@@ -52,13 +52,18 @@ final class LabCapabilityService
         return ContainerRegistry::get(self::class);
     }
 
-    /** @return array{capabilities: ?array, capabilitiesSeenAt: ?string, commandPlaneSeenAt: ?string} */
+    /** @return array{capabilities: ?array, capabilitiesSeenAt: ?string, commandPlaneSeenAt: ?string, instanceId: ?string, instanceSeenAt: ?string, previousInstanceId: ?string, instanceChangedAt: ?string, instanceChangeCount: int} */
     public function read(int $labId): array
     {
         $row = $this->db->rawQueryOne(
-            "SELECT facility_attributes->>'$.capabilities'        AS caps,
-                    facility_attributes->>'$.capabilitiesSeenAt'  AS seenAt,
-                    facility_attributes->>'$.commandPlaneSeenAt'  AS planeSeenAt
+            "SELECT facility_attributes->>'$.capabilities'          AS caps,
+                    facility_attributes->>'$.capabilitiesSeenAt'    AS seenAt,
+                    facility_attributes->>'$.commandPlaneSeenAt'    AS planeSeenAt,
+                    facility_attributes->>'$.instanceId'            AS instanceId,
+                    facility_attributes->>'$.instanceSeenAt'        AS instanceSeenAt,
+                    facility_attributes->>'$.previousInstanceId'    AS previousInstanceId,
+                    facility_attributes->>'$.instanceChangedAt'     AS instanceChangedAt,
+                    facility_attributes->>'$.instanceChangeCount'   AS instanceChangeCount
              FROM facility_details
              WHERE facility_id = ?",
             [$labId]
@@ -77,6 +82,66 @@ final class LabCapabilityService
             'capabilities' => $caps,
             'capabilitiesSeenAt' => $clean($row['seenAt'] ?? null),
             'commandPlaneSeenAt' => $clean($row['planeSeenAt'] ?? null),
+            'instanceId' => $clean($row['instanceId'] ?? null),
+            'instanceSeenAt' => $clean($row['instanceSeenAt'] ?? null),
+            'previousInstanceId' => $clean($row['previousInstanceId'] ?? null),
+            'instanceChangedAt' => $clean($row['instanceChangedAt'] ?? null),
+            'instanceChangeCount' => (int) ($clean($row['instanceChangeCount'] ?? null) ?? 0),
+        ];
+    }
+
+    /**
+     * How to read a lab's instance history, in one place so the sync-status row,
+     * the queue dialog and anything added later agree.
+     *
+     * Two installations of one lab are indistinguishable to the command plane:
+     * the sts_token is a single column on facility_details, so both authenticate
+     * identically, and every query keys on lab_id. A command goes to whichever
+     * polls first and the other never learns it existed.
+     *
+     * A single change is ordinary — a rebuilt machine, a restore onto new
+     * hardware, a migration. Repeated changes are the case worth acting on:
+     * two live instances taking turns, each overwriting the other's report.
+     * The distinction is the count, not the fact of a change.
+     *
+     * @param array $attrs A row from read()
+     * @return array{state: string, message: ?string}
+     *         state: 'single' | 'changed' | 'contested' | 'unknown'
+     */
+    public static function instanceState(array $attrs, int $contestedThreshold = 2): array
+    {
+        $instanceId = $attrs['instanceId'] ?? null;
+        $changeCount = (int) ($attrs['instanceChangeCount'] ?? 0);
+
+        if (empty($instanceId)) {
+            return [
+                'state' => 'unknown',
+                'message' => null,
+            ];
+        }
+
+        if ($changeCount >= $contestedThreshold) {
+            return [
+                'state' => 'contested',
+                'message' => sprintf(
+                    'This lab has reported %d different installations. Two may be running at once, '
+                        . 'in which case a queued command goes to whichever polls first and the other never sees it.',
+                    $changeCount + 1
+                ),
+            ];
+        }
+
+        if ($changeCount > 0) {
+            return [
+                'state' => 'changed',
+                'message' => 'The installation reporting for this lab has changed once, '
+                    . 'which is expected after a rebuild, a restore, or a move to new hardware.',
+            ];
+        }
+
+        return [
+            'state' => 'single',
+            'message' => null,
         ];
     }
 

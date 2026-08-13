@@ -42,6 +42,10 @@ $query = "SELECT
     f.facility_attributes->>'$.capabilities' as capabilitiesJson,
     f.facility_attributes->>'$.capabilitiesSeenAt' as capabilitiesSeenAt,
     f.facility_attributes->>'$.commandPlaneSeenAt' as commandPlaneSeenAt,
+    f.facility_attributes->>'$.instanceId' as instanceId,
+    f.facility_attributes->>'$.previousInstanceId' as previousInstanceId,
+    f.facility_attributes->>'$.instanceChangedAt' as instanceChangedAt,
+    f.facility_attributes->>'$.instanceChangeCount' as instanceChangeCount,
     tar.last_requested_on,
     GREATEST(
         COALESCE(UNIX_TIMESTAMP(STR_TO_DATE(f.facility_attributes->>'$.lastHeartBeat', '%Y-%m-%d %H:%i:%s')), 0),
@@ -148,6 +152,18 @@ if (empty($resultSet)) {
         $labTier = $capEval['tier'];
         $labSupports = $capEval['supports'];
 
+        // Which installation is answering for this lab, and whether more than
+        // one has. The plane cannot distinguish two installations of the same
+        // lab, so a command goes to whichever polls first; this is the only
+        // signal that says so.
+        $clean = static fn($v) => !empty($v) && $v !== 'null' ? (string) $v : null;
+        $instanceState = LabCapabilityService::instanceState([
+            'instanceId' => $clean($aRow['instanceId'] ?? null),
+            'previousInstanceId' => $clean($aRow['previousInstanceId'] ?? null),
+            'instanceChangedAt' => $clean($aRow['instanceChangedAt'] ?? null),
+            'instanceChangeCount' => (int) ($clean($aRow['instanceChangeCount'] ?? null) ?? 0),
+        ]);
+
         // Determine sync status color
         $latestSync = (int) $aRow['latest_timestamp'];
         if ($latestSync > $twoWeeksAgo) {
@@ -235,6 +251,25 @@ if (empty($resultSet)) {
                             <?= $renderHb($runnerHb, _translate('runner')); ?>
                         </small>
                     <?php }
+
+                    // Which installation is answering. Shown only once more than
+                    // one ever has: on the overwhelming majority of rows — one
+                    // lab, one machine — an instance id is noise, and the point
+                    // of the badge is the exception.
+                    if ($instanceState['state'] === 'changed' || $instanceState['state'] === 'contested') {
+                        $instCls = $instanceState['state'] === 'contested' ? 'label-danger' : 'label-warning';
+                        $instText = $instanceState['state'] === 'contested'
+                            ? _translate('multiple installations')
+                            : _translate('installation changed'); ?>
+                        <br>
+                        <small style="display:inline-block; margin-top:3px;">
+                            <span class="label <?= $instCls; ?>" style="font-weight:normal;"
+                                  title="<?= htmlspecialchars((string) $instanceState['message']); ?>">
+                                <em class="fa-solid fa-server"></em>
+                                <?= htmlspecialchars($instText); ?>
+                            </span>
+                        </small>
+                    <?php }
                 } ?>
             </td>
             <?php if ($showActions) {
@@ -261,6 +296,8 @@ if (empty($resultSet)) {
                             data-lab-name="<?= htmlspecialchars((string) $aRow['facility_name'], ENT_QUOTES); ?>"
                             data-prepared='<?= htmlspecialchars(json_encode($labPrepared), ENT_QUOTES); ?>'
                             data-supports='<?= htmlspecialchars(json_encode($labSupports), ENT_QUOTES); ?>'
+                            data-instance-state="<?= htmlspecialchars($instanceState['state'], ENT_QUOTES); ?>"
+                            data-instance-warning="<?= htmlspecialchars((string) $instanceState['message'], ENT_QUOTES); ?>"
                             title="<?= htmlspecialchars($queueBtnTitle, ENT_QUOTES); ?>"<?= $queueBtnDisabled; ?>>
                             <i class="fa fa-paper-plane"></i>
                             <?= _translate('Queue'); ?>
