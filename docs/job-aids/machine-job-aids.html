@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InteLIS machine job aids</title>
+<style>
+  :root {
+    --ink: #14181c;
+    --muted: #5b6670;
+    --rule: #c8d0d6;
+    --tint: #eef3f5;
+    --accent: #00695c;
+    --warn: #8a4b00;
+    --warn-bg: #fdf3e6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #f4f6f7;
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.42;
+  }
+  .toolbar {
+    max-width: 200mm;
+    margin: 0 auto 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .toolbar h1 { font-size: 16pt; margin: 0; }
+  .toolbar p { margin: 0; color: var(--muted); font-size: 10pt; }
+  button {
+    font: inherit;
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .card {
+    max-width: 200mm;
+    min-height: 250mm;
+    margin: 0 auto 20px;
+    padding: 16mm 15mm;
+    background: #fff;
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+  .card > header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+  .kicker {
+    font-size: 8.5pt;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .card h2 { font-size: 17pt; margin: 3px 0 0; }
+  .card h2 + p { margin: 5px 0 0; color: var(--muted); }
+
+  h3 {
+    font-size: 10.5pt;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 18px 0 7px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 3px;
+  }
+
+  ol, ul { margin: 0 0 10px; padding-left: 20px; }
+  li { margin-bottom: 5px; }
+  ol.steps { counter-reset: s; list-style: none; padding-left: 0; }
+  ol.steps > li {
+    counter-increment: s;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 9px;
+  }
+  ol.steps > li::before {
+    content: counter(s);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 21px; height: 21px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 9.5pt;
+    text-align: center;
+    line-height: 18px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 0 0 10px; font-size: 10pt; }
+  th, td { text-align: left; vertical-align: top; padding: 5px 8px; border-bottom: 1px solid var(--rule); }
+  th { background: var(--tint); font-size: 9pt; text-transform: uppercase; letter-spacing: .04em; }
+  td:first-child { white-space: nowrap; font-weight: 600; }
+  table.wrapfirst td:first-child { white-space: normal; }
+
+  .path {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9.5pt;
+    background: var(--tint);
+    padding: 1px 5px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .ui { font-weight: 700; }
+
+  /* A command to be typed, on its own line. Deliberately not nowrap: a long one
+     must wrap on the page rather than run off the edge of the paper, because a
+     command that is printed incomplete is worse than one that is printed ugly. */
+  .cmd {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 10pt;
+    background: var(--tint);
+    border-left: 3px solid var(--accent);
+    padding: 7px 10px;
+    margin: 8px 0 12px;
+    word-break: break-all;
+  }
+  .cmd.big { font-size: 12pt; font-weight: 700; }
+  .screen {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9pt;
+    background: #14181c;
+    color: #e6edf0;
+    padding: 9px 11px;
+    margin: 8px 0 12px;
+    white-space: pre-wrap;
+    line-height: 1.35;
+  }
+
+  .warn {
+    border-left: 4px solid var(--warn);
+    background: var(--warn-bg);
+    padding: 9px 12px;
+    margin: 12px 0;
+  }
+  .warn strong { color: var(--warn); display: block; margin-bottom: 2px; font-size: 9.5pt; text-transform: uppercase; letter-spacing: .04em; }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; margin: 10px 0 14px; }
+  .flow .step {
+    flex: 1 1 90px;
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
+    padding: 7px 8px;
+    font-size: 9.5pt;
+    background: #fff;
+  }
+  .flow .step b { display: block; font-size: 8pt; color: var(--accent); letter-spacing: .05em; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+  footer.cardfoot {
+    margin-top: 16px; padding-top: 7px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 8.5pt;
+    display: flex; justify-content: space-between; gap: 10px;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; font-size: 10.5pt; }
+    .toolbar { display: none; }
+    .card {
+      margin: 0; border: 0; box-shadow: none;
+      min-height: 0; max-width: none;
+      padding: 12mm 14mm;
+      page-break-after: always;
+      break-after: page;
+    }
+    .card:last-of-type { page-break-after: auto; break-after: auto; }
+    .screen { background: #fff; color: var(--ink); border: 1px solid var(--rule); }
+  }
+  @page { size: A4 portrait; margin: 10mm; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <h1>InteLIS machine job aids</h1>
+    <p>Six single-page cards for whoever looks after the machine. Print and keep near it.</p>
+  </div>
+  <button onclick="window.print()">Print all cards</button>
+</div>
+
+<!-- CARD 1 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 1 of 6</div>
+    <h2>One command runs the machine</h2>
+    <p>Everything on these cards starts the same way.</p>
+  </header>
+
+  <p>Open the black terminal window on the InteLIS machine and type:</p>
+
+  <div class="cmd big">intelis</div>
+
+  <p>A numbered list appears. Type a number, press Enter. Nothing needs to be remembered.</p>
+
+  <div class="screen">  1) Check this machine is working
+  2) See whether backups are working
+  3) Back up now
+  4) Update InteLIS
+  5) Restore from a backup
+  6) Change where backups are sent
+  7) Quit
+
+Type a number and press Enter:</div>
+
+  <h3>Or type the words, if that is quicker</h3>
+  <table class="wrapfirst">
+    <tr><th>To do this</th><th>Type</th></tr>
+    <tr><td>Check the machine is working</td><td><span class="path">intelis check</span></td></tr>
+    <tr><td>See whether backups are working</td><td><span class="path">sudo intelis backup status</span></td></tr>
+    <tr><td>Back up right now</td><td><span class="path">sudo intelis backup</span></td></tr>
+    <tr><td>Update InteLIS</td><td><span class="path">sudo intelis update</span></td></tr>
+    <tr><td>Restore from a backup</td><td><span class="path">sudo intelis restore</span></td></tr>
+    <tr><td>Change where backups go</td><td><span class="path">sudo intelis backup setup</span></td></tr>
+  </table>
+
+  <h3>How often</h3>
+  <table class="wrapfirst">
+    <tr><th>When</th><th>What</th></tr>
+    <tr><td>Every Monday</td><td>Check backups are working (menu 2). Takes ten seconds.</td></tr>
+    <tr><td>When asked to</td><td>Update InteLIS (menu 4).</td></tr>
+    <tr><td>When something looks wrong</td><td>Check the machine (menu 1) before calling anyone.</td></tr>
+    <tr><td>Never, normally</td><td>Back up by hand. The machine backs itself up every 8 hours.</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>About the word sudo</strong>
+    Some commands start with <span class="path">sudo</span>. It means "do this as the
+    administrator", and the machine will ask for the password once. If a command fails
+    saying permission denied, it needed <span class="path">sudo</span> in front.
+  </div>
+
+  <h3>If typing intelis says "command not found"</h3>
+  <p>The machine is an older installation. Run the update once using the long command on
+  card 3, and the short one works from then on.</p>
+
+  <footer class="cardfoot"><span>InteLIS machine job aid</span><span>Card 1: one command</span></footer>
+</section>
+
+<!-- CARD 2 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 2 of 6</div>
+    <h2>Install InteLIS on a new machine</h2>
+    <p>A machine with Ubuntu on it and nothing else.</p>
+  </header>
+
+  <h3>Before starting</h3>
+  <table class="wrapfirst">
+    <tr><td>Ubuntu installed</td><td>Ubuntu 22.04 or newer</td></tr>
+    <tr><td>Internet</td><td>Needed for the whole install. It downloads a lot.</td></tr>
+    <tr><td>Administrator password</td><td>The one used to log in to the machine</td></tr>
+    <tr><td>Time</td><td>Allow an hour. Do not start it ten minutes before leaving.</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Restoring an old lab onto a new machine?</strong>
+    Do not use this card. Go to card 5 and run the restore first. It prints the exact
+    install command, with the backup already attached, so the machine comes back with
+    its data instead of empty.
+  </div>
+
+  <h3>Type these three lines, one at a time</h3>
+  <div class="cmd">cd ~</div>
+  <div class="cmd">wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)"</div>
+  <div class="cmd">sudo bash setup.sh</div>
+
+  <div class="warn">
+    <strong>Download the file first, always</strong>
+    Never join these into one line that pipes the download straight into the shell.
+    The installer asks questions, and a piped run answers them with its own text.
+    It refuses to start that way, on purpose.
+  </div>
+
+  <h3>What it will ask</h3>
+  <table class="wrapfirst">
+    <tr><th>Question</th><th>Answer</th></tr>
+    <tr><td>Where to install</td><td>Press Enter for the standard place unless told otherwise</td></tr>
+    <tr><td>Database password</td><td>Choose one and write it down somewhere safe. It cannot be recovered.</td></tr>
+    <tr><td>STS address</td><td>The address given by the programme. Leave empty for a standalone lab.</td></tr>
+    <tr><td>Which modules</td><td>The tests this lab does</td></tr>
+  </table>
+
+  <h3>When it finishes</h3>
+  <ol class="steps">
+    <li>Type <span class="path">intelis check</span>. Every line should say PASS.</li>
+    <li>Open a browser on the machine and log in.</li>
+    <li>Set up backups straight away, using card 4. A machine with no backup is one disk away from losing everything.</li>
+  </ol>
+
+  <footer class="cardfoot"><span>InteLIS machine job aid</span><span>Card 2: install</span></footer>
+</section>
+
+<!-- CARD 3 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 3 of 6</div>
+    <h2>Update InteLIS</h2>
+    <p>Do this when the programme asks for it.</p>
+  </header>
+
+  <div class="cmd big">sudo intelis update</div>
+
+  <p>That is the whole procedure. Leave the window open until it finishes and says so.</p>
+
+  <h3>What happens while it runs</h3>
+  <div class="flow">
+    <div class="step"><b>1</b>Downloads the new version</div>
+    <div class="step"><b>2</b>Takes a snapshot it can go back to</div>
+    <div class="step"><b>3</b>Puts the new files in place</div>
+    <div class="step"><b>4</b>Updates the database</div>
+    <div class="step"><b>5</b>Restarts the web server</div>
+  </div>
+
+  <h3>Before and after</h3>
+  <table class="wrapfirst">
+    <tr><td>Before</td><td>Tell the lab. There is a short spell where pages may not load.</td></tr>
+    <tr><td>Before</td><td>Check backups are current: <span class="path">sudo intelis backup status</span></td></tr>
+    <tr><td>After</td><td>Run <span class="path">intelis check</span>. Every line should say PASS.</td></tr>
+    <tr><td>After</td><td>Log in and open one page, to see it with your own eyes.</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Do not close the window, unplug, or restart</strong>
+    An update interrupted halfway leaves new code running against an old database.
+    If the window is closed by accident, run the same command again rather than
+    anything else. It is safe to re-run.
+  </div>
+
+  <h3>Only if "intelis: command not found"</h3>
+  <p>An older machine may not have the short command. Type these two lines once, and it
+  will exist from then on.</p>
+  <div class="cmd">sudo wget -O /usr/local/bin/intelis-update https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh</div>
+  <div class="cmd">sudo chmod +x /usr/local/bin/intelis-update &amp;&amp; sudo intelis-update</div>
+
+  <h3>If it fails</h3>
+  <p>The update keeps a snapshot and reports what went wrong. Do not try to fix the machine
+  by hand. Run <span class="path">intelis check</span>, and send the whole output to support.</p>
+
+  <footer class="cardfoot"><span>InteLIS machine job aid</span><span>Card 3: update</span></footer>
+</section>
+
+<!-- CARD 4 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 4 of 6</div>
+    <h2>Backups</h2>
+    <p>Set it up once. Check it every week.</p>
+  </header>
+
+  <h3>Setting it up, once per machine</h3>
+  <div class="cmd">sudo intelis backup setup</div>
+  <p>It asks where backups should go, and tests the connection before saving anything:</p>
+  <table class="wrapfirst">
+    <tr><td>1 &mdash; Another Linux machine</td><td>Over the network. Needs that machine's address, a username, and its password once.</td></tr>
+    <tr><td>2 &mdash; A Windows shared folder</td><td>Share a folder on the Windows PC first, and give the user Change permission on it.</td></tr>
+    <tr><td>3 &mdash; A USB or external drive</td><td>Plug it in first. Simplest, but someone has to keep the drive safe.</td></tr>
+  </table>
+  <p>It then runs the first backup while you watch. If that fails, it says so rather than
+  pretending it worked.</p>
+
+  <h3>After that it runs itself</h3>
+  <p>Every 8 hours, and after every restart. Nobody has to remember.</p>
+
+  <h3>The weekly ten seconds</h3>
+  <div class="cmd">sudo intelis backup status</div>
+  <div class="screen">Lab            : kigali-central (kigali-central-a1b2c3d4)
+Backing up to  : backup@192.168.1.20:/home/backup/backups/...
+Last good backup: 2026-08-13T04:00:11Z (6 hours ago)
+Size on backup  : 4.2G
+Last attempt    : succeeded in 143s
+Schedule        : every 8 hours and after every restart</div>
+
+  <table class="wrapfirst">
+    <tr><th>What it says</th><th>What to do</th></tr>
+    <tr><td>Last good backup: a few hours ago</td><td>Nothing. This is what right looks like.</td></tr>
+    <tr><td>Last good backup: never</td><td>It has never worked. Run <span class="path">sudo intelis backup test</span>.</td></tr>
+    <tr><td>More than a day old</td><td>Run <span class="path">sudo intelis backup test</span> to find out why.</td></tr>
+    <tr><td>Last attempt: FAILED</td><td>Read the reason on the next line. Usually the other machine is switched off.</td></tr>
+    <tr><td>Schedule: OFF</td><td>Backups are not scheduled. Call support.</td></tr>
+  </table>
+
+  <h3>The other two commands</h3>
+  <table class="wrapfirst">
+    <tr><td><span class="path">sudo intelis backup test</span></td><td>Checks the connection and reports what would be copied. Changes nothing. Safe any time.</td></tr>
+    <tr><td><span class="path">sudo intelis backup</span></td><td>Backs up right now, on this machine and off it. Use before an update or a move.</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>A backup nobody has ever restored is not a backup</strong>
+    It is a hope. Once a year, restore one onto a spare machine and check the data is
+    there. Card 5 is how.
+  </div>
+
+  <footer class="cardfoot"><span>InteLIS machine job aid</span><span>Card 4: backups</span></footer>
+</section>
+
+<!-- CARD 5 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 5 of 6</div>
+    <h2>Restore from a backup</h2>
+    <p>For a machine that has died, or data that has been lost.</p>
+  </header>
+
+  <div class="warn">
+    <strong>Stop and think first</strong>
+    Restoring replaces the current data with older data. Anything entered since that
+    backup was taken is gone. If the machine still works, call support before restoring.
+  </div>
+
+  <h3>See what backups exist</h3>
+  <div class="cmd">sudo intelis restore --list</div>
+
+  <h3>Restore one</h3>
+  <div class="cmd big">sudo intelis restore</div>
+  <p>It connects to wherever backups were sent, shows every lab stored there, copies the
+  chosen one back, and checks the files are readable before doing anything with them.</p>
+
+  <h3>What happens next depends on the machine</h3>
+  <table class="wrapfirst">
+    <tr><th>Situation</th><th>What it does</th></tr>
+    <tr><td>InteLIS is installed and working</td><td>Offers to restore the database in place. It takes a safety copy of the current data first, so this can be undone.</td></tr>
+    <tr><td>The machine is blank or newly rebuilt</td><td>Prints one command that installs InteLIS <em>and</em> loads the backup in the same step. Copy that line and run it.</td></tr>
+  </table>
+
+  <h3>Rebuilding a machine that died completely</h3>
+  <ol class="steps">
+    <li>Install Ubuntu on the new machine.</li>
+    <li>Connect it to the same network as the backup destination, or plug in the backup drive.</li>
+    <li>Run <span class="path">sudo intelis restore</span> and choose the lab.</li>
+    <li>Copy the command it prints, and run it. Allow an hour.</li>
+    <li>Run <span class="path">intelis check</span>, then log in and confirm the data is there.</li>
+    <li>Set backups up again with card 4. The new machine is not backing anything up yet.</li>
+  </ol>
+
+  <div class="warn">
+    <strong>If the backups are encrypted</strong>
+    The command it prints is enough when the new machine uses the same database password
+    as the old one. If it does not, the STS administrator has to issue a recovery token
+    first. Ask for one before starting, not halfway through.
+  </div>
+
+  <footer class="cardfoot"><span>InteLIS machine job aid</span><span>Card 5: restore</span></footer>
+</section>
+
+<!-- CARD 6 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 6 of 6</div>
+    <h2>When something is wrong</h2>
+    <p>Do this before calling anyone. It often answers the question.</p>
+  </header>
+
+  <div class="cmd big">intelis check</div>
+
+  <p>It examines the machine and prints one line per thing checked. It works even when
+  InteLIS itself will not start, which is exactly when it is needed.</p>
+
+  <div class="screen">  PASS  PHP version                8.4.5
+  PASS  Database host              localhost
+  WARN  Apache post_max_size       8M — large imports will be truncated
+  FAIL  Schema version             database is at 5.6.3, migrations go to 5.6.5
+                                     run: composer migrate</div>
+
+  <h3>Reading it</h3>
+  <table class="wrapfirst">
+    <tr><td>PASS</td><td>Fine. Ignore.</td></tr>
+    <tr><td>WARN</td><td>Works, but something will bite later. Worth reporting.</td></tr>
+    <tr><td>FAIL</td><td>Broken. This is the line that matters.</td></tr>
+    <tr><td>The indented line</td><td>The exact command that fixes it. Type it as printed.</td></tr>
+  </table>
+
+  <h3>The other check</h3>
+  <div class="cmd">intelis health</div>
+  <p>Disk space, database speed, and whether backups are current. Use this one when the
+  machine works but feels slow or full.</p>
+
+  <h3>Common ones</h3>
+  <table class="wrapfirst">
+    <tr><th>Sign</th><th>Likely cause</th></tr>
+    <tr><td>Pages blank or will not load</td><td>Run <span class="path">intelis check</span>. Usually an interrupted update or a stopped database.</td></tr>
+    <tr><td>Disk usage above 90%</td><td>The disk is filling. Call support before it reaches 100%, not after.</td></tr>
+    <tr><td>Everything is slow</td><td>Run <span class="path">intelis health</span> and report the database latency figure.</td></tr>
+    <tr><td>Results not reaching the programme</td><td>Check the STS address and token lines in <span class="path">intelis check</span>.</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>When calling support, send the output</strong>
+    Run <span class="path">intelis check</span>, select all the text in the window, copy it,
+    and send it. It answers most of the questions support would otherwise have to ask,
+    and it turns a two-day exchange into one message.
+  </div>
+
+  <h3>What not to do</h3>
+  <ul>
+    <li>Do not reinstall to fix a problem. Restoring after an unnecessary reinstall loses everything entered since the last backup.</li>
+    <li>Do not delete files to free disk space. Ask first.</li>
+    <li>Do not run commands found on the internet. Run the one InteLIS printed.</li>
+  </ul>
+
+  <footer class="cardfoot"><span>InteLIS machine job aid</span><span>Card 6: when something is wrong</span></footer>
+</section>
+
+</body>
+</html>
