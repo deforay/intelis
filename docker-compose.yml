@@ -8,6 +8,9 @@ services:
       - "${APACHE_PORT:-80}:80"
     volumes:
       - .:/var/www/html
+      # Dev-only PHP overrides. The mount above is what makes them necessary:
+      # the image is built with OPcache pinned to never revalidate.
+      - ./docker/php-apache/dev-php.ini:/usr/local/etc/php/conf.d/zz-dev.ini:ro
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_password}
       - MYSQL_DATABASE=${MYSQL_DATABASE:-vlsm}
