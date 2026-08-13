@@ -37,7 +37,7 @@ pièce : la fiche 5 sert un jour où la machine ne peut pas l'afficher.
 |---|---|---|
 | 1. Une seule commande pilote la machine | Le menu `intelis`, et à quelle fréquence faire quoi | La personne qui s'occupe de la machine |
 | 2. Installer InteLIS sur une machine neuve | Les trois lignes à saisir, et ce que demande l'installation | La personne qui installe |
-| 3. Mettre à jour InteLIS | `intelis update`, quoi vérifier avant et après | La personne qui s'occupe de la machine |
+| 3. Mettre à jour InteLIS | `sudo intelis-update`, quoi vérifier avant et après | La personne qui s'occupe de la machine |
 | 4. Les sauvegardes | Choisir une destination, et la vérification hebdomadaire de dix secondes | La personne qui s'occupe de la machine |
 | 5. Restaurer depuis une sauvegarde | Restaurer sur place, et remonter une machine perdue | À imprimer et garder près de la machine |
 | 6. Quand quelque chose ne va pas | Lire `intelis check`, et quoi envoyer au support | N'importe qui, avant d'appeler le support |

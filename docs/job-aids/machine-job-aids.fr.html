@@ -225,7 +225,7 @@ Saisir un numéro et appuyer sur Entrée :</div>
     <tr><td>Vérifier que la machine fonctionne</td><td><span class="path">intelis check</span></td></tr>
     <tr><td>Voir si les sauvegardes fonctionnent</td><td><span class="path">intelis backup status</span></td></tr>
     <tr><td>Sauvegarder tout de suite</td><td><span class="path">intelis backup</span></td></tr>
-    <tr><td>Mettre à jour InteLIS</td><td><span class="path">intelis update</span></td></tr>
+    <tr><td>Mettre à jour InteLIS</td><td><span class="path">sudo intelis-update</span></td></tr>
     <tr><td>Restaurer depuis une sauvegarde</td><td><span class="path">intelis restore</span></td></tr>
     <tr><td>Changer la destination des sauvegardes</td><td><span class="path">intelis backup setup</span></td></tr>
   </table>
@@ -317,9 +317,17 @@ Saisir un numéro et appuyer sur Entrée :</div>
     <p>À faire lorsque le programme le demande.</p>
   </header>
 
-  <div class="cmd big">intelis update</div>
+  <div class="cmd big">sudo intelis-update</div>
 
   <p>C'est toute la procédure. Laisser la fenêtre ouverte jusqu'à ce qu'elle annonce la fin.</p>
+
+  <div class="warn">
+    <strong>Attention au trait d'union</strong>
+    <span class="path">intelis-update</span>, et non <span class="path">intelis update</span>.
+    Sur une machine qui n'a pas été mise à jour depuis un certain temps, la forme avec
+    espace lance tout autre chose. Utiliser le trait d'union tant que chaque machine
+    n'a pas été mise à jour au moins une fois.
+  </div>
 
   <h3>Ce qui se passe pendant l'exécution</h3>
   <div class="flow">
