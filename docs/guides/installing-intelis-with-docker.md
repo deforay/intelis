@@ -86,11 +86,15 @@ migration, and installs dependencies. Watch it with
 ### 5. Check it came up clean
 
 ```bash
-docker compose exec -u www-data intelis php bin/preflight.php
+docker compose exec intelis intelis check
 ```
 
 Every line should say PASS. Anything that says FAIL prints the command that
 fixes it.
+
+The `intelis` command works inside the container exactly as it does on an Ubuntu
+install, so `intelis backup status`, `intelis health` and the rest all apply —
+run them with `docker compose exec intelis intelis <command>`.
 
 ## Environment Variables Reference
 

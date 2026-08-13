@@ -1,1 +1,9 @@
+# crunz drives the application's own scheduled tasks, including the sync-sts
+# tick that carries the remote command courier.
 * * * * * cd /var/www/html/ && ./cron.sh
+
+# The privileged command runner. On Ubuntu this is a systemd timer
+# (scripts/systemd/intelis-runner.timer); a container has no systemd, so cron
+# stands in for it at the same one-minute cadence. Without this, a Docker
+# instance reports itself able to run root commands and then never executes one.
+* * * * * /usr/local/bin/intelis-runner >/dev/null 2>&1

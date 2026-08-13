@@ -12,6 +12,7 @@ RUN apt-get update && \
     cron \
     curl \
     default-mysql-client \
+    fzf \
     gettext \
     git \
     libcurl4-openssl-dev \
@@ -20,6 +21,7 @@ RUN apt-get update && \
     libjpeg62-turbo-dev \
     libonig-dev \
     libpng-dev \
+    jq \
     libzip-dev \
     openssl \
     rsync \
