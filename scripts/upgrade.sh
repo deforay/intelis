@@ -2023,20 +2023,6 @@ fi
 # Best-effort: if the first lis_path doesn't contain the installer files yet
 # (e.g. fresh install mid-upgrade), we skip gracefully. A subsequent upgrade
 # will finish the install.
-runner_installer="${first_lis_path:-${lis_paths[0]}}/scripts/install-runner.sh"
-if [ -f "$runner_installer" ]; then
-    print header "Installing remote command runner"
-    if bash "$runner_installer" --source-dir "$(dirname "$runner_installer")" >>"$log_file" 2>&1; then
-        print success "Remote command runner installed / refreshed."
-        log_action "intelis-runner installed via $runner_installer"
-    else
-        print warning "Remote command runner install failed; see $log_file. Upgrade will continue."
-        log_action "intelis-runner install failed"
-    fi
-else
-    log_action "Skipping runner install (installer not found at $runner_installer)"
-fi
-
 # Process each instance
 total_instances=${#lis_paths[@]}
 
@@ -2156,6 +2142,28 @@ if [ ${#failed_instances[@]} -gt 0 ]; then
         print error "  ✗ $p"
     done
 fi
+
+# Installed from the code that has just arrived, not the code being replaced.
+#
+# This used to run before the instances were updated, so install-runner.sh read
+# the previous release's systemd unit and installed that. A change to the unit
+# therefore landed in the tree on one upgrade and only took effect on the next
+# — which meant a unit that could not start stayed broken through an upgrade
+# that contained its fix, and nothing said so.
+runner_installer="${first_lis_path:-${lis_paths[0]}}/scripts/install-runner.sh"
+if [ -f "$runner_installer" ]; then
+    print header "Installing remote command runner"
+    if bash "$runner_installer" --source-dir "$(dirname "$runner_installer")" >>"$log_file" 2>&1; then
+        print success "Remote command runner installed / refreshed."
+        log_action "intelis-runner installed via $runner_installer"
+    else
+        print warning "Remote command runner install failed; see $log_file. Upgrade will continue."
+        log_action "intelis-runner install failed"
+    fi
+else
+    log_action "Skipping runner install (installer not found at $runner_installer)"
+fi
+
 
 log_action "Upgrade complete. Updated: ${#updated_instances[@]}, Failed: ${#failed_instances[@]}"
 
