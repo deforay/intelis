@@ -225,6 +225,13 @@ $(function () {
         $('#cmdDetailsModal').modal('show');
         $.get('/admin/monitoring/get-lis-command-history.php', { detailFor: commandId }, function (html) {
             $('#cmdDetailsBody').html(html);
+            // The output box holds the tail of a run, so what went wrong is at
+            // the bottom of it. Opening at the top means scrolling past a few
+            // hundred lines of package installation to reach the one line that
+            // says why the command failed.
+            $('#cmdDetailsBody .result-tail-box').each(function () {
+                this.scrollTop = this.scrollHeight;
+            });
         }).fail(function () {
             $('#cmdDetailsBody').html('<p class="text-danger"><?= _translate('Failed to load details.'); ?></p>');
         });

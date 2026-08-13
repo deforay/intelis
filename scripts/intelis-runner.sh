@@ -109,11 +109,19 @@ write_result() {
 }
 
 # Build a result JSON blob capturing exit code and a tail of output.
+#
+# The scripts this runs write for a terminal, so their output carries colour
+# escapes and apt's progress redraws carry carriage returns. Neither survives
+# the trip usefully: on the STS they render as literal "[1;92m" around the very
+# lines someone is trying to read, and the carriage returns make text overwrite
+# itself. Stripped here so what is stored is what a person needs.
 build_result_json() {
     local rc="$1" output_log="$2"
     local tail_json='""'
     if [ -f "$output_log" ]; then
-        tail_json=$(tail -n 30 "$output_log" 2>/dev/null | jq -Rs . || echo '""')
+        tail_json=$(tail -n 30 "$output_log" 2>/dev/null \
+            | sed -e 's/\x1b\[[0-9;]*[A-Za-z]//g' -e 's/\r$//' \
+            | jq -Rs . || echo '""')
     fi
     printf '{"exitCode":%d,"outputTail":%s}\n' "$rc" "$tail_json"
 }
@@ -234,7 +242,8 @@ dispatch_marker() {
                         # Override the standard result JSON with a richer payload
                         # so STS sees stagedVersion + stagingDir alongside exitCode.
                         local tail_json='""'
-                        [ -f "$output_log" ] && tail_json=$(tail -n 30 "$output_log" 2>/dev/null | jq -Rs . || echo '""')
+                        [ -f "$output_log" ] && tail_json=$(tail -n 30 "$output_log" 2>/dev/null \
+                            | sed -e 's/\x1b\[[0-9;]*[A-Za-z]//g' -e 's/\r$//' | jq -Rs . || echo '""')
                         result_json=$(jq -n \
                             --argjson exitCode 0 \
                             --arg stagedVersion "${staged_version:-unknown}" \
