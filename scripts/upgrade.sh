@@ -50,7 +50,19 @@ SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
 
-if wget -q -O "$SHARED_FN_PATH" "$SHARED_FN_URL"; then
+# wget on a normal Ubuntu box, curl where wget is absent. The official PHP
+# images ship curl and not wget, so a Docker instance failed here on line one of
+# every upgrade — including one triggered remotely from the STS, where the whole
+# failure an operator saw was "wget: command not found".
+if command -v wget >/dev/null 2>&1; then
+    fetch_shared_fn() { wget -q -O "$1" "$2"; }
+elif command -v curl >/dev/null 2>&1; then
+    fetch_shared_fn() { curl -fsSL -o "$1" "$2"; }
+else
+    fetch_shared_fn() { return 1; }
+fi
+
+if fetch_shared_fn "$SHARED_FN_PATH" "$SHARED_FN_URL"; then
     chmod +x "$SHARED_FN_PATH"
     echo "Downloaded shared-functions.sh."
 else
