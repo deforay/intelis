@@ -1,0 +1,43 @@
+-- Migration file for version 5.7.0
+--
+-- The minimum version for remote upgrades from the STS.
+--
+-- The command plane has existed since 5.4.3 and could not deliver a command on
+-- any of the releases between. Four faults, each of which looked like something
+-- else, and any one of which was enough on its own:
+--
+--   The STS never handed over the first queued command. It fetched a lab's
+--   pending rows with an [offset, count] pair that read as [page, perPage], so
+--   the generated SQL was LIMIT 1, 10 and the oldest row was skipped on every
+--   poll. With a single command queued, that is all of them. The lab was told
+--   there was nothing waiting; the STS held a row it believed was queued; both
+--   were behaving correctly and neither could see the other's view.
+--
+--   upgrade.sh fetched its shared functions with wget before doing anything
+--   else and exited when that failed, so any machine without wget could not
+--   update at all — remotely or by hand. It now uses whichever of wget or curl
+--   is present.
+--
+--   The runner passed -b on every remote upgrade. upgrade.sh never had a -b:
+--   its parser ignored unknown options silently, so the flag did nothing while
+--   the script's own header documented it as the non-interactive one. Unknown
+--   options are now an error rather than a shrug.
+--
+--   A containerised instance advertised upgrade support it could not honour.
+--   upgrade.sh manages the operating system around the application and refuses
+--   on anything that is not Ubuntu LTS, while the container was Debian. The
+--   container is Ubuntu now, and an instance that is containerised no longer
+--   advertises the verb regardless: a container is upgraded by rebuilding its
+--   image, not from inside one.
+--
+-- Also in this release, and the reason it is a minor rather than a patch: the
+-- STS records which installation is answering for a lab, and says so when more
+-- than one has. Two installations of one lab were indistinguishable to every
+-- query on the plane, so a command went to whichever polled first and the other
+-- never learned it existed. That is now visible rather than silent.
+--
+-- For clients: a lab must be on 5.7.0 or newer for remote upgrades to work, and
+-- so must the STS. An older lab still answers the plane for the safe non-root
+-- commands; it simply will not receive an upgrade.
+
+UPDATE `system_config` SET `value` = '5.7.0' WHERE `system_config`.`name` = 'sc_version';
