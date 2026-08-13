@@ -265,7 +265,7 @@ configure_ssh() {
     print success "Backup server is reachable"
 
     # Already trusted from a previous run?
-    if ssh -i "$SSH_KEY" -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 \
+    if ssh -n -i "$SSH_KEY" -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 \
          -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" true 2>/dev/null; then
       print success "Password-free login already works"
       break
@@ -279,7 +279,7 @@ configure_ssh() {
       exit 1
     fi
 
-    if ! ssh -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=10 \
+    if ! ssh -n -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=10 \
          -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" true; then
       print warning "The key was installed but password-free login still does not work."
       confirm "Try again?" && continue
@@ -290,7 +290,7 @@ configure_ssh() {
   done
 
   local remote_home
-  remote_home="$(ssh -i "$SSH_KEY" -o BatchMode=yes -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" 'printf %s "$HOME"')"
+  remote_home="$(ssh -n -i "$SSH_KEY" -o BatchMode=yes -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" 'printf %s "$HOME"')"
   DEST_BASE="${remote_home}/backups"
   DEST_DIR="${DEST_BASE}/${DEST_FOLDER}"
 }
@@ -421,7 +421,7 @@ esac
 
 dest_exec() {
   case "$DEST_MODE" in
-    ssh) ssh -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=10 -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" "$1" ;;
+    ssh) ssh -n -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=10 -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" "$1" ;;
     *)   bash -c "$1" ;;
   esac
 }
@@ -735,7 +735,7 @@ SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-
 
 dest_exec() {
   case "$DEST_MODE" in
-    ssh) ssh -i "$SSH_KEY" "${SSH_OPTS[@]}" -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" "$1" ;;
+    ssh) ssh -n -i "$SSH_KEY" "${SSH_OPTS[@]}" -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" "$1" ;;
     *)   bash -c "$1" ;;
   esac
 }

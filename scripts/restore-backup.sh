@@ -212,7 +212,7 @@ connect_ssh() {
       [ -n "$SSH_KEY" ] && [ -f "$SSH_KEY" ] && SSH_ARGS+=(-i "$SSH_KEY")
     fi
     print info "Connecting to ${SSH_HOST}... (you may be asked for ${SSH_USER}'s password)"
-    if ssh "${SSH_ARGS[@]}" "${SSH_USER}@${SSH_HOST}" true; then
+    if ssh -n "${SSH_ARGS[@]}" "${SSH_USER}@${SSH_HOST}" true; then
       print success "Connected"
       break
     fi
@@ -223,7 +223,7 @@ connect_ssh() {
 
   if [ -z "$SRC_BASE" ]; then
     local remote_home
-    remote_home="$(ssh "${SSH_ARGS[@]}" "${SSH_USER}@${SSH_HOST}" 'printf %s "$HOME"')"
+    remote_home="$(ssh -n "${SSH_ARGS[@]}" "${SSH_USER}@${SSH_HOST}" 'printf %s "$HOME"')"
     SRC_BASE="${remote_home}/backups"
   fi
 }
@@ -312,7 +312,7 @@ esac
 
 src_exec() {
   case "$SRC_MODE" in
-    ssh) ssh "${SSH_ARGS[@]}" "${SSH_USER}@${SSH_HOST}" "$1" ;;
+    ssh) ssh -n "${SSH_ARGS[@]}" "${SSH_USER}@${SSH_HOST}" "$1" ;;
     *)   bash -c "$1" ;;
   esac
 }
