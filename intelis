@@ -21,6 +21,8 @@
 #   intelis backup status    when the last backup worked, and whether it did
 #   intelis backup test      check the backup destination, change nothing
 #   intelis backup setup     choose or change where backups are sent
+#   intelis backup enable    start or stop the scheduled backups
+#   intelis backup disable
 #   intelis restore          bring a backup back from where it was sent
 #   intelis check            can this machine run and serve InteLIS?
 #   intelis health           disk, database, backups: is it well right now?
@@ -197,13 +199,15 @@ cmd_update() {
 
 cmd_backup() {
     case "${1:-now}" in
-        status) shift; backup_runner_action --status "$@" ;;
-        test)   shift; backup_runner_action --test "$@" ;;
-        setup)  shift; backup_setup "$@" ;;
-        now)    backup_now ;;
+        status)  shift; backup_runner_action --status "$@" ;;
+        test)    shift; backup_runner_action --test "$@" ;;
+        enable)  shift; backup_runner_action --enable "$@" ;;
+        disable) shift; backup_runner_action --disable "$@" ;;
+        setup)   shift; backup_setup "$@" ;;
+        now)     backup_now ;;
         *)
             error "Unknown backup command: $1"
-            say "Try: intelis backup | intelis backup status | intelis backup test | intelis backup setup"
+            say "Try one of: status, test, setup, enable, disable — or just 'intelis backup' to back up now."
             return 2
             ;;
     esac
@@ -338,6 +342,8 @@ cmd_help() {
     say "  intelis backup status    See whether backups are working"
     say "  intelis backup test      Test the backup destination, change nothing"
     say "  intelis backup setup     Choose or change where backups are sent"
+    say "  intelis backup disable   Stop the scheduled backups"
+    say "  intelis backup enable    Start the scheduled backups again"
     say "  intelis restore          Bring a backup back from where it was sent"
     say ""
     say "  Anything else is passed to composer, e.g. intelis migrate."

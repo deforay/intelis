@@ -2185,5 +2185,5 @@ if [ ${#updated_instances[@]} -gt 0 ]; then
         fi
         sudo -u www-data php "${p}/bin/preflight.php" --quiet || true
     done
-    print info "Full report any time: cd <instance> && composer preflight"
+    print info "Full report any time: intelis check"
 fi

@@ -24,7 +24,7 @@
  *
  * It reports; it does not repair. Every failure carries the exact command that
  * fixes it, so the support loop for a lab is "send me the output of
- * `composer preflight`" instead of decoding an Apache error log over WhatsApp.
+ * `intelis check`" instead of decoding an Apache error log over WhatsApp.
  *
  * Checks, in order:
  *   1. PHP runtime — version and the extensions composer.json requires
@@ -38,9 +38,16 @@
  *      failed rather than only that it did
  *
  * Usage:
- *   composer preflight             run all checks
- *   composer preflight -- --quiet  only print warnings and failures (CI / hooks)
+ *   intelis check                  run all checks
+ *   intelis check --quiet          only print warnings and failures (CI / hooks)
  *   php bin/preflight.php --help   print this docblock
+ *
+ * `composer preflight` still works and is what setup.sh and upgrade.sh call,
+ * since they run before the intelis command is necessarily in place. Every
+ * remedy printed below names the intelis form, because that is the one an
+ * operator can type from anywhere on the machine — composer has to be run from
+ * the installation directory, and a lab reading a remedy off a screen is rarely
+ * standing in it.
  *
  * Exit codes: 0 nothing failed (warnings still exit 0), 1 one or more failed.
  */
@@ -232,7 +239,7 @@ if ($webIni === null) {
 // ─── 3. Dependencies ───
 
 $hasVendor = is_file($root . '/vendor/autoload.php');
-check('vendor/ installed', $hasVendor ? PF_OK : PF_FAIL, $hasVendor ? '' : 'run: composer install');
+check('vendor/ installed', $hasVendor ? PF_OK : PF_FAIL, $hasVendor ? '' : 'run: intelis install');
 
 if (!$hasVendor) {
     pf_render($results, $quiet);
@@ -269,7 +276,7 @@ if ($comparison === null) {
         PF_WARN,
         count($comparison['problems']) . ' package(s) differ from composer.lock: '
             . implode(', ', $shown) . ($extra > 0 ? ", and {$extra} more" : '') . "\n"
-            . '  run: composer install --no-dev',
+            . '  run: intelis install --no-dev',
     );
 }
 
@@ -458,7 +465,7 @@ if ($webUser === null) {
         check(
             'How to fix',
             PF_WARN,
-            'sudo composer provision' . "\n"
+            'sudo intelis provision' . "\n"
                 . 'if that cannot start, clear the way for it first:' . "\n"
                 . '  sudo chown -R $(logname):' . $webUser['name'] . ' '
                 . implode(' ', array_map(static fn(string $d): string => $root . '/' . $d, $notWritable)) . "\n"
@@ -542,13 +549,13 @@ $latestMigration = $migrations === [] ? null : end($migrations);
 
 if ($scVersion === null) {
     check('Schema version', PF_FAIL, 'no sc_version — this database has never been migrated' . "\n"
-        . '  run: composer migrate');
+        . '  run: intelis migrate');
 } elseif ($latestMigration !== null && version_compare($latestMigration, $scVersion, '>')) {
     check(
         'Schema version',
         PF_FAIL,
         "database is at {$scVersion}, migrations go to {$latestMigration}\n"
-            . '  run: composer migrate',
+            . '  run: intelis migrate',
     );
 } else {
     check('Schema version', PF_OK, "sc_version {$scVersion}");
@@ -588,7 +595,7 @@ try {
         'Table collation',
         $drifted === 0 ? PF_OK : PF_WARN,
         $drifted === 0 ? 'all tables utf8mb4' : "{$drifted} table(s) are not utf8mb4\n"
-            . '  run: composer db:collation',
+            . '  run: intelis db:collation',
     );
 } catch (PDOException $e) {
     check('Table collation', PF_SKIP, $e->getMessage());
@@ -627,7 +634,7 @@ try {
             $untriggered === []
                 ? count($formTables) . ' form table(s) audited'
                 : 'no audit trigger on: ' . implode(', ', $untriggered) . "\n"
-                    . '  changes to these tables are not being recorded — run: composer audit-triggers-install',
+                    . '  changes to these tables are not being recorded — run: intelis audit-triggers-install',
         );
 
         // Pre-5.5.3 triggers wrote to the columnar audit_form_* tables. Left in
@@ -656,7 +663,7 @@ try {
                 PF_WARN,
                 "{$legacy} pre-5.5.3 trigger(s) still installed on: "
                     . implode(', ', array_keys($legacyTables)) . "\n"
-                    . '  run: composer audit-triggers-install',
+                    . '  run: intelis audit-triggers-install',
             );
         }
     }
@@ -700,7 +707,7 @@ try {
                 'STS token',
                 PF_WARN,
                 "registered, but no STS token is stored\n"
-                    . '  run: composer token',
+                    . '  run: intelis token',
             );
         }
     } elseif ($remoteUrl === '') {
@@ -1353,7 +1360,7 @@ function pf_db_remedy(string $host, PDOException $e): string
 
     if (str_contains($message, 'unknown database')) {
         return 'the database named in configs/config.production.php does not exist' . "\n"
-            . '  create it, then run: composer migrate';
+            . '  create it, then run: intelis migrate';
     }
 
     if (str_contains($message, "can't connect") || str_contains($message, 'connection refused')) {
