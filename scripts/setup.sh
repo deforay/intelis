@@ -1599,7 +1599,7 @@ wait "${permissions_pid}" 2>/dev/null || true
 if [ -f "${lis_path}/bin/preflight.php" ]; then
     print header "Install Check"
     sudo -u www-data php "${lis_path}/bin/preflight.php" || true
-    print info "Re-run any time: cd ${lis_path} && composer preflight"
+    print info "Re-run any time: intelis check"
 fi
 
 print success "Setup complete. Proceed to LIS setup."

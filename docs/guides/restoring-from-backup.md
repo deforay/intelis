@@ -20,22 +20,18 @@ first. That guide covers the whole rebuild. This one covers fetching the backup.
 
 ## Fetch the backup
 
-1. Download the script.
+```bash
+sudo intelis restore
+```
+
+??? info "If `intelis` is not recognised"
+
+    On a machine with no InteLIS on it yet, fetch the script directly:
 
     ```bash
     cd ~
     wget -O restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
-    ```
-
-2. Make it executable.
-
-    ```bash
     sudo chmod u+x restore-backup.sh
-    ```
-
-3. Run it.
-
-    ```bash
     sudo ./restore-backup.sh
     ```
 
@@ -65,7 +61,7 @@ Choose the lab by number. Then choose what to copy back:
 | 2 | Everything, including uploads and attachments | Files are missing as well as data |
 
 To see what is stored without copying anything, run
-`sudo ./restore-backup.sh --list`.
+`sudo intelis restore --list`.
 
 ## Put the data back
 
@@ -115,7 +111,7 @@ needed. For the other options, see
 !!! failure "There are no backups in this folder"
     The destination holds no lab folders. Confirm you connected to the right
     machine or drive. On the InteLIS server, run
-    `sudo /usr/local/bin/intelis-backup.sh --status` to see where its backups go.
+    `sudo intelis backup status` to see where its backups go.
 
 !!! failure "A backup file is damaged"
     The script reports which file failed its check. Choose an older backup from

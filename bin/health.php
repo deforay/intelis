@@ -317,13 +317,15 @@ if ($mysqlLatencyStatus === 'ok') {
 // What is worth waking someone for is a backup that was set up and has since
 // stopped working, because that is the case that looks fine from the outside.
 $backupStatus = 'unknown';
-$backupDetail = 'Not set up (run scripts/remote-backup.sh)';
+$backupDetail = 'Not set up — run: intelis backup setup';
 $backupAgeHours = null;
 
 if (is_file($backupStatusFile) && !is_readable($backupStatusFile)) {
     // get_current_user() would answer for the owner of this file rather than the
     // account running it, which is the one that cannot read the status file.
-    $runningAs = function_exists('posix_geteuid')
+    // Both functions come from ext-posix, which is not guaranteed to be loaded;
+    // each is checked for rather than inferred from the other being present.
+    $runningAs = function_exists('posix_geteuid') && function_exists('posix_getpwuid')
         ? (posix_getpwuid(posix_geteuid())['name'] ?? 'this user')
         : (trim((string) @shell_exec('id -nu 2>/dev/null')) ?: 'this user');
 

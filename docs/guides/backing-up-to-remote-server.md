@@ -16,24 +16,20 @@ folder instead, see
 
 ## Set up the backup
 
-Run these commands on the InteLIS server.
+On the InteLIS server, run:
 
-1. Download the script.
+```bash
+sudo intelis backup setup
+```
+
+??? info "If `intelis` is not recognised"
+
+    The installation predates the command. Fetch the script directly instead:
 
     ```bash
     cd ~
     wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
-    ```
-
-2. Make it executable.
-
-    ```bash
     sudo chmod u+x remote-backup.sh
-    ```
-
-3. Run it.
-
-    ```bash
     sudo ./remote-backup.sh
     ```
 
@@ -59,7 +55,7 @@ The script runs the first backup before it finishes, and reports the result. To
 check again at any time:
 
 ```bash
-sudo /usr/local/bin/intelis-backup.sh --status
+sudo intelis backup status
 ```
 
 A working setup looks like this:
@@ -95,13 +91,13 @@ to `backups/db` every 6 hours. It leaves out files that are rebuilt on install:
 
 | Task | Command |
 |------|---------|
-| Check the last backup | `sudo /usr/local/bin/intelis-backup.sh --status` |
-| Test the connection without copying | `sudo /usr/local/bin/intelis-backup.sh --test` |
-| Back up right now | `sudo /usr/local/bin/intelis-backup.sh` |
+| Check the last backup | `sudo intelis backup status` |
+| Test the connection without copying | `sudo intelis backup test` |
+| Back up right now | `sudo intelis backup` |
 | Watch a backup as it runs | `tail -f /var/log/intelis-backup.log` |
-| Stop the scheduled backups | `sudo /usr/local/bin/intelis-backup.sh --disable` |
-| Start them again | `sudo /usr/local/bin/intelis-backup.sh --enable` |
-| Change any setting | Re-run `sudo ./remote-backup.sh` |
+| Stop the scheduled backups | `sudo intelis backup disable` |
+| Start them again | `sudo intelis backup enable` |
+| Change any setting | Re-run `sudo intelis backup setup` |
 
 ## Getting the backup back
 
@@ -121,7 +117,7 @@ See [Restoring from a Backup](restoring-from-backup.md).
 
 !!! failure "The backup folder does not belong to this installation any more"
     The folder at the destination was replaced by another machine's backup. Re-run
-    `sudo ./remote-backup.sh` to set the destination up again.
+    `sudo intelis backup setup` to set the destination up again.
 
 !!! warning "The newest database dump is more than 24 hours old"
     The scheduled job that dumps the database has stopped. The file copy still
