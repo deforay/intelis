@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
+use Tests\Support\InMemoryInterfaceInstallationRepository;
 
 /**
  * Covers which installation a row is attributed to. The lookup itself is one IN query;
@@ -243,6 +244,97 @@ final class InstrumentInstallationResolverTest extends TestCase
             [null],
             $this->resolver()->resolve([['source_installation_id' => self::SOURCE]], 7)
         );
+    }
+
+    /**
+     * A tool the server has never activated is registered rather than left unnamed. For a
+     * lab syncing only through bin/interface.php this is not a transitional state -- that
+     * deployment never calls the API -- so without it their telemetry is never attributed
+     * to a machine at all.
+     */
+    public function testAnUnknownSourceIsRegisteredAndUsed(): void
+    {
+        $repository = new InMemoryInterfaceInstallationRepository();
+        $resolver = $this->resolverWith($repository);
+
+        $resolved = $resolver->resolve(
+            [['source_installation_id' => self::SOURCE, 'machine_type' => 'roche-cobas-5800']],
+            7
+        );
+
+        $held = $repository->listInstallations(7);
+        self::assertCount(1, $held);
+        self::assertSame(self::SOURCE, $held[0]['source_installation_id']);
+        self::assertSame('observed', $held[0]['status']);
+        self::assertNull($held[0]['credential_hash'], 'an observed row must grant nothing');
+        self::assertSame([$held[0]['installation_id']], $resolved);
+    }
+
+    /** Names it after the analyzer it drives, which is what an administrator recognises. */
+    public function testARegisteredToolIsNamedAfterWhatItDrives(): void
+    {
+        $repository = new InMemoryInterfaceInstallationRepository();
+        $this->resolverWith($repository)->resolve(
+            [['source_installation_id' => self::SOURCE, 'machine_type' => 'roche-cobas-5800']],
+            7
+        );
+
+        self::assertSame('roche-cobas-5800 (auto-detected)', $repository->listInstallations(7)[0]['display_name']);
+    }
+
+    /** Nothing has said what it drives yet, so the name at least stays matchable. */
+    public function testAToolThatHasNotSaidWhatItDrivesStillGetsAMatchableName(): void
+    {
+        $repository = new InMemoryInterfaceInstallationRepository();
+        $this->resolverWith($repository)->resolve([['source_installation_id' => self::SOURCE]], 7);
+
+        self::assertStringContainsString(
+            substr(self::SOURCE, -12),
+            $repository->listInstallations(7)[0]['display_name']
+        );
+    }
+
+    /** A source already resolved is used as it stands; registering again would be a second row. */
+    public function testAKnownSourceIsNotRegisteredAgain(): void
+    {
+        $repository = new InMemoryInterfaceInstallationRepository();
+        $resolver = $this->resolverWith($repository);
+        $this->seed($resolver, [7 . ':' . self::SOURCE => self::INSTALLATION]);
+
+        $resolved = $resolver->resolve([['source_installation_id' => self::SOURCE]], 7);
+
+        self::assertSame([self::INSTALLATION], $resolved);
+        self::assertSame([], $repository->listInstallations(7));
+    }
+
+    /** Another facility's tool is not this lab's to attribute, so the row stays unnamed. */
+    public function testASourceBelongingToAnotherFacilityStaysUnattributed(): void
+    {
+        $repository = new InMemoryInterfaceInstallationRepository();
+        $repository->registerObserved(
+            '99999999-8888-4777-8666-555555555555',
+            self::SOURCE,
+            101,
+            'Observed at another lab',
+            new \DateTimeImmutable('2026-08-13 00:00:00')
+        );
+
+        self::assertSame(
+            [null],
+            $this->resolverWith($repository)->resolve([['source_installation_id' => self::SOURCE]], 7)
+        );
+    }
+
+    private function resolverWith(InMemoryInterfaceInstallationRepository $repository): InstrumentInstallationResolver
+    {
+        // Built without a constructor so no database is involved, then given the pieces
+        // the registration path actually uses. `db` stays uninitialised: reaching for it
+        // would mean the lookup ran, and the lookup is what registration replaces here.
+        $resolver = (new ReflectionClass(InstrumentInstallationResolver::class))->newInstanceWithoutConstructor();
+        $property = new \ReflectionProperty(InstrumentInstallationResolver::class, 'installations');
+        $property->setValue($resolver, $repository);
+
+        return $resolver;
     }
 
     /** @param array<string, string|null> $seen */
