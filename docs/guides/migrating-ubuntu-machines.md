@@ -9,6 +9,14 @@ Backups are usually **encrypted** (the file ends in `.sql.zst.gpg`). setup.sh
 restores encrypted backups too — see [If your backups are encrypted](#if-your-backups-are-encrypted-gpg)
 below for how it gets the key.
 
+!!! tip "If off-machine backups were set up, there is a shorter route"
+
+    `sudo intelis restore` on the new machine fetches the backup from wherever
+    it was sent, checks the files are readable, and prints the exact install
+    command below with the path already filled in. This page is the manual
+    version of the same thing, for when the backups are on a drive in your hand.
+    See [Restoring from a backup](restoring-from-backup.md).
+
 ## 1. Put the backups on the new machine
 
 Connect the drive that holds the old machine's `backups` folder, or copy that
@@ -29,8 +37,11 @@ The restore uses that token to rebuild the passphrase.
 > first, then copy the new file across:
 >
 > ```bash
-> cd /var/www/intelis && sudo -u www-data composer db:backup
+> sudo intelis backup
 > ```
+>
+> That takes a fresh dump and also sends it to wherever off-machine backups go,
+> so the new machine can be built from either copy.
 
 ## 2. Install on the new machine and restore the latest backup
 
