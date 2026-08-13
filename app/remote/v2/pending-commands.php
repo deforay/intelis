@@ -166,8 +166,12 @@ try {
         ))"
     );
     $db->orderBy('requested_at', 'ASC');
-    $db->pageLimit = 10;
-    $rows = $db->get('s_lis_remote_commands', [1, 10],
+    // A plain row limit. The array form of this argument is [offset, count], not
+    // [page, perPage] — so [1, 10] meant "LIMIT 1, 10", which skipped the oldest
+    // pending command on every poll. With a single command queued, that is all
+    // of them: it stayed 'pending' forever, the lab never heard about it, and
+    // the STS showed an in-flight badge for something it had never handed over.
+    $rows = $db->get('s_lis_remote_commands', 10,
         'command_id, command, params, nonce, not_before, expires_at, depends_on');
 
     // 3) Mark them picked.
