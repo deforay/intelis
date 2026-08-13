@@ -1552,6 +1552,21 @@ if [ -f "${lis_path}/var/cache/CompiledContainer.php" ]; then
     rm "${lis_path}/var/cache/CompiledContainer.php"
 fi
 
+# The update command, installed here rather than left for the operator to fetch.
+# Until now nothing put it on a fresh machine: the first update of a new
+# installation began with a two-command wget-and-chmod copied out of a document,
+# and a lab that mistyped it had no way to update at all.
+#
+# Checked before installing, like everything else here: setup is idempotent and
+# re-running it on a working machine must not disturb what is already in place.
+# Staleness is not a reason to overwrite it either — `intelis update` refreshes
+# this copy from master every time it runs.
+if [ ! -x /usr/local/bin/intelis-update ]; then
+    download_file "/usr/local/bin/intelis-update" https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh
+    chmod +x /usr/local/bin/intelis-update
+    print success "Update command installed — run 'intelis update' to update this machine"
+fi
+
 # Set proper permissions
 download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh
 chmod +x /usr/local/bin/intelis-refresh
