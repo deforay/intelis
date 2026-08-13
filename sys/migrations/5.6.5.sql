@@ -42,3 +42,16 @@ ALTER TABLE `instrument_usage_statistics_daily`
     COMMENT 'api, importer or relay';
 
 UPDATE `system_config` SET `value` = '5.6.5' WHERE `system_config`.`name` = 'sc_version';
+
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
