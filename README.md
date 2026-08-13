@@ -1,257 +1,83 @@
 # InteLIS
 
 > **Integrated Laboratory Information & Sample Tracking System**
-> Simple, open-source LIS to manage and track samples for HIV VL, EID, TB, Hepatitis, COVID-19, CD4, and other priority diseases.
+> Open-source LIS to manage and track samples for HIV viral load, EID, TB, hepatitis, COVID-19, CD4, and other priority diseases.
 
-![PHP](https://img.shields.io/badge/PHP-8.4+-blue)
- ![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04%2B-orange)
- ![Status](https://img.shields.io/badge/status-stable-success)
- ![License: InteLIS Community Copyleft License (Non-Commercial)](https://img.shields.io/badge/License-Community%20Copyleft%20v1.0-blue)
+![PHP](https://img.shields.io/badge/PHP-8.4+-blue) ![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04%2B-orange) ![Status](https://img.shields.io/badge/status-stable-success) ![License: InteLIS Community Copyleft License (Non-Commercial)](https://img.shields.io/badge/License-Community%20Copyleft%20v1.0-blue)
 
-InteLIS (formerly **VLSM**) digitizes laboratory workflows — from sample collection to result dispatch — for national and sub-national health programs.
+InteLIS digitizes laboratory workflows from sample collection to result dispatch, for national and sub-national health programs. It is lightweight, self-hostable, and works both online and offline.
 
-It's lightweight, self-hostable, and works both online and offline.
+InteLIS was previously called VLSM. Some paths and the database keep the old name.
 
-For a codebase overview, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+**[Read the documentation](https://deforay.github.io/intelis/)** · **[Documentation en français](https://deforay.github.io/intelis/fr/)**
 
-------
+---
 
-## Table of Contents
+## What it does
 
-- [InteLIS](#intelis)
-  - [Table of Contents](#table-of-contents)
-  - [License](#license)
-  - [Pre-requisites](#pre-requisites)
-  - [Installation](#installation)
-    - [Option 1 — Automated Installation (Ubuntu LTS only)](#option-1--automated-installation-ubuntu-lts-only)
-    - [Option 2 — Manual Installation](#option-2--manual-installation)
-      - [Step 1 — Get the code](#step-1--get-the-code)
-      - [Step 2 — Install dependencies](#step-2--install-dependencies)
-      - [Step 3 — Set up the database](#step-3--set-up-the-database)
-      - [Step 4 — Configure the application](#step-4--configure-the-application)
-      - [Step 5 — Set up Apache virtual host](#step-5--set-up-apache-virtual-host)
-      - [Step 6 — Set up the cron job](#step-6--set-up-the-cron-job)
-  - [Complete the Setup](#complete-the-setup)
-  - [Updating InteLIS](#updating-intelis)
-    - [Option 1 — Automated Update (Ubuntu LTS only)](#option-1--automated-update-ubuntu-lts-only)
-    - [Option 2 — Manual Update](#option-2--manual-update)
-  - [Support](#support)
+- Register test requests and track each sample from collection to released result
+- Send and receive samples on manifests between facilities and testing labs
+- Batch samples for testing and load the analyzer
+- Capture results by analyzer interfacing, file import, or manual entry
+- Review, approve, and release results by print, email, or export
+- Record where each sample is stored
+- Report on turnaround time, testing volumes, failures, and rejections
+- Run modules for HIV viral load, EID, TB, hepatitis, COVID-19, CD4, and custom tests
+- Work in English or French, and integrate over a REST API
 
-------
+---
+
+## Quick start
+
+Docker is the fastest route. It supplies Apache, MySQL, and PHP.
+
+```bash
+git clone https://github.com/deforay/intelis.git
+cd intelis
+cp .env.example .env    # set MYSQL_ROOT_PASSWORD
+docker compose up -d
+```
+
+Open <http://localhost/> and create the administrator account.
+
+Full instructions: [Installing InteLIS with Docker](https://deforay.github.io/intelis/guides/installing-intelis-with-docker/). To install on a server instead, see [InteLIS on Ubuntu](https://deforay.github.io/intelis/guides/installing-intelis-on-ubuntu/) or [InteLIS on Windows](https://deforay.github.io/intelis/guides/installing-intelis-on-windows/).
+
+---
+
+## Documentation
+
+| Audience | Start here |
+| --- | --- |
+| Lab staff | [Using InteLIS](https://deforay.github.io/intelis/user-guides/) |
+| Bench and workstation | [Printable job aids](https://deforay.github.io/intelis/job-aids/) |
+| Installing and updating | [Installation guides](https://deforay.github.io/intelis/guides/installing-intelis-with-docker/) |
+| Keeping data safe | [Backup and restore](https://deforay.github.io/intelis/guides/restoring-from-backup/) |
+| Developers | [Architecture](https://deforay.github.io/intelis/ARCHITECTURE/) |
+| Integrators | [API reference](https://deforay.github.io/intelis/api/) |
+
+---
+
+## Requirements
+
+Docker supplies all three. A server install needs them present.
+
+- Apache 2.x with the `rewrite` and `headers` modules enabled
+- MySQL 5.7 or higher
+- PHP 8.2 to 8.5. The Ubuntu installer selects 8.4, or 8.5 on Ubuntu 26.04 and newer.
+
+---
 
 ## License
 
 InteLIS is released under the **InteLIS Community Copyleft License (Non-Commercial), Version 1.0**.
 
-This license allows **non-commercial use** — including public or private laboratories, healthcare programs, NGOs, research, and education — but **restricts commercial redistribution or resale** of the software.
+Non-commercial use is permitted. That includes public and private laboratories, health programs, NGOs, research, and education. Commercial redistribution and resale are restricted.
 
-> For commercial licensing inquiries, contact [support@deforay.com](mailto:support@deforay.com)
+Read the full text in [LICENSE.md](LICENSE.md). For commercial licensing, contact [support@deforay.com](mailto:support@deforay.com).
 
-See the full license text in [LICENSE.md](LICENSE.md).
-
-------
-
-## Pre-requisites
-
-- Apache 2.x (with `rewrite` and `headers` modules enabled)
-- MySQL 5.7 or higher
-- PHP 8.2 to 8.5. The Ubuntu installer selects 8.4, or 8.5 on Ubuntu 26.04 and newer.
-- [Composer](https://getcomposer.org/download/)
-
-------
-
-## Installation
-
-### Option 1 — Automated Installation (Ubuntu LTS only)
-
-Supports Ubuntu 22.04 and above, LTS versions only.
-
-```bash
-# Download the script to a file, then run it. Do NOT pipe it (curl ... | bash).
-cd ~ && wget -O setup.sh "https://github.com/deforay/intelis/raw/master/scripts/setup.sh?v=$(date +%s)" && sudo bash setup.sh
-```
-
-When prompted, enter:
-
-- MySQL password
-- STS URL
-- Hostname (optional, default is `intelis`)
-
-After the script completes:
-
-1. Edit the config file with your MySQL details:
-
-   ```bash
-   sudo gedit /var/www/intelis/configs/config.production.php
-   ```
-
-2. Continue with [Complete the Setup](#complete-the-setup).
-
-------
-
-### Option 2 — Manual Installation
-
-#### Step 1 — Get the code
-
-Download the source code and place it in your web root (`/var/www/` or `htdocs`).
-
-#### Step 2 — Install dependencies
-
-```bash
-cd /var/www/intelis
-composer install --no-scripts --no-autoloader --prefer-dist --no-dev
-composer dump-autoload -o
-composer post-install
-```
-
-> The `composer post-install` command is required after a fresh install.
-
-#### Step 3 — Set up the database
-
-1. Create a blank database called `vlsm`.
-2. Import `init.sql` from the `sql` folder into it (via phpMyAdmin or the MySQL CLI).
-
-#### Step 4 — Configure the application
-
-Copy and edit the configuration file:
-
-```bash
-cp configs/config.production.dist.php configs/config.production.php
-```
-
-Edit `configs/config.production.php`:
-
-```php
-// Database Settings
-$systemConfig['database']['host']     = 'localhost';
-$systemConfig['database']['username'] = 'dbuser';
-$systemConfig['database']['password'] = 'dbpassword';
-$systemConfig['database']['db']       = 'vlsm';
-$systemConfig['database']['port']     = 3306;
-$systemConfig['database']['charset']  = 'utf8mb4';
-```
-
-Enable or disable modules as needed:
-
-```php
-// Enable/Disable Modules
-$systemConfig['modules']['vl'] = true;              // Viral Load
-$systemConfig['modules']['eid'] = true;             // Early Infant Diagnosis
-$systemConfig['modules']['covid19'] = true;         // Covid-19
-$systemConfig['modules']['hepatitis'] = false;      // Hepatitis
-$systemConfig['modules']['tb'] = false;             // Tuberculosis
-$systemConfig['modules']['cd4'] = false;            // CD4
-$systemConfig['modules']['generic-tests'] = false;  // Custom Tests
-```
-
-#### Step 5 — Set up Apache virtual host
-
-1. Ensure Apache rewrite module is enabled.
-
-2. Add this to `/etc/hosts`:
-
-   ```text
-   127.0.0.1  intelis.example.org
-   ```
-
-3. Create a virtual host configuration (assuming `/var/www/intelis`):
-
-   ```apache
-   <VirtualHost *:80>
-      DocumentRoot "/var/www/intelis/public"
-      ServerName intelis.example.org
-   
-      <Directory "/var/www/intelis/public">
-          AddDefaultCharset UTF-8
-          Options -Indexes -MultiViews +FollowSymLinks
-          AllowOverride All
-          Require all granted
-      </Directory>
-   </VirtualHost>
-   ```
-
-Need help? See: [How to set up Apache Virtual Hosts on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-20-04)
-
-#### Step 6 — Set up the cron job
-
-```bash
-sudo EDITOR=gedit crontab -e
-```
-
-Add this line:
-
-```bash
-* * * * * cd /var/www/intelis/ && ./vendor/bin/crunz schedule:run
-```
-
-------
-
-## Complete the Setup
-
-These steps apply to both automated and manual installations.
-
-1. Visit the application in your browser:
-   - **Manual:** Use the hostname you configured, for example <http://intelis.example.org/>
-   - **Automated:** Use the hostname you chose during setup, `intelis` by default: <http://intelis/>
-
-2. Register and set up the admin user.
-
-3. Log in and configure under **Admin → System Settings**:
-   - Sample Types
-   - Reasons for Testing
-   - Rejection Reasons
-   - Users, Provinces, Districts, Facilities
-   - Other settings
-
-------
-
-## Updating InteLIS
-
-### Option 1 — Automated Update (Ubuntu LTS only)
-
-```bash
-sudo wget -O /usr/local/bin/intelis-update https://github.com/deforay/intelis/raw/master/scripts/upgrade.sh
-sudo chmod +x /usr/local/bin/intelis-update
-sudo intelis-update
-```
-
-When prompted, enter:
-
-- MySQL password
-- STS URL
-
-------
-
-### Option 2 — Manual Update
-
-1. Pull the latest source or download it manually.
-
-2. Update dependencies:
-
-   ```bash
-   cd /var/www/intelis
-   composer install --no-scripts --no-autoloader --prefer-dist --no-dev
-   composer dump-autoload -o
-   composer post-update
-   ```
-
-   > The `composer post-update` command is required after code updates.
-
-3. Apply any database migrations or config changes (see release notes).
-
-4. Clear cache if needed.
-
-5. Restart Apache:
-
-   ```bash
-   sudo systemctl restart apache2
-   ```
-
-------
+---
 
 ## Support
 
-Need help or commercial licensing?
-
-- Email **[support@deforay.com](mailto:support@deforay.com)**
-- Website: [https://deforay.com](https://deforay.com/)
+- Email [support@deforay.com](mailto:support@deforay.com)
+- Website [deforay.com](https://deforay.com/)
