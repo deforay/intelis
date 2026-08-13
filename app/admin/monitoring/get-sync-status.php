@@ -244,7 +244,16 @@ if (empty($resultSet)) {
                     $runnerHb = $aRow['runnerHeartbeat'] ?? null;
                     $staleThresholdSec = 15 * 60;
 
-                    $renderHb = static function (?string $iso, string $label) use ($staleThresholdSec): string {
+                    // Chips, not blocks. Two saturated full-width labels stacked
+                    // on top of each other read as one alarming rectangle, and at
+                    // fleet scale the column became a wall of red that said less
+                    // than a single dot would. These are one line, muted, and sized
+                    // to their content, with the colour carried by a dot.
+                    //
+                    // Four tiers rather than two. 21 minutes late and nine weeks
+                    // dead were both flat red, so the reader could not tell a lab
+                    // that is a little behind from one that is gone.
+                    $renderHb = static function (?string $iso, string $label): string {
                         // MySQL's ->> renders a JSON null as the four-character
                         // string "null", which is not empty and which strtotime
                         // cannot read. That produced "runner: 496281h ago" — the
@@ -253,21 +262,42 @@ if (empty($resultSet)) {
                         $ts = (!empty($iso) && $iso !== 'null') ? strtotime($iso) : false;
 
                         if ($ts === false || $ts <= 0) {
-                            // Never reported: the loop is off, or the lab predates it.
-                            // Grey, not red — nothing has regressed here, and red
-                            // should stay reserved for something that worked and stopped.
-                            return '<span class="label label-default" style="font-weight:normal;" title="'
-                                 . _translate('Has never reported') . ' (' . htmlspecialchars($label) . ')">'
-                                 . htmlspecialchars($label) . ': ' . _translate('never') . '</span>';
+                            return '<span class="plane-chip plane-never" title="'
+                                 . htmlspecialchars(_translate('Has never reported')) . '">'
+                                 . '<i class="plane-dot"></i>' . htmlspecialchars($label)
+                                 . ' <b>' . htmlspecialchars(_translate('never')) . '</b></span>';
                         }
 
                         $age = time() - $ts;
-                        $ageText = $age < 60 ? 'just now'
-                                 : ($age < 3600 ? floor($age / 60) . 'm ago'
-                                 : floor($age / 3600) . 'h ago');
-                        $cls = $age > $staleThresholdSec ? 'label-danger' : 'label-success';
-                        return '<span class="label ' . $cls . '" style="font-weight:normal;" title="' . htmlspecialchars($iso) . '">'
-                             . htmlspecialchars($label) . ': ' . htmlspecialchars($ageText) . '</span>';
+
+                        // Hours stop being readable after a day or so: "1531h ago"
+                        // is a number the reader has to divide before it means
+                        // anything.
+                        if ($age < 60) {
+                            $ageText = _translate('just now');
+                        } elseif ($age < 3600) {
+                            $ageText = floor($age / 60) . 'm';
+                        } elseif ($age < 86400) {
+                            $ageText = floor($age / 3600) . 'h';
+                        } else {
+                            $ageText = floor($age / 86400) . 'd';
+                        }
+
+                        // Both loops are eventually-consistent and tick about every
+                        // minute, so a few minutes late is normal, under an hour is
+                        // worth noticing, and beyond that something has stopped.
+                        if ($age <= 15 * 60) {
+                            $cls = 'plane-ok';
+                        } elseif ($age <= 3600) {
+                            $cls = 'plane-late';
+                        } else {
+                            $cls = 'plane-stale';
+                        }
+
+                        return '<span class="plane-chip ' . $cls . '" title="'
+                             . htmlspecialchars($label . ': ' . $iso) . '">'
+                             . '<i class="plane-dot"></i>' . htmlspecialchars($label)
+                             . ' <b>' . htmlspecialchars($ageText) . '</b></span>';
                     };
 
                     $everReported = (!empty($courierHb) && $courierHb !== 'null')
@@ -278,13 +308,12 @@ if (empty($resultSet)) {
                     // cell is ambiguous — it could mean "no data" or "nothing
                     // wrong" — so it says which.
                     if (!$everReported) { ?>
-                        <small class="text-muted"><?= _translate('not reporting'); ?></small>
+                        <span class="text-muted" title="<?= htmlspecialchars(_translate('This lab has never reported the command plane. It is either on a release that predates it, or the courier is not running.')); ?>">&mdash;</span>
                     <?php }
                     if ($everReported) { ?>
-                        <small style="display:inline-block;">
-                            <?= $renderHb($courierHb, _translate('courier')); ?>
-                            <?= $renderHb($runnerHb, _translate('runner')); ?>
-                        </small>
+                        <span class="plane-chips">
+                            <?= $renderHb($courierHb, _translate('courier')); ?><?= $renderHb($runnerHb, _translate('runner')); ?>
+                        </span>
                     <?php }
 
                     // Which installation is answering. Shown only once more than
@@ -292,18 +321,16 @@ if (empty($resultSet)) {
                     // lab, one machine — an instance id is noise, and the point
                     // of the badge is the exception.
                     if ($instanceState['state'] === 'changed' || $instanceState['state'] === 'contested') {
-                        $instCls = $instanceState['state'] === 'contested' ? 'label-danger' : 'label-warning';
+                        $instCls = $instanceState['state'] === 'contested' ? 'plane-stale' : 'plane-late';
                         $instText = $instanceState['state'] === 'contested'
                             ? _translate('multiple installations')
                             : _translate('installation changed'); ?>
-                        <br>
-                        <small style="display:inline-block; margin-top:3px;">
-                            <span class="label <?= $instCls; ?>" style="font-weight:normal;"
+                        <span class="plane-chips">
+                            <span class="plane-chip <?= $instCls; ?>"
                                   title="<?= htmlspecialchars((string) $instanceState['message']); ?>">
-                                <em class="fa-solid fa-server"></em>
-                                <?= htmlspecialchars($instText); ?>
+                                <i class="plane-dot"></i><?= htmlspecialchars($instText); ?>
                             </span>
-                        </small>
+                        </span>
                     <?php }
                 } ?>
             </td>
