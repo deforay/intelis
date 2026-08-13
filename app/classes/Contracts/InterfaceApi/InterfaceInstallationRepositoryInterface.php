@@ -40,6 +40,29 @@ interface InterfaceInstallationRepositoryInterface
         DateTimeImmutable $now
     ): array;
 
+    /**
+     * Registers a tool that has been seen reporting but has never activated, so its
+     * telemetry has an installation to belong to. The importer is the reason this
+     * exists: a lab that syncs results through bin/interface.php never calls the API,
+     * so nothing would otherwise register it and everything it reports would be
+     * attributed to the lab as a whole rather than to the machine that sent it.
+     *
+     * The row is created with no credential and status 'observed'. It grants nothing:
+     * it is a label until an activation claims it. Idempotent on the source, so a run
+     * that re-reads events already seen does not create a second row.
+     *
+     * @return string|null the installation now associated with the source, which may
+     *                     predate this call; null when the source belongs to another
+     *                     facility, whose events must not be attributed here
+     */
+    public function registerObserved(
+        string $proposedInstallationId,
+        string $sourceInstallationId,
+        int $facilityId,
+        string $displayName,
+        DateTimeImmutable $now
+    ): ?string;
+
     /** @return array<string, mixed>|null */
     public function findInstallation(string $installationId): ?array;
 

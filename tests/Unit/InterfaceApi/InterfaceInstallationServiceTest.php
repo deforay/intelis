@@ -177,6 +177,77 @@ final class InterfaceInstallationServiceTest extends TestCase
         );
     }
 
+    /**
+     * The importer registers a tool it sees reporting so its telemetry has somewhere to
+     * belong. When that lab later adopts the API, the ordinary connection code has to
+     * work: an administrator issues the same code they issue for every other tool, and
+     * the one machine already reporting must not be the one that cannot connect.
+     */
+    public function testAnOrdinaryCodeClaimsAnInstallationTheImporterRegistered(): void
+    {
+        $source = 'interface-observed-by-importer';
+        $observedId = $this->repository->registerObserved(
+            '550e8400-e29b-41d4-a716-4466554400aa',
+            $source,
+            101,
+            'Cobas 5800 (auto-detected)',
+            $this->now
+        );
+
+        $claimed = $this->service->activate($this->createCode(101), $source, 'Bench 2 tool', $this->now);
+
+        // The same row, so everything already attributed to it stays attributed to it.
+        self::assertSame($observedId, $claimed['installationId']);
+        self::assertSame($source, $claimed['sourceInstallationId']);
+        self::assertSame('Bench 2 tool', $claimed['displayName']);
+        self::assertSame(
+            101,
+            $this->service->authenticate($claimed['credential'], 'connection:read')['facility_id']
+        );
+    }
+
+    /** Claiming a tool that already holds a credential still takes a reconnect code. */
+    public function testAnOrdinaryCodeDoesNotClaimAnAlreadyActiveInstallation(): void
+    {
+        $source = 'interface-already-active';
+        $this->service->activate($this->createCode(101), $source, 'First', $this->now);
+
+        $this->assertInterfaceError(
+            'source_already_registered',
+            fn() => $this->service->activate($this->createCode(101), $source, 'Second', $this->now)
+        );
+    }
+
+    /** An observed tool is still only claimable by the facility it reports for. */
+    public function testAnObservedInstallationIsNotClaimableFromAnotherFacility(): void
+    {
+        $source = 'interface-observed-elsewhere';
+        $this->repository->registerObserved(
+            '550e8400-e29b-41d4-a716-4466554400bb',
+            $source,
+            101,
+            'Observed at 101',
+            $this->now
+        );
+
+        $this->assertInterfaceError(
+            'source_facility_conflict',
+            fn() => $this->service->activate($this->createCode(202), $source, 'Facility B', $this->now)
+        );
+    }
+
+    /** Registering is idempotent: a re-read of events already seen adds no second row. */
+    public function testRegisteringAnObservedInstallationTwiceKeepsOneIdentity(): void
+    {
+        $source = 'interface-seen-twice';
+        $first = $this->repository
+            ->registerObserved('550e8400-e29b-41d4-a716-4466554400cc', $source, 101, 'A', $this->now);
+        $second = $this->repository
+            ->registerObserved('550e8400-e29b-41d4-a716-4466554400dd', $source, 101, 'B', $this->now);
+
+        self::assertSame($first, $second);
+    }
+
     public function testCrossFacilityClaimIsRejectedWithoutConsumingCode(): void
     {
         $source = 'source-installation-010';
