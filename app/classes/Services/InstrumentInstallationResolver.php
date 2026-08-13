@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Contracts\InterfaceApi\InterfaceInstallationRepositoryInterface;
 use App\Utilities\LoggerUtility;
+use DateTimeImmutable;
+use Symfony\Component\Uid\Uuid;
 use Throwable;
 
 /**
@@ -44,8 +47,10 @@ final class InstrumentInstallationResolver
      */
     private array $seen = [];
 
-    public function __construct(private readonly DatabaseService $db)
-    {
+    public function __construct(
+        private readonly DatabaseService $db,
+        private readonly InterfaceInstallationRepositoryInterface $installations
+    ) {
     }
 
     /**
@@ -76,7 +81,16 @@ final class InstrumentInstallationResolver
 
         if ($unseen !== []) {
             $found = $this->lookup($unseen, $labId);
+
+            // A source with no row is a tool that has never activated -- which for a lab
+            // syncing through bin/interface.php alone is not a transitional state but the
+            // permanent one, since nothing in that deployment ever calls the API. Left as
+            // it was, every such lab's telemetry stays attributed to the lab and never to
+            // the machine, which is the whole of what this resolver exists to provide.
+            // Registering it observed costs nothing and grants nothing: the row carries no
+            // credential until an activation claims it.
             foreach ($unseen as $source) {
+                $found[$source] ??= $this->register($source, $labId, $rows);
                 $this->seen[$this->key($labId, $source)] = $found[$source] ?? null;
             }
         }
@@ -155,6 +169,54 @@ final class InstrumentInstallationResolver
         }
 
         return array_column($rows, 'installation_id', 'source_installation_id');
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $rows the batch, for naming the tool
+     */
+    private function register(string $source, int $labId, array $rows): ?string
+    {
+        try {
+            return $this->installations->registerObserved(
+                Uuid::v4()->toRfc4122(),
+                $source,
+                $labId,
+                $this->nameFor($source, $rows),
+                new DateTimeImmutable()
+            );
+        } catch (Throwable $error) {
+            // Same bargain as a failed lookup: the event is worth more than knowing which
+            // machine sent it, and bin/interface.php reads a throw from this block as
+            // "activity not imported".
+            LoggerUtility::logInfo('Instrument installation could not be registered: ' . $error->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Names a tool after the analyzer it drives, because that is what an administrator
+     * recognises. A list of raw source identifiers is a list nobody can act on, and this
+     * name is what they will be picking from when they come to connect it.
+     *
+     * @param array<int, array<string, mixed>> $rows
+     */
+    private function nameFor(string $source, array $rows): string
+    {
+        foreach ($rows as $row) {
+            if ($this->sourceOf($row) !== $source) {
+                continue;
+            }
+            foreach (['machine_type', 'instrument_id'] as $field) {
+                $value = $row[$field] ?? null;
+                if (is_scalar($value) && trim((string) $value) !== '') {
+                    return mb_substr(trim((string) $value), 0, 120) . ' (auto-detected)';
+                }
+            }
+        }
+
+        // Nothing said what it drives yet. The source tail is at least stable and lets an
+        // administrator match it against the tool's own settings screen.
+        return 'Interface Tool ' . mb_substr($source, -12) . ' (auto-detected)';
     }
 
     /** @param array<string, mixed> $row */

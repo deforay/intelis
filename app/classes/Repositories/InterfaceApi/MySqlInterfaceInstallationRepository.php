@@ -81,6 +81,61 @@ final readonly class MySqlInterfaceInstallationRepository implements InterfaceIn
         return $updated && $this->db->count > 0;
     }
 
+    public function registerObserved(
+        string $proposedInstallationId,
+        string $sourceInstallationId,
+        int $facilityId,
+        string $displayName,
+        DateTimeImmutable $now
+    ): ?string {
+        $facility = $this->db->rawQueryOne(
+            "SELECT facility_id FROM facility_details WHERE facility_id = ? AND status = 'active' LIMIT 1",
+            [$facilityId]
+        );
+        if (empty($facility)) {
+            return null;
+        }
+
+        $nowSql = $this->formatDate($now);
+
+        // INSERT IGNORE against the unique key on source_installation_id, so two
+        // importer runs racing on the same new source settle in the database rather
+        // than one of them erroring. The row that wins is read back below.
+        $this->db->rawQuery(
+            "INSERT IGNORE INTO interface_installations
+                (installation_id, source_installation_id, facility_id, display_name,
+                 credential_hash, credential_scopes, credential_version, status,
+                 last_seen_at, created_at, updated_at)
+             VALUES (?, ?, ?, ?, NULL, NULL, 1, 'observed', ?, ?, ?)",
+            [
+                $proposedInstallationId,
+                $sourceInstallationId,
+                $facilityId,
+                mb_substr($displayName, 0, 150),
+                $nowSql,
+                $nowSql,
+                $nowSql,
+            ]
+        );
+
+        $existing = $this->db->rawQueryOne(
+            'SELECT installation_id, facility_id FROM interface_installations
+              WHERE source_installation_id = ? LIMIT 1',
+            [$sourceInstallationId]
+        );
+        if (empty($existing)) {
+            return null;
+        }
+
+        // A source already registered to another facility is not this lab's to claim,
+        // and its events are not this lab's to attribute. Left unresolved instead.
+        if ((int) $existing['facility_id'] !== $facilityId) {
+            return null;
+        }
+
+        return (string) $existing['installation_id'];
+    }
+
     public function activate(
         string $codeHash,
         string $installationId,
@@ -128,11 +183,26 @@ final readonly class MySqlInterfaceInstallationRepository implements InterfaceIn
             } else {
                 $this->assertNewInstallationInput($sourceInstallationId, $displayName);
                 $existing = $this->db->rawQueryOne(
-                    'SELECT installation_id, facility_id FROM interface_installations
+                    'SELECT installation_id, facility_id, status, display_name
+                       FROM interface_installations
                       WHERE source_installation_id = ? FOR UPDATE',
                     [$sourceInstallationId]
                 );
-                if (!empty($existing)) {
+
+                // An observed row is a tool the importer registered so its telemetry had
+                // somewhere to belong. It holds no credential and confers nothing, so a
+                // valid code for its own facility claims it rather than colliding with it.
+                //
+                // Without this the ordinary path is a dead end: an administrator issues
+                // the same connection code they issue for every other tool, and the one
+                // machine already reporting is the one that cannot connect, with an error
+                // that reads as though it is already set up. Claiming an *active*
+                // installation stays deliberate -- that needs a reconnect code naming it.
+                $claimable = !empty($existing)
+                    && (int) $existing['facility_id'] === $facilityId
+                    && ($existing['status'] ?? '') === 'observed';
+
+                if (!empty($existing) && !$claimable) {
                     $errorCode = (int) $existing['facility_id'] === $facilityId
                         ? 'source_already_registered'
                         : 'source_facility_conflict';
@@ -142,7 +212,32 @@ final readonly class MySqlInterfaceInstallationRepository implements InterfaceIn
                         409
                     );
                 }
-                $created = $this->db->insert('interface_installations', [
+
+                if ($claimable) {
+                    $installationId = (string) $existing['installation_id'];
+                    // The name the tool supplies wins, since an operator typed it; the
+                    // one being replaced was derived from telemetry when nobody had said
+                    // what this machine is called.
+                    $this->db->rawQuery(
+                        "UPDATE interface_installations
+                            SET credential_hash = ?, credential_scopes = ?,
+                                credential_version = credential_version + 1,
+                                display_name = ?, status = 'active',
+                                claimed_at = ?, revoked_at = NULL, updated_at = ?
+                          WHERE installation_id = ? AND facility_id = ?",
+                        [
+                            $credentialHash,
+                            $scopesJson,
+                            mb_substr((string) ($displayName ?? $existing['display_name']), 0, 150),
+                            $nowSql,
+                            $nowSql,
+                            $installationId,
+                            $facilityId,
+                        ]
+                    );
+                }
+
+                $created = $claimable ? true : $this->db->insert('interface_installations', [
                     'installation_id' => $installationId,
                     'source_installation_id' => $sourceInstallationId,
                     'facility_id' => $facilityId,

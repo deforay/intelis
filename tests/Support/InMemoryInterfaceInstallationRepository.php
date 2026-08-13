@@ -37,6 +37,40 @@ final class InMemoryInterfaceInstallationRepository implements InterfaceInstalla
         ];
     }
 
+    public function registerObserved(
+        string $proposedInstallationId,
+        string $sourceInstallationId,
+        int $facilityId,
+        string $displayName,
+        DateTimeImmutable $now
+    ): ?string {
+        $held = $this->findBySource($sourceInstallationId);
+        if ($held !== null) {
+            // Already known. Another facility's tool is not this one's to attribute.
+            return (int) $held['facility_id'] === $facilityId
+                ? (string) $held['installation_id']
+                : null;
+        }
+
+        $this->installations[$proposedInstallationId] = [
+            'installation_id' => $proposedInstallationId,
+            'source_installation_id' => $sourceInstallationId,
+            'facility_id' => $facilityId,
+            'display_name' => $displayName,
+            'credential_hash' => null,
+            'credential_scopes' => null,
+            'credential_version' => 1,
+            'status' => 'observed',
+            'claimed_at' => null,
+            'reconnected_at' => null,
+            'created_at' => $now->format('Y-m-d H:i:s'),
+            'last_seen_at' => $now->format('Y-m-d H:i:s'),
+            'revoked_at' => null,
+        ];
+
+        return $proposedInstallationId;
+    }
+
     /** @param list<string> $scopes */
     public function setScopes(string $installationId, array $scopes): void
     {
@@ -152,7 +186,15 @@ final class InMemoryInterfaceInstallationRepository implements InterfaceInstalla
             throw new InterfaceApiException('invalid_activation_input', 'The activation input is invalid.', 422);
         }
         $existing = $this->findBySource($sourceInstallationId);
-        if ($existing !== null) {
+
+        // Mirrors MySqlInterfaceInstallationRepository: an observed row belongs to a tool
+        // the importer registered, holds no credential, and is claimed by a valid code for
+        // its own facility rather than colliding with it. An active one still is not.
+        $claimable = $existing !== null
+            && (int) $existing['facility_id'] === (int) $code['facility_id']
+            && ($existing['status'] ?? '') === 'observed';
+
+        if ($existing !== null && !$claimable) {
             throw new InterfaceApiException(
                 (int) $existing['facility_id'] === (int) $code['facility_id']
                     ? 'source_already_registered'
@@ -160,6 +202,21 @@ final class InMemoryInterfaceInstallationRepository implements InterfaceInstalla
                 'This source installation is already registered.',
                 409
             );
+        }
+
+        if ($claimable) {
+            $claimed = $existing;
+            $installationId = (string) $claimed['installation_id'];
+            $claimed['credential_hash'] = $credentialHash;
+            $claimed['credential_scopes'] = array_values($scopes);
+            $claimed['credential_version'] = (int) $claimed['credential_version'] + 1;
+            $claimed['display_name'] = $displayName;
+            $claimed['status'] = 'active';
+            $claimed['claimed_at'] = $now;
+            $claimed['revoked_at'] = null;
+            $this->installations[$installationId] = $claimed;
+            $this->codes[$codeHash]['used_at'] = $now;
+            return $claimed;
         }
 
         $installation = [
