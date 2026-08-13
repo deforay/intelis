@@ -10,6 +10,18 @@ mv /etc/apache2/sites-enabled/000-default.conf.tmp /etc/apache2/sites-enabled/00
 # Add domain to /etc/hosts
 echo "127.0.0.1 ${DOMAIN}" >>/etc/hosts
 
+# Debian's default-mysql-client is MariaDB's, and since 11.4 it verifies the
+# server certificate by default. mysql:8.4 generates a self-signed one on first
+# start, so every client call below fails with "self-signed certificate in
+# certificate chain" — and the readiness loop, having no way to distinguish that
+# from a server still starting, waits for it forever. The container never gets
+# past "Waiting for main MySQL to be ready".
+#
+# These connections are container-to-container on a private compose network, so
+# turn TLS off rather than provision a CA to satisfy a check that is protecting
+# nothing here.
+MYSQL_TLS="--skip-ssl"
+
 # Main DB config
 main_db_host="intelis-db"
 main_db_user="root"
@@ -26,14 +38,14 @@ interfacing_enabled="${INTERFACING_ENABLED:-true}"
 
 # Wait for main MySQL to be ready
 echo "Waiting for main MySQL to be ready..."
-while ! mysqladmin ping -h"$main_db_host" --silent; do
+while ! mysqladmin $MYSQL_TLS ping -h"$main_db_host" --silent; do
     sleep 1
 done
 echo "Main MySQL is ready."
 
 # Persist sql_mode='' to ensure it survives restarts (matches upgrade.sh behavior)
 echo "Persisting sql_mode=''..."
-mysql -h "$main_db_host" -u "$main_db_user" -p"$main_db_password" \
+mysql $MYSQL_TLS -h "$main_db_host" -u "$main_db_user" -p"$main_db_password" \
     -e "SET PERSIST sql_mode = '';" 2>/dev/null || echo "Warning: SET PERSIST sql_mode failed (non-fatal)"
 
 # Audit Trail v2 triggers are generated later by `composer db:repair` (run after
@@ -46,22 +58,22 @@ if [ "$interfacing_enabled" = "true" ]; then
     # If interfacing DB is on a different host, wait for it separately
     if [ "$iface_db_host" != "$main_db_host" ]; then
         echo "Waiting for interfacing MySQL ($iface_db_host:$iface_db_port) to be ready..."
-        while ! mysqladmin ping -h"$iface_db_host" -P"$iface_db_port" --silent; do
+        while ! mysqladmin $MYSQL_TLS ping -h"$iface_db_host" -P"$iface_db_port" --silent; do
             sleep 1
         done
         echo "Interfacing MySQL is ready."
     fi
 
     # Create the interfacing database if it doesn't exist
-    mysql -h "$iface_db_host" -P "$iface_db_port" -u "$iface_db_user" -p"$iface_db_password" \
+    mysql $MYSQL_TLS -h "$iface_db_host" -P "$iface_db_port" -u "$iface_db_user" -p"$iface_db_password" \
         -e "CREATE DATABASE IF NOT EXISTS \`$iface_db_name\` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"
 
     # Import interface-init.sql if the interfacing DB is empty
-    iface_tables=$(mysql -h "$iface_db_host" -P "$iface_db_port" -u "$iface_db_user" -p"$iface_db_password" \
+    iface_tables=$(mysql $MYSQL_TLS -h "$iface_db_host" -P "$iface_db_port" -u "$iface_db_user" -p"$iface_db_password" \
         -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$iface_db_name';")
     if [ "$iface_tables" -eq 0 ] && [ -f /var/www/html/sql/interface-init.sql ]; then
         echo "Importing interface-init.sql..."
-        mysql -h "$iface_db_host" -P "$iface_db_port" -u "$iface_db_user" -p"$iface_db_password" \
+        mysql $MYSQL_TLS -h "$iface_db_host" -P "$iface_db_port" -u "$iface_db_user" -p"$iface_db_password" \
             "$iface_db_name" </var/www/html/sql/interface-init.sql
     fi
 fi
