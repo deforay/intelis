@@ -225,10 +225,19 @@ final readonly class InterfaceInstallationService
     public function listInstallations(?int $facilityId = null): array
     {
         $installations = $this->repository->listInstallations($facilityId);
+
+        // Only for a single facility: the aggregate is bounded by the lab, and an
+        // unscoped listing has no lab to bound it with.
+        $activity = $facilityId !== null ? $this->repository->activitySummary($facilityId) : [];
+
         foreach ($installations as &$installation) {
             $installation['credential_scopes'] = $this->decodeScopes(
                 $installation['credential_scopes'] ?? []
             );
+            $seen = $activity[(string) $installation['installation_id']] ?? null;
+            $installation['activity_machines'] = $seen['machines'] ?? null;
+            $installation['activity_last_seen'] = $seen['last_activity'] ?? null;
+            $installation['activity_events'] = $seen['events'] ?? 0;
         }
         unset($installation);
         return $installations;
