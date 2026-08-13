@@ -35,7 +35,7 @@ when the machine cannot show it.
 |---|---|---|
 | 1. One command runs the machine | The `intelis` menu, and how often to do each thing | Whoever looks after the machine |
 | 2. Install InteLIS on a new machine | The three lines to type, and what setup asks | Whoever installs it |
-| 3. Update InteLIS | `sudo intelis-update`, what to check before and after | Whoever looks after the machine |
+| 3. Update InteLIS | `intelis update`, what to check before and after | Whoever looks after the machine |
 | 4. Backups | Setting a destination, and the weekly ten-second check | Whoever looks after the machine |
 | 5. Restore from a backup | Restoring in place, and rebuilding a machine that died | Keep printed and near the machine |
 | 6. When something is wrong | Reading `intelis check`, and what to send support | Anyone, before calling support |

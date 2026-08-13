@@ -1564,7 +1564,7 @@ fi
 if [ ! -x /usr/local/bin/intelis-update ]; then
     download_file "/usr/local/bin/intelis-update" https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh
     chmod +x /usr/local/bin/intelis-update
-    print success "Update command installed — run 'sudo intelis-update' to update this machine"
+    print success "Update command installed — run 'intelis update' to update this machine"
 fi
 
 # Set proper permissions
