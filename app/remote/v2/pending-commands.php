@@ -108,6 +108,15 @@ try {
         }
 
         if ($knownInstance !== '' && !hash_equals($knownInstance, $reportedInstance)) {
+            // CAST on the counter because ->> returns the value as a string, and
+            // string + 1 in MySQL yields a DOUBLE — the counter would be stored
+            // as 1.0, 2.0 and printed that way.
+            //
+            // No -- comments inside the statement. Something between here and
+            // the driver puts the query on one line, and a -- comment then hides
+            // everything after it, including the closing paren and the WHERE
+            // clause. That is not a hypothetical: it took the STS endpoint down
+            // with "syntax error near ''" for every lab that polled.
             $db->rawQuery(
                 "UPDATE facility_details
                     SET facility_attributes = JSON_SET(
@@ -116,9 +125,6 @@ try {
                         '$.instanceSeenAt',      ?,
                         '$.previousInstanceId',  ?,
                         '$.instanceChangedAt',   ?,
-                        -- CAST, because ->> returns the value as a string and
-                        -- string + 1 in MySQL yields a DOUBLE: the counter would
-                        -- be stored as 1.0, 2.0, and printed that way.
                         '$.instanceChangeCount',
                             CAST(COALESCE(facility_attributes->>'$.instanceChangeCount', 0) AS UNSIGNED) + 1
                     )
