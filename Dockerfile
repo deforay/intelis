@@ -23,9 +23,11 @@ RUN apt-get update && \
     libzip-dev \
     openssl \
     rsync \
+    locales \
     unzip \
     vim \
     zip && \
+    sed -i 's/^# *en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen && locale-gen && \
     apt-get upgrade -y openssl apache2 curl libxml2 && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install pdo_mysql zip mysqli mbstring \
