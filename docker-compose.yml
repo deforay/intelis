@@ -3,6 +3,9 @@ services:
     build:
       context: .
       target: php-web
+      args:
+        UBUNTU_VERSION: ${UBUNTU_VERSION:-24.04}
+        PHP_VERSION: ${PHP_VERSION:-8.4}
       # image: deforay/intelis:latest
     ports:
       - "${APACHE_PORT:-80}:80"
@@ -10,7 +13,8 @@ services:
       - .:/var/www/html
       # Dev-only PHP overrides. The mount above is what makes them necessary:
       # the image is built with OPcache pinned to never revalidate.
-      - ./docker/php-apache/dev-php.ini:/usr/local/etc/php/conf.d/zz-dev.ini:ro
+      - ./docker/php-apache/dev-php.ini:/etc/php/${PHP_VERSION:-8.4}/apache2/conf.d/zz-dev.ini:ro
+      - ./docker/php-apache/dev-php.ini:/etc/php/${PHP_VERSION:-8.4}/cli/conf.d/zz-dev.ini:ro
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_password}
       - MYSQL_DATABASE=${MYSQL_DATABASE:-vlsm}
