@@ -60,7 +60,7 @@ nav:
       - Job Aids: job-aids/index.md
   - Installation:
       - InteLIS on Ubuntu (Recommended): guides/installing-intelis-on-ubuntu.md
-      - Using Docker (Evaluation & Development): guides/installing-intelis-with-docker.md
+      - Using Docker: guides/installing-intelis-with-docker.md
       - InteLIS on Windows: guides/installing-intelis-on-windows.md
   - Updates & Migration:
       - Updating InteLIS on Ubuntu: guides/updating-intelis-on-ubuntu.md
@@ -129,7 +129,7 @@ plugins:
             Job Aids: Aide-mémoires
             Installation: Installation
             InteLIS on Ubuntu (Recommended): InteLIS sur Ubuntu (recommandé)
-            Using Docker (Evaluation & Development): Avec Docker (évaluation et développement)
+            Using Docker: Avec Docker
             InteLIS on Windows: InteLIS sur Windows
             Updates & Migration: Mises à jour et migration
             Updating InteLIS on Ubuntu: Mettre à jour InteLIS sur Ubuntu

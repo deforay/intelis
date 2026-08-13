@@ -4,8 +4,9 @@ This is the recommended way to install a lab. Everything that keeps an
 installation running afterwards — `intelis update`, off-machine backup, restore,
 and remote commands from the STS — is built for an Ubuntu host and works here
 without qualification. [Docker](installing-intelis-with-docker.md) is quicker to
-stand up and is the better choice for evaluating InteLIS or developing against
-it, but several of those operations do not apply inside a container.
+stand up and works well; it is updated with its own script rather than
+`intelis update`, and remote upgrades from the STS are not yet offered to a
+containerised instance.
 
 This guide installs InteLIS on a fresh Ubuntu server.
 

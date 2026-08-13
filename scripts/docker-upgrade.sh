@@ -51,6 +51,47 @@ if ! docker compose version >/dev/null 2>&1; then
     exit 1
 fi
 
+# --- Resolve service names from the compose file ---
+#
+# This script addressed the services as "web" and "db"; docker-compose.yml calls
+# them "intelis" and "intelis-db". Every `docker compose exec` here therefore
+# failed with "no such service", which meant the pre-upgrade database backup
+# never ran, composer never ran, and the readiness loop always timed out. Asking
+# compose what the services are called beats hard-coding either set of names,
+# and keeps working if they are renamed again.
+# A read loop rather than mapfile: this script runs wherever Docker does, and
+# macOS still ships bash 3.2, which has no mapfile.
+_services=()
+while IFS= read -r _svc; do
+    [ -n "$_svc" ] && _services+=("$_svc")
+done < <(docker compose config --services 2>/dev/null || true)
+
+pick_service() { # pick_service <preferred> <fallback-pattern>
+    local preferred=$1 pattern=$2 svc
+    for svc in "${_services[@]}"; do
+        [ "$svc" = "$preferred" ] && { printf '%s' "$svc"; return 0; }
+    done
+    for svc in "${_services[@]}"; do
+        [[ "$svc" =~ $pattern ]] && { printf '%s' "$svc"; return 0; }
+    done
+    return 1
+}
+
+# The database service name contains "db"; the application one is what is left.
+DB_SERVICE="$(pick_service intelis-db 'db' || true)"
+APP_SERVICE=""
+for _s in "${_services[@]}"; do
+    [ "$_s" != "$DB_SERVICE" ] && { APP_SERVICE="$_s"; break; }
+done
+
+if [ -z "$APP_SERVICE" ] || [ -z "$DB_SERVICE" ]; then
+    echo "Error: could not work out the service names from docker-compose.yml."
+    echo "       Found: ${_services[*]:-none}"
+    exit 1
+fi
+
+echo "Services: app=${APP_SERVICE}  db=${DB_SERVICE}"
+
 # --- Backup ---
 if [ "$skip_backup" = false ]; then
     read -r -p "Do you want to backup the database before upgrading? [y/N]: " do_backup
@@ -60,7 +101,7 @@ if [ "$skip_backup" = false ]; then
         mkdir -p "$backup_dir"
 
         echo "Backing up database..."
-        docker compose exec -T db mysqldump -u root -p"${MYSQL_ROOT_PASSWORD:-root_password}" \
+        docker compose exec -T "$DB_SERVICE" mysqldump -u root -p"${MYSQL_ROOT_PASSWORD:-root_password}" \
             --all-databases --single-transaction --quick \
             | gzip > "${backup_dir}/all_databases_${timestamp}.sql.gz"
 
@@ -158,8 +199,8 @@ if [ "$need_composer_install" = true ]; then
 
     # Run composer install in the web container
     echo "Running composer install..."
-    docker compose exec -T web composer install --no-dev --optimize-autoloader --no-interaction
-    docker compose exec -T web composer dump-autoload -o --no-interaction
+    docker compose exec -T "$APP_SERVICE" composer install --no-dev --optimize-autoloader --no-interaction
+    docker compose exec -T "$APP_SERVICE" composer dump-autoload -o --no-interaction
 else
     echo ""
     echo "Composer dependencies unchanged. Skipping vendor update."
@@ -177,7 +218,7 @@ echo "Waiting for containers to be healthy..."
 timeout=120
 elapsed=0
 while [ $elapsed -lt $timeout ]; do
-    if docker compose exec -T web true 2>/dev/null; then
+    if docker compose exec -T "$APP_SERVICE" true 2>/dev/null; then
         break
     fi
     sleep 2
@@ -190,10 +231,10 @@ if [ $elapsed -ge $timeout ]; then
 fi
 
 # --- Fix permissions on bind mount ---
-docker compose exec -T web bash -c 'chown -R www-data:www-data /var/www/html/var /var/www/html/public/uploads /var/www/html/public/temporary 2>/dev/null || true'
+docker compose exec -T "$APP_SERVICE" bash -c 'chown -R www-data:www-data /var/www/html/var /var/www/html/public/uploads /var/www/html/public/temporary 2>/dev/null || true'
 
 echo ""
 echo "========================================"
 echo "  Upgrade complete!"
-echo "  Check logs: docker compose logs -f web"
+echo "  Check logs: docker compose logs -f ${APP_SERVICE}"
 echo "========================================"
