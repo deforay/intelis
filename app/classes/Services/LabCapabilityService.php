@@ -108,10 +108,14 @@ final class LabCapabilityService
      * @return array{state: string, message: ?string}
      *         state: 'single' | 'changed' | 'contested' | 'unknown'
      */
-    public static function instanceState(array $attrs, int $contestedThreshold = 2): array
-    {
+    public static function instanceState(
+        array $attrs,
+        int $contestedThreshold = 2,
+        int $settledDays = 7
+    ): array {
         $instanceId = $attrs['instanceId'] ?? null;
         $changeCount = (int) ($attrs['instanceChangeCount'] ?? 0);
+        $changedAt = $attrs['instanceChangedAt'] ?? null;
 
         if (empty($instanceId)) {
             return [
@@ -120,13 +124,41 @@ final class LabCapabilityService
             ];
         }
 
+        // Has one installation been the only one answering for a while?
+        //
+        // The count only ever climbs, so without this a lab rebuilt twice over
+        // two years wears "multiple installations" for the rest of its life, and
+        // an operator learns to ignore the badge. What the warning is actually
+        // about is now — two machines answering for one lab, a queued command
+        // going to whichever polls first. A lab that has reported the same
+        // installation for a week is not in that situation, whatever it did
+        // last year.
+        //
+        // The history is kept either way: previousInstanceId and the count are
+        // still recorded and still shown on the lab's own page. This decides
+        // only whether to warn.
+        $settled = false;
+        if (!empty($changedAt)) {
+            $ts = strtotime((string) $changedAt);
+            $settled = $ts !== false && (time() - $ts) > ($settledDays * 86400);
+        }
+
+        if ($settled) {
+            return [
+                'state' => 'single',
+                'message' => null,
+            ];
+        }
+
         if ($changeCount >= $contestedThreshold) {
             return [
                 'state' => 'contested',
                 'message' => sprintf(
-                    'This lab has reported %d different installations. Two may be running at once, '
-                        . 'in which case a queued command goes to whichever polls first and the other never sees it.',
-                    $changeCount + 1
+                    'This lab has reported %d different installations, the most recent change within the '
+                        . 'last %d days. Two may be running at once, in which case a queued command goes to '
+                        . 'whichever polls first and the other never sees it.',
+                    $changeCount + 1,
+                    $settledDays
                 ),
             ];
         }
@@ -134,8 +166,8 @@ final class LabCapabilityService
         if ($changeCount > 0) {
             return [
                 'state' => 'changed',
-                'message' => 'The installation reporting for this lab has changed once, '
-                    . 'which is expected after a rebuild, a restore, or a move to new hardware.',
+                'message' => 'The installation reporting for this lab changed recently, which is expected '
+                    . 'after a rebuild, a restore, or a move to new hardware.',
             ];
         }
 
