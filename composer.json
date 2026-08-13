@@ -89,6 +89,9 @@
         "symfony/var-dumper": "^8.0"
     },
     "scripts": {
+        "pre-update-cmd": [
+            "@php bin/guard-composer-update.php"
+        ],
         "test": "@php vendor/bin/phpunit",
         "check-di": "@php bin/build/check-di.php",
         "preflight": "@php bin/preflight.php",

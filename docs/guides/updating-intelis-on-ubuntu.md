@@ -9,20 +9,26 @@ This guide updates an existing InteLIS installation to the current release.
 Open a terminal on the InteLIS machine and run:
 
 ```bash
-intelis update
+sudo intelis-update
 ```
-
-Do not prefix the command with `sudo`. It asks for administrator rights only for
-the steps that need them.
 
 That is the whole procedure. It fetches the current release, takes a snapshot it
 can roll back to, puts the new files in place, applies database migrations, and
 restarts the web server. Leave the window open until it finishes.
 
-## If `intelis` is not recognised
+!!! warning "`intelis-update`, with a hyphen — not `intelis update`"
+
+    On a machine that has not taken an upgrade since August 2026, `/usr/local/bin/intelis`
+    is still a plain composer wrapper, so the spaced form runs `composer update`. That
+    rewrites `composer.lock` to whatever upstream released today and installs the
+    development toolchain on a server that runs a lab. Use the hyphenated command until
+    every machine in the fleet has been updated at least once; after that the two are
+    equivalent.
+
+## If `intelis-update` is not recognised
 
 Older installations do not have the command. Run these two lines once, and
-`intelis update` works from then on:
+`sudo intelis-update` works from then on:
 
 ```bash
 sudo wget -O /usr/local/bin/intelis-update https://github.com/deforay/intelis/raw/master/scripts/upgrade.sh
@@ -45,4 +51,4 @@ Wrong entries can make the update fail.
 
 If the update fails, it keeps its snapshot and reports what went wrong. Do not
 repair the machine by hand. Run `intelis check` and send the whole output to
-support. Re-running `intelis update` is safe.
+support. Re-running `sudo intelis-update` is safe.

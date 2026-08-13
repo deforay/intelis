@@ -16,7 +16,7 @@
 # an operator has to remember is one word.
 #
 #   intelis                  a numbered menu — no words to remember at all
-#   intelis update           update InteLIS to the current release
+#   intelis update           update InteLIS to the current release (see the note below)
 #   intelis backup           back up now, on this machine and off it
 #   intelis backup status    when the last backup worked, and whether it did
 #   intelis backup test      check the backup destination, change nothing
@@ -33,6 +33,18 @@
 # passthrough for the two words this file now claims for itself: `update` means
 # "update InteLIS" here, so `composer update` is reached as
 # `intelis composer update`.
+#
+# One transitional note, and the reason the help below says `sudo intelis-update`
+# rather than `intelis update`. This file only reaches a machine when that
+# machine takes an upgrade. Until then /usr/local/bin/intelis is still the plain
+# composer wrapper this replaced, and there `intelis update` means
+# `composer update` — which rewrites composer.lock to whatever upstream released
+# that morning and installs the dev toolchain onto a server running a lab. It
+# has already happened to one instance. Every other verb degrades harmlessly on
+# the old wrapper (`check`, `restore` and `health` are not composer commands at
+# all, and `backup`, `migrate` and `token` are our own scripts), so `update` is
+# the only one the documentation avoids for now. Once the fleet has all taken an
+# upgrade, the hyphen can go and this note with it.
 
 set -uo pipefail
 
@@ -377,7 +389,7 @@ cmd_help() {
     say ""
     say "  intelis check            Check this machine can run InteLIS"
     say "  intelis health           Check disk, database and backups right now"
-    say "  intelis update           Update InteLIS to the current release"
+    say "  sudo intelis-update      Update InteLIS to the current release"
     say ""
     say "  intelis backup           Back up now, on this machine and off it"
     say "  intelis backup status    See whether backups are working"

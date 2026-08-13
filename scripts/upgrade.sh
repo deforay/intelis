@@ -1989,7 +1989,7 @@ chmod +x /usr/local/bin/intelis-refresh
 if [ ! -x /usr/local/bin/intelis-update ]; then
     download_file "/usr/local/bin/intelis-update" https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh
     chmod +x /usr/local/bin/intelis-update
-    print success "Update command installed — next time just run 'intelis update'"
+    print success "Update command installed — next time just run 'sudo intelis-update'"
 fi
 
 # Install or refresh the remote command runner (root-owned, systemd-timed).
