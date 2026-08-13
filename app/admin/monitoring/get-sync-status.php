@@ -164,9 +164,19 @@ if (empty($resultSet)) {
             'instanceChangeCount' => (int) ($clean($aRow['instanceChangeCount'] ?? null) ?? 0),
         ]);
 
-        // Determine sync status color
+        // Determine sync status colour.
+        //
+        // 'never' is split out from 'red' deliberately. Lumping them together
+        // reported 52 of 55 labs as critical, at which point the word had
+        // stopped carrying information — an operator cannot triage a list that
+        // is almost entirely red. A lab that has never once synced is not an
+        // incident; it is a lab that was registered and never brought up, and
+        // it needs a different response from one that was working last month
+        // and stopped. The second is the one worth looking at today.
         $latestSync = (int) $aRow['latest_timestamp'];
-        if ($latestSync > $twoWeeksAgo) {
+        if ($latestSync <= 0) {
+            $color = 'never';
+        } elseif ($latestSync > $twoWeeksAgo) {
             $color = 'green';
         } elseif ($latestSync > $fourWeeksAgo) {
             $color = 'yellow';
@@ -218,7 +228,15 @@ if (empty($resultSet)) {
                 <?= htmlspecialchars($aRow['version'] ?? '-'); ?><?php if ($_rowShaShort): ?>
                     <small class="text-muted">(<?= htmlspecialchars($_rowShaShort, ENT_QUOTES, 'UTF-8'); ?>)</small>
                 <?php endif; ?>
-                <?php if ($showActions) {
+            </td>
+            <?php if ($showActions) { ?>
+            <!-- Health of the command plane, in its own column. It used to sit
+                 under the version, where a red heartbeat block visually
+                 outweighed the version it was attached to and read as though
+                 the version itself were wrong. They answer different questions:
+                 what is installed, versus whether the machine is listening. -->
+            <td class="text-center">
+                <?php {
                     // Heartbeat freshness — report on the two background loops
                     // that actually drive remote commands. Both are "eventually
                     // consistent" so > 10 min stale is genuinely suspicious.
@@ -227,12 +245,22 @@ if (empty($resultSet)) {
                     $staleThresholdSec = 15 * 60;
 
                     $renderHb = static function (?string $iso, string $label) use ($staleThresholdSec): string {
-                        if (empty($iso)) {
-                            // Never reported — feature is either off or the lab is on an older version.
+                        // MySQL's ->> renders a JSON null as the four-character
+                        // string "null", which is not empty and which strtotime
+                        // cannot read. That produced "runner: 496281h ago" — the
+                        // age of the Unix epoch, in red, on every lab that had
+                        // never reported a runner. It means "never".
+                        $ts = (!empty($iso) && $iso !== 'null') ? strtotime($iso) : false;
+
+                        if ($ts === false || $ts <= 0) {
+                            // Never reported: the loop is off, or the lab predates it.
+                            // Grey, not red — nothing has regressed here, and red
+                            // should stay reserved for something that worked and stopped.
                             return '<span class="label label-default" style="font-weight:normal;" title="'
-                                 . _translate('Not reporting') . ' (' . htmlspecialchars($label) . ')">' . htmlspecialchars($label) . ': —</span>';
+                                 . _translate('Has never reported') . ' (' . htmlspecialchars($label) . ')">'
+                                 . htmlspecialchars($label) . ': ' . _translate('never') . '</span>';
                         }
-                        $ts = strtotime($iso);
+
                         $age = time() - $ts;
                         $ageText = $age < 60 ? 'just now'
                                  : ($age < 3600 ? floor($age / 60) . 'm ago'
@@ -242,11 +270,18 @@ if (empty($resultSet)) {
                              . htmlspecialchars($label) . ': ' . htmlspecialchars($ageText) . '</span>';
                     };
 
-                    // Show heartbeats only when at least one has ever reported,
-                    // so legacy (not-yet-upgraded) labs don't show noise.
-                    if (!empty($courierHb) || !empty($runnerHb)) { ?>
-                        <br>
-                        <small style="display:inline-block; margin-top:3px;">
+                    $everReported = (!empty($courierHb) && $courierHb !== 'null')
+                        || (!empty($runnerHb) && $runnerHb !== 'null');
+
+                    // A lab that has never spoken the plane gets one quiet line
+                    // rather than two grey badges. In its own column an empty
+                    // cell is ambiguous — it could mean "no data" or "nothing
+                    // wrong" — so it says which.
+                    if (!$everReported) { ?>
+                        <small class="text-muted"><?= _translate('not reporting'); ?></small>
+                    <?php }
+                    if ($everReported) { ?>
+                        <small style="display:inline-block;">
                             <?= $renderHb($courierHb, _translate('courier')); ?>
                             <?= $renderHb($runnerHb, _translate('runner')); ?>
                         </small>
@@ -272,6 +307,7 @@ if (empty($resultSet)) {
                     <?php }
                 } ?>
             </td>
+            <?php } ?>
             <?php if ($showActions) {
                 $labPending = $pendingCommandsByLab[$aRow['facility_id']] ?? [];
                 $labPrepared = $preparedByLab[$aRow['facility_id']] ?? []; ?>

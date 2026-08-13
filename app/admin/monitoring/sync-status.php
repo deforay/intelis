@@ -54,6 +54,14 @@ $stateNameList = $geolocationService->getProvinces("yes");
         border-left: 4px solid #ffc107 !important;
     }
 
+    /* Never synced. Left plain so the rows that need attention stand out
+       against it: on this fleet these are the majority, and tinting the
+       majority is the same as tinting nothing. */
+    .never {
+        background: #fff !important;
+        border-left: 4px solid #9aa0a6 !important;
+    }
+
     .center {
         text-align: center;
     }
@@ -87,6 +95,15 @@ $stateNameList = $geolocationService->getProvinces("yes");
         box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.3);
     }
 
+    /* Never synced: grey, and deliberately not red. It is a lab that was
+       registered and never brought up, not one that broke — and when most of
+       the fleet is in this state, colouring it as an emergency hides the few
+       labs that genuinely did break. */
+    .never-indicator {
+        background-color: #9aa0a6;
+        box-shadow: 0 0 0 2px rgba(154, 160, 166, 0.3);
+    }
+
     /* Status summary cards */
     .status-summary {
         margin-bottom: 20px;
@@ -117,6 +134,10 @@ $stateNameList = $geolocationService->getProvinces("yes");
 
     .status-card.critical {
         border-top-color: #dc3545;
+    }
+
+    .status-card.never {
+        border-top-color: #9aa0a6;
     }
 
     .status-card h3 {
@@ -314,25 +335,32 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 <!-- Status Summary Cards -->
                 <div class="status-summary">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="status-card active">
                                 <h3 id="activeCount">0</h3>
-                                <p><?= _translate("Active Labs"); ?></p>
+                                <p><?= _translate("Active"); ?></p>
                                 <small><?= _translate("Synced within 2 weeks"); ?></small>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="status-card warning">
                                 <h3 id="warningCount">0</h3>
-                                <p><?= _translate("Warning Labs"); ?></p>
+                                <p><?= _translate("Falling behind"); ?></p>
                                 <small><?= _translate("Synced 2-4 weeks ago"); ?></small>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="status-card critical">
                                 <h3 id="criticalCount">0</h3>
-                                <p><?= _translate("Critical Labs"); ?></p>
-                                <small><?= _translate("Not synced for 4+ weeks"); ?></small>
+                                <p><?= _translate("Stopped"); ?></p>
+                                <small><?= _translate("Synced before, but not for 4+ weeks"); ?></small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="status-card never">
+                                <h3 id="neverCount">0</h3>
+                                <p><?= _translate("Never synced"); ?></p>
+                                <small><?= _translate("Registered, never brought up"); ?></small>
                             </div>
                         </div>
                     </div>
@@ -404,18 +432,32 @@ $stateNameList = $geolocationService->getProvinces("yes");
                                             <th class="center">
                                                 <?= _translate("Lab Name"); ?>
                                             </th>
-                                            <th class="center">
+                                            <!-- Three timestamps sit side by side and nothing said which
+                                                 mattered when. The hints name what each one measures and
+                                                 which direction the data moved, so a reader can tell a lab
+                                                 that has stopped sending from one that has stopped asking. -->
+                                            <th class="center" title="<?= _translate('The most recent activity of any kind for this lab. Drives the colour of the row.'); ?>">
                                                 <?= _translate("Last Synced on"); ?>
+                                                <em class="fa-regular fa-circle-question text-muted"></em>
                                             </th>
-                                            <th class="center">
+                                            <th class="center" title="<?= _translate('When this lab last sent test results up to the STS. A gap here means results are sitting on the lab machine.'); ?>">
                                                 <?= _translate("Last Results Sync from Lab"); ?>
+                                                <em class="fa-regular fa-circle-question text-muted"></em>
                                             </th>
-                                            <th class="center">
+                                            <th class="center" title="<?= _translate('When this lab last pulled test requests down from the STS. A gap here means the lab is not seeing new requests.'); ?>">
                                                 <?= _translate("Last Requests Sync from STS"); ?>
+                                                <em class="fa-regular fa-circle-question text-muted"></em>
                                             </th>
-                                            <th class="center">
+                                            <th class="center" title="<?= _translate('The InteLIS release the lab reported, and the exact build it came from.'); ?>">
                                                 <?= _translate("Version"); ?>
+                                                <em class="fa-regular fa-circle-question text-muted"></em>
                                             </th>
+                                            <?php if ($showActions) { ?>
+                                                <th class="center" title="<?= _translate('The two background loops that carry remote commands: the courier talks to the STS, the runner executes what needs root. Both must be recent for a queued command to run.'); ?>">
+                                                    <?= _translate("Command plane"); ?>
+                                                    <em class="fa-regular fa-circle-question text-muted"></em>
+                                                </th>
+                                            <?php } ?>
                                             <?php if ($showActions) { ?>
                                                 <th class="center">
                                                     <?= _translate("Actions"); ?>
@@ -902,12 +944,17 @@ $stateNameList = $geolocationService->getProvinces("yes");
     function updateStatusSummary() {
         const activeCount = $('#syncStatusTable .green').length;
         const warningCount = $('#syncStatusTable .yellow').length;
+        // 'Stopped' now means "worked once and stopped". Labs that have never
+        // synced at all are counted separately: they were drowning this number
+        // and made every other lab's problem harder to see.
         const criticalCount = $('#syncStatusTable .red').length;
+        const neverCount = $('#syncStatusTable .never').length;
 
         // Animate counter updates
         animateCounter('#activeCount', activeCount);
         animateCounter('#warningCount', warningCount);
         animateCounter('#criticalCount', criticalCount);
+        animateCounter('#neverCount', neverCount);
     }
 
     function animateCounter(selector, targetValue) {
