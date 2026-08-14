@@ -86,11 +86,27 @@ mysql_error_log_path() {
 mysql_start_diagnostics() {
     local unit=$1 err_log
 
+    # The evidence below is worth printing, but it is eighty lines of log and
+    # the person reading it usually cannot act on any of it. What they can do is
+    # run the one thing that reads the same evidence, names the cause in a
+    # sentence and offers to repair it. So that goes first, where it will be
+    # seen, and the raw detail goes underneath for whoever it is useful to.
     echo
     echo "----------------------------------------------------------------"
-    echo "MySQL would not start. Below is why. Send this to your support"
-    echo "contact if the cause is not obvious."
+    echo "MySQL would not start, so no backup can be taken yet."
+    echo
+    echo "To find out why and repair it, run:"
+    echo
+    echo "    sudo intelis fix-database"
+    echo
+    echo "If that command is not on this machine, run this instead:"
+    echo
+    echo "    sudo bash -c \"\$(wget -qO- https://raw.githubusercontent.com/deforay/intelis/master/scripts/mysql-doctor.sh)\""
+    echo
+    echo "Then run this backup again."
     echo "----------------------------------------------------------------"
+    echo
+    echo "The detail below is for support. Everything above is the useful part."
 
     echo
     echo "--- disk space (a full disk is the most common cause) ---"
@@ -140,7 +156,8 @@ if ! mysql_is_up; then
     if ! mysql_is_up; then
         log_action "MySQL failed to start (unit: ${MYSQL_UNIT}); backup aborted"
         mysql_start_diagnostics "$MYSQL_UNIT"
-        echo "No backup was taken. Fix the problem above, then run this script again."
+        echo
+        echo "No backup was taken. Run 'sudo intelis fix-database' first."
         exit 1
     fi
 
