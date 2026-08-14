@@ -149,7 +149,7 @@ $inProcessHandlers = [
     'refresh-cache' => __DIR__ . '/command-handlers/refresh-cache.php',
     'rotate-token' => __DIR__ . '/command-handlers/rotate-token.php',
 ];
-$rootRunnerCommands = ['upgrade', 'upgrade-prepare', 'upgrade-apply', 'refresh-perms', 'restart-apache'];
+$rootRunnerCommands = ['upgrade', 'upgrade-prepare', 'upgrade-apply', 'rollback', 'refresh-perms', 'restart-apache'];
 
 /**
  * Atomically write a status file for a command. Overwriting is intentional —

@@ -21,6 +21,10 @@
 #                      Number of rollback snapshot generations to retain under
 #                      /var/intelis-rollback/ (default: 3). Older snapshots are
 #                      pruned after a successful apply run.
+#   -R, --rollback     Restore the most recent pre-upgrade snapshot and stop.
+#                      Code only: migrations run forward, so the restored release
+#                      runs against the newer schema. Nothing else is performed.
+#
 #   -M, --maintenance  Show a 503 "upgrade in progress" page to users during the
 #                      apply window. Default is silent (no page shown), which is
 #                      usually fine because most upgrades are small PHP/template
@@ -134,6 +138,11 @@ detect_intelis_installations() {
 
 # Initialize flags
 skip_ubuntu_updates=false
+rollback_only=false
+
+# Declared here rather than beside the snapshot helpers: rollback mode runs
+# early, before any system work, and needs to know where to look.
+ROLLBACK_BASE_DIR="/var/intelis-rollback"
 auto_detect=false
 interactive_select=false
 prepare_only=false
@@ -151,11 +160,16 @@ log_file="/tmp/intelis-upgrade-$(date +'%Y%m%d-%H%M%S').log"
 # Supported long options:
 #   --prepare-only        -> -P
 #   --apply-prepared DIR  -> -a DIR
+#   --rollback            -> -R
 declare -a _rewritten_args=()
 while [ $# -gt 0 ]; do
     case "$1" in
         --prepare-only)
             _rewritten_args+=("-P")
+            shift
+            ;;
+        --rollback)
+            _rewritten_args+=("-R")
             shift
             ;;
         --apply-prepared)
@@ -203,7 +217,7 @@ done
 set -- "${_rewritten_args[@]}"
 
 # Parse command-line options
-while getopts ":sAiPp:a:k:M" opt; do
+while getopts ":sAiPp:a:k:MR" opt; do
     case $opt in
     s) skip_ubuntu_updates=true ;;
     A) auto_detect=true ;;
@@ -219,6 +233,7 @@ while getopts ":sAiPp:a:k:M" opt; do
         ROLLBACK_KEEP="$OPTARG"
         ;;
     M) show_maintenance=true ;;
+    R) rollback_only=true ;;
     \?)
         # Say so rather than continuing with an option the caller believed was
         # doing something. The runner passed -b for years — documented in this
@@ -452,6 +467,158 @@ fi
 
 # Restore the previous error trap
 eval "$current_trap"
+
+# Paths excluded from rollback snapshot/restore. User-data and ephemeral dirs
+# aren't touched by the apply phase, so snapshotting them just burns stat()
+# time on big installs — and restoring with --delete over them would nuke
+# uploads created between snapshot and failure.
+ROLLBACK_EXCLUDES=(
+    --exclude 'public/temporary/'
+    --exclude 'public/files/'
+    --exclude 'var/'
+    --exclude 'vendor/'
+)
+
+# create_rollback_snapshot — hardlink snapshot of $lp. Echoes snapshot path on
+# stdout; all informational output goes to stderr so callers can capture cleanly.
+create_rollback_snapshot() {
+    local lp="$1"
+    local ts="$2"   # shared timestamp so snapshots for same run cluster together
+    local snap_dir="${ROLLBACK_BASE_DIR}/${ts}/$(basename "$lp")"
+    mkdir -p "$snap_dir" >&2
+    # --link-dest makes this near-zero-disk: unchanged files become hardlinks.
+    if rsync -a "${ROLLBACK_EXCLUDES[@]}" --link-dest="$lp" "$lp/" "$snap_dir/" >/dev/null 2>&1; then
+        print info "Rollback snapshot created at ${snap_dir}" >&2
+        echo "$snap_dir"
+        return 0
+    fi
+    print warning "Rollback snapshot failed for ${lp} (continuing without rollback safety net)" >&2
+    return 1
+}
+
+# restore_rollback_snapshot — rsync a snapshot back over lis_path. Uses --delete
+# so files added by the failed apply get removed. Excludes must match the
+# snapshot so --delete doesn't wipe user-data dirs that were never snapshotted.
+restore_rollback_snapshot() {
+    local lp="$1"
+    local snap="$2"
+    if [ -z "$snap" ] || [ ! -d "$snap" ]; then
+        print error "No usable snapshot to restore for ${lp}"
+        return 1
+    fi
+    print warning "Restoring ${lp} from snapshot ${snap}"
+    log_action "Restoring ${lp} from rollback snapshot ${snap}"
+    rsync -a --delete "${ROLLBACK_EXCLUDES[@]}" "$snap/" "$lp/" >/dev/null 2>&1 || {
+        print error "Rollback rsync failed for ${lp}"
+        return 1
+    }
+    chown -R www-data:www-data "$lp" 2>/dev/null || true
+
+    # vendor/ is excluded from snapshot to save disk/stat time. Rebuild it from
+    # the restored (old) composer.lock so PHP autoloading matches the rolled-back
+    # code. Wipe first so leftover new-version packages can't shadow old ones.
+    if [ -f "${lp}/composer.lock" ]; then
+        print info "Rebuilding vendor/ from snapshot composer.lock..."
+        rm -rf "${lp}/vendor"
+        if (cd "$lp" && wwwdata_composer install --no-scripts --prefer-dist --no-dev --no-interaction); then
+            (cd "$lp" && wwwdata_composer dump-autoload -o --no-interaction) || true
+            chown -R www-data:www-data "${lp}/vendor" 2>/dev/null || true
+            print success "vendor/ rebuilt from snapshot composer.lock"
+        else
+            print error "composer install failed during rollback; vendor/ is missing"
+            log_action "Rollback composer install failed for ${lp}"
+            return 1
+        fi
+    fi
+
+    print success "Rollback complete for ${lp}"
+    return 0
+}
+
+# prune_rollback_snapshots — delete all but the ROLLBACK_KEEP most recent
+# timestamped snapshot dirs under ROLLBACK_BASE_DIR. Called after a successful
+# apply run so operators still have the latest N generations (including the
+# one just created) available for manual recovery.
+prune_rollback_snapshots() {
+    local keep="${ROLLBACK_KEEP:-3}"
+    [ -d "$ROLLBACK_BASE_DIR" ] || return 0
+
+    local -a snap_dirs=()
+    local d
+    while IFS= read -r d; do
+        [ -d "$d" ] || continue
+        local base
+        base="$(basename "$d")"
+        # Only prune dirs matching the timestamp format used by apply_run_ts
+        [[ "$base" =~ ^[0-9]{8}-[0-9]{6}$ ]] || continue
+        snap_dirs+=("$d")
+    done < <(find "$ROLLBACK_BASE_DIR" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort -r)
+
+    local total="${#snap_dirs[@]}"
+    if [ "$total" -le "$keep" ]; then
+        return 0
+    fi
+
+    local pruned=0
+    local i
+    for (( i=keep; i<total; i++ )); do
+        if rm -rf "${snap_dirs[$i]}" 2>/dev/null; then
+            pruned=$((pruned + 1))
+        fi
+    done
+
+    if [ "$pruned" -gt 0 ]; then
+        print info "Pruned ${pruned} old rollback snapshot(s); kept the ${keep} most recent"
+        log_action "Pruned ${pruned} rollback snapshots under ${ROLLBACK_BASE_DIR} (kept ${keep})"
+    fi
+}
+
+# --- Rollback mode -----------------------------------------------------------
+#
+# Restores the most recent snapshot taken before an apply. The machinery already
+# existed and ran automatically when an apply failed; it had no way to be asked
+# for afterwards, so a lab that discovered a problem an hour later had no route
+# back short of a site visit and a manual rsync.
+#
+# What this does NOT undo is the database. Migrations run forward only — of 62
+# migration files, 3 have anything resembling a down path — so restoring the
+# code puts the previous release against a schema it has already been migrated
+# past. That is usually survivable and occasionally not, which is why this says
+# so out loud rather than presenting itself as an undo button.
+if [ "$rollback_only" = true ]; then
+    print header "Rollback"
+
+    for lp in "${lis_paths[@]}"; do
+        latest_snap=""
+        if [ -d "$ROLLBACK_BASE_DIR" ]; then
+            latest_snap=$(find "$ROLLBACK_BASE_DIR" -mindepth 2 -maxdepth 2 -type d \
+                -name "$(basename "$lp")" 2>/dev/null | sort -r | head -1)
+        fi
+
+        if [ -z "$latest_snap" ]; then
+            print error "No rollback snapshot found for ${lp} under ${ROLLBACK_BASE_DIR}"
+            print info  "Snapshots are taken during an upgrade's apply phase; there is nothing to go back to."
+            exit 1
+        fi
+
+        print info "Most recent snapshot: ${latest_snap}"
+        print warning "The database is NOT rolled back. Migrations only run forward, so the"
+        print warning "restored code will be running against the newer schema."
+
+        if restore_rollback_snapshot "$lp" "$latest_snap"; then
+            restart_service apache >/dev/null 2>&1 || true
+            print success "Rolled back ${lp}"
+            log_action "Manual rollback of ${lp} from ${latest_snap}"
+        else
+            print error "Rollback failed for ${lp}"
+            log_action "Manual rollback FAILED for ${lp}"
+            exit 1
+        fi
+    done
+
+    exit 0
+fi
+
 
 # Check for MySQL
 if ! command -v mysql &>/dev/null; then
@@ -994,7 +1161,6 @@ VENDOR_TARBALL_MD5_URL="https://github.com/deforay/intelis/releases/download/ven
 # setup.sh and this prepare phase acquire the master tree identically.
 
 STAGING_BASE_DIR="/var/intelis-staging"
-ROLLBACK_BASE_DIR="/var/intelis-rollback"
 
 # Default number of rollback snapshot generations to retain. Override with
 # --keep-snapshots N. Older snapshots are pruned after a successful apply run.
@@ -1324,110 +1490,6 @@ disable_maintenance_mode() {
     print info "Maintenance mode disabled for ${lp}"
 }
 
-# Paths excluded from rollback snapshot/restore. User-data and ephemeral dirs
-# aren't touched by the apply phase, so snapshotting them just burns stat()
-# time on big installs — and restoring with --delete over them would nuke
-# uploads created between snapshot and failure.
-ROLLBACK_EXCLUDES=(
-    --exclude 'public/temporary/'
-    --exclude 'public/files/'
-    --exclude 'var/'
-    --exclude 'vendor/'
-)
-
-# create_rollback_snapshot — hardlink snapshot of $lp. Echoes snapshot path on
-# stdout; all informational output goes to stderr so callers can capture cleanly.
-create_rollback_snapshot() {
-    local lp="$1"
-    local ts="$2"   # shared timestamp so snapshots for same run cluster together
-    local snap_dir="${ROLLBACK_BASE_DIR}/${ts}/$(basename "$lp")"
-    mkdir -p "$snap_dir" >&2
-    # --link-dest makes this near-zero-disk: unchanged files become hardlinks.
-    if rsync -a "${ROLLBACK_EXCLUDES[@]}" --link-dest="$lp" "$lp/" "$snap_dir/" >/dev/null 2>&1; then
-        print info "Rollback snapshot created at ${snap_dir}" >&2
-        echo "$snap_dir"
-        return 0
-    fi
-    print warning "Rollback snapshot failed for ${lp} (continuing without rollback safety net)" >&2
-    return 1
-}
-
-# restore_rollback_snapshot — rsync a snapshot back over lis_path. Uses --delete
-# so files added by the failed apply get removed. Excludes must match the
-# snapshot so --delete doesn't wipe user-data dirs that were never snapshotted.
-restore_rollback_snapshot() {
-    local lp="$1"
-    local snap="$2"
-    if [ -z "$snap" ] || [ ! -d "$snap" ]; then
-        print error "No usable snapshot to restore for ${lp}"
-        return 1
-    fi
-    print warning "Restoring ${lp} from snapshot ${snap}"
-    log_action "Restoring ${lp} from rollback snapshot ${snap}"
-    rsync -a --delete "${ROLLBACK_EXCLUDES[@]}" "$snap/" "$lp/" >/dev/null 2>&1 || {
-        print error "Rollback rsync failed for ${lp}"
-        return 1
-    }
-    chown -R www-data:www-data "$lp" 2>/dev/null || true
-
-    # vendor/ is excluded from snapshot to save disk/stat time. Rebuild it from
-    # the restored (old) composer.lock so PHP autoloading matches the rolled-back
-    # code. Wipe first so leftover new-version packages can't shadow old ones.
-    if [ -f "${lp}/composer.lock" ]; then
-        print info "Rebuilding vendor/ from snapshot composer.lock..."
-        rm -rf "${lp}/vendor"
-        if (cd "$lp" && wwwdata_composer install --no-scripts --prefer-dist --no-dev --no-interaction); then
-            (cd "$lp" && wwwdata_composer dump-autoload -o --no-interaction) || true
-            chown -R www-data:www-data "${lp}/vendor" 2>/dev/null || true
-            print success "vendor/ rebuilt from snapshot composer.lock"
-        else
-            print error "composer install failed during rollback; vendor/ is missing"
-            log_action "Rollback composer install failed for ${lp}"
-            return 1
-        fi
-    fi
-
-    print success "Rollback complete for ${lp}"
-    return 0
-}
-
-# prune_rollback_snapshots — delete all but the ROLLBACK_KEEP most recent
-# timestamped snapshot dirs under ROLLBACK_BASE_DIR. Called after a successful
-# apply run so operators still have the latest N generations (including the
-# one just created) available for manual recovery.
-prune_rollback_snapshots() {
-    local keep="${ROLLBACK_KEEP:-3}"
-    [ -d "$ROLLBACK_BASE_DIR" ] || return 0
-
-    local -a snap_dirs=()
-    local d
-    while IFS= read -r d; do
-        [ -d "$d" ] || continue
-        local base
-        base="$(basename "$d")"
-        # Only prune dirs matching the timestamp format used by apply_run_ts
-        [[ "$base" =~ ^[0-9]{8}-[0-9]{6}$ ]] || continue
-        snap_dirs+=("$d")
-    done < <(find "$ROLLBACK_BASE_DIR" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort -r)
-
-    local total="${#snap_dirs[@]}"
-    if [ "$total" -le "$keep" ]; then
-        return 0
-    fi
-
-    local pruned=0
-    local i
-    for (( i=keep; i<total; i++ )); do
-        if rm -rf "${snap_dirs[$i]}" 2>/dev/null; then
-            pruned=$((pruned + 1))
-        fi
-    done
-
-    if [ "$pruned" -gt 0 ]; then
-        print info "Pruned ${pruned} old rollback snapshot(s); kept the ${keep} most recent"
-        log_action "Pruned ${pruned} rollback snapshots under ${ROLLBACK_BASE_DIR} (kept ${keep})"
-    fi
-}
 
 # smoke_check — cheap post-apply sanity check. Prefers a smoke.php endpoint if
 # present, otherwise checks that public/index.php parses.

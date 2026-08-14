@@ -196,6 +196,24 @@ dispatch_marker() {
             fi
             ;;
 
+        rollback)
+            # Restore the snapshot taken before the last apply.
+            #
+            # The snapshot and the restore both already existed — the restore ran
+            # automatically when an apply failed mid-flight. What was missing was
+            # any way to ask for it afterwards, so a lab that noticed a problem an
+            # hour later had no route back except someone reaching the machine.
+            #
+            # Code only. Migrations run forward, so this leaves the previous
+            # release running against the newer schema; upgrade.sh says so on the
+            # way through and that warning reaches the STS in the output tail.
+            if ! command -v intelis-update >/dev/null 2>&1; then
+                echo "intelis-update is not installed" >>"$output_log"; rc=127
+            else
+                intelis-update -p "$lp" --rollback >>"$output_log" 2>&1 || rc=$?
+            fi
+            ;;
+
         restart-apache)
             if command -v apache2ctl >/dev/null 2>&1; then
                 apache2ctl -k graceful >>"$output_log" 2>&1 || rc=$?
