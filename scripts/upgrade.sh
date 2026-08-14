@@ -58,12 +58,37 @@ mkdir -p "$(dirname "$SHARED_FN_PATH")"
 # every upgrade — including one triggered remotely from the STS, where the whole
 # failure an operator saw was "wget: command not found".
 if command -v wget >/dev/null 2>&1; then
-    fetch_shared_fn() { wget -q -O "$1" "$2"; }
+    download_to() { wget -q -O "$1" "$2"; }
 elif command -v curl >/dev/null 2>&1; then
-    fetch_shared_fn() { curl -fsSL -o "$1" "$2"; }
+    download_to() { curl -fsSL -o "$1" "$2"; }
 else
-    fetch_shared_fn() { return 1; }
+    download_to() { return 1; }
 fi
+
+# Download to a temporary file and swap it in only once it looks like the real
+# thing.
+#
+# Both `wget -O` and `curl -o` truncate the destination before the transfer
+# starts, so downloading straight onto the installed copy destroys it the moment
+# the network hiccups. The "do we still have one?" check below then finds a file
+# that exists, is zero bytes, and sources without complaint — leaving every
+# function undefined while the script walks on regardless.
+#
+# That reached a lab. A momentary blip against raw.githubusercontent.com emptied
+# the file, and the operator was carried past a failed system check to an
+# interactive "which instances do you want to update?" prompt, as root, with
+# nothing defined behind it. The same command succeeded on the next attempt,
+# which is precisely why it must not depend on the first one working.
+fetch_shared_fn() {
+    local dest="$1" url="$2" tmp
+    tmp="$(mktemp "${dest}.XXXXXX" 2>/dev/null)" || return 1
+    if download_to "$tmp" "$url" && [ -s "$tmp" ] && grep -q '^prepare_system()' "$tmp"; then
+        mv -f "$tmp" "$dest"
+        return 0
+    fi
+    rm -f "$tmp"
+    return 1
+}
 
 if fetch_shared_fn "$SHARED_FN_PATH" "$SHARED_FN_URL"; then
     chmod +x "$SHARED_FN_PATH"
@@ -74,10 +99,21 @@ else
         echo "shared-functions.sh missing. Cannot proceed."
         exit 1
     fi
+    echo "Continuing with the copy already on this machine."
 fi
 
 # Source the shared functions
 source "$SHARED_FN_PATH"
+
+# Existing is not the same as usable: a copy left truncated by an older version
+# of this script, or one that fails to parse, gets sourced without a murmur.
+# Asking for a function it is known to define turns "everything is mysteriously
+# not a command" into one clear line, before anything runs as root.
+if ! declare -F prepare_system >/dev/null 2>&1; then
+    echo "shared-functions.sh at $SHARED_FN_PATH is unusable (truncated or corrupt)."
+    echo "Delete it and run this again: sudo rm -f $SHARED_FN_PATH"
+    exit 1
+fi
 
 # Belt-and-suspenders: whatever happens — normal completion, an ERR-trap abort, or
 # an explicit early exit — make sure MySQL is running before we leave. The MySQL
