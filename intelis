@@ -349,6 +349,15 @@ cmd_restore() {
     as_root bash "$script" "$@"
 }
 
+# The database is what breaks on these machines, and the person in front of the
+# screen is rarely a Linux user. So this is one word, it explains itself, and it
+# offers to repair what it finds rather than printing commands to copy.
+cmd_fix_database() {
+    local script
+    script="$(locate_script mysql-doctor.sh intelis-fix-database)" || return 1
+    as_root bash "$script" "$@"
+}
+
 cmd_check() {
     # preflight reports on paths the web server has to write to, and its answer
     # is only measured rather than guessed when it runs as that account.
@@ -440,6 +449,7 @@ cmd_help() {
     say ""
     say "  intelis check            Check this machine can run InteLIS"
     say "  intelis health           Check disk, database and backups right now"
+    say "  intelis fix-database     Find out why the database is down, and repair it"
     say "  intelis update           Update InteLIS to the current release"
     say ""
     say "  intelis backup           Back up now, on this machine and off it"
@@ -458,12 +468,13 @@ cmd_help() {
 menu() {
     header "InteLIS"
     say "  1) Check this machine is working"
-    say "  2) See whether backups are working"
-    say "  3) Back up now"
-    say "  4) Update InteLIS"
-    say "  5) Restore from a backup"
-    say "  6) Change where backups are sent"
-    say "  7) Quit"
+    say "  2) The site will not open — find out why and fix it"
+    say "  3) See whether backups are working"
+    say "  4) Back up now"
+    say "  5) Update InteLIS"
+    say "  6) Restore from a backup"
+    say "  7) Change where backups are sent"
+    say "  8) Quit"
     say ""
 
     local choice
@@ -472,15 +483,16 @@ menu() {
 
     case "$(printf '%s' "$choice" | tr -d '[:space:]')" in
         1) cmd_check ;;
-        2) backup_runner_action --status ;;
-        3) backup_now ;;
-        4) cmd_update ;;
-        5) cmd_restore ;;
-        6) backup_setup ;;
-        7|q|Q|"") return 0 ;;
+        2) cmd_fix_database ;;
+        3) backup_runner_action --status ;;
+        4) backup_now ;;
+        5) cmd_update ;;
+        6) cmd_restore ;;
+        7) backup_setup ;;
+        8|q|Q|"") return 0 ;;
         *)
             warning "That was not one of the numbers. Nothing has been done."
-            say "Run 'intelis' again and type a number between 1 and 7."
+            say "Run 'intelis' again and type a number between 1 and 8."
             return 2
             ;;
     esac
@@ -509,6 +521,11 @@ case "$command" in
     restore)            cmd_restore "$@" ;;
     check|preflight)    cmd_check "$@" ;;
     health)             cmd_health "$@" ;;
+
+    # Named several ways on purpose. Whoever needs it is describing a symptom,
+    # not looking up a command, and any of these is what they would try.
+    fix-database|fix-db|database|db|mysql|mysql-doctor|doctor)
+                        cmd_fix_database "$@" ;;
     menu)               menu ;;
     help|--help|-h)     cmd_help ;;
     composer)           run_composer "$@" ;;
