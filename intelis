@@ -267,7 +267,16 @@ cmd_update() {
         fi
     fi
 
-    as_root bash "$updater" -p "$APP_DIR" "$@"
+    # Carry INTELIS_TRACK across the sudo boundary. sudo runs with env_reset, so
+    # an exported variable is dropped on the way to root — and dropped silently,
+    # which is the worst possible way for this one to fail: an operator pinning a
+    # lab to master for a hotfix would be told nothing and quietly get the latest
+    # release instead, which is the exact opposite of what they asked for.
+    if [ -n "${INTELIS_TRACK:-}" ]; then
+        as_root env "INTELIS_TRACK=$INTELIS_TRACK" bash "$updater" -p "$APP_DIR" "$@"
+    else
+        as_root bash "$updater" -p "$APP_DIR" "$@"
+    fi
 }
 
 cmd_backup() {
