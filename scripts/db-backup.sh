@@ -6,6 +6,10 @@
 # sudo chmod u+x db-backup.sh;
 # sudo ./db-backup.sh;
 
+# A failed mysqldump still produces a valid (but truncated) .gz, so the exit
+# status of the pipeline has to come from mysqldump, not from gzip.
+set -o pipefail
+
 # Ensure the script is run with sudo privileges
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root or use sudo"
@@ -32,34 +36,149 @@ trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 
 echo "This script will help you export selected MySQL databases."
 
+# Resolve the systemd unit name; MariaDB hosts do not always answer to "mysql".
+mysql_unit_name() {
+    local unit
+    for unit in mysql mysqld mariadb; do
+        if systemctl list-unit-files "${unit}.service" >/dev/null 2>&1; then
+            echo "$unit"
+            return 0
+        fi
+    done
+    echo "mysql"
+}
+
+# systemctl returning 0 only means the unit was handed off, so wait for the
+# server to actually answer. `mysqladmin ping` reports the server alive even on
+# an auth error, so this needs no credentials.
+mysql_is_up() {
+    mysqladmin ping --silent >/dev/null 2>&1
+}
+
+# Where the reason for a refusal to start is actually written. The journal
+# almost always just says "the control process exited with an error code".
+mysql_error_log_path() {
+    local candidate cnf
+    for cnf in /etc/mysql/mysql.conf.d/mysqld.cnf /etc/mysql/my.cnf /etc/my.cnf /etc/mysql/mariadb.conf.d/50-server.cnf; do
+        [ -f "$cnf" ] || continue
+        candidate="$(awk -F= '/^[[:space:]]*log[-_]error[[:space:]]*=/ {gsub(/[[:space:]]/, "", $2); print $2; exit}' "$cnf" 2>/dev/null || true)"
+        if [ -n "$candidate" ] && [ -f "$candidate" ]; then
+            echo "$candidate"
+            return 0
+        fi
+    done
+
+    for candidate in /var/log/mysql/error.log /var/log/mysqld.log /var/log/mariadb/mariadb.log /var/log/mysql/mysql.err; do
+        if [ -f "$candidate" ]; then
+            echo "$candidate"
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+# These machines are in labs on the other side of the world, and whoever runs
+# this script is the only person who can see the screen. So when MySQL will not
+# start, print the evidence that distinguishes the handful of real causes (full
+# disk, OOM, a config option mysqld refuses, a corrupt data directory) rather
+# than just the fact that it failed.
+mysql_start_diagnostics() {
+    local unit=$1 err_log
+
+    echo
+    echo "----------------------------------------------------------------"
+    echo "MySQL would not start. Below is why. Send this to your support"
+    echo "contact if the cause is not obvious."
+    echo "----------------------------------------------------------------"
+
+    echo
+    echo "--- disk space (a full disk is the most common cause) ---"
+    df -h /var/lib/mysql / 2>/dev/null || true
+    df -i /var/lib/mysql / 2>/dev/null || true
+
+    echo
+    echo "--- memory ---"
+    free -m 2>/dev/null || true
+
+    err_log="$(mysql_error_log_path || true)"
+    if [ -n "$err_log" ]; then
+        echo
+        echo "--- ${err_log} (last 30 lines) ---"
+        tail -n 30 "$err_log" 2>/dev/null || true
+    fi
+
+    echo
+    echo "--- journalctl -u ${unit} (last 30 lines) ---"
+    journalctl -u "$unit" -n 30 --no-pager 2>/dev/null || true
+
+    echo
+    echo "--- kernel: out-of-memory kills in the last 24h ---"
+    journalctl -k --since "-24 hours" --no-pager 2>/dev/null |
+        grep -iE 'out of memory|oom.?kill|killed process' | tail -n 10 || true
+
+    echo
+    echo "----------------------------------------------------------------"
+}
+
 # Start MySQL if it's stopped
 echo "Checking MySQL status..."
-if ! systemctl is-active --quiet mysql; then
-    echo "MySQL is stopped, starting MySQL..."
-    log_action "MySQL is stopped, starting MySQL..."
-    systemctl start mysql
+MYSQL_UNIT="$(mysql_unit_name)"
+if ! mysql_is_up; then
+    echo "MySQL is stopped, starting MySQL (unit: ${MYSQL_UNIT})..."
+    log_action "MySQL is stopped, starting MySQL (unit: ${MYSQL_UNIT})..."
+
+    # The trap must not fire here: a failed start is handled below, with the
+    # reason attached, instead of aborting on a bare "exited with status 1".
+    systemctl start "$MYSQL_UNIT" >/dev/null 2>&1 || true
+
+    for _ in $(seq 1 30); do
+        mysql_is_up && break
+        sleep 1
+    done
+
+    if ! mysql_is_up; then
+        log_action "MySQL failed to start (unit: ${MYSQL_UNIT}); backup aborted"
+        mysql_start_diagnostics "$MYSQL_UNIT"
+        echo "No backup was taken. Fix the problem above, then run this script again."
+        exit 1
+    fi
+
+    echo "MySQL started."
+    log_action "MySQL started"
 fi
 
 # Ask for MySQL root or administrative username
 read -p "Enter MySQL username [root]: " USERNAME
 USERNAME=${USERNAME:-root}
 
-# Ask for MySQL password
+# Ask for MySQL password. Checking it here beats asking for it twice: a
+# confirmation prompt catches a typo repeated, not a password misremembered.
 while true; do
     read -sp "Enter MySQL password: " PASSWORD
     echo
-    read -sp "Confirm MySQL password: " PASSWORD_CONFIRM
-    echo
-    if [ "$PASSWORD" == "$PASSWORD_CONFIRM" ]; then
+    if MYSQL_PWD="$PASSWORD" mysqladmin -u "$USERNAME" ping --silent >/dev/null 2>&1; then
         break
-    else
-        echo "Passwords do not match. Please try again."
     fi
+    echo "Could not log in as '${USERNAME}' with that password. Please try again."
 done
+
+# Passed through the environment rather than on the command line, where it
+# would be visible to every user on the machine via `ps`.
+export MYSQL_PWD="$PASSWORD"
 
 # List all databases
 echo "Fetching list of databases..."
-DATABASES=$(mysql -u "$USERNAME" -p"$PASSWORD" -e "SHOW DATABASES;" | grep -v Database | grep -v information_schema | grep -v performance_schema | grep -v mysql | grep -v sys)
+# The grep is wrapped so that filtering everything out is not read as a
+# failure; pipefail still surfaces a genuine mysql error.
+DATABASES=$(mysql -u "$USERNAME" -N -B -e "SHOW DATABASES;" |
+    { grep -vxE 'information_schema|performance_schema|mysql|sys' || true; })
+
+if [ -z "$DATABASES" ]; then
+    echo "No databases found to export on this machine."
+    log_action "No databases found to export"
+    exit 1
+fi
 
 echo "Available databases:"
 i=1
@@ -85,6 +204,12 @@ for index in "${SELECTED_INDEXES[@]}"; do
     fi
 done
 
+if [ ${#SELECTED_DBS[@]} -eq 0 ]; then
+    echo "No databases selected. Nothing to export."
+    log_action "No databases selected; nothing exported"
+    exit 1
+fi
+
 # Confirm selected databases
 echo "You have selected the following databases for export:"
 log_action "Selected databases for export:"
@@ -108,7 +233,8 @@ log_action "Export location: $EXPORT_LOCATION"
 # Change to the export directory
 cd "$EXPORT_LOCATION" || exit
 
-# Function to show a spinning cursor
+# Function to show a spinning cursor. Returns the exit status of the job it
+# was watching, so a failed dump cannot be reported as a success.
 spinner() {
     local pid=$!
     local delay=0.75
@@ -121,28 +247,40 @@ spinner() {
         printf "\b\b\b\b\b\b"
     done
     printf "    \b\b\b\b"
+    wait $pid
 }
 
 # Export each selected database
+FAILED_DBS=()
 for db in "${SELECTED_DBS[@]}"; do
     echo "Exporting $db..."
-    (mysqldump --default-character-set=utf8mb4 -u "$USERNAME" -p"$PASSWORD" "$db" | gzip >"${db}-$(date +%Y-%m-%d-%H-%M-%S).sql.gz") &
-    spinner
-    echo "Exported $db to ${EXPORT_LOCATION}/${db}-$(date +%Y-%m-%d-%H-%M-%S).sql.gz"
-    log_action "Exported $db to ${EXPORT_LOCATION}/${db}-$(date +%Y-%m-%d-%H-%M-%S).sql.gz"
+
+    # Stamped once, so the name reported below is the name on disk.
+    outfile="${db}-$(date +%Y-%m-%d-%H-%M-%S).sql.gz"
+
+    (mysqldump --default-character-set=utf8mb4 -u "$USERNAME" "$db" | gzip >"$outfile") &
+
+    # The trap must not fire here; a failed dump is reported per database.
+    if spinner; then
+        echo "Exported $db to ${EXPORT_LOCATION}/${outfile}"
+        log_action "Exported $db to ${EXPORT_LOCATION}/${outfile}"
+    else
+        # The partial file is truncated and would restore silently as an
+        # incomplete database, which is worse than having no backup at all.
+        rm -f "$outfile"
+        FAILED_DBS+=("$db")
+        echo "FAILED to export $db. The incomplete file has been deleted."
+        log_action "FAILED to export $db; incomplete file deleted"
+    fi
 done
 
-# Example usage within your restart block
-if [[ "$RESTART_SERVICES" == "yes" || "$RESTART_SERVICES" == "y" || "$RESTART_SERVICES" == "Y" ]]; then
-    echo "Restarting Apache2..."
-    systemctl start apache2
-    log_action "Apache2 restarted"
-    echo "Restarting MySQL..."
-    systemctl start mysql
-    log_action "MySQL restarted"
-else
-    echo "Services have not been restarted; remember to manually restart services when appropriate."
-    log_action "Services not restarted by user decision"
+if [ ${#FAILED_DBS[@]} -gt 0 ]; then
+    echo
+    echo "These databases were NOT backed up: ${FAILED_DBS[*]}"
+    echo "Do not treat this run as a completed backup."
+    log_action "Script completed with failures: ${FAILED_DBS[*]}"
+    exit 1
 fi
 
 echo "Script completed."
+log_action "Script completed"
