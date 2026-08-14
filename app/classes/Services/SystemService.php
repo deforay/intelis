@@ -7,7 +7,9 @@ use Throwable;
 use RuntimeException;
 use Gettext\Loader\MoLoader;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Utilities\LoggerUtility;
+use App\Registries\ContainerRegistry;
 
 final class SystemService
 {
@@ -126,6 +128,22 @@ final class SystemService
 
         $_SESSION['APP_TIMEZONE'] ??= $this->getTimezone();
         date_default_timezone_set($_SESSION['APP_TIMEZONE']);
+
+        // Tell the database the same thing. Setting PHP's timezone and leaving
+        // the connection on the server's own is how NOW() came to disagree with
+        // every datetime the application writes — by four and a half hours on an
+        // STS hosted in one country for a programme in another. Rows stayed
+        // self-consistent; anything comparing a stored value against NOW() did
+        // not.
+        //
+        // Done here rather than only at connect time because the connection is
+        // opened during bootstrap before this method runs, so it starts on PHP's
+        // default timezone and has to be corrected once the real one is known.
+        try {
+            ContainerRegistry::get(DatabaseService::class)->applySessionTimeZone();
+        } catch (Throwable $e) {
+            LoggerUtility::logWarning('Could not align database time zone: ' . $e->getMessage());
+        }
     }
 
     public function getTimezone(): string
