@@ -228,14 +228,28 @@ A machine being replaced is often a machine that has already gone wrong, so this
 is common. Nothing can be exported until MySQL runs, but in almost every case the
 data itself is fine and only the server is refusing to come up.
 
-Get the reason first. Do not reinstall or reformat anything before reading this:
+Run this first. It works out the cause, says so in plain language, and offers to
+repair what is safe to repair:
 
 ```bash
-sudo systemctl status mysql --no-pager -l
-sudo tail -n 40 /var/log/mysql/error.log
-df -h /
-free -m
+sudo intelis fix-database
 ```
+
+On a machine whose `intelis` command is missing or too old to have it — which is
+likely, since a machine with a broken database is one that cannot be updated —
+the same thing runs straight from the internet:
+
+```bash
+sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/deforay/intelis/master/scripts/mysql-doctor.sh)"
+```
+
+It asks before changing anything, and it leaves `mysql-report.txt` on the
+desktop of whoever ran it. Send that file on if it cannot fix the problem
+itself: it holds the service log, the database error log, memory, disk and
+settings, with passwords removed.
+
+Whatever it says, do not reinstall or reformat the machine. What it finds is
+almost always one of the following.
 
 In order of how often it turns out to be the cause:
 
@@ -260,10 +274,17 @@ In order of how often it turns out to be the cause:
 3. **A configuration file was edited** and MySQL rejects an option in it. The
    error log names the exact line. Undo that edit.
 
-4. **The data directory is damaged**, usually after an unclean shutdown. The
+4. **The data directory lost its ownership**, usually after a copy or a restore
+   that was run as root. `ls -ld /var/lib/mysql` shows an owner other than
+   `mysql`. MySQL runs under its own account and cannot open files owned by
+   anyone else.
+
+5. **The data directory is damaged**, usually after an unclean shutdown. The
    error log mentions InnoDB recovery or a specific table. This is the only case
    that needs care, and it is worth getting help before touching
-   `innodb_force_recovery`.
+   `innodb_force_recovery`. If the machine has a recent backup under
+   `backups/db/`, restoring that is normally faster and safer than repairing
+   damaged files.
 
 !!! danger "Last resort: move the disk, not the data"
 
