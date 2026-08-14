@@ -26,8 +26,8 @@
  *     instance reports and what preflight compares
  *
  * Usage:
- *   composer release            check everything, then tag and push
- *   composer release -- --dry   report what it would do and stop
+ *   composer publish            check everything, then tag and push
+ *   composer publish -- --dry   report what it would do and stop
  */
 
 declare(strict_types=1);
