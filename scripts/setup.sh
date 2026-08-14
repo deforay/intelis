@@ -63,7 +63,33 @@ SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
 
-if wget -q -O "$SHARED_FN_PATH" "$SHARED_FN_URL"; then
+# wget where it exists, curl otherwise — a minimal Ubuntu image has curl and no
+# wget, and this is line one of an install, so failing here means failing before
+# anything has told the operator what is wrong.
+if command -v wget >/dev/null 2>&1; then
+    download_to() { wget -q -O "$1" "$2"; }
+elif command -v curl >/dev/null 2>&1; then
+    download_to() { curl -fsSL -o "$1" "$2"; }
+else
+    download_to() { return 1; }
+fi
+
+# Stage the download and swap it in only once it looks like the real thing:
+# `wget -O` and `curl -o` both truncate the destination before transferring, so
+# a network hiccup leaves a zero-byte file that exists, sources cleanly, and
+# defines nothing. See the same guard in upgrade.sh, where that reached a lab.
+fetch_shared_fn() {
+    local dest="$1" url="$2" tmp
+    tmp="$(mktemp "${dest}.XXXXXX" 2>/dev/null)" || return 1
+    if download_to "$tmp" "$url" && [ -s "$tmp" ] && grep -q '^prepare_system()' "$tmp"; then
+        mv -f "$tmp" "$dest"
+        return 0
+    fi
+    rm -f "$tmp"
+    return 1
+}
+
+if fetch_shared_fn "$SHARED_FN_PATH" "$SHARED_FN_URL"; then
     chmod +x "$SHARED_FN_PATH"
     echo "Downloaded shared-functions.sh."
 else
@@ -72,10 +98,19 @@ else
         echo "shared-functions.sh missing. Cannot proceed."
         exit 1
     fi
+    echo "Continuing with the copy already on this machine."
 fi
 
 # Source the shared functions
 source "$SHARED_FN_PATH"
+
+# Existing is not the same as usable — check for a function it must define
+# before prepare_system runs anything as root.
+if ! declare -F prepare_system >/dev/null 2>&1; then
+    echo "shared-functions.sh at $SHARED_FN_PATH is unusable (truncated or corrupt)."
+    echo "Delete it and run this again: sudo rm -f $SHARED_FN_PATH"
+    exit 1
+fi
 
 prepare_system
 
