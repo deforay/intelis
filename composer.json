@@ -98,6 +98,7 @@
         "scan": "@php bin/scan.php",
         "housekeeping": "@php bin/housekeeping.php 30",
         "version": "@php bin/build/generate-version.php",
+        "release": "@php bin/build/publish-release.php",
         "db:collation": "@php vendor/bin/db-tools collation --all",
         "db:backup": "@php vendor/bin/db-tools backup --all",
         "backup": [
@@ -199,6 +200,7 @@
         "test": "Run the PHPUnit test suite",
         "check-di": "Compile the DI container in isolation so a broken service definition fails here instead of in production",
         "preflight": "Check this machine can run and serve the app \u2014 PHP, the web server's own php.ini, config, permissions, schema. Runs without booting the app, so it still reports when nothing else does",
+        "release": "Publish the current version as a release tag, which is what labs upgrade to",
         "version": "Bump the project version (patch|minor|major|x.y.z, or no argument for an interactive menu)",
         "interface": "Auto-import results from connected analyzer / middleware databases",
         "provision": "Create the runtime directories the app writes to and fix their ownership and permissions",
