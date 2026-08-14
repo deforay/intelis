@@ -62,6 +62,23 @@ against them without running a review.
   `#id` handler and `label[for]`.
 - **Country forms are copies.** A defect found in one country's form is usually present in
   its siblings. Fix the family, not the instance.
+- **A password handed to MySQL is the weakest of the three ways to give it one.** MySQL reads
+  option files before anything passed to it, and the precedence is command line > option file
+  > environment. `setup_mysql_config()` writes `/root/.my.cnf` with a password on every
+  machine, and these scripts run as root, so a password supplied in `MYSQL_PWD` is silently
+  ignored in favour of that file's. Any script shelling out to `mysql`, `mysqldump`,
+  `mysqladmin` or `mysqlcheck` with a password of its own passes `--no-defaults` as the
+  **first** argument, or MySQL ignores the flag without saying so — and only when a password
+  was actually supplied, since an empty one means the option file is the intended source. It
+  always presents the same way: a credential that is definitely correct being refused, with
+  nothing on screen to explain it. Three occurrences so far — db-tools 3.3.0, `db-backup.sh`,
+  and `repair_html_escaped_db_password()`, where it left the repair unable to fire on the
+  machines it was written for. Known and deliberately not fixed: the `SET PERSIST sql_mode`
+  calls in `setup.sh` and `upgrade.sh`, where the same setting is also written to
+  `mysqld.cnf` and the failure is printed rather than swallowed.
+- **`mysqladmin ping` is not a credential check.** It answers "is the server alive", and
+  answers yes when access is denied — which is why it is the right probe for "is MySQL up"
+  and useless for "is this password correct". Test a password by running a statement.
 - **User-visible strings are translatable** and escaped with the helper matching their output
   context.
 - **Exports use OpenSpout.**
@@ -79,3 +96,9 @@ against them without running a review.
 - `composer test` green.
 - `php -l` clean on every changed PHP file.
 - `bin/dev/review` run, and every finding addressed or rebutted.
+- Shell scripts under `scripts/` run, not just read. `bash -n` proves syntax and nothing
+  else. Use a privileged systemd container and stage the machine the way the fleet actually
+  is — MySQL installed, `/root/.my.cnf` present, an installation under `/var/www/intelis` —
+  then break the thing the script is supposed to handle and watch it handle it. Every MySQL
+  credential bug above survived review and reading, and was found in the first minute of
+  running the script on a machine configured like a lab's.
