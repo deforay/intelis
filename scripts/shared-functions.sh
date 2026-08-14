@@ -422,7 +422,51 @@ to_absolute_path() {
 # clone as fallback, and the codeload tarball as the last resort.
 # ---------------------------------------------------------------------------
 MASTER_GIT_URL="${MASTER_GIT_URL:-https://github.com/deforay/intelis.git}"
-MASTER_TARBALL_URL="${MASTER_TARBALL_URL:-https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master}"
+
+# What a lab upgrades TO.
+#
+# Labs tracked the tip of master, which made merging and shipping the same
+# event: anything pushed reached every installation on its next upgrade, with no
+# point in between where somebody decided it was ready. Now they follow the
+# newest vN.N.N tag, so publishing is a deliberate act — and a cheap one, since
+# `composer version patch -- -y` plus a tag push is the whole ceremony. An
+# urgent fix still ships in the time it takes to type it.
+#
+# INTELIS_TRACK overrides this:
+#   INTELIS_TRACK=master     the old behaviour, for hotfixing one lab from tip
+#   INTELIS_TRACK=v5.7.1     pin an installation to an exact release
+#
+# Falls back to master when no release tag exists yet, so an instance is never
+# left unable to update because nothing has been tagged.
+INTELIS_TRACK="${INTELIS_TRACK:-latest}"
+
+# resolve_intelis_ref — echo the git ref this machine should upgrade to.
+#
+# The tag filter is deliberately strict: ^v[0-9]+\.[0-9]+\.[0-9]+$ excludes the
+# vendor-latest release tag, which is a build artefact and not a version of the
+# application, and excludes pre-release suffixes. sort -V so v5.10.0 ranks above
+# v5.7.1 rather than below it, which a lexical sort gets backwards.
+resolve_intelis_ref() {
+    case "$INTELIS_TRACK" in
+        master) printf 'refs/heads/master'; return 0 ;;
+        v[0-9]*) printf 'refs/tags/%s' "$INTELIS_TRACK"; return 0 ;;
+    esac
+
+    local newest
+    newest=$(git ls-remote --tags "$MASTER_GIT_URL" 2>/dev/null \
+        | sed 's|.*refs/tags/||' \
+        | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
+        | sort -V | tail -1)
+
+    if [ -n "$newest" ]; then
+        printf 'refs/tags/%s' "$newest"
+    else
+        printf 'refs/heads/master'
+    fi
+}
+
+INTELIS_REF="${INTELIS_REF:-$(resolve_intelis_ref)}"
+MASTER_TARBALL_URL="${MASTER_TARBALL_URL:-https://codeload.github.com/deforay/intelis/tar.gz/${INTELIS_REF}}"
 
 # Persistent shallow mirror of master. After the first clone, callers advance it
 # with DELTA fetches (only changed objects, usually tens of KB) instead of
@@ -475,8 +519,8 @@ fetch_master_tree() {
 
     # Attempt 1: delta-fetch an existing mirror (cheap; changed objects only).
     if command -v git >/dev/null 2>&1 && [ -d "$INTELIS_SRC_DIR/.git" ]; then
-        echo "master: updating source mirror (delta fetch — only changed files)"
-        if run_git -C "$INTELIS_SRC_DIR" fetch --depth 1 origin master &&
+        echo "source: updating mirror to ${INTELIS_REF} (delta fetch — only changed files)"
+        if run_git -C "$INTELIS_SRC_DIR" fetch --depth 1 origin "$INTELIS_REF" &&
             git -c safe.directory='*' -C "$INTELIS_SRC_DIR" reset --hard FETCH_HEAD &&
             git -c safe.directory='*' -C "$INTELIS_SRC_DIR" clean -fd; then
             # Shallow fetch/reset orphans the previous tip; sweep it now so the
@@ -492,12 +536,16 @@ fetch_master_tree() {
 
     # Attempt 2: fresh shallow clone into the mirror.
     if [ "$src_ready" = false ] && command -v git >/dev/null 2>&1; then
-        echo "master: shallow-cloning master into source mirror"
+        echo "source: shallow-cloning ${INTELIS_REF} into source mirror"
         local attempt
+        # --branch takes a tag as well as a branch name, so the short ref works
+        # for both; strip the refs/ prefix the resolver returns.
+        local clone_ref="${INTELIS_REF#refs/heads/}"
+        clone_ref="${clone_ref#refs/tags/}"
         for attempt in 1 2 3; do
             rm -rf "$INTELIS_SRC_DIR"
             mkdir -p "$(dirname "$INTELIS_SRC_DIR")"
-            if run_git clone --depth 1 --single-branch --branch master \
+            if run_git clone --depth 1 --single-branch --branch "$clone_ref" \
                 "$MASTER_GIT_URL" "$INTELIS_SRC_DIR"; then
                 src_ready=true
                 echo "master: cloned (attempt ${attempt}); future updates will be delta-only"

@@ -40,6 +40,34 @@ sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/deforay/intelis/mas
 The update prompts for the MySQL password and the STS URL. Enter both correctly.
 Wrong entries can make the update fail.
 
+## What a lab upgrades to
+
+Labs follow the newest published release tag, not the tip of `master`. Nothing
+reaches an installation until someone tags it, which is what separates merging a
+change from shipping it.
+
+Publishing is two commands after the version bump:
+
+```bash
+composer version patch -- -y      # bumps composer.json, version.php, migrations
+git tag -a v5.7.1 -m "Release 5.7.1"
+git push origin v5.7.1
+```
+
+An urgent fix therefore ships as fast as it always did — the tag is the
+deliberate act, not a delay.
+
+`INTELIS_TRACK` overrides this on a single machine:
+
+| Value | Effect |
+|-------|--------|
+| unset / `latest` | newest `vN.N.N` tag (default) |
+| `master` | branch tip, for hotfixing one lab ahead of a release |
+| `v5.7.1` | pinned to an exact release |
+
+If nothing has been tagged yet, a lab falls back to `master`, so an installation
+is never stuck because no release exists.
+
 ## Before and after
 
 | When | Do this |
