@@ -578,6 +578,9 @@ $stateNameList = $geolocationService->getProvinces("yes");
                          changes what queueing means, so it has to be read before the
                          choice rather than after it. -->
                     <div class="alert" id="queueInstanceWarning" style="display:none; margin-bottom: 15px;"></div>
+                    <div class="alert alert-warning" id="queueRollbackWarning" style="display:none; margin-bottom: 15px;">
+                        <?= _translate('This restores the code from the snapshot taken before the last upgrade. The database is not rolled back — migrations only run forward, so the previous release will be running against the newer schema. Use it to get out of a bad upgrade, then decide what to do about the data.'); ?>
+                    </div>
                     <div class="form-group">
                         <label for="queueCommandType"><?= _translate('Command'); ?></label>
                         <select class="form-control" id="queueCommandType">
@@ -599,6 +602,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                                 <option value="upgrade"><?= _translate('Upgrade (prepare + auto-apply)'); ?></option>
                                 <option value="upgrade-prepare"><?= _translate('Prepare upgrade only'); ?></option>
                                 <option value="upgrade-apply"><?= _translate('Apply a prepared upgrade'); ?></option>
+                                <option value="rollback"><?= _translate('Roll back to the pre-upgrade snapshot (code only)'); ?></option>
                             </optgroup>
                         </select>
                     </div>
@@ -727,6 +731,17 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 // badge is easy to miss, and this is the moment the choice is
                 // made: with two installations answering for one lab, the plane
                 // cannot say which will take it.
+                // Rolling back restores code and leaves the database migrated.
+                // That asymmetry is the whole risk, and the moment to say so is
+                // before the command is sent.
+                $('#queueCommandType').off('change.rollbackWarning').on('change.rollbackWarning', function () {
+                    if ($(this).val() === 'rollback') {
+                        $('#queueRollbackWarning').show();
+                    } else {
+                        $('#queueRollbackWarning').hide();
+                    }
+                });
+
                 if (instanceState === 'contested' || instanceState === 'changed') {
                     $('#queueInstanceWarning')
                         .removeClass('alert-warning alert-danger')
