@@ -46,24 +46,44 @@ Labs follow the newest published release tag, not the tip of `master`. Nothing
 reaches an installation until someone tags it, which is what separates merging a
 change from shipping it.
 
-Publishing is two commands after the version bump:
+Publishing is one command, once the version bump has been merged:
 
 ```bash
 composer version patch -- -y      # bumps composer.json, version.php, migrations
-git tag -a v5.7.1 -m "Release 5.7.1"
-git push origin v5.7.1
+# review and merge that, then:
+composer publish                  # tags it and pushes the tag
 ```
+
+`composer publish` refuses if the working tree is dirty, if the branch is not
+`master`, if it does not match `origin`, or if `composer.json` and `version.php`
+disagree — so a tag can only ever name a commit everyone else already has. It
+never commits anything itself. Running it twice is safe: an already-published
+version reports that and stops.
 
 An urgent fix therefore ships as fast as it always did — the tag is the
 deliberate act, not a delay.
 
-`INTELIS_TRACK` overrides this on a single machine:
+### Pinning a single machine
+
+`INTELIS_TRACK` overrides what one installation follows:
 
 | Value | Effect |
 |-------|--------|
 | unset / `latest` | newest `vN.N.N` tag (default) |
 | `master` | branch tip, for hotfixing one lab ahead of a release |
 | `v5.7.1` | pinned to an exact release |
+
+It has to be set on the command that runs the update, not exported beforehand:
+
+```bash
+sudo INTELIS_TRACK=master intelis update
+```
+
+Exporting it in the shell and then running the update does not work on its own.
+`sudo` starts the update with a clean environment, so the variable is dropped on
+the way to root. `intelis update` now carries it across that boundary if it is
+set, but anything invoking `intelis-update` or `upgrade.sh` directly still needs
+it on the command line.
 
 If nothing has been tagged yet, a lab falls back to `master`, so an installation
 is never stuck because no release exists.
