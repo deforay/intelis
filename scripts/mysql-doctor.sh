@@ -115,6 +115,21 @@ REPORT="/var/log/intelis-mysql-doctor-$(date +%Y%m%d%H%M%S).log"
   { REPORT="/tmp/intelis-mysql-doctor-$(date +%Y%m%d%H%M%S).log"; ( umask 077 && : >"$REPORT" ) 2>/dev/null || true; }
 chmod 600 "$REPORT" 2>/dev/null || true
 
+# One report on the machine, not a pile of them. Each run writes a new file, and
+# a lab that tries three times has three copies of its own logs and settings
+# sitting in /var/log for good. The report exists to be sent and then to stop
+# existing, so every earlier one goes now: a crash later still leaves exactly the
+# current run behind and nothing older.
+prune_old_reports() {
+  local old
+  for old in /var/log/intelis-mysql-doctor-*.log /tmp/intelis-mysql-doctor-*.log; do
+    [ -f "$old" ] || continue
+    [ "$old" = "$REPORT" ] && continue
+    rm -f -- "$old" 2>/dev/null || true
+  done
+}
+prune_old_reports
+
 # The whole point of the report is that it gets sent somewhere: attached to an
 # email, or photographed, or forwarded over WhatsApp from a lab. So nothing
 # secret may reach it. /etc/mysql/debian.cnf alone holds the debian-sys-maint
@@ -390,10 +405,81 @@ error_log_recent() {
   ' "$ERRLOG" 2>/dev/null | tail -n 400 || true
 }
 
+# A config the server rejects outright is refused by the service's pre-start
+# step, before mysqld is running and therefore before anything can be written to
+# the error log. That log is empty in exactly the case an operator most needs it,
+# so the journal has to be read as well. Both sources, most recent first.
+journal_recent() {
+  journalctl -u "$UNIT" -n 200 --no-pager 2>/dev/null || true
+}
+
+mysql_complaints() {
+  { journal_recent; error_log_recent; } 2>/dev/null || true
+}
+
+CONFIG_PRELUDE_FILE=""
+
+# True when the file has an option line before its first [section] heading.
+# !includedir and friends are directives rather than options and are legal
+# there, as are comments and blank lines.
+# The answer is carried in a variable rather than in `exit 0` / `exit 1` from the
+# rules. An exit inside a main rule still runs END, so an END that exits with its
+# own status overrides the one just given and the test always answers the same
+# way regardless of the file.
+config_has_prelude_option() { # config_has_prelude_option <file>
+  awk '
+    /^[[:space:]]*\[/ { exit }
+    /^[[:space:]]*$/  { next }
+    /^[[:space:]]*#/  { next }
+    /^[[:space:]]*;/  { next }
+    /^[[:space:]]*!/  { next }
+                      { found = 1; exit }
+    END               { exit (found ? 0 : 1) }
+  ' "$1" 2>/dev/null
+}
+
+# Every option in a MySQL config has to sit under a [section] heading. One above
+# the first heading makes the whole file invalid: the server stops at that line
+# without reading further and without starting. It is what happens when settings
+# are pasted at the top of a file.
+#
+# Deliberately checked by reading the files rather than by believing the journal.
+# A message in the journal is evidence of a fault at the time it was written, not
+# of one now, so trusting it would keep reporting a fault after it was repaired
+# and would offer the repair again on every run. The file either has the problem
+# or it does not, and that answer is true whether or not the server is running.
+check_config_prelude() {
+  local cnf found=""
+  for cnf in $MYSQL_CONFS /etc/mysql/conf.d/*.cnf /etc/mysql/mysql.conf.d/*.cnf; do
+    [ -f "$cnf" ] || continue
+    config_has_prelude_option "$cnf" || continue
+    found="$cnf"
+    break
+  done
+  [ -n "$found" ] || return 0
+  CONFIG_PRELUDE_FILE="$found"
+
+  # While the server is up this is not why anything is broken today, but it is
+  # why it will not come back after the next restart, which is worth saying.
+  if $SERVER_UP; then
+    finding warning configprelude \
+      "Settings were added to ${found} above the first [section] heading." \
+      "The database is running now, but it will refuse to start the next time it is restarted, because it cannot read a file whose first line is an option with no heading above it."
+    return 0
+  fi
+
+  finding critical configprelude \
+    "Settings were added to ${found} above the first [section] heading, and the database will not read that file at all." \
+    "Every setting has to sit under a heading such as [mysqld]. The server stops at the first line and never starts."
+}
+
+# No equivalent direct test exists for a setting the server merely rejects: that
+# takes running mysqld. So this reads the logs, and only while the server is
+# down, when a refusal is by definition the current state of affairs.
 check_config_refusal() {
-  [ -n "$ERRLOG" ] || return 0
+  $SERVER_UP && return 0
   local refusal
-  refusal="$(error_log_recent | grep -iE "unknown variable|unknown option|error while setting value" | tail -n 1 || true)"
+  refusal="$(mysql_complaints | grep -iE "unknown variable|unknown option|error while setting value" | tail -n 1 || true)"
   [ -n "$refusal" ] || return 0
   finding critical config \
     "The database is refusing a setting in its configuration file." \
@@ -409,7 +495,7 @@ newest_config_backup() {
 check_corruption() {
   [ -n "$ERRLOG" ] || return 0
   local marker
-  marker="$(error_log_recent | grep -iE "corrupt|page.*checksum|cannot find tablespace|forcing recovery|Assertion failure" | tail -n 1 || true)"
+  marker="$(mysql_complaints | grep -iE "corrupt|page.*checksum|cannot find tablespace|forcing recovery|Assertion failure" | tail -n 1 || true)"
   [ -n "$marker" ] || return 0
   finding critical corruption \
     "The database reports damage in its own files." \
@@ -559,6 +645,7 @@ check_crashed_tables() {
 check_disk
 check_oom
 check_buffer_pool
+check_config_prelude
 check_config_refusal
 check_corruption
 check_socket_dir
@@ -627,6 +714,49 @@ EOF
 
 fix_datadir_owner() { chown -R mysql:mysql "$DATADIR"; }
 
+# Comment out every option sitting above the first [section] heading, which is
+# the only part of the file that is invalid. Deliberately conservative: it does
+# not try to guess which heading those settings were meant to go under. Putting
+# them under [mysqld] would be a guess, and on this server most of what gets
+# pasted there is an option MySQL 8 removed years ago, so the guess would trade
+# this failure for "unknown variable" and the server still would not start.
+# !includedir lines are left alone; they are directives, not options, and are
+# legal exactly where they are.
+fix_config_prelude() {
+  local f="$CONFIG_PRELUDE_FILE" tmp
+  [ -n "$f" ] && [ -f "$f" ] || return 1
+
+  tmp="$(mktemp)" || return 1
+
+  awk '
+    seen              { print; next }
+    /^[[:space:]]*\[/ { seen = 1; print; next }
+    /^[[:space:]]*$/  { print; next }
+    /^[[:space:]]*#/  { print; next }
+    /^[[:space:]]*;/  { print; next }
+    /^[[:space:]]*!/  { print; next }
+    {
+      print "# disabled by intelis fix-database: an option here, above the first"
+      print "# [section] heading, stops MySQL reading this file at all."
+      print "#" $0
+    }
+  ' "$f" >"$tmp" || { rm -f "$tmp"; return 1; }
+
+  # Nothing to do means nothing done: no rewrite, and above all no backup file.
+  # A repair that leaves a copy behind every time it is run turns re-running the
+  # script into a way of filling /etc/mysql with near-identical files.
+  if cmp -s "$f" "$tmp"; then
+    rm -f "$tmp"
+    return 0
+  fi
+
+  cp "$f" "${f}.bak.$(date +%Y%m%d%H%M%S)" || { rm -f "$tmp"; return 1; }
+
+  # Written back through the original so the file keeps its ownership and mode.
+  cat "$tmp" >"$f" || { rm -f "$tmp"; return 1; }
+  rm -f "$tmp"
+}
+
 fix_unmask() { systemctl unmask "$UNIT" && systemctl enable "$UNIT"; }
 
 fix_vacuum_journal() { journalctl --vacuum-size=100M >/dev/null 2>&1; }
@@ -682,6 +812,7 @@ fix_app_password() {
 if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
   print header "What can be done about it"
 
+  has_finding configprelude && { run_fix "Disable the settings that were added above the first heading in ${CONFIG_PRELUDE_FILE:-the configuration file}." fix_config_prelude || true; }
   has_finding socketdir  && { run_fix "Recreate the folder the database needs, and make it come back after a restart." fix_socket_dir || true; }
   has_finding dataowner  && { run_fix "Give the database back its own files." fix_datadir_owner || true; }
   has_finding unmask     && { run_fix "Allow the database service to start again." fix_unmask || true; }
@@ -786,6 +917,15 @@ if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != "root" ]; then
         HANDOFF="$TARGET"
         break
       fi
+    done
+
+    # A run that lands in the home folder because the Desktop was unavailable,
+    # or the other way round, must not leave the previous run's copy behind for
+    # somebody to send by mistake. Only ever a plain file, never a symlink.
+    for dir in "$USER_HOME/Desktop" "$USER_HOME"; do
+      STALE="${dir}/mysql-report.txt"
+      [ "$STALE" = "$HANDOFF" ] && continue
+      [ -f "$STALE" ] && [ ! -L "$STALE" ] && rm -f -- "$STALE" 2>/dev/null
     done
   fi
 fi
