@@ -154,7 +154,16 @@ if ($previous !== '') {
 } else {
     echo "  First release. Recent commits:\n";
 }
-echo run('git log --oneline -8 ' . escapeshellarg($range) . ' | sed "s/^/    /"') . "\n\n";
+// Indent in PHP rather than piping through sed: run() trims what it captures,
+// which strips the indent from the first line only and leaves the block looking
+// ragged.
+$log = run('git log --oneline -8 ' . escapeshellarg($range));
+foreach (explode("\n", $log) as $line) {
+    if ($line !== '') {
+        echo '    ' . $line . "\n";
+    }
+}
+echo "\n";
 
 if ($dry) {
     echo "  Dry run — nothing tagged. Remove --dry to publish.\n\n";
