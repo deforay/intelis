@@ -352,6 +352,52 @@ final class DatabaseService extends MysqliDb
         } catch (Throwable $e) {
             LoggerUtility::logWarning('Failed to apply session collation settings: ' . $e->getMessage());
         }
+
+        $this->applySessionTimeZone();
+    }
+
+    /**
+     * Point the connection at the same clock PHP is using.
+     *
+     * The application already chooses its timezone deliberately:
+     * SystemService::setDateTimeZone() reads global_config.default_time_zone and
+     * calls date_default_timezone_set(), so every datetime the app writes is in
+     * the timezone of the programme it serves. Nothing ever told the database
+     * that, so MySQL kept answering NOW() in the server's own timezone — which
+     * is wherever the machine happens to be hosted, and need not be anywhere
+     * near the lab.
+     *
+     * Rows stayed self-consistent, because PHP wrote every column. What was
+     * wrong was any query mixing the two: DATEDIFF(NOW(), request_created_datetime)
+     * and its relatives, of which this codebase has around thirty. On an STS
+     * hosted in Asia/Kolkata serving a programme in Africa/Kinshasa, that is a
+     * four-and-a-half hour skew — enough to put a day-count out by one for a
+     * fifth of every day, silently, and only in the direction of looking older
+     * than it is.
+     *
+     * A numeric offset rather than a name, because named zones require the
+     * mysql.time_zone tables to have been populated and on most installs they
+     * have not been. The offset is recomputed on every connect and reconnect, so
+     * a daylight-saving change is picked up on the next connection rather than
+     * being baked in.
+     *
+     * Public because connect time is too early on its own. bootstrap.php opens
+     * the connection before SystemService::setDateTimeZone() runs, so the offset
+     * captured here is PHP's default rather than the application's — UTC, on a
+     * machine that has not been told otherwise. SystemService calls this again
+     * once it knows the answer.
+     *
+     * Never fatal: a connection that cannot set this is still a usable
+     * connection, and it behaves exactly as it did before this existed.
+     */
+    public function applySessionTimeZone(): void
+    {
+        try {
+            $offset = (new \DateTimeImmutable('now'))->format('P');
+            $this->rawQuery("SET time_zone = ?", [$offset]);
+        } catch (Throwable $e) {
+            LoggerUtility::logWarning('Failed to align database session time zone: ' . $e->getMessage());
+        }
     }
 
     /**
