@@ -17,7 +17,9 @@
  *
  * What it checks before tagging, in order of how badly each would hurt:
  *
- *   - the version is not already tagged, so a release is never silently moved
+ *   - the version does not already name a different commit, so a release is
+ *     never silently moved (already naming this one is not an error: it means
+ *     the work is done, and running this again says so and stops)
  *   - the working tree is clean, so the tag cannot mean something the repository
  *     does not contain
  *   - HEAD is on the main branch and matches the remote, so the tag lands on
@@ -83,24 +85,61 @@ if ($composerVersion !== $version) {
 $tag = 'v' . $version;
 echo "\n  Publishing {$tag}\n\n";
 
-// --- refuse to move a release that already exists ---------------------------
+// --- what, if anything, this version already names --------------------------
+//
+// A tag with the right name is not the same fact as a release being published,
+// and the difference decides whether running this again is a mistake:
+//
+//   naming this commit    the work is done; saying so and stopping is the
+//                         honest answer, not an error
+//   naming another commit a release is being asked to move, which is the one
+//                         thing that must never happen quietly
+//
+// Telling them apart is what makes a second run safe to attempt. Treating both
+// as failure was worse than noisy — it advised bumping the version to escape a
+// state where nothing was wrong.
 
+$head = run('git rev-parse HEAD');
+
+$localTagCommit = '';
 run('git rev-parse -q --verify refs/tags/' . escapeshellarg($tag), $code);
 if ($code === 0) {
-    fail(
-        "{$tag} already exists locally.",
-        'A published release is immutable — bump the version instead: composer version patch -- -y'
-    );
+    $localTagCommit = run('git rev-parse ' . escapeshellarg($tag . '^{commit}'));
 }
 
-$remoteTag = run('git ls-remote --tags origin ' . escapeshellarg('refs/tags/' . $tag));
-if ($remoteTag !== '') {
-    fail(
-        "{$tag} is already published on origin.",
-        'A published release is immutable — bump the version instead: composer version patch -- -y'
-    );
+// ls-remote prints an annotated tag twice: the tag object, then a '^{}' line
+// carrying the commit it points at. The second is the one worth comparing.
+$remoteTagCommit = '';
+foreach (explode("\n", run('git ls-remote --tags origin ' . escapeshellarg('refs/tags/' . $tag . '*'))) as $line) {
+    if (preg_match('/^([0-9a-f]{40})\s+refs\/tags\/' . preg_quote($tag, '/') . '(\^\{\})?$/', trim($line), $m)) {
+        if ($remoteTagCommit === '' || isset($m[2])) {
+            $remoteTagCommit = $m[1];
+        }
+    }
 }
-ok("{$tag} is not yet published");
+
+foreach ([[$localTagCommit, 'locally'], [$remoteTagCommit, 'on origin']] as [$existing, $where]) {
+    if ($existing !== '' && $existing !== $head) {
+        fail(
+            "{$tag} already exists {$where}, naming " . substr($existing, 0, 8) . ' rather than HEAD.',
+            'A published release is immutable — bump the version instead: composer version patch -- -y'
+        );
+    }
+}
+
+if ($remoteTagCommit === $head && $head !== '') {
+    echo "  ✓ {$tag} is already published at " . substr($head, 0, 8) . "\n";
+    echo "\n  Nothing to do.\n\n";
+    exit(0);
+}
+
+if ($localTagCommit === $head && $head !== '') {
+    // Tagged but never pushed — the tail of a run that failed at the push. The
+    // tag is correct, so finish it rather than asking for a version nobody needs.
+    ok("{$tag} is tagged locally but not on origin — will push it");
+} else {
+    ok("{$tag} is not yet published");
+}
 
 // --- the tag must mean what the repository contains -------------------------
 
@@ -172,19 +211,28 @@ if ($dry) {
 
 // --- publish ---------------------------------------------------------------
 
-$message = "Release {$version}";
-run(sprintf('git tag -a %s -m %s', escapeshellarg($tag), escapeshellarg($message)), $tagCode);
-if ($tagCode !== 0) {
-    fail("Could not create tag {$tag}.");
+$createdTag = false;
+if ($localTagCommit !== $head) {
+    run(sprintf('git tag -a %s -m %s', escapeshellarg($tag), escapeshellarg("Release {$version}")), $tagCode);
+    if ($tagCode !== 0) {
+        fail("Could not create tag {$tag}.");
+    }
+    $createdTag = true;
+    ok("tagged {$tag}");
 }
-ok("tagged {$tag}");
 
 $pushOut = run('git push origin ' . escapeshellarg($tag), $pushCode);
 if ($pushCode !== 0) {
     // Leave no half-published state: a local tag that origin never got is a
-    // release nobody can install and a name that cannot be reused.
-    run('git tag -d ' . escapeshellarg($tag));
-    fail("Could not push {$tag} (local tag removed).", $pushOut);
+    // release nobody can install and a name that cannot be reused. Only undo a
+    // tag this run made — one that was already here is a previous run's attempt
+    // to publish this same commit, and deleting it would throw away the state
+    // that lets the next run pick up where this one stopped.
+    if ($createdTag) {
+        run('git tag -d ' . escapeshellarg($tag));
+        fail("Could not push {$tag} (local tag removed).", $pushOut);
+    }
+    fail("Could not push {$tag}.", $pushOut);
 }
 ok("pushed {$tag} to origin");
 
