@@ -1094,12 +1094,30 @@ repair_html_escaped_db_password() {
     [ -n "$host" ] || host="localhost"
     [ -n "$port" ] || port="3306"
 
+    # Both probes below ask "does this exact password work". They have to be the
+    # only source of one, and --no-defaults is what makes them so.
+    #
+    # MySQL reads option files before anything handed to it, and the precedence
+    # between the three ways to supply a password is command line > option file >
+    # environment. These pass it in MYSQL_PWD, the weakest of the three, and
+    # setup_mysql_config() writes /root/.my.cnf on every machine this runs on. So
+    # without the flag both probes silently test that file's password instead of
+    # the two being compared, and the answer is the same for both: either the
+    # stored password appears to work and the repair is skipped as unnecessary,
+    # or the decoded one appears to fail and it is skipped as unproven. This
+    # function could not repair anything on the machines it was written for.
+    #
+    # It must be the first argument or MySQL ignores it without saying so.
+    # Unconditional here, unlike elsewhere: both passwords are non-empty by the
+    # checks above, so there is never a case where the option file is the
+    # intended source.
+
     # The stored password must actually be broken...
-    if MYSQL_PWD="$current" mysql -u "$user" -h "$host" -P "$port" ${db_name:+"$db_name"} -e "SELECT 1" >/dev/null 2>&1; then
+    if MYSQL_PWD="$current" mysql --no-defaults -u "$user" -h "$host" -P "$port" ${db_name:+"$db_name"} -e "SELECT 1" >/dev/null 2>&1; then
         return 1
     fi
     # ...and the decoded one must actually work.
-    if ! MYSQL_PWD="$decoded" mysql -u "$user" -h "$host" -P "$port" ${db_name:+"$db_name"} -e "SELECT 1" >/dev/null 2>&1; then
+    if ! MYSQL_PWD="$decoded" mysql --no-defaults -u "$user" -h "$host" -P "$port" ${db_name:+"$db_name"} -e "SELECT 1" >/dev/null 2>&1; then
         return 1
     fi
 
