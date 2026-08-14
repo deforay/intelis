@@ -111,7 +111,9 @@ print() {
 say() { $QUIET || print "$@"; }
 
 REPORT="/var/log/intelis-mysql-doctor-$(date +%Y%m%d%H%M%S).log"
-: >"$REPORT" 2>/dev/null || REPORT="/tmp/intelis-mysql-doctor-$(date +%Y%m%d%H%M%S).log"
+( umask 077 && : >"$REPORT" ) 2>/dev/null ||
+  { REPORT="/tmp/intelis-mysql-doctor-$(date +%Y%m%d%H%M%S).log"; ( umask 077 && : >"$REPORT" ) 2>/dev/null || true; }
+chmod 600 "$REPORT" 2>/dev/null || true
 
 # The whole point of the report is that it gets sent somewhere: attached to an
 # email, or photographed, or forwarded over WhatsApp from a lab. So nothing
@@ -767,9 +769,21 @@ if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != "root" ]; then
   if [ -n "$USER_HOME" ] && [ -d "$USER_HOME" ]; then
     for dir in "$USER_HOME/Desktop" "$USER_HOME"; do
       [ -d "$dir" ] || continue
-      if cp "$REPORT" "${dir}/mysql-report.txt" 2>/dev/null; then
-        chown "$SUDO_USER" "${dir}/mysql-report.txt" 2>/dev/null || true
-        HANDOFF="${dir}/mysql-report.txt"
+      TARGET="${dir}/mysql-report.txt"
+
+      # This is root writing into a directory the operator can write to, so the
+      # destination is not to be trusted. A symlink left at that name would
+      # otherwise have root copy over whatever it points at and then hand
+      # ownership of it away. Only ever replace a plain file.
+      if [ -L "$TARGET" ] || { [ -e "$TARGET" ] && [ ! -f "$TARGET" ]; }; then
+        continue
+      fi
+      rm -f -- "$TARGET" 2>/dev/null || true
+
+      # One step, so the file is never briefly readable by anyone else: it
+      # carries this machine's logs and settings.
+      if install -m 600 -o "$SUDO_USER" -- "$REPORT" "$TARGET" 2>/dev/null; then
+        HANDOFF="$TARGET"
         break
       fi
     done
