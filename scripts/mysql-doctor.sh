@@ -398,16 +398,48 @@ check_corruption() {
     "Its own words: ${marker}"
 }
 
+SOCKET_DIR=""
+
+# An absent /run/mysqld is the normal state of a stopped server, not a fault.
+# The unit declares RuntimeDirectory=mysqld, so systemd creates the folder at
+# every start and deletes it again at every stop. Reporting it as the cause
+# would name a non-cause on every machine whose database is simply stopped,
+# which is worse than saying nothing: it sends the operator off to repair
+# something that was never broken, and the real fault stays hidden.
+#
+# So it is only a fault when nothing on the machine is going to create it, or
+# when the server has already said it could not.
 check_socket_dir() {
-  local sockpath sockdir
-  sockpath="$(grep -rhiE '^[[:space:]]*socket' /etc/mysql 2>/dev/null | head -1 |
+  local sockpath sockdir runtime_dir
+  sockpath="$(grep -rhiE --include='*.cnf' '^[[:space:]]*socket' /etc/mysql 2>/dev/null | head -1 |
     sed -E 's/.*=[[:space:]]*//; s/[[:space:]]*$//' || true)"
-  [ -n "$sockpath" ] || sockpath="/var/run/mysqld/mysqld.sock"
+  [ -n "$sockpath" ] || sockpath="/run/mysqld/mysqld.sock"
   sockdir="$(dirname "$sockpath")"
+  SOCKET_DIR="$sockdir"
+
+  # The server's own complaint outranks any reasoning about who creates what.
+  local complaint
+  complaint="$(error_log_recent |
+    grep -iE "can't create/write to file.*\.sock|could not create unix socket|failed to create.*socket|Can't start server.*socket" |
+    tail -n 1 || true)"
+  if [ -n "$complaint" ]; then
+    finding critical socketdir \
+      "The database cannot create the connection file it needs in ${sockdir}." \
+      "Its own words: ${complaint}"
+    return 0
+  fi
+
   [ -d "$sockdir" ] && return 0
+
+  # systemd's RuntimeDirectory= covers it, as does a tmpfiles rule.
+  runtime_dir="$(systemctl show -p RuntimeDirectory --value "$UNIT" 2>/dev/null || true)"
+  [ -n "$runtime_dir" ] && return 0
+  grep -rqsE "^[[:space:]]*[dD][[:space:]]+${sockdir}([[:space:]]|$)" \
+    /usr/lib/tmpfiles.d /etc/tmpfiles.d /run/tmpfiles.d 2>/dev/null && return 0
+
   finding critical socketdir \
-    "The folder the database needs for its connection file (${sockdir}) is missing." \
-    "That folder is emptied at every restart and normally recreated automatically. While it is missing the server starts and immediately gives up."
+    "Nothing on this machine creates the folder the database needs for its connection file (${sockdir})." \
+    "That folder is emptied at every restart. Normally the database service recreates it, but this machine has no rule that does so, and the server gives up as soon as it starts."
 }
 
 check_datadir_ownership() {
@@ -549,9 +581,30 @@ fi
 
 # --- repairs ------------------------------------------------------------------
 
+# Creating the folder by hand lasts until the next reboot, because the
+# filesystem it sits on is emptied then. A machine that has already lost the
+# rule which recreates it would come back up broken, on a morning when nobody
+# is expecting it. So write the rule as well, and only then the folder.
 fix_socket_dir() {
-  local dir="/var/run/mysqld"
-  mkdir -p "$dir" && chown mysql:mysql "$dir" && chmod 755 "$dir"
+  local dir="${SOCKET_DIR:-/run/mysqld}" owner=mysql rule=/etc/tmpfiles.d/intelis-mysqld.conf
+
+  id -u mysql >/dev/null 2>&1 || owner=mariadb
+  id -u "$owner" >/dev/null 2>&1 || return 1
+
+  cat >"$rule" <<EOF
+# Written by intelis fix-database: this machine had no rule recreating the
+# directory MySQL needs for its socket, so it came up broken after a restart.
+d ${dir} 0755 ${owner} ${owner} -
+EOF
+
+  # Apply the rule now rather than creating the directory separately, so what
+  # happens at the next boot is the same thing that just happened.
+  if command -v systemd-tmpfiles >/dev/null 2>&1; then
+    systemd-tmpfiles --create "$rule" >/dev/null 2>&1 || true
+  fi
+
+  [ -d "$dir" ] || mkdir -p "$dir" || return 1
+  chown "${owner}:${owner}" "$dir" && chmod 755 "$dir"
 }
 
 fix_datadir_owner() { chown -R mysql:mysql "$DATADIR"; }
@@ -611,7 +664,7 @@ fix_app_password() {
 if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
   print header "What can be done about it"
 
-  has_finding socketdir  && { run_fix "Recreate the missing folder and give it to the database." fix_socket_dir || true; }
+  has_finding socketdir  && { run_fix "Recreate the folder the database needs, and make it come back after a restart." fix_socket_dir || true; }
   has_finding dataowner  && { run_fix "Give the database back its own files." fix_datadir_owner || true; }
   has_finding unmask     && { run_fix "Allow the database service to start again." fix_unmask || true; }
   has_finding bufferpool && { run_fix "Stop the database reserving more memory than this machine has." fix_buffer_pool || true; }
