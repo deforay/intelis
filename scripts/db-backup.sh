@@ -169,12 +169,39 @@ fi
 read -p "Enter MySQL username [root]: " USERNAME
 USERNAME=${USERNAME:-root}
 
+# MySQL reads option files before anything it is handed, and the precedence
+# between the three ways to supply a password is command line > option file >
+# environment. This script puts the password in MYSQL_PWD, which is the right
+# place for it — it stays out of `ps` — and also the weakest of the three.
+#
+# Our own setup writes /root/.my.cnf with a password, and this script runs as
+# root. Without --no-defaults that file's password silently wins over the one
+# typed below, which makes the check pointless (any password appears to work)
+# and turns a stale entry in that file into an access-denied that nothing on
+# screen can explain.
+#
+# Only when a password was actually given. Passing it unconditionally would
+# break the case where the option file is deliberately the source of the
+# credentials, which is exactly what pressing Enter at the prompt means. It also
+# has to be the first argument, or MySQL ignores it without saying so.
+defaults_flag=()
+
 # Ask for MySQL password. Checking it here beats asking for it twice: a
 # confirmation prompt catches a typo repeated, not a password misremembered.
+#
+# Checked by running a statement, not by `mysqladmin ping`. Ping answers the
+# question "is the server alive", which it answers with yes even when the
+# credentials are refused — deliberately, and it is why the start check above
+# uses it. As a password test it accepts anything typed, so the loop below could
+# never have rejected a wrong one and the first sign of trouble would have been
+# an access-denied several prompts later.
 while true; do
     read -sp "Enter MySQL password: " PASSWORD
     echo
-    if MYSQL_PWD="$PASSWORD" mysqladmin -u "$USERNAME" ping --silent >/dev/null 2>&1; then
+    defaults_flag=()
+    [ -n "$PASSWORD" ] && defaults_flag=(--no-defaults)
+    if MYSQL_PWD="$PASSWORD" mysql ${defaults_flag[@]+"${defaults_flag[@]}"} \
+        -u "$USERNAME" -e "SELECT 1;" >/dev/null 2>&1; then
         break
     fi
     echo "Could not log in as '${USERNAME}' with that password. Please try again."
@@ -188,7 +215,7 @@ export MYSQL_PWD="$PASSWORD"
 echo "Fetching list of databases..."
 # The grep is wrapped so that filtering everything out is not read as a
 # failure; pipefail still surfaces a genuine mysql error.
-DATABASES=$(mysql -u "$USERNAME" -N -B -e "SHOW DATABASES;" |
+DATABASES=$(mysql ${defaults_flag[@]+"${defaults_flag[@]}"} -u "$USERNAME" -N -B -e "SHOW DATABASES;" |
     { grep -vxE 'information_schema|performance_schema|mysql|sys' || true; })
 
 if [ -z "$DATABASES" ]; then
@@ -275,7 +302,8 @@ for db in "${SELECTED_DBS[@]}"; do
     # Stamped once, so the name reported below is the name on disk.
     outfile="${db}-$(date +%Y-%m-%d-%H-%M-%S).sql.gz"
 
-    (mysqldump --default-character-set=utf8mb4 -u "$USERNAME" "$db" | gzip >"$outfile") &
+    (mysqldump ${defaults_flag[@]+"${defaults_flag[@]}"} --default-character-set=utf8mb4 \
+        -u "$USERNAME" "$db" | gzip >"$outfile") &
 
     # The trap must not fire here; a failed dump is reported per database.
     if spinner; then
