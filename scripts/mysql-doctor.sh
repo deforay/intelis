@@ -113,7 +113,21 @@ say() { $QUIET || print "$@"; }
 REPORT="/var/log/intelis-mysql-doctor-$(date +%Y%m%d%H%M%S).log"
 : >"$REPORT" 2>/dev/null || REPORT="/tmp/intelis-mysql-doctor-$(date +%Y%m%d%H%M%S).log"
 
-report() { printf '%s\n' "$*" >>"$REPORT" 2>/dev/null || true; }
+# The whole point of the report is that it gets sent somewhere: attached to an
+# email, or photographed, or forwarded over WhatsApp from a lab. So nothing
+# secret may reach it. /etc/mysql/debian.cnf alone holds the debian-sys-maint
+# password in clear text, and it is picked up by any sweep of that directory.
+# Everything written here goes through this first.
+redact() {
+  sed -E \
+    -e 's/^([[:space:]]*(pass|password|passwd|encryption_password)[[:space:]]*=[[:space:]]*).*/\1[removed]/I' \
+    -e 's/(--password=)[^[:space:]]*/\1[removed]/Ig' \
+    -e 's/(MYSQL_PWD=)[^[:space:]]*/\1[removed]/Ig' \
+    -e "s/(['\"]password['\"][[:space:]]*=>[[:space:]]*)['\"][^'\"]*['\"]/\1'[removed]'/Ig" \
+    2>/dev/null || cat
+}
+
+report() { printf '%s\n' "$*" | redact >>"$REPORT" 2>/dev/null || true; }
 
 report_cmd() {
   local label="$1"; shift
@@ -121,7 +135,7 @@ report_cmd() {
     echo
     echo "--- ${label} ---"
     "$@" 2>&1 || true
-  } >>"$REPORT" 2>/dev/null || true
+  } 2>/dev/null | redact >>"$REPORT" 2>/dev/null || true
 }
 
 # --- findings -----------------------------------------------------------------
@@ -262,7 +276,9 @@ report_cmd "memory" free -m
 report_cmd "disk" df -h "$DATADIR" / /var/log
 report_cmd "inodes" df -i "$DATADIR" / /var/log
 report_cmd "datadir" ls -ld "$DATADIR"
-report_cmd "config" grep -rhvE '^[[:space:]]*(#|$)' /etc/mysql
+# debian.cnf is credentials and nothing else, so it is excluded outright rather
+# than relied on being redacted. The tuning worth reading is in the .cnf files.
+report_cmd "config" grep -rhvE --include='*.cnf' --exclude='debian.cnf' '^[[:space:]]*(#|$)' /etc/mysql
 report_cmd "listening sockets" ss -lntp
 [ -n "$ERRLOG" ] && report_cmd "error log (120 lines)" tail -n 120 "$ERRLOG"
 
@@ -740,8 +756,38 @@ if ! $SERVER_UP; then
 fi
 
 print header "Report"
-print info "Written to ${REPORT}"
-print plain "     Send that file when asking for help. It holds the service log, the"
-print plain "     database error log, memory, disk and configuration."
+
+# /var/log cannot be opened from the desktop, and the person who has to send
+# this file is not going to copy it out with a terminal command. So put a copy
+# where they can see it: their own folder, owned by them, named plainly and
+# ending in .txt so it opens with a double click and attaches like any document.
+HANDOFF=""
+if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != "root" ]; then
+  USER_HOME="$(getent passwd "$SUDO_USER" 2>/dev/null | cut -d: -f6 || true)"
+  if [ -n "$USER_HOME" ] && [ -d "$USER_HOME" ]; then
+    for dir in "$USER_HOME/Desktop" "$USER_HOME"; do
+      [ -d "$dir" ] || continue
+      if cp "$REPORT" "${dir}/mysql-report.txt" 2>/dev/null; then
+        chown "$SUDO_USER" "${dir}/mysql-report.txt" 2>/dev/null || true
+        HANDOFF="${dir}/mysql-report.txt"
+        break
+      fi
+    done
+  fi
+fi
+
+if [ -n "$HANDOFF" ]; then
+  print info "A copy has been put in your own folder, ready to send:"
+  print plain "       ${HANDOFF}"
+  print plain ""
+  print plain "     Open Files, find mysql-report.txt, and attach it to a message. It"
+  print plain "     holds the service log, the database error log, memory, disk and"
+  print plain "     settings. Passwords have been removed from it."
+else
+  print info "Written to ${REPORT}"
+  print plain "     Send that file when asking for help. It holds the service log, the"
+  print plain "     database error log, memory, disk and settings. Passwords have been"
+  print plain "     removed from it."
+fi
 
 exit 0
