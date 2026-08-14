@@ -57,6 +57,15 @@ try {
 
     applyPlan($plan, $paths);
     info("\n✓ Done. Version is now {$plan['newVersion']}.");
+    info("");
+    info("  Next, once this is committed and merged, publish it:");
+    info("    git tag -a v{$plan['newVersion']} -m \"Release {$plan['newVersion']}\"");
+    info("    git push origin v{$plan['newVersion']}");
+    info("");
+    info("  Labs upgrade to the newest vN.N.N tag, not to master. Until a version");
+    info("  is tagged, no lab receives it — which is the point: merging and");
+    info("  shipping stop being the same event. Tagging costs one command, so an");
+    info("  urgent fix still ships in the time it takes to type it.");
     exit(0);
 } catch (Throwable $e) {
     fwrite(STDERR, "✗ " . $e->getMessage() . "\n");
