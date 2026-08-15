@@ -578,6 +578,13 @@ $tablesToCleanup = [
         'condition' => 'requested_on < NOW() - INTERVAL 365 DAY',
         'description' => 'API requests older than 365 days'
     ],
+    // Completed work only: anything not yet processed is pending, however old, and
+    // deleting it would lose a sample its code. This table was never pruned, so it had
+    // grown to sixteen months of finished rows.
+    'queue_sample_code_generation' => [
+        'condition' => 'processed = 1 AND updated_datetime < NOW() - INTERVAL 90 DAY',
+        'description' => 'completed sample code queue entries older than 90 days'
+    ],
 ];
 
 $dbStats = [
