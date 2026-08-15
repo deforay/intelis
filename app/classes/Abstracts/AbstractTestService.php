@@ -50,7 +50,19 @@ abstract class AbstractTestService
     private function getMaxId($year, $testType, string $sampleCodeType, $insertOperation): int|float
     {
         if (!$insertOperation) {
-            // For display only, no need to lock or increment
+            // The preview the request form shows. It predicts the next number rather than
+            // reserving one, so two people with the form open see the same value and
+            // whoever saves first takes it. Reserving would make the preview exact at the
+            // cost of spending a number every time somebody opens a form and thinks
+            // better of it, and a gap in the series is worse than a preview that moved.
+            //
+            // Read-only, deliberately. This used to seed the counter when no row existed,
+            // so merely opening the form could write to sequence_counter and, before the
+            // subquery was made sargable, scan the whole form table to do it. Seeding
+            // belongs to the first real insert of the year, which does it on the claim
+            // path below. Until then the preview shows the start of the series -- the
+            // same answer seeding would have produced, since a year with no counter row
+            // has no samples to have advanced it.
             $sql = "SELECT max_sequence_number FROM sequence_counter
                 WHERE year = ? AND
                 test_type = ? AND
@@ -61,16 +73,6 @@ abstract class AbstractTestService
                 $testType,
                 $sampleCodeType
             ]);
-
-            // If no counter exists, initialize it
-            if (empty($yearData)) {
-                $this->resetSequenceCounter($this->table, $year, $testType, $sampleCodeType);
-                $yearData = $this->db->rawQueryOne($sql, [
-                    $year,
-                    $testType,
-                    $sampleCodeType
-                ]);
-            }
 
             return ($yearData['max_sequence_number'] ?? 0) + 1;
         }
