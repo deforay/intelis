@@ -259,7 +259,7 @@ final class TestRequestsService
     /**
      * @return mixed[]
      */
-    public function processSampleCodeQueue($uniqueIds = [], $parallelProcess = false, $maxTries = 5, $interval = 5): array
+    public function processSampleCodeQueue($uniqueIds = [], $parallelProcess = false, $maxTries = 5): array
     {
         $response = [];
         $lockFile = null;
@@ -294,11 +294,26 @@ final class TestRequestsService
                 }
             }
 
-            // Get queue items to process
+            // Get queue items to process.
+            //
+            // 0 = new, 2 = retryable failure, 3 = permanent failure (only when the caller
+            // named the samples). Statuses are gathered rather than stopped at the first
+            // that yields rows: breaking there meant retryable failures were only ever
+            // attempted when no new work existed, so on an instance with steady inflow a
+            // sample that failed once could wait indefinitely for a code -- and a sample
+            // with no code is a sample nobody can find. Order still matters, so new work
+            // fills the batch first and retries take what room is left.
             $queueItems = [];
-            $priorityStatuses = [0, 2, 3]; // 0 = new, 2 = retryable failure, 3 = permanent failure (only if explicitly requested)
+            $priorityStatuses = [0, 2, 3];
 
             foreach ($priorityStatuses as $status) {
+                if (count($queueItems) >= $batchSize) {
+                    break;
+                }
+                if ($status === 3 && $uniqueIds === []) {
+                    continue;
+                }
+
                 try {
                     $this->db->reset();
 
@@ -307,13 +322,10 @@ final class TestRequestsService
                     }
 
                     $this->db->where('processed', $status);
-                    if ($status === 3 && $uniqueIds === []) {
-                        continue;
-                    }
 
-                    $queueItems = $this->db->get('queue_sample_code_generation', $batchSize);
-                    if (!empty($queueItems)) {
-                        break;
+                    $found = $this->db->get('queue_sample_code_generation', $batchSize - count($queueItems));
+                    if (!empty($found)) {
+                        $queueItems = [...$queueItems, ...$found];
                     }
                 } catch (Throwable $e) {
                     LoggerUtility::logError("Error fetching queue items (status {$status}): " . $e->getMessage(), [
@@ -331,6 +343,21 @@ final class TestRequestsService
                 return $response;
             }
 
+            // Everything below that does not vary per item is resolved once. These were
+            // all inside the loop, so a batch of 1472 asked the same questions 1472 times.
+            $isStsInstance = $this->commonService->isSTSInstance();
+            $testConfig = $this->resolveTestConfig($queueItems);
+            $sampleRows = $this->mapQueuedSamples($queueItems, $testConfig);
+
+            // Marking the queue was an UPDATE per item. Completions are collected and
+            // written once at the end instead -- and in the finally, so a throw part-way
+            // still records the work that did land. Deferring is safe because the marking
+            // is not what makes the work durable: the sample already carries its code, so
+            // an item left unmarked is simply seen again and short-circuits on the
+            // already-has-a-code branch. Failures stay per-item; each carries its own
+            // message and they are rare.
+            $completedQueueIds = [];
+
             // Process queue items
             $counter = 0;
 
@@ -341,7 +368,7 @@ final class TestRequestsService
                 // on it: a testing-lab actor (incl. cloud-LIS on an STS box) mints
                 // the local "lis" series into sample_code; collection-site / legacy
                 // actors on STS mint the network "sts" series into remote_sample_code.
-                $sampleCodeColumn = ($this->commonService->isSTSInstance() && ($item['access_type'] ?? '') !== 'testing-lab')
+                $sampleCodeColumn = ($isStsInstance && ($item['access_type'] ?? '') !== 'testing-lab')
                     ? 'remote_sample_code'
                     : 'sample_code';
 
@@ -363,30 +390,21 @@ final class TestRequestsService
                         continue;
                     }
 
-                    // Get test configuration
-                    try {
-                        $formTable = TestsService::getTestTableName($item['test_type']);
-                        $primaryKey = TestsService::getPrimaryColumn($item['test_type']);
-                        $serviceClass = TestsService::getTestServiceClass($item['test_type']);
-                        $testTypeService = ContainerRegistry::get($serviceClass);
-                    } catch (Throwable $e) {
-                        throw new SystemException("Invalid test type configuration: " . $e->getMessage(), 0, $e);
+                    // Test configuration, resolved once per test type above.
+                    if (!isset($testConfig[$item['test_type']])) {
+                        throw new SystemException("Invalid test type configuration for '{$item['test_type']}'");
                     }
+                    $formTable = $testConfig[$item['test_type']]['formTable'];
+                    $testTypeService = $testConfig[$item['test_type']]['service'];
 
-                    // Check if sample code already exists
-                    try {
-                        $sQuery = "SELECT `result_status`, `sample_code`, `remote_sample_code` FROM {$formTable} WHERE unique_id = ?";
-                        $rowData = $this->db->rawQueryOne($sQuery, [$item['unique_id']]);
-
-                        if (!empty($rowData) && !empty($rowData[$sampleCodeColumn])) {
-                            if ($isCli) {
-                                echo "Sample ID {$rowData[$sampleCodeColumn]} exists for {$item['unique_id']}" . PHP_EOL;
-                            }
-                            $this->updateQueueItem($item['id'], 1);
-                            continue;
+                    // Already carries a code? Read from the batched lookup above.
+                    $rowData = $sampleRows[$item['test_type']][$item['unique_id']] ?? null;
+                    if (!empty($rowData) && !empty($rowData[$sampleCodeColumn])) {
+                        if ($isCli) {
+                            echo "Sample ID {$rowData[$sampleCodeColumn]} exists for {$item['unique_id']}" . PHP_EOL;
                         }
-                    } catch (Throwable $e) {
-                        throw new SystemException("Error checking sample code existence: " . $e->getMessage(), 0, $e);
+                        $completedQueueIds[] = $item['id'];
+                        continue;
                     }
 
                     // Get preset status for excluded statuses
@@ -415,6 +433,14 @@ final class TestRequestsService
                     while ($attempt < $maxTries && !$updated) {
                         $attempt++;
 
+                        // One transaction spans claiming the number and writing it onto
+                        // the sample, so the counter only advances when the sample
+                        // actually ends up carrying the code. Claiming and committing
+                        // separately meant a failure after the claim spent a number
+                        // nobody could see -- a hole in the series, which is exactly what
+                        // a lab notices and asks about.
+                        $this->db->beginTransaction();
+
                         // Generate sample code
                         try {
                             $sampleCodeParams = [
@@ -426,6 +452,9 @@ final class TestRequestsService
                                 'labId' => isset($item['lab_id']) ? (int) $item['lab_id'] : null,
                                 'accessType' => $item['access_type'] ?? null,
                                 'insertOperation' => true,
+                                // This loop owns the transaction; the generator must not
+                                // commit the claim on its own.
+                                'manageTransaction' => false,
                             ];
 
                             $sampleJson = $testTypeService->getSampleCode($sampleCodeParams);
@@ -435,6 +464,15 @@ final class TestRequestsService
                                 throw new SystemException("Sample code generation returned empty result");
                             }
                         } catch (Throwable $e) {
+                            // Rolling back returns the claimed number to the series.
+                            $this->db->rollbackTransaction();
+
+                            if ($attempt < $maxTries) {
+                                LoggerUtility::logInfo("Retrying sample code generation for {$item['unique_id']} (attempt {$attempt}/{$maxTries}): " . $e->getMessage());
+                                usleep($attempt * 100000);
+                                continue;
+                            }
+
                             throw new SystemException("Sample code generation failed: " . $e->getMessage(), 0, $e);
                         }
 
@@ -498,6 +536,7 @@ final class TestRequestsService
                                 ];
                             }
                         } catch (Throwable $e) {
+                            $this->db->rollbackTransaction();
                             throw new SystemException("Error building test request data: " . $e->getMessage(), 0, $e);
                         }
 
@@ -512,11 +551,19 @@ final class TestRequestsService
                             $lastDbError = $this->db->getLastError();
 
                             if ($success && $this->db->count > 0) {
+                                // The sample now carries the code, so the claim behind it
+                                // is earned and both are committed together.
+                                $this->db->commitTransaction();
                                 $response[$item['unique_id']] = $tesRequestData;
-                                $this->updateQueueItem($item['id'], 1);
+                                $completedQueueIds[] = $item['id'];
                                 $updated = true;
                                 break;
                             }
+
+                            // Nothing was written, so give the number back before looking
+                            // at why -- the checks below do not need the transaction and
+                            // holding it only keeps the counter locked.
+                            $this->db->rollbackTransaction();
 
                             // Check if another process updated the record
                             $checkQuery = "SELECT {$sampleCodeColumn} FROM {$formTable} WHERE unique_id = ?";
@@ -524,7 +571,7 @@ final class TestRequestsService
 
                             if (!empty($checkData) && !empty($checkData[$sampleCodeColumn])) {
                                 LoggerUtility::logInfo("Sample ID for {$item['unique_id']} was set by another process: {$checkData[$sampleCodeColumn]}");
-                                $this->updateQueueItem($item['id'], 1);
+                                $completedQueueIds[] = $item['id'];
                                 $updated = true;
                                 break;
                             }
@@ -546,6 +593,10 @@ final class TestRequestsService
                             $errorMessage = $lastDbError ?: 'Unknown database error during sample code update';
                             throw new SystemException("Database update failed: {$errorMessage}");
                         } catch (Throwable $e) {
+                            // Safe to call unconditionally: rollbackTransaction() is a
+                            // no-op once the transaction has already been resolved.
+                            $this->db->rollbackTransaction();
+
                             if ($attempt >= $maxTries) {
                                 throw new SystemException($e->getMessage(), 0, $e);
                             }
@@ -564,6 +615,11 @@ final class TestRequestsService
                         throw new SystemException("Failed to set sample code for {$item['unique_id']} after {$maxTries} attempts");
                     }
                 } catch (Throwable $e) {
+                    // Backstop. Every path above resolves its own transaction, but one
+                    // left open here would be inherited by the next item and by the
+                    // batched queue update in the finally. A no-op when there is none.
+                    $this->db->rollbackTransaction();
+
                     // Handle individual item errors
                     try {
                         $newStatus = ($item['processed'] ?? 0) >= $maxTries ? 3 : 2;
@@ -603,6 +659,26 @@ final class TestRequestsService
 
             return $response;
         } finally {
+            // In the finally so an escaping throw still records the items that completed
+            // before it. Chunked because this list is as long as the batch.
+            try {
+                foreach (array_chunk($completedQueueIds ?? [], 500) as $chunk) {
+                    $this->db->reset();
+                    $this->db->where('id', $chunk, 'IN');
+                    $this->db->update('queue_sample_code_generation', [
+                        'processed' => 1,
+                        'updated_datetime' => DateUtility::getCurrentDateTime(),
+                    ]);
+                }
+            } catch (Throwable $e) {
+                // An unmarked item is re-read next run and short-circuits on the
+                // already-has-a-code branch, so this is a cost rather than a loss.
+                LoggerUtility::logError("Error marking sample code queue items complete: " . $e->getMessage(), [
+                    'exception' => $e,
+                    'itemCount' => count($completedQueueIds ?? []),
+                ]);
+            }
+
             // Cleanup lock file
             try {
                 if (!$parallelProcess && $lockFile) {
@@ -617,6 +693,89 @@ final class TestRequestsService
                 ]);
             }
         }
+    }
+
+    /**
+     * Test-type configuration for a batch, resolved once per distinct type rather than
+     * once per item.
+     *
+     * @param list<array<string, mixed>> $queueItems
+     * @return array<string, array{formTable: string, service: object}>
+     */
+    private function resolveTestConfig(array $queueItems): array
+    {
+        $config = [];
+        foreach ($queueItems as $item) {
+            $testType = (string) ($item['test_type'] ?? '');
+            if ($testType === '' || isset($config[$testType])) {
+                continue;
+            }
+            try {
+                $config[$testType] = [
+                    'formTable' => TestsService::getTestTableName($testType),
+                    'service' => ContainerRegistry::get(TestsService::getTestServiceClass($testType)),
+                ];
+            } catch (Throwable $e) {
+                // Left out of the map; the loop fails just the items of this type rather
+                // than the batch.
+                LoggerUtility::logError("Invalid test type configuration for '{$testType}': " . $e->getMessage(), [
+                    'exception' => $e,
+                ]);
+            }
+        }
+        return $config;
+    }
+
+    /**
+     * The stored row for every sample in the batch, keyed by test type then unique_id.
+     * This was one query per item; it is now one per distinct form table.
+     *
+     * @param list<array<string, mixed>>                          $queueItems
+     * @param array<string, array{formTable: string, service: object}> $testConfig
+     * @return array<string, array<string, array<string, mixed>>>
+     */
+    private function mapQueuedSamples(array $queueItems, array $testConfig): array
+    {
+        $idsByTestType = [];
+        foreach ($queueItems as $item) {
+            $testType = (string) ($item['test_type'] ?? '');
+            $uniqueId = $item['unique_id'] ?? null;
+            if ($testType === '' || empty($uniqueId) || !isset($testConfig[$testType])) {
+                continue;
+            }
+            $idsByTestType[$testType][$uniqueId] = $uniqueId;
+        }
+
+        $rows = [];
+        foreach ($idsByTestType as $testType => $uniqueIdSet) {
+            $formTable = $testConfig[$testType]['formTable'];
+            if (preg_match('/^[A-Za-z0-9_]+$/', $formTable) !== 1) {
+                continue;
+            }
+
+            foreach (array_chunk(array_values($uniqueIdSet), 500) as $chunk) {
+                try {
+                    $placeholders = implode(',', array_fill(0, count($chunk), '?'));
+                    $found = $this->db->rawQuery(
+                        "SELECT `unique_id`, `result_status`, `sample_code`, `remote_sample_code`
+                           FROM `{$formTable}` WHERE `unique_id` IN ({$placeholders})",
+                        $chunk
+                    ) ?: [];
+
+                    foreach ($found as $row) {
+                        $rows[$testType][$row['unique_id']] = $row;
+                    }
+                } catch (Throwable $e) {
+                    // A miss here reads as "no code yet", which is the safe reading: the
+                    // update that follows is guarded on the code column still being empty.
+                    LoggerUtility::logError("Error reading queued samples from {$formTable}: " . $e->getMessage(), [
+                        'exception' => $e,
+                    ]);
+                }
+            }
+        }
+
+        return $rows;
     }
 
     private function updateQueueItem($id, int $processed, $error = null)

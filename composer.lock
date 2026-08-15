@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6b07c27a0ee1237b737b4dcf09481301",
+    "content-hash": "3e1cdb69e406b25eed915a7232de1301",
     "packages": [
         {
             "name": "amitdugar/archiveutil",

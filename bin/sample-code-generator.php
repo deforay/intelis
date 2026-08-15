@@ -25,6 +25,5 @@ $general = ContainerRegistry::get(CommonService::class);
 $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
 $maxTries = 5; // Maximum number of tries to generate sample code
-$interval = 5; // Interval in seconds to wait between checks
 
-$testRequestsService->processSampleCodeQueue(parallelProcess: $parallelProcess, maxTries: $maxTries, interval: $interval);
+$testRequestsService->processSampleCodeQueue(parallelProcess: $parallelProcess, maxTries: $maxTries);

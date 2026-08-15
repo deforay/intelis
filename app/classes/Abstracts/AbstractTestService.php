@@ -75,43 +75,38 @@ abstract class AbstractTestService
             return ($yearData['max_sequence_number'] ?? 0) + 1;
         }
 
-        // For insert operations, use a direct approach without creating new transactions
-        // First, check if we need to initialize the counter
-        $checkSql = "SELECT max_sequence_number FROM sequence_counter
-                WHERE year = ? AND test_type = ? AND code_type = ? FOR UPDATE";
+        // Claim exactly one number, atomically.
+        //
+        // LAST_INSERT_ID(expr) makes the incremented value readable from the connection
+        // afterwards, so a single statement does what a SELECT ... FOR UPDATE, a separate
+        // UPDATE and the transaction around them used to. The row lock is taken and
+        // released inside that one statement rather than held across three round trips,
+        // and the number is still claimed one at a time, so the sequence stays
+        // contiguous. Allocating a whole batch's range in one go would be far faster
+        // still, but it burns the unused numbers when a batch part-fails, and gaps in a
+        // sample-code series are not acceptable to the people reading them.
+        $claimSql = "UPDATE sequence_counter
+                        SET max_sequence_number = LAST_INSERT_ID(max_sequence_number + 1)
+                      WHERE year = ? AND test_type = ? AND code_type = ?";
 
-        $current = $this->db->rawQueryOne($checkSql, [
-            $year,
-            $testType,
-            $sampleCodeType
-        ]);
+        $this->db->rawQuery($claimSql, [$year, $testType, $sampleCodeType]);
+        $claimed = (int) $this->db->getInsertId();
 
-        if (empty($current)) {
-            // Counter doesn't exist, initialize it
-            $this->resetSequenceCounter($this->table, $year, $testType, $sampleCodeType);
-            $current = $this->db->rawQueryOne($checkSql, [
-                $year,
-                $testType,
-                $sampleCodeType
-            ]);
+        if ($claimed > 0) {
+            return $claimed;
         }
 
-        // Increment the counter
-        $nextValue = ($current['max_sequence_number'] ?? 0) + 1;
+        // Nothing was claimed, so the counter row does not exist yet -- the first sample
+        // of a year. Seed it and claim again.
+        $this->resetSequenceCounter($this->table, $year, $testType, $sampleCodeType);
+        $this->db->rawQuery($claimSql, [$year, $testType, $sampleCodeType]);
+        $claimed = (int) $this->db->getInsertId();
 
-        // Update the counter
-        $updateSql = "UPDATE sequence_counter
-                        SET max_sequence_number = ?
-                            WHERE year = ? AND test_type = ? AND code_type = ?";
+        if ($claimed <= 0) {
+            throw new SystemException("Unable to claim a sequence number for {$testType}/{$sampleCodeType} in {$year}");
+        }
 
-        $this->db->rawQuery($updateSql, [
-            $nextValue,
-            $year,
-            $testType,
-            $sampleCodeType
-        ]);
-
-        return $nextValue;
+        return $claimed;
     }
 
     /**
@@ -199,17 +194,39 @@ abstract class AbstractTestService
         return $this->stsLabPostfix($params);
     }
 
-    // $testTable is the table where the sample code is to be generated - form_vl, form_eid etc.
+    /**
+     * $testTable is the table where the sample code is to be generated - form_vl, form_eid etc.
+     *
+     * By default this owns the transaction around the claim: it commits as soon as a
+     * number is taken, which means the number is spent whether or not the caller then
+     * manages to write it onto a sample. A write that fails afterwards leaves a hole in
+     * the series, and a hole is what a lab notices.
+     *
+     * A caller that is going to persist the code should therefore pass
+     * `$params['manageTransaction'] = false`, open its own transaction, and commit only
+     * once the sample carries the code -- then a failure rolls the claim back with it and
+     * the number is returned to the series. Note that the transaction handling here is a
+     * flag rather than a depth counter, so a nested commit would end the caller's
+     * transaction: when the caller owns it, this method must not touch it at all.
+     *
+     * The cost of that is a longer hold on the counter row -- it now spans the caller's
+     * write rather than just the claim -- so concurrent generation serialises more. That
+     * is the price of a contiguous series, and it is the one worth paying.
+     */
     public function generateSampleCode($testTable, $params, $tryCount = 0)
     {
         $sampleCodeGenerator = [];
         $insertOperation = $params['insertOperation'] ?? true;
+        $manageTransaction = $params['manageTransaction'] ?? true;
+        $ownsTransaction = $insertOperation && $manageTransaction;
+        // Distinct from !$ownsTransaction, which is also true for the display path -- and
+        // the display path holds no transaction at all, so it keeps the retry behaviour.
+        $callerOwnsTransaction = $insertOperation && !$manageTransaction;
         $this->testType = $params['testType'] ?? $this->testType ?? 'generic-tests';
         $formId = (int) $this->commonService->getGlobalConfig('vl_form');
 
         for ($attempt = 0; $attempt < $this->maxTries; $attempt++) {
-            // For insert operations, we need a transaction
-            if ($insertOperation) {
+            if ($ownsTransaction) {
                 $this->db->beginTransaction();
             }
 
@@ -309,6 +326,14 @@ abstract class AbstractTestService
                         // Log the duplicate
                         LoggerUtility::logInfo("DUPLICATE ::: Sample ID/Sample Key Code in $testTable ::: " . $sampleCodeGenerator['sampleCode'] . " / " . $maxId);
 
+                        if ($callerOwnsTransaction) {
+                            // The claim belongs to the caller's transaction, so it cannot
+                            // be undone from here without ending that transaction. Hand
+                            // the collision back and let the caller roll back and retry,
+                            // which returns this number to the series.
+                            throw new SystemException("Duplicate sample code generated for $testTable : " . $sampleCodeGenerator['sampleCode']);
+                        }
+
                         // Rollback the transaction for this attempt
                         $this->db->rollbackTransaction();
 
@@ -316,17 +341,32 @@ abstract class AbstractTestService
                         continue;
                     }
 
-                    // Successfully generated a non-duplicate code
-                    $this->db->commitTransaction();
+                    // A number has been claimed and is not a duplicate. When this method
+                    // owns the transaction the claim is committed here; when the caller
+                    // owns it, it stays uncommitted until the sample carries the code.
+                    if ($ownsTransaction) {
+                        $this->db->commitTransaction();
+                    }
                     return json_encode($sampleCodeGenerator);
                 } else {
                     // For display only, no need to check for duplicates
                     return json_encode($sampleCodeGenerator);
                 }
             } catch (Throwable $exception) {
-                // Rollback the transaction on error
-                if ($insertOperation) {
+                // Only unwind what this method started. Rolling back a transaction the
+                // caller opened would discard work this method knows nothing about.
+                if ($ownsTransaction) {
                     $this->db->rollbackTransaction();
+                }
+
+                if ($callerOwnsTransaction) {
+                    // The caller owns the transaction and therefore owns the recovery:
+                    // retrying in here would claim another number inside a transaction it
+                    // is about to roll back. The display path is unaffected -- it holds no
+                    // transaction and keeps the retry behaviour below.
+                    throw $exception instanceof SystemException
+                        ? $exception
+                        : new SystemException("Error while generating Sample ID for $testTable : " . $exception->getMessage(), $exception->getCode(), $exception);
                 }
 
                 // For specific database deadlock errors, add a delay and retry
@@ -359,12 +399,21 @@ abstract class AbstractTestService
                 '$testType' AS test_type,
                 ? AS year,
                 '$sampleCodeType' AS code_type,
+                /* Bounded by a date range rather than YEAR(sample_collection_date), which
+                   no index can answer: seeding a counter meant a full scan of the form
+                   table, and it is seeded on the first sample of a year, so every
+                   1 January, for every test type at once, on the largest table there is. */
                 COALESCE((SELECT MAX($codeKey) FROM $testTable
-                    WHERE YEAR(sample_collection_date) = ?), 0) AS max_sequence_number
+                    WHERE sample_collection_date >= ?
+                      AND sample_collection_date < ?), 0) AS max_sequence_number
                     ON DUPLICATE KEY UPDATE
                     max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number)";
 
-        $this->db->rawQuery($query, [$year, $year]);
+        $this->db->rawQuery($query, [
+            $year,
+            sprintf('%04d-01-01 00:00:00', (int) $year),
+            sprintf('%04d-01-01 00:00:00', (int) $year + 1),
+        ]);
     }
     public function isSampleCancelled($uniqueId): bool
     {
