@@ -66,6 +66,14 @@ final class TestRequestsService
         $response = [];
         $lockFile = null;
 
+        $uniqueIds = $uniqueIds === null ? [] : (is_array($uniqueIds) ? $uniqueIds : [$uniqueIds]);
+
+        // A caller that named the samples it wants is waiting on those codes, so the
+        // batch has to cover all of them. Capping it at the background default left a
+        // 1472-sample API payload with 100 codes and the rest answering null until the
+        // cron caught up. Unnamed (cron) runs keep the default so one pass stays bounded.
+        $batchSize = $uniqueIds === [] ? 100 : max(100, count(array_unique($uniqueIds)));
+
         try {
             $isCli = CommonService::isCliRequest();
 
@@ -96,17 +104,16 @@ final class TestRequestsService
                 try {
                     $this->db->reset();
 
-                    if (!empty($uniqueIds)) {
-                        $uniqueIds = is_array($uniqueIds) ? $uniqueIds : [$uniqueIds];
+                    if ($uniqueIds !== []) {
                         $this->db->where('unique_id', $uniqueIds, 'IN');
                     }
 
                     $this->db->where('processed', $status);
-                    if ($status === 3 && empty($uniqueIds)) {
+                    if ($status === 3 && $uniqueIds === []) {
                         continue;
                     }
 
-                    $queueItems = $this->db->get('queue_sample_code_generation', 100);
+                    $queueItems = $this->db->get('queue_sample_code_generation', $batchSize);
                     if (!empty($queueItems)) {
                         break;
                     }
