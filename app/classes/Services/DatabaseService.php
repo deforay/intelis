@@ -242,10 +242,17 @@ final class DatabaseService extends MysqliDb
      * table.
      *
      * When a prefix is configured the parent runs verbatim, so prefixed installs are
-     * unchanged. When it is empty the whitespace normalization is kept identical and
-     * only the prefix-injection regex is skipped. Dropping it is safe here because no
-     * table in the schema is a reserved word, so none depends on being auto-backticked;
-     * already-backticked references in a query are left exactly as written.
+     * unchanged. When it is empty the query is returned exactly as written. Dropping
+     * the regex is safe here because no table in the schema is a reserved word, so
+     * none depends on being auto-backticked; already-backticked references in a query
+     * are left exactly as written.
+     *
+     * The parent's newline stripping goes with it. It existed only to flatten the
+     * query for that single-line regex, and flattening turns a `--` comment into one
+     * that swallows every line after it: the VL fetch-results SELECT carried two such
+     * lines and reached MySQL truncated at the comment, failing every call with a
+     * syntax error. MySQL parses multi-line SQL fine, so there is nothing to gain by
+     * rewriting it.
      */
     #[Override]
     public function rawAddPrefix($query)
@@ -254,8 +261,7 @@ final class DatabaseService extends MysqliDb
             return parent::rawAddPrefix($query);
         }
 
-        $query = str_replace(PHP_EOL, '', (string) $query);
-        return preg_replace('/\s+/', ' ', $query);
+        return (string) $query;
     }
 
     /**
