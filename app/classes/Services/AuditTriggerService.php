@@ -257,10 +257,16 @@ final class AuditTriggerService
         // Columns to fingerprint rather than store raw (credentials/secrets).
         $sensitive = array_flip(self::SENSITIVE_COLUMNS[$formTable] ?? []);
 
+        // `lockingRead` picks a locking read for the revision lookup below. It is on
+        // wherever a revision for the record can already exist, and off for the insert
+        // trigger, where it would buy nothing: a fresh auto-increment primary key gives
+        // every concurrent insert its own record_id, so two of them can never compute
+        // the same revision. Leaving it off there also keeps concurrent inserts from
+        // contending on a gap lock none of them needs.
         $defs = [
-            ['suffix' => 'ai', 'timing' => 'AFTER INSERT',  'row' => 'NEW', 'action' => 'insert'],
-            ['suffix' => 'au', 'timing' => 'AFTER UPDATE',  'row' => 'NEW', 'action' => 'update'],
-            ['suffix' => 'bd', 'timing' => 'BEFORE DELETE', 'row' => 'OLD', 'action' => 'delete'],
+            ['suffix' => 'ai', 'timing' => 'AFTER INSERT',  'row' => 'NEW', 'action' => 'insert', 'lockingRead' => false],
+            ['suffix' => 'au', 'timing' => 'AFTER UPDATE',  'row' => 'NEW', 'action' => 'update', 'lockingRead' => true],
+            ['suffix' => 'bd', 'timing' => 'BEFORE DELETE', 'row' => 'OLD', 'action' => 'delete', 'lockingRead' => true],
         ];
 
         $statements = [];
@@ -268,6 +274,7 @@ final class AuditTriggerService
             $trigQ      = $this->qIdent($this->newTriggerName($formTable, $d['suffix']));
             $actionLit  = $this->qLit($d['action']);
             $rowAlias   = $d['row'];
+            $lockClause = $d['lockingRead'] ? "\n     FOR UPDATE" : '';
 
             // JSON_OBJECT('col_name', NEW.`col_name`, …)  — built from the live
             // form column list. Same column list for INSERT/UPDATE (NEW) and
@@ -288,6 +295,23 @@ final class AuditTriggerService
             // caller must dispatch this as a SINGLE statement (e.g. via
             // mysqli::query) rather than splitting on `;`. No DELIMITER tricks
             // are needed at the API layer — only the mysql CLI requires those.
+            //
+            // The revision lookup is a LOCKING read (see `lockingRead` above), and it
+            // has to be. A plain SELECT is a consistent read served from the
+            // transaction's snapshot, so a writer whose snapshot predates a competing
+            // commit computes a revision that is already taken, and `u_rec_rev` --
+            // UNIQUE on (form_table, record_id, revision) -- rejects the INSERT. That
+            // error surfaces from inside the trigger, which fails the UPDATE that fired
+            // it and rolls the caller back: the write is lost, reported as a database
+            // error unrelated to anything the caller did. It needs a reader before the
+            // writer to bite, which is exactly the shape of api/*/save-request.php --
+            // it looks the sample up, then updates it.
+            //
+            // FOR UPDATE reads the latest committed row instead of the snapshot, so the
+            // second writer sees the revision the first one took. The lock is on
+            // `audit_log`, never on the form table, and the index takes it straight to
+            // the record's last revision: four locks scoped to that one record, whether
+            // it has five revisions or four hundred.
             $statements[] = <<<SQL
 CREATE TRIGGER {$trigQ} {$d['timing']} ON {$form}
 FOR EACH ROW
@@ -296,7 +320,7 @@ BEGIN
   SELECT COALESCE(MAX(`revision`),0)+1 INTO next_rev
     FROM {$audit}
    WHERE `form_table` = {$formLit}
-     AND `record_id`  = {$rowAlias}.{$pkQ};
+     AND `record_id`  = {$rowAlias}.{$pkQ}{$lockClause};
   INSERT INTO {$audit}
     (`form_table`, `record_id`, `revision`, `action`, `dt_datetime`, `row_data`)
   VALUES (
