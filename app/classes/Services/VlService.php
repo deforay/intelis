@@ -283,6 +283,15 @@ final class VlService extends AbstractTestService
             return $regimen;
         }
 
+        // An API payload carries hundreds of samples drawn from a handful of regimens, and
+        // this used to cost a query per sample. Cached for the request only: the branch
+        // below registers unknown regimens, so a longer-lived cache would have to be
+        // invalidated on every reference-data edit to stay honest.
+        static $resolved = [];
+        if (array_key_exists($regimen, $resolved)) {
+            return $resolved[$regimen];
+        }
+
         try {
             // 1. Already a known regimen. Return the stored spelling rather than the
             // caller's, so that a difference the collation ignores (case, accents) does
@@ -301,7 +310,7 @@ final class VlService extends AbstractTestService
                 [$regimen]
             );
             if (!empty($row['art_code'])) {
-                return $row['art_code'];
+                return $resolved[$regimen] = $row['art_code'];
             }
 
             // 2. Unrecognised. Register it so the form has something to select. This runs
@@ -328,7 +337,10 @@ final class VlService extends AbstractTestService
             ]);
         }
 
-        return $regimen;
+        // Covers both outcomes: the regimen was just registered, or resolving it failed
+        // and the caller's string stands. Caching the failure too keeps a payload of
+        // hundreds from retrying a broken query once per sample.
+        return $resolved[$regimen] = $regimen;
     }
 
     public function getVLResultCategory($resultStatus, $finalResult): ?string

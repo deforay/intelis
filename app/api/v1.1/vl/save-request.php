@@ -129,6 +129,14 @@ try {
         });
     }
 
+    // Resolve every sample in the payload up front. This used to be one query per
+    // record inside the loop, which a lab pushing 1472 samples paid 1472 times.
+    $existingSamples = $testRequestsService->mapSamplesByAppSampleCode(
+        'form_vl',
+        ['vl_sample_id', 'unique_id', 'sample_code', 'remote_sample_code', 'result_status', 'locked'],
+        $dataItems
+    );
+
     $dataCounter = 0;
     foreach ($dataItems as $rootKey => $data) {
         $dataCounter++;
@@ -213,11 +221,7 @@ try {
         $rowData = null;
         $uniqueId = null;
         if (!empty($data['labId']) && !empty($data['appSampleCode'])) {
-            $sQuery = "SELECT vl_sample_id, unique_id, sample_code, remote_sample_code, result_status, locked
-                        FROM form_vl
-                        WHERE (app_sample_code like ? AND lab_id = ?) ";
-
-            $rowData = $db->rawQueryOne($sQuery, [$data['appSampleCode'], $data['labId']]);
+            $rowData = $existingSamples[$data['labId'] . '|' . $data['appSampleCode']] ?? null;
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
                     $noOfFailedRecords++;
@@ -281,6 +285,23 @@ try {
                     'error' => _translate("Failed to insert sample")
                 ];
                 continue;
+            }
+
+            // A payload may carry the same sample twice. The per-record lookup this
+            // replaced would have found the row the first pass inserted; a map built
+            // before the loop cannot, and the second pass would insert a duplicate.
+            // Recording the insert keeps the second pass an update, as it was.
+            if (!empty($data['labId']) && !empty($data['appSampleCode'])) {
+                $existingSamples[$data['labId'] . '|' . $data['appSampleCode']] = [
+                    'vl_sample_id'       => $data['vlSampleId'],
+                    'unique_id'          => $uniqueId,
+                    'sample_code'        => null,
+                    'remote_sample_code' => null,
+                    'result_status'      => null,
+                    'locked'             => 'no',
+                    'lab_id'             => $data['labId'],
+                    'app_sample_code'    => $data['appSampleCode'],
+                ];
             }
         }
 

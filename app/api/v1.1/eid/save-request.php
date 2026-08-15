@@ -140,6 +140,18 @@ try {
     }
 
     $responseData = [];
+    // Resolve every sample in the payload up front. This used to be one query per
+    // record inside the loop, built by concatenating appSampleCode into the SQL.
+    $existingSamples = $testRequestsService->mapSamplesByAppSampleCode(
+        'form_eid',
+        [
+            'eid_id', 'unique_id', 'sample_code', 'sample_code_format', 'sample_code_key',
+            'remote_sample_code', 'remote_sample_code_format', 'remote_sample_code_key',
+            'result_status', 'locked',
+        ],
+        $dataItems
+    );
+
     $dataCounter = 0;
     foreach ($dataItems as $rootKey => $data) {
         $dataCounter++;
@@ -228,28 +240,7 @@ try {
         $uniqueId = null;
         if (!empty($data['labId']) && !empty($data['appSampleCode'])) {
 
-            $sQuery = "SELECT eid_id,
-                            unique_id,
-                            sample_code,
-                            sample_code_format,
-                            sample_code_key,
-                            remote_sample_code,
-                            remote_sample_code_format,
-                            remote_sample_code_key,
-                            result_status,
-                            locked
-                            FROM form_eid ";
-
-            $sQueryWhere = [];
-
-            if (!empty($data['appSampleCode']) && !empty($data['labId'])) {
-                $sQueryWhere[] = " (app_sample_code like '" . $data['appSampleCode'] . "' AND lab_id = '" . $data['labId'] . "') ";
-            }
-
-            if ($sQueryWhere !== []) {
-                $sQuery .= " WHERE " . implode(" OR ", $sQueryWhere);
-            }
-            $rowData = $db->rawQueryOne($sQuery);
+            $rowData = $existingSamples[$data['labId'] . '|' . $data['appSampleCode']] ?? null;
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
                     $noOfFailedRecords++;
@@ -311,6 +302,22 @@ try {
                     'error' => _translate("Failed to insert sample")
                 ];
                 continue;
+            }
+
+            // A payload may carry the same sample twice. The per-record lookup this
+            // replaced would have found the row the first pass inserted; a map built
+            // before the loop cannot, and the second pass would insert a duplicate.
+            if (!empty($data['labId']) && !empty($data['appSampleCode'])) {
+                $existingSamples[$data['labId'] . '|' . $data['appSampleCode']] = [
+                    'eid_id'             => $data['eidSampleId'],
+                    'unique_id'          => $uniqueId,
+                    'sample_code'        => null,
+                    'remote_sample_code' => null,
+                    'result_status'      => null,
+                    'locked'             => 'no',
+                    'lab_id'             => $data['labId'],
+                    'app_sample_code'    => $data['appSampleCode'],
+                ];
             }
         }
 

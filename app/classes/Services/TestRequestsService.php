@@ -59,6 +59,84 @@ final class TestRequestsService
     }
 
     /**
+     * Resolve every sample in an API payload in one keyed lookup, returning a map of
+     * "<labId>|<appSampleCode>" to the stored row.
+     *
+     * api/*\/save-request.php used to ask this question once per record, so a lab
+     * pushing 1472 samples paid 1472 round trips to answer it. Each form table carries
+     * a UNIQUE index on (lab_id, app_sample_code), and MySQL rewrites the row-constructor
+     * IN below into a range scan over it: one round trip, one index row examined per
+     * sample, whatever the size of the table behind it.
+     *
+     * The pairs are bound, not interpolated. Four of the five endpoints used to build
+     * this predicate by concatenating appSampleCode -- a value that arrives verbatim in
+     * the request body -- straight into the SQL.
+     *
+     * Rows are keyed on the pair the caller asked for rather than on appSampleCode
+     * alone, because the same code may legitimately exist under a different lab.
+     *
+     * @param list<string>    $selectColumns Columns to read. `lab_id` and `app_sample_code`
+     *                                       are always included so the result can be keyed.
+     * @param iterable<array> $items         Decoded payload records.
+     * @return array<string, array<string, mixed>>
+     */
+    public function mapSamplesByAppSampleCode(string $formTable, array $selectColumns, iterable $items): array
+    {
+        $pairs = [];
+        foreach ($items as $item) {
+            $labId = $item['labId'] ?? null;
+            $appSampleCode = $item['appSampleCode'] ?? null;
+            // Same guard the per-record lookup applied, so a payload that skipped the
+            // lookup before still skips it now.
+            if (empty($labId) || empty($appSampleCode)) {
+                continue;
+            }
+            // Keyed, so a payload repeating a sample asks for it once.
+            $pairs[$labId . '|' . $appSampleCode] = [$labId, $appSampleCode];
+        }
+
+        if ($pairs === []) {
+            return [];
+        }
+
+        // Identifiers are ours (a form table and its columns), never request data, but
+        // they are still quoted rather than trusted -- this method is a step removed
+        // from its callers and a future one may be less careful about what it passes.
+        $columns = array_unique([...$selectColumns, 'lab_id', 'app_sample_code']);
+        foreach ([$formTable, ...$columns] as $identifier) {
+            if (preg_match('/^[A-Za-z0-9_]+$/', (string) $identifier) !== 1) {
+                throw new SystemException("Refusing to build a lookup for identifier '{$identifier}'");
+            }
+        }
+        $columnList = '`' . implode('`, `', $columns) . '`';
+
+        $map = [];
+        // Chunked so a very large payload cannot approach the placeholder limit, and so
+        // no single statement grows past what is comfortable to log or retry.
+        foreach (array_chunk(array_values($pairs), 500) as $chunk) {
+            $params = [];
+            foreach ($chunk as [$labId, $appSampleCode]) {
+                $params[] = $labId;
+                $params[] = $appSampleCode;
+            }
+
+            $placeholders = implode(',', array_fill(0, count($chunk), '(?,?)'));
+            $rows = $this->db->rawQuery(
+                "SELECT {$columnList} FROM `{$formTable}` WHERE (`lab_id`, `app_sample_code`) IN ({$placeholders})",
+                $params
+            ) ?: [];
+
+            foreach ($rows as $row) {
+                // First row wins, matching the rawQueryOne this replaces. The unique
+                // index means there should never be a second.
+                $map[$row['lab_id'] . '|' . $row['app_sample_code']] ??= $row;
+            }
+        }
+
+        return $map;
+    }
+
+    /**
      * @return mixed[]
      */
     public function processSampleCodeQueue($uniqueIds = [], $parallelProcess = false, $maxTries = 5, $interval = 5): array
