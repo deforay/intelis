@@ -131,11 +131,36 @@ try {
 
     // Resolve every sample in the payload up front. This used to be one query per
     // record inside the loop, which a lab pushing 1472 samples paid 1472 times.
-    $existingSamples = $testRequestsService->mapSamplesByAppSampleCode(
-        'form_vl',
-        ['vl_sample_id', 'unique_id', 'sample_code', 'remote_sample_code', 'result_status', 'locked'],
-        $dataItems
-    );
+    // Whole rows, so that an unchanged record can be recognised without reading it again.
+    $existingSamples = $testRequestsService->mapSamplesByAppSampleCode('form_vl', [], $dataItems);
+
+    // Off unless switched on: 'shadow' measures how many records are unchanged without
+    // acting on it, 'yes' skips their writes. Read as an allow-list rather than as
+    // "anything that is not 'no'", so that a key left empty, misspelt or holding some
+    // future value falls back to the behaviour this endpoint already had.
+    $skipUnchangedMode = (string) ($general->getGlobalConfig('api_skip_unchanged_updates') ?? '');
+    if (!in_array($skipUnchangedMode, ['shadow', 'yes'], true)) {
+        $skipUnchangedMode = 'no';
+    }
+    $unchangedRecords = 0;
+    $changedColumnTally = [];
+
+    // Columns the API rewrites on every save with something that is not the record's
+    // data, so a difference in one of them is not a reason to write:
+    //  - the modification stamps, which are this request rather than the sample;
+    //  - form_attributes, a db->func() expression that cannot be compared;
+    //  - request_created_datetime, which defaults to today when the payload omits
+    //    createdOn, and so differs from the stored creation date on every re-post;
+    //  - result_sent_to_source, pinned to 'pending' on every save, which would
+    //    otherwise mark every already-delivered sample as changed.
+    $ignoreWhenComparing = [
+        'last_modified_datetime',
+        'last_modified_by',
+        'request_created_datetime',
+        'request_created_by',
+        'form_attributes',
+        'result_sent_to_source',
+    ];
 
     $dataCounter = 0;
     foreach ($dataItems as $rootKey => $data) {
@@ -494,6 +519,50 @@ try {
             $vlFulldata['result_status'] = REJECTED;
         }
 
+        // ========================================
+        // UNCHANGED RECORDS
+        // ========================================
+        // A client that re-posts its whole dataset every sync sends mostly records that
+        // are already stored exactly as posted. Recognising them here, before the
+        // duplicate check, skips that query, the result archive, the full-row UPDATE and
+        // the audit row it fires -- the entire remaining cost of the record.
+        //
+        // Deliberately before the duplicate check: asking whether a sample already in the
+        // table under this appSampleCode is a duplicate registration is a question this
+        // record has already answered.
+        if ($skipUnchangedMode !== 'no' && !empty($rowData)) {
+            $changedColumns = $testRequestsService->changedColumnsAgainstStored(
+                $vlFulldata,
+                $rowData,
+                'form_vl',
+                $ignoreWhenComparing
+            );
+
+            if ($changedColumns === []) {
+                $unchangedRecords++;
+
+                if ($skipUnchangedMode === 'yes') {
+                    // The same answer the write path would have produced. The sample code
+                    // was already resolved above, including the re-queue when the code has
+                    // not been minted yet, so the client sees no difference.
+                    $responseData[$rootKey] = [
+                        'status' => 'success',
+                        'action' => $currentSampleData['action'] ?? null,
+                        'sampleCode' => ($currentSampleData['remoteSampleCode'] ?? null) ?: ($currentSampleData['sampleCode'] ?? null),
+                        'transactionId' => $transactionId,
+                        'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
+                        'appSampleCode' => $data['appSampleCode'] ?? null,
+                    ];
+                    continue;
+                }
+            } else {
+                // Shadow mode earns its keep here: which columns keep records out of the
+                // unchanged set is what says whether the ignore list above is right.
+                foreach ($changedColumns as $changedColumn) {
+                    $changedColumnTally[$changedColumn] = ($changedColumnTally[$changedColumn] ?? 0) + 1;
+                }
+            }
+        }
 
         // ========================================
         // DUPLICATE DETECTION
@@ -631,6 +700,27 @@ try {
             'failedRecords' => $noOfFailedRecords,
         ]
     ];
+
+    // Additive, and only once the feature is switched on, so a client parsing this
+    // response strictly sees exactly the summary it saw before.
+    if ($skipUnchangedMode !== 'no') {
+        $payload['summary']['unchangedRecords'] = $unchangedRecords;
+    }
+
+    // In shadow mode nothing was skipped, so the counts only reach the operator if they
+    // are written down. The column tally is the actionable half: it names what keeps
+    // records out of the unchanged set, which is what decides whether the ignore list
+    // is right before any write is skipped on the strength of it.
+    if ($skipUnchangedMode === 'shadow') {
+        arsort($changedColumnTally);
+        LoggerUtility::logInfo('save-request unchanged-record shadow pass', [
+            'transactionId' => $transactionId,
+            'testType' => 'vl',
+            'totalRecords' => $dataCounter,
+            'unchangedRecords' => $unchangedRecords,
+            'topChangedColumns' => array_slice($changedColumnTally, 0, 15, true),
+        ]);
+    }
 
     // Add detailed duplicate information only if duplicates were detected
     if ($enableDuplicateDetection && $duplicateInfo !== []) {

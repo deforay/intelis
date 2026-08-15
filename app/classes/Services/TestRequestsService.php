@@ -17,6 +17,7 @@ use SAMPLE_STATUS;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
+use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -75,8 +76,11 @@ final class TestRequestsService
      * Rows are keyed on the pair the caller asked for rather than on appSampleCode
      * alone, because the same code may legitimately exist under a different lab.
      *
-     * @param list<string>    $selectColumns Columns to read. `lab_id` and `app_sample_code`
-     *                                       are always included so the result can be keyed.
+     * @param list<string>    $selectColumns Columns to read, or [] for the whole row --
+     *                                       which a caller comparing the payload against
+     *                                       what is stored needs. `lab_id` and
+     *                                       `app_sample_code` are always included so the
+     *                                       result can be keyed.
      * @param iterable<array> $items         Decoded payload records.
      * @return array<string, array<string, mixed>>
      */
@@ -102,13 +106,15 @@ final class TestRequestsService
         // Identifiers are ours (a form table and its columns), never request data, but
         // they are still quoted rather than trusted -- this method is a step removed
         // from its callers and a future one may be less careful about what it passes.
-        $columns = array_unique([...$selectColumns, 'lab_id', 'app_sample_code']);
+        $columns = $selectColumns === []
+            ? []
+            : array_unique([...$selectColumns, 'lab_id', 'app_sample_code']);
         foreach ([$formTable, ...$columns] as $identifier) {
             if (preg_match('/^[A-Za-z0-9_]+$/', (string) $identifier) !== 1) {
                 throw new SystemException("Refusing to build a lookup for identifier '{$identifier}'");
             }
         }
-        $columnList = '`' . implode('`, `', $columns) . '`';
+        $columnList = $columns === [] ? '*' : '`' . implode('`, `', $columns) . '`';
 
         $map = [];
         // Chunked so a very large payload cannot approach the placeholder limit, and so
@@ -134,6 +140,120 @@ final class TestRequestsService
         }
 
         return $map;
+    }
+
+    /**
+     * Which columns of an incoming API record actually differ from what is stored.
+     *
+     * An API client that re-posts its whole dataset every sync sends mostly records that
+     * have not changed since last time, and rewriting those costs a duplicate check, a
+     * result archive, a full-row UPDATE and an audit row apiece. An empty return here
+     * means all of that can be skipped.
+     *
+     * The comparison is deliberately NOT `===`. MySQL hands back every column as a
+     * string while the caller's array holds ints, floats and nulls, so an identity
+     * comparison reports `4 !== "4"` and finds every record changed -- which looks like
+     * a working optimisation that silently never fires. Columns are compared as the
+     * schema types them: numeric ones by value, so `1.5` matches a stored `1.50`, and
+     * everything else as exact strings, so a real edit is never mistaken for a match.
+     *
+     * Untrimmed on purpose. Treating "abc " as "abc" would be a false match, and a false
+     * match means skipping a write that was needed -- the one failure this must not have.
+     * null and '' are the exception: they are treated as equal, because the caller
+     * normalises '' to null on the way to the database anyway.
+     *
+     * @param array<string, mixed> $incoming       The row about to be written.
+     * @param array<string, mixed> $stored         The row currently held.
+     * @param list<string>         $ignoreColumns  Columns the API rewrites unconditionally
+     *                                             with values that are not the record's
+     *                                             data (timestamps, audit stamps).
+     * @return list<string> Differing column names; empty when the record is unchanged.
+     */
+    public function changedColumnsAgainstStored(array $incoming, array $stored, string $formTable, array $ignoreColumns = []): array
+    {
+        if ($stored === []) {
+            return array_keys($incoming);
+        }
+
+        $numeric = $this->numericColumns($formTable);
+        $ignored = array_flip($ignoreColumns);
+        $changed = [];
+
+        foreach ($incoming as $column => $newValue) {
+            if (isset($ignored[$column]) || !array_key_exists($column, $stored)) {
+                continue;
+            }
+
+            // Values wrapped for the driver (db->func(...)) carry an expression, not a
+            // comparable value. A caller that writes one must ignore that column.
+            if (is_object($newValue) || is_array($newValue)) {
+                continue;
+            }
+
+            $oldValue = $stored[$column];
+
+            $newIsBlank = $newValue === null || $newValue === '';
+            $oldIsBlank = $oldValue === null || $oldValue === '';
+            if ($newIsBlank || $oldIsBlank) {
+                if ($newIsBlank !== $oldIsBlank) {
+                    $changed[] = $column;
+                }
+                continue;
+            }
+
+            if (isset($numeric[$column]) && is_numeric($newValue) && is_numeric($oldValue)) {
+                if ((float) $newValue !== (float) $oldValue) {
+                    $changed[] = $column;
+                }
+                continue;
+            }
+
+            if ((string) $newValue !== (string) $oldValue) {
+                $changed[] = $column;
+            }
+        }
+
+        return $changed;
+    }
+
+    /**
+     * Columns the schema types as numeric, so the comparison above can match `1.5`
+     * against a stored `1.50` without loosening it for text columns, where "1.0" and
+     * "1.00" are genuinely different values.
+     *
+     * @return array<string, true>
+     */
+    private function numericColumns(string $formTable): array
+    {
+        if (preg_match('/^[A-Za-z0-9_]+$/', $formTable) !== 1) {
+            throw new SystemException("Refusing to inspect identifier '{$formTable}'");
+        }
+
+        return MemoUtility::memo(
+            'numeric-columns-' . $formTable,
+            function () use ($formTable): array {
+                $rows = $this->db->rawQuery(
+                    "SELECT COLUMN_NAME, DATA_TYPE
+                       FROM information_schema.COLUMNS
+                      WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?",
+                    [$formTable]
+                ) ?: [];
+
+                $numericTypes = array_flip([
+                    'tinyint', 'smallint', 'mediumint', 'int', 'bigint',
+                    'decimal', 'float', 'double', 'bit',
+                ]);
+
+                $numeric = [];
+                foreach ($rows as $row) {
+                    if (isset($numericTypes[strtolower((string) $row['DATA_TYPE'])])) {
+                        $numeric[$row['COLUMN_NAME']] = true;
+                    }
+                }
+                return $numeric;
+            },
+            crossRequest: false
+        );
     }
 
     /**
