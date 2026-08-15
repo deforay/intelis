@@ -245,6 +245,15 @@ try {
             $currentSampleData['remoteSampleCode'] = $rowData['remote_sample_code'] ?? null;
             $currentSampleData['uniqueId'] = $rowData['unique_id'] ?? null;
             $currentSampleData['action'] = 'updated';
+
+            // An earlier payload can leave a sample whose code has not been minted yet
+            // -- the queue drains in batches -- and an update reads its code straight
+            // off the row, so without this the response answers sampleCode: null on
+            // every update until a cron happens to catch up. Sending it through the
+            // same post-commit pass as this payload's inserts mints it now.
+            if (empty($currentSampleData['sampleCode']) && empty($currentSampleData['remoteSampleCode']) && !empty($uniqueId)) {
+                $uniqueIdsForSampleCodeGeneration[] = $uniqueId;
+            }
         } else {
             $params['appSampleCode'] = $data['appSampleCode'] ?? null;
             $params['provinceCode'] = $provinceCode;
@@ -529,7 +538,7 @@ try {
             $sampleResponse = [
                 'status' => 'success',
                 'action' => $currentSampleData['action'] ?? null,
-                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
+                'sampleCode' => ($currentSampleData['remoteSampleCode'] ?? null) ?: ($currentSampleData['sampleCode'] ?? null),
                 'transactionId' => $transactionId,
                 'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,

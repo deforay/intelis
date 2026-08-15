@@ -65,13 +65,27 @@ final class DatabaseServiceRawAddPrefixTest extends TestCase
         self::assertSame('SELECT * FROM `orders` o', $out);
     }
 
-    public function testWhitespaceIsNormalisedAsBefore(): void
+    public function testQueryIsLeftVerbatimWithNoPrefix(): void
     {
-        // The parent collapses runs of whitespace to a single space; keep that identical
-        // so only the prefix injection changes.
+        // The parent's whitespace collapsing existed only to flatten the query for its
+        // single-line prefix regex. With no prefix there is no regex to feed, and MySQL
+        // parses the query as written.
         $out = $this->db->rawAddPrefix('SELECT a,   b   FROM t');
 
-        self::assertSame('SELECT a, b FROM t', $out);
+        self::assertSame('SELECT a,   b   FROM t', $out);
+    }
+
+    public function testLineCommentDoesNotSwallowTheRestOfTheQuery(): void
+    {
+        // Flattening a multi-line query puts every later line behind a `--` comment, so
+        // MySQL received the VL fetch-results SELECT truncated at the comment and failed
+        // every call with a syntax error. Newlines have to survive.
+        $query = "SELECT a,\n-- why b is what it is\nb\nFROM t";
+
+        $out = $this->db->rawAddPrefix($query);
+
+        self::assertStringContainsString("\n", $out);
+        self::assertStringContainsString('FROM t', explode('-- why b is what it is', $out)[1] ?? '');
     }
 
     public function testConfiguredPrefixStillInjects(): void
