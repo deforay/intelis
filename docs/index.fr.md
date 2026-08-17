@@ -19,6 +19,8 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
 
     [:octicons-arrow-right-24: Le parcours d'un échantillon](user-guides/index.md)
 
+    [:octicons-arrow-right-24: Enregistrer une demande de test](user-guides/register-a-request.md)
+
 -   :material-server:{ .lg .middle } __Administrer la machine__
 
     ---
@@ -26,6 +28,8 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
     Installation, mise à jour, sauvegarde, restauration et les scripts de
     maintenance qui gardent une machine de laboratoire en bonne santé. Ces
     guides sont disponibles en anglais uniquement.
+
+    [:octicons-arrow-right-24: Mettre à jour InteLIS](guides/updating-intelis-on-ubuntu.md)
 
     [:octicons-arrow-right-24: Installer sur Ubuntu](guides/installing-intelis-on-ubuntu.md)
 
@@ -36,7 +40,9 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
     Treize fiches d'une page à imprimer et à afficher : sept pour le poste de
     travail, six pour la personne qui administre la machine.
 
-    [:octicons-arrow-right-24: Ouvrir les aide-mémoires](job-aids/index.md)
+    [:octicons-arrow-right-24: Fiches pour le laboratoire](job-aids/index.md#pour-le-laboratoire)
+
+    [:octicons-arrow-right-24: Fiches pour la machine](job-aids/index.md#pour-la-machine)
 
 -   :material-code-braces:{ .lg .middle } __Référence__
 
@@ -47,12 +53,12 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
 
     [:octicons-arrow-right-24: Architecture](ARCHITECTURE.md)
 
+    [:octicons-arrow-right-24: Référence API](api/)
+
 </div>
 
 ## Fréquemment consultés
 
-- [Mettre à jour InteLIS](guides/updating-intelis-on-ubuntu.md) — une seule commande, sur une machine déjà en service
 - [Restaurer depuis une sauvegarde](guides/restoring-from-backup.md) — remettre les données en place, ou reconstruire une machine hors service
 - [Statuts des échantillons](user-guides/sample-statuses.md) — chaque statut et sa signification
 - [Scripts de maintenance](guides/maintenance.md) — surveillance des services, ressources, db-tools, nettoyage et tâches planifiées
-- [Référence API](api/) — la documentation OpenAPI interactive
