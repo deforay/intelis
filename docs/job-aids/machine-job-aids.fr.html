@@ -210,12 +210,13 @@
   <p>Une liste numérotée s'affiche. Saisir un numéro, appuyer sur Entrée. Rien à retenir.</p>
 
   <div class="screen">  1) Vérifier que cette machine fonctionne
-  2) Voir si les sauvegardes fonctionnent
-  3) Sauvegarder maintenant
-  4) Mettre à jour InteLIS
-  5) Restaurer depuis une sauvegarde
-  6) Changer la destination des sauvegardes
-  7) Quitter
+  2) Le site ne s'ouvre pas — trouver la cause et réparer
+  3) Voir si les sauvegardes fonctionnent
+  4) Sauvegarder maintenant
+  5) Mettre à jour InteLIS
+  6) Restaurer depuis une sauvegarde
+  7) Changer la destination des sauvegardes
+  8) Quitter
 
 Saisir un numéro et appuyer sur Entrée :</div>
 
@@ -223,6 +224,8 @@ Saisir un numéro et appuyer sur Entrée :</div>
   <table class="wrapfirst">
     <tr><th>Pour faire ceci</th><th>Saisir</th></tr>
     <tr><td>Vérifier que la machine fonctionne</td><td><span class="path">intelis check</span></td></tr>
+    <tr><td>Le site ne s'ouvre pas</td><td><span class="path">intelis fix-database</span></td></tr>
+    <tr><td>Vérifier disque, base et sauvegardes maintenant</td><td><span class="path">intelis health</span></td></tr>
     <tr><td>Voir si les sauvegardes fonctionnent</td><td><span class="path">intelis backup status</span></td></tr>
     <tr><td>Sauvegarder tout de suite</td><td><span class="path">intelis backup</span></td></tr>
     <tr><td>Mettre à jour InteLIS</td><td><span class="path">intelis update</span></td></tr>
@@ -233,9 +236,10 @@ Saisir un numéro et appuyer sur Entrée :</div>
   <h3>À quelle fréquence</h3>
   <table class="wrapfirst">
     <tr><th>Quand</th><th>Quoi</th></tr>
-    <tr><td>Chaque lundi</td><td>Vérifier que les sauvegardes fonctionnent (menu 2). Dix secondes.</td></tr>
-    <tr><td>Sur demande</td><td>Mettre à jour InteLIS (menu 4).</td></tr>
+    <tr><td>Chaque lundi</td><td>Vérifier que les sauvegardes fonctionnent (menu 3). Dix secondes.</td></tr>
+    <tr><td>Sur demande</td><td>Mettre à jour InteLIS (menu 5).</td></tr>
     <tr><td>Quand quelque chose cloche</td><td>Vérifier la machine (menu 1) avant d'appeler qui que ce soit.</td></tr>
+    <tr><td>Quand le site ne s'ouvre pas</td><td>Réparer la base (menu 2). Rien n'est modifié sans confirmation.</td></tr>
     <tr><td>Jamais, normalement</td><td>Sauvegarder à la main. La machine se sauvegarde toutes les 8 heures.</td></tr>
   </table>
 
