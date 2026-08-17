@@ -33,7 +33,7 @@ jobs:
       PACKAGE_NAME: 'vendor.tar.gz'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -48,7 +48,7 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -120,7 +120,7 @@ jobs:
           echo "PACKAGE_SIZE=$(du -h ${{ env.PACKAGE_NAME }} | cut -f1)" >> $GITHUB_ENV
 
       - name: Upload vendor package as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: vendor-package
           path: |
