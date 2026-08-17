@@ -210,12 +210,13 @@
   <p>A numbered list appears. Type a number, press Enter. Nothing needs to be remembered.</p>
 
   <div class="screen">  1) Check this machine is working
-  2) See whether backups are working
-  3) Back up now
-  4) Update InteLIS
-  5) Restore from a backup
-  6) Change where backups are sent
-  7) Quit
+  2) The site will not open — find out why and fix it
+  3) See whether backups are working
+  4) Back up now
+  5) Update InteLIS
+  6) Restore from a backup
+  7) Change where backups are sent
+  8) Quit
 
 Type a number and press Enter:</div>
 
@@ -223,6 +224,8 @@ Type a number and press Enter:</div>
   <table class="wrapfirst">
     <tr><th>To do this</th><th>Type</th></tr>
     <tr><td>Check the machine is working</td><td><span class="path">intelis check</span></td></tr>
+    <tr><td>The site will not open</td><td><span class="path">intelis fix-database</span></td></tr>
+    <tr><td>Check disk, database and backups now</td><td><span class="path">intelis health</span></td></tr>
     <tr><td>See whether backups are working</td><td><span class="path">intelis backup status</span></td></tr>
     <tr><td>Back up right now</td><td><span class="path">intelis backup</span></td></tr>
     <tr><td>Update InteLIS</td><td><span class="path">intelis update</span></td></tr>
@@ -233,9 +236,10 @@ Type a number and press Enter:</div>
   <h3>How often</h3>
   <table class="wrapfirst">
     <tr><th>When</th><th>What</th></tr>
-    <tr><td>Every Monday</td><td>Check backups are working (menu 2). Takes ten seconds.</td></tr>
-    <tr><td>When asked to</td><td>Update InteLIS (menu 4).</td></tr>
+    <tr><td>Every Monday</td><td>Check backups are working (menu 3). Takes ten seconds.</td></tr>
+    <tr><td>When asked to</td><td>Update InteLIS (menu 5).</td></tr>
     <tr><td>When something looks wrong</td><td>Check the machine (menu 1) before calling anyone.</td></tr>
+    <tr><td>When the site will not open</td><td>Repair the database (menu 2). It asks before changing anything.</td></tr>
     <tr><td>Never, normally</td><td>Back up by hand. The machine backs itself up every 8 hours.</td></tr>
   </table>
 

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InteLIS break-fix drills (trainer sheet)</title>
+<!--
+  Trainer sheet, not a lab job aid. It lives in dev/ rather than docs/ on
+  purpose: it tells the reader how to break a working machine, which is useful
+  in front of a class and dangerous on a published site a lab administrator
+  browses. Do not move it into docs/ or link it from docs/job-aids/index.md.
+
+  Every drill runs on a throwaway machine: a VM reverted from a snapshot, or the
+  container in dev/lab-vm, which runs systemd so upgrade.sh cannot tell it from
+  a real lab. Never on titan, and never on a lab's machine.
+-->
+<style>
+  :root {
+    --ink: #14181c;
+    --muted: #5b6670;
+    --rule: #c8d0d6;
+    --tint: #eef3f5;
+    --accent: #00695c;
+    --warn: #8a4b00;
+    --warn-bg: #fdf3e6;
+    --break: #8a1c1c;
+    --break-bg: #fbeded;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #f4f6f7;
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.42;
+  }
+  .toolbar {
+    max-width: 200mm;
+    margin: 0 auto 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .toolbar h1 { font-size: 16pt; margin: 0; }
+  .toolbar p { margin: 0; color: var(--muted); font-size: 10pt; }
+  button {
+    font: inherit;
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .card {
+    max-width: 200mm;
+    margin: 0 auto 18px;
+    padding: 12mm 14mm;
+    background: #fff;
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+  .card > header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+  .kicker {
+    font-size: 8.5pt;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .card h2 { font-size: 15pt; margin: 3px 0 0; }
+  .card h2 + p { margin: 5px 0 0; color: var(--muted); }
+
+  h3 {
+    font-size: 10pt;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 15px 0 6px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 3px;
+  }
+  h3.breakit { color: var(--break); border-bottom-color: var(--break); }
+
+  ol, ul { margin: 0 0 10px; padding-left: 20px; }
+  li { margin-bottom: 4px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 0 0 10px; font-size: 10pt; }
+  th, td { text-align: left; vertical-align: top; padding: 5px 8px; border-bottom: 1px solid var(--rule); }
+  th { background: var(--tint); font-size: 9pt; text-transform: uppercase; letter-spacing: .04em; }
+  table.wrapfirst td:first-child { white-space: normal; font-weight: 600; width: 34%; }
+
+  .path {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9.5pt;
+    background: var(--tint);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+
+  /* Deliberately not nowrap: a command printed incomplete is worse than one
+     printed ugly. */
+  .cmd {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 10pt;
+    background: var(--tint);
+    border-left: 3px solid var(--accent);
+    padding: 7px 10px;
+    margin: 8px 0 12px;
+    word-break: break-all;
+  }
+  .cmd.dangerous { border-left-color: var(--break); background: var(--break-bg); }
+
+  .warn {
+    border-left: 4px solid var(--warn);
+    background: var(--warn-bg);
+    padding: 9px 12px;
+    margin: 12px 0;
+  }
+  .warn strong { color: var(--warn); display: block; margin-bottom: 2px; font-size: 9.5pt; text-transform: uppercase; letter-spacing: .04em; }
+  .warn.stop { border-left-color: var(--break); background: var(--break-bg); }
+  .warn.stop strong { color: var(--break); }
+
+  footer.cardfoot {
+    margin-top: 14px; padding-top: 7px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 8.5pt;
+    display: flex; justify-content: space-between; gap: 10px;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; font-size: 10pt; }
+    .toolbar { display: none; }
+    .card {
+      margin: 0 0 8mm; border: 0; box-shadow: none;
+      max-width: none; padding: 8mm 10mm;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+  }
+  @page { size: A4 portrait; margin: 12mm; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <h1>InteLIS break-fix drills</h1>
+    <p>Trainer sheet. Six drills, each one a real failure a lab has hit.</p>
+  </div>
+  <button onclick="window.print()">Print all drills</button>
+</div>
+
+<section class="card">
+  <header>
+    <div class="kicker">Before any drill</div>
+    <h2>Where these may be run</h2>
+    <p>Each drill damages a working installation on purpose.</p>
+  </header>
+
+  <div class="warn stop">
+    <strong>Throwaway machines only</strong>
+    A VM that can be reverted from a snapshot, or the container in
+    <span class="path">dev/lab-vm</span>, which runs systemd as PID 1 and so cannot be
+    told apart from a lab machine by <span class="path">upgrade.sh</span>. Never on
+    <span class="path">titan</span>, which real labs poll, and never on a lab's own machine.
+  </div>
+
+  <h3>The shape of every drill</h3>
+  <ol>
+    <li>The trainee runs the drill's break command, or the trainer runs it while they look away.</li>
+    <li>The trainee reproduces the symptom, so they see what a lab would report.</li>
+    <li>The trainee diagnoses using only <span class="path">intelis</span>, not guesswork.</li>
+    <li>The trainee applies the fix and confirms the symptom is gone.</li>
+    <li>Reset, and the next trainee gets the same machine in the same state.</li>
+  </ol>
+
+  <h3>Resetting between drills</h3>
+  <table class="wrapfirst">
+    <tr><td>Cloud VM</td><td>Rebuild from the prepared snapshot. About a minute.</td></tr>
+    <tr><td>Multipass</td><td><span class="path">multipass delete --purge lab1</span>, then relaunch.</td></tr>
+    <tr><td>dev/lab-vm</td><td><span class="path">docker rm -f labvm</span>, then re-run and re-install with the unattended answers file in its README.</td></tr>
+  </table>
+
+  <footer class="cardfoot"><span>InteLIS trainer sheet</span><span>Not for labs</span></footer>
+</section>
+
+<section class="card">
+  <header>
+    <div class="kicker">Drill 1</div>
+    <h2>The update refuses to finish</h2>
+    <p>Cause: files the web server account cannot replace. The most common one in the field.</p>
+  </header>
+
+  <h3 class="breakit">Break it</h3>
+  <div class="cmd dangerous">sudo chown -R root:root /var/www/intelis/var/cache</div>
+
+  <h3>Symptom the trainee should see</h3>
+  <p>Run <span class="path">intelis update</span>. It gets as far as the composer step and
+  fails there. The command-line tooling runs as <span class="path">www-data</span>, which
+  cannot replace cache files owned by root.</p>
+
+  <h3>Diagnose</h3>
+  <div class="cmd">intelis check</div>
+  <div class="cmd">ls -la /var/www/intelis/var/cache</div>
+  <p>The listing shows <span class="path">root root</span> where every other directory in
+  the installation shows the operator's account and <span class="path">www-data</span>.</p>
+
+  <h3>Fix</h3>
+  <div class="cmd">intelis provision</div>
+  <p>It hands ownership back and is safe to run repeatedly. Then re-run
+  <span class="path">intelis update</span> and let it finish.</p>
+
+  <div class="warn">
+    <strong>The lesson worth stating out loud</strong>
+    This state is usually self-inflicted, by running an <span class="path">intelis</span>
+    or composer command with <span class="path">sudo</span> in front of it. That runs work
+    as root which is supposed to run as the account InteLIS uses, and leaves behind exactly
+    the files this drill creates. <span class="path">intelis</span> asks for administrator
+    rights itself, only for the steps that need them.
+  </div>
+
+  <footer class="cardfoot"><span>InteLIS trainer sheet</span><span>Drill 1: cache ownership</span></footer>
+</section>
+
+<section class="card">
+  <header>
+    <div class="kicker">Drill 2</div>
+    <h2>Permission denied</h2>
+    <p>Cause: the access control lists on the installation directory were cleared.</p>
+  </header>
+
+  <h3 class="breakit">Break it</h3>
+  <div class="cmd dangerous">sudo setfacl -R -b /var/www</div>
+
+  <h3>Symptom the trainee should see</h3>
+  <p>Uploads, exports and log writes start failing, and the message reaching the operator is
+  some form of permission denied.</p>
+
+  <h3>Fix</h3>
+  <div class="cmd">sudo setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www;</div>
+  <p>It grants read, write and execute to both the operator's account and the web server
+  account, recursively.</p>
+
+  <footer class="cardfoot"><span>InteLIS trainer sheet</span><span>Drill 2: permissions</span></footer>
+</section>
+
+<section class="card">
+  <header>
+    <div class="kicker">Drill 3</div>
+    <h2>The site will not open at all</h2>
+    <p>Cause: the database server is not running. Carries the single most important
+    diagnostic lesson on this sheet.</p>
+  </header>
+
+  <h3 class="breakit">Break it</h3>
+  <div class="cmd dangerous">sudo systemctl stop mysql</div>
+
+  <h3>Symptom the trainee should see</h3>
+  <p>The browser shows an error rather than a login page. This is the call a lab actually
+  makes, and they describe it as a symptom, not a cause.</p>
+
+  <h3>Diagnose and fix</h3>
+  <div class="cmd">intelis fix-database</div>
+  <p>Or menu item 2, named for the symptom rather than the cause. It reports what it finds
+  and asks before changing anything.</p>
+
+  <div class="warn stop">
+    <strong>A stopped server has no /run/mysqld, and that is not a fault</strong>
+    systemd creates that directory when MySQL starts and deletes it when MySQL stops. On a
+    stopped server it is correctly absent. Recreating it by hand fixes nothing, and on a
+    machine that later starts normally it leaves a directory with the wrong ownership
+    behind. Start the service and look again before treating anything as damaged.
+  </div>
+
+  <h3>Reset</h3>
+  <div class="cmd">sudo systemctl start mysql</div>
+
+  <footer class="cardfoot"><span>InteLIS trainer sheet</span><span>Drill 3: database down</span></footer>
+</section>
+
+<section class="card">
+  <header>
+    <div class="kicker">Drill 4</div>
+    <h2>A collation mismatch</h2>
+    <p>Cause: one table no longer matches the rest of the database.</p>
+  </header>
+
+  <h3 class="breakit">Break it</h3>
+  <div class="cmd dangerous">sudo mysql vlsm -e "ALTER TABLE facility_details CONVERT TO CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci;"</div>
+
+  <h3>Symptom the trainee should see</h3>
+  <p>Pages and reports that join the altered table against another one fail with an illegal
+  mix of collations, while the rest of the application carries on working. Partial breakage
+  is what makes this one confusing in the field.</p>
+
+  <h3>Fix</h3>
+  <div class="cmd">intelis db:collation</div>
+  <p>It sets every table and column back to one collation. The same repair exists in
+  phpMyAdmin for Windows installations with no command line, under the database's
+  Operations tab.</p>
+
+  <footer class="cardfoot"><span>InteLIS trainer sheet</span><span>Drill 4: collation</span></footer>
+</section>
+
+<section class="card">
+  <header>
+    <div class="kicker">Drill 5</div>
+    <h2>An update that was interrupted</h2>
+    <p>Cause: power loss, a closed laptop lid, or an operator who pressed Ctrl-C.</p>
+  </header>
+
+  <h3 class="breakit">Break it</h3>
+  <p>Start an update and interrupt it once it is past the download and into the apply step.</p>
+  <div class="cmd">intelis update</div>
+  <div class="cmd dangerous">Ctrl-C</div>
+
+  <h3>Fix</h3>
+  <div class="cmd">intelis update --rollback</div>
+  <p>The update takes a snapshot it can return to before it changes anything, and this puts
+  the installation back to it.</p>
+
+  <div class="warn">
+    <strong>Why this drill matters more than it looks</strong>
+    An operator whose update was interrupted will assume the machine is ruined and start
+    improvising. The one thing worth them remembering is that a rollback exists and is one
+    command. Have every trainee run it once so it is familiar rather than theoretical.
+  </div>
+
+  <footer class="cardfoot"><span>InteLIS trainer sheet</span><span>Drill 5: rollback</span></footer>
+</section>
+
+<section class="card">
+  <header>
+    <div class="kicker">Drill 6</div>
+    <h2>Restore onto a different machine</h2>
+    <p>Not a breakage. The exercise most often skipped, and the one that matters most.</p>
+  </header>
+
+  <h3>Run it in pairs, across two machines</h3>
+  <ol>
+    <li>On machine A, take a backup: <span class="path">intelis backup</span></li>
+    <li>Confirm it reached its destination: <span class="path">intelis backup status</span></li>
+    <li>Move to a partner's machine, or a fresh VM, and restore A's backup there:
+        <span class="path">intelis restore</span></li>
+    <li>Sign in to the restored installation and find a request that was registered on A.</li>
+  </ol>
+
+  <div class="warn">
+    <strong>Restoring onto a machine with nothing on it yet</strong>
+    Do not install first and restore second. The restore prints the exact install command
+    with the backup already attached, so the machine comes back with its data rather than
+    empty.
+  </div>
+
+  <h3>What the drill is really teaching</h3>
+  <table class="wrapfirst">
+    <tr><td>A backup nobody has restored</td><td>is not a backup. This is the only exercise that proves the file is usable.</td></tr>
+    <tr><td>Restoring on the same machine</td><td>proves less than it appears to. It can pass while depending on something only that machine has.</td></tr>
+    <tr><td>If a passphrase was set</td><td>the restore needs it, and it cannot be recovered from the backup file. A backup that cannot be decrypted is not a backup either.</td></tr>
+  </table>
+
+  <footer class="cardfoot"><span>InteLIS trainer sheet</span><span>Drill 6: cross-machine restore</span></footer>
+</section>
+
+</body>
+</html>
