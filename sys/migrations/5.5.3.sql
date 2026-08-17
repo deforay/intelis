@@ -10,9 +10,8 @@
 -- upgrade-flow swap, and the gated cutover with run-once/prune-legacy-audit-
 -- tables.php) will land separately.
 --
--- Design summary (full plan kept in the assistant's persistent memory at
--- ~/.claude/.../memory/project_audit_trail_v2.md — intentionally not committed
--- as a repo doc):
+-- Design summary (the full plan is kept in the maintainer's notes outside the
+-- repository, intentionally not committed as a repo doc):
 --   - audit_log replaces every per-form audit_form_* columnar table with one
 --     fixed-schema JSON staging table. Triggers (added in a later step) capture
 --     each form_* mutation as JSON_OBJECT(...) keyed by (form_table,record_id,

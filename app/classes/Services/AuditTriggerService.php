@@ -23,8 +23,8 @@ use App\Registries\ContainerRegistry;
  * yet. The upgrade-flow wiring that calls `buildTriggersFor()` / executes the
  * SQL lands in a later step, and the cutover that drops the legacy
  * `<form>_data__ai/au/bd` triggers and switches capture to `audit_log` lands in
- * the cutover step. Full plan in the assistant's persistent memory at
- * `~/.claude/.../memory/project_audit_trail_v2.md` (off-repo by design).
+ * the cutover step. The full plan is kept in the maintainer's notes, outside
+ * the repository by design.
  *
  * Why two trigger name conventions:
  *   - Legacy (still recognised here so the upgrade flow's drop-all step
