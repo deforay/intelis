@@ -77,6 +77,9 @@ nav:
       - InteLIS on Ubuntu (Recommended): guides/installing-intelis-on-ubuntu.md
       - Using Docker: guides/installing-intelis-with-docker.md
       - InteLIS on Windows: guides/installing-intelis-on-windows.md
+      # Connecting an analyzer is a setup task, not a repair. It sat under
+      # Troubleshooting, where nobody setting up an instrument would look.
+      - Connect an Instrument: guides/setting-up-interfacing-tool.md
   - Updates & Migration:
       - Updating InteLIS on Ubuntu: guides/updating-intelis-on-ubuntu.md
       - Updating InteLIS on Windows: guides/updating-intelis-on-windows.md
@@ -93,7 +96,6 @@ nav:
   - Troubleshooting:
       - Fix Collation Mismatch: guides/fix-collation-issue.md
       - Permission Denied Issue: guides/permission-denied-issue.md
-      - Setting up Interfacing Tool: guides/setting-up-interfacing-tool.md
   - Reference:
       - Architecture: ARCHITECTURE.md
       - Engineering Standards: engineering-standards.md
@@ -168,7 +170,7 @@ plugins:
             Troubleshooting: Dépannage
             Fix Collation Mismatch: Corriger une incohérence de collation
             Permission Denied Issue: Corriger une erreur de permission
-            Setting up Interfacing Tool: Configurer l'outil d'interfaçage
+            Connect an Instrument: Connecter un automate
             Reference: Référence
             Architecture: Architecture
             Engineering Standards: Standards d'ingénierie
