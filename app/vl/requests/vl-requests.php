@@ -183,9 +183,25 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 					],
 				];
 				?>
+				<?php
+				/* Dismissal is of this state, not of the card. The signature covers
+				 * which issues are present and how many of each, so a count that
+				 * moves or a new kind of problem brings it back rather than staying
+				 * hidden behind a decision someone made about a different day.
+				 *
+				 * Prefixed so it is never all digits: the storage helper JSON.parses what
+				 * it reads, and an all-digit hash would come back as a number and never
+				 * match the string on the element.
+				 */
+				$issueSignature = 'v' . md5(json_encode($issueCounts));
+				?>
 				<?php if ($issueCounts !== []) { ?>
-					<div class="needs-attention" id="needsAttention">
+					<div class="needs-attention" id="needsAttention"
+						data-signature="<?= htmlspecialchars($issueSignature, ENT_QUOTES); ?>" style="display:none;">
 						<div class="na-header">
+							<button type="button" class="na-dismiss" onclick="dismissNeedsAttention();"
+								title="<?= _htmlTranslate('Hide until this changes'); ?>"
+								aria-label="<?= _htmlTranslate('Hide until this changes'); ?>">&times;</button>
 							<em class="fa-solid fa-circle-exclamation" aria-hidden="true"></em>
 							<?= _htmlTranslate('Needs attention'); ?>
 							<span class="na-count"><?= count($issueCounts); ?></span>
@@ -1043,9 +1059,41 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 			searchExecuted = false;
 		});
 
+		initNeedsAttention();
+
 	});
 
-	// Shows the records behind one Needs attention row: the grid filters to them
+	// The card starts hidden and is shown here, once the stored dismissal has been
+// read: rendering it and then hiding it would flash the thing someone dismissed
+// on every page load.
+//
+// What is remembered is the signature of what was wrong, not "hidden". If a
+// count moves or a new kind of problem appears the signature changes, and the
+// card returns rather than staying dismissed on the strength of a decision
+// about a different day.
+var NEEDS_ATTENTION_KEY = 'vlNeedsAttentionDismissed';
+
+function initNeedsAttention() {
+	var card = document.getElementById('needsAttention');
+	if (!card) {
+		return;
+	}
+	var dismissed = StorageHelper.getFromLocalStorage(NEEDS_ATTENTION_KEY);
+	if (dismissed !== card.getAttribute('data-signature')) {
+		card.style.display = '';
+	}
+}
+
+function dismissNeedsAttention() {
+	var card = document.getElementById('needsAttention');
+	if (!card) {
+		return;
+	}
+	StorageHelper.storeInLocalStorage(NEEDS_ATTENTION_KEY, card.getAttribute('data-signature'));
+	$(card).slideUp(150);
+}
+
+// Shows the records behind one Needs attention row: the grid filters to them
 // rather than the card duplicating a listing that already exists.
 function showDataIssue(issueKey) {
 	$('#dataIssue').val(issueKey);
