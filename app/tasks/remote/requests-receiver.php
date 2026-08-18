@@ -140,6 +140,38 @@ $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 $db->rawQuery("SET SESSION wait_timeout=28800"); // 8 hours
 
 /**
+ * Codes the testing lab assigns on this instance. STS only ever holds a copy of
+ * them, and only after the lab pushed the row up with its results, so STS is
+ * never the authority for these columns -- the local value always wins.
+ *
+ * Without this, a request sync silently wiped them: getTableFieldsAsArray()
+ * seeds every column as null, STS sends its own (still empty) copy, and neither
+ * column is in removeKeys/excludeUpdateKeys, so the update wrote NULL over the
+ * code the lab had just entered. The window is wide open in practice, because a
+ * lab assigns its code right after activating a manifest -- long before any
+ * result is pushed up. Manually registered samples never come back down from
+ * STS, which is why only the synced ones lost their code.
+ *
+ * Backfill still works: when the column is empty locally, an incoming value is
+ * applied as usual.
+ */
+function preserveLocallyOwnedFields(array $updatePayload, array $localRecord): array
+{
+    $locallyOwnedKeys = ['lab_assigned_code', 'cv_number'];
+
+    foreach ($locallyOwnedKeys as $key) {
+        if (!array_key_exists($key, $updatePayload)) {
+            continue;
+        }
+        if (trim((string) ($localRecord[$key] ?? '')) !== '') {
+            unset($updatePayload[$key]);
+        }
+    }
+
+    return $updatePayload;
+}
+
+/**
  * Helper to sync a single test request: find matching local record, optionally backfill remote_sample_code,
  * compare meaningful fields, and update or insert.
  *
@@ -174,6 +206,7 @@ function syncTestRequest(
         );
         $updatePayload['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes);
         $updatePayload['is_result_mail_sent'] ??= 'no';
+        $updatePayload = preserveLocallyOwnedFields($updatePayload, $localRecord);
 
         // Conditional backfill of remote_sample_code
         if (!empty($incoming['remote_sample_code']) && empty($localRecord['remote_sample_code'])) {
@@ -1045,6 +1078,7 @@ try {
                     $request['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes);
                     $request['is_result_mail_sent'] ??= 'no';
                     $updatePayload = MiscUtility::excludeKeys($request, $removeKeysForUpdate);
+                    $updatePayload = preserveLocallyOwnedFields($updatePayload, $localRecord);
                     // Conditional backfill of remote_sample_code
                     if (!empty($request['remote_sample_code']) && empty($localRecord['remote_sample_code'])) {
                         $db->rawQuery(

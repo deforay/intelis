@@ -570,6 +570,15 @@ try {
         $formAttributesStr = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
         $eidData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
 
+        // Never let a payload that omits the lab assigned code blank out the one
+        // the testing lab already entered. A client re-posting its whole dataset
+        // sends the key as null, and this is an update-only payload, so that null
+        // would overwrite the lab's own code. Same rule as the STS request sync --
+        // see preserveLocallyOwnedFields() in app/tasks/remote/requests-receiver.php.
+        if (trim((string) ($data['labSampleCode'] ?? '')) === '') {
+            unset($eidData['lab_assigned_code']);
+        }
+
         $id = false;
         $eidData = MiscUtility::arrayEmptyStringsToNull($eidData);
         if (!empty($data['eidSampleId'])) {
