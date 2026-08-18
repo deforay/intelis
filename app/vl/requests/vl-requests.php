@@ -70,6 +70,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 
 $sampleStatusData = $general->getSampleStatus();
 
+// Reports link here with a status already chosen (the Sample Rejection Report
+// drills into its rejected samples), so the grid opens on the same set of rows
+// the report counted instead of on every sample in the date range.
+$preselectedStatus = (isset($_GET['status']) && $_GET['status'] !== '') ? (int) $_GET['status'] : null;
+
 //Funding source list
 $fundingSourceList = $general->getFundingSources();
 
@@ -231,10 +236,10 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 								<select name="status" id="status" class="form-control"
 									title="<?php echo _translate('Please choose status'); ?>"
 									onchange="checkSampleCollectionDate();">
-									<option value="" selected=selected><?php echo _translate("All Status"); ?></option>
+									<option value="" <?= ($preselectedStatus === null) ? 'selected="selected"' : ''; ?>><?php echo _translate("All Status"); ?></option>
 									<?php
 									foreach ($sampleStatusData as $sample) { ?>
-										<option value="<?= $sample['status_id']; ?>"><?= $sample['status_name'] ?></option>
+										<option value="<?= $sample['status_id']; ?>" <?= ($preselectedStatus === (int) $sample['status_id']) ? 'selected="selected"' : ''; ?>><?= $sample['status_name'] ?></option>
 										<?php
 									} ?>
 								</select>
