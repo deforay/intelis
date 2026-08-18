@@ -747,15 +747,14 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 					 * The counts come from what the nightly scan flagged, not from counting
 					 * now: the check is a full pass over a table that reaches millions of
 					 * rows and has no business running in front of a listing page. */
-					$dataIssues = ContainerRegistry::get(DataIssuesService::class);
-					$issueCounts = $dataIssues->getIssueCounts('vl');
-
-					/* Seeing a problem and fixing one are separate rights. The card states
-					 * the problem to anyone who can open the page -- someone who cannot see
-					 * a problem cannot report it either -- while the action that shows the
-					 * rows is gated on the privilege that leads to the fix, and the closing
-					 * sentence changes so a viewer is told who to ask. */
+					/* Shown only to someone who can act on it. Every row here is a call
+					 * to open a record and decide something, so to a reader who cannot
+					 * edit it is a list of problems they can do nothing about, sitting
+					 * above the listing they came here to use. */
 					$canFixData = _isAllowed("/vl/requests/editVlRequest.php") && !$hidesrcofreq;
+
+					$dataIssues = ContainerRegistry::get(DataIssuesService::class);
+					$issueCounts = $canFixData ? $dataIssues->getIssueCounts('vl') : [];
 
 					$issueCopy = [
 						'rejectedWithResult' => [
@@ -763,21 +762,18 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 							'title' => _translate('marked rejected, but carrying a result'),
 							'cost' => _translate('A sample is rejected before it is tested, so it should have no result. These are counted as a rejection by some reports and as a result by others.'),
 							'fix' => _translate('Open each and decide which is true: the rejection or the result.'),
-							'ask' => _translate('Someone who can edit requests needs to decide which is true for each.'),
 						],
 						'goneWithResult' => [
 							'icon' => 'fa-hourglass-end',
 							'title' => _translate('marked lost or expired, but carrying a result'),
 							'cost' => _translate('Both statuses lock the record, so a result that was produced cannot be reached, printed or sent back to the facility.'),
 							'fix' => _translate('Review each and move it back to Accepted if the result stands.'),
-							'ask' => _translate('Someone who can edit requests needs to move these back to Accepted.'),
 						],
 						'acceptedWithoutResult' => [
 							'icon' => 'fa-question-circle',
 							'title' => _translate('marked accepted, but with no result'),
 							'cost' => _translate('Accepted is what the printing, emailing and dispatch lists treat as having a result, so these drop silently out of all of them.'),
 							'fix' => _translate('Enter the result, or correct the status to match what happened.'),
-							'ask' => _translate('Someone who can edit requests needs to enter the result or correct the status.'),
 						],
 					];
 					?>
@@ -795,13 +791,9 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 								$count = (int) $issueCounts[$issueKey];
 							?>
 								<div class="na-item">
-									<?php if ($canFixData) { ?>
-										<a href="javascript:void(0);"
-											onclick="showDataIssue('<?= htmlspecialchars($issueKey, ENT_QUOTES); ?>');"
-											class="na-action">&rarr; <?= _htmlTranslate('Show them'); ?></a>
-									<?php } else { ?>
-										<span class="na-readonly"><?= _htmlTranslate('needs an editor'); ?></span>
-									<?php } ?>
+									<a href="javascript:void(0);"
+										onclick="showDataIssue('<?= htmlspecialchars($issueKey, ENT_QUOTES); ?>');"
+										class="na-action">&rarr; <?= _htmlTranslate('Show them'); ?></a>
 									<div class="na-icon"><em class="fa-solid <?= $copy['icon']; ?>" aria-hidden="true"></em></div>
 									<div class="na-body">
 										<div class="na-title">
@@ -809,7 +801,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 										</div>
 										<div class="na-desc">
 											<?= htmlspecialchars($copy['cost'], ENT_QUOTES); ?>
-											<?= htmlspecialchars($canFixData ? $copy['fix'] : $copy['ask'], ENT_QUOTES); ?>
+											<?= htmlspecialchars($copy['fix'], ENT_QUOTES); ?>
 										</div>
 									</div>
 								</div>
