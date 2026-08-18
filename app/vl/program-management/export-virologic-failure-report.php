@@ -8,6 +8,7 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
+use App\Utilities\SampleCountUtility;
 
 ini_set('memory_limit', '512M');
 set_time_limit(300);
@@ -111,6 +112,9 @@ if ($labScope = $general->labScopeWhere('vl')) {
 }
 
 if (!empty($sWhere)) {
+     // A cancelled sample was called off before testing, so it is not work
+     // this report should count.
+     $sWhere[] = SampleCountUtility::countableWhere('vl');
      $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);
 }
 $sQuery .= " ORDER BY f.facility_name asc, patient_art_no asc, sample_collection_date asc";

@@ -7,6 +7,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 use const SAMPLE_STATUS\REJECTED;
+use App\Utilities\SampleCountUtility;
 
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -80,6 +81,9 @@ if ($dateRange !== '') {
         $sWhere[] = $labScope;
     }
 
+    // A cancelled sample was called off before testing, so it is not work
+    // this report should count.
+    $sWhere[] = SampleCountUtility::countableWhere('vl');
     $vlQuery .= " WHERE " . implode(' AND ', $sWhere) . " GROUP BY vl.reason_for_sample_rejection, vl.lab_id, vl.facility_id";
 
     // Keyed per module -- VL, CD4 and TB rejection reports all used to share one

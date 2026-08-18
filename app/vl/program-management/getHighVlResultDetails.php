@@ -9,6 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
 
 
 // Sanitized values from $request object
@@ -167,6 +168,9 @@ try {
     }
 
     if ($sWhere !== []) {
+        // A cancelled sample was called off before testing, so it is not work
+        // this report should count.
+        $sWhere[] = SampleCountUtility::countableWhere('vl');
         $sQuery = $sQuery . ' AND ' . implode(" AND ", $sWhere);
     }
 
