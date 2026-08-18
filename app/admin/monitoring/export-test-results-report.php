@@ -113,14 +113,19 @@ $sheet->getStyle('O5:O5')->applyFromArray($styleArray);
 
 $no = 1;
 foreach ($rResult as $aRow) {
-    $rejectedObj = json_decode((string) $aRow['reason_for_result_changes']);
+    // The reason column holds a history of changes (and, on older records, legacy formats),
+    // not the single object this once assumed -- export the most recent recorded change. EID,
+    // COVID and hepatitis keep the same history under reason_for_changing.
+    $latestChange = MiscUtility::latestResultChangeReason(
+        $aRow['reason_for_result_changes'] ?? $aRow['reason_for_changing'] ?? null
+    );
     $row = [];
     $row[] = $aRow['sample_code'];
     $row[] = $aRow['remote_sample_code'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '', true);
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '', true);
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '', true);
-    $row[] = $aRow['result'];
+    $row[] = $aRow['result'] ?? $aRow['cd4_result'] ?? '';
     $row[] = html_entity_decode($aRow['testedByName'] ?? '');
     $row[] = html_entity_decode($aRow['machine_name'] ?? '');
     $row[] = $aRow['status_name'];
@@ -128,7 +133,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['is_sample_rejected'];
     $row[] = $aRow['rejection_reason_name'];
     $row[] = $aRow["result_modified"];
-    $row[] = html_entity_decode($rejectedObj->reasonForChange ?? '');
+    $row[] = html_entity_decode((string) ($latestChange['msg'] ?? ''));
     $row[] = $aRow['import_machine_file_name'];
     $output[] = $row;
     $no++;

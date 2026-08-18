@@ -198,15 +198,19 @@ try {
 
 	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 	$getPrevResult = $db->getOne('form_hepatitis');
-	$hepatitisData['result_modified'] = ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) ? "yes" : "no";
+	// The result counts as modified when the value changed or the sample flipped
+	// between rejected and not rejected -- the same rule the change history is logged on.
+	$previousState = ['result' => $getPrevResult['result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null];
+	$currentState = ['result' => $_POST['result'] ?? null, 'is_sample_rejected' => $_POST['isSampleRejected'] ?? null];
+	$hepatitisData['result_modified'] = MiscUtility::resultOrRejectionChanged($previousState, $currentState) ? "yes" : "no";
 
 	// Append the change reason (preserving prior history) whenever the result or rejection changed.
 	$reasonForChanges = MiscUtility::appendResultChangeReason(
 		$getPrevResult['reason_for_changing'] ?? null,
 		$_SESSION['userId'] ?? $_POST['userId'] ?? null,
 		$_POST['reasonForResultChanges'] ?? $_POST['reasonForChanging'] ?? null,
-		['result' => $getPrevResult['result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null],
-		['result' => $_POST['result'] ?? null, 'is_sample_rejected' => $_POST['isSampleRejected'] ?? null]
+		$previousState,
+		$currentState
 	);
 	if ($reasonForChanges !== null) {
 		$hepatitisData['reason_for_changing'] = $reasonForChanges;

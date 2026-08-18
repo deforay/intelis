@@ -84,7 +84,6 @@ try {
      vl.patient_middle_name,
      vl.patient_last_name,
      vl.lab_assigned_code,
-     vl.result_modified,
      vl.reason_for_result_changes,
      f.facility_name,
      f.facility_district,
@@ -243,12 +242,15 @@ try {
      foreach ($rResult as $aRow) {
           $row = [];
 
+          // The chip is driven by the stored change history, not by form_vl.result_modified:
+          // the reason column also holds entries that were never result changes, and only an
+          // entry recording the pre-change state proves the result (or the rejection status)
+          // actually moved. An empty attribute here means nothing proves a change.
           $resultTooltip = MiscUtility::resultChangeHistoryTooltipAttribute(
                $aRow['reason_for_result_changes'] ?? null,
                $usersService,
                $aRow['result'] ?? null
           );
-          $hasResultTooltip = $resultTooltip !== '';
 
           if (isset($_POST['vlPrint'])) {
                if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {
@@ -257,9 +259,8 @@ try {
                     $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedPrintedRow(this);"  />';
                }
                $resultModified = '';
-               if ($aRow['result_modified'] == 'yes') {
-                    $modifiedClass = $hasResultTooltip ? 'result-modified-badge top-tooltip' : 'result-modified-badge';
-                    $resultModified = '<br><span class="' . $modifiedClass . '"' . $resultTooltip . '><em class="fa-solid fa-triangle-exclamation"></em> ' . _translate("Result Modified") . '</span>';
+               if ($resultTooltip !== '') {
+                    $resultModified = '<br><span class="result-modified-badge top-tooltip"' . $resultTooltip . '><em class="fa-solid fa-triangle-exclamation"></em> ' . _translate("Result Modified") . '</span>';
                }
                $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="generateResultPDF(' . $aRow['vl_sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>' . $resultModified;
           } else {
