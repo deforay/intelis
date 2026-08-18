@@ -4,7 +4,7 @@
     "homepage": "https://github.com/deforay/intelis",
     "type": "project",
     "license": "InteLIS-Community-Copyleft-NonCommercial-1.0",
-    "version": "5.7.14",
+    "version": "5.7.15",
     "authors": [
         {
             "name": "Deforay",
@@ -108,6 +108,7 @@
         ],
         "interface": "@php bin/interface.php",
         "lock-samples": "@php bin/update-sample-status.php",
+        "flag-data-issues": "@php bin/flag-data-issues.php",
         "vl-recompute-derived": "@php bin/vl-recompute-derived.php",
         "purge-cache": "@php app/includes/purge-cache.php",
         "provision": "@php bin/provision.php",
@@ -201,6 +202,7 @@
         "test": "Run the PHPUnit test suite",
         "check-di": "Compile the DI container in isolation so a broken service definition fails here instead of in production",
         "preflight": "Check this machine can run and serve the app \u2014 PHP, the web server's own php.ini, config, permissions, schema. Runs without booting the app, so it still reports when nothing else does",
+        "flag-data-issues": "Find records whose own columns contradict each other, for the Needs attention card (counts only, never corrects)",
         "publish": "Publish the current version as a release tag, which is what labs upgrade to",
         "ship": "Bump if needed, refresh the lockfile, commit, push, and publish \u2014 the whole release in one command",
         "version": "Bump the project version (patch|minor|major|x.y.z, or no argument for an interactive menu)",
