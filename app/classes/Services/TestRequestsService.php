@@ -1245,15 +1245,40 @@ final class TestRequestsService
      * answered wrongly -- see hasUsableIdentity() below.
      *
      * The order is not arbitrary and should not be tidied into something
-     * neater. sample_code + lab_id sits above unique_id because unique_id has
-     * been seen in the field arriving attached to a different sample_code than
-     * the one it belongs to locally, and a unique_id match is by definition a
-     * match on one specific row -- so trusting it first would quietly overwrite
-     * somebody else's sample. The pairs are tried ahead of it because they
-     * describe a sample and where it was handled, which is much harder to
-     * collide by accident.
+     * neater. It runs from keys that cannot collide to keys that demonstrably
+     * do:
      *
-     * @return array<int, array{where: string, params: array}>
+     *   remote_sample_code  minted only on the STS, one per country, so there
+     *                       is a single authority and no way for two systems to
+     *                       issue the same one. Zero contested values in the
+     *                       national database checked.
+     *
+     *   unique_id           1,042,665 values on that database, 1,042,665 of
+     *                       them distinct, and present on everything created
+     *                       since 2023 without exception.
+     *
+     *   sample_code + lab   contested, and last for that reason. A sample code
+     *                       is minted from a counter keyed on
+     *                       (test_type, year, code_type) -- no instance, no lab
+     *                       -- and a VL code minted on a LIS carries no lab
+     *                       either, so two instances sending work to one lab
+     *                       will mint the same code eventually. 59,821
+     *                       code/key pairs on that database are claimed by more
+     *                       than one instance. Matching on this pair can
+     *                       therefore land on a different patient's sample, and
+     *                       it is worse than a failed write because nothing
+     *                       raises an error: the wrong record is simply
+     *                       updated. It is here only for the rows that carry
+     *                       neither key above, which is everything from before
+     *                       unique_id was written.
+     *
+     * unique_id used to sit below the pair, on the strength of unique_ids
+     * arriving attached to a different sample_code than the local record had.
+     * That symptom is this collision seen from the other end -- the unique_id
+     * was right, and the sample code beside it belonged to somebody else's
+     * record. See SampleCodeVariantUtility.
+     *
+     * @return array<int, array{key: string, where: string, params: array}>
      */
     private static function identityCandidates(array $recordFromOtherSystem): array
     {
@@ -1273,32 +1298,37 @@ final class TestRequestsService
 
         if ($remoteSampleCode !== '') {
             $candidates[] = [
+                'key' => 'remote_sample_code',
                 'where' => 'remote_sample_code = ?',
                 'params' => [$remoteSampleCode],
             ];
         }
 
-        // sample_code on its own is deliberately not a candidate: it is not
-        // unique -- on one production database 47% of rows share theirs with
-        // some other row -- so matching on it alone would sometimes update a
-        // different patient's sample. It is only an identity when paired with
-        // something that narrows it to one place.
-        if ($sampleCode !== '' && $labId !== null) {
-            $candidates[] = [
-                'where' => 'sample_code = ? AND lab_id = ?',
-                'params' => [$sampleCode, $labId],
-            ];
-        }
-
         if ($uniqueId !== '') {
             $candidates[] = [
+                'key' => 'unique_id',
                 'where' => 'unique_id = ?',
                 'params' => [$uniqueId],
             ];
         }
 
+        // sample_code on its own is never a candidate: it is not unique -- on
+        // one production database 47% of rows share theirs with some other row
+        // -- so matching on it alone would sometimes update a different
+        // patient's sample. Paired with a place it is narrower, but as the
+        // docblock above sets out, not narrow enough to be trusted ahead of a
+        // real identity.
+        if ($sampleCode !== '' && $labId !== null) {
+            $candidates[] = [
+                'key' => 'sample_code_and_lab_id',
+                'where' => 'sample_code = ? AND lab_id = ?',
+                'params' => [$sampleCode, $labId],
+            ];
+        }
+
         if ($sampleCode !== '' && $facilityId !== null) {
             $candidates[] = [
+                'key' => 'sample_code_and_facility_id',
                 'where' => 'sample_code = ? AND facility_id = ?',
                 'params' => [$sampleCode, $facilityId],
             ];
@@ -1325,6 +1355,20 @@ final class TestRequestsService
     public static function hasUsableIdentity(array $recordFromOtherSystem): bool
     {
         return self::identityCandidates($recordFromOtherSystem) !== [];
+    }
+
+    /**
+     * The keys this record would be looked up by, strongest first.
+     *
+     * Exposed because the order is the point, not an implementation detail: a
+     * record carrying a real identity must never be resolved by a sample code,
+     * and that is worth being able to assert.
+     *
+     * @return string[]
+     */
+    public static function identityKeys(array $recordFromOtherSystem): array
+    {
+        return array_column(self::identityCandidates($recordFromOtherSystem), 'key');
     }
 
     /**
