@@ -8,6 +8,7 @@ use App\Exceptions\SystemException;
 use App\Utilities\DateUtility;
 use App\Utilities\TurnaroundTimeUtility;
 use App\Utilities\SampleCountUtility;
+use App\Utilities\SampleRejectionUtility;
 
 /**
  * Query layer for the Lab Performance Indicators report.
@@ -724,7 +725,7 @@ final class LabPerformanceIndicatorsService
 
     private function rejectedPredicate(): string
     {
-        return "(t.is_sample_rejected = 'yes' OR t.result_status = " . \SAMPLE_STATUS\REJECTED . ")";
+        return SampleRejectionUtility::sqlPredicate('t');
     }
 
     /**
