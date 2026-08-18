@@ -33886,6 +33886,10 @@ msgstr "Format allemand"
 #~ msgid "Missing Count"
 #~ msgstr "Nombre de manquants"
 
+#: app/classes/Utilities/SampleRejectionUtility.php
+msgid "Unknown or unreported reason"
+msgstr "Motif inconnu ou non renseigné"
+
 #, fuzzy
 #~| msgid "Reason for Examination"
 #~ msgid "Select reason for examination"

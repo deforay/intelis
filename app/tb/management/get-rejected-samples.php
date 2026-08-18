@@ -6,6 +6,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleRejectionUtility;
 
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -29,16 +30,18 @@ $tResult = [];
 //get value by rejection reason id
 $vlQuery = "select count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`, r_c_a.recommended_corrective_action_name
                 FROM form_tb as vl
-                INNER JOIN r_tb_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
+                LEFT JOIN r_tb_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
                 LEFT JOIN r_tb_sample_type as s ON s.sample_id=vl.specimen_type
                 LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
-                INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
-                INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
-$sWhere[] = ' vl.is_sample_rejected = "yes" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
+                LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
+                LEFT JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
+$sWhere[] = SampleRejectionUtility::sqlPredicate('vl');
 if (!empty($_POST['sampleCollectionDate'])) {
     $start_date = '';
     $end_date = '';
-    $sWhere = [];
+    // NOT $sWhere = [] -- that reset used to drop the rejected-samples filter set
+    // above it, so supplying a date range (the normal way this report is run) made
+    // it count every TB sample in the range instead of the rejected ones.
     $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
 
     if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
@@ -72,6 +75,13 @@ $vlQuery = $vlQuery . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab
 //vl.vlsm_country_id = "' . $formId . '" AND
 $_SESSION['rejectedSamples'] = $vlQuery;
 $tableResult = $db->rawQuery($vlQuery);
+// A reason id is local to the install that minted it, so a lab's own reason
+// arrives here with no row behind it. Name it rather than leave the cell blank
+// -- the LEFT JOIN above is what stops the row being dropped altogether.
+foreach ($tableResult as $rejectionRowKey => $rejectionRow) {
+    $tableResult[$rejectionRowKey]['rejection_reason_name'] =
+        SampleRejectionUtility::reasonLabel($rejectionRow['rejection_reason_name'] ?? null);
+}
 
 foreach ($tableResult as $tableRow) {
     if (!isset($tResult[$tableRow['rejection_reason_name']])) {
