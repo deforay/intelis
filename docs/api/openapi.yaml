@@ -7,6 +7,10 @@ info:
     for the API.
 servers:
 - url: https://example.org/api/v1.1
+  description: Deliberate placeholder. The API is served by the Sample Tracking
+    System (STS), and each country has one STS in the cloud, so there is no shared
+    public host to send requests to. These endpoints write real records, so direct
+    any trial requests at a test STS rather than a production one.
 tags:
 - name: Initialization API
 - name: Core API
