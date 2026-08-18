@@ -357,7 +357,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
                                 <dd><?= _htmlTranslate('How many of the tests performed in the period were earlier attempts on a sample that had to be run again, divided by all tests with an outcome. It answers how often a sample takes more than one run, which a failure rate on its own does not show.'); ?></dd>
 
                                 <dt><?= _htmlTranslate('Rejection Rate'); ?></dt>
-                                <dd><?= _htmlTranslate('Rejection happens at registration, before any test, so both sides of this rate count samples registered in the period: those rejected divided by all of them.'); ?></dd>
+                                <dd><?= _htmlTranslate('Rejection happens at registration, before any test, so both sides of this rate count samples registered in the period: those rejected divided by all of them. Registered means the sample collection date, or the date the request was created when no collection date was recorded. Screens that filter on the collection date alone leave those samples out entirely, so they can show a slightly lower count for the same period.'); ?></dd>
 
                                 <dt><?= _htmlTranslate('Repeat Patients'); ?></dt>
                                 <dd><?= _htmlTranslate('Tests performed in the period are linked into one patient using the patient identifier on the request. A result change is flagged when the linked tests do not all carry the same result. Samples without an identifier cannot be linked, so the identifier coverage is shown next to these numbers.'); ?></dd>
@@ -641,12 +641,12 @@ $testingLabs = $facilitiesService->getTestingLabs();
         pageNote: "<?= _jsTranslate('Registrations and tests are counted separately, each on its own date. A period can show more tests than registrations when samples from an earlier period were worked through, or fewer when testing was held up.'); ?>",
         // Every card states the date it is measured on, so a figure copied off
         // this page carries its own definition with it.
-        basisRegistered: "<?= _jsTranslate('Collection date in range'); ?>",
+        basisRegistered: "<?= _jsTranslate('Collection date in range, or request date when not collected'); ?>",
         basisTested: "<?= _jsTranslate('Test date in range'); ?>",
         basisResulted: "<?= _jsTranslate('Test date in range, result recorded'); ?>",
         basisAwaiting: "<?= _jsTranslate('Test date in range, no result yet'); ?>",
         basisFailure: "<?= _jsTranslate('Of tests with an outcome, test date in range'); ?>",
-        basisRejection: "<?= _jsTranslate('Of samples registered, collection date in range'); ?>",
+        basisRejection: "<?= _jsTranslate('Of samples registered, collection date in range, or request date when not collected'); ?>",
         allDates: "<?= _jsTranslate('all dates'); ?>"
     };
 
