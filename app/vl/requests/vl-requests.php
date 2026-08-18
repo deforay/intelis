@@ -763,10 +763,10 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 							'cost' => _translate('A sample is rejected before it is tested, so it should have no result. These are counted as a rejection by some reports and as a result by others.'),
 							'fix' => _translate('Open each and decide which is true: the rejection or the result.'),
 						],
-						'goneWithResult' => [
+						'lostWithResult' => [
 							'icon' => 'fa-hourglass-end',
-							'title' => _translate('marked lost or expired, but carrying a result'),
-							'cost' => _translate('Both statuses lock the record, so a result that was produced cannot be reached, printed or sent back to the facility.'),
+							'title' => _translate('marked lost or missing, but carrying a result'),
+							'cost' => _translate('The status locks the record, so a result that was produced cannot be reached, printed or sent back to the facility.'),
 							'fix' => _translate('Review each and move it back to Accepted if the result stands.'),
 						],
 						'acceptedWithoutResult' => [
