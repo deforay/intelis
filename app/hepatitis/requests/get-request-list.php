@@ -13,6 +13,7 @@ use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 use App\Utilities\MiscUtility;
+use App\Utilities\SampleRejectionUtility;
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -186,7 +187,7 @@ try {
           $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
-          $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
+          $sWhere[] = ' ' . SampleRejectionUtility::sqlPredicate('vl') . ' ';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
           $sWhere[] = " vl.sample_received_at_lab_datetime is NOT NULL ";

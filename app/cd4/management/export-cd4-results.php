@@ -7,6 +7,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
+use App\Utilities\SampleRejectionUtility;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -62,7 +63,7 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 			$arvAdherence = 'Poor <85%';
 		}
 
-		$sampleRejection = ($aRow['is_sample_rejected'] == 'yes' || ($aRow['reason_for_sample_rejection'] != null && $aRow['reason_for_sample_rejection'] > 0)) ? 'Yes' : 'No';
+		$sampleRejection = SampleRejectionUtility::isRejected($aRow) ? 'Yes' : 'No';
 
 
 		//set result log value

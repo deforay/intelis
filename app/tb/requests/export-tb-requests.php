@@ -8,6 +8,7 @@ use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
+use App\Utilities\SampleRejectionUtility;
 
 
 /** @var DatabaseService $db */
@@ -64,7 +65,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $tbResults, $db): array {
 
     //set sample rejection
     $sampleRejection = 'No';
-    if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
+    if (SampleRejectionUtility::isRejected($aRow)) {
         $sampleRejection = 'Yes';
     }
     if (!empty($aRow['patient_name'])) {

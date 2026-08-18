@@ -8,6 +8,7 @@ use App\Registries\ContainerRegistry;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Utilities\SampleRejectionUtility;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -57,7 +58,7 @@ $buildRow = function ($aRow, $no) use ($general, $key): array {
 		$arvAdherence = 'Poor <85%';
 	}
 
-	$sampleRejection = ($aRow['is_sample_rejected'] == 'yes' || ($aRow['reason_for_sample_rejection'] != null && $aRow['reason_for_sample_rejection'] > 0)) ? 'Yes' : 'No';
+	$sampleRejection = SampleRejectionUtility::isRejected($aRow) ? 'Yes' : 'No';
 
 
 	$patientFname = $aRow['patient_first_name'] != '' ? $aRow['patient_first_name'] : '';
