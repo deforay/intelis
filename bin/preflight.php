@@ -579,6 +579,32 @@ if ($scVersion !== null && defined('VERSION')) {
     );
 }
 
+// Work that is pushed but never tagged reaches no lab, and nothing else says
+// so. Only a development clone can answer this: a lab is deployed from a
+// tarball or sits on a detached tag, with no branch and no tags to compare
+// against, so there the question does not arise.
+$gitDir = $root . '/.git';
+if (is_dir($gitDir) || is_file($gitDir)) {
+    $branch = trim((string) shell_exec('git -C ' . escapeshellarg($root) . ' rev-parse --abbrev-ref HEAD 2>/dev/null'));
+    $tags   = trim((string) shell_exec(
+        'git -C ' . escapeshellarg($root) . " tag --list 2>/dev/null | grep -E '^v[0-9]+\\.[0-9]+\\.[0-9]+$' | sort -V | tail -1"
+    ));
+
+    if ($branch === 'master' && $tags !== '') {
+        $unreleased = (int) trim((string) shell_exec(
+            'git -C ' . escapeshellarg($root) . ' rev-list --count ' . escapeshellarg($tags . '..HEAD') . ' 2>/dev/null'
+        ));
+        check(
+            'Unreleased work',
+            $unreleased === 0 ? PF_OK : PF_WARN,
+            $unreleased === 0
+                ? "master is published as {$tags}"
+                : "{$unreleased} commit(s) on master are not in any release (newest is {$tags})\n"
+                    . '  publish with: composer ship',
+        );
+    }
+}
+
 // Collation drift silently breaks joins and sorting between an old table and a
 // new one, and shows up as "Illegal mix of collations" from a query that has
 // worked for years.
