@@ -185,7 +185,21 @@ try {
     $apiService->setBearerToken((string) $general->getSTSToken());
 
     $output->write("Uploading to STS... ");
-    $jsonResponse = $apiService->post($url, $payload, gzip: true);
+    $response = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
+    $httpStatusCode = (int) ($response['httpStatusCode'] ?? 0);
+
+    // post() swallows HTTP errors and hands back the body, so the status has to be
+    // read explicitly. Without this a rejected upload -- an expired token above all --
+    // looked like a success, advanced the watermarks below, and quietly dropped the
+    // metadata it had just failed to deliver.
+    if ($httpStatusCode < 200 || $httpStatusCode > 299) {
+        $reason = !empty($response['body']) ? substr((string) $response['body'], 0, 500) : 'no response body';
+        throw new Exception(
+            $httpStatusCode === 0
+                ? "STS could not be reached for the lab metadata upload ($url)"
+                : "STS rejected the lab metadata upload with HTTP $httpStatusCode: $reason"
+        );
+    }
     $output->writeln("<info>OK</info>");
 
     // Only reached when the post above did not throw, so the watermarks advance solely

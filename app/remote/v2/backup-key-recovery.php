@@ -23,7 +23,6 @@ use App\Services\UsersService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
-use App\Services\FacilitiesService;
 use App\Services\STS\TokensService;
 use App\Registries\ContainerRegistry;
 
@@ -42,8 +41,6 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var TokensService $stsTokensService */
 $stsTokensService = ContainerRegistry::get(TokensService::class);
 
-/** @var FacilitiesService $facilitiesService */
-$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var Request $request */
 $request = AppRegistry::get('request');
@@ -75,9 +72,11 @@ try {
 
     $token = $stsTokensService->validateToken($authToken, $labId);
     if ($token === false || empty($token)) {
-        $labDetails = $facilitiesService->getFacilityById($labId);
         http_response_code(401);
-        throw new SystemException("Unauthorized Access. Token missing or invalid for lab {$labDetails['facility_name']}.", 401);
+        throw new SystemException(
+            'Unauthorized Access on backup key recovery: ' . $stsTokensService->getLastValidationFailure(),
+            401
+        );
     }
 
     $backupKey = trim((string) ($input['backupKey'] ?? ''));
