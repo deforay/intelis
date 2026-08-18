@@ -6,6 +6,7 @@ use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleRejectionUtility;
 
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -69,7 +70,7 @@ try {
           $writer->addRow(Row::fromValues([
                $aRow['labname'] ?? '',
                $aRow['facility_name'] ?? '',
-               trim((string) $aRow['rejection_reason_name']) ?: _translate("Unspecified reason for rejection"),
+               SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null),
                trim((string) $aRow['rejection_type']) ?: _translate("Unspecified"),
                (int) $aRow['total']
           ]));

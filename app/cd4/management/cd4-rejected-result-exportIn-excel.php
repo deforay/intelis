@@ -2,6 +2,7 @@
 
 
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleRejectionUtility;
 use App\Services\CommonService;
 use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
@@ -60,7 +61,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $row[] = ($patientFname);
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['labName'];
-          $row[] = $aRow['rejection_reason_name'];
+          $row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);
           $output[] = $row;
      }
      if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 50000) {

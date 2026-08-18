@@ -4,6 +4,7 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleRejectionUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -57,7 +58,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $row[] = ($patientFname);
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['labName'];
-          $row[] = $aRow['rejection_reason_name'];
+          $row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);
           $output[] = $row;
      }
      if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 50000) {

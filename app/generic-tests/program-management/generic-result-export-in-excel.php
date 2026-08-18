@@ -5,6 +5,7 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleRejectionUtility;
 use App\Services\GenericTestsService;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -166,7 +167,7 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		$row[] = ($aRow['request_clinician_name']);
 		$row[] = $requestedDate;
 		$row[] = $sampleRejection;
-		$row[] = $aRow['rejection_reason_name'];
+		$row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);
 		$row[] = $sampleTestedOn;
 		$row[] = $aRow['result'];
 		$row[] = $resultDispatchedDate;

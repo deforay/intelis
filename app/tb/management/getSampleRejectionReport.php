@@ -8,6 +8,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleRejectionUtility;
 
 
 // Sanitized values from $request object
@@ -96,11 +97,11 @@ try {
             LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
             LEFT JOIN r_tb_sample_type as s ON s.sample_id=vl.specimen_type
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-            JOIN r_tb_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
+            LEFT JOIN r_tb_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
             LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action ";
     $start_date = '';
     $end_date = '';
-    $sWhere[] = " vl.is_sample_rejected='yes' ";
+    $sWhere[] = SampleRejectionUtility::sqlPredicate('vl');
     if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) !== '') {
         $sWhere[] = ' b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
     }
@@ -204,7 +205,7 @@ try {
         $row[] = ($patientFname . " " . $patientMname);
         $row[] = $aRow['sample_collection_date'];
         $row[] = $aRow['labName'];
-        $row[] = $aRow['rejection_reason_name'];
+        $row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);
         $row[] = $aRow['recommended_corrective_action_name'];
         $output['aaData'][] = $row;
     }

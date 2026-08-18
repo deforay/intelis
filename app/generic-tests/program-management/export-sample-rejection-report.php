@@ -1,6 +1,7 @@
 <?php
 
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleRejectionUtility;
 use App\Services\CommonService;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -40,7 +41,7 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
           $row = [];
           $row[] = ucwords((string) $aRow['labname']);
           $row[] = ucwords((string) $aRow['facility_name']);
-          $row[] = ucwords((string) $aRow['rejection_reason_name']);
+          $row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);
           $row[] = strtoupper((string) $aRow['rejection_type']);
           $row[] = $aRow['total'];
           $output[] = $row;

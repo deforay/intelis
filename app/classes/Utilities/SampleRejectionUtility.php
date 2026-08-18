@@ -59,6 +59,27 @@ final class SampleRejectionUtility
     }
 
     /**
+     * The label to show for a rejection reason.
+     *
+     * A reason id is an auto-increment that is local to the install that minted
+     * it, and reference data only flows STS -> LIS, so a reason a lab creates
+     * arrives at the STS as an id with no row behind it. On one country's data
+     * 1,553 VL rows -- 91% of the rejections in a recent nine-month window --
+     * pointed at a reason id the STS has never had.
+     *
+     * Reports used to INNER JOIN the reason table, so every one of those rows
+     * vanished from the listing while the summary on the same page still counted
+     * it. LEFT JOIN and route the name through here instead: an unmatched or
+     * absent reason is named, not dropped. A rejection with no reason on record
+     * is still a rejection.
+     */
+    public static function reasonLabel(?string $reasonName): string
+    {
+        $name = trim((string) $reasonName);
+        return $name !== '' ? $name : _translate('Unknown or unreported reason');
+    }
+
+    /**
      * Samples whose two records of rejection contradict each other, so they can
      * be found and corrected rather than silently rounded away by whichever
      * definition a report happens to use.

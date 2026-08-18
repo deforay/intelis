@@ -2,6 +2,7 @@
 
 
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleRejectionUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
@@ -54,7 +55,7 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
           $row = [];
           $row[] = ($aRow['labname']);
           $row[] = ($aRow['facility_name']);
-          $row[] = ($aRow['rejection_reason_name']);
+          $row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);
           $row[] = strtoupper((string) $aRow['rejection_type']);
           $row[] = $aRow['total'];
           $output[] = $row;
