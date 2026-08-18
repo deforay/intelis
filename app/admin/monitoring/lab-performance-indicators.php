@@ -177,6 +177,56 @@ $testingLabs = $facilitiesService->getTestingLabs();
         overflow-y: auto;
     }
 
+    /* One thin bar across the top of the window, running for as long as any
+       request on this page is still out. The skeletons say which panel is
+       waiting; this says the page as a whole is still working, which is what
+       a filter change needs when it replaces several panels at once. */
+    #lpiProgress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        z-index: 2000;
+        overflow: hidden;
+        display: none;
+        /* Nothing on the page is blocked while it runs, not even the few
+           pixels it sits on. */
+        pointer-events: none;
+        background-color: #dfe6ec;
+    }
+
+    #lpiProgress.is-active {
+        display: block;
+    }
+
+    #lpiProgress span {
+        display: block;
+        width: 35%;
+        height: 100%;
+        background-color: #3c8dbc;
+        animation: lpiProgressSlide 1.15s ease-in-out infinite;
+    }
+
+    @keyframes lpiProgressSlide {
+        0% {
+            margin-left: -35%;
+        }
+
+        100% {
+            margin-left: 100%;
+        }
+    }
+
+    /* Without motion a travelling stripe says nothing, so the bar simply
+       sits there filled for as long as the work is running. */
+    @media (prefers-reduced-motion: reduce) {
+        #lpiProgress span {
+            width: 100%;
+            animation: none;
+        }
+    }
+
     /* A skeleton stands in for a card, chart or table while the query behind
        it is still running, so the panel shows where the numbers will land
        instead of reading as empty or broken. */
@@ -229,6 +279,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
     }
 </style>
 <div class="content-wrapper" id="lpiReport">
+    <div id="lpiProgress" aria-hidden="true"><span></span></div>
     <section class="content-header">
         <h1><em class="fa-solid fa-gauge-high"></em>
             <?php echo _htmlTranslate("Lab Performance Indicators"); ?>
@@ -548,6 +599,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
 </div>
 <script type="text/javascript">
     var lpiCache = {};
+    var lpiInFlight = {};
     var patientsTable = null;
 
     var LPI_LABELS = {
@@ -609,6 +661,16 @@ $testingLabs = $facilitiesService->getTestingLabs();
 
     var LPI_PATIENT_CARDS = ['cardRepeatPatients', 'cardChangedPatients', 'cardIdentifierCoverage'];
 
+    // Requests overlap: a filter change asks for the summary and a section at
+    // once, so the bar is counted up and down rather than switched, and only
+    // goes away once the last one is back.
+    var lpiPending = 0;
+
+    function lpiProgress(delta) {
+        lpiPending = Math.max(0, lpiPending + delta);
+        $('#lpiProgress').toggleClass('is-active', lpiPending > 0);
+    }
+
     function lpiSkelBar(variant) {
         return '<span class="lpi-skel ' + variant + '"></span>';
     }
@@ -650,6 +712,17 @@ $testingLabs = $facilitiesService->getTestingLabs();
             + esc(LPI_LABELS.noData) + '</td></tr></tbody>');
     }
 
+    // Every panel on the page is about to be replaced, so every panel goes to
+    // a skeleton before the tabs are reshuffled.
+    function lpiShowAllSkeletons() {
+        lpiSetCards(LPI_SUMMARY_CARDS, lpiSkelBar('lpi-skel-value'));
+        lpiSetCards(LPI_PATIENT_CARDS, lpiSkelBar('lpi-skel-value'));
+        Object.keys(LPI_SECTIONS).forEach(function (section) {
+            lpiShowSectionSkeleton(section);
+        });
+        $('#patientsTable tbody').html(lpiSkelRows(5, 5));
+    }
+
     function lpiChartDefaults() {
         Highcharts.setOptions({
             colors: ['#3c8dbc', '#00a65a', '#f39c12', '#8a9299', '#c0392b', '#605ca8'],
@@ -686,6 +759,8 @@ $testingLabs = $facilitiesService->getTestingLabs();
 
     function lpiApplyFilters() {
         lpiCache = {};
+        lpiInFlight = {};
+        lpiShowAllSkeletons();
         lpiToggleTabs();
         lpiRenderBasisNote();
         lpiLoadSummary();
@@ -725,12 +800,15 @@ $testingLabs = $facilitiesService->getTestingLabs();
 
     function lpiPost(section, extra, done) {
         var data = $.extend({ section: section }, lpiFilters(), extra || {});
+        lpiProgress(1);
         return $.ajax({
             url: '/admin/monitoring/get-lab-performance-indicators.php',
             type: 'POST',
             dataType: 'json',
             data: data,
             success: done
+        }).always(function () {
+            lpiProgress(-1);
         });
     }
 
@@ -745,6 +823,8 @@ $testingLabs = $facilitiesService->getTestingLabs();
             lpiRenderSection(section, lpiCache[key]);
             return;
         }
+        if (lpiInFlight[key]) { return; }
+        lpiInFlight[key] = true;
         lpiShowSectionSkeleton(section);
         lpiPost(section, null, function (json) {
             if (!json || json.error) {
@@ -755,6 +835,8 @@ $testingLabs = $facilitiesService->getTestingLabs();
             lpiRenderSection(section, json);
         }).fail(function () {
             lpiClearSectionSkeleton(section);
+        }).always(function () {
+            delete lpiInFlight[key];
         });
     }
 
@@ -1064,11 +1146,15 @@ $testingLabs = $facilitiesService->getTestingLabs();
                 Object.keys(f).forEach(function (k) {
                     aoData.push({ "name": k, "value": f[k] });
                 });
+                lpiProgress(1);
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
                     "url": sSource,
                     "data": aoData,
+                    "complete": function () {
+                        lpiProgress(-1);
+                    },
                     "success": function (json) {
                         if (json && json.summary) {
                             var s = json.summary;
@@ -1102,10 +1188,13 @@ $testingLabs = $facilitiesService->getTestingLabs();
 
     function lpiRunExport(section, format) {
         var data = $.extend({ section: section, format: format }, lpiFilters());
+        lpiProgress(1);
         $.post('/admin/monitoring/export-lab-performance-indicators.php', data, function (fileName) {
             if (fileName) {
                 window.location.href = '/download.php?f=' + fileName + '&d=a';
             }
+        }).always(function () {
+            lpiProgress(-1);
         });
     }
 
