@@ -9,6 +9,7 @@ use App\Services\VlService;
 use App\Abstracts\AbstractTestService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\TurnaroundTimeUtility;
+use App\Utilities\SampleCountUtility;
 
 ini_set('memory_limit', '512M');
 set_time_limit(600);
@@ -56,6 +57,9 @@ try {
     }
 
     if ($sWhere !== []) {
+        // A cancelled sample was called off before testing, so it is not work
+        // this report should count.
+        $sWhere[] = SampleCountUtility::countableWhere('vl');
         $sQuery .= " AND " . implode(" AND ", $sWhere);
     }
     // Same plausibility guards the chart applies, so the export reconciles
