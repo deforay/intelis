@@ -25,3 +25,14 @@ if (!is_dir(VAR_PATH)) {
 }
 
 require_once dirname(__DIR__) . '/app/system/constants.php';
+
+// The app's translation helpers live in app/system/functions.php, which pulls in the
+// whole framework on load. A unit test only needs _translate() to hand back the string
+// it was given, so it is stubbed here rather than dragging the framework into the suite.
+// Guarded, so if the real one is ever loaded first it wins.
+if (!function_exists('_translate')) {
+    function _translate(?string $text, bool|string $escapeTextOrContext = false): string
+    {
+        return (string) $text;
+    }
+}

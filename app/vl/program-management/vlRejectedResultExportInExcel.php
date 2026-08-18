@@ -4,6 +4,7 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleRejectionUtility;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
 
@@ -64,7 +65,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           }
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['labName'];
-          $row[] = $aRow['rejection_reason_name'];
+          $row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);
           $row[] = $aRow['recommended_corrective_action_name'];
 
           $writer->addRow(Row::fromValues($row));
