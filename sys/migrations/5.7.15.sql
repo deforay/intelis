@@ -50,3 +50,15 @@ CREATE TABLE IF NOT EXISTS `s_data_issues_scan` (
     `full_scan_cursor` BIGINT UNSIGNED NOT NULL DEFAULT 0,
     PRIMARY KEY (`test_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

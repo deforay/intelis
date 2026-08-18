@@ -96,20 +96,22 @@ final class DataIssuesService
      */
     public function getIssueCounts(string $testType): array
     {
-        // A facility-scoped user sees only their own facilities' samples, and
-        // flags are broken down by lab, not by facility. Rather than show a
-        // number that counts samples they cannot open, they are shown nothing.
-        if (!empty($_SESSION['facilityMap'])) {
-            return [];
-        }
-
         $where = ' WHERE test_type = ? ';
         $params = [$testType];
 
+        // Scoped exactly as the listing below it is. There is no use being told
+        // about conflicted data outside your own scope of access: the rows
+        // cannot be opened, so the count is a number nobody can act on.
         $labId = (int) ($_SESSION['labId'] ?? 0);
         if ($labId > 0 && $this->general->treatAsLIS()) {
             $where .= ' AND lab_id IN (?, 0) ';
             $params[] = $labId;
+        }
+
+        if (!empty($_SESSION['facilityMap'])) {
+            // Same source the request lists use, and already a list of integers
+            // built by the session, never by a request.
+            $where .= ' AND facility_id IN (' . $_SESSION['facilityMap'] . ') ';
         }
 
         $rows = $this->db->rawQuery(
@@ -236,8 +238,8 @@ final class DataIssuesService
             foreach ($predicates as $issue => $predicate) {
                 $this->db->rawQuery(
                     "INSERT INTO " . self::TABLE . "
-                            (test_type, record_id, issue_key, lab_id, sample_code, flagged_on)
-                     SELECT ?, vl.$primaryKey, ?, COALESCE(vl.lab_id, 0), vl.sample_code, ?
+                            (test_type, record_id, issue_key, lab_id, facility_id, sample_code, flagged_on)
+                     SELECT ?, vl.$primaryKey, ?, COALESCE(vl.lab_id, 0), COALESCE(vl.facility_id, 0), vl.sample_code, ?
                        FROM $table AS vl
                       WHERE $predicate" . $range . $window . "
                      ON DUPLICATE KEY UPDATE flagged_on = VALUES(flagged_on)",
