@@ -177,6 +177,53 @@ $testingLabs = $facilitiesService->getTestingLabs();
         overflow-y: auto;
     }
 
+    /* A skeleton stands in for a card, chart or table while the query behind
+       it is still running, so the panel shows where the numbers will land
+       instead of reading as empty or broken. */
+    #lpiReport .lpi-skel {
+        display: block;
+        border-radius: 3px;
+        background-color: #e9edf1;
+        background-image: linear-gradient(90deg, #e9edf1 0%, #f5f7f9 50%, #e9edf1 100%);
+        background-size: 200% 100%;
+        animation: lpiSkelShimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes lpiSkelShimmer {
+        0% {
+            background-position: 200% 0;
+        }
+
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        #lpiReport .lpi-skel {
+            animation: none;
+        }
+    }
+
+    #lpiReport .lpi-skel-value {
+        height: 21px;
+        margin: 4px 0 3px;
+        width: 70%;
+        max-width: 110px;
+    }
+
+    #lpiReport .lpi-skel-chart {
+        height: 300px;
+    }
+
+    #lpiReport #chartRejectionReasons .lpi-skel-chart {
+        height: 240px;
+    }
+
+    #lpiReport .lpi-skel-cell {
+        height: 12px;
+    }
+
     th {
         display: revert !important;
     }
@@ -262,7 +309,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
                             </dl>
                         </div>
 
-                        <table aria-describedby="lpi-description" class="table pageFilters" aria-hidden="true"
+                        <table aria-describedby="lpi-description" class="table pageFilters"
                             cellspacing="3" style="margin-left:1%;margin-top:5px;width:98%;">
                             <tr>
                                 <td><strong><?= _htmlTranslate('Test'); ?>&nbsp;:</strong></td>
@@ -482,11 +529,13 @@ $testingLabs = $facilitiesService->getTestingLabs();
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td colspan="5" class="dataTables_empty">
-                                                <?= _htmlTranslate("Loading data from server"); ?>
-                                            </td>
-                                        </tr>
+                                        <?php for ($skelRow = 0; $skelRow < 5; $skelRow++) { ?>
+                                            <tr>
+                                                <?php for ($skelCell = 0; $skelCell < 5; $skelCell++) { ?>
+                                                    <td><span class="lpi-skel lpi-skel-cell"></span></td>
+                                                <?php } ?>
+                                            </tr>
+                                        <?php } ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -497,9 +546,6 @@ $testingLabs = $facilitiesService->getTestingLabs();
         </div>
     </section>
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript" src="/assets/js/highcharts.js"></script>
 <script type="text/javascript">
     var lpiCache = {};
     var patientsTable = null;
@@ -548,12 +594,70 @@ $testingLabs = $facilitiesService->getTestingLabs();
         allDates: "<?= _jsTranslate('all dates'); ?>"
     };
 
-    Highcharts.setOptions({
-        colors: ['#3c8dbc', '#00a65a', '#f39c12', '#8a9299', '#c0392b', '#605ca8'],
-        chart: { style: { fontFamily: 'inherit' } },
-        title: { style: { fontSize: '14px', fontWeight: '600' } },
-        credits: { enabled: false }
-    });
+    // Which chart, table and reasons block each tab owns, so a skeleton can
+    // be put up and taken down without every loader repeating the list.
+    var LPI_SECTIONS = {
+        overview: { chart: 'chartOverview', table: 'tableOverview', columns: 15 },
+        tat: { chart: 'chartTat', table: 'tableTat', columns: 7 },
+        volume: { chart: 'chartVolume', table: 'tableVolume', columns: 10 },
+        failure: { chart: 'chartFailure', table: 'tableFailure', columns: 7, reasons: 'failureReasonsWrap' },
+        rejection: { chart: 'chartRejection', table: 'tableRejection', columns: 5, reasons: 'rejectionReasonsWrap' }
+    };
+
+    var LPI_SUMMARY_CARDS = ['cardRegistered', 'cardTested', 'cardResulted',
+        'cardAwaitingResult', 'cardFailure', 'cardRejection'];
+
+    var LPI_PATIENT_CARDS = ['cardRepeatPatients', 'cardChangedPatients', 'cardIdentifierCoverage'];
+
+    function lpiSkelBar(variant) {
+        return '<span class="lpi-skel ' + variant + '"></span>';
+    }
+
+    function lpiSkelRows(columns, rows) {
+        var html = '';
+        for (var r = 0; r < rows; r++) {
+            html += '<tr>';
+            for (var c = 0; c < columns; c++) {
+                html += '<td>' + lpiSkelBar('lpi-skel-cell') + '</td>';
+            }
+            html += '</tr>';
+        }
+        return html;
+    }
+
+    function lpiSetCards(ids, html) {
+        ids.forEach(function (id) { $('#' + id).html(html); });
+    }
+
+    function lpiShowSectionSkeleton(section) {
+        var s = LPI_SECTIONS[section];
+        if (!s) { return; }
+        $('#' + s.chart).html(lpiSkelBar('lpi-skel-chart'));
+        $('#' + s.table).html('<tbody>' + lpiSkelRows(s.columns, 6) + '</tbody>');
+        // Reasons belong to the filters being replaced, so they go away until
+        // the new answer says whether there are any.
+        if (s.reasons) { $('#' + s.reasons).hide(); }
+    }
+
+    // A request that fails or errors must not leave the shimmer running
+    // forever, so the skeleton falls back to the same empty state a query
+    // with no rows would produce.
+    function lpiClearSectionSkeleton(section) {
+        var s = LPI_SECTIONS[section];
+        if (!s) { return; }
+        $('#' + s.chart).empty();
+        $('#' + s.table).html('<tbody><tr><td class="text-center text-muted">'
+            + esc(LPI_LABELS.noData) + '</td></tr></tbody>');
+    }
+
+    function lpiChartDefaults() {
+        Highcharts.setOptions({
+            colors: ['#3c8dbc', '#00a65a', '#f39c12', '#8a9299', '#c0392b', '#605ca8'],
+            chart: { style: { fontFamily: 'inherit' } },
+            title: { style: { fontSize: '14px', fontWeight: '600' } },
+            credits: { enabled: false }
+        });
+    }
 
     function lpiFilters() {
         var testValue = $('#testType').val() || 'all';
@@ -641,10 +745,16 @@ $testingLabs = $facilitiesService->getTestingLabs();
             lpiRenderSection(section, lpiCache[key]);
             return;
         }
+        lpiShowSectionSkeleton(section);
         lpiPost(section, null, function (json) {
-            if (!json || json.error) { return; }
+            if (!json || json.error) {
+                lpiClearSectionSkeleton(section);
+                return;
+            }
             lpiCache[key] = json;
             lpiRenderSection(section, json);
+        }).fail(function () {
+            lpiClearSectionSkeleton(section);
         });
     }
 
@@ -661,6 +771,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
     function lpiLoadSummary() {
         var f = lpiFilters();
         var section = 'overview';
+        lpiSetCards(LPI_SUMMARY_CARDS, lpiSkelBar('lpi-skel-value'));
         lpiPost(section, null, function (json) {
             var rows = (json && json.rows) || [];
             if (f.testType !== 'all') {
@@ -688,6 +799,8 @@ $testingLabs = $facilitiesService->getTestingLabs();
             $('#cardRejection').text(rejectionRate === null ? '--' : rejectionRate.toFixed(2) + '%');
             $('#cardFailureWrap').toggleClass('is-alert', failureRate !== null && failureRate > 5);
             $('#cardRejectionWrap').toggleClass('is-alert', rejectionRate !== null && rejectionRate > 5);
+        }).fail(function () {
+            lpiSetCards(LPI_SUMMARY_CARDS, '--');
         });
     }
 
@@ -924,6 +1037,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
 
     function lpiLoadPatients() {
         if (patientsTable !== null) {
+            $('#patientsTable tbody').html(lpiSkelRows(5, 5));
             patientsTable.fnDraw();
             return;
         }
@@ -944,6 +1058,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-lab-performance-indicators.php",
             "fnServerData": function (sSource, aoData, fnCallback) {
+                lpiSetCards(LPI_PATIENT_CARDS, lpiSkelBar('lpi-skel-value'));
                 aoData.push({ "name": "section", "value": "patients" });
                 var f = lpiFilters();
                 Object.keys(f).forEach(function (k) {
@@ -963,8 +1078,13 @@ $testingLabs = $facilitiesService->getTestingLabs();
                                 s.identifierCoverage === null ? '--' : s.identifierCoverage + '%');
                             $('#patientsCoverageNote').text(
                                 "<?= _jsTranslate('Repeat visits can only be linked for samples that carry a patient identifier. Coverage below shows how much of the data that is.'); ?>");
+                        } else {
+                            lpiSetCards(LPI_PATIENT_CARDS, '--');
                         }
                         fnCallback(json);
+                    },
+                    "error": function () {
+                        lpiSetCards(LPI_PATIENT_CARDS, '--');
                     }
                 });
             }
@@ -1018,6 +1138,8 @@ $testingLabs = $facilitiesService->getTestingLabs();
     }
 
     $(document).ready(function () {
+        lpiChartDefaults();
+
         $('#dateRange').daterangepicker({
             locale: {
                 cancelLabel: "<?= _jsTranslate("Clear"); ?>",
