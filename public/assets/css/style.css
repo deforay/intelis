@@ -713,20 +713,9 @@ div.dataTables_processing>div:last-child {
     text-decoration: none;
 }
 
-/* No action available to this role, so the row only states the problem. */
-.needs-attention .na-readonly {
-    float: right;
-    margin-left: 12px;
-    color: #999;
-    font-size: 12px;
-    font-style: italic;
-    white-space: nowrap;
-}
-
 @media (max-width: 767px) {
 
-    .needs-attention .na-action,
-    .needs-attention .na-readonly {
+    .needs-attention .na-action {
         float: none;
         display: inline-block;
         margin: 8px 0 0 26px;
