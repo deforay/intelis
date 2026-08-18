@@ -47,3 +47,15 @@ ALTER TABLE `r_hepatitis_sample_rejection_reasons` ADD COLUMN `contributed_by_la
 ALTER TABLE `r_tb_sample_rejection_reasons` ADD COLUMN `contributed_by_lab_id` INT DEFAULT NULL;
 ALTER TABLE `r_cd4_sample_rejection_reasons` ADD COLUMN `contributed_by_lab_id` INT DEFAULT NULL;
 ALTER TABLE `r_generic_sample_rejection_reasons` ADD COLUMN `contributed_by_lab_id` INT DEFAULT NULL;
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
