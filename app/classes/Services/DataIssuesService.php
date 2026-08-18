@@ -7,7 +7,6 @@ use App\Utilities\SampleRejectionUtility;
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\CANCELLED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-use const SAMPLE_STATUS\EXPIRED;
 use const SAMPLE_STATUS\LOST_OR_MISSING;
 
 /**
@@ -80,9 +79,16 @@ final class DataIssuesService
             // report. Both write paths that produced these are closed.
             'rejectedWithResult' => '(' . SampleRejectionUtility::sqlPredicate($alias) . " AND $hasResult)",
 
-            // Marked as never arriving or past use, yet a result was produced.
-            // Both statuses lock the row, so the result cannot be reached.
-            'goneWithResult' => "($alias.result_status IN (" . LOST_OR_MISSING . ", " . EXPIRED . ") AND $hasResult)",
+            // Someone recorded that the sample never arrived, yet a result for
+            // it exists. The status locks the row, so that result cannot be
+            // reached, printed or sent back.
+            //
+            // Expiry is deliberately not here. It is a time-based decision the
+            // nightly task makes about a sample nobody worked on, so an expired
+            // sample carrying a result is a backlog rather than a contradiction
+            // -- 823 of them on one instance, none of which anyone was going to
+            // work through.
+            'lostWithResult' => "($alias.result_status = " . LOST_OR_MISSING . " AND $hasResult)",
 
             // Accepted is what the printing, emailing and dispatch queries treat
             // as "has a result", so one without a result drops silently out of
