@@ -21,6 +21,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\RejectionReasonMappingService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -107,14 +108,42 @@ try {
         ],
     ];
 
+    // Rejection reasons this lab holds, sent WHOLE every run rather than by delta.
+    //
+    // A reason typed into the "Other" box gets a local auto-increment id that means
+    // nothing anywhere else, and the id is what travels on the sample -- so STS ends
+    // up with rejections pointing at reasons it has never heard of. STS resolves them
+    // by name and records what each of this lab's ids means (see
+    // RejectionReasonMappingService).
+    //
+    // Whole, not delta, because the reasons that need resolving were minted years ago
+    // and would never cross an updated_datetime watermark again. These are a few dozen
+    // rows per module, so sending all of them every run costs nothing worth measuring.
+    $reasonTables = [];
+    foreach (RejectionReasonMappingService::syncableTestTypes() as $reasonTestType) {
+        $reasonTable = RejectionReasonMappingService::reasonTableFor($reasonTestType);
+        if (!empty($reasonTable)) {
+            $reasonTables[$reasonTable] = RejectionReasonMappingService::payloadKeyFor($reasonTestType);
+        }
+    }
+
     // +1 for users table
-    $totalSteps = count($metadataTables) + count($instrumentDataTables) + 1;
+    $totalSteps = count($metadataTables) + count($reasonTables) + count($instrumentDataTables) + 1;
     $bar = MiscUtility::spinnerStart($totalSteps, 'Collecting table data…');
 
     foreach ($metadataTables as $table => $payloadKey) {
         if ($forceFlag === false && !empty($lastUpdatedOn)) {
             $db->where($lastUpdatedOnCondition);
         }
+        $records = $db->get($table);
+        if (!empty($records)) {
+            $payload[$payloadKey] = $records;
+        }
+        MiscUtility::spinnerAdvance($bar);
+    }
+
+    foreach ($reasonTables as $table => $payloadKey) {
+        $db->reset();
         $records = $db->get($table);
         if (!empty($records)) {
             $payload[$payloadKey] = $records;
