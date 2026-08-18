@@ -18,6 +18,8 @@ final class TokensService
 
     protected $facilitiesTable = 'facility_details';
 
+    private ?string $lastValidationFailure = null;
+
     public function __construct(DatabaseService $db, protected CommonService $commonService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
@@ -76,22 +78,77 @@ final class TokensService
 
     public function validateToken(?string $token, int $facilityId): bool
     {
+        $this->lastValidationFailure = null;
 
-        if ($token !== null && $token !== '' && $token !== '0' && $facilityId !== 0) {
-
-            $this->db->where('facility_id', $facilityId);
-            $result = $this->db->getOne($this->facilitiesTable, ['sts_token', 'sts_token_expiry']);
-            // Constant-time comparison so token validity can't be probed by timing.
-            if ($result && !empty($result['sts_token']) && hash_equals((string) $result['sts_token'], (string) $token)) {
-                // Directly check if the current time is less than the stored expiry
-                if (time() < strtotime((string) $result['sts_token_expiry'])) {
-                    return true;
-                }
-                // Token expired, so generate a new one
-                $this->createToken($facilityId);
-            }
+        if ($facilityId === 0) {
+            $this->lastValidationFailure = 'no lab id was sent, so the token could not be checked against a lab';
+            return false;
         }
 
+        if ($token === null || $token === '' || $token === '0') {
+            $this->lastValidationFailure = "no bearer token was sent for {$this->describeFacility($facilityId)}";
+            return false;
+        }
+
+        $this->db->where('facility_id', $facilityId);
+        $result = $this->db->getOne($this->facilitiesTable, ['facility_name', 'sts_token', 'sts_token_expiry']);
+
+        if (empty($result)) {
+            $this->lastValidationFailure = "no lab with id $facilityId exists on this STS";
+            return false;
+        }
+
+        $lab = $this->describeFacility($facilityId, $result['facility_name'] ?? null);
+
+        if (empty($result['sts_token'])) {
+            $this->lastValidationFailure = "$lab has no STS token issued yet";
+            return false;
+        }
+
+        // Constant-time comparison so token validity can't be probed by timing.
+        if (!hash_equals((string) $result['sts_token'], (string) $token)) {
+            $this->lastValidationFailure = "the token sent does not match the one issued to $lab";
+            return false;
+        }
+
+        // Directly check if the current time is less than the stored expiry
+        if (time() < strtotime((string) $result['sts_token_expiry'])) {
+            return true;
+        }
+
+        // Token expired, so generate a new one. The reason is recorded before that
+        // happens -- once the new token is stored, an expired token is indistinguishable
+        // from a wrong one, and those two need different answers from whoever reads the log.
+        $this->lastValidationFailure = sprintf(
+            'the token for %s expired on %s; a fresh one has been issued for the next sync',
+            $lab,
+            $result['sts_token_expiry'] ?: 'an unrecorded date'
+        );
+        $this->createToken($facilityId);
+
         return false;
+    }
+
+    /**
+     * Why the last validateToken() call said no, phrased for whoever is reading the
+     * log and has to work out which lab has stopped talking to STS. Never contains
+     * the token itself.
+     */
+    public function getLastValidationFailure(): string
+    {
+        return $this->lastValidationFailure ?? 'the token could not be validated';
+    }
+
+    private function describeFacility(int $facilityId, ?string $facilityName = null): string
+    {
+        if ($facilityName === null) {
+            $this->db->where('facility_id', $facilityId);
+            $row = $this->db->getOne($this->facilitiesTable, ['facility_name']);
+            $facilityName = $row['facility_name'] ?? null;
+        }
+
+        return empty($facilityName)
+            ? "lab id $facilityId"
+            : "lab '$facilityName' (id $facilityId)";
     }
 }

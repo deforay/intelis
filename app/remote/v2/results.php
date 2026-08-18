@@ -56,7 +56,10 @@ try {
 
     $token = $stsTokensService->validateToken($authToken, $labId);
     if (!$token) {
-        throw new SystemException('Unauthorized Access', 401);
+        throw new SystemException(
+            'Unauthorized Access on results sync: ' . $stsTokensService->getLastValidationFailure(),
+            401
+        );
     }
 
     $dataInJsonFormat = JsonUtility::encodeUtf8Json($data);

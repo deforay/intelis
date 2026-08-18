@@ -87,9 +87,11 @@ try {
 
     $token = $stsTokensService->validateToken($authToken, $labId);
     if ($token === false || empty($token)) {
-        $labDetails = $facilitiesService->getFacilityById($labId);
         http_response_code(401);
-        throw new SystemException("Unauthorized Access. Token missing or invalid for lab {$labDetails['facility_name']}.", 401);
+        throw new SystemException(
+            'Unauthorized Access on manifest verification: ' . $stsTokensService->getLastValidationFailure(),
+            401
+        );
     }
 
     $db->where('manifest_code', $manifestCode);

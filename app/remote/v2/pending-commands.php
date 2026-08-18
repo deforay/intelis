@@ -51,7 +51,10 @@ try {
 
     $token = $stsTokensService->validateToken($authToken, $labId);
     if (!$token) {
-        throw new SystemException('Unauthorized Access', 401);
+        throw new SystemException(
+            'Unauthorized Access on pending commands poll: ' . $stsTokensService->getLastValidationFailure(),
+            401
+        );
     }
 
     $now = DateUtility::getCurrentDateTime();

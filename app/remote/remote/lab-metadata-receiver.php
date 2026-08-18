@@ -136,7 +136,11 @@ try {
         // receivers already apply.
         $authToken = ApiService::extractBearerToken($request);
         if (!$stsTokensService->validateToken($authToken, (int) $labId)) {
-            throw new SystemException('Unauthorized Access', 401);
+            http_response_code(401);
+            throw new SystemException(
+                'Unauthorized Access on lab metadata sync: ' . $stsTokensService->getLastValidationFailure(),
+                401
+            );
         }
 
 
@@ -248,9 +252,28 @@ try {
 } catch (Throwable $e) {
     $db->rollbackTransaction();
 
-    $payload = json_encode([]);
+    // An empty body told the sender nothing about why the upload failed. Client errors
+    // (a bad or expired token above all) carry their reason back so the lab sees it in
+    // its own sync output instead of only in this server's log.
+    $statusCode = (int) $e->getCode();
+    if ($statusCode >= 400 && $statusCode <= 499) {
+        http_response_code($statusCode);
+        $payload = json_encode([
+            'status' => 'error',
+            'error' => $e->getMessage(),
+        ]);
+    } else {
+        http_response_code(500);
+        $payload = json_encode([
+            'status' => 'error',
+            'error' => 'Metadata sync failed on the server',
+        ]);
+    }
 
     LoggerUtility::logError($e->getMessage(), [
+        'labId' => $labId ?? null,
+        'transactionId' => $transactionId ?? null,
+        'clientIp' => CommonService::getClientIpAddress($request ?? null),
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'last_db_errno' => $db->getLastErrno(),
