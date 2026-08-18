@@ -4,6 +4,7 @@ use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -30,7 +31,8 @@ foreach ($_POST['facilityId'] as $facility) {
 $collectionQuery = "SELECT COUNT(vl.unique_id) as total, facility_name
                     FROM $table as vl
                     JOIN facility_details as f ON f.facility_id=vl.facility_id
-                    WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
+                    WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
+                    AND " . SampleCountUtility::countableWhere('vl');
 if (count($facilities) > 0) {
     $collectionQuery .= " AND f.facility_name IN (" . implode(",", $facilities) . ")";
 }

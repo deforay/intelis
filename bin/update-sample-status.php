@@ -213,7 +213,14 @@ try {
 
                     $db->reset();
                     $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
-                    $db->where("DATEDIFF(CURRENT_DATE, `sample_collection_date`) > $expiryDays");
+                    // Falls back to the date the request was created when no
+                    // collection date was recorded. DATEDIFF against NULL is
+                    // NULL, so keying on the collection date alone meant a
+                    // sample without one could never expire, however old --
+                    // 23,291 of them on one instance, sitting in a pre-result
+                    // status for good. Same COALESCE the indicators use to
+                    // decide when a sample was registered.
+                    $db->where("DATEDIFF(CURRENT_DATE, COALESCE(`sample_collection_date`, `request_created_datetime`)) > $expiryDays");
                     $db->pageLimit = $batchSize;
                     $rows = $db->get($tableName, [$offset, $batchSize], $primaryKey);
 

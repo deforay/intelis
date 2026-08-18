@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use App\Utilities\SampleCountUtility;
 
 
 
@@ -83,6 +84,9 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
         $sWhere[] =  ' f.facility_id = "' . $_POST['facilityName'] . '"';
     }
+    // A cancelled sample was called off before testing, so it is not
+    // work this report should count.
+    $sWhere[] = SampleCountUtility::countableWhere('vl');
     $sQuery = $sQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.result!=""';
 
     $sResult = $db->rawQuery($sQuery);
@@ -115,6 +119,9 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
         $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
     }
 
+    // A cancelled sample was called off before testing, so it is not
+    // work this report should count.
+    $sWhere[] = SampleCountUtility::countableWhere('vl');
     $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.sample_tested_datetime IS NULL AND vl.specimen_type!="" AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH AND IFNULL(reason_for_vl_testing, 0)  != 9999';
     $checkEmptyResult = $db->rawQuery($checkEmptyResultQuery);
     //get all sample type
@@ -154,6 +161,9 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
             if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
                 $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
             }
+            // A cancelled sample was called off before testing, so it is not
+            // work this report should count.
+            $sWhere[] = SampleCountUtility::countableWhere('vl');
             $checkEmptyResultSampleQuery .= implode(" AND ", $sWhere);
             $checkEmptySampleResult[$sample['sample_name']] = $db->rawQuery($checkEmptyResultSampleQuery);
         }
@@ -212,6 +222,9 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
         if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
             $sWhere[] =  '  f.facility_id = "' . $_POST['facilityName'] . '"';
         }
+        // A cancelled sample was called off before testing, so it is not
+        // work this report should count.
+        $sWhere[] = SampleCountUtility::countableWhere('vl');
         $checkResultAvgQuery = $checkResultAvgQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.result=""';
         $checkResultAvgResult = $db->rawQuery($checkResultAvgQuery);
         if (count($checkResultAvgResult) > 0) {
@@ -612,7 +625,8 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
                     FROM form_vl as vl
                     JOIN facility_details as f ON vl.facility_id=f.facility_id
                     WHERE MONTH(sample_collection_date)='$mnth'
-                    AND YEAR(sample_collection_date)='$year'";
+                    AND YEAR(sample_collection_date)='$year'
+                    AND " . SampleCountUtility::countableWhere('vl');
             if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
                 $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
             }

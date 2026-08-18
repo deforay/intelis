@@ -4,6 +4,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
 
 
 /** @var DatabaseService $db */
@@ -147,6 +148,9 @@ if ($labScope = $general->labScopeWhere('vl')) {
 }
 
 if ($sWhere !== []) {
+  // A cancelled sample was called off before testing, so it is not work
+  // this report should count.
+  $sWhere[] = SampleCountUtility::countableWhere('vl');
   $sWhere = implode(' AND ', $sWhere);
 }
 

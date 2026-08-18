@@ -7,6 +7,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
 
 
 // Sanitized values from $request object
@@ -82,6 +83,7 @@ try {
 
             FROM form_vl as vl JOIN facility_details as f ON f.facility_id=vl.facility_id
             WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
+            AND " . SampleCountUtility::countableWhere('vl') . "
             $whereCondition
             $recencyWhere
             GROUP BY vl.facility_id ORDER BY totalCount DESC";
