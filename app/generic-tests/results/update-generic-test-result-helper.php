@@ -32,6 +32,16 @@ $absDecimalVal = null;
 $absVal = null;
 $txtVal = null;
 try {
+    // Acting as a LIS: a result can only be recorded for this install's own lab.
+    // A sample already saved against another lab (referred in) keeps that lab, so
+    // this never reassigns someone else's sample. No-op on STS and standalone.
+    $_POST['labId'] = $general->resolveRequestLabId($_POST['labId'] ?? null, $tableName, 'sample_id', $_POST['requestSampleId'] ?? null);
+    // Per-test cards follow the same rule, except a lab that already has tests
+    // on this sample (referred in) keeps them. Blank cards stay blank.
+    if (!empty($_POST['testResult']['labId']) && is_array($_POST['testResult']['labId'])) {
+        $_POST['testResult']['labId'] = $general->resolveTestCardLabIds($_POST['testResult']['labId'], $_POST['labId'] ?? null, 'generic_test_results', 'generic_id', $_POST['requestSampleId'] ?? null);
+    }
+
 
     $db->where('sample_id', $_POST['requestSampleId'] ?? 0);
     $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);

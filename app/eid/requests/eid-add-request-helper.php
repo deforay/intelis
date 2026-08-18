@@ -39,6 +39,12 @@ $tableName = "form_eid";
 $tableName1 = "activity_log";
 
 try {
+	// Acting as a LIS: the Testing Lab is this install's own lab, not a free
+	// choice. The forms already constrain the dropdown, but AJAX endpoints
+	// bypass ACL, so the rule only holds if it holds here. No-op on STS and
+	// standalone installs, and on any LIS session with no resolved lab.
+	$_POST['labId'] = $general->resolveRequestLabId($_POST['labId'] ?? null);
+
 	$general->assertFacilityAllowed((int) ($_POST['facilityId'] ?? 0));
 
 	$instanceId = '';

@@ -1140,6 +1140,102 @@ final class CommonService
     }
 
     /**
+     * The testing lab a request may actually be saved against.
+     *
+     * When acting as a LIS (treatAsLIS) the lab is not a free choice: this
+     * install IS one lab, so a request it creates must name that lab. The forms
+     * already constrain the Testing Lab dropdown, but AJAX endpoints bypass ACL
+     * and a POST can be replayed with any labId, so the rule only holds if it
+     * holds server-side.
+     *
+     * Why it matters beyond tidiness: sample codes are minted per install with
+     * no lab component, so one install writing requests under another install's
+     * lab_id puts two counters' codes under one lab -- which is what collides on
+     * UNIQUE (sample_code, lab_id) when results sync back. See the collision
+     * absorber in STS\ResultsService for the other end of the same problem.
+     *
+     * One exception, mirroring the dropdown rule in _request-form-body.php: a
+     * record already saved against a different lab keeps that lab on edit, so
+     * editing an unrelated field never silently reassigns someone else's sample.
+     * Pass $table/$primaryKey/$recordId on edit to enable that; omit them on add.
+     *
+     * A no-op for STS, standalone, and any LIS session with no resolved lab, so
+     * it never blanks a lab that used to save fine.
+     */
+    public function resolveRequestLabId($postedLabId, ?string $table = null, ?string $primaryKey = null, $recordId = null): ?int
+    {
+        $posted = ((int) $postedLabId) ?: null;
+        $ownLabId = $this->getOwnLabId();
+        if ($ownLabId === null) {
+            return $posted;
+        }
+        if ($posted === $ownLabId) {
+            return $posted;
+        }
+        $savedLabId = null;
+        if (!empty($table) && !empty($primaryKey) && !empty($recordId)) {
+            $saved = $this->db->rawQueryOne(
+                "SELECT lab_id FROM `$table` WHERE `$primaryKey` = ?",
+                [$recordId]
+            );
+            $savedLabId = ((int) ($saved['lab_id'] ?? 0)) ?: null;
+        }
+        // Keep an existing foreign lab as-is; otherwise this install's own lab.
+        $resolved = $savedLabId ?? $ownLabId;
+        if ($posted !== null && $posted !== $resolved) {
+            // Worth knowing about: the form should not have offered this lab. Either
+            // a dropdown somewhere is still unconstrained, or the POST was crafted.
+            LoggerUtility::logWarning('Testing lab discarded on a LIS request', [
+                'posted' => $posted,
+                'resolved' => $resolved,
+                'ownLab' => $ownLabId,
+            ]);
+        }
+        return $resolved;
+    }
+
+    /**
+     * Per-test card labs on the multi-test forms (TB, Custom Tests), aligned to the
+     * lab already resolved for the request by resolveRequestLabId().
+     *
+     * On a LIS a NEW test can only be recorded for this install's own lab, so a card
+     * naming some other lab is discarded exactly like the parent lab is. Two things
+     * are deliberately left alone:
+     *  - a lab already recorded against this sample's tests -- TB samples referred in
+     *    carry the referring lab's tests, and an edit here must not rewrite them;
+     *  - blank cards, because an empty card means "no test" and filling one in would
+     *    create a phantom test row.
+     * Pass $testTable/$idColumn/$recordId to enable the first exception.
+     *
+     * A no-op when not acting as a LIS, or when the request has no resolved lab.
+     */
+    public function resolveTestCardLabIds(
+        array $postedLabIds,
+        $requestLabId,
+        ?string $testTable = null,
+        ?string $idColumn = null,
+        $recordId = null
+    ): array {
+        $labId = ((int) $requestLabId) ?: null;
+        if ($labId === null || $this->getOwnLabId() === null) {
+            return $postedLabIds;
+        }
+        $savedLabIds = [];
+        if (!empty($testTable) && !empty($idColumn) && !empty($recordId)) {
+            $rows = $this->db->rawQuery(
+                "SELECT DISTINCT lab_id FROM `$testTable` WHERE `$idColumn` = ?",
+                [$recordId]
+            );
+            $savedLabIds = array_filter(array_map(static fn($r) => (int) ($r['lab_id'] ?? 0), $rows));
+        }
+        $keep = array_merge([$labId], $savedLabIds);
+        return array_map(
+            static fn($posted) => ((int) $posted) && !in_array((int) $posted, $keep, true) ? $labId : $posted,
+            $postedLabIds
+        );
+    }
+
+    /**
      * Lab scope for the admin LIST surfaces (users, instruments) on a lab column.
      * Three cases, by design:
      *  - LIS install:        own lab + legacy unassigned -> (col = labId OR col IS NULL)

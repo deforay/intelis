@@ -43,6 +43,18 @@ $vl_result_category = null;
 $vlResult = null;
 $resultStatus = null;
 try {
+     // Acting as a LIS: the Testing Lab is this install's own lab, not a free
+     // choice. The forms already constrain the dropdown, but AJAX endpoints
+     // bypass ACL, so the rule only holds if it holds here. No-op on STS and
+     // standalone installs, and on any LIS session with no resolved lab.
+     $_POST['labId'] = $general->resolveRequestLabId($_POST['labId'] ?? null, $tableName, 'sample_id', $_POST['requestSampleId'] ?? null);
+     // Same rule for the per-test cards on this form: every card runs at the
+     // request's lab, unless that lab already has tests on this sample (referred in).
+     // Blank cards are left blank so no phantom test is created.
+     if (!empty($_POST['testResult']['labId']) && is_array($_POST['testResult']['labId'])) {
+         $_POST['testResult']['labId'] = $general->resolveTestCardLabIds($_POST['testResult']['labId'], $_POST['labId'] ?? null, 'generic_test_results', 'generic_id', $_POST['requestSampleId'] ?? null);
+     }
+
      $db->where('sample_id', $_POST['requestSampleId'] ?? 0);
      $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
      $general->assertFacilityAllowed($sampleFacilityId);

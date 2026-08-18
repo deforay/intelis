@@ -39,6 +39,12 @@ $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 
 try {
+	// Acting as a LIS: the Testing Lab is this install's own lab, not a free
+	// choice. The forms already constrain the dropdown, but AJAX endpoints
+	// bypass ACL, so the rule only holds if it holds here. No-op on STS and
+	// standalone installs, and on any LIS session with no resolved lab.
+	$_POST['labId'] = $general->resolveRequestLabId($_POST['labId'] ?? null, $tableName, 'eid_id', $_POST['eidSampleId'] ?? null);
+
 	$db->where('eid_id', $_POST['eidSampleId'] ?? 0);
 	$sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
 	$general->assertFacilityAllowed($sampleFacilityId);

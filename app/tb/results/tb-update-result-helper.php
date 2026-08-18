@@ -26,6 +26,16 @@ $tableName1 = "activity_log";
 $testTableName = 'tb_tests';
 
 try {
+    // Acting as a LIS: a result can only be recorded for this install's own lab.
+    // A sample already saved against another lab (referred in) keeps that lab, so
+    // this never reassigns someone else's sample. No-op on STS and standalone.
+    $_POST['labId'] = $general->resolveRequestLabId($_POST['labId'] ?? null, $tableName, 'tb_id', $_POST['tbSampleId'] ?? null);
+    // Per-test cards follow the same rule, except a lab that already has tests
+    // on this sample (referred in) keeps them. Blank cards stay blank.
+    if (!empty($_POST['testResult']['labId']) && is_array($_POST['testResult']['labId'])) {
+        $_POST['testResult']['labId'] = $general->resolveTestCardLabIds($_POST['testResult']['labId'], $_POST['labId'] ?? null, 'tb_tests', 'tb_id', $_POST['tbSampleId'] ?? null);
+    }
+
     $db->where('tb_id', $_POST['tbSampleId'] ?? 0);
     $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
     $general->assertFacilityAllowed($sampleFacilityId);
