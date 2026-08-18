@@ -11,6 +11,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\REJECTED;
+use App\Services\DataIssuesService;
 use App\Utilities\SampleRejectionUtility;
 use const SAMPLE_STATUS\CANCELLED;
 use App\Services\FacilitiesService;
@@ -168,6 +169,19 @@ try {
 
 
 
+
+     // The Needs attention card counts flagged records; this is how it shows
+     // them. EXISTS rather than a join because one record can carry more than
+     // one flag and must still appear once.
+     if (!empty($_POST['dataIssue'])) {
+          $issue = (string) $_POST['dataIssue'];
+          if (array_key_exists($issue, DataIssuesService::predicates('vl'))) {
+               $sWhere[] = " EXISTS (SELECT 1 FROM " . DataIssuesService::TABLE . " AS di
+                                      WHERE di.test_type = 'vl'
+                                        AND di.record_id = vl.vl_sample_id
+                                        AND di.issue_key = '" . $db->escape($issue) . "') ";
+          }
+     }
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';

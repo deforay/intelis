@@ -104,6 +104,17 @@ $schedule->run(PHP_BINARY . " " . BIN_PATH . "/update-sample-status.php")
     ->preventOverlapping()
     ->description('Updating sample status to Expired or Locking samples');
 
+// Flagging records whose own columns contradict each other. Counts only, never
+// corrects: every contradiction it looks for has had its cause closed, so a
+// count above zero means a new write path has opened one, and a job that
+// quietly repaired them would erase the evidence saying so. Runs after the
+// status updates above, so it sees the day's final state.
+$schedule->run(PHP_BINARY . " " . BIN_PATH . "/flag-data-issues.php")
+    ->cron('25 0 * * *')
+    ->timezone($timezone)
+    ->preventOverlapping()
+    ->description('Flagging contradictory records for the Needs attention card');
+
 // MACHINE INTERFACING
 if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacing']['enabled'] === true) {
     // Syncing data from SQLite to MySQL

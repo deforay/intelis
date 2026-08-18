@@ -629,3 +629,106 @@ div.dataTables_processing>div:last-child {
     background-color: #eef2f7;
     color: #2c3e50;
 }
+/* "Needs attention" — records whose own columns contradict each other, carded
+   above the listing. Ported from the same card in odkdash so a data problem
+   reads the same in both apps.
+
+   Sits outside the table widget, at page level: it is about the data, not about
+   the table's controls, and nesting it inside that panel put a box in a box. */
+.needs-attention {
+    border: 1px solid #f0c36d;
+    border-radius: 6px;
+    background-color: #fff;
+    margin-bottom: 15px;
+}
+
+.needs-attention .na-header {
+    background-color: #fffbf0;
+    border-bottom: 1px solid #f5e0b0;
+    border-radius: 5px 5px 0 0;
+    padding: 9px 14px;
+    color: #8a6d3b;
+    font-weight: 700;
+}
+
+.needs-attention .na-count {
+    float: right;
+    background-color: #c77c02;
+    color: #fff;
+    border-radius: 10px;
+    padding: 1px 9px;
+    font-size: 12px;
+}
+
+.needs-attention .na-item {
+    padding: 14px;
+    border-top: 1px solid #f2f2f2;
+    overflow: hidden;
+}
+
+.needs-attention .na-item:first-of-type {
+    border-top: 0;
+}
+
+.needs-attention .na-icon {
+    float: left;
+    width: 26px;
+    color: #a94442;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.needs-attention .na-body {
+    overflow: hidden;
+    padding-right: 12px;
+}
+
+.needs-attention .na-title {
+    font-weight: 700;
+    color: #333;
+}
+
+.needs-attention .na-desc {
+    color: #888;
+    font-size: 13px;
+    margin-top: 2px;
+}
+
+.needs-attention .na-action {
+    float: right;
+    margin-left: 12px;
+    border: 1px solid #a94442;
+    color: #a94442;
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 6px 14px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.needs-attention .na-action:hover,
+.needs-attention .na-action:focus {
+    background-color: #a94442;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* No action available to this role, so the row only states the problem. */
+.needs-attention .na-readonly {
+    float: right;
+    margin-left: 12px;
+    color: #999;
+    font-size: 12px;
+    font-style: italic;
+    white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+
+    .needs-attention .na-action,
+    .needs-attention .na-readonly {
+        float: none;
+        display: inline-block;
+        margin: 8px 0 0 26px;
+    }
+}
