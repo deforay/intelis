@@ -239,11 +239,57 @@ function buildPlan(array $action, array $current, array $paths): array
         throw new InvalidArgumentException("Refusing to set version to {$newVersion}: not greater than current composer version {$current['composer']}.");
     }
 
+    refuseIfReleasedMigrationHasNewWork($paths['migrations'], $current['composer'], $newVersion);
+
     return [
         'newVersion'        => $newVersion,
         'closeMigrations'   => findOpenMigrationsBetween($paths['migrations'], $current['composer'], $newVersion),
         'openMigrationFile' => $paths['migrations'] . $newVersion . '.sql',
     ];
+}
+
+// Stop a bump that would strand schema work in an already-released file.
+//
+// After a release the open migration is named for a version that has been
+// published, and writing DDL into it is the obvious thing to do -- it is the only
+// open file. But a lab already at that version never replays it, so the change
+// reaches nobody, and this bump would close the file and leave an empty stub
+// beside it. Two files, one of them silently inert.
+//
+// Refusing rather than moving the statements: which of them have shipped is the
+// author's knowledge, not the script's, and both wrong answers are bad -- DDL that
+// reaches no lab, or DDL applied twice.
+function refuseIfReleasedMigrationHasNewWork(string $migrationsDir, string $currentCore, string $newVersion): void
+{
+    $file = rtrim($migrationsDir, '/') . '/' . $currentCore . '.sql';
+    if (!is_file($file)) {
+        return;
+    }
+    $body = (string) file_get_contents($file);
+    if (str_contains($body, EOV_MARKER)) {
+        return;
+    }
+
+    // Only a tagged version can have stranded anything. Anything git cannot answer
+    // reads as "not released", which lets the bump proceed exactly as it always has.
+    $root = escapeshellarg(ROOT_PATH);
+    $ref = escapeshellarg("v{$currentCore}:sys/migrations/{$currentCore}.sql");
+    $released = shell_exec("git -C {$root} show {$ref} 2>/dev/null");
+    if ($released === null || $released === false || trim((string) $released) === '') {
+        return;
+    }
+    if (trim((string) $released) === trim($body)) {
+        return;   // shipped exactly as it stands
+    }
+
+    throw new RuntimeException(
+        relPath($file) . " has changed since v{$currentCore} was released.\n"
+        . "  Labs already on {$currentCore} will never replay it, so anything added\n"
+        . "  there reaches no one. Move the new statements into\n"
+        . "  sys/migrations/{$newVersion}.sql (keep its sc_version line last), restore\n"
+        . "  " . relPath($file) . " to its released content, then re-run:\n"
+        . "    git show v{$currentCore}:sys/migrations/{$currentCore}.sql > " . relPath($file)
+    );
 }
 
 // Every X.Y.Z.sql with $currentCore <= version < $newCore that doesn't already
