@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Utilities\DateUtility;
 use App\Utilities\SampleRejectionUtility;
 use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\CANCELLED;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\EXPIRED;
 use const SAMPLE_STATUS\LOST_OR_MISSING;
 
@@ -94,29 +96,73 @@ final class DataIssuesService
      *
      * @return array<string, int> issue key => count, non-zero only
      */
+    /**
+     * Every restriction the request list applies to what a reader may see.
+     *
+     * Kept identical to app/vl/requests/get-request-list.php on purpose. A count
+     * is data: one that includes records the reader cannot open discloses that
+     * those records exist, which is a disclosure whether or not the row itself
+     * is ever shown. The two must therefore agree exactly -- if that file gains
+     * a restriction, this needs it too.
+     *
+     * @return string[] SQL clauses, already scoped to the given alias
+     */
+    private function visibilityClauses(string $alias = 'vl'): array
+    {
+        $clauses = [];
+
+        if ($this->general->isSTSInstance()) {
+            if (!empty($_SESSION['facilityMap'])) {
+                // Built by the session from the user's own mapping, never from
+                // a request, and already a list of integers.
+                $clauses[] = "$alias.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+            }
+            // Testing-lab users work the lab side only.
+            if (($_SESSION['accessType'] ?? '') === 'testing-lab') {
+                $clauses[] = "$alias.result_status != " . RECEIVED_AT_CLINIC;
+            }
+        } else {
+            $clauses[] = "$alias.result_status != " . RECEIVED_AT_CLINIC;
+        }
+
+        if ($labScope = $this->general->labScopeWhere($alias)) {
+            $clauses[] = $labScope;
+        }
+
+        $clauses[] = "$alias.result_status != " . CANCELLED;
+
+        return $clauses;
+    }
+
+    /**
+     * Counts for the current reader, of what the last scan flagged.
+     *
+     * Joined back to the form table rather than read from the flags alone. The
+     * flags carry a denormalised lab and facility, which would answer the scope
+     * question more cheaply, but not the status one -- and a cancelled sample
+     * carrying a rejection flag would otherwise be counted here while being
+     * invisible in the listing below. Joining also means the count reflects the
+     * record as it stands now, not as it stood at the last scan.
+     *
+     * @return array<string, int> issue key => count, non-zero only
+     */
     public function getIssueCounts(string $testType): array
     {
-        $where = ' WHERE test_type = ? ';
-        $params = [$testType];
-
-        // Scoped exactly as the listing below it is. There is no use being told
-        // about conflicted data outside your own scope of access: the rows
-        // cannot be opened, so the count is a number nobody can act on.
-        $labId = (int) ($_SESSION['labId'] ?? 0);
-        if ($labId > 0 && $this->general->treatAsLIS()) {
-            $where .= ' AND lab_id IN (?, 0) ';
-            $params[] = $labId;
+        $table = TestsService::getTestTableName($testType);
+        $primaryKey = TestsService::getPrimaryColumn($testType);
+        if (empty($table) || empty($primaryKey)) {
+            return [];
         }
 
-        if (!empty($_SESSION['facilityMap'])) {
-            // Same source the request lists use, and already a list of integers
-            // built by the session, never by a request.
-            $where .= ' AND facility_id IN (' . $_SESSION['facilityMap'] . ') ';
-        }
+        $clauses = array_merge(['di.test_type = ?'], $this->visibilityClauses('vl'));
 
         $rows = $this->db->rawQuery(
-            "SELECT issue_key, COUNT(*) AS total FROM " . self::TABLE . $where . " GROUP BY issue_key",
-            $params
+            "SELECT di.issue_key, COUNT(*) AS total
+               FROM " . self::TABLE . " AS di
+               JOIN $table AS vl ON vl.$primaryKey = di.record_id
+              WHERE " . implode(' AND ', $clauses) . "
+              GROUP BY di.issue_key",
+            [$testType]
         ) ?: [];
 
         $counts = [];
