@@ -142,6 +142,18 @@ final class InterfacingService
             return $this->outcome(false, false, $table, 'unsupported_test_type');
         }
 
+        // A result from the analyzer means the sample was tested, so it is no longer
+        // rejected. The builders above already move result_status off Rejected; without
+        // this the rejection flag and reason stay behind from an earlier rejection and
+        // the row reads as rejected and resulted at once -- which is how the rejection
+        // reports came to count samples that carry a viral load. Every manual path
+        // (the result page, the bulk status grid, the file importer) already clears
+        // both columns when a result is recorded.
+        if (trim((string) ($data['result'] ?? '')) !== '') {
+            $data['is_sample_rejected'] = 'no';
+            $data['reason_for_sample_rejection'] = null;
+        }
+
         if (!$updateModifiedTime) {
             unset($data['last_modified_datetime']);
         }
