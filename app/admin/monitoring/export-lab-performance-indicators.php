@@ -53,6 +53,20 @@ try {
         'collectionToReleased' => _translate('Collection to Result Released'),
     ];
 
+    // Fetched once here rather than inside each arm below: the flat export rows
+    // drop the denominators the totals need (the overview keeps no `outcomes`
+    // column, turnaround time needs each stage's own n), so totals are computed
+    // from these and not from the rows that get written out.
+    $rawRows = match ($section) {
+        'overview' => $indicators->getOverview($filters),
+        'tat' => $indicators->getTat($filters),
+        'volume' => $indicators->getVolume($filters),
+        'failure' => $indicators->getFailure($filters),
+        'rejection' => $indicators->getRejection($filters),
+        'patients' => $indicators->getRepeatPatients($filters, 0, 100000)['rows'],
+        default => [],
+    };
+
     // [headings, rows, secondary sheet or null]
     [$headings, $rows, $secondary] = match ($section) {
         'overview' => [
@@ -70,7 +84,7 @@ try {
                 $r['fileImport'], $r['unclassified'], $r['failed'], $r['failureRate'],
                 $r['retested'], $r['retestRate'],
                 $r['rejected'], $r['rejectionRate']
-            ], $indicators->getOverview($filters)),
+            ], $rawRows),
             null
         ],
         'tat' => [
@@ -87,7 +101,7 @@ try {
                     $row[] = $r[$stage . 'N'];
                 }
                 return $row;
-            }, $indicators->getTat($filters)),
+            }, $rawRows),
             null
         ],
         'volume' => [
@@ -101,7 +115,7 @@ try {
             array_map(static fn(array $r): array => [
                 $r['period'], $r['lab'], $r['registered'], $r['sampleTested'], $r['resulted'],
                 $r['testedPending'], $r['manual'], $r['interface'], $r['fileImport'], $r['unclassified']
-            ], $indicators->getVolume($filters)),
+            ], $rawRows),
             null
         ],
         'failure' => [
@@ -113,7 +127,7 @@ try {
             array_map(static fn(array $r): array => [
                 $r['period'], $r['lab'], $r['tested'], $r['failed'], $r['failureRate'],
                 $r['retested'], $r['retestRate']
-            ], $indicators->getFailure($filters)),
+            ], $rawRows),
             [
                 'name' => _translate('Failure Reasons'),
                 'headings' => [_translate('Reason'), _translate('Total')],
@@ -128,7 +142,7 @@ try {
             ],
             array_map(static fn(array $r): array => [
                 $r['period'], $r['lab'], $r['received'], $r['rejected'], $r['rejectionRate']
-            ], $indicators->getRejection($filters)),
+            ], $rawRows),
             [
                 'name' => _translate('Rejection Reasons'),
                 'headings' => [_translate('Reason'), _translate('Total')],
@@ -145,12 +159,78 @@ try {
                 $r['patient'], $r['tests'], $r['firstDate'], $r['firstResult'],
                 $r['lastDate'], $r['lastResult'],
                 $r['changed'] ? _translate('Changed') : _translate('Unchanged')
-            ], $indicators->getRepeatPatients($filters, 0, 100000)['rows']),
+            ], $rawRows),
             null
         ],
         'all' => [[], [], null],
         default => throw new \App\Exceptions\SystemException('Invalid indicator section'),
     };
+
+    // Totals, on the same terms as the on-screen tables: counts are summed and
+    // every rate is recomputed from the totalled numerator and denominator. A
+    // rate is never the average of the rates above it -- a period with three
+    // samples would weigh as much as one with three thousand.
+    $total = static fn(string $field): int => (int) array_sum(array_column($rawRows, $field));
+    $rate = static fn(int $numerator, int $denominator): ?float
+        => $denominator > 0 ? round($numerator * 100 / $denominator, 2) : null;
+    $label = _translate('Total');
+
+    $totals = [];
+    if (count($rawRows) > 1) {
+        // Under a single row the total is just that row again.
+        $totals = match ($section) {
+            'overview' => [
+                $label, $total('registered'), $total('sampleTested'), $total('resulted'),
+                $total('testedPending'), $total('manual'), $total('interface'),
+                $total('fileImport'), $total('unclassified'), $total('failed'),
+                $rate($total('failed'), $total('outcomes')),
+                $total('retested'), $rate($total('retested'), $total('outcomes')),
+                $total('rejected'), $rate($total('rejected'), $total('registered')),
+            ],
+            'volume' => [
+                $label, '', $total('registered'), $total('sampleTested'), $total('resulted'),
+                $total('testedPending'), $total('manual'), $total('interface'),
+                $total('fileImport'), $total('unclassified'),
+            ],
+            'failure' => [
+                $label, '', $total('tested'), $total('failed'),
+                $rate($total('failed'), $total('tested')),
+                $total('retested'), $rate($total('retested'), $total('tested')),
+            ],
+            'rejection' => [
+                $label, '', $total('received'), $total('rejected'),
+                $rate($total('rejected'), $total('received')),
+            ],
+            // Each stage is averaged over the samples that actually reached it,
+            // so the overall figure is weighted by those counts rather than by
+            // how many periods happen to be in the range.
+            'tat' => (static function () use ($rawRows, $tatStages, $label, $total): array {
+                $row = [$label, $total('samples')];
+                foreach (array_keys($tatStages) as $stage) {
+                    $days = 0.0;
+                    $n = 0;
+                    foreach ($rawRows as $r) {
+                        if ($r[$stage] !== null && (int) $r[$stage . 'N'] > 0) {
+                            $days += (float) $r[$stage] * (int) $r[$stage . 'N'];
+                            $n += (int) $r[$stage . 'N'];
+                        }
+                    }
+                    $row[] = $n > 0 ? round($days / $n, 2) : null;
+                    $row[] = $n;
+                }
+                return $row;
+            })(),
+            default => [],
+        };
+    }
+
+    // The reasons sheets are a plain count, so they total the same way.
+    if (!empty($secondary['rows']) && count($secondary['rows']) > 1) {
+        $secondary['totals'] = [
+            $label,
+            (int) array_sum(array_column($secondary['rows'], 1)),
+        ];
+    }
 
     $baseName = 'InteLIS-Lab-Performance-Indicators-' . $section . '-' . date('d-M-Y-H-i-s');
     $filePath = TEMP_PATH . DIRECTORY_SEPARATOR . $baseName . '.' . $format;
@@ -168,6 +248,7 @@ try {
                 ],
                 'headings' => $headings,
                 'rows' => $rows,
+                'totals' => $totals,
                 'secondary' => $secondary,
             ];
         $payload['generatedOn'] = date('Y-m-d H:i:s');
@@ -178,6 +259,9 @@ try {
         $writer->addRow(Row::fromValues($headings));
         foreach ($rows as $row) {
             $writer->addRow(Row::fromValues($row));
+        }
+        if ($totals !== []) {
+            $writer->addRow(Row::fromValues($totals));
         }
         if (!empty($secondary['rows'])) {
             if ($format === 'xlsx') {
@@ -192,6 +276,9 @@ try {
             $writer->addRow(Row::fromValues($secondary['headings']));
             foreach ($secondary['rows'] as $row) {
                 $writer->addRow(Row::fromValues($row));
+            }
+            if (!empty($secondary['totals'])) {
+                $writer->addRow(Row::fromValues($secondary['totals']));
             }
         }
         $writer->close();
