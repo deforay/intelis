@@ -11,6 +11,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\REJECTED;
+use App\Utilities\SampleRejectionUtility;
 use const SAMPLE_STATUS\CANCELLED;
 use App\Services\FacilitiesService;
 use App\Utilities\DataTableUtility;
@@ -261,7 +262,7 @@ try {
           $sWhere[] = ' vl.lab_id = "' . $_POST['labIdModel'] . '" ';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == REJECTED) {
-          $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected = "yes"';
+          $sWhere[] = ' ' . SampleRejectionUtility::sqlPredicate('vl') . ' ';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == RECEIVED_AT_TESTING_LAB) {
           $sWhere[] = " vl.sample_received_at_lab_datetime is NOT NULL ";
