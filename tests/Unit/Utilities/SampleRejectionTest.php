@@ -104,4 +104,23 @@ final class SampleRejectionTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         SampleRejectionUtility::sqlPredicate("vl; DROP TABLE form_vl --");
     }
+
+    public function testReasonLabelKeepsARealReason(): void
+    {
+        $this->assertSame(
+            'Mismatched sample and form labeling',
+            SampleRejectionUtility::reasonLabel('Mismatched sample and form labeling')
+        );
+    }
+
+    /**
+     * A reason id minted on another install arrives here with no row behind it, so
+     * the join yields null. The rejection still happened and must still be named.
+     */
+    public function testReasonLabelNamesAnUnmatchedReason(): void
+    {
+        $this->assertSame('Unknown or unreported reason', SampleRejectionUtility::reasonLabel(null));
+        $this->assertSame('Unknown or unreported reason', SampleRejectionUtility::reasonLabel(''));
+        $this->assertSame('Unknown or unreported reason', SampleRejectionUtility::reasonLabel('   '));
+    }
 }
