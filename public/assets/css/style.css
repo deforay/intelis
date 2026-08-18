@@ -635,6 +635,9 @@ div.dataTables_processing>div:last-child {
 
    Sits outside the table widget, at page level: it is about the data, not about
    the table's controls, and nesting it inside that panel put a box in a box. */
+/* Sits outside the box that holds the filters and the table, at page level:
+   it is about the data, not about that table's controls, and nesting it
+   inside put a box in a box. */
 .needs-attention {
     border: 1px solid #f0c36d;
     border-radius: 6px;
