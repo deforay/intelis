@@ -243,10 +243,6 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/highcharts-exporting.js"></script>
-<script src="/assets/js/highcharts-offline-exporting.js"></script>
-<script src="/assets/js/highcharts-accessibility.js"></script>
 <script type="text/javascript">
   var startDate = "";
   var endDate = "";

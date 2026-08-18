@@ -91,7 +91,6 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/assets/js/highcharts.js"></script>
 <script>
   $(function() {
     $("#clinicName").select2({
