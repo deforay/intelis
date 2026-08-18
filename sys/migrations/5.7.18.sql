@@ -17,3 +17,15 @@ UPDATE `system_config` SET `value` = '5.7.18' WHERE `system_config`.`name` = 'sc
 -- idempotent; the cost is one full pass.
 DELETE FROM `s_data_issues`;
 DELETE FROM `s_data_issues_scan`;
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
