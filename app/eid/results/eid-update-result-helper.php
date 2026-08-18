@@ -24,6 +24,11 @@ $tableName2 = "log_result_updates";
 
 
 try {
+  // Acting as a LIS: a result can only be recorded for this install's own lab.
+  // A sample already saved against another lab (referred in) keeps that lab, so
+  // this never reassigns someone else's sample. No-op on STS and standalone.
+  $_POST['labId'] = $general->resolveRequestLabId($_POST['labId'] ?? null, $tableName, 'eid_id', $_POST['eidSampleId'] ?? null);
+
   $db->where('eid_id', $_POST['eidSampleId'] ?? 0);
   $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
   $general->assertFacilityAllowed($sampleFacilityId);

@@ -28,6 +28,11 @@ $tableName1 = "activity_log";
 $tableName2 = "log_result_updates";
 $testTableName = 'covid19_tests';
 try {
+	// Acting as a LIS: a result can only be recorded for this install's own lab.
+	// A sample already saved against another lab (referred in) keeps that lab, so
+	// this never reassigns someone else's sample. No-op on STS and standalone.
+	$_POST['labId'] = $general->resolveRequestLabId($_POST['labId'] ?? null, $tableName, 'covid19_id', $_POST['covid19SampleId'] ?? null);
+
 	$db->where('covid19_id', $_POST['covid19SampleId'] ?? 0);
 	$sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
 	$general->assertFacilityAllowed($sampleFacilityId);
