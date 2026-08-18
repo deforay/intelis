@@ -775,6 +775,14 @@ final class LabPerformanceIndicatorsService
             ? "CAST(JSON_UNQUOTE(JSON_EXTRACT(a.attempt_data, '$.row.test_type')) AS UNSIGNED) AS test_type,"
             : '';
 
+        // result_status is carried through because buildWhere() excludes cancelled
+        // samples by it, and this derived table is aliased `t` exactly like the
+        // form tables the other indicators read. An archived attempt takes the
+        // status of the sample as it stands now, not the snapshot stored with
+        // the attempt: a sample cancelled after a test was run should drop out
+        // of these figures the same way its live row does. The join is LEFT so
+        // an attempt whose sample row has since gone still counts, on its own
+        // recorded status, rather than vanishing from the totals.
         return "(
                     SELECT live.lab_id AS lab_id,
                            live.facility_id AS facility_id,
@@ -783,7 +791,8 @@ final class LabPerformanceIndicatorsService
                            (live.result_status = $failed) AS is_failed,
                            $liveResulted AS is_resulted,
                            live.reason_for_failure AS reason_for_failure,
-                           0 AS is_retest
+                           0 AS is_retest,
+                           live.result_status AS result_status
                       FROM `$table` AS live
 
                     UNION ALL
@@ -795,8 +804,10 @@ final class LabPerformanceIndicatorsService
                            a.result_failed,
                            (a.result IS NOT NULL AND a.result != ''),
                            a.reason_for_failure,
-                           1
+                           1,
+                           COALESCE(sample.result_status, a.result_status)
                       FROM test_result_attempts AS a
+                      LEFT JOIN `$table` AS sample ON sample.`$primaryKey` = a.record_id
                      WHERE a.form_table = '" . $this->db->escape($table) . "'
                        AND a.superseded_by = '" . TestAttemptService::BY_RETEST . "'
                 ) AS t";
@@ -819,6 +830,12 @@ final class LabPerformanceIndicatorsService
     /**
      * Shared WHERE for every indicator: lab filter, lab scope, facility map,
      * plus the date predicate the calling indicator measures itself on.
+     *
+     * Alias `t` is not always a form table. The failure indicators read
+     * testEventsFrom(), a derived table also aliased `t`, so every column named
+     * here has to exist on that one too -- it is not enough for it to exist on
+     * form_vl. Adding a column to this method without adding it there returns
+     * an error the page renders as a row of zeros.
      */
     private function buildWhere(array $f, string $extra = '', string $dateClause = ''): string
     {
