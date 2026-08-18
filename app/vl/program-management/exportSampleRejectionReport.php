@@ -1,63 +1,91 @@
 <?php
 
-use App\Services\CommonService;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
+use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
+// Sanitized values from $request object
+/** @var Psr\Http\Message\ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+try {
+     $saved = $_SESSION['vlRejectedSamplesQuery'] ?? null;
+     if (empty($saved['query'])) {
+          echo '';
+          return;
+     }
 
-if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamples']) !== "") {
-     $rResult = $db->rawQuery($_SESSION['rejectedSamples']);
+     $rResult = $db->rawQuery($saved['query'], $saved['params'] ?? []);
 
-     $excel = new Spreadsheet();
-     $output = [];
-     $sheet = $excel->getActiveSheet();
-     $headings = [_translate("Lab Name"), _translate("Facility Name"), _translate("Rejection Reason"), _translate("Reason Category"), _translate("No. of Rejected Samples")];
+     $headings = [
+          _translate("Lab Name"),
+          _translate("Facility Name"),
+          _translate("Rejection Reason"),
+          _translate("Reason Category"),
+          _translate("No. of Rejected Samples")
+     ];
 
-
-     $colNo = 1;
-
-
-     $nameValue = '';
-     foreach ($_POST as $key => $value) {
-          if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-               $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+     // Filters the report was run with, as one line above the table. Arrays
+     // (the multi-select clinic list) are flattened rather than cast to string.
+     $filterLabels = [
+          'sampleCollectionDate' => _translate("Sample Collection Date"),
+          'lab_name' => _translate("Lab"),
+          'clinic_name' => _translate("Clinic Name"),
+          'sample_type' => _translate("Sample Type"),
+     ];
+     $appliedFilters = [];
+     foreach ($filterLabels as $key => $label) {
+          $value = $_POST[$key] ?? null;
+          if (is_array($value)) {
+               $value = implode(', ', array_filter(array_map('strval', $value)));
+          }
+          $value = trim((string) $value);
+          if ($value !== '' && $value !== '-- Select --') {
+               $appliedFilters[] = "$label : $value";
           }
      }
-     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
 
-     foreach ($headings as $field => $value) {
-          $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-          $colNo++;
-     }
-
-
-     foreach ($rResult as $aRow) {
-          $row = [];
-          $row[] = $aRow['labname'];
-          $row[] = $aRow['facility_name'];
-          $row[] = $aRow['rejection_reason_name'] ?? _translate("Unspecified reason for rejection");
-          $row[] = $aRow['rejection_type'] ?? _translate("Unspecified");
-          $row[] = $aRow['total'];
-          $output[] = $row;
-     }
-
-     $sheet->fromArray($headings, null, 'A1'); // Write headings
-     $sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
-     $sheet = $general->centerAndBoldRowInSheet($sheet, 'A1');
-     $sheet = $general->applyBordersToSheet($sheet);
-
-     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
      $filename = 'InteLIS-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
-     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-     echo $filename;
+     $filePath = TEMP_PATH . DIRECTORY_SEPARATOR . $filename;
+
+     $writer = new Writer();
+     $writer->openToFile($filePath);
+     if ($appliedFilters !== []) {
+          $writer->addRow(Row::fromValues([implode('   ', $appliedFilters)]));
+          $writer->addRow(Row::fromValues([]));
+     }
+     $writer->addRow(Row::fromValues($headings));
+
+     $totalRejected = 0;
+     foreach ($rResult as $aRow) {
+          $totalRejected += (int) $aRow['total'];
+          $writer->addRow(Row::fromValues([
+               $aRow['labname'] ?? '',
+               $aRow['facility_name'] ?? '',
+               trim((string) $aRow['rejection_reason_name']) ?: _translate("Unspecified reason for rejection"),
+               trim((string) $aRow['rejection_type']) ?: _translate("Unspecified"),
+               (int) $aRow['total']
+          ]));
+     }
+     $writer->addRow(Row::fromValues([]));
+     $writer->addRow(Row::fromValues(['', '', '', _translate("Total"), $totalRejected]));
+     $writer->close();
+
+     echo basename($filePath);
+} catch (Throwable $e) {
+     LoggerUtility::logError($e->getMessage(), [
+          'trace' => $e->getTraceAsString(),
+          'file' => $e->getFile(),
+          'line' => $e->getLine(),
+          'last_db_error' => $db->getLastError(),
+          'last_db_query' => $db->getLastQuery()
+     ]);
+     echo '';
 }

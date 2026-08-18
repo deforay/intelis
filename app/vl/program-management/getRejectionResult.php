@@ -4,8 +4,9 @@ use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+
+use const SAMPLE_STATUS\REJECTED;
 
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -19,23 +20,20 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var FacilitiesService $facilitiesService */
-$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-
-$formId = (int) $general->getGlobalConfig('vl_form');
-
 $tResult = [];
-//$rjResult = [];
-if (!empty($_POST['sampleCollectionDate'])) {
-    $start_date = '';
-    $end_date = '';
-    $sWhere = [];
+$tableResult = [];
+$dateRange = trim((string) ($_POST['sampleCollectionDate'] ?? ''));
 
-    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'], includeTime: true);
+if ($dateRange !== '') {
+    $queryParams = [];
+
+    [$start_date, $end_date] = DateUtility::convertDateRange($dateRange, includeTime: true);
 
     //get value by rejection reason id
     $vlQuery = "SELECT count(*) as `total`,
                 vl.reason_for_sample_rejection,
+                vl.lab_id,
+                vl.facility_id,
                 sr.rejection_reason_name,
                 sr.rejection_type,
                 sr.rejection_reason_code,
@@ -46,16 +44,33 @@ if (!empty($_POST['sampleCollectionDate'])) {
                 LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 LEFT JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
 
-    $sWhere[] = " vl.is_sample_rejected = 'yes' AND vl.sample_collection_date BETWEEN '$start_date' AND '$end_date'";
+    // A sample counts as rejected when the rejection flag OR the sample status
+    // says so. The two disagree on older records -- samples rejected from the
+    // Add Request page were saved with the status set and the flag left blank --
+    // and this is the same rule the Lab Performance Indicators report counts on.
+    $sWhere = [' (vl.is_sample_rejected = "yes" OR vl.result_status = ' . REJECTED . ') '];
+
+    // Control samples are excluded from every other VL report and export.
+    $sWhere[] = ' IFNULL(vl.reason_for_vl_testing, 0) != 9999 ';
+
+    $sWhere[] = ' vl.sample_collection_date BETWEEN ? AND ? ';
+    $queryParams[] = $start_date;
+    $queryParams[] = $end_date;
 
     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-        $sWhere[] = ' vl.specimen_type = "' . $_POST['sampleType'] . '"';
+        $sWhere[] = ' vl.specimen_type = ? ';
+        $queryParams[] = (int) $_POST['sampleType'];
     }
     if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
-        $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
+        $sWhere[] = ' vl.lab_id = ? ';
+        $queryParams[] = (int) $_POST['labName'];
     }
-    if (is_array($_POST['clinicName']) && (isset($_POST['clinicName']) && $_POST['clinicName'] !== [])) {
-        $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
+    if (isset($_POST['clinicName']) && is_array($_POST['clinicName'])) {
+        $clinics = array_values(array_filter(array_map('intval', $_POST['clinicName'])));
+        if ($clinics !== []) {
+            $sWhere[] = ' vl.facility_id IN (' . implode(',', array_fill(0, count($clinics), '?')) . ') ';
+            $queryParams = array_merge($queryParams, $clinics);
+        }
     }
     if (!empty($_SESSION['facilityMap'])) {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
@@ -65,13 +80,12 @@ if (!empty($_POST['sampleCollectionDate'])) {
         $sWhere[] = $labScope;
     }
 
-    if ($sWhere !== []) {
-        $sWhere = implode(' AND ', $sWhere);
-    }
-    $vlQuery .= " WHERE $sWhere GROUP BY vl.reason_for_sample_rejection, vl.lab_id, vl.facility_id";
-    //echo $vlQuery; die;
-    $_SESSION['rejectedSamples'] = $vlQuery;
-    $tableResult = $db->rawQuery($vlQuery);
+    $vlQuery .= " WHERE " . implode(' AND ', $sWhere) . " GROUP BY vl.reason_for_sample_rejection, vl.lab_id, vl.facility_id";
+
+    // Keyed per module -- VL, CD4 and TB rejection reports all used to share one
+    // session key, so exporting from one could hand back another module's rows.
+    $_SESSION['vlRejectedSamplesQuery'] = ['query' => $vlQuery, 'params' => $queryParams];
+    $tableResult = $db->rawQuery($vlQuery, $queryParams);
 
     foreach ($tableResult as $tableRow) {
         $reasonName = trim((string) $tableRow['rejection_reason_name']) ?: _translate('Unspecified reason for rejection');
@@ -123,24 +137,26 @@ if (!empty($tableResult)) { ?>
         <?php
         if (!empty($tableResult)) {
             foreach ($tableResult as $tableRow) {
+                // Drill down to this row's lab and facility, not to whatever the
+                // page filters happened to be set to.
                 ?>
-                <tr data-lab="<?php echo base64_encode((string) $_POST['labName']); ?>"
-                    data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'] ?? [])); ?>"
-                    data-daterange="<?= htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>" data-type="rejection">
+                <tr data-lab="<?php echo base64_encode((string) $tableRow['lab_id']); ?>"
+                    data-facility="<?php echo base64_encode((string) $tableRow['facility_id']); ?>"
+                    data-daterange="<?= _sanitizeOutput($dateRange); ?>" data-type="rejection">
                     <td>
-                        <?php echo $tableRow['labname']; ?>
+                        <?php echo _sanitizeOutput($tableRow['labname']); ?>
                     </td>
                     <td>
-                        <?php echo $tableRow['facility_name']; ?>
+                        <?php echo _sanitizeOutput($tableRow['facility_name']); ?>
                     </td>
                     <td>
-                        <?php echo $tableRow['rejection_reason_name'] ?? _translate('Unspecified reason for rejection'); ?>
+                        <?php echo _sanitizeOutput(trim((string) $tableRow['rejection_reason_name']) ?: _translate('Unspecified reason for rejection')); ?>
                     </td>
                     <td>
-                        <?php echo $tableRow['rejection_type'] ?? _translate("Unspecified"); ?>
+                        <?php echo _sanitizeOutput(trim((string) $tableRow['rejection_type']) ?: _translate("Unspecified")); ?>
                     </td>
                     <td>
-                        <?php echo $tableRow['total']; ?>
+                        <?php echo (int) $tableRow['total']; ?>
                     </td>
                 </tr>
                 <?php
@@ -159,7 +175,13 @@ if (!empty($tableResult)) { ?>
             let lab = $(this).attr('data-lab');
             let daterange = $(this).attr('data-daterange');
             let type = $(this).attr('data-type');
-            let link = "/vl/requests/vl-requests.php?labId=" + lab + "&facilityId=" + facilityId + "&daterange=" + daterange + "&type=" + type;
+            if (!facilityId || !lab) {
+                return;
+            }
+            let link = "/vl/requests/vl-requests.php?labId=" + encodeURIComponent(lab) +
+                "&facilityId=" + encodeURIComponent(facilityId) +
+                "&daterange=" + encodeURIComponent(daterange) +
+                "&status=<?= REJECTED; ?>&type=" + encodeURIComponent(type);
             window.open(link);
         });
     });
@@ -174,7 +196,7 @@ if (!empty($tableResult)) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _translate('Sample Rejection Reasons') . ' (N = ' . $totalRejected . ')'; ?>"
+                text: <?= _jsEscape(_translate('Sample Rejection Reasons') . ' (N = ' . $totalRejected . ')'); ?>
             },
             credits: {
                 enabled: false
@@ -208,9 +230,9 @@ if (!empty($tableResult)) { ?>
                     <?php
                     foreach ($tResult as $reasonName => $values) {
                         ?> {
-                            name: '<?php echo $reasonName; ?>',
-                            y: <?php echo ($values['total']); ?>,
-                            number: '<?php echo ($values['category']); ?>'
+                            name: <?= _jsEscape($reasonName); ?>,
+                            y: <?= (int) $values['total']; ?>,
+                            number: <?= _jsEscape($values['category']); ?>
                         },
                         <?php
                     }
