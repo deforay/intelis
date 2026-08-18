@@ -859,7 +859,15 @@ $testingLabs = $facilitiesService->getTestingLabs();
         var section = 'overview';
         lpiSetCards(LPI_SUMMARY_CARDS, lpiSkelBar('lpi-skel-value'));
         lpiPost(section, null, function (json) {
-            var rows = (json && json.rows) || [];
+            // The endpoint catches its own exceptions and answers 200 with an
+            // error payload, so a failure arrives here rather than in .fail().
+            // Left unchecked it reads as rows: none, which the cards render as
+            // a row of zeros indistinguishable from a period with no data.
+            if (!json || json.error) {
+                lpiSetCards(LPI_SUMMARY_CARDS, '--');
+                return;
+            }
+            var rows = json.rows || [];
             if (f.testType !== 'all') {
                 rows = rows.filter(function (r) { return r.testKey === f.testType; });
                 if (f.testType === 'generic-tests' && f.genericTestTypeId > 0) {
