@@ -174,6 +174,19 @@ $commonDataToSync = [
 // Receive data from STS
 $url = "$remoteURL/remote/remote/sts-metadata-sender.php";
 
+// A note on canTruncate and the rejection reason tables, which are the one
+// exception below.
+//
+// Truncating a reference table and refilling it from STS is safe when this
+// install has never authored a row of its own. That is not true of rejection
+// reasons: the "Other" box on the request and result forms mints one locally,
+// and this lab's samples then point at its id. Truncating would delete the only
+// row that names them -- here AND, since the id means nothing to STS either,
+// everywhere. So these tables are merged into, never emptied.
+//
+// They travel the other way instead: lab-metadata-sender.php sends them up, and
+// STS records what each local id means (RejectionReasonMappingService).
+
 if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
     $toSyncTables = [
         "r_test_types",
@@ -199,7 +212,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
         $genericDataToSync[$general->stringToCamelCase($table)] = [
             "primaryKey" => $general->getPrimaryKeyField($table),
             "tableName" => $table,
-            "canTruncate" => true
+            "canTruncate" => $table !== 'r_generic_sample_rejection_reasons'
         ];
     }
 }
@@ -227,7 +240,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
         'vlRejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_vl_sample_rejection_reasons',
-            'canTruncate' => true
+            'canTruncate' => false
         ],
         'vlTestReasons' => [
             'primaryKey' => 'test_reason_id',
@@ -259,7 +272,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         'eidRejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_eid_sample_rejection_reasons',
-            'canTruncate' => true
+            'canTruncate' => false
         ],
         'eidSampleTypes' => [
             'primaryKey' => 'sample_id',
@@ -297,7 +310,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         'covid19RejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_covid19_sample_rejection_reasons',
-            'canTruncate' => true
+            'canTruncate' => false
         ],
         'covid19SampleTypes' => [
             'primaryKey' => 'sample_id',
@@ -364,7 +377,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         'hepatitisRejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_hepatitis_sample_rejection_reasons',
-            'canTruncate' => true
+            'canTruncate' => false
         ]
     ];
 }
@@ -395,7 +408,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
         'tbRejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_tb_sample_rejection_reasons',
-            'canTruncate' => true
+            'canTruncate' => false
         ]
     ];
 }
@@ -415,7 +428,7 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
         'cd4RejectionReasons' => [
             'primaryKey' => 'rejection_reason_id',
             'tableName' => 'r_cd4_sample_rejection_reasons',
-            'canTruncate' => true
+            'canTruncate' => false
         ],
         'cd4ReasonForTesting' => [
             'primaryKey' => 'test_reason_id',

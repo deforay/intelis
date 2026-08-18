@@ -15,6 +15,7 @@ use App\Services\STS\TokensService;
 use App\Registries\ContainerRegistry;
 use App\Services\InstrumentActivityService;
 use App\Services\InstrumentUsageStatisticsService;
+use App\Services\RejectionReasonMappingService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 require_once __DIR__ . "/../../../bootstrap.php";
@@ -71,6 +72,7 @@ try {
     // labId is known.
     $instrumentActivityRows = [];
     $instrumentUsageRows = [];
+    $rejectionReasonRows = [];
 
     $tableMap = [
         'labStorage' => [
@@ -119,6 +121,18 @@ try {
             }
             if ($name === 'instrumentUsageStatistics') {
                 $instrumentUsageRows = is_array($data) ? $data : [];
+                continue;
+            }
+            // Reason tables are NOT in $tableMap on purpose: every table there is
+            // upserted on its own primary key, and rejection_reason_id is a per-install
+            // auto-increment. Upserting one would overwrite this server's reason 26 with
+            // whatever a lab happens to call its 26. They are resolved by name instead,
+            // below, once the payload's lab is authenticated.
+            if (str_starts_with((string) $name, 'rejectionReasons:')) {
+                $reasonTestType = substr((string) $name, strlen('rejectionReasons:'));
+                if (RejectionReasonMappingService::reasonTableFor($reasonTestType) !== null) {
+                    $rejectionReasonRows[$reasonTestType] = is_array($data) ? $data : [];
+                }
                 continue;
             }
             if (isset($tableMap[$name])) {
@@ -229,6 +243,33 @@ try {
                 InstrumentActivityService::VIA_RELAY
             );
             $counter += count($instrumentActivityRows);
+        }
+        if ($rejectionReasonRows !== []) {
+            // What each of this lab's reason ids means here. Matching is by name, so a
+            // wording already on the national list resolves to it and only a genuinely
+            // new one is added. Nothing the lab holds is changed -- its ids stay its own;
+            // this only records how to read them.
+            /** @var RejectionReasonMappingService $rejectionReasonMappingService */
+            $rejectionReasonMappingService = ContainerRegistry::get(RejectionReasonMappingService::class);
+            foreach ($rejectionReasonRows as $reasonTestType => $reasonRows) {
+                if ($reasonRows === []) {
+                    continue;
+                }
+                $stats = $rejectionReasonMappingService->ingestLabReasons(
+                    $reasonTestType,
+                    (int) $labId,
+                    $reasonRows
+                );
+                $counter += $stats['mapped'];
+                if ($stats['created'] > 0) {
+                    LoggerUtility::logInfo('Lab contributed new rejection reasons', [
+                        'labId' => (int) $labId,
+                        'testType' => $reasonTestType,
+                        'created' => $stats['created'],
+                        'mapped' => $stats['mapped'],
+                    ]);
+                }
+            }
         }
         if ($instrumentUsageRows !== []) {
             /** @var InstrumentUsageStatisticsService $instrumentUsageStatisticsService */

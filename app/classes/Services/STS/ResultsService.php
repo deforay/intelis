@@ -15,6 +15,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use App\Services\RejectionReasonMappingService;
 use App\Utilities\SampleCodeVariantUtility;
 use App\Utilities\QueryLoggerUtility;
 use App\Abstracts\AbstractTestService;
@@ -33,7 +34,7 @@ final class ResultsService
     protected $fieldsToRemoveForAcceptedResults = [];
     protected $unwantedColumns = [];
 
-    public function __construct(DatabaseService $db, protected CommonService $commonService, protected UsersService $usersService, protected TestRequestsService $testRequestsService)
+    public function __construct(DatabaseService $db, protected CommonService $commonService, protected UsersService $usersService, protected TestRequestsService $testRequestsService, protected RejectionReasonMappingService $rejectionReasonMappingService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
     }
@@ -262,6 +263,17 @@ final class ResultsService
                     // whole record and the result is lost, so the arriving
                     // sample takes a numbered variant of the code instead.
                     $resultFromLab = $this->resolveSampleCodeConflict($resultFromLab, $localRecord, $labId);
+
+                    // reason_for_sample_rejection arrives as the LAB's own reason id, and
+                    // a reason it created from the "Other" box exists only on that lab.
+                    // Swap it for this server's equivalent where the lab's metadata sync
+                    // has said what it means; left untouched otherwise, because a wrong
+                    // reason is worse than an unresolved one.
+                    $resultFromLab = $this->rejectionReasonMappingService->translateIncoming(
+                        $resultFromLab,
+                        $this->testType,
+                        $labId
+                    );
 
                     // Now we update/insert the record
                     if (!empty($localRecord)) {
