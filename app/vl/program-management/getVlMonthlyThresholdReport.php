@@ -6,6 +6,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -154,6 +155,11 @@ if ($sWhere !== '') {
 
 // HAVING COUNT(c2.sid) >= 2)
 $sWhere .= " AND tl.test_type = 'vl'";
+
+// Appended past the branches above, where $sWhere is guaranteed to carry a
+// WHERE either way. A cancelled sample was called off before testing, so it is
+// not work this report should count.
+$sWhere .= ' AND ' . SampleCountUtility::countableWhere('vl');
 
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
      $sWhere .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";

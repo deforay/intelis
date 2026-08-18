@@ -5,6 +5,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -39,7 +40,10 @@ $sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%Y-%b') as month
                 INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id
                 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
 
-$sWhere = ' WHERE vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+$sWhere = ' WHERE vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC
+    // A cancelled sample was called off before testing, so it is not work this
+    // report should count.
+    . ' AND ' . SampleCountUtility::countableWhere('vl');
 
 if (!empty($_POST['facilityName'])) {
     $fac = $_POST['facilityName'];

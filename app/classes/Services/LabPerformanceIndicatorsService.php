@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Exceptions\SystemException;
 use App\Utilities\DateUtility;
 use App\Utilities\TurnaroundTimeUtility;
+use App\Utilities\SampleCountUtility;
 
 /**
  * Query layer for the Lab Performance Indicators report.
@@ -820,7 +821,11 @@ final class LabPerformanceIndicatorsService
      */
     private function buildWhere(array $f, string $extra = '', string $dateClause = ''): string
     {
-        $clauses = [];
+        // A cancelled sample was called off before testing, so no figure on this
+        // page counts one -- not registrations, not the rates built on them.
+        // Applied here rather than per query because every figure the page shows
+        // comes through this method.
+        $clauses = [SampleCountUtility::countableWhere('t')];
 
         if ($dateClause !== '') {
             $clauses[] = $dateClause;

@@ -11,6 +11,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use App\Utilities\SampleCountUtility;
 
 
 /** @var DatabaseService $db */
@@ -133,7 +134,8 @@ $sQuery = "SELECT
         FROM form_vl as vl
         INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
         INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id
-        WHERE vl.lab_id is NOT NULL AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
+        WHERE vl.lab_id is NOT NULL AND IFNULL(reason_for_vl_testing, 0)  != 9999
+        AND " . SampleCountUtility::countableWhere('vl') . " ";
 
 if (!empty($labId)) {
     $sQuery .= " AND vl.lab_id IN ($labId)";
