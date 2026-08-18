@@ -6,6 +6,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -144,6 +145,9 @@ if ($labScope = $general->labScopeWhere('vl')) {
 }
 
 if ($sWhere !== []) {
+     // A cancelled sample was called off before testing, so it does not belong
+     // in this list.
+     $sWhere[] = SampleCountUtility::countableWhere('vl');
      $sWhere = implode(' AND ', $sWhere);
 }
 $sQuery = $sQuery . ' ' . $sWhere;

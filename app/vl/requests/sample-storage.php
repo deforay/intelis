@@ -8,6 +8,7 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
+use App\Utilities\SampleCountUtility;
 
 // Sanitized values from $request object
 
@@ -100,6 +101,9 @@ if ($labScope = $general->labScopeWhere('vl')) {
 	$sWhere[] = $labScope;
 }
 
+// A cancelled sample was called off before testing, so it does not belong
+// in this list.
+$sWhere[] = SampleCountUtility::countableWhere('vl');
 $sWhere = isset($sWhere) && !empty($sWhere) ? ' AND ' . implode(" AND ", $sWhere) : "";
 $vlQuery = "SELECT vl.*,f.facility_name,s.storage_code,h.*,r.removal_reason_name FROM form_vl as vl
             LEFT JOIN lab_storage_history as h ON h.sample_unique_id = vl.unique_id
