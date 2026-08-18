@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# pre-push — say how much of master will be sitting unreleased once this push
+# lands, and how to publish it.
+#
+# Labs upgrade to the newest vN.N.N tag, not to master, so a pushed fix reaches
+# nobody until it is tagged. That gap is silent: nothing in git, the app, or CI
+# mentions it, and the fix simply never arrives. This is the last moment
+# anything is watching, so this is where it gets said.
+#
+# It never blocks. A push being refused because of paperwork would be worse
+# than the problem, and an urgent fix sometimes genuinely wants to sit on
+# master for a while before it goes out.
+
+set -u
+
+remote_ref_is_master=0
+while read -r _local_ref _local_sha remote_ref _remote_sha; do
+    case "$remote_ref" in
+        refs/heads/master) remote_ref_is_master=1 ;;
+    esac
+done
+
+[ "$remote_ref_is_master" -eq 1 ] || exit 0
+
+# The strict filter matches the one upgrade.sh resolves releases with, so this
+# counts against the tag labs would actually land on and not, say, the
+# vendor-latest build artefact.
+newest_tag=$(git tag --list \
+    | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
+    | sort -V | tail -1)
+
+[ -n "$newest_tag" ] || exit 0
+
+unreleased=$(git rev-list --count "${newest_tag}..HEAD" 2>/dev/null || echo 0)
+[ "$unreleased" -gt 0 ] || exit 0
+
+# `composer ship` pushes the bump and tags it moments later, so warning about
+# the bump it just made would fire on every release and mean nothing.
+subject=$(git log -1 --format='%s' HEAD 2>/dev/null || echo '')
+case "$subject" in
+    "chore: bump version to "*) exit 0 ;;
+esac
+
+printf '\n\033[33m⚠ %s commit(s) on master are not in any release.\033[0m\n' "$unreleased"
+printf '  Newest tag is %s. Labs upgrade to tags, not to master, so this\n' "$newest_tag"
+printf '  work reaches nobody until it is published:\n\n'
+git log --oneline --no-decorate "${newest_tag}..HEAD" 2>/dev/null | head -8 | sed 's/^/    /'
+[ "$unreleased" -gt 8 ] && printf '    … and %s more\n' "$((unreleased - 8))"
+printf '\n  Publish with:  \033[1mcomposer ship\033[0m\n\n'
+
+exit 0
