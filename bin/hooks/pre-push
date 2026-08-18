@@ -14,7 +14,12 @@
 set -u
 
 remote_ref_is_master=0
-while read -r _local_ref _local_sha remote_ref _remote_sha; do
+# `|| [ -n "${remote_ref:-}" ]` catches a final line with no trailing newline:
+# read fills the variables but still reports EOF, so a plain `while read` drops
+# it. Git itself terminates every line, but a global core.hooksPath dispatcher
+# that forwards stdin with `printf '%s'` does not, and then this hook would
+# silently do nothing.
+while read -r _local_ref _local_sha remote_ref _remote_sha || [ -n "${remote_ref:-}" ]; do
     case "$remote_ref" in
         refs/heads/master) remote_ref_is_master=1 ;;
     esac
