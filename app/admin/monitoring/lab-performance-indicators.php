@@ -170,6 +170,10 @@ $testingLabs = $facilitiesService->getTestingLabs();
         background-color: #f4f6f8;
     }
 
+    #lpiReport table.lpi-table tfoot th {
+        border-top: 2px solid #d5dce2;
+    }
+
     /* The preset list carries a year of named months, so it needs to scroll
        rather than push the calendar off the bottom of the viewport. */
     .daterangepicker .ranges ul {
@@ -890,7 +894,18 @@ $testingLabs = $facilitiesService->getTestingLabs();
         return $('<span>').text(value === null || value === undefined ? '' : String(value)).html();
     }
 
-    function buildTable(tableId, headers, rows) {
+    // A rate is never the average of the rates above it: a month with three
+    // samples would weigh as much as a month with three thousand. Every total
+    // rate here is recomputed from the totalled numerator and denominator.
+    function lpiRate(numerator, denominator) {
+        return denominator > 0 ? (Math.round(numerator * 10000 / denominator) / 100) + '%' : null;
+    }
+
+    function lpiSum(rows, field) {
+        return rows.reduce(function (carry, r) { return carry + (r[field] || 0); }, 0);
+    }
+
+    function buildTable(tableId, headers, rows, totals) {
         var html = '<thead><tr>';
         headers.forEach(function (h) { html += '<th>' + esc(h) + '</th>'; });
         html += '</tr></thead><tbody>';
@@ -906,6 +921,15 @@ $testingLabs = $facilitiesService->getTestingLabs();
             html += '</tr>';
         });
         html += '</tbody>';
+        // Under a single row the total is just that row again, so it is only
+        // worth the space once there is something to add up.
+        if (totals && rows.length > 1) {
+            html += '<tfoot><tr>';
+            totals.forEach(function (cell) {
+                html += '<th>' + (cell === null || cell === undefined || cell === '' ? '' : esc(cell)) + '</th>';
+            });
+            html += '</tr></tfoot>';
+        }
         $('#' + tableId).html(html);
     }
 
@@ -940,7 +964,18 @@ $testingLabs = $facilitiesService->getTestingLabs();
                 r.retestRate === null ? null : r.retestRate + '%',
                 r.rejected.toLocaleString(),
                 r.rejectionRate === null ? null : r.rejectionRate + '%'];
-            }));
+            }),
+            [LPI_LABELS.total,
+            lpiSum(rows, 'registered').toLocaleString(), lpiSum(rows, 'sampleTested').toLocaleString(),
+            lpiSum(rows, 'resulted').toLocaleString(), lpiSum(rows, 'testedPending').toLocaleString(),
+            lpiSum(rows, 'manual').toLocaleString(), lpiSum(rows, 'interface').toLocaleString(),
+            lpiSum(rows, 'fileImport').toLocaleString(), lpiSum(rows, 'unclassified').toLocaleString(),
+            lpiSum(rows, 'failed').toLocaleString(),
+            lpiRate(lpiSum(rows, 'failed'), lpiSum(rows, 'outcomes')),
+            lpiSum(rows, 'retested').toLocaleString(),
+            lpiRate(lpiSum(rows, 'retested'), lpiSum(rows, 'outcomes')),
+            lpiSum(rows, 'rejected').toLocaleString(),
+            lpiRate(lpiSum(rows, 'rejected'), lpiSum(rows, 'registered'))]);
 
         Highcharts.chart('chartOverview', {
             chart: { type: 'column' },
@@ -969,7 +1004,22 @@ $testingLabs = $facilitiesService->getTestingLabs();
                 return [r.period, r.samples.toLocaleString()].concat(stages.map(function (s) {
                     return r[s] === null ? null : r[s] + ' ' + LPI_LABELS.days + ' (n=' + r[s + 'N'].toLocaleString() + ')';
                 }));
-            }));
+            }),
+            // Each stage is averaged over the samples that actually reached
+            // it, so the overall figure is weighted by those counts rather
+            // than by how many periods happen to be on screen.
+            [LPI_LABELS.total, lpiSum(rows, 'samples').toLocaleString()].concat(stages.map(function (s) {
+                var days = 0, n = 0;
+                rows.forEach(function (r) {
+                    if (r[s] !== null && r[s + 'N'] > 0) {
+                        days += r[s] * r[s + 'N'];
+                        n += r[s + 'N'];
+                    }
+                });
+                return n > 0
+                    ? (Math.round(days * 100 / n) / 100) + ' ' + LPI_LABELS.days + ' (n=' + n.toLocaleString() + ')'
+                    : null;
+            })));
 
         Highcharts.chart('chartTat', {
             chart: { type: 'line' },
@@ -992,7 +1042,12 @@ $testingLabs = $facilitiesService->getTestingLabs();
                 r.resulted.toLocaleString(), r.testedPending.toLocaleString(),
                 r.manual.toLocaleString(), r.interface.toLocaleString(),
                 r.fileImport.toLocaleString(), r.unclassified.toLocaleString()];
-            }));
+            }),
+            [LPI_LABELS.total, '',
+            lpiSum(rows, 'registered').toLocaleString(), lpiSum(rows, 'sampleTested').toLocaleString(),
+            lpiSum(rows, 'resulted').toLocaleString(), lpiSum(rows, 'testedPending').toLocaleString(),
+            lpiSum(rows, 'manual').toLocaleString(), lpiSum(rows, 'interface').toLocaleString(),
+            lpiSum(rows, 'fileImport').toLocaleString(), lpiSum(rows, 'unclassified').toLocaleString()]);
 
         var agg = sumByPeriod(rows,
             ['registered', 'sampleTested', 'manual', 'interface', 'fileImport', 'unclassified']);
@@ -1039,7 +1094,12 @@ $testingLabs = $facilitiesService->getTestingLabs();
                 r.failureRate === null ? null : r.failureRate + '%',
                 r.retested.toLocaleString(),
                 r.retestRate === null ? null : r.retestRate + '%'];
-            }));
+            }),
+            [LPI_LABELS.total, '',
+            lpiSum(rows, 'tested').toLocaleString(), lpiSum(rows, 'failed').toLocaleString(),
+            lpiRate(lpiSum(rows, 'failed'), lpiSum(rows, 'tested')),
+            lpiSum(rows, 'retested').toLocaleString(),
+            lpiRate(lpiSum(rows, 'retested'), lpiSum(rows, 'tested'))]);
 
         var agg = sumByPeriod(rows, ['tested', 'failed']);
         Highcharts.chart('chartFailure', {
@@ -1067,7 +1127,8 @@ $testingLabs = $facilitiesService->getTestingLabs();
         $('#failureReasonsWrap').toggle(reasons.length > 0);
         if (reasons.length > 0) {
             buildTable('tableFailureReasons', [LPI_LABELS.reason, LPI_LABELS.total],
-                reasons.map(function (r) { return [r.reason, r.total.toLocaleString()]; }));
+                reasons.map(function (r) { return [r.reason, r.total.toLocaleString()]; }),
+                [LPI_LABELS.total, lpiSum(reasons, 'total').toLocaleString()]);
         }
     }
 
@@ -1077,7 +1138,10 @@ $testingLabs = $facilitiesService->getTestingLabs();
             rows.map(function (r) {
                 return [r.period, r.lab, r.received.toLocaleString(), r.rejected.toLocaleString(),
                 r.rejectionRate === null ? null : r.rejectionRate + '%'];
-            }));
+            }),
+            [LPI_LABELS.total, '',
+            lpiSum(rows, 'received').toLocaleString(), lpiSum(rows, 'rejected').toLocaleString(),
+            lpiRate(lpiSum(rows, 'rejected'), lpiSum(rows, 'received'))]);
 
         var agg = sumByPeriod(rows, ['received', 'rejected']);
         Highcharts.chart('chartRejection', {
@@ -1105,7 +1169,8 @@ $testingLabs = $facilitiesService->getTestingLabs();
         $('#rejectionReasonsWrap').toggle(reasons.length > 0);
         if (reasons.length > 0) {
             buildTable('tableRejectionReasons', [LPI_LABELS.reason, LPI_LABELS.total],
-                reasons.map(function (r) { return [r.reason, r.total.toLocaleString()]; }));
+                reasons.map(function (r) { return [r.reason, r.total.toLocaleString()]; }),
+                [LPI_LABELS.total, lpiSum(reasons, 'total').toLocaleString()]);
             Highcharts.chart('chartRejectionReasons', {
                 chart: { type: 'bar' },
                 title: { text: "<?= _jsTranslate('Top rejection reasons'); ?>" },
