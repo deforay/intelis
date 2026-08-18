@@ -15,6 +15,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use App\Utilities\SampleCodeVariantUtility;
 use App\Utilities\QueryLoggerUtility;
 use App\Abstracts\AbstractTestService;
 use App\Exceptions\SystemException;
@@ -255,6 +256,12 @@ final class ResultsService
                         $resultFromLab['form_attributes'] ?? null
                     );
 
+                    // Two instances can mint the same sample code for the same
+                    // testing lab, and the unique index on (sample_code, lab_id)
+                    // then refuses the second. Left alone that rolls back the
+                    // whole record and the result is lost, so the arriving
+                    // sample takes a numbered variant of the code instead.
+                    $resultFromLab = $this->resolveSampleCodeConflict($resultFromLab, $localRecord, $labId);
 
                     // Now we update/insert the record
                     if (!empty($localRecord)) {
@@ -350,6 +357,87 @@ final class ResultsService
         }
 
         return $sampleCodes;
+    }
+
+    /**
+     * Keeps an arriving sample from being dropped because its code is taken.
+     *
+     * The code belongs to whoever minted it, and two instances sending work to
+     * one lab will mint the same one sooner or later -- see
+     * SampleCodeVariantUtility for why nothing prevents that. The sample
+     * already holding the code keeps it; this one takes the next free variant.
+     *
+     * The assignment has to stick. The lab goes on sending the bare code every
+     * sync, so a record already carrying a variant is left exactly as it is --
+     * otherwise it would be renamed back, collide again, and fail again on
+     * every run.
+     */
+    private function resolveSampleCodeConflict(array $incoming, array $localRecord, $syncedFromLabId = null): array
+    {
+        $code = trim((string) ($incoming['sample_code'] ?? ''));
+        if ($code === '') {
+            return $incoming;
+        }
+
+        // The unique key is (sample_code, lab_id), and MySQL lets any number of
+        // rows share it while lab_id is NULL, so there is nothing to resolve.
+        $labId = $incoming['lab_id'] ?? ($localRecord['lab_id'] ?? null);
+        if ($labId === null || $labId === '' || (int) $labId <= 0) {
+            return $incoming;
+        }
+
+        $localCode = trim((string) ($localRecord['sample_code'] ?? ''));
+        if ($localCode !== '' && SampleCodeVariantUtility::isVariantOf($localCode, $code)) {
+            $incoming['sample_code'] = $localCode;
+            return $incoming;
+        }
+
+        $rows = $this->db->rawQuery(
+            "SELECT `{$this->primaryKeyName}` AS record_id, sample_code
+               FROM `{$this->tableName}`
+              WHERE lab_id = ?
+                AND (sample_code = ? OR sample_code LIKE ? ESCAPE '" . SampleCodeVariantUtility::LIKE_ESCAPE . "')",
+            [$labId, $code, SampleCodeVariantUtility::likePattern($code)]
+        ) ?: [];
+
+        $ownId = $localRecord[$this->primaryKeyName] ?? null;
+        $taken = [];
+        foreach ($rows as $row) {
+            if ($ownId !== null && (string) $row['record_id'] === (string) $ownId) {
+                continue;
+            }
+            $taken[] = (string) $row['sample_code'];
+        }
+
+        if ($taken === []) {
+            return $incoming;
+        }
+
+        $variant = SampleCodeVariantUtility::nextVariant($code, $taken);
+        if ($variant === $code) {
+            return $incoming;
+        }
+
+        $incoming['sample_code'] = $variant;
+
+        // Logged rather than flagged on the record: the nightly data-issues scan
+        // clears every issue row for a record before re-deriving them from the
+        // table alone, so a flag written here would not survive the night. Two
+        // real samples collided, and the codes and ids below are what it takes
+        // to work out which instances minted them.
+        LoggerUtility::logWarning('Sample code already used at this lab; stored the result under a variant', [
+            'test_type' => $this->testType,
+            'minted_code' => $code,
+            'stored_as' => $variant,
+            'lab_id' => $labId,
+            'synced_from_lab_id' => $syncedFromLabId,
+            'record_id' => $ownId,
+            'unique_id' => $incoming['unique_id'] ?? null,
+            'facility_id' => $incoming['facility_id'] ?? null,
+            'held_by' => array_slice($taken, 0, 5),
+        ]);
+
+        return $incoming;
     }
 
     private function buildSafeFormAttributesExpression(mixed $existingAttributes, mixed $incomingAttributes): mixed
