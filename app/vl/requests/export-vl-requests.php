@@ -6,6 +6,7 @@ use const COUNTRY\DRC;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SampleRejectionUtility;
 use App\Services\CommonService;
 use OpenSpout\Common\Entity\Row;
 use App\Services\DatabaseService;
@@ -70,7 +71,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf): ar
 		$arvAdherence = 'Poor <85%';
 	}
 
-	$sampleRejection = ($aRow['is_sample_rejected'] == 'yes' || ($aRow['reason_for_sample_rejection'] != null && $aRow['reason_for_sample_rejection'] > 0)) ? 'Yes' : 'No';
+	$sampleRejection = SampleRejectionUtility::isRejected($aRow) ? 'Yes' : 'No';
 
 	$patientFname = $aRow['patient_first_name'] ?? '';
 	$patientMname = $aRow['patient_middle_name'] ?? '';

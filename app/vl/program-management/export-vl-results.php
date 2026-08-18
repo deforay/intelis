@@ -6,6 +6,7 @@ use const COUNTRY\DRC;
 use const COUNTRY\BURKINA_FASO;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SampleRejectionUtility;
 use App\Services\CommonService;
 use OpenSpout\Common\Entity\Row;
 use App\Services\DatabaseService;
@@ -78,7 +79,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$arvAdherence = 'Poor <85%';
 		}
 
-		$sampleRejection = ($aRow['is_sample_rejected'] == 'yes' || ($aRow['reason_for_sample_rejection'] != null && $aRow['reason_for_sample_rejection'] > 0)) ? 'Yes' : 'No';
+		$sampleRejection = SampleRejectionUtility::isRejected($aRow) ? 'Yes' : 'No';
 
 		//set result log value
 		$logVal = '';
