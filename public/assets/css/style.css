@@ -654,6 +654,26 @@ div.dataTables_processing>div:last-child {
     font-weight: 700;
 }
 
+/* Dismiss sits in the header corner, quiet until hovered: it hides a warning,
+   so it should not compete with the warning for attention. */
+.needs-attention .na-dismiss {
+    float: right;
+    margin-left: 10px;
+    padding: 0 2px;
+    border: 0;
+    background: none;
+    color: #8a6d3b;
+    font-size: 18px;
+    line-height: 1;
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.needs-attention .na-dismiss:hover,
+.needs-attention .na-dismiss:focus {
+    opacity: 1;
+}
+
 .needs-attention .na-count {
     float: right;
     background-color: #c77c02;
