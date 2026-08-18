@@ -1,0 +1,6 @@
+-- Migration file for version 5.7.19
+-- Created on 2026-08-18 19:07:29
+
+
+UPDATE `system_config` SET `value` = '5.7.19' WHERE `system_config`.`name` = 'sc_version';
+
