@@ -185,20 +185,25 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 				sampleType: $("#sampleType").val()
 			},
 			function(data) {
-				if (data != '') {
-					$("#pieChartDiv").html(data);
-				}
+				$("#pieChartDiv").html(data);
+			})
+			.fail(function() {
+				alert("<?php echo _jsTranslate("Unable to load the rejection report"); ?>.");
+			})
+			.always(function() {
+				$.unblockUI();
 			});
-		$.unblockUI();
 	}
 
 	function exportInexcel() {
 		$.blockUI();
 		$.post("/vl/program-management/exportSampleRejectionReport.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
-				lab_name: $("#labName").val(),
-				clinic_name: $("#clinicName").val(),
-				sample_type: $("#sampleType").val()
+				lab_name: $("#labName option:selected").text(),
+				clinic_name: $("#clinicName option:selected").map(function() {
+					return $(this).text();
+				}).get(),
+				sample_type: $("#sampleType option:selected").text()
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
