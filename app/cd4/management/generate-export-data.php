@@ -8,6 +8,7 @@ use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Utilities\SampleRejectionUtility;
 
 
 /** @var DatabaseService $db */
@@ -48,7 +49,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 			default => '',
 		};
 
-		$sampleRejection = ($aRow['is_sample_rejected'] == 'yes' || ($aRow['reason_for_sample_rejection'] != null && $aRow['reason_for_sample_rejection'] > 0)) ? 'Yes' : 'No';
+		$sampleRejection = SampleRejectionUtility::isRejected($aRow) ? 'Yes' : 'No';
 
 		$sampleCode = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
 
