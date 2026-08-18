@@ -17,6 +17,8 @@
 //   php bin/apply-rejection-reason-map.php --dry-run   count what would change
 //   php bin/apply-rejection-reason-map.php             apply it
 //   php bin/apply-rejection-reason-map.php vl          one test type only
+//   php bin/apply-rejection-reason-map.php --quiet     say nothing unless it rewrote
+//                                                      something (how cron runs it)
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -40,6 +42,15 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $args = array_slice($argv, 1);
 $dryRun = in_array('--dry-run', $args, true);
+// Scheduled daily, and on most days there is nothing new to apply. A job that
+// reports "nothing to do" every night trains everyone to ignore its output, so
+// under --quiet it speaks only when it actually changed something.
+$quiet = in_array('--quiet', $args, true);
+$say = static function (string $message) use ($quiet): void {
+    if (!$quiet) {
+        MiscUtility::safeCliEcho($message);
+    }
+};
 $only = null;
 foreach ($args as $arg) {
     if (!str_starts_with($arg, '--')) {
@@ -49,7 +60,21 @@ foreach ($args as $arg) {
 }
 
 if (!$general->isSTSInstance()) {
-    MiscUtility::safeCliEcho("Not an STS instance -- the map lives only on STS. Nothing to do." . PHP_EOL);
+    $say("Not an STS instance -- the map lives only on STS. Nothing to do." . PHP_EOL);
+    exit(0);
+}
+
+// The map table arrives with the same release as this script, but an STS whose
+// migration has not finished -- or that is mid-upgrade when cron fires -- would
+// otherwise throw here and, because the global handler exits 0, do it silently.
+// A scheduled job that fails invisibly is worse than one that does nothing.
+$mapTableExists = $db->rawQueryOne(
+    "SELECT COUNT(*) AS total FROM INFORMATION_SCHEMA.TABLES
+      WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?",
+    [RejectionReasonMappingService::MAP_TABLE]
+);
+if ((int) ($mapTableExists['total'] ?? 0) === 0) {
+    $say(RejectionReasonMappingService::MAP_TABLE . " does not exist yet -- run the migrations first." . PHP_EOL);
     exit(0);
 }
 
@@ -65,7 +90,7 @@ $mappings = $db->rawQuery(
 );
 
 if (empty($mappings)) {
-    MiscUtility::safeCliEcho(
+    $say(
         "No mappings differ from the id already stored." . PHP_EOL
         . "Either no lab has synced its reason tables yet, or every id already agrees." . PHP_EOL
     );
@@ -103,6 +128,7 @@ foreach ($mappings as $mapping) {
     }
     $totalRows += $affected;
 
+    // Always printed, quiet or not: this line IS the change being made.
     MiscUtility::safeCliEcho(
         sprintf(
             "%s lab %d: reason %d -> %d  (%d row%s)%s",
@@ -138,11 +164,13 @@ if ($skipped !== []) {
     );
 }
 
-MiscUtility::safeCliEcho(
-    $dryRun
-        ? sprintf("Dry run: %d row(s) would be rewritten.%s", $totalRows, PHP_EOL)
-        : sprintf("Rewrote %d row(s).%s", $applied, PHP_EOL)
-);
+if (!$quiet || $totalRows > 0) {
+    MiscUtility::safeCliEcho(
+        $dryRun
+            ? sprintf("Dry run: %d row(s) would be rewritten.%s", $totalRows, PHP_EOL)
+            : sprintf("Rewrote %d row(s).%s", $applied, PHP_EOL)
+    );
+}
 
 if (!$dryRun && $applied > 0) {
     LoggerUtility::logInfo('Applied lab rejection reason map to historical samples', [

@@ -206,6 +206,21 @@ if ($general->isSTSInstance()) {
         ->timezone($timezone)
         ->preventOverlapping()
         ->description('Updating inter-lab referrals and referral history across active test modules');
+
+    // Rejection reason ids are minted per install, so a reason a lab creates from
+    // the "Other" box arrives here pointing at nothing. Labs send their reason
+    // tables up with every metadata sync and the receiver records what each of
+    // their ids means; this puts that answer onto the samples already stored.
+    //
+    // Scheduled rather than run once at upgrade: the answers arrive over weeks, as
+    // each lab upgrades and syncs, so there is no single moment when the work is
+    // complete. Idempotent -- it only touches rows still holding a lab's own id --
+    // and --quiet so the nightly run is silent unless it actually rewrote something.
+    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/apply-rejection-reason-map.php --quiet")
+        ->cron('40 3 * * *') // 03:40 daily, after the retention prune at 03:15
+        ->timezone($timezone)
+        ->preventOverlapping()
+        ->description('Applying labs\' rejection reason ids to samples already stored');
 }
 
 
