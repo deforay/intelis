@@ -270,6 +270,19 @@ final class ResultsService
                             $this->db->where($this->primaryKeyName, $localRecord[$this->primaryKeyName]);
                             $id = $this->db->update($this->tableName, $resultFromLab);
                         }
+                    } elseif (!TestRequestsService::hasUsableIdentity($resultFromLab)) {
+                        // Nothing matched, but there was also nothing to match
+                        // on, so this is not a new record -- inserting it would
+                        // create a row that the next batch from the same lab
+                        // would fail to find and insert all over again.
+                        LoggerUtility::logError('Skipped an unidentifiable result received from a lab', [
+                            'reason' => 'no remote_sample_code, no unique_id, and no sample_code paired with a lab or facility',
+                            'test_type' => $this->testType,
+                            'sample_code' => $resultFromLab['sample_code'] ?? null,
+                            'synced_from_lab_id' => $labId,
+                        ]);
+                        $this->db->rollbackTransaction();
+                        continue;
                     } else {
                         // $id = $this->db->insert($this->tableName, $resultFromLab);
                         // $primaryKeyValue = $this->db->getInsertId();

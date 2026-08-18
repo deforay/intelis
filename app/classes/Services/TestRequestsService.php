@@ -1236,8 +1236,105 @@ final class TestRequestsService
     }
 
     /**
+     * The keys a synced record can be recognised by, in the order they are tried.
+     *
+     * This is the single definition of identity for records arriving from the
+     * other system, and it answers two questions that have to stay in step:
+     * how to look a record up, and whether it can be looked up at all. They
+     * used to be answered separately, which is how the second one came to be
+     * answered wrongly -- see hasUsableIdentity() below.
+     *
+     * The order is not arbitrary and should not be tidied into something
+     * neater. sample_code + lab_id sits above unique_id because unique_id has
+     * been seen in the field arriving attached to a different sample_code than
+     * the one it belongs to locally, and a unique_id match is by definition a
+     * match on one specific row -- so trusting it first would quietly overwrite
+     * somebody else's sample. The pairs are tried ahead of it because they
+     * describe a sample and where it was handled, which is much harder to
+     * collide by accident.
+     *
+     * @return array<int, array{where: string, params: array}>
+     */
+    private static function identityCandidates(array $recordFromOtherSystem): array
+    {
+        $remoteSampleCode = trim((string) ($recordFromOtherSystem['remote_sample_code'] ?? ''));
+        $sampleCode = trim((string) ($recordFromOtherSystem['sample_code'] ?? ''));
+        $uniqueId = trim((string) ($recordFromOtherSystem['unique_id'] ?? ''));
+
+        // A lab or facility id of 0 is absence wearing a number: no row carries
+        // one and facility ids start at 1. Left as a value it would build a
+        // lookup that can never match, which lands in the same place as having
+        // no key at all -- an insert, and then another one next sync.
+        $realId = static fn($value): bool => $value !== null && trim((string) $value) !== '' && (string) $value !== '0';
+        $labId = $realId($recordFromOtherSystem['lab_id'] ?? null) ? $recordFromOtherSystem['lab_id'] : null;
+        $facilityId = $realId($recordFromOtherSystem['facility_id'] ?? null) ? $recordFromOtherSystem['facility_id'] : null;
+
+        $candidates = [];
+
+        if ($remoteSampleCode !== '') {
+            $candidates[] = [
+                'where' => 'remote_sample_code = ?',
+                'params' => [$remoteSampleCode],
+            ];
+        }
+
+        // sample_code on its own is deliberately not a candidate: it is not
+        // unique -- on one production database 47% of rows share theirs with
+        // some other row -- so matching on it alone would sometimes update a
+        // different patient's sample. It is only an identity when paired with
+        // something that narrows it to one place.
+        if ($sampleCode !== '' && $labId !== null) {
+            $candidates[] = [
+                'where' => 'sample_code = ? AND lab_id = ?',
+                'params' => [$sampleCode, $labId],
+            ];
+        }
+
+        if ($uniqueId !== '') {
+            $candidates[] = [
+                'where' => 'unique_id = ?',
+                'params' => [$uniqueId],
+            ];
+        }
+
+        if ($sampleCode !== '' && $facilityId !== null) {
+            $candidates[] = [
+                'where' => 'sample_code = ? AND facility_id = ?',
+                'params' => [$sampleCode, $facilityId],
+            ];
+        }
+
+        return $candidates;
+    }
+
+    /**
+     * Whether an incoming record carries any key it could be found by later.
+     *
+     * A caller that inserts a record failing this test creates one it can never
+     * match again, so the next sync inserts it a second time, and the one after
+     * that a third. That is not hypothetical: it left 537,074 copies of 141
+     * records on one instance, re-inserted every ten minutes for weeks, because
+     * findMatchingLocalRecord() returned the same empty array for "searched and
+     * found nothing" as for "had nothing to search by", and every caller read
+     * it as the first.
+     *
+     * So: update when a match is found, insert when this returns true, and
+     * reject otherwise. Rejecting loses nothing -- the record stays on the
+     * other system and arrives on the next run once it has a key.
+     */
+    public static function hasUsableIdentity(array $recordFromOtherSystem): bool
+    {
+        return self::identityCandidates($recordFromOtherSystem) !== [];
+    }
+
+    /**
      * Find a matching local record based on the provided remotely received data
      * From CLOUD Sample Tracking System (STS) to Local LIS or vice versa.
+     *
+     * An empty return means only that no local record matched. It does NOT mean
+     * the record is safe to insert -- a record with no usable key never matches
+     * anything. Ask hasUsableIdentity() before treating an empty result as new.
+     *
      * @param array $recordFromOtherSystem The request data from the other system.
      * @param string $tableName The name of the table to search in.
      * @param string $primaryKeyName The name of the primary key column.
@@ -1263,48 +1360,7 @@ final class TestRequestsService
             $fields = '*';
         }
 
-        // Normalize incoming values
-        $remoteSampleCode = trim((string) ($recordFromOtherSystem['remote_sample_code'] ?? ''));
-        $sampleCode = trim((string) ($recordFromOtherSystem['sample_code'] ?? ''));
-        $labId = $recordFromOtherSystem['lab_id'] ?? null;
-        $facilityId = $recordFromOtherSystem['facility_id'] ?? null;
-        $uniqueId = trim((string) ($recordFromOtherSystem['unique_id'] ?? ''));
-
-        // Candidate matching conditions in priority order
-        $candidates = [];
-
-        if ($remoteSampleCode !== '') {
-            $candidates[] = [
-                'where' => 'remote_sample_code = ?',
-                'params' => [$remoteSampleCode],
-                //'match_criteria' => 'remote_sample_code',
-            ];
-        }
-
-        if ($sampleCode !== '' && $labId !== null && $labId !== '') {
-            $candidates[] = [
-                'where' => 'sample_code = ? AND lab_id = ?',
-                'params' => [$sampleCode, $labId],
-                //'match_criteria' => 'sample_code_and_lab_id',
-            ];
-        }
-
-        if ($uniqueId !== '') {
-            $candidates[] = [
-                'where' => 'unique_id = ?',
-                'params' => [$uniqueId],
-                //'match_criteria' => 'unique_id',
-            ];
-        }
-
-        if ($sampleCode !== '' && $facilityId !== null && $facilityId !== '') {
-            $candidates[] = [
-                'where' => 'sample_code = ? AND facility_id = ?',
-                'params' => [$sampleCode, $facilityId],
-                //'match_criteria' => 'sample_code_and_facility_id',
-            ];
-        }
-
+        $candidates = self::identityCandidates($recordFromOtherSystem);
         if ($candidates === []) {
             return [];
         }

@@ -247,6 +247,14 @@ function syncTestRequest(
         } else {
             $resultRecord = $localRecord;
         }
+    } elseif (!TestRequestsService::hasUsableIdentity($incoming)) {
+        // Not a match failure -- a record with no remote_sample_code, no
+        // unique_id, and no sample_code paired with a lab or facility cannot be
+        // found again, so inserting it would mean inserting it once more on
+        // every sync from here on. It is reported through the same channel as
+        // any other sync failure and left on the sending system.
+        $didFail = true;
+        $failureReason = 'unidentifiable: no remote_sample_code, no unique_id, and no sample_code paired with a lab or facility';
     } else {
         // Insert path
         $incoming['source_of_request'] ??= 'vlsts';
@@ -1103,6 +1111,17 @@ try {
                         $id = true;
                     }
                     $genericId = $localRecord[$primaryKeyName];
+                } elseif (!TestRequestsService::hasUsableIdentity($request)) {
+                    // See syncTestRequest(): a record with no key to be found
+                    // by would be re-inserted on every sync.
+                    LoggerUtility::logError("Sync operation failed", [
+                        'reason' => 'unidentifiable: no remote_sample_code, no unique_id, and no sample_code paired with a lab or facility',
+                        'unique_id' => $request['unique_id'] ?? null,
+                        'sample_code' => $request['sample_code'] ?? null,
+                        'module' => 'generic-tests',
+                    ]);
+                    $id = false;
+                    $genericId = null;
                 } elseif (!empty($request['sample_collection_date'])) {
                     // Insert path
                     $request['source_of_request'] = 'vlsts';
