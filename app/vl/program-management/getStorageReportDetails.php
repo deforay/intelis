@@ -8,6 +8,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
 
 
 // Sanitized values from $request object
@@ -49,6 +50,9 @@ try {
           if ($labScope = $general->labScopeWhere('vl')) {
               $sWhere[] = $labScope;
           }
+          // A cancelled sample was called off before testing, so it is not stock
+          // this report should account for.
+          $sWhere[] = SampleCountUtility::countableWhere('vl');
           if (!empty($sWhere)) {
                $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
           }
@@ -101,6 +105,9 @@ try {
           if ($labScope = $general->labScopeWhere('vl')) {
               $sWhere[] = $labScope;
           }
+          // A cancelled sample was called off before testing, so it is not stock
+          // this report should account for.
+          $sWhere[] = SampleCountUtility::countableWhere('vl');
           if (!empty($sWhere)) {
                $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
           }
