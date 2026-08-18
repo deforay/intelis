@@ -12,6 +12,7 @@ use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use App\Utilities\SampleRejectionUtility;
 
 
 /** @var DatabaseService $db */
@@ -68,7 +69,7 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 
 		//set sample rejection
 		$sampleRejection = 'No';
-		if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		if (SampleRejectionUtility::isRejected($aRow)) {
 			$sampleRejection = 'Yes';
 		}
 

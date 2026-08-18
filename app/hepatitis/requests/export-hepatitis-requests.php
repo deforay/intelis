@@ -13,6 +13,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Common\Entity\Row;
+use App\Utilities\SampleRejectionUtility;
 
 
 /** @var DatabaseService $db */
@@ -53,7 +54,7 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) !== "") {
 
         //set sample rejection
         $sampleRejection = 'No';
-        if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
+        if (SampleRejectionUtility::isRejected($aRow)) {
             $sampleRejection = 'Yes';
         }
 

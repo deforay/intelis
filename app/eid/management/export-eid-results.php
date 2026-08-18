@@ -13,6 +13,7 @@ use OpenSpout\Writer\XLSX\Writer;
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
+use App\Utilities\SampleRejectionUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -85,7 +86,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		}
 		//set sample rejection
 		$sampleRejection = 'No';
-		if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		if (SampleRejectionUtility::isRejected($aRow)) {
 			$sampleRejection = 'Yes';
 		}
 

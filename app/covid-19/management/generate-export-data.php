@@ -18,6 +18,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use App\Utilities\SampleRejectionUtility;
 
 
 /** @var DatabaseService $db */
@@ -124,7 +125,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 
 		//set sample rejection
 		$sampleRejection = 'No';
-		if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		if (SampleRejectionUtility::isRejected($aRow)) {
 			$sampleRejection = 'Yes';
 		}
 		//result dispatched date

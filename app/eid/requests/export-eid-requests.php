@@ -10,6 +10,7 @@ use App\Services\CommonService;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\DateUtility;
+use App\Utilities\SampleRejectionUtility;
 
 
 ini_set('memory_limit', '512M');
@@ -68,7 +69,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $formId): array {
 
     //set sample rejection
     $sampleRejection = 'No';
-    if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
+    if (SampleRejectionUtility::isRejected($aRow)) {
         $sampleRejection = 'Yes';
     }
 

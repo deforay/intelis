@@ -13,6 +13,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use Psr\Http\Message\ServerRequestInterface;
+use App\Utilities\SampleRejectionUtility;
 
 
 // Sanitized values from $request object
@@ -168,7 +169,7 @@ try {
           $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
-          $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
+          $sWhere[] = ' ' . SampleRejectionUtility::sqlPredicate('vl') . ' ';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
           $sWhere[] = " vl.sample_received_at_lab_datetime is NOT NULL ";
