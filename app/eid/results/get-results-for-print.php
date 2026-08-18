@@ -212,8 +212,10 @@ try {
     foreach ($rResult as $aRow) {
         $row = [];
 
-        // EID stores the same canonical change history as VL, under a different
-        // column name.
+        // EID stores the same canonical change history as VL, under a different column name.
+        // As in VL, the chip is driven by that history rather than by result_modified: only an
+        // entry recording the pre-change state proves the result (or the rejection status)
+        // actually moved. An empty attribute here means nothing proves a change.
         $resultTooltip = MiscUtility::resultChangeHistoryTooltipAttribute(
             $aRow['reason_for_changing'] ?? null,
             $usersService,
@@ -227,9 +229,8 @@ try {
                 $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['eid_id'] . '"  value="' . $aRow['eid_id'] . '" onclick="checkedPrintedRow(this);"  />';
             }
             $resultModified = '';
-            if (($aRow['result_modified'] ?? '') == 'yes') {
-                $modifiedClass = $resultTooltip !== '' ? 'result-modified-badge top-tooltip' : 'result-modified-badge';
-                $resultModified = '<br><span class="' . $modifiedClass . '"' . $resultTooltip . '><em class="fa-solid fa-triangle-exclamation"></em> ' . _translate("Result Modified") . '</span>';
+            if ($resultTooltip !== '') {
+                $resultModified = '<br><span class="result-modified-badge top-tooltip"' . $resultTooltip . '><em class="fa-solid fa-triangle-exclamation"></em> ' . _translate("Result Modified") . '</span>';
             }
             $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="resultPDF(' . $aRow['eid_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>' . $resultModified;
         }

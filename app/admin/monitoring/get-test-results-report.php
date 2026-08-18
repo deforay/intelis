@@ -3,6 +3,7 @@
 use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -31,10 +32,8 @@ try {
         $resultColumn = "cd4_result";
     }
 
-    $resultChangeColumn = " vl.reason_for_changing";
-    if ($testType == "vl" || $testType == "cd4") {
-        $resultChangeColumn = " vl.reason_for_result_changes";
-    }
+    $resultChangeKey = ($testType == "vl" || $testType == "cd4") ? "reason_for_result_changes" : "reason_for_changing";
+    $resultChangeColumn = " vl.$resultChangeKey";
 
     $table = TestsService::getTestTableName($testType);
     $testName = TestsService::getTestName($testType);
@@ -178,7 +177,9 @@ try {
 
     foreach ($rResult as $key => $aRow) {
 
-        $rejectedObj = json_decode((string) $aRow['reason_for_result_changes']);
+        // The reason column holds a history of changes (and, on older records, legacy formats),
+        // not the single object this once assumed -- report the most recent recorded change.
+        $latestChange = MiscUtility::latestResultChangeReason($aRow[$resultChangeKey] ?? null);
         $row = [];
         //$row[] = $aRow['f.facility_name'];
         $row[] = $aRow['sample_code'];
@@ -186,7 +187,7 @@ try {
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
-        $row[] = $aRow['result'];
+        $row[] = $aRow[$resultColumn];
         $row[] = $aRow['testedByName'];
         $row[] = $aRow['machine_name'];
         $row[] = $aRow['status_name'];
@@ -194,7 +195,7 @@ try {
         $row[] = $aRow['is_sample_rejected'];
         $row[] = $aRow['rejection_reason_name'];
         $row[] = $aRow["result_modified"];
-        $row[] = $rejectedObj->reasonForChange;
+        $row[] = $latestChange['msg'] ?? '';
         $row[] = DateUtility::humanReadableDateFormat($aRow["last_modified_datetime"]);
         $fileName = $aRow['import_machine_file_name'];
         if (!empty($aRow['import_machine_file_name']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $aRow['import_machine_file_name'])) {

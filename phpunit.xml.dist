@@ -11,5 +11,8 @@
         <testsuite name="Services">
             <directory>tests/Unit/Services</directory>
         </testsuite>
+        <testsuite name="Utilities">
+            <directory>tests/Unit/Utilities</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

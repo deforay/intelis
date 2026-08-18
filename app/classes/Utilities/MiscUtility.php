@@ -1434,6 +1434,32 @@ final class MiscUtility
     }
 
     /**
+     * The one rule for "this result was modified": either the result value moved away from a
+     * previously stored (non-empty) value, or the sample flipped between rejected and not rejected.
+     *
+     * Every module sets form_*.result_modified from this and logs its change history on the same
+     * condition, so the "Result Modified" chip, the printed reports and the stored history can never
+     * disagree about what counts as a change.
+     *
+     * @param array $previous ['result' => , 'is_sample_rejected' => ]
+     * @param array $current  ['result' => , 'is_sample_rejected' => ]
+     */
+    public static function resultOrRejectionChanged(array $previous, array $current): bool
+    {
+        $prevResult = $previous['result'] ?? null;
+        $newResult = $current['result'] ?? null;
+        $resultChanged = $prevResult !== null
+            && trim((string) $prevResult) !== ''
+            && (string) $prevResult !== (string) $newResult;
+
+        // Only a flip between rejected / not-rejected counts (avoids null<->"no" noise).
+        $prevRejected = ((string) ($previous['is_sample_rejected'] ?? '')) === 'yes';
+        $newRejected = ((string) ($current['is_sample_rejected'] ?? '')) === 'yes';
+
+        return $resultChanged || $prevRejected !== $newRejected;
+    }
+
+    /**
      * Append a result/rejection change entry to the existing (any-format) reason history and return
      * the canonical JSON array string. Existing history is preserved (never overwritten).
      *
@@ -1448,19 +1474,9 @@ final class MiscUtility
         $history = self::parseResultChangeHistory($existingRaw);
 
         $prevResult = $previous['result'] ?? null;
-        $newResult = $current['result'] ?? null;
-        $resultChanged = $prevResult !== null
-            && trim((string) $prevResult) !== ''
-            && (string) $prevResult !== (string) $newResult;
-
-        // Only a flip between rejected / not-rejected counts (avoids null<->"no" noise).
-        $prevRejected = ((string) ($previous['is_sample_rejected'] ?? '')) === 'yes';
-        $newRejected = ((string) ($current['is_sample_rejected'] ?? '')) === 'yes';
-        $rejectionChanged = $prevRejected !== $newRejected;
-
         $reasonText = trim((string) $reasonText);
 
-        if (($resultChanged || $rejectionChanged) && $reasonText !== '') {
+        if (self::resultOrRejectionChanged($previous, $current) && $reasonText !== '') {
             $history[] = [
                 'usr' => $userId,
                 'dtime' => DateUtility::getCurrentDateTime(),
@@ -1474,10 +1490,42 @@ final class MiscUtility
         return empty($history) ? null : json_encode($history);
     }
 
-    /** Return the most recent change entry (canonical shape), or [] when there is no history. */
+    /**
+     * Keep only the history entries that record an actual result / rejection change.
+     *
+     * The reason column is not exclusively a result-change log: legacy "name##message##datetime"
+     * rows, the free-text reasons older forms saved on any edit, and the per-test reason fields
+     * (TB / custom tests) all land in the same column but say nothing about the result having
+     * changed. Only appendResultChangeReason() writes the pre-change state alongside the reason,
+     * and it does so only when the result or the rejection status actually moved -- so an entry
+     * carrying any of those keys is proof of a change, and an entry without them is not.
+     *
+     * @return array oldest-first, canonical entry shape
+     */
+    public static function genuineResultChangeHistory(?string $raw): array
+    {
+        return array_values(array_filter(
+            self::parseResultChangeHistory($raw),
+            static fn(array $entry): bool => array_key_exists('previousResult', $entry)
+                || array_key_exists('previousResultStatus', $entry)
+                || array_key_exists('previousRejection', $entry)
+        ));
+    }
+
+    /** True when the stored history proves the result (or the rejection status) was changed. */
+    public static function hasGenuineResultChange(?string $raw): bool
+    {
+        return self::genuineResultChangeHistory($raw) !== [];
+    }
+
+    /**
+     * Return the most recent recorded result/rejection change (canonical shape), or [] when the
+     * history holds none. Entries that do not record a result change are skipped, so the caller
+     * never reports an unrelated reason as the reason the result changed.
+     */
     public static function latestResultChangeReason(?string $raw): array
     {
-        $history = self::parseResultChangeHistory($raw);
+        $history = self::genuineResultChangeHistory($raw);
         return empty($history) ? [] : (array) end($history);
     }
 
@@ -1499,15 +1547,19 @@ final class MiscUtility
     }
 
     /**
-     * Build the tooltipster title="..." attribute holding the full result change
+     * Build the tooltipster title="..." attribute holding the result change
      * history (newest first), for the "Result Modified" chip on the print pages.
      *
      * Each stored entry records what the result was *before* that edit, so the
      * "Changed To" column is read from the next entry down -- and the newest entry
      * is the one that produced $currentResult.
      *
-     * Returns '' when there is no history, meaning the caller should render the
-     * chip without a tooltip.
+     * Only entries that record an actual result / rejection change are listed
+     * (see genuineResultChangeHistory), so an unrelated reason never shows up as
+     * a result change and never breaks the Changed From -> Changed To walk-back.
+     *
+     * Returns '' when nothing in the history proves a change, which is also the
+     * signal for the caller not to render the chip at all.
      *
      * @param string|null $raw           The stored history column, any supported format.
      * @param mixed       $usersService  Resolves user ids to names.
@@ -1515,14 +1567,14 @@ final class MiscUtility
      */
     public static function resultChangeHistoryTooltipAttribute(?string $raw, $usersService, ?string $currentResult): string
     {
-        $history = array_reverse(self::parseResultChangeHistory($raw));
+        $history = array_reverse(self::genuineResultChangeHistory($raw));
         if (empty($history)) {
             return '';
         }
 
-        // The legacy "name##message##datetime" entries carry no previousResult, so
-        // the from/to columns would be blank for those records. Show them only when
-        // at least one entry can actually fill them in.
+        // A rejection-only flip is recorded with an empty previousResult, so the
+        // from/to columns would be blank for those records. Show them only when at
+        // least one entry can actually fill them in.
         $showResultColumns = false;
         foreach ($history as $change) {
             if (($change['previousResult'] ?? '') !== '') {
