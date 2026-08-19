@@ -1141,10 +1141,18 @@ mysql_diagnostics() {
 
 
 # Ask user yes/no
+# ask_yes_no <question> [default] [timeout-seconds]
+#
+# There is no timeout unless one is asked for. There used to be a flat 15
+# seconds, which could only ever fire when a human WAS at the keyboard —
+# a run with no terminal returns the default at the top of this function and
+# never reaches the read — so its whole effect was to answer for operators who
+# stopped to think. On a question like "reuse your previous answers?" that is
+# the machine making the decision the operator came to make.
 ask_yes_no() {
     local prompt="$1"
     local default="${2:-no}"
-    local timeout=15
+    local timeout="${3:-0}"
     local answer
 
     # Normalize default
@@ -1156,12 +1164,28 @@ ask_yes_no() {
         [[ "$default" == "yes" ]] && return 0 || return 1
     fi
 
-    echo -n "$prompt (y/n) [default: $default, auto in ${timeout}s]: "
+    # gum confirm has no timeout of its own, so it is only used for the
+    # untimed case — which, since the timeout is now opt-in, is nearly all of
+    # them. Its exit status is the answer: 0 for yes, 1 for no.
+    if [ "$timeout" -eq 0 ] 2>/dev/null && [ "$(ui_renderer)" = "gum" ]; then
+        local affirmative="Yes" negative="No" default_flag="--default=true"
+        [ "$default" = "no" ] && default_flag="--default=false"
+        gum confirm "$prompt" --affirmative "$affirmative" --negative "$negative" "$default_flag"
+        return $?
+    fi
 
-    read -t "$timeout" answer
-    if [ $? -ne 0 ]; then
-        print info "No input received in ${timeout} seconds. Using default: $default"
-        [[ "$default" == "yes" ]] && return 0 || return 1
+    if [ "$timeout" -gt 0 ] 2>/dev/null; then
+        echo -n "$prompt (y/n) [default: $default, auto in ${timeout}s]: "
+        read -t "$timeout" answer
+        if [ $? -ne 0 ]; then
+            print info "No input received in ${timeout} seconds. Using default: $default"
+            [[ "$default" == "yes" ]] && return 0 || return 1
+        fi
+    else
+        echo -n "$prompt (y/n) [default: $default]: "
+        if ! read -r answer; then
+            [[ "$default" == "yes" ]] && return 0 || return 1
+        fi
     fi
 
     # Treat empty input (Enter) as choosing default
@@ -2149,11 +2173,26 @@ ensure_gum() {
     local keyring="/etc/apt/keyrings/charm.gpg"
     local list="/etc/apt/sources.list.d/charm.list"
 
+    # Say so before going quiet. prepare_system has just finished its own apt
+    # work, so the install below routinely waits on the dpkg lock while
+    # apt-daily finishes — and a silent wait immediately before the first
+    # question is indistinguishable from a hang.
+    print info "Preparing the installer (skip with INTELIS_UI=plain)..."
+
+    # Every apt call is bounded twice: DPkg::Lock::Timeout so it gives up on a
+    # held lock instead of blocking forever, and an outer timeout so a stalled
+    # transfer cannot hold the install either. Neither failure matters — this is
+    # cosmetic, and the plain prompts are already there.
+    local apt_opts=(-o DPkg::Lock::Timeout=20)
+    local runner=()
+    command -v timeout >/dev/null 2>&1 && runner=(timeout 90)
+
     if [ ! -s "$keyring" ]; then
         mkdir -p /etc/apt/keyrings || return 1
-        if ! curl -fsSL --max-time 30 https://repo.charm.sh/apt/gpg.key 2>/dev/null |
+        if ! curl -fsSL --max-time 20 https://repo.charm.sh/apt/gpg.key 2>/dev/null |
             gpg --dearmor -o "$keyring" 2>/dev/null; then
             rm -f "$keyring"
+            print info "Continuing with plain prompts."
             return 1
         fi
         chmod 0644 "$keyring"
@@ -2163,23 +2202,26 @@ ensure_gum() {
         printf 'deb [signed-by=%s] https://repo.charm.sh/apt/ * *\n' "$keyring" >"$list" || return 1
     fi
 
-    # Scoped to this one list file on purpose: refreshing every index on a lab
-    # link costs minutes, and nothing here is worth minutes.
+    # The index refresh is scoped to this one list file on purpose: refreshing
+    # every index on a lab link costs minutes, and nothing here is worth minutes.
     #
-    # On failure the repo is removed again rather than left behind. An
+    # On any failure the repo is removed again rather than left behind. An
     # unreachable third-party repo makes every later `apt-get update` on the
     # machine noisy and non-zero — including the ones that run unattended, with
     # nobody there to read the error — and gum is not worth that.
-    if ! DEBIAN_FRONTEND=noninteractive apt-get update \
+    if ! DEBIAN_FRONTEND=noninteractive "${runner[@]}" apt-get update "${apt_opts[@]}" \
         -o Dir::Etc::sourcelist="$list" \
         -o Dir::Etc::sourceparts=- \
         -o APT::Get::List-Cleanup=0 >/dev/null 2>&1; then
         rm -f "$list" "$keyring"
+        print info "Continuing with plain prompts."
         return 1
     fi
 
-    if ! DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gum >/dev/null 2>&1; then
+    if ! DEBIAN_FRONTEND=noninteractive "${runner[@]}" apt-get install -y \
+        --no-install-recommends "${apt_opts[@]}" gum >/dev/null 2>&1; then
         rm -f "$list" "$keyring"
+        print info "Continuing with plain prompts."
         return 1
     fi
 
@@ -2197,6 +2239,20 @@ ui_step() {
     else
         printf '\n\033[1;96m── Step %s of %s · %s\033[0m\n' "$current" "$total" "$title" >&2
     fi
+}
+
+# Step numbering, counted rather than hard-coded. Questions that turn out not
+# to apply are not asked, so the numbers have to be assigned as the run goes:
+# a hard-coded "Step 5 of 6" is a promise the flow cannot keep once a step is
+# skipped, and skipping steps is the point.
+ui_steps_total() {
+    _ui_step_total="$1"
+    _ui_step_n=0
+}
+
+ui_step_next() {
+    _ui_step_n=$((${_ui_step_n:-0} + 1))
+    ui_step "$_ui_step_n" "${_ui_step_total:-?}" "$1"
 }
 
 # Supporting text under a question. Always shown, never abbreviated: the whole
@@ -2321,6 +2377,47 @@ ask_text() {
         fi
 
         printf -v "$__outvar" '%s' "$reply"
+        return 0
+    done
+}
+
+# --- Password ---------------------------------------------------------------
+# ask_password <outvar> <question> [confirm-question]
+#
+# Typed twice and compared, because the MySQL root password is being CHOSEN at
+# this prompt rather than recalled, and a typo is only discovered later by
+# whoever tries to restore a backup.
+ask_password() {
+    local __outvar="$1" question="$2" confirm_question="${3:-Confirm password}"
+    local first second
+
+    if ! ui_interactive; then
+        printf -v "$__outvar" '%s' ''
+        return 1
+    fi
+
+    while true; do
+        if [ "$(ui_renderer)" = "gum" ]; then
+            first=$(gum input --password --header "$question" 2>/dev/null) || first=""
+            second=$(gum input --password --header "$confirm_question" 2>/dev/null) || second=""
+        else
+            printf '\n \033[1m%s\033[0m\n > ' "$question" >&2
+            read -rs first || first=""
+            printf '\n \033[1m%s\033[0m\n > ' "$confirm_question" >&2
+            read -rs second || second=""
+            echo >&2
+        fi
+
+        if [ -z "$first" ]; then
+            print error "The password cannot be empty."
+            continue
+        fi
+        if [ "$first" != "$second" ]; then
+            print error "The two entries do not match. Try again."
+            continue
+        fi
+
+        printf -v "$__outvar" '%s' "$first"
         return 0
     done
 }
