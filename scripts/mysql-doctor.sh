@@ -473,6 +473,180 @@ check_config_prelude() {
     "Every setting has to sit under a heading such as [mysqld]. The server stops at the first line and never starts."
 }
 
+# Every check above this one asks the question from the server's side. This one
+# asks it from the client's, because a file can be perfectly acceptable to
+# mysqld and still stop every client dead.
+#
+# The cause is a server setting that has ended up under a heading the clients
+# read - [client], or [mysql], or the section a tool appended after them. mysqld
+# never looks at those sections, so it starts happily and writes nothing to its
+# log, while mysql and mysqldump read them, do not recognise a server variable,
+# and refuse to run at all: "unknown variable 'innodb_file_per_table=1'". Two
+# faults, one cause. The tuning was never in effect, and since mysqldump is one
+# of the clients that stops working, the nightly backup has been failing for as
+# long as the line has been there.
+#
+# It reaches a file two ways. Someone adds a [client] section at the foot of a
+# file that ends in server settings, and everything below it changes meaning; or
+# a script appends tuning to the end of a file whose last heading is already a
+# client one.
+
+CLIENT_LEAK_HITS=()      # "file<TAB>line<TAB>section<TAB>option"
+CLIENT_LEAK_FILES=()
+CLIENT_LEAK_BREAKS_CLIENTS=false
+
+# Every file a client reads, which is a wider set than the server's: each user's
+# own ~/.my.cnf counts, and a fault in one breaks that person's mysql while
+# leaving everyone else's working.
+client_config_files() {
+  local f
+  for f in /etc/my.cnf /etc/mysql/my.cnf \
+           /etc/mysql/conf.d/*.cnf /etc/mysql/mysql.conf.d/*.cnf \
+           /etc/mysql/mariadb.conf.d/*.cnf \
+           /root/.my.cnf /home/*/.my.cnf; do
+    [ -f "$f" ] && printf '%s\n' "$f"
+  done
+  # Never the status of the last [ -f ]: with errexit on, a final candidate that
+  # does not exist would take the whole run down.
+  return 0
+}
+
+# Deliberately narrow: the names this project's own scripts write, and their
+# immediate neighbours. A guess in the other direction - flagging anything not
+# on a list of known client options - would eventually condemn a legitimate
+# setting on somebody's server, and this check exists to have a repair offered
+# against it. Options valid for both, such as max_allowed_packet, port and
+# socket, are not here and must not be.
+SERVER_ONLY_OPTION_RE='^(innodb_|performance_schema|query_cache_|slow_query_log|long_query_time|log_queries_not_using_indexes|max_connections|max_connect_errors|thread_cache_size|table_open_cache|table_definition_cache|tmp_table_size|max_heap_table_size|join_buffer_size|sort_buffer_size|read_buffer_size|read_rnd_buffer_size|key_buffer_size|sql_mode|character_set_server|collation_server|default_authentication_plugin|datadir|bind_address|skip_name_resolve|log_error|log_bin|expire_logs_days|binlog_expire_logs_seconds|wait_timeout|interactive_timeout|open_files_limit|back_log)'
+
+# Print "file<TAB>line<TAB>section<TAB>option" for every active option under a
+# client-read heading that matches <regex>.
+scan_client_sections() { # scan_client_sections <regex>
+  local pattern="$1" file
+  while IFS= read -r file; do
+    awk -v file="$file" -v pattern="$pattern" '
+      function norm(s) { gsub(/-/, "_", s); return tolower(s) }
+      /^[[:space:]]*[#;!]/ { next }
+      /^[[:space:]]*\[/ {
+        s = $0
+        sub(/^[[:space:]]*\[/, "", s)
+        sub(/\].*$/, "", s)
+        gsub(/[[:space:]]/, "", s)
+        section = norm(s)
+        # The groups a client reads. [client] is read by all of them, the rest
+        # by the one program they are named for; any of them is enough to stop
+        # that program.
+        client_section = (section ~ /^(client|client_server|client_mariadb|mysql|mysqldump|mysqladmin|mysqlimport|mysqlshow|mysqlcheck|mysqlbinlog|mysqlslap|mysql_upgrade)$/)
+        next
+      }
+      !client_section { next }
+      {
+        k = $0
+        sub(/=.*$/, "", k)
+        gsub(/[[:space:]]/, "", k)
+        if (k == "") next
+        if (norm(k) !~ pattern) next
+        printf "%s\t%d\t%s\t%s\n", file, NR, section, k
+      }
+    ' "$file" 2>/dev/null
+  done < <(client_config_files)
+}
+
+# Ground truth, and worth having even though the scan above usually finds the
+# same line: it reports what is actually broken today rather than what ought to
+# be, and it names options this script's own list has never heard of. mysqldump
+# validates the options it reads from a file even for --version, so this needs
+# no credentials and no running server. mysql is asked too because whether it
+# also refuses varies by version, and the answer decides how serious this is.
+#
+# Only these two, and the choice matters. mysqlcheck and mysqladmin reject
+# max_allowed_packet in [client] - a legitimate, common setting that mysql and
+# mysqldump both accept - so probing with them would report a healthy server as
+# broken and then offer to comment the setting out. A name is only taken from
+# here when the program that rejected it is one whose failure is itself the
+# fault being looked for: the client people type, and the one that takes the
+# backup.
+probe_client_rejection() {
+  local client out name
+  for client in mysqldump mysql; do
+    command -v "$client" >/dev/null 2>&1 || continue
+    out="$("$client" --version 2>&1 >/dev/null)" || true
+    case "$out" in
+      *"unknown variable"*|*"unknown option"*)
+        # Kept inside a substitution rather than left as a bare pipeline: with
+        # pipefail on, head closing the pipe early would count as a failure of
+        # the whole function.
+        name="$(printf '%s\n' "$out" | sed -nE "s/.*unknown (variable|option) '([^'=]+).*/\2/p" | head -n 1 || true)"
+        [ -n "$name" ] || continue
+        printf '%s\n' "$name"
+        return 0
+        ;;
+    esac
+  done
+  return 1
+}
+
+check_client_option_leak() {
+  local rejected hit file line
+
+  # What the clients themselves say, first, so that a name this script's own
+  # list does not know about is still found and still repaired.
+  rejected="$(probe_client_rejection || true)"
+  if [ -n "$rejected" ]; then
+    CLIENT_LEAK_BREAKS_CLIENTS=true
+  fi
+
+  while IFS= read -r hit; do
+    [ -n "$hit" ] || continue
+    CLIENT_LEAK_HITS+=("$hit")
+  done < <(
+    {
+      scan_client_sections "$SERVER_ONLY_OPTION_RE"
+      # An exact search for the rejected name catches whatever the list above
+      # does not cover. Duplicates are removed rather than avoided, because the
+      # two searches overlap in the ordinary case.
+      if [ -n "$rejected" ]; then
+        scan_client_sections "^$(printf '%s' "$rejected" | tr 'A-Z-' 'a-z_')$"
+      fi
+    } | sort -t"$(printf '\t')" -k1,1 -k2,2n -u
+  )
+
+  if [ ${#CLIENT_LEAK_HITS[@]} -eq 0 ]; then
+    # A client is refusing an option that is in none of the files searched here.
+    # There is nothing to offer a repair against, but saying so is still better
+    # than a clean bill of health for a machine where mysqldump will not run.
+    if [ -n "$rejected" ]; then
+      finding critical none \
+        "The client programs are refusing an option in a configuration file, and mysqldump is one of them, so the backup cannot run." \
+        "The option they will not accept is ${rejected}. It is not in any of the usual files, so it has to be found by hand: run  my_print_defaults client mysql mysqldump  to see what they are reading, and  mysql --no-defaults  to get a working connection meanwhile."
+    fi
+    return 0
+  fi
+
+  for hit in "${CLIENT_LEAK_HITS[@]}"; do
+    file="${hit%%$'\t'*}"
+    case " ${CLIENT_LEAK_FILES[*]-} " in
+      *" ${file} "*) ;;
+      *) CLIENT_LEAK_FILES+=("$file") ;;
+    esac
+  done
+
+  line="$(printf '%s\n' "${CLIENT_LEAK_HITS[@]}" | awk -F'\t' '{printf "%s line %s (under [%s]): %s\n", $1, $2, $3, $4}')"
+  report "Settings for the server found under client headings:"
+  report "$line"
+
+  if $CLIENT_LEAK_BREAKS_CLIENTS; then
+    finding critical clientleak \
+      "Settings meant for the database server were put under a heading that the client programs read, and those programs will no longer run." \
+      "Typing mysql fails with \"unknown variable\". So does mysqldump, which is what takes the backup, so the backups have been failing too. The server itself never reads those sections, so it started normally and none of that tuning has ever been in use. Switching the lines off is safe; they are written back where they belong, sized for this machine, the next time the software is updated. $(printf '%s\n' "${CLIENT_LEAK_HITS[@]}" | awk -F'\t' '{ printf "%s%s line %s under [%s]: %s", (NR > 1 ? "; " : ""), $1, $2, $3, $4 }')"
+    return 0
+  fi
+
+  finding warning clientleak \
+    "Settings meant for the database server are sitting under a heading that the client programs read." \
+    "This version of the client tolerates them, so nothing is failing today, but the server does not read those sections and never applied any of it. A different client, or the next upgrade, will refuse to start. $(printf '%s\n' "${CLIENT_LEAK_HITS[@]}" | awk -F'\t' '{ printf "%s%s line %s under [%s]: %s", (NR > 1 ? "; " : ""), $1, $2, $3, $4 }')"
+}
+
 # No equivalent direct test exists for a setting the server merely rejects: that
 # takes running mysqld. So this reads the logs, and only while the server is
 # down, when a refusal is by definition the current state of affairs.
@@ -646,6 +820,7 @@ check_disk
 check_oom
 check_buffer_pool
 check_config_prelude
+check_client_option_leak
 check_config_refusal
 check_corruption
 check_socket_dir
@@ -757,6 +932,51 @@ fix_config_prelude() {
   rm -f "$tmp"
 }
 
+# Comment the stranded lines out where they are, rather than move them under
+# [mysqld]. Moving them looks like the more helpful repair and is the more
+# dangerous one: the server has been running without them all along, so putting
+# them into effect here would change how much memory it takes on the strength of
+# a number nobody has checked against this machine. Commenting them out changes
+# nothing about how the server runs - it was already ignoring them - and gets
+# the clients and the backup working again. The settings are written back where
+# they belong, sized for this machine, the next time the software is updated.
+fix_client_option_leak() {
+  local file lines tmp changed=false
+
+  [ ${#CLIENT_LEAK_HITS[@]} -gt 0 ] || return 1
+
+  for file in ${CLIENT_LEAK_FILES[@]+"${CLIENT_LEAK_FILES[@]}"}; do
+    lines="$(printf '%s\n' "${CLIENT_LEAK_HITS[@]}" | awk -F'\t' -v f="$file" '$1 == f { print $2 }' | sort -n | paste -sd, -)"
+    [ -n "$lines" ] || continue
+
+    tmp="$(mktemp)" || return 1
+    awk -v want="$lines" '
+      BEGIN { n = split(want, a, ","); for (i = 1; i <= n; i++) target[a[i] + 0] = 1 }
+      target[FNR] {
+        print "# disabled by intelis fix-database: a setting for the server, under a"
+        print "# heading only the client programs read. The server never read it, and a"
+        print "# client that does not recognise it refuses to run."
+        print "#" $0
+        next
+      }
+      { print }
+    ' "$file" >"$tmp" || { rm -f "$tmp"; return 1; }
+
+    # Nothing to do means nothing done, and above all no backup file left behind.
+    if cmp -s "$file" "$tmp"; then
+      rm -f "$tmp"
+      continue
+    fi
+
+    cp "$file" "${file}.bak.$(date +%Y%m%d%H%M%S)" || { rm -f "$tmp"; return 1; }
+    cat "$tmp" >"$file" || { rm -f "$tmp"; return 1; }
+    rm -f "$tmp"
+    changed=true
+  done
+
+  $changed
+}
+
 fix_unmask() { systemctl unmask "$UNIT" && systemctl enable "$UNIT"; }
 
 fix_vacuum_journal() { journalctl --vacuum-size=100M >/dev/null 2>&1; }
@@ -813,6 +1033,7 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
   print header "What can be done about it"
 
   has_finding configprelude && { run_fix "Disable the settings that were added above the first heading in ${CONFIG_PRELUDE_FILE:-the configuration file}." fix_config_prelude || true; }
+  has_finding clientleak && { run_fix "Disable the server settings that were put under a client heading in ${CLIENT_LEAK_FILES[0]:-the configuration file}, so that mysql and the backup can run again." fix_client_option_leak || true; }
   has_finding socketdir  && { run_fix "Recreate the folder the database needs, and make it come back after a restart." fix_socket_dir || true; }
   has_finding dataowner  && { run_fix "Give the database back its own files." fix_datadir_owner || true; }
   has_finding unmask     && { run_fix "Allow the database service to start again." fix_unmask || true; }

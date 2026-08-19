@@ -881,29 +881,41 @@ wait_for_mysql() {
     return 1
 }
 
-changes_needed=false
-
-# --- dry-run check first ---
+# --- work out what has to change, without touching the file yet ---
+#
+# Only the [mysqld] section counts. A copy of the setting sitting in some other
+# section is not the server's value however much it looks like one, and reading
+# it as though it were is how a stranded [client] copy would convince this that
+# the tuning is already in place while the server runs on defaults.
+mysql_settings_to_write=()
 for setting in "${!mysql_settings[@]}"; do
-    if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$MYSQL_CONFIG_FILE"; then
-        changes_needed=true
-        break
+    if current_value="$(mysql_cnf_get_option "$MYSQL_CONFIG_FILE" mysqld "$setting")"; then
+        [ "$current_value" = "${mysql_settings[$setting]}" ] && continue
     fi
+    mysql_settings_to_write+=("$setting")
 done
 
-if [ "$changes_needed" = true ]; then
+if [ ${#mysql_settings_to_write[@]} -gt 0 ]; then
     print info "Changes needed. Backing up and updating MySQL config..."
     cp "$MYSQL_CONFIG_FILE" "${MYSQL_CONFIG_FILE}.bak.${backup_timestamp}"
 
-    for setting in "${!mysql_settings[@]}"; do
-        if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$MYSQL_CONFIG_FILE"; then
-            # Comment existing wrong setting if found
-            if grep -qE "^[[:space:]]*$setting[[:space:]]*=" "$MYSQL_CONFIG_FILE"; then
-                sed -i "/^[[:space:]]*$setting[[:space:]]*=.*/s/^/#/" "$MYSQL_CONFIG_FILE"
-            fi
-            echo "$setting = ${mysql_settings[$setting]}" >>"$MYSQL_CONFIG_FILE"
-        fi
+    # Written into the [mysqld] section rather than appended to the end of the
+    # file: appending is only correct while the last heading happens to be
+    # [mysqld], and where it is not, the whole block lands under [client], where
+    # the server ignores it and every client refuses to start.
+    mysql_new_lines="$(mktemp)"
+    for setting in "${mysql_settings_to_write[@]}"; do
+        mysql_cnf_comment_option "$MYSQL_CONFIG_FILE" "$setting"
+        printf '%s = %s\n' "$setting" "${mysql_settings[$setting]}" >>"$mysql_new_lines"
     done
+
+    if ! mysql_cnf_insert_mysqld_options "$MYSQL_CONFIG_FILE" "$mysql_new_lines"; then
+        print error "Failed to write MySQL settings. Restoring backup and exiting..."
+        cp "${MYSQL_CONFIG_FILE}.bak.${backup_timestamp}" "$MYSQL_CONFIG_FILE"
+        rm -f "$mysql_new_lines"
+        exit 1
+    fi
+    rm -f "$mysql_new_lines"
 
     print info "Restarting MySQL service to apply changes..."
     restart_service mysql || {
