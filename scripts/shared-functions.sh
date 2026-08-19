@@ -1852,6 +1852,33 @@ configure_php_ini() {
     local desired_log_errors="log_errors = On"
     local desired_post_max_size="post_max_size = 1G"
     local desired_upload_max_filesize="upload_max_filesize = 1G"
+    # preflight.php warns below 256M because exports and imports run out of memory
+    # there, and Debian ships 128M, so without this the warning is permanent on
+    # every box.
+    #
+    # Sized from RAM, like the MySQL tuning in upgrade.sh, because the ceiling that
+    # lets a big export finish on a 32GB server is the one that lets a small box
+    # start swapping. memory_limit is a per-request ceiling rather than a
+    # reservation - an ordinary page still peaks at a few tens of MB, and only
+    # exports and imports go near it - but with mod_php every Apache worker can
+    # reach it at once, and MySQL has already claimed roughly half the machine for
+    # its buffer pool. The tiers leave that room. The smallest one clears
+    # preflight's floor and no more.
+    local php_mem_total_kb php_mem_total_gb desired_memory_limit
+    php_mem_total_kb="$(awk '/MemTotal/ {print $2}' /proc/meminfo 2>/dev/null || echo 0)"
+    php_mem_total_gb=$((php_mem_total_kb / 1024 / 1024))
+    if [ "$php_mem_total_gb" -ge 16 ]; then
+        desired_memory_limit="memory_limit = 2G"
+    elif [ "$php_mem_total_gb" -ge 8 ]; then
+        desired_memory_limit="memory_limit = 1G"
+    elif [ "$php_mem_total_gb" -ge 4 ]; then
+        desired_memory_limit="memory_limit = 512M"
+    else
+        # Includes the case where /proc/meminfo could not be read at all, where
+        # guessing high on an unknown machine is the worse mistake.
+        desired_memory_limit="memory_limit = 256M"
+    fi
+    print info "RAM detected: ${php_mem_total_gb}GB - setting PHP ${desired_memory_limit#memory_limit = }"
     local desired_strict_mode="session.use_strict_mode = 1"
     local desired_sid_length="session.sid_length = 48"
     local desired_sid_bits="session.sid_bits_per_character = 6"
@@ -1889,7 +1916,7 @@ configure_php_ini() {
         print info "Checking PHP settings in $ini_file..."
 
         # Check which settings are already correctly set
-        local er_set de_set le_set pms_set umf_set sm_set sid_len_set sid_bits_set gc_maxlifetime_set expose_set
+        local er_set de_set le_set pms_set umf_set ml_set sm_set sid_len_set sid_bits_set gc_maxlifetime_set expose_set
         local opcache_enable_set opcache_enable_cli_set opcache_memory_set opcache_max_files_set
         local opcache_validate_set opcache_revalidate_freq_set opcache_save_comments_set opcache_jit_set opcache_interned_set opcache_override_set
         local pcre_jit_set
@@ -1899,6 +1926,7 @@ configure_php_ini() {
         le_set=$(grep -q "^${desired_log_errors}$" "$ini_file" && echo true || echo false)
         pms_set=$(grep -q "^${desired_post_max_size}$" "$ini_file" && echo true || echo false)
         umf_set=$(grep -q "^${desired_upload_max_filesize}$" "$ini_file" && echo true || echo false)
+        ml_set=$(grep -q "^${desired_memory_limit}$" "$ini_file" && echo true || echo false)
         sm_set=$(grep -q "^${desired_strict_mode}$" "$ini_file" && echo true || echo false)
         sid_len_set=$(grep -q "^${desired_sid_length}$" "$ini_file" && echo true || echo false)
         sid_bits_set=$(grep -q "^${desired_sid_bits}$" "$ini_file" && echo true || echo false)
@@ -1917,7 +1945,7 @@ configure_php_ini() {
         pcre_jit_set=$(grep -q "^${desired_pcre_jit}$" "$ini_file" && echo true || echo false)
 
         # If ANY are missing, we need to rewrite
-        if [ "$er_set" = false ] || [ "$de_set" = false ] || [ "$le_set" = false ] || [ "$pms_set" = false ] || [ "$umf_set" = false ] || [ "$sm_set" = false ] \
+        if [ "$er_set" = false ] || [ "$de_set" = false ] || [ "$le_set" = false ] || [ "$pms_set" = false ] || [ "$umf_set" = false ] || [ "$ml_set" = false ] || [ "$sm_set" = false ] \
             || [ "$sid_len_set" = false ] || [ "$sid_bits_set" = false ] || [ "$gc_maxlifetime_set" = false ] \
             || [ "$expose_set" = false ] \
             || [ "$opcache_enable_set" = false ] || [ "$opcache_enable_cli_set" = false ] || [ "$opcache_memory_set" = false ] \
@@ -1945,6 +1973,8 @@ configure_php_ini() {
                     echo ";$line" >>"$temp_file"; echo "$desired_post_max_size" >>"$temp_file"; pms_set=true
                 elif [[ "$line" =~ ^[[:space:]]*upload_max_filesize[[:space:]]*= ]] && [ "$umf_set" = false ]; then
                     echo ";$line" >>"$temp_file"; echo "$desired_upload_max_filesize" >>"$temp_file"; umf_set=true
+                elif [[ "$line" =~ ^[[:space:]]*memory_limit[[:space:]]*= ]] && [ "$ml_set" = false ]; then
+                    echo ";$line" >>"$temp_file"; echo "$desired_memory_limit" >>"$temp_file"; ml_set=true
                 elif [[ "$line" =~ ^[[:space:]]*session\.use_strict_mode[[:space:]]*= ]] && [ "$sm_set" = false ]; then
                     echo ";$line" >>"$temp_file"; echo "$desired_strict_mode" >>"$temp_file"; sm_set=true
                 elif [[ "$line" =~ ^[[:space:]]*session\.sid_length[[:space:]]*= ]] && [ "$sid_len_set" = false ]; then
@@ -1988,6 +2018,7 @@ configure_php_ini() {
             [ "$le_set" = true ] || echo "$desired_log_errors" >>"$temp_file"
             [ "$pms_set" = true ] || echo "$desired_post_max_size" >>"$temp_file"
             [ "$umf_set" = true ] || echo "$desired_upload_max_filesize" >>"$temp_file"
+            [ "$ml_set" = true ] || echo "$desired_memory_limit" >>"$temp_file"
             [ "$sm_set" = true ] || echo "$desired_strict_mode" >>"$temp_file"
             [ "$sid_len_set" = true ] || echo "$desired_sid_length" >>"$temp_file"
             [ "$sid_bits_set" = true ] || echo "$desired_sid_bits" >>"$temp_file"
