@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InteLIS administration job aids</title>
+<style>
+  :root {
+    --ink: #14181c;
+    --muted: #5b6670;
+    --rule: #c8d0d6;
+    --tint: #eef3f5;
+    --accent: #00695c;
+    --warn: #8a4b00;
+    --warn-bg: #fdf3e6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #f4f6f7;
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.42;
+  }
+  .toolbar {
+    max-width: 200mm;
+    margin: 0 auto 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .toolbar h1 { font-size: 16pt; margin: 0; }
+  .toolbar p { margin: 0; color: var(--muted); font-size: 10pt; }
+  button {
+    font: inherit;
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .card {
+    max-width: 200mm;
+    min-height: 250mm;
+    margin: 0 auto 20px;
+    padding: 16mm 15mm;
+    background: #fff;
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+  .card > header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+  .kicker {
+    font-size: 8.5pt;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .card h2 { font-size: 17pt; margin: 3px 0 0; }
+  .card h2 + p { margin: 5px 0 0; color: var(--muted); }
+
+  h3 {
+    font-size: 10.5pt;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 18px 0 7px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 3px;
+  }
+
+  ol, ul { margin: 0 0 10px; padding-left: 20px; }
+  li { margin-bottom: 5px; }
+  ol.steps { counter-reset: s; list-style: none; padding-left: 0; }
+  ol.steps > li {
+    counter-increment: s;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 9px;
+  }
+  ol.steps > li::before {
+    content: counter(s);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 21px; height: 21px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 9.5pt;
+    text-align: center;
+    line-height: 18px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 0 0 10px; font-size: 10pt; }
+  th, td { text-align: left; vertical-align: top; padding: 5px 8px; border-bottom: 1px solid var(--rule); }
+  th { background: var(--tint); font-size: 9pt; text-transform: uppercase; letter-spacing: .04em; }
+  td:first-child { white-space: nowrap; font-weight: 600; }
+  table.wrapfirst td:first-child { white-space: normal; }
+
+  .path {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9.5pt;
+    background: var(--tint);
+    padding: 1px 5px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .ui { font-weight: 700; }
+
+  .warn {
+    border-left: 4px solid var(--warn);
+    background: var(--warn-bg);
+    padding: 9px 12px;
+    margin: 12px 0;
+  }
+  .warn strong { color: var(--warn); display: block; margin-bottom: 2px; font-size: 9.5pt; text-transform: uppercase; letter-spacing: .04em; }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; margin: 10px 0 14px; }
+  .flow .step {
+    flex: 1 1 90px;
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
+    padding: 7px 8px;
+    font-size: 9.5pt;
+    background: #fff;
+  }
+  .flow .step b { display: block; font-size: 8pt; color: var(--accent); letter-spacing: .05em; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+  footer.cardfoot {
+    margin-top: 16px; padding-top: 7px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 8.5pt;
+    display: flex; justify-content: space-between; gap: 10px;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; font-size: 10.5pt; }
+    .toolbar { display: none; }
+    .card {
+      margin: 0; border: 0; box-shadow: none;
+      min-height: 0; max-width: none;
+      padding: 12mm 14mm;
+      page-break-after: always;
+      break-after: page;
+    }
+    .card:last-of-type { page-break-after: auto; break-after: auto; }
+  }
+  @page { size: A4 portrait; margin: 10mm; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <h1>InteLIS administration job aids</h1>
+    <p>Five single-page cards. Print and keep with the administrator, not at the workstation.</p>
+  </div>
+  <button onclick="window.print()">Print all cards</button>
+</div>
+
+<!-- CARD 1 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 1 of 5</div>
+    <h2>What the administrator owns</h2>
+    <p>Everything under ADMIN, and which parts need approval first.</p>
+  </header>
+
+  <h3>The ADMIN menu</h3>
+  <table class="wrapfirst">
+    <tr><th>Section</th><th>Holds</th></tr>
+    <tr><td>Access Control</td><td>Roles and Users</td></tr>
+    <tr><td>Facilities</td><td>Health facilities and testing labs, and the Interface Tool connections</td></tr>
+    <tr><td>System Configuration</td><td>General Configuration, Instruments, Geographical Divisions, Implementation Partners, Funding Sources, Lab Storage</td></tr>
+    <tr><td>The module config sections</td><td>The dropdown lists on each module's request form. One section per module the installation runs</td></tr>
+    <tr><td>Monitoring</td><td>Activity log, audit trail, API history, analyzer activity, lab performance</td></tr>
+  </table>
+
+  <h3>Two levels of administrator</h3>
+  <table class="wrapfirst">
+    <tr><th>Level</th><th>Does</th></tr>
+    <tr><td>Lab administrator</td><td>Users, facilities, analyzers, module config lists, Interface Tool connections, audit trail lookups</td></tr>
+    <tr><td>National administrator</td><td>All of the above, plus roles and privileges, General Configuration, and Geographical Divisions</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Get approval before changing these</strong>
+    Sample ID format or prefix. Locking and expiry days. Same user can Review and Approve.
+    Auto Approve Interface Results. Role privileges. Deleting a list entry. Renaming or
+    removing a province or district. Each one applies across the whole installation at once,
+    and setting it back does not undo its effect on the records already created.
+  </div>
+
+  <h3>Rules that hold everywhere</h3>
+  <ul>
+    <li>Never share a login. The activity log and the tester, reviewer, and approver names record whoever was signed in.</li>
+    <li>Set entries inactive. Never delete them.</li>
+    <li>Change one setting at a time, then check the effect.</li>
+    <li>Give each role the permissions its work needs and no more.</li>
+  </ul>
+
+  <footer class="cardfoot"><span>InteLIS administration job aid</span><span>Card 1: what the administrator owns</span></footer>
+</section>
+
+<!-- CARD 2 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 2 of 5</div>
+    <h2>Add a user, and set what they can reach</h2>
+    <p>InteLIS has no self-registration. Every login is created here.</p>
+  </header>
+
+  <h3>Add the user</h3>
+  <p><span class="path">ADMIN &rsaquo; Access Control &rsaquo; Users &rsaquo; Add User</span></p>
+
+  <ol class="steps">
+    <li>Enter the <span class="ui">Full Name</span> as it should appear on reports and in the activity log.</li>
+    <li>Enter the email and phone number.</li>
+    <li>Choose the <span class="ui">Role</span>. Permissions come from the role, never from the user.</li>
+    <li>Set the <span class="ui">Testing Lab</span>. This scopes what the user sees to their own lab's work.</li>
+    <li>Upload a <span class="ui">Signature</span> for anyone who approves results. 100 by 100 pixels.</li>
+    <li>Set the <span class="ui">Login ID</span> and a starting password.</li>
+    <li>Select <span class="ui">Submit</span>, then hand the Login ID and password to the user directly.</li>
+  </ol>
+
+  <div class="warn">
+    <strong>One login per person</strong>
+    A shared login makes the activity log and the tester, reviewer, and approver names on every
+    report worthless. To remove a departing user, edit the account and set it inactive. Never
+    reuse the login for someone else. The old records stay attached to the old name.
+  </div>
+
+  <h3>Add or change a role</h3>
+  <p><span class="path">ADMIN &rsaquo; Access Control &rsaquo; Roles</span></p>
+
+  <table class="wrapfirst">
+    <tr><th>Field</th><th>What to set</th></tr>
+    <tr><td>Role Name</td><td>A name staff recognise, such as Lab Technician</td></tr>
+    <tr><td>Role Code</td><td>A short unique code</td></tr>
+    <tr><td>Landing Page</td><td>The page this role opens on. Data entry staff open straight onto the request form</td></tr>
+    <tr><td>Access Type</td><td>Testing Lab for lab staff. Collection Site for facility staff</td></tr>
+    <tr><td>Privileges</td><td>Tick each page the role can reach. Use the search box, do not scroll the list</td></tr>
+  </table>
+
+  <p>To find which roles hold a given permission, use the <span class="ui">Permission</span>
+  filter on the Roles page.</p>
+
+  <div class="warn">
+    <strong>Never let one role both enter and approve</strong>
+    Approval is the only check on result quality. A role holding both removes it.
+  </div>
+
+  <footer class="cardfoot"><span>InteLIS administration job aid</span><span>Card 2: users and roles</span></footer>
+</section>
+
+<!-- CARD 3 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 3 of 5</div>
+    <h2>Add a facility, and connect an analyzer</h2>
+    <p>Every sample is attached to a health facility and a testing lab.</p>
+  </header>
+
+  <h3>Add a facility</h3>
+  <p><span class="path">ADMIN &rsaquo; Facilities &rsaquo; Add Facility</span></p>
+
+  <table class="wrapfirst">
+    <tr><th>Field</th><th>What to enter</th></tr>
+    <tr><td>Facility Name</td><td>The name staff will search for</td></tr>
+    <tr><td>Facility Code</td><td>The national unique code</td></tr>
+    <tr><td>Facility Type</td><td>Health facility, or testing lab</td></tr>
+    <tr><td>Province/State, District/County</td><td>The location. Both must be set</td></tr>
+    <tr><td>Test Type</td><td>Every test type the facility takes part in</td></tr>
+    <tr><td>Testing Point(s)</td><td>The service points, such as VCT or PMTCT</td></tr>
+    <tr><td>Email(s), Report Email(s)</td><td>Addresses for emailed results and report distribution</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Test Type is what makes a facility appear</strong>
+    A facility not ticked for a test type is missing from that test type's request form.
+    A facility ticked for one test type stays missing from every other test type's form.
+    This is the usual reason a facility is "missing".
+  </div>
+
+  <p>For a testing lab, upload the signatories. They appear on the result PDFs that lab issues.
+  To load many facilities at once, use <span class="ui">Bulk Upload</span>.</p>
+
+  <h3>Add an analyzer</h3>
+  <p><span class="path">ADMIN &rsaquo; System Configuration &rsaquo; Instruments &rsaquo; Add Instrument</span></p>
+  <p>Enter the name, the test types it runs, and the configuration file that tells InteLIS how
+  to read its result files. Without that file, results exported from the analyzer cannot be imported.</p>
+
+  <h3>Connect the Interface Tool</h3>
+  <p><span class="path">ADMIN &rsaquo; Facilities &rsaquo; open the testing lab &rsaquo; Interface Tool Connections</span></p>
+  <ol class="steps">
+    <li>Select <span class="ui">Generate Connection Code</span>.</li>
+    <li>Enter the three groups of the code, and the InteLIS URL shown above them, into the Interface Tool on the lab computer.</li>
+    <li>Check the installation appears under <span class="ui">Connected Installations</span> with a recent <span class="ui">Last Seen</span>.</li>
+  </ol>
+  <table class="wrapfirst">
+    <tr><td>Code expired</td><td>Generate another. Only one code can be outstanding at a time</td></tr>
+    <tr><td>Computer rebuilt</td><td>Use Reconnect / Reinstall</td></tr>
+    <tr><td>Computer retired or lost</td><td>Use Revoke. Other installations are unaffected</td></tr>
+  </table>
+
+  <footer class="cardfoot"><span>InteLIS administration job aid</span><span>Card 3: facilities and analyzers</span></footer>
+</section>
+
+<!-- CARD 4 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 4 of 5</div>
+    <h2>Keep the request form lists correct</h2>
+    <p>Each module keeps its own lists. They do not share.</p>
+  </header>
+
+  <h3>One config section per module</h3>
+  <table class="wrapfirst">
+    <tr><th>Config section</th><th>Lists it holds</th></tr>
+    <tr><td>VL Config</td><td>Sample Type, Rejection Reasons, Test Reasons, Results, ART Regimen, Test Failure Reasons, Recommended Corrective Actions</td></tr>
+    <tr><td>EID Config</td><td>Sample Type, Rejection Reasons, Test Reasons, Results</td></tr>
+    <tr><td>TB Config</td><td>Sample Type, Rejection Reasons, Test Reasons, Results</td></tr>
+    <tr><td>CD4 Config</td><td>Sample Type, Rejection Reasons, Test Reasons</td></tr>
+    <tr><td>Covid-19 Config</td><td>Sample Type, Rejection Reasons, Test Reasons, Results, Symptoms, Co-morbidities, Recommended Corrective Actions, QC Test Kits</td></tr>
+    <tr><td>Hepatitis Config</td><td>Sample Type, Rejection Reasons, Test Reasons, Results, Co-morbidities, Risk Factors</td></tr>
+    <tr><td>Other Lab Tests Config</td><td>Sample Types, Testing Reasons, Sample Rejection Reasons, Test Failure Reasons, Symptoms, Test Result Units, Test Methods, Test Categories, Test Type Configuration</td></tr>
+  </table>
+  <p>Only the modules the installation runs appear in the ADMIN menu.</p>
+
+  <div class="warn">
+    <strong>Adding to one module does not add to the others</strong>
+    A sample type added under one module's config section does not appear on another module's
+    request form. Add it under every module that needs it.
+  </div>
+
+  <h3>What each list controls</h3>
+  <table class="wrapfirst">
+    <tr><td>Sample Type</td><td>The specimen types on the request form</td></tr>
+    <tr><td>Rejection Reasons</td><td>The reasons offered when rejecting a sample</td></tr>
+    <tr><td>Test Reasons</td><td>The indications for testing</td></tr>
+    <tr><td>Results</td><td>The result values for qualitative reporting</td></tr>
+    <tr><td>Test Failure Reasons</td><td>The reasons offered when a test fails</td></tr>
+    <tr><td>Symptoms, Co-morbidities, Risk Factors</td><td>The clinical checklists on the request form</td></tr>
+    <tr><td>ART Regimen</td><td>The regimen choices on the viral load request form</td></tr>
+    <tr><td>Recommended Corrective Actions</td><td>The actions suggested on high viral load results</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Retire, never delete</strong>
+    To retire an entry, edit it and set the status to inactive. An inactive entry disappears
+    from the form but stays readable on the records that already use it. Deleting it leaves
+    those records unreadable. After adding an entry, open the request form and confirm it
+    appears in its dropdown.
+  </div>
+
+  <p>Geographical Divisions, Implementation Partners, Funding Sources, and Lab Storage are not
+  module lists. They sit under <span class="path">ADMIN &rsaquo; System Configuration</span> and
+  serve every module.</p>
+
+  <footer class="cardfoot"><span>InteLIS administration job aid</span><span>Card 4: the request form lists</span></footer>
+</section>
+
+<!-- CARD 5 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 5 of 5</div>
+    <h2>Something is missing or wrong</h2>
+    <p>The complaints an administrator actually receives, and what causes them.</p>
+  </header>
+
+  <h3>Start here</h3>
+  <table class="wrapfirst">
+    <tr><th>Complaint</th><th>Cause</th></tr>
+    <tr><td>A facility is missing from the request form</td><td>The facility is not ticked for that test type. Open it under Facilities and set Test Type</td></tr>
+    <tr><td>A district is missing from the request form</td><td>It was added without a parent province. Open Geographical Divisions and set the parent</td></tr>
+    <tr><td>An option is missing from a dropdown</td><td>It is inactive, or it was added under a different module's config section</td></tr>
+    <tr><td>A user sees the wrong menu</td><td>The role's privileges, not the user. Check under Access Control &rsaquo; Roles</td></tr>
+    <tr><td>A user sees another lab's samples</td><td>Testing Lab is not set on the user account</td></tr>
+    <tr><td>Results stopped arriving from the analyzer</td><td>Check Last Seen under Connected Installations, then Monitoring &rsaquo; Interface Machine Activity</td></tr>
+    <tr><td>A result was questioned</td><td>Monitoring &rsaquo; Audit Trail. It shows which field changed, from what to what, by whom</td></tr>
+    <tr><td>A facility behaves oddly in report filters</td><td>Set Show Orphaned Facilities on the Facilities page. Its province or district is missing or wrongly linked</td></tr>
+  </table>
+
+  <h3>Where to look</h3>
+  <table class="wrapfirst">
+    <tr><th>Page</th><th>Answers</th></tr>
+    <tr><td>User Activity Log</td><td>Which pages a user opened, and when</td></tr>
+    <tr><td>Audit Trail</td><td>Which field changed, from what to what, by whom</td></tr>
+    <tr><td>API History</td><td>Whether this installation reached the national server, and how many records went</td></tr>
+    <tr><td>Interface Machine Activity</td><td>Whether each connected analyzer is still sending</td></tr>
+    <tr><td>Lab Performance Indicators</td><td>Turnaround time, volumes by entry mode, failure and rejection rates</td></tr>
+    <tr><td>Log File Viewer</td><td>System messages, for support requests</td></tr>
+  </table>
+  <p>All six sit under <span class="path">ADMIN &rsaquo; Monitoring</span>. Lab Sync Status and
+  API Dashboard appear on the national server only.</p>
+
+  <h3>Confirm a change worked</h3>
+  <table class="wrapfirst">
+    <tr><td>New user</td><td>The user signs in and sees the expected menu</td></tr>
+    <tr><td>Role change</td><td>Sign in as a user with that role, or check the Permission filter on the Roles page</td></tr>
+    <tr><td>New facility</td><td>The facility appears on the request form of each test type it was ticked for</td></tr>
+    <tr><td>New analyzer</td><td>It appears in Testing Platform when creating a batch</td></tr>
+    <tr><td>Interface Tool connection</td><td>The installation shows a recent Last Seen</td></tr>
+    <tr><td>List entry</td><td>The entry appears in its dropdown on the request form</td></tr>
+  </table>
+
+  <footer class="cardfoot"><span>InteLIS administration job aid</span><span>Card 5: missing or wrong</span></footer>
+</section>
+
+</body>
+</html>

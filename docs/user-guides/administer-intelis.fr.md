@@ -106,9 +106,11 @@ test. Les deux sont des fiches de la page Structures sanitaires.
 
 4. Sélectionner **Envoyer**.
 
-Renseigner le **Test Type**. Une structure non rattachée à la charge virale
-n'apparaît pas dans la liste des structures du formulaire de demande de charge
-virale. C'est la raison habituelle d'une structure « absente » du formulaire.
+Renseigner le **Test Type**, et cocher chaque type de test auquel la structure
+participe. Une structure non rattachée à un type de test n'apparaît pas dans la
+liste des structures du formulaire de demande de ce type de test. Une structure
+cochée pour un seul type de test reste absente du formulaire de tous les autres.
+C'est la raison habituelle d'une structure « absente ».
 
 Pour un laboratoire de test, téléverser les signataires. Ils apparaissent sur les
 PDF de résultats émis par ce laboratoire.
@@ -159,20 +161,40 @@ résultats cessent d'arriver.
 | **Reconnect / Reinstall** | L'ordinateur du laboratoire est réinstallé ou l'outil est réinstallé |
 | **Revoke** | L'ordinateur est retiré du service ou perdu. Les autres installations ne sont pas affectées |
 
-## Maintenir les listes de la charge virale
+## Maintenir les listes du formulaire de demande
 
-Les listes déroulantes du formulaire de demande de charge virale proviennent des
-listes situées sous **ADMIN → Configuration CV**.
+Chaque module de test tient ses propres listes. Elles alimentent les listes
+déroulantes du formulaire de demande de ce module. Ajouter un type
+d'échantillon sous un module ne l'ajoute pas au formulaire d'un autre module.
+L'ajouter sous chaque module concerné.
+
+Le menu ADMIN porte une section de configuration par module actif sur
+l'installation. Une installation qui n'exécute qu'un module ne porte qu'une
+section.
+
+| Section de configuration | Listes qu'elle contient |
+|---|---|
+| Configuration CV | Type d'échantillon, Motifs de rejet, Motifs de test, Résultats, Régime ART, Raisons de l'échec des tests, Mesures correctives recommandées |
+| Configuration EID | Type d'échantillon, Motifs de rejet, Motifs de test, Résultats |
+| Tuberculose-Configuration | Type d'échantillon, Motifs de rejet, Motifs de test, Résultats |
+| Configuration CD4 | Type d'échantillon, Motifs de rejet, Motifs de test |
+| Configuration Covid-19 | Type d'échantillon, Motifs de rejet, Motifs de test, Résultats, Symptomes, Co-morbidités, Mesures correctives recommandées, Kits de test QC |
+| Configuration Hépatite | Type d'échantillon, Motifs de rejet, Motifs de test, Résultats, Co-morbidités, Facteurs de risque |
+| Autres tests de laboratoire Config | Types d'échantillons, Raisons des tests, Motifs de rejet des échantillons, Raisons de l'échec des tests, Symptomes, Unités de résultat du test, Méthodes de test, Catégories de tests, Configuration du type de test |
+
+Ce que contrôle chaque liste :
 
 | Liste | Contrôle |
 |---|---|
-| Régime ART | Les choix de régime sur le formulaire |
+| Type d'échantillon | Les types de prélèvement proposés sur le formulaire |
 | Motifs de rejet | Les motifs proposés lors du rejet d'un échantillon |
-| Type d'échantillon | Les types de prélèvement |
-| Résultats | Les valeurs de résultat pour le rendu qualitatif |
 | Motifs de test | Les indications de test |
+| Résultats | Les valeurs de résultat pour le rendu qualitatif |
 | Raisons de l'échec des tests | Les motifs proposés en cas d'échec |
+| Symptomes, Co-morbidités, Facteurs de risque | Les listes cliniques à cocher sur le formulaire |
+| Régime ART | Les choix de régime sur le formulaire de charge virale |
 | Mesures correctives recommandées | Les actions suggérées sur les résultats de charge virale élevée |
+| Unités de résultat du test, Méthodes de test, Catégories de tests | Les propriétés disponibles pour un type de test personnalisé |
 
 Chaque liste fonctionne de la même façon. Ouvrir la page, sélectionner l'option
 d'ajout, saisir le libellé et enregistrer. Pour retirer une entrée, la modifier
@@ -211,16 +233,21 @@ paramètres qui modifient le comportement d'InteLIS sur toute l'installation.
 Modifier un paramètre à la fois et en vérifier l'effet. Ces paramètres
 s'appliquent d'un coup à tous les utilisateurs de l'installation.
 
-Deux paramètres demandent de l'attention.
+## Modifications à faire valider avant de les appliquer
 
-**Same user can Review and Approve.** L'activer permet à une personne de saisir
-et de valider son propre résultat. Le désactiver partout où les effectifs le
-permettent.
+Les modifications ci-dessous prennent effet sur toute l'installation dès
+l'enregistrement. Revenir en arrière n'annule pas leur effet sur les fiches déjà
+créées. Les valider d'abord avec l'équipe nationale.
 
-**Auto Approve Interface Results.** L'activer diffuse les résultats de l'automate
-sans contrôle humain. C'est sûr lorsque l'automate est fiable et que le circuit
-des batchs est respecté. Ce ne l'est pas lorsque les ID d'échantillon sont
-saisis à la main sur l'automate.
+| Modification | Emplacement | Pourquoi la faire valider |
+|---|---|---|
+| Format ou préfixe des ID d'échantillon | Configuration générale → ID d'échantillon | Tout échantillon enregistré ensuite porte le nouveau format. Les échantillons déjà enregistrés gardent l'ancien, ce qui laisse deux schémas au laboratoire |
+| Jours de verrouillage et de péremption | Configuration générale → Verrouillage | Détermine quand une fiche cesse d'accepter les modifications. Trop court, le laboratoire ne peut plus corriger un résultat. Trop long, les résultats restent modifiables après diffusion |
+| Same user can Review and Approve | Configuration générale → Approbation | Permet à une personne de saisir et de valider son propre résultat. L'approbation est le seul contrôle sur la qualité des résultats. Le désactiver partout où les effectifs le permettent |
+| Auto Approve Interface Results | Configuration générale → Approbation | Diffuse les résultats de l'automate sans contrôle humain. Sûr lorsque l'automate est fiable et que le circuit des batchs est respecté. Pas sûr lorsque les ID d'échantillon sont saisis à la main sur l'automate |
+| Permissions d'un rôle | Contrôle d'accès → Les rôles | S'applique aussitôt à tous les utilisateurs portant ce rôle |
+| Suppression d'une entrée de liste | Toute page de configuration de module | Passer l'entrée en inactif à la place. La supprimer rend illisibles les fiches qui l'utilisaient |
+| Renommage ou suppression d'une province ou d'un district | Configuration du système → Divisions géographiques | Les structures rattachées perdent leur lien, et les filtres géographiques de tous les rapports cessent de correspondre |
 
 ## Vérifier qui a fait quoi
 
@@ -228,10 +255,17 @@ saisis à la main sur l'automate.
 |---|---|
 | **ADMIN → Surveillance → Journal d'activité de l'utilisateur** | Quelles pages un utilisateur a ouvertes, et quand |
 | **ADMIN → Surveillance → Piste d'audit** | Quel champ a changé, de quoi à quoi, par qui |
+| **ADMIN → Surveillance → Historique de l'API** | Si cette installation a atteint le serveur national, et combien de fiches sont parties |
+| **ADMIN → Surveillance → Activité des machines d'interface** | Si chaque automate connecté émet encore |
+| **ADMIN → Surveillance → Indicateurs de performance du laboratoire** | Délai de rendu, volumes par mode de saisie, taux d'échec et de rejet |
 | **ADMIN → Surveillance → Log File Viewer** | Les messages système, pour les demandes de support |
 
 Utiliser la piste d'audit lorsqu'un résultat est contesté. Elle donne
 l'historique des modifications de la fiche.
+
+**État de la synchronisation du laboratoire** et **Tableau de bord de l'API**
+n'apparaissent que sur le serveur national. Leur absence sur une installation de
+laboratoire est voulue.
 
 ## Vérifier que tout fonctionne
 
@@ -239,7 +273,7 @@ l'historique des modifications de la fiche.
 |---|---|
 | Nouvel utilisateur | L'utilisateur se connecte et voit le menu attendu |
 | Modification de rôle | Se connecter avec un utilisateur de ce rôle, ou utiliser le filtre Permission sur la page des rôles |
-| Nouvelle structure | La structure apparaît dans la liste du formulaire de demande de charge virale |
+| Nouvelle structure | La structure apparaît sur le formulaire de demande de chaque type de test coché |
 | Nouvel automate | L'automate apparaît dans Plateforme de test à la création d'un batch |
 | Connexion de l'outil d'interface | L'installation figure sous Installations connectées avec une Dernière connexion récente |
 | Entrée de liste | L'entrée apparaît dans sa liste déroulante sur le formulaire |
