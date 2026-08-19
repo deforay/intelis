@@ -1,7 +1,8 @@
 # Printable job aids
 
-Single-page cards, each printing on one A4 page. Two sets: one for the people
-using InteLIS, one for whoever looks after the machine it runs on.
+Single-page cards, each printing on one A4 page. Three sets: one for the people
+using InteLIS, one for whoever administers it, one for whoever looks after the
+machine it runs on.
 
 Open a set and select **Print all cards**, or print a single card from the
 browser's print dialog by choosing its page number.
@@ -22,6 +23,21 @@ workstation they belong to.
 | 5. Approve and release results | Approval checks, printing, emailing | The supervisor's desk |
 | 6. Failed, rejected, lost, or cancelled? | Choosing the right action, retesting, recovery | The supervisor's desk |
 | 7. Sample statuses at a glance | Every status and its effect on reports | Anywhere in the lab |
+
+## For the administrator
+
+Five cards covering everything under ADMIN. Keep them with the administrator.
+Card 1 carries the list of changes that need approval before they are made.
+
+[Open the administration job aids](administration-job-aids.html){ .md-button .md-button--primary }
+
+| Card | Covers | Who needs it |
+|---|---|---|
+| 1. What the administrator owns | The ADMIN menu, the two administrator levels, the changes that need approval | Every administrator |
+| 2. Add a user, and set what they can reach | Creating logins, building roles, the one-login-per-person rule | Every administrator |
+| 3. Add a facility, and connect an analyzer | Facility fields, the Test Type rule, instruments, Interface Tool connection codes | Every administrator |
+| 4. Keep the request form lists correct | Which list sits under which module, and why entries are retired and never deleted | Every administrator |
+| 5. Something is missing or wrong | The usual complaints and their causes, and which Monitoring page answers what | Every administrator |
 
 ## For the machine
 
@@ -54,6 +70,7 @@ what to do when something goes wrong.
 | Lab 5 | [How to review and approve results](../user-guides/approve-results.md) and [How to release results](../user-guides/release-results.md) |
 | Lab 6 | [How to handle failed and held samples](../user-guides/failed-and-held-samples.md) |
 | Lab 7 | [Sample statuses](../user-guides/sample-statuses.md) |
+| Admin 1 to 5 | [How to administer InteLIS](../user-guides/administer-intelis.md) |
 | Machine 2 | [Installing InteLIS on Ubuntu](../guides/installing-intelis-on-ubuntu.md) |
 | Machine 3 | [Updating InteLIS on Ubuntu](../guides/updating-intelis-on-ubuntu.md) |
 | Machine 4 | [Backing up to another Linux machine](../guides/backing-up-to-remote-server.md) and [to a Windows machine](../guides/backing-up-to-windows-machine.md) |
