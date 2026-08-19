@@ -70,7 +70,11 @@ what to do when something goes wrong.
 | Lab 5 | [How to review and approve results](../user-guides/approve-results.md) and [How to release results](../user-guides/release-results.md) |
 | Lab 6 | [How to handle failed and held samples](../user-guides/failed-and-held-samples.md) |
 | Lab 7 | [Sample statuses](../user-guides/sample-statuses.md) |
-| Admin 1 to 5 | [How to administer InteLIS](../user-guides/administer-intelis.md) |
+| Admin 1 | [How to administer InteLIS](../user-guides/administer-intelis.md) |
+| Admin 2 | [How to manage users and roles](../user-guides/admin-users-and-roles.md) |
+| Admin 3 | [How to manage facilities and testing labs](../user-guides/admin-facilities.md) and [How to set up instruments and interfacing](../user-guides/admin-instruments.md) |
+| Admin 4 | [How to maintain the request form lists](../user-guides/admin-module-configuration.md) |
+| Admin 5 | [How to monitor and audit InteLIS](../user-guides/admin-monitoring.md) |
 | Machine 2 | [Installing InteLIS on Ubuntu](../guides/installing-intelis-on-ubuntu.md) |
 | Machine 3 | [Updating InteLIS on Ubuntu](../guides/updating-intelis-on-ubuntu.md) |
 | Machine 4 | [Backing up to another Linux machine](../guides/backing-up-to-remote-server.md) and [to a Windows machine](../guides/backing-up-to-windows-machine.md) |

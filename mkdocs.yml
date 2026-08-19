@@ -67,14 +67,19 @@ nav:
           - Record Where a Sample Is Stored: user-guides/store-samples.md
       - Administration:
           - Administer InteLIS: user-guides/administer-intelis.md
+          - Users and Roles: user-guides/admin-users-and-roles.md
+          - Facilities and Testing Labs: user-guides/admin-facilities.md
+          - Instruments and Interfacing: user-guides/admin-instruments.md
+          - Module Configuration: user-guides/admin-module-configuration.md
+          - General Configuration: user-guides/admin-general-configuration.md
+          - Monitoring and Audit: user-guides/admin-monitoring.md
+          - System Admin Area: user-guides/admin-system-administration.md
           - For Requesting Facilities: user-guides/for-requesting-facilities.md
       - Statuses & Reports:
           - Sample Statuses: user-guides/sample-statuses.md
           - Viral Load Reports: user-guides/reports.md
   - Printable Job Aids:
       - Job Aids: job-aids/index.md
-  - Training:
-      - Running the Administration Training: training/administration-training.md
   - Installation:
       - InteLIS on Ubuntu (Recommended): guides/installing-intelis-on-ubuntu.md
       - Using Docker: guides/installing-intelis-with-docker.md
@@ -147,13 +152,18 @@ plugins:
             Release Results: Diffuser les résultats
             Record Where a Sample Is Stored: Enregistrer le stockage d'un échantillon
             Administer InteLIS: Administrer InteLIS
+            Users and Roles: Utilisateurs et rôles
+            Facilities and Testing Labs: Structures et laboratoires
+            Instruments and Interfacing: Automates et interfaçage
+            Module Configuration: Configuration des modules
+            General Configuration: Configuration générale
+            Monitoring and Audit: Surveillance et audit
+            System Admin Area: Espace System Admin
             For Requesting Facilities: Pour les structures demandeuses
             Sample Statuses: Statuts des échantillons
             Viral Load Reports: Rapports charge virale
             Printable Job Aids: Aide-mémoires imprimables
             Job Aids: Aide-mémoires
-            Training: Formation
-            Running the Administration Training: Animer la formation à l'administration
             Installation: Installation
             InteLIS on Ubuntu (Recommended): InteLIS sur Ubuntu (recommandé)
             Using Docker: Avec Docker

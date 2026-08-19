@@ -72,7 +72,11 @@ exceptions et la conduite à tenir en cas de problème.
 | Labo 5 | [Vérifier et approuver les résultats](../user-guides/approve-results.md) et [Diffuser les résultats](../user-guides/release-results.md) |
 | Labo 6 | [Gérer les échecs et les échantillons en attente](../user-guides/failed-and-held-samples.md) |
 | Labo 7 | [Statuts des échantillons](../user-guides/sample-statuses.md) |
-| Admin 1 à 5 | [Administrer InteLIS](../user-guides/administer-intelis.md) |
+| Admin 1 | [Administrer InteLIS](../user-guides/administer-intelis.md) |
+| Admin 2 | [Gérer les utilisateurs et les rôles](../user-guides/admin-users-and-roles.md) |
+| Admin 3 | [Gérer les structures et les laboratoires](../user-guides/admin-facilities.md) et [Configurer les automates et l'interfaçage](../user-guides/admin-instruments.md) |
+| Admin 4 | [Maintenir les listes du formulaire de demande](../user-guides/admin-module-configuration.md) |
+| Admin 5 | [Surveiller et auditer InteLIS](../user-guides/admin-monitoring.md) |
 | Machine 2 | [Installer InteLIS sur Ubuntu](../guides/installing-intelis-on-ubuntu.md) |
 | Machine 3 | [Mettre à jour InteLIS sur Ubuntu](../guides/updating-intelis-on-ubuntu.md) |
 | Machine 4 | [Sauvegarder vers une autre machine Linux](../guides/backing-up-to-remote-server.md) et [vers une machine Windows](../guides/backing-up-to-windows-machine.md) |
