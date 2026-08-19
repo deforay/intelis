@@ -16,6 +16,13 @@ class FileCacheUtility
     private readonly FilesystemAdapter $filesystemAdapter;
     private readonly TagAwareAdapter $tagAwareAdapter;
 
+    /**
+     * Details of the last clear() that could not remove everything; null when
+     * the last clear succeeded. See getLastClearDiagnostics().
+     * @var array{path:string, runningAs:string, entries:int, owners:array<string,int>, samples:string[]}|null
+     */
+    private ?array $lastClearDiagnostics = null;
+
     public function __construct()
     {
         $this->filesystemAdapter = new FilesystemAdapter('', 0, CACHE_PATH . DIRECTORY_SEPARATOR . 'file_cache');
@@ -77,31 +84,50 @@ class FileCacheUtility
 
     public function clear(): bool
     {
-        $ok = false;
+        $this->lastClearDiagnostics = null;
+
+        // Let the adapter clear first: it drops its own in-memory state
+        // (deferred items, known tag versions) alongside the files, which a
+        // filesystem sweep alone cannot do.
         try {
-            $ok = $this->tagAwareAdapter->clear();
+            $this->tagAwareAdapter->clear();
         } catch (Exception $e) {
             LoggerUtility::logError('Cache adapter clear failed', ['exception' => $e]);
         }
 
-        // The Symfony adapter's clear() returns false (or throws) if a single
-        // entry can't be unlinked -- a stale/locked file, a read-only entry, or
-        // one left behind with foreign ownership. A cache clear is non-critical,
-        // so fall back to a forceful filesystem sweep that chmods-then-unlinks
-        // whatever it can, instead of letting one stuck file fail the whole
-        // clear (and, via post-update, strand an instance in maintenance mode).
-        if (!$ok) {
-            $ok = $this->forceFilesystemClear();
-        }
-
-        return $ok;
+        // Then ALWAYS sweep the directory, rather than only when the adapter
+        // reports failure. The adapter walks nothing but its own two-level hash
+        // shards, so an orphaned tmp file (a write killed mid-rename), entries
+        // from an older cache layout and the empty shard dirs it never rmdirs
+        // all survive a "successful" clear. The sweep is what makes the cache
+        // directory actually empty, so it -- not the adapter -- is the verdict.
+        // It is also forgiving by design: a cache clear is non-critical, and
+        // inside composer post-update a hard failure would strand the instance
+        // in 503/maintenance with migrations already applied.
+        return $this->forceFilesystemClear();
     }
 
     /**
-     * Best-effort recursive removal of the on-disk cache. Returns true if the
-     * cache directory is empty afterwards (nothing left to serve stale data),
-     * false if at least one entry survived (e.g. foreign-owned files this
-     * process genuinely cannot remove).
+     * Why the last clear() came back false, or null when it succeeded. Callers
+     * (purge-cache) turn this into an actionable message instead of a generic
+     * "something was left behind".
+     *
+     * @return array{path:string, runningAs:string, entries:int, owners:array<string,int>, samples:string[]}|null
+     */
+    public function getLastClearDiagnostics(): ?array
+    {
+        return $this->lastClearDiagnostics;
+    }
+
+    /**
+     * Best-effort recursive removal of the on-disk cache. Returns true unless
+     * an entry that existed when the sweep reached it genuinely refused to go
+     * (typically foreign-owned files this process cannot unlink).
+     *
+     * Deliberately judged by what the sweep failed to remove, NOT by whether
+     * the directory is empty afterwards: on a live instance a web request can
+     * repopulate the cache between the sweep and the check, and a re-warmed
+     * cache is not a failed purge.
      */
     private function forceFilesystemClear(): bool
     {
@@ -110,33 +136,111 @@ class FileCacheUtility
             return true;
         }
 
+        $stuck = [];
+
         try {
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($cacheDir, RecursiveDirectoryIterator::SKIP_DOTS),
-                RecursiveIteratorIterator::CHILD_FIRST
+                RecursiveIteratorIterator::CHILD_FIRST,
+                // CATCH_GET_CHILD is a FLAG (3rd arg), not part of the mode:
+                // one unreadable shard directory then skips itself instead of
+                // aborting the whole sweep. It is reported below.
+                RecursiveIteratorIterator::CATCH_GET_CHILD
             );
 
             foreach ($iterator as $item) {
                 $path = $item->getPathname();
-                // Make sure the parent dir is traversable/writable before the
-                // unlink/rmdir; some Symfony shards land mode 700.
-                @chmod($item->isDir() ? $path : dirname($path), 0775);
+
                 if ($item->isDir()) {
-                    @rmdir($path);
-                } else {
-                    @chmod($path, 0664);
-                    @unlink($path);
+                    if (@rmdir($path) || !is_dir($path)) {
+                        continue;
+                    }
+                    @chmod($path, 0775);
+                    // A directory that still won't go is only interesting if we
+                    // could not look inside it; otherwise it is either empty and
+                    // racing a concurrent request, or its surviving files are
+                    // reported on their own.
+                    if (!@rmdir($path) && is_dir($path) && !is_readable($path)) {
+                        $stuck[] = $path;
+                    }
+                    continue;
+                }
+
+                if (@unlink($path)) {
+                    continue;
+                }
+                // Only now force the permissions open -- doing it up front costs
+                // two syscalls per entry on every purge and needlessly rewrites
+                // modes on files about to be deleted. Note unlink needs write on
+                // the PARENT directory, not on the file; some Symfony shards
+                // land mode 700.
+                @chmod(dirname($path), 0775);
+                @chmod($path, 0664);
+                if (!@unlink($path) && file_exists($path)) {
+                    $stuck[] = $path;
                 }
             }
         } catch (Exception $e) {
             LoggerUtility::logError('Cache filesystem clear failed', ['exception' => $e]);
+            $this->lastClearDiagnostics = [
+                'path' => $cacheDir,
+                'runningAs' => $this->ownerName(function_exists('posix_geteuid') ? posix_geteuid() : null),
+                'entries' => 0,
+                'owners' => [],
+                'samples' => [],
+                'error' => $e->getMessage(),
+            ];
             return false;
         }
 
-        // Empty == fully cleared. Anything remaining is something we couldn't
-        // remove (caller decides whether that's fatal -- for purge-cache it is
-        // not).
-        return (new \FilesystemIterator($cacheDir))->valid() === false;
+        if ($stuck === []) {
+            return true;
+        }
+
+        $this->lastClearDiagnostics = $this->describeStuckEntries($cacheDir, $stuck);
+        LoggerUtility::logWarning('Cache clear left entries behind', $this->lastClearDiagnostics);
+
+        return false;
+    }
+
+    /**
+     * Turn a list of unremovable cache paths into something a human can act on:
+     * who this process is, who owns what survived, and a few example paths.
+     *
+     * @param string[] $paths
+     * @return array{path:string, runningAs:string, entries:int, owners:array<string,int>, samples:string[]}
+     */
+    private function describeStuckEntries(string $cacheDir, array $paths): array
+    {
+        $owners = [];
+        foreach ($paths as $path) {
+            $owner = $this->ownerName(@fileowner($path));
+            $owners[$owner] = ($owners[$owner] ?? 0) + 1;
+        }
+        arsort($owners);
+
+        return [
+            'path' => $cacheDir,
+            'runningAs' => $this->ownerName(function_exists('posix_geteuid') ? posix_geteuid() : null),
+            'entries' => count($paths),
+            'owners' => $owners,
+            'samples' => array_slice($paths, 0, 3),
+        ];
+    }
+
+    /** Resolve a uid to a login name, degrading gracefully without ext-posix. */
+    private function ownerName(int|false|null $uid): string
+    {
+        if ($uid === false || $uid === null) {
+            return 'unknown';
+        }
+        if (function_exists('posix_getpwuid')) {
+            $info = @posix_getpwuid($uid);
+            if (!empty($info['name'])) {
+                return $info['name'];
+            }
+        }
+        return 'uid ' . $uid;
     }
 
     public function invalidateTags(array $tags): bool
