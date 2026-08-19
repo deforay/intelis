@@ -166,19 +166,27 @@ resolve_db_strategy() {
 
 prompt_db_strategy() {
     local tty="/dev/tty"
+    # Same three answers as the upfront question, worded the same way. This is
+    # the copy most operators will actually see, because the upfront one is only
+    # asked when a database was already found before setup started.
+    #
+    # Written straight to the tty because the caller captures stdout.
     {
         echo
-        echo "Existing InteLIS database detected. Choose what to do:"
-        echo "  1) DROP   – delete current database and create a fresh one"
-        echo "  2) RENAME – back up to vlsm_YYYYMMDD_HHMMSS and create fresh (default)"
-        echo "  3) USE    – keep existing 'vlsm' as-is and skip import"
+        echo "An existing 'vlsm' database with data in it was found."
+        echo "  1) Keep a copy, then start fresh — renamed to vlsm_YYYYMMDD_HHMMSS, nothing is lost (default)"
+        echo "  2) Leave it alone and use it   — no import; choose this when reinstalling over live data"
+        echo "  3) Delete it                   — the existing data is destroyed permanently"
     } >"$tty"
 
-    read -r -p "Enter choice [1=DROP, 2=RENAME(default), 3=USE]: " choice <"$tty"
-    case "${choice:-2}" in
-        1) echo "drop"   ;;
-        2) echo "rename" ;;
-        3) echo "use"    ;;
+    # The order matches the list above, safest first, and anything unrecognised
+    # falls to the same safe answer. Nothing here may map to "drop" by accident:
+    # that branch deletes a lab's data with no copy kept.
+    read -r -p "Enter choice [1=keep a copy (default), 2=use it, 3=delete]: " choice <"$tty"
+    case "${choice:-1}" in
+        1) echo "rename" ;;
+        2) echo "use"    ;;
+        3) echo "drop"   ;;
         *) echo "rename" ;;
     esac
 }
@@ -597,6 +605,28 @@ _validate_local_hostname() {
     return 0
 }
 
+# Is there an existing, non-empty 'vlsm' database on this machine?
+#
+# Prints "yes", "no", or "unknown". Only "no" is acted on, and only to skip a
+# question: everything else falls through to asking, because being wrong about
+# this in the cautious direction costs one prompt and being wrong in the other
+# direction costs a database.
+#
+# On a clean server there is no mysql binary at all, which is the common case
+# and the cheapest possible answer.
+_vlsm_database_state() {
+    command -v mysql >/dev/null 2>&1 || { printf 'no'; return; }
+
+    local tables
+    tables=$(mysql -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='vlsm';" 2>/dev/null) || {
+        printf 'unknown'
+        return
+    }
+
+    [[ "$tables" =~ ^[0-9]+$ ]] || { printf 'unknown'; return; }
+    [ "$tables" -gt 0 ] && printf 'yes' || printf 'no'
+}
+
 collect_user_inputs() {
     # The ERR trap is fatal on any non-zero exit. read can legitimately return
     # non-zero (timeout, EOF, etc.), so disable the trap across the whole
@@ -629,12 +659,29 @@ collect_user_inputs() {
     echo "prompt internally; that sub-script is out of our control.)"
     echo
 
+    # Count the questions this particular machine will be asked, so the step
+    # numbers describe the run in front of the operator rather than a general
+    # case. Where to install and what this machine is are always asked; an
+    # address question is always asked too, but which one depends on the role,
+    # so a supplied flag can only be counted out when it covers both.
+    vlsm_db_state="$(_vlsm_database_state)"
+    local _total=3
+    if [ -n "$intelis_sts_url_flag" ] && [ -n "$intelis_server_name_flag" ]; then
+        _total=2
+    fi
+    [ -f ~/.my.cnf ] || _total=$((_total + 1))
+    if ! $resume_setup && [ -z "$DB_STRATEGY_FLAG" ] && [ "$vlsm_db_state" != "no" ]; then
+        _total=$((_total + 1))
+    fi
+    _total=$((_total + 1))
+    ui_steps_total "$_total"
+
     # --- 1. Where to install ---
     # The old prompt timed out after 60 seconds and chose the default silently,
     # so an operator who stopped to check something came back to a decision
     # already made for them. Nothing here is on a clock.
     if ! $reuse_saved_answers; then
-        ui_step 1 6 "Where to install"
+        ui_step_next "Where to install"
         ask_text lis_path "/var/www/intelis" "Installation directory" "" "/var/www/intelis"
         print info "Installing into ${lis_path}"
     else
@@ -721,7 +768,7 @@ collect_user_inputs() {
     # asked at all: a lab machine is asked where its STS is, a central server is
     # asked what its own web address should be, and neither is ever asked both.
     if ! $reuse_saved_answers; then
-        ui_step 2 6 "What this machine is"
+        ui_step_next "What this machine is"
         local _role=""
         ask_choice _role "lis" "What is this machine?" \
             "lis:Lab machine (LIS):Runs in a laboratory. Results are entered here and sent up to the STS." \
@@ -753,12 +800,12 @@ collect_user_inputs() {
         remote_sts_url=""
         local max_sts_url_attempts=3
         local sts_url_attempts=0
-        ui_step 3 6 "Address of the STS"
+        ui_step_next "Address of the STS"
         ui_note "The central server this lab sends its results to." \
             "Ask the national programme if you do not know it." \
             "Leave it blank to configure syncing later."
         while true; do
-            read -p " Remote STS URL (or press Enter to skip): " remote_sts_url
+            ask_text remote_sts_url "" "Remote STS URL (leave blank to skip)" "" "https://sts.example.org"
             log_action "Remote STS URL entered: $remote_sts_url"
             if [ -z "$remote_sts_url" ]; then
                 echo "No STS URL provided. Skipping validation."
@@ -820,7 +867,7 @@ collect_user_inputs() {
                 print error "Ignoring --server-name; falling back to ${hostname}"
             fi
         elif $is_sts; then
-            ui_step 3 6 "Web address of this server"
+            ui_step_next "Web address of this server"
             ui_note "What the labs will type in their browser to reach this server." \
                 "It must already point at this machine in DNS." \
                 "" \
@@ -849,32 +896,33 @@ collect_user_inputs() {
         mysql_root_password=$(awk -F= '/password/ {print $2}' ~/.my.cnf | xargs)
         echo "MySQL root password extracted from ~/.my.cnf"
     else
-        ui_step 4 6 "MySQL root password"
+        ui_step_next "MySQL root password"
         ui_note "MySQL is not installed on this machine yet, so this password is" \
             "being CHOSEN now, not recalled. Write it down before continuing:" \
             "database backups and restores need it."
-        while true; do
-            read -sp " New MySQL root password: " mysql_root_password
-            echo
-            read -sp " Confirm password: " mysql_root_password_confirm
-            echo
-            if [ "$mysql_root_password" != "$mysql_root_password_confirm" ]; then
-                print error "Passwords do not match. Please try again."
-            elif [ -z "$mysql_root_password" ]; then
-                print error "Password cannot be empty. Please try again."
-            else
-                break
-            fi
-        done
+        ask_password mysql_root_password "New MySQL root password" "Confirm password"
         mysql_password_needs_persisting=true
     fi
 
     # --- 5. DB-collision strategy (skip if --db-strategy / env supplied or resuming) ---
-    if ! $resume_setup && [[ -z "$DB_STRATEGY_FLAG" ]]; then
-        ui_step 5 6 "If a database is already here"
-        ui_note "Only applies if this machine already has a 'vlsm' database." \
-            "Ignored on a clean server."
-        ask_choice DB_STRATEGY_FLAG "rename" "If an existing 'vlsm' database is found, what should setup do?" \
+    # Asked only when there is actually a database to decide about — which is
+    # rare, and means someone is re-running setup after a failure. Putting it to
+    # every operator on every clean install asked them to rule on a hypothetical,
+    # and the three answers only make sense once you know something is there.
+    #
+    # Nothing is lost by staying quiet when the check says there is none. If one
+    # turns up anyway, the import step already prompts at the point it finds it,
+    # where the question is concrete.
+    if ! $resume_setup && [[ -z "$DB_STRATEGY_FLAG" ]] && [ "$vlsm_db_state" != "no" ]; then
+        ui_step_next "An existing database was found"
+        if [ "$vlsm_db_state" = "unknown" ]; then
+            ui_note "MySQL is installed but could not be queried from here, so" \
+                "whether a 'vlsm' database exists is not known yet."
+        else
+            ui_note "This machine already has a 'vlsm' database with data in it." \
+                "That usually means setup is being run again after a problem."
+        fi
+        ask_choice DB_STRATEGY_FLAG "rename" "What should setup do with it?" \
             "rename:Keep a copy, then start fresh:Renamed to vlsm_YYYYMMDD_HHMMSS. Nothing is lost. Safest." \
             "use:Leave it alone and use it:No import. Choose this when reinstalling over live data." \
             "drop:Delete it:The existing data is destroyed permanently."
@@ -888,7 +936,7 @@ collect_user_inputs() {
     if ! $reuse_saved_answers; then
         run_maintenance_scripts=false
         maintenance_scripts_mode="none"
-        ui_step 6 6 "Maintenance scripts"
+        ui_step_next "Maintenance scripts"
         if ask_yes_no "Run the one-off maintenance scripts after setup finishes?" "no"; then
             run_maintenance_scripts=true
             ask_choice maintenance_scripts_mode "all" "Which ones?" \
@@ -913,7 +961,7 @@ collect_user_inputs() {
             "Install path: ${lis_path}" \
             "Reached at: http://${hostname}/" \
             "Sends data to: ${remote_sts_url:-nowhere — syncing not configured}" \
-            "Existing vlsm database: ${DB_STRATEGY_FLAG:-rename}" \
+            "Existing vlsm database: ${DB_STRATEGY_FLAG:-none found}" \
             "Maintenance scripts: ${maintenance_scripts_mode:-none}"
         if ! ask_yes_no "Is this correct?" "yes"; then
             print info "Stopped. Nothing has been installed."
