@@ -797,6 +797,162 @@ mysql_is_up() {
     mysqladmin ping --silent >/dev/null 2>&1
 }
 
+# --- MySQL option-file editing ------------------------------------------------
+#
+# MySQL reads an option file top to bottom and every option belongs to the
+# [section] heading above it. Appending a server setting to the end of the file
+# therefore only does the right thing while the last heading in that file is
+# [mysqld]. The moment anything adds a [client] or [mysql] section at the bottom
+# - by hand, or by a tool setting default-character-set - every setting appended
+# after it silently becomes a *client* option instead. Two things then go wrong
+# at once and neither announces itself: the server never reads the tuning, so it
+# runs on defaults while the file says otherwise, and every client (mysql, and
+# mysqldump, and therefore the nightly backup) refuses to start with
+# "unknown variable 'innodb_file_per_table=1'". These helpers write into the
+# [mysqld] section rather than at the end of the file so that cannot happen.
+#
+# Option names treat - and _ as the same character, so every comparison here is
+# made on a normalised name: character-set-server and character_set_server are
+# one setting, not two, and matching only one of them would write a duplicate.
+
+# Print the value <section> gives to <key>, and return 1 when the section does
+# not set it at all. Absent and set-to-empty have to stay distinguishable:
+# sql_mode is deliberately set to the empty string, while a missing sql_mode
+# line means the server keeps its own non-empty default - opposite meanings that
+# would otherwise both look like "". The last occurrence wins, which is how
+# MySQL itself resolves a repeated option.
+mysql_cnf_get_option() { # mysql_cnf_get_option <file> <section> <key>
+    local file="$1" section="$2" key="$3" found
+
+    [ -f "$file" ] || return 1
+
+    # The "=" prefix is what separates found-and-empty from not-found; the value
+    # itself can be anything, so nothing that could also be a value is usable as
+    # the marker.
+    found="$(
+        awk -v want_section="$section" -v want_key="$key" '
+            function norm(s) { gsub(/-/, "_", s); return tolower(s) }
+            /^[[:space:]]*[#;!]/ { next }
+            /^[[:space:]]*\[/ {
+                s = $0
+                sub(/^[[:space:]]*\[/, "", s)
+                sub(/\].*$/, "", s)
+                gsub(/[[:space:]]/, "", s)
+                current = norm(s)
+                next
+            }
+            current != norm(want_section) { next }
+            {
+                k = $0
+                sub(/=.*$/, "", k)
+                gsub(/[[:space:]]/, "", k)
+                if (k == "" || norm(k) != norm(want_key)) next
+                v = ""
+                if (index($0, "=")) {
+                    v = $0
+                    sub(/^[^=]*=/, "", v)
+                    sub(/^[[:space:]]+/, "", v)
+                    sub(/[[:space:]]+$/, "", v)
+                }
+                value = v
+                seen = 1
+            }
+            END { if (seen) printf "=%s", value }
+        ' "$file" 2>/dev/null
+    )"
+
+    [ -n "$found" ] || return 1
+    printf '%s' "${found#=}"
+}
+
+# Comment out every active occurrence of <key>, in every section of the file.
+# Deliberately not limited to one section: a copy stranded under [client] is
+# precisely the fault this exists to clear, and a stale copy anywhere else would
+# only go on overriding the line we are about to write.
+mysql_cnf_comment_option() { # mysql_cnf_comment_option <file> <key>
+    local file="$1" key="$2" tmp
+
+    [ -f "$file" ] || return 1
+
+    tmp="$(mktemp)" || return 1
+    awk -v want_key="$key" '
+        function norm(s) { gsub(/-/, "_", s); return tolower(s) }
+        /^[[:space:]]*[#;!]/ { print; next }
+        /^[[:space:]]*\[/    { print; next }
+        {
+            k = $0
+            sub(/=.*$/, "", k)
+            gsub(/[[:space:]]/, "", k)
+            if (k != "" && norm(k) == norm(want_key)) { print "#" $0; next }
+            print
+        }
+    ' "$file" >"$tmp" 2>/dev/null || {
+        rm -f "$tmp"
+        return 1
+    }
+
+    # Written back through the original so the file keeps its owner and mode.
+    cat "$tmp" >"$file" || {
+        rm -f "$tmp"
+        return 1
+    }
+    rm -f "$tmp"
+}
+
+# Add the lines in <lines-file> to the end of the [mysqld] section, creating the
+# section when the file has none. Inserting before the next heading instead of
+# at the end of the file is the entire point. The blank lines that trail the
+# section are stepped over so that running this repeatedly does not open a
+# widening gap in the middle of the file.
+mysql_cnf_insert_mysqld_options() { # mysql_cnf_insert_mysqld_options <file> <lines-file>
+    local file="$1" lines="$2" tmp
+
+    [ -f "$file" ] && [ -s "$lines" ] || return 1
+
+    tmp="$(mktemp)" || return 1
+    awk -v lines_file="$lines" '
+        function emit_new_lines(   line) {
+            while ((getline line < lines_file) > 0) print line
+            close(lines_file)
+        }
+        { text[NR] = $0 }
+        /^[[:space:]]*\[/ {
+            s = $0
+            sub(/^[[:space:]]*\[/, "", s)
+            sub(/\].*$/, "", s)
+            gsub(/[[:space:]]/, "", s)
+            # The last [mysqld] is the one to extend: when a file has two, the
+            # later one has the final say on any option written in both.
+            if (tolower(s) == "mysqld") { start = NR; stop = 0 }
+            else if (start && !stop)    { stop = NR }
+        }
+        END {
+            if (!start) {
+                for (i = 1; i <= NR; i++) print text[i]
+                if (NR > 0 && text[NR] !~ /^[[:space:]]*$/) print ""
+                print "[mysqld]"
+                emit_new_lines()
+                exit
+            }
+            if (!stop) stop = NR + 1
+            at = stop - 1
+            while (at > start && text[at] ~ /^[[:space:]]*$/) at--
+            for (i = 1; i <= at; i++) print text[i]
+            emit_new_lines()
+            for (i = at + 1; i <= NR; i++) print text[i]
+        }
+    ' "$file" >"$tmp" 2>/dev/null || {
+        rm -f "$tmp"
+        return 1
+    }
+
+    cat "$tmp" >"$file" || {
+        rm -f "$tmp"
+        return 1
+    }
+    rm -f "$tmp"
+}
+
 # Best-effort recovery: make sure MySQL is running. Safe to call multiple times
 # and on hosts without MySQL (returns 0 quietly). Strategy:
 #   1) if already reachable, do nothing;
