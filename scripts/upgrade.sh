@@ -328,11 +328,27 @@ update_configuration() {
     sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_mysql_root_password';|" "${config_file}"
 
     # Prompt for Remote STS URL
-    read -p "Please enter the Remote STS URL (can be blank if you choose so): " remote_sts_url
+    ui_note "The central server this lab sends its results to." \
+        "Ask the national programme if you do not know it." \
+        "Leave it blank to configure syncing later."
+    read -p " Remote STS URL (or press Enter to skip): " remote_sts_url
 
     # Update config.production.php with Remote STS URL if provided
     if [ ! -z "$remote_sts_url" ]; then
         sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|\$systemConfig['remoteURL'] = '$remote_sts_url';|" "${config_file}"
+
+        # A machine that resolves its own STS to itself will sync to itself and
+        # report success while nothing leaves the building. That is exactly what
+        # a wrong answer at setup's domain prompt produces, so check for it here
+        # too — this is the point at which the STS address is actually known.
+        _sts_host="$(normalize_hostname_input "$remote_sts_url")"
+        if [ -n "$_sts_host" ] && hosts_file_shadows "$_sts_host"; then
+            print error "/etc/hosts points ${_sts_host} at this machine."
+            print error "Syncing cannot work: this server would be talking to itself."
+            print error "Remove the '${_sts_host}' line from /etc/hosts, then run: intelis check"
+            log_action "STS host ${_sts_host} is shadowed by /etc/hosts"
+        fi
+        unset _sts_host
     fi
 
     print info "Configuration file updated."
