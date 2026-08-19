@@ -2082,3 +2082,380 @@ configure_php_ini() {
         fi
     done
 }
+
+# ===========================================================================
+# Interactive prompt layer
+#
+# Every question setup.sh and upgrade.sh ask goes through here, for one reason:
+# a lab once answered "Enter domain name" with their STS URL. Setup wrote
+# "127.0.0.1 sts.example.org" into /etc/hosts and the machine spent weeks
+# syncing to itself. Nothing in the prompt said whose domain it wanted, nothing
+# validated the answer, and nothing afterwards noticed.
+#
+# The fix is question design, not decoration: an identity question is a menu, so
+# a URL cannot be typed into it; the STS URL is asked before the local name, so
+# the two can be compared; and free text is validated in a loop instead of
+# silently falling back to a default the operator never saw.
+#
+# Rendering is a separate concern. ask_* speaks plain text everywhere, and
+# upgrades itself to gum when gum happens to be installed. Nothing here may
+# depend on gum being present: Docker builds, CI and `bash setup.sh </dev/null`
+# have no terminal at all, and those runs must still reach a sane default.
+# Set INTELIS_UI=plain to force the plain renderer.
+# ===========================================================================
+
+# Whether there is anyone there to answer.
+#
+# Every unattended path in this project runs through here: cron-driven and
+# remote-triggered upgrades, Docker builds, CI, `bash setup.sh </dev/null`. All
+# of them must reach a default without a prompt and without a spinner, so this
+# is checked before any question is asked and before gum is even considered.
+#
+# A terminal on both stdin and stdout is the real test; the environment
+# variables are belt and braces for the cases where a tty exists but nobody is
+# watching it.
+ui_interactive() {
+    [ -n "${INTELIS_UNATTENDED:-}" ] && return 1
+    [ -n "${CI:-}" ] && return 1
+    [ "${DEBIAN_FRONTEND:-}" = "noninteractive" ] && return 1
+    [ -t 0 ] && [ -t 1 ]
+}
+
+ui_renderer() {
+    if [ "${INTELIS_UI:-}" = "plain" ] || ! ui_interactive; then
+        printf 'plain'
+    elif command -v gum >/dev/null 2>&1; then
+        printf 'gum'
+    else
+        printf 'plain'
+    fi
+}
+
+# gum is a single static binary and a nicety, never a requirement — a lab on a
+# bad link must not have its install blocked by it. Anything that goes wrong here
+# leaves the plain renderer in place and says nothing.
+#
+# Installed from Charm's apt repo rather than a pinned .deb so it upgrades with
+# everything else on the machine. The apt update is scoped to just that list
+# file: refreshing every index on a lab link costs minutes, and nothing here is
+# worth minutes.
+ensure_gum() {
+    command -v gum >/dev/null 2>&1 && return 0
+    ui_interactive || return 1
+    [ "${INTELIS_UI:-}" = "plain" ] && return 1
+    [ "${INTELIS_SKIP_GUM:-}" = "1" ] && return 1
+    [ "$(id -u)" -eq 0 ] || return 1
+
+    local keyring="/etc/apt/keyrings/charm.gpg"
+    local list="/etc/apt/sources.list.d/charm.list"
+
+    if [ ! -s "$keyring" ]; then
+        mkdir -p /etc/apt/keyrings || return 1
+        if ! curl -fsSL --max-time 30 https://repo.charm.sh/apt/gpg.key 2>/dev/null |
+            gpg --dearmor -o "$keyring" 2>/dev/null; then
+            rm -f "$keyring"
+            return 1
+        fi
+        chmod 0644 "$keyring"
+    fi
+
+    if [ ! -s "$list" ]; then
+        printf 'deb [signed-by=%s] https://repo.charm.sh/apt/ * *\n' "$keyring" >"$list" || return 1
+    fi
+
+    # Scoped to this one list file on purpose: refreshing every index on a lab
+    # link costs minutes, and nothing here is worth minutes.
+    #
+    # On failure the repo is removed again rather than left behind. An
+    # unreachable third-party repo makes every later `apt-get update` on the
+    # machine noisy and non-zero — including the ones that run unattended, with
+    # nobody there to read the error — and gum is not worth that.
+    if ! DEBIAN_FRONTEND=noninteractive apt-get update \
+        -o Dir::Etc::sourcelist="$list" \
+        -o Dir::Etc::sourceparts=- \
+        -o APT::Get::List-Cleanup=0 >/dev/null 2>&1; then
+        rm -f "$list" "$keyring"
+        return 1
+    fi
+
+    if ! DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gum >/dev/null 2>&1; then
+        rm -f "$list" "$keyring"
+        return 1
+    fi
+
+    command -v gum >/dev/null 2>&1
+}
+
+# --- Step header ------------------------------------------------------------
+# "Step 3 of 7" is not decoration. It tells an operator part-way through a long
+# install whether they are nearly done, which is the difference between reading
+# the question and hitting enter to get past it.
+ui_step() {
+    local current="$1" total="$2" title="$3"
+    if [ "$(ui_renderer)" = "gum" ]; then
+        gum style --foreground 51 --bold "── Step ${current} of ${total} · ${title} " >&2
+    else
+        printf '\n\033[1;96m── Step %s of %s · %s\033[0m\n' "$current" "$total" "$title" >&2
+    fi
+}
+
+# Supporting text under a question. Always shown, never abbreviated: the whole
+# point is that the operator learns what the question means without asking.
+ui_note() {
+    local line
+    for line in "$@"; do
+        printf '   \033[2m%s\033[0m\n' "$line" >&2
+    done
+}
+
+# --- Menu -------------------------------------------------------------------
+# ask_choice <outvar> <default-key> <question> <key:label:description> ...
+#
+# Menus exist so that the answer space is closed. A free-text question about
+# what kind of machine this is can be answered with a URL; a menu cannot.
+ask_choice() {
+    local __outvar="$1" default_key="$2" question="$3"
+    shift 3
+
+    local keys=() labels=() descs=() entry
+    for entry in "$@"; do
+        keys+=("${entry%%:*}")
+        local rest="${entry#*:}"
+        labels+=("${rest%%:*}")
+        descs+=("${rest#*:}")
+    done
+
+    local count=${#keys[@]} i default_index=1
+    for ((i = 0; i < count; i++)); do
+        [ "${keys[$i]}" = "$default_key" ] && default_index=$((i + 1))
+    done
+
+    if ! ui_interactive; then
+        printf -v "$__outvar" '%s' "$default_key"
+        log_action "Non-interactive: ${question} -> ${default_key}"
+        return 0
+    fi
+
+    printf '\n \033[1m%s\033[0m\n\n' "$question" >&2
+
+    if [ "$(ui_renderer)" = "gum" ]; then
+        local options=() chosen
+        for ((i = 0; i < count; i++)); do
+            options+=("${labels[$i]} — ${descs[$i]}")
+        done
+        chosen=$(gum choose --height "$((count + 2))" \
+            --selected "${labels[$((default_index - 1))]} — ${descs[$((default_index - 1))]}" \
+            "${options[@]}" 2>/dev/null) || chosen=""
+        for ((i = 0; i < count; i++)); do
+            if [ "$chosen" = "${labels[$i]} — ${descs[$i]}" ]; then
+                printf -v "$__outvar" '%s' "${keys[$i]}"
+                log_action "${question} -> ${keys[$i]}"
+                return 0
+            fi
+        done
+        printf -v "$__outvar" '%s' "$default_key"
+        log_action "${question} -> ${default_key} (default)"
+        return 0
+    fi
+
+    for ((i = 0; i < count; i++)); do
+        printf '   \033[1;96m%d)\033[0m %s\n' "$((i + 1))" "${labels[$i]}" >&2
+        printf '      \033[2m%s\033[0m\n' "${descs[$i]}" >&2
+    done
+    echo >&2
+
+    # No timeout. A question about what this machine IS must not answer itself
+    # because the operator took a minute to think about it.
+    local reply
+    while true; do
+        printf ' Choose 1-%d [%d]: ' "$count" "$default_index" >&2
+        read -r reply || reply=""
+        reply="${reply// /}"
+        if [ -z "$reply" ]; then
+            printf -v "$__outvar" '%s' "${keys[$((default_index - 1))]}"
+            log_action "${question} -> ${keys[$((default_index - 1))]} (default)"
+            return 0
+        fi
+        if [[ "$reply" =~ ^[0-9]+$ ]] && [ "$reply" -ge 1 ] && [ "$reply" -le "$count" ]; then
+            printf -v "$__outvar" '%s' "${keys[$((reply - 1))]}"
+            log_action "${question} -> ${keys[$((reply - 1))]}"
+            return 0
+        fi
+        print error "Enter a number between 1 and ${count}."
+    done
+}
+
+# --- Free text --------------------------------------------------------------
+# ask_text <outvar> <default> <question> [validator-fn] [placeholder]
+#
+# The validator is a function name taking the candidate answer; it prints its
+# own complaint and returns non-zero to re-ask. An invalid answer is never
+# silently swapped for the default — that is how an operator ends up believing
+# they configured something they did not.
+ask_text() {
+    local __outvar="$1" default="$2" question="$3" validator="${4:-}" placeholder="${5:-}"
+
+    if ! ui_interactive; then
+        printf -v "$__outvar" '%s' "$default"
+        log_action "Non-interactive: ${question} -> ${default}"
+        return 0
+    fi
+
+    local reply
+    while true; do
+        if [ "$(ui_renderer)" = "gum" ]; then
+            printf '\n \033[1m%s\033[0m\n' "$question" >&2
+            reply=$(gum input --placeholder "${placeholder:-$default}" --value "" 2>/dev/null) || reply=""
+        else
+            printf '\n \033[1m%s\033[0m\n' "$question" >&2
+            [ -n "$default" ] && printf '   \033[2mpress enter for: %s\033[0m\n' "$default" >&2
+            printf ' > ' >&2
+            read -r reply || reply=""
+        fi
+
+        reply="$(printf '%s' "$reply" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')"
+        [ -z "$reply" ] && reply="$default"
+
+        if [ -n "$validator" ] && ! "$validator" "$reply"; then
+            continue
+        fi
+
+        printf -v "$__outvar" '%s' "$reply"
+        return 0
+    done
+}
+
+# --- Recap ------------------------------------------------------------------
+# ui_recap "Label: value" ...
+#
+# Everything collected, on one screen, before the unattended phase starts. This
+# is the last moment at which a wrong answer is free to fix, and it is the only
+# place the operator sees their answers next to each other — which is what makes
+# "Domain name: sts.example.org" next to "STS URL: https://sts.example.org"
+# look as wrong as it is.
+ui_recap() {
+    print header "Please confirm before setup begins"
+    local line
+    for line in "$@"; do
+        printf '   \033[1;96m%-24s\033[0m %s\n' "${line%%:*}" "${line#*: }"
+    done
+    echo
+}
+
+# ===========================================================================
+# Hostnames and /etc/hosts
+#
+# A name typed at the domain prompt lands in two places: an Apache ServerName,
+# where a wrong value is merely cosmetic, and /etc/hosts, where a wrong value
+# takes a real server off the air for this machine. Everything below guards the
+# second one.
+# ===========================================================================
+
+# Reduce whatever was typed to a bare hostname: scheme, credentials, port, path
+# and trailing dot removed, lowercased. Prints nothing when nothing survives.
+normalize_hostname_input() {
+    local raw="$1"
+    raw="$(printf '%s' "$raw" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')"
+    raw="$(printf '%s' "$raw" | sed -E 's|^[A-Za-z][A-Za-z0-9+.-]*://||')"
+    raw="${raw%%\?*}"
+    raw="${raw%%/*}"
+    raw="${raw##*@}"
+    raw="${raw%%:*}"
+    raw="${raw%.}"
+    printf '%s' "$raw" | tr '[:upper:]' '[:lower:]'
+}
+
+is_valid_hostname() {
+    local name="$1"
+    [ -n "$name" ] || return 1
+    [ ${#name} -le 253 ] || return 1
+    [[ "$name" == *..* ]] && return 1
+    [[ "$name" =~ ^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$ ]] || return 1
+    return 0
+}
+
+# The address /etc/hosts maps a name to, if any. Comments and trailing comments
+# are stripped and the first match wins, which is what the resolver does.
+hosts_file_lookup() {
+    local name
+    name="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')"
+    [ -r /etc/hosts ] || return 0
+    awk -v want="$name" '
+        { sub(/#.*/, "") }
+        NF < 2 { next }
+        {
+            for (i = 2; i <= NF; i++) {
+                if (tolower($i) == want) { print $1; exit }
+            }
+        }
+    ' /etc/hosts 2>/dev/null
+}
+
+# Every address this machine answers on, loopback included.
+local_ip_addresses() {
+    printf '127.0.0.1\n::1\n0.0.0.0\n'
+    if command -v ip >/dev/null 2>&1; then
+        ip -o addr show 2>/dev/null |
+            awk '{for (i = 1; i <= NF; i++) if ($i == "inet" || $i == "inet6") {split($(i+1), a, "/"); print a[1]}}'
+    fi
+}
+
+ip_is_local() {
+    local candidate="$1" addr
+    [ -n "$candidate" ] || return 1
+    while read -r addr; do
+        [ "$addr" = "$candidate" ] && return 0
+    done < <(local_ip_addresses)
+    return 1
+}
+
+# What DNS says a name is. This consults /etc/hosts too, which is correct at the
+# moment of asking: the entry under consideration has not been written yet, so a
+# hit here means some other machine already owns the name.
+dns_resolve_host() {
+    local name="$1"
+    command -v getent >/dev/null 2>&1 || return 0
+    getent ahostsv4 "$name" 2>/dev/null | awk 'NR==1 {print $1}'
+}
+
+# Does /etc/hosts point a name at this machine when the name belongs elsewhere?
+# This is the check that finds an already-broken box, so it deliberately asks
+# only about /etc/hosts and not about DNS: once the bad line is in place, DNS
+# lookups return 127.0.0.1 too and the evidence disappears.
+hosts_file_shadows() {
+    local name="$1" mapped
+    mapped="$(hosts_file_lookup "$name")"
+    [ -n "$mapped" ] || return 1
+    ip_is_local "$mapped"
+}
+
+# Add "127.0.0.1 <name>" — but only when doing so cannot steal a name from a
+# real server. Returns 0 when the entry is present, 1 when it was refused.
+hosts_file_add_local() {
+    local name="$1" mapped resolved
+
+    if ! is_valid_hostname "$name"; then
+        print warning "Not adding '${name}' to /etc/hosts: that is not a valid hostname."
+        log_action "Refused /etc/hosts entry for invalid name: ${name}"
+        return 1
+    fi
+
+    mapped="$(hosts_file_lookup "$name")"
+    if [ -n "$mapped" ]; then
+        print info "${name} is already in /etc/hosts (${mapped})."
+        return 0
+    fi
+
+    resolved="$(dns_resolve_host "$name")"
+    if [ -n "$resolved" ] && ! ip_is_local "$resolved"; then
+        print warning "'${name}' already resolves to ${resolved}, which is not this machine."
+        print warning "Not adding it to /etc/hosts. Pointing it here would make this server answer for ${name} and cut this machine off from the real one."
+        log_action "Refused /etc/hosts entry for ${name}: resolves to ${resolved}"
+        return 1
+    fi
+
+    printf '127.0.0.1 %s # added by intelis setup\n' "$name" >>/etc/hosts
+    print info "Added ${name} to /etc/hosts"
+    log_action "Added ${name} to hosts file"
+    return 0
+}

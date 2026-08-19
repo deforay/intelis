@@ -704,6 +704,7 @@ check(
 );
 
 pf_check_sts_url($remoteUrl, $instanceType);
+pf_check_sts_not_shadowed($remoteUrl);
 
 // s_vlsm_instance holds the one row that identifies this machine: the ULID
 // minted once at registration and the STS token issued against it. Both come
@@ -795,6 +796,108 @@ function pf_check_sts_url(string $remoteUrl, ?string $instanceType): void
             default => "not set — expected on a {$instanceType} instance",
         },
     );
+}
+
+/**
+ * Whether /etc/hosts points the STS's own name back at this machine.
+ *
+ * This is the quietest way an instance can be broken. Sync resolves the STS
+ * hostname to 127.0.0.1, connects to the local Apache, and talks to itself:
+ * every request succeeds, every log line looks normal, and nothing ever leaves
+ * the building. It is only visible from the STS side, as a lab that stopped
+ * reporting, which is not where anybody looks first.
+ *
+ * It happens because setup's old "Enter domain name" prompt asked for the local
+ * server's address without saying so, and an operator holding the STS URL typed
+ * that instead; setup then wrote "127.0.0.1 sts.example.org" into /etc/hosts.
+ * Both ends of that are fixed now, but the machines it already happened to are
+ * only reachable through this check.
+ *
+ * Deliberately reads /etc/hosts rather than resolving the name: once the bad
+ * line is in place, gethostbyname() answers 127.0.0.1 and the evidence of why
+ * is gone.
+ */
+function pf_check_sts_not_shadowed(string $remoteUrl): void
+{
+    if ($remoteUrl === '') {
+        return;
+    }
+
+    $stsHost = strtolower((string) (parse_url($remoteUrl, PHP_URL_HOST) ?: ''));
+
+    if ($stsHost === '') {
+        check('STS hosts entry', PF_SKIP, "could not read a hostname out of {$remoteUrl}");
+        return;
+    }
+
+    $hosts = @file('/etc/hosts', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+    if ($hosts === false) {
+        check('STS hosts entry', PF_SKIP, '/etc/hosts is unreadable');
+        return;
+    }
+
+    foreach ($hosts as $line) {
+        $line = trim((string) preg_replace('/#.*/', '', $line));
+
+        if ($line === '') {
+            continue;
+        }
+
+        $fields = preg_split('/\s+/', $line) ?: [];
+        $address = strtolower((string) array_shift($fields));
+
+        if ($fields === [] || !pf_address_is_local($address)) {
+            continue;
+        }
+
+        foreach ($fields as $name) {
+            if (strtolower((string) $name) !== $stsHost) {
+                continue;
+            }
+
+            check(
+                'STS hosts entry',
+                PF_FAIL,
+                "/etc/hosts maps {$stsHost} to {$address} — this machine\n"
+                    . "  sync connects to this server instead of the STS, so nothing is being sent\n"
+                    . "  fix: remove the '{$stsHost}' entry from /etc/hosts, then re-run this check",
+            );
+
+            return;
+        }
+    }
+
+    check('STS hosts entry', PF_OK, "{$stsHost} is not overridden locally");
+}
+
+/**
+ * Whether an address in /etc/hosts is one this machine answers on. Loopback
+ * covers the case that actually occurs; the interface addresses are checked too
+ * because a LAN address pointed at this box breaks sync in exactly the same way.
+ */
+function pf_address_is_local(string $address): bool
+{
+    if ($address === '' || str_starts_with($address, '127.') || $address === '::1' || $address === '0.0.0.0') {
+        return $address !== '';
+    }
+
+    static $localAddresses = null;
+
+    if ($localAddresses === null) {
+        $localAddresses = [];
+        $output = @shell_exec('hostname -I 2>/dev/null');
+
+        if (is_string($output)) {
+            foreach (preg_split('/\s+/', trim($output)) ?: [] as $candidate) {
+                if ($candidate !== '') {
+                    $localAddresses[strtolower($candidate)] = true;
+                }
+            }
+        }
+    }
+
+    return isset($localAddresses[$address]);
 }
 
 /** @param list<array{status:string,label:string,detail:string}> $results */

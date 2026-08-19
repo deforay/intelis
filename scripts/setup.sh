@@ -27,6 +27,11 @@
 #       Defaults to the OS baseline: 8.4 on Ubuntu <=24.04, 8.5 on 26.04+
 #       (which no longer ships 8.4). Equivalent long form: --php <version>
 #
+#   --server-name=<name>
+#       Serve this installation under the given hostname instead of the default
+#       'intelis'. Setup only asks for a web address on a central server (STS);
+#       use this for the uncommon lab machine that has an address of its own.
+#
 #   --resume
 #       Skip the database setup/import step (only allowed after a previous
 #       successful import; requires the setup-db-complete.checkpoint file).
@@ -541,6 +546,57 @@ handle_database_setup_and_import() {
 # unattended. Anything that needs MySQL or extracted files (password
 # verification, ~/.my.cnf write, vhost config, picking individual maintenance
 # scripts) is deferred to its original place but uses the values collected here.
+# Validator for the local-address answer, passed to ask_text.
+#
+# It rejects, in order: anything that is not a hostname, the STS address, and
+# (after a confirmation) a name that already belongs to some other server.
+#
+# The middle check is the one that matters. A lab machine is no longer asked for
+# a name at all, which removes the path that actually broke a lab, but a name
+# can still arrive here through --server-name or a saved answers file — and the
+# operator supplying it is often holding the STS URL at the time.
+#
+# The cleaned-up name is published in _validated_hostname rather than returned,
+# because ask_text hands back what was typed and the caller wants what it meant.
+_validate_local_hostname() {
+    local candidate="$1" normalized sts_host resolved
+    normalized="$(normalize_hostname_input "$candidate")"
+
+    if ! is_valid_hostname "$normalized"; then
+        print error "'${candidate}' is not a valid hostname."
+        print error "Use letters, digits, dots and hyphens — for example: lab.health.gov.zm"
+        return 1
+    fi
+
+    if [ -n "${remote_sts_url:-}" ]; then
+        sts_host="$(normalize_hostname_input "$remote_sts_url")"
+        if [ -n "$sts_host" ] && [ "$normalized" = "$sts_host" ]; then
+            print error "That is the STS address you gave a moment ago (${remote_sts_url})."
+            print error "This question is asking for the address of THIS machine."
+            print error "Pointing it at the STS name would make this server answer for the STS, and syncing would stop completely."
+            log_action "Rejected hostname '${normalized}': same host as the STS URL"
+            return 1
+        fi
+    fi
+
+    resolved="$(dns_resolve_host "$normalized")"
+    if [ -n "$resolved" ] && ! ip_is_local "$resolved"; then
+        print warning "${normalized} already resolves to ${resolved}, which is not this machine."
+        print warning "Using it here would make this server answer for a name that belongs to another one."
+        if ! ask_yes_no "Use ${normalized} anyway?" "no"; then
+            return 1
+        fi
+        log_action "Operator confirmed hostname '${normalized}' despite resolving to ${resolved}"
+    fi
+
+    if [ "$normalized" != "$candidate" ]; then
+        print info "Using: ${normalized}"
+    fi
+
+    _validated_hostname="$normalized"
+    return 0
+}
+
 collect_user_inputs() {
     # The ERR trap is fatal on any non-zero exit. read can legitimately return
     # non-zero (timeout, EOF, etc.), so disable the trap across the whole
@@ -573,23 +629,21 @@ collect_user_inputs() {
     echo "prompt internally; that sub-script is out of our control.)"
     echo
 
-    # --- 1. LIS installation path ---
+    # --- 1. Where to install ---
+    # The old prompt timed out after 60 seconds and chose the default silently,
+    # so an operator who stopped to check something came back to a decision
+    # already made for them. Nothing here is on a clock.
     if ! $reuse_saved_answers; then
-        echo "Enter the LIS installation path [press enter to select /var/www/intelis]: "
-        read -t 60 lis_path
-        if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
-            lis_path="/var/www/intelis"
-            echo "Using default path: $lis_path"
-        else
-            echo "LIS installation path is set to ${lis_path}."
-        fi
+        ui_step 1 6 "Where to install"
+        ask_text lis_path "/var/www/intelis" "Installation directory" "" "/var/www/intelis"
+        print info "Installing into ${lis_path}"
     else
         print info "Reusing saved LIS path: ${lis_path}"
     fi
     log_action "LIS installation path is set to ${lis_path}."
     db_setup_checkpoint_file="${lis_path}/var/run/setup-db-complete.checkpoint"
 
-    # --- 2. Resume-mode preflight (needs the path) ---
+    # --- Preflight: resume mode (needs the path; asks nothing) ---
     if $resume_setup; then
         intelis_sql_file=""
         DB_STRATEGY_FLAG=""
@@ -602,7 +656,7 @@ collect_user_inputs() {
         log_action "Resume mode enabled. Skipping database setup/import."
     fi
 
-    # --- 3. Existing-install confirmation (skipped when reusing saved answers) ---
+    # --- Preflight: existing installation ---
     if ! $reuse_saved_answers && [ -d "${lis_path}" ] && [ -n "$(ls -A ${lis_path} 2>/dev/null)" ]; then
         if [ -f "${lis_path}/composer.json" ] || [ -f "${lis_path}/bootstrap.php" ]; then
             print warning "InteLIS installation detected at ${lis_path}"
@@ -617,7 +671,7 @@ collect_user_inputs() {
         fi
     fi
 
-    # --- 4. SQL dump file validation (path came from --database/--db) ---
+    # --- Preflight: SQL dump file (path came from --database/--db; asks nothing) ---
     # Resolve the "latest" keyword to the newest db-tools backup so you can feed a
     # routine backup straight into a (re)install without hunting for a timestamp:
     #   --db latest            -> newest backup in <lis_path>/backups/db
@@ -658,92 +712,37 @@ collect_user_inputs() {
         fi
     fi
 
-    # --- 5. Hostname ---
+    # --- 2. What this machine is ---
+    # A menu, not free text. The old prompt read the first character of whatever
+    # was typed and defaulted to LIS on anything unrecognised, so a mistyped
+    # answer chose for you and said so only in the log.
+    #
+    # Asked before the addresses because it decides which address question gets
+    # asked at all: a lab machine is asked where its STS is, a central server is
+    # asked what its own web address should be, and neither is ever asked both.
     if ! $reuse_saved_answers; then
-        read -p "Enter domain name (press enter to use 'intelis'): " hostname
-        if [[ -n "$hostname" ]]; then
-            hostname=$(echo "$hostname" | sed -E 's|^https?://||i')
-            hostname=$(echo "$hostname" | sed -E 's|/*$||')
-            hostname=$(echo "$hostname" | sed -E 's|:[0-9]+$||')
-            hostname=$(echo "$hostname" | cut -d'/' -f1)
-            if [[ -z "$hostname" ]]; then
-                hostname="intelis"
-                print info "Using default hostname: $hostname"
-            else
-                print info "Using cleaned hostname: $hostname"
-            fi
-        else
-            hostname="intelis"
-            print info "Using default hostname: $hostname"
-        fi
-    else
-        print info "Reusing saved hostname: ${hostname}"
-    fi
-    log_action "Hostname: $hostname"
-
-    # --- 6. Installation type (LIS vs STS) ---
-    if ! $reuse_saved_answers; then
-        read -p "Is this an LIS or STS installation? [LIS/STS] (press enter for default: LIS): " installation_type
-        installation_type="${installation_type:-LIS}"
-        local first_char
-        first_char=$(echo "$installation_type" | cut -c1 | tr '[:upper:]' '[:lower:]')
-        is_lis=false
-        is_sts=false
-        if [[ "$first_char" == "l" ]]; then
-            is_lis=true
-            log_action "Will install InteLIS as the default host"
-        elif [[ "$first_char" == "s" ]]; then
+        ui_step 2 6 "What this machine is"
+        local _role=""
+        ask_choice _role "lis" "What is this machine?" \
+            "lis:Lab machine (LIS):Runs in a laboratory. Results are entered here and sent up to the STS." \
+            "sts:Central server (STS):Receives data from the labs. Normally one per country."
+        if [ "$_role" = "sts" ]; then
+            is_lis=false
             is_sts=true
-            log_action "Will install InteLIS alongside other apps"
+            log_action "Will install InteLIS alongside other apps (STS)"
         else
             is_lis=true
-            log_action "Invalid installation type '$installation_type'; defaulting to LIS"
+            is_sts=false
+            log_action "Will install InteLIS as the default host (LIS)"
         fi
     else
         print info "Reusing saved installation type: $([ "$is_lis" = true ] && echo LIS || echo STS)"
     fi
 
-    # --- 7. MySQL root password (collect only; verify+persist after lamp-setup) ---
-    mysql_password_needs_persisting=false
-    if [ -f ~/.my.cnf ]; then
-        mysql_root_password=$(awk -F= '/password/ {print $2}' ~/.my.cnf | xargs)
-        echo "MySQL root password extracted from ~/.my.cnf"
-    else
-        echo "MySQL password not yet configured. Please provide a root password to set."
-        while true; do
-            read -sp "Enter MySQL root password: " mysql_root_password
-            echo
-            read -sp "Confirm MySQL root password: " mysql_root_password_confirm
-            echo
-            if [ "$mysql_root_password" != "$mysql_root_password_confirm" ]; then
-                print error "Passwords do not match. Please try again."
-            elif [ -z "$mysql_root_password" ]; then
-                print error "Password cannot be empty. Please try again."
-            else
-                break
-            fi
-        done
-        mysql_password_needs_persisting=true
-    fi
-
-    # --- 8. DB-collision strategy (skip if --db-strategy / env supplied or resuming) ---
-    if ! $resume_setup && [[ -z "$DB_STRATEGY_FLAG" ]]; then
-        echo
-        echo "If an existing 'vlsm' database is detected, what should setup do?"
-        echo "  1) DROP   – delete current database and create a fresh one"
-        echo "  2) RENAME – back up to vlsm_YYYYMMDD_HHMMSS and create fresh (default)"
-        echo "  3) USE    – keep existing 'vlsm' as-is and skip import"
-        read -r -p "Enter choice [1=DROP, 2=RENAME(default), 3=USE]: " _dbchoice
-        case "${_dbchoice:-2}" in
-            1) DB_STRATEGY_FLAG="drop"   ;;
-            2) DB_STRATEGY_FLAG="rename" ;;
-            3) DB_STRATEGY_FLAG="use"    ;;
-            *) DB_STRATEGY_FLAG="rename" ;;
-        esac
-        log_action "DB strategy chosen upfront: ${DB_STRATEGY_FLAG}"
-    fi
-
-    # --- 9. Remote STS URL (LIS only; validated with curl, no local setup needed) ---
+    # --- 3. Remote STS URL (LIS only; validated with curl, no local setup needed) ---
+    # Collected before anything that could be confused with it, so that a name
+    # arriving later — from --server-name, or from a saved answers file — can be
+    # checked against it rather than silently accepted.
     if [ -n "$intelis_sts_url_flag" ]; then
         remote_sts_url="${intelis_sts_url_flag%/}"
         print info "Using STS URL from --sts-url: ${remote_sts_url}"
@@ -754,8 +753,12 @@ collect_user_inputs() {
         remote_sts_url=""
         local max_sts_url_attempts=3
         local sts_url_attempts=0
+        ui_step 3 6 "Address of the STS"
+        ui_note "The central server this lab sends its results to." \
+            "Ask the national programme if you do not know it." \
+            "Leave it blank to configure syncing later."
         while true; do
-            read -p "Please enter the Remote STS URL (or press Enter to skip): " remote_sts_url
+            read -p " Remote STS URL (or press Enter to skip): " remote_sts_url
             log_action "Remote STS URL entered: $remote_sts_url"
             if [ -z "$remote_sts_url" ]; then
                 echo "No STS URL provided. Skipping validation."
@@ -791,26 +794,133 @@ collect_user_inputs() {
         done
     fi
 
-    # --- 10. Maintenance scripts policy ---
+    # --- 3b. Web address (STS only) ---
+    #
+    # A lab machine is never asked. It is reached from the bench by IP address
+    # or by http://intelis/, it has no public name, and the question that used
+    # to be put to it — "Enter domain name" — is jargon to the person doing the
+    # install. Worse, an operator with the STS URL in hand answered it with that,
+    # setup wrote "127.0.0.1 sts.example.org" into /etc/hosts, and the lab spent
+    # the following weeks syncing to itself.
+    #
+    # A central server does need a name, because the labs have to reach it, so
+    # it is asked there — where it cannot be confused with "the address of the
+    # STS", because on an STS this machine IS the STS.
+    #
+    # The uncommon lab machine that really does have an address of its own is
+    # served by --server-name, which skips the prompt entirely.
+    if ! $reuse_saved_answers; then
+        hostname="intelis"
+        if [ -n "$intelis_server_name_flag" ]; then
+            _validated_hostname=""
+            if _validate_local_hostname "$intelis_server_name_flag"; then
+                hostname="$_validated_hostname"
+                print info "Using server name from --server-name: ${hostname}"
+            else
+                print error "Ignoring --server-name; falling back to ${hostname}"
+            fi
+        elif $is_sts; then
+            ui_step 3 6 "Web address of this server"
+            ui_note "What the labs will type in their browser to reach this server." \
+                "It must already point at this machine in DNS." \
+                "" \
+                "Press enter to skip if the labs will use this machine's IP address."
+            _validated_hostname=""
+            local _hostname_answer=""
+            ask_text _hostname_answer "intelis" \
+                "Web address of this server" \
+                _validate_local_hostname \
+                "e.g. sts.health.gov.zm"
+            hostname="${_validated_hostname:-intelis}"
+        fi
+        if [ "$hostname" = "intelis" ]; then
+            print info "This machine will be reached at http://intelis/ or by its IP address."
+        else
+            print info "This machine will be served as: http://${hostname}/"
+        fi
+    else
+        print info "Reusing saved hostname: ${hostname}"
+    fi
+    log_action "Hostname: $hostname"
+
+    # --- 4. MySQL root password (collect only; verify+persist after lamp-setup) ---
+    mysql_password_needs_persisting=false
+    if [ -f ~/.my.cnf ]; then
+        mysql_root_password=$(awk -F= '/password/ {print $2}' ~/.my.cnf | xargs)
+        echo "MySQL root password extracted from ~/.my.cnf"
+    else
+        ui_step 4 6 "MySQL root password"
+        ui_note "MySQL is not installed on this machine yet, so this password is" \
+            "being CHOSEN now, not recalled. Write it down before continuing:" \
+            "database backups and restores need it."
+        while true; do
+            read -sp " New MySQL root password: " mysql_root_password
+            echo
+            read -sp " Confirm password: " mysql_root_password_confirm
+            echo
+            if [ "$mysql_root_password" != "$mysql_root_password_confirm" ]; then
+                print error "Passwords do not match. Please try again."
+            elif [ -z "$mysql_root_password" ]; then
+                print error "Password cannot be empty. Please try again."
+            else
+                break
+            fi
+        done
+        mysql_password_needs_persisting=true
+    fi
+
+    # --- 5. DB-collision strategy (skip if --db-strategy / env supplied or resuming) ---
+    if ! $resume_setup && [[ -z "$DB_STRATEGY_FLAG" ]]; then
+        ui_step 5 6 "If a database is already here"
+        ui_note "Only applies if this machine already has a 'vlsm' database." \
+            "Ignored on a clean server."
+        ask_choice DB_STRATEGY_FLAG "rename" "If an existing 'vlsm' database is found, what should setup do?" \
+            "rename:Keep a copy, then start fresh:Renamed to vlsm_YYYYMMDD_HHMMSS. Nothing is lost. Safest." \
+            "use:Leave it alone and use it:No import. Choose this when reinstalling over live data." \
+            "drop:Delete it:The existing data is destroyed permanently."
+        log_action "DB strategy chosen upfront: ${DB_STRATEGY_FLAG}"
+    fi
+
+    # --- 6. Maintenance scripts policy ---
     # The full file list isn't known until the codebase is extracted, so the
     # "pick individual scripts" mode is the only one that still has to prompt
     # at the end. "all" and "none" run unattended.
     if ! $reuse_saved_answers; then
         run_maintenance_scripts=false
         maintenance_scripts_mode="none"
-        if ask_yes_no "Do you want to run maintenance scripts after setup completes?" "no"; then
+        ui_step 6 6 "Maintenance scripts"
+        if ask_yes_no "Run the one-off maintenance scripts after setup finishes?" "no"; then
             run_maintenance_scripts=true
-            echo "  1) ALL  – run every maintenance script automatically (default, unattended)"
-            echo "  2) PICK – list the scripts at the end and let me choose (interactive)"
-            read -r -p "Enter choice [1=ALL(default), 2=PICK]: " _mchoice
-            case "${_mchoice:-1}" in
-                2) maintenance_scripts_mode="pick" ;;
-                *) maintenance_scripts_mode="all"  ;;
-            esac
+            ask_choice maintenance_scripts_mode "all" "Which ones?" \
+                "all:Run all of them:Unattended. Setup finishes without asking again." \
+                "pick:Let me choose at the end:Lists them once the code is in place."
             log_action "Maintenance scripts policy: ${maintenance_scripts_mode}"
         fi
     else
         print info "Reusing saved maintenance policy: ${maintenance_scripts_mode:-none}"
+    fi
+
+    # Last chance to catch a wrong answer, and the only screen on which the
+    # answers appear next to each other — which is what makes a domain name that
+    # is really the STS address look as wrong as it is. Nothing has been
+    # installed at this point beyond the base packages prepare_system pulls in,
+    # so declining is free.
+    if ! $reuse_saved_answers && ui_interactive; then
+        local _role_label
+        _role_label=$($is_sts && echo "Central server (STS)" || echo "Lab machine (LIS)")
+        ui_recap \
+            "Role: ${_role_label}" \
+            "Install path: ${lis_path}" \
+            "Reached at: http://${hostname}/" \
+            "Sends data to: ${remote_sts_url:-nowhere — syncing not configured}" \
+            "Existing vlsm database: ${DB_STRATEGY_FLAG:-rename}" \
+            "Maintenance scripts: ${maintenance_scripts_mode:-none}"
+        if ! ask_yes_no "Is this correct?" "yes"; then
+            print info "Stopped. Nothing has been installed."
+            print info "Run the same command again to start over."
+            log_action "Operator rejected the configuration recap; setup aborted before install."
+            exit 0
+        fi
     fi
 
     # Persist the answers so a re-run after a mid-setup failure can skip the
@@ -859,6 +969,7 @@ intelis_recovery_token=""
 # used verbatim and the STS-URL prompt is skipped. Needed by --recovery-token to
 # reach the key-release endpoint without an operator at the keyboard.
 intelis_sts_url_flag=""
+intelis_server_name_flag=""
 
 # How many timestamped code/DB backups to retain when re-running setup.
 BACKUP_KEEP="${BACKUP_KEEP:-3}"
@@ -905,6 +1016,14 @@ while [[ $# -gt 0 ]]; do
         intelis_recovery_token="$2"
         shift 2
         ;;
+        --server-name=*)
+        intelis_server_name_flag="${1#*=}"
+        shift
+        ;;
+        --server-name)
+        intelis_server_name_flag="$2"
+        shift 2
+        ;;
         --sts-url=*)
         intelis_sts_url_flag="${1#*=}"
         shift
@@ -929,6 +1048,11 @@ if [[ ! "$PHP_VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
     echo "Invalid --php value: '$PHP_VERSION'. Expected format like 8.4 or 8.5."
     exit 1
 fi
+
+# Prompts render in plain text everywhere; this only makes them nicer when it
+# works. It is deliberately best-effort and silent about failing — an install
+# must never be blocked by a cosmetic dependency.
+ensure_gum || true
 
 collect_user_inputs
 
@@ -1181,35 +1305,23 @@ configure_vhost() {
 }
 
 # Hostname was collected upfront in collect_user_inputs.
-# Check if the hostname entry is already in /etc/hosts
-if ! grep -q "127.0.0.1 ${hostname}" /etc/hosts; then
-    print info "Adding ${hostname} to hosts file..."
-    echo "127.0.0.1 ${hostname}" | tee -a /etc/hosts
-    log_action "${hostname} entry added to hosts file."
-else
-    print info "${hostname} entry is already in the hosts file."
-    log_action "${hostname} entry is already in the hosts file."
-fi
-
-if ! grep -q "127.0.0.1 intelis" /etc/hosts; then
-    print info "Adding intelis to hosts file..."
-    echo "127.0.0.1 intelis" | tee -a /etc/hosts
-    log_action "intelis entry added to hosts file."
-else
-    print info "intelis entry is already in the hosts file."
-    log_action "intelis entry is already in the hosts file."
-fi
-
-
-if ! grep -q "127.0.0.1 vlsm" /etc/hosts; then
-    print info "Adding vlsm to hosts file..."
-    echo "127.0.0.1 vlsm" | tee -a /etc/hosts
-    log_action "vlsm entry added to hosts file."
-else
-    print info "vlsm entry is already in the hosts file."
-    log_action "vlsm entry is already in the hosts file."
-fi
-
+#
+# These entries let the machine reach itself by name. They go through
+# hosts_file_add_local, which refuses any name that already resolves to another
+# server — because "127.0.0.1 sts.example.org" written here is the single line
+# that silently cut a lab off from its STS, and refusing to write it is the last
+# defence after the prompts that used to invite it.
+#
+# The old guard grepped unanchored too, so a name inside a comment, or one that
+# was a substring of another entry, read as already present.
+for _hosts_name in "${hostname}" intelis vlsm; do
+    case " ${_hosts_written:-} " in
+        *" ${_hosts_name} "*) continue ;;
+    esac
+    _hosts_written="${_hosts_written:-} ${_hosts_name}"
+    hosts_file_add_local "$_hosts_name" || true
+done
+unset _hosts_name _hosts_written
 
 # Installation type (is_lis / is_sts) was collected upfront. Write the vhost.
 if $is_lis; then
