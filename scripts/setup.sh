@@ -1363,47 +1363,56 @@ if $mysql_is_mariadb || ([[ -n "$mysql_major_minor" ]] && ! version_lt "$mysql_m
     mysql_obsolete_keys+=("default_authentication_plugin")
 fi
 
-changes_needed=false
-
-# --- dry-run check first ---
+# --- work out what has to change, without touching the file yet ---
+#
+# Only the [mysqld] section counts. A copy of the setting in another section is
+# not the server's value, and reading it as one is how a line stranded under
+# [client] would convince this that the work is already done.
+mysql_settings_to_write=()
 for setting in "${!mysql_settings[@]}"; do
-    if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$mysql_cnf"; then
-        changes_needed=true
-        break
+    if current_value="$(mysql_cnf_get_option "$mysql_cnf" mysqld "$setting")"; then
+        [ "$current_value" = "${mysql_settings[$setting]}" ] && continue
+    fi
+    mysql_settings_to_write+=("$setting")
+done
+
+mysql_obsolete_present=()
+for obsolete in ${mysql_obsolete_keys[@]+"${mysql_obsolete_keys[@]}"}; do
+    if grep -qE "^[[:space:]]*${obsolete}[[:space:]]*=" "$mysql_cnf"; then
+        mysql_obsolete_present+=("$obsolete")
     fi
 done
 
-if [ "$changes_needed" = false ]; then
-    for obsolete in "${mysql_obsolete_keys[@]}"; do
-        if grep -qE "^[[:space:]]*$obsolete[[:space:]]*=" "$mysql_cnf"; then
-            changes_needed=true
-            break
-        fi
-    done
-fi
-
-if [ "$changes_needed" = true ]; then
+if [ ${#mysql_settings_to_write[@]} -gt 0 ] || [ ${#mysql_obsolete_present[@]} -gt 0 ]; then
     print info "Changes needed. Backing up and updating MySQL config..."
     print info "Detected MySQL flavor: $([ "$mysql_is_mariadb" = true ] && echo MariaDB || echo MySQL) ${mysql_major_minor:-unknown}"
     cp "$mysql_cnf" "${mysql_cnf}.bak.${backup_timestamp}"
 
     # Comment out any obsolete-on-this-version keys first.
-    for obsolete in "${mysql_obsolete_keys[@]}"; do
-        if grep -qE "^[[:space:]]*$obsolete[[:space:]]*=" "$mysql_cnf"; then
-            print info "Disabling obsolete option for this server: $obsolete"
-            sed -i "/^[[:space:]]*$obsolete[[:space:]]*=.*/s/^/#/" "$mysql_cnf"
-        fi
+    for obsolete in ${mysql_obsolete_present[@]+"${mysql_obsolete_present[@]}"}; do
+        print info "Disabling obsolete option for this server: $obsolete"
+        mysql_cnf_comment_option "$mysql_cnf" "$obsolete"
     done
 
-    for setting in "${!mysql_settings[@]}"; do
-        if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$mysql_cnf"; then
-            # Comment existing wrong setting if found
-            if grep -qE "^[[:space:]]*$setting[[:space:]]*=" "$mysql_cnf"; then
-                sed -i "/^[[:space:]]*$setting[[:space:]]*=.*/s/^/#/" "$mysql_cnf"
-            fi
-            echo "$setting = ${mysql_settings[$setting]}" >>"$mysql_cnf"
+    # Written into the [mysqld] section rather than appended to the end of the
+    # file: appending is only correct while the last heading happens to be
+    # [mysqld], and where it is not, the settings land under [client], where the
+    # server ignores them and every client refuses to start.
+    if [ ${#mysql_settings_to_write[@]} -gt 0 ]; then
+        mysql_new_lines="$(mktemp)"
+        for setting in "${mysql_settings_to_write[@]}"; do
+            mysql_cnf_comment_option "$mysql_cnf" "$setting"
+            printf '%s = %s\n' "$setting" "${mysql_settings[$setting]}" >>"$mysql_new_lines"
+        done
+
+        if ! mysql_cnf_insert_mysqld_options "$mysql_cnf" "$mysql_new_lines"; then
+            print error "Failed to write MySQL settings. Restoring backup and exiting..."
+            cp "${mysql_cnf}.bak.${backup_timestamp}" "$mysql_cnf"
+            rm -f "$mysql_new_lines"
+            exit 1
         fi
-    done
+        rm -f "$mysql_new_lines"
+    fi
 
     print info "Restarting MySQL service to apply changes..."
     restart_service mysql || {
