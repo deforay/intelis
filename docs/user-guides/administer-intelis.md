@@ -102,9 +102,10 @@ records on the Facilities page.
 
 4. Select **Submit**.
 
-Set the **Test Type**. A facility not linked to viral load does not appear in the
-facility list on the viral load request form. This is the usual reason a facility
-is "missing" from the form.
+Set the **Test Type**, and tick every test type the facility takes part in. A
+facility not linked to a test type does not appear in the facility list on that
+test type's request form. A facility ticked for one test type stays missing from
+every other test type's form. This is the usual reason a facility is "missing".
 
 For a testing lab, upload the signatories. They appear on result PDFs issued by
 that lab.
@@ -153,20 +154,38 @@ status and a **Last Seen** time. Use **Last Seen** when results stop arriving.
 | **Reconnect / Reinstall** | The lab computer is rebuilt or the tool is reinstalled |
 | **Revoke** | The computer is retired or lost. Other installations are unaffected |
 
-## Maintain the viral load option lists
+## Maintain the request form lists
 
-The dropdowns on the viral load request form come from lists under **ADMIN → VL
-Config**.
+Each test module keeps its own lists. They fill the dropdowns on that module's
+request form. Adding a sample type under one module does not add it to another
+module's form. Add it under each module that needs it.
+
+The ADMIN menu carries one config section per module the installation runs. An
+installation running one module carries one section.
+
+| Config section | Lists it holds |
+|---|---|
+| VL Config | Sample Type, Rejection Reasons, Test Reasons, Results, ART Regimen, Test Failure Reasons, Recommended Corrective Actions |
+| EID Config | Sample Type, Rejection Reasons, Test Reasons, Results |
+| TB Config | Sample Type, Rejection Reasons, Test Reasons, Results |
+| CD4 Config | Sample Type, Rejection Reasons, Test Reasons |
+| Covid-19 Config | Sample Type, Rejection Reasons, Test Reasons, Results, Symptoms, Co-morbidities, Recommended Corrective Actions, QC Test Kits |
+| Hepatitis Config | Sample Type, Rejection Reasons, Test Reasons, Results, Co-morbidities, Risk Factors |
+| Other Lab Tests Config | Sample Types, Testing Reasons, Sample Rejection Reasons, Test Failure Reasons, Symptoms, Test Result Units, Test Methods, Test Categories, Test Type Configuration |
+
+What each list controls:
 
 | List | Controls |
 |---|---|
-| ART Regimen | The regimen choices on the request form |
+| Sample Type | The specimen types offered on the request form |
 | Rejection Reasons | The reasons offered when rejecting a sample |
-| Sample Type | The specimen types |
-| Results | The result values for qualitative reporting |
 | Test Reasons | The indications for testing |
+| Results | The result values for qualitative reporting |
 | Test Failure Reasons | The reasons offered when a test fails |
+| Symptoms, Co-morbidities, Risk Factors | The clinical checklists on the request form |
+| ART Regimen | The regimen choices on the viral load request form |
 | Recommended Corrective Actions | The actions suggested on high viral load results |
+| Test Result Units, Test Methods, Test Categories | The properties available to a custom test type |
 
 Each list works the same way. Open the page, select the add option, enter the
 name, and save. To retire an entry, edit it and set the status to inactive.
@@ -204,15 +223,21 @@ change how InteLIS behaves across the installation.
 Change one setting at a time and check the effect. These settings apply to
 everyone on the installation at once.
 
-Two settings deserve care.
+## Changes that need approval before making them
 
-**Same user can Review and Approve.** Turning this on lets one person enter and
-sign off their own result. Turn it off wherever staffing allows.
+The changes below take effect across the whole installation the moment they are
+saved. Setting them back does not undo their effect on the records already
+created. Agree each one with the national team first.
 
-**Auto Approve Interface Results.** Turning this on releases analyzer results
-without a human check. It is safe where the analyzer is trusted and the batch
-workflow is followed. It is not safe where Sample IDs are entered on the analyzer
-by hand.
+| Change | Where | Why it needs approval |
+|---|---|---|
+| Sample ID format or prefix | General Configuration → Sample IDs | Every sample registered from that moment carries the new format. The samples already registered keep the old one, leaving the lab with two schemes |
+| Locking and expiry days | General Configuration → Locking | Decides when a record stops accepting edits. Too short and the lab cannot correct a result. Too long and results stay editable after release |
+| Same user can Review and Approve | General Configuration → Approval | Lets one person enter and sign off their own result. Approval is the only check on result quality. Turn it off wherever staffing allows |
+| Auto Approve Interface Results | General Configuration → Approval | Releases analyzer results with no human check. Safe where the analyzer is trusted and the batch workflow is followed. Not safe where Sample IDs are typed on the analyzer by hand |
+| Role privileges | Access Control → Roles | Applies at once to every user holding the role |
+| Deleting a list entry | Any module config page | Set the entry inactive instead. Deleting it leaves the records that used it unreadable |
+| Renaming or removing a province or district | System Configuration → Geographical Divisions | The facilities under it lose their link, and the geographic filters on every report stop matching |
 
 ## Check who did what
 
@@ -220,10 +245,16 @@ by hand.
 |---|---|
 | **ADMIN → Monitoring → User Activity Log** | Which pages a user opened, and when |
 | **ADMIN → Monitoring → Audit Trail** | Which field changed, from what to what, by whom |
+| **ADMIN → Monitoring → API History** | Whether this installation reached the national server, and how many records went |
+| **ADMIN → Monitoring → Interface Machine Activity** | Whether each connected analyzer is still sending |
+| **ADMIN → Monitoring → Lab Performance Indicators** | Turnaround time, volumes by entry mode, failure and rejection rates |
 | **ADMIN → Monitoring → Log File Viewer** | System messages, for support requests |
 
 Use the Audit Trail when a result is questioned. It shows the change history for
 the record.
+
+**Lab Sync Status** and **API Dashboard** appear on the national server only.
+They are absent from a lab installation by design.
 
 ## Confirm it worked
 
@@ -231,7 +262,7 @@ the record.
 |---|---|
 | New user | The user signs in and sees the expected menu |
 | Role change | Sign in as a user with that role, or check the Permission filter on the Roles page |
-| New facility | The facility appears in the facility list on the viral load request form |
+| New facility | The facility appears on the request form of each test type it was ticked for |
 | New analyzer | The analyzer appears in Testing Platform when creating a batch |
 | Interface Tool connection | The installation shows under Connected Installations with a recent Last Seen |
 | Option list entry | The entry appears in its dropdown on the request form |

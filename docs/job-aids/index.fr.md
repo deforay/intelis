@@ -1,8 +1,8 @@
 # Aide-mémoires imprimables
 
-Des fiches d'une page, chacune imprimée sur une page A4. Deux séries : une pour
-les personnes qui utilisent InteLIS, une pour celle qui s'occupe de la machine
-sur laquelle il tourne.
+Des fiches d'une page, chacune imprimée sur une page A4. Trois séries : une pour
+les personnes qui utilisent InteLIS, une pour celle qui l'administre, une pour
+celle qui s'occupe de la machine sur laquelle il tourne.
 
 Ouvrir une série et sélectionner **Imprimer toutes les fiches**, ou imprimer une
 seule fiche depuis la boîte de dialogue d'impression du navigateur en indiquant
@@ -24,6 +24,22 @@ travail concerné.
 | 5. Approuver et diffuser les résultats | Contrôles d'approbation, impression, courriel | Au poste du superviseur |
 | 6. Échec, rejet, perte ou annulation ? | Choisir la bonne action, retest, récupération | Au poste du superviseur |
 | 7. Les statuts en un coup d'œil | Chaque statut et son effet sur les rapports | Partout dans le laboratoire |
+
+## Pour l'administrateur
+
+Cinq fiches sur tout ce qui se trouve sous ADMIN. Les garder par
+l'administrateur. La fiche 1 porte la liste des modifications à faire valider
+avant de les appliquer.
+
+[Ouvrir les aide-mémoires administration](administration-job-aids.html){ .md-button .md-button--primary }
+
+| Fiche | Contenu | Qui en a besoin |
+|---|---|---|
+| 1. Ce dont l'administrateur a la charge | Le menu ADMIN, les deux niveaux d'administrateur, les modifications à faire valider | Tout administrateur |
+| 2. Ajouter un utilisateur et définir ses accès | Créer les identifiants, construire les rôles, la règle d'un identifiant par personne | Tout administrateur |
+| 3. Ajouter une structure, connecter un automate | Les champs d'une structure, la règle du Test Type, les instruments, les codes de connexion | Tout administrateur |
+| 4. Maintenir les listes du formulaire de demande | Quelle liste sous quel module, et pourquoi les entrées sont retirées et jamais supprimées | Tout administrateur |
+| 5. Quelque chose manque ou ne va pas | Les plaintes habituelles et leurs causes, et quelle page de Surveillance répond à quoi | Tout administrateur |
 
 ## Pour la machine
 
@@ -56,6 +72,7 @@ exceptions et la conduite à tenir en cas de problème.
 | Labo 5 | [Vérifier et approuver les résultats](../user-guides/approve-results.md) et [Diffuser les résultats](../user-guides/release-results.md) |
 | Labo 6 | [Gérer les échecs et les échantillons en attente](../user-guides/failed-and-held-samples.md) |
 | Labo 7 | [Statuts des échantillons](../user-guides/sample-statuses.md) |
+| Admin 1 à 5 | [Administrer InteLIS](../user-guides/administer-intelis.md) |
 | Machine 2 | [Installer InteLIS sur Ubuntu](../guides/installing-intelis-on-ubuntu.md) |
 | Machine 3 | [Mettre à jour InteLIS sur Ubuntu](../guides/updating-intelis-on-ubuntu.md) |
 | Machine 4 | [Sauvegarder vers une autre machine Linux](../guides/backing-up-to-remote-server.md) et [vers une machine Windows](../guides/backing-up-to-windows-machine.md) |

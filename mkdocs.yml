@@ -73,6 +73,8 @@ nav:
           - Viral Load Reports: user-guides/reports.md
   - Printable Job Aids:
       - Job Aids: job-aids/index.md
+  - Training:
+      - Running the Administration Training: training/administration-training.md
   - Installation:
       - InteLIS on Ubuntu (Recommended): guides/installing-intelis-on-ubuntu.md
       - Using Docker: guides/installing-intelis-with-docker.md
@@ -150,6 +152,8 @@ plugins:
             Viral Load Reports: Rapports charge virale
             Printable Job Aids: Aide-mémoires imprimables
             Job Aids: Aide-mémoires
+            Training: Formation
+            Running the Administration Training: Animer la formation à l'administration
             Installation: Installation
             InteLIS on Ubuntu (Recommended): InteLIS sur Ubuntu (recommandé)
             Using Docker: Avec Docker

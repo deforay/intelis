@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InteLIS — aide-mémoires administration</title>
+<style>
+  :root {
+    --ink: #14181c;
+    --muted: #5b6670;
+    --rule: #c8d0d6;
+    --tint: #eef3f5;
+    --accent: #00695c;
+    --warn: #8a4b00;
+    --warn-bg: #fdf3e6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #f4f6f7;
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.42;
+  }
+  .toolbar {
+    max-width: 200mm;
+    margin: 0 auto 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .toolbar h1 { font-size: 16pt; margin: 0; }
+  .toolbar p { margin: 0; color: var(--muted); font-size: 10pt; }
+  button {
+    font: inherit;
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .card {
+    max-width: 200mm;
+    min-height: 250mm;
+    margin: 0 auto 20px;
+    padding: 16mm 15mm;
+    background: #fff;
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+  .card > header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+  .kicker {
+    font-size: 8.5pt;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .card h2 { font-size: 17pt; margin: 3px 0 0; }
+  .card h2 + p { margin: 5px 0 0; color: var(--muted); }
+
+  h3 {
+    font-size: 10.5pt;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 18px 0 7px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 3px;
+  }
+
+  ol, ul { margin: 0 0 10px; padding-left: 20px; }
+  li { margin-bottom: 5px; }
+  ol.steps { counter-reset: s; list-style: none; padding-left: 0; }
+  ol.steps > li {
+    counter-increment: s;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 9px;
+  }
+  ol.steps > li::before {
+    content: counter(s);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 21px; height: 21px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 9.5pt;
+    text-align: center;
+    line-height: 18px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 0 0 10px; font-size: 10pt; }
+  th, td { text-align: left; vertical-align: top; padding: 5px 8px; border-bottom: 1px solid var(--rule); }
+  th { background: var(--tint); font-size: 9pt; text-transform: uppercase; letter-spacing: .04em; }
+  td:first-child { white-space: nowrap; font-weight: 600; }
+  table.wrapfirst td:first-child { white-space: normal; }
+
+  .path {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9.5pt;
+    background: var(--tint);
+    padding: 1px 5px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .ui { font-weight: 700; }
+
+  .warn {
+    border-left: 4px solid var(--warn);
+    background: var(--warn-bg);
+    padding: 9px 12px;
+    margin: 12px 0;
+  }
+  .warn strong { color: var(--warn); display: block; margin-bottom: 2px; font-size: 9.5pt; text-transform: uppercase; letter-spacing: .04em; }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; margin: 10px 0 14px; }
+  .flow .step {
+    flex: 1 1 90px;
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
+    padding: 7px 8px;
+    font-size: 9.5pt;
+    background: #fff;
+  }
+  .flow .step b { display: block; font-size: 8pt; color: var(--accent); letter-spacing: .05em; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+  footer.cardfoot {
+    margin-top: 16px; padding-top: 7px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 8.5pt;
+    display: flex; justify-content: space-between; gap: 10px;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; font-size: 10.5pt; }
+    .toolbar { display: none; }
+    .card {
+      margin: 0; border: 0; box-shadow: none;
+      min-height: 0; max-width: none;
+      padding: 12mm 14mm;
+      page-break-after: always;
+      break-after: page;
+    }
+    .card:last-of-type { page-break-after: auto; break-after: auto; }
+  }
+  @page { size: A4 portrait; margin: 10mm; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <h1>InteLIS — aide-mémoires administration</h1>
+    <p>Cinq fiches d'une page. À imprimer et à garder par l'administrateur, pas au poste de travail.</p>
+  </div>
+  <button onclick="window.print()">Imprimer toutes les fiches</button>
+</div>
+
+<!-- FICHE 1 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 1 sur 5</div>
+    <h2>Ce dont l'administrateur a la charge</h2>
+    <p>Tout ce qui est sous ADMIN, et ce qui demande une validation préalable.</p>
+  </header>
+
+  <h3>Le menu ADMIN</h3>
+  <table class="wrapfirst">
+    <tr><th>Section</th><th>Contient</th></tr>
+    <tr><td>Contrôle d'accès</td><td>Les rôles et les utilisateurs</td></tr>
+    <tr><td>Structures sanitaires</td><td>Les structures et les laboratoires de test, ainsi que les connexions de l'outil d'interface</td></tr>
+    <tr><td>Configuration du système</td><td>Configuration générale, Instruments, Divisions géographiques, Partenaires, Sources de financement, Stockage en laboratoire</td></tr>
+    <tr><td>Les sections de configuration des modules</td><td>Les listes déroulantes du formulaire de demande de chaque module. Une section par module actif</td></tr>
+    <tr><td>Surveillance</td><td>Journal d'activité, piste d'audit, historique de l'API, activité des automates, performance du laboratoire</td></tr>
+  </table>
+
+  <h3>Deux niveaux d'administrateur</h3>
+  <table class="wrapfirst">
+    <tr><th>Niveau</th><th>Intervient sur</th></tr>
+    <tr><td>Administrateur de laboratoire</td><td>Utilisateurs, structures, automates, listes de configuration des modules, connexions de l'outil d'interface, consultation de la piste d'audit</td></tr>
+    <tr><td>Administrateur national</td><td>Tout ce qui précède, plus les rôles et permissions, la Configuration générale et les Divisions géographiques</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Faire valider avant de modifier</strong>
+    Format ou préfixe des ID d'échantillon. Jours de verrouillage et de péremption.
+    Same user can Review and Approve. Auto Approve Interface Results. Permissions d'un rôle.
+    Suppression d'une entrée de liste. Renommage ou suppression d'une province ou d'un district.
+    Chacune s'applique d'un coup à toute l'installation, et revenir en arrière n'annule pas
+    son effet sur les fiches déjà créées.
+  </div>
+
+  <h3>Règles valables partout</h3>
+  <ul>
+    <li>Ne jamais partager un identifiant. Le journal d'activité et les noms du technicien, du réviseur et de l'approbateur enregistrent la personne connectée.</li>
+    <li>Passer les entrées en inactif. Ne jamais les supprimer.</li>
+    <li>Modifier un paramètre à la fois, puis en vérifier l'effet.</li>
+    <li>Donner à chaque rôle les permissions nécessaires à son travail, et pas davantage.</li>
+  </ul>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire administration</span><span>Fiche 1 : la charge de l'administrateur</span></footer>
+</section>
+
+<!-- FICHE 2 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 2 sur 5</div>
+    <h2>Ajouter un utilisateur et définir ses accès</h2>
+    <p>InteLIS n'a pas d'auto-inscription. Chaque identifiant est créé ici.</p>
+  </header>
+
+  <h3>Ajouter l'utilisateur</h3>
+  <p><span class="path">ADMIN &rsaquo; Contrôle d'accès &rsaquo; Utilisateurs &rsaquo; Add User</span></p>
+
+  <ol class="steps">
+    <li>Saisir le <span class="ui">Full Name</span> tel qu'il doit figurer sur les rapports et dans le journal d'activité.</li>
+    <li>Saisir l'adresse e-mail et le numéro de téléphone.</li>
+    <li>Choisir le <span class="ui">Role</span>. Les permissions viennent du rôle, jamais de l'utilisateur.</li>
+    <li>Renseigner le <span class="ui">Testing Lab</span>. Cela limite ce que l'utilisateur voit au travail de son propre laboratoire.</li>
+    <li>Téléverser une <span class="ui">Signature</span> pour toute personne qui approuve des résultats. 100 sur 100 pixels.</li>
+    <li>Définir le <span class="ui">Login ID</span> et un mot de passe initial.</li>
+    <li>Sélectionner <span class="ui">Submit</span>, puis remettre l'identifiant et le mot de passe à l'utilisateur en main propre.</li>
+  </ol>
+
+  <div class="warn">
+    <strong>Un identifiant par personne</strong>
+    Un identifiant partagé rend sans valeur le journal d'activité et les noms du technicien,
+    du réviseur et de l'approbateur sur chaque rapport. Pour retirer un utilisateur qui part,
+    modifier le compte et le passer en inactif. Ne jamais réattribuer l'identifiant à
+    quelqu'un d'autre. Les anciennes fiches restent rattachées à l'ancien nom.
+  </div>
+
+  <h3>Ajouter ou modifier un rôle</h3>
+  <p><span class="path">ADMIN &rsaquo; Contrôle d'accès &rsaquo; Les rôles</span></p>
+
+  <table class="wrapfirst">
+    <tr><th>Champ</th><th>Ce qu'il faut renseigner</th></tr>
+    <tr><td>Role Name</td><td>Un nom que le personnel reconnaît, par exemple Technicien de laboratoire</td></tr>
+    <tr><td>Role Code</td><td>Un code court et unique</td></tr>
+    <tr><td>Landing Page</td><td>La page d'arrivée de ce rôle. Le personnel de saisie arrive directement sur le formulaire de demande</td></tr>
+    <tr><td>Access Type</td><td>Testing Lab pour le personnel du laboratoire. Collection Site pour le personnel des structures</td></tr>
+    <tr><td>Privileges</td><td>Cocher chaque page accessible au rôle. Utiliser le champ de recherche, ne pas parcourir la liste</td></tr>
+  </table>
+
+  <p>Pour savoir quels rôles portent une permission donnée, utiliser le filtre
+  <span class="ui">Permission</span> sur la page des rôles.</p>
+
+  <div class="warn">
+    <strong>Jamais un rôle qui saisit et approuve à la fois</strong>
+    L'approbation est le seul contrôle sur la qualité des résultats. Un rôle qui porte les
+    deux le supprime.
+  </div>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire administration</span><span>Fiche 2 : utilisateurs et rôles</span></footer>
+</section>
+
+<!-- FICHE 3 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 3 sur 5</div>
+    <h2>Ajouter une structure, connecter un automate</h2>
+    <p>Chaque échantillon est rattaché à une structure sanitaire et à un laboratoire de test.</p>
+  </header>
+
+  <h3>Ajouter une structure</h3>
+  <p><span class="path">ADMIN &rsaquo; Structures sanitaires &rsaquo; Add Facility</span></p>
+
+  <table class="wrapfirst">
+    <tr><th>Champ</th><th>Ce qu'il faut saisir</th></tr>
+    <tr><td>Facility Name</td><td>Le nom que le personnel recherchera</td></tr>
+    <tr><td>Facility Code</td><td>Le code national unique</td></tr>
+    <tr><td>Facility Type</td><td>Structure sanitaire, ou laboratoire de test</td></tr>
+    <tr><td>Province/State, District/County</td><td>La localisation. Les deux doivent être renseignés</td></tr>
+    <tr><td>Test Type</td><td>Chaque type de test auquel la structure participe</td></tr>
+    <tr><td>Testing Point(s)</td><td>Les points de service, par exemple CDV ou PTME</td></tr>
+    <tr><td>Email(s), Report Email(s)</td><td>Les adresses pour l'envoi des résultats et la diffusion des rapports</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>C'est le Test Type qui fait apparaître une structure</strong>
+    Une structure non cochée pour un type de test est absente du formulaire de demande de ce
+    type de test. Une structure cochée pour un seul type de test reste absente du formulaire
+    de tous les autres. C'est la raison habituelle d'une structure « absente ».
+  </div>
+
+  <p>Pour un laboratoire de test, téléverser les signataires. Ils apparaissent sur les PDF de
+  résultats émis par ce laboratoire. Pour charger de nombreuses structures en une fois,
+  utiliser <span class="ui">Bulk Upload</span>.</p>
+
+  <h3>Ajouter un automate</h3>
+  <p><span class="path">ADMIN &rsaquo; Configuration du système &rsaquo; Instruments &rsaquo; Add Instrument</span></p>
+  <p>Saisir le nom, les types de test exécutés, et le fichier de configuration qui indique à
+  InteLIS comment lire ses fichiers de résultats. Sans ce fichier, les résultats exportés de
+  l'automate ne peuvent pas être importés.</p>
+
+  <h3>Connecter l'outil d'interface</h3>
+  <p><span class="path">ADMIN &rsaquo; Structures sanitaires &rsaquo; ouvrir le laboratoire &rsaquo; Interface Tool Connections</span></p>
+  <ol class="steps">
+    <li>Sélectionner <span class="ui">Generate Connection Code</span>.</li>
+    <li>Saisir les trois groupes du code, et l'URL InteLIS affichée au-dessus, dans l'outil d'interface sur l'ordinateur du laboratoire.</li>
+    <li>Vérifier que l'installation figure sous <span class="ui">Connected Installations</span> avec une <span class="ui">Last Seen</span> récente.</li>
+  </ol>
+  <table class="wrapfirst">
+    <tr><td>Code expiré</td><td>En générer un autre. Un seul code peut être en attente à la fois</td></tr>
+    <tr><td>Ordinateur réinstallé</td><td>Utiliser Reconnect / Reinstall</td></tr>
+    <tr><td>Ordinateur retiré ou perdu</td><td>Utiliser Revoke. Les autres installations ne sont pas affectées</td></tr>
+  </table>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire administration</span><span>Fiche 3 : structures et automates</span></footer>
+</section>
+
+<!-- FICHE 4 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 4 sur 5</div>
+    <h2>Maintenir les listes du formulaire de demande</h2>
+    <p>Chaque module tient ses propres listes. Elles ne sont pas partagées.</p>
+  </header>
+
+  <h3>Une section de configuration par module</h3>
+  <table class="wrapfirst">
+    <tr><th>Section de configuration</th><th>Listes qu'elle contient</th></tr>
+    <tr><td>Configuration CV</td><td>Type d'échantillon, Motifs de rejet, Motifs de test, Résultats, Régime ART, Raisons de l'échec des tests, Mesures correctives recommandées</td></tr>
+    <tr><td>Configuration EID</td><td>Type d'échantillon, Motifs de rejet, Motifs de test, Résultats</td></tr>
+    <tr><td>Tuberculose-Configuration</td><td>Type d'échantillon, Motifs de rejet, Motifs de test, Résultats</td></tr>
+    <tr><td>Configuration CD4</td><td>Type d'échantillon, Motifs de rejet, Motifs de test</td></tr>
+    <tr><td>Configuration Covid-19</td><td>Type d'échantillon, Motifs de rejet, Motifs de test, Résultats, Symptomes, Co-morbidités, Mesures correctives recommandées, Kits de test QC</td></tr>
+    <tr><td>Configuration Hépatite</td><td>Type d'échantillon, Motifs de rejet, Motifs de test, Résultats, Co-morbidités, Facteurs de risque</td></tr>
+    <tr><td>Autres tests de laboratoire Config</td><td>Types d'échantillons, Raisons des tests, Motifs de rejet des échantillons, Raisons de l'échec des tests, Symptomes, Unités de résultat du test, Méthodes de test, Catégories de tests, Configuration du type de test</td></tr>
+  </table>
+  <p>Seuls les modules actifs sur l'installation apparaissent dans le menu ADMIN.</p>
+
+  <div class="warn">
+    <strong>Ajouter dans un module ne l'ajoute pas aux autres</strong>
+    Un type d'échantillon ajouté sous la section de configuration d'un module n'apparaît pas
+    sur le formulaire de demande d'un autre module. L'ajouter sous chaque module concerné.
+  </div>
+
+  <h3>Ce que contrôle chaque liste</h3>
+  <table class="wrapfirst">
+    <tr><td>Type d'échantillon</td><td>Les types de prélèvement du formulaire</td></tr>
+    <tr><td>Motifs de rejet</td><td>Les motifs proposés lors du rejet d'un échantillon</td></tr>
+    <tr><td>Motifs de test</td><td>Les indications de test</td></tr>
+    <tr><td>Résultats</td><td>Les valeurs de résultat pour le rendu qualitatif</td></tr>
+    <tr><td>Raisons de l'échec des tests</td><td>Les motifs proposés en cas d'échec</td></tr>
+    <tr><td>Symptomes, Co-morbidités, Facteurs de risque</td><td>Les listes cliniques à cocher sur le formulaire</td></tr>
+    <tr><td>Régime ART</td><td>Les choix de régime sur le formulaire de charge virale</td></tr>
+    <tr><td>Mesures correctives recommandées</td><td>Les actions suggérées sur les résultats de charge virale élevée</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Retirer, jamais supprimer</strong>
+    Pour retirer une entrée, la modifier et la passer en inactif. Une entrée inactive disparaît
+    du formulaire mais reste lisible sur les fiches qui l'utilisent déjà. La supprimer rend ces
+    fiches illisibles. Après avoir ajouté une entrée, ouvrir le formulaire de demande et
+    vérifier qu'elle figure dans sa liste déroulante.
+  </div>
+
+  <p>Divisions géographiques, Partenaires, Sources de financement et Stockage en laboratoire ne
+  sont pas des listes de module. Ils se trouvent sous <span class="path">ADMIN &rsaquo;
+  Configuration du système</span> et servent tous les modules.</p>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire administration</span><span>Fiche 4 : les listes du formulaire</span></footer>
+</section>
+
+<!-- FICHE 5 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 5 sur 5</div>
+    <h2>Quelque chose manque ou ne va pas</h2>
+    <p>Les plaintes que reçoit réellement un administrateur, et leur cause.</p>
+  </header>
+
+  <h3>Commencer ici</h3>
+  <table class="wrapfirst">
+    <tr><th>Plainte</th><th>Cause</th></tr>
+    <tr><td>Une structure manque sur le formulaire de demande</td><td>La structure n'est pas cochée pour ce type de test. L'ouvrir sous Structures sanitaires et renseigner Test Type</td></tr>
+    <tr><td>Un district manque sur le formulaire de demande</td><td>Il a été ajouté sans province parente. Ouvrir Divisions géographiques et renseigner le parent</td></tr>
+    <tr><td>Une option manque dans une liste déroulante</td><td>Elle est inactive, ou elle a été ajoutée dans la section de configuration d'un autre module</td></tr>
+    <tr><td>Un utilisateur voit le mauvais menu</td><td>Les permissions du rôle, pas de l'utilisateur. Vérifier sous Contrôle d'accès &rsaquo; Les rôles</td></tr>
+    <tr><td>Un utilisateur voit les échantillons d'un autre laboratoire</td><td>Testing Lab n'est pas renseigné sur le compte</td></tr>
+    <tr><td>Les résultats n'arrivent plus de l'automate</td><td>Vérifier Last Seen sous Connected Installations, puis Surveillance &rsaquo; Activité des machines d'interface</td></tr>
+    <tr><td>Un résultat est contesté</td><td>Surveillance &rsaquo; Piste d'audit. Elle indique quel champ a changé, de quoi à quoi, par qui</td></tr>
+    <tr><td>Une structure se comporte mal dans les filtres des rapports</td><td>Activer Show Orphaned Facilities sur la page des structures. Sa province ou son district est absent ou mal rattaché</td></tr>
+  </table>
+
+  <h3>Où chercher</h3>
+  <table class="wrapfirst">
+    <tr><th>Page</th><th>Répond à</th></tr>
+    <tr><td>Journal d'activité de l'utilisateur</td><td>Quelles pages un utilisateur a ouvertes, et quand</td></tr>
+    <tr><td>Piste d'audit</td><td>Quel champ a changé, de quoi à quoi, par qui</td></tr>
+    <tr><td>Historique de l'API</td><td>Si cette installation a atteint le serveur national, et combien de fiches sont parties</td></tr>
+    <tr><td>Activité des machines d'interface</td><td>Si chaque automate connecté émet encore</td></tr>
+    <tr><td>Indicateurs de performance du laboratoire</td><td>Délai de rendu, volumes par mode de saisie, taux d'échec et de rejet</td></tr>
+    <tr><td>Log File Viewer</td><td>Les messages système, pour les demandes de support</td></tr>
+  </table>
+  <p>Les six se trouvent sous <span class="path">ADMIN &rsaquo; Surveillance</span>. État de la
+  synchronisation du laboratoire et Tableau de bord de l'API n'apparaissent que sur le serveur
+  national.</p>
+
+  <h3>Vérifier qu'une modification a fonctionné</h3>
+  <table class="wrapfirst">
+    <tr><td>Nouvel utilisateur</td><td>L'utilisateur se connecte et voit le menu attendu</td></tr>
+    <tr><td>Modification de rôle</td><td>Se connecter avec un utilisateur de ce rôle, ou utiliser le filtre Permission sur la page des rôles</td></tr>
+    <tr><td>Nouvelle structure</td><td>La structure apparaît sur le formulaire de demande de chaque type de test coché</td></tr>
+    <tr><td>Nouvel automate</td><td>Il apparaît dans Plateforme de test à la création d'un batch</td></tr>
+    <tr><td>Connexion de l'outil d'interface</td><td>L'installation affiche une Last Seen récente</td></tr>
+    <tr><td>Entrée de liste</td><td>L'entrée apparaît dans sa liste déroulante sur le formulaire</td></tr>
+  </table>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire administration</span><span>Fiche 5 : manquant ou incorrect</span></footer>
+</section>
+
+</body>
+</html>
