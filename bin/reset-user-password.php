@@ -2,7 +2,7 @@
 <?php
 
 // bin/reset-user-password.php
-// Reset a user's password (fzf picker when no login is given).
+// Reset a user's password (interactive picker when no login is given).
 //
 // Usage:
 //   php bin/reset-user-password.php
@@ -15,10 +15,10 @@ declare(strict_types=1);
 
 use App\Utilities\MiscUtility;
 use App\Utilities\DateUtility;
+use App\Utilities\CliPickerUtility;
 use App\Services\UsersService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use Symfony\Component\Process\Process;
 use Hackzilla\PasswordGenerator\Generator\ComputerPasswordGenerator;
 use Hackzilla\PasswordGenerator\Generator\RequirementPasswordGenerator;
 
@@ -45,11 +45,6 @@ if (isset($options['help'])) {
     echo "  --activate          Also set the user status to active" . PHP_EOL;
     echo "  --force-reset       Require the user to change the password at next login" . PHP_EOL;
     exit(CLI\OK);
-}
-
-function hasCmd(string $cmd): bool
-{
-    return trim((string) shell_exec('command -v ' . escapeshellarg($cmd) . ' 2>/dev/null || true')) !== '';
 }
 
 function readUserInput(string $prompt = ''): ?string
@@ -85,68 +80,6 @@ function generatePassword(): string
     return $generator->generatePassword();
 }
 
-/**
- * fzf-based picker; returns the selected user row or null.
- * Searches across login ID, name, role and status.
- */
-function pickUserViaFzf(array $users): ?array
-{
-    $inFile = tempnam(sys_get_temp_dir(), 'users_in_');
-    $outFile = tempnam(sys_get_temp_dir(), 'users_out_');
-
-    $lines = array_map(function ($u): string {
-        $clean = fn($v): string => trim((string) preg_replace('/\s+/', ' ', str_replace(["\r", "\n", "\t"], ' ', (string) $v)));
-        return implode("\t", [
-            $clean($u['login_id']),
-            $clean($u['user_name']),
-            $clean($u['role_name'] ?? ''),
-            $clean($u['status']),
-        ]);
-    }, $users);
-    file_put_contents($inFile, implode(PHP_EOL, $lines));
-
-    $cmd = sprintf(
-        'cat %s | fzf --ansi --height=80%% --reverse --border --cycle ' .
-        ' --prompt="Select user > " ' .
-        ' --header="Login ID | Name | Role | Status • Enter to select" ' .
-        ' --delimiter="\t" --nth=1,2,3,4 ' .
-        ' --preview \'printf "Login ID: %%s\nName:     %%s\nRole:     %%s\nStatus:   %%s\n" "$(echo {} | cut -f1)" "$(echo {} | cut -f2)" "$(echo {} | cut -f3)" "$(echo {} | cut -f4)"\' ' .
-        ' --preview-window=down,5,wrap ' .
-        ' > %s',
-        escapeshellarg($inFile),
-        escapeshellarg($outFile)
-    );
-
-    $process = Process::fromShellCommandline($cmd);
-    $process->setTimeout(null);
-    if (Process::isTtySupported()) {
-        try {
-            $process->setTty(true);
-        } catch (\RuntimeException) {
-            // Fallback when TTY cannot be enabled (e.g., running detached).
-        }
-    }
-    $process->run();
-
-    MiscUtility::deleteFile($inFile);
-
-    $out = @file_get_contents($outFile);
-    MiscUtility::deleteFile($outFile);
-
-    $out = $out === false ? '' : trim($out);
-    if ($out === '' || !str_contains($out, "\t")) {
-        return null; // user aborted or nothing selected
-    }
-
-    $loginId = trim(explode("\t", $out, 2)[0]);
-    foreach ($users as $u) {
-        if (trim((string) $u['login_id']) === $loginId) {
-            return $u;
-        }
-    }
-    return null;
-}
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -174,16 +107,17 @@ if (!empty($options['login'])) {
         exit(CLI\ERROR);
     }
 } else {
-    if (!hasCmd('fzf')) {
-        echo "Error: fzf not found. Install fzf or use --login <login_id>." . PHP_EOL;
-        exit(CLI\ERROR);
-    }
     $users = $db->rawQuery($userQuery);
     if (empty($users)) {
         echo "Error: No users found." . PHP_EOL;
         exit(CLI\ERROR);
     }
-    $user = pickUserViaFzf($users);
+    $user = CliPickerUtility::pick(
+        $users,
+        ['login_id', 'user_name', 'role_name', 'status'],
+        'Select user',
+        'Login ID | Name | Role | Status'
+    );
     if ($user === null) {
         echo "No user selected. Aborting." . PHP_EOL;
         exit(CLI\OK);
