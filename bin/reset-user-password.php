@@ -189,6 +189,7 @@ if ($loginId === '') {
 // ---- Determine the new password ----------------------------------------
 
 $generated = false;
+$methodPrompted = false;
 if (!empty($options['password'])) {
     $password = (string) $options['password'];
     if (!preg_match(PASSWORD_RULE, $password)) {
@@ -199,11 +200,15 @@ if (!empty($options['password'])) {
     $password = generatePassword();
     $generated = true;
 } else {
+    // The account is printed directly above this, so answering here IS the
+    // consent to rewrite its password. Cancelling lives in the same prompt
+    // rather than in a second "are you sure" that re-asks a settled question.
+    $methodPrompted = true;
     $useGenerated = null;
     while ($useGenerated === null) {
-        $answer = readUserInput("Generate a strong password automatically? [Y/n]: ");
+        $answer = readUserInput("Generate a strong password? [Y]es / [n]o, type one / [q]uit: ");
         if ($answer === null) {
-            echo "Aborting." . PHP_EOL;
+            echo "Aborting. No changes made." . PHP_EOL;
             exit(CLI\OK);
         }
         $answer = strtolower(trim($answer));
@@ -211,8 +216,11 @@ if (!empty($options['password'])) {
             $useGenerated = true;
         } elseif ($answer === 'n' || $answer === 'no') {
             $useGenerated = false;
+        } elseif ($answer === 'q' || $answer === 'quit') {
+            echo "Aborting. No changes made." . PHP_EOL;
+            exit(CLI\OK);
         } else {
-            echo "Please answer y to generate one, or n to type your own." . PHP_EOL;
+            echo "Please answer y, n or q." . PHP_EOL;
         }
     }
 
@@ -242,9 +250,11 @@ if (!empty($options['password'])) {
 
 // ---- Confirm and apply -------------------------------------------------
 
-// Fully-specified invocations stay non-interactive for scripting
-$interactive = empty($options['login']) || (empty($options['password']) && !isset($options['generate']));
-if ($interactive) {
+// Only one path reaches here without having asked anything: a user chosen from
+// the picker with --generate or --password already fixing the password. Every
+// other path has just taken an answer about this exact account, and re-asking
+// would default to N and throw away a password typed twice.
+if (!$methodPrompted && empty($options['login'])) {
     $answer = strtolower((string) (readUserInput("Reset password for '{$label}'? [y/N]: ") ?? ''));
     if ($answer !== 'y' && $answer !== 'yes') {
         echo "Aborting. No changes made." . PHP_EOL;
