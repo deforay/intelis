@@ -40,9 +40,11 @@ if (isset($options['help'])) {
     echo "  php bin/reset-user-password.php [--login <login_id>] [--password <pwd> | --generate] [--activate] [--force-reset]" . PHP_EOL . PHP_EOL;
     echo "Options:" . PHP_EOL;
     echo "  --login <login_id>  Skip the picker and target this user" . PHP_EOL;
+    echo "                      (the picker lists active users only)" . PHP_EOL;
     echo "  --password <pwd>    Set this password (otherwise prompted)" . PHP_EOL;
     echo "  --generate          Generate a random password and print it" . PHP_EOL;
-    echo "  --activate          Also set the user status to active" . PHP_EOL;
+    echo "  --activate          Also set the user status to active; required to" . PHP_EOL;
+    echo "                      target an inactive user with --login" . PHP_EOL;
     echo "  --force-reset       Require the user to change the password at next login" . PHP_EOL;
     exit(CLI\OK);
 }
@@ -88,35 +90,44 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 // ---- Pick the user -----------------------------------------------------
 
+// Login requires status = 'active', so an inactive account is not something a
+// password alone can fix. The picker leaves them out entirely; --login can
+// still reach one, but only together with --activate.
 $userQuery = "SELECT u.user_id, u.login_id, u.user_name, u.status, r.role_name
                 FROM user_details u
                 LEFT JOIN roles r ON r.role_id = u.role_id
+                WHERE u.status = 'active'
                 ORDER BY u.login_id";
 
 if (!empty($options['login'])) {
-    $loginId = trim((string) $options['login']);
+    $requestedLogin = trim((string) $options['login']);
     $user = $db->rawQueryOne(
         "SELECT u.user_id, u.login_id, u.user_name, u.status, r.role_name
             FROM user_details u
             LEFT JOIN roles r ON r.role_id = u.role_id
             WHERE u.login_id = ?",
-        [$loginId]
+        [$requestedLogin]
     );
     if (empty($user)) {
-        echo "Error: No user found with login ID '$loginId'." . PHP_EOL;
+        echo "Error: No user found with login ID '$requestedLogin'." . PHP_EOL;
+        exit(CLI\ERROR);
+    }
+    if ($user['status'] !== 'active' && !isset($options['activate'])) {
+        echo "Error: '$requestedLogin' is {$user['status']} and cannot sign in." . PHP_EOL;
+        echo "Add --activate to reset the password and activate the account." . PHP_EOL;
         exit(CLI\ERROR);
     }
 } else {
     $users = $db->rawQuery($userQuery);
     if (empty($users)) {
-        echo "Error: No users found." . PHP_EOL;
+        echo "Error: No active users found." . PHP_EOL;
         exit(CLI\ERROR);
     }
     $user = CliPickerUtility::pick(
         $users,
-        ['login_id', 'user_name', 'role_name', 'status'],
-        'Select user',
-        'Login ID | Name | Role | Status'
+        ['login_id', 'user_name', 'role_name'],
+        'Select active user',
+        'Login ID | Name | Role'
     );
     if ($user === null) {
         echo "No user selected. Aborting." . PHP_EOL;
@@ -124,12 +135,56 @@ if (!empty($options['login'])) {
     }
 }
 
+$loginId = trim((string) $user['login_id']);
+// Some rows (remote-order facilities, for instance) carry no login ID at all.
+// Naming such a user by it gives "Reset password for ''?", and the password
+// itself is inert because there is nothing to sign in with.
+$label = $loginId !== '' ? $loginId : trim((string) $user['user_name']);
+
 echo PHP_EOL;
-echo "  Login ID: {$user['login_id']}" . PHP_EOL;
+echo "  Login ID: " . ($loginId !== '' ? $loginId : '(none)') . PHP_EOL;
 echo "  Name:     {$user['user_name']}" . PHP_EOL;
 echo "  Role:     " . ($user['role_name'] ?? '-') . PHP_EOL;
 echo "  Status:   {$user['status']}" . PHP_EOL;
 echo PHP_EOL;
+
+$newLoginId = null;
+if ($loginId === '') {
+    echo "This user has no login ID, so a password on its own leaves them unable" . PHP_EOL;
+    echo "to sign in. Set one now, or press Enter to leave the account untouched." . PHP_EOL . PHP_EOL;
+
+    while (true) {
+        $entered = readUserInput("New login ID: ");
+        if ($entered === null || trim($entered) === '') {
+            echo "Aborting. No changes made." . PHP_EOL;
+            exit(CLI\OK);
+        }
+        $entered = strtolower(trim($entered));
+
+        // Same rule the add/edit user forms enforce
+        if (!preg_match('/^[a-z0-9_-]+$/', $entered)) {
+            echo "Login ID can only contain lowercase letters, numbers, hyphens (-) and underscores (_)." . PHP_EOL;
+            continue;
+        }
+
+        // login_id carries a UNIQUE index; catching the collision here beats
+        // letting the update fail after the password has already been decided.
+        $taken = $db->rawQueryOne(
+            "SELECT user_id FROM user_details WHERE login_id = ? AND user_id != ?",
+            [$entered, $user['user_id']]
+        );
+        if (!empty($taken)) {
+            echo "'$entered' is already taken by another user. Try another." . PHP_EOL;
+            continue;
+        }
+
+        $newLoginId = $entered;
+        $loginId = $entered;
+        $label = $entered;
+        break;
+    }
+    echo PHP_EOL;
+}
 
 // ---- Determine the new password ----------------------------------------
 
@@ -144,8 +199,24 @@ if (!empty($options['password'])) {
     $password = generatePassword();
     $generated = true;
 } else {
-    $choice = strtolower((string) (readUserInput("Generate a password or enter one? [G/e]: ") ?? 'g'));
-    if ($choice === 'e' || $choice === 'enter') {
+    $useGenerated = null;
+    while ($useGenerated === null) {
+        $answer = readUserInput("Generate a strong password automatically? [Y/n]: ");
+        if ($answer === null) {
+            echo "Aborting." . PHP_EOL;
+            exit(CLI\OK);
+        }
+        $answer = strtolower(trim($answer));
+        if ($answer === '' || $answer === 'y' || $answer === 'yes') {
+            $useGenerated = true;
+        } elseif ($answer === 'n' || $answer === 'no') {
+            $useGenerated = false;
+        } else {
+            echo "Please answer y to generate one, or n to type your own." . PHP_EOL;
+        }
+    }
+
+    if ($useGenerated === false) {
         do {
             $password = readHiddenInput("New password: ");
             if ($password === null || $password === '') {
@@ -174,7 +245,7 @@ if (!empty($options['password'])) {
 // Fully-specified invocations stay non-interactive for scripting
 $interactive = empty($options['login']) || (empty($options['password']) && !isset($options['generate']));
 if ($interactive) {
-    $answer = strtolower((string) (readUserInput("Reset password for '{$user['login_id']}'? [y/N]: ") ?? ''));
+    $answer = strtolower((string) (readUserInput("Reset password for '{$label}'? [y/N]: ") ?? ''));
     if ($answer !== 'y' && $answer !== 'yes') {
         echo "Aborting. No changes made." . PHP_EOL;
         exit(CLI\OK);
@@ -185,6 +256,9 @@ $data = [
     'password' => $usersService->passwordHash($password),
     'updated_datetime' => DateUtility::getCurrentDateTime(),
 ];
+if ($newLoginId !== null) {
+    $data['login_id'] = $newLoginId;
+}
 if (isset($options['activate'])) {
     $data['status'] = 'active';
 }
@@ -201,7 +275,7 @@ if ($db->getLastErrno() > 0) {
 }
 
 MiscUtility::consoleSuccess('Password reset successfully.');
-echo "  Login ID: {$user['login_id']}" . PHP_EOL;
+echo "  Login ID: " . ($loginId !== '' ? $loginId : '(none)') . ($newLoginId !== null ? '  (newly set)' : '') . PHP_EOL;
 echo "  Name:     {$user['user_name']}" . PHP_EOL;
 if (isset($options['activate'])) {
     echo "  Status:   active" . PHP_EOL;
