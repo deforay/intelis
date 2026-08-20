@@ -42,6 +42,16 @@ class LegacyRequestHandler implements RequestHandlerInterface
             return $this->createResponse($output);
         } catch (Throwable $e) {
             ob_end_clean(); // Clean the buffer in case of an error
+
+            // sanitizePath() has already logged a 404 against the path that was
+            // requested. Re-logging it here only adds a Slim stack trace, which
+            // describes the router rather than the missing file, and doubles the
+            // volume: one absent icon referenced from a stylesheet wrote two
+            // ERROR entries per page view on every instance in the fleet.
+            if ($e instanceof SystemException && (int) $e->getCode() === 404) {
+                throw $e;
+            }
+
             $fileContext = $filePath ?? $request->getUri()->getPath();
             LoggerUtility::logError("Error in $fileContext : " . $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
                 'request' => $request->getUri()->getPath(),
@@ -68,7 +78,15 @@ class LegacyRequestHandler implements RequestHandlerInterface
         $resolvedPath = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri);
         $resolvedPath = is_dir($resolvedPath) ? "$resolvedPath/index.php" : $resolvedPath;
         if (!$resolvedPath || !str_starts_with($resolvedPath, realpath(APPLICATION_PATH)) || !is_readable($resolvedPath)) {
-            LoggerUtility::logError("Invalid Request : $resolvedPath");
+            // Log what was asked for, not what it resolved to: realpath() returns
+            // false for anything that does not exist, which is the common case
+            // here, and interpolating false produced "Invalid Request : " with
+            // the one useful detail missing.
+            //
+            // Warning, not error. A request for a file that is not there is a
+            // 404, not a fault in the application, and at ERROR it competes for
+            // attention with the failures that are.
+            LoggerUtility::logWarning('Request for a path that does not exist: ' . $uri);
             throw new SystemException(_translate('Sorry! We could not find this page or resource'), 404);
         }
 

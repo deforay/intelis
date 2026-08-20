@@ -129,10 +129,13 @@ if ($showActions) {
     }
 }
 
-if (empty($resultSet)) {
-    echo '<tr><td colspan="' . $colspan . '" class="dataTables_empty">' . _translate("No data available") . '</td></tr>';
-} else {
-    foreach ($resultSet as $aRow) {
+// rawQueryGenerator() hands back a Generator, and empty() on an object is
+// always false, so the "no data" branch this used to guard was unreachable: a
+// query matching no labs rendered an empty table body rather than saying so.
+// Count what the loop actually yields instead.
+$rowsRendered = 0;
+foreach ($resultSet as $aRow) {
+    $rowsRendered++;
         // Grade how far we trust this lab for remote commands (see
         // LabCapabilityService::evaluate()):
         //   'full'  -> lab reported commandPlane=true recently: offer every
@@ -403,6 +406,9 @@ if (empty($resultSet)) {
         </tr>
         <?php
     }
+
+if ($rowsRendered === 0) {
+    echo '<tr><td colspan="' . $colspan . '" class="dataTables_empty">' . _translate("No data available") . '</td></tr>';
 }
 
     echo ob_get_clean();
