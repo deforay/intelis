@@ -11,11 +11,11 @@ use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
+use App\Utilities\CliPickerUtility;
 use App\Registries\ContainerRegistry;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Process\Process;
 
 
 $cliMode = PHP_SAPI === 'cli';
@@ -105,11 +105,6 @@ try {
         return filter_var($url, FILTER_VALIDATE_URL) !== false;
     }
 
-    function hasCmd(string $cmd): bool
-    {
-        return trim((string) shell_exec('command -v ' . escapeshellarg($cmd) . ' 2>/dev/null || true')) !== '';
-    }
-
     /**
      * Try https, then http for STS; verify via CommonService::validateStsUrl().
      */
@@ -146,34 +141,6 @@ try {
     }
 
     /**
-     * Attempt apt-get install of fzf if missing (only if root).
-     */
-    function maybeInstallFzf(): void
-    {
-        if (hasCmd('fzf')) {
-            return;
-        }
-        $isRoot = function_exists('posix_geteuid') ? (posix_geteuid() === 0) : false;
-        $hasApt = hasCmd('apt-get');
-
-        if (!$isRoot || !$hasApt) {
-            echo "❌ fzf not found. Please install:\n   sudo apt-get update && sudo apt-get install -y fzf\n";
-            exit(CLI\ERROR);
-        }
-        $ans = strtolower((string) (readUserInput("fzf not found. Install now? (y/N): ") ?? ''));
-        if ($ans !== 'y' && $ans !== 'yes') {
-            echo "❌ fzf required. Aborting." . PHP_EOL;
-            exit(CLI\ERROR);
-        }
-        system('apt-get update -y && apt-get install -y fzf', $rc);
-        if ($rc !== 0 || !hasCmd('fzf')) {
-            echo "❌ Failed to install fzf." . PHP_EOL;
-            exit(CLI\ERROR);
-        }
-        echo "✅ fzf installed." . PHP_EOL;
-    }
-
-    /**
      * Fetch active testing labs and sanitize names.
      * @return array<int,array{facility_id:int|string,facility_name:string}>
      */
@@ -193,63 +160,6 @@ try {
         unset($l);
         return $labs;
     }
-
-    /**
-     * fzf-based picker; returns selected lab or null.
-     * Filters by BOTH facility_id and facility_name.
-     * @param array<int,array{facility_id:int|string,facility_name:string}> $labs
-     */
-    function pickLabViaFzf(array $labs): ?array
-    {
-        $inFile = tempnam(sys_get_temp_dir(), 'labs_in_');
-        $outFile = tempnam(sys_get_temp_dir(), 'labs_out_');
-
-        // Keep two clear fields: "ID<TAB>Name"
-        $lines = array_map(fn($l): string => $l['facility_id'] . "\t" . $l['facility_name'], $labs);
-        file_put_contents($inFile, implode(PHP_EOL, $lines));
-
-        // Use output redirection to file since TTY mode prevents output capture
-        $cmd = sprintf(
-            'cat %s | fzf --ansi --height=80%% --reverse --border --cycle ' .
-            ' --prompt="Select lab > " ' .
-            ' --header="Type ID or name • ↑/↓ to move • Enter to select" ' .
-            ' --delimiter="\t" --nth=1,2 ' .        // <-- search by BOTH ID and Name
-            ' --preview \'printf "ID: %%s\nName: %%s\n" "$(echo {} | cut -f1)" "$(echo {} | cut -f2)"\' ' .
-            ' --preview-window=down,3,wrap ' .
-            ' > %s',
-            escapeshellarg($inFile),
-            escapeshellarg($outFile)
-        );
-
-        $process = Process::fromShellCommandline($cmd);
-        $process->setTimeout(null);
-        if (Process::isTtySupported()) {
-            try {
-                $process->setTty(true);
-            } catch (\RuntimeException) {
-                // Fallback when TTY cannot be enabled (e.g., running detached).
-            }
-        }
-        $process->run();
-
-        MiscUtility::deleteFile($inFile);
-
-        $out = @file_get_contents($outFile);
-        MiscUtility::deleteFile($outFile);
-
-        $out = $out === false ? '' : trim($out);
-        if ($out === '' || !str_contains($out, "\t")) {
-            return null; // user aborted or nothing selected
-        }
-
-        [$id, $name] = explode("\t", $out, 2);
-        return [
-            'facility_id' => trim($id),
-            'facility_name' => trim($name),
-        ];
-    }
-
-
 
     // ------------------------------------------------------------------------
 
@@ -453,7 +363,6 @@ try {
     // Lab Selection Logic
     if ($needLabSelection) {
         $io->section('Selecting Lab');
-        maybeInstallFzf();
 
         $labFetchBar = MiscUtility::spinnerStart(1, 'Fetching available labs…');
         $testingLabs = fetchActiveLabs($db);
@@ -476,7 +385,12 @@ try {
                 '• Press Enter to confirm',
             ]);
 
-            $selectedLab = pickLabViaFzf($testingLabs);
+            $selectedLab = CliPickerUtility::pick(
+                $testingLabs,
+                ['facility_id', 'facility_name'],
+                'Select lab',
+                'ID | Name'
+            );
             if ($selectedLab === null) {
                 $io->error('No lab selected. Setup cancelled.');
                 exit(CLI\ERROR);
