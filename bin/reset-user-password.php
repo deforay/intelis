@@ -19,6 +19,7 @@ use App\Utilities\CliPickerUtility;
 use App\Services\UsersService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Hackzilla\PasswordGenerator\Generator\ComputerPasswordGenerator;
 use Hackzilla\PasswordGenerator\Generator\RequirementPasswordGenerator;
 
@@ -285,14 +286,26 @@ if ($db->getLastErrno() > 0) {
 }
 
 MiscUtility::consoleSuccess('Password reset successfully.');
-echo "  Login ID: " . ($loginId !== '' ? $loginId : '(none)') . ($newLoginId !== null ? '  (newly set)' : '') . PHP_EOL;
-echo "  Name:     {$user['user_name']}" . PHP_EOL;
+
+// The name used to sit between the login ID and the password, formatted the
+// same way, so copying the middle line handed over a full name where a login
+// ID was wanted. A name is not a credential: it belongs in the sentence, and
+// only the two values actually typed at the login screen are laid out as a
+// block to copy from.
+$who = trim((string) $user['user_name']);
+echo ($who !== '' ? "$who signs in with:" : "This user signs in with:") . PHP_EOL . PHP_EOL;
+
+$console = MiscUtility::console();
+$console->writeln('    Login ID   <options=bold>' . OutputFormatter::escape($loginId !== '' ? $loginId : '(none)') . '</>'
+    . ($newLoginId !== null ? ' <comment>(newly set)</comment>' : ''));
+$console->writeln($generated
+    ? '    Password   <options=bold>' . OutputFormatter::escape($password) . '</>'
+    : '    Password   <comment>(the one entered above)</comment>');
+echo PHP_EOL;
+
 if (isset($options['activate'])) {
-    echo "  Status:   active" . PHP_EOL;
-}
-if ($generated) {
-    echo "  Password: $password" . PHP_EOL;
+    echo "Account status set to active." . PHP_EOL;
 }
 if (isset($options['force-reset'])) {
-    echo PHP_EOL . "The user must change this password at next login." . PHP_EOL;
+    echo "The user must change this password at next login." . PHP_EOL;
 }
