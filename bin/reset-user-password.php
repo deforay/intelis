@@ -8,7 +8,7 @@
 //   php bin/reset-user-password.php
 //   php bin/reset-user-password.php --login amit
 //   php bin/reset-user-password.php --login amit --generate
-//   php bin/reset-user-password.php --login amit --password 'S3cretPass'
+//   php bin/reset-user-password.php --login amit --password '<new-password>'
 //   php bin/reset-user-password.php --login amit --generate --activate --force-reset
 
 declare(strict_types=1);
