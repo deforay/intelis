@@ -59,7 +59,7 @@ try {
         // sample-level sync, with its own facility re-check) lives in ONE shared place
         // (GenericTestsService::saveMultiTestResults) so the add/edit request flow reuses
         // the exact same write path instead of a second copy.
-        $genericTestsService->saveMultiTestResults((int) ($_POST['requestSampleId'] ?? 0), $_POST, (int) ($_SESSION['userId'] ?? 0));
+        $genericTestsService->saveMultiTestResults((int) ($_POST['requestSampleId'] ?? 0), $_POST, (string) ($_SESSION['userId'] ?? ''));
 
         $general->activityLog(
             'update-lab-test-result',

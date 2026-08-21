@@ -523,7 +523,13 @@ final class UsersService
         return $_SESSION[$ipAddress]['failedAttempts'];
     }
 
-    public function savePreferences(int $userId, string $page, array $newPreferences): bool
+    /**
+     * $userId is a string: user_details.user_id is a VARCHAR(50) holding a UUID, and
+     * user_preferences.user_id is half of that table's primary key. Typed int, every
+     * id starting with a hex letter collapsed to 0 and those users would have shared
+     * one preferences row.
+     */
+    public function savePreferences(string $userId, string $page, array $newPreferences): bool
     {
         $pageId = MiscUtility::generateUUIDv5($page); // Generating UUIDv5 based on page name
 
@@ -556,7 +562,7 @@ final class UsersService
         return $this->db->upsert('user_preferences', $data, $updateColumns);
     }
 
-    public function getPreferencesJson(int $userId, string $pageId): ?string
+    public function getPreferencesJson(string $userId, string $pageId): ?string
     {
         $query = "SELECT preferences FROM user_preferences WHERE user_id = ? AND page_id = ?";
         $result = $this->db->rawQueryOne($query, [$userId, $pageId]);

@@ -329,7 +329,7 @@ try {
         $gtSampleId = !empty($_POST['requestSampleId']) ? (int) $_POST['requestSampleId'] : (int) $id;
         $gtCardLabs = array_filter((array) ($_POST['testResult']['labId'] ?? []));
         if (!empty($gtCardLabs)) {
-            $genericTestsService->saveMultiTestResults($gtSampleId, $_POST, (int) ($_SESSION['userId'] ?? 0));
+            $genericTestsService->saveMultiTestResults($gtSampleId, $_POST, (string) ($_SESSION['userId'] ?? ''));
         }
 
         $_SESSION['alertMsg'] = _translate("Lab test request added successfully");
