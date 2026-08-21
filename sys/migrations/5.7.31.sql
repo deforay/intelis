@@ -20,6 +20,27 @@ ALTER TABLE `s_vlsm_instance`
   ADD COLUMN `sc_api_token` VARCHAR(64) NULL DEFAULT NULL AFTER `sts_token`;
 
 
+-- The other half of the enroll call: the key that proves this installation is
+-- allowed to enroll at all. One key covers every laboratory in a Smart Connect
+-- deployment, which is why it belongs in global_config with
+-- remote_sync_needed = 'yes' -- it is set once centrally and carried down to the
+-- whole fleet by the metadata sync, so a rotation does not mean touching each
+-- installation by hand.
+--
+-- Ships empty. Until it is filled in, enrollment simply does not run.
+--
+-- Used once, on the POST to /api/v2/enroll, and never as a Bearer credential --
+-- that is what the per-lab token above is for.
+--
+-- IGNORE, not ON DUPLICATE KEY UPDATE: `name` is the primary key, and migrations
+-- replay -- on a fresh install the whole series runs from the 5.3.2 baseline. An
+-- upsert here would write the empty string back over a key that had already been
+-- set, silently un-enrolling the installation on its next upgrade. Seed the row
+-- if it is missing, leave it alone if it is not.
+INSERT IGNORE INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_datetime`, `status`)
+VALUES ('Smart Connect Enrollment Key', 'smart_connect_enrollment_key', '', 'general', 'yes', CURRENT_TIMESTAMP, 'active');
+
+
 UPDATE `system_config` SET `value` = '5.7.31' WHERE `system_config`.`name` = 'sc_version';
 
 -- END OF VERSION --
