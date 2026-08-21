@@ -98,6 +98,9 @@ try {
             'external_code' => $externalCode,
             'art_id' => $targetId,
             'alias_source' => 'admin',
+            // The whole session user id, uncast. mapped_by was an INT until 5.7.30 and
+            // silently kept only the leading digits of the UUID, so who mapped a code
+            // was discarded rather than recorded. Do not narrow it again.
             'mapped_by' => $_SESSION['userId'] ?? null,
             'updated_datetime' => DateUtility::getCurrentDateTime(),
         ];

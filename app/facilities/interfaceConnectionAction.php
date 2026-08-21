@@ -43,7 +43,7 @@ try {
         );
     }
     $facilityAccess->assertCanManage($facilityId);
-    $createdBy = 'user:' . (int) ($_SESSION['userId'] ?? 0);
+    $createdBy = 'user:' . (string) ($_SESSION['userId'] ?? '');
 
     switch ($action) {
         case 'generate-new':
