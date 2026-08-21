@@ -77,21 +77,6 @@ $systemConfig['system'] = [
 ];
 
 
-// Smart Connect enrollment key
-//
-// One key per Smart Connect deployment, shared by every laboratory in it. Read it
-// from the Smart Connect server with `php bin/generate-enrollment-key.php --show`.
-//
-// It is used once, on the POST to /api/v2/enroll, to prove this installation is
-// allowed to enroll. The per-lab token that comes back is what authenticates every
-// later request; this key is never sent as a Bearer credential.
-//
-// It stays in the file config on purpose. It is not stored in the database and not
-// in global_config, so an STS cannot push it out to the fleet and a database dump
-// does not carry it.
-$systemConfig['smart_connect']['enrollment_key'] = '';
-
-
 // Security settings
 $systemConfig['security'] = [
     // Enforce CSRF token validation on state-changing requests (POST/PUT/PATCH/DELETE).
