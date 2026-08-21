@@ -149,7 +149,7 @@ try {
         'command' => $source['command'],
         'params' => $source['params'],
         'status' => 'pending',
-        'requested_by' => (int) $_SESSION['userId'],
+        'requested_by' => (string) $_SESSION['userId'],
         'requested_at' => DateUtility::getCurrentDateTime(),
         'nonce' => $newNonce,
         'depends_on' => $source['depends_on'] ?: null,
