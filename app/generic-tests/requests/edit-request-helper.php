@@ -319,7 +319,7 @@ try {
      // or untouched section posts nothing and leaves results untouched.
      $gtCardLabs = array_filter((array) ($_POST['testResult']['labId'] ?? []));
      if (!empty($gtCardLabs) || !empty($_POST['deletedTestIds'])) {
-          $genericTestsService->saveMultiTestResults((int) $_POST['requestSampleId'], $_POST, (int) ($_SESSION['userId'] ?? 0));
+          $genericTestsService->saveMultiTestResults((int) $_POST['requestSampleId'], $_POST, (string) ($_SESSION['userId'] ?? ''));
      }
 
      $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';

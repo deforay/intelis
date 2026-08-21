@@ -302,8 +302,14 @@ final class GenericTestsService extends AbstractTestService
      * $post is the submitted payload (the $_POST array); it must carry
      * $post['testResult'] (the per-card arrays) plus the sample-level fields.
      * The caller owns the HTTP response (activity log, alert, redirect).
+     *
+     * $userId is a string because user_details.user_id is a VARCHAR(50) holding a
+     * UUID. It used to be typed int here, which kept only the leading run of digits
+     * -- a user id became 19, or 0 for any UUID starting with a hex letter -- and
+     * that truncated value was written to revised_by, last_modified_by and the
+     * change-history "usr" field, where it matches no user and reads as blank.
      */
-    public function saveMultiTestResults(int $sampleId, array $post, int $userId): void
+    public function saveMultiTestResults(int $sampleId, array $post, string $userId): void
     {
         $tableName = 'form_generic';
         $testTableName = 'generic_test_results';

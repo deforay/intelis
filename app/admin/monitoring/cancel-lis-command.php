@@ -76,7 +76,7 @@ try {
     $db->update('s_lis_remote_commands', [
         'status' => 'cancelled',
         'completed_at' => DateUtility::getCurrentDateTime(),
-        'last_error' => 'Cancelled by user ' . (int) $_SESSION['userId'],
+        'last_error' => 'Cancelled by user ' . (string) ($_SESSION['userId'] ?? ''),
     ]);
 
     echo json_encode([
