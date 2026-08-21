@@ -222,6 +222,14 @@ if (!empty($post['dateTo'])) {
 
 $whereClause = $conditions ? (' WHERE ' . implode(' AND ', $conditions)) : '';
 
+// Both joins compare like with like, and both are on a primary key, so each
+// command can only ever produce one row. That is worth stating because it was
+// not always true: requested_by used to be an INT while user_details.user_id is
+// a VARCHAR holding a UUID, and MySQL resolved the mismatch by coercing every
+// user_details row to a number. A single upgrade came back as one row per user
+// -- the same timestamps, the same status, a different name, and a Replay link
+// on each of them. Widened to VARCHAR(50) in 5.7.29. Do not narrow it again,
+// and do not compare these two columns across types.
 $query = "SELECT c.command_id, c.lab_id, c.command, c.params, c.status,
                  c.requested_by, c.requested_at, c.picked_at, c.completed_at,
                  c.not_before, c.expires_at, c.depends_on,
