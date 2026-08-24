@@ -674,6 +674,16 @@ div.dataTables_processing>div:last-child {
     opacity: 1;
 }
 
+/* The window the card works to, said once in the header rather than repeated in
+   every row: it qualifies the whole card, and a reader who does not know it
+   reads every count as "ever". */
+.needs-attention .na-scope {
+    margin-left: 8px;
+    color: #a08a5f;
+    font-weight: 400;
+    font-size: 12px;
+}
+
 .needs-attention .na-count {
     float: right;
     background-color: #c77c02;

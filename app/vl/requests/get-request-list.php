@@ -172,7 +172,8 @@ try {
 
      // The Needs attention card counts flagged records; this is how it shows
      // them. EXISTS rather than a join because one record can carry more than
-     // one flag and must still appear once.
+     // one flag and must still appear once. The card's age limit is applied here
+     // too, or "Show them" would answer a count of 4 with a listing of 400.
      if (!empty($_POST['dataIssue'])) {
           $issue = (string) $_POST['dataIssue'];
           if (array_key_exists($issue, DataIssuesService::predicates('vl'))) {
@@ -180,6 +181,7 @@ try {
                                       WHERE di.test_type = 'vl'
                                         AND di.record_id = vl.vl_sample_id
                                         AND di.issue_key = '" . $db->escape($issue) . "') ";
+               $sWhere[] = ' ' . DataIssuesService::recencyClause('vl') . ' ';
           }
      }
 

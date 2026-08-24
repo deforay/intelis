@@ -163,12 +163,6 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 				$issueCounts = $canFixData ? $dataIssues->getIssueCounts('vl') : [];
 
 				$issueCopy = [
-					'rejectedWithResult' => [
-						'icon' => 'fa-ban',
-						'title' => _translate('marked rejected, but carrying a result'),
-						'cost' => _translate('A sample is rejected before it is tested, so it should have no result. These are counted as a rejection by some reports and as a result by others.'),
-						'fix' => _translate('Open each and decide which is true: the rejection or the result.'),
-					],
 					'lostWithResult' => [
 						'icon' => 'fa-hourglass-end',
 						'title' => _translate('marked lost or missing, but carrying a result'),
@@ -204,6 +198,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 								aria-label="<?= _htmlTranslate('Hide until this changes'); ?>">&times;</button>
 							<em class="fa-solid fa-circle-exclamation" aria-hidden="true"></em>
 							<?= _htmlTranslate('Needs attention'); ?>
+							<span class="na-scope"><?= htmlspecialchars(sprintf(_translate('samples from the last %d days'), DataIssuesService::recentDays()), ENT_QUOTES); ?></span>
 							<span class="na-count"><?= count($issueCounts); ?></span>
 						</div>
 						<?php foreach ($issueCopy as $issueKey => $copy) {
