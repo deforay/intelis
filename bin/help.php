@@ -88,10 +88,7 @@ $CATEGORY_MAP = [
     'httpd-graceful.php' => 'Ops',
 
     // Subsystems (hidden by default).
-    'smart-connect/metadata.php' => 'Subsystems',
-    'smart-connect/vl.php' => 'Subsystems',
-    'smart-connect/eid.php' => 'Subsystems',
-    'smart-connect/covid19.php' => 'Subsystems',
+    'smart-connect/sync.php' => 'Subsystems',
     'referrals.php' => 'Subsystems',
     'external/results.php' => 'Subsystems',
 
