@@ -115,7 +115,7 @@ final class ApiService
         try {
             $headers = [
                 'X-Request-ID' => MiscUtility::generateULID(),
-                'X-Timestamp' => time()
+                'X-Timestamp' => (string) time()
             ];
             $headers = $this->headers === [] ? $headers : array_merge($headers, $this->headers);
             if ($this->bearerToken !== null && $this->bearerToken !== '' && $this->bearerToken !== '0') {
@@ -141,7 +141,7 @@ final class ApiService
         $options = [
             RequestOptions::HEADERS => [
                 'X-Request-ID' => MiscUtility::generateULID(),
-                'X-Timestamp' => time(),
+                'X-Timestamp' => (string) time(),
                 'Content-Type' => 'application/json; charset=utf-8',
             ],
         ];
@@ -261,7 +261,7 @@ final class ApiService
             }
             // Prepare headers
             $headers = [
-                'X-Timestamp' => time(),
+                'X-Timestamp' => (string) time(),
                 'X-Request-ID' => MiscUtility::generateULID()
             ];
 
@@ -555,5 +555,31 @@ final class ApiService
         } else {
             return $headerValues;
         }
+    }
+
+   public function getHealth($url, bool $returnWithStatusCode = false): array|string|null
+    {
+        $returnPayload = null;
+        try {
+            $response = $this->client->get($url);
+            $responseBody = $response->getBody()->getContents();
+            $returnPayload = $returnWithStatusCode
+                ? ['httpStatusCode' => $response->getStatusCode(), 'body' => $responseBody]
+                : $responseBody;
+        } catch (RequestException $e) {
+            $responseBody = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null;
+            $this->logError($e, "Unable to GET $url. Server responded with: " . ($responseBody ?? 'No response body'));
+
+            $returnPayload = $returnWithStatusCode
+                ? [
+                    'httpStatusCode' => $e->getResponse() instanceof ResponseInterface ? $e->getResponse()->getStatusCode() : 500,
+                    'body' => $responseBody,
+                ]
+                : $responseBody;
+        } catch (Throwable $e) {
+            $this->logError($e, "Unable to GET $url");
+            $returnPayload = null;
+        }
+        return $returnPayload;
     }
 }
