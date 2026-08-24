@@ -41,6 +41,14 @@ INSERT IGNORE INTO `global_config` (`display_name`, `name`, `value`, `category`,
 VALUES ('Smart Connect Enrollment Key', 'smart_connect_enrollment_key', '', 'general', 'yes', CURRENT_TIMESTAMP, 'active');
 
 
+-- The "Needs attention" card no longer asks about a rejected sample that carries
+-- a result. Rejection is the lab's own decision and it stands, so the leftover
+-- result is stale data rather than a ruling anyone owes -- and both write paths
+-- that produced these are closed, so nothing new arrives. The flags already
+-- raised would otherwise sit in the table until each row happens to be scanned
+-- again, so they go now.
+DELETE FROM `s_data_issues` WHERE `issue_key` = 'rejectedWithResult';
+
 UPDATE `system_config` SET `value` = '5.7.31' WHERE `system_config`.`name` = 'sc_version';
 
 -- END OF VERSION --
