@@ -151,7 +151,7 @@ final class ApiService
         }
 
         // Add Authorization header if a bearer token is provided
-        if ($this->bearerToken !== null && $this->bearerToken !== '' && $this->bearerToken !== '0' && $this->bearerToken !== '') {
+        if ($this->bearerToken !== null && $this->bearerToken !== '' && $this->bearerToken !== '0') {
             $options[RequestOptions::HEADERS]['Authorization'] = "Bearer $this->bearerToken";
         }
 
@@ -223,10 +223,24 @@ final class ApiService
     }
 
 
-    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = true): ?string
+    /**
+     * Upload a file as multipart/form-data.
+     *
+     * With $returnWithStatusCode the return is
+     * ['httpStatusCode' => int|null, 'body' => string|null] instead of the bare
+     * body, matching post() and getHealth(). Callers that need to tell a 401
+     * apart from a 413 apart from a success have no other way to do it: a 4xx
+     * arrives here as a Guzzle exception, so the status has to be carried out
+     * of the catch block rather than read off a response object.
+     *
+     * The status is null when the request never produced an HTTP response at
+     * all (DNS failure, connection refused, timeout).
+     */
+    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = true, $returnWithStatusCode = false): array|string|null
     {
         // Prepare multipart data
         $multipartData = [];
+        $statusCode = null;
 
         try {
 
@@ -276,26 +290,39 @@ final class ApiService
             }
 
             // Add Authorization header if a bearer token is provided
-            if ($this->bearerToken !== null && $this->bearerToken !== '' && $this->bearerToken !== '0' && $this->bearerToken !== '') {
+            if ($this->bearerToken !== null && $this->bearerToken !== '' && $this->bearerToken !== '0') {
                 $options[RequestOptions::HEADERS]['Authorization'] = "Bearer $this->bearerToken";
             }
 
             // Send the request
             $response = $this->client->post($url, $options);
 
+            $statusCode = $response->getStatusCode();
             $apiResponse = $response->getBody()->getContents();
         } catch (RequestException $e) {
             // Extract the response body from the exception, if available
             $responseBody = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null;
-            $errorCode = $e->getResponse() instanceof ResponseInterface ? $e->getResponse()->getStatusCode() : 500;
+            // Only a real response carries a real status. Without one this was a
+            // transport failure, and reporting it as 500 would let a caller
+            // treat "never left the machine" as "the server said no".
+            $statusCode = $e->getResponse() instanceof ResponseInterface ? $e->getResponse()->getStatusCode() : null;
             // Log the error along with the response body
-            $this->logError($e, "Unable to post to $url. Server responded with $errorCode : " . ($responseBody ?? 'No response body'));
+            $this->logError($e, "Unable to post to $url. Server responded with " . ($statusCode ?? 'no response') . " : " . ($responseBody ?? 'No response body'));
 
             $apiResponse = $responseBody ?? null;
         } catch (Throwable $e) {
             $this->logError($e, "Unable to post to $url");
+            $statusCode = null;
             $apiResponse = null; // Error occurred while making the request
         }
+
+        if ($returnWithStatusCode) {
+            return [
+                'httpStatusCode' => $statusCode,
+                'body' => $apiResponse,
+            ];
+        }
+
         return $apiResponse;
     }
 
