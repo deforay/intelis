@@ -47,6 +47,15 @@ final class AuditTriggersCommand extends Command
     private const MODE_INSTALL  = 'install';
     private const MODE_DROP_ALL = 'drop-all';
 
+    /** How long a trigger DDL waits for its metadata lock before giving up. */
+    private const LOCK_WAIT_SECONDS = 30;
+
+    /** MySQL: "Lock wait timeout exceeded; try restarting transaction". */
+    private const ER_LOCK_WAIT_TIMEOUT = 1205;
+
+    /** How many times a table blocked on a lock is retried before it fails. */
+    private const LOCK_RETRIES = 3;
+
     #[\Override]
     protected function configure(): void
     {
@@ -160,6 +169,20 @@ final class AuditTriggersCommand extends Command
         $successful = [];
         $failed     = [];
 
+        // Bound the metadata-lock wait. MySQL's default lock_wait_timeout is
+        // 31536000 seconds -- a year -- so a DDL that cannot get its lock does
+        // not fail, it hangs, printing nothing, and every later query against
+        // the same table queues behind it because locks are granted in request
+        // order. That turned one slow background query on a busy instance into
+        // an apparently frozen `composer post-update` and a form table no one
+        // could read. Failing after 30 seconds says which table is blocked and
+        // leaves the instance running.
+        try {
+            $mysqli->query('SET SESSION lock_wait_timeout = ' . self::LOCK_WAIT_SECONDS);
+        } catch (\mysqli_sql_exception $e) {
+            $output->writeln('<comment>Could not set lock_wait_timeout (' . $e->getMessage() . '); continuing with the server default.</comment>');
+        }
+
         foreach ($forms as $f) {
             // Install always drops the legacy `_data__` triggers first, so a bare
             // `--apply install` self-heals a table whose legacy triggers were
@@ -169,12 +192,51 @@ final class AuditTriggersCommand extends Command
                 ? [...$svc->buildDropLegacyTriggers($f['table']), ...$svc->buildTriggersFor($f['table'], $f['pk'])]
                 : [...$svc->buildDropLegacyTriggers($f['table']), ...$svc->buildDropTriggersFor($f['table'])];
 
+            // Named before the statement runs, not after. This is the only
+            // thing an operator watching a stalled upgrade has to go on, and a
+            // summary printed at the end is no use while it is still blocked.
+            if ($output->isVerbose()) {
+                $output->writeln("  {$f['table']}...");
+            }
+
+            // Retried, because a lock held by a query that is merely slow should
+            // not abort an upgrade -- only one held by something genuinely stuck
+            // should. Replaying a table from the top is safe: every statement is
+            // a DROP ... IF EXISTS, or a CREATE preceded by its own drop.
             $err = null;
-            foreach ($statements as $sql) {
-                if (!$mysqli->query($sql)) {
-                    $err = $mysqli->error;
+            for ($attempt = 1; $attempt <= self::LOCK_RETRIES; $attempt++) {
+                // mysqli reports errors by exception here (MYSQLI_REPORT_ERROR |
+                // MYSQLI_REPORT_STRICT, the default since PHP 8.1), so a failed
+                // DDL never comes back as a false return -- checking one would
+                // let the exception escape and abort post-update outright.
+                $err   = null;
+                $errno = 0;
+                try {
+                    foreach ($statements as $sql) {
+                        $mysqli->query($sql);
+                    }
+                } catch (\mysqli_sql_exception $e) {
+                    $err   = $e->getMessage();
+                    $errno = $e->getCode();
+                }
+
+                if ($err === null || $errno !== self::ER_LOCK_WAIT_TIMEOUT) {
                     break;
                 }
+
+                if ($attempt < self::LOCK_RETRIES) {
+                    $output->writeln(
+                        "<comment>{$f['table']}: still waiting on a lock after "
+                        . self::LOCK_WAIT_SECONDS . "s (attempt {$attempt} of "
+                        . self::LOCK_RETRIES . "); retrying.</comment>"
+                    );
+                    continue;
+                }
+
+                $err .= ' -- another connection has held a lock on ' . $f['table']
+                    . ' for over ' . (self::LOCK_WAIT_SECONDS * self::LOCK_RETRIES)
+                    . 's. Find the long-running query or open transaction'
+                    . ' (SHOW FULL PROCESSLIST) and re-run this once it has finished.';
             }
 
             if ($err !== null) {
@@ -193,11 +255,12 @@ final class AuditTriggersCommand extends Command
 
         if ($sweepOrphans) {
             foreach ($svc->findLegacyTriggers() as $legacy) {
-                if ($mysqli->query($svc->buildDropLegacyTriggerByName($legacy['trigger']))) {
+                try {
+                    $mysqli->query($svc->buildDropLegacyTriggerByName($legacy['trigger']));
                     $orphansDropped++;
-                    continue;
+                } catch (\mysqli_sql_exception $e) {
+                    $failed[] = ['table' => $legacy['trigger'], 'error' => $e->getMessage()];
                 }
-                $failed[] = ['table' => $legacy['trigger'], 'error' => $mysqli->error];
             }
         }
 
