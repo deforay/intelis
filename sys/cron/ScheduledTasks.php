@@ -164,7 +164,7 @@ $schedule->run(PHP_BINARY . " " . BIN_PATH . "/prune-remote-commands.php")
 // Smart-Connect DASHBOARD JOBS START
 
 if (!empty($smartConnectURL)) {
-    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/metadata.php")
+    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/sync.php metadata")
         ->cron('*/20 * * * *')
         ->timezone($timezone)
         ->preventOverlapping()
@@ -173,7 +173,7 @@ if (!empty($smartConnectURL)) {
 
 
 if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/vl.php")
+    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/sync.php vl")
         ->cron('*/25 * * * *')
         ->timezone($timezone)
         ->preventOverlapping()
@@ -181,14 +181,14 @@ if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['vl']) && SYSTEM
 }
 
 if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/eid.php")
+    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/sync.php eid")
         ->cron('*/30 * * * *')
         ->timezone($timezone)
         ->preventOverlapping()
         ->description('Syncing EID data from local database to Dashboard');
 }
 if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/covid19.php")
+    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/sync.php covid19")
         ->cron('*/35 * * * *')
         ->timezone($timezone)
         ->preventOverlapping()
