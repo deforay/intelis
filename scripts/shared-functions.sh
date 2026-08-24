@@ -1594,6 +1594,40 @@ remove_all_monitoring() {
 
 
 # Setup Intelis cron job (classic crontab, idempotent)
+# pause_cron / resume_cron — hold scheduled tasks across a window where the
+# database is being altered.
+#
+# A marker file rather than a crontab edit, deliberately. Editing the crontab
+# means an upgrade that dies at the wrong moment leaves the instance with its
+# scheduled tasks switched off and nothing to say so; a marker cron.sh checks
+# is inert on its own and expires after 30 minutes regardless of what happens
+# to the process that wrote it.
+#
+# This only stops NEW runs from starting. A task already running keeps its
+# transactions, which is fine: the point is to stop fresh ones piling in for
+# the couple of minutes the DDL needs.
+pause_cron() {
+    local lis_path="$1"
+    [ -n "$lis_path" ] || return 0
+
+    mkdir -p "${lis_path}/var" 2>/dev/null || true
+    if touch "${lis_path}/var/cron-paused" 2>/dev/null; then
+        chown www-data:www-data "${lis_path}/var/cron-paused" 2>/dev/null || true
+        print info "Scheduled tasks paused for the database step."
+    else
+        # Not fatal. The window is short and the DDL now fails fast rather than
+        # hanging, so an unpaused cron costs a retry at worst.
+        print warning "Could not pause scheduled tasks; continuing."
+    fi
+}
+
+resume_cron() {
+    local lis_path="$1"
+    [ -n "$lis_path" ] || return 0
+
+    rm -f "${lis_path}/var/cron-paused" 2>/dev/null || true
+}
+
 setup_intelis_cron() {
     local lis_path="$1"
     local cron_job="* * * * * cd ${lis_path} && ./cron.sh"

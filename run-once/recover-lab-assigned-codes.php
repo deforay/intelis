@@ -15,8 +15,9 @@ declare(strict_types=1);
  * which is why manually registered samples kept theirs.
  *
  * Recovery runs in two passes, cheapest first:
- *   1. audit_log  -- set-based UPDATE ... JOIN per table+column. Fast, covers
- *      everything not yet drained to the archive.
+ *   1. audit_log  -- UPDATE ... JOIN per table+column, in batches of primary
+ *      keys so no single statement holds a long metadata lock on the form
+ *      table. Covers everything not yet drained to the archive.
  *   2. archives   -- var/audit-trail/{testKey}/{unique_id}.csv.{zst|gz|zip},
  *      read one sample at a time via AuditArchiveService. Bounded per run and
  *      resumable through a cursor, so a large backlog spreads across upgrades
@@ -29,9 +30,8 @@ declare(strict_types=1);
  *     manually registered sample is left alone.
  *   - The restore is itself an audited UPDATE, so it can be traced or undone.
  *
- * Gated on the field actually being in use (lab assigned code is Cameroon-only),
- * so on every other install this is two cheap queries per module and then a
- * permanent no-op.
+ * Gated on the instance's country (lab assigned code is Cameroon-only), so on
+ * every other install this is one indexed lookup and then a permanent no-op.
  */
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -53,6 +53,16 @@ $cliMode = php_sapi_name() === 'cli';
 
 /** How many samples the archive pass reads per run, per table. */
 const ARCHIVE_BATCH_SIZE = 500;
+
+/**
+ * How many samples the audit_log pass repairs per statement.
+ *
+ * Bounds how long any one statement holds a metadata lock on the form table.
+ * Every DDL on that table -- the audit-trigger drop in `composer post-update`
+ * above all -- has to wait for that lock, and once the DDL is queued MySQL
+ * makes every later read of the table queue behind it too.
+ */
+const AUDIT_BATCH_SIZE = 500;
 
 const DONE_FLAG = 'lab_code_recovery_done';
 const CURSOR_FLAG = 'lab_code_recovery_cursor';
@@ -128,22 +138,18 @@ if ($targets === []) {
     exit(0);
 }
 
-// ----- 3. Gate on the field being in use on this instance -----
-// Lab assigned code is Cameroon-only. Checking the live table alone is not
-// enough (an instance could in principle have had every value wiped), so the
-// audit history counts as "in use" too.
-$inUse = false;
-foreach ($targets as $table => $cfg) {
-    foreach ($cfg['columns'] as $column) {
-        if (columnInUse($db, $table, $column)) {
-            $inUse = true;
-            break 2;
-        }
-    }
-}
-
-if (!$inUse) {
-    $log('Lab assigned code is not used on this instance — marking complete.');
+// ----- 3. Gate on the instance's country -----
+// The bug this repairs only ever touched lab assigned code, which is a
+// Cameroon-only field, so every other instance has nothing to recover and is
+// marked complete without reading a single row of sample or audit data.
+//
+// The country is the gate rather than "is the column populated anywhere",
+// which is what this used to ask. Answering that meant JSON_EXTRACT over every
+// row of audit_log -- no index can serve those predicates -- run on every
+// instance purely to conclude that there was nothing to do. The country lookup
+// reads two indexed rows.
+if (!isCameroonInstance($db)) {
+    $log('Lab assigned code is a Cameroon-only field and this is not a Cameroon instance — marking complete.');
     markDone($db, $log);
     exit(0);
 }
@@ -219,9 +225,21 @@ exit(0);
 
 /**
  * Restore a column from audit_log: for each sample, the highest revision that
- * still carried a value wins. Set-based, so this is one statement per column.
- */
-/**
+ * still carried a value wins.
+ *
+ * Batched, deliberately. The set-based version of this ran one statement per
+ * column across the whole of audit_log, which meant a window function over
+ * every row of a multi-million-row table while holding a metadata lock on the
+ * form table. On a busy STS that lock lasted minutes, and any DDL queued behind
+ * it -- `composer post-update`'s audit-trigger drop, in the case that surfaced
+ * this -- took every subsequent read of the form table down with it, because
+ * MySQL grants metadata locks in request order.
+ *
+ * Working in batches of primary keys keeps each statement short and each lock
+ * brief. Candidates are read from the form table alone (indexed, bounded, no
+ * audit_log involvement), then audit_log is probed for just those record ids,
+ * which the `u_rec_rev` (form_table, record_id, revision) unique key covers.
+ *
  * @param list<string> $originColumns
  */
 function recoverFromAuditLog(
@@ -236,57 +254,82 @@ function recoverFromAuditLog(
     $path = '$.' . $column;
     $originWhere = originCondition($originColumns);
 
-    // Counted before the write rather than read back afterwards: rawQuery()
-    // runs the UPDATE through a prepared statement whose result binding zeroes
-    // MysqliDb::$count, so there is no affected-row count to read. This figure
-    // only feeds the log line.
-    $pending = $db->rawQueryOne(
-        "SELECT COUNT(*) AS pending
-         FROM `$table` f
-         JOIN (
-             SELECT record_id FROM (
-                 SELECT a.record_id,
-                        ROW_NUMBER() OVER (PARTITION BY a.record_id ORDER BY a.revision DESC) AS rn
-                 FROM   audit_log a
-                 WHERE  a.form_table = ?
-                   AND  JSON_EXTRACT(a.row_data, ?) IS NOT NULL
-                   AND  JSON_TYPE(JSON_EXTRACT(a.row_data, ?)) <> 'NULL'
-                   AND  TRIM(JSON_UNQUOTE(JSON_EXTRACT(a.row_data, ?))) <> ''
-             ) ranked
-             WHERE ranked.rn = 1
-         ) recovered ON recovered.record_id = f.`$primaryKey`
-         WHERE (f.`$column` IS NULL OR TRIM(f.`$column`) = '')
-           AND ($originWhere)",
-        [$table, $path, $path, $path]
-    );
+    $recovered = 0;
+    $cursor = 0;
 
-    $count = (int) ($pending['pending'] ?? 0);
-    if ($count === 0) {
-        return 0;
+    while (true) {
+        // Candidate ids only. A row this pass cannot fill (no surviving audit
+        // revision) stays empty and would be selected forever without the
+        // cursor, so paging is by primary key rather than by repeated LIMIT.
+        $candidates = $db->rawQuery(
+            "SELECT f.`$primaryKey` AS pk
+             FROM   `$table` f
+             WHERE  f.`$primaryKey` > ?
+               AND  (f.`$column` IS NULL OR TRIM(f.`$column`) = '')
+               AND  ($originWhere)
+             ORDER BY f.`$primaryKey` ASC
+             LIMIT " . AUDIT_BATCH_SIZE,
+            [$cursor]
+        );
+
+        if (empty($candidates)) {
+            break;
+        }
+
+        $ids = array_map(static fn(array $row): int => (int) $row['pk'], $candidates);
+        $cursor = (int) end($ids);
+
+        // record_id is VARCHAR, so the ids are bound as strings. Binding them as
+        // integers makes MySQL convert the column instead of the literal, and a
+        // converted column cannot use `u_rec_rev` -- turning the probe this
+        // batching exists to avoid back into a full scan.
+        $auditIds = array_map(strval(...), $ids);
+        $auditPlaceholders = implode(',', array_fill(0, count($auditIds), '?'));
+        $pkPlaceholders = implode(',', array_fill(0, count($ids), '?'));
+
+        $db->rawQuery(
+            "UPDATE `$table` f
+             JOIN (
+                 SELECT record_id, val FROM (
+                     SELECT a.record_id,
+                            JSON_UNQUOTE(JSON_EXTRACT(a.row_data, ?)) AS val,
+                            ROW_NUMBER() OVER (PARTITION BY a.record_id ORDER BY a.revision DESC) AS rn
+                     FROM   audit_log a
+                     WHERE  a.form_table = ?
+                       AND  a.record_id IN ($auditPlaceholders)
+                       AND  JSON_EXTRACT(a.row_data, ?) IS NOT NULL
+                       AND  JSON_TYPE(JSON_EXTRACT(a.row_data, ?)) <> 'NULL'
+                       AND  TRIM(JSON_UNQUOTE(JSON_EXTRACT(a.row_data, ?))) <> ''
+                 ) ranked
+                 WHERE ranked.rn = 1
+             ) recovered ON recovered.record_id = f.`$primaryKey`
+             SET   f.`$column` = recovered.val
+             WHERE f.`$primaryKey` IN ($pkPlaceholders)
+               AND (f.`$column` IS NULL OR TRIM(f.`$column`) = '')
+               AND ($originWhere)",
+            [$path, $table, ...$auditIds, $path, $path, $path, ...$ids]
+        );
+
+        // Read back rather than trusting an affected-row count: rawQuery() runs
+        // the UPDATE through a prepared statement whose result binding zeroes
+        // MysqliDb::$count. Every id in the batch was empty a statement ago, so
+        // anything non-empty now was filled by the UPDATE above. Bounded to the
+        // batch, and by primary key, so it is a cheap lookup either way.
+        $filled = $db->rawQueryOne(
+            "SELECT COUNT(*) AS filled
+             FROM   `$table`
+             WHERE  `$primaryKey` IN ($pkPlaceholders)
+               AND  `$column` IS NOT NULL AND TRIM(`$column`) <> ''",
+            $ids
+        );
+        $recovered += (int) ($filled['filled'] ?? 0);
+
+        if (count($ids) < AUDIT_BATCH_SIZE) {
+            break;
+        }
     }
 
-    $db->rawQuery(
-        "UPDATE `$table` f
-         JOIN (
-             SELECT record_id, val FROM (
-                 SELECT a.record_id,
-                        JSON_UNQUOTE(JSON_EXTRACT(a.row_data, ?)) AS val,
-                        ROW_NUMBER() OVER (PARTITION BY a.record_id ORDER BY a.revision DESC) AS rn
-                 FROM   audit_log a
-                 WHERE  a.form_table = ?
-                   AND  JSON_EXTRACT(a.row_data, ?) IS NOT NULL
-                   AND  JSON_TYPE(JSON_EXTRACT(a.row_data, ?)) <> 'NULL'
-                   AND  TRIM(JSON_UNQUOTE(JSON_EXTRACT(a.row_data, ?))) <> ''
-             ) ranked
-             WHERE ranked.rn = 1
-         ) recovered ON recovered.record_id = f.`$primaryKey`
-         SET   f.`$column` = recovered.val
-         WHERE (f.`$column` IS NULL OR TRIM(f.`$column`) = '')
-           AND ($originWhere)",
-        [$path, $table, $path, $path, $path]
-    );
-
-    return $count;
+    return $recovered;
 }
 
 /**
@@ -431,29 +474,29 @@ function tableColumns(DatabaseService $db, string $table): array
     return array_column($rows, 'COLUMN_NAME');
 }
 
-/** Is this column populated anywhere -- live table first, then audit history? */
-function columnInUse(DatabaseService $db, string $table, string $column): bool
+/**
+ * Is this a Cameroon instance?
+ *
+ * Reads the configured country form (global_config.vl_form ->
+ * s_available_country_forms.short_name), the same pairing the rest of the
+ * application uses to decide which country's request forms to render.
+ *
+ * Fails closed: an instance whose country cannot be determined is not treated
+ * as Cameroon, so the recovery is skipped and marked complete rather than
+ * running a repair no other country needs.
+ */
+function isCameroonInstance(DatabaseService $db): bool
 {
     try {
-        $live = $db->rawQueryOne(
-            "SELECT 1 AS found FROM `$table`
-             WHERE `$column` IS NOT NULL AND TRIM(`$column`) <> '' LIMIT 1"
-        );
-        if (!empty($live)) {
-            return true;
-        }
-
-        $audited = $db->rawQueryOne(
-            "SELECT 1 AS found FROM audit_log
-             WHERE form_table = ?
-               AND JSON_EXTRACT(row_data, ?) IS NOT NULL
-               AND JSON_TYPE(JSON_EXTRACT(row_data, ?)) <> 'NULL'
-               AND TRIM(JSON_UNQUOTE(JSON_EXTRACT(row_data, ?))) <> ''
-             LIMIT 1",
-            [$table, '$.' . $column, '$.' . $column, '$.' . $column]
+        $row = $db->rawQueryOne(
+            "SELECT LOWER(TRIM(scf.short_name)) AS short_name
+               FROM s_available_country_forms scf
+               JOIN global_config gc
+                 ON gc.name = 'vl_form' AND gc.value = scf.vlsm_country_id
+              LIMIT 1"
         );
 
-        return !empty($audited);
+        return ($row['short_name'] ?? '') === 'cameroon';
     } catch (Throwable) {
         return false;
     }
