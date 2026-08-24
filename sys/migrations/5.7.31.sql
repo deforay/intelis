@@ -44,3 +44,7 @@ VALUES ('Smart Connect Enrollment Key', 'smart_connect_enrollment_key', '', 'gen
 UPDATE `system_config` SET `value` = '5.7.31' WHERE `system_config`.`name` = 'sc_version';
 
 -- END OF VERSION --
+
+-- Thana 21-Aug-2026;
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_datetime`, `status`)
+VALUES ('Smart Connect Enrollment Key', 'smart_connect_enrollment_key', '', 'general', 'yes', CURRENT_TIMESTAMP, 'active');
