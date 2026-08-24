@@ -1982,11 +1982,22 @@ upgrade_instance() {
         print warning "A secondary database profile (interfacing) is unreachable; continuing, since the main database is fine."
     fi
 
+    # Hold scheduled tasks for the duration of post-update. They keep opening
+    # transactions on the very form tables the audit-trigger step runs DDL
+    # against, and a DDL that has to queue for its metadata lock drags every
+    # later read of that table into the queue with it. cron.sh honours this
+    # marker and expires it on its own after 30 minutes, so an interrupted
+    # upgrade cannot leave an instance with cron silently switched off.
+    pause_cron "${lis_path}"
+
     print info "Running database migrations..."
     if ! wwwdata_composer post-update; then
+        resume_cron "${lis_path}"
         _apply_failure_no_rollback "database migrations (composer post-update) failed"
         return 1
     fi
+
+    resume_cron "${lis_path}"
 
     # Directory migrations are already awaited before the composer step above
     # (so the var/ ownership reset can't race them). This is a safety net in
