@@ -24,6 +24,9 @@
  *     does not contain
  *   - HEAD is on the main branch and matches the remote, so the tag lands on
  *     what everyone else can see rather than on a local commit
+ *   - no pull request has auto-merge armed, so the tag cannot exclude work that
+ *     is about to land on its own (see the check itself for why this is the one
+ *     kind of open pull request worth blocking on)
  *   - app/system/version.php and composer.json agree, since they are what an
  *     instance reports and what preflight compares
  *
@@ -180,6 +183,40 @@ if ($local !== $remote) {
     );
 }
 ok("{$mainBranch} matches origin (" . substr($local, 0, 8) . ')');
+
+// --- nothing may be queued to land after this tag ---------------------------
+
+// `git land` has two exit states. When the repository allows auto-merge and a
+// check is still running, it arms the merge and returns immediately, leaving
+// the work on a branch and the main branch rewound. Every check above still
+// passes -- clean tree, on the main branch, matching origin -- and the tag
+// would name a release that silently excludes the very change being released.
+//
+// Only pull requests with auto-merge armed count. Those are going to land on
+// their own, without anyone deciding again. One left open on purpose is not in
+// flight, and blocking a release on it would make this check something people
+// learn to route around.
+//
+// gh is optional tooling: missing, unauthenticated or offline, this check is
+// skipped rather than failing a release that is very probably fine.
+$queued = run(
+    'gh pr list --base ' . escapeshellarg($mainBranch) . ' --state open'
+        . ' --json number,title,autoMergeRequest'
+        . ' --jq \'.[] | select(.autoMergeRequest != null) | "#\(.number) \(.title)"\'',
+    $ghCode
+);
+
+if ($ghCode !== 0) {
+    echo "  · skipped the queued-merge check (gh unavailable)\n";
+} elseif ($queued !== '') {
+    fail(
+        'A pull request has auto-merge armed but has not landed yet.',
+        "This tag would exclude it. Wait for it to merge, pull, then publish:\n\n"
+            . preg_replace('/^/m', '    ', $queued)
+    );
+} else {
+    ok('nothing is queued to land');
+}
 
 // --- what this release contains --------------------------------------------
 
