@@ -25,6 +25,11 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 $sQuery = "SELECT * from lab_storage where storage_id=?";
 $sInfo = $db->rawQueryOne($sQuery, [$id]);
 
+// Keep this record's own stored lab selectable even if that lab has since been
+// deactivated. Without it the required Testing Lab select renders empty and the
+// user must pick some OTHER lab just to save, silently reassigning the storage.
+$labNameList = $facilitiesService->getTestingLabs(alwaysIncludeLabId: $sInfo['lab_id'] ?? null);
+
 
 ?>
 <!-- Content Wrapper. Contains page content -->
