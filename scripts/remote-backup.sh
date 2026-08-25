@@ -67,7 +67,7 @@ fi
 # and gum rendering wherever gum is installed.
 #
 # INTELIS_TRACK is pinned before sourcing. shared-functions.sh resolves the
-# newest release tag at source time with an untimed `git ls-remote`, and nothing
+# ref labs follow at source time with an untimed `git ls-remote`, and nothing
 # in this script upgrades anything, so that lookup is pure latency here — on a
 # bad lab link it is an indefinite stall before the first question is asked.
 INTELIS_TRACK="${INTELIS_TRACK:-master}"

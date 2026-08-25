@@ -1,6 +1,11 @@
 <?php
 
-// ship-release.php — take what is on master and publish it, in one command.
+// ship-release.php — give what is on master a version number, in one command.
+//
+// This no longer decides whether anybody receives the code: CI publishes every
+// green commit on master to the `stable` branch that labs follow. Run this when
+// there is real DDL or a milestone worth naming, which is when a new number
+// means something.
 //
 //   composer ship                 bump the patch level if the current version
 //                                 is already tagged, then publish
@@ -20,10 +25,10 @@
 //   git push
 //   composer publish
 //
-// None of those steps carried a decision. The one decision worth making —
-// whether this work should reach labs at all — is made by choosing to run
-// this, and that decision is kept: nothing here tags anything that is not
-// already pushed to origin/master.
+// None of those steps carried a decision. The one decision left — whether this
+// work is a new version — is made by choosing to run this, and the safety that
+// matters is kept: nothing here tags anything that is not already pushed to
+// origin/master.
 //
 // The pieces are not reimplemented. generate-version.php still owns bumping
 // and publish-release.php still owns every safety check around tagging; this

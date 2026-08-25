@@ -2,12 +2,14 @@
 <?php
 
 /**
- * bin/build/publish-release.php — tag the current version so labs can have it.
+ * bin/build/publish-release.php — tag the current version.
  *
- * Labs upgrade to the newest vN.N.N tag rather than to the tip of master, so a
- * merged change reaches nobody until it is tagged. That separation is the point:
- * it puts a deliberate act between "this is on master" and "every lab is running
- * it". This is that act, reduced to one command so the separation costs nothing.
+ * Delivery does not run through here any more. Labs upgrade to the `stable`
+ * branch, which CI fast-forwards to any commit on master that passed Verify, so
+ * a fix reaches installations without anybody tagging anything. What a tag names
+ * now is the version — the schema/feature level that sc_version and preflight
+ * compare — which is what the number was always supposed to mean. Forgetting to
+ * tag therefore costs an accurate version number rather than everybody's fixes.
  *
  * Deliberately does NOT bump the version. Bumping and publishing are different
  * decisions and belong at different moments — `composer version` writes the

@@ -42,26 +42,37 @@ Wrong entries can make the update fail.
 
 ## What a lab upgrades to
 
-Labs follow the newest published release tag, not the tip of `master`. Nothing
-reaches an installation until someone tags it, which is what separates merging a
-change from shipping it.
+Labs follow the `stable` branch, not the tip of `master`. CI fast-forwards
+`stable` to any commit on `master` that passed the Verify workflow, so
+publishing is automatic and a commit that fails a check reaches no installation.
 
-Publishing is one command, once the version bump has been merged:
+Verify is what "stable" means here, and it is worth knowing exactly how much it
+claims: every PHP file parses, the DI container compiles, the unit tests pass,
+and a fresh install seeded from `sql/init.sql` migrates all the way up to the
+current version. Nothing runs against real data and no browser opens.
+
+There is no publish command to remember. A fix pushed to `master` is in labs on
+their next update, usually within a few minutes of the build going green.
+
+To hold something back, put `[hold]` in its commit message and `stable` skips
+it. To publish a specific commit by hand, run the Publish workflow from the
+Actions tab.
+
+`stable` only ever fast-forwards. It is never forced, so it cannot be moved back
+onto code an installation has already left behind; un-publishing means shipping
+a revert.
+
+### Version numbers
+
+A version number is the schema and feature level — what `sc_version` records and
+what preflight compares — and no longer controls whether anybody receives the
+code. Bump one when there is real DDL or a milestone worth naming:
 
 ```bash
-composer version patch -- -y      # bumps composer.json, version.php, migrations
-# review and merge that, then:
-composer publish                  # tags it and pushes the tag
+composer ship                     # bumps, refreshes the lockfile, commits, pushes, tags
 ```
 
-`composer publish` refuses if the working tree is dirty, if the branch is not
-`master`, if it does not match `origin`, or if `composer.json` and `version.php`
-disagree — so a tag can only ever name a commit everyone else already has. It
-never commits anything itself. Running it twice is safe: an already-published
-version reports that and stops.
-
-An urgent fix therefore ships as fast as it always did — the tag is the
-deliberate act, not a delay.
+Forgetting it costs an accurate version number, not delivery.
 
 ### Pinning a single machine
 
@@ -69,9 +80,10 @@ deliberate act, not a delay.
 
 | Value | Effect |
 |-------|--------|
-| unset / `latest` | newest `vN.N.N` tag (default) |
-| `master` | branch tip, for hotfixing one lab ahead of a release |
-| `v5.7.1` | pinned to an exact release |
+| unset / `latest` | `stable` (default) |
+| `stable` | the same thing, named explicitly |
+| `master` | branch tip, unverified, for hotfixing one lab ahead of everyone |
+| `v5.7.1` | pinned to an exact release tag |
 
 It has to be set on the command that runs the update, not exported beforehand:
 
@@ -85,8 +97,8 @@ the way to root. `intelis update` now carries it across that boundary if it is
 set, but anything invoking `intelis-update` or `upgrade.sh` directly still needs
 it on the command line.
 
-If nothing has been tagged yet, a lab falls back to `master`, so an installation
-is never stuck because no release exists.
+If `stable` does not exist, a lab falls back to the newest release tag, and then
+to `master`, so an installation is never stuck because a ref is missing.
 
 ## Before and after
 
