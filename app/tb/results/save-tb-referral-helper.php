@@ -28,10 +28,17 @@ try {
         exit;
     }
 
-    // A sample cannot be referred to the lab that is sending it. The receiving
-    // dropdown already excludes the sending lab, so getting here means a stale page
-    // or a crafted POST -- a dropdown is not a control.
-    if ((int) $_POST['referralToLabId'] === (int) ($_POST['referralLabId'] ?? 0)) {
+    // The sending lab is authoritative from the session whenever the user acts as
+    // one: comparing two POST values would let a crafted request name a sender it is
+    // not, passing this check AND recording a forged referral. Only an all-labs
+    // operator (no own lab) may name the sender, and then it is their picker value.
+    $ownLabId = (int) ($general->getOwnLabId() ?? 0);
+    $referredBy = $ownLabId > 0 ? $ownLabId : (int) ($_POST['referralLabId'] ?? 0);
+
+    // A sample cannot be referred to the lab sending it. The receiving dropdown
+    // already excludes the sending lab, so getting here means a stale page or a
+    // crafted POST -- a dropdown is not a control.
+    if ((int) $_POST['referralToLabId'] === $referredBy) {
         $_SESSION['alertMsg'] = _translate("A sample cannot be referred to the lab that is sending it");
         header("Location: /tb/results/tb-referral.php");
         exit;
@@ -44,7 +51,6 @@ try {
     }
 
     $testType = $_POST['type'] ?? 'tb';
-    $referredBy = $_POST['referralLabId'];
     $referralSamples = $_POST['referralSamples'];
     $referredTo = $_POST['referralToLabId'];
 
