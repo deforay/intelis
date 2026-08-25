@@ -447,37 +447,24 @@ if [ "$auto_detect" = true ]; then
         exit 1
     fi
 
-    # Show numbered list
     echo ""
     print info "Found ${#detected_paths[@]} installation(s):"
-    for i in "${!detected_paths[@]}"; do
-        echo "  $((i+1))) ${detected_paths[$i]}"
-    done
-    echo ""
 
     if [ "$interactive_select" = true ]; then
-        # Interactive mode: let user pick which instances to update
-        printf "Enter instance numbers to update (e.g., 1,2,3) or press Enter for all: "
-        read -r selection < /dev/tty
-
-        if [ -z "$selection" ]; then
-            lis_paths=("${detected_paths[@]}")
-        else
-            IFS=',' read -ra selected_nums <<< "$selection"
-            for num in "${selected_nums[@]}"; do
-                num=$(echo "$num" | xargs)  # trim whitespace
-                idx=$((num - 1))
-                if [[ $idx -ge 0 ]] && [[ $idx -lt ${#detected_paths[@]} ]]; then
-                    lis_paths+=("${detected_paths[$idx]}")
-                fi
-            done
-        fi
+        # ask_multi lists the instances itself — numbered when it is asking in
+        # plain text, as a checklist where gum is installed — so printing them
+        # here as well would show the same list twice.
+        mapfile -t lis_paths < <(ask_multi "Which instances should be updated?" "${detected_paths[@]}")
 
         if [ ${#lis_paths[@]} -eq 0 ]; then
             print error "No valid instances selected"
             exit 1
         fi
     else
+        for i in "${!detected_paths[@]}"; do
+            echo "  $((i + 1))) ${detected_paths[$i]}"
+        done
+        echo ""
         # Non-interactive: use all detected instances
         lis_paths=("${detected_paths[@]}")
     fi
@@ -993,9 +980,16 @@ else
 fi
 
 if [ -z "$mysql_pw" ]; then
-    print warning "Password in config file is empty or missing. Prompting for manual entry..."
-    read -r -sp "Please enter MySQL root password: " mysql_pw
-    echo
+    print warning "Password in config file is empty or missing."
+    # Asked once, not twice: this password already exists and is being recalled,
+    # and MySQL rejects a wrong one moments later anyway. The `read -sp` this
+    # replaces read from stdin, so a run whose stdin was not the terminal — the
+    # remote command plane, or a piped invocation — silently swallowed a line of
+    # whatever was there and used it as the password.
+    if ! ask_password mysql_pw "Please enter the MySQL root password" ""; then
+        mysql_pw=""
+        print info "No terminal to ask on — continuing without it."
+    fi
 fi
 
 if persist_result=$(MYSQL_PWD="${mysql_pw}" mysql -u root -e "SET PERSIST sql_mode = '';" 2>&1); then
@@ -2244,32 +2238,22 @@ if [ ${#lis_paths[@]} -eq 1 ] && [ -z "$apply_prepared_dir" ]; then
     done
 
     if [ ${#files[@]} -gt 0 ] && ask_yes_no "Do you want to run maintenance scripts?" "no"; then
-        echo "Available maintenance scripts to run:"
+        # Chosen by name rather than by index. The numbers were only ever a way
+        # to refer to a file, and a mistyped one used to be dropped in silence
+        # — the operator asked for three scripts, two ran, and nothing said so.
+        names=()
         for i in "${!files[@]}"; do
-            filename=$(basename "${files[$i]}")
-            echo "$((i + 1))) $filename"
+            names+=("$(basename "${files[$i]}")")
         done
 
-        echo "Enter the numbers of the scripts you want to run separated by commas (e.g., 1,2,4) or type 'all' to run them all."
-        read -r files_to_run
+        mapfile -t chosen_names < <(ask_multi "Which maintenance scripts should run?" "${names[@]}")
 
-        if [[ "$files_to_run" == "all" ]]; then
-            for file in "${files[@]}"; do
-                print info "Running $file..."
-                sudo -u www-data php "$file"
-            done
-        else
-            IFS=',' read -ra ADDR <<<"$files_to_run"
-            for i in "${ADDR[@]}"; do
-                i=$(echo "$i" | xargs)
-                file_index=$((i - 1))
-                if [[ $file_index -ge 0 ]] && [[ $file_index -lt ${#files[@]} ]]; then
-                    file="${files[$file_index]}"
-                    print info "Running $file..."
-                    sudo -u www-data php "$file"
-                fi
-            done
-        fi
+        for filename in "${chosen_names[@]}"; do
+            file="${lis_path}/maintenance/${filename}"
+            [ -f "$file" ] || continue
+            print info "Running $file..."
+            sudo -u www-data php "$file"
+        done
     fi
 fi
 
