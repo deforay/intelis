@@ -378,8 +378,62 @@ cmd_health() {
     fi
 }
 
+# Same question web_user answers, asked of a directory composer never writes
+# into. var/cache is the wrong thing to ask here: a root-run composer may
+# already have left it root-owned, which is the very state reclaim repairs, and
+# web_user would then answer "not a served install" and skip the repair.
+runtime_owner() {
+    local target owner
+
+    for target in "${APP_DIR}/public" "${APP_DIR}/var" "$APP_DIR"; do
+        [ -d "$target" ] || continue
+
+        owner="$(stat -c %U "$target" 2>/dev/null || stat -f %Su "$target" 2>/dev/null)"
+        case "$owner" in
+            www-data|apache|apache2|_www|http|nginx)
+                printf '%s' "$owner"
+                return 0
+                ;;
+        esac
+    done
+
+    return 1
+}
+
+# Hand the runtime directories back to the account the application runs as.
+#
+# Composer run as root creates var/cache entries -- and the nested directories
+# that hold them -- owned by root. Removing a file needs write access to the
+# DIRECTORY holding it, not ownership of the file, so it is those root-owned
+# subdirectories that later stop the web server, and every purge-cache run as
+# the application account, from clearing anything. That is what surfaces as
+# "N cache entries could not be removed while running as www-data (N owned by
+# root)", and inside post-install a single such entry used to take the whole
+# chain down.
+#
+# The passthrough itself has to stay as root -- migrations and provisioning
+# need it -- so the ownership is put back afterwards instead. var/cache holds
+# tens of entries, so this costs nothing.
+reclaim_runtime_ownership() {
+    [ "$(id -u)" -eq 0 ] || return 0
+
+    local runner
+    runner="$(runtime_owner)" || return 0
+
+    local d
+    for d in var/cache var/logs; do
+        [ -d "${APP_DIR}/${d}" ] || continue
+        chown -R "${runner}:${runner}" "${APP_DIR}/${d}" 2>/dev/null || true
+    done
+
+    return 0
+}
+
 run_composer() {
-    ( cd "$APP_DIR" && COMPOSER_ALLOW_SUPERUSER=1 composer "$@" )
+    local rc=0
+    ( cd "$APP_DIR" && COMPOSER_ALLOW_SUPERUSER=1 composer "$@" ) || rc=$?
+    reclaim_runtime_ownership
+    return "$rc"
 }
 
 # provision is the one repair that wants root rather than the application's
