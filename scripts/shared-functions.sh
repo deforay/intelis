@@ -483,6 +483,25 @@ run_git() {
     $_timeout_cmd git -c safe.directory='*' -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=60 "$@"
 }
 
+# lock_fingerprint <composer.lock> — identify the dependency set a lock file
+# describes, ignoring "content-hash".
+#
+# content-hash is a digest of composer.json, and composer.json carries the
+# version field, so a release bump rewrites it while not one package moves —
+# the last six releases changed exactly those two lines and nothing else.
+# Hashing the whole file therefore reported "dependencies changed" on every
+# release, which is how a 23MB vendor tarball came to be downloaded, extracted
+# and rsynced over a vendor/ that was already byte-for-byte correct.
+#
+# Everything else in the lock does describe what gets installed — packages,
+# packages-dev, platform, plugin-api-version — so it all stays in the hash. A
+# real dependency change still shows up here; a version bump no longer does.
+lock_fingerprint() {
+    local file="$1"
+    [ -f "$file" ] || return 1
+    grep -v '"content-hash"' "$file" | md5sum | awk '{print $1}'
+}
+
 # fetch_master_tree <extract_dir>
 #   Populate <extract_dir> with the deforay/intelis master working tree — the
 #   equivalent of the codeload tarball's intelis-master/ contents at the top

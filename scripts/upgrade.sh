@@ -168,7 +168,7 @@ REQUIRED_SHARED_FN=(
     ensure_opcache ensure_path ensure_php_cli_extensions ensure_switch_php
     error_handling escape_php_string_for_sed extract_mysql_password_from_config
     fetch_master_tree format_duration hosts_file_shadows
-    is_valid_application_path log_action mysql_cnf_comment_option
+    is_valid_application_path lock_fingerprint log_action mysql_cnf_comment_option
     mysql_cnf_get_option mysql_cnf_insert_mysqld_options mysql_diagnostics
     normalize_hostname_input pause_cron phase_mark phase_record phase_report
     phase_reset
@@ -1621,30 +1621,30 @@ prepare_phase() {
     # yet), so this compares old-vs-new exactly. First mismatch wins — we only
     # need one outdated instance to justify the download, and a single staged
     # vendor is reused across every instance in the apply phase.
-    local master_lock_md5=""
+    local master_lock_fp=""
     if [ -f "$master_extract_dir/composer.lock" ]; then
-        master_lock_md5=$(md5sum "$master_extract_dir/composer.lock" | awk '{print $1}')
+        master_lock_fp=$(lock_fingerprint "$master_extract_dir/composer.lock")
     fi
 
     local vendor_needed=false
     local _gate_reason=""
-    if [ -z "$master_lock_md5" ]; then
+    if [ -z "$master_lock_fp" ]; then
         # No lock in master (unexpected) — be safe and fetch vendor.
         vendor_needed=true
         _gate_reason="master tarball has no composer.lock"
     else
-        local _lp _inst_lock_md5
+        local _lp _inst_lock_fp
         for _lp in "${lis_paths[@]}"; do
             if [ ! -d "${_lp}/vendor" ] || [ ! -d "${_lp}/vendor/composer" ]; then
                 vendor_needed=true
                 _gate_reason="${_lp}: vendor/ missing or incomplete"
                 break
             fi
-            _inst_lock_md5=""
-            [ -f "${_lp}/composer.lock" ] && _inst_lock_md5=$(md5sum "${_lp}/composer.lock" | awk '{print $1}')
-            if [ "$_inst_lock_md5" != "$master_lock_md5" ]; then
+            _inst_lock_fp=""
+            [ -f "${_lp}/composer.lock" ] && _inst_lock_fp=$(lock_fingerprint "${_lp}/composer.lock")
+            if [ "$_inst_lock_fp" != "$master_lock_fp" ]; then
                 vendor_needed=true
-                _gate_reason="${_lp}: composer.lock differs from new master"
+                _gate_reason="${_lp}: dependencies differ from new master"
                 break
             fi
         done
