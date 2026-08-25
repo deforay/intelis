@@ -54,9 +54,10 @@ current version. Nothing runs against real data and no browser opens.
 There is no publish command to remember. A fix pushed to `master` is in labs on
 their next update, usually within a few minutes of the build going green.
 
-To hold something back, put `[hold]` in its commit message and `stable` skips
-it. To publish a specific commit by hand, run the Publish workflow from the
-Actions tab.
+To hold something back, start its commit subject with `[hold]` and `stable`
+skips it. It has to be the start of the subject, so a commit that merely
+mentions the marker still ships. To publish a specific commit by hand, run the
+Publish workflow from the Actions tab.
 
 `stable` only ever fast-forwards. It is never forced, so it cannot be moved back
 onto code an installation has already left behind; un-publishing means shipping
