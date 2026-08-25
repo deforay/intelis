@@ -880,7 +880,14 @@ EXCLUDES
 
 # --- rsync options per destination --------------------------------------------
 
-RSYNC_OPTS=(--delete --partial --timeout=900 --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta)
+# Split deliberately. RSYNC_MODE_OPTS is everything about HOW to reach the
+# destination — transport, compression, and the compatibility flags a filesystem
+# that cannot hold POSIX metadata needs. RSYNC_FILTER_OPTS is everything about
+# WHAT to send. The verification pass below reuses the transport but must not
+# reuse the filters: it works from an explicit file list, and --delete needs a
+# whole-tree walk, which is the cost this is here to avoid.
+RSYNC_FILTER_OPTS=(--delete --partial --timeout=900 --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta)
+RSYNC_MODE_OPTS=()
 
 needs_compat_flags() {
   # Filesystems that cannot hold POSIX ownership, permissions, or symlinks.
@@ -894,23 +901,25 @@ needs_compat_flags() {
 
 case "$DEST_MODE" in
   ssh)
-    RSYNC_OPTS+=(-aHz -e "ssh -i ${SSH_KEY} -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new -p ${SSH_PORT}")
+    RSYNC_MODE_OPTS+=(-aHz -e "ssh -i ${SSH_KEY} -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new -p ${SSH_PORT}")
     RSYNC_TARGET="${SSH_USER}@${SSH_HOST}:${DEST_DIR}/"
     ;;
   smb)
     # -L copies what symlinks point at, because Windows shares cannot store them.
-    RSYNC_OPTS+=(-rtLz --no-perms --no-owner --no-group --omit-dir-times --modify-window=2)
+    RSYNC_MODE_OPTS+=(-rtLz --no-perms --no-owner --no-group --omit-dir-times --modify-window=2)
     RSYNC_TARGET="${DEST_DIR}/"
     ;;
   local)
     if needs_compat_flags "$LOCAL_ROOT"; then
-      RSYNC_OPTS+=(-rtL --no-perms --no-owner --no-group --omit-dir-times --modify-window=2)
+      RSYNC_MODE_OPTS+=(-rtL --no-perms --no-owner --no-group --omit-dir-times --modify-window=2)
     else
-      RSYNC_OPTS+=(-aH)
+      RSYNC_MODE_OPTS+=(-aH)
     fi
     RSYNC_TARGET="${DEST_DIR}/"
     ;;
 esac
+
+RSYNC_OPTS=("${RSYNC_FILTER_OPTS[@]}" "${RSYNC_MODE_OPTS[@]}")
 
 # --- dry run ------------------------------------------------------------------
 
@@ -927,23 +936,94 @@ fi
 
 SECONDS=0
 print info "Copying files..."
-rsync "${RSYNC_OPTS[@]}" "${LIS_PATH}/" "$RSYNC_TARGET" >/dev/null || fail "The copy did not finish. See ${LOGFILE} for the details."
-print success "Files copied"
 
-# Verification that understands the exclusions: ask rsync what is still
-# outstanding. A correct backup leaves nothing to transfer.
-REMAINING=$(rsync "${RSYNC_OPTS[@]}" --dry-run --itemize-changes "${LIS_PATH}/" "$RSYNC_TARGET" | grep -c '^[<>]f' || true)
-if [ "${REMAINING:-0}" -gt 0 ]; then
-  print warning "${REMAINING} file(s) still differ after the copy. They may have changed while the backup was running; the next backup should pick them up."
+# The transfer's own account of itself, kept rather than discarded.
+#
+# This used to end in `>/dev/null`, and verification was a second full
+# --dry-run over the whole tree. That is the single most expensive thing a
+# backup did: an installation carries one audit-trail file per sample, so a
+# busy lab has hundreds of thousands of them, and re-statting every one to
+# rediscover what rsync had just finished telling us dominated the run. Over
+# SMB, where the cost is per-file latency rather than bytes, most of a backup
+# was spent re-confirming that immutable files were still unchanged.
+#
+# rsync already computed the answer in order to do the work. %i is the itemized
+# change string and %n the path, so this list is the transfer, exactly.
+TRANSFER_LOG="$(mktemp /tmp/intelis-backup-transfer.XXXXXX)"
+trap 'rm -f "$EXCLUDE_LIST" "$TRANSFER_LOG" "${TRANSFER_LOG}.files"' EXIT
+
+rsync "${RSYNC_OPTS[@]}" --out-format='%i|%n' "${LIS_PATH}/" "$RSYNC_TARGET" >"$TRANSFER_LOG" 2>&1 ||
+  fail "The copy did not finish. See ${LOGFILE} for the details."
+
+# Regular files that were actually sent. Directories, symlinks and deletions are
+# not re-checked: a stale extra file at the destination is not a loss, and the
+# question this answers is whether what was sent arrived intact.
+CHANGED_LIST="${TRANSFER_LOG}.files"
+awk -F'|' '$1 ~ /^[<>]f/ { sub(/^[^|]*\|/, ""); print }' "$TRANSFER_LOG" > "$CHANGED_LIST" || true
+CHANGED_COUNT=$(wc -l < "$CHANGED_LIST" | tr -d ' ')
+CHANGED_COUNT=${CHANGED_COUNT:-0}
+
+print success "Files copied (${CHANGED_COUNT} changed)"
+
+# --- verification -------------------------------------------------------------
+# Only what this run touched, and by content rather than by size and timestamp.
+#
+# Checking the delta instead of the tree is not a weaker guarantee, it is a
+# stronger one. The old whole-tree pass compared size and mtime, so a file that
+# arrived corrupt but plausible passed it. Restricting the check to the handful
+# of files that actually moved makes -c affordable, and -c reads both copies and
+# compares checksums.
+#
+# rsync escapes non-printable bytes in %n as \#nnn. A path like that cannot be
+# fed back through --files-from safely, so the whole-tree check is used instead
+# rather than silently verifying the wrong paths.
+verify_transfer() {
+  if grep -q '\\#' "$CHANGED_LIST"; then
+    print info "Some file names need escaping; verifying the whole tree instead."
+    local remaining
+    remaining=$(rsync "${RSYNC_OPTS[@]}" --dry-run --itemize-changes "${LIS_PATH}/" "$RSYNC_TARGET" | grep -c '^[<>]f' || true)
+    [ "${remaining:-0}" -eq 0 ]
+    return $?
+  fi
+
+  local differing
+  differing=$(rsync "${RSYNC_MODE_OPTS[@]}" --files-from="$CHANGED_LIST" \
+                    --checksum --dry-run --out-format='%i|%n' \
+                    "${LIS_PATH}/" "$RSYNC_TARGET" 2>/dev/null | grep -c '^[<>]f' || true)
+  [ "${differing:-0}" -eq 0 ]
+}
+
+if [ "$CHANGED_COUNT" -eq 0 ]; then
+  print success "Verified: nothing needed copying, the backup already matches"
+elif verify_transfer; then
+  print success "Verified: ${CHANGED_COUNT} file(s) match at the destination"
 else
-  print success "Verified: the backup matches the installation"
+  print warning "Some files still differ after the copy. They may have changed while the backup was running; the next backup should pick them up."
 fi
 
-BACKUP_SIZE=$(dest_exec "du -sh ${Q_DEST} 2>/dev/null | cut -f1" || echo "unknown")
+# The size on the backup, for `intelis backup status` — measured only where
+# measuring is cheap.
+#
+# `du -sh` is a recursive stat of every file the lab has ever backed up. Over SSH
+# that runs on the backup server as a local walk and the network cost is one
+# round trip, so it stays. On a CIFS mount every one of those stats is a network
+# round trip, which is the same per-file cost this change exists to remove — and
+# an installation carries one audit-trail file per sample. So SMB does not pay
+# it. Nothing depends on the number: it is displayed by `backup status` and
+# stored in the status JSON, and both already handle "unknown".
+case "$DEST_MODE" in
+  smb)
+    BACKUP_SIZE="not measured"
+    ;;
+  *)
+    BACKUP_SIZE=$(dest_exec "du -sh ${Q_DEST} 2>/dev/null | cut -f1" || echo "unknown")
+    ;;
+esac
 BACKUP_SIZE=${BACKUP_SIZE:-unknown}
 
 write_status ok "" "$BACKUP_SIZE" "$SECONDS"
-print success "Backup finished in ${SECONDS}s. Total size at the destination: ${BACKUP_SIZE}"
+print success "Backup finished in ${SECONDS}s. ${AVAILABLE_GB} GB free at the destination."
+[ "$BACKUP_SIZE" = "not measured" ] || print info "Size on the backup: ${BACKUP_SIZE}"
 RUNNER_SCRIPT
 
 chmod 0755 "$RUNNER"
