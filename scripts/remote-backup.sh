@@ -33,6 +33,24 @@ SSH_KEY="/root/.ssh/id_ed25519_intelis"
 MOUNT_POINT="/mnt/intelis-backup"
 SMB_CRED_FILE="${CONF_DIR}/smb-backup.cred"
 
+# --- arguments ----------------------------------------------------------------
+# Parsed before anything else so --help answers without needing root, and
+# --refresh-runner is known before the first question would be asked.
+SETUP_ACTION="setup"
+case "${1:-}" in
+  "") ;;
+  --refresh-runner) SETUP_ACTION="refresh-runner" ;;
+  --help | -h)
+    sed -n '3,24p' "$0" | sed 's/^# \{0,1\}//'
+    exit 0
+    ;;
+  *)
+    echo "Unknown option: $1"
+    echo "Try --help"
+    exit 2
+    ;;
+esac
+
 # Checked before anything else: the shared-functions bootstrap below writes
 # under /usr/local/lib, so a non-root run has to fail here rather than partway
 # through with a permission error nobody can read.
@@ -178,382 +196,19 @@ choose() {
   ask_choice "$@"
 }
 
-# --- preflight ----------------------------------------------------------------
-
-require_cmd realpath
-require_cmd awk
-require_cmd sed
-
-mkdir -p "$CONF_DIR"
-chmod 700 "$CONF_DIR"
-
-# Load any previous answers so a re-run is press-Enter-all-the-way.
-INSTANCE_NAME=""; LIS_PATH=""; DEST_MODE=""
-SSH_USER=""; SSH_HOST=""; SSH_PORT=""
-SMB_HOST=""; SMB_SHARE=""; SMB_USER=""; SMB_VERS=""
-LOCAL_ROOT=""
-if [ -f "$CONF_FILE" ]; then
-  # shellcheck disable=SC1090
-  . "$CONF_FILE"
-  print info "Found an existing configuration at $CONF_FILE. Press Enter to keep each saved answer."
-fi
-
-# Best-effort, bounded, and never fatal: gum is a nicety here exactly as it is
-# in setup.sh, and the plain prompts below are already correct without it.
-ensure_gum || true
-
-print header "InteLIS backup setup"
-
-# --- instance name ------------------------------------------------------------
-
-ask INSTANCE_NAME "Lab name or lab code" "${INSTANCE_NAME:-$(hostname -s 2>/dev/null || echo lab)}"
-SANITIZED_NAME=$(printf '%s' "$INSTANCE_NAME" | tr -s '[:space:]' '-' | tr -cd '[:alnum:]-' | sed 's/-*$//;s/^-*//')
-if [ -z "$SANITIZED_NAME" ]; then
-  print error "That name has no letters or numbers in it. Use something like 'kigali-central'."
-  exit 1
-fi
-
-# --- lab identity -------------------------------------------------------------
-# Every installation gets a permanent UUID. The destination folder is named from
-# it, so two labs that pick the same lab name still get separate folders and can
-# never overwrite each other.
-
-if [ ! -f "$LAB_UUID_FILE" ]; then
-  LAB_UUID="$(cat /proc/sys/kernel/random/uuid)"
-  printf '%s\n' "$LAB_UUID" > "$LAB_UUID_FILE"
-  chmod 600 "$LAB_UUID_FILE"
-else
-  LAB_UUID="$(trim "$(cat "$LAB_UUID_FILE")")"
-fi
-UUID_SHORT="${LAB_UUID:0:8}"
-DEST_FOLDER="${SANITIZED_NAME}-${UUID_SHORT}"
-
-print success "This installation is '${SANITIZED_NAME}' (id ${UUID_SHORT})"
-print info    "Its backups will live in a folder called: ${DEST_FOLDER}"
-
-# --- LIS path -----------------------------------------------------------------
-
-looks_like_lis() { [ -f "$1/configs/config.production.php" ] && [ -d "$1/public" ]; }
-
-print header "Which installation should be backed up?"
-
-if [ -z "$LIS_PATH" ]; then
-  for candidate in /var/www/intelis /var/www/vlsm; do
-    if looks_like_lis "$candidate"; then LIS_PATH="$candidate"; break; fi
-  done
-fi
-if [ -z "$LIS_PATH" ]; then
-  for candidate in /var/www/*/; do
-    candidate="${candidate%/}"
-    if looks_like_lis "$candidate"; then LIS_PATH="$candidate"; break; fi
-  done
-fi
-[ -n "$LIS_PATH" ] && print info "Detected an installation at $LIS_PATH"
-
-while true; do
-  ask LIS_PATH "InteLIS folder path" "${LIS_PATH:-/var/www/intelis}"
-  [[ "$LIS_PATH" != /* ]] && LIS_PATH="$(realpath "$LIS_PATH" 2>/dev/null || printf '%s' "$LIS_PATH")"
-  if [ ! -d "$LIS_PATH" ]; then
-    print warning "'$LIS_PATH' does not exist. Try again."
-    LIS_PATH=""
-    continue
-  fi
-  if ! looks_like_lis "$LIS_PATH"; then
-    print warning "'$LIS_PATH' does not look like an InteLIS installation (no configs/config.production.php)."
-    LIS_PATH=""
-    continue
-  fi
-  break
-done
-print success "Backing up: $LIS_PATH"
-
-# --- destination --------------------------------------------------------------
-
-choose DEST_MODE "${DEST_MODE:-ssh}" "Where should the backup be sent?" \
-  "ssh:Another Linux machine on the network:Sent over SSH. The usual choice where there is a server in the building." \
-  "smb:A shared folder on a Windows machine:Sent over SMB to a folder shared from Windows." \
-  "local:A USB or external drive plugged into this machine:Written to a drive attached to this machine."
-
-# --- destination: another Linux machine over SSH ------------------------------
-
-configure_ssh() {
-  require_cmd ssh
-  require_cmd ssh-keygen
-  require_cmd ssh-copy-id
-
-  print header "Backup server details"
-
-  mkdir -p /root/.ssh; chmod 700 /root/.ssh
-  if [ ! -f "$SSH_KEY" ]; then
-    print info "Creating a dedicated SSH key for backups..."
-    ssh-keygen -t ed25519 -C "intelis-backup-${SANITIZED_NAME}" -N "" -f "$SSH_KEY" >/dev/null
-  fi
-  chmod 600 "$SSH_KEY"; chmod 644 "${SSH_KEY}.pub"
-
-  while true; do
-    ask SSH_USER "Username on the backup server" "${SSH_USER:-}"
-    ask SSH_HOST "Hostname or IP of the backup server" "${SSH_HOST:-}"
-    ask SSH_PORT "SSH port" "${SSH_PORT:-22}"
-
-    if ! [[ "$SSH_PORT" =~ ^[0-9]+$ ]] || [ "$SSH_PORT" -lt 1 ] || [ "$SSH_PORT" -gt 65535 ]; then
-      print warning "'$SSH_PORT' is not a valid port number."
-      SSH_PORT=""
-      continue
-    fi
-
-    print info "Checking that ${SSH_HOST}:${SSH_PORT} is reachable..."
-    if ! timeout 10 bash -c "</dev/tcp/${SSH_HOST}/${SSH_PORT}" 2>/dev/null; then
-      print warning "Cannot reach ${SSH_HOST} on port ${SSH_PORT}."
-      print info    "Check that the machine is switched on, on the same network, and that its SSH port is open."
-      confirm "Try different details?" && { SSH_HOST=""; SSH_PORT=""; continue; }
-      exit 1
-    fi
-    print success "Backup server is reachable"
-
-    # Already trusted from a previous run?
-    if ssh -n -i "$SSH_KEY" -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 \
-         -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" true 2>/dev/null; then
-      print success "Password-free login already works"
-      break
-    fi
-
-    print info "Installing the backup key on the server. You will be asked for ${SSH_USER}'s password once."
-    if ! ssh-copy-id -i "${SSH_KEY}.pub" -o StrictHostKeyChecking=accept-new \
-         -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" >/dev/null; then
-      print warning "Could not install the key. The username or password may be wrong, or the server may not allow password logins."
-      confirm "Try again?" && { SSH_USER=""; SSH_HOST=""; SSH_PORT=""; continue; }
-      exit 1
-    fi
-
-    if ! ssh -n -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=10 \
-         -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" true; then
-      print warning "The key was installed but password-free login still does not work."
-      confirm "Try again?" && continue
-      exit 1
-    fi
-    print success "Password-free login works"
-    break
-  done
-
-  local remote_home
-  remote_home="$(ssh -n -i "$SSH_KEY" -o BatchMode=yes -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" 'printf %s "$HOME"')"
-  DEST_BASE="${remote_home}/backups"
-  DEST_DIR="${DEST_BASE}/${DEST_FOLDER}"
-}
-
-# --- destination: Windows shared folder over SMB ------------------------------
-
-configure_smb() {
-  print header "Windows shared folder details"
-  print info "On the Windows machine: share a folder (for example C:\\InteLIS-Backups)"
-  print info "and give a Windows user Change + Read permission on that share."
-  echo
-
-  print info "Installing the tools needed to talk to Windows shares..."
-  apt-get update -y >/dev/null 2>&1 || print warning "Could not refresh the package lists; continuing."
-  apt-get install -y cifs-utils rsync >/dev/null || { print error "Could not install cifs-utils. Fix the package manager and re-run."; exit 1; }
-  require_cmd mount.cifs
-
-  mkdir -p "$MOUNT_POINT"
-
-  local smb_pass
-  while true; do
-    ask SMB_HOST  "Windows hostname or IP (for example 192.168.1.50)" "${SMB_HOST:-}"
-    ask SMB_SHARE "Name of the shared folder (for example InteLIS-Backups)" "${SMB_SHARE:-}"
-    ask SMB_USER  "Windows username" "${SMB_USER:-}"
-    ask_secret smb_pass "Windows password for ${SMB_USER}"
-
-    if printf '%s' "$SMB_SHARE" | grep -q ' '; then
-      print warning "The share name contains a space. Re-share the folder using a name without spaces, such as InteLIS-Backups."
-      SMB_SHARE=""
-      continue
-    fi
-
-    umask 077
-    printf 'username=%s\npassword=%s\n' "$SMB_USER" "$smb_pass" > "$SMB_CRED_FILE"
-    chmod 600 "$SMB_CRED_FILE"
-    umask 022
-
-    local unc="//${SMB_HOST}/${SMB_SHARE}"
-    mountpoint -q "$MOUNT_POINT" && umount "$MOUNT_POINT" 2>/dev/null || true
-
-    # Try the modern dialect first and fall back, so the operator never has to
-    # know what an "SMB protocol version" is.
-    local mounted=0 v
-    for v in "${SMB_VERS:-3.1.1}" 3.0 2.1 1.0; do
-      if mount -t cifs "$unc" "$MOUNT_POINT" \
-           -o "credentials=${SMB_CRED_FILE},vers=${v},uid=root,gid=root,iocharset=utf8,file_mode=0640,dir_mode=0750" 2>/dev/null; then
-        SMB_VERS="$v"; mounted=1; break
-      fi
-    done
-
-    if [ "$mounted" -ne 1 ]; then
-      print warning "Could not connect to ${unc}."
-      print info    "Check the username and password, that the folder is actually shared,"
-      print info    "and that File and Printer Sharing is allowed through the Windows firewall."
-      rm -f "$SMB_CRED_FILE"
-      confirm "Try again?" && { SMB_HOST=""; SMB_SHARE=""; SMB_USER=""; SMB_VERS=""; continue; }
-      exit 1
-    fi
-
-    if ! ( : > "${MOUNT_POINT}/.intelis-writetest" && rm -f "${MOUNT_POINT}/.intelis-writetest" ); then
-      print warning "Connected, but the folder is read-only. Give ${SMB_USER} the Change permission on the share in Windows."
-      umount "$MOUNT_POINT" 2>/dev/null || true
-      confirm "Try again?" && continue
-      exit 1
-    fi
-
-    print success "Connected to ${unc} (SMB ${SMB_VERS}) and it is writable"
-    break
-  done
-
-  # Remount automatically after a reboot.
-  local fstab_line="//${SMB_HOST}/${SMB_SHARE} ${MOUNT_POINT} cifs credentials=${SMB_CRED_FILE},vers=${SMB_VERS},uid=root,gid=root,iocharset=utf8,file_mode=0640,dir_mode=0750,nofail,_netdev 0 0"
-  if grep -qE "[[:space:]]${MOUNT_POINT}[[:space:]]" /etc/fstab; then
-    sed -i "\#[[:space:]]${MOUNT_POINT}[[:space:]]#d" /etc/fstab
-  fi
-  echo "$fstab_line" >> /etc/fstab
-  print success "The share will reconnect by itself after a restart"
-
-  DEST_BASE="${MOUNT_POINT}/backups"
-  DEST_DIR="${DEST_BASE}/${DEST_FOLDER}"
-}
-
-# --- destination: local USB or external drive ---------------------------------
-
-configure_local() {
-  print header "External drive details"
-  print info "Plug the drive in and make sure it is mounted before continuing."
-  if command -v lsblk >/dev/null 2>&1; then
-    echo
-    lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT 2>/dev/null | grep -v '^loop' || true
-    echo
-  fi
-
-  while true; do
-    ask LOCAL_ROOT "Folder on the drive to back up into" "${LOCAL_ROOT:-/media/backup}"
-    if [ ! -d "$LOCAL_ROOT" ]; then
-      print warning "'$LOCAL_ROOT' does not exist. Is the drive plugged in and mounted?"
-      LOCAL_ROOT=""
-      continue
-    fi
-    if ! ( : > "${LOCAL_ROOT}/.intelis-writetest" && rm -f "${LOCAL_ROOT}/.intelis-writetest" ); then
-      print warning "'$LOCAL_ROOT' is not writable."
-      LOCAL_ROOT=""
-      continue
-    fi
-    # A backup on the same disk as the original is not a backup.
-    if [ "$(stat -c %d "$LOCAL_ROOT" 2>/dev/null || echo 0)" = "$(stat -c %d "$LIS_PATH" 2>/dev/null || echo 1)" ]; then
-      print warning "'$LOCAL_ROOT' is on the same disk as the installation, so it would not survive a disk failure."
-      confirm "Use it anyway?" || { LOCAL_ROOT=""; continue; }
-    fi
-    break
-  done
-
-  print success "Backing up to $LOCAL_ROOT"
-  DEST_BASE="${LOCAL_ROOT}/backups"
-  DEST_DIR="${DEST_BASE}/${DEST_FOLDER}"
-}
-
-case "$DEST_MODE" in
-  ssh)   configure_ssh ;;
-  smb)   configure_smb ;;
-  local) configure_local ;;
-esac
-
-# --- destination folder -------------------------------------------------------
-# dest_exec runs a command wherever the backup lands, so the folder handling
-# below is written once instead of once per destination type.
-
-dest_exec() {
-  case "$DEST_MODE" in
-    ssh) ssh -n -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=10 -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" "$1" ;;
-    *)   bash -c "$1" ;;
-  esac
-}
-
-print header "Preparing the backup folder"
-
-q_dest="$(printf '%q' "$DEST_DIR")"
-q_meta="$(printf '%q' "${DEST_DIR}/.lab-meta")"
-
-# A folder from the older scripts was named after the lab alone. If it belongs to
-# this installation, rename it instead of re-uploading everything from scratch.
-LEGACY_DIR="${DEST_BASE}/${SANITIZED_NAME}"
-if [ "$LEGACY_DIR" != "$DEST_DIR" ]; then
-  q_legacy="$(printf '%q' "$LEGACY_DIR")"
-  if dest_exec "test -d ${q_legacy}" 2>/dev/null && ! dest_exec "test -d ${q_dest}" 2>/dev/null; then
-    legacy_uuid="$(dest_exec "awk -F= '/^lab_uuid=/{print \$2}' ${q_legacy}/.lab-meta 2>/dev/null || true" | tr -d '\r\n')"
-    if [ "$legacy_uuid" = "$LAB_UUID" ]; then
-      print info "Found this lab's previous backup folder. Renaming it to ${DEST_FOLDER} to keep the history."
-      dest_exec "mv ${q_legacy} ${q_dest}"
-      print success "Renamed"
-    elif [ -z "$legacy_uuid" ]; then
-      print warning "There is an older folder called '${SANITIZED_NAME}' with no identity marker."
-      if confirm "Is it this lab's? Answer no to leave it alone and start a fresh folder"; then
-        dest_exec "mv ${q_legacy} ${q_dest}"
-        print success "Renamed to ${DEST_FOLDER}"
-      fi
-    fi
-  fi
-fi
-
-if dest_exec "test -d ${q_dest}" 2>/dev/null; then
-  remote_uuid="$(dest_exec "awk -F= '/^lab_uuid=/{print \$2}' ${q_meta} 2>/dev/null || true" | tr -d '\r\n')"
-  if [ -n "$remote_uuid" ] && [ "$remote_uuid" != "$LAB_UUID" ]; then
-    # Effectively unreachable now that folders carry the UUID, but a wrong answer
-    # here would overwrite another lab's backup, so refuse rather than guess.
-    print error "The folder ${DEST_FOLDER} already belongs to a different installation."
-    print info  "Nothing has been changed. Contact support before continuing."
-    exit 1
-  fi
-  print info "Reusing the existing folder for this lab"
-fi
-
-dest_exec "mkdir -p ${q_dest} && printf 'lab_uuid=%s\ninstance=%s\nhostname=%s\nupdated_at=%s\n' \
-  $(printf '%q' "$LAB_UUID") $(printf '%q' "$SANITIZED_NAME") $(printf '%q' "$(hostname -f 2>/dev/null || hostname)") $(printf '%q' "$(date -u +%FT%TZ)") > ${q_meta}"
-print success "Backup folder ready: ${DEST_DIR}"
-
-# --- tools --------------------------------------------------------------------
-
-if ! command -v rsync >/dev/null 2>&1; then
-  print info "Installing rsync..."
-  apt-get update -y >/dev/null 2>&1 || true
-  apt-get install -y rsync >/dev/null || { print error "Could not install rsync."; exit 1; }
-fi
-require_cmd rsync
-
-# --- save configuration -------------------------------------------------------
-
-umask 077
-cat > "$CONF_FILE" <<CONF
-# InteLIS backup configuration. Written by remote-backup.sh.
-# Re-run 'intelis backup setup' to change any of this.
-INSTANCE_NAME='${SANITIZED_NAME}'
-LAB_UUID='${LAB_UUID}'
-DEST_FOLDER='${DEST_FOLDER}'
-LIS_PATH='${LIS_PATH}'
-DEST_MODE='${DEST_MODE}'
-DEST_BASE='${DEST_BASE}'
-DEST_DIR='${DEST_DIR}'
-SSH_USER='${SSH_USER}'
-SSH_HOST='${SSH_HOST}'
-SSH_PORT='${SSH_PORT}'
-SSH_KEY='${SSH_KEY}'
-SMB_HOST='${SMB_HOST}'
-SMB_SHARE='${SMB_SHARE}'
-SMB_USER='${SMB_USER}'
-SMB_VERS='${SMB_VERS}'
-SMB_CRED_FILE='${SMB_CRED_FILE}'
-MOUNT_POINT='${MOUNT_POINT}'
-LOCAL_ROOT='${LOCAL_ROOT}'
-CONF
-chmod 600 "$CONF_FILE"
-umask 022
-print success "Settings saved to $CONF_FILE"
-
-# --- install the backup runner ------------------------------------------------
-
+# --- the backup runner -------------------------------------------------------
+#
+# The runner is a fixed script. Every setting it uses it reads from backup.conf
+# at the moment it runs, so writing it needs none of the answers collected
+# during setup — which is what lets --refresh-runner rewrite it during an
+# upgrade without asking anyone anything.
+#
+# The body is flush against the margin deliberately. It writes a quoted
+# heredoc, and a quoted heredoc ends only where its terminator sits at column
+# zero; indenting this function to match the rest of the file stops
+# RUNNER_SCRIPT closing it, and bash then reads the rest of the script as
+# heredoc content and the file no longer parses at all.
+install_backup_runner() {
 print header "Installing the backup runner"
 
 cat > "$RUNNER" <<'RUNNER_SCRIPT'
@@ -1034,6 +689,412 @@ if [ -f "$LEGACY_WINDOWS_RUNNER" ]; then
   rm -f "$LEGACY_WINDOWS_RUNNER"
   print info "Removed the old Windows-only runner; one runner now handles every destination."
 fi
+}
+
+# --- preflight ----------------------------------------------------------------
+
+require_cmd realpath
+require_cmd awk
+require_cmd sed
+
+mkdir -p "$CONF_DIR"
+chmod 700 "$CONF_DIR"
+
+# --- refreshing the runner on an upgrade --------------------------------------
+#
+# The runner is written once, on the day backups are set up, and then never
+# again: nothing in the upgrade path rewrote it. Every improvement made to it
+# since a lab was configured therefore sat in the repository and reached that
+# lab only if somebody re-ran setup by hand — and nobody re-runs setup on a
+# thing that is working. Shipping a faster or safer runner did not deliver one.
+#
+# upgrade.sh now calls this once the new code is in place, on the principle it
+# already applies to the remote command runner: install from the code that has
+# just arrived, not the code being replaced.
+#
+# Non-interactive by design, since it runs inside an upgrade. It will not invent
+# a configuration: with no backup.conf there is nothing to refresh and nothing
+# to guess, and deciding to back a lab up is a decision for a person.
+if [ "$SETUP_ACTION" = "refresh-runner" ]; then
+  if [ ! -f "$CONF_FILE" ]; then
+    exit 0
+  fi
+
+  if install_backup_runner >/dev/null 2>&1; then
+    print success "Backup runner refreshed from the installed version."
+    exit 0
+  fi
+
+  print warning "Could not refresh the backup runner; the existing one is left in place."
+  exit 1
+fi
+
+# Load any previous answers so a re-run is press-Enter-all-the-way.
+INSTANCE_NAME=""; LIS_PATH=""; DEST_MODE=""
+SSH_USER=""; SSH_HOST=""; SSH_PORT=""
+SMB_HOST=""; SMB_SHARE=""; SMB_USER=""; SMB_VERS=""
+LOCAL_ROOT=""
+if [ -f "$CONF_FILE" ]; then
+  # shellcheck disable=SC1090
+  . "$CONF_FILE"
+  print info "Found an existing configuration at $CONF_FILE. Press Enter to keep each saved answer."
+fi
+
+# Best-effort, bounded, and never fatal: gum is a nicety here exactly as it is
+# in setup.sh, and the plain prompts below are already correct without it.
+ensure_gum || true
+
+print header "InteLIS backup setup"
+
+# --- instance name ------------------------------------------------------------
+
+ask INSTANCE_NAME "Lab name or lab code" "${INSTANCE_NAME:-$(hostname -s 2>/dev/null || echo lab)}"
+SANITIZED_NAME=$(printf '%s' "$INSTANCE_NAME" | tr -s '[:space:]' '-' | tr -cd '[:alnum:]-' | sed 's/-*$//;s/^-*//')
+if [ -z "$SANITIZED_NAME" ]; then
+  print error "That name has no letters or numbers in it. Use something like 'kigali-central'."
+  exit 1
+fi
+
+# --- lab identity -------------------------------------------------------------
+# Every installation gets a permanent UUID. The destination folder is named from
+# it, so two labs that pick the same lab name still get separate folders and can
+# never overwrite each other.
+
+if [ ! -f "$LAB_UUID_FILE" ]; then
+  LAB_UUID="$(cat /proc/sys/kernel/random/uuid)"
+  printf '%s\n' "$LAB_UUID" > "$LAB_UUID_FILE"
+  chmod 600 "$LAB_UUID_FILE"
+else
+  LAB_UUID="$(trim "$(cat "$LAB_UUID_FILE")")"
+fi
+UUID_SHORT="${LAB_UUID:0:8}"
+DEST_FOLDER="${SANITIZED_NAME}-${UUID_SHORT}"
+
+print success "This installation is '${SANITIZED_NAME}' (id ${UUID_SHORT})"
+print info    "Its backups will live in a folder called: ${DEST_FOLDER}"
+
+# --- LIS path -----------------------------------------------------------------
+
+looks_like_lis() { [ -f "$1/configs/config.production.php" ] && [ -d "$1/public" ]; }
+
+print header "Which installation should be backed up?"
+
+if [ -z "$LIS_PATH" ]; then
+  for candidate in /var/www/intelis /var/www/vlsm; do
+    if looks_like_lis "$candidate"; then LIS_PATH="$candidate"; break; fi
+  done
+fi
+if [ -z "$LIS_PATH" ]; then
+  for candidate in /var/www/*/; do
+    candidate="${candidate%/}"
+    if looks_like_lis "$candidate"; then LIS_PATH="$candidate"; break; fi
+  done
+fi
+[ -n "$LIS_PATH" ] && print info "Detected an installation at $LIS_PATH"
+
+while true; do
+  ask LIS_PATH "InteLIS folder path" "${LIS_PATH:-/var/www/intelis}"
+  [[ "$LIS_PATH" != /* ]] && LIS_PATH="$(realpath "$LIS_PATH" 2>/dev/null || printf '%s' "$LIS_PATH")"
+  if [ ! -d "$LIS_PATH" ]; then
+    print warning "'$LIS_PATH' does not exist. Try again."
+    LIS_PATH=""
+    continue
+  fi
+  if ! looks_like_lis "$LIS_PATH"; then
+    print warning "'$LIS_PATH' does not look like an InteLIS installation (no configs/config.production.php)."
+    LIS_PATH=""
+    continue
+  fi
+  break
+done
+print success "Backing up: $LIS_PATH"
+
+# --- destination --------------------------------------------------------------
+
+choose DEST_MODE "${DEST_MODE:-ssh}" "Where should the backup be sent?" \
+  "ssh:Another Linux machine on the network:Sent over SSH. The usual choice where there is a server in the building." \
+  "smb:A shared folder on a Windows machine:Sent over SMB to a folder shared from Windows." \
+  "local:A USB or external drive plugged into this machine:Written to a drive attached to this machine."
+
+# --- destination: another Linux machine over SSH ------------------------------
+
+configure_ssh() {
+  require_cmd ssh
+  require_cmd ssh-keygen
+  require_cmd ssh-copy-id
+
+  print header "Backup server details"
+
+  mkdir -p /root/.ssh; chmod 700 /root/.ssh
+  if [ ! -f "$SSH_KEY" ]; then
+    print info "Creating a dedicated SSH key for backups..."
+    ssh-keygen -t ed25519 -C "intelis-backup-${SANITIZED_NAME}" -N "" -f "$SSH_KEY" >/dev/null
+  fi
+  chmod 600 "$SSH_KEY"; chmod 644 "${SSH_KEY}.pub"
+
+  while true; do
+    ask SSH_USER "Username on the backup server" "${SSH_USER:-}"
+    ask SSH_HOST "Hostname or IP of the backup server" "${SSH_HOST:-}"
+    ask SSH_PORT "SSH port" "${SSH_PORT:-22}"
+
+    if ! [[ "$SSH_PORT" =~ ^[0-9]+$ ]] || [ "$SSH_PORT" -lt 1 ] || [ "$SSH_PORT" -gt 65535 ]; then
+      print warning "'$SSH_PORT' is not a valid port number."
+      SSH_PORT=""
+      continue
+    fi
+
+    print info "Checking that ${SSH_HOST}:${SSH_PORT} is reachable..."
+    if ! timeout 10 bash -c "</dev/tcp/${SSH_HOST}/${SSH_PORT}" 2>/dev/null; then
+      print warning "Cannot reach ${SSH_HOST} on port ${SSH_PORT}."
+      print info    "Check that the machine is switched on, on the same network, and that its SSH port is open."
+      confirm "Try different details?" && { SSH_HOST=""; SSH_PORT=""; continue; }
+      exit 1
+    fi
+    print success "Backup server is reachable"
+
+    # Already trusted from a previous run?
+    if ssh -n -i "$SSH_KEY" -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 \
+         -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" true 2>/dev/null; then
+      print success "Password-free login already works"
+      break
+    fi
+
+    print info "Installing the backup key on the server. You will be asked for ${SSH_USER}'s password once."
+    if ! ssh-copy-id -i "${SSH_KEY}.pub" -o StrictHostKeyChecking=accept-new \
+         -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" >/dev/null; then
+      print warning "Could not install the key. The username or password may be wrong, or the server may not allow password logins."
+      confirm "Try again?" && { SSH_USER=""; SSH_HOST=""; SSH_PORT=""; continue; }
+      exit 1
+    fi
+
+    if ! ssh -n -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=10 \
+         -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" true; then
+      print warning "The key was installed but password-free login still does not work."
+      confirm "Try again?" && continue
+      exit 1
+    fi
+    print success "Password-free login works"
+    break
+  done
+
+  local remote_home
+  remote_home="$(ssh -n -i "$SSH_KEY" -o BatchMode=yes -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" 'printf %s "$HOME"')"
+  DEST_BASE="${remote_home}/backups"
+  DEST_DIR="${DEST_BASE}/${DEST_FOLDER}"
+}
+
+# --- destination: Windows shared folder over SMB ------------------------------
+
+configure_smb() {
+  print header "Windows shared folder details"
+  print info "On the Windows machine: share a folder (for example C:\\InteLIS-Backups)"
+  print info "and give a Windows user Change + Read permission on that share."
+  echo
+
+  print info "Installing the tools needed to talk to Windows shares..."
+  apt-get update -y >/dev/null 2>&1 || print warning "Could not refresh the package lists; continuing."
+  apt-get install -y cifs-utils rsync >/dev/null || { print error "Could not install cifs-utils. Fix the package manager and re-run."; exit 1; }
+  require_cmd mount.cifs
+
+  mkdir -p "$MOUNT_POINT"
+
+  local smb_pass
+  while true; do
+    ask SMB_HOST  "Windows hostname or IP (for example 192.168.1.50)" "${SMB_HOST:-}"
+    ask SMB_SHARE "Name of the shared folder (for example InteLIS-Backups)" "${SMB_SHARE:-}"
+    ask SMB_USER  "Windows username" "${SMB_USER:-}"
+    ask_secret smb_pass "Windows password for ${SMB_USER}"
+
+    if printf '%s' "$SMB_SHARE" | grep -q ' '; then
+      print warning "The share name contains a space. Re-share the folder using a name without spaces, such as InteLIS-Backups."
+      SMB_SHARE=""
+      continue
+    fi
+
+    umask 077
+    printf 'username=%s\npassword=%s\n' "$SMB_USER" "$smb_pass" > "$SMB_CRED_FILE"
+    chmod 600 "$SMB_CRED_FILE"
+    umask 022
+
+    local unc="//${SMB_HOST}/${SMB_SHARE}"
+    mountpoint -q "$MOUNT_POINT" && umount "$MOUNT_POINT" 2>/dev/null || true
+
+    # Try the modern dialect first and fall back, so the operator never has to
+    # know what an "SMB protocol version" is.
+    local mounted=0 v
+    for v in "${SMB_VERS:-3.1.1}" 3.0 2.1 1.0; do
+      if mount -t cifs "$unc" "$MOUNT_POINT" \
+           -o "credentials=${SMB_CRED_FILE},vers=${v},uid=root,gid=root,iocharset=utf8,file_mode=0640,dir_mode=0750" 2>/dev/null; then
+        SMB_VERS="$v"; mounted=1; break
+      fi
+    done
+
+    if [ "$mounted" -ne 1 ]; then
+      print warning "Could not connect to ${unc}."
+      print info    "Check the username and password, that the folder is actually shared,"
+      print info    "and that File and Printer Sharing is allowed through the Windows firewall."
+      rm -f "$SMB_CRED_FILE"
+      confirm "Try again?" && { SMB_HOST=""; SMB_SHARE=""; SMB_USER=""; SMB_VERS=""; continue; }
+      exit 1
+    fi
+
+    if ! ( : > "${MOUNT_POINT}/.intelis-writetest" && rm -f "${MOUNT_POINT}/.intelis-writetest" ); then
+      print warning "Connected, but the folder is read-only. Give ${SMB_USER} the Change permission on the share in Windows."
+      umount "$MOUNT_POINT" 2>/dev/null || true
+      confirm "Try again?" && continue
+      exit 1
+    fi
+
+    print success "Connected to ${unc} (SMB ${SMB_VERS}) and it is writable"
+    break
+  done
+
+  # Remount automatically after a reboot.
+  local fstab_line="//${SMB_HOST}/${SMB_SHARE} ${MOUNT_POINT} cifs credentials=${SMB_CRED_FILE},vers=${SMB_VERS},uid=root,gid=root,iocharset=utf8,file_mode=0640,dir_mode=0750,nofail,_netdev 0 0"
+  if grep -qE "[[:space:]]${MOUNT_POINT}[[:space:]]" /etc/fstab; then
+    sed -i "\#[[:space:]]${MOUNT_POINT}[[:space:]]#d" /etc/fstab
+  fi
+  echo "$fstab_line" >> /etc/fstab
+  print success "The share will reconnect by itself after a restart"
+
+  DEST_BASE="${MOUNT_POINT}/backups"
+  DEST_DIR="${DEST_BASE}/${DEST_FOLDER}"
+}
+
+# --- destination: local USB or external drive ---------------------------------
+
+configure_local() {
+  print header "External drive details"
+  print info "Plug the drive in and make sure it is mounted before continuing."
+  if command -v lsblk >/dev/null 2>&1; then
+    echo
+    lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT 2>/dev/null | grep -v '^loop' || true
+    echo
+  fi
+
+  while true; do
+    ask LOCAL_ROOT "Folder on the drive to back up into" "${LOCAL_ROOT:-/media/backup}"
+    if [ ! -d "$LOCAL_ROOT" ]; then
+      print warning "'$LOCAL_ROOT' does not exist. Is the drive plugged in and mounted?"
+      LOCAL_ROOT=""
+      continue
+    fi
+    if ! ( : > "${LOCAL_ROOT}/.intelis-writetest" && rm -f "${LOCAL_ROOT}/.intelis-writetest" ); then
+      print warning "'$LOCAL_ROOT' is not writable."
+      LOCAL_ROOT=""
+      continue
+    fi
+    # A backup on the same disk as the original is not a backup.
+    if [ "$(stat -c %d "$LOCAL_ROOT" 2>/dev/null || echo 0)" = "$(stat -c %d "$LIS_PATH" 2>/dev/null || echo 1)" ]; then
+      print warning "'$LOCAL_ROOT' is on the same disk as the installation, so it would not survive a disk failure."
+      confirm "Use it anyway?" || { LOCAL_ROOT=""; continue; }
+    fi
+    break
+  done
+
+  print success "Backing up to $LOCAL_ROOT"
+  DEST_BASE="${LOCAL_ROOT}/backups"
+  DEST_DIR="${DEST_BASE}/${DEST_FOLDER}"
+}
+
+case "$DEST_MODE" in
+  ssh)   configure_ssh ;;
+  smb)   configure_smb ;;
+  local) configure_local ;;
+esac
+
+# --- destination folder -------------------------------------------------------
+# dest_exec runs a command wherever the backup lands, so the folder handling
+# below is written once instead of once per destination type.
+
+dest_exec() {
+  case "$DEST_MODE" in
+    ssh) ssh -n -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=10 -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" "$1" ;;
+    *)   bash -c "$1" ;;
+  esac
+}
+
+print header "Preparing the backup folder"
+
+q_dest="$(printf '%q' "$DEST_DIR")"
+q_meta="$(printf '%q' "${DEST_DIR}/.lab-meta")"
+
+# A folder from the older scripts was named after the lab alone. If it belongs to
+# this installation, rename it instead of re-uploading everything from scratch.
+LEGACY_DIR="${DEST_BASE}/${SANITIZED_NAME}"
+if [ "$LEGACY_DIR" != "$DEST_DIR" ]; then
+  q_legacy="$(printf '%q' "$LEGACY_DIR")"
+  if dest_exec "test -d ${q_legacy}" 2>/dev/null && ! dest_exec "test -d ${q_dest}" 2>/dev/null; then
+    legacy_uuid="$(dest_exec "awk -F= '/^lab_uuid=/{print \$2}' ${q_legacy}/.lab-meta 2>/dev/null || true" | tr -d '\r\n')"
+    if [ "$legacy_uuid" = "$LAB_UUID" ]; then
+      print info "Found this lab's previous backup folder. Renaming it to ${DEST_FOLDER} to keep the history."
+      dest_exec "mv ${q_legacy} ${q_dest}"
+      print success "Renamed"
+    elif [ -z "$legacy_uuid" ]; then
+      print warning "There is an older folder called '${SANITIZED_NAME}' with no identity marker."
+      if confirm "Is it this lab's? Answer no to leave it alone and start a fresh folder"; then
+        dest_exec "mv ${q_legacy} ${q_dest}"
+        print success "Renamed to ${DEST_FOLDER}"
+      fi
+    fi
+  fi
+fi
+
+if dest_exec "test -d ${q_dest}" 2>/dev/null; then
+  remote_uuid="$(dest_exec "awk -F= '/^lab_uuid=/{print \$2}' ${q_meta} 2>/dev/null || true" | tr -d '\r\n')"
+  if [ -n "$remote_uuid" ] && [ "$remote_uuid" != "$LAB_UUID" ]; then
+    # Effectively unreachable now that folders carry the UUID, but a wrong answer
+    # here would overwrite another lab's backup, so refuse rather than guess.
+    print error "The folder ${DEST_FOLDER} already belongs to a different installation."
+    print info  "Nothing has been changed. Contact support before continuing."
+    exit 1
+  fi
+  print info "Reusing the existing folder for this lab"
+fi
+
+dest_exec "mkdir -p ${q_dest} && printf 'lab_uuid=%s\ninstance=%s\nhostname=%s\nupdated_at=%s\n' \
+  $(printf '%q' "$LAB_UUID") $(printf '%q' "$SANITIZED_NAME") $(printf '%q' "$(hostname -f 2>/dev/null || hostname)") $(printf '%q' "$(date -u +%FT%TZ)") > ${q_meta}"
+print success "Backup folder ready: ${DEST_DIR}"
+
+# --- tools --------------------------------------------------------------------
+
+if ! command -v rsync >/dev/null 2>&1; then
+  print info "Installing rsync..."
+  apt-get update -y >/dev/null 2>&1 || true
+  apt-get install -y rsync >/dev/null || { print error "Could not install rsync."; exit 1; }
+fi
+require_cmd rsync
+
+# --- save configuration -------------------------------------------------------
+
+umask 077
+cat > "$CONF_FILE" <<CONF
+# InteLIS backup configuration. Written by remote-backup.sh.
+# Re-run 'intelis backup setup' to change any of this.
+INSTANCE_NAME='${SANITIZED_NAME}'
+LAB_UUID='${LAB_UUID}'
+DEST_FOLDER='${DEST_FOLDER}'
+LIS_PATH='${LIS_PATH}'
+DEST_MODE='${DEST_MODE}'
+DEST_BASE='${DEST_BASE}'
+DEST_DIR='${DEST_DIR}'
+SSH_USER='${SSH_USER}'
+SSH_HOST='${SSH_HOST}'
+SSH_PORT='${SSH_PORT}'
+SSH_KEY='${SSH_KEY}'
+SMB_HOST='${SMB_HOST}'
+SMB_SHARE='${SMB_SHARE}'
+SMB_USER='${SMB_USER}'
+SMB_VERS='${SMB_VERS}'
+SMB_CRED_FILE='${SMB_CRED_FILE}'
+MOUNT_POINT='${MOUNT_POINT}'
+LOCAL_ROOT='${LOCAL_ROOT}'
+CONF
+chmod 600 "$CONF_FILE"
+umask 022
+print success "Settings saved to $CONF_FILE"
+
+install_backup_runner
 
 # --- log rotation -------------------------------------------------------------
 
