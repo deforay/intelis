@@ -31,6 +31,23 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/archive-audit-table
     ->preventOverlapping()
     ->description('Archiving Audit Tables');
 
+// Roll settled per-sample audit files into one archive per month.
+//
+// The archiving task above writes one file per sample, which is right for
+// reading and expensive for everything else: a working lab ends up with a file
+// per sample it has ever run, and audit-trail alone reaches gigabytes — much of
+// it the unused tail of a filesystem block, repeated per sample. It also makes
+// every off-machine backup stat hundreds of thousands of files to conclude
+// there is nothing to do.
+//
+// Daily, and batched, because the first run on an established lab has the
+// whole history to work through.
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/bundle-audit-trail.php")
+    ->daily()
+    ->timezone($timezone)
+    ->preventOverlapping()
+    ->description('Bundling settled audit files');
+
 // Generate Sample IDs
 $schedule->run(PHP_BINARY . " " . BIN_PATH . "/sample-code-generator.php")
     ->everyMinute()
