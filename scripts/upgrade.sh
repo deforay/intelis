@@ -170,7 +170,8 @@ REQUIRED_SHARED_FN=(
     fetch_master_tree format_duration hosts_file_shadows
     is_valid_application_path log_action mysql_cnf_comment_option
     mysql_cnf_get_option mysql_cnf_insert_mysqld_options mysql_diagnostics
-    normalize_hostname_input pause_cron phase_mark phase_report phase_reset
+    normalize_hostname_input pause_cron phase_mark phase_record phase_report
+    phase_reset
     prepare_system print print_instance_status repair_html_escaped_db_password
     restart_service resume_cron run_git set_permissions setup_intelis_cron
     setup_mysql_config spinner to_absolute_path ui_note wait_with_progress
@@ -1503,6 +1504,11 @@ prepare_phase() {
     local vendor_tar="${staging_dir}/vendor.tar.gz"
     local vendor_md5="${staging_dir}/vendor.tar.gz.md5"
     local vendor_extract_dir="${staging_dir}/vendor"
+    # The vendor worker runs in a backgrounded subshell, so it hands its
+    # download time back through a file rather than a variable. Splitting the
+    # download from the extract is the difference between blaming the link and
+    # blaming the disk, which is the whole point of the breakdown.
+    local vendor_dl_secs_file="${staging_dir}/.vendor-download-secs"
 
     # ---- master worker ----
     # Acquisition (shallow mirror + delta fetch, clone fallback, tarball fallback,
@@ -1529,10 +1535,13 @@ prepare_phase() {
             return 0
         fi
         if [ ! -f "$vendor_tar" ] || [ ! -f "$vendor_md5" ]; then
+            local _dl_started
+            _dl_started=$(date +%s)
             echo "vendor: downloading tarball"
             download_file "$vendor_tar" "$VENDOR_TARBALL_URL" "vendor: downloading tarball"
             echo "vendor: downloading checksum"
             download_file "$vendor_md5" "$VENDOR_TARBALL_MD5_URL" "vendor: downloading checksum"
+            echo $(( $(date +%s) - _dl_started )) > "$vendor_dl_secs_file"
         else
             echo "vendor: tarball + checksum already present"
         fi
@@ -1580,18 +1589,29 @@ prepare_phase() {
     else
         print info "Downloading master tarball (git unavailable)..."
     fi
+    # Downloads are timed like every other step. They are the single biggest
+    # cost of a run on a slow link, and until now the breakdown at the end of
+    # the run did not account for them at all -- it started at the rollback
+    # snapshot, by which point the long wait had already happened. Recorded
+    # once per run, not per instance, since one download serves them all.
+    local _prelude_note="" _step_started
+    [ "${#lis_paths[@]}" -gt 1 ] && _prelude_note=" (all instances)"
+
+    _step_started=$(date +%s)
     ( _prepare_master_worker ) >"$master_log" 2>&1 &
     local master_pid=$!
 
     local master_status=0
     wait "$master_pid" || master_status=$?
+    local master_elapsed=$(( $(date +%s) - _step_started ))
+    phase_record "source download${_prelude_note}" "$master_elapsed"
 
     if [ "$master_status" -ne 0 ]; then
         print error "Master download/extract failed. See ${master_log}"
         log_action "Prepare: master failed (status $master_status)"
         return 1
     fi
-    print success "Master ready at ${master_extract_dir}"
+    print success "Master ready at ${master_extract_dir} ($(format_duration "$master_elapsed"))"
 
     # ---- Step 2: decide whether any instance needs a fresh vendor ----
     # vendor/ is fully determined by composer.lock, so the precise "outdated"
@@ -1635,9 +1655,20 @@ prepare_phase() {
     if [ "$vendor_needed" = true ]; then
         print info "Vendor download needed (${_gate_reason}); fetching vendor tarball"
         log_action "Prepare: vendor needed (${_gate_reason})"
+        _step_started=$(date +%s)
         ( _prepare_vendor_worker ) >"$vendor_log" 2>&1 &
         local vendor_pid=$!
         wait "$vendor_pid" || vendor_status=$?
+        local vendor_elapsed=$(( $(date +%s) - _step_started ))
+        local vendor_dl_secs=0
+        if [ -f "$vendor_dl_secs_file" ]; then
+            vendor_dl_secs=$(head -n1 "$vendor_dl_secs_file" | tr -cd '0-9')
+            [ -n "$vendor_dl_secs" ] || vendor_dl_secs=0
+            [ "$vendor_dl_secs" -le "$vendor_elapsed" ] || vendor_dl_secs="$vendor_elapsed"
+        fi
+        phase_record "vendor download${_prelude_note}" "$vendor_dl_secs"
+        phase_record "vendor unpack${_prelude_note}" "$(( vendor_elapsed - vendor_dl_secs ))"
+        log_action "Prepare: vendor took $(format_duration "$vendor_elapsed") ($(format_duration "$vendor_dl_secs") downloading)"
 
         if [ "$vendor_status" -ne 0 ]; then
             print error "Vendor download/extract failed. See ${vendor_log}"
@@ -1645,7 +1676,7 @@ prepare_phase() {
             return 1
         fi
         if [ -d "$vendor_extract_dir" ] && [ -d "$vendor_extract_dir/composer" ]; then
-            print success "Vendor ready at ${vendor_extract_dir}"
+            print success "Vendor ready at ${vendor_extract_dir} ($(format_duration "$vendor_elapsed"))"
         else
             print warning "Vendor staging not populated; apply will fall back to composer install"
         fi
@@ -1873,6 +1904,11 @@ else
     fi
 
     if [ "$prepare_only" = true ]; then
+        echo
+        # Nothing else in this mode will print the download timings, so do it
+        # here; phase_report falls back to the whole-run steps when no instance
+        # steps were recorded.
+        phase_report
         echo
         print success "Prepared at ${staging_dir}"
         echo "Apply later with: sudo intelis-update --apply-prepared ${staging_dir}"

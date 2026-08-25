@@ -1869,11 +1869,35 @@ declare -a phase_order=()
 _phase_label=""
 _phase_started=0
 
+# Steps that happen once for the whole run, before any instance is touched --
+# downloading and extracting the update package. They belong in the same table
+# as the per-instance steps (the download is often the honest answer to "why
+# was that slow"), but they are not owned by any one instance, so they are kept
+# separately and printed once, at the top of the first instance's breakdown.
+declare -A prelude_seconds=()
+declare -a prelude_order=()
+_prelude_reported=false
+
+# Resets the per-instance steps only. The prelude is per run, and the loop
+# calls this between instances.
 phase_reset() {
     phase_seconds=()
     phase_order=()
     _phase_label=""
     _phase_started=0
+}
+
+# Record an already-measured whole-run step. Separate from phase_mark because
+# these are timed around a single call rather than being marked off in sequence.
+phase_record() {
+    local label="$1" secs="${2:-0}"
+    [ -n "$label" ] || return 0
+    [[ "$secs" =~ ^[0-9]+$ ]] || secs=0
+    if [ -z "${prelude_seconds[$label]:-}" ]; then
+        prelude_order+=("$label")
+        prelude_seconds["$label"]=0
+    fi
+    prelude_seconds["$label"]=$(( ${prelude_seconds[$label]} + secs ))
 }
 
 # Close the phase in progress, if any, and open one called $1. Called with no
@@ -1902,26 +1926,44 @@ phase_mark() {
 phase_report() {
     phase_mark   # close whatever is still open
 
-    [ "${#phase_order[@]}" -gt 0 ] || return 0
+    # One table, prelude first: the reader wants the whole cost of the run in
+    # front of them, not a download timing they have to go and find elsewhere.
+    local -a labels=() values=()
+    local label
+    if [ "$_prelude_reported" != true ] && [ "${#prelude_order[@]}" -gt 0 ]; then
+        for label in "${prelude_order[@]}"; do
+            labels+=("$label")
+            values+=("${prelude_seconds[$label]}")
+        done
+        _prelude_reported=true
+    fi
+    if [ "${#phase_order[@]}" -gt 0 ]; then
+        for label in "${phase_order[@]}"; do
+            labels+=("$label")
+            values+=("${phase_seconds[$label]}")
+        done
+    fi
 
-    local label longest="" longest_secs=0 width=0
-    for label in "${phase_order[@]}"; do
-        [ "${#label}" -gt "$width" ] && width=${#label}
-        if [ "${phase_seconds[$label]}" -gt "$longest_secs" ]; then
-            longest_secs=${phase_seconds[$label]}
-            longest="$label"
+    [ "${#labels[@]}" -gt 0 ] || return 0
+
+    local i longest_idx=-1 longest_secs=0 width=0
+    for i in "${!labels[@]}"; do
+        [ "${#labels[$i]}" -gt "$width" ] && width=${#labels[$i]}
+        if [ "${values[$i]}" -gt "$longest_secs" ]; then
+            longest_secs=${values[$i]}
+            longest_idx=$i
         fi
     done
 
     print info "Where the time went:"
-    for label in "${phase_order[@]}"; do
+    for i in "${!labels[@]}"; do
         local note=""
         # Only worth pointing at when there is a spread to point at.
-        if [ "$label" = "$longest" ] && [ "$longest_secs" -ge 10 ]; then
+        if [ "$i" -eq "$longest_idx" ] && [ "$longest_secs" -ge 10 ]; then
             note="   <- longest"
         fi
         printf '    %-*s  %8s%s\n' \
-            "$width" "$label" "$(format_duration "${phase_seconds[$label]}")" "$note"
+            "$width" "${labels[$i]}" "$(format_duration "${values[$i]}")" "$note"
     done
 }
 
