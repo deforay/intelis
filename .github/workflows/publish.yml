@@ -13,8 +13,10 @@ name: Publish
 #   - force. `stable` only ever fast-forwards, so it can never be moved back
 #     onto code labs have already left behind, and a push that is not a
 #     descendant fails loudly rather than rewriting what is running in a lab.
-#   - publish work marked [hold] in its commit message, which is the escape
-#     hatch for something that is finished enough to push and not to ship.
+#   - publish a commit whose subject STARTS with [hold], which is the escape
+#     hatch for something finished enough to push and not to ship. Start of the
+#     subject, not anywhere in the message, so that writing about the marker
+#     does not trip it.
 #
 # Version tags are a separate act with a separate meaning — `composer ship`,
 # when there is real DDL or a milestone worth naming. Forgetting THAT now costs
@@ -80,11 +82,17 @@ jobs:
             echo "stable does not exist yet — this push creates it."
           fi
 
-          if git log -1 --format='%s%n%b' "$sha" | grep -qiE '\[(hold|no-publish)\]'; then
-            echo "::notice::Held back by a [hold] marker in the commit message."
-            echo "Held: \`${subject}\`" >> "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
+          # Only at the START of the subject, never anywhere in the message.
+          # Matching the whole message means a commit that merely mentions the
+          # marker holds itself back — which is exactly what the commit
+          # introducing this workflow did, silently, on its first run.
+          case "$subject" in
+            '[hold]'*|'[no-publish]'*)
+              echo "::notice::Held back by the marker at the start of the subject."
+              echo "Held: \`${subject}\`" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+              ;;
+          esac
 
           # No --force, ever. A rejection here means stable and master have
           # diverged, which is worth a red run and a person looking at it.
