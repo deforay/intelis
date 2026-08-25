@@ -1701,6 +1701,7 @@ upgrade_instance() {
     [ -f "${lis_path}/VERSION.txt" ] && _old_sha=$(head -n1 "${lis_path}/VERSION.txt" | tr -d '\r\n')
     [ -f "${temp_dir}/intelis-master/VERSION.txt" ] && _new_sha=$(head -n1 "${temp_dir}/intelis-master/VERSION.txt" | tr -d '\r\n')
 
+    phase_mark "rollback snapshot"
     # --- Rollback snapshot (before any destructive change) ---
     local _snapshot_dir=""
     _snapshot_dir="$(create_rollback_snapshot "$lis_path" "$apply_run_ts" || true)"
@@ -1755,6 +1756,7 @@ upgrade_instance() {
     fi
 
     # Rsync from temp to this instance
+    phase_mark "code sync"
     eval rsync -a --inplace --whole-file $exclude_options --info=progress2 "$temp_dir/intelis-master/" "$lis_path/" &
     local rsync_pid=$!
     spinner "${rsync_pid}"
@@ -1771,6 +1773,7 @@ upgrade_instance() {
     log_action "Files copied to ${lis_path}."
 
     # Migrate directories to var/ structure
+    phase_mark "directory migrations"
     print info "Migrating directories to var/ structure..."
 
     # Ensure var/* root exists
@@ -1842,6 +1845,7 @@ upgrade_instance() {
     ensure_cache_di_true "${config_file}"
 
     # Run Composer Install as www-data
+    phase_mark "vendor install"
     print info "Running composer operations..."
     cd "${lis_path}"
 
@@ -1928,6 +1932,7 @@ upgrade_instance() {
     # be briefly unreachable just after a config reload / restart (socket being
     # recreated), and a transient blip shouldn't fail a healthy instance. Probe
     # as www-data so we exercise the same credentials/socket the migrations use.
+    phase_mark "database check"
     print info "Checking database connectivity..."
     local db_ok=0 db_try db_probe_out=""
     for db_try in 1 2 3 4 5; do
@@ -1999,6 +2004,7 @@ upgrade_instance() {
     # upgrade cannot leave an instance with cron silently switched off.
     pause_cron "${lis_path}"
 
+    phase_mark "migrations"
     print info "Running database migrations..."
     if ! wwwdata_composer post-update; then
         resume_cron "${lis_path}"
@@ -2017,6 +2023,7 @@ upgrade_instance() {
         done
     fi
 
+    phase_mark "run-once scripts"
     # Run run-once scripts.
     #
     # Each script self-guards against re-execution (ledger-based ones via
@@ -2094,6 +2101,7 @@ upgrade_instance() {
         sudo rm "${lis_path}/public/test.php"
     fi
 
+    phase_mark "cron + smoke check"
     # Cron job setup
     setup_intelis_cron "${lis_path}"
 
@@ -2191,6 +2199,7 @@ for i in "${!lis_paths[@]}"; do
     fi
 
     instance_started_at=$(date +%s)
+    phase_reset
 
     if upgrade_instance "${lis_paths[$i]}" "$((i+1))" "$total_instances" "$temp_dir"; then
         updated_instances+=("${lis_paths[$i]}")
@@ -2202,6 +2211,10 @@ for i in "${!lis_paths[@]}"; do
 
     instance_seconds["${lis_paths[$i]}"]=$(( $(date +%s) - instance_started_at ))
     log_action "Instance ${lis_paths[$i]} took $(format_duration "${instance_seconds[${lis_paths[$i]}]}")"
+
+    # Printed for a failed instance too: how far it got, and how long that took,
+    # is the part of a failure report worth having.
+    phase_report
 
     # Show status after completion
     if [ "$total_instances" -gt 1 ]; then
@@ -2355,9 +2368,18 @@ if [ ${#updated_instances[@]} -gt 0 ]; then
 
     if [ ${#permission_pids[@]} -gt 0 ]; then
         print info "Waiting for the permission pass to finish before checking..."
+        _perm_wait_started=$(date +%s)
         for _pid in "${permission_pids[@]}"; do
             wait "${_pid}" 2>/dev/null || true
         done
+        # Only what was spent WAITING, not what the pass took: it runs in the
+        # background alongside the rest of the upgrade, so most of its work is
+        # normally already done by the time anything blocks on it. A number here
+        # is time the operator actually lost.
+        _perm_waited=$(( $(date +%s) - _perm_wait_started ))
+        if [ "$_perm_waited" -ge 5 ]; then
+            print info "Waited $(format_duration "${_perm_waited}") for it."
+        fi
     fi
 
     print header "Post-Upgrade Check"
