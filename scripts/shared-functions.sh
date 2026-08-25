@@ -1721,6 +1721,73 @@ format_duration() {
     fi
 }
 
+# Phase timing within one instance.
+#
+# The run total says an upgrade took an hour and never which part of it did.
+# These record wall clock between marks so the summary can name the step that
+# actually cost the time, which is the difference between "the upgrade is slow"
+# and something anyone can act on.
+declare -A phase_seconds=()
+declare -a phase_order=()
+_phase_label=""
+_phase_started=0
+
+phase_reset() {
+    phase_seconds=()
+    phase_order=()
+    _phase_label=""
+    _phase_started=0
+}
+
+# Close the phase in progress, if any, and open one called $1. Called with no
+# argument it only closes, which is how the last phase of a run is ended.
+phase_mark() {
+    if [ -n "$_phase_label" ]; then
+        local elapsed=$(( $(date +%s) - _phase_started ))
+        [ "$elapsed" -lt 0 ] && elapsed=0
+        if [ -z "${phase_seconds[$_phase_label]:-}" ]; then
+            phase_order+=("$_phase_label")
+            phase_seconds["$_phase_label"]=0
+        fi
+        phase_seconds["$_phase_label"]=$(( ${phase_seconds[$_phase_label]} + elapsed ))
+    fi
+
+    _phase_label="${1:-}"
+    _phase_started=$(date +%s)
+}
+
+# Print the breakdown, longest step called out.
+#
+# Silent when nothing was marked, so an instance that failed before the first
+# mark says nothing rather than printing an empty table. An instance that
+# failed part-way through prints what it got through, which is the half worth
+# having.
+phase_report() {
+    phase_mark   # close whatever is still open
+
+    [ "${#phase_order[@]}" -gt 0 ] || return 0
+
+    local label longest="" longest_secs=0 width=0
+    for label in "${phase_order[@]}"; do
+        [ "${#label}" -gt "$width" ] && width=${#label}
+        if [ "${phase_seconds[$label]}" -gt "$longest_secs" ]; then
+            longest_secs=${phase_seconds[$label]}
+            longest="$label"
+        fi
+    done
+
+    print info "Where the time went:"
+    for label in "${phase_order[@]}"; do
+        local note=""
+        # Only worth pointing at when there is a spread to point at.
+        if [ "$label" = "$longest" ] && [ "$longest_secs" -ge 10 ]; then
+            note="   <- longest"
+        fi
+        printf '    %-*s  %8s%s\n' \
+            "$width" "$label" "$(format_duration "${phase_seconds[$label]}")" "$note"
+    done
+}
+
 # pause_cron / resume_cron — hold scheduled tasks across a window where the
 # database is being altered.
 #
