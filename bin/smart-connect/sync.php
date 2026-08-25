@@ -50,8 +50,12 @@ try {
     if ($module === 'metadata') {
         // Force drops and rebuilds the dashboard's copy of each table, so it
         // also ignores the watermark and resends every row.
-        $options = getopt('f', ['force']);
-        $force = isset($options['f']) || isset($options['force']);
+        //
+        // Read straight from $argv rather than via getopt(): getopt() stops at
+        // the first non-option argument, and the module name is always one, so
+        // it returns nothing at all here and every forced run silently ran as
+        // an incremental one.
+        $force = count(array_intersect(['-f', '--force'], array_slice($argv, 2))) > 0;
 
         $output->writeln('<info>Smart Connect Metadata Sync</info>');
         if ($force) {
