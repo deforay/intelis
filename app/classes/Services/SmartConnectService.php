@@ -544,6 +544,31 @@ class SmartConnectService
                 ]);
             }
 
+            // A partial sync answers 200 with status 'success' and names the
+            // tables it could not write. Advancing the watermark on that loses
+            // them for good: the next run asks only for rows changed since, and
+            // nothing changed, so the rows that never arrived are never sent
+            // again. Treat it as a failure so the watermark holds and the next
+            // run resends the same tables.
+            $errors = $decoded['data']['errors'] ?? [];
+
+            if (!empty($decoded['partial']) || !empty($errors)) {
+                $names = is_array($errors) ? array_keys($errors) : [];
+
+                LoggerUtility::logError('Smart Connect: metadata sync was partial', [
+                    'url' => $url,
+                    'errors' => $errors,
+                ]);
+
+                return $report('failed', [
+                    'tables' => count($tables),
+                    'httpStatus' => $status,
+                    'message' => 'Dashboard accepted only part of the metadata'
+                        . ($names === [] ? '' : ' (failed: ' . implode(', ', $names) . ')')
+                        . '. Watermark held so the next run resends.',
+                ]);
+            }
+
             $this->general->addApiTracking(
                 MiscUtility::generateULID(),
                 'vlsm-system',
