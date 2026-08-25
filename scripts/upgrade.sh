@@ -54,6 +54,16 @@
 #   sudo intelis-update --prepare-only           # Stage the update now; apply later
 #   sudo intelis-update --apply-prepared /var/intelis-staging/20260422-120000-1234
 #   sudo intelis-update -p /var/www/intelis --no-snapshot   # skip the rollback snapshot
+#
+# Run straight from the network, without installing it first:
+#   sudo bash -c "$(wget -qO- https://intelis.app/up)"          # options go after the quotes
+#   wget -qO- https://intelis.app/up | sudo bash -s -- -N -p /var/www/intelis
+#
+# A bare `... | sudo bash` has nowhere to put options: everything after `bash` is
+# read as the script's own arguments only when `-s --` is there to say so. That
+# is the case /etc/intelis/upgrade.conf exists for — a machine that always wants
+# --no-snapshot can say so once in the file and then be upgraded by any of these
+# forms without anyone having to remember a flag.
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
