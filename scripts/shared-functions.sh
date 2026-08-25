@@ -763,18 +763,41 @@ set_permissions() {
         ;;
     esac
 
-    # The pruned trees: grant on the directory itself, and set the matching
-    # default entries so anything created inside inherits them. The immediate
-    # children are covered too -- audit-trail holds one subdirectory per test
-    # type, which already exist and so would never pick up a default set only
-    # on the parent. Both are O(1) against the number of samples.
-    local heavy_dir
-    for heavy_dir in "${HEAVY[@]}"; do
-        [[ -d "$heavy_dir" ]] || continue
-        find "$heavy_dir" -maxdepth 1 -type d -print0 \
-            | xargs -0 -r setfacl -m \
-                "u:${who}:rwx,u:www-data:rwx,d:u:${who}:rwx,d:u:www-data:rwx" \
-                2>>/tmp/acl_failures.log || true
+    # Default ACLs on the directories that get written at runtime.
+    #
+    # An access ACL only covers entries that already exist. What keeps causing
+    # trouble is the ones that do not yet: the scheduled tasks run from root's
+    # crontab, so composer and the application create var/cache entries -- and
+    # the sharded subdirectories holding them -- owned by root. Unlinking a file
+    # needs write access to the DIRECTORY that holds it, not ownership of the
+    # file, so a root-owned subdirectory is what stops www-data clearing the
+    # cache, and what surfaces as "N cache entries could not be removed while
+    # running as www-data (N owned by root)".
+    #
+    # A default ACL is inherited by everything created underneath from here on,
+    # and inheritance is transitive: a directory created inside one carries the
+    # default forward to its own children. So setting it high enough is enough
+    # to keep every future entry removable, whoever writes it.
+    local acl_default="u:${who}:rwx,u:www-data:rwx,d:u:${who}:rwx,d:u:www-data:rwx"
+    local dflt_dir
+
+    # The runtime directories are swept in full, directories only. They are
+    # small, and going all the way down repairs an instance whose existing
+    # cache shards are already root-owned rather than only fixing the next
+    # entries to be written.
+    for dflt_dir in var/cache var/logs var/temporary public/temporary public/uploads; do
+        [[ -d "${root}/${dflt_dir}" ]] || continue
+        find "${root}/${dflt_dir}" -type d -print0 \
+            | xargs -0 -r setfacl -m "$acl_default" 2>>/tmp/acl_failures.log || true
+    done
+
+    # The pruned trees get the roots and their immediate children only -- going
+    # deeper is exactly the walk the pruning exists to avoid, and nothing but
+    # the application writes there anyway.
+    for dflt_dir in "${HEAVY[@]}"; do
+        [[ -d "$dflt_dir" ]] || continue
+        find "$dflt_dir" -maxdepth 1 -type d -print0 \
+            | xargs -0 -r setfacl -m "$acl_default" 2>>/tmp/acl_failures.log || true
     done
 
     if [[ "$wait_mode" == "sync" ]]; then
