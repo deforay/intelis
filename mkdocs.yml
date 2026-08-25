@@ -101,6 +101,7 @@ nav:
   - Remote Administration:
       - Remote Command Plane (runbook): guides/remote-command-plane.md
   - Troubleshooting:
+      - Browser Shows PHP Code: guides/browser-shows-php-code.md
       - Fix Collation Mismatch: guides/fix-collation-issue.md
       - Permission Denied Issue: guides/permission-denied-issue.md
   - Reference:
@@ -182,6 +183,7 @@ plugins:
             Remote Administration: Administration à distance
             Remote Command Plane (runbook): Plan de commande à distance (procédure)
             Troubleshooting: Dépannage
+            Browser Shows PHP Code: Le navigateur affiche du code PHP
             Fix Collation Mismatch: Corriger une incohérence de collation
             Permission Denied Issue: Corriger une erreur de permission
             Connect an Instrument: Connecter un automate
