@@ -4,78 +4,84 @@ Opening InteLIS shows the raw contents of `index.php` as plain text, starting
 with `<?php declare(strict_types=1);`, instead of the sign-in page. On some
 browsers the page is offered as a download rather than displayed.
 
-This means Apache is serving the file instead of running it: the PHP module is
-no longer active. It usually appears right after an Ubuntu release upgrade, an
-`apt upgrade` that pulled in a different PHP version, or an interrupted setup —
-any of which can leave Apache without a PHP handler, or switch it back to the
-`mpm_event` worker, which mod_php cannot run under.
+This means Apache is serving the file instead of running it. It usually appears
+right after an Ubuntu release upgrade, an `apt upgrade` that pulled in a
+different PHP version, or an interrupted setup.
 
 Nothing is lost when this happens. The database and the uploaded files are
-untouched; only the web server needs its PHP module put back.
+untouched; only the web server needs putting right.
 
 ## Fix
 
 Open a terminal on the InteLIS machine and run:
 
 ```bash
-sudo switch-php 8.4
+sudo intelis doctor
 ```
 
-Use `8.5` instead of `8.4` on Ubuntu 26.04 or later, which no longer ships PHP
-8.4. On Ubuntu 24.04 and earlier, use `8.4`. Check the release with
-`lsb_release -rs` if unsure.
+It checks what the browser actually gets, explains what it found in plain
+language, and asks before changing anything. Reload the browser when it says the
+site is working again.
 
-The command installs the matching PHP packages, re-enables `mpm_prefork` and the
-`phpX.Y` Apache module, points the `php` command at that version, and restarts
-Apache. It takes a few minutes on a slow connection. Reload the browser when it
-finishes.
-
-If the command is not found, install it first:
+On a machine too old to have that command, or one where InteLIS cannot be
+updated to get it, the same script runs straight from the internet:
 
 ```bash
-sudo curl -fsSL https://raw.githubusercontent.com/deforay/utility-scripts/master/php/switch-php -o /usr/local/bin/switch-php
-sudo chmod +x /usr/local/bin/switch-php
+sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/deforay/intelis/master/scripts/intelis-doctor.sh)"
 ```
 
-## Confirm the fix
+Note that is `bash -c "$(…)"`, not `… | bash`. Piping hands the script its own
+text as the answers to the questions it asks.
+
+The doctor always writes a report and puts a copy named `site-report.txt` in the
+operator's own folder, ready to attach to a message. Send that file when asking
+for help.
+
+## What it is actually fixing
+
+Three different faults produce this same page, and they are not distinguishable
+by looking at the screen.
+
+**Apache has no PHP module.** The usual state after a release upgrade. Ubuntu
+defaults to the `event` worker, and mod_php only runs under `prefork` — so
+enabling the PHP module while `event` is active silently does nothing. The
+module has to go on after the worker is switched, which is the order
+`sudo switch-php 8.4` uses (`8.5` on Ubuntu 26.04 and later, which no longer
+ships 8.4).
+
+**The PHP packages are not available to install.** A release upgrade disables
+the PHP repository, so there is nothing for apt to install and every repair
+looks like it failed.
+
+**Apache is configured correctly and never picked it up.** This one is worth
+knowing about, because every check says the machine is fine:
+
+```
+Module mpm_prefork already enabled
+Module php8.4 already enabled
+```
+
+All of that can be true while the running server still serves source, because
+`apache2ctl -M` reports the configuration on disk rather than what the live
+process loaded. A restart is the whole fix:
 
 ```bash
-php -v                          # reports the expected version
-apache2ctl -M | grep -E 'php|mpm'   # lists php8.4_module and mpm_prefork_module
+sudo systemctl restart apache2
 ```
 
-Both lines have to be present. A `mpm_event_module` in that output with no
-`php` line is the exact state that produces the raw source page.
+A reboot does not reliably settle it, and neither does re-running the tool that
+already wrote the correct configuration. This is why the doctor requests a page
+over HTTP and reads what comes back, rather than trusting the configuration.
 
-## If the page still shows code
+## If the site opens but shows an error
 
-Work through these in order.
+The web server is then doing its job and the fault is inside the application,
+most often the database. `intelis doctor` detects this and offers to run the
+database doctor itself. To go straight there:
 
-1. **Apache did not actually restart.** `sudo systemctl restart apache2`, then
-   `systemctl status apache2 --no-pager`. A configuration error stops the
-   restart and leaves the old process running; `sudo apache2ctl -t` names the
-   offending file.
-
-2. **The module is installed but not enabled.** Enable it by hand, matching the
-   version reported by `php -v`:
-
-   ```bash
-   sudo a2dismod -f mpm_event mpm_worker
-   sudo a2enmod mpm_prefork
-   sudo a2enmod php8.4
-   sudo systemctl restart apache2
-   ```
-
-   `a2enmod php8.4` failing with "module php8.4 does not exist" means the
-   package is missing — `sudo apt install libapache2-mod-php8.4` — and enabling
-   `mpm_prefork` first is not optional, because the module's `.load` file is not
-   created while `mpm_event` is active.
-
-3. **The browser cached the source.** Reload with Ctrl+Shift+R, or open the
-   address in a private window, before concluding the fix did not work.
-
-4. **Something else is wrong.** The last lines of
-   `/var/log/apache2/error.log` and `/var/log/php-switch.log` say what failed.
+```bash
+sudo intelis fix-database
+```
 
 ## After the fix
 

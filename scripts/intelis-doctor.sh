@@ -635,6 +635,16 @@ fi
 case "$PROBE_RESULT" in
   source-served)
     say error "Confirmed: the server is sending PHP code to the browser instead of running it."
+    # apache2ctl -M reads the configuration on disk, not what the running server
+    # actually loaded. A server that was never restarted after the configuration
+    # was corrected passes every check above and still serves source — which is
+    # the state a real lab was left in after switch-php had already done its job.
+    # The probe is the only thing that can tell the two apart.
+    if ! has_finding handler && ! has_finding ppa; then
+      finding critical stale \
+        "Apache is set up correctly but has not picked it up yet." \
+        "The configuration on disk is right and the running server is still working from the old one. It only needs restarting."
+    fi
     ;;
   php-runs)
     say success "PHP runs correctly on this machine."
@@ -729,6 +739,14 @@ fix_php_handler() {
   apache2ctl -M 2>/dev/null | grep -q 'php[0-9._]*_module'
 }
 
+# Deliberately a restart and not a reload: a reload keeps existing worker
+# processes, and those are the ones running without PHP.
+fix_stale() {
+  systemctl restart apache2 >/dev/null 2>&1 || return 1
+  sleep 2
+  systemctl is-active --quiet apache2
+}
+
 fix_maintenance() {
   local conf
   [ -n "$INSTALL_PATH" ] && rm -f -- \
@@ -813,6 +831,7 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
   print header "What can be done about it"
 
   has_finding maintenance && { run_fix "Take the site out of update mode." fix_maintenance || true; }
+  has_finding stale       && { run_fix "Restart the web server so it picks up its settings." fix_stale || true; }
   has_finding ppa         && { run_fix "Restore the PHP repository so the packages can be installed." fix_add_ppa || true; }
   has_finding handler     && { run_fix "Make Apache able to run PHP again." fix_php_handler || true; }
   has_finding permissions && { run_fix "Give the web server access to the folders it needs." fix_permissions || true; }

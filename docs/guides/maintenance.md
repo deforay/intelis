@@ -4,6 +4,42 @@ InteLIS ships with several CLI tools for system health, database management, and
 
 ---
 
+## Site Doctor
+
+Works out why InteLIS will not open in the browser, explains it in plain
+language, and offers to repair what is safe to repair.
+
+```bash
+sudo intelis doctor
+
+# Only look and report, change nothing
+sudo intelis doctor --check
+```
+
+**How it works:**
+
+- Requests a page over HTTP and reads what comes back, rather than trusting the
+  configuration — `apache2ctl -M` reports what is on disk, not what the running
+  server loaded, and the two disagree often enough to matter
+- Covers the web-serving path: the server running, the PHP handler and MPM, a
+  leftover maintenance marker, the DocumentRoot, another program holding port 80,
+  file permissions and disk space
+- Repairs are offered one at a time and asked for before they are applied
+- Hands over to the database doctor itself when the fault turns out to be there
+- Writes a report and puts a copy named `site-report.txt` in the operator's own
+  folder, ready to attach to a message. Passwords are removed from it
+
+On a machine without the `intelis` command:
+
+```bash
+sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/deforay/intelis/master/scripts/intelis-doctor.sh)"
+```
+
+See [Browser Shows PHP Code](browser-shows-php-code.md) for the symptom this is
+most often reached from.
+
+---
+
 ## Service Guard
 
 A systemd watchdog that checks Apache and MySQL every 60 seconds and restarts them if unresponsive.
