@@ -70,6 +70,7 @@ try {
         if ($total == 0) {
             $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
             header("Location:/facilities/upload-facilities.php");
+            exit;
         }
 
         foreach ($filteredArray as $rowIndex => $rowData) {
@@ -77,6 +78,7 @@ try {
             if (empty($rowData['A']) || empty($rowData['D']) || empty($rowData['E']) || empty($rowData['F'])) {
                 $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
                 header("Location:/facilities/upload-facilities.php");
+                exit;
             }
             if (!in_array($rowData['F'], ['1', '2', '3'], true)) {
                 $rowData['F'] = 1;
