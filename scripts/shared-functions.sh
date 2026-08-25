@@ -426,21 +426,39 @@ MASTER_GIT_URL="${MASTER_GIT_URL:-https://github.com/deforay/intelis.git}"
 # What a lab upgrades TO.
 #
 # Labs tracked the tip of master, which made merging and shipping the same
-# event: anything pushed reached every installation on its next upgrade, with no
-# point in between where somebody decided it was ready. Now they follow the
-# newest vN.N.N tag, so publishing is a deliberate act — and a cheap one, since
-# `composer version patch -- -y` plus a tag push is the whole ceremony. An
-# urgent fix still ships in the time it takes to type it.
+# event: anything pushed reached every installation on its next upgrade, with
+# no point in between where somebody decided it was ready.
+#
+# They then tracked the newest vN.N.N tag, which put a person between the two —
+# and made that person the single point of failure. Forgetting `composer ship`
+# meant the fix reached nobody, silently, and the only thing that ever said so
+# was a pre-push warning. It also charged a version number for every delivery:
+# 36 of the 46 releases in the 5.7 line carried no schema change at all, and
+# each one still minted a version, a migration file and a tag.
+#
+# Now they follow the `stable` branch, which CI advances to any commit on
+# master that passed Verify — every PHP file parses, the DI container compiles,
+# the unit tests pass, and a fresh install migrates from sql/init.sql all the
+# way up. Nothing to remember, and a red commit reaches no lab, which is more
+# than the tag ever promised: tagging checked repo hygiene and never once
+# looked at the code.
+#
+# Version numbers go back to meaning the schema/feature level, bumped by
+# `composer ship` when there is real DDL or a milestone worth naming.
 #
 # INTELIS_TRACK overrides this:
-#   INTELIS_TRACK=master     the old behaviour, for hotfixing one lab from tip
+#   INTELIS_TRACK=master     tip of master, unverified — for hotfixing one lab
+#   INTELIS_TRACK=stable     the default, named explicitly
 #   INTELIS_TRACK=v5.7.1     pin an installation to an exact release
 #
-# Falls back to master when no release tag exists yet, so an instance is never
-# left unable to update because nothing has been tagged.
+# Falls back to the newest tag, then to master, so an instance is never left
+# unable to update because `stable` does not exist yet.
 INTELIS_TRACK="${INTELIS_TRACK:-latest}"
 
 # resolve_intelis_ref — echo the git ref this machine should upgrade to.
+#
+# One ls-remote answers both questions, so preferring `stable` costs no extra
+# round trip on a link where round trips are the expensive part.
 #
 # The tag filter is deliberately strict: ^v[0-9]+\.[0-9]+\.[0-9]+$ excludes the
 # vendor-latest release tag, which is a build artefact and not a version of the
@@ -449,11 +467,20 @@ INTELIS_TRACK="${INTELIS_TRACK:-latest}"
 resolve_intelis_ref() {
     case "$INTELIS_TRACK" in
         master) printf 'refs/heads/master'; return 0 ;;
+        stable) printf 'refs/heads/stable'; return 0 ;;
         v[0-9]*) printf 'refs/tags/%s' "$INTELIS_TRACK"; return 0 ;;
     esac
 
+    local refs
+    refs=$(git ls-remote "$MASTER_GIT_URL" 'refs/heads/stable' 'refs/tags/v*' 2>/dev/null)
+
+    if printf '%s\n' "$refs" | grep -q '[[:space:]]refs/heads/stable$'; then
+        printf 'refs/heads/stable'
+        return 0
+    fi
+
     local newest
-    newest=$(git ls-remote --tags "$MASTER_GIT_URL" 2>/dev/null \
+    newest=$(printf '%s\n' "$refs" \
         | sed 's|.*refs/tags/||' \
         | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
         | sort -V | tail -1)

@@ -1,0 +1,94 @@
+name: Publish
+
+# Advances the `stable` branch, which is what every installation upgrades to.
+#
+# Publishing used to be a command somebody had to remember. Forgetting it meant
+# the fix reached nobody — silently, since a lab has no way to know a fix exists
+# — and the only thing that ever mentioned it was a warning on push. Now Verify
+# passing on master IS the publish: nothing to remember, and a commit that fails
+# any check reaches no lab, which is more than the old tag ever promised.
+#
+# Two things it will not do:
+#
+#   - force. `stable` only ever fast-forwards, so it can never be moved back
+#     onto code labs have already left behind, and a push that is not a
+#     descendant fails loudly rather than rewriting what is running in a lab.
+#   - publish work marked [hold] in its commit message, which is the escape
+#     hatch for something that is finished enough to push and not to ship.
+#
+# Version tags are a separate act with a separate meaning — `composer ship`,
+# when there is real DDL or a milestone worth naming. Forgetting THAT now costs
+# an accurate version number rather than everybody's fixes.
+
+on:
+  workflow_run:
+    workflows: ["Verify"]
+    types: [completed]
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'Commit to publish (default: tip of master)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+# Serialized: two runs finishing at once must not race to move the same ref.
+concurrency:
+  group: publish-stable
+  cancel-in-progress: false
+
+jobs:
+  advance:
+    name: Advance stable
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Checkout the commit that passed
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.workflow_run.head_sha || inputs.sha || 'master' }}
+
+      - name: Publish it
+        run: |
+          sha=$(git rev-parse HEAD)
+          subject=$(git log -1 --format='%s' "$sha")
+          echo "candidate: ${sha} — ${subject}"
+
+          # On master, and nowhere else. workflow_run already filters by branch;
+          # this also covers a hand-typed SHA from workflow_dispatch.
+          git fetch --no-tags --quiet origin master
+          if ! git merge-base --is-ancestor "$sha" FETCH_HEAD; then
+            echo "::error::${sha} is not on master — refusing to publish it."
+            exit 1
+          fi
+
+          # Verify runs on every push, so a run that finishes after a newer one
+          # would otherwise try to move stable backwards and fail as a
+          # non-fast-forward. Already-published is a normal outcome, not a fault.
+          if git fetch --no-tags --quiet origin stable 2>/dev/null; then
+            if git merge-base --is-ancestor "$sha" FETCH_HEAD; then
+              echo "Already published — stable is at or ahead of this commit."
+              exit 0
+            fi
+          else
+            echo "stable does not exist yet — this push creates it."
+          fi
+
+          if git log -1 --format='%s%n%b' "$sha" | grep -qiE '\[(hold|no-publish)\]'; then
+            echo "::notice::Held back by a [hold] marker in the commit message."
+            echo "Held: \`${subject}\`" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # No --force, ever. A rejection here means stable and master have
+          # diverged, which is worth a red run and a person looking at it.
+          git push origin "${sha}:refs/heads/stable"
+
+          echo "Published \`${sha:0:9}\` — ${subject}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Installations tracking stable pick this up on their next upgrade."

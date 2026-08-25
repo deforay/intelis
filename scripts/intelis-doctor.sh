@@ -110,7 +110,7 @@ export NEEDRESTART_MODE=a
 # is wanted. So the fetch is best-effort and plain equivalents stand in.
 #
 # INTELIS_TRACK is pinned before sourcing: shared-functions.sh resolves the
-# newest release tag at source time with an untimed `git ls-remote`, and nothing
+# ref labs follow at source time with an untimed `git ls-remote`, and nothing
 # here upgrades anything, so that lookup would be pure latency on a bad link.
 INTELIS_TRACK="${INTELIS_TRACK:-master}"
 

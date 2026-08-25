@@ -579,28 +579,35 @@ if ($scVersion !== null && defined('VERSION')) {
     );
 }
 
-// Work that is pushed but never tagged reaches no lab, and nothing else says
-// so. Only a development clone can answer this: a lab is deployed from a
-// tarball or sits on a detached tag, with no branch and no tags to compare
-// against, so there the question does not arise.
+// Labs upgrade to the `stable` branch, which CI fast-forwards to any commit on
+// master that passed Verify. So work sitting on master unpublished is no longer
+// something somebody forgot to do — it means Verify is red or the Publish
+// workflow is stuck, and the symptom of both is labs quietly not receiving
+// fixes. Only a development clone can answer this: a lab is deployed from a
+// tarball or sits on a detached ref, with nothing to compare against.
 $gitDir = $root . '/.git';
 if (is_dir($gitDir) || is_file($gitDir)) {
-    $branch = trim((string) shell_exec('git -C ' . escapeshellarg($root) . ' rev-parse --abbrev-ref HEAD 2>/dev/null'));
-    $tags   = trim((string) shell_exec(
-        'git -C ' . escapeshellarg($root) . " tag --list 2>/dev/null | grep -E '^v[0-9]+\\.[0-9]+\\.[0-9]+$' | sort -V | tail -1"
-    ));
+    $git = 'git -C ' . escapeshellarg($root) . ' ';
+    $branch = trim((string) shell_exec($git . 'rev-parse --abbrev-ref HEAD 2>/dev/null'));
+    $hasStable = trim((string) shell_exec(
+        $git . 'rev-parse --verify --quiet refs/remotes/origin/stable 2>/dev/null'
+    )) !== '';
 
-    if ($branch === 'master' && $tags !== '') {
-        $unreleased = (int) trim((string) shell_exec(
-            'git -C ' . escapeshellarg($root) . ' rev-list --count ' . escapeshellarg($tags . '..HEAD') . ' 2>/dev/null'
+    if ($branch === 'master' && $hasStable) {
+        // Whatever the last fetch saw; preflight does not go to the network.
+        $unpublished = (int) trim((string) shell_exec(
+            $git . 'rev-list --count refs/remotes/origin/stable..refs/remotes/origin/master 2>/dev/null'
+        ));
+        $stable = trim((string) shell_exec(
+            $git . 'rev-parse --short refs/remotes/origin/stable 2>/dev/null'
         ));
         check(
-            'Unreleased work',
-            $unreleased === 0 ? PF_OK : PF_WARN,
-            $unreleased === 0
-                ? "master is published as {$tags}"
-                : "{$unreleased} commit(s) on master are not in any release (newest is {$tags})\n"
-                    . '  publish with: composer ship',
+            'Published to labs',
+            $unpublished === 0 ? PF_OK : PF_WARN,
+            $unpublished === 0
+                ? "stable is at {$stable}, level with origin/master"
+                : "{$unpublished} commit(s) on origin/master have not reached stable (at {$stable})\n"
+                    . '  CI publishes on a green Verify — check: gh run list --workflow Verify --branch master',
         );
     }
 }

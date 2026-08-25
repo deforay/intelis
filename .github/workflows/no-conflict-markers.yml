@@ -113,3 +113,103 @@ jobs:
             public/api/index.php
           vendor/bin/yaml-lint docs/api/openapi.yaml \
             .github/workflows/no-conflict-markers.yml
+
+  php-syntax:
+    name: Every PHP file parses
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      # A parse error that reaches an installation is a white screen for every
+      # user of that lab until somebody notices and reports it. The per-module
+      # lint above covers the Interface API; most of app/ is procedural pages
+      # that no test ever loads, so nothing else would catch one there.
+      # No composer install: php -l does not autoload anything.
+      - name: Lint every PHP file
+        run: |
+          mapfile -t files < <(find app bin public sys tests -name '*.php')
+          echo "Linting ${#files[@]} files…"
+          if ! printf '%s\0' "${files[@]}" | xargs -0 -P 4 -n 1 php -l > lint.log 2>&1; then
+            grep -v '^No syntax errors' lint.log | head -40
+            echo "::error::PHP syntax errors — see above."
+            exit 1
+          fi
+          echo "OK — ${#files[@]} files parse."
+
+  fresh-install:
+    name: Fresh install migrates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: gd, zip, pdo, pdo_mysql, mysqli, json, curl, gettext, openssl, fileinfo, sodium, zlib, intl, bcmath
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      # Started by hand rather than as a `services:` container because the
+      # server needs two flags a service block cannot pass. setup.sh writes both
+      # into my.cnf on every install, and the schema does not load without
+      # them: form_vl is wide enough that innodb_strict_mode=1 refuses to
+      # create it ("Row size too large (> 8126)"). Reproducing a lab's server
+      # settings is part of proving a fresh install works.
+      - name: Start MySQL configured the way an install configures it
+        run: |
+          docker run -d --name mysql -p 3306:3306 \
+            -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=vlsm \
+            mysql:8.0 --innodb-strict-mode=0 --sql-mode=
+          for _ in $(seq 1 60); do
+            docker exec mysql mysql -uroot -proot -e 'SELECT 1' >/dev/null 2>&1 && break
+            sleep 2
+          done
+          docker exec mysql mysql -uroot -proot -e 'SELECT VERSION()'
+
+      - name: Seed the baseline schema
+        run: |
+          docker exec -i mysql mysql -uroot -proot vlsm < sql/init.sql
+          echo "baseline: $(docker exec mysql mysql -uroot -proot -N -B vlsm \
+            -e "SELECT value FROM system_config WHERE name='sc_version'")"
+
+      - name: Point the app at it
+        run: |
+          cp configs/config.production.dist.php configs/config.production.php
+          sed -i '/^return \$systemConfig;$/d' configs/config.production.php
+          cat >> configs/config.production.php <<'PHP'
+          $systemConfig['database']['host']     = '127.0.0.1';
+          $systemConfig['database']['username'] = 'root';
+          $systemConfig['database']['password'] = 'root';
+          $systemConfig['database']['db']       = 'vlsm';
+          $systemConfig['database']['port']     = 3306;
+          return $systemConfig;
+          PHP
+          php -l configs/config.production.php
+
+      # Every migration, in order, against the baseline — the same path a new
+      # install takes. Nothing else runs sys/migrations/ before a lab does.
+      - name: Replay every migration
+        run: composer migrate
+
+      - name: Schema ends up at the app version
+        run: |
+          app=$(php -r 'require "app/system/version.php"; echo VERSION;')
+          db=$(docker exec mysql mysql -uroot -proot -N -B vlsm \
+            -e "SELECT value FROM system_config WHERE name='sc_version'")
+          echo "app ${app} / schema ${db}"
+          if [ "$app" != "$db" ]; then
+            echo "::error::app is ${app} but a fresh install migrates only to ${db}"
+            exit 1
+          fi

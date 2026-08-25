@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
-# pre-push — say how much of master will be sitting unreleased once this push
-# lands, and how to publish it.
+# pre-push — say so when publishing has stopped working.
 #
-# Labs upgrade to the newest vN.N.N tag, not to master, so a pushed fix reaches
-# nobody until it is tagged. That gap is silent: nothing in git, the app, or CI
-# mentions it, and the fix simply never arrives. This is the last moment
-# anything is watching, so this is where it gets said.
+# Labs upgrade to the `stable` branch, which CI fast-forwards to any commit on
+# master that passed Verify. So the normal case needs no warning at all: push,
+# and a few minutes later it is published. This hook used to fire on every push
+# to say "remember to run composer ship", which was the right warning for a
+# process that depended on somebody remembering, and is noise now that nothing
+# does.
 #
-# It never blocks. A push being refused because of paperwork would be worse
-# than the problem, and an urgent fix sometimes genuinely wants to sit on
-# master for a while before it goes out.
+# What is still worth saying is the opposite: work that is ALREADY on origin and
+# still not published. That means Verify has been failing, or the publish
+# workflow is stuck — and both are silent failures whose symptom is labs quietly
+# not receiving fixes, which is the exact thing this whole arrangement exists to
+# prevent. Checked before this push rather than after, because the commits being
+# pushed now have not had their chance yet.
+#
+# It never blocks. A push refused over paperwork would be worse than the problem.
 
 set -u
 
@@ -27,30 +33,25 @@ done
 
 [ "$remote_ref_is_master" -eq 1 ] || exit 0
 
-# The strict filter matches the one upgrade.sh resolves releases with, so this
-# counts against the tag labs would actually land on and not, say, the
-# vendor-latest build artefact.
-newest_tag=$(git tag --list \
-    | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
-    | sort -V | tail -1)
+# Whatever the last fetch saw. Deliberately no network call — a hook that hangs
+# on a bad connection is a hook people disable.
+git rev-parse --verify --quiet refs/remotes/origin/stable >/dev/null || exit 0
+git rev-parse --verify --quiet refs/remotes/origin/master >/dev/null || exit 0
 
-[ -n "$newest_tag" ] || exit 0
+stuck=$(git rev-list --count refs/remotes/origin/stable..refs/remotes/origin/master 2>/dev/null || echo 0)
+[ "$stuck" -gt 0 ] || exit 0
 
-unreleased=$(git rev-list --count "${newest_tag}..HEAD" 2>/dev/null || echo 0)
-[ "$unreleased" -gt 0 ] || exit 0
+# One commit behind is just a run still in flight — Verify takes a few minutes,
+# and a push made while the previous one is still building is normal.
+[ "$stuck" -gt 1 ] || exit 0
 
-# `composer ship` pushes the bump and tags it moments later, so warning about
-# the bump it just made would fire on every release and mean nothing.
-subject=$(git log -1 --format='%s' HEAD 2>/dev/null || echo '')
-case "$subject" in
-    "chore: bump version to "*) exit 0 ;;
-esac
-
-printf '\n\033[33m⚠ %s commit(s) on master are not in any release.\033[0m\n' "$unreleased"
-printf '  Newest tag is %s. Labs upgrade to tags, not to master, so this\n' "$newest_tag"
-printf '  work reaches nobody until it is published:\n\n'
-git log --oneline --no-decorate "${newest_tag}..HEAD" 2>/dev/null | head -8 | sed 's/^/    /'
-[ "$unreleased" -gt 8 ] && printf '    … and %s more\n' "$((unreleased - 8))"
-printf '\n  Publish with:  \033[1mcomposer ship\033[0m\n\n'
+printf '\n\033[33m⚠ %s commit(s) on origin/master have not reached stable.\033[0m\n' "$stuck"
+printf '  Labs upgrade to stable, so these are not in any installation yet:\n\n'
+git log --oneline --no-decorate \
+    refs/remotes/origin/stable..refs/remotes/origin/master 2>/dev/null | head -8 | sed 's/^/    /'
+[ "$stuck" -gt 8 ] && printf '    … and %s more\n' "$((stuck - 8))"
+printf '\n  CI publishes on a green Verify, so this usually means Verify is red\n'
+printf '  or the Publish workflow needs a look:\n'
+printf '  \033[1mgh run list --workflow Verify --branch master --limit 5\033[0m\n\n'
 
 exit 0
