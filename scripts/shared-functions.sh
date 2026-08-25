@@ -639,7 +639,7 @@ fetch_master_tree() {
 #     every upgrade).
 set_permissions() {
     local path=$1
-    local mode=${2:-"full"}          # full | quick | minimal
+    local mode=${2:-"full"}          # full | quick | minimal | deep
     local wait_mode=${3:-"async"}    # async | sync
 
     # Who to grant (robust under sudo/non-interactive)
@@ -685,39 +685,73 @@ set_permissions() {
 
     print info "Setting permissions for ${path} (${mode}, ${wait_mode})..."
 
-    # Common excludes — keep .git and node_modules out of the sweep across
-    # all modes. .git alone can be 5k–30k files on a long-running repo.
-    local -a EXCLUDES=(-not -path "*/.git*" -not -path "*/node_modules*")
+    # Common excludes, pruned rather than filtered.
+    #
+    # `-not -path` only stops find PRINTING a match; find still descends the
+    # directory and stats every file in it, which is the whole cost. -prune
+    # stops it walking in at all.
+    #
+    # What is pruned, and why each one is safe to leave alone:
+    #
+    #   .git, node_modules  — not part of the running application. .git alone
+    #                         can be 5k-30k files on a long-running repo.
+    #   var/audit-trail     — one compressed CSV per sample, so on a mature
+    #                         instance this is most of the files in the whole
+    #                         install. No upgrade ever writes to them, and the
+    #                         application only ever reads them back.
+    #   backups             — same: written by the backup task, never by an
+    #                         upgrade, and large.
+    #
+    # Those last two get an ACL on the directory itself plus a DEFAULT ACL, so
+    # everything created in them from here on inherits the right access without
+    # anything ever having to walk what is already there. `-m deep` still
+    # sweeps them, for the one-off case where existing files really do have the
+    # wrong owner.
+    local root="${path%/}"
+    local -a PRUNE=(-path "*/.git" -o -path "*/node_modules")
+    local -a HEAVY=()
+
+    if [[ "$mode" != "deep" ]]; then
+        HEAVY=("${root}/var/audit-trail" "${root}/backups")
+        local heavy
+        for heavy in "${HEAVY[@]}"; do
+            PRUNE+=(-o -path "$heavy")
+        done
+    fi
+
+    local -a EXCLUDES=(\( "${PRUNE[@]}" \) -prune -o)
 
     local pids=()
 
+    # The prune expression has to come before the -type test, or find has
+    # already descended by the time the test is evaluated.
     case "$mode" in
-        full)
+        full|deep)
             # Directories: rwx to user + www-data
-            find "$path" -type d "${EXCLUDES[@]}" -print0 \
+            find "$path" "${EXCLUDES[@]}" -type d -print0 \
                 | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
                     setfacl -m "u:${who}:rwx,u:www-data:rwx" 2>>/tmp/acl_failures.log &
             pids+=($!)
 
             # Files: rw to user + www-data
-            find "$path" -type f "${EXCLUDES[@]}" -print0 \
+            find "$path" "${EXCLUDES[@]}" -type f -print0 \
                 | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
                     setfacl -m "u:${who}:rw,u:www-data:rw" 2>>/tmp/acl_failures.log &
             pids+=($!)
         ;;
         quick)
-            find "$path" -type d "${EXCLUDES[@]}" -print0 \
+            find "$path" "${EXCLUDES[@]}" -type d -print0 \
                 | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
                     setfacl -m "u:${who}:rwx,u:www-data:rwx" 2>>/tmp/acl_failures.log &
             pids+=($!)
 
-            find "$path" -type f -name "*.php" "${EXCLUDES[@]}" -print0 \
+            find "$path" "${EXCLUDES[@]}" -type f -name "*.php" -print0 \
                 | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
                     setfacl -m "u:${who}:rw,u:www-data:rw" 2>>/tmp/acl_failures.log &
             pids+=($!)
         ;;
         minimal)
-            find "$path" -type d "${EXCLUDES[@]}" -print0 \
+            find "$path" "${EXCLUDES[@]}" -type d -print0 \
                 | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
                     setfacl -m "u:${who}:rwx,u:www-data:rwx" 2>>/tmp/acl_failures.log &
             pids+=($!)
@@ -728,6 +762,20 @@ set_permissions() {
         return
         ;;
     esac
+
+    # The pruned trees: grant on the directory itself, and set the matching
+    # default entries so anything created inside inherits them. The immediate
+    # children are covered too -- audit-trail holds one subdirectory per test
+    # type, which already exist and so would never pick up a default set only
+    # on the parent. Both are O(1) against the number of samples.
+    local heavy_dir
+    for heavy_dir in "${HEAVY[@]}"; do
+        [[ -d "$heavy_dir" ]] || continue
+        find "$heavy_dir" -maxdepth 1 -type d -print0 \
+            | xargs -0 -r setfacl -m \
+                "u:${who}:rwx,u:www-data:rwx,d:u:${who}:rwx,d:u:www-data:rwx" \
+                2>>/tmp/acl_failures.log || true
+    done
 
     if [[ "$wait_mode" == "sync" ]]; then
         for pid in "${pids[@]}"; do wait "$pid"; done
@@ -1594,6 +1642,36 @@ remove_all_monitoring() {
 
 
 # Setup Intelis cron job (classic crontab, idempotent)
+# chown_app_tree — give www-data ownership of the application tree, skipping
+# the directories an upgrade never writes to.
+#
+# The plain `chown -R` this replaces walked the entire install: .git (which the
+# ACL sweep prunes precisely because it is large and has nothing to do with the
+# running application), vendor/ (already chowned right after the vendor sync)
+# and var/audit-trail (one compressed CSV per sample, written only ever by the
+# application itself). On a mature instance that was the longest single step of
+# an upgrade, and all of it was repeating work already done.
+chown_app_tree() {
+    local lp="${1%/}"
+    [ -d "$lp" ] || return 0
+
+    find "$lp" \
+        \( -path "*/.git" -o -path "*/node_modules" \
+           -o -path "${lp}/var/audit-trail" -o -path "${lp}/backups" \) -prune \
+        -o -print0 \
+        | xargs -0 -r chown -h www-data:www-data 2>/dev/null || true
+
+    # The pruned roots still need the right owner themselves; their contents do
+    # not, and set_permissions has given them default ACLs so new entries
+    # inherit access without anyone walking what is already there.
+    local d
+    for d in "${lp}/var/audit-trail" "${lp}/backups"; do
+        [ -d "$d" ] && chown -h www-data:www-data "$d" 2>/dev/null
+    done
+
+    return 0
+}
+
 # pause_cron / resume_cron — hold scheduled tasks across a window where the
 # database is being altered.
 #
