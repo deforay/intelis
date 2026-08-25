@@ -2624,6 +2624,121 @@ ask_choice() {
     done
 }
 
+# --- Multiple choice --------------------------------------------------------
+# ask_multi <question> <item> ...
+#
+# Prints the chosen items to stdout one per line; everything it shows the
+# operator goes to stderr, so a caller can read the answer straight out of a
+# command substitution. Read it with mapfile, since an item may contain spaces.
+#
+# An empty answer means everything. Both callers already meant that by it, and
+# it is the safe reading of "I have not decided": an upgrade of all instances
+# is what the same command does without -i.
+#
+# Typed numbers are validated rather than filtered. The pickers this replaces
+# built their list by silently dropping anything out of range, so asking for
+# "1,3" of two instances updated instance 1 and said nothing about 3 — the
+# operator watched an upgrade run and had no reason to doubt it covered what
+# they asked for.
+ask_multi() {
+    local question="$1"
+    shift
+
+    local items=("$@")
+    local count=${#items[@]}
+    [ "$count" -gt 0 ] || return 0
+
+    if ! _ui_can_ask; then
+        printf '%s\n' "${items[@]}"
+        return 0
+    fi
+
+    if [ "$(ui_renderer)" = "gum" ]; then
+        local chosen
+        chosen=$(gum choose --no-limit --height "$((count + 2))" \
+            --header "$question" "${items[@]}" 2>/dev/null) || chosen=""
+        if [ -z "$chosen" ]; then
+            printf '%s\n' "${items[@]}"
+        else
+            printf '%s\n' "$chosen"
+        fi
+        return 0
+    fi
+
+    printf '\n \033[1m%s\033[0m\n\n' "$question" >&2
+    local i
+    for ((i = 0; i < count; i++)); do
+        printf '   \033[1;96m%d)\033[0m %s\n' "$((i + 1))" "${items[$i]}" >&2
+    done
+    echo >&2
+
+    local reply nums=() n picked=() bad seen
+    while true; do
+        printf ' Numbers separated by commas, or enter for all: ' >&2
+        _ui_read_line reply || reply=""
+
+        reply="${reply// /}"
+        if [ -z "$reply" ] || [ "$reply" = "all" ]; then
+            printf '%s\n' "${items[@]}"
+            return 0
+        fi
+
+        picked=()
+        bad=""
+        seen=""
+        IFS=',' read -ra nums <<< "$reply"
+        for n in "${nums[@]}"; do
+            if [[ "$n" =~ ^[0-9]+$ ]] && [ "$n" -ge 1 ] && [ "$n" -le "$count" ]; then
+                # "1,1" is a slip, not a request to do it twice.
+                case " ${seen} " in
+                    *" ${n} "*) continue ;;
+                esac
+                seen="${seen} ${n}"
+                picked+=("${items[$((n - 1))]}")
+            else
+                bad="$n"
+                break
+            fi
+        done
+
+        # >&2, like every other line this function shows. stdout is the answer
+        # here — the caller reads it out of a command substitution — so a
+        # complaint printed there would come back as a selected item.
+        if [ -n "$bad" ]; then
+            print error "'${bad}' is not one of 1-${count}." >&2
+            continue
+        fi
+        if [ ${#picked[@]} -eq 0 ]; then
+            print error "Nothing selected." >&2
+            continue
+        fi
+
+        printf '%s\n' "${picked[@]}"
+        return 0
+    done
+}
+
+# ask_multi is reached from paths the operator asked for explicitly (-i, or
+# answering yes to "run maintenance scripts?"), and one of them has to survive
+# `curl | bash` — where stdin is the script and ui_interactive is therefore
+# false, but a terminal is still right there. The unattended flags still win:
+# a cron or remote-triggered run must never stop on a question.
+_ui_can_ask() {
+    [ -n "${INTELIS_UNATTENDED:-}" ] && return 1
+    [ -n "${CI:-}" ] && return 1
+    [ "${DEBIAN_FRONTEND:-}" = "noninteractive" ] && return 1
+    ui_interactive && return 0
+    [ -r /dev/tty ] && [ -w /dev/tty ]
+}
+
+_ui_read_line() {
+    if [ -t 0 ]; then
+        read -r "$1"
+    else
+        read -r "$1" < /dev/tty
+    fi
+}
+
 # --- Free text --------------------------------------------------------------
 # ask_text <outvar> <default> <question> [validator-fn] [placeholder]
 #
@@ -2670,8 +2785,13 @@ ask_text() {
 # Typed twice and compared, because the MySQL root password is being CHOSEN at
 # this prompt rather than recalled, and a typo is only discovered later by
 # whoever tries to restore a backup.
+#
+# Pass an empty confirm-question to ask once. That is for the other case: a
+# password that already exists and is being RECALLED, where there is nothing to
+# protect against — the wrong answer is rejected by MySQL a second later, and
+# asking twice only invites the operator to type their typo twice.
 ask_password() {
-    local __outvar="$1" question="$2" confirm_question="${3:-Confirm password}"
+    local __outvar="$1" question="$2" confirm_question="${3-Confirm password}"
     local first second
 
     if ! ui_interactive; then
@@ -2682,12 +2802,20 @@ ask_password() {
     while true; do
         if [ "$(ui_renderer)" = "gum" ]; then
             first=$(gum input --password --header "$question" 2>/dev/null) || first=""
-            second=$(gum input --password --header "$confirm_question" 2>/dev/null) || second=""
+            if [ -n "$confirm_question" ]; then
+                second=$(gum input --password --header "$confirm_question" 2>/dev/null) || second=""
+            else
+                second="$first"
+            fi
         else
             printf '\n \033[1m%s\033[0m\n > ' "$question" >&2
             read -rs first || first=""
-            printf '\n \033[1m%s\033[0m\n > ' "$confirm_question" >&2
-            read -rs second || second=""
+            if [ -n "$confirm_question" ]; then
+                printf '\n \033[1m%s\033[0m\n > ' "$confirm_question" >&2
+                read -rs second || second=""
+            else
+                second="$first"
+            fi
             echo >&2
         fi
 
