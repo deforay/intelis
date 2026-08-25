@@ -72,6 +72,11 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 $tbQuery = "SELECT * from form_tb where tb_id=?";
 $tbInfo = $db->rawQueryOne($tbQuery, [$id]);
 
+// Keep the sample's own stored lab selectable even if that lab has since been
+// deactivated. Without it the required Testing Lab select renders empty and the
+// user must pick some OTHER lab just to save, silently reassigning the sample.
+$testingLabs = $facilitiesService->getTestingLabs('tb', alwaysIncludeLabId: $tbInfo['lab_id'] ?? null);
+
 // Facility isolation: a mapped STS user may only open samples for facilities in
 // their facilityMap. No-op on LIS and for unmapped (all-access) users.
 if (!empty($tbInfo['facility_id'])) {

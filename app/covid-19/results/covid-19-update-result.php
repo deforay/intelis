@@ -74,6 +74,11 @@ $specimenTypeResult = $db->query($sQuery);
 $covid19Query = "SELECT * FROM form_covid19 where covid19_id=?";
 $covid19Info = $db->rawQueryOne($covid19Query, [$id]);
 
+// Keep the sample's own stored lab selectable even if that lab has since been
+// deactivated. Without it the required Testing Lab select renders empty and the
+// user must pick some OTHER lab just to save, silently reassigning the sample.
+$testingLabs = $facilitiesService->getTestingLabs('covid19', alwaysIncludeLabId: $covid19Info['lab_id'] ?? null);
+
 // Facility isolation: a mapped STS user may only open samples for facilities in
 // their facilityMap. No-op on LIS and for unmapped (all-access) users.
 if (!empty($covid19Info['facility_id'])) {

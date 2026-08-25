@@ -846,26 +846,21 @@ final class TestRequestsService
      * Cloud LIS verification: the manifest and its samples already live on this
      * instance, so there is no remote hash to compare. We only need to confirm
      * the manifest is registered to the current user's testing lab
-     * ($_SESSION['labId']) before activation. Mirrors the ownership branch of
+     * (getOwnLabId()) before activation. Mirrors the ownership branch of
      * app/remote/v2/verify-manifest.php, run locally.
      *
      * @return array{status: string, message?: string, labName?: string}
      */
     private function verifyManifestLocally(string $manifestCode, string $testType): array
     {
-        $labId = (int) ($_SESSION['labId'] ?? $this->commonService->getSystemConfig('sc_testing_lab_id') ?? 0);
+        // getOwnLabId(), not a raw sc_testing_lab_id fallback: on cloud-LIS that
+        // install-wide value is the STS's own setup lab, not this user's.
+        $labId = (int) ($this->commonService->getOwnLabId() ?? 0);
 
-        // A cloud-LIS operator must have an operating testing lab. Without one we
-        // cannot scope the manifest to a lab, so we refuse outright rather than
-        // hand back a misleading 'match' that the (correctly lab-scoped) grid
-        // would then render as an empty table. Mirrors the remote STS endpoint
-        // app/remote/v2/verify-manifest.php, which 400s on labId <= 0.
-        if ($labId <= 0) {
-            return [
-                'status' => 'no-lab',
-                'message' => 'No testing lab is assigned to your account. Please contact your administrator.',
-            ];
-        }
+        // A cloud-LIS operator with no assigned testing lab is an all-labs user, so
+        // the manifest is left unnarrowed rather than refused -- the same rule this
+        // function already applies on the facility axis below ("no facility map ->
+        // any sample for the code"). An operator WITH a lab stays scoped to it.
 
         // TB and Custom (generic) tests link samples via referral_manifest_code;
         // their manifest row may not exist even when samples do.
@@ -878,7 +873,9 @@ final class TestRequestsService
         $this->db->reset();
         $this->db->where('manifest_code', $manifestCode);
         $this->db->where('module', $testType);
-        $this->db->where('lab_id', $labId);
+        if ($labId > 0) {
+            $this->db->where('lab_id', $labId);
+        }
         $manifestRecord = $this->db->getOne('specimen_manifests');
 
         if (!empty($manifestRecord)) {
@@ -902,7 +899,9 @@ final class TestRequestsService
         $this->db->where('module', $testType);
         $otherLabManifest = $this->db->getOne('specimen_manifests', ['lab_id']);
 
-        if (!empty($otherLabManifest['lab_id']) && (int) $otherLabManifest['lab_id'] !== $labId) {
+        // Unreachable when $labId is 0 (the lookup above already matched any lab),
+        // but guarded so an all-labs operator can never be told "wrong lab".
+        if ($labId > 0 && !empty($otherLabManifest['lab_id']) && (int) $otherLabManifest['lab_id'] !== $labId) {
             /** @var FacilitiesService $facilitiesService */
             $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
             $otherLab = $facilitiesService->getFacilityById((int) $otherLabManifest['lab_id']);
@@ -929,8 +928,9 @@ final class TestRequestsService
         // source (FacilitiesService::getUserFacilityMap), so both interpolate safely.
         $sampleScope = "(sample_package_code = ? OR referral_manifest_code = ?)";
         if (!empty($_SESSION['facilityMap'])) {
-            $sampleScope .= " AND (referred_to_lab_id = " . $labId
-                . " OR facility_id IN (" . $_SESSION['facilityMap'] . "))";
+            $ownLabClause = $labId > 0 ? "referred_to_lab_id = $labId OR " : '';
+            $sampleScope .= " AND (" . $ownLabClause
+                . "facility_id IN (" . $_SESSION['facilityMap'] . "))";
         }
         $admissible = $this->db->rawQueryOne(
             "SELECT 1 FROM $tableName WHERE $sampleScope LIMIT 1",
@@ -1088,16 +1088,11 @@ final class TestRequestsService
             return 0;
         }
 
-        // Cloud-LIS: an operator with no testing lab assigned must not be able to
-        // activate -- the manifest cannot be lab-scoped to them. verifyManifestLocally
-        // already blocks the UI path with status 'no-lab'; this guards a direct POST
-        // to the activate endpoint from bypassing that.
-        if ($this->commonService->isCloudLISMode()) {
-            $activatingLabId = (int) ($_SESSION['labId'] ?? $this->commonService->getSystemConfig('sc_testing_lab_id') ?? 0);
-            if ($activatingLabId <= 0) {
-                return 0;
-            }
-        }
+        // No operator-lab gate here. Activation stamps the MANIFEST's own lab
+        // (specimen_manifests.lab_id, read below) onto the samples, never the
+        // operator's, so an all-labs operator with no assigned lab invents nothing
+        // by activating. Which manifests they may reach at all is decided by
+        // verifyManifestLocally(), which scopes on the same rule.
 
         $tableName = TestsService::getTestTableName($testType);
 

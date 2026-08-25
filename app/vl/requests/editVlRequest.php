@@ -97,6 +97,11 @@ $vlTestReasonResult = $db->query($vlTestReasonQuery);
 $vlQuery = "SELECT * FROM form_vl WHERE vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, [$id]);
 
+// Keep the sample's own stored lab selectable even if that lab has since been
+// deactivated. Without it the required Testing Lab select renders empty and the
+// user must pick some OTHER lab just to save, silently reassigning the sample.
+$testingLabs = $facilitiesService->getTestingLabs('vl', alwaysIncludeLabId: $vlQueryInfo['lab_id'] ?? null);
+
 // Facility isolation: a mapped STS user may only open samples for facilities in
 // their facilityMap. No-op on LIS and for unmapped (all-access) users.
 if (!empty($vlQueryInfo['facility_id'])) {

@@ -25,11 +25,17 @@ $referToLab = $_POST['labId'];
 $table = TestsService::getTestTableName($testType);
 $primaryKeyColumn = TestsService::getPrimaryColumn($testType);
 $patientIdColumn = TestsService::getPatientIdColumn($testType);
-// Eligible-for-referral samples belong to the current user's own (sending) lab.
-// Use the session lab (authoritative, not a POST value) so a testing-lab user on
-// STS (cloud-LIS) sees their own lab's samples; on LIS this equals the install's
-// sc_testing_lab_id (fallback covers sessions predating the per-user lab).
-$lisLabId = $_SESSION['labId'] ?? $general->getSystemConfig('sc_testing_lab_id');
+// Eligible-for-referral samples belong to the sending lab. A user with a definite
+// operating lab (LIS / cloud-LIS) is pinned to it from the session, authoritative
+// over any POST value. Everyone else -- an all-labs cloud-LIS operator with no
+// assigned lab included -- refers for the lab they chose in the "Referred From"
+// selector that add-tb-referral.php renders for exactly that case. This mirrors
+// app/generic-tests/results/get-referral-samples.php, which already did both.
+//
+// The old fallback also dereferenced $general, which this file never builds, so it
+// fatalled outright for any session whose labId was null -- masked until now only
+// because ?? short-circuits whenever a lab IS resolved.
+$lisLabId = $_SESSION['labId'] ?? $labId;
 
 $queryParams = [];
 $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '')";

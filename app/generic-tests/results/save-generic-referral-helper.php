@@ -30,6 +30,15 @@ try {
         exit;
     }
 
+    // A sample cannot be referred to the lab that is sending it. The receiving
+    // dropdown already excludes the sending lab, so getting here means a stale page
+    // or a crafted POST -- a dropdown is not a control.
+    if ((int) $_POST['referralToLabId'] === (int) ($_POST['referralLabId'] ?? 0)) {
+        $response['message'] = _translate("A sample cannot be referred to the lab that is sending it");
+        echo JsonUtility::encodeUtf8Json($response);
+        exit;
+    }
+
     if (empty($_POST['referralSamples']) || !is_array($_POST['referralSamples'])) {
         $response['message'] = _translate("Please select at least one sample");
         echo JsonUtility::encodeUtf8Json($response);

@@ -80,6 +80,11 @@ $testReason = $db->query($vlTestReasonQuery);
 $vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
 $genericResultInfo = $db->rawQueryOne($vlQuery, [$id]);
 
+// Re-resolve now the record is known, so a lab that has since been deactivated
+// still appears by name (the per-card list in _test-section.php otherwise falls
+// back to a bare "Lab #<id>").
+$testingLabs = $facilitiesService->getTestingLabs('generic-tests', alwaysIncludeLabId: $genericResultInfo['lab_id'] ?? null);
+
 // Facility isolation: a mapped STS user may only open samples for facilities in
 // their facilityMap. No-op on LIS and for unmapped (all-access) users.
 if (!empty($genericResultInfo['facility_id'])) {
@@ -237,7 +242,10 @@ $fundingSourceList = $general->getFundingSources();
 //Implementing partner list
 $implementingPartnerList = $general->getImplementationPartners();
 
-$lResult = $facilitiesService->getTestingLabs('generic-tests', true, true);
+// Keep the sample's own stored lab selectable even if that lab has since been
+// deactivated. Without it the required Testing Lab select renders empty and the
+// user must pick some OTHER lab just to save, silently reassigning the sample.
+$lResult = $facilitiesService->getTestingLabs('generic-tests', true, true, alwaysIncludeLabId: $genericResultInfo['lab_id'] ?? null);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 	$sampleClass = '';

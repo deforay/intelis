@@ -20,7 +20,10 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $globalConfig = $general->getGlobalConfig();
 
-$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
+// Keep the sample's own stored lab selectable even if that lab has since been
+// deactivated. Without it the required Testing Lab select renders empty and the
+// user must pick some OTHER lab just to save, silently reassigning the sample.
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true, alwaysIncludeLabId: $vlQueryInfo['lab_id'] ?? null);
 
 if ($globalConfig['sample_code'] == 'auto' || $globalConfig['sample_code'] == 'alphanumeric' || $globalConfig['sample_code'] == 'MMYY' || $globalConfig['sample_code'] == 'YY') {
      $sampleClass = '';
