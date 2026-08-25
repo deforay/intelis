@@ -2282,13 +2282,19 @@ apache2ctl -k graceful || systemctl reload apache2 || systemctl restart apache2
 print header "Upgrade Summary"
 if [ ${#updated_instances[@]} -gt 0 ]; then
     print success "Successfully updated ${#updated_instances[@]} instance(s):"
+    # The list items are printed rather than passed through print, which stamps
+    # every line with "Info:" or "Error:". Under a heading that has already said
+    # how many succeeded and how many failed, the stamp is repeated on every row
+    # and pushes the path — the part being read — to the right. The tick and the
+    # cross carry the same meaning in a fraction of the width.
     for p in "${updated_instances[@]}"; do
         _took=""
         [ -n "${instance_seconds[$p]:-}" ] && _took="  ($(format_duration "${instance_seconds[$p]}"))"
         if [ -n "${instance_commit_change[$p]:-}" ]; then
-            print info "  ✓ $p  [${instance_commit_change[$p]}]${_took}"
+            printf '   \033[1;92m✓\033[0m %s  \033[2m[%s]\033[0m%s\n' \
+                "$p" "${instance_commit_change[$p]}" "$_took"
         else
-            print info "  ✓ $p${_took}"
+            printf '   \033[1;92m✓\033[0m %s%s\n' "$p" "$_took"
         fi
     done
 fi
@@ -2297,7 +2303,7 @@ if [ ${#failed_instances[@]} -gt 0 ]; then
     for p in "${failed_instances[@]}"; do
         _took=""
         [ -n "${instance_seconds[$p]:-}" ] && _took="  (after $(format_duration "${instance_seconds[$p]}"))"
-        print error "  ✗ $p${_took}"
+        printf '   \033[1;91m✗\033[0m %s%s\n' "$p" "$_took"
     done
 fi
 
