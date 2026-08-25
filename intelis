@@ -358,6 +358,16 @@ cmd_fix_database() {
     as_root bash "$script" "$@"
 }
 
+# The web side of the same problem, and the front door for it: it checks what
+# the browser actually gets, repairs what it can, and fetches and runs the
+# database doctor itself when the answer turns out to lie there. So a person who
+# only knows that "the site will not open" has one command to type either way.
+cmd_doctor() {
+    local script
+    script="$(locate_script intelis-doctor.sh intelis-doctor)" || return 1
+    as_root bash "$script" "$@"
+}
+
 cmd_check() {
     # preflight reports on paths the web server has to write to, and its answer
     # is only measured rather than guessed when it runs as that account.
@@ -503,6 +513,7 @@ cmd_help() {
     say ""
     say "  intelis check            Check this machine can run InteLIS"
     say "  intelis health           Check disk, database and backups right now"
+    say "  intelis doctor           The site will not open — find out why, and repair it"
     say "  intelis fix-database     Find out why the database is down, and repair it"
     say "  intelis update           Update InteLIS to the current release"
     say ""
@@ -537,7 +548,7 @@ menu() {
 
     case "$(printf '%s' "$choice" | tr -d '[:space:]')" in
         1) cmd_check ;;
-        2) cmd_fix_database ;;
+        2) cmd_doctor ;;
         3) backup_runner_action --status ;;
         4) backup_now ;;
         5) cmd_update ;;
@@ -578,8 +589,14 @@ case "$command" in
 
     # Named several ways on purpose. Whoever needs it is describing a symptom,
     # not looking up a command, and any of these is what they would try.
-    fix-database|fix-db|database|db|mysql|mysql-doctor|doctor)
+    fix-database|fix-db|database|db|mysql|mysql-doctor)
                         cmd_fix_database "$@" ;;
+
+    # Named after the symptom rather than the cause, because whoever types it
+    # knows only that the site will not open. It works out which half is at
+    # fault and runs the database doctor itself if that is the half.
+    doctor|fix-site|fix-web|site|web|apache|php)
+                        cmd_doctor "$@" ;;
     menu)               menu ;;
     help|--help|-h)     cmd_help ;;
     composer)           run_composer "$@" ;;
