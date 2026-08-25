@@ -882,9 +882,9 @@ final class TestRequestsService
             // A lab that OWNS the manifest may act on every sample under the code, so
             // for it this is only an existence check. With no own lab we just matched
             // SOMEONE ELSE's manifest and ownership justifies nothing, so the facility
-            // axis has to carry the isolation instead: require at least one sample the
-            // user may actually see. Activation updates every sample under the code,
-            // so admitting on a manifest row alone would reach outside facilityMap.
+            // axis has to carry the isolation instead: every sample under the code must
+            // be one the user may act on. Activation updates them all, so admitting on
+            // a manifest row alone would reach outside facilityMap.
             //
             // Built as one predicate rather than where()/orWhere(): AND binds tighter
             // than OR, so appending a filter to those would parse as
@@ -893,9 +893,34 @@ final class TestRequestsService
                 ? "(sample_package_code = ? OR referral_manifest_code = ?)"
                 : "sample_package_code = ?";
             $sampleParams = $isReferralModule ? [$manifestCode, $manifestCode] : [$manifestCode];
+
+            // "At least one sample I can see" is the wrong admission rule here, because
+            // admission and effect have different scopes: activateSamplesFromManifest()
+            // selects on the manifest code with NO facility predicate, so one in-scope
+            // sample would drag every out-of-scope one under the same code with it --
+            // new sample codes, statuses and timestamps on samples this user cannot see.
+            //
+            // Refuse the whole manifest instead. Failing closed beats a partial write,
+            // and pushing the predicate down into activation is worse: it would make a
+            // mapped lab user silently activate only PART of its own manifest, leaving
+            // the rest stuck with no indication why. A NULL facility cannot be proven
+            // in scope, so it counts as out of scope.
             if ($labId <= 0 && !empty($_SESSION['facilityMap'])) {
-                $sampleWhere .= " AND facility_id IN (" . $_SESSION['facilityMap'] . ")";
+                $foreign = $this->db->rawQueryOne(
+                    "SELECT $primaryKey FROM $tableName
+                      WHERE $sampleWhere
+                        AND (facility_id IS NULL OR facility_id NOT IN (" . $_SESSION['facilityMap'] . "))
+                      LIMIT 1",
+                    $sampleParams
+                );
+                if (!empty($foreign)) {
+                    return [
+                        'status' => 'not-found',
+                        'message' => 'This manifest contains samples from facilities outside your access.',
+                    ];
+                }
             }
+
             $selectedSamples = $this->db->rawQueryOne(
                 "SELECT $primaryKey FROM $tableName WHERE $sampleWhere LIMIT 1",
                 $sampleParams
