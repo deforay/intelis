@@ -50,13 +50,24 @@ class AuditTrailService
             return;
         }
 
-        $type = self::detectCompressionType();
+        // Chosen by what the file IS, not by what happens to be installed.
+        //
+        // detectCompressionType() reports the best compressor available on this
+        // machine, which is the right answer when writing and the wrong one when
+        // reading: the extension a file got depended on what was installed the
+        // day it was written, so a directory holds both .zst and .gz, and a lab
+        // that gained zstd since then would have fed its older .gz files to
+        // `zstd -d`. Dispatching on the extension reads each file with the tool
+        // that actually wrote it.
+        $arg = escapeshellarg($compressedFile);
 
-        $command = match ($type) {
-            'zstd' => "zstd -d -c " . escapeshellarg($compressedFile) . " 2>/dev/null",
-            'pigz' => "pigz -d -c " . escapeshellarg($compressedFile) . " 2>/dev/null",
-            default => "gzip -d -c " . escapeshellarg($compressedFile) . " 2>/dev/null"
-        };
+        if (str_ends_with($compressedFile, '.zst')) {
+            $command = "zstd -d -c {$arg} 2>/dev/null";
+        } elseif (self::detectCompressionType() === 'pigz') {
+            $command = "pigz -d -c {$arg} 2>/dev/null";
+        } else {
+            $command = "gzip -d -c {$arg} 2>/dev/null";
+        }
 
         $handle = popen($command, 'r');
         if ($handle === false) {
@@ -91,7 +102,46 @@ class AuditTrailService
             }
         }
 
-        return null;
+        // Not loose, so it may have settled into a month bundle. A loose file
+        // always wins: after a bundled sample is reopened its bundle member is
+        // the stale copy until the next bundling pass overwrites it.
+        return self::extractFromBundle($testType, $uniqueId);
+    }
+
+    /**
+     * Materialise a bundled sample as a temporary file.
+     *
+     * The readers below all take a path and shell out to a decompressor, so a
+     * member lifted out of a bundle is written to a temp file rather than
+     * threading in-memory contents through every one of them. The member keeps
+     * its own .csv.zst or .csv.gz name so the extension dispatch above still
+     * picks the right tool.
+     *
+     * Registered for deletion at shutdown: the caller reads lazily through a
+     * generator, so the file has to outlive this function.
+     */
+    private static function extractFromBundle(string $testType, string $uniqueId): ?string
+    {
+        $member = AuditBundleService::readSample($testType, $uniqueId);
+        if ($member === null) {
+            return null;
+        }
+
+        $tmpDir = VAR_TEMP_PATH . '/audit-bundle';
+        MiscUtility::makeDirectory($tmpDir);
+
+        $tmp = $tmpDir . '/' . bin2hex(random_bytes(8)) . '-' . $member['name'];
+        if (file_put_contents($tmp, $member['contents']) === false) {
+            return null;
+        }
+
+        register_shutdown_function(static function () use ($tmp): void {
+            if (is_file($tmp)) {
+                @unlink($tmp);
+            }
+        });
+
+        return $tmp;
     }
 
     /**
@@ -398,14 +448,42 @@ class AuditTrailService
             $fileExtension = self::getFileExtension();
             $filePath = "{$archivePath}/{$uniqueId}{$fileExtension}";
 
+            // A sample that had settled can be edited again. The read-modify-
+            // write below loads the existing revisions to avoid duplicating
+            // them, so if this sample now lives in a bundle it has to come back
+            // out first — otherwise its history looks empty here and the file is
+            // rewritten from scratch, silently dropping every revision that was
+            // already archived.
+            if (!file_exists($filePath)) {
+                AuditBundleService::unbundleSample($testType, $uniqueId);
+            }
+
+            // What is on disk now, which is not necessarily $filePath.
+            //
+            // $filePath carries the extension this machine writes today, while
+            // the existing file carries the one that was current when it was
+            // written — and a sample just lifted out of a bundle keeps whatever
+            // its member was named. Reading $filePath directly meant a lab that
+            // gained zstd stopped seeing its own .csv.gz history and rewrote the
+            // file from scratch, dropping every archived revision. Read from
+            // whichever file actually exists; keep writing to $filePath.
+            $existingFile = null;
+            foreach (['.csv.zst', '.csv.gz'] as $ext) {
+                $candidate = "{$archivePath}/{$uniqueId}{$ext}";
+                if (file_exists($candidate)) {
+                    $existingFile = $candidate;
+                    break;
+                }
+            }
+
             // Get current columns
             $currentHeaders = array_keys($auditRecords[0]);
 
             // Load existing revisions to avoid duplicates
             $existingRevisions = [];
-            if (file_exists($filePath)) {
+            if ($existingFile !== null) {
                 $lineNumber = 0;
-                foreach (self::readCsvLines($filePath) as $row) {
+                foreach (self::readCsvLines($existingFile) as $row) {
                     $lineNumber++;
                     if ($lineNumber === 1) {
                         continue;
@@ -429,9 +507,9 @@ class AuditTrailService
             fputcsv($tempHandle, $currentHeaders);
 
             // Write existing records first (if file exists)
-            if (file_exists($filePath)) {
+            if ($existingFile !== null) {
                 $lineNumber = 0;
-                foreach (self::readCsvLines($filePath) as $row) {
+                foreach (self::readCsvLines($existingFile) as $row) {
                     $lineNumber++;
                     if ($lineNumber === 1) {
                         continue;
@@ -467,6 +545,15 @@ class AuditTrailService
 
             // Clean up temp file
             MiscUtility::deleteFile($tempFile);
+
+            // The rewrite above carried every revision from the old file across,
+            // so a leftover under the previous extension is now a stale
+            // duplicate. Left in place it would be found first by the .csv.zst
+            // then .csv.gz lookup order on some paths and shadow the current
+            // file. Removed only after the new one is confirmed written.
+            if ($existingFile !== null && $existingFile !== $filePath && file_exists($filePath)) {
+                MiscUtility::deleteFile($existingFile);
+            }
         } catch (Exception $e) {
             LoggerUtility::logError("Error processing sample audit data", [
                 'testType' => $testType,

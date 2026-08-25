@@ -258,7 +258,15 @@ final readonly class AuditArchiveService
                 return $p;
             }
         }
-        return null;
+
+        // Nothing loose. A sample that went quiet long enough will have settled
+        // into a month bundle, so lift it back out before answering "no history
+        // here" — every caller of this treats null as an empty past and rewrites
+        // the file from scratch, which would drop everything already archived
+        // for a sample that is simply being worked on again.
+        $testType = basename(rtrim($dir, DIRECTORY_SEPARATOR));
+
+        return AuditBundleService::unbundleSample($testType, $base);
     }
 
     /**
