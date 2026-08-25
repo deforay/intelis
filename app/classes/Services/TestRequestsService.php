@@ -879,14 +879,27 @@ final class TestRequestsService
         $manifestRecord = $this->db->getOne('specimen_manifests');
 
         if (!empty($manifestRecord)) {
-            // Lab owns the manifest -> every sample under this code belongs here.
-            // Confirm samples exist locally, then it is ready to activate.
-            $this->db->reset();
-            $this->db->where('sample_package_code', $manifestCode);
-            if ($isReferralModule) {
-                $this->db->orWhere('referral_manifest_code', $manifestCode);
+            // A lab that OWNS the manifest may act on every sample under the code, so
+            // for it this is only an existence check. With no own lab we just matched
+            // SOMEONE ELSE's manifest and ownership justifies nothing, so the facility
+            // axis has to carry the isolation instead: require at least one sample the
+            // user may actually see. Activation updates every sample under the code,
+            // so admitting on a manifest row alone would reach outside facilityMap.
+            //
+            // Built as one predicate rather than where()/orWhere(): AND binds tighter
+            // than OR, so appending a filter to those would parse as
+            // `code = ? OR (referral = ? AND facility IN (...))` and leak the first arm.
+            $sampleWhere = $isReferralModule
+                ? "(sample_package_code = ? OR referral_manifest_code = ?)"
+                : "sample_package_code = ?";
+            $sampleParams = $isReferralModule ? [$manifestCode, $manifestCode] : [$manifestCode];
+            if ($labId <= 0 && !empty($_SESSION['facilityMap'])) {
+                $sampleWhere .= " AND facility_id IN (" . $_SESSION['facilityMap'] . ")";
             }
-            $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
+            $selectedSamples = $this->db->rawQueryOne(
+                "SELECT $primaryKey FROM $tableName WHERE $sampleWhere LIMIT 1",
+                $sampleParams
+            );
 
             return empty($selectedSamples)
                 ? ['status' => 'not-found', 'message' => 'Manifest not found.']

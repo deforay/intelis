@@ -37,6 +37,19 @@ $patientIdColumn = TestsService::getPatientIdColumn($testType);
 // because ?? short-circuits whenever a lab IS resolved.
 $lisLabId = $_SESSION['labId'] ?? $labId;
 
+// The lab axis alone does not isolate this endpoint: it is an AJAX endpoint, the
+// sending lab can be a POST value whenever the session has no lab of its own, and
+// the response carries sample codes, patient IDs and facility names. Apply the
+// facility axis too, exactly as every sample grid does, so a user can never
+// enumerate patients from facilities outside their map by naming another lab.
+// facilityMap is a clean integer CSV normalised at its source
+// (FacilitiesService::getUserFacilityMap), so it interpolates safely.
+$facilityScope = '';
+if (!empty($_SESSION['facilityMap'])) {
+    $facilityScope = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+}
+
+
 $queryParams = [];
 $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '')";
 if (isset($packageCodeId) && !empty($packageCodeId)) {
@@ -63,6 +76,7 @@ $query = "SELECT
             AND (COALESCE(vl.is_sample_rejected, '') = '' OR vl.is_sample_rejected = 'no')
             AND (vl.sample_code IS NOT NULL AND vl.sample_code != '')
             AND (vl.lab_id IS NOT NULL AND vl.lab_id = ?)
+            $facilityScope
           ORDER BY vl.sample_code ASC";
 $queryParams[] = (int) $lisLabId;
 $result = $db->rawQuery($query, $queryParams);
