@@ -34,7 +34,9 @@ source "$SHARED_FN_PATH"
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
     echo "Usage: sudo intelis-refresh [-p path] [-m mode] [-a] [-d]"
     echo "  -p : LIS install path (default: /var/www/intelis)"
-    echo "  -m : Mode (full, quick, minimal)"
+    echo "  -m : Mode (full, quick, minimal, deep)"
+    echo "       deep also sweeps var/audit-trail and backups, which full skips"
+    echo "       because nothing but the application itself ever writes there."
     echo "  -a : Restart Apache/httpd"
     echo "  -d : Restart MySQL"
     exit 0

@@ -2102,7 +2102,7 @@ upgrade_instance() {
     # reports what www-data can write, and a tree still being chowned reports
     # root-owned directories that fix themselves seconds later.
     (intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
-        chown -R www-data:www-data "${lis_path}" 2>/dev/null || true) &
+        chown_app_tree "${lis_path}" || true) &
     permission_pids+=("$!")
 
     # --- Report which commit-to-commit jump this update made ---
