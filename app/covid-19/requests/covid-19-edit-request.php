@@ -75,6 +75,11 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 $covid19Query = "SELECT * from form_covid19 WHERE covid19_id=?";
 $covid19Info = $db->rawQueryOne($covid19Query, [$id]);
 
+// Keep the sample's own stored lab selectable even if that lab has since been
+// deactivated. Without it the required Testing Lab select renders empty and the
+// user must pick some OTHER lab just to save, silently reassigning the sample.
+$testingLabs = $facilitiesService->getTestingLabs('covid19', alwaysIncludeLabId: $covid19Info['lab_id'] ?? null);
+
 $covid19TestQuery = "SELECT * from covid19_tests WHERE covid19_id=? ORDER BY test_id ASC";
 $covid19TestInfo = $db->rawQuery($covid19TestQuery, [$id]);
 

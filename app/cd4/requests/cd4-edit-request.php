@@ -90,6 +90,11 @@ $cd4TestReasonResult = $db->query($cd4TestReasonQuery);
 $cd4Query = "SELECT * FROM form_cd4 WHERE cd4_id=?";
 $cd4QueryInfo = $db->rawQueryOne($cd4Query, [$id]);
 
+// Keep the sample's own stored lab selectable even if that lab has since been
+// deactivated. Without it the required Testing Lab select renders empty and the
+// user must pick some OTHER lab just to save, silently reassigning the sample.
+$testingLabs = $facilitiesService->getTestingLabs('cd4', alwaysIncludeLabId: $cd4QueryInfo['lab_id'] ?? null);
+
 // Facility isolation: a mapped STS user may only open samples for facilities in
 // their facilityMap. No-op on LIS and for unmapped (all-access) users.
 if (!empty($cd4QueryInfo['facility_id'])) {

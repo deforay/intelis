@@ -59,6 +59,11 @@ $vlTestReasonResult = $db->query($vlTestReasonQuery);
 $eidQuery = "SELECT * from form_eid where eid_id=?";
 $eidInfo = $db->rawQueryOne($eidQuery, [$id]);
 
+// Keep the sample's own stored lab selectable even if that lab has since been
+// deactivated. Without it the required Testing Lab select renders empty and the
+// user must pick some OTHER lab just to save, silently reassigning the sample.
+$testingLabs = $facilitiesService->getTestingLabs('eid', alwaysIncludeLabId: $eidInfo['lab_id'] ?? null);
+
 
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);

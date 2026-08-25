@@ -456,7 +456,16 @@ final class FacilitiesService
     // $condition = WHERE condition (for eg. "facility_state = 1")
     // $allColumns = (false -> only facility_id and facility_name, true -> all columns)
     // $onlyActive = true/false
-    public function getTestingLabs($testType = null, $byPassFacilityMap = true, $allColumns = false, $condition = [], $onlyActive = true, $userId = null)
+    /**
+     * @param int|string|null $alwaysIncludeLabId A lab to keep in the list even when
+     *        $onlyActive would drop it. Pass the lab already stored on the record an
+     *        edit form is rendering: deactivating a lab must not make it vanish from
+     *        the forms of samples still assigned to it. When it does vanish, the
+     *        select falls back to its placeholder and the field -- which is required
+     *        -- forces the user to pick some OTHER lab merely to save, silently
+     *        reassigning the sample. Appended after the sorted active labs.
+     */
+    public function getTestingLabs($testType = null, $byPassFacilityMap = true, $allColumns = false, $condition = [], $onlyActive = true, $userId = null, $alwaysIncludeLabId = null)
     {
         $userId ??= null;
         if (isset($_SESSION['userId']) && $userId === null) {
@@ -493,16 +502,37 @@ final class FacilitiesService
         $this->db->where('facility_type = 2');
         $this->db->orderBy("facility_name", "asc");
 
+        $keepLabId = (int) ($alwaysIncludeLabId ?? 0);
+
         if ($allColumns) {
-            return $this->db->get("facility_details");
-        } else {
-            $response = [];
-            $results = $this->db->get("facility_details", null, "facility_id,facility_name");
-            foreach ($results as $row) {
-                $response[$row['facility_id']] = $row['facility_name'];
+            $labs = $this->db->get("facility_details");
+            if ($keepLabId > 0 && !in_array($keepLabId, array_column($labs, 'facility_id'))) {
+                $missing = $this->db->rawQueryOne(
+                    "SELECT * FROM facility_details WHERE facility_id = ? AND facility_type = 2",
+                    [$keepLabId]
+                );
+                if (!empty($missing)) {
+                    $labs[] = $missing;
+                }
             }
-            return $response;
+            return $labs;
         }
+
+        $response = [];
+        $results = $this->db->get("facility_details", null, "facility_id,facility_name");
+        foreach ($results as $row) {
+            $response[$row['facility_id']] = $row['facility_name'];
+        }
+        if ($keepLabId > 0 && !isset($response[$keepLabId])) {
+            $missing = $this->db->rawQueryOne(
+                "SELECT facility_id, facility_name FROM facility_details WHERE facility_id = ? AND facility_type = 2",
+                [$keepLabId]
+            );
+            if (!empty($missing['facility_id'])) {
+                $response[$missing['facility_id']] = $missing['facility_name'];
+            }
+        }
+        return $response;
     }
 
     public function getOrCreateProvince(string $provinceName, ?string $provinceCode = null): int

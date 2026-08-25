@@ -28,6 +28,15 @@ try {
         exit;
     }
 
+    // A sample cannot be referred to the lab that is sending it. The receiving
+    // dropdown already excludes the sending lab, so getting here means a stale page
+    // or a crafted POST -- a dropdown is not a control.
+    if ((int) $_POST['referralToLabId'] === (int) ($_POST['referralLabId'] ?? 0)) {
+        $_SESSION['alertMsg'] = _translate("A sample cannot be referred to the lab that is sending it");
+        header("Location: /tb/results/tb-referral.php");
+        exit;
+    }
+
     if (empty($_POST['referralSamples']) || !is_array($_POST['referralSamples'])) {
         $_SESSION['alertMsg'] = _translate("Please select at least one sample");
         header("Location: /tb/results/tb-referral.php");

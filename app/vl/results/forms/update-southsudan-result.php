@@ -17,7 +17,10 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 
-$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
+// Keep the sample's own stored lab selectable even if that lab has since been
+// deactivated. Without it the required Testing Lab select renders empty and the
+// user must pick some OTHER lab just to save, silently reassigning the sample.
+$lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true, alwaysIncludeLabId: $vlQueryInfo['lab_id'] ?? null);
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 

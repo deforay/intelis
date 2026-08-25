@@ -44,6 +44,12 @@ $genericResult = $db->getOne('form_generic');*/
 
 /* Testing lab list */
 $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
+// "Receiving Lab" is deliberately EVERY active testing lab, not only those
+// registered for this test type: a sample may be referred to any lab. The single
+// exclusion is the lab sending it, applied in JS below (it has to follow the
+// "Referred By" picker, which the user can change) and enforced again in the
+// save helper, since a dropdown is not a control.
+$receivingLabs = $facilitiesService->getTestingLabs();
 
 
 $isLisInstance = $general->isLISInstance();
@@ -198,7 +204,7 @@ $genericResult = $db->rawQuery($sQuery, [$codeId]);
                                 <select name="referralToLabId" id="referralToLabId"
                                     class="form-control select2 isRequired"
                                     title="<?php echo _translate("Please select receiving lab"); ?>" required>
-                                    <?= $general->generateSelectOptions($testingLabs, $genericResult[0]['referred_to_lab_id'], '-- Select --'); ?>
+                                    <?= $general->generateSelectOptions($receivingLabs, $genericResult[0]['referred_to_lab_id'], '-- Select --'); ?>
                                 </select>
                             </div>
                         </div>
@@ -239,6 +245,26 @@ $genericResult = $db->rawQuery($sQuery, [$codeId]);
             width: '100%',
             placeholder: "<?php echo _translate("Select Receiving Lab"); ?>"
         });
+        // The receiving lab may be any lab EXCEPT the one sending the samples.
+        // Re-run on every change of the sending lab, which is a picker whenever the
+        // session has no lab of its own.
+        function syncReceivingLabOptions() {
+            const sendingLabId = $("#referralLabId").val();
+            let clearedSelection = false;
+            $("#referralToLabId option").each(function() {
+                const isSendingLab = this.value !== '' && this.value === sendingLabId;
+                $(this).prop('disabled', isSendingLab);
+                if (isSendingLab && this.selected) {
+                    clearedSelection = true;
+                }
+            });
+            if (clearedSelection) {
+                $("#referralToLabId").val('');
+            }
+            $("#referralToLabId").trigger('change.select2');
+        }
+        $("#referralLabId").on('change', syncReceivingLabOptions);
+        syncReceivingLabOptions();
         loadSamples();
     });
 
