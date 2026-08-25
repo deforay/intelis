@@ -1678,11 +1678,16 @@ chown_app_tree() {
     local lp="${1%/}"
     [ -d "$lp" ] || return 0
 
+    # Batched and parallel, for the same reason the ACL pass is: one chown per
+    # file is one fork per file, and an instance is tens of thousands of them.
+    local jobs=1
+    command -v nproc >/dev/null 2>&1 && jobs=$(nproc)
+
     find "$lp" \
         \( -path "*/.git" -o -path "*/node_modules" \
            -o -path "${lp}/var/audit-trail" -o -path "${lp}/backups" \) -prune \
         -o -print0 \
-        | xargs -0 -r chown -h www-data:www-data 2>/dev/null || true
+        | xargs -0 -r -n 200 -P "$jobs" chown -h www-data:www-data 2>/dev/null || true
 
     # The pruned roots still need the right owner themselves; their contents do
     # not, and set_permissions has given them default ACLs so new entries
@@ -1719,6 +1724,56 @@ format_duration() {
     else
         printf '%ds' "$s"
     fi
+}
+
+# wait_with_progress — block on background jobs, but visibly.
+#
+# `wait` is silent. On a big or slow instance the final permission pass can
+# still be running when everything else is done, and the operator gets a line
+# saying we are waiting followed by minutes of nothing — indistinguishable from
+# a hang, on exactly the machines where it is most likely to be one.
+#
+# Not gum: `gum spin` takes a command to run, cannot poll jobs belonging to this
+# shell, and shows a fixed title with no elapsed time — and the older machines
+# where this wait is long are the least likely to have it installed. A counter
+# ticking upward is the thing that answers "is it stuck?", so we print one.
+#
+# Falls back to a plain wait when stdout is not a terminal: a log full of
+# carriage returns helps nobody.
+wait_with_progress() {
+    local message="${1:-Working}"
+    shift
+
+    local pids=("$@")
+    [ "${#pids[@]}" -gt 0 ] || return 0
+
+    local pid
+    if [ ! -t 1 ]; then
+        for pid in "${pids[@]}"; do wait "$pid" 2>/dev/null || true; done
+        return 0
+    fi
+
+    local started frames='|/-\' i=0 alive elapsed
+    started=$(date +%s)
+
+    while :; do
+        alive=0
+        for pid in "${pids[@]}"; do
+            kill -0 "$pid" 2>/dev/null && alive=1
+        done
+        [ "$alive" -eq 0 ] && break
+
+        elapsed=$(( $(date +%s) - started ))
+        printf '\r  %s %s  %s' "${frames:$i:1}" "$message" "$(format_duration "$elapsed")"
+        i=$(( (i + 1) % 4 ))
+        sleep 0.5
+    done
+
+    # Clear the spinner line so whatever prints next starts clean.
+    printf '\r\033[K'
+
+    for pid in "${pids[@]}"; do wait "$pid" 2>/dev/null || true; done
+    return 0
 }
 
 # Phase timing within one instance.

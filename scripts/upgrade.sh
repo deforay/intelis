@@ -2118,7 +2118,13 @@ upgrade_instance() {
     # the post-upgrade check at the end of the run can wait for it: that check
     # reports what www-data can write, and a tree still being chowned reports
     # root-owned directories that fix themselves seconds later.
-    (intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
+    #
+    # INTELIS_SHARED_FN_FRESH stops intelis-refresh re-downloading the shared
+    # functions: this run fetched that exact file before anything else ran, and
+    # repeating the round trip inside a job whose output is discarded is how a
+    # stalled link turns into a silent multi-minute wait at the end of an
+    # otherwise finished upgrade.
+    (INTELIS_SHARED_FN_FRESH=1 intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
         chown_app_tree "${lis_path}" || true) &
     permission_pids+=("$!")
 
@@ -2367,11 +2373,9 @@ if [ ${#updated_instances[@]} -gt 0 ]; then
     ensure_mysql_running "/etc/mysql/mysql.conf.d/mysqld.cnf" || true
 
     if [ ${#permission_pids[@]} -gt 0 ]; then
-        print info "Waiting for the permission pass to finish before checking..."
         _perm_wait_started=$(date +%s)
-        for _pid in "${permission_pids[@]}"; do
-            wait "${_pid}" 2>/dev/null || true
-        done
+        wait_with_progress "Waiting for the permission pass to finish" \
+            "${permission_pids[@]}"
         # Only what was spent WAITING, not what the pass took: it runs in the
         # background alongside the rest of the upgrade, so most of its work is
         # normally already done by the time anything blocks on it. A number here
