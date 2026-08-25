@@ -178,495 +178,6 @@ choose() {
   ask_choice "$@"
 }
 
-# --- the backup runner -------------------------------------------------------
-#
-# The generated runner is a fixed script: it reads every setting from
-# backup.conf at the moment it runs, so nothing about this depends on the
-# answers given above. That is what lets it be rewritten on its own, without
-# asking a soul, which --refresh-runner below does.
-install_backup_runner() {
-  print header "Installing the backup runner"
-
-  cat > "$RUNNER" <<'RUNNER_SCRIPT'
-  #!/bin/bash
-  # InteLIS backup runner. Installed by remote-backup.sh; reads its settings from
-  # /etc/intelis/backup.conf. Safe to run by hand at any time.
-  set -Eeuo pipefail
-
-  CONF_FILE="/etc/intelis/backup.conf"
-  STATE_DIR="/var/lib/intelis"
-  STATUS_JSON="${STATE_DIR}/backup-status.json"
-  STATUS_ENV="${STATE_DIR}/backup-status.env"
-  LOGFILE="/var/log/intelis-backup.log"
-  LOCKFILE="/var/lock/intelis-backup.lock"
-
-  usage() {
-    cat <<USAGE
-  This is the backup runner. It is normally reached through the intelis command,
-  which is the form to use and the form the documentation carries:
-
-    intelis backup            Run a backup now
-    intelis backup status     Show when the last backup ran and whether it worked
-    intelis backup test       Check the connection and report what would be copied
-    intelis backup disable    Stop the scheduled backups
-    intelis backup enable     Start the scheduled backups again
-    intelis backup setup      Choose or change where backups are sent
-
-  Running this file directly takes the same actions as options:
-
-    (no option)   Run a backup now
-    --status      Show when the last backup ran and whether it worked
-    --test        Check the connection and report what would be copied, changing nothing
-    --disable     Stop the scheduled backups
-    --enable      Start the scheduled backups again
-    --help        Show this message
-  USAGE
-  }
-
-  ACTION="run"
-  case "${1:-}" in
-    "")         ACTION="run" ;;
-    --status)   ACTION="status" ;;
-    --test)     ACTION="test" ;;
-    --disable)  ACTION="disable" ;;
-    --enable)   ACTION="enable" ;;
-    --help|-h)  usage; exit 0 ;;
-    *)          echo "Unknown option: $1"; usage; exit 2 ;;
-  esac
-
-  [ -f "$CONF_FILE" ] || { echo "No backup configuration found at $CONF_FILE. Run remote-backup.sh first."; exit 1; }
-  # shellcheck disable=SC1090
-  . "$CONF_FILE"
-
-  : "${INSTANCE_NAME:=}"; : "${LAB_UUID:=}"; : "${DEST_FOLDER:=}"; : "${LIS_PATH:=}"
-  : "${DEST_MODE:=}"; : "${DEST_BASE:=}"; : "${DEST_DIR:=}"
-  : "${SSH_USER:=}"; : "${SSH_HOST:=}"; : "${SSH_PORT:=22}"; : "${SSH_KEY:=/root/.ssh/id_ed25519_intelis}"
-  : "${SMB_HOST:=}"; : "${SMB_SHARE:=}"; : "${SMB_VERS:=3.0}"; : "${MOUNT_POINT:=/mnt/intelis-backup}"
-  : "${LOCAL_ROOT:=}"
-
-  CRON_MARKER="/usr/local/bin/intelis-backup.sh"
-
-  # --- scheduling toggles (no lock or logging needed) ---------------------------
-
-  case "$ACTION" in
-    disable)
-      if crontab -l 2>/dev/null | grep -q "$CRON_MARKER"; then
-        crontab -l 2>/dev/null | grep -v "$CRON_MARKER" | crontab -
-        echo "Scheduled backups stopped. Run 'intelis backup enable' to start them again."
-      else
-        echo "Scheduled backups were already stopped."
-      fi
-      pkill -f "$CRON_MARKER" 2>/dev/null && echo "Stopped the backup that was running." || true
-      exit 0
-      ;;
-    enable)
-      ( crontab -l 2>/dev/null | grep -v "$CRON_MARKER" || true ) | crontab -
-      ( crontab -l 2>/dev/null; echo "@reboot $CRON_MARKER >/dev/null 2>&1"; echo "0 */8 * * * $CRON_MARKER >/dev/null 2>&1" ) | crontab -
-      echo "Scheduled backups started: every 8 hours and after every restart."
-      exit 0
-      ;;
-  esac
-
-  # --- status readout -----------------------------------------------------------
-
-  human_age() {
-    local secs=$1
-    if   [ "$secs" -lt 3600 ];  then echo "$((secs / 60)) minutes ago"
-    elif [ "$secs" -lt 86400 ]; then echo "$((secs / 3600)) hours ago"
-    else                             echo "$((secs / 86400)) days ago"; fi
-  }
-
-  if [ "$ACTION" = "status" ]; then
-    echo "Lab            : ${INSTANCE_NAME} (${DEST_FOLDER})"
-    case "$DEST_MODE" in
-      ssh)   echo "Backing up to  : ${SSH_USER}@${SSH_HOST}:${DEST_DIR}" ;;
-      smb)   echo "Backing up to  : //${SMB_HOST}/${SMB_SHARE} -> ${DEST_DIR}" ;;
-      local) echo "Backing up to  : ${DEST_DIR}" ;;
-    esac
-    if [ -f "$STATUS_ENV" ]; then
-      # shellcheck disable=SC1090
-      . "$STATUS_ENV"
-      : "${LAST_STATUS:=unknown}"; : "${LAST_SUCCESS_AT:=}"; : "${LAST_SUCCESS_EPOCH:=0}"
-      : "${LAST_FAILURE_AT:=}"; : "${LAST_ERROR:=}"; : "${LAST_SIZE:=unknown}"; : "${LAST_DURATION:=0}"
-      if [ "${LAST_SUCCESS_EPOCH:-0}" -gt 0 ]; then
-        age=$(( $(date +%s) - LAST_SUCCESS_EPOCH ))
-        echo "Last good backup: ${LAST_SUCCESS_AT} ($(human_age "$age"))"
-        echo "Size on backup  : ${LAST_SIZE}"
-        if [ "$age" -gt 86400 ]; then
-          echo
-          echo "⚠️  The last good backup is more than a day old. Run 'intelis backup test' to find out why."
-        fi
-      else
-        echo "Last good backup: never"
-      fi
-      [ "$LAST_STATUS" = "failed" ] && { echo "Last attempt    : FAILED at ${LAST_FAILURE_AT}"; echo "Reason          : ${LAST_ERROR}"; }
-      [ "$LAST_STATUS" = "ok" ]     &&   echo "Last attempt    : succeeded in ${LAST_DURATION}s"
-    else
-      echo "Last good backup: never (no backup has finished yet)"
-    fi
-    if crontab -l 2>/dev/null | grep -q "$CRON_MARKER"; then
-      echo "Schedule        : every 8 hours and after every restart"
-    else
-      echo "Schedule        : OFF — backups are not scheduled"
-    fi
-    exit 0
-  fi
-
-  # --- logging ------------------------------------------------------------------
-  # Appended, never truncated: the record of a failure must survive the next run.
-
-  mkdir -p "$STATE_DIR"
-  umask 027
-  touch "$LOGFILE" 2>/dev/null || true
-  chmod 640 "$LOGFILE" 2>/dev/null || true
-  exec 1> >(tee -a "$LOGFILE")
-  exec 2>&1
-
-  print() {
-    local t=${1:-info}; shift || true
-    local m=${1:-};     shift || true
-    local ts="[$(date '+%Y-%m-%d %H:%M:%S')]"
-    case "$t" in
-      error)   printf "%s \033[1;91m❌ Error:\033[0m %s\n" "$ts" "$m" ;;
-      success) printf "%s \033[1;92m✅ Success:\033[0m %s\n" "$ts" "$m" ;;
-      warning) printf "%s \033[1;93m⚠️ Warning:\033[0m %s\n" "$ts" "$m" ;;
-      info)    printf "%s \033[1;96mℹ️ Info:\033[0m %s\n" "$ts" "$m" ;;
-      *)       printf "%s %s\n" "$ts" "$m" ;;
-    esac
-  }
-
-  # --- status file --------------------------------------------------------------
-
-  LAST_STATUS="never"; LAST_SUCCESS_AT=""; LAST_SUCCESS_EPOCH=0
-  LAST_FAILURE_AT=""; LAST_ERROR=""; LAST_SIZE="unknown"; LAST_DURATION=0
-  if [ -f "$STATUS_ENV" ]; then
-    # shellcheck disable=SC1090
-    . "$STATUS_ENV" || true
-  fi
-
-  json_escape() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr -d '\n\r'; }
-
-  write_status() {
-    local st=$1 msg=${2:-} size=${3:-unknown} duration=${4:-0}
-    local now epoch
-    now="$(date -u +%FT%TZ)"; epoch="$(date +%s)"
-    if [ "$st" = "ok" ]; then
-      LAST_SUCCESS_AT="$now"; LAST_SUCCESS_EPOCH="$epoch"; LAST_SIZE="$size"; LAST_ERROR=""
-    else
-      LAST_FAILURE_AT="$now"; LAST_ERROR="$msg"
-    fi
-    LAST_STATUS="$st"; LAST_DURATION="$duration"
-
-    mkdir -p "$STATE_DIR"
-    umask 022
-    cat > "$STATUS_ENV" <<STATUS
-  LAST_STATUS='${LAST_STATUS}'
-  LAST_RUN_AT='${now}'
-  LAST_SUCCESS_AT='${LAST_SUCCESS_AT}'
-  LAST_SUCCESS_EPOCH='${LAST_SUCCESS_EPOCH}'
-  LAST_FAILURE_AT='${LAST_FAILURE_AT}'
-  LAST_ERROR='$(printf '%s' "$LAST_ERROR" | tr -d "'" | tr -d '\n\r')'
-  LAST_SIZE='${LAST_SIZE}'
-  LAST_DURATION='${LAST_DURATION}'
-  DB_DUMP_AGE_HOURS='${DB_DUMP_AGE_HOURS:--1}'
-  STATUS
-    cat > "$STATUS_JSON" <<STATUS
-  {
-    "instance": "$(json_escape "$INSTANCE_NAME")",
-    "folder": "$(json_escape "$DEST_FOLDER")",
-    "destination": "$(json_escape "$DEST_MODE")",
-    "status": "$(json_escape "$LAST_STATUS")",
-    "last_run_at": "${now}",
-    "last_success_at": "$(json_escape "$LAST_SUCCESS_AT")",
-    "last_success_epoch": ${LAST_SUCCESS_EPOCH:-0},
-    "last_failure_at": "$(json_escape "$LAST_FAILURE_AT")",
-    "last_error": "$(json_escape "$LAST_ERROR")",
-    "size": "$(json_escape "$LAST_SIZE")",
-    "duration_seconds": ${LAST_DURATION:-0},
-    "db_dump_age_hours": ${DB_DUMP_AGE_HOURS:--1}
-  }
-  STATUS
-    chmod 644 "$STATUS_JSON" "$STATUS_ENV" 2>/dev/null || true
-  }
-
-  fail() {
-    trap - ERR
-    local msg=$1
-    print error "$msg"
-    [ "$ACTION" = "run" ] && write_status failed "$msg" "unknown" "${SECONDS:-0}"
-    exit 1
-  }
-  trap 'fail "backup failed at line $LINENO (status $?)"' ERR
-
-  # --- one run at a time --------------------------------------------------------
-
-  exec 9>"$LOCKFILE"
-  if ! flock -n 9; then
-    print warning "Another backup is already running. Leaving it to finish."
-    exit 0
-  fi
-
-  # --- destination helpers ------------------------------------------------------
-
-  SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new)
-
-  dest_exec() {
-    case "$DEST_MODE" in
-      ssh) ssh -n -i "$SSH_KEY" "${SSH_OPTS[@]}" -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" "$1" ;;
-      *)   bash -c "$1" ;;
-    esac
-  }
-
-  ensure_destination_available() {
-    case "$DEST_MODE" in
-      ssh)
-        dest_exec "true" >/dev/null 2>&1 || fail "Cannot reach the backup server ${SSH_HOST}. Is it switched on and on the network?"
-        ;;
-      smb)
-        if ! mountpoint -q "$MOUNT_POINT"; then
-          print warning "The Windows shared folder is not connected; reconnecting."
-          mount "$MOUNT_POINT" >/dev/null 2>&1 || fail "Cannot connect to //${SMB_HOST}/${SMB_SHARE}. Is the Windows machine switched on and on the network?"
-        fi
-        ;;
-      local)
-        [ -d "$LOCAL_ROOT" ] || fail "The backup drive at ${LOCAL_ROOT} is not there. Is it plugged in?"
-        ;;
-    esac
-  }
-
-  Q_DEST="$(printf '%q' "$DEST_DIR")"
-
-  # --- checks -------------------------------------------------------------------
-
-  print info "Starting backup of ${INSTANCE_NAME}"
-  print info "From: ${LIS_PATH}/"
-  print info "To  : ${DEST_DIR}/"
-
-  [ -d "$LIS_PATH" ] || fail "The installation folder ${LIS_PATH} does not exist."
-
-  ensure_destination_available
-
-  # The folder must still belong to this lab before anything is written into it.
-  REMOTE_UUID="$(dest_exec "awk -F= '/^lab_uuid=/{print \$2}' ${Q_DEST}/.lab-meta 2>/dev/null || true" | tr -d '\r\n')"
-  [ "$REMOTE_UUID" = "$LAB_UUID" ] || fail "The backup folder does not belong to this installation any more. Re-run remote-backup.sh."
-
-  # Free space at the destination.
-  AVAILABLE_GB=$(dest_exec "df -Pk ${Q_DEST} 2>/dev/null | awk 'NR==2{print int(\$4/1024/1024)}'" || echo 0)
-  AVAILABLE_GB=${AVAILABLE_GB:-0}
-  if [ "$AVAILABLE_GB" -lt 5 ]; then
-    print warning "Only ${AVAILABLE_GB} GB free where the backup is stored."
-    [ "$AVAILABLE_GB" -ge 2 ] || fail "Less than 2 GB free at the destination. Free up space and run the backup again."
-  fi
-
-  # How old is the newest database dump? The files on disk are only half a backup;
-  # the data lives in the dump written by the scheduled job every 6 hours.
-  DB_DUMP_AGE_HOURS=-1
-  DB_DUMP_DIR="${LIS_PATH}/backups/db"
-  if [ -d "$DB_DUMP_DIR" ]; then
-    newest_dump=$(find "$DB_DUMP_DIR" -maxdepth 1 -type f \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst' -o -name '*.gpg' \) -printf '%T@\n' 2>/dev/null | sort -nr | head -1 | cut -d. -f1)
-    if [ -n "${newest_dump:-}" ]; then
-      DB_DUMP_AGE_HOURS=$(( ( $(date +%s) - newest_dump ) / 3600 ))
-      if [ "$DB_DUMP_AGE_HOURS" -gt 24 ]; then
-        print warning "The newest database dump is ${DB_DUMP_AGE_HOURS} hours old. The scheduled backup job may have stopped running; check that cron.sh is in the crontab."
-      else
-        print info "Newest database dump is ${DB_DUMP_AGE_HOURS} hours old"
-      fi
-    else
-      print warning "No database dump found in ${DB_DUMP_DIR}. Only files will be copied, not the data."
-    fi
-  fi
-
-  # --- what to leave out --------------------------------------------------------
-  # composer.lock is deliberately kept: vendor/ is excluded, so the lock file is
-  # what makes the restored copy reproducible.
-
-  EXCLUDE_LIST="$(mktemp /tmp/intelis-backup-excludes.XXXXXX)"
-  trap 'rm -f "$EXCLUDE_LIST"' EXIT
-  cat > "$EXCLUDE_LIST" <<'EXCLUDES'
-  /public/temporary/
-  /var/logs/
-  /var/cache/
-  /vendor/
-  /node_modules/
-  /bower_components/
-  .git/
-  .svn/
-  .hg/
-  /.vscode/
-  /.idea/
-  *.tmp
-  *.temp
-  *.cache
-  *.pid
-  *.swp
-  *.swo
-  *~
-  *.sql.tmp
-  *.sql.partial
-  .DS_Store
-  Thumbs.db
-  desktop.ini
-  .directory
-  EXCLUDES
-
-  # --- rsync options per destination --------------------------------------------
-
-  # Split deliberately. RSYNC_MODE_OPTS is everything about HOW to reach the
-  # destination — transport, compression, and the compatibility flags a filesystem
-  # that cannot hold POSIX metadata needs. RSYNC_FILTER_OPTS is everything about
-  # WHAT to send. The verification pass below reuses the transport but must not
-  # reuse the filters: it works from an explicit file list, and --delete needs a
-  # whole-tree walk, which is the cost this is here to avoid.
-  RSYNC_FILTER_OPTS=(--delete --partial --timeout=900 --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta)
-  RSYNC_MODE_OPTS=()
-
-  needs_compat_flags() {
-    # Filesystems that cannot hold POSIX ownership, permissions, or symlinks.
-    local fstype
-    fstype=$(stat -f -c %T "$1" 2>/dev/null || echo unknown)
-    case "$fstype" in
-      vfat|exfat|msdos|ntfs|fuseblk|cifs|smb2) return 0 ;;
-      *) return 1 ;;
-    esac
-  }
-
-  case "$DEST_MODE" in
-    ssh)
-      RSYNC_MODE_OPTS+=(-aHz -e "ssh -i ${SSH_KEY} -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new -p ${SSH_PORT}")
-      RSYNC_TARGET="${SSH_USER}@${SSH_HOST}:${DEST_DIR}/"
-      ;;
-    smb)
-      # -L copies what symlinks point at, because Windows shares cannot store them.
-      RSYNC_MODE_OPTS+=(-rtLz --no-perms --no-owner --no-group --omit-dir-times --modify-window=2)
-      RSYNC_TARGET="${DEST_DIR}/"
-      ;;
-    local)
-      if needs_compat_flags "$LOCAL_ROOT"; then
-        RSYNC_MODE_OPTS+=(-rtL --no-perms --no-owner --no-group --omit-dir-times --modify-window=2)
-      else
-        RSYNC_MODE_OPTS+=(-aH)
-      fi
-      RSYNC_TARGET="${DEST_DIR}/"
-      ;;
-  esac
-
-  RSYNC_OPTS=("${RSYNC_FILTER_OPTS[@]}" "${RSYNC_MODE_OPTS[@]}")
-
-  # --- dry run ------------------------------------------------------------------
-
-  if [ "$ACTION" = "test" ]; then
-    print info "Test run: nothing will be changed."
-    pending=$(rsync "${RSYNC_OPTS[@]}" --dry-run --itemize-changes "${LIS_PATH}/" "$RSYNC_TARGET" | grep -c '^[<>]f' || true)
-    print success "Connection works. ${AVAILABLE_GB} GB free at the destination."
-    print info    "${pending} file(s) would be copied by a real backup."
-    [ "$DB_DUMP_AGE_HOURS" -ge 0 ] && print info "Newest database dump: ${DB_DUMP_AGE_HOURS} hours old."
-    exit 0
-  fi
-
-  # --- the backup ---------------------------------------------------------------
-
-  SECONDS=0
-  print info "Copying files..."
-
-  # The transfer's own account of itself, kept rather than discarded.
-  #
-  # This used to end in `>/dev/null`, and verification was a second full
-  # --dry-run over the whole tree. That is the single most expensive thing a
-  # backup did: an installation carries one audit-trail file per sample, so a
-  # busy lab has hundreds of thousands of them, and re-statting every one to
-  # rediscover what rsync had just finished telling us dominated the run. Over
-  # SMB, where the cost is per-file latency rather than bytes, most of a backup
-  # was spent re-confirming that immutable files were still unchanged.
-  #
-  # rsync already computed the answer in order to do the work. %i is the itemized
-  # change string and %n the path, so this list is the transfer, exactly.
-  TRANSFER_LOG="$(mktemp /tmp/intelis-backup-transfer.XXXXXX)"
-  trap 'rm -f "$EXCLUDE_LIST" "$TRANSFER_LOG" "${TRANSFER_LOG}.files"' EXIT
-
-  rsync "${RSYNC_OPTS[@]}" --out-format='%i|%n' "${LIS_PATH}/" "$RSYNC_TARGET" >"$TRANSFER_LOG" 2>&1 ||
-    fail "The copy did not finish. See ${LOGFILE} for the details."
-
-  # Regular files that were actually sent. Directories, symlinks and deletions are
-  # not re-checked: a stale extra file at the destination is not a loss, and the
-  # question this answers is whether what was sent arrived intact.
-  CHANGED_LIST="${TRANSFER_LOG}.files"
-  awk -F'|' '$1 ~ /^[<>]f/ { sub(/^[^|]*\|/, ""); print }' "$TRANSFER_LOG" > "$CHANGED_LIST" || true
-  CHANGED_COUNT=$(wc -l < "$CHANGED_LIST" | tr -d ' ')
-  CHANGED_COUNT=${CHANGED_COUNT:-0}
-
-  print success "Files copied (${CHANGED_COUNT} changed)"
-
-  # --- verification -------------------------------------------------------------
-  # Only what this run touched, and by content rather than by size and timestamp.
-  #
-  # Checking the delta instead of the tree is not a weaker guarantee, it is a
-  # stronger one. The old whole-tree pass compared size and mtime, so a file that
-  # arrived corrupt but plausible passed it. Restricting the check to the handful
-  # of files that actually moved makes -c affordable, and -c reads both copies and
-  # compares checksums.
-  #
-  # rsync escapes non-printable bytes in %n as \#nnn. A path like that cannot be
-  # fed back through --files-from safely, so the whole-tree check is used instead
-  # rather than silently verifying the wrong paths.
-  verify_transfer() {
-    if grep -q '\\#' "$CHANGED_LIST"; then
-      print info "Some file names need escaping; verifying the whole tree instead."
-      local remaining
-      remaining=$(rsync "${RSYNC_OPTS[@]}" --dry-run --itemize-changes "${LIS_PATH}/" "$RSYNC_TARGET" | grep -c '^[<>]f' || true)
-      [ "${remaining:-0}" -eq 0 ]
-      return $?
-    fi
-
-    local differing
-    differing=$(rsync "${RSYNC_MODE_OPTS[@]}" --files-from="$CHANGED_LIST" \
-                      --checksum --dry-run --out-format='%i|%n' \
-                      "${LIS_PATH}/" "$RSYNC_TARGET" 2>/dev/null | grep -c '^[<>]f' || true)
-    [ "${differing:-0}" -eq 0 ]
-  }
-
-  if [ "$CHANGED_COUNT" -eq 0 ]; then
-    print success "Verified: nothing needed copying, the backup already matches"
-  elif verify_transfer; then
-    print success "Verified: ${CHANGED_COUNT} file(s) match at the destination"
-  else
-    print warning "Some files still differ after the copy. They may have changed while the backup was running; the next backup should pick them up."
-  fi
-
-  # The size on the backup, for `intelis backup status` — measured only where
-  # measuring is cheap.
-  #
-  # `du -sh` is a recursive stat of every file the lab has ever backed up. Over SSH
-  # that runs on the backup server as a local walk and the network cost is one
-  # round trip, so it stays. On a CIFS mount every one of those stats is a network
-  # round trip, which is the same per-file cost this change exists to remove — and
-  # an installation carries one audit-trail file per sample. So SMB does not pay
-  # it. Nothing depends on the number: it is displayed by `backup status` and
-  # stored in the status JSON, and both already handle "unknown".
-  case "$DEST_MODE" in
-    smb)
-      BACKUP_SIZE="not measured"
-      ;;
-    *)
-      BACKUP_SIZE=$(dest_exec "du -sh ${Q_DEST} 2>/dev/null | cut -f1" || echo "unknown")
-      ;;
-  esac
-  BACKUP_SIZE=${BACKUP_SIZE:-unknown}
-
-  write_status ok "" "$BACKUP_SIZE" "$SECONDS"
-  print success "Backup finished in ${SECONDS}s. ${AVAILABLE_GB} GB free at the destination."
-  [ "$BACKUP_SIZE" = "not measured" ] || print info "Size on the backup: ${BACKUP_SIZE}"
-  RUNNER_SCRIPT
-
-  chmod 0755 "$RUNNER"
-  print success "Backup runner installed at $RUNNER"
-
-  # The Windows-only runner from the older setup is replaced by the unified one.
-  if [ -f "$LEGACY_WINDOWS_RUNNER" ]; then
-    rm -f "$LEGACY_WINDOWS_RUNNER"
-    print info "Removed the old Windows-only runner; one runner now handles every destination."
-  fi
-}
-
 # --- preflight ----------------------------------------------------------------
 
 require_cmd realpath
@@ -1041,8 +552,488 @@ chmod 600 "$CONF_FILE"
 umask 022
 print success "Settings saved to $CONF_FILE"
 
-# (the runner is written by install_backup_runner, defined near the top)
-install_backup_runner
+# --- install the backup runner ------------------------------------------------
+
+print header "Installing the backup runner"
+
+cat > "$RUNNER" <<'RUNNER_SCRIPT'
+#!/bin/bash
+# InteLIS backup runner. Installed by remote-backup.sh; reads its settings from
+# /etc/intelis/backup.conf. Safe to run by hand at any time.
+set -Eeuo pipefail
+
+CONF_FILE="/etc/intelis/backup.conf"
+STATE_DIR="/var/lib/intelis"
+STATUS_JSON="${STATE_DIR}/backup-status.json"
+STATUS_ENV="${STATE_DIR}/backup-status.env"
+LOGFILE="/var/log/intelis-backup.log"
+LOCKFILE="/var/lock/intelis-backup.lock"
+
+usage() {
+  cat <<USAGE
+This is the backup runner. It is normally reached through the intelis command,
+which is the form to use and the form the documentation carries:
+
+  intelis backup            Run a backup now
+  intelis backup status     Show when the last backup ran and whether it worked
+  intelis backup test       Check the connection and report what would be copied
+  intelis backup disable    Stop the scheduled backups
+  intelis backup enable     Start the scheduled backups again
+  intelis backup setup      Choose or change where backups are sent
+
+Running this file directly takes the same actions as options:
+
+  (no option)   Run a backup now
+  --status      Show when the last backup ran and whether it worked
+  --test        Check the connection and report what would be copied, changing nothing
+  --disable     Stop the scheduled backups
+  --enable      Start the scheduled backups again
+  --help        Show this message
+USAGE
+}
+
+ACTION="run"
+case "${1:-}" in
+  "")         ACTION="run" ;;
+  --status)   ACTION="status" ;;
+  --test)     ACTION="test" ;;
+  --disable)  ACTION="disable" ;;
+  --enable)   ACTION="enable" ;;
+  --help|-h)  usage; exit 0 ;;
+  *)          echo "Unknown option: $1"; usage; exit 2 ;;
+esac
+
+[ -f "$CONF_FILE" ] || { echo "No backup configuration found at $CONF_FILE. Run remote-backup.sh first."; exit 1; }
+# shellcheck disable=SC1090
+. "$CONF_FILE"
+
+: "${INSTANCE_NAME:=}"; : "${LAB_UUID:=}"; : "${DEST_FOLDER:=}"; : "${LIS_PATH:=}"
+: "${DEST_MODE:=}"; : "${DEST_BASE:=}"; : "${DEST_DIR:=}"
+: "${SSH_USER:=}"; : "${SSH_HOST:=}"; : "${SSH_PORT:=22}"; : "${SSH_KEY:=/root/.ssh/id_ed25519_intelis}"
+: "${SMB_HOST:=}"; : "${SMB_SHARE:=}"; : "${SMB_VERS:=3.0}"; : "${MOUNT_POINT:=/mnt/intelis-backup}"
+: "${LOCAL_ROOT:=}"
+
+CRON_MARKER="/usr/local/bin/intelis-backup.sh"
+
+# --- scheduling toggles (no lock or logging needed) ---------------------------
+
+case "$ACTION" in
+  disable)
+    if crontab -l 2>/dev/null | grep -q "$CRON_MARKER"; then
+      crontab -l 2>/dev/null | grep -v "$CRON_MARKER" | crontab -
+      echo "Scheduled backups stopped. Run 'intelis backup enable' to start them again."
+    else
+      echo "Scheduled backups were already stopped."
+    fi
+    pkill -f "$CRON_MARKER" 2>/dev/null && echo "Stopped the backup that was running." || true
+    exit 0
+    ;;
+  enable)
+    ( crontab -l 2>/dev/null | grep -v "$CRON_MARKER" || true ) | crontab -
+    ( crontab -l 2>/dev/null; echo "@reboot $CRON_MARKER >/dev/null 2>&1"; echo "0 */8 * * * $CRON_MARKER >/dev/null 2>&1" ) | crontab -
+    echo "Scheduled backups started: every 8 hours and after every restart."
+    exit 0
+    ;;
+esac
+
+# --- status readout -----------------------------------------------------------
+
+human_age() {
+  local secs=$1
+  if   [ "$secs" -lt 3600 ];  then echo "$((secs / 60)) minutes ago"
+  elif [ "$secs" -lt 86400 ]; then echo "$((secs / 3600)) hours ago"
+  else                             echo "$((secs / 86400)) days ago"; fi
+}
+
+if [ "$ACTION" = "status" ]; then
+  echo "Lab            : ${INSTANCE_NAME} (${DEST_FOLDER})"
+  case "$DEST_MODE" in
+    ssh)   echo "Backing up to  : ${SSH_USER}@${SSH_HOST}:${DEST_DIR}" ;;
+    smb)   echo "Backing up to  : //${SMB_HOST}/${SMB_SHARE} -> ${DEST_DIR}" ;;
+    local) echo "Backing up to  : ${DEST_DIR}" ;;
+  esac
+  if [ -f "$STATUS_ENV" ]; then
+    # shellcheck disable=SC1090
+    . "$STATUS_ENV"
+    : "${LAST_STATUS:=unknown}"; : "${LAST_SUCCESS_AT:=}"; : "${LAST_SUCCESS_EPOCH:=0}"
+    : "${LAST_FAILURE_AT:=}"; : "${LAST_ERROR:=}"; : "${LAST_SIZE:=unknown}"; : "${LAST_DURATION:=0}"
+    if [ "${LAST_SUCCESS_EPOCH:-0}" -gt 0 ]; then
+      age=$(( $(date +%s) - LAST_SUCCESS_EPOCH ))
+      echo "Last good backup: ${LAST_SUCCESS_AT} ($(human_age "$age"))"
+      echo "Size on backup  : ${LAST_SIZE}"
+      if [ "$age" -gt 86400 ]; then
+        echo
+        echo "⚠️  The last good backup is more than a day old. Run 'intelis backup test' to find out why."
+      fi
+    else
+      echo "Last good backup: never"
+    fi
+    [ "$LAST_STATUS" = "failed" ] && { echo "Last attempt    : FAILED at ${LAST_FAILURE_AT}"; echo "Reason          : ${LAST_ERROR}"; }
+    [ "$LAST_STATUS" = "ok" ]     &&   echo "Last attempt    : succeeded in ${LAST_DURATION}s"
+  else
+    echo "Last good backup: never (no backup has finished yet)"
+  fi
+  if crontab -l 2>/dev/null | grep -q "$CRON_MARKER"; then
+    echo "Schedule        : every 8 hours and after every restart"
+  else
+    echo "Schedule        : OFF — backups are not scheduled"
+  fi
+  exit 0
+fi
+
+# --- logging ------------------------------------------------------------------
+# Appended, never truncated: the record of a failure must survive the next run.
+
+mkdir -p "$STATE_DIR"
+umask 027
+touch "$LOGFILE" 2>/dev/null || true
+chmod 640 "$LOGFILE" 2>/dev/null || true
+exec 1> >(tee -a "$LOGFILE")
+exec 2>&1
+
+print() {
+  local t=${1:-info}; shift || true
+  local m=${1:-};     shift || true
+  local ts="[$(date '+%Y-%m-%d %H:%M:%S')]"
+  case "$t" in
+    error)   printf "%s \033[1;91m❌ Error:\033[0m %s\n" "$ts" "$m" ;;
+    success) printf "%s \033[1;92m✅ Success:\033[0m %s\n" "$ts" "$m" ;;
+    warning) printf "%s \033[1;93m⚠️ Warning:\033[0m %s\n" "$ts" "$m" ;;
+    info)    printf "%s \033[1;96mℹ️ Info:\033[0m %s\n" "$ts" "$m" ;;
+    *)       printf "%s %s\n" "$ts" "$m" ;;
+  esac
+}
+
+# --- status file --------------------------------------------------------------
+
+LAST_STATUS="never"; LAST_SUCCESS_AT=""; LAST_SUCCESS_EPOCH=0
+LAST_FAILURE_AT=""; LAST_ERROR=""; LAST_SIZE="unknown"; LAST_DURATION=0
+if [ -f "$STATUS_ENV" ]; then
+  # shellcheck disable=SC1090
+  . "$STATUS_ENV" || true
+fi
+
+json_escape() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr -d '\n\r'; }
+
+write_status() {
+  local st=$1 msg=${2:-} size=${3:-unknown} duration=${4:-0}
+  local now epoch
+  now="$(date -u +%FT%TZ)"; epoch="$(date +%s)"
+  if [ "$st" = "ok" ]; then
+    LAST_SUCCESS_AT="$now"; LAST_SUCCESS_EPOCH="$epoch"; LAST_SIZE="$size"; LAST_ERROR=""
+  else
+    LAST_FAILURE_AT="$now"; LAST_ERROR="$msg"
+  fi
+  LAST_STATUS="$st"; LAST_DURATION="$duration"
+
+  mkdir -p "$STATE_DIR"
+  umask 022
+  cat > "$STATUS_ENV" <<STATUS
+LAST_STATUS='${LAST_STATUS}'
+LAST_RUN_AT='${now}'
+LAST_SUCCESS_AT='${LAST_SUCCESS_AT}'
+LAST_SUCCESS_EPOCH='${LAST_SUCCESS_EPOCH}'
+LAST_FAILURE_AT='${LAST_FAILURE_AT}'
+LAST_ERROR='$(printf '%s' "$LAST_ERROR" | tr -d "'" | tr -d '\n\r')'
+LAST_SIZE='${LAST_SIZE}'
+LAST_DURATION='${LAST_DURATION}'
+DB_DUMP_AGE_HOURS='${DB_DUMP_AGE_HOURS:--1}'
+STATUS
+  cat > "$STATUS_JSON" <<STATUS
+{
+  "instance": "$(json_escape "$INSTANCE_NAME")",
+  "folder": "$(json_escape "$DEST_FOLDER")",
+  "destination": "$(json_escape "$DEST_MODE")",
+  "status": "$(json_escape "$LAST_STATUS")",
+  "last_run_at": "${now}",
+  "last_success_at": "$(json_escape "$LAST_SUCCESS_AT")",
+  "last_success_epoch": ${LAST_SUCCESS_EPOCH:-0},
+  "last_failure_at": "$(json_escape "$LAST_FAILURE_AT")",
+  "last_error": "$(json_escape "$LAST_ERROR")",
+  "size": "$(json_escape "$LAST_SIZE")",
+  "duration_seconds": ${LAST_DURATION:-0},
+  "db_dump_age_hours": ${DB_DUMP_AGE_HOURS:--1}
+}
+STATUS
+  chmod 644 "$STATUS_JSON" "$STATUS_ENV" 2>/dev/null || true
+}
+
+fail() {
+  trap - ERR
+  local msg=$1
+  print error "$msg"
+  [ "$ACTION" = "run" ] && write_status failed "$msg" "unknown" "${SECONDS:-0}"
+  exit 1
+}
+trap 'fail "backup failed at line $LINENO (status $?)"' ERR
+
+# --- one run at a time --------------------------------------------------------
+
+exec 9>"$LOCKFILE"
+if ! flock -n 9; then
+  print warning "Another backup is already running. Leaving it to finish."
+  exit 0
+fi
+
+# --- destination helpers ------------------------------------------------------
+
+SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new)
+
+dest_exec() {
+  case "$DEST_MODE" in
+    ssh) ssh -n -i "$SSH_KEY" "${SSH_OPTS[@]}" -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" "$1" ;;
+    *)   bash -c "$1" ;;
+  esac
+}
+
+ensure_destination_available() {
+  case "$DEST_MODE" in
+    ssh)
+      dest_exec "true" >/dev/null 2>&1 || fail "Cannot reach the backup server ${SSH_HOST}. Is it switched on and on the network?"
+      ;;
+    smb)
+      if ! mountpoint -q "$MOUNT_POINT"; then
+        print warning "The Windows shared folder is not connected; reconnecting."
+        mount "$MOUNT_POINT" >/dev/null 2>&1 || fail "Cannot connect to //${SMB_HOST}/${SMB_SHARE}. Is the Windows machine switched on and on the network?"
+      fi
+      ;;
+    local)
+      [ -d "$LOCAL_ROOT" ] || fail "The backup drive at ${LOCAL_ROOT} is not there. Is it plugged in?"
+      ;;
+  esac
+}
+
+Q_DEST="$(printf '%q' "$DEST_DIR")"
+
+# --- checks -------------------------------------------------------------------
+
+print info "Starting backup of ${INSTANCE_NAME}"
+print info "From: ${LIS_PATH}/"
+print info "To  : ${DEST_DIR}/"
+
+[ -d "$LIS_PATH" ] || fail "The installation folder ${LIS_PATH} does not exist."
+
+ensure_destination_available
+
+# The folder must still belong to this lab before anything is written into it.
+REMOTE_UUID="$(dest_exec "awk -F= '/^lab_uuid=/{print \$2}' ${Q_DEST}/.lab-meta 2>/dev/null || true" | tr -d '\r\n')"
+[ "$REMOTE_UUID" = "$LAB_UUID" ] || fail "The backup folder does not belong to this installation any more. Re-run remote-backup.sh."
+
+# Free space at the destination.
+AVAILABLE_GB=$(dest_exec "df -Pk ${Q_DEST} 2>/dev/null | awk 'NR==2{print int(\$4/1024/1024)}'" || echo 0)
+AVAILABLE_GB=${AVAILABLE_GB:-0}
+if [ "$AVAILABLE_GB" -lt 5 ]; then
+  print warning "Only ${AVAILABLE_GB} GB free where the backup is stored."
+  [ "$AVAILABLE_GB" -ge 2 ] || fail "Less than 2 GB free at the destination. Free up space and run the backup again."
+fi
+
+# How old is the newest database dump? The files on disk are only half a backup;
+# the data lives in the dump written by the scheduled job every 6 hours.
+DB_DUMP_AGE_HOURS=-1
+DB_DUMP_DIR="${LIS_PATH}/backups/db"
+if [ -d "$DB_DUMP_DIR" ]; then
+  newest_dump=$(find "$DB_DUMP_DIR" -maxdepth 1 -type f \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst' -o -name '*.gpg' \) -printf '%T@\n' 2>/dev/null | sort -nr | head -1 | cut -d. -f1)
+  if [ -n "${newest_dump:-}" ]; then
+    DB_DUMP_AGE_HOURS=$(( ( $(date +%s) - newest_dump ) / 3600 ))
+    if [ "$DB_DUMP_AGE_HOURS" -gt 24 ]; then
+      print warning "The newest database dump is ${DB_DUMP_AGE_HOURS} hours old. The scheduled backup job may have stopped running; check that cron.sh is in the crontab."
+    else
+      print info "Newest database dump is ${DB_DUMP_AGE_HOURS} hours old"
+    fi
+  else
+    print warning "No database dump found in ${DB_DUMP_DIR}. Only files will be copied, not the data."
+  fi
+fi
+
+# --- what to leave out --------------------------------------------------------
+# composer.lock is deliberately kept: vendor/ is excluded, so the lock file is
+# what makes the restored copy reproducible.
+
+EXCLUDE_LIST="$(mktemp /tmp/intelis-backup-excludes.XXXXXX)"
+trap 'rm -f "$EXCLUDE_LIST"' EXIT
+cat > "$EXCLUDE_LIST" <<'EXCLUDES'
+/public/temporary/
+/var/logs/
+/var/cache/
+/vendor/
+/node_modules/
+/bower_components/
+.git/
+.svn/
+.hg/
+/.vscode/
+/.idea/
+*.tmp
+*.temp
+*.cache
+*.pid
+*.swp
+*.swo
+*~
+*.sql.tmp
+*.sql.partial
+.DS_Store
+Thumbs.db
+desktop.ini
+.directory
+EXCLUDES
+
+# --- rsync options per destination --------------------------------------------
+
+# Split deliberately. RSYNC_MODE_OPTS is everything about HOW to reach the
+# destination — transport, compression, and the compatibility flags a filesystem
+# that cannot hold POSIX metadata needs. RSYNC_FILTER_OPTS is everything about
+# WHAT to send. The verification pass below reuses the transport but must not
+# reuse the filters: it works from an explicit file list, and --delete needs a
+# whole-tree walk, which is the cost this is here to avoid.
+RSYNC_FILTER_OPTS=(--delete --partial --timeout=900 --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta)
+RSYNC_MODE_OPTS=()
+
+needs_compat_flags() {
+  # Filesystems that cannot hold POSIX ownership, permissions, or symlinks.
+  local fstype
+  fstype=$(stat -f -c %T "$1" 2>/dev/null || echo unknown)
+  case "$fstype" in
+    vfat|exfat|msdos|ntfs|fuseblk|cifs|smb2) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+case "$DEST_MODE" in
+  ssh)
+    RSYNC_MODE_OPTS+=(-aHz -e "ssh -i ${SSH_KEY} -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new -p ${SSH_PORT}")
+    RSYNC_TARGET="${SSH_USER}@${SSH_HOST}:${DEST_DIR}/"
+    ;;
+  smb)
+    # -L copies what symlinks point at, because Windows shares cannot store them.
+    RSYNC_MODE_OPTS+=(-rtLz --no-perms --no-owner --no-group --omit-dir-times --modify-window=2)
+    RSYNC_TARGET="${DEST_DIR}/"
+    ;;
+  local)
+    if needs_compat_flags "$LOCAL_ROOT"; then
+      RSYNC_MODE_OPTS+=(-rtL --no-perms --no-owner --no-group --omit-dir-times --modify-window=2)
+    else
+      RSYNC_MODE_OPTS+=(-aH)
+    fi
+    RSYNC_TARGET="${DEST_DIR}/"
+    ;;
+esac
+
+RSYNC_OPTS=("${RSYNC_FILTER_OPTS[@]}" "${RSYNC_MODE_OPTS[@]}")
+
+# --- dry run ------------------------------------------------------------------
+
+if [ "$ACTION" = "test" ]; then
+  print info "Test run: nothing will be changed."
+  pending=$(rsync "${RSYNC_OPTS[@]}" --dry-run --itemize-changes "${LIS_PATH}/" "$RSYNC_TARGET" | grep -c '^[<>]f' || true)
+  print success "Connection works. ${AVAILABLE_GB} GB free at the destination."
+  print info    "${pending} file(s) would be copied by a real backup."
+  [ "$DB_DUMP_AGE_HOURS" -ge 0 ] && print info "Newest database dump: ${DB_DUMP_AGE_HOURS} hours old."
+  exit 0
+fi
+
+# --- the backup ---------------------------------------------------------------
+
+SECONDS=0
+print info "Copying files..."
+
+# The transfer's own account of itself, kept rather than discarded.
+#
+# This used to end in `>/dev/null`, and verification was a second full
+# --dry-run over the whole tree. That is the single most expensive thing a
+# backup did: an installation carries one audit-trail file per sample, so a
+# busy lab has hundreds of thousands of them, and re-statting every one to
+# rediscover what rsync had just finished telling us dominated the run. Over
+# SMB, where the cost is per-file latency rather than bytes, most of a backup
+# was spent re-confirming that immutable files were still unchanged.
+#
+# rsync already computed the answer in order to do the work. %i is the itemized
+# change string and %n the path, so this list is the transfer, exactly.
+TRANSFER_LOG="$(mktemp /tmp/intelis-backup-transfer.XXXXXX)"
+trap 'rm -f "$EXCLUDE_LIST" "$TRANSFER_LOG" "${TRANSFER_LOG}.files"' EXIT
+
+rsync "${RSYNC_OPTS[@]}" --out-format='%i|%n' "${LIS_PATH}/" "$RSYNC_TARGET" >"$TRANSFER_LOG" 2>&1 ||
+  fail "The copy did not finish. See ${LOGFILE} for the details."
+
+# Regular files that were actually sent. Directories, symlinks and deletions are
+# not re-checked: a stale extra file at the destination is not a loss, and the
+# question this answers is whether what was sent arrived intact.
+CHANGED_LIST="${TRANSFER_LOG}.files"
+awk -F'|' '$1 ~ /^[<>]f/ { sub(/^[^|]*\|/, ""); print }' "$TRANSFER_LOG" > "$CHANGED_LIST" || true
+CHANGED_COUNT=$(wc -l < "$CHANGED_LIST" | tr -d ' ')
+CHANGED_COUNT=${CHANGED_COUNT:-0}
+
+print success "Files copied (${CHANGED_COUNT} changed)"
+
+# --- verification -------------------------------------------------------------
+# Only what this run touched, and by content rather than by size and timestamp.
+#
+# Checking the delta instead of the tree is not a weaker guarantee, it is a
+# stronger one. The old whole-tree pass compared size and mtime, so a file that
+# arrived corrupt but plausible passed it. Restricting the check to the handful
+# of files that actually moved makes -c affordable, and -c reads both copies and
+# compares checksums.
+#
+# rsync escapes non-printable bytes in %n as \#nnn. A path like that cannot be
+# fed back through --files-from safely, so the whole-tree check is used instead
+# rather than silently verifying the wrong paths.
+verify_transfer() {
+  if grep -q '\\#' "$CHANGED_LIST"; then
+    print info "Some file names need escaping; verifying the whole tree instead."
+    local remaining
+    remaining=$(rsync "${RSYNC_OPTS[@]}" --dry-run --itemize-changes "${LIS_PATH}/" "$RSYNC_TARGET" | grep -c '^[<>]f' || true)
+    [ "${remaining:-0}" -eq 0 ]
+    return $?
+  fi
+
+  local differing
+  differing=$(rsync "${RSYNC_MODE_OPTS[@]}" --files-from="$CHANGED_LIST" \
+                    --checksum --dry-run --out-format='%i|%n' \
+                    "${LIS_PATH}/" "$RSYNC_TARGET" 2>/dev/null | grep -c '^[<>]f' || true)
+  [ "${differing:-0}" -eq 0 ]
+}
+
+if [ "$CHANGED_COUNT" -eq 0 ]; then
+  print success "Verified: nothing needed copying, the backup already matches"
+elif verify_transfer; then
+  print success "Verified: ${CHANGED_COUNT} file(s) match at the destination"
+else
+  print warning "Some files still differ after the copy. They may have changed while the backup was running; the next backup should pick them up."
+fi
+
+# The size on the backup, for `intelis backup status` — measured only where
+# measuring is cheap.
+#
+# `du -sh` is a recursive stat of every file the lab has ever backed up. Over SSH
+# that runs on the backup server as a local walk and the network cost is one
+# round trip, so it stays. On a CIFS mount every one of those stats is a network
+# round trip, which is the same per-file cost this change exists to remove — and
+# an installation carries one audit-trail file per sample. So SMB does not pay
+# it. Nothing depends on the number: it is displayed by `backup status` and
+# stored in the status JSON, and both already handle "unknown".
+case "$DEST_MODE" in
+  smb)
+    BACKUP_SIZE="not measured"
+    ;;
+  *)
+    BACKUP_SIZE=$(dest_exec "du -sh ${Q_DEST} 2>/dev/null | cut -f1" || echo "unknown")
+    ;;
+esac
+BACKUP_SIZE=${BACKUP_SIZE:-unknown}
+
+write_status ok "" "$BACKUP_SIZE" "$SECONDS"
+print success "Backup finished in ${SECONDS}s. ${AVAILABLE_GB} GB free at the destination."
+[ "$BACKUP_SIZE" = "not measured" ] || print info "Size on the backup: ${BACKUP_SIZE}"
+RUNNER_SCRIPT
+
+chmod 0755 "$RUNNER"
+print success "Backup runner installed at $RUNNER"
+
+# The Windows-only runner from the older setup is replaced by the unified one.
+if [ -f "$LEGACY_WINDOWS_RUNNER" ]; then
+  rm -f "$LEGACY_WINDOWS_RUNNER"
+  print info "Removed the old Windows-only runner; one runner now handles every destination."
+fi
 
 # --- log rotation -------------------------------------------------------------
 
