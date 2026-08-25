@@ -623,6 +623,35 @@ fetch_master_tree() {
 }
 
 
+# app_heavy_dirs — the subtrees of an install that no upgrade ever writes into
+# and that are unbounded in size, printed one absolute path per line (only the
+# ones that actually exist).
+#
+# Every full-tree pass over an install — the ACL pass, the ownership pass, the
+# rollback snapshot — is O(files), and on a mature lab almost all of those files
+# are in here: the audit-trail alone is one entry per sample. Walking them is
+# what turns a four-minute upgrade into a forty-minute one, and it buys nothing,
+# because the application wrote every one of them as www-data in the first
+# place. The pruned roots get an owner and a default ACL instead, so whatever is
+# created in them next inherits the right access without anyone re-walking what
+# is already there.
+#
+# The bare names are the pre-var/ locations of the same content. The migration
+# into var/ runs in the background during an upgrade, so a passthrough that only
+# knows the var/ names misses the whole audit-trail on any instance that has not
+# been migrated yet — which is exactly the long-running instance where it costs
+# the most.
+app_heavy_dirs() {
+    local lp="${1%/}"
+    local d
+    for d in var/audit-trail var/cache backups \
+        audit-trail logs cache metadata \
+        public/uploads public/temporary public/files; do
+        [ -d "${lp}/${d}" ] && printf '%s\n' "${lp}/${d}"
+    done
+    return 0
+}
+
 # Set ACL-based permissions (async by default; pass third arg "sync" to wait).
 #
 # Performance notes:
@@ -701,18 +730,30 @@ set_permissions() {
     #                         application only ever reads them back.
     #   backups             — same: written by the backup task, never by an
     #                         upgrade, and large.
+    #   audit-trail, logs,  — the pre-var/ locations of the same content. This
+    #   cache, metadata       pass runs while the migration into var/ is still
+    #                         going, so on an instance that has not been
+    #                         migrated yet the audit-trail is sitting at the
+    #                         root under its old name and none of the var/
+    #                         prunes match it.
+    #   var/cache           — regenerable, and the default ACL below is what
+    #                         actually keeps it clearable; walking every shard
+    #                         buys nothing.
+    #   public/uploads,     — user-uploaded data. Written by the application,
+    #   public/temporary,     never by an upgrade, and unbounded.
+    #   public/files
     #
-    # Those last two get an ACL on the directory itself plus a DEFAULT ACL, so
-    # everything created in them from here on inherits the right access without
-    # anything ever having to walk what is already there. `-m deep` still
-    # sweeps them, for the one-off case where existing files really do have the
-    # wrong owner.
+    # Everything pruned gets an ACL on the directory itself plus a DEFAULT ACL,
+    # so everything created in them from here on inherits the right access
+    # without anything ever having to walk what is already there. `-m deep`
+    # still sweeps them, for the one-off case where existing files really do
+    # have the wrong owner.
     local root="${path%/}"
     local -a PRUNE=(-path "*/.git" -o -path "*/node_modules")
     local -a HEAVY=()
 
     if [[ "$mode" != "deep" ]]; then
-        HEAVY=("${root}/var/audit-trail" "${root}/backups")
+        mapfile -t HEAVY < <(app_heavy_dirs "$root")
         local heavy
         for heavy in "${HEAVY[@]}"; do
             PRUNE+=(-o -path "$heavy")
@@ -1683,18 +1724,25 @@ chown_app_tree() {
     local jobs=1
     command -v nproc >/dev/null 2>&1 && jobs=$(nproc)
 
+    local -a heavy=()
+    mapfile -t heavy < <(app_heavy_dirs "$lp")
+
+    local -a prune=(-path "*/.git" -o -path "*/node_modules")
+    local d
+    for d in "${heavy[@]}"; do
+        prune+=(-o -path "$d")
+    done
+
     find "$lp" \
-        \( -path "*/.git" -o -path "*/node_modules" \
-           -o -path "${lp}/var/audit-trail" -o -path "${lp}/backups" \) -prune \
+        \( "${prune[@]}" \) -prune \
         -o -print0 \
         | xargs -0 -r -n 200 -P "$jobs" chown -h www-data:www-data 2>/dev/null || true
 
     # The pruned roots still need the right owner themselves; their contents do
     # not, and set_permissions has given them default ACLs so new entries
     # inherit access without anyone walking what is already there.
-    local d
-    for d in "${lp}/var/audit-trail" "${lp}/backups"; do
-        [ -d "$d" ] && chown -h www-data:www-data "$d" 2>/dev/null
+    for d in "${heavy[@]}"; do
+        chown -h www-data:www-data "$d" 2>/dev/null || true
     done
 
     return 0
@@ -1740,6 +1788,20 @@ format_duration() {
 #
 # Falls back to a plain wait when stdout is not a terminal: a log full of
 # carriage returns helps nobody.
+# Returns 0 when every job finished, 2 when it gave up waiting — either because
+# WAIT_PROGRESS_TIMEOUT elapsed or because the operator pressed Ctrl+C. In both
+# of those cases the jobs are still running; the caller decides what that means
+# for whatever it was going to do next.
+#
+# Giving up is the point. This is the last thing an upgrade does, on work that
+# nobody is blocked on, and an operator watching a spinner tick past ten minutes
+# has no way to tell it from a hang — so they interrupt, which used to take the
+# half-finished ownership pass down with the script and skip the post-upgrade
+# check entirely. Now the wait ends and the pass carries on.
+#
+# The jobs survive Ctrl+C only if the caller made them ignore SIGINT; a job in
+# this shell's process group still gets the terminal's interrupt regardless of
+# what happens here.
 wait_with_progress() {
     local message="${1:-Working}"
     shift
@@ -1747,13 +1809,16 @@ wait_with_progress() {
     local pids=("$@")
     [ "${#pids[@]}" -gt 0 ] || return 0
 
-    local pid
-    if [ ! -t 1 ]; then
-        for pid in "${pids[@]}"; do wait "$pid" 2>/dev/null || true; done
-        return 0
-    fi
+    local timeout="${WAIT_PROGRESS_TIMEOUT:-0}"
+    [[ "$timeout" =~ ^[0-9]+$ ]] || timeout=0
 
-    local started frames='|/-\' i=0 alive elapsed
+    local interrupted=false
+    local previous_int_trap
+    previous_int_trap="$(trap -p INT || true)"
+    trap 'interrupted=true' INT
+
+    local started frames='|/-\' i=0 alive elapsed rc=0 tty=false
+    [ -t 1 ] && tty=true
     started=$(date +%s)
 
     while :; do
@@ -1764,16 +1829,33 @@ wait_with_progress() {
         [ "$alive" -eq 0 ] && break
 
         elapsed=$(( $(date +%s) - started ))
-        printf '\r  %s %s  %s' "${frames:$i:1}" "$message" "$(format_duration "$elapsed")"
-        i=$(( (i + 1) % 4 ))
+
+        if [ "$interrupted" = true ]; then
+            rc=2
+            break
+        fi
+        if [ "$timeout" -gt 0 ] && [ "$elapsed" -ge "$timeout" ]; then
+            rc=2
+            break
+        fi
+
+        if [ "$tty" = true ]; then
+            printf '\r  %s %s  %s' "${frames:$i:1}" "$message" "$(format_duration "$elapsed")"
+            i=$(( (i + 1) % 4 ))
+        fi
         sleep 0.5
     done
 
     # Clear the spinner line so whatever prints next starts clean.
-    printf '\r\033[K'
+    [ "$tty" = true ] && printf '\r\033[K'
 
-    for pid in "${pids[@]}"; do wait "$pid" 2>/dev/null || true; done
-    return 0
+    trap - INT
+    [ -n "$previous_int_trap" ] && eval "$previous_int_trap"
+
+    if [ "$rc" -eq 0 ]; then
+        for pid in "${pids[@]}"; do wait "$pid" 2>/dev/null || true; done
+    fi
+    return "$rc"
 }
 
 # Phase timing within one instance.

@@ -24,6 +24,19 @@
 #   -R, --rollback     Restore the most recent pre-upgrade snapshot and stop.
 #                      Code only: migrations run forward, so the restored release
 #                      runs against the newer schema. Nothing else is performed.
+#   -N, --no-snapshot  Skip the pre-upgrade rollback snapshot entirely. The
+#                      snapshot hardlinks the whole install tree, which on a box
+#                      with a very large or slow disk can cost more wall-clock
+#                      than the rest of the upgrade put together. Without it a
+#                      failed apply cannot be reverted with --rollback, so use it
+#                      only where the instance is backed up by other means.
+#                      Can be made the permanent default for one machine with
+#                      SKIP_ROLLBACK_SNAPSHOT=yes in /etc/intelis/upgrade.conf.
+#                      Deliberately NOT -S: -s already means "skip Ubuntu
+#                      updates", both are booleans, and either one typed for the
+#                      other parses cleanly and silently does the wrong thing —
+#                      a full apt run nobody wanted, or an upgrade with no way
+#                      back.
 #
 #   -M, --maintenance  Show a 503 "upgrade in progress" page to users during the
 #                      apply window. Default is silent (no page shown), which is
@@ -40,6 +53,7 @@
 #   sudo intelis-update -A -i                    # Detect instances, pick which to update
 #   sudo intelis-update --prepare-only           # Stage the update now; apply later
 #   sudo intelis-update --apply-prepared /var/intelis-staging/20260422-120000-1234
+#   sudo intelis-update -p /var/www/intelis --no-snapshot   # skip the rollback snapshot
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -139,10 +153,10 @@ fi
 #   grep -oE '^[a-z_][a-z0-9_]*\(\)' scripts/shared-functions.sh | tr -d '()' | sort -u
 # then keep the names this script uses.
 REQUIRED_SHARED_FN=(
-    ask_multi ask_password ask_yes_no chown_app_tree configure_php_ini
-    download_file ensure_composer ensure_mysql_running ensure_opcache
-    ensure_path ensure_php_cli_extensions ensure_switch_php error_handling
-    escape_php_string_for_sed extract_mysql_password_from_config
+    app_heavy_dirs ask_multi ask_password ask_yes_no chown_app_tree
+    configure_php_ini download_file ensure_composer ensure_mysql_running
+    ensure_opcache ensure_path ensure_php_cli_extensions ensure_switch_php
+    error_handling escape_php_string_for_sed extract_mysql_password_from_config
     fetch_master_tree format_duration hosts_file_shadows
     is_valid_application_path log_action mysql_cnf_comment_option
     mysql_cnf_get_option mysql_cnf_insert_mysqld_options mysql_diagnostics
@@ -248,6 +262,21 @@ rollback_only=false
 # Declared here rather than beside the snapshot helpers: rollback mode runs
 # early, before any system work, and needs to know where to look.
 ROLLBACK_BASE_DIR="/var/intelis-rollback"
+
+# Per-machine upgrade preferences. Some boxes have a disk slow enough that
+# hardlinking the install tree costs more than every other phase combined, and
+# an operator should not have to remember a flag on every run to avoid it.
+# Only the keys read below are honoured; anything else in the file is ignored.
+UPGRADE_CONF_FILE="/etc/intelis/upgrade.conf"
+skip_snapshot=false
+if [ -f "$UPGRADE_CONF_FILE" ]; then
+    _conf_skip=$(grep -E '^[[:space:]]*SKIP_ROLLBACK_SNAPSHOT[[:space:]]*=' "$UPGRADE_CONF_FILE" 2>/dev/null |
+        tail -n1 | cut -d= -f2- | tr -d '"'"'"' \t\r' | tr '[:upper:]' '[:lower:]')
+    case "$_conf_skip" in
+        yes | true | 1) skip_snapshot=true ;;
+    esac
+    unset _conf_skip
+fi
 auto_detect=false
 interactive_select=false
 prepare_only=false
@@ -271,6 +300,7 @@ upgrade_started_at=$(date +%s)
 #   --prepare-only        -> -P
 #   --apply-prepared DIR  -> -a DIR
 #   --rollback            -> -R
+#   --no-snapshot         -> -N
 declare -a _rewritten_args=()
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -280,6 +310,10 @@ while [ $# -gt 0 ]; do
             ;;
         --rollback)
             _rewritten_args+=("-R")
+            shift
+            ;;
+        --no-snapshot | --skip-snapshot)
+            _rewritten_args+=("-N")
             shift
             ;;
         --apply-prepared)
@@ -327,7 +361,7 @@ done
 set -- "${_rewritten_args[@]}"
 
 # Parse command-line options
-while getopts ":sAiPp:a:k:MR" opt; do
+while getopts ":sAiPp:a:k:MRN" opt; do
     case $opt in
     s) skip_ubuntu_updates=true ;;
     A) auto_detect=true ;;
@@ -344,6 +378,7 @@ while getopts ":sAiPp:a:k:MR" opt; do
         ;;
     M) show_maintenance=true ;;
     R) rollback_only=true ;;
+    N) skip_snapshot=true ;;
     \?)
         # Say so rather than continuing with an option the caller believed was
         # doing something. The runner passed -b for years — documented in this
@@ -470,26 +505,54 @@ ensure_cache_di_true() {
 }
 
 
-# If source exists → rsync its contents to destination, then delete the source.
-# If source doesn't exist → silently skip.
+# Relocate a legacy top-level directory into var/. If source doesn't exist →
+# silently skip, which is the case on every instance that has already been
+# migrated by an earlier upgrade.
+#
+# Source and destination are both inside the install, so they are on the same
+# filesystem in every deployment we ship: a rename is then O(1) regardless of
+# how many files are underneath, where the copy-then-delete this used to always
+# do is O(files) twice over. On a lab with a large audit-trail that was the
+# difference between an instant migration and half an hour of the upgrade. The
+# rsync path is kept for the cases rename genuinely cannot handle — a
+# destination that already has content, or a bind-mount / separate volume under
+# var/ — and detected by letting mv fail rather than by guessing at device ids.
 move_dir_fully() {
     local src="$1"
     local dst="$2"
 
     [ -d "$src" ] || return 0  # silently skip if missing
 
-    mkdir -p "$dst"
+    local renamed=false
+    if [ ! -e "$dst" ]; then
+        mkdir -p "$(dirname "$dst")"
+        if mv "$src" "$dst" 2>/dev/null; then
+            renamed=true
+        fi
+    fi
 
-    # Copy everything safely (preserve perms/ownerships)
-    rsync -a "$src"/ "$dst"/ >/dev/null 2>&1
-
-    # Remove the original directory entirely
-    rm -rf "$src"
+    if [ "$renamed" = false ]; then
+        mkdir -p "$dst"
+        # Copy everything safely (preserve perms/ownerships)
+        rsync -a "$src"/ "$dst"/ >/dev/null 2>&1
+        # Remove the original directory entirely
+        rm -rf "$src"
+    fi
 
     # Ensure destination stays tracked
     touch "$dst/.hgkeep" 2>/dev/null || true
-    chown -R www-data:www-data "$dst" 2>/dev/null || true
-    chmod -R u=rwX,g=rX,o= "$dst" 2>/dev/null || true
+
+    # Only fix up ownership on the tree we actually copied. A rename preserves
+    # every inode's owner and mode untouched, so walking it would be a second
+    # full pass over the same audit-trail the rename just avoided — and the
+    # files were already www-data's, because the running app is what wrote them.
+    if [ "$renamed" = false ]; then
+        chown -R www-data:www-data "$dst" 2>/dev/null || true
+        chmod -R u=rwX,g=rX,o= "$dst" 2>/dev/null || true
+    else
+        chown www-data:www-data "$dst" 2>/dev/null || true
+        chmod u=rwX,g=rX,o= "$dst" 2>/dev/null || true
+    fi
 }
 
 
@@ -585,11 +648,24 @@ eval "$current_trap"
 # aren't touched by the apply phase, so snapshotting them just burns stat()
 # time on big installs — and restoring with --delete over them would nuke
 # uploads created between snapshot and failure.
+#
+# The legacy pre-var/ locations are excluded for the same reason var/ is. On an
+# instance that has not been migrated yet they hold exactly the same content —
+# an audit-trail is one file per sample, so a long-running lab has hundreds of
+# thousands of them — and hardlinking that tree was costing more wall-clock than
+# every other phase of the upgrade combined. The apply phase never rewrites
+# their contents; it relocates the directories, and the data itself lands under
+# var/, which a restore leaves alone either way.
 ROLLBACK_EXCLUDES=(
     --exclude 'public/temporary/'
     --exclude 'public/files/'
+    --exclude 'public/uploads/'
     --exclude 'var/'
     --exclude 'vendor/'
+    --exclude 'logs/'
+    --exclude 'audit-trail/'
+    --exclude 'cache/'
+    --exclude 'metadata/'
 )
 
 # create_rollback_snapshot — hardlink snapshot of $lp. Echoes snapshot path on
@@ -598,8 +674,38 @@ create_rollback_snapshot() {
     local lp="$1"
     local ts="$2"   # shared timestamp so snapshots for same run cluster together
     local snap_dir="${ROLLBACK_BASE_DIR}/${ts}/$(basename "$lp")"
+
+    # Opted out for this run (-N) or permanently for this machine
+    # (SKIP_ROLLBACK_SNAPSHOT in /etc/intelis/upgrade.conf). Say so loudly:
+    # without a snapshot a failed apply cannot be reverted with --rollback, and
+    # an operator reading the log later should not have to guess why there is
+    # nothing to restore.
+    if [ "${skip_snapshot:-false}" = true ]; then
+        print warning "Rollback snapshot skipped (--no-snapshot); a failed apply cannot be reverted." >&2
+        log_action "Rollback snapshot skipped for ${lp} (--no-snapshot)"
+        return 0
+    fi
     mkdir -p "$snap_dir" >&2
+
     # --link-dest makes this near-zero-disk: unchanged files become hardlinks.
+    #
+    # But a hardlink cannot cross a filesystem, and when it can't rsync does not
+    # fail — it silently copies the bytes instead. That is the difference between
+    # a snapshot that costs seconds and nothing, and one that costs half an hour
+    # and a full duplicate of the install every time an upgrade runs. Nothing
+    # said so, which is how an instance ends up with several GB of rollback
+    # snapshots and an operator with no idea which phase to look at.
+    local snap_dev live_dev
+    snap_dev=$(stat -c %d "${ROLLBACK_BASE_DIR}" 2>/dev/null || echo "")
+    live_dev=$(stat -c %d "$lp" 2>/dev/null || echo "")
+    if [ -n "$snap_dev" ] && [ -n "$live_dev" ] && [ "$snap_dev" != "$live_dev" ]; then
+        print warning "${ROLLBACK_BASE_DIR} is on a different filesystem than ${lp}." >&2
+        print warning "  Snapshots cannot be hardlinked across it, so this is a full copy of the install" >&2
+        print warning "  on every upgrade. Skip it with --no-snapshot, or set SKIP_ROLLBACK_SNAPSHOT=yes" >&2
+        print warning "  in ${UPGRADE_CONF_FILE} to make that permanent on this machine." >&2
+        log_action "Rollback snapshot for ${lp} is a cross-filesystem copy (no hardlinks possible)"
+    fi
+
     if rsync -a "${ROLLBACK_EXCLUDES[@]}" --link-dest="$lp" "$lp/" "$snap_dir/" >/dev/null 2>&1; then
         print info "Rollback snapshot created at ${snap_dir}" >&2
         echo "$snap_dir"
@@ -683,6 +789,51 @@ prune_rollback_snapshots() {
     if [ "$pruned" -gt 0 ]; then
         print info "Pruned ${pruned} old rollback snapshot(s); kept the ${keep} most recent"
         log_action "Pruned ${pruned} rollback snapshots under ${ROLLBACK_BASE_DIR} (kept ${keep})"
+    fi
+}
+
+# prune_staging_dirs — delete staging directories left behind by earlier runs.
+#
+# prepare_phase makes a fresh /var/intelis-staging/<timestamp>-<pid> on every
+# invocation and nothing has ever removed one. Each holds an extracted master
+# tree plus an extracted vendor — roughly 1.2GB — so a lab that has upgraded a
+# dozen times is carrying a dozen copies of releases it stopped running months
+# ago, on the same disk the preflight then refuses to start on for want of 2GB.
+#
+# The most recent is kept because --prepare-only exists precisely so that an
+# operator can stage now and apply later, and this runs at the end of a run that
+# may have been exactly that. The one this run is using is the newest, so it is
+# never the one removed.
+prune_staging_dirs() {
+    local keep="${STAGING_KEEP:-1}"
+    [ -d "$STAGING_BASE_DIR" ] || return 0
+
+    local -a stage_dirs=()
+    local d base
+    while IFS= read -r d; do
+        [ -d "$d" ] || continue
+        base="$(basename "$d")"
+        # Only the <YYYYmmdd-HHMMSS>-<pid> layout prepare_phase creates. Anything
+        # else under here was put there by a person, and is theirs to remove.
+        [[ "$base" =~ ^[0-9]{8}-[0-9]{6}-[0-9]+$ ]] || continue
+        stage_dirs+=("$d")
+    done < <(find "$STAGING_BASE_DIR" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort -r)
+
+    local total="${#stage_dirs[@]}"
+    [ "$total" -gt "$keep" ] || return 0
+
+    local pruned=0 freed_kb=0 kb i
+    for (( i=keep; i<total; i++ )); do
+        kb=$(du -sk "${stage_dirs[$i]}" 2>/dev/null | awk '{print $1}')
+        if rm -rf "${stage_dirs[$i]}" 2>/dev/null; then
+            pruned=$((pruned + 1))
+            [[ "$kb" =~ ^[0-9]+$ ]] && freed_kb=$((freed_kb + kb))
+        fi
+    done
+
+    if [ "$pruned" -gt 0 ]; then
+        print info "Pruned ${pruned} old staging dir(s) under ${STAGING_BASE_DIR}, freeing $((freed_kb / 1024))MB"
+        log_action "Pruned ${pruned} staging dirs under ${STAGING_BASE_DIR} (freed ${freed_kb}KB, kept ${keep})"
     fi
 }
 
@@ -1706,8 +1857,8 @@ else
         print info "Once the network is working, just run the upgrade again."
         log_action "Prepare phase failed (rc=${prepare_rc}) - update aborted; likely network issue"
         # Keep the staging dir so the user can inspect the logs. A later rerun
-        # will create a new timestamped staging dir; old ones can be cleaned up
-        # manually from ${STAGING_BASE_DIR} when the upgrade has succeeded.
+        # creates a new timestamped staging dir and prune_staging_dirs clears
+        # the older ones once an upgrade gets all the way through.
         exit 1
     fi
 
@@ -1818,9 +1969,24 @@ upgrade_instance() {
         print info "Preserving $symlinks_found symlinks."
     fi
 
-    # Rsync from temp to this instance
+    # Rsync from temp to this instance.
+    #
+    # NOT --inplace, for two reasons that both matter here.
+    #
+    # The rollback snapshot taken moments ago is a tree of hardlinks to these
+    # very inodes. --inplace writes new content THROUGH the inode, so every file
+    # the upgrade actually changed had its snapshot copy rewritten along with it
+    # — the snapshot ended up holding the new release, and --rollback restored
+    # the thing it was supposed to undo. Unchanged files matched either way,
+    # which is why this looked like it worked. rsync's default writes a temp
+    # file and renames it, giving the live tree a new inode and leaving the
+    # snapshot pointing at the old one.
+    #
+    # It is also what makes the swap atomic. --inplace leaves a window where a
+    # PHP file on a live instance is half old and half new, and Apache is still
+    # serving during the sync unless --maintenance was passed.
     phase_mark "code sync"
-    eval rsync -a --inplace --whole-file $exclude_options --info=progress2 "$temp_dir/intelis-master/" "$lis_path/" &
+    eval rsync -a --whole-file $exclude_options --info=progress2 "$temp_dir/intelis-master/" "$lis_path/" &
     local rsync_pid=$!
     spinner "${rsync_pid}"
     wait ${rsync_pid}
@@ -1870,8 +2036,17 @@ upgrade_instance() {
         fi
     done
 
-    # Set proper permissions
+    # Set proper permissions.
+    #
+    # Its own phase, not part of "directory migrations". This runs synchronously
+    # and walks the whole install, so on a large instance it is most of the time
+    # between the two marks — and reporting it under the migrations label sent
+    # everyone reading the summary at move_dir_fully, which on an instance that
+    # was migrated years ago does nothing at all.
+    phase_mark "permission pass (acl)"
     set_permissions "${lis_path}" "quick" "sync"
+
+    phase_mark "directory migrations"
 
     # Make intelis command globally accessible (only for first instance)
     if [ "$instance_num" -eq 1 ]; then
@@ -2187,8 +2362,16 @@ upgrade_instance() {
     # repeating the round trip inside a job whose output is discarded is how a
     # stalled link turns into a silent multi-minute wait at the end of an
     # otherwise finished upgrade.
-    (INTELIS_SHARED_FN_FRESH=1 intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
-        chown_app_tree "${lis_path}" || true) &
+    #
+    # The subshell ignores SIGINT deliberately. It is in this script's process
+    # group, so a Ctrl+C at the wait below used to reach it too and take the
+    # ownership pass down part-way through a tree it was halfway to fixing —
+    # the one outcome worse than either finishing it or never starting it.
+    # Ignoring the interrupt lets the wait give up on its own terms while the
+    # pass runs to completion in the background.
+    (trap '' INT
+        INTELIS_SHARED_FN_FRESH=1 intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
+            chown_app_tree "${lis_path}" || true) &
     permission_pids+=("$!")
 
     # --- Report which commit-to-commit jump this update made ---
@@ -2291,8 +2474,10 @@ for i in "${!lis_paths[@]}"; do
     fi
 done
 
-# Prune old rollback snapshots, keeping the N most recent (including this run's).
+# Prune old rollback snapshots, keeping the N most recent (including this run's),
+# and the staging dirs of runs that have already finished.
 prune_rollback_snapshots
+prune_staging_dirs
 
 # Maintenance scripts prompt (only for single instance to avoid tedious multi-prompts).
 # Skipped under --apply-prepared since operator context (and TTY) may differ from
@@ -2456,14 +2641,28 @@ if [ ${#updated_instances[@]} -gt 0 ]; then
 
     if [ ${#permission_pids[@]} -gt 0 ]; then
         _perm_wait_started=$(date +%s)
-        wait_with_progress "Waiting for the permission pass to finish" \
-            "${permission_pids[@]}"
+        # Bounded, because nothing here is blocked on it. The wait exists only so
+        # the post-upgrade check below reports a settled tree rather than one
+        # still being chowned — worth a couple of minutes, never worth an
+        # open-ended one. Ctrl+C ends the wait the same way, and neither ends the
+        # pass. Overridable for a machine where it is genuinely slower than this.
+        # `|| _perm_wait_rc=$?` rather than a bare call: giving up on the wait
+        # is an ordinary outcome, and a bare non-zero return here would trip the
+        # ERR trap and abort an upgrade that has already succeeded.
+        _perm_wait_rc=0
+        WAIT_PROGRESS_TIMEOUT="${PERMISSION_WAIT_TIMEOUT:-180}" \
+            wait_with_progress "Waiting for the permission pass to finish" \
+            "${permission_pids[@]}" || _perm_wait_rc=$?
         # Only what was spent WAITING, not what the pass took: it runs in the
         # background alongside the rest of the upgrade, so most of its work is
         # normally already done by the time anything blocks on it. A number here
         # is time the operator actually lost.
         _perm_waited=$(( $(date +%s) - _perm_wait_started ))
-        if [ "$_perm_waited" -ge 5 ]; then
+        if [ "$_perm_wait_rc" -ne 0 ]; then
+            print warning "The permission pass is still running; it will finish on its own."
+            print warning "  The ownership lines in the check below may not have settled yet."
+            log_action "Stopped waiting on the permission pass after $(format_duration "${_perm_waited}")"
+        elif [ "$_perm_waited" -ge 5 ]; then
             print info "Waited $(format_duration "${_perm_waited}") for it."
         fi
     fi
