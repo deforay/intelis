@@ -39,29 +39,79 @@ case "${1:-}" in
   *)         echo "Unknown option: $1"; echo "Try --help"; exit 2 ;;
 esac
 
-# --- helpers ------------------------------------------------------------------
+# Checked before anything else: the shared-functions bootstrap below writes
+# under /usr/local/lib, so a non-root run has to fail here rather than partway
+# through with a permission error nobody can read.
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Need admin privileges. Run with sudo."
+  exit 1
+fi
 
-print() {
-  local type=${1:-info}; shift || true
-  local message=${1:-};  shift || true
-  case "$type" in
-    error)   printf "\033[1;91m❌ Error:\033[0m %s\n" "$message" ;;
-    success) printf "\033[1;92m✅ Success:\033[0m %s\n" "$message" ;;
-    warning) printf "\033[1;93m⚠️ Warning:\033[0m %s\n" "$message" ;;
-    info)    printf "\033[1;96mℹ️ Info:\033[0m %s\n" "$message" ;;
-    header)
-      local term_width msg_length padding pad_str
-      term_width=$(tput cols 2>/dev/null || echo 80)
-      msg_length=${#message}
-      padding=$(((term_width - msg_length) / 2)); ((padding<0)) && padding=0
-      pad_str=$(printf '%*s' "$padding" '')
-      printf "\n\033[1;96m%*s\033[0m\n" "$term_width" '' | tr ' ' '='
-      printf "\033[1;96m%s%s\033[0m\n" "$pad_str" "$message"
-      printf "\033[1;96m%*s\033[0m\n\n" "$term_width" '' | tr ' ' '='
-      ;;
-    *)       printf "%s\n" "$message" ;;
-  esac
+# --- helpers ------------------------------------------------------------------
+#
+# print, and the gum-aware ask_* prompt layer, come from shared-functions.sh, so
+# this script asks its questions exactly the way setup.sh does: menus where the
+# answer space is closed, validation that re-asks instead of quietly accepting,
+# and gum rendering wherever gum is installed.
+#
+# INTELIS_TRACK is pinned before sourcing. shared-functions.sh resolves the
+# newest release tag at source time with an untimed `git ls-remote`, and nothing
+# in this script upgrades anything, so that lookup is pure latency here. This is
+# the script an operator reaches for when a machine has already gone wrong, and
+# a dead link must not hang it before the first question is asked.
+INTELIS_TRACK="${INTELIS_TRACK:-master}"
+
+SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
+SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/shared-functions.sh"
+
+mkdir -p "$(dirname "$SHARED_FN_PATH")"
+
+if command -v wget >/dev/null 2>&1; then
+  download_to() { wget -q -O "$1" "$2"; }
+elif command -v curl >/dev/null 2>&1; then
+  download_to() { curl -fsSL -o "$1" "$2"; }
+else
+  download_to() { return 1; }
+fi
+
+# Stage the download and swap it in only once it looks like the real thing:
+# `wget -O` and `curl -o` both truncate the destination before transferring, so
+# a network hiccup leaves a zero-byte file that exists, sources cleanly, and
+# defines nothing. Same guard as setup.sh, where that reached a lab.
+fetch_shared_fn() {
+  local dest="$1" url="$2" tmp
+  tmp="$(mktemp "${dest}.XXXXXX" 2>/dev/null)" || return 1
+  if download_to "$tmp" "$url" && [ -s "$tmp" ] && grep -q '^ask_choice()' "$tmp"; then
+    # mktemp makes the staging file 0600, and mv keeps that. Set it back to a
+    # readable mode: this is a library other scripts source, not a secret.
+    chmod 0644 "$tmp"
+    mv -f "$tmp" "$dest"
+    return 0
+  fi
+  rm -f "$tmp"
+  return 1
 }
+
+fetch_shared_fn "$SHARED_FN_PATH" "$SHARED_FN_URL" || true
+
+if [ ! -r "$SHARED_FN_PATH" ]; then
+  echo "Could not download shared-functions.sh and there is no copy at $SHARED_FN_PATH."
+  echo "Fetch it onto this machine, then run this again:"
+  echo "  sudo mkdir -p $(dirname "$SHARED_FN_PATH")"
+  echo "  sudo wget -O $SHARED_FN_PATH $SHARED_FN_URL"
+  exit 1
+fi
+
+# shellcheck disable=SC1090
+source "$SHARED_FN_PATH"
+
+# Present is not the same as usable — a truncated copy sources without error and
+# defines nothing.
+if ! declare -F ask_choice >/dev/null 2>&1; then
+  echo "shared-functions.sh at $SHARED_FN_PATH is unusable (truncated or corrupt)."
+  echo "Delete it and run this again: sudo rm -f $SHARED_FN_PATH"
+  exit 1
+fi
 
 require_cmd() { command -v "$1" >/dev/null 2>&1 || { print error "Missing dependency: $1"; exit 1; }; }
 
@@ -78,42 +128,63 @@ no_more_input() {
   exit 1
 }
 
+# Which lab gets restored is being CHOSEN at these prompts, so an unanswered
+# question must never resolve itself. ask_text and ask_choice fall back to their
+# defaults when nobody is there to answer, which is right for setup.sh and wrong
+# here: this script overwrites a live database, and a default nobody picked
+# would overwrite it with the wrong lab. Checked once, up front, rather than
+# after each read.
+#
+# Guarded at the point a question is actually asked, not once up front. --list
+# only reads the destination and prints it, so it stays usable from cron or a
+# pipe when the saved settings already answer everything; it fails here only if
+# it reaches a question nobody is there to answer.
+
+validate_nonempty() {
+  [ -n "$(trim "$1")" ] && return 0
+  print error "This cannot be left empty."
+  return 1
+}
+
+# ask <var> <prompt> [default] — kept as the local spelling so every call site
+# below reads the same as it always did, now rendered by gum where available.
 ask() {
-  local __var=$1 prompt=$2 default=${3:-} raw input rc
-  while true; do
-    rc=0; raw=""
-    if [ -n "$default" ]; then
-      read -r -p "$prompt [$default]: " raw || rc=$?
-    else
-      read -r -p "$prompt: " raw || rc=$?
-    fi
-    # An empty answer plus a read error means the input ended. Never fall back to
-    # the default there: restoring the wrong lab is not a recoverable mistake.
-    [ -z "$raw" ] && [ "$rc" -ne 0 ] && no_more_input
-    input="$(trim "${raw:-$default}")"
-    [ -n "$input" ] && break
-    print warning "This cannot be left empty. Try again."
-  done
-  printf -v "$__var" '%s' "$input"
+  ui_interactive || no_more_input
+  local __var=$1 prompt=$2 default=${3:-}
+  ask_text "$__var" "$default" "$prompt" validate_nonempty
+  printf -v "$__var" '%s' "$(trim "${!__var}")"
 }
 
+# Deliberately not ask_password: that asks twice and compares, which is right
+# when a password is being invented and wrong here. These are existing Windows
+# and SSH passwords being recalled, and asking twice for one only invites a
+# mistyped confirmation of a correct password.
 ask_secret() {
-  local __var=$1 prompt=$2 input rc
+  ui_interactive || no_more_input
+  local __var=$1 prompt=$2 input
   while true; do
-    rc=0
-    read -r -s -p "$prompt: " input || rc=$?; echo
+    if [ "$(ui_renderer)" = "gum" ]; then
+      input=$(gum input --password --header "$prompt" 2>/dev/null) || input=""
+    else
+      printf '\n \033[1m%s\033[0m\n > ' "$prompt" >&2
+      read -r -s input || no_more_input
+      echo >&2
+    fi
     [ -n "$input" ] && break
-    [ "$rc" -ne 0 ] && no_more_input
     print warning "This cannot be left empty. Try again."
   done
   printf -v "$__var" '%s' "$input"
 }
 
-confirm() {
-  local prompt=$1 answer rc=0
-  read -r -p "$prompt (y/N): " answer || rc=$?
-  [ "$rc" -ne 0 ] && [ -z "$answer" ] && no_more_input
-  [[ "$answer" =~ ^[Yy]$ ]]
+confirm() { ui_interactive || no_more_input; ask_yes_no "$1" no; }
+
+# choose <var> <default-key> <question> <key:label:description>...
+# ask_choice with the same refusal to answer itself: its own fallback to the
+# default key is right for setup.sh, where every default is safe, and wrong for
+# a script that picks which lab's database gets overwritten.
+choose() {
+  ui_interactive || no_more_input
+  ask_choice "$@"
 }
 
 cleanup() {
@@ -130,13 +201,12 @@ trap cleanup EXIT
 
 # --- preflight ----------------------------------------------------------------
 
-if [ "$(id -u)" -ne 0 ]; then
-  echo "Need admin privileges. Run with sudo."
-  exit 1
-fi
-
 require_cmd rsync
 require_cmd awk
+
+# Best-effort, bounded, and never fatal: gum is a nicety here exactly as it is
+# in setup.sh, and the plain prompts below are already correct without it.
+ensure_gum || true
 
 print header "InteLIS restore"
 
@@ -169,20 +239,10 @@ if [ -f "$CONF_FILE" ]; then
 fi
 
 if [ -z "$SRC_MODE" ]; then
-  print header "Where is the backup stored?"
-  echo "  1) On another Linux machine (over SSH)"
-  echo "  2) In a shared folder on a Windows machine (over SMB)"
-  echo "  3) On a USB or external drive plugged into this machine"
-  echo
-  while true; do
-    ask choice "Choose 1, 2 or 3" "1"
-    case "$choice" in
-      1) SRC_MODE="ssh";   break ;;
-      2) SRC_MODE="smb";   break ;;
-      3) SRC_MODE="local"; break ;;
-      *) print warning "Please enter 1, 2 or 3." ;;
-    esac
-  done
+  choose SRC_MODE ssh "Where is the backup stored?" \
+    "ssh:On another Linux machine:Fetched over SSH from a server on the network." \
+    "smb:In a shared folder on a Windows machine:Fetched over SMB from a folder shared from Windows." \
+    "local:On a USB or external drive plugged into this machine:Read from a drive attached to this machine."
   SRC_BASE=""
 fi
 
@@ -328,8 +388,12 @@ src_exec "test -d ${Q_BASE}" 2>/dev/null || { print error "No backups folder fou
 mapfile -t FOLDERS < <(src_exec "ls -1 ${Q_BASE} 2>/dev/null" | tr -d '\r' | grep -v '^$' || true)
 [ "${#FOLDERS[@]}" -gt 0 ] || { print error "There are no backups in ${SRC_BASE}."; exit 1; }
 
+# Read each folder's metadata once, into both shapes it is needed in: the full
+# multi-line listing --list prints, and the one-line-per-lab summary the menu
+# shows. Reading it twice would mean a second round of remote commands per lab
+# over the same link the backup is about to come down.
+declare -a CHOICES=() OPTIONS=()
 idx=0
-declare -a CHOICES=()
 for folder in "${FOLDERS[@]}"; do
   q_folder="$(printf '%q' "${SRC_BASE}/${folder}")"
   meta="$(src_exec "cat ${q_folder}/.lab-meta 2>/dev/null || true" | tr -d '\r')"
@@ -340,43 +404,50 @@ for folder in "${FOLDERS[@]}"; do
 
   idx=$((idx + 1))
   CHOICES+=("$folder")
-  printf "  \033[1m%2d)\033[0m %s\n" "$idx" "$folder"
-  [ -n "$instance" ] && printf "      lab: %s%s\n" "$instance" "${host:+  (machine: $host)}"
-  [ -n "$updated" ]  && printf "      backup last updated: %s\n" "$updated"
-  if [ -n "$newest" ]; then
-    printf "      newest database dump: %s\n" "$newest"
+
+  # The menu row has one line for the whole lab, so the fields are joined rather
+  # than listed. "no database dumps" stays first when it applies: a folder with
+  # nothing restorable in it is the one thing worth knowing before choosing.
+  summary=""
+  if [ -z "$newest" ]; then
+    summary="no database dumps in this folder"
   else
-    printf "      \033[1;93mno database dumps in this folder\033[0m\n"
+    summary="newest dump ${newest}"
   fi
-  echo
+  [ -n "$instance" ] && summary="${summary} · lab ${instance}${host:+ on ${host}}"
+  [ -n "$updated" ]  && summary="${summary} · updated ${updated}"
+  OPTIONS+=("${folder}:${folder}:${summary}")
+
+  # --- the long form, for --list ---
+  if [ "$ACTION" = "list" ]; then
+    printf "  \033[1m%2d)\033[0m %s\n" "$idx" "$folder"
+    [ -n "$instance" ] && printf "      lab: %s%s\n" "$instance" "${host:+  (machine: $host)}"
+    [ -n "$updated" ]  && printf "      backup last updated: %s\n" "$updated"
+    if [ -n "$newest" ]; then
+      printf "      newest database dump: %s\n" "$newest"
+    else
+      printf "      \033[1;93mno database dumps in this folder\033[0m\n"
+    fi
+    echo
+  fi
 done
 
 [ "$ACTION" = "list" ] && exit 0
 
-while true; do
-  ask pick "Which one should be restored? Enter a number" "1"
-  if [[ "$pick" =~ ^[0-9]+$ ]] && [ "$pick" -ge 1 ] && [ "$pick" -le "${#CHOICES[@]}" ]; then break; fi
-  print warning "Please enter a number between 1 and ${#CHOICES[@]}."
-done
-CHOSEN="${CHOICES[$((pick - 1))]}"
+choose CHOSEN "${FOLDERS[0]}" "Which lab should be restored?" "${OPTIONS[@]}"
 SRC_DIR="${SRC_BASE}/${CHOSEN}"
 print success "Restoring from ${CHOSEN}"
 
 # --- what should come back? ---------------------------------------------------
 
-print header "What should be copied back?"
-echo "  1) Just the database backups — the right choice for rebuilding a machine"
-echo "  2) Everything, including uploaded files and attachments"
-echo
-
-while true; do
-  ask what "Choose 1 or 2" "1"
-  case "$what" in
-    1) SUBPATH="/backups/db"; break ;;
-    2) SUBPATH="";            break ;;
-    *) print warning "Please enter 1 or 2." ;;
-  esac
-done
+choose what db "What should be copied back?" \
+  "db:Just the database backups:The right choice for rebuilding a machine." \
+  "all:Everything, including uploaded files and attachments:Much larger, and slower over a link."
+# shellcheck disable=SC2154  # set by `choose` above, via printf -v
+case "$what" in
+  db) SUBPATH="/backups/db" ;;
+  *)  SUBPATH="" ;;
+esac
 
 ask STAGING "Where should the files be put on this machine?" "/root/intelis-restore/${CHOSEN}"
 mkdir -p "$STAGING"
@@ -468,7 +539,10 @@ if [ -n "$LIS_PATH" ]; then
   print warning "Restoring the database REPLACES everything currently in it."
   print info    "A safety copy of the current database is taken first, so this can be undone."
   echo
-  if confirm "Restore the database into ${LIS_PATH} now?"; then
+  # Names the lab, not just the path. ask_choice falls back to its default when
+  # a gum menu is dismissed with Esc, so this confirm is the last point at which
+  # restoring the wrong lab's database over this one is still catchable.
+  if confirm "Restore ${CHOSEN} into ${LIS_PATH} now?"; then
     newest_dump="$(find "$DUMP_DIR" -maxdepth 1 -type f -name 'vlsm-*' | sort | tail -1)"
     if [ -z "$newest_dump" ]; then
       print error "No main-database backup (a file starting with 'vlsm-') was found in ${DUMP_DIR}."

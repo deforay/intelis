@@ -33,30 +33,78 @@ SSH_KEY="/root/.ssh/id_ed25519_intelis"
 MOUNT_POINT="/mnt/intelis-backup"
 SMB_CRED_FILE="${CONF_DIR}/smb-backup.cred"
 
-# --- helpers ------------------------------------------------------------------
+# Checked before anything else: the shared-functions bootstrap below writes
+# under /usr/local/lib, so a non-root run has to fail here rather than partway
+# through with a permission error nobody can read.
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Need admin privileges. Run with sudo."
+  exit 1
+fi
 
-print() {
-  local type=${1:-info}; shift || true
-  local message=${1:-};  shift || true
-  local header_char="="
-  case "$type" in
-    error)   printf "\033[1;91m❌ Error:\033[0m %s\n" "$message" ;;
-    success) printf "\033[1;92m✅ Success:\033[0m %s\n" "$message" ;;
-    warning) printf "\033[1;93m⚠️ Warning:\033[0m %s\n" "$message" ;;
-    info)    printf "\033[1;96mℹ️ Info:\033[0m %s\n" "$message" ;;
-    header)
-      local term_width msg_length padding pad_str
-      term_width=$(tput cols 2>/dev/null || echo 80)
-      msg_length=${#message}
-      padding=$(((term_width - msg_length) / 2)); ((padding<0)) && padding=0
-      pad_str=$(printf '%*s' "$padding" '')
-      printf "\n\033[1;96m%*s\033[0m\n" "$term_width" '' | tr ' ' "$header_char"
-      printf "\033[1;96m%s%s\033[0m\n" "$pad_str" "$message"
-      printf "\033[1;96m%*s\033[0m\n\n" "$term_width" '' | tr ' ' "$header_char"
-      ;;
-    *)       printf "%s\n" "$message" ;;
-  esac
+# --- helpers ------------------------------------------------------------------
+#
+# print, and the gum-aware ask_* prompt layer, come from shared-functions.sh, so
+# this script asks its questions exactly the way setup.sh does: menus where the
+# answer space is closed, validation that re-asks instead of quietly accepting,
+# and gum rendering wherever gum is installed.
+#
+# INTELIS_TRACK is pinned before sourcing. shared-functions.sh resolves the
+# newest release tag at source time with an untimed `git ls-remote`, and nothing
+# in this script upgrades anything, so that lookup is pure latency here — on a
+# bad lab link it is an indefinite stall before the first question is asked.
+INTELIS_TRACK="${INTELIS_TRACK:-master}"
+
+SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
+SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/shared-functions.sh"
+
+mkdir -p "$(dirname "$SHARED_FN_PATH")"
+
+if command -v wget >/dev/null 2>&1; then
+  download_to() { wget -q -O "$1" "$2"; }
+elif command -v curl >/dev/null 2>&1; then
+  download_to() { curl -fsSL -o "$1" "$2"; }
+else
+  download_to() { return 1; }
+fi
+
+# Stage the download and swap it in only once it looks like the real thing:
+# `wget -O` and `curl -o` both truncate the destination before transferring, so
+# a network hiccup leaves a zero-byte file that exists, sources cleanly, and
+# defines nothing. Same guard as setup.sh, where that reached a lab.
+fetch_shared_fn() {
+  local dest="$1" url="$2" tmp
+  tmp="$(mktemp "${dest}.XXXXXX" 2>/dev/null)" || return 1
+  if download_to "$tmp" "$url" && [ -s "$tmp" ] && grep -q '^ask_choice()' "$tmp"; then
+    # mktemp makes the staging file 0600, and mv keeps that. Set it back to a
+    # readable mode: this is a library other scripts source, not a secret.
+    chmod 0644 "$tmp"
+    mv -f "$tmp" "$dest"
+    return 0
+  fi
+  rm -f "$tmp"
+  return 1
 }
+
+fetch_shared_fn "$SHARED_FN_PATH" "$SHARED_FN_URL" || true
+
+if [ ! -r "$SHARED_FN_PATH" ]; then
+  echo "Could not download shared-functions.sh and there is no copy at $SHARED_FN_PATH."
+  echo "Fetch it onto this machine, then run this again:"
+  echo "  sudo mkdir -p $(dirname "$SHARED_FN_PATH")"
+  echo "  sudo wget -O $SHARED_FN_PATH $SHARED_FN_URL"
+  exit 1
+fi
+
+# shellcheck disable=SC1090
+source "$SHARED_FN_PATH"
+
+# Present is not the same as usable — a truncated copy sources without error and
+# defines nothing.
+if ! declare -F ask_choice >/dev/null 2>&1; then
+  echo "shared-functions.sh at $SHARED_FN_PATH is unusable (truncated or corrupt)."
+  echo "Delete it and run this again: sudo rm -f $SHARED_FN_PATH"
+  exit 1
+fi
 
 require_cmd() { command -v "$1" >/dev/null 2>&1 || { print error "Missing dependency: $1"; exit 1; }; }
 
@@ -73,52 +121,64 @@ no_more_input() {
   exit 1
 }
 
-# ask <var> <prompt> [default] — keeps asking until a non-empty answer is given.
+# A destination is being CHOSEN at these prompts, so an unanswered question must
+# never resolve itself. ask_text falls back to its default when nobody is there
+# to answer, which is right for setup.sh and wrong here: silently picking a
+# backup destination nobody named is how backups end up going to the wrong place
+# and nobody finds out until a restore. Checked once, up front, rather than
+# after each read.
+#
+# Guarded at the point a question is actually asked rather than once up front,
+# so a run that needs no answers is never refused for want of a terminal.
+
+validate_nonempty() {
+  [ -n "$(trim "$1")" ] && return 0
+  print error "This cannot be left empty."
+  return 1
+}
+
+# ask <var> <prompt> [default] — kept as the local spelling so every call site
+# below reads the same as it always did, now rendered by gum where available.
 ask() {
-  local __var=$1 prompt=$2 default=${3:-} raw input rc
-  while true; do
-    rc=0; raw=""
-    if [ -n "$default" ]; then
-      read -r -p "$prompt [$default]: " raw || rc=$?
-    else
-      read -r -p "$prompt: " raw || rc=$?
-    fi
-    # An empty answer plus a read error means the input ended. Never fall back to
-    # the default there: silently choosing an answer nobody gave is how the wrong
-    # destination gets configured.
-    [ -z "$raw" ] && [ "$rc" -ne 0 ] && no_more_input
-    input="$(trim "${raw:-$default}")"
-    [ -n "$input" ] && break
-    print warning "This cannot be left empty. Try again."
-  done
-  printf -v "$__var" '%s' "$input"
+  ui_interactive || no_more_input
+  local __var=$1 prompt=$2 default=${3:-}
+  ask_text "$__var" "$default" "$prompt" validate_nonempty
+  printf -v "$__var" '%s' "$(trim "${!__var}")"
 }
 
+# Deliberately not ask_password: that asks twice and compares, which is right
+# when a password is being invented and wrong here. These are existing Windows
+# and SSH passwords being recalled, and asking twice for one only invites a
+# mistyped confirmation of a correct password.
 ask_secret() {
-  local __var=$1 prompt=$2 input rc
+  ui_interactive || no_more_input
+  local __var=$1 prompt=$2 input
   while true; do
-    rc=0
-    read -r -s -p "$prompt: " input || rc=$?; echo
+    if [ "$(ui_renderer)" = "gum" ]; then
+      input=$(gum input --password --header "$prompt" 2>/dev/null) || input=""
+    else
+      printf '\n \033[1m%s\033[0m\n > ' "$prompt" >&2
+      read -r -s input || no_more_input
+      echo >&2
+    fi
     [ -n "$input" ] && break
-    [ "$rc" -ne 0 ] && no_more_input
     print warning "This cannot be left empty. Try again."
   done
   printf -v "$__var" '%s' "$input"
 }
 
-confirm() {
-  local prompt=$1 answer rc=0
-  read -r -p "$prompt (y/N): " answer || rc=$?
-  [ "$rc" -ne 0 ] && [ -z "$answer" ] && no_more_input
-  [[ "$answer" =~ ^[Yy]$ ]]
+confirm() { ui_interactive || no_more_input; ask_yes_no "$1" no; }
+
+# choose <var> <default-key> <question> <key:label:description>...
+# ask_choice with the same refusal to answer itself: its own fallback to the
+# default key is right for setup.sh, where every default is safe, and wrong for
+# a script that picks which lab's database gets overwritten.
+choose() {
+  ui_interactive || no_more_input
+  ask_choice "$@"
 }
 
 # --- preflight ----------------------------------------------------------------
-
-if [ "$(id -u)" -ne 0 ]; then
-  echo "Need admin privileges. Run with sudo."
-  exit 1
-fi
 
 require_cmd realpath
 require_cmd awk
@@ -137,6 +197,10 @@ if [ -f "$CONF_FILE" ]; then
   . "$CONF_FILE"
   print info "Found an existing configuration at $CONF_FILE. Press Enter to keep each saved answer."
 fi
+
+# Best-effort, bounded, and never fatal: gum is a nicety here exactly as it is
+# in setup.sh, and the plain prompts below are already correct without it.
+ensure_gum || true
 
 print header "InteLIS backup setup"
 
@@ -205,28 +269,10 @@ print success "Backing up: $LIS_PATH"
 
 # --- destination --------------------------------------------------------------
 
-print header "Where should the backup be sent?"
-echo "  1) Another Linux machine on the network (over SSH)"
-echo "  2) A shared folder on a Windows machine (over SMB)"
-echo "  3) A USB or external drive plugged into this machine"
-echo
-
-default_choice=1
-case "$DEST_MODE" in
-  ssh)   default_choice=1 ;;
-  smb)   default_choice=2 ;;
-  local) default_choice=3 ;;
-esac
-
-while true; do
-  ask choice "Choose 1, 2 or 3" "$default_choice"
-  case "$choice" in
-    1) DEST_MODE="ssh";   break ;;
-    2) DEST_MODE="smb";   break ;;
-    3) DEST_MODE="local"; break ;;
-    *) print warning "Please enter 1, 2 or 3." ;;
-  esac
-done
+choose DEST_MODE "${DEST_MODE:-ssh}" "Where should the backup be sent?" \
+  "ssh:Another Linux machine on the network:Sent over SSH. The usual choice where there is a server in the building." \
+  "smb:A shared folder on a Windows machine:Sent over SMB to a folder shared from Windows." \
+  "local:A USB or external drive plugged into this machine:Written to a drive attached to this machine."
 
 # --- destination: another Linux machine over SSH ------------------------------
 
