@@ -42,8 +42,20 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/archive-audit-table
 //
 // Daily, and batched, because the first run on an established lab has the
 // whole history to work through.
+//
+// 05:15 rather than midnight, and the time matters more than it looks. This
+// job deletes and rewrites a great many files under var/audit-trail, and at
+// midnight it would be doing that while two other things read the same tree:
+// db-tools backup runs on the six-hourly boundary, and the off-machine backup
+// runner is on 0 */8. rsync copying a directory that is being restructured
+// beneath it reports files that still differ and re-sends work the next run
+// undoes.
+//
+// 05:15 clears both, and also clears the monthly optimize at 04:00 on the 1st,
+// which rebuilds tables and is the one neighbour here that can run long. The
+// tree is then settled well before the 08:00 backup.
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/bundle-audit-trail.php")
-    ->daily()
+    ->cron('15 5 * * *') // 05:15 daily, clear of 0 */6, 0 */8 and the monthly optimize
     ->timezone($timezone)
     ->preventOverlapping()
     ->description('Bundling settled audit files');
