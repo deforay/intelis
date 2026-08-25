@@ -117,7 +117,7 @@ function importCoordinatesFromCsv(DatabaseService $db, string $path, bool $dryRu
         exit("Could not open CSV: $path\n");
     }
 
-    $header = fgetcsv($handle);
+    $header = fgetcsv($handle, null, ",", "\"", "\\");
     if (!is_array($header)) {
         fclose($handle);
         exit("CSV appears to be empty: $path\n");
@@ -128,7 +128,7 @@ function importCoordinatesFromCsv(DatabaseService $db, string $path, bool $dryRu
     $updates = [];   // facility_id => [lat, lon]
     $stats = ['rows' => 0, 'byCode' => 0, 'byName' => 0, 'noMatch' => 0, 'badCoord' => 0];
 
-    while (($row = fgetcsv($handle)) !== false) {
+    while (($row = fgetcsv($handle, null, ",", "\"", "\\")) !== false) {
         if (count($row) === 1 && trim((string) ($row[0] ?? '')) === '') {
             continue; // blank line
         }
