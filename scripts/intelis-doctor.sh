@@ -141,7 +141,21 @@ fetch_shared_fn() {
   return 1
 }
 
-fetch_shared_fn "$SHARED_FN_PATH" "${RAW_BASE}/shared-functions.sh" || true
+# --check promises to change nothing, and shared-functions.sh is sourced by every
+# InteLIS maintenance script -- refreshing it here would quietly re-version all of
+# them during a report-only run. In check mode fetch to a throwaway copy instead,
+# and fall back to whatever is already installed if that fails.
+if [ "$MODE" = check ]; then
+  SHARED_FN_TMP="$(mktemp 2>/dev/null || true)"
+  if [ -n "${SHARED_FN_TMP:-}" ] && fetch_shared_fn "$SHARED_FN_TMP" "${RAW_BASE}/shared-functions.sh"; then
+    trap 'rm -f "$SHARED_FN_TMP"' EXIT
+    SHARED_FN_PATH="$SHARED_FN_TMP"
+  elif [ -n "${SHARED_FN_TMP:-}" ]; then
+    rm -f "$SHARED_FN_TMP"
+  fi
+else
+  fetch_shared_fn "$SHARED_FN_PATH" "${RAW_BASE}/shared-functions.sh" || true
+fi
 
 HAVE_SHARED=false
 if [ -r "$SHARED_FN_PATH" ]; then
@@ -342,11 +356,52 @@ active_mpm() {
   return 1
 }
 
+# Taking the FIRST DocumentRoot in sites-enabled picks whatever sorts first --
+# usually 000-default.conf. On a box that also serves an unrelated default site
+# that is the wrong vhost entirely, so the doctor probed a site it was never
+# asked about. Prefer the vhost pointing at this install.
 apache_doc_root() {
-  local root
-  root="$(grep -rhi '^[[:space:]]*DocumentRoot' /etc/apache2/sites-enabled/ 2>/dev/null |
-          head -n1 | awk '{print $2}' | tr -d '"'"'" || true)"
+  local roots root
+  roots="$(grep -rhi '^[[:space:]]*DocumentRoot' /etc/apache2/sites-enabled/ 2>/dev/null |
+           awk '{print $2}' | tr -d '"'"'" || true)"
+  [ -n "$roots" ] || return 1
+
+  if [ -n "${INSTALL_PATH:-}" ]; then
+    root="$(printf '%s\n' "$roots" | grep -Fx "${INSTALL_PATH}/public" | head -n1 || true)"
+    [ -n "$root" ] && { echo "$root"; return 0; }
+    root="$(printf '%s\n' "$roots" | grep -F "$INSTALL_PATH" | head -n1 || true)"
+    [ -n "$root" ] && { echo "$root"; return 0; }
+  fi
+
+  root="$(printf '%s\n' "$roots" | head -n1)"
   [ -n "$root" ] && { echo "$root"; return 0; }
+  return 1
+}
+
+# The conf file whose DocumentRoot is $1, and the ServerName it declares. Needed
+# because requests to 127.0.0.1 land on the DEFAULT vhost: without a matching
+# Host header, a probe file written into the InteLIS docroot is fetched from
+# some other site, which reads as a broken InteLIS when it is nothing of the kind.
+apache_vhost_file_for_root() {
+  local root="$1" f
+  [ -n "$root" ] || return 1
+  for f in /etc/apache2/sites-enabled/*; do
+    [ -f "$f" ] || continue
+    if grep -hi '^[[:space:]]*DocumentRoot' "$f" 2>/dev/null |
+         awk '{print $2}' | tr -d '"'"'" | grep -qFx "$root"; then
+      echo "$f"; return 0
+    fi
+  done
+  return 1
+}
+
+apache_server_name() {
+  local f name
+  f="$(apache_vhost_file_for_root "$1" || true)"
+  [ -n "$f" ] || return 1
+  name="$(grep -i '^[[:space:]]*ServerName' "$f" 2>/dev/null |
+          head -n1 | awk '{print $2}' | tr -d '"'"'" || true)"
+  [ -n "$name" ] && { echo "$name"; return 0; }
   return 1
 }
 
@@ -357,19 +412,44 @@ port_80_owner() {
 
 # curl is not on every Ubuntu server install and wget is not on every desktop
 # one, so neither may be assumed.
-http_get() { # http_get <url> -> body on stdout
+http_get() { # http_get <url> [host] -> body on stdout
+  local url="$1" host="${2:-}"
   if command -v curl >/dev/null 2>&1; then
-    curl -sS --max-time 15 -o - "$1" 2>/dev/null
+    if [ -n "$host" ]; then
+      curl -sS --max-time 15 -H "Host: ${host}" -o - "$url" 2>/dev/null
+    else
+      curl -sS --max-time 15 -o - "$url" 2>/dev/null
+    fi
   elif command -v wget >/dev/null 2>&1; then
-    wget -qO- --timeout=15 "$1" 2>/dev/null
+    if [ -n "$host" ]; then
+      wget -qO- --timeout=15 --header="Host: ${host}" "$url" 2>/dev/null
+    else
+      wget -qO- --timeout=15 "$url" 2>/dev/null
+    fi
   else
     return 2
   fi
 }
 
-http_status() { # http_status <url> -> three-digit code, or empty
+http_status() { # http_status <url> [host] -> three-digit code, or empty
+  local url="$1" host="${2:-}"
   if command -v curl >/dev/null 2>&1; then
-    curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "$1" 2>/dev/null
+    if [ -n "$host" ]; then
+      curl -sS -o /dev/null -w '%{http_code}' --max-time 15 -H "Host: ${host}" "$url" 2>/dev/null
+    else
+      curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "$url" 2>/dev/null
+    fi
+  elif command -v wget >/dev/null 2>&1; then
+    # wget has no --write-out. With -S it prints the status line to stderr, and
+    # it exits non-zero on 4xx/5xx -- piping discards that exit status, which is
+    # what we want, since an error code is the answer here rather than a failure.
+    # Without this branch a wget-only machine got an empty status, so InteLIS
+    # returning HTTP 500 read exactly like a healthy site.
+    if [ -n "$host" ]; then
+      wget -S -O /dev/null --timeout=15 --header="Host: ${host}" "$url" 2>&1
+    else
+      wget -S -O /dev/null --timeout=15 "$url" 2>&1
+    fi | awk '/^[[:space:]]*HTTP\//{code=$2} END{if (code) print code}'
   else
     return 2
   fi
@@ -472,7 +552,14 @@ check_probe() {
   printf '%s' '<?php echo "INTELIS_PHP_OK";' >"$probe" 2>/dev/null || { PROBE_RESULT=unwritable; return; }
   chmod 644 "$probe" 2>/dev/null || true
 
-  body="$(http_get "http://127.0.0.1/.intelis-doctor-probe.php" || true)"
+  # 127.0.0.1 reaches the DEFAULT vhost. Send the InteLIS vhost's ServerName so
+  # the probe is answered by the site being diagnosed rather than by whatever
+  # else this machine happens to serve.
+  local host
+  host="$(apache_server_name "$DOC_ROOT" || true)"
+  report "probe host=${host:-<default vhost>}"
+
+  body="$(http_get "http://127.0.0.1/.intelis-doctor-probe.php" "$host" || true)"
   rm -f -- "$probe" 2>/dev/null || true
 
   report_cmd "probe response" printf '%s\n' "$body"
@@ -487,7 +574,7 @@ check_probe() {
     PROBE_RESULT=other
   fi
 
-  PROBE_STATUS="$(http_status "http://127.0.0.1/" || true)"
+  PROBE_STATUS="$(http_status "http://127.0.0.1/" "$host" || true)"
   report "site status=${PROBE_STATUS:-unknown}"
 }
 
@@ -841,7 +928,17 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
     print warning "Stopping another program that holds port 80 is a decision for a person."
     print plain   "     If it is a web server that was installed by mistake, it is safe to stop."
     print plain   "     If it was installed on purpose, stopping it will break whatever uses it."
-    run_fix "Stop it and let Apache have the address." fix_stop_foreign || true
+    # That decision cannot be made unattended. run_fix only prompts in ask mode,
+    # so under --yes this would stop AND disable whatever holds port 80 -- and
+    # `disable` does not come back on reboot. A machine deliberately serving
+    # something else on port 80 would be taken offline by a tool the operator
+    # ran to diagnose a different problem. Report it and move on instead.
+    if [ "$MODE" = yes ]; then
+      print warning "Left alone: unattended mode will not stop another program. Re-run without --yes to decide."
+      report "SKIPPED (unattended): stop the program holding port 80"
+    else
+      run_fix "Stop it and let Apache have the address." fix_stop_foreign || true
+    fi
   fi
 
   if has_finding config; then
