@@ -16,7 +16,35 @@ SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
 
-if wget -q -O "$SHARED_FN_PATH" "$SHARED_FN_URL"; then
+# Fetch to a temporary file and swap it in only once it looks like the real
+# thing. `wget -O` truncates the destination before the transfer starts, so
+# downloading straight onto the installed copy destroys it the moment the
+# network hiccups — and a zero-byte file sources without complaint, leaving
+# every function undefined while the script walks on regardless. upgrade.sh
+# learned this the hard way; the same hole was still open here.
+#
+# The transfer is bounded, too. Unbounded, wget retries 20 times with a 900s
+# read timeout, and this script is normally run from inside a background job
+# whose output is discarded — so a stalled link is minutes of complete silence
+# that looks exactly like a hang.
+fetch_shared_fn() {
+    local dest="$1" url="$2" tmp
+    tmp="$(mktemp "${dest}.XXXXXX" 2>/dev/null)" || return 1
+    if wget -q --timeout=15 --tries=2 -O "$tmp" "$url" &&
+        [ -s "$tmp" ] && grep -q '^set_permissions()' "$tmp"; then
+        mv -f "$tmp" "$dest"
+        return 0
+    fi
+    rm -f "$tmp"
+    return 1
+}
+
+# The caller may have fetched this very file seconds ago: upgrade.sh downloads
+# it on line one of every run and then calls this script. Repeating the round
+# trip there buys nothing and can only cost time.
+if [ "${INTELIS_SHARED_FN_FRESH:-}" = "1" ] && [ -s "$SHARED_FN_PATH" ]; then
+    :
+elif fetch_shared_fn "$SHARED_FN_PATH" "$SHARED_FN_URL"; then
     chmod +x "$SHARED_FN_PATH"
     echo "Downloaded shared-functions.sh."
 else
@@ -25,6 +53,7 @@ else
         echo "shared-functions.sh missing. Cannot proceed."
         exit 1
     fi
+    echo "Continuing with the copy already on this machine."
 fi
 
 # Source the shared functions
@@ -107,11 +136,29 @@ wait  # Ensure background ACL jobs are done
 # was root-owned var/logs and backups in the post-upgrade check.
 #
 # Kept in step with the path constants in bootstrap.php.
-for d in var/cache var/logs var/temporary public/temporary public/uploads backups; do
+for d in var/cache var/logs var/temporary public/temporary public/uploads; do
     if [ -d "${lis_path}/$d" ]; then
         chown -R www-data:www-data "${lis_path}/$d"
     fi
 done
+
+# backups is deliberately NOT recursive.
+#
+# It grows without limit and set_permissions prunes it for exactly that reason,
+# so a `chown -R` here undid the pruning: the whole of it was walked on every
+# upgrade and on every hourly cron pass, which on a mature instance was the
+# longest single thing either one did. Nothing but the backup task ever writes
+# there, and set_permissions gives the directory a default ACL, so owning the
+# directory itself is enough for everything written from here on. `-m deep`
+# still sweeps the contents, for the one-off case where an existing tree really
+# does have the wrong owner.
+if [ -d "${lis_path}/backups" ]; then
+    if [ "$mode" = "deep" ]; then
+        chown -R www-data:www-data "${lis_path}/backups"
+    else
+        chown www-data:www-data "${lis_path}/backups"
+    fi
+fi
 
 # Restarts happen only when asked for. -a and -d have always been parsed into
 # restart_apache/restart_mysql and then never read, so both services were

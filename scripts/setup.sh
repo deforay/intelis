@@ -1774,9 +1774,17 @@ fi
 # Set proper permissions
 download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh
 chmod +x /usr/local/bin/intelis-refresh
+# INTELIS_SHARED_FN_FRESH: this run already fetched the shared functions, so
+# intelis-refresh has no reason to fetch them again.
+#
+# chown_app_tree rather than a bare `find -exec chown`: the flat walk covered
+# .git and node_modules as well, which nothing serving the application ever
+# reads, and on a re-run over an existing install it covered backups and
+# var/audit-trail too — the trees set_permissions prunes precisely because they
+# are the largest thing there.
 (print success "Setting final permissions in the background..." &&
-    intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
-    find "${lis_path}" -exec chown www-data:www-data {} + 2>/dev/null || true) &
+    INTELIS_SHARED_FN_FRESH=1 intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
+    chown_app_tree "${lis_path}" || true) &
 permissions_pid=$!
 
 restart_service apache
@@ -1786,7 +1794,7 @@ restart_service apache
 # reporting failures that fix themselves seconds later — which is worse than not
 # reporting at all, because the installer learns to ignore it. Nothing follows
 # this point, so the wait costs the install nothing.
-wait "${permissions_pid}" 2>/dev/null || true
+wait_with_progress "Setting final permissions" "${permissions_pid}"
 
 # ---------------------------------------------------------------------------
 # Install preflight — advisory, never fatal.
