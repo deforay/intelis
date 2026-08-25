@@ -894,17 +894,36 @@ final class TestRequestsService
                 : "sample_package_code = ?";
             $sampleParams = $isReferralModule ? [$manifestCode, $manifestCode] : [$manifestCode];
 
-            // "At least one sample I can see" is the wrong admission rule here, because
-            // admission and effect have different scopes: activateSamplesFromManifest()
-            // selects on the manifest code with NO facility predicate, so one in-scope
-            // sample would drag every out-of-scope one under the same code with it --
-            // new sample codes, statuses and timestamps on samples this user cannot see.
+            // Step 1: is there anything here for this user at all? Answered FIRST, and
+            // with the facility filter applied, so a manifest they can see no part of is
+            // indistinguishable from a code that does not exist. Answering step 2 first
+            // would turn the distinct message into an oracle: a direct caller could
+            // confirm an otherwise inaccessible manifest exists.
+            $inScopeWhere = $sampleWhere;
+            if ($labId <= 0 && !empty($_SESSION['facilityMap'])) {
+                $inScopeWhere .= " AND facility_id IN (" . $_SESSION['facilityMap'] . ")";
+            }
+            $selectedSamples = $this->db->rawQueryOne(
+                "SELECT $primaryKey FROM $tableName WHERE $inScopeWhere LIMIT 1",
+                $sampleParams
+            );
+            if (empty($selectedSamples)) {
+                return ['status' => 'not-found', 'message' => 'Manifest not found.'];
+            }
+
+            // Step 2: they can see PART of it. "At least one sample I can see" is still
+            // the wrong admission rule, because admission and effect have different
+            // scopes: activateSamplesFromManifest() selects on the manifest code with NO
+            // facility predicate, so that one in-scope sample would drag every
+            // out-of-scope one under the same code with it -- new sample codes, statuses
+            // and timestamps on samples this user cannot see.
             //
-            // Refuse the whole manifest instead. Failing closed beats a partial write,
-            // and pushing the predicate down into activation is worse: it would make a
+            // Refuse the whole manifest. Failing closed beats a partial write, and
+            // pushing the predicate down into activation is worse: it would make a
             // mapped lab user silently activate only PART of its own manifest, leaving
-            // the rest stuck with no indication why. A NULL facility cannot be proven
-            // in scope, so it counts as out of scope.
+            // the rest stuck with no indication why. Naming the reason is safe here --
+            // they already hold a sample under this code, so it reveals nothing new.
+            // A NULL facility cannot be proven in scope, so it counts as out of scope.
             if ($labId <= 0 && !empty($_SESSION['facilityMap'])) {
                 $foreign = $this->db->rawQueryOne(
                     "SELECT $primaryKey FROM $tableName
@@ -921,14 +940,7 @@ final class TestRequestsService
                 }
             }
 
-            $selectedSamples = $this->db->rawQueryOne(
-                "SELECT $primaryKey FROM $tableName WHERE $sampleWhere LIMIT 1",
-                $sampleParams
-            );
-
-            return empty($selectedSamples)
-                ? ['status' => 'not-found', 'message' => 'Manifest not found.']
-                : ['status' => 'match'];
+            return ['status' => 'match'];
         }
 
         // Not owned by this lab -- is it registered to a DIFFERENT lab?
