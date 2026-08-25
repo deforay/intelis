@@ -136,9 +136,31 @@ wait  # Ensure background ACL jobs are done
 # was root-owned var/logs and backups in the post-upgrade check.
 #
 # Kept in step with the path constants in bootstrap.php.
-for d in var/cache var/logs var/temporary public/temporary public/uploads; do
+#
+# Split by whether the directory is bounded, for the same reason backups below
+# is not recursive. var/logs and the two temporary dirs are small and rotated,
+# so sweeping them costs nothing and repairs anything the app left behind.
+# var/cache and public/uploads are not: a busy instance shards tens of thousands
+# of cache entries, and uploads grow with the lab's own data. Walking those on
+# every run — including the hourly cron this script installs — was the longest
+# thing either one did, and it was buying nothing. Unlinking a cache entry needs
+# write access to the DIRECTORY holding it, not ownership of the file, and
+# set_permissions has already swept every directory under var/cache and given it
+# a default ACL. `-m deep` still sweeps the contents for the one-off case where
+# an existing tree really does have the wrong owner.
+for d in var/logs var/temporary public/temporary; do
     if [ -d "${lis_path}/$d" ]; then
         chown -R www-data:www-data "${lis_path}/$d"
+    fi
+done
+
+for d in var/cache public/uploads; do
+    if [ -d "${lis_path}/$d" ]; then
+        if [ "$mode" = "deep" ]; then
+            chown -R www-data:www-data "${lis_path}/$d"
+        else
+            chown www-data:www-data "${lis_path}/$d"
+        fi
     fi
 done
 
