@@ -1695,6 +1695,32 @@ chown_app_tree() {
     return 0
 }
 
+# format_duration — seconds as something an operator can read at a glance.
+#
+# Upgrades range from seconds on a small instance to well over an hour on a big
+# one, so a bare seconds count is either noise or arithmetic. Units are dropped
+# once they are not needed rather than zero-padded through: "48s", "6m 12s",
+# "1h 04m".
+format_duration() {
+    local total="${1:-0}"
+
+    # Guard against a clock that moved backwards mid-run (NTP stepping the time
+    # on a machine that has just come up is the realistic way this happens).
+    [[ "$total" =~ ^[0-9]+$ ]] || total=0
+
+    local h=$(( total / 3600 ))
+    local m=$(( (total % 3600) / 60 ))
+    local s=$(( total % 60 ))
+
+    if [ "$h" -gt 0 ]; then
+        printf '%dh %02dm' "$h" "$m"
+    elif [ "$m" -gt 0 ]; then
+        printf '%dm %02ds' "$m" "$s"
+    else
+        printf '%ds' "$s"
+    fi
+}
+
 # pause_cron / resume_cron — hold scheduled tasks across a window where the
 # database is being altered.
 #

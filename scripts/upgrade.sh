@@ -192,6 +192,11 @@ declare -a lis_paths=()
 
 log_file="/tmp/intelis-upgrade-$(date +'%Y%m%d-%H%M%S').log"
 
+# Wall clock for the whole run, taken before anything is fetched or built so the
+# total covers the download and staging an operator is also waiting through, not
+# just the per-instance work.
+upgrade_started_at=$(date +%s)
+
 # Pre-process long options into short equivalents so getopts can handle them.
 # Supported long options:
 #   --prepare-only        -> -P
@@ -1666,6 +1671,10 @@ declare -a permission_pids=()
 declare -a failed_instances=()
 # Per-instance commit-to-commit change, keyed by lis_path (set in upgrade_instance).
 declare -A instance_commit_change=()
+# How long each instance took, keyed by lis_path. Recorded for failures too --
+# knowing an instance died forty minutes in, rather than immediately, is most of
+# the diagnosis on a machine none of us can log in to.
+declare -A instance_seconds=()
 
 # Shared timestamp for rollback snapshots across all instances in this run.
 apply_run_ts="$(date +%Y%m%d-%H%M%S)"
@@ -2181,6 +2190,8 @@ for i in "${!lis_paths[@]}"; do
         print_instance_status lis_paths instance_statuses
     fi
 
+    instance_started_at=$(date +%s)
+
     if upgrade_instance "${lis_paths[$i]}" "$((i+1))" "$total_instances" "$temp_dir"; then
         updated_instances+=("${lis_paths[$i]}")
         instance_statuses[$i]="done"
@@ -2188,6 +2199,9 @@ for i in "${!lis_paths[@]}"; do
         failed_instances+=("${lis_paths[$i]}")
         instance_statuses[$i]="failed"
     fi
+
+    instance_seconds["${lis_paths[$i]}"]=$(( $(date +%s) - instance_started_at ))
+    log_action "Instance ${lis_paths[$i]} took $(format_duration "${instance_seconds[${lis_paths[$i]}]}")"
 
     # Show status after completion
     if [ "$total_instances" -gt 1 ]; then
@@ -2266,17 +2280,21 @@ print header "Upgrade Summary"
 if [ ${#updated_instances[@]} -gt 0 ]; then
     print success "Successfully updated ${#updated_instances[@]} instance(s):"
     for p in "${updated_instances[@]}"; do
+        _took=""
+        [ -n "${instance_seconds[$p]:-}" ] && _took="  ($(format_duration "${instance_seconds[$p]}"))"
         if [ -n "${instance_commit_change[$p]:-}" ]; then
-            print info "  ✓ $p  [${instance_commit_change[$p]}]"
+            print info "  ✓ $p  [${instance_commit_change[$p]}]${_took}"
         else
-            print info "  ✓ $p"
+            print info "  ✓ $p${_took}"
         fi
     done
 fi
 if [ ${#failed_instances[@]} -gt 0 ]; then
     print error "Failed to update ${#failed_instances[@]} instance(s):"
     for p in "${failed_instances[@]}"; do
-        print error "  ✗ $p"
+        _took=""
+        [ -n "${instance_seconds[$p]:-}" ] && _took="  (after $(format_duration "${instance_seconds[$p]}"))"
+        print error "  ✗ $p${_took}"
     done
 fi
 
@@ -2354,3 +2372,11 @@ if [ ${#updated_instances[@]} -gt 0 ]; then
     done
     print info "Full report any time: intelis check"
 fi
+
+# Total for the run, printed last so it is the line still on screen when the
+# upgrade ends. It is wall clock from before the download, which is what the
+# operator actually waited through -- the per-instance figures above will not
+# add up to it, and are not meant to.
+_total_seconds=$(( $(date +%s) - upgrade_started_at ))
+print info "Total time: $(format_duration "${_total_seconds}")"
+log_action "Upgrade finished in $(format_duration "${_total_seconds}")"
