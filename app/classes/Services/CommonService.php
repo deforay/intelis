@@ -1109,9 +1109,10 @@ final class CommonService
     /**
      * The lab this session operates AS, when acting as a LIS (treatAsLIS):
      * $_SESSION['labId'] is the effective lab resolved at login (per-user on
-     * cloud-LIS); fall back to the install's configured lab (sc_testing_lab_id)
-     * so a LIS session that predates the per-user lab feature still resolves.
-     * Null when not acting as a lab, or when nothing resolves.
+     * cloud-LIS). On a LIS install ONLY, fall back to the install's configured
+     * lab (sc_testing_lab_id) so a session predating the per-user lab feature
+     * still resolves. Null when not acting as a lab, or when nothing resolves --
+     * a cloud-LIS operator with no assigned testing lab included.
      *
      * Route every "which lab am I?" decision (e.g. constraining Testing Lab
      * dropdowns) through this method so the resolution lives in one place.
@@ -1121,7 +1122,20 @@ final class CommonService
         if (!$this->treatAsLIS()) {
             return null;
         }
-        return ((int) ($_SESSION['labId'] ?? 0)) ?: ((int) ($this->getSystemConfig('sc_testing_lab_id') ?? 0)) ?: null;
+        $sessionLabId = (int) ($_SESSION['labId'] ?? 0);
+        if ($sessionLabId > 0) {
+            return $sessionLabId;
+        }
+        // sc_testing_lab_id identifies the operating lab only on a real single-lab
+        // LIS install. Cloud-LIS is many labs sharing ONE STS install, so there it
+        // is that install's setup value and not this user's lab -- applying it
+        // invented a lab for an unassigned operator and stamped it onto the
+        // requests they edited. loginProcess.php already draws this line: it uses
+        // the fallback for LIS/standalone only and leaves cloud-LIS null when the
+        // user has no testing_lab_id. Keep the two in agreement.
+        return $this->isLISInstance()
+            ? (((int) ($this->getSystemConfig('sc_testing_lab_id') ?? 0)) ?: null)
+            : null;
     }
 
     /**
