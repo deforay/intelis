@@ -207,9 +207,17 @@ abstract class AbstractTestService
      * A caller that is going to persist the code should therefore pass
      * `$params['manageTransaction'] = false`, open its own transaction, and commit only
      * once the sample carries the code -- then a failure rolls the claim back with it and
-     * the number is returned to the series. Note that the transaction handling here is a
-     * flag rather than a depth counter, so a nested commit would end the caller's
-     * transaction: when the caller owns it, this method must not touch it at all.
+     * the number is returned to the series. When the caller owns the transaction this
+     * method does not touch it at all -- it neither begins, commits nor rolls back, and
+     * it hands a duplicate collision back instead of retrying, because retrying inside a
+     * transaction the caller is about to roll back would claim another number for
+     * nothing.
+     *
+     * DatabaseService used to track transactions with a flag rather than a depth, so an
+     * inner commit ended the caller's transaction and this flag was the only thing
+     * keeping a claim from committing a half-finished batch. It counts nesting depth now
+     * and gives each nested scope its own savepoint, so that hazard is gone. Passing the
+     * flag is still what ties the claim to the write, and what decides who recovers.
      *
      * The cost of that is a longer hold on the counter row -- it now spans the caller's
      * write rather than just the claim -- so concurrent generation serialises more. That
