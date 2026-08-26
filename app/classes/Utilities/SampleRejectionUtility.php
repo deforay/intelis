@@ -35,12 +35,24 @@ final class SampleRejectionUtility
     /**
      * SQL predicate, for counting in a query.
      *
+     * The flag is trimmed and lowered here so this answers on exactly the rows
+     * isRejected() answers on. That method normalises before comparing, and the two
+     * have to agree or a grid and the export taken from it disagree again, which is
+     * the whole thing this class exists to stop. A plain `= 'yes'` did not agree:
+     * MySQL 8 defaults to utf8mb4_0900_ai_ci, which is NO PAD, so a trailing space
+     * makes the comparison fail there while an older install on utf8mb4_unicode_ci
+     * would match it -- a difference between two labs, not just between two reports.
+     * Neither collation matches a leading space.
+     *
+     * No index is lost to this: nothing indexes is_sample_rejected, and the OR with
+     * result_status rules out a single-column index either way.
+     *
      * @param string $alias the table alias the columns hang off
      */
     public static function sqlPredicate(string $alias = 't'): string
     {
         $a = self::safeAlias($alias);
-        return "({$a}.is_sample_rejected = 'yes' OR {$a}.result_status = " . REJECTED . ")";
+        return "(LOWER(TRIM({$a}.is_sample_rejected)) = 'yes' OR {$a}.result_status = " . REJECTED . ")";
     }
 
     /**
