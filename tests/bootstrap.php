@@ -24,6 +24,21 @@ if (!is_dir(VAR_PATH)) {
     mkdir(VAR_PATH, 0777, true);
 }
 
+// Derived from VAR_PATH in bootstrap.php. Anything that logs or caches on a failure
+// path -- DatabaseService does both -- resolves these at call time, so a test that
+// drives real service code needs them to exist.
+if (!defined('LOG_PATH')) {
+    define('LOG_PATH', VAR_PATH . DIRECTORY_SEPARATOR . 'logs');
+}
+if (!defined('CACHE_PATH')) {
+    define('CACHE_PATH', VAR_PATH . DIRECTORY_SEPARATOR . 'cache');
+}
+foreach ([LOG_PATH, CACHE_PATH] as $path) {
+    if (!is_dir($path)) {
+        mkdir($path, 0777, true);
+    }
+}
+
 require_once dirname(__DIR__) . '/app/system/constants.php';
 
 // The app's translation helpers live in app/system/functions.php, which pulls in the

@@ -18,8 +18,34 @@ use PhpMyAdmin\SqlParser\Components\Expression;
 final class DatabaseService extends MysqliDb
 {
 
-    private bool $isTransactionActive = false;
-    private $useSavepoints = false;
+    /**
+     * Transaction nesting depth, keyed by connection name.
+     *
+     * A depth rather than a flag because a request save opens a transaction and then
+     * calls a service that opens one of its own -- insertSample() in every module does
+     * exactly this. With a flag, the inner scope's commit ended the outer scope's
+     * transaction, so the rest of a batch ran unprotected and the outer rollback
+     * silently undid nothing. Only depth 0 talks to the server.
+     *
+     * @var array<string, int>
+     */
+    private array $transactionDepth = [];
+
+    /**
+     * Set when a nested scope rolled back with no savepoint to unwind to, so the
+     * outermost commit must refuse rather than persist half an operation.
+     *
+     * @var array<string, bool>
+     */
+    private array $rollbackOnly = [];
+
+    /**
+     * Savepoint names pushed by nested scopes, keyed by connection name.
+     *
+     * @var array<string, list<string|null>>
+     */
+    private array $savepointStack = [];
+
     private string $sessionCollation = 'utf8mb4_unicode_ci';
     private string $sessionCharset = 'utf8mb4';
     private int $countQueryMaxExecutionMs = 10000;
@@ -117,7 +143,20 @@ final class DatabaseService extends MysqliDb
 
     public function isTransactionActive(): bool
     {
-        return $this->isTransactionActive;
+        return ($this->transactionDepth[$this->currentConnection()] ?? 0) > 0;
+    }
+
+    /**
+     * The connection transaction state is tracked against.
+     *
+     * MysqliDb keeps several connections on one object -- bin/interface.php drives the
+     * analyzer database alongside the application's -- and holds defConnectionName
+     * steady for as long as a transaction is in progress. Keying the depth by name
+     * keeps one connection's nesting from being counted against another's.
+     */
+    private function currentConnection(): string
+    {
+        return $this->defConnectionName ?: 'default';
     }
 
     /**
@@ -455,8 +494,11 @@ final class DatabaseService extends MysqliDb
 
         try {
             $this->connect($connectionName);
-            $this->isTransactionActive = false;
-            $this->useSavepoints = false;
+            // The server-side transaction did not survive the reconnect, so neither
+            // does any scope that was counted against it.
+            $this->transactionDepth = [];
+            $this->rollbackOnly = [];
+            $this->savepointStack = [];
             $this->applySessionSettings();
         } catch (Throwable $e) {
             LoggerUtility::logError('Database reconnect attempt failed: ' . $e->getMessage());
@@ -483,68 +525,188 @@ final class DatabaseService extends MysqliDb
      */
     public function beginReadOnlyTransaction($level = 'READ COMMITTED'): void
     {
-        if (!$this->isTransactionActive) {
+        // The isolation level applies to the transaction as a whole, so only the
+        // outermost scope gets to choose it.
+        if (($this->transactionDepth[$this->currentConnection()] ?? 0) === 0) {
             $this->setTransactionIsolationLevel($level);
-            $this->startTransaction();
-            $this->isTransactionActive = true;
         }
+
+        $this->beginTransaction();
     }
 
     /**
-     * Begin a new transaction.
-     * Optionally use savepoints if supported and requested.
+     * Begin a transaction, or enter a nested scope within the one already open.
      *
-     * @param bool $useSavepoints Whether to use savepoints within the transaction.
+     * Nesting is real here: a request save opens a transaction and then calls a
+     * service that opens another. Only the outermost scope starts and ends the
+     * server-side transaction; an inner scope is bookkeeping, plus a savepoint when
+     * savepoints were asked for, so it can unwind its own work without discarding
+     * work the caller knows about and it does not.
+     *
+     * @param bool $useSavepoints Accepted for compatibility and ignored -- a nested
+     *                             scope always takes a savepoint now.
      */
     public function beginTransaction($useSavepoints = false): void
     {
-        if (!$this->isTransactionActive) {
+        $connection = $this->currentConnection();
+        $depth = $this->transactionDepth[$connection] ?? 0;
+
+        if ($depth === 0) {
             $this->startTransaction();
-            $this->isTransactionActive = true;
-            // Enable savepoints only if MySQL 8 or higher and requested.
-            $this->useSavepoints = $this->isMySQL8OrHigher() ? $useSavepoints : false;
+            $this->rollbackOnly[$connection] = false;
+            $this->savepointStack[$connection] = [];
+        } else {
+            // Always, not on request: a nested scope that rolls back has to be able to
+            // undo its own work and nothing else, and the callers that need it are the
+            // ones least likely to know they are nested. An API batch calling
+            // insertSample() per record, or an interop receiver calling getSampleCode()
+            // inside its own transaction, both get per-record recovery for free.
+            $savepoint = 'nested_' . $depth;
+            try {
+                $this->createSavepoint($savepoint);
+            } catch (Throwable $e) {
+                // Degrade rather than pretend. Without a savepoint this scope cannot
+                // roll back on its own, and rollbackTransaction() will say so by
+                // marking the whole transaction instead.
+                LoggerUtility::logWarning(
+                    'Could not create savepoint for nested transaction scope: ' . $e->getMessage()
+                );
+                $savepoint = null;
+            }
+            $this->savepointStack[$connection][] = $savepoint;
         }
-    }
 
-
-    public function commitTransaction(): void
-    {
-        if ($this->isTransactionActive) {
-            $this->commit();
-            $this->isTransactionActive = false;
-        }
+        $this->transactionDepth[$connection] = $depth + 1;
     }
 
 
     /**
-     * Roll back the current transaction.
-     * * @param string|null $toSavepoint The savepoint to rollback to, or null to rollback the entire transaction.
+     * Commit the current scope.
+     *
+     * A nested commit is not a commit -- it closes that scope and nothing more. Only
+     * the outermost one reaches the server, which is what lets a service commit its
+     * own insert without ending the batch its caller is still building.
+     */
+    public function commitTransaction(): void
+    {
+        $connection = $this->currentConnection();
+        $depth = $this->transactionDepth[$connection] ?? 0;
+
+        // Nothing open. Unchanged, and depended on: several call sites commit
+        // unconditionally on a path that may already have resolved.
+        if ($depth === 0) {
+            return;
+        }
+
+        if ($depth > 1) {
+            $savepoint = array_pop($this->savepointStack[$connection]);
+            if ($savepoint !== null) {
+                try {
+                    $this->releaseSavepoint($savepoint);
+                } catch (Throwable $e) {
+                    // Releasing only frees the marker; the work stays in the
+                    // transaction either way. Not worth failing an operation over.
+                    LoggerUtility::logWarning('Could not release savepoint: ' . $e->getMessage());
+                }
+            }
+            $this->transactionDepth[$connection] = $depth - 1;
+            return;
+        }
+
+        $this->transactionDepth[$connection] = 0;
+        $this->savepointStack[$connection] = [];
+
+        if ($this->rollbackOnly[$connection] ?? false) {
+            // An inner scope failed and had no savepoint to undo just its own work.
+            // Committing here would persist half an operation and report success.
+            $this->rollbackOnly[$connection] = false;
+            $this->rollback();
+            throw new SystemException(
+                'Transaction was marked rollback-only by a nested operation and has been rolled back',
+                500
+            );
+        }
+
+        $this->commit();
+    }
+
+
+    /**
+     * Roll back the current scope.
+     *
+     * @param string|null $toSavepoint The savepoint to rollback to, or null to rollback the entire transaction.
      */
     public function rollbackTransaction($toSavepoint = null): void
     {
-        if ($this->isTransactionActive) {
-            if ($toSavepoint && $this->useSavepoints) {
-                $this->rollbackToSavepoint($toSavepoint);
-            } else {
-                $this->rollback();
-            }
-            $this->isTransactionActive = false;
+        $connection = $this->currentConnection();
+        $depth = $this->transactionDepth[$connection] ?? 0;
+
+        // A no-op once the transaction has been resolved. Several call sites roll back
+        // unconditionally as a backstop and rely on this.
+        if ($depth === 0) {
+            return;
         }
+
+        if ($depth > 1) {
+            $savepoint = array_pop($this->savepointStack[$connection]);
+            if ($savepoint !== null) {
+                $this->rollbackToSavepoint($savepoint);
+            } else {
+                // Nothing to unwind to, so this scope cannot undo only its own work.
+                // Mark the transaction so the outermost commit refuses it.
+                $this->rollbackOnly[$connection] = true;
+            }
+            $this->transactionDepth[$connection] = $depth - 1;
+            return;
+        }
+
+        // An explicit partial rollback leaves the transaction open, as SQL says it
+        // does. The caller asked to undo part of its work, not to end it.
+        if ($toSavepoint !== null) {
+            $this->rollbackToSavepoint($toSavepoint);
+            return;
+        }
+
+        $this->transactionDepth[$connection] = 0;
+        $this->savepointStack[$connection] = [];
+        $this->rollbackOnly[$connection] = false;
+        $this->rollback();
+    }
+
+    /**
+     * Run a savepoint statement.
+     *
+     * Not through rawQuery(): that prepares, and MySQL rejects SAVEPOINT and its two
+     * companions in the prepared statement protocol ("This command is not supported
+     * in the prepared statement protocol yet"), so these three used to fatal the
+     * moment anything called them.
+     *
+     * A savepoint name is an identifier and cannot be bound, so it is validated
+     * rather than escaped. Names are generated internally today, but these are
+     * public methods and the check is what keeps that from mattering.
+     */
+    private function savepointStatement(string $keyword, string $savepointName): void
+    {
+        if (preg_match('/^[A-Za-z0-9_]{1,64}$/', $savepointName) !== 1) {
+            throw new SystemException("Invalid savepoint name: $savepointName", 500);
+        }
+
+        $this->mysqli()->query("$keyword `$savepointName`");
     }
 
     public function createSavepoint($savepointName): void
     {
-        $this->rawQuery("SAVEPOINT `$savepointName`;");
+        $this->savepointStatement('SAVEPOINT', (string) $savepointName);
     }
 
     public function rollbackToSavepoint($savepointName): void
     {
-        $this->rawQuery("ROLLBACK TO SAVEPOINT `$savepointName`;");
+        $this->savepointStatement('ROLLBACK TO SAVEPOINT', (string) $savepointName);
     }
 
     public function releaseSavepoint($savepointName): void
     {
-        $this->rawQuery("RELEASE SAVEPOINT `$savepointName`;");
+        $this->savepointStatement('RELEASE SAVEPOINT', (string) $savepointName);
     }
 
 
