@@ -17,6 +17,16 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 // constants.php resolves CORE\SYSADMIN_SECRET_KEY_FILE against VAR_PATH at load time, so
 // that has to exist first. It points at a throwaway directory: nothing under test writes
 // there, and a test that did would be reaching further than a unit test should.
+// LegacyRequestHandler resolves a page against APPLICATION_PATH, and several
+// utilities resolve paths against ROOT_PATH. bootstrap.php defines both; a test
+// driving that code needs them to mean the same thing.
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', dirname(__DIR__));
+}
+if (!defined('APPLICATION_PATH')) {
+    define('APPLICATION_PATH', ROOT_PATH . DIRECTORY_SEPARATOR . 'app');
+}
+
 if (!defined('VAR_PATH')) {
     define('VAR_PATH', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'intelis-tests-var');
 }
