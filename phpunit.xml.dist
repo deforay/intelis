@@ -14,5 +14,13 @@
         <testsuite name="Utilities">
             <directory>tests/Unit/Utilities</directory>
         </testsuite>
+        <!--
+            Needs a real MySQL, because what it tests is what the server does with
+            SAVEPOINT and an implicit commit. Skips itself when INTELIS_TEST_DB_HOST
+            and INTELIS_TEST_DB_USER are unset, so this suite stays green without one.
+        -->
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
