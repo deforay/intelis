@@ -236,6 +236,12 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         border: 1px solid #a9dfbf;
     }
 
+    .pmtct-badge.b-info {
+        background: #eaf2fb;
+        color: #21618c;
+        border: 1px solid #aed0ee;
+    }
+
     .pmtct-badge.b-muted {
         background: #f0f1f3;
         color: #777;
@@ -393,6 +399,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                             <div class="pmtct-empty-panel"><?= _htmlTranslate("Loading…"); ?></div>
                         </div>
                         <div id="pmtctBridgeNote" style="font-size:11px; color:#999; margin:6px 0 0 4px;">&nbsp;</div>
+                        <div id="pmtctMaternalStatusNote" style="font-size:12px; color:#666; margin:6px 0 0 4px;">&nbsp;</div>
 
                         <!-- Infant EID outcome cascade (children units): of the matched
                              children, how many were EID-tested and how many are positive. -->
@@ -440,6 +447,8 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                                     <th><?= _htmlTranslate("VL Sample Code"); ?></th>
                                     <th><?= _htmlTranslate("VL Sample Collection Date"); ?></th>
                                     <th><?= _htmlTranslate("VL Test Date"); ?></th>
+                                    <th><?= _htmlTranslate("Mother Pregnant"); ?></th>
+                                    <th><?= _htmlTranslate("Mother Breastfeeding"); ?></th>
                                     <th><?= _htmlTranslate("VL Result"); ?></th>
                                     <th><?= _htmlTranslate("VL Test Platform"); ?></th>
                                     <th><?= _htmlTranslate("VL Testing Lab"); ?></th>
@@ -447,7 +456,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="19" class="dataTables_empty">
+                                    <td colspan="21" class="dataTables_empty">
                                         <?= _htmlTranslate("Loading data from server"); ?>
                                     </td>
                                 </tr>
@@ -608,6 +617,23 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
             { label: "<?= _jsTranslate('Mothers w/ High VL ≥1000'); ?>", count: mHighVl, tone: 'danger', drill: function () { openHighVlMothersDrill(); } }
         ]);
 
+        // Of the mothers still at high VL, how many were pregnant or
+        // breastfeeding when that sample was taken. These two are not exclusive
+        // (a mother can be recorded as both) and are counted over her whole VL
+        // history, so they are shown as separate counts rather than a split of
+        // the high-VL total.
+        var hvPregnant = s.mothersHighVlPregnant || 0;
+        var hvBreastfeeding = s.mothersHighVlBreastfeeding || 0;
+        $("#pmtctMaternalStatusNote").html(
+            mHighVl > 0
+                ? "<em class='fa-solid fa-person-breastfeeding'></em> " +
+                  "<?= _jsTranslate('Of the mothers at high VL:'); ?> " +
+                  "<strong>" + hvPregnant.toLocaleString() + "</strong> <?= _jsTranslate('pregnant'); ?>" +
+                  " &nbsp;\u00b7&nbsp; <strong>" + hvBreastfeeding.toLocaleString() + "</strong> <?= _jsTranslate('breastfeeding'); ?>" +
+                  " <span style='color:#999;'>(<?= _jsTranslate('as recorded on the VL request'); ?>)</span>"
+                : "&nbsp;"
+        );
+
         // Pivot note — explain the children → mothers unit change without repeating
         // numbers already in the boxes.
         $("#pmtctBridgeNote").html(
@@ -710,6 +736,22 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         return '<span class="pmtct-badge b-muted"><?= _jsTranslate('Unknown (no DOB)'); ?></span>';
     }
 
+    // Mother's pregnancy / breastfeeding status as recorded on a VL request.
+    // Stored as 'yes' / 'no' / 'N/A' (N/A is written for male patients).
+    function motherStatusBadge(value) {
+        var v = $.trim(String(value === null || value === undefined ? '' : value)).toLowerCase();
+        if (v === 'yes') {
+            return '<span class="pmtct-badge b-info"><?= _jsTranslate('Yes'); ?></span>';
+        }
+        if (v === 'no') {
+            return '<span class="pmtct-badge b-muted"><?= _jsTranslate('No'); ?></span>';
+        }
+        if (v === 'n/a' || v === 'na') {
+            return '<span class="pmtct-badge b-muted"><?= _jsTranslate('N/A'); ?></span>';
+        }
+        return '<span class="pmtct-badge b-muted">\u2014</span>';
+    }
+
     function eidResultBadge(result, isPositive) {
         if (!result) { return '<span class="pmtct-badge b-muted"><?= _jsTranslate('No result'); ?></span>'; }
         var txt = escHtml(result);
@@ -786,6 +828,8 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                         (r.highVlTests || 0),
                         fmtIsoDate(r.firstHighVlDate),
                         vlCategoryBadge(r.latestVlCategory) + (r.latestVlDate ? ' <span style="color:#999;">(' + fmtIsoDate(r.latestVlDate) + ')</span>' : ''),
+                        motherStatusBadge(r.latestPregnant),
+                        motherStatusBadge(r.latestBreastfeeding),
                         preBirthBadge(r.motherHighVlPreBirth),
                         actions
                     ];
@@ -804,6 +848,8 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                         { sTitle: "<?= _jsTranslate('High VL Tests'); ?>" },
                         { sTitle: "<?= _jsTranslate('First High VL Date'); ?>" },
                         { sTitle: "<?= _jsTranslate('Mother Latest VL'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Pregnant at Latest VL'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Breastfeeding at Latest VL'); ?>" },
                         { sTitle: "<?= _jsTranslate('High VL Before Birth'); ?>" },
                         { sTitle: "<?= _jsTranslate('Actions'); ?>", bSortable: false }
                     ],
@@ -846,6 +892,8 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                         (r.highVlTests || 0),
                         fmtIsoDate(r.firstHighVlDate),
                         vlCategoryBadge(r.latestVlCategory) + (r.latestVlResult ? ' ' + escHtml(r.latestVlResult) : '') + (r.latestVlDate ? ' <span style="color:#999;">(' + fmtIsoDate(r.latestVlDate) + ')</span>' : ''),
+                        motherStatusBadge(r.latestPregnant),
+                        motherStatusBadge(r.latestBreastfeeding),
                         actions
                     ];
                 });
@@ -860,6 +908,8 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                         { sTitle: "<?= _jsTranslate('High VL Tests'); ?>" },
                         { sTitle: "<?= _jsTranslate('First High VL Date'); ?>" },
                         { sTitle: "<?= _jsTranslate('Latest VL'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Pregnant at Latest VL'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Breastfeeding at Latest VL'); ?>" },
                         { sTitle: "<?= _jsTranslate('Actions'); ?>", bSortable: false }
                     ],
                     bDestroy: true,
@@ -901,6 +951,8 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
             '<th><?= _jsTranslate('VL Sample Code'); ?></th>' +
             '<th><?= _jsTranslate('Collection Date'); ?></th>' +
             '<th><?= _jsTranslate('Test Date'); ?></th>' +
+            '<th><?= _jsTranslate('Pregnant'); ?></th>' +
+            '<th><?= _jsTranslate('Breastfeeding'); ?></th>' +
             '<th><?= _jsTranslate('Result'); ?></th>' +
             '<th><?= _jsTranslate('cp/mL'); ?></th>' +
             '<th><?= _jsTranslate('Log'); ?></th>' +
@@ -915,6 +967,8 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                 '<td>' + escHtml(t.sampleCode || t.remoteSampleCode) + '</td>' +
                 '<td>' + fmtIsoDate(t.collectionDate) + '</td>' +
                 '<td>' + fmtIsoDate(t.testedDate) + '</td>' +
+                '<td>' + motherStatusBadge(t.pregnant) + '</td>' +
+                '<td>' + motherStatusBadge(t.breastfeeding) + '</td>' +
                 '<td>' + escHtml(t.result) + '</td>' +
                 '<td>' + escHtml(t.resultAbsolute) + '</td>' +
                 '<td>' + escHtml(t.resultLog) + '</td>' +
