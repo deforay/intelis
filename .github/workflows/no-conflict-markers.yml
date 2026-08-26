@@ -213,3 +213,15 @@ jobs:
             echo "::error::app is ${app} but a fresh install migrates only to ${db}"
             exit 1
           fi
+
+      # Runs here rather than alongside the unit suite because this is the only job
+      # with a server. What these cover is what MySQL itself does with SAVEPOINT and
+      # an implicit commit, so a double would prove nothing. The suite skips itself
+      # when these are unset, which is what keeps `composer test` green elsewhere.
+      - name: Run the integration suite against it
+        env:
+          INTELIS_TEST_DB_HOST: 127.0.0.1
+          INTELIS_TEST_DB_PORT: '3306'
+          INTELIS_TEST_DB_USER: root
+          INTELIS_TEST_DB_PASS: root
+        run: vendor/bin/phpunit --testsuite Integration
