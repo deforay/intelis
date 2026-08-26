@@ -85,13 +85,26 @@ $activeTests = TestsService::getActiveTests();
         border-radius: 2px;
     }
 
+    /* The checkbox rows sit under one divider, not one each, and never wrap --
+       "Show all referral lines" used to break after "referral" and drop the last
+       word outside the panel. */
     .referral-legend label {
         display: block;
         font-weight: normal;
-        margin: 8px 0 0;
+        margin: 2px 0 0;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .referral-legend label:first-of-type {
+        margin-top: 8px;
         padding-top: 6px;
         border-top: 1px solid #eee;
-        cursor: pointer;
+    }
+
+    .referral-legend label input {
+        margin-right: 4px;
+        vertical-align: middle;
     }
 
     /* Larger, more readable marker popup. */
@@ -190,6 +203,55 @@ $activeTests = TestsService::getActiveTests();
 
     .leaflet-tooltip.referral-cluster-label::before {
         display: none;
+    }
+
+    /* Facility name labels pinned beside each marker. Rendered with a soft
+       halo rather than a filled box so a dense cluster of names stays readable
+       over the basemap without hiding the roads and boundaries underneath. */
+    .leaflet-tooltip.referral-name-label {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        color: #263238;
+        font-weight: 600;
+        font-size: 11px;
+        padding: 0;
+        white-space: nowrap;
+        pointer-events: none;
+        text-shadow:
+            -1px -1px 0 rgba(255, 255, 255, 0.9),
+            1px -1px 0 rgba(255, 255, 255, 0.9),
+            -1px 1px 0 rgba(255, 255, 255, 0.9),
+            1px 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .leaflet-tooltip.referral-name-label::before {
+        display: none;
+    }
+
+    /* The legend checkbox hides every name at once, for when the national view
+       gets too crowded to read. */
+    #referralMap.referral-labels-off .leaflet-tooltip.referral-name-label {
+        display: none;
+    }
+
+    /* The lab's own walk-in samples: counted, but not a referral, so it is set
+       apart from the list of facilities that refer in. */
+    .referral-focus-hint .rl-own {
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 3px;
+        margin-bottom: 3px;
+        color: #00695c;
+    }
+
+    .referral-focus-hint .rl-total {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        border-top: 2px solid #ddd;
+        margin-top: 4px;
+        padding-top: 3px;
+        font-weight: 700;
     }
 
     /* Larger, easier-to-hit map control buttons (expand, etc.). */
@@ -310,6 +372,15 @@ $activeTests = TestsService::getActiveTests();
                                     placeholder="<?php echo _translate('Enter date range'); ?>" style="background:#fff;" />
                             </div>
                             <div class="col-md-3 col-sm-6 form-group">
+                                <label for="dateField"><?= _translate('Date Based On'); ?></label>
+                                <select class="form-control" id="dateField" name="dateField"
+                                    title="<?= _translate('Which date the range above is measured against. A lab counting samples it tested in a month will not see the same total as one counting samples registered in that month.', true); ?>">
+                                    <option value="collection"><?= _translate("Sample Collection Date"); ?></option>
+                                    <option value="registration"><?= _translate("Sample Registration Date"); ?></option>
+                                    <option value="tested"><?= _translate("Sample Tested Date"); ?></option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-sm-6 form-group">
                                 <label for="state"><?= _translate('Province/State'); ?></label>
                                 <select class="form-control" id="state" onchange="getByProvince()" name="state"
                                     multiple="multiple">
@@ -320,14 +391,14 @@ $activeTests = TestsService::getActiveTests();
                                 <label for="district"><?= _translate("District/County"); ?></label>
                                 <select class="form-control" id="district" name="district" multiple="multiple"></select>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-3 col-sm-6 form-group">
                                 <label for="labName"><?= _translate("Name of the Testing Lab"); ?></label>
                                 <select class="form-control" id="labName" name="labName" multiple="multiple">
                                     <?= $general->generateSelectOptions($labNameList); ?>
                                 </select>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-3 col-sm-6 form-group">
                                 <label for="testType"><?= _translate("Test Type"); ?></label>
                                 <select id="testType" name="testType" class="form-control" multiple="multiple">
@@ -343,6 +414,8 @@ $activeTests = TestsService::getActiveTests();
                                     class="form-control"
                                     placeholder="<?php echo _translate('Enter sample code', true); ?>" />
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-3 col-sm-6 form-group">
                                 <label for="markerFilter"><?= _translate("Show on map"); ?></label>
                                 <select id="markerFilter" name="markerFilter" class="form-control">
@@ -454,6 +527,7 @@ $activeTests = TestsService::getActiveTests();
     function filterPayload() {
         return {
             dateRange: $('#dateRange').val(),
+            dateField: $('#dateField').val(),
             state: $('#state').val(),
             district: $('#district').val(),
             labName: $('#labName').val(),
@@ -655,7 +729,8 @@ $activeTests = TestsService::getActiveTests();
             div.innerHTML = '<span class="dot" style="background:' + LAB_COLOR + '"></span><?= _translate("Testing Lab", true); ?><br>' +
                 '<span class="dot" style="background:' + SITE_COLOR + '"></span><?= _translate("Referring Facility", true); ?><br>' +
                 '<span class="line" style="background:' + LAB_FLOW_COLOR + '"></span><?= _translate("Lab-to-lab referral", true); ?>' +
-                '<label><input type="checkbox" id="toggleLines"> <?= _translate("Show all referral lines", true); ?></label>';
+                '<label><input type="checkbox" id="toggleLines"> <?= _translate("Show all referral lines", true); ?></label>' +
+                '<label><input type="checkbox" id="toggleLabels" checked> <?= _translate("Show facility names", true); ?></label>';
             L.DomEvent.disableClickPropagation(div);
             return div;
         };
@@ -895,6 +970,20 @@ $activeTests = TestsService::getActiveTests();
         });
         var cap = 15,
             rows = '';
+        // A lab's own collections have no line on the map, so they would drop out
+        // of this list entirely. They are listed first, marked as its own, and
+        // carried into the total -- that total is what a lab reconciles against
+        // its own report.
+        var own = Number(node.samplesOwnCollected || 0);
+        var total = own;
+        links.forEach(function(l) {
+            total += l.count;
+        });
+        if (node.isLab && own > 0) {
+            rows += '<div class="rl-row rl-own"><span class="rl-name">' +
+                '<?= _translate("Collected at this lab", true); ?></span>' +
+                '<span class="rl-count">' + own.toLocaleString() + '</span></div>';
+        }
         links.slice(0, cap).forEach(function(l) {
             rows += '<div class="rl-row"><span class="rl-name">' + esc(l.name) + '</span>' +
                 '<span class="rl-count">' + Number(l.count).toLocaleString() + '</span></div>';
@@ -902,9 +991,11 @@ $activeTests = TestsService::getActiveTests();
         if (links.length > cap) {
             rows += '<div class="rl-more">… ' + (links.length - cap) + ' <?= _translate("more", true); ?></div>';
         }
+        var totalRow = '<div class="rl-total"><span><?= _translate("Total", true); ?></span>' +
+            '<span>' + total.toLocaleString() + '</span></div>';
         focusHintEl.innerHTML = '<strong>' + esc(node.name) + '</strong>' +
             '<div class="rl-head">' + heading + ' (' + links.length + ')</div>' +
-            '<div class="rl-list">' + rows + '</div>' +
+            '<div class="rl-list">' + rows + '</div>' + totalRow +
             '<a href="#" onclick="clearFocus();return false;"><?= _translate("Show all", true); ?></a>';
         focusHintEl.style.display = 'block';
     }
@@ -983,6 +1074,7 @@ $activeTests = TestsService::getActiveTests();
                 var labCount = 0,
                     sent = 0,
                     recv = 0,
+                    own = 0,
                     members = [],
                     instruments = [];
                 g.forEach(function(m) {
@@ -992,6 +1084,7 @@ $activeTests = TestsService::getActiveTests();
                     }
                     sent += m.samplesSent || 0;
                     recv += m.samplesReceived || 0;
+                    own += m.samplesOwnCollected || 0;
                     members.push({
                         name: m.name,
                         isLab: !!m.isLab
@@ -1024,6 +1117,7 @@ $activeTests = TestsService::getActiveTests();
                     isLab: isLab,
                     samplesSent: sent,
                     samplesReceived: recv,
+                    samplesOwnCollected: own,
                     instruments: instruments,
                     memberCount: g.length,
                     members: members,
@@ -1097,8 +1191,18 @@ $activeTests = TestsService::getActiveTests();
                         (n.district ? esc(n.district) + ', ' : '') + esc(n.province || '') + '<br>' +
                         '<?= _translate("Samples referred out", true); ?>: ' + Number(n.samplesSent).toLocaleString();
                     if (n.isLab) {
-                        popup += '<br><?= _translate("Samples received for testing", true); ?>: ' +
+                        popup += '<br><?= _translate("Samples referred in", true); ?>: ' +
                             Number(n.samplesReceived).toLocaleString();
+                        // Samples collected at the lab itself are not referrals,
+                        // but they are part of what the lab tested -- shown so
+                        // this popup adds up to the lab's own total.
+                        var own = Number(n.samplesOwnCollected || 0);
+                        if (own > 0) {
+                            popup += '<br><?= _translate("Collected at this lab", true); ?>: ' +
+                                own.toLocaleString() +
+                                '<br><strong><?= _translate("Total for this lab", true); ?>: ' +
+                                (Number(n.samplesReceived) + own).toLocaleString() + '</strong>';
+                        }
                         popup += instrumentsHtml(n.instruments);
                     }
                     popup += '</div>';
@@ -1114,6 +1218,16 @@ $activeTests = TestsService::getActiveTests();
                         permanent: true,
                         direction: 'center',
                         className: 'referral-cluster-label'
+                    });
+                } else {
+                    // Pin the facility name beside the marker so the map can be
+                    // read without clicking every point. Offset clears the
+                    // marker itself, which is wider for a lab than for a site.
+                    marker.bindTooltip(esc(n.name), {
+                        permanent: true,
+                        direction: 'right',
+                        offset: [n.isLab ? 10 : 6, 0],
+                        className: 'referral-name-label'
                     });
                 }
                 // Focus is wired through the cluster group's own 'click' event
@@ -1275,6 +1389,12 @@ $activeTests = TestsService::getActiveTests();
             if (focusedId === null) {
                 redrawLines();
             }
+        });
+
+        // Names are on by default; the class flips them off wholesale in CSS so
+        // markers never have to be rebound.
+        $(document).on('change', '#toggleLabels', function() {
+            $('#referralMap').toggleClass('referral-labels-off', !this.checked);
         });
 
         $(document).on('change', '#markerFilter', function() {

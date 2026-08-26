@@ -24,6 +24,7 @@ try {
     $filters = [
         'testTypes' => array_filter((array) ($_POST['testType'] ?? [])),
         'dateRange' => $_POST['dateRange'] ?? '',
+        'dateField' => $_POST['dateField'] ?? '',
         'sampleCode' => $_POST['sampleCode'] ?? '',
         'provinceIds' => (array) ($_POST['state'] ?? []),
         'districtIds' => (array) ($_POST['district'] ?? []),
@@ -59,8 +60,18 @@ try {
     $meta = $referralService->getFacilitiesMeta(array_keys($facilityIds));
 
     // Tally sent / received volume per node so the UI can size markers.
-    $sent = $received = [];
+    //
+    // A sample collected at the testing lab itself is a real sample the lab
+    // tested, but it is not a referral and it cannot be drawn as a line from a
+    // point to itself. It used to be dropped outright, which is why a lab's
+    // popup could never add up to the same total as the lab's own report. It is
+    // now counted separately and shown as its own row, so the two reconcile.
+    $sent = $received = $ownCollected = [];
     foreach ($flows as $f) {
+        if ($f['from'] === $f['to']) {
+            $ownCollected[$f['to']] = ($ownCollected[$f['to']] ?? 0) + $f['count'];
+            continue;
+        }
         $sent[$f['from']] = ($sent[$f['from']] ?? 0) + $f['count'];
         $received[$f['to']] = ($received[$f['to']] ?? 0) + $f['count'];
     }
@@ -71,7 +82,7 @@ try {
         if ($m['lat'] === null || $m['lng'] === null) {
             continue;
         }
-        if ($m['type'] === 2 || ($received[$id] ?? 0) > 0) {
+        if ($m['type'] === 2 || ($received[$id] ?? 0) > 0 || ($ownCollected[$id] ?? 0) > 0) {
             $labIds[] = $id;
         }
     }
@@ -84,7 +95,8 @@ try {
             $unmapped++;
             continue;
         }
-        $isLab = $m['type'] === 2 || ($received[$id] ?? 0) > 0;
+        $own = $ownCollected[$id] ?? 0;
+        $isLab = $m['type'] === 2 || ($received[$id] ?? 0) > 0 || $own > 0;
         $nodes[] = [
             'id' => $id,
             'name' => $m['name'],
@@ -95,6 +107,7 @@ try {
             'isLab' => $isLab,
             'samplesSent' => $sent[$id] ?? 0,
             'samplesReceived' => $received[$id] ?? 0,
+            'samplesOwnCollected' => $own,
             'instruments' => $isLab ? ($instrumentsByLab[$id] ?? []) : [],
         ];
     }
@@ -106,6 +119,8 @@ try {
     }
     $outFlows = [];
     foreach ($flows as $f) {
+        // Self-flows are excluded from the drawn lines only -- their volume is
+        // already carried on the node as samplesOwnCollected.
         if (isset($mappable[$f['from']], $mappable[$f['to']]) && $f['from'] !== $f['to']) {
             $outFlows[] = $f;
         }

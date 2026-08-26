@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Services\TestsService;
 use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
+use App\Utilities\SampleCountUtility;
 
 /**
  * Aggregates the "which facility sends samples to which testing lab" referral
@@ -24,6 +25,36 @@ final class ReferralNetworkService
     public const CACHE_TTL = 1800; // 30 minutes
     private const CACHE_TAG = 'referral_network';
 
+    /**
+     * Which date a date-range filter is measured against.
+     *
+     * A referral network can be counted on three different days and each one
+     * answers a different question, so the caller picks rather than the report
+     * assuming. They are not interchangeable: a lab reading "34 tested in June"
+     * off its own pivot will never see that number on a map counting the day the
+     * request was registered.
+     *
+     * 'collection' is the default because it is the day the referral actually
+     * happened and it is the only one of the three that is populated on
+     * essentially every row -- request_created_datetime is null on samples that
+     * arrived before it was recorded, and sample_tested_datetime is null on
+     * everything still in the pipeline. A basis with holes in it does not report
+     * a smaller number, it silently drops those samples off the map entirely.
+     */
+    public const DATE_FIELDS = [
+        'collection' => 'sample_collection_date',
+        'registration' => 'request_created_datetime',
+        'tested' => 'sample_tested_datetime',
+    ];
+
+    public const DEFAULT_DATE_FIELD = 'collection';
+
+    /** Resolve a caller-supplied date basis to a real column, falling back to the default. */
+    public static function dateColumn(?string $basis): string
+    {
+        return self::DATE_FIELDS[$basis] ?? self::DATE_FIELDS[self::DEFAULT_DATE_FIELD];
+    }
+
     public function __construct(private DatabaseService $db, private FileCacheUtility $fileCache) {}
 
     /**
@@ -35,10 +66,11 @@ final class ReferralNetworkService
      * recompute (the "Refresh" action on the map page).
      *
      * @param array{
-     *   testTypes?: string[], dateRange?: string,
-     *   provinceIds?: int[], districtIds?: int[],
+     *   testTypes?: string[], dateRange?: string, dateField?: string,
+     *   sampleCode?: string, provinceIds?: int[], districtIds?: int[],
      *   labIds?: int[], facilityIds?: int[]
-     * } $filters
+     * } $filters  dateField is a key of self::DATE_FIELDS; anything else falls
+     *             back to self::DEFAULT_DATE_FIELD.
      *
      * @return list<array{facility_id:int, lab_id:int, test_type:string, test_name:string, samples:int, latest:?string}>
      */
@@ -67,6 +99,7 @@ final class ReferralNetworkService
         $normalised = [
             'testTypes' => $this->sortedStrings((array) ($filters['testTypes'] ?? [])),
             'dateRange' => trim((string) ($filters['dateRange'] ?? '')),
+            'dateField' => self::dateColumn($filters['dateField'] ?? null),
             'sampleCode' => trim((string) ($filters['sampleCode'] ?? '')),
             'provinceIds' => $this->intList($filters['provinceIds'] ?? []),
             'districtIds' => $this->intList($filters['districtIds'] ?? []),
@@ -103,10 +136,13 @@ final class ReferralNetworkService
 
         $dateClause = '';
         $params = [];
+        // The column is resolved from a fixed allow-list, never from the raw input.
+        $dateColumn = self::dateColumn($filters['dateField'] ?? null);
+
         if (!empty($filters['dateRange']) && trim((string) $filters['dateRange']) !== '') {
             // convertDateRange returns controlled 'Y-m-d H:i:s' strings, safe to interpolate.
             [$start, $end] = \App\Utilities\DateUtility::convertDateRange($filters['dateRange'], includeTime: true);
-            $dateClause .= " AND t.request_created_datetime BETWEEN '$start' AND '$end'";
+            $dateClause .= " AND t.$dateColumn BETWEEN '$start' AND '$end'";
         }
 
         if (!empty($filters['sampleCode']) && trim((string) $filters['sampleCode']) !== '') {
@@ -131,9 +167,11 @@ final class ReferralNetworkService
                 continue; // unknown / non-table test type
             }
 
+            // "Latest" tracks whichever date the user is counting on, so the
+            // column and the timestamp beside it always tell the same story.
             $sql = "SELECT t.facility_id, t.lab_id,
                            COUNT(*) AS samples,
-                           MAX(t.request_created_datetime) AS latest
+                           MAX(t.$dateColumn) AS latest
                       FROM $table t
                       $join
                      WHERE $where
@@ -164,9 +202,14 @@ final class ReferralNetworkService
      */
     private function buildWhere(string $dateClause, array $labIds, array $facilityIds, array $provinceIds, array $districtIds): string
     {
-        $where = ['t.facility_id IS NOT NULL', 't.lab_id IS NOT NULL'];
+        // A cancelled sample was called off before it was ever work, so it is not
+        // a referral either. Shared predicate, not a hand-written one -- see
+        // SampleCountUtility for why.
+        $where = ['t.facility_id IS NOT NULL', 't.lab_id IS NOT NULL', SampleCountUtility::countableWhere('t')];
         if ($dateClause !== '') {
-            $where[] = ltrim($dateClause, ' AND');
+            // Strip the leading conjunction only. ltrim() with an ' AND' charlist
+            // would eat any leading A, N or D of the column name that follows.
+            $where[] = preg_replace('/^\s*AND\s+/', '', $dateClause);
         }
         if ($labIds !== []) {
             $where[] = 't.lab_id IN (' . implode(',', $labIds) . ')';
