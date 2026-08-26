@@ -105,6 +105,34 @@ function pmtctDateOrBlank($v): string
 }
 
 /**
+ * Human label for the yes / no / N/A fields the VL request form records for
+ * pregnancy and breastfeeding. Anything unrecognised (including blanks, which
+ * is what a request saved before the field existed carries) reads as empty
+ * rather than as a "No" the lab never entered.
+ */
+function pmtctYesNoLabel($value): string
+{
+    return match (strtolower(trim((string) $value))) {
+        'yes'       => _translate('Yes'),
+        'no'        => _translate('No'),
+        'n/a', 'na' => _translate('N/A'),
+        default     => '',
+    };
+}
+
+/**
+ * SQL fragment picking one column's value from the mother's most recent VL
+ * test within a GROUP BY. Same GROUP_CONCAT/SUBSTRING_INDEX trick the latest
+ * result columns already use: only the first element is read, so hitting
+ * group_concat_max_len on a long history truncates the tail we discard anyway.
+ */
+function pmtctLatestVlValueExpr(string $column, string $alias = 'v'): string
+{
+    return "SUBSTRING_INDEX(GROUP_CONCAT(COALESCE($alias.$column, '')"
+        . " ORDER BY $alias.sample_collection_date DESC SEPARATOR '||'), '||', 1)";
+}
+
+/**
  * Classify whether the mother had a documented high VL strictly before the
  * child's date of birth. Returns 'yes', 'no', or 'unknown' (no usable DOB).
  */
@@ -160,7 +188,11 @@ if ($action === 'summary') {
             COUNT(DISTINCT v.vl_sample_id) AS vlTests,
             COUNT(DISTINCT CASE WHEN $hasVlResult THEN v.vl_sample_id END) AS vlTestsWithResult,
             COUNT(DISTINCT CASE WHEN $hasVlResult THEN v.patient_art_no END) AS mothersWithResult,
-            COUNT(DISTINCT CASE WHEN $highVlExpr THEN v.patient_art_no END) AS mothersHighVl
+            COUNT(DISTINCT CASE WHEN $highVlExpr THEN v.patient_art_no END) AS mothersHighVl,
+            COUNT(DISTINCT CASE WHEN $highVlExpr AND LOWER(TRIM(v.is_patient_pregnant)) = 'yes'
+                            THEN v.patient_art_no END) AS mothersHighVlPregnant,
+            COUNT(DISTINCT CASE WHEN $highVlExpr AND LOWER(TRIM(v.is_patient_breastfeeding)) = 'yes'
+                            THEN v.patient_art_no END) AS mothersHighVlBreastfeeding
         FROM form_eid e
         INNER JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
         WHERE $whereSql";
@@ -210,6 +242,8 @@ if ($action === 'summary') {
         'vlTestsWithResult'         => (int) ($motherRow['vlTestsWithResult'] ?? 0),
         'mothersWithResult'         => (int) ($motherRow['mothersWithResult'] ?? 0),
         'mothersHighVl'             => (int) ($motherRow['mothersHighVl'] ?? 0),
+        'mothersHighVlPregnant'     => (int) ($motherRow['mothersHighVlPregnant'] ?? 0),
+        'mothersHighVlBreastfeeding' => (int) ($motherRow['mothersHighVlBreastfeeding'] ?? 0),
     ];
 
     header('Content-Type: application/json');
@@ -249,7 +283,9 @@ if ($action === 'positiveChildren') {
             vm.firstHighVlDate,
             vm.latestVlDate,
             vm.latestVlResult,
-            vm.latestVlCategory
+            vm.latestVlCategory,
+            vm.latestPregnant,
+            vm.latestBreastfeeding
         FROM form_eid e
         INNER JOIN (
             SELECT TRIM(v.patient_art_no) AS mid,
@@ -258,7 +294,9 @@ if ($action === 'positiveChildren') {
                    MIN(CASE WHEN v.vl_result_category = 'not suppressed' THEN DATE(v.sample_collection_date) END) AS firstHighVlDate,
                    MAX(DATE(v.sample_collection_date)) AS latestVlDate,
                    SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.result, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlResult,
-                   SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.vl_result_category, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlCategory
+                   SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.vl_result_category, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlCategory,
+                   " . pmtctLatestVlValueExpr('is_patient_pregnant') . " AS latestPregnant,
+                   " . pmtctLatestVlValueExpr('is_patient_breastfeeding') . " AS latestBreastfeeding
             FROM form_vl v
             INNER JOIN (
                 SELECT DISTINCT TRIM(e2.mother_id) AS mid
@@ -294,6 +332,8 @@ if ($action === 'positiveChildren') {
             'latestVlDate'          => pmtctDateOrBlank($r['latestVlDate'] ?? null),
             'latestVlResult'        => $r['latestVlResult'] ?? '',
             'latestVlCategory'      => $r['latestVlCategory'] ?? '',
+            'latestPregnant'        => $r['latestPregnant'] ?? '',
+            'latestBreastfeeding'   => $r['latestBreastfeeding'] ?? '',
             'motherHighVlPreBirth'  => $preBirth,
         ];
     }
@@ -323,7 +363,9 @@ if ($action === 'highVlMothers') {
             MIN(CASE WHEN v.vl_result_category = 'not suppressed' THEN DATE(v.sample_collection_date) END) AS firstHighVlDate,
             MAX(DATE(v.sample_collection_date)) AS latestVlDate,
             SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.result, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlResult,
-            SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.vl_result_category, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlCategory
+            SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.vl_result_category, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlCategory,
+            " . pmtctLatestVlValueExpr('is_patient_pregnant') . " AS latestPregnant,
+            " . pmtctLatestVlValueExpr('is_patient_breastfeeding') . " AS latestBreastfeeding
         FROM (
             SELECT TRIM(e.mother_id) AS mid,
                    COUNT(DISTINCT $childKeyExpr) AS childrenInWindow,
@@ -349,6 +391,8 @@ if ($action === 'highVlMothers') {
             'latestVlDate'     => pmtctDateOrBlank($r['latestVlDate'] ?? null),
             'latestVlResult'   => $r['latestVlResult'] ?? '',
             'latestVlCategory' => $r['latestVlCategory'] ?? '',
+            'latestPregnant'   => $r['latestPregnant'] ?? '',
+            'latestBreastfeeding' => $r['latestBreastfeeding'] ?? '',
         ];
     }
 
@@ -375,6 +419,7 @@ function pmtctLoadMotherVlTests(DatabaseService $db, string $motherId): array
                 v.result, v.result_value_absolute, v.result_value_log,
                 v.vl_result_category, v.vl_test_platform,
                 v.reason_for_vl_testing,
+                v.is_patient_pregnant, v.is_patient_breastfeeding,
                 fvl.facility_name AS testing_lab,
                 fv.facility_name AS facility_name
         FROM form_vl v
@@ -398,6 +443,8 @@ function pmtctLoadMotherVlTests(DatabaseService $db, string $motherId): array
             'category'       => $r['vl_result_category'] ?? '',
             'platform'       => $r['vl_test_platform'] ?? '',
             'reason'         => $r['reason_for_vl_testing'] ?? '',
+            'pregnant'       => $r['is_patient_pregnant'] ?? '',
+            'breastfeeding'  => $r['is_patient_breastfeeding'] ?? '',
             'testingLab'     => $r['testing_lab'] ?? '',
             'facility'       => $r['facility_name'] ?? '',
         ];
@@ -569,6 +616,8 @@ $aColumns = [
     'v.sample_code',
     "DATE_FORMAT(v.sample_collection_date,'%d-%b-%Y')",
     "DATE_FORMAT(v.sample_tested_datetime,'%d-%b-%Y')",
+    'v.is_patient_pregnant',
+    'v.is_patient_breastfeeding',
     'v.result',
     'v.vl_test_platform',
     'fvl.facility_name',
@@ -590,6 +639,8 @@ $orderColumns = [
     'v.sample_code',
     'v.sample_collection_date',
     'v.sample_tested_datetime',
+    'v.is_patient_pregnant',
+    'v.is_patient_breastfeeding',
     'v.result',
     'v.vl_test_platform',
     'fvl.facility_name',
@@ -617,6 +668,8 @@ $selectCols = "e.eid_id, e.sample_code AS eid_sample_code,
         v.sample_code AS vl_sample_code,
         v.sample_collection_date AS vl_collection_date,
         v.sample_tested_datetime AS vl_tested_date,
+        v.is_patient_pregnant,
+        v.is_patient_breastfeeding,
         v.result AS vl_result,
         v.result_value_log,
         v.result_value_absolute,
@@ -679,6 +732,8 @@ foreach ($rows as $r) {
         $r['vl_sample_code'] ?? '',
         $fmtDate($r['vl_collection_date'] ?? null),
         $fmtDate($r['vl_tested_date'] ?? null),
+        pmtctYesNoLabel($r['is_patient_pregnant'] ?? null),
+        pmtctYesNoLabel($r['is_patient_breastfeeding'] ?? null),
         $r['vl_result'] ?? '',
         $r['vl_test_platform'] ?? '',
         $r['vl_testing_lab'] ?? '',

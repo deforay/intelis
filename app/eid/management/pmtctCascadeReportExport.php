@@ -88,6 +88,21 @@ function pmtctExportIsoDate($v): string
 }
 
 /**
+ * Human label for the yes / no / N/A pregnancy and breastfeeding fields on a
+ * VL request. Blank (a request saved before the field existed) stays blank
+ * rather than reading as a "No" the lab never entered.
+ */
+function pmtctExportYesNoLabel($value): string
+{
+    return match (strtolower(trim((string) $value))) {
+        'yes'       => _translate('Yes'),
+        'no'        => _translate('No'),
+        'n/a', 'na' => _translate('N/A'),
+        default     => '',
+    };
+}
+
+/**
  * Same child-identity rule as the report screen: prefer the recorded Child
  * ID, fall back to the EID record's own id for records without one.
  */
@@ -194,7 +209,11 @@ $motherRow = $db->rawQueryOne("SELECT
         COUNT(DISTINCT v.vl_sample_id) AS vlTests,
         COUNT(DISTINCT CASE WHEN $hasVlResult THEN v.vl_sample_id END) AS vlTestsWithResult,
         COUNT(DISTINCT CASE WHEN $hasVlResult THEN v.patient_art_no END) AS mothersWithResult,
-        COUNT(DISTINCT CASE WHEN $highVlExpr THEN v.patient_art_no END) AS mothersHighVl
+        COUNT(DISTINCT CASE WHEN $highVlExpr THEN v.patient_art_no END) AS mothersHighVl,
+        COUNT(DISTINCT CASE WHEN $highVlExpr AND LOWER(TRIM(v.is_patient_pregnant)) = 'yes'
+                        THEN v.patient_art_no END) AS mothersHighVlPregnant,
+        COUNT(DISTINCT CASE WHEN $highVlExpr AND LOWER(TRIM(v.is_patient_breastfeeding)) = 'yes'
+                        THEN v.patient_art_no END) AS mothersHighVlBreastfeeding
     FROM form_eid e
     INNER JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
     WHERE $whereSql");
@@ -313,6 +332,8 @@ $summaryRows = [
     [_translate('VL tests pending result'),                                  max(0, (int) ($motherRow['vlTests'] ?? 0) - (int) ($motherRow['vlTestsWithResult'] ?? 0))],
     [_translate('Mothers with VL result available'),                         (int) ($motherRow['mothersWithResult'] ?? 0)],
     [_translate('Mothers with high VL (>= 1000 cp/mL)'),                     (int) ($motherRow['mothersHighVl'] ?? 0)],
+    [_translate('Of those, pregnant at a high VL test'),                     (int) ($motherRow['mothersHighVlPregnant'] ?? 0)],
+    [_translate('Of those, breastfeeding at a high VL test'),                (int) ($motherRow['mothersHighVlBreastfeeding'] ?? 0)],
     [_translate('Distinct HIV-positive children'),                           $positiveChildrenDistinct],
     [_translate('Of those, mother had high VL before the child\'s birth'),   $preBirthHighVlChildren],
 ];
@@ -457,6 +478,8 @@ $vlHeaders = [
     _translate('Remote VL Sample Code'),
     _translate('VL Sample Collection Date'),
     _translate('VL Sample Tested Date'),
+    _translate('Pregnant'),
+    _translate('Breastfeeding'),
     _translate('VL Result'),
     _translate('VL Result (Absolute cp/mL)'),
     _translate('VL Result (Log)'),
@@ -479,6 +502,8 @@ $vlSql = "SELECT
         v.remote_sample_code AS vl_remote_sample_code,
         v.sample_collection_date AS vl_collection_date,
         v.sample_tested_datetime AS vl_tested_date,
+        v.is_patient_pregnant,
+        v.is_patient_breastfeeding,
         v.result AS vl_result,
         v.result_value_absolute,
         v.result_value_log,
@@ -511,6 +536,8 @@ foreach ($db->rawQueryGenerator($vlSql) as $r) {
         $r['vl_remote_sample_code'] ?? '',
         pmtctExportFormatDate($r['vl_collection_date'] ?? null),
         pmtctExportFormatDate($r['vl_tested_date'] ?? null),
+        pmtctExportYesNoLabel($r['is_patient_pregnant'] ?? null),
+        pmtctExportYesNoLabel($r['is_patient_breastfeeding'] ?? null),
         $r['vl_result'] ?? '',
         $r['result_value_absolute'] ?? '',
         $r['result_value_log'] ?? '',
