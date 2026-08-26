@@ -2,6 +2,7 @@
 
 namespace App\Utilities;
 
+use App\Exceptions\RedirectException;
 use DirectoryIterator;
 use RuntimeException;
 use Throwable;
@@ -1050,8 +1051,22 @@ final class MiscUtility
         }
     }
 
+    /**
+     * Send the browser somewhere else and stop.
+     *
+     * Under CLI this throws instead. Nothing in production reaches it there -- every
+     * CLI entry point requires only bootstrap, vendor and config, and no task, cron
+     * or run-once script calls this -- and it could not work if it did: header() is a
+     * no-op under CLI, so the call amounted to a silent exit(0). Throwing lets a test
+     * drive one of the procedural helpers to completion and see where it meant to
+     * send the user, which is half of what those files decide.
+     */
     public static function redirect(string $url): void
     {
+        if (PHP_SAPI === 'cli') {
+            throw new RedirectException($url);
+        }
+
         if (str_contains(strtolower($url), 'location:')) {
             header($url);
         } else {

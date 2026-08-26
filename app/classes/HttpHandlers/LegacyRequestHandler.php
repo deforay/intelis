@@ -4,6 +4,7 @@ namespace App\HttpHandlers;
 
 use Override;
 use Throwable;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use Slim\Psr7\Response;
 use App\Utilities\LoggerUtility;
@@ -22,9 +23,18 @@ class LegacyRequestHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $filePath = null;
+        $bufferDepth = ob_get_level();
         try {
 
             $filePath = $this->sanitizePath($request);
+
+            // The pages read the request from the registry rather than from an
+            // argument, 523 of them, so it has to be there before one is required.
+            // Setting it here rather than relying on the front controller having done
+            // it makes this handler answer for the request it was actually given: the
+            // middleware that sets it runs before authentication, so anything a later
+            // middleware puts on the request was invisible to every page until now.
+            AppRegistry::set('request', $request);
 
             // Capture output buffer to prevent it from being sent directly
             ob_start();
@@ -41,7 +51,13 @@ class LegacyRequestHandler implements RequestHandlerInterface
             $output = ob_get_clean();
             return $this->createResponse($output);
         } catch (Throwable $e) {
-            ob_end_clean(); // Clean the buffer in case of an error
+            // Unwind only buffers opened above, and only if any were. sanitizePath()
+            // throws before ob_start() -- a 404 for a missing asset is its commonest
+            // outcome -- and an unconditional ob_end_clean() there discarded whichever
+            // buffer the caller had open instead.
+            while (ob_get_level() > $bufferDepth) {
+                ob_end_clean();
+            }
 
             // sanitizePath() has already logged a 404 against the path that was
             // requested. Re-logging it here only adds a Slim stack trace, which
