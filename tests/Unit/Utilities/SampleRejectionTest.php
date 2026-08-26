@@ -94,8 +94,20 @@ final class SampleRejectionTest extends TestCase
     public function testSqlPredicateUsesTheGivenAlias(): void
     {
         $sql = SampleRejectionUtility::sqlPredicate('vl');
-        $this->assertStringContainsString("vl.is_sample_rejected = 'yes'", $sql);
+        $this->assertStringContainsString('vl.is_sample_rejected', $sql);
         $this->assertStringContainsString('vl.result_status = 4', $sql);
+    }
+
+    /**
+     * The flag is normalised in SQL the same way isRejected() normalises it in PHP.
+     * Without it the two disagree on a value carrying a stray space, which is a grid
+     * disagreeing with its own export -- the thing this class was written to end.
+     * That they agree on real rows is checked against MySQL in the integration suite.
+     */
+    public function testSqlPredicateNormalisesTheFlagTheWayThePhpTestDoes(): void
+    {
+        $sql = SampleRejectionUtility::sqlPredicate('vl');
+        $this->assertStringContainsString("LOWER(TRIM(vl.is_sample_rejected)) = 'yes'", $sql);
     }
 
     /** Identifiers are interpolated into SQL, so a bad one is refused outright. */
