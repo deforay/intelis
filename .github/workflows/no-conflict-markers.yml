@@ -56,12 +56,15 @@ jobs:
         # instead of 500-ing production, where the container is compiled lazily.
         run: composer check-di
 
-      # Counting rules that have to be applied together. Both times these drifted
-      # apart it was found months later by someone grepping, and a grep is the wrong
-      # tool: the surfaces assemble their WHERE clause in five different shapes.
+      # Rules the codebase states in one place and has to apply in many: every
+      # surface counting rejections also excludes cancelled samples, and an
+      # incoming sync cannot overwrite a column the lab owns. Both drifted before
+      # and were found months later by someone grepping, which is the wrong tool
+      # -- the surfaces are near-identical blocks that differ in small ways, and a
+      # regex written to audit them has twice reported correct code as broken.
       # Reads source only, so it needs no database.
-      - name: Counting rules are applied together
-        run: composer check-counts
+      - name: Shared invariants hold
+        run: composer check-invariants
 
   interface-api-tests:
     name: Interface API tests
