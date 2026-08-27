@@ -34745,3 +34745,7 @@ msgstr "Les échantillons annulés seront retirés de ce manifeste"
 #: app/specimen-referral-manifest/get-samples-for-manifest.php
 msgid "These samples were cancelled after being added to this manifest. Saving will remove them from it."
 msgstr "Ces échantillons ont été annulés après avoir été ajoutés à ce manifeste. L'enregistrement les retirera du manifeste."
+
+#: app/tb/results/save-tb-referral-helper.php
+msgid "cancelled sample(s) were not referred"
+msgstr "échantillon(s) annulé(s) n'ont pas été transférés"
