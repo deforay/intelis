@@ -13,6 +13,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use Psr\Http\Message\ServerRequestInterface;
+use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
 
 
@@ -279,6 +280,10 @@ try {
      if ($labScope = $general->labScopeWhere('vl')) {
           $sWhere[] = $labScope;
      }
+
+     // A cancelled sample was called off before testing, so it is not work this
+     // grid should list. Matches the VL requests grid.
+     $sWhere[] = SampleCountUtility::countableWhere('vl');
 
      if (!empty($sWhere)) {
           $_SESSION['vlRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);

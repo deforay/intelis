@@ -13,6 +13,7 @@ use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 use App\Utilities\MiscUtility;
+use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
 
 // Sanitized values from $request object
@@ -221,6 +222,10 @@ try {
      if ($labScope = $general->labScopeWhere('vl')) {
           $sWhere[] = $labScope;
      }
+
+     // A cancelled sample was called off before testing, so it is not work this
+     // grid should list. Matches the VL requests grid.
+     $sWhere[] = SampleCountUtility::countableWhere('vl');
      if (!empty($sWhere)) {
           $_SESSION['hepatitisRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
           $sQuery = "$sQuery WHERE $sWhere";
