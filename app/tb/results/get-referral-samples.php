@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\SampleCountUtility;
 use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
@@ -50,6 +51,10 @@ if (!empty($_SESSION['facilityMap'])) {
 }
 
 
+// A cancelled sample was called off before testing, so it is not a sample to
+// refer. save-tb-referral-helper.php sets REFERRED on whatever id it is handed
+// without checking, so this picker is where the rule has to hold.
+$countableWhere = SampleCountUtility::countableWhere('vl');
 $queryParams = [];
 $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '')";
 if (isset($packageCodeId) && !empty($packageCodeId)) {
@@ -74,6 +79,7 @@ $query = "SELECT
           INNER JOIN facility_details as f ON vl.facility_id = f.facility_id
           WHERE $condition
             AND (COALESCE(vl.is_sample_rejected, '') = '' OR vl.is_sample_rejected = 'no')
+            AND $countableWhere
             AND (vl.sample_code IS NOT NULL AND vl.sample_code != '')
             AND (vl.lab_id IS NOT NULL AND vl.lab_id = ?)
             $facilityScope
