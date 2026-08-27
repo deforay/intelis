@@ -62,7 +62,9 @@ final class AdminFilterClauseBuilderTest extends TestCase
 
     public function testDateRangeClauseIsNullWhenEmptyString(): void
     {
-        $this->assertNull(AdminFilterClauseBuilder::dateRangeClause(['dateRange' => '  '], 't.request_created_datetime'));
+        $this->assertNull(
+            AdminFilterClauseBuilder::dateRangeClause(['dateRange' => '  '], 't.request_created_datetime')
+        );
     }
 
     public function testDateRangeClauseContainsBetweenAndTheGivenColumn(): void
