@@ -6,6 +6,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
+use App\Utilities\SampleCountUtility;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -45,6 +46,10 @@ $query = "SELECT vl.sample_code,vl.remote_sample_code,vl.$testPrimaryKey,vl.$pat
 
 $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) ";
+// A cancelled sample was called off before testing, so it is not a sample to
+// refer. Nothing downstream re-checks this: save-tb-referral-helper.php sets
+// REFERRED on whatever it is handed, so the picker is where it has to hold.
+$where[] = SampleCountUtility::countableWhere('vl');
 if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) !== '') {
 
 	[$startDate, $endDate] = DateUtility::convertDateRange($_POST['daterange'], includeTime: true);
