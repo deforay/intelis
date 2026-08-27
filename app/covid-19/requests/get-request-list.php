@@ -11,6 +11,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
 
 
@@ -261,6 +262,10 @@ try {
      if ($labScope = $general->labScopeWhere('vl')) {
           $sWhere[] = $labScope;
      }
+
+     // A cancelled sample was called off before testing, so it is not work this
+     // grid should list. Matches the VL requests grid.
+     $sWhere[] = SampleCountUtility::countableWhere('vl');
 
      if ($sWhere !== []) {
           $_SESSION['covid19RequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);

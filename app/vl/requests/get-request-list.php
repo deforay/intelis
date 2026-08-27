@@ -12,8 +12,8 @@ use App\Services\DatabaseService;
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\REJECTED;
 use App\Services\DataIssuesService;
+use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
-use const SAMPLE_STATUS\CANCELLED;
 use App\Services\FacilitiesService;
 use App\Utilities\DataTableUtility;
 use App\Registries\ContainerRegistry;
@@ -327,7 +327,7 @@ try {
           $sWhere[] = $labScope;
      }
 
-     $sWhere[] = ' vl.result_status != ' . CANCELLED;
+     $sWhere[] = SampleCountUtility::countableWhere('vl');
 
      if ($sWhere !== []) {
           $_SESSION['vlRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
