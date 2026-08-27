@@ -117,9 +117,9 @@ $key = (string) $general->getGlobalConfig('key');
 <?php if ($cancelledOnManifest !== []) { ?>
 	<div class="col-md-12">
 		<div class="alert alert-warning">
-			<strong><?= _translate("Cancelled samples will be removed from this manifest"); ?></strong>
+			<strong><?= _htmlTranslate("Cancelled samples will be removed from this manifest"); ?></strong>
 			<p style="margin:5px 0 0;">
-				<?= _translate("These samples were cancelled after being added to this manifest. Saving will remove them from it."); ?>
+				<?= _htmlTranslate("These samples were cancelled after being added to this manifest. Saving will remove them from it."); ?>
 			</p>
 			<ul style="margin:5px 0 0;">
 				<?php foreach ($cancelledOnManifest as $cancelledSample) { ?>
