@@ -117,12 +117,27 @@ try {
     foreach ($nodes as $n) {
         $mappable[$n['id']] = true;
     }
+    // A facility with no coordinates cannot be plotted, so its referrals are
+    // absent from the map while still being listed in the table below it. That
+    // gap used to be silent, which is indistinguishable from the map being
+    // wrong; report the volume so the page can say what it is not showing.
     $outFlows = [];
+    $unmappedSamples = 0;
     foreach ($flows as $f) {
-        // Self-flows are excluded from the drawn lines only -- their volume is
-        // already carried on the node as samplesOwnCollected.
-        if (isset($mappable[$f['from']], $mappable[$f['to']]) && $f['from'] !== $f['to']) {
+        if ($f['from'] === $f['to']) {
+            // Self-flows are never drawn -- their volume rides on the node as
+            // samplesOwnCollected. But if the lab itself has no coordinates
+            // there is no node to carry it, so it has to be reported as
+            // unmapped or it is simply lost.
+            if (!isset($mappable[$f['to']])) {
+                $unmappedSamples += $f['count'];
+            }
+            continue;
+        }
+        if (isset($mappable[$f['from']], $mappable[$f['to']])) {
             $outFlows[] = $f;
+        } else {
+            $unmappedSamples += $f['count'];
         }
     }
     // Heaviest flows first so the client can cap rendering while keeping the busiest links.
@@ -132,6 +147,7 @@ try {
         'nodes' => $nodes,
         'flows' => array_values($outFlows),
         'unmappedCount' => $unmapped,
+        'unmappedSamples' => $unmappedSamples,
     ]);
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getMessage(), [
@@ -142,5 +158,5 @@ try {
         'last_db_query' => $db->getLastQuery(),
     ]);
     http_response_code(500);
-    echo JsonUtility::encodeUtf8Json(['nodes' => [], 'flows' => [], 'unmappedCount' => 0, 'error' => 'Unable to build referral map data']);
+    echo JsonUtility::encodeUtf8Json(['nodes' => [], 'flows' => [], 'unmappedCount' => 0, 'unmappedSamples' => 0, 'error' => 'Unable to build referral map data']);
 }

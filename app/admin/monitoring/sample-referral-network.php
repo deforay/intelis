@@ -509,6 +509,9 @@ $activeTests = TestsService::getActiveTests();
         showAllLines = false;
     // 'all' | 'labs' | 'sites' — restricts which marker type is shown on the map.
     var markerFilter = 'all';
+    // Volume the map cannot draw, reported in the note under it.
+    var unmappedFacilities = 0,
+        unmappedSamples = 0;
     var tsState, tsDistrict, tsLab, tsTest;
 
     // Escape DB-sourced text before it goes into Leaflet popup/tooltip HTML.
@@ -913,11 +916,23 @@ $activeTests = TestsService::getActiveTests();
     }
 
     function updateMapNote() {
-        var note = '';
+        var notes = [];
         if (showAllLines && mapFlows.length > MAX_FLOWS_RENDERED) {
-            note = '<?= _translate("Showing the busiest", true); ?> ' + MAX_FLOWS_RENDERED +
-                ' <?= _translate("referral links; the table below lists all of them.", true); ?>';
+            notes.push('<?= _translate("Showing the busiest", true); ?> ' + MAX_FLOWS_RENDERED +
+                ' <?= _translate("referral links; the table below lists all of them.", true); ?>');
         }
+        // A facility with no recorded coordinates cannot be drawn. Say so, with
+        // the volume, so the map and the table below it can be told apart from
+        // each other disagreeing.
+        if (unmappedFacilities > 0) {
+            notes.push(unmappedFacilities.toLocaleString() +
+                ' <?= _translate("facilities have no map coordinates", true); ?>' +
+                (unmappedSamples > 0 ?
+                    ' (' + unmappedSamples.toLocaleString() +
+                    ' <?= _translate("samples", true); ?>)' : '') +
+                ' <?= _translate("and are not shown on the map; they are included in the table below.", true); ?>');
+        }
+        var note = notes.join('<br>');
         $('#mapNote').html(note).toggle(note !== '');
     }
     // Show only the clicked node's referral links; dim everything else.
@@ -1032,6 +1047,8 @@ $activeTests = TestsService::getActiveTests();
 
             var rawNodes = resp.nodes || [];
             var rawFlows = resp.flows || [];
+            unmappedFacilities = Number(resp.unmappedCount || 0);
+            unmappedSamples = Number(resp.unmappedSamples || 0);
 
             // Headline stats reflect the true network — every facility, every
             // lab, and every facility -> lab relationship — before co-located
