@@ -1,6 +1,7 @@
 <?php
 
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -137,6 +138,9 @@ if ($labScope = $general->labScopeWhere('vl')) {
     $sWhere[] = $labScope;
 }
 
+// A cancelled sample was called off before testing, so it is not work
+// this report should count. Same rule the VL rejection report applies.
+$sWhere[] = SampleCountUtility::countableWhere('vl');
 $sWhere = $sWhere === [] ? [] : ' AND ' . implode(' AND ', $sWhere);
 $sQuery .= $sWhere;
 $sQuery .= ' group by vl.cd4_id';

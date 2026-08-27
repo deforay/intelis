@@ -6,6 +6,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
 
 // Sanitized values from $request object
@@ -69,6 +70,9 @@ if ($labScope = $general->labScopeWhere('vl')) {
     $sWhere[] = $labScope;
 }
 
+// A cancelled sample was called off before testing, so it is not work
+// this report should count. Same rule the VL rejection report applies.
+$sWhere[] = SampleCountUtility::countableWhere('vl');
 $sWhere = empty($sWhere) ? "" : " where " . implode(' AND ', $sWhere);
 
 $vlQuery = $vlQuery . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";

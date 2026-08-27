@@ -4,6 +4,7 @@ use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
@@ -64,6 +65,9 @@ if (!empty($_POST['sampleCollectionDate'])) {
         $sWhere[] = $labScope;
     }
 
+    // A cancelled sample was called off before testing, so it is not work
+    // this report should count. Same rule the VL rejection report applies.
+    $sWhere[] = SampleCountUtility::countableWhere('vl');
     $vlQuery = $vlQuery . ' where ' . implode(' AND ', $sWhere) . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
     $_SESSION['rejectedSamples'] = $vlQuery;
     // echo $vlQuery; die;
