@@ -34765,3 +34765,11 @@ msgstr "Motif inconnu ou non renseigné"
 #, fuzzy
 #~ msgid "Test_Type"
 #~ msgstr "Test_Type"
+
+#: app/specimen-referral-manifest/get-samples-for-manifest.php
+msgid "Cancelled samples will be removed from this manifest"
+msgstr "Les échantillons annulés seront retirés de ce manifeste"
+
+#: app/specimen-referral-manifest/get-samples-for-manifest.php
+msgid "These samples were cancelled after being added to this manifest. Saving will remove them from it."
+msgstr "Ces échantillons ont été annulés après avoir été ajoutés à ce manifeste. L'enregistrement les retirera du manifeste."
