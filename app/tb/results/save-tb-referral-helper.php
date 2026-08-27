@@ -6,6 +6,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use const SAMPLE_STATUS\CANCELLED;
 use const SAMPLE_STATUS\REFERRED;
 use App\Registries\ContainerRegistry;
 use Psr\Http\Message\ServerRequestInterface;
@@ -65,7 +66,7 @@ try {
     // Current datetime
     $currentDateTime = DateUtility::getCurrentDateTime();
 
-    $errorCount = $updateCount = $manifestId = 0;
+    $errorCount = $updateCount = $manifestId = $cancelledCount = 0;
     $numberOfSamples = count($referralSamples);
     if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) !== "") {
         $currentDateTime = DateUtility::getCurrentDateTime();
@@ -108,10 +109,25 @@ try {
             'last_modified_datetime' => $currentDateTime
         ];
 
+        // The picker no longer offers cancelled samples, but the picker is a list in a
+        // browser and this endpoint takes sample ids. A cancellation is the lab saying
+        // the sample will not be tested; referring it would reopen it.
+        //
+        // Checked first so the count can say what happened, and repeated as a WHERE so
+        // a cancellation landing between the two still wins.
         $db->where($primaryKeyColumn, $sampleId);
+        if ((int) $db->getValue($table, 'result_status') === CANCELLED) {
+            $cancelledCount++;
+            continue;
+        }
+
+        $db->where($primaryKeyColumn, $sampleId);
+        $db->where('result_status', CANCELLED, '!=');
         $update = $db->update($table, $updateData);
 
-        if ($update) {
+        // update() returns whether the statement ran, not whether it changed anything,
+        // so the guard above would otherwise be reported as a successful referral.
+        if ($update && $db->count > 0) {
             $updateCount++;
 
             //Add event log
@@ -127,9 +143,16 @@ try {
     // Set success message
     if ($updateCount > 0) {
         $_SESSION['alertMsg'] = _translate("Successfully referred") . " $updateCount " . _translate("sample(s) to the lab");
+        if ($cancelledCount > 0) {
+            $_SESSION['alertMsg'] .= ". " . $cancelledCount . " " . _translate("cancelled sample(s) were not referred");
+        }
         if ($errorCount > 0) {
             $_SESSION['alertMsg'] .= ". " . _translate("Failed to refer") . " $errorCount " . _translate("sample(s)");
         }
+    } elseif ($cancelledCount > 0 && $errorCount === 0) {
+        // Nothing failed. Every sample asked for had been cancelled, and saying
+        // "please try again" would send somebody back to retry what will not change.
+        $_SESSION['alertMsg'] = $cancelledCount . " " . _translate("cancelled sample(s) were not referred");
     } else {
         $_SESSION['alertMsg'] = _translate("Failed to refer samples. Please try again.");
     }

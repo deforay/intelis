@@ -5,6 +5,7 @@ set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
 use Psr\Http\Message\ServerRequestInterface;
+use const SAMPLE_STATUS\CANCELLED;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
 //this file gets the requests from the remote server and updates the local database
@@ -229,8 +230,21 @@ function syncTestRequest(
             if ($isSilent) {
                 unset($updatePayload['last_modified_datetime']);
             }
+            // result_status is stripped from every incoming update, so the STS cannot
+            // move a sample the lab has already decided about. This is the one branch
+            // that puts it back: a TB sample referred to this lab arrives as received.
+            //
+            // Not when the lab has cancelled it. A cancellation is the lab saying the
+            // sample will not be tested, and a later referral does not undo that -- it
+            // would reopen a sample nobody is going to test, which is the kind of thing
+            // a lab finds months later in a count it cannot explain.
             if ($testType == 'tb' && isset($updatePayload['referred_to_lab_id'])) {
-                if (($updatePayload['lab_id'] == $updatePayload['referred_to_lab_id']) && ($updatePayload['referred_to_lab_id'] != $updatePayload['referred_by_lab_id'])) {
+                $alreadyCancelled = (int) ($localRecord['result_status'] ?? 0) === CANCELLED;
+                if (
+                    !$alreadyCancelled
+                    && ($updatePayload['lab_id'] == $updatePayload['referred_to_lab_id'])
+                    && ($updatePayload['referred_to_lab_id'] != $updatePayload['referred_by_lab_id'])
+                ) {
                     $updatePayload['result_status'] = RECEIVED_AT_TESTING_LAB;
                 }
             }
