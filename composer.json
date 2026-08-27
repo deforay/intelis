@@ -94,6 +94,7 @@
         ],
         "test": "@php vendor/bin/phpunit",
         "check-di": "@php bin/build/check-di.php",
+        "check-counts": "@php bin/build/check-count-invariants.php",
         "preflight": "@php bin/preflight.php",
         "scan": "@php bin/scan.php",
         "housekeeping": "@php bin/housekeeping.php 30",
@@ -200,6 +201,7 @@
     },
     "scripts-descriptions": {
         "test": "Run the PHPUnit test suite",
+        "check-counts": "Check every surface that counts rejected samples also excludes cancelled ones, so two screens cannot disagree",
         "check-di": "Compile the DI container in isolation so a broken service definition fails here instead of in production",
         "preflight": "Check this machine can run and serve the app \u2014 PHP, the web server's own php.ini, config, permissions, schema. Runs without booting the app, so it still reports when nothing else does",
         "flag-data-issues": "Find records whose own columns contradict each other, for the Needs attention card (counts only, never corrects)",

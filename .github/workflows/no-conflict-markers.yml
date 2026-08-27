@@ -56,6 +56,13 @@ jobs:
         # instead of 500-ing production, where the container is compiled lazily.
         run: composer check-di
 
+      # Counting rules that have to be applied together. Both times these drifted
+      # apart it was found months later by someone grepping, and a grep is the wrong
+      # tool: the surfaces assemble their WHERE clause in five different shapes.
+      # Reads source only, so it needs no database.
+      - name: Counting rules are applied together
+        run: composer check-counts
+
   interface-api-tests:
     name: Interface API tests
     runs-on: ubuntu-latest
