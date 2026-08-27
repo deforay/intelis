@@ -7,6 +7,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Utilities\SampleCountUtility;
+use const SAMPLE_STATUS\CANCELLED;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -94,11 +95,40 @@ if ($where !== []) {
 $query .= " ORDER BY vl.remote_sample_code ASC, vl.request_created_datetime ASC";
 
 $result = $db->rawQuery($query);
+
+// The clause above keeps cancelled samples out of both sides of the dual-box,
+// and saving rewrites the manifest from what the right-hand side holds. So a
+// sample cancelled after it was added is about to be dropped from this
+// manifest, which is right, but not something to do without saying so.
+$cancelledOnManifest = [];
+if (!empty($_POST['pkgId'])) {
+	$cancelledOnManifest = $db->rawQuery(
+		"SELECT vl.$sampleCode AS code FROM $testTable AS vl
+		 WHERE vl.sample_package_id = ? AND vl.result_status = ?
+		 ORDER BY vl.$sampleCode",
+		[$_POST['pkgId'], CANCELLED]
+	) ?: [];
+}
 $key = (string) $general->getGlobalConfig('key');
 
 ?>
 
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+<?php if ($cancelledOnManifest !== []) { ?>
+	<div class="col-md-12">
+		<div class="alert alert-warning">
+			<strong><?= _translate("Cancelled samples will be removed from this manifest"); ?></strong>
+			<p style="margin:5px 0 0;">
+				<?= _translate("These samples were cancelled after being added to this manifest. Saving will remove them from it."); ?>
+			</p>
+			<ul style="margin:5px 0 0;">
+				<?php foreach ($cancelledOnManifest as $cancelledSample) { ?>
+					<li><?= htmlspecialchars((string) $cancelledSample["code"], ENT_QUOTES, "UTF-8"); ?></li>
+				<?php } ?>
+			</ul>
+		</div>
+	</div>
+<?php } ?>
 <div class="col-md-5">
 	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 		<?php foreach ($result as $sample) {
