@@ -67,16 +67,38 @@ final class AdminFilterClauseBuilderTest extends TestCase
         );
     }
 
-    public function testDateRangeClauseContainsBetweenAndTheGivenColumn(): void
+    /**
+     * Asserts the dates, not just the shape. Checking only that the string contains
+     * "BETWEEN" passes even when both bounds are empty -- which is what the original
+     * version of this test did, because its fixture used a hyphen and
+     * convertDateRange() separates on "to" (the separator the dashboards post, see
+     * api-dashboard.php's daterangepicker). It was asserting BETWEEN '' AND ''.
+     */
+    public function testDateRangeClauseCarriesTheParsedDates(): void
     {
         $clause = AdminFilterClauseBuilder::dateRangeClause(
-            ['dateRange' => date('m/d/Y') . ' - ' . date('m/d/Y', strtotime('+30 days'))],
+            ['dateRange' => '01/15/2026 to 02/20/2026'],
             't.request_created_datetime'
         );
 
-        $this->assertNotNull($clause);
-        $this->assertStringContainsString('BETWEEN', $clause);
-        $this->assertStringContainsString('t.request_created_datetime', $clause);
+        self::assertSame(
+            " t.request_created_datetime BETWEEN '2026-01-15 00:00:00' AND '2026-02-20 23:59:59' ",
+            $clause
+        );
+    }
+
+    /** The end of the range is the end of that day, not its first second. */
+    public function testASingleDayRangeSpansTheWholeDay(): void
+    {
+        $clause = AdminFilterClauseBuilder::dateRangeClause(
+            ['dateRange' => '03/01/2026 to 03/01/2026'],
+            't.request_created_datetime'
+        );
+
+        self::assertSame(
+            " t.request_created_datetime BETWEEN '2026-03-01 00:00:00' AND '2026-03-01 23:59:59' ",
+            $clause
+        );
     }
 
     // --- inClause ---
@@ -122,6 +144,42 @@ final class AdminFilterClauseBuilderTest extends TestCase
         $clause = AdminFilterClauseBuilder::inClause(['facilityId' => [42]], 'facilityId', 't.facility_id');
 
         $this->assertSame(' t.facility_id IN (42)', $clause);
+    }
+
+    /**
+     * These ids reach an IN() list, which cannot take a placeholder for a
+     * variable-length list, so they are concatenated. Dropping everything non-numeric
+     * is what makes that safe, and it is the only thing that does.
+     */
+    public function testNonNumericValuesAreDroppedRatherThanConcatenated(): void
+    {
+        $clause = AdminFilterClauseBuilder::inClause(
+            ['labName' => "1,2) OR 1=1 --"],
+            'labName',
+            't.lab_id'
+        );
+
+        // The injected token is dropped whole, taking its leading "2" with it, so the
+        // clause is narrower than the caller asked for rather than wider.
+        self::assertSame(' t.lab_id IN (1)', $clause);
+    }
+
+    public function testAValueThatIsEntirelyNonNumericYieldsNoClauseAtAll(): void
+    {
+        self::assertNull(
+            AdminFilterClauseBuilder::inClause(['labName' => 'DROP TABLE form_vl'], 'labName', 't.lab_id')
+        );
+    }
+
+    public function testNonNumericMembersOfAnArrayAreDropped(): void
+    {
+        $clause = AdminFilterClauseBuilder::inClause(
+            ['state' => [4, '5; DELETE FROM form_vl', 6]],
+            'state',
+            'f.facility_state_id'
+        );
+
+        self::assertSame(' f.facility_state_id IN (4,6)', $clause);
     }
 
     // --- buildStandardFilters ---

@@ -12,10 +12,11 @@ namespace App\Utilities;
  * consolidates it into one place so a fix or a test written here covers all of them
  * at once, instead of once per copy.
  *
- * NOTE: this preserves the original files' behavior exactly, including that
- * labName/state/district/facilityId values are concatenated into the SQL string
- * without escaping or parameterization. That is a pre-existing condition in the code
- * being extracted, not something introduced here -- flagged separately, not fixed here.
+ * These values are ids and reach an IN() list, which cannot take a placeholder for a
+ * variable-length list, so they are concatenated. Everything non-numeric is therefore
+ * dropped before it reaches the query -- the approach get-duplicates-detail.php already
+ * took, and the reason consolidating was worth doing: it was the only one of the dozen
+ * that sanitised, and now they all do.
  */
 final class AdminFilterClauseBuilder
 {
@@ -47,19 +48,14 @@ final class AdminFilterClauseBuilder
 
         $value = $post[$postKey];
 
-        if (is_array($value)) {
-            if ($value === []) {
-                return null;
-            }
-            $ids = implode(',', $value);
-        } else {
-            if (trim((string) $value) === '') {
-                return null;
-            }
-            $ids = $value;
+        $ids = is_array($value) ? $value : explode(',', (string) $value);
+        $ids = array_filter($ids, static fn($id): bool => is_numeric($id));
+
+        if ($ids === []) {
+            return null;
         }
 
-        return " $column IN ($ids)";
+        return " $column IN (" . implode(',', array_map('intval', $ids)) . ")";
     }
 
     /**

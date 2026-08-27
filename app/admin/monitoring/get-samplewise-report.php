@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\AdminFilterClauseBuilder;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
@@ -81,25 +82,15 @@ try {
 
 
 
-    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
-        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
-        $sWhere[] = " vl.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
-    }
-    if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
-        $sWhere[] = " vl.lab_id IN (" . $_POST['labName'] . ")";
-    }
-    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-        $provinceId = implode(',', $_POST['state']);
-        $sWhere[] = " f.facility_state_id  IN ($provinceId)";
-    }
-    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $districtId = implode(',', $_POST['district']);
-        $sWhere[] = " f.facility_district_id  IN ($districtId)";
-    }
-    if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) !== '') {
-        $facilityId = implode(',', $_POST['facilityId']);
-        $sWhere[] = " vl.facility_id  IN ($facilityId)";
-    }
+    // These five filters appear, verbatim, in a dozen admin endpoints, each with
+    // its own alias. AdminFilterClauseBuilder is the one copy of them.
+    $sWhere = array_merge($sWhere, AdminFilterClauseBuilder::buildStandardFilters($_POST, [
+        'dateColumn' => 'vl.request_created_datetime',
+        'labColumn' => 'vl.lab_id',
+        'stateColumn' => 'f.facility_state_id',
+        'districtColumn' => 'f.facility_district_id',
+        'facilityColumn' => 'vl.facility_id',
+    ]));
 
     if (isset($_POST['originalSourceOfRequest']) && trim((string) $_POST['originalSourceOfRequest']) !== '') {
         $sWhere[] = ' vl.source_of_request = "' . $_POST['originalSourceOfRequest'] . '"';
