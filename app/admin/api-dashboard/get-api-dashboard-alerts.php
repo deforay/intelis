@@ -1,7 +1,7 @@
 <?php
 // get-smart-dashboard-alerts.php
+use App\Utilities\AdminFilterClauseBuilder;
 use App\Services\TestsService;
-use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
@@ -24,44 +24,35 @@ try {
     $sWhere = [];
     $duplicatesWhere = [];
 
-    // Date range filter
-    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
-        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
-        $sWhere[] = " t.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
-        $duplicatesWhere[] = " t1.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
-    }
+    // This endpoint runs two queries over different aliases, so the same filters are
+    // built twice. AdminFilterClauseBuilder is the one copy of them; state and
+    // district stay inside the join conditional, since without the join there is no
+    // facility table to filter on.
+    $sWhere = array_merge($sWhere, AdminFilterClauseBuilder::buildStandardFilters($_POST, [
+        'dateColumn' => 't.request_created_datetime',
+        'labColumn' => 't.lab_id',
+        'facilityColumn' => 't.facility_id',
+    ]));
+    $duplicatesWhere = array_merge($duplicatesWhere, AdminFilterClauseBuilder::buildStandardFilters($_POST, [
+        'dateColumn' => 't1.request_created_datetime',
+        'labColumn' => 't1.lab_id',
+        'facilityColumn' => 't1.facility_id',
+    ]));
 
-    // Lab filter
-    if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
-        $sWhere[] = " t.lab_id IN (" . $_POST['labName'] . ")";
-        $duplicatesWhere[] = " t1.lab_id IN (" . $_POST['labName'] . ")";
-    }
-
-    // Facility filter
-    if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) !== '') {
-        $facilityId = implode(',', $_POST['facilityId']);
-        $sWhere[] = " t.facility_id IN ($facilityId)";
-        $duplicatesWhere[] = " t1.facility_id IN ($facilityId)";
-    }
-
-    // Geographic filters
     $facilityJoin = '';
     $duplicatesFacilityJoin = '';
-    if (isset($_POST['state']) || isset($_POST['district'])) {
+    if (AdminFilterClauseBuilder::needsFacilityJoin($_POST)) {
         $facilityJoin = ' LEFT JOIN facility_details as f ON t.facility_id = f.facility_id ';
         $duplicatesFacilityJoin = ' LEFT JOIN facility_details as f1 ON t1.facility_id = f1.facility_id ';
 
-        if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-            $provinceId = implode(',', $_POST['state']);
-            $sWhere[] = " f.facility_state_id IN ($provinceId)";
-            $duplicatesWhere[] = " f1.facility_state_id IN ($provinceId)";
-        }
-
-        if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-            $districtId = implode(',', $_POST['district']);
-            $sWhere[] = " f.facility_district_id IN ($districtId)";
-            $duplicatesWhere[] = " f1.facility_district_id IN ($districtId)";
-        }
+        $sWhere = array_merge($sWhere, AdminFilterClauseBuilder::buildStandardFilters($_POST, [
+            'stateColumn' => 'f.facility_state_id',
+            'districtColumn' => 'f.facility_district_id',
+        ]));
+        $duplicatesWhere = array_merge($duplicatesWhere, AdminFilterClauseBuilder::buildStandardFilters($_POST, [
+            'stateColumn' => 'f1.facility_state_id',
+            'districtColumn' => 'f1.facility_district_id',
+        ]));
     }
 
     $whereSql = $sWhere === [] ? ('') : ' WHERE ' . implode(' AND ', $sWhere);

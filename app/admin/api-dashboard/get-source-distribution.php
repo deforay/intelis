@@ -1,8 +1,8 @@
 <?php
 // get-source-distribution.php
+use App\Utilities\AdminFilterClauseBuilder;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
-use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -24,34 +24,15 @@ try {
 
     $sWhere = [];
 
-    // Date range filter
-    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
-        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
-        $sWhere[] = " t.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
-    }
-
-    // Lab filter
-    if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
-        $sWhere[] = " t.lab_id IN (" . $_POST['labName'] . ")";
-    }
-
-    // State filter
-    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-        $provinceId = implode(',', $_POST['state']);
-        $sWhere[] = " f.facility_state_id IN ($provinceId)";
-    }
-
-    // District filter
-    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $districtId = implode(',', $_POST['district']);
-        $sWhere[] = " f.facility_district_id IN ($districtId)";
-    }
-
-    // Facility filter
-    if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) !== '') {
-        $facilityId = implode(',', $_POST['facilityId']);
-        $sWhere[] = " t.facility_id IN ($facilityId)";
-    }
+    // These five filters appear, verbatim, in a dozen admin endpoints, each with
+    // its own alias. AdminFilterClauseBuilder is the one copy of them.
+    $sWhere = array_merge($sWhere, AdminFilterClauseBuilder::buildStandardFilters($_POST, [
+        'dateColumn' => 't.request_created_datetime',
+        'labColumn' => 't.lab_id',
+        'stateColumn' => 'f.facility_state_id',
+        'districtColumn' => 'f.facility_district_id',
+        'facilityColumn' => 't.facility_id',
+    ]));
 
     $whereSql = $sWhere === [] ? ('') : 'WHERE ' . implode(' AND ', $sWhere) . ' ';
 

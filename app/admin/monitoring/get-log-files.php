@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\LogLevelUtility;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 
@@ -319,21 +320,6 @@ function lineContainsAllSearchTerms($line, $search): bool
     return true;
 }
 
-function detectLogLevel($line): string
-{
-    $line = strtolower((string) $line);
-    if (str_contains($line, 'error') || str_contains($line, 'exception') || str_contains($line, 'fatal')) {
-        return 'error';
-    } elseif (str_contains($line, 'warn')) {
-        return 'warning';
-    } elseif (str_contains($line, 'info')) {
-        return 'info';
-    } elseif (str_contains($line, 'debug')) {
-        return 'debug';
-    }
-    return 'info';
-}
-
 function formatApplicationLogEntry($entry): string|array|null
 {
     $entry = preg_replace('/\\\\n#(\d+)/', '<br/><span style="color:#e83e8c;font-weight:bold;">#$1</span>', (string) $entry);
@@ -489,7 +475,7 @@ if (file_exists($file)) {
 
         foreach ($logEntries as $index => $entry) {
             $lineNumber = $start + $index + 1;
-            $logLevel = detectLogLevel($entry);
+            $logLevel = LogLevelUtility::detectLogLevel($entry);
             $entry = htmlspecialchars((string) $entry);
 
             $lines = preg_split('/\\\\n|\\n|\n/', $entry);
@@ -543,7 +529,7 @@ if (file_exists($file)) {
 
         foreach ($logEntries as $index => $entry) {
             $lineNumber = $start + $index + 1;
-            $logLevel = detectLogLevel($entry);
+            $logLevel = LogLevelUtility::detectLogLevel($entry);
             $entry = htmlspecialchars((string) $entry);
 
             $lines = preg_split('/\\\\n|\\n|\n/', $entry);
