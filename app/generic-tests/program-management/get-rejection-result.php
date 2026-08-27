@@ -6,6 +6,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
 
 // Sanitized values from $request object
@@ -61,6 +62,9 @@ if (!empty($_POST['sampleCollectionDate'])) {
         $sWhere[] = $labScope;
     }
 
+    // A cancelled sample was called off before testing, so it is not work
+    // this report should count. Same rule the VL rejection report applies.
+    $sWhere[] = SampleCountUtility::countableWhere('vl');
     if ($sWhere !== []) {
         $sWhere = implode(' AND ', $sWhere);
     }
