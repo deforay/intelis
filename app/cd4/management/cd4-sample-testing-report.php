@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\SampleCountUtility;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -29,6 +30,11 @@ try {
             $whereCondition = " AND cd4.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
         }
     }
+
+    // totalCount below is a COUNT(*) with a four-status breakdown beside it, so a
+    // cancelled sample inflated the total while appearing in none of the columns.
+    // Applies to both branches above: the STS one filters on facility, not status.
+    $whereCondition .= ' AND ' . SampleCountUtility::countableWhere('cd4');
 
     if ($labScope = $general->labScopeWhere('cd4')) {
         $whereCondition .= " AND $labScope";

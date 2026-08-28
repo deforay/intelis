@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\SampleCountUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
@@ -105,6 +106,9 @@ try {
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
                 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                 WHERE vl.result_status != " . REJECTED . "
+                    -- A cancelled sample was called off before testing, so it is not
+                    -- a sample still awaiting a result.
+                    AND " . SampleCountUtility::countableWhere('vl') . "
                 AND vl.sample_code is NOT NULL AND (vl.result IS NULL OR vl.result='')";
     if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) !== '') {
         $sWhere[] = ' b.batch_code LIKE "%' . $_POST['noResultBatchCode'] . '%"';

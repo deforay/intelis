@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\SampleCountUtility;
 use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -87,6 +88,9 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
             WHERE vl.result_status != " . REJECTED . "
+                    -- A cancelled sample was called off before testing, so it is not
+                    -- a sample still awaiting a result.
+                    AND " . SampleCountUtility::countableWhere('vl') . "
             AND vl.sample_code is NOT NULL
             AND (vl.result IS NULL OR vl.result='')";
 
