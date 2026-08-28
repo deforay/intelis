@@ -3,6 +3,7 @@
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -75,6 +76,8 @@ try {
         $_POST['finalResult'] = null;
         $status = REJECTED;
         $resultSentToSource = 'pending';
+    }elseif (!empty($_POST['finalResult'])) {
+        $status = PENDING_APPROVAL; // Awaiting Approval
     }
     if (!empty($_POST['dob'])) {
         $_POST['dob'] = DateUtility::isoDateFormat($_POST['dob'] ?? '');

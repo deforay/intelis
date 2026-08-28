@@ -7,11 +7,12 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
-use const SAMPLE_STATUS\REJECTED;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use Psr\Http\Message\ServerRequestInterface;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
 
@@ -107,6 +108,8 @@ try {
         $_POST['finalResult'] = null;
         $status = REJECTED;
         $resultSentToSource = 'pending';
+    }elseif (!empty($_POST['finalResult'])) {
+        $status = PENDING_APPROVAL; // Awaiting Approval
     }
     if (!empty($_POST['dob'])) {
         $_POST['dob'] = DateUtility::isoDateFormat($_POST['dob']);
