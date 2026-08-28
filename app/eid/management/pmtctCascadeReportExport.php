@@ -669,4 +669,4 @@ foreach (array_chunk($eidIdList, 500) as $chunk) {
 
 $writer->close();
 
-echo urlencode($filename);
+echo _downloadToken($filename);

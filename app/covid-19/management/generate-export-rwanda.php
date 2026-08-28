@@ -151,5 +151,5 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 	}
 
 	$writer->close();
-	echo urlencode(basename($filename));
+	echo _downloadToken($filename);
 }

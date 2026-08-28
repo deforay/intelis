@@ -578,7 +578,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
           alert("<?php echo _translate("Unable to generate the excel file"); ?>");
         } else {
           $.unblockUI();
-          location.href = '/temporary/' + data;
+          location.href = '/download.php?d=a&f=' + data;
         }
       });
   }
@@ -602,7 +602,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
           alert("<?php echo _translate("Unable to generate the excel file"); ?>");
         } else {
           $.unblockUI();
-          location.href = '/temporary/' + data;
+          location.href = '/download.php?d=a&f=' + data;
         }
       });
   }

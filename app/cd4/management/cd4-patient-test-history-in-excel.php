@@ -73,7 +73,7 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore
           unset($output);
-          echo base64_encode((string) $fileName);
+          echo _downloadToken($fileName);
      } else {
 
           $excel = new Spreadsheet();
@@ -95,6 +95,6 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);
-          echo urlencode(basename($filename));
+          echo _downloadToken($filename);
      }
 }

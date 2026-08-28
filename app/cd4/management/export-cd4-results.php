@@ -154,5 +154,5 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 	}
 
 	$writer->close();
-	echo urlencode(basename($filename));
+	echo _downloadToken($filename);
 }

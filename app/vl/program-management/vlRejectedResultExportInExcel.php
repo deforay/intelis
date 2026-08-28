@@ -72,5 +72,5 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
      }
 
      $writer->close();
-     echo urlencode(basename($filename));
+     echo _downloadToken($filename);
 }

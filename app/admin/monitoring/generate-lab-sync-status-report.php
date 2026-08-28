@@ -225,4 +225,4 @@ $writer = IOFactory::createWriter($excel, 'Xlsx');
 $filename = 'InteLIS-LAB-SYNC-STATUS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomNumber(6) . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 
-echo urlencode(basename($filename));
+echo _downloadToken($filename);

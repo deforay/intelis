@@ -75,5 +75,5 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
      }
 
      $writer->close();
-     echo urlencode(basename($filename));
+     echo _downloadToken($filename);
 }

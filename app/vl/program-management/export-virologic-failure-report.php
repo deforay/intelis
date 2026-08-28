@@ -198,4 +198,4 @@ unset($grouped);
 
 $writer->close();
 
-echo urlencode(basename($filename));
+echo _downloadToken($filename);

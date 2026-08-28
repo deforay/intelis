@@ -70,5 +70,5 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
      }
 
      $writer->close();
-     echo urlencode(basename($filename));
+     echo _downloadToken($filename);
 }

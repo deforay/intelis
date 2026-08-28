@@ -75,7 +75,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore
           unset($output);
-          echo base64_encode((string) $fileName);
+          echo _downloadToken($fileName);
      } else {
 
           $excel = new Spreadsheet();
@@ -121,6 +121,6 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-EID-CLINIC-RESULT-EXPORT-' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);
-          echo urlencode(basename($filename));
+          echo _downloadToken($filename);
      }
 }

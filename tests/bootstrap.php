@@ -49,6 +49,24 @@ foreach ([LOG_PATH, CACHE_PATH] as $path) {
     }
 }
 
+// download.php serves out of exactly two roots and DownloadTokenUtility refuses to sign
+// anything outside them, so a test that exercises a grant needs these to be real
+// directories it can drop a file into.
+if (!defined('WEB_ROOT')) {
+    define('WEB_ROOT', VAR_PATH . DIRECTORY_SEPARATOR . 'public');
+}
+if (!defined('TEMP_PATH')) {
+    define('TEMP_PATH', WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary');
+}
+if (!defined('VAR_TEMP_PATH')) {
+    define('VAR_TEMP_PATH', VAR_PATH . DIRECTORY_SEPARATOR . 'temporary');
+}
+foreach ([TEMP_PATH, VAR_TEMP_PATH] as $path) {
+    if (!is_dir($path)) {
+        mkdir($path, 0777, true);
+    }
+}
+
 require_once dirname(__DIR__) . '/app/system/constants.php';
 
 // The app's translation helpers live in app/system/functions.php, which pulls in the

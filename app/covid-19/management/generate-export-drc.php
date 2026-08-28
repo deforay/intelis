@@ -209,7 +209,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
         $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
         // we dont need the $output variable anymore
         unset($output);
-        echo base64_encode((string) $fileName);
+        echo _downloadToken($fileName);
     } else {
         $excel = new Spreadsheet();
         $sheet = $excel->getActiveSheet();
@@ -224,6 +224,6 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
         $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
         $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
         $writer->save($filename);
-        echo urlencode(basename($filename));
+        echo _downloadToken($filename);
     }
 }

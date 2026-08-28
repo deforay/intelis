@@ -57,5 +57,5 @@ if (isset($_SESSION['storageHistoryDataQuery']) && trim((string) $_SESSION['stor
      $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
      $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Storage-History-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save($filename);
-     echo urlencode(basename($filename));
+     echo _downloadToken($filename);
 }

@@ -25,6 +25,12 @@ class AclMiddleware implements MiddlewareInterface
         '/remote/*',
         '/system-admin/*',
         '/includes/captcha.php',
+        // download.php authorizes itself: a signed grant from the endpoint that
+        // produced the file, or -- for a legacy unsigned request -- the very
+        // same Referer check this middleware applies below. Keeping the check
+        // inside download.php is what lets a grant stand on its own without the
+        // browser having to volunteer a Referer.
+        '/download.php',
         '/users/edit-profile-helper.php',
         '/health-check',
         '/status'
@@ -45,7 +51,7 @@ class AclMiddleware implements MiddlewareInterface
                 return $handler->handle($request);
             }
 
-            if ($this->isRefererAccessAllowed($request, $currentURI)) {
+            if (self::refererAccessAllowed($request)) {
                 return $handler->handle($request);
             }
 
@@ -75,15 +81,22 @@ class AclMiddleware implements MiddlewareInterface
         return _isAllowed($currentURI);
     }
 
-    private function isRefererAccessAllowed(ServerRequestInterface $request, string $currentURI): bool
+    /**
+     * Legacy fallback: allow a request whose same-origin Referer points at a page
+     * the user is allowed to use.
+     *
+     * Public and static because download.php applies the identical rule to
+     * unsigned requests now that it is excluded from the middleware's own check.
+     */
+    public static function refererAccessAllowed(ServerRequestInterface $request): bool
     {
         $referer = $request->getHeaderLine('Referer');
 
-        if (!$this->isValidReferer($referer)) {
+        if (!self::isValidReferer($referer)) {
             return false;
         }
 
-        $refererPath = $this->getRefererPath($referer);
+        $refererPath = self::getRefererPath($referer);
 
         if (!CommonService::isSameOriginRequest($request) || ($refererPath === '' || $refererPath === '0')) {
             return false;
@@ -93,7 +106,7 @@ class AclMiddleware implements MiddlewareInterface
         return _isAllowed($refererPath);
     }
 
-    private function isValidReferer(string $referer): bool
+    private static function isValidReferer(string $referer): bool
     {
         if ($referer === '' || $referer === '0' || strlen($referer) > 2048) {
             return false;
@@ -119,7 +132,7 @@ class AclMiddleware implements MiddlewareInterface
         return true;
     }
 
-    private function getRefererPath(string $referer): string
+    private static function getRefererPath(string $referer): string
     {
         $parsedUrl = parse_url($referer);
 
@@ -130,10 +143,10 @@ class AclMiddleware implements MiddlewareInterface
         $path = $parsedUrl['path'] ?? '/';
         $query = isset($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
 
-        return $this->sanitizePath($path) . $query;
+        return self::sanitizePath($path) . $query;
     }
 
-    private function sanitizePath(string $path): string
+    private static function sanitizePath(string $path): string
     {
         $path = preg_replace('/\/+/', '/', $path);
         $path = str_replace(['../', '..\\'], '', $path);

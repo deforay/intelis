@@ -634,7 +634,7 @@ $state = $geolocationService->getProvinces("yes");
                 if (data === "" || data === null || data === undefined) {
                     alert("<?php echo _translate("Unable to generate the excel file"); ?>");
                 } else {
-                    location.href = '/temporary/' + data;
+                    location.href = '/download.php?d=a&f=' + data;
                 }
             });
     }

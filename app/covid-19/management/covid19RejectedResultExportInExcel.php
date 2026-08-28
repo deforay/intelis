@@ -66,7 +66,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore
           unset($output);
-          echo base64_encode((string) $fileName);
+          echo _downloadToken($fileName);
      } else {
           $excel = new Spreadsheet();
           $sheet = $excel->getActiveSheet();
@@ -80,6 +80,6 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-COVID19-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);
-          echo urlencode(basename($filename));
+          echo _downloadToken($filename);
      }
 }

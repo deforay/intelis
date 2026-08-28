@@ -10,6 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Utilities\InputSanitizer;
 use App\Exceptions\SystemException;
 use App\Utilities\FileCacheUtility;
+use App\Utilities\DownloadTokenUtility;
 use App\Registries\ContainerRegistry;
 use function iter\count as iterCount;
 use function iter\toArray as iterToArray;
@@ -313,6 +314,28 @@ function _sanitizeJson(string $jsonString, bool $nullifyEmptyStrings = false, bo
     $sanitized = _sanitizeInput($decoded, $nullifyEmptyStrings);
 
     return $returnAsArray ? $sanitized : json_encode($sanitized);
+}
+
+/**
+ * Mints a short-lived, signed grant for a generated file, to be handed to
+ * download.php in place of the file name.
+ *
+ * Every export/report endpoint ends by telling the browser which file to fetch.
+ * That echo is the one place in the app that knows the user was entitled to the
+ * file, so it is where the grant is issued. Callers echo the return value
+ * exactly where they used to echo the (url-encoded, or base64) file name, and
+ * the existing `/download.php?f=' + data` JavaScript keeps working unchanged.
+ *
+ * Returns an empty string if the file is not under a trusted root, which the
+ * calling JavaScript already treats as "generation failed".
+ *
+ * @param string $filePath Absolute path, or a name relative to a trusted root
+ * @param int|null $ttlSeconds Overrides the default grant lifetime
+ * @return string URL-safe token, safe to concatenate into a query string as-is
+ */
+function _downloadToken(string $filePath, ?int $ttlSeconds = null): string
+{
+    return DownloadTokenUtility::sign($filePath, $ttlSeconds);
 }
 
 /**
