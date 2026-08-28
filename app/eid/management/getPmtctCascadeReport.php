@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\SampleCountUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -22,7 +23,13 @@ $general = ContainerRegistry::get(CommonService::class);
  */
 function pmtctBuildFilterConditions(array $post, DatabaseService $db, string $alias = 'e'): array
 {
-    $where = ["$alias.mother_id IS NOT NULL", "TRIM($alias.mother_id) != ''"];
+    // A cancelled sample was called off before testing, so it is not a test this
+    // cascade should count.
+    $where = [
+        "$alias.mother_id IS NOT NULL",
+        "TRIM($alias.mother_id) != ''",
+        SampleCountUtility::countableWhere($alias),
+    ];
 
     if (!empty($post['sampleCollectionDate'])) {
         $range = explode("to", (string) $post['sampleCollectionDate']);
@@ -205,6 +212,9 @@ if ($action === 'summary') {
     // date inequality forces a nested-loop full scan per EID row (~30s),
     // while "MIN(high VL date) < DOB" is equivalent and runs in ~2s.
     $whereSqlE2     = implode(' AND ', pmtctBuildFilterConditions($_POST, $db, 'e2'));
+    // The mother's VL rows are constrained only by the join onto positive mothers,
+    // so they need the cancelled rule stated separately.
+    $vlCountable    = SampleCountUtility::countableWhere('v');
     $positiveExprE2 = pmtctEidPositiveExpr('e2');
     $preBirthSql = "SELECT
             COUNT(DISTINCT $childKeyExpr) AS preBirthHighVlChildren
@@ -218,6 +228,7 @@ if ($action === 'summary') {
                 FROM form_eid e2
                 WHERE $whereSqlE2 AND $positiveExprE2
             ) pm ON pm.mid = TRIM(v.patient_art_no)
+            WHERE $vlCountable
             GROUP BY TRIM(v.patient_art_no)
         ) vm ON vm.mid = TRIM(e.mother_id)
         WHERE $whereSql AND $positiveExpr
@@ -261,6 +272,8 @@ if ($action === 'positiveChildren') {
 
     $whereSql     = implode(' AND ', pmtctBuildFilterConditions($_POST, $db));
     $whereSqlE2   = implode(' AND ', pmtctBuildFilterConditions($_POST, $db, 'e2'));
+    // As above: the mother's VL rows carry no filter of their own.
+    $vlCountable  = SampleCountUtility::countableWhere('v');
     $positiveExpr   = pmtctEidPositiveExpr('e');
     $positiveExprE2 = pmtctEidPositiveExpr('e2');
     $childKeyExpr   = pmtctChildKeyExpr('e');
@@ -303,6 +316,7 @@ if ($action === 'positiveChildren') {
                 FROM form_eid e2
                 WHERE $whereSqlE2 AND $positiveExprE2
             ) pm ON pm.mid = TRIM(v.patient_art_no)
+            WHERE $vlCountable
             GROUP BY TRIM(v.patient_art_no)
         ) vm ON vm.mid = TRIM(e.mother_id)
         WHERE $whereSql AND $positiveExpr
@@ -426,6 +440,7 @@ function pmtctLoadMotherVlTests(DatabaseService $db, string $motherId): array
         LEFT JOIN facility_details fvl ON fvl.facility_id = v.lab_id
         LEFT JOIN facility_details fv ON fv.facility_id = v.facility_id
         WHERE TRIM(v.patient_art_no) = ?
+          AND " . SampleCountUtility::countableWhere('v') . "
         ORDER BY v.sample_collection_date ASC, v.vl_sample_id ASC",
         [$motherId]
     ) ?: [];
