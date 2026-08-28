@@ -194,5 +194,5 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 	}
 
 	$writer->close();
-	echo urlencode(basename($fileName));
+	echo _downloadToken($fileName);
 }

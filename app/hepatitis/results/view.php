@@ -65,9 +65,7 @@ $id = $res['hepatitis_id'];
                 if (data == "" || data == null || data == undefined) {
                     alert('Unable to generate result PDF');
                 } else {
-                    var url = atob(data);
-                    url = url.split('\\').pop().split('/').pop();
-                    url = '/temporary/' + url;
+                    var url = '/download.php?f=' + data;
                     // Loaded via <script> tag, create shortcut to access PDF.js exports.
                     var pdfjsLib = window['pdfjs-dist/build/pdf'];
 

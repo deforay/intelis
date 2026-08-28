@@ -79,7 +79,7 @@ try {
      $writer->addRow(Row::fromValues(['', '', '', _translate("Total"), $totalRejected]));
      $writer->close();
 
-     echo basename($filePath);
+     echo _downloadToken($filePath);
 } catch (Throwable $e) {
      LoggerUtility::logError($e->getMessage(), [
           'trace' => $e->getTraceAsString(),

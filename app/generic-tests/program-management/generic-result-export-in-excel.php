@@ -191,7 +191,7 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
 		// we dont need the $output variable anymore
 		unset($output);
-		echo base64_encode((string) $fileName);
+		echo _downloadToken($fileName);
 	} else {
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();
@@ -212,6 +212,6 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 		$writer->save($filename);
-		echo urlencode(basename($filename));
+		echo _downloadToken($filename);
 	}
 }

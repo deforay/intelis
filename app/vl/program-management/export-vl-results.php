@@ -263,5 +263,5 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 	}
 
 	$writer->close();
-	echo urlencode(basename($filename));
+	echo _downloadToken($filename);
 }

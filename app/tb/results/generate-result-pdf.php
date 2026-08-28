@@ -381,7 +381,7 @@ try {
     }
 
     // Return the file path
-    echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);
+    echo _downloadToken(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);
 } catch (Exception $e) {
     error_log("Critical error in TB PDF generation: " . $e->getMessage());
 

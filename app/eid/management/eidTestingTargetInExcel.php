@@ -122,5 +122,5 @@ if (isset($_SESSION['eidMonitoringThresholdReportQuery']) && trim((string) $_SES
     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
     $filename = 'InteLIS-EID-Testing-Target-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-    echo $filename;
+    echo _downloadToken($filename);
 }

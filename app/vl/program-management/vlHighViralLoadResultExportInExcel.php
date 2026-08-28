@@ -89,5 +89,5 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           }
      }
 
-     echo urlencode(basename($filename));
+     echo _downloadToken($filename);
 }

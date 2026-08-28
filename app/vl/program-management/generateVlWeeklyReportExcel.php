@@ -305,7 +305,7 @@ if ($c > 0) {
     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
     $filename = 'InteLIS-VL-Lab-Weekly-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-    echo $filename;
+    echo _downloadToken($filename);
 } else {
     echo '';
 }

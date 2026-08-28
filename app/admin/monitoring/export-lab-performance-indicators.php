@@ -284,7 +284,7 @@ try {
         $writer->close();
     }
 
-    echo urlencode(basename($filePath));
+    echo _downloadToken($filePath);
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getMessage(), [
         'trace' => $e->getTraceAsString(),

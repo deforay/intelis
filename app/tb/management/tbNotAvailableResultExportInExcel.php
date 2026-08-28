@@ -66,7 +66,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
         // we dont need the $output variable anymore
         unset($output);
-        echo base64_encode((string) $fileName);
+        echo _downloadToken($fileName);
     } else {
         $excel = new Spreadsheet();
         $sheet = $excel->getActiveSheet();
@@ -94,6 +94,6 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
         $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
         $writer->save($fileName);
-        echo urlencode(basename($fileName));
+        echo _downloadToken($fileName);
     }
 }

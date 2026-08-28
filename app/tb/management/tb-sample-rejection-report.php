@@ -152,7 +152,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
           alert("<?php echo _translate("Unable to generate excel"); ?>.");
         } else {
           $.unblockUI();
-          location.href = '/temporary/' + data;
+          location.href = '/download.php?d=a&f=' + data;
         }
       });
   }

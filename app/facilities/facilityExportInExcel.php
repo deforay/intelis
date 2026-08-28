@@ -115,4 +115,4 @@ foreach ($resultSet as $aRow) {
 }
 
 $writer->close();
-echo urlencode(basename($filename));
+echo _downloadToken($filename);

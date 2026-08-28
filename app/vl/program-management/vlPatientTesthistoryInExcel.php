@@ -69,5 +69,5 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
      }
 
      $writer->close();
-     echo urlencode(basename($filename));
+     echo _downloadToken($filename);
 }
