@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\SampleCountUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -127,6 +128,10 @@ if ($labScope = $general->labScopeWhere('vl')) {
 if ($labScope = $general->labScopeWhere('vl')) {
     $dWhere .= " AND $labScope";
 }
+
+// A cancelled sample was called off before testing, so its data is not a quality
+// problem anyone needs to chase.
+$sWhere[] = SampleCountUtility::countableWhere('vl');
 
 $sWhere = $sWhere === [] ? "" : ' WHERE ' . implode(' AND ', $sWhere);
 
