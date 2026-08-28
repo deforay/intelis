@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\SampleCountUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -31,7 +32,14 @@ $general = ContainerRegistry::get(CommonService::class);
 // ---------------------------------------------------------------------------
 function pmtctExportFilterConditions(array $post, string $alias = 'e'): array
 {
-    $where = ["$alias.mother_id IS NOT NULL", "TRIM($alias.mother_id) != ''"];
+    // A cancelled sample was called off before testing, so it is not a test this
+    // cascade should count. Must match the report's builder, or the export and
+    // the screen it was taken from disagree.
+    $where = [
+        "$alias.mother_id IS NOT NULL",
+        "TRIM($alias.mother_id) != ''",
+        SampleCountUtility::countableWhere($alias),
+    ];
 
     if (!empty($post['sampleCollectionDate'])) {
         $range = explode("to", (string) $post['sampleCollectionDate']);
@@ -149,6 +157,10 @@ function pmtctExportVlStatusAsOf(array $vlTests, string $asOfDate): ?array
 
 $where = pmtctExportFilterConditions($_POST);
 $whereSql = implode(' AND ', $where);
+// The mother's VL rows are constrained only by the join onto positive mothers, so
+// the cancelled rule has to be stated for them separately. Same clause the report
+// uses, or the export and the screen it was taken from disagree.
+$vlCountable = SampleCountUtility::countableWhere('v');
 $positiveExpr = pmtctExportEidPositiveExpr('e');
 $highVlExpr   = pmtctExportHighVlExpr('v');
 
@@ -169,6 +181,7 @@ $vlCountSql = "SELECT TRIM(v.patient_art_no) AS mid, COUNT(*) AS cnt
         FROM form_eid e
         WHERE $whereSql
     ) m ON m.mid = TRIM(v.patient_art_no)
+    WHERE $vlCountable
     GROUP BY TRIM(v.patient_art_no)";
 foreach ($db->rawQueryGenerator($vlCountSql) as $r) {
     if (!empty($r['mid'])) {
@@ -239,6 +252,7 @@ $vlHistorySql = "SELECT TRIM(v.patient_art_no) AS mid,
         v.result, v.vl_result_category
     FROM form_vl v
     INNER JOIN ($posMotherSubquery) pm ON pm.mid = TRIM(v.patient_art_no)
+    WHERE $vlCountable
     ORDER BY v.sample_collection_date ASC, v.vl_sample_id ASC";
 foreach ($db->rawQueryGenerator($vlHistorySql) as $r) {
     $mid = (string) ($r['mid'] ?? '');
@@ -261,7 +275,7 @@ $posChildSql = "SELECT
         MAX(e.child_dob) AS childDob
     FROM form_eid e
     INNER JOIN (
-        SELECT DISTINCT TRIM(v.patient_art_no) AS mid FROM form_vl v
+        SELECT DISTINCT TRIM(v.patient_art_no) AS mid FROM form_vl v WHERE $vlCountable
     ) vm ON vm.mid = TRIM(e.mother_id)
     WHERE $whereSql AND $positiveExpr
     GROUP BY childKey";
@@ -520,6 +534,7 @@ $vlSql = "SELECT
     ) m ON m.mid = TRIM(v.patient_art_no)
     LEFT JOIN facility_details fv ON fv.facility_id = v.facility_id
     LEFT JOIN facility_details fvl ON fvl.facility_id = v.lab_id
+    WHERE $vlCountable
     ORDER BY v.patient_art_no, v.sample_collection_date DESC";
 
 $rowCount = 0;
