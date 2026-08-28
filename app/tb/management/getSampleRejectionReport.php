@@ -161,7 +161,12 @@ try {
     // A cancelled sample was called off before testing, so it is not work
     // this report should count. Same rule the VL rejection report applies.
     $sWhere[] = SampleCountUtility::countableWhere('vl');
-    $sWhere = $sWhere === [] ? "" : ' AND' . implode(" AND ", $sWhere);
+    // WHERE, not AND. The query above ends in a LEFT JOIN and has no WHERE of its own,
+    // so an ' AND' prefix attached every filter to that join's ON condition. That is
+    // valid SQL and filters nothing -- a LEFT JOIN whose ON fails keeps the row -- so
+    // this report was listing every TB sample rather than the rejected ones, with the
+    // facility map and lab scope ignored too.
+    $sWhere = $sWhere === [] ? "" : ' WHERE ' . implode(" AND ", $sWhere);
 
     $sQuery .= $sWhere;
     $sQuery .= ' group by vl.tb_id';

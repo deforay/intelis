@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\SampleCountUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -162,7 +163,17 @@ try {
         $sWhere[] = $labScope;
     }
 
-    $sWhere = $sWhere === [] ? "" : ' AND' . implode(" AND ", $sWhere);
+    // WHERE, not AND. The query above ends in a LEFT JOIN and has no WHERE of its own,
+    // so an ' AND' prefix attached every filter to that join's ON condition instead.
+    // That is valid SQL, which is why nothing complained, and it filters nothing: a
+    // LEFT JOIN whose ON fails keeps the row and nulls the joined columns. Every
+    // filter on this report was silently ignored, the facility map and the lab scope
+    // included, and the Excel export re-runs this same query out of the session.
+    //
+    // A cancelled sample was called off before testing, so it is not a result to
+    // report either.
+    $sWhere[] = SampleCountUtility::countableWhere('vl');
+    $sWhere = $sWhere === [] ? "" : ' WHERE ' . implode(" AND ", $sWhere);
     $sQuery .= $sWhere;
     $sQuery .= ' group by vl.tb_id';
     if (!empty($sOrder) && $sOrder !== '') {
