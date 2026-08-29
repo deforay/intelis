@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\SampleCountUtility;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -79,7 +80,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,ts.*,fd.facility_name as labName FROM form_cd4 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_cd4_sample_types as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.cd4_result = 'positive' OR vl.cd4_result > 0";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,ts.*,fd.facility_name as labName FROM form_cd4 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_cd4_sample_types as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7
+    -- Parenthesised. AND binds tighter than OR, so this read as
+    -- (status=7 AND cd4_result='positive') OR (cd4_result > 0), and that second
+    -- branch carried no status filter at all: any sample with a positive count
+    -- appeared here whatever state it was in.
+    AND (vl.cd4_result = 'positive' OR vl.cd4_result > 0)
+    AND " . SampleCountUtility::countableWhere('vl') . "";
 $start_date = '';
 $end_date = '';
 

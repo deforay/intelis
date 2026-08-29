@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\SampleCountUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -81,7 +82,12 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 $sQuery = "SELECT vl.*,f.facility_name,s.sample_id,b.batch_code,fd.facility_name as labName
-FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.hcv_vl_count = 'positive' OR vl.hbv_vl_count = 'positive'";
+FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7
+    -- Parenthesised. AND binds tighter than OR, so this read as
+    -- (status=7 AND hcv='positive') OR (hbv='positive'), and the hbv branch
+    -- carried no status filter at all.
+    AND (vl.hcv_vl_count = 'positive' OR vl.hbv_vl_count = 'positive')
+    AND " . SampleCountUtility::countableWhere('vl') . "";
 $start_date = '';
 $end_date = '';
 
