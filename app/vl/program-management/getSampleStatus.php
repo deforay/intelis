@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\SampleCountUtility;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -42,7 +43,7 @@ if (isset($_POST['type']) && trim((string) $_POST['type']) === 'recency') {
 $filters = [];
 $params = [];
 
-$filters[] = " sample.result_status != " . SAMPLE_STATUS\CANCELLED;
+$filters[] = SampleCountUtility::countableWhere('sample');
 if (!$general->isSTSInstance()) {
     $filters[] = " sample.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }

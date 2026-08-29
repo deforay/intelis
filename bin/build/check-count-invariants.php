@@ -32,6 +32,33 @@ const APP_DIR = __DIR__ . '/../../app';
  *
  * @var array<string, string>
  */
+/**
+ * Report surfaces that aggregate over a form table and deliberately do not exclude
+ * cancelled samples. Each needs a reason, checked by reading the file -- these six were
+ * classified by hand on 2026-08-27 alongside the thirteen that did need fixing.
+ *
+ * @var array<string, string>
+ */
+const COUNT_RULE_EXEMPT = [
+    'app/covid-19/management/getCovid19MonthlyThresholdReport.php' =>
+        'requires result != "", and a cancelled sample carries no result',
+    'app/eid/management/getEidMonthlyThresholdReport.php' =>
+        'requires result != "", and a cancelled sample carries no result',
+    'app/covid-19/management/getPositiveCovid19ResultDetails.php' =>
+        'pinned to result_status = ACCEPTED, which cancelled cannot be',
+    'app/eid/management/getPositiveEidResultDetails.php' =>
+        'pinned to result_status = ACCEPTED, which cancelled cannot be',
+    'app/eid/management/getPatientTestHistoryReport.php' =>
+        'pinned to result_status = ACCEPTED, which cancelled cannot be',
+    'app/tb/management/getTbCascadeReport.php' =>
+        'excludes cancelled by hand, in a two-status NOT IN that a later step '
+        . 'string-matches in order to strip it for one sub-report -- switching to the '
+        . 'shared clause would break that matching, so this one is left as it is',
+    'app/generic-tests/program-management/get-sample-status.php' =>
+        'a mutually-exclusive status breakdown that has to sum to its own total, like '
+        . 'the dashboard -- excluding one status would stop the parts summing',
+];
+
 const CANCELLED_RULE_EXEMPT = [
     // The dashboard counts a mutually-exclusive status breakdown that has to sum to
     // the total, so it asks "how many are IN the Rejected state", not "how many were
@@ -92,6 +119,51 @@ foreach (phpFilesIn(APP_DIR) as $path) {
     ];
 }
 
+// --- second rule: a report that counts samples excludes cancelled ones -------
+//
+// Scoped to the report directories rather than all of app/. That is the population
+// actually read and classified; a broader trigger catches 35 files, most of which are
+// not report surfaces at all, and an exemption list written by guesswork would either
+// cry wolf or hide a real gap.
+$countChecked = 0;
+$countExempt = 0;
+
+foreach (phpFilesIn(APP_DIR) as $path) {
+    $name = relative($path);
+    if (!str_contains($name, '/management/') && !str_contains($name, '/program-management/')) {
+        continue;
+    }
+
+    $source = file_get_contents($path);
+    if ($source === false) {
+        continue;
+    }
+    if (preg_match('/form_(vl|eid|covid19|tb|hepatitis|generic|cd4)/', $source) !== 1) {
+        continue;
+    }
+    if (preg_match('/COUNT\(|SUM\(|GROUP BY|group by/', $source) !== 1) {
+        continue;
+    }
+
+    $countChecked++;
+
+    if (array_key_exists($name, COUNT_RULE_EXEMPT)) {
+        $countExempt++;
+        continue;
+    }
+    if (str_contains($source, 'SampleCountUtility::')) {
+        continue;
+    }
+
+    $violations[] = [
+        'file' => $name,
+        'hint' => 'counts samples from a form table but never excludes cancelled ones',
+    ];
+}
+
+echo "check-count-invariants: {$countChecked} report surfaces count samples";
+echo $countExempt > 0 ? ", {$countExempt} exempt by declaration" : '';
+echo PHP_EOL;
 echo "check-count-invariants: {$checked} files apply the rejection rule";
 echo $exempt > 0 ? ", {$exempt} exempt by declaration" : '';
 echo PHP_EOL;

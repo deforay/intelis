@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\SampleCountUtility;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -28,7 +29,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $filters = [];
 $params = [];
 
-$filters[] = " sample.result_status != " . SAMPLE_STATUS\CANCELLED;
+$filters[] = SampleCountUtility::countableWhere('sample');
 if (!empty($_SESSION['facilityMap'])) {
 	$filters[] = " sample.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
