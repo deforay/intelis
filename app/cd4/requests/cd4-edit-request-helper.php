@@ -36,6 +36,28 @@ $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
+// Which result fields this form actually sent. Taken before anything below can add
+// a key, so an absent field cannot look present. Writing a result column the form
+// never rendered blanks whatever was already there -- the defect fixed for Custom
+// Tests in b20503799 and for TB in 2a7c80af3. Keyed on what was posted rather than
+// on a country list, so a new form gets this right without anyone remembering.
+$resultColumnsOwnedByTheForm = [
+    'sample_tested_datetime'     => 'sampleTestingDateAtLab',
+    'result_dispatched_datetime' => 'resultDispatchedOn',
+    'result_reviewed_by'         => 'reviewedBy',
+    'result_reviewed_datetime'   => 'reviewedOn',
+    'tested_by'                  => 'testedBy',
+    'result_approved_by'         => 'approvedBy',
+    'result_approved_datetime'   => 'approvedOnDateTime',
+    'lab_tech_comments'          => 'labComments',
+];
+$resultColumnsPosted = [];
+foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+    if (array_key_exists($postKey, (array) $_POST)) {
+        $resultColumnsPosted[] = $column;
+    }
+}
+
 $tableName = "form_cd4";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_cd4_test_reasons";
@@ -334,6 +356,13 @@ try {
      }
 
      $db->where('cd4_id', $_POST['cd4SampleId']);
+     // Drop every result column this form did not send.
+     foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+         if (!in_array($column, $resultColumnsPosted, true)) {
+             unset($vlData[$column]);
+         }
+     }
+
      $id = $db->update($tableName, $vlData);
      if ($db->getLastErrno() > 0) {
           LoggerUtility::logError("DB ERROR :: " . $db->getLastError(), [

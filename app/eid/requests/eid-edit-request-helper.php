@@ -37,6 +37,29 @@ $tableName1 = "activity_log";
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
+// Which result fields this form actually sent. Taken before anything below can add
+// a key, so an absent field cannot look present. Writing a result column the form
+// never rendered blanks whatever was already there -- the defect fixed for Custom
+// Tests in b20503799 and for TB in 2a7c80af3. Keyed on what was posted rather than
+// on a country list, so a new form gets this right without anyone remembering.
+$resultColumnsOwnedByTheForm = [
+    'sample_tested_datetime'     => 'sampleTestedDateTime',
+    'result'                     => 'result',
+    'result_reviewed_by'         => 'reviewedBy',
+    'result_reviewed_datetime'   => 'reviewedOn',
+    'result_dispatched_datetime' => 'resultDispatchedOn',
+    'tested_by'                  => 'testedBy',
+    'lab_tech_comments'          => 'labTechCmt',
+    'result_approved_by'         => 'approvedBy',
+    'result_approved_datetime'   => 'approvedOnDateTime',
+];
+$resultColumnsPosted = [];
+foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+    if (array_key_exists($postKey, (array) $_POST)) {
+        $resultColumnsPosted[] = $column;
+    }
+}
+
 
 try {
 	// Acting as a LIS: the Testing Lab is this install's own lab, not a free
@@ -407,6 +430,13 @@ try {
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
 		$db->where('eid_id', $_POST['eidSampleId']);
+		// Drop every result column this form did not send.
+		foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+		    if (!in_array($column, $resultColumnsPosted, true)) {
+		        unset($eidData[$column]);
+		    }
+		}
+
 		$id = $db->update($tableName, $eidData);
 	}
 

@@ -29,6 +29,24 @@ $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
+// Which result fields this form actually sent. Taken before anything below can add
+// a key, so an absent field cannot look present. Writing a result column the form
+// never rendered blanks whatever was already there -- the defect fixed for Custom
+// Tests in b20503799 and for TB in 2a7c80af3. Keyed on what was posted rather than
+// on a country list, so a new form gets this right without anyone remembering.
+$resultColumnsOwnedByTheForm = [
+    'sample_tested_datetime'   => 'sampleTestedDateTime',
+    'result'                   => 'result',
+    'result_reviewed_by'       => 'reviewedBy',
+    'result_reviewed_datetime' => 'reviewedOn',
+];
+$resultColumnsPosted = [];
+foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+    if (array_key_exists($postKey, (array) $_POST)) {
+        $resultColumnsPosted[] = $column;
+    }
+}
+
 $tableName = "form_hepatitis";
 $tableName1 = "activity_log";
 
@@ -269,6 +287,13 @@ try {
 		$id = 0;
 		if (isset($_POST['hepatitisSampleId']) && $_POST['hepatitisSampleId'] != '') {
 			$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
+			// Drop every result column this form did not send.
+			foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+			    if (!in_array($column, $resultColumnsPosted, true)) {
+			        unset($hepatitisData[$column]);
+			    }
+			}
+
 			$id = $db->update($tableName, $hepatitisData);
 		}
 	} else {

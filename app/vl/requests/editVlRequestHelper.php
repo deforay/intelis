@@ -38,6 +38,30 @@ $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
+// Which result fields this form actually sent. Taken before anything below can add a
+// key, so an absent field cannot look present.
+//
+// VL edit forms differ by country -- the PNG one carries no sample-testing date while
+// its result form does -- and writing a result column the form never rendered blanks
+// whatever was there. Keyed on what was posted rather than on a country list.
+$resultColumnsOwnedByTheForm = [
+    'sample_tested_datetime'     => 'sampleTestingDateAtLab',
+    'result_dispatched_datetime' => 'resultDispatchedOn',
+    'result_reviewed_by'         => 'reviewedBy',
+    'result_reviewed_datetime'   => 'reviewedOn',
+    'tested_by'                  => 'testedBy',
+    'result_approved_by'         => 'approvedBy',
+    'result_approved_datetime'   => 'approvedOnDateTime',
+    'lab_tech_comments'          => 'labComments',
+    'reason_for_failure'         => 'reasonForFailure',
+];
+$resultColumnsPosted = [];
+foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+    if (array_key_exists($postKey, (array) $_POST)) {
+        $resultColumnsPosted[] = $column;
+    }
+}
+
 $tableName = "form_vl";
 $tableName1 = "activity_log";
 $vlTestReasonTable = "r_vl_test_reasons";
@@ -363,6 +387,15 @@ try {
 
      // The log and absolute columns are derived in a dozen places and nothing downstream
      // checks they can be true. Drop any that cannot before they reach the table.
+     // Drop every result column this form did not send, so an edit cannot blank a
+     // result column the form never offered. Same defect fixed for Custom Tests in
+     // b20503799 and for TB in 2a7c80af3.
+     foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+         if (!in_array($column, $resultColumnsPosted, true)) {
+             unset($vlData[$column]);
+         }
+     }
+
      $vlData = $vlService->sanitizeResultColumnsForWrite($vlData, 'edit-vl-request');
 
      $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);

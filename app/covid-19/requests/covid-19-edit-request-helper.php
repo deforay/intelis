@@ -44,6 +44,26 @@ $testTableName = 'covid19_tests';
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
+// Which result fields this form actually sent. Taken before anything below can add
+// a key, so an absent field cannot look present. Writing a result column the form
+// never rendered blanks whatever was already there -- the defect fixed for Custom
+// Tests in b20503799 and for TB in 2a7c80af3. Keyed on what was posted rather than
+// on a country list, so a new form gets this right without anyone remembering.
+$resultColumnsOwnedByTheForm = [
+    'result'                   => 'result',
+    'result_reviewed_by'       => 'reviewedBy',
+    'result_reviewed_datetime' => 'reviewedOn',
+    'result_approved_by'       => 'approvedBy',
+    'result_approved_datetime' => 'approvedOn',
+    'tested_by'                => 'testedBy',
+];
+$resultColumnsPosted = [];
+foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+    if (array_key_exists($postKey, (array) $_POST)) {
+        $resultColumnsPosted[] = $column;
+    }
+}
+
 
 try {
 	// Acting as a LIS: the Testing Lab is this install's own lab, not a free
@@ -403,6 +423,13 @@ try {
 	$id = 0;
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '') {
 		$db->where('covid19_id', $_POST['covid19SampleId']);
+		// Drop every result column this form did not send.
+		foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+		    if (!in_array($column, $resultColumnsPosted, true)) {
+		        unset($covid19Data[$column]);
+		    }
+		}
+
 		$id = $db->update($tableName, $covid19Data);
 		error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
 	}
