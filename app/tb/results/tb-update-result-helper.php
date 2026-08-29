@@ -87,8 +87,24 @@ try {
     // sample. is_sample_rejected is written unconditionally below, so leaving the
     // status alone would clear the rejection while the sample stayed at REJECTED --
     // off the worklist, and not rejected either. Only read when it can matter.
-    if ($status === null && ($_POST['isSampleRejected'] ?? null) === 'no') {
+    // Rwanda's multi-test form posts no top-level isSampleRejected -- only
+    // testResult[isSampleRejected][], and the write below takes the last card's
+    // value. Read both shapes, or this never fires on that form.
+    $markedNotRejected = ($_POST['isSampleRejected'] ?? null) === 'no';
+    $postedTestCards = (array) ($_POST['testResult'] ?? []);
+    if (!$markedNotRejected && isset($postedTestCards['isSampleRejected'], $postedTestCards['labId'])) {
+        // Indexed exactly as the write below does -- by the labId count, not by the
+        // rejection array's own length -- so the guard reads the card the write uses.
+        $lastCardIndex = count((array) $postedTestCards['labId']) - 1;
+        $markedNotRejected = (($postedTestCards['isSampleRejected'][$lastCardIndex] ?? null) === 'no');
+    }
+
+    if ($status === null && $markedNotRejected) {
+        // Lab-scoped, so this cannot read a sample belonging to another lab.
         $db->where('tb_id', $_POST['tbSampleId'] ?? 0);
+        if ($labScope = $general->labScopeWhere('form_tb')) {
+            $db->where($labScope);
+        }
         if ((int) $db->getValue($tableName, 'result_status') === REJECTED) {
             $status = ($general->isSTSInstance() && ($_SESSION['accessType'] ?? '') === 'collection-site')
                 ? RECEIVED_AT_CLINIC
