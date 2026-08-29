@@ -136,11 +136,30 @@ try {
         }
     }
 
-    $isRejected = false;
-    $resultStatus = PENDING_APPROVAL; // Awaiting Approval
-    if (($_POST['isSampleRejected'] ?? null) === 'yes') {
-        $isRejected = true;
+    // Awaiting Approval is a statement that there is something to approve, so it is
+    // reached only when a final result was actually entered. This used to be set
+    // unconditionally, so saving the form to correct a test kit or a testing date
+    // queued the sample for a reviewer with nothing to review.
+    //
+    // finalResult is keyed by sub-test here, and the form posts a key for every
+    // sub-test whether or not it was filled in, so an empty array is not the only
+    // empty case: an array of empty strings is one too. A result of "0" is a
+    // result, which is why this is not !empty().
+    $enteredFinalResults = array_filter(
+        (array) ($_POST['finalResult'] ?? []),
+        static fn($value): bool => $value !== null && trim((string) $value) !== ''
+    );
+
+    // null means leave result_status alone. Once a result has been entered the
+    // sample cannot go back to Received at Testing Lab, so a save that carries no
+    // result must not rewrite the status at all -- it says nothing about where the
+    // sample has got to.
+    $isRejected = ($_POST['isSampleRejected'] ?? null) === 'yes';
+    $resultStatus = null;
+    if ($isRejected) {
         $resultStatus = REJECTED; // Rejected
+    } elseif ($enteredFinalResults !== []) {
+        $resultStatus = PENDING_APPROVAL; // Awaiting Approval
     }
 
     // Result-change history is stored as a JSON array of {usr, msg, dtime} entries. The hidden field
@@ -206,15 +225,18 @@ try {
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         'manual_result_entry' => 'yes',
-        'result_status' => $resultStatus,
         'data_sync' => 0,
         'sub_tests' => (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) ? implode("##", $_POST['subTestResult']) : $_POST['subTestResult'],
         'result_printed_datetime' => null
     ];
 
 
-    if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
-        $dataToUpdate['result_status'] = REJECTED;
+    // Written only when this save decided a status: a result was entered, or the
+    // sample was rejected. Leaving the key out otherwise is the point -- a save
+    // that carries no result says nothing about where the sample has got to, and
+    // must not send one that already has a result back to Received at Testing Lab.
+    if ($resultStatus !== null) {
+        $dataToUpdate['result_status'] = $resultStatus;
     }
 
     if (isset($_POST['requestSampleId']) && $_POST['requestSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
