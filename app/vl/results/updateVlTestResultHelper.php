@@ -62,6 +62,23 @@ try {
 
     $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true);
     $_POST['sampleReceivedAtHubOn'] = DateUtility::isoDateFormat($_POST['sampleReceivedAtHubOn'] ?? '', true);
+// Which of these the form actually sent, recorded before the lines below can add
+// a key -- the approved-on normalisation uses ?? '' and would create an absent
+// one. A result form that does not render a field must not blank it: the PNG
+// forms carry no approver, and writing NULL there erases what the request edit
+// recorded. Keyed on what was posted, not on a country list.
+$resultColumnsOwnedByTheForm = [
+    'result_approved_by'       => 'approvedBy',
+    'result_approved_datetime' => 'approvedOnDateTime',
+    'lab_tech_comments'        => 'labComments',
+];
+$resultColumnsPosted = [];
+foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+    if (array_key_exists($postKey, (array) $_POST)) {
+        $resultColumnsPosted[] = $column;
+    }
+}
+
     $_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true);
     $_POST['sampleTestingDateAtLab'] = DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'] ?? '', true);
     $_POST['resultDispatchedOn'] = DateUtility::isoDateFormat($_POST['resultDispatchedOn'] ?? '', true);
@@ -309,6 +326,13 @@ try {
         );
 
         $db->where('vl_sample_id', $_POST['vlSampleId']);
+        // Drop every one this form did not send.
+        foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+            if (!in_array($column, $resultColumnsPosted, true)) {
+                unset($vlData[$column]);
+            }
+        }
+
         $id = $db->update($tableName, $vlData);
 
         $db->commitTransaction();
