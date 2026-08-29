@@ -2,6 +2,8 @@
 
 use const SAMPLE_STATUS\PENDING_APPROVAL;
 use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Services\VlService;
 use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
@@ -160,6 +162,19 @@ try {
         $resultStatus = REJECTED; // Rejected
     } elseif ($enteredFinalResults !== []) {
         $resultStatus = PENDING_APPROVAL; // Awaiting Approval
+    }
+
+    // Un-rejecting is the one case where a save with no result must still move the
+    // sample. is_sample_rejected is written unconditionally below, so leaving the
+    // status alone would clear the rejection while the sample stayed at REJECTED --
+    // off the worklist, and not rejected either. Only read when it can matter.
+    if ($resultStatus === null && ($_POST['isSampleRejected'] ?? null) === 'no') {
+        $db->where('sample_id', $_POST['requestSampleId'] ?? 0);
+        if ((int) $db->getValue($tableName, 'result_status') === REJECTED) {
+            $resultStatus = ($general->isSTSInstance() && ($_SESSION['accessType'] ?? '') === 'collection-site')
+                ? RECEIVED_AT_CLINIC
+                : RECEIVED_AT_TESTING_LAB;
+        }
     }
 
     // Result-change history is stored as a JSON array of {usr, msg, dtime} entries. The hidden field

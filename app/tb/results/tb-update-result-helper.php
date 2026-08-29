@@ -1,6 +1,8 @@
 <?php
 
 use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\PENDING_APPROVAL;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -79,6 +81,19 @@ try {
         $resultSentToSource = 'pending';
     } elseif (trim((string) ($_POST['finalResult'] ?? '')) !== '') {
         $status = PENDING_APPROVAL; // Awaiting Approval
+    }
+
+    // Un-rejecting is the one case where a save with no result must still move the
+    // sample. is_sample_rejected is written unconditionally below, so leaving the
+    // status alone would clear the rejection while the sample stayed at REJECTED --
+    // off the worklist, and not rejected either. Only read when it can matter.
+    if ($status === null && ($_POST['isSampleRejected'] ?? null) === 'no') {
+        $db->where('tb_id', $_POST['tbSampleId'] ?? 0);
+        if ((int) $db->getValue($tableName, 'result_status') === REJECTED) {
+            $status = ($general->isSTSInstance() && ($_SESSION['accessType'] ?? '') === 'collection-site')
+                ? RECEIVED_AT_CLINIC
+                : RECEIVED_AT_TESTING_LAB;
+        }
     }
     if (!empty($_POST['dob'])) {
         $_POST['dob'] = DateUtility::isoDateFormat($_POST['dob'] ?? '');
