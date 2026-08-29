@@ -33,6 +33,47 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
+
+// Which result fields this form actually sent. Taken here, before anything below
+// mutates $_POST -- line ~170 assigns $_POST['finalResult'] = null, which would create
+// the key and make an absent field look present.
+//
+// TB request-edit forms differ by country: Rwanda enters results on this form, Sierra
+// Leone partly, Burkina Faso and South Sudan not at all. Writing a result column the
+// form never rendered blanks it, which is how editing a South Sudan TB request wiped
+// its result. Keyed on what was posted rather than on a country list, so a new form
+// gets this right without anyone remembering to add it.
+$resultColumnsOwnedByTheForm = [
+    'is_result_finalized'        => 'isResultFinalized',
+    'result'                     => 'finalResult',
+    'tb_lam_result'              => 'tbLamResult',
+    'xpert_mtb_result'           => 'xPertMTMResult',
+    'culture_result'             => 'cultureResult',
+    'identification_result'      => 'identicationResult',
+    'drug_mgit_result'           => 'drugMGITResult',
+    'drug_lpa_result'            => 'drugLPAResult',
+    'xpert_result_date'          => 'xpertDateOfResult',
+    'culture_result_date'        => 'cultureDateOfResult',
+    'tblam_result_date'          => 'tbLamDateOfResult',
+    'identification_result_date' => 'identificationDateOfResult',
+    'drug_mgit_result_date'      => 'drugMGITDateOfResult',
+    'drug_lpa_result_date'       => 'drugLPADateOfResult',
+    'result_dispatched_datetime' => 'resultDispatchedDatetime',
+    'result_reviewed_by'         => 'reviewedBy',
+    'result_reviewed_datetime'   => 'reviewedOn',
+    'result_approved_by'         => 'approvedBy',
+    'result_approved_datetime'   => 'approvedOn',
+    'sample_tested_datetime'     => 'sampleTestedDateTime',
+    'tested_by'                  => 'testedBy',
+    'result_date'                => 'resultDate',
+    'lab_tech_comments'          => 'labComments',
+];
+$resultColumnsPosted = [];
+foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+    if (array_key_exists($postKey, (array) $_POST)) {
+        $resultColumnsPosted[] = $column;
+    }
+}
 $tableName = "form_tb";
 $tableName1 = "activity_log";
 $testTableName = 'tb_tests';
@@ -232,7 +273,7 @@ try {
         'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
         'recommended_corrective_action' => $_POST['correctiveAction'] ?? null,
         'is_result_finalized' => $_POST['isResultFinalized'] ?? null,
-        'result' => $_POST['finalResult'],
+        'result' => $_POST['finalResult'] ?? null,
         'tb_lam_result' => $_POST['tbLamResult'] ?? null,
         'xpert_mtb_result' => empty($_POST['xPertMTMResult']) ? null : $_POST['xPertMTMResult'],
         'culture_result' => empty($_POST['cultureResult']) ? null : $_POST['cultureResult'],
@@ -271,13 +312,26 @@ try {
     if (isset($_POST['finalResult']) && !empty($_POST['finalResult'])) {
         $tbData['result'] = $_POST['finalResult'];
     }
+    // Drop every result column this form did not send. Leaving them in writes NULL
+    // over a result that is already there -- the same defect fixed for Custom Tests
+    // in b20503799, which never covered TB.
+    foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+        if (!in_array($column, $resultColumnsPosted, true)) {
+            unset($tbData[$column]);
+        }
+    }
+
     $db->where('tb_id', $_POST['tbSampleId']);
     $getPrevResult = $db->getOne('form_tb');
 
-    if (isset($getPrevResult['result']) && ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['finalResult'])) {
-        $tbData['result_modified'] = "yes";
-    } else {
-        $tbData['result_modified'] = "no";
+    // Only meaningful when this form carried a result. Without one there is nothing
+    // to compare against, and the old comparison read an absent key as a change.
+    if (in_array('result', $resultColumnsPosted, true)) {
+        $previousResult = (string) ($getPrevResult['result'] ?? '');
+        $tbData['result_modified'] =
+            ($previousResult !== '' && $previousResult !== (string) ($_POST['finalResult'] ?? ''))
+                ? "yes"
+                : "no";
     }
 
     $id = 0;
