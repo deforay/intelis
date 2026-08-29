@@ -78,6 +78,22 @@ try {
 	}
 
 	$_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
+// Which of these the form actually sent, recorded before the lines below can add
+// a key -- the approved-on normalisation uses ?? '' and would create an absent
+// one. A result form that does not render a field must not blank it: the PNG
+// forms carry no approver, and writing NULL there erases what the request edit
+// recorded. Keyed on what was posted, not on a country list.
+$resultColumnsOwnedByTheForm = [
+    'result_approved_by'       => 'approvedBy',
+    'result_approved_datetime' => 'approvedOn',
+];
+$resultColumnsPosted = [];
+foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+    if (array_key_exists($postKey, (array) $_POST)) {
+        $resultColumnsPosted[] = $column;
+    }
+}
+
 	$_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
 	$_POST['authorizedOn'] = DateUtility::isoDateFormat($_POST['authorizedOn'] ?? '', true);
 
@@ -199,6 +215,13 @@ try {
 	/* echo "<pre>";
 		  print_r($covid19Data);die; */
 	$db->where('covid19_id', $_POST['covid19SampleId']);
+	// Drop every one this form did not send.
+	foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
+	    if (!in_array($column, $resultColumnsPosted, true)) {
+	        unset($covid19Data[$column]);
+	    }
+	}
+
 	$id = $db->update($tableName, $covid19Data);
 	if ($id === true) {
 		$_SESSION['alertMsg'] = _translate("Covid-19 result updated successfully");
