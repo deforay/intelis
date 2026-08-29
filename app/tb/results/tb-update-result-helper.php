@@ -1,7 +1,5 @@
 <?php
 
-use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\PENDING_APPROVAL;
 use App\Utilities\DateUtility;
@@ -65,18 +63,21 @@ try {
         $sampleCodeKey = 'sample_code_key';
     }
 
-    $status = RECEIVED_AT_TESTING_LAB;
-    if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
-        $status = RECEIVED_AT_CLINIC;
-    }
-
     $resultSentToSource = null;
 
+    // null means leave result_status alone. Awaiting Approval is reached only when
+    // a final result was entered, and once one has been the sample cannot go back to
+    // Received at Testing Lab -- so a save carrying no result must not rewrite the
+    // status at all. It previously defaulted to RECEIVED_AT_TESTING_LAB and always
+    // wrote it, which sent an already-approved sample backwards on any re-save.
+    //
+    // trim() rather than !empty(): a final result of "0" is a result.
+    $status = null;
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
         $_POST['finalResult'] = null;
         $status = REJECTED;
         $resultSentToSource = 'pending';
-    }elseif (!empty($_POST['finalResult'])) {
+    } elseif (trim((string) ($_POST['finalResult'] ?? '')) !== '') {
         $status = PENDING_APPROVAL; // Awaiting Approval
     }
     if (!empty($_POST['dob'])) {
@@ -162,7 +163,6 @@ try {
         'sample_tested_datetime' => (isset($_POST['sampleTestedDateTime']) && $_POST['sampleTestedDateTime'] != "") ? $_POST['sampleTestedDateTime'] : null,
         'tested_by' => empty($_POST['testedBy']) ? null : $_POST['testedBy'],
         'rejection_on' => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-        'result_status' => $status,
         'data_sync' => 0,
         'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
         'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) !== '') ? $_POST['correctiveAction'] : null,
@@ -287,6 +287,13 @@ try {
 
     if (!empty($_POST['tbSampleId'])) {
         $db->where('tb_id', $_POST['tbSampleId']);
+        // Written only when this save decided a status: a result was entered, or the
+        // sample was rejected. Left out otherwise, so a save with no result does not
+        // move the sample back down the workflow.
+        if ($status !== null) {
+            $tbData['result_status'] = $status;
+        }
+
         $id = $db->update($tableName, $tbData);
     }
 
