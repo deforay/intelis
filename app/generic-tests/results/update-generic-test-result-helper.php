@@ -169,7 +169,11 @@ try {
     // status alone would clear the rejection while the sample stayed at REJECTED --
     // off the worklist, and not rejected either. Only read when it can matter.
     if ($resultStatus === null && ($_POST['isSampleRejected'] ?? null) === 'no') {
+        // Lab-scoped, so this cannot read a sample belonging to another lab.
         $db->where('sample_id', $_POST['requestSampleId'] ?? 0);
+        if ($labScope = $general->labScopeWhere('form_generic')) {
+            $db->where($labScope);
+        }
         if ((int) $db->getValue($tableName, 'result_status') === REJECTED) {
             $resultStatus = ($general->isSTSInstance() && ($_SESSION['accessType'] ?? '') === 'collection-site')
                 ? RECEIVED_AT_CLINIC
