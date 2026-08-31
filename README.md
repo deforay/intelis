@@ -67,6 +67,12 @@ Docker supplies all three. A server install needs them present.
 
 ---
 
+## Funding and partners
+
+InteLIS is developed with funding from the United States Government (USG). Over the years, the project has benefited from the support and collaboration of partners including the African Society for Laboratory Medicine (ASLM), the American Society for Microbiology (ASM), the African Field Epidemiology Network (AFENET), Emory University, and the Maryland Global Initiatives Corporation (MGIC), among others.
+
+---
+
 ## License
 
 InteLIS is free and open-source software released under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
