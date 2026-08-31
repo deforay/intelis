@@ -3,7 +3,7 @@
 > **Integrated Laboratory Information & Sample Tracking System**
 > Open-source LIS to manage and track samples for HIV viral load, EID, TB, hepatitis, COVID-19, CD4, and other priority diseases.
 
-![PHP](https://img.shields.io/badge/PHP-8.4+-blue) ![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04%2B-orange) ![Status](https://img.shields.io/badge/status-stable-success) ![License: InteLIS Community Copyleft License (Non-Commercial)](https://img.shields.io/badge/License-Community%20Copyleft%20v1.0-blue)
+![PHP](https://img.shields.io/badge/PHP-8.4+-blue) ![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04%2B-orange) ![Status](https://img.shields.io/badge/status-stable-success) ![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue)
 
 InteLIS digitizes laboratory workflows from sample collection to result dispatch, for national and sub-national health programs. It is lightweight, self-hostable, and works both online and offline.
 
@@ -69,11 +69,9 @@ Docker supplies all three. A server install needs them present.
 
 ## License
 
-InteLIS is released under the **InteLIS Community Copyleft License (Non-Commercial), Version 1.0**.
+InteLIS is free and open-source software released under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
-Non-commercial use is permitted. That includes public and private laboratories, health programs, NGOs, research, and education. Commercial redistribution and resale are restricted.
-
-Read the full text in [LICENSE.md](LICENSE.md). For commercial licensing, contact [support@deforay.com](mailto:support@deforay.com).
+Read the full text in [LICENSE.md](LICENSE.md).
 
 ---
 
