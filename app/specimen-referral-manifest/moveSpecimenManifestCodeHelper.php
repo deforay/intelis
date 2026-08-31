@@ -34,29 +34,53 @@ try {
 
     if (isset($_POST['assignLab']) && trim((string) $_POST['assignLab']) !== "" && !empty($_POST['packageCode'])) {
 
+        $packageCodes = array_values(array_filter((array) $_POST['packageCode'], 'strlen'));
+        $assignLab = (int) $_POST['assignLab'];
+        $placeholders = implode(',', array_fill(0, count($packageCodes), '?'));
 
-        $lastId = $_POST['packageId'];
-
-        $db->where('manifest_code', $packageCode);
-        $previousData = $db->getOne("specimen_manifests");
-        $oldReason = json_decode((string) $previousData['manifest_change_history']);
-
+        // Append this move to each manifest's OWN change history. This used to
+        // read one undefined manifest's history and stamp that merged blob onto
+        // every selected manifest, with the codes interpolated unquoted into the
+        // SQL; the codes are bound now.
         $newReason = ['reason' => $_POST['reasonForChange'], 'changedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
-        $oldReason[] = $newReason;
+        $manifests = $db->rawQuery(
+            "SELECT manifest_code, manifest_change_history FROM specimen_manifests WHERE manifest_code IN ($placeholders)",
+            $packageCodes
+        );
+        foreach ($manifests as $manifest) {
+            $history = json_decode((string) $manifest['manifest_change_history']) ?: [];
+            $history[] = $newReason;
+            $db->reset();
+            $db->where('manifest_code', $manifest['manifest_code']);
+            $db->update('specimen_manifests', ['lab_id' => $assignLab, 'manifest_change_history' => json_encode($history)]);
+        }
+
+        // A sample_code is the TESTING LAB's working id, minted from that lab's
+        // own series. Moving a sample used to carry the origin lab's code along,
+        // planting a foreign code inside the destination lab's series -- which is
+        // what wedged a lab's code generation in the field. Clear it (before the
+        // lab flips below, while lab_id still names the origin) so the
+        // destination lab mints its own code at activation. The network code
+        // (remote_sample_code) is untouched.
+        $db->rawQuery(
+            "UPDATE $table
+                SET sample_code = NULL, sample_code_format = NULL, sample_code_key = NULL
+              WHERE sample_package_code IN ($placeholders)
+                AND lab_id <> ?
+                AND sample_code IS NOT NULL",
+            [...$packageCodes, $assignLab]
+        );
 
         $value = [
-            'lab_id' => $_POST['assignLab'],
-            'referring_lab_id' => $_POST['testingLab'],
+            'lab_id' => $assignLab,
+            'referring_lab_id' => (int) $_POST['testingLab'],
             'last_modified_datetime' => DateUtility::getCurrentDateTime(),
             'samples_referred_datetime' => DateUtility::getCurrentDateTime(),
             'data_sync' => 0
         ];
-        /* Update Package details table */
-        $db->where('manifest_code IN(' . implode(",", $_POST['packageCode']) . ')');
-        $db->update('specimen_manifests', ["lab_id" => $_POST['assignLab'], "manifest_change_history" => json_encode($oldReason)]);
-
         /* Update test types */
-        $db->where('sample_package_code IN(' . implode(",", $_POST['packageCode']) . ')');
+        $db->reset();
+        $db->where("sample_package_code IN ($placeholders)", $packageCodes);
         $db->update($table, $value);
 
         $_SESSION['alertMsg'] = "Manifest code(s) moved successfully";
