@@ -91,6 +91,7 @@ function showHelp(SymfonyStyle $io): void
         ['<days>' => 'Optional. Send results modified in the last N days, e.g. 7'],
         ['silent' => 'Optional. Suppresses certain notifications / timestamp bumps where applicable'],
         ['-c, --chunk-size' => 'Optional. Number of records per request (default ' . RESULTS_SENDER_DEFAULT_CHUNK_SIZE . ')'],
+        ['--dry-run, dry-run' => 'Optional. Select and chunk rows, report what would be sent, but send nothing and update nothing'],
         ['-h, --help, help' => 'Show this help and exit']
     );
 
@@ -105,6 +106,7 @@ function showHelp(SymfonyStyle $io): void
         'php results-sender.php eid silent',
         'php results-sender.php hepatitis 2025-01-01 silent',
         'php results-sender.php vl -c 500',
+        'php results-sender.php vl 2025-01-01 --dry-run',
     ]);
 
     $io->section('Notes');
@@ -115,6 +117,7 @@ function showHelp(SymfonyStyle $io): void
         'Results must have a valid sample_code.',
         'By default, only unsynced results (data_sync = 0) are sent.',
         'When a date/days is specified, data_sync is ignored.',
+        'With --dry-run, rows are selected and chunked but nothing is posted, no sync flags change, and nothing is tracked.',
         'All operations are logged and tracked for audit.',
     ]);
 
@@ -258,6 +261,31 @@ function showServerHints(?SymfonyStyle $io, array $headers, ?string $label = nul
     }
 }
 
+/**
+ * Report what a dry run would have sent for one module.
+ * Rows are either flat records or nested ['form_data' => [...]] payload entries.
+ */
+function reportDryRunChunks(SymfonyStyle $io, string $label, array $rows, int $totalChunks): void
+{
+    $codes = [];
+    foreach ($rows as $row) {
+        $code = $row['sample_code'] ?? ($row['form_data']['sample_code'] ?? null);
+        if (!empty($code)) {
+            $codes[] = $code;
+        }
+        if (count($codes) >= 10) {
+            break;
+        }
+    }
+
+    $count = count($rows);
+    $io->text(sprintf('DRY RUN: would send %d %s row(s) in %d chunk(s)', $count, strtoupper($label), $totalChunks));
+    if ($codes !== []) {
+        $suffix = $count > count($codes) ? ', ...' : '';
+        $io->text('Sample codes: ' . implode(', ', $codes) . $suffix);
+    }
+}
+
 
 
 // Check for help flag early
@@ -285,6 +313,7 @@ $stsBearerToken = $general->getSTSToken();
 $apiService->setBearerToken($stsBearerToken);
 
 $isSilent = false;
+$isDryRun = false;
 $syncSinceDate = null;
 $forceSyncModule = null;
 $sampleCode = null;
@@ -328,6 +357,8 @@ if ($cliMode) {
 
         if ($arg === 'silent') {
             $isSilent = true;
+        } elseif ($arg === '--dry-run' || $arg === 'dry-run') {
+            $isDryRun = true;
         } elseif ($arg === '-t' || $arg === '--test') {
             $awaitingTestType = true;
         } elseif ($arg === '-c' || $arg === '--chunk-size') {
@@ -378,6 +409,10 @@ if ($cliMode) {
     }
 
     $io->text("Chunk size per request: $chunkSize");
+
+    if ($isDryRun) {
+        $io->warning('DRY RUN: nothing will be sent to STS and no local sync flags will be updated.');
+    }
 }
 
 // Web fallback
@@ -464,6 +499,11 @@ try {
             $chunks = array_chunk($customTestResultData, max(1, $chunkSize), true);
             $totalChunks = count($chunks);
 
+            if ($isDryRun) {
+                reportDryRunChunks($io, 'generic-tests', $customTestResultData, $totalChunks);
+                $chunks = [];
+            }
+
             foreach ($chunks as $chunkIndex => $chunk) {
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
@@ -527,7 +567,7 @@ try {
                 );
             }
 
-            if ($cliMode) {
+            if ($cliMode && !$isDryRun) {
                 $io->success("Custom Tests: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
@@ -540,18 +580,20 @@ try {
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
         ];
-        $general->addApiTracking(
-            $transactionId,
-            'intelis-system',
-            $count,
-            'send-results',
-            'generic-tests',
-            $url,
-            $summaryRequest,
-            $summaryResponse,
-            'json',
-            $labId
-        );
+        if (!$isDryRun) {
+            $general->addApiTracking(
+                $transactionId,
+                'intelis-system',
+                $count,
+                'send-results',
+                'generic-tests',
+                $url,
+                $summaryRequest,
+                $summaryResponse,
+                'json',
+                $labId
+            );
+        }
     }
 
     // ----------------------- VL -----------------------
@@ -594,6 +636,11 @@ try {
             }
             $chunks = array_chunk($vlLabResult, max(1, $chunkSize), true);
             $totalChunks = count($chunks);
+
+            if ($isDryRun) {
+                reportDryRunChunks($io, 'vl', $vlLabResult, $totalChunks);
+                $chunks = [];
+            }
 
             foreach ($chunks as $chunkIndex => $chunk) {
                 $chunkNumber = $chunkIndex + 1;
@@ -658,7 +705,7 @@ try {
                 );
             }
 
-            if ($cliMode) {
+            if ($cliMode && !$isDryRun) {
                 $io->text("VL: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
@@ -671,18 +718,20 @@ try {
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
         ];
-        $general->addApiTracking(
-            $transactionId,
-            'intelis-system',
-            $count,
-            'send-results',
-            'vl',
-            $url,
-            $summaryRequest,
-            $summaryResponse,
-            'json',
-            $labId
-        );
+        if (!$isDryRun) {
+            $general->addApiTracking(
+                $transactionId,
+                'intelis-system',
+                $count,
+                'send-results',
+                'vl',
+                $url,
+                $summaryRequest,
+                $summaryResponse,
+                'json',
+                $labId
+            );
+        }
     }
 
     // ----------------------- EID -----------------------
@@ -726,6 +775,11 @@ try {
             }
             $chunks = array_chunk($eidLabResult, max(1, $chunkSize), true);
             $totalChunks = count($chunks);
+
+            if ($isDryRun) {
+                reportDryRunChunks($io, 'eid', $eidLabResult, $totalChunks);
+                $chunks = [];
+            }
 
             foreach ($chunks as $chunkIndex => $chunk) {
                 $chunkNumber = $chunkIndex + 1;
@@ -789,7 +843,7 @@ try {
                 );
             }
 
-            if ($cliMode) {
+            if ($cliMode && !$isDryRun) {
                 $io->text("EID: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
@@ -802,18 +856,20 @@ try {
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
         ];
-        $general->addApiTracking(
-            $transactionId,
-            'intelis-system',
-            $count,
-            'send-results',
-            'eid',
-            $url,
-            $summaryRequest,
-            $summaryResponse,
-            'json',
-            $labId
-        );
+        if (!$isDryRun) {
+            $general->addApiTracking(
+                $transactionId,
+                'intelis-system',
+                $count,
+                'send-results',
+                'eid',
+                $url,
+                $summaryRequest,
+                $summaryResponse,
+                'json',
+                $labId
+            );
+        }
     }
 
     // ----------------------- COVID-19 -----------------------
@@ -878,6 +934,11 @@ try {
             $chunks = array_chunk($c19ResultData, max(1, $chunkSize), true);
             $totalChunks = count($chunks);
 
+            if ($isDryRun) {
+                reportDryRunChunks($io, 'covid19', $c19ResultData, $totalChunks);
+                $chunks = [];
+            }
+
             foreach ($chunks as $chunkIndex => $chunk) {
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
@@ -940,7 +1001,7 @@ try {
                 );
             }
 
-            if ($cliMode) {
+            if ($cliMode && !$isDryRun) {
                 $io->text("COVID-19: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
@@ -953,18 +1014,20 @@ try {
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
         ];
-        $general->addApiTracking(
-            $transactionId,
-            'intelis-system',
-            $count,
-            'send-results',
-            'covid19',
-            $url,
-            $summaryRequest,
-            $summaryResponse,
-            'json',
-            $labId
-        );
+        if (!$isDryRun) {
+            $general->addApiTracking(
+                $transactionId,
+                'intelis-system',
+                $count,
+                'send-results',
+                'covid19',
+                $url,
+                $summaryRequest,
+                $summaryResponse,
+                'json',
+                $labId
+            );
+        }
     }
 
     // ----------------------- HEPATITIS -----------------------
@@ -1007,6 +1070,11 @@ try {
             }
             $chunks = array_chunk($hepLabResult, max(1, $chunkSize), true);
             $totalChunks = count($chunks);
+
+            if ($isDryRun) {
+                reportDryRunChunks($io, 'hepatitis', $hepLabResult, $totalChunks);
+                $chunks = [];
+            }
 
             foreach ($chunks as $chunkIndex => $chunk) {
                 $chunkNumber = $chunkIndex + 1;
@@ -1070,7 +1138,7 @@ try {
                 );
             }
 
-            if ($cliMode) {
+            if ($cliMode && !$isDryRun) {
                 $io->text("Hepatitis: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
@@ -1083,18 +1151,20 @@ try {
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
         ];
-        $general->addApiTracking(
-            $transactionId,
-            'intelis-system',
-            $count,
-            'send-results',
-            'hepatitis',
-            $url,
-            $summaryRequest,
-            $summaryResponse,
-            'json',
-            $labId
-        );
+        if (!$isDryRun) {
+            $general->addApiTracking(
+                $transactionId,
+                'intelis-system',
+                $count,
+                'send-results',
+                'hepatitis',
+                $url,
+                $summaryRequest,
+                $summaryResponse,
+                'json',
+                $labId
+            );
+        }
     }
 
     // ----------------------- TB -----------------------
@@ -1156,6 +1226,11 @@ try {
 
             $chunks = array_chunk($tbTestResultData, max(1, $chunkSize), true);
             $totalChunks = count($chunks);
+
+            if ($isDryRun) {
+                reportDryRunChunks($io, 'tb', $tbTestResultData, $totalChunks);
+                $chunks = [];
+            }
 
             foreach ($chunks as $chunkIndex => $chunk) {
                 $chunkNumber = $chunkIndex + 1;
@@ -1222,7 +1297,7 @@ try {
                 );
             }
 
-            if ($cliMode) {
+            if ($cliMode && !$isDryRun) {
                 $io->text("TB: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
@@ -1235,18 +1310,20 @@ try {
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
         ];
-        $general->addApiTracking(
-            $transactionId,
-            'intelis-system',
-            $count,
-            'send-results',
-            'tb',
-            $url,
-            $summaryRequest,
-            $summaryResponse,
-            'json',
-            $labId
-        );
+        if (!$isDryRun) {
+            $general->addApiTracking(
+                $transactionId,
+                'intelis-system',
+                $count,
+                'send-results',
+                'tb',
+                $url,
+                $summaryRequest,
+                $summaryResponse,
+                'json',
+                $labId
+            );
+        }
     }
 
     // ----------------------- CD4 -----------------------
@@ -1290,6 +1367,11 @@ try {
 
             $chunks = array_chunk($cd4LabResult, max(1, $chunkSize), true);
             $totalChunks = count($chunks);
+
+            if ($isDryRun) {
+                reportDryRunChunks($io, 'cd4', $cd4LabResult, $totalChunks);
+                $chunks = [];
+            }
 
             foreach ($chunks as $chunkIndex => $chunk) {
                 $chunkNumber = $chunkIndex + 1;
@@ -1353,7 +1435,7 @@ try {
                 );
             }
 
-            if ($cliMode) {
+            if ($cliMode && !$isDryRun) {
                 $io->text("CD4: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
@@ -1366,31 +1448,39 @@ try {
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
         ];
-        $general->addApiTracking(
-            $transactionId,
-            'intelis-system',
-            $count,
-            'send-results',
-            'cd4',
-            $url,
-            $summaryRequest,
-            $summaryResponse,
-            'json',
-            $labId
-        );
+        if (!$isDryRun) {
+            $general->addApiTracking(
+                $transactionId,
+                'intelis-system',
+                $count,
+                'send-results',
+                'cd4',
+                $url,
+                $summaryRequest,
+                $summaryResponse,
+                'json',
+                $labId
+            );
+        }
     }
 
     // Final sync timestamp update
-    if ($cliMode) {
-        $io->section("Timestamps");
-        $io->text("Updating sync timestamps...");
-    }
-    $tFinal = MiscUtility::startTimer();
-    $instanceId = $general->getInstanceId();
-    $db->where('vlsm_instance_id', $instanceId);
-    $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
-    if ($cliMode) {
-        $io->text("Updated timestamps in " . MiscUtility::elapsedTime($tFinal) . "s");
+    if ($isDryRun) {
+        if ($cliMode) {
+            $io->success("DRY RUN complete. Nothing was sent and nothing was updated.");
+        }
+    } else {
+        if ($cliMode) {
+            $io->section("Timestamps");
+            $io->text("Updating sync timestamps...");
+        }
+        $tFinal = MiscUtility::startTimer();
+        $instanceId = $general->getInstanceId();
+        $db->where('vlsm_instance_id', $instanceId);
+        $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
+        if ($cliMode) {
+            $io->text("Updated timestamps in " . MiscUtility::elapsedTime($tFinal) . "s");
+        }
     }
 } catch (Exception $e) {
     LoggerUtility::logError($e->getMessage(), [
