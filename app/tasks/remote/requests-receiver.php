@@ -59,6 +59,7 @@ function showHelp(SymfonyStyle $io): void
     $io->definitionList(
         ['-t <module>' => 'Force sync for a specific test module. Valid: vl, eid, covid19, hepatitis, tb, cd4, generic-tests'],
         ['-m <manifest_code>' => 'Sync only a specific manifest/package (use with -t).'],
+        ['--dry-run, dry-run' => 'Preview the sync: fetch from STS and report what would be inserted/updated, then roll everything back.'],
         ['-h, --help, help' => 'Show this help and exit.']
     );
 
@@ -77,6 +78,7 @@ function showHelp(SymfonyStyle $io): void
         'php requests-receiver.php 7',
         'php requests-receiver.php 2025-01-01',
         'php requests-receiver.php -t covid19 3 silent',
+        'php requests-receiver.php -t vl 2025-01-01 --dry-run',
     ]);
 
     $io->section('Notes');
@@ -86,6 +88,7 @@ function showHelp(SymfonyStyle $io): void
         'Progress indicators show during sync operations.',
         'All operations are logged.',
         'By default, only unsynced requests (data_sync = 0) are processed.',
+        'With --dry-run, every record is processed inside a transaction that is rolled back, so nothing is saved and the sync window does not advance.',
     ]);
 
     exit(0);
@@ -363,6 +366,7 @@ if (null == $labId || '' == $labId) {
 $forceSyncModule = $manifestCode = null;
 $syncSinceDate = null;
 $isSilent = false;
+$isDryRun = false;
 if ($cliMode) {
 
     $io->section('Starting test requests sync');
@@ -377,6 +381,11 @@ if ($cliMode) {
     }
     if (isset($options['m'])) {
         $manifestCode = $options['m'];
+    }
+
+    if (in_array('--dry-run', $args, true) || in_array('dry-run', $args, true)) {
+        $isDryRun = true;
+        $io->warning('DRY RUN: every change will be rolled back; nothing will be saved and the sync window will not advance.');
     }
 
     // Scan all args to find a valid date or number-of-days
@@ -903,6 +912,8 @@ try {
         $loopIndex = 0;
         $successCounter = 0;
         $failureCounter = 0;
+        $insertCounter = 0;
+        $updateCounter = 0;
 
         foreach ($parsedData as $key => $remoteData) {
             try {
@@ -956,8 +967,17 @@ try {
 
                 if ($syncResult['success']) {
                     $successCounter++;
+                    if ($syncResult['is_insert']) {
+                        $insertCounter++;
+                    } else {
+                        $updateCounter++;
+                    }
                 }
-                $db->commitTransaction();
+                if ($isDryRun) {
+                    $db->rollbackTransaction();
+                } else {
+                    $db->commitTransaction();
+                }
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getMessage(), [
@@ -993,21 +1013,33 @@ try {
         if ($cliMode) {
             clearSpinner();
             echo PHP_EOL;
-            outputSyncResults($io, $module, $successCounter, $failureCounter);
+            if ($isDryRun) {
+                $io->note(sprintf(
+                    'DRY RUN %s: would insert %d and update %d record(s); %d would fail',
+                    strtoupper($module),
+                    $insertCounter,
+                    $updateCounter,
+                    $failureCounter
+                ));
+            } else {
+                outputSyncResults($io, $module, $successCounter, $failureCounter);
+            }
         }
 
-        $general->addApiTracking(
-            $transactionId,
-            'intelis-system',
-            $successCounter,
-            'receive-requests',
-            $module,
-            $requestInfo[$module]['url'] ?? null,
-            $requestInfo[$module]['payload'] ?? null,
-            $responsePayload[$module],
-            'json',
-            $labId
-        );
+        if (!$isDryRun) {
+            $general->addApiTracking(
+                $transactionId,
+                'intelis-system',
+                $successCounter,
+                'receive-requests',
+                $module,
+                $requestInfo[$module]['url'] ?? null,
+                $requestInfo[$module]['payload'] ?? null,
+                $responsePayload[$module],
+                'json',
+                $labId
+            );
+        }
     }
 
     // Special-case generic-tests (preserve its merging logic)
@@ -1161,10 +1193,14 @@ try {
 
                 $general->syncSubTable('generic_test_results', 'generic_id', $genericId, $remoteData['data_from_tests'] ?? null, ['generic_test_result_id', 'data_sync'], [], true);
 
-                if (!empty($id) && $id === true) {
+                if ($id === true || $id > 0) {
                     $successCounter++;
                 }
-                $db->commitTransaction();
+                if ($isDryRun) {
+                    $db->rollbackTransaction();
+                } else {
+                    $db->commitTransaction();
+                }
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getMessage(), [
@@ -1199,21 +1235,27 @@ try {
 
         if ($cliMode) {
             clearSpinner();
-            $io->success("Synced $successCounter Custom Tests record(s)");
+            if ($isDryRun) {
+                $io->note("DRY RUN CUSTOM TESTS: would sync $successCounter record(s)");
+            } else {
+                $io->success("Synced $successCounter Custom Tests record(s)");
+            }
         }
 
-        $general->addApiTracking(
-            $transactionId,
-            'intelis-system',
-            $successCounter,
-            'receive-requests',
-            'generic-tests',
-            $requestInfo['generic-tests']['url'] ?? null,
-            $requestInfo['generic-tests']['payload'] ?? null,
-            $responsePayload['generic-tests'],
-            'json',
-            $labId
-        );
+        if (!$isDryRun) {
+            $general->addApiTracking(
+                $transactionId,
+                'intelis-system',
+                $successCounter,
+                'receive-requests',
+                'generic-tests',
+                $requestInfo['generic-tests']['url'] ?? null,
+                $requestInfo['generic-tests']['payload'] ?? null,
+                $responsePayload['generic-tests'],
+                'json',
+                $labId
+            );
+        }
     }
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
@@ -1227,8 +1269,12 @@ try {
 }
 
 // Final sync timestamp update
-$db->where('vlsm_instance_id', $general->getInstanceId());
-$db->update('s_vlsm_instance', ['last_remote_requests_sync' => DateUtility::getCurrentDateTime()]);
+if (!$isDryRun) {
+    $db->where('vlsm_instance_id', $general->getInstanceId());
+    $db->update('s_vlsm_instance', ['last_remote_requests_sync' => DateUtility::getCurrentDateTime()]);
+} elseif ($cliMode) {
+    $io->success('DRY RUN complete. All changes were rolled back.');
+}
 
 if (
     isset($forceSyncModule) && trim((string) $forceSyncModule) !== ""
