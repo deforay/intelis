@@ -32,6 +32,12 @@ abstract class AbstractTestService
 {
     public TestRequestsService $testRequestsService;
     public int $maxTries = 5; // Max tries for generating Sample ID
+
+    // How many already-used sequence numbers one generation call will step over
+    // when the counter turns out to be behind the form table (see the duplicate
+    // handling in generateSampleCode()). Each step is one counter UPDATE and one
+    // indexed lookup, so this stays cheap even when fully spent.
+    protected const MAX_SEQUENCE_WALKS = 50;
     public string $table;
     public string $primaryKey;
     public string $testType;
@@ -329,18 +335,52 @@ abstract class AbstractTestService
 
                 // Check for duplication only if we are inserting
                 if ($insertOperation) {
+                    // A claimed number can already sit on a sample this counter never
+                    // heard about -- rows restored from a dump, or synced in carrying
+                    // codes minted elsewhere in the same series. Rolling back and
+                    // retrying used to re-claim the SAME number (the rollback returns
+                    // it to the counter), so one such row wedged the series for good:
+                    // every sample after it failed on the identical collision, however
+                    // many times activation was re-run. A number already carried by a
+                    // sample is spent, not lost -- consuming it leaves no hole anyone
+                    // can see -- so walk forward past the used numbers instead. The
+                    // walks happen inside the surrounding transaction and only become
+                    // durable together with the sample write they made possible.
                     $checkDuplicateQuery = "SELECT 1 FROM $testTable WHERE $sampleCodeType = ? LIMIT 1";
                     $checkDuplicateResult = $this->db->rawQueryOne($checkDuplicateQuery, [$sampleCodeGenerator['sampleCode']]);
 
-                    if (!empty($checkDuplicateResult)) {
-                        // Log the duplicate
-                        LoggerUtility::logInfo("DUPLICATE ::: Sample ID/Sample Key Code in $testTable ::: " . $sampleCodeGenerator['sampleCode'] . " / " . $maxId);
+                    $jumpTried = false;
+                    for ($walk = 0; !empty($checkDuplicateResult) && $walk < static::MAX_SEQUENCE_WALKS; $walk++) {
+                        LoggerUtility::logInfo("DUPLICATE ::: Sample ID/Sample Key Code in $testTable ::: " . $sampleCodeGenerator['sampleCode'] . " / " . $sampleCodeGenerator['maxId']);
 
+                        // When the counter is behind a whole block of used numbers (a
+                        // restored database, a bulk import), stepping one at a time is
+                        // hopeless. Once per call, move the counter to the end of the
+                        // contiguous used run so the next claim lands on the first
+                        // genuinely free number -- and never further, so no unused
+                        // number is skipped.
+                        if (!$jumpTried) {
+                            $jumpTried = true;
+                            $this->advanceCounterPastUsedRun($testTable, $currentYear, $this->testType, $sampleCodeType, (int) $sampleCodeGenerator['maxId']);
+                        }
+
+                        $maxId = sprintf("%04d", (int) $this->getMaxId($currentYear, $this->testType, $sampleCodeType, true));
+                        $sampleCodeGenerator['sampleCodeKey'] = $maxId;
+                        $sampleCodeGenerator['maxId'] = $maxId;
+                        $sampleCodeGenerator['sampleCode'] = $sampleCodeGenerator['sampleCodeFormat'] . $sequenceSeparator . $maxId;
+                        $sampleCodeGenerator['sampleCodeInText'] = $sampleCodeGenerator['sampleCode'];
+
+                        $checkDuplicateResult = $this->db->rawQueryOne($checkDuplicateQuery, [$sampleCodeGenerator['sampleCode']]);
+                    }
+
+                    if (!empty($checkDuplicateResult)) {
+                        // Still colliding after the walk budget -- something beyond a
+                        // stale counter is wrong, so fail the old way.
                         if ($callerOwnsTransaction) {
-                            // The claim belongs to the caller's transaction, so it cannot
-                            // be undone from here without ending that transaction. Hand
-                            // the collision back and let the caller roll back and retry,
-                            // which returns this number to the series.
+                            // The claims belong to the caller's transaction, so they
+                            // cannot be undone from here without ending that
+                            // transaction. Hand the collision back and let the caller
+                            // roll back, which returns the numbers to the series.
                             throw new SystemException("Duplicate sample code generated for $testTable : " . $sampleCodeGenerator['sampleCode']);
                         }
 
@@ -396,6 +436,72 @@ abstract class AbstractTestService
 
         // If we've reached here, we've exceeded max tries
         throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for generating Sample ID");
+    }
+
+    /**
+     * Move the sequence counter to the end of the contiguous run of already-used
+     * numbers that starts at $claimed, so the next claim returns the first number
+     * not yet carried by any sample of that year.
+     *
+     * Only ever advances ACROSS used numbers: the run is traced through rows that
+     * exist and stops at the first key with no successor, so no unused number is
+     * skipped and the series stays gapless. If the colliding row does not record
+     * its own key (so the run cannot be traced safely), this does nothing and the
+     * caller falls back to stepping one number at a time.
+     *
+     * Runs inside whatever transaction the caller holds: the move only becomes
+     * durable once a sample write commits it, which is exactly when it is earned.
+     */
+    private function advanceCounterPastUsedRun(string $testTable, $year, string $testType, string $sampleCodeType, int $claimed): void
+    {
+        $codeKey = "{$sampleCodeType}_key";
+        $yearStart = sprintf('%04d-01-01 00:00:00', (int) $year);
+        $yearEnd = sprintf('%04d-01-01 00:00:00', (int) $year + 1);
+
+        // The run can only be traced from $claimed if $claimed itself is recorded
+        // as a used key. (The collision is detected on the full code string; a row
+        // can carry the string without the key, and then jumping would risk
+        // skipping numbers that were never used.)
+        $claimedInUse = $this->db->rawQueryOne(
+            "SELECT 1 FROM $testTable
+              WHERE $codeKey = ?
+                AND sample_collection_date >= ? AND sample_collection_date < ?
+              LIMIT 1",
+            [$claimed, $yearStart, $yearEnd]
+        );
+        if (empty($claimedInUse)) {
+            return;
+        }
+
+        // The smallest used key at/after $claimed with no used successor is where
+        // the contiguous run containing $claimed ends.
+        $runEndRow = $this->db->rawQueryOne(
+            "SELECT MIN(t1.$codeKey) AS run_end
+               FROM $testTable t1
+          LEFT JOIN $testTable t2
+                 ON t2.$codeKey = t1.$codeKey + 1
+                AND t2.sample_collection_date >= ? AND t2.sample_collection_date < ?
+              WHERE t1.$codeKey >= ?
+                AND t1.sample_collection_date >= ? AND t1.sample_collection_date < ?
+                AND t2.$codeKey IS NULL",
+            [$yearStart, $yearEnd, $claimed, $yearStart, $yearEnd]
+        );
+
+        $runEnd = (int) ($runEndRow['run_end'] ?? 0);
+        if ($runEnd <= $claimed) {
+            // A single stray row: the counter already sits on it, so the next
+            // one-step claim clears it without any jump.
+            return;
+        }
+
+        LoggerUtility::logInfo("Sequence counter for $testType/$sampleCodeType/$year is behind the used numbers; advancing from $claimed to $runEnd");
+
+        $this->db->rawQuery(
+            "UPDATE sequence_counter
+                SET max_sequence_number = GREATEST(max_sequence_number, ?)
+              WHERE year = ? AND test_type = ? AND code_type = ?",
+            [$runEnd, $year, $testType, $sampleCodeType]
+        );
     }
 
     private function resetSequenceCounter(string $testTable, $year, $testType, $sampleCodeType): void
