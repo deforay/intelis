@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use App\Abstracts\AbstractTestService;
+use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
+use App\Services\TestRequestsService;
+use App\Services\VlService;
 use App\Utilities\FileCacheUtility;
 use mysqli;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
+
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
 /**
  * Sample-code generation when the counter is behind the form table, against a
@@ -73,9 +79,30 @@ final class SampleCodeCounterRecoveryTest extends TestCase
                 remote_sample_code VARCHAR(64) NULL,
                 remote_sample_code_format VARCHAR(64) NULL,
                 remote_sample_code_key INT NULL,
+                remote_sample VARCHAR(10) NULL,
+                result_status INT NULL,
+                lab_id INT NULL,
                 sample_collection_date DATETIME NULL,
+                UNIQUE KEY sample_code (sample_code, lab_id),
                 KEY sample_code_key (sample_code_key),
                 KEY remote_sample_code_key (remote_sample_code_key)
+            ) ENGINE=InnoDB'
+        );
+        $bootstrap->query(
+            'CREATE TABLE queue_sample_code_generation (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                unique_id VARCHAR(255) NOT NULL,
+                test_type VARCHAR(32) NOT NULL,
+                access_type VARCHAR(32) NULL,
+                sample_collection_date DATE NOT NULL,
+                province_code VARCHAR(32) NULL,
+                sample_code_format VARCHAR(32) NULL,
+                prefix VARCHAR(32) NULL,
+                lab_id INT NULL,
+                created_datetime DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_datetime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                processed TINYINT(1) DEFAULT 0,
+                processing_error TEXT
             ) ENGINE=InnoDB'
         );
         $bootstrap->query(
@@ -121,10 +148,15 @@ final class SampleCodeCounterRecoveryTest extends TestCase
 
         self::$db->rawQuery('DELETE FROM form_vl');
         self::$db->rawQuery('DELETE FROM sequence_counter');
+        self::$db->rawQuery('DELETE FROM queue_sample_code_generation');
     }
 
-    /** A concrete test service on a LIS instance, so codes go into sample_code. */
-    private function service(): AbstractTestService
+    /**
+     * The real CommonService against the test database, with the container
+     * registered so code resolving services mid-flight (the queue's
+     * resolveTestConfig, MemoUtility's cache lookup) finds what it needs.
+     */
+    private function commonService(): CommonService
     {
         // Compute every time, touch no filesystem -- the same pass-through the
         // unit suite uses (see Tests\Support\VlServiceFactory).
@@ -144,6 +176,46 @@ final class SampleCodeCounterRecoveryTest extends TestCase
         };
 
         $commonService = new CommonService(self::$db, new FacilitiesService(self::$db), $passThroughCache);
+
+        ContainerRegistry::setContainer(
+            new class (self::$db, $commonService, $passThroughCache) implements ContainerInterface {
+                public function __construct(
+                    private readonly DatabaseService $db,
+                    private readonly CommonService $common,
+                    private readonly FileCacheUtility $cache
+                ) {
+                }
+
+                public function get(string $id): mixed
+                {
+                    return match ($id) {
+                        VlService::class => new VlService($this->db, $this->common),
+                        CommonService::class => $this->common,
+                        DatabaseService::class => $this->db,
+                        default => $this->cache,
+                    };
+                }
+
+                public function has(string $id): bool
+                {
+                    return true;
+                }
+            }
+        );
+
+        return $commonService;
+    }
+
+    /** The queue processor wired to the test database. */
+    private function queueService(): TestRequestsService
+    {
+        return new TestRequestsService(self::$db, $this->commonService());
+    }
+
+    /** A concrete test service on a LIS instance, so codes go into sample_code. */
+    private function service(): AbstractTestService
+    {
+        $commonService = $this->commonService();
 
         return new class (self::$db, $commonService) extends AbstractTestService {
             public string $testType = 'vl';
@@ -305,6 +377,78 @@ final class SampleCodeCounterRecoveryTest extends TestCase
             [101, 102, 105, 106, 107, 108, 109, 110, 111, 112]
         );
         $this->assertSame($expected, $codes);
+    }
+
+    /** A queue row for $uniqueId, as addToSampleCodeQueue leaves it. */
+    private function enqueue(string $uniqueId): void
+    {
+        self::$db->insert('queue_sample_code_generation', [
+            'unique_id' => $uniqueId,
+            'test_type' => 'vl',
+            'access_type' => 'testing-lab',
+            'sample_collection_date' => '2026-08-19',
+            'sample_code_format' => 'MMYY',
+            'prefix' => 'VL',
+        ]);
+    }
+
+    public function testQueueMintsThroughTheFullPath(): void
+    {
+        // The whole activation flow for one clean sample: queued, minted,
+        // written, marked done -- the path a manifest activation drives.
+        $this->seedCounter(100);
+        self::$db->insert('form_vl', [
+            'unique_id' => 'clean-1',
+            'lab_id' => 325,
+            'sample_collection_date' => self::COLLECTION_DATE,
+        ]);
+        $this->enqueue('clean-1');
+
+        $result = $this->queueService()->processSampleCodeQueue(uniqueIds: ['clean-1'], parallelProcess: true);
+
+        $this->assertArrayHasKey('clean-1', $result);
+        $row = self::$db->rawQueryOne("SELECT sample_code, result_status FROM form_vl WHERE unique_id = 'clean-1'");
+        $this->assertSame(self::code(101), $row['sample_code']);
+        $this->assertSame(RECEIVED_AT_TESTING_LAB, (int) $row['result_status']);
+        $queueRow = self::$db->rawQueryOne(
+            "SELECT processed FROM queue_sample_code_generation WHERE unique_id = 'clean-1'"
+        );
+        $this->assertSame(1, (int) $queueRow['processed']);
+    }
+
+    public function testQueueParksItemWhenDuplicateRowsShareUniqueId(): void
+    {
+        // The field failure behind a 134MB day of logs: an old sync bug left
+        // several rows sharing one unique_id, so the mint's UPDATE stamps the
+        // same fresh code on all of them and trips UNIQUE(sample_code, lab_id)
+        // against itself -- deterministically. The item must park at
+        // processed = 3 (skipped by the cron) instead of retrying forever, and
+        // no half-written code may survive.
+        $this->seedCounter(100);
+        foreach ([1, 2] as $i) {
+            self::$db->insert('form_vl', [
+                'unique_id' => 'dup-1',
+                'lab_id' => 325,
+                'sample_collection_date' => self::COLLECTION_DATE,
+            ]);
+        }
+        $this->enqueue('dup-1');
+
+        $result = $this->queueService()->processSampleCodeQueue(uniqueIds: ['dup-1'], parallelProcess: true);
+
+        $this->assertArrayNotHasKey('dup-1', $result);
+        $queueRow = self::$db->rawQueryOne(
+            "SELECT processed, processing_error FROM queue_sample_code_generation WHERE unique_id = 'dup-1'"
+        );
+        $this->assertSame(3, (int) $queueRow['processed']);
+        $this->assertStringContainsString('share unique_id', (string) $queueRow['processing_error']);
+
+        $coded = self::$db->rawQueryOne(
+            "SELECT COUNT(*) AS n FROM form_vl WHERE unique_id = 'dup-1' AND sample_code IS NOT NULL"
+        );
+        $this->assertSame(0, (int) $coded['n']);
+        // The rolled-back claim went back to the series: nothing was spent.
+        $this->assertSame(100, $this->counterValue());
     }
 
     public function testOwnTransactionPathRecoversToo(): void

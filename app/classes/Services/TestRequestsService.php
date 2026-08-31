@@ -22,6 +22,7 @@ use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use App\Exceptions\PermanentQueueFailureException;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
@@ -384,9 +385,12 @@ final class TestRequestsService
                         }
                     }
 
-                    // Validate required fields
+                    // Validate required fields. The fields checked live on the queue row
+                    // itself and are frozen at enqueue time, so a row failing this can
+                    // never pass it later -- retrying is pure noise. Parked permanently;
+                    // fixing the sample means re-queueing it, which makes a new row.
                     if (empty($item['test_type']) || empty($item['sample_collection_date']) || empty($item['unique_id'])) {
-                        $this->updateQueueItem($item['id'], 2, 'Missing required fields');
+                        $this->updateQueueItem($item['id'], 3, 'Missing required fields on the queue row; re-queue the sample to retry');
                         continue;
                     }
 
@@ -576,6 +580,13 @@ final class TestRequestsService
                                 break;
                             }
 
+                            // A duplicate-key failure can be self-inflicted -- see
+                            // parkIfCodeCollidesWithItself() -- and then no retry can
+                            // ever succeed.
+                            if ($errno === 1062) {
+                                $this->parkIfCodeCollidesWithItself($formTable, $item);
+                            }
+
                             // Retry on duplicate key or lock wait/deadlock
                             if (in_array($errno, [1062, 1205, 1213], true)) {
                                 $retryReason = $errno === 1062 ? 'duplicate sample code' : 'lock wait/deadlock';
@@ -593,16 +604,32 @@ final class TestRequestsService
                             $errorMessage = $lastDbError ?: 'Unknown database error during sample code update';
                             throw new SystemException("Database update failed: {$errorMessage}");
                         } catch (Throwable $e) {
+                            // Read before the rollback below runs its own statement.
+                            // With the driver in strict mode the failed UPDATE arrives
+                            // here as a thrown exception, not a false return, so this
+                            // catch is the main road, not the edge case.
+                            $caughtErrno = $this->db->getLastErrno() ?: (int) $e->getCode();
+
                             // Safe to call unconditionally: rollbackTransaction() is a
                             // no-op once the transaction has already been resolved.
                             $this->db->rollbackTransaction();
+
+                            // Unretryable by definition -- reaches the item handler as
+                            // itself so the item is parked, not requeued.
+                            if ($e instanceof PermanentQueueFailureException) {
+                                throw $e;
+                            }
+
+                            if ($caughtErrno === 1062) {
+                                $this->parkIfCodeCollidesWithItself($formTable, $item);
+                            }
 
                             if ($attempt >= $maxTries) {
                                 throw new SystemException($e->getMessage(), 0, $e);
                             }
 
                             // Retry for transient database errors
-                            if (in_array($this->db->getLastErrno(), [1062, 1205, 1213], true)) {
+                            if (in_array($caughtErrno, [1062, 1205, 1213], true)) {
                                 usleep($attempt * 100000);
                                 continue;
                             }
@@ -620,9 +647,13 @@ final class TestRequestsService
                     // batched queue update in the finally. A no-op when there is none.
                     $this->db->rollbackTransaction();
 
-                    // Handle individual item errors
+                    // Handle individual item errors. Permanent failures park at 3 (the
+                    // cron skips them; a named run can still reach them); everything
+                    // else stays retryable at 2. The old escalation test compared the
+                    // item's STATUS against the try count -- two unrelated quantities --
+                    // so it never fired and unfixable items retried on every cron run.
                     try {
-                        $newStatus = ($item['processed'] ?? 0) >= $maxTries ? 3 : 2;
+                        $newStatus = $e instanceof PermanentQueueFailureException ? 3 : 2;
                         $this->updateQueueItem($item['id'], $newStatus, $e->getMessage());
 
                         LoggerUtility::logError("Error processing queue item {$item['id']}: " . $e->getMessage(), [
@@ -776,6 +807,33 @@ final class TestRequestsService
         }
 
         return $rows;
+    }
+
+    /**
+     * Park a queue item whose duplicate-key failure is self-inflicted.
+     *
+     * When several rows share one unique_id (the duplicate rows an old
+     * sync-matcher bug left behind -- 2 to 8 apiece at the lab that surfaced
+     * this), the mint's UPDATE stamps the same freshly-minted code on all of
+     * them and the second row violates UNIQUE(sample_code, lab_id): the code
+     * collides with itself, deterministically, so no retry can ever succeed.
+     * Retrying anyway is what filled a lab's log with 296k lines in half a
+     * day. Throws PermanentQueueFailureException so the item lands at
+     * processed = 3; does nothing when the unique_id maps to a single row,
+     * because then the 1062 came from a real, retryable collision.
+     */
+    private function parkIfCodeCollidesWithItself(string $formTable, array $item): void
+    {
+        $dupCount = $this->db->rawQueryOne(
+            "SELECT COUNT(*) AS n FROM {$formTable} WHERE unique_id = ?",
+            [$item['unique_id']]
+        );
+        if ((int) ($dupCount['n'] ?? 0) > 1) {
+            throw new PermanentQueueFailureException(
+                "{$dupCount['n']} rows in {$formTable} share unique_id {$item['unique_id']}; " .
+                "a sample code cannot be assigned until the duplicate rows are cleaned up"
+            );
+        }
     }
 
     private function updateQueueItem($id, int $processed, $error = null)
