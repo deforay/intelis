@@ -32,9 +32,14 @@ try {
 
     $db->beginTransaction();
 
-    if (isset($_POST['assignLab']) && trim((string) $_POST['assignLab']) !== "" && !empty($_POST['packageCode'])) {
+    // The picker used to wrap each code in literal single quotes for raw SQL
+    // interpolation; those quotes make a bound parameter match nothing, so
+    // strip them in case an older cached picker still posts quoted codes.
+    $packageCodes = array_map(fn($code) => trim((string) $code, "'"), (array) ($_POST['packageCode'] ?? []));
+    $packageCodes = array_values(array_filter($packageCodes, 'strlen'));
 
-        $packageCodes = array_values(array_filter((array) $_POST['packageCode'], 'strlen'));
+    if (isset($_POST['assignLab']) && trim((string) $_POST['assignLab']) !== "" && $packageCodes !== []) {
+
         $assignLab = (int) $_POST['assignLab'];
         $placeholders = implode(',', array_fill(0, count($packageCodes), '?'));
 
@@ -88,7 +93,7 @@ try {
 
     //Add event log
     $eventType = 'move-manifest';
-    $action = $_SESSION['userName'] . ' moved Sample Manifest(s) ' . implode(", ", $_POST['packageCode']) . ' from ' . $facilitiesService->getFacilityName($_POST['testingLab']) . ' to ' . $facilitiesService->getFacilityName($_POST['assignLab']);
+    $action = $_SESSION['userName'] . ' moved Sample Manifest(s) ' . implode(", ", $packageCodes) . ' from ' . $facilitiesService->getFacilityName($_POST['testingLab']) . ' to ' . $facilitiesService->getFacilityName($_POST['assignLab']);
     $resource = 'specimen-manifest';
 
     $general->activityLog($eventType, $action, $resource);
