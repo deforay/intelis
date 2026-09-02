@@ -472,7 +472,16 @@ resolve_intelis_ref() {
     esac
 
     local refs
-    refs=$(git ls-remote "$MASTER_GIT_URL" 'refs/heads/stable' 'refs/tags/v*' 2>/dev/null)
+    # Anonymous on purpose, and never interactive. The repo is public, but a
+    # machine whose root once stored a GitHub credential (helper,
+    # .git-credentials, .netrc) sends it, gets 401 back once it expires, and
+    # git then prompts for a username on /dev/tty — straight past the
+    # 2>/dev/null, hanging a piped `intelis update` at "Username for
+    # 'https://github.com':". Clearing the helper list makes git go anonymous,
+    # which is all a public fetch ever needed; GIT_TERMINAL_PROMPT=0 turns any
+    # remaining auth failure into a plain error the fallbacks below absorb.
+    refs=$(GIT_TERMINAL_PROMPT=0 git -c credential.helper= \
+        ls-remote "$MASTER_GIT_URL" 'refs/heads/stable' 'refs/tags/v*' 2>/dev/null)
 
     if printf '%s\n' "$refs" | grep -q '[[:space:]]refs/heads/stable$'; then
         printf 'refs/heads/stable'
@@ -507,7 +516,13 @@ INTELIS_SRC_DIR="${INTELIS_SRC_DIR:-/usr/local/lib/intelis/src}"
 run_git() {
     local _timeout_cmd=""
     command -v timeout >/dev/null 2>&1 && _timeout_cmd="timeout --kill-after=15 ${GIT_NET_TIMEOUT:-2400}"
-    $_timeout_cmd git -c safe.directory='*' -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=60 "$@"
+    # credential.helper= + GIT_TERMINAL_PROMPT=0: everything fetched through
+    # here is the public deforay/intelis repo, so stored credentials are never
+    # needed — and a stale one on the machine turns into a 401 followed by an
+    # interactive username prompt on /dev/tty that hangs a piped run. Go
+    # anonymous always; if that still fails, fail as an error, never a prompt.
+    GIT_TERMINAL_PROMPT=0 $_timeout_cmd git -c safe.directory='*' -c credential.helper= \
+        -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=60 "$@"
 }
 
 # lock_fingerprint <composer.lock> — identify the dependency set a lock file
