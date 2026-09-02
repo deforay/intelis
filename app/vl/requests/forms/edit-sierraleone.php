@@ -998,7 +998,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] === "Other") {
 	</section>
 </div>
 
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script type="text/javascript" src="<?= _asset('/assets/js/datalist-css.min.js') ?>"></script>
 <script type="text/javascript">
 	let provinceName = true;
 	let facilityName = true;

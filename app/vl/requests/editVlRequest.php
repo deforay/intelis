@@ -240,7 +240,7 @@ require_once($fileArray[$arr['vl_form']]);
 ?>
 
 <script type="text/javascript"
-     src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>">
+     src="<?= _asset('/assets/js/datalist-css.min.js') ?>">
 function updateLocationOfSample()
     {
         var communitySample = $("#communitySample").val();

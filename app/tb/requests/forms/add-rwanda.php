@@ -1547,4 +1547,4 @@ if ($isLisInstance) {
     });
 </script>
 <!--<script type="text/javascript"
-    src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>-->
+    src="<?= _asset('/assets/js/datalist-css.min.js') ?>"></script>-->
