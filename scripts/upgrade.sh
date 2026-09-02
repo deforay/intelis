@@ -174,7 +174,7 @@ REQUIRED_SHARED_FN=(
     phase_reset
     prepare_system print print_instance_status repair_html_escaped_db_password
     restart_service resume_cron run_git set_permissions setup_intelis_cron
-    setup_mysql_config spinner to_absolute_path ui_note wait_with_progress
+    setup_mysql_config spinner to_absolute_path ui_note
     wwwdata_composer
 )
 
@@ -2398,10 +2398,11 @@ upgrade_instance() {
     # Apply succeeded — remove maintenance mode.
     disable_maintenance_mode "${lis_path}"
 
-    # Set final permissions in background. The PID is kept rather than disowned so
-    # the post-upgrade check at the end of the run can wait for it: that check
-    # reports what www-data can write, and a tree still being chowned reports
-    # root-owned directories that fix themselves seconds later.
+    # Set final permissions in background. The PID is kept rather than disowned
+    # so the post-upgrade check at the end of the run can tell whether the pass
+    # is still going and say so next to its ownership lines — it does not wait
+    # on it: everything that check probes was already fixed by the quick-sync
+    # ACL pass during apply.
     #
     # INTELIS_SHARED_FN_FRESH stops intelis-refresh re-downloading the shared
     # functions: this run fetched that exact file before anything else ran, and
@@ -2410,11 +2411,11 @@ upgrade_instance() {
     # otherwise finished upgrade.
     #
     # The subshell ignores SIGINT deliberately. It is in this script's process
-    # group, so a Ctrl+C at the wait below used to reach it too and take the
-    # ownership pass down part-way through a tree it was halfway to fixing —
+    # group, so a Ctrl+C anywhere later in the run would reach it too and take
+    # the ownership pass down part-way through a tree it was halfway to fixing —
     # the one outcome worse than either finishing it or never starting it.
-    # Ignoring the interrupt lets the wait give up on its own terms while the
-    # pass runs to completion in the background.
+    # Ignoring the interrupt lets the pass run to completion in the background
+    # whatever happens to the rest of the script.
     (trap '' INT
         INTELIS_SHARED_FN_FRESH=1 intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
             chown_app_tree "${lis_path}" || true) &
@@ -2575,8 +2576,17 @@ fi
 [ -f "/tmp/vendor.tar.gz.md5" ] && rm /tmp/vendor.tar.gz.md5
 true  # absorb nonzero exit from the tests above
 
-# Reload Apache
-apache2ctl -k graceful || systemctl reload apache2 || systemctl restart apache2
+# Reload Apache so the code that just landed is what gets served (mod_php, and
+# opcache on instances running with validate_timestamps=0). Guarded by an `if`
+# so a failed reload reports instead of tripping the ERR trap.
+print header "Reloading Apache"
+if apache2ctl -k graceful >/dev/null 2>&1 || systemctl reload apache2 >/dev/null 2>&1 || systemctl restart apache2 >/dev/null 2>&1; then
+    print success "Apache reloaded."
+    log_action "Apache reloaded after instance updates"
+else
+    print warning "Could not reload Apache; please reload it manually (systemctl reload apache2)."
+    log_action "Apache reload failed after instance updates"
+fi
 
 # Print summary
 print header "Upgrade Summary"
@@ -2668,8 +2678,8 @@ log_action "Upgrade complete. Updated: ${#updated_instances[@]}, Failed: ${#fail
 # information about the instance, not a failure of the upgrade — the upgrade is
 # already done and its exit status must keep meaning what it meant.
 #
-# Two things have to settle before this runs, or it reports problems that are
-# already fixing themselves:
+# One thing has to settle before this runs, or it reports a problem that is
+# already fixing itself:
 #
 #   MySQL. The config rewrite restarts the server, and on_exit_restore_mysql
 #   brings it back — but that is an EXIT trap, so it fires AFTER everything here.
@@ -2678,38 +2688,33 @@ log_action "Upgrade complete. Updated: ${#updated_instances[@]}, Failed: ${#fail
 #   is a no-op when MySQL is already up, so calling it here costs nothing and the
 #   trap still stands as the last guard.
 #
-#   Ownership. The per-instance permission pass runs in the background, and the
-#   check reports what www-data can write. Waiting first is the difference
-#   between reporting the finished tree and reporting a half-chowned one.
+# The background permission pass, by contrast, does NOT need settling: the
+# writability the check probes was fixed synchronously during apply. When the
+# pass is still going, a note beside the check says so instead of a wait.
 # ---------------------------------------------------------------------------
 if [ ${#updated_instances[@]} -gt 0 ]; then
     ensure_mysql_running "/etc/mysql/mysql.conf.d/mysqld.cnf" || true
 
     if [ ${#permission_pids[@]} -gt 0 ]; then
-        _perm_wait_started=$(date +%s)
-        # Bounded, because nothing here is blocked on it. The wait exists only so
-        # the post-upgrade check below reports a settled tree rather than one
-        # still being chowned — worth a couple of minutes, never worth an
-        # open-ended one. Ctrl+C ends the wait the same way, and neither ends the
-        # pass. Overridable for a machine where it is genuinely slower than this.
-        # `|| _perm_wait_rc=$?` rather than a bare call: giving up on the wait
-        # is an ordinary outcome, and a bare non-zero return here would trip the
-        # ERR trap and abort an upgrade that has already succeeded.
-        _perm_wait_rc=0
-        WAIT_PROGRESS_TIMEOUT="${PERMISSION_WAIT_TIMEOUT:-180}" \
-            wait_with_progress "Waiting for the permission pass to finish" \
-            "${permission_pids[@]}" || _perm_wait_rc=$?
-        # Only what was spent WAITING, not what the pass took: it runs in the
-        # background alongside the rest of the upgrade, so most of its work is
-        # normally already done by the time anything blocks on it. A number here
-        # is time the operator actually lost.
-        _perm_waited=$(( $(date +%s) - _perm_wait_started ))
-        if [ "$_perm_wait_rc" -ne 0 ]; then
-            print warning "The permission pass is still running; it will finish on its own."
-            print warning "  The ownership lines in the check below may not have settled yet."
-            log_action "Stopped waiting on the permission pass after $(format_duration "${_perm_waited}")"
-        elif [ "$_perm_waited" -ge 5 ]; then
-            print info "Waited $(format_duration "${_perm_waited}") for it."
+        # No waiting. This used to block (bounded at 3 minutes) so the check
+        # below reported a settled tree — but everything that check actually
+        # probes (var/ and the upload dirs) was already fixed synchronously
+        # during apply by the quick-sync ACL pass, so the wait spent a minute
+        # of the operator's time buying a verdict that was already in. The
+        # full-tree pass is belt-and-braces over paths the check never looks
+        # at; it keeps running in the background and finishes on its own,
+        # exactly as it did when Ctrl+C ended the old wait early.
+        _perm_still_running=0
+        for _pid in "${permission_pids[@]}"; do
+            if kill -0 "$_pid" 2>/dev/null; then
+                _perm_still_running=1
+                break
+            fi
+        done
+        if [ "$_perm_still_running" -eq 1 ]; then
+            print info "The final permission pass is still finishing in the background."
+            print info "  If an ownership line below looks off, re-run 'intelis check' in a minute."
+            log_action "Permission pass still running at post-upgrade check; not waiting on it"
         fi
     fi
 
