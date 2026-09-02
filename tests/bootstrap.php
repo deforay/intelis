@@ -79,3 +79,34 @@ if (!function_exists('_translate')) {
         return (string) $text;
     }
 }
+
+// Same reasoning for the request helpers the swept endpoints call. The real
+// _sanitizeInput() runs HTML Purifier; a test drives endpoints with plain values,
+// so a passthrough keeps the framework out of the suite. _rawInput() mirrors the
+// real lookup order: the registered request's parsed body, then $_POST.
+if (!function_exists('_sanitizeInput')) {
+    function _sanitizeInput(mixed $input, bool $nullifyEmptyStrings = false): mixed
+    {
+        return $input;
+    }
+}
+
+if (!function_exists('_rawInput')) {
+    function _rawInput(string $key, mixed $default = null): mixed
+    {
+        try {
+            $request = \App\Registries\AppRegistry::get('request');
+        } catch (\Throwable) {
+            $request = null;
+        }
+        $body = ($request instanceof \Psr\Http\Message\ServerRequestInterface)
+            ? $request->getParsedBody()
+            : null;
+
+        if (!is_array($body)) {
+            $body = $_POST ?? [];
+        }
+
+        return $body[$key] ?? $default;
+    }
+}
