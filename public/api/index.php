@@ -24,6 +24,8 @@ if (is_file(dirname(__DIR__) . '/.maintenance')) {
 $requestPath = (string) (parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '');
 $requestPath = (string) preg_replace('/([\/.])\1+/', '$1', $requestPath);
 $isHealthProbe = rtrim($requestPath, '/') === '/api/v1.1/health';
+// DatabaseFactory rethrows a failed connection instead of exiting when this is set.
+define('INTELIS_HEALTH_PROBE', $isHealthProbe);
 
 try {
     require_once dirname(__DIR__) . '/../bootstrap.php';
