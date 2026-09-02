@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use MysqliDb;
 use Override;
 use Exception;
+use App\Services\Database\MysqliDb;
 use Generator;
 use Throwable;
 use App\Utilities\MiscUtility;
