@@ -1,5 +1,7 @@
 <?php
 
+use Psr\Http\Message\ServerRequestInterface;
+use App\Registries\AppRegistry;
 use App\Utilities\SampleCountUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -7,6 +9,10 @@ use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
 
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 
 /** @var DatabaseService $db */
@@ -37,47 +43,18 @@ $sTable = $tableName;
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-     $sOffset = $_POST['iDisplayStart'];
-     $sLimit = $_POST['iDisplayLength'];
+     $sOffset = (int) $_POST['iDisplayStart'];
+     $sLimit = (int) $_POST['iDisplayLength'];
 }
 
 
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-          if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-               $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
-}
-
-
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 $sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", (string) $_POST['sSearch']);
-     $sWhereSub = "";
-     foreach ($searchArray as $search) {
-          if ($sWhereSub === "") {
-               $sWhereSub .= "(";
-          } else {
-               $sWhereSub .= " AND (";
-          }
-          $colSize = count($aColumns);
-
-          for ($i = 0; $i < $colSize; $i++) {
-               if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-               } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-               }
-          }
-          $sWhereSub .= ")";
-     }
-     $sWhere[] = $sWhereSub;
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+if (!empty($columnSearch)) {
+     $sWhere[] = $columnSearch;
 }
 
 
@@ -95,25 +72,45 @@ if (!empty($_POST['sampleCollectionDate'])) {
      }
 }
 if (isset($_POST['formField']) && trim((string) $_POST['formField']) !== '') {
-     $sWhereSubC = "  (";
+     // Whitelist keeps request values out of the SQL as identifiers, and maps
+     // each option to the column that actually holds it: state/district live on
+     // the joined facility row.
+     $checkableFields = [
+          'sample_code' => 'vl.sample_code',
+          'sample_collection_date' => 'vl.sample_collection_date',
+          'sample_batch_id' => 'vl.sample_batch_id',
+          'child_id' => 'vl.child_id',
+          'child_name' => 'vl.child_name',
+          'facility_id' => 'vl.facility_id',
+          'facility_state' => 'f.facility_state',
+          'facility_district' => 'f.facility_district',
+          'specimen_type' => 'vl.specimen_type',
+          'result' => 'vl.result',
+          'result_status' => 'vl.result_status',
+     ];
      $sWhereSub = '';
      $searchArray = explode(",", (string) $_POST['formField']);
      foreach ($searchArray as $search) {
+          if (!isset($checkableFields[$search])) {
+               continue;
+          }
+          $column = $checkableFields[$search];
           if ($sWhereSub === "") {
-               $sWhereSub .= $sWhereSubC;
-               $sWhereSub .= "(";
+               $sWhereSub .= "  ((";
           } else {
                $sWhereSub .= " AND (";
           }
           if ($search === 'sample_collection_date') {
-              $sWhereSub .=  'vl.' . $search . " IS NULL";
+               $sWhereSub .= $column . " IS NULL";
           } else {
-              $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
+               $sWhereSub .= $column . " ='' OR " . $column . " IS NULL";
           }
           $sWhereSub .= ")";
      }
-     $sWhereSub .= ")";
-     $sWhere[] = $sWhereSub;
+     if ($sWhereSub !== '') {
+          $sWhereSub .= ")";
+          $sWhere[] = $sWhereSub;
+     }
 }
 //echo $sWhereSub; die;
 $dWhere = '';
@@ -148,7 +145,9 @@ if (isset($sLimit) && isset($sOffset)) {
 }
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("SELECT vl.eid_id,vl.facility_id,vl.child_name,vl.result,f.facility_name,f.facility_code,s.sample_name,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere ORDER BY vl.last_modified_datetime DESC, $sOrder");
+// An empty sort must not leave a dangling comma after the fixed ORDER BY column.
+$filterTotalOrder = (!empty($sOrder) && $sOrder !== '') ? ", $sOrder" : '';
+$aResultFilterTotal = $db->rawQuery("SELECT vl.eid_id,vl.facility_id,vl.child_name,vl.result,f.facility_name,f.facility_code,s.sample_name,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere ORDER BY vl.last_modified_datetime DESC $filterTotalOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */

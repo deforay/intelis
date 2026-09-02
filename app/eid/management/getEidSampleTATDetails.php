@@ -36,14 +36,14 @@ try {
 
 	$sOffset = $sLimit = null;
 	if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-		$sOffset = $_POST['iDisplayStart'];
-		$sLimit = $_POST['iDisplayLength'];
+		$sOffset = (int) $_POST['iDisplayStart'];
+		$sLimit = (int) $_POST['iDisplayLength'];
 	}
 
 
 	$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-	$columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+	$columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
 	$sWhere = [];
 	if (!empty($columnSearch) && $columnSearch != '') {
 		$sWhere[] = $columnSearch;
@@ -78,7 +78,7 @@ try {
 	[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '', includeTime: true);
 
 	if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-		$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+		$sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
 	}
 	if (!empty($_POST['sampleCollectionDate'])) {
 		$sWhere[] = " vl.sample_collection_date BETWEEN '$start_date' AND '$end_date'";
@@ -88,13 +88,13 @@ try {
 	}
 
 	if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
-		$sWhere[] = " vl.sample_tested_datetime BETWEEN '$start$testedStartDate_date' AND '$testedEndDate'";
+		$sWhere[] = " vl.sample_tested_datetime BETWEEN '$testedStartDate' AND '$testedEndDate'";
 	}
 	if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-		$sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
+		$sWhere[] = ' vl.specimen_type = ' . (int) $_POST['sampleType'];
 	}
 	if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-		$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+		$sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
 	}
 
 	if (!empty($sWhere)) {
