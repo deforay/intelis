@@ -11916,10 +11916,6 @@ msgstr ""
 msgid "HIV Recency"
 msgstr ""
 
-#: classes/Services/TestsService.php:98
-msgid "Tubercolosis"
-msgstr ""
-
 #: classes/Services/TestsService.php:111
 msgid "Other Tests"
 msgstr ""

@@ -199,7 +199,7 @@ final class TestsService
                 ]
             ],
             'tb' => [
-                'testName' => _translate('Tubercolosis', escapeTextOrContext: true),
+                'testName' => _translate('Tuberculosis', escapeTextOrContext: true),
                 'testShortCode' => 'TB',
                 'tableName' => 'form_tb',
                 'primaryKey' => 'tb_id',
