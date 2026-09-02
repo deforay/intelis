@@ -21,7 +21,7 @@ $key = (string) $general->getGlobalConfig('key');
 
 if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) !== "") {
 
-     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status"];
+     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status", "Implementing Partner"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
@@ -65,6 +65,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
           $row[] = $sampleCollectionDate;
           $row[] = ($aRow['labName']);
           $row[] = ($aRow['status_name']);
+          $row[] = $aRow['i_partner_name'];
 
           $writer->addRow(Row::fromValues($row));
      }

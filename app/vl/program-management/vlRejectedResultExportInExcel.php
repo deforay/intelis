@@ -22,7 +22,7 @@ $key = (string) $general->getGlobalConfig('key');
 
 if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['rejectedViralLoadResult']) !== "") {
 
-     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action"];
+     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action", "Implementing Partner"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
@@ -67,6 +67,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $row[] = $aRow['labName'];
           $row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);
           $row[] = $aRow['recommended_corrective_action_name'];
+          $row[] = $aRow['i_partner_name'];
 
           $writer->addRow(Row::fromValues($row));
      }

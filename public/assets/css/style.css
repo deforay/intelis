@@ -754,3 +754,38 @@ div.dataTables_processing>div:last-child {
         margin: 8px 0 0 26px;
     }
 }
+
+/* Predefined date ranges: two columns beside the calendars so a long list
+   does not leave a tall empty gap below them */
+@media (min-width: 564px) {
+    .daterangepicker.show-calendar .ranges ul {
+        width: 280px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-content: start;
+    }
+
+    .daterangepicker.show-calendar .ranges li {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* Collapsible presets panel: the toggle is injected by dates.js.php */
+.daterangepicker .drp-ranges-toggle {
+    display: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    color: #08c;
+    text-align: right;
+    user-select: none;
+}
+
+.daterangepicker.show-calendar .drp-ranges-toggle {
+    display: block;
+}
+
+.daterangepicker.show-calendar.drp-ranges-collapsed .ranges ul {
+    display: none;
+}
