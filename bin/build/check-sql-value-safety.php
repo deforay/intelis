@@ -115,6 +115,18 @@ const COVERED_FILES = [
     'app/admin/monitoring/get-sync-status-details.php',
     'app/admin/monitoring/get-api-sync-history-list.php',
     'app/admin/monitoring/get-samplewise-report.php',
+    'app/vl/reference/get-vl-sample-type-helper.php',
+    'app/cd4/reference/get-cd4-sample-type-helper.php',
+    'app/eid/reference/get-eid-sample-type-helper.php',
+    'app/hepatitis/reference/get-hepatitis-sample-type-helper.php',
+    'app/covid-19/reference/getCovid19SampleTypeDetails.php',
+    'app/tb/reference/getTbSampleTypeDetails.php',
+    'app/vl/reference/get-vl-sample-rejection-reasons-helper.php',
+    'app/cd4/reference/get-cd4-sample-rejection-reasons-helper.php',
+    'app/eid/reference/get-eid-sample-rejection-reasons-helper.php',
+    'app/hepatitis/reference/get-hepatitis-sample-rejection-reasons-helper.php',
+    'app/covid-19/reference/getCovid19SampleRejectionDetails.php',
+    'app/tb/reference/getTbSampleRejectionDetails.php',
 ];
 
 const RAW_VALUE_PATTERNS = [
