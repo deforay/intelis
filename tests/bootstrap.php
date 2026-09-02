@@ -91,6 +91,23 @@ if (!function_exists('_sanitizeInput')) {
     }
 }
 
+// The AJAX guard the endpoints call. The real one asks UsersService, which the
+// suite does not boot; this keeps the one rule a test relies on -- superadmin
+// (role 1) always passes, anyone else needs the privilege in their session --
+// so an endpoint under test still refuses a caller without the page's privilege.
+if (!function_exists('_requirePrivilege')) {
+    function _requirePrivilege(string $page, ?string $message = null): void
+    {
+        if ((int) ($_SESSION['roleId'] ?? 0) === 1 || isset($_SESSION['privileges'][$page])) {
+            return;
+        }
+        throw new \App\Exceptions\SystemException(
+            $message ?? 'You do not have permission to perform this action.',
+            403
+        );
+    }
+}
+
 if (!function_exists('_rawInput')) {
     function _rawInput(string $key, mixed $default = null): mixed
     {
