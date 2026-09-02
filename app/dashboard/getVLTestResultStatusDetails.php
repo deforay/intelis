@@ -41,48 +41,18 @@ try {
 
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-          $sOffset = $_POST['iDisplayStart'];
-          $sLimit = $_POST['iDisplayLength'];
+          $sOffset = (int) $_POST['iDisplayStart'];
+          $sLimit = (int) $_POST['iDisplayLength'];
      }
 
 
 
-     $sOrder = "";
-     if (isset($_POST['iSortCol_0'])) {
-          $sOrder = "";
-          for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-               if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-               }
-          }
-          $sOrder = substr_replace($sOrder, "", -2);
-     }
-
-
+     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
      $sWhere = [];
-     if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-          $searchArray = explode(" ", (string) $_POST['sSearch']);
-          $sWhereSub = "";
-          foreach ($searchArray as $search) {
-               if ($sWhereSub === "") {
-                    $sWhereSub .= " (";
-               } else {
-                    $sWhereSub .= " AND (";
-               }
-               $colSize = count($aColumns);
-
-               for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-               }
-               $sWhereSub .= ")";
-          }
-          $sWhere[] = $sWhereSub;
+     $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+     if (!empty($columnSearch)) {
+          $sWhere[] = $columnSearch;
      }
 
      $sQuery = "SELECT * FROM form_vl as vl
@@ -94,17 +64,17 @@ try {
 
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-          $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
+          $sWhere[] = ' b.batch_code LIKE "%' . $db->escapeLike($_POST['batchCode']) . '%"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
           [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
           $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
      }
      if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
-          $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
+          $sWhere[] = ' s.sample_id = ' . (int) $_POST['sampleType'];
      }
      if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-          $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
+          $sWhere[] = ' f.facility_id = ' . (int) $_POST['facilityName'];
      }
 
      if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
@@ -116,18 +86,14 @@ try {
           $sWhere[] = $labScope;
      }
 
-     if ($sWhere !== []) {
-          $sWhere[] = ' vl.result_status = "' . $_POST['status'] . '"';
-     } else {
-          $sWhere = ' WHERE vl.result_status = "' . $_POST['status'] . '"';
-     }
+     // Keep $sWhere an array throughout: the old string fallback made the
+     // countableWhere append below fatal on a filterless request.
+     $sWhere[] = ' vl.result_status = ' . (int) $_POST['status'];
 
-     if ($sWhere !== '' && $sWhere !== '0' && $sWhere !== []) {
-          // A cancelled sample was called off before testing, so it does not belong
-          // in this list.
-          $sWhere[] = SampleCountUtility::countableWhere('vl');
-          $sQuery = "$sQuery WHERE " . implode(' AND ', $sWhere);
-     }
+     // A cancelled sample was called off before testing, so it does not belong
+     // in this list.
+     $sWhere[] = SampleCountUtility::countableWhere('vl');
+     $sQuery = "$sQuery WHERE " . implode(' AND ', $sWhere);
 
      $sQuery = "$sQuery ORDER BY vl.last_modified_datetime DESC";
 

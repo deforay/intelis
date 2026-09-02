@@ -60,10 +60,10 @@ try {
      }
 
      if (isset($_POST['syncedType']) && trim((string) $_POST['syncedType']) !== '') {
-          $sWhere[] = ' a.request_type like "' . $_POST['syncedType'] . '"';
+          $sWhere[] = ' a.request_type like "' . $db->escape((string) $_POST['syncedType']) . '"';
      }
      if (isset($_POST['testType']) && trim((string) $_POST['testType']) !== '') {
-          $sWhere[] = ' a.test_type like "' . $_POST['testType'] . '"';
+          $sWhere[] = ' a.test_type like "' . $db->escape((string) $_POST['testType']) . '"';
      }
      if (isset($_POST['apiToken']) && trim((string) $_POST['apiToken']) !== '') {
           $sWhere[] = ' a.api_token like "%' . $db->escape($_POST['apiToken']) . '%"';

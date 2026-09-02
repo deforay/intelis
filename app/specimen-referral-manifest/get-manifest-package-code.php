@@ -40,11 +40,11 @@ if ($labScope = $general->labScopeWhere('vl')) {
 }
 
 if (!empty($_POST['testingLab'])) {
-	$where[] = " p.lab_id IN(" . $_POST['testingLab'] . ")";
+	$where[] = " p.lab_id IN(" . $db->inIntList($_POST['testingLab']) . ")";
 }
 
 if (!empty($_POST['genericTestType'])) {
-	$where[] = " vl.test_type =" . $_POST['genericTestType'];
+	$where[] = " vl.test_type = " . (int) $_POST['genericTestType'];
 }
 
 

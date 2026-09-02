@@ -32,7 +32,10 @@ try {
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
 
-    $formTable = TestsService::getTestTableName($_POST['type']);
+    $batchType = (string) ($_POST['type'] ?? '');
+    // getTestTableName() throws on an unknown type, so past this point
+    // $batchType is a whitelisted test-type slug and safe to reuse.
+    $formTable = TestsService::getTestTableName($batchType);
     $formId = (int) $general->getGlobalConfig('vl_form');
 
     // Check if test type is not set for any batch
@@ -43,7 +46,7 @@ try {
     if (!empty($incompleteBatches)) {
         $incompleteBatches = implode(",", $incompleteBatches);
         $update = "UPDATE batch_details SET test_type = ? WHERE (test_type is NULL OR test_type = '') and batch_id in (SELECT DISTINCT sample_batch_id FROM $formTable WHERE sample_batch_id IN ($incompleteBatches))";
-        $db->rawQuery($update, [$_POST['type']]);
+        $db->rawQuery($update, [$batchType]);
     }
 
     $pdfLayout = $general->getGlobalConfig('batch_pdf_layout') ?? 'standard';
@@ -58,20 +61,20 @@ try {
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
+        $sOffset = (int) $_POST['iDisplayStart'];
+        $sLimit = (int) $_POST['iDisplayLength'];
     }
 
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
 
     $sWhere = [];
     if (!empty($columnSearch) && $columnSearch != '') {
         $sWhere[] = $columnSearch;
     }
 
-    $sWhere[] = " b.test_type like '" . $_POST['type'] . "'";
+    $sWhere[] = " b.test_type like '" . $batchType . "'";
 
     // Facility isolation: a mapped STS user only sees batches that contain their
     // own facilities' samples (the join to the sample table carries facility_id).
@@ -88,12 +91,12 @@ try {
     }
 
     if (isset($_POST['testType']) && ($_POST['testType'] != "")) {
-        $sWhere[] = " vl.test_type = '" . $_POST['testType'] . "'";
+        $sWhere[] = ' vl.test_type = ' . (int) $_POST['testType'];
     }
 
     $testTypeCol = "";
 
-    if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
+    if (!empty($batchType) && $batchType == 'generic-tests') {
         $testTypeCol = " vl.test_type, ";
     }
 
@@ -143,13 +146,13 @@ try {
         "aaData" => []
     ];
     $editBatch = $delete = $pdf = $editPosition = false;
-    if (_isAllowed("/batch/edit-batch.php?type=" . $_POST['type'])) {
+    if (_isAllowed("/batch/edit-batch.php?type=" . $batchType)) {
         $editBatch = true;
         $delete = true;
         $pdf = true;
         $editPosition = true;
     }
-    if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
+    if (!empty($batchType) && $batchType == 'generic-tests') {
         $testTypeInfo = $general->getDataByTableAndFields("r_test_types", ["test_type_id", "test_standard_name", "test_loinc_code"], false, "test_status='active'");
         $testTypes = [];
         foreach ($testTypeInfo as $tests) {
@@ -161,17 +164,17 @@ try {
         $edit = '';
         $editPositionLink = '';
         if ($editBatch) {
-            if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
-                $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '&testType=' . base64_encode((string) $aRow['test_type']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>&nbsp;';
+            if (!empty($batchType) && $batchType == 'generic-tests') {
+                $edit = '<a href="edit-batch.php?type=' . $batchType . '&id=' . base64_encode((string) $aRow['batch_id']) . '&testType=' . base64_encode((string) $aRow['test_type']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>&nbsp;';
             } else {
-                $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>&nbsp;';
+                $edit = '<a href="edit-batch.php?type=' . $batchType . '&id=' . base64_encode((string) $aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>&nbsp;';
             }
         }
         if ($editPosition) {
-            if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
-                $editPositionLink = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '&testType=' . base64_encode((string) $aRow['test_type']) . '" class="btn btn-default btn-xs" style="" title="' . _translate("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _translate("Edit Position") . '</a>';
+            if (!empty($batchType) && $batchType == 'generic-tests') {
+                $editPositionLink = '<a href="edit-batch-position.php?type=' . $batchType . '&id=' . base64_encode((string) $aRow['batch_id']) . '&testType=' . base64_encode((string) $aRow['test_type']) . '" class="btn btn-default btn-xs" style="" title="' . _translate("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _translate("Edit Position") . '</a>';
             } else {
-                $editPositionLink = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '" class="btn btn-default btn-xs" style="" title="' . _translate("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _translate("Edit Position") . '</a>';
+                $editPositionLink = '<a href="edit-batch-position.php?type=' . $batchType . '&id=' . base64_encode((string) $aRow['batch_id']) . '" class="btn btn-default btn-xs" style="" title="' . _translate("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _translate("Edit Position") . '</a>';
             }
         }
         if ($pdf) {
@@ -182,10 +185,10 @@ try {
             if ($pdfLayout == 'compact') {
                 $printBatchPdf = '';
             } else {
-                $printBatchPdf = '<a href="' . $fullPdfUrl . '?type=' . $_POST['type'] . '&id=' . $batchId . '" target="_blank" rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Batch PDF") . '</a>';
+                $printBatchPdf = '<a href="' . $fullPdfUrl . '?type=' . $batchType . '&id=' . $batchId . '" target="_blank" rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Batch PDF") . '</a>';
             }
 
-            $printCompactPdf = '<a href="' . $compactPdfUrl . '?type=' . $_POST['type'] . '&id=' . $batchId . '" target="_blank" rel="noopener" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Compact Batch PDF") . '"><em class="fa-solid fa-table-columns"></em> ' . _translate("Compact Batch PDF") . '</a>';
+            $printCompactPdf = '<a href="' . $compactPdfUrl . '?type=' . $batchType . '&id=' . $batchId . '" target="_blank" rel="noopener" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Compact Batch PDF") . '"><em class="fa-solid fa-table-columns"></em> ' . _translate("Compact Batch PDF") . '</a>';
 
             $printBarcode = trim($printBatchPdf . '&nbsp;' . $printCompactPdf);
         }
@@ -199,7 +202,7 @@ try {
 
         $row = [];
         $row[] = $aRow['batch_code'];
-        if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
+        if (!empty($batchType) && $batchType == 'generic-tests') {
             $row[] = $testTypes[$aRow['test_type']];
         }
         if ($formId == CAMEROON) {
