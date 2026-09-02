@@ -812,9 +812,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 													<td colspan="3">
 														<select name="rejectionReason" id="rejectionReason"
 															class="form-control select2 sampleRjtReportFilter"
-															title="Please choose reason"
-															onchange="checkRejectionReason();">
-															<option value="">-- Select --</option>
+															title="<?php echo _translate('Please choose reason'); ?>">
+															<option value="">
+																<?php echo _translate("-- Select --"); ?>
+															</option>
 															<?php foreach ($rejectionTypeResult as $type) { ?>
 																<optgroup
 																	label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
@@ -828,9 +829,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 																		<?php }
 																	} ?>
 																</optgroup>
-															<?php }
-															if ($general->isLISInstance() === false) { ?>
-																<option value="other">Other (Please Specify) </option>
 															<?php } ?>
 														</select>
 													</td>
