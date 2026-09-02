@@ -46,13 +46,13 @@ if (!empty($_POST['sampleCollectionDate'])) {
     $sWhere[] = SampleRejectionUtility::sqlPredicate('vl') . ' AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '"';
 
     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-        $sWhere[] = ' vl.specimen_type = "' . $_POST['sampleType'] . '"';
+        $sWhere[] = ' vl.specimen_type = ' . (int) $_POST['sampleType'];
     }
     if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
-        $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
+        $sWhere[] = ' vl.lab_id = ' . (int) $_POST['labName'];
     }
     if (isset($_POST['clinicName']) && is_array($_POST['clinicName']) && $_POST['clinicName'] !== []) {
-        $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
+        $sWhere[] = " vl.facility_id IN (" . $db->inIntList($_POST['clinicName']) . ")";
     }
     if (!empty($_SESSION['facilityMap'])) {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";

@@ -63,6 +63,12 @@ const COVERED_FILES = [
     'app/cd4/management/get-cd4-monthly-threshold-report.php',
     'app/cd4/management/get-rejected-samples.php',
     'app/cd4/management/get-sample-status.php',
+    'app/generic-tests/program-management/get-data-export.php',
+    'app/generic-tests/program-management/get-sample-tat-details.php',
+    'app/generic-tests/program-management/get-rejection-result.php',
+    'app/generic-tests/program-management/get-patient-test-history-report.php',
+    'app/generic-tests/program-management/generic-tests-sample-testing-report.php',
+    'app/generic-tests/program-management/get-sample-status.php',
 ];
 
 const RAW_VALUE_PATTERNS = [
