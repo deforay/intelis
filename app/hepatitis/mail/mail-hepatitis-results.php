@@ -250,7 +250,7 @@ $batchResult = $db->rawQuery($batchQuery);
 <script src="/assets/js/jquery.multi-select.js"></script>
 <script src="/assets/js/jquery.quicksearch.js"></script>
 <script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js?v=<?= filemtime(WEB_ROOT . '/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 <script type="text/javascript">
   noOfAllowedSamples = 100;
   var startDate = "";

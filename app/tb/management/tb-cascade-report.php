@@ -376,7 +376,7 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
 </div>
 
 <script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js?v=<?= filemtime(WEB_ROOT . '/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 <script>
     let perLabTable = null;
     let referralMatrixTable = null;

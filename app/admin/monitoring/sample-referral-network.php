@@ -484,7 +484,7 @@ $activeTests = TestsService::getActiveTests();
 </div>
 
 <script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js?v=<?= filemtime(WEB_ROOT . '/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 <script src="/assets/plugins/leaflet/leaflet.js"></script>
 <script src="/assets/plugins/leaflet/leaflet.markercluster.js"></script>
 <script src="/assets/js/tom-select.complete.min.js"></script>

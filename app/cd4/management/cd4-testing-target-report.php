@@ -249,7 +249,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 </div>
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
 <script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js?v=<?= filemtime(WEB_ROOT . '/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 <script type="text/javascript">
   let searchExecuted = false;
   var startDate = "";

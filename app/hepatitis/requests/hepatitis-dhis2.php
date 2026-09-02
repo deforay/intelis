@@ -396,7 +396,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 </div>
 <link rel="stylesheet" type="text/css" href="/assets/css/tooltipster.bundle.min.css" />
 <script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js?v=<?= filemtime(WEB_ROOT . '/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 <script type="text/javascript" src="/assets/js/tooltipster.bundle.min.js"></script>
 
 <?= CommonService::barcodeScripts(); ?>
