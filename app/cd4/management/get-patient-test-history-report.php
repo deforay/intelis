@@ -43,15 +43,15 @@ try {
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
+        $sOffset = (int) $_POST['iDisplayStart'];
+        $sLimit = (int) $_POST['iDisplayLength'];
     }
 
     $sWhere = [];
 
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
 
     $sWhere = [];
     if (!empty($columnSearch) && $columnSearch != '') {
@@ -83,16 +83,18 @@ try {
             FROM form_cd4 as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
             LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
-            LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
+            LEFT JOIN r_cd4_sample_types as s ON s.sample_id=vl.specimen_type
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
     $sWhere[] = ' vl.cd4_result is not null AND vl.cd4_result not like "" AND vl.result_status = ' . ACCEPTED;
 
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-        $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
+        $sWhere[] = ' vl.patient_art_no like "%' . $db->escapeLike($_POST['patientId']) . '%"';
     }
     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-        $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
+        // CONCAT_WS keeps a space between the name parts, so searching
+        // "John Doe" matches; plain CONCAT only matched "JohnDoe".
+        $sWhere[] = " CONCAT_WS(' ', NULLIF(vl.patient_first_name,''), NULLIF(vl.patient_middle_name,''), NULLIF(vl.patient_last_name,'')) like '%" . $db->escapeLike($_POST['patientName']) . "%'";
     }
 
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {

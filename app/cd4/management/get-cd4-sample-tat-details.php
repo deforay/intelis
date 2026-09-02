@@ -1,12 +1,19 @@
 <?php
 
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestsService;
 use App\Utilities\TurnaroundTimeUtility;
+
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -28,47 +35,17 @@ $sTable = $tableName;
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-	$sOffset = $_POST['iDisplayStart'];
-	$sLimit = $_POST['iDisplayLength'];
+	$sOffset = (int) $_POST['iDisplayStart'];
+	$sLimit = (int) $_POST['iDisplayLength'];
 }
 
 
-
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-	$sOrder = "";
-	for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-		if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-			$sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-		}
-	}
-	$sOrder = substr_replace($sOrder, "", -2);
-}
-
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 $sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-	$searchArray = explode(" ", (string) $_POST['sSearch']);
-	$sWhereSub = "";
-	foreach ($searchArray as $search) {
-		if ($sWhereSub === "") {
-			$sWhereSub .= " (";
-		} else {
-			$sWhereSub .= " AND (";
-		}
-		$colSize = count($aColumns);
-
-		for ($i = 0; $i < $colSize; $i++) {
-			if ($i < $colSize - 1) {
-				$sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-			} else {
-				$sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-			}
-		}
-		$sWhereSub .= ")";
-	}
-	$sWhere[] = $sWhereSub;
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+if (!empty($columnSearch)) {
+	$sWhere[] = $columnSearch;
 }
 
 
@@ -105,11 +82,11 @@ if ($general->isSTSInstance()) {
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+	$sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
 }
 
 if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
-	$sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
+	$sWhere[] = ' vl.lab_id = ' . (int) $_POST['labName'];
 }
 
 if (!empty($_POST['sampleCollectionDate'])) {
@@ -136,23 +113,25 @@ if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate'
 	}
 }
 if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-	$sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
+	$sWhere[] = ' vl.specimen_type = ' . (int) $_POST['sampleType'];
 }
 if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-	$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+	$sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
 }
+// The TAT export reads $_SESSION['cd4TatData']['sWhere'] / ['sOrder'], so the
+// session must hold that array; storing the whole query string here made the
+// export silently ignore every filter. Reset first so a filterless search does
+// not export the previous search's filters.
+$_SESSION['cd4TatData'] = [];
 if ($sWhere !== []) {
-	//$_SESSION['tbTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
-	$sWhere = implode(" AND ", $sWhere);
+	$_SESSION['cd4TatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
 	$sQuery = $sQuery . ' AND ' . $sWhere;
 }
 
 if (!empty($sOrder) && $sOrder !== '') {
-	//$_SESSION['tbTatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-	$sOrder = preg_replace('/\s+/', ' ', $sOrder);
+	$_SESSION['cd4TatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
 	$sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-$_SESSION['cd4TatData'] = $sQuery;
 
 if (isset($sLimit) && isset($sOffset)) {
 	$sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
