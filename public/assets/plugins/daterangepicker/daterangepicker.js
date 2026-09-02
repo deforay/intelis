@@ -51,7 +51,11 @@
         this.timePicker24Hour = false;
         this.timePickerIncrement = 1;
         this.timePickerSeconds = false;
-        this.linkedCalendars = true;
+        // Unlinked by default: each calendar navigates on its own, so changing the
+        // left month/year does not yank the right calendar along. The snap in
+        // updateMonthsInView() keeps the right calendar honest once a start date
+        // is picked, which is what prevented mixed from/to years with linking.
+        this.linkedCalendars = false;
         this.autoUpdateInput = true;
         this.alwaysShowCalendars = true;
         this.ranges = {};
@@ -562,6 +566,14 @@
             } else {
                 if (this.leftCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM') && this.rightCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM')) {
                     this.leftCalendar.month = this.startDate.clone().date(2);
+                    this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month');
+                } else if (!this.linkedCalendars &&
+                    this.rightCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM') &&
+                    this.rightCalendar.month.format('YYYY-MM') != this.startDate.clone().add(1, 'month').format('YYYY-MM')) {
+                    // A start date was just picked while the right calendar sits on an
+                    // unrelated month (possibly years away). Snap it next to the start
+                    // date so the end-date click can't land on a year the user isn't
+                    // looking at.
                     this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month');
                 }
             }
