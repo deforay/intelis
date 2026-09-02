@@ -623,17 +623,28 @@ foreach ($rejectionTypeResult as $type) {
 					separator: ' to ',
 				},
 				showDropdowns: true,
-				alwaysShowCalendars: false,
+				alwaysShowCalendars: true,
+				linkedCalendars: false,
 				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
+				minDate: moment('2013-01-01'),
 				maxDate: moment(),
 				ranges: {
 					'Today': [moment(), moment()],
 					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
 					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
 					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+					'Last 18 Months': [moment().subtract(18, 'month').startOf('month'), moment().endOf('month')],
+					'Last 24 Months': [moment().subtract(24, 'month').startOf('month'), moment().endOf('month')],
+					'Last 30 Months': [moment().subtract(30, 'month').startOf('month'), moment().endOf('month')],
+					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+					'Current Year To Date': [moment().startOf('year'), moment()]
 				}
 			},
 			function(start, end) {

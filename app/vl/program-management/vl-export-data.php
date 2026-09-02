@@ -589,9 +589,11 @@ if ($formId == COUNTRY\CAMEROON) {
 					separator: ' to ',
 				},
 				showDropdowns: true,
-				alwaysShowCalendars: false,
+				alwaysShowCalendars: true,
+				linkedCalendars: false,
 				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
+				minDate: moment('2013-01-01'),
 				maxDate: moment(),
 				ranges: {
 					'Today': [moment(), moment()],
@@ -604,6 +606,9 @@ if ($formId == COUNTRY\CAMEROON) {
 					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
 					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
 					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+					'Last 18 Months': [moment().subtract(18, 'month').startOf('month'), moment().endOf('month')],
+					'Last 24 Months': [moment().subtract(24, 'month').startOf('month'), moment().endOf('month')],
+					'Last 30 Months': [moment().subtract(30, 'month').startOf('month'), moment().endOf('month')],
 					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
 					'Current Year To Date': [moment().startOf('year'), moment()]
 				}
