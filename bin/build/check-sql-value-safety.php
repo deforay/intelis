@@ -52,6 +52,17 @@ const COVERED_FILES = [
     'app/eid/management/get-rejected-samples.php',
     'app/eid/management/getPmtctCascadeReport.php',
     'app/eid/management/pmtctCascadeReportExport.php',
+    'app/cd4/management/get-data-export.php',
+    'app/cd4/management/get-positive-cd4-result-details.php',
+    'app/cd4/management/get-sample-rejection-report.php',
+    'app/cd4/management/get-result-not-available.php',
+    'app/cd4/management/data-quality-check.php',
+    'app/cd4/management/cd4-sample-testing-report.php',
+    'app/cd4/management/get-cd4-sample-tat-details.php',
+    'app/cd4/management/get-patient-test-history-report.php',
+    'app/cd4/management/get-cd4-monthly-threshold-report.php',
+    'app/cd4/management/get-rejected-samples.php',
+    'app/cd4/management/get-sample-status.php',
 ];
 
 const RAW_VALUE_PATTERNS = [
