@@ -22,7 +22,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
     $excel = new Spreadsheet();
     $output = [];
     $sheet = $excel->getActiveSheet();
-    $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name", "Sample Status"];
+    $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name", "Sample Status", "Implementing Partner"];
     if ($general->isStandaloneInstance()) {
         $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
     }
@@ -78,6 +78,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $row[] = $sampleCollectionDate;
         $row[] = ($aRow['labName']);
         $row[] = ($aRow['status_name']);
+        $row[] = $aRow['i_partner_name'];
         $output[] = $row;
     }
 

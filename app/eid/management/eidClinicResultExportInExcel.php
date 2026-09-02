@@ -27,7 +27,7 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) !== "") {
 
      $output = [];
-     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child's ID", "Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "Result"];
+     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child's ID", "Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "Result", "Implementing Partner"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
@@ -63,6 +63,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $row[] = $sampleTestDate;
           $row[] = $aRow['labName'];
           $row[] = $aRow['result'];
+          $row[] = $aRow['i_partner_name'];
           $vlSampleId[] = $aRow['eid_id'];
           $output[] = $row;
      }

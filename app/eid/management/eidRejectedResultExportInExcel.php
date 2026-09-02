@@ -24,7 +24,7 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['rejectedViralLoadResult']) !== "") {
 
      $output = [];
-     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action"];
+     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action", "Implementing Partner"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
@@ -54,6 +54,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $row[] = $aRow['labName'];
           $row[] = $aRow['rejection_reason_name'];
           $row[] = $aRow['recommended_corrective_action_name'];
+          $row[] = $aRow['i_partner_name'];
           $output[] = $row;
      }
      if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 50000) {

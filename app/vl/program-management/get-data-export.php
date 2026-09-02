@@ -240,11 +240,11 @@ try {
      }
      /* Funding src filter */
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-          $sWhere[] = '  vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+          $sWhere[] = '  vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
      }
      /* Implemening partner filter */
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
-          $sWhere[] =  '  vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+          $sWhere[] =  '  vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
      }
      if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
           $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
