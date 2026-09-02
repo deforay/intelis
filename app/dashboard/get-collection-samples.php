@@ -1,6 +1,7 @@
 <?php
 
 use App\Registries\AppRegistry;
+use App\Services\TestsService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
@@ -24,9 +25,15 @@ if (!empty($_POST['sampleCollectionDate'])) {
 
 $facilityId = [];
 //get collection data
-$table = $_POST['table'];
-foreach ($_POST['facilityId'] as $facility) {
-    $facilities[] = '"' . $facility . '"';
+// A request value names the table, so it is accepted only when it is one of
+// the test tables the app itself knows; anything else is refused, not queried.
+$table = (string) ($_POST['table'] ?? '');
+if (!in_array($table, TestsService::getAllTableNames(), true)) {
+    exit(0);
+}
+$facilities = [];
+foreach ((array) ($_POST['facilityId'] ?? []) as $facility) {
+    $facilities[] = '"' . $db->escape((string) $facility) . '"';
 }
 $collectionQuery = "SELECT COUNT(vl.unique_id) as total, facility_name
                     FROM $table as vl
