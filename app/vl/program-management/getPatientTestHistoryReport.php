@@ -46,8 +46,8 @@ try {
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
+        $sOffset = (int) $_POST['iDisplayStart'];
+        $sLimit = (int) $_POST['iDisplayLength'];
     }
 
     $sWhere = [];
@@ -91,12 +91,12 @@ try {
     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . ACCEPTED;
 
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-        $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
+        $sWhere[] = ' vl.patient_art_no like "%' . $db->escapeLike($_POST['patientId']) . '%"';
     }
     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
         // CONCAT_WS with NULLIF puts exactly one space between the parts that
         // exist, so searching "First Last" matches names stored in split columns.
-        $sWhere[] = " CONCAT_WS(' ', NULLIF(vl.patient_first_name,''), NULLIF(vl.patient_middle_name,''), NULLIF(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
+        $sWhere[] = " CONCAT_WS(' ', NULLIF(vl.patient_first_name,''), NULLIF(vl.patient_middle_name,''), NULLIF(vl.patient_last_name,'')) like '%" . $db->escapeLike($_POST['patientName']) . "%'";
     }
     if (isset($_POST['pthImplementingPartner']) && trim((string) $_POST['pthImplementingPartner']) !== '') {
         $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['pthImplementingPartner'])) . '"';

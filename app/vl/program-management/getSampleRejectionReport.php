@@ -50,8 +50,8 @@ try {
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
+        $sOffset = (int) $_POST['iDisplayStart'];
+        $sLimit = (int) $_POST['iDisplayLength'];
     }
 
     $sWhere = [];
@@ -104,32 +104,32 @@ try {
     }
 
     if (isset($_POST['rjtSampleType']) && $_POST['rjtSampleType'] != '') {
-        $sWhere[] = ' s.sample_id = "' . $_POST['rjtSampleType'] . '"';
+        $sWhere[] = ' s.sample_id = ' . (int) $_POST['rjtSampleType'];
     }
     if (isset($_POST['rjtState']) && trim((string) $_POST['rjtState']) !== '') {
-        $sWhere[] = " f.facility_state_id = '" . $_POST['rjtState'] . "' ";
+        $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['rjtState'];
     }
     if (isset($_POST['rjtDistrict']) && trim((string) $_POST['rjtDistrict']) !== '') {
-        $sWhere[] = " f.facility_district_id = '" . $_POST['rjtDistrict'] . "' ";
+        $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['rjtDistrict'];
     }
     if (isset($_POST['rjtFacilityName']) && $_POST['rjtFacilityName'] != '') {
-        $sWhere[] = ' f.facility_id IN (' . $_POST['rjtFacilityName'] . ')';
+        $sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['rjtFacilityName']) . ')';
     }
     if (isset($_POST['rjtGender']) && $_POST['rjtGender'] != '') {
         if (trim((string) $_POST['rjtGender']) === "unreported") {
             $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
         } else {
-            $sWhere[] = ' vl.patient_gender ="' . $_POST['rjtGender'] . '"';
+            $sWhere[] = ' vl.patient_gender ="' . $db->escape((string) $_POST['rjtGender']) . '"';
         }
     }
     if (isset($_POST['rjtPatientPregnant']) && $_POST['rjtPatientPregnant'] != '') {
-        $sWhere[] = ' vl.is_patient_pregnant = "' . $_POST['rjtPatientPregnant'] . '"';
+        $sWhere[] = ' vl.is_patient_pregnant = "' . $db->escape((string) $_POST['rjtPatientPregnant']) . '"';
     }
     if (isset($_POST['rjtPatientBreastfeeding']) && $_POST['rjtPatientBreastfeeding'] != '') {
-        $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['rjtPatientBreastfeeding'] . '"';
+        $sWhere[] = ' vl.is_patient_breastfeeding = "' . $db->escape((string) $_POST['rjtPatientBreastfeeding']) . '"';
     }
     if (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') {
-        $sWhere[] = ' vl.reason_for_sample_rejection = "' . $_POST['rejectionReason'] . '"';
+        $sWhere[] = ' vl.reason_for_sample_rejection = ' . (int) $_POST['rejectionReason'];
     }
     if (isset($_POST['rjtImplementingPartner']) && trim((string) $_POST['rjtImplementingPartner']) !== '') {
         $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['rjtImplementingPartner'])) . '"';

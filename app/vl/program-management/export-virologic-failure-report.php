@@ -55,34 +55,33 @@ $sWhere[] = " vl.vl_result_category = 'not suppressed' AND vl.patient_age_in_yea
 
 /* State filter */
 if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-     $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+     $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['state'];
 }
 
 /* District filters */
 if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-     $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+     $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['district'];
 }
 /* Facility filter */
-if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-     $facilityIdsString = implode(',', $_POST['facilityName']);
-     $sWhere[] = " f.facility_id IN ($facilityIdsString)";
+if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
+     $sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
 }
 
 if (isset($_POST['gender']) && $_POST['gender'] != '') {
      if (trim((string) $_POST['gender']) === "unreported") {
           $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
      } else {
-          $sWhere[] = ' vl.patient_gender ="' . $_POST['gender'] . '"';
+          $sWhere[] = ' vl.patient_gender ="' . $db->escape((string) $_POST['gender']) . '"';
      }
 }
 
 
 if (isset($_POST['pregnancy']) && trim((string) $_POST['pregnancy']) !== '') {
-     $sWhere[] = " vl.is_patient_pregnant = '" . $_POST['pregnancy'] . "' ";
+     $sWhere[] = " vl.is_patient_pregnant = '" . $db->escape((string) $_POST['pregnancy']) . "' ";
 }
 
 if (isset($_POST['breastfeeding']) && trim((string) $_POST['breastfeeding']) !== '') {
-     $sWhere[] = " vl.is_patient_breastfeeding = '" . $_POST['breastfeeding'] . "' ";
+     $sWhere[] = " vl.is_patient_breastfeeding = '" . $db->escape((string) $_POST['breastfeeding']) . "' ";
 }
 
 if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
@@ -94,7 +93,7 @@ if (
      is_numeric($_POST['maxAge']) &&
      $_POST['maxAge'] >= $_POST['minAge']
 ) {
-     $sWhere[] = " vl.patient_age_in_years BETWEEN {$_POST['minAge']} AND {$_POST['maxAge']} ";
+     $sWhere[] = ' vl.patient_age_in_years BETWEEN ' . (int) $_POST['minAge'] . ' AND ' . (int) $_POST['maxAge'] . ' ';
 }
 
 /* Sample collection date filter */

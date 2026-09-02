@@ -92,6 +92,37 @@ final class DatabaseService extends MysqliDb
         $this->applySessionSettings();
     }
 
+    /**
+     * Escapes a value destined for a LIKE pattern. escape() alone leaves % and _
+     * live, so user input could silently widen the match to everything.
+     */
+    public function escapeLike(mixed $value): string
+    {
+        return str_replace(['%', '_'], ['\\%', '\\_'], (string) $this->escape((string) $value));
+    }
+
+    /**
+     * Renders an id list for an IN () clause from an array or a CSV string,
+     * casting every element to int. Non-numeric elements are dropped; an empty
+     * result yields "0" so the IN () stays valid SQL and matches nothing.
+     */
+    public function inIntList(mixed $values, string $emptyFallback = '0'): string
+    {
+        if (is_string($values)) {
+            $values = explode(',', $values);
+        } elseif (!is_array($values)) {
+            $values = [$values];
+        }
+        $ints = [];
+        foreach ($values as $value) {
+            $value = trim((string) $value);
+            if (is_numeric($value)) {
+                $ints[] = (int) $value;
+            }
+        }
+        return $ints === [] ? $emptyFallback : implode(',', $ints);
+    }
+
     public function getMySQLVersion(): string
     {
         return $this->mysqli()->server_info; // human-readable, e.g. "8.0.37-0ubuntu0.22.04.3"
