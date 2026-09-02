@@ -701,7 +701,7 @@ try {
         'status' => $payloadStatus,
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'data' => $responseData ?? [],
+        'data' => array_values($responseData ?? []),
         'summary' => [
             'isDuplicateCheckEnabled' => $enableDuplicateDetection ? 'yes' : 'no',
             'totalRecords' => $dataCounter,

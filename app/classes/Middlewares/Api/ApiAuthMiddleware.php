@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Response;
 
 readonly class ApiAuthMiddleware implements MiddlewareInterface
@@ -46,15 +47,40 @@ readonly class ApiAuthMiddleware implements MiddlewareInterface
         $newToken = $this->checkAndResetTokenIfNeeded($token);
 
         if ($newToken !== null) {
-            // Add the new_token to the response object
-            $responseBody = json_decode($response->getBody(), true);
-            $responseBody['new_token'] = $newToken;
-            $responseBody['token_updated'] = true;
-            $response->getBody()->rewind();
-            $response->getBody()->write(json_encode($responseBody));
+            $response = self::withRotatedToken($response, $newToken);
         }
 
         return $response->withStatus(200);
+    }
+
+    /**
+     * Put a rotated token into an already-built JSON response.
+     *
+     * InteLIS Mobile reads the top-level `token` key; `new_token` and
+     * `token_updated` stay for anything written against the older shape. The body
+     * is replaced rather than overwritten in place, because writing a longer JSON
+     * over the old stream left the old Content-Length behind and the client cut
+     * the payload short. A body that is not a JSON object is left untouched.
+     */
+    public static function withRotatedToken(ResponseInterface $response, string $newToken): ResponseInterface
+    {
+        $decoded = json_decode((string) $response->getBody(), true);
+        if (!is_array($decoded)) {
+            return $response;
+        }
+
+        $decoded['token'] = $newToken;
+        $decoded['new_token'] = $newToken;
+        $decoded['token_updated'] = true;
+
+        $json = json_encode($decoded);
+        if ($json === false) {
+            return $response;
+        }
+
+        return $response
+            ->withBody((new StreamFactory())->createStream($json))
+            ->withHeader('Content-Length', (string) strlen($json));
     }
 
     private function getTokenFromAuthorizationHeader(string $authorization): ?string
@@ -93,6 +119,7 @@ readonly class ApiAuthMiddleware implements MiddlewareInterface
         $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
 
         $excludedRoutes = [
+            '/api/v1.1/health',
             '/api/v1.1/user/login.php',
             '/api/v1.1/version.php',
             '/api/version.php',

@@ -704,7 +704,7 @@ try {
         'status' => $payloadStatus,
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'data' => $responseData ?? []
+        'data' => array_values($responseData ?? [])
     ];
 } catch (Throwable $exc) {
     $db->rollbackTransaction();

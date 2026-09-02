@@ -120,6 +120,8 @@ try {
         f.facility_name                                      as facilityName,
         vl.result_reviewed_datetime                          as resultReviewedDatetime,
         vl.reason_for_sample_rejection                       as sampleRejectionReason,
+        vl.reason_for_sample_rejection                       as rejectionReasonId,
+        rs.rejection_reason_name                             as rejectionReason,
         vl.request_created_datetime                          as requestCreatedDatetime,
         vl.rejection_on                                      as rejectionDate,
         g.geo_name                                           as provinceName,
@@ -178,8 +180,8 @@ try {
     }
     /* To check the facility and date range filter */
     if (!empty($input['sampleCollectionDate'])) {
-        $from = $input['sampleCollectionDate'][0];
-        $to = $input['sampleCollectionDate'][1];
+        $from = $input['sampleCollectionDate'][0] ?? null;
+        $to = $input['sampleCollectionDate'][1] ?? null;
         if (!empty($from) && !empty($to)) {
             $where[] = " DATE(sample_collection_date) between '$from' AND '$to' ";
         }
@@ -190,8 +192,10 @@ try {
         $where[] = " vl.facility_id IN ('$facilityId') ";
     }
 
-    if (!empty($input['childId'])) {
-        $childId = implode("','", $input['childId']);
+    // patientId is the cross-test-type filter name; childId stays for older clients
+    $childId = array_merge((array) ($input['childId'] ?? []), (array) ($input['patientId'] ?? []));
+    if ($childId !== []) {
+        $childId = implode("','", array_map($db->escape(...), $childId));
         $where[] = " vl.child_id IN ('" . $childId . "') ";
     }
 

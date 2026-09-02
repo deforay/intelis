@@ -24,6 +24,10 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
+      description: The api_token returned by /user/login.php. When the token
+        expires and is rotated during a call, the JSON response carries the
+        replacement under the top-level keys token and new_token, with
+        token_updated set to true; the client must switch to it for the next call.
     InterfaceInstallationAuth:
       type: http
       scheme: bearer
@@ -788,6 +792,271 @@ paths:
         '503':
           description: Interface API is disabled.
 
+  "/health":
+    get:
+      tags:
+      - Initialization API
+      summary: Liveness probe
+      description: Unauthenticated. Answers 200 with the server version when the
+        database round-trips and 503 otherwise, including while an upgrade is in
+        progress. Servers built before this path existed answer 400 to it; a client
+        should fall back to /version.php. minAppVersion is null until an
+        administrator sets the global_config row named min_app_version, and null
+        means no minimum is enforced.
+      security: []
+      responses:
+        '200':
+          description: Server is up and the database is reachable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, unavailable]
+                  version:
+                    type: string
+                    nullable: true
+                  serverTime:
+                    type: string
+                    format: date-time
+                  minAppVersion:
+                    type: string
+                    nullable: true
+                  database:
+                    type: string
+                    enum: [ok, unreachable]
+              example:
+                status: ok
+                version: 5.7.49
+                serverTime: '2026-09-02T10:15:00+00:00'
+                minAppVersion: 
+                database: ok
+        '503':
+          description: Database unreachable or upgrade in progress
+          content:
+            application/json:
+              example:
+                status: unavailable
+                version: 
+                serverTime: '2026-09-02T10:15:00+00:00'
+                minAppVersion: 
+                database: unreachable
+  "/version.php":
+    get:
+      tags:
+      - Initialization API
+      summary: Server version
+      description: Unauthenticated. Returns the server version. When labId and
+        version are both passed, the calling lab's version and last heartbeat are
+        recorded against that facility.
+      security: []
+      parameters:
+      - in: query
+        name: labId
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: version
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Response 200
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+              example:
+                version: 5.7.49
+  "/user/login.php":
+    post:
+      tags:
+      - Initialization API
+      summary: Login
+      description: Unauthenticated. Exchanges a user name and password for the API
+        token used as the Bearer credential on every other call. The status field
+        is the integer 1 on success and 2 on failure.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userName:
+                  type: string
+                password:
+                  type: string
+              required:
+              - userName
+              - password
+            example:
+              userName: labuser
+              password: secret
+      responses:
+        '200':
+          description: Login succeeded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  timestamp:
+                    type: integer
+                  transactionId:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        additionalProperties: true
+                      form:
+                        type: integer
+                      api_token:
+                        type: string
+                      new_token:
+                        type: boolean
+                        description: true when a fresh token was issued during this login
+                      appMenuName:
+                        type: string
+                      access:
+                        type: object
+                        additionalProperties: true
+              example:
+                status: 1
+                message: Login Success
+                timestamp: 1756800000
+                transactionId: 01J6Z0000000000000000000
+                data:
+                  user:
+                    user_id: 8fisqdpu-wpkn-jo19-jo19-ku9fk2207e89
+                    user_name: Lab User
+                    login_id: labuser
+                    role_name: Lab Technician
+                  form: 3
+                  api_token: 3f9c...
+                  new_token: false
+                  appMenuName: InteLIS
+                  access: {}
+        '500':
+          description: Login failed
+          content:
+            application/json:
+              example:
+                status: 2
+                message: Login failed. Please contact system administrator.
+                timestamp: 1756800000
+                transactionId: 01J6Z0000000000000000000
+  "/vl/get-request.php":
+    post:
+      tags:
+      - VL API
+      summary: Fetch VL REQUESTS
+      description: Returns test requests that were created through the API
+        (app_sample_code is set), newest first, at most 100. Same filters as
+        /vl/fetch-results.php. Unlike fetch-results, reading here does not mark
+        results as sent.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sampleCode:
+                  type: array
+                  items:
+                    type: string
+                facility:
+                  type: array
+                  items:
+                    type: integer
+                patientName:
+                  type: string
+                patientArtNo:
+                  type: array
+                  items:
+                    type: string
+                patientId:
+                  type: array
+                  items:
+                    type: string
+                  description: Alias of patientArtNo, shared with the other test types
+                sampleCollectionDate:
+                  type: array
+                  items:
+                    type: string
+                  description: Two dates, from and to
+                sampleStatus:
+                  type: array
+                  items:
+                    type: integer
+                lastModifiedDateTime:
+                  type: string
+            example:
+              sampleCode: []
+              patientId: []
+              patientName: ''
+              facility: []
+              sampleCollectionDate: []
+              sampleStatus: []
+      responses:
+        '200':
+          description: Response 200
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  timestamp:
+                    type: integer
+                  transactionId:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+              example:
+                status: success
+                timestamp: 1756800000
+                transactionId: 01J6Z0000000000000000000
+                data:
+                - appSampleCode: UNIQVL001
+                  uniqueId: 85221ea3c053ac3a2b41d92879746a1b
+                  vlSampleId: 1
+                  sampleCode: VL21001
+                  facilityId: 3
+                  labId: 16
+                  patientArtNo: ART0001
+                  sampleCollectionDate: '2021-09-01 10:36:00'
+                  resultStatus: 6
+                  result: 
+                  rejectionReasonId: 
+                  rejectionReason: 
+        '500':
+          description: Response 500
+          content:
+            application/json:
+              example:
+                status: failed
+                timestamp: 0
+                data: []
   "/generate-manifest.php":
     post:
       tags:
@@ -1501,6 +1770,9 @@ paths:
                 patientArtNo:
                   type: string
                   description: Filter by Patient ID
+                patientId:
+                  type: string
+                  description: Alias of patientArtNo, shared with the other test types
                 sampleCollectionDate:
                   type: string
                   description: Filter By Sample Collection Date
@@ -3955,7 +4227,7 @@ paths:
         schema:
           type: string
         description: ''
-  "/tb/add-request.php":
+  "/tb/save-request.php":
     post:
       tags:
       - TB API

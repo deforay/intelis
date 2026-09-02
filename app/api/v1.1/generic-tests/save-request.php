@@ -521,7 +521,7 @@ try {
         'status' => $payloadStatus,
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'data' => $responseData ?? []
+        'data' => array_values($responseData ?? [])
     ];
     http_response_code(200);
     $db->commitTransaction();
