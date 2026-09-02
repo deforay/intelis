@@ -1,40 +1,43 @@
 <?php
 
-use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
-use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Repositories\Reference\SampleTypeRepository;
 
+// Sanitized values from $request object
+/** @var Psr\Http\Message\ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+// The stored name is read raw: _sanitizeInput() is an HTML sanitizer and would
+// persist "Plasma & Serum" as "Plasma &amp; Serum". Escaping belongs to rendering.
+$sampleName = trim((string) _rawInput("sampleName", ""));
 
-
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
+/** @var SampleTypeRepository $sampleTypes */
+$sampleTypes = ContainerRegistry::get(SampleTypeRepository::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$tableName = "r_eid_sample_type";
-$primaryKey = "sample_id";
-try {
-	if (isset($_POST['sampleName']) && trim((string) $_POST['sampleName']) !== "") {
-		$data = ['sample_name' => $_POST['sampleName'], 'status' => $_POST['sampleStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
-		if (isset($_POST['sampleId']) && $_POST['sampleId'] != "") {
-			$db->where($primaryKey, base64_decode((string) $_POST['sampleId']));
-			$lastId = $db->update($tableName, $data);
-		} else {
-			$data['data_sync'] = 0;
-			$db->insert($tableName, $data);
-			$lastId = $db->getInsertId();
-		}
 
+try {
+	if ($sampleName !== "") {
+		$sampleTypeId = (isset($_POST['sampleId']) && $_POST['sampleId'] != "")
+			? (int) base64_decode((string) $_POST['sampleId'], true)
+			: null;
+		$lastId = $sampleTypes->save(
+			'eid',
+			$sampleName,
+			(string) ($_POST['sampleStatus'] ?? ''),
+			$sampleTypeId
+		);
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("EID Sample details saved successfully");
-			$general->activityLog('EID Sample Type details', $_SESSION['userName'] . ' added new EID sample type : ' . $_POST['sampleName'], 'eid-reference');
+			$general->activityLog('EID Sample Type details', $_SESSION['userName'] . ' saved EID sample type : ' . $sampleName, 'eid-reference');
 		}
 	}
 	header("Location:eid-sample-type.php");
-} catch (Exception $e) {
+} catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),
 		'line' => $e->getLine(),
