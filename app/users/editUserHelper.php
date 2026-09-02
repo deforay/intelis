@@ -95,7 +95,9 @@ try {
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         }
         if (isset($_POST['removedSignatureImage']) && trim((string) $_POST['removedSignatureImage']) !== "") {
-            $fImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];
+            // basename() pins the delete inside the signature folder; a
+            // crafted ../ path must not reach any other file.
+            $fImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . basename((string) $_POST['removedSignatureImage']);
             if ($fImagePath !== '' && $fImagePath !== '0' && file_exists($fImagePath)) {
                 MiscUtility::deleteFile($fImagePath);
             }

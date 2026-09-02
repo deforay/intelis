@@ -12,7 +12,9 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
+// A status id is numeric; the cast keeps a crafted encoded value out of the
+// query below and out of the inline JS this page prints the id into.
+$id = (isset($_GET['id'])) ? (int) base64_decode((string) $_GET['id']) : null;
 
 $date = base64_decode((string) $_GET['d']);
 $tsQuery = "SELECT status_name FROM r_sample_status WHERE status_id = '" . $id . "'";

@@ -22,23 +22,23 @@ if (trim((string) $facilityType) !== '') {
 	$sWhere[] = ' f_t.facility_type_id = "' . $facilityType . '"';
 }
 if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-	$sWhere[] = " d.geo_name LIKE '%" . $_POST['district'] . "%' ";
+	$sWhere[] = " d.geo_name LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
 }
 if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-	$sWhere[] = " p.geo_name LIKE '%" . $_POST['state'] . "%' ";
+	$sWhere[] = " p.geo_name LIKE '%" . $db->escapeLike($_POST['state']) . "%' ";
 }
 $qry = "";
 if (isset($_POST['testType']) && trim((string) $_POST['testType']) !== '' && !empty($facilityType)) {
 	if ($facilityType == '2') {
 		$qry = " LEFT JOIN testing_labs tl ON tl.facility_id=f_d.facility_id";
-		$sWhere[] = ' tl.test_type = "' . $_POST['testType'] . '"';
+		$sWhere[] = ' tl.test_type = "' . $db->escape((string) $_POST['testType']) . '"';
 	} else {
 		$qry = " LEFT JOIN health_facilities hf ON hf.facility_id=f_d.facility_id";
-		$sWhere[] = ' hf.test_type = "' . $_POST['testType'] . '"';
+		$sWhere[] = ' hf.test_type = "' . $db->escape((string) $_POST['testType']) . '"';
 	}
 }
 if (isset($_POST['activeFacility']) && trim((string) $_POST['activeFacility']) !== '') {
-	$sWhere[] = " f_d.status = '" . $_POST['activeFacility'] . "' ";
+	$sWhere[] = " f_d.status = '" . $db->escape((string) $_POST['activeFacility']) . "' ";
 }
 if (isset($_POST['orphanFacility']) && $_POST['orphanFacility'] === 'yes') {
 	$sWhere[] = "(f_d.status = 'active' AND (p.geo_status IS NULL OR p.geo_status != 'active' OR d.geo_status IS NULL OR d.geo_status != 'active'))";
