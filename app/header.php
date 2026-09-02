@@ -98,37 +98,37 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 	$iconType = $general->isSTSInstance() ? 'sts' : 'lis';
 	?>
 
-	<link rel="apple-touch-icon" sizes="180x180" href="/assets/<?= $iconType; ?>-icons/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/assets/<?= $iconType; ?>-icons/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/assets/<?= $iconType; ?>-icons/favicon-16x16.png">
-	<link rel="manifest" href="/assets/<?= $iconType; ?>-icons/site.webmanifest">
+	<link rel="apple-touch-icon" sizes="180x180" href="<?= _asset('/assets/' . $iconType . '-icons/apple-touch-icon.png') ?>">
+	<link rel="icon" type="image/png" sizes="32x32" href="<?= _asset('/assets/' . $iconType . '-icons/favicon-32x32.png') ?>">
+	<link rel="icon" type="image/png" sizes="16x16" href="<?= _asset('/assets/' . $iconType . '-icons/favicon-16x16.png') ?>">
+	<link rel="manifest" href="<?= _asset('/assets/' . $iconType . '-icons/site.webmanifest') ?>">
 
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/fonts.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui-timepicker-addon.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/bootstrap.min.css">
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/font-awesome.min.css">
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/plugins/datatables/dataTables.bootstrap.css">
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/AdminLTE.min.css">
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/skins/_all-skins.min.css">
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/plugins/daterangepicker/daterangepicker.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.min.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/deforayModal.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery.fastconfirm.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/components-rounded.min.css">
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/fonts.css') ?>" />
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/jquery-ui.min.css') ?>" />
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/jquery-ui-timepicker-addon.css') ?>" />
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/bootstrap.min.css') ?>">
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/font-awesome.min.css') ?>">
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/plugins/datatables/dataTables.bootstrap.css') ?>">
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/AdminLTE.min.css') ?>">
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/skins/_all-skins.min.css') ?>">
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/plugins/daterangepicker/daterangepicker.css') ?>" />
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/select2.min.css') ?>" />
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/deforayModal.css') ?>" />
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/jquery.fastconfirm.css') ?>" />
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/components-rounded.min.css') ?>">
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/select2.live.min.css') ?>" />
 	<link rel="stylesheet" media="all" type="text/css"
 		href="<?= _asset('/assets/css/style.css') ?>" />
 	<link rel="stylesheet" type="text/css"
 		href="<?= _asset('/assets/css/toastify.min.css') ?>">
-	<link rel="stylesheet" type="text/css" href="/assets/css/summernote.min.css">
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
+	<link rel="stylesheet" type="text/css" href="<?= _asset('/assets/css/summernote.min.css') ?>">
+	<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/selectize.css') ?>" />
 
-	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="<?= _asset('/assets/js/jquery.min.js') ?>"></script>
+	<script type="text/javascript" src="<?= _asset('/assets/js/jquery-ui.min.js') ?>"></script>
 	<script type="text/javascript"
 		src="<?= _asset('/assets/js/deforayModal.js') ?>"></script>
-	<script type="text/javascript" src="/assets/js/jquery.fastconfirm.js"></script>
+	<script type="text/javascript" src="<?= _asset('/assets/js/jquery.fastconfirm.js') ?>"></script>
 	<script type="text/javascript"
 		src="<?= _asset('/assets/js/utils.js') ?>"></script>
 	<script type="text/javascript"
