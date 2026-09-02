@@ -24,13 +24,20 @@ use App\Utilities\DateUtility;
 final readonly class ReferenceDataRepository
 {
     /**
-     * tables: per-module table names, keyed by the TestsService test-type slug.
+     * tables: per-module table names, keyed by the TestsService test-type slug
+     * ('common' for the vocabularies that are not per-test-type).
      * id/name/status: the entity's column names for those three roles.
      * fields: further writable columns, if any.
      * defaults: replacement for a field submitted empty.
      * sync: the modules whose table carries a data_sync column, when it is not
      * all of them -- the test-reason tables for hepatitis, covid-19, and tb
      * were created without one, and writing it there is an SQL error.
+     * cacheTags: file-cache tags invalidated after every write, so a consumer
+     * that caches the vocabulary (result-entry forms, request forms) never
+     * serves a stale list. In the map rather than the endpoints, because an
+     * endpoint rewire once dropped the invalidation and only review caught it.
+     * statusOnly: updateStatus() is allowed but save() is refused -- the save
+     * path has an owner of its own (lab storage saves via StorageService).
      *
      * Custom Tests manage their reference data elsewhere with different
      * schemas, so they are not listed.
@@ -42,7 +49,10 @@ final readonly class ReferenceDataRepository
      *   status: string,
      *   fields?: list<string>,
      *   defaults?: array<string, string>,
-     *   sync?: list<string>
+     *   sync?: list<string>,
+     *   cacheTags?: list<string>,
+     *   statusOnly?: bool,
+     *   idType?: string
      * }>
      */
     private const ENTITIES = [
@@ -114,6 +124,8 @@ final readonly class ReferenceDataRepository
             // available_for_instruments is a JSON list of instrument ids the
             // endpoint assembles, or SQL NULL when the result is unrestricted.
             'fields' => ['interpretation', 'available_for_instruments'],
+            // The result-entry forms cache the VL result list per instrument.
+            'cacheTags' => ['r_vl_results'],
         ],
         'art-code' => [
             'tables' => ['vl' => 'r_vl_art_regimen'],
@@ -125,6 +137,39 @@ final readonly class ReferenceDataRepository
             // update-vl-art-code-alias.php for why it is additive-only.
             'fields' => ['parent_art', 'headings'],
             'defaults' => ['parent_art' => '0'],
+        ],
+        // The vocabularies that are not per-test-type.
+        'funding-source' => [
+            'tables' => ['common' => 'r_funding_sources'],
+            'id' => 'funding_source_id',
+            'name' => 'funding_source_name',
+            'status' => 'funding_source_status',
+            'cacheTags' => ['r_funding_sources'],
+        ],
+        'implementation-partner' => [
+            'tables' => ['common' => 'r_implementation_partners'],
+            'id' => 'i_partner_id',
+            'name' => 'i_partner_name',
+            'status' => 'i_partner_status',
+            'cacheTags' => ['r_implementation_partners'],
+        ],
+        'corrective-action' => [
+            'tables' => ['common' => 'r_recommended_corrective_actions'],
+            'id' => 'recommended_corrective_action_id',
+            'name' => 'recommended_corrective_action_name',
+            'status' => 'status',
+            // The test-type slug the action belongs to; the screen manages one
+            // test type at a time.
+            'fields' => ['test_type'],
+        ],
+        'lab-storage' => [
+            'tables' => ['common' => 'lab_storage'],
+            'id' => 'storage_id',
+            'name' => 'storage_code',
+            'status' => 'storage_status',
+            'statusOnly' => true,
+            // storage_id is a CHAR(50) generated identifier, not an integer.
+            'idType' => 'string',
         ],
     ];
 
@@ -152,6 +197,9 @@ final readonly class ReferenceDataRepository
         ?int $rowId = null
     ): int {
         $spec = $this->spec($entity);
+        if ($spec['statusOnly'] ?? false) {
+            throw new SystemException("A $entity is not saved here; only its status is managed by this repository");
+        }
         $table = $this->table($spec, $entity, $testType);
         $this->assertStatus($status);
 
@@ -188,6 +236,7 @@ final readonly class ReferenceDataRepository
             }
             $this->db->where($spec['id'], $rowId);
             $this->db->update($table, $data);
+            $this->invalidateCaches($spec);
             return $rowId;
         }
 
@@ -195,6 +244,7 @@ final readonly class ReferenceDataRepository
             $data['data_sync'] = 0;
         }
         $this->db->insert($table, $data);
+        $this->invalidateCaches($spec);
         return (int) $this->db->getInsertId();
     }
 
@@ -211,14 +261,18 @@ final readonly class ReferenceDataRepository
         $table = $this->table($spec, $entity, $testType);
         $this->assertStatus($status);
 
-        // Strictly digits: intval('12abc') would silently address row 12.
-        $ids = array_values(array_map(
-            intval(...),
-            array_filter(
-                array_map(static fn ($id): string => trim((string) $id), $rowIds),
-                static fn (string $id): bool => ctype_digit($id) && (int) $id > 0
-            )
-        ));
+        $trimmed = array_map(static fn ($id): string => trim((string) $id), $rowIds);
+        if (($spec['idType'] ?? '') === 'string') {
+            // Generated CHAR ids (lab storage): anything non-empty addresses a
+            // row, and the values are bound, never interpolated.
+            $ids = array_values(array_filter($trimmed, static fn (string $id): bool => $id !== ''));
+        } else {
+            // Strictly digits: intval('12abc') would silently address row 12.
+            $ids = array_values(array_map(
+                intval(...),
+                array_filter($trimmed, static fn (string $id): bool => ctype_digit($id) && (int) $id > 0)
+            ));
+        }
         if ($ids === []) {
             return 0;
         }
@@ -228,6 +282,7 @@ final readonly class ReferenceDataRepository
             $spec['status'] => $status,
             'updated_datetime' => DateUtility::getCurrentDateTime(),
         ]);
+        $this->invalidateCaches($spec);
         return (int) $this->db->count;
     }
 
@@ -246,6 +301,16 @@ final readonly class ReferenceDataRepository
     {
         return $spec['tables'][$testType]
             ?? throw new SystemException("No $entity table for test type '$testType'");
+    }
+
+    /** @param array{cacheTags?: list<string>} $spec */
+    private function invalidateCaches(array $spec): void
+    {
+        // Guarded because the helper lives in app/system/functions.php, which
+        // the test harness does not load; in the application it always exists.
+        if (($spec['cacheTags'] ?? []) !== [] && function_exists('_invalidateFileCacheByTags')) {
+            _invalidateFileCacheByTags($spec['cacheTags']);
+        }
     }
 
     private function assertStatus(string $status): void

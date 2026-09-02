@@ -71,6 +71,12 @@ const COVERED_FILES = [
     'app/vl/reference/update-vl-test-failure-reason-status.php' => 'Reference\ReferenceDataRepository',
     'app/vl/reference/update-vl-result-status.php' => 'Reference\ReferenceDataRepository',
     'app/vl/reference/update-vl-art-code-status.php' => 'Reference\ReferenceDataRepository',
+    'app/common/reference/save-funding-sources-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/common/reference/save-implementation-partners-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/common/reference/save-recommended-corrective-action-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/common/reference/update-funding-source-status.php' => 'Reference\ReferenceDataRepository',
+    'app/common/reference/update-implementation-status.php' => 'Reference\ReferenceDataRepository',
+    'app/common/reference/update-lab-storage-status.php' => 'Reference\ReferenceDataRepository',
 ];
 
 /**
