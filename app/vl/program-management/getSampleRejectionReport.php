@@ -89,7 +89,9 @@ try {
     // Control samples are excluded from every other VL report and export.
     $sWhere[] = " IFNULL(vl.reason_for_vl_testing, 0) != 9999 ";
     if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) !== '') {
-        $sWhere[] = ' b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
+        // The filter is fed by a dropdown of exact batch codes; LIKE made
+        // batch "B1" also match "B12".
+        $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['rjtBatchCode']) . '"';
     }
 
     if (!empty($_POST['rjtSampleCollectionDate'])) {

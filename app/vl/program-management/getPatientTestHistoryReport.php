@@ -94,7 +94,9 @@ try {
         $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
     }
     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-        $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
+        // CONCAT_WS with NULLIF puts exactly one space between the parts that
+        // exist, so searching "First Last" matches names stored in split columns.
+        $sWhere[] = " CONCAT_WS(' ', NULLIF(vl.patient_first_name,''), NULLIF(vl.patient_middle_name,''), NULLIF(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
     }
     if (isset($_POST['pthImplementingPartner']) && trim((string) $_POST['pthImplementingPartner']) !== '') {
         $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['pthImplementingPartner'])) . '"';

@@ -90,7 +90,6 @@ try {
      }
 
 
-     $aWhere = '';
      $sQuery = "SELECT  * FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
@@ -103,25 +102,45 @@ try {
           }
      }
      if (isset($_POST['formField']) && trim((string) $_POST['formField']) !== '') {
-          $sWhereSubC = "  (";
+          // Whitelist keeps request values out of the SQL as identifiers, and maps
+          // each option to the column that actually holds it: state/district live on
+          // the joined facility row, and the sample type column is specimen_type.
+          $checkableFields = [
+               'sample_code' => 'vl.sample_code',
+               'sample_collection_date' => 'vl.sample_collection_date',
+               'sample_batch_id' => 'vl.sample_batch_id',
+               'patient_art_no' => 'vl.patient_art_no',
+               'patient_first_name' => 'vl.patient_first_name',
+               'facility_id' => 'vl.facility_id',
+               'facility_state' => 'f.facility_state',
+               'facility_district' => 'f.facility_district',
+               'sample_type' => 'vl.specimen_type',
+               'result' => 'vl.result',
+               'result_status' => 'vl.result_status',
+          ];
           $sWhereSub = '';
           $searchArray = explode(",", (string) $_POST['formField']);
           foreach ($searchArray as $search) {
+               if (!isset($checkableFields[$search])) {
+                    continue;
+               }
+               $column = $checkableFields[$search];
                if ($sWhereSub === "") {
-                    $sWhereSub .= $sWhereSubC;
-                    $sWhereSub .= "(";
+                    $sWhereSub .= "  ((";
                } else {
                     $sWhereSub .= " AND (";
                }
                if ($search === 'sample_collection_date') {
-                    $sWhereSub .= 'vl.' . $search . " IS NULL";
+                    $sWhereSub .= $column . " IS NULL";
                } else {
-                    $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
+                    $sWhereSub .= $column . " ='' OR " . $column . " IS NULL";
                }
                $sWhereSub .= ")";
           }
-          $sWhereSub .= ")";
-          $sWhere[] = $sWhereSub;
+          if ($sWhereSub !== '') {
+               $sWhereSub .= ")";
+               $sWhere[] = $sWhereSub;
+          }
      }
 
 
@@ -137,14 +156,12 @@ try {
          $sWhere[] = $labScope;
      }
 
-     if ($sWhere !== []) {
-          // A cancelled sample was called off before testing, so it is not work
-          // this report should count.
-          $sWhere[] = SampleCountUtility::countableWhere('vl');
-          $sWhere = ' where ' . implode(" AND ", $sWhere);
-     }
+     // A cancelled sample was called off before testing, so it is not work
+     // this report should count. Applied unconditionally: it also guarantees the
+     // WHERE clause exists, so an all-empty filter set stays valid SQL.
+     $sWhere[] = SampleCountUtility::countableWhere('vl');
 
-     $sQuery = $sQuery . ' ' . $sWhere;
+     $sQuery = $sQuery . ' where ' . implode(" AND ", $sWhere);
 
      $_SESSION['vlIncompleteForm'] = $sQuery;
      if (!empty($sOrder) && $sOrder !== '') {
