@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Services;
 
 use App\Services\DatabaseService;
-use MysqliDb;
+use App\Services\Database\MysqliDb;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
