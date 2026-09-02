@@ -546,7 +546,7 @@ foreach ($actions as $list) {
 </div>
 
 <script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js?v=<?= filemtime(WEB_ROOT . '/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 <script type="text/javascript">
 	var feedUrl = "/admin/monitoring/get-activity-log.php";
 	var actionIcons = {

@@ -185,7 +185,7 @@ $state = $geolocationService->getProvinces("yes");
 	<!-- /.content -->
 </div>
 <script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js?v=<?= filemtime(WEB_ROOT . '/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 <script type="text/javascript">
 	let searchExecuted = false;
 	var oTablepatientTestHistoryReport = null;

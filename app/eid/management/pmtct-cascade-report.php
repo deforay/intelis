@@ -509,7 +509,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
 </div>
 
 <script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js?v=<?= filemtime(WEB_ROOT . '/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 <script>
     let pmtctTable = null;
 
