@@ -2,34 +2,25 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Repositories\Reference\SampleTypeRepository;
 
+/** @var SampleTypeRepository $sampleTypes */
+$sampleTypes = ContainerRegistry::get(SampleTypeRepository::class);
 
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-$tableName = "r_covid19_sample_type";
+$result = "";
 try {
-
     // Sanitized values from $request object
     /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
-    $id = explode(",", (string) $_POST['id']);
-    $counter = count($id);
-    for ($i = 0; $i < $counter; $i++) {
-        $status = ['status' => $_POST['status'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
-        $db->where('sample_id', $id[$i]);
-        $db->update($tableName, $status);
-        $result = $id[$i];
-    }
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+    $ids = explode(",", (string) ($_POST['id'] ?? ''));
+    $sampleTypes->updateStatus('covid19', $ids, (string) ($_POST['status'] ?? ''));
+    $result = end($ids);
+} catch (Throwable $exc) {
+    LoggerUtility::logError($exc->getMessage());
+    throw $exc;
 }
 echo $result;
