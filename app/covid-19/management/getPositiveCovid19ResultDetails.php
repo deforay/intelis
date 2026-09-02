@@ -45,50 +45,20 @@ try {
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
+        $sOffset = (int) $_POST['iDisplayStart'];
+        $sLimit = (int) $_POST['iDisplayLength'];
     }
 
     /*
      * Ordering
      */
 
-    $sOrder = "";
-    if (isset($_POST['iSortCol_0'])) {
-        $sOrder = "";
-        for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-            }
-        }
-        $sOrder = substr_replace($sOrder, "", -2);
-    }
-
-
+    $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
     $sWhere = [];
-    if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-        $searchArray = explode(" ", (string) $_POST['sSearch']);
-        $sWhereSub = "";
-        foreach ($searchArray as $search) {
-            if ($sWhereSub === "") {
-                $sWhereSub .= "(";
-            } else {
-                $sWhereSub .= " AND (";
-            }
-            $colSize = count($aColumns);
-
-            for ($i = 0; $i < $colSize; $i++) {
-                if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                }
-            }
-            $sWhereSub .= ")";
-        }
-        $sWhere[] = $sWhereSub;
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+    if (!empty($columnSearch)) {
+        $sWhere[] = $columnSearch;
     }
 
 
@@ -100,7 +70,9 @@ try {
     $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_covid19_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 ";
 
     if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) !== '') {
-        $sWhere[] = ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
+        // The filter is fed by a dropdown of exact batch codes; LIKE made
+        // batch "B1" also match "B12".
+        $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['hvlBatchCode']) . '"';
     }
 
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['hvlSampleTestDate'] ?? '');
@@ -112,29 +84,29 @@ try {
         }
     }
     if (isset($_POST['hvlSampleType']) && $_POST['hvlSampleType'] != '') {
-        $sWhere[] = ' s.sample_id = "' . $_POST['hvlSampleType'] . '"';
+        $sWhere[] = ' vl.specimen_type = ' . (int) $_POST['hvlSampleType'];
     }
     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-        $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+        $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['state'] . ' ';
     }
     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+        $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['district'] . ' ';
     }
     if (isset($_POST['hvlFacilityName']) && $_POST['hvlFacilityName'] != '') {
-        $sWhere[] = ' f.facility_id IN (' . $_POST['hvlFacilityName'] . ')';
+        $sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['hvlFacilityName']) . ')';
     }
     if (isset($_POST['hvlGender']) && $_POST['hvlGender'] != '') {
         if (trim((string) $_POST['hvlGender']) === "unreported") {
             $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
         } else {
-            $sWhere[] = ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['hvlGender'] . '") ';
+            $sWhere[] = ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $db->escape((string) $_POST['hvlGender']) . '") ';
         }
     }
     if (isset($_POST['hvlPatientPregnant']) && $_POST['hvlPatientPregnant'] != '') {
-        $sWhere[] = ' vl.is_patient_pregnant = "' . $_POST['hvlPatientPregnant'] . '"';
+        $sWhere[] = ' vl.is_patient_pregnant = "' . $db->escape((string) $_POST['hvlPatientPregnant']) . '"';
     }
     if (isset($_POST['hvlPatientBreastfeeding']) && $_POST['hvlPatientBreastfeeding'] != '') {
-        $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['hvlPatientBreastfeeding'] . '"';
+        $sWhere[] = ' vl.is_patient_breastfeeding = "' . $db->escape((string) $_POST['hvlPatientBreastfeeding']) . '"';
     }
     $dWhere = '';
 

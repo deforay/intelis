@@ -42,48 +42,17 @@ try {
 
 	$sOffset = $sLimit = null;
 	if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-		$sOffset = $_POST['iDisplayStart'];
-		$sLimit = $_POST['iDisplayLength'];
+		$sOffset = (int) $_POST['iDisplayStart'];
+		$sLimit = (int) $_POST['iDisplayLength'];
 	}
 
 
-
-	$sOrder = "";
-	if (isset($_POST['iSortCol_0'])) {
-		$sOrder = "";
-		for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-			if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-				$sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-			}
-		}
-		$sOrder = substr_replace($sOrder, "", -2);
-	}
-
-
+	$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 	$sWhere = [];
-	if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-		$searchArray = explode(" ", (string) $_POST['sSearch']);
-		$sWhereSub = "";
-		foreach ($searchArray as $search) {
-			if ($sWhereSub === "") {
-				$sWhereSub .= " (";
-			} else {
-				$sWhereSub .= " AND (";
-			}
-			$colSize = count($aColumns);
-
-			for ($i = 0; $i < $colSize; $i++) {
-				if ($i < $colSize - 1) {
-					$sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-				} else {
-					$sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-				}
-			}
-			$sWhereSub .= ")";
-		}
-		$sWhere[] = $sWhereSub;
+	$columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+	if (!empty($columnSearch)) {
+		$sWhere[] = $columnSearch;
 	}
 
 
@@ -120,7 +89,7 @@ try {
 
 	[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 	if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-		$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+		$sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
 	}
 	if (!empty($_POST['sampleCollectionDate'])) {
 		if (trim((string) $start_date) === trim((string) $end_date)) {
@@ -145,11 +114,14 @@ try {
 		}
 	}
 	if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-		$sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
+		$sWhere[] = ' vl.specimen_type = ' . (int) $_POST['sampleType'];
 	}
 	if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-		$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+		$sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
 	}
+	// Reset first so a filterless search does not export the previous
+	// search's filters.
+	$_SESSION['hepatitisTatData'] = [];
 	if ($sWhere !== []) {
 		$_SESSION['hepatitisTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
 		$sQuery = $sQuery . ' AND ' . $sWhere;

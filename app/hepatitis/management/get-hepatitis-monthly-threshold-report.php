@@ -1,6 +1,9 @@
 <?php
 
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use App\Registries\AppRegistry;
+use App\Utilities\SampleCountUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -8,6 +11,10 @@ use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
 
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 
 /** @var DatabaseService $db */
@@ -35,51 +42,32 @@ $sTable = $tableName;
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-     $sOffset = $_POST['iDisplayStart'];
-     $sLimit = $_POST['iDisplayLength'];
+     $sOffset = (int) $_POST['iDisplayStart'];
+     $sLimit = (int) $_POST['iDisplayLength'];
 }
 
 
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-     $sOrder = "";
-     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-          if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-               $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
-}
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 $sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", (string) $_POST['sSearch']);
-     $sWhereSub = "";
-     foreach ($searchArray as $search) {
-          if ($sWhereSub === "") {
-               $sWhereSub .= "(";
-          } else {
-               $sWhereSub .= " AND (";
-          }
-          $colSize = count($aColumns);
-
-          for ($i = 0; $i < $colSize; $i++) {
-               if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-               } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-               }
-          }
-          $sWhereSub .= ")";
-     }
-     $sWhere[] = $sWhereSub;
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+if (!empty($columnSearch)) {
+     $sWhere[] = $columnSearch;
 }
 
-
-
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange, f.*, vl.*, hf.monthly_target FROM testing_labs as hf INNER JOIN form_hepatitis as vl ON vl.lab_id=hf.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
+// The output loop below compares monthly_target against per-facility-per-month
+// totals, so the SELECT must aggregate; without the SUM columns and GROUP BY
+// every row carried null totals and the report showed nothing meaningful.
+$sQuery = "SELECT
+          DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange,
+          f.facility_id,
+          f.facility_name,
+          hf.monthly_target,
+          SUM(CASE WHEN (vl.is_sample_rejected IS NOT NULL AND vl.is_sample_rejected LIKE 'yes%') THEN 1 ELSE 0 END) as totalRejected,
+          SUM(CASE WHEN (vl.sample_tested_datetime IS NULL AND vl.sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalReceived,
+          SUM(CASE WHEN (vl.sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalCollected
+          FROM testing_labs as hf INNER JOIN form_hepatitis as vl ON vl.lab_id=hf.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 $sTestDate = '';
@@ -104,22 +92,14 @@ if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !
 }
 
 if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-     $fac = explode(',', (string) $_POST['facilityName']);
-     $out = '';
-     //  print_r($fac);
-     /// die;
-     $counter = count($fac);
-     //  print_r($fac);
-     /// die;
-     for ($s = 0; $s < $counter; $s++) {
-          $out = $out !== '' && $out !== '0' ? $out . ',"' . $fac[$s] . '"' : '("' . $fac[$s] . '"';
-     }
-     $out .= ')';
-     $sWhere[] = ' vl.lab_id IN ' . $out;
+     $sWhere[] = ' vl.lab_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
 }
 
 $sWhere[] = '  vl.result_status != ' . RECEIVED_AT_CLINIC;
 
+// A cancelled sample was called off before testing, so it belongs in none of
+// the totals this report compares against the monthly target.
+$sWhere[] = SampleCountUtility::countableWhere('vl');
 
 if (!empty($_SESSION['facilityMap'])) {
      $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
@@ -129,23 +109,10 @@ if ($labScope = $general->labScopeWhere('vl')) {
     $sWhere[] = $labScope;
 }
 $sWhere[] = " hf.test_type = 'hepatitis'";
-$sWhere = $sWhere === [] ? [] : ' where ' . implode(' AND ', $sWhere);
-$sQuery = $sQuery . ' ' . $sWhere;
+$sQuery = $sQuery . ' WHERE ' . implode(' AND ', $sWhere);
+$sQuery .= ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 $_SESSION['hepatitisMonitoringThresholdReportQuery'] = $sQuery;
-// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
-/*
-$aResultFilterTotal = $db->rawQuery($sQuery);
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length
-$aResultTotal =  $db->rawQuery($sQuery);
-// $aResultTotal = $countResult->fetch_row();
-$iTotal = count($aResultTotal);*/
-
-
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 
 $output = ["sEcho" => (int) $_POST['sEcho'], "aaData" => []];
@@ -155,15 +122,15 @@ foreach ($rResult as $rowData) {
      $targetType1 = false;
      $targetType2 = false;
      $targetType3 = false;
-     if ($_POST['targetType'] == 1) {
+     if (($_POST['targetType'] ?? '') == 1) {
          if ($rowData['monthly_target'] > $rowData['totalCollected']) {
               $targetType1 = true;
          }
-     } elseif ($_POST['targetType'] == 2) {
+     } elseif (($_POST['targetType'] ?? '') == 2) {
          if ($rowData['monthly_target'] < $rowData['totalCollected']) {
               $targetType2 = true;
          }
-     } elseif ($_POST['targetType'] == 3) {
+     } elseif (($_POST['targetType'] ?? '') == 3) {
          $targetType3 = true;
      }
      if ($targetType1 || $targetType2 || $targetType3) {
