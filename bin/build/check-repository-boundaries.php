@@ -65,6 +65,12 @@ const COVERED_FILES = [
     'app/hepatitis/reference/update-hepatitis-test-reason-status.php' => 'Reference\ReferenceDataRepository',
     'app/covid-19/reference/update-covid19-test-reason-status.php' => 'Reference\ReferenceDataRepository',
     'app/tb/reference/update-tb-test-reason-status.php' => 'Reference\ReferenceDataRepository',
+    'app/vl/reference/save-vl-test-failure-reason-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/vl/reference/save-vl-results-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/vl/reference/save-vl-art-code-details-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/vl/reference/update-vl-test-failure-reason-status.php' => 'Reference\ReferenceDataRepository',
+    'app/vl/reference/update-vl-result-status.php' => 'Reference\ReferenceDataRepository',
+    'app/vl/reference/update-vl-art-code-status.php' => 'Reference\ReferenceDataRepository',
 ];
 
 /**
