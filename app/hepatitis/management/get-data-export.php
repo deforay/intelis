@@ -47,53 +47,16 @@ try {
       */
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-          $sOffset = $_POST['iDisplayStart'];
-          $sLimit = $_POST['iDisplayLength'];
+          $sOffset = (int) $_POST['iDisplayStart'];
+          $sLimit = (int) $_POST['iDisplayLength'];
      }
 
-
-
-     $sOrder = "";
-     if (isset($_POST['iSortCol_0'])) {
-          $sOrder = "";
-          for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-               if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-                    " . ($_POST['sSortDir_' . $i]) . ", ";
-               }
-          }
-          $sOrder = substr_replace($sOrder, "", -2);
-     }
-
-     /*
-      * Filtering
-      * NOTE this does not match the built-in DataTables filtering which does it
-      * word by word on any field. It's possible to do here, but concerned about efficiency
-      * on very large tables, and MySQL's regex functionality is very limited
-      */
+     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
      $sWhere = [];
-     if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-          $searchArray = explode(" ", (string) $_POST['sSearch']);
-          $sWhereSub = "";
-          foreach ($searchArray as $search) {
-               if ($sWhereSub === "") {
-                    $sWhereSub .= "(";
-               } else {
-                    $sWhereSub .= " AND (";
-               }
-               $colSize = count($aColumns);
-
-               for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-               }
-               $sWhereSub .= ")";
-          }
-          $sWhere[] = $sWhereSub;
+     $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+     if (!empty($columnSearch)) {
+          $sWhere[] = $columnSearch;
      }
 
 
@@ -143,23 +106,23 @@ try {
 
      //$sQuery = $sQuery.' '.$sWhere;
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-          $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+          $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
      }
      if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-        $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+        $sWhere[] = ' vl.sample_package_code = "' . $db->escape((string) $_POST['manifestCode']) . '"';
      }
      if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-          $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+          $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['state'] . ' ';
      }
      if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-          $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+          $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['district'] . ' ';
      }
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-          $sWhere[] = ' vl.facility_id = "' . $_POST['facilityName'] . '"';
+          $sWhere[] = ' vl.facility_id = ' . (int) $_POST['facilityName'];
      }
 
      if (isset($_POST['testingLab']) && trim((string) $_POST['testingLab']) !== '') {
-          $sWhere[] = ' vl.lab_id = "' . $_POST['testingLab'] . '"';
+          $sWhere[] = ' vl.lab_id = ' . (int) $_POST['testingLab'];
      }
 
      if (!empty($_POST['sampleCollectionDate'])) {
@@ -192,27 +155,29 @@ try {
      }
      if (isset($_POST['hcvVLoad']) && trim((string) $_POST['hcvVLoad']) !== '') {
 
-          $sWhere[] = ' vl.hcv_vl_count = "' . $_POST['hcvVLoad'] . '"';
+          $sWhere[] = ' vl.hcv_vl_count = "' . $db->escape((string) $_POST['hcvVLoad']) . '"';
      }
      if (isset($_POST['hbvVLoad']) && trim((string) $_POST['hbvVLoad']) !== '') {
 
-          $sWhere[] = ' vl.hbv_vl_count = "' . $_POST['hbvVLoad'] . '"';
+          $sWhere[] = ' vl.hbv_vl_count = "' . $db->escape((string) $_POST['hbvVLoad']) . '"';
      }
 
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
-          $sWhere[] = ' vl.result_status =' . $_POST['status'];
+          $sWhere[] = ' vl.result_status = ' . (int) $_POST['status'];
      }
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-          $sWhere[] = ' vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+          $sWhere[] = ' vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
      }
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
-          $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+          $sWhere[] = ' vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
      }
      if (isset($_POST['patientId']) && trim((string) $_POST['patientId']) !== '') {
-          $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
+          $sWhere[] = " vl.patient_id LIKE '%" . $db->escapeLike($_POST['patientId']) . "%' ";
      }
      if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-          $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+          // CONCAT_WS keeps a space between name and surname, so searching
+          // "John Doe" matches; plain CONCAT only matched "JohnDoe".
+          $sWhere[] = " CONCAT_WS(' ', NULLIF(vl.patient_name,''), NULLIF(vl.patient_surname,'')) like '%" . $db->escapeLike($_POST['patientName']) . "%'";
      }
      $sWhere[] = ' vl.result_status != ' . RECEIVED_AT_CLINIC;
 
