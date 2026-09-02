@@ -108,6 +108,15 @@ if (!function_exists('_requirePrivilege')) {
     }
 }
 
+// The real helper is one line over DownloadTokenUtility, which works against the
+// TEMP_PATH defined above, so the stub does the same rather than pretend.
+if (!function_exists('_downloadToken')) {
+    function _downloadToken(string $filePath, ?int $ttlSeconds = null): string
+    {
+        return \App\Utilities\DownloadTokenUtility::sign($filePath, $ttlSeconds);
+    }
+}
+
 if (!function_exists('_rawInput')) {
     function _rawInput(string $key, mixed $default = null): mixed
     {

@@ -303,6 +303,56 @@ $groupLabels = [
         text-align: right;
     }
 
+    /* Every count in the breakdown opens the samples behind it. */
+    #sampleFlow table.sf-table td.sf-drill {
+        cursor: pointer;
+    }
+
+    #sampleFlow table.sf-table td.sf-drill:hover {
+        outline: 2px solid #3c8dbc;
+        outline-offset: -2px;
+    }
+
+    #sampleFlow table.sf-table td.sf-drill.is-active {
+        outline: 2px solid #3c8dbc;
+        outline-offset: -2px;
+        background-color: #e3eef5;
+    }
+
+    #sampleFlow .sf-samples {
+        margin-top: 22px;
+        padding-top: 14px;
+        border-top: 1px solid #e4e8ec;
+    }
+
+    #sampleFlow .sf-samples-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+    #sampleFlow .sf-samples-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #444;
+    }
+
+    #sampleFlow .sf-samples-title small {
+        display: block;
+        font-size: 12px;
+        font-weight: 400;
+        color: #8a9299;
+        margin-top: 2px;
+    }
+
+    #sampleFlow #sfSamplesTable td.num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+
     #sampleFlow .sf-methodology {
         background-color: #f8fafb;
         border: 1px solid #e4e8ec;
@@ -534,7 +584,10 @@ $groupLabels = [
 
                         <div id="sfBreakdown" style="display:none;">
                             <div class="sf-breakdown-title" id="sfBreakdownTitle"></div>
-                            <div class="sf-breakdown-hint"><?= _htmlTranslate('Sorted by the column marked with an arrow; click a column heading to sort by it.'); ?></div>
+                            <div class="sf-breakdown-hint">
+                                <?= _htmlTranslate('Sorted by the column marked with an arrow; click a column heading to sort by it. Click any count to list the samples behind it.'); ?>
+                                <a href="javascript:void(0);" onclick="sfDrill('', '', '');"><?= _htmlTranslate('List every sample in this stage'); ?></a>
+                            </div>
                             <ul class="nav nav-tabs" id="sfGroupTabs">
                                 <?php $first = true; ?>
                                 <?php foreach ($groupLabels as $groupKey => $label) { ?>
@@ -567,6 +620,33 @@ $groupLabels = [
                                     </tfoot>
                                 </table>
                             </div>
+
+                            <div class="sf-samples" id="sfSamples" style="display:none;">
+                                <div class="sf-samples-head">
+                                    <div class="sf-samples-title">
+                                        <span id="sfSamplesTitle"></span>
+                                        <small id="sfSamplesSubtitle"></small>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-success btn-sm" onclick="sfExportSamples();">
+                                            <em class="fa-solid fa-cloud-arrow-down"></em>
+                                            <?= _htmlTranslate('Export to Excel'); ?>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped" id="sfSamplesTable" aria-describedby="sfSamplesTitle">
+                                        <thead>
+                                            <tr>
+                                                <?php foreach (\App\Services\SampleFlowService::sampleColumns() as $heading) { ?>
+                                                    <th><?= htmlspecialchars($heading, ENT_QUOTES); ?></th>
+                                                <?php } ?>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -580,10 +660,16 @@ $groupLabels = [
     var SF_BUCKETS = <?= json_encode(array_keys($bucketLabels)); ?>;
     var SF_STAGE_LABELS = <?= json_encode(array_merge($stageLabels, $exitLabels), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
     var SF_GROUP_LABELS = <?= json_encode($groupLabels, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+    var SF_BUCKET_LABELS = <?= json_encode($bucketLabels, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+    var SF_SAMPLE_COLUMNS = <?= count(\App\Services\SampleFlowService::sampleColumns()); ?>;
     var SF_LABELS = {
         noData: "<?= _jsTranslate('No samples in this stage for the selected filters'); ?>",
         oldest: "<?= _jsTranslate('over 30 days'); ?>",
-        breakdownOf: "<?= _jsTranslate('%s by'); ?>"
+        breakdownOf: "<?= _jsTranslate('%s by'); ?>",
+        samplesIn: "<?= _jsTranslate('Samples: %s'); ?>",
+        allAges: "<?= _jsTranslate('all ages'); ?>",
+        wholeStage: "<?= _jsTranslate('every %s'); ?>",
+        exportFailed: "<?= _jsTranslate('Unable to generate the export file'); ?>"
     };
 
     var sfFlow = null;
@@ -592,6 +678,9 @@ $groupLabels = [
     var sfSort = 'total';
     var sfRows = [];
     var sfPending = 0;
+    // The cell currently listed: group key and age bucket within sfStage.
+    var sfDrillSel = null;
+    var sfSamplesTable = null;
 
     function sfProgress(delta) {
         sfPending = Math.max(0, sfPending + delta);
@@ -626,6 +715,7 @@ $groupLabels = [
 
     function sfApplyFilters() {
         sfFlow = null;
+        sfCloseSamples();
         $('#sfBreakdown').hide();
         $('.sf-stage, .sf-exit').removeClass('is-active');
         sfLoadFlow(function () {
@@ -717,6 +807,7 @@ $groupLabels = [
 
     function sfSelectStage(stage) {
         sfStage = stage;
+        sfCloseSamples();
         $('.sf-stage, .sf-exit').removeClass('is-active');
         $('[data-stage="' + stage + '"]').addClass('is-active');
         sfLoadBreakdown();
@@ -724,6 +815,7 @@ $groupLabels = [
 
     function sfSelectGroup(group) {
         sfGroup = group;
+        sfCloseSamples();
         $('#sfGroupTabs li').removeClass('active');
         $('#sfGroupTabs a[data-group="' + group + '"]').parent().addClass('active');
         sfLoadBreakdown();
@@ -760,7 +852,10 @@ $groupLabels = [
 
         var html = '';
         rows.forEach(function (row) {
-            html += '<tr><td>' + esc(row.label) + '</td><td class="num">' + row.total.toLocaleString() + '</td>';
+            var key = String(row.key === undefined || row.key === null ? '' : row.key);
+            html += '<tr><td>' + esc(row.label) + '</td>'
+                + '<td class="num sf-drill" data-key="' + esc(key) + '" data-bucket="" data-label="' + esc(row.label) + '">'
+                + row.total.toLocaleString() + '</td>';
             totals.total += row.total;
             SF_BUCKETS.forEach(function (b) {
                 var value = row[b] || 0;
@@ -768,7 +863,9 @@ $groupLabels = [
                 var heat = '';
                 if (value > 0 && b === 'b4') { heat = ' hot'; }
                 if (value > 0 && b === 'b3') { heat = ' warm'; }
-                html += '<td class="num' + heat + '">' + (value > 0 ? value.toLocaleString() : '') + '</td>';
+                html += '<td class="num' + heat + (value > 0 ? ' sf-drill' : '') + '"'
+                    + (value > 0 ? ' data-key="' + esc(key) + '" data-bucket="' + b + '" data-label="' + esc(row.label) + '"' : '')
+                    + '>' + (value > 0 ? value.toLocaleString() : '') + '</td>';
             });
             html += '</tr>';
         });
@@ -779,6 +876,107 @@ $groupLabels = [
         $('#foot-total').text(totals.total.toLocaleString());
         SF_BUCKETS.forEach(function (b) {
             $('#foot-' + b).text(totals[b] > 0 ? totals[b].toLocaleString() : '');
+        });
+        sfMarkDrillCell();
+    }
+
+    // Level 3: the samples behind one cell. groupKey '' with bucket '' lists
+    // the whole stage; a key narrows to one breakdown row; a bucket to one age.
+    function sfDrill(groupKey, bucket, label) {
+        if (!sfStage) { return; }
+        sfDrillSel = {
+            stage: sfStage,
+            groupBy: groupKey === '' && label === '' ? '' : sfGroup,
+            groupKey: groupKey,
+            bucket: bucket,
+            label: label
+        };
+        sfMarkDrillCell();
+
+        var stageLabel = SF_STAGE_LABELS[sfStage] || sfStage;
+        $('#sfSamplesTitle').text(SF_LABELS.samplesIn.replace('%s', stageLabel));
+        var scope = label !== '' ? (SF_GROUP_LABELS[sfGroup] || sfGroup) + ': ' + label : SF_LABELS.wholeStage.replace('%s', stageLabel.toLowerCase());
+        $('#sfSamplesSubtitle').text(scope + ' · ' + (bucket !== '' ? (SF_BUCKET_LABELS[bucket] || bucket) : SF_LABELS.allAges));
+        $('#sfSamples').show();
+        sfLoadSamples();
+        document.getElementById('sfSamples').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function sfMarkDrillCell() {
+        $('#sfTable td.sf-drill').removeClass('is-active');
+        if (!sfDrillSel || sfDrillSel.groupBy === '') { return; }
+        $('#sfTable td.sf-drill').filter(function () {
+            return $(this).data('key') === sfDrillSel.groupKey && $(this).data('bucket') === sfDrillSel.bucket;
+        }).addClass('is-active');
+    }
+
+    function sfCloseSamples() {
+        sfDrillSel = null;
+        $('#sfSamples').hide();
+        $('#sfTable td.sf-drill').removeClass('is-active');
+    }
+
+    function sfDrillParams() {
+        return $.extend({}, sfFilters(), {
+            stage: sfDrillSel.stage,
+            groupBy: sfDrillSel.groupBy,
+            groupKey: sfDrillSel.groupKey,
+            bucket: sfDrillSel.bucket
+        });
+    }
+
+    function sfLoadSamples() {
+        if (sfSamplesTable !== null) {
+            sfSamplesTable.fnDraw();
+            return;
+        }
+        var columns = [];
+        for (var i = 0; i < SF_SAMPLE_COLUMNS; i++) {
+            columns.push({ "bSortable": false, "sClass": i === SF_SAMPLE_COLUMNS - 1 ? 'num' : '' });
+        }
+        sfSamplesTable = $('#sfSamplesTable').dataTable({
+            "bJQueryUI": false,
+            "bAutoWidth": false,
+            "bInfo": true,
+            "bRetrieve": true,
+            "aoColumns": columns,
+            "aaSorting": [],
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "/sample-flow/get-sample-flow.php",
+            "fnServerData": function (sSource, aoData, fnCallback) {
+                if (!sfDrillSel) { return; }
+                aoData.push({ "name": "section", "value": "samples" });
+                var p = sfDrillParams();
+                Object.keys(p).forEach(function (k) {
+                    aoData.push({ "name": k, "value": p[k] });
+                });
+                sfProgress(1);
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": sSource,
+                    "data": aoData,
+                    "complete": function () { sfProgress(-1); },
+                    "success": fnCallback
+                });
+            }
+        });
+    }
+
+    function sfExportSamples() {
+        if (!sfDrillSel) { return; }
+        $.blockUI();
+        $.post('/sample-flow/get-sample-flow.php', $.extend({ section: 'export' }, sfDrillParams()), function (data) {
+            $.unblockUI();
+            if (data === '' || data === null || data === undefined || String(data).indexOf('{') === 0) {
+                alert(SF_LABELS.exportFailed);
+                return;
+            }
+            window.open('/download.php?f=' + data, '_blank');
+        }).fail(function () {
+            $.unblockUI();
+            alert(SF_LABELS.exportFailed);
         });
     }
 
@@ -819,6 +1017,10 @@ $groupLabels = [
         }
         $('#testType').on('change', function () {
             sfApplyFilters();
+        });
+
+        $('#sfTable').on('click', 'td.sf-drill', function () {
+            sfDrill(String($(this).data('key')), String($(this).data('bucket')), String($(this).data('label')));
         });
 
         sfApplyFilters();
