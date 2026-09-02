@@ -4,7 +4,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
-use App\Repositories\Reference\SampleTypeRepository;
+use App\Repositories\Reference\ReferenceDataRepository;
 
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -14,15 +14,16 @@ $_POST = _sanitizeInput($request->getParsedBody());
 // persist "Plasma & Serum" as "Plasma &amp; Serum". Escaping belongs to rendering.
 $sampleName = trim((string) _rawInput("sampleName", ""));
 
-/** @var SampleTypeRepository $sampleTypes */
-$sampleTypes = ContainerRegistry::get(SampleTypeRepository::class);
+/** @var ReferenceDataRepository $referenceData */
+$referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 try {
 	if ($sampleName !== "") {
-		$sampleTypes->save(
+		$referenceData->save(
+			'sample-type',
 			'tb',
 			$sampleName,
 			(string) ($_POST['sampleStatus'] ?? '')
