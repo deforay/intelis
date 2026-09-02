@@ -73,7 +73,10 @@ try {
                 ts.status_name,
                 r_i_p.i_partner_name FROM form_eid as vl
                 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-                LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
+                -- INNER on purpose: a sample that never reached a lab is not part
+                -- of tracking tested samples; the data export applies the same
+                -- rule, so this report and the export agree.
+                INNER JOIN facility_details as fd ON fd.facility_id=vl.lab_id
                 LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
                 LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner
