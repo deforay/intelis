@@ -135,7 +135,13 @@ foreach ($resultSet as $aRow) {
      }
      unset($aRow['is_encrypted']);
      $patientId = trim((string) $aRow['patient_art_no']);
-     $grouped[$patientId][] = $aRow;
+     if ($patientId === '') {
+          // A blank patient ID is not one patient. Grouped together, such rows
+          // would clump into a single fake "virologic failure" patient.
+          $grouped['blank-id-' . count($grouped)][] = $aRow;
+     } else {
+          $grouped[$patientId][] = $aRow;
+     }
 }
 
 if (empty($grouped)) {
