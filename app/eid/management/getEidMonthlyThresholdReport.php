@@ -1,10 +1,18 @@
 <?php
 
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+
+
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 
 /** @var DatabaseService $db */
@@ -28,47 +36,18 @@ $sTable = $tableName;
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-     $sOffset = $_POST['iDisplayStart'];
-     $sLimit = $_POST['iDisplayLength'];
+     $sOffset = (int) $_POST['iDisplayStart'];
+     $sLimit = (int) $_POST['iDisplayLength'];
 }
 
 
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-     $sOrder = "";
-     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-          if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-               $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
-}
-
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 $sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", (string) $_POST['sSearch']);
-     $sWhereSub = "";
-     foreach ($searchArray as $search) {
-          if ($sWhereSub === "") {
-               $sWhereSub .= "(";
-          } else {
-               $sWhereSub .= " AND (";
-          }
-          $colSize = count($aColumns);
-
-          for ($i = 0; $i < $colSize; $i++) {
-               if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-               } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-               }
-          }
-          $sWhereSub .= ")";
-     }
-     $sWhere[] = $sWhereSub;
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+if (!empty($columnSearch)) {
+     $sWhere[] = $columnSearch;
 }
 
 
@@ -111,27 +90,13 @@ if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !
 }
 
 if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-     $fac = explode(',', (string) $_POST['facilityName']);
-     $out = '';
-     // print_r($fac);die;
-     $counter = count($fac);
-     // print_r($fac);die;
-     for ($s = 0; $s < $counter; $s++) {
-          $out = $out !== '' && $out !== '0' ? $out . ',"' . $fac[$s] . '"' : '("' . $fac[$s] . '"';
-     }
-     $out .= ')';
-
-     $sWhere[] = ' vl.lab_id IN ' . $out;
+     $sWhere[] = ' vl.lab_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
 }
 if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-     $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+     $sWhere[] = " f.facility_district LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
 }
 if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-     $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
-}
-if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-
-     $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+     $sWhere[] = " f.facility_state LIKE '%" . $db->escapeLike($_POST['state']) . "%' ";
 }
 
 $sWhere[] = ' vl.result!="" AND vl.result_status != ' . RECEIVED_AT_CLINIC;
@@ -152,21 +117,16 @@ if ($sWhere !== []) {
 
 
 $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
-if ($_POST['targetType'] == 1) {
+if (($_POST['targetType'] ?? '') == 1) {
      $sQuery .= ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
-} elseif ($_POST['targetType'] == 2) {
+} elseif (($_POST['targetType'] ?? '') == 2) {
      $sQuery .= ' HAVING tl.monthly_target < SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 }
 
 $_SESSION['eidMonitoringThresholdReportQuery'] = $sQuery;
 
-// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
-
-/* Total data set length */
-$aResultTotal = $db->rawQuery($sQuery);
-//$iTotal = count($aResultTotal);
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];

@@ -57,48 +57,16 @@ try {
       */
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-          $sOffset = $_POST['iDisplayStart'];
-          $sLimit = $_POST['iDisplayLength'];
+          $sOffset = (int) $_POST['iDisplayStart'];
+          $sLimit = (int) $_POST['iDisplayLength'];
      }
 
-
-
-     $sOrder = "";
-     if (isset($_POST['iSortCol_0'])) {
-          $sOrder = "";
-          for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-               if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-                    " . ($_POST['sSortDir_' . $i]) . ", ";
-               }
-          }
-          $sOrder = substr_replace($sOrder, "", -2);
-     }
-
-
+     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
      $sWhere = [];
-     if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-          $searchArray = explode(" ", (string) $_POST['sSearch']);
-          $sWhereSub = "";
-          foreach ($searchArray as $search) {
-               if ($sWhereSub === "") {
-                    $sWhereSub .= "(";
-               } else {
-                    $sWhereSub .= " AND (";
-               }
-               $colSize = count($aColumns);
-
-               for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-               }
-               $sWhereSub .= ")";
-          }
-          $sWhere[] = $sWhereSub;
+     $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+     if (!empty($columnSearch)) {
+          $sWhere[] = $columnSearch;
      }
 
 
@@ -164,58 +132,58 @@ try {
      [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
      /* Sample type filter */
      if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-          $sWhere[] = ' vl.specimen_type IN (' . $_POST['sampleType'] . ')';
+          $sWhere[] = ' vl.specimen_type IN (' . $db->inIntList($_POST['sampleType']) . ')';
      }
      if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-          $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+          $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['state'] . ' ';
      }
      if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-          $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+          $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['district'] . ' ';
      }
      /* Facility id filter */
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-          $sWhere[] = ' vl.facility_id = "' . $_POST['facilityName'] . '"';
+          $sWhere[] = ' vl.facility_id = ' . (int) $_POST['facilityName'];
      }
      /* Testing lab filter */
      if (isset($_POST['testingLab']) && trim((string) $_POST['testingLab']) !== '') {
-          $sWhere[] = ' vl.lab_id = "' . $_POST['testingLab'] . '"';
+          $sWhere[] = ' vl.lab_id = ' . (int) $_POST['testingLab'];
      }
      /* Result filter */
      if (isset($_POST['result']) && trim((string) $_POST['result']) !== '') {
-          $sWhere[] = ' vl.result like "' . $_POST['result'] . '"';
+          $sWhere[] = ' vl.result like "' . $db->escape((string) $_POST['result']) . '"';
      }
      /* Status filter */
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
-          $sWhere[] = ' vl.result_status =' . $_POST['status'];
+          $sWhere[] = ' vl.result_status = ' . (int) $_POST['status'];
      }
      /* Funding src filter */
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-          $sWhere[] = ' vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+          $sWhere[] = ' vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
      }
      /* Implementing partner filter */
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
-          $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+          $sWhere[] = ' vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
      }
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-          $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+          $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
      }
 
      if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+          $sWhere[] = ' vl.sample_package_code = "' . $db->escape((string) $_POST['manifestCode']) . '"';
      }
 
      if (isset($_POST['childId']) && $_POST['childId'] != "") {
-          $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
+          $sWhere[] = ' vl.child_id like "%' . $db->escapeLike($_POST['childId']) . '%"';
      }
      if (isset($_POST['childName']) && $_POST['childName'] != "") {
-          $sWhere[] = ' vl.child_name like "%' . $_POST['childName'] . '%"';
+          $sWhere[] = ' vl.child_name like "%' . $db->escapeLike($_POST['childName']) . '%"';
      }
      if (isset($_POST['motherId']) && $_POST['motherId'] != "") {
-          $sWhere[] = ' vl.mother_id like "%' . $_POST['motherId'] . '%"';
+          $sWhere[] = ' vl.mother_id like "%' . $db->escapeLike($_POST['motherId']) . '%"';
      }
      if (isset($_POST['motherName']) && $_POST['motherName'] != "") {
-          $sWhere[] = ' vl.mother_name like "%' . $_POST['motherName'] . '%"';
+          $sWhere[] = ' vl.mother_name like "%' . $db->escapeLike($_POST['motherName']) . '%"';
      }
 
      /* Date time filters */
