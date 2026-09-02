@@ -48,16 +48,16 @@ try {
     }
     /* State filter */
     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-        $whereCondition .= " AND f.facility_state_id = '" . $_POST['state'] . "' ";
+        $whereCondition .= ' AND f.facility_state_id = ' . (int) $_POST['state'] . ' ';
     }
 
     /* District filters */
     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $whereCondition .= " AND f.facility_district_id = '" . $_POST['district'] . "' ";
+        $whereCondition .= ' AND f.facility_district_id = ' . (int) $_POST['district'] . ' ';
     }
     /* Facility filter */
     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-        $whereCondition .= ' AND f.facility_id IN (' . $_POST['facilityName'] . ') ';
+        $whereCondition .= ' AND f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ') ';
     }
 
     $sQuery = "SELECT
