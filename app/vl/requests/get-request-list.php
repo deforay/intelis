@@ -231,7 +231,7 @@ try {
 
      /* Sample status filter */
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
-          $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';
+          $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . (int) $_POST['status'] . ')';
      }
      if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) !== '') {
           $sWhere[] = ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
@@ -247,10 +247,10 @@ try {
           $sWhere[] = ' vl.is_patient_breastfeeding IN ("' . $_POST['breastFeeding'] . '")';
      }
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-          $sWhere[] = ' vl.funding_source IN ("' . base64_decode((string) $_POST['fundingSource']) . '")';
+          $sWhere[] = ' vl.funding_source IN ("' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '")';
      }
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
-          $sWhere[] = ' vl.implementing_partner IN ("' . base64_decode((string) $_POST['implementingPartner']) . '")';
+          $sWhere[] = ' vl.implementing_partner IN ("' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '")';
      }
      if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
           $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
