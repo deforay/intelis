@@ -97,6 +97,9 @@ try {
 		$sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
 	}
 
+	// Reset first so a filterless search does not export the previous
+	// search's filters.
+	$_SESSION['eidTatData'] = [];
 	if (!empty($sWhere)) {
 		$_SESSION['eidTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
 		$sQuery = "$sQuery AND $sWhere";

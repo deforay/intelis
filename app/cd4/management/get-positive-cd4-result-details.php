@@ -1,10 +1,18 @@
 <?php
 
+use Psr\Http\Message\ServerRequestInterface;
+use App\Registries\AppRegistry;
 use App\Utilities\SampleCountUtility;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+
+
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 
 /** @var DatabaseService $db */
@@ -35,47 +43,17 @@ $sTable = $tableName;
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
+    $sOffset = (int) $_POST['iDisplayStart'];
+    $sLimit = (int) $_POST['iDisplayLength'];
 }
 
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-    $sOrder = "";
-    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-            $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-        }
-    }
-    $sOrder = substr_replace($sOrder, "", -2);
-}
-
-
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 $sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", (string) $_POST['sSearch']);
-    $sWhereSub = "";
-    foreach ($searchArray as $search) {
-        if ($sWhereSub === "") {
-            $sWhereSub .= "(";
-        } else {
-            $sWhereSub .= " AND (";
-        }
-        $colSize = count($aColumns);
-
-        for ($i = 0; $i < $colSize; $i++) {
-            if ($i < $colSize - 1) {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-            } else {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-            }
-        }
-        $sWhereSub .= ")";
-    }
-    $sWhere[] = $sWhereSub;
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+if (!empty($columnSearch)) {
+    $sWhere[] = $columnSearch;
 }
 
 
@@ -91,17 +69,10 @@ $start_date = '';
 $end_date = '';
 
 if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) !== '') {
-    $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
+    // The filter is fed by a dropdown of exact batch codes; LIKE made
+    // batch "B1" also match "B12".
+    $sWhere[] =  ' b.batch_code = "' . $db->escape((string) $_POST['hvlBatchCode']) . '"';
 }
-/* if(isset($_POST['hvlContactStatus']) && trim($_POST['hvlContactStatus'])!= ''){
-		if($_POST['hvlContactStatus']=='all')
-		{
-			$sWhere = $sWhere.' AND (contact_complete_status = "no" OR contact_complete_status="yes" OR contact_complete_status IS NULL OR contact_complete_status="")';
-		}else{
-	    $sWhere = $sWhere.' AND contact_complete_status = "'.$_POST['hvlContactStatus'].'"';
-		}
-	} */
-
 if (isset($_POST['hvlSampleTestDate']) && trim((string) $_POST['hvlSampleTestDate']) !== '') {
     $s_c_date = explode("to", (string) $_POST['hvlSampleTestDate']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
@@ -117,25 +88,25 @@ if (isset($_POST['hvlSampleTestDate']) && trim((string) $_POST['hvlSampleTestDat
     }
 }
 if (isset($_POST['hvlSampleType']) && $_POST['hvlSampleType'] != '') {
-    $sWhere[] =  ' s.sample_id = "' . $_POST['hvlSampleType'] . '"';
+    $sWhere[] =  ' vl.specimen_type = ' . (int) $_POST['hvlSampleType'];
 }
 if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-    $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+    $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['state'] . ' ';
 }
 if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-    $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+    $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['district'] . ' ';
 }
 if (isset($_POST['hvlFacilityName']) && $_POST['hvlFacilityName'] != '') {
-    $sWhere[] =  ' f.facility_id IN (' . $_POST['hvlFacilityName'] . ')';
+    $sWhere[] =  ' f.facility_id IN (' . $db->inIntList($_POST['hvlFacilityName']) . ')';
 }
 if (isset($_POST['hvlGender']) && $_POST['hvlGender'] != '') {
-    $sWhere[] = ' vl.patient_gender = "' . $_POST['hvlGender'] . '"';
+    $sWhere[] = ' vl.patient_gender = "' . $db->escape((string) $_POST['hvlGender']) . '"';
 }
 if (isset($_POST['hvlPatientPregnant']) && $_POST['hvlPatientPregnant'] != '') {
-    $sWhere[] =  ' vl.is_patient_pregnant = "' . $_POST['hvlPatientPregnant'] . '"';
+    $sWhere[] =  ' vl.is_patient_pregnant = "' . $db->escape((string) $_POST['hvlPatientPregnant']) . '"';
 }
 if (isset($_POST['hvlPatientBreastfeeding']) && $_POST['hvlPatientBreastfeeding'] != '') {
-    $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['hvlPatientBreastfeeding'] . '"';
+    $sWhere[] = ' vl.is_patient_breastfeeding = "' . $db->escape((string) $_POST['hvlPatientBreastfeeding']) . '"';
 }
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
