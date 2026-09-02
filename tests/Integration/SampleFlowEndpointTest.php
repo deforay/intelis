@@ -401,6 +401,27 @@ final class SampleFlowEndpointTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testAnExportWithAForgedStageWritesNoFileAnywhere(): void
+    {
+        $before = array_merge(
+            glob(TEMP_PATH . DIRECTORY_SEPARATOR . '*') ?: [],
+            glob(dirname(TEMP_PATH) . DIRECTORY_SEPARATOR . '*') ?: []
+        );
+
+        $json = $this->drive([
+            'section' => 'export', 'testType' => 'eid', 'dateRange' => '',
+            'stage' => '../forged', 'groupBy' => '', 'groupKey' => '', 'bucket' => '',
+        ]);
+        self::assertArrayHasKey('error', $json);
+
+        $after = array_merge(
+            glob(TEMP_PATH . DIRECTORY_SEPARATOR . '*') ?: [],
+            glob(dirname(TEMP_PATH) . DIRECTORY_SEPARATOR . '*') ?: []
+        );
+        self::assertSame($before, $after, 'the forged stage must not create a file, inside or outside TEMP_PATH');
+    }
+
+    #[RunInSeparateProcess]
     public function testACallerWithoutThePagePrivilegeIsRefused(): void
     {
         LegacyAppHarness::withSession(['roleId' => 5, 'privileges' => []]);

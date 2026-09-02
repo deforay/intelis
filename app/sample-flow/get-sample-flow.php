@@ -71,6 +71,13 @@ try {
             'aaData' => $aaData,
         ]);
     } elseif ($section === 'export') {
+        // The stage names the file, so it is checked against the fixed list
+        // before any path is built; the test key was already checked against
+        // the registry. Nothing request-supplied reaches the filename raw.
+        if (!in_array($stage, array_merge(SampleFlowService::STAGES, SampleFlowService::EXITS), true)) {
+            throw new \App\Exceptions\SystemException('Invalid stage for the sample flow');
+        }
+
         // Every sample behind the cell, streamed straight into the workbook so
         // a stage holding tens of thousands of samples never sits in memory.
         $columns = SampleFlowService::sampleColumns();
