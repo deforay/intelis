@@ -47,10 +47,6 @@ try {
 			$_SESSION['alertMsg'] = _translate("VL Results details saved successfully");
 			$general->activityLog('VL Results details', $_SESSION['userName'] . ' saved results ' . $resultName, 'vl-reference');
 		}
-		// The result-entry forms cache the VL result list per instrument;
-		// without this, an added or edited result stays invisible there
-		// until the cache expires.
-		_invalidateFileCacheByTags(['r_vl_results']);
 	}
 	MiscUtility::redirect("/vl/reference/vl-results.php");
 } catch (Throwable $e) {

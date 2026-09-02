@@ -93,6 +93,35 @@ final class ReferenceDataRepositoryTest extends TestCase
             'name' => 'art_code',
             'status' => 'art_status',
         ],
+        'funding-source' => [
+            'tables' => ['common' => 'r_funding_sources'],
+            'id' => 'funding_source_id',
+            'name' => 'funding_source_name',
+            'status' => 'funding_source_status',
+        ],
+        'implementation-partner' => [
+            'tables' => ['common' => 'r_implementation_partners'],
+            'id' => 'i_partner_id',
+            'name' => 'i_partner_name',
+            'status' => 'i_partner_status',
+        ],
+        'corrective-action' => [
+            'tables' => ['common' => 'r_recommended_corrective_actions'],
+            'id' => 'recommended_corrective_action_id',
+            'name' => 'recommended_corrective_action_name',
+            'status' => 'status',
+        ],
+    ];
+
+    /**
+     * Saved through StorageService, status-toggled through the repository, so
+     * it is exercised separately from the save-capable entities above.
+     */
+    private const LAB_STORAGE = [
+        'tables' => ['common' => 'lab_storage'],
+        'id' => 'storage_id',
+        'name' => 'storage_code',
+        'status' => 'storage_status',
     ];
 
     /**
@@ -152,6 +181,44 @@ final class ReferenceDataRepositoryTest extends TestCase
                 ) ENGINE=InnoDB"
             );
         }
+        $bootstrap->query(
+            'CREATE TABLE r_funding_sources (
+                funding_source_id INT AUTO_INCREMENT PRIMARY KEY,
+                funding_source_name VARCHAR(255) DEFAULT NULL,
+                funding_source_status VARCHAR(45) DEFAULT NULL,
+                updated_datetime DATETIME DEFAULT NULL,
+                data_sync INT NOT NULL DEFAULT 1
+            ) ENGINE=InnoDB'
+        );
+        $bootstrap->query(
+            'CREATE TABLE r_implementation_partners (
+                i_partner_id INT AUTO_INCREMENT PRIMARY KEY,
+                i_partner_name VARCHAR(255) DEFAULT NULL,
+                i_partner_status VARCHAR(45) DEFAULT NULL,
+                updated_datetime DATETIME DEFAULT NULL,
+                data_sync INT NOT NULL DEFAULT 1
+            ) ENGINE=InnoDB'
+        );
+        $bootstrap->query(
+            'CREATE TABLE r_recommended_corrective_actions (
+                recommended_corrective_action_id INT AUTO_INCREMENT PRIMARY KEY,
+                test_type VARCHAR(50) DEFAULT NULL,
+                recommended_corrective_action_name VARCHAR(255) DEFAULT NULL,
+                status VARCHAR(45) DEFAULT NULL,
+                updated_datetime DATETIME DEFAULT NULL,
+                data_sync INT NOT NULL DEFAULT 1
+            ) ENGINE=InnoDB'
+        );
+        $bootstrap->query(
+            'CREATE TABLE lab_storage (
+                storage_id CHAR(50) NOT NULL PRIMARY KEY,
+                storage_code VARCHAR(255) DEFAULT NULL,
+                lab_id INT DEFAULT NULL,
+                storage_status VARCHAR(10) DEFAULT NULL,
+                updated_datetime DATETIME DEFAULT NULL,
+                data_sync INT NOT NULL DEFAULT 1
+            ) ENGINE=InnoDB'
+        );
         $bootstrap->query(
             'CREATE TABLE r_vl_test_failure_reasons (
                 failure_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -220,6 +287,7 @@ final class ReferenceDataRepositoryTest extends TestCase
                 self::$db->rawQuery("DELETE FROM `$table`");
             }
         }
+        self::$db->rawQuery('DELETE FROM lab_storage');
         $this->repository = new ReferenceDataRepository(self::$db);
     }
 
@@ -371,6 +439,57 @@ final class ReferenceDataRepositoryTest extends TestCase
         } catch (SystemException) {
         }
         $this->assertSame(1, (int) self::$db->rawQueryOne('SELECT COUNT(*) AS c FROM r_vl_sample_type')['c']);
+    }
+
+    public function testAStatusOnlyEntitytogglesByItsGeneratedStringIdButRefusesSaves(): void
+    {
+        // Production storage ids are generated CHAR(50) values, not integers;
+        // an integer-only id filter would silently toggle nothing.
+        $id = '01973f9c-e26c-636f-3aac-395bdbf77f81-lX0fk6';
+        $other = '05ffb8f7-544e-4ec2-acf9-e03ef0ca0806';
+        self::$db->rawQuery(
+            "INSERT INTO lab_storage (storage_id, storage_code, lab_id, storage_status)
+             VALUES (?, 'Rack A1', 1, 'active'), (?, 'Rack B1', 1, 'active')",
+            [$id, $other]
+        );
+
+        $changed = $this->repository->updateStatus('lab-storage', 'common', [$id, '', '  '], 'inactive');
+        $this->assertSame(1, $changed);
+        $spec = self::LAB_STORAGE;
+        $row = self::$db->rawQueryOne("SELECT * FROM lab_storage WHERE {$spec['id']} = ?", [$id]);
+        $this->assertSame('inactive', $row[$spec['status']]);
+        $untouched = self::$db->rawQueryOne("SELECT * FROM lab_storage WHERE {$spec['id']} = ?", [$other]);
+        $this->assertSame('active', $untouched[$spec['status']]);
+
+        // Saving lab storage belongs to StorageService; the repository must
+        // refuse rather than write a bare row behind that service's back.
+        $this->expectException(SystemException::class);
+        $this->repository->save('lab-storage', 'common', 'Rack C1', 'active');
+    }
+
+    public function testWritesInvalidateTheCacheTagsTheEntityDeclares(): void
+    {
+        $GLOBALS['__invalidatedCacheTags'] = [];
+
+        $id = $this->repository->save('funding-source', 'common', 'Global Fund', 'active');
+        $this->assertContains(['r_funding_sources'], $GLOBALS['__invalidatedCacheTags']);
+
+        $GLOBALS['__invalidatedCacheTags'] = [];
+        $this->repository->updateStatus('funding-source', 'common', [(string) $id], 'inactive');
+        $this->assertContains(
+            ['r_funding_sources'],
+            $GLOBALS['__invalidatedCacheTags'],
+            'A status toggle must invalidate too -- the old endpoints only invalidated on save'
+        );
+
+        $GLOBALS['__invalidatedCacheTags'] = [];
+        $this->repository->save('vl-result', 'vl', '< 40', 'active');
+        $this->assertContains(['r_vl_results'], $GLOBALS['__invalidatedCacheTags']);
+
+        // An entity with no declared tags invalidates nothing.
+        $GLOBALS['__invalidatedCacheTags'] = [];
+        $this->repository->save('sample-type', 'vl', 'Plasma', 'active');
+        $this->assertSame([], $GLOBALS['__invalidatedCacheTags']);
     }
 
     public function testUnknownEntityAndUnknownTestTypeAreRefused(): void

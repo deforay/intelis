@@ -110,3 +110,14 @@ if (!function_exists('_rawInput')) {
         return $body[$key] ?? $default;
     }
 }
+
+// The repository invalidates file-cache tags after reference writes; the real
+// helper needs the container-built FileCacheUtility, which the suite does not
+// boot. This stub records the tags instead, so a test can assert that a write
+// actually invalidates what its entity declares.
+if (!function_exists('_invalidateFileCacheByTags')) {
+    function _invalidateFileCacheByTags($tags): void
+    {
+        $GLOBALS['__invalidatedCacheTags'][] = is_array($tags) ? $tags : [$tags];
+    }
+}
