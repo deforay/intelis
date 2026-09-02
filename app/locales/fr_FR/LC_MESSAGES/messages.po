@@ -15143,10 +15143,6 @@ msgstr "Charge virale du VIH"
 msgid "HIV Recency"
 msgstr "Récence du VIH"
 
-#: app/classes/Services/TestsService.php:138
-msgid "Tubercolosis"
-msgstr "Tuberculose"
-
 #: app/classes/Services/TestsService.php:152
 msgid "Other Tests"
 msgstr "Autres tests"
