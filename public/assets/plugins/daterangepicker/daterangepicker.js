@@ -1329,6 +1329,11 @@
                     date = date.clone().hour(hour).minute(minute).second(second);
                 }
                 this.endDate = null;
+                // A new range is being picked: clear the field so it doesn't keep
+                // showing the previously applied range mid-selection. It is filled
+                // again on Apply, or restored if the picker closes unapplied.
+                if (this.element.is('input') && this.autoUpdateInput)
+                    this.element.val('');
                 this.setStartDate(date.clone());
             } else if (date.isBefore(this.startDate, 'day')) {
                 // The second click landed before the first: swap them, so the
