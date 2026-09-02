@@ -533,6 +533,8 @@
             }
             if (this.endDate)
                 this.container.find('.drp-selected').html(this.startDate.format(this.locale.format) + this.locale.separator + this.endDate.format(this.locale.format));
+            else
+                this.container.find('.drp-selected').html(this.startDate.format(this.locale.format) + this.locale.separator + '&hellip;');
             this.updateMonthsInView();
             this.updateCalendars();
             this.updateFormInputs();

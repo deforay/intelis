@@ -624,7 +624,6 @@ foreach ($rejectionTypeResult as $type) {
 				},
 				showDropdowns: true,
 				alwaysShowCalendars: true,
-				linkedCalendars: false,
 				startDate: moment().subtract(28, 'days'),
 				endDate: moment(),
 				minDate: moment('2013-01-01'),
