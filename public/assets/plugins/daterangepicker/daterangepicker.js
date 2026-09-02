@@ -1311,7 +1311,7 @@
             // * if one of the inputs above the calendars was focused, cancel that manual input
             //
 
-            if (this.endDate || date.isBefore(this.startDate, 'day')) { //picking start
+            if (this.endDate) { //picking start
                 if (this.timePicker) {
                     var hour = parseInt(this.container.find('.left .hourselect').val(), 10);
                     if (!this.timePicker24Hour) {
@@ -1330,6 +1330,16 @@
                 }
                 this.endDate = null;
                 this.setStartDate(date.clone());
+            } else if (date.isBefore(this.startDate, 'day')) {
+                // The second click landed before the first: swap them, so the
+                // earlier date becomes From and the first click becomes To.
+                var firstPick = this.startDate.clone();
+                this.setStartDate(date.clone());
+                this.setEndDate(firstPick);
+                if (this.autoApply) {
+                    this.calculateChosenLabel();
+                    this.clickApply();
+                }
             } else if (!this.endDate && date.isBefore(this.startDate)) {
                 //special case: clicking the same date for start/end,
                 //but the time of the end date is before the start date
