@@ -36,8 +36,8 @@ try {
     $tableName = "form_vl";
     $primaryKey = "vl_sample_id";
 
-    $aColumns = ['vl.patient_art_no', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result'];
-    $orderColumns = ['vl.patient_art_no', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result'];
+    $aColumns = ['vl.patient_art_no', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result', 'r_i_p.i_partner_name'];
+    $orderColumns = ['vl.patient_art_no', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result', 'r_i_p.i_partner_name'];
 
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = $primaryKey;
@@ -79,11 +79,13 @@ try {
                 f.facility_name,
                 s.sample_name,
                 fd.facility_name as labName,
-                ts.status_name
+                ts.status_name,
+                r_i_p.i_partner_name
             FROM form_vl as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
             LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
             LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
+            LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . ACCEPTED;
@@ -93,6 +95,9 @@ try {
     }
     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
         $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
+    }
+    if (isset($_POST['pthImplementingPartner']) && trim((string) $_POST['pthImplementingPartner']) !== '') {
+        $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['pthImplementingPartner'])) . '"';
     }
 
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
@@ -160,6 +165,7 @@ try {
         $row[] = $aRow['labName'];
         $row[] = $aRow['sample_tested_datetime'];
         $row[] = $aRow['result'];
+        $row[] = $aRow['i_partner_name'];
         $row[] = $print;
         $output['aaData'][] = $row;
     }

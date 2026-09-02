@@ -47,6 +47,8 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 $state = $geolocationService->getProvinces("yes");
 
+$implementingPartnerList = $general->getImplementationPartners();
+
 ?>
 <style>
 	.select2-selection__choice {
@@ -362,6 +364,24 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
+													<td style="width: 10%;"><strong>
+															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23.33%;">
+														<select name="hvlImplementingPartner" id="hvlImplementingPartner"
+															class="form-control select2Class highViralLoadReportFilter"
+															title="<?php echo _translate('Please choose implementing partner'); ?>"
+															style="width:100%;">
+															<option value="">
+																<?php echo _translate("-- Select --"); ?>
+															</option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+																	<?= $implementingPartner['i_partner_name']; ?>
+																</option>
+															<?php } ?>
+														</select>
+													</td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button"
@@ -416,6 +436,9 @@ $state = $geolocationService->getProvinces("yes");
 														</th>
 														<th>
 															<?php echo _translate("Viral Load (cp/mL)"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Implementing Partner"); ?>
 														</th>
 														<th scope="row">
 															<?php echo _translate("Status"); ?>
@@ -576,6 +599,27 @@ $state = $geolocationService->getProvinces("yes");
 																class="form-control" min="0" max="120" value="120">
 														</div>
 													</td>
+												</tr>
+												<tr>
+													<td style="width: 10%;"><strong>
+															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23.33%;">
+														<select name="vfVlnsImplementingPartner" id="vfVlnsImplementingPartner"
+															class="form-control select2Class vfvlnsfilters"
+															title="<?php echo _translate('Please choose implementing partner'); ?>"
+															style="width:100%;">
+															<option value="">
+																<?php echo _translate("-- Select --"); ?>
+															</option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+																	<?= $implementingPartner['i_partner_name']; ?>
+																</option>
+															<?php } ?>
+														</select>
+													</td>
+													<td colspan="4"></td>
 												</tr>
 												<tr>
 													<td colspan="6">
@@ -808,6 +852,27 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 												<tr>
+													<td style="width: 10%;"><strong>
+															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23.33%;">
+														<select name="rjtImplementingPartner" id="rjtImplementingPartner"
+															class="form-control select2Class sampleRjtReportFilter"
+															title="<?php echo _translate('Please choose implementing partner'); ?>"
+															style="width:100%;">
+															<option value="">
+																<?php echo _translate("-- Select --"); ?>
+															</option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+																	<?= $implementingPartner['i_partner_name']; ?>
+																</option>
+															<?php } ?>
+														</select>
+													</td>
+													<td colspan="4"></td>
+												</tr>
+												<tr>
 													<td colspan="6">&nbsp;<input type="button"
 															onclick="searchVlRequestData();"
 															value="<?= _translate('Search'); ?>"
@@ -856,6 +921,9 @@ $state = $geolocationService->getProvinces("yes");
 														</th>
 														<th>
 															<?php echo _translate("Recommended Corrective Action"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Implementing Partner"); ?>
 														</th>
 													</tr>
 												</thead>
@@ -1058,6 +1126,25 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
+													<td style="width: 10%;"><strong>
+															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23.33%;">
+														<select name="noResultImplementingPartner"
+															id="noResultImplementingPartner"
+															class="form-control select2Class notAvailReportFilter"
+															title="<?php echo _translate('Please choose implementing partner'); ?>"
+															style="width:100%;">
+															<option value="">
+																<?php echo _translate("-- Select --"); ?>
+															</option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+																	<?= $implementingPartner['i_partner_name']; ?>
+																</option>
+															<?php } ?>
+														</select>
+													</td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button"
@@ -1105,6 +1192,9 @@ $state = $geolocationService->getProvinces("yes");
 														</th>
 														<th>
 															<?php echo _translate("Sample Status"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Implementing Partner"); ?>
 														</th>
 													</tr>
 												</thead>
@@ -1196,6 +1286,27 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 
 												<tr>
+													<td style="width: 10%;"><strong>
+															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23.33%;">
+														<select name="dqImplementingPartner" id="dqImplementingPartner"
+															class="form-control select2Class incompleteFormReportFilter"
+															title="<?php echo _translate('Please choose implementing partner'); ?>"
+															style="width:100%;">
+															<option value="">
+																<?php echo _translate("-- Select --"); ?>
+															</option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+																	<?= $implementingPartner['i_partner_name']; ?>
+																</option>
+															<?php } ?>
+														</select>
+													</td>
+													<td colspan="4"></td>
+												</tr>
+												<tr>
 													<td colspan="4">&nbsp;<input type="button"
 															onclick="searchVlRequestData();"
 															value="<?= _translate('Search'); ?>"
@@ -1253,6 +1364,9 @@ $state = $geolocationService->getProvinces("yes");
 														</th>
 														<th scope="row">
 															<?php echo _translate("Status"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Implementing Partner"); ?>
 														</th>
 													</tr>
 												</thead>
@@ -1322,7 +1436,25 @@ $state = $geolocationService->getProvinces("yes");
 															placeholder="<?= _translate('Select Sample Collection date'); ?>"
 															style="width:220px;background:#fff;" />
 													</td>
-													<td colspan="3">&nbsp;<input type="button"
+													<td style="width: 10%;"><strong>
+															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23.3%;">
+														<select name="stImplementingPartner" id="stImplementingPartner"
+															class="form-control select2Class stReportFilter"
+															title="<?php echo _translate('Please choose implementing partner'); ?>"
+															style="width:100%;">
+															<option value="">
+																<?php echo _translate("-- Select --"); ?>
+															</option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+																	<?= $implementingPartner['i_partner_name']; ?>
+																</option>
+															<?php } ?>
+														</select>
+													</td>
+													<td colspan="2">&nbsp;<input type="button"
 															onclick="sampleTestingReport();"
 															value="<?= _translate('Search'); ?>"
 															class="searchBtn btn btn-success btn-sm">
@@ -1360,6 +1492,24 @@ $state = $geolocationService->getProvinces("yes");
 															class="form-control patientHistoryFilter"
 															placeholder="<?php echo _translate('Enter Patient Name'); ?>"
 															style="background:#fff;" />
+													</td>
+													<td style="width: 10%;"><strong>
+															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23.33%;">
+														<select name="pthImplementingPartner" id="pthImplementingPartner"
+															class="form-control select2Class patientHistoryFilter"
+															title="<?php echo _translate('Please choose implementing partner'); ?>"
+															style="width:100%;">
+															<option value="">
+																<?php echo _translate("-- Select --"); ?>
+															</option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+																	<?= $implementingPartner['i_partner_name']; ?>
+																</option>
+															<?php } ?>
+														</select>
 													</td>
 													<td> <input type="button" onclick="searchVlRequestData();"
 															value="<?= _translate('Search'); ?>"
@@ -1412,6 +1562,9 @@ $state = $geolocationService->getProvinces("yes");
 														</th>
 														<th>
 															<?php echo _translate("Result"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Implementing Partner"); ?>
 														</th>
 														<th>
 															<?php echo _translate("Download PDF"); ?>
@@ -1550,6 +1703,9 @@ $state = $geolocationService->getProvinces("yes");
 				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
 				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
 				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+				'Last 18 Months': [moment().subtract(18, 'month').startOf('month'), moment().endOf('month')],
+				'Last 24 Months': [moment().subtract(24, 'month').startOf('month'), moment().endOf('month')],
+				'Last 30 Months': [moment().subtract(30, 'month').startOf('month'), moment().endOf('month')],
 				'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
 				'Current Year To Date': [moment().startOf('year'), moment()]
 			}
@@ -1582,6 +1738,9 @@ $state = $geolocationService->getProvinces("yes");
 				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
 				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
 				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+				'Last 18 Months': [moment().subtract(18, 'month').startOf('month'), moment().endOf('month')],
+				'Last 24 Months': [moment().subtract(24, 'month').startOf('month'), moment().endOf('month')],
+				'Last 30 Months': [moment().subtract(30, 'month').startOf('month'), moment().endOf('month')],
 				'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
 				'Current Year To Date': [moment().startOf('year'), moment()]
 			}
@@ -1625,6 +1784,7 @@ $state = $geolocationService->getProvinces("yes");
 			breastfeeding: $('#breastfeeding').val(),
 			minAge: $('#min_age').val(),
 			maxAge: $('#max_age').val(),
+			implementingPartner: $('#vfVlnsImplementingPartner').val(),
 			withAlphaNum: 'yes',
 		},
 			function (data) {
@@ -1656,6 +1816,9 @@ $state = $geolocationService->getProvinces("yes");
 					"sClass": "center"
 				},
 				<?php } ?> {
+				"sClass": "center"
+			},
+			{
 				"sClass": "center"
 			},
 			{
@@ -1731,6 +1894,10 @@ $state = $geolocationService->getProvinces("yes");
 					"name": "hvlPatientBreastfeeding",
 					"value": $("#hvlPatientBreastfeeding").val()
 				});
+				aoData.push({
+					"name": "hvlImplementingPartner",
+					"value": $("#hvlImplementingPartner").val()
+				});
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -1757,6 +1924,9 @@ $state = $geolocationService->getProvinces("yes");
 					"sClass": "center"
 				},
 				<?php } ?> {
+				"sClass": "center"
+			},
+			{
 				"sClass": "center"
 			},
 			{
@@ -1825,6 +1995,10 @@ $state = $geolocationService->getProvinces("yes");
 					"name": "rejectionReason",
 					"value": $("#rejectionReason").val()
 				});
+				aoData.push({
+					"name": "rjtImplementingPartner",
+					"value": $("#rjtImplementingPartner").val()
+				});
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -1852,6 +2026,9 @@ $state = $geolocationService->getProvinces("yes");
 					"sClass": "center"
 				},
 				<?php } ?> {
+				"sClass": "center"
+			},
+			{
 				"sClass": "center"
 			},
 			{
@@ -1913,6 +2090,10 @@ $state = $geolocationService->getProvinces("yes");
 					"name": "noResultPatientBreastfeeding",
 					"value": $("#noResultPatientBreastfeeding").val()
 				});
+				aoData.push({
+					"name": "noResultImplementingPartner",
+					"value": $("#noResultImplementingPartner").val()
+				});
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -1968,6 +2149,9 @@ $state = $geolocationService->getProvinces("yes");
 			{
 				"sClass": "center"
 			},
+			{
+				"sClass": "center"
+			},
 			],
 			"aaSorting": [
 				[<?= ($general->isStandaloneInstance()) ? 1 : 2; ?>, "desc"]
@@ -1983,6 +2167,10 @@ $state = $geolocationService->getProvinces("yes");
 				aoData.push({
 					"name": "formField",
 					"value": $("#formField").val()
+				});
+				aoData.push({
+					"name": "dqImplementingPartner",
+					"value": $("#dqImplementingPartner").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -2037,6 +2225,9 @@ $state = $geolocationService->getProvinces("yes");
 				"sClass": "center"
 			},
 			{
+				"sClass": "center"
+			},
+			{
 				"sClass": "center",
 				"bSortable": false
 			},
@@ -2055,6 +2246,10 @@ $state = $geolocationService->getProvinces("yes");
 				aoData.push({
 					"name": "patientName",
 					"value": $("#patientName").val()
+				});
+				aoData.push({
+					"name": "pthImplementingPartner",
+					"value": $("#pthImplementingPartner").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -2304,6 +2499,7 @@ $state = $geolocationService->getProvinces("yes");
 			state: $('#stState').val(),
 			district: $('#stDistrict').val(),
 			facilityName: $('#stfacilityName').val(),
+			implementingPartner: $('#stImplementingPartner').val(),
 		},
 			function (data) {
 				if (data != '') {

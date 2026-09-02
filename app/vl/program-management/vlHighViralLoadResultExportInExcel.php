@@ -23,9 +23,9 @@ $key = (string) $general->getGlobalConfig('key');
 
 if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) !== "") {
 
-     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL"];
+     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL", "Implementing Partner"];
      if ($general->isStandaloneInstance()) {
-          $headings = ['Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL"];
+          $headings = ['Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL", "Implementing Partner"];
      }
      if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
           $headings = MiscUtility::removeMatchingElements($headings, ["Patient's Name"]);
@@ -75,6 +75,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $row[] = $sampleTestDate;
           $row[] = $aRow['labName'];
           $row[] = $aRow['result'];
+          $row[] = $aRow['i_partner_name'];
           $vlSampleId[] = $aRow['vl_sample_id'];
 
           $writer->addRow(Row::fromValues($row));

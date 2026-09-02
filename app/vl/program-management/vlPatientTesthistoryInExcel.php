@@ -21,7 +21,7 @@ $key = (string) $general->getGlobalConfig('key');
 
 if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['patientTestHistoryResult']) !== "") {
 
-     $headings = ['Patient ID', 'Patient Name', "Age", "DoB", "Facility Name", "Requesting Clinican", "Sample Collection Date", "Sample Type", "Lab Name", "Sample Tested Date", "Result"];
+     $headings = ['Patient ID', 'Patient Name', "Age", "DoB", "Facility Name", "Requesting Clinican", "Sample Collection Date", "Sample Type", "Lab Name", "Sample Tested Date", "Result", "Implementing Partner"];
 
      $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.xlsx';
 
@@ -64,6 +64,7 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
           $row[] = $aRow['labName'];
           $row[] = $sampleTestDate;
           $row[] = $aRow['result'];
+          $row[] = $aRow['i_partner_name'];
 
           $writer->addRow(Row::fromValues($row));
      }

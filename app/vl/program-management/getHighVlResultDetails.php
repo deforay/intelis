@@ -35,8 +35,8 @@ try {
 
 
     $sampleCode = 'sample_code';
-    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_first_name', 'vl.patient_art_no', 'vl.patient_mobile_number', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result'];
-    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.patient_mobile_number', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result'];
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_first_name', 'vl.patient_art_no', 'vl.patient_mobile_number', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result', 'r_i_p.i_partner_name'];
+    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.patient_mobile_number', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result', 'r_i_p.i_partner_name'];
     if ($general->isSTSInstance()) {
         $sampleCode = 'remote_sample_code';
     } elseif ($general->isStandaloneInstance()) {
@@ -100,11 +100,12 @@ try {
 
 
 
-    $sQuery = "SELECT vl.*,f.facility_name, b.batch_code,fd.facility_name as labName
+    $sQuery = "SELECT vl.*,f.facility_name, b.batch_code,fd.facility_name as labName, r_i_p.i_partner_name
     FROM form_vl as vl
     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
     INNER JOIN facility_details as fd ON fd.facility_id=vl.lab_id
     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+    LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner
     WHERE vl_result_category like 'not suppressed' AND IFNULL(reason_for_vl_testing, 0)  != 9999 AND vl.lab_id is NOT NULL ";
     $start_date = '';
     $end_date = '';
@@ -156,6 +157,9 @@ try {
     }
     if (isset($_POST['hvlPatientBreastfeeding']) && $_POST['hvlPatientBreastfeeding'] != '') {
         $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['hvlPatientBreastfeeding'] . '"';
+    }
+    if (isset($_POST['hvlImplementingPartner']) && trim((string) $_POST['hvlImplementingPartner']) !== '') {
+        $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['hvlImplementingPartner'])) . '"';
     }
 
 
@@ -232,6 +236,7 @@ try {
         $row[] = $aRow['sample_tested_datetime'];
         $row[] = $aRow['labName'];
         $row[] = $aRow['result'];
+        $row[] = $aRow['i_partner_name'];
         $row[] = '<select class="form-control" name="status" id=' . $aRow['vl_sample_id'] . ' title="Please select status" onchange="updateStatus(this.id,this.value)">
                             <option value=""> ' . _translate("-- Select --") . ' </option>
                             <option value="yes" ' . ($aRow['contact_complete_status'] == "yes" ? "selected=selected" : "") . '>' . _translate("Yes") . '</option>
