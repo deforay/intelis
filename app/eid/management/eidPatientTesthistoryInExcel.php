@@ -33,7 +33,7 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
 
      $output = [];
 
-     $headings = ["Child's ID", "Child's Name", "Age", "DoB", "Facility Name", "Requesting Clinican", "Sample Collection Date", "Sample Type", "Lab Name", "Sample Tested Date", "Result"];
+     $headings = ["Child's ID", "Child's Name", "Age", "DoB", "Facility Name", "Requesting Clinican", "Sample Collection Date", "Sample Type", "Lab Name", "Sample Tested Date", "Result", "Implementing Partner"];
 
      $resultSet = $db->rawQuery($_SESSION['patientTestHistoryResult']);
      foreach ($resultSet as $aRow) {
@@ -65,6 +65,7 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
           $row[] = $aRow['labName'];
           $row[] = $sampleTestDate;
           $row[] = ucwords($eidResults[$aRow['result']] ?? $aRow['result']);
+          $row[] = $aRow['i_partner_name'];
           $output[] = $row;
      }
 

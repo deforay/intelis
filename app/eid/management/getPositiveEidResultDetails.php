@@ -31,13 +31,13 @@ try {
 
 
     $sampleCode = 'sample_code';
-    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_name', 'vl.child_id', 'vl.caretaker_phone_number', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result'];
-    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.caretaker_phone_number', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result'];
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_name', 'vl.child_id', 'vl.caretaker_phone_number', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result', 'r_i_p.i_partner_name'];
+    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.caretaker_phone_number', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result', 'r_i_p.i_partner_name'];
     if ($general->isSTSInstance()) {
         $sampleCode = 'remote_sample_code';
     } elseif ($general->isStandaloneInstance()) {
-        $aColumns = ['vl.sample_code', 'f.facility_name', 'vl.child_name', 'vl.child_id', 'vl.caretaker_phone_number', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result'];
-        $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.caretaker_phone_number', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result'];
+        $aColumns = ['vl.sample_code', 'f.facility_name', 'vl.child_name', 'vl.child_id', 'vl.caretaker_phone_number', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result', 'r_i_p.i_partner_name'];
+        $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.caretaker_phone_number', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result', 'r_i_p.i_partner_name'];
     }
 
     /* Indexed column (used for fast and accurate table cardinality) */
@@ -68,11 +68,12 @@ try {
 
     //$sQuery = "SELECT vl.*,f.*,s.*,b.*,lab.facility_name as labName FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as lab ON lab.facility_id=vl.lab_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result like 'positive' ";
 
-    $sQuery = "SELECT vl.*,f.facility_name, b.batch_code,fd.facility_name as labName
+    $sQuery = "SELECT vl.*,f.facility_name, b.batch_code,fd.facility_name as labName, r_i_p.i_partner_name
     FROM form_eid as vl
     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
     INNER JOIN facility_details as fd ON fd.facility_id=vl.lab_id
     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+    LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner
     WHERE vl.result_status=7 AND vl.result like 'positive' ";
 
     if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) !== '') {
@@ -114,6 +115,9 @@ try {
     }
     if (isset($_POST['hvlPatientBreastfeeding']) && $_POST['hvlPatientBreastfeeding'] != '') {
         $sWhere[] = '  vl.is_patient_breastfeeding = "' . $db->escape((string) $_POST['hvlPatientBreastfeeding']) . '"';
+    }
+    if (isset($_POST['hvlImplementingPartner']) && trim((string) $_POST['hvlImplementingPartner']) !== '') {
+        $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['hvlImplementingPartner'])) . '"';
     }
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
@@ -174,6 +178,7 @@ try {
         $row[] = $aRow['sample_tested_datetime'];
         $row[] = $aRow['labName'];
         $row[] = $aRow['result'];
+        $row[] = $aRow['i_partner_name'];
         $row[] = '';
         /* $row[] = '<select class="form-control" name="status" id=' . $aRow['eid_id'] . ' title="Please select status" onchange="updateStatus(this.id,this.value)">
                             <option value=""> -- Select -- </option>

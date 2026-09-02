@@ -24,7 +24,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
 
      $output = [];
 
-     $headings = ['Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Child Id.", "Child's Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status"];
+     $headings = ['Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Child Id.", "Child's Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status", "Implementing Partner"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
@@ -57,6 +57,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           $row[] = ($aRow['sample_name']);
           $row[] = $aRow['result'];
           $row[] = ($aRow['status_name']);
+          $row[] = $aRow['i_partner_name'];
           $output[] = $row;
      }
 

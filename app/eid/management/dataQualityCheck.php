@@ -29,8 +29,8 @@ $tableName = "form_eid";
 $primaryKey = "eid_id";
 
 
-$aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name'];
-$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name'];
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name', 'r_i_p.i_partner_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name', 'r_i_p.i_partner_name'];
 if ($general->isStandaloneInstance()) {
      $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
      $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
@@ -60,7 +60,7 @@ if (!empty($columnSearch)) {
 
 
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
@@ -112,6 +112,9 @@ if (isset($_POST['formField']) && trim((string) $_POST['formField']) !== '') {
           $sWhere[] = $sWhereSub;
      }
 }
+if (isset($_POST['dqImplementingPartner']) && trim((string) $_POST['dqImplementingPartner']) !== '') {
+     $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['dqImplementingPartner'])) . '"';
+}
 //echo $sWhereSub; die;
 $dWhere = '';
 if (!empty($_SESSION['facilityMap'])) {
@@ -147,7 +150,7 @@ $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 // An empty sort must not leave a dangling comma after the fixed ORDER BY column.
 $filterTotalOrder = (!empty($sOrder) && $sOrder !== '') ? ", $sOrder" : '';
-$aResultFilterTotal = $db->rawQuery("SELECT vl.eid_id,vl.facility_id,vl.child_name,vl.result,f.facility_name,f.facility_code,s.sample_name,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere ORDER BY vl.last_modified_datetime DESC $filterTotalOrder");
+$aResultFilterTotal = $db->rawQuery("SELECT vl.eid_id,vl.facility_id,vl.child_name,vl.result,f.facility_name,f.facility_code,s.sample_name,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner $sWhere ORDER BY vl.last_modified_datetime DESC $filterTotalOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
@@ -187,6 +190,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['sample_name']);
      $row[] = $aRow['result'];
      $row[] = ($aRow['status_name']);
+     $row[] = $aRow['i_partner_name'];
      $output['aaData'][] = $row;
 }
 

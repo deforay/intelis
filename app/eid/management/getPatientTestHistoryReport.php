@@ -40,8 +40,8 @@ try {
     $tableName = "form_eid";
     $primaryKey = "eid_id";
 
-    $aColumns = ['vl.child_id', 'vl.child_name', 'vl.child_age', 'vl.child_dob', 'f.facility_name', 'vl.clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result'];
-    $orderColumns = ['vl.child_id', 'vl.child_name', 'vl.child_age', 'vl.child_dob', 'f.facility_name', 'vl.clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result'];
+    $aColumns = ['vl.child_id', 'vl.child_name', 'vl.child_age', 'vl.child_dob', 'f.facility_name', 'vl.clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result', 'r_i_p.i_partner_name'];
+    $orderColumns = ['vl.child_id', 'vl.child_name', 'vl.child_age', 'vl.child_dob', 'f.facility_name', 'vl.clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result', 'r_i_p.i_partner_name'];
 
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = $primaryKey;
@@ -83,11 +83,13 @@ try {
                 f.facility_name,
                 s.sample_name,
                 fd.facility_name as labName,
-                ts.status_name
+                ts.status_name,
+                r_i_p.i_partner_name
             FROM form_eid as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
             LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
             LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type
+            LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . ACCEPTED;
@@ -99,6 +101,9 @@ try {
         // CONCAT_WS keeps a space between name and surname, so searching
         // "John Doe" matches; plain CONCAT only matched "JohnDoe".
         $sWhere[] = " CONCAT_WS(' ', NULLIF(vl.child_name,''), NULLIF(vl.child_surname,'')) like '%" . $db->escapeLike($_POST['childName']) . "%'";
+    }
+    if (isset($_POST['pthImplementingPartner']) && trim((string) $_POST['pthImplementingPartner']) !== '') {
+        $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['pthImplementingPartner'])) . '"';
     }
 
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
@@ -160,6 +165,7 @@ try {
         $row[] = $aRow['labName'];
         $row[] = $aRow['sample_tested_datetime'];
         $row[] = ucwords($eidResults[$aRow['result']] ?? $aRow['result']);
+        $row[] = $aRow['i_partner_name'];
         $row[] = $print;
         $output['aaData'][] = $row;
     }

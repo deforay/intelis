@@ -34,8 +34,8 @@ try {
     $primaryKey = "eid_id";
     $key = (string) $general->getGlobalConfig('key');
 
-    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name'];
-    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.sample_collection_date', 'fd.facility_name'];
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
+    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.sample_collection_date', 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
     if ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
@@ -69,11 +69,13 @@ try {
                 f.*,
                 s.*,
                 fd.facility_name as labName,
-                ts.status_name FROM form_eid as vl
+                ts.status_name,
+                r_i_p.i_partner_name FROM form_eid as vl
                 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                 LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
                 LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+                LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner
                 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                 WHERE vl.result_status != " . REJECTED . "
                     -- A cancelled sample was called off before testing, so it is not
@@ -118,6 +120,9 @@ try {
     }
     if (isset($_POST['noResultPatientBreastfeeding']) && $_POST['noResultPatientBreastfeeding'] != '') {
         $sWhere[] = ' vl.is_patient_breastfeeding = "' . $db->escape((string) $_POST['noResultPatientBreastfeeding']) . '"';
+    }
+    if (isset($_POST['noResultImplementingPartner']) && trim((string) $_POST['noResultImplementingPartner']) !== '') {
+        $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['noResultImplementingPartner'])) . '"';
     }
 
 
@@ -179,6 +184,7 @@ try {
         $row[] = $aRow['sample_collection_date'];
         $row[] = ($aRow['labName']);
         $row[] = ($aRow['status_name']);
+        $row[] = $aRow['i_partner_name'];
         $output['aaData'][] = $row;
     }
     echo JsonUtility::encodeUtf8Json($output);

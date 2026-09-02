@@ -44,6 +44,8 @@ $rejectionQuery = "SELECT * FROM r_eid_sample_rejection_reasons where rejection_
 $rejectionResult = $db->rawQuery($rejectionQuery);
 $state = $geolocationService->getProvinces("yes");
 
+$implementingPartnerList = $general->getImplementationPartners();
+
 
 foreach ($rejectionTypeResult as $type) {
 	$rejectionReason .= '<optgroup label="' . ($type['rejection_type']) . '">';
@@ -164,7 +166,15 @@ foreach ($rejectionTypeResult as $type) {
 															<option value="unreported"><?php echo _translate("Unreported"); ?></option>
 														</select>
 													</td>
-													<td></td>
+													<td>&nbsp;<strong><?php echo _translate("Implementing Partner"); ?>&nbsp;:</strong></td>
+													<td>
+														<select name="hvlImplementingPartner" id="hvlImplementingPartner" class="form-control" title="<?php echo _translate('Please choose implementing partner'); ?>" style="width:220px;">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+															<?php } ?>
+														</select>
+													</td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
@@ -189,6 +199,7 @@ foreach ($rejectionTypeResult as $type) {
 														<th><?php echo _translate("Sample Tested Date"); ?></th>
 														<th><?php echo _translate("Testing Lab"); ?></th>
 														<th><?php echo _translate("Result"); ?></th>
+														<th><?php echo _translate("Implementing Partner"); ?></th>
 														<th><?php echo _translate("Status"); ?></th>
 													</tr>
 												</thead>
@@ -274,6 +285,15 @@ foreach ($rejectionTypeResult as $type) {
 															<?php echo $rejectionReason; ?>
 														</select>
 													</td>
+													<td>&nbsp;<strong><?php echo _translate("Implementing Partner"); ?>&nbsp;:</strong></td>
+													<td>
+														<select name="rjtImplementingPartner" id="rjtImplementingPartner" class="form-control" title="<?php echo _translate('Please choose implementing partner'); ?>" style="width:220px;">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+															<?php } ?>
+														</select>
+													</td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
@@ -296,6 +316,7 @@ foreach ($rejectionTypeResult as $type) {
 														<th><?php echo _translate("Testing Lab Name"); ?></th>
 														<th><?php echo _translate("Rejection Reason"); ?></th>
 														<th><?php echo _translate("Recommended Corrective action"); ?></th>
+														<th><?php echo _translate("Implementing Partner"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
@@ -371,6 +392,15 @@ foreach ($rejectionTypeResult as $type) {
 															<option value="unreported"><?php echo _translate("Unreported"); ?></option>
 														</select>
 													</td>
+													<td>&nbsp;<strong><?php echo _translate("Implementing Partner"); ?>&nbsp;:</strong></td>
+													<td>
+														<select name="noResultImplementingPartner" id="noResultImplementingPartner" class="form-control" title="<?php echo _translate('Please choose implementing partner'); ?>" style="width:220px;">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+															<?php } ?>
+														</select>
+													</td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
@@ -392,6 +422,7 @@ foreach ($rejectionTypeResult as $type) {
 														<th><?php echo _translate("Sample Collection Date"); ?></th>
 														<th><?php echo _translate("Testing Lab Name"); ?></th>
 														<th><?php echo _translate("Sample Status"); ?></th>
+														<th><?php echo _translate("Implementing Partner"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
@@ -425,6 +456,15 @@ foreach ($rejectionTypeResult as $type) {
 															<option value="result_status"><?php echo _translate("Status"); ?></option>
 														</select>
 													</td>
+													<td>&nbsp;<strong><?php echo _translate("Implementing Partner"); ?>&nbsp;:</strong></td>
+													<td>
+														<select name="dqImplementingPartner" id="dqImplementingPartner" class="form-control" title="<?php echo _translate('Please choose implementing partner'); ?>" style="width:220px;">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+															<?php } ?>
+														</select>
+													</td>
 												</tr>
 
 												<tr>
@@ -450,6 +490,7 @@ foreach ($rejectionTypeResult as $type) {
 														<th><?php echo _translate("Sample Type"); ?></th>
 														<th><?php echo _translate("Result"); ?></th>
 														<th><?php echo _translate("Status"); ?></th>
+														<th><?php echo _translate("Implementing Partner"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
@@ -491,7 +532,16 @@ foreach ($rejectionTypeResult as $type) {
 													<td style="width: 23%;">
 														<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="width:220px;background:#fff;" />
 													</td>
-													<td colspan="3">&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+													<td style="width: 14%;"><strong><?php echo _translate("Implementing Partner"); ?>&nbsp;:</strong></td>
+													<td style="width: 23%;">
+														<select name="stImplementingPartner" id="stImplementingPartner" class="form-control stReportFilter" title="<?php echo _translate('Please choose implementing partner'); ?>" style="width:220px;">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+															<?php } ?>
+														</select>
+													</td>
+													<td colspan="2">&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('stReportFilter');"><span>
 																<?= _translate("Reset"); ?>
 															</span></button>
@@ -519,6 +569,15 @@ foreach ($rejectionTypeResult as $type) {
 														</strong></td>
 													<td style="width: 23.33%;">
 														<input type="text" id="childName" name="childName" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Child Name'); ?>" style="background:#fff;" />
+													</td>
+													<td style="width: 10%;"><strong><?php echo _translate("Implementing Partner"); ?>&nbsp;:</strong></td>
+													<td style="width: 23.33%;">
+														<select name="pthImplementingPartner" id="pthImplementingPartner" class="form-control patientHistoryFilter" title="<?php echo _translate('Please choose implementing partner'); ?>" style="width:100%;">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
+																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+															<?php } ?>
+														</select>
 													</td>
 													<td> <input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 
@@ -565,6 +624,9 @@ foreach ($rejectionTypeResult as $type) {
 														</th>
 														<th>
 															<?php echo _translate("Result"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Implementing Partner"); ?>
 														</th>
 														<th>
 															<?php echo _translate("Download PDF"); ?>
@@ -657,7 +719,7 @@ foreach ($rejectionTypeResult as $type) {
 		incompleteForm();
 		getSampleTestingResult();
 		patientHistoryReport();
-		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select, #patientTestHistoryFormReport input").on("change", function() {
+		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select, #patientTestHistoryFormReport input, #patientTestHistoryFormReport select").on("change", function() {
 			searchExecuted = false;
 		});
 	});
@@ -678,6 +740,9 @@ foreach ($rejectionTypeResult as $type) {
 						"sClass": "center"
 					},
 				<?php } ?> {
+					"sClass": "center"
+				},
+				{
 					"sClass": "center"
 				},
 				{
@@ -744,6 +809,10 @@ foreach ($rejectionTypeResult as $type) {
 					"name": "hvlGender",
 					"value": $("#hvlGender").val()
 				});
+				aoData.push({
+					"name": "hvlImplementingPartner",
+					"value": $("#hvlImplementingPartner").val()
+				});
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -772,6 +841,9 @@ foreach ($rejectionTypeResult as $type) {
 						"sClass": "center"
 					},
 				<?php } ?> {
+					"sClass": "center"
+				},
+				{
 					"sClass": "center"
 				},
 				{
@@ -832,6 +904,10 @@ foreach ($rejectionTypeResult as $type) {
 					"name": "sampleRejectionReason",
 					"value": $("#sampleRejectionReason").val()
 				});
+				aoData.push({
+					"name": "rjtImplementingPartner",
+					"value": $("#rjtImplementingPartner").val()
+				});
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -860,6 +936,9 @@ foreach ($rejectionTypeResult as $type) {
 						"sClass": "center"
 					},
 				<?php } ?> {
+					"sClass": "center"
+				},
+				{
 					"sClass": "center"
 				},
 				{
@@ -912,6 +991,10 @@ foreach ($rejectionTypeResult as $type) {
 				aoData.push({
 					"name": "noResultGender",
 					"value": $("#noResultGender").val()
+				});
+				aoData.push({
+					"name": "noResultImplementingPartner",
+					"value": $("#noResultImplementingPartner").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -967,6 +1050,9 @@ foreach ($rejectionTypeResult as $type) {
 				{
 					"sClass": "center"
 				},
+				{
+					"sClass": "center"
+				},
 			],
 			"aaSorting": [
 				[<?= ($general->isStandaloneInstance()) ? 1 : 2; ?>, "desc"]
@@ -982,6 +1068,10 @@ foreach ($rejectionTypeResult as $type) {
 				aoData.push({
 					"name": "formField",
 					"value": $("#formField").val()
+				});
+				aoData.push({
+					"name": "dqImplementingPartner",
+					"value": $("#dqImplementingPartner").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -1038,6 +1128,9 @@ foreach ($rejectionTypeResult as $type) {
 					"sClass": "center"
 				},
 				{
+					"sClass": "center"
+				},
+				{
 					"sClass": "center",
 					"bSortable": false
 				},
@@ -1056,6 +1149,10 @@ foreach ($rejectionTypeResult as $type) {
 				aoData.push({
 					"name": "childName",
 					"value": $("#childName").val()
+				});
+				aoData.push({
+					"name": "pthImplementingPartner",
+					"value": $("#pthImplementingPartner").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -1257,6 +1354,7 @@ foreach ($rejectionTypeResult as $type) {
 				state: $('#stState').val(),
 				district: $('#stDistrict').val(),
 				facilityName: $('#stfacilityName').val(),
+				implementingPartner: $('#stImplementingPartner').val(),
 			},
 			function(data) {
 				if (data != '') {
