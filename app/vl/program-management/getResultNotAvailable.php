@@ -1,6 +1,7 @@
 <?php
 
 use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\EXPIRED;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -97,6 +98,11 @@ if (isset($_POST['noResultPatientBreastfeeding']) && $_POST['noResultPatientBrea
 }
 if (isset($_POST['noResultImplementingPartner']) && trim((string) $_POST['noResultImplementingPartner']) !== '') {
     $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['noResultImplementingPartner'])) . '"';
+}
+// An expired sample will never get a result, so it is noise when this report
+// is read as a backlog; counting them stays the default for continuity.
+if (($_POST['noResultIncludeExpired'] ?? '') === 'no') {
+    $sWhere[] = ' vl.result_status != ' . EXPIRED;
 }
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";

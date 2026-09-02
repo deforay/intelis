@@ -401,6 +401,13 @@ foreach ($rejectionTypeResult as $type) {
 															<?php } ?>
 														</select>
 													</td>
+													<td>&nbsp;<strong><?php echo _translate("Include Expired Samples"); ?>&nbsp;:</strong></td>
+													<td>
+														<select name="noResultIncludeExpired" id="noResultIncludeExpired" class="form-control" title="<?php echo _translate('Please choose whether expired samples are counted'); ?>" style="width:220px;">
+															<option value=""><?php echo _translate("Yes"); ?></option>
+															<option value="no"><?php echo _translate("No"); ?></option>
+														</select>
+													</td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
@@ -995,6 +1002,10 @@ foreach ($rejectionTypeResult as $type) {
 				aoData.push({
 					"name": "noResultImplementingPartner",
 					"value": $("#noResultImplementingPartner").val()
+				});
+				aoData.push({
+					"name": "noResultIncludeExpired",
+					"value": $("#noResultIncludeExpired").val()
 				});
 				$.ajax({
 					"dataType": 'json',

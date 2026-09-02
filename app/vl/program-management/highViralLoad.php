@@ -1145,6 +1145,21 @@ $implementingPartnerList = $general->getImplementationPartners();
 													</td>
 												</tr>
 												<tr>
+													<td style="width: 10%;"><strong>
+															<?php echo _translate("Include Expired Samples"); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23.33%;">
+														<select name="noResultIncludeExpired" id="noResultIncludeExpired"
+															class="form-control notAvailReportFilter"
+															title="<?php echo _translate('Please choose whether expired samples are counted'); ?>"
+															style="width:100%;">
+															<option value=""><?php echo _translate("Yes"); ?></option>
+															<option value="no"><?php echo _translate("No"); ?></option>
+														</select>
+													</td>
+													<td colspan="4"></td>
+												</tr>
+												<tr>
 													<td colspan="6">&nbsp;<input type="button"
 															onclick="searchVlRequestData();"
 															value="<?= _translate('Search'); ?>"
@@ -2105,6 +2120,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 				aoData.push({
 					"name": "noResultImplementingPartner",
 					"value": $("#noResultImplementingPartner").val()
+				});
+				aoData.push({
+					"name": "noResultIncludeExpired",
+					"value": $("#noResultIncludeExpired").val()
 				});
 				$.ajax({
 					"dataType": 'json',
