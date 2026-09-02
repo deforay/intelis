@@ -31,8 +31,8 @@ if ($general->isStandaloneInstance()) {
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
+    $sOffset = (int) $_POST['iDisplayStart'];
+    $sLimit = (int) $_POST['iDisplayLength'];
 }
 
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
@@ -71,29 +71,29 @@ if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSam
     $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
 }
 if (isset($_POST['noResultSampleType']) && $_POST['noResultSampleType'] != '') {
-    $sWhere[] = ' s.sample_id = "' . $_POST['noResultSampleType'] . '"';
+    $sWhere[] = ' s.sample_id = ' . (int) $_POST['noResultSampleType'];
 }
 if (isset($_POST['noResultState']) && trim((string) $_POST['noResultState']) !== '') {
-    $sWhere[] = " f.facility_state_id = '" . $_POST['noResultState'] . "' ";
+    $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['noResultState'];
 }
 if (isset($_POST['noResultDistrict']) && trim((string) $_POST['noResultDistrict']) !== '') {
-    $sWhere[] = " f.facility_district_id = '" . $_POST['noResultDistrict'] . "' ";
+    $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['noResultDistrict'];
 }
 if (isset($_POST['noResultFacilityName']) && $_POST['noResultFacilityName'] != '') {
-    $sWhere[] = ' f.facility_id IN (' . $_POST['noResultFacilityName'] . ')';
+    $sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['noResultFacilityName']) . ')';
 }
 if (isset($_POST['noResultGender']) && $_POST['noResultGender'] != '') {
     if (trim((string) $_POST['noResultGender']) === "unreported") {
         $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
     } else {
-        $sWhere[] = ' vl.patient_gender ="' . $_POST['noResultGender'] . '"';
+        $sWhere[] = ' vl.patient_gender ="' . $db->escape((string) $_POST['noResultGender']) . '"';
     }
 }
 if (isset($_POST['noResultPatientPregnant']) && $_POST['noResultPatientPregnant'] != '') {
-    $sWhere[] = ' vl.is_patient_pregnant = "' . $_POST['noResultPatientPregnant'] . '"';
+    $sWhere[] = ' vl.is_patient_pregnant = "' . $db->escape((string) $_POST['noResultPatientPregnant']) . '"';
 }
 if (isset($_POST['noResultPatientBreastfeeding']) && $_POST['noResultPatientBreastfeeding'] != '') {
-    $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['noResultPatientBreastfeeding'] . '"';
+    $sWhere[] = ' vl.is_patient_breastfeeding = "' . $db->escape((string) $_POST['noResultPatientBreastfeeding']) . '"';
 }
 if (isset($_POST['noResultImplementingPartner']) && trim((string) $_POST['noResultImplementingPartner']) !== '') {
     $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['noResultImplementingPartner'])) . '"';
