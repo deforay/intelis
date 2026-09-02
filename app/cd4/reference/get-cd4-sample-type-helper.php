@@ -106,8 +106,8 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['status'] == "inactive" ? "selected=selected" : "") . '>' . _translate("Inactive") . '</option>
                </select><br><br>';
     $row = [];
-    $row[] = ($aRow['sample_name']);
-    $row[] = _isAllowed("cd4-sample-type.php") && $general->isLISInstance() === false ? $status : $aRow['status'];
+    $row[] = htmlspecialchars((string) ($aRow['sample_name'] ?? ''), ENT_QUOTES, 'UTF-8');
+    $row[] = _isAllowed("cd4-sample-type.php") && $general->isLISInstance() === false ? $status : htmlspecialchars((string) ($aRow['status'] ?? ''), ENT_QUOTES, 'UTF-8');
     $output['aaData'][] = $row;
 }
 

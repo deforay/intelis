@@ -4,10 +4,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
-use App\Repositories\Reference\SampleTypeRepository;
+use App\Repositories\Reference\ReferenceDataRepository;
 
-/** @var SampleTypeRepository $sampleTypes */
-$sampleTypes = ContainerRegistry::get(SampleTypeRepository::class);
+/** @var ReferenceDataRepository $referenceData */
+$referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
 $result = "";
 try {
@@ -17,7 +17,7 @@ try {
     $_POST = _sanitizeInput($request->getParsedBody());
 
     $ids = explode(",", (string) ($_POST['id'] ?? ''));
-    $sampleTypes->updateStatus('vl', $ids, (string) ($_POST['status'] ?? ''));
+    $referenceData->updateStatus('sample-type', 'vl', $ids, (string) ($_POST['status'] ?? ''));
     $result = end($ids);
 } catch (Throwable $exc) {
     LoggerUtility::logError($exc->getMessage());

@@ -1,40 +1,44 @@
 <?php
 
-use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
-use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Repositories\Reference\ReferenceDataRepository;
 
+// Sanitized values from $request object
+/** @var Psr\Http\Message\ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+// Stored values are read raw: _sanitizeInput() is an HTML sanitizer and would
+// persist "Broken & Leaking" as "Broken &amp; Leaking". Escaping belongs to rendering.
+$reasonName = trim((string) _rawInput("rejectionReasonName", ""));
+$reasonType = (string) _rawInput("rejectionType", "");
+$reasonCode = (string) _rawInput("rejectionReasonCode", "");
 
-
-
-
-
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
+/** @var ReferenceDataRepository $referenceData */
+$referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-
-
-$tableName = "r_covid19_sample_rejection_reasons";
-
 try {
-	if (isset($_POST['rejectionReasonName']) && trim((string) $_POST['rejectionReasonName']) !== "") {
-
-		$data = ['rejection_reason_name' => $_POST['rejectionReasonName'], 'rejection_type' => $_POST['rejectionType'], 'rejection_reason_status' => $_POST['rejectionReasonStatus'], 'rejection_reason_code' => $_POST['rejectionReasonCode'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
-
-		$db->insert($tableName, $data);
-		$lastId = $db->getInsertId();
-
+	if ($reasonName !== "") {
+		$referenceData->save(
+			'rejection-reason',
+			'covid19',
+			$reasonName,
+			(string) ($_POST['rejectionReasonStatus'] ?? ''),
+			[
+				'rejection_type' => $reasonType,
+				'rejection_reason_code' => $reasonCode,
+			]
+		);
 		$_SESSION['alertMsg'] = _translate("Covid-19 Sample Rejection Reasons details added successfully");
-		$general->activityLog('add-Sample Rejection Reasons', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons ' . $_POST['rejectionReasonName'], 'reference-covid19-Sample Rejection Reasons');
+		$general->activityLog('add-Sample Rejection Reasons', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons ' . $reasonName, 'reference-covid19-Sample Rejection Reasons');
 	}
 	header("Location:covid19-sample-rejection-reasons.php");
-} catch (Exception $e) {
+} catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),
 		'line' => $e->getLine(),
