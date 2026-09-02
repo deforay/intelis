@@ -40,6 +40,18 @@ const COVERED_FILES = [
     'app/vl/program-management/getSampleTestingReport.php',
     'app/vl/program-management/getPatientTestHistoryReport.php',
     'app/vl/program-management/export-virologic-failure-report.php',
+    'app/eid/management/get-data-export.php',
+    'app/eid/management/getPositiveEidResultDetails.php',
+    'app/eid/management/getSampleRejectionReport.php',
+    'app/eid/management/getResultNotAvailable.php',
+    'app/eid/management/dataQualityCheck.php',
+    'app/eid/management/eid-sample-testing-report.php',
+    'app/eid/management/getEidSampleTATDetails.php',
+    'app/eid/management/getPatientTestHistoryReport.php',
+    'app/eid/management/getEidMonthlyThresholdReport.php',
+    'app/eid/management/get-rejected-samples.php',
+    'app/eid/management/getPmtctCascadeReport.php',
+    'app/eid/management/pmtctCascadeReportExport.php',
 ];
 
 const RAW_VALUE_PATTERNS = [

@@ -50,15 +50,15 @@ try {
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
+        $sOffset = (int) $_POST['iDisplayStart'];
+        $sLimit = (int) $_POST['iDisplayLength'];
     }
 
     $sWhere = [];
 
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
 
     $sWhere = [];
     if (!empty($columnSearch) && $columnSearch != '') {
@@ -93,10 +93,12 @@ try {
     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . ACCEPTED;
 
     if (isset($_POST['childId']) && $_POST['childId'] != "") {
-        $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
+        $sWhere[] = ' vl.child_id like "%' . $db->escapeLike($_POST['childId']) . '%"';
     }
     if (isset($_POST['childName']) && $_POST['childName'] != "") {
-        $sWhere[] = " CONCAT(COALESCE(vl.child_name,''), COALESCE(vl.child_surname,'')) like '%" . $_POST['childName'] . "%'";
+        // CONCAT_WS keeps a space between name and surname, so searching
+        // "John Doe" matches; plain CONCAT only matched "JohnDoe".
+        $sWhere[] = " CONCAT_WS(' ', NULLIF(vl.child_name,''), NULLIF(vl.child_surname,'')) like '%" . $db->escapeLike($_POST['childName']) . "%'";
     }
 
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
