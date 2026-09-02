@@ -111,7 +111,9 @@ try {
     $end_date = '';
 
     if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) !== '') {
-        $sWhere[] = ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
+        // The filter is fed by a dropdown of exact batch codes; LIKE made
+        // batch "B1" also match "B12".
+        $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['hvlBatchCode']) . '"';
     }
     if (isset($_POST['hvlContactStatus']) && trim((string) $_POST['hvlContactStatus']) !== '' && $_POST['hvlContactStatus'] != 'all') {
         $sWhere[] = ' contact_complete_status = "' . $_POST['hvlContactStatus'] . '"';
@@ -171,12 +173,11 @@ try {
         $sWhere[] = $labScope;
     }
 
-    if ($sWhere !== []) {
-        // A cancelled sample was called off before testing, so it is not work
-        // this report should count.
-        $sWhere[] = SampleCountUtility::countableWhere('vl');
-        $sQuery = $sQuery . ' AND ' . implode(" AND ", $sWhere);
-    }
+    // A cancelled sample was called off before testing, so it is not work
+    // this report should count. Applied unconditionally so an unfiltered view
+    // excludes cancelled samples too.
+    $sWhere[] = SampleCountUtility::countableWhere('vl');
+    $sQuery = $sQuery . ' AND ' . implode(" AND ", $sWhere);
 
 
     //$sQuery = $sQuery . ' group by vl.vl_sample_id';

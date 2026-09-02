@@ -1,12 +1,19 @@
 <?php
 
 use const SAMPLE_STATUS\REJECTED;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\SampleCountUtility;
+
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -54,7 +61,9 @@ $sQuery = "SELECT vl.*,
             AND (vl.result IS NULL OR vl.result='')";
 
 if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) !== '') {
-    $sWhere[] = ' b.batch_code LIKE "%' . $_POST['noResultBatchCode'] . '%"';
+    // The filter is fed by a dropdown of exact batch codes; LIKE made
+    // batch "B1" also match "B12".
+    $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['noResultBatchCode']) . '"';
 }
 
 if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSampleTestDate']) !== '') {
