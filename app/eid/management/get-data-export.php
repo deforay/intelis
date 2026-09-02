@@ -142,7 +142,9 @@ try {
      }
      /* Facility id filter */
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-          $sWhere[] = ' vl.facility_id = ' . (int) $_POST['facilityName'];
+          // The page's facility dropdown is a multi-select; a scalar cast kept
+          // only the first choice and silently dropped the rest.
+          $sWhere[] = ' vl.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
      }
      /* Testing lab filter */
      if (isset($_POST['testingLab']) && trim((string) $_POST['testingLab']) !== '') {
@@ -216,7 +218,7 @@ try {
           }
      }
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) !== '') {
-          if (trim((string) $sPrintDate) === trim((string) $eTestDate)) {
+          if (trim((string) $sPrintDate) === trim((string) $ePrintDate)) {
                $sWhere[] = ' DATE(vl.result_printed_datetime) like "' . $sPrintDate . '"';
           } else {
                $sWhere[] = ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';

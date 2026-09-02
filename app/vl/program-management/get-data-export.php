@@ -187,7 +187,7 @@ try {
      }
      /* Facility id filter */
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-          $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+          $sWhere[] =  ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
      }
      /*Lab id filter */
      if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
