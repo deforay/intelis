@@ -240,6 +240,51 @@ $general = ContainerRegistry::get(CommonService::class);
         $('.dateTime, .date-time').mask(dateFormatMask + ' 99:99');
     });
 
+    // Collapsible presets panel for every daterangepicker. The toggle is
+    // injected on first open; the collapsed state is remembered per browser.
+    (function () {
+        var collapseTitle = "<?= _translate('Hide presets', true); ?>";
+        var expandTitle = "<?= _translate('Show presets', true); ?>";
+
+        function applyRangesState($container, collapsed) {
+            $container.toggleClass('drp-ranges-collapsed', collapsed);
+            $container.find('.drp-ranges-toggle')
+                .attr('title', collapsed ? expandTitle : collapseTitle)
+                .find('em').attr('class', collapsed ? 'fa-solid fa-angles-right' : 'fa-solid fa-angles-left');
+        }
+
+        function savedRangesCollapsed() {
+            try {
+                return localStorage.getItem('drpRangesCollapsed') === 'yes';
+            } catch (e) {
+                return false;
+            }
+        }
+
+        $(document).on('show.daterangepicker', function (ev, picker) {
+            if (!picker || !picker.container) {
+                return;
+            }
+            var $container = picker.container;
+            var $ranges = $container.find('.ranges');
+            if ($ranges.length === 0) {
+                return;
+            }
+            if ($ranges.find('.drp-ranges-toggle').length === 0) {
+                var $toggle = $('<div class="drp-ranges-toggle" role="button" tabindex="0"><em class="fa-solid fa-angles-left"></em></div>');
+                $ranges.prepend($toggle);
+                $toggle.on('click', function () {
+                    var collapsed = !$container.hasClass('drp-ranges-collapsed');
+                    applyRangesState($container, collapsed);
+                    try {
+                        localStorage.setItem('drpRangesCollapsed', collapsed ? 'yes' : 'no');
+                    } catch (e) {}
+                });
+            }
+            applyRangesState($container, savedRangesCollapsed());
+        });
+    })();
+
     function initDatePicker() {
         $('.date:not(.hasDatePicker)').each(function () {
             $(this).addClass('hasDatePicker').datepicker({

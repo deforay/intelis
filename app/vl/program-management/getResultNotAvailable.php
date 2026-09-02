@@ -15,8 +15,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $key = (string) $general->getGlobalConfig('key');
 
-$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name'];
-$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name'];
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
 if ($general->isStandaloneInstance()) {
     $aColumns = MiscUtility::removeMatchingElements($aColumns, ['vl.remote_sample_code']);
     $orderColumns = MiscUtility::removeMatchingElements($orderColumns, ['vl.remote_sample_code']);
@@ -39,13 +39,15 @@ if (!empty($columnSearch) && $columnSearch != '') {
 
 $sQuery = "SELECT vl.*,
             f.*,s.*,fd.facility_name as labName,
-            ts.status_name
+            ts.status_name,
+            r_i_p.i_partner_name
             FROM form_vl as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
             LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
             LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
             LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id
+            LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
             WHERE vl.result_status != " . REJECTED . "
             AND vl.sample_code is NOT NULL
@@ -84,6 +86,9 @@ if (isset($_POST['noResultPatientPregnant']) && $_POST['noResultPatientPregnant'
 if (isset($_POST['noResultPatientBreastfeeding']) && $_POST['noResultPatientBreastfeeding'] != '') {
     $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['noResultPatientBreastfeeding'] . '"';
 }
+if (isset($_POST['noResultImplementingPartner']) && trim((string) $_POST['noResultImplementingPartner']) !== '') {
+    $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['noResultImplementingPartner'])) . '"';
+}
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
@@ -91,13 +96,10 @@ if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
 if ($labScope = $general->labScopeWhere('vl')) {
     $sWhere[] = $labScope;
 }
-if (!empty($sWhere)) {
-    // A cancelled sample was called off before testing, so it is not work
-    // this report should count.
-    $sWhere[] = SampleCountUtility::countableWhere('vl');
-    $sWhere = implode(" AND ", $sWhere);
-}
-$sQuery = $sQuery . ' AND ' . $sWhere;
+// A cancelled sample was called off before testing, so it is not work
+// this report should count.
+$sWhere[] = SampleCountUtility::countableWhere('vl');
+$sQuery = $sQuery . ' AND ' . implode(" AND ", $sWhere);
 $sQuery .= ' group by vl.vl_sample_id';
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
@@ -145,6 +147,7 @@ foreach ($rResult as $aRow) {
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     $row[] = $aRow['labName'];
     $row[] = $aRow['status_name'];
+    $row[] = $aRow['i_partner_name'];
     $output['aaData'][] = $row;
 }
 echo json_encode($output);

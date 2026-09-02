@@ -35,8 +35,8 @@ try {
     $tableName = "form_vl";
     $primaryKey = "vl_sample_id";
 
-    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name'];
-    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name'];
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name', 'r_i_p.i_partner_name'];
+    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name', 'r_i_p.i_partner_name'];
 
     if ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
@@ -72,7 +72,8 @@ try {
             s.*,
             fd.facility_name as labName,
             rsrr.rejection_reason_name,
-            r_c_a.recommended_corrective_action_name
+            r_c_a.recommended_corrective_action_name,
+            r_i_p.i_partner_name
             FROM form_vl as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
             LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
@@ -80,7 +81,8 @@ try {
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
             LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id
             LEFT JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
-            LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action ";
+            LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
+            LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner ";
     // Same rule the summary on this page counts on: the flag OR the status says
     // rejected. Flag-only made the table disagree with its own chart.
     $sWhere[] = SampleRejectionUtility::sqlPredicate('vl');
@@ -126,6 +128,9 @@ try {
     }
     if (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') {
         $sWhere[] = ' vl.reason_for_sample_rejection = "' . $_POST['rejectionReason'] . '"';
+    }
+    if (isset($_POST['rjtImplementingPartner']) && trim((string) $_POST['rjtImplementingPartner']) !== '') {
+        $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['rjtImplementingPartner'])) . '"';
     }
 
     if (!empty($_SESSION['facilityMap'])) {
@@ -192,6 +197,7 @@ try {
         $row[] = $aRow['labName'];
         $row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);
         $row[] = $aRow['recommended_corrective_action_name'];
+        $row[] = $aRow['i_partner_name'];
         $output['aaData'][] = $row;
     }
     echo JsonUtility::encodeUtf8Json($output);

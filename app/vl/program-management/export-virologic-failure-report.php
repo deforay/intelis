@@ -42,11 +42,13 @@ $sQuery = "SELECT
                DATE_FORMAT(vl.treatment_initiated_date,'%d-%b-%Y') as artStartDate,
                vl.current_regimen,
                DATE_FORMAT(vl.date_of_initiation_of_current_regimen,'%d-%b-%Y') as regStartDate,
-               vl.result
+               vl.result,
+               r_i_p.i_partner_name
           FROM form_vl as vl
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
           LEFT JOIN r_vl_sample_type as s ON vl.specimen_type=s.sample_id
           LEFT JOIN instruments as i ON vl.instrument_id=i.instrument_id
+          LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner
           INNER JOIN facility_details as l ON vl.lab_id=l.facility_id";
 
 $sWhere[] = " vl.vl_result_category = 'not suppressed' AND vl.patient_age_in_years IS NOT NULL AND vl.patient_gender IS NOT NULL AND vl.current_regimen IS NOT NULL ";
@@ -81,6 +83,10 @@ if (isset($_POST['pregnancy']) && trim((string) $_POST['pregnancy']) !== '') {
 
 if (isset($_POST['breastfeeding']) && trim((string) $_POST['breastfeeding']) !== '') {
      $sWhere[] = " vl.is_patient_breastfeeding = '" . $_POST['breastfeeding'] . "' ";
+}
+
+if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
+     $sWhere[] = ' vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
 }
 
 if (
@@ -152,7 +158,8 @@ $headings = [
      _translate('ART Start Date'),
      _translate('Regimen'),
      _translate('Current Regimen Start Date'),
-     _translate('VL Result')
+     _translate('VL Result'),
+     _translate('Implementing Partner')
 ];
 
 $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-HIGH-VL-AND-VIROLOGIC-FAILURE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';

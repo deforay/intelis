@@ -57,6 +57,11 @@ try {
     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
         $whereCondition .= ' AND f.facility_id IN (' . $_POST['facilityName'] . ') ';
     }
+
+    /* Implementing partner filter */
+    if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
+        $whereCondition .= ' AND vl.implementing_partner = "' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '" ';
+    }
     $sQuery = "SELECT
             vl.facility_id,
             f.facility_code,
