@@ -12,6 +12,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\DataIssuesService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 
@@ -106,6 +107,21 @@ try {
      LEFT JOIN r_eid_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
      LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
      LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
+
+     // The Needs attention card counts flagged records; this is how it shows
+     // them. EXISTS rather than a join because one record can carry more than
+     // one flag and must still appear once. The card's age limit is applied here
+     // too, or "Show them" would answer a count of 4 with a listing of 400.
+     if (!empty($_POST['dataIssue'])) {
+          $issue = (string) $_POST['dataIssue'];
+          if (array_key_exists($issue, DataIssuesService::predicates('eid'))) {
+               $sWhere[] = " EXISTS (SELECT 1 FROM " . DataIssuesService::TABLE . " AS di
+                                      WHERE di.test_type = 'eid'
+                                        AND di.record_id = vl.eid_id
+                                        AND di.issue_key = '" . $db->escape($issue) . "') ";
+               $sWhere[] = ' ' . DataIssuesService::recencyClause('vl') . ' ';
+          }
+     }
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';

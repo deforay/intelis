@@ -161,7 +161,10 @@ try {
                FROM form_vl as vl
 
                LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-               LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
+               -- INNER on purpose: a sample that never reached a lab is not part
+               -- of tracking tested samples; the clinic reports apply the same
+               -- rule, so this export and the reports agree.
+               INNER JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
                LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
                LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
@@ -191,7 +194,7 @@ try {
      }
      /*Lab id filter */
      if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
-          $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          $sWhere[] =  '  vl.lab_id IN (' . $db->inIntList($_POST['vlLab']) . ')';
      }
 
      /* Viral load filter */
