@@ -1,42 +1,50 @@
 <?php
 
-use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
-use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Repositories\Reference\ReferenceDataRepository;
 
+// Sanitized values from $request object
+/** @var Psr\Http\Message\ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+// Stored values are read raw: _sanitizeInput() is an HTML sanitizer and would
+// persist "Broken & Leaking" as "Broken &amp; Leaking". Escaping belongs to rendering.
+$reasonName = trim((string) _rawInput("rejectionReasonName", ""));
+$reasonType = (string) _rawInput("rejectionType", "");
+$reasonCode = (string) _rawInput("rejectionReasonCode", "");
 
-
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
+/** @var ReferenceDataRepository $referenceData */
+$referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$tableName = "r_hepatitis_sample_rejection_reasons";
-$primaryKey = "rejection_reason_id";
 
 try {
-	if (isset($_POST['rejectionReasonName']) && trim((string) $_POST['rejectionReasonName']) !== "") {
-
-		$data = ['rejection_reason_name' 	=> $_POST['rejectionReasonName'], 'rejection_type' 			=> $_POST['rejectionType'], 'rejection_reason_status'	=> $_POST['rejectionReasonStatus'], 'rejection_reason_code' 	=> $_POST['rejectionReasonCode'], 'updated_datetime' 			=> DateUtility::getCurrentDateTime()];
-
-		if (isset($_POST['rejectionReasonId']) && $_POST['rejectionReasonId'] != "") {
-			$db->where($primaryKey, base64_decode((string) $_POST['rejectionReasonId']));
-			$lastId = $db->update($tableName, $data);
-		} else {
-			$data['data_sync'] = 0;
-			$db->insert($tableName, $data);
-			$lastId = $db->getInsertId();
-		}
+	if ($reasonName !== "") {
+		$reasonId = (isset($_POST['rejectionReasonId']) && $_POST['rejectionReasonId'] != "")
+			? (int) base64_decode((string) $_POST['rejectionReasonId'], true)
+			: null;
+		$lastId = $referenceData->save(
+			'rejection-reason',
+			'hepatitis',
+			$reasonName,
+			(string) ($_POST['rejectionReasonStatus'] ?? ''),
+			[
+				'rejection_type' => $reasonType,
+				'rejection_reason_code' => $reasonCode,
+			],
+			$reasonId
+		);
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("Hepatitis Sample Rejection Reasons details added successfully");
-			$general->activityLog('Hepatitis Sample Rejection Reasons', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons for  ' . $_POST['rejectionReasonName'], 'hepatitis-reference');
+			$general->activityLog('Hepatitis Sample Rejection Reasons', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons for  ' . $reasonName, 'hepatitis-reference');
 		}
 	}
 	header("Location:hepatitis-sample-rejection-reasons.php");
-} catch (Exception $e) {
+} catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),
 		'line' => $e->getLine(),

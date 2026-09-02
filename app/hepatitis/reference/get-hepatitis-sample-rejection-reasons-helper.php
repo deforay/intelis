@@ -100,13 +100,13 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['rejection_reason_status'] == "inactive" ? "selected=selected" : "") . '>' . _translate("Inactive") . '</option>
                </select><br><br>';
     $row = [];
-    $row[] = ($aRow['rejection_reason_name']);
-    $row[] = ($aRow['rejection_type']);
-    $row[] = ($aRow['rejection_reason_code']);
+    $row[] = htmlspecialchars((string) ($aRow['rejection_reason_name'] ?? ''), ENT_QUOTES, 'UTF-8');
+    $row[] = htmlspecialchars((string) ($aRow['rejection_type'] ?? ''), ENT_QUOTES, 'UTF-8');
+    $row[] = htmlspecialchars((string) ($aRow['rejection_reason_code'] ?? ''), ENT_QUOTES, 'UTF-8');
     if (_isAllowed("hepatitis-sample-type.php") && $general->isLISInstance() === false) {
         $row[] = $status;
     } else {
-        $row[] = ($aRow['rejection_reason_status']);
+        $row[] = htmlspecialchars((string) ($aRow['rejection_reason_status'] ?? ''), ENT_QUOTES, 'UTF-8');
     }
     $output['aaData'][] = $row;
 }
