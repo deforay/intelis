@@ -5,6 +5,7 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DataIssuesService;
 use App\Services\GeoLocationsService;
 use App\Services\UsersService;
 
@@ -116,6 +117,72 @@ foreach ($sourceOfRequests as $value => $displayText) {
 	<section class="content">
 		<div class="row">
 			<div class="col-xs-12">
+				<?php
+				/* Records whose own columns contradict each other, gathered above the
+				 * listing — same card, definitions and behavior as the VL request list.
+				 * Shown only to someone who can act on it. */
+				$canFixData = _isAllowed("/eid/requests/eid-edit-request.php") && !$hidesrcofreq;
+
+				$dataIssues = ContainerRegistry::get(DataIssuesService::class);
+				$issueCounts = $canFixData ? $dataIssues->getIssueCounts('eid') : [];
+
+				$issueCopy = [
+					'lostWithResult' => [
+						'icon' => 'fa-hourglass-end',
+						'title' => _translate('marked lost or missing, but carrying a result'),
+						'cost' => _translate('The status locks the record, so a result that was produced cannot be reached, printed or sent back to the facility.'),
+						'fix' => _translate('Review each and move it back to Accepted if the result stands.'),
+					],
+					'acceptedWithoutResult' => [
+						'icon' => 'fa-question-circle',
+						'title' => _translate('marked accepted, but with no result'),
+						'cost' => _translate('Accepted is what the printing, emailing and dispatch lists treat as having a result, so these drop silently out of all of them.'),
+						'fix' => _translate('Enter the result, or correct the status to match what happened.'),
+					],
+				];
+
+				/* Dismissal is of this state, not of the card: the signature covers
+				 * which issues are present and how many of each. Prefixed so it is
+				 * never all digits (the storage helper JSON.parses what it reads). */
+				$issueSignature = 'v' . md5(json_encode($issueCounts));
+				?>
+				<?php if ($issueCounts !== []) { ?>
+					<div class="needs-attention" id="needsAttention"
+						data-signature="<?= htmlspecialchars($issueSignature, ENT_QUOTES); ?>" style="display:none;">
+						<div class="na-header">
+							<button type="button" class="na-dismiss" onclick="dismissNeedsAttention();"
+								title="<?= _htmlTranslate('Hide until this changes'); ?>"
+								aria-label="<?= _htmlTranslate('Hide until this changes'); ?>">&times;</button>
+							<em class="fa-solid fa-circle-exclamation" aria-hidden="true"></em>
+							<?= _htmlTranslate('Needs attention'); ?>
+							<span class="na-scope"><?= htmlspecialchars(sprintf(_translate('samples from the last %d days'), DataIssuesService::recentDays()), ENT_QUOTES); ?></span>
+							<span class="na-count"><?= count($issueCounts); ?></span>
+						</div>
+						<?php foreach ($issueCopy as $issueKey => $copy) {
+							if (empty($issueCounts[$issueKey])) {
+								continue;
+							}
+							$count = (int) $issueCounts[$issueKey];
+						?>
+							<div class="na-item">
+								<a href="javascript:void(0);"
+									onclick="showDataIssue('<?= htmlspecialchars($issueKey, ENT_QUOTES); ?>');"
+									class="na-action">&rarr; <?= _htmlTranslate('Show them'); ?></a>
+								<div class="na-icon"><em class="fa-solid <?= $copy['icon']; ?>" aria-hidden="true"></em></div>
+								<div class="na-body">
+									<div class="na-title">
+										<?= number_format($count); ?> <?= htmlspecialchars($copy['title'], ENT_QUOTES); ?>
+									</div>
+									<div class="na-desc">
+										<?= htmlspecialchars($copy['cost'], ENT_QUOTES); ?>
+										<?= htmlspecialchars($copy['fix'], ENT_QUOTES); ?>
+									</div>
+								</div>
+							</div>
+						<?php } ?>
+					</div>
+				<?php } ?>
+				<input type="hidden" id="dataIssue" value="" />
 				<div class="box">
 					<table aria-describedby="table" id="advanceFilter" class="table pageFilters" aria-hidden="true"
 						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
@@ -695,7 +762,51 @@ foreach ($sourceOfRequests as $value => $displayText) {
 			searchExecuted = false;
 		});
 
+		initNeedsAttention();
+
 	});
+
+	// The card starts hidden and is shown here, once the stored dismissal has
+	// been read: rendering it and then hiding it would flash the thing someone
+	// dismissed on every page load. What is remembered is the signature of what
+	// was wrong, not "hidden".
+	var NEEDS_ATTENTION_KEY = 'eidNeedsAttentionDismissed';
+
+	function initNeedsAttention() {
+		var card = document.getElementById('needsAttention');
+		if (!card) {
+			return;
+		}
+		var dismissed = StorageHelper.getFromLocalStorage(NEEDS_ATTENTION_KEY);
+		if (dismissed !== card.getAttribute('data-signature')) {
+			card.style.display = '';
+		}
+	}
+
+	function dismissNeedsAttention() {
+		var card = document.getElementById('needsAttention');
+		if (!card) {
+			return;
+		}
+		StorageHelper.storeInLocalStorage(NEEDS_ATTENTION_KEY, card.getAttribute('data-signature'));
+		$(card).slideUp(150);
+	}
+
+	// Shows the records behind one Needs attention row: the grid filters to them
+	// rather than the card duplicating a listing that already exists.
+	function showDataIssue(issueKey) {
+		$('#dataIssue').val(issueKey);
+		$('#vlRequestDataTable').DataTable().draw();
+		document.getElementById('vlRequestDataTable').scrollIntoView({ behavior: 'smooth', block: 'start' });
+	}
+
+	function clearDataIssue() {
+		if ($('#dataIssue').val() === '') {
+			return;
+		}
+		$('#dataIssue').val('');
+		$('#vlRequestDataTable').DataTable().draw();
+	}
 
 	function fnShowHide(iCol) {
 		var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
@@ -776,6 +887,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 			"bServerSide": true,
 			"sAjaxSource": "/eid/requests/get-request-list.php",
 			"fnServerData": function (sSource, aoData, fnCallback) {
+				aoData.push({
+					"name": "dataIssue",
+					"value": $("#dataIssue").val()
+				});
 				aoData.push({
 					"name": "batchCode",
 					"value": $("#batchCode").val()

@@ -36,9 +36,10 @@ if (!$isCli) {
 $dataIssues = ContainerRegistry::get(DataIssuesService::class);
 
 // Everything here -- the table, the predicates, the scan -- is written per test
-// type and works for any module. Only VL is scanned by default while the checks
-// earn their keep on real data; adding a module is one entry in this list.
-const ENABLED_MODULES = ['vl'];
+// type and works for any module; adding one is one entry in this list. EID
+// joined after field data showed accepted-without-result rows there (79 on one
+// instance, 68 on another) while VL had none.
+const ENABLED_MODULES = ['vl', 'eid'];
 
 $args = array_slice($argv, 1);
 $forceFull = in_array('--full', $args, true);
