@@ -1,43 +1,47 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Utilities\LoggerUtility;
+use App\Registries\ContainerRegistry;
+use App\Repositories\Reference\SampleTypeRepository;
 
+// Sanitized values from $request object
+/** @var Psr\Http\Message\ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+// The stored name is read raw: _sanitizeInput() is an HTML sanitizer and would
+// persist "Plasma & Serum" as "Plasma &amp; Serum". Escaping belongs to rendering.
+$sampleName = trim((string) _rawInput("sampleName", ""));
 
-
-
-
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
+/** @var SampleTypeRepository $sampleTypes */
+$sampleTypes = ContainerRegistry::get(SampleTypeRepository::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$tableName = "r_cd4_sample_types";
-$primaryKey = "sample_id";
-
 try {
-	if (isset($_POST['sampleName']) && trim((string) $_POST['sampleName']) !== "") {
-
-		$data = ['sample_name' => $_POST['sampleName'], 'status' => $_POST['sampleStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
-		if (isset($_POST['sampleId']) && $_POST['sampleId'] != "") {
-			$db->where($primaryKey, base64_decode((string) $_POST['sampleId']));
-			$lastId = $db->update($tableName, $data);
-		} else {
-			$data['data_sync'] = 0;
-			$db->insert($tableName, $data);
-			$lastId = $db->getInsertId();
-		}
+	if ($sampleName !== "") {
+		$sampleTypeId = (isset($_POST['sampleId']) && $_POST['sampleId'] != "")
+			? (int) base64_decode((string) $_POST['sampleId'], true)
+			: null;
+		$lastId = $sampleTypes->save(
+			'cd4',
+			$sampleName,
+			(string) ($_POST['sampleStatus'] ?? ''),
+			$sampleTypeId
+		);
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("CD4 Sample details saved successfully");
-			$general->activityLog('CD4 Sample Type details', $_SESSION['userName'] . ' added new CD4 sample type : ' . $_POST['sampleName'], 'cd4-reference');
+			$general->activityLog('CD4 Sample Type details', $_SESSION['userName'] . ' saved CD4 sample type : ' . $sampleName, 'cd4-reference');
 		}
 	}
 	header("Location:cd4-sample-type.php");
-} catch (Exception $exc) {
-	error_log($exc->getMessage());
-	throw $exc;
+} catch (Throwable $e) {
+	LoggerUtility::log("error", $e->getMessage(), [
+		'file' => $e->getFile(),
+		'line' => $e->getLine(),
+		'trace' => $e->getTraceAsString(),
+	]);
+	throw $e;
 }

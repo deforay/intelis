@@ -96,10 +96,12 @@
         "check-counts": "@php bin/build/check-count-invariants.php",
         "check-sync-ownership": "@php bin/build/check-sync-ownership.php",
         "check-sql-value-safety": "@php bin/build/check-sql-value-safety.php",
+        "check-repository-boundaries": "@php bin/build/check-repository-boundaries.php",
         "check-invariants": [
             "@check-counts",
             "@check-sync-ownership",
-            "@check-sql-value-safety"
+            "@check-sql-value-safety",
+            "@check-repository-boundaries"
         ],
         "preflight": "@php bin/preflight.php",
         "scan": "@php bin/scan.php",
