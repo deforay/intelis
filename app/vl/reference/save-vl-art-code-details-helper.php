@@ -1,38 +1,46 @@
 <?php
 
-use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
-use App\Services\DatabaseService;
-use App\Services\SecurityService;
 use App\Registries\ContainerRegistry;
+use App\Repositories\Reference\ReferenceDataRepository;
 
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
+// Sanitized values from $request object
+/** @var Psr\Http\Message\ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+// The stored code is read raw: _sanitizeInput() is an HTML sanitizer and would
+// mangle codes containing an ampersand. Escaping belongs to rendering.
+$artCode = trim((string) _rawInput("artCode", ""));
+$category = (string) _rawInput("category", "");
+
+/** @var ReferenceDataRepository $referenceData */
+$referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$tableName = "r_vl_art_regimen";
-$primaryKey = "art_id";
-// echo "<pre>";print_r($_POST);die;
 try {
-	if (isset($_POST['artCode']) && trim((string) $_POST['artCode']) !== "") {
-
-
-		$data = ['art_code'          => $_POST['artCode'], 'parent_art'        => (isset($_POST['parentArtCode']) && $_POST['parentArtCode'] != "") ? $_POST['parentArtCode'] : 0, 'headings'          => $_POST['category'], 'art_status'        => $_POST['artStatus'], 'updated_datetime'  => DateUtility::getCurrentDateTime()];
-		if (isset($_POST['artCodeId']) && $_POST['artCodeId'] != "") {
-			$db->where($primaryKey, base64_decode((string) $_POST['artCodeId']));
-			$lastId = $db->update($tableName, $data);
-		} else {
-			$data['data_sync'] = 0;
-			$db->insert($tableName, $data);
-			$lastId = $db->getInsertId();
-		}
+	if ($artCode !== "") {
+		$artCodeId = (isset($_POST['artCodeId']) && $_POST['artCodeId'] != "")
+			? (int) base64_decode((string) $_POST['artCodeId'], true)
+			: null;
+		$lastId = $referenceData->save(
+			'art-code',
+			'vl',
+			$artCode,
+			(string) ($_POST['artStatus'] ?? ''),
+			[
+				'parent_art' => (string) ($_POST['parentArtCode'] ?? ''),
+				'headings' => $category,
+			],
+			$artCodeId
+		);
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("Art Code details saved successfully");
-			$general->activityLog('Add art code details', $_SESSION['userName'] . ' added new art code for ' . $_POST['artCode'], 'vl-reference');
+			$general->activityLog('Add art code details', $_SESSION['userName'] . ' saved art code ' . $artCode, 'vl-reference');
 		}
 	}
 	MiscUtility::redirect("/vl/reference/vl-art-code-details.php");

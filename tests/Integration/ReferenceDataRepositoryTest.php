@@ -75,6 +75,24 @@ final class ReferenceDataRepositoryTest extends TestCase
             'name' => 'test_reason_name',
             'status' => 'test_reason_status',
         ],
+        'test-failure-reason' => [
+            'tables' => ['vl' => 'r_vl_test_failure_reasons'],
+            'id' => 'failure_id',
+            'name' => 'failure_reason',
+            'status' => 'status',
+        ],
+        'vl-result' => [
+            'tables' => ['vl' => 'r_vl_results'],
+            'id' => 'result_id',
+            'name' => 'result',
+            'status' => 'status',
+        ],
+        'art-code' => [
+            'tables' => ['vl' => 'r_vl_art_regimen'],
+            'id' => 'art_id',
+            'name' => 'art_code',
+            'status' => 'art_status',
+        ],
     ];
 
     /**
@@ -134,6 +152,38 @@ final class ReferenceDataRepositoryTest extends TestCase
                 ) ENGINE=InnoDB"
             );
         }
+        $bootstrap->query(
+            'CREATE TABLE r_vl_test_failure_reasons (
+                failure_id INT AUTO_INCREMENT PRIMARY KEY,
+                failure_reason VARCHAR(255) DEFAULT NULL,
+                status VARCHAR(45) DEFAULT NULL,
+                updated_datetime DATETIME DEFAULT NULL,
+                data_sync INT NOT NULL DEFAULT 1
+            ) ENGINE=InnoDB'
+        );
+        $bootstrap->query(
+            'CREATE TABLE r_vl_results (
+                result_id INT AUTO_INCREMENT PRIMARY KEY,
+                result VARCHAR(255) DEFAULT NULL,
+                status VARCHAR(45) DEFAULT NULL,
+                available_for_instruments TEXT DEFAULT NULL,
+                interpretation VARCHAR(255) DEFAULT NULL,
+                updated_datetime DATETIME DEFAULT NULL,
+                data_sync INT NOT NULL DEFAULT 1
+            ) ENGINE=InnoDB'
+        );
+        $bootstrap->query(
+            'CREATE TABLE r_vl_art_regimen (
+                art_id INT AUTO_INCREMENT PRIMARY KEY,
+                art_code VARCHAR(255) DEFAULT NULL,
+                parent_art INT DEFAULT NULL,
+                headings VARCHAR(255) DEFAULT NULL,
+                art_status VARCHAR(45) DEFAULT NULL,
+                art_source VARCHAR(45) DEFAULT NULL,
+                updated_datetime DATETIME DEFAULT NULL,
+                data_sync INT NOT NULL DEFAULT 1
+            ) ENGINE=InnoDB'
+        );
         foreach (self::ENTITIES['test-reason']['tables'] as $table) {
             $syncColumn = in_array($table, self::TEST_REASON_TABLES_WITHOUT_SYNC, true)
                 ? ''
@@ -195,6 +245,22 @@ final class ReferenceDataRepositoryTest extends TestCase
             $tracked = $this->repository->save('test-reason', $testType, 'Baseline', 'active');
             $this->assertSame(0, (int) $this->row('test-reason', $testType, $tracked)['data_sync'], $testType);
         }
+    }
+
+    public function testANullFieldIsStoredAsSqlNull(): void
+    {
+        // NULL instruments means the result is available everywhere; '' would
+        // read as a restriction to no instrument at all.
+        $id = $this->repository->save('vl-result', 'vl', '< 20', 'active', [
+            'interpretation' => 'Suppressed',
+            'available_for_instruments' => null,
+        ]);
+
+        $row = $this->row('vl-result', 'vl', $id);
+        $this->assertSame('< 20', $row['result']);
+        $this->assertNull($row['available_for_instruments']);
+        $this->assertSame('Suppressed', $row['interpretation']);
+        $this->assertSame(0, (int) $row['data_sync']);
     }
 
     public function testAnEntitySpecificFieldEmptyFallsBackToItsDefault(): void
@@ -310,7 +376,7 @@ final class ReferenceDataRepositoryTest extends TestCase
     public function testUnknownEntityAndUnknownTestTypeAreRefused(): void
     {
         try {
-            $this->repository->save('art-code', 'vl', 'X', 'active');
+            $this->repository->save('funding-source', 'vl', 'X', 'active');
             $this->fail('An undeclared entity must be refused');
         } catch (SystemException) {
         }

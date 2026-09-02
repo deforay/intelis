@@ -98,6 +98,34 @@ final readonly class ReferenceDataRepository
             'defaults' => ['parent_reason' => '0'],
             'sync' => ['vl', 'eid', 'cd4'],
         ],
+        // The three VL-only vocabularies live in the same map: a single-module
+        // entity is just a map with one table.
+        'test-failure-reason' => [
+            'tables' => ['vl' => 'r_vl_test_failure_reasons'],
+            'id' => 'failure_id',
+            'name' => 'failure_reason',
+            'status' => 'status',
+        ],
+        'vl-result' => [
+            'tables' => ['vl' => 'r_vl_results'],
+            'id' => 'result_id',
+            'name' => 'result',
+            'status' => 'status',
+            // available_for_instruments is a JSON list of instrument ids the
+            // endpoint assembles, or SQL NULL when the result is unrestricted.
+            'fields' => ['interpretation', 'available_for_instruments'],
+        ],
+        'art-code' => [
+            'tables' => ['vl' => 'r_vl_art_regimen'],
+            'id' => 'art_id',
+            'name' => 'art_code',
+            'status' => 'art_status',
+            // parent_art holds the id of a parent regimen, 0 when top-level.
+            // The reporting alias table is NOT this entity's business; see
+            // update-vl-art-code-alias.php for why it is additive-only.
+            'fields' => ['parent_art', 'headings'],
+            'defaults' => ['parent_art' => '0'],
+        ],
     ];
 
     private const STATUSES = ['active', 'inactive'];
@@ -111,8 +139,9 @@ final readonly class ReferenceDataRepository
      * the row id. New rows carry an explicit data_sync = 0 so the
      * reference-data sync picks them up regardless of the column default.
      *
-     * @param array<string, string> $fields Entity-specific columns beyond
-     *        name and status; keys must be declared in the entity's map.
+     * @param array<string, string|null> $fields Entity-specific columns beyond
+     *        name and status; keys must be declared in the entity's map. A null
+     *        value is stored as SQL NULL.
      */
     public function save(
         string $entity,
@@ -141,11 +170,13 @@ final readonly class ReferenceDataRepository
             if (!in_array($column, $spec['fields'] ?? [], true)) {
                 throw new SystemException("'$column' is not a writable $entity field");
             }
-            $value = trim($value);
-            if ($value === '') {
-                $value = $spec['defaults'][$column] ?? '';
+            if ($value !== null) {
+                $value = trim($value);
+                if ($value === '') {
+                    $value = $spec['defaults'][$column] ?? '';
+                }
+                $this->assertPlainText($entity, $value);
             }
-            $this->assertPlainText($entity, $value);
             $data[$column] = $value;
         }
 
