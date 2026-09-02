@@ -44,15 +44,15 @@ try {
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
+        $sOffset = (int) $_POST['iDisplayStart'];
+        $sLimit = (int) $_POST['iDisplayLength'];
     }
 
     $sWhere = [];
 
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
 
     $sWhere = [];
     if (!empty($columnSearch) && $columnSearch != '') {
@@ -86,10 +86,12 @@ try {
     $sWhere[] = ' vl.hcv_vl_count != "" OR vl.hbv_vl_count != "" AND result_status = ' . ACCEPTED;
 
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-        $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
+        $sWhere[] = ' vl.patient_id like "%' . $db->escapeLike($_POST['patientId']) . '%"';
     }
     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-        $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
+        // CONCAT_WS keeps a space between name and surname, so searching
+        // "John Doe" matches; plain CONCAT only matched "JohnDoe".
+        $sWhere[] = " CONCAT_WS(' ', NULLIF(vl.patient_name,''), NULLIF(vl.patient_surname,'')) like '%" . $db->escapeLike($_POST['patientName']) . "%'";
     }
 
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
