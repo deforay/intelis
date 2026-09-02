@@ -87,13 +87,13 @@ $testName = TestsService::getTestTypes();
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/components-rounded.min.css">
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
   <link rel="stylesheet" media="all" type="text/css"
-    href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
+    href="<?= _asset('/assets/css/style.css') ?>" />
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
   <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
   <script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
   <script type="text/javascript"
-    src="/assets/js/utils.js?v=<?= filemtime(WEB_ROOT . '/assets/js/utils.js') ?>"></script>
+    src="<?= _asset('/assets/js/utils.js') ?>"></script>
 
   <!-- iCheck -->
   <style>

@@ -171,4 +171,4 @@ $advLabel = (isset($advCfg['patientIdLabel']) && trim((string) $advCfg['patientI
 </div>
 <?php // Styles the Patient ID label datalist consistently (the config pages don't load it otherwise). ?>
 <script type="text/javascript"
-    src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . '/assets/js/datalist-css.min.js') ?>"></script>
+    src="<?= _asset('/assets/js/datalist-css.min.js') ?>"></script>

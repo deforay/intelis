@@ -675,6 +675,22 @@ function _jsEscape($value): string
     ) ?: '""';
 }
 
+/**
+ * Returns a public asset URL with a cache-busting version query based on the
+ * file's modification time, so browsers refetch assets after an update.
+ * Falls back to the plain path if the file cannot be found.
+ */
+function _asset(string $path): string
+{
+    static $versions = [];
+    $path = '/' . ltrim($path, '/');
+    if (!isset($versions[$path])) {
+        $file = WEB_ROOT . $path;
+        $versions[$path] = is_file($file) ? (string) filemtime($file) : '';
+    }
+    return $versions[$path] !== '' ? "{$path}?v={$versions[$path]}" : $path;
+}
+
 function _getFromFileCache(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600)
 {
     /** @var FileCacheUtility $fileCache */

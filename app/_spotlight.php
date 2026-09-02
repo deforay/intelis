@@ -151,7 +151,7 @@ $spotlightCacheKey = 'spotlight_menu_' . ($_SESSION['userId'] ?? 'default') . '_
 $spotlightData = \App\Utilities\MemoUtility::memo($spotlightCacheKey, fn() => $flattenMenuForSpotlight($_SESSION['menuItems'] ?? []), 300);
 ?>
 <link rel="stylesheet" media="all" type="text/css"
-    href="/assets/css/spotlight-search.css?v=<?= filemtime(WEB_ROOT . '/assets/css/spotlight-search.css'); ?>" />
+    href="<?= _asset('/assets/css/spotlight-search.css') ?>" />
 
 <script>
     window.spotlightData = <?= \App\Utilities\JsonUtility::encodeUtf8Json($spotlightData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
@@ -186,4 +186,4 @@ $spotlightData = \App\Utilities\MemoUtility::memo($spotlightCacheKey, fn() => $f
 </div>
 
 <script type="text/javascript"
-    src="/assets/js/spotlight-search.js?v=<?= filemtime(WEB_ROOT . '/assets/js/spotlight-search.js'); ?>"></script>
+    src="<?= _asset('/assets/js/spotlight-search.js') ?>"></script>
