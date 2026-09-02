@@ -57,8 +57,7 @@
         "symfony/process": "^8.0",
         "symfony/string": "^8.0",
         "symfony/uid": "^8.0",
-        "tecnickcom/tcpdf": "^6.11",
-        "thingengineer/mysqli-database-class": "dev-master"
+        "tecnickcom/tcpdf": "^6.11"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing"
