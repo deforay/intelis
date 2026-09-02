@@ -63,6 +63,11 @@ const CANCELLED_RULE_EXEMPT = [
     // The dashboard counts a mutually-exclusive status breakdown that has to sum to
     // the total, so it asks "how many are IN the Rejected state", not "how many were
     // ever rejected". Excluding cancelled there would make the parts stop summing.
+    'app/classes/Services/SampleFlowService.php' =>
+        'places every registered sample in exactly one stage or exit, and cancelled is '
+        . 'one of the exits, so the stages have to add up to everything registered; the '
+        . 'CASE tests cancelled before rejected, so a cancelled sample can never be '
+        . 'counted as rejected, which is what the shared clause exists to guarantee',
 ];
 
 /** @return list<string> */
