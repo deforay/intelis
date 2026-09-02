@@ -1302,7 +1302,23 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<?php } ?>
 														</select>
 													</td>
-													<td colspan="4"></td>
+													<td style="width: 10%;"><strong>
+															<?php echo _translate("Field Match"); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23.33%;">
+														<select name="dqFieldMatch" id="dqFieldMatch"
+															class="form-control select2Class incompleteFormReportFilter"
+															title="<?php echo _translate('Please choose how the selected fields combine'); ?>"
+															style="width:100%;">
+															<option value="any">
+																<?php echo _translate("Any selected field is missing"); ?>
+															</option>
+															<option value="all">
+																<?php echo _translate("All selected fields are missing"); ?>
+															</option>
+														</select>
+													</td>
+													<td colspan="2"></td>
 												</tr>
 												<tr>
 													<td colspan="4">&nbsp;<input type="button"
@@ -2169,6 +2185,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 				aoData.push({
 					"name": "dqImplementingPartner",
 					"value": $("#dqImplementingPartner").val()
+				});
+				aoData.push({
+					"name": "dqFieldMatch",
+					"value": $("#dqFieldMatch").val()
 				});
 				$.ajax({
 					"dataType": 'json',
