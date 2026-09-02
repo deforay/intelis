@@ -220,8 +220,8 @@ try {
         $where[] = " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
     }
     /* To check the facility and date range filter */
-    $from = $input['sampleCollectionDate'][0];
-    $to = $input['sampleCollectionDate'][1];
+    $from = $input['sampleCollectionDate'][0] ?? null;
+    $to = $input['sampleCollectionDate'][1] ?? null;
     if (!empty($from) && !empty($to)) {
         $where[] = " DATE(sample_collection_date) between '$from' AND '$to' ";
     }
@@ -244,7 +244,7 @@ try {
         $where[] = " (vl.patient_first_name like '" . $input['patientName'] . "' OR vl.patient_last_name like '" . $input['patientName'] . "')";
     }
 
-    $sampleStatus = $input['sampleStatus'];
+    $sampleStatus = $input['sampleStatus'] ?? [];
     if (!empty($sampleStatus)) {
         $sampleStatus = implode("','", $sampleStatus);
         $where[] = " result_status IN ('$sampleStatus') ";

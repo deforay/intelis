@@ -18,7 +18,31 @@ if (is_file(dirname(__DIR__) . '/.maintenance')) {
     exit;
 }
 
-require_once dirname(__DIR__) . '/../bootstrap.php';
+// Health probe. /api/v1.1/health has to answer even when bootstrap cannot reach
+// the database, which is exactly when a monitor most wants an answer. Bootstrap
+// connects eagerly, so a failed connection surfaces here as a thrown exception.
+$requestPath = (string) (parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '');
+$requestPath = (string) preg_replace('/([\/.])\1+/', '$1', $requestPath);
+$isHealthProbe = rtrim($requestPath, '/') === '/api/v1.1/health';
+
+try {
+    require_once dirname(__DIR__) . '/../bootstrap.php';
+} catch (Throwable $bootstrapFailure) {
+    if (!$isHealthProbe) {
+        throw $bootstrapFailure;
+    }
+    http_response_code(503);
+    header('Cache-Control: no-store');
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'status' => 'unavailable',
+        'version' => null,
+        'serverTime' => date(DATE_ATOM),
+        'minAppVersion' => null,
+        'database' => 'unreachable',
+    ]);
+    exit;
+}
 
 use Slim\Factory\AppFactory;
 use Slim\Middleware\BodyParsingMiddleware;
@@ -33,6 +57,7 @@ use App\Registries\ContainerRegistry;
 use App\Middlewares\Api\ApiAuthMiddleware;
 use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
+use App\HttpHandlers\Api\HealthHandler;
 use App\HttpHandlers\InterfaceApi\ActivateInstallationHandler;
 use App\HttpHandlers\InterfaceApi\GetConnectionHandler;
 use App\HttpHandlers\InterfaceApi\SubmitActivityHandler;
@@ -67,6 +92,9 @@ $app = AppFactory::create();
 // ---------------------------------------------------------------------
 // Routes
 // ---------------------------------------------------------------------
+
+// Unauthenticated liveness probe; ApiAuthMiddleware excludes this path.
+$app->map(['GET', 'HEAD'], '/api/v1.1/health', HealthHandler::class);
 
 $app->any(
     '/api/v1.1/init',

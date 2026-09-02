@@ -188,8 +188,8 @@ try {
         $where[] = " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
     }
     /* To check the facility and date range filter */
-    $from = $input['sampleCollectionDate'][0];
-    $to = $input['sampleCollectionDate'][1];
+    $from = $input['sampleCollectionDate'][0] ?? null;
+    $to = $input['sampleCollectionDate'][1] ?? null;
     if (!empty($from) && !empty($to)) {
         $where[] = " DATE(sample_collection_date) between '$from' AND '$to' ";
     }
@@ -203,8 +203,10 @@ try {
         $where[] = " vl.facility_id IN ('$facilityId') ";
     }
 
-    if (!empty($input['childId'])) {
-        $childId = implode("','", $input['childId']);
+    // patientId is the cross-test-type filter name; childId stays for older clients
+    $childId = array_merge((array) ($input['childId'] ?? []), (array) ($input['patientId'] ?? []));
+    if ($childId !== []) {
+        $childId = implode("','", array_map($db->escape(...), $childId));
         $where[] = " vl.child_id IN ('" . $childId . "') ";
     }
 
@@ -212,7 +214,7 @@ try {
         $where[] = " (vl.child_name like '" . $input['childName'] . "' OR vl.child_surname like '" . $input['childName'] . "')";
     }
 
-    $sampleStatus = $input['sampleStatus'];
+    $sampleStatus = $input['sampleStatus'] ?? [];
     if (!empty($sampleStatus)) {
         $sampleStatus = implode("','", $sampleStatus);
         $where[] = " result_status IN ('$sampleStatus') ";

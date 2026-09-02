@@ -203,8 +203,8 @@ try {
     }
     /* To check the facility and date range filter */
     if (!empty($input['sampleCollectionDate'])) {
-        $from = $input['sampleCollectionDate'][0];
-        $to = $input['sampleCollectionDate'][1];
+        $from = $input['sampleCollectionDate'][0] ?? null;
+        $to = $input['sampleCollectionDate'][1] ?? null;
         if (!empty($from) && !empty($to)) {
             $where[] = " DATE(sample_collection_date) between '$from' AND '$to' ";
         }
@@ -215,8 +215,10 @@ try {
         $where[] = " vl.facility_id IN ('$facilityId') ";
     }
 
-    if (!empty($input['patientArtNo'])) {
-        $patientArtNo = implode("','", $input['patientArtNo']);
+    // patientId is the cross-test-type filter name; patientArtNo stays for older clients
+    $patientArtNo = array_merge((array) ($input['patientArtNo'] ?? []), (array) ($input['patientId'] ?? []));
+    if ($patientArtNo !== []) {
+        $patientArtNo = implode("','", array_map($db->escape(...), $patientArtNo));
         $where[] = " vl.patient_art_no IN ('" . $patientArtNo . "') ";
     }
 

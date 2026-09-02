@@ -132,6 +132,7 @@ try {
         vl.asymptomatic                         as asymptomatic,
         vl.is_sample_rejected                   as isSampleRejected,
         vl.result                               as result,
+        vl.result                               as testResult,
         vl.if_have_other_diseases               as ifOtherDiseases,
         vl.other_diseases                       as otherDiseases,
         vl.is_result_authorised                 as isResultAuthorized,
@@ -231,8 +232,8 @@ try {
 
     /* To check the facility and date range filter */
     if (!empty($input['sampleCollectionDate'])) {
-        $from = $input['sampleCollectionDate'][0];
-        $to = $input['sampleCollectionDate'][1];
+        $from = $input['sampleCollectionDate'][0] ?? null;
+        $to = $input['sampleCollectionDate'][1] ?? null;
         if (!empty($from) && !empty($to)) {
             $where[] = " DATE(sample_collection_date) between '$from' AND '$to' ";
         }
