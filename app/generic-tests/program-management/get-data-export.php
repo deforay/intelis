@@ -1,5 +1,7 @@
 <?php
 
+use Psr\Http\Message\ServerRequestInterface;
+use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Services\CommonService;
@@ -7,6 +9,12 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+
+
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 
 /** @var DatabaseService $db */
@@ -41,47 +49,17 @@ try {
 
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-          $sOffset = $_POST['iDisplayStart'];
-          $sLimit = $_POST['iDisplayLength'];
+          $sOffset = (int) $_POST['iDisplayStart'];
+          $sLimit = (int) $_POST['iDisplayLength'];
      }
 
+     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-
-     $sOrder = "";
-     if (isset($_POST['iSortCol_0'])) {
-          $sOrder = "";
-          for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-               if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true" && !empty($orderColumns[(int) $_POST['iSortCol_' . $i]])) {
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-               }
-          }
-          $sOrder = substr_replace($sOrder, "", -2);
-     }
-
-
+     $sWhere = [];
      $sWhere[] = " (reason_for_testing != 9999 or reason_for_testing is null) ";
-     if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-          $searchArray = explode(" ", (string) $_POST['sSearch']);
-          $sWhereSub = "";
-          foreach ($searchArray as $search) {
-               if ($sWhereSub === "") {
-                    $sWhereSub .= "(";
-               } else {
-                    $sWhereSub .= " AND (";
-               }
-               $colSize = count($aColumns);
-
-               for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-               }
-               $sWhereSub .= ")";
-          }
-          $sWhere[] = $sWhereSub;
+     $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+     if (!empty($columnSearch)) {
+          $sWhere[] = $columnSearch;
      }
 
 
@@ -152,21 +130,21 @@ try {
      [$sSampleReceivedDate, $eSampleReceivedDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
      /* Sample type filter */
      if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-          $sWhere[] =  ' vl.specimen_type IN (' . $_POST['sampleType'] . ')';
+          $sWhere[] =  ' vl.specimen_type IN (' . $db->inIntList($_POST['sampleType']) . ')';
      }
      if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-          $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+          $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['state'] . ' ';
      }
      if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-          $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+          $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['district'] . ' ';
      }
      /* Facility id filter */
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-          $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+          $sWhere[] =  ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
      }
      /* lab id filter */
      if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
-          $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          $sWhere[] =  '  vl.lab_id IN (' . $db->inIntList($_POST['vlLab']) . ')';
      }
      /* Sample test date filter */
      $sTestDate = '';
@@ -197,13 +175,13 @@ try {
           if (trim((string) $_POST['gender']) === "unreported") {
                $sWhere[] =  ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
           } else {
-               $sWhere[] =  ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['gender'] . '") ';
+               $sWhere[] =  ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $db->escape((string) $_POST['gender']) . '") ';
           }
      }
 
      /* Sample status filter */
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
-          $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';
+          $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status = ' . (int) $_POST['status'] . ')';
      }
      /* Show only recorded sample filter */
      if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) === 'yes') {
@@ -211,32 +189,34 @@ try {
      }
      /* Is patient pregnant filter */
      if (isset($_POST['patientPregnant']) && trim((string) $_POST['patientPregnant']) !== '') {
-          $sWhere[] = '  vl.is_patient_pregnant ="' . $_POST['patientPregnant'] . '"';
+          $sWhere[] = '  vl.is_patient_pregnant ="' . $db->escape((string) $_POST['patientPregnant']) . '"';
      }
      /* Is patient breast feeding filter */
      if (isset($_POST['breastFeeding']) && trim((string) $_POST['breastFeeding']) !== '') {
-          $sWhere[] = '  vl.is_patient_breastfeeding ="' . $_POST['breastFeeding'] . '"';
+          $sWhere[] = '  vl.is_patient_breastfeeding ="' . $db->escape((string) $_POST['breastFeeding']) . '"';
      }
      /* Batch code filter */
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-          $sWhere[] =  '  b.batch_code = "' . $_POST['batchCode'] . '"';
+          $sWhere[] =  '  b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
      }
      /* Funding src filter */
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-          $sWhere[] = '  vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+          $sWhere[] = '  vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
      }
      /* Implemening partner filter */
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
-          $sWhere[] =  '  vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+          $sWhere[] =  '  vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
      }
      if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-          $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
+          $sWhere[] = ' vl.patient_id like "%' . $db->escapeLike($_POST['patientId']) . '%"';
      }
      if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-          $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
+          // CONCAT_WS keeps a space between the name parts, so searching
+          // "John Doe" matches; plain CONCAT only matched "JohnDoe".
+          $sWhere[] = " CONCAT_WS(' ', NULLIF(vl.patient_first_name,''), NULLIF(vl.patient_middle_name,''), NULLIF(vl.patient_last_name,'')) like '%" . $db->escapeLike($_POST['patientName']) . "%'";
      }
      if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+          $sWhere[] = ' vl.sample_package_code = "' . $db->escape((string) $_POST['manifestCode']) . '"';
      }
      /* Assign date time filters */
      if (!empty($_POST['sampleCollectionDate'])) {
@@ -246,7 +226,7 @@ try {
                $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
      }
-     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '' && $_POST['status'] == 7) {
+     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '' && ($_POST['status'] ?? '') == 7) {
           if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
                $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
           } else {

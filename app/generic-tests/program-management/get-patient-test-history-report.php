@@ -34,8 +34,8 @@ try {
     $tableName = "form_generic";
     $primaryKey = "sample_id";
 
-    $aColumns = ['vl.patient_id', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result'];
-    $orderColumns = ['vl.patient_id', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result'];
+    $aColumns = ['vl.patient_id', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_type_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result'];
+    $orderColumns = ['vl.patient_id', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', 'vl.sample_collection_date', 's.sample_type_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result'];
 
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = $primaryKey;
@@ -44,15 +44,15 @@ try {
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
+        $sOffset = (int) $_POST['iDisplayStart'];
+        $sLimit = (int) $_POST['iDisplayLength'];
     }
 
     $sWhere = [];
 
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
 
     $sWhere = [];
     if (!empty($columnSearch) && $columnSearch != '') {
@@ -74,22 +74,24 @@ try {
                 vl.sample_tested_datetime,
                 vl.result,
                 f.facility_name,
-                s.sample_name,
+                s.sample_type_name as sample_name,
                 fd.facility_name as labName,
                 ts.status_name
             FROM form_generic as vl
             LEFT JOIN facility_details as f ON vl.facility_id = f.facility_id
             LEFT JOIN facility_details as fd ON fd.facility_id = vl.lab_id
-            LEFT JOIN r_vl_sample_type as s ON s.sample_id = vl.specimen_type
+            LEFT JOIN r_generic_sample_types as s ON s.sample_type_id = vl.specimen_type
             INNER JOIN r_sample_status as ts ON ts.status_id = vl.result_status ";
 
     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . ACCEPTED;
 
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-        $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
+        $sWhere[] = ' vl.patient_id like "%' . $db->escapeLike($_POST['patientId']) . '%"';
     }
     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-        $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
+        // CONCAT_WS keeps a space between the name parts, so searching
+        // "John Doe" matches; plain CONCAT only matched "JohnDoe".
+        $sWhere[] = " CONCAT_WS(' ', NULLIF(vl.patient_first_name,''), NULLIF(vl.patient_middle_name,''), NULLIF(vl.patient_last_name,'')) like '%" . $db->escapeLike($_POST['patientName']) . "%'";
     }
 
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
