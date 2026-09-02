@@ -49,7 +49,8 @@ final class SampleFlowEndpointTest extends TestCase
         // system_config and global_config are read by the scoping checks the
         // service applies to every query; empty is what a plain install has.
         $db = LegacyAppHarness::boot(self::DATABASE, [
-            'form_eid', 'facility_details', 'r_implementation_partners', 'system_config', 'global_config',
+            'form_eid', 'facility_details', 'r_implementation_partners', 'r_sample_status',
+            'system_config', 'global_config',
         ]);
         // Superadmin: the endpoint's privilege guard passes, and no lab or
         // facility scoping narrows what it counts.
@@ -310,6 +311,93 @@ final class SampleFlowEndpointTest extends TestCase
     {
         $json = $this->breakdown('atLab', 'facility_id');
         self::assertArrayHasKey('error', $json);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheDrilldownListsTheSamplesBehindACellOldestFirst(): void
+    {
+        $json = $this->drive([
+            'section' => 'samples', 'testType' => 'eid', 'dateRange' => '',
+            'stage' => 'atLab', 'groupBy' => 'lab', 'groupKey' => (string) self::LAB_ID, 'bucket' => '',
+            'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sEcho' => 3,
+        ]);
+        self::assertSame(2, $json['iTotalRecords'], json_encode($json));
+        self::assertSame(3, $json['sEcho']);
+        self::assertCount(2, $json['aaData']);
+        $columns = array_keys(\App\Services\SampleFlowService::sampleColumns());
+        self::assertCount(count($columns), $json['aaData'][0]);
+        $age = array_search('age', $columns, true);
+        $lab = array_search('lab', $columns, true);
+        self::assertSame(40, $json['aaData'][0][$age], 'the 40-day sample comes before the 3-day one');
+        self::assertSame(3, $json['aaData'][1][$age]);
+        self::assertSame('Central Lab', $json['aaData'][0][$lab]);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheDrilldownNarrowsToOneAgeBucket(): void
+    {
+        $json = $this->drive([
+            'section' => 'samples', 'testType' => 'eid', 'dateRange' => '',
+            'stage' => 'atLab', 'groupBy' => 'lab', 'groupKey' => (string) self::LAB_ID, 'bucket' => 'b3',
+            'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sEcho' => 1,
+        ]);
+        self::assertSame(1, $json['iTotalRecords']);
+        $age = array_search('age', array_keys(\App\Services\SampleFlowService::sampleColumns()), true);
+        self::assertSame(40, $json['aaData'][0][$age]);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheDrilldownFindsSamplesWithNoLabByTheZeroKey(): void
+    {
+        $json = $this->drive([
+            'section' => 'samples', 'testType' => 'eid', 'dateRange' => '',
+            'stage' => 'rejected', 'groupBy' => 'lab', 'groupKey' => '0', 'bucket' => '',
+            'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sEcho' => 1,
+        ]);
+        self::assertSame(1, $json['iTotalRecords'], 'the flag-only rejection has no lab');
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheWholeStageListsWithoutAGroup(): void
+    {
+        $json = $this->drive([
+            'section' => 'samples', 'testType' => 'eid', 'dateRange' => '',
+            'stage' => 'rejected', 'groupBy' => '', 'groupKey' => '', 'bucket' => '',
+            'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sEcho' => 1,
+        ]);
+        self::assertSame(2, $json['iTotalRecords']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheExportWritesEverySampleBehindTheCellToAWorkbook(): void
+    {
+        $request = LegacyAppHarness::withPost([
+            'section' => 'export', 'testType' => 'eid', 'dateRange' => '',
+            'stage' => 'atLab', 'groupBy' => 'lab', 'groupKey' => (string) self::LAB_ID, 'bucket' => '',
+        ], '/sample-flow/get-sample-flow.php');
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $token = (string) $handler->handle($request)->getBody();
+
+        self::assertNotSame('', $token);
+        self::assertStringNotContainsString('{', $token, 'a token, not an error envelope');
+
+        $files = glob(TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Sample-Flow-eid-atLab-*.xlsx') ?: [];
+        self::assertNotEmpty($files, 'the workbook was written under TEMP_PATH');
+        $reader = new \OpenSpout\Reader\XLSX\Reader();
+        $reader->open($files[0]);
+        $rows = [];
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
+                $rows[] = $row->toArray();
+            }
+        }
+        $reader->close();
+        array_map('unlink', $files);
+
+        $columns = \App\Services\SampleFlowService::sampleColumns();
+        self::assertCount(3, $rows, 'a heading row and the two at-lab samples');
+        self::assertSame(array_values($columns), $rows[0]);
+        self::assertSame(40, (int) $rows[1][array_search('age', array_keys($columns), true)]);
     }
 
     #[RunInSeparateProcess]
