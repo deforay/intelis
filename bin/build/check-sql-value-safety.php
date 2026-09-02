@@ -69,6 +69,18 @@ const COVERED_FILES = [
     'app/generic-tests/program-management/get-patient-test-history-report.php',
     'app/generic-tests/program-management/generic-tests-sample-testing-report.php',
     'app/generic-tests/program-management/get-sample-status.php',
+    'app/tb/management/get-data-export.php',
+    'app/tb/management/getPositiveTbResultDetails.php',
+    'app/tb/management/getSampleRejectionReport.php',
+    'app/tb/management/getResultNotAvailable.php',
+    'app/tb/management/getTbSampleTATDetails.php',
+    'app/tb/management/getPatientTestHistoryReport.php',
+    'app/tb/management/get-rejected-samples.php',
+    'app/tb/management/tb-sample-testing-report.php',
+    'app/tb/management/dataQualityCheck.php',
+    'app/tb/management/get-tb-monthly-threshold-report.php',
+    'app/tb/management/getTbCascadeReport.php',
+    'app/tb/management/getSampleStatus.php',
 ];
 
 const RAW_VALUE_PATTERNS = [
