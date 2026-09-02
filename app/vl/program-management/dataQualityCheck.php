@@ -118,6 +118,9 @@ try {
                'result' => 'vl.result',
                'result_status' => 'vl.result_status',
           ];
+          // "any" (the default) lists records missing at least one of the selected
+          // fields; "all" only those missing every one of them.
+          $fieldJoiner = (($_POST['dqFieldMatch'] ?? 'any') === 'all') ? ' AND (' : ' OR (';
           $sWhereSub = '';
           $searchArray = explode(",", (string) $_POST['formField']);
           foreach ($searchArray as $search) {
@@ -128,7 +131,7 @@ try {
                if ($sWhereSub === "") {
                     $sWhereSub .= "  ((";
                } else {
-                    $sWhereSub .= " AND (";
+                    $sWhereSub .= $fieldJoiner;
                }
                if ($search === 'sample_collection_date') {
                     $sWhereSub .= $column . " IS NULL";
