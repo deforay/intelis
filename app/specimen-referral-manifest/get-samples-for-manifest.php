@@ -68,26 +68,26 @@ if ($labScope = $general->labScopeWhere('vl')) {
 }
 
 if (!empty($_POST['testingLab']) && $_POST['testingLab'] > 0) {
-	$where[] = " vl.lab_id = {$_POST['testingLab']} ";
+	$where[] = " vl.lab_id = " . (int) $_POST['testingLab'] . " ";
 }
 
 if (!empty($_POST['testingLab']) && is_numeric($_POST['facility'])) {
-	$where[] = " facility_id = " . $_POST['facility'];
+	$where[] = " facility_id = " . (int) $_POST['facility'];
 }
 
 
 if (!empty($_POST['testType'])) {
-	$where[] = " test_type = " . $_POST['testType'];
+	$where[] = " test_type = " . (int) $_POST['testType'];
 }
 
 
 if (!empty($_POST['pkgId'])) {
-	$where[] = " (vl.sample_package_id = '{$_POST['pkgId']}' OR vl.sample_package_id IS NULL OR vl.sample_package_id = '')";
+	$where[] = " (vl.sample_package_id = " . (int) $_POST['pkgId'] . " OR vl.sample_package_id IS NULL OR vl.sample_package_id = '')";
 } else {
 	$where[] = " (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
 }
 if (!empty($_POST['sampleType'])) {
-	$where[] = " specimen_type IN(" . $_POST['sampleType'] . ") ";
+	$where[] = " specimen_type IN(" . $db->inIntList($_POST['sampleType']) . ") ";
 }
 if ($where !== []) {
 	$query .= " WHERE " . implode(" AND ", $where);

@@ -103,6 +103,18 @@ const COVERED_FILES = [
     'app/covid-19/management/dataQualityCheck.php',
     'app/covid-19/management/getCovid19MonthlyThresholdReport.php',
     'app/covid-19/management/getSampleStatus.php',
+    'app/batch/get-batches.php',
+    'app/batch/get-samples-batch.php',
+    'app/batch/getBatchCodeHelper.php',
+    'app/specimen-referral-manifest/get-manifests.php',
+    'app/specimen-referral-manifest/get-samples-for-manifest.php',
+    'app/specimen-referral-manifest/get-manifest-package-code.php',
+    'app/facilities/getFacilityDetails.php',
+    'app/facilities/facilityExportInExcel.php',
+    'app/dashboard/getVLTestResultStatusDetails.php',
+    'app/admin/monitoring/get-sync-status-details.php',
+    'app/admin/monitoring/get-api-sync-history-list.php',
+    'app/admin/monitoring/get-samplewise-report.php',
 ];
 
 const RAW_VALUE_PATTERNS = [

@@ -1,6 +1,21 @@
 <?php
 
+use Psr\Http\Message\ServerRequestInterface;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "facility_details";
 $primaryKey = "facility_id";
@@ -14,72 +29,44 @@ $sTable = $tableName;
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
+    $sOffset = (int) $_POST['iDisplayStart'];
+    $sLimit = (int) $_POST['iDisplayLength'];
 }
 
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-    $sOrder = "";
-    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-            $sOrder .= $aColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-        }
-    }
-    $sOrder = substr_replace($sOrder, "", -2);
-}
+$sOrder = $general->generateDataTablesSorting($_POST, $aColumns);
 
 
 
 $sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", (string) $_POST['sSearch']);
-    $sWhereSub = "";
-    foreach ($searchArray as $search) {
-        if ($sWhereSub === "") {
-            $sWhereSub .= "(";
-        } else {
-            $sWhereSub .= " AND (";
-        }
-        $colSize = count($aColumns);
-
-        for ($i = 0; $i < $colSize; $i++) {
-            if ($i < $colSize - 1) {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-            } else {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-            }
-        }
-        $sWhereSub .= ")";
-    }
-    $sWhere[] = $sWhereSub;
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+if (!empty($columnSearch)) {
+    $sWhere[] = $columnSearch;
 }
 
 
-$facilityType = $_POST['facilityType'];
+$facilityType = $_POST['facilityType'] ?? null;
 if (isset($facilityType) && trim((string) $facilityType) !== '') {
-    $sWhere[] = ' f_t.facility_type_id = "' . $_POST['facilityType'] . '"';
+    $sWhere[] = ' f_t.facility_type_id = ' . (int) $_POST['facilityType'];
 }
 if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-    $sWhere[] = " d.geo_id = '" . $_POST['district'] . "' ";
+    $sWhere[] = ' d.geo_id = ' . (int) $_POST['district'] . ' ';
 }
 if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-    $sWhere[] = " p.geo_id = '" . $_POST['state'] . "' ";
+    $sWhere[] = ' p.geo_id = ' . (int) $_POST['state'] . ' ';
 }
 $qry = "";
 if (isset($_POST['testType']) && trim((string) $_POST['testType']) !== '' && !empty($facilityType)) {
     if ($facilityType == '2') {
         $qry = " LEFT JOIN testing_labs tl ON tl.facility_id=f_d.facility_id";
-        $sWhere[] = ' tl.test_type = "' . $_POST['testType'] . '"';
+        $sWhere[] = ' tl.test_type = "' . $db->escape((string) $_POST['testType']) . '"';
     } else {
         $qry = " LEFT JOIN health_facilities hf ON hf.facility_id=f_d.facility_id";
-        $sWhere[] = ' hf.test_type = "' . $_POST['testType'] . '"';
+        $sWhere[] = ' hf.test_type = "' . $db->escape((string) $_POST['testType']) . '"';
     }
 }
 if (isset($_POST['activeFacility']) && trim((string) $_POST['activeFacility']) !== '') {
-    $sWhere[] = " f_d.status = '" . $_POST['activeFacility'] . "' ";
+    $sWhere[] = " f_d.status = '" . $db->escape((string) $_POST['activeFacility']) . "' ";
 }
 $orphanFacility = $_POST['orphanFacility'] ?? '';
 if ($orphanFacility === 'yes') {

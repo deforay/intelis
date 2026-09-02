@@ -315,10 +315,13 @@ try {
 			}
 		}
 
-		if (isset($_POST['removedLabLogoImage']) && trim((string) $_POST['removedLabLogoImage']) !== "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage'])) {
+		// basename() pins the delete inside this facility's logo folder; a
+		// crafted ../ path must not reach any other file.
+		$removedLabLogoImage = basename((string) ($_POST['removedLabLogoImage'] ?? ''));
+		if ($removedLabLogoImage !== "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $removedLabLogoImage)) {
 			$filesToDelete = [
-				UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage'],
-				UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']
+				UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "actual-" . $removedLabLogoImage,
+				UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $removedLabLogoImage
 			];
 			MiscUtility::deleteFile($filesToDelete);
 			$data['facility_logo'] = null;

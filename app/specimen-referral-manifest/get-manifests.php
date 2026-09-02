@@ -43,7 +43,9 @@ if (empty($_POST['module'])) {
     exit;
 }
 
-$testType = $_POST['module'];
+$testType = (string) $_POST['module'];
+// getTestTableName() throws on an unknown type, so past this point
+// $testType is a whitelisted test-type slug and safe to reuse.
 $tableName = TestsService::getTestTableName($testType);
 $primaryKey = TestsService::getPrimaryColumn($testType);
 
@@ -71,45 +73,17 @@ $orderColumns = ['p.manifest_code', 'p.module', 'facility_name', 'p.number_of_sa
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
+    $sOffset = (int) $_POST['iDisplayStart'];
+    $sLimit = (int) $_POST['iDisplayLength'];
 }
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-    $sOrder = "";
-    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-            $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-                " . ($_POST['sSortDir_' . $i]) . ", ";
-        }
-    }
-    $sOrder = substr_replace($sOrder, "", -2);
-}
 $sWhere = [];
 $sWhere[] = "p.module = '$testType'";
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", (string) $_POST['sSearch']);
-    $sWhereSub = "";
-    foreach ($searchArray as $search) {
-        if ($sWhereSub === "") {
-            $sWhereSub .= "(";
-        } else {
-            $sWhereSub .= " AND (";
-        }
-        $colSize = count($aColumns);
-
-        for ($i = 0; $i < $colSize; $i++) {
-            if ($i < $colSize - 1) {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-            } else {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-            }
-        }
-        $sWhereSub .= ")";
-    }
-    $sWhere[] = $sWhereSub;
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+if (!empty($columnSearch)) {
+    $sWhere[] = $columnSearch;
 }
 
 
@@ -156,7 +130,7 @@ $output = [
     "aaData" => []
 ];
 
-$editUrl = '/specimen-referral-manifest/edit-manifest.php?t=' . $_POST['module'];
+$editUrl = '/specimen-referral-manifest/edit-manifest.php?t=' . $testType;
 
 $editAllowed = false;
 if (_isAllowed($editUrl)) {

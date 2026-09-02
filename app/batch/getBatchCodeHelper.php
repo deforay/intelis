@@ -22,11 +22,11 @@ if (empty($_POST['type'])) {
     echo "";
     exit;
 } else {
-    $testType = $_POST['type'];
+    $testType = $db->escape((string) $_POST['type']);
 }
 $where = "";
 if (isset($_POST['search']) && $_POST['search'] != "") {
-    $where = " AND batch_code like '%" . $_POST['search'] . "%'";
+    $where = " AND batch_code like '%" . $db->escapeLike($_POST['search']) . "%'";
 }
 $query = "SELECT batch_code FROM batch_details WHERE test_type='$testType' $where";
 

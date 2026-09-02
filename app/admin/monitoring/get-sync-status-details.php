@@ -69,13 +69,13 @@ if (isset($_POST['testType']) && trim((string) $_POST['testType']) !== '' && iss
     $sWhere[] = ' f.facility_id IN (SELECT DISTINCT facility_id from ' . $table . ' WHERE lab_id = ' . base64_decode((string) $_POST['labId']) . ') ';
 }
 if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-    $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+    $sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
 }
 if (isset($_POST['province']) && trim((string) $_POST['province']) !== '') {
-    $sWhere[] = ' f.facility_state_id = "' . $_POST['province'] . '"';
+    $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['province'];
 }
 if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-    $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
+    $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['district'];
 }
 if (!empty($sWhere)) {
     $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);

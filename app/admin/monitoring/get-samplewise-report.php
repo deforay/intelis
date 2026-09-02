@@ -93,7 +93,7 @@ try {
     ]));
 
     if (isset($_POST['originalSourceOfRequest']) && trim((string) $_POST['originalSourceOfRequest']) !== '') {
-        $sWhere[] = ' vl.source_of_request = "' . $_POST['originalSourceOfRequest'] . '"';
+        $sWhere[] = ' vl.source_of_request = "' . $db->escape((string) $_POST['originalSourceOfRequest']) . '"';
     }
 
     /* Implode all the where fields for filtering the data */

@@ -74,13 +74,13 @@ $where[] = "((COALESCE(vl.is_sample_rejected, '') = '' OR vl.is_sample_rejected 
 
 
 if (isset($_POST['batchId'])) {
-    $where[] = " (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";
+    $where[] = " (sample_batch_id = " . (int) $_POST['batchId'] . " OR sample_batch_id IS NULL OR sample_batch_id = '')";
 } else {
     $where[] = " (sample_batch_id IS NULL OR sample_batch_id='')";
 }
 
 if (!empty($_POST['facilityId']) && is_array($_POST['facilityId'])) {
-    $where[] = $swhere[] = " vl.facility_id IN (" . implode(',', $_POST['facilityId']) . ")";
+    $where[] = $swhere[] = " vl.facility_id IN (" . $db->inIntList($_POST['facilityId']) . ")";
 }
 
 // Facility isolation: a mapped STS user only sees their own facilities' samples
@@ -99,11 +99,11 @@ if ($labScope = $general->labScopeWhere('vl')) {
 }
 
 if (!empty($_POST['sName'])) {
-    $swhere[] = $where[] = " vl.$sampleTypeColumn='" . $_POST['sName'] . "'";
+    $swhere[] = $where[] = " vl.$sampleTypeColumn='" . $db->escape((string) $_POST['sName']) . "'";
 }
 
 if (!empty($_POST['testType'])) {
-    $swhere[] = $where[] = " vl.test_type = '" . $_POST['testType'] . "'";
+    $swhere[] = $where[] = " vl.test_type = '" . $db->escape((string) $_POST['testType']) . "'";
 }
 
 if (!empty($_POST['sampleCollectionDate'])) {
@@ -122,11 +122,11 @@ if (!empty($_POST['lastModifiedDateTime']) && trim((string) $_POST['lastModified
 }
 
 if (!empty($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-    $swhere[] = $where[] = ' funding_source = "' . $_POST['fundingSource'] . '"';
+    $swhere[] = $where[] = ' funding_source = "' . $db->escape((string) $_POST['fundingSource']) . '"';
 }
 
 if (!empty($_POST['userId']) && trim((string) $_POST['userId']) !== '') {
-    $swhere[] = $where[] = ' (vl.request_created_by = "' . $_POST['userId'] . '" OR vl.last_modified_by = "' . $_POST['userId'] . '") ';
+    $swhere[] = $where[] = ' (vl.request_created_by = "' . $db->escape((string) $_POST['userId']) . '" OR vl.last_modified_by = "' . $db->escape((string) $_POST['userId']) . '") ';
 }
 
 if (!empty($where)) {
