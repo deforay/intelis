@@ -1,44 +1,43 @@
 <?php
 
-use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Repositories\Reference\ReferenceDataRepository;
 
+// Sanitized values from $request object
+/** @var Psr\Http\Message\ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+// The stored name is read raw: _sanitizeInput() is an HTML sanitizer and would
+// persist "PEPFAR & Global Fund" with entities. Escaping belongs to rendering.
+$fundingSourceName = trim((string) _rawInput("fundingSrcName", ""));
 
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
+/** @var ReferenceDataRepository $referenceData */
+$referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$tableName = "r_funding_sources";
-$primaryKey = "funding_source_id";
-
 try {
-	if (isset($_POST['fundingSrcName']) && trim((string) $_POST['fundingSrcName']) !== "") {
-
-		$data = [
-			'funding_source_name' => $_POST['fundingSrcName'],
-			'funding_source_status' => $_POST['fundingStatus'],
-			'updated_datetime' => DateUtility::getCurrentDateTime()
-		];
-		if (isset($_POST['fundingId']) && $_POST['fundingId'] != "") {
-			$db->where($primaryKey, base64_decode((string) $_POST['fundingId']));
-			$lastId = $db->update($tableName, $data);
-		} else {
-			$data['data_sync'] = 0;
-			$db->insert($tableName, $data);
-			$lastId = $db->getInsertId();
-		}
+	if ($fundingSourceName !== "") {
+		$fundingId = (isset($_POST['fundingId']) && $_POST['fundingId'] != "")
+			? (int) base64_decode((string) $_POST['fundingId'], true)
+			: null;
+		$lastId = $referenceData->save(
+			'funding-source',
+			'common',
+			$fundingSourceName,
+			(string) ($_POST['fundingStatus'] ?? ''),
+			rowId: $fundingId
+		);
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("Funding Source saved successfully");
-			$general->activityLog('Funding Source', $_SESSION['userName'] . ' added new Funding Source for ' . $_POST['fundingSrcName'], 'common-reference');
+			$general->activityLog('Funding Source', $_SESSION['userName'] . ' saved Funding Source ' . $fundingSourceName, 'common-reference');
 		}
 	}
 } catch (Throwable $e) {
 	throw new SystemException($e->getMessage(), 500, $e);
 }
-_invalidateFileCacheByTags(['r_funding_sources']);
 header("Location:funding-sources.php");
