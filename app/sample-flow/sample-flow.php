@@ -507,8 +507,8 @@ $groupLabels = [
                                     <td>
                                         <select id="labId" class="form-control" style="width:100%;max-width:260px;">
                                             <option value=""><?= _htmlTranslate('-- All Labs --'); ?></option>
-                                            <?php foreach ($testingLabs as $lab) { ?>
-                                                <option value="<?= (int) $lab['facility_id']; ?>"><?= htmlspecialchars((string) $lab['facility_name'], ENT_QUOTES); ?></option>
+                                            <?php foreach ($testingLabs as $labId => $labName) { ?>
+                                                <option value="<?= (int) $labId; ?>"><?= htmlspecialchars((string) $labName, ENT_QUOTES); ?></option>
                                             <?php } ?>
                                         </select>
                                     </td>
