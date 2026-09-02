@@ -2538,7 +2538,11 @@ if [ ${#lis_paths[@]} -eq 1 ] && [ -z "$apply_prepared_dir" ]; then
         [ -f "$f" ] && files+=("$f")
     done
 
-    if [ ${#files[@]} -gt 0 ] && ask_yes_no "Do you want to run maintenance scripts?" "no"; then
+    # Timed, unlike most prompts: this one sits between the instance updates
+    # and the rest of the wrap-up, so an operator who walked away after the
+    # long part leaves the whole upgrade hanging on end-of-run housekeeping
+    # that defaults to "no" anyway. 30s is enough to say yes when present.
+    if [ ${#files[@]} -gt 0 ] && ask_yes_no "Do you want to run maintenance scripts?" "no" 30; then
         # Chosen by name rather than by index. The numbers were only ever a way
         # to refer to a file, and a mistyped one used to be dropped in silence
         # — the operator asked for three scripts, two ran, and nothing said so.
