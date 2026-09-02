@@ -62,6 +62,31 @@ final class ReferenceDataRepositoryTest extends TestCase
             'name' => 'rejection_reason_name',
             'status' => 'rejection_reason_status',
         ],
+        'test-reason' => [
+            'tables' => [
+                'vl' => 'r_vl_test_reasons',
+                'eid' => 'r_eid_test_reasons',
+                'cd4' => 'r_cd4_test_reasons',
+                'tb' => 'r_tb_test_reasons',
+                'covid19' => 'r_covid19_test_reasons',
+                'hepatitis' => 'r_hepatitis_test_reasons',
+            ],
+            'id' => 'test_reason_id',
+            'name' => 'test_reason_name',
+            'status' => 'test_reason_status',
+        ],
+    ];
+
+    /**
+     * Production drift the repository must respect: these test-reason tables
+     * have no data_sync column, so an insert must not write one there.
+     *
+     * @var list<string>
+     */
+    private const TEST_REASON_TABLES_WITHOUT_SYNC = [
+        'r_tb_test_reasons',
+        'r_covid19_test_reasons',
+        'r_hepatitis_test_reasons',
     ];
 
     private static ?DatabaseService $db = null;
@@ -91,7 +116,7 @@ final class ReferenceDataRepositoryTest extends TestCase
                     sample_name VARCHAR(255) DEFAULT NULL,
                     status VARCHAR(45) DEFAULT NULL,
                     updated_datetime DATETIME DEFAULT NULL,
-                    data_sync INT NOT NULL DEFAULT 0
+                    data_sync INT NOT NULL DEFAULT 1
                 ) ENGINE=InnoDB"
             );
         }
@@ -104,8 +129,22 @@ final class ReferenceDataRepositoryTest extends TestCase
                     rejection_reason_status VARCHAR(255) DEFAULT NULL,
                     rejection_reason_code VARCHAR(255) DEFAULT NULL,
                     updated_datetime DATETIME DEFAULT NULL,
-                    data_sync INT NOT NULL DEFAULT 0,
+                    data_sync INT NOT NULL DEFAULT 1,
                     contributed_by_lab_id INT DEFAULT NULL
+                ) ENGINE=InnoDB"
+            );
+        }
+        foreach (self::ENTITIES['test-reason']['tables'] as $table) {
+            $syncColumn = in_array($table, self::TEST_REASON_TABLES_WITHOUT_SYNC, true)
+                ? ''
+                : ', data_sync INT NOT NULL DEFAULT 1';
+            $bootstrap->query(
+                "CREATE TABLE `$table` (
+                    test_reason_id INT AUTO_INCREMENT PRIMARY KEY,
+                    test_reason_name VARCHAR(255) DEFAULT NULL,
+                    parent_reason INT DEFAULT NULL,
+                    test_reason_status VARCHAR(255) DEFAULT NULL,
+                    updated_datetime DATETIME DEFAULT NULL$syncColumn
                 ) ENGINE=InnoDB"
             );
         }
@@ -142,9 +181,33 @@ final class ReferenceDataRepositoryTest extends TestCase
         return self::$db->rawQueryOne("SELECT * FROM `$table` WHERE {$spec['id']} = ?", [$id]) ?: null;
     }
 
+    public function testAnInsertSucceedsWhereTheTableCarriesNoSyncColumn(): void
+    {
+        // The hepatitis, covid-19, and tb test-reason tables were created
+        // without data_sync; writing it there is an SQL error, so the entity
+        // declares which modules are sync-tracked and the insert must respect
+        // that on both sides.
+        foreach (['tb', 'covid19', 'hepatitis'] as $testType) {
+            $id = $this->repository->save('test-reason', $testType, 'Baseline', 'active');
+            $this->assertNotNull($this->row('test-reason', $testType, $id), $testType);
+        }
+        foreach (['vl', 'eid', 'cd4'] as $testType) {
+            $tracked = $this->repository->save('test-reason', $testType, 'Baseline', 'active');
+            $this->assertSame(0, (int) $this->row('test-reason', $testType, $tracked)['data_sync'], $testType);
+        }
+    }
+
+    public function testAnEntitySpecificFieldEmptyFallsBackToItsDefault(): void
+    {
+        $id = $this->repository->save('test-reason', 'vl', 'Routine', 'active', ['parent_reason' => '']);
+        // Uncast on purpose: the VL parent selector matches parent_reason = '0',
+        // so the default must actually be written, not left NULL for a cast to hide.
+        $this->assertSame('0', (string) $this->row('test-reason', 'vl', $id)['parent_reason']);
+    }
+
     public function testInsertTrimsTheNameAndMarksTheRowForSync(): void
     {
-        foreach (array_keys(self::ENTITIES) as $entity) {
+        foreach (['sample-type', 'rejection-reason'] as $entity) {
             $id = $this->repository->save($entity, 'vl', '  Plasma  ', 'active');
 
             $row = $this->row($entity, 'vl', $id);

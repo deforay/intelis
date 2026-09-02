@@ -52,6 +52,19 @@ const COVERED_FILES = [
     'app/hepatitis/reference/update-hepatitis-rejection-status.php' => 'Reference\ReferenceDataRepository',
     'app/covid-19/reference/update-covid19-rejection-status.php' => 'Reference\ReferenceDataRepository',
     'app/tb/reference/update-tb-rejection-status.php' => 'Reference\ReferenceDataRepository',
+    'app/vl/reference/save-vl-test-reasons-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/cd4/reference/save-cd4-test-reasons-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/eid/reference/save-eid-test-reasons-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/hepatitis/reference/save-hepatitis-test-reasons-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/covid-19/reference/add-test-reasons-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/tb/reference/add-test-reasons-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/tb/reference/edit-test-reasons-helper.php' => 'Reference\ReferenceDataRepository',
+    'app/vl/reference/update-vl-test-reason-status.php' => 'Reference\ReferenceDataRepository',
+    'app/cd4/reference/update-cd4-test-reason-status.php' => 'Reference\ReferenceDataRepository',
+    'app/eid/reference/update-eid-test-reason-status.php' => 'Reference\ReferenceDataRepository',
+    'app/hepatitis/reference/update-hepatitis-test-reason-status.php' => 'Reference\ReferenceDataRepository',
+    'app/covid-19/reference/update-covid19-test-reason-status.php' => 'Reference\ReferenceDataRepository',
+    'app/tb/reference/update-tb-test-reason-status.php' => 'Reference\ReferenceDataRepository',
 ];
 
 /**

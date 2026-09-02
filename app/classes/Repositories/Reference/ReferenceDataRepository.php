@@ -28,6 +28,9 @@ final readonly class ReferenceDataRepository
      * id/name/status: the entity's column names for those three roles.
      * fields: further writable columns, if any.
      * defaults: replacement for a field submitted empty.
+     * sync: the modules whose table carries a data_sync column, when it is not
+     * all of them -- the test-reason tables for hepatitis, covid-19, and tb
+     * were created without one, and writing it there is an SQL error.
      *
      * Custom Tests manage their reference data elsewhere with different
      * schemas, so they are not listed.
@@ -38,7 +41,8 @@ final readonly class ReferenceDataRepository
      *   name: string,
      *   status: string,
      *   fields?: list<string>,
-     *   defaults?: array<string, string>
+     *   defaults?: array<string, string>,
+     *   sync?: list<string>
      * }>
      */
     private const ENTITIES = [
@@ -76,6 +80,23 @@ final readonly class ReferenceDataRepository
             // RejectionReasonMappingService.
             'fields' => ['rejection_type', 'rejection_reason_code'],
             'defaults' => ['rejection_type' => 'general'],
+        ],
+        'test-reason' => [
+            'tables' => [
+                'vl' => 'r_vl_test_reasons',
+                'eid' => 'r_eid_test_reasons',
+                'cd4' => 'r_cd4_test_reasons',
+                'tb' => 'r_tb_test_reasons',
+                'covid19' => 'r_covid19_test_reasons',
+                'hepatitis' => 'r_hepatitis_test_reasons',
+            ],
+            'id' => 'test_reason_id',
+            'name' => 'test_reason_name',
+            'status' => 'test_reason_status',
+            // parent_reason holds the id of a parent reason, 0 when top-level.
+            'fields' => ['parent_reason'],
+            'defaults' => ['parent_reason' => '0'],
+            'sync' => ['vl', 'eid', 'cd4'],
         ],
     ];
 
@@ -139,7 +160,9 @@ final readonly class ReferenceDataRepository
             return $rowId;
         }
 
-        $data['data_sync'] = 0;
+        if (in_array($testType, $spec['sync'] ?? array_keys($spec['tables']), true)) {
+            $data['data_sync'] = 0;
+        }
         $this->db->insert($table, $data);
         return (int) $this->db->getInsertId();
     }
