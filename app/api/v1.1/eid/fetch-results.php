@@ -45,6 +45,11 @@ if (JsonUtility::isJSON($origJson) === false) {
 }
 $input = JsonUtility::decodeJson($origJson, true);
 
+// Page size and offset. The default of 100 is what every deployed app expects;
+// a client that wants more pages through with limit and offset and reads total.
+$limit = min(max((int) ($input['limit'] ?? 100), 1), 500);
+$offset = max((int) ($input['offset'] ?? 0), 0);
+
 // Reading results here marks them as sent to the source, which is right for the
 // app's sync and wrong for a person browsing a search screen. Search screens
 // pass markAsSent: false; anything that omits it keeps the stamping default.
@@ -231,9 +236,10 @@ try {
     if ($where !== []) {
         $whereString = " WHERE " . implode(" AND ", $where);
     }
-    $sQuery .= "$whereString ORDER BY vl.last_modified_datetime DESC limit 100 ";
+    $sQuery .= "$whereString ORDER BY vl.last_modified_datetime DESC LIMIT $limit OFFSET $offset";
 
     $rowData = $db->rawQuery($sQuery);
+    $total = (int) ($db->rawQueryOne("SELECT COUNT(*) AS total FROM form_eid AS vl $whereString")['total'] ?? 0);
 
     $now = DateUtility::getCurrentDateTime();
     $affectedSamples = array_values(array_filter(array_unique(array_column($rowData, 'testRequestId'))));
@@ -266,7 +272,10 @@ try {
         'status' => 'success',
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'data' => $rowData ?? []
+        'data' => $rowData ?? [],
+        'total' => $total,
+        'limit' => $limit,
+        'offset' => $offset
     ];
 } catch (Throwable $e) {
     $payload = [

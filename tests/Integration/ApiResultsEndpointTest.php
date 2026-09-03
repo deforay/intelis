@@ -325,6 +325,35 @@ final class ApiResultsEndpointTest extends TestCase
         self::assertNull($row['result_pulled_via_api_datetime']);
     }
 
+    /**
+     * limit and offset page through the newest-first list and total counts the
+     * whole filtered set, so a client can tell it has not seen everything. The
+     * defaults of 100 and 0 are what every deployed app gets without asking.
+     */
+    #[RunInSeparateProcess]
+    public function testVlFetchResultsPagesWithLimitOffsetAndReportsTotal(): void
+    {
+        $this->seedVl('ART-1', 1, ['last_modified_datetime' => '2026-08-01 09:00:00']);
+        $this->seedVl('ART-2', 1, ['last_modified_datetime' => '2026-08-02 09:00:00']);
+        $this->seedVl('ART-3', 1, ['last_modified_datetime' => '2026-08-03 09:00:00']);
+        $this->seedVl('ART-4', 2);
+
+        $payload = $this->drive('/api/v1.1/vl/fetch-results.php', [
+            'sampleCode' => [],
+            'sampleCollectionDate' => [],
+            'sampleStatus' => [],
+            'limit' => 1,
+            'offset' => 1,
+            'markAsSent' => false,
+        ]);
+
+        self::assertSame('success', $payload['status']);
+        self::assertSame(['VL-ART-2'], array_column($payload['data'], 'sampleCode'));
+        self::assertSame(3, $payload['total']);
+        self::assertSame(1, $payload['limit']);
+        self::assertSame(1, $payload['offset']);
+    }
+
     /** get-request is the read the app uses to browse; it must not stamp anything. */
     #[RunInSeparateProcess]
     public function testVlGetRequestReturnsRowsWithoutStampingThem(): void

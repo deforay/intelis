@@ -43,6 +43,11 @@ if (JsonUtility::isJSON($origJson) === false) {
 }
 $input = JsonUtility::decodeJson($origJson, true);
 
+// Page size and offset. The default of 100 is what every deployed app expects;
+// a client that wants more pages through with limit and offset and reads total.
+$limit = min(max((int) ($input['limit'] ?? 100), 1), 500);
+$offset = max((int) ($input['offset'] ?? 0), 0);
+
 $transactionId = MiscUtility::generateULID();
 
 $user = null;
@@ -213,16 +218,20 @@ try {
     if ($where !== []) {
         $whereString = " WHERE " . implode(" AND ", $where);
     }
-    $sQuery .= "$whereString ORDER BY vl.last_modified_datetime DESC limit 100 ";
+    $sQuery .= "$whereString ORDER BY vl.last_modified_datetime DESC LIMIT $limit OFFSET $offset";
 
     $rowData = $db->rawQuery($sQuery);
+    $total = (int) ($db->rawQueryOne("SELECT COUNT(*) AS total FROM form_eid AS vl $whereString")['total'] ?? 0);
 
     http_response_code(200);
     $payload = [
         'status' => 'success',
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'data' => $rowData ?? []
+        'data' => $rowData ?? [],
+        'total' => $total,
+        'limit' => $limit,
+        'offset' => $offset
     ];
 } catch (Throwable $exc) {
 
