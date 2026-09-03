@@ -21,7 +21,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 try {
     // AJAX requests bypass the access control layer, so the page's own
     // privilege is checked here.
-    _requirePrivilege('/sample-flow/sample-flow.php');
+    _requirePrivilege('/reports/sample-ageing.php');
 
     /** @var SampleFlowService $sampleFlow */
     $sampleFlow = ContainerRegistry::get(SampleFlowService::class);

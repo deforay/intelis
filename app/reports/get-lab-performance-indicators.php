@@ -17,6 +17,10 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $db = ContainerRegistry::get(DatabaseService::class);
 
 try {
+    // AJAX requests bypass the access control layer, so the page's own
+    // privilege is checked here.
+    _requirePrivilege('/reports/lab-performance-indicators.php');
+
     /** @var LabPerformanceIndicatorsService $indicators */
     $indicators = ContainerRegistry::get(LabPerformanceIndicatorsService::class);
 
