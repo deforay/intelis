@@ -43,6 +43,9 @@ final class ApiV2UserProfileTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
         require_once ROOT_PATH . '/app/system/version.php';
+        if (!defined('UPLOAD_PATH')) {
+            define('UPLOAD_PATH', VAR_PATH . DIRECTORY_SEPARATOR . 'uploads');
+        }
 
         LegacyAppHarness::boot(self::DATABASE, [
             's_vlsm_instance', 'system_config', 'global_config', 'roles', 'user_details', 'facility_details',
@@ -180,6 +183,28 @@ final class ApiV2UserProfileTest extends TestCase
         // Omitted fields stay; an unstamped user is adopted by the pushing lab.
         self::assertSame('111', $row['phone_number']);
         self::assertSame(7, (int) $row['testing_lab_id']);
+    }
+
+    /** A 1x1 PNG. The file is written only after the row is saved and recorded on it. */
+    #[RunInSeparateProcess]
+    public function testSignatureIsStoredAndRecordedOnTheUser(): void
+    {
+        $png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+
+        ['code' => $code, 'payload' => $payload] = $this->post(self::LAB_TOKEN, [
+            'labId' => 7,
+            'profile' => [
+                'userId' => 'signed-1',
+                'userName' => 'Signed Person',
+                'signature' => ['filename' => 'sig.png', 'content' => $png],
+            ],
+        ]);
+
+        self::assertSame(200, $code, json_encode($payload));
+        $row = self::user('signed-1');
+        self::assertSame('usign-signed-1.png', $row['user_signature']);
+        self::assertFileExists(UPLOAD_PATH . '/users-signature/' . $row['user_signature']);
+        self::assertFileDoesNotExist(UPLOAD_PATH . '/users-signature/usign-signed-1.png.incoming');
     }
 
     #[RunInSeparateProcess]
