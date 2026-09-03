@@ -762,12 +762,12 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										<div class="col-md-6" style="height:38px;">
 											<div class="form-group" style="height:38px;">
 												<label for="min_app_version"
-													class="col-lg-4 control-label"><?php echo _translate("Minimum Mobile App Version"); ?></label>
+													class="col-lg-4 control-label"><?php echo _htmlTranslate("Minimum Mobile App Version"); ?></label>
 												<div class="col-lg-8">
 													<input type="text" class="form-control readPage" id="min_app_version"
 														name="min_app_version"
-														placeholder="<?php echo _translate("e.g. 1.5.0"); ?>"
-														title="<?php echo _translate('Please enter the minimum mobile app version'); ?>"
+														placeholder="<?php echo _htmlTranslate("e.g. 1.5.0"); ?>"
+														title="<?php echo _htmlTranslate('Please enter the minimum mobile app version'); ?>"
 														value="<?php echo htmlspecialchars((string) ($arr['min_app_version'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>" />
 												</div>
 											</div>
@@ -775,7 +775,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									</div>
 									<div class="row">
 										<div class="col-md-6" style="text-align:center;">
-											<code><?php echo _translate("Reported by the health endpoint as minAppVersion. Leave blank to allow every mobile app version."); ?></code>
+											<code><?php echo _htmlTranslate("Reported by the health endpoint as minAppVersion. Leave blank to allow every mobile app version."); ?></code>
 										</div>
 									</div>
 									<br>
