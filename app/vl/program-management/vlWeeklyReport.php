@@ -14,11 +14,13 @@ $general = ContainerRegistry::get(CommonService::class);
 $db = ContainerRegistry::get(DatabaseService::class);
 
 
-$facilityQuery = "SELECT * FROM facility_details where facility_type = 2 AND status='active' Order By facility_name";
-
+// The lab condition goes before the ORDER BY: appended after it, it became part
+// of the order expression and never filtered the list.
+$facilityWhere = ["facility_type = 2", "status = 'active'"];
 if ($general->isLISInstance() && isset($_SESSION['instance']['labId'])) {
-  $facilityQuery .= " AND facility_id = " . $_SESSION['instance']['labId'];
+  $facilityWhere[] = "facility_id = " . (int) $_SESSION['instance']['labId'];
 }
+$facilityQuery = "SELECT * FROM facility_details WHERE " . implode(' AND ', $facilityWhere) . " ORDER BY facility_name";
 
 $facilityResult = $db->rawQuery($facilityQuery);
 ?>
