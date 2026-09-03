@@ -10,6 +10,7 @@
 //   php bin/migrate.php --status         show current version and pending files, exit
 //   php bin/migrate.php --dry-run        preview statements without executing
 //   php bin/migrate.php --version=4.5.0  replay from a specific version (ignores DB version)
+//   php bin/migrate.php -v 4.5.0        short form of --version
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -474,12 +475,12 @@ $versions = array_map(fn($file): string => basename((string) $file, '.sql'), $mi
 // Sort versions
 usort($versions, 'version_compare');
 
-$options = getopt("yq", ["status", "dry-run", "version:"]);  // -y auto-continue on error, -q quiet, --status show pending, --dry-run preview, --version=X.Y.Z replay from version
+$options = getopt("yqv:", ["status", "dry-run", "version:"]);  // -y auto-continue on error, -q quiet, --status show pending, --dry-run preview, --version=X.Y.Z (or -v X.Y.Z) replay from version
 $autoContinueOnError = isset($options['y']);
 $quietMode = isset($options['q']);
 $showStatus = isset($options['status']);
 $dryRun = isset($options['dry-run']);
-$fromVersion = $options['version'] ?? null;
+$fromVersion = $options['version'] ?? $options['v'] ?? null;
 // In verbose mode the bar redraw clobbers any error/benign notice printed via
 // spinnerPausePrint, so drop the bar and let messages print on their own lines.
 $showProgress = !$quietMode && !$dryRun && !$showStatus && !getenv('MIG_VERBOSE');
@@ -489,10 +490,26 @@ if ($quietMode) {
 }
 
 $startVersion = $fromVersion ?? $currentVersion;
-$pendingVersions = array_values(array_filter(
-    $versions,
-    fn($v) => version_compare($v, $startVersion, '>=')
-));
+
+// sc_version advances only after a clean run, so a version recorded in the DB is
+// one that fully applied. Re-running it is never needed and is sometimes fatal:
+// 5.4.1 copies form_tb.purpose_of_test into reason_for_tb_test and then drops the
+// column, so a second pass errors on the column that is no longer there, the
+// version is not bumped, and every later migration is held back for good. An
+// instance resting on such a version could never be upgraded again.
+//
+// An explicit --version is a deliberate replay, so that one still runs the
+// version it names. Note that replaying below the current version will hit
+// objects later migrations renamed or dropped (5.3.2 renames package_details to
+// specimen_manifests, for one), so it is a repair tool, not a routine step.
+$startComparison = $fromVersion !== null ? '>=' : '>';
+$hasStartVersion = $startVersion !== null && $startVersion !== '';
+
+// Nothing recorded yet means a fresh database: every migration is pending.
+$isPending = fn(string $v): bool => !$hasStartVersion
+    || version_compare($v, (string) $startVersion, $startComparison);
+
+$pendingVersions = array_values(array_filter($versions, $isPending));
 
 if ($showStatus) {
     $io->writeln("Current DB version: " . ($currentVersion ?: '(none)'));
@@ -519,7 +536,7 @@ $lastVersion = $currentVersion;
 foreach ($versions as $version) {
     $file = ROOT_PATH . '/sys/migrations/' . $version . '.sql';
 
-    if (version_compare($version, $startVersion, '>=')) {
+    if ($isPending($version)) {
         if (!$quietMode) {
             $io->section($dryRun ? "DRY RUN: version $version" : "Migrating to version $version");
         }
