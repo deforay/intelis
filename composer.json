@@ -97,6 +97,7 @@
         "check-sync-ownership": "@php bin/build/check-sync-ownership.php",
         "check-sql-value-safety": "@php bin/build/check-sql-value-safety.php",
         "check-repository-boundaries": "@php bin/build/check-repository-boundaries.php",
+        "check-schema-drift": "@php bin/build/check-schema-drift.php",
         "check-invariants": [
             "@check-counts",
             "@check-sync-ownership",
@@ -210,6 +211,7 @@
     "scripts-descriptions": {
         "test": "Run the PHPUnit test suite",
         "check-invariants": "Run every static invariant check \u2014 rules the codebase states in one place and has to apply in many",
+        "check-schema-drift": "Check the live database has every table and column its recorded version claims",
         "check-sync-ownership": "Check an incoming sync cannot overwrite a column the lab owns, such as a sample it has cancelled",
         "check-counts": "Check every surface that counts rejected samples also excludes cancelled ones, so two screens cannot disagree",
         "check-di": "Compile the DI container in isolation so a broken service definition fails here instead of in production",
