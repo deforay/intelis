@@ -149,6 +149,19 @@ const API_COVERED_FILES = [
     'app/api/v1.1/generic-tests/get-request.php',
 ];
 
+/**
+ * The API files copy request values into plain variables before the SQL line,
+ * which the $input patterns above cannot see. These pin the encoder at the
+ * point the value becomes SQL instead: a text list is only ever imploded
+ * through $db->escape(), and the date and id values are never interpolated
+ * bare. Keep the variable names in step with the endpoints.
+ */
+const API_LAUNDERED_PATTERNS = [
+    'list imploded into SQL without $db->escape()' => '/implode\\("\x27,\x27",(?!\\s*array_map\\(\\$db->escape\\(\\.\\.\\.\\))/',
+    'date bound interpolated without $db->escape()' => '/\x27\\$(from|to)\x27/',
+    'id list interpolated without $db->inIntList()' => '/IN \\(\x27\\$(facilityId|sampleStatus)\x27\\)/',
+];
+
 const RAW_VALUE_PATTERNS = [
     'concatenated directly after a string' => '/\.\s*\$_(POST|GET|REQUEST)\s*\[/',
     'concatenated after only a string cast' => '/\.\s*\(string\)\s*\$_(POST|GET|REQUEST)\s*\[/',
@@ -176,7 +189,7 @@ foreach (COVERED_FILES as $name) {
     $covered[$name] = ['source' => '\\$_(POST|GET|REQUEST)', 'patterns' => RAW_VALUE_PATTERNS];
 }
 foreach (API_COVERED_FILES as $name) {
-    $covered[$name] = ['source' => '\\$input', 'patterns' => rawValuePatternsFor('\\$input')];
+    $covered[$name] = ['source' => '\\$input', 'patterns' => rawValuePatternsFor('\\$input') + API_LAUNDERED_PATTERNS];
 }
 
 foreach ($covered as $name => $rule) {
