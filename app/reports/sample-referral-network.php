@@ -1036,7 +1036,7 @@ $activeTests = TestsService::getActiveTests();
         if (forceRefresh) {
             payload.refresh = 'true';
         }
-        return $.post('/admin/monitoring/get-referral-map-data.php', payload, function(resp) {
+        return $.post('/reports/get-referral-map-data.php', payload, function(resp) {
             markerLayer.clearLayers();
             flowLayer.clearLayers();
             mapNodesById = {};
@@ -1289,7 +1289,7 @@ $activeTests = TestsService::getActiveTests();
             bAutoWidth: false,
             bProcessing: true,
             bServerSide: true,
-            sAjaxSource: '/admin/monitoring/get-referral-summary.php',
+            sAjaxSource: '/reports/get-referral-summary.php',
             aaSorting: [
                 [5, 'desc']
             ],

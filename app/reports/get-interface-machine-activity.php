@@ -18,6 +18,10 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $db = ContainerRegistry::get(DatabaseService::class);
 
 try {
+    // AJAX requests bypass the access control layer, so the page's own
+    // privilege is checked here.
+    _requirePrivilege('/reports/interface-machine-activity.php');
+
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
 
