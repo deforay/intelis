@@ -86,7 +86,7 @@ try {
     if (!empty($input['sampleCode'])) {
         $sampleCode = $input['sampleCode'];
         if (!empty($sampleCode)) {
-            $sampleCode = implode("','", $sampleCode);
+            $sampleCode = implode("','", array_map($db->escape(...), (array) $sampleCode));
             $where[] = " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
         }
     }
@@ -96,13 +96,13 @@ try {
         $from = $input['sampleCollectionDate'][0] ?? null;
         $to = $input['sampleCollectionDate'][1] ?? null;
         if (!empty($from) && !empty($to)) {
-            $where[] = " DATE(sample_collection_date) between '$from' AND '$to' ";
+            $where[] = " DATE(sample_collection_date) between '" . $db->escape($from) . "' AND '" . $db->escape($to) . "' ";
         }
     }
 
     if (!empty($input['facility'])) {
-        $facilityId = implode("','", $input['facility']);
-        $where[] = " vl.facility_id IN ('$facilityId') ";
+        $facilityId = $db->inIntList($input['facility']);
+        $where[] = " vl.facility_id IN ($facilityId) ";
     }
     $where[] = " vl.app_sample_code is not null";
     $whereStr = "";

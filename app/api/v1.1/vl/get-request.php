@@ -198,7 +198,7 @@ try {
 
     if (!empty($input['sampleCode'])) {
         $sampleCode = $input['sampleCode'];
-        $sampleCode = implode("','", $sampleCode);
+        $sampleCode = implode("','", array_map($db->escape(...), (array) $sampleCode));
         $where[] = " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
     }
     /* To check the facility and date range filter */
@@ -206,13 +206,13 @@ try {
         $from = $input['sampleCollectionDate'][0] ?? null;
         $to = $input['sampleCollectionDate'][1] ?? null;
         if (!empty($from) && !empty($to)) {
-            $where[] = " DATE(sample_collection_date) between '$from' AND '$to' ";
+            $where[] = " DATE(sample_collection_date) between '" . $db->escape($from) . "' AND '" . $db->escape($to) . "' ";
         }
     }
 
     if (!empty($input['facility'])) {
-        $facilityId = implode("','", $input['facility']);
-        $where[] = " vl.facility_id IN ('$facilityId') ";
+        $facilityId = $db->inIntList($input['facility']);
+        $where[] = " vl.facility_id IN ($facilityId) ";
     }
 
     // patientId is the cross-test-type filter name; patientArtNo stays for older clients
@@ -223,13 +223,13 @@ try {
     }
 
     if (!empty($input['patientName'])) {
-        $where[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_last_name,'')) like '%" . $input['patientName'] . "%'";
+        $where[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_last_name,'')) like '%" . $db->escape($input['patientName']) . "%'";
     }
 
     $sampleStatus = $input['sampleStatus'] ?? [];
     if (!empty($sampleStatus)) {
-        $sampleStatus = implode("','", $sampleStatus);
-        $where[] = " result_status IN ('$sampleStatus') ";
+        $sampleStatus = $db->inIntList($sampleStatus);
+        $where[] = " result_status IN ($sampleStatus) ";
     }
     $where[] = " vl.app_sample_code is not null";
     $where = " WHERE " . implode(" AND ", $where);

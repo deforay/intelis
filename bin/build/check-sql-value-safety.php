@@ -129,6 +129,26 @@ const COVERED_FILES = [
     'app/tb/reference/getTbSampleRejectionDetails.php',
 ];
 
+/**
+ * The InteLIS Mobile results endpoints. They read a JSON body into $input rather
+ * than $_POST, so the same rule is checked against that name. Swept 2026-09-03:
+ * text lists go through $db->escape(), id lists through $db->inIntList().
+ *
+ * @var list<string>
+ */
+const API_COVERED_FILES = [
+    'app/api/v1.1/vl/fetch-results.php',
+    'app/api/v1.1/vl/get-request.php',
+    'app/api/v1.1/eid/fetch-results.php',
+    'app/api/v1.1/eid/get-request.php',
+    'app/api/v1.1/covid-19/fetch-results.php',
+    'app/api/v1.1/covid-19/get-request.php',
+    'app/api/v1.1/tb/fetch-results.php',
+    'app/api/v1.1/tb/get-request.php',
+    'app/api/v1.1/generic-tests/fetch-results.php',
+    'app/api/v1.1/generic-tests/get-request.php',
+];
+
 const RAW_VALUE_PATTERNS = [
     'concatenated directly after a string' => '/\.\s*\$_(POST|GET|REQUEST)\s*\[/',
     'concatenated after only a string cast' => '/\.\s*\(string\)\s*\$_(POST|GET|REQUEST)\s*\[/',
@@ -139,7 +159,27 @@ const RAW_VALUE_PATTERNS = [
 $violations = [];
 $checked = 0;
 
+/**
+ * @return array<string, string> label => pattern, for one request-value source
+ */
+function rawValuePatternsFor(string $source): array
+{
+    $patterns = [];
+    foreach (RAW_VALUE_PATTERNS as $label => $pattern) {
+        $patterns[$label] = str_replace('\\$_(POST|GET|REQUEST)', $source, $pattern);
+    }
+    return $patterns;
+}
+
+$covered = [];
 foreach (COVERED_FILES as $name) {
+    $covered[$name] = ['source' => '\\$_(POST|GET|REQUEST)', 'patterns' => RAW_VALUE_PATTERNS];
+}
+foreach (API_COVERED_FILES as $name) {
+    $covered[$name] = ['source' => '\\$input', 'patterns' => rawValuePatternsFor('\\$input')];
+}
+
+foreach ($covered as $name => $rule) {
     $path = REPO_DIR . '/' . $name;
     if (!is_file($path)) {
         $violations[] = [
@@ -153,8 +193,8 @@ foreach (COVERED_FILES as $name) {
     foreach ($lines as $i => $line) {
         // An (int) or (float) cast is itself an encoder, so a cast access is
         // removed before matching -- the dot then touches the cast, not $_POST.
-        $line = preg_replace('/\((?:int|float)\)\s*\$_(POST|GET|REQUEST)\s*\[[^\]]*\]/', 'CAST_ENCODED', $line);
-        foreach (RAW_VALUE_PATTERNS as $label => $pattern) {
+        $line = preg_replace('/\((?:int|float)\)\s*' . $rule['source'] . '\s*\[[^\]]*\]/', 'CAST_ENCODED', $line);
+        foreach ($rule['patterns'] as $label => $pattern) {
             if (preg_match($pattern, $line)) {
                 $violations[] = [
                     'where' => $name . ':' . ($i + 1),
@@ -166,7 +206,7 @@ foreach (COVERED_FILES as $name) {
     }
 }
 
-echo "check-sql-value-safety: {$checked} report endpoints keep request values out of their SQL" . PHP_EOL;
+echo "check-sql-value-safety: {$checked} endpoints keep request values out of their SQL" . PHP_EOL;
 
 if ($violations === []) {
     echo 'check-sql-value-safety: no raw request value reaches a query string.' . PHP_EOL;

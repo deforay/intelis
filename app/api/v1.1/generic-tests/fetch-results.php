@@ -209,45 +209,45 @@ try {
     /* To check the uniqueId filter */
     $uniqueId = $input['uniqueId'] ?? [];
     if (!empty($uniqueId)) {
-        $uniqueId = implode("','", $uniqueId);
+        $uniqueId = implode("','", array_map($db->escape(...), (array) $uniqueId));
         $where[] = " unique_id IN ('$uniqueId')";
     }
 
     /* To check the sample id filter */
     $sampleCode = $input['sampleCode'] ?? [];
     if (!empty($sampleCode)) {
-        $sampleCode = implode("','", $sampleCode);
+        $sampleCode = implode("','", array_map($db->escape(...), (array) $sampleCode));
         $where[] = " (sample_code IN ('$sampleCode') OR remote_sample_code IN ('$sampleCode') )";
     }
     /* To check the facility and date range filter */
     $from = $input['sampleCollectionDate'][0] ?? null;
     $to = $input['sampleCollectionDate'][1] ?? null;
     if (!empty($from) && !empty($to)) {
-        $where[] = " DATE(sample_collection_date) between '$from' AND '$to' ";
+        $where[] = " DATE(sample_collection_date) between '" . $db->escape($from) . "' AND '" . $db->escape($to) . "' ";
     }
 
     if (!empty($input['lastModifiedDateTime'])) {
-        $where[] = " DATE(vl.request_created_datetime) >= '" . DateUtility::isoDateFormat($input['lastModifiedDateTime']) . "'";
+        $where[] = " DATE(vl.request_created_datetime) >= '" . $db->escape(DateUtility::isoDateFormat($input['lastModifiedDateTime'])) . "'";
     }
 
     $facilityId = $input['facility'] ?? [];
     if (!empty($facilityId)) {
-        $facilityId = implode("','", $facilityId);
-        $where[] = " vl.facility_id IN ('$facilityId') ";
+        $facilityId = $db->inIntList($facilityId);
+        $where[] = " vl.facility_id IN ($facilityId) ";
     }
     if (!empty($input['patientId'])) {
-        $patientId = implode("','", $input['patientId']);
+        $patientId = implode("','", array_map($db->escape(...), (array) $input['patientId']));
         $where[] = " vl.patient_id IN ('" . $patientId . "') ";
     }
 
     if (!empty($input['patientName'])) {
-        $where[] = " (vl.patient_first_name like '" . $input['patientName'] . "' OR vl.patient_last_name like '" . $input['patientName'] . "')";
+        $where[] = " (vl.patient_first_name like '" . $db->escape($input['patientName']) . "' OR vl.patient_last_name like '" . $db->escape($input['patientName']) . "')";
     }
 
     $sampleStatus = $input['sampleStatus'] ?? [];
     if (!empty($sampleStatus)) {
-        $sampleStatus = implode("','", $sampleStatus);
-        $where[] = " result_status IN ('$sampleStatus') ";
+        $sampleStatus = $db->inIntList($sampleStatus);
+        $where[] = " result_status IN ($sampleStatus) ";
     }
     $whereStr = "";
     if ($where !== []) {
