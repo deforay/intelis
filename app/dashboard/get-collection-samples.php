@@ -111,7 +111,7 @@ if (count($collectionResult) > 0) {
             },
             series: [{
                 showInLegend: false,
-                name: 'Samples',
+                name: "<?= _jsTranslate('Samples'); ?>",
                 data: [<?php
                 foreach ($collectionResult as $tRow) {
                     echo htmlspecialchars((string) $tRow['total']) . ",";
