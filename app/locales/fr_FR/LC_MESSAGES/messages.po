@@ -34986,3 +34986,7 @@ msgstr "le résultat est approuvé et prêt, et personne ne l'a imprimé, envoy�
 msgid "the result was printed (here or on the connected system), dispatched, e-mailed, sent by SMS, sent back to the system that requested it, or downloaded over the API. Any one of these counts, because a lab that e-mails results never prints or dispatches them."
 msgstr "le résultat a été imprimé (ici ou sur le système connecté), transmis, envoyé par e-mail ou par SMS, renvoyé au système qui l'a demandé, ou téléchargé via l'API. L'un quelconque de ces cas suffit, car un laboratoire qui envoie les résultats par e-mail ne les imprime ni ne les transmet jamais."
 
+
+#: app/reports/sample-ageing.php
+msgid "Break down by"
+msgstr "Répartir par"
