@@ -24,15 +24,13 @@ $testingLabs = $facilitiesService->getTestingLabs();
 
 $stageLabels = [
     'atFacility' => _translate('At facility'),
-    'inTransit' => _translate('In transit'),
     'atLab' => _translate('At lab, awaiting test'),
     'awaitingApproval' => _translate('Tested, awaiting approval'),
     'awaitingRelease' => _translate('Approved, awaiting release'),
     'released' => _translate('Released'),
 ];
 $stageHints = [
-    'atFacility' => _translate('Registered, not yet dispatched'),
-    'inTransit' => _translate('Dispatched, not yet received at a lab'),
+    'atFacility' => _translate('Registered, not yet received at a lab'),
     'atLab' => _translate('Received, not yet tested (includes failed, on hold and reordered)'),
     'awaitingApproval' => _translate('Tested, result not yet approved'),
     'awaitingRelease' => _translate('Approved, but no delivery of the result recorded yet'),
@@ -467,8 +465,7 @@ $groupLabels = [
                                 <dd>
                                     <?= _htmlTranslate('A sample is placed at the furthest point its recorded timestamps prove it reached, read from the workflow dates rather than the status alone. Status is only used for the exits, and for failed, on hold and reordered samples, which are back in the lab queue.'); ?>
                                     <ul>
-                                        <li><strong><?= _htmlTranslate('At facility'); ?></strong>: <?= _htmlTranslate('registered, with no dispatch, hub or lab receipt recorded.'); ?></li>
-                                        <li><strong><?= _htmlTranslate('In transit'); ?></strong>: <?= _htmlTranslate('dispatched from the facility or received at a hub, not yet received at a lab.'); ?></li>
+                                        <li><strong><?= _htmlTranslate('At facility'); ?></strong>: <?= _htmlTranslate('registered, with no lab receipt recorded. Dispatch from the facility is not tracked, so a sample stays here until a lab records receiving it.'); ?></li>
                                         <li><strong><?= _htmlTranslate('At lab, awaiting test'); ?></strong>: <?= _htmlTranslate('received at a lab, not yet tested; also failed, on hold and reordered samples.'); ?></li>
                                         <li><strong><?= _htmlTranslate('Tested, awaiting approval'); ?></strong>: <?= _htmlTranslate('a test date or a result is recorded, but the result is not yet approved.'); ?></li>
                                         <li><strong><?= _htmlTranslate('Approved, awaiting release'); ?></strong>: <?= _htmlTranslate('the result is approved, but no delivery has been recorded.'); ?></li>

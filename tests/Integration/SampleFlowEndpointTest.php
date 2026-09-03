@@ -140,7 +140,9 @@ final class SampleFlowEndpointTest extends TestCase
     {
         // At facility: nothing beyond registration, 100 days ago.
         $this->seed([]);
-        // In transit: dispatched 20 days ago, never received.
+        // Also at facility: a dispatch date was typed in 20 days ago but no lab
+        // has received it. Dispatch is not a tracked stage, but it is a real
+        // milestone for the age.
         $this->seed(['sample_dispatched_datetime' => self::daysAgo(20)]);
         // At lab: received 40 days ago, not tested.
         $this->seed([
@@ -203,11 +205,10 @@ final class SampleFlowEndpointTest extends TestCase
         self::assertArrayHasKey('flow', $json, json_encode($json));
         $flow = $json['flow'];
 
-        self::assertSame(1, $flow['atFacility']['total']);
+        self::assertSame(2, $flow['atFacility']['total'], 'the untouched one and the dispatched, never received one');
         self::assertSame(1, $flow['atFacility']['b4'], 'collected 100 days ago, nothing since');
-
-        self::assertSame(1, $flow['inTransit']['total']);
-        self::assertSame(1, $flow['inTransit']['b2'], 'dispatched 20 days ago');
+        self::assertSame(1, $flow['atFacility']['b2'], 'dispatched 20 days ago, so 20 days waiting');
+        self::assertArrayNotHasKey('inTransit', $flow, 'dispatch is not a tracked stage on this system');
 
         self::assertSame(2, $flow['atLab']['total'], 'received-not-tested plus the failed one');
         self::assertSame(1, $flow['atLab']['b3'], 'received 40 days ago');

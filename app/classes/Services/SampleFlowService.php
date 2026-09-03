@@ -38,8 +38,14 @@ use const SAMPLE_STATUS\TEST_FAILED;
  */
 final class SampleFlowService
 {
-    /** Pipeline order. A sample sits in exactly one of these or one exit. */
-    public const STAGES = ['atFacility', 'inTransit', 'atLab', 'awaitingApproval', 'awaitingRelease', 'released'];
+    /**
+     * Pipeline order. A sample sits in exactly one of these or one exit.
+     * There is no "in transit" stage: dispatch from the facility is not
+     * tracked on this system (the manifest never stamps it, and the form's
+     * dispatch date is rarely filled), so a sample is at the facility until a
+     * lab records receiving it.
+     */
+    public const STAGES = ['atFacility', 'atLab', 'awaitingApproval', 'awaitingRelease', 'released'];
 
     /** Ways out of the pipeline that are not a released result. */
     public const EXITS = ['rejected', 'expired', 'lost', 'cancelled'];
@@ -136,7 +142,6 @@ final class SampleFlowService
         )) . ')';
         $onBench = "t.result_status IN (" . TEST_FAILED . ", " . ON_HOLD . ", " . REORDERED_FOR_TESTING . ")";
         $approved = "(" . $set('result_approved_datetime') . " OR t.result_status = " . ACCEPTED . ")";
-        $dispatched = "(" . $set('sample_dispatched_datetime') . " OR " . $set('sample_received_at_hub_datetime') . ")";
 
         return "CASE
             WHEN t.result_status = " . CANCELLED . " THEN 'cancelled'
@@ -148,7 +153,6 @@ final class SampleFlowService
             WHEN $hasResult AND $approved THEN 'awaitingRelease'
             WHEN " . $set('sample_tested_datetime') . " OR $hasResult THEN 'awaitingApproval'
             WHEN " . $set('sample_received_at_lab_datetime') . " THEN 'atLab'
-            WHEN $dispatched THEN 'inTransit'
             ELSE 'atFacility'
         END";
     }
