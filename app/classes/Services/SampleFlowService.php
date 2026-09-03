@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Exceptions\SystemException;
 use App\Utilities\DateUtility;
+use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
 
 use const SAMPLE_STATUS\ACCEPTED;
@@ -64,12 +65,6 @@ final class SampleFlowService
 
     public const GROUPINGS = ['lab', 'facility', 'province', 'district', 'partner'];
 
-    /**
-     * The date a sample entered the system, falling back for older rows. Zero
-     * dates are what legacy rows carry instead of NULL, so they fall back too.
-     */
-    private const REGISTERED_ON = "COALESCE(NULLIF(t.sample_collection_date, '0000-00-00 00:00:00'),"
-        . " t.request_created_datetime)";
 
     /**
      * Every way a result leaves the system, on every module's table. A lab
@@ -185,7 +180,7 @@ final class SampleFlowService
      */
     public static function ageExpression(): string
     {
-        $milestones = array_merge([self::REGISTERED_ON], array_map(
+        $milestones = array_merge([SampleCountUtility::registeredOn('t')], array_map(
             static fn(string $column): string => self::milestone($column),
             [
                 'sample_dispatched_datetime',
@@ -557,9 +552,7 @@ final class SampleFlowService
         $clauses = [];
 
         if ($f['startDate'] !== '' && $f['endDate'] !== '') {
-            $clauses[] = "DATE(" . self::REGISTERED_ON . ") BETWEEN '"
-                . $this->db->escape($f['startDate']) . "' AND '"
-                . $this->db->escape($f['endDate']) . "'";
+            $clauses[] = SampleCountUtility::registeredBetween('t', $f['startDate'], $f['endDate']);
         }
         if ($f['labId'] > 0) {
             $clauses[] = "t.lab_id = " . $f['labId'];
@@ -569,6 +562,15 @@ final class SampleFlowService
         }
         if (!empty($_SESSION['facilityMap'])) {
             $clauses[] = "t.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+        }
+        // 'recency' and 'vl' share form_vl, and reason_for_vl_testing is the only
+        // thing telling them apart. Every other VL surface in the app applies this
+        // discriminator, so without it recency samples are counted as viral loads
+        // here and this report disagrees with the dashboard and the request list.
+        if ($f['testKey'] === 'vl') {
+            $clauses[] = "IFNULL(t.reason_for_vl_testing, 0) != 9999";
+        } elseif ($f['testKey'] === 'recency') {
+            $clauses[] = "t.reason_for_vl_testing = 9999";
         }
 
         return $clauses === [] ? '' : ' WHERE ' . implode(' AND ', $clauses);

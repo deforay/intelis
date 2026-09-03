@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\TestsService;
+use App\Utilities\SampleCountUtility;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -81,12 +82,15 @@ if (!empty($_POST['sampleCollectionDate'])) {
     $selectedRange = date('d-M-Y', strtotime($startDate)) . ' to ' . date('d-M-Y', strtotime($endDate));
 }
 
+// A sample with no collection facility still exists and still has to be counted.
+$notRecorded = $db->escape(_translate('Facility not recorded'));
+
 $sQuery = "SELECT
     vl.facility_id,
     f.facility_code,
     f.facility_state,
     f.facility_district,
-    f.facility_name,
+    COALESCE(f.facility_name, '$notRecorded') AS facility_name,
     COUNT(*) AS totalCount,
     NULL AS reorderCount,
     SUM(result_status = 9) AS registerCount,
@@ -97,8 +101,8 @@ $sQuery = "SELECT
     SUM(result_status = 7) AS acceptCount,
     SUM(vl.result_printed_datetime IS NOT NULL) AS printCount
     FROM $table AS vl
-    JOIN facility_details AS f ON f.facility_id = vl.facility_id
-    WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
+    LEFT JOIN facility_details AS f ON f.facility_id = vl.facility_id
+    WHERE " . SampleCountUtility::registeredBetween('vl', $startDate, $endDate) . "
     AND $whereCondition
     $recencyWhere
     GROUP BY vl.facility_id
@@ -193,7 +197,7 @@ $tableResult = $db->rawQuery($sQuery);
                         foreach ($tableResult as $tableRow) { ?>
                             <tr>
                                 <td>
-                                    <?= $tableRow['facility_name'] ?? 0; ?>
+                                    <?= $tableRow['facility_name'] ?? ''; ?>
                                 </td>
                                 <td>
                                     <?= $tableRow['totalCount'] ?? 0; ?>

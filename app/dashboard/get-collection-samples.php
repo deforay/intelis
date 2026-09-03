@@ -35,15 +35,20 @@ $facilities = [];
 foreach ((array) ($_POST['facilityId'] ?? []) as $facility) {
     $facilities[] = '"' . $db->escape((string) $facility) . '"';
 }
-$collectionQuery = "SELECT COUNT(vl.unique_id) as total, facility_name
+// Matches the table beside it: a sample with no collection facility, or no
+// collection date, is still counted rather than dropped by the join.
+$notRecorded = $db->escape(_translate('Facility not recorded'));
+
+$collectionQuery = "SELECT COUNT(vl.unique_id) as total,
+                           COALESCE(f.facility_name, '$notRecorded') as facility_name
                     FROM $table as vl
-                    JOIN facility_details as f ON f.facility_id=vl.facility_id
-                    WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
+                    LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
+                    WHERE " . SampleCountUtility::registeredBetween('vl', $startDate, $endDate) . "
                     AND " . SampleCountUtility::countableWhere('vl');
 if (count($facilities) > 0) {
     $collectionQuery .= " AND f.facility_name IN (" . implode(",", $facilities) . ")";
 }
-$collectionQuery .= "  GROUP BY f.facility_id ORDER BY total DESC";
+$collectionQuery .= "  GROUP BY vl.facility_id ORDER BY total DESC";
 // die($collectionQuery);
 $collectionResult = $db->rawQuery($collectionQuery); //collection result
 $collectionTotal = 0;

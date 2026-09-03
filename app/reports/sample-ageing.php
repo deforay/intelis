@@ -10,9 +10,10 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-// recency shares form_vl with VL, so a selector entry of its own would only
-// repeat the VL numbers.
-$selectableTests = array_values(array_diff(TestsService::getActiveTests(), ['recency']));
+// recency shares form_vl with VL and is separated by reason_for_vl_testing, the
+// same way the dashboard and the request lists separate them, so it stands as
+// its own entry rather than being folded into the VL numbers.
+$selectableTests = TestsService::getActiveTests();
 
 // The module menus link here with the module preselected.
 $preselectedTest = (string) ($_GET['t'] ?? '');
