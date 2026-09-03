@@ -117,6 +117,27 @@ if (!function_exists('_downloadToken')) {
     }
 }
 
+// The API files read their body through ApiService::getJsonFromRequest(), which
+// hands it to _sanitizeJson(). That helper catches any Throwable and answers
+// with an empty body, so without this stub every filter an API test sends is
+// silently dropped and the endpoint appears to work. Mirrors the real helper
+// on top of the passthrough _sanitizeInput() above.
+if (!function_exists('_sanitizeJson')) {
+    function _sanitizeJson(
+        string $jsonString,
+        bool $nullifyEmptyStrings = false,
+        bool $returnAsArray = false
+    ): string|array {
+        $decoded = json_decode($jsonString, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return $returnAsArray ? [] : '{}';
+        }
+        $sanitized = _sanitizeInput($decoded, $nullifyEmptyStrings);
+
+        return $returnAsArray ? $sanitized : json_encode($sanitized);
+    }
+}
+
 if (!function_exists('_rawInput')) {
     function _rawInput(string $key, mixed $default = null): mixed
     {

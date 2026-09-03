@@ -90,6 +90,7 @@ try {
         vl.no_of_breastfeeding_weeks                         as noOfBreastfeedingWeeks,
         vl.pregnancy_trimester                               as trimester,
         vl.patient_art_no                                    as artNo,
+        vl.patient_art_no                                    as patientArtNo,
         vl.treatment_initiated_date                          as dateOfArtInitiation,
         vl.regimen_change_date                               as dateOfArvRegimenChange,
         vl.reason_for_regimen_change                         as reasonForArvRegimenChange,
