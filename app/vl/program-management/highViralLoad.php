@@ -24,15 +24,16 @@ $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$fQuery = "SELECT * FROM facility_details WHERE status='active' Order By facility_name";
-
+// Conditions go before the ORDER BY: appended after it they become part of the
+// order expression, which silently stopped the facility map filtering and, for
+// a lab-scoped user, failed outright. No lab scope on this table either:
+// facility_details has no lab_id, since a facility is not owned by a lab; the
+// report's own sample queries are what scope to the lab.
+$fWhere = ["status = 'active'"];
 if (!empty($_SESSION['facilityMap'])) {
-	$fQuery .= " AND facility_id IN (" . $_SESSION['facilityMap'] . ")";
+	$fWhere[] = "facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
-
-if ($labScope = $general->labScopeWhere('')) {
-    $fQuery .= " AND $labScope";
-}
+$fQuery = "SELECT * FROM facility_details WHERE " . implode(' AND ', $fWhere) . " ORDER BY facility_name";
 $fResult = $db->rawQuery($fQuery);
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type = 'vl' AND batch_status='completed'";
