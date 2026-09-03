@@ -369,7 +369,7 @@ $tableResult = $db->rawQuery($sQuery);
             },
             series: [{
                 showInLegend: false,
-                name: 'Samples',
+                name: "<?= _jsTranslate('Samples'); ?>",
                 data: [<?= implode(",", array_column($tableResult, 'totalCount')); ?>]
 
             }],
