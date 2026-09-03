@@ -18,6 +18,7 @@ tags:
 - name: EID API
 - name: TB API
 - name: COVID-19 API
+- name: Custom Tests API
 - name: Interface API
 components:
   securitySchemes:
@@ -801,8 +802,9 @@ paths:
         database round-trips and 503 otherwise, including while an upgrade is in
         progress. Servers built before this path existed answer 400 to it; a client
         should fall back to /version.php. minAppVersion is null until an
-        administrator sets the global_config row named min_app_version, and null
-        means no minimum is enforced.
+        administrator sets Minimum Mobile App Version on the Global Configuration
+        page (global_config row min_app_version, from 5.7.51), and null means no
+        minimum is enforced.
       security: []
       responses:
         '200':
@@ -1006,6 +1008,15 @@ paths:
                     type: integer
                 lastModifiedDateTime:
                   type: string
+                limit:
+                  type: integer
+                  default: 100
+                  maximum: 500
+                  description: Page size. Servers before 5.7.51 ignore it and return 100.
+                offset:
+                  type: integer
+                  default: 0
+                  description: Rows to skip, newest first.
             example:
               sampleCode: []
               patientId: []
@@ -1021,6 +1032,13 @@ paths:
               schema:
                 type: object
                 properties:
+                  total:
+                    type: integer
+                    description: Rows matching the filters, across all pages. Absent on servers before 5.7.51.
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
                   status:
                     type: string
                   timestamp:
@@ -1057,6 +1075,378 @@ paths:
                 status: failed
                 timestamp: 0
                 data: []
+  "/generic-tests/fetch-results.php":
+    post:
+      tags:
+      - Custom Tests API
+      summary: Fetch Custom Test Results
+      description: Returns test requests with their results, newest first. Every row returned is marked as sent to the source unless markAsSent is false.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sampleCode:
+                  type: array
+                  items:
+                    type: string
+                  description: Sample codes to return. Matches sample_code or remote_sample_code.
+                uniqueId:
+                  type: array
+                  items:
+                    type: string
+                facility:
+                  type: array
+                  items:
+                    type: integer
+                  description: Facility ids, further limited to the facilities the token can see.
+                patientName:
+                  type: string
+                patientId:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter by patient id.
+                sampleCollectionDate:
+                  type: array
+                  items:
+                    type: string
+                  description: Two dates, from and to. An empty array means no date filter.
+                sampleStatus:
+                  type: array
+                  items:
+                    type: integer
+                  description: Sample status ids. An empty array means no status filter.
+                lastModifiedDateTime:
+                  type: string
+                  description: Only requests created on or after this date.
+                limit:
+                  type: integer
+                  default: 100
+                  maximum: 500
+                  description: Page size. Servers before 5.7.51 ignore it and return 100.
+                offset:
+                  type: integer
+                  default: 0
+                  description: Rows to skip, newest first.
+                markAsSent:
+                  type: boolean
+                  default: true
+                  description: When true, every row returned is marked as sent to the source and dispatched. Search screens pass false so browsing does not mark results delivered. Servers before 5.7.51 always mark.
+            example:
+              sampleCode: []
+              patientId: []
+              patientName: ''
+              facility: []
+              sampleCollectionDate: []
+              sampleStatus: []
+              limit: 100
+              offset: 0
+              markAsSent: true
+      responses:
+        '200':
+          description: Response 200
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Rows matching the filters, across all pages. Absent on servers before 5.7.51.
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                  status:
+                    type: string
+                  timestamp:
+                    type: integer
+                  transactionId:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+        '500':
+          description: Response 500
+          content:
+            application/json:
+              example:
+                status: failed
+                timestamp: 0
+                data: []
+  "/generic-tests/get-request.php":
+    post:
+      tags:
+      - Custom Tests API
+      summary: Fetch Custom Test REQUESTS
+      description: Returns test requests created through the API, newest first. Reading here marks nothing.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sampleCode:
+                  type: array
+                  items:
+                    type: string
+                  description: Sample codes to return. Matches sample_code or remote_sample_code.
+                uniqueId:
+                  type: array
+                  items:
+                    type: string
+                facility:
+                  type: array
+                  items:
+                    type: integer
+                  description: Facility ids, further limited to the facilities the token can see.
+                patientName:
+                  type: string
+                patientId:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter by patient id.
+                sampleCollectionDate:
+                  type: array
+                  items:
+                    type: string
+                  description: Two dates, from and to. An empty array means no date filter.
+                sampleStatus:
+                  type: array
+                  items:
+                    type: integer
+                  description: Sample status ids. An empty array means no status filter.
+                lastModifiedDateTime:
+                  type: string
+                  description: Only requests created on or after this date.
+                limit:
+                  type: integer
+                  default: 100
+                  maximum: 500
+                  description: Page size. Servers before 5.7.51 ignore it and return 100.
+                offset:
+                  type: integer
+                  default: 0
+                  description: Rows to skip, newest first.
+            example:
+              sampleCode: []
+              patientId: []
+              patientName: ''
+              facility: []
+              sampleCollectionDate: []
+              sampleStatus: []
+              limit: 100
+              offset: 0
+      responses:
+        '200':
+          description: Response 200
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Rows matching the filters, across all pages. Absent on servers before 5.7.51.
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                  status:
+                    type: string
+                  timestamp:
+                    type: integer
+                  transactionId:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+        '500':
+          description: Response 500
+          content:
+            application/json:
+              example:
+                status: failed
+                timestamp: 0
+                data: []
+  "/generic-tests/save-request.php":
+    post:
+      tags:
+      - Custom Tests API
+      summary: Save Custom Test Requests
+      description: Creates or updates custom test requests, one per element of the
+        body array. Rows are matched on labId and appSampleCode. Each record needs
+        sampleCollectionDate, facilityId, appSampleCode and labId; testType names
+        the custom test and testTypeForm carries its fields as a JSON object.
+        Cannot be used to change a sample that is locked or finalised.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  appSampleCode:
+                    type: string
+                  labId:
+                    type: integer
+                  facilityId:
+                    type: integer
+                  sampleCollectionDate:
+                    type: string
+                  testType:
+                    type: string
+                  testTypeForm:
+                    type: object
+                    additionalProperties: true
+                required:
+                - appSampleCode
+                - labId
+                - facilityId
+                - sampleCollectionDate
+            example:
+            - appSampleCode: APP-CT-0001
+              labId: 1
+              facilityId: 3
+              sampleCollectionDate: '2026-08-01 09:00:00'
+              testType: hepatitis-b
+              testTypeForm:
+                patientId: PT-1
+      responses:
+        '200':
+          description: Per-record outcome. status is success, partial or failed for the batch.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  timestamp:
+                    type: integer
+                  transactionId:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+              example:
+                status: success
+                timestamp: 1756800000
+                transactionId: 01J6Z0000000000000000000
+                data:
+                - appSampleCode: APP-CT-0001
+                  sampleCode: CT08260001
+                  status: success
+                  action: created
+  "/covid-19/add-request.php":
+    post:
+      tags:
+      - COVID-19 API
+      summary: Alias of /covid-19/save-request.php
+      deprecated: true
+      description: Kept for older app builds. Identical to /covid-19/save-request.php
+        and will be removed in a future API version.
+      responses:
+        '200':
+          description: See /covid-19/save-request.php
+  "/instruments.php":
+    get:
+      tags:
+      - Core API
+      summary: Instruments known to a lab
+      description: Names of the analysers configured for the lab, from both the
+        interfacing configuration and the instrument list. labId must be one of the
+        facilities the token can see. With detailed the response carries the id and
+        date format of each instrument.
+      parameters:
+      - in: query
+        name: labId
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: detailed
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Response 200
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  timestamp:
+                    type: integer
+                  transactionId:
+                    type: string
+                  instruments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        instrumentId:
+                          type: integer
+                        name:
+                          type: string
+                        dateFormat:
+                          type: string
+              example:
+                status: success
+                timestamp: 1756800000
+                transactionId: 01J6Z0000000000000000000
+                instruments:
+                - name: Abbott m2000
+                - name: Roche Cobas 6800
+  "/user/save-user-profile.php":
+    post:
+      tags:
+      - Core API
+      summary: Create or update a user profile
+      description: Used by an STS to push a user to a LIS. Accepts either the
+        bearer token or an x-api-key field in the body carrying the STS key. The
+        user is matched on userId, then on email; post carries the profile and
+        arrives as a JSON string.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                x-api-key:
+                  type: string
+                post:
+                  type: string
+                  description: JSON-encoded object with userId, userName, email, phoneNo, loginId, role, status, password and interfaceUserName.
+            example:
+              x-api-key: sts-key
+              post: '{"userId":"u-1","userName":"Lab User","email":"lab@example.org","loginId":"lab","role":"2","status":"active"}'
+      responses:
+        '200':
+          description: Response 200
+          content:
+            application/json:
+              example:
+                status: success
+                timestamp: 1756800000
+                transactionId: 01J6Z0000000000000000000
   "/generate-manifest.php":
     post:
       tags:
@@ -1779,6 +2169,19 @@ paths:
                 sampleStatus:
                   type: number
                   description: Filter by sample status
+                limit:
+                  type: integer
+                  default: 100
+                  maximum: 500
+                  description: Page size. Servers before 5.7.51 ignore it and return 100.
+                offset:
+                  type: integer
+                  default: 0
+                  description: Rows to skip, newest first.
+                markAsSent:
+                  type: boolean
+                  default: true
+                  description: When true, every row returned is marked as sent to the source and dispatched. Search screens pass false so browsing does not mark results delivered. Servers before 5.7.51 always mark.
               required:
               - sampleCode
             example:
@@ -1798,6 +2201,13 @@ paths:
               schema:
                 type: object
                 properties:
+                  total:
+                    type: integer
+                    description: Rows matching the filters, across all pages. Absent on servers before 5.7.51.
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
                   status:
                     type: string
                   timestamp:
@@ -2425,10 +2835,79 @@ paths:
           type: string
         description: ''
   "/eid/fetch-results.php":
-    get:
+    post:
       tags:
       - EID API
       summary: Fetch Test Results
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sampleCode:
+                  type: array
+                  items:
+                    type: string
+                  description: Sample codes to return. Matches sample_code or remote_sample_code.
+                uniqueId:
+                  type: array
+                  items:
+                    type: string
+                facility:
+                  type: array
+                  items:
+                    type: integer
+                  description: Facility ids, further limited to the facilities the token can see.
+                childName:
+                  type: string
+                childId:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter by child id.
+                patientId:
+                  type: array
+                  items:
+                    type: string
+                  description: Alias of childId, shared with the other test types.
+                sampleCollectionDate:
+                  type: array
+                  items:
+                    type: string
+                  description: Two dates, from and to. An empty array means no date filter.
+                sampleStatus:
+                  type: array
+                  items:
+                    type: integer
+                  description: Sample status ids. An empty array means no status filter.
+                lastModifiedDateTime:
+                  type: string
+                  description: Only requests created on or after this date.
+                limit:
+                  type: integer
+                  default: 100
+                  maximum: 500
+                  description: Page size. Servers before 5.7.51 ignore it and return 100.
+                offset:
+                  type: integer
+                  default: 0
+                  description: Rows to skip, newest first.
+                markAsSent:
+                  type: boolean
+                  default: true
+                  description: When true, every row returned is marked as sent to the source and dispatched. Search screens pass false so browsing does not mark results delivered. Servers before 5.7.51 always mark.
+            example:
+              sampleCode: []
+              patientId: []
+              childName: ''
+              facility: []
+              sampleCollectionDate: []
+              sampleStatus: []
+              limit: 100
+              offset: 0
+              markAsSent: true
       responses:
         '200':
           description: Response 200
@@ -2437,6 +2916,13 @@ paths:
               schema:
                 type: object
                 properties:
+                  total:
+                    type: integer
+                    description: Rows matching the filters, across all pages. Absent on servers before 5.7.51.
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
                   status:
                     type: string
                   timestamp:
@@ -2544,10 +3030,74 @@ paths:
           type: string
         description: ''
   "/eid/get-request.php":
-    get:
+    post:
       tags:
       - EID API
       summary: Fetch EID REQUESTS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sampleCode:
+                  type: array
+                  items:
+                    type: string
+                  description: Sample codes to return. Matches sample_code or remote_sample_code.
+                uniqueId:
+                  type: array
+                  items:
+                    type: string
+                facility:
+                  type: array
+                  items:
+                    type: integer
+                  description: Facility ids, further limited to the facilities the token can see.
+                childName:
+                  type: string
+                childId:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter by child id.
+                patientId:
+                  type: array
+                  items:
+                    type: string
+                  description: Alias of childId, shared with the other test types.
+                sampleCollectionDate:
+                  type: array
+                  items:
+                    type: string
+                  description: Two dates, from and to. An empty array means no date filter.
+                sampleStatus:
+                  type: array
+                  items:
+                    type: integer
+                  description: Sample status ids. An empty array means no status filter.
+                lastModifiedDateTime:
+                  type: string
+                  description: Only requests created on or after this date.
+                limit:
+                  type: integer
+                  default: 100
+                  maximum: 500
+                  description: Page size. Servers before 5.7.51 ignore it and return 100.
+                offset:
+                  type: integer
+                  default: 0
+                  description: Rows to skip, newest first.
+            example:
+              sampleCode: []
+              patientId: []
+              childName: ''
+              facility: []
+              sampleCollectionDate: []
+              sampleStatus: []
+              limit: 100
+              offset: 0
       responses:
         '200':
           description: Response 200
@@ -2556,6 +3106,13 @@ paths:
               schema:
                 type: object
                 properties:
+                  total:
+                    type: integer
+                    description: Rows matching the filters, across all pages. Absent on servers before 5.7.51.
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
                   status:
                     type: string
                   timestamp:
@@ -3996,10 +4553,69 @@ paths:
                 timestamp: 0
                 data: []
   "/tb/get-request.php":
-    get:
+    post:
       tags:
       - TB API
       summary: Fetch TB REQUESTS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sampleCode:
+                  type: array
+                  items:
+                    type: string
+                  description: Sample codes to return. Matches sample_code or remote_sample_code.
+                uniqueId:
+                  type: array
+                  items:
+                    type: string
+                facility:
+                  type: array
+                  items:
+                    type: integer
+                  description: Facility ids, further limited to the facilities the token can see.
+                patientName:
+                  type: string
+                patientId:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter by patient id.
+                sampleCollectionDate:
+                  type: array
+                  items:
+                    type: string
+                  description: Two dates, from and to. An empty array means no date filter.
+                sampleStatus:
+                  type: array
+                  items:
+                    type: integer
+                  description: Sample status ids. An empty array means no status filter.
+                lastModifiedDateTime:
+                  type: string
+                  description: Only requests created on or after this date.
+                limit:
+                  type: integer
+                  default: 100
+                  maximum: 500
+                  description: Page size. Servers before 5.7.51 ignore it and return 100.
+                offset:
+                  type: integer
+                  default: 0
+                  description: Rows to skip, newest first.
+            example:
+              sampleCode: []
+              patientId: []
+              patientName: ''
+              facility: []
+              sampleCollectionDate: []
+              sampleStatus: []
+              limit: 100
+              offset: 0
       responses:
         '200':
           description: Response 200
@@ -4008,6 +4624,13 @@ paths:
               schema:
                 type: object
                 properties:
+                  total:
+                    type: integer
+                    description: Rows matching the filters, across all pages. Absent on servers before 5.7.51.
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
                   status:
                     type: string
                   timestamp:
@@ -4112,10 +4735,74 @@ paths:
           type: string
         description: aksndlans234k23
   "/tb/fetch-results.php":
-    get:
+    post:
       tags:
       - TB API
       summary: Fetch Test Results
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sampleCode:
+                  type: array
+                  items:
+                    type: string
+                  description: Sample codes to return. Matches sample_code or remote_sample_code.
+                uniqueId:
+                  type: array
+                  items:
+                    type: string
+                facility:
+                  type: array
+                  items:
+                    type: integer
+                  description: Facility ids, further limited to the facilities the token can see.
+                patientName:
+                  type: string
+                patientId:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter by patient id.
+                sampleCollectionDate:
+                  type: array
+                  items:
+                    type: string
+                  description: Two dates, from and to. An empty array means no date filter.
+                sampleStatus:
+                  type: array
+                  items:
+                    type: integer
+                  description: Sample status ids. An empty array means no status filter.
+                lastModifiedDateTime:
+                  type: string
+                  description: Only requests created on or after this date.
+                limit:
+                  type: integer
+                  default: 100
+                  maximum: 500
+                  description: Page size. Servers before 5.7.51 ignore it and return 100.
+                offset:
+                  type: integer
+                  default: 0
+                  description: Rows to skip, newest first.
+                markAsSent:
+                  type: boolean
+                  default: true
+                  description: When true, every row returned is marked as sent to the source and dispatched. Search screens pass false so browsing does not mark results delivered. Servers before 5.7.51 always mark.
+            example:
+              sampleCode: []
+              patientId: []
+              patientName: ''
+              facility: []
+              sampleCollectionDate: []
+              sampleStatus: []
+              limit: 100
+              offset: 0
+              markAsSent: true
       responses:
         '200':
           description: Response 200
@@ -4124,6 +4811,13 @@ paths:
               schema:
                 type: object
                 properties:
+                  total:
+                    type: integer
+                    description: Rows matching the filters, across all pages. Absent on servers before 5.7.51.
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
                   status:
                     type: string
                   timestamp:
@@ -4519,10 +5213,74 @@ paths:
           type: string
         description: ''
   "/covid-19/fetch-results.php":
-    get:
+    post:
       tags:
       - COVID-19 API
       summary: Fetch Test Results
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sampleCode:
+                  type: array
+                  items:
+                    type: string
+                  description: Sample codes to return. Matches sample_code or remote_sample_code.
+                uniqueId:
+                  type: array
+                  items:
+                    type: string
+                facility:
+                  type: array
+                  items:
+                    type: integer
+                  description: Facility ids, further limited to the facilities the token can see.
+                patientName:
+                  type: string
+                patientId:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter by patient id.
+                sampleCollectionDate:
+                  type: array
+                  items:
+                    type: string
+                  description: Two dates, from and to. An empty array means no date filter.
+                sampleStatus:
+                  type: array
+                  items:
+                    type: integer
+                  description: Sample status ids. An empty array means no status filter.
+                lastModifiedDateTime:
+                  type: string
+                  description: Only requests created on or after this date.
+                limit:
+                  type: integer
+                  default: 100
+                  maximum: 500
+                  description: Page size. Servers before 5.7.51 ignore it and return 100.
+                offset:
+                  type: integer
+                  default: 0
+                  description: Rows to skip, newest first.
+                markAsSent:
+                  type: boolean
+                  default: true
+                  description: When true, every row returned is marked as sent to the source and dispatched. Search screens pass false so browsing does not mark results delivered. Servers before 5.7.51 always mark.
+            example:
+              sampleCode: []
+              patientId: []
+              patientName: ''
+              facility: []
+              sampleCollectionDate: []
+              sampleStatus: []
+              limit: 100
+              offset: 0
+              markAsSent: true
       responses:
         '200':
           description: Response 200
@@ -4531,6 +5289,13 @@ paths:
               schema:
                 type: object
                 properties:
+                  total:
+                    type: integer
+                    description: Rows matching the filters, across all pages. Absent on servers before 5.7.51.
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
                   status:
                     type: string
                   timestamp:
@@ -4804,10 +5569,69 @@ paths:
                 timestamp: 0
                 data: []
   "/covid-19/get-request.php":
-    get:
+    post:
       tags:
       - COVID-19 API
       summary: Fetch COVID-19 REQUESTS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sampleCode:
+                  type: array
+                  items:
+                    type: string
+                  description: Sample codes to return. Matches sample_code or remote_sample_code.
+                uniqueId:
+                  type: array
+                  items:
+                    type: string
+                facility:
+                  type: array
+                  items:
+                    type: integer
+                  description: Facility ids, further limited to the facilities the token can see.
+                patientName:
+                  type: string
+                patientId:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter by patient id.
+                sampleCollectionDate:
+                  type: array
+                  items:
+                    type: string
+                  description: Two dates, from and to. An empty array means no date filter.
+                sampleStatus:
+                  type: array
+                  items:
+                    type: integer
+                  description: Sample status ids. An empty array means no status filter.
+                lastModifiedDateTime:
+                  type: string
+                  description: Only requests created on or after this date.
+                limit:
+                  type: integer
+                  default: 100
+                  maximum: 500
+                  description: Page size. Servers before 5.7.51 ignore it and return 100.
+                offset:
+                  type: integer
+                  default: 0
+                  description: Rows to skip, newest first.
+            example:
+              sampleCode: []
+              patientId: []
+              patientName: ''
+              facility: []
+              sampleCollectionDate: []
+              sampleStatus: []
+              limit: 100
+              offset: 0
       responses:
         '200':
           description: Response 200
@@ -4816,6 +5640,13 @@ paths:
               schema:
                 type: object
                 properties:
+                  total:
+                    type: integer
+                    description: Rows matching the filters, across all pages. Absent on servers before 5.7.51.
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
                   status:
                     type: string
                   timestamp:

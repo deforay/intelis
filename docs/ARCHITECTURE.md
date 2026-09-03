@@ -110,6 +110,13 @@ sequenceDiagram
 - Legacy fallback: `App\Middlewares\Api\ApiLegacyFallbackMiddleware`
 - Content-Length header
 
+`GET /api/v1.1/health` is a real Slim route (`App\HttpHandlers\Api\HealthHandler`)
+and is excluded from auth. It answers 503 when the database is unreachable. Bootstrap
+connects eagerly, so `public/api/index.php` recognises the health path before requiring
+bootstrap and defines `INTELIS_HEALTH_PROBE`; `DatabaseFactory` then rethrows the
+connection failure instead of printing the HTML outage page, and the front controller
+answers with JSON.
+
 The Interface Tool endpoints are registered as real Slim routes rather than
 legacy includes. They carry their own `InterfaceApiEnabledMiddleware` and
 `InterfaceInstallationAuthMiddleware`, so a lab is always resolved from the
