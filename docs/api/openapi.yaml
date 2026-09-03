@@ -908,14 +908,20 @@ paths:
               password: secret
       responses:
         '200':
-          description: Login succeeded
+          description: Every outcome. status is 1 (token issued), 2 (login,
+            password or app access rejected) or the string failed (the server
+            could not act on the request; message says why).
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   status:
-                    type: integer
+                    oneOf:
+                    - type: integer
+                      enum: [1, 2]
+                    - type: string
+                      enum: [failed]
                   message:
                     type: string
                   timestamp:
@@ -940,27 +946,24 @@ paths:
                       access:
                         type: object
                         additionalProperties: true
-              example:
-                status: 1
-                message: Login Success
-                timestamp: 1756800000
-                transactionId: 01J6Z0000000000000000000
-                data:
-                  user:
-                    user_id: 8fisqdpu-wpkn-jo19-jo19-ku9fk2207e89
-                    user_name: Lab User
-                    login_id: labuser
-                    role_name: Lab Technician
-                  form: 3
-                  api_token: 3f9c...
-                  new_token: false
-                  appMenuName: InteLIS
-                  access: {}
-        '500':
-          description: Never used on v1.1; every outcome is a 200 whose body carries status 1, 2 or failed
-          content:
-            application/json:
               examples:
+                success:
+                  value:
+                        status: 1
+                        message: Login Success
+                        timestamp: 1756800000
+                        transactionId: 01J6Z0000000000000000000
+                        data:
+                          user:
+                            user_id: 8fisqdpu-wpkn-jo19-jo19-ku9fk2207e89
+                            user_name: Lab User
+                            login_id: labuser
+                            role_name: Lab Technician
+                          form: 3
+                          api_token: 3f9c...
+                          new_token: false
+                          appMenuName: InteLIS
+                          access: {}
                 rejected:
                   value:
                     status: 2
@@ -973,6 +976,13 @@ paths:
                     message: password is required
                     timestamp: 1756800000
                     transactionId: 01J6Z0000000000000000000
+                fault:
+                  value:
+                    status: failed
+                    message: InteLIS could not process the login. Please try again in a few minutes. If the problem continues, contact the system administrator.
+                    timestamp: 1756800000
+                    transactionId: 01J6Z0000000000000000000
+
   "/vl/get-request.php":
     post:
       tags:

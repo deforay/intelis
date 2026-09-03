@@ -107,6 +107,7 @@ try {
         $implementingPartnerList[$key]['show'] = $ip['i_partner_name'];
     }
     // Countries List
+    $nationalityList = [];
     $nationalityQry = "SELECT iso_name, iso3, id FROM `r_countries` ORDER BY `iso_name` ASC";
     $nationalityResult = $db->query($nationalityQry);
     foreach ($nationalityResult as $key => $nrow) {
@@ -193,6 +194,7 @@ try {
                 $testReasonTable = 'r_generic_test_reasons';
                 $testReasonName = "test_reason";
             }
+            $testReasons[$module] = ['testReasons' => []];
             $testReasonsResult = $general->getDataByTableAndFields($testReasonTable, ['test_reason_id', $testReasonName, 'parent_reason'], false, " test_reason_status like 'active' ", $testReasonName);
             foreach ($testReasonsResult as $subKey => $reject) {
                 $testReasons[$module]['testReasons'][$subKey]['parent'] = $reject['parent_reason'] ?? 0;

@@ -34,8 +34,10 @@ final class LegacyAppHarness
 
     /**
      * @param list<string> $tables tables to create, by name, from sql/init.sql
+     * @param array<string, mixed> $config extra applicationConfig entries, for example
+     *                                     the modules a page switches on
      */
-    public static function boot(string $database, array $tables): DatabaseService
+    public static function boot(string $database, array $tables, array $config = []): DatabaseService
     {
         $host = getenv('INTELIS_TEST_DB_HOST');
         $user = getenv('INTELIS_TEST_DB_USER');
@@ -75,7 +77,7 @@ final class LegacyAppHarness
         $builder->useAutowiring(true);
         $builder->addDefinitions([
             DatabaseService::class => factory(static fn(): DatabaseService => self::$db),
-            'applicationConfig' => ['database' => ['db' => $database]],
+            'applicationConfig' => $config + ['database' => ['db' => $database]],
         ]);
         ContainerRegistry::setContainer($builder->build());
 
