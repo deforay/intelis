@@ -1501,10 +1501,14 @@ paths:
         status success with data on 200, status failed with error.code and
         error.message otherwise. The caller is a lab (Bearer is the lab's STS
         token, the same one results sync uses, and labId names the lab) or an
-        API user (Bearer is the user's token). A pushed profile can never grant
-        access. login id, role and password are ignored, an existing user keeps
-        its status, a new user is created inactive. The user is matched on
-        userId, then on email.
+        API user (Bearer is the user's token). A lab may create users for its own
+        lab and update users that belong to it or to no lab yet; the write stamps
+        the lab. A user token edits its own profile only, whatever userId or
+        email the body names. A pushed profile can never grant access. login id,
+        role and password are ignored, an existing user keeps its status, a new
+        user is created inactive. Only the fields present are written; an update
+        that omits phoneNo keeps the phone number. The user is matched on userId,
+        then on email.
       security:
       - BearerAuth: []
       requestBody:
@@ -1600,6 +1604,16 @@ paths:
                 error:
                   code: invalid_credential
                   message: A valid user token, or a lab token with its labId, is required.
+                timestamp: 1756800000
+        '403':
+          description: The named user belongs to another lab
+          content:
+            application/json:
+              example:
+                status: failed
+                error:
+                  code: forbidden
+                  message: This user belongs to another lab
                 timestamp: 1756800000
         '500':
           description: The profile could not be saved
