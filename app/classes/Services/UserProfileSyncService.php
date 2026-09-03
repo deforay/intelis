@@ -168,10 +168,12 @@ final class UserProfileSyncService
      * this instance has no STS, is not a LIS, or the STS rejected the push.
      *
      * @param array<string, mixed> $profile the submitted user form, userId as stored
+     * @param string|null $remoteUrl the STS to push to; defaults to the configured one.
+     *                               Setup passes the URL it has just saved.
      */
-    public function push(array $profile, ?string $signaturePath = null): bool
+    public function push(array $profile, ?string $signaturePath = null, ?string $remoteUrl = null): bool
     {
-        $remoteUrl = rtrim((string) $this->commonService->getRemoteURL(), '/');
+        $remoteUrl = rtrim((string) ($remoteUrl ?? $this->commonService->getRemoteURL()), '/');
         if ($remoteUrl === '' || !$this->commonService->isLISInstance()) {
             return false;
         }

@@ -1,7 +1,6 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface;
-use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -175,26 +174,15 @@ try {
         }
 
         if (!empty($stsURL) && $general->isLISInstance()) {
-            $insertData['userId'] = $userId;
-            $insertData['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
-            $insertData['password'] = null; // We don't want to unintentionally end up creating admin users on STS
-            $insertData['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
-            $insertData['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
-            $insertData['status'] = 'inactive';
-
-
-            $apiUrl = $stsURL . "/api/v1.1/user/save-user-profile.php";
-            $post = [
-                'post' => json_encode($insertData),
-                'x-api-key' => ConfigService::generateAPIKeyForSTS($stsURL)
-            ];
-
-            $client = new Client();
-            $response = $client->post($apiUrl, [
-                'form_params' => $post
-            ]);
-
-            $result = $response->getBody()->getContents();
+            // Mirror the first admin to the STS as an inactive profile. At setup the
+            // LIS has no STS token yet, so the service falls back to the legacy
+            // endpoint; once a token exists every later push goes through v2.
+            ContainerRegistry::get(\App\Services\UserProfileSyncService::class)->push([
+                'userId' => $userId,
+                'userName' => $insertData['user_name'],
+                'email' => $emailId,
+                'phoneNo' => $insertData['phone_number'] ?? null,
+            ], null, $stsURL);
         }
 
         $_SESSION['alertMsg'] = "New admin user added successfully";
