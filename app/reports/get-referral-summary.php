@@ -20,6 +20,10 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $referralService = ContainerRegistry::get(ReferralNetworkService::class);
 
 try {
+    // AJAX requests bypass the access control layer, so the page's own
+    // privilege is checked here.
+    _requirePrivilege('/reports/sample-referral-network.php');
+
     $filters = [
         'testTypes' => array_filter((array) ($_POST['testType'] ?? [])),
         'dateRange' => $_POST['dateRange'] ?? '',

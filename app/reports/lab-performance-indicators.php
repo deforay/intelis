@@ -806,7 +806,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
         var data = $.extend({ section: section }, lpiFilters(), extra || {});
         lpiProgress(1);
         return $.ajax({
-            url: '/admin/monitoring/get-lab-performance-indicators.php',
+            url: '/reports/get-lab-performance-indicators.php',
             type: 'POST',
             dataType: 'json',
             data: data,
@@ -1211,7 +1211,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
             "aaSorting": [],
             "bProcessing": true,
             "bServerSide": true,
-            "sAjaxSource": "/admin/monitoring/get-lab-performance-indicators.php",
+            "sAjaxSource": "/reports/get-lab-performance-indicators.php",
             "fnServerData": function (sSource, aoData, fnCallback) {
                 lpiSetCards(LPI_PATIENT_CARDS, lpiSkelBar('lpi-skel-value'));
                 aoData.push({ "name": "section", "value": "patients" });
@@ -1262,7 +1262,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
     function lpiRunExport(section, format) {
         var data = $.extend({ section: section, format: format }, lpiFilters());
         lpiProgress(1);
-        $.post('/admin/monitoring/export-lab-performance-indicators.php', data, function (fileName) {
+        $.post('/reports/export-lab-performance-indicators.php', data, function (fileName) {
             if (fileName) {
                 window.location.href = '/download.php?f=' + fileName + '&d=a';
             }

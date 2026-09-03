@@ -120,7 +120,7 @@ final class SampleFlowEndpointTest extends TestCase
     /** @return array<string, mixed> decoded JSON */
     private function drive(array $post): array
     {
-        $request = LegacyAppHarness::withPost($post, '/sample-flow/get-sample-flow.php');
+        $request = LegacyAppHarness::withPost($post, '/reports/get-sample-ageing.php');
         $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
         $body = (string) $handler->handle($request)->getBody();
         $json = json_decode($body, true);
@@ -375,7 +375,7 @@ final class SampleFlowEndpointTest extends TestCase
         $request = LegacyAppHarness::withPost([
             'section' => 'export', 'testType' => 'eid', 'dateRange' => '',
             'stage' => 'atLab', 'groupBy' => 'lab', 'groupKey' => (string) self::LAB_ID, 'bucket' => '',
-        ], '/sample-flow/get-sample-flow.php');
+        ], '/reports/get-sample-ageing.php');
         $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
         $token = (string) $handler->handle($request)->getBody();
 

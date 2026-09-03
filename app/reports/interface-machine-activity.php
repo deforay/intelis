@@ -299,7 +299,7 @@ $summary = $db->rawQueryOne(
             ],
             "bProcessing": true,
             "bServerSide": true,
-            "sAjaxSource": "/admin/monitoring/get-interface-machine-activity.php",
+            "sAjaxSource": "/reports/get-interface-machine-activity.php",
             "fnServerData": function (sSource, aoData, fnCallback) {
                 aoData.push({ "name": "dateRange", "value": $("#dateRange").val() });
                 aoData.push({ "name": "eventType", "value": $("#eventType").val() });
