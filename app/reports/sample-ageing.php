@@ -10,10 +10,33 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-// recency shares form_vl with VL and is separated by reason_for_vl_testing, the
-// same way the dashboard and the request lists separate them, so it stands as
-// its own entry rather than being folded into the VL numbers.
-$selectableTests = TestsService::getActiveTests();
+// The same gate the dashboard tabs use: a test is offered when the instance runs
+// the module and the signed-in user's role covers it. Listing every module the
+// build supports would offer tests this country does not do and this user cannot
+// see.
+$userModules = (array) ($_SESSION['modules'] ?? []);
+$selectableTests = array_values(array_filter(
+    TestsService::getActiveTests(),
+    static fn(string $testKey): bool => in_array($testKey, $userModules, true)
+));
+
+// Recency is not a config module, so it never appears in getActiveTests(); the
+// dashboard adds its tab off this setting and this does the same. It reads
+// form_vl, so it is offered only to someone who already has VL.
+if (!empty(SYSTEM_CONFIG['recency']['vlsync']) && in_array('vl', $userModules, true)) {
+    $selectableTests[] = 'recency';
+}
+
+// The page's own privilege sits under the Reports resource, so a role can hold
+// it while covering no test module at all. Say so rather than rendering an empty
+// selector that reports an invalid test type on every search.
+if ($selectableTests === []) {
+    echo '<div class="content-wrapper"><section class="content"><div class="box"><div class="box-body">'
+        . _htmlTranslate('No test modules are enabled for your account, so there is nothing to report on here.')
+        . '</div></div></section></div>';
+    require_once APPLICATION_PATH . '/footer.php';
+    return;
+}
 
 // The module menus link here with the module preselected.
 $preselectedTest = (string) ($_GET['t'] ?? '');
