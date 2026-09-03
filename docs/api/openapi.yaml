@@ -20,6 +20,7 @@ tags:
 - name: COVID-19 API
 - name: Custom Tests API
 - name: Interface API
+- name: v2
 components:
   securitySchemes:
     BearerAuth:
@@ -1460,9 +1461,12 @@ paths:
       tags:
       - Core API
       summary: Create or update a user profile
-      description: Used by an STS to push a user to a LIS. The user is matched on
-        userId, then on email; post carries the profile and arrives as a JSON
-        string.
+      deprecated: true
+      description: Used by a LIS to push a user to its STS. Superseded by
+        POST /api/v2/user/profile, which authenticates the lab; LIS builds from
+        5.7.52 call v2 and fall back here only on a 404. Retired once no caller
+        remains. The user is matched on userId, then on email; post carries the
+        profile and arrives as a JSON string.
       requestBody:
         required: true
         content:
@@ -1484,6 +1488,129 @@ paths:
                 status: success
                 timestamp: 1756800000
                 transactionId: 01J6Z0000000000000000000
+  "/api/v2/user/profile":
+    post:
+      servers:
+      - url: https://example.org
+        description: v2 paths are absolute; they are not under /api/v1.1.
+      tags:
+      - v2
+      summary: Push a user profile from a LIS to its STS
+      description: The strict replacement for /user/save-user-profile.php and the
+        first v2 endpoint. v2 uses real HTTP status codes and one envelope,
+        status success with data on 200, status failed with error.code and
+        error.message otherwise. The caller is a lab (Bearer is the lab's STS
+        token, the same one results sync uses, and labId names the lab) or an
+        API user (Bearer is the user's token). A pushed profile can never grant
+        access. login id, role and password are ignored, an existing user keeps
+        its status, a new user is created inactive. The user is matched on
+        userId, then on email.
+      security:
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                labId:
+                  type: integer
+                  description: Required when the Bearer is a lab token.
+                profile:
+                  type: object
+                  properties:
+                    userId:
+                      type: string
+                    userName:
+                      type: string
+                    email:
+                      type: string
+                    phoneNo:
+                      type: string
+                    interfaceUserName:
+                      type: string
+                      description: Comma-separated analyser user names.
+                    signature:
+                      type: object
+                      properties:
+                        filename:
+                          type: string
+                        content:
+                          type: string
+                          description: Base64 image content, png, jpg, jpeg or gif.
+                  required:
+                  - userName
+              required:
+              - profile
+            example:
+              labId: 7
+              profile:
+                userId: 8fisqdpu-wpkn-jo19-jo19-ku9fk2207e89
+                userName: Lab User
+                email: lab@example.org
+                phoneNo: '0700000000'
+      responses:
+        '200':
+          description: Profile applied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+                      action:
+                        type: string
+                        enum: [created, updated]
+                      caller:
+                        type: string
+                        enum: [lab, user]
+                  timestamp:
+                    type: integer
+              example:
+                status: success
+                data:
+                  userId: 8fisqdpu-wpkn-jo19-jo19-ku9fk2207e89
+                  action: updated
+                  caller: lab
+                timestamp: 1756800000
+        '400':
+          description: profile missing, or userName missing, or neither userId nor email
+          content:
+            application/json:
+              example:
+                status: failed
+                error:
+                  code: invalid_request
+                  message: userName is required
+                timestamp: 1756800000
+        '401':
+          description: No usable credential
+          content:
+            application/json:
+              example:
+                status: failed
+                error:
+                  code: invalid_credential
+                  message: A valid user token, or a lab token with its labId, is required.
+                timestamp: 1756800000
+        '500':
+          description: The profile could not be saved
+          content:
+            application/json:
+              example:
+                status: failed
+                error:
+                  code: server_error
+                  message: The profile could not be saved. Please try again later.
+                timestamp: 1756800000
   "/generate-manifest.php":
     post:
       tags:
