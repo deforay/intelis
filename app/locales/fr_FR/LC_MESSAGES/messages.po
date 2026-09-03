@@ -638,7 +638,7 @@ msgstr "CD4"
 #: app/vl/results/vl-print-results.php:804 app/vl/results/vlTestResult.php:147
 #: app/vl/results/vlTestResult.php:310
 msgid "Testing Lab"
-msgstr "Labo de test"
+msgstr "Laboratoire d'analyse"
 
 #: app/admin/api-dashboard/api-dashboard.php:281
 #: app/cd4/management/cd4-export-data.php:110
@@ -668,7 +668,7 @@ msgstr "Labo de test"
 #: app/vl/requests/vl-requests.php:451 app/vl/results/vl-failed-results.php:103
 #: app/vl/results/vlTestResult.php:151
 msgid "Please select Testing Lab"
-msgstr "Veuillez sélectionner le laboratoire de test"
+msgstr "Veuillez sélectionner le laboratoire d'analyse"
 
 #: app/admin/api-dashboard/api-dashboard.php:288
 #: app/admin/monitoring/lab-sync-details.php:115
@@ -2156,11 +2156,11 @@ msgstr "API/EMR %"
 
 #: app/admin/api-dashboard/api-dashboard.php:601
 msgid "Registered via API/EMR but Not Received at Testing Lab"
-msgstr "Enregistré via API/EMR mais non reçu au laboratoire de test"
+msgstr "Enregistré via API/EMR mais non reçu au laboratoire d'analyse"
 
 #: app/admin/api-dashboard/api-dashboard.php:603
 msgid "Registered via API/EMR and Received at Testing Lab"
-msgstr "Enregistré via API/EMR et reçu au laboratoire de test"
+msgstr "Enregistré via API/EMR et reçu au laboratoire d'analyse"
 
 #: app/admin/api-dashboard/api-dashboard.php:604
 msgid "Registered via API/EMR and Tested"
@@ -2192,7 +2192,7 @@ msgstr ""
 
 #: app/admin/api-dashboard/api-dashboard.php:640
 msgid "Not Yet Received at Testing Lab"
-msgstr "Pas encore reçu au laboratoire de test"
+msgstr "Pas encore reçu au laboratoire d'analyse"
 
 #: app/admin/api-dashboard/api-dashboard.php:641
 msgid "≤ 7 Days"
@@ -6333,7 +6333,7 @@ msgstr "Actualiser"
 #: app/admin/monitoring/sources-of-requests.php:124
 #: app/admin/monitoring/sources-of-requests.php:237
 msgid "Name of the Testing Lab"
-msgstr "Nom du laboratoire de test"
+msgstr "Nom du laboratoire d'analyse"
 
 #: app/admin/monitoring/sample-referral-network.php:344
 msgid "Enter sample code"
@@ -6345,7 +6345,7 @@ msgstr "Afficher sur la carte"
 
 #: app/admin/monitoring/sample-referral-network.php:350
 msgid "Testing Labs only"
-msgstr "Réservé aux laboratoires d'essais"
+msgstr "Réservé aux laboratoires d'analyse"
 
 #: app/admin/monitoring/sample-referral-network.php:351
 msgid "Referring Facilities only"
@@ -6388,7 +6388,7 @@ msgstr "Établissements de référence"
 #: app/vl/results/vl-print-results.php:155
 #: app/vl/results/vl-print-results.php:525
 msgid "Testing Labs"
-msgstr "Labo de test"
+msgstr "Laboratoires d'analyse"
 
 #: app/admin/monitoring/sample-referral-network.php:381
 msgid "Referral Links"
@@ -6638,7 +6638,7 @@ msgstr "Nombre d'échantillons ayant fait l'objet d'un accusé de réception"
 
 #: app/admin/monitoring/sources-of-requests.php:202
 msgid "No. of Samples Received at Testing Lab"
-msgstr "Nombre d'échantillons reçus au laboratoire de test"
+msgstr "Nombre d'échantillons reçus au laboratoire d'analyse"
 
 #: app/admin/monitoring/sources-of-requests.php:203 app/batch/batches.php:115
 #: app/cd4/management/get-sample-status.php:357
@@ -7037,7 +7037,7 @@ msgstr "Commande de file d'attente"
 #: app/vl/program-management/vl-sample-status.php:215
 #: app/vl/requests/vl-requests.php:899 app/vl/results/vlTestResult.php:361
 msgid "Select Testing Lab"
-msgstr "Sélectionner le laboratoire de test"
+msgstr "Sélectionner le laboratoire d'analyse"
 
 #: app/admin/monitoring/sync-status.php:574
 #: app/cd4/management/cd4-clinic-report.php:611
@@ -9756,7 +9756,7 @@ msgstr "Résultat CD4"
 #: app/vl/program-management/highViralLoad.php:852
 #: app/vl/program-management/highViralLoad.php:1104
 msgid "Testing Lab Name"
-msgstr "Nom du laboratoire de test"
+msgstr "Nom du laboratoire d'analyse"
 
 #: app/cd4/management/cd4-clinic-report.php:315
 #: app/cd4/management/cd4-clinic-report.php:412
@@ -10306,7 +10306,7 @@ msgstr "En attente d'approbation"
 #: app/tb/management/tb-export-data.php:149 app/tb/requests/tb-requests.php:220
 #: app/vl/program-management/vl-export-data.php:195
 msgid "Registered At Testing Lab"
-msgstr "Enregistré au laboratoire de test"
+msgstr "Enregistré au laboratoire d'analyse"
 
 #: app/cd4/management/cd4-export-data.php:135
 #: app/cd4/results/cd4-failed-results.php:142
@@ -12788,7 +12788,7 @@ msgstr "Échantillon communautaire"
 #: app/cd4/requests/cd4-requests.php:437
 #: app/cd4/results/cd4-manual-results.php:150
 msgid "Please Select Testing Lab"
-msgstr "Veuillez sélectionner le laboratoire de test"
+msgstr "Veuillez sélectionner le laboratoire d'analyse"
 
 #: app/cd4/requests/cd4-requests.php:503 app/cd4/requests/cd4-requests.php:533
 msgid "Add CD4 Request Form"
@@ -13743,7 +13743,7 @@ msgstr "Sélectionner la date de réception de l'échantillon"
 #: app/vl/results/vl-print-results.php:159
 #: app/vl/results/vl-print-results.php:529
 msgid "Please select testing labs"
-msgstr "Labo de test"
+msgstr "Veuillez sélectionner les laboratoires d'analyse"
 
 #: app/cd4/results/cd4-print-results.php:211
 #: app/covid-19/results/covid-19-print-results.php:213
@@ -14804,7 +14804,7 @@ msgstr "Saisir le résultat"
 #: app/hepatitis/results/pdf/result-pdf-rwanda.php:446
 #: app/vl/results/pdf/result-pdf-rwanda.php:372
 msgid "Report generated at Testing Lab"
-msgstr "Rapport généré par le laboratoire de test"
+msgstr "Rapport généré par le laboratoire d'analyse"
 
 #: app/cd4/results/view.php:16 app/covid-19/results/view.php:20
 #: app/eid/results/view.php:16 app/generic-tests/results/view.php:16
@@ -16877,7 +16877,7 @@ msgstr "Imprimante :"
 #: app/covid-19/results/edit-covid-19-qc-data.php:182
 #: app/covid-19/results/forms/update-cameroon-result.php:360
 msgid "Testing Point"
-msgstr "Labo de test"
+msgstr "Laboratoire d'analyse"
 
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
@@ -17107,7 +17107,7 @@ msgstr "Nom du projet"
 #: app/tb/results/forms/update-burkina-faso.php:389
 #: app/tb/results/forms/update-rwanda.php:164
 msgid "Testing Laboratory"
-msgstr "Laboratoire de test"
+msgstr "Laboratoire d'analyse"
 
 #: app/covid-19/requests/forms/add-cameroon.php:193
 #: app/covid-19/requests/forms/edit-cameroon.php:189
@@ -17811,7 +17811,7 @@ msgstr "Réservé à l'usage des laboratoires"
 #: app/covid-19/requests/forms/edit-cameroon.php:388
 #: app/covid-19/results/forms/update-cameroon-result.php:337
 msgid "Please select Testing Testing Laboratory"
-msgstr "Veuillez sélectionner le laboratoire de test"
+msgstr "Veuillez sélectionner le laboratoire d'analyse"
 
 #: app/covid-19/requests/forms/add-cameroon.php:396
 #: app/covid-19/requests/forms/edit-cameroon.php:392
@@ -18749,7 +18749,7 @@ msgstr "Échantillons actuellement enregistrés à HC"
 
 #: app/dashboard/getSampleCount.php:169
 msgid "Samples Currently Registered at Testing Lab"
-msgstr "Échantillons actuellement enregistrés au laboratoire de test"
+msgstr "Échantillons actuellement enregistrés au laboratoire d'analyse"
 
 #: app/dashboard/getSampleCount.php:171
 msgid "(Results not yet available)"
@@ -18809,7 +18809,7 @@ msgstr "Collectés"
 
 #: app/dashboard/getSampleResult.php:608
 msgid "Registered at Testing Lab"
-msgstr "Enregistré auprès du laboratoire d'essais"
+msgstr "Enregistré auprès du laboratoire d'analyse"
 
 #: app/dashboard/getSampleResult.php:610
 msgid "On Hold"
@@ -18870,7 +18870,7 @@ msgstr "Échantillons enregistrés sur les sites de collecte"
 
 #: app/dashboard/getSampleResult.php:1214
 msgid "Samples Registered at Testing Lab"
-msgstr "Échantillons enregistrés au laboratoire de test"
+msgstr "Échantillons enregistrés au laboratoire d'analyse"
 
 #: app/dashboard/getSampleResult.php:1216
 msgid "Samples Failed"
@@ -19177,7 +19177,7 @@ msgstr "Etablissement de santé"
 #: app/eid/management/export-eid-results.php:41
 #: app/eid/management/export-eid-results.php:43
 msgid "Testing Lab Name (Hub)"
-msgstr "Nom du laboratoire d'essais (pôle)"
+msgstr "Nom du laboratoire d'analyse (pôle)"
 
 #: app/eid/management/export-eid-results.php:41
 #: app/eid/management/export-eid-results.php:43
@@ -19599,7 +19599,7 @@ msgstr "Plateforme de test EID"
 #: app/eid/management/pmtctCascadeReportExport.php:361
 #: app/eid/management/pmtctCascadeReportExport.php:552
 msgid "EID Testing Lab"
-msgstr "Laboratoire d'essais EID"
+msgstr "Laboratoire d'analyse EID"
 
 #: app/eid/management/pmtct-cascade-report.php:422
 #: app/eid/management/pmtct-cascade-report.php:885
@@ -19630,7 +19630,7 @@ msgstr "Plateforme de test VL"
 #: app/eid/management/pmtct-cascade-report.php:427
 #: app/eid/management/pmtctCascadeReportExport.php:466
 msgid "VL Testing Lab"
-msgstr "Laboratoire d'essais VL"
+msgstr "Laboratoire d'analyse VL"
 
 #: app/eid/management/pmtct-cascade-report.php:476
 msgid "Back to list"
@@ -19985,7 +19985,7 @@ msgstr "Filtre : Province"
 
 #: app/eid/management/pmtctCascadeReportExport.php:300
 msgid "Filter: Testing Lab"
-msgstr "Filtre : Laboratoire d'essais"
+msgstr "Filtre : Laboratoire d'analyse"
 
 #: app/eid/management/pmtctCascadeReportExport.php:303
 msgid "Indicator"
@@ -20716,7 +20716,7 @@ msgstr "Téléphone du demandeur d'échantillon"
 #: app/eid/requests/forms/edit-burkina-faso.php:362
 #: app/eid/results/forms/update-burkina-faso-result.php:352
 msgid "Sample Received Date (at Testing Lab)"
-msgstr "Date de réception de l'échantillon (au laboratoire de test)"
+msgstr "Date de réception de l'échantillon (au laboratoire d'analyse)"
 
 #: app/eid/requests/forms/add-burkina-faso.php:379
 #: app/eid/requests/forms/edit-burkina-faso.php:385
@@ -20801,7 +20801,7 @@ msgstr "Veuillez saisir le code de la clinique/du centre de santé"
 #: app/eid/results/forms/update-cameroon-result.php:150
 #: app/eid/results/forms/update-cameroon-result.php:516
 msgid "Please select Testing Lab name"
-msgstr "Veuillez sélectionner le nom du laboratoire de test"
+msgstr "Veuillez sélectionner le nom du laboratoire d'analyse"
 
 #: app/eid/requests/forms/add-cameroon.php:189
 #: app/eid/requests/forms/edit-cameroon.php:217
@@ -24130,7 +24130,7 @@ msgstr "Veuillez sélectionner l'échantillon reçu à la date du Hub"
 #: app/vl/results/forms/update-burkina-faso-result.php:381
 #: app/vl/results/forms/update-cameroon-result.php:585
 msgid "Date Sample Received at Testing Lab"
-msgstr "Date de réception de l'échantillon au laboratoire de test"
+msgstr "Date de réception de l'échantillon au laboratoire d'analyse"
 
 #: app/generic-tests/requests/_request-form-body.php:701
 msgid "Sample Received at LAB Date"
@@ -24273,7 +24273,7 @@ msgstr "Tous les champs sont obligatoires, sauf celui des commentaires"
 #: app/tb/results/forms/update-rwanda.php:564
 #: app/tb/results/forms/update-rwanda.php:819
 msgid "Please select testing laboratory"
-msgstr "Veuillez sélectionner le laboratoire de test"
+msgstr "Veuillez sélectionner le laboratoire d'analyse"
 
 #: app/generic-tests/requests/_test-section.php:119
 msgid "Select lab"
@@ -27583,7 +27583,7 @@ msgstr "Sélectionner une autorisation"
 
 #: app/setup/getTestingLabOptions.php:13
 msgid "-- Choose Testing Lab --"
-msgstr "-- Choisir le laboratoire de test --"
+msgstr "-- Choisir le laboratoire d'analyse --"
 
 #: app/setup/index.php:41
 msgid "Lab Sample Management System"
@@ -27768,7 +27768,7 @@ msgstr "Veuillez saisir un code manifeste valide pour l'activation"
 msgid "Please select when the samples were received at the Testing Lab"
 msgstr ""
 "Veuillez indiquer la date à laquelle les échantillons ont été reçus par le "
-"laboratoire de test"
+"laboratoire d'analyse"
 
 #: app/specimen-referral-manifest/_add-samples-from-manifest-body.php:226
 msgid "Samples from this Manifest have been activated"
@@ -27834,7 +27834,7 @@ msgstr "Une erreur est survenue. Veuillez réessayer."
 #: app/specimen-referral-manifest/add-manifest-helper.php:21
 #: app/specimen-referral-manifest/edit-manifest-helper.php:22
 msgid "Please select the Testing lab"
-msgstr "Veuillez sélectionner le laboratoire de test"
+msgstr "Veuillez sélectionner le laboratoire d'analyse"
 
 #: app/specimen-referral-manifest/add-manifest.php:127
 #: app/specimen-referral-manifest/add-manifest.php:133
@@ -27844,7 +27844,7 @@ msgstr "Créer un manifeste de référence des échantillons"
 #: app/specimen-referral-manifest/add-manifest.php:203
 #: app/specimen-referral-manifest/edit-manifest.php:173
 msgid "Choose one test lab"
-msgstr "Choisissez un laboratoire de test"
+msgstr "Choisissez un laboratoire d'analyse"
 
 #: app/specimen-referral-manifest/add-manifest.php:214
 #: app/specimen-referral-manifest/edit-manifest.php:202
@@ -27903,7 +27903,7 @@ msgstr "Veuillez sélectionner le statut du manifeste"
 
 #: app/specimen-referral-manifest/edit-manifest.php:258
 msgid "Please select testing lab"
-msgstr "Veuillez sélectionner un laboratoire de test"
+msgstr "Veuillez sélectionner un laboratoire d'analyse"
 
 #: app/specimen-referral-manifest/edit-manifest.php:271
 msgid "Reason for changing manifest"
@@ -27915,7 +27915,7 @@ msgstr "Raison de la modification de ce manifeste"
 
 #: app/specimen-referral-manifest/edit-manifest.php:499
 msgid "Please select the Testing Lab"
-msgstr "Veuillez sélectionner le laboratoire de test"
+msgstr "Veuillez sélectionner le laboratoire d'analyse"
 
 #: app/specimen-referral-manifest/generateCD4Manifest.php:82
 msgid "CLUSTERS OF DIFFERENTIATION 4 Sample Referral Manifest"
@@ -27988,16 +27988,16 @@ msgstr "Déplacer le manifeste"
 
 #: app/specimen-referral-manifest/move-manifest.php:151
 msgid "Manifest From Testing Lab"
-msgstr "Manifeste du laboratoire de test"
+msgstr "Manifeste du laboratoire d'analyse"
 
 #: app/specimen-referral-manifest/move-manifest.php:222
 msgid "Assign to Testing Lab"
-msgstr "Affectation au laboratoire de test"
+msgstr "Affectation au laboratoire d'analyse"
 
 #: app/specimen-referral-manifest/move-manifest.php:227
 msgid "Choose the Testing Lab where these manifests are being moved to"
 msgstr ""
-"Choisissez le laboratoire de test vers lequel ces manifestes sont transférés"
+"Choisissez le laboratoire d'analyse vers lequel ces manifestes sont transférés"
 
 #: app/specimen-referral-manifest/move-manifest.php:237
 msgid "Reason for Moving Manifest(s)"
@@ -28812,7 +28812,7 @@ msgstr "Consulter un autre laboratoire"
 
 #: app/system/translate-strings.php:104
 msgid "Sample Registered at Testing Lab"
-msgstr "Échantillon enregistré au laboratoire de test"
+msgstr "Échantillon enregistré au laboratoire d'analyse"
 
 #: app/system/translate-strings.php:107
 msgid "Sample Registered at Health Center"
@@ -29584,15 +29584,15 @@ msgstr "Référé"
 
 #: app/tb/management/_tbCascadeFunnel.php:222
 msgid "Received at Target"
-msgstr "Reçu au labo de test"
+msgstr "Reçu au laboratoire d'analyse"
 
 #: app/tb/management/_tbCascadeFunnel.php:223
 msgid "Tested at Target"
-msgstr "Testé au labo de test"
+msgstr "Testé au laboratoire d'analyse"
 
 #: app/tb/management/_tbCascadeFunnel.php:224
 msgid "Accepted at Target"
-msgstr "Accepté au labo de test"
+msgstr "Accepté au laboratoire d'analyse"
 
 #: app/tb/management/getSampleStatus.php:164
 msgid "TB Samples Status Overview"
@@ -29755,7 +29755,7 @@ msgstr "Laboratoire primaire"
 
 #: app/tb/management/tb-cascade-report.php:353
 msgid "Performing Lab"
-msgstr "Laboratoire de création scénique"
+msgstr "Laboratoire exécutant"
 
 #: app/tb/management/tb-cascade-report.php:354
 msgid "Lab Role"
@@ -30174,7 +30174,7 @@ msgstr "Veuillez sélectionner un centre de dépistage de la tuberculose agréé
 #: app/tb/requests/forms/edit-rwanda.php:182
 #: app/tb/results/forms/update-rwanda.php:167
 msgid "Please select Testing Laboratory"
-msgstr "Veuillez sélectionner le laboratoire de test"
+msgstr "Veuillez sélectionner le laboratoire d'analyse"
 
 #: app/tb/requests/forms/add-rwanda.php:166
 #: app/tb/requests/forms/edit-rwanda.php:194
@@ -30539,7 +30539,7 @@ msgstr "Sélectionnez un centre de dépistage de la tuberculose agréé"
 #: app/tb/requests/forms/edit-rwanda.php:1839
 #: app/tb/results/forms/update-rwanda.php:1708
 msgid "Select testing lab"
-msgstr "Sélectionner un laboratoire de test"
+msgstr "Sélectionner un laboratoire d'analyse"
 
 #: app/tb/requests/forms/add-sierraleone.php:177
 #: app/tb/requests/forms/edit-sierraleone.php:207
@@ -30815,7 +30815,7 @@ msgstr "Veuillez sélectionner le rôle de cet utilisateur"
 
 #: app/users/addUser.php:159 app/users/editUser.php:206
 msgid "Select the testing lab this user operates as"
-msgstr "Sélectionnez le laboratoire de test sous lequel cet utilisateur opère"
+msgstr "Sélectionnez le laboratoire d'analyse sous lequel cet utilisateur opère"
 
 #: app/users/addUser.php:171 app/users/editUser.php:221
 msgid "AuthToken"
@@ -33031,7 +33031,7 @@ msgid ""
 "Sample Received at Testing Lab Date cannot be earlier than Sample Collection "
 "Date"
 msgstr ""
-"Échantillon reçu au laboratoire de test - La date ne peut être antérieure à "
+"Échantillon reçu au laboratoire d'analyse - La date ne peut être antérieure à "
 "la date de prélèvement de l'échantillon"
 
 #: public/assets/js/dates.js.php:298
@@ -33100,7 +33100,7 @@ msgstr "Manifeste"
 #: public/assets/js/main.js.php:284
 msgid "is registered to a different testing lab and cannot be activated here"
 msgstr ""
-"est enregistré auprès d'un autre laboratoire d'essais et ne peut pas être "
+"est enregistré auprès d'un autre laboratoire d'analyse et ne peut pas être "
 "activé ici"
 
 #: public/assets/js/main.js.php:290
@@ -33108,7 +33108,7 @@ msgid ""
 "No testing lab is assigned to your account. Please contact your "
 "administrator."
 msgstr ""
-"Aucun laboratoire de test n'est associé à votre compte. Veuillez contacter "
+"Aucun laboratoire d'analyse n'est associé à votre compte. Veuillez contacter "
 "votre administrateur."
 
 #: public/assets/js/main.js.php:297
