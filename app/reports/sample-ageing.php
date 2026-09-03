@@ -56,11 +56,11 @@ $stageLabels = [
 // Shown under each stage name in the table, not just on hover: "awaiting
 // release" in particular does not tell a reader what is actually missing.
 $stageHints = [
-    'atFacility' => _translate('Registered, with no record of a lab receiving it'),
-    'atLab' => _translate('Received by a lab and not tested yet, including failed, on hold and reordered'),
-    'awaitingApproval' => _translate('Tested, but the result has not been approved yet'),
-    'awaitingRelease' => _translate('Approved and final, but nothing records the result reaching the facility that asked for it'),
-    'released' => _translate('The result left the lab: printed, dispatched, e-mailed, sent to its source or fetched over the API'),
+    'atFacility' => _translate('Registered at the collection point. No lab has recorded receiving it'),
+    'atLab' => _translate('A lab has the sample but has not tested it yet. Includes failed, on hold and reordered'),
+    'awaitingApproval' => _translate('Tested. The result is waiting for someone to approve it'),
+    'awaitingRelease' => _translate('Result is ready, but it has not been printed, sent or downloaded, so the facility may not have it'),
+    'released' => _translate('Result was printed, sent to the facility, or downloaded by the facility system'),
 ];
 $exitLabels = [
     'rejected' => _translate('Rejected'),
@@ -319,8 +319,8 @@ $exitLabels = [
                                         <li><strong><?= _htmlTranslate('At facility'); ?></strong>: <?= _htmlTranslate('registered, with no lab receipt recorded. Dispatch from the facility is not tracked, so a sample stays here until a lab records receiving it.'); ?></li>
                                         <li><strong><?= _htmlTranslate('At lab, awaiting test'); ?></strong>: <?= _htmlTranslate('received at a lab, not yet tested; also failed, on hold and reordered samples.'); ?></li>
                                         <li><strong><?= _htmlTranslate('Tested, awaiting approval'); ?></strong>: <?= _htmlTranslate('a test date or a result is recorded, but the result is not yet approved.'); ?></li>
-                                        <li><strong><?= _htmlTranslate('Approved, awaiting release'); ?></strong>: <?= _htmlTranslate('the result is approved and final, but no delivery of it has been recorded: it has not been printed, dispatched, e-mailed, sent to its source or fetched over the API. The result exists in the system and nothing shows it reaching the facility that asked for it. A large number here usually means results are being handed over in a way the system is not recording, rather than a testing delay.'); ?></li>
-                                        <li><strong><?= _htmlTranslate('Released'); ?></strong>: <?= _htmlTranslate('a delivery of the result is recorded: dispatched, printed (here or on the connected system), e-mailed, sent to its source, or fetched over the API.'); ?></li>
+                                        <li><strong><?= _htmlTranslate('Approved, awaiting release'); ?></strong>: <?= _htmlTranslate('the result is approved and ready, and nobody has printed it, sent it (by dispatch, e-mail or SMS), or had the facility system download it. Syncing to the central system does not count here, because a result arriving centrally is not the same as the facility receiving it. The result may still have been passed on by phone or on paper, which cannot be seen from here. A large number usually means results are reaching facilities in a way nobody is recording, rather than a delay in testing.'); ?></li>
+                                        <li><strong><?= _htmlTranslate('Released'); ?></strong>: <?= _htmlTranslate('the result was printed (here or on the connected system), dispatched, e-mailed, sent by SMS, sent back to the system that requested it, or downloaded over the API. Any one of these counts, because a lab that e-mails results never prints or dispatches them.'); ?></li>
                                     </ul>
                                 </dd>
 
