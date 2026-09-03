@@ -170,7 +170,7 @@ final class SystemService
         $activeModules = [];
 
         if ($onlyTests === false) {
-            $activeModules = ['admin', 'dashboard', 'common'];
+            $activeModules = ['admin', 'dashboard', 'common', 'reports'];
         }
         return array_merge($activeModules, array_keys(array_filter(SYSTEM_CONFIG['modules'])));
     }
