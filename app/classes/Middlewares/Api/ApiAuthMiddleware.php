@@ -133,6 +133,11 @@ readonly class ApiAuthMiddleware implements MiddlewareInterface
             return true;
         }
 
+        // v2 handlers authenticate their own caller: a user token or a lab token.
+        if (str_starts_with($uri, '/api/v2/')) {
+            return true;
+        }
+
 
         if (in_array($uri, $excludedRoutes, true)) {
             return true;

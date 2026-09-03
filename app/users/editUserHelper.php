@@ -252,55 +252,12 @@ try {
 
 
         if (!empty($general->getRemoteURL()) && $general->isLISInstance()) {
-            $apiData = $_POST;
-            // We don't want to unintentionally end up creating admin users on STS or
-            // end up modifying existing user roles or statuses
-            foreach (['loginId', 'password', 'hashAlgorithm', 'role'] as $unsetKey) {
-                unset($apiData[$unsetKey]);
-            }
-            $apiData['userId'] = base64_encode($userId);
-            $apiUrl = $general->getRemoteURL() . "/api/v1.1/user/save-user-profile.php";
-
-            if ($signatureImagePath !== null && $signatureImagePath !== '' && $signatureImagePath !== '0' && MiscUtility::isImageValid($signatureImagePath)) {
-                // Mirror the signature into JSON so the cloud API can still persist it
-                // when multipart file parsing is altered by proxies or PHP config.
-                $apiData['signature_image_content'] = base64_encode(file_get_contents($signatureImagePath));
-                $apiData['signature_image_filename'] = basename($signatureImagePath);
-            }
-
-            $multipart = [
-                [
-                    'name' => 'post',
-                    'contents' => json_encode($apiData)
-                ],
-                [
-                    'name' => 'x-api-key',
-                    'contents' => MiscUtility::generateRandomString(18)
-                ]
-            ];
-
-            if ($signatureImagePath !== null && $signatureImagePath !== '' && $signatureImagePath !== '0' && MiscUtility::isImageValid($signatureImagePath)) {
-                $multipart[] = [
-                    'name' => 'sign',
-                    'contents' => fopen($signatureImagePath, 'r'),
-                    'filename' => basename($signatureImagePath),
-                    'headers' => [
-                        'Content-Type' => mime_content_type($signatureImagePath) ?: 'application/octet-stream',
-                    ],
-                ];
-            }
-
-            $client = new Client();
-            try {
-                $response = $client->post($apiUrl, ['multipart' => $multipart]);
-            } catch (Throwable $e) {
-                // Handle the exception
-                LoggerUtility::log("error", $e->getMessage(), [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
-            }
+            // Mirror the profile to the STS. The service drops credentials and role
+            // before sending; the STS drops them again on receipt.
+            $profile = $_POST;
+            $profile['userId'] = $userId;
+            ContainerRegistry::get(\App\Services\UserProfileSyncService::class)
+                ->push($profile, $signatureImagePath ?? null);
         }
     }
 
