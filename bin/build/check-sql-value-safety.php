@@ -162,6 +162,26 @@ const API_LAUNDERED_PATTERNS = [
     'id list interpolated without $db->inIntList()' => '/IN \\(\x27\\$(facilityId|sampleStatus)\x27\\)/',
 ];
 
+/**
+ * Positive form of the same rule for the API files: whenever an endpoint reads a
+ * given filter, the encoder for that filter has to be present somewhere in the
+ * file. Deleting an $db->escape() or $db->inIntList() call turns the file red
+ * even though the remaining line is a spelling the negative patterns never saw.
+ * marker => required, both regexes.
+ */
+const API_REQUIRED_ENCODERS = [
+    '/\\$input\\[\x27uniqueId\x27\\]/' => '/array_map\\(\\$db->escape\\(\\.\\.\\.\\), (\\(array\\) )?\\$uniqueId\\)/',
+    '/\\$input\\[\x27sampleCode\x27\\]/' => '/array_map\\(\\$db->escape\\(\\.\\.\\.\\), (\\(array\\) )?\\$sampleCode\\)/',
+    '/\\$input\\[\x27facility\x27\\]/' => '/\\$db->inIntList\\((\\$facilityId|\\$input\\[\x27facility\x27\\])\\)/',
+    '/\\$input\\[\x27sampleStatus\x27\\]/' => '/\\$db->inIntList\\(\\$sampleStatus\\)/',
+    '/\\$input\\[\x27sampleCollectionDate\x27\\]\\[0\\]/' => '/\\$db->escape\\(\\$from\\)/',
+    '/\\$input\\[\x27sampleCollectionDate\x27\\]\\[1\\]/' => '/\\$db->escape\\(\\$to\\)/',
+    '/\\$input\\[\x27lastModifiedDateTime\x27\\]/' => '/\\$db->escape\\(DateUtility::isoDateFormat\\(\\$input\\[\x27lastModifiedDateTime\x27\\]\\)\\)/',
+    '/\\$input\\[\x27patientName\x27\\]/' => '/\\$db->escape\\(\\$input\\[\x27patientName\x27\\]\\)/',
+    '/\\$input\\[\x27childName\x27\\]/' => '/\\$db->escape\\(\\$input\\[\x27childName\x27\\]\\)/',
+    '/\\$input\\[\x27patientId\x27\\]/' => '/array_map\\(\\$db->escape\\(\\.\\.\\.\\), /',
+];
+
 const RAW_VALUE_PATTERNS = [
     'concatenated directly after a string' => '/\.\s*\$_(POST|GET|REQUEST)\s*\[/',
     'concatenated after only a string cast' => '/\.\s*\(string\)\s*\$_(POST|GET|REQUEST)\s*\[/',
@@ -215,6 +235,23 @@ foreach ($covered as $name => $rule) {
                 ];
                 break;
             }
+        }
+    }
+}
+
+// Positive check for the API files: every filter read has its encoder present.
+foreach (API_COVERED_FILES as $name) {
+    $path = REPO_DIR . '/' . $name;
+    if (!is_file($path)) {
+        continue;
+    }
+    $source = (string) file_get_contents($path);
+    foreach (API_REQUIRED_ENCODERS as $marker => $required) {
+        if (preg_match($marker, $source) && !preg_match($required, $source)) {
+            $violations[] = [
+                'where' => $name,
+                'hint' => 'reads ' . trim($marker, '/') . ' but its encoder is missing (expected ' . trim($required, '/') . ')',
+            ];
         }
     }
 }
