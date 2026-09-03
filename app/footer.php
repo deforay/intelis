@@ -36,6 +36,22 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 				&nbsp;&nbsp;<?= "v" . VERSION; ?><?php if ($commitShaShort): ?> <span class="text-muted" style="font-weight:normal;">(<?= htmlspecialchars($commitShaShort, ENT_QUOTES, 'UTF-8'); ?>)</span><?php endif; ?>
 			</small>
 			<?php
+			// Flag a half-applied upgrade next to the version it disagrees with. A
+			// migration that stops on an error leaves sc_version behind the code and
+			// says so only in the migration log, which nobody reads until something
+			// breaks. Logged-in users only, so it never shows on the login screen.
+			$schemaMismatch = isset($_SESSION['userName']) ? $general->getSchemaVersionMismatch() : null;
+			if (!empty($schemaMismatch)) {
+				$mismatchNote = $schemaMismatch['pending']
+					? _translate("database not fully migrated")
+					: _translate("code older than database");
+			?>
+				<small class="pull-right" style="color:#b94a48;font-weight:bold;"
+					title="<?= _translate("App version"); ?>: <?= htmlspecialchars($schemaMismatch['appVersion'], ENT_QUOTES, 'UTF-8'); ?> &middot; <?= _translate("DB version"); ?>: <?= htmlspecialchars($schemaMismatch['dbVersion'], ENT_QUOTES, 'UTF-8'); ?>">
+					&#9888; <?= _translate("DB ver."); ?> <?= htmlspecialchars($schemaMismatch['dbVersion'], ENT_QUOTES, 'UTF-8'); ?> (<?= htmlspecialchars($mismatchNote, ENT_QUOTES, 'UTF-8'); ?>)&nbsp;&nbsp;
+				</small>
+			<?php } ?>
+			<?php
 
 			if (!empty($remoteURL) && isset($_SESSION['userName']) && $general->isLISInstance()) { ?>
 
