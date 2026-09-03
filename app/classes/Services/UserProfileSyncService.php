@@ -12,6 +12,7 @@ use DomainException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use InvalidArgumentException;
+use RuntimeException;
 use Throwable;
 
 /**
@@ -122,8 +123,21 @@ final class UserProfileSyncService
         if (!empty($existing)) {
             $targetId = (string) $existing['user_id'];
             $this->db->where('user_id', $targetId);
+            if ($labId !== null) {
+                // The ownership rule is part of the write itself, so two labs
+                // claiming the same unstamped user at once cannot both win: the
+                // second update matches no row, and the re-read below says so.
+                $this->db->where("(testing_lab_id IS NULL OR testing_lab_id = $labId)");
+            }
             if ($this->db->update('user_details', $data) === false) {
                 throw new InvalidArgumentException(_translate('The profile could not be saved'));
+            }
+            if ($labId !== null) {
+                $this->db->where('user_id', $targetId);
+                $owner = $this->db->getValue('user_details', 'testing_lab_id');
+                if ($owner === null || (int) $owner !== $labId) {
+                    throw new DomainException(_translate('This user belongs to another lab'));
+                }
             }
             $action = 'updated';
         } else {
@@ -141,7 +155,9 @@ final class UserProfileSyncService
         $signatureFile = $this->storeSignature($profile['signature'] ?? null, $targetId);
         if ($signatureFile !== null) {
             $this->db->where('user_id', $targetId);
-            $this->db->update('user_details', ['user_signature' => $signatureFile]);
+            if ($this->db->update('user_details', ['user_signature' => $signatureFile]) === false) {
+                throw new RuntimeException('The signature was stored but could not be recorded for ' . $targetId);
+            }
         }
 
         return ['userId' => $targetId, 'action' => $action];
