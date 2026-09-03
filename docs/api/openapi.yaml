@@ -884,7 +884,10 @@ paths:
       summary: Login
       description: Unauthenticated. Exchanges a user name and password for the API
         token used as the Bearer credential on every other call. The status field
-        is the integer 1 on success and 2 on failure.
+        is the integer 1 on success, the integer 2 when the login, the password or
+        the account's app access is rejected, and the string failed when the
+        server could not act on the request, with message saying why (a missing
+        field, or an internal fault to retry). HTTP is 200 in every case on v1.1.
       security: []
       requestBody:
         required: true
@@ -954,14 +957,22 @@ paths:
                   appMenuName: InteLIS
                   access: {}
         '500':
-          description: Login failed
+          description: Never used on v1.1; every outcome is a 200 whose body carries status 1, 2 or failed
           content:
             application/json:
-              example:
-                status: 2
-                message: Login failed. Please contact system administrator.
-                timestamp: 1756800000
-                transactionId: 01J6Z0000000000000000000
+              examples:
+                rejected:
+                  value:
+                    status: 2
+                    message: Login failed. Please contact system administrator.
+                    timestamp: 1756800000
+                    transactionId: 01J6Z0000000000000000000
+                invalid:
+                  value:
+                    status: failed
+                    message: password is required
+                    timestamp: 1756800000
+                    transactionId: 01J6Z0000000000000000000
   "/vl/get-request.php":
     post:
       tags:
