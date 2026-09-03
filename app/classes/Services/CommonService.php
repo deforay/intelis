@@ -2005,7 +2005,8 @@ final class CommonService
      */
     public function getDistrictDetailsApi($user = null, $onlyActive = false, $updatedDateTime = null): array
     {
-        // Query to get districts with their province information
+        // Districts with their province, limited to districts that have a facility
+        // the user can see when a user is given.
         $query = "
         SELECT DISTINCT
             d.geo_id as district_id,
@@ -2023,7 +2024,6 @@ final class CommonService
 
         $where = [];
 
-        // Add user facility mapping filter if user is provided
         if (!empty($user)) {
             $facilityMap = $this->facilitiesService->getUserFacilityMap($user);
             if (!empty($facilityMap)) {
@@ -2031,41 +2031,48 @@ final class CommonService
             }
         }
 
-        // Add active status filter if requested
         if ($onlyActive) {
             $where[] = " f.status = 'active'";
         }
 
-        // Add last update datetime filter if provided
         if ($updatedDateTime) {
-            $where[] = " d.updated_datetime >= '$updatedDateTime'";
+            $where[] = " d.updated_datetime >= '" . $this->db->escape($updatedDateTime) . "'";
         }
 
-        // Combine all WHERE conditions
         if ($where !== []) {
             $query .= " AND " . implode(" AND ", $where);
         }
 
-        // Order by district name
         $query .= " ORDER BY d.geo_name ASC";
 
-        // Execute the query
-        $result = $this->db->rawQuery($query);
+        $districts = $this->db->rawQuery($query);
+        if ($districts === []) {
+            return [];
+        }
+
+        // Every facility of every listed district in one query, grouped here.
+        // This used to be one query per district: 440 round trips on a national
+        // instance, and most of the time the app waited for init.php.
+        $districtIds = $this->db->inIntList(array_column($districts, 'district_id'));
+        $facilityRows = $this->db->rawQuery(
+            "SELECT facility_id, facility_name, facility_district_id
+             FROM facility_details
+             WHERE facility_district_id IN ($districtIds)
+             ORDER BY facility_name ASC"
+        );
+        $facilitiesByDistrict = [];
+        foreach ($facilityRows as $facility) {
+            $facilitiesByDistrict[$facility['facility_district_id']][] = [
+                'value' => $facility['facility_id'],
+                'show' => $facility['facility_name'],
+            ];
+        }
 
         $response = [];
-        foreach ($result as $key => $row) {
+        foreach ($districts as $key => $row) {
             $response[$key]['value'] = $row['district_id'];
             $response[$key]['show'] = $row['district_name'];
-
-            // Get facilities in this district
-            $response[$key]['facilityDetails'] = $this->getSubFields(
-                'facility_details',
-                'facility_id',
-                'facility_name',
-                "facility_district_id = {$row['district_id']}"
-            );
-
-            // Format province details directly from the query result
+            $response[$key]['facilityDetails'] = $facilitiesByDistrict[$row['district_id']] ?? [];
             $response[$key]['provinceDetails'] = [
                 [
                     'value' => $row['province_id'],
@@ -2089,7 +2096,6 @@ final class CommonService
                         f.facility_district_id,
                         f.facility_district,
                         f.testing_points,
-                        f.facility_attributes,
                         f.status,
                         gd.geo_id as province_id,
                         gd.geo_name as province_name
@@ -2144,7 +2150,6 @@ final class CommonService
                 $response[$key]['facility_state'] = $row['facility_state'];
                 $response[$key]['facility_district_id'] = $row['facility_district_id'];
                 $response[$key]['facility_district'] = $row['facility_district'];
-                $response[$key]['facility_attributes'] = $row['facility_attributes'];
                 $response[$key]['testing_points'] = $row['testing_points'];
                 $response[$key]['status'] = $row['status'];
             }

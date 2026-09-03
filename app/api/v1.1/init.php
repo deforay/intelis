@@ -231,10 +231,9 @@ try {
         }
         $data['covid19']['sourceOfAlertList'] = $sourceOfAlertList;
 
-        /* Province Details */
-        $data['covid19']['provinceList'] = $data['provinceList'] ?? [];
-        /* District Details */
-        $data['covid19']['districtList'] = $data['districtList'] ?? [];
+        // provinceList and districtList are served once at the top level. Both app
+        // builds in the field read them there and never inside this block; the
+        // nested copies doubled the district payload on a national instance.
         /* Health Facility Details */
         $data['covid19']['fundingSourceList'] = $data['fundingSourceList'] ?? [];
         $data['covid19']['implementingPartnerList'] = $implementingPartnerList;
@@ -315,11 +314,9 @@ try {
         /** @var EidService $eidService */
         $eidService = ContainerRegistry::get(EidService::class);
 
-        // SITE INFORMATION SECTION
-        // Province Details
-        $data['eid']['provinceList'] = $data['provinceList'] ?? [];
-        // District Details
-        $data['eid']['districtList'] = $data['districtList'] ?? [];
+        // provinceList and districtList are served once at the top level. Both app
+        // builds in the field read them there and never inside this block; the
+        // nested copies doubled the district payload on a national instance.
 
         // Infant and Mother's Health Information Section
         $data['eid']['mothersHIVStatus'] = $commonResultsList;
