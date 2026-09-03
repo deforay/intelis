@@ -34773,3 +34773,244 @@ msgstr "Ces échantillons ont été annulés après avoir été ajoutés à ce m
 #: app/tb/results/save-tb-referral-helper.php
 msgid "cancelled sample(s) were not referred"
 msgstr "échantillon(s) annulé(s) n'ont pas été transférés"
+
+#: app/reports/sample-ageing.php
+msgid "%s by testing lab"
+msgstr "%s par laboratoire d'analyse"
+
+#: app/reports/sample-ageing.php
+msgid "A lab has the sample but has not tested it yet. Includes failed, on hold and reordered"
+msgstr "Un laboratoire a l'échantillon mais ne l'a pas encore analysé. Inclut les échantillons en échec, en attente et redemandés"
+
+#: app/reports/sample-ageing.php
+msgid "A sample is placed at the furthest point its recorded timestamps prove it reached, read from the workflow dates rather than the status alone. Status is only used for the exits, and for failed, on hold and reordered samples, which are back in the lab queue."
+msgstr "Un échantillon est placé au point le plus avancé que ses horodatages permettent d'établir, d'après les dates du circuit plutôt que d'après le seul statut. Le statut ne sert que pour les sorties, ainsi que pour les échantillons en échec, en attente et redemandés, qui repassent dans la file du laboratoire."
+
+#: app/reports/sample-ageing.php
+msgid "All stages"
+msgstr "Toutes les étapes"
+
+#: app/reports/sample-ageing.php
+msgid "Approved"
+msgstr "Approuvé"
+
+#: app/reports/sample-ageing.php
+msgid "Approved, awaiting release"
+msgstr "Approuvé, en attente de transmission"
+
+#: app/reports/sample-ageing.php
+msgid "At facility"
+msgstr "À l'établissement"
+
+#: app/reports/sample-ageing.php
+msgid "At lab, awaiting test"
+msgstr "Au laboratoire, en attente d'analyse"
+
+#: app/reports/sample-ageing.php
+msgid "Click a count to list the samples behind it."
+msgstr "Cliquez sur un chiffre pour afficher les échantillons correspondants."
+
+#: app/reports/sample-ageing.php
+msgid "Click a stage to break it down by testing lab."
+msgstr "Cliquez sur une étape pour la détailler par laboratoire d'analyse."
+
+#: app/reports/sample-ageing.php
+msgid "Collection Facility"
+msgstr "Établissement de prélèvement"
+
+#: app/reports/sample-ageing.php
+msgid "Current Year To Date"
+msgstr "Année en cours à ce jour"
+
+#: app/reports/sample-ageing.php
+msgid "Days Waiting"
+msgstr "Jours d'attente"
+
+#: app/reports/sample-ageing.php
+msgid "Days since the most recent milestone the sample reached: since lab receipt for a sample awaiting a test, since the test date for one awaiting approval, and so on. A sample that has sat 30 days at a lab shows as 30 days, whatever its collection date. Milestones dated in the future count as zero days."
+msgstr "Nombre de jours écoulés depuis la dernière étape atteinte par l'échantillon : depuis la réception au laboratoire pour un échantillon en attente d'analyse, depuis la date d'analyse pour un résultat en attente d'approbation, et ainsi de suite. Un échantillon resté 30 jours dans un laboratoire affiche 30 jours, quelle que soit sa date de prélèvement. Une étape datée dans le futur compte pour zéro jour."
+
+#: app/reports/sample-ageing.php
+msgid "Dispatched"
+msgstr "Transmis"
+
+#: app/reports/sample-ageing.php
+msgid "Every sample whose collection date falls in the selected range, or the date the request was created when no collection date was recorded. The stages and the exits together add up to all of them, so nothing registered goes uncounted."
+msgstr "Tous les échantillons dont la date de prélèvement se situe dans la période sélectionnée, ou la date de création de la demande lorsqu'aucune date de prélèvement n'a été enregistrée. Les étapes et les sorties réunies en couvrent la totalité : aucun échantillon enregistré n'est omis."
+
+#: app/reports/sample-ageing.php
+msgid "Exits"
+msgstr "Sorties"
+
+#: app/reports/sample-ageing.php
+msgid "Facility not recorded"
+msgstr "Établissement non renseigné"
+
+#: app/reports/sample-ageing.php
+msgid "How is a sample placed in a stage?"
+msgstr "Comment un échantillon est-il classé dans une étape ?"
+
+#: app/reports/sample-ageing.php
+msgid "Last 12 Months"
+msgstr "12 derniers mois"
+
+#: app/reports/sample-ageing.php
+msgid "Last 120 Days"
+msgstr "120 derniers jours"
+
+#: app/reports/sample-ageing.php
+msgid "Last 18 Months"
+msgstr "18 derniers mois"
+
+#: app/reports/sample-ageing.php
+msgid "Last 180 Days"
+msgstr "180 derniers jours"
+
+#: app/reports/sample-ageing.php
+msgid "Last 24 Months"
+msgstr "24 derniers mois"
+
+#: app/reports/sample-ageing.php
+msgid "Last 30 Days"
+msgstr "30 derniers jours"
+
+#: app/reports/sample-ageing.php
+msgid "Last 30 Months"
+msgstr "30 derniers mois"
+
+#: app/reports/sample-ageing.php
+msgid "Last 7 Days"
+msgstr "7 derniers jours"
+
+#: app/reports/sample-ageing.php
+msgid "Last 90 Days"
+msgstr "90 derniers jours"
+
+#: app/reports/sample-ageing.php
+msgid "Last Month"
+msgstr "Mois dernier"
+
+#: app/reports/sample-ageing.php
+msgid "Left the pipeline"
+msgstr "Sorti du circuit"
+
+#: app/reports/sample-ageing.php
+msgid "List every sample in this stage"
+msgstr "Afficher tous les échantillons de cette étape"
+
+#: app/reports/sample-ageing.php
+msgid "Lost or missing"
+msgstr "Perdu ou manquant"
+
+#: app/reports/sample-ageing.php
+msgid "No samples in this stage for the selected filters"
+msgstr "Aucun échantillon à cette étape pour les filtres sélectionnés"
+
+#: app/reports/sample-ageing.php
+msgid "No test modules are enabled for your account, so there is nothing to report on here."
+msgstr "Aucun module d'analyse n'est activé pour votre compte : il n'y a donc rien à afficher ici."
+
+#: app/reports/sample-ageing.php
+msgid "Over 30 days"
+msgstr "Plus de 30 jours"
+
+#: app/reports/sample-ageing.php
+msgid "Previous Year"
+msgstr "Année précédente"
+
+#: app/reports/sample-ageing.php
+msgid "Registered at the collection point. No lab has recorded receiving it"
+msgstr "Enregistré au point de prélèvement. Aucun laboratoire n'a enregistré sa réception"
+
+#: app/reports/sample-ageing.php
+msgid "Registered in this period"
+msgstr "Enregistrés sur la période"
+
+#: app/reports/sample-ageing.php
+msgid "Rejected, expired, lost and cancelled samples have left the pipeline without a released result. They are listed so the total reconciles, and can be broken down like any stage."
+msgstr "Les échantillons rejetés, expirés, perdus et annulés sont sortis du circuit sans résultat transmis. Ils sont listés afin que le total soit cohérent, et peuvent être détaillés comme n'importe quelle étape."
+
+#: app/reports/sample-ageing.php
+msgid "Released"
+msgstr "Transmis"
+
+#: app/reports/sample-ageing.php
+msgid "Result is ready, but it has not been printed, sent or downloaded, so the facility may not have it"
+msgstr "Le résultat est prêt, mais il n'a pas été imprimé, envoyé ni téléchargé : l'établissement ne l'a peut-être pas reçu"
+
+#: app/reports/sample-ageing.php
+msgid "Result was printed, sent to the facility, or downloaded by the facility system"
+msgstr "Le résultat a été imprimé, envoyé à l'établissement, ou téléchargé par le système de l'établissement"
+
+#: app/reports/sample-ageing.php
+msgid "Sample Ageing Report"
+msgstr "Rapport d'ancienneté des échantillons"
+
+#: app/reports/sample-ageing.php
+msgid "Samples: %s"
+msgstr "Échantillons : %s"
+
+#: app/reports/sample-ageing.php
+msgid "Stage"
+msgstr "Étape"
+
+#: app/reports/sample-ageing.php
+msgid "Stages"
+msgstr "Étapes"
+
+#: app/reports/sample-ageing.php
+msgid "Tested. The result is waiting for someone to approve it"
+msgstr "Analysé. Le résultat attend d'être approuvé"
+
+#: app/reports/sample-ageing.php
+msgid "This Month"
+msgstr "Ce mois-ci"
+
+#: app/reports/sample-ageing.php
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#: app/reports/sample-ageing.php
+msgid "Unable to generate the export file"
+msgstr "Impossible de générer le fichier d'export"
+
+#: app/reports/sample-ageing.php
+msgid "Unknown facility"
+msgstr "Établissement inconnu"
+
+#: app/reports/sample-ageing.php
+msgid "Where every sample registered in the period is right now, and how long it has been there."
+msgstr "Où se trouve actuellement chaque échantillon enregistré sur la période, et depuis combien de temps il s'y trouve."
+
+#: app/reports/sample-ageing.php
+msgid "Which samples"
+msgstr "Quels échantillons"
+
+#: app/reports/sample-ageing.php
+msgid "Yesterday"
+msgstr "Hier"
+
+#: app/reports/sample-ageing.php
+msgid "a test date or a result is recorded, but the result is not yet approved."
+msgstr "une date d'analyse ou un résultat est enregistré, mais le résultat n'est pas encore approuvé."
+
+#: app/reports/sample-ageing.php
+msgid "every %s"
+msgstr "toute l'étape %s"
+
+#: app/reports/sample-ageing.php
+msgid "received at a lab, not yet tested; also failed, on hold and reordered samples."
+msgstr "reçu par un laboratoire, pas encore analysé ; inclut également les échantillons en échec, en attente et redemandés."
+
+#: app/reports/sample-ageing.php
+msgid "registered, with no lab receipt recorded. Dispatch from the facility is not tracked, so a sample stays here until a lab records receiving it."
+msgstr "enregistré, sans réception enregistrée par un laboratoire. L'envoi depuis l'établissement n'est pas suivi : un échantillon reste donc ici jusqu'à ce qu'un laboratoire enregistre sa réception."
+
+#: app/reports/sample-ageing.php
+msgid "the result is approved and ready, and nobody has printed it, sent it (by dispatch, e-mail or SMS), or had the facility system download it. Syncing to the central system does not count here, because a result arriving centrally is not the same as the facility receiving it. The result may still have been passed on by phone or on paper, which cannot be seen from here. A large number usually means results are reaching facilities in a way nobody is recording, rather than a delay in testing."
+msgstr "le résultat est approuvé et prêt, et personne ne l'a imprimé, envoyé (par transmission, e-mail ou SMS), ni fait télécharger par le système de l'établissement. La synchronisation vers le système central ne compte pas ici : un résultat arrivé au niveau central n'équivaut pas à un résultat reçu par l'établissement. Le résultat a pu être communiqué par téléphone ou sur papier, ce qui n'est pas visible ici. Un nombre élevé signifie généralement que les résultats parviennent aux établissements par un moyen que personne n'enregistre, plutôt qu'un retard d'analyse."
+
+#: app/reports/sample-ageing.php
+msgid "the result was printed (here or on the connected system), dispatched, e-mailed, sent by SMS, sent back to the system that requested it, or downloaded over the API. Any one of these counts, because a lab that e-mails results never prints or dispatches them."
+msgstr "le résultat a été imprimé (ici ou sur le système connecté), transmis, envoyé par e-mail ou par SMS, renvoyé au système qui l'a demandé, ou téléchargé via l'API. L'un quelconque de ces cas suffit, car un laboratoire qui envoie les résultats par e-mail ne les imprime ni ne les transmet jamais."
+

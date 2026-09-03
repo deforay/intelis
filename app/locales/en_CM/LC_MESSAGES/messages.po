@@ -26099,3 +26099,272 @@ msgstr ""
 #: vl/results/vlResultApproval.php:8 vl/results/vlResultApproval.php:81
 msgid "Manage Sample Status"
 msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "%s by testing lab"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "-- All Labs --"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "A lab has the sample but has not tested it yet. Includes failed, on hold and reordered"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "A sample is placed at the furthest point its recorded timestamps prove it reached, read from the workflow dates rather than the status alone. Status is only used for the exits, and for failed, on hold and reordered samples, which are back in the lab queue."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "All stages"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Approved"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Approved, awaiting release"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "At facility"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "At lab, awaiting test"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Click a count to list the samples behind it."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Click a stage to break it down by testing lab."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Collected"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Collection Facility"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Current Year To Date"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Days Waiting"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Days since the most recent milestone the sample reached: since lab receipt for a sample awaiting a test, since the test date for one awaiting approval, and so on. A sample that has sat 30 days at a lab shows as 30 days, whatever its collection date. Milestones dated in the future count as zero days."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Dispatched"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Every sample whose collection date falls in the selected range, or the date the request was created when no collection date was recorded. The stages and the exits together add up to all of them, so nothing registered goes uncounted."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Exits"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Facility not recorded"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "How is a sample placed in a stage?"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Last 12 Months"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Last 120 Days"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Last 18 Months"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Last 180 Days"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Last 24 Months"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Last 30 Days"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Last 30 Months"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Last 7 Days"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Last 90 Days"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Last Month"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Left the pipeline"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "List every sample in this stage"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Lost or missing"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "No samples in this stage for the selected filters"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "No test modules are enabled for your account, so there is nothing to report on here."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Not assigned to a lab"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Not specified"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Over 30 days"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Previous Year"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Registered"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Registered at the collection point. No lab has recorded receiving it"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Registered in this period"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Rejected, expired, lost and cancelled samples have left the pipeline without a released result. They are listed so the total reconciles, and can be broken down like any stage."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Released"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Result is ready, but it has not been printed, sent or downloaded, so the facility may not have it"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Result was printed, sent to the facility, or downloaded by the facility system"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Sample Ageing Report"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Samples: %s"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Stage"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Stages"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Test"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Tested, awaiting approval"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Tested. The result is waiting for someone to approve it"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "This Month"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Today"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Unable to generate the export file"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Unknown facility"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Where every sample registered in the period is right now, and how long it has been there."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Which samples"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Yesterday"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "a test date or a result is recorded, but the result is not yet approved."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "every %s"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "received at a lab, not yet tested; also failed, on hold and reordered samples."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "registered, with no lab receipt recorded. Dispatch from the facility is not tracked, so a sample stays here until a lab records receiving it."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "the result is approved and ready, and nobody has printed it, sent it (by dispatch, e-mail or SMS), or had the facility system download it. Syncing to the central system does not count here, because a result arriving centrally is not the same as the facility receiving it. The result may still have been passed on by phone or on paper, which cannot be seen from here. A large number usually means results are reaching facilities in a way nobody is recording, rather than a delay in testing."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "the result was printed (here or on the connected system), dispatched, e-mailed, sent by SMS, sent back to the system that requested it, or downloaded over the API. Any one of these counts, because a lab that e-mails results never prints or dispatches them."
+msgstr ""
+

@@ -768,16 +768,26 @@ $exitLabels = [
         });
     }
 
+    // The same presets the clinic reports offer, so a reader moving between the
+    // two picks the same period the same way. The labels are translated here;
+    // the clinic pages still carry theirs in English.
     function sfDateRanges() {
         var ranges = {};
+        ranges["<?= _jsTranslate('Today'); ?>"] = [moment(), moment()];
+        ranges["<?= _jsTranslate('Yesterday'); ?>"] = [moment().subtract(1, 'days'), moment().subtract(1, 'days')];
+        ranges["<?= _jsTranslate('Last 7 Days'); ?>"] = [moment().subtract(6, 'days'), moment()];
+        ranges["<?= _jsTranslate('This Month'); ?>"] = [moment().startOf('month'), moment().endOf('month')];
+        ranges["<?= _jsTranslate('Last Month'); ?>"] = [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')];
         ranges["<?= _jsTranslate('Last 30 Days'); ?>"] = [moment().subtract(29, 'days'), moment()];
         ranges["<?= _jsTranslate('Last 90 Days'); ?>"] = [moment().subtract(89, 'days'), moment()];
+        ranges["<?= _jsTranslate('Last 120 Days'); ?>"] = [moment().subtract(119, 'days'), moment()];
         ranges["<?= _jsTranslate('Last 180 Days'); ?>"] = [moment().subtract(179, 'days'), moment()];
-        ranges["<?= _jsTranslate('Last 12 Months'); ?>"] = [moment().subtract(12, 'month'), moment()];
-        ranges["<?= _jsTranslate('Last 24 Months'); ?>"] = [moment().subtract(24, 'month'), moment()];
-        ranges["<?= _jsTranslate('This Year'); ?>"] = [moment().startOf('year'), moment()];
-        var m = moment().subtract(1, 'year');
-        ranges[m.year()] = [m.clone().startOf('year'), m.clone().endOf('year')];
+        ranges["<?= _jsTranslate('Last 12 Months'); ?>"] = [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')];
+        ranges["<?= _jsTranslate('Last 18 Months'); ?>"] = [moment().subtract(18, 'month').startOf('month'), moment().endOf('month')];
+        ranges["<?= _jsTranslate('Last 24 Months'); ?>"] = [moment().subtract(24, 'month').startOf('month'), moment().endOf('month')];
+        ranges["<?= _jsTranslate('Last 30 Months'); ?>"] = [moment().subtract(30, 'month').startOf('month'), moment().endOf('month')];
+        ranges["<?= _jsTranslate('Previous Year'); ?>"] = [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')];
+        ranges["<?= _jsTranslate('Current Year To Date'); ?>"] = [moment().startOf('year'), moment()];
         return ranges;
     }
 
@@ -790,8 +800,12 @@ $exitLabels = [
                 separator: ' to ',
             },
             showDropdowns: true,
+            alwaysShowCalendars: true,
+            // A stuck sample is old by definition, so this one opens wider than
+            // the clinic reports do rather than on their 28 days.
             startDate: moment().subtract(12, 'month'),
             endDate: moment(),
+            minDate: moment('2013-01-01'),
             maxDate: moment(),
             ranges: sfDateRanges()
         });
