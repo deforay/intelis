@@ -47,6 +47,11 @@ if (JsonUtility::isJSON($origJson) === false) {
 }
 $input = JsonUtility::decodeJson($origJson, true);
 
+// Reading results here marks them as sent to the source, which is right for the
+// app's sync and wrong for a person browsing a search screen. Search screens
+// pass markAsSent: false; anything that omits it keeps the stamping default.
+$markAsSent = filter_var($input['markAsSent'] ?? true, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? true;
+
 $user = null;
 
 /* For API Tracking params */
@@ -255,7 +260,7 @@ try {
 
     $now = DateUtility::getCurrentDateTime();
     $affectedSamples = array_values(array_filter(array_unique(array_column($rowData, 'testRequestId'))));
-    if ($affectedSamples !== []) {
+    if ($markAsSent && $affectedSamples !== []) {
         // 1) result_sent_to_source / result_sent_to_source_datetime — set once
         $db->where($primaryKey, $affectedSamples, 'IN');
         $db->where('result_sent_to_source_datetime IS NULL');

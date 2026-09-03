@@ -148,10 +148,11 @@ final class ApiResultsEndpointTest extends TestCase
         return (int) $db->getInsertId();
     }
 
-    private function seedEid(string $childId, int $facilityId): int
+    /** @param array<string, mixed> $overrides */
+    private function seedEid(string $childId, int $facilityId, array $overrides = []): int
     {
         $db = LegacyAppHarness::db();
-        $db->insert('form_eid', [
+        $db->insert('form_eid', $overrides + [
             'vlsm_instance_id' => 'test-instance',
             'unique_id' => bin2hex(random_bytes(8)),
             'sample_code' => 'EID-' . $childId,
@@ -249,11 +250,15 @@ final class ApiResultsEndpointTest extends TestCase
         self::assertNull($untouched['result_pulled_via_api_datetime']);
     }
 
-    /** patientId is the cross-test-type name; on VL it filters patient_art_no. */
+    /**
+     * patientId is the cross-test-type name; on VL it filters patient_art_no. The
+     * row the filter left out is in the same facility and must not be stamped:
+     * the stamp covers what was returned, not what the user could see.
+     */
     #[RunInSeparateProcess]
     public function testVlFetchResultsAcceptsPatientIdAsAliasOfPatientArtNo(): void
     {
-        $this->seedVl('ART-1', 1);
+        $filteredOut = $this->seedVl('ART-1', 1);
         $this->seedVl('ART-2', 1);
 
         $payload = $this->drive('/api/v1.1/vl/fetch-results.php', [
@@ -262,24 +267,62 @@ final class ApiResultsEndpointTest extends TestCase
             'sampleStatus' => [],
         ]);
 
-        self::assertSame(['VL-ART-2'], array_column($payload['data'], 'sampleCode'));
+        self::assertCount(1, $payload['data']);
+        self::assertSame('VL-ART-2', $payload['data'][0]['sampleCode']);
+        self::assertSame('ART-2', $payload['data'][0]['patientArtNo']);
+        self::assertSame('ART-2', $payload['data'][0]['artNo']);
+
+        $row = self::row('form_vl', 'vl_sample_id', $filteredOut);
+        self::assertNull($row['result_sent_to_source_datetime']);
+        self::assertNull($row['result_dispatched_datetime']);
+        self::assertNull($row['result_pulled_via_api_datetime']);
     }
 
-    /** A quote in a filter value is data, not SQL. */
+    /**
+     * A quote in a filter value is data, not SQL. Unescaped, this payload closes
+     * the IN clause and ORs the facility predicate away, so every row in the
+     * table comes back, including the one at a facility the user cannot see.
+     */
     #[RunInSeparateProcess]
     public function testVlFetchResultsQuotesInFilterValuesAreData(): void
     {
         $this->seedVl('ART-1', 1);
         $this->seedVl('ART-2', 1);
+        $this->seedVl('ART-3', 2);
 
         $payload = $this->drive('/api/v1.1/vl/fetch-results.php', [
-            'patientId' => ["ART-1' OR '1'='1"],
+            'patientId' => ["ART-1') OR ('1'='1"],
             'sampleCollectionDate' => [],
             'sampleStatus' => [],
         ]);
 
         self::assertSame('success', $payload['status']);
         self::assertSame([], $payload['data']);
+    }
+
+    /**
+     * A search screen passes markAsSent: false so that browsing results does not
+     * mark them as delivered. The rows come back; nothing is stamped.
+     */
+    #[RunInSeparateProcess]
+    public function testVlFetchResultsWithMarkAsSentFalseReturnsRowsWithoutStampingThem(): void
+    {
+        $id = $this->seedVl('ART-1', 1);
+
+        $payload = $this->drive('/api/v1.1/vl/fetch-results.php', [
+            'sampleCode' => [],
+            'sampleCollectionDate' => [],
+            'sampleStatus' => [],
+            'markAsSent' => false,
+        ]);
+
+        self::assertSame('success', $payload['status']);
+        self::assertSame(['VL-ART-1'], array_column($payload['data'], 'sampleCode'));
+
+        $row = self::row('form_vl', 'vl_sample_id', $id);
+        self::assertNull($row['result_sent_to_source_datetime']);
+        self::assertNull($row['result_dispatched_datetime']);
+        self::assertNull($row['result_pulled_via_api_datetime']);
     }
 
     /** get-request is the read the app uses to browse; it must not stamp anything. */
@@ -302,12 +345,21 @@ final class ApiResultsEndpointTest extends TestCase
         self::assertNull($row['result_pulled_via_api_datetime']);
     }
 
-    /** On EID, patientId filters child_id, and the response carries both rejection fields. */
+    /**
+     * On EID, patientId filters child_id, the user's facilities still bound the
+     * read, and a rejected sample carries both the reason id and its name.
+     */
     #[RunInSeparateProcess]
     public function testEidFetchResultsAcceptsPatientIdAsAliasOfChildIdAndStamps(): void
     {
+        LegacyAppHarness::db()->insert('r_eid_sample_rejection_reasons', [
+            'rejection_reason_id' => 5,
+            'rejection_reason_name' => 'Haemolysed',
+            'rejection_reason_status' => 'active',
+        ]);
         $this->seedEid('CH-1', 1);
-        $wanted = $this->seedEid('CH-2', 1);
+        $wanted = $this->seedEid('CH-2', 1, ['is_sample_rejected' => 'yes', 'reason_for_sample_rejection' => 5]);
+        $elsewhere = $this->seedEid('CH-2', 2, ['sample_code' => 'EID-CH-2-F2', 'app_sample_code' => 'APP-CH-2-F2']);
 
         $payload = $this->drive('/api/v1.1/eid/fetch-results.php', [
             'patientId' => ['CH-2'],
@@ -316,10 +368,13 @@ final class ApiResultsEndpointTest extends TestCase
         ]);
 
         self::assertSame('success', $payload['status']);
-        self::assertSame(['CH-2'], array_column($payload['data'], 'childId'));
-        self::assertArrayHasKey('rejectionReasonId', $payload['data'][0]);
-        self::assertArrayHasKey('rejectionReason', $payload['data'][0]);
+        self::assertCount(1, $payload['data']);
+        self::assertSame('CH-2', $payload['data'][0]['childId']);
+        self::assertSame('APP-CH-2', $payload['data'][0]['appSampleCode']);
+        self::assertSame('5', (string) $payload['data'][0]['rejectionReasonId']);
+        self::assertSame('Haemolysed', $payload['data'][0]['rejectionReason']);
         self::assertSame('sent', self::row('form_eid', 'eid_id', $wanted)['result_sent_to_source']);
+        self::assertNull(self::row('form_eid', 'eid_id', $elsewhere)['result_sent_to_source_datetime']);
     }
 
     /** COVID rows expose the result under both names the app has used. */
