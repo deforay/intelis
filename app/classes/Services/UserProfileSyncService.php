@@ -127,7 +127,7 @@ final class UserProfileSyncService
                 // The ownership rule is part of the write itself, so two labs
                 // claiming the same unstamped user at once cannot both win: the
                 // second update matches no row, and the re-read below says so.
-                $this->db->where("(testing_lab_id IS NULL OR testing_lab_id = $labId)");
+                $this->db->where('(testing_lab_id IS NULL OR testing_lab_id = ?)', [$labId]);
             }
             if ($this->db->update('user_details', $data) === false) {
                 throw new InvalidArgumentException(_translate('The profile could not be saved'));
