@@ -224,6 +224,60 @@ final class CommonService
         return $sha ? substr($sha, 0, 7) : null;
     }
 
+    /**
+     * Compare the running code's VERSION against the schema version the database
+     * records, so a half-applied upgrade is visible on screen instead of only in
+     * the migration log.
+     *
+     * bin/migrate.php advances sc_version only after a clean run, so a database
+     * left behind by a failed migration reads exactly the same as one nobody has
+     * migrated yet. Both mean the same thing to whoever is looking at the screen:
+     * the code and the schema do not match.
+     *
+     * The cached copy of system_config answers the common case for free. Only a
+     * mismatch pays for a live read, because migrate.php does not purge that
+     * cache and a stale value would otherwise pin a false warning to every page.
+     *
+     * @return array{dbVersion: string, appVersion: string, pending: bool}|null
+     *         Null when the two agree, or when the schema version cannot be read.
+     */
+    public function getSchemaVersionMismatch(): ?array
+    {
+        if (!defined('VERSION')) {
+            return null;
+        }
+
+        $appVersion = trim((string) VERSION);
+        $dbVersion = trim((string) ($this->getSystemConfig('sc_version') ?? ''));
+
+        if ($appVersion === '' || $dbVersion === '' || version_compare($appVersion, $dbVersion, '==')) {
+            return null;
+        }
+
+        // The cached value says the two differ. Confirm against the live row
+        // before telling anybody their database is behind.
+        try {
+            $live = $this->db->rawQueryOne("SELECT value FROM system_config WHERE name = 'sc_version' LIMIT 1");
+            $liveVersion = trim((string) ($live['value'] ?? ''));
+            if ($liveVersion !== '') {
+                $dbVersion = $liveVersion;
+            }
+        } catch (Throwable) {
+            // Keep the cached value. A row that cannot be read right now is not a
+            // reason to hide a mismatch there is already evidence for.
+        }
+
+        if (version_compare($appVersion, $dbVersion, '==')) {
+            return null;
+        }
+
+        return [
+            'dbVersion' => $dbVersion,
+            'appVersion' => $appVersion,
+            'pending' => version_compare($appVersion, $dbVersion, '>'),
+        ];
+    }
+
     public function getRemoteURL(): ?string
     {
         return $this->fileCache->get('remoteURL', function (): ?string {
