@@ -138,6 +138,8 @@ try {
         lt_u_d.user_name                                     as labTechnicianName,
 
         vl.reason_for_sample_rejection                       as sampleRejectionReason,
+        vl.reason_for_sample_rejection                       as rejectionReasonId,
+        rs.rejection_reason_name                             as rejectionReason,
         vl.request_created_datetime                          as requestCreatedDatetime,
         vl.rejection_on                                      as rejectionDate,
         g.geo_name                                           as provinceName,
