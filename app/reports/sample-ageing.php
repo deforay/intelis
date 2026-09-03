@@ -46,6 +46,14 @@ if (!in_array($preselectedTest, $selectableTests, true)) {
 
 $testingLabs = $facilitiesService->getTestingLabs();
 
+// The breakdown answers one of two questions. Partner is worth its own view
+// rather than a column on the lab table, because a lab draws from many
+// collection sites and so from many partners: sixteen on one DRC lab.
+$groupLabels = [
+    'lab' => _translate('Testing Lab'),
+    'partner' => _translate('Implementing Partner'),
+];
+
 $stageLabels = [
     'atFacility' => _translate('At facility'),
     'atLab' => _translate('At lab, awaiting test'),
@@ -76,6 +84,32 @@ $exitLabels = [
         font-weight: 600;
         color: #444;
         margin: 0 0 4px;
+    }
+
+    #sampleFlow .sf-breakdown-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 4px 14px;
+    }
+
+    #sampleFlow .sf-groups {
+        font-size: 12px;
+        color: #8a9299;
+        white-space: nowrap;
+    }
+
+    #sampleFlow .sf-groups a {
+        margin-left: 8px;
+        cursor: pointer;
+    }
+
+    #sampleFlow .sf-groups a.is-active {
+        color: #444;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: default;
     }
 
     #sampleFlow .sf-breakdown-hint {
@@ -422,7 +456,16 @@ $exitLabels = [
                             </div>
                             <div class="col-md-7">
                                 <div id="sfBreakdown" style="display:none;">
+                                    <div class="sf-breakdown-head">
                                     <div class="sf-breakdown-title" id="sfBreakdownTitle"></div>
+                                    <div class="sf-groups" id="sfGroups">
+                                        <?= _htmlTranslate('Break down by'); ?>:
+                                        <?php foreach ($groupLabels as $gKey => $gLabel) { ?>
+                                            <a href="javascript:void(0);" data-group="<?= $gKey; ?>"
+                                                onclick="sfSelectGroup('<?= $gKey; ?>');"><?= htmlspecialchars($gLabel, ENT_QUOTES); ?></a>
+                                        <?php } ?>
+                                    </div>
+                                </div>
                                     <div class="sf-breakdown-hint">
                                         <?= _htmlTranslate('Click a count to list the samples behind it.'); ?>
                                         <a href="javascript:void(0);" onclick="sfDrill('', '');"><?= _htmlTranslate('List every sample in this stage'); ?></a>
@@ -431,7 +474,7 @@ $exitLabels = [
                                         <table class="table table-bordered table-striped sf-table" id="sfTable" aria-describedby="sfBreakdownTitle">
                                             <thead>
                                                 <tr>
-                                                    <th><?= _htmlTranslate('Testing Lab'); ?></th>
+                                                    <th id="sfGroupHeading"></th>
                                                     <th class="sf-num"><?= _htmlTranslate('Samples'); ?></th>
                                                 </tr>
                                             </thead>
@@ -484,12 +527,11 @@ $exitLabels = [
     var SF_STAGES = <?= json_encode(array_keys($stageLabels)); ?>;
     var SF_EXITS = <?= json_encode(array_keys($exitLabels)); ?>;
     var SF_STAGE_LABELS = <?= json_encode(array_merge($stageLabels, $exitLabels), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+    var SF_GROUP_LABELS = <?= json_encode($groupLabels, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
     var SF_SAMPLE_COLUMNS = <?= count(\App\Services\SampleFlowService::sampleColumns()); ?>;
     var SF_LABELS = {
         noData: "<?= _jsTranslate('No samples in this stage for the selected filters'); ?>",
-        breakdownOf: "<?= _jsTranslate('%s by testing lab'); ?>",
         samplesIn: "<?= _jsTranslate('Samples: %s'); ?>",
-        lab: "<?= _jsTranslate('Testing Lab'); ?>",
         wholeStage: "<?= _jsTranslate('every %s'); ?>",
         exportFailed: "<?= _jsTranslate('Unable to generate the export file'); ?>"
     };
@@ -631,9 +673,19 @@ $exitLabels = [
         sfLoadBreakdown();
     }
 
+    function sfSelectGroup(group) {
+        if (group === sfGroup || !SF_GROUP_LABELS[group]) { return; }
+        sfGroup = group;
+        sfCloseSamples();
+        sfLoadBreakdown();
+    }
+
     function sfLoadBreakdown() {
         if (!sfStage) { return; }
-        $('#sfBreakdownTitle').text(SF_LABELS.breakdownOf.replace('%s', SF_STAGE_LABELS[sfStage] || sfStage));
+        $('#sfBreakdownTitle').text(SF_STAGE_LABELS[sfStage] || sfStage);
+        $('#sfGroupHeading').text(SF_GROUP_LABELS[sfGroup] || sfGroup);
+        $('#sfGroups a').removeClass('is-active');
+        $('#sfGroups a[data-group="' + sfGroup + '"]').addClass('is-active');
         $('#sfBreakdown').show();
         $('#sfTable tbody').html('<tr><td colspan="2" class="text-center text-muted">&hellip;</td></tr>');
         sfPost('breakdown', { stage: sfStage, groupBy: sfGroup }, function (json) {
@@ -683,7 +735,9 @@ $exitLabels = [
         var stageLabel = SF_STAGE_LABELS[sfStage] || sfStage;
         $('#sfSamplesTitle').text(SF_LABELS.samplesIn.replace('%s', stageLabel));
         $('#sfSamplesSubtitle').text(
-            label !== '' ? SF_LABELS.lab + ': ' + label : SF_LABELS.wholeStage.replace('%s', stageLabel.toLowerCase())
+            label !== ''
+                ? (SF_GROUP_LABELS[sfDrillSel.groupBy] || '') + ': ' + label
+                : SF_LABELS.wholeStage.replace('%s', stageLabel.toLowerCase())
         );
         $('#sfSamples').show();
         sfLoadSamples();
