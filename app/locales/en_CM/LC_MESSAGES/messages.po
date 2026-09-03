@@ -26368,3 +26368,7 @@ msgstr ""
 msgid "the result was printed (here or on the connected system), dispatched, e-mailed, sent by SMS, sent back to the system that requested it, or downloaded over the API. Any one of these counts, because a lab that e-mails results never prints or dispatches them."
 msgstr ""
 
+
+#: app/reports/sample-ageing.php
+msgid "Break down by"
+msgstr ""
