@@ -53,12 +53,14 @@ $stageLabels = [
     'awaitingRelease' => _translate('Approved, awaiting release'),
     'released' => _translate('Released'),
 ];
+// Shown under each stage name in the table, not just on hover: "awaiting
+// release" in particular does not tell a reader what is actually missing.
 $stageHints = [
-    'atFacility' => _translate('Registered, not yet received at a lab'),
-    'atLab' => _translate('Received, not yet tested (includes failed, on hold and reordered)'),
-    'awaitingApproval' => _translate('Tested, result not yet approved'),
-    'awaitingRelease' => _translate('Approved, but no delivery of the result recorded yet'),
-    'released' => _translate('Result dispatched, printed, e-mailed, sent to its source or fetched over the API'),
+    'atFacility' => _translate('Registered, with no record of a lab receiving it'),
+    'atLab' => _translate('Received by a lab and not tested yet, including failed, on hold and reordered'),
+    'awaitingApproval' => _translate('Tested, but the result has not been approved yet'),
+    'awaitingRelease' => _translate('Approved and final, but nothing records the result reaching the facility that asked for it'),
+    'released' => _translate('The result left the lab: printed, dispatched, e-mailed, sent to its source or fetched over the API'),
 ];
 $exitLabels = [
     'rejected' => _translate('Rejected'),
@@ -103,6 +105,14 @@ $exitLabels = [
     #sampleFlow tr.sf-row.is-active>td {
         background-color: #eaf3fa;
         font-weight: 600;
+    }
+
+    #sampleFlow .sf-stage-note {
+        display: block;
+        margin-top: 2px;
+        font-size: 11px;
+        font-weight: 400;
+        color: #8a9299;
     }
 
     #sampleFlow tr.sf-section>td {
@@ -309,7 +319,7 @@ $exitLabels = [
                                         <li><strong><?= _htmlTranslate('At facility'); ?></strong>: <?= _htmlTranslate('registered, with no lab receipt recorded. Dispatch from the facility is not tracked, so a sample stays here until a lab records receiving it.'); ?></li>
                                         <li><strong><?= _htmlTranslate('At lab, awaiting test'); ?></strong>: <?= _htmlTranslate('received at a lab, not yet tested; also failed, on hold and reordered samples.'); ?></li>
                                         <li><strong><?= _htmlTranslate('Tested, awaiting approval'); ?></strong>: <?= _htmlTranslate('a test date or a result is recorded, but the result is not yet approved.'); ?></li>
-                                        <li><strong><?= _htmlTranslate('Approved, awaiting release'); ?></strong>: <?= _htmlTranslate('the result is approved, but no delivery has been recorded.'); ?></li>
+                                        <li><strong><?= _htmlTranslate('Approved, awaiting release'); ?></strong>: <?= _htmlTranslate('the result is approved and final, but no delivery of it has been recorded: it has not been printed, dispatched, e-mailed, sent to its source or fetched over the API. The result exists in the system and nothing shows it reaching the facility that asked for it. A large number here usually means results are being handed over in a way the system is not recording, rather than a testing delay.'); ?></li>
                                         <li><strong><?= _htmlTranslate('Released'); ?></strong>: <?= _htmlTranslate('a delivery of the result is recorded: dispatched, printed (here or on the connected system), e-mailed, sent to its source, or fetched over the API.'); ?></li>
                                     </ul>
                                 </dd>
@@ -379,9 +389,11 @@ $exitLabels = [
                                         <tbody>
                                             <?php foreach ($stageLabels as $stageKey => $label) { ?>
                                                 <tr class="sf-row" data-stage="<?= $stageKey; ?>"
-                                                    title="<?= htmlspecialchars($stageHints[$stageKey], ENT_QUOTES); ?>"
                                                     onclick="sfSelectStage('<?= $stageKey; ?>');">
-                                                    <td><?= htmlspecialchars($label, ENT_QUOTES); ?></td>
+                                                    <td>
+                                                        <?= htmlspecialchars($label, ENT_QUOTES); ?>
+                                                        <small class="sf-stage-note"><?= htmlspecialchars($stageHints[$stageKey], ENT_QUOTES); ?></small>
+                                                    </td>
                                                     <td class="num" id="count-<?= $stageKey; ?>">&ndash;</td>
                                                     <td class="num" id="old-<?= $stageKey; ?>"></td>
                                                 </tr>
