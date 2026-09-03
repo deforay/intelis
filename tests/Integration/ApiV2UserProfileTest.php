@@ -67,6 +67,17 @@ final class ApiV2UserProfileTest extends TestCase
             'sts_token' => self::LAB_TOKEN,
             'sts_token_expiry' => date('Y-m-d H:i:s', strtotime('+30 days')),
         ]);
+        $db->insert('facility_details', ['facility_id' => 8, 'facility_name' => 'Lab Eight', 'status' => 'active']);
+        $db->insert('user_details', [
+            'user_id' => 'lab8-user',
+            'user_name' => 'Eight Person',
+            'login_id' => 'eight',
+            'email' => 'eight@example.org',
+            'phone_number' => '888',
+            'status' => 'active',
+            'role_id' => 1,
+            'testing_lab_id' => 8,
+        ]);
         $db->insert('user_details', [
             'user_id' => 'api-user',
             'user_name' => 'API User',
@@ -75,11 +86,13 @@ final class ApiV2UserProfileTest extends TestCase
             'status' => 'active',
             'role_id' => 1,
         ]);
+        // Pushed before labs were stamped: no testing_lab_id yet.
         $db->insert('user_details', [
             'user_id' => 'existing-1',
             'user_name' => 'Old Name',
             'login_id' => 'old',
             'email' => 'old@example.org',
+            'phone_number' => '111',
             'status' => 'active',
             'role_id' => 1,
         ]);
@@ -147,6 +160,7 @@ final class ApiV2UserProfileTest extends TestCase
         self::assertNull($row['login_id']);
         self::assertNull($row['password']);
         self::assertNull($row['role_id']);
+        self::assertSame(7, (int) $row['testing_lab_id']);
     }
 
     #[RunInSeparateProcess]
@@ -163,6 +177,22 @@ final class ApiV2UserProfileTest extends TestCase
         self::assertSame('Renamed', $row['user_name']);
         self::assertSame('active', $row['status']);
         self::assertSame('old', $row['login_id']);
+        // Omitted fields stay; an unstamped user is adopted by the pushing lab.
+        self::assertSame('111', $row['phone_number']);
+        self::assertSame(7, (int) $row['testing_lab_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testLabCannotTouchAnotherLabsUser(): void
+    {
+        ['code' => $code, 'payload' => $payload] = $this->post(self::LAB_TOKEN, [
+            'labId' => 7,
+            'profile' => ['userId' => 'lab8-user', 'userName' => 'Hijacked', 'email' => 'eight@example.org'],
+        ]);
+
+        self::assertSame(403, $code, json_encode($payload));
+        self::assertSame('forbidden', $payload['error']['code']);
+        self::assertSame('Eight Person', self::user('lab8-user')['user_name']);
     }
 
     #[RunInSeparateProcess]
@@ -191,16 +221,19 @@ final class ApiV2UserProfileTest extends TestCase
         self::assertSame(401, $code);
     }
 
+    /** A user token edits its own profile only, whatever userId or email the body names. */
     #[RunInSeparateProcess]
-    public function testUserTokenIsAccepted(): void
+    public function testUserTokenEditsItselfOnly(): void
     {
         ['code' => $code, 'payload' => $payload] = $this->post(self::USER_TOKEN, [
-            'profile' => ['userId' => 'new-2', 'userName' => 'Via User', 'email' => 'via@example.org'],
+            'profile' => ['userId' => 'lab8-user', 'userName' => 'My New Name', 'email' => 'eight@example.org'],
         ]);
 
         self::assertSame(200, $code, json_encode($payload));
-        self::assertSame('user', $payload['data']['caller']);
-        self::assertSame('inactive', self::user('new-2')['status']);
+        self::assertSame(['userId' => 'api-user', 'action' => 'updated', 'caller' => 'user'], $payload['data']);
+        self::assertSame('My New Name', self::user('api-user')['user_name']);
+        self::assertSame('Eight Person', self::user('lab8-user')['user_name']);
+        self::assertSame([], LegacyAppHarness::db()->rawQuery("SELECT * FROM user_details WHERE user_id = 'new-2'"));
     }
 
     #[RunInSeparateProcess]

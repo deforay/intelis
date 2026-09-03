@@ -10,6 +10,7 @@ use App\Services\STS\TokensService;
 use App\Services\UserProfileSyncService;
 use App\Services\UsersService;
 use App\Utilities\LoggerUtility;
+use DomainException;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -53,42 +54,58 @@ final readonly class SaveUserProfileHandler
         if ($caller === null) {
             return ApiV2Response::error(
                 'invalid_credential',
-                'A valid user token, or a lab token with its labId, is required.',
+                _translate('A valid user token, or a lab token with its labId, is required.'),
                 401
             );
         }
 
         $profile = $body['profile'] ?? null;
         if (!is_array($profile) || $profile === []) {
-            return ApiV2Response::error('invalid_request', 'profile is required.', 400);
+            return ApiV2Response::error('invalid_request', _translate('profile is required.'), 400);
         }
 
         try {
-            $result = $this->profiles->receive($profile);
+            $result = $this->profiles->receive(
+                $profile,
+                $caller['type'] === 'lab' ? $labId : null,
+                $caller['type'] === 'user' ? $caller['userId'] : null
+            );
         } catch (InvalidArgumentException $e) {
             return ApiV2Response::error('invalid_request', $e->getMessage(), 400);
+        } catch (DomainException $e) {
+            return ApiV2Response::error('forbidden', $e->getMessage(), 403);
         } catch (Throwable $e) {
             LoggerUtility::logError('v2 user profile: ' . $e->getMessage(), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
-            return ApiV2Response::error('server_error', 'The profile could not be saved. Please try again later.', 500);
+            return ApiV2Response::error(
+                'server_error',
+                _translate('The profile could not be saved. Please try again later.'),
+                500
+            );
         }
 
-        return ApiV2Response::success($result + ['caller' => $caller]);
+        return ApiV2Response::success($result + ['caller' => $caller['type']]);
     }
 
-    /** @return string|null 'user' or 'lab', null when neither credential holds */
-    private function authenticate(?string $token, int $labId): ?string
+    /**
+     * @return array{type: string, userId?: string}|null 'user' with its id, 'lab', or
+     *                                                   null when neither credential holds
+     */
+    private function authenticate(?string $token, int $labId): ?array
     {
         if ($token === null || $token === '') {
             return null;
         }
         if ($this->users->validateAuthToken($token)) {
-            return 'user';
+            $user = $this->users->findUserByApiToken($token);
+            if (!empty($user['user_id'])) {
+                return ['type' => 'user', 'userId' => (string) $user['user_id']];
+            }
         }
         if ($labId > 0 && $this->tokens->validateToken($token, $labId)) {
-            return 'lab';
+            return ['type' => 'lab'];
         }
         return null;
     }

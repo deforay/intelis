@@ -8,6 +8,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\ImageResizeUtility;
 use App\Utilities\LoggerUtility;
 use App\Utilities\MiscUtility;
+use DomainException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use InvalidArgumentException;
@@ -45,72 +46,105 @@ final class UserProfileSyncService
     /**
      * Apply a pushed profile on the receiving instance.
      *
+     * A lab caller ($labId) may create users for its own lab and update users
+     * that belong to it or to no lab yet (rows pushed before labs were stamped);
+     * the write stamps the lab. A user caller ($selfUserId) may only update
+     * its own profile, whatever userId or email the body names.
+     *
+     * Only the fields present in the profile are written, so an update that
+     * omits the phone number keeps the phone number.
+     *
      * @param array<string, mixed> $profile
      * @return array{userId: string, action: string}
-     * @throws InvalidArgumentException when the profile cannot be applied
+     * @throws InvalidArgumentException when the profile cannot be applied (400)
+     * @throws DomainException when the profile names a user outside the caller's scope (403)
      */
-    public function receive(array $profile): array
+    public function receive(array $profile, ?int $labId = null, ?string $selfUserId = null): array
     {
         $profile = array_intersect_key($profile, array_flip(self::PROFILE_FIELDS));
 
-        $userId = isset($profile['userId']) ? trim((string) $profile['userId']) : '';
-        if ($userId !== '' && MiscUtility::isBase64($userId)) {
-            $userId = (string) base64_decode($userId, true);
-        }
-        $email = isset($profile['email']) ? trim((string) $profile['email']) : '';
-        $userName = isset($profile['userName']) ? trim((string) $profile['userName']) : '';
+        $userId = trim((string) ($profile['userId'] ?? ''));
+        $email = trim((string) ($profile['email'] ?? ''));
+        $userName = trim((string) ($profile['userName'] ?? ''));
 
         if ($userName === '') {
-            throw new InvalidArgumentException('userName is required');
+            throw new InvalidArgumentException(_translate('userName is required'));
         }
-        if ($userId === '' && $email === '') {
-            throw new InvalidArgumentException('userId or email is required');
+
+        if ($selfUserId !== null) {
+            // A user token edits itself and nothing else.
+            $userId = $selfUserId;
+        } elseif ($userId === '' && $email === '') {
+            throw new InvalidArgumentException(_translate('userId or email is required'));
         }
 
         $existing = null;
         if ($userId !== '') {
             $this->db->where('user_id', $userId);
-            $existing = $this->db->getOne('user_details', ['user_id']);
+            $existing = $this->db->getOne('user_details', ['user_id', 'testing_lab_id']);
         }
-        if (empty($existing) && $email !== '') {
+        if (empty($existing) && $selfUserId === null && $email !== '') {
             $this->db->where('email', $email);
-            $existing = $this->db->getOne('user_details', ['user_id']);
+            $existing = $this->db->getOne('user_details', ['user_id', 'testing_lab_id']);
+        }
+        if ($selfUserId !== null && empty($existing)) {
+            throw new InvalidArgumentException(_translate('The user for this token no longer exists'));
         }
 
-        $interfaceUserName = trim((string) ($profile['interfaceUserName'] ?? ''));
-        $phone = trim((string) ($profile['phoneNo'] ?? ''));
+        if (!empty($existing) && $labId !== null) {
+            $ownerLab = $existing['testing_lab_id'] === null ? null : (int) $existing['testing_lab_id'];
+            if ($ownerLab !== null && $ownerLab !== $labId) {
+                throw new DomainException(_translate('This user belongs to another lab'));
+            }
+        }
+
         $data = [
             'user_name' => $userName,
-            'email' => $email !== '' ? $email : null,
-            'phone_number' => $phone !== '' ? $phone : null,
-            'interface_user_name' => $interfaceUserName === ''
-                ? null
-                : json_encode(array_map('trim', explode(',', $interfaceUserName))),
             'updated_datetime' => DateUtility::getCurrentDateTime(),
         ];
-
-        $targetId = !empty($existing['user_id'])
-            ? (string) $existing['user_id']
-            : ($userId !== '' ? $userId : MiscUtility::generateUUID());
-        $signatureFile = $this->storeSignature($profile['signature'] ?? null, $targetId);
-        if ($signatureFile !== null) {
-            $data['user_signature'] = $signatureFile;
+        if (array_key_exists('email', $profile)) {
+            $data['email'] = $email !== '' ? $email : null;
+        }
+        if (array_key_exists('phoneNo', $profile)) {
+            $phone = trim((string) $profile['phoneNo']);
+            $data['phone_number'] = $phone !== '' ? $phone : null;
+        }
+        if (array_key_exists('interfaceUserName', $profile)) {
+            $interfaceUserName = trim((string) $profile['interfaceUserName']);
+            $data['interface_user_name'] = $interfaceUserName === ''
+                ? null
+                : json_encode(array_map('trim', explode(',', $interfaceUserName)));
+        }
+        if ($labId !== null) {
+            $data['testing_lab_id'] = $labId;
         }
 
-        if (!empty($existing['user_id'])) {
+        if (!empty($existing)) {
+            $targetId = (string) $existing['user_id'];
             $this->db->where('user_id', $targetId);
             if ($this->db->update('user_details', $data) === false) {
-                throw new InvalidArgumentException('The profile could not be saved');
+                throw new InvalidArgumentException(_translate('The profile could not be saved'));
             }
-            return ['userId' => $targetId, 'action' => 'updated'];
+            $action = 'updated';
+        } else {
+            $targetId = $userId !== '' ? $userId : MiscUtility::generateUUID();
+            $data['user_id'] = $targetId;
+            $data['status'] = 'inactive';
+            if ($this->db->insert('user_details', $data) === false) {
+                throw new InvalidArgumentException(_translate('The profile could not be saved'));
+            }
+            $action = 'created';
         }
 
-        $data['user_id'] = $targetId;
-        $data['status'] = 'inactive';
-        if ($this->db->insert('user_details', $data) === false) {
-            throw new InvalidArgumentException('The profile could not be saved');
+        // The signature goes on disk only after the row is safely written, so a
+        // failed save never replaces the signature the user already had.
+        $signatureFile = $this->storeSignature($profile['signature'] ?? null, $targetId);
+        if ($signatureFile !== null) {
+            $this->db->where('user_id', $targetId);
+            $this->db->update('user_details', ['user_signature' => $signatureFile]);
         }
-        return ['userId' => $targetId, 'action' => 'created'];
+
+        return ['userId' => $targetId, 'action' => $action];
     }
 
     /**
@@ -221,14 +255,19 @@ final class UserProfileSyncService
         MiscUtility::makeDirectory($dir);
         $safeId = preg_replace('/[^A-Za-z0-9_-]/', '', $userId);
         $path = realpath($dir) . DIRECTORY_SEPARATOR . 'usign-' . $safeId . '.' . $extension;
-        file_put_contents($path, $bytes);
-        if (!MiscUtility::isImageValid($path)) {
-            @unlink($path);
+        $staged = $path . '.incoming';
+        file_put_contents($staged, $bytes);
+        if (!MiscUtility::isImageValid($staged)) {
+            @unlink($staged);
             return null;
         }
-        $resize = new ImageResizeUtility($path);
+        $resize = new ImageResizeUtility($staged);
         $resize->resizeToWidth(250);
-        $resize->save($path);
+        $resize->save($staged);
+        if (!rename($staged, $path)) {
+            @unlink($staged);
+            return null;
+        }
 
         return basename($path);
     }
