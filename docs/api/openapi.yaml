@@ -1013,6 +1013,9 @@ paths:
                   default: 100
                   maximum: 500
                   description: Page size. Servers before 5.7.51 ignore it and return 100.
+                    Offset paging is meant for browsing. Rows are ordered newest first, so a
+                    row modified between two pages moves and can be seen twice or missed.
+                    A sync must filter by sampleCode or lastModifiedDateTime instead.
                 offset:
                   type: integer
                   default: 0
@@ -1127,6 +1130,9 @@ paths:
                   default: 100
                   maximum: 500
                   description: Page size. Servers before 5.7.51 ignore it and return 100.
+                    Offset paging is meant for browsing. Rows are ordered newest first, so a
+                    row modified between two pages moves and can be seen twice or missed.
+                    A sync must filter by sampleCode or lastModifiedDateTime instead.
                 offset:
                   type: integer
                   default: 0
@@ -1184,7 +1190,8 @@ paths:
       tags:
       - Custom Tests API
       summary: Fetch Custom Test REQUESTS
-      description: Returns test requests created through the API, newest first. Reading here marks nothing.
+      description: Returns test requests created through the API, newest first, with
+        the same filters as fetch-results. Reading here marks nothing.
       requestBody:
         required: true
         content:
@@ -1231,6 +1238,9 @@ paths:
                   default: 100
                   maximum: 500
                   description: Page size. Servers before 5.7.51 ignore it and return 100.
+                    Offset paging is meant for browsing. Rows are ordered newest first, so a
+                    row modified between two pages moves and can be seen twice or missed.
+                    A sync must filter by sampleCode or lastModifiedDateTime instead.
                 offset:
                   type: integer
                   default: 0
@@ -1293,36 +1303,46 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                type: object
-                properties:
-                  appSampleCode:
-                    type: string
-                  labId:
-                    type: integer
-                  facilityId:
-                    type: integer
-                  sampleCollectionDate:
-                    type: string
-                  testType:
-                    type: string
-                  testTypeForm:
+              type: object
+              properties:
+                appVersion:
+                  type: string
+                  description: Version of the calling app, recorded against each request.
+                data:
+                  type: array
+                  items:
                     type: object
-                    additionalProperties: true
-                required:
-                - appSampleCode
-                - labId
-                - facilityId
-                - sampleCollectionDate
+                    properties:
+                      appSampleCode:
+                        type: string
+                      labId:
+                        type: integer
+                      facilityId:
+                        type: integer
+                      sampleCollectionDate:
+                        type: string
+                      testType:
+                        type: string
+                      testTypeForm:
+                        type: object
+                        additionalProperties: true
+                    required:
+                    - appSampleCode
+                    - labId
+                    - facilityId
+                    - sampleCollectionDate
+              required:
+              - data
             example:
-            - appSampleCode: APP-CT-0001
-              labId: 1
-              facilityId: 3
-              sampleCollectionDate: '2026-08-01 09:00:00'
-              testType: hepatitis-b
-              testTypeForm:
-                patientId: PT-1
+              appVersion: 1.5.0
+              data:
+              - appSampleCode: APP-CT-0001
+                labId: 1
+                facilityId: 3
+                sampleCollectionDate: '2026-08-01 09:00:00'
+                testType: hepatitis-b
+                testTypeForm:
+                  patientId: PT-1
       responses:
         '200':
           description: Per-record outcome. status is success, partial or failed for the batch.
@@ -1419,10 +1439,9 @@ paths:
       tags:
       - Core API
       summary: Create or update a user profile
-      description: Used by an STS to push a user to a LIS. Accepts either the
-        bearer token or an x-api-key field in the body carrying the STS key. The
-        user is matched on userId, then on email; post carries the profile and
-        arrives as a JSON string.
+      description: Used by an STS to push a user to a LIS. The user is matched on
+        userId, then on email; post carries the profile and arrives as a JSON
+        string.
       requestBody:
         required: true
         content:
@@ -1430,13 +1449,10 @@ paths:
             schema:
               type: object
               properties:
-                x-api-key:
-                  type: string
                 post:
                   type: string
                   description: JSON-encoded object with userId, userName, email, phoneNo, loginId, role, status, password and interfaceUserName.
             example:
-              x-api-key: sts-key
               post: '{"userId":"u-1","userName":"Lab User","email":"lab@example.org","loginId":"lab","role":"2","status":"active"}'
       responses:
         '200':
@@ -2174,6 +2190,9 @@ paths:
                   default: 100
                   maximum: 500
                   description: Page size. Servers before 5.7.51 ignore it and return 100.
+                    Offset paging is meant for browsing. Rows are ordered newest first, so a
+                    row modified between two pages moves and can be seen twice or missed.
+                    A sync must filter by sampleCode or lastModifiedDateTime instead.
                 offset:
                   type: integer
                   default: 0
@@ -2890,6 +2909,9 @@ paths:
                   default: 100
                   maximum: 500
                   description: Page size. Servers before 5.7.51 ignore it and return 100.
+                    Offset paging is meant for browsing. Rows are ordered newest first, so a
+                    row modified between two pages moves and can be seen twice or missed.
+                    A sync must filter by sampleCode or lastModifiedDateTime instead.
                 offset:
                   type: integer
                   default: 0
@@ -3085,6 +3107,9 @@ paths:
                   default: 100
                   maximum: 500
                   description: Page size. Servers before 5.7.51 ignore it and return 100.
+                    Offset paging is meant for browsing. Rows are ordered newest first, so a
+                    row modified between two pages moves and can be seen twice or missed.
+                    A sync must filter by sampleCode or lastModifiedDateTime instead.
                 offset:
                   type: integer
                   default: 0
@@ -4603,6 +4628,9 @@ paths:
                   default: 100
                   maximum: 500
                   description: Page size. Servers before 5.7.51 ignore it and return 100.
+                    Offset paging is meant for browsing. Rows are ordered newest first, so a
+                    row modified between two pages moves and can be seen twice or missed.
+                    A sync must filter by sampleCode or lastModifiedDateTime instead.
                 offset:
                   type: integer
                   default: 0
@@ -4785,6 +4813,9 @@ paths:
                   default: 100
                   maximum: 500
                   description: Page size. Servers before 5.7.51 ignore it and return 100.
+                    Offset paging is meant for browsing. Rows are ordered newest first, so a
+                    row modified between two pages moves and can be seen twice or missed.
+                    A sync must filter by sampleCode or lastModifiedDateTime instead.
                 offset:
                   type: integer
                   default: 0
@@ -5263,6 +5294,9 @@ paths:
                   default: 100
                   maximum: 500
                   description: Page size. Servers before 5.7.51 ignore it and return 100.
+                    Offset paging is meant for browsing. Rows are ordered newest first, so a
+                    row modified between two pages moves and can be seen twice or missed.
+                    A sync must filter by sampleCode or lastModifiedDateTime instead.
                 offset:
                   type: integer
                   default: 0
@@ -5619,6 +5653,9 @@ paths:
                   default: 100
                   maximum: 500
                   description: Page size. Servers before 5.7.51 ignore it and return 100.
+                    Offset paging is meant for browsing. Rows are ordered newest first, so a
+                    row modified between two pages moves and can be seen twice or missed.
+                    A sync must filter by sampleCode or lastModifiedDateTime instead.
                 offset:
                   type: integer
                   default: 0

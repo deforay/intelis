@@ -11,6 +11,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 
 ini_set('memory_limit', -1);
@@ -195,6 +196,17 @@ try {
     if (!empty($input['facility'])) {
         $facilityId = $db->inIntList($input['facility']);
         $where[] = " vl.facility_id IN ($facilityId) ";
+    }
+
+    // Same filters as fetch-results, so a client can use one request shape for both.
+    $uniqueId = (array) ($input['uniqueId'] ?? []);
+    if ($uniqueId !== []) {
+        $uniqueId = implode("','", array_map($db->escape(...), $uniqueId));
+        $where[] = " vl.unique_id IN ('$uniqueId')";
+    }
+
+    if (!empty($input['lastModifiedDateTime'])) {
+        $where[] = " DATE(vl.request_created_datetime) >= '" . $db->escape(DateUtility::isoDateFormat($input['lastModifiedDateTime'])) . "'";
     }
 
     // patientId is the cross-test-type filter name; childId stays for older clients

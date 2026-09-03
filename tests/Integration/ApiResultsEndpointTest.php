@@ -406,6 +406,30 @@ final class ApiResultsEndpointTest extends TestCase
         self::assertNull(self::row('form_eid', 'eid_id', $elsewhere)['result_sent_to_source_datetime']);
     }
 
+    /**
+     * get-request now takes the same filters as fetch-results on every test type.
+     * COVID had only sampleCode, dates and facility, so a patient filter used to
+     * return every request the token could see.
+     */
+    #[RunInSeparateProcess]
+    public function testCovidGetRequestFiltersByPatientIdAndStatusWithoutStamping(): void
+    {
+        $wanted = $this->seedCovid('PT-1', 1);
+        $this->seedCovid('PT-2', 1);
+        $this->seedCovid('PT-1-F2', 2);
+
+        $payload = $this->drive('/api/v1.1/covid-19/get-request.php', [
+            'patientId' => ['PT-1', 'PT-1-F2'],
+            'sampleStatus' => [7],
+            'sampleCollectionDate' => [],
+        ]);
+
+        self::assertSame('success', $payload['status']);
+        self::assertSame(['C19-PT-1'], array_column($payload['data'], 'sampleCode'));
+        self::assertSame(1, $payload['total']);
+        self::assertNull(self::row('form_covid19', 'covid19_id', $wanted)['result_sent_to_source_datetime']);
+    }
+
     /** COVID rows expose the result under both names the app has used. */
     #[RunInSeparateProcess]
     public function testCovidFetchResultsReturnsTestResultAliasAndStamps(): void

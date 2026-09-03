@@ -4,6 +4,7 @@ use Slim\Psr7\Request;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
+use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -108,6 +109,33 @@ try {
     if (!empty($input['facility'])) {
         $facilityId = $db->inIntList($input['facility']);
         $where[] = " vl.facility_id IN ($facilityId) ";
+    }
+
+    // Same filters as fetch-results, so a client can use one request shape for both.
+    $uniqueId = (array) ($input['uniqueId'] ?? []);
+    if ($uniqueId !== []) {
+        $uniqueId = implode("','", array_map($db->escape(...), $uniqueId));
+        $where[] = " vl.unique_id IN ('$uniqueId')";
+    }
+
+    if (!empty($input['lastModifiedDateTime'])) {
+        $where[] = " DATE(vl.request_created_datetime) >= '" . $db->escape(DateUtility::isoDateFormat($input['lastModifiedDateTime'])) . "'";
+    }
+
+    $patientId = (array) ($input['patientId'] ?? []);
+    if ($patientId !== []) {
+        $patientId = implode("','", array_map($db->escape(...), $patientId));
+        $where[] = " vl.patient_id IN ('$patientId') ";
+    }
+
+    if (!empty($input['patientName'])) {
+        $where[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_last_name,'')) like '%" . $db->escape($input['patientName']) . "%'";
+    }
+
+    $sampleStatus = $input['sampleStatus'] ?? [];
+    if (!empty($sampleStatus)) {
+        $sampleStatus = $db->inIntList($sampleStatus);
+        $where[] = " vl.result_status IN ($sampleStatus) ";
     }
     $where[] = " vl.app_sample_code is not null";
     $whereStr = "";
