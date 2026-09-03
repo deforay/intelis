@@ -38,6 +38,7 @@ rather than scrolling.
 | Same user can Review and Approve | Whether one person may both review and approve a result |
 | Allow Samples not matching the System Sample IDs while importing results manually | Whether a manual import may bring in rows whose Sample ID InteLIS does not hold |
 | Support Email | The address shown to users asking for help |
+| Minimum Mobile App Version | The oldest InteLIS Mobile version allowed to sign in, for example `1.5.0`. Blank allows every version |
 | CSV Delimiter, CSV Enclosure | How exported CSV files are separated and quoted |
 | Default Phone Prefix | The country dialling prefix |
 | Minimum Length of Phone Number, Maximum Length of Phone Number | The accepted phone number lengths |

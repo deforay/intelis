@@ -39,6 +39,7 @@ trouver un paramètre plutôt que de faire défiler.
 | Same user can Review and Approve | Si une même personne peut réviser et approuver un résultat |
 | Allow Samples not matching the System Sample IDs while importing results manually | Si un import manuel peut introduire des lignes dont l'ID d'échantillon est inconnu d'InteLIS |
 | Support Email | L'adresse indiquée aux utilisateurs qui demandent de l'aide |
+| Minimum Mobile App Version | La version la plus ancienne d'InteLIS Mobile autorisée à se connecter, par exemple `1.5.0`. Vide autorise toutes les versions |
 | CSV Delimiter, CSV Enclosure | Le séparateur et le guillemet des fichiers CSV exportés |
 | Default Phone Prefix | L'indicatif téléphonique du pays |
 | Minimum Length of Phone Number, Maximum Length of Phone Number | Les longueurs de numéro acceptées |

@@ -11,3 +11,15 @@ UPDATE `s_app_menu` SET `status` = 'inactive', `updated_datetime` = CURRENT_TIME
  WHERE `link` LIKE '/sample-flow/sample-flow.php%';
 
 UPDATE `system_config` SET `value` = '5.7.50' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
