@@ -85,10 +85,23 @@ final class ApiInitBuildersTest extends TestCase
         }
     }
 
+    private static function selectsRun(): int
+    {
+        $row = LegacyAppHarness::db()->rawQueryOne("SHOW SESSION STATUS LIKE 'Com_select'");
+
+        return (int) ($row['Value'] ?? 0);
+    }
+
+    /**
+     * Two SELECTs however many districts there are. The old shape ran one more
+     * per district, which was the 1.8 seconds on a national instance.
+     */
     #[RunInSeparateProcess]
     public function testDistrictListGroupsFacilitiesPerDistrictInNameOrder(): void
     {
+        $before = self::selectsRun();
         $districts = ContainerRegistry::get(CommonService::class)->getDistrictDetailsApi(null, true, null);
+        self::assertSame(2, self::selectsRun() - $before, 'the district list must be built in two queries');
 
         // Only districts that have an active facility, in district name order.
         self::assertSame(['Alpha', 'Beta'], array_column($districts, 'show'));
