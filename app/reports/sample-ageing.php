@@ -529,13 +529,21 @@ $exitLabels = [
         $('#sfStages tr.sf-row').removeClass('is-active');
         sfLoadFlow(function () {
             // Keep the reader on the stage they were looking at across a
-            // filter change; otherwise land on the busiest open stage.
+            // filter change; otherwise open on the backlog.
             if (sfStage && (sfFlow[sfStage] || {}).total > 0) {
                 sfSelectStage(sfStage);
             } else {
-                sfSelectStage(sfBusiestStage());
+                sfSelectStage(sfDefaultStage());
             }
         });
+    }
+
+    // Samples received by a lab and not yet tested are the backlog somebody can
+    // actually act on, so the page opens there rather than on whichever stage
+    // happens to hold the most rows. Falls back to the busiest open stage when
+    // nothing is waiting at a lab, so the page never opens on an empty table.
+    function sfDefaultStage() {
+        return ((sfFlow.atLab || {}).total || 0) > 0 ? 'atLab' : sfBusiestStage();
     }
 
     function sfBusiestStage() {
