@@ -182,11 +182,20 @@ jobs:
           docker run -d --name mysql -p 3306:3306 \
             -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=vlsm \
             mysql:8.0 --innodb-strict-mode=0 --sql-mode=
+          # The entrypoint runs a temporary server over the unix socket while
+          # it initialises, then stops it and starts the real one. A socket
+          # probe answers during that window, so the seed step that follows
+          # lands in the restart and dies with "Can't connect to local MySQL
+          # server through socket". That temporary server is started with
+          # networking off, so a TCP probe is the one that waits for the server
+          # still running afterwards.
           for _ in $(seq 1 60); do
-            docker exec mysql mysql -uroot -proot -e 'SELECT 1' >/dev/null 2>&1 && break
+            docker exec mysql mysql -uroot -proot --protocol=TCP -h 127.0.0.1 \
+              -e 'SELECT 1' >/dev/null 2>&1 && break
             sleep 2
           done
-          docker exec mysql mysql -uroot -proot -e 'SELECT VERSION()'
+          docker exec mysql mysql -uroot -proot --protocol=TCP -h 127.0.0.1 \
+            -e 'SELECT VERSION()'
 
       - name: Seed the baseline schema
         run: |
