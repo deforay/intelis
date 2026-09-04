@@ -169,6 +169,13 @@ final readonly class AuditArchiveService
      * The audit_log drain already groups by sample for this reason; this is the
      * legacy path catching up.
      *
+     * Grouping is per page rather than per run. Rows are read in date order, so
+     * a sample carrying more revisions than one page holds is filed once per
+     * page its revisions fall in rather than once overall. Every one of those
+     * passes is still correct -- de-duplication by dt_datetime sees to that --
+     * and paginating by sample instead would need a cursor that is not a date,
+     * which is more than a path being retired is worth.
+     *
      * $metadata is the bulk-run cursor state, updated in place. Its keys are
      * audit table names, so there is no fixed shape to declare.
      */
@@ -285,8 +292,24 @@ final readonly class AuditArchiveService
 
         if ($existing) {
             $old = $this->readCompressedCsv($existing);
-            // Map old rows to current headers (preserve cell strings as-is)
-            $rows = $this->reheaderIfNeeded($old['headers'], $currentHeaders, $old['rows']);
+
+            // Union of the table's columns and the file's own, current order
+            // first. A form that drops a field must not take that field's
+            // history with it: the column is gone from the table, so mapping the
+            // file onto the table alone would blank every value it ever held and
+            // the rewrite below would then make that permanent. The audit_log
+            // drain has kept the union for this reason since it was written;
+            // this is the legacy path doing the same. Standard columns keep
+            // their positions because currentHeaders leads, so the revision and
+            // dt_datetime offsets the caller resolved still hold.
+            foreach ($old['headers'] as $retired) {
+                if (!in_array($retired, $headers, true)) {
+                    $headers[] = $retired;
+                }
+            }
+
+            // Map old rows onto that union (preserve cell strings as-is)
+            $rows = $this->reheaderIfNeeded($old['headers'], $headers, $old['rows']);
 
             // Build dt_datetime set + last revision from the reheadered rows
             foreach ($rows as $r) {
@@ -496,7 +519,10 @@ final readonly class AuditArchiveService
         if ($legacyFits && !$strictFits) {
             return $legacy;
         }
-        if ($strictFits && $legacyFits && $strict['rows'] !== $legacy['rows']) {
+        // Past those two, the readings are either both coherent or both not, so
+        // $strictFits alone says which. Both coherent and disagreeing is the
+        // ambiguous case the old writer left behind.
+        if ($strictFits && $strict['rows'] !== $legacy['rows']) {
             return $legacy;
         }
 
