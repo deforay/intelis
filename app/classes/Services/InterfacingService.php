@@ -484,7 +484,7 @@ final class InterfacingService
             $result = EidService::interpretEidResult($row['results']) ?? $reported;
         }
 
-        return [
+        $data = [
             'lab_id' => $labId,
             'tested_by' => $row['tested_by'],
             'instrument_id' => $instrument['instrument_id'] ?? null,
@@ -501,6 +501,23 @@ final class InterfacingService
             'last_modified_datetime' => DateUtility::getCurrentDateTime(),
             'data_sync' => 0,
         ];
+
+        // Nothing to approve if there is no result -- the same rule the viral
+        // load branch above states, which this one was missing. bin/interface.php
+        // pulls an order on the Interface Tool's own ready flag alone, never on
+        // the result being present, so a row flagged ready with an unparsed
+        // result reaches here with $result null. Auto-approval then stamped
+        // Accepted on a sample holding nothing, which is how the EID grids came
+        // to carry accepted samples with no result while viral load stayed clean.
+        //
+        // The status is dropped from the payload rather than lowered: an order
+        // that reports no result says nothing about where the sample got to, so
+        // whatever status the lab already recorded stands.
+        if (trim((string) $result) === '') {
+            unset($data['result_status']);
+        }
+
+        return $data;
     }
 
     /**
@@ -532,7 +549,7 @@ final class InterfacingService
             $result = $interpreted['result'];
         }
 
-        return [
+        $data = [
             'lab_id' => $labId,
             'instrument_id' => $instrument['instrument_id'] ?? null,
             'tested_by' => $this->usersService->getOrCreateUser($row['tested_by']),
@@ -550,6 +567,14 @@ final class InterfacingService
             'last_modified_datetime' => DateUtility::getCurrentDateTime(),
             'data_sync' => 0,
         ];
+
+        // As in the EID branch: no result means nothing to approve, and the
+        // status the lab already recorded stands.
+        if (trim((string) $result) === '') {
+            unset($data['result_status']);
+        }
+
+        return $data;
     }
 
     // -----------------------------------------------------------------

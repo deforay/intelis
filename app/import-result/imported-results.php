@@ -1418,6 +1418,11 @@ foreach ($rejectionTypeResult as $type) {
 				function (data) {
 					oTable.fnDraw();
 					$.unblockUI();
+					// Samples whose result did not come through in the file are
+					// left where they are, and named so they can be looked at.
+					if (data && data.message) {
+						alert(data.message);
+					}
 				});
 
 		} else {

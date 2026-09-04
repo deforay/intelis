@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Utilities\DateUtility;
+use App\Utilities\SampleStatusUtility;
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\CANCELLED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
@@ -82,10 +83,10 @@ final class DataIssuesService
      */
     public static function predicates(string $testType, string $alias = 'vl'): array
     {
-        $resultColumn = TestsService::getResultColumn($testType);
-        $result = "$alias.$resultColumn";
-        $hasResult = "($result IS NOT NULL AND TRIM($result) <> '')";
-        $noResult = "($result IS NULL OR TRIM($result) = '')";
+        // Same definition the write paths refuse on, so what this scan reports
+        // and what the app declines to write cannot drift apart.
+        $hasResult = SampleStatusUtility::hasResultSql($testType, $alias);
+        $noResult = SampleStatusUtility::noResultSql($testType, $alias);
 
         return [
             // A rejected sample carrying a result is deliberately absent. It was
