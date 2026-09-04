@@ -15,6 +15,7 @@ use App\Services\PatientsService;
 use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleStatusUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -309,10 +310,24 @@ try {
 
      $db->where('cd4_id', $_POST['cd4SampleId']);
      $getPrevResult = $db->getOne('form_cd4');
+     // The request edit is not where a result gets removed. A save that carries no
+     // result while the status still says Accepted leaves a row that every printing,
+     // dispatch and reporting query passes over, because they all read Accepted as
+     // "there is a result here". So the stored result stands and the edit keeps its
+     // other changes. Rejecting a sample is unaffected: that branch above moves the
+     // status off Accepted first, and clearing a result outright belongs to the
+     // result page, which owns that column.
+     if (
+         SampleStatusUtility::assertsAResult($status)
+         && !SampleStatusUtility::rowHasResult('cd4', $cd4Data)
+     ) {
+         $cd4Data['cd4_result'] = $getPrevResult['cd4_result'];
+         $_POST['cd4Result'] = $getPrevResult['cd4_result'];
+     }
      // The result counts as modified when the value changed or the sample flipped
      // between rejected and not rejected -- the same rule the change history is logged on.
      $previousState = ['result' => $getPrevResult['cd4_result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null];
-     $currentState = ['result' => $_POST['cd4_result'] ?? null, 'is_sample_rejected' => $_POST['isSampleRejected'] ?? null];
+     $currentState = ['result' => $_POST['cd4Result'] ?? null, 'is_sample_rejected' => $_POST['isSampleRejected'] ?? null];
      $vlData['result_modified'] = MiscUtility::resultOrRejectionChanged($previousState, $currentState) ? "yes" : "no";
 
      // Append the change reason (preserving prior history) whenever the result or rejection changed.

@@ -12,6 +12,7 @@ use App\Services\BulkResultStatusService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleStatusUtility;
 use App\Services\TestAttemptService;
 
 /** @var DatabaseService $db */
@@ -34,12 +35,29 @@ try {
 
     $id = explode(",", (string) $_POST['id']);
     $counter = count($id);
+    $skippedSampleCodes = [];
+    $statusUpdated = 0;
+
     for ($i = 0; $i < $counter; $i++) {
         $db->where('vl_sample_id', $id[$i]);
         $vlRow = $db->getOne($tableName);
 
         $status = [];
-        if (!empty($_POST['status'])) {
+        // A status that says the test is finished cannot go onto a sample
+        // with no result: the printing, dispatch and reporting queries all
+        // read Accepted as "there is a result here", so such a row drops out
+        // of every one of them at once. The rest of the selection still goes
+        // through, because a selection is a list of separate patients and one
+        // missing result is no reason to hold up anyone else's.
+        $cannotAccept = SampleStatusUtility::assertsAResult($_POST['status'] ?? null)
+            && !SampleStatusUtility::rowHasResult('vl', $vlRow ?? []);
+        if ($cannotAccept) {
+            $skippedSampleCodes[] = ($vlRow['sample_code'] ?? '')
+                ?: ($vlRow['remote_sample_code'] ?? '')
+                ?: $id[$i];
+        }
+
+        if (!empty($_POST['status']) && !$cannotAccept) {
             $status = [
                 'result_status' => $_POST['status'],
                 'result_approved_datetime' => DateUtility::getCurrentDateTime(),
@@ -88,6 +106,7 @@ try {
 
             $db->where('vl_sample_id', $id[$i]);
             $db->update($tableName, $status);
+            $statusUpdated++;
         }
 
         $userData = $bulkResultStatusService->getBulkUserData($vlRow, $_POST);
@@ -99,8 +118,6 @@ try {
             $db->update($tableName, $userData);
         }
 
-
-        $result = $id[$i];
 
         $sampleCode = 'sample_code';
         if ($general->isSTSInstance()) {
@@ -116,8 +133,10 @@ try {
         $action = $_SESSION['userName'] . ' updated VL samples status for the ' . $sampleId . $concat . $patientId;
         $resource = 'vl-results';
         $general->activityLog($eventType, $action, $resource);
-        echo $result;
     }
+
+    header('Content-Type: application/json');
+    echo json_encode($bulkResultStatusService->buildResponse($statusUpdated, $skippedSampleCodes));
 } catch (Throwable $e) {
     throw new SystemException(
         $e->getMessage(),

@@ -659,14 +659,14 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 							rejectedReason: $("#bulkRejectionReason").val()
 						},
 						function(data) {
-							if (data != "") {
+							if (data && data.status === 'ok') {
 								$("#checkedTests").val('');
 								selectedTests = [];
 								selectedTestsId = [];
 								$("#checkTestsData").attr("checked", false);
 								resetBulkActionForm();
 								oTable.fnDraw();
-								alert("<?php echo _translate("Updated successfully"); ?>.");
+								alert(data.message);
 							}
 						});
 				};
@@ -699,7 +699,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 						rejectedReason: obj.value
 					},
 					function(data) {
-						if (data != "") {
+						if (data && data.status === 'ok') {
 							$("#checkedTests").val('');
 							selectedTests = [];
 							selectedTestsId = [];
@@ -709,7 +709,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 							$("#statusDropDownId").val('');
 							$("#rejectionReason").val('');
 							oTable.fnDraw();
-							alert("<?php echo _translate("Updated successfully"); ?>.");
+							alert(data.message);
 						}
 					});
 			} else {

@@ -655,14 +655,14 @@ foreach ($rejectionTypeResult as $type) {
 							rejectedReason: $("#bulkRejectionReason").val()
 						},
 						function(data) {
-							if (data != "") {
+							if (data && data.status === 'ok') {
 								$("#checkedTests").val('');
 								selectedTests = [];
 								selectedTestsId = [];
 								$("#checkTestsData").attr("checked", false);
 								resetBulkActionForm();
 								oTable.fnDraw();
-								alert("<?php echo _translate("Updated successfully."); ?>");
+								alert(data.message);
 							}
 						});
 				};
@@ -695,7 +695,7 @@ foreach ($rejectionTypeResult as $type) {
 						rejectedReason: obj.value
 					},
 					function(data) {
-						if (data != "") {
+						if (data && data.status === 'ok') {
 							$("#checkedTests").val('');
 							selectedTests = [];
 							selectedTestsId = [];
@@ -705,7 +705,7 @@ foreach ($rejectionTypeResult as $type) {
 							$("#statusDropDownId").val('');
 							$("#rejectionReason").val('');
 							oTable.fnDraw();
-							alert("<?php echo _translate("Updated successfully."); ?>");
+							alert(data.message);
 						}
 					});
 			} else {

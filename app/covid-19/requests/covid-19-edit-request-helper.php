@@ -16,6 +16,7 @@ use App\Services\PatientsService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleStatusUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -289,6 +290,20 @@ try {
 
 	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$getPrevResult = $db->getOne('form_covid19');
+	// The request edit is not where a result gets removed. A save that carries no
+	// result while the status still says Accepted leaves a row that every printing,
+	// dispatch and reporting query passes over, because they all read Accepted as
+	// "there is a result here". So the stored result stands and the edit keeps its
+	// other changes. Rejecting a sample is unaffected: that branch above moves the
+	// status off Accepted first, and clearing a result outright belongs to the
+	// result page, which owns that column.
+	if (
+		SampleStatusUtility::assertsAResult($status)
+		&& !SampleStatusUtility::rowHasResult('covid19', $covid19Data)
+	) {
+		$covid19Data['result'] = $getPrevResult['result'];
+		$_POST['result'] = $getPrevResult['result'];
+	}
 	// The result counts as modified when the value changed or the sample flipped
 	// between rejected and not rejected -- the same rule the change history is logged on.
 	$previousState = ['result' => $getPrevResult['result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null];
