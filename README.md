@@ -57,6 +57,17 @@ Full instructions: [Installing InteLIS with Docker](https://deforay.github.io/in
 
 ---
 
+## Related projects
+
+InteLIS works alongside two other open-source projects from the same team.
+
+| Project | What it does |
+| --- | --- |
+| [InteLIS Interfacing](https://github.com/deforay/intelis-interfacing) | Desktop application that reads results from laboratory analyzers over ASTM and HL7, stores them locally, and passes them to InteLIS |
+| [Smart Connect](https://github.com/deforay/smart-connect) | National dashboard that collects data from connected InteLIS installations and reports on viral load, EID, and COVID-19 |
+
+---
+
 ## Requirements
 
 Docker supplies all three. A server install needs them present.
