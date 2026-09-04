@@ -127,6 +127,7 @@ const COVERED_FILES = [
     'app/hepatitis/reference/get-hepatitis-sample-rejection-reasons-helper.php',
     'app/covid-19/reference/getCovid19SampleRejectionDetails.php',
     'app/tb/reference/getTbSampleRejectionDetails.php',
+    'app/eid/qa/get-qa-monitoring-data.php',
 ];
 
 /**
