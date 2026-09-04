@@ -107,8 +107,10 @@ if (!empty($_POST['sampleReceivedAtLab']) && trim((string) $_POST['sampleReceive
 }
 
 if (!empty($_POST['lastModifiedDateTime']) && trim((string) $_POST['lastModifiedDateTime']) != '') {
-    [$lastModifiedStartDate, $lastModifiedEndDate] = DateUtility::convertDateRange($_POST['lastModifiedDateTime'] ?? '');
-    $conds[] = " DATE(last_modified_datetime) BETWEEN ? AND ? ";
+    // Compared as datetimes rather than through DATE(), which put the index on
+    // this column out of reach. See the note in app/tb/results/get-samples.php.
+    [$lastModifiedStartDate, $lastModifiedEndDate] = DateUtility::convertDateRange($_POST['lastModifiedDateTime'] ?? '', includeTime: true);
+    $conds[] = " last_modified_datetime BETWEEN ? AND ? ";
     $bind[] = $lastModifiedStartDate;
     $bind[] = $lastModifiedEndDate;
 }

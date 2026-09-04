@@ -92,8 +92,13 @@ if (!empty($_POST['sampleReceivedAtLab']) && trim((string) $_POST['sampleReceive
 }
 
 if (!empty($_POST['lastModifiedDateTime']) && trim((string) $_POST['lastModifiedDateTime']) != '') {
-    [$lastModifiedStartDate, $lastModifiedEndDate] = DateUtility::convertDateRange($_POST['lastModifiedDateTime'] ?? '');
-    $swhere[] = $where[] = " DATE(last_modified_datetime) BETWEEN '$lastModifiedStartDate' AND '$lastModifiedEndDate' ";
+    // Compared as datetimes rather than through DATE(). A function around the
+    // column puts every index on it out of reach, so the filter read the whole
+    // table. convertDateRange() with time gives midnight to 23:59:59, which is
+    // the span DATE(col) BETWEEN already meant, and last_modified_datetime
+    // carries no fractional seconds for the endpoint to fall inside.
+    [$lastModifiedStartDate, $lastModifiedEndDate] = DateUtility::convertDateRange($_POST['lastModifiedDateTime'] ?? '', includeTime: true);
+    $swhere[] = $where[] = " last_modified_datetime BETWEEN '$lastModifiedStartDate' AND '$lastModifiedEndDate' ";
 }
 
 if (!empty($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
