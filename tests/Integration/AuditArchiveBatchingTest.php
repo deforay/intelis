@@ -20,7 +20,14 @@ use ReflectionMethod;
  * cost grew with the square of a sample's revision count and every rewrite cost
  * the next backup a re-copy of the file. The fix files a whole page of rows one
  * sample at a time, and this pins the property that makes it a fix: one write
- * per sample per pass, whatever the revision count.
+ * per sample per page of rows read, whatever the revision count.
+ *
+ * Per page, not per run: rows are read in date order, so a sample with more
+ * revisions than one page holds is filed once for each page its revisions fall
+ * in. De-duplication by dt_datetime keeps every one of those passes correct, and
+ * fixing it properly means paginating by sample instead of by date, which the
+ * metadata cursor is not shaped for. Not worth reworking a path that
+ * prune-legacy-audit-tables.php is retiring.
  *
  * archiveTable() is reached by reflection because the public entry points resolve
  * a test type through TestsService, which wants the application's test_types
@@ -250,6 +257,12 @@ final class AuditArchiveBatchingTest extends TestCase
 
         $rows = $this->archivedRows('SAMPLE-A');
         $this->assertCount(2, $rows);
+        $this->assertArrayHasKey('retired_field', $rows[0], 'A column the form has dropped must keep its history.');
+        $this->assertSame(
+            'kept',
+            $rows[0]['retired_field'] ?? null,
+            'The retired column value must survive the rewrite.'
+        );
         $this->assertSame('r1', $rows[0]['result'], 'A reordered legacy column must land in its own field.');
         $this->assertSame('r2', $rows[1]['result']);
         $this->assertSame([1, 2], array_map(static fn(array $r): int => (int) $r['revision'], $rows));
