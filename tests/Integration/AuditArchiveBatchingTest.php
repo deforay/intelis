@@ -255,6 +255,129 @@ final class AuditArchiveBatchingTest extends TestCase
         $this->assertSame([1, 2], array_map(static fn(array $r): int => (int) $r['revision'], $rows));
     }
 
+    /**
+     * A value ending in a backslash survives the archive round trip.
+     *
+     * Written under PHP's historical CSV escape, a field ending in a backslash
+     * became "value\\" — the backslash escaped the closing quote, so on the way
+     * back the field swallowed the delimiter and everything after it on the
+     * line. One analyzer path in import_machine_file_name was enough to lose the
+     * rest of a revision, which for an audit trail is the whole failure.
+     */
+    public function testTrailingBackslashSurvivesTheRoundTrip(): void
+    {
+        $value = 'C:\\analyzer\\run\\';
+        self::$db->rawQuery(
+            'INSERT INTO `' . self::AUDIT_TBL . '` (unique_id, sample_code, dt_datetime, result)
+             VALUES (?, ?, ?, ?)',
+            ['SAMPLE-A', 'SAMPLE-A', '2026-01-01 00:01:00', $value]
+        );
+
+        $this->archive('SAMPLE-A');
+
+        $rows = $this->archivedRows('SAMPLE-A');
+        $this->assertCount(1, $rows);
+        $this->assertSame($value, $rows[0]['result'], 'The backslash must come back intact.');
+        $this->assertSame('SAMPLE-A', $rows[0]['unique_id'], 'And must not have swallowed the next field.');
+    }
+
+    /**
+     * Quotes, commas, newlines and unicode round trip under the same rule.
+     *
+     * Disabling the escape changes how a backslash is handled and nothing else,
+     * so the characters that were already safe have to stay safe.
+     */
+    public function testAwkwardValuesSurviveTheRoundTrip(): void
+    {
+        $values = [
+            'quoted' => 'says "hello" twice',
+            'comma'  => 'Kinshasa, Gombe',
+            'accent' => 'accentué — ünïcode',
+            'json'   => '{"result":"<40","unit":"cp/mL"}',
+        ];
+
+        $i = 0;
+        foreach ($values as $value) {
+            $i++;
+            self::$db->rawQuery(
+                'INSERT INTO `' . self::AUDIT_TBL . '` (unique_id, sample_code, dt_datetime, result)
+                 VALUES (?, ?, ?, ?)',
+                ['SAMPLE-A', 'SAMPLE-A', sprintf('2026-01-01 00:%02d:00', $i), $value]
+            );
+        }
+
+        $this->archive('SAMPLE-A');
+
+        $this->assertSame(
+            array_values($values),
+            array_map(static fn(array $r): string => (string) $r['result'], $this->archivedRows('SAMPLE-A'))
+        );
+    }
+
+    /**
+     * A legacy file whose quoting the old writer broke is still read correctly.
+     *
+     * The old escape rule suppressed quote-doubling whenever a backslash came
+     * first, so a JSON value carrying an escaped quote went to disk as
+     * ""he said \"no\"" instead of ""he said \""no\"""". Read back under RFC 4180
+     * that row parses one field too wide, because the undoubled quote ends the
+     * field early and the comma inside the value becomes a delimiter.
+     *
+     * The header row is what catches it: every row has to be as wide as the
+     * header, and this one is not, so the file is re-read under the rule it was
+     * written with. buildRow() json_encodes array and object values, so this is
+     * the shape a real archive would carry it in.
+     */
+    public function testLegacyFileWithBrokenQuotingIsRecovered(): void
+    {
+        $json = '{"note":"he said \\"no\\", then left"}';
+
+        $this->writeLegacyCsv('SAMPLE-A', ['action', 'revision', 'dt_datetime', 'unique_id', 'result'], [
+            ['update', '1', '2026-01-01 00:01:00', 'SAMPLE-A', $json],
+        ]);
+
+        $this->insertRevisions('SAMPLE-A', 2);
+        $this->archive('SAMPLE-A');
+
+        $rows = $this->archivedRows('SAMPLE-A');
+        $this->assertCount(2, $rows, 'The legacy row must survive, not be split or dropped.');
+        $this->assertSame($json, $rows[0]['result'], 'The value must be recovered intact.');
+        $this->assertSame([1, 2], array_map(static fn(array $r): int => (int) $r['revision'], $rows));
+    }
+
+    /**
+     * And once rewritten, that same value round trips under the new rule alone.
+     *
+     * The recovery above is for files already on disk. What the fixed writer
+     * produces has to need no recovery at all.
+     */
+    public function testBrokenQuotingIsNotReintroducedOnRewrite(): void
+    {
+        $json = '{"note":"he said \\"no\\", then left"}';
+
+        self::$db->rawQuery(
+            'INSERT INTO `' . self::AUDIT_TBL . '` (unique_id, sample_code, dt_datetime, result)
+             VALUES (?, ?, ?, ?)',
+            ['SAMPLE-A', 'SAMPLE-A', '2026-01-01 00:01:00', $json]
+        );
+
+        $this->archive('SAMPLE-A');
+
+        // Read the file back with the strict rule only -- no fallback, no header
+        // width check -- so a rewrite that reintroduced the old quoting fails here.
+        $path = $this->archivedPath('SAMPLE-A');
+        $csv  = ArchiveUtility::decompressToString($path);
+        $h    = fopen('php://temp', 'r+');
+        fwrite($h, $csv);
+        rewind($h);
+        $headers = fgetcsv($h, escape: '');
+        $row     = fgetcsv($h, escape: '');
+        fclose($h);
+
+        $this->assertCount(count($headers), $row, 'The rewritten row must be exactly header-wide.');
+        $this->assertSame($json, $row[array_search('result', $headers, true)]);
+    }
+
     /* ====================== Helpers ====================== */
 
     /**
@@ -345,9 +468,9 @@ final class AuditArchiveBatchingTest extends TestCase
         fwrite($handle, $csv);
         rewind($handle);
 
-        $headers = fgetcsv($handle, escape: '\\');
+        $headers = fgetcsv($handle, escape: '');
         $rows    = [];
-        while (($row = fgetcsv($handle, escape: '\\')) !== false) {
+        while (($row = fgetcsv($handle, escape: '')) !== false) {
             $rows[] = array_combine($headers, $row);
         }
         fclose($handle);
