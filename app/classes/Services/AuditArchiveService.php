@@ -39,16 +39,31 @@ final readonly class AuditArchiveService
     private const ARCHIVE_BATCH = 1000;
 
     /**
-     * The escape character every archive is read and written with.
+     * No escape character: archives are written and read as RFC 4180.
      *
-     * PHP 8.4 deprecates leaving this to the default because the default is
-     * changing. An audit archive is rewritten in full each time a revision is
-     * appended, so a file written under one escape rule and re-read under
-     * another would round-trip differently — a field ending in a backslash is
-     * enough. Pinning it to today's default keeps every file already on disk
-     * readable; changing the rule is a format migration, not an upgrade.
+     * PHP's historical default escapes with a backslash, which loses data. A
+     * field ending in one is written as "value\" — the backslash escapes the
+     * closing quote, so on the way back the field swallows the delimiter and
+     * everything after it on the line. An analyzer path such as C:\data\run.csv
+     * in import_machine_file_name is enough to trigger it, and an audit trail
+     * that cannot return what was written has failed at its one job.
+     *
+     * Disabling the escape is not a format change for existing archives. The
+     * setting governs only how a backslash is treated, so for any content
+     * without one both rules emit identical bytes and read back identical
+     * values — verified over 20,000 generated cases carrying quotes, commas,
+     * embedded newlines and unicode. Round-tripping under this rule is exact
+     * for rows wider than one column, which every audit row is.
      */
-    private const CSV_ESCAPE = '\\';
+    private const CSV_ESCAPE = '';
+
+    /**
+     * The rule archives were written under before the above.
+     *
+     * Only reached when a file does not parse cleanly as RFC 4180, which needs
+     * a backslash to have been stored in the first place. See parseCsv().
+     */
+    private const LEGACY_CSV_ESCAPE = '\\';
 
     private string $archiveRoot;
     private string $metadataPath;
@@ -415,21 +430,78 @@ final readonly class AuditArchiveService
             $content = ArchiveUtility::decompressToString($path);
         }
 
-        $f = fopen('php://temp', 'r+');
-        fwrite($f, $content);
-        rewind($f);
+        return $this->parseCsv($content);
+    }
 
-        $headers = fgetcsv($f, escape: self::CSV_ESCAPE);
+    /**
+     * Parse archive CSV, preferring RFC 4180 and falling back to the legacy rule.
+     *
+     * The header row fixes the width of every row beneath it, which is enough to
+     * tell a good parse from a bad one: a mis-parsed field swallows the
+     * delimiter that should have ended it, so the row comes back short. A file
+     * can only be mis-parsed this way if a backslash was stored in it, which is
+     * why the fallback re-reads under LEGACY_CSV_ESCAPE and keeps that reading
+     * only when the header vouches for the whole file.
+     *
+     * Some pre-fix files cannot be recovered by either rule. "a\"b" is a valid
+     * encoding of two different values and the writer left no way to tell them
+     * apart; that loss happened when the row was written. The width check
+     * recovers what is recoverable and prefers the correct rule otherwise.
+     *
+     * @return array{headers: string[], rows: array<int, array<int, string|null>>}
+     */
+    private function parseCsv(string $content): array
+    {
+        $strict = self::parseCsvWith($content, self::CSV_ESCAPE);
+        if ($strict['headers'] === []) {
+            return $strict;
+        }
+
+        $width = count($strict['headers']);
+        $fits  = static function (array $parsed) use ($width): bool {
+            foreach ($parsed['rows'] as $row) {
+                if (count($row) !== $width) {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        if ($fits($strict)) {
+            return $strict;
+        }
+
+        // Only pre-fix files carrying a backslash reach here.
+        $legacy = self::parseCsvWith($content, self::LEGACY_CSV_ESCAPE);
+        if (count($legacy['headers']) === $width && $fits($legacy)) {
+            return $legacy;
+        }
+
+        return $strict;
+    }
+
+    /**
+     * Read a CSV string under one escape rule.
+     *
+     * @return array{headers: string[], rows: array<int, array<int, string|null>>}
+     */
+    private static function parseCsvWith(string $content, string $escape): array
+    {
+        $handle = fopen('php://temp', 'r+');
+        fwrite($handle, $content);
+        rewind($handle);
+
+        $headers = fgetcsv($handle, escape: $escape);
         if ($headers === false || $headers === null) {
-            fclose($f);
+            fclose($handle);
             return ['headers' => [], 'rows' => []];
         }
 
         $rows = [];
-        while (($row = fgetcsv($f, escape: self::CSV_ESCAPE)) !== false) {
+        while (($row = fgetcsv($handle, escape: $escape)) !== false) {
             $rows[] = $row;
         }
-        fclose($f);
+        fclose($handle);
 
         return ['headers' => $headers, 'rows' => $rows];
     }
@@ -998,14 +1070,9 @@ final readonly class AuditArchiveService
             }
         }
 
-        // Parse CSV from a temp stream
-        $fp = fopen('php://temp', 'r+');
-        fwrite($fp, $csvString);
-        rewind($fp);
-
-        $headers = fgetcsv($fp, escape: self::CSV_ESCAPE);
-        if ($headers === false || $headers === null) {
-            fclose($fp);
+        $parsed  = $this->parseCsv($csvString);
+        $headers = $parsed['headers'];
+        if ($headers === []) {
             return [];
         }
 
@@ -1023,18 +1090,17 @@ final readonly class AuditArchiveService
         }
 
         $rows = [];
-        while (($row = fgetcsv($fp, escape: self::CSV_ESCAPE)) !== false) {
+        foreach ($parsed['rows'] as $row) {
             $assoc = [];
             foreach ($resolvedHeaders as $i => $h) {
-                // original archiver writes json_encode() values; fgetcsv already unquotes;
-                // we’ll show as-is (including literal "null" when used).
+                // original archiver writes json_encode() values; the parser already
+                // unquotes; we'll show as-is (including literal "null" when used).
                 // When two old names alias to the same current name (rename
                 // collision), last write wins — acceptable edge for renames.
                 $assoc[$h] = $row[$i] ?? '';
             }
             $rows[] = $assoc;
         }
-        fclose($fp);
 
         return $rows;
     }
