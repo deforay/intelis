@@ -30,6 +30,26 @@ use App\Utilities\ArchiveUtility;
  */
 final readonly class AuditArchiveService
 {
+    /**
+     * Rows buffered before they are filed to disk.
+     *
+     * Matches the page fetchRecordBatches() reads with, so filing a page lines
+     * up with a database round trip rather than cutting across one.
+     */
+    private const ARCHIVE_BATCH = 1000;
+
+    /**
+     * The escape character every archive is read and written with.
+     *
+     * PHP 8.4 deprecates leaving this to the default because the default is
+     * changing. An audit archive is rewritten in full each time a revision is
+     * appended, so a file written under one escape rule and re-read under
+     * another would round-trip differently — a field ending in a backslash is
+     * enough. Pinning it to today's default keeps every file already on disk
+     * readable; changing the rule is a format migration, not an upgrade.
+     */
+    private const CSV_ESCAPE = '\\';
+
     private string $archiveRoot;
     private string $metadataPath;
 
@@ -86,108 +106,15 @@ final readonly class AuditArchiveService
 
 
             foreach ($auditToKey as $auditTable => $testKey) {
-                // Post-cutover (after run-once/prune-legacy-audit-tables.php has
-                // dropped the legacy table), this table simply won't exist. Skip
-                // silently so the cron task keeps draining audit_log instead of
-                // throwing on the missing table.
-                if (!$this->tableExists($auditTable)) {
-                    continue;
-                }
-
-                $lastProcessedDate = $sampleCode ? null : ($metadata[$auditTable]['last_processed_date'] ?? null);
-
-                // Folder is the test key, normalized to filesystem-friendly
-                $folderName = preg_replace('/[^\w\-]+/', '-', (string) $testKey);
-                $targetDir  = $this->archiveRoot . DIRECTORY_SEPARATOR . $folderName;
-                MiscUtility::makeDirectory($targetDir);
-
-                $this->log($progress, "Archiving from {$auditTable} (test={$testKey})..");
-
-                $currentHeaders = $this->getCurrentColumns($auditTable);
-
-                // Robust indexes by name (fallbacks keep old assumption for legacy files)
-                $idxRevision   = $this->idx($currentHeaders, 'revision') ?? 1;
-                $idxDtDatetime = $this->idx($currentHeaders, 'dt_datetime') ?? 2;
-
-                $counter = 0;
-                foreach ($this->fetchRecords($auditTable, $lastProcessedDate, 1000, $sampleCode) as $record) {
-                    $counter++;
-                    if ($counter % 10 === 0 && $useLock) {
-                        MiscUtility::touchLockFile($lockFile);
-                    }
-
-                    if (!isset($record['unique_id'])) {
-                        $this->log($progress, 'Skipping record without unique_id');
-                        continue;
-                    }
-
-                    $uniqueId = $record['unique_id'];
-                    $baseName = $uniqueId;               // {uniqueId}.csv.<ext>
-                    $existing = $this->resolveExistingCompressed($targetDir, $baseName);
-
-                    $headers = $currentHeaders;
-                    $rows    = [];
-
-                    $existingDtSet  = [];
-                    $lastRevisionNo = 0;
-
-                    if ($existing) {
-                        $old = $this->readCompressedCsv($existing);
-                        // Map old rows to current headers (preserve cell strings as-is)
-                        $rows = $this->reheaderIfNeeded($old['headers'], $currentHeaders, $old['rows']);
-
-                        // Build dt_datetime set + last revision from the reheadered rows
-                        foreach ($rows as $r) {
-                            if (isset($r[$idxDtDatetime])) {
-                                $existingDtSet[$this->jsonishScalar((string)$r[$idxDtDatetime])] = true;
-                            }
-                            if (isset($r[$idxRevision])) {
-                                $revRaw = $this->jsonishScalar((string)$r[$idxRevision]); // handles "5" → 5
-                                if (is_numeric($revRaw)) {
-                                    $lastRevisionNo = max($lastRevisionNo, (int)$revRaw);
-                                }
-                            }
-                        }
-                    }
-
-                    // De-dup by dt_datetime
-                    $thisDt = isset($record['dt_datetime']) ? (string)$record['dt_datetime'] : null;
-                    if ($thisDt !== null && isset($existingDtSet[$thisDt])) {
-                        $this->log($progress, "Skipping duplicate dt_datetime={$record['dt_datetime']} for {$uniqueId}");
-                        if (!$sampleCode && $thisDt !== '') {
-                            $lastProcessedDate = $record['dt_datetime'];
-                            $this->updateLastProcessedDate($metadata, $auditTable, $lastProcessedDate);
-                            MiscUtility::saveMetadata($this->metadataPath, $metadata);
-                        }
-                        continue;
-                    }
-
-                    // Revision
-                    $record['revision'] = $lastRevisionNo + 1;
-
-                    // Append new row (values encoded like original writer)
-                    $rows[] = $this->buildRow($headers, $record);
-
-                    // Normalize to preferred compression:
-                    // Remove old files (any extension), then write fresh compressed file.
-                    $dstBaseNoExt = $targetDir . DIRECTORY_SEPARATOR . $baseName;
-                    MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.zst");
-                    MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.gz");
-                    MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.zip");
-                    MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv"); // legacy plain
-
-                    $out = $this->writeCompressedCsv($dstBaseNoExt, $headers, $rows);
-                    $this->log($progress, 'Wrote ' . basename($out));
-
-                    // Update metadata only in bulk mode
-                    if (!$sampleCode && !empty($record['dt_datetime'])) {
-                        $lastProcessedDate = $record['dt_datetime'];
-                        $this->updateLastProcessedDate($metadata, $auditTable, $lastProcessedDate);
-                        MiscUtility::saveMetadata($this->metadataPath, $metadata);
-                    }
-                }
-
-                $this->log($progress, "Completed archiving for {$auditTable}.");
+                $this->archiveTable(
+                    (string) $auditTable,
+                    (string) $testKey,
+                    $sampleCode,
+                    $progress,
+                    $metadata,
+                    $lockFile,
+                    $useLock
+                );
             }
 
             $this->log($progress, 'Archiving process completed.');
@@ -212,26 +139,229 @@ final readonly class AuditArchiveService
 
     /* ====================== Helpers ====================== */
 
-    /** Yield batches from audit table; supports bulk (by dt) or single sample code. */
-    private function fetchRecords(string $tableName, ?string $lastProcessedDate = null, int $limit = 1000, ?string $sampleCode = null): Generator
+    /**
+     * Archive one legacy `audit_*` table, optionally narrowed to a single sample.
+     *
+     * The one implementation behind both entry points. run() and runForTables()
+     * each used to carry their own copy of this loop, which is how they drifted:
+     * the same bug had to be found twice.
+     *
+     * Rows are filed a sample at a time rather than one at a time. Archiving a
+     * row means decompressing that sample's whole history, appending, and
+     * recompressing it, so a per-row loop rewrote the file once per revision and
+     * re-read everything it had just written — quadratic in a sample's revision
+     * count, plus a bundle lookup in resolveExistingCompressed() for each pass.
+     * The audit_log drain already groups by sample for this reason; this is the
+     * legacy path catching up.
+     *
+     * $metadata is the bulk-run cursor state, updated in place. Its keys are
+     * audit table names, so there is no fixed shape to declare.
+     */
+    private function archiveTable(
+        string $auditTable,
+        string $testKey,
+        ?string $sampleCode,
+        ?callable $progress,
+        array &$metadata,
+        ?string $lockFile = null,
+        bool $useLock = false
+    ): void {
+        // Post-cutover (after run-once/prune-legacy-audit-tables.php has dropped
+        // the legacy table) this table simply won't exist. Skip silently so the
+        // cron task keeps draining audit_log, and archiveSample() keeps working,
+        // instead of throwing on the missing table.
+        if (!$this->tableExists($auditTable)) {
+            return;
+        }
+
+        $lastProcessedDate = $sampleCode ? null : ($metadata[$auditTable]['last_processed_date'] ?? null);
+
+        // Folder is the test key, normalized to filesystem-friendly
+        $folderName = preg_replace('/[^\w\-]+/', '-', $testKey);
+        $targetDir  = $this->archiveRoot . DIRECTORY_SEPARATOR . $folderName;
+        MiscUtility::makeDirectory($targetDir);
+
+        $this->log($progress, "Archiving from {$auditTable} (test={$testKey})..");
+
+        $currentHeaders = $this->getCurrentColumns($auditTable);
+
+        // Robust indexes by name (fallbacks keep old assumption for legacy files)
+        $idxRevision   = $this->idx($currentHeaders, 'revision') ?? 1;
+        $idxDtDatetime = $this->idx($currentHeaders, 'dt_datetime') ?? 2;
+
+        foreach ($this->fetchRecordBatches($auditTable, $lastProcessedDate, self::ARCHIVE_BATCH, $sampleCode) as $batch) {
+            // Group the batch by sample, preserving the dt_datetime order the
+            // query returned them in.
+            $bySample = [];
+            $batchMaxDt = null;
+            foreach ($batch as $record) {
+                if (!isset($record['unique_id'])) {
+                    $this->log($progress, 'Skipping record without unique_id');
+                    continue;
+                }
+                $bySample[(string) $record['unique_id']][] = $record;
+
+                if (!empty($record['dt_datetime'])) {
+                    $dt = (string) $record['dt_datetime'];
+                    if ($batchMaxDt === null || $dt > $batchMaxDt) {
+                        $batchMaxDt = $dt;
+                    }
+                }
+            }
+
+            foreach ($bySample as $uniqueId => $records) {
+                if ($useLock && $lockFile !== null) {
+                    MiscUtility::touchLockFile($lockFile);
+                }
+                $this->archiveSampleRows(
+                    $targetDir,
+                    (string) $uniqueId,
+                    $records,
+                    $currentHeaders,
+                    $idxRevision,
+                    $idxDtDatetime,
+                    $progress
+                );
+            }
+
+            // The cursor advances once the whole batch is on disk. A crash
+            // mid-batch replays at most one batch on the next run, and the
+            // dt_datetime de-dup makes that replay a no-op. Duplicates count
+            // toward the cursor too, so a batch of nothing but rows already
+            // archived still moves the run forward.
+            if (!$sampleCode && $batchMaxDt !== null) {
+                $this->updateLastProcessedDate($metadata, $auditTable, $batchMaxDt);
+                MiscUtility::saveMetadata($this->metadataPath, $metadata);
+            }
+        }
+
+        $this->log($progress, "Completed archiving for {$auditTable}.");
+    }
+
+
+    /**
+     * File every buffered audit row for one sample, rewriting its archive once.
+     *
+     * Reads the sample's existing history a single time, appends the new rows in
+     * the order they were read (fetchRecordBatches() orders by dt_datetime), and
+     * writes the file once. De-duplication is by dt_datetime against both the
+     * existing rows and the rows appended earlier in this same call, so a batch
+     * carrying a repeat cannot slip one through.
+     *
+     * @param array<int, array<string, mixed>> $records
+     * @param string[] $currentHeaders
+     */
+    private function archiveSampleRows(
+        string $targetDir,
+        string $uniqueId,
+        array $records,
+        array $currentHeaders,
+        int $idxRevision,
+        int $idxDtDatetime,
+        ?callable $progress
+    ): void {
+        $existing = $this->resolveExistingCompressed($targetDir, $uniqueId);
+
+        $headers = $currentHeaders;
+        $rows    = [];
+
+        $existingDtSet  = [];
+        $lastRevisionNo = 0;
+
+        if ($existing) {
+            $old = $this->readCompressedCsv($existing);
+            // Map old rows to current headers (preserve cell strings as-is)
+            $rows = $this->reheaderIfNeeded($old['headers'], $currentHeaders, $old['rows']);
+
+            // Build dt_datetime set + last revision from the reheadered rows
+            foreach ($rows as $r) {
+                if (isset($r[$idxDtDatetime])) {
+                    $existingDtSet[$this->jsonishScalar((string)$r[$idxDtDatetime])] = true;
+                }
+                if (isset($r[$idxRevision])) {
+                    $revRaw = $this->jsonishScalar((string)$r[$idxRevision]); // handles "5" → 5
+                    if (is_numeric($revRaw)) {
+                        $lastRevisionNo = max($lastRevisionNo, (int)$revRaw);
+                    }
+                }
+            }
+        }
+
+        $appended = false;
+        foreach ($records as $record) {
+            // De-dup by dt_datetime
+            $thisDt = isset($record['dt_datetime']) ? (string)$record['dt_datetime'] : null;
+            if ($thisDt !== null && isset($existingDtSet[$thisDt])) {
+                $this->log($progress, "Skipping duplicate dt_datetime={$thisDt} for {$uniqueId}");
+                continue;
+            }
+            if ($thisDt !== null) {
+                $existingDtSet[$thisDt] = true;
+            }
+
+            // Revision
+            $record['revision'] = ++$lastRevisionNo;
+
+            // Append new row (values encoded like original writer)
+            $rows[]   = $this->buildRow($headers, $record);
+            $appended = true;
+        }
+
+        // Every row in the batch was already archived — leave the file alone
+        // rather than rewriting it byte-identical, which would only cost the
+        // next backup a re-copy.
+        if (!$appended) {
+            return;
+        }
+
+        // Normalize to preferred compression:
+        // Remove old files (any extension), then write fresh compressed file.
+        $dstBaseNoExt = $targetDir . DIRECTORY_SEPARATOR . $uniqueId;
+        MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$uniqueId.csv.zst");
+        MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$uniqueId.csv.gz");
+        MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$uniqueId.csv.zip");
+        MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$uniqueId.csv"); // legacy plain
+
+        $out = $this->writeCompressedCsv($dstBaseNoExt, $headers, $rows);
+        $this->log($progress, 'Wrote ' . basename($out));
+    }
+
+
+    /**
+     * Yield pages of rows from an audit table; bulk (by dt_datetime) or one sample.
+     *
+     * Pages rather than single rows because the caller files a whole page at a
+     * time — see archiveTable(). Ordered by dt_datetime so a sample's revisions
+     * arrive in the order they happened, which is the order they are appended in.
+     *
+     * @return Generator<int, array<int, array<string, mixed>>>
+     */
+    private function fetchRecordBatches(string $tableName, ?string $lastProcessedDate = null, int $limit = 1000, ?string $sampleCode = null): Generator
     {
+        $where  = '1=1';
+        $params = [];
+        if ($sampleCode !== null && $sampleCode !== '' && $sampleCode !== '0') {
+            $where  = '(sample_code = ? OR remote_sample_code = ? OR external_sample_code = ?)';
+            $params = [$sampleCode, $sampleCode, $sampleCode];
+        } elseif ($lastProcessedDate) {
+            $where  = 'dt_datetime > ?';
+            $params = [$lastProcessedDate];
+        }
+
+        $limit  = max(1, $limit);
         $offset = 0;
         while (true) {
-            if ($sampleCode !== null && $sampleCode !== '' && $sampleCode !== '0') {
-                $this->db->connection('default')->where(
-                    "sample_code = '$sampleCode' OR remote_sample_code = '$sampleCode' OR external_sample_code = '$sampleCode'"
-                );
-            } elseif ($lastProcessedDate) {
-                $this->db->connection('default')->where('dt_datetime', $lastProcessedDate, '>');
-            }
-            $this->db->connection('default')->orderBy('dt_datetime', 'asc');
-            $batch = $this->db->connection('default')->get($tableName, [$offset, $limit]);
+            $batch = $this->db->rawQuery(
+                "SELECT * FROM `$tableName` WHERE $where ORDER BY dt_datetime ASC LIMIT $limit OFFSET $offset",
+                $params
+            );
 
             if (!$batch || count($batch) === 0) {
                 break;
             }
-            foreach ($batch as $record) {
-                yield $record;
+            yield $batch;
+            if (count($batch) < $limit) {
+                break;
             }
             $offset += $limit;
         }
@@ -289,14 +419,14 @@ final readonly class AuditArchiveService
         fwrite($f, $content);
         rewind($f);
 
-        $headers = fgetcsv($f);
+        $headers = fgetcsv($f, escape: self::CSV_ESCAPE);
         if ($headers === false || $headers === null) {
             fclose($f);
             return ['headers' => [], 'rows' => []];
         }
 
         $rows = [];
-        while (($row = fgetcsv($f)) !== false) {
+        while (($row = fgetcsv($f, escape: self::CSV_ESCAPE)) !== false) {
             $rows[] = $row;
         }
         fclose($f);
@@ -654,101 +784,7 @@ final readonly class AuditArchiveService
         $metadata = $sampleCode === null || $sampleCode === '' || $sampleCode === '0' ? MiscUtility::loadMetadata($this->metadataPath) : [];
 
         foreach ($auditToKey as $auditTable => $testKey) {
-            // Post-cutover the legacy table may be gone — skip silently so
-            // archiveSample() still works (the v2 audit_log drain happens
-            // separately at the caller).
-            if (!$this->tableExists($auditTable)) {
-                continue;
-            }
-
-            $lastProcessedDate = $sampleCode ? null : ($metadata[$auditTable]['last_processed_date'] ?? null);
-
-            $folderName = preg_replace('/[^\w\-]+/', '-', (string) $testKey);
-            $targetDir  = $this->archiveRoot . DIRECTORY_SEPARATOR . $folderName;
-            MiscUtility::makeDirectory($targetDir);
-
-            $this->log($progress, "Archiving from {$auditTable} (test={$testKey})..");
-
-            $currentHeaders = $this->getCurrentColumns($auditTable);
-            $idxRevision   = $this->idx($currentHeaders, 'revision') ?? 1;
-            $idxDtDatetime = $this->idx($currentHeaders, 'dt_datetime') ?? 2;
-
-            $counter = 0;
-            foreach ($this->fetchRecords($auditTable, $lastProcessedDate, 1000, $sampleCode) as $record) {
-                $counter++;
-
-
-                if (!isset($record['unique_id'])) {
-                    $this->log($progress, 'Skipping record without unique_id');
-                    continue;
-                }
-
-                $uniqueId = $record['unique_id'];
-                $baseName = $uniqueId;               // {uniqueId}.csv.<ext>
-                $existing = $this->resolveExistingCompressed($targetDir, $baseName);
-
-                $headers = $currentHeaders;
-                $rows    = [];
-
-                $existingDtSet  = [];
-                $lastRevisionNo = 0;
-
-                if ($existing) {
-                    $old = $this->readCompressedCsv($existing);
-                    // Map old rows to current headers (preserve cell strings as-is)
-                    $rows = $this->reheaderIfNeeded($old['headers'], $currentHeaders, $old['rows']);
-
-                    // Build dt_datetime set + last revision from the reheadered rows
-                    foreach ($rows as $r) {
-                        if (isset($r[$idxDtDatetime])) {
-                            $existingDtSet[$this->jsonishScalar((string)$r[$idxDtDatetime])] = true;
-                        }
-                        if (isset($r[$idxRevision])) {
-                            $revRaw = $this->jsonishScalar((string)$r[$idxRevision]); // handles "5" → 5
-                            if (is_numeric($revRaw)) {
-                                $lastRevisionNo = max($lastRevisionNo, (int)$revRaw);
-                            }
-                        }
-                    }
-                }
-
-                // De-dup by dt_datetime
-                $thisDt = isset($record['dt_datetime']) ? (string)$record['dt_datetime'] : null;
-                if ($thisDt !== null && isset($existingDtSet[$thisDt])) {
-                    $this->log($progress, "Skipping duplicate dt_datetime={$record['dt_datetime']} for {$uniqueId}");
-                    if (!$sampleCode && $thisDt !== '') {
-                        $lastProcessedDate = $record['dt_datetime'];
-                        $this->updateLastProcessedDate($metadata, $auditTable, $lastProcessedDate);
-                        MiscUtility::saveMetadata($this->metadataPath, $metadata);
-                    }
-                    continue;
-                }
-
-                // Revision
-                $record['revision'] = $lastRevisionNo + 1;
-
-                // Append new row (values encoded like original writer)
-                $rows[] = $this->buildRow($headers, $record);
-
-                // Normalize to preferred compression:
-                // Remove old files (any extension), then write fresh compressed file.
-                $dstBaseNoExt = $targetDir . DIRECTORY_SEPARATOR . $baseName;
-                MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.zst");
-                MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.gz");
-                MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.zip");
-                MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv"); // legacy plain
-
-                $out = $this->writeCompressedCsv($dstBaseNoExt, $headers, $rows);
-                $this->log($progress, 'Wrote ' . basename($out));
-
-                // Update metadata only in bulk mode
-                if (!$sampleCode && !empty($record['dt_datetime'])) {
-                    $lastProcessedDate = $record['dt_datetime'];
-                    $this->updateLastProcessedDate($metadata, $auditTable, $lastProcessedDate);
-                    MiscUtility::saveMetadata($this->metadataPath, $metadata);
-                }
-            }
-            $this->log($progress, "Completed archiving for {$auditTable}.");
+            $this->archiveTable((string) $auditTable, (string) $testKey, $sampleCode, $progress, $metadata);
         }
     }
 
@@ -795,9 +831,9 @@ final readonly class AuditArchiveService
             MiscUtility::deleteFile($tmpCsv);
             throw new RuntimeException('Failed to open temp CSV file');
         }
-        fputcsv($csvH, $headers);
+        fputcsv($csvH, $headers, escape: self::CSV_ESCAPE);
         foreach ($rows as $row) {
-            fputcsv($csvH, $row);
+            fputcsv($csvH, $row, escape: self::CSV_ESCAPE);
         }
         fclose($csvH);
 
@@ -967,7 +1003,7 @@ final readonly class AuditArchiveService
         fwrite($fp, $csvString);
         rewind($fp);
 
-        $headers = fgetcsv($fp);
+        $headers = fgetcsv($fp, escape: self::CSV_ESCAPE);
         if ($headers === false || $headers === null) {
             fclose($fp);
             return [];
@@ -987,7 +1023,7 @@ final readonly class AuditArchiveService
         }
 
         $rows = [];
-        while (($row = fgetcsv($fp)) !== false) {
+        while (($row = fgetcsv($fp, escape: self::CSV_ESCAPE)) !== false) {
             $assoc = [];
             foreach ($resolvedHeaders as $i => $h) {
                 // original archiver writes json_encode() values; fgetcsv already unquotes;
