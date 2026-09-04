@@ -29,18 +29,18 @@ InteLIS was previously called VLSM. Some paths and the database keep the old nam
 
 ## Quick start
 
-Docker is the fastest route. It supplies Apache, MySQL, and PHP.
+Ubuntu 22.04 LTS or later is the recommended install. The installer sets up Apache, MySQL, PHP, cron jobs, and the `intelis` command that runs the machine from then on.
 
 ```bash
-git clone https://github.com/deforay/intelis.git
-cd intelis
-cp .env.example .env    # set MYSQL_ROOT_PASSWORD
-docker compose up -d
+# Download the script to a file, then run it. Do NOT pipe it (curl ... | bash).
+cd ~ && wget -O setup.sh "https://github.com/deforay/intelis/raw/master/scripts/setup.sh?v=$(date +%s)" && sudo bash setup.sh
 ```
 
-Open <http://localhost/> and create the administrator account.
+Open <http://intelis/> and create the administrator account.
 
-Full instructions: [Installing InteLIS with Docker](https://deforay.github.io/intelis/guides/installing-intelis-with-docker/). To install on a server instead, see [InteLIS on Ubuntu](https://deforay.github.io/intelis/guides/installing-intelis-on-ubuntu/) or [InteLIS on Windows](https://deforay.github.io/intelis/guides/installing-intelis-on-windows/).
+Full instructions: [InteLIS on Ubuntu](https://deforay.github.io/intelis/guides/installing-intelis-on-ubuntu/).
+
+[Docker](https://deforay.github.io/intelis/guides/installing-intelis-with-docker/) is quicker to stand up and suits evaluation and development. It is updated with its own script rather than `intelis update`, and remote upgrades are not yet offered to a containerised instance. Windows is also supported: see [InteLIS on Windows](https://deforay.github.io/intelis/guides/installing-intelis-on-windows/).
 
 ---
 
@@ -50,7 +50,7 @@ Full instructions: [Installing InteLIS with Docker](https://deforay.github.io/in
 | --- | --- |
 | Lab staff | [Using InteLIS](https://deforay.github.io/intelis/user-guides/) |
 | Bench and workstation | [Printable job aids](https://deforay.github.io/intelis/job-aids/) |
-| Installing and updating | [Installation guides](https://deforay.github.io/intelis/guides/installing-intelis-with-docker/) |
+| Installing and updating | [Installation guides](https://deforay.github.io/intelis/guides/installing-intelis-on-ubuntu/) |
 | Keeping data safe | [Backup and restore](https://deforay.github.io/intelis/guides/restoring-from-backup/) |
 | Developers | [Architecture](https://deforay.github.io/intelis/ARCHITECTURE/) |
 | Integrators | [API reference](https://deforay.github.io/intelis/api/) |
@@ -70,7 +70,7 @@ InteLIS works alongside two other open-source projects from the same team.
 
 ## Requirements
 
-Docker supplies all three. A server install needs them present.
+The Ubuntu installer and the Docker image both supply these. A manual install needs them present.
 
 - Apache 2.x with the `rewrite` and `headers` modules enabled
 - MySQL 5.7 or higher
