@@ -1024,10 +1024,17 @@ final class MiscUtility
 
 
     // Functions for metadata management
-    public static function loadMetadata($metadataPath)
+    /**
+     * @return array<string, mixed> Empty when the file is absent or unreadable JSON.
+     */
+    public static function loadMetadata($metadataPath): array
     {
         if (file_exists($metadataPath)) {
-            return json_decode(file_get_contents($metadataPath), true);
+            $decoded = json_decode((string) file_get_contents($metadataPath), true);
+            // A file truncated mid-write (a power cut during saveMetadata) decodes
+            // to null. Treat it as no metadata rather than handing callers a null
+            // they would have to guard at every read.
+            return is_array($decoded) ? $decoded : [];
         }
         return [];
     }
@@ -1036,7 +1043,7 @@ final class MiscUtility
     {
         self::makeDirectory(dirname((string) $metadataPath));
         $existingData = self::loadMetadata($metadataPath);
-        $mergedData = array_merge($existingData ?? [], $newData ?? []);
+        $mergedData = array_merge($existingData, $newData ?? []);
         file_put_contents($metadataPath, json_encode($mergedData, JSON_PRETTY_PRINT));
     }
 
