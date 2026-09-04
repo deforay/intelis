@@ -303,21 +303,31 @@ FROM `r_vl_test_failure_reasons`
 WHERE `failure_reason` IS NOT NULL AND TRIM(`failure_reason`) <> '';
 
 -- r_generic_test_failure_reasons has drifted on at least one deployed database: the
--- table is present but test_failure_reason_code is not, even though 5.2.0 declares it
--- NOT NULL at creation. That table was therefore created by some route other than the
+-- table is present but holds only a subset of its columns, even though 5.2.0 declares
+-- all six at creation. That table was therefore created by some route other than the
 -- migration history, and 5.2.0's CREATE TABLE carries no IF NOT EXISTS, so a replay
 -- raises 1050 and is skipped as benign rather than repairing the shape.
 --
 -- The SELECT below then fails with 1054, which is not in the benign list, so the whole
--- version halts and every later migration is held back for good. Adding the column here
--- costs nothing on a healthy install -- add_column_if_missing() sees it and skips -- and
--- unblocks a drifted one.
+-- version halts and every later migration is held back for good. Restoring the shape
+-- one column at a time is whack-a-mole -- the first field report fixed the code column
+-- by hand and the next run failed on the one after it -- so every column 5.2.0 declares
+-- is re-stated here. On a healthy install each is a clean skip through
+-- add_column_if_missing(); on a drifted one the table is made whole in a single pass.
 --
--- Declared NULL rather than NOT NULL as in 5.2.0: rows already in the table have no code
--- to backfill with, and a fabricated one would be copied across as a real vocabulary
--- entry. NULL reads correctly as "not recorded", and the WHERE clause below skips those
--- rows. Every write path generates a code, so new rows are unaffected.
+-- The two NOT NULL columns in 5.2.0 are declared NULL here. Rows already in the table
+-- have nothing to backfill with, and a fabricated code would be copied across as a real
+-- vocabulary entry. NULL reads correctly as "not recorded", and the WHERE clause below
+-- skips those rows. Every write path generates a code, so new rows are unaffected.
+--
+-- data_sync is not read by this migration. It is included because this table is
+-- metadata-synced from the STS, and a copy missing that column silently drops out of
+-- the sync rather than failing loudly.
 ALTER TABLE `r_generic_test_failure_reasons` ADD COLUMN `test_failure_reason_code` VARCHAR(256) NULL DEFAULT NULL;
+ALTER TABLE `r_generic_test_failure_reasons` ADD COLUMN `test_failure_reason` VARCHAR(256) NULL DEFAULT NULL;
+ALTER TABLE `r_generic_test_failure_reasons` ADD COLUMN `test_failure_reason_status` VARCHAR(256) NULL DEFAULT NULL;
+ALTER TABLE `r_generic_test_failure_reasons` ADD COLUMN `updated_datetime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `r_generic_test_failure_reasons` ADD COLUMN `data_sync` INT NULL DEFAULT NULL;
 
 -- Copy the custom-test reasons too, so this table is the single vocabulary. Their ids
 -- are NOT preserved and do not need to be: form_generic had no reason_for_failure
