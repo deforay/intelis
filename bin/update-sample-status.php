@@ -19,6 +19,7 @@ use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\TEST_FAILED;
 use App\Registries\ContainerRegistry;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use App\Services\SampleStatusRepairService;
 use const SAMPLE_STATUS\REORDERED_FOR_TESTING;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
@@ -35,6 +36,13 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var SampleStatusRepairService $statusRepair */
+$statusRepair = ContainerRegistry::get(SampleStatusRepairService::class);
+
+// How far back the nightly status repair looks. Older rows are the one-time
+// pass in run-once/reconcile-accepted-without-result.php, not this job's work.
+const REPAIR_WINDOW_MONTHS = 6;
 
 $lockTargetFile = __FILE__;
 
@@ -190,7 +198,42 @@ try {
                 MiscUtility::touchLockFile($lockTargetFile);
             }
 
-            // BLOCK 3: EXPIRING SAMPLES
+            // BLOCK 3: STATUS THAT CONTRADICTS THE RECORD
+            //
+            // A sample marked Accepted or Awaiting Approval that holds no result
+            // at all. Neither status can be true of a row with nothing to show.
+            // SampleStatusRepairService carries the reasoning and the repair;
+            // see it for what is put back and what is left alone.
+            //
+            // Kept to a recent window on purpose. This runs nightly on a server
+            // the labs are using, and re-scanning years of settled history every
+            // night to find nothing is not what a nightly job is for. Anything
+            // older is the one-time pass in
+            // run-once/reconcile-accepted-without-result.php, which does the
+            // same repair over everything. What is left here is the ongoing
+            // guard: whatever the write paths produce between now and their
+            // fixes landing, caught within months rather than never.
+            if ($isCli) {
+                echo "Processing accepted-without-result samples for $module" . PHP_EOL;
+            }
+
+            $repair = $statusRepair->repairAcceptedWithoutResult(
+                $module,
+                REPAIR_WINDOW_MONTHS,
+                // The lock file has to keep being touched or a long sweep looks
+                // to the next invocation like a crashed one.
+                static function () use ($lockTargetFile): void {
+                    MiscUtility::touchLockFile($lockTargetFile);
+                }
+            );
+
+            if ($isCli && $repair['repaired'] > 0) {
+                echo $repair['repaired'] . " sample(s) put back to what the record proves ("
+                    . $repair['datesCleared'] . " copied test date(s) cleared)." . PHP_EOL;
+            }
+            MiscUtility::touchLockFile($lockTargetFile);
+
+            // BLOCK 4: EXPIRING SAMPLES
             if ($isCli) {
                 echo "Processing expired samples for $module" . PHP_EOL;
             }
