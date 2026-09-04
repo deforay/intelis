@@ -6,6 +6,14 @@
 #   bin/dev/review                 # review the working branch against master
 #   bin/dev/review <commit-sha>    # review one commit
 #   bin/dev/review --uncommitted   # review the working tree before committing
+#   bin/dev/review --pending       # list commits not yet recorded as reviewed
+#   bin/dev/review --since-last    # review everything since the last recorded commit
+#   bin/dev/review --mark [sha]    # record a commit (default HEAD) as reviewed
+#
+# The last three keep a ledger of what has already been through a review, so the answer to
+# "where do I start?" is a command rather than a memory. Without it the honest options are
+# re-reviewing commits that were already read, or skipping ones that were not. The ledger is
+# per-clone and never committed — see LEDGER below.
 #
 # The reviewing CLI is named by $REVIEW_AGENT rather than hard-coded, so the repository
 # carries no vendor name and the reviewer can be swapped without editing anything here.
@@ -16,14 +24,81 @@ set -euo pipefail
 
 cd "$(dirname "$0")/../.."
 
-# Falls back to the untracked .env, so the reviewer's name lives on the machine rather than
-# in a shell profile — and never in the repository. Only these keys are read: the reviewing
-# CLI has no business inheriting database credentials just to read a diff.
+# Falls back to the untracked .env, so the reviewer's name and the ledger's location live on
+# the machine rather than in a shell profile — and never in the repository. Only these keys
+# are read: the reviewing CLI has no business inheriting database credentials to read a diff.
 read_env() {
     [ -f .env ] || return 0
     awk -v key="$1" -F= '$0 ~ "^[[:space:]]*" key "[[:space:]]*=" {
         sub(/^[^=]*=[[:space:]]*/, ""); gsub(/^["'\'']|["'\'']$/, ""); print; exit }' .env
 }
+
+# Deliberately NOT in the repository. What one machine has already read is that machine's
+# business, and committing it would put a bookmark that changes on every review into the
+# history of the code being reviewed — and into every lab's deployment. It lives inside the
+# .git directory instead: local by construction, never committed, never deployed, and gone
+# when the clone is. Set REVIEW_LEDGER in .env to keep it somewhere that outlives a clone.
+LEDGER="${REVIEW_LEDGER:-$(read_env REVIEW_LEDGER)}"
+[ -n "$LEDGER" ] || LEDGER="$(git rev-parse --git-dir)/reviewed-commits.txt"
+
+# Where an empty ledger starts. Reviewing the whole history to bootstrap would be days of
+# work nobody asked for; this is the recent past, and anything older is deemed shipped.
+BOOTSTRAP_COMMITS=10
+
+# The newest commit in the ledger that is still reachable — a rebase or a squash-merge can
+# leave a recorded SHA that no longer exists, and resuming from a dangling ref would fail
+# every git command downstream of it. Reads bottom-up and takes the first that resolves.
+last_reviewed() {
+    [ -f "$LEDGER" ] || return 0
+    local sha
+    while read -r sha _; do
+        case "$sha" in ''|\#*) continue ;; esac
+        if git cat-file -e "${sha}^{commit}" 2>/dev/null; then
+            echo "$sha"
+            return 0
+        fi
+    done < <(tac "$LEDGER" 2>/dev/null || tail -r "$LEDGER")
+}
+
+# The commits on HEAD that the ledger does not account for, oldest first.
+pending_range() {
+    local last
+    last="$(last_reviewed)"
+    if [ -n "$last" ]; then
+        echo "${last}..HEAD"
+    else
+        echo "HEAD~${BOOTSTRAP_COMMITS}..HEAD"
+    fi
+}
+
+mark_reviewed() {
+    local sha subject
+    sha="$(git rev-parse "${1:-HEAD}")"
+    if [ -f "$LEDGER" ] && grep -q "^$sha " "$LEDGER"; then
+        echo "Already recorded: $(git log -1 --format='%h %s' "$sha")"
+        return 0
+    fi
+    subject="$(git log -1 --format='%s' "$sha")"
+    printf '%s\t%s\t%s\n' "$sha" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$subject" >> "$LEDGER"
+    echo "Recorded as reviewed: $(git log -1 --format='%h %s' "$sha")"
+}
+
+case "${1:-}" in
+    --pending)
+        RANGE="$(pending_range)"
+        if [ -z "$(git log --format='%h' "$RANGE" 2>/dev/null)" ]; then
+            echo "Nothing pending — the ledger is level with HEAD."
+            exit 0
+        fi
+        echo "Not yet recorded as reviewed ($RANGE):"
+        git log --reverse --format='  %h  %s' "$RANGE"
+        exit 0
+        ;;
+    --mark)
+        mark_reviewed "${2:-HEAD}"
+        exit 0
+        ;;
+esac
 
 [ -n "${REVIEW_AGENT:-}" ]       || REVIEW_AGENT="$(read_env REVIEW_AGENT)"
 [ -n "${REVIEW_AGENT_STDIN:-}" ] || REVIEW_AGENT_STDIN="$(read_env REVIEW_AGENT_STDIN)"
@@ -70,8 +145,26 @@ $BRIEF"
 # The scope travels inside the prompt rather than as a --base/--commit flag: those flags
 # select a built-in review mode and are mutually exclusive with custom instructions, and
 # the instructions are the entire point of this script.
+MARK_AFTER=""
 case "${1:-}" in
     --uncommitted) SCOPE="Review the staged, unstaged and untracked changes in the working tree (\`git status\`, \`git diff\`, \`git diff --cached\`)." ;;
+    --since-last)
+        RANGE="$(pending_range)"
+        if [ -z "$(git log --format='%h' "$RANGE" 2>/dev/null)" ]; then
+            echo "Nothing to review — the ledger is level with HEAD."
+            exit 0
+        fi
+        # Resolved to concrete SHAs now, not after the reviewer returns. A review
+        # takes minutes, and HEAD can move under it — a parallel session landing a
+        # commit is exactly how this went wrong the first time it ran, marking a
+        # commit nobody had read and dropping one that had been. What is recorded
+        # afterwards is this list, whatever HEAD has become.
+        MARK_AFTER="$(git log --reverse --format='%H' "$RANGE")"
+        SCOPE="Review the changes introduced by these commits together: \`git diff ${RANGE%%..*}..HEAD\`, with
+\`git log --reverse --format='%h %s' $RANGE\` for what each one was for. Judge them as one body of
+work — a defect introduced in one commit and fixed in a later one is not a finding. Ignore code
+outside that diff except where you need it to judge the diff."
+        ;;
     "")            SCOPE="Review the changes on the current branch relative to master: \`git diff master...HEAD\`. Ignore code outside that diff except where you need it to judge the diff." ;;
     *)             SCOPE="Review the changes introduced by commit $1: \`git show $1\`. Ignore code outside that diff except where you need it to judge the diff." ;;
 esac
@@ -83,9 +176,27 @@ $CONTEXT"
 # REVIEW_AGENT is a command line, not just a binary, so a reviewer that wants a subcommand
 # and one that wants a flag are both a setting rather than an edit here. Word-splitting is
 # intended. Reviewers that read the prompt from stdin get REVIEW_AGENT_STDIN=1.
+#
+# exec everywhere except --since-last, which has to outlive the reviewer to write the
+# ledger. Recording happens only on a clean exit: quitting a reviewer early is how you
+# abandon a review, and an abandoned review must not advance the bookmark.
 # shellcheck disable=SC2086
-if [ "${REVIEW_AGENT_STDIN:-}" = "1" ]; then
-    printf '%s' "$PROMPT" | exec $REVIEW_AGENT
-else
-    exec $REVIEW_AGENT "$PROMPT"
+if [ -z "$MARK_AFTER" ]; then
+    if [ "${REVIEW_AGENT_STDIN:-}" = "1" ]; then
+        printf '%s' "$PROMPT" | exec $REVIEW_AGENT
+    else
+        exec $REVIEW_AGENT "$PROMPT"
+    fi
 fi
+
+if [ "${REVIEW_AGENT_STDIN:-}" = "1" ]; then
+    printf '%s' "$PROMPT" | $REVIEW_AGENT
+else
+    $REVIEW_AGENT "$PROMPT"
+fi
+
+echo
+for sha in $MARK_AFTER; do
+    mark_reviewed "$sha"
+done
+echo "Ledger updated: $LEDGER"
