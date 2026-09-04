@@ -378,6 +378,31 @@ final class AuditArchiveBatchingTest extends TestCase
         $this->assertSame($json, $row[array_search('result', $headers, true)]);
     }
 
+    /**
+     * A legacy value whose two readings are both header-width keeps the old one.
+     *
+     * The old writer emitted a backslash before a quote for two unrelated
+     * reasons, and "{"note":"he said \\"no\\""}" is the case where both rules
+     * produce a row of exactly the header width and disagree about its content.
+     * Width cannot separate them, so the reading every earlier version of the
+     * application showed is the one that must survive — anything else would
+     * change the value and then bake the change in, because appending a
+     * revision rewrites the whole file.
+     */
+    public function testAmbiguousLegacyValueKeepsTheHistoricalReading(): void
+    {
+        $json = '{"note":"he said \\"no\\""}';   // no comma: both parses stay header-width
+
+        $this->writeLegacyCsv('SAMPLE-A', ['action', 'revision', 'dt_datetime', 'unique_id', 'result'], [
+            ['update', '1', '2026-01-01 00:01:00', 'SAMPLE-A', $json],
+        ]);
+
+        $rows = $this->archivedRows('SAMPLE-A');
+
+        $this->assertCount(1, $rows);
+        $this->assertSame($json, $rows[0]['result'], 'The historical reading must win when width cannot decide.');
+    }
+
     /* ====================== Helpers ====================== */
 
     /**
@@ -460,20 +485,17 @@ final class AuditArchiveBatchingTest extends TestCase
         $path = $this->archivedPath($uniqueId);
         $this->assertNotNull($path, "No archive written for {$uniqueId}.");
 
-        $csv = str_ends_with($path, '.csv')
-            ? (string) file_get_contents($path)
-            : ArchiveUtility::decompressToString($path);
+        // Read back through the service's own parser rather than a copy of the
+        // rule it is supposed to apply. A private copy would keep passing if
+        // parseCsv() stopped preferring the RFC reading, which is exactly the
+        // regression these tests exist to catch.
+        $method = new ReflectionMethod(AuditArchiveService::class, 'readCompressedCsv');
+        $parsed = $method->invoke(new AuditArchiveService(self::$db), $path);
 
-        $handle = fopen('php://temp', 'r+');
-        fwrite($handle, $csv);
-        rewind($handle);
-
-        $headers = fgetcsv($handle, escape: '');
-        $rows    = [];
-        while (($row = fgetcsv($handle, escape: '')) !== false) {
-            $rows[] = array_combine($headers, $row);
+        $rows = [];
+        foreach ($parsed['rows'] as $row) {
+            $rows[] = array_combine($parsed['headers'], $row);
         }
-        fclose($handle);
 
         return $rows;
     }
