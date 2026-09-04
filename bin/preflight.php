@@ -704,6 +704,125 @@ try {
     check('Audit triggers', PF_SKIP, $e->getMessage());
 }
 
+// Schema drift against sql/init.sql.
+//
+// A lab halted mid-upgrade with "Unknown column test_failure_reason_code": its
+// r_generic_test_failure_reasons was missing three of the six columns the 5.2.0
+// migration declares, so a migration that read them failed, the version never
+// bumped, and every later migration was held back for good. Nothing in the
+// upgrade path looks at schema shape, so the first symptom was a stalled lab
+// rather than a finding, and each missing column surfaced only after the last
+// one was fixed by hand -- three round trips to a lab on a phone camera.
+//
+// init.sql is the shape a fresh install gets, so anything it declares that is
+// absent here is drift by definition. The reverse is not: country deployments
+// and older instances legitimately carry extra tables and columns, so a live
+// object with no counterpart in init.sql is ignored rather than reported.
+try {
+    $initPath = $root . '/sql/init.sql';
+    $expected = is_readable($initPath) ? pf_parse_init_schema($initPath) : [];
+
+    if ($expected === []) {
+        check('Schema drift', PF_SKIP, 'sql/init.sql not readable');
+    } else {
+        $stmt = $pdo->prepare(
+            'SELECT TABLE_NAME FROM information_schema.TABLES
+              WHERE TABLE_SCHEMA = ? AND TABLE_TYPE = "BASE TABLE"',
+        );
+        $stmt->execute([$name]);
+        $liveTables = array_flip($stmt->fetchAll(PDO::FETCH_COLUMN) ?: []);
+
+        $stmt = $pdo->prepare(
+            'SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ?',
+        );
+        $stmt->execute([$name]);
+
+        /** @var array<string, array<string, true>> $liveColumns */
+        $liveColumns = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) ?: [] as $row) {
+            $liveColumns[(string) $row['TABLE_NAME']][strtolower((string) $row['COLUMN_NAME'])] = true;
+        }
+
+        $missingTables  = [];
+        $missingColumns = [];
+        $remedies       = [];
+
+        foreach ($expected as $table => $columns) {
+            if (!isset($liveTables[$table])) {
+                $missingTables[] = $table;
+                continue;
+            }
+
+            foreach ($columns as $column => $definition) {
+                if (isset($liveColumns[$table][strtolower($column)])) {
+                    continue;
+                }
+                $missingColumns[] = "{$table}.{$column}";
+
+                // Empty when the column cannot be added by paste alone (a
+                // missing AUTO_INCREMENT key). It still counts as drift; it just
+                // gets no suggested statement.
+                $remedy = pf_add_column_sql($table, $column, $definition);
+                if ($remedy !== '') {
+                    $remedies[] = $remedy;
+                }
+            }
+        }
+
+        $tableCount = count($expected);
+
+        // Severity is split because the two findings mean different things.
+        //
+        // A column missing from a table that exists is the HPK failure exactly:
+        // a migration reads it, gets 1054, the version never bumps and the
+        // instance can never be upgraded again. That is a hard fail.
+        //
+        // A whole table missing is usually not that. Instances drop tables they
+        // never used, and country builds diverge; treating that as a failure
+        // would paint the check red on installs that are working perfectly, and
+        // a check that cries wolf stops being read. It is still worth saying.
+        if ($missingColumns === []) {
+            check(
+                'Schema drift',
+                PF_OK,
+                $tableCount . ' table(s) match sql/init.sql'
+                    . ($missingTables === [] ? '' : ', ignoring ' . count($missingTables) . ' absent'),
+            );
+        } else {
+            // The statements are printed rather than a command named, because
+            // there is no repair command for this yet and the paste is what
+            // actually unblocks a lab mid-upgrade. Capped so a badly drifted
+            // install still produces something a person can read off a screen.
+            $detail = count($missingColumns) . ' column(s) missing: '
+                . implode(', ', array_slice($missingColumns, 0, 8))
+                . (count($missingColumns) > 8 ? ' +' . (count($missingColumns) - 8) . ' more' : '');
+
+            if ($remedies !== []) {
+                $detail .= "\n  an upgrade will halt on these -- run:\n    "
+                    . implode("\n    ", array_slice($remedies, 0, 20))
+                    . (count($remedies) > 20
+                        ? "\n    (+" . (count($remedies) - 20) . ' more — re-run this check after applying these)'
+                        : '');
+            }
+
+            check('Schema drift', PF_FAIL, $detail);
+        }
+
+        if ($missingTables !== []) {
+            check(
+                'Missing tables',
+                PF_WARN,
+                count($missingTables) . ' table(s) in sql/init.sql are absent here: '
+                    . implode(', ', array_slice($missingTables, 0, 8))
+                    . (count($missingTables) > 8 ? ' +' . (count($missingTables) - 8) . ' more' : '')
+                    . "\n  harmless if this instance never used them; lift the CREATE TABLE from sql/init.sql if a migration needs one",
+            );
+        }
+    }
+} catch (PDOException $e) {
+    check('Schema drift', PF_SKIP, $e->getMessage());
+}
+
 check(
     'Instance type',
     $instanceType !== null ? PF_OK : PF_SKIP,
@@ -762,6 +881,80 @@ pf_render($results, $quiet);
 exit(pf_exit_code($results));
 
 /* ---------------------- Helpers ---------------------- */
+
+/**
+ * Column inventory per table, read out of a mysqldump.
+ *
+ * A line-by-line state machine rather than a SQL parser, because this script is
+ * deliberately zero-dependency -- it has to keep reporting on an instance whose
+ * vendor/ is missing or stale, which is exactly when a schema question gets
+ * asked. mysqldump output is rigid enough to make that safe: a column line is
+ * the only thing inside the parens that starts with a backtick, so PRIMARY KEY,
+ * KEY, UNIQUE KEY and CONSTRAINT lines fall out without being enumerated.
+ *
+ * @return array<string, array<string, string>> table => column => definition
+ */
+function pf_parse_init_schema(string $path): array
+{
+    $handle = @fopen($path, 'r');
+    if ($handle === false) {
+        return [];
+    }
+
+    $schema  = [];
+    $current = null;
+
+    while (($line = fgets($handle)) !== false) {
+        if ($current === null) {
+            if (preg_match('/^CREATE TABLE `([^`]+)`/i', $line, $m) === 1) {
+                $current          = $m[1];
+                $schema[$current] = [];
+            }
+            continue;
+        }
+
+        // ") ENGINE=InnoDB ..." closes the definition.
+        if (preg_match('/^\)/', $line) === 1) {
+            $current = null;
+            continue;
+        }
+
+        if (preg_match('/^\s+`([^`]+)`\s+(.+?),?\s*$/', $line, $m) === 1) {
+            $schema[$current][$m[1]] = rtrim($m[2], ',');
+        }
+    }
+
+    fclose($handle);
+
+    return array_filter($schema, static fn(array $columns): bool => $columns !== []);
+}
+
+/**
+ * The ALTER that adds one missing column back.
+ *
+ * Two departures from what init.sql declares, both for the same reason -- the
+ * table already holds rows and the column is being added underneath them:
+ *
+ *   NOT NULL with no DEFAULT is relaxed to NULL. MySQL would otherwise invent a
+ *   value ('' or 0) for every existing row, and those fabricated values then read
+ *   as real data. NULL says "not recorded", which is what actually happened.
+ *
+ *   AUTO_INCREMENT yields no statement at all. That column is the primary key,
+ *   adding one to a populated table is not a paste-and-go repair, and a table
+ *   missing its own key needs a person looking at it rather than a suggestion.
+ */
+function pf_add_column_sql(string $table, string $column, string $definition): string
+{
+    if (stripos($definition, 'AUTO_INCREMENT') !== false) {
+        return '';
+    }
+
+    if (preg_match('/\bNOT\s+NULL\b/i', $definition) === 1 && stripos($definition, 'DEFAULT') === false) {
+        $definition = preg_replace('/\bNOT\s+NULL\b/i', 'NULL', $definition) ?? $definition;
+    }
+
+    return "ALTER TABLE `{$table}` ADD COLUMN `{$column}` {$definition};";
+}
 
 /**
  * The STS URL row. An empty remoteURL is only a finding on an instance that is
