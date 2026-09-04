@@ -103,7 +103,9 @@ try {
     }
 
     if (!empty($from) && !empty($to)) {
-        $sQuery .= " AND DATE(last_modified_datetime) between '$from' AND '$to' ";
+        // Datetime comparison, not DATE(): the wrapper made the index on this
+        // column unreachable and read the whole table.
+        $sQuery .= " AND last_modified_datetime BETWEEN '$from 00:00:00' AND '$to 23:59:59' ";
     }
 
     if (empty($orderSortType)) {
