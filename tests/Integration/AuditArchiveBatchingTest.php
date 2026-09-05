@@ -416,6 +416,42 @@ final class AuditArchiveBatchingTest extends TestCase
         $this->assertSame($json, $rows[0]['result'], 'The historical reading must win when width cannot decide.');
     }
 
+    /**
+     * A value the current writer stored correctly is not re-read under the old rule.
+     *
+     * The ambiguous case cuts both ways. {"note":"he said \\"no\\""} written by
+     * the current writer is unambiguous to it and misread by the old rule, and
+     * resolving ambiguity in favour of the old rule therefore corrupted a file
+     * that was written correctly -- then made it permanent, because appending a
+     * revision rewrites the file. Archives written before the escape was fixed
+     * are a set that stops growing; this would not have been.
+     */
+    public function testACorrectlyWrittenValueIsNotReinterpretedAsLegacy(): void
+    {
+        $json = '{"note":"he said \\"no\\""}';   // no comma: both readings stay header-width
+
+        self::$db->rawQuery(
+            'INSERT INTO `' . self::AUDIT_TBL . '` (unique_id, sample_code, dt_datetime, result)
+             VALUES (?, ?, ?, ?)',
+            ['SAMPLE-A', 'SAMPLE-A', '2026-01-01 00:01:00', $json]
+        );
+
+        // Written by the current writer, then read back through the service.
+        $this->archive('SAMPLE-A');
+        $rows = $this->archivedRows('SAMPLE-A');
+
+        $this->assertCount(1, $rows);
+        $this->assertSame(
+            $json,
+            $rows[0]['result'],
+            'A file this writer produced must be read the way it was written.'
+        );
+
+        // And a second pass must not rewrite it into something else.
+        $this->archive('SAMPLE-A');
+        $this->assertSame($json, $this->archivedRows('SAMPLE-A')[0]['result'], 'Nor on the next pass.');
+    }
+
     /* ====================== Helpers ====================== */
 
     /**
