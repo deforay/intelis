@@ -121,14 +121,114 @@ function statements(string $sql): array
     $sql = preg_replace('/^\s*--[^\n]*$/m', '', $sql) ?? $sql;
     $sql = preg_replace('#/\*.*?\*/#s', '', $sql) ?? $sql;
 
+    // Split on semicolons that end a statement, not on ones inside a string.
+    // init.sql carries at least one column comment containing a semicolon --
+    // instrument_activity_log.installation_id -- and splitting on it blindly cut
+    // that CREATE TABLE in half, so its columns were read from the first
+    // fragment and its six index declarations, which sit after the comment, were
+    // never seen at all. A statement that cannot be read is a table this check
+    // silently stops covering.
     $out = [];
-    foreach (explode(';', $sql) as $chunk) {
-        $chunk = trim($chunk);
-        if ($chunk !== '') {
-            $out[] = $chunk;
+    $buffer = '';
+    $quote = null;                 // ' " or ` while inside one
+    $length = strlen($sql);
+
+    for ($i = 0; $i < $length; $i++) {
+        $char = $sql[$i];
+
+        if ($quote !== null) {
+            $buffer .= $char;
+            if ($char === '\\' && $quote !== '`' && $i + 1 < $length) {
+                $buffer .= $sql[++$i];      // escaped character inside a string
+                continue;
+            }
+            if ($char === $quote) {
+                // Doubled delimiter is an escaped one, not the end.
+                if ($i + 1 < $length && $sql[$i + 1] === $quote) {
+                    $buffer .= $sql[++$i];
+                    continue;
+                }
+                $quote = null;
+            }
+            continue;
         }
+
+        if ($char === "'" || $char === '"' || $char === '`') {
+            $quote = $char;
+            $buffer .= $char;
+            continue;
+        }
+
+        if ($char === ';') {
+            $chunk = trim($buffer);
+            if ($chunk !== '') {
+                $out[] = $chunk;
+            }
+            $buffer = '';
+            continue;
+        }
+
+        $buffer .= $char;
     }
+
+    $chunk = trim($buffer);
+    if ($chunk !== '') {
+        $out[] = $chunk;
+    }
+
     return $out;
+}
+
+/**
+ * Read an index declaration into [name|null, columns, unique], or null.
+ *
+ * Covers the shapes the history actually uses: a KEY line inside CREATE TABLE,
+ * and ADD INDEX / ADD KEY with or without a name. A name of null means the
+ * statement left it to MySQL, which derives one from the first column and
+ * appends _2, _3 and onward once that is taken -- so an unnamed declaration
+ * cannot be matched to a live index by name and is compared on its columns.
+ *
+ * Columns come back with any prefix length attached, because `note`(10) and
+ * `note` are different indexes. FOREIGN KEY and CHECK are not indexes and are
+ * not returned; MySQL creates a backing index for a foreign key on its own, and
+ * claiming the history declared one would report every install as drifted.
+ *
+ * @return array{0: string|null, 1: string[], 2: bool}|null
+ */
+function parseIndexDeclaration(string $definition): ?array
+{
+    $definition = trim($definition);
+
+    if (preg_match('/^(?:CONSTRAINT\s+(?:`[^`]+`|[A-Za-z0-9_$]+)\s+)?(?:FOREIGN\s+KEY|CHECK)\b/i', $definition)) {
+        return null;
+    }
+
+    $re = '/^(?:CONSTRAINT\s+(?:`[^`]+`|[A-Za-z0-9_$]+)\s+)?'
+        . '(PRIMARY\s+KEY|UNIQUE(?:\s+(?:KEY|INDEX))?|FULLTEXT(?:\s+(?:KEY|INDEX))?|SPATIAL(?:\s+(?:KEY|INDEX))?|KEY|INDEX)'
+        . '\s*(?:`([^`]+)`|([A-Za-z0-9_$]+))?\s*\(([^)]*(?:\([0-9]+\)[^)]*)*)\)/i';
+    if (!preg_match($re, $definition, $m)) {
+        return null;
+    }
+
+    $kind = strtoupper(preg_replace('/\s+/', ' ', $m[1]) ?? '');
+    $name = $m[2] !== '' ? $m[2] : ($m[3] ?? '');
+    if (str_starts_with($kind, 'PRIMARY')) {
+        $name = 'PRIMARY';
+    }
+
+    $columns = [];
+    foreach (splitTopLevel($m[4]) as $part) {
+        $part = trim($part);
+        if (!preg_match('/^`?([A-Za-z0-9_$]+)`?(?:\s*\((\d+)\))?/', $part, $c)) {
+            return null;
+        }
+        $columns[] = strtolower($c[1]) . (isset($c[2]) && $c[2] !== '' ? '(' . $c[2] . ')' : '');
+    }
+    if ($columns === []) {
+        return null;
+    }
+
+    return [$name !== '' ? $name : null, $columns, str_starts_with($kind, 'PRIMARY') || str_starts_with($kind, 'UNIQUE')];
 }
 
 /**
@@ -139,9 +239,14 @@ function statements(string $sql): array
  * false when it was a schema statement it did not. Anything that is not DDL (INSERT,
  * UPDATE, and the rest) returns true, because there is nothing to miss.
  *
+ * $indexes maps lowercased table name => list of ['name' => string|null,
+ * 'cols' => string[], 'unique' => bool]. Kept as a list rather than keyed by
+ * name because a declaration may not carry one.
+ *
  * @param array<string, array<string, string>> $schema
+ * @param array<string, array<int, array{name: string|null, cols: string[], unique: bool}>> $indexes
  */
-function applyStatement(string $stmt, array &$schema): bool
+function applyStatement(string $stmt, array &$schema, array &$indexes = []): bool
 {
     $head = ltrim($stmt);
 
@@ -149,22 +254,28 @@ function applyStatement(string $stmt, array &$schema): bool
     if (preg_match('/^CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?`?([A-Za-z0-9_$]+)`?\s*\((.*)\)[^)]*$/is', $head, $m)) {
         $table = strtolower($m[1]);
         $columns = [];
+        $tableIndexes = [];
         foreach (splitTopLevel($m[2]) as $definition) {
             if (!preg_match('/^`?([A-Za-z0-9_$]+)`?/', trim($definition), $c)) {
                 continue;
             }
             if (in_array(strtolower($c[1]), NOT_A_COLUMN, true) && !str_starts_with(trim($definition), '`')) {
+                $declared = parseIndexDeclaration($definition);
+                if ($declared !== null) {
+                    $tableIndexes[] = ['name' => $declared[0], 'cols' => $declared[1], 'unique' => $declared[2]];
+                }
                 continue;
             }
             $columns[strtolower($c[1])] = $c[1];
         }
         $schema[$table] = $columns;
+        $indexes[$table] = $tableIndexes;
         return true;
     }
 
     if (preg_match('/^DROP\s+TABLE\s+(?:IF\s+EXISTS\s+)?(.+)$/is', $head, $m)) {
         foreach (splitTopLevel($m[1]) as $name) {
-            unset($schema[strtolower(ident($name))]);
+            unset($schema[strtolower(ident($name))], $indexes[strtolower(ident($name))]);
         }
         return true;
     }
@@ -177,6 +288,8 @@ function applyStatement(string $stmt, array &$schema): bool
                 if (isset($schema[$from])) {
                     $schema[$to] = $schema[$from];
                     unset($schema[$from]);
+                    $indexes[$to] = $indexes[$from] ?? [];
+                    unset($indexes[$from]);
                 }
             }
         }
@@ -222,6 +335,22 @@ function applyStatement(string $stmt, array &$schema): bool
             if (preg_match('/^(MODIFY|RENAME\s+(INDEX|KEY)|ENGINE|COLLATE|DEFAULT|CONVERT|AUTO_INCREMENT|ORDER\s+BY|DISABLE|ENABLE|ALTER)\b/i', $action)) {
                 continue;
             }
+            if (preg_match('/^ADD\s+/i', $action)) {
+                $declared = parseIndexDeclaration(preg_replace('/^ADD\s+/i', '', $action) ?? '');
+                if ($declared !== null) {
+                    $indexes[$table][] = ['name' => $declared[0], 'cols' => $declared[1], 'unique' => $declared[2]];
+                    continue;
+                }
+            }
+
+            if (preg_match('/^DROP\s+(?:INDEX|KEY)\s+`?([A-Za-z0-9_$]+)`?\s*$/i', $action, $a)) {
+                $indexes[$table] = array_values(array_filter(
+                    $indexes[$table] ?? [],
+                    static fn(array $i): bool => strcasecmp((string) $i['name'], $a[1]) !== 0
+                ));
+                continue;
+            }
+
             if (preg_match('/^(ADD|DROP)\s+(PRIMARY|UNIQUE|KEY|INDEX|CONSTRAINT|FOREIGN|FULLTEXT|SPATIAL|CHECK)\b/i', $action)) {
                 continue;
             }
@@ -280,10 +409,12 @@ if (version_compare($dbVersion, $baseline, '<')) {
 
 /** @var array<string, array<string, string>> $expected */
 $expected = [];
+/** @var array<string, array<int, array{name: string|null, cols: string[], unique: bool}>> $expectedIndexes */
+$expectedIndexes = [];
 $unparsed = [];
 
 foreach (statements($initSql) as $stmt) {
-    if (!applyStatement($stmt, $expected)) {
+    if (!applyStatement($stmt, $expected, $expectedIndexes)) {
         $unparsed[] = 'init.sql: ' . substr(preg_replace('/\s+/', ' ', $stmt) ?? '', 0, 120);
     }
 }
@@ -299,7 +430,7 @@ foreach ($versions as $version) {
     }
     $applied++;
     foreach (statements((string) file_get_contents(ROOT_PATH . "/sys/migrations/$version.sql")) as $stmt) {
-        if (!applyStatement($stmt, $expected)) {
+        if (!applyStatement($stmt, $expected, $expectedIndexes)) {
             $unparsed[] = "$version.sql: " . substr(preg_replace('/\s+/', ' ', $stmt) ?? '', 0, 120);
         }
     }
@@ -312,6 +443,22 @@ foreach ($db->rawQuery(
     "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE()"
 ) as $row) {
     $actual[strtolower((string) $row['TABLE_NAME'])][strtolower((string) $row['COLUMN_NAME'])] = (string) $row['COLUMN_NAME'];
+}
+
+// Live indexes, as definitions rather than names.
+/** @var array<string, array<string, array{cols: string[], unique: bool}>> $actualIndexes */
+$actualIndexes = [];
+foreach ($db->rawQuery(
+    "SELECT TABLE_NAME, INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, SUB_PART
+       FROM information_schema.STATISTICS
+      WHERE TABLE_SCHEMA = DATABASE()
+      ORDER BY TABLE_NAME, INDEX_NAME, SEQ_IN_INDEX"
+) as $row) {
+    $t = strtolower((string) $row['TABLE_NAME']);
+    $n = (string) $row['INDEX_NAME'];
+    $actualIndexes[$t][$n]['unique'] = ((int) $row['NON_UNIQUE']) === 0;
+    $actualIndexes[$t][$n]['cols'][] = strtolower((string) $row['COLUMN_NAME'])
+        . ($row['SUB_PART'] !== null ? '(' . $row['SUB_PART'] . ')' : '');
 }
 
 $missingTables = [];
@@ -329,14 +476,62 @@ foreach ($expected as $table => $columns) {
     }
 }
 
+// Indexes the history declares that are nowhere in the database, and indexes
+// the database holds that the history never asked for.
+//
+// Matched on definition, never on name. An unnamed declaration has no name to
+// match, a renamed index still does the same job, and the same index under two
+// names is the ordinary state of these installs -- `composer duplicate-indexes`
+// is where that is reported, so it is not repeated here.
+$missingIndexes = [];
+$undeclaredIndexes = [];
+
+$definition = static fn(array $i): string
+    => implode(',', $i['cols']) . ($i['unique'] ? ':U' : ':N');
+
+foreach ($expectedIndexes as $table => $declared) {
+    if (!isset($actual[$table])) {
+        continue;   // the missing table is already reported; its indexes follow from that
+    }
+    $live = array_map($definition, array_values($actualIndexes[$table] ?? []));
+    foreach ($declared as $index) {
+        if (!in_array($definition($index), $live, true)) {
+            $missingIndexes[] = $table . ' (' . implode(', ', $index['cols']) . ')'
+                . ($index['unique'] ? ' UNIQUE' : '')
+                . ($index['name'] !== null ? ' — declared as ' . $index['name'] : '');
+        }
+    }
+}
+
+foreach ($actualIndexes as $table => $live) {
+    if (!isset($expectedIndexes[$table])) {
+        continue;   // a table the history never created; not this check's business
+    }
+    $declaredDefs = array_map($definition, $expectedIndexes[$table]);
+    $seen = [];
+    foreach ($live as $name => $index) {
+        $def = $definition($index);
+        if (in_array($def, $declaredDefs, true) || isset($seen[$def])) {
+            $seen[$def] = true;   // a second copy is a duplicate, not an undeclared index
+            continue;
+        }
+        $seen[$def] = true;
+        $undeclaredIndexes[] = "$table.$name (" . implode(', ', $index['cols']) . ')'
+            . ($index['unique'] ? ' UNIQUE' : '');
+    }
+}
+
 sort($missingTables);
 sort($missingColumns);
+sort($missingIndexes);
+sort($undeclaredIndexes);
 
 $tableCount = count($expected);
 $columnCount = array_sum(array_map('count', $expected));
+$indexCount = array_sum(array_map('count', $expectedIndexes));
 
 echo "check-schema-drift: baseline $baseline + $applied migration(s) to $dbVersion\n";
-echo "check-schema-drift: expects $tableCount tables, $columnCount columns\n";
+echo "check-schema-drift: expects $tableCount tables, $columnCount columns, $indexCount indexes\n";
 
 if ($unparsed !== []) {
     $shown = $verbose ? $unparsed : array_slice($unparsed, 0, 5);
@@ -349,8 +544,26 @@ if ($unparsed !== []) {
     }
 }
 
-if ($missingTables === [] && $missingColumns === []) {
-    echo "check-schema-drift: every expected table and column is present.\n";
+// Undeclared indexes are reported and never fail the check. An index the
+// history did not ask for is not necessarily wrong: on installs this old it may
+// be a hand-applied fix for a slow local report, or a leftover from a module the
+// site once ran, and there is no way to tell those from cruft by looking. What
+// it is for is visibility -- knowing an install carries them at all.
+if ($undeclaredIndexes !== []) {
+    $shown = $verbose ? $undeclaredIndexes : array_slice($undeclaredIndexes, 0, 10);
+    echo "check-schema-drift: " . count($undeclaredIndexes) . " index(es) the history never declared:\n";
+    foreach ($shown as $line) {
+        echo "  EXTRA INDEX     $line\n";
+    }
+    if (!$verbose && count($undeclaredIndexes) > count($shown)) {
+        echo "  … " . (count($undeclaredIndexes) - count($shown)) . " more (--verbose to list)\n";
+    }
+    echo "check-schema-drift: these are reported, not judged. Exact copies of another index are\n";
+    echo "check-schema-drift: listed separately by `composer duplicate-indexes`.\n";
+}
+
+if ($missingTables === [] && $missingColumns === [] && $missingIndexes === []) {
+    echo "check-schema-drift: every expected table, column and index is present.\n";
     exit(OK);
 }
 
@@ -360,7 +573,12 @@ foreach ($missingTables as $table) {
 foreach ($missingColumns as $column) {
     echo "  MISSING COLUMN  $column\n";
 }
+foreach ($missingIndexes as $index) {
+    echo "  MISSING INDEX   $index\n";
+}
 
-echo "check-schema-drift: " . count($missingTables) . " missing table(s), " . count($missingColumns) . " missing column(s).\n";
+echo "check-schema-drift: " . count($missingTables) . " missing table(s), "
+    . count($missingColumns) . " missing column(s), "
+    . count($missingIndexes) . " missing index(es).\n";
 echo "check-schema-drift: the recorded version claims these exist, so a past migration stamped itself done without finishing.\n";
 exit(DRIFT);
