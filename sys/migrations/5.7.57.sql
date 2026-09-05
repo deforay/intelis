@@ -57,3 +57,15 @@ ALTER TABLE `form_hepatitis` ADD INDEX `last_modified_datetime` (`last_modified_
 ALTER TABLE `form_generic`   ADD INDEX `last_modified_datetime` (`last_modified_datetime`);
 
 UPDATE `system_config` SET `value` = '5.7.57' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

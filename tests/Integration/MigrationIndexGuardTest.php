@@ -32,7 +32,13 @@ use PHPUnit\Framework\TestCase;
 final class MigrationIndexGuardTest extends TestCase
 {
     private const DATABASE = 'intelis_migration_index_test';
-    private const WANTED = ['current_db', 'index_exists', 'index_column_list', 'equivalent_index_exists'];
+    private const WANTED = [
+        'current_db',
+        'index_exists',
+        'index_column_list',
+        'equivalent_index_exists',
+        'parse_unnamed_index_statement',
+    ];
 
     private static ?DatabaseService $db = null;
 
@@ -177,6 +183,40 @@ final class MigrationIndexGuardTest extends TestCase
         $this->assertFalse(
             equivalent_index_exists(self::$db, 'probe', ['note'], false),
             'The existing note index is prefixed, so it must not satisfy a request for the whole column.'
+        );
+    }
+
+    /**
+     * An ADD INDEX written without a name is recognised, a named one is not.
+     *
+     * MySQL names an unnamed index after its first column and appends _2, _3
+     * and onward once that name is taken, so two of these in a row leave two
+     * indexes and nothing collides to stop it. Twenty-four statements in the
+     * migration history are written this way, which is how one instance came to
+     * carry 63 copies of a single index. They have no name to compare, so the
+     * column check is the only thing that can catch them -- and it only gets the
+     * chance if they are routed to it rather than run straight through.
+     */
+    public function testUnnamedIndexStatementsAreRecognised(): void
+    {
+        $parsed = parse_unnamed_index_statement('ALTER TABLE `form_vl` ADD INDEX( `remote_sample_code_key`)');
+        $this->assertNotNull($parsed, 'The 4.4.3 shape must be routed through the column check.');
+        $this->assertSame('form_vl', $parsed[0]);
+        $this->assertSame(['remote_sample_code_key'], $parsed[1]);
+        $this->assertFalse($parsed[2]);
+
+        $unique = parse_unnamed_index_statement('ALTER TABLE `t` ADD UNIQUE KEY (`a`,`b`)');
+        $this->assertNotNull($unique);
+        $this->assertSame(['a', 'b'], $unique[1]);
+        $this->assertTrue($unique[2], 'Uniqueness has to survive parsing or the comparison is wrong.');
+
+        $this->assertNull(
+            parse_unnamed_index_statement('ALTER TABLE `t` ADD INDEX `named` (`a`)'),
+            'A named index has its own handler and a name to compare; this must not take it.'
+        );
+        $this->assertNull(
+            parse_unnamed_index_statement('ALTER TABLE `t` ADD COLUMN `a` INT'),
+            'Anything that is not an index statement must fall through.'
         );
     }
 
