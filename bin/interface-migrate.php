@@ -37,6 +37,69 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
+/**
+ * Split a SQLite migration into statements, the way the Interface Tool does.
+ *
+ * Mirrors splitSqliteMigrationStatements() in the Electron app (app/main.ts).
+ * Both runners apply the same files to the same database, so they have to agree
+ * on where a statement ends -- and they had stopped agreeing. This side stripped
+ * comment lines and split on every semicolon, which holds until a migration
+ * contains a trigger: the semicolons inside BEGIN ... END belong to the CREATE
+ * TRIGGER around them. 010.sql has one, and splitting that way yielded a
+ * truncated CREATE TRIGGER followed by a bare END, neither of which SQLite
+ * accepts, so this runner could not apply that migration at all.
+ *
+ * The comment replaced here said the two were the same splitter. They stopped
+ * being the same when trigger handling was added on the other side, and nothing
+ * reported it: the files sit in separate repositories with nothing holding them
+ * together but a line of prose.
+ *
+ * @return string[]
+ */
+function splitSqliteMigrationStatements(string $sql): array
+{
+    $statements = [];
+    $buffer = '';
+    $insideTrigger = false;
+
+    foreach (explode("\n", $sql) as $line) {
+        $trimmed = trim($line);
+        if (str_starts_with($trimmed, '--')) {
+            continue;
+        }
+
+        if (trim($buffer) === '' && preg_match('/^CREATE\s+TRIGGER\b/i', $trimmed)) {
+            $insideTrigger = true;
+        }
+        $buffer .= $line . "\n";
+
+        // Semicolons inside BEGIN ... END belong to the one CREATE TRIGGER.
+        if ($insideTrigger) {
+            if (preg_match('/^END\s*;\s*$/i', $trimmed)) {
+                $statements[] = preg_replace('/;\s*$/', '', trim($buffer)) ?? trim($buffer);
+                $buffer = '';
+                $insideTrigger = false;
+            }
+            continue;
+        }
+
+        $parts = explode(';', $buffer);
+        $buffer = (string) array_pop($parts);
+        foreach ($parts as $part) {
+            $part = trim($part);
+            if ($part !== '') {
+                $statements[] = $part;
+            }
+        }
+    }
+
+    if (trim($buffer) !== '') {
+        $statements[] = trim($buffer);
+    }
+
+    return $statements;
+}
+
 ini_set('memory_limit', '-1');
 set_time_limit(0);
 
@@ -411,14 +474,7 @@ foreach ($sqliteDbCandidates as $dbPath) {
         echo "  $file:" . PHP_EOL;
         $sqlContent = $sqliteContents[$file];
 
-        // Same splitter as Electron (main.ts:150-155): strip `--` comment lines, split on `;`
-        $lines = explode("\n", $sqlContent);
-        $cleanLines = array_filter($lines, fn($l) => !str_starts_with(trim($l), '--'));
-        $clean = implode("\n", $cleanLines);
-        $statements = array_values(array_filter(
-            array_map('trim', explode(';', $clean)),
-            fn($s) => $s !== ''
-        ));
+        $statements = splitSqliteMigrationStatements($sqlContent);
 
         if ($dryRun) {
             foreach ($statements as $idx => $s) {

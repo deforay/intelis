@@ -139,3 +139,74 @@ UPDATE `raw_data` SET `instrument_id` = `machine` WHERE `instrument_id` IS NULL;
 
 -- Add an index for better query performance
 CREATE INDEX `idx_raw_data_instrument_id` ON `raw_data` (`instrument_id`);
+
+-- Give app_log the structured columns it logs through (mysql-migrations/004.sql)
+ALTER TABLE `app_log` ADD COLUMN `log_type` VARCHAR(20) NULL;
+ALTER TABLE `app_log` ADD COLUMN `log_message` TEXT NULL;
+ALTER TABLE `app_log` ADD COLUMN `instrument_id` VARCHAR(255) NULL;
+
+-- Free-text notes against an order (mysql-migrations/005.sql)
+ALTER TABLE `orders` ADD COLUMN `notes` TEXT NULL;
+
+-- Identify the ingestion that produced an order, so a repeat of the same
+-- delivery cannot enter twice (mysql-migrations/006.sql)
+ALTER TABLE `orders` ADD COLUMN `ingestion_id` VARCHAR(36) NULL;
+CREATE UNIQUE INDEX `idx_orders_ingestion_id` ON `orders` (`ingestion_id`);
+
+-- Separate operational log lines from the rest (mysql-migrations/007.sql)
+ALTER TABLE `app_log` ADD COLUMN `category` VARCHAR(20) NOT NULL DEFAULT 'operational';
+
+-- Instrument activity, one row per event (mysql-migrations/008.sql), with the
+-- originating installation and its index folded in from 009.sql
+CREATE TABLE IF NOT EXISTS `telemetry_events` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `event_id` CHAR(36) NOT NULL,
+  `event_type` VARCHAR(64) NOT NULL,
+  `event_category` VARCHAR(32) NOT NULL,
+  `occurred_at` DATETIME NOT NULL,
+  `lab_id` VARCHAR(128) DEFAULT NULL,
+  `source_installation_id` VARCHAR(128) DEFAULT NULL,
+  `instrument_id` VARCHAR(128) DEFAULT NULL,
+  `machine_type` VARCHAR(128) DEFAULT NULL,
+  `protocol` VARCHAR(32) DEFAULT NULL,
+  `connection_mode` VARCHAR(32) DEFAULT NULL,
+  `test_type` VARCHAR(128) DEFAULT NULL,
+  `outcome` VARCHAR(32) NOT NULL DEFAULT 'success',
+  `failure_code` VARCHAR(64) DEFAULT NULL,
+  `event_count` INT UNSIGNED NOT NULL DEFAULT 1,
+  `app_version` VARCHAR(32) DEFAULT NULL,
+  `remote_uploaded_at` DATETIME DEFAULT NULL,
+  `remote_batch_id` CHAR(36) DEFAULT NULL,
+  `added_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_telemetry_events_event_id` (`event_id`),
+  KEY `idx_telemetry_events_occurred_at` (`occurred_at`),
+  KEY `idx_telemetry_events_type_time` (`event_type`, `occurred_at`),
+  KEY `idx_telemetry_events_instrument_time` (`instrument_id`, `occurred_at`),
+  KEY `idx_telemetry_events_source_time` (`source_installation_id`, `occurred_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Daily rollup of the above, one row per installation, instrument and test type
+-- per day (mysql-migrations/009.sql)
+CREATE TABLE IF NOT EXISTS `usage_statistics_daily` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `aggregate_id` CHAR(36) NOT NULL,
+  `activity_date` DATE NOT NULL,
+  `source_installation_id` VARCHAR(128) NOT NULL,
+  `lab_id` VARCHAR(128) NOT NULL DEFAULT '',
+  `instrument_id` VARCHAR(128) NOT NULL DEFAULT '',
+  `machine_type` VARCHAR(128) NOT NULL DEFAULT '',
+  `test_type` VARCHAR(128) NOT NULL DEFAULT '',
+  `total_tests` INT UNSIGNED NOT NULL DEFAULT 0,
+  `successful_tests` INT UNSIGNED NOT NULL DEFAULT 0,
+  `failed_tests` INT UNSIGNED NOT NULL DEFAULT 0,
+  `first_test_at` DATETIME NOT NULL,
+  `last_test_at` DATETIME NOT NULL,
+  `revision` INT UNSIGNED NOT NULL DEFAULT 1,
+  `remote_uploaded_revision` INT UNSIGNED NOT NULL DEFAULT 0,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_usage_statistics_daily_aggregate_id` (`aggregate_id`),
+  KEY `idx_usage_statistics_daily_activity` (`activity_date`, `instrument_id`),
+  KEY `idx_usage_statistics_daily_remote_pending` (`remote_uploaded_revision`, `revision`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
