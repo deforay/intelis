@@ -521,12 +521,50 @@ final readonly class AuditArchiveService
         }
         // Past those two, the readings are either both coherent or both not, so
         // $strictFits alone says which. Both coherent and disagreeing is the
-        // ambiguous case the old writer left behind.
+        // ambiguous case -- and which reading is right depends on which writer
+        // produced the file, so ask that before choosing.
         if ($strictFits && $strict['rows'] !== $legacy['rows']) {
-            return $legacy;
+            return $this->wasWrittenAsRfc($content, $strict) ? $strict : $legacy;
         }
 
         return $strict;
+    }
+
+    /**
+     * Was this file written by the current writer rather than the old one?
+     *
+     * Asked by re-encoding: take the RFC reading and write it back out through
+     * the same writer the archive uses. A file that writer produced reproduces
+     * itself exactly, because nothing in between is lossy. A file the old writer
+     * produced, in the cases where the two readings differ at all, does not --
+     * the RFC reading of it is wrong, so what comes back out is wrong too.
+     *
+     * Without this the ambiguous case was resolved in favour of the old rule,
+     * which is right for a file already on disk and wrong for every file written
+     * since. A value like {"note":"he said \"no\""} is stored correctly by the
+     * current writer, read back under the old rule as something else, and made
+     * permanent by the next appended revision. Preferring the old reading turned
+     * a bounded problem -- archives written before the escape was fixed -- into
+     * one that would keep happening.
+     *
+     * @param array{headers: string[], rows: array<int, array<int, string|null>>} $parsed
+     */
+    private function wasWrittenAsRfc(string $content, array $parsed): bool
+    {
+        if ($parsed['headers'] === []) {
+            return false;
+        }
+
+        $handle = fopen('php://temp', 'r+');
+        fputcsv($handle, $parsed['headers'], escape: self::CSV_ESCAPE);
+        foreach ($parsed['rows'] as $row) {
+            fputcsv($handle, $row, escape: self::CSV_ESCAPE);
+        }
+        rewind($handle);
+        $reencoded = stream_get_contents($handle);
+        fclose($handle);
+
+        return $reencoded === $content;
     }
 
     /**
