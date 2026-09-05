@@ -218,14 +218,107 @@ function index_exists(DatabaseService $db, string $table, string $index): bool
 }
 
 /** Create index only if missing (works on MySQL 5.x/8.x and MariaDB). */
-function add_index_if_missing(DatabaseService $db, string $table, string $index, string $ddl): int
+/**
+ * Column list of an index definition, or null when it cannot be compared safely.
+ *
+ * "`a`, `b`" becomes ['a','b']. A prefix length such as `note`(10) returns null:
+ * two indexes over the same column with different prefixes are not the same
+ * index, and rather than encode that comparison the caller falls back to
+ * creating what the migration asked for.
+ *
+ * @return string[]|null
+ */
+function index_column_list(string $columns): ?array
 {
-    if (!index_exists($db, $table, $index)) {
-        $db->rawQuery($ddl);
-        assert_no_errno($db, $ddl);
-        return MIG_EXECUTED;
+    $parts = [];
+    foreach (explode(',', $columns) as $part) {
+        $part = trim($part);
+        if ($part === '' || str_contains($part, '(')) {
+            return null;                      // empty, or a prefix length
+        }
+        if (preg_match('/\s+(asc|desc)$/i', $part)) {
+            return null;                      // ordered index; not worth comparing
+        }
+        $parts[] = strtolower(trim($part, '` '));
     }
-    return MIG_SKIPPED;
+
+    return $parts === [] ? null : $parts;
+}
+
+/**
+ * An index over exactly these columns, with the same uniqueness, already there?
+ *
+ * Name is not enough. `add_index_if_missing()` asks information_schema whether
+ * the NAME is taken, so an index over the same column under another name is
+ * invisible to it -- which is how 5.7.56 came to build a second copy of an index
+ * sql/init.sql already ships, on every fresh install. Comparing the column list
+ * catches that.
+ *
+ * The comparison is deliberately exact. A composite (a, b) is a different index
+ * from (a) and must still be created, and a UNIQUE index over the same columns
+ * as a plain one carries a constraint the plain one does not -- skipping that
+ * would drop the constraint silently, which is worse than a redundant index.
+ *
+ * @param string[] $columns
+ */
+function equivalent_index_exists(DatabaseService $db, string $table, array $columns, bool $unique): bool
+{
+    $dbName = current_db($db);
+    $rows = $db->rawQuery(
+        "SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, SUB_PART
+            FROM information_schema.STATISTICS
+            WHERE TABLE_SCHEMA=? AND TABLE_NAME=?
+            ORDER BY INDEX_NAME, SEQ_IN_INDEX",
+        [$dbName, $table]
+    );
+    if (!$rows) {
+        return false;
+    }
+
+    $byIndex = [];
+    foreach ($rows as $r) {
+        $name = (string) $r['INDEX_NAME'];
+        $byIndex[$name]['unique'] = ((int) $r['NON_UNIQUE']) === 0;
+        // A prefix on either side makes the two incomparable, same as above.
+        $byIndex[$name]['prefixed'] = ($byIndex[$name]['prefixed'] ?? false) || $r['SUB_PART'] !== null;
+        $byIndex[$name]['cols'][] = strtolower((string) $r['COLUMN_NAME']);
+    }
+
+    foreach ($byIndex as $existing) {
+        if (($existing['prefixed'] ?? false) || ($existing['unique'] ?? false) !== $unique) {
+            continue;
+        }
+        if (($existing['cols'] ?? []) === $columns) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * ADD INDEX only if one is not already present -- by name, then by definition.
+ *
+ * @param string[]|null $columns Parsed column list, when the caller could parse one.
+ */
+function add_index_if_missing(
+    DatabaseService $db,
+    string $table,
+    string $index,
+    string $ddl,
+    ?array $columns = null,
+    bool $unique = false
+): int {
+    if (index_exists($db, $table, $index)) {
+        return MIG_SKIPPED;
+    }
+    if ($columns !== null && equivalent_index_exists($db, $table, $columns, $unique)) {
+        return MIG_SKIPPED;
+    }
+
+    $db->rawQuery($ddl);
+    assert_no_errno($db, $ddl);
+    return MIG_EXECUTED;
 }
 
 /** Column exists? */
@@ -373,7 +466,7 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
 
     // CREATE [UNIQUE] INDEX idx ON table (...)
     if (preg_match('/^create\s+(unique\s+)?index\s+`?([^`]+)`?\s*(?:using\s+btree)?\s+on\s+`?([^`]+)`?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', (string) $q, $m)) {
-        return add_index_if_missing($db, $m[3], $m[2], $q);
+        return add_index_if_missing($db, $m[3], $m[2], $q, index_column_list($m[4]), trim((string) $m[1]) !== '');
     }
 
     // ALTER TABLE ... ADD [UNIQUE] INDEX idx (...)
@@ -383,7 +476,7 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
         $index = $m[3];
         $cols = trim($m[4]);
         $ddl = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', $uniqueKw, $index, $table, $cols);
-        return add_index_if_missing($db, $table, $index, $ddl);
+        return add_index_if_missing($db, $table, $index, $ddl, index_column_list($cols), $uniqueKw !== '');
     }
 
     // ALTER TABLE ... ADD [UNIQUE] KEY idx (...) (synonym)
@@ -393,7 +486,7 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
         $index = $m[3];
         $cols = trim($m[4]);
         $ddl = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', $uniqueKw, $index, $table, $cols);
-        return add_index_if_missing($db, $table, $index, $ddl);
+        return add_index_if_missing($db, $table, $index, $ddl, index_column_list($cols), $uniqueKw !== '');
     }
 
     // ALTER TABLE ... ADD CONSTRAINT `name` FOREIGN KEY (...) — skip if the
