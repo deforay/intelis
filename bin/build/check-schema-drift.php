@@ -34,6 +34,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../bootstrap.php';
 
+use PhpMyAdmin\SqlParser\Parser;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -111,69 +112,37 @@ function ident(string $raw): string
 }
 
 /**
- * Strip comments and split a SQL file into statements.
+ * Split a SQL file into statements.
  *
- * @return list<string>
+ * Through the same parser bin/migrate.php runs migrations with, rather than a
+ * split on every semicolon. A semicolon inside a string literal does not end a
+ * statement, and sql/init.sql has one -- a column comment on
+ * instrument_activity_log.installation_id -- which used to cut that CREATE TABLE
+ * in half. The columns above the comment were read and the six index
+ * declarations below it were never seen, and nothing reported a problem: the
+ * fragments still parse as something, so the check just stopped covering the
+ * rest of the statement. That cost 27 columns and 11 indexes of coverage across
+ * the file, none of which it could then have reported missing.
+ *
+ * The parser rebuilds each statement from what it understood rather than
+ * handing back the original text, which is what migrate.php already relies on.
+ * Parsing all 340K of init.sql takes about a quarter of a second.
+ *
+ * @return string[]
  */
 function statements(string $sql): array
 {
-    // Line comments first, so a "--" inside no string can swallow a statement.
-    $sql = preg_replace('/^\s*--[^\n]*$/m', '', $sql) ?? $sql;
-    $sql = preg_replace('#/\*.*?\*/#s', '', $sql) ?? $sql;
+    // "--Insert" with no space is not a comment to the standard but is meant as
+    // one here, and migration files contain it. migrate.php makes the same
+    // repair before parsing.
+    $sql = preg_replace('/^(\s*--)(?=\S)/m', '$1 ', $sql) ?? $sql;
 
-    // Split on semicolons that end a statement, not on ones inside a string.
-    // init.sql carries at least one column comment containing a semicolon --
-    // instrument_activity_log.installation_id -- and splitting on it blindly cut
-    // that CREATE TABLE in half, so its columns were read from the first
-    // fragment and its six index declarations, which sit after the comment, were
-    // never seen at all. A statement that cannot be read is a table this check
-    // silently stops covering.
     $out = [];
-    $buffer = '';
-    $quote = null;                 // ' " or ` while inside one
-    $length = strlen($sql);
-
-    for ($i = 0; $i < $length; $i++) {
-        $char = $sql[$i];
-
-        if ($quote !== null) {
-            $buffer .= $char;
-            if ($char === '\\' && $quote !== '`' && $i + 1 < $length) {
-                $buffer .= $sql[++$i];      // escaped character inside a string
-                continue;
-            }
-            if ($char === $quote) {
-                // Doubled delimiter is an escaped one, not the end.
-                if ($i + 1 < $length && $sql[$i + 1] === $quote) {
-                    $buffer .= $sql[++$i];
-                    continue;
-                }
-                $quote = null;
-            }
-            continue;
+    foreach ((new Parser($sql))->statements as $statement) {
+        $built = trim((string) $statement->build());
+        if ($built !== '') {
+            $out[] = $built;
         }
-
-        if ($char === "'" || $char === '"' || $char === '`') {
-            $quote = $char;
-            $buffer .= $char;
-            continue;
-        }
-
-        if ($char === ';') {
-            $chunk = trim($buffer);
-            if ($chunk !== '') {
-                $out[] = $chunk;
-            }
-            $buffer = '';
-            continue;
-        }
-
-        $buffer .= $char;
-    }
-
-    $chunk = trim($buffer);
-    if ($chunk !== '') {
-        $out[] = $chunk;
     }
 
     return $out;
