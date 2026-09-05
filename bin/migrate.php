@@ -297,6 +297,26 @@ function equivalent_index_exists(DatabaseService $db, string $table, array $colu
 }
 
 /**
+ * Parse an ADD INDEX/KEY that was written without a name.
+ *
+ * "ALTER TABLE `t` ADD INDEX( `a`)" is the shape; a named one such as
+ * "ADD INDEX `foo` (`a`)" is not matched, because that has its own handler and a
+ * name to compare. Returns [table, columns|null, unique] or null when the
+ * statement is something else. Columns come back null when they cannot be
+ * compared safely -- see index_column_list().
+ *
+ * @return array{0: string, 1: string[]|null, 2: bool}|null
+ */
+function parse_unnamed_index_statement(string $sql): ?array
+{
+    if (!preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+(unique\s+)?(?:index|key)\s*\((.+)\)\s*;?$/is', $sql, $m)) {
+        return null;
+    }
+
+    return [$m[1], index_column_list($m[3]), trim((string) $m[2]) !== ''];
+}
+
+/**
  * ADD INDEX only if one is not already present -- by name, then by definition.
  *
  * @param string[]|null $columns Parsed column list, when the caller could parse one.
@@ -477,6 +497,31 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
         $cols = trim($m[4]);
         $ddl = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', $uniqueKw, $index, $table, $cols);
         return add_index_if_missing($db, $table, $index, $ddl, index_column_list($cols), $uniqueKw !== '');
+    }
+
+    // ALTER TABLE ... ADD [UNIQUE] INDEX|KEY (...) with NO name.
+    //
+    // MySQL names these after their first column and appends _2, _3 and onward
+    // when that name is taken, so nothing about them collides and every replay
+    // quietly adds another copy. Twenty-four statements in the migration history
+    // are written this way, which is how one instance came to hold 63 copies of
+    // one index on s_app_menu and 41 of one on user_details. They match neither
+    // named-index pattern above, so before this they went straight to the server.
+    //
+    // The column check is the only thing that can catch them -- there is no name
+    // to compare. When nothing equivalent is there the original statement runs
+    // untouched, so MySQL still picks the name it always did.
+    $unnamed = parse_unnamed_index_statement((string) $q);
+    if ($unnamed !== null) {
+        [$table, $columns, $unique] = $unnamed;
+
+        if ($columns !== null && equivalent_index_exists($db, $table, $columns, $unique)) {
+            return MIG_SKIPPED;
+        }
+
+        $db->rawQuery($q);
+        assert_no_errno($db, $q);
+        return MIG_EXECUTED;
     }
 
     // ALTER TABLE ... ADD [UNIQUE] KEY idx (...) (synonym)
