@@ -37,7 +37,9 @@ final class SchemaDriftParsingTest extends TestCase
 
         $source = (string) file_get_contents(dirname(__DIR__, 3) . '/bin/build/check-schema-drift.php');
         $tokens = token_get_all($source);
-        $out = "<?php\n";
+        // The lifted functions are written without their file's imports, so the
+        // ones they reach for have to come along.
+        $out = "<?php\nuse PhpMyAdmin\\SqlParser\\Parser;\n";
         $n = count($tokens);
 
         for ($i = 0; $i < $n; $i++) {
