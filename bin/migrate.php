@@ -137,6 +137,30 @@ function _apply_add_primary_key(DatabaseService $db, SymfonyStyle $io, string $t
     return MIG_SKIPPED;
 }
 
+/**
+ * Codes that mean "this DDL was already applied" rather than "this DDL failed".
+ *
+ * 1050 table exists, 1060 duplicate column, 1061 duplicate key name, 1068
+ * multiple primary keys, 1091 nothing to drop, 1826 duplicate foreign key. The
+ * same list the migration loop treats as benign, named once so a caller that
+ * has to keep going after one can ask.
+ */
+function is_benign_ddl_error(Throwable $e, DatabaseService $db): bool
+{
+    $code = (int) $e->getCode();
+
+    // assert_no_errno() raises a RuntimeException carrying the number in its
+    // message rather than its code.
+    if ($code === 0 && preg_match('/DB error \((\d+)\)/', $e->getMessage(), $m)) {
+        $code = (int) $m[1];
+    }
+    if ($code === 0) {
+        $code = (int) $db->getLastErrno();
+    }
+
+    return in_array($code, [1050, 1060, 1061, 1068, 1091, 1826], true);
+}
+
 function assert_no_errno(DatabaseService $db, string $sql): void
 {
     $errno = $db->getLastErrno();
@@ -606,33 +630,59 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
     $q = trim($query);
     $q = preg_replace('/NULL\s*AFTER/i', 'NULL AFTER', $q);
 
-    // An ALTER carrying several actions is dispatched one action at a time.
+    // An ALTER carrying several actions, where some of them may already be done.
     //
     // Every guard below reads the FIRST action and answers for the whole
     // statement, so `ADD a, ADD b` where a is already present was reported as
     // already applied and b was never added -- silently, with the version then
-    // stamped as done. And letting it run raw is no better: MySQL fails the
-    // whole ALTER on the duplicate a, so b is lost either way. Three statements
-    // in 5.2.9 alone are written like this, one of them the pair that leaves
-    // facility_details with an sts_token and no sts_token_expiry.
+    // stamped as done. Running it raw is no better: MySQL fails the whole ALTER
+    // on the duplicate a, 1060 is benign, and b is lost either way. Three
+    // statements in 5.2.9 are written like this, one of them the pair that
+    // leaves facility_details with an sts_token and no sts_token_expiry.
     //
-    // Splitting costs the statement its atomicity, which DDL does not have on
-    // MySQL regardless: each action is its own implicit commit already.
+    // The statement is still tried WHOLE first, and only taken apart when that
+    // fails on something already applied. Splitting unconditionally would cost
+    // far more than it fixes: MySQL rebuilds the table for most of these, and
+    // 5.2.1 changes form_vl in one ALTER of 51 clauses -- one rebuild of the
+    // largest table in the schema, which a blind split turns into 51.
     if (preg_match('/^alter\s+table\s+(`?[a-z0-9_$]+`?)\s+(.+?);?$/is', (string) $q, $alter)) {
         $actions = split_top_level($alter[2]);
         if (count($actions) > 1) {
+            try {
+                $db->rawQuery($q);
+                assert_no_errno($db, $q);
+                return MIG_EXECUTED;      // nothing was applied yet: one rebuild, as written
+            } catch (Throwable $e) {
+                if (!is_benign_ddl_error($e, $db)) {
+                    throw $e;
+                }
+                // Part of it is already in place. Only now is it worth the
+                // rebuilds to find out which part.
+            }
+
             $outcome = MIG_SKIPPED;
             foreach ($actions as $action) {
                 $single = 'ALTER TABLE ' . $alter[1] . ' ' . trim($action);
-                $result = handle_idempotent_ddl($db, $io, $single);
 
-                if ($result === MIG_NOT_HANDLED) {
-                    // No guard knows this one; run it on its own so the actions
-                    // beside it are not lost with it.
-                    $db->rawQuery($single);
-                    assert_no_errno($db, $single);
-                    $result = MIG_EXECUTED;
+                try {
+                    $result = handle_idempotent_ddl($db, $io, $single);
+                    if ($result === MIG_NOT_HANDLED) {
+                        // No guard knows this one; run it on its own so the
+                        // actions beside it are not lost with it.
+                        $db->rawQuery($single);
+                        assert_no_errno($db, $single);
+                        $result = MIG_EXECUTED;
+                    }
+                } catch (Throwable $e) {
+                    // An action that is already satisfied must not end the loop
+                    // and take the actions after it down: that is the failure
+                    // this whole branch exists to stop.
+                    if (!is_benign_ddl_error($e, $db)) {
+                        throw $e;
+                    }
+                    $result = MIG_SKIPPED;
                 }
+
                 if ($result === MIG_EXECUTED) {
                     $outcome = MIG_EXECUTED;
                 }
