@@ -112,3 +112,15 @@ ALTER TABLE `facility_details` ADD COLUMN `sts_token` VARCHAR(64) NULL DEFAULT N
 ALTER TABLE `facility_details` ADD COLUMN `sts_token_expiry` DATETIME NULL DEFAULT NULL AFTER `sts_token`;
 
 UPDATE `system_config` SET `value` = '5.7.61' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
