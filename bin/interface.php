@@ -36,12 +36,66 @@ use App\Services\InstrumentActivityService;
 use App\Services\InstrumentUsageStatisticsService;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\CliPromptUtility;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
-if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
-    MiscUtility::safeCliEcho('⚠️  Interfacing is not enabled. Please enable it in configuration.' . PHP_EOL);
-    LoggerUtility::logError('Interfacing is not enabled. Please enable it in configuration.');
-    exit;
+// Nothing to import from, in either of the two ways that happens: interfacing
+// switched off, or switched on with no analyzer database named. The second used
+// to run to completion and report nothing, which is indistinguishable from a
+// quiet day.
+$interfacingEnabled = !empty(SYSTEM_CONFIG['interfacing']['enabled']);
+$hasMysqlSource = !empty(SYSTEM_CONFIG['interfacing']['database']['host'])
+    && !empty(SYSTEM_CONFIG['interfacing']['database']['username']);
+$hasSqliteSource = !empty(SYSTEM_CONFIG['interfacing']['sqlite3Path']);
+
+if (!$interfacingEnabled || (!$hasMysqlSource && !$hasSqliteSource)) {
+    $reason = $interfacingEnabled
+        ? 'Interfacing is enabled, but no analyzer database is configured.'
+        : 'Interfacing is not enabled.';
+
+    // Scheduled runs get what they always got. There is nobody to answer a
+    // question, and a wizard that blocked forever on one would take the whole
+    // cron slot with it.
+    if (!CliPromptUtility::isInteractive()) {
+        MiscUtility::safeCliEcho('⚠️  ' . $reason . ' Please enable it in configuration.' . PHP_EOL);
+        LoggerUtility::logError($reason . ' Please enable it in configuration.');
+        exit;
+    }
+
+    // Somebody typed this command, so somebody is here to answer. Telling them
+    // to go and edit a PHP file by hand is what the setup wizard exists to
+    // replace, and this is the moment they would have gone looking for it.
+    MiscUtility::safeCliEcho('⚠️  ' . $reason . PHP_EOL);
+
+    $prompt = new CliPromptUtility(new SymfonyStyle(new ArgvInput(), new ConsoleOutput()));
+    if (!$prompt->confirm('Set interfacing up now?', true)) {
+        MiscUtility::safeCliEcho('Nothing has been changed. Set it up later with: intelis interface setup' . PHP_EOL);
+        exit;
+    }
+
+    $setupStatus = 0;
+    passthru(
+        escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(__DIR__ . '/setup/setup-interface.php'),
+        $setupStatus
+    );
+    if ($setupStatus !== CLI\OK) {
+        exit($setupStatus);
+    }
+
+    // SYSTEM_CONFIG became a constant when this process booted, so the settings
+    // the wizard just wrote are invisible here. Re-run the import in a fresh
+    // process rather than reporting on a configuration this one cannot see.
+    $reRun = escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(__FILE__);
+    foreach (array_slice($argv, 1) as $passedArgument) {
+        $reRun .= ' ' . escapeshellarg((string) $passedArgument);
+    }
+
+    $importStatus = 0;
+    passthru($reRun, $importStatus);
+    exit($importStatus);
 }
 
 
