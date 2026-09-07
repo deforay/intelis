@@ -20,18 +20,17 @@ use Tests\Support\MigrationRunnerFunctions;
  * kept whatever default it was created with, and the version was stamped as
  * done on top of that -- the reader sees an empty column and no error anywhere.
  *
- * Labs reach this state honestly. Preflight handed out an `ADD` remedy for the
- * missing new column before the rename migration existed, so both columns hold
- * real values: the old one everything written before the remedy, the new one
- * everything since, because the application only ever knew the new name. That
- * is why the old column may only fill gaps and must never overwrite.
+ * Labs reach this state honestly: preflight handed out an ADD remedy for the
+ * missing new column before the rename migration existed.
  *
- * The two shapes below are 5.7.59's two renames:
- * form_generic.sample_received_at_testing_lab_datetime, nullable, where NULL is
- * an honest gap; and lab_storage.lab_storage_status, NOT NULL DEFAULT 'active',
- * where nothing distinguishes a row written as active from one that merely
- * defaulted, and the shelves that were marked inactive are the rows actually
- * lost.
+ * Merging the two automatically cannot be made safe. A row whose new column is
+ * empty may be one nothing ever wrote or one someone deliberately cleared, and
+ * nothing tells them apart; and dropping the old column drops whatever keys it
+ * belongs to, which a real CHANGE would have carried across --
+ * instrument_controls.config_id is half of a primary key before 5.2.8 renames
+ * it. So the runner stops and names the table and columns instead. An upgrade
+ * that halts for a stated reason beats one that finishes having kept the wrong
+ * data, because it can be seen.
  *
  * Set INTELIS_TEST_DB_HOST/_PORT/_USER/_PASS to run; skipped without them.
  */
@@ -74,103 +73,121 @@ final class MigrationRenameReconcileTest extends TestCase
     }
 
     /**
-     * The nullable case: 5.7.59's form_generic datetime.
+     * Both names present halts, and touches nothing.
      *
-     * Rows written before the remedy have their value under the old name and
-     * NULL under the new; rows written after have it the other way round. Both
-     * have to survive.
+     * The important half is what did NOT happen: no value moved, no column was
+     * dropped, and the migration did not report itself applied.
      */
-    public function testANullableColumnTakesTheOldValueOnlyWhereItIsEmpty(): void
+    public function testBothNamesPresentHaltsWithoutTouchingAnything(): void
     {
-        self::$db->rawQuery('DROP TABLE IF EXISTS `reconcile_null_probe`');
+        self::$db->rawQuery('DROP TABLE IF EXISTS `reconcile_both_probe`');
         self::$db->rawQuery(
-            'CREATE TABLE `reconcile_null_probe` (
+            'CREATE TABLE `reconcile_both_probe` (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 `sample_received_at_testing_lab_datetime` DATETIME NULL DEFAULT NULL,
                 `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL
             ) ENGINE=InnoDB'
         );
         self::$db->rawQuery(
-            'INSERT INTO `reconcile_null_probe`
+            'INSERT INTO `reconcile_both_probe`
                 (`sample_received_at_testing_lab_datetime`, `sample_received_at_lab_datetime`) VALUES
                 ("2024-03-01 09:00:00", NULL),
-                (NULL, "2024-11-01 09:00:00"),
-                ("2024-03-02 09:00:00", "2024-11-02 09:00:00"),
-                (NULL, NULL)'
+                (NULL, "2024-11-01 09:00:00")'
         );
 
-        $this->assertSame(
-            MIG_EXECUTED,
+        $raised = null;
+        try {
             $this->dispatch(
-                'ALTER TABLE `reconcile_null_probe`
+                'ALTER TABLE `reconcile_both_probe`
                  CHANGE `sample_received_at_testing_lab_datetime` `sample_received_at_lab_datetime`
                  DATETIME NULL DEFAULT NULL'
-            )
+            );
+        } catch (\Throwable $e) {
+            $raised = $e;
+        }
+
+        $this->assertNotNull($raised, 'An ambiguous state must stop the migration, not be guessed at.');
+
+        // Named in place, not merely mentioned somewhere in the text: the
+        // operator has to be able to read off which table and which two
+        // columns without going looking for them.
+        $this->assertStringStartsWith(
+            '`reconcile_both_probe` holds BOTH `sample_received_at_testing_lab_datetime` '
+            . 'and `sample_received_at_lab_datetime`',
+            $raised->getMessage(),
+            'The message has to name the table and both columns, in that order.'
+        );
+        $this->assertStringContainsString(
+            'drop `sample_received_at_testing_lab_datetime`',
+            $raised->getMessage(),
+            'and say what to do about it.'
         );
 
-        $rows = array_column(
-            self::$db->rawQuery(
-                'SELECT `sample_received_at_lab_datetime` AS v FROM `reconcile_null_probe` ORDER BY id'
-            ),
-            'v'
-        );
-
-        $this->assertSame('2024-03-01 09:00:00', $rows[0], 'The stranded value has to be carried over.');
-        $this->assertSame('2024-11-01 09:00:00', $rows[1], 'A value written since must not be lost.');
-        $this->assertSame('2024-11-02 09:00:00', $rows[2], 'and must not be overwritten by the older one.');
-        $this->assertNull($rows[3], 'Nothing to carry over stays nothing.');
-
-        $this->assertNotContains(
+        $this->assertContains(
             'sample_received_at_testing_lab_datetime',
-            $this->columnsOf('reconcile_null_probe'),
-            'The old name has to be retired, or the next run finds both again.'
+            $this->columnsOf('reconcile_both_probe'),
+            'Nothing may be dropped: the old column can be half of a key.'
         );
+
+        $rows = self::$db->rawQuery(
+            'SELECT `sample_received_at_testing_lab_datetime` AS o, `sample_received_at_lab_datetime` AS n
+               FROM `reconcile_both_probe` ORDER BY id'
+        );
+        $this->assertSame('2024-03-01 09:00:00', $rows[0]['o'], 'The old value stays where it was.');
+        $this->assertNull($rows[0]['n'], 'and nothing was written over the gap.');
+        $this->assertNull($rows[1]['o']);
+        $this->assertSame('2024-11-01 09:00:00', $rows[1]['n'], 'A value written since is untouched.');
     }
 
     /**
-     * The NOT NULL DEFAULT case: 5.7.59's lab_storage status.
+     * A column that is half of a key is never dropped on this path.
      *
-     * Every row reads 'active' under the new name whether it was written that
-     * way or merely defaulted, so only rows where the old column disagrees can
-     * be recovered. Those are the ones that were actually lost.
+     * instrument_controls.config_id is half of PRIMARY KEY(test_type,
+     * config_id) until 5.2.8 renames it. Dropping it rather than renaming it
+     * reduces the primary key instead of moving it.
      */
-    public function testANotNullColumnTakesTheOldValueOnlyWhereItStillHoldsItsDefault(): void
+    public function testAKeyCarryingColumnIsLeftIntact(): void
     {
-        self::$db->rawQuery('DROP TABLE IF EXISTS `reconcile_default_probe`');
+        self::$db->rawQuery('DROP TABLE IF EXISTS `reconcile_key_probe`');
         self::$db->rawQuery(
-            "CREATE TABLE `reconcile_default_probe` (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                `lab_storage_status` VARCHAR(10) NOT NULL DEFAULT 'active',
-                `storage_status` VARCHAR(10) NOT NULL DEFAULT 'active'
-            ) ENGINE=InnoDB"
+            'CREATE TABLE `reconcile_key_probe` (
+                `test_type` VARCHAR(50) NOT NULL,
+                `config_id` VARCHAR(50) NOT NULL,
+                `instrument_id` VARCHAR(50) NOT NULL DEFAULT "",
+                PRIMARY KEY (`test_type`, `config_id`)
+            ) ENGINE=InnoDB'
         );
         self::$db->rawQuery(
-            "INSERT INTO `reconcile_default_probe` (`lab_storage_status`, `storage_status`) VALUES
-                ('inactive', 'active'),
-                ('active',   'active'),
-                ('active',   'inactive'),
-                ('inactive', 'inactive')"
+            'INSERT INTO `reconcile_key_probe` (`test_type`, `config_id`) VALUES ("vl", "a"), ("vl", "b")'
+        );
+
+        try {
+            $this->dispatch(
+                'ALTER TABLE `reconcile_key_probe` CHANGE `config_id` `instrument_id` VARCHAR(50) NOT NULL'
+            );
+        } catch (\Throwable) {
+            // Halting is the expected outcome; what matters is the table below.
+        }
+
+        $key = array_column(
+            self::$db->rawQuery(
+                "SELECT COLUMN_NAME FROM information_schema.STATISTICS
+                   WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'reconcile_key_probe'
+                     AND INDEX_NAME = 'PRIMARY' ORDER BY SEQ_IN_INDEX"
+            ),
+            'COLUMN_NAME'
         );
 
         $this->assertSame(
-            MIG_EXECUTED,
-            $this->dispatch(
-                "ALTER TABLE `reconcile_default_probe`
-                 CHANGE `lab_storage_status` `storage_status` VARCHAR(10) NOT NULL DEFAULT 'active'"
-            )
+            ['test_type', 'config_id'],
+            $key,
+            'The primary key must be exactly as it was; a drop here would silently shorten it.'
         );
-
-        $rows = array_column(
-            self::$db->rawQuery('SELECT `storage_status` AS v FROM `reconcile_default_probe` ORDER BY id'),
-            'v'
+        $this->assertSame(
+            '2',
+            (string) (self::$db->rawQueryOne('SELECT COUNT(*) AS c FROM `reconcile_key_probe`')['c'] ?? ''),
+            'and both rows must survive.'
         );
-
-        $this->assertSame('inactive', $rows[0], 'The shelf marked inactive under the old name was lost; recover it.');
-        $this->assertSame('active', $rows[1], 'Agreeing rows are left alone.');
-        $this->assertSame('inactive', $rows[2], 'A value written since must not be overwritten by the default.');
-        $this->assertSame('inactive', $rows[3], 'and stays as it is when both agree.');
-
-        $this->assertNotContains('lab_storage_status', $this->columnsOf('reconcile_default_probe'));
     }
 
     /** Only the old name present is an ordinary rename, untouched by any of this. */

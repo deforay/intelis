@@ -494,75 +494,50 @@ function _apply_change_column(DatabaseService $db, string $table, string $oldCol
 }
 
 /**
- * Both names present: carry the old column's values over and retire it.
+ * Both names present: stop, and say so.
  *
- * A CHANGE cannot rename onto a name the table already holds -- MySQL raises
+ * MySQL will not CHANGE a column onto a name the table already holds. It raises
  * 1060, which is on the benign list, so the statement was written off as
- * already applied. It was not: the values still sat under the old name, the
- * new column held whatever default it was created with, and the version was
- * stamped as done on top of that. The reader sees an empty column and no error.
+ * already applied while the values stayed under the old name and the version
+ * was stamped as done on top of that. Silent, and the reader just sees an empty
+ * column.
  *
- * A lab reaches this state by having been handed an `ADD` remedy for the
- * missing new column before the rename migration existed. Both columns then
- * hold real values: the old one everything written before the remedy, the new
- * one everything written since, because the application only ever knew the new
- * name. So the old column fills gaps and never overwrites.
+ * Merging the two automatically was tried and abandoned, because neither half
+ * of it can be done safely without knowing things the runner cannot know:
  *
- * What counts as a gap depends on the new column. If it takes NULL, NULL is the
- * gap. If it does not, the only mark of a row nothing ever wrote is that it
- * still carries the column default -- which cannot be told apart from a row
- * deliberately written to that value, so rows holding the default are filled
- * from the old column only where the old column disagrees with it. That
- * recovers the rows that were actually lost (a shelf marked inactive under the
- * old name, reading active under the new) and leaves every other row alone.
+ *   - Which value wins. Both columns hold real data in this state -- the old
+ *     one everything written before the remedy that created the new column,
+ *     the new one everything since. A row where the new column is empty may be
+ *     a row nothing ever wrote, or a row someone deliberately cleared, and
+ *     nothing distinguishes them. Filling it restores a stale value over a
+ *     deliberate edit; leaving it loses the stranded one.
+ *   - What the old column carries besides values. Dropping it drops whatever
+ *     keys it belongs to, which a real CHANGE would have moved across.
+ *     instrument_controls.config_id is half of PRIMARY KEY(test_type,
+ *     config_id) before 5.2.8 renames it, so a drop there quietly reduces the
+ *     primary key rather than renaming it.
+ *
+ * So this halts instead. The migration does not advance, nothing is written and
+ * nothing is dropped, and the operator is told exactly which table and columns
+ * need a decision. An upgrade that stops with a clear reason is a better
+ * outcome than one that finishes having quietly kept the wrong data -- and
+ * unlike the silent version, it can be seen.
  */
 function _reconcile_renamed_column(DatabaseService $db, string $table, string $oldCol, string $newCol): int
 {
-    $meta = $db->rawQueryOne(
-        "SELECT IS_NULLABLE, COLUMN_DEFAULT FROM information_schema.COLUMNS
-          WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ? LIMIT 1",
-        [current_db($db), $table, $newCol]
-    );
-
-    $nullable = strcasecmp((string) ($meta['IS_NULLABLE'] ?? 'YES'), 'YES') === 0;
-    $default  = $meta['COLUMN_DEFAULT'] ?? null;
-
-    if ($nullable) {
-        $sql = sprintf(
-            'UPDATE `%s` SET `%s` = `%s` WHERE `%s` IS NULL AND `%s` IS NOT NULL',
-            $table,
-            $newCol,
-            $oldCol,
-            $newCol,
-            $oldCol
-        );
-        $params = [];
-    } elseif ($default !== null) {
-        $sql = sprintf(
-            'UPDATE `%s` SET `%s` = `%s` WHERE `%s` = ? AND `%s` IS NOT NULL AND `%s` <> ?',
-            $table,
-            $newCol,
-            $oldCol,
-            $newCol,
-            $oldCol,
-            $oldCol
-        );
-        $params = [$default, $default];
-    } else {
-        // NOT NULL with no default: every row was written deliberately and
-        // there is no gap to fill. Retire the old column without touching data.
-        $sql = null;
-        $params = [];
-    }
-
-    if ($sql !== null) {
-        $db->rawQuery($sql, $params);
-        assert_no_errno($db, $sql);
-    }
-
-    drop_column_if_exists($db, $table, $oldCol);
-
-    return MIG_EXECUTED;
+    throw new RuntimeException(sprintf(
+        "`%s` holds BOTH `%s` and `%s`, so the rename cannot be applied and this migration has stopped.\n"
+        . "Both columns may hold real values: `%s` what was written before `%s` was added, `%s` what was\n"
+        . "written since. Decide which each row should keep, move the values across, then drop `%s`\n"
+        . "(carrying over any key it belongs to). Re-run the migration afterwards.",
+        $table,
+        $oldCol,
+        $newCol,
+        $oldCol,
+        $newCol,
+        $newCol,
+        $oldCol
+    ));
 }
 
 /**
