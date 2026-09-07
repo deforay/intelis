@@ -17,24 +17,33 @@
 -- own upgrade happened to fall, so the only safe assumption is that any of it
 -- may be missing.
 --
--- The tables come first, for two reasons. 5.2.9 CREATEs nine of them partway
--- through its own run, so an instance that stopped before one of those has no
--- table for the columns below to be added to -- a 1146, which is fatal, so the
--- upgrade would halt here and never reach any later version. And one of those
--- nine could never have been created at all: 5.2.9 line 310 ends the
--- `lab_storage` CREATE without a semicolon, running it into the INSERT that
--- follows, so the pair is a syntax error wherever the file is replayed.
--- IF NOT EXISTS makes each of them a no-op everywhere they did land.
+-- The tables come first: 5.2.9 CREATEs nine of them partway through its own
+-- run, so an instance that stopped before one has no table for these columns to
+-- be added to -- a 1146, which is fatal, so the upgrade would halt here and
+-- never reach any later version. IF NOT EXISTS makes each a no-op everywhere
+-- else.
 --
--- Every column added below is one today's sql/init.sql declares, checked
--- mechanically, so this adds nothing a current schema does not already have and
--- the runner skips each one it finds present. 5.2.9 drops no column, so nothing
--- here can remove anything.
+-- The columns are grouped one ALTER per table, NOT one per column. MySQL
+-- rebuilds the table for each ALTER it runs, and form_vl is a gigabyte of data
+-- on a working instance, so six separate adds would be six rebuilds of it. The
+-- runner takes a multi-action ALTER apart by itself when part of it is already
+-- applied, and only then, so grouping costs a partly-repaired instance nothing
+-- and saves every other one five rebuilds a table.
 --
--- One action per statement, deliberately: a multi-action ALTER used to be
--- judged by its first action alone. Reading them needs a statement-level parse
--- too -- 5.2.9's longest ALTER runs to 27 lines, and a line-at-a-time reading
--- of this file silently misses sixteen of the columns.
+-- No column carries the AFTER clause 5.2.9 wrote it with. Position is cosmetic,
+-- and an anchor is exactly the kind of column a stranded instance is missing --
+-- which is a 1054, which is fatal. The runner drops a dead AFTER for a single
+-- ADD, but it cannot for a grouped one: the statement fails before it can be
+-- taken apart. Leaving them out is what makes the grouping safe here.
+--
+-- Every column added is one today's sql/init.sql declares, checked
+-- mechanically. That check only proves nothing here is invented: init.sql
+-- describes a FRESH install, so it can say nothing about what a half-migrated
+-- one is missing. 5.2.9 drops no column, so nothing here can remove anything.
+--
+-- Reading 5.2.9 needs a statement-level parse: its longest ALTER runs to 27
+-- lines, and taking it a line at a time silently drops sixteen columns,
+-- including six on form_vl and three on form_tb that every request save writes.
 --
 -- Left out: the audit_form_* copies, whose tables audit_log replaced in 5.5.3,
 -- and the two columns 5.7.59 renames, which re-adding would restore under their
@@ -280,87 +289,87 @@ CREATE TABLE IF NOT EXISTS queue_sample_code_generation (
     processed TINYINT(1) DEFAULT 0
 ) CHARACTER SET utf8mb4;
 
--- Columns 5.2.9 adds.
--- form_cd4
-ALTER TABLE `form_cd4` ADD COLUMN `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
-ALTER TABLE `form_cd4` ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
-ALTER TABLE `form_cd4` ADD COLUMN `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+-- Columns 5.2.9 adds, one ALTER per table so each costs one rebuild.
+ALTER TABLE `form_cd4`
+  ADD COLUMN `referring_lab_id` INT NULL DEFAULT NULL,
+  ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL,
+  ADD COLUMN `rejection_on` DATE NULL DEFAULT NULL;
 
--- form_eid
-ALTER TABLE `form_eid` ADD COLUMN `second_dbs_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_dbs_requested`;
-ALTER TABLE `form_eid` ADD COLUMN `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `child_gender`;
-ALTER TABLE `form_eid` ADD COLUMN `is_mother_alive` VARCHAR(50) NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
-ALTER TABLE `form_eid` ADD COLUMN `child_age_in_weeks` INT NULL DEFAULT NULL AFTER `child_age`;
-ALTER TABLE `form_eid` ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
-ALTER TABLE `form_eid` ADD COLUMN `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `form_eid`
+  ADD COLUMN `second_dbs_requested_reason` VARCHAR(256) NULL DEFAULT NULL,
+  ADD COLUMN `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL,
+  ADD COLUMN `is_mother_alive` VARCHAR(50) NULL DEFAULT NULL,
+  ADD COLUMN `child_age_in_weeks` INT NULL DEFAULT NULL,
+  ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL,
+  ADD COLUMN `rejection_on` DATE NULL DEFAULT NULL;
 
--- form_covid19
-ALTER TABLE `form_covid19` ADD COLUMN `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL AFTER `patient_gender`;
-ALTER TABLE `form_covid19` ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
-ALTER TABLE `form_covid19` ADD COLUMN `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `form_covid19`
+  ADD COLUMN `health_insurance_code` VARCHAR(32) NULL DEFAULT NULL,
+  ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL,
+  ADD COLUMN `rejection_on` DATE NULL DEFAULT NULL;
 
--- lab_storage
-ALTER TABLE `lab_storage` ADD COLUMN `data_sync` INT NOT NULL DEFAULT '0' AFTER `updated_datetime`;
+ALTER TABLE `lab_storage`
+  ADD COLUMN `data_sync` INT NOT NULL DEFAULT '0';
 
--- batch_details
-ALTER TABLE `batch_details` ADD COLUMN `control_names` JSON NULL DEFAULT NULL AFTER `label_order`;
-ALTER TABLE `batch_details` ADD COLUMN `batch_attributes` JSON NULL DEFAULT NULL AFTER `batch_status`;
-ALTER TABLE `batch_details` ADD COLUMN `lab_assigned_batch_code` VARCHAR(64) NULL DEFAULT NULL AFTER `machine`;
-ALTER TABLE `batch_details` ADD COLUMN `printed_datetime` DATETIME NULL DEFAULT NULL AFTER control_names;
+ALTER TABLE `batch_details`
+  ADD COLUMN `control_names` JSON NULL DEFAULT NULL,
+  ADD COLUMN `batch_attributes` JSON NULL DEFAULT NULL,
+  ADD COLUMN `lab_assigned_batch_code` VARCHAR(64) NULL DEFAULT NULL,
+  ADD COLUMN `printed_datetime` DATETIME NULL DEFAULT NULL;
 
--- r_generic_test_reasons
-ALTER TABLE `r_generic_test_reasons` ADD COLUMN `parent_reason` INT NULL DEFAULT NULL AFTER `test_reason`;
+ALTER TABLE `r_generic_test_reasons`
+  ADD COLUMN `parent_reason` INT NULL DEFAULT NULL;
 
--- instrument_controls
-ALTER TABLE `instrument_controls` ADD COLUMN `updated_datetime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `number_of_calibrators`;
+ALTER TABLE `instrument_controls`
+  ADD COLUMN `updated_datetime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP;
 
--- s_vlsm_instance
-ALTER TABLE `s_vlsm_instance` ADD COLUMN `last_vldash_sync` DATETIME NULL DEFAULT NULL;
-ALTER TABLE `s_vlsm_instance` ADD COLUMN `last_lab_metadata_sync` DATETIME NULL DEFAULT NULL AFTER `last_vldash_sync`;
-ALTER TABLE `s_vlsm_instance` ADD COLUMN `sts_token` VARCHAR(64) NULL DEFAULT NULL AFTER `instance_facility_logo`;
+ALTER TABLE `s_vlsm_instance`
+  ADD COLUMN `last_vldash_sync` DATETIME NULL DEFAULT NULL,
+  ADD COLUMN `last_lab_metadata_sync` DATETIME NULL DEFAULT NULL,
+  ADD COLUMN `sts_token` VARCHAR(64) NULL DEFAULT NULL;
 
--- lab_storage_history
-ALTER TABLE `lab_storage_history` ADD COLUMN `date_out` DATE NULL DEFAULT NULL AFTER `sample_status`;
-ALTER TABLE `lab_storage_history` ADD COLUMN `comments` TEXT NULL DEFAULT NULL AFTER `date_out`;
-ALTER TABLE `lab_storage_history` ADD COLUMN `sample_removal_reason` INT NULL DEFAULT NULL AFTER `comments`;
+ALTER TABLE `lab_storage_history`
+  ADD COLUMN `date_out` DATE NULL DEFAULT NULL,
+  ADD COLUMN `comments` TEXT NULL DEFAULT NULL,
+  ADD COLUMN `sample_removal_reason` INT NULL DEFAULT NULL;
 
--- form_vl
-ALTER TABLE `form_vl` ADD COLUMN `treatment_duration_precise` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration`;
-ALTER TABLE `form_vl` ADD COLUMN `last_cd4_result` VARCHAR(50) NULL DEFAULT NULL AFTER `treatment_duration_precise`;
-ALTER TABLE `form_vl` ADD COLUMN `last_cd4_percentage` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_result`;
-ALTER TABLE `form_vl` ADD COLUMN `last_cd8_result` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_percentage`;
-ALTER TABLE `form_vl` ADD COLUMN `last_cd4_date` DATE NULL DEFAULT NULL AFTER `last_cd8_result`;
-ALTER TABLE `form_vl` ADD COLUMN `last_cd8_date` VARCHAR(50) NULL DEFAULT NULL AFTER `last_cd4_date`;
-ALTER TABLE `form_vl` ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
-ALTER TABLE `form_vl` ADD COLUMN `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
-ALTER TABLE `form_vl` ADD COLUMN `result_sent_to_external` TEXT NULL DEFAULT NULL AFTER `result_sent_to_source`;
-ALTER TABLE `form_vl` ADD COLUMN `result_sent_to_external_datetime` TEXT NULL DEFAULT NULL AFTER `result_sent_to_external`;
+ALTER TABLE `form_vl`
+  ADD COLUMN `treatment_duration_precise` VARCHAR(50) NULL DEFAULT NULL,
+  ADD COLUMN `last_cd4_result` VARCHAR(50) NULL DEFAULT NULL,
+  ADD COLUMN `last_cd4_percentage` VARCHAR(50) NULL DEFAULT NULL,
+  ADD COLUMN `last_cd8_result` VARCHAR(50) NULL DEFAULT NULL,
+  ADD COLUMN `last_cd4_date` DATE NULL DEFAULT NULL,
+  ADD COLUMN `last_cd8_date` VARCHAR(50) NULL DEFAULT NULL,
+  ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL,
+  ADD COLUMN `rejection_on` DATE NULL DEFAULT NULL,
+  ADD COLUMN `result_sent_to_external` TEXT NULL DEFAULT NULL,
+  ADD COLUMN `result_sent_to_external_datetime` TEXT NULL DEFAULT NULL;
 
--- form_tb
-ALTER TABLE `form_tb` ADD COLUMN `patient_weight` DECIMAL(5,2) NULL DEFAULT NULL AFTER `patient_age`;
-ALTER TABLE `form_tb` ADD COLUMN `is_displaced_population` VARCHAR(5) NULL DEFAULT NULL AFTER `patient_address`;
-ALTER TABLE `form_tb` ADD COLUMN `is_referred_by_community_actor` VARCHAR(5) NULL DEFAULT NULL AFTER `is_displaced_population`;
-ALTER TABLE `form_tb` ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
-ALTER TABLE `form_tb` ADD COLUMN `is_patient_pregnant` VARCHAR(3) CHARACTER SET utf8mb4 NULL DEFAULT NULL AFTER `patient_gender`;
-ALTER TABLE `form_tb` ADD COLUMN `is_patient_breastfeeding` VARCHAR(3) CHARACTER SET utf8mb4 NULL DEFAULT NULL AFTER `is_patient_pregnant`;
+ALTER TABLE `form_tb`
+  ADD COLUMN `patient_weight` DECIMAL(5,2) NULL DEFAULT NULL,
+  ADD COLUMN `is_displaced_population` VARCHAR(5) NULL DEFAULT NULL,
+  ADD COLUMN `is_referred_by_community_actor` VARCHAR(5) NULL DEFAULT NULL,
+  ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL,
+  ADD COLUMN `is_patient_pregnant` VARCHAR(3) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+  ADD COLUMN `is_patient_breastfeeding` VARCHAR(3) CHARACTER SET utf8mb4 NULL DEFAULT NULL;
 
--- global_config
-ALTER TABLE `global_config` ADD COLUMN `instance_id` VARCHAR(50) NULL DEFAULT NULL AFTER `value`;
+ALTER TABLE `global_config`
+  ADD COLUMN `instance_id` VARCHAR(50) NULL DEFAULT NULL;
 
--- user_details
-ALTER TABLE `user_details` ADD COLUMN `user_attributes` JSON NULL DEFAULT NULL AFTER `user_signature`;
+ALTER TABLE `user_details`
+  ADD COLUMN `user_attributes` JSON NULL DEFAULT NULL;
 
--- form_generic
-ALTER TABLE `form_generic` ADD COLUMN `is_encrypted` varchar(10) DEFAULT 'no' AFTER `patient_address`;
-ALTER TABLE `form_generic` ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
-ALTER TABLE `form_generic` ADD COLUMN `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `form_generic`
+  ADD COLUMN `is_encrypted` varchar(10) DEFAULT 'no',
+  ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL,
+  ADD COLUMN `rejection_on` DATE NULL DEFAULT NULL;
 
--- form_hepatitis
-ALTER TABLE `form_hepatitis` ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL AFTER `sample_code`;
-ALTER TABLE `form_hepatitis` ADD COLUMN `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `form_hepatitis`
+  ADD COLUMN `lab_assigned_code` VARCHAR(32) NULL DEFAULT NULL,
+  ADD COLUMN `rejection_on` DATE NULL DEFAULT NULL;
 
--- facility_details
-ALTER TABLE `facility_details` ADD COLUMN `sts_token` VARCHAR(64) NULL DEFAULT NULL AFTER `facility_type`;
-ALTER TABLE `facility_details` ADD COLUMN `sts_token_expiry` DATETIME NULL DEFAULT NULL AFTER `sts_token`;
+ALTER TABLE `facility_details`
+  ADD COLUMN `sts_token` VARCHAR(64) NULL DEFAULT NULL,
+  ADD COLUMN `sts_token_expiry` DATETIME NULL DEFAULT NULL;
 
 UPDATE `system_config` SET `value` = '5.7.61' WHERE `system_config`.`name` = 'sc_version';
