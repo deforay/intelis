@@ -746,6 +746,7 @@ try {
         $missingTables  = [];
         $missingColumns = [];
         $remedies       = [];
+        $renameHints    = [];
 
         foreach ($expected as $table => $columns) {
             if (!isset($liveTables[$table])) {
@@ -758,6 +759,27 @@ try {
                     continue;
                 }
                 $missingColumns[] = "{$table}.{$column}";
+
+                // A missing column is not always a column to add. Migrations
+                // rename columns, and an instance that missed the rename still
+                // holds every value under the old name -- 5.2.9 renamed
+                // lab_storage.lab_storage_status and form_generic's
+                // sample_received_at_testing_lab_datetime, and two DRC
+                // instances were still on the old names eighteen months later.
+                // The ADD printed below would create the new name empty and
+                // leave the data in a column nothing reads, silently.
+                //
+                // init.sql cannot say which of a table's spare columns is an
+                // old name, so this names them and leaves the judgement to the
+                // reader rather than guessing a rename that would rewrite the
+                // wrong column.
+                $spare = array_values(array_diff(
+                    array_keys($liveColumns[$table] ?? []),
+                    array_map('strtolower', array_keys($columns))
+                ));
+                if ($spare !== []) {
+                    $renameHints[$table] = $spare;
+                }
 
                 // Empty when the column cannot be added by paste alone (a
                 // missing AUTO_INCREMENT key). It still counts as drift; it just
@@ -803,6 +825,16 @@ try {
                     . (count($remedies) > 20
                         ? "\n    (+" . (count($remedies) - 20) . ' more — re-run this check after applying these)'
                         : '');
+            }
+
+            if ($renameHints !== []) {
+                $detail .= "\n  check first — these tables also carry columns sql/init.sql does not declare,"
+                    . "\n  and a missing column that is really a rename must be RENAMEd, not added,"
+                    . "\n  or the values stay in the old column and the new one comes up empty:";
+                foreach (array_slice($renameHints, 0, 8, true) as $table => $spare) {
+                    $detail .= "\n    {$table}: " . implode(', ', array_slice($spare, 0, 8))
+                        . (count($spare) > 8 ? ' +' . (count($spare) - 8) . ' more' : '');
+                }
             }
 
             check('Schema drift', PF_FAIL, $detail);
