@@ -58,6 +58,8 @@ final class MigrationRunnerFunctions
         $bootstrap = new mysqli($host, $user, $password, null, $port);
         $bootstrap->query('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
         $bootstrap->query('CREATE DATABASE `' . self::DATABASE . '`');
+        $bootstrap->select_db(self::DATABASE);
+        self::loadRealSchema($bootstrap);
         $bootstrap->close();
 
         self::load();
@@ -66,6 +68,41 @@ final class MigrationRunnerFunctions
             'host' => $host, 'username' => $user, 'password' => $password,
             'db' => self::DATABASE, 'port' => $port,
         ]);
+    }
+
+    /**
+     * Build the real schema, from sql/init.sql, rather than a stand-in.
+     *
+     * A test that invents `CREATE TABLE probe (id INT)` is testing the runner
+     * against a table no installation has. That gap has cost real time: a
+     * foreign key with nothing to point at, an AFTER clause naming a column the
+     * stand-in never had -- failures that say nothing about the code and have
+     * to be diagnosed anyway. The columns, keys, defaults and collations here
+     * are the ones a lab actually carries.
+     *
+     * Through multi_query rather than the SQL parser the runner uses: init.sql
+     * opens with SET SQL_MODE and START TRANSACTION, and the parser's build()
+     * runs those together into one statement the server rejects, leaving an
+     * empty database and every later assertion meaningless.
+     *
+     * Around half a second for 139 tables, once per process, which is why the
+     * connection is cached rather than the schema rebuilt per test.
+     */
+    private static function loadRealSchema(mysqli $bootstrap): void
+    {
+        $path = dirname(__DIR__, 2) . '/sql/init.sql';
+        $sql = @file_get_contents($path);
+        if ($sql === false || $sql === '') {
+            return;     // no seed to build from; tests fall back to their own tables
+        }
+
+        if ($bootstrap->multi_query($sql)) {
+            do {
+                if ($result = $bootstrap->store_result()) {
+                    $result->free();
+                }
+            } while ($bootstrap->more_results() && $bootstrap->next_result());
+        }
     }
 
     public static function load(): void
