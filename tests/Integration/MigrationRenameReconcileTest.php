@@ -73,121 +73,205 @@ final class MigrationRenameReconcileTest extends TestCase
     }
 
     /**
-     * Both names present halts, and touches nothing.
+     * The common case: the hand-added column was never written to.
      *
-     * The important half is what did NOT happen: no value moved, no column was
-     * dropped, and the migration did not report itself applied.
+     * Nothing is being weighed up here, so nothing needs a person. The empty
+     * stand-in goes and the rename runs as written -- which is what carries the
+     * values, the primary key and every secondary index across, because MySQL
+     * does that for a rename and does not do it for a drop.
      */
-    public function testBothNamesPresentHaltsWithoutTouchingAnything(): void
+    public function testAnEmptyStandInColumnIsRetiredAndTheRenameRunsForReal(): void
     {
-        self::$db->rawQuery('DROP TABLE IF EXISTS `reconcile_both_probe`');
+        self::$db->rawQuery('DROP TABLE IF EXISTS `heal_empty_probe`');
         self::$db->rawQuery(
-            'CREATE TABLE `reconcile_both_probe` (
+            'CREATE TABLE `heal_empty_probe` (
+                `test_type` VARCHAR(50) NOT NULL,
+                `config_id` VARCHAR(50) NOT NULL,
+                `instrument_id` VARCHAR(50) NOT NULL DEFAULT "",
+                PRIMARY KEY (`test_type`, `config_id`),
+                KEY `idx_cfg` (`config_id`)
+            ) ENGINE=InnoDB'
+        );
+        self::$db->rawQuery(
+            'INSERT INTO `heal_empty_probe` (`test_type`, `config_id`) VALUES ("vl", "a"), ("vl", "b")'
+        );
+
+        $this->assertSame(
+            MIG_EXECUTED,
+            $this->dispatch(
+                'ALTER TABLE `heal_empty_probe` CHANGE `config_id` `instrument_id` VARCHAR(50) NOT NULL'
+            )
+        );
+
+        $columns = $this->columnsOf('heal_empty_probe');
+        $this->assertContains('instrument_id', $columns);
+        $this->assertNotContains('config_id', $columns, 'The old name is gone, because it was renamed.');
+
+        $values = array_column(
+            self::$db->rawQuery('SELECT `instrument_id` AS v FROM `heal_empty_probe` ORDER BY `instrument_id`'),
+            'v'
+        );
+        $this->assertSame(['a', 'b'], $values, 'The values came across, not the empty defaults.');
+
+        // The whole reason for renaming rather than copying and dropping.
+        $this->assertSame(
+            ['test_type', 'instrument_id'],
+            array_column(
+                self::$db->rawQuery(
+                    "SELECT COLUMN_NAME FROM information_schema.STATISTICS
+                       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'heal_empty_probe'
+                         AND INDEX_NAME = 'PRIMARY' ORDER BY SEQ_IN_INDEX"
+                ),
+                'COLUMN_NAME'
+            ),
+            'The primary key has to follow the column, not shrink.'
+        );
+        $this->assertSame(
+            ['instrument_id'],
+            array_column(
+                self::$db->rawQuery(
+                    "SELECT COLUMN_NAME FROM information_schema.STATISTICS
+                       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'heal_empty_probe'
+                         AND INDEX_NAME = 'idx_cfg'"
+                ),
+                'COLUMN_NAME'
+            ),
+            'and so does every secondary index.'
+        );
+    }
+
+    /** A nullable stand-in nobody wrote to is empty too. */
+    public function testAnUnwrittenNullableStandInIsAlsoHealed(): void
+    {
+        self::$db->rawQuery('DROP TABLE IF EXISTS `heal_null_probe`');
+        self::$db->rawQuery(
+            'CREATE TABLE `heal_null_probe` (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 `sample_received_at_testing_lab_datetime` DATETIME NULL DEFAULT NULL,
                 `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL
             ) ENGINE=InnoDB'
         );
         self::$db->rawQuery(
-            'INSERT INTO `reconcile_both_probe`
-                (`sample_received_at_testing_lab_datetime`, `sample_received_at_lab_datetime`) VALUES
+            'INSERT INTO `heal_null_probe` (`sample_received_at_testing_lab_datetime`) VALUES
+                ("2024-03-01 09:00:00"), ("2024-03-02 09:00:00")'
+        );
+
+        $this->assertSame(
+            MIG_EXECUTED,
+            $this->dispatch(
+                'ALTER TABLE `heal_null_probe`
+                 CHANGE `sample_received_at_testing_lab_datetime` `sample_received_at_lab_datetime`
+                 DATETIME NULL DEFAULT NULL'
+            )
+        );
+
+        $this->assertSame(
+            ['2024-03-01 09:00:00', '2024-03-02 09:00:00'],
+            array_column(
+                self::$db->rawQuery('SELECT `sample_received_at_lab_datetime` AS v FROM `heal_null_probe` ORDER BY id'),
+                'v'
+            ),
+            'Every stranded value has to arrive under the new name.'
+        );
+        $this->assertNotContains('sample_received_at_testing_lab_datetime', $this->columnsOf('heal_null_probe'));
+    }
+
+    /** The rename already happened; the old column is just a leftover. */
+    public function testAnEmptyOldColumnBesideAPopulatedNewOneIsRetired(): void
+    {
+        self::$db->rawQuery('DROP TABLE IF EXISTS `heal_leftover_probe`');
+        self::$db->rawQuery(
+            'CREATE TABLE `heal_leftover_probe` (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                `old_name` INT NULL DEFAULT NULL,
+                `new_name` INT NULL DEFAULT NULL
+            ) ENGINE=InnoDB'
+        );
+        self::$db->rawQuery('INSERT INTO `heal_leftover_probe` (`new_name`) VALUES (4), (5)');
+
+        $this->assertSame(
+            MIG_EXECUTED,
+            $this->dispatch('ALTER TABLE `heal_leftover_probe` CHANGE `old_name` `new_name` INT NULL')
+        );
+
+        $this->assertNotContains('old_name', $this->columnsOf('heal_leftover_probe'));
+        $this->assertSame(
+            ['4', '5'],
+            array_map('strval', array_column(
+                self::$db->rawQuery('SELECT `new_name` AS v FROM `heal_leftover_probe` ORDER BY id'),
+                'v'
+            )),
+            'and nothing may disturb the values that are already right.'
+        );
+    }
+
+    /**
+     * Both columns holding values is the one case nobody can decide for you.
+     *
+     * A row empty on one side may be one nothing ever wrote or one somebody
+     * deliberately cleared. So this halts, having touched nothing.
+     */
+    public function testBothColumnsHoldingValuesHaltsWithoutTouchingAnything(): void
+    {
+        self::$db->rawQuery('DROP TABLE IF EXISTS `heal_both_probe`');
+        self::$db->rawQuery(
+            'CREATE TABLE `heal_both_probe` (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                `old_name` DATETIME NULL DEFAULT NULL,
+                `new_name` DATETIME NULL DEFAULT NULL
+            ) ENGINE=InnoDB'
+        );
+        self::$db->rawQuery(
+            'INSERT INTO `heal_both_probe` (`old_name`, `new_name`) VALUES
                 ("2024-03-01 09:00:00", NULL),
                 (NULL, "2024-11-01 09:00:00")'
         );
 
         $raised = null;
         try {
-            $this->dispatch(
-                'ALTER TABLE `reconcile_both_probe`
-                 CHANGE `sample_received_at_testing_lab_datetime` `sample_received_at_lab_datetime`
-                 DATETIME NULL DEFAULT NULL'
-            );
+            $this->dispatch('ALTER TABLE `heal_both_probe` CHANGE `old_name` `new_name` DATETIME NULL');
         } catch (\Throwable $e) {
             $raised = $e;
         }
 
-        $this->assertNotNull($raised, 'An ambiguous state must stop the migration, not be guessed at.');
-
-        // Named in place, not merely mentioned somewhere in the text: the
-        // operator has to be able to read off which table and which two
-        // columns without going looking for them.
+        $this->assertNotNull($raised, 'Two populated columns must stop the migration, not be guessed at.');
         $this->assertStringStartsWith(
-            '`reconcile_both_probe` holds BOTH `sample_received_at_testing_lab_datetime` '
-            . 'and `sample_received_at_lab_datetime`',
+            '`heal_both_probe` holds BOTH `old_name` and `new_name`, and both carry values',
             $raised->getMessage(),
-            'The message has to name the table and both columns, in that order.'
-        );
-        $this->assertStringContainsString(
-            'drop `sample_received_at_testing_lab_datetime`',
-            $raised->getMessage(),
-            'and say what to do about it.'
+            'naming the table and both columns.'
         );
 
-        $this->assertContains(
-            'sample_received_at_testing_lab_datetime',
-            $this->columnsOf('reconcile_both_probe'),
-            'Nothing may be dropped: the old column can be half of a key.'
-        );
-
-        $rows = self::$db->rawQuery(
-            'SELECT `sample_received_at_testing_lab_datetime` AS o, `sample_received_at_lab_datetime` AS n
-               FROM `reconcile_both_probe` ORDER BY id'
-        );
-        $this->assertSame('2024-03-01 09:00:00', $rows[0]['o'], 'The old value stays where it was.');
-        $this->assertNull($rows[0]['n'], 'and nothing was written over the gap.');
-        $this->assertNull($rows[1]['o']);
-        $this->assertSame('2024-11-01 09:00:00', $rows[1]['n'], 'A value written since is untouched.');
+        $this->assertContains('old_name', $this->columnsOf('heal_both_probe'), 'Nothing may be dropped.');
+        $rows = self::$db->rawQuery('SELECT `old_name` AS o, `new_name` AS n FROM `heal_both_probe` ORDER BY id');
+        $this->assertSame('2024-03-01 09:00:00', $rows[0]['o'], 'and no value may move.');
+        $this->assertNull($rows[0]['n']);
+        $this->assertSame('2024-11-01 09:00:00', $rows[1]['n']);
     }
 
-    /**
-     * A column that is half of a key is never dropped on this path.
-     *
-     * instrument_controls.config_id is half of PRIMARY KEY(test_type,
-     * config_id) until 5.2.8 renames it. Dropping it rather than renaming it
-     * reduces the primary key instead of moving it.
-     */
-    public function testAKeyCarryingColumnIsLeftIntact(): void
+    /** An empty stand-in that is indexed is more than a stand-in. */
+    public function testAnIndexedStandInHalts(): void
     {
-        self::$db->rawQuery('DROP TABLE IF EXISTS `reconcile_key_probe`');
+        self::$db->rawQuery('DROP TABLE IF EXISTS `heal_indexed_probe`');
         self::$db->rawQuery(
-            'CREATE TABLE `reconcile_key_probe` (
-                `test_type` VARCHAR(50) NOT NULL,
-                `config_id` VARCHAR(50) NOT NULL,
-                `instrument_id` VARCHAR(50) NOT NULL DEFAULT "",
-                PRIMARY KEY (`test_type`, `config_id`)
+            'CREATE TABLE `heal_indexed_probe` (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                `old_name` INT NULL DEFAULT NULL,
+                `new_name` INT NULL DEFAULT NULL,
+                KEY `idx_new` (`new_name`)
             ) ENGINE=InnoDB'
         );
-        self::$db->rawQuery(
-            'INSERT INTO `reconcile_key_probe` (`test_type`, `config_id`) VALUES ("vl", "a"), ("vl", "b")'
-        );
+        self::$db->rawQuery('INSERT INTO `heal_indexed_probe` (`old_name`) VALUES (1)');
 
+        $raised = null;
         try {
-            $this->dispatch(
-                'ALTER TABLE `reconcile_key_probe` CHANGE `config_id` `instrument_id` VARCHAR(50) NOT NULL'
-            );
-        } catch (\Throwable) {
-            // Halting is the expected outcome; what matters is the table below.
+            $this->dispatch('ALTER TABLE `heal_indexed_probe` CHANGE `old_name` `new_name` INT NULL');
+        } catch (\Throwable $e) {
+            $raised = $e;
         }
 
-        $key = array_column(
-            self::$db->rawQuery(
-                "SELECT COLUMN_NAME FROM information_schema.STATISTICS
-                   WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'reconcile_key_probe'
-                     AND INDEX_NAME = 'PRIMARY' ORDER BY SEQ_IN_INDEX"
-            ),
-            'COLUMN_NAME'
-        );
-
-        $this->assertSame(
-            ['test_type', 'config_id'],
-            $key,
-            'The primary key must be exactly as it was; a drop here would silently shorten it.'
-        );
-        $this->assertSame(
-            '2',
-            (string) (self::$db->rawQueryOne('SELECT COUNT(*) AS c FROM `reconcile_key_probe`')['c'] ?? ''),
-            'and both rows must survive.'
-        );
+        $this->assertNotNull($raised, 'Dropping an indexed column would take its keys with it.');
+        $this->assertStringContainsString('idx_new', $raised->getMessage(), 'naming the key in the way.');
+        $this->assertContains('new_name', $this->columnsOf('heal_indexed_probe'));
     }
 
     /** Only the old name present is an ordinary rename, untouched by any of this. */
