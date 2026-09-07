@@ -63,7 +63,11 @@ if [ -z "$ledger" ] && [ -f .env ]; then
     ledger=$(awk -F= '$0 ~ "^[[:space:]]*REVIEW_LEDGER[[:space:]]*=" {
         sub(/^[^=]*=[[:space:]]*/, ""); gsub(/^["'"'"']|["'"'"']$/, ""); print; exit }' .env)
 fi
-[ -n "$ledger" ] || ledger="$(git rev-parse --git-dir)/reviewed-commits.txt"
+# --git-common-dir, not --git-dir: inside a linked worktree the latter is
+# .git/worktrees/<name>, so each worktree would keep a ledger of its own and a
+# commit read in one would look unread from another. The hook installer already
+# resolves the repo's directories this way.
+[ -n "$ledger" ] || ledger="$(git rev-parse --git-common-dir)/reviewed-commits.txt"
 
 if [ -f "$ledger" ] && [ -n "$master_local_sha" ]; then
     # A branch that does not exist on the remote yet reports the null sha; fall
@@ -98,8 +102,9 @@ EOF
             done
             printf '\n  Labs receive these on the next green Verify. Commits by anyone who\n'
             printf '  does not run a review pass will show up here too, which is expected.\n\n'
-            printf '    \033[1mbin/dev/review <sha>\033[0m       read one\n'
-            printf '    \033[1mbin/dev/review --since-last\033[0m  read everything new\n\n'
+            printf '    \033[1mbin/dev/review <sha>\033[0m         read one\n'
+            printf '    \033[1mbin/dev/review --mark <sha>\033[0m  record it as read\n'
+            printf '    \033[1mbin/dev/review --since-last\033[0m  read everything new, recording as it goes\n\n'
         fi
     fi
 fi
