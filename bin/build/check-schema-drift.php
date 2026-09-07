@@ -149,6 +149,144 @@ function statements(string $sql): array
 }
 
 /**
+ * The content of the parenthesised group that starts at $open, or null when the
+ * parentheses do not balance. Quoted strings and backticks are skipped so a
+ * parenthesis inside one does not close the group.
+ */
+function balancedParenContent(string $s, int $open): ?string
+{
+    if (($s[$open] ?? '') !== '(') {
+        return null;
+    }
+
+    $depth = 0;
+    $quote = '';
+    for ($i = $open, $n = strlen($s); $i < $n; $i++) {
+        $ch = $s[$i];
+
+        if ($quote !== '') {
+            if ($ch === '\\' && $quote !== '`') {
+                $i++;               // an escaped character cannot close the quote
+            } elseif ($ch === $quote) {
+                $quote = '';
+            }
+            continue;
+        }
+
+        if ($ch === '`' || $ch === "'" || $ch === '"') {
+            $quote = $ch;
+            continue;
+        }
+        if ($ch === '(') {
+            $depth++;
+        } elseif ($ch === ')') {
+            $depth--;
+            if ($depth === 0) {
+                return substr($s, $open + 1, $i - $open - 1);
+            }
+        }
+    }
+
+    return null;
+}
+
+/**
+ * An index's key part, split into the column name and whatever follows it.
+ *
+ * Columns are stored with their prefix length attached (`note(10)`), because
+ * that is part of the index, so the name cannot simply be compared.
+ *
+ * @return array{0: string, 1: string}
+ */
+function splitIndexedColumn(string $part): array
+{
+    return preg_match('/^([A-Za-z0-9_$]+)(.*)$/', $part, $m) === 1
+        ? [$m[1], $m[2]]
+        : [$part, ''];
+}
+
+/**
+ * Re-point every index over $from at $to, keeping prefix lengths.
+ *
+ * @param list<array{name: ?string, cols: string[], unique: bool, primary: bool}> $indexes
+ * @return list<array{name: ?string, cols: string[], unique: bool, primary: bool}>
+ */
+function renameIndexedColumn(array $indexes, string $from, string $to): array
+{
+    $from = strtolower($from);
+    $to = strtolower($to);
+
+    foreach ($indexes as &$index) {
+        foreach ($index['cols'] as &$col) {
+            [$name, $suffix] = splitIndexedColumn($col);
+            if (strtolower($name) === $from) {
+                $col = $to . $suffix;
+            }
+        }
+        unset($col);
+    }
+    unset($index);
+
+    return $indexes;
+}
+
+/**
+ * Remove $column from every index, and drop any index left with no columns.
+ *
+ * @param list<array{name: ?string, cols: string[], unique: bool, primary: bool}> $indexes
+ * @return list<array{name: ?string, cols: string[], unique: bool, primary: bool}>
+ */
+function dropIndexedColumn(array $indexes, string $column): array
+{
+    $column = strtolower($column);
+    $out = [];
+
+    foreach ($indexes as $index) {
+        $cols = [];
+        foreach ($index['cols'] as $col) {
+            [$name] = splitIndexedColumn($col);
+            if (strtolower($name) !== $column) {
+                $cols[] = $col;
+            }
+        }
+        if ($cols === []) {
+            continue;   // the index was only ever over this column
+        }
+        $index['cols'] = $cols;
+        $out[] = $index;
+    }
+
+    return $out;
+}
+
+/** How an index is described in a report: " PRIMARY", " UNIQUE", or nothing. */
+function indexKindLabel(array $i): string
+{
+    if ($i['primary'] ?? false) {
+        return ' PRIMARY';
+    }
+    return ($i['unique'] ?? false) ? ' UNIQUE' : '';
+}
+
+/**
+ * An index as the string two of them must share to be the same index.
+ *
+ * A primary key is not a unique index. Both constrain, but only one is the
+ * row's identity, only one is clustered, and only one refuses NULL -- so a
+ * UNIQUE KEY over the same column must not be read as satisfying a declared
+ * PRIMARY KEY. Both used to reduce to "id:U", and a table carrying both over
+ * one column -- r_countries has historically done exactly that -- is where a
+ * primary key that had gone missing would have been reported clean.
+ *
+ * @param array{cols: string[], unique?: bool, primary?: bool} $i
+ */
+function indexDefinition(array $i): string
+{
+    return implode(',', $i['cols'])
+        . (($i['primary'] ?? false) ? ':P' : (($i['unique'] ?? false) ? ':U' : ':N'));
+}
+
+/**
  * Read an index declaration into [name|null, columns, unique], or null.
  *
  * Covers the shapes the history actually uses: a KEY line inside CREATE TABLE,
@@ -162,7 +300,7 @@ function statements(string $sql): array
  * not returned; MySQL creates a backing index for a foreign key on its own, and
  * claiming the history declared one would report every install as drifted.
  *
- * @return array{0: string|null, 1: string[], 2: bool}|null
+ * @return array{0: string|null, 1: string[], 2: bool, 3: bool}|null
  */
 function parseIndexDeclaration(string $definition): ?array
 {
@@ -172,23 +310,43 @@ function parseIndexDeclaration(string $definition): ?array
         return null;
     }
 
+
+
+
     $re = '/^(?:CONSTRAINT\s+(?:`[^`]+`|[A-Za-z0-9_$]+)\s+)?'
         . '(PRIMARY\s+KEY|UNIQUE(?:\s+(?:KEY|INDEX))?|FULLTEXT(?:\s+(?:KEY|INDEX))?|SPATIAL(?:\s+(?:KEY|INDEX))?|KEY|INDEX)'
-        . '\s*(?:`([^`]+)`|([A-Za-z0-9_$]+))?\s*\(([^)]*(?:\([0-9]+\)[^)]*)*)\)/i';
-    if (!preg_match($re, $definition, $m)) {
+        . '\s*(?:`([^`]+)`|([A-Za-z0-9_$]+))?\s*(?=\()/i';
+    if (!preg_match($re, $definition, $m, PREG_OFFSET_CAPTURE)) {
         return null;
     }
 
-    $kind = strtoupper(preg_replace('/\s+/', ' ', $m[1]) ?? '');
-    $name = $m[2] !== '' ? $m[2] : ($m[3] ?? '');
-    if (str_starts_with($kind, 'PRIMARY')) {
+    // The column list is taken by matching parentheses rather than by regex.
+    // A prefix length puts parentheses INSIDE the list, and a pattern that
+    // stops at the first `)` reads `(`note`(10), `category`)` as `note` with no
+    // prefix and no second column -- it matches, so nothing backtracks and
+    // nothing complains. The index then looks absent from a database that has
+    // it, which is a false report of drift on a correct schema.
+    $open = (int) $m[0][1] + strlen($m[0][0]);
+    $list = balancedParenContent($definition, $open);
+    if ($list === null) {
+        return null;
+    }
+
+    $kind = strtoupper(preg_replace('/\s+/', ' ', $m[1][0]) ?? '');
+    $name = ($m[2][0] ?? '') !== '' ? $m[2][0] : ($m[3][0] ?? '');
+    $primary = str_starts_with($kind, 'PRIMARY');
+    if ($primary) {
         $name = 'PRIMARY';
     }
 
     $columns = [];
-    foreach (splitTopLevel($m[4]) as $part) {
+    foreach (splitTopLevel($list) as $part) {
         $part = trim($part);
-        if (!preg_match('/^`?([A-Za-z0-9_$]+)`?(?:\s*\((\d+)\))?/', $part, $c)) {
+        // Anchored at both ends: a part this does not fully understand -- a
+        // functional key, an expression -- must make the whole declaration
+        // unreadable rather than contribute a plausible-looking column name
+        // salvaged from its first few characters.
+        if (!preg_match('/^`?([A-Za-z0-9_$]+)`?(?:\s*\((\d+)\))?(?:\s+(?:ASC|DESC))?$/i', $part, $c)) {
             return null;
         }
         $columns[] = strtolower($c[1]) . (isset($c[2]) && $c[2] !== '' ? '(' . $c[2] . ')' : '');
@@ -197,7 +355,7 @@ function parseIndexDeclaration(string $definition): ?array
         return null;
     }
 
-    return [$name !== '' ? $name : null, $columns, str_starts_with($kind, 'PRIMARY') || str_starts_with($kind, 'UNIQUE')];
+    return [$name !== '' ? $name : null, $columns, $primary || str_starts_with($kind, 'UNIQUE'), $primary];
 }
 
 /**
@@ -209,7 +367,7 @@ function parseIndexDeclaration(string $definition): ?array
  * UPDATE, and the rest) returns true, because there is nothing to miss.
  *
  * $indexes maps lowercased table name => list of ['name' => string|null,
- * 'cols' => string[], 'unique' => bool]. Kept as a list rather than keyed by
+ * 'cols' => string[], 'unique' => bool, 'primary' => bool]. Kept as a list rather than keyed by
  * name because a declaration may not carry one.
  *
  * @param array<string, array<string, string>> $schema
@@ -231,7 +389,10 @@ function applyStatement(string $stmt, array &$schema, array &$indexes = []): boo
             if (in_array(strtolower($c[1]), NOT_A_COLUMN, true) && !str_starts_with(trim($definition), '`')) {
                 $declared = parseIndexDeclaration($definition);
                 if ($declared !== null) {
-                    $tableIndexes[] = ['name' => $declared[0], 'cols' => $declared[1], 'unique' => $declared[2]];
+                    $tableIndexes[] = [
+                        'name' => $declared[0], 'cols' => $declared[1],
+                        'unique' => $declared[2], 'primary' => $declared[3],
+                    ];
                 }
                 continue;
             }
@@ -279,7 +440,24 @@ function applyStatement(string $stmt, array &$schema, array &$indexes = []): boo
 
             if (preg_match('/^ADD\s+(?:COLUMN\s+)?`?([A-Za-z0-9_$]+)`?\s+\S/i', $action, $a)) {
                 if (in_array(strtolower($a[1]), NOT_A_COLUMN, true)) {
-                    continue; // ADD PRIMARY KEY / ADD INDEX / ADD CONSTRAINT
+                    // ADD PRIMARY KEY / ADD INDEX / ADD CONSTRAINT. This branch
+                    // used to stop here, which meant every NAMED index addition
+                    // -- `ADD INDEX idx (c)`, the ordinary way to write one --
+                    // was dropped before it reached the parser below, because
+                    // the word INDEX matched where a column name goes. Only the
+                    // unnamed `ADD INDEX(c)` form, which has no space to match,
+                    // ever got through. So the expected set held whatever
+                    // init.sql declared and almost nothing a migration added,
+                    // and an index that failed to build under a stamped version
+                    // was reported as present.
+                    $declared = parseIndexDeclaration(preg_replace('/^ADD\s+/i', '', $action) ?? '');
+                    if ($declared !== null) {
+                        $indexes[$table][] = [
+                            'name' => $declared[0], 'cols' => $declared[1],
+                            'unique' => $declared[2], 'primary' => $declared[3],
+                        ];
+                    }
+                    continue;
                 }
                 $schema[$table][strtolower($a[1])] = $a[1];
                 continue;
@@ -290,12 +468,22 @@ function applyStatement(string $stmt, array &$schema, array &$indexes = []): boo
                     continue;
                 }
                 unset($schema[$table][strtolower($a[1])]);
+                // Dropping a column drops any index over it, and a composite
+                // loses that column from its key. Keeping the old definition
+                // would leave the expected set asking for an index that cannot
+                // exist, so every database looks drifted and stays that way.
+                $indexes[$table] = dropIndexedColumn($indexes[$table] ?? [], $a[1]);
                 continue;
             }
 
             if (preg_match('/^CHANGE\s+(?:COLUMN\s+)?`?([A-Za-z0-9_$]+)`?\s+`?([A-Za-z0-9_$]+)`?\s+\S/i', $action, $a)) {
                 unset($schema[$table][strtolower($a[1])]);
                 $schema[$table][strtolower($a[2])] = $a[2];
+                // An index over a renamed column follows the column: MySQL keeps
+                // the index and re-points it. Leaving the expected index on the
+                // old name reports a correct database as missing an index it
+                // has, under a name that no longer exists anywhere.
+                $indexes[$table] = renameIndexedColumn($indexes[$table] ?? [], $a[1], $a[2]);
                 continue;
             }
 
@@ -307,7 +495,10 @@ function applyStatement(string $stmt, array &$schema, array &$indexes = []): boo
             if (preg_match('/^ADD\s+/i', $action)) {
                 $declared = parseIndexDeclaration(preg_replace('/^ADD\s+/i', '', $action) ?? '');
                 if ($declared !== null) {
-                    $indexes[$table][] = ['name' => $declared[0], 'cols' => $declared[1], 'unique' => $declared[2]];
+                    $indexes[$table][] = [
+                        'name' => $declared[0], 'cols' => $declared[1],
+                        'unique' => $declared[2], 'primary' => $declared[3],
+                    ];
                     continue;
                 }
             }
@@ -327,6 +518,49 @@ function applyStatement(string $stmt, array &$schema, array &$indexes = []): boo
             $understood = false;
         }
         return $understood;
+    }
+
+    // CREATE [UNIQUE] INDEX name ON table (...) -- the other way to add one, and
+    // it never touches the ALTER branch above, so an index declared this way was
+    // simply not in the expected set.
+    if (preg_match(
+        '/^CREATE\s+(UNIQUE\s+|FULLTEXT\s+|SPATIAL\s+)?INDEX\s+(?:`([^`]+)`|([A-Za-z0-9_$]+))'
+        . '\s+ON\s+`?([A-Za-z0-9_$]+)`?\s*(?=\()/i',
+        $head,
+        $m,
+        PREG_OFFSET_CAPTURE
+    )) {
+        $table = strtolower($m[4][0]);
+        if (!isset($schema[$table])) {
+            return true;    // a table the history never created
+        }
+
+        $list = balancedParenContent($head, (int) $m[0][1] + strlen($m[0][0]));
+        // Rebuilt into the shape parseIndexDeclaration reads, keeping the space
+        // after UNIQUE/FULLTEXT/SPATIAL that trim() would otherwise weld shut.
+        $kind = trim($m[1][0]) === '' ? '' : strtoupper(trim($m[1][0])) . ' ';
+        $declared = $list === null
+            ? null
+            : parseIndexDeclaration($kind . 'INDEX `' . ($m[2][0] ?: $m[3][0]) . '` (' . $list . ')');
+        if ($declared === null) {
+            return false;
+        }
+
+        $indexes[$table][] = [
+            'name' => $declared[0], 'cols' => $declared[1],
+            'unique' => $declared[2], 'primary' => $declared[3],
+        ];
+        return true;
+    }
+
+    if (preg_match('/^DROP\s+INDEX\s+(?:`([^`]+)`|([A-Za-z0-9_$]+))\s+ON\s+`?([A-Za-z0-9_$]+)`?/i', $head, $m)) {
+        $table = strtolower($m[3]);
+        $name = $m[1] !== '' ? $m[1] : $m[2];
+        $indexes[$table] = array_values(array_filter(
+            $indexes[$table] ?? [],
+            static fn(array $i): bool => strcasecmp((string) $i['name'], $name) !== 0
+        ));
+        return true;
     }
 
     return true; // not DDL
@@ -426,6 +660,8 @@ foreach ($db->rawQuery(
     $t = strtolower((string) $row['TABLE_NAME']);
     $n = (string) $row['INDEX_NAME'];
     $actualIndexes[$t][$n]['unique'] = ((int) $row['NON_UNIQUE']) === 0;
+    // MySQL names the primary key PRIMARY and nothing else may take that name.
+    $actualIndexes[$t][$n]['primary'] = $n === 'PRIMARY';
     $actualIndexes[$t][$n]['cols'][] = strtolower((string) $row['COLUMN_NAME'])
         . ($row['SUB_PART'] !== null ? '(' . $row['SUB_PART'] . ')' : '');
 }
@@ -455,8 +691,7 @@ foreach ($expected as $table => $columns) {
 $missingIndexes = [];
 $undeclaredIndexes = [];
 
-$definition = static fn(array $i): string
-    => implode(',', $i['cols']) . ($i['unique'] ? ':U' : ':N');
+$definition = indexDefinition(...);
 
 foreach ($expectedIndexes as $table => $declared) {
     if (!isset($actual[$table])) {
@@ -466,7 +701,7 @@ foreach ($expectedIndexes as $table => $declared) {
     foreach ($declared as $index) {
         if (!in_array($definition($index), $live, true)) {
             $missingIndexes[] = $table . ' (' . implode(', ', $index['cols']) . ')'
-                . ($index['unique'] ? ' UNIQUE' : '')
+                . indexKindLabel($index)
                 . ($index['name'] !== null ? ' — declared as ' . $index['name'] : '');
         }
     }
@@ -486,7 +721,7 @@ foreach ($actualIndexes as $table => $live) {
         }
         $seen[$def] = true;
         $undeclaredIndexes[] = "$table.$name (" . implode(', ', $index['cols']) . ')'
-            . ($index['unique'] ? ' UNIQUE' : '');
+            . indexKindLabel($index);
     }
 }
 
