@@ -4,7 +4,7 @@
     "homepage": "https://github.com/deforay/intelis",
     "type": "project",
     "license": "AGPL-3.0-or-later",
-    "version": "5.7.58",
+    "version": "5.7.59",
     "authors": [
         {
             "name": "Deforay",
@@ -232,7 +232,7 @@
         "interface": "Auto-import results from connected analyzer / middleware databases",
         "interface-setup": "Set up instrument interfacing: create the database and the account the Interfacing Tool connects with, and write the settings",
         "setup-interface": "Set up instrument interfacing: create the database and the account the Interfacing Tool connects with, and write the settings",
-        "interface-migrate": "Bring the interfacing database up to date with the Interfacing Tool’s own migrations",
+        "interface-migrate": "Bring the interfacing database up to date with the Interfacing Tool\u2019s own migrations",
         "provision": "Create the runtime directories the app writes to and fix their ownership and permissions",
         "clear-logs": "Remove generated log files from var/logs (--keep=N and/or --days=N to retain recent ones)",
         "audit-triggers-drop": "Drop all audit triggers (triggers only; no table or row data is touched)",

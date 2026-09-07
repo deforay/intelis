@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use App\Services\DatabaseService;
-use mysqli;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Tests\Support\MigrationRunnerFunctions;
 
 /**
  * Whether the migration runner can tell it already has an index.
@@ -26,7 +26,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * a constraint the plain one does not, so treating them as the same would drop
  * that constraint silently -- a worse outcome than a redundant index.
  *
- * bin/migrate.php runs its own body on include, so the functions are lifted out
+ * bin/migrate.php runs its own body on include, so its functions are lifted out
  * with the tokenizer rather than copied here. What runs below is the shipped
  * code, byte for byte.
  *
@@ -34,26 +34,18 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 final class MigrationIndexGuardTest extends TestCase
 {
-    private const DATABASE = 'intelis_migration_index_test';
-
     private static ?DatabaseService $db = null;
 
     public static function setUpBeforeClass(): void
     {
-        $host = getenv('INTELIS_TEST_DB_HOST');
-        $user = getenv('INTELIS_TEST_DB_USER');
-        if ($host === false || $host === '' || $user === false || $user === '') {
+        self::$db = MigrationRunnerFunctions::connect();
+        if (self::$db === null) {
             return;
         }
 
-        $port     = (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306);
-        $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
-
-        $bootstrap = new mysqli($host, $user, $password, null, $port);
-        $bootstrap->query('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
-        $bootstrap->query('CREATE DATABASE `' . self::DATABASE . '`');
-        $bootstrap->select_db(self::DATABASE);
-        $bootstrap->query(
+        // The shape sql/init.sql ships: the index is there, under its own name.
+        self::$db->rawQuery('DROP TABLE IF EXISTS probe');
+        self::$db->rawQuery(
             'CREATE TABLE probe (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 a VARCHAR(64) NULL,
@@ -62,76 +54,9 @@ final class MigrationIndexGuardTest extends TestCase
                 last_modified_datetime DATETIME NULL
             ) ENGINE=InnoDB'
         );
-        // The shape sql/init.sql ships: the index is there, under its own name.
-        $bootstrap->query('ALTER TABLE probe ADD INDEX `last_modified_datetime` (`last_modified_datetime`)');
-        $bootstrap->query('ALTER TABLE probe ADD INDEX `plain_a` (`a`)');
-        $bootstrap->query('ALTER TABLE probe ADD INDEX `note_prefix` (`note`(10))');
-        $bootstrap->close();
-
-        self::$db = new DatabaseService([
-            'host' => $host, 'username' => $user, 'password' => $password,
-            'db' => self::DATABASE, 'port' => $port,
-        ]);
-
-        self::loadRunnerFunctions();
-    }
-
-    /**
-     * Lift the runner's functions out of bin/migrate.php without running its body.
-     *
-     * Every function, not a chosen few: the dispatcher below is only worth
-     * testing if it reaches the same helpers it reaches in production, and a
-     * hand-kept list of names is one more thing to fall out of step.
-     */
-    private static function loadRunnerFunctions(): void
-    {
-        if (function_exists('handle_idempotent_ddl')) {
-            return;
-        }
-
-        $source = (string) file_get_contents(dirname(__DIR__, 2) . '/bin/migrate.php');
-        $tokens = token_get_all($source);
-
-        $out = "<?php\nuse App\\Services\\DatabaseService;\n"
-            . "use Symfony\\Component\\Console\\Style\\SymfonyStyle;\n"
-            . "const MIG_NOT_HANDLED = 0;\nconst MIG_EXECUTED = 1;\nconst MIG_SKIPPED = 2;\n";
-        for ($i = 0, $n = count($tokens); $i < $n; $i++) {
-            if (!is_array($tokens[$i]) || $tokens[$i][0] !== T_FUNCTION) {
-                continue;
-            }
-            // The name follows the keyword, past whitespace.
-            $j = $i + 1;
-            while ($j < $n && is_array($tokens[$j]) && $tokens[$j][0] === T_WHITESPACE) {
-                $j++;
-            }
-            if (!is_array($tokens[$j]) || $tokens[$j][0] !== T_STRING) {
-                continue;
-            }
-
-            // Copy from the keyword to the brace that closes the body.
-            $depth = 0;
-            $started = false;
-            $body = '';
-            for ($k = $i; $k < $n; $k++) {
-                $text = is_array($tokens[$k]) ? $tokens[$k][1] : $tokens[$k];
-                $body .= $text;
-                if ($text === '{') {
-                    $depth++;
-                    $started = true;
-                } elseif ($text === '}') {
-                    $depth--;
-                    if ($started && $depth === 0) {
-                        break;
-                    }
-                }
-            }
-            $out .= "\n" . $body . "\n";
-        }
-
-        $tmp = sys_get_temp_dir() . '/intelis-migrate-fns-' . getmypid() . '.php';
-        file_put_contents($tmp, $out);
-        require $tmp;
-        unlink($tmp);
+        self::$db->rawQuery('ALTER TABLE probe ADD INDEX `last_modified_datetime` (`last_modified_datetime`)');
+        self::$db->rawQuery('ALTER TABLE probe ADD INDEX `plain_a` (`a`)');
+        self::$db->rawQuery('ALTER TABLE probe ADD INDEX `note_prefix` (`note`(10))');
     }
 
     protected function setUp(): void

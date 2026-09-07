@@ -43,3 +43,15 @@ ALTER TABLE `province_details` DROP INDEX `province_name_2`;
 ALTER TABLE `s_app_menu`       DROP INDEX `parent_id_2`;
 
 UPDATE `system_config` SET `value` = '5.7.58' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
