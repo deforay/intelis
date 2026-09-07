@@ -43,3 +43,15 @@ DROP TABLE IF EXISTS `patients_old`;
 ALTER TABLE `support` ADD COLUMN `status` VARCHAR(100) NULL DEFAULT 'active';
 
 UPDATE `system_config` SET `value` = '5.7.60' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
