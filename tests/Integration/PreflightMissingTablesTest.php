@@ -39,10 +39,19 @@ final class PreflightMissingTablesTest extends TestCase
      * would make one suite or the other fail depending on the order PHPUnit
      * happened to run them in, which it did: MigrationRepairsStrandedSchemaTest
      * builds a form_covid19 and this class was dropping it.
+     *
+     * The name carries the process id for the same reason one step out. Two
+     * suites running at once against one MySQL -- two terminals, or a watcher
+     * beside a manual run -- would otherwise drop and recreate this database
+     * underneath each other, and the fixture would be gone by the time the
+     * assertions read it. That is not hypothetical either: it is where the
+     * intermittent failure in this class came from.
      */
     private const DATABASE = 'intelis_preflight_test';
 
     private static ?DatabaseService $db = null;
+
+    private static string $database = self::DATABASE;
 
     public static function setUpBeforeClass(): void
     {
@@ -55,14 +64,16 @@ final class PreflightMissingTablesTest extends TestCase
         $port     = (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306);
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
+        self::$database = self::DATABASE . '_' . getmypid();
+
         $bootstrap = new mysqli($host, $user, $password, null, $port);
-        $bootstrap->query('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
-        $bootstrap->query('CREATE DATABASE `' . self::DATABASE . '`');
+        $bootstrap->query('DROP DATABASE IF EXISTS `' . self::$database . '`');
+        $bootstrap->query('CREATE DATABASE `' . self::$database . '`');
         $bootstrap->close();
 
         self::$db = new DatabaseService([
             'host' => $host, 'username' => $user, 'password' => $password,
-            'db' => self::DATABASE, 'port' => $port,
+            'db' => self::$database, 'port' => $port,
         ]);
 
         // The config written below carries the test database password in
@@ -94,7 +105,7 @@ final class PreflightMissingTablesTest extends TestCase
                 . "'port' => " . var_export((string) (getenv('INTELIS_TEST_DB_PORT') ?: '3306'), true) . ','
                 . "'username' => " . var_export((string) getenv('INTELIS_TEST_DB_USER'), true) . ','
                 . "'password' => " . var_export((string) (getenv('INTELIS_TEST_DB_PASS') ?: ''), true) . ','
-                . "'db' => " . var_export(self::DATABASE, true)
+                . "'db' => " . var_export(self::$database, true)
                 . ']];'
         );
         chmod($root . '/configs/config.production.php', 0600);
@@ -131,7 +142,7 @@ final class PreflightMissingTablesTest extends TestCase
     public static function tearDownAfterClass(): void
     {
         if (self::$db !== null) {
-            self::$db->rawQuery('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
+            self::$db->rawQuery('DROP DATABASE IF EXISTS `' . self::$database . '`');
             self::$db = null;
         }
 
