@@ -7,6 +7,9 @@ namespace Tests\Integration;
 use App\Services\DatabaseService;
 use mysqli;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Whether the migration runner can tell it already has an index.
@@ -32,13 +35,6 @@ use PHPUnit\Framework\TestCase;
 final class MigrationIndexGuardTest extends TestCase
 {
     private const DATABASE = 'intelis_migration_index_test';
-    private const WANTED = [
-        'current_db',
-        'index_exists',
-        'index_column_list',
-        'equivalent_index_exists',
-        'parse_unnamed_index_statement',
-    ];
 
     private static ?DatabaseService $db = null;
 
@@ -80,17 +76,25 @@ final class MigrationIndexGuardTest extends TestCase
         self::loadRunnerFunctions();
     }
 
-    /** Lift the named functions out of bin/migrate.php without running its body. */
+    /**
+     * Lift the runner's functions out of bin/migrate.php without running its body.
+     *
+     * Every function, not a chosen few: the dispatcher below is only worth
+     * testing if it reaches the same helpers it reaches in production, and a
+     * hand-kept list of names is one more thing to fall out of step.
+     */
     private static function loadRunnerFunctions(): void
     {
-        if (function_exists('equivalent_index_exists')) {
+        if (function_exists('handle_idempotent_ddl')) {
             return;
         }
 
         $source = (string) file_get_contents(dirname(__DIR__, 2) . '/bin/migrate.php');
         $tokens = token_get_all($source);
 
-        $out = "<?php\nuse App\\Services\\DatabaseService;\n";
+        $out = "<?php\nuse App\\Services\\DatabaseService;\n"
+            . "use Symfony\\Component\\Console\\Style\\SymfonyStyle;\n"
+            . "const MIG_NOT_HANDLED = 0;\nconst MIG_EXECUTED = 1;\nconst MIG_SKIPPED = 2;\n";
         for ($i = 0, $n = count($tokens); $i < $n; $i++) {
             if (!is_array($tokens[$i]) || $tokens[$i][0] !== T_FUNCTION) {
                 continue;
@@ -101,9 +105,6 @@ final class MigrationIndexGuardTest extends TestCase
                 $j++;
             }
             if (!is_array($tokens[$j]) || $tokens[$j][0] !== T_STRING) {
-                continue;
-            }
-            if (!in_array($tokens[$j][1], self::WANTED, true)) {
                 continue;
             }
 
@@ -139,6 +140,56 @@ final class MigrationIndexGuardTest extends TestCase
             $this->markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run.');
         }
         $this->assertTrue(function_exists('equivalent_index_exists'), 'Runner functions were not loaded.');
+        $this->assertTrue(function_exists('handle_idempotent_ddl'), 'The dispatcher was not loaded.');
+    }
+
+    /** How many indexes the table carries over exactly these columns. */
+    private function indexesOver(string $table, array $columns): int
+    {
+        $rows = self::$db->rawQuery(
+            "SELECT INDEX_NAME, GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS cols
+               FROM information_schema.STATISTICS
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?
+              GROUP BY INDEX_NAME",
+            [$table]
+        );
+
+        $wanted = implode(',', $columns);
+        return count(array_filter($rows, static fn(array $r): bool => $r['cols'] === $wanted));
+    }
+
+    /**
+     * A table of this test's own, dropped and rebuilt on the spot.
+     *
+     * The dispatcher tests below create indexes, and sharing `probe` with the
+     * tests above would make them depend on the order PHPUnit happens to run
+     * them in. Each gets its own table instead.
+     */
+    private function freshTable(string $name, array $indexes = []): string
+    {
+        self::$db->rawQuery("DROP TABLE IF EXISTS `$name`");
+        self::$db->rawQuery(
+            "CREATE TABLE `$name` (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                a VARCHAR(64) NULL,
+                b VARCHAR(64) NULL,
+                last_modified_datetime DATETIME NULL
+            ) ENGINE=InnoDB"
+        );
+        foreach ($indexes as $ddl) {
+            self::$db->rawQuery(sprintf($ddl, $name));
+        }
+        return $name;
+    }
+
+    /** Run a statement the way bin/migrate.php runs it. */
+    private function dispatch(string $sql): int
+    {
+        return handle_idempotent_ddl(
+            self::$db,
+            new SymfonyStyle(new ArrayInput([]), new NullOutput()),
+            $sql
+        );
     }
 
     /** The case that caused this: same column, different name. */
@@ -228,5 +279,96 @@ final class MigrationIndexGuardTest extends TestCase
         $this->assertSame(['a', 'b'], index_column_list('a,b'));
         $this->assertNull(index_column_list(''), 'Nothing to compare.');
         $this->assertNull(index_column_list('`a` DESC'), 'An ordered index is not compared.');
+    }
+
+    /**
+     * The invariant itself: replaying a migration cannot accumulate indexes.
+     *
+     * Everything above tests a helper. This tests the runner, because the
+     * helpers being right buys nothing if handle_idempotent_ddl() stops routing
+     * statements through them -- and that is precisely the failure that already
+     * happened. Twenty-four unnamed ADD INDEX statements in the migration
+     * history went straight to the server for years, MySQL appending _2, _3 to
+     * each new copy, until one instance held 63 copies of one index.
+     *
+     * So: run the statement the way the runner runs it, ten times, and count.
+     */
+    public function testReplayingAnUnnamedAddIndexLeavesExactlyOneIndex(): void
+    {
+        $table = $this->freshTable('replay_probe');
+        $this->assertSame(0, $this->indexesOver($table, ['b']), 'Nothing indexes b yet.');
+
+        $sql = "ALTER TABLE `$table` ADD INDEX( `b`)";
+
+        $this->assertSame(MIG_EXECUTED, $this->dispatch($sql), 'The first run must create it.');
+        $this->assertSame(1, $this->indexesOver($table, ['b']));
+
+        for ($i = 0; $i < 9; $i++) {
+            $this->assertSame(
+                MIG_SKIPPED,
+                $this->dispatch($sql),
+                'Every replay after the first must be recognised as already done.'
+            );
+        }
+
+        $this->assertSame(
+            1,
+            $this->indexesOver($table, ['b']),
+            'Ten runs of one statement left more than one index -- the accumulation bug is back.'
+        );
+    }
+
+    /**
+     * The original 5.7.56 case, through the runner.
+     *
+     * sql/init.sql ships the index as `last_modified_datetime` and the migration
+     * asks for `idx_last_modified_datetime`. The name is free, so a name-only
+     * check creates a second copy on every fresh install.
+     */
+    public function testAnAddIndexUnderANewNameIsSkippedWhenTheColumnIsAlreadyIndexed(): void
+    {
+        $table = $this->freshTable(
+            'named_probe',
+            ['ALTER TABLE `%s` ADD INDEX `last_modified_datetime` (`last_modified_datetime`)']
+        );
+
+        $this->assertSame(
+            MIG_SKIPPED,
+            $this->dispatch(
+                "ALTER TABLE `$table` ADD INDEX `idx_last_modified_datetime` (`last_modified_datetime`)"
+            ),
+            'The column is indexed already, under the name init.sql gives it.'
+        );
+        $this->assertSame(
+            1,
+            $this->indexesOver($table, ['last_modified_datetime']),
+            'and no second copy was created.'
+        );
+    }
+
+    /**
+     * The runner must still build what is genuinely missing.
+     *
+     * A guard that skips everything would pass every test above and leave labs
+     * without their indexes, which is the failure mode worth guarding against
+     * once the other one is closed.
+     */
+    public function testTheRunnerStillCreatesAnIndexThatIsGenuinelyMissing(): void
+    {
+        $table = $this->freshTable('missing_probe', ['ALTER TABLE `%s` ADD INDEX `plain_a` (`a`)']);
+        $this->assertSame(0, $this->indexesOver($table, ['a', 'b']), 'The composite is not there.');
+
+        $this->assertSame(
+            MIG_EXECUTED,
+            $this->dispatch("ALTER TABLE `$table` ADD INDEX `idx_a_b` (`a`, `b`)"),
+            '(a, b) is a different index from (a), so it must be created.'
+        );
+        $this->assertSame(1, $this->indexesOver($table, ['a', 'b']));
+
+        $this->assertSame(
+            MIG_EXECUTED,
+            $this->dispatch("ALTER TABLE `$table` ADD UNIQUE INDEX `uniq_a` (`a`)"),
+            'A UNIQUE index carries a constraint the existing plain one does not.'
+        );
     }
 }
