@@ -31,7 +31,7 @@ Everything else in this guide follows from this one choice.
 | InteLIS reads | the tool's SQLite file | a MySQL database over the network |
 | MySQL changes needed | none | a dedicated user, a bind address, a firewall rule |
 | Instrument activity and usage reporting | not available | available |
-| Setup effort | a few minutes | most of this guide |
+| Setup effort | one command | one command, and a firewall rule to approve |
 
 **Choose the InteLIS machine whenever the analyzer can reach it.** It needs no
 database exposed to the network, and it is the shorter path by a wide margin.
@@ -80,6 +80,33 @@ on the analyzer and watch it appear in the tool's results table. If it does not
 arrive here, no amount of InteLIS configuration will help.
 
 ## 3. Point InteLIS at the results
+
+```bash
+sudo intelis interface setup
+```
+
+It asks two questions — where the tool stores its results, and where the tool
+runs — and does the rest: creates the `interfacing` database and its tables,
+creates the MySQL account the tool connects with, writes the settings into
+`configs/config.production.php`, proves the connection works, and prints the
+host, port, database, username and password to type into the tool's MySQL
+settings.
+
+There is nothing to type into a configuration file, and nothing to remember
+about switching interfacing on, which is the step most often missed.
+
+`sudo intelis interface` runs the same setup by itself when interfacing has not
+been configured yet, and imports results once it has. So an operator who knows
+only the one command reaches the right place either way.
+
+To change any of it later, run `sudo intelis interface setup` again. It shows
+what is configured now before it changes anything.
+
+## If you would rather set it up by hand
+
+Skip this if step 3 worked; step 4 is next. What follows is the same work done
+by hand, for a machine with no `intelis` command yet, or to see what was
+written.
 
 Both paths edit `configs/config.production.php` in the InteLIS installation
 directory.
@@ -133,9 +160,31 @@ sudo mysql
 
 ```sql
 CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4;
+
 CREATE USER 'interfacing'@'TOOL_IP' IDENTIFIED BY 'A-LONG-PASSWORD-HERE';
-GRANT SELECT, INSERT, UPDATE, DELETE ON interfacing.* TO 'interfacing'@'TOOL_IP';
+GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'TOOL_IP';
+
+CREATE USER 'interfacing'@'localhost' IDENTIFIED BY 'A-LONG-PASSWORD-HERE';
+GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'localhost';
+
 FLUSH PRIVILEGES;
+```
+
+Two accounts, not one. MySQL treats `'interfacing'@'TOOL_IP'` and
+`'interfacing'@'localhost'` as different accounts, and both connect: the tool
+from its own machine, InteLIS from this one. Creating only the tool's leaves
+InteLIS locked out of the database it is about to be told to read.
+
+Privileges are wide within that one database because the tool's own migrations
+add columns to its tables, and narrow outside it: nothing else on the server is
+reachable with this account.
+
+If the tool reports that it cannot authenticate, its MySQL client is older than
+this server's default password plugin. Give the account the older one:
+
+```sql
+ALTER USER 'interfacing'@'TOOL_IP'
+  IDENTIFIED WITH mysql_native_password BY 'A-LONG-PASSWORD-HERE';
 ```
 
 **Let MySQL answer on the local network.** Edit its configuration:
@@ -229,6 +278,7 @@ Work down this list; it is ordered by how often each one is the cause.
 
 | Check | How |
 |---|---|
+| Interfacing is configured at all | `sudo intelis interface setup` prints what is configured now before changing anything |
 | Interfacing is switched on | `enabled` is `true` in `config.production.php` |
 | The tool is running and connected | Its console shows the instrument connected, not just the app open |
 | The tool received the result at all | It appears in the tool's own results table |

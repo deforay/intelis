@@ -63,6 +63,7 @@ $CATEGORY_MAP = [
     // Setup & install.
     'provision.php' => 'Setup & install',
     'setup/setup-sts.php' => 'Setup & install',
+    'setup/setup-interface.php' => 'Setup & install',
     'setup/system-admin.php' => 'Setup & install',
     'setup/update-privileges.php' => 'Setup & install',
     'setup/fix-app-menu.php' => 'Setup & install',

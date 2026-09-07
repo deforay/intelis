@@ -26,6 +26,8 @@
 #   intelis restore          bring a backup back from where it was sent
 #   intelis check            can this machine run and serve InteLIS?
 #   intelis health           disk, database, backups: is it well right now?
+#   intelis interface        import whatever the Interfacing Tool is holding
+#   intelis interface setup  connect this machine to the Interfacing Tool
 #
 # Anything else is passed through to composer exactly as before, so every
 # `intelis migrate`, `intelis preflight` and `intelis post-install` in the
@@ -525,6 +527,9 @@ cmd_help() {
     say "  intelis backup enable    Start the scheduled backups again"
     say "  intelis restore          Bring a backup back from where it was sent"
     say ""
+    say "  intelis interface        Import whatever the Interfacing Tool is holding"
+    say "  intelis interface setup  Connect this machine to the Interfacing Tool"
+    say ""
     say "  Anything else is passed to composer, e.g. intelis migrate."
     say "  Use 'intelis composer update' for composer's own update command."
     say ""
@@ -600,6 +605,20 @@ case "$command" in
     menu)               menu ;;
     help|--help|-h)     cmd_help ;;
     composer)           run_composer "$@" ;;
+
+    # Named here rather than left to the passthrough because `intelis interface
+    # setup` through it would reach bin/interface.php with "setup" as an
+    # argument, which that script has no use for and silently ignores — so the
+    # operator would be shown a results import and no wizard at all. Both run as
+    # whoever typed them: the wizard creates a MySQL account and may open a
+    # firewall port, neither of which the web server's account can do.
+    interface)
+        case "${1:-}" in
+            setup|--setup|config|configure) shift; run_composer interface-setup "$@" ;;
+            migrate)                        shift; run_composer interface-migrate "$@" ;;
+            *)                              run_composer interface "$@" ;;
+        esac
+        ;;
 
     # The repairs preflight prescribes. They are named here rather than left to
     # the passthrough so that each one runs as the account it needs, which is
