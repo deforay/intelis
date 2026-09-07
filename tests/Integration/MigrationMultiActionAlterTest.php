@@ -142,7 +142,10 @@ final class MigrationMultiActionAlterTest extends TestCase
      */
     public function testCommasInsideTypesAndDefaultsDoNotSplitTheStatement(): void
     {
+        // As above: one action already applied, so the split path is the one
+        // under test rather than the whole-statement shortcut.
         $t = $this->freshTable('multi_comma_probe', 'placeholder INT NULL');
+        self::$db->rawQuery("ALTER TABLE `$t` ADD `amount` DECIMAL(10,2) NULL DEFAULT NULL");
 
         $this->assertSame(
             MIG_EXECUTED,
@@ -220,6 +223,143 @@ final class MigrationMultiActionAlterTest extends TestCase
             'bigint',
             strtolower((string) $type),
             'The MODIFY was dropped: no guard understood it, so nothing ran it.'
+        );
+    }
+
+    /**
+     * A quoted comma outside any parentheses does not split the statement.
+     *
+     * ENUM('yes','no') is protected by parenthesis depth alone, so a test using
+     * only that still passes with every quote rule deleted. `DEFAULT 'yes,no'`
+     * has nothing but the quotes to protect it.
+     */
+    public function testAQuotedCommaOutsideParenthesesDoesNotSplitTheStatement(): void
+    {
+        // `other` is already there, so the statement cannot run whole and the
+        // splitter is actually reached. Without that the quote handling is
+        // never exercised at all.
+        $t = $this->freshTable('multi_quoted_probe', 'placeholder INT NULL');
+        self::$db->rawQuery("ALTER TABLE `$t` ADD `other` INT NULL");
+
+        $this->dispatch(
+            "ALTER TABLE `$t` ADD `label` VARCHAR(20) NOT NULL DEFAULT 'yes,no',"
+            . " ADD `other` INT NULL"
+        );
+
+        $columns = $this->columnsOf($t);
+        $this->assertContains('label', $columns, 'The split cut inside the quoted default.');
+        $this->assertContains('other', $columns);
+
+        $this->assertSame(
+            'yes,no',
+            (string) (self::$db->rawQueryOne(
+                "SELECT COLUMN_DEFAULT AS d FROM information_schema.COLUMNS
+                   WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = 'label' LIMIT 1",
+                [$t]
+            )['d'] ?? ''),
+            'and the default has to survive intact.'
+        );
+    }
+
+    /**
+     * An already-satisfied action must not take the actions after it down.
+     *
+     * The unguarded ones are the danger: a duplicate FULLTEXT index raises 1061
+     * before the loop reaches the column add beside it, and 1061 is benign to
+     * the migration loop, so the version advances with the column missing --
+     * the exact failure this branch exists to prevent, reintroduced one level
+     * down.
+     */
+    public function testABenignErrorOnOneActionDoesNotStopTheRest(): void
+    {
+        $t = $this->freshTable('multi_benign_probe', 'body TEXT NULL');
+        self::$db->rawQuery("ALTER TABLE `$t` ADD FULLTEXT INDEX `ft` (`body`)");
+
+        $this->dispatch("ALTER TABLE `$t` ADD FULLTEXT INDEX `ft` (`body`), ADD COLUMN `x` INT NULL");
+
+        $this->assertContains(
+            'x',
+            $this->columnsOf($t),
+            'The duplicate index ended the run and the column was never added.'
+        );
+    }
+
+    /**
+     * Nothing applied yet means the statement runs as written.
+     *
+     * MySQL rebuilds the table for most of these, and 5.2.1 changes form_vl in
+     * one ALTER of 51 clauses. Splitting when there is nothing to repair turns
+     * a single rebuild of the largest table in the schema into 51 of them, so
+     * the split has to stay the exception rather than the rule.
+     */
+    public function testAnUntouchedMultiActionAlterRunsAsOneStatement(): void
+    {
+        $t = $this->freshTable('multi_batch_probe', 'a INT NULL');
+
+        $before = (int) (self::$db->rawQueryOne(
+            "SHOW SESSION STATUS LIKE 'Com_alter_table'"
+        )['Value'] ?? 0);
+
+        $this->assertSame(
+            MIG_EXECUTED,
+            $this->dispatch("ALTER TABLE `$t` ADD `b` INT NULL, ADD `c` INT NULL, ADD `d` INT NULL")
+        );
+
+        $after = (int) (self::$db->rawQueryOne(
+            "SHOW SESSION STATUS LIKE 'Com_alter_table'"
+        )['Value'] ?? 0);
+
+        $columns = $this->columnsOf($t);
+        foreach (['b', 'c', 'd'] as $c) {
+            $this->assertContains($c, $columns);
+        }
+        $this->assertSame(
+            1,
+            $after - $before,
+            'Three columns nothing had yet must cost one ALTER, not three.'
+        );
+    }
+
+    /**
+     * A comma that separates columns of an option, not actions.
+     *
+     * `ORDER BY c1, c2` is one option carrying a column list. Split on that
+     * comma and the second half becomes `ALTER TABLE t c2`, which is not SQL,
+     * so a valid migration fails part-applied.
+     */
+    public function testAnOptionCarryingAColumnListIsNotSplit(): void
+    {
+        $t = $this->freshTable('multi_orderby_probe', 'a INT NULL, b INT NULL');
+        self::$db->rawQuery("INSERT INTO `$t` (a, b) VALUES (2, 1), (1, 2)");
+
+        $this->dispatch("ALTER TABLE `$t` ORDER BY `a`, `b`");
+
+        $this->assertSame(
+            ['a', 'b'],
+            array_values(array_intersect(['a', 'b'], $this->columnsOf($t))),
+            'The table has to survive an ORDER BY intact.'
+        );
+    }
+
+    /**
+     * A real failure is still raised, not written off as already applied.
+     *
+     * Only the codes that mean "already applied" may be swallowed. Treating
+     * every error that way would turn the repair loop into the very thing it
+     * was built to stop: a migration that reports success having done nothing.
+     */
+    public function testAGenuineErrorInOneActionStillFails(): void
+    {
+        $t = $this->freshTable('multi_error_probe', 'c INT NULL');
+
+        $this->expectException(\Throwable::class);
+
+        // Whole, this fails 1060 on the duplicate `c` -- benign, so the split
+        // path is entered. Taken apart, the index over `d` runs before the
+        // column `d` exists and fails 1072, which is not benign and has to
+        // surface rather than be filed as already applied.
+        $this->dispatch(
+            "ALTER TABLE `$t` ADD `c` INT NULL, ADD INDEX `idx_d` (`d`), ADD COLUMN `d` INT NULL"
         );
     }
 
