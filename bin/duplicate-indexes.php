@@ -133,21 +133,50 @@ function index_signature(array $cols, bool $unique, string $type): ?string
     return implode(',', $cols) . "\0" . ($unique ? 'U' : 'N') . "\0" . $type;
 }
 
-$defs = [];
-foreach ($rows as $r) {
-    $key = $r['TABLE_NAME'] . "\0" . $r['INDEX_NAME'];
-    $defs[$key]['table']  = $r['TABLE_NAME'];
-    $defs[$key]['name']   = $r['INDEX_NAME'];
-    $defs[$key]['unique'] = ((int) $r['NON_UNIQUE']) === 0;
-    $defs[$key]['type']   = (string) $r['INDEX_TYPE'];
-    $defs[$key]['cols'][] = index_part_signature($r);
+/**
+ * Rows of information_schema.STATISTICS, gathered into groups of indexes that
+ * are copies of one another. A group with one member in it is an index with no
+ * duplicate; only groups of two or more mean anything.
+ *
+ * This is the whole of the decision the tool acts on, deliberately in one
+ * function rather than spread across the script body. Everything above it can
+ * be correct while the caller keys its groups on something looser, and the
+ * result is still a dropped index -- so this is what the tests drive.
+ *
+ * Indexes whose definition could not be read are collected into $unreadable and
+ * put in no group at all.
+ */
+function group_indexes(array $rows, array &$unreadable = []): array
+{
+    $defs = [];
+    foreach ($rows as $r) {
+        $key = $r['TABLE_NAME'] . "\0" . $r['INDEX_NAME'];
+        $defs[$key]['table']  = $r['TABLE_NAME'];
+        $defs[$key]['name']   = $r['INDEX_NAME'];
+        $defs[$key]['unique'] = ((int) $r['NON_UNIQUE']) === 0;
+        $defs[$key]['type']   = (string) $r['INDEX_TYPE'];
+        $defs[$key]['cols'][] = index_part_signature($r);
 
-    // Kept as its own field rather than recovered from the formatted column
-    // list, which carries prefix lengths and sort direction a column name has
-    // no business containing.
-    if ((int) $r['SEQ_IN_INDEX'] === 1 && $r['COLUMN_NAME'] !== null) {
-        $defs[$key]['leading'] = strtolower((string) $r['COLUMN_NAME']);
+        // Kept as its own field rather than recovered from the formatted column
+        // list, which carries prefix lengths and sort direction a column name
+        // has no business containing.
+        if ((int) $r['SEQ_IN_INDEX'] === 1 && $r['COLUMN_NAME'] !== null) {
+            $defs[$key]['leading'] = strtolower((string) $r['COLUMN_NAME']);
+        }
     }
+
+    $unreadable = [];
+    $groups = [];
+    foreach ($defs as $key => $d) {
+        $signature = index_signature($d['cols'], $d['unique'], $d['type']);
+        if ($signature === null) {
+            $unreadable[] = $key;
+            continue;
+        }
+        $groups[$d['table'] . "\0" . $signature][] = $d;
+    }
+
+    return $groups;
 }
 
 
@@ -165,14 +194,11 @@ foreach (
     $fkLeading[$r['TABLE_NAME']][strtolower((string) $r['COLUMN_NAME'])] = true;
 }
 
-$groups = [];
-foreach ($defs as $key => $d) {
-    $signature = index_signature($d['cols'], $d['unique'], $d['type']);
-    if ($signature === null) {
-        printf("skipping %s: its definition cannot be read on this server\n", str_replace("\0", '.', $key));
-        continue;
-    }
-    $groups[$d['table'] . "\0" . $signature][] = $d;
+$unreadable = [];
+$groups = group_indexes($rows, $unreadable);
+
+foreach ($unreadable as $key) {
+    printf("skipping %s: its definition cannot be read on this server\n", str_replace("\0", '.', $key));
 }
 
 /**
