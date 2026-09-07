@@ -40,22 +40,23 @@ done
 [ "$remote_ref_is_master" -eq 1 ] || exit 0
 
 # ---------------------------------------------------------------------------
-# Every commit being pushed has been through a review.
+# Which commits about to be pushed have not been through a review.
 #
-# This one DOES block, unlike the warning below, because the thing it prevents
-# is not paperwork. A push to master is published to labs by CI on a green
+# Worth saying because a push to master is published to labs by CI on a green
 # Verify, so an unreviewed commit here is an unreviewed commit in installations
-# a few minutes later. That has happened: a migration was pushed without a
-# review, reached stable, and the review it should have had first found two P1
-# defects in it.
+# a few minutes later. A migration went out that way and the review it should
+# have had first found two P1 defects in it. The list is only accurate
+# immediately before the push, which is why it belongs here rather than in a
+# habit.
 #
-# It is deliberately quiet where it cannot know the answer. The ledger is
-# per-clone and never committed, so a fresh clone, a colleague's checkout and CI
-# all have no ledger and this does nothing at all -- it can only ever hold back
-# a push from a machine that is actually keeping the record.
+# It says so and gets out of the way. Reviewing is one person's practice, not
+# everyone's: commits by colleagues who do not run one land in this tree and are
+# pushed from it, and blocking on those would be pointing the friction at the
+# wrong person entirely.
 #
-# `git push --no-verify` skips it, which is the right escape hatch: the point is
-# to stop it happening by accident, not to make it impossible on purpose.
+# It is silent where it cannot know the answer. The ledger is per-clone and
+# never committed, so a fresh clone, a colleague's checkout and CI have no
+# ledger and this prints nothing at all.
 # ---------------------------------------------------------------------------
 ledger="${REVIEW_LEDGER:-}"
 if [ -z "$ledger" ] && [ -f .env ]; then
@@ -91,18 +92,14 @@ EOF
 
         if [ -n "$unreviewed" ]; then
             count=$(printf '%s' "$unreviewed" | grep -c .)
-            printf '\n\033[31m✋ push blocked\033[0m — %s commit(s) have not been reviewed:\n\n' "$count"
+            printf '\n\033[33m⚠ %s commit(s) in this push have not been reviewed:\033[0m\n\n' "$count"
             printf '%s' "$unreviewed" | while read -r sha; do
                 [ -n "$sha" ] && git log -1 --format='    %h %s' "$sha"
             done
-            printf '\n  A push to master reaches labs on the next green Verify, so this is\n'
-            printf '  the last point at which a review still comes before the installation.\n\n'
-            printf '    \033[1mbin/dev/review <sha>\033[0m       review one\n'
-            printf '    \033[1mbin/dev/review --since-last\033[0m  review everything new\n\n'
-            printf '  Someone else committing into this tree is the usual reason for a\n'
-            printf '  surprise here: their commits are yours to push, and to read first.\n'
-            printf '  Deliberately unreviewed: \033[1mgit push --no-verify\033[0m\n\n'
-            exit 1
+            printf '\n  Labs receive these on the next green Verify. Commits by anyone who\n'
+            printf '  does not run a review pass will show up here too, which is expected.\n\n'
+            printf '    \033[1mbin/dev/review <sha>\033[0m       read one\n'
+            printf '    \033[1mbin/dev/review --since-last\033[0m  read everything new\n\n'
         fi
     fi
 fi
