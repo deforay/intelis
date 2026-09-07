@@ -39,7 +39,10 @@ read_env() {
 # .git directory instead: local by construction, never committed, never deployed, and gone
 # when the clone is. Set REVIEW_LEDGER in .env to keep it somewhere that outlives a clone.
 LEDGER="${REVIEW_LEDGER:-$(read_env REVIEW_LEDGER)}"
-[ -n "$LEDGER" ] || LEDGER="$(git rev-parse --git-dir)/reviewed-commits.txt"
+# --git-common-dir rather than --git-dir: in a linked worktree the latter points at
+# .git/worktrees/<name>, which would give every worktree a ledger of its own and make
+# a commit read in one look unread from another.
+[ -n "$LEDGER" ] || LEDGER="$(git rev-parse --git-common-dir)/reviewed-commits.txt"
 
 # Where an empty ledger starts. Reviewing the whole history to bootstrap would be days of
 # work nobody asked for; this is the recent past, and anything older is deemed shipped.

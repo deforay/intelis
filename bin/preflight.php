@@ -65,6 +65,40 @@ const PF_WARN = 'warn';
 const PF_FAIL = 'fail';
 const PF_SKIP = 'skip';
 
+/**
+ * Tables no installation can be without, whatever else is true of it.
+ *
+ * Every table one login attempt touches, following the calls out of
+ * app/login/loginProcess.php rather than only the names written in it -- the
+ * indirect ones are the dangerous half. user_login_history is read through
+ * UsersService::continuousFailedLogins() before the password is even checked,
+ * so its absence throws on every attempt while nothing in the login file names
+ * it; activity_log and the privilege tables are reached the same way.
+ *
+ * These need naming because nothing else can reach them. user_details' only
+ * foreign key points at roles, which the seed fills, so every parent is
+ * excluded as evidence and the table would be filed as dormant -- on an
+ * instance where nobody can log in. Several here are seeded and would be caught
+ * anyway; they are listed because the set is meant to read as "one login", not
+ * as "what the other rules happen to miss".
+ *
+ * It is a list, with a list's failure mode: a new table added to the login path
+ * is not added here by anything. Scoped to one code path so that at least the
+ * question "is this still true" has an answer someone can check.
+ */
+const PF_CORE_TABLES = [
+    'user_details'         => true,
+    'user_login_history'   => true,
+    'roles'                => true,
+    'roles_privileges_map' => true,
+    'privileges'           => true,
+    'facility_details'     => true,
+    's_vlsm_instance'      => true,
+    'system_config'        => true,
+    'global_config'        => true,
+    'activity_log'         => true,
+];
+
 /** @var list<array{status:string,label:string,detail:string}> $results */
 $results = [];
 
@@ -858,23 +892,47 @@ try {
             // at all. DRC is missing covid19_tests while form_covid19 holds
             // 51,459 requests: every COVID page there fails on 1146 the moment
             // anyone opens one, and the check called that harmless.
-            $references = pf_parse_init_references($initPath);
+            // Whether a parent holds a row, asked exactly and asked once.
+            //
+            // information_schema.TABLE_ROWS is InnoDB's cached estimate and is
+            // routinely 0 for a table that holds rows -- it is not refreshed
+            // until statistics are recalculated, which is precisely the
+            // situation where this check would then report the module dormant
+            // and pass. A LIMIT 1 probe is exact and stops at the first row, so
+            // it costs the same on 51,459 rows as on one. The estimate is still
+            // good enough to put a size next to the name in the report.
+            $probed  = [];
+            $hasRows = static function (string $table) use ($pdo, $liveTables, &$probed): ?bool {
+                // A parent that is itself absent is no evidence either way, and
+                // is already being reported on its own account. Probing it would
+                // raise 1146 and be read as "could not be read", so a country
+                // deployment that carries neither form_covid19 nor
+                // covid19_tests -- an entire module it never enabled -- would be
+                // failed for it.
+                if (!isset($liveTables[$table])) {
+                    return false;
+                }
 
-            $inUse   = [];
-            $dormant = [];
-            foreach ($missingTables as $table) {
-                $populated = [];
-                foreach ($references[$table] ?? [] as $parent) {
-                    if (($liveTables[$parent] ?? 0) > 0) {
-                        $populated[] = $parent . ' (~' . number_format($liveTables[$parent]) . ' rows)';
+                if (!array_key_exists($table, $probed)) {
+                    try {
+                        $probed[$table] = $pdo->query("SELECT 1 FROM `{$table}` LIMIT 1")->fetchColumn() !== false;
+                    } catch (PDOException) {
+                        // Null, not false: the parent is there and could not be
+                        // read, which is a finding of its own rather than a
+                        // reason to call the child unused.
+                        $probed[$table] = null;
                     }
                 }
-                if ($populated !== []) {
-                    $inUse[$table] = $populated;
-                } else {
-                    $dormant[] = $table;
-                }
-            }
+                return $probed[$table];
+            };
+
+            [$inUse, $dormant] = pf_classify_missing_tables(
+                $missingTables,
+                pf_parse_init_references($initPath),
+                pf_parse_init_seeded($initPath),
+                PF_CORE_TABLES,
+                $hasRows,
+            );
 
             if ($dormant !== []) {
                 check(
@@ -883,15 +941,30 @@ try {
                     count($dormant) . ' table(s) in sql/init.sql are absent here: '
                         . implode(', ', array_slice($dormant, 0, 8))
                         . (count($dormant) > 8 ? ' +' . (count($dormant) - 8) . ' more' : '')
-                        . "\n  nothing they hang off holds any data, so this instance never used them;"
+                        . "\n  nothing they hang off holds data this instance wrote, so it never used them;"
                         . "\n  lift the CREATE TABLE from sql/init.sql if a migration needs one",
                 );
             }
 
             if ($inUse !== []) {
                 $detail = count($inUse) . ' table(s) absent here that this instance HAS used:';
-                foreach (array_slice($inUse, 0, 8, true) as $table => $populated) {
-                    $detail .= "\n    {$table} — hangs off " . implode(', ', $populated);
+                foreach (array_slice($inUse, 0, 8, true) as $table => $reasons) {
+                    // Each reason is either a parent table or the seed itself.
+                    // A parent gets its size attached, from the estimate rather
+                    // than a second query -- it is decoration on a finding the
+                    // exact probe already settled, not the finding.
+                    // The size is decoration on a finding the exact probe
+                    // already settled, so a stale 0 estimate is dropped rather
+                    // than printed -- "holds ~0 rows" as the evidence that a
+                    // table holds rows contradicts itself in front of whoever
+                    // is trying to read the report.
+                    $said = array_map(
+                        static fn(string $reason): string => ($liveTables[$reason] ?? 0) > 0
+                            ? $reason . ' holds ~' . number_format($liveTables[$reason]) . ' rows'
+                            : (isset($liveTables[$reason]) ? $reason . ' holds rows' : $reason),
+                        $reasons,
+                    );
+                    $detail .= "\n    {$table} — " . implode(', ', $said);
                 }
                 $detail .= "\n  the module still has its data but lost the table it writes to, so its pages"
                     . "\n  fail on \"Table doesn't exist\" — lift the CREATE TABLE for each from sql/init.sql";
@@ -1060,6 +1133,128 @@ function pf_parse_init_references(string $path): array
         static fn(array $parents): array => array_values(array_unique($parents)),
         $references
     );
+}
+
+/**
+ * Which tables sql/init.sql fills in itself.
+ *
+ * These are the reference tables every install starts with populated --
+ * r_sample_status, r_countries, the rejection-reason lists -- and their rows
+ * are therefore no evidence of anything. That matters because form_vl
+ * references r_sample_status: without this, a COVID-only country deployment
+ * that carries no form_vl at all would be told it HAS used VL, on the strength
+ * of thirteen rows the installer put there.
+ *
+ * Derived from the seed rather than from a naming convention, so a reference
+ * table that does not start with r_ is still recognised and a transactional
+ * table that does is not misread.
+ *
+ * @return array<string, true>
+ */
+function pf_parse_init_seeded(string $path): array
+{
+    $handle = @fopen($path, 'r');
+    if ($handle === false) {
+        return [];
+    }
+
+    $seeded = [];
+    while (($line = fgets($handle)) !== false) {
+        if (preg_match('/^INSERT INTO `([^`]+)`/i', $line, $m) === 1) {
+            $seeded[$m[1]] = true;
+        }
+    }
+
+    fclose($handle);
+
+    return $seeded;
+}
+
+/**
+ * Split the absent tables into the ones this instance evidently used, and the rest.
+ *
+ * A table is judged used on any of three grounds: it is one the application
+ * cannot run without, the seed fills it -- an installer that writes rows into a
+ * table says every install needs it -- or a table it hangs off holds rows the
+ * installer did not put there. A parent that cannot be read counts too, since a
+ * probe that failed is not a probe that found nothing. Nothing else counts: an absent table with no
+ * foreign key, or whose every parent is seed data or empty, stays a warning,
+ * because nothing here can tell a module that was never enabled from one whose
+ * only table went missing.
+ *
+ * Kept as a function taking its inputs rather than reading them, so the
+ * severity decision -- which is the whole point of the check and the part that
+ * fails silently when it is wrong -- can be tested without a database.
+ *
+ * @param list<string>                     $missingTables
+ * @param array<string, list<string>>      $references  table => the tables it references
+ * @param array<string, true>              $seeded      tables sql/init.sql populates
+ * @param array<string, true>              $core        tables no install can be without
+ * @param callable(string): ?bool          $hasRows     rows? null when it could not be read
+ * @return array{0: array<string, list<string>>, 1: list<string>} [used => why, dormant]
+ */
+function pf_classify_missing_tables(
+    array $missingTables,
+    array $references,
+    array $seeded,
+    array $core,
+    callable $hasRows
+): array {
+    $inUse   = [];
+    $dormant = [];
+
+    foreach ($missingTables as $table) {
+        // Some tables have nothing to be judged by and still cannot be absent.
+        // user_details is the one that proves it: its only foreign key points
+        // at roles, which the seed fills, so every parent is excluded as
+        // evidence and the table would be filed as dormant -- on an instance
+        // where login fails outright, since loginProcess.php reads it on every
+        // attempt. The set is exactly what that path touches, which is why it
+        // can be written down at all; a longer guess at "important" tables
+        // would be the kind of list nobody maintains.
+        if (isset($core[$table])) {
+            $inUse[$table] = ['the login path reads it on every attempt'];
+            continue;
+        }
+
+        // A table the seed fills is required by definition -- the installer put
+        // rows in it, so no install is meant to be without it, and no parent
+        // needs consulting. roles_privileges_map is the one that matters:
+        // it is seeded, it references roles and privileges which are seeded
+        // too, so judging it by its parents alone would have filed a missing
+        // ACL table as dormant while every privilege lookup in the application
+        // fails on it.
+        if (isset($seeded[$table])) {
+            $inUse[$table] = ['sql/init.sql seeds it'];
+            continue;
+        }
+
+        $evidence = [];
+        foreach ($references[$table] ?? [] as $parent) {
+            if (isset($seeded[$parent])) {
+                continue;
+            }
+
+            // A probe that failed is not a probe that found nothing. A parent
+            // that is there but unreadable -- revoked privileges, a corrupt
+            // tablespace -- says less than an empty one, not more, so it is
+            // reported rather than quietly read as "unused".
+            $answer = $hasRows($parent);
+            if ($answer === null) {
+                $evidence[] = $parent . ' could not be read';
+            } elseif ($answer) {
+                $evidence[] = $parent;
+            }
+        }
+
+        if ($evidence !== []) {
+            $inUse[$table] = $evidence;
+        } else {
+            $dormant[] = $table;
+        }
+    }
+
+    return [$inUse, $dormant];
 }
 
 /**
