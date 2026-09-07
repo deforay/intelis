@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
+use App\Services\DatabaseService;
+use mysqli;
 use PHPUnit\Framework\TestCase;
-use Tests\Support\MigrationRunnerFunctions;
 
 /**
  * What `intelis check` actually reports when a table is gone.
@@ -29,11 +30,40 @@ final class PreflightMissingTablesTest extends TestCase
 {
     private static ?string $root = null;
 
+    /**
+     * A database of this class's own, not the one the migration suites share.
+     *
+     * The fixture works by leaving real tables in particular states -- a
+     * two-column form_covid19, no form_generic at all -- and the migration
+     * tests use those same names for their own purposes. Sharing a schema
+     * would make one suite or the other fail depending on the order PHPUnit
+     * happened to run them in, which it did: MigrationRepairsStrandedSchemaTest
+     * builds a form_covid19 and this class was dropping it.
+     */
+    private const DATABASE = 'intelis_preflight_test';
+
+    private static ?DatabaseService $db = null;
+
     public static function setUpBeforeClass(): void
     {
-        if (MigrationRunnerFunctions::connect() === null) {
+        $host = getenv('INTELIS_TEST_DB_HOST');
+        $user = getenv('INTELIS_TEST_DB_USER');
+        if ($host === false || $host === '' || $user === false || $user === '') {
             return;
         }
+
+        $port     = (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306);
+        $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
+
+        $bootstrap = new mysqli($host, $user, $password, null, $port);
+        $bootstrap->query('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
+        $bootstrap->query('CREATE DATABASE `' . self::DATABASE . '`');
+        $bootstrap->close();
+
+        self::$db = new DatabaseService([
+            'host' => $host, 'username' => $user, 'password' => $password,
+            'db' => self::DATABASE, 'port' => $port,
+        ]);
 
         // The config written below carries the test database password in
         // plaintext, so the tree it lives in is the owner's alone -- on a shared
@@ -64,39 +94,47 @@ final class PreflightMissingTablesTest extends TestCase
                 . "'port' => " . var_export((string) (getenv('INTELIS_TEST_DB_PORT') ?: '3306'), true) . ','
                 . "'username' => " . var_export((string) getenv('INTELIS_TEST_DB_USER'), true) . ','
                 . "'password' => " . var_export((string) (getenv('INTELIS_TEST_DB_PASS') ?: ''), true) . ','
-                . "'db' => " . var_export(MigrationRunnerFunctions::DATABASE, true)
+                . "'db' => " . var_export(self::DATABASE, true)
                 . ']];'
         );
         chmod($root . '/configs/config.production.php', 0600);
 
         self::$root = $root;
 
-        // The parent exists and holds a row; both children are declared by the
-        // fixture seed and absent from the database, which is the shape DRC is
-        // in with covid19_tests.
-        $db = MigrationRunnerFunctions::connect();
-        $db->rawQuery('DROP TABLE IF EXISTS `pf_child_used`');
-        $db->rawQuery('DROP TABLE IF EXISTS `pf_child_dormant`');
-        $db->rawQuery('DROP TABLE IF EXISTS `pf_parent_used`');
-        $db->rawQuery('DROP TABLE IF EXISTS `pf_parent_dormant`');
-        // The populated parent is deliberately left with a row estimate of
-        // zero, which is the state the exact probe exists for. Persistent
-        // statistics with auto-recalc off, analysed while empty, record
-        // n_rows = 0; the row inserted afterwards never updates them. So
-        // information_schema reports an empty table while SELECT ... LIMIT 1
-        // finds a row -- and an implementation that went back to reading the
-        // estimate would call this module dormant and pass.
+        // Three modules in three states, so one run of the check exercises
+        // every branch of the classification at once.
+        $db = self::$db;
+
+        // form_covid19 is deliberately left with a row estimate of zero, which
+        // is the state the exact probe exists for. Persistent statistics with
+        // auto-recalc off, analysed while empty, record n_rows = 0; the row
+        // inserted afterwards never updates them. So information_schema reports
+        // an empty table while SELECT ... LIMIT 1 finds a row -- and an
+        // implementation that went back to reading the estimate would call the
+        // module dormant and pass.
         $db->rawQuery(
-            'CREATE TABLE `pf_parent_used` (`id` INT NOT NULL PRIMARY KEY)'
+            'CREATE TABLE `form_covid19` (`covid19_id` INT NOT NULL PRIMARY KEY)'
             . ' ENGINE=InnoDB STATS_PERSISTENT=1, STATS_AUTO_RECALC=0'
         );
-        $db->rawQuery('ANALYZE TABLE `pf_parent_used`');
-        $db->rawQuery('INSERT INTO `pf_parent_used` (`id`) VALUES (1)');
-        $db->rawQuery('CREATE TABLE `pf_parent_dormant` (`id` INT NOT NULL PRIMARY KEY) ENGINE=InnoDB');
+        $db->rawQuery('ANALYZE TABLE `form_covid19`');
+        $db->rawQuery('INSERT INTO `form_covid19` (`covid19_id`) VALUES (1)');
+
+        // form_tb is present and empty: the module was never used.
+        $db->rawQuery('CREATE TABLE `form_tb` (`tb_id` INT NOT NULL PRIMARY KEY) ENGINE=InnoDB');
+
+        // form_generic is left uncreated, along with its result table: the
+        // module was removed rather than broken. The database is made fresh
+        // above, so "never created" is a state this class controls rather than
+        // one it inherits.
     }
 
     public static function tearDownAfterClass(): void
     {
+        if (self::$db !== null) {
+            self::$db->rawQuery('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
+            self::$db = null;
+        }
+
         if (self::$root === null) {
             return;
         }
@@ -148,51 +186,89 @@ final class PreflightMissingTablesTest extends TestCase
     /**
      * The fixture is in the state the rest of this class depends on.
      *
-     * If a future MySQL recalculates the estimate anyway, the parent stops
+     * If a future MySQL recalculates the estimate anyway, form_covid19 stops
      * being stale-zero and the test below would pass against an implementation
      * that reads the estimate -- covering nothing while looking green.
      */
-    public function testTheFixtureParentReportsZeroRowsWhileHoldingOne(): void
+    public function testTheRequestTableReportsZeroRowsWhileHoldingOne(): void
     {
-        $db = MigrationRunnerFunctions::connect();
+        $db = self::$db;
 
         $estimate = $db->rawQueryOne(
             'SELECT TABLE_ROWS AS n FROM information_schema.TABLES
               WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?',
-            ['pf_parent_used']
+            ['form_covid19']
         );
 
         $this->assertSame(0, (int) ($estimate['n'] ?? -1), 'The estimate has to be the stale zero.');
         $this->assertNotNull(
-            $db->rawQueryOne('SELECT 1 AS one FROM `pf_parent_used` LIMIT 1'),
+            $db->rawQueryOne('SELECT 1 AS one FROM `form_covid19` LIMIT 1'),
             'while the table really does hold a row.'
         );
     }
 
-    /** The DRC shape: the child is gone and its parent holds requests. */
-    public function testAnAbsentTableWhoseParentHoldsRowsFailsTheCheck(): void
+    /**
+     * The other two module states are the states they claim to be.
+     *
+     * The removed-module case is the one that can rot without saying so: if
+     * anything ever leaves a form_generic behind, that case silently becomes a
+     * second copy of the unused-module case and the absent-request-table branch
+     * stops being exercised at all.
+     */
+    public function testTheUnusedAndRemovedModulesAreSetUpAsClaimed(): void
     {
-        [$out, $status] = $this->check(
-            self::PARENT_USED
-            . "CREATE TABLE `pf_child_used` (\n"
-            . "  `id` int NOT NULL,\n"
-            . "  `parent_id` int NOT NULL,\n"
-            . "  PRIMARY KEY (`id`),\n"
-            . "  CONSTRAINT `pf_c1` FOREIGN KEY (`parent_id`) REFERENCES `pf_parent_used` (`id`)\n"
-            . ") ENGINE=InnoDB;\n"
-        );
+        $db = self::$db;
 
-        // Matched with the severity attached. Asserting only that the line is
-        // present would survive PF_FAIL being softened to PF_WARN, which is the
-        // mutation this test exists to catch -- and the exit code cannot carry
-        // it, because the throwaway root fails other checks of its own.
+        $present = static fn(string $t): bool => $db->rawQueryOne(
+            'SELECT 1 AS one FROM information_schema.TABLES
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?',
+            [$t]
+        ) !== null;
+
+        $this->assertTrue($present('form_tb'), 'The unused module keeps its request table.');
+        $this->assertNull(
+            $db->rawQueryOne('SELECT 1 AS one FROM `form_tb` LIMIT 1'),
+            'and that table has to be empty, or it is not the unused case.'
+        );
+        $this->assertFalse($present('form_generic'), 'The removed module has no request table at all.');
+    }
+
+    /** The seed as it stands for all three modules plus one seeded table. */
+    private function seed(): string
+    {
+        return "CREATE TABLE `form_covid19` (\n  `covid19_id` int NOT NULL,\n"
+            . "  PRIMARY KEY (`covid19_id`)\n) ENGINE=InnoDB;\n"
+            . "CREATE TABLE `covid19_tests` (\n  `test_id` int NOT NULL,\n"
+            . "  PRIMARY KEY (`test_id`)\n) ENGINE=InnoDB;\n"
+            . "CREATE TABLE `form_tb` (\n  `tb_id` int NOT NULL,\n"
+            . "  PRIMARY KEY (`tb_id`)\n) ENGINE=InnoDB;\n"
+            . "CREATE TABLE `tb_tests` (\n  `test_id` int NOT NULL,\n"
+            . "  PRIMARY KEY (`test_id`)\n) ENGINE=InnoDB;\n"
+            . "CREATE TABLE `form_generic` (\n  `generic_id` int NOT NULL,\n"
+            . "  PRIMARY KEY (`generic_id`)\n) ENGINE=InnoDB;\n"
+            . "CREATE TABLE `generic_test_results` (\n  `result_id` int NOT NULL,\n"
+            . "  PRIMARY KEY (`result_id`)\n) ENGINE=InnoDB;\n";
+    }
+
+    /**
+     * The DRC shape: requests are there and the result table is gone.
+     *
+     * Matched with the severity attached. Asserting only that the line is
+     * present would survive PF_FAIL being softened to PF_WARN, which is one of
+     * the mutations this test exists to catch -- and the exit code cannot carry
+     * it, because the throwaway root fails other checks of its own.
+     */
+    public function testAModuleWithRequestsAndNoResultTableFailsTheCheck(): void
+    {
+        [$out, $status] = $this->check($this->seed());
+
         $this->assertMatchesRegularExpression(
             '/FAIL\s+Missing tables in use/',
             $out,
             "The finding has to be a failure, not a note. Full output:\n$out"
         );
-        $this->assertStringContainsString('pf_child_used', $out);
-        $this->assertStringContainsString('pf_parent_used holds', $out, 'and it has to say what proves use.');
+        $this->assertStringContainsString('covid19_tests', $out);
+        $this->assertStringContainsString('form_covid19 holds', $out, 'and it has to say what proves use.');
         $this->assertStringNotContainsString(
             'holds ~0 rows',
             $out,
@@ -201,79 +277,47 @@ final class PreflightMissingTablesTest extends TestCase
         $this->assertSame(1, $status, 'A module that lost its table must not exit 0.');
     }
 
-    /** The same shape with an empty parent stays a warning. */
-    public function testAnAbsentTableWhoseParentIsEmptyIsOnlyAWarning(): void
+    /**
+     * The other two modules in the same run stay warnings.
+     *
+     * tb_tests is absent with form_tb present and empty -- a module that was
+     * never used. generic_test_results is absent with form_generic absent too
+     * -- a module that was removed. Reporting either as broken is what makes
+     * the covid19_tests failure worth reading.
+     */
+    public function testUnusedAndRemovedModulesStayWarnings(): void
     {
-        [$out] = $this->check(
-            self::PARENT_DORMANT
-            . "CREATE TABLE `pf_child_dormant` (\n"
-            . "  `id` int NOT NULL,\n"
-            . "  `parent_id` int NOT NULL,\n"
-            . "  PRIMARY KEY (`id`),\n"
-            . "  CONSTRAINT `pf_c2` FOREIGN KEY (`parent_id`) REFERENCES `pf_parent_dormant` (`id`)\n"
-            . ") ENGINE=InnoDB;\n"
-        );
+        [$out] = $this->check($this->seed());
 
-        // With the severity attached: softened to PF_OK the line survives this
-        // assertion but vanishes from `intelis check --quiet`, which is what an
-        // operator is asked to send.
         $this->assertMatchesRegularExpression(
             '/WARN\s+Missing tables/',
             $out,
             "An absent table is still worth saying. Full output:\n$out"
         );
+
+        $failure = substr($out, (int) strpos($out, 'Missing tables in use'));
+        $this->assertStringNotContainsString('tb_tests', $failure, 'A module never used is not broken.');
         $this->assertStringNotContainsString(
-            'Missing tables in use',
-            $out,
-            'An unused module must not be reported as broken; that is what makes the failure worth reading.'
+            'generic_test_results',
+            $failure,
+            'A module removed entirely is not broken either.'
         );
     }
 
     /**
-     * A module removed entirely is still only a warning.
-     *
-     * Both the parent and the child are absent, which is what a deployment
-     * that never enabled a module looks like. Probing the parent raises 1146,
-     * and reading that as "could not be read" would turn every such install
-     * red for tables it was never meant to have.
-     */
-    public function testAModuleWhoseParentIsAlsoAbsentStaysAWarning(): void
-    {
-        [$out] = $this->check(
-            "CREATE TABLE `pf_absent_parent` (\n  `id` int NOT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB;\n"
-            . "CREATE TABLE `pf_absent_child` (\n"
-            . "  `id` int NOT NULL,\n"
-            . "  `parent_id` int NOT NULL,\n"
-            . "  PRIMARY KEY (`id`),\n"
-            . "  CONSTRAINT `pf_c3` FOREIGN KEY (`parent_id`) REFERENCES `pf_absent_parent` (`id`)\n"
-            . ") ENGINE=InnoDB;\n"
-        );
-
-        $this->assertStringNotContainsString(
-            'Missing tables in use',
-            $out,
-            "A module that was never enabled must not be a failure. Full output:\n$out"
-        );
-    }
-
-    /**
-     * A table the seed itself fills is required whatever its parents say.
+     * A table the seed itself fills is required whatever else is true.
      *
      * roles_privileges_map is the real one: seeded, and referencing two tables
-     * that are seeded too, so judging it by parent rows alone files a missing
-     * ACL table as dormant while every privilege lookup fails on it.
+     * that are seeded too, so nothing but this rule can reach it while every
+     * privilege lookup in the application fails on it.
      */
-    public function testAnAbsentTableThatTheSeedFillsFailsWithoutConsultingParents(): void
+    public function testAnAbsentTableThatTheSeedFillsFails(): void
     {
         [$out, $status] = $this->check(
-            self::PARENT_DORMANT
-            . "CREATE TABLE `pf_child_dormant` (\n"
-            . "  `id` int NOT NULL,\n"
-            . "  `parent_id` int NOT NULL,\n"
-            . "  PRIMARY KEY (`id`),\n"
-            . "  CONSTRAINT `pf_c2` FOREIGN KEY (`parent_id`) REFERENCES `pf_parent_dormant` (`id`)\n"
-            . ") ENGINE=InnoDB;\n"
-            . "INSERT INTO `pf_child_dormant` (`id`, `parent_id`) VALUES (1, 1);\n"
+            $this->seed()
+            . "CREATE TABLE `pf_seeded_probe` (\n  `id` int NOT NULL,\n"
+            . "  PRIMARY KEY (`id`)\n) ENGINE=InnoDB;\n"
+            . "INSERT INTO `pf_seeded_probe` (`id`) VALUES (1);\n"
         );
 
         $this->assertMatchesRegularExpression('/FAIL\s+Missing tables in use/', $out, "Full output:\n$out");

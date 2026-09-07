@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Utilities;
 
+use App\Services\TestsService;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,20 +17,27 @@ use PHPUnit\Framework\TestCase;
  * 2024, so every COVID page there fails on "Table doesn't exist" the moment
  * anyone opens one -- and the check called it harmless.
  *
- * A child table carries a foreign key to the table it hangs off, so init.sql
- * already records which table would have to be in use for its absence to
- * matter. Reading those is what turns the assertion into a question the check
- * can answer, which is what these tests cover.
+ * The first attempt at answering it read foreign keys out of sql/init.sql, on
+ * the reasoning that a child table hangs off the table whose rows would show
+ * the module in use. That reads like the right question and is not. Of the
+ * twelve foreign keys the seed declares, three carry that meaning and the rest
+ * hang off facility_details or batch_details, which every installation
+ * populates -- so an instance that had dropped report_to_mail, a table the
+ * application has not referenced in years, would have been failed for it.
+ *
+ * What actually means it is the test-type map: a module's requests are in its
+ * form table and its per-test results in its child table. That map lives in
+ * TestsService, and these tests hold preflight's transcription of it to
+ * account.
  *
  * bin/preflight.php runs its own body on include -- it is a script, and
- * including it would connect to a database and print a report -- so the two
- * parsers are lifted out with the tokenizer. What runs below is the shipped
+ * including it would connect to a database and print a report -- so what it
+ * declares is lifted out with the tokenizer. What runs below is the shipped
  * code rather than a copy of it.
  */
 final class PreflightSchemaReferencesTest extends TestCase
 {
     private const WANTED = [
-        'pf_parse_init_references',
         'pf_parse_init_schema',
         'pf_parse_init_seeded',
         'pf_classify_missing_tables',
@@ -37,7 +45,7 @@ final class PreflightSchemaReferencesTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        if (function_exists('pf_parse_init_references')) {
+        if (function_exists('pf_classify_missing_tables')) {
             return;
         }
 
@@ -80,11 +88,13 @@ final class PreflightSchemaReferencesTest extends TestCase
             $out .= "\n" . $body . "\n";
         }
 
-        // The constant as well as the functions: a test that restates the core
-        // set in its own words cannot notice an entry being removed from the
-        // real one.
-        if (preg_match('/^const PF_CORE_TABLES = \[.*?\];$/ms', $source, $const) === 1) {
-            $out .= "\n" . $const[0] . "\n";
+        // The two tables the decision is made from, as well as the functions. A
+        // test that restates either list in its own words cannot notice an
+        // entry being dropped from the one that runs.
+        foreach (['PF_CORE_TABLES', 'PF_CHILD_RESULT_TABLES'] as $constant) {
+            if (preg_match('/^const ' . $constant . ' = \[.*?\];$/ms', $source, $m) === 1) {
+                $out .= "\n" . $m[0] . "\n";
+            }
         }
 
         $tmp = sys_get_temp_dir() . '/intelis-preflight-fns-' . getmypid() . '.php';
@@ -93,223 +103,139 @@ final class PreflightSchemaReferencesTest extends TestCase
         unlink($tmp);
     }
 
-    private function parse(string $sql): array
+    /**
+     * The transcription against the map it was transcribed from.
+     *
+     * preflight cannot call TestsService -- it runs before the application
+     * boots, which is the point of it -- so the pairs are written out by hand.
+     * This is what stops a fourth test type gaining a child result table and
+     * quietly not being covered.
+     */
+    public function testTheChildTableMapMatchesTestsService(): void
     {
-        $tmp = sys_get_temp_dir() . '/intelis-init-fixture-' . getmypid() . '.sql';
-        file_put_contents($tmp, $sql);
-        try {
-            return pf_parse_init_references($tmp);
-        } finally {
-            unlink($tmp);
+        $expected = [];
+        foreach (TestsService::getTestTypes() as $meta) {
+            $child = $meta['childResultTable'] ?? null;
+            $form  = $meta['tableName'] ?? null;
+            if (is_string($child) && $child !== '' && is_string($form) && $form !== '') {
+                $expected[$child] = $form;
+            }
         }
-    }
 
-    /**
-     * The real seed, not a fixture.
-     *
-     * The whole mechanism rests on init.sql actually declaring these foreign
-     * keys in a shape the parser reads. A fixture would keep passing after the
-     * seed was regenerated in some other style, and the check would go back to
-     * calling every missing table harmless with nothing to say so.
-     */
-    public function testTheSeedYieldsTheParentOfTheTableThisWasBuiltFor(): void
-    {
-        $references = pf_parse_init_references(dirname(__DIR__, 3) . '/sql/init.sql');
-
+        $this->assertNotEmpty($expected, 'No test type declares a child result table; the map cannot be empty.');
         $this->assertSame(
-            ['form_covid19'],
-            $references['covid19_tests'] ?? null,
-            'covid19_tests hangs off form_covid19; without that, DRC\'s missing table reads as harmless.'
-        );
-        $this->assertSame(['form_generic'], $references['generic_test_results'] ?? null);
-        $this->assertGreaterThan(
-            10,
-            count($references),
-            'Almost no table resolving to a parent means the seed changed shape and this check went quiet.'
+            $expected,
+            PF_CHILD_RESULT_TABLES,
+            'preflight\'s copy of the test-type child tables has drifted from TestsService.'
         );
     }
 
-    /** A table is not its own evidence of use. */
-    public function testASelfReferenceIsNotRecorded(): void
+    /** The case this was built for: requests present, result table gone. */
+    public function testAModuleWithRequestsAndNoResultTableIsNeeded(): void
     {
-        $out = $this->parse(
-            "CREATE TABLE `tree` (\n"
-            . "  `id` int NOT NULL,\n"
-            . "  `parent_id` int DEFAULT NULL,\n"
-            . "  CONSTRAINT `tree_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `tree` (`id`)\n"
-            . ") ENGINE=InnoDB;\n"
-        );
-
-        $this->assertArrayNotHasKey(
-            'tree',
-            $out,
-            'A self-reference says nothing about whether the table was used, and it is gone with the table anyway.'
-        );
-    }
-
-    /** Two keys onto the same parent are one parent. */
-    public function testRepeatedParentsCollapse(): void
-    {
-        $out = $this->parse(
-            "CREATE TABLE `child` (\n"
-            . "  `a` int NOT NULL,\n"
-            . "  `b` int NOT NULL,\n"
-            . "  CONSTRAINT `c1` FOREIGN KEY (`a`) REFERENCES `parent` (`id`),\n"
-            . "  CONSTRAINT `c2` FOREIGN KEY (`b`) REFERENCES `parent` (`id`)\n"
-            . ") ENGINE=InnoDB;\n"
-        );
-
-        $this->assertSame(['parent'], $out['child'] ?? null);
-    }
-
-    /**
-     * A REFERENCES outside a CREATE TABLE is not attributed to the last one.
-     *
-     * The parser is a line reader, so the closing paren is the only thing that
-     * ends a table. If it ever stopped honouring that, an ALTER further down
-     * the file would attach its parent to whichever table was read last, and
-     * the check would judge one table's absence by another table's rows.
-     */
-    public function testAReferenceAfterTheTableClosesIsIgnored(): void
-    {
-        $out = $this->parse(
-            "CREATE TABLE `child` (\n"
-            . "  `a` int NOT NULL\n"
-            . ") ENGINE=InnoDB;\n"
-            . "ALTER TABLE `elsewhere` ADD FOREIGN KEY (`a`) REFERENCES `parent` (`id`);\n"
-        );
-
-        $this->assertSame([], $out, 'Nothing inside a CREATE TABLE referenced anything.');
-    }
-
-    /**
-     * The severity decision itself, which is what the check is for.
-     *
-     * The parsing tests above would all stay green if this classification were
-     * deleted or inverted, and an absent covid19_tests next to a populated
-     * form_covid19 would go back to passing as a warning. So the invariant is
-     * asserted here directly: evidence of use is a failure, and the absence of
-     * evidence is not.
-     */
-    public function testAPopulatedParentMakesTheAbsenceAFailure(): void
-    {
-        [$inUse, $dormant] = pf_classify_missing_tables(
-            ['covid19_tests', 'qc_covid19_tests'],
-            ['covid19_tests' => ['form_covid19'], 'qc_covid19_tests' => ['qc_covid19']],
+        [$needed, $dormant] = pf_classify_missing_tables(
+            ['covid19_tests'],
             [],
             [],
+            ['covid19_tests' => 'form_covid19'],
             static fn(string $t): ?bool => $t === 'form_covid19',
         );
 
-        $this->assertSame(['covid19_tests' => ['form_covid19']], $inUse);
-        $this->assertSame(['qc_covid19_tests'], $dormant, 'An empty parent is no evidence of use.');
+        $this->assertSame(['covid19_tests' => ['form_covid19']], $needed);
+        $this->assertSame([], $dormant);
+    }
+
+    /** The same module on an instance that never enabled it. */
+    public function testAModuleWithNoRequestsStaysAWarning(): void
+    {
+        [$needed, $dormant] = pf_classify_missing_tables(
+            ['covid19_tests'],
+            [],
+            [],
+            ['covid19_tests' => 'form_covid19'],
+            static fn(string $t): ?bool => false,
+        );
+
+        $this->assertSame([], $needed, 'An unused module must not be reported as broken.');
+        $this->assertSame(['covid19_tests'], $dormant);
     }
 
     /**
-     * Rows the installer put there are not evidence.
+     * A table that is nobody's result table is not judged by anything else.
      *
-     * form_vl references r_sample_status, which sql/init.sql fills with sample
-     * statuses on every install. Without this exclusion a COVID-only country
-     * deployment carrying no form_vl at all would be told it HAS used VL, on
-     * the strength of rows it never wrote -- the check painting red an install
-     * that is working exactly as intended.
+     * This is the rule the foreign-key version got wrong. report_to_mail hangs
+     * off batch_details, which every installation populates, and is referenced
+     * nowhere in the application -- so parenthood would have failed every
+     * instance that dropped it.
      */
-    public function testSeedDataIsNotEvidenceOfUse(): void
+    public function testATableThatIsNoModulesResultTableStaysAWarning(): void
     {
-        [$inUse, $dormant] = pf_classify_missing_tables(
-            ['form_vl'],
-            ['form_vl' => ['r_sample_status']],
-            ['r_sample_status' => true],
+        [$needed, $dormant] = pf_classify_missing_tables(
+            ['report_to_mail'],
             [],
+            [],
+            PF_CHILD_RESULT_TABLES,
             static fn(string $t): ?bool => true,
         );
 
-        $this->assertSame([], $inUse, 'Seed rows must never escalate an absent table to a failure.');
-        $this->assertSame(['form_vl'], $dormant);
-    }
-
-    /** One real parent among seeded ones is still enough. */
-    public function testAnUnseededPopulatedParentSurvivesAmongSeededOnes(): void
-    {
-        [$inUse] = pf_classify_missing_tables(
-            ['child'],
-            ['child' => ['r_seeded', 'form_real']],
-            ['r_seeded' => true],
-            [],
-            static fn(string $t): ?bool => true,
-        );
-
-        $this->assertSame(
-            ['child' => ['form_real']],
-            $inUse,
-            'Only the parent that proves use should be named as the reason.'
-        );
-    }
-
-    /** A table with no foreign key cannot be judged, so it is not. */
-    public function testATableWithNoParentStaysAWarning(): void
-    {
-        [$inUse, $dormant] = pf_classify_missing_tables(
-            ['orphan'],
-            [],
-            [],
-            [],
-            static fn(string $t): ?bool => true,
-        );
-
-        $this->assertSame([], $inUse);
-        $this->assertSame(['orphan'], $dormant);
-    }
-
-    /** The seed's own reference tables are recognised as seeded. */
-    public function testTheSeedNamesItsOwnReferenceTables(): void
-    {
-        $seeded = pf_parse_init_seeded(dirname(__DIR__, 3) . '/sql/init.sql');
-
-        $this->assertArrayHasKey('r_sample_status', $seeded, 'This is the row set that caused the exclusion.');
-        $this->assertArrayNotHasKey('form_covid19', $seeded, 'A request table is never seeded, so its rows are real.');
-        $this->assertArrayNotHasKey('form_generic', $seeded);
+        $this->assertSame([], $needed, 'A dead table over a populated one is not evidence of anything.');
+        $this->assertSame(['report_to_mail'], $dormant);
     }
 
     /**
      * A table the application cannot run without is never filed as dormant.
      *
      * user_details is the case: its only foreign key points at roles, which the
-     * seed fills, so every parent is excluded as evidence and nothing is left
-     * to judge it by -- on an instance where nobody can log in.
+     * seed fills, and it is no module's result table, so nothing else in the
+     * check can reach it -- on an instance where nobody can log in.
      */
-    public function testACoreTableIsUsedWhateverItsParentsSay(): void
+    public function testACoreTableIsNeededWithoutAnyOtherEvidence(): void
     {
-        [$inUse, $dormant] = pf_classify_missing_tables(
+        [$needed, $dormant] = pf_classify_missing_tables(
             ['user_details'],
-            ['user_details' => ['roles']],
-            ['roles' => true],
+            [],
             ['user_details' => true],
+            [],
             static fn(string $t): ?bool => false,
         );
 
-        $this->assertArrayHasKey('user_details', $inUse, 'A missing login table cannot be a note.');
+        $this->assertArrayHasKey('user_details', $needed, 'A missing login table cannot be a note.');
+        $this->assertSame([], $dormant);
+    }
+
+    /** A table the seed fills is required by the seed filling it. */
+    public function testASeededTableIsNeeded(): void
+    {
+        [$needed, $dormant] = pf_classify_missing_tables(
+            ['roles_privileges_map'],
+            ['roles_privileges_map' => true],
+            [],
+            [],
+            static fn(string $t): ?bool => false,
+        );
+
+        $this->assertSame(['roles_privileges_map' => ['sql/init.sql seeds it']], $needed);
         $this->assertSame([], $dormant);
     }
 
     /**
-     * An unreadable parent is reported, not read as an empty one.
+     * An unreadable request table is reported, not read as an empty one.
      *
      * A probe that threw says less than one that returned no rows, so treating
-     * the two alike would let a corrupt or permission-denied parent pass as
+     * the two alike would let a corrupt or permission-denied table pass as
      * evidence that the module was never used.
      */
-    public function testAParentThatCouldNotBeReadIsEvidenceInItself(): void
+    public function testARequestTableThatCouldNotBeReadIsEvidenceInItself(): void
     {
-        [$inUse, $dormant] = pf_classify_missing_tables(
-            ['child'],
-            ['child' => ['parent']],
+        [$needed, $dormant] = pf_classify_missing_tables(
+            ['tb_tests'],
             [],
             [],
+            ['tb_tests' => 'form_tb'],
             static fn(string $t): ?bool => null,
         );
 
-        $this->assertSame(['child' => ['parent could not be read']], $inUse);
+        $this->assertSame(['tb_tests' => ['form_tb could not be read']], $needed);
         $this->assertSame([], $dormant);
     }
 
@@ -320,13 +246,8 @@ final class PreflightSchemaReferencesTest extends TestCase
      * copy of the list would keep passing while an entry was removed from the
      * one that runs -- and the removed entry is a login dependency downgraded
      * to a note.
-     *
-     * The path is followed one call out of loginProcess.php, which is where the
-     * dangerous half lives: user_login_history is queried by
-     * continuousFailedLogins() before the password is checked and is not named
-     * in the login file at all.
      */
-    public function testEveryCoreTableIsStillOnTheLoginPath(): void
+    public function testEveryCoreTableIsStillReachedByLoggingIn(): void
     {
         $this->assertTrue(
             defined('PF_CORE_TABLES'),
@@ -334,33 +255,89 @@ final class PreflightSchemaReferencesTest extends TestCase
         );
         $this->assertNotEmpty(PF_CORE_TABLES);
 
-        $repo = dirname(__DIR__, 3);
-        $path = implode("\n", array_map(
-            static fn(string $file): string => (string) file_get_contents($repo . $file),
-            [
-                '/app/login/loginProcess.php',
-                '/app/classes/Services/UsersService.php',
-                '/app/classes/Services/CommonService.php',
-            ],
-        ));
+        $repo   = dirname(__DIR__, 3);
+        $login  = (string) file_get_contents($repo . '/app/login/loginProcess.php');
+        $source = $login;
+
+        // Only the methods login actually calls, rather than whole service
+        // classes: CommonService alone mentions most of the schema, so
+        // searching it entire would confirm anything put in front of it.
+        foreach (self::loginReachableMethods($login) as [$file, $method]) {
+            $source .= "\n" . self::methodBody($repo . $file, $method);
+        }
 
         foreach (array_keys(PF_CORE_TABLES) as $table) {
             $this->assertStringContainsString(
                 (string) $table,
-                $path,
-                "PF_CORE_TABLES claims logging in reads {$table}, and nothing on that path mentions it any more."
+                $source,
+                "PF_CORE_TABLES claims logging in reads {$table}, and nothing it calls mentions it any more."
             );
         }
     }
 
     /** The one that is invisible from the login file itself. */
-    public function testTheIndirectLoginDependencyIsInTheCoreSet(): void
+    public function testTheIndirectLoginDependenciesAreInTheCoreSet(): void
     {
         $this->assertArrayHasKey(
             'user_login_history',
             PF_CORE_TABLES,
-            'continuousFailedLogins() reads it before the password is checked; its absence throws on every attempt.'
+            'continuousFailedLogins() reads it before the password is checked.'
         );
-        $this->assertArrayHasKey('user_details', PF_CORE_TABLES);
+        $this->assertArrayHasKey(
+            'user_facility_map',
+            PF_CORE_TABLES,
+            'getUserFacilityMap() reads it on every successful login.'
+        );
+    }
+
+    /** @return list<array{0: string, 1: string}> the service methods login calls */
+    private static function loginReachableMethods(string $login): array
+    {
+        $reachable = [
+            'continuousFailedLogins' => '/app/classes/Services/UsersService.php',
+            'recordLoginAttempt'     => '/app/classes/Services/UsersService.php',
+            'getAllPrivileges'       => '/app/classes/Services/UsersService.php',
+            'getUserFacilityMap'     => '/app/classes/Services/FacilitiesService.php',
+            'activityLog'            => '/app/classes/Services/CommonService.php',
+            'getSystemConfig'        => '/app/classes/Services/CommonService.php',
+            'getGlobalConfig'        => '/app/classes/Services/CommonService.php',
+        ];
+
+        $out = [];
+        foreach ($reachable as $method => $file) {
+            // Each one is asserted to still be called, so a method dropped from
+            // login stops vouching for its table instead of silently continuing
+            // to.
+            if (str_contains($login, $method . '(')) {
+                $out[] = [$file, $method];
+            }
+        }
+
+        return $out;
+    }
+
+    /** The body of one method, from its signature to the brace that closes it. */
+    private static function methodBody(string $file, string $method): string
+    {
+        $source = (string) file_get_contents($file);
+        $at     = strpos($source, ' function ' . $method . '(');
+        if ($at === false) {
+            return '';
+        }
+
+        $open  = strpos($source, '{', $at);
+        $depth = 0;
+        for ($i = (int) $open, $n = strlen($source); $i < $n; $i++) {
+            if ($source[$i] === '{') {
+                $depth++;
+            } elseif ($source[$i] === '}') {
+                $depth--;
+                if ($depth === 0) {
+                    return substr($source, $at, $i - $at + 1);
+                }
+            }
+        }
+
+        return '';
     }
 }
