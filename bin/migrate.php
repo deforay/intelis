@@ -902,7 +902,10 @@ foreach ($versions as $version) {
                 if ($bar instanceof ProgressBar) {
                     MiscUtility::spinnerFinish($bar);
                 }
-                exit("Migration aborted by user.\n");
+                // exit() with a string prints it and exits 0, which reported an
+                // aborted migration as a success. Print, then exit with a failure code.
+                fwrite(STDERR, "Migration aborted by user.\n");
+                exit(CLI\ERROR);
             }
 
             // Persist the version only if the run wasn't aborted AND no non-benign
@@ -961,4 +964,14 @@ if (!$quietMode) {
         $summaryRows[] = ['Potential Errors logged', $totalErrors];
     }
     $io->table(['Migration summary', ''], $summaryRows);
+}
+
+// A failed migration has to be a failed command. `composer post-update` runs
+// `migrate.php -y`, so -y keeps the run going past an error to apply what it
+// can, and the chain then halts -- but a zero exit told composer the step
+// succeeded and it moved on to @audit-triggers-install, which failed with
+// "audit_log is not present yet" and buried the real error far up the scroll.
+// The exit code now reports what the summary already says.
+if ($totalErrors > 0) {
+    exit(CLI\ERROR);
 }
