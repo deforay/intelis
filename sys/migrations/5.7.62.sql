@@ -63,3 +63,15 @@ ALTER TABLE `form_tb` ADD INDEX `idx_facility_collection_date` (`facility_id`, `
 
 
 UPDATE `system_config` SET `value` = '5.7.62' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
