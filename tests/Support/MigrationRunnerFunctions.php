@@ -80,10 +80,13 @@ final class MigrationRunnerFunctions
      * to be diagnosed anyway. The columns, keys, defaults and collations here
      * are the ones a lab actually carries.
      *
-     * Through multi_query rather than the SQL parser the runner uses: init.sql
-     * opens with SET SQL_MODE and START TRANSACTION, and the parser's build()
-     * runs those together into one statement the server rejects, leaving an
-     * empty database and every later assertion meaningless.
+     * Through multi_query rather than the SQL parser the runner uses. The
+     * parser would work here -- init.sql is a mysqldump and carries no session
+     * setup -- but it costs a quarter of a second to parse 340KB to no benefit,
+     * and its build() is known to run a header of SET and START TRANSACTION
+     * together into one statement the server rejects, which is what
+     * sql/interface-init.sql opens with. multi_query has neither problem and
+     * needs no exception for the next file that does have a header.
      *
      * Around half a second for 139 tables, once per process, which is why the
      * connection is cached rather than the schema rebuilt per test.
