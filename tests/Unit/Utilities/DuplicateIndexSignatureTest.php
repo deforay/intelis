@@ -31,7 +31,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class DuplicateIndexSignatureTest extends TestCase
 {
-    private const WANTED = ['index_part_signature', 'index_signature'];
+    private const WANTED = ['index_part_signature', 'index_signature', 'group_indexes'];
 
     public static function setUpBeforeClass(): void
     {
@@ -219,5 +219,149 @@ final class DuplicateIndexSignatureTest extends TestCase
             self::signature([self::part('a'), self::part('b')]),
             'Two plain BTREE indexes over (a, b) are the case this tool exists for.'
         );
+    }
+
+    /**
+     * A full row of information_schema.STATISTICS, as group_indexes() reads it.
+     */
+    private static function row(
+        string $index,
+        int $seq,
+        ?string $column,
+        array $overrides = []
+    ): array {
+        return $overrides + [
+            'TABLE_NAME'   => 'probe',
+            'INDEX_NAME'   => $index,
+            'NON_UNIQUE'   => 1,
+            'SEQ_IN_INDEX' => $seq,
+            'COLUMN_NAME'  => $column,
+            'SUB_PART'     => null,
+            'COLLATION'    => 'A',
+            'INDEX_TYPE'   => 'BTREE',
+            'EXPRESSION'   => null,
+        ];
+    }
+
+    /** The index names the tool would report as copies of something else. */
+    private static function copiesFoundIn(array $rows): array
+    {
+        $unreadable = [];
+        $found = [];
+        foreach (group_indexes($rows, $unreadable) as $group) {
+            if (count($group) > 1) {
+                foreach ($group as $index) {
+                    $found[] = $index['name'];
+                }
+            }
+        }
+        sort($found);
+        return $found;
+    }
+
+    /**
+     * The grouping the script acts on, not a reimplementation of it.
+     *
+     * The functions above can each be right while the caller keys its groups on
+     * something looser, and the outcome is still a dropped index. This drives
+     * `group_indexes()`, which is what bin/duplicate-indexes.php calls, with the
+     * three pairs that used to collide -- and one pair that genuinely is a
+     * duplicate, so the test cannot pass by the tool simply finding nothing.
+     */
+    public function testTheGroupingUsedByTheToolSeparatesDistinctIndexes(): void
+    {
+        $rows = [
+            // BTREE and FULLTEXT over one column.
+            self::row('title_btree', 1, 'title'),
+            self::row('title_ft', 1, 'title', ['INDEX_TYPE' => 'FULLTEXT', 'COLLATION' => null]),
+            // Ascending and descending over one column.
+            self::row('name_asc', 1, 'name'),
+            self::row('name_desc', 1, 'name', ['COLLATION' => 'D']),
+            // Two different expressions.
+            self::row('d_year', 1, null, ['EXPRESSION' => 'year(`d`)']),
+            self::row('d_month', 1, null, ['EXPRESSION' => 'month(`d`)']),
+            // A pair that really is redundant, so a tool that found nothing at
+            // all would fail this test rather than pass it.
+            self::row('dup_a', 1, 'a'),
+            self::row('dup_b', 1, 'a'),
+        ];
+
+        $this->assertSame(
+            ['dup_a', 'dup_b'],
+            self::copiesFoundIn($rows),
+            'Only the genuine pair may be grouped together.'
+        );
+    }
+
+    /** Composites are grouped on the whole key, in order. */
+    public function testTheGroupingComparesEveryKeyPartInOrder(): void
+    {
+        $rows = [
+            self::row('ab1', 1, 'a'), self::row('ab1', 2, 'b'),
+            self::row('ab2', 1, 'a'), self::row('ab2', 2, 'b'),
+            self::row('ba', 1, 'b'),  self::row('ba', 2, 'a'),
+            self::row('a_only', 1, 'a'),
+            // Same columns, but the second is ordered the other way.
+            self::row('ab_desc', 1, 'a'), self::row('ab_desc', 2, 'b', ['COLLATION' => 'D']),
+        ];
+
+        $this->assertSame(
+            ['ab1', 'ab2'],
+            self::copiesFoundIn($rows),
+            '(b, a), (a) and (a, b DESC) are each a different index from (a, b).'
+        );
+    }
+
+    /**
+     * Two tables can hold the same index definition without either being a copy.
+     *
+     * Nothing is more ordinary than two tables both indexing `last_modified_datetime`,
+     * and an index is only ever redundant against another on its own table.
+     * DROP INDEX names a table, so a grouping that lost track of which one would
+     * aim the drop at whichever table sorted first.
+     */
+    public function testIndexesOnDifferentTablesAreNeverCopiesOfEachOther(): void
+    {
+        $onFormVl = self::row('idx_lmd', 1, 'last_modified_datetime', ['TABLE_NAME' => 'form_vl']);
+        $onFormEid = self::row('idx_lmd', 1, 'last_modified_datetime', ['TABLE_NAME' => 'form_eid']);
+
+        $this->assertSame(
+            [],
+            self::copiesFoundIn([$onFormVl, $onFormEid]),
+            'Identical definitions on two tables are two indexes, not one and a copy.'
+        );
+
+        $unreadable = [];
+        $this->assertCount(
+            2,
+            group_indexes([$onFormVl, $onFormEid], $unreadable),
+            'They must land in separate groups, one per table.'
+        );
+    }
+
+    /** An index the server cannot fully describe is grouped with nothing. */
+    public function testTheGroupingSetsAsideWhatItCannotRead(): void
+    {
+        $rows = [
+            self::row('expr1', 1, null),
+            self::row('expr2', 1, null),
+            self::row('plain1', 1, 'a'),
+            self::row('plain2', 1, 'a'),
+        ];
+
+        $unreadable = [];
+        $groups = group_indexes($rows, $unreadable);
+
+        $this->assertSame(
+            ['probe' . "\0" . 'expr1', 'probe' . "\0" . 'expr2'],
+            $unreadable,
+            'Both functional indexes are unreadable without EXPRESSION and must be reported, not compared.'
+        );
+        $this->assertSame(
+            ['plain1', 'plain2'],
+            self::copiesFoundIn($rows),
+            'and the readable duplicate alongside them is still found.'
+        );
+        $this->assertCount(1, $groups, 'The unreadable pair forms no group.');
     }
 }
