@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Utilities;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -288,6 +289,76 @@ final class SchemaDriftParsingTest extends TestCase
             $indexes['t'],
             'and the unnamed form must keep working.'
         );
+    }
+
+    /**
+     * Index additions survive the round trip through the parser.
+     *
+     * The checker does not see migration text; it sees what the parser rebuilds
+     * from it, and the rebuild is not the input. `ADD INDEX(`a`)` -- the form 24
+     * statements in the migration history use -- comes back as
+     * `ADD INDEX (`a`)`, with a space the author never wrote, and that space is
+     * enough to move it from one branch of the dispatcher to another.
+     *
+     * So these go through statements() first, the way the checker does. Handing
+     * applyStatement() a string shaped by hand tests the dispatcher against
+     * input it never actually receives, which is how a rewrite that silently
+     * drops every unnamed index addition passes a green suite.
+     *
+     */
+    #[DataProvider('indexAdditions')]
+    public function testAnIndexAdditionSurvivesTheParserRebuild(string $sql, array $expected): void
+    {
+        $built = statements($sql)[0] ?? null;
+        $this->assertNotNull($built, 'The parser has to return the statement at all.');
+
+        $schema = ['t' => ['a' => 'a', 'b' => 'b']];
+        $indexes = ['t' => []];
+
+        $this->assertTrue(
+            applyStatement($built, $schema, $indexes),
+            "The dispatcher did not understand what the parser rebuilt: $built"
+        );
+        $this->assertSame(
+            [$expected],
+            $indexes['t'],
+            "Rebuilt as: $built"
+        );
+    }
+
+    /** @return array<string, array{0: string, 1: array}> */
+    public static function indexAdditions(): array
+    {
+        return [
+            'unnamed ADD INDEX' => [
+                'ALTER TABLE `t` ADD INDEX(`a`);',
+                ['name' => null, 'cols' => ['a'], 'unique' => false, 'primary' => false],
+            ],
+            'unnamed ADD UNIQUE' => [
+                'ALTER TABLE `t` ADD UNIQUE(`a`);',
+                ['name' => null, 'cols' => ['a'], 'unique' => true, 'primary' => false],
+            ],
+            'unnamed composite ADD KEY' => [
+                'ALTER TABLE `t` ADD KEY(`a`,`b`);',
+                ['name' => null, 'cols' => ['a', 'b'], 'unique' => false, 'primary' => false],
+            ],
+            'named ADD INDEX' => [
+                'ALTER TABLE `t` ADD INDEX `named` (`a`);',
+                ['name' => 'named', 'cols' => ['a'], 'unique' => false, 'primary' => false],
+            ],
+            'named ADD UNIQUE KEY' => [
+                'ALTER TABLE `t` ADD UNIQUE KEY `u` (`a`,`b`);',
+                ['name' => 'u', 'cols' => ['a', 'b'], 'unique' => true, 'primary' => false],
+            ],
+            'CREATE INDEX' => [
+                'CREATE INDEX `ci` ON `t` (`a`);',
+                ['name' => 'ci', 'cols' => ['a'], 'unique' => false, 'primary' => false],
+            ],
+            'CREATE UNIQUE INDEX' => [
+                'CREATE UNIQUE INDEX `cu` ON `t` (`a`);',
+                ['name' => 'cu', 'cols' => ['a'], 'unique' => true, 'primary' => false],
+            ],
+        ];
     }
 
     /** CREATE INDEX is the other way to add one, and never touched the ALTER branch. */
