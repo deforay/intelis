@@ -66,14 +66,41 @@ const PF_FAIL = 'fail';
 const PF_SKIP = 'skip';
 
 /**
+ * Where each test type keeps its per-test result rows.
+ *
+ * Transcribed from TestsService::getTestTypes(), which preflight cannot call --
+ * it runs before the application boots, which is the point of it. A test asserts
+ * the two agree, so a fourth test type gaining a child table is a failing test
+ * rather than a silent hole.
+ *
+ * This is the one relation that means what the check needs: a module's requests
+ * are in the form table and its per-test results are here, so requests present
+ * with the result table gone is a module that has lost somewhere to write. A
+ * foreign key looks like the same statement and is not. sql/init.sql declares
+ * twelve of them and only these three carry that meaning; the rest hang off
+ * facility_details or batch_details, which every installation populates.
+ * report_to_mail is the one that settles it -- referenced nowhere in the
+ * application, hanging off populated batch_details, so treating parenthood as
+ * evidence would have failed every instance that ever dropped a dead table.
+ *
+ * @var array<string, string> result table => the request table it belongs to
+ */
+const PF_CHILD_RESULT_TABLES = [
+    'covid19_tests'        => 'form_covid19',
+    'tb_tests'             => 'form_tb',
+    'generic_test_results' => 'form_generic',
+];
+
+/**
  * Tables no installation can be without, whatever else is true of it.
  *
  * Every table one login attempt touches, following the calls out of
  * app/login/loginProcess.php rather than only the names written in it -- the
  * indirect ones are the dangerous half. user_login_history is read through
- * UsersService::continuousFailedLogins() before the password is even checked,
- * so its absence throws on every attempt while nothing in the login file names
- * it; activity_log and the privilege tables are reached the same way.
+ * UsersService::continuousFailedLogins() before the password is even checked
+ * and user_facility_map through FacilitiesService::getUserFacilityMap() after
+ * it succeeds, so each throws on every attempt while nothing in the login file
+ * names the table; activity_log and the privilege tables are the same.
  *
  * These need naming because nothing else can reach them. user_details' only
  * foreign key points at roles, which the seed fills, so every parent is
@@ -89,6 +116,7 @@ const PF_SKIP = 'skip';
 const PF_CORE_TABLES = [
     'user_details'         => true,
     'user_login_history'   => true,
+    'user_facility_map'    => true,
     'roles'                => true,
     'roles_privileges_map' => true,
     'privileges'           => true,
@@ -903,12 +931,11 @@ try {
             // good enough to put a size next to the name in the report.
             $probed  = [];
             $hasRows = static function (string $table) use ($pdo, $liveTables, &$probed): ?bool {
-                // A parent that is itself absent is no evidence either way, and
-                // is already being reported on its own account. Probing it would
-                // raise 1146 and be read as "could not be read", so a country
-                // deployment that carries neither form_covid19 nor
-                // covid19_tests -- an entire module it never enabled -- would be
-                // failed for it.
+                // A request table that is itself absent is no evidence either
+                // way, and is already reported on its own account. Probing it
+                // would raise 1146 and read as "could not be read", so a country
+                // deployment carrying neither form_covid19 nor covid19_tests --
+                // an entire module it never enabled -- would be failed for it.
                 if (!isset($liveTables[$table])) {
                     return false;
                 }
@@ -917,20 +944,20 @@ try {
                     try {
                         $probed[$table] = $pdo->query("SELECT 1 FROM `{$table}` LIMIT 1")->fetchColumn() !== false;
                     } catch (PDOException) {
-                        // Null, not false: the parent is there and could not be
+                        // Null, not false: the table is there and could not be
                         // read, which is a finding of its own rather than a
-                        // reason to call the child unused.
+                        // reason to call the module unused.
                         $probed[$table] = null;
                     }
                 }
                 return $probed[$table];
             };
 
-            [$inUse, $dormant] = pf_classify_missing_tables(
+            [$needed, $dormant] = pf_classify_missing_tables(
                 $missingTables,
-                pf_parse_init_references($initPath),
                 pf_parse_init_seeded($initPath),
                 PF_CORE_TABLES,
+                PF_CHILD_RESULT_TABLES,
                 $hasRows,
             );
 
@@ -941,23 +968,21 @@ try {
                     count($dormant) . ' table(s) in sql/init.sql are absent here: '
                         . implode(', ', array_slice($dormant, 0, 8))
                         . (count($dormant) > 8 ? ' +' . (count($dormant) - 8) . ' more' : '')
-                        . "\n  nothing they hang off holds data this instance wrote, so it never used them;"
+                        . "\n  no module's data points at them and the seed does not fill them, so nothing"
+                        . "\n  here says this instance ever used them;"
                         . "\n  lift the CREATE TABLE from sql/init.sql if a migration needs one",
                 );
             }
 
-            if ($inUse !== []) {
-                $detail = count($inUse) . ' table(s) absent here that this instance HAS used:';
-                foreach (array_slice($inUse, 0, 8, true) as $table => $reasons) {
-                    // Each reason is either a parent table or the seed itself.
-                    // A parent gets its size attached, from the estimate rather
-                    // than a second query -- it is decoration on a finding the
-                    // exact probe already settled, not the finding.
-                    // The size is decoration on a finding the exact probe
-                    // already settled, so a stale 0 estimate is dropped rather
-                    // than printed -- "holds ~0 rows" as the evidence that a
-                    // table holds rows contradicts itself in front of whoever
-                    // is trying to read the report.
+            if ($needed !== []) {
+                $detail = count($needed) . ' table(s) absent here that this instance needs:';
+                foreach (array_slice($needed, 0, 8, true) as $table => $reasons) {
+                    // A reason naming a live table gets its size attached. That
+                    // is decoration on a finding the exact probe already
+                    // settled, so a stale 0 estimate is dropped rather than
+                    // printed: "holds ~0 rows" as the evidence that a table
+                    // holds rows contradicts itself in front of whoever is
+                    // reading the report.
                     $said = array_map(
                         static fn(string $reason): string => ($liveTables[$reason] ?? 0) > 0
                             ? $reason . ' holds ~' . number_format($liveTables[$reason]) . ' rows'
@@ -966,8 +991,9 @@ try {
                     );
                     $detail .= "\n    {$table} — " . implode(', ', $said);
                 }
-                $detail .= "\n  the module still has its data but lost the table it writes to, so its pages"
-                    . "\n  fail on \"Table doesn't exist\" — lift the CREATE TABLE for each from sql/init.sql";
+                $detail .= "\n  the data is still here but the table it is written to is gone, so the pages"
+                    . "\n  that use it fail on \"Table doesn't exist\" — lift the CREATE TABLE for each"
+                    . "\n  from sql/init.sql";
 
                 check('Missing tables in use', PF_FAIL, $detail);
             }
@@ -1084,58 +1110,6 @@ function pf_parse_init_schema(string $path): array
 }
 
 /**
- * Which tables each CREATE TABLE in init.sql hangs off, by its foreign keys.
- *
- * Only the REFERENCES side is collected, and only for the table currently being
- * read, so the result answers one question: if this table were missing, which
- * table's rows would tell you whether anyone ever used it. covid19_tests
- * references form_covid19, generic_test_results references form_generic, and so
- * on down the child tables -- which is exactly the set whose absence is easy to
- * wave through as "this instance never turned that module on".
- *
- * A table with no foreign key yields no entry and is left to the warning, since
- * nothing here can tell a module that was never enabled from one whose only
- * table went missing.
- *
- * @return array<string, list<string>> table => the tables it references
- */
-function pf_parse_init_references(string $path): array
-{
-    $handle = @fopen($path, 'r');
-    if ($handle === false) {
-        return [];
-    }
-
-    $references = [];
-    $current    = null;
-
-    while (($line = fgets($handle)) !== false) {
-        if ($current === null) {
-            if (preg_match('/^CREATE TABLE `([^`]+)`/i', $line, $m) === 1) {
-                $current = $m[1];
-            }
-            continue;
-        }
-
-        if (preg_match('/^\)/', $line) === 1) {
-            $current = null;
-            continue;
-        }
-
-        if (preg_match('/\bREFERENCES\s+`([^`]+)`/i', $line, $m) === 1 && $m[1] !== $current) {
-            $references[$current][] = $m[1];
-        }
-    }
-
-    fclose($handle);
-
-    return array_map(
-        static fn(array $parents): array => array_values(array_unique($parents)),
-        $references
-    );
-}
-
-/**
  * Which tables sql/init.sql fills in itself.
  *
  * These are the reference tables every install starts with populated --
@@ -1171,90 +1145,79 @@ function pf_parse_init_seeded(string $path): array
 }
 
 /**
- * Split the absent tables into the ones this instance evidently used, and the rest.
+ * Split the absent tables into the ones this instance evidently needs, and the rest.
  *
- * A table is judged used on any of three grounds: it is one the application
- * cannot run without, the seed fills it -- an installer that writes rows into a
- * table says every install needs it -- or a table it hangs off holds rows the
- * installer did not put there. A parent that cannot be read counts too, since a
- * probe that failed is not a probe that found nothing. Nothing else counts: an absent table with no
- * foreign key, or whose every parent is seed data or empty, stays a warning,
- * because nothing here can tell a module that was never enabled from one whose
- * only table went missing.
+ * Three grounds, each of which can be checked rather than assumed:
+ *
+ *   logging in reads it     nothing else can reach these -- user_details' only
+ *                           foreign key points at seeded roles, and
+ *                           user_facility_map has neither seed rows nor a key
+ *   the seed fills it       the installer writes rows there, so no install is
+ *                           meant to be without it
+ *   it holds a module's     requests present and the result table gone is a
+ *   results and that        module that has lost somewhere to write; an
+ *   module has requests     installation that never enabled it has neither
+ *
+ * Everything else stays a warning, because nothing here can tell a module that
+ * was never enabled from one whose table went missing, and a check that paints
+ * a working install red stops being read. That is not hypothetical: judging an
+ * absent table by whether its foreign-key parent held rows -- which reads like
+ * the same question -- would fail every instance that dropped report_to_mail, a
+ * table the application has not referenced in years, because the batch_details
+ * underneath it is populated everywhere.
  *
  * Kept as a function taking its inputs rather than reading them, so the
- * severity decision -- which is the whole point of the check and the part that
- * fails silently when it is wrong -- can be tested without a database.
+ * severity decision -- the whole point of the check, and the part that fails
+ * silently when it is wrong -- can be tested without a database.
  *
- * @param list<string>                     $missingTables
- * @param array<string, list<string>>      $references  table => the tables it references
- * @param array<string, true>              $seeded      tables sql/init.sql populates
- * @param array<string, true>              $core        tables no install can be without
- * @param callable(string): ?bool          $hasRows     rows? null when it could not be read
- * @return array{0: array<string, list<string>>, 1: list<string>} [used => why, dormant]
+ * @param list<string>            $missingTables
+ * @param array<string, true>     $seeded    tables sql/init.sql populates
+ * @param array<string, true>     $core      tables no install can be without
+ * @param array<string, string>   $children  result table => its request table
+ * @param callable(string): ?bool $hasRows   rows? null when it could not be read
+ * @return array{0: array<string, list<string>>, 1: list<string>} [needed => why, dormant]
  */
 function pf_classify_missing_tables(
     array $missingTables,
-    array $references,
     array $seeded,
     array $core,
+    array $children,
     callable $hasRows
 ): array {
-    $inUse   = [];
+    $needed  = [];
     $dormant = [];
 
     foreach ($missingTables as $table) {
-        // Some tables have nothing to be judged by and still cannot be absent.
-        // user_details is the one that proves it: its only foreign key points
-        // at roles, which the seed fills, so every parent is excluded as
-        // evidence and the table would be filed as dormant -- on an instance
-        // where login fails outright, since loginProcess.php reads it on every
-        // attempt. The set is exactly what that path touches, which is why it
-        // can be written down at all; a longer guess at "important" tables
-        // would be the kind of list nobody maintains.
         if (isset($core[$table])) {
-            $inUse[$table] = ['the login path reads it on every attempt'];
+            $needed[$table] = ['the login path reads it on every attempt'];
             continue;
         }
 
-        // A table the seed fills is required by definition -- the installer put
-        // rows in it, so no install is meant to be without it, and no parent
-        // needs consulting. roles_privileges_map is the one that matters:
-        // it is seeded, it references roles and privileges which are seeded
-        // too, so judging it by its parents alone would have filed a missing
-        // ACL table as dormant while every privilege lookup in the application
-        // fails on it.
         if (isset($seeded[$table])) {
-            $inUse[$table] = ['sql/init.sql seeds it'];
+            $needed[$table] = ['sql/init.sql seeds it'];
             continue;
         }
 
-        $evidence = [];
-        foreach ($references[$table] ?? [] as $parent) {
-            if (isset($seeded[$parent])) {
-                continue;
-            }
-
-            // A probe that failed is not a probe that found nothing. A parent
-            // that is there but unreadable -- revoked privileges, a corrupt
-            // tablespace -- says less than an empty one, not more, so it is
-            // reported rather than quietly read as "unused".
-            $answer = $hasRows($parent);
-            if ($answer === null) {
-                $evidence[] = $parent . ' could not be read';
-            } elseif ($answer) {
-                $evidence[] = $parent;
-            }
+        $requests = $children[$table] ?? null;
+        if ($requests === null) {
+            $dormant[] = $table;
+            continue;
         }
 
-        if ($evidence !== []) {
-            $inUse[$table] = $evidence;
+        // A probe that failed is not a probe that found nothing. A request
+        // table that is there but unreadable -- revoked privileges, a corrupt
+        // tablespace -- says less than an empty one, not more.
+        $answer = $hasRows($requests);
+        if ($answer === null) {
+            $needed[$table] = [$requests . ' could not be read'];
+        } elseif ($answer) {
+            $needed[$table] = [$requests];
         } else {
             $dormant[] = $table;
         }
     }
 
-    return [$inUse, $dormant];
+    return [$needed, $dormant];
 }
 
 /**
