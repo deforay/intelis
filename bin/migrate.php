@@ -465,6 +465,62 @@ function _apply_change_column(DatabaseService $db, string $table, string $oldCol
 }
 
 /**
+ * Split a comma-separated list without cutting inside quotes or parentheses.
+ *
+ * ENUM('yes','no') and DECIMAL(10,2) both carry commas that separate nothing.
+ *
+ * @return list<string>
+ */
+function split_top_level(string $clause): array
+{
+    $parts = [];
+    $buffer = '';
+    $depth = 0;
+    $quote = null;
+    $length = strlen($clause);
+
+    for ($i = 0; $i < $length; $i++) {
+        $char = $clause[$i];
+
+        if ($quote !== null) {
+            $buffer .= $char;
+            if ($char === '\\' && $i + 1 < $length) {
+                $buffer .= $clause[++$i];
+            } elseif ($char === $quote) {
+                $quote = null;
+            }
+            continue;
+        }
+
+        if ($char === "'" || $char === '"' || $char === '`') {
+            $quote = $char;
+            $buffer .= $char;
+            continue;
+        }
+
+        if ($char === '(') {
+            $depth++;
+        } elseif ($char === ')') {
+            $depth--;
+        }
+
+        if ($char === ',' && $depth === 0) {
+            $parts[] = trim($buffer);
+            $buffer = '';
+            continue;
+        }
+
+        $buffer .= $char;
+    }
+
+    if (trim($buffer) !== '') {
+        $parts[] = trim($buffer);
+    }
+
+    return $parts;
+}
+
+/**
  * Route known DDL patterns through idempotent helpers.
  * Returns true if handled (do not execute again), false to execute raw.
  */
@@ -472,6 +528,41 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
 {
     $q = trim($query);
     $q = preg_replace('/NULL\s*AFTER/i', 'NULL AFTER', $q);
+
+    // An ALTER carrying several actions is dispatched one action at a time.
+    //
+    // Every guard below reads the FIRST action and answers for the whole
+    // statement, so `ADD a, ADD b` where a is already present was reported as
+    // already applied and b was never added -- silently, with the version then
+    // stamped as done. And letting it run raw is no better: MySQL fails the
+    // whole ALTER on the duplicate a, so b is lost either way. Three statements
+    // in 5.2.9 alone are written like this, one of them the pair that leaves
+    // facility_details with an sts_token and no sts_token_expiry.
+    //
+    // Splitting costs the statement its atomicity, which DDL does not have on
+    // MySQL regardless: each action is its own implicit commit already.
+    if (preg_match('/^alter\s+table\s+(`?[a-z0-9_$]+`?)\s+(.+?);?$/is', (string) $q, $alter)) {
+        $actions = split_top_level($alter[2]);
+        if (count($actions) > 1) {
+            $outcome = MIG_SKIPPED;
+            foreach ($actions as $action) {
+                $single = 'ALTER TABLE ' . $alter[1] . ' ' . trim($action);
+                $result = handle_idempotent_ddl($db, $io, $single);
+
+                if ($result === MIG_NOT_HANDLED) {
+                    // No guard knows this one; run it on its own so the actions
+                    // beside it are not lost with it.
+                    $db->rawQuery($single);
+                    assert_no_errno($db, $single);
+                    $result = MIG_EXECUTED;
+                }
+                if ($result === MIG_EXECUTED) {
+                    $outcome = MIG_EXECUTED;
+                }
+            }
+            return $outcome;
+        }
+    }
 
     // ALTER TABLE ... ADD [COLUMN] `col` ...
     // Guard: the bare-ADD form below also matches ADD INDEX/KEY/PRIMARY/etc.,
