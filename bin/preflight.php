@@ -726,11 +726,19 @@ try {
         check('Schema drift', PF_SKIP, 'sql/init.sql not readable');
     } else {
         $stmt = $pdo->prepare(
-            'SELECT TABLE_NAME FROM information_schema.TABLES
+            'SELECT TABLE_NAME, TABLE_ROWS FROM information_schema.TABLES
               WHERE TABLE_SCHEMA = ? AND TABLE_TYPE = "BASE TABLE"',
         );
         $stmt->execute([$name]);
-        $liveTables = array_flip($stmt->fetchAll(PDO::FETCH_COLUMN) ?: []);
+
+        // TABLE_ROWS is InnoDB's estimate, not a count, and that is the right
+        // instrument here: the question below is only ever "has this table been
+        // used at all", and a COUNT(*) over form_vl to answer it would have a
+        // diagnostic scanning millions of rows.
+        $liveTables = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) ?: [] as $row) {
+            $liveTables[(string) $row['TABLE_NAME']] = (int) ($row['TABLE_ROWS'] ?? 0);
+        }
 
         $stmt = $pdo->prepare(
             'SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ?',
@@ -841,14 +849,55 @@ try {
         }
 
         if ($missingTables !== []) {
-            check(
-                'Missing tables',
-                PF_WARN,
-                count($missingTables) . ' table(s) in sql/init.sql are absent here: '
-                    . implode(', ', array_slice($missingTables, 0, 8))
-                    . (count($missingTables) > 8 ? ' +' . (count($missingTables) - 8) . ' more' : '')
-                    . "\n  harmless if this instance never used them; lift the CREATE TABLE from sql/init.sql if a migration needs one",
-            );
+            // "Harmless if this instance never used them" was the whole basis
+            // for reporting a missing table as a warning, and it is checkable
+            // rather than assumable. A child table carries a foreign key to the
+            // table it hangs off, so init.sql already says which table would
+            // have to be in use for its absence to matter -- and if that parent
+            // holds rows, the module IS in use and the absence is not harmless
+            // at all. DRC is missing covid19_tests while form_covid19 holds
+            // 51,459 requests: every COVID page there fails on 1146 the moment
+            // anyone opens one, and the check called that harmless.
+            $references = pf_parse_init_references($initPath);
+
+            $inUse   = [];
+            $dormant = [];
+            foreach ($missingTables as $table) {
+                $populated = [];
+                foreach ($references[$table] ?? [] as $parent) {
+                    if (($liveTables[$parent] ?? 0) > 0) {
+                        $populated[] = $parent . ' (~' . number_format($liveTables[$parent]) . ' rows)';
+                    }
+                }
+                if ($populated !== []) {
+                    $inUse[$table] = $populated;
+                } else {
+                    $dormant[] = $table;
+                }
+            }
+
+            if ($dormant !== []) {
+                check(
+                    'Missing tables',
+                    PF_WARN,
+                    count($dormant) . ' table(s) in sql/init.sql are absent here: '
+                        . implode(', ', array_slice($dormant, 0, 8))
+                        . (count($dormant) > 8 ? ' +' . (count($dormant) - 8) . ' more' : '')
+                        . "\n  nothing they hang off holds any data, so this instance never used them;"
+                        . "\n  lift the CREATE TABLE from sql/init.sql if a migration needs one",
+                );
+            }
+
+            if ($inUse !== []) {
+                $detail = count($inUse) . ' table(s) absent here that this instance HAS used:';
+                foreach (array_slice($inUse, 0, 8, true) as $table => $populated) {
+                    $detail .= "\n    {$table} — hangs off " . implode(', ', $populated);
+                }
+                $detail .= "\n  the module still has its data but lost the table it writes to, so its pages"
+                    . "\n  fail on \"Table doesn't exist\" — lift the CREATE TABLE for each from sql/init.sql";
+
+                check('Missing tables in use', PF_FAIL, $detail);
+            }
         }
     }
 } catch (PDOException $e) {
@@ -959,6 +1008,58 @@ function pf_parse_init_schema(string $path): array
     fclose($handle);
 
     return array_filter($schema, static fn(array $columns): bool => $columns !== []);
+}
+
+/**
+ * Which tables each CREATE TABLE in init.sql hangs off, by its foreign keys.
+ *
+ * Only the REFERENCES side is collected, and only for the table currently being
+ * read, so the result answers one question: if this table were missing, which
+ * table's rows would tell you whether anyone ever used it. covid19_tests
+ * references form_covid19, generic_test_results references form_generic, and so
+ * on down the child tables -- which is exactly the set whose absence is easy to
+ * wave through as "this instance never turned that module on".
+ *
+ * A table with no foreign key yields no entry and is left to the warning, since
+ * nothing here can tell a module that was never enabled from one whose only
+ * table went missing.
+ *
+ * @return array<string, list<string>> table => the tables it references
+ */
+function pf_parse_init_references(string $path): array
+{
+    $handle = @fopen($path, 'r');
+    if ($handle === false) {
+        return [];
+    }
+
+    $references = [];
+    $current    = null;
+
+    while (($line = fgets($handle)) !== false) {
+        if ($current === null) {
+            if (preg_match('/^CREATE TABLE `([^`]+)`/i', $line, $m) === 1) {
+                $current = $m[1];
+            }
+            continue;
+        }
+
+        if (preg_match('/^\)/', $line) === 1) {
+            $current = null;
+            continue;
+        }
+
+        if (preg_match('/\bREFERENCES\s+`([^`]+)`/i', $line, $m) === 1 && $m[1] !== $current) {
+            $references[$current][] = $m[1];
+        }
+    }
+
+    fclose($handle);
+
+    return array_map(
+        static fn(array $parents): array => array_values(array_unique($parents)),
+        $references
+    );
 }
 
 /**
