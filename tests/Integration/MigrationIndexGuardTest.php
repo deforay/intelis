@@ -158,6 +158,50 @@ final class MigrationIndexGuardTest extends TestCase
         return count(array_filter($rows, static fn(array $r): bool => $r['cols'] === $wanted));
     }
 
+    /** Whether an index over exactly these columns exists and is UNIQUE. */
+    private function hasUniqueIndexOver(string $table, array $columns): bool
+    {
+        $rows = self::$db->rawQuery(
+            "SELECT NON_UNIQUE, GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS cols
+               FROM information_schema.STATISTICS
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?
+              GROUP BY INDEX_NAME, NON_UNIQUE",
+            [$table]
+        );
+
+        $wanted = implode(',', $columns);
+        foreach ($rows as $r) {
+            if ($r['cols'] === $wanted && (int) $r['NON_UNIQUE'] === 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Whether the table refuses a second row carrying the same value.
+     *
+     * Empties the table on the way out as well as on the way in: when there is
+     * no constraint this leaves duplicate rows behind, and a later ADD UNIQUE
+     * KEY over that column would then fail on the data rather than tell us
+     * anything about the runner.
+     */
+    private function rejectsDuplicate(string $table, string $column, string $value): bool
+    {
+        self::$db->rawQuery("DELETE FROM `$table`");
+        self::$db->rawQuery("INSERT INTO `$table` (`$column`) VALUES (?)", [$value]);
+
+        $rejected = false;
+        try {
+            self::$db->rawQuery("INSERT INTO `$table` (`$column`) VALUES (?)", [$value]);
+        } catch (\Throwable) {
+            $rejected = true;
+        }
+
+        self::$db->rawQuery("DELETE FROM `$table`");
+        return $rejected;
+    }
+
     /**
      * A table of this test's own, dropped and rebuilt on the spot.
      *
@@ -319,6 +363,53 @@ final class MigrationIndexGuardTest extends TestCase
     }
 
     /**
+     * An unnamed ADD UNIQUE KEY is not satisfied by a plain index on the column.
+     *
+     * The dangerous direction. `equivalent_index_exists()` compares uniqueness,
+     * but the unnamed route has to hand it the flag it parsed -- and if it ever
+     * stops doing so, the runner reports the migration as already applied and
+     * the constraint is simply never created. Nothing fails, nothing is logged,
+     * and the table quietly accepts duplicates from then on.
+     *
+     * So this asserts the constraint by its effect, not by its metadata.
+     */
+    public function testAnUnnamedUniqueKeyIsStillCreatedWhenOnlyAPlainIndexExists(): void
+    {
+        $table = $this->freshTable('unnamed_unique_probe', ['ALTER TABLE `%s` ADD INDEX( `a`)']);
+
+        $this->assertFalse(
+            $this->hasUniqueIndexOver($table, ['a']),
+            'Only a plain index is there to begin with.'
+        );
+        $this->assertFalse(
+            $this->rejectsDuplicate($table, 'a', 'same'),
+            'so duplicates are accepted to begin with.'
+        );
+
+        $this->assertSame(
+            MIG_EXECUTED,
+            $this->dispatch("ALTER TABLE `$table` ADD UNIQUE KEY (`a`)"),
+            'A plain index over the column must not satisfy a request for a UNIQUE one.'
+        );
+        $this->assertTrue(
+            $this->hasUniqueIndexOver($table, ['a']),
+            'The UNIQUE index has to exist afterwards.'
+        );
+        $this->assertTrue(
+            $this->rejectsDuplicate($table, 'a', 'same'),
+            'and it has to actually constrain the column.'
+        );
+
+        // Having created it, the runner must recognise it on the next replay --
+        // otherwise the fix for one bug is the other bug.
+        $this->assertSame(
+            MIG_SKIPPED,
+            $this->dispatch("ALTER TABLE `$table` ADD UNIQUE KEY (`a`)"),
+            'The second run must see the UNIQUE index it just created.'
+        );
+    }
+
+    /**
      * The original 5.7.56 case, through the runner.
      *
      * sql/init.sql ships the index as `last_modified_datetime` and the migration
@@ -369,6 +460,17 @@ final class MigrationIndexGuardTest extends TestCase
             MIG_EXECUTED,
             $this->dispatch("ALTER TABLE `$table` ADD UNIQUE INDEX `uniq_a` (`a`)"),
             'A UNIQUE index carries a constraint the existing plain one does not.'
+        );
+        // MIG_EXECUTED only says a statement ran. The route rewrites ADD UNIQUE
+        // INDEX into a CREATE INDEX of its own, so whether UNIQUE survived that
+        // rewrite is a separate question, and the whole point of the statement.
+        $this->assertTrue(
+            $this->hasUniqueIndexOver($table, ['a']),
+            'The index was created without its UNIQUE constraint.'
+        );
+        $this->assertTrue(
+            $this->rejectsDuplicate($table, 'a', 'same'),
+            'and the database still accepts duplicates, so the constraint is not really there.'
         );
     }
 }
