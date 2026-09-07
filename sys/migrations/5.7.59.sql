@@ -56,3 +56,15 @@ ALTER TABLE `form_vl` ADD COLUMN `result_sent_to_external_datetime` TEXT NULL DE
 ALTER TABLE `s_vlsm_instance` ADD COLUMN `sts_token` VARCHAR(64) NULL DEFAULT NULL AFTER `instance_facility_logo`;
 
 UPDATE `system_config` SET `value` = '5.7.59' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
