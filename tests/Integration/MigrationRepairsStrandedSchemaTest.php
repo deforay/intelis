@@ -44,6 +44,10 @@ final class MigrationRepairsStrandedSchemaTest extends TestCase
         'primary', 'key', 'unique', 'index', 'constraint', 'fulltext', 'spatial', 'foreign', 'check',
     ];
 
+    /** What begins a new statement, for a file whose statements are not all terminated. */
+    private const STATEMENT_START =
+        '/^\s*(CREATE|ALTER|INSERT|UPDATE|DELETE|DROP|SET|TRUNCATE|LOCK|UNLOCK)\b/i';
+
     /** Columns 5.7.59 renames; re-adding them would restore the old names. */
     private const RENAMED_AWAY_BY_5_7_59 = [
         'sample_received_at_testing_lab_datetime',
@@ -226,36 +230,51 @@ final class MigrationRepairsStrandedSchemaTest extends TestCase
         $statements = [];
         $buffer = '';
         $quote = null;
-        $text = implode("\n", $lines);
 
-        for ($i = 0, $n = strlen($text); $i < $n; $i++) {
-            $char = $text[$i];
-
-            if ($quote !== null) {
-                $buffer .= $char;
-                if ($char === '\\' && $i + 1 < $n) {
-                    $buffer .= $text[++$i];
-                } elseif ($char === $quote) {
-                    $quote = null;
-                }
-                continue;
-            }
-
-            if ($char === "'" || $char === '"' || $char === '`') {
-                $quote = $char;
-                $buffer .= $char;
-                continue;
-            }
-
-            if ($char === ';') {
-                if (trim($buffer) !== '') {
-                    $statements[] = trim($buffer);
-                }
+        foreach ($lines as $line) {
+            // Five statements in 5.2.9 are never terminated. Splitting on
+            // semicolons alone welds each to the statement after it, and the
+            // joined text no longer begins with ALTER, so BOTH disappear from
+            // whatever is reading the file -- which is how
+            // form_vl.health_insurance_code and batch_details.created_by went
+            // missing from the repair while this suite stayed green. A
+            // statement keyword at the start of a line ends the one before it.
+            if ($quote === null && trim($buffer) !== '' && preg_match(self::STATEMENT_START, $line)) {
+                $statements[] = trim($buffer);
                 $buffer = '';
-                continue;
             }
 
-            $buffer .= $char;
+            for ($i = 0, $n = strlen($line); $i < $n; $i++) {
+                $char = $line[$i];
+
+                if ($quote !== null) {
+                    $buffer .= $char;
+                    if ($char === '\\' && $i + 1 < $n) {
+                        $buffer .= $line[++$i];
+                    } elseif ($char === $quote) {
+                        $quote = null;
+                    }
+                    continue;
+                }
+
+                if ($char === "'" || $char === '"' || $char === '`') {
+                    $quote = $char;
+                    $buffer .= $char;
+                    continue;
+                }
+
+                if ($char === ';') {
+                    if (trim($buffer) !== '') {
+                        $statements[] = trim($buffer);
+                    }
+                    $buffer = '';
+                    continue;
+                }
+
+                $buffer .= $char;
+            }
+
+            $buffer .= "\n";
         }
 
         if (trim($buffer) !== '') {
@@ -337,6 +356,91 @@ final class MigrationRepairsStrandedSchemaTest extends TestCase
             }
         }
         $this->assertSame([], $missing, 'Columns the repair left missing.');
+    }
+
+    /**
+     * A recreated table comes back in the shape the application expects.
+     *
+     * Not just present, and not just carrying the columns 5.2.9 went on to add:
+     * the same columns a fresh install has. The repair originally carried
+     * 5.2.9's own CREATE statements, which are the 2024 shape -- and a stranded
+     * instance has already recorded every migration since as run, so nothing
+     * would ever grow that into the current one. form_cd4 came back missing
+     * eleven columns including cd4_result, and lab_storage came back carrying
+     * lab_storage_status after 5.7.59 had renamed it. Both pass a test that
+     * only asks whether the table exists.
+     */
+    public function testARecreatedTableMatchesTheCurrentSchema(): void
+    {
+        [$tables] = $this->owedBy529();
+        $this->assertNotEmpty($tables);
+
+        // From sql/init.sql, not from the database. An earlier test in this
+        // class has already dropped and rebuilt these tables, so reading the
+        // baseline from the live schema would capture whatever the migration
+        // just did and then compare it against itself -- which is exactly how
+        // the 2024 shape passed this assertion the first time it was written.
+        $expected = [];
+        foreach ($tables as $table) {
+            $expected[$table] = $this->columnsDeclaredInInitSql($table);
+            $this->assertNotEmpty($expected[$table], "sql/init.sql does not declare `$table`.");
+        }
+
+        self::$db->rawQuery('SET FOREIGN_KEY_CHECKS = 0');
+        foreach ($tables as $table) {
+            self::$db->rawQuery("DROP TABLE IF EXISTS `$table`");
+        }
+        self::$db->rawQuery('SET FOREIGN_KEY_CHECKS = 1');
+
+        $this->applyMigration();
+
+        foreach ($tables as $table) {
+            $this->assertSame(
+                $expected[$table],
+                $this->columnsOf($table),
+                "`$table` was rebuilt in a different shape from the one sql/init.sql declares."
+            );
+        }
+    }
+
+    /**
+     * The columns sql/init.sql declares for a table, sorted.
+     *
+     * The authority on what shape a table should have is the seed, not a
+     * database some other test has been rearranging.
+     *
+     * @return list<string>
+     */
+    private function columnsDeclaredInInitSql(string $table): array
+    {
+        $init = (string) file_get_contents(dirname(__DIR__, 2) . '/sql/init.sql');
+        if (!preg_match('/CREATE TABLE `' . preg_quote($table, '/') . '` \((.*?)\n\) ENGINE/s', $init, $m)) {
+            return [];
+        }
+
+        $columns = [];
+        foreach (explode("\n", $m[1]) as $line) {
+            if (preg_match('/^\s*`([A-Za-z0-9_]+)`\s+\S/', $line, $c)) {
+                $columns[] = $c[1];
+            }
+        }
+        sort($columns);
+
+        return $columns;
+    }
+
+    /** @return list<string> */
+    private function columnsOf(string $table): array
+    {
+        return array_column(
+            self::$db->rawQuery(
+                "SELECT COLUMN_NAME FROM information_schema.COLUMNS
+                   WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?
+                   ORDER BY COLUMN_NAME",
+                [$table]
+            ),
+            'COLUMN_NAME'
+        );
     }
 
     /**
