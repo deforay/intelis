@@ -1138,6 +1138,48 @@ final readonly class AuditArchiveService
      * install, so behavior is identical to today's until a rename migration
      * registers an alias.
      */
+    /**
+     * One archived row, keyed by column name.
+     *
+     * Two headers can resolve to one current name, and after a rename they
+     * routinely do. A rewrite takes the union of the table's columns and the
+     * file's own -- that is what keeps a retired column's history from being
+     * erased -- so a renamed column ends up in the file twice, under the old
+     * name and the new one. The alias map then resolves both to the new name.
+     *
+     * Only one of that pair is ever filled in on a given revision: the old name
+     * on revisions written before the rename, the new name on the ones after.
+     * So whichever of the two has something in it is the value, and an empty
+     * cell must not overwrite a filled one. Assigning blindly meant the last
+     * header won, and since the union puts the table's own columns first and
+     * appends the retired ones, the last header is the OLD name -- empty on
+     * every revision since the rename, and therefore blanking exactly the
+     * values a reader is most likely to be looking for.
+     *
+     * Values arrive as the archiver wrote them (json_encode output that the
+     * parser has unquoted) and are passed through as-is, literal "null"
+     * included. Only the empty string counts as absent.
+     *
+     * @param string[] $resolvedHeaders
+     * @param string[] $row
+     * @return array<string, string>
+     */
+    private static function assembleRow(array $resolvedHeaders, array $row): array
+    {
+        $assoc = [];
+        foreach ($resolvedHeaders as $i => $h) {
+            // First non-empty wins. The union puts the table's own columns
+            // ahead of the retired ones, so where both hold something the
+            // current column is the authority; where only one does, it is the
+            // answer whichever side it is on.
+            if (($assoc[$h] ?? '') !== '') {
+                continue;
+            }
+            $assoc[$h] = $row[$i] ?? '';
+        }
+        return $assoc;
+    }
+
     public function readAuditDataFromCsvFlexible(string $filePath, ?string $testType = null): array
     {
         if (!is_file($filePath)) {
@@ -1178,15 +1220,7 @@ final readonly class AuditArchiveService
 
         $rows = [];
         foreach ($parsed['rows'] as $row) {
-            $assoc = [];
-            foreach ($resolvedHeaders as $i => $h) {
-                // original archiver writes json_encode() values; the parser already
-                // unquotes; we'll show as-is (including literal "null" when used).
-                // When two old names alias to the same current name (rename
-                // collision), last write wins — acceptable edge for renames.
-                $assoc[$h] = $row[$i] ?? '';
-            }
-            $rows[] = $assoc;
+            $rows[] = self::assembleRow($resolvedHeaders, $row);
         }
 
         return $rows;
