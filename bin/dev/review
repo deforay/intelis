@@ -56,7 +56,13 @@ last_reviewed() {
     local sha
     while read -r sha _; do
         case "$sha" in ''|\#*) continue ;; esac
-        if git cat-file -e "${sha}^{commit}" 2>/dev/null; then
+        # An ancestor of HEAD, not merely a commit that exists. A recorded sha
+        # can drop off this branch -- an amend or a rebase leaves the old object
+        # behind, and the shared ledger also carries entries from other
+        # worktrees' branches. Either way `thatSha..HEAD` is not a range of
+        # anything, and --since-last would re-read commits already recorded
+        # while missing ones that are not.
+        if git merge-base --is-ancestor "$sha" HEAD 2>/dev/null; then
             echo "$sha"
             return 0
         fi
