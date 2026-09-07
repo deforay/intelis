@@ -453,15 +453,92 @@ function drop_index_if_exists(DatabaseService $db, string $table, string $index)
  */
 function _apply_change_column(DatabaseService $db, string $table, string $oldCol, string $newCol, string $ddl): int
 {
+    $isRename = strcasecmp($oldCol, $newCol) !== 0;
+
     if (column_exists($db, $table, $oldCol)) {
+        if ($isRename && column_exists($db, $table, $newCol)) {
+            return _reconcile_renamed_column($db, $table, $oldCol, $newCol);
+        }
         $db->rawQuery($ddl);
         assert_no_errno($db, $ddl);
         return MIG_EXECUTED;
     }
-    if (strcasecmp($oldCol, $newCol) !== 0 && column_exists($db, $table, $newCol)) {
+    if ($isRename && column_exists($db, $table, $newCol)) {
         return MIG_SKIPPED;
     }
     return MIG_NOT_HANDLED;
+}
+
+/**
+ * Both names present: carry the old column's values over and retire it.
+ *
+ * A CHANGE cannot rename onto a name the table already holds -- MySQL raises
+ * 1060, which is on the benign list, so the statement was written off as
+ * already applied. It was not: the values still sat under the old name, the
+ * new column held whatever default it was created with, and the version was
+ * stamped as done on top of that. The reader sees an empty column and no error.
+ *
+ * A lab reaches this state by having been handed an `ADD` remedy for the
+ * missing new column before the rename migration existed. Both columns then
+ * hold real values: the old one everything written before the remedy, the new
+ * one everything written since, because the application only ever knew the new
+ * name. So the old column fills gaps and never overwrites.
+ *
+ * What counts as a gap depends on the new column. If it takes NULL, NULL is the
+ * gap. If it does not, the only mark of a row nothing ever wrote is that it
+ * still carries the column default -- which cannot be told apart from a row
+ * deliberately written to that value, so rows holding the default are filled
+ * from the old column only where the old column disagrees with it. That
+ * recovers the rows that were actually lost (a shelf marked inactive under the
+ * old name, reading active under the new) and leaves every other row alone.
+ */
+function _reconcile_renamed_column(DatabaseService $db, string $table, string $oldCol, string $newCol): int
+{
+    $meta = $db->rawQueryOne(
+        "SELECT IS_NULLABLE, COLUMN_DEFAULT FROM information_schema.COLUMNS
+          WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ? LIMIT 1",
+        [current_db($db), $table, $newCol]
+    );
+
+    $nullable = strcasecmp((string) ($meta['IS_NULLABLE'] ?? 'YES'), 'YES') === 0;
+    $default  = $meta['COLUMN_DEFAULT'] ?? null;
+
+    if ($nullable) {
+        $sql = sprintf(
+            'UPDATE `%s` SET `%s` = `%s` WHERE `%s` IS NULL AND `%s` IS NOT NULL',
+            $table,
+            $newCol,
+            $oldCol,
+            $newCol,
+            $oldCol
+        );
+        $params = [];
+    } elseif ($default !== null) {
+        $sql = sprintf(
+            'UPDATE `%s` SET `%s` = `%s` WHERE `%s` = ? AND `%s` IS NOT NULL AND `%s` <> ?',
+            $table,
+            $newCol,
+            $oldCol,
+            $newCol,
+            $oldCol,
+            $oldCol
+        );
+        $params = [$default, $default];
+    } else {
+        // NOT NULL with no default: every row was written deliberately and
+        // there is no gap to fill. Retire the old column without touching data.
+        $sql = null;
+        $params = [];
+    }
+
+    if ($sql !== null) {
+        $db->rawQuery($sql, $params);
+        assert_no_errno($db, $sql);
+    }
+
+    drop_column_if_exists($db, $table, $oldCol);
+
+    return MIG_EXECUTED;
 }
 
 /**
