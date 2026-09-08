@@ -1,0 +1,112 @@
+/*
+ * Filter panel for the clinic report pages. The filters used to be a six-column
+ * <table> with hardcoded percentage widths, which could not reflow and pushed
+ * the results themselves below the fold on anything smaller than a desktop.
+ */
+
+.report-filter-box {
+    margin-top: 15px;
+}
+
+.report-filter-header {
+    cursor: pointer;
+}
+
+.report-filter-box .box-title {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* What the tab is filtered to, readable while the panel is collapsed. */
+.report-filter-summary {
+    display: none;
+    margin-left: 10px;
+    color: #72777c;
+    font-size: 12px;
+    line-height: 20px;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 55%;
+}
+
+/* Floated columns of unequal height snag on each other and leave holes in the
+   grid; the filters are a plain wrapping row, so let them be one. */
+.report-filter-box .box-body > .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.report-filter-box .box-body > .row > [class*="col-"] {
+    float: none;
+}
+
+.report-filter-box .form-group {
+    margin-bottom: 12px;
+}
+
+.report-filter-box label.control-label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.report-filter-box .form-control,
+.report-filter-box .select2-container {
+    width: 100% !important;
+}
+
+.report-filter-box .filter-actions {
+    padding-top: 5px;
+    border-top: 1px solid #f4f4f4;
+    margin-top: 5px;
+}
+
+.report-filter-box .filter-actions .btn {
+    margin-right: 5px;
+}
+
+/* An age range is one filter in two boxes; keep it inside its column. */
+.report-filter-box .form-group .input-pair {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.report-filter-box .input-pair-sep {
+    color: #72777c;
+    font-size: 12px;
+}
+
+/* Drag for a range, type for an exact one; the two stay in step. */
+.report-filter-box .range-slider {
+    margin: 14px 6px 4px;
+    height: 6px;
+    background: #e4e7ea;
+    border: 0;
+    border-radius: 3px;
+}
+
+.report-filter-box .range-slider .ui-slider-range {
+    background: #3c8dbc;
+    border-radius: 3px;
+}
+
+.report-filter-box .range-slider .ui-slider-handle {
+    width: 16px;
+    height: 16px;
+    top: -5px;
+    margin-left: -8px;
+    background: #fff;
+    border: 2px solid #3c8dbc;
+    border-radius: 50%;
+    cursor: pointer;
+    outline: none;
+}
+
+@media (max-width: 767px) {
+    .report-filter-summary {
+        display: none !important;
+    }
+}
