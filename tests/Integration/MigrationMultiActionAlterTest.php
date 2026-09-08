@@ -332,12 +332,24 @@ final class MigrationMultiActionAlterTest extends TestCase
         $t = $this->freshTable('multi_orderby_probe', 'a INT NULL, b INT NULL');
         self::$db->rawQuery("INSERT INTO `$t` (a, b) VALUES (2, 1), (1, 2)");
 
+        $before = (int) (self::$db->rawQueryOne("SHOW SESSION STATUS LIKE 'Com_alter_table'")['Value'] ?? 0);
+
         $this->dispatch("ALTER TABLE `$t` ORDER BY `a`, `b`");
 
+        $after = (int) (self::$db->rawQueryOne("SHOW SESSION STATUS LIKE 'Com_alter_table'")['Value'] ?? 0);
+
+        // Counting the ALTERs, not re-reading the columns: both columns exist
+        // before and after whatever happens, so a version that quietly ran
+        // nothing at all would satisfy an assertion about them.
+        $this->assertSame(
+            1,
+            $after - $before,
+            'The statement has to run, once, rather than be split into halves that are not SQL.'
+        );
         $this->assertSame(
             ['a', 'b'],
             array_values(array_intersect(['a', 'b'], $this->columnsOf($t))),
-            'The table has to survive an ORDER BY intact.'
+            'and the table has to survive it intact.'
         );
     }
 
@@ -361,6 +373,38 @@ final class MigrationMultiActionAlterTest extends TestCase
         $this->dispatch(
             "ALTER TABLE `$t` ADD `c` INT NULL, ADD INDEX `idx_d` (`d`), ADD COLUMN `d` INT NULL"
         );
+    }
+
+    /**
+     * A multi-rename interrupted partway still finishes.
+     *
+     * 4.4.9 renames four system_admin columns in one ALTER. Interrupted after
+     * the first, the statement fails 1054 on the next run -- the old first
+     * column is gone -- and 1054 is not a benign code. Rethrowing it left the
+     * installation stuck on 4.4.9 with no way forward, which is exactly the
+     * replay deadlock this guard exists to prevent. So the split has to be
+     * reached on any failure, not only on a benign one.
+     */
+    public function testAPartlyAppliedMultiRenameStillCompletes(): void
+    {
+        $t = $this->freshTable('multi_rename_probe', 'old_a INT NULL, old_b INT NULL, old_c INT NULL');
+
+        // The interruption: the first rename landed, the rest did not.
+        self::$db->rawQuery("ALTER TABLE `$t` CHANGE `old_a` `new_a` INT NULL");
+
+        $this->dispatch(
+            "ALTER TABLE `$t` CHANGE `old_a` `new_a` INT NULL,"
+            . " CHANGE `old_b` `new_b` INT NULL,"
+            . " CHANGE `old_c` `new_c` INT NULL"
+        );
+
+        $columns = $this->columnsOf($t);
+        foreach (['new_a', 'new_b', 'new_c'] as $expected) {
+            $this->assertContains($expected, $columns, "`$expected` was never renamed.");
+        }
+        foreach (['old_b', 'old_c'] as $gone) {
+            $this->assertNotContains($gone, $columns, "`$gone` should have been renamed away.");
+        }
     }
 
     /** Mixed actions: a column add beside an index add. */

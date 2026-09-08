@@ -733,12 +733,19 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
                 $db->rawQuery($q);
                 assert_no_errno($db, $q);
                 return MIG_EXECUTED;      // nothing was applied yet: one rebuild, as written
-            } catch (Throwable $e) {
-                if (!is_benign_ddl_error($e, $db)) {
-                    throw $e;
-                }
-                // Part of it is already in place. Only now is it worth the
-                // rebuilds to find out which part.
+            } catch (Throwable) {
+                // However it failed, it failed whole -- MySQL applies an ALTER
+                // or none of it. So take it apart and let each action answer
+                // for itself. A benign error below means that action is already
+                // done; anything else still stops the run.
+                //
+                // Falling through on ANY error, not only a benign one, because
+                // a part-applied statement does not always fail benignly. Four
+                // renames in one ALTER (4.4.9 on system_admin) fail with 1054
+                // once the FIRST has been applied: the old column is gone, and
+                // 1054 is not on the benign list. Rethrowing there left the
+                // installation stuck on 4.4.9 with no way forward, which is the
+                // deadlock this whole guard exists to prevent.
             }
 
             $outcome = MIG_SKIPPED;
