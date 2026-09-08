@@ -30,7 +30,7 @@ $tResult = [];
 //$rjResult = [];
 if (!empty($_POST['sampleCollectionDate'])) {
     $sWhere = [];
-    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+    [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
     //get value by rejection reason id
     $vlQuery = "SELECT count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`, r_c_a.recommended_corrective_action_name
                 FROM form_covid19 as vl
@@ -38,7 +38,10 @@ if (!empty($_POST['sampleCollectionDate'])) {
                 LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
                 LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 LEFT JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
-    $sWhere[] = ' where ' . SampleRejectionUtility::sqlPredicate('vl') . ' AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '"';
+    // Compared as a datetime rather than through DATE(): a function around the
+    // column puts the index on it out of reach, so the filter read the whole
+    // table to answer what the index already knew.
+    $sWhere[] = ' where ' . SampleRejectionUtility::sqlPredicate('vl') . ' AND vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 
     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
         $sWhere[] = ' vl.specimen_type = ' . (int) $_POST['sampleType'];

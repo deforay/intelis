@@ -185,7 +185,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															class="form-control highViralLoadReportFilter stDate"
 															placeholder="<?php echo _htmlTranslate('Select Sample Test Date'); ?>"
 															readonly style="background:#fff;"
-															onchange="setSampleTestDate(this)" />
+															onchange="syncDateFilters(this)" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
@@ -638,7 +638,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															class="form-control sampleRjtReportFilter stDate daterange"
 															placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>"
 															readonly style="background:#fff;"
-															onchange="setSampleTestDate(this)" />
+															onchange="syncDateFilters(this)" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
@@ -932,7 +932,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															class="form-control notAvailReportFilter stDate daterange"
 															placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>"
 															readonly style="background:#fff;"
-															onchange="setSampleTestDate(this)" />
+															onchange="syncDateFilters(this)" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
@@ -2438,7 +2438,12 @@ $implementingPartnerList = $general->getImplementationPartners();
 		}
 	}
 
-	function setSampleTestDate(obj) {
+	/* Copies the range just picked into every tab's date filter, so switching
+	   tabs keeps the period you were looking at. The tabs do not all date a
+	   sample the same way -- rejection and results-not-available go by
+	   collection date, the rest by test date -- so this carries the period
+	   across, not the meaning. */
+	function syncDateFilters(obj) {
 		$(".stDate").val($("#" + obj.id).val());
 	}
 

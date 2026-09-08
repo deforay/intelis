@@ -97,13 +97,12 @@ try {
         $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['rjtBatchCode']) . '"';
     }
 
-    if (!empty($_POST['rjtSampleCollectionDate'])) {
-        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['rjtSampleCollectionDate'] ?? '');
-        if (trim((string) $start_date) === trim((string) $end_date)) {
-            $sWhere[] = " DATE(vl.sample_collection_date) = '$start_date' ";
-        } else {
-            $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date' ";
-        }
+    [$start_date, $end_date] = DateUtility::dayRange($_POST['rjtSampleCollectionDate'] ?? '');
+    if ($start_date !== '' && $end_date !== '') {
+        // Compared as a datetime rather than through DATE(): a function around the
+        // column puts the index on it out of reach, so the filter read the whole
+        // table to answer what the index already knew.
+        $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
     }
 
     if (isset($_POST['rjtSampleType']) && $_POST['rjtSampleType'] != '') {

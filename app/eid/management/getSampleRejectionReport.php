@@ -80,13 +80,12 @@ if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) !== '
     // batch "B1" also match "B12".
     $sWhere[] = '  b.batch_code = "' . $db->escape((string) $_POST['rjtBatchCode']) . '"';
 }
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['rjtSampleCollectionDate'] ?? '');
-if (isset($_POST['rjtSampleCollectionDate']) && trim((string) $_POST['rjtSampleCollectionDate']) !== '') {
-    if (trim((string) $start_date) === trim((string) $end_date)) {
-        $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-    } else {
-        $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-    }
+[$start_date, $end_date] = DateUtility::dayRange($_POST['rjtSampleCollectionDate'] ?? '');
+if ($start_date !== '' && $end_date !== '') {
+    // Compared as a datetime rather than through DATE(): a function around the
+    // column puts the index on it out of reach, so the filter read the whole
+    // table to answer what the index already knew.
+    $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 if (isset($_POST['rjtSampleType']) && $_POST['rjtSampleType'] != '') {
     $sWhere[] = ' vl.specimen_type = ' . (int) $_POST['rjtSampleType'];
