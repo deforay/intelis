@@ -286,9 +286,24 @@
         });
     }
 
+    /* Only the grid of filters folds away. The Search, Reset and Export buttons
+       stay put: a search is often the step before an export, and collapsing the
+       panel used to take the export button off the screen with it. */
+    function toggleFilters(box, collapsed) {
+        var grid = box.find('.box-body > .row').first();
+        var icon = box.find('.report-filter-toggle em').first();
+        box.toggleClass('report-filter-collapsed', collapsed);
+        icon.toggleClass('fa-minus', !collapsed).toggleClass('fa-plus', collapsed);
+        if (collapsed) {
+            grid.slideUp(150);
+        } else {
+            grid.slideDown(150);
+        }
+    }
+
     function collapse(box) {
-        if (!box.hasClass('collapsed-box')) {
-            box.find('[data-widget="collapse"]').first().trigger('click');
+        if (box.length && !box.hasClass('report-filter-collapsed')) {
+            toggleFilters(box, true);
         }
     }
 
@@ -426,11 +441,10 @@
                 }
             });
 
-            $(document).on('click', '.report-filter-header', function (event) {
-                if ($(event.target).closest('.btn-box-tool').length) {
-                    return;
-                }
-                $(this).find('[data-widget="collapse"]').first().trigger('click');
+            /* The whole header is the hit area, the chevron included. */
+            $(document).on('click', '.report-filter-header', function () {
+                var box = $(this).closest('.report-filter-box');
+                toggleFilters(box, !box.hasClass('report-filter-collapsed'));
             });
 
             $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
