@@ -89,8 +89,18 @@
 /* With the filters folded away there is nothing to search or reset, so those
    two go. Export acts on the results already on screen and stays -- running a
    search is usually the step before exporting it. */
-.report-filter-box.report-filter-collapsed .filter-actions .btn:not(.filter-export) {
+.report-filter-box.report-filter-collapsed .filter-actions .btn:not(.filter-export):not(.filter-expand) {
     display: none;
+}
+
+/* A chevron in the corner of a panel is not an obvious way back to the filters.
+   Collapsed, the way back is a button sitting beside the export. */
+.report-filter-box .filter-actions .filter-expand {
+    display: none;
+}
+
+.report-filter-box.report-filter-collapsed .filter-actions .filter-expand {
+    display: inline-block;
 }
 
 /* An age range is one filter in two boxes; keep it inside its column. */

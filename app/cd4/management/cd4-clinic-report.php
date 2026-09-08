@@ -111,13 +111,13 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="hvlSampleTestDate"><?php echo _translate("Sample Test Date"); ?></label>
-															<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
+															<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _htmlTranslate('Select Sample Test Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="hvlBatchCode"><?php echo _translate("Batch Code"); ?></label>
-															<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _translate('Please select batch code'); ?>">
+															<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _htmlTranslate('Please select batch code'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
@@ -132,7 +132,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="hvlSampleType"><?php echo _translate("Sample Type"); ?></label>
-															<select class="form-control" id="hvlSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+															<select class="form-control" id="hvlSampleType" name="sampleType" title="<?php echo _htmlTranslate('Please select sample type'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
@@ -147,7 +147,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="state"><?php echo _translate("Province/State"); ?></label>
-															<select class="form-control select2-element" id="state" onchange="getByProvince('district','hvlFacilityName',this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+															<select class="form-control select2-element" id="state" onchange="getByProvince('district','hvlFacilityName',this.value)" name="state" title="<?php echo _htmlTranslate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 															</select>
 														</div>
@@ -155,14 +155,14 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="district"><?php echo _translate("District/County"); ?></label>
-															<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
+															<select class="form-control select2-element" id="district" name="district" title="<?php echo _htmlTranslate('Please select District/County'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
 															</select>
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="hvlFacilityName"><?php echo _translate("Facility"); ?></label>
-															<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
+															<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _htmlTranslate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
 															</select>
 														</div>
@@ -170,7 +170,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="hvlContactStatus"><?php echo _translate("Contact Status"); ?></label>
-															<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _translate('Please select contact status'); ?>">
+															<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _htmlTranslate('Please select contact status'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="yes"><?php echo _translate("Completed"); ?></option>
 															<option value="no"><?php echo _translate("Not Completed"); ?></option>
@@ -181,7 +181,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="hvlGender"><?php echo _translate("Sex"); ?></label>
-															<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" onchange="">
+															<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _htmlTranslate('Please select sex'); ?>" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>
@@ -192,7 +192,8 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
+													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _htmlTranslate("Search"); ?>" class="btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 												</div>
@@ -236,13 +237,13 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="rjtSampleTestDate"><?php echo _translate("Sample Test Date"); ?></label>
-															<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
+															<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _htmlTranslate('Select Sample Test Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="rjtBatchCode"><?php echo _translate("Batch Code"); ?></label>
-															<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _translate('Please select batch code'); ?>">
+															<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _htmlTranslate('Please select batch code'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
@@ -257,7 +258,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="rjtSampleType"><?php echo _translate("Sample Type"); ?></label>
-															<select class="form-control" id="rjtSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+															<select class="form-control" id="rjtSampleType" name="sampleType" title="<?php echo _htmlTranslate('Please select sample type'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
@@ -272,7 +273,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="rjtState"><?php echo _translate("Province/State"); ?></label>
-															<select class="form-control select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _translate('Please select Province/State'); ?>">
+															<select class="form-control select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _htmlTranslate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 															</select>
 														</div>
@@ -280,14 +281,14 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="rjtDistrict"><?php echo _translate("District/County"); ?></label>
-															<select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
+															<select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _htmlTranslate('Please select District/County'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
 															</select>
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="rjtFacilityName"><?php echo _translate("Facility"); ?></label>
-															<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
+															<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _htmlTranslate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
 															</select>
 														</div>
@@ -295,7 +296,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="rjtGender"><?php echo _translate("Sex"); ?></label>
-															<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" onchange="">
+															<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _htmlTranslate('Please select sex'); ?>" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>
@@ -315,7 +316,8 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
+													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _htmlTranslate("Search"); ?>" class="btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 												</div>
@@ -356,13 +358,13 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="noResultSampleTestDate"><?php echo _translate("Sample Collection Date"); ?></label>
-															<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
+															<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="noResultBatchCode"><?php echo _translate("Batch Code"); ?></label>
-															<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _translate('Please select batch code'); ?>">
+															<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _htmlTranslate('Please select batch code'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
@@ -377,7 +379,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="noResultSampleType"><?php echo _translate("Sample Type"); ?></label>
-															<select class="form-control" id="noResultSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+															<select class="form-control" id="noResultSampleType" name="sampleType" title="<?php echo _htmlTranslate('Please select sample type'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
@@ -392,7 +394,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="noResultState"><?php echo _translate("Province/State"); ?></label>
-															<select class="form-control select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _translate('Please select Province/State'); ?>">
+															<select class="form-control select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _htmlTranslate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 															</select>
 														</div>
@@ -400,14 +402,14 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="noResultDistrict"><?php echo _translate("District/County"); ?></label>
-															<select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
+															<select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _htmlTranslate('Please select District/County'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
 															</select>
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="noResultFacilityName"><?php echo _translate("Facility"); ?></label>
-															<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
+															<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _htmlTranslate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
 															</select>
 														</div>
@@ -415,7 +417,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="noResultGender"><?php echo _translate("Sex"); ?></label>
-															<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" onchange="">
+															<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _htmlTranslate('Please select sex'); ?>" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>
@@ -426,7 +428,8 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
+													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _htmlTranslate("Search"); ?>" class="btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 												</div>
@@ -468,13 +471,13 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="sampleCollectionDate"><?php echo _translate("Sample Collection Date"); ?></label>
-															<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="background:#fff;" />
+															<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>" readonly style="background:#fff;" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="formField"><?php echo _translate("Fields"); ?></label>
-															<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _translate('Please fields'); ?>">
+															<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _htmlTranslate('Please fields'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="sample_code"><?php echo _translate("Sample ID"); ?></option>
 															<option value="sample_collection_date"><?php echo _translate("Sample Collection Date"); ?></option>
@@ -491,7 +494,8 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
+													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _htmlTranslate("Search"); ?>" class="btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 												</div>
@@ -535,7 +539,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="stState"><?php echo _translate("Province/State"); ?></label>
-															<select class="form-control stReportFilter select2 select2-element" id="stState" onchange="getByProvince('stDistrict','stfacilityName',this.value)" name="stState" title="<?php echo _translate('Please select Province/State'); ?>">
+															<select class="form-control stReportFilter select2 select2-element" id="stState" onchange="getByProvince('stDistrict','stfacilityName',this.value)" name="stState" title="<?php echo _htmlTranslate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 															</select>
 														</div>
@@ -543,14 +547,14 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="stDistrict"><?php echo _translate("District/County"); ?></label>
-															<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
+															<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _htmlTranslate('Please select District/County'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
 															</select>
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="stfacilityName"><?php echo _translate("Facility"); ?></label>
-															<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
+															<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _htmlTranslate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
 															</select>
 														</div>
@@ -558,13 +562,14 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="stSampleCollectionDate"><?php echo _translate("Sample Collection Date "); ?></label>
-															<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="background:#fff;" />
+															<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _htmlTranslate('Select Sample Collection date'); ?>" style="background:#fff;" />
 														</div>
 													</div>
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
+													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _htmlTranslate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('stReportFilter');"><span>
 													<?= _translate("Reset"); ?>
 													</span></button>
@@ -591,19 +596,20 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="patientId"><?php echo _translate("Patient ID"); ?></label>
-															<input type="text" id="patientId" name="patientId" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
+															<input type="text" id="patientId" name="patientId" class="form-control patientHistoryFilter" placeholder="<?php echo _htmlTranslate('Enter Patient ID'); ?>" style="background:#fff;" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="patientName"><?php echo _translate("Patient Name"); ?></label>
-															<input type="text" id="patientName" name="patientName" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
+															<input type="text" id="patientName" name="patientName" class="form-control patientHistoryFilter" placeholder="<?php echo _htmlTranslate('Enter Patient Name'); ?>" style="background:#fff;" />
 														</div>
 													</div>
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
+													<input type="button" onclick="searchVlRequestData();" value="<?= _htmlTranslate('Search'); ?>" class="btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('patientHistoryFilter');">
 													<span><?= _translate('Reset'); ?></span>
 													</button>
@@ -687,22 +693,22 @@ $state = $geolocationService->getProvinces("yes");
 	var oTablepatientTestHistoryReport = null;
 	$(document).ready(function() {
 		$("#state,#rjtState,#noResultState,#stState").select2({
-			placeholder: "<?php echo _translate("Select Province"); ?>",
+			placeholder: "<?php echo _jsTranslate("Select Province"); ?>",
 			width: '100%'
 		});
 		$("#district,#rjtDistrict,#noResultDistrict,#stDistrict").select2({
-			placeholder: "<?php echo _translate("Select District"); ?>",
+			placeholder: "<?php echo _jsTranslate("Select District"); ?>",
 			width: '100%'
 		});
 		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName,#stfacilityName").select2({
-			placeholder: "<?php echo _translate("Select Facilities"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Facilities"); ?>"
 		});
 		$("#formField").select2({
-			placeholder: "<?php echo _translate("Select Fields"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Fields"); ?>"
 		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#stSampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear", true); ?>",
+					cancelLabel: "<?= _jsTranslate("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
@@ -1121,7 +1127,7 @@ $state = $geolocationService->getProvinces("yes");
 			return searchVlRequestData().then(exportHighViralLoadInexcel);
 		}
 		var markAsComplete = false;
-		confm = confirm("<?php echo _translate("Do you want to mark these as complete ?"); ?>");
+		confm = confirm("<?php echo _jsTranslate("Do you want to mark these as complete ?"); ?>");
 		if (confm) {
 			var markAsComplete = true;
 		}
@@ -1137,7 +1143,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -1162,7 +1168,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -1187,7 +1193,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -1209,7 +1215,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -1231,7 +1237,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -1323,7 +1329,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?= _translate("Unable to generate download", true); ?>");
+					alert("<?= _jsTranslate("Unable to generate download"); ?>");
 				} else {
 					$.unblockUI();
 					oTablepatientTestHistoryReport.fnDraw();

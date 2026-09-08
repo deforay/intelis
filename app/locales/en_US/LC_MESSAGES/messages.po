@@ -4775,7 +4775,7 @@ msgstr ""
 #: hepatitis/management/hepatitis-clinic-report.php:886
 #: tb/management/tb-clinic-report.php:880
 #: vl/program-management/highViralLoad.php:1431
-msgid "Do you wisht to change the contact completed status?"
+msgid "Do you wish to change the contact completed status?"
 msgstr ""
 
 #: covid-19/management/covid-19-clinic-report.php:897
