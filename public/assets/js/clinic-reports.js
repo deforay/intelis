@@ -140,17 +140,31 @@
         target.trigger('change.select2');
     }
 
-    /* Carries the filters the user has actually set into the tab being opened,
-       without overwriting anything they set in that tab themselves. */
+    function touched(paneId) {
+        var any = false;
+        $.each(labelledControls(paneId), function (key, el) {
+            if (el.data('cr-touched')) {
+                any = true;
+            }
+        });
+        return any;
+    }
+
+    /* Carries the filters the user is working with into a tab they have not set
+       up themselves. All or nothing, per tab: filling in only the untouched
+       controls can leave a tab holding a combination nobody chose -- a hand-set
+       Sex of male beside a copied Pregnant of yes, or one tab's province beside
+       another's district. A tab the user has touched is theirs. */
     function shareFilters(fromPane, toPane) {
-        if (!fromPane || !toPane || fromPane === toPane) {
+        if (!fromPane || !toPane || fromPane === toPane || touched(toPane)) {
             return;
         }
         var source = labelledControls(fromPane);
         var target = labelledControls(toPane);
+        var copied = false;
         $.each(source, function (key, from) {
             var to = target[key];
-            if (!to || to.data('cr-touched')) {
+            if (!to) {
                 return;
             }
             var value = from.val();
@@ -163,7 +177,27 @@
                 to.html(from.html());
             }
             applyValue(to, value);
+            copied = true;
         });
+        if (!copied) {
+            return;
+        }
+        /* A copied sex has to take the pregnancy controls with it, or the tab
+           shows a disabled filter that is still submitted. Safe to call: the
+           handler only enables and disables, unlike the province and district
+           handlers, which fetch. */
+        pane(toPane).find('select[onchange^="hideFemaleDetails"]').each(function () {
+            if (typeof this.onchange === 'function') {
+                this.onchange();
+            }
+        });
+        /* The copies are made with a namespaced event so the province and
+           district lookups do not fire, which also means the page's own change
+           handlers do not see them. Without this the page still believes its
+           last search matches the filters on screen, and an export would replay
+           the query that search stored -- for the high viral load report, that
+           is the row set a confirmed "mark as complete" writes to. */
+        $(document).trigger('clinicreports:filterschanged', [toPane]);
         updateSummaries(pane(toPane));
     }
 
