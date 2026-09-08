@@ -30706,6 +30706,10 @@ msgstr "Gérer le statut des résultats VL (approbation/refus)"
 msgid "High VL Report"
 msgstr "Rapport VL élevé"
 
+#: app/system/translate-strings.php:126
+msgid "VL Clinic Reports"
+msgstr "Rapports cliniques VL"
+
 #: app/system/translate-strings.php:127
 msgid "Contact Notes (High VL Reports)"
 msgstr "Notes de contact (rapports sur les taux élevés de VL)"

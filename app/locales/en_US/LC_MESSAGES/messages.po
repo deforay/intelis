@@ -14578,6 +14578,10 @@ msgstr ""
 msgid "High VL Report"
 msgstr ""
 
+#: app/system/translate-strings.php:126
+msgid "VL Clinic Reports"
+msgstr ""
+
 #: system/translate-strings.php:106
 msgid "Contact Notes (High VL Reports)"
 msgstr ""
