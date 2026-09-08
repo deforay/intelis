@@ -729,8 +729,18 @@ collect_user_inputs() {
         local _newest
         # Include encrypted (.gpg) backups — db-tools encrypts by default — so a
         # routine encrypted backup is picked up like any other.
-        _newest="$(ls -1t "${_bkdir}"/intelis-*.sql.zst "${_bkdir}"/intelis-*.sql.gz "${_bkdir}"/intelis-*.sql.zst.gpg "${_bkdir}"/intelis-*.sql.gz.gpg 2>/dev/null | head -1)"
-        [[ -z "$_newest" ]] && _newest="$(ls -1t "${_bkdir}"/*.sql.zst "${_bkdir}"/*.sql.gz "${_bkdir}"/*.sql "${_bkdir}"/*.sql.zst.gpg "${_bkdir}"/*.sql.gz.gpg "${_bkdir}"/*.sql.gpg 2>/dev/null | head -1)"
+        # vlsm-* as well as intelis-*: db-tools names a dump after the database,
+        # and the main database is still called vlsm on every installation made
+        # before the rename, which is most of them.
+        _newest="$(ls -1t "${_bkdir}"/intelis-*.sql.zst "${_bkdir}"/intelis-*.sql.gz "${_bkdir}"/intelis-*.sql.zst.gpg "${_bkdir}"/intelis-*.sql.gz.gpg \
+                          "${_bkdir}"/vlsm-*.sql.zst "${_bkdir}"/vlsm-*.sql.gz "${_bkdir}"/vlsm-*.sql.zst.gpg "${_bkdir}"/vlsm-*.sql.gz.gpg 2>/dev/null | head -1)"
+        # The fallback takes the newest dump of any name, so it has to refuse the
+        # one dump in this directory that is certainly the wrong database:
+        # `db-tools backup --all` writes interfacing-* after the main dump, which
+        # makes it the newest file and therefore the one a plain `ls -1t` picks.
+        # Restoring it over the main database would replace a lab's test data
+        # with the instrument staging tables.
+        [[ -z "$_newest" ]] && _newest="$(ls -1t "${_bkdir}"/*.sql.zst "${_bkdir}"/*.sql.gz "${_bkdir}"/*.sql "${_bkdir}"/*.sql.zst.gpg "${_bkdir}"/*.sql.gz.gpg "${_bkdir}"/*.sql.gpg 2>/dev/null | grep -v '/interfacing-[^/]*$' | head -1)"
         if [[ -z "$_newest" ]]; then
             echo "No db-tools backup found in ${_bkdir}. Pass an explicit file with --db <path>."
             log_action "--db latest: no backup found in ${_bkdir}"

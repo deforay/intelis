@@ -19,7 +19,7 @@ sudo intelis doctor --check
 **How it works:**
 
 - Requests a page over HTTP and reads what comes back, rather than trusting the
-  configuration — `apache2ctl -M` reports what is on disk, not what the running
+  configuration, `apache2ctl -M` reports what is on disk, not what the running
   server loaded, and the two disagree often enough to matter
 - Covers the web-serving path: the server running, the PHP handler and MPM, a
   leftover maintenance marker, the DocumentRoot, another program holding port 80,
@@ -73,14 +73,6 @@ journalctl -u service-guard.service -n 100 --no-pager
 
 A systemd timer that monitors memory, disk, CPU, and load every 2 minutes. Takes emergency action at critical thresholds.
 
-```bash
-# Install
-sudo ./scripts/resource-monitor.sh
-
-# Uninstall
-sudo ./scripts/resource-monitor.sh --uninstall
-```
-
 **Thresholds:**
 
 | Resource | Warning | Critical |
@@ -88,12 +80,26 @@ sudo ./scripts/resource-monitor.sh --uninstall
 | Memory   | 80%     | 90%      |
 | Disk     | 85%     | 95%      |
 
-**Emergency actions at critical level:**
+**Emergency actions at critical level.** Installing the timer authorises these
+deletions, without further confirmation, on every mount listed below. Review them
+against what else the machine stores before installing:
 
-- **Memory** — Clears system caches
-- **Disk `/`** — Purges old journal entries, cleans package cache
-- **Disk `/var`** — Deletes archived logs (30+ days)
-- **Disk `/tmp`** — Removes temp files older than 3 days
+- **Memory:** clears system caches
+- **Disk `/`:** purges journal entries older than 7 days, cleans the package cache
+- **Disk `/var`:** deletes compressed archived logs older than 30 days, and any
+  rotated log file older than 7 days, anywhere under `/var/log`
+- **Disk `/tmp`:** deletes files older than 3 days
+
+A machine that keeps anything of value under `/var/log` or `/tmp`, such as an
+export waiting to be collected, must not run this timer unattended.
+
+```bash
+# Install
+sudo ./scripts/resource-monitor.sh
+
+# Uninstall
+sudo ./scripts/resource-monitor.sh --uninstall
+```
 
 ```bash
 # Check status
@@ -117,28 +123,30 @@ vendor/bin/db-tools <command> [options]
 
 | Command | Description |
 |---------|-------------|
-| `backup [target]` | Create encrypted backup (default) |
-| `restore [file]` | Restore from backup (interactive selection) |
-| `export <target> [file]` | Export as plain SQL |
-| `import <target> [file]` | Import SQL file (`.sql`, `.gz`, `.zst`, `.zip`) |
-| `list` | List available backups |
+| `backup [database]` | Create encrypted backup (default). `--all` backs up every configured profile |
+| `restore <file>` | Restore from a backup archive |
+| `export <output> [database]` | Export as plain SQL. The output file comes first |
+| `import <file> [database]` | Import SQL file (`.sql`, `.gz`, `.zst`, `.zip`, `.gpg`). The file comes first |
+| `show` | List available backups |
 | `verify [file]` | Verify backup integrity |
 | `clean` | Delete old backups (`--keep=N` or `--days=N`) |
-| `size [target]` | Show database size breakdown |
-| `maintain [target]` | Run mysqlcheck + binlog purge |
+| `size [database]` | Show database size breakdown |
+| `maintain [database]` | Run mysqlcheck + binlog purge. `--all` covers every configured profile |
 | `purge-binlogs [--days=N]` | Clean old binary logs (default: 7 days) |
 | `collation` | Launch collation conversion utility |
 
-**Targets:** `intelis` (default), `interfacing`, `both`/`all`
+**Profiles:** `intelis` (default) and `interfacing`. Use `--all` to act on both.
+A bare profile name given where a file is expected is treated as a database name,
+not as a shorthand for every profile, so `--all` is the only way to cover both.
 
 **Examples:**
 
 ```bash
-vendor/bin/db-tools backup all
+vendor/bin/db-tools backup --all
 vendor/bin/db-tools clean --days=30
-vendor/bin/db-tools maintain all
+vendor/bin/db-tools maintain --all
 vendor/bin/db-tools size
-vendor/bin/db-tools restore
+vendor/bin/db-tools restore /var/www/intelis/backups/db/vlsm-20260908-0100.sql.zst
 ```
 
 **Automated schedules:**
@@ -174,7 +182,7 @@ php bin/housekeeping.php [DAYS]
 | `var/track-api/requests/` | 120 days | 1 GB |
 | `var/track-api/responses/` | 120 days | 1 GB |
 
-**Database cleanup** — Deletes records older than 365 days from `activity_log`, `user_login_history`, and `track_api_requests`.
+**Database cleanup**: deletes records older than 365 days from `activity_log`, `user_login_history`, and `track_api_requests`.
 
 ### cleanup-logs.sh
 
@@ -198,7 +206,7 @@ Shell script for managing log files by size with safe in-place truncation.
 
 ## System Scanner
 
-Displays a full overview of the InteLIS instance — configuration, connectivity, and sync status.
+Displays a full overview of the InteLIS instance, configuration, connectivity, and sync status.
 
 ```bash
 php bin/scan.php
@@ -218,11 +226,21 @@ php bin/scan.php
 
 InteLIS uses [Crunz](https://github.com/lavary/crunz) for task scheduling. All definitions are in `sys/cron/ScheduledTasks.php`.
 
-**Setup** — Add a single cron entry:
+**Setup:** `scripts/setup.sh` installs the schedule in root's crontab as part of
+installation, so a normal machine needs nothing done by hand. The entry it adds is:
 
 ```bash
-* * * * * cd /var/www/intelis && ./vendor/bin/crunz schedule:run
+* * * * * cd /var/www/intelis && ./cron.sh
 ```
+
+Run the scheduler through `cron.sh`, not through `vendor/bin/crunz schedule:run`
+directly. `cron.sh` honours the `var/cron-paused` marker that `upgrade.sh` writes
+around the migration step. Scheduled tasks hold transactions on the same tables
+the migration runs DDL against, and MySQL grants metadata locks in request order,
+so a task started during that window can stall every later query on those tables.
+A crontab entry calling crunz directly ignores the marker.
+
+To confirm the schedule is running, check that `var/.cron_heartbeat` is current.
 
 **Core tasks:**
 

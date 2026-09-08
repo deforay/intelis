@@ -1,55 +1,80 @@
-# Remote Command Plane — Operator Runbook
+# Remote command plane: operator runbook
 
 > Admin-facing guide. For the architecture and the trust model, see the
-> [Remote Command Plane design](../remote-command-plane.md).
+> [Remote Command Plane design](../remote-command-plane.md), which is
+> authoritative for the command set and the data model.
 
 This guide is for operators who manage STS and the labs connected to it.
-It covers how to enable remote commands on a lab, queue common commands,
-monitor their progress, and roll back if something misbehaves.
+It covers how to check whether remote commands are enabled on a lab, queue
+common commands, monitor their progress, and roll back a bad upgrade.
 
 ## What is it?
 
-STS can queue **commands** — "resend results from the last 45 days",
-"refresh cache", "upgrade" — for any connected LIS. The LIS pulls the
-queue on its normal 5-minute sync tick and executes commands locally.
-Root-privileged commands (like upgrades) run through a systemd-timed
-runner. Nothing pushes into the LAN from the cloud — commands are pulled
-by LIS, which preserves the usual one-way security model.
+STS can queue commands, such as "resend results from the last 45 days",
+"refresh cache" or "upgrade", for any connected LIS. The LIS pulls the queue
+on its normal 5-minute sync tick and executes commands locally.
+Root-privileged commands such as upgrades run through a systemd-timed
+runner. Nothing pushes into the LAN from the cloud: commands are pulled by
+the LIS, which preserves the usual one-way security model.
 
-Commands in the whitelist:
+Commands offered by the queue form:
 
-| Command           | Runs as      | What it does                                                    |
-|-------------------|--------------|-----------------------------------------------------------------|
-| `resend-results`  | www-data PHP | Re-runs `results-sender.php` with optional module + days filter |
-| `resend-requests` | www-data PHP | Re-runs `requests-receiver.php` with optional module + manifest |
-| `metadata-resync` | www-data PHP | Force metadata sync from STS + lab metadata send                |
-| `refresh-cache`   | www-data PHP | Clears the file cache (optional tag filter)                     |
-| `rotate-token`    | www-data PHP | Drops + re-fetches the STS bearer token                         |
-| `refresh-perms`   | root runner  | `intelis-refresh -p <lis> -m full`                              |
-| `restart-apache`  | root runner  | `apache2ctl -k graceful`                                        |
-| `upgrade`         | root runner  | Prepare + auto-apply back-to-back in one shot                   |
-| `upgrade-prepare` | root runner  | Download + extract + validate. Does not apply.                  |
-| `upgrade-apply`   | root runner  | Apply a previously prepared upgrade                             |
+| Command           | Runs as      | What it does                                                      |
+|-------------------|--------------|-------------------------------------------------------------------|
+| `ping`            | www-data PHP | Self-test with no side effects. Confirms the courier is running.  |
+| `resend-results`  | www-data PHP | Re-runs `results-sender.php` with optional module and days filter |
+| `resend-requests` | www-data PHP | Re-runs `requests-receiver.php` with optional module filter       |
+| `metadata-resync` | www-data PHP | Forces metadata sync from STS and lab metadata send               |
+| `refresh-cache`   | www-data PHP | Clears the file cache (optional tag filter)                       |
+| `rotate-token`    | www-data PHP | Drops and re-fetches the STS bearer token                         |
+| `refresh-perms`   | root runner  | `intelis-refresh -p <lis> -m full`                                |
+| `restart-apache`  | root runner  | `apache2ctl -k graceful`                                          |
+| `upgrade`         | root runner  | Prepare and auto-apply back to back in one shot                   |
+| `upgrade-prepare` | root runner  | Download, extract and validate. Does not apply.                   |
+| `upgrade-apply`   | root runner  | Applies a previously prepared upgrade                             |
+| `rollback`        | root runner  | Restores the pre-upgrade snapshot, code only                      |
 
-## Enabling remote commands on a lab
+`resend-requests` also accepts a specific manifest code, but the queue form
+has no field for it. Only the module filter can be sent from STS.
 
-By default the whole channel is off. To opt a lab in, set two
-`global_config` values on that lab's LIS DB:
+## Checking whether remote commands are enabled on a lab
+
+Both switches default to enabled. Migrations `5.5.2.sql` and `5.5.3.sql` seed
+`remote_commands_enabled` and `allow_remote_upgrade` as `yes` on fresh and
+upgraded installations alike, so a lab accepts remote commands, including root
+commands, unless someone has turned them off.
+
+Check the current state on that lab's LIS database:
 
 ```sql
-INSERT INTO global_config (name, value) VALUES
-  ('remote_commands_enabled', 'yes'),     -- master switch for the courier
-  ('allow_remote_upgrade',    'yes')      -- per-lab kill switch for root commands
-ON DUPLICATE KEY UPDATE value = VALUES(value);
+SELECT name, value FROM global_config
+ WHERE name IN ('remote_commands_enabled', 'allow_remote_upgrade');
 ```
 
-To schedule an upgrade for a specific time, use the **Not before** field
-when queueing the command from STS (see below). There is no global
-"quiet window" — every command's timing is per-command.
+To turn either off:
 
-The next scheduled LIS upgrade (or a fresh `sudo intelis-update`)
-installs the privileged runner + its systemd timer automatically — no
-separate bootstrap step.
+```sql
+UPDATE global_config SET value = 'no'
+ WHERE name IN ('remote_commands_enabled', 'allow_remote_upgrade');
+```
+
+The effect of each:
+
+- `remote_commands_enabled` set to anything non-truthy stops the courier
+  polling the pending-commands endpoint. Queued commands on STS sit at
+  `pending` until it is turned back on or they are cancelled.
+- `allow_remote_upgrade` set to `no` makes the courier drop a
+  `var/remote-commands/disabled` flag file, and the runner then refuses all
+  root commands. Non-root commands such as resends and cache refresh continue
+  to work.
+
+To schedule an upgrade for a specific time, use the **Not before** field when
+queueing the command from STS. There is no global quiet window; every command's
+timing is per command.
+
+The next scheduled LIS upgrade, or a fresh `sudo intelis-update`, installs the
+privileged runner and its systemd timer automatically. There is no separate
+bootstrap step.
 
 Verify the install:
 
@@ -59,34 +84,31 @@ systemctl list-timers | grep intelis         # shows next fire time
 sudo tail -f /var/log/intelis-runner/runner-*.log
 ```
 
-Disable again at any time:
-
-- Flip `global_config.remote_commands_enabled` to anything non-truthy →
-  courier stops polling the pending-commands endpoint. Queued commands
-  on STS sit at `pending` until you turn it back on or cancel them.
-- Flip `global_config.allow_remote_upgrade` to `no` → courier drops a
-  `var/remote-commands/disabled` flag file; the runner refuses all root
-  commands. Non-root commands (resends, cache refresh) still work.
-
 ## Queueing a command from STS
 
 1. Go to **Admin → Monitoring → Lab Sync Status**.
-2. Find the lab's row. Click the **Queue** button.
-3. Pick a command from the dropdown; the modal shows only the fields
-   that command needs:
-   - **Resend results / Resend requests:** optional module (VL, EID,
-     etc.) + optional "last N days". Leave both blank to only send
-     unsynced records.
-   - **Upgrade / Upgrade-prepare / Upgrade-apply:** optional `Not before`
-     time — leave blank to run on the next sync tick (~5 min) or pick a
-     specific datetime to schedule it (e.g. tonight at 23:00).
-   - **Upgrade-apply:** pick from the dropdown of staged upgrades for
-     this lab (populated only if a prior `upgrade-prepare` completed).
-4. Click **Queue command**. The row's badge updates within a few seconds
-   showing `pending`. Within ~5 minutes, the LIS picks it up.
+2. Find the lab's row and select **Queue**.
+3. Pick a command from the dropdown. The modal shows only the fields that
+   command needs:
+   - **Resend results:** optional module (VL, EID and so on) and an optional
+     **Resend data from last N days**. Leave both blank to send only unsynced
+     records.
+   - **Resend requests:** optional module. The days field is ignored by this
+     command even when the form allows it to be filled in.
+   - **Upgrade, Prepare upgrade only, Apply a prepared upgrade:** optional
+     **Not before** time. Leave it blank to run on the next sync tick, about
+     five minutes, or pick a datetime to schedule it.
+   - **Apply a prepared upgrade:** select from the dropdown of staged upgrades
+     for this lab, which is populated only if a prior prepare completed.
+4. For a release that changes `composer.lock` or runs migrations, select
+   **Show maintenance page to users during apply**. It is unchecked by default,
+   and without it requests can reach a partially replaced application while the
+   apply is in progress.
+5. Select **Queue command**. The row's badge updates within a few seconds
+   showing `pending`. The LIS picks it up within about five minutes.
 
-Bulk rollout: prepare on many labs first, then apply on pilots, then
-apply on the rest. See "Gated apply" below.
+Bulk rollout: prepare on many labs first, then apply on pilots, then apply on
+the rest. See "Gated apply" below.
 
 ## Monitoring
 
@@ -94,86 +116,102 @@ apply on the rest. See "Gated apply" below.
 
 Each row shows badges for that lab:
 
-- Blue **Staged: vX.Y.Z** — an `upgrade-prepare` is ready to apply. Click
-  Queue → `Apply a prepared upgrade` to fire it.
-- Yellow **command: status** — an in-flight command. Pending commands
-  show an **×** you can click to cancel (only works while status is
-  `pending` — once the courier picks it up the runner owns it).
+- Blue **Staged: vX.Y.Z** means an `upgrade-prepare` is ready to apply. Select
+  Queue, then **Apply a prepared upgrade**, to fire it.
+- Yellow **command: status** is an in-flight command. Pending commands show an
+  **×** to cancel them. Cancelling works only while the status is `pending`:
+  once the courier picks a command up, the runner owns it.
 
-### Lab Command History page
+### Lab command history
 
-**Admin → Monitoring → Lab Command History** lists the 200 most recent
-commands across all labs with filters for lab, command, status, and
-date range. Click **Details** on any row to see the full result JSON
-(exit codes, output tails, staged versions, etc.).
+The command history is reached through the **Lab Command History** button on
+**Admin → Monitoring → Lab Sync Status**. It has no sidebar entry of its own;
+migration `5.5.25.sql` removed it while keeping the page and its privileges.
+
+The page lists the 200 most recent commands across all labs with filters for
+lab, command, status and date range. Select **Details** on any row to see the
+full result JSON, including exit codes, output tails and staged versions.
 
 ## Gated apply (risky releases)
 
 For a release that needs human approval before applying:
 
 1. Queue `upgrade-prepare` on the affected labs.
-2. Each lab downloads + extracts + validates in the background over the
-   next few hours. Zero downtime for this phase.
-3. When a lab is ready, the row on Lab Sync Status shows **Staged: vX.Y.Z**.
-4. Queue `upgrade-apply` on 2–3 pilot labs, selecting the staged
-   `commandId` from the dropdown.
-5. Watch the pilots via Lab Command History for a day or two.
-6. If OK, queue `upgrade-apply` on the rest.
+2. Each lab downloads, extracts and validates in the background over the next
+   few hours. This phase causes no downtime.
+3. When a lab is ready, its row on Lab Sync Status shows **Staged: vX.Y.Z**.
+4. Queue **Apply a prepared upgrade** on two or three pilot labs, selecting the
+   staged `commandId` from the dropdown.
+5. Watch the pilots through the command history for a day or two.
+6. If the pilots are healthy, queue the apply on the rest.
 
-`upgrade-apply` refuses to fire if the referenced `dependsOn` isn't a
-`prepared` row for that same lab, so you can't accidentally apply a
-stale staging.
+An apply refuses to fire unless the referenced `dependsOn` is a `prepared` row
+for that same lab, so a stale staging cannot be applied by accident.
 
 ## Troubleshooting
 
-### "Queue" button doesn't appear
+### The Queue button does not appear
 
-You don't have the `Queue Lab Command` privilege. Ask an admin to add
-the `/admin/monitoring/queue-lis-command.php` privilege to your role.
+The account lacks the `Queue Lab Command` privilege. An administrator must add
+the `/admin/monitoring/queue-lis-command.php` privilege to that role.
 
-### Command sits at `pending` forever
+### A command sits at `pending` forever
 
-Likely the lab has `remote_commands_enabled = no` (or unset). The LIS
-courier never polls, so STS never learns the command was "seen".
-Options: turn the flag on at the lab, or cancel the command on STS.
+The lab most likely has `remote_commands_enabled` set to something other than
+`yes`. The courier never polls, so STS never learns the command was seen. Either
+turn the flag back on at the lab, or cancel the command on STS.
 
-### Command gets to `picked` then stalls
+### A command reaches `picked` and stalls
 
-Means the courier pulled it but hasn't reported back yet. For non-root
-commands, check `/var/log/apache2/error.log` or the LIS cron log for
-exceptions. For root commands, check `/var/log/intelis-runner/runner-*.log`
-and `systemctl status intelis-runner.service`.
+The courier pulled it but has not reported back. For non-root commands, check
+`/var/log/apache2/error.log` or the LIS cron log for exceptions. For root
+commands, check `/var/log/intelis-runner/runner-*.log` and
+`systemctl status intelis-runner.service`.
 
-### Upgrade gets to `prepared` and waits
+### An upgrade reaches `prepared` and waits
 
-The command's `not_before` hasn't arrived yet. STS withholds the
-command from the lab until that timestamp passes. Check the details
-pane of the row on Lab Command History.
+This is the expected resting state. A prepared upgrade is staged and waits for
+an explicit apply; it does not continue on its own. Queue **Apply a prepared
+upgrade** for that lab, selecting the staged entry.
+
+A command that has not yet reached the lab at all, rather than one sitting at
+`prepared`, may still be inside its **Not before** window, which STS enforces by
+withholding the command until that timestamp passes.
 
 ### Rolling back a bad upgrade
 
 The apply phase always takes a hardlink snapshot at
-`/var/intelis-rollback/<timestamp>/<basename>/` before rsyncing the
-new tree. If the smoke check fails, the runner restores the snapshot
-automatically and reports `failed` back to STS. Manual rollback:
+`/var/intelis-rollback/<timestamp>/<basename>/` before rsyncing the new tree. If
+the smoke check fails, the runner restores the snapshot automatically and
+reports `failed` back to STS.
+
+To roll back deliberately, queue the **Roll back to the pre-upgrade snapshot**
+command from STS, or run the updater's own rollback on the machine:
 
 ```bash
-sudo systemctl stop apache2
-sudo rsync -a --delete /var/intelis-rollback/<ts>/<basename>/ /var/www/<basename>/
-sudo systemctl start apache2
+sudo intelis-update -p /var/www/intelis --rollback
 ```
 
-Then fix the underlying issue, prepare the corrected version, and try
-again.
+Use the updater rather than restoring the snapshot by hand. The snapshot is
+taken with `public/uploads/`, `public/files/`, `public/temporary/`, `var/` and
+`vendor/` excluded, so a manual `rsync -a --delete` from the snapshot over the
+installation deletes the lab's uploads and runtime data and leaves no usable
+`vendor/` directory. The updater applies the same exclusions on the way back and
+reinstalls dependencies.
+
+Rollback restores code only. Database migrations already applied are not
+reversed, so confirm the restored version can still run against the current
+schema before returning the lab to service.
+
+Then fix the underlying issue, prepare the corrected version, and try again.
 
 ## Safety invariants
 
-- `sudo intelis-update` with no flags always works exactly as it did
-  before the remote plane. Default operator flow is unchanged.
+- `sudo intelis-update` with no flags always works exactly as it did before the
+  remote plane. The default operator flow is unchanged.
 - Every new flag on `intelis-update` is opt-in.
-- Commands are whitelisted in both the LIS courier and the root runner.
-  Unknown command names fail closed.
+- Commands are whitelisted in both the LIS courier and the root runner. Unknown
+  command names fail closed.
 - Nonces prevent a command from running twice.
-- `expires_at` rows auto-sweep to `expired` on every pending-commands
-  request.
+- Rows past `expires_at` sweep to `expired` on every pending-commands request.
 - `flock` on the runner prevents overlapping ticks.

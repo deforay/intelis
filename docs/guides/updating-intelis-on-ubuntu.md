@@ -4,6 +4,42 @@ This guide updates an existing InteLIS installation to the current release.
 
 **Prerequisites:** Ubuntu 22.04 LTS or a later LTS release. An account with `sudo` rights. An internet connection.
 
+## Before updating
+
+Two checks, in this order, before the update command.
+
+**1. Install the current commands, once per machine.** This installs the current
+`intelis` and `intelis-update` straight from master, and nothing else. It is safe
+to run on a machine that is already current.
+
+```bash
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/deforay/intelis/master/scripts/bootstrap.sh)"
+```
+
+!!! warning "Required on any machine last updated before August 2026"
+
+    On those, `/usr/local/bin/intelis` is still a plain composer wrapper, so
+    `intelis update` runs `composer update`, rewriting `composer.lock` to whatever
+    upstream released today and installing the development toolchain onto a server
+    that runs a lab. Running the update before this line is what causes that, which
+    is why this step comes first. The line above replaces the wrapper, after which
+    `intelis update` is correct.
+
+    Note it is `bash -c "$(curl …)"`, not `curl … | bash`. Piping makes the script
+    bash's standard input, which is harmless for the bootstrap but ruins the two
+    interactive scripts it installs.
+
+**2. Confirm a current backup exists.** The update takes a code snapshot it can
+roll back to, but that snapshot does not cover the database, and migrations are
+not reversed by a rollback.
+
+```bash
+intelis backup
+ls -lt /var/www/intelis/backups/db | head
+```
+
+The listing must show a dump from today.
+
 ## Update
 
 Open a terminal on the InteLIS machine and run:
@@ -15,27 +51,6 @@ intelis update
 That is the whole procedure. It fetches the current release, takes a snapshot it
 can roll back to, puts the new files in place, applies database migrations, and
 restarts the web server. Leave the window open until it finishes.
-
-## First time on a given machine
-
-Run this once per machine, before the command above. It installs the current
-`intelis` and `intelis-update` straight from master, and nothing else.
-
-```bash
-sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/deforay/intelis/master/scripts/bootstrap.sh)"
-```
-
-!!! warning "Do this first on any machine last updated before August 2026"
-
-    On those, `/usr/local/bin/intelis` is still a plain composer wrapper, so
-    `intelis update` runs `composer update` — rewriting `composer.lock` to whatever
-    upstream released today and installing the development toolchain onto a server
-    that runs a lab. The line above replaces the wrapper, after which `intelis update`
-    is correct. It is safe to run on a machine that is already current.
-
-    Note it is `bash -c "$(curl …)"`, not `curl … | bash`. Piping makes the script
-    bash's standard input, which is harmless for the bootstrap but ruins the two
-    interactive scripts it installs.
 
 The update prompts for the MySQL password and the STS URL. Enter both correctly.
 Wrong entries can make the update fail.
@@ -65,15 +80,14 @@ a revert.
 
 ### Version numbers
 
-A version number is the schema and feature level — what `sc_version` records and
-what preflight compares — and no longer controls whether anybody receives the
-code. Bump one when there is real DDL or a milestone worth naming:
+A version number is the schema and feature level, which is what `sc_version`
+records and what preflight compares. It does not control whether an installation
+receives the code: labs follow the `stable` branch, and a push is what ships.
+A version is bumped when there is real DDL or a milestone worth naming, and
+forgetting it costs an accurate version number, not delivery.
 
-```bash
-composer ship                     # bumps, refreshes the lockfile, commits, pushes, tags
-```
-
-Forgetting it costs an accurate version number, not delivery.
+Bumping is a maintainer task performed in the repository, not on a lab machine,
+so it is out of scope for this guide.
 
 ### Pinning a single machine
 

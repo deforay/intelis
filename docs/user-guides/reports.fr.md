@@ -4,7 +4,7 @@ Cette page décrit chaque rapport situé sous **CHARGE VIRALE DU VIH → Gestion
 ainsi que le contenu charge virale du tableau de bord et des pages de
 surveillance de l'administration.
 
-S'applique à InteLIS 5.6.2.
+S'applique à InteLIS 5.7.64.
 
 Toutes les pages de rapport utilisent les mêmes commandes. Régler les filtres,
 sélectionner **Rechercher**, et utiliser la commande d'export lorsqu'elle est

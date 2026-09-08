@@ -31,16 +31,24 @@ own login. See [System administration](admin-system-administration.md).
 
 ## Two levels of administrator
 
-Not every administrator needs every page. InteLIS does not enforce the split.
-Build it into the roles.
+Not every administrator needs every page.
 
 | Level | Owns |
 |---|---|
 | Lab administrator | Users, facilities, instruments, module config lists, Interface Tool connections, audit trail lookups |
 | National administrator | All of the above, plus roles and privileges, General Configuration, and Geographical Divisions |
 
-Most trouble in the field comes from national-level settings being changed by
-lab-level staff.
+How much of this the application enforces depends on the instance:
+
+- **On a standalone or LIS installation**, the split is not enforced beyond the
+  privileges on each role. Build it into the roles, because most trouble in the
+  field comes from national-level settings being changed by lab-level staff.
+- **On a cloud instance**, the split is enforced. Every role except the full
+  administrator role sees an Administration menu cut down to Users, Instruments,
+  Audit Trail, User Activity Log and Log File Viewer, with page privileges
+  deciding the rest. Pages outside that list are not reachable, so guidance
+  elsewhere in these pages that points a lab administrator at Facilities, module
+  configuration or roles applies to the other instance types.
 
 ## Changes that need agreement before making them
 

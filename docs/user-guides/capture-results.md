@@ -154,6 +154,28 @@ Read the result back off the screen against the analyzer printout before saving.
 A manually entered result is not released until it is approved. See
 [How to review and approve results](approve-results.md).
 
+### Custom Tests use a different result screen
+
+The fields above are the viral load form. A Custom Tests sample is recorded
+under **OTHER LAB TESTS → Test Result Management → Enter Result Manually**, and
+its result screen works by test card rather than by a single result field.
+
+1. Open the sample.
+2. Select **Add Test** for each test performed on the sample, and record that
+   test's result on its own card. A card can record a test done at this lab or
+   one referred to another lab.
+3. When every test has been recorded, set **Enter the Final Interpretation?** and
+   enter the **Final Interpretation**.
+4. Select **Save**.
+
+The final interpretation is what carries the sample forward. Until it is
+entered, the sample stays at **Sample Registered at Testing Lab** however many
+test cards have been saved, so it never reaches the approval queue and looks to
+a supervisor as though nothing was tested.
+
+Entering the final interpretation locks further tests and referral on that
+sample, so record every test card first.
+
 ---
 
 ## If the sample was rejected

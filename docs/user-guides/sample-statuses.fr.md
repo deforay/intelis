@@ -2,7 +2,7 @@
 
 Chaque échantillon dans InteLIS porte un statut. Cette page les liste tous.
 
-S'applique à InteLIS 5.6.2.
+S'applique à InteLIS 5.7.64.
 
 ## Les statuts
 

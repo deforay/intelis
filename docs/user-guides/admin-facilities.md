@@ -63,8 +63,14 @@ PDFs a lab issues.
 1. Open the testing lab under **ADMIN → Facilities**.
 2. Find the signatory section.
 3. For each signatory, enter the **Name of Signatory** and **Designation**, set
-   the **Display Order**, and upload the signature image as jpg or png.
+   the **Display Order**, select every applicable **Test Type**, and upload the
+   signature image as jpg or png.
 4. Select **Submit**.
+
+A signatory is printed only on the modules selected in **Test Type**. One saved
+with no test type selected is stored and never appears on any result PDF, which
+looks like the signature block having been switched off. After saving, generate
+a result PDF for each module and confirm the expected names appear.
 
 | Setting | Controls |
 |---|---|
@@ -109,6 +115,12 @@ filtered list to Excel.
 
 The Interface Tool passes results from an analyzer into InteLIS without anyone
 typing them. Each installation of the tool connects to InteLIS once.
+
+**Before starting:** the **Interface Tool Connections** panel appears only when
+the global setting **Interface API Enabled** is set to `yes`. It ships set to
+`no`, so on a default installation this panel is not on the page at all. A
+national administrator turns it on under **ADMIN → General Configuration**. The
+panel also appears only on a facility that is a testing lab.
 
 1. Go to **ADMIN → Facilities**.
 2. Open the testing lab.

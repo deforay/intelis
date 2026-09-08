@@ -8,8 +8,14 @@ attachment. This guide covers both.
 - Results approved. See [How to review and approve results](approve-results.md)
 - Permission to print or email results
 
-Only approved results can be released. A result still awaiting approval does not
-appear on either page.
+Two kinds of sample can be released:
+
+- **Accepted** samples that have a result recorded.
+- **Rejected** samples, which carry no result. These are released so the
+  requesting facility learns the sample was rejected and can recollect. Leaving
+  them unreleased is what delays a recollection.
+
+A sample still awaiting approval does not appear on either page.
 
 ## Print results
 

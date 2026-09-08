@@ -237,8 +237,19 @@ uninstall_all() {
   rm -f /usr/local/sbin/service-guard.sh
 
   detect_services
-  [[ -n "${SVC_APACHE:-}" ]] && rm -rf "/etc/systemd/system/${SVC_APACHE}.service.d" || true
-  [[ -n "${SVC_MYSQL:-}"  ]] && rm -rf "/etc/systemd/system/${SVC_MYSQL}.service.d"  || true
+  # Only the override this script wrote, never the directory. A drop-in
+  # directory is shared: an administrator's own restart, resource or security
+  # override for Apache or MySQL lives beside ours, and rm -rf on the directory
+  # would take those with it and leave no trace of what had been removed. The
+  # directory itself goes only when nothing else is left in it.
+  remove_override() {
+    local dir="$1"
+    [[ -n "$dir" ]] || return 0
+    rm -f "${dir}/override.conf"
+    rmdir "$dir" 2>/dev/null || true
+  }
+  [[ -n "${SVC_APACHE:-}" ]] && remove_override "/etc/systemd/system/${SVC_APACHE}.service.d" || true
+  [[ -n "${SVC_MYSQL:-}"  ]] && remove_override "/etc/systemd/system/${SVC_MYSQL}.service.d"  || true
 
   systemctl daemon-reload
   echo "Service Guard uninstalled."

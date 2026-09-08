@@ -37,7 +37,7 @@ Everything else in this guide follows from this one choice.
 database exposed to the network, and it is the shorter path by a wide margin.
 
 Choose a separate machine when the analyzer must connect to a computer that is
-not the InteLIS server — most often because of where the analyzer physically
+not the InteLIS server, most often because of where the analyzer physically
 sits, or because the instrument's software only runs on Windows.
 
 ## 1. Install the Interfacing Tool
@@ -67,10 +67,10 @@ Open the tool and add the instrument in its settings. The tool's
 [User Guide](https://github.com/deforay/vlsm-interfacing/blob/master/USER_GUIDE.md)
 covers the fields per analyzer model. What matters for every instrument:
 
-- **Protocol** — ASTM or HL7, as the analyzer's manual specifies
-- **Connection mode** — TCP Server if the analyzer connects to this computer, TCP
+- **Protocol**: ASTM or HL7, as the analyzer's manual specifies
+- **Connection mode**: TCP Server if the analyzer connects to this computer, TCP
   Client if this computer connects to the analyzer
-- **Port** — as configured on the analyzer
+- **Port**, as configured on the analyzer
 
 Turn on **auto-connect on startup**. Without it, a reboot leaves the tool open
 but not listening, and results stop arriving with nothing visibly wrong.
@@ -85,8 +85,8 @@ arrive here, no amount of InteLIS configuration will help.
 sudo intelis interface setup
 ```
 
-It asks two questions — where the tool stores its results, and where the tool
-runs — and does the rest: creates the `interfacing` database and its tables,
+It asks two questions, where the tool stores its results, and where the tool
+runs, and does the rest: creates the `interfacing` database and its tables,
 creates the MySQL account the tool connects with, writes the settings into
 `configs/config.production.php`, proves the connection works, and prints the
 host, port, database, username and password to type into the tool's MySQL
@@ -102,7 +102,7 @@ only the one command reaches the right place either way.
 To change any of it later, run `sudo intelis interface setup` again. It shows
 what is configured now before it changes anything.
 
-## If you would rather set it up by hand
+## Setting it up by hand
 
 Skip this if step 3 worked; step 4 is next. What follows is the same work done
 by hand, for a machine with no `intelis` command yet, or to see what was
@@ -115,7 +115,7 @@ directory.
 sudo nano /var/www/intelis/configs/config.production.php
 ```
 
-### Path A — the tool runs on the InteLIS machine
+### Path A, the tool runs on the InteLIS machine
 
 Set the path to the tool's SQLite file, and switch interfacing on:
 
@@ -145,7 +145,7 @@ sudo setfacl -m u:www-data:r /home/OPERATOR/.config/vlsm-interfacing/interface.d
 
 Path A is now complete. Skip to step 4.
 
-### Path B — the tool runs on a separate machine
+### Path B, the tool runs on a separate machine
 
 The tool writes to a MySQL database on the InteLIS machine, so that machine has
 to accept a connection from the tool's machine. Grant exactly that, and nothing
@@ -205,7 +205,23 @@ bind-address = 192.168.1.10
 
 ```bash
 sudo ufw allow from TOOL_IP to any port 3306 proto tcp
+```
+
+Validate the MySQL configuration before restarting. A typo in the file edited
+above stops MySQL from starting again, which takes the laboratory database
+offline until it is found:
+
+```bash
+sudo mysqld --validate-config
 sudo systemctl restart mysql
+sudo systemctl status mysql
+```
+
+Restart only after `--validate-config` reports no error, and confirm MySQL is
+listening on the intended address afterwards:
+
+```bash
+sudo ss -lntp | grep 3306
 ```
 
 **Tell InteLIS where that database is:**
@@ -227,7 +243,7 @@ InteLIS machine's network address as the host.
 jobs are only scheduled when it is true
 ([`sys/cron/ScheduledTasks.php`](https://github.com/deforay/intelis/blob/master/sys/cron/ScheduledTasks.php)).
 With it left false, nothing runs, nothing fails, and nothing is written to any
-log — which looks exactly like a broken analyzer.
+log, which looks exactly like a broken analyzer.
 
 This is the single most common reason a correctly configured interface delivers
 nothing.
@@ -238,11 +254,27 @@ The import is a scheduled task, so the schedule itself has to be active. It is
 installed with InteLIS, and this is what it looks like:
 
 ```bash
-sudo crontab -l | grep crunz
+sudo crontab -l | grep cron.sh
 ```
 
-Expect a line running `crunz schedule:run` every minute. If there is none, see
-[Maintenance scripts](maintenance.md).
+Expect a line running `cron.sh` every minute, which is what `setup.sh` installs:
+
+```
+* * * * * cd /var/www/intelis && ./cron.sh
+```
+
+Older machines may instead show a line calling `crunz schedule:run` directly.
+That form still runs the schedule, but it ignores the `var/cron-paused` marker
+that upgrades rely on, so replace it with the `cron.sh` line above.
+
+Confirm the schedule is actually firing, rather than merely installed, by
+checking that the heartbeat is current:
+
+```bash
+ls -l /var/www/intelis/var/.cron_heartbeat
+```
+
+If there is no entry at all, see [Maintenance scripts](maintenance.md).
 
 ## 6. Verify a result actually arrives
 
