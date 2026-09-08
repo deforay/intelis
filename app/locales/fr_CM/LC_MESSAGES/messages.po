@@ -30354,7 +30354,7 @@ msgstr "Rapport sur la cascade de la tuberculose"
 
 #: app/system/translate-strings.php:111
 msgid "Sample Registered at Testing Lab"
-msgstr "Échantillon enregistré au laboratoire d'analyseing"
+msgstr "Échantillon enregistré au laboratoire d'analyse"
 
 #: app/system/translate-strings.php:114
 msgid "Sample Registered at Health Center"
