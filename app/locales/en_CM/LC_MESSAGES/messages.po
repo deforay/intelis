@@ -8251,6 +8251,10 @@ msgstr ""
 msgid "Implementing Partner"
 msgstr ""
 
+#: app/vl/program-management/export-virologic-failure-report.php:169
+msgid "Days Since Previous Collection"
+msgstr ""
+
 #: cd4/management/cd4-export-data.php:548
 #: covid-19/management/covid-19-export-data.php:568
 #: tb/management/tb-export-data.php:557

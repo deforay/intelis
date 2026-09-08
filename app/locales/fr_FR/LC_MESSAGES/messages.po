@@ -10731,6 +10731,10 @@ msgstr "Gérer les colonnes"
 msgid "Implementing Partner"
 msgstr "Partenaire"
 
+#: app/vl/program-management/export-virologic-failure-report.php:169
+msgid "Days Since Previous Collection"
+msgstr "Jours depuis le prélèvement précédent"
+
 #: app/cd4/management/cd4-export-data.php:554
 #: app/covid-19/management/covid-19-export-data.php:573
 #: app/tb/management/tb-export-data.php:558

@@ -28,6 +28,7 @@ $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $sQuery = "SELECT
                vl.patient_art_no,
                DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y') as sampleDate,
+               vl.sample_collection_date as rawCollectionDate,
                DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y') as sampleTestDate,
                f.facility_name,
                f.facility_code,
@@ -164,7 +165,8 @@ $headings = [
      _translate('Regimen'),
      _translate('Current Regimen Start Date'),
      _translate('VL Result'),
-     _translate('Implementing Partner')
+     _translate('Implementing Partner'),
+     _translate('Days Since Previous Collection')
 ];
 
 $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-HIGH-VL-AND-VIROLOGIC-FAILURE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
@@ -187,18 +189,46 @@ foreach ($grouped as $rows) {
      if (count($rows) > 1) {
           // Virologic Failure — show patient ID only on first row
           $writer->setCurrentSheet($vfSheet);
+
+          // The query orders by facility first, so a patient seen at two
+          // facilities arrives out of order. Sort the group before measuring
+          // the gap, or the interval is taken against the wrong sample.
+          usort($rows, static fn($a, $b) => strcmp((string) $a['rawCollectionDate'], (string) $b['rawCollectionDate']));
+
+          $previousCollectionDate = null;
           $isFirst = true;
           foreach ($rows as $row) {
+               // Compare dates, not timestamps: '%a' counts whole days, so two
+               // collections less than 24h apart would otherwise report 0 days
+               // while the two dates printed beside it differ by one.
+               $collectionDate = substr((string) $row['rawCollectionDate'], 0, 10);
+               // Legacy rows carry '0000-00-00' where a date is missing rather than
+               // NULL, and DateUtility::isDateValid() accepts it, so an interval
+               // measured from one would read as roughly 739,000 days.
+               if ($collectionDate === '0000-00-00') {
+                    $collectionDate = '';
+               }
+               unset($row['rawCollectionDate']);
                if (!$isFirst) {
                     $row['patient_art_no'] = '';
                }
+               // Blank on the first row: there is no earlier sample to measure from.
+               $row['daysSincePreviousCollection'] = $previousCollectionDate === null
+                    ? ''
+                    : (DateUtility::dateDiff($previousCollectionDate, $collectionDate, '%a') ?? '');
                $writer->addRow(Row::fromValues(array_values($row)));
+               if ($collectionDate !== '' && DateUtility::isDateValid($collectionDate)) {
+                    $previousCollectionDate = $collectionDate;
+               }
                $isFirst = false;
           }
      } else {
-          // VL - Not Suppressed
+          // VL - Not Suppressed — a single result, so nothing to measure against
           $writer->setCurrentSheet($vlnsSheet);
-          $writer->addRow(Row::fromValues(array_values($rows[0])));
+          $row = $rows[0];
+          unset($row['rawCollectionDate']);
+          $row['daysSincePreviousCollection'] = '';
+          $writer->addRow(Row::fromValues(array_values($row)));
      }
 
      $rowCount++;
