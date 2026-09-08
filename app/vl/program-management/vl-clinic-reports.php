@@ -171,6 +171,21 @@ $implementingPartnerList = $general->getImplementationPartners();
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
+												<div class="filter-actions">
+													&nbsp;<input type="button"
+													onclick="searchVlRequestData();"
+													value="<?= _translate('Search'); ?>"
+													class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('highViralLoadReportFilter');"><span>
+													<?= _translate('Reset'); ?>
+													</span></button>
+													<button class="btn btn-success btn-sm" type="button"
+													onclick="exportHighViralLoadInexcel()"><em
+													class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
+												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -377,21 +392,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 														</div>
 													</div>
 												</div>
-												<div class="filter-actions">
-													&nbsp;<input type="button"
-													onclick="searchVlRequestData();"
-													value="<?= _translate('Search'); ?>"
-													class="btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm"
-													onclick="resetFilters('highViralLoadReportFilter');"><span>
-													<?= _translate('Reset'); ?>
-													</span></button>
-													<button class="btn btn-success btn-sm" type="button"
-													onclick="exportHighViralLoadInexcel()"><em
-													class="fa-solid fa-cloud-arrow-down"></em>
-													<?php echo _translate("Export to excel"); ?>
-													</button>
-												</div>
 												</div>
 											</div>
 
@@ -453,6 +453,13 @@ $implementingPartnerList = $general->getImplementationPartners();
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
+												<div class="filter-actions">
+													&nbsp;<button onclick="vfVlnsExportInexcel();" value="Search"
+													class="btn btn-success btn-sm"><em
+													class="fa-solid fa-cloud-arrow-down"></em><span><?php echo _translate(" Generate report"); ?></span></button>
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('vfvlnsfilters');"><span><?php echo _translate("Reset"); ?></span></button>
+												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -607,13 +614,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 														</div>
 													</div>
 												</div>
-												<div class="filter-actions">
-													&nbsp;<button onclick="vfVlnsExportInexcel();" value="Search"
-													class="btn btn-success btn-sm"><em
-													class="fa-solid fa-cloud-arrow-down"></em><span><?php echo _translate(" Generate report"); ?></span></button>
-													&nbsp;<button type="button" class="btn btn-default btn-sm"
-													onclick="resetFilters('vfvlnsfilters');"><span><?php echo _translate("Reset"); ?></span></button>
-												</div>
 												</div>
 											</div>
 										</div>
@@ -622,6 +622,21 @@ $implementingPartnerList = $general->getImplementationPartners();
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
+												<div class="filter-actions">
+													&nbsp;<input type="button"
+													onclick="searchVlRequestData();"
+													value="<?= _translate('Search'); ?>"
+													class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('sampleRjtReportFilter');"><span>
+													<?= _translate('Reset'); ?>
+													</span></button>
+													<button class="btn btn-success btn-sm" type="button"
+													onclick="exportRejectedResultInexcel()"><em
+													class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
+												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -846,21 +861,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 														</div>
 													</div>
 												</div>
-												<div class="filter-actions">
-													&nbsp;<input type="button"
-													onclick="searchVlRequestData();"
-													value="<?= _translate('Search'); ?>"
-													class="btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm"
-													onclick="resetFilters('sampleRjtReportFilter');"><span>
-													<?= _translate('Reset'); ?>
-													</span></button>
-													<button class="btn btn-success btn-sm" type="button"
-													onclick="exportRejectedResultInexcel()"><em
-													class="fa-solid fa-cloud-arrow-down"></em>
-													<?php echo _translate("Export to excel"); ?>
-													</button>
-												</div>
 												</div>
 											</div>
 											<table aria-describedby="table" id="sampleRjtReportTable"
@@ -915,6 +915,21 @@ $implementingPartnerList = $general->getImplementationPartners();
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
+												<div class="filter-actions">
+													&nbsp;<input type="button"
+													onclick="searchVlRequestData();"
+													value="<?= _translate('Search'); ?>"
+													class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('notAvailReportFilter');"><span>
+													<?= _translate('Reset'); ?>
+													</span></button>
+													<button class="btn btn-success btn-sm" type="button"
+													onclick="exportNotAvailableResultInexcel()"><em
+													class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
+												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -1126,21 +1141,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 														</div>
 													</div>
 												</div>
-												<div class="filter-actions">
-													&nbsp;<input type="button"
-													onclick="searchVlRequestData();"
-													value="<?= _translate('Search'); ?>"
-													class="btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm"
-													onclick="resetFilters('notAvailReportFilter');"><span>
-													<?= _translate('Reset'); ?>
-													</span></button>
-													<button class="btn btn-success btn-sm" type="button"
-													onclick="exportNotAvailableResultInexcel()"><em
-													class="fa-solid fa-cloud-arrow-down"></em>
-													<?php echo _translate("Export to excel"); ?>
-													</button>
-												</div>
 												</div>
 											</div>
 											<table aria-describedby="table" id="notAvailReportTable"
@@ -1192,6 +1192,21 @@ $implementingPartnerList = $general->getImplementationPartners();
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
+												<div class="filter-actions">
+													&nbsp;<input type="button"
+													onclick="searchVlRequestData();"
+													value="<?= _translate('Search'); ?>"
+													class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('incompleteFormReportFilter');"><span>
+													<?= _translate('Reset'); ?>
+													</span></button>
+													<button class="btn btn-success btn-sm" type="button"
+													onclick="exportDataQualityInexcel()"><em
+													class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
+												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -1301,21 +1316,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 														</div>
 													</div>
 												</div>
-												<div class="filter-actions">
-													&nbsp;<input type="button"
-													onclick="searchVlRequestData();"
-													value="<?= _translate('Search'); ?>"
-													class="btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm"
-													onclick="resetFilters('incompleteFormReportFilter');"><span>
-													<?= _translate('Reset'); ?>
-													</span></button>
-													<button class="btn btn-success btn-sm" type="button"
-													onclick="exportDataQualityInexcel()"><em
-													class="fa-solid fa-cloud-arrow-down"></em>
-													<?php echo _translate("Export to excel"); ?>
-													</button>
-												</div>
 												</div>
 											</div>
 											<table aria-describedby="table" id="incompleteReport"
@@ -1379,6 +1379,16 @@ $implementingPartnerList = $general->getImplementationPartners();
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
+												<div class="filter-actions">
+													&nbsp;<input type="button"
+													onclick="sampleTestingReport();"
+													value="<?= _translate('Search'); ?>"
+													class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('stReportFilter');"><span>
+													<?= _translate("Reset"); ?>
+													</span></button>
+												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -1453,16 +1463,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 														</div>
 													</div>
 												</div>
-												<div class="filter-actions">
-													&nbsp;<input type="button"
-													onclick="sampleTestingReport();"
-													value="<?= _translate('Search'); ?>"
-													class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm"
-													onclick="resetFilters('stReportFilter');"><span>
-													<?= _translate("Reset"); ?>
-													</span></button>
-												</div>
 												</div>
 											</div>
 											<figure class="highcharts-figure">
@@ -1476,6 +1476,20 @@ $implementingPartnerList = $general->getImplementationPartners();
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
+												<div class="filter-actions">
+													<input type="button" onclick="searchVlRequestData();"
+													value="<?= _translate('Search'); ?>"
+													class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('patientHistoryFilter');">
+													<span><?= _translate('Reset'); ?></span>
+													</button>
+													<button class="btn btn-success btn-sm" type="button"
+													onclick="exportPatientTesthistoryInexcel()"><em
+													class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
+												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -1517,20 +1531,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 															</select>
 														</div>
 													</div>
-												</div>
-												<div class="filter-actions">
-													<input type="button" onclick="searchVlRequestData();"
-													value="<?= _translate('Search'); ?>"
-													class="btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm"
-													onclick="resetFilters('patientHistoryFilter');">
-													<span><?= _translate('Reset'); ?></span>
-													</button>
-													<button class="btn btn-success btn-sm" type="button"
-													onclick="exportPatientTesthistoryInexcel()"><em
-													class="fa-solid fa-cloud-arrow-down"></em>
-													<?php echo _translate("Export to excel"); ?>
-													</button>
 												</div>
 												</div>
 											</div>

@@ -261,14 +261,14 @@
         });
         var summary = box.find('.report-filter-summary').first();
         if (applied.length === 0) {
-            summary.text('').hide();
+            summary.text('').removeClass('is-visible');
             return;
         }
         var shown = applied.slice(0, 2).join(' · ');
         if (applied.length > 2) {
             shown += ' · +' + (applied.length - 2);
         }
-        summary.text(shown).attr('title', applied.join('\n')).show();
+        summary.text(shown).attr('title', applied.join('\n')).addClass('is-visible');
     }
 
     /* The app-wide highlighter tints a filter that holds a value, which is how
@@ -286,11 +286,11 @@
         });
     }
 
-    /* Only the grid of filters folds away. The Search, Reset and Export buttons
-       stay put: a search is often the step before an export, and collapsing the
-       panel used to take the export button off the screen with it. */
+    /* Search, Reset and Export live in the header, so folding the panel leaves
+       them where they were. A search is usually the step before an export, and
+       collapsing used to take the export button off the screen with it. */
     function toggleFilters(box, collapsed) {
-        var grid = box.find('.box-body > .row').first();
+        var grid = box.find('.box-body').first();
         var icon = box.find('.report-filter-toggle em').first();
         box.toggleClass('report-filter-collapsed', collapsed);
         icon.toggleClass('fa-minus', !collapsed).toggleClass('fa-plus', collapsed);
@@ -441,8 +441,12 @@
                 }
             });
 
-            /* The whole header is the hit area, the chevron included. */
-            $(document).on('click', '.report-filter-header', function () {
+            /* The whole header is the hit area, the chevron included -- except
+               the buttons that now live in it, which have their own job. */
+            $(document).on('click', '.report-filter-header', function (event) {
+                if ($(event.target).closest('.filter-actions').length) {
+                    return;
+                }
                 var box = $(this).closest('.report-filter-box');
                 toggleFilters(box, !box.hasClass('report-filter-collapsed'));
             });

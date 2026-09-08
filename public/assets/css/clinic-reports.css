@@ -8,8 +8,28 @@
     margin-top: 15px;
 }
 
+/* One row: title, what the tab is filtered to, the buttons, the chevron. The
+   buttons sit here rather than in the body so that folding the filters away
+   does not take Export with them -- a search is usually the step before one. */
 .report-filter-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
     cursor: pointer;
+}
+
+.report-filter-header .box-title {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.report-filter-header .box-tools.pull-right {
+    position: static;
+    float: none;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0;
 }
 
 .report-filter-box .box-title {
@@ -20,15 +40,18 @@
 /* What the tab is filtered to, readable while the panel is collapsed. */
 .report-filter-summary {
     display: none;
-    margin-left: 10px;
+    flex: 1 1 auto;
+    min-width: 0;
     color: #72777c;
     font-size: 12px;
     line-height: 20px;
-    vertical-align: middle;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 55%;
+}
+
+.report-filter-summary.is-visible {
+    display: block;
 }
 
 /* Floated columns of unequal height snag on each other and leave holes in the
@@ -58,17 +81,10 @@
 }
 
 .report-filter-box .filter-actions {
-    padding-top: 5px;
-    border-top: 1px solid #f4f4f4;
-    margin-top: 5px;
-}
-
-/* With the grid folded away the actions are the only thing left in the body,
-   so the rule that separated them from the filters has nothing to separate. */
-.report-filter-box.report-filter-collapsed .filter-actions {
-    padding-top: 0;
-    margin-top: 0;
-    border-top: 0;
+    flex: 0 0 auto;
+    margin-left: auto;
+    cursor: default;
+    white-space: nowrap;
 }
 
 .report-filter-box .filter-actions .btn {
