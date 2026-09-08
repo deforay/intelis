@@ -520,40 +520,23 @@ function _apply_change_column(DatabaseService $db, string $table, string $oldCol
 }
 
 /**
- * Does this column hold anything a person would miss?
+ * Whether the table holds any row at all.
  *
- * A column added by hand and never written to is not data, and knowing that is
- * what makes most of the both-names cases repairable without asking anyone.
- * What counts as unwritten depends on the column: NULL where NULL is allowed,
- * and otherwise the column default, which cannot be told apart from a value
- * deliberately written to the same thing -- so a table of nothing but defaults
- * is read as empty. That is the safe direction here: it only ever means
- * preferring the other column, which does hold something.
+ * This is the only question about the data that can be answered without
+ * guessing. An earlier version asked a cleverer one -- does this column hold
+ * anything a person would miss -- and answered it by treating NULL, or the
+ * column default, as "nobody wrote this". That is not something a database
+ * records. A shelf reactivated today reads `storage_status = 'active'` exactly
+ * as an untouched row does, and a received date somebody deliberately cleared
+ * reads NULL exactly as one never entered does. Dropping the column on that
+ * reasoning restores a stale value over a deliberate one, silently, which is
+ * worse than the problem being repaired.
+ *
+ * So the heal below applies only where there is provably nothing to lose.
  */
-function column_carries_data(DatabaseService $db, string $table, string $column): bool
+function table_has_rows(DatabaseService $db, string $table): bool
 {
-    $meta = $db->rawQueryOne(
-        "SELECT IS_NULLABLE, COLUMN_DEFAULT FROM information_schema.COLUMNS
-          WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ? LIMIT 1",
-        [current_db($db), $table, $column]
-    );
-
-    $nullable = strcasecmp((string) ($meta['IS_NULLABLE'] ?? 'YES'), 'YES') === 0;
-    $default  = $meta['COLUMN_DEFAULT'] ?? null;
-
-    if ($nullable) {
-        $sql = sprintf('SELECT 1 FROM `%s` WHERE `%s` IS NOT NULL LIMIT 1', $table, $column);
-        $params = [];
-    } elseif ($default !== null) {
-        $sql = sprintf('SELECT 1 FROM `%s` WHERE `%s` <> ? LIMIT 1', $table, $column);
-        $params = [$default];
-    } else {
-        // NOT NULL and no default: every row carries a value somebody wrote.
-        $sql = sprintf('SELECT 1 FROM `%s` LIMIT 1', $table);
-        $params = [];
-    }
-
-    return $db->rawQuery($sql, $params) !== [];
+    return $db->rawQuery(sprintf('SELECT 1 FROM `%s` LIMIT 1', $table)) !== [];
 }
 
 /** Every index this column is part of. */
@@ -570,36 +553,33 @@ function column_key_names(DatabaseService $db, string $table, string $column): a
 }
 
 /**
- * Both names present: repair it where the answer is knowable, stop where it is not.
+ * Both names present: repair it only where nothing can be lost, stop otherwise.
  *
  * MySQL will not CHANGE a column onto a name the table already holds. It raises
  * 1060, which is on the benign list, so the statement was written off as
  * already applied while the values stayed under the old name and the version
- * was stamped as done on top of that.
+ * was stamped as done on top of that. Silent, and the reader just sees an empty
+ * column.
  *
  * Labs reach this state by having been handed an ADD remedy for the missing new
- * column before the rename migration existed. That column is usually empty --
- * it was created to satisfy a query, not to be written to -- and when it is,
- * there is nothing to weigh up:
+ * column before the rename migration existed.
  *
- *   drop the EMPTY new column, then run the rename as written.
+ * On an EMPTY table there is nothing to weigh up: drop the stand-in and run the
+ * rename as written. The direction matters -- copying values across and
+ * dropping the OLD column would take that column's keys with it, where a real
+ * CHANGE carries them over. instrument_controls.config_id is half of PRIMARY
+ * KEY(test_type, config_id) until 5.2.8 renames it.
  *
- * Which direction matters. Copying the values across and dropping the OLD
- * column would take that column's keys with it, and a real CHANGE carries them
- * over instead: instrument_controls.config_id is half of PRIMARY KEY(test_type,
- * config_id) until 5.2.8 renames it, and dropping it shortens the key rather
- * than moving it. Renaming does the whole job -- values, primary key, every
- * secondary index -- and MySQL does it for us.
+ * With rows in the table it stops, and does not try to work out which column
+ * wins. It cannot: a column holding only NULL, or only its default, does not
+ * mean nobody wrote it. A shelf reactivated today reads 'active' exactly as an
+ * untouched row does; a date deliberately cleared reads NULL exactly as one
+ * never entered does. Choosing on that basis restores stale values over
+ * deliberate ones without saying so -- worse than the problem being repaired,
+ * and invisible afterwards.
  *
- * The other way round, an old column with nothing in it beside a populated new
- * one, is a rename that already happened; the leftover is retired, unless it
- * carries a key, which makes it something more than a leftover.
- *
- * Only when BOTH hold real values is there a question the runner cannot answer:
- * a row empty on one side may be one nothing ever wrote or one somebody
- * deliberately cleared, and nothing distinguishes them. That halts, naming what
- * needs deciding. An upgrade that stops for a stated reason can be acted on;
- * the silent version could not.
+ * An upgrade that stops for a stated reason can be acted on. The silent version
+ * could not, and a wrong guess cannot be either.
  */
 function _reconcile_renamed_column(
     DatabaseService $db,
@@ -608,23 +588,23 @@ function _reconcile_renamed_column(
     string $newCol,
     string $ddl
 ): int {
-    $newHasData = column_carries_data($db, $table, $newCol);
-
-    if (!$newHasData) {
+    if (!table_has_rows($db, $table)) {
         $newKeys = column_key_names($db, $table, $newCol);
         if ($newKeys !== []) {
             throw new RuntimeException(sprintf(
-                "`%s` holds BOTH `%s` and `%s`. The second is empty but indexed by %s, so dropping it\n"
-                . "would take those keys with it. Move or drop them, then re-run the migration.",
+                "`%s` holds BOTH `%s` and `%s`. The table is empty, but `%s` is indexed by %s, so dropping\n"
+                . "it would take those keys with it. Move or drop them, then re-run the migration.",
                 $table,
                 $oldCol,
+                $newCol,
                 $newCol,
                 implode(', ', $newKeys)
             ));
         }
 
-        // Retire the empty stand-in, then rename for real: values, primary key
-        // and every secondary index come across with the column.
+        // Nothing in the table, so nothing to choose between. Retire the
+        // stand-in and rename for real: values, primary key and every secondary
+        // index come across with the column.
         $drop = sprintf('ALTER TABLE `%s` DROP COLUMN `%s`', $table, $newCol);
         $db->rawQuery($drop);
         assert_no_errno($db, $drop);
@@ -635,33 +615,12 @@ function _reconcile_renamed_column(
         return MIG_EXECUTED;
     }
 
-    if (!column_carries_data($db, $table, $oldCol)) {
-        $oldKeys = column_key_names($db, $table, $oldCol);
-        if ($oldKeys !== []) {
-            throw new RuntimeException(sprintf(
-                "`%s` holds BOTH `%s` and `%s`. The first is empty but indexed by %s, so it is more than\n"
-                . "a leftover. Move or drop those keys, then re-run the migration.",
-                $table,
-                $oldCol,
-                $newCol,
-                implode(', ', $oldKeys)
-            ));
-        }
-
-        // The rename already happened; this is what it left behind.
-        $drop = sprintf('ALTER TABLE `%s` DROP COLUMN `%s`', $table, $oldCol);
-        $db->rawQuery($drop);
-        assert_no_errno($db, $drop);
-
-        return MIG_EXECUTED;
-    }
-
     throw new RuntimeException(sprintf(
-        "`%s` holds BOTH `%s` and `%s`, and both carry values, so the rename cannot be applied and this\n"
-        . "migration has stopped. `%s` holds what was written before `%s` was added, `%s` what was written\n"
-        . "since. A row empty on one side may be one nothing ever wrote or one somebody cleared, and\n"
-        . "nothing here can tell those apart. Decide which each row should keep, move the values across,\n"
-        . "then drop `%s` (carrying over any key it belongs to). Re-run the migration afterwards.",
+        "`%s` holds BOTH `%s` and `%s`, and the table has rows, so this migration has stopped rather than\n"
+        . "choose between them. `%s` holds what was written before `%s` was added, `%s` what was written\n"
+        . "since. A row that is empty on one side may be one nobody ever wrote or one somebody deliberately\n"
+        . "cleared, and nothing recorded here can tell those apart. Decide which each row should keep, move\n"
+        . "the values across, then drop `%s` (carrying over any key it belongs to). Re-run afterwards.",
         $table,
         $oldCol,
         $newCol,
