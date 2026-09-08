@@ -35,7 +35,7 @@ dispose d'un volume suffisant.
 InteLIS confirme que le retest a été enregistré.
 
 Le retest efface le résultat et renvoie l'échantillon dans la file des non
-testés avec le statut **Échantillon enregistré au laboratoire de test**.
+testés avec le statut **Échantillon enregistré au laboratoire d'analyse**.
 L'échantillon peut alors être ajouté à un nouveau batch. Voir
 [Créer un batch pour le test](batch-samples.md).
 
@@ -67,7 +67,7 @@ page.
 1. Trouver l'échantillon.
 2. Utiliser l'option d'impression sur la ligne.
 
-Si aucune imprimante n'est proposée, sélectionner **Change/Retry** pour en
+Si aucune imprimante n'est proposée, sélectionner **Modifier/Réessayer** pour en
 choisir une.
 
 ## Choisir entre retest et annulation
@@ -88,7 +88,7 @@ l'annulation pour effacer des échecs masque un indicateur réel de qualité.
 
 Après un retest, rechercher l'échantillon sous **CHARGE VIRALE DU VIH → Gestion
 des demandes → Afficher les demandes de test**. Il affiche le statut
-**Échantillon enregistré au laboratoire de test** et aucun résultat.
+**Échantillon enregistré au laboratoire d'analyse** et aucun résultat.
 
 Après une récupération, l'échantillon n'apparaît plus sur la page
 Échec/Echantillons en attente sous **Échec**, et il porte son résultat.

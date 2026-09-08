@@ -16,7 +16,7 @@ l'administrateur.
 
 1. Ouvrir l'adresse web d'InteLIS dans un navigateur.
 2. Saisir l'identifiant de connexion et le mot de passe.
-3. Sélectionner **Login**.
+3. Sélectionner **Connexion**.
 
 InteLIS ouvre la page définie pour le rôle. Pour la plupart des utilisateurs de
 laboratoire, il s'agit du tableau de bord.
@@ -79,7 +79,7 @@ compte.
 ## Se déconnecter
 
 1. Sélectionner le nom du compte en haut à droite.
-2. Sélectionner **Sign out**.
+2. Sélectionner **Déconnexion**.
 
 Se déconnecter en fin de poste. Laisser une session ouverte sur un ordinateur
 partagé permet à la personne suivante de travailler sous un autre nom, qui

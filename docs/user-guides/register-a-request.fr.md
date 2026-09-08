@@ -6,7 +6,8 @@ l'échantillon et le place dans la file d'attente de test.
 
 Pour les échantillons qui arrivent dans un colis avec manifeste, ne pas les
 enregistrer un par un. Voir
-[Réceptionner des échantillons envoyés avec un manifeste](receive-referred-samples.md).
+[Réceptionner des échantillons envoyés avec un
+manifeste](receive-referred-samples.md).
 
 ## Avant de commencer
 
@@ -45,7 +46,8 @@ district.
 
 Si la structure est absente de la liste, c'est qu'elle n'a pas encore été créée,
 ou qu'elle n'est pas rattachée au test de charge virale. Demander à
-l'administrateur de l'ajouter. Voir [Administrer InteLIS](administer-intelis.md).
+l'administrateur de l'ajouter. Voir [Administrer
+InteLIS](administer-intelis.md).
 
 ## Renseigner les informations sur le patient
 
@@ -118,7 +120,7 @@ Lorsque le laboratoire utilise des étiquettes code-barres, le formulaire propos
 l'option **Imprimer une étiquette de code-barres**. La régler avant
 d'enregistrer.
 
-Si aucune imprimante n'est proposée, sélectionner **Change/Retry** pour en
+Si aucune imprimante n'est proposée, sélectionner **Modifier/Réessayer** pour en
 choisir une. L'étiquette porte l'ID de l'échantillon sous forme de code-barres.
 La coller sur le tube.
 
@@ -131,7 +133,8 @@ La demande apparaît avec le statut **Échantillon enregistré au laboratoire de
 test**. Ce statut signifie que l'échantillon est enregistré et en attente de
 test.
 
-Pour corriger une erreur, sélectionner **Modifier** sur la ligne. Les demandes se
+Pour corriger une erreur, sélectionner **Modifier** sur la ligne. Les demandes
+se
 verrouillent après un nombre de jours défini par l'administrateur. Une demande
 verrouillée ne peut plus être modifiée.
 

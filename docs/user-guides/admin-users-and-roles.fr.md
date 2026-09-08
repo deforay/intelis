@@ -14,7 +14,7 @@ administrateur.
 ## Ajouter un utilisateur
 
 1. Aller à **ADMIN → Contrôle d'accès → Utilisateurs**.
-2. Sélectionner **Add User**.
+2. Sélectionner **Ajouter un utilisateur**.
 3. Renseigner les informations.
 
 | Champ | Ce qu'il faut saisir |
@@ -33,7 +33,7 @@ administrateur.
 | Password, Confirm Password | Le mot de passe initial |
 | User Status | Actif ou inactif |
 
-4. Sélectionner **Submit**.
+4. Sélectionner **Envoyer**.
 5. Remettre le Login Id et le mot de passe à l'utilisateur en main propre.
 
 Le Login Id accepte les lettres minuscules, les chiffres, les traits d'union et
@@ -42,7 +42,8 @@ les tirets bas. Il n'accepte ni espaces ni majuscules.
 Le mot de passe doit compter au moins 8 caractères et comporter au moins un
 chiffre et au moins une lettre. Les caractères spéciaux sont autorisés.
 
-Renseigner le **Testing Lab** sur chaque utilisateur. Cela limite ce que
+Renseigner le **Laboratoire d'analyse** sur chaque utilisateur. Cela limite ce
+que
 l'utilisateur voit au travail de son propre laboratoire. Un utilisateur sans
 laboratoire renseigné voit les échantillons de tous les laboratoires.
 
@@ -62,17 +63,18 @@ mot de passe.
 
 1. Ouvrir l'utilisateur sous **ADMIN → Contrôle d'accès → Utilisateurs**.
 2. Repérer **AuthToken**.
-3. Sélectionner **Generate**, ou **Generate Another Token** pour remplacer le
+3. Sélectionner **Générer**, ou **Générer un autre jeton** pour remplacer le
    jeton actuel.
 
-Générer un autre jeton invalide aussitôt le précédent. Tout ce qui utilise encore
+Générer un autre jeton invalide aussitôt le précédent. Tout ce qui utilise
+encore
 l'ancien jeton cesse de fonctionner.
 
 ## Désactiver un utilisateur qui part
 
 1. Ouvrir l'utilisateur.
-2. Passer **User Status** en inactif.
-3. Sélectionner **Submit**.
+2. Passer **Statut de l'utilisateur** en inactif.
+3. Sélectionner **Envoyer**.
 
 Ne pas supprimer le compte, et ne pas réattribuer le Login Id à quelqu'un
 d'autre. Les fiches créées par l'utilisateur restent rattachées à son nom.
@@ -83,25 +85,26 @@ Un rôle est un ensemble nommé de permissions. Les utilisateurs tiennent leurs
 permissions de leur rôle, jamais individuellement.
 
 1. Aller à **ADMIN → Contrôle d'accès → Les rôles**.
-2. Sélectionner **Add Role**, ou **Edit** sur un rôle existant.
+2. Sélectionner **Ajouter rôle**, ou **Modifier** sur un rôle existant.
 3. Renseigner les informations.
 
 | Champ | Ce qu'il faut saisir |
 |---|---|
 | Role Name | Un nom que le personnel reconnaît, par exemple Technicien de laboratoire |
 | Role Code | Un code court et unique |
-| Access Type | **Testing Lab** pour le personnel du laboratoire. **Collection Site** pour le personnel des structures |
+| Access Type | **Laboratoire d'analyse** pour le personnel du laboratoire. **Site de prélèvement** pour le personnel des structures |
 | Status | Actif ou inactif |
 | Privileges | Cocher chaque page accessible à ce rôle |
 
-4. Sélectionner **Submit**.
+4. Sélectionner **Envoyer**.
 
 ## Fonctionnement de la liste des permissions
 
 La liste des permissions est un panneau dépliant par module. Chaque panneau
-contient les pages de ce module, et chaque page porte un interrupteur oui ou non.
+contient les pages de ce module, et chaque page porte un interrupteur oui ou
+non.
 
-**Access Type** filtre la liste. Une page qui relève du travail de laboratoire
+**Type d'Accès** filtre la liste. Une page qui relève du travail de laboratoire
 disparaît lorsque Access Type vaut Collection Site, et inversement. Les pages
 masquées sont forcées en refus, et le serveur l'impose à l'enregistrement.
 Renseigner Access Type d'abord, puis les permissions.

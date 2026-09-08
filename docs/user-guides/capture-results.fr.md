@@ -98,7 +98,7 @@ Les types de fichiers acceptés sont xls, xlsx, csv et txt.
 1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests → Importer
    les résultats d'un fichier**.
 2. Choisir le **Nom de l'instrument/plateforme**.
-3. Choisir le **Specific Machine Name/Code**.
+3. Choisir le **Nom/code de la machine spécifique**.
 4. Choisir le **Nom du laboratoire de test**.
 5. Sélectionner le fichier exporté sous **Fichier**.
 6. Sélectionner **Envoyer**.
@@ -123,10 +123,12 @@ source** sur chacune.
 | Test date ~1+ month from collection | La date du test est postérieure d'un mois ou plus au prélèvement | Vérifier la date |
 | Test date ~1+ year from collection | La date du test est postérieure d'un an ou plus au prélèvement | Vérifier la date. Un écart d'un an est presque toujours une faute de frappe |
 
-Renseigner un **Statut** sur chaque ligne. Renseigner **Tested By**, **Reviewed
+Renseigner un **Statut** sur chaque ligne. Renseigner **Examiné par**,
+**Reviewed
 By** et **Approved By**.
 
-Pour renseigner toutes les lignes en une action, sélectionner **Accepter tous les
+Pour renseigner toutes les lignes en une action, sélectionner **Accepter tous
+les
 échantillons**. Cette action ne touche que les lignes sans statut, celles déjà
 marquées comme rejetées le restent.
 
@@ -173,7 +175,8 @@ Voir [Vérifier et approuver les résultats](approve-results.md).
 ## Si l'échantillon a été rejeté
 
 Lorsque l'échantillon ne peut pas être testé, enregistrer le rejet au lieu d'un
-résultat. Régler **Is Sample Rejected?** sur le formulaire, choisir un **Motif de
+résultat. Régler **L'échantillon est-il rejeté ?** sur le formulaire, choisir un
+**Motif de
 rejet** et renseigner la date de rejet.
 
 Un échantillon rejeté transmet le motif au rapport et au rapport de rejet

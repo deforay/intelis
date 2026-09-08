@@ -47,7 +47,8 @@ sont saisies par ceux qui les détiennent.
 Une fois le colis prêt à partir, lister ses échantillons sur un manifeste.
 
 Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Manifeste VL** et suivre
-[Envoyer des échantillons à un laboratoire avec un manifeste](send-samples-on-a-manifest.md).
+[Envoyer des échantillons à un laboratoire avec un
+manifeste](send-samples-on-a-manifest.md).
 
 Imprimer le manifeste et le placer dans le colis.
 
@@ -61,14 +62,15 @@ La colonne de statut indique où se trouve chaque échantillon.
 
 | Statut | Signification |
 |---|---|
-| Échantillon actuellement enregistré au centre de santé | Enregistré ici, pas encore réceptionné par le laboratoire |
-| Échantillon enregistré au laboratoire de test | Le laboratoire l'a reçu et il attend d'être testé |
+| Échantillon enregistré au centre de santé | Enregistré ici, pas encore réceptionné par le laboratoire |
+| Échantillon enregistré au laboratoire d'analyse | Le laboratoire l'a reçu et il attend d'être testé |
 | En attente d'approbation | Testé, en attente de validation du résultat par le laboratoire |
 | Accepté | Le résultat est approuvé et disponible |
 | Rejeté | Le laboratoire n'a pas pu tester l'échantillon. Le motif figure sur la fiche |
 | Échec/Invalidité | Le test n'a pas produit de résultat exploitable. Le laboratoire décide d'un retest |
 
-La liste complète figure sur la page [statuts des échantillons](sample-statuses.md).
+La liste complète figure sur la page [statuts des
+échantillons](sample-statuses.md).
 
 Un échantillon qui reste à **Échantillon actuellement enregistré au centre de
 santé** longtemps après le départ du colis signifie généralement que le

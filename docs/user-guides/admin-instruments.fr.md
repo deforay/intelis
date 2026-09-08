@@ -15,7 +15,7 @@ ses fichiers de résultats ne peuvent pas être importés.
 ## Ajouter un automate
 
 1. Aller à **ADMIN → Configuration du système → Instruments**.
-2. Sélectionner **Add Instrument**.
+2. Sélectionner **Ajouter un instrument**.
 3. Renseigner les informations.
 
 | Champ | Ce qu'il faut saisir |
@@ -30,9 +30,10 @@ ses fichiers de résultats ne peuvent pas être importés.
 | Latitude, Longitude | Où se trouve la machine, pour la carte du réseau de référence |
 | Status | Actif ou inactif |
 
-4. Sélectionner **Submit**.
+4. Sélectionner **Envoyer**.
 
-L'**Instrument File** est ce qui fait fonctionner l'import de fichiers. Sans lui,
+L'**Fichier des instruments** est ce qui fait fonctionner l'import de fichiers.
+Sans lui,
 les résultats exportés de l'automate ne peuvent pas être lus. Voir
 [Saisir les résultats de charge virale](capture-results.md).
 
@@ -46,7 +47,8 @@ Les limites déterminent comment un résultat numérique est affiché et interpr
 | Higher Limit | La plus grande valeur rendue par la machine, par exemple 10000000 |
 | Low VL Result Text | Le texte exact écrit par la machine pour un résultat indétectable, par exemple `Target Not Detected, TND, < 20, < 40`. Séparer les variantes par des virgules |
 
-Saisir dans **Low VL Result Text** toutes les formulations employées par la
+Saisir dans **Faible VL Texte de résultat** toutes les formulations employées
+par la
 machine. Une formulation absente de la liste est importée comme un résultat non
 reconnu et non comme indétectable.
 
@@ -55,7 +57,7 @@ reconnu et non comme indétectable.
 Les fichiers de résultats portent des dates au format propre à la machine.
 InteLIS déduit ce format d'un exemple.
 
-1. Repérer **Date Format**.
+1. Repérer **Format de date**.
 2. Coller une date exactement telle que la machine l'écrit, par exemple
    `06.19.2025 11:19 AM`.
 3. InteLIS en déduit le format.
@@ -79,16 +81,17 @@ et la tuberculose porte un jeu pour chacun.
 
 ## Définir le réviseur et l'approbateur par défaut
 
-**Default Reviewer** et **Default Approver** pré-remplissent les noms du réviseur
+**Réviseur par défaut** et **Approbateur par défaut** pré-remplissent les noms du réviseur
 et de l'approbateur sur les résultats venant de cette machine.
 
-Ne les renseigner que lorsque les mêmes personnes valident toujours les résultats
+Ne les renseigner que lorsque les mêmes personnes valident toujours les
+résultats
 de cette machine. Les laisser vides fait enregistrer sur chaque résultat la
 personne qui l'a réellement validé.
 
 ## Ajouter un commentaire aux résultats de cette machine
 
-**Description/Comment to add in Test Result** ajoute un commentaire fixe à chaque
+**Description/Commentaire à ajouter dans le résultat du test** ajoute un commentaire fixe à chaque
 résultat de cette machine. À utiliser pour une mention de méthode qui doit
 figurer sur tous les rapports de cette plateforme.
 
