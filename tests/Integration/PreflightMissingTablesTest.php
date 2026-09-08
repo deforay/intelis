@@ -258,7 +258,11 @@ final class PreflightMissingTablesTest extends TestCase
             . "CREATE TABLE `form_generic` (\n  `generic_id` int NOT NULL,\n"
             . "  PRIMARY KEY (`generic_id`)\n) ENGINE=InnoDB;\n"
             . "CREATE TABLE `generic_test_results` (\n  `result_id` int NOT NULL,\n"
-            . "  PRIMARY KEY (`result_id`)\n) ENGINE=InnoDB;\n";
+            . "  PRIMARY KEY (`result_id`)\n) ENGINE=InnoDB;\n"
+            // Declared by the seed, never created here, and neither seeded nor
+            // any module's result table -- so only PF_CORE_TABLES can reach it.
+            . "CREATE TABLE `user_details` (\n  `user_id` int NOT NULL,\n"
+            . "  PRIMARY KEY (`user_id`)\n) ENGINE=InnoDB;\n";
     }
 
     /**
@@ -313,6 +317,25 @@ final class PreflightMissingTablesTest extends TestCase
             $failure,
             'A module removed entirely is not broken either.'
         );
+    }
+
+    /**
+     * A table nobody can log in without is a failure on its own.
+     *
+     * user_details is not seeded and is no module's result table, so both other
+     * rules answer "no" for it. Without PF_CORE_TABLES reaching the classifier
+     * it drops to a warning and `intelis check` passes an installation where
+     * nobody can get in -- and passing the constant is a separate line from
+     * using it, so it needs asserting here rather than in the unit tests.
+     */
+    public function testAnAbsentCoreTableFails(): void
+    {
+        [$out, $status] = $this->check($this->seed());
+
+        $this->assertMatchesRegularExpression('/FAIL\s+Missing tables in use/', $out, "Full output:\n$out");
+        $this->assertStringContainsString('user_details', $out);
+        $this->assertStringContainsString('logging in or drawing a page reads it', $out);
+        $this->assertSame(1, $status);
     }
 
     /**

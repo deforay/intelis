@@ -199,7 +199,11 @@ final class PreflightSchemaReferencesTest extends TestCase
             static fn(string $t): ?bool => false,
         );
 
-        $this->assertArrayHasKey('user_details', $needed, 'A missing login table cannot be a note.');
+        $this->assertSame(
+            ['user_details' => ['logging in or drawing a page reads it']],
+            $needed,
+            'A missing login table cannot be a note.'
+        );
         $this->assertSame([], $dormant);
     }
 
@@ -240,14 +244,14 @@ final class PreflightSchemaReferencesTest extends TestCase
     }
 
     /**
-     * The real constant, and every table in it still on the login path.
+     * The real constant, and every table in it still on one of the two paths.
      *
      * Read from bin/preflight.php rather than restated here, because a second
      * copy of the list would keep passing while an entry was removed from the
-     * one that runs -- and the removed entry is a login dependency downgraded
-     * to a note.
+     * one that runs -- and the removed entry is a table the application needs,
+     * downgraded to a note.
      */
-    public function testEveryCoreTableIsStillReachedByLoggingIn(): void
+    public function testEveryCoreTableIsStillReachedByLoggingInOrDrawingAPage(): void
     {
         $this->assertTrue(
             defined('PF_CORE_TABLES'),
@@ -255,28 +259,39 @@ final class PreflightSchemaReferencesTest extends TestCase
         );
         $this->assertNotEmpty(PF_CORE_TABLES);
 
-        $repo   = dirname(__DIR__, 3);
-        $login  = (string) file_get_contents($repo . '/app/login/loginProcess.php');
-        $source = $login;
+        $repo = dirname(__DIR__, 3);
 
-        // Only the methods login actually calls, rather than whole service
+        // header.php is included by every page in the application, so what it
+        // reaches is as unavoidable as what login reaches.
+        $entry  = (string) file_get_contents($repo . '/app/login/loginProcess.php')
+            . "\n" . (string) file_get_contents($repo . '/app/header.php');
+        $source = $entry;
+
+        // Only the methods those two actually call, rather than whole service
         // classes: CommonService alone mentions most of the schema, so
         // searching it entire would confirm anything put in front of it.
-        foreach (self::loginReachableMethods($login) as [$file, $method]) {
-            $source .= "\n" . self::methodBody($repo . $file, $method);
+        foreach (self::reachableMethods($entry) as [$file, $method]) {
+            // The property initialisers come too. A service commonly names its
+            // table once, as `protected string $table = '...'`, and works
+            // through $this->table thereafter -- AppMenuService does exactly
+            // that -- so the method body alone never mentions the table it
+            // reads.
+            $source .= "\n" . self::methodBody($repo . $file, $method)
+                . "\n" . self::scalarProperties($repo . $file);
         }
 
         foreach (array_keys(PF_CORE_TABLES) as $table) {
             $this->assertStringContainsString(
                 (string) $table,
                 $source,
-                "PF_CORE_TABLES claims logging in reads {$table}, and nothing it calls mentions it any more."
+                "PF_CORE_TABLES claims logging in or drawing a page reads {$table}, "
+                    . 'and nothing on either path mentions it any more.'
             );
         }
     }
 
-    /** The one that is invisible from the login file itself. */
-    public function testTheIndirectLoginDependenciesAreInTheCoreSet(): void
+    /** The ones that are invisible from the files that reach them. */
+    public function testTheIndirectDependenciesAreInTheCoreSet(): void
     {
         $this->assertArrayHasKey(
             'user_login_history',
@@ -288,10 +303,39 @@ final class PreflightSchemaReferencesTest extends TestCase
             PF_CORE_TABLES,
             'getUserFacilityMap() reads it on every successful login.'
         );
+        $this->assertArrayHasKey(
+            's_app_menu',
+            PF_CORE_TABLES,
+            'AppMenuService::getMenu() reads it from header.php, which every page includes.'
+        );
     }
 
-    /** @return list<array{0: string, 1: string}> the service methods login calls */
-    private static function loginReachableMethods(string $login): array
+    /** header.php really is on every page, which is what puts s_app_menu here. */
+    public function testEveryPageGoesThroughTheHeader(): void
+    {
+        $repo = dirname(__DIR__, 3);
+
+        $this->assertStringContainsString(
+            'AppMenuService',
+            (string) file_get_contents($repo . '/app/header.php'),
+            'The header stopped drawing the menu, so s_app_menu is no longer unavoidable.'
+        );
+
+        $pages = ['/app/dashboard/index.php', '/app/users/users.php', '/app/vl/requests/vl-requests.php'];
+        foreach ($pages as $page) {
+            if (!is_file($repo . $page)) {
+                continue;
+            }
+            $this->assertStringContainsString(
+                'header.php',
+                (string) file_get_contents($repo . $page),
+                "{$page} no longer includes header.php; the claim that every page does has weakened."
+            );
+        }
+    }
+
+    /** @return list<array{0: string, 1: string}> the service methods those entry points call */
+    private static function reachableMethods(string $entry): array
     {
         $reachable = [
             'continuousFailedLogins' => '/app/classes/Services/UsersService.php',
@@ -301,19 +345,33 @@ final class PreflightSchemaReferencesTest extends TestCase
             'activityLog'            => '/app/classes/Services/CommonService.php',
             'getSystemConfig'        => '/app/classes/Services/CommonService.php',
             'getGlobalConfig'        => '/app/classes/Services/CommonService.php',
+            'getMenu'                => '/app/classes/Services/AppMenuService.php',
         ];
 
         $out = [];
         foreach ($reachable as $method => $file) {
-            // Each one is asserted to still be called, so a method dropped from
-            // login stops vouching for its table instead of silently continuing
-            // to.
-            if (str_contains($login, $method . '(')) {
+            // Each one has to still be called, so a method dropped from the
+            // entry points stops vouching for its table instead of silently
+            // continuing to.
+            if (str_contains($entry, $method . '(')) {
                 $out[] = [$file, $method];
             }
         }
 
         return $out;
+    }
+
+    /** A class's scalar property initialisers, where table names tend to live. */
+    private static function scalarProperties(string $file): string
+    {
+        $source = (string) file_get_contents($file);
+        preg_match_all(
+            '/^\s*(?:protected|private|public)\s+[^;(){}]*=\s*\'[^\']*\'\s*;$/m',
+            $source,
+            $m
+        );
+
+        return implode("\n", $m[0]);
     }
 
     /** The body of one method, from its signature to the brace that closes it. */
