@@ -30697,6 +30697,10 @@ msgstr "Gérer le statut des résultats CV (approbation/refus)"
 msgid "High VL Report"
 msgstr "Rapport CV élevé"
 
+#: app/system/translate-strings.php:126
+msgid "VL Clinic Reports"
+msgstr "Rapports cliniques CV"
+
 #: app/system/translate-strings.php:127
 msgid "Contact Notes (High VL Reports)"
 msgstr "Notes de contact (rapports sur les taux élevés de CV)"
