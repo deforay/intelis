@@ -65,7 +65,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="stState"><?php echo _translate("Province/State"); ?></label>
-															<select class="form-control stReportFilter select2 select2-element" id="stState" onchange="getByProvince('stDistrict','stfacilityName',this.value)" name="stState" title="<?php echo _translate('Please select Province/State'); ?>">
+															<select class="form-control stReportFilter select2 select2-element" id="stState" onchange="getByProvince('stDistrict','stfacilityName',this.value)" name="stState" title="<?php echo _htmlTranslate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 															</select>
 														</div>
@@ -73,14 +73,14 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="stDistrict"><?php echo _translate("District/County"); ?></label>
-															<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
+															<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _htmlTranslate('Please select District/County'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
 															</select>
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="stfacilityName"><?php echo _translate("Facility"); ?></label>
-															<select class="stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
+															<select class="stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _htmlTranslate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
 															</select>
 														</div>
@@ -88,13 +88,14 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="stSampleCollectionDate"><?php echo _translate("Sample Collection Date "); ?></label>
-															<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="background:#fff;" />
+															<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _htmlTranslate('Select Sample Collection date'); ?>" style="background:#fff;" />
 														</div>
 													</div>
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
+													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _htmlTranslate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('stReportFilter');"><span>
 													<?= _translate("Reset"); ?>
 													</span></button>
@@ -121,19 +122,20 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="patientId"><?php echo _translate("Patient ID"); ?></label>
-															<input type="text" id="patientId" name="patientId" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
+															<input type="text" id="patientId" name="patientId" class="form-control patientHistoryFilter" placeholder="<?php echo _htmlTranslate('Enter Patient ID'); ?>" style="background:#fff;" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="patientName"><?php echo _translate("Patient Name"); ?></label>
-															<input type="text" id="patientName" name="patientName" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
+															<input type="text" id="patientName" name="patientName" class="form-control patientHistoryFilter" placeholder="<?php echo _htmlTranslate('Enter Patient Name'); ?>" style="background:#fff;" />
 														</div>
 													</div>
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
+													<input type="button" onclick="searchVlRequestData();" value="<?= _htmlTranslate('Search'); ?>" class="btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('patientHistoryFilter');">
 													<span><?= _translate('Reset'); ?></span>
 													</button>
@@ -213,17 +215,17 @@ $state = $geolocationService->getProvinces("yes");
 	var oTablepatientTestHistoryReport = null;
 	$(document).ready(function() {
 		$("#stState").select2({
-			placeholder: "<?php echo _translate("Select Province"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Province"); ?>"
 		});
 		$("#stDistrict").select2({
-			placeholder: "<?php echo _translate("Select District"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select District"); ?>"
 		});
 		$("#stfacilityName").selectize({
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 		$('#stSampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear", true); ?>",
+					cancelLabel: "<?= _jsTranslate("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
@@ -352,7 +354,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -440,7 +442,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?= _translate("Unable to generate download", true); ?>");
+					alert("<?= _jsTranslate("Unable to generate download"); ?>");
 				} else {
 					$.unblockUI();
 					oTablepatientTestHistoryReport.fnDraw();

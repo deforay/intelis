@@ -289,15 +289,13 @@
     /* Only the filters fold. The button bar sits below them and stays, but with
        the filters hidden there is nothing to search, so Search and Reset go and
        Export -- which acts on the results already on screen, and is usually why
-       the search was run -- stays. A panel with nothing left to show drops the
-       bar rather than leaving an empty strip. */
+       the search was run -- stays, next to the button that brings the filters
+       back. Which buttons show is a matter for the stylesheet. */
     function toggleFilters(box, collapsed) {
         var grid = box.find('.box-body').first();
         var icon = box.find('.report-filter-toggle em').first();
-        var bar = box.find('.filter-actions').first();
         box.toggleClass('report-filter-collapsed', collapsed);
         icon.toggleClass('fa-minus', !collapsed).toggleClass('fa-plus', collapsed);
-        bar.toggle(!collapsed || bar.find('.filter-export').length > 0);
         if (collapsed) {
             grid.slideUp(150);
         } else {
@@ -443,6 +441,10 @@
                 if (typeof this.onchange === 'function') {
                     this.onchange();
                 }
+            });
+
+            $(document).on('click', '.filter-expand', function () {
+                toggleFilters($(this).closest('.report-filter-box'), false);
             });
 
             /* The whole header is the hit area, the chevron included. */

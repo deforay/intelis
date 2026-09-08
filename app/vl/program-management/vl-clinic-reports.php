@@ -183,7 +183,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<input type="text" id="hvlSampleTestDate"
 															name="hvlSampleTestDate"
 															class="form-control highViralLoadReportFilter stDate"
-															placeholder="<?php echo _translate('Select Sample Test Date'); ?>"
+															placeholder="<?php echo _htmlTranslate('Select Sample Test Date'); ?>"
 															readonly style="background:#fff;"
 															onchange="setSampleTestDate(this)" />
 														</div>
@@ -194,7 +194,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select
 															class="form-control select2Class highViralLoadReportFilter"
 															id="hvlBatchCode" name="hvlBatchCode"
-															title="<?php echo _translate('Please select batch code'); ?>">
+															title="<?php echo _htmlTranslate('Please select batch code'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -212,7 +212,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select
 															class="form-control highViralLoadReportFilter"
 															id="hvlSampleType" name="sampleType"
-															title="<?php echo _translate('Please select sample type'); ?>">
+															title="<?php echo _htmlTranslate('Please select sample type'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -231,7 +231,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															id="state"
 															onchange="getByProvince('district','hvlFacilityName',this.value)"
 															name="state"
-															title="<?php echo _translate('Please select Province/State'); ?>">
+															title="<?php echo _htmlTranslate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 															</select>
 														</div>
@@ -241,7 +241,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="district"><?php echo _translate("District/County"); ?></label>
 															<select class="form-control highViralLoadReportFilter"
 															id="district" name="district"
-															title="<?php echo _translate('Please select District/County'); ?>"
+															title="<?php echo _htmlTranslate('Please select District/County'); ?>"
 															onchange="getByDistrict('hvlFacilityName',this.value)">
 															</select>
 														</div>
@@ -252,7 +252,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select class="form-control highViralLoadReportFilter"
 															id="hvlFacilityName" name="hvlFacilityName"
 															multiple="multiple"
-															title="<?php echo _translate('Please select facility name'); ?>">
+															title="<?php echo _htmlTranslate('Please select facility name'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -269,7 +269,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="hvlContactStatus"><?php echo _translate("Contact Status"); ?></label>
 															<select class="form-control select2 highViralLoadReportFilter"
 															id="hvlContactStatus" name="hvlContactStatus"
-															title="<?php echo _translate('Please select contact status'); ?>">
+															title="<?php echo _htmlTranslate('Please select contact status'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -290,7 +290,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="hvlGender"><?php echo _translate("Sex"); ?></label>
 															<select name="hvlGender" id="hvlGender"
 															class="form-control select2 highViralLoadReportFilter"
-															title="<?php echo _translate('Please select sex'); ?>"
+															title="<?php echo _htmlTranslate('Please select sex'); ?>"
 															onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
@@ -312,7 +312,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="hvlPatientPregnant"><?php echo _translate("Pregnant"); ?></label>
 															<select name="hvlPatientPregnant" id="hvlPatientPregnant"
 															class="form-control select2 highViralLoadReportFilter"
-															title="<?php echo _translate('Please choose pregnant option'); ?>">
+															title="<?php echo _htmlTranslate('Please choose pregnant option'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -331,7 +331,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select name="hvlPatientBreastfeeding"
 															id="hvlPatientBreastfeeding"
 															class="form-control select2 highViralLoadReportFilter"
-															title="<?php echo _translate('Please choose option'); ?>">
+															title="<?php echo _htmlTranslate('Please choose option'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -349,7 +349,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="patientInfo"><?php echo _translate("Export with Patient Name"); ?></label>
 															<select name="patientInfo" id="patientInfo"
 															class="form-control select2 highViralLoadReportFilter"
-															title="<?php echo _translate('Please choose community sample'); ?>">
+															title="<?php echo _htmlTranslate('Please choose community sample'); ?>">
 															<option value="yes">
 															<?php echo _translate("Yes"); ?>
 															</option>
@@ -364,7 +364,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="hvlImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
 															<select name="hvlImplementingPartner" id="hvlImplementingPartner"
 															class="form-control select2Class highViralLoadReportFilter"
-															title="<?php echo _translate('Please choose implementing partner'); ?>">
+															title="<?php echo _htmlTranslate('Please choose implementing partner'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -379,9 +379,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<input type="button"
 													onclick="searchVlRequestData();"
-													value="<?= _translate('Search'); ?>"
+													value="<?= _htmlTranslate('Search'); ?>"
 													class="btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm"
 													onclick="resetFilters('highViralLoadReportFilter');"><span>
@@ -467,7 +468,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															id="vfVlnsState"
 															onchange="getByProvince('vfVlnsDistrict','vfVlnsfacilityName',this.value)"
 															name="vfVlnsState"
-															title="<?php echo _translate('Please select Province/State'); ?>">
+															title="<?php echo _htmlTranslate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 															</select>
 														</div>
@@ -478,7 +479,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select
 															class="form-control vfvlnsfilters select2 select2-element"
 															id="vfVlnsDistrict" name="vfVlnsDistrict"
-															title="<?php echo _translate('Please select District/County'); ?>"
+															title="<?php echo _htmlTranslate('Please select District/County'); ?>"
 															onchange="getByDistrict('vfVlnsfacilityName',this.value)">
 															</select>
 														</div>
@@ -489,7 +490,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select class="form-control vfvlnsfilters"
 															id="vfVlnsfacilityName" name="vfVlnsfacilityName"
 															multiple="multiple"
-															title="<?php echo _translate('Please select facility name'); ?>">
+															title="<?php echo _htmlTranslate('Please select facility name'); ?>">
 															<?php foreach ($fResult as $name) { ?>
 															<option value="<?php echo $name['facility_id']; ?>">
 															<?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?>
@@ -504,7 +505,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<input type="text" id="vfVlnsSampleCollectionDate"
 															name="vfVlnsSampleCollectionDate"
 															class="form-control vfvlnsfilters daterangefield"
-															placeholder="<?php echo _translate('Select Collection Date'); ?>"
+															placeholder="<?php echo _htmlTranslate('Select Collection Date'); ?>"
 															style="background:#fff;" />
 														</div>
 													</div>
@@ -514,7 +515,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<input type="text" id="vfVlnsSampleTestDate"
 															name="vfVlnsSampleTestDate"
 															class="form-control vfvlnsfilters daterangefield"
-															placeholder="<?php echo _translate('Select Tested Date'); ?>"
+															placeholder="<?php echo _htmlTranslate('Select Tested Date'); ?>"
 															style="background:#fff;" />
 														</div>
 													</div>
@@ -523,7 +524,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="vfvlnGender"><?php echo _translate("Sex"); ?></label>
 															<select name="vfvlnGender" id="vfvlnGender"
 															class="form-control select2 vfvlnsfilters"
-															title="<?php echo _translate('Please select sex'); ?>"
+															title="<?php echo _htmlTranslate('Please select sex'); ?>"
 															onchange="hideFemaleDetails(this.value,'pregnancy','breastfeeding');">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
@@ -546,7 +547,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select
 															class="form-control select2 select2-element vfvlnsfilters"
 															id="pregnancy" name="pregnancy"
-															title="<?php echo _translate('Please select pregnancy'); ?>">
+															title="<?php echo _htmlTranslate('Please select pregnancy'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -565,7 +566,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select
 															class="form-control select2 select2-element vfvlnsfilters"
 															id="breastfeeding" name="breastfeeding"
-															title="<?php echo _translate('Please select Province/State'); ?>">
+															title="<?php echo _htmlTranslate('Please select Province/State'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -594,7 +595,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="vfVlnsImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
 															<select name="vfVlnsImplementingPartner" id="vfVlnsImplementingPartner"
 															class="form-control select2Class vfvlnsfilters"
-															title="<?php echo _translate('Please choose implementing partner'); ?>">
+															title="<?php echo _htmlTranslate('Please choose implementing partner'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -609,6 +610,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<button onclick="vfVlnsExportInexcel();" value="Search"
 													class="filter-export btn btn-success btn-sm"><em
 													class="fa-solid fa-cloud-arrow-down"></em><span><?php echo _translate(" Generate report"); ?></span></button>
@@ -634,7 +636,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<input type="text" id="rjtSampleCollectionDate"
 															name="rjtSampleCollectionDate"
 															class="form-control sampleRjtReportFilter stDate daterange"
-															placeholder="<?php echo _translate('Select Sample Collection Date'); ?>"
+															placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>"
 															readonly style="background:#fff;"
 															onchange="setSampleTestDate(this)" />
 														</div>
@@ -644,7 +646,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="rjtBatchCode"><?php echo _translate("Batch Code"); ?></label>
 															<select class="form-control select2Class sampleRjtReportFilter"
 															id="rjtBatchCode" name="rjtBatchCode"
-															title="<?php echo _translate('Please select batch code'); ?>">
+															title="<?php echo _htmlTranslate('Please select batch code'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -666,7 +668,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select
 															class="form-control select2 sampleRjtReportFilter"
 															id="rjtSampleType" name="sampleType"
-															title="<?php echo _translate('Please select sample type'); ?>">
+															title="<?php echo _htmlTranslate('Please select sample type'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -690,7 +692,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															id="rjtState"
 															onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)"
 															name="rjtState"
-															title="<?php echo _translate('Please select Province/State'); ?>">
+															title="<?php echo _htmlTranslate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 															</select>
 														</div>
@@ -701,7 +703,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select
 															class="form-control sampleRjtReportFilter select2-element"
 															id="rjtDistrict" name="rjtDistrict"
-															title="<?php echo _translate('Please select District/County'); ?>"
+															title="<?php echo _htmlTranslate('Please select District/County'); ?>"
 															onchange="getByDistrict('rjtFacilityName',this.value)">
 															</select>
 														</div>
@@ -711,7 +713,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="rjtFacilityName"><?php echo _translate("Facility"); ?></label>
 															<select class="form-control sampleRjtReportFilter"
 															id="rjtFacilityName" name="facilityName"
-															title="<?php echo _translate('Please select facility name'); ?>"
+															title="<?php echo _htmlTranslate('Please select facility name'); ?>"
 															multiple="multiple">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
@@ -733,7 +735,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="rjtGender"><?php echo _translate("Sex"); ?></label>
 															<select name="rjtGender" id="rjtGender"
 															class="form-control select2 sampleRjtReportFilter"
-															title="<?php echo _translate('Please select sex'); ?>"
+															title="<?php echo _htmlTranslate('Please select sex'); ?>"
 															onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
@@ -755,7 +757,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="rjtPatientPregnant"><?php echo _translate("Pregnant"); ?></label>
 															<select name="rjtPatientPregnant" id="rjtPatientPregnant"
 															class="form-control select2 sampleRjtReportFilter"
-															title="<?php echo _translate('Please choose pregnant option'); ?>">
+															title="<?php echo _htmlTranslate('Please choose pregnant option'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -774,7 +776,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select name="rjtPatientBreastfeeding"
 															id="rjtPatientBreastfeeding"
 															class="form-control select2 sampleRjtReportFilter"
-															title="<?php echo _translate('Please choose option'); ?>">
+															title="<?php echo _htmlTranslate('Please choose option'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -792,7 +794,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="rejectionReason"><?php echo _translate("Rejection Reason"); ?></label>
 															<select name="rejectionReason" id="rejectionReason"
 															class="form-control select2 sampleRjtReportFilter"
-															title="<?php echo _translate('Please choose reason'); ?>">
+															title="<?php echo _htmlTranslate('Please choose reason'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -818,7 +820,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="patientRejectedInfo"><?php echo _translate("Export with Patient Name"); ?></label>
 															<select name="patientRejectedInfo" id="patientRejectedInfo"
 															class="form-control select2 sampleRjtReportFilter"
-															title="<?php echo _translate('Please choose community sample'); ?>">
+															title="<?php echo _htmlTranslate('Please choose community sample'); ?>">
 															<option value="yes">
 															<?php echo _translate("Yes"); ?>
 															</option>
@@ -833,7 +835,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="rjtImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
 															<select name="rjtImplementingPartner" id="rjtImplementingPartner"
 															class="form-control select2Class sampleRjtReportFilter"
-															title="<?php echo _translate('Please choose implementing partner'); ?>">
+															title="<?php echo _htmlTranslate('Please choose implementing partner'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -848,9 +850,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<input type="button"
 													onclick="searchVlRequestData();"
-													value="<?= _translate('Search'); ?>"
+													value="<?= _htmlTranslate('Search'); ?>"
 													class="btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm"
 													onclick="resetFilters('sampleRjtReportFilter');"><span>
@@ -927,7 +930,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<input type="text" id="noResultSampleTestDate"
 															name="noResultSampleTestDate"
 															class="form-control notAvailReportFilter stDate daterange"
-															placeholder="<?php echo _translate('Select Sample Collection Date'); ?>"
+															placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>"
 															readonly style="background:#fff;"
 															onchange="setSampleTestDate(this)" />
 														</div>
@@ -937,7 +940,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="noResultBatchCode"><?php echo _translate("Batch Code"); ?></label>
 															<select class="form-control select2Class notAvailReportFilter"
 															id="noResultBatchCode" name="noResultBatchCode"
-															title="<?php echo _translate('Please select batch code'); ?>">
+															title="<?php echo _htmlTranslate('Please select batch code'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -959,7 +962,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select
 															class="form-control select2 notAvailReportFilter"
 															id="noResultSampleType" name="sampleType"
-															title="<?php echo _translate('Please select sample type'); ?>">
+															title="<?php echo _htmlTranslate('Please select sample type'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -983,7 +986,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															id="noResultState"
 															onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)"
 															name="rjtState"
-															title="<?php echo _translate('Please select Province/State'); ?>">
+															title="<?php echo _htmlTranslate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 															</select>
 														</div>
@@ -994,7 +997,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select
 															class="form-control notAvailReportFilter select2-element"
 															id="noResultDistrict" name="noResultDistrict"
-															title="<?php echo _translate('Please select District/County'); ?>"
+															title="<?php echo _htmlTranslate('Please select District/County'); ?>"
 															onchange="getByDistrict('noResultFacilityName',this.value)">
 															</select>
 														</div>
@@ -1004,7 +1007,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="noResultFacilityName"><?php echo _translate("Facility"); ?></label>
 															<select class="form-control notAvailReportFilter"
 															id="noResultFacilityName" name="facilityName"
-															title="<?php echo _translate('Please select facility name'); ?>"
+															title="<?php echo _htmlTranslate('Please select facility name'); ?>"
 															multiple="multiple">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
@@ -1026,7 +1029,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="noResultGender"><?php echo _translate("Sex"); ?></label>
 															<select name="noResultGender" id="noResultGender"
 															class="form-control select2 notAvailReportFilter"
-															title="<?php echo _translate('Please select sex'); ?>"
+															title="<?php echo _htmlTranslate('Please select sex'); ?>"
 															onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
@@ -1049,7 +1052,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select name="noResultPatientPregnant"
 															id="noResultPatientPregnant"
 															class="form-control select2 notAvailReportFilter"
-															title="<?php echo _translate('Please choose pregnant option'); ?>">
+															title="<?php echo _htmlTranslate('Please choose pregnant option'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -1068,7 +1071,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select name="noResultPatientBreastfeeding"
 															id="noResultPatientBreastfeeding"
 															class="form-control select2 notAvailReportFilter"
-															title="<?php echo _translate('Please choose option'); ?>">
+															title="<?php echo _htmlTranslate('Please choose option'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -1086,7 +1089,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="patientNtAvailInfo"><?php echo _translate("Export with Patient Name"); ?></label>
 															<select name="patientNtAvailInfo" id="patientNtAvailInfo"
 															class="form-control select2 notAvailReportFilter"
-															title="<?php echo _translate('Please choose community sample'); ?>">
+															title="<?php echo _htmlTranslate('Please choose community sample'); ?>">
 															<option value="yes">
 															<?php echo _translate("Yes"); ?>
 															</option>
@@ -1102,7 +1105,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select name="noResultImplementingPartner"
 															id="noResultImplementingPartner"
 															class="form-control select2Class notAvailReportFilter"
-															title="<?php echo _translate('Please choose implementing partner'); ?>">
+															title="<?php echo _htmlTranslate('Please choose implementing partner'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -1119,7 +1122,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="noResultIncludeExpired"><?php echo _translate("Include Expired Samples"); ?></label>
 															<select name="noResultIncludeExpired" id="noResultIncludeExpired"
 															class="form-control notAvailReportFilter"
-															title="<?php echo _translate('Please choose whether expired samples are counted'); ?>">
+															title="<?php echo _htmlTranslate('Please choose whether expired samples are counted'); ?>">
 															<option value=""><?php echo _translate("Yes"); ?></option>
 															<option value="no"><?php echo _translate("No"); ?></option>
 															</select>
@@ -1128,9 +1131,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<input type="button"
 													onclick="searchVlRequestData();"
-													value="<?= _translate('Search'); ?>"
+													value="<?= _htmlTranslate('Search'); ?>"
 													class="btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm"
 													onclick="resetFilters('notAvailReportFilter');"><span>
@@ -1204,7 +1208,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<input type="text" id="sampleCollectionDate"
 															name="sampleCollectionDate"
 															class="form-control incompleteFormReportFilter"
-															placeholder="<?php echo _translate('Select Sample Collection Date'); ?>"
+															placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>"
 															readonly style="background:#fff;" />
 														</div>
 													</div>
@@ -1213,7 +1217,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="formField"><?php echo _translate("Fields"); ?></label>
 															<select class="form-control incompleteFormReportFilter"
 															id="formField" name="formField" multiple="multiple"
-															title="<?php echo _translate('Please fields'); ?>">
+															title="<?php echo _htmlTranslate('Please fields'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -1258,7 +1262,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="patientVlQualityInfo"><?php echo _translate("Export with Patient Name"); ?></label>
 															<select name="patientVlQualityInfo" id="patientVlQualityInfo"
 															class="form-control select2 incompleteFormReportFilter"
-															title="<?php echo _translate('Please choose community sample'); ?>">
+															title="<?php echo _htmlTranslate('Please choose community sample'); ?>">
 															<option value="yes">
 															<?php echo _translate("Yes"); ?>
 															</option>
@@ -1273,7 +1277,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="dqImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
 															<select name="dqImplementingPartner" id="dqImplementingPartner"
 															class="form-control select2Class incompleteFormReportFilter"
-															title="<?php echo _translate('Please choose implementing partner'); ?>">
+															title="<?php echo _htmlTranslate('Please choose implementing partner'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -1290,7 +1294,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="dqFieldMatch"><?php echo _translate("Field Match"); ?></label>
 															<select name="dqFieldMatch" id="dqFieldMatch"
 															class="form-control select2Class incompleteFormReportFilter"
-															title="<?php echo _translate('Please choose how the selected fields combine'); ?>">
+															title="<?php echo _htmlTranslate('Please choose how the selected fields combine'); ?>">
 															<option value="any">
 															<?php echo _translate("Any selected field is missing"); ?>
 															</option>
@@ -1303,9 +1307,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<input type="button"
 													onclick="searchVlRequestData();"
-													value="<?= _translate('Search'); ?>"
+													value="<?= _htmlTranslate('Search'); ?>"
 													class="btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm"
 													onclick="resetFilters('incompleteFormReportFilter');"><span>
@@ -1393,7 +1398,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															id="stState"
 															onchange="getByProvince('stDistrict','stfacilityName',this.value)"
 															name="stState"
-															title="<?php echo _translate('Please select Province/State'); ?>">
+															title="<?php echo _htmlTranslate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 															</select>
 														</div>
@@ -1404,7 +1409,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select
 															class="form-control stReportFilter select2 select2-element"
 															id="stDistrict" name="stDistrict"
-															title="<?php echo _translate('Please select District/County'); ?>"
+															title="<?php echo _htmlTranslate('Please select District/County'); ?>"
 															onchange="getByDistrict('stfacilityName',this.value)">
 															</select>
 														</div>
@@ -1414,7 +1419,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="stfacilityName"><?php echo _translate("Facility"); ?></label>
 															<select class="form-control stReportFilter" id="stfacilityName"
 															name="stfacilityName" multiple="multiple"
-															title="<?php echo _translate('Please select facility name'); ?>">
+															title="<?php echo _htmlTranslate('Please select facility name'); ?>">
 															<option value=""><?php echo _translate('-- Select --'); ?>
 															</option>
 															<?php foreach ($fResult as $name) { ?>
@@ -1431,7 +1436,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<input type="text" id="stSampleCollectionDate"
 															name="stSampleCollectionDate"
 															class="form-control stReportFilter"
-															placeholder="<?= _translate('Select Sample Collection date'); ?>"
+															placeholder="<?= _htmlTranslate('Select Sample Collection date'); ?>"
 															style="background:#fff;" />
 														</div>
 													</div>
@@ -1440,7 +1445,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="stImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
 															<select name="stImplementingPartner" id="stImplementingPartner"
 															class="form-control select2Class stReportFilter"
-															title="<?php echo _translate('Please choose implementing partner'); ?>">
+															title="<?php echo _htmlTranslate('Please choose implementing partner'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -1455,9 +1460,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<input type="button"
 													onclick="sampleTestingReport();"
-													value="<?= _translate('Search'); ?>"
+													value="<?= _htmlTranslate('Search'); ?>"
 													class="searchBtn btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm"
 													onclick="resetFilters('stReportFilter');"><span>
@@ -1487,7 +1493,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="patientId"><?php echo _translate("Patient ID"); ?></label>
 															<input type="text" id="patientId" name="patientId"
 															class="form-control patientHistoryFilter"
-															placeholder="<?php echo _translate('Enter Patient ID'); ?>"
+															placeholder="<?php echo _htmlTranslate('Enter Patient ID'); ?>"
 															style="background:#fff;" />
 														</div>
 													</div>
@@ -1496,7 +1502,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="patientName"><?php echo _translate("Patient Name"); ?></label>
 															<input type="text" id="patientName" name="patientName"
 															class="form-control patientHistoryFilter"
-															placeholder="<?php echo _translate('Enter Patient Name'); ?>"
+															placeholder="<?php echo _htmlTranslate('Enter Patient Name'); ?>"
 															style="background:#fff;" />
 														</div>
 													</div>
@@ -1505,7 +1511,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="pthImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
 															<select name="pthImplementingPartner" id="pthImplementingPartner"
 															class="form-control select2Class patientHistoryFilter"
-															title="<?php echo _translate('Please choose implementing partner'); ?>">
+															title="<?php echo _htmlTranslate('Please choose implementing partner'); ?>">
 															<option value="">
 															<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -1520,8 +1526,9 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
+													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													<input type="button" onclick="searchVlRequestData();"
-													value="<?= _translate('Search'); ?>"
+													value="<?= _htmlTranslate('Search'); ?>"
 													class="btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm"
 													onclick="resetFilters('patientHistoryFilter');">
@@ -1671,27 +1678,27 @@ $implementingPartnerList = $general->getImplementationPartners();
 	$(document).ready(function () {
 		$("#state,#vfVlnsState,#rjtState,#noResultState,#stState").select2({
 			width: '100%',
-			placeholder: "<?php echo _translate("Select Province"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Province"); ?>"
 		});
 		$("#district,#vfVlnsDistrict,#rjtDistrict,#noResultDistrict,#stDistrict").select2({
 			width: '100%',
-			placeholder: "<?php echo _translate("Select District"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select District"); ?>"
 		});
 		$("#hvlFacilityName,#vfVlnsfacilityName,#rjtFacilityName,#noResultFacilityName,#stfacilityName").select2({
 			width: '100%',
-			placeholder: "<?php echo _translate("Select Facilities"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Facilities"); ?>"
 		});
 		$(".select2Class").select2({
 			width: '100%',
-			placeholder: "<?php echo _translate("Select Option"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Option"); ?>"
 		});
 		$("#formField").select2({
 			width: '100%',
-			placeholder: "<?php echo _translate("Select Fields"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Fields"); ?>"
 		});
 		$('#hvlSampleTestDate,#rjtSampleCollectionDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#stSampleCollectionDate').daterangepicker({
 			locale: {
-				cancelLabel: "<?= _translate("Clear", true); ?>",
+				cancelLabel: "<?= _jsTranslate("Clear"); ?>",
 				format: 'DD-MMM-YYYY',
 				separator: ' to ',
 			},
@@ -1725,7 +1732,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			});
 		$('#vfVlnsSampleCollectionDate').daterangepicker({
 			locale: {
-				cancelLabel: "<?= _translate("Clear", true); ?>",
+				cancelLabel: "<?= _jsTranslate("Clear"); ?>",
 				format: 'DD-MMM-YYYY',
 				separator: ' to ',
 			},
@@ -1808,7 +1815,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 					alert("Age range is incorrect");
 				} else if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _translate("No data found matching the selected parameters"); ?>");
+					alert("<?php echo _jsTranslate("No data found matching the selected parameters"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -2265,14 +2272,14 @@ $implementingPartnerList = $general->getImplementationPartners();
 	}
 
 	function updateStatus(id, value) {
-		conf = confirm("<?php echo _translate("Do you wisht to change the contact completed status?"); ?>");
+		conf = confirm("<?php echo _jsTranslate("Do you wish to change the contact completed status?"); ?>");
 		if (conf) {
 			$.post("/vl/program-management/updateContactCompletedStatus.php", {
 				id: id,
 				value: value
 			},
 				function (data) {
-					alert("<?php echo _translate("Status updated successfully"); ?>");
+					alert("<?php echo _jsTranslate("Status updated successfully"); ?>");
 					oTableViralLoad.fnDraw();
 				});
 		} else {
@@ -2287,7 +2294,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			return searchVlRequestData().then(exportHighViralLoadInexcel);
 		}
 		var markAsComplete = false;
-		confm = confirm("<?php echo _translate("Do you want to mark these as complete ?"); ?>");
+		confm = confirm("<?php echo _jsTranslate("Do you want to mark these as complete ?"); ?>");
 		if (confm) {
 			var markAsComplete = true;
 		}
@@ -2306,7 +2313,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			function (data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					//location.href = '/temporary/' + data;
@@ -2337,7 +2344,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			function (data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -2365,7 +2372,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			function (data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -2389,7 +2396,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			function (data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -2411,7 +2418,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			function (data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -2522,7 +2529,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			function (data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?= _translate("Unable to generate download", true); ?>");
+					alert("<?= _jsTranslate("Unable to generate download"); ?>");
 				} else {
 					$.unblockUI();
 					oTablepatientTestHistoryReport.fnDraw();

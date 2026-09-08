@@ -32939,7 +32939,7 @@ msgid "No data found matching the selected parameters"
 msgstr "Aucune donnée trouvée correspondant aux paramètres sélectionnés"
 
 #: app/vl/program-management/highViralLoad.php:2314
-msgid "Do you wisht to change the contact completed status?"
+msgid "Do you wish to change the contact completed status?"
 msgstr "Souhaitez-vous modifier le statut du contact terminé ?"
 
 #: app/vl/program-management/highViralLoad.php:2321
