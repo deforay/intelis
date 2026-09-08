@@ -6152,10 +6152,6 @@ msgstr ""
 msgid "Batch Samples Position saved successfully."
 msgstr ""
 
-#: cd4/management/cd4-clinic-report.php:9
-msgid "CD4 | Clinics Report"
-msgstr ""
-
 #: cd4/management/cd4-clinic-report.php:73
 #: cd4/management/cd4-clinic-report.php:78
 #: covid-19/management/covid-19-clinic-report.php:66
@@ -12372,10 +12368,6 @@ msgstr "Project saved successfully"
 msgid "Recommended Corrective Action saved successfully"
 msgstr ""
 
-#: covid-19/management/covid-19-clinic-report.php:7
-msgid "Covid-19 | Clinics Report"
-msgstr ""
-
 #: covid-19/management/covid-19-clinic-report.php:408
 #: eid/management/eid-clinic-report.php:411
 #: tb/management/tb-clinic-report.php:406
@@ -15060,10 +15052,6 @@ msgstr ""
 
 #: eid/eid.js.php:48
 msgid "The total age must not exceed 24 months."
-msgstr ""
-
-#: eid/management/eid-clinic-report.php:7
-msgid "EID | Clinics Report"
 msgstr ""
 
 #: eid/management/eid-clinic-report.php:185
@@ -18583,10 +18571,6 @@ msgstr ""
 msgid "Other Lab Tests Sample Status Report"
 msgstr ""
 
-#: generic-tests/program-management/generic-tests-clinic-report.php:7
-msgid "Other Lab Tests | Clinics Report"
-msgstr ""
-
 #: generic-tests/program-management/get-sample-status.php:195
 #: vl/program-management/getSampleStatus.php:313
 msgid "Samples Status Overview (N = "
@@ -20146,10 +20130,6 @@ msgstr ""
 #: hepatitis/reference/hepatitis-test-reasons.php:16
 #: hepatitis/reference/hepatitis-test-reasons.php:19
 msgid "Hepatitis Test Reasons"
-msgstr ""
-
-#: hepatitis/management/hepatitis-clinic-report.php:7
-msgid "Hepatitis | Clinics Report"
 msgstr ""
 
 #: hepatitis/management/hepatitis-clinic-report.php:192
@@ -22048,10 +22028,6 @@ msgstr ""
 msgid "System Instance Overview"
 msgstr ""
 
-#: system-admin/instance-overview/instanceIndex.php:63
-msgid "Instance Id"
-msgstr ""
-
 #: system-admin/instance-overview/instanceIndex.php:67
 msgid "Added On"
 msgstr ""
@@ -23362,10 +23338,6 @@ msgstr ""
 msgid "TB Test Reasons"
 msgstr ""
 
-#: tb/management/tb-clinic-report.php:7
-msgid "TB | Clinics Report"
-msgstr ""
-
 #: tb/management/tb-sample-rejection-report.php:6
 msgid "TB | Sample Rejection Report"
 msgstr ""
@@ -24482,10 +24454,6 @@ msgstr ""
 
 #: vl/program-management/getSuppressedTargetReport.php:158
 msgid "No of target in month %"
-msgstr ""
-
-#: vl/program-management/highViralLoad.php:8
-msgid "VL | Clinics Report"
 msgstr ""
 
 #: vl/program-management/highViralLoad.php:139
