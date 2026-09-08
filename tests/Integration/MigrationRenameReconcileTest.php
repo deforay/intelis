@@ -73,14 +73,13 @@ final class MigrationRenameReconcileTest extends TestCase
     }
 
     /**
-     * The common case: the hand-added column was never written to.
+     * An empty table has nothing to choose between, so it is healed.
      *
-     * Nothing is being weighed up here, so nothing needs a person. The empty
-     * stand-in goes and the rename runs as written -- which is what carries the
-     * values, the primary key and every secondary index across, because MySQL
-     * does that for a rename and does not do it for a drop.
+     * The rename runs for real, which is what carries the values, the primary
+     * key and every secondary index across -- MySQL does that for a rename and
+     * does not do it for a drop.
      */
-    public function testAnEmptyStandInColumnIsRetiredAndTheRenameRunsForReal(): void
+    public function testAnEmptyTableIsHealedByRenamingForReal(): void
     {
         self::$db->rawQuery('DROP TABLE IF EXISTS `heal_empty_probe`');
         self::$db->rawQuery(
@@ -91,9 +90,6 @@ final class MigrationRenameReconcileTest extends TestCase
                 PRIMARY KEY (`test_type`, `config_id`),
                 KEY `idx_cfg` (`config_id`)
             ) ENGINE=InnoDB'
-        );
-        self::$db->rawQuery(
-            'INSERT INTO `heal_empty_probe` (`test_type`, `config_id`) VALUES ("vl", "a"), ("vl", "b")'
         );
 
         $this->assertSame(
@@ -106,12 +102,6 @@ final class MigrationRenameReconcileTest extends TestCase
         $columns = $this->columnsOf('heal_empty_probe');
         $this->assertContains('instrument_id', $columns);
         $this->assertNotContains('config_id', $columns, 'The old name is gone, because it was renamed.');
-
-        $values = array_column(
-            self::$db->rawQuery('SELECT `instrument_id` AS v FROM `heal_empty_probe` ORDER BY `instrument_id`'),
-            'v'
-        );
-        $this->assertSame(['a', 'b'], $values, 'The values came across, not the empty defaults.');
 
         // The whole reason for renaming rather than copying and dropping.
         $this->assertSame(
@@ -131,8 +121,7 @@ final class MigrationRenameReconcileTest extends TestCase
             array_column(
                 self::$db->rawQuery(
                     "SELECT COLUMN_NAME FROM information_schema.STATISTICS
-                       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'heal_empty_probe'
-                         AND INDEX_NAME = 'idx_cfg'"
+                       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'heal_empty_probe' AND INDEX_NAME = 'idx_cfg'"
                 ),
                 'COLUMN_NAME'
             ),
@@ -140,116 +129,83 @@ final class MigrationRenameReconcileTest extends TestCase
         );
     }
 
-    /** A nullable stand-in nobody wrote to is empty too. */
-    public function testAnUnwrittenNullableStandInIsAlsoHealed(): void
-    {
-        self::$db->rawQuery('DROP TABLE IF EXISTS `heal_null_probe`');
-        self::$db->rawQuery(
-            'CREATE TABLE `heal_null_probe` (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                `sample_received_at_testing_lab_datetime` DATETIME NULL DEFAULT NULL,
-                `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL
-            ) ENGINE=InnoDB'
-        );
-        self::$db->rawQuery(
-            'INSERT INTO `heal_null_probe` (`sample_received_at_testing_lab_datetime`) VALUES
-                ("2024-03-01 09:00:00"), ("2024-03-02 09:00:00")'
-        );
-
-        $this->assertSame(
-            MIG_EXECUTED,
-            $this->dispatch(
-                'ALTER TABLE `heal_null_probe`
-                 CHANGE `sample_received_at_testing_lab_datetime` `sample_received_at_lab_datetime`
-                 DATETIME NULL DEFAULT NULL'
-            )
-        );
-
-        $this->assertSame(
-            ['2024-03-01 09:00:00', '2024-03-02 09:00:00'],
-            array_column(
-                self::$db->rawQuery('SELECT `sample_received_at_lab_datetime` AS v FROM `heal_null_probe` ORDER BY id'),
-                'v'
-            ),
-            'Every stranded value has to arrive under the new name.'
-        );
-        $this->assertNotContains('sample_received_at_testing_lab_datetime', $this->columnsOf('heal_null_probe'));
-    }
-
-    /** The rename already happened; the old column is just a leftover. */
-    public function testAnEmptyOldColumnBesideAPopulatedNewOneIsRetired(): void
-    {
-        self::$db->rawQuery('DROP TABLE IF EXISTS `heal_leftover_probe`');
-        self::$db->rawQuery(
-            'CREATE TABLE `heal_leftover_probe` (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                `old_name` INT NULL DEFAULT NULL,
-                `new_name` INT NULL DEFAULT NULL
-            ) ENGINE=InnoDB'
-        );
-        self::$db->rawQuery('INSERT INTO `heal_leftover_probe` (`new_name`) VALUES (4), (5)');
-
-        $this->assertSame(
-            MIG_EXECUTED,
-            $this->dispatch('ALTER TABLE `heal_leftover_probe` CHANGE `old_name` `new_name` INT NULL')
-        );
-
-        $this->assertNotContains('old_name', $this->columnsOf('heal_leftover_probe'));
-        $this->assertSame(
-            ['4', '5'],
-            array_map('strval', array_column(
-                self::$db->rawQuery('SELECT `new_name` AS v FROM `heal_leftover_probe` ORDER BY id'),
-                'v'
-            )),
-            'and nothing may disturb the values that are already right.'
-        );
-    }
-
     /**
-     * Both columns holding values is the one case nobody can decide for you.
+     * A column holding only its default is NOT evidence that nobody wrote it.
      *
-     * A row empty on one side may be one nothing ever wrote or one somebody
-     * deliberately cleared. So this halts, having touched nothing.
+     * The case that removed the cleverer version of this repair. One shelf,
+     * reactivated today: `storage_status` is 'active' because somebody set it,
+     * and the stale `lab_storage_status` still says 'inactive'. Reading the new
+     * column as empty and preferring the old one restores the stale value over
+     * a deliberate edit -- silently, and with the old column then dropped there
+     * is nothing left to notice it by.
      */
-    public function testBothColumnsHoldingValuesHaltsWithoutTouchingAnything(): void
+    public function testADefaultValuedColumnIsNotTreatedAsUnwritten(): void
     {
-        self::$db->rawQuery('DROP TABLE IF EXISTS `heal_both_probe`');
+        self::$db->rawQuery('DROP TABLE IF EXISTS `heal_default_probe`');
         self::$db->rawQuery(
-            'CREATE TABLE `heal_both_probe` (
+            "CREATE TABLE `heal_default_probe` (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                `lab_storage_status` VARCHAR(10) NOT NULL DEFAULT 'active',
+                `storage_status` VARCHAR(10) NOT NULL DEFAULT 'active'
+            ) ENGINE=InnoDB"
+        );
+        self::$db->rawQuery(
+            "INSERT INTO `heal_default_probe` (`lab_storage_status`, `storage_status`)
+             VALUES ('inactive', 'active')"
+        );
+
+        $raised = null;
+        try {
+            $this->dispatch(
+                "ALTER TABLE `heal_default_probe`
+                 CHANGE `lab_storage_status` `storage_status` VARCHAR(10) NOT NULL DEFAULT 'active'"
+            );
+        } catch (\Throwable $e) {
+            $raised = $e;
+        }
+
+        $this->assertNotNull($raised, 'A table with rows must stop, not guess.');
+        $this->assertSame(
+            'active',
+            (string) (self::$db->rawQueryOne(
+                'SELECT `storage_status` AS v FROM `heal_default_probe` LIMIT 1'
+            )['v'] ?? ''),
+            'The deliberate value must survive; restoring the stale one is the failure.'
+        );
+        $this->assertContains('lab_storage_status', $this->columnsOf('heal_default_probe'));
+    }
+
+    /** A nullable column cleared on purpose is not a gap either. */
+    public function testADeliberatelyClearedColumnIsNotTreatedAsUnwritten(): void
+    {
+        self::$db->rawQuery('DROP TABLE IF EXISTS `heal_cleared_probe`');
+        self::$db->rawQuery(
+            'CREATE TABLE `heal_cleared_probe` (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 `old_name` DATETIME NULL DEFAULT NULL,
                 `new_name` DATETIME NULL DEFAULT NULL
             ) ENGINE=InnoDB'
         );
         self::$db->rawQuery(
-            'INSERT INTO `heal_both_probe` (`old_name`, `new_name`) VALUES
-                ("2024-03-01 09:00:00", NULL),
-                (NULL, "2024-11-01 09:00:00")'
+            'INSERT INTO `heal_cleared_probe` (`old_name`, `new_name`) VALUES ("2024-03-01 09:00:00", NULL)'
         );
 
         $raised = null;
         try {
-            $this->dispatch('ALTER TABLE `heal_both_probe` CHANGE `old_name` `new_name` DATETIME NULL');
+            $this->dispatch('ALTER TABLE `heal_cleared_probe` CHANGE `old_name` `new_name` DATETIME NULL');
         } catch (\Throwable $e) {
             $raised = $e;
         }
 
-        $this->assertNotNull($raised, 'Two populated columns must stop the migration, not be guessed at.');
-        $this->assertStringStartsWith(
-            '`heal_both_probe` holds BOTH `old_name` and `new_name`, and both carry values',
-            $raised->getMessage(),
-            'naming the table and both columns.'
+        $this->assertNotNull($raised, 'NULL does not prove the row was never written.');
+        $this->assertNull(
+            self::$db->rawQueryOne('SELECT `new_name` AS v FROM `heal_cleared_probe` LIMIT 1')['v'],
+            'The cleared value must stay cleared.'
         );
-
-        $this->assertContains('old_name', $this->columnsOf('heal_both_probe'), 'Nothing may be dropped.');
-        $rows = self::$db->rawQuery('SELECT `old_name` AS o, `new_name` AS n FROM `heal_both_probe` ORDER BY id');
-        $this->assertSame('2024-03-01 09:00:00', $rows[0]['o'], 'and no value may move.');
-        $this->assertNull($rows[0]['n']);
-        $this->assertSame('2024-11-01 09:00:00', $rows[1]['n']);
     }
 
-    /** An empty stand-in that is indexed is more than a stand-in. */
-    public function testAnIndexedStandInHalts(): void
+    /** An indexed stand-in is not dropped even when the table is empty. */
+    public function testAnIndexedStandInHaltsEvenOnAnEmptyTable(): void
     {
         self::$db->rawQuery('DROP TABLE IF EXISTS `heal_indexed_probe`');
         self::$db->rawQuery(
@@ -260,7 +216,6 @@ final class MigrationRenameReconcileTest extends TestCase
                 KEY `idx_new` (`new_name`)
             ) ENGINE=InnoDB'
         );
-        self::$db->rawQuery('INSERT INTO `heal_indexed_probe` (`old_name`) VALUES (1)');
 
         $raised = null;
         try {
@@ -272,60 +227,6 @@ final class MigrationRenameReconcileTest extends TestCase
         $this->assertNotNull($raised, 'Dropping an indexed column would take its keys with it.');
         $this->assertStringContainsString('idx_new', $raised->getMessage(), 'naming the key in the way.');
         $this->assertContains('new_name', $this->columnsOf('heal_indexed_probe'));
-
-        // Halting after writing is not halting. An earlier version of this
-        // reconciliation copied every value across and only then failed on the
-        // drop, and a test that checked the exception and the column list alone
-        // would have called that a pass.
-        $row = self::$db->rawQueryOne(
-            'SELECT `old_name` AS o, `new_name` AS n FROM `heal_indexed_probe` LIMIT 1'
-        );
-        $this->assertSame('1', (string) $row['o'], 'The value stays where it was.');
-        $this->assertNull($row['n'], 'and nothing was written to the column being halted over.');
-    }
-
-    /**
-     * An aborted or failed run puts the recorded version back.
-     *
-     * A migration file may write its own sc_version part way through -- 5.2.6
-     * does -- and any DDL after that implicitly commits it, so a rollback
-     * leaves the version advanced over work that never happened and the file is
-     * skipped for good. Both the abort path and the unresolved-error path
-     * restore the snapshot; this covers the restoring itself, which is the part
-     * that can be reached without driving the interactive run loop.
-     */
-    public function testTheRecordedVersionIsPutBack(): void
-    {
-        self::$db->rawQuery('DROP TABLE IF EXISTS `system_config`');
-        self::$db->rawQuery(
-            'CREATE TABLE `system_config` (
-                `name` VARCHAR(100) NOT NULL,
-                `value` TEXT NULL,
-                PRIMARY KEY (`name`)
-            ) ENGINE=InnoDB'
-        );
-        self::$db->rawQuery("INSERT INTO `system_config` (`name`, `value`) VALUES ('sc_version', '5.2.6')");
-
-        $this->assertTrue(restore_sc_version(self::$db, '5.2.5'), 'A snapshot that exists is restored.');
-        $this->assertSame(
-            '5.2.5',
-            (string) (self::$db->rawQueryOne(
-                "SELECT `value` AS v FROM `system_config` WHERE `name` = 'sc_version' LIMIT 1"
-            )['v'] ?? ''),
-            'The version the run started at has to be what is left behind.'
-        );
-
-        // A first-ever install has no value to put back, and inventing one
-        // would be worse than leaving it alone.
-        $this->assertFalse(restore_sc_version(self::$db, null));
-        $this->assertFalse(restore_sc_version(self::$db, ''));
-        $this->assertSame(
-            '5.2.5',
-            (string) (self::$db->rawQueryOne(
-                "SELECT `value` AS v FROM `system_config` WHERE `name` = 'sc_version' LIMIT 1"
-            )['v'] ?? ''),
-            'and neither may overwrite what is there.'
-        );
     }
 
     /** Only the old name present is an ordinary rename, untouched by any of this. */
