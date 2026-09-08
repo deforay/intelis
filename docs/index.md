@@ -34,10 +34,12 @@ name, and the guides say so where it matters.
 
     ---
 
-    Thirteen single-page cards to print and pin up: seven for the lab bench,
-    six for whoever looks after the machine.
+    Eighteen single-page cards to print and pin up: seven for the lab bench,
+    five for the administrator, and six for whoever looks after the machine.
 
     [:octicons-arrow-right-24: Cards for the lab bench](job-aids/index.md#for-the-lab)
+
+    [:octicons-arrow-right-24: Cards for the administrator](job-aids/index.md#for-the-administrator)
 
     [:octicons-arrow-right-24: Cards for the machine](job-aids/index.md#for-the-machine)
 
@@ -56,6 +58,6 @@ name, and the guides say so where it matters.
 
 ## Frequently needed
 
-- [Restore from a backup](guides/restoring-from-backup.md) — put the data back, or rebuild a machine that died
-- [Sample statuses](user-guides/sample-statuses.md) — every status and what it means
-- [Maintenance scripts](guides/maintenance.md) — service guard, resource monitor, db-tools, cleanup, and scheduled tasks
+- [Restore from a backup](guides/restoring-from-backup.md): put the data back, or rebuild a machine that died
+- [Sample statuses](user-guides/sample-statuses.md): every status and what it means
+- [Maintenance scripts](guides/maintenance.md): service guard, resource monitor, db-tools, cleanup, and scheduled tasks

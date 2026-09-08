@@ -1,23 +1,30 @@
 # Migrating From One Ubuntu Machine to Another
 
 InteLIS backs up its databases automatically every 6 hours to
-`<install-path>/backups/db/` — compressed `.sql.zst` files for both the main
+`<install-path>/backups/db/`, compressed `.sql.zst` files for both the main
 (`vlsm-…`) and, if used, the interfacing (`interfacing-…`) database. Migration
 normally reuses those backups directly, with no separate export step. Machines
 that have no backups, or whose backups are stale, take one first: see
 [Exporting by hand](#exporting-by-hand).
 
-Backup encryption is off unless it was deliberately turned on for the lab, so on
-most machines these files are plain `.sql.zst` and nothing extra is needed. If
-the names end in `.sql.zst.gpg` they are encrypted; setup.sh restores those too,
-see [If your backups are encrypted](#if-your-backups-are-encrypted-gpg) below.
+Backups are encrypted by default, so on most machines these names end in
+`.sql.zst.gpg`. setup.sh restores them with the same `--db` options as an
+unencrypted file, provided the key can be derived or supplied: see
+[If the backups are encrypted](#if-the-backups-are-encrypted-gpg) below.
+
+What the lab's `backup_encryption_enabled` setting controls is which key is used,
+not whether the backup is encrypted. Left at its default, the key is derived from
+the MySQL root password, which is why reusing that password on the new machine is
+the simplest route. Where the setting has been turned on, the key is the
+instance's own escrowed key and the MySQL password will not open the file, so the
+recovery token is required.
 
 !!! tip "If off-machine backups were set up, there is a shorter route"
 
     `intelis restore` on the new machine fetches the backup from wherever
     it was sent, checks the files are readable, and prints the exact install
     command below with the path already filled in. This page is the manual
-    version of the same thing, for when the backups are on a drive in your hand.
+    version of the same thing, for when the backups are on a drive at hand.
     See [Restoring from a backup](restoring-from-backup.md).
 
 ## Start here: check what the old machine actually has
@@ -30,7 +37,7 @@ ls -lh /var/www/intelis/backups/db/
 
 What comes back decides which route to take:
 
-| What you see | What to do |
+| What appears | What to do |
 | --- | --- |
 | A list of `.sql.zst` or `.sql.zst.gpg` files, the newest dated today or yesterday | Normal route. Go to [step 1](#1-put-the-backups-on-the-new-machine). |
 | Nothing, "No such file or directory", or only old files | The install predates automatic backups, or the backup job stopped. Take a fresh export first: [Exporting by hand](#exporting-by-hand). |
@@ -52,7 +59,7 @@ before anything else.
 
 Connect the drive that holds the old machine's `backups` folder, or copy that
 folder onto the new machine (USB/external drive, or by mounting the old disk).
-You only need `backups/db/`. Each backup is named after the database it came
+Only `backups/db/` is needed. Each backup is named after the database it came
 from, so the main-database files start with `vlsm-` and the interfacing files
 start with `interfacing-`:
 
@@ -78,7 +85,7 @@ The restore uses that token to rebuild the passphrase.
 
 **Requirement:** Ubuntu 22.04 LTS or newer.
 
-Point `--db latest:` at the folder where you placed the backups (e.g. the mounted
+Point `--db latest:` at the folder holding the copied backups (e.g. the mounted
 drive). setup.sh installs the stack and restores the newest backup it finds there
 — `.sql.zst` / `.sql.gz` are imported as-is, no need to decompress or rename:
 
@@ -86,7 +93,7 @@ drive). setup.sh installs the stack and restores the newest backup it finds ther
 cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)" && sudo bash setup.sh --db latest:/media/USB/backups/db
 ```
 
-- Replace `/media/USB/backups/db` with the actual path to your copied folder, e.g.
+- Replace `/media/USB/backups/db` with the actual path to the copied folder, e.g.
   `/media/<user>/<drive>/backups/db`, `~/Desktop/backups/db`, or
   `/mnt/old-disk/var/www/intelis/backups/db`.
 - To restore one specific file instead of the newest, pass it directly:
@@ -94,7 +101,7 @@ cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/mast
 
 When prompted, enter the **new** machine's MySQL credentials and the STS URL.
 
-## If your backups are encrypted (`.gpg`)
+## If the backups are encrypted (`.gpg`)
 
 !!! tip "The old machine still runs? Skip this section entirely"
 
@@ -108,28 +115,31 @@ When prompted, enter the **new** machine's MySQL credentials and the STS URL.
     backup is all that is left.
 
 If the files end in `.sql.zst.gpg`, setup.sh still restores them with `--db` /
-`--db latest:` exactly as above — it needs the key. Use whichever fits:
+`--db latest:` exactly as above, it needs the key. Use whichever fits:
 
-- **Easiest — use the same MySQL root password** on the new machine as the old
+- **Easiest, use the same MySQL root password** on the new machine as the old
   one. setup.sh then derives the key automatically and the restore needs nothing
-  extra. This is the recommended path for a straightforward move.
+  extra. This is the recommended path for a straightforward move, and it works
+  wherever `backup_encryption_enabled` is at its default. Where that setting has
+  been turned on for the lab, the key is escrowed instead of derived, and this
+  route does not work: use the recovery token below.
 
 - **Recover the key from the STS** (when the new machine has a different MySQL
-  password). Ask your STS administrator to approve a one-time key release for your
-  lab — on the STS they run:
+  password). Ask the STS administrator to approve a one-time key release for the
+  lab, on the STS they run:
 
   ```bash
   cd /var/www/intelis && sudo -u www-data composer backup-key-admin approve --lab <your-lab-id>
   ```
 
-  They give you the short token it prints. On the new machine:
+  They provide the short token it prints. On the new machine:
 
   ```bash
   sudo bash setup.sh --db latest:/media/USB/backups/db \
       --sts-url https://your-sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
   ```
 
-- **Offline (STS unreachable)** — ask your STS administrator for the recovery code
+- **Offline (STS unreachable)**, ask the STS administrator for the recovery code
   (on the STS: `sudo -u www-data composer backup-key-admin show-code --lab <id>`)
   and pass it directly:
 
@@ -143,14 +153,14 @@ If the files end in `.sql.zst.gpg`, setup.sh still restores them with `--db` /
 
 ## 3. After install
 
-The restored database already contains your users, lab/instance settings, and
-data, so you do **not** create a new admin or re-select the lab:
+The restored database already contains the users, lab/instance settings, and
+data, so there is **no** need to create a new admin or re-select the lab:
 
-- Browse to the instance and log in with your existing administrator account.
+- Browse to the instance and log in with the existing administrator account.
 - Verify instance/lab settings under **Admin → System Config**.
 - If connected to an STS, run a **Force Sync** and monitor until complete.
 
-### Interfacing database (only if you use it)
+### Interfacing database (only where it is in use)
 
 `--db` restores the main database. If the interfacing database is in use, restore
 its backup separately after install:
@@ -162,7 +172,7 @@ cd /var/www/intelis && sudo -u www-data php vendor/bin/db-tools restore /media/U
 ## Exporting by hand
 
 Use this when `backups/db/` is empty or missing, when the newest backup there is
-too old to move a lab onto, or when you simply want a guaranteed-fresh
+too old to move a lab onto, or when a guaranteed-fresh
 **unencrypted** file so no key is needed at the other end. The old machine's
 MySQL has to be running for any of it; if it is not, see the next section.
 
@@ -181,7 +191,7 @@ folder to the drive and carry on from [step 2](#2-install-on-the-new-machine-and
 
     A passphrase configured for the instance takes priority over `--no-encrypt`,
     so on those machines the file still comes out as `.sql.zst.gpg`. The
-    extension tells you which you got. To force a plain file regardless:
+    extension shows which was produced. To force a plain file regardless:
 
     ```bash
     cd /var/www/intelis
@@ -235,7 +245,7 @@ repair what is safe to repair:
 sudo intelis fix-database
 ```
 
-On a machine whose `intelis` command is missing or too old to have it — which is
+On a machine whose `intelis` command is missing or too old to have it, which is
 likely, since a machine with a broken database is one that cannot be updated —
 the same thing runs straight from the internet:
 
@@ -263,7 +273,7 @@ In order of how often it turns out to be the cause:
     ```
 
     Old `.sql.zst` / `.sql.gz` files under `backups/db/` are usually the largest
-    thing on the disk. Copy them off to the drive you are migrating with before
+    thing on the disk. Copy them off to the drive being migrated with before
     deleting any, and keep the newest one.
 
 2. **The machine ran out of memory** and the kernel killed `mysqld`. The error

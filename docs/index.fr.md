@@ -37,10 +37,13 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
 
     ---
 
-    Treize fiches d'une page à imprimer et à afficher : sept pour le poste de
-    travail, six pour la personne qui administre la machine.
+    Dix-huit fiches d'une page à imprimer et à afficher : sept pour le poste de
+    travail, cinq pour l'administrateur, et six pour la personne qui administre
+    la machine.
 
     [:octicons-arrow-right-24: Fiches pour le laboratoire](job-aids/index.md#pour-le-laboratoire)
+
+    [:octicons-arrow-right-24: Fiches pour l'administrateur](job-aids/index.md#pour-ladministrateur)
 
     [:octicons-arrow-right-24: Fiches pour la machine](job-aids/index.md#pour-la-machine)
 
@@ -59,6 +62,6 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
 
 ## Fréquemment consultés
 
-- [Restaurer depuis une sauvegarde](guides/restoring-from-backup.md) — remettre les données en place, ou reconstruire une machine hors service
-- [Statuts des échantillons](user-guides/sample-statuses.md) — chaque statut et sa signification
-- [Scripts de maintenance](guides/maintenance.md) — surveillance des services, ressources, db-tools, nettoyage et tâches planifiées
+- [Restaurer depuis une sauvegarde](guides/restoring-from-backup.md): remettre les données en place, ou reconstruire une machine hors service
+- [Statuts des échantillons](user-guides/sample-statuses.md): chaque statut et sa signification
+- [Scripts de maintenance](guides/maintenance.md): surveillance des services, ressources, db-tools, nettoyage et tâches planifiées

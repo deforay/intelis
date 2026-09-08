@@ -76,9 +76,20 @@ Viral Load Settings carries five more.
 | Interpret and Convert VL Results | Whether InteLIS converts and interprets imported viral load values |
 | Viral Load Export Format | The column layout of the viral load export |
 
-**Auto Approve API Results** releases analyzer results with no human check. It is
-safe where the analyzer is trusted and the batch workflow is followed. It is not
-safe where Sample IDs are entered on the analyzer by hand.
+**Auto Approve API Results** releases results arriving through the API with no
+human check. It is safe where the analyzer is trusted and the batch workflow is
+followed. It is not safe where Sample IDs are entered on the analyzer by hand.
+
+!!! warning "The Interface Tool has its own separate switch, and it defaults to on"
+    Results arriving through the Interface Tool are governed by **Auto Approve
+    Interface Results**, not by the per-module Auto Approve API Results settings
+    above. It ships set to `yes`, so on a default installation interface results
+    are accepted without review even where every per-module API setting has been
+    turned off.
+
+    A lab that requires human review of interface results must set that setting to
+    `no` as well, and then confirm that results arriving from an analyzer land in
+    the approval queue rather than as Accepted.
 
 ## Sample ID formats
 

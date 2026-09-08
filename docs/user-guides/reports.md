@@ -3,7 +3,7 @@
 This page describes every report under **HIV VIRAL LOAD → Management**, and the
 viral load content of the dashboard and the admin monitoring pages.
 
-Applies to InteLIS 5.6.2.
+Applies to InteLIS 5.7.64.
 
 Every report page uses the same controls. Set the filters, select **Search**, and
 use the export control where one is offered. See
@@ -16,8 +16,8 @@ use the export control where one is offered. See
 Shows counts of samples registered, tested, rejected, and without a result, plus
 facility-wise performance. One tab per test type enabled on the installation.
 
-Covers the last 30 days by default. The date range control at the top of the
-page changes the period.
+Opens on the last 29 days, today included. The date range control at the top of
+the page changes the period, and its **Last 30 Days** preset covers 30 days.
 
 ## Sample Status Report
 
@@ -128,6 +128,29 @@ repeat patients, across every test type on the installation.
 
 The failure rate counts test events. A sample tested twice counts as two events,
 so a retest after a failure does not hide the original failure.
+
+## Sample Referral Network
+
+**Location:** **ADMIN → Monitoring → Sample Referral Network**
+
+Shows which facilities send samples to which testing labs, as a map and as a
+summary. Set **Date Based On** to choose whether a sample is counted by the date
+it was collected, received, or tested. Counting by tested date is what reproduces
+a testing lab's own figures.
+
+## Sample Ageing Report
+
+**Location:** **ADMIN → Monitoring → Sample Ageing Report**
+
+Shows how long samples have been waiting at each stage, so samples stalled
+between registration and result can be found before they expire.
+
+## Interface Machine Activity
+
+**Location:** **ADMIN → Monitoring → Interface Machine Activity**
+
+Shows what each connected analyzer has sent and when it was last heard from,
+which is the quickest way to tell an idle analyzer from a broken connection.
 
 ## Source of Requests
 

@@ -29,14 +29,20 @@ Configuration → Lab Storage**.
 
 | Field | What to enter |
 |---|---|
-| Rack | The rack inside the freezer |
-| Box | The box inside the rack |
-| Position | The position inside the box |
-| Volume(ml) | The volume stored, if the lab tracks it |
+| Rack | The rack inside the freezer. Required |
+| Box | The box inside the rack. Required |
+| Position | The position inside the box. Required |
+| Volume(ml) | The volume stored. Required, and greater than zero |
 | Date out | The date the sample left storage, filled in on removal |
 | Comments | Anything needed to find or interpret the sample |
 
 5. Select **Save**.
+
+!!! warning "Every required field must be filled in, on every row"
+    A row is saved only when the freezer, rack, box, position and a volume
+    greater than zero are all present. A row missing any of them is skipped
+    silently: the page still reports success, and the tube ends up with no
+    recorded position. After saving, confirm each sample now shows its position.
 
 Record the position at the moment the tube goes into the freezer. A position
 written down later, from memory, is the position the tube was meant to go in,
@@ -44,13 +50,31 @@ not necessarily where it is.
 
 ## Record many samples at once
 
-Where a whole box goes in at one time, use **Storage Bulk Upload**. Fill the
-spreadsheet with the Sample IDs and their positions, then upload it.
+Where a whole box goes in at one time, use **Storage Bulk Upload**. The button
+appears only on the DRC request form, so labs on other country forms record
+positions one row at a time using the steps above.
+
+1. Select **Storage Bulk Upload**.
+2. Select **Download Excel Format** and fill in the downloaded sheet. Use its
+   columns as they are, including the volume column, which is required in the
+   same way as on the form.
+3. Select **Upload File**, choose the completed sheet, and select **Submit**.
+4. Confirm the samples now show their positions before returning the box to the
+   freezer.
 
 ## Record a sample leaving storage
 
-Set **Date out** on the sample's row and save. The sample stays on record with
-its history, so a later search shows where it was and when it left.
+1. Find the sample's row in **Freezer/Storage**.
+2. Select **Remove** on that row.
+3. Choose the reason for removal.
+4. Confirm.
+
+The sample's status becomes Removed and it leaves current storage, while its
+history is kept, so a later search still shows where it was and when it left.
+
+Setting **Date out** and saving does not remove a sample. That writes another
+storage history row and leaves the sample in its position, so the freezer map
+still shows the tube as present.
 
 ## Find a stored sample
 

@@ -2,7 +2,7 @@
 
 Every sample in InteLIS carries one status. This page lists all of them.
 
-Applies to InteLIS 5.6.2.
+Applies to InteLIS 5.7.64.
 
 ## The statuses
 
@@ -13,13 +13,13 @@ Applies to InteLIS 5.6.2.
 | Sample Referred to another Lab | Sent on to a different lab for testing |
 | Awaiting Approval | A result is recorded and waiting for approval |
 | Accepted | The result is approved and available for release |
-| Rejected | The sample was not fit to test. A rejection reason is recorded |
+| Rejected | The sample was not fit to test. A rejection reason is recorded, and the rejection is released to the requesting facility so the sample can be recollected |
 | Failed/Invalid | The test ran and did not produce a usable result |
 | Hold | Paused pending a decision |
-| Sample Reordered | Sent back for testing again |
+| Sample Reordered | Legacy status, kept so older records still read correctly. Not set by any current workflow |
 | Lost | The sample cannot be found and will not be tested |
 | Expired | The sample passed the storage life the installation allows |
-| No Result | No result is recorded for the sample |
+| No Result | The test ran and reported no result. Recorded by entering a result of `no result` |
 | Cancelled | Testing will not be performed. The request stands but no test is done |
 
 ## Where each status is set
@@ -34,7 +34,7 @@ Applies to InteLIS 5.6.2.
 | Rejected | Recording a rejection on the result form, or applying Rejected in Manage Results Status |
 | Failed/Invalid | Recording a test failure, or an import marking the row failed |
 | Hold | Applying Hold to a sample |
-| Sample Reordered | Reordering a sample for testing |
+| Sample Reordered | Legacy. No current workflow sets this status. Retesting a sample returns it to Sample Registered at Testing Lab, and the **Sample Reordered** checkbox on the request form records a separate flag rather than this status |
 | Lost | Applying Lost in Manage Results Status |
 | Expired | The installation's sample expiry period elapsing |
 | Cancelled | Applying Cancelled in Manage Results Status, with a typed confirmation |

@@ -46,6 +46,14 @@ A mismatch between the Sample ID and the patient means the sample was registered
 against the wrong patient, or loaded into the wrong analyzer position. Do not
 approve it. Hold the sample and investigate.
 
+!!! warning "Custom Tests: check the individual test cards, not only the row"
+    For a Custom Tests sample, the approval list shows the sample's final
+    interpretation. It does not show the individual test cards recorded against
+    that sample. Approving from the list alone therefore approves an
+    interpretation without anyone having checked the assay results behind it.
+
+    Open the sample's result screen and check every test card before approving.
+
 ## Approve
 
 1. Tick the samples to approve.
@@ -106,12 +114,23 @@ different things in the reports. See
 
 ## Correct an approved result
 
+What needs correcting decides where the correction is made.
+
+**To change the result value**, go to **HIV VIRAL LOAD → Test Result Management
+→ Enter Result Manually**, open the sample, enter the correct result, and give
+the reason for the change. The approval screen cannot do this: it writes the
+status and the staff names, and leaves the stored result value untouched. A
+status changed there on a sample whose value is wrong leaves the wrong value in
+place, and it is the value that reaches the requesting facility.
+
+**To change only the status**, for example from Rejected to Accepted:
+
 1. Set **Show Samples that are** to **Already Approved/Rejected**.
 2. Select **Search** and find the sample.
 3. Apply the corrected status through **Bulk Actions**.
 
-InteLIS asks before overwriting a result that already exists. Confirm only when
-the replacement is the correct result.
+After correcting a value, check the status is still the one intended, and
+re-release the result if it had already gone out.
 
 Samples lock after a number of days set by the administrator. A locked sample
 cannot be changed here. Ask the administrator.

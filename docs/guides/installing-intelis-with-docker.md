@@ -1,6 +1,6 @@
 # Installing InteLIS with Docker
 
-**Prerequisites:** [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) must be installed on your system.
+**Prerequisites:** [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) must be installed on the machine.
 
 Docker is the quickest way to get InteLIS running. The traditional setup
 (`setup.sh`) installs and configures PHP, Apache, MySQL, Composer, virtual
@@ -10,8 +10,8 @@ one command.
 !!! note "Docker installs are updated differently"
 
     A container is not updated by `upgrade.sh`. That script manages the operating
-    system around the application — apt packages, PHP versions, systemd units,
-    MySQL tuning — none of which a container owns. Use
+    system around the application, apt packages, PHP versions, systemd units,
+    MySQL tuning, none of which a container owns. Use
     [`scripts/docker-upgrade.sh`](#updating-intelis) instead, which pulls the new
     code, refreshes dependencies and restarts the stack so the entrypoint runs
     migrations.
@@ -20,13 +20,13 @@ one command.
     containerised instance.** The command plane's runner drives `upgrade.sh`, so
     a container declines to advertise the verb rather than accept a command it
     cannot honour. Remote updates for Docker installs are a solvable problem —
-    the runner would need to sit on the host and call `docker-upgrade.sh` — and
+    the runner would need to sit on the host and call `docker-upgrade.sh`, and
     it has not been built yet.
 
     Two things to keep in mind about backups. `remote-backup.sh` recognises an
     installation by finding `configs/config.production.php` and `public/` on the
     machine it runs on, and MySQL's data lives in the `intelis_db_data` volume
-    rather than the installation folder — so what protects you is the scheduled
+    rather than the installation folder, so what protects the data is the scheduled
     `db-tools` job writing dumps into `backups/db`. Both work because
     `docker-compose.yml` mounts the source into the container, putting those
     paths on the host. Keep that mount.
@@ -60,7 +60,7 @@ MYSQL_PORT=3306
 MYSQL_DATABASE=vlsm
 ```
 
-`APACHE_PORT` and `MYSQL_PORT` are **host** ports only — the ports you reach the
+`APACHE_PORT` and `MYSQL_PORT` are **host** ports only, the ports used to reach the
 containers on from this machine. Inside the containers Apache always listens on
 80 and MySQL on 3306. Change them when something already holds those ports
 locally, which on a developer machine is common.
@@ -73,8 +73,8 @@ docker compose up -d
 
 This starts two services:
 
-- **intelis** — PHP 8.4 / Apache application server
-- **intelis-db** — MySQL 8.4 database server
+- **intelis**: PHP 8.4 / Apache application server
+- **intelis-db**: MySQL 8.4 database server
 
 The entrypoint script automatically handles everything that `setup.sh` does manually:
 
@@ -83,7 +83,7 @@ The entrypoint script automatically handles everything that `setup.sh` does manu
 - Creates and configures the interfacing database (if enabled)
 - Generates `config.production.php` with the correct database credentials
 - Installs Composer dependencies if they are absent. The image installs them
-  during the build, but the compose file mounts your working copy over
+  during the build, but the compose file mounts the working copy over
   `/var/www/html` and hides that copy, so on a fresh clone the entrypoint
   installs them into the mount instead
 - Runs database migrations (`composer post-update`) then generates Audit Trail v2
@@ -95,14 +95,14 @@ The entrypoint script automatically handles everything that `setup.sh` does manu
 
 ### 4. Access InteLIS
 
-Once the containers are running, open your browser at the `APACHE_PORT` you set:
+Once the containers are running, open a browser at the `APACHE_PORT` set above:
 
 ```text
 http://localhost/          # APACHE_PORT=80
 http://localhost:8080/     # APACHE_PORT=8080
 ```
 
-InteLIS then prompts you to finalize the configuration and create an
+InteLIS then prompts for the configuration to be finalized and create an
 administrator account.
 
 The first start takes a few minutes: it initialises the database, runs every
@@ -141,7 +141,7 @@ run them with `docker compose exec intelis intelis <command>`.
 
 ## Updating InteLIS
 
-On a traditional Ubuntu installation, updating requires running `upgrade.sh` — a ~1200-line script that handles Ubuntu package updates, PHP version switching, OPcache configuration, MySQL performance tuning (buffer pool sizing based on RAM, SSD detection, slow query logs), Composer updates, Apache config validation, database backups, vendor checksum verification, directory structure migrations, cron job setup, run-once scripts, file permissions, and multi-instance coordination.
+On a traditional Ubuntu installation, updating requires running `upgrade.sh`, a ~1200-line script that handles Ubuntu package updates, PHP version switching, OPcache configuration, MySQL performance tuning (buffer pool sizing based on RAM, SSD detection, slow query logs), Composer updates, Apache config validation, database backups, vendor checksum verification, directory structure migrations, cron job setup, run-once scripts, file permissions, and multi-instance coordination.
 
 With Docker, updating is one command:
 
@@ -150,24 +150,40 @@ cd intelis
 sudo ./scripts/docker-upgrade.sh
 ```
 
-It backs up the database first, downloads the current release over the
+It offers a database backup, downloads the current release over the
 installation (leaving `.env`, `configs/`, uploads, `var/` and `backups/` alone),
 refreshes Composer dependencies only when `composer.json` or `composer.lock`
 changed, and restarts the stack so the entrypoint runs migrations and the
-run-once scripts. `-b` skips the backup prompt; `-s` restarts without updating
-the code, which is the way to re-run migrations on their own.
+run-once scripts. `-s` restarts without updating the code, which is the way to
+re-run migrations on their own.
 
-If you are working from a git checkout and want only the code, `git pull &&
-docker compose up -d --build` does that much — but it skips the backup and the
+!!! warning "The backup is not automatic"
+    The script asks `Do you want to backup the database before upgrading? [y/N]`
+    and the default is no, so pressing Enter upgrades with no backup at all. `-b`
+    skips the question entirely, which also means no backup. Answer `y`, and
+    confirm the dump exists before continuing.
+
+    The dump it writes is named `all_databases_<timestamp>.sql.gz`. `intelis
+    restore` and `setup.sh --db latest:` look for a per-database dump and will not
+    select that file, so recovery from it means passing the path explicitly:
+
+    ```bash
+    sudo bash setup.sh --db /var/www/intelis/backups/db/all_databases_<timestamp>.sql.gz
+    ```
+
+    For a release that matters, take a normal backup with `intelis backup` first.
+
+Where the installation is a git checkout and only the code is wanted, `git pull &&
+docker compose up -d --build` does that much, but it skips the backup and the
 dependency check.
 
-The container rebuild picks up the new code, and the entrypoint script automatically runs database migrations, repairs, composer updates, and any run-once scripts — the same post-update tasks that `upgrade.sh` handles, without needing to worry about system-level configuration.
+The container rebuild picks up the new code, and the entrypoint script automatically runs database migrations, repairs, composer updates, and any run-once scripts, the same post-update tasks that `upgrade.sh` handles, without needing to worry about system-level configuration.
 
 !!! tip
     The PHP configuration is baked into the image (`docker/php-apache/custom-php.ini`)
     and the MySQL one is mounted from `docker/mysql/my.cnf`, so neither needs tuning
     by hand. `docker/php-apache/dev-php.ini` is mounted on top for development: it
-    turns OPcache revalidation back on, so an edit on your machine takes effect on
+    turns OPcache revalidation back on, so an edit on the machine takes effect on
     the next request instead of waiting for a restart.
 
 ## Common Commands
@@ -195,7 +211,20 @@ docker compose exec intelis-db mysql -u root -p vlsm
 
 ## Data Persistence
 
-The MySQL data is stored in a named Docker volume (`intelis_db_data`). Your data persists across container restarts and rebuilds.
+The MySQL data is stored in a named Docker volume (`intelis_db_data`). The data persists across container restarts and rebuilds.
+
+!!! danger "Resetting the database destroys it"
+    `docker compose down -v` **permanently deletes the `intelis_db_data` volume
+    and every record in it**. There is no undo, and no prompt. Use it only for a
+    deliberate fresh start.
+
+    Before running it, confirm what is about to be destroyed and that a current
+    dump exists elsewhere:
+
+    ```bash
+    docker volume inspect intelis_db_data
+    ls -lt /var/www/intelis/backups/db | head
+    ```
 
 To completely reset the database:
 
@@ -203,6 +232,3 @@ To completely reset the database:
 docker compose down -v
 docker compose up -d
 ```
-
-!!! warning
-    `docker compose down -v` **deletes all database data**. Use it only for a fresh start.
