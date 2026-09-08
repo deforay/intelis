@@ -127,13 +127,13 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                    <div class="col-md-6">
                                         <div class="form-group">
                                              <label for="userName"
-                                                  class="col-lg-4 control-label"><?php echo _translate("User Name"); ?>
+                                                  class="col-lg-4 control-label"><?php echo _translate("Full Name"); ?>
                                                   <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
                                                   <input type="text" class="form-control isRequired" id="userName"
                                                        name="userName"
-                                                       placeholder="<?php echo _translate('User Name'); ?>"
-                                                       title="<?php echo _translate('Please enter user name'); ?>"
+                                                       placeholder="<?php echo _htmlTranslate('Full Name'); ?>"
+                                                       title="<?php echo _htmlTranslate('Your Full Name'); ?>"
                                                        value="<?php echo $userInfo['user_name']; ?>"
                                                        onblur="checkNameValidation('user_details','user_name',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _translate("A user with this full name already exists. Please use a different name."); ?>',null)" />
                                                   <input type="hidden" name="userId" id="userId"

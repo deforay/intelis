@@ -285,22 +285,22 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 							<span class="input-group-addon"><em class="fa-solid fa-x"></em></span>
 							<input id="labname_<?= MiscUtility::generateRandomNumber(4) ?>" type="text"
 								class="form-control" name="labname" value=""
-								placeholder="<?= _translate('Lab Name'); ?>"
-								title="<?= _translate('Please enter your lab name'); ?>"
+								placeholder="<?= _htmlTranslate('Lab Name'); ?>"
+								title="<?= _htmlTranslate('Please enter your lab name'); ?>"
 								onchange="$('#captcha').show();">
 						</div>
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
 							<input id="username" type="text" class="form-control isRequired" name="username" value=""
-								placeholder="<?= _translate('User Name'); ?>"
-								title="<?= _translate('Please enter your user name'); ?>" onblur="checkLoginAttempts()">
+								placeholder="<?= _htmlTranslate('Login ID'); ?>"
+								title="<?= _htmlTranslate('Please enter the login id'); ?>" onblur="checkLoginAttempts()">
 						</div>
 
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
 							<input id="password" type="password" class="form-control isRequired" name="password"
-								placeholder="<?= _translate('Password'); ?>"
-								title="<?= _translate('Please enter your password'); ?>">
+								placeholder="<?= _htmlTranslate('Password'); ?>"
+								title="<?= _htmlTranslate('Please enter your password'); ?>">
 						</div>
 						<div style="margin-bottom: 5px;display:none" id="captcha">
 							<div>
@@ -312,9 +312,9 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 							<div style="margin-bottom: 5px" class="input-group">
 								<span class="input-group-addon"><em class="fa-solid fa-shield-halved"></em></span>
 								<input type="text" id="challengeResponse" name="captcha"
-									placeholder="<?= _translate('Please enter the text from the image'); ?>"
+									placeholder="<?= _htmlTranslate('Please enter the text from the image'); ?>"
 									class="form-control"
-									title="<?= _translate('Please enter the text from the image'); ?>." maxlength="40">
+									title="<?= _htmlTranslate('Please enter the text from the image'); ?>." maxlength="40">
 							</div>
 						</div>
 

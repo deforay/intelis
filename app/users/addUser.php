@@ -95,7 +95,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                   <input type="text" class="form-control isRequired" id="userName"
                                                        name="userName"
                                                        placeholder="<?php echo _translate('Full Name'); ?>"
-                                                       title="<?php echo _translate('Please enter user name'); ?>"
+                                                       title="<?php echo _htmlTranslate('Your Full Name'); ?>"
                                                        onblur='checkNameValidation("user_details","user_name",this,null,"<?php echo _translate("A user with this full name already exists. Please use a different name."); ?>",null)' />
                                              </div>
                                         </div>
