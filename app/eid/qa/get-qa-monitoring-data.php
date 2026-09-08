@@ -34,11 +34,26 @@ try {
 
     $section = (string) ($_POST['section'] ?? '');
     $view = (string) ($_POST['view'] ?? '');
-    if ($section !== 'summary' && !isset(QualityMonitoringService::VIEWS[$view])) {
+    if (!in_array($section, ['summary', 'activity'], true) && !isset(QualityMonitoringService::VIEWS[$view])) {
         throw new SystemException('Invalid view for quality monitoring');
     }
 
-    if ($section === 'summary') {
+    if ($section === 'activity') {
+        // What somebody did on the page, and how long they had it open.
+        //
+        // The browser sends an event key and, for a visit, a number of seconds;
+        // it never sends the wording. Every line written here is composed from
+        // the fixed set below and from filters that resolveFilters() has already
+        // rebuilt, so nothing a requester typed can be written into an audit
+        // trail that is read as a record of what happened.
+        echo JsonUtility::encodeUtf8Json([
+            'logged' => $qaService->logActivity(
+                (string) ($_POST['event'] ?? ''),
+                $filters,
+                (int) ($_POST['seconds'] ?? 0)
+            ),
+        ]);
+    } elseif ($section === 'summary') {
         echo JsonUtility::encodeUtf8Json(['summary' => $qaService->getSummary($filters)]);
     } elseif ($section === 'samples') {
         // DataTables envelope for the grid. No exit() anywhere in this file:
@@ -93,6 +108,7 @@ try {
             $writer->addRow(Row::fromValues($cells));
         }
         $writer->close();
+        $qaService->logActivity('exported-' . $view, $filters);
         echo _downloadToken($filePath);
     } else {
         throw new SystemException('Invalid section for quality monitoring');

@@ -54,7 +54,7 @@ final class QualityMonitoringEndpointTest extends TestCase
             // Referenced tables first: form_vl carries a foreign key to
             // r_sample_status and will not create without it.
             'facility_details', 'r_implementation_partners', 'r_sample_status',
-            'form_eid', 'form_vl', 'instruments', 'system_config', 'global_config',
+            'form_eid', 'form_vl', 'instruments', 'activity_log', 'system_config', 'global_config',
         ]);
         // Superadmin: the endpoint's privilege guard passes, and no lab or
         // facility scoping narrows what it lists.
@@ -351,6 +351,53 @@ final class QualityMonitoringEndpointTest extends TestCase
         // against everything, so an instrument cannot be used to smuggle SQL in.
         $this->expectException(SystemException::class);
         $service->resolveFilters(['dateRange' => '', 'instrument' => "GeneXpert' OR 1=1 -- "]);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTimeOnThePageIsRecordedAgainstTheActivityLog(): void
+    {
+        LegacyAppHarness::withSession(['roleId' => 1, 'userId' => 1, 'userName' => 'Grace Mwangi']);
+
+        $json = $this->drive([
+            'section' => 'activity',
+            'event' => 'visit',
+            'seconds' => 437,
+            'dateRange' => '',
+            'bucket' => 'b2',
+        ]);
+        self::assertTrue($json['logged'], json_encode($json));
+
+        $row = LegacyAppHarness::db()->rawQueryOne(
+            "SELECT event_type, action, resource, user_id FROM activity_log ORDER BY log_id DESC LIMIT 1"
+        );
+        self::assertSame('eid-quality-monitoring-visit', $row['event_type']);
+        self::assertSame('eid-quality-monitoring', $row['resource']);
+        self::assertSame('1', (string) $row['user_id']);
+        // Minutes for whoever reads the log, seconds for whoever adds visits up,
+        // and the filters in force so the line says what was being looked at.
+        self::assertSame(
+            'Grace Mwangi had EID Quality Monitoring open for 7.3 minutes (437 seconds) [waiting b2]',
+            $row['action']
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnUnknownActivityEventIsIgnoredRatherThanWritten(): void
+    {
+        LegacyAppHarness::withSession(['roleId' => 1, 'userId' => 1, 'userName' => 'Grace Mwangi']);
+
+        // The browser sends an event key and never the wording, so a key that is
+        // not one this page defines has to leave no line at all -- otherwise the
+        // log records whatever it was handed, which is evidence of nothing.
+        $json = $this->drive([
+            'section' => 'activity',
+            'event' => 'deleted every sample',
+            'dateRange' => '',
+        ]);
+        self::assertFalse($json['logged'], json_encode($json));
+
+        $count = LegacyAppHarness::db()->rawQueryOne("SELECT COUNT(*) AS c FROM activity_log");
+        self::assertSame(0, (int) $count['c']);
     }
 
     #[RunInSeparateProcess]
