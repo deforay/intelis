@@ -5384,6 +5384,10 @@ msgstr ""
 msgid "Implementing Partner"
 msgstr ""
 
+#: app/vl/program-management/export-virologic-failure-report.php:169
+msgid "Days Since Previous Collection"
+msgstr ""
+
 #: covid-19/management/covid-19-export-data.php:547
 #: tb/management/tb-export-data.php:541
 msgid "At Least select one filter for get report"
