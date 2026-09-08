@@ -170,6 +170,22 @@ function some_action_already_applied(DatabaseService $db, string $table, array $
             continue;
         }
 
+        // ADD PRIMARY KEY (...): applied when the table already has one.
+        if (preg_match('/^ADD\s+PRIMARY\s+KEY\b/i', $action)) {
+            if (table_primary_key($db, $table) !== []) {
+                return true;
+            }
+            continue;
+        }
+
+        // ADD CONSTRAINT `name` ...: applied when that constraint is there.
+        if (preg_match('/^ADD\s+CONSTRAINT\s+`?([a-z0-9_$]+)`?\s/i', $action, $m)) {
+            if (foreign_key_exists($db, $table, $m[1])) {
+                return true;
+            }
+            continue;
+        }
+
         // ADD [COLUMN] `col`: applied when the column is there.
         if (preg_match('/^ADD\s+(?:COLUMN\s+)?`?([a-z0-9_$]+)`?\s+\S/i', $action, $m)) {
             if (in_array(strtolower($m[1]), ['index', 'key', 'primary', 'constraint', 'unique', 'fulltext', 'spatial', 'foreign'], true)) {
@@ -805,7 +821,26 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
                 // nothing already applied is a real failure, and the whole
                 // point of an ALTER being atomic is that it stays that way.
                 if (!some_action_already_applied($db, $alter[1], $actions)) {
-                    throw $e;
+                    // Rethrown as something the outer loop cannot file as
+                    // benign. It classifies by error code, and the codes that
+                    // arrive here are exactly the benign ones -- 1091 for a
+                    // drop of a column that is not there, 1068 for a second
+                    // primary key, 1826 for a duplicate constraint. Passed
+                    // through unchanged, the run would report success and
+                    // advance sc_version over a statement that did nothing,
+                    // and the rest of it would never be attempted again.
+                    //
+                    // Whatever the code says, an ALTER that neither applied nor
+                    // could be repaired is unfinished work, and the version has
+                    // to stay where it is so somebody can see it.
+                    throw new RuntimeException(sprintf(
+                        "Could not apply, and could not repair, this statement:\n%s\n"
+                        . "It failed with: %s\n"
+                        . "Nothing in it was already applied, so taking it apart action by action would "
+                        . "risk committing half of a statement MySQL refused whole.",
+                        $q,
+                        $e->getMessage()
+                    ), 0, $e);
                 }
             }
 
