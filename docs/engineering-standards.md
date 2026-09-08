@@ -84,14 +84,16 @@ against them without running a review.
   machines it was written for. Known and deliberately not fixed: the `SET PERSIST sql_mode`
   calls in `setup.sh` and `upgrade.sh`, where the same setting is also written to
   `mysqld.cnf` and the failure is printed rather than swallowed.
-- **A migration must survive the table its foreign key points at being absent.** `CREATE
-  TABLE` with a `FOREIGN KEY` onto a table that is not there fails with 1824, which is not
-  in the runner's benign set, so the migration halts, `sc_version` stays behind and every
-  later version is blocked for good. A country deployment that never enabled a module has
-  neither its request table nor its result table, and preflight reads exactly that pair as
-  a module removed rather than broken — so the state is legitimate and common. The runner
-  has no way to express "only if the parent exists", so a repair migration creates the
-  table without the constraint and keeps the index the key sat on.
+- **The runner disables foreign-key checks for the whole file.** `bin/migrate.php` issues
+  `SET FOREIGN_KEY_CHECKS = 0` before the first statement and restores it after the last,
+  so a `CREATE TABLE` naming a parent that is not there succeeds rather than failing with
+  1824. Two things follow. A repair migration can carry the same `FOREIGN KEY` clauses
+  `sql/init.sql` declares, and should, so a repaired install and a fresh one end up with
+  the same table. And the constraint it creates is not validated against anything, so on
+  an install that never had the parent it is a reference to a table that does not exist —
+  check by hand what happens if that parent is later created. Testing such a statement
+  through the `mysql` client instead of the runner reproduces the 1824 that the runner
+  does not raise, which is a good way to reach the wrong conclusion.
 - **Never copy a `COLLATE` clause out of `sql/init.sql` into a migration.** The seed is a
   MySQL 8 dump, so its definitions carry `COLLATE utf8mb4_0900_ai_ci` — a collation that
   exists only on MySQL 8, and fails with 1273 anywhere else. The floor is 8.0 and every
@@ -100,17 +102,24 @@ against them without running a review.
   Leave the clause off and each server applies its own default for `utf8mb4`: a fresh
   MySQL 8 install still lands on exactly the collation the seed declares, and
   `composer db:collation` is what brings an installation into line.
-- **The runner's benign-errno set is the definition of "safe to fail".** 1050, 1060, 1061,
-  1068, 1091 and 1826 are swallowed and the migration continues; anything else halts the
-  upgrade and strands the instance. Before writing a statement that may fail on some
-  installation, check which side of that line its error code falls on.
+- **Know which errors the runner swallows before writing a statement that may hit one.**
+  1050, 1060, 1061, 1068, 1091 and 1826 are always benign and the migration continues.
+  Two more are benign only in context: 1062 on a statement beginning `insert`, so a
+  re-runnable seed row is safe but a data migration relying on a duplicate to stop is
+  not, and 1146 on anything naming `audit_form_*`, left over from Audit Trail v2. Some
+  messages are matched textually as well — "Duplicate column name", "Duplicate key name",
+  "already exists". Anything else halts the upgrade and strands the instance at the
+  version before. A statement that fails benignly is skipped silently while `sc_version`
+  advances, so a data migration that quietly does nothing is the failure to think about,
+  not just a hard stop.
 - **An integration test that owns a database names it with the process id.** Two suites run
   against one MySQL here — a second terminal, or a watcher beside a manual run — and a
   fixed-name database is dropped and recreated underneath the other run, so the fixture is
   gone by the time the assertions read it. It presents as an intermittent failure that looks
   like a test-order bug and disappears on a re-run. `tests/Support/MigrationRunnerFunctions`
-  shares one database on purpose, because the runner caches the schema name in a static;
-  anything that builds real application tables wants its own.
+  shares one database across the migration suites because the runner caches the schema name
+  in a static — but that only requires one database per PROCESS, not one fixed name across
+  every process, so its name wants the process id too.
 - **`mysqladmin ping` is not a credential check.** It answers "is the server alive", and
   answers yes when access is denied — which is why it is the right probe for "is MySQL up"
   and useless for "is this password correct". Test a password by running a statement.
