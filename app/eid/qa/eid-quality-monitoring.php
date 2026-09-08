@@ -81,7 +81,8 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
     }
 
     /* Select2 sizes itself off the original control, which is display:none here. */
-    #qaModule .qa-filters .select2-container {
+    #qaModule .qa-filters .select2-container,
+    #qaNoteModal .select2-container {
         width: 100% !important;
     }
 
@@ -201,6 +202,19 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         font-size: 11px;
         color: #a0740c;
         cursor: help;
+    }
+
+    #qaModule .qa-instruments {
+        display: block;
+        font-size: 11px;
+        color: #7a848c;
+        margin-top: 2px;
+        cursor: help;
+    }
+
+    #qaModule .qa-instruments em {
+        margin-right: 3px;
+        opacity: 0.7;
     }
 
     #qaModule .qa-from-vl {
@@ -669,6 +683,8 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
     var QA_SIDE_LABELS = <?= json_encode($sideLabels, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
     var QA_LATE_DAYS = <?= QualityMonitoringService::LATE_DAYS; ?>;
     var QA_VERY_LATE_DAYS = <?= QualityMonitoringService::VERY_LATE_DAYS; ?>;
+    // How many instrument names fit under a lab name before the rest go on hover.
+    var QA_LAB_INSTRUMENTS_SHOWN = 3;
     var QA_USER = <?= json_encode($currentUser !== '' ? $currentUser : _translate('You'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
     var QA_ROLE = <?= json_encode($currentRole, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
@@ -821,11 +837,33 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
                     stage += '<span class="qa-secondary">' + qaEsc(row.status) + '</span>';
                 }
                 return stage;
+            case 'lab':
+                return qaLabCell(row);
             case 'notes':
                 return qaRenderNoteCell(row);
             default:
                 return qaEsc(row[key] || '');
         }
+    }
+
+    // The lab, and under it what it runs EID on. None of these samples has a
+    // result, so the instruments come from the lab's finished work over the
+    // same period; a lab that has tested nothing in the period simply shows no
+    // second line. Only the first few are shown, with the rest on hover, so a
+    // lab with a long list does not push every row of the grid taller.
+    function qaLabCell(row) {
+        var name = qaEsc(row.lab || '');
+        var all = String(row.labInstruments || '');
+        if (all === '') { return name; }
+
+        var names = all.split(', ');
+        var shown = names.slice(0, QA_LAB_INSTRUMENTS_SHOWN).join(', ');
+        if (names.length > QA_LAB_INSTRUMENTS_SHOWN) {
+            shown += ' ' + qaSprintf(QA_LABELS.andMore, names.length - QA_LAB_INSTRUMENTS_SHOWN);
+        }
+
+        return name + '<span class="qa-instruments" title="' + qaEsc(all) + '">' +
+            '<em class="fa-solid fa-microscope"></em> ' + qaEsc(shown) + '</span>';
     }
 
     // An id, a name and an age line, each on its own line and each skipped
@@ -1012,6 +1050,21 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         }
     }
 
+    // Select2 measures the control it replaces, and inside a modal that has not
+    // opened yet that measurement is zero, which leaves a box too small to
+    // click. So the widget is built when the modal is on screen, not when its
+    // options are filled in.
+    function qaBuildReasonSelect() {
+        qaDestroyReasonSelect();
+        $('#qaNoteReason').select2({
+            placeholder: QA_LABELS.chooseReason,
+            width: '100%',
+            // Without this the search box inside a Bootstrap modal cannot be
+            // typed in: the modal keeps pulling focus back to itself.
+            dropdownParent: $('#qaNoteModal')
+        });
+    }
+
     function qaShowNoteModal(view, ids) {
         qaNoteTarget = { view: view, ids: ids };
 
@@ -1038,12 +1091,6 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         });
         qaDestroyReasonSelect();
         $('#qaNoteReason').html(options).val('');
-        $('#qaNoteReason').select2({
-            placeholder: QA_LABELS.chooseReason,
-            width: '100%',
-            // Without this the search box inside a Bootstrap modal cannot be typed in.
-            dropdownParent: $('#qaNoteModal')
-        });
 
         $('#qaNoteText').val('');
         $('#qaNoteExpected').val('');
@@ -1239,6 +1286,10 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         $('#dateRange').on('cancel.daterangepicker', function () {
             $(this).val('');
         });
+
+        $('#qaNoteModal')
+            .on('shown.bs.modal', qaBuildReasonSelect)
+            .on('hidden.bs.modal', qaDestroyReasonSelect);
 
         $('#provinceId, #partnerId, #bucket').select2();
         $('#districtId').select2();

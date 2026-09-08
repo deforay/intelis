@@ -64,6 +64,15 @@ final class QualityMonitoringService
     /** How many rows one mother-name lookup covers. Bounds the IN () list. */
     private const MOTHER_LOOKUP_BATCH = 200;
 
+    /**
+     * Instruments already looked up for a lab, as lab id => joined names.
+     * One page of the grid is a handful of labs and an export is not many
+     * more, so the whole listing costs a query or two rather than one per row.
+     *
+     * @var array<int, string>
+     */
+    private array $labInstruments = [];
+
     public function __construct(
         private readonly DatabaseService $db,
         private readonly CommonService $general
@@ -176,7 +185,10 @@ final class QualityMonitoringService
         foreach ($rows ?: [] as $row) {
             $out[] = $this->presentSample($row);
         }
-        return ['rows' => $this->attachMothersFromVl($out), 'total' => $total];
+        return [
+            'rows' => $this->attachLabInstruments($this->attachMothersFromVl($out), $f),
+            'total' => $total,
+        ];
     }
 
     /**
@@ -194,13 +206,102 @@ final class QualityMonitoringService
         foreach ($this->db->rawQueryGenerator($this->samplesQuery($f, $view, '', '', 'desc')) as $row) {
             $buffer[] = $this->presentSample($row);
             if (count($buffer) >= self::MOTHER_LOOKUP_BATCH) {
-                yield from $this->attachMothersFromVl($buffer);
+                yield from $this->attachLabInstruments($this->attachMothersFromVl($buffer), $f);
                 $buffer = [];
             }
         }
         if ($buffer !== []) {
-            yield from $this->attachMothersFromVl($buffer);
+            yield from $this->attachLabInstruments($this->attachMothersFromVl($buffer), $f);
         }
+    }
+
+    /**
+     * Names the instruments each lab in the listing has actually run EID
+     * samples on, over the same collection period the filters ask for.
+     *
+     * The rows here are samples with no result, so none of them names an
+     * instrument of its own; what the reader wants under a lab's name is what
+     * that lab tests on, which only its finished work can say. So the lookup
+     * is over the lab's tested EID samples in the period, not over the waiting
+     * ones, and it is one query for every lab on the page rather than one per
+     * row.
+     *
+     * Two places record the instrument and both are read. Rows written since
+     * instruments became a managed list carry an instrument_id and take the
+     * configured machine name; older rows carry only the free text that was
+     * typed into the platform field, which is kept as it stands rather than
+     * tidied, because on a data quality page an instrument recorded as
+     * "HRL/PCR/GNX/003" is worth seeing exactly as somebody entered it.
+     *
+     * @param list<array<string, mixed>> $rows
+     * @return list<array<string, mixed>>
+     */
+    private function attachLabInstruments(array $rows, array $f): array
+    {
+        $wanted = [];
+        foreach ($rows as $row) {
+            $labId = (int) ($row['labId'] ?? 0);
+            if ($labId > 0 && !isset($this->labInstruments[$labId])) {
+                $wanted[$labId] = true;
+            }
+        }
+
+        if ($wanted !== []) {
+            foreach ($this->loadLabInstruments($f, array_keys($wanted)) as $labId => $names) {
+                $this->labInstruments[$labId] = $names;
+            }
+            // A lab that has tested nothing in the period is remembered as
+            // such, so an empty answer is not asked for again on the next page.
+            foreach (array_keys($wanted) as $labId) {
+                $this->labInstruments[$labId] ??= '';
+            }
+        }
+
+        foreach ($rows as $index => $row) {
+            $rows[$index]['labInstruments'] = $this->labInstruments[(int) ($row['labId'] ?? 0)] ?? '';
+        }
+
+        return $rows;
+    }
+
+    /**
+     * @param list<int> $labIds
+     * @return array<int, string> lab id => instrument names, most used first
+     */
+    private function loadLabInstruments(array $f, array $labIds): array
+    {
+        $table = TestsService::getTestTableName(self::TEST_KEY);
+        $ids = $this->db->inIntList($labIds);
+
+        $period = '';
+        if ($f['startDate'] !== '' && $f['endDate'] !== '') {
+            $period = ' AND ' . SampleCountUtility::registeredBetween('t', $f['startDate'], $f['endDate']);
+        }
+
+        // COALESCE and not CONCAT: the configured name wins where there is one,
+        // and the typed-in platform is the fallback, so the same machine is not
+        // listed twice under two spellings on labs that have both kinds of row.
+        $sql = "SELECT t.lab_id AS lab_id,
+                       TRIM(COALESCE(NULLIF(TRIM(i.machine_name), ''), t.eid_test_platform)) AS instrument,
+                       COUNT(*) AS tests
+                  FROM $table AS t
+                  LEFT JOIN instruments AS i ON i.instrument_id = t.instrument_id
+                 WHERE t.lab_id IN ($ids)
+                   AND TRIM(COALESCE(t.result, '')) <> ''
+                   AND COALESCE(NULLIF(TRIM(i.machine_name), ''), TRIM(COALESCE(t.eid_test_platform, ''))) <> ''
+                   $period
+                 GROUP BY t.lab_id, instrument
+                 ORDER BY t.lab_id, tests DESC";
+
+        $out = [];
+        foreach ($this->db->rawQuery($sql) ?: [] as $row) {
+            $labId = (int) $row['lab_id'];
+            $out[$labId] = isset($out[$labId])
+                ? $out[$labId] . ', ' . (string) $row['instrument']
+                : (string) $row['instrument'];
+        }
+
+        return $out;
     }
 
     /**
@@ -353,6 +454,7 @@ final class QualityMonitoringService
             'province' => _translate('Province/State'),
             'district' => _translate('District/County'),
             'lab' => _translate('Testing Lab'),
+            'labInstruments' => _translate('Instruments Used at Lab'),
             'partner' => _translate('Implementing Partner'),
             'collected' => _translate('Collected'),
             'dispatched' => _translate('Dispatched'),
@@ -642,6 +744,9 @@ final class QualityMonitoringService
             'province' => (string) ($row['facility_state'] ?? ''),
             'district' => (string) ($row['facility_district'] ?? ''),
             'lab' => (string) ($row['lab_name'] ?? ''),
+            'labId' => (int) ($row['lab_id'] ?? 0),
+            // Filled in afterwards, in one query for every lab on the page.
+            'labInstruments' => '',
             'partner' => (string) ($row['i_partner_name'] ?? ''),
             'collected' => $date($row['sample_collection_date'] ?? null),
             'dispatched' => $date($row['sample_dispatched_datetime'] ?? null),
