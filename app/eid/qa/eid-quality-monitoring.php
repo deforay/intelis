@@ -68,10 +68,8 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         border-radius: 2px;
     }
 
-    #qaModule .qa-filters td {
-        vertical-align: middle;
-        border-top: 0;
-        padding: 4px 8px;
+    #qaModule .qa-filters .form-group {
+        margin-bottom: 12px;
     }
 
     #qaModule .qa-filters label {
@@ -80,6 +78,17 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         font-weight: 600;
         display: block;
         margin-bottom: 2px;
+    }
+
+    /* Select2 sizes itself off the original control, which is display:none here. */
+    #qaModule .qa-filters .select2-container {
+        width: 100% !important;
+    }
+
+    /* The buttons sit under a blank label so they line up with the fields
+       beside them; the label is dropped once the grid stacks. */
+    #qaModule .qa-filter-actions .btn {
+        margin-right: 4px;
     }
 
     #qaModule .qa-viewing-as {
@@ -351,40 +360,31 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
                             <?= _htmlTranslate('Every EID sample that is still waiting, split by the side of the workflow holding it, so the people responsible for each side can record why.'); ?>
                         </p>
 
-                        <table class="table pageFilters qa-filters" aria-describedby="qa-description"
-                            cellspacing="3" style="width:100%;">
-                            <tr>
-                                <td style="width:18%;">
+                        <div class="row qa-filters" aria-describedby="qa-description">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
                                     <label for="dateRange"><?= _htmlTranslate('Sample Collection Period'); ?></label>
                                     <input type="text" id="dateRange" class="form-control daterangefield" />
-                                </td>
-                                <td style="width:14%;">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
                                     <label for="provinceId"><?= _htmlTranslate('Province/State'); ?></label>
                                     <select id="provinceId" class="form-control">
                                         <?= $general->generateSelectOptions($provinces, null, _translate('-- All --')); ?>
                                     </select>
-                                </td>
-                                <td style="width:14%;">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
                                     <label for="districtId"><?= _htmlTranslate('District/County'); ?></label>
                                     <select id="districtId" class="form-control">
                                         <option value=""><?= _htmlTranslate('-- All --'); ?></option>
                                     </select>
-                                </td>
-                                <td style="width:18%;">
-                                    <label for="facilityId"><?= _htmlTranslate('Collection Facility'); ?></label>
-                                    <select id="facilityId" class="form-control" multiple="multiple">
-                                        <?= $general->generateSelectOptions($healthFacilities); ?>
-                                    </select>
-                                </td>
-                                <td style="width:18%;">
-                                    <label for="labId"><?= _htmlTranslate('Testing Lab'); ?></label>
-                                    <select id="labId" class="form-control" multiple="multiple">
-                                        <?= $general->generateSelectOptions($testingLabs); ?>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
                                     <label for="partnerId"><?= _htmlTranslate('Implementing Partner'); ?></label>
                                     <select id="partnerId" class="form-control">
                                         <option value=""><?= _htmlTranslate('-- All --'); ?></option>
@@ -394,8 +394,31 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
                                             </option>
                                         <?php } ?>
                                     </select>
-                                </td>
-                                <td>
+                                </div>
+                            </div>
+
+                            <?php // The two multi-selects grow taller as chips are added, so they share a
+                            // row of their own rather than dragging the single-line fields out of line. ?>
+                            <div class="clearfix visible-md-block visible-lg-block"></div>
+
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label for="facilityId"><?= _htmlTranslate('Collection Facility'); ?></label>
+                                    <select id="facilityId" class="form-control" multiple="multiple">
+                                        <?= $general->generateSelectOptions($healthFacilities); ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label for="labId"><?= _htmlTranslate('Testing Lab'); ?></label>
+                                    <select id="labId" class="form-control" multiple="multiple">
+                                        <?= $general->generateSelectOptions($testingLabs); ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
                                     <label for="bucket"><?= _htmlTranslate('Waiting For'); ?></label>
                                     <select id="bucket" class="form-control">
                                         <option value=""><?= _htmlTranslate('-- Any length of time --'); ?></option>
@@ -405,19 +428,23 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
                                         <option value="b3"><?= _htmlTranslate('31 to 60 days'); ?></option>
                                         <option value="b4"><?= _htmlTranslate('Over 60 days'); ?></option>
                                     </select>
-                                </td>
-                                <td colspan="3">
-                                    <label>&nbsp;</label>
-                                    <button type="button" class="btn btn-success btn-sm" onclick="qaApplyFilters();">
-                                        <em class="fa-solid fa-magnifying-glass"></em>
-                                        <?= _htmlTranslate('Search'); ?>
-                                    </button>
-                                    <button type="button" class="btn btn-default btn-sm" onclick="qaResetFilters();">
-                                        <?= _htmlTranslate('Reset'); ?>
-                                    </button>
-                                </td>
-                            </tr>
-                        </table>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group qa-filter-actions">
+                                    <label class="hidden-xs hidden-sm">&nbsp;</label>
+                                    <div>
+                                        <button type="button" class="btn btn-success" onclick="qaApplyFilters();">
+                                            <em class="fa-solid fa-magnifying-glass"></em>
+                                            <?= _htmlTranslate('Search'); ?>
+                                        </button>
+                                        <button type="button" class="btn btn-default" onclick="qaResetFilters();">
+                                            <?= _htmlTranslate('Reset'); ?>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="qa-viewing-as">
                             <strong><?= _htmlTranslate('Viewing as'); ?>:</strong>
@@ -976,6 +1003,15 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         qaShowNoteModal(view, ids);
     }
 
+    // The reason list is rebuilt for each side, so the old widget has to go
+    // before the options underneath it are replaced.
+    function qaDestroyReasonSelect() {
+        var $reason = $('#qaNoteReason');
+        if ($reason.data('select2')) {
+            $reason.select2('destroy');
+        }
+    }
+
     function qaShowNoteModal(view, ids) {
         qaNoteTarget = { view: view, ids: ids };
 
@@ -1000,7 +1036,14 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             });
             options += '</optgroup>';
         });
+        qaDestroyReasonSelect();
         $('#qaNoteReason').html(options).val('');
+        $('#qaNoteReason').select2({
+            placeholder: QA_LABELS.chooseReason,
+            width: '100%',
+            // Without this the search box inside a Bootstrap modal cannot be typed in.
+            dropdownParent: $('#qaNoteModal')
+        });
 
         $('#qaNoteText').val('');
         $('#qaNoteExpected').val('');
