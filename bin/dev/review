@@ -107,7 +107,9 @@ mark_reviewed() {
 #
 # Off unless asked, because it doubles the cost of a run and a two-line diff does not
 # need it. REVIEW_VERIFY=1 in .env turns it on for good.
-VERIFY="${REVIEW_VERIFY:-0}"
+VERIFY="${REVIEW_VERIFY:-}"
+[ -n "$VERIFY" ] || VERIFY="$(read_env REVIEW_VERIFY)"
+[ -n "$VERIFY" ] || VERIFY=0
 if [ "${1:-}" = "--verify" ]; then
     VERIFY=1
     shift
@@ -234,7 +236,9 @@ if [ "$VERIFY" != "1" ]; then
 else
     # The first pass is teed rather than exec'd, because the second one needs to read it.
     # It still streams, so the wait feels the same as an unverified run.
-    FINDINGS="$(mktemp -t review-findings)"
+    # Spelled out rather than `mktemp -t`, whose meaning differs between BSD and GNU:
+    # BSD takes a prefix, GNU takes a template and insists on the trailing Xs.
+    FINDINGS="$(mktemp "${TMPDIR:-/tmp}/review-findings.XXXXXX")"
     trap 'rm -f "$FINDINGS"' EXIT
 
     run_reviewer "$PROMPT" | tee "$FINDINGS"
