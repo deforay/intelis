@@ -207,6 +207,7 @@
            is the row set a confirmed "mark as complete" writes to. */
         $(document).trigger('clinicreports:filterschanged', [toPane]);
         updateSummaries(pane(toPane));
+        refreshHighlights();
     }
 
     /* ------------------------------------------------------- filter summary */
@@ -268,6 +269,15 @@
             shown += ' · +' + (applied.length - 2);
         }
         summary.text(shown).attr('title', applied.join('\n')).show();
+    }
+
+    /* The app-wide highlighter tints a filter that holds a value, which is how
+       you find the three that are set among twelve. It listens for a plain
+       change event, and filters copied between tabs are applied without one. */
+    function refreshHighlights() {
+        if (window.pageFilterHighlighter && typeof window.pageFilterHighlighter.refresh === 'function') {
+            window.pageFilterHighlighter.refresh();
+        }
     }
 
     function updateSummaries(scope) {
