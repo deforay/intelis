@@ -382,7 +382,7 @@ final class QualityMonitoringEndpointTest extends TestCase
     }
 
     #[RunInSeparateProcess]
-    public function testTheChildAndMotherPartsComeBackSeparately(): void
+    public function testTheListingCarriesIdentifiersAndNoPatientNames(): void
     {
         $json = $this->drive(['section' => 'samples', 'view' => 'lab', 'dateRange' => '', 'iDisplayLength' => 25]);
 
@@ -394,13 +394,17 @@ final class QualityMonitoringEndpointTest extends TestCase
         }
         self::assertNotNull($row, json_encode($json));
 
-        // The grid clubs these into two cells and the workbook keeps them
-        // apart, so each part has to arrive on its own.
-        self::assertSame('Amina Okello', $row['childName'], 'name and surname, joined');
         self::assertSame('MO-77', $row['motherId']);
-        self::assertSame('Grace Okello', $row['motherName']);
         self::assertNotSame('', $row['childDob'], 'a date of birth is formatted for reading');
         self::assertSame('8', $row['childAge']);
+
+        // Both sides of the workflow read this page, so it carries no name for
+        // the child or the mother even though the seeded rows have them.
+        foreach ($json['aaData'] as $listed) {
+            self::assertArrayNotHasKey('childName', $listed);
+            self::assertArrayNotHasKey('motherName', $listed);
+            self::assertArrayNotHasKey('motherNameFromVl', $listed);
+        }
     }
 
     // The endpoint is required once per process, so each filter gets its own
@@ -459,35 +463,6 @@ final class QualityMonitoringEndpointTest extends TestCase
             $row['dataIssue'],
             'the message quotes the status the record actually carries'
         );
-    }
-
-    #[RunInSeparateProcess]
-    public function testAMothersNameIsRecoveredFromHerOwnViralLoadRecord(): void
-    {
-        $json = $this->drive(['section' => 'samples', 'view' => 'lab', 'dateRange' => '', 'iDisplayLength' => 25]);
-
-        $row = null;
-        foreach ($json['aaData'] as $candidate) {
-            if ($candidate['motherId'] === 'MO-VL-88') {
-                $row = $candidate;
-            }
-        }
-        self::assertNotNull($row, json_encode($json));
-
-        self::assertSame('', $row['motherName'], 'the EID request recorded no name');
-        self::assertSame('Rebecca Felex', $row['motherNameFromVl'], 'matched on her ART number');
-    }
-
-    #[RunInSeparateProcess]
-    public function testARecordedMotherNameIsNeverOverwrittenByTheViralLoadOne(): void
-    {
-        $json = $this->drive(['section' => 'samples', 'view' => 'lab', 'dateRange' => '', 'iDisplayLength' => 25]);
-
-        foreach ($json['aaData'] as $row) {
-            if ($row['motherName'] !== '') {
-                self::assertSame('', $row['motherNameFromVl'], 'what the clinic wrote down wins');
-            }
-        }
     }
 
     #[RunInSeparateProcess]

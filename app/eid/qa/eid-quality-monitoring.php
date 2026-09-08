@@ -61,6 +61,7 @@ $notePrompts = [
 $currentUser = trim((string) ($_SESSION['userName'] ?? ''));
 $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? ''));
 ?>
+<link rel="stylesheet" media="all" type="text/css" href="/assets/css/tom-select.css" />
 <style>
     #qaModule .qa-preview {
         border-left: 4px solid #f0ad4e;
@@ -85,9 +86,22 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
     }
 
     /* Select2 sizes itself off the original control, which is display:none here. */
-    #qaModule .qa-filters .select2-container,
-    #qaNoteModal .select2-container {
+    #qaModule .qa-filters .select2-container {
         width: 100% !important;
+    }
+
+    /* TomSelect ships its own control styling; this only lines its height and
+       border up with the Bootstrap fields above and below it in the form. */
+    #qaNoteModal .ts-wrapper .ts-control {
+        border: 1px solid #d2d6de;
+        border-radius: 0;
+        min-height: 34px;
+        padding: 6px 12px;
+    }
+
+    #qaNoteModal .ts-wrapper.focus .ts-control {
+        border-color: #3c8dbc;
+        box-shadow: none;
     }
 
     #qaModule .qa-filter-actions {
@@ -221,23 +235,6 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
     #qaModule .qa-instruments em {
         margin-right: 3px;
         opacity: 0.7;
-    }
-
-    #qaModule .qa-from-vl {
-        display: inline-block;
-        font-size: 10px;
-        color: #7a848c;
-        border: 1px dashed #cfd6db;
-        border-radius: 2px;
-        padding: 0 4px;
-        margin-top: 2px;
-        cursor: help;
-    }
-
-    #qaModule .qa-person-name {
-        display: block;
-        font-size: 12px;
-        color: #5a636a;
     }
 
     #qaModule .qa-note-cell a {
@@ -681,6 +678,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
     </div>
 </div>
 
+<script src="/assets/js/tom-select.complete.min.js"></script>
 <script type="text/javascript">
     var QA_URL = '/eid/qa/get-qa-monitoring-data.php';
     var QA_VIEWS = <?= json_encode(array_keys($viewLabels)); ?>;
@@ -713,8 +711,6 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         noneYet: "<?= _jsTranslate('No notes yet'); ?>",
         dob: "<?= _jsTranslate('DoB %s'); ?>",
         age: "<?= _jsTranslate('Age %s'); ?>",
-        fromVl: "<?= _jsTranslate('from VL record'); ?>",
-        fromVlHint: "<?= _jsTranslate('This request recorded no mother name. This one comes from the mother\'s own viral load request, matched on her ART number.'); ?>",
         conflictHint: "<?= _jsTranslate('The recorded status does not match what the sample has actually been through. The stage on the left is read from the dates on the record. This one needs correcting rather than explaining.'); ?>"
     };
 
@@ -812,24 +808,18 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
                     code += '<span class="qa-secondary">' + qaEsc(row.remoteSampleCode) + '</span>';
                 }
                 return code;
-            // One person, one cell. The id leads because it is what gets quoted
-            // on the phone; the age line is the date of birth when there is one,
-            // since an age recorded months ago is only true of the day it was
-            // typed in.
+            // Identifiers only. Nobody chasing a sample needs the child's or
+            // the mother's name to do it -- the id is what gets quoted on the
+            // phone -- so no name is put on a screen that is read by both the
+            // lab and the implementing partner. The age line is the date of
+            // birth when there is one, since an age recorded months ago is only
+            // true of the day it was typed in.
             case 'child':
-                return qaPerson(row.childId, row.childName, row.childDob
+                return qaPerson(row.childId, row.childDob
                     ? qaSprintf(QA_LABELS.dob, row.childDob)
                     : (row.childAge ? qaSprintf(QA_LABELS.age, row.childAge) : ''));
             case 'mother':
-                if (row.motherName || !row.motherNameFromVl) {
-                    return qaPerson(row.motherId, row.motherName, '');
-                }
-                // Found on her own viral load record, not written on this
-                // request. Marked, because on a data quality page the
-                // difference between recorded and inferred is the point.
-                return qaPerson(row.motherId, row.motherNameFromVl, '') +
-                    '<span class="qa-from-vl" title="' + qaEsc(QA_LABELS.fromVlHint) + '">' +
-                    qaEsc(QA_LABELS.fromVl) + '</span>';
+                return qaPerson(row.motherId, '');
             case 'age':
                 var cls = row.age >= QA_VERY_LATE_DAYS ? ' is-very-late'
                     : (row.age >= QA_LATE_DAYS ? ' is-late' : '');
@@ -872,12 +862,11 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             '<em class="fa-solid fa-microscope"></em> ' + qaEsc(shown) + '</span>';
     }
 
-    // An id, a name and an age line, each on its own line and each skipped
-    // when empty, so a row with only an id is one line rather than three.
-    function qaPerson(id, name, detail) {
+    // An id and an age line, each skipped when empty, so a row carrying only an
+    // id is one line rather than two and a row carrying neither says so.
+    function qaPerson(id, detail) {
         var lines = [];
         if (id) { lines.push('<span>' + qaEsc(id) + '</span>'); }
-        if (name) { lines.push('<span class="qa-person-name">' + qaEsc(name) + '</span>'); }
         if (detail) { lines.push('<span class="qa-secondary">' + qaEsc(detail) + '</span>'); }
         return lines.length ? lines.join('') : '<span class="qa-note-none">&ndash;</span>';
     }
@@ -994,27 +983,26 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         qaShowNoteModal(view, ids);
     }
 
-    // The reason list is rebuilt for each side, so the old widget has to go
-    // before the options underneath it are replaced.
+    // TomSelect and not the Select2 the filter bar uses. Select2 hangs its
+    // dropdown off an ancestor it has to be told about and measures the control
+    // it replaces, neither of which survives a Bootstrap modal that has not
+    // opened yet; TomSelect renders in place, so a searchable list of twenty
+    // grouped reasons works inside the modal without any of that.
     function qaDestroyReasonSelect() {
-        var $reason = $('#qaNoteReason');
-        if ($reason.data('select2')) {
-            $reason.select2('destroy');
+        var el = document.getElementById('qaNoteReason');
+        if (el && el.tomselect) {
+            el.tomselect.destroy();
         }
     }
 
-    // Select2 measures the control it replaces, and inside a modal that has not
-    // opened yet that measurement is zero, which leaves a box too small to
-    // click. So the widget is built when the modal is on screen, not when its
-    // options are filled in.
+    // The list differs between the two sides, so the widget is rebuilt each
+    // time the form is opened rather than kept and re-filled.
     function qaBuildReasonSelect() {
         qaDestroyReasonSelect();
-        $('#qaNoteReason').select2({
-            placeholder: QA_LABELS.chooseReason,
-            width: '100%',
-            // Without this the search box inside a Bootstrap modal cannot be
-            // typed in: the modal keeps pulling focus back to itself.
-            dropdownParent: $('#qaNoteModal')
+        new TomSelect('#qaNoteReason', {
+            create: false,
+            allowEmptyOption: true,
+            placeholder: QA_LABELS.chooseReason
         });
     }
 
@@ -1044,6 +1032,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         });
         qaDestroyReasonSelect();
         $('#qaNoteReason').html(options).val('');
+        qaBuildReasonSelect();
 
         $('#qaNoteText').val('');
         $('#qaNoteExpected').val('');
@@ -1238,9 +1227,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             $(this).val('');
         });
 
-        $('#qaNoteModal')
-            .on('shown.bs.modal', qaBuildReasonSelect)
-            .on('hidden.bs.modal', qaDestroyReasonSelect);
+        $('#qaNoteModal').on('hidden.bs.modal', qaDestroyReasonSelect);
 
         $('#provinceId, #partnerId, #bucket, #instrument').select2();
         $('#districtId').select2();
