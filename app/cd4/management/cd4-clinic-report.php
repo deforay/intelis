@@ -103,7 +103,7 @@ $state = $geolocationService->getProvinces("yes");
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -228,7 +228,7 @@ $state = $geolocationService->getProvinces("yes");
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -348,7 +348,7 @@ $state = $geolocationService->getProvinces("yes");
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -460,7 +460,7 @@ $state = $geolocationService->getProvinces("yes");
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -473,7 +473,7 @@ $state = $geolocationService->getProvinces("yes");
 													</div>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
-															<label class="control-label" for="formField">Fields</label>
+															<label class="control-label" for="formField"><?php echo _translate("Fields"); ?></label>
 															<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _translate('Please fields'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="sample_code"><?php echo _translate("Sample ID"); ?></option>
@@ -527,7 +527,7 @@ $state = $geolocationService->getProvinces("yes");
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -583,7 +583,7 @@ $state = $geolocationService->getProvinces("yes");
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -731,6 +731,12 @@ $state = $geolocationService->getProvinces("yes");
 		ClinicReports.registerTab('incompleteFormReport', { init: incompleteForm, table: function () { return oTableincompleteReport; } });
 		ClinicReports.registerTab('sampleTestingReport', { init: getSampleTestingResult, search: sampleTestingReport });
 		ClinicReports.registerTab('patientTestHistoryFormReport', { init: patientHistoryReport, table: function () { return oTablepatientTestHistoryReport; } });
+		/* Filters copied in from another tab are applied with a namespaced
+		   event, so the change handlers above never see them. The last
+		   search no longer matches what is on screen. */
+		$(document).on('clinicreports:filterschanged', function () {
+			searchExecuted = false;
+		});
 		ClinicReports.start();
 		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select, #patientTestHistoryFormReport input").on("change", function() {
 			searchExecuted = false;

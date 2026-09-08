@@ -172,7 +172,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -454,7 +454,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -582,9 +582,9 @@ $implementingPartnerList = $general->getImplementationPartners();
 														<div class="form-group">
 															<label class="control-label" for="min_age"><?php echo _translate("Age Range"); ?> <small class="text-muted"><?php echo _translate("in years"); ?></small></label>
 															<div class="input-pair">
-																<input type="number" id="min_age" class="form-control vfvlnsfilters" name="min_age" min="0" max="120" value="0" aria-label="<?php echo _translate("Youngest age"); ?>">
+																<input type="number" id="min_age" class="form-control vfvlnsfilters" name="min_age" min="0" max="120" value="0" aria-label="<?php echo _htmlTranslate("Youngest age"); ?>">
 																<span class="input-pair-sep"><?php echo _translate("to"); ?></span>
-																<input type="number" id="max_age" name="max_age" class="form-control vfvlnsfilters" min="0" max="120" value="120" aria-label="<?php echo _translate("Oldest age"); ?>">
+																<input type="number" id="max_age" name="max_age" class="form-control vfvlnsfilters" min="0" max="120" value="120" aria-label="<?php echo _htmlTranslate("Oldest age"); ?>">
 															</div>
 															<div class="range-slider" data-range-min="#min_age" data-range-max="#max_age" data-floor="0" data-ceiling="120"></div>
 														</div>
@@ -623,7 +623,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -916,7 +916,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -1193,7 +1193,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -1380,7 +1380,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -1477,7 +1477,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body">
@@ -1768,6 +1768,12 @@ $implementingPartnerList = $general->getImplementationPartners();
 		ClinicReports.registerTab('incompleteFormReport', { init: incompleteForm, table: function () { return oTableincompleteReport; } });
 		ClinicReports.registerTab('sampleTestingReport', { init: getSampleResult, search: sampleTestingReport });
 		ClinicReports.registerTab('patientTestHistoryFormReport', { init: patientHistoryReport, table: function () { return oTablepatientTestHistoryReport; } });
+		/* Filters copied in from another tab are applied with a namespaced
+		   event, so the change handlers above never see them. The last
+		   search no longer matches what is on screen. */
+		$(document).on('clinicreports:filterschanged', function () {
+			searchExecuted = false;
+		});
 		ClinicReports.start();
 		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select, #patientTestHistoryFormReport input").on("change", function () {
 			searchExecuted = false;
