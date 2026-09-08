@@ -10,6 +10,10 @@
 #   bin/dev/review --since-last    # review everything since the last recorded commit
 #   bin/dev/review --mark [sha]    # record a commit (default HEAD) as reviewed
 #
+#   --verify may precede any of the review forms, and REVIEW_VERIFY=1 in .env makes it
+#   the default. It adds a second pass whose only job is to refute the first one's
+#   findings.
+#
 # The last three keep a ledger of what has already been through a review, so the answer to
 # "where do I start?" is a command rather than a memory. Without it the honest options are
 # re-reviewing commits that were already read, or skipping ones that were not. The ledger is
@@ -91,6 +95,23 @@ mark_reviewed() {
     printf '%s\t%s\t%s\n' "$sha" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$subject" >> "$LEDGER"
     echo "Recorded as reviewed: $(git log -1 --format='%h %s' "$sha")"
 }
+
+# A second pass that only tries to refute the first one's findings.
+#
+# One pass that both finds AND reports has nothing pushing back on it, and that is where
+# the false positives live: a run of this script once produced four sentences resting on a
+# claim about a function the reviewer had not opened. Refutation is a different job from
+# discovery -- it is cheap, it is bounded by the number of findings rather than by the size
+# of the diff, and the second reader starts from "this is probably wrong" rather than from
+# its own reasoning.
+#
+# Off unless asked, because it doubles the cost of a run and a two-line diff does not
+# need it. REVIEW_VERIFY=1 in .env turns it on for good.
+VERIFY="${REVIEW_VERIFY:-0}"
+if [ "${1:-}" = "--verify" ]; then
+    VERIFY=1
+    shift
+fi
 
 case "${1:-}" in
     --pending)
@@ -190,22 +211,82 @@ $CONTEXT"
 # ledger. Recording happens only on a clean exit: quitting a reviewer early is how you
 # abandon a review, and an abandoned review must not advance the bookmark.
 # shellcheck disable=SC2086
-if [ -z "$MARK_AFTER" ]; then
+run_reviewer() {
     if [ "${REVIEW_AGENT_STDIN:-}" = "1" ]; then
-        printf '%s' "$PROMPT" | exec $REVIEW_AGENT
+        printf '%s' "$1" | $REVIEW_AGENT
     else
-        exec $REVIEW_AGENT "$PROMPT"
+        $REVIEW_AGENT "$1"
+    fi
+}
+
+# Without --verify nothing changes: one pass, streamed straight through, and exec'd where
+# there is no ledger to write afterwards.
+if [ "$VERIFY" != "1" ]; then
+    # shellcheck disable=SC2086
+    if [ -z "$MARK_AFTER" ]; then
+        if [ "${REVIEW_AGENT_STDIN:-}" = "1" ]; then
+            printf '%s' "$PROMPT" | exec $REVIEW_AGENT
+        else
+            exec $REVIEW_AGENT "$PROMPT"
+        fi
+    fi
+    run_reviewer "$PROMPT"
+else
+    # The first pass is teed rather than exec'd, because the second one needs to read it.
+    # It still streams, so the wait feels the same as an unverified run.
+    FINDINGS="$(mktemp -t review-findings)"
+    trap 'rm -f "$FINDINGS"' EXIT
+
+    run_reviewer "$PROMPT" | tee "$FINDINGS"
+
+    if [ ! -s "$FINDINGS" ]; then
+        echo
+        echo "The first pass returned nothing, so there is nothing to verify."
+    else
+        echo
+        echo "── verifying ──────────────────────────────────────────────────────────────────"
+        echo
+
+        # Deliberately one-sided. This pass is not asked whether the findings are good, it
+        # is asked to break them, and the wording says so -- a reader invited to "check"
+        # a claim mostly agrees with it. Its own evidence is held to the same bar the
+        # brief sets for a finding, so a refutation that cannot cite a line is no better
+        # than the claim it is trying to kill.
+        VERIFY_PROMPT="A review pass on this repository produced the findings below. Your only
+job is to try to REFUTE each one. Do not add findings of your own, do not restate them, and do
+not soften them into suggestions.
+
+For each finding, open the code it cites and answer with one of:
+  CONFIRMED   file:line and the quoted line that proves the defect is real
+  REFUTED     file:line and the quoted line that shows the claim is wrong, or that names the
+              premise it rests on and shows that premise is false
+  UNVERIFIED  you could not find the line either way -- say what you looked for
+
+A finding whose premise is a claim about code is refuted the moment that code says otherwise,
+however plausible the reasoning built on it. A deliberate trade-off recorded in the commit
+message, in a comment, or in docs/engineering-standards.md is refuted too: it is a rebuttal
+rather than a defect.
+
+Finish with the surviving findings only, in severity order, each with its evidence. Say
+plainly how many you refuted and why. If every finding is refuted, say that.
+
+$SCOPE
+
+The findings to refute:
+
+$(cat "$FINDINGS")"
+
+        run_reviewer "$VERIFY_PROMPT"
     fi
 fi
 
-if [ "${REVIEW_AGENT_STDIN:-}" = "1" ]; then
-    printf '%s' "$PROMPT" | $REVIEW_AGENT
-else
-    $REVIEW_AGENT "$PROMPT"
+# Only --since-last has a list to record. The other forms reach here too now that a
+# verified run cannot exec, so the ledger block has to say so rather than rely on having
+# been unreachable.
+if [ -n "$MARK_AFTER" ]; then
+    echo
+    for sha in $MARK_AFTER; do
+        mark_reviewed "$sha"
+    done
+    echo "Ledger updated: $LEDGER"
 fi
-
-echo
-for sha in $MARK_AFTER; do
-    mark_reviewed "$sha"
-done
-echo "Ledger updated: $LEDGER"
