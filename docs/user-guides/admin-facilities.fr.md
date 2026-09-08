@@ -23,7 +23,7 @@ laboratoire.
 | Champ | Ce qu'il faut saisir |
 |---|---|
 | Nom de la structure | Le nom que le personnel recherchera. Il ne doit pas déjà être utilisé |
-| Nom et code de la structure | Le code national unique. L'intitulé affiché parle de nom et de code, mais le champ ne reçoit que le code |
+| Code de la structure | Le code national unique |
 | Autre/code externe | Un second code, lorsqu'un autre système utilise le sien |
 | Type d'installation | Structure sanitaire, ou laboratoire de test |
 | Type de test | Chaque type de test auquel la structure participe |
@@ -56,7 +56,7 @@ pas.
 | Plates-formes disponibles | Les automates de ce laboratoire, par exemple Xpert, Microscopy ou Lam |
 | Objectif mensuel | L'objectif mensuel de test du laboratoire, utilisé par les rapports |
 | Cible mensuelle de suppression virale | L'objectif de suppression virologique |
-| Allow Results File Upload | Si ce laboratoire peut importer des fichiers de résultats |
+| Autoriser le téléchargement de fichiers de résultats | Si ce laboratoire peut importer des fichiers de résultats |
 | Image du logo | Le logo des PDF de résultats de ce laboratoire. 80 sur 80 pixels |
 | Report Format For VL, EID, TB, Covid-19, Hepatitis | La mise en page du PDF de résultat par type de test |
 | Télécharger le modèle de rapport | Un modèle PDF, lorsque la mise en page par défaut ne convient pas |
