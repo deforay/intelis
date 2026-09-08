@@ -92,12 +92,14 @@ against them without running a review.
   a module removed rather than broken — so the state is legitimate and common. The runner
   has no way to express "only if the parent exists", so a repair migration creates the
   table without the constraint and keeps the index the key sat on.
-- **`sql/init.sql` is a MySQL 8 dump; README supports MySQL 5.7.** Its column and table
-  definitions carry `COLLATE utf8mb4_0900_ai_ci`, which does not exist on 5.7 and fails with
-  1273. Never copy a `COLLATE` clause from the seed into a migration: leave it off and each
-  server applies its own default for `utf8mb4` — a fresh MySQL 8 install still lands on the
-  collation the seed declares — and `composer db:collation` is what brings an installation
-  into line.
+- **Never copy a `COLLATE` clause out of `sql/init.sql` into a migration.** The seed is a
+  MySQL 8 dump, so its definitions carry `COLLATE utf8mb4_0900_ai_ci` — a collation that
+  exists only on MySQL 8, and fails with 1273 anywhere else. The floor is 8.0 and every
+  instance in the field meets it, but "may work and is not guaranteed" is not the same as
+  "cannot be there", and a `CREATE TABLE` that fails takes the whole upgrade down with it.
+  Leave the clause off and each server applies its own default for `utf8mb4`: a fresh
+  MySQL 8 install still lands on exactly the collation the seed declares, and
+  `composer db:collation` is what brings an installation into line.
 - **The runner's benign-errno set is the definition of "safe to fail".** 1050, 1060, 1061,
   1068, 1091 and 1826 are swallowed and the migration continues; anything else halts the
   upgrade and strands the instance. Before writing a statement that may fail on some
