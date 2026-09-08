@@ -52,7 +52,7 @@ final class QualityMonitoringEndpointTest extends TestCase
             // Referenced tables first: form_vl carries a foreign key to
             // r_sample_status and will not create without it.
             'facility_details', 'r_implementation_partners', 'r_sample_status',
-            'form_eid', 'form_vl', 'system_config', 'global_config',
+            'form_eid', 'form_vl', 'instruments', 'system_config', 'global_config',
         ]);
         // Superadmin: the endpoint's privilege guard passes, and no lab or
         // facility scoping narrows what it lists.
@@ -251,6 +251,45 @@ final class QualityMonitoringEndpointTest extends TestCase
         // Released, approved-unreleased and the five exits are nobody's to
         // explain, so they are in neither total.
         self::assertSame(7, $summary['clinic']['total'] + $summary['lab']['total']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testALabCarriesTheInstrumentsItHasActuallyTestedOn(): void
+    {
+        // None of the waiting rows names an instrument -- they have no result
+        // yet -- so the line under the lab name has to come from its finished
+        // work. Both ways of recording it are seeded: a managed instrument by
+        // id, and the free text older rows carry in the platform field.
+        LegacyAppHarness::db()->rawQuery(
+            "INSERT INTO instruments (instrument_id, machine_name, lab_id, max_no_of_samples_in_a_batch, status)
+             VALUES ('inst-gx-1', 'GeneXpert', " . self::LAB_ID . ", 16, 'active')"
+        );
+        $released = [
+            'lab_id' => self::LAB_ID,
+            'result' => 'negative',
+            'result_status' => 7,
+            'sample_tested_datetime' => self::daysAgo(20),
+            'result_approved_datetime' => self::daysAgo(19),
+            'result_mail_datetime' => self::daysAgo(18),
+        ];
+        // Two on the managed instrument and one on the typed-in platform, so
+        // the ordering by how much each is used is also being asserted.
+        $this->seed($released + ['instrument_id' => 'inst-gx-1']);
+        $this->seed($released + ['instrument_id' => 'inst-gx-1']);
+        $this->seed($released + ['eid_test_platform' => 'HRL/PCR/GNX/003']);
+        // A finished sample at a lab nobody is waiting on must not leak into
+        // another lab's line.
+        $this->seed(['lab_id' => self::OTHER_FACILITY_ID, 'eid_test_platform' => 'Abbott'] + $released);
+
+        $json = $this->drive(['section' => 'samples', 'view' => 'lab', 'dateRange' => '', 'iDisplayLength' => 25]);
+
+        foreach ($json['aaData'] as $row) {
+            self::assertSame(
+                'GeneXpert, HRL/PCR/GNX/003',
+                $row['labInstruments'],
+                'most used first, and only this lab own instruments'
+            );
+        }
     }
 
     #[RunInSeparateProcess]
