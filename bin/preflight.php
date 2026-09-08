@@ -101,8 +101,10 @@ const PF_CHILD_RESULT_TABLES = [
  * the dangerous half -- user_login_history is read through
  * UsersService::continuousFailedLogins() before the password is even checked,
  * user_facility_map through FacilitiesService::getUserFacilityMap() once it
- * succeeds, and s_app_menu through AppMenuService::getMenu() when the page
- * renders. Each throws on every attempt while neither file names the table.
+ * succeeds, s_app_menu through AppMenuService::getMenu() when the page renders,
+ * and instruments through CommonService::getInstrumentsCount(), which the header
+ * calls to decide whether to show its setup banner. Each throws while neither
+ * entry file names the table.
  *
  * These need naming because nothing else in the check can reach them. They are
  * not seeded, and they are no test type's result table, so both other rules
@@ -129,6 +131,7 @@ const PF_CORE_TABLES = [
     'global_config'        => true,
     'activity_log'         => true,
     's_app_menu'           => true,
+    'instruments'          => true,
 ];
 
 /** @var list<array{status:string,label:string,detail:string}> $results */

@@ -259,10 +259,21 @@ final class PreflightMissingTablesTest extends TestCase
             . "  PRIMARY KEY (`generic_id`)\n) ENGINE=InnoDB;\n"
             . "CREATE TABLE `generic_test_results` (\n  `result_id` int NOT NULL,\n"
             . "  PRIMARY KEY (`result_id`)\n) ENGINE=InnoDB;\n"
-            // Declared by the seed, never created here, and neither seeded nor
-            // any module's result table -- so only PF_CORE_TABLES can reach it.
+            // Declared by the seed, never created here, and none of them
+            // seeded or any module's result table -- so only PF_CORE_TABLES can
+            // reach them. More than one, because a call site passing a subset of
+            // the constant would satisfy a test that only ever checks a single
+            // entry.
             . "CREATE TABLE `user_details` (\n  `user_id` int NOT NULL,\n"
-            . "  PRIMARY KEY (`user_id`)\n) ENGINE=InnoDB;\n";
+            . "  PRIMARY KEY (`user_id`)\n) ENGINE=InnoDB;\n"
+            . "CREATE TABLE `user_login_history` (\n  `id` int NOT NULL,\n"
+            . "  PRIMARY KEY (`id`)\n) ENGINE=InnoDB;\n"
+            . "CREATE TABLE `user_facility_map` (\n  `id` int NOT NULL,\n"
+            . "  PRIMARY KEY (`id`)\n) ENGINE=InnoDB;\n"
+            . "CREATE TABLE `s_app_menu` (\n  `id` int NOT NULL,\n"
+            . "  PRIMARY KEY (`id`)\n) ENGINE=InnoDB;\n"
+            . "CREATE TABLE `instruments` (\n  `instrument_id` int NOT NULL,\n"
+            . "  PRIMARY KEY (`instrument_id`)\n) ENGINE=InnoDB;\n";
     }
 
     /**
@@ -328,14 +339,25 @@ final class PreflightMissingTablesTest extends TestCase
      * nobody can get in -- and passing the constant is a separate line from
      * using it, so it needs asserting here rather than in the unit tests.
      */
-    public function testAnAbsentCoreTableFails(): void
+    public function testEveryAbsentCoreTableFails(): void
     {
         [$out, $status] = $this->check($this->seed());
 
         $this->assertMatchesRegularExpression('/FAIL\s+Missing tables in use/', $out, "Full output:\n$out");
-        $this->assertStringContainsString('user_details', $out);
         $this->assertStringContainsString('logging in or drawing a page reads it', $out);
         $this->assertSame(1, $status);
+
+        // Each one named, not just the first. A call site handing the classifier
+        // a subset of PF_CORE_TABLES would still fail one table and pass this
+        // test if it only ever looked for one.
+        $failure = substr($out, (int) strpos($out, 'Missing tables in use'));
+        foreach (['user_details', 'user_login_history', 'user_facility_map', 's_app_menu', 'instruments'] as $t) {
+            $this->assertStringContainsString(
+                $t,
+                $failure,
+                "{$t} is in PF_CORE_TABLES and absent here, so the check has to name it."
+            );
+        }
     }
 
     /**
