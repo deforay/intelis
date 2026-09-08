@@ -322,16 +322,6 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         color: #1f7a4d;
     }
 
-    .qa-example-badge {
-        display: inline-block;
-        font-size: 10px;
-        padding: 1px 5px;
-        border-radius: 2px;
-        border: 1px dashed #c9a227;
-        color: #8a6100;
-        margin-left: 6px;
-    }
-
     .qa-sample-chips .label {
         display: inline-block;
         margin: 0 4px 4px 0;
@@ -367,7 +357,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
 
                         <div class="qa-preview">
                             <strong><?= _htmlTranslate('Preview'); ?>:</strong>
-                            <?= _htmlTranslate('the sample list, the counts and the filters below run on live data. Notes are not saved yet, so anything added here is lost when the page is reloaded, and the example notes on a few rows are there to show how a thread reads.'); ?>
+                            <?= _htmlTranslate('the sample list, the counts and the filters below all run on live data. Notes are the one part that is not built yet: a note added here is shown so the workflow can be reviewed, and it disappears when the page is reloaded.'); ?>
                         </div>
 
                         <p class="text-muted" id="qa-description">
@@ -702,7 +692,6 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         exportFailed: "<?= _jsTranslate('Unable to generate the export file'); ?>",
         days: "<?= _jsTranslate('days'); ?>",
         sample: "<?= _jsTranslate('Sample'); ?>",
-        example: "<?= _jsTranslate('Example'); ?>",
         addNote: "<?= _jsTranslate('Add note'); ?>",
         noneYet: "<?= _jsTranslate('No notes yet'); ?>",
         dob: "<?= _jsTranslate('DoB %s'); ?>",
@@ -723,7 +712,6 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
     var qaRowCache = {};
     var qaSide = "<?= $userSide; ?>";
     var qaNoteTarget = { view: null, ids: [] };
-    var qaSeeded = {};
 
     // Which side owns a sample, read off the stage it is in. A sample moves
     // between the two over its life, which is why a thread can hold notes from
@@ -938,7 +926,6 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
                 qaSelection[view] = [];
                 $('#qaTable-' + view).find('.qa-check-all, .qa-row-check').prop('checked', false);
                 qaCacheRows(view, settings);
-                qaSeedExamples(view, settings);
                 qaUpdateSelection(view);
             }
         });
@@ -950,58 +937,6 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             var row = entry._aData;
             if (row && row.recordId) { qaRowCache[row.recordId] = row; }
         });
-    }
-
-    // ------------------------------------------------------- example notes
-
-    // Two rows on each side start with a thread already on them, so the
-    // cross-side conversation is visible without anyone having to type it. They
-    // are labelled as examples and go away on reload, like every other note
-    // here until the saving side is built.
-    function qaSeedExamples(view, settings) {
-        if (qaSeeded[view]) { return; }
-        var rows = (settings.aoData || []).map(function (entry) { return entry._aData; })
-            .filter(function (row) { return row && row.recordId; });
-        if (!rows.length) { return; }
-        qaSeeded[view] = true;
-
-        var samples = view === 'lab' ? [
-            [
-                { side: 'lab', key: 'reagent_stockout', text: "<?= _jsTranslate('Extraction kits ran out on the 3rd. The next consignment is confirmed for the end of the week and this sample is first in the queue.'); ?>" },
-                { side: 'clinic', key: 'awaiting_transport', text: "<?= _jsTranslate('Noting from our side that the sample sat with us for six days waiting for the courier, so part of the delay is ours.'); ?>" }
-            ],
-            [
-                { side: 'lab', key: 'instrument_breakdown', text: "<?= _jsTranslate('Analyser down since Monday. The engineer has been called and is expected on site this week.'); ?>" }
-            ]
-        ] : [
-            [
-                { side: 'clinic', key: 'no_transport', text: "<?= _jsTranslate('No vehicle available on the scheduled run. Sample is stored and will go with the next pick-up.'); ?>" }
-            ],
-            [
-                { side: 'clinic', key: 'supplies_stockout', text: "<?= _jsTranslate('DBS cards ran out at the facility, so packaging was delayed. Supplies have now been received.'); ?>" },
-                { side: 'lab', key: 'awaiting_full_run', text: "<?= _jsTranslate('Once it reaches us it will go on the next run; we are holding a slot on Thursday.'); ?>" }
-            ]
-        ];
-
-        samples.forEach(function (thread, index) {
-            var row = rows[index];
-            if (!row || qaNotes[row.recordId]) { return; }
-            thread.forEach(function (note, offset) {
-                qaAppendNote(row.recordId, {
-                    side: note.side,
-                    reasonKey: note.key,
-                    reasonLabel: qaReasonLabel(note.side, note.key),
-                    text: note.text,
-                    author: note.side === 'lab' ? "<?= _jsTranslate('Lab QA Manager'); ?>" : "<?= _jsTranslate('Partner M&E Officer'); ?>",
-                    role: QA_SIDE_LABELS[note.side],
-                    when: moment().subtract((thread.length - offset) * 2, 'days').format('DD-MMM-YYYY HH:mm'),
-                    expected: '',
-                    example: true
-                });
-            });
-        });
-
-        if (qaTables[view]) { qaRefreshNoteCells(view); }
     }
 
     function qaReasonLabel(side, key) {
@@ -1133,8 +1068,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             author: QA_USER,
             role: QA_ROLE || QA_SIDE_LABELS[qaNoteTarget.view],
             when: moment().format('DD-MMM-YYYY HH:mm'),
-            expected: $('#qaNoteExpected').val() || '',
-            example: false
+            expected: $('#qaNoteExpected').val() || ''
         };
 
         qaNoteTarget.ids.forEach(function (id) {
@@ -1169,7 +1103,6 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
                     '<span class="qa-side-badge qa-side-' + note.side + '">' +
                     qaEsc(QA_SIDE_LABELS[note.side] || note.side) + '</span>' +
                     qaEsc(note.reasonLabel) +
-                    (note.example ? '<span class="qa-example-badge">' + qaEsc(QA_LABELS.example) + '</span>' : '') +
                     '</span>' +
                     '<span class="qa-note-meta">' + qaEsc(note.author) +
                     (note.role ? ' · ' + qaEsc(note.role) : '') +
