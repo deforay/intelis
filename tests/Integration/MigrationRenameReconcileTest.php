@@ -272,6 +272,60 @@ final class MigrationRenameReconcileTest extends TestCase
         $this->assertNotNull($raised, 'Dropping an indexed column would take its keys with it.');
         $this->assertStringContainsString('idx_new', $raised->getMessage(), 'naming the key in the way.');
         $this->assertContains('new_name', $this->columnsOf('heal_indexed_probe'));
+
+        // Halting after writing is not halting. An earlier version of this
+        // reconciliation copied every value across and only then failed on the
+        // drop, and a test that checked the exception and the column list alone
+        // would have called that a pass.
+        $row = self::$db->rawQueryOne(
+            'SELECT `old_name` AS o, `new_name` AS n FROM `heal_indexed_probe` LIMIT 1'
+        );
+        $this->assertSame('1', (string) $row['o'], 'The value stays where it was.');
+        $this->assertNull($row['n'], 'and nothing was written to the column being halted over.');
+    }
+
+    /**
+     * An aborted or failed run puts the recorded version back.
+     *
+     * A migration file may write its own sc_version part way through -- 5.2.6
+     * does -- and any DDL after that implicitly commits it, so a rollback
+     * leaves the version advanced over work that never happened and the file is
+     * skipped for good. Both the abort path and the unresolved-error path
+     * restore the snapshot; this covers the restoring itself, which is the part
+     * that can be reached without driving the interactive run loop.
+     */
+    public function testTheRecordedVersionIsPutBack(): void
+    {
+        self::$db->rawQuery('DROP TABLE IF EXISTS `system_config`');
+        self::$db->rawQuery(
+            'CREATE TABLE `system_config` (
+                `name` VARCHAR(100) NOT NULL,
+                `value` TEXT NULL,
+                PRIMARY KEY (`name`)
+            ) ENGINE=InnoDB'
+        );
+        self::$db->rawQuery("INSERT INTO `system_config` (`name`, `value`) VALUES ('sc_version', '5.2.6')");
+
+        $this->assertTrue(restore_sc_version(self::$db, '5.2.5'), 'A snapshot that exists is restored.');
+        $this->assertSame(
+            '5.2.5',
+            (string) (self::$db->rawQueryOne(
+                "SELECT `value` AS v FROM `system_config` WHERE `name` = 'sc_version' LIMIT 1"
+            )['v'] ?? ''),
+            'The version the run started at has to be what is left behind.'
+        );
+
+        // A first-ever install has no value to put back, and inventing one
+        // would be worse than leaving it alone.
+        $this->assertFalse(restore_sc_version(self::$db, null));
+        $this->assertFalse(restore_sc_version(self::$db, ''));
+        $this->assertSame(
+            '5.2.5',
+            (string) (self::$db->rawQueryOne(
+                "SELECT `value` AS v FROM `system_config` WHERE `name` = 'sc_version' LIMIT 1"
+            )['v'] ?? ''),
+            'and neither may overwrite what is there.'
+        );
     }
 
     /** Only the old name present is an ordinary rename, untouched by any of this. */
