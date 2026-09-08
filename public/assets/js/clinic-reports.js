@@ -9,7 +9,11 @@
  *      so looking at one report cost five queries.
  *   2. $.blockUI() was called immediately before $.unblockUI() around calls
  *      that are asynchronous, so the overlay was gone before the first request
- *      left the browser and nothing on screen said the page was working.
+ *      left the browser -- and when it did land it was a second loading state
+ *      over a table that already shows its own, blocking the filters and the
+ *      tabs to refresh one table. Table draws now show only the table's
+ *      indicator; blocking is left to work that really does hold up the page,
+ *      such as generating a file.
  *   3. Filters that mean the same thing in every tab had to be re-entered in
  *      each one.
  *
@@ -31,16 +35,20 @@
         });
     }
 
+    /* Counts requests in flight so an export can wait for the search it started.
+       It deliberately does not block the page: a table draw already has its own
+       indicator inside the table, which is the thing that is loading. Blocking
+       the whole page on top of that is a second loader for one event, and it
+       takes the filters and the tabs away while a page-2 click loads. Whole-page
+       work -- generating a file, drawing the chart -- still blocks, because
+       there the page really is busy. */
     function startLoading() {
-        if (pending++ === 0) {
-            $.blockUI();
-        }
+        pending++;
     }
 
     function endLoading() {
         pending = Math.max(0, pending - 1);
         if (pending === 0) {
-            $.unblockUI();
             settle();
         }
     }
@@ -339,8 +347,8 @@
 
     var ClinicReports = {
 
-        /* DataTables fnServerData that reports progress honestly and always
-           lets the page go again, whatever the server does. */
+        /* DataTables fnServerData. The table's own processing indicator is the
+           loading state; this tracks the request so exports can wait on it. */
         serverData: function (sSource, aoData, fnCallback) {
             startLoading();
             return $.ajax({
