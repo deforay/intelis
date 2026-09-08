@@ -407,6 +407,77 @@ final class MigrationMultiActionAlterTest extends TestCase
         }
     }
 
+    /**
+     * An untouched statement that fails stays atomic, and keeps its columns.
+     *
+     * 5.2.7 drops fifteen form_vl columns in one ALTER. If the last drop fails
+     * -- an incoming foreign key on a drifted instance is enough -- MySQL keeps
+     * all fifteen, because an ALTER applies entirely or not at all. Splitting
+     * on the way past that failure would apply the first fourteen one at a
+     * time and their data would be gone for good, to fix a statement that had
+     * not been part-applied in the first place.
+     *
+     * So the fallback is gated on something in the statement being already
+     * done, which is what actually distinguishes a part-applied statement from
+     * a failing one. Nothing here is applied, so the failure has to propagate
+     * with the table untouched.
+     */
+    public function testAnUntouchedStatementThatFailsKeepsEveryColumn(): void
+    {
+        $t = $this->freshTable('multi_atomic_probe', 'keep_a INT NULL, keep_b INT NULL');
+
+        $raised = null;
+        try {
+            // The last action cannot succeed and is plainly not already done:
+            // it renames a column that does not exist to another that does not
+            // exist either.
+            $this->dispatch(
+                "ALTER TABLE `$t` DROP COLUMN `keep_a`, DROP COLUMN `keep_b`,"
+                . " CHANGE `absent_x` `absent_y` INT NULL"
+            );
+        } catch (\Throwable $e) {
+            $raised = $e;
+        }
+
+        $this->assertNotNull($raised, 'A genuine failure has to surface.');
+
+        $columns = $this->columnsOf($t);
+        $this->assertContains('keep_a', $columns, 'Nothing may be dropped on the way to failing.');
+        $this->assertContains('keep_b', $columns);
+    }
+
+    /**
+     * A part-applied multi-DROP is left alone rather than finished.
+     *
+     * Deliberate, and the one place this guard chooses less repair. An absent
+     * column cannot be told from one that never existed on this installation,
+     * so reading it as evidence of a part-applied statement would open the
+     * splitting path for a statement where nothing had been applied -- and
+     * 5.2.7 drops fifteen form_vl columns at once, so one bad name at the end
+     * would take the other fourteen apart and commit them.
+     *
+     * The cost of stopping here is a migration that fails on a benign 1091
+     * with the columns still present, which someone can look at. The cost of
+     * the other choice is the columns.
+     */
+    public function testAPartlyAppliedMultiDropIsNotSplit(): void
+    {
+        $t = $this->freshTable('multi_partdrop_probe', 'gone INT NULL, still_here INT NULL');
+        self::$db->rawQuery("ALTER TABLE `$t` DROP COLUMN `gone`");
+
+        try {
+            $this->dispatch("ALTER TABLE `$t` DROP COLUMN `gone`, DROP COLUMN `still_here`");
+        } catch (\Throwable) {
+            // 1091 is benign to the migration loop; what matters is below.
+        }
+
+        $this->assertContains(
+            'still_here',
+            $this->columnsOf($t),
+            'Nothing may be dropped one action at a time on this path.'
+        );
+    }
+
     /** Mixed actions: a column add beside an index add. */
     public function testAColumnAndAnIndexInOneStatementBothApply(): void
     {
