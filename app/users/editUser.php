@@ -194,22 +194,24 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                    </div>
                               </div>
                               <?php if ($general->isSTSInstance()): ?>
-                              <div class="row testing-lab-row" id="testingLabRow"
-                                   style="display: <?php echo ($initialAccessType === 'testing-lab') ? 'flex' : 'none'; ?>;">
-                                   <div class="col-md-6">
-                                        <div class="form-group">
-                                             <label for="testingLabId" class="col-lg-4 control-label"><?= _translate("Testing Lab"); ?>
-                                                  <span class="mandatory">*</span></label>
-                                             <div class="col-lg-7">
-                                                  <select class="form-control<?php echo ($initialAccessType === 'testing-lab') ? ' isRequired' : ''; ?>"
-                                                       name="testingLabId" id="testingLabId"
-                                                       title="<?= _translate("Select the testing lab this user operates as"); ?>">
-                                                       <?= $general->generateSelectOptions($testingLabs, $currentTestingLabId, _translate("-- Select --")); ?>
-                                                  </select>
+                                   <div class="row testing-lab-row" id="testingLabRow"
+                                        style="display: <?php echo ($initialAccessType === 'testing-lab') ? 'flex' : 'none'; ?>;">
+                                        <div class="col-md-6">
+                                             <div class="form-group">
+                                                  <label for="testingLabId"
+                                                       class="col-lg-4 control-label"><?= _translate("Testing Lab"); ?>
+                                                       <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-7">
+                                                       <select
+                                                            class="form-control<?php echo ($initialAccessType === 'testing-lab') ? ' isRequired' : ''; ?>"
+                                                            name="testingLabId" id="testingLabId"
+                                                            title="<?= _translate("Select the testing lab this user operates as"); ?>">
+                                                            <?= $general->generateSelectOptions($testingLabs, $currentTestingLabId, _translate("-- Select --")); ?>
+                                                       </select>
+                                                  </div>
                                              </div>
                                         </div>
                                    </div>
-                              </div>
                               <?php endif; ?>
 
 
@@ -332,13 +334,13 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                    <div class="col-md-6">
                                         <div class="form-group">
                                              <label for="loginId"
-                                                  class="col-lg-4 control-label"><?php echo _translate("Login Id"); ?>
+                                                  class="col-lg-4 control-label"><?php echo _translate("Login ID"); ?>
                                                   <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
                                                   <input type="text" class="form-control isRequired" id="loginId"
                                                        name="loginId"
-                                                       placeholder="<?php echo _translate('Login Id'); ?>"
-                                                       title="<?php echo _translate('Please enter login id'); ?>"
+                                                       placeholder="<?php echo _translate('Login ID'); ?>"
+                                                       title="<?php echo _translate('Please enter Login ID'); ?>"
                                                        value="<?php echo $userInfo['login_id']; ?>"
                                                        onblur="checkNameValidation('user_details','login_id',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _translate("This login id that you entered already exists.Try another login id"); ?>',null)" />
                                                   <input type="hidden" id="originalLoginId"
