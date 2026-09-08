@@ -133,6 +133,114 @@ final class QualityMonitoringService
         ];
     }
 
+    /**
+     * The actions this page records against the activity log, keyed by what the
+     * browser is allowed to ask for. The wording lives here and not in the page,
+     * so nothing a requester sends decides what an audit line says.
+     */
+    private const ACTIVITY = [
+        'opened' => 'opened EID Quality Monitoring',
+        'searched' => 'searched EID Quality Monitoring',
+        'viewed-clinic' => 'read the clinic side of EID Quality Monitoring',
+        'viewed-lab' => 'read the lab side of EID Quality Monitoring',
+        'read-notes' => 'read the notes on a sample in EID Quality Monitoring',
+        'added-note' => 'added a note in EID Quality Monitoring',
+        'exported-clinic' => 'exported the clinic side of EID Quality Monitoring',
+        'exported-lab' => 'exported the lab side of EID Quality Monitoring',
+        'visit' => 'had EID Quality Monitoring open',
+    ];
+
+    /**
+     * A visit shorter than this is not written down. Opening a page and leaving
+     * again is not time spent on it, and a line per stray click would bury the
+     * visits that mean something.
+     */
+    private const MIN_VISIT_SECONDS = 5;
+
+    /** Nobody reads one page for four hours; anything longer is a stuck tab. */
+    private const MAX_VISIT_SECONDS = 4 * 60 * 60;
+
+    /**
+     * Records one action against the activity log, which is where this system
+     * already keeps who did what and is read at Admin > Monitoring > Activity.
+     *
+     * The event has to be one of the fixed set; an unknown one is ignored rather
+     * than written, because a log that accepts whatever it is handed is not
+     * evidence of anything. The filters in force are appended so a line says
+     * what was being looked at and not only that something was, and they are
+     * read from the already-rebuilt filter set, never from raw input.
+     */
+    public function logActivity(string $event, array $f = [], int $seconds = 0): bool
+    {
+        if (!isset(self::ACTIVITY[$event])) {
+            return false;
+        }
+
+        $action = trim((string) ($_SESSION['userName'] ?? '')) . ' ' . self::ACTIVITY[$event];
+
+        if ($event === 'visit') {
+            if ($seconds < self::MIN_VISIT_SECONDS || $seconds > self::MAX_VISIT_SECONDS) {
+                return false;
+            }
+            // Both units on the line: the minutes are what a reader wants and
+            // the seconds are what anyone adding visits up needs.
+            $action .= sprintf(
+                ' for %s minutes (%s seconds)',
+                number_format($seconds / 60, 1),
+                $seconds
+            );
+        }
+
+        $described = $this->describeFilters($f);
+        if ($described !== '') {
+            $action .= ' [' . $described . ']';
+        }
+
+        // The event is part of the type and not only of the wording, so the
+        // monitoring screen can filter this page's lines down to one kind of
+        // action, and so its own reading of a type -- an export is a download,
+        // a note is something created -- lands on the right one.
+        $this->general->activityLog(
+            'eid-quality-monitoring-' . $event,
+            $action,
+            'eid-quality-monitoring'
+        );
+
+        return true;
+    }
+
+    /**
+     * The filters in force, as one readable clause. Every part is taken from the
+     * rebuilt filter set -- dates reparsed, ids cast, the instrument resolved
+     * against the list of what has actually been tested on -- so no request
+     * value reaches the log as it was typed.
+     */
+    private function describeFilters(array $f): string
+    {
+        $parts = [];
+        if (($f['startDate'] ?? '') !== '' && ($f['endDate'] ?? '') !== '') {
+            $parts[] = $f['startDate'] . ' to ' . $f['endDate'];
+        }
+        foreach (['labIds' => 'labs', 'facilityIds' => 'facilities'] as $key => $label) {
+            if (($f[$key] ?? '') !== '') {
+                $parts[] = $label . ' ' . $f[$key];
+            }
+        }
+        foreach (['provinceId' => 'province', 'districtId' => 'district', 'partnerId' => 'partner'] as $key => $label) {
+            if ((int) ($f[$key] ?? 0) > 0) {
+                $parts[] = $label . ' ' . (int) $f[$key];
+            }
+        }
+        if (($f['bucket'] ?? '') !== '') {
+            $parts[] = 'waiting ' . $f['bucket'];
+        }
+        if (($f['instrument'] ?? '') !== '') {
+            $parts[] = 'instrument ' . $f['instrument'];
+        }
+
+        return implode(', ', $parts);
+    }
+
     /** @return string an IN () list of ids, or '' when nothing was selected */
     private function idList(mixed $value): string
     {

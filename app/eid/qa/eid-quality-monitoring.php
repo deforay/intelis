@@ -1081,6 +1081,10 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         qaNoteTarget.ids.forEach(function (id) {
             qaAppendNote(id, $.extend({}, note));
         });
+        // Logged even though the note itself is not stored yet: what a reader
+        // did on the page is a separate record from what the page saved, and it
+        // is the one that says who was working this queue and when.
+        qaLogActivity('added-note');
 
         $('#qaNoteModal').modal('hide');
         QA_VIEWS.forEach(qaRefreshNoteCells);
@@ -1150,7 +1154,81 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         $('#qa-locked-' + view).toggle(!owned);
     }
 
+    // ------------------------------------------------------------- activity
+
+    // What was done on this page, and how long it was open, against the same
+    // activity log the rest of the system writes to (Admin > Monitoring >
+    // Activity). Only an event key and, for a visit, a number of seconds are
+    // sent: the wording of every line is composed on the server, so nothing
+    // typed here can be written into a record of what happened.
+    function qaLogActivity(event, seconds) {
+        var payload = $.extend({ section: 'activity', event: event }, qaFilters());
+        if (seconds) { payload.seconds = seconds; }
+        $.post(QA_URL, payload).fail(function () {
+            // Logging is not the reader's problem. A failed line is lost rather
+            // than shown, because a page that stops working because it could
+            // not write its own audit trail is worse than one with a gap in it.
+        });
+    }
+
+    // Time on page, counted only while the tab is actually being looked at: a
+    // page left open behind twenty others was not being read. The count is sent
+    // when the reader leaves or switches away, and once every quarter of an hour
+    // so a tab that is never closed properly still leaves a record.
+    var qaVisitStarted = null;
+    var qaVisitPending = 0;
+
+    function qaVisitTick() {
+        if (qaVisitStarted !== null) {
+            qaVisitPending += Math.round((Date.now() - qaVisitStarted) / 1000);
+            qaVisitStarted = null;
+        }
+    }
+
+    function qaVisitFlush(useBeacon) {
+        qaVisitTick();
+        var seconds = qaVisitPending;
+        if (seconds < 5) { return; }
+        qaVisitPending = 0;
+
+        // A page being unloaded will not wait for an XHR, so the last flush goes
+        // out as a beacon; everything the endpoint reads arrives as form data
+        // either way.
+        if (useBeacon && navigator.sendBeacon) {
+            var form = new FormData();
+            form.append('section', 'activity');
+            form.append('event', 'visit');
+            form.append('seconds', String(seconds));
+            var filters = qaFilters();
+            Object.keys(filters).forEach(function (key) { form.append(key, filters[key]); });
+            navigator.sendBeacon(QA_URL, form);
+            return;
+        }
+        qaLogActivity('visit', seconds);
+    }
+
+    function qaWatchVisit() {
+        qaVisitStarted = Date.now();
+
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                qaVisitFlush(false);
+            } else if (qaVisitStarted === null) {
+                qaVisitStarted = Date.now();
+            }
+        });
+
+        // pagehide and not beforeunload: it is the one that fires on a mobile
+        // browser putting the page away, which beforeunload does not.
+        window.addEventListener('pagehide', function () { qaVisitFlush(true); });
+
+        window.setInterval(function () {
+            if (!document.hidden) { qaVisitFlush(false); qaVisitStarted = Date.now(); }
+        }, 15 * 60 * 1000);
+    }
+
     function qaApplyFilters() {
+        qaLogActivity('searched');
         qaLoadSummary();
         QA_VIEWS.forEach(function (view) {
             if (qaTables[view]) { qaTables[view].fnDraw(); }
@@ -1166,6 +1244,8 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
 
     function qaExport(view) {
         $.blockUI();
+        // The export logs itself where it is written, so the token that comes
+        // back is proof the line was recorded alongside the file.
         $.post(QA_URL, $.extend({ section: 'export', view: view }, qaFilters()), function (token) {
             $.unblockUI();
             token = $.trim(String(token || ''));
@@ -1258,6 +1338,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
 
         $('input[name="qaSide"]').on('change', function () {
             qaSide = $(this).val();
+            qaLogActivity('viewed-' + qaSide);
             // Switching side is switching job, so it lands on that side's queue.
             $('#qaTabs a[data-view="' + qaSide + '"]').tab('show');
             QA_VIEWS.forEach(qaUpdateSelection);
@@ -1300,6 +1381,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         });
 
         $(document).on('click', '[data-thread]', function () {
+            qaLogActivity('read-notes');
             qaOpenThread(String($(this).data('thread')));
         });
 
@@ -1310,6 +1392,8 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         QA_VIEWS.forEach(qaInitTable);
         QA_VIEWS.forEach(qaUpdateSelection);
         qaLoadSummary();
+        qaLogActivity('opened');
+        qaWatchVisit();
     });
 </script>
 <?php
