@@ -32,7 +32,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
 
     $output = [];
 
-    $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient Id.", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status"];
+    $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ID", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status"];
     if ($general->isStandaloneInstance()) {
         $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
     }

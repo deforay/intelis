@@ -26,9 +26,9 @@ if (isset($_SESSION['tbIncompleteForm']) && trim((string) $_SESSION['tbIncomplet
 
      $output = [];
 
-     $headings = ['Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Patient Id.", "Patient Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status"];
+     $headings = ['Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Patient ID", "Patient Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status"];
      if ($general->isStandaloneInstance()) {
-          $headings = ["Sample ID", "Sample Collection Date", "Batch Code", "Patient Id.", "Patient Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status"];
+          $headings = ["Sample ID", "Sample Collection Date", "Batch Code", "Patient ID", "Patient Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status"];
      }
 
 
