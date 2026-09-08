@@ -276,8 +276,8 @@ final class PreflightSchemaReferencesTest extends TestCase
             // through $this->table thereafter -- AppMenuService does exactly
             // that -- so the method body alone never mentions the table it
             // reads.
-            $source .= "\n" . self::methodBody($repo . $file, $method)
-                . "\n" . self::scalarProperties($repo . $file);
+            $body    = self::methodBody($repo . $file, $method);
+            $source .= "\n" . $body . "\n" . self::scalarProperties($repo . $file, $body);
         }
 
         foreach (array_keys(PF_CORE_TABLES) as $table) {
@@ -346,6 +346,8 @@ final class PreflightSchemaReferencesTest extends TestCase
             'getSystemConfig'        => '/app/classes/Services/CommonService.php',
             'getGlobalConfig'        => '/app/classes/Services/CommonService.php',
             'getMenu'                => '/app/classes/Services/AppMenuService.php',
+            'getInstrumentsCount'    => '/app/classes/Services/CommonService.php',
+            'getNonAdminUsersCount'  => '/app/classes/Services/CommonService.php',
         ];
 
         $out = [];
@@ -361,17 +363,41 @@ final class PreflightSchemaReferencesTest extends TestCase
         return $out;
     }
 
-    /** A class's scalar property initialisers, where table names tend to live. */
-    private static function scalarProperties(string $file): string
+    /**
+     * The scalar properties this method actually reaches for, and no others.
+     *
+     * A service names its table once as `protected string $table = '...'` and
+     * works through $this->table after that, so the method body alone never
+     * mentions what it reads. Taking every property instead would keep vouching
+     * for a table after the method stopped touching it -- the property would sit
+     * there unused, the test would stay green, and PF_CORE_TABLES would go on
+     * failing installations over a dependency that no longer exists.
+     */
+    private static function scalarProperties(string $file, string $methodBody): string
     {
         $source = (string) file_get_contents($file);
+
+        preg_match_all('/\$this->([a-zA-Z_][a-zA-Z0-9_]*)\b(?!\()/', $methodBody, $used);
+        $wanted = array_unique($used[1]);
+        if ($wanted === []) {
+            return '';
+        }
+
         preg_match_all(
-            '/^\s*(?:protected|private|public)\s+[^;(){}]*=\s*\'[^\']*\'\s*;$/m',
+            '/^\s*(?:protected|private|public)\s+[^;(){}]*\$([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*\'[^\']*\'\s*;$/m',
             $source,
-            $m
+            $m,
+            PREG_SET_ORDER
         );
 
-        return implode("\n", $m[0]);
+        $out = [];
+        foreach ($m as $property) {
+            if (in_array($property[1], $wanted, true)) {
+                $out[] = $property[0];
+            }
+        }
+
+        return implode("\n", $out);
     }
 
     /** The body of one method, from its signature to the brace that closes it. */
