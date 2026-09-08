@@ -79,8 +79,8 @@ try {
         $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['rjtBatchCode']) . '"';
     }
 
-    if (isset($_POST['rjtSampleTestDate']) && trim((string) $_POST['rjtSampleTestDate']) !== '') {
-        $s_c_date = explode("to", (string) $_POST['rjtSampleTestDate']);
+    if (isset($_POST['rjtSampleCollectionDate']) && trim((string) $_POST['rjtSampleCollectionDate']) !== '') {
+        $s_c_date = explode("to", (string) $_POST['rjtSampleCollectionDate']);
 
         if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
             $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
@@ -89,9 +89,9 @@ try {
             $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
         }
         if (trim((string) $start_date) === trim((string) $end_date)) {
-            $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
+            $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
-            $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+            $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
     if (isset($_POST['rjtSampleType']) && $_POST['rjtSampleType'] != '') {

@@ -227,8 +227,8 @@ $state = $geolocationService->getProvinces("yes");
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
-															<label class="control-label" for="rjtSampleTestDate"><?php echo _translate("Sample Test Date"); ?></label>
-															<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _htmlTranslate('Select Sample Test Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
+															<label class="control-label" for="rjtSampleCollectionDate"><?php echo _translate("Sample Collection Date"); ?></label>
+															<input type="text" id="rjtSampleCollectionDate" name="rjtSampleCollectionDate" class="form-control stDate daterange" placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
@@ -695,7 +695,7 @@ $state = $geolocationService->getProvinces("yes");
 		$("#formField").select2({
 			placeholder: "<?php echo _jsTranslate("Select Fields"); ?>"
 		});
-		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#stSampleCollectionDate').daterangepicker({
+		$('#hvlSampleTestDate,#rjtSampleCollectionDate,#noResultSampleTestDate,#sampleCollectionDate,#stSampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _jsTranslate("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
@@ -723,7 +723,7 @@ $state = $geolocationService->getProvinces("yes");
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').val('');
+		$('#hvlSampleTestDate,#rjtSampleCollectionDate,#noResultSampleTestDate,#sampleCollectionDate').val('');
 		ClinicReports.registerTab('highViralLoadReport', { init: highViralLoadReport, table: function () { return oTableViralLoad; } });
 		ClinicReports.registerTab('sampleRjtReport', { init: sampleRjtReport, table: function () { return oTableRjtReport; } });
 		ClinicReports.registerTab('notAvailReport', { init: notAvailReport, table: function () { return oTablenotAvailReport; } });
@@ -876,8 +876,8 @@ $state = $geolocationService->getProvinces("yes");
 					"value": $("#rjtBatchCode").val()
 				});
 				aoData.push({
-					"name": "rjtSampleTestDate",
-					"value": $("#rjtSampleTestDate").val()
+					"name": "rjtSampleCollectionDate",
+					"value": $("#rjtSampleCollectionDate").val()
 				});
 				aoData.push({
 					"name": "rjtState",
@@ -1157,7 +1157,7 @@ $state = $geolocationService->getProvinces("yes");
 		}
 		$.blockUI();
 		$.post("/covid-19/management/covid19RejectedResultExportInExcel.php", {
-				Sample_Test_Date: $("#rjtSampleTestDate").val(),
+				Sample_Collection_Date: $("#rjtSampleCollectionDate").val(),
 				Batch_Code: $("#rjtBatchCode  option:selected").text(),
 				Sample_Type: $("#rjtSampleType  option:selected").text(),
 				Facility_Name: $("#rjtFacilityName  option:selected").text(),
