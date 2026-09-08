@@ -175,10 +175,10 @@
             if (!to) {
                 return;
             }
-            var value = from.val();
-            if (value === null || value === '' || ($.isArray(value) && value.length === 0)) {
+            if (setValues(from).length === 0) {
                 return;
             }
+            var value = from.val();
             if (to.is('select') && !optionsMatch(to, value)) {
                 /* District and facility lists are fetched per tab; the fetched
                    markup is the same, so copy it rather than fetching again. */
@@ -215,10 +215,23 @@
         return $.trim(el.closest('.form-group').find('label.control-label').first().text());
     }
 
+    /* The placeholder option carries an empty value, and a multi-select reports
+       it as [""] rather than [] -- enough to read as a chosen facility and put
+       "Facility: -- Select --" in the summary. Empty values are not filters. */
+    function setValues(el) {
+        var value = el.val();
+        if (value === null || typeof value === 'undefined') {
+            return [];
+        }
+        return $.grep($.isArray(value) ? value : [value], function (v) {
+            return $.trim(String(v)) !== '';
+        });
+    }
+
     function displayValue(el) {
         if (el.is('select')) {
             var texts = el.find('option:selected').map(function () {
-                return $.trim($(this).text());
+                return $.trim($(this).val()) === '' ? null : $.trim($(this).text());
             }).get();
             return texts.join(', ');
         }
@@ -230,14 +243,7 @@
        Comparing against the value the page opened with would hide the date
        range, which is the one filter always in force and worth showing. */
     function isApplied(el) {
-        if (el.is(':disabled')) {
-            return false;
-        }
-        var value = el.val();
-        if (value === null || typeof value === 'undefined') {
-            return false;
-        }
-        return $.isArray(value) ? value.length > 0 : $.trim(value) !== '';
+        return !el.is(':disabled') && setValues(el).length > 0;
     }
 
     function updateSummary(box) {
