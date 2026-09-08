@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
+use App\Exceptions\SystemException;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Services\CommonService;
+use App\Services\QualityMonitoringService;
 use App\Registries\ContainerRegistry;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -290,6 +292,65 @@ final class QualityMonitoringEndpointTest extends TestCase
                 'most used first, and only this lab own instruments'
             );
         }
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheInstrumentFilterNarrowsToTheLabsThatRunIt(): void
+    {
+        // A second lab, testing on something the first one does not have.
+        LegacyAppHarness::db()->rawQuery(
+            "INSERT INTO facility_details
+                (facility_id, facility_name, facility_state, facility_state_id, facility_district,
+                 facility_district_id, facility_type, vlsm_instance_id, status)
+             VALUES (901, 'Northern Lab', 'North', 11, 'Capital', 21, 2, 'test', 'active')"
+        );
+        $released = [
+            'result' => 'negative',
+            'result_status' => 7,
+            'sample_tested_datetime' => self::daysAgo(20),
+            'result_approved_datetime' => self::daysAgo(19),
+            'result_mail_datetime' => self::daysAgo(18),
+        ];
+        $this->seed(['lab_id' => self::LAB_ID, 'eid_test_platform' => 'GeneXpert'] + $released);
+        $this->seed(['lab_id' => 901, 'eid_test_platform' => 'Abbott m2000'] + $released);
+        // Waiting at the second lab, so the filter has something to keep and
+        // something to drop on the same tab.
+        $this->seed(['lab_id' => 901, 'sample_received_at_lab_datetime' => self::daysAgo(6)]);
+
+        // The service and not the endpoint: driving the endpoint requires a
+        // process of its own, and this is four questions rather than one.
+        /** @var QualityMonitoringService $service */
+        $service = ContainerRegistry::get(QualityMonitoringService::class);
+
+        $labsOf = static function (array $rows): array {
+            return array_values(array_unique(array_column($rows, 'lab')));
+        };
+
+        $all = $service->getSamples($service->resolveFilters(['dateRange' => '']), 'lab', 0, 25);
+        self::assertSame(5, $all['total'], 'the four already waiting plus the one at Northern Lab');
+
+        $genexpert = $service->getSamples(
+            $service->resolveFilters(['dateRange' => '', 'instrument' => 'GeneXpert']),
+            'lab',
+            0,
+            25
+        );
+        self::assertSame(4, $genexpert['total'], 'only Central Lab tests on GeneXpert');
+        self::assertSame(['Central Lab'], $labsOf($genexpert['rows']));
+
+        $abbott = $service->getSamples(
+            $service->resolveFilters(['dateRange' => '', 'instrument' => 'Abbott m2000']),
+            'lab',
+            0,
+            25
+        );
+        self::assertSame(1, $abbott['total']);
+        self::assertSame(['Northern Lab'], $labsOf($abbott['rows']));
+
+        // A name nothing has been tested on is refused, not quietly matched
+        // against everything, so an instrument cannot be used to smuggle SQL in.
+        $this->expectException(SystemException::class);
+        $service->resolveFilters(['dateRange' => '', 'instrument' => "GeneXpert' OR 1=1 -- "]);
     }
 
     #[RunInSeparateProcess]

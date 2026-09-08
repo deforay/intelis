@@ -73,6 +73,14 @@ final class QualityMonitoringService
      */
     private array $labInstruments = [];
 
+    /**
+     * Every instrument EID has been tested on, and the labs that used it.
+     * Built once, because the filter list and the filter itself both read it.
+     *
+     * @var array<string, list<int>>|null
+     */
+    private ?array $instrumentsInUse = null;
+
     public function __construct(
         private readonly DatabaseService $db,
         private readonly CommonService $general
@@ -84,7 +92,7 @@ final class QualityMonitoringService
      * Nothing here reaches a query as written: dates are rebuilt from a parsed
      * date, ids are cast, and the age bucket must be one of the fixed set.
      *
-     * @return array{startDate: string, endDate: string, labIds: string, facilityIds: string, provinceId: int, districtId: int, partnerId: int, bucket: string}
+     * @return array{startDate: string, endDate: string, labIds: string, facilityIds: string, provinceId: int, districtId: int, partnerId: int, bucket: string, instrument: string, instrumentLabIds: string}
      */
     public function resolveFilters(array $input): array
     {
@@ -93,6 +101,20 @@ final class QualityMonitoringService
         $bucket = (string) ($input['bucket'] ?? '');
         if ($bucket !== '' && !isset(SampleFlowService::AGE_BUCKETS[$bucket])) {
             throw new SystemException('Invalid age bucket for quality monitoring');
+        }
+
+        // The instrument arrives as a name and leaves as a list of lab ids, so
+        // nothing that was typed by a requester is ever placed in a query. A
+        // name this system has not tested on is refused rather than quietly
+        // matching nothing, the same way an unknown age bucket is.
+        $instrument = trim((string) ($input['instrument'] ?? ''));
+        $instrumentLabIds = '';
+        if ($instrument !== '') {
+            $known = $this->instrumentsInUse();
+            if (!isset($known[$instrument])) {
+                throw new SystemException('Invalid instrument for quality monitoring');
+            }
+            $instrumentLabIds = $this->db->inIntList($known[$instrument]);
         }
 
         return [
@@ -106,6 +128,8 @@ final class QualityMonitoringService
             'districtId' => (int) ($input['districtId'] ?? 0),
             'partnerId' => (int) ($input['partnerId'] ?? 0),
             'bucket' => $bucket,
+            'instrument' => $instrument,
+            'instrumentLabIds' => $instrumentLabIds,
         ];
     }
 
@@ -262,6 +286,53 @@ final class QualityMonitoringService
         }
 
         return $rows;
+    }
+
+    /**
+     * Every instrument EID has actually been tested on, most used first, with
+     * the labs that used each one.
+     *
+     * It fills the filter dropdown and resolves what the reader picks there, so
+     * the two can never disagree about what an instrument is called. Read over
+     * all time rather than the selected period, deliberately: which machines a
+     * lab runs is not a fact about a date range, and a dropdown that emptied
+     * itself as the period narrowed would be worse than useless.
+     *
+     * @return array<string, list<int>> instrument name => lab ids
+     */
+    public function instrumentsInUse(): array
+    {
+        if ($this->instrumentsInUse !== null) {
+            return $this->instrumentsInUse;
+        }
+
+        $table = TestsService::getTestTableName(self::TEST_KEY);
+        $name = "COALESCE(NULLIF(TRIM(i.machine_name), ''), TRIM(COALESCE(t.eid_test_platform, '')))";
+
+        $rows = $this->db->rawQuery(
+            "SELECT $name AS instrument,
+                    t.lab_id AS lab_id,
+                    COUNT(*) AS tests
+               FROM $table AS t
+               LEFT JOIN instruments AS i ON i.instrument_id = t.instrument_id
+              WHERE TRIM(COALESCE(t.result, '')) <> ''
+                AND t.lab_id > 0
+                AND $name <> ''
+              GROUP BY instrument, t.lab_id"
+        );
+
+        // Ordered on the total across labs, which the grouped rows only carry a
+        // lab at a time, so the counting is finished here.
+        $out = [];
+        $tests = [];
+        foreach ($rows ?: [] as $row) {
+            $instrument = (string) $row['instrument'];
+            $out[$instrument][] = (int) $row['lab_id'];
+            $tests[$instrument] = ($tests[$instrument] ?? 0) + (int) $row['tests'];
+        }
+        uksort($out, static fn(string $a, string $b): int => $tests[$b] <=> $tests[$a] ?: strcasecmp($a, $b));
+
+        return $this->instrumentsInUse = $out;
     }
 
     /**
@@ -775,6 +846,12 @@ final class QualityMonitoringService
         }
         if ($f['facilityIds'] !== '') {
             $clauses[] = "t.facility_id IN (" . $f['facilityIds'] . ")";
+        }
+        // Not a filter on the sample: none of these has been on an instrument.
+        // It narrows the listing to the labs that test EID on the chosen one,
+        // which is what somebody chasing a platform-wide problem is asking for.
+        if ($f['instrumentLabIds'] !== '') {
+            $clauses[] = "t.lab_id IN (" . $f['instrumentLabIds'] . ")";
         }
         // Province and district live on facility_details. Selecting the
         // facilities first keeps the sample table's own index on facility_id in

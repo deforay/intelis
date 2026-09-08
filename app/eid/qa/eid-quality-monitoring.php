@@ -23,6 +23,10 @@ $healthFacilities = $facilitiesService->getHealthFacilities('eid');
 $testingLabs = $facilitiesService->getTestingLabs('eid');
 $partners = $general->getImplementationPartners();
 
+/** @var QualityMonitoringService $qaService */
+$qaService = ContainerRegistry::get(QualityMonitoringService::class);
+$instrumentsInUse = array_keys($qaService->instrumentsInUse());
+
 $viewLabels = QualityMonitoringService::viewLabels();
 $stageLabels = QualityMonitoringService::stageLabels();
 // The two views differ by one column, so each carries its own list.
@@ -86,8 +90,10 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         width: 100% !important;
     }
 
-    /* The buttons sit under a blank label so they line up with the fields
-       beside them; the label is dropped once the grid stacks. */
+    #qaModule .qa-filter-actions {
+        margin-bottom: 0;
+    }
+
     #qaModule .qa-filter-actions .btn {
         margin-right: 4px;
     }
@@ -435,17 +441,28 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label for="instrument"><?= _htmlTranslate('Instrument'); ?></label>
+                                    <select id="instrument" class="form-control">
+                                        <option value=""><?= _htmlTranslate('-- All Instruments --'); ?></option>
+                                        <?php foreach ($instrumentsInUse as $instrumentName) { ?>
+                                            <option value="<?= htmlspecialchars($instrumentName, ENT_QUOTES); ?>">
+                                                <?= htmlspecialchars($instrumentName, ENT_QUOTES); ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
                                 <div class="form-group qa-filter-actions">
-                                    <label class="hidden-xs hidden-sm">&nbsp;</label>
-                                    <div>
-                                        <button type="button" class="btn btn-success" onclick="qaApplyFilters();">
-                                            <em class="fa-solid fa-magnifying-glass"></em>
-                                            <?= _htmlTranslate('Search'); ?>
-                                        </button>
-                                        <button type="button" class="btn btn-default" onclick="qaResetFilters();">
-                                            <?= _htmlTranslate('Reset'); ?>
-                                        </button>
-                                    </div>
+                                    <button type="button" class="btn btn-success" onclick="qaApplyFilters();">
+                                        <em class="fa-solid fa-magnifying-glass"></em>
+                                        <?= _htmlTranslate('Search'); ?>
+                                    </button>
+                                    <button type="button" class="btn btn-default" onclick="qaResetFilters();">
+                                        <?= _htmlTranslate('Reset'); ?>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -739,7 +756,8 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             facilityId: ($('#facilityId').val() || []).join(','),
             labId: ($('#labId').val() || []).join(','),
             partnerId: $('#partnerId').val() || '',
-            bucket: $('#bucket').val() || ''
+            bucket: $('#bucket').val() || '',
+            instrument: $('#instrument').val() || ''
         };
     }
 
@@ -1151,7 +1169,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
     }
 
     function qaResetFilters() {
-        $('#provinceId, #districtId, #partnerId, #bucket').val('').trigger('change');
+        $('#provinceId, #districtId, #partnerId, #bucket, #instrument').val('').trigger('change');
         $('#facilityId, #labId').val(null).trigger('change');
         $('#districtId').html('<option value=""><?= _jsTranslate('-- All --'); ?></option>');
         qaApplyFilters();
@@ -1224,7 +1242,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             .on('shown.bs.modal', qaBuildReasonSelect)
             .on('hidden.bs.modal', qaDestroyReasonSelect);
 
-        $('#provinceId, #partnerId, #bucket').select2();
+        $('#provinceId, #partnerId, #bucket, #instrument').select2();
         $('#districtId').select2();
         $('#facilityId').select2({ placeholder: "<?= _jsTranslate('-- All Facilities --'); ?>" });
         $('#labId').select2({ placeholder: "<?= _jsTranslate('-- All Labs --'); ?>" });
