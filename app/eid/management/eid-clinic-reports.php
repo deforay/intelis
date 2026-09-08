@@ -98,7 +98,7 @@ foreach ($rejectionTypeResult as $type) {
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body pageFilters">
@@ -236,7 +236,7 @@ foreach ($rejectionTypeResult as $type) {
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body pageFilters">
@@ -369,7 +369,7 @@ foreach ($rejectionTypeResult as $type) {
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body pageFilters">
@@ -501,7 +501,7 @@ foreach ($rejectionTypeResult as $type) {
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body pageFilters">
@@ -582,7 +582,7 @@ foreach ($rejectionTypeResult as $type) {
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body pageFilters">
@@ -649,7 +649,7 @@ foreach ($rejectionTypeResult as $type) {
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
 													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
 												<div class="box-body pageFilters">

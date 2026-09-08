@@ -63,6 +63,14 @@
     margin-top: 5px;
 }
 
+/* With the grid folded away the actions are the only thing left in the body,
+   so the rule that separated them from the filters has nothing to separate. */
+.report-filter-box.report-filter-collapsed .filter-actions {
+    padding-top: 0;
+    margin-top: 0;
+    border-top: 0;
+}
+
 .report-filter-box .filter-actions .btn {
     margin-right: 5px;
 }
