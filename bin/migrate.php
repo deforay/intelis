@@ -138,6 +138,73 @@ function _apply_add_primary_key(DatabaseService $db, SymfonyStyle $io, string $t
 }
 
 /**
+ * Whether any action of a multi-action ALTER has already been applied.
+ *
+ * Asked by reading the schema, never by executing anything, because the answer
+ * decides whether it is safe to execute the actions separately at all.
+ *
+ * An action this cannot classify counts as not-applied. Erring that way keeps
+ * an untouched statement atomic, which is the direction where the mistake is
+ * recoverable: the migration stops and someone looks, rather than the statement
+ * being taken apart and half of it committed.
+ *
+ * @param list<string> $actions
+ */
+function some_action_already_applied(DatabaseService $db, string $table, array $actions): bool
+{
+    $table = trim($table, '`');
+
+    foreach ($actions as $action) {
+        $action = trim((string) $action);
+
+        // CHANGE `old` `new`: applied when the old name has gone and the new
+        // one is there.
+        if (preg_match('/^CHANGE\s+(?:COLUMN\s+)?`?([a-z0-9_$]+)`?\s+`?([a-z0-9_$]+)`?\s+\S/i', $action, $m)) {
+            if (
+                strcasecmp($m[1], $m[2]) !== 0
+                && !column_exists($db, $table, $m[1])
+                && column_exists($db, $table, $m[2])
+            ) {
+                return true;
+            }
+            continue;
+        }
+
+        // ADD [COLUMN] `col`: applied when the column is there.
+        if (preg_match('/^ADD\s+(?:COLUMN\s+)?`?([a-z0-9_$]+)`?\s+\S/i', $action, $m)) {
+            if (in_array(strtolower($m[1]), ['index', 'key', 'primary', 'constraint', 'unique', 'fulltext', 'spatial', 'foreign'], true)) {
+                $declared = parse_unnamed_index_statement("ALTER TABLE `$table` " . $action);
+                if ($declared !== null && $declared[1] !== null
+                    && equivalent_index_exists($db, $table, $declared[1], $declared[2])) {
+                    return true;
+                }
+                if (preg_match('/^ADD\s+(?:(?:UNIQUE|FULLTEXT|SPATIAL)\s+)?(?:INDEX|KEY)\s+`?([a-z0-9_$]+)`?\s*\(/i', $action, $n)
+                    && index_exists($db, $table, $n[1])) {
+                    return true;
+                }
+                continue;
+            }
+            if (column_exists($db, $table, $m[1])) {
+                return true;
+            }
+            continue;
+        }
+
+        // A DROP whose column is absent is NOT evidence, deliberately. It
+        // cannot be told from a DROP of a column that never existed on this
+        // installation, and reading it as evidence opens the splitting path for
+        // a statement where nothing has been applied at all: 5.2.7 drops
+        // fifteen form_vl columns at once, and one bad name at the end would
+        // then take the other fourteen apart and commit them. Declining to
+        // repair a part-applied multi-drop costs a migration that stops on a
+        // benign 1091 with columns still present. Getting it wrong costs the
+        // columns.
+    }
+
+    return false;
+}
+
+/**
  * Put sc_version back to what it was when the run started.
  *
  * A migration file may write its own sc_version part way through -- 5.2.6 does,
@@ -718,19 +785,28 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
                 $db->rawQuery($q);
                 assert_no_errno($db, $q);
                 return MIG_EXECUTED;      // nothing was applied yet: one rebuild, as written
-            } catch (Throwable) {
-                // However it failed, it failed whole -- MySQL applies an ALTER
-                // or none of it. So take it apart and let each action answer
-                // for itself. A benign error below means that action is already
-                // done; anything else still stops the run.
+            } catch (Throwable $e) {
+                // Take it apart ONLY when something in it has already been
+                // applied. That, not the error code, is what says a statement
+                // is part-done and worth repairing action by action.
                 //
-                // Falling through on ANY error, not only a benign one, because
-                // a part-applied statement does not always fail benignly. Four
-                // renames in one ALTER (4.4.9 on system_admin) fail with 1054
-                // once the FIRST has been applied: the old column is gone, and
-                // 1054 is not on the benign list. Rethrowing there left the
-                // installation stuck on 4.4.9 with no way forward, which is the
-                // deadlock this whole guard exists to prevent.
+                // The code is the wrong test in both directions. A part-applied
+                // rename does not fail benignly -- four renames in one ALTER
+                // (4.4.9 on system_admin) fail 1054 once the first has landed,
+                // because the old column is gone -- so a benign-only rule left
+                // the installation stuck on 4.4.9 with no way forward.
+                //
+                // And falling through on any error at all is worse than the
+                // deadlock it fixes. 5.2.7 drops fifteen form_vl columns in one
+                // ALTER. On an untouched instance where the last drop fails,
+                // splitting applies the first fourteen individually and their
+                // data is gone for good, where the atomic statement MySQL
+                // rejected would have kept every one of them. A failure with
+                // nothing already applied is a real failure, and the whole
+                // point of an ALTER being atomic is that it stays that way.
+                if (!some_action_already_applied($db, $alter[1], $actions)) {
+                    throw $e;
+                }
             }
 
             $outcome = MIG_SKIPPED;
