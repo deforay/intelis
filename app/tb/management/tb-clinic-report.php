@@ -4,7 +4,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\GeoLocationsService;
 
-$title = _translate("TB | Clinics Report");
+$title = _translate("TB | Clinic Reports");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -90,88 +90,105 @@ $state = $geolocationService->getProvinces("yes");
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highTbReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
-													<td>
-														<input type="text" id="positiveTbSampleTestDate" name="positiveTbSampleTestDate" class="form-control stDate" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
-													</td>
-													<td>&nbsp;<strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" id="positiveTbBatchCode" name="positiveTbBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="positiveTbSampleTestDate"><?php echo _translate("Sample Test Date"); ?></label>
+															<input type="text" id="positiveTbSampleTestDate" name="positiveTbSampleTestDate" class="form-control stDate" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="positiveTbBatchCode"><?php echo _translate("Batch Code"); ?></label>
+															<select class="form-control" id="positiveTbBatchCode" name="positiveTbBatchCode" title="<?php echo _translate('Please select batch code'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
 															?>
-																<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
+															<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
 															<?php
 															}
 															?>
-														</select>
-													</td>
-													<td>&nbsp;<strong><?php echo _translate("Sample Type"); ?>&nbsp;:</strong></td>
-													<td>
-														<select style="width:220px;" class="form-control" id="positiveTbSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="positiveTbSampleType"><?php echo _translate("Sample Type"); ?></label>
+															<select class="form-control" id="positiveTbSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
+															<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 															<?php
 															}
 															?>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control select2-element" id="state" onchange="getByProvince('district','positiveTbFacilityName',this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="state"><?php echo _translate("Province/State"); ?></label>
+															<select class="form-control select2-element" id="state" onchange="getByProvince('district','positiveTbFacilityName',this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
-														</select>
-													</td>
-
-													<td><strong><?php echo _translate("District/County"); ?> :</strong></td>
-													<td>
-														<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('positiveTbFacilityName',this.value)">
-														</select>
-													</td>
-													<td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" id="positiveTbFacilityName" name="positiveTbFacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="district"><?php echo _translate("District/County"); ?></label>
+															<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('positiveTbFacilityName',this.value)">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="positiveTbFacilityName"><?php echo _translate("Facility"); ?></label>
+															<select class="form-control" id="positiveTbFacilityName" name="positiveTbFacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
-														</select>
-													</td>
-
-												</tr>
-												<tr>
-													<td>&nbsp;<strong><?php echo _translate("Contact Status"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" id="positiveTbContactStatus" name="positiveTbContactStatus" title="<?php echo _translate('Please select contact status'); ?>" style="width:220px;">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="positiveTbContactStatus"><?php echo _translate("Contact Status"); ?></label>
+															<select class="form-control" id="positiveTbContactStatus" name="positiveTbContactStatus" title="<?php echo _translate('Please select contact status'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="yes"><?php echo _translate("Completed"); ?></option>
 															<option value="no"><?php echo _translate("Not Completed"); ?></option>
 															<option value="all" selected="selected"><?php echo _translate("All"); ?></option>
-														</select>
-													</td>
-													<td><strong><?php echo _translate("Sex"); ?>&nbsp;:</strong></td>
-													<td>
-														<select name="positiveTbGender" id="positiveTbGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="positiveTbGender"><?php echo _translate("Sex"); ?></label>
+															<select name="positiveTbGender" id="positiveTbGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>
 															<option value="unreported"><?php echo _translate("Unreported"); ?></option>
-														</select>
-													</td>
-													<td></td>
-												</tr>
-												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchTbRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportPositiveTbResultsInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													&nbsp;<input type="button" onclick="searchTbRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+													<button class="btn btn-success btn-sm" type="button" onclick="exportPositiveTbResultsInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
+												</div>
+												</div>
+											</div>
 
 											<table aria-describedby="table" id="highTbReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
@@ -198,85 +215,103 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
-													<td>
-														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
-													</td>
-													<td>&nbsp;<strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtSampleTestDate"><?php echo _translate("Sample Test Date"); ?></label>
+															<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtBatchCode"><?php echo _translate("Batch Code"); ?></label>
+															<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _translate('Please select batch code'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
 															?>
-																<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
+															<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
 															<?php
 															}
 															?>
-														</select>
-													</td>
-													<td>&nbsp;<strong><?php echo _translate("Sample Type"); ?>&nbsp;:</strong></td>
-													<td>
-														<select style="width:220px;" class="form-control" id="rjtSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtSampleType"><?php echo _translate("Sample Type"); ?></label>
+															<select class="form-control" id="rjtSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
+															<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 															<?php
 															}
 															?>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _translate('Please select Province/State'); ?>">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtState"><?php echo _translate("Province/State"); ?></label>
+															<select class="form-control select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
-														</select>
-													</td>
-
-													<td><strong><?php echo _translate("District/County"); ?> :</strong></td>
-													<td>
-														<select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
-														</select>
-													</td>
-													<td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtDistrict"><?php echo _translate("District/County"); ?></label>
+															<select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtFacilityName"><?php echo _translate("Facility"); ?></label>
+															<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
-														</select>
-													</td>
-
-												</tr>
-												<tr>
-													<td><strong><?php echo _translate("Sex"); ?>&nbsp;:</strong></td>
-													<td>
-														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtGender"><?php echo _translate("Sex"); ?></label>
+															<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>
 															<option value="unreported"><?php echo _translate("Unreported"); ?></option>
-														</select>
-													</td>
-													<td><strong><?php echo _translate("Rejection Reason"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="sampleRejectionReason"><?php echo _translate("Rejection Reason"); ?></label>
+															<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection">
 															<option value=''> -- Select -- </option>
 															<?php echo $rejectionReason; ?>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchTbRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													&nbsp;<input type="button" onclick="searchTbRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+													<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
+												</div>
+												</div>
+											</div>
 											<table aria-describedby="table" id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
@@ -302,78 +337,94 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="notAvailReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
-													<td>
-														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
-													</td>
-													<td>&nbsp;<strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultSampleTestDate"><?php echo _translate("Sample Collection Date"); ?></label>
+															<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultBatchCode"><?php echo _translate("Batch Code"); ?></label>
+															<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _translate('Please select batch code'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
 															?>
-																<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
+															<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
 															<?php
 															}
 															?>
-														</select>
-													</td>
-													<td>&nbsp;<strong><?php echo _translate("Sample Type"); ?>&nbsp;:</strong></td>
-													<td>
-														<select style="width:220px;" class="form-control" id="noResultSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultSampleType"><?php echo _translate("Sample Type"); ?></label>
+															<select class="form-control" id="noResultSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
 															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
+															<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 															<?php
 															}
 															?>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _translate('Please select Province/State'); ?>">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultState"><?php echo _translate("Province/State"); ?></label>
+															<select class="form-control select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
-														</select>
-													</td>
-
-													<td><strong><?php echo _translate("District/County"); ?> :</strong></td>
-													<td>
-														<select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
-														</select>
-													</td>
-													<td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultDistrict"><?php echo _translate("District/County"); ?></label>
+															<select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultFacilityName"><?php echo _translate("Facility"); ?></label>
+															<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
-														</select>
-													</td>
-
-												</tr>
-												<tr>
-													<td><strong><?php echo _translate("Sex"); ?>&nbsp;:</strong></td>
-													<td>
-														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultGender"><?php echo _translate("Sex"); ?></label>
+															<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>
 															<option value="unreported"><?php echo _translate("Unreported"); ?></option>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchTbRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													&nbsp;<input type="button" onclick="searchTbRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+													<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
+												</div>
+												</div>
+											</div>
 											<table aria-describedby="table" id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
@@ -397,15 +448,26 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="incompleteFormReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
-													<td>
-														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
-													</td>
-													<td>&nbsp;<strong><?php echo _translate("Fields"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _translate('Please fields'); ?>" style="width:220px;">
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="sampleCollectionDate"><?php echo _translate("Sample Collection Date"); ?></label>
+															<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="background:#fff;" />
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="formField"><?php echo _translate("Fields"); ?></label>
+															<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _translate('Please fields'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="sample_code"><?php echo _translate("Sample ID"); ?></option>
 															<option value="sample_collection_date"><?php echo _translate("Sample Collection Date"); ?></option>
@@ -416,17 +478,17 @@ $state = $geolocationService->getProvinces("yes");
 															<option value="specimen_type"><?php echo _translate("Sample Type"); ?></option>
 															<option value="result"><?php echo _translate("Result"); ?></option>
 															<option value="result_status"><?php echo _translate("Status"); ?></option>
-														</select>
-													</td>
-												</tr>
-
-												<tr>
-													<td colspan="4">&nbsp;<input type="button" onclick="searchTbRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													&nbsp;<input type="button" onclick="searchTbRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+													<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
+												</div>
+												</div>
+											</div>
 											<table aria-describedby="table" id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
@@ -453,42 +515,52 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleTestingReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td style="width: 14%;"><strong>
-															<?php echo _translate("Province/State"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23%;">
-														<select class="form-control stReportFilter select2 select2-element" id="stState" onchange="getByProvince('stDistrict','stfacilityName',this.value)" name="stState" title="<?php echo _translate('Please select Province/State'); ?>">
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stState"><?php echo _translate("Province/State"); ?></label>
+															<select class="form-control stReportFilter select2 select2-element" id="stState" onchange="getByProvince('stDistrict','stfacilityName',this.value)" name="stState" title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
-														</select>
-													</td>
-
-													<td style="width: 14%;"><strong>
-															<?php echo _translate("District/County"); ?> :
-														</strong></td>
-													<td style="width: 23%;">
-														<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
-														</select>
-													</td>
-													<td style="width: 14%;"><strong><?php echo _translate("Facility"); ?> :</strong></td>
-													<td style="width: 23%;">
-														<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stDistrict"><?php echo _translate("District/County"); ?></label>
+															<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stfacilityName"><?php echo _translate("Facility"); ?></label>
+															<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
-														</select>
-													</td>
-												<tr>
-													<td style="width: 14%;"><strong>
-															<?php echo _translate("Sample Collection Date "); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23%;">
-														<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="width:220px;background:#fff;" />
-													</td>
-													<td colspan="3">&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stSampleCollectionDate"><?php echo _translate("Sample Collection Date "); ?></label>
+															<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="background:#fff;" />
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+												</div>
+												</div>
+											</div>
 											<figure class="highcharts-figure">
 												<div id="container"></div>
 												<div id="sampleTestingResultDetails">
@@ -497,28 +569,38 @@ $state = $geolocationService->getProvinces("yes");
 											</figure>
 										</div>
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Patient ID"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<input type="text" id="patientId" name="patientId" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Patient Name"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<input type="text" id="patientName" name="patientName" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
-													</td>
-													<td> <input type="button" onclick="searchTbRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
-															<?php echo _translate("Export to excel"); ?>
-														</button>
-													</td>
-												</tr>
-											</table>
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="patientId"><?php echo _translate("Patient ID"); ?></label>
+															<input type="text" id="patientId" name="patientId" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="patientName"><?php echo _translate("Patient Name"); ?></label>
+															<input type="text" id="patientName" name="patientName" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													<input type="button" onclick="searchTbRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+													<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
+												</div>
+												</div>
+											</div>
 											<table aria-describedby="table" id="patientTestHistoryReport" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
@@ -583,6 +665,8 @@ $state = $geolocationService->getProvinces("yes");
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="<?= _asset('/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
+<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/clinic-reports.css') ?>">
+<script type="text/javascript" src="<?= _asset('/assets/js/clinic-reports.js') ?>"></script>
 <script type="text/javascript">
 	let searchExecuted = false;
 	var oTablePositiveTbReport = null;
@@ -630,20 +714,20 @@ $state = $geolocationService->getProvinces("yes");
 				endDate = end.format('YYYY-MM-DD');
 			});
 		$('#positiveTbSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').val('');
-		highTbReportTable();
-		sampleRjtReport();
-		notAvailReport();
-		incompleteForm();
-		getSampleTestingResult();
-		patientHistoryReport();
+		ClinicReports.registerTab('highTbReport', { init: highTbReportTable, table: function () { return oTablePositiveTbReport; } });
+		ClinicReports.registerTab('sampleRjtReport', { init: sampleRjtReport, table: function () { return oTableRjtReport; } });
+		ClinicReports.registerTab('notAvailReport', { init: notAvailReport, table: function () { return oTablenotAvailReport; } });
+		ClinicReports.registerTab('incompleteFormReport', { init: incompleteForm, table: function () { return oTableincompleteReport; } });
+		ClinicReports.registerTab('sampleTestingReport', { init: getSampleTestingResult, search: sampleTestingReport });
+		ClinicReports.registerTab('patientTestHistoryFormReport', { init: patientHistoryReport, table: function () { return oTablepatientTestHistoryReport; } });
+		ClinicReports.start();
 		$("#highTbReport input, #highTbReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select, #patientTestHistoryFormReport input").on("change", function() {
 			searchExecuted = false;
 		});
 	});
 
 	function highTbReportTable() {
-		$.blockUI();
-		oTablePositiveTbReport = $('#highTbReportTable').dataTable({
+				oTablePositiveTbReport = $('#highTbReportTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -722,21 +806,13 @@ $state = $geolocationService->getProvinces("yes");
 					"name": "positiveTbGender",
 					"value": $("#positiveTbGender").val()
 				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
+				ClinicReports.serverData(sSource, aoData, fnCallback);
 			}
 		});
-		$.unblockUI();
 	}
 
 	function sampleRjtReport() {
-		$.blockUI();
-		oTableRjtReport = $('#sampleRjtReportTable').dataTable({
+				oTableRjtReport = $('#sampleRjtReportTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -810,21 +886,13 @@ $state = $geolocationService->getProvinces("yes");
 					"name": "sampleRejectionReason",
 					"value": $("#sampleRejectionReason").val()
 				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
+				ClinicReports.serverData(sSource, aoData, fnCallback);
 			}
 		});
-		$.unblockUI();
 	}
 
 	function notAvailReport() {
-		$.blockUI();
-		oTablenotAvailReport = $('#notAvailReportTable').dataTable({
+				oTablenotAvailReport = $('#notAvailReportTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -891,21 +959,13 @@ $state = $geolocationService->getProvinces("yes");
 					"name": "noResultGender",
 					"value": $("#noResultGender").val()
 				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
+				ClinicReports.serverData(sSource, aoData, fnCallback);
 			}
 		});
-		$.unblockUI();
 	}
 
 	function incompleteForm() {
-		$.blockUI();
-		oTableincompleteReport = $('#incompleteReport').dataTable({
+				oTableincompleteReport = $('#incompleteReport').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -961,21 +1021,13 @@ $state = $geolocationService->getProvinces("yes");
 					"name": "formField",
 					"value": $("#formField").val()
 				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
+				ClinicReports.serverData(sSource, aoData, fnCallback);
 			}
 		});
-		$.unblockUI();
 	}
 
 	function patientHistoryReport() {
-		$.blockUI();
-		oTablepatientTestHistoryReport = $('#patientTestHistoryReport').dataTable({
+				oTablepatientTestHistoryReport = $('#patientTestHistoryReport').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -1035,34 +1087,26 @@ $state = $geolocationService->getProvinces("yes");
 					"name": "patientName",
 					"value": $("#patientName").val()
 				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
+				ClinicReports.serverData(sSource, aoData, fnCallback);
 			}
 		});
-		$.unblockUI();
 	}
 
+	/* Every tab is a server-side table over its own endpoint, so redrawing all
+	   of them cost a query per tab to look at one. Only the visible tab is
+	   drawn, and the promise settles when its request comes back -- which is
+	   what the exports wait on before asking the server to replay the query. */
 	function searchTbRequestData() {
 		searchExecuted = true;
-		$.blockUI();
-		oTablePositiveTbReport.fnDraw();
-		oTableRjtReport.fnDraw();
-		oTablenotAvailReport.fnDraw();
-		//incompleteForm();
-		oTableincompleteReport.fnDraw();
-		oTablepatientTestHistoryReport.fnDraw();
-		$.unblockUI();
+		return ClinicReports.searchActive();
 	}
 
 
 	function exportPositiveTbResultsInexcel() {
-		if (searchExecuted === false) {
-			searchTbRequestData();
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
+		if (!searchExecuted) {
+			return searchTbRequestData().then(exportPositiveTbResultsInexcel);
 		}
 		var markAsComplete = false;
 		confm = confirm("<?php echo _translate("Do you want to mark these as complete ?"); ?>");
@@ -1090,8 +1134,10 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function exportRejectedResultInexcel() {
-		if (searchExecuted === false) {
-			searchTbRequestData();
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
+		if (!searchExecuted) {
+			return searchTbRequestData().then(exportRejectedResultInexcel);
 		}
 		$.blockUI();
 		$.post("/tb/management/tbRejectedResultExportInExcel.php", {
@@ -1113,8 +1159,10 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function exportNotAvailableResultInexcel() {
-		if (searchExecuted === false) {
-			searchTbRequestData();
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
+		if (!searchExecuted) {
+			return searchTbRequestData().then(exportNotAvailableResultInexcel);
 		}
 		$.blockUI();
 		$.post("/tb/management/tbNotAvailableResultExportInExcel.php", {
@@ -1136,8 +1184,10 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function exportDataQualityInexcel() {
-		if (searchExecuted === false) {
-			searchTbRequestData();
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
+		if (!searchExecuted) {
+			return searchTbRequestData().then(exportDataQualityInexcel);
 		}
 		$.blockUI();
 		$.post("/tb/management/tbDataQualityExportInExcel.php", {
@@ -1156,8 +1206,10 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function exportPatientTesthistoryInexcel() {
-		if (searchExecuted === false) {
-			searchTbRequestData();
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
+		if (!searchExecuted) {
+			return searchTbRequestData().then(exportPatientTesthistoryInexcel);
 		}
 		$.blockUI();
 		$.post("/tb/management/tbPatientTesthistoryInExcel.php", {

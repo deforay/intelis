@@ -4,7 +4,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\GeoLocationsService;
 
-$title = _translate("Other Lab Tests | Clinics Report");
+$title = _translate("Custom Tests | Clinic Reports");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -52,44 +52,54 @@ $state = $geolocationService->getProvinces("yes");
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="sampleTestingReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td style="width: 14%;"><strong>
-															<?php echo _translate("Province/State"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23%;">
-														<select class="form-control stReportFilter select2 select2-element" id="stState" onchange="getByProvince('stDistrict','stfacilityName',this.value)" name="stState" title="<?php echo _translate('Please select Province/State'); ?>">
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stState"><?php echo _translate("Province/State"); ?></label>
+															<select class="form-control stReportFilter select2 select2-element" id="stState" onchange="getByProvince('stDistrict','stfacilityName',this.value)" name="stState" title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
-														</select>
-													</td>
-
-													<td style="width: 14%;"><strong>
-															<?php echo _translate("District/County"); ?> :
-														</strong></td>
-													<td style="width: 23%;">
-														<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
-														</select>
-													</td>
-													<td style="width: 14%;"><strong><?php echo _translate("Facility"); ?> :</strong></td>
-													<td style="width: 23%;">
-														<select class="stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stDistrict"><?php echo _translate("District/County"); ?></label>
+															<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stfacilityName"><?php echo _translate("Facility"); ?></label>
+															<select class="stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
-														</select>
-													</td>
-												<tr>
-													<td style="width: 14%;"><strong>
-															<?php echo _translate("Sample Collection Date "); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23%;">
-														<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="width:220px;background:#fff;" />
-													</td>
-													<td colspan="3">&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('stReportFilter');"><span>
-																<?= _translate("Reset"); ?>
-															</span></button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stSampleCollectionDate"><?php echo _translate("Sample Collection Date "); ?></label>
+															<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="background:#fff;" />
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('stReportFilter');"><span>
+													<?= _translate("Reset"); ?>
+													</span></button>
+												</div>
+												</div>
+											</div>
 											<figure class="highcharts-figure">
 												<div id="container"></div>
 												<div id="sampleTestingResultDetails">
@@ -98,30 +108,40 @@ $state = $geolocationService->getProvinces("yes");
 											</figure>
 										</div>
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Patient ID"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<input type="text" id="patientId" name="patientId" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Patient Name"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<input type="text" id="patientName" name="patientName" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
-													</td>
-													<td> <input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('patientHistoryFilter');">
-															<span><?= _translate('Reset'); ?></span>
-														</button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
-															<?php echo _translate("Export to excel"); ?>
-														</button>
-													</td>
-												</tr>
-											</table>
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="patientId"><?php echo _translate("Patient ID"); ?></label>
+															<input type="text" id="patientId" name="patientId" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="patientName"><?php echo _translate("Patient Name"); ?></label>
+															<input type="text" id="patientName" name="patientName" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('patientHistoryFilter');">
+													<span><?= _translate('Reset'); ?></span>
+													</button>
+													<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
+												</div>
+												</div>
+											</div>
 											<table aria-describedby="table" id="patientTestHistoryReport" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
@@ -186,6 +206,8 @@ $state = $geolocationService->getProvinces("yes");
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="<?= _asset('/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
+<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/clinic-reports.css') ?>">
+<script type="text/javascript" src="<?= _asset('/assets/js/clinic-reports.js') ?>"></script>
 <script type="text/javascript">
 	let searchExecuted = false;
 	var oTablepatientTestHistoryReport = null;
@@ -227,16 +249,16 @@ $state = $geolocationService->getProvinces("yes");
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		getSampleTestingResult();
-		patientHistoryReport();
+		ClinicReports.registerTab('sampleTestingReport', { init: getSampleTestingResult, search: sampleTestingReport });
+		ClinicReports.registerTab('patientTestHistoryFormReport', { init: patientHistoryReport, table: function () { return oTablepatientTestHistoryReport; } });
+		ClinicReports.start();
 		$("#patientTestHistoryFormReport input").on("change", function() {
 			searchExecuted = false;
 		});
 	});
 
 	function patientHistoryReport() {
-		$.blockUI();
-		oTablepatientTestHistoryReport = $('#patientTestHistoryReport').dataTable({
+				oTablepatientTestHistoryReport = $('#patientTestHistoryReport').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -296,28 +318,25 @@ $state = $geolocationService->getProvinces("yes");
 					"name": "patientName",
 					"value": $("#patientName").val()
 				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
+				ClinicReports.serverData(sSource, aoData, fnCallback);
 			}
 		});
-		$.unblockUI();
 	}
 
+	/* Every tab is a server-side table over its own endpoint, so redrawing all
+	   of them cost a query per tab to look at one. Only the visible tab is
+	   drawn, and the promise settles when its request comes back -- which is
+	   what the exports wait on before asking the server to replay the query. */
 	function searchVlRequestData() {
 		searchExecuted = true;
-		$.blockUI();
-		oTablepatientTestHistoryReport.fnDraw();
-		$.unblockUI();
+		return ClinicReports.searchActive();
 	}
 
 	function exportPatientTesthistoryInexcel() {
-		if (searchExecuted === false) {
-			searchVlRequestData();
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
+		if (!searchExecuted) {
+			return searchVlRequestData().then(exportPatientTesthistoryInexcel);
 		}
 		$.blockUI();
 		$.post("/generic-tests/program-management/generic-patient-test-history-in-excel.php", {

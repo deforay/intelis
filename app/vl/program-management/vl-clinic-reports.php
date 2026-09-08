@@ -5,7 +5,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-$title = _translate("VL | Clinics Report");
+$title = _translate("VL | Clinic Reports");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -167,240 +167,233 @@ $implementingPartnerList = $general->getImplementationPartners();
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
-											<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
-												style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<input type="text" id="hvlSampleTestDate"
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="hvlSampleTestDate"><?php echo _translate("Sample Test Date"); ?></label>
+															<input type="text" id="hvlSampleTestDate"
 															name="hvlSampleTestDate"
 															class="form-control highViralLoadReportFilter stDate"
 															placeholder="<?php echo _translate('Select Sample Test Date'); ?>"
-															readonly style="width:100%;background:#fff;"
+															readonly style="background:#fff;"
 															onchange="setSampleTestDate(this)" />
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Batch Code"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="hvlBatchCode"><?php echo _translate("Batch Code"); ?></label>
+															<select
 															class="form-control select2Class highViralLoadReportFilter"
 															id="hvlBatchCode" name="hvlBatchCode"
-															title="<?php echo _translate('Please select batch code'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please select batch code'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($batResult as $code) { ?>
-																<option value="<?php echo $code['batch_code']; ?>">
-																	<?php echo $code['batch_code']; ?>
-																</option>
+															<option value="<?php echo $code['batch_code']; ?>">
+															<?php echo $code['batch_code']; ?>
+															</option>
 															<?php } ?>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sample Type"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select style="width:100%;"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="hvlSampleType"><?php echo _translate("Sample Type"); ?></label>
+															<select
 															class="form-control highViralLoadReportFilter"
 															id="hvlSampleType" name="sampleType"
 															title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($sResult as $type) { ?>
-																<option value="<?php echo $type['sample_id']; ?>">
-																	<?= $type['sample_name']; ?>
-																</option>
+															<option value="<?php echo $type['sample_id']; ?>">
+															<?= $type['sample_name']; ?>
+															</option>
 															<?php } ?>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Province/State"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select class="form-control highViralLoadReportFilter"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="state"><?php echo _translate("Province/State"); ?></label>
+															<select class="form-control highViralLoadReportFilter"
 															id="state"
 															onchange="getByProvince('district','hvlFacilityName',this.value)"
 															name="state"
 															title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
-														</select>
-													</td>
-
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("District/County"); ?> :
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select class="form-control highViralLoadReportFilter"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="district"><?php echo _translate("District/County"); ?></label>
+															<select class="form-control highViralLoadReportFilter"
 															id="district" name="district"
 															title="<?php echo _translate('Please select District/County'); ?>"
 															onchange="getByDistrict('hvlFacilityName',this.value)">
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Facility"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select class="form-control highViralLoadReportFilter"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="hvlFacilityName"><?php echo _translate("Facility"); ?></label>
+															<select class="form-control highViralLoadReportFilter"
 															id="hvlFacilityName" name="hvlFacilityName"
 															multiple="multiple"
-															title="<?php echo _translate('Please select facility name'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please select facility name'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($fResult as $name) { ?>
-																<option value="<?php echo $name['facility_id']; ?>">
-																	<?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?>
-																</option>
+															<option value="<?php echo $name['facility_id']; ?>">
+															<?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?>
+															</option>
 															<?php } ?>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Contact Status"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select class="form-control select2 highViralLoadReportFilter"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="hvlContactStatus"><?php echo _translate("Contact Status"); ?></label>
+															<select class="form-control select2 highViralLoadReportFilter"
 															id="hvlContactStatus" name="hvlContactStatus"
-															title="<?php echo _translate('Please select contact status'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please select contact status'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _translate("Completed"); ?>
+															<?php echo _translate("Completed"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("Not Completed"); ?>
+															<?php echo _translate("Not Completed"); ?>
 															</option>
 															<option value="all" selected="selected">
-																<?php echo _translate("All"); ?>
+															<?php echo _translate("All"); ?>
 															</option>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sex"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="hvlGender" id="hvlGender"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="hvlGender"><?php echo _translate("Sex"); ?></label>
+															<select name="hvlGender" id="hvlGender"
 															class="form-control select2 highViralLoadReportFilter"
 															title="<?php echo _translate('Please select sex'); ?>"
-															style="width:100%;"
 															onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="male">
-																<?php echo _translate("Male"); ?>
+															<?php echo _translate("Male"); ?>
 															</option>
 															<option value="female">
-																<?php echo _translate("Female"); ?>
+															<?php echo _translate("Female"); ?>
 															</option>
 															<option value="unreported">
-																<?php echo _translate("Unreported"); ?>
+															<?php echo _translate("Unreported"); ?>
 															</option>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Pregnant"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="hvlPatientPregnant" id="hvlPatientPregnant"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="hvlPatientPregnant"><?php echo _translate("Pregnant"); ?></label>
+															<select name="hvlPatientPregnant" id="hvlPatientPregnant"
 															class="form-control select2 highViralLoadReportFilter"
 															title="<?php echo _translate('Please choose pregnant option'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _translate("Yes"); ?>
+															<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("No"); ?>
+															<?php echo _translate("No"); ?>
 															</option>
-														</select>
-													</td>
-
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="hvlPatientBreastfeeding"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="hvlPatientBreastfeeding"><?php echo _translate("Breastfeeding"); ?></label>
+															<select name="hvlPatientBreastfeeding"
 															id="hvlPatientBreastfeeding"
 															class="form-control select2 highViralLoadReportFilter"
 															title="<?php echo _translate('Please choose option'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _translate("Yes"); ?>
+															<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("No"); ?>
+															<?php echo _translate("No"); ?>
 															</option>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Export with Patient Name"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="patientInfo" id="patientInfo"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="patientInfo"><?php echo _translate("Export with Patient Name"); ?></label>
+															<select name="patientInfo" id="patientInfo"
 															class="form-control select2 highViralLoadReportFilter"
-															title="<?php echo _translate('Please choose community sample'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose community sample'); ?>">
 															<option value="yes">
-																<?php echo _translate("Yes"); ?>
+															<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("No"); ?>
+															<?php echo _translate("No"); ?>
 															</option>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="hvlImplementingPartner" id="hvlImplementingPartner"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="hvlImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
+															<select name="hvlImplementingPartner" id="hvlImplementingPartner"
 															class="form-control select2Class highViralLoadReportFilter"
-															title="<?php echo _translate('Please choose implementing partner'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose implementing partner'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
-																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
-																	<?= $implementingPartner['i_partner_name']; ?>
-																</option>
+															<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+															<?= $implementingPartner['i_partner_name']; ?>
+															</option>
 															<?php } ?>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="6">&nbsp;<input type="button"
-															onclick="searchVlRequestData();"
-															value="<?= _translate('Search'); ?>"
-															class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="resetFilters('highViralLoadReportFilter');"><span>
-																<?= _translate('Reset'); ?>
-															</span></button>
-														<button class="btn btn-success btn-sm" type="button"
-															onclick="exportHighViralLoadInexcel()"><em
-																class="fa-solid fa-cloud-arrow-down"></em>
-															<?php echo _translate("Export to excel"); ?>
-														</button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													&nbsp;<input type="button"
+													onclick="searchVlRequestData();"
+													value="<?= _translate('Search'); ?>"
+													class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('highViralLoadReportFilter');"><span>
+													<?= _translate('Reset'); ?>
+													</span></button>
+													<button class="btn btn-success btn-sm" type="button"
+													onclick="exportHighViralLoadInexcel()"><em
+													class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
+												</div>
+												</div>
+											</div>
 
 											<table aria-describedby="table" id="highViralLoadReportTable"
 												class="table table-bordered table-striped" aria-hidden="true">
@@ -456,438 +449,420 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</table>
 										</div>
 										<div class="tab-pane fade" id="highVlVirologicFailureReport">
-											<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
-												style="margin-left:1%;margin-top:20px;width:98%;">
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Province/State"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="vfVlnsState"><?php echo _translate("Province/State"); ?></label>
+															<select
 															class="form-control vfvlnsfilters select2 select2-element"
 															id="vfVlnsState"
 															onchange="getByProvince('vfVlnsDistrict','vfVlnsfacilityName',this.value)"
 															name="vfVlnsState"
 															title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
-														</select>
-													</td>
-
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("District/County"); ?> :
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="vfVlnsDistrict"><?php echo _translate("District/County"); ?></label>
+															<select
 															class="form-control vfvlnsfilters select2 select2-element"
 															id="vfVlnsDistrict" name="vfVlnsDistrict"
 															title="<?php echo _translate('Please select District/County'); ?>"
 															onchange="getByDistrict('vfVlnsfacilityName',this.value)">
-														</select>
-													</td>
-													<td style="width: 10%;">
-														<strong><?php echo _translate("Facility"); ?> :</strong>
-													</td>
-													<td style="width: 23.33%;">
-														<select class="form-control vfvlnsfilters"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="vfVlnsfacilityName"><?php echo _translate("Facility"); ?></label>
+															<select class="form-control vfvlnsfilters"
 															id="vfVlnsfacilityName" name="vfVlnsfacilityName"
 															multiple="multiple"
-															title="<?php echo _translate('Please select facility name'); ?>"
-															style="width:220px;">
+															title="<?php echo _translate('Please select facility name'); ?>">
 															<?php foreach ($fResult as $name) { ?>
-																<option value="<?php echo $name['facility_id']; ?>">
-																	<?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?>
-																</option>
+															<option value="<?php echo $name['facility_id']; ?>">
+															<?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?>
+															</option>
 															<?php } ?>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td style="width: 10%;">
-														<strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong>
-													</td>
-													<td style="width: 23.33%;">
-														<input type="text" id="vfVlnsSampleCollectionDate"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="vfVlnsSampleCollectionDate"><?php echo _translate("Sample Collection Date"); ?></label>
+															<input type="text" id="vfVlnsSampleCollectionDate"
 															name="vfVlnsSampleCollectionDate"
 															class="form-control vfvlnsfilters daterangefield"
 															placeholder="<?php echo _translate('Select Collection Date'); ?>"
 															style="background:#fff;" />
-													</td>
-													<td style="width: 10%;">
-														<strong><?php echo _translate("Sample Tested Date"); ?>&nbsp;:</strong>
-													</td>
-													<td style="width: 23.33%;">
-														<input type="text" id="vfVlnsSampleTestDate"
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="vfVlnsSampleTestDate"><?php echo _translate("Sample Tested Date"); ?></label>
+															<input type="text" id="vfVlnsSampleTestDate"
 															name="vfVlnsSampleTestDate"
 															class="form-control vfvlnsfilters daterangefield"
 															placeholder="<?php echo _translate('Select Tested Date'); ?>"
 															style="background:#fff;" />
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sex"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="vfvlnGender" id="vfvlnGender"
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="vfvlnGender"><?php echo _translate("Sex"); ?></label>
+															<select name="vfvlnGender" id="vfvlnGender"
 															class="form-control select2 vfvlnsfilters"
 															title="<?php echo _translate('Please select sex'); ?>"
-															style="width:100%;"
 															onchange="hideFemaleDetails(this.value,'pregnancy','breastfeeding');">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="male">
-																<?php echo _translate("Male"); ?>
+															<?php echo _translate("Male"); ?>
 															</option>
 															<option value="female">
-																<?php echo _translate("Female"); ?>
+															<?php echo _translate("Female"); ?>
 															</option>
 															<option value="unreported">
-																<?php echo _translate("Unreported"); ?>
+															<?php echo _translate("Unreported"); ?>
 															</option>
-														</select>
-													</td>
-
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Pregnancy"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="pregnancy"><?php echo _translate("Pregnancy"); ?></label>
+															<select
 															class="form-control select2 select2-element vfvlnsfilters"
 															id="pregnancy" name="pregnancy"
 															title="<?php echo _translate('Please select pregnancy'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _translate("Yes"); ?>
+															<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("No"); ?>
+															<?php echo _translate("No"); ?>
 															</option>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="breastfeeding"><?php echo _translate("Breastfeeding"); ?></label>
+															<select
 															class="form-control select2 select2-element vfvlnsfilters"
 															id="breastfeeding" name="breastfeeding"
 															title="<?php echo _translate('Please select Province/State'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _translate("Yes"); ?>
+															<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("No"); ?>
+															<?php echo _translate("No"); ?>
 															</option>
-														</select>
-													</td>
-													<td style="width: 10%;">
-														<strong><?php echo _translate("Age Range"); ?>&nbsp;:</strong>
-													</td>
-													<td>
-														<div class="col-sm-6">
-															<input type="number" id="min_age"
-																class="form-control vfvlnsfilters" name="min_age"
-																min="0" max="120" value="0">
+															</select>
 														</div>
-														<div class="col-sm-6">
-															<input type="number" id="max_age" name="max_age"
-																class="form-control" min="0" max="120" value="120">
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="min_age"><?php echo _translate("Age Range"); ?> <small class="text-muted"><?php echo _translate("in years"); ?></small></label>
+															<div class="input-pair">
+																<input type="number" id="min_age" class="form-control vfvlnsfilters" name="min_age" min="0" max="120" value="0" aria-label="<?php echo _translate("Youngest age"); ?>">
+																<span class="input-pair-sep"><?php echo _translate("to"); ?></span>
+																<input type="number" id="max_age" name="max_age" class="form-control vfvlnsfilters" min="0" max="120" value="120" aria-label="<?php echo _translate("Oldest age"); ?>">
+															</div>
+															<div class="range-slider" data-range-min="#min_age" data-range-max="#max_age" data-floor="0" data-ceiling="120"></div>
 														</div>
-													</td>
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="vfVlnsImplementingPartner" id="vfVlnsImplementingPartner"
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="vfVlnsImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
+															<select name="vfVlnsImplementingPartner" id="vfVlnsImplementingPartner"
 															class="form-control select2Class vfvlnsfilters"
-															title="<?php echo _translate('Please choose implementing partner'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose implementing partner'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
-																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
-																	<?= $implementingPartner['i_partner_name']; ?>
-																</option>
+															<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+															<?= $implementingPartner['i_partner_name']; ?>
+															</option>
 															<?php } ?>
-														</select>
-													</td>
-													<td colspan="4"></td>
-												</tr>
-												<tr>
-													<td colspan="6">
-														&nbsp;<button onclick="vfVlnsExportInexcel();" value="Search"
-															class="btn btn-success btn-sm"><em
-																class="fa-solid fa-cloud-arrow-down"></em><span><?php echo _translate(" Generate report"); ?></span></button>
-														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="resetFilters('vfvlnsfilters');"><span><?php echo _translate("Reset"); ?></span></button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													&nbsp;<button onclick="vfVlnsExportInexcel();" value="Search"
+													class="btn btn-success btn-sm"><em
+													class="fa-solid fa-cloud-arrow-down"></em><span><?php echo _translate(" Generate report"); ?></span></button>
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('vfvlnsfilters');"><span><?php echo _translate("Reset"); ?></span></button>
+												</div>
+												</div>
+											</div>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
-											<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
-												style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<input type="text" id="rjtSampleCollectionDate"
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtSampleCollectionDate"><?php echo _translate("Sample Collection Date"); ?></label>
+															<input type="text" id="rjtSampleCollectionDate"
 															name="rjtSampleCollectionDate"
 															class="form-control sampleRjtReportFilter stDate daterange"
 															placeholder="<?php echo _translate('Select Sample Collection Date'); ?>"
-															readonly style="width:100%;background:#fff;"
+															readonly style="background:#fff;"
 															onchange="setSampleTestDate(this)" />
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Batch Code"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select class="form-control select2Class sampleRjtReportFilter"
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtBatchCode"><?php echo _translate("Batch Code"); ?></label>
+															<select class="form-control select2Class sampleRjtReportFilter"
 															id="rjtBatchCode" name="rjtBatchCode"
-															title="<?php echo _translate('Please select batch code'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please select batch code'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($batResult as $code) {
-																?>
-																<option value="<?php echo $code['batch_code']; ?>">
-																	<?php echo $code['batch_code']; ?>
-																</option>
-																<?php
+															?>
+															<option value="<?php echo $code['batch_code']; ?>">
+															<?php echo $code['batch_code']; ?>
+															</option>
+															<?php
 															}
 															?>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sample Type"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select style="width:100%;"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtSampleType"><?php echo _translate("Sample Type"); ?></label>
+															<select
 															class="form-control select2 sampleRjtReportFilter"
 															id="rjtSampleType" name="sampleType"
 															title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($sResult as $type) {
-																?>
-																<option value="<?php echo $type['sample_id']; ?>">
-																	<?= $type['sample_name']; ?>
-																</option>
-																<?php
+															?>
+															<option value="<?php echo $type['sample_id']; ?>">
+															<?= $type['sample_name']; ?>
+															</option>
+															<?php
 															}
 															?>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Province/State"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtState"><?php echo _translate("Province/State"); ?></label>
+															<select
 															class="form-control sampleRjtReportFilter select2-element"
 															id="rjtState"
 															onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)"
 															name="rjtState"
 															title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
-														</select>
-													</td>
-
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("District/County"); ?> :
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtDistrict"><?php echo _translate("District/County"); ?></label>
+															<select
 															class="form-control sampleRjtReportFilter select2-element"
 															id="rjtDistrict" name="rjtDistrict"
 															title="<?php echo _translate('Please select District/County'); ?>"
 															onchange="getByDistrict('rjtFacilityName',this.value)">
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Facility"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select class="form-control sampleRjtReportFilter"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtFacilityName"><?php echo _translate("Facility"); ?></label>
+															<select class="form-control sampleRjtReportFilter"
 															id="rjtFacilityName" name="facilityName"
 															title="<?php echo _translate('Please select facility name'); ?>"
-															multiple="multiple" style="width:100%;">
+															multiple="multiple">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($fResult as $name) {
-																?>
-																<option value="<?php echo $name['facility_id']; ?>">
-																	<?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?>
-																</option>
-																<?php
+															?>
+															<option value="<?php echo $name['facility_id']; ?>">
+															<?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?>
+															</option>
+															<?php
 															}
 															?>
-														</select>
-													</td>
-
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sex"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="rjtGender" id="rjtGender"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtGender"><?php echo _translate("Sex"); ?></label>
+															<select name="rjtGender" id="rjtGender"
 															class="form-control select2 sampleRjtReportFilter"
 															title="<?php echo _translate('Please select sex'); ?>"
-															style="width:100%;"
 															onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="male">
-																<?php echo _translate("Male"); ?>
+															<?php echo _translate("Male"); ?>
 															</option>
 															<option value="female">
-																<?php echo _translate("Female"); ?>
+															<?php echo _translate("Female"); ?>
 															</option>
 															<option value="unreported">
-																<?php echo _translate("Unreported"); ?>
+															<?php echo _translate("Unreported"); ?>
 															</option>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Pregnant"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="rjtPatientPregnant" id="rjtPatientPregnant"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtPatientPregnant"><?php echo _translate("Pregnant"); ?></label>
+															<select name="rjtPatientPregnant" id="rjtPatientPregnant"
 															class="form-control select2 sampleRjtReportFilter"
 															title="<?php echo _translate('Please choose pregnant option'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _translate("Yes"); ?>
+															<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("No"); ?>
+															<?php echo _translate("No"); ?>
 															</option>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="rjtPatientBreastfeeding"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtPatientBreastfeeding"><?php echo _translate("Breastfeeding"); ?></label>
+															<select name="rjtPatientBreastfeeding"
 															id="rjtPatientBreastfeeding"
 															class="form-control select2 sampleRjtReportFilter"
 															title="<?php echo _translate('Please choose option'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _translate("Yes"); ?>
+															<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("No"); ?>
+															<?php echo _translate("No"); ?>
 															</option>
-														</select>
-													</td>
-
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Rejection Reason"); ?>&nbsp;:
-														</strong></td>
-													<td colspan="3">
-														<select name="rejectionReason" id="rejectionReason"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rejectionReason"><?php echo _translate("Rejection Reason"); ?></label>
+															<select name="rejectionReason" id="rejectionReason"
 															class="form-control select2 sampleRjtReportFilter"
 															title="<?php echo _translate('Please choose reason'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($rejectionTypeResult as $type) { ?>
-																<optgroup
-																	label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
-																	<?php foreach ($rejectionResult as $reject) {
-																		if ($type['rejection_type'] == $reject['rejection_type']) {
-																			?>
-																			<option
-																				value="<?php echo $reject['rejection_reason_id']; ?>">
-																				<?= $reject['rejection_reason_name']; ?>
-																			</option>
-																		<?php }
-																	} ?>
-																</optgroup>
+															<optgroup
+															label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
+															<?php foreach ($rejectionResult as $reject) {
+															if ($type['rejection_type'] == $reject['rejection_type']) {
+															?>
+															<option
+															value="<?php echo $reject['rejection_reason_id']; ?>">
+															<?= $reject['rejection_reason_name']; ?>
+															</option>
+															<?php }
+															} ?>
+															</optgroup>
 															<?php } ?>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Export with Patient Name"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="patientRejectedInfo" id="patientRejectedInfo"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="patientRejectedInfo"><?php echo _translate("Export with Patient Name"); ?></label>
+															<select name="patientRejectedInfo" id="patientRejectedInfo"
 															class="form-control select2 sampleRjtReportFilter"
-															title="<?php echo _translate('Please choose community sample'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose community sample'); ?>">
 															<option value="yes">
-																<?php echo _translate("Yes"); ?>
+															<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("No"); ?>
+															<?php echo _translate("No"); ?>
 															</option>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="rjtImplementingPartner" id="rjtImplementingPartner"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="rjtImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
+															<select name="rjtImplementingPartner" id="rjtImplementingPartner"
 															class="form-control select2Class sampleRjtReportFilter"
-															title="<?php echo _translate('Please choose implementing partner'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose implementing partner'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
-																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
-																	<?= $implementingPartner['i_partner_name']; ?>
-																</option>
+															<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+															<?= $implementingPartner['i_partner_name']; ?>
+															</option>
 															<?php } ?>
-														</select>
-													</td>
-													<td colspan="4"></td>
-												</tr>
-												<tr>
-													<td colspan="6">&nbsp;<input type="button"
-															onclick="searchVlRequestData();"
-															value="<?= _translate('Search'); ?>"
-															class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="resetFilters('sampleRjtReportFilter');"><span>
-																<?= _translate('Reset'); ?>
-															</span></button>
-														<button class="btn btn-success btn-sm" type="button"
-															onclick="exportRejectedResultInexcel()"><em
-																class="fa-solid fa-cloud-arrow-down"></em>
-															<?php echo _translate("Export to excel"); ?>
-														</button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													&nbsp;<input type="button"
+													onclick="searchVlRequestData();"
+													value="<?= _translate('Search'); ?>"
+													class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('sampleRjtReportFilter');"><span>
+													<?= _translate('Reset'); ?>
+													</span></button>
+													<button class="btn btn-success btn-sm" type="button"
+													onclick="exportRejectedResultInexcel()"><em
+													class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
+												</div>
+												</div>
+											</div>
 											<table aria-describedby="table" id="sampleRjtReportTable"
 												class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
@@ -936,247 +911,238 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</table>
 										</div>
 										<div class="tab-pane fade" id="notAvailReport">
-											<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
-												style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<input type="text" id="noResultSampleTestDate"
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultSampleTestDate"><?php echo _translate("Sample Collection Date"); ?></label>
+															<input type="text" id="noResultSampleTestDate"
 															name="noResultSampleTestDate"
 															class="form-control notAvailReportFilter stDate daterange"
 															placeholder="<?php echo _translate('Select Sample Collection Date'); ?>"
-															readonly style="width:100%;background:#fff;"
+															readonly style="background:#fff;"
 															onchange="setSampleTestDate(this)" />
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Batch Code"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select class="form-control select2Class notAvailReportFilter"
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultBatchCode"><?php echo _translate("Batch Code"); ?></label>
+															<select class="form-control select2Class notAvailReportFilter"
 															id="noResultBatchCode" name="noResultBatchCode"
-															title="<?php echo _translate('Please select batch code'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please select batch code'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($batResult as $code) {
-																?>
-																<option value="<?php echo $code['batch_code']; ?>">
-																	<?php echo $code['batch_code']; ?>
-																</option>
-																<?php
+															?>
+															<option value="<?php echo $code['batch_code']; ?>">
+															<?php echo $code['batch_code']; ?>
+															</option>
+															<?php
 															}
 															?>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sample Type"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select style="width:100%;"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultSampleType"><?php echo _translate("Sample Type"); ?></label>
+															<select
 															class="form-control select2 notAvailReportFilter"
 															id="noResultSampleType" name="sampleType"
 															title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($sResult as $type) {
-																?>
-																<option value="<?php echo $type['sample_id']; ?>">
-																	<?= $type['sample_name']; ?>
-																</option>
-																<?php
+															?>
+															<option value="<?php echo $type['sample_id']; ?>">
+															<?= $type['sample_name']; ?>
+															</option>
+															<?php
 															}
 															?>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Province/State"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultState"><?php echo _translate("Province/State"); ?></label>
+															<select
 															class="form-control notAvailReportFilter select2-element"
 															id="noResultState"
 															onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)"
 															name="rjtState"
 															title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
-														</select>
-													</td>
-
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("District/County"); ?> :
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultDistrict"><?php echo _translate("District/County"); ?></label>
+															<select
 															class="form-control notAvailReportFilter select2-element"
 															id="noResultDistrict" name="noResultDistrict"
 															title="<?php echo _translate('Please select District/County'); ?>"
 															onchange="getByDistrict('noResultFacilityName',this.value)">
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Facility"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select class="form-control notAvailReportFilter"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultFacilityName"><?php echo _translate("Facility"); ?></label>
+															<select class="form-control notAvailReportFilter"
 															id="noResultFacilityName" name="facilityName"
 															title="<?php echo _translate('Please select facility name'); ?>"
-															multiple="multiple" style="width:100%;">
+															multiple="multiple">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($fResult as $name) {
-																?>
-																<option value="<?php echo $name['facility_id']; ?>">
-																	<?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?>
-																</option>
-																<?php
+															?>
+															<option value="<?php echo $name['facility_id']; ?>">
+															<?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?>
+															</option>
+															<?php
 															}
 															?>
-														</select>
-													</td>
-
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sex"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="noResultGender" id="noResultGender"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultGender"><?php echo _translate("Sex"); ?></label>
+															<select name="noResultGender" id="noResultGender"
 															class="form-control select2 notAvailReportFilter"
 															title="<?php echo _translate('Please select sex'); ?>"
-															style="width:100%;"
 															onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="male">
-																<?php echo _translate("Male"); ?>
+															<?php echo _translate("Male"); ?>
 															</option>
 															<option value="female">
-																<?php echo _translate("Female"); ?>
+															<?php echo _translate("Female"); ?>
 															</option>
 															<option value="unreported">
-																<?php echo _translate("Unreported"); ?>
+															<?php echo _translate("Unreported"); ?>
 															</option>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Pregnant"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="noResultPatientPregnant"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultPatientPregnant"><?php echo _translate("Pregnant"); ?></label>
+															<select name="noResultPatientPregnant"
 															id="noResultPatientPregnant"
 															class="form-control select2 notAvailReportFilter"
 															title="<?php echo _translate('Please choose pregnant option'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _translate("Yes"); ?>
+															<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("No"); ?>
+															<?php echo _translate("No"); ?>
 															</option>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="noResultPatientBreastfeeding"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultPatientBreastfeeding"><?php echo _translate("Breastfeeding"); ?></label>
+															<select name="noResultPatientBreastfeeding"
 															id="noResultPatientBreastfeeding"
 															class="form-control select2 notAvailReportFilter"
 															title="<?php echo _translate('Please choose option'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _translate("Yes"); ?>
+															<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("No"); ?>
+															<?php echo _translate("No"); ?>
 															</option>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Export with Patient Name"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="patientNtAvailInfo" id="patientNtAvailInfo"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="patientNtAvailInfo"><?php echo _translate("Export with Patient Name"); ?></label>
+															<select name="patientNtAvailInfo" id="patientNtAvailInfo"
 															class="form-control select2 notAvailReportFilter"
-															title="<?php echo _translate('Please choose community sample'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose community sample'); ?>">
 															<option value="yes">
-																<?php echo _translate("Yes"); ?>
+															<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("No"); ?>
+															<?php echo _translate("No"); ?>
 															</option>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="noResultImplementingPartner"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
+															<select name="noResultImplementingPartner"
 															id="noResultImplementingPartner"
 															class="form-control select2Class notAvailReportFilter"
-															title="<?php echo _translate('Please choose implementing partner'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose implementing partner'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
-																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
-																	<?= $implementingPartner['i_partner_name']; ?>
-																</option>
+															<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+															<?= $implementingPartner['i_partner_name']; ?>
+															</option>
 															<?php } ?>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Include Expired Samples"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="noResultIncludeExpired" id="noResultIncludeExpired"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="noResultIncludeExpired"><?php echo _translate("Include Expired Samples"); ?></label>
+															<select name="noResultIncludeExpired" id="noResultIncludeExpired"
 															class="form-control notAvailReportFilter"
-															title="<?php echo _translate('Please choose whether expired samples are counted'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose whether expired samples are counted'); ?>">
 															<option value=""><?php echo _translate("Yes"); ?></option>
 															<option value="no"><?php echo _translate("No"); ?></option>
-														</select>
-													</td>
-													<td colspan="4"></td>
-												</tr>
-												<tr>
-													<td colspan="6">&nbsp;<input type="button"
-															onclick="searchVlRequestData();"
-															value="<?= _translate('Search'); ?>"
-															class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="resetFilters('notAvailReportFilter');"><span>
-																<?= _translate('Reset'); ?>
-															</span></button>
-														<button class="btn btn-success btn-sm" type="button"
-															onclick="exportNotAvailableResultInexcel()"><em
-																class="fa-solid fa-cloud-arrow-down"></em>
-															<?php echo _translate("Export to excel"); ?>
-														</button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													&nbsp;<input type="button"
+													onclick="searchVlRequestData();"
+													value="<?= _translate('Search'); ?>"
+													class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('notAvailReportFilter');"><span>
+													<?= _translate('Reset'); ?>
+													</span></button>
+													<button class="btn btn-success btn-sm" type="button"
+													onclick="exportNotAvailableResultInexcel()"><em
+													class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
+												</div>
+												</div>
+											</div>
 											<table aria-describedby="table" id="notAvailReportTable"
 												class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
@@ -1222,137 +1188,136 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</table>
 										</div>
 										<div class="tab-pane fade" id="incompleteFormReport">
-											<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
-												style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<input type="text" id="sampleCollectionDate"
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="sampleCollectionDate"><?php echo _translate("Sample Collection Date"); ?></label>
+															<input type="text" id="sampleCollectionDate"
 															name="sampleCollectionDate"
 															class="form-control incompleteFormReportFilter"
 															placeholder="<?php echo _translate('Select Sample Collection Date'); ?>"
-															readonly style="width:100%;background:#fff;" />
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Fields"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select class="form-control incompleteFormReportFilter"
+															readonly style="background:#fff;" />
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="formField"><?php echo _translate("Fields"); ?></label>
+															<select class="form-control incompleteFormReportFilter"
 															id="formField" name="formField" multiple="multiple"
-															title="<?php echo _translate('Please fields'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please fields'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="sample_code">
-																<?php echo _translate("Sample ID"); ?>
+															<?php echo _translate("Sample ID"); ?>
 															</option>
 															<option value="sample_collection_date">
-																<?php echo _translate("Sample Collection Date"); ?>
+															<?php echo _translate("Sample Collection Date"); ?>
 															</option>
 															<option value="sample_batch_id">
-																<?php echo _translate("Batch Code"); ?>
+															<?php echo _translate("Batch Code"); ?>
 															</option>
 															<option value="patient_art_no">
-																<?php echo _translate("Unique ART No"); ?>.
+															<?php echo _translate("Unique ART No"); ?>.
 															</option>
 															<option value="patient_first_name">
-																<?php echo _translate("Patient Name"); ?>
+															<?php echo _translate("Patient Name"); ?>
 															</option>
 															<option value="facility_id">
-																<?php echo _translate("Facility Name"); ?>
+															<?php echo _translate("Facility Name"); ?>
 															</option>
 															<option value="facility_state">
-																<?php echo _translate("Province"); ?>
+															<?php echo _translate("Province"); ?>
 															</option>
 															<option value="facility_district">
-																<?php echo _translate("County"); ?>
+															<?php echo _translate("County"); ?>
 															</option>
 															<option value="sample_type">
-																<?php echo _translate("Sample Type"); ?>
+															<?php echo _translate("Sample Type"); ?>
 															</option>
 															<option value="result">
-																<?php echo _translate("Result"); ?>
+															<?php echo _translate("Result"); ?>
 															</option>
 															<option value="result_status">
-																<?php echo _translate("Status"); ?>
+															<?php echo _translate("Status"); ?>
 															</option>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Export with Patient Name"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="patientVlQualityInfo" id="patientVlQualityInfo"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="patientVlQualityInfo"><?php echo _translate("Export with Patient Name"); ?></label>
+															<select name="patientVlQualityInfo" id="patientVlQualityInfo"
 															class="form-control select2 incompleteFormReportFilter"
-															title="<?php echo _translate('Please choose community sample'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose community sample'); ?>">
 															<option value="yes">
-																<?php echo _translate("Yes"); ?>
+															<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _translate("No"); ?>
+															<?php echo _translate("No"); ?>
 															</option>
-														</select>
-													</td>
-												</tr>
-
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="dqImplementingPartner" id="dqImplementingPartner"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="dqImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
+															<select name="dqImplementingPartner" id="dqImplementingPartner"
 															class="form-control select2Class incompleteFormReportFilter"
-															title="<?php echo _translate('Please choose implementing partner'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose implementing partner'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
-																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
-																	<?= $implementingPartner['i_partner_name']; ?>
-																</option>
+															<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+															<?= $implementingPartner['i_partner_name']; ?>
+															</option>
 															<?php } ?>
-														</select>
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Field Match"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="dqFieldMatch" id="dqFieldMatch"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="dqFieldMatch"><?php echo _translate("Field Match"); ?></label>
+															<select name="dqFieldMatch" id="dqFieldMatch"
 															class="form-control select2Class incompleteFormReportFilter"
-															title="<?php echo _translate('Please choose how the selected fields combine'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose how the selected fields combine'); ?>">
 															<option value="any">
-																<?php echo _translate("Any selected field is missing"); ?>
+															<?php echo _translate("Any selected field is missing"); ?>
 															</option>
 															<option value="all">
-																<?php echo _translate("All selected fields are missing"); ?>
+															<?php echo _translate("All selected fields are missing"); ?>
 															</option>
-														</select>
-													</td>
-													<td colspan="2"></td>
-												</tr>
-												<tr>
-													<td colspan="4">&nbsp;<input type="button"
-															onclick="searchVlRequestData();"
-															value="<?= _translate('Search'); ?>"
-															class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="resetFilters('incompleteFormReportFilter');"><span>
-																<?= _translate('Reset'); ?>
-															</span></button>
-														<button class="btn btn-success btn-sm" type="button"
-															onclick="exportDataQualityInexcel()"><em
-																class="fa-solid fa-cloud-arrow-down"></em>
-															<?php echo _translate("Export to excel"); ?>
-														</button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													&nbsp;<input type="button"
+													onclick="searchVlRequestData();"
+													value="<?= _translate('Search'); ?>"
+													class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('incompleteFormReportFilter');"><span>
+													<?= _translate('Reset'); ?>
+													</span></button>
+													<button class="btn btn-success btn-sm" type="button"
+													onclick="exportDataQualityInexcel()"><em
+													class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
+												</div>
+												</div>
+											</div>
 											<table aria-describedby="table" id="incompleteReport"
 												class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
@@ -1410,91 +1375,96 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleTestingReport" style="width: 100%; overflow-x: auto;">
-											<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
-												style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Province/State"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.3%;">
-														<select
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stState"><?php echo _translate("Province/State"); ?></label>
+															<select
 															class="form-control stReportFilter select2 select2-element"
 															id="stState"
 															onchange="getByProvince('stDistrict','stfacilityName',this.value)"
 															name="stState"
 															title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
-														</select>
-													</td>
-
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("District/County"); ?> :
-														</strong></td>
-													<td style="width: 23.3%;">
-														<select
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stDistrict"><?php echo _translate("District/County"); ?></label>
+															<select
 															class="form-control stReportFilter select2 select2-element"
 															id="stDistrict" name="stDistrict"
 															title="<?php echo _translate('Please select District/County'); ?>"
 															onchange="getByDistrict('stfacilityName',this.value)">
-														</select>
-													</td>
-													<td style="width: 10%;">
-														<strong><?php echo _translate("Facility"); ?> :</strong>
-													</td>
-													<td style="width: 23.3%;">
-														<select class="form-control stReportFilter" id="stfacilityName"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stfacilityName"><?php echo _translate("Facility"); ?></label>
+															<select class="form-control stReportFilter" id="stfacilityName"
 															name="stfacilityName" multiple="multiple"
-															title="<?php echo _translate('Please select facility name'); ?>"
-															style="width:220px;">
+															title="<?php echo _translate('Please select facility name'); ?>">
 															<option value=""><?php echo _translate('-- Select --'); ?>
 															</option>
 															<?php foreach ($fResult as $name) { ?>
-																<option value="<?php echo $name['facility_id']; ?>">
-																	<?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?>
-																</option>
+															<option value="<?php echo $name['facility_id']; ?>">
+															<?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?>
+															</option>
 															<?php } ?>
-														</select>
-													</td>
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sample Collection Date "); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.3%;">
-														<input type="text" id="stSampleCollectionDate"
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stSampleCollectionDate"><?php echo _translate("Sample Collection Date "); ?></label>
+															<input type="text" id="stSampleCollectionDate"
 															name="stSampleCollectionDate"
 															class="form-control stReportFilter"
 															placeholder="<?= _translate('Select Sample Collection date'); ?>"
-															style="width:220px;background:#fff;" />
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.3%;">
-														<select name="stImplementingPartner" id="stImplementingPartner"
+															style="background:#fff;" />
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="stImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
+															<select name="stImplementingPartner" id="stImplementingPartner"
 															class="form-control select2Class stReportFilter"
-															title="<?php echo _translate('Please choose implementing partner'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose implementing partner'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
-																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
-																	<?= $implementingPartner['i_partner_name']; ?>
-																</option>
+															<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+															<?= $implementingPartner['i_partner_name']; ?>
+															</option>
 															<?php } ?>
-														</select>
-													</td>
-													<td colspan="2">&nbsp;<input type="button"
-															onclick="sampleTestingReport();"
-															value="<?= _translate('Search'); ?>"
-															class="searchBtn btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="resetFilters('stReportFilter');"><span>
-																<?= _translate("Reset"); ?>
-															</span></button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													&nbsp;<input type="button"
+													onclick="sampleTestingReport();"
+													value="<?= _translate('Search'); ?>"
+													class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('stReportFilter');"><span>
+													<?= _translate("Reset"); ?>
+													</span></button>
+												</div>
+												</div>
+											</div>
 											<figure class="highcharts-figure">
 												<div id="container"></div>
 												<div id="sampleTestingResultDetails">
@@ -1502,60 +1472,68 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</figure>
 										</div>
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
-											<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
-												style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
-												<tr>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Patient ID"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<input type="text" id="patientId" name="patientId"
+											<div class="box box-default report-filter-box">
+												<div class="box-header with-border report-filter-header">
+													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
+													<span class="report-filter-summary"></span>
+													<div class="box-tools pull-right">
+														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _translate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
+													</div>
+												</div>
+												<div class="box-body">
+												<div class="row">
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="patientId"><?php echo _translate("Patient ID"); ?></label>
+															<input type="text" id="patientId" name="patientId"
 															class="form-control patientHistoryFilter"
 															placeholder="<?php echo _translate('Enter Patient ID'); ?>"
 															style="background:#fff;" />
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Patient Name"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<input type="text" id="patientName" name="patientName"
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="patientName"><?php echo _translate("Patient Name"); ?></label>
+															<input type="text" id="patientName" name="patientName"
 															class="form-control patientHistoryFilter"
 															placeholder="<?php echo _translate('Enter Patient Name'); ?>"
 															style="background:#fff;" />
-													</td>
-													<td style="width: 10%;"><strong>
-															<?php echo _translate("Implementing Partner"); ?>&nbsp;:
-														</strong></td>
-													<td style="width: 23.33%;">
-														<select name="pthImplementingPartner" id="pthImplementingPartner"
+														</div>
+													</div>
+													<div class="col-md-4 col-sm-6">
+														<div class="form-group">
+															<label class="control-label" for="pthImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
+															<select name="pthImplementingPartner" id="pthImplementingPartner"
 															class="form-control select2Class patientHistoryFilter"
-															title="<?php echo _translate('Please choose implementing partner'); ?>"
-															style="width:100%;">
+															title="<?php echo _translate('Please choose implementing partner'); ?>">
 															<option value="">
-																<?php echo _translate("-- Select --"); ?>
+															<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
-																<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
-																	<?= $implementingPartner['i_partner_name']; ?>
-																</option>
+															<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+															<?= $implementingPartner['i_partner_name']; ?>
+															</option>
 															<?php } ?>
-														</select>
-													</td>
-													<td> <input type="button" onclick="searchVlRequestData();"
-															value="<?= _translate('Search'); ?>"
-															class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="resetFilters('patientHistoryFilter');">
-															<span><?= _translate('Reset'); ?></span>
-														</button>
-														<button class="btn btn-success btn-sm" type="button"
-															onclick="exportPatientTesthistoryInexcel()"><em
-																class="fa-solid fa-cloud-arrow-down"></em>
-															<?php echo _translate("Export to excel"); ?>
-														</button>
-													</td>
-												</tr>
-											</table>
+															</select>
+														</div>
+													</div>
+												</div>
+												<div class="filter-actions">
+													<input type="button" onclick="searchVlRequestData();"
+													value="<?= _translate('Search'); ?>"
+													class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('patientHistoryFilter');">
+													<span><?= _translate('Reset'); ?></span>
+													</button>
+													<button class="btn btn-success btn-sm" type="button"
+													onclick="exportPatientTesthistoryInexcel()"><em
+													class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
+												</div>
+												</div>
+											</div>
 											<table aria-describedby="table" id="patientTestHistoryReport"
 												class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
@@ -1623,6 +1601,8 @@ $implementingPartnerList = $general->getImplementationPartners();
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="<?= _asset('/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
+<link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/clinic-reports.css') ?>">
+<script type="text/javascript" src="<?= _asset('/assets/js/clinic-reports.js') ?>"></script>
 <script type="text/javascript">
 	let searchExecuted = false;
 	var oTableViralLoad = null;
@@ -1782,12 +1762,13 @@ $implementingPartnerList = $general->getImplementationPartners();
 		});
 		$('#vfVlnsSampleTestDate').val('');
 		restoreAllFilters();
-		highViralLoadReport();
-		sampleRjtReport();
-		notAvailReport();
-		incompleteForm();
-		getSampleResult();
-		patientHistoryReport();
+		ClinicReports.registerTab('highViralLoadReport', { init: highViralLoadReport, table: function () { return oTableViralLoad; } });
+		ClinicReports.registerTab('sampleRjtReport', { init: sampleRjtReport, table: function () { return oTableRjtReport; } });
+		ClinicReports.registerTab('notAvailReport', { init: notAvailReport, table: function () { return oTablenotAvailReport; } });
+		ClinicReports.registerTab('incompleteFormReport', { init: incompleteForm, table: function () { return oTableincompleteReport; } });
+		ClinicReports.registerTab('sampleTestingReport', { init: getSampleResult, search: sampleTestingReport });
+		ClinicReports.registerTab('patientTestHistoryFormReport', { init: patientHistoryReport, table: function () { return oTablepatientTestHistoryReport; } });
+		ClinicReports.start();
 		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select, #patientTestHistoryFormReport input").on("change", function () {
 			searchExecuted = false;
 		});
@@ -1926,13 +1907,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 					"name": "hvlImplementingPartner",
 					"value": $("#hvlImplementingPartner").val()
 				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
+				ClinicReports.serverData(sSource, aoData, fnCallback);
 			}
 		});
 	}
@@ -2027,13 +2002,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 					"name": "rjtImplementingPartner",
 					"value": $("#rjtImplementingPartner").val()
 				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
+				ClinicReports.serverData(sSource, aoData, fnCallback);
 			}
 		});
 	}
@@ -2126,13 +2095,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 					"name": "noResultIncludeExpired",
 					"value": $("#noResultIncludeExpired").val()
 				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
+				ClinicReports.serverData(sSource, aoData, fnCallback);
 			}
 		});
 	}
@@ -2208,13 +2171,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 					"name": "dqFieldMatch",
 					"value": $("#dqFieldMatch").val()
 				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
+				ClinicReports.serverData(sSource, aoData, fnCallback);
 			}
 		});
 	}
@@ -2287,27 +2244,18 @@ $implementingPartnerList = $general->getImplementationPartners();
 					"name": "pthImplementingPartner",
 					"value": $("#pthImplementingPartner").val()
 				});
-				$.ajax({
-					"dataType": 'json',
-					"type": "POST",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback
-				});
+				ClinicReports.serverData(sSource, aoData, fnCallback);
 			}
 		});
 	}
 
+	/* Every tab is a server-side table over its own endpoint, so redrawing all
+	   of them cost five queries to look at one. Only the visible tab is drawn,
+	   and the promise settles when its request comes back -- which is what the
+	   exports wait on before asking the server to replay the query. */
 	function searchVlRequestData() {
 		searchExecuted = true;
-		$.blockUI();
-		oTableViralLoad.fnDraw();
-		oTableRjtReport.fnDraw();
-		oTablenotAvailReport.fnDraw();
-		//incompleteForm();
-		oTableincompleteReport.fnDraw();
-		oTablepatientTestHistoryReport.fnDraw();
-		$.unblockUI();
+		return ClinicReports.searchActive();
 	}
 
 	function updateStatus(id, value) {
@@ -2327,8 +2275,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 	}
 
 	function exportHighViralLoadInexcel() {
-		if (searchExecuted === false) {
-			searchVlRequestData();
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
+		if (!searchExecuted) {
+			return searchVlRequestData().then(exportHighViralLoadInexcel);
 		}
 		var markAsComplete = false;
 		confm = confirm("<?php echo _translate("Do you want to mark these as complete ?"); ?>");
@@ -2361,8 +2311,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 	}
 
 	function exportRejectedResultInexcel() {
-		if (searchExecuted === false) {
-			searchVlRequestData();
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
+		if (!searchExecuted) {
+			return searchVlRequestData().then(exportRejectedResultInexcel);
 		}
 		$.blockUI();
 		$.post("/vl/program-management/vlRejectedResultExportInExcel.php", {
@@ -2388,8 +2340,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 	}
 
 	function exportNotAvailableResultInexcel() {
-		if (searchExecuted === false) {
-			searchVlRequestData();
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
+		if (!searchExecuted) {
+			return searchVlRequestData().then(exportNotAvailableResultInexcel);
 		}
 		$.blockUI();
 		$.post("/vl/program-management/vlNotAvailableResultExportInExcel.php", {
@@ -2414,8 +2368,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 	}
 
 	function exportDataQualityInexcel() {
-		if (searchExecuted === false) {
-			searchVlRequestData();
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
+		if (!searchExecuted) {
+			return searchVlRequestData().then(exportDataQualityInexcel);
 		}
 		$.blockUI();
 		$.post("/vl/program-management/vlDataQualityExportInExcel.php", {
@@ -2436,8 +2392,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 	}
 
 	function exportPatientTesthistoryInexcel() {
-		if (searchExecuted === false) {
-			searchVlRequestData();
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
+		if (!searchExecuted) {
+			return searchVlRequestData().then(exportPatientTesthistoryInexcel);
 		}
 		$.blockUI();
 		$.post("/vl/program-management/vlPatientTesthistoryInExcel.php", {
