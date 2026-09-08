@@ -138,6 +138,32 @@ function _apply_add_primary_key(DatabaseService $db, SymfonyStyle $io, string $t
 }
 
 /**
+ * Put sc_version back to what it was when the run started.
+ *
+ * A migration file may write its own sc_version part way through -- 5.2.6 does,
+ * well before the rename it exists for -- and any DDL after that implicitly
+ * commits it. So a rollback does not take the version back with it: the file
+ * reads as applied while the work it was supposed to do never happened, and the
+ * next run skips it for good.
+ *
+ * Restoring the snapshot rather than skipping the file's own UPDATE keeps every
+ * migration working standalone, and does not care whether an older file calls
+ * the key 'version' or 'sc_version'. Nothing to restore on a first-ever install
+ * that had no value to begin with.
+ */
+function restore_sc_version(DatabaseService $db, ?string $scVersionBefore): bool
+{
+    if ($scVersionBefore === null || $scVersionBefore === '') {
+        return false;
+    }
+
+    $db->where('name', 'sc_version');
+    $db->update('system_config', ['value' => $scVersionBefore]);
+
+    return true;
+}
+
+/**
  * Codes that mean "this DDL was already applied" rather than "this DDL failed".
  *
  * 1050 table exists, 1060 duplicate column, 1061 duplicate key name, 1068
@@ -1205,6 +1231,17 @@ foreach ($versions as $version) {
             $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;");
             if ($aborted) {
                 $db->rollbackTransaction();
+
+                // The rollback is not enough on its own. A migration file may
+                // write its own sc_version part way through -- 5.2.6 does, well
+                // before the rename it exists for -- and any DDL after that
+                // implicitly commits it, so the version survives the rollback
+                // while the work does not. Left alone, the next run skips the
+                // file as already applied and the rename never happens.
+                // Restoring the value read at the start puts the run back where
+                // it began, which is what an abort is supposed to mean.
+                restore_sc_version($db, $scVersionBefore);
+
                 if ($bar instanceof ProgressBar) {
                     MiscUtility::spinnerFinish($bar);
                 }
@@ -1231,10 +1268,7 @@ foreach ($versions as $version) {
                 // standalone) and does not care whether the key is 'version' or
                 // 'sc_version' in older files. Only restore when there was a value to
                 // begin with, so a first-ever install with no key set is left alone.
-                if ($scVersionBefore !== null && $scVersionBefore !== '') {
-                    $db->where('name', 'sc_version');
-                    $db->update('system_config', ['value' => $scVersionBefore]);
-                }
+                restore_sc_version($db, $scVersionBefore);
                 if (!$quietMode) {
                     $io->warning("app_version NOT bumped to $version: $versionErrors non-benign error(s) occurred. Fix the issue(s) above and re-run migrate.php.");
                 }
