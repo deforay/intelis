@@ -23,7 +23,7 @@ The review is a local step, not a CI job — the reviewing CLI is authenticated 
 machine. CI enforces the deterministic checks; this one is a discipline.
 
 **The review brief** — single source of truth, extracted verbatim by the script, so it cannot drift:
-> "You are reviewing a change to InteLIS, a PHP laboratory information system covering viral load, EID, COVID-19, TB, CD4, hepatitis and custom tests, deployed as a fleet of laboratory instances that sync to a central instance. Do not summarize the code. Find: (1) any query reaching test, patient or user data without the lab scope (`CommonService::labScopeWhere`, `labAdminScopeWhere`, `$_SESSION['labId']`), and any administrative write a restricted operator could reach on a cloud instance (`CommonService::isCloudLisNonAdmin`); (2) SQL built by concatenating request data instead of binding it; (3) anything that can silently lose entered data — a request save that writes result columns, two fields sharing one `name` in a form (PHP keeps the last, so the earlier value is discarded), an index misalignment across parallel POST arrays, a status update that nulls a column it did not intend to touch, or a write to `generic_test_results`, which has no audit triggers and is therefore unrecoverable; (4) schema changes made anywhere but `sys/migrations/`, migrations that are not re-runnable on both fresh and upgraded installs, and a new migration without the matching version bump; (5) any place patient data or a lab identifier is taken from the request rather than from the credential or an explicit allowlist before reaching an API response or a remote payload; (6) user-visible strings that bypass the translation helpers, and output escaped with the wrong helper for its context — HTML body, HTML attribute, JS string, or grid tooltip; (7) a defect fixed in one country form while its siblings carry the same copy-pasted code; (8) tests that assert the happy path but would still pass if the invariant were deleted. Rank findings by severity. If you find nothing in a category, say 'clear' — don't pad."
+> "You are reviewing a change to InteLIS, a PHP laboratory information system covering viral load, EID, COVID-19, TB, CD4, hepatitis and custom tests, deployed as a fleet of laboratory instances that sync to a central instance. Do not summarize the code. Find: (1) any query reaching test, patient or user data without the lab scope (`CommonService::labScopeWhere`, `labAdminScopeWhere`, `$_SESSION['labId']`), and any administrative write a restricted operator could reach on a cloud instance (`CommonService::isCloudLisNonAdmin`); (2) SQL built by concatenating request data instead of binding it; (3) anything that can silently lose entered data — a request save that writes result columns, two fields sharing one `name` in a form (PHP keeps the last, so the earlier value is discarded), an index misalignment across parallel POST arrays, a status update that nulls a column it did not intend to touch, or a write to `generic_test_results`, which has no audit triggers and is therefore unrecoverable; (4) schema changes made anywhere but `sys/migrations/`, migrations that are not re-runnable on both fresh and upgraded installs, and a new migration without the matching version bump; (5) any place patient data or a lab identifier is taken from the request rather than from the credential or an explicit allowlist before reaching an API response or a remote payload; (6) user-visible strings that bypass the translation helpers, and output escaped with the wrong helper for its context — HTML body, HTML attribute, JS string, or grid tooltip; (7) a defect fixed in one country form while its siblings carry the same copy-pasted code; (8) tests that assert the happy path but would still pass if the invariant were deleted. Before claiming what a function outside the diff does, open it and quote the line you are relying on — a claim about unread code is not a finding. When a hand-maintained list is missing an entry, trace the whole path and report every entry it is missing, not the first. If the commit message or a comment already addresses a concern, say why that reasoning is insufficient rather than restating the concern. Report a defect outside the diff separately, not ranked among the diff's findings. Rank findings by severity. If you find nothing in a category, say 'clear' — don't pad."
 
 **Where the second opinion matters most:** anything touching lab scoping or the cloud-instance
 admin gate, the result-entry and import paths, every migration, and the remote sync and API
@@ -76,6 +76,31 @@ against them without running a review.
   machines it was written for. Known and deliberately not fixed: the `SET PERSIST sql_mode`
   calls in `setup.sh` and `upgrade.sh`, where the same setting is also written to
   `mysqld.cnf` and the failure is printed rather than swallowed.
+- **A migration must survive the table its foreign key points at being absent.** `CREATE
+  TABLE` with a `FOREIGN KEY` onto a table that is not there fails with 1824, which is not
+  in the runner's benign set, so the migration halts, `sc_version` stays behind and every
+  later version is blocked for good. A country deployment that never enabled a module has
+  neither its request table nor its result table, and preflight reads exactly that pair as
+  a module removed rather than broken — so the state is legitimate and common. The runner
+  has no way to express "only if the parent exists", so a repair migration creates the
+  table without the constraint and keeps the index the key sat on.
+- **`sql/init.sql` is a MySQL 8 dump; README supports MySQL 5.7.** Its column and table
+  definitions carry `COLLATE utf8mb4_0900_ai_ci`, which does not exist on 5.7 and fails with
+  1273. Never copy a `COLLATE` clause from the seed into a migration: leave it off and each
+  server applies its own default for `utf8mb4` — a fresh MySQL 8 install still lands on the
+  collation the seed declares — and `composer db:collation` is what brings an installation
+  into line.
+- **The runner's benign-errno set is the definition of "safe to fail".** 1050, 1060, 1061,
+  1068, 1091 and 1826 are swallowed and the migration continues; anything else halts the
+  upgrade and strands the instance. Before writing a statement that may fail on some
+  installation, check which side of that line its error code falls on.
+- **An integration test that owns a database names it with the process id.** Two suites run
+  against one MySQL here — a second terminal, or a watcher beside a manual run — and a
+  fixed-name database is dropped and recreated underneath the other run, so the fixture is
+  gone by the time the assertions read it. It presents as an intermittent failure that looks
+  like a test-order bug and disappears on a re-run. `tests/Support/MigrationRunnerFunctions`
+  shares one database on purpose, because the runner caches the schema name in a static;
+  anything that builds real application tables wants its own.
 - **`mysqladmin ping` is not a credential check.** It answers "is the server alive", and
   answers yes when access is denied — which is why it is the right probe for "is MySQL up"
   and useless for "is this password correct". Test a password by running a statement.
