@@ -872,8 +872,10 @@ $remoteURL = $general->getRemoteURL();
 
 
         if ($(".pageFilters").length > 0) {
-            // Initialize filter highlighter
-            Utilities.initFilterHighlighter('.pageFilters');
+            // Initialize filter highlighter. The handle is kept so a page that
+            // sets a filter without a plain change event -- copying one between
+            // tabs, say -- can ask for the highlights to be recalculated.
+            window.pageFilterHighlighter = Utilities.initFilterHighlighter('.pageFilters');
         }
 
         // Run the scheduler with the defined scripts and intervals

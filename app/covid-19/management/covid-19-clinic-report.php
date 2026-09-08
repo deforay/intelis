@@ -97,7 +97,7 @@ $state = $geolocationService->getProvinces("yes");
 														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
-												<div class="box-body">
+												<div class="box-body pageFilters">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -222,7 +222,7 @@ $state = $geolocationService->getProvinces("yes");
 														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
-												<div class="box-body">
+												<div class="box-body pageFilters">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -343,7 +343,7 @@ $state = $geolocationService->getProvinces("yes");
 														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
-												<div class="box-body">
+												<div class="box-body pageFilters">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -454,7 +454,7 @@ $state = $geolocationService->getProvinces("yes");
 														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
-												<div class="box-body">
+												<div class="box-body pageFilters">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -523,7 +523,7 @@ $state = $geolocationService->getProvinces("yes");
 														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
-												<div class="box-body">
+												<div class="box-body pageFilters">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -577,7 +577,7 @@ $state = $geolocationService->getProvinces("yes");
 														<button type="button" class="btn btn-box-tool" data-widget="collapse" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
 												</div>
-												<div class="box-body">
+												<div class="box-body pageFilters">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
