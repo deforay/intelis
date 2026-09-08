@@ -15650,7 +15650,7 @@ msgstr "Installations cartographiées dans cette province"
 #: app/vl/program-management/export-virologic-failure-report.php:155
 #: app/vl/results/forms/update-cameroon-result.php:245
 msgid "Facility Code"
-msgstr "Nom et code de la FOSA"
+msgstr "Code de la structure"
 
 #: app/common/reference/edit-geographical-divisions.php:314
 msgid "No facilities found for this province."
@@ -22629,7 +22629,7 @@ msgstr "Modifier la FOSA"
 
 #: app/facilities/editFacility.php:281
 msgid "Allow Results File Upload"
-msgstr "Autoriser le téléchargement du fichier des resultats"
+msgstr "Autoriser le téléchargement de fichiers de résultats"
 
 #: app/facilities/editFacility.php:323
 msgid "Please choose Lab Manager"
