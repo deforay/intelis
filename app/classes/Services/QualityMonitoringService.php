@@ -61,8 +61,8 @@ final class QualityMonitoringService
     public const LATE_DAYS = 14;
     public const VERY_LATE_DAYS = 30;
 
-    /** How many rows one mother-name lookup covers. Bounds the IN () list. */
-    private const MOTHER_LOOKUP_BATCH = 200;
+    /** How many rows one batch of the export carries before it is yielded. */
+    private const EXPORT_BATCH = 200;
 
     /**
      * Instruments already looked up for a lab, as lab id => joined names.
@@ -210,7 +210,7 @@ final class QualityMonitoringService
             $out[] = $this->presentSample($row);
         }
         return [
-            'rows' => $this->attachLabInstruments($this->attachMothersFromVl($out), $f),
+            'rows' => $this->attachLabInstruments($out, $f),
             'total' => $total,
         ];
     }
@@ -229,13 +229,13 @@ final class QualityMonitoringService
         $buffer = [];
         foreach ($this->db->rawQueryGenerator($this->samplesQuery($f, $view, '', '', 'desc')) as $row) {
             $buffer[] = $this->presentSample($row);
-            if (count($buffer) >= self::MOTHER_LOOKUP_BATCH) {
-                yield from $this->attachLabInstruments($this->attachMothersFromVl($buffer), $f);
+            if (count($buffer) >= self::EXPORT_BATCH) {
+                yield from $this->attachLabInstruments($buffer, $f);
                 $buffer = [];
             }
         }
         if ($buffer !== []) {
-            yield from $this->attachLabInstruments($this->attachMothersFromVl($buffer), $f);
+            yield from $this->attachLabInstruments($buffer, $f);
         }
     }
 
@@ -376,95 +376,6 @@ final class QualityMonitoringService
     }
 
     /**
-     * Fills in a mother's name from her own viral load record when the EID
-     * request did not carry one.
-     *
-     * The link is the one the PMTCT cascade report already uses: the mother id
-     * on the EID request against the patient's ART number on the VL request.
-     * Nothing else ties a mother to her infant on this system.
-     *
-     * Two deliberate limits. The lookup runs against the indexed column rather
-     * than TRIM() of it, with both the raw and the trimmed id in the list, so
-     * whitespace on the EID side is caught without turning a paged grid into a
-     * full scan of a seven-figure table. The collation is NO PAD, so a VL row
-     * whose own ART number was stored with surrounding whitespace is missed --
-     * about one row in six hundred, against a full scan on every page draw and
-     * on every batch of an export, which is not a trade worth making. And a
-     * request stored with PII encryption on holds its ART number encrypted, so
-     * it matches only another encrypted value; the name is then simply left
-     * blank, which is what it was before.
-     *
-     * The borrowed name is kept in its own field, never merged into the one the
-     * EID form recorded: on this page the difference between "the clinic wrote
-     * this down" and "we found it elsewhere" is the whole point.
-     *
-     * @param list<array<string, mixed>> $rows
-     * @return list<array<string, mixed>>
-     */
-    private function attachMothersFromVl(array $rows): array
-    {
-        $wanted = [];
-        foreach ($rows as $row) {
-            if ($row['motherName'] === '' && $row['motherId'] !== '') {
-                $wanted[$row['motherId']] = true;
-                $wanted[trim($row['motherId'])] = true;
-            }
-        }
-        if ($wanted === []) {
-            return $rows;
-        }
-
-        $list = implode(', ', array_map(
-            fn(string $id): string => "'" . $this->db->escape($id) . "'",
-            array_keys($wanted)
-        ));
-
-        // Newest last: the loop below keeps overwriting, so the most recent
-        // request a mother made is the name that survives.
-        $found = $this->db->rawQuery(
-            "SELECT TRIM(v.patient_art_no) AS mother_id,
-                    v.patient_first_name,
-                    v.patient_middle_name,
-                    v.patient_last_name,
-                    v.is_encrypted
-               FROM form_vl AS v
-              WHERE v.patient_art_no IN ($list)
-                AND TRIM(COALESCE(v.patient_first_name, '')) <> ''
-              ORDER BY v.vl_sample_id ASC"
-        ) ?: [];
-
-        $names = [];
-        $key = null;
-        foreach ($found as $row) {
-            if (($row['is_encrypted'] ?? '') === 'yes') {
-                $key ??= (string) $this->general->getGlobalConfig('key');
-            }
-            $part = static function (mixed $value) use ($row, $key): string {
-                $value = trim((string) ($value ?? ''));
-                if ($value === '' || ($row['is_encrypted'] ?? '') !== 'yes') {
-                    return $value;
-                }
-                return trim((string) CommonService::crypto('decrypt', $value, (string) $key));
-            };
-            $name = trim(implode(' ', array_filter([
-                $part($row['patient_first_name']),
-                $part($row['patient_middle_name']),
-                $part($row['patient_last_name']),
-            ])));
-            if ($name !== '') {
-                $names[(string) $row['mother_id']] = $name;
-            }
-        }
-
-        foreach ($rows as $index => $row) {
-            if ($row['motherName'] === '' && $row['motherId'] !== '') {
-                $rows[$index]['motherNameFromVl'] = $names[trim($row['motherId'])] ?? '';
-            }
-        }
-        return $rows;
-    }
-
-    /**
      * The grid, in order. 'sort' is the expression the column orders by, or
      * null for a column that cannot be ordered. The page renders its header
      * and its DataTables column list from this, so the two stay in step.
@@ -489,8 +400,8 @@ final class QualityMonitoringService
         return [
             'select' => ['label' => '', 'sort' => null],
             'sampleCode' => ['label' => _translate('Sample ID'), 'sort' => 'placed.sample_code'],
-            'child' => ['label' => _translate('Child'), 'sort' => 'placed.child_id'],
-            'mother' => ['label' => _translate('Mother'), 'sort' => 'placed.mother_id'],
+            'child' => ['label' => _translate('Child ID'), 'sort' => 'placed.child_id'],
+            'mother' => ['label' => _translate('Mother ID'), 'sort' => 'placed.mother_id'],
             'facility' => ['label' => _translate('Collection Facility'), 'sort' => 'f.facility_name'],
             'province' => ['label' => _translate('Province/State'), 'sort' => 'f.facility_state'],
             'lab' => ['label' => _translate('Testing Lab'), 'sort' => 'l.facility_name'],
@@ -515,12 +426,9 @@ final class QualityMonitoringService
             'sampleCode' => _translate('Sample ID'),
             'remoteSampleCode' => _translate('Remote Sample ID'),
             'childId' => _translate('Child ID'),
-            'childName' => _translate('Child Name'),
             'childDob' => _translate('Child Date of Birth'),
             'childAge' => _translate('Child Age'),
             'motherId' => _translate('Mother ID'),
-            'motherName' => _translate('Mother Name'),
-            'motherNameFromVl' => _translate('Mother Name (from VL record)'),
             'facility' => _translate('Collection Facility'),
             'province' => _translate('Province/State'),
             'district' => _translate('District/County'),
@@ -677,13 +585,9 @@ final class QualityMonitoringService
                        TRIM(COALESCE(t.result, '')) <> '' AS has_result,
                        t.result_approved_datetime,
                        t.child_id,
-                       t.child_name,
-                       t.child_surname,
                        t.child_dob,
                        t.child_age,
                        t.mother_id,
-                       t.mother_name,
-                       t.mother_surname,
                        t.sample_collection_date,
                        t.sample_dispatched_datetime,
                        t.sample_received_at_lab_datetime,
@@ -755,7 +659,6 @@ final class QualityMonitoringService
             }
             return (string) CommonService::crypto('decrypt', $value, $key);
         };
-        $fullName = static fn(string $first, mixed $last): string => trim($first . ' ' . trim((string) ($last ?? '')));
 
         // A blank cell for a missing date, and for the zero date legacy rows
         // carry instead of NULL, which the formatter would render as year -1.
@@ -803,14 +706,9 @@ final class QualityMonitoringService
             'sampleCode' => (string) ($row['sample_code'] ?? ''),
             'remoteSampleCode' => (string) ($row['remote_sample_code'] ?? ''),
             'childId' => $plain($row['child_id'] ?? null),
-            'childName' => $fullName($plain($row['child_name'] ?? null), $row['child_surname'] ?? null),
             'childDob' => $date($row['child_dob'] ?? null),
             'childAge' => $childAge === '0' ? '' : $childAge,
             'motherId' => $plain($row['mother_id'] ?? null),
-            'motherName' => $fullName($plain($row['mother_name'] ?? null), $row['mother_surname'] ?? null),
-            // Filled in afterwards, in one query for a batch of rows, and only
-            // where the EID request recorded no name of its own.
-            'motherNameFromVl' => '',
             'facility' => (string) ($row['facility_name'] ?? ''),
             'province' => (string) ($row['facility_state'] ?? ''),
             'district' => (string) ($row['facility_district'] ?? ''),
