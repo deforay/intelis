@@ -19,7 +19,8 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
 
     [:octicons-arrow-right-24: Le parcours d'un échantillon](user-guides/index.md)
 
-    [:octicons-arrow-right-24: Enregistrer une demande de test](user-guides/register-a-request.md)
+    [:octicons-arrow-right-24: Enregistrer une demande de
+    test](user-guides/register-a-request.md)
 
 -   :material-server:{ .lg .middle } __Administrer la machine__
 
@@ -29,9 +30,11 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
     maintenance qui gardent une machine de laboratoire en bonne santé. Ces
     guides sont disponibles en anglais uniquement.
 
-    [:octicons-arrow-right-24: Mettre à jour InteLIS](guides/updating-intelis-on-ubuntu.md)
+    [:octicons-arrow-right-24: Mettre à jour
+    InteLIS](guides/updating-intelis-on-ubuntu.md)
 
-    [:octicons-arrow-right-24: Installer sur Ubuntu](guides/installing-intelis-on-ubuntu.md)
+    [:octicons-arrow-right-24: Installer sur
+    Ubuntu](guides/installing-intelis-on-ubuntu.md)
 
 -   :material-printer-outline:{ .lg .middle } __Aide-mémoires imprimables__
 
@@ -41,11 +44,14 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
     travail, cinq pour l'administrateur, et six pour la personne qui administre
     la machine.
 
-    [:octicons-arrow-right-24: Fiches pour le laboratoire](job-aids/index.md#pour-le-laboratoire)
+    [:octicons-arrow-right-24: Fiches pour le
+    laboratoire](job-aids/index.md#pour-le-laboratoire)
 
-    [:octicons-arrow-right-24: Fiches pour l'administrateur](job-aids/index.md#pour-ladministrateur)
+    [:octicons-arrow-right-24: Fiches pour
+    l'administrateur](job-aids/index.md#pour-ladministrateur)
 
-    [:octicons-arrow-right-24: Fiches pour la machine](job-aids/index.md#pour-la-machine)
+    [:octicons-arrow-right-24: Fiches pour la
+    machine](job-aids/index.md#pour-la-machine)
 
 -   :material-code-braces:{ .lg .middle } __Référence__
 

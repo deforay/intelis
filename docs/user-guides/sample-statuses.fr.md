@@ -13,13 +13,13 @@ S'applique à InteLIS 5.7.64.
 | Échantillon envoyé à un autre laboratoire | Transmis à un autre laboratoire pour analyse |
 | En attente d'approbation | Un résultat est enregistré et attend son approbation |
 | Accepté | Le résultat est approuvé et disponible pour diffusion |
-| Rejeté | L'échantillon n'était pas propre au test. Un motif de rejet est enregistré |
+| Rejeté | L'échantillon n'était pas propre au test. Un motif de rejet est enregistré, et le rejet est diffusé à la structure demandeuse afin qu'un nouveau prélèvement soit effectué |
 | Échec/Invalidité | Le test a eu lieu et n'a pas produit de résultat exploitable |
 | En attente | Suspendu dans l'attente d'une décision |
-| Échantillon réorganisé | Renvoyé au test |
+| Échantillon réorganisé | Statut hérité, conservé pour que les anciens enregistrements restent lisibles. Aucun flux actuel ne l'attribue |
 | Perdu | L'échantillon est introuvable et ne sera pas testé |
 | Expiré | L'échantillon a dépassé la durée de conservation autorisée par l'installation |
-| Aucun résultats | Aucun résultat n'est enregistré pour l'échantillon |
+| Aucun résultats | Le test a eu lieu et n'a rapporté aucun résultat. Enregistré en saisissant un résultat `no result` |
 | Annulée | Le test ne sera pas réalisé. La demande subsiste mais aucun test n'a lieu |
 
 ## Où chaque statut est attribué
@@ -34,7 +34,7 @@ S'applique à InteLIS 5.7.64.
 | Rejeté | L'enregistrement d'un rejet sur le formulaire de résultat, ou l'application de Rejeté dans Gérer le statut des résultats |
 | Échec/Invalidité | L'enregistrement d'un échec de test, ou un import qui marque la ligne en échec |
 | En attente | L'application de En attente à un échantillon |
-| Échantillon réorganisé | La remise au test d'un échantillon |
+| Échantillon réorganisé | Hérité. Aucun flux actuel n'attribue ce statut. Retester un échantillon le ramène à Échantillon enregistré au laboratoire d'analyse, et la case **Échantillon réorganisé** du formulaire de demande enregistre un indicateur distinct plutôt que ce statut |
 | Perdu | L'application de Perdu dans Gérer le statut des résultats |
 | Expiré | L'écoulement de la période de péremption définie pour l'installation |
 | Annulée | L'application de Annulée dans Gérer le statut des résultats, avec saisie d'une confirmation |

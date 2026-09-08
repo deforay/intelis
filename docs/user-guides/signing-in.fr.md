@@ -46,8 +46,10 @@ signifie que le rôle ne l'autorise pas, et non que la fonction n'existe pas.
 ## Vérifier la bannière de formation
 
 Certaines installations disposent d'une copie de formation séparée. Une copie de
-formation affiche une bannière portant la mention **TRAINING SERVER** en travers
-de l'écran.
+formation affiche une bannière défilante en haut de l'écran. Son libellé est
+défini par l'administrateur et porte la mention **TRAINING SERVER** tant qu'il
+n'a pas été modifié : considérer toute bannière comme la marque d'une copie de
+formation plutôt que de chercher ces deux mots.
 
 Le travail effectué sur une copie de formation n'atteint jamais de vrais
 patients. Le travail effectué sur le système réel, si. Vérifier la bannière
@@ -56,13 +58,13 @@ avant de saisir de vrais résultats.
 ## Changer le mot de passe
 
 1. Sélectionner le nom du compte en haut à droite.
-2. Sélectionner **My Account**.
+2. Sélectionner **Modifier le profil**.
 3. Saisir deux fois le nouveau mot de passe.
-4. Sélectionner **Sauvegarder**.
+4. Sélectionner **Envoyer**.
 
-Si le menu du compte ne comporte pas d'entrée **My Account**, l'administrateur a
-désactivé la modification du profil. Demander à l'administrateur de changer le
-mot de passe.
+Si le menu du compte ne comporte pas d'entrée **Modifier le profil**,
+l'administrateur a désactivé la modification du profil. Demander à
+l'administrateur de changer le mot de passe.
 
 ## Utiliser les filtres d'une page de liste
 

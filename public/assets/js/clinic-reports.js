@@ -286,14 +286,18 @@
         });
     }
 
-    /* Search, Reset and Export live in the header, so folding the panel leaves
-       them where they were. A search is usually the step before an export, and
-       collapsing used to take the export button off the screen with it. */
+    /* Only the filters fold. The button bar sits below them and stays, but with
+       the filters hidden there is nothing to search, so Search and Reset go and
+       Export -- which acts on the results already on screen, and is usually why
+       the search was run -- stays. A panel with nothing left to show drops the
+       bar rather than leaving an empty strip. */
     function toggleFilters(box, collapsed) {
         var grid = box.find('.box-body').first();
         var icon = box.find('.report-filter-toggle em').first();
+        var bar = box.find('.filter-actions').first();
         box.toggleClass('report-filter-collapsed', collapsed);
         icon.toggleClass('fa-minus', !collapsed).toggleClass('fa-plus', collapsed);
+        bar.toggle(!collapsed || bar.find('.filter-export').length > 0);
         if (collapsed) {
             grid.slideUp(150);
         } else {
@@ -441,12 +445,8 @@
                 }
             });
 
-            /* The whole header is the hit area, the chevron included -- except
-               the buttons that now live in it, which have their own job. */
-            $(document).on('click', '.report-filter-header', function (event) {
-                if ($(event.target).closest('.filter-actions').length) {
-                    return;
-                }
+            /* The whole header is the hit area, the chevron included. */
+            $(document).on('click', '.report-filter-header', function () {
                 var box = $(this).closest('.report-filter-box');
                 toggleFilters(box, !box.hasClass('report-filter-collapsed'));
             });

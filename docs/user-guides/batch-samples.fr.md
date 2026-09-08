@@ -41,7 +41,7 @@ restreindre, sélectionner **Afficher la recherche avancée** et filtrer.
 | Filtre | Usage |
 |---|---|
 | Structure | Les échantillons d'une seule structure sanitaire |
-| Samples Entered or Modified By | Les échantillons traités par un utilisateur |
+| Échantillons saisis ou modifiés par | Les échantillons traités par un utilisateur |
 | Date de prélèvement de l'échantillon | Une période de prélèvement |
 | Date de réception de l'échantillon au labo | Une période de réception |
 | Type d'échantillon | Un seul type de prélèvement |

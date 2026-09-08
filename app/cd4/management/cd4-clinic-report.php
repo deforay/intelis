@@ -102,11 +102,6 @@ $state = $geolocationService->getProvinces("yes");
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
-												<div class="filter-actions">
-													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-													<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
-												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -196,6 +191,11 @@ $state = $geolocationService->getProvinces("yes");
 													</div>
 												</div>
 												</div>
+												<div class="box-footer filter-actions">
+													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
+												</div>
 											</div>
 
 											<table aria-describedby="table" id="highViralLoadReportTable" class="table table-bordered table-striped" aria-hidden="true">
@@ -227,11 +227,6 @@ $state = $geolocationService->getProvinces("yes");
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
-												<div class="filter-actions">
-													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-													<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
-												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -319,6 +314,11 @@ $state = $geolocationService->getProvinces("yes");
 													</div>
 												</div>
 												</div>
+												<div class="box-footer filter-actions">
+													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
+												</div>
 											</div>
 											<table aria-describedby="table" id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
@@ -347,11 +347,6 @@ $state = $geolocationService->getProvinces("yes");
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
-												<div class="filter-actions">
-													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-													<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
-												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -430,6 +425,11 @@ $state = $geolocationService->getProvinces("yes");
 													</div>
 												</div>
 												</div>
+												<div class="box-footer filter-actions">
+													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
+												</div>
 											</div>
 											<table aria-describedby="table" id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
@@ -459,11 +459,6 @@ $state = $geolocationService->getProvinces("yes");
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
-												<div class="filter-actions">
-													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-													<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
-												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -494,6 +489,11 @@ $state = $geolocationService->getProvinces("yes");
 														</div>
 													</div>
 												</div>
+												</div>
+												<div class="box-footer filter-actions">
+													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 												</div>
 											</div>
 											<table aria-describedby="table" id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true">
@@ -526,12 +526,6 @@ $state = $geolocationService->getProvinces("yes");
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
-												<div class="filter-actions">
-													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('stReportFilter');"><span>
-													<?= _translate("Reset"); ?>
-													</span></button>
-												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -569,6 +563,12 @@ $state = $geolocationService->getProvinces("yes");
 													</div>
 												</div>
 												</div>
+												<div class="box-footer filter-actions">
+													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('stReportFilter');"><span>
+													<?= _translate("Reset"); ?>
+													</span></button>
+												</div>
 											</div>
 											<figure class="highcharts-figure">
 												<div id="container"></div>
@@ -582,15 +582,6 @@ $state = $geolocationService->getProvinces("yes");
 												<div class="box-header with-border report-filter-header">
 													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
 													<span class="report-filter-summary"></span>
-												<div class="filter-actions">
-													<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('patientHistoryFilter');">
-													<span><?= _translate('Reset'); ?></span>
-													</button>
-													<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
-													<?php echo _translate("Export to excel"); ?>
-													</button>
-												</div>
 													<div class="box-tools pull-right">
 														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
 													</div>
@@ -610,6 +601,15 @@ $state = $geolocationService->getProvinces("yes");
 														</div>
 													</div>
 												</div>
+												</div>
+												<div class="box-footer filter-actions">
+													<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
+													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('patientHistoryFilter');">
+													<span><?= _translate('Reset'); ?></span>
+													</button>
+													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
 												</div>
 											</div>
 											<table aria-describedby="table" id="patientTestHistoryReport" class="table table-bordered table-striped" aria-hidden="true">

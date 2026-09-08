@@ -20,15 +20,15 @@ ses fichiers de résultats ne peuvent pas être importés.
 
 | Champ | Ce qu'il faut saisir |
 |---|---|
-| Instrument Name | Le fabricant ou la plateforme, par exemple Roche ou Abbott |
-| Machine Name | Le nom de cette machine en particulier |
-| Testing Lab | Le laboratoire où se trouve la machine |
-| Supported Tests | Chaque type de test exécuté par cette machine |
-| Instrument File | Le fichier de configuration qui indique à InteLIS comment lire les fichiers de résultats de cette machine |
-| Maximum No. of Samples In a Batch | Le nombre d'échantillons d'une série |
-| Is this a POC Device? | S'il s'agit d'un appareil délocalisé |
+| Nom de l'instrument | Le fabricant ou la plateforme, par exemple Roche ou Abbott |
+| Nom de la machine | Le nom de cette machine en particulier |
+| Laboratoire d'analyse | Le laboratoire où se trouve la machine |
+| Tests pris en charge | Chaque type de test exécuté par cette machine |
+| Fichier des instruments | Le fichier de configuration qui indique à InteLIS comment lire les fichiers de résultats de cette machine |
+| Nombre maximal d'échantillons dans un lot | Le nombre d'échantillons d'une série |
+| S'agit-il d'un dispositif POC ? | S'il s'agit d'un appareil délocalisé |
 | Latitude, Longitude | Où se trouve la machine, pour la carte du réseau de référence |
-| Status | Actif ou inactif |
+| Statut | Actif ou inactif |
 
 4. Sélectionner **Envoyer**.
 
@@ -43,9 +43,9 @@ Les limites déterminent comment un résultat numérique est affiché et interpr
 
 | Champ | Ce qu'il faut saisir |
 |---|---|
-| Lower Limit | La plus petite valeur rendue par la machine, par exemple 20 |
-| Higher Limit | La plus grande valeur rendue par la machine, par exemple 10000000 |
-| Low VL Result Text | Le texte exact écrit par la machine pour un résultat indétectable, par exemple `Target Not Detected, TND, < 20, < 40`. Séparer les variantes par des virgules |
+| Limite inférieure | La plus petite valeur rendue par la machine, par exemple 20 |
+| Limite supérieure | La plus grande valeur rendue par la machine, par exemple 10000000 |
+| Faible VL Texte de résultat | Le texte exact écrit par la machine pour un résultat indétectable, par exemple `Target Not Detected, TND, < 20, < 40`. Séparer les variantes par des virgules |
 
 Saisir dans **Faible VL Texte de résultat** toutes les formulations employées
 par la
@@ -72,9 +72,9 @@ des échantillons de patients.
 
 | Champ | Ce qu'il faut saisir |
 |---|---|
-| No. Of Calibrators | Le nombre de positions de calibrateurs de ce type de test |
-| Number of Manufacturer Controls | Le nombre de positions de contrôles du fabricant |
-| Number of In-House Controls | Le nombre de positions de contrôles internes |
+| Nombre d'étalonneurs | Le nombre de positions de calibrateurs de ce type de test |
+| Nombre de contrôles du fabricant | Le nombre de positions de contrôles du fabricant |
+| Nombre de contrôles internes | Le nombre de positions de contrôles internes |
 
 Renseigner ces valeurs par type de test. Une machine exécutant la charge virale
 et la tuberculose porte un jeu pour chacun.
@@ -100,7 +100,7 @@ figurer sur tous les rapports de cette plateforme.
 | Modification | Contrôle |
 |---|---|
 | Nouvel automate | Il apparaît dans Plateforme de test à la création d'un batch |
-| Instrument File | Importer un fichier de résultats de la machine et lire les lignes importées |
+| Fichier des instruments | Importer un fichier de résultats de la machine et lire les lignes importées |
 | Format de date | Les dates Sample Tested On importées correspondent à celles de la machine |
-| Low VL Result Text | Un résultat indétectable s'importe comme indétectable et non comme non reconnu |
+| Faible VL Texte de résultat | Un résultat indétectable s'importe comme indétectable et non comme non reconnu |
 | Compteurs de contrôle | Le nombre de positions du batch correspond à la série |

@@ -9,8 +9,16 @@ ou de pièce jointe à un courriel. Ce guide couvre les deux.
   [Vérifier et approuver les résultats](approve-results.md)
 - La permission d'imprimer ou d'envoyer les résultats
 
-Seuls les résultats approuvés peuvent être diffusés. Un résultat encore en
-attente d'approbation n'apparaît sur aucune des deux pages.
+Deux types d'échantillon peuvent être diffusés :
+
+- Les échantillons **Accepté** pour lesquels un résultat est enregistré.
+- Les échantillons **Rejeté**, qui ne portent aucun résultat. Ils sont diffusés
+  pour que la structure demandeuse apprenne le rejet et puisse effectuer un
+  nouveau prélèvement. Ne pas les diffuser est précisément ce qui retarde ce
+  nouveau prélèvement.
+
+Un échantillon encore en attente d'approbation n'apparaît sur aucune des deux
+pages.
 
 ## Imprimer les résultats
 

@@ -4,7 +4,8 @@ Ce guide couvre **ADMIN → Surveillance**, les pages qui indiquent qui a fait
 quoi, si les données circulent, et comment le laboratoire se comporte.
 
 À utiliser lorsqu'un résultat est contesté, lorsque les résultats cessent
-d'arriver, ou lorsqu'un laboratoire demande pourquoi ses données manquent dans un
+d'arriver, ou lorsqu'un laboratoire demande pourquoi ses données manquent dans
+un
 rapport national.
 
 ## Avant de commencer
@@ -46,18 +47,20 @@ modifié.
 
 | Colonne | Signifie |
 |---|---|
-| Transaction ID | L'identifiant d'une synchronisation |
-| Number of Records Synced | Le nombre de fiches transportées |
-| Sync Type | Le sens et le type de données échangées |
-| Test Type | Le module auquel les fiches appartiennent |
+| ID de transaction | L'identifiant d'une synchronisation |
+| Nombre d'enregistrements synchronisés | Le nombre de fiches transportées |
+| Type de synchronisation | Le sens et le type de données échangées |
+| Type de test | Le module auquel les fiches appartiennent |
 | URL | Le serveur destinataire |
-| Synced On | Le moment de l'exécution |
+| Synchronisé sur | Le moment de l'exécution |
 
-Un laboratoire dont les données manquent au niveau national n'a soit aucune ligne
+Un laboratoire dont les données manquent au niveau national n'a soit aucune
+ligne
 récente ici, soit des lignes portant zéro fiche.
 
 **État de la synchronisation du laboratoire** et **Tableau de bord de l'API**
-répondent à la même question depuis l'autre extrémité. Ils n'apparaissent que sur
+répondent à la même question depuis l'autre extrémité. Ils n'apparaissent que
+sur
 le serveur national, et leur absence sur une installation de laboratoire est
 voulue.
 
@@ -115,10 +118,12 @@ vers Excel pour transmettre au support.
 
 **ADMIN → Surveillance → Sample Referral Network** cartographie quelles
 structures réfèrent des échantillons à quels laboratoires, par type de test.
-Sélectionner un laboratoire ou une structure sur la carte pour n'afficher que ses
+Sélectionner un laboratoire ou une structure sur la carte pour n'afficher que
+ses
 liens.
 
-Les structures n'apparaissent sur la carte que si leur latitude et leur longitude
+Les structures n'apparaissent sur la carte que si leur latitude et leur
+longitude
 sont renseignées. Voir [Structures et laboratoires](admin-facilities.md).
 
 ## Lire les fichiers journaux

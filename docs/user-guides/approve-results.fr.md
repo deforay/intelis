@@ -1,6 +1,7 @@
 # Vérifier et approuver les résultats
 
-Un résultat n'est pas diffusé tant qu'il n'est pas approuvé. L'approbation est le
+Un résultat n'est pas diffusé tant qu'il n'est pas approuvé. L'approbation est
+le
 contrôle qui garantit que le résultat enregistré dans InteLIS est bien celui
 rendu par l'automate, et qu'il appartient au bon échantillon.
 
@@ -48,6 +49,16 @@ Une discordance entre l'ID de l'échantillon et le patient signifie que
 l'échantillon a été enregistré sur le mauvais patient, ou chargé dans la
 mauvaise position de l'automate. Ne pas l'approuver. Mettre l'échantillon en
 attente et investiguer.
+
+!!! warning "Tests personnalisés : contrôler chaque fiche de test, pas seulement la ligne"
+    Pour un échantillon en Tests personnalisés, la liste d'approbation affiche
+    l'interprétation finale de l'échantillon. Elle n'affiche pas les fiches de
+    test enregistrées pour cet échantillon. Approuver depuis la seule liste
+    revient donc à approuver une interprétation sans que personne ait contrôlé
+    les résultats d'analyse qui la fondent.
+
+    Ouvrir l'écran de résultat de l'échantillon et contrôler chaque fiche de test
+    avant d'approuver.
 
 ## Approuver
 
@@ -111,12 +122,26 @@ n'ont pas le même sens dans les rapports. Voir
 
 ## Corriger un résultat approuvé
 
+Ce qu'il faut corriger détermine où la correction se fait.
+
+**Pour changer la valeur du résultat**, aller à **CHARGE VIRALE DU VIH → Gestion
+des résultats des tests → Saisir le résultat manuellement**, ouvrir
+l'échantillon, saisir le bon résultat et indiquer le motif du changement.
+L'écran
+d'approbation ne peut pas le faire : il enregistre le statut et les noms du
+personnel, et laisse la valeur du résultat inchangée. Un statut modifié depuis
+cet écran sur un échantillon dont la valeur est fausse laisse la valeur fausse
+en
+place, et c'est la valeur qui parvient à la structure demandeuse.
+
+**Pour ne changer que le statut**, par exemple de Rejeté à Accepté :
+
 1. Régler **Afficher les échantillons qui sont** sur **Déjà approuvé/rejeté**.
 2. Sélectionner **Rechercher** et trouver l'échantillon.
 3. Appliquer le statut corrigé via **Actions groupées**.
 
-InteLIS demande confirmation avant d'écraser un résultat existant. Ne confirmer
-que si le remplacement est le bon résultat.
+Après avoir corrigé une valeur, vérifier que le statut est toujours celui voulu,
+et rediffuser le résultat s'il était déjà parti.
 
 Les échantillons se verrouillent après un nombre de jours défini par
 l'administrateur. Un échantillon verrouillé ne peut plus être modifié ici.

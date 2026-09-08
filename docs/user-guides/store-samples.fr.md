@@ -32,14 +32,22 @@ sous **ADMIN → Configuration du système → Stockage en laboratoire**.
 
 | Champ | À saisir |
 |---|---|
-| Coffret | Le coffret dans le congélateur |
-| Boîte | La boîte dans le coffret |
-| Position | La position dans la boîte |
-| Volume(ml) | Le volume stocké, si le laboratoire le suit |
-| Date out | La date de sortie de l'échantillon, renseignée au retrait |
-| Comments | Tout ce qui aide à retrouver ou interpréter l'échantillon |
+| Coffret | Le coffret dans le congélateur. Obligatoire |
+| Boîte | La boîte dans le coffret. Obligatoire |
+| Position | La position dans la boîte. Obligatoire |
+| Volume (ml) | Le volume stocké. Obligatoire, et supérieur à zéro |
+| Date de sortie | La date de sortie de l'échantillon, renseignée au retrait |
+| Commentaires | Tout ce qui aide à retrouver ou interpréter l'échantillon |
 
 5. Sélectionner **Sauvegarder**.
+
+!!! warning "Chaque champ obligatoire doit être rempli, sur chaque ligne"
+    Une ligne n'est enregistrée que si le congélateur, le coffret, la boîte, la
+    position et un volume supérieur à zéro sont tous renseignés. Une ligne à
+    laquelle il en manque un est ignorée sans avertissement : la page annonce
+    quand même la réussite, et le tube se retrouve sans position enregistrée.
+    Après l'enregistrement, vérifier que chaque échantillon affiche bien sa
+    position.
 
 Enregistrer la position au moment où le tube entre dans le congélateur. Une
 position notée plus tard, de mémoire, est celle où le tube devait aller, pas
@@ -48,14 +56,33 @@ nécessairement celle où il se trouve.
 ## Enregistrer plusieurs échantillons à la fois
 
 Lorsqu'une boîte entière est rangée en une fois, utiliser **Stockage
-Téléchargement en masse**. Remplir le tableur avec les ID d'échantillon et leurs
-positions, puis le téléverser.
+Téléchargement en masse**. Le bouton n'apparaît que sur le formulaire de demande
+de la RDC ; les laboratoires utilisant un autre formulaire pays enregistrent les
+positions ligne par ligne avec les étapes ci-dessus.
+
+1. Sélectionner **Stockage Téléchargement en masse**.
+2. Sélectionner **Télécharger le format Excel** et remplir le fichier obtenu.
+   Conserver ses colonnes telles quelles, y compris la colonne du volume, qui est
+   obligatoire au même titre que sur le formulaire.
+3. Sélectionner **Charger le fichier**, choisir le fichier rempli, puis
+   sélectionner **Envoyer**.
+4. Vérifier que les échantillons affichent bien leur position avant de remettre
+   la boîte au congélateur.
 
 ## Enregistrer la sortie d'un échantillon
 
-Renseigner **Date de sortie** sur la ligne de l'échantillon et enregistrer.
-L'échantillon reste enregistré avec son historique, une recherche ultérieure
-indique donc où il était et quand il en est sorti.
+1. Retrouver la ligne de l'échantillon dans **Congélateur/Stockage**.
+2. Sélectionner **Supprimer** sur cette ligne.
+3. Choisir le motif du retrait.
+4. Confirmer.
+
+Le statut de l'échantillon devient Retiré et il quitte le stockage courant, tout
+en conservant son historique : une recherche ultérieure indique donc où il était
+et quand il en est sorti.
+
+Renseigner **Date de sortie** puis enregistrer ne retire pas l'échantillon. Cela
+ajoute une ligne d'historique de stockage et laisse l'échantillon à sa position,
+si bien que le plan du congélateur continue d'indiquer le tube comme présent.
 
 ## Retrouver un échantillon stocké
 

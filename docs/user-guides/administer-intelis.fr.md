@@ -1,6 +1,7 @@
 # Administrer InteLIS
 
-Ce guide est le point d'entrée de tout ce qui se trouve sous **ADMIN**. Il décrit
+Ce guide est le point d'entrée de tout ce qui se trouve sous **ADMIN**. Il
+décrit
 ce dont l'administrateur a la charge, les modifications à faire valider avant de
 les appliquer, et où chaque tâche est documentée.
 
@@ -29,20 +30,32 @@ sur l'installation. Une installation qui n'exécute qu'un module ne porte qu'une
 section.
 
 Un second espace d'administration se trouve hors de ce menu, à `/system-admin`,
-avec sa propre connexion. Voir [Espace System Admin](admin-system-administration.md).
+avec sa propre connexion. Voir [Espace System
+Admin](admin-system-administration.md).
 
 ## Deux niveaux d'administrateur
 
-Tous les administrateurs n'ont pas besoin de toutes les pages. InteLIS n'impose
-pas cette séparation. Elle se construit dans les rôles.
+Tous les administrateurs n'ont pas besoin de toutes les pages.
 
 | Niveau | A la charge de |
 |---|---|
 | Administrateur de laboratoire | Utilisateurs, structures, automates, listes de configuration des modules, connexions de l'outil d'interface, consultation de la piste d'audit |
 | Administrateur national | Tout ce qui précède, plus les rôles et permissions, la Configuration générale et les Divisions géographiques |
 
-La plupart des problèmes sur le terrain viennent de paramètres de niveau national
-modifiés par du personnel de niveau laboratoire.
+Ce que l'application impose dépend du type d'instance :
+
+- **Sur une installation autonome ou LIS**, la séparation n'est imposée que par
+  les permissions de chaque rôle. Elle se construit donc dans les rôles, car la
+  plupart des problèmes sur le terrain viennent de paramètres de niveau national
+  modifiés par du personnel de niveau laboratoire.
+- **Sur une instance cloud**, la séparation est imposée. Tous les rôles autres
+  que le rôle d'administrateur complet voient un menu Administration réduit aux
+  Utilisateurs, aux Instruments, à la Piste d'audit, au Journal d'activité des
+  utilisateurs et au Visualiseur de fichiers journaux, le reste étant décidé par
+  les permissions de page. Les pages hors de cette liste ne sont pas
+  accessibles : les indications données ailleurs dans ces pages qui envoient un
+  administrateur de laboratoire vers les Structures sanitaires, la configuration
+  des modules ou les rôles concernent donc les autres types d'instance.
 
 ## Modifications à faire valider avant de les appliquer
 
@@ -54,10 +67,10 @@ créées.
 |---|---|---|
 | Format ou préfixe des ID d'échantillon | Configuration générale, par module | Tout échantillon enregistré ensuite porte le nouveau format. Les échantillons déjà enregistrés gardent l'ancien, ce qui laisse deux schémas au laboratoire |
 | Sample Lock Days et Sample Expiry Days | Configuration générale → Global Settings | Détermine quand une fiche cesse d'accepter les modifications. Trop court, le laboratoire ne peut plus corriger un résultat. Trop long, les résultats restent modifiables après diffusion |
-| Same user can Review and Approve | Configuration générale → Global Settings | Permet à une personne de réviser et d'approuver son propre résultat. L'approbation est le seul contrôle sur la qualité des résultats |
+| Le même utilisateur peut réviser et approuver | Configuration générale → Global Settings | Permet à une personne de réviser et d'approuver son propre résultat. L'approbation est le seul contrôle sur la qualité des résultats |
 | Auto Approve API Results | Configuration générale, par module | Diffuse les résultats de l'automate sans contrôle humain. Pas sûr lorsque les ID d'échantillon sont saisis à la main sur l'automate |
-| Country of Installation | Configuration générale → Global Settings | Sélectionne la mise en page du formulaire de demande. En changer change le formulaire vu par tous |
-| Training Mode | Configuration générale → Global Settings | Marque l'installation comme un entraînement. Ne jamais l'activer sur une installation réelle |
+| Pays d'installation | Configuration générale → Global Settings | Sélectionne la mise en page du formulaire de demande. En changer change le formulaire vu par tous |
+| Mode de formation | Configuration générale → Global Settings | Marque l'installation comme un entraînement. Ne jamais l'activer sur une installation réelle |
 | Permissions d'un rôle | Contrôle d'accès → Les rôles | S'applique aussitôt à tous les utilisateurs portant ce rôle |
 | Suppression d'une entrée de liste | Toute page de configuration de module | Passer l'entrée en inactif à la place. La supprimer rend illisibles les fiches qui l'utilisaient |
 | Renommage ou suppression d'une province ou d'un district | Configuration du système → Divisions géographiques | Les structures rattachées perdent leur lien, et les filtres géographiques de tous les rapports cessent de correspondre |
@@ -70,7 +83,8 @@ la personne connectée. Un identifiant partagé rend ces enregistrements sans
 valeur.
 
 **Retirer, jamais supprimer.** Passer les entrées de liste et les utilisateurs
-partants en inactif. Une entrée inactive disparaît du formulaire et reste lisible
+partants en inactif. Une entrée inactive disparaît du formulaire et reste
+lisible
 sur les fiches qui l'utilisent déjà.
 
 **Ne jamais réattribuer un identifiant à une autre personne.** Les anciennes
