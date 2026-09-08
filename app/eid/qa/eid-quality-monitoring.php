@@ -90,8 +90,19 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         width: 100% !important;
     }
 
-    /* TomSelect ships its own control styling; this only lines its height and
-       border up with the Bootstrap fields above and below it in the form. */
+    /* Tom Select copies the `.form-control` class onto its wrapper, which then
+       draws a second box around the real control. Neutralise the outer box.
+       Same fix as reports/sample-referral-network.php. */
+    #qaNoteModal .ts-wrapper.form-control,
+    #qaNoteModal .ts-wrapper.form-select {
+        padding: 0;
+        height: auto;
+        border: 0;
+        box-shadow: none;
+    }
+
+    /* What is left is Tom Select's own control, lined up with the Bootstrap
+       fields above and below it in the form. */
     #qaNoteModal .ts-wrapper .ts-control {
         border: 1px solid #d2d6de;
         border-radius: 0;
