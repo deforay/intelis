@@ -17,7 +17,7 @@ laboratoire.
 ## Ajouter une structure
 
 1. Aller à **ADMIN → Structures sanitaires**.
-2. Sélectionner **Add Facility**.
+2. Sélectionner **Ajouter installations**.
 3. Renseigner les informations.
 
 | Champ | Ce qu'il faut saisir |
@@ -35,9 +35,10 @@ laboratoire.
 | Linked Hub Name | Le hub par lequel transitent les échantillons, le cas échéant |
 | Status | Actif ou inactif |
 
-4. Sélectionner **Submit**.
+4. Sélectionner **Envoyer**.
 
-Renseigner le **Test Type**, et cocher chaque type de test auquel la structure
+Renseigner le **Type de test**, et cocher chaque type de test auquel la
+structure
 participe. Une structure non rattachée à un type de test n'apparaît pas dans la
 liste des structures du formulaire de demande de ce type de test. Une structure
 cochée pour un seul type de test reste absente du formulaire de tous les autres.
@@ -45,7 +46,8 @@ C'est la raison habituelle d'une structure « absente ».
 
 ## Configurer un laboratoire de test
 
-Un laboratoire de test est une structure dont **Facility Type** vaut laboratoire
+Un laboratoire de test est une structure dont **Type d'installation** vaut
+laboratoire
 de test. Il porte des réglages supplémentaires qu'une structure sanitaire n'a
 pas.
 
@@ -66,9 +68,10 @@ résultats émis par un laboratoire.
 
 1. Ouvrir le laboratoire de test sous **ADMIN → Structures sanitaires**.
 2. Repérer la section des signataires.
-3. Pour chaque signataire, saisir **Name of Signatory** et **Designation**,
-   renseigner **Display Order**, et téléverser l'image de signature en jpg ou png.
-4. Sélectionner **Submit**.
+3. Pour chaque signataire, saisir **Nom du signataire** et **Désignation**,
+   renseigner **Ordre d'affichage**, et téléverser l'image de signature en jpg ou
+   png.
+4. Sélectionner **Envoyer**.
 
 | Réglage | Contrôle |
 |---|---|
@@ -80,7 +83,7 @@ résultats émis par un laboratoire.
 ## Charger de nombreuses structures en une fois
 
 1. Aller à **ADMIN → Structures sanitaires**.
-2. Sélectionner **Bulk Upload**.
+2. Sélectionner **Chargement groupé**.
 3. Télécharger le format Excel depuis le lien de la page.
 4. Le remplir et le téléverser.
 5. Choisir une option de chargement.
@@ -101,14 +104,17 @@ Toujours utiliser le format téléchargé. Un fichier aux colonnes différentes
 
 ## Repérer les structures au comportement anormal
 
-Activer **Show Orphaned Facilities** sur la page des structures. Cela liste les
-structures dont la province ou le district est absent, inactif, ou non rattaché à
+Activer **Afficher les installations orphelines** sur la page des structures.
+Cela liste les
+structures dont la province ou le district est absent, inactif, ou non rattaché
+à
 sa province.
 
-Ces structures se comportent de façon imprévisible dans les filtres géographiques
+Ces structures se comportent de façon imprévisible dans les filtres
+géographiques
 de tous les rapports tant que la province et le district ne sont pas corrigés.
 
-**Show Only Active** masque les structures retirées. **Export** écrit la liste
+**Afficher uniquement les actifs** masque les structures retirées. **Exporter** écrit la liste
 filtrée courante dans un fichier Excel.
 
 ## Connecter l'outil d'interface
@@ -118,19 +124,22 @@ Chaque installation de l'outil se connecte une fois à InteLIS.
 
 1. Aller à **ADMIN → Structures sanitaires**.
 2. Ouvrir le laboratoire de test.
-3. Descendre jusqu'à **Interface Tool Connections**.
-4. Sélectionner **Generate Connection Code**.
+3. Descendre jusqu'à **Connexions des outils d'interface**.
+4. Sélectionner **Générer un code de connexion**.
 5. Saisir les trois groupes du code, et l'URL InteLIS affichée au-dessus, dans
    l'outil d'interface sur l'ordinateur du laboratoire.
 
 Le code expire. La page indique le temps restant. S'il expire, en générer un
 autre.
 
-Un seul code peut être en attente à la fois. Pour recommencer, annuler d'abord le
+Un seul code peut être en attente à la fois. Pour recommencer, annuler d'abord
+le
 code courant.
 
-Une fois connectée, l'installation figure sous **Connected Installations** avec un
-statut et une heure de **Last Seen**. Utiliser **Last Seen** quand les résultats
+Une fois connectée, l'installation figure sous **Installations connectées** avec
+un
+statut et une heure de **Dernière connexion**. Utiliser **Dernière connexion**
+quand les résultats
 cessent d'arriver.
 
 | Action | Quand l'utiliser |

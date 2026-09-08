@@ -74,7 +74,7 @@ Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les demand
 test** et rechercher le code du manifeste.
 
 Tous les échantillons du colis apparaissent avec un ID d'échantillon et le
-statut **Échantillon enregistré au laboratoire de test**.
+statut **Échantillon enregistré au laboratoire d'analyse**.
 
 ## Suite
 

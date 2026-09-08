@@ -53,7 +53,7 @@ positions, puis le téléverser.
 
 ## Enregistrer la sortie d'un échantillon
 
-Renseigner **Date out** sur la ligne de l'échantillon et enregistrer.
+Renseigner **Date de sortie** sur la ligne de l'échantillon et enregistrer.
 L'échantillon reste enregistré avec son historique, une recherche ultérieure
 indique donc où il était et quand il en est sorti.
 

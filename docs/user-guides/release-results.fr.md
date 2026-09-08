@@ -45,11 +45,12 @@ série de rapports sans réimprimer ceux déjà envoyés.
 
 1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests → Envoyer le
    résultat du test par courriel**.
-2. Choisir la structure dans **Facility Name (To)**.
+2. Choisir la structure dans **Nom de l'installation (à)**.
 3. Saisir un objet et un message.
 4. Filtrer les résultats à envoyer.
 
-Régler **Mail Sent Status** sur **Samples Not yet Mailed** pour écarter ce qui a
+Régler **Statut du courrier envoyé** sur **Échantillons non encore envoyés**
+pour écarter ce qui a
 déjà été envoyé.
 
 5. Sélectionner **Rechercher**.
@@ -79,5 +80,6 @@ patients sous forme de PDF.
 Pour l'impression, les résultats passent de **Résultats pas encore imprimés** à
 **Résultats déjà imprimés**.
 
-Pour le courriel, régler **Mail Sent Status** sur **Already Mailed Samples** et
+Pour le courriel, régler **Statut du courrier envoyé** sur **Échantillons déjà
+envoyés** et
 rechercher. Les résultats y apparaissent.

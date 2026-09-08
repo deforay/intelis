@@ -8,8 +8,8 @@ S'applique à InteLIS 5.7.64.
 
 | Statut | Signification |
 |---|---|
-| Échantillon actuellement enregistré au centre de santé | Enregistré dans une structure sanitaire. Le laboratoire ne l'a pas reçu |
-| Échantillon enregistré au laboratoire de test | Reçu par le laboratoire et en attente de test |
+| Échantillon enregistré au centre de santé | Enregistré dans une structure sanitaire. Le laboratoire ne l'a pas reçu |
+| Échantillon enregistré au laboratoire d'analyse | Reçu par le laboratoire et en attente de test |
 | Échantillon envoyé à un autre laboratoire | Transmis à un autre laboratoire pour analyse |
 | En attente d'approbation | Un résultat est enregistré et attend son approbation |
 | Accepté | Le résultat est approuvé et disponible pour diffusion |
@@ -26,8 +26,8 @@ S'applique à InteLIS 5.7.64.
 
 | Statut | Attribué par |
 |---|---|
-| Échantillon actuellement enregistré au centre de santé | L'enregistrement d'une demande dans une structure sanitaire |
-| Échantillon enregistré au laboratoire de test | L'enregistrement d'une demande au laboratoire, l'activation d'un manifeste, ou l'envoi au retest |
+| Échantillon enregistré au centre de santé | L'enregistrement d'une demande dans une structure sanitaire |
+| Échantillon enregistré au laboratoire d'analyse | L'enregistrement d'une demande au laboratoire, l'activation d'un manifeste, ou l'envoi au retest |
 | Échantillon envoyé à un autre laboratoire | La référence d'un échantillon à un autre laboratoire |
 | En attente d'approbation | L'enregistrement d'un résultat |
 | Accepté | L'approbation d'un résultat, ou sa récupération depuis la page Échec/Echantillons en attente |
@@ -49,14 +49,17 @@ S'applique à InteLIS 5.7.64.
 
 ## Effet des statuts sur les rapports
 
-Les échantillons **Annulée** sont considérés comme jamais testés. Ils sont exclus
+Les échantillons **Annulée** sont considérés comme jamais testés. Ils sont
+exclus
 des volumes de test et du délai de rendu.
 
 Les échantillons **Échec/Invalidité** restent dans le taux d'échec. Envoyer un
-échantillon en échec au retest conserve la tentative en échec, les deux sont donc
+échantillon en échec au retest conserve la tentative en échec, les deux sont
+donc
 comptés.
 
-Les échantillons **Rejeté** figurent dans le rapport de rejet d'échantillons avec
+Les échantillons **Rejeté** figurent dans le rapport de rejet d'échantillons
+avec
 leur motif.
 
 Les échantillons **Accepté** sont les seuls disponibles à l'impression et à

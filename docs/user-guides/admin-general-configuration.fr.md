@@ -11,7 +11,8 @@ autre.
 
 - Un compte avec des droits d'administrateur
 - L'accord de l'équipe nationale pour les paramètres listés sous
-  [Modifications à faire valider](administer-intelis.md#modifications-a-faire-valider-avant-de-les-appliquer)
+  [Modifications à faire
+  valider](administer-intelis.md#modifications-a-faire-valider-avant-de-les-appliquer)
 
 La page est organisée en panneaux. Utiliser le champ de recherche en haut pour
 trouver un paramètre plutôt que de faire défiler.
@@ -47,17 +48,19 @@ trouver un paramètre plutôt que de faire défiler.
 | Sample Lock Days | Le nombre de jours avant qu'un échantillon cesse d'accepter les modifications |
 | Sample Expiry Days | Le nombre de jours avant péremption d'un échantillon |
 
-**Country of Installation** sélectionne le formulaire de demande. En changer
-change le formulaire vu par tous, et le nouveau formulaire peut ne pas porter les
+**Pays d'installation** sélectionne le formulaire de demande. En changer
+change le formulaire vu par tous, et le nouveau formulaire peut ne pas porter
+les
 champs de l'ancien.
 
-**Training Mode** ne convient qu'à une installation d'entraînement. Ne jamais
+**Mode de formation** ne convient qu'à une installation d'entraînement. Ne jamais
 l'activer sur une installation contenant de vraies fiches patients.
 
 ## Paramètres par module
 
 Chaque module actif porte son propre panneau. Les paramètres se répètent par
-module, donc une modification sous Viral Load Settings n'atteint pas TB Settings.
+module, donc une modification sous Viral Load Settings n'atteint pas TB
+Settings.
 
 | Paramètre | Contrôle |
 |---|---|
@@ -101,7 +104,8 @@ code de laboratoire est ajouté, un trait d'union le sépare du numéro courant,
 comme dans `VL0826-NMC-0019`.
 
 Changer le format ou le préfixe change tout échantillon enregistré ensuite. Les
-échantillons déjà enregistrés gardent l'ancien format. Le laboratoire porte alors
+échantillons déjà enregistrés gardent l'ancien format. Le laboratoire porte
+alors
 deux schémas à la fois, et aucun n'est faux.
 
 ## Mobile App Settings
@@ -126,7 +130,7 @@ deux schémas à la fois, et aucun n'est faux.
 | Low Viral Load Message | Le message imprimé sur un résultat bas |
 | Patient Name Format | `flname` pour prénom et nom, `fullname` pour le nom complet, `hidename` pour n'imprimer aucun nom |
 
-Régler **Patient Name Format** sur `hidename` lorsque les PDF de résultats
+Régler **Format du nom du patient** sur `hidename` lorsque les PDF de résultats
 circulent par une voie qui ne doit pas porter de noms de patients.
 
 ## Vérifier que tout fonctionne

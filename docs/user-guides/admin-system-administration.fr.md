@@ -32,7 +32,7 @@ peut l'empêcher de fonctionner.
 ## Lire l'aperçu de l'instance
 
 1. Se connecter à `/system-admin`.
-2. Ouvrir **System Instance Overview**.
+2. Ouvrir **Aperçu de l'instance System**.
 
 | Champ | Signifie |
 |---|---|
@@ -54,7 +54,8 @@ national. Le confirmer avec **ADMIN → Surveillance → Historique de l'API**. 
 | Standalone | Ni l'un ni l'autre. Il ne se synchronise nulle part |
 
 Le type d'instance détermine quelles pages apparaissent. État de la
-synchronisation du laboratoire et Tableau de bord de l'API n'apparaissent que sur
+synchronisation du laboratoire et Tableau de bord de l'API n'apparaissent que
+sur
 une instance STS.
 
 Changer le type d'instance sur une installation en service change la destination
@@ -63,9 +64,10 @@ de ses données. Le faire valider avec l'équipe nationale.
 ## Vérifier qui s'est connecté
 
 1. Se connecter à `/system-admin`.
-2. Ouvrir **Manage User Login History**.
+2. Ouvrir **Gérer l'historique des connexions des utilisateurs**.
 
-Chaque ligne porte le Login Id, la date et l'heure de la tentative, l'adresse IP,
+Chaque ligne porte le Login Id, la date et l'heure de la tentative, l'adresse
+IP,
 le navigateur et le système d'exploitation.
 
 À utiliser lorsqu'un compte est soupçonné d'être partagé ou utilisé par
@@ -74,7 +76,7 @@ plusieurs endroits.
 
 ## Modifier la configuration système
 
-**Manage System Config** contient les identifiants de la base de données, le type
+**Gérer la configuration du système** contient les identifiants de la base de données, le type
 d'instance, l'URL STS, les modules activés, le pays d'installation, le fuseau
 horaire et les réglages SMTP.
 

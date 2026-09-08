@@ -52,7 +52,8 @@ expéditeur.
 
 Le laboratoire destinataire a besoin du code du manifeste figurant sur cette
 fiche pour enregistrer le colis. Voir
-[Réceptionner des échantillons envoyés avec un manifeste](receive-referred-samples.md).
+[Réceptionner des échantillons envoyés avec un
+manifeste](receive-referred-samples.md).
 
 ## Modifier un manifeste avant l'expédition
 
@@ -74,9 +75,9 @@ Lorsqu'un laboratoire de test est hors service, les manifestes qui lui ont déj�
 
 1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Manifeste VL**.
 2. Sélectionner **Déplacer le manifeste**.
-3. Renseigner **Manifest From Testing Lab** et une période pour trouver les
+3. Renseigner **Manifeste du laboratoire d'analyse** et une période pour trouver les
    manifestes.
-4. Choisir la destination dans **Assign to Testing Lab**.
+4. Choisir la destination dans **Affectation au laboratoire d'analyse**.
 5. Saisir le motif du déplacement.
 6. Enregistrer.
 

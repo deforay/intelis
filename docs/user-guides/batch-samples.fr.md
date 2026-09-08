@@ -22,7 +22,7 @@ sans correspondre à aucun échantillon.
 2. Sélectionner **Créer un nouveau batch**.
 3. Choisir l'automate dans **Plateforme de test**.
 4. Saisir un **Code de batch**.
-5. Choisir la numérotation des **Positions**, **Numeric** ou **Alpha Numeric**,
+5. Choisir la numérotation des **Positions**, **Numérique** ou **Alphanumérique**,
    pour correspondre à l'étiquetage des positions sur l'automate.
 
 Choisir l'automate en premier. InteLIS limite le nombre d'échantillons d'un
@@ -36,7 +36,7 @@ plus tard.
 ## Trouver les échantillons
 
 La liste sous le formulaire affiche les échantillons en attente de test. Pour la
-restreindre, sélectionner **Show Advanced Search Options** et filtrer.
+restreindre, sélectionner **Afficher la recherche avancée** et filtrer.
 
 | Filtre | Usage |
 |---|---|
@@ -47,11 +47,12 @@ restreindre, sélectionner **Show Advanced Search Options** et filtrer.
 | Type d'échantillon | Un seul type de prélèvement |
 | Sources de financement | Les échantillons d'un seul bailleur |
 
-Régler **Sort By** et **Sort Type** pour définir l'ordre d'affichage des
+Régler **Trier par** et **Type de tri** pour définir l'ordre d'affichage des
 échantillons. Cet ordre devient l'ordre du PDF du batch, il faut donc le régler
 selon l'ordre de chargement de la série.
 
-Sélectionner **Filter Samples** pour appliquer. Sélectionner **Reset Filters**
+Sélectionner **Filtrer les échantillons** pour appliquer. Sélectionner
+**Réinitialiser les filtres**
 pour effacer.
 
 ## Sélectionner les échantillons
@@ -59,7 +60,7 @@ pour effacer.
 Cocher les échantillons de la série.
 
 Pour remplir le batch jusqu'à la capacité de l'automate en une action, utiliser
-**Automatically select samples for Batch**. La sélection se fait dans la liste
+**Sélection automatique des échantillons pour le lot**. La sélection se fait dans la liste
 filtrée, selon l'ordre de tri choisi.
 
 InteLIS bloque l'enregistrement dans trois cas.
@@ -115,7 +116,7 @@ La liste des batchs propose ces actions par ligne.
 | Action | Effet | Disponibilité |
 |---|---|---|
 | **Modifier** | Modifier les informations du batch et ses échantillons | Toujours |
-| **Edit Position** | Modifier la position de chaque échantillon | Toujours |
+| **Modifier le poste** | Modifier la position de chaque échantillon | Toujours |
 | **PDF par lots** | Réimprimer la planche de codes-barres complète | Sauf si le laboratoire n'utilise que la version compacte |
 | **PDF par lots compacts** | Réimprimer la planche condensée | Toujours |
 | **Supprimer** | Supprimer le batch et libérer ses échantillons | Uniquement tant qu'aucun échantillon du batch n'a été testé |
@@ -130,5 +131,5 @@ ligne. Pour retester ces échantillons, utiliser l'action de retest. Voir
 ## Vérifier que tout fonctionne
 
 Le batch apparaît dans **Gérer le batch** avec le bon nombre d'échantillons dans
-**No. of Samples**. Après la série et après la saisie des résultats, **No. of
+**Nombre d'échantillons**. Après la série et après la saisie des résultats, **No. of
 Samples Tested** augmente jusqu'à correspondre.
