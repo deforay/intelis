@@ -147,7 +147,8 @@ initial.
 **Emplacement :** **ADMIN → Surveillance → Source des demandes**
 
 Indique par quelle voie les demandes sont entrées dans le système, en
-distinguant les demandes saisies dans InteLIS de celles reçues d'autres systèmes.
+distinguant les demandes saisies dans InteLIS de celles reçues d'autres
+systèmes.
 
 ## Rapports situés ailleurs
 

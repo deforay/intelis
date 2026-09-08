@@ -24,10 +24,10 @@ peut l'empêcher de fonctionner.
 
 | Page | Contient |
 |---|---|
-| Manage System Config | Connexion à la base, type d'instance, URL STS, modules activés, pays, fuseau horaire, réglages SMTP |
-| System Instance Overview | L'identifiant de l'instance, son type, et la dernière synchronisation de chaque module |
-| API Stats | Le trafic API traité par cette installation |
-| Manage User Login History | Chaque tentative de connexion, avec adresse IP, navigateur et système d'exploitation |
+| Gérer la configuration du système | Connexion à la base, type d'instance, URL STS, modules activés, pays, fuseau horaire, réglages SMTP |
+| Aperçu de l'instance System | L'identifiant de l'instance, son type, et la dernière synchronisation de chaque module |
+| Statistiques API | Le trafic API traité par cette installation |
+| Gérer l'historique des connexions des utilisateurs | Chaque tentative de connexion, avec adresse IP, navigateur et système d'exploitation |
 
 ## Lire l'aperçu de l'instance
 
@@ -36,9 +36,9 @@ peut l'empêcher de fonctionner.
 
 | Champ | Signifie |
 |---|---|
-| Instance Id | L'identifiant sous lequel le serveur national connaît cette installation |
-| Instance Type | LIS, STS ou Standalone |
-| Lab Name | Le laboratoire auquel appartient cette installation |
+| Id d'instance | L'identifiant sous lequel le serveur national connaît cette installation |
+| Type d'instance | LIS, STS ou Standalone |
+| Nom du Labo | Le laboratoire auquel appartient cette installation |
 | Last Sync, par module | La dernière fois que chaque module a échangé des données |
 
 Un module dont la dernière synchronisation est ancienne n'atteint pas le serveur
@@ -51,7 +51,7 @@ national. Le confirmer avec **ADMIN → Surveillance → Historique de l'API**. 
 |---|---|
 | LIS | Un système d'information de laboratoire. Il tourne dans un laboratoire et se synchronise vers le serveur national |
 | STS | Le système de suivi des échantillons. Le serveur national vers lequel les laboratoires se synchronisent |
-| Standalone | Ni l'un ni l'autre. Il ne se synchronise nulle part |
+| Mode autonome | Ni l'un ni l'autre. Il ne se synchronise nulle part |
 
 Le type d'instance détermine quelles pages apparaissent. État de la
 synchronisation du laboratoire et Tableau de bord de l'API n'apparaissent que

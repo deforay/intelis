@@ -54,7 +54,7 @@ La liste affiche deux colonnes pour cette raison.
 | Colonne | Signification |
 |---|---|
 | ID de l'échantillon | L'identifiant attribué par ce laboratoire, utilisé sur l'automate et sur le rapport |
-| Remote Sample ID | L'identifiant utilisé par la structure expéditrice, conservé pour lui permettre de suivre l'échantillon |
+| ID de l'échantillon à distance | L'identifiant utilisé par la structure expéditrice, conservé pour lui permettre de suivre l'échantillon |
 
 ## Si le code est refusé
 

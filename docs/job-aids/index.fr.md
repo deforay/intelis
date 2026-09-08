@@ -13,7 +13,8 @@ son numéro de page.
 Sept fiches sur le circuit de la charge virale. Afficher chacune au poste de
 travail concerné.
 
-[Ouvrir les aide-mémoires charge virale](viral-load-job-aids.html){ .md-button .md-button--primary }
+[Ouvrir les aide-mémoires charge virale](viral-load-job-aids.html){ .md-button
+.md-button--primary }
 
 | Fiche | Contenu | À afficher |
 |---|---|---|
@@ -31,7 +32,8 @@ Cinq fiches sur tout ce qui se trouve sous ADMIN. Les garder par
 l'administrateur. La fiche 1 porte la liste des modifications à faire valider
 avant de les appliquer.
 
-[Ouvrir les aide-mémoires administration](administration-job-aids.html){ .md-button .md-button--primary }
+[Ouvrir les aide-mémoires administration](administration-job-aids.html){
+.md-button .md-button--primary }
 
 | Fiche | Contenu | Qui en a besoin |
 |---|---|---|
@@ -47,7 +49,8 @@ Six fiches sur l'installation, la mise à jour, les sauvegardes et la
 restauration. Les garder près de la machine, et non dans un tiroir d'une autre
 pièce : la fiche 5 sert un jour où la machine ne peut pas l'afficher.
 
-[Ouvrir les aide-mémoires machine](machine-job-aids.html){ .md-button .md-button--primary }
+[Ouvrir les aide-mémoires machine](machine-job-aids.html){ .md-button
+.md-button--primary }
 
 | Fiche | Contenu | Qui en a besoin |
 |---|---|---|

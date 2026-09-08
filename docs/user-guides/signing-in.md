@@ -44,8 +44,10 @@ means the role does not permit it, not that the feature is absent.
 
 ## Check for the training banner
 
-Some installations run a separate training copy. A training copy shows a banner
-reading **TRAINING SERVER** across the screen.
+Some installations run a separate training copy. A training copy shows a scrolling
+banner across the top of the screen. Its wording is set by the administrator and
+reads **TRAINING SERVER** unless it has been changed, so treat any banner as the
+mark of a training copy rather than looking for those two words.
 
 Work done on a training copy never reaches real patients. Work done on the live
 system does. Check the banner before entering real results.
@@ -53,11 +55,11 @@ system does. Check the banner before entering real results.
 ## Change the password
 
 1. Select the account name in the top right.
-2. Select **My Account**.
+2. Select **Edit Profile**.
 3. Enter the new password twice.
-4. Select **Save**.
+4. Select **Submit**.
 
-If the account menu has no **My Account** entry, the administrator has turned
+If the account menu has no **Edit Profile** entry, the administrator has turned
 off profile editing. Ask the administrator to change the password.
 
 ## Use the filters on a list page

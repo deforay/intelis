@@ -117,11 +117,11 @@ source** sur chacune.
 
 | Mention | Signification | Que faire |
 |---|---|---|
-| Result for Sample ID from VLSM | L'ID correspond à un échantillon enregistré | Accepter |
-| Sample ID not from VLSM | L'ID ne correspond à aucun échantillon enregistré | Ne pas accepter. Chercher pourquoi l'ID diffère |
-| Result already exists for this sample | L'échantillon a déjà un résultat | N'écraser que si le nouveau résultat est le bon |
-| Test date ~1+ month from collection | La date du test est postérieure d'un mois ou plus au prélèvement | Vérifier la date |
-| Test date ~1+ year from collection | La date du test est postérieure d'un an ou plus au prélèvement | Vérifier la date. Un écart d'un an est presque toujours une faute de frappe |
+| Résultat pour l'ID de l'échantillon du VLSM | L'ID correspond à un échantillon enregistré | Accepter |
+| ID de l'échantillon/ID ne provenant pas du VLSM | L'ID ne correspond à aucun échantillon enregistré | Ne pas accepter. Chercher pourquoi l'ID diffère |
+| Le résultat existe déjà pour cet échantillon | L'échantillon a déjà un résultat | N'écraser que si le nouveau résultat est le bon |
+| Date du test : environ 1 mois après le prélèvement | La date du test est postérieure d'un mois ou plus au prélèvement | Vérifier la date |
+| Date du test : environ 1 an après le prélèvement | La date du test est postérieure d'un an ou plus au prélèvement | Vérifier la date. Un écart d'un an est presque toujours une faute de frappe |
 
 Renseigner un **Statut** sur chaque ligne. Renseigner **Examiné par**,
 **Reviewed
@@ -156,11 +156,11 @@ fichier.
 | Champ | À saisir |
 |---|---|
 | Date de réception de l'échantillon au labo | La date d'arrivée de l'échantillon au laboratoire |
-| Sample Testing Date | La date de passage sur l'automate |
+| Date de l'analyse de l'échantillon | La date de passage sur l'automate |
 | Plateforme de test | L'automate utilisé |
 | Résultat de la charge virale (copies/mL) | Le résultat tel que rendu par l'automate |
 | Réviseur, Tester, Approbateur | Le personnel responsable |
-| Lab Tech. Comments | Tout ce que le rapport doit porter |
+| Commentaires de Lab Technicien | Tout ce que le rapport doit porter |
 
 5. Sélectionner **Sauvegarder**.
 
@@ -169,6 +169,32 @@ d'enregistrer.
 
 Un résultat saisi manuellement n'est pas diffusé tant qu'il n'est pas approuvé.
 Voir [Vérifier et approuver les résultats](approve-results.md).
+
+### Les Tests personnalisés utilisent un autre écran de résultat
+
+Les champs ci-dessus sont ceux du formulaire de charge virale. Un échantillon en
+Tests personnalisés s'enregistre sous **AUTRES TESTS DE LABORATOIRE → Gestion
+des
+résultats des tests → Saisir le résultat manuellement**, et son écran de
+résultat
+fonctionne par fiche de test plutôt qu'avec un champ de résultat unique.
+
+1. Ouvrir l'échantillon.
+2. Sélectionner **Ajouter Test** pour chaque test effectué sur l'échantillon, et
+   enregistrer le résultat de ce test sur sa propre fiche. Une fiche peut
+   enregistrer un test réalisé dans ce laboratoire ou confié à un autre.
+3. Une fois tous les tests enregistrés, cocher **Saisir l'interprétation
+   finale ?** et saisir l'**Interprétation finale**.
+4. Sélectionner **Sauvegarder**.
+
+C'est l'interprétation finale qui fait avancer l'échantillon. Tant qu'elle n'est
+pas saisie, l'échantillon reste à **Échantillon enregistré au laboratoire
+d'analyse**, quel que soit le nombre de fiches de test enregistrées : il
+n'atteint donc jamais la file d'approbation et paraît, pour un superviseur,
+n'avoir fait l'objet d'aucun test.
+
+Saisir l'interprétation finale verrouille l'ajout de tests et la référence sur
+cet échantillon : enregistrer d'abord toutes les fiches de test.
 
 ---
 

@@ -696,8 +696,13 @@ class Utilities {
             // Check all select dropdowns
             $container.find('select').each(function () {
                 const val = $(this).val();
-                const isEmpty = !val || val === '' || val === null ||
-                    (Array.isArray(val) && val.length === 0) ||
+                // A multi-select whose placeholder option is selected reports
+                // [""], not [], so an untouched Facility box read as filled and
+                // was tinted on every filter page in the application.
+                const chosen = (Array.isArray(val) ? val : [val]).filter(
+                    v => v !== null && v !== undefined && String(v).trim() !== ''
+                );
+                const isEmpty = chosen.length === 0 ||
                     (typeof val === 'string' && val.includes('-- Select --'));
 
                 if (!isEmpty) {

@@ -22,18 +22,18 @@ laboratoire.
 
 | Champ | Ce qu'il faut saisir |
 |---|---|
-| Facility Name | Le nom que le personnel recherchera. Il ne doit pas déjà être utilisé |
-| Facility Code | Le code national unique |
-| Other/External Code | Un second code, lorsqu'un autre système utilise le sien |
-| Facility Type | Structure sanitaire, ou laboratoire de test |
-| Test Type | Chaque type de test auquel la structure participe |
-| Testing Point(s) | Les points de service, par exemple CDV ou PTME |
+| Nom de la structure | Le nom que le personnel recherchera. Il ne doit pas déjà être utilisé |
+| Nom et code de la structure | Le code national unique. L'intitulé affiché parle de nom et de code, mais le champ ne reçoit que le code |
+| Autre/code externe | Un second code, lorsqu'un autre système utilise le sien |
+| Type d'installation | Structure sanitaire, ou laboratoire de test |
+| Type de test | Chaque type de test auquel la structure participe |
+| Point(s) de contrôle | Les points de service, par exemple CDV ou PTME |
 | Province/State, District/County | La localisation |
 | Address, Latitude, Longitude | Où se trouve la structure. La latitude et la longitude la placent sur la carte du réseau de référence |
 | Email(s) | Les adresses pour l'envoi des résultats, séparées par des virgules |
 | Lab Manager, Phone Number | La personne de contact |
 | Linked Hub Name | Le hub par lequel transitent les échantillons, le cas échéant |
-| Status | Actif ou inactif |
+| Statut | Actif ou inactif |
 
 4. Sélectionner **Envoyer**.
 
@@ -53,13 +53,13 @@ pas.
 
 | Réglage | Contrôle |
 |---|---|
-| Available Platforms | Les automates de ce laboratoire, par exemple Xpert, Microscopy ou Lam |
-| Monthly Target | L'objectif mensuel de test du laboratoire, utilisé par les rapports |
-| Suppressed Monthly Target | L'objectif de suppression virologique |
+| Plates-formes disponibles | Les automates de ce laboratoire, par exemple Xpert, Microscopy ou Lam |
+| Objectif mensuel | L'objectif mensuel de test du laboratoire, utilisé par les rapports |
+| Cible mensuelle de suppression virale | L'objectif de suppression virologique |
 | Allow Results File Upload | Si ce laboratoire peut importer des fichiers de résultats |
-| Logo Image | Le logo des PDF de résultats de ce laboratoire. 80 sur 80 pixels |
+| Image du logo | Le logo des PDF de résultats de ce laboratoire. 80 sur 80 pixels |
 | Report Format For VL, EID, TB, Covid-19, Hepatitis | La mise en page du PDF de résultat par type de test |
-| Upload Report Template | Un modèle PDF, lorsque la mise en page par défaut ne convient pas |
+| Télécharger le modèle de rapport | Un modèle PDF, lorsque la mise en page par défaut ne convient pas |
 
 ## Ajouter des signataires aux PDF de résultats
 
@@ -69,16 +69,22 @@ résultats émis par un laboratoire.
 1. Ouvrir le laboratoire de test sous **ADMIN → Structures sanitaires**.
 2. Repérer la section des signataires.
 3. Pour chaque signataire, saisir **Nom du signataire** et **Désignation**,
-   renseigner **Ordre d'affichage**, et téléverser l'image de signature en jpg ou
-   png.
+   renseigner **Ordre d'affichage**, sélectionner chaque **Type de test**
+   applicable, et téléverser l'image de signature en jpg ou png.
 4. Sélectionner **Envoyer**.
+
+Un signataire n'est imprimé que sur les modules sélectionnés dans **Type de
+test**. Un signataire enregistré sans aucun type de test est conservé et
+n'apparaît sur aucun PDF de résultat, ce qui donne l'impression que le bloc de
+signatures a été désactivé. Après l'enregistrement, générer un PDF de résultat
+pour chaque module et vérifier que les noms attendus y figurent.
 
 | Réglage | Contrôle |
 |---|---|
-| Display Signature Table | Si le bloc de signatures s'imprime |
+| Afficher le tableau de signatures | Si le bloc de signatures s'imprime |
 | Header Text, Header Margin, Report Top Margin | L'en-tête du rapport et ses marges |
-| Bottom Text Location | Au-dessus du pied de page, ou sous le nom de la plateforme |
-| Display Page Number in Footer | Si les pages sont numérotées |
+| Emplacement du texte en bas de page | Au-dessus du pied de page, ou sous le nom de la plateforme |
+| Afficher le numéro de page dans le pied de page | Si les pages sont numérotées |
 
 ## Charger de nombreuses structures en une fois
 
@@ -91,9 +97,9 @@ résultats émis par un laboratoire.
 | Option | Effet |
 |---|---|
 | Don't update duplicates | Ajoute les nouvelles structures. Laisse les existantes intactes. C'est la valeur par défaut |
-| Update if Facility Code matches | Écrase la structure portant ce code |
-| Update if Facility Name matches | Écrase la structure portant ce nom |
-| Update if Facility Name and Facility Code match | N'écrase que si les deux correspondent |
+| Mettre à jour si le code de l'installation correspond | Écrase la structure portant ce code |
+| Mettre à jour si le nom de l'installation correspond | Écrase la structure portant ce nom |
+| Mettre à jour si le nom de l'établissement et le code de l'établissement correspondent | N'écrase que si les deux correspondent |
 
 La page indique le nombre total de fiches du fichier, le nombre ajouté et le
 nombre non ajouté. Lire les trois. Un fichier qui ajoute moins de structures
@@ -122,6 +128,13 @@ filtrée courante dans un fichier Excel.
 L'outil d'interface transmet les résultats d'un automate à InteLIS sans saisie.
 Chaque installation de l'outil se connecte une fois à InteLIS.
 
+**Avant de commencer :** le panneau **Connexions des outils d'interface**
+n'apparaît que si le réglage global **Interface API Enabled** vaut `yes`. Il est
+livré à `no`, donc sur une installation par défaut ce panneau est absent de la
+page. Un administrateur national l'active sous **ADMIN → Configuration
+générale**. Le panneau n'apparaît par ailleurs que sur une structure qui est un
+laboratoire d'analyse.
+
 1. Aller à **ADMIN → Structures sanitaires**.
 2. Ouvrir le laboratoire de test.
 3. Descendre jusqu'à **Connexions des outils d'interface**.
@@ -144,8 +157,8 @@ cessent d'arriver.
 
 | Action | Quand l'utiliser |
 |---|---|
-| Reconnect / Reinstall | L'ordinateur du laboratoire est réinstallé, ou l'outil est réinstallé |
-| Revoke | L'ordinateur est retiré ou perdu. Les autres installations ne sont pas affectées |
+| Se reconnecter / Réinstaller | L'ordinateur du laboratoire est réinstallé, ou l'outil est réinstallé |
+| Révoquer | L'ordinateur est retiré ou perdu. Les autres installations ne sont pas affectées |
 
 ## Vérifier que tout fonctionne
 

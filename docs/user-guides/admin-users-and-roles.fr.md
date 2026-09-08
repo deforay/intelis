@@ -19,19 +19,18 @@ administrateur.
 
 | Champ | Ce qu'il faut saisir |
 |---|---|
-| User Name | Le nom tel qu'il figure sur les rapports et dans le journal d'activité |
-| Email | L'adresse de l'utilisateur. Elle ne doit pas déjà être utilisée |
-| Phone Number | Le numéro de l'utilisateur |
-| Role | Le rôle qui définit ce que cet utilisateur peut atteindre |
-| Testing Lab | Le laboratoire au titre duquel cet utilisateur travaille |
-| Province/State, District/County | La localisation de l'utilisateur |
-| Map User to Selected Facilities | Les structures auxquelles cet utilisateur est limité. Laisser vide pour aucune limite |
-| Mobile App Access | Si le compte peut utiliser l'application mobile |
-| Interface User Name | Le nom d'utilisateur de cette personne sur l'automate moléculaire. Il rattache les résultats de l'automate à une personne |
+| Nom complet | Le nom tel qu'il figure sur les rapports et dans le journal d'activité |
+| Courriel | L'adresse de l'utilisateur. Elle ne doit pas déjà être utilisée |
+| Numéro de téléphone | Le numéro de l'utilisateur |
+| Rôle | Le rôle qui définit ce que cet utilisateur peut atteindre |
+| Laboratoire d'analyse | Le laboratoire au titre duquel cet utilisateur travaille. Affiché sur STS uniquement, et seulement après le choix d'un rôle de laboratoire d'analyse |
+| Province, District | La localisation de l'utilisateur |
+| Accès à l'application mobile | Si le compte peut utiliser l'application mobile |
+| Nom de l'utilisateur de l'interface | Le nom d'utilisateur de cette personne sur l'automate moléculaire. Il rattache les résultats de l'automate à une personne |
 | Signature | Une image de signature pour toute personne qui approuve des résultats. 100 sur 100 pixels |
-| Login Id | L'identifiant de connexion |
-| Password, Confirm Password | Le mot de passe initial |
-| User Status | Actif ou inactif |
+| ID de connexion | L'identifiant de connexion |
+| Mot de passe, Confirmer le mot de passe | Le mot de passe initial |
+| Statut de l'utilisateur | Actif ou inactif |
 
 4. Sélectionner **Envoyer**.
 5. Remettre le Login Id et le mot de passe à l'utilisateur en main propre.
@@ -42,29 +41,59 @@ les tirets bas. Il n'accepte ni espaces ni majuscules.
 Le mot de passe doit compter au moins 8 caractères et comporter au moins un
 chiffre et au moins une lettre. Les caractères spéciaux sont autorisés.
 
-Renseigner le **Laboratoire d'analyse** sur chaque utilisateur. Cela limite ce
-que
-l'utilisateur voit au travail de son propre laboratoire. Un utilisateur sans
-laboratoire renseigné voit les échantillons de tous les laboratoires.
+### Le Laboratoire d'analyse dépend du type d'instance
+
+- **Sur STS**, renseigner le **Laboratoire d'analyse** sur chaque utilisateur de
+  laboratoire. Le champ apparaît dès qu'un rôle de ce type d'accès est choisi, et
+  limite ce que l'utilisateur voit au travail de son propre laboratoire.
+- **Sur une installation LIS ou autonome**, le champ n'est pas affiché. Chaque
+  utilisateur est rattaché automatiquement au laboratoire de cette installation :
+  il n'y a donc rien à renseigner.
+- **Sur une instance cloud**, les utilisateurs créés par un administrateur de
+  laboratoire sont rattachés au laboratoire de cet administrateur.
 
 ## Limiter un utilisateur à certaines structures
 
-**Map User to Selected Facilities** restreint un utilisateur au-delà du
+La correspondance avec des structures restreint un utilisateur au-delà du
 laboratoire. À utiliser pour le personnel des structures qui enregistre ses
 propres demandes, afin que chacun ne voie que sa structure.
 
-Laisser vide pour le personnel de laboratoire. Une correspondance vide signifie
-aucune limite de structure, et le laboratoire de test s'applique toujours.
+**Le formulaire d'ajout d'utilisateur ne comporte aucun sélecteur de structure.**
+Les contrôles de correspondance n'existent que sur la page de modification : un
+utilisateur créé puis laissé tel quel n'a donc aucune restriction de structure,
+quelle qu'ait été l'intention au moment de la création.
+
+1. Créer l'utilisateur comme ci-dessus et sélectionner **Envoyer**.
+2. Rouvrir ce même utilisateur sous **ADMIN → Contrôle d'accès → Utilisateurs**.
+3. Utiliser **Carte de l'utilisateur vers les installations sélectionnées
+   (facultatif)** pour faire passer les structures voulues dans la liste
+   sélectionnée.
+4. Sélectionner **Envoyer**.
+5. Se connecter avec ce compte, ou consulter sa liste de demandes, et vérifier
+   que seules les structures voulues apparaissent.
+
+Laisser la correspondance vide pour le personnel de laboratoire qui doit voir
+toutes les structures. Une correspondance vide signifie aucune limite de
+structure, et le laboratoire d'analyse s'applique toujours.
 
 ## Donner un jeton d'API à un utilisateur
 
 Les utilisateurs qui se connectent par l'API ont besoin d'un jeton et non d'un
 mot de passe.
 
+Le champ **AuthToken** est masqué tant que le rôle du compte n'est pas le rôle
+API, ou que le compte ne détient pas déjà un jeton. Ouvrir un utilisateur
+ordinaire ne le fait pas apparaître.
+
 1. Ouvrir l'utilisateur sous **ADMIN → Contrôle d'accès → Utilisateurs**.
-2. Repérer **AuthToken**.
+2. Régler **Rôle** sur le rôle API. Le champ **AuthToken** apparaît.
 3. Sélectionner **Générer**, ou **Générer un autre jeton** pour remplacer le
    jeton actuel.
+4. Sélectionner **Envoyer**.
+
+Sur une instance cloud, un administrateur de laboratoire ne peut pas attribuer
+le
+rôle API : ces comptes sont créés par un administrateur complet.
 
 Générer un autre jeton invalide aussitôt le précédent. Tout ce qui utilise
 encore
@@ -90,11 +119,11 @@ permissions de leur rôle, jamais individuellement.
 
 | Champ | Ce qu'il faut saisir |
 |---|---|
-| Role Name | Un nom que le personnel reconnaît, par exemple Technicien de laboratoire |
-| Role Code | Un code court et unique |
-| Access Type | **Laboratoire d'analyse** pour le personnel du laboratoire. **Site de prélèvement** pour le personnel des structures |
-| Status | Actif ou inactif |
-| Privileges | Cocher chaque page accessible à ce rôle |
+| Nom du rôle | Un nom que le personnel reconnaît, par exemple Technicien de laboratoire |
+| Code de rôle | Un code court et unique |
+| Type d'Accès | **Laboratoire d'analyse** pour le personnel du laboratoire. **Site de prélèvement** pour le personnel des structures |
+| Statut | Actif ou inactif |
+| Privilèges | Cocher chaque page accessible à ce rôle |
 
 4. Sélectionner **Envoyer**.
 
