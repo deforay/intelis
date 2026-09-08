@@ -30819,7 +30819,7 @@ msgstr "Rapport sur les cibles de suppression virale"
 
 #: app/system/translate-strings.php:162
 msgid "Hepatitis Clinic Reports"
-msgstr "Rapports clinique de l'hépatite"
+msgstr "Rapports cliniques Hépatite"
 
 #: app/system/translate-strings.php:163
 msgid "Hepatitis Testing Target Reports"
@@ -31143,7 +31143,7 @@ msgstr "Importer des résultats à partir de fichiers"
 
 #: app/system/translate-strings.php:252
 msgid "CD4 Clinic Reports"
-msgstr "Rapports des cliniques CD4"
+msgstr "Rapports cliniques CD4"
 
 #: app/system/translate-strings.php:253
 msgid "Manage CD4 Reference Tables"

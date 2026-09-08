@@ -3773,10 +3773,6 @@ msgstr ""
 msgid "Recommended Corrective Action saved successfully"
 msgstr ""
 
-#: covid-19/management/covid-19-clinic-report.php:7
-msgid "Covid-19 | Clinics Report"
-msgstr ""
-
 #: covid-19/management/covid-19-clinic-report.php:70
 #: covid-19/management/covid-19-clinic-report.php:73
 #: eid/management/eid-clinic-report.php:72
@@ -9045,10 +9041,6 @@ msgstr ""
 msgid "TB testing lab(s) did not meet the monthly test target"
 msgstr ""
 
-#: eid/management/eid-clinic-report.php:7
-msgid "EID | Clinics Report"
-msgstr ""
-
 #: eid/management/eid-clinic-report.php:187
 #: eid/management/eid-clinic-report.php:295
 #: eid/management/eid-clinic-report.php:392
@@ -12718,10 +12710,6 @@ msgstr ""
 msgid "Hepatitis Test Reasons"
 msgstr ""
 
-#: hepatitis/management/hepatitis-clinic-report.php:7
-msgid "Hepatitis | Clinics Report"
-msgstr ""
-
 #: hepatitis/management/hepatitis-clinic-report.php:75
 #: hepatitis/management/hepatitis-sample-rejection-report.php:38
 #: hepatitis/management/hepatitis-sample-status.php:49
@@ -14216,10 +14204,6 @@ msgstr ""
 msgid "System Instance Overview"
 msgstr ""
 
-#: system-admin/instance-overview/instanceIndex.php:56
-msgid "Instance Id"
-msgstr ""
-
 #: system-admin/instance-overview/instanceIndex.php:60
 msgid "Instance Facility Name"
 msgstr ""
@@ -15175,10 +15159,6 @@ msgstr ""
 msgid "TB Test Reasons"
 msgstr ""
 
-#: tb/management/tb-clinic-report.php:7
-msgid "TB | Clinics Report"
-msgstr ""
-
 #: tb/management/tb-sample-rejection-report.php:6
 msgid "TB | Sample Rejection Report"
 msgstr ""
@@ -15490,10 +15470,6 @@ msgstr ""
 
 #: vl/program-management/getSuppressedTargetReport.php:172
 msgid "No of target in month %"
-msgstr ""
-
-#: vl/program-management/highViralLoad.php:6
-msgid "VL | Clinics Report"
 msgstr ""
 
 #: vl/program-management/highViralLoad.php:72
