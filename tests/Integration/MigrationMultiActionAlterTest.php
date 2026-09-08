@@ -465,16 +465,98 @@ final class MigrationMultiActionAlterTest extends TestCase
         $t = $this->freshTable('multi_partdrop_probe', 'gone INT NULL, still_here INT NULL');
         self::$db->rawQuery("ALTER TABLE `$t` DROP COLUMN `gone`");
 
+        $raised = null;
         try {
             $this->dispatch("ALTER TABLE `$t` DROP COLUMN `gone`, DROP COLUMN `still_here`");
-        } catch (\Throwable) {
-            // 1091 is benign to the migration loop; what matters is below.
+        } catch (\Throwable $e) {
+            $raised = $e;
         }
 
         $this->assertContains(
             'still_here',
             $this->columnsOf($t),
             'Nothing may be dropped one action at a time on this path.'
+        );
+
+        // And the failure must not read as benign. 1091 is on the runner's
+        // benign list, so passing it straight through would have the run report
+        // success and advance sc_version over a statement that did nothing --
+        // the remaining column then never dropped, by anything, ever.
+        $this->assertNotNull($raised, 'Declining to repair is still a failure.');
+        $this->assertFalse(
+            is_benign_ddl_error($raised, self::$db),
+            'A statement that neither applied nor could be repaired must stop the version bump.'
+        );
+    }
+
+    /**
+     * An already-added primary key counts as evidence.
+     *
+     * 5.2.9 adds form_cd4's primary key alongside several unique indexes in one
+     * statement. Replayed with only the primary key present, the whole ALTER
+     * raises 1068 -- a benign code -- so without recognising the applied key
+     * the run would report success and advance the version, leaving every one
+     * of those indexes absent.
+     */
+    public function testAnAppliedPrimaryKeyIsRecognised(): void
+    {
+        $t = $this->freshTable('multi_pk_probe', 'a INT NOT NULL, b INT NULL');
+
+        // The part-applied state: the key landed, the index did not.
+        $this->assertSame(
+            MIG_EXECUTED,
+            $this->dispatch("ALTER TABLE `$t` ADD PRIMARY KEY (`a`), ADD INDEX `idx_b` (`b`)")
+        );
+
+        $this->assertNotEmpty(
+            self::$db->rawQuery(
+                "SELECT INDEX_NAME FROM information_schema.STATISTICS
+                   WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND INDEX_NAME = 'idx_b'",
+                [$t]
+            ),
+            'The index beside the primary key has to be created.'
+        );
+    }
+
+    /**
+     * An already-added named constraint counts as evidence too.
+     *
+     * 5.2.0 adds the generic-map foreign keys in one statement. Replayed with
+     * only the first present, the whole ALTER raises 1826 -- benign -- so
+     * without recognising the applied constraint the run would report success,
+     * advance the version, and leave the rest of the keys absent for good.
+     */
+    public function testAnAppliedForeignKeyConstraintIsRecognised(): void
+    {
+        self::$db->rawQuery('DROP TABLE IF EXISTS `multi_fk_child`');
+        self::$db->rawQuery('DROP TABLE IF EXISTS `multi_fk_parent`');
+        self::$db->rawQuery(
+            'CREATE TABLE `multi_fk_parent` (id INT AUTO_INCREMENT PRIMARY KEY) ENGINE=InnoDB'
+        );
+        self::$db->rawQuery(
+            'CREATE TABLE `multi_fk_child` (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                `pid` INT NULL,
+                KEY `pid` (`pid`)
+            ) ENGINE=InnoDB'
+        );
+
+        // The part-applied state: the constraint landed, the column did not.
+        self::$db->rawQuery(
+            'ALTER TABLE `multi_fk_child`
+             ADD CONSTRAINT `fk_multi_child` FOREIGN KEY (`pid`) REFERENCES `multi_fk_parent` (`id`)'
+        );
+
+        $this->dispatch(
+            'ALTER TABLE `multi_fk_child`
+             ADD CONSTRAINT `fk_multi_child` FOREIGN KEY (`pid`) REFERENCES `multi_fk_parent` (`id`),
+             ADD COLUMN `extra` INT NULL'
+        );
+
+        $this->assertContains(
+            'extra',
+            $this->columnsOf('multi_fk_child'),
+            'The column beside the already-added constraint has to be created.'
         );
     }
 
