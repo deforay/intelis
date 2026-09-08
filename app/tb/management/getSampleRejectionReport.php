@@ -70,8 +70,6 @@ try {
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
             LEFT JOIN r_tb_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
             LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action ";
-    $start_date = '';
-    $end_date = '';
     $sWhere[] = SampleRejectionUtility::sqlPredicate('vl');
     if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) !== '') {
         // The filter is fed by a dropdown of exact batch codes; LIKE made
@@ -79,20 +77,12 @@ try {
         $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['rjtBatchCode']) . '"';
     }
 
-    if (isset($_POST['rjtSampleCollectionDate']) && trim((string) $_POST['rjtSampleCollectionDate']) !== '') {
-        $s_c_date = explode("to", (string) $_POST['rjtSampleCollectionDate']);
-
-        if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
-            $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-        }
-        if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
-            $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-        }
-        if (trim((string) $start_date) === trim((string) $end_date)) {
-            $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-        } else {
-            $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-        }
+    [$start_date, $end_date] = DateUtility::dayRange($_POST['rjtSampleCollectionDate'] ?? '');
+    if ($start_date !== '' && $end_date !== '') {
+        // Compared as a datetime rather than through DATE(): a function around the
+        // column puts the index on it out of reach, so the filter read the whole
+        // table to answer what the index already knew.
+        $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
     }
     if (isset($_POST['rjtSampleType']) && $_POST['rjtSampleType'] != '') {
         $sWhere[] = ' vl.specimen_type = ' . (int) $_POST['rjtSampleType'];

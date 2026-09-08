@@ -38,20 +38,14 @@ $vlQuery = "select count(*) as `total`, vl.reason_for_sample_rejection,sr.reject
                 LEFT JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
 $sWhere[] = SampleRejectionUtility::sqlPredicate('vl');
 if (!empty($_POST['sampleCollectionDate'])) {
-    $start_date = '';
-    $end_date = '';
     // NOT $sWhere = [] -- that reset used to drop the rejected-samples filter set
     // above it, so supplying a date range (the normal way this report is run) made
     // it count every TB sample in the range instead of the rejected ones.
-    $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-    $sWhere[] = ' DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '"';
+    [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+    // Compared as a datetime rather than through DATE(): a function around the
+    // column puts the index on it out of reach, so the filter read the whole
+    // table to answer what the index already knew.
+    $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
     $sWhere[] = ' vl.specimen_type = ' . (int) $_POST['sampleType'];

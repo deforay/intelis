@@ -111,7 +111,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="hvlSampleTestDate"><?php echo _translate("Sample Test Date"); ?></label>
-															<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _htmlTranslate('Select Sample Test Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
+															<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _htmlTranslate('Select Sample Test Date'); ?>" readonly style="background:#fff;" onchange="syncDateFilters(this)" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
@@ -237,7 +237,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="rjtSampleCollectionDate"><?php echo _translate("Sample Collection Date"); ?></label>
-															<input type="text" id="rjtSampleCollectionDate" name="rjtSampleCollectionDate" class="form-control stDate daterange" placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
+															<input type="text" id="rjtSampleCollectionDate" name="rjtSampleCollectionDate" class="form-control stDate daterange" placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>" readonly style="background:#fff;" onchange="syncDateFilters(this)" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
@@ -358,7 +358,7 @@ $state = $geolocationService->getProvinces("yes");
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="noResultSampleTestDate"><?php echo _translate("Sample Collection Date"); ?></label>
-															<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>" readonly style="background:#fff;" onchange="setSampleTestDate(this)" />
+															<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>" readonly style="background:#fff;" onchange="syncDateFilters(this)" />
 														</div>
 													</div>
 													<div class="col-md-4 col-sm-6">
@@ -1245,7 +1245,12 @@ $state = $geolocationService->getProvinces("yes");
 			});
 	}
 
-	function setSampleTestDate(obj) {
+	/* Copies the range just picked into every tab's date filter, so switching
+	   tabs keeps the period you were looking at. The tabs do not all date a
+	   sample the same way -- rejection and results-not-available go by
+	   collection date, the rest by test date -- so this carries the period
+	   across, not the meaning. */
+	function syncDateFilters(obj) {
 		$(".stDate").val($("#" + obj.id).val());
 	}
 

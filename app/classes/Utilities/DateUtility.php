@@ -386,6 +386,39 @@ final class DateUtility
         };
     }
 
+    /**
+     * A date-range filter as the two datetimes that bound the days it names,
+     * ready to compare a datetime column against directly.
+     *
+     * Reports used to write DATE(col) BETWEEN start AND end. Wrapping the
+     * column in a function puts every index on it out of reach, so the filter
+     * read the whole table to answer a question the index could have answered.
+     * The span is the same either way: midnight on the first day through
+     * 23:59:59 on the last. The form_* date columns are plain datetimes with
+     * no fractional seconds, so that second endpoint is exact.
+     *
+     * A range naming only one day bounds that single day rather than
+     * collapsing to an empty end and matching nothing.
+     *
+     * @return array{0: string, 1: string} ['', ''] when nothing was picked.
+     */
+    public static function dayRange(?string $dateRange, string $seperator = "to"): array
+    {
+        [$start, $end] = self::convertDateRange($dateRange, $seperator, includeTime: true);
+
+        if ($start === '' && $end === '') {
+            return ['', ''];
+        }
+        if ($start === '') {
+            $start = Carbon::parse($end)->startOfDay()->format('Y-m-d H:i:s');
+        }
+        if ($end === '') {
+            $end = Carbon::parse($start)->endOfDay()->format('Y-m-d H:i:s');
+        }
+
+        return [$start, $end];
+    }
+
     public static function convertDateRange(?string $dateRange, $seperator = "to", bool $includeTime = false): array
     {
         return MemoUtility::remember(function () use ($dateRange, $seperator, $includeTime): array {

@@ -29,16 +29,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 $tResult = [];
 $sWhere = [];
 if (!empty($_POST['sampleCollectionDate'])) {
-    $start_date = '';
-    $end_date = '';
-    $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
+    [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
     //get value by rejection reason id
     $vlQuery = "SELECT count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`, r_c_a.recommended_corrective_action_name
                 FROM form_eid as vl
@@ -46,7 +37,10 @@ if (!empty($_POST['sampleCollectionDate'])) {
                 LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
                 LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 LEFT JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
-    $sWhere[] = SampleRejectionUtility::sqlPredicate('vl') . ' AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '"';
+    // Compared as a datetime rather than through DATE(): a function around the
+    // column puts the index on it out of reach, so the filter read the whole
+    // table to answer what the index already knew.
+    $sWhere[] = SampleRejectionUtility::sqlPredicate('vl') . ' AND vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 
     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
         $sWhere[] = ' vl.specimen_type = ' . (int) $_POST['sampleType'];
