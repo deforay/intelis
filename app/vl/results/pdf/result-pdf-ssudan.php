@@ -61,6 +61,12 @@ if (!empty($result)) {
           $revisedBySignaturePath = MiscUtility::getFullImagePath($result['revisedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
 
+     // South Sudan stamps GeneXpert reports as approved once an approver has signed them off
+     $testPlatform = strtolower(preg_replace('/[^a-z]/i', '', (string) ($result['vl_test_platform'] ?? '')));
+     $showApprovedStamp = $testPlatform === 'genexpert'
+          && !empty($resultApprovedBy)
+          && !empty($result['result_approved_datetime']);
+
 
      $_SESSION['aliasPage'] = $page;
      if (!isset($result['labName'])) {
@@ -561,6 +567,14 @@ if (!empty($result)) {
      $html .= '</table>';
      $html .= '</td>';
      $html .= '</tr>';
+     if ($showApprovedStamp) {
+          $html .= '<tr>';
+          $html .= '<td colspan="3" style="line-height:20px;"></td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td colspan="3" style="text-align:center;"><img src="/assets/img/approved.png" alt="approved_stamp" style="width:180px;" /></td>';
+          $html .= '</tr>';
+     }
      $html .= '</table>';
      if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == REJECTED)) {
           $pdf->writeHTML($html);
