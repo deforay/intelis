@@ -94,23 +94,26 @@ const PF_CHILD_RESULT_TABLES = [
 /**
  * Tables no installation can be without, whatever else is true of it.
  *
- * Every table one login attempt touches, following the calls out of
- * app/login/loginProcess.php rather than only the names written in it -- the
- * indirect ones are the dangerous half. user_login_history is read through
- * UsersService::continuousFailedLogins() before the password is even checked
- * and user_facility_map through FacilitiesService::getUserFacilityMap() after
- * it succeeds, so each throws on every attempt while nothing in the login file
- * names the table; activity_log and the privilege tables are the same.
+ * Every table it takes to log in and draw one page: the calls out of
+ * app/login/loginProcess.php, and the calls out of app/header.php, which every
+ * page in the application includes. Following the calls rather than reading the
+ * names in those two files is the whole point, because the indirect ones are
+ * the dangerous half -- user_login_history is read through
+ * UsersService::continuousFailedLogins() before the password is even checked,
+ * user_facility_map through FacilitiesService::getUserFacilityMap() once it
+ * succeeds, and s_app_menu through AppMenuService::getMenu() when the page
+ * renders. Each throws on every attempt while neither file names the table.
  *
- * These need naming because nothing else can reach them. user_details' only
- * foreign key points at roles, which the seed fills, so every parent is
- * excluded as evidence and the table would be filed as dormant -- on an
- * instance where nobody can log in. Several here are seeded and would be caught
- * anyway; they are listed because the set is meant to read as "one login", not
- * as "what the other rules happen to miss".
+ * These need naming because nothing else in the check can reach them. They are
+ * not seeded, and they are no test type's result table, so both other rules
+ * answer "no" and a database missing one would be reported as fine -- on an
+ * instance where nobody can log in, or where every page comes up without
+ * navigation. Several entries here ARE seeded and would be caught by that rule
+ * anyway; they are listed because the set is meant to read as "one login and
+ * one page", not as "what the other rules happen to miss".
  *
- * It is a list, with a list's failure mode: a new table added to the login path
- * is not added here by anything. Scoped to one code path so that at least the
+ * It is a list, with a list's failure mode: a table added to either path is not
+ * added here by anything. Scoped to two code paths so that at least the
  * question "is this still true" has an answer someone can check.
  */
 const PF_CORE_TABLES = [
@@ -125,6 +128,7 @@ const PF_CORE_TABLES = [
     'system_config'        => true,
     'global_config'        => true,
     'activity_log'         => true,
+    's_app_menu'           => true,
 ];
 
 /** @var list<array{status:string,label:string,detail:string}> $results */
@@ -1188,8 +1192,11 @@ function pf_classify_missing_tables(
     $dormant = [];
 
     foreach ($missingTables as $table) {
+        // Named rather than inferred: these are not seeded and are no test
+        // type's result table, so both rules below answer "no" for a table
+        // without which nobody can log in or no page draws.
         if (isset($core[$table])) {
-            $needed[$table] = ['the login path reads it on every attempt'];
+            $needed[$table] = ['logging in or drawing a page reads it'];
             continue;
         }
 
