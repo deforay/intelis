@@ -209,6 +209,10 @@ try {
                     if(empty($result['result_printed_on_lis_datetime'])){
                         $currentCount = 0;
                         $pData['result_printed_on_lis_datetime'] = $currentDateTime;
+                        // First print only. results-sender.php sends rows with data_sync = 0, so
+                        // without this the STS never receives the date its turnaround report
+                        // needs. A reprint is not a change the STS has to hear about again.
+                        $pData['data_sync'] = 0;
                         
                     }
                     $formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_lis_count' => $currentCount + 1]), 'form_attributes');
@@ -222,6 +226,11 @@ try {
                     if(empty($result['result_printed_on_sts_datetime'])){
                         $currentCount = 0;
                         $pData['result_printed_on_sts_datetime'] = $currentDateTime;
+                        // First print only. The lab learns of an STS print only while the row is
+                        // still inside the request sync window, and that window is measured on
+                        // last_modified_datetime. A reprint carries nothing the lab has not
+                        // already had, and must not move a turnaround milestone.
+                        $pData['last_modified_datetime'] = $currentDateTime;
                     }
                     $formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_sts_count' => $currentCount + 1]), 'form_attributes');
                     $pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);

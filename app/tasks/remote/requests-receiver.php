@@ -627,7 +627,6 @@ $moduleConfigs = [
             'result_status',
             'data_sync',
             'result_printed_datetime',
-            'result_printed_on_sts_datetime',
             'vl_result_category'
         ],
     ],
@@ -673,7 +672,6 @@ $moduleConfigs = [
             'rejection_on',
             'last_modified_by',
             'result_printed_datetime',
-            'result_printed_on_sts_datetime',
             'last_modified_datetime'
         ],
     ],
@@ -722,7 +720,6 @@ $moduleConfigs = [
             'reason_for_sample_rejection',
             'last_modified_by',
             'result_printed_datetime',
-            'result_printed_on_sts_datetime',
             'result_dispatched_datetime',
             'last_modified_datetime',
             'data_from_comorbidities',
@@ -776,7 +773,6 @@ $moduleConfigs = [
             'last_modified_by',
             'last_modified_datetime',
             'result_printed_datetime',
-            'result_printed_on_sts_datetime',
             'result_dispatched_datetime',
             'reason_for_vl_test',
             'data_from_comorbidities',
@@ -832,7 +828,6 @@ $moduleConfigs = [
             'last_modified_datetime',
             'lab_technician',
             'result_printed_datetime',
-            'result_printed_on_sts_datetime',
             'data_from_tests'
         ],
     ],
@@ -882,7 +877,6 @@ $moduleConfigs = [
             'result_status',
             'data_sync',
             'result_printed_datetime',
-            'result_printed_on_sts_datetime',
         ],
     ],
 ];
@@ -1114,7 +1108,6 @@ try {
                         'result_status',
                         'data_sync',
                         'result_printed_datetime',
-                        'result_printed_on_sts_datetime',
                         'data_from_tests'
                     ];
                     // Merge test_type_form and form_attributes like original
