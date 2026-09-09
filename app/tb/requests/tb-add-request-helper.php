@@ -103,11 +103,6 @@ try {
 
     $resultSentToSource = null;
 
-    if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
-        $_POST['finalResult'] = null;
-        $status = REJECTED;
-        $resultSentToSource = 'pending';
-    }
     if (!empty($_POST['dob'])) {
         $_POST['dob'] = DateUtility::isoDateFormat($_POST['dob']);
     }
@@ -175,6 +170,20 @@ try {
         $_POST['finalResult'] = $_POST['finalResult'];
     } else {
         $_POST['finalResult'] = null;
+    }
+    // Single-test forms (Sierra Leone, South Sudan, Burkina Faso) post a flat
+    // isSampleRejected. Rwanda's multi-test form posts only
+    // testResult[isSampleRejected][] -- read whichever the form sent, taking the
+    // last card, the same one folded into form_tb's is_sample_rejected below.
+    $sampleRejected = $_POST['isSampleRejected'] ?? null;
+    if ($sampleRejected === null && !empty($_POST['testResult']['labId']) && is_array($_POST['testResult']['labId'])) {
+        $lastCardIndex = count($_POST['testResult']['labId']) - 1;
+        $sampleRejected = $_POST['testResult']['isSampleRejected'][$lastCardIndex] ?? null;
+    }
+    if ($sampleRejected === 'yes') {
+        $_POST['finalResult'] = null;
+        $status = REJECTED;
+        $resultSentToSource = 'pending';
     }
     $labId = null;
     if (isset($_POST['labId']) && !empty($_POST['labId'])) {
