@@ -29,6 +29,15 @@ const TEST_TYPES = ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'cd4'];
 
 /**
  * Columns the lab owns. An incoming update must never carry them.
+ *
+ * result_printed_on_sts_datetime is deliberately not one of them. Only an STS
+ * instance writes it, and this receiver runs only on a LIS, so the column has no
+ * local author and is always empty until the STS sends it. The lab needs the
+ * value: it is one end of the "Printed on LIS - Printed on STS" turnaround
+ * stage, which reads empty on every lab without it.
+ *
+ * result_printed_datetime stays owned. Both instances write that one, and the
+ * lab's copy is the one its own users mean by it.
  */
 const LOCALLY_OWNED = [
     'data_sync',
@@ -38,7 +47,6 @@ const LOCALLY_OWNED = [
     'last_modified_datetime',
     'result_dispatched_datetime',
     'result_printed_datetime',
-    'result_printed_on_sts_datetime',
     'result_reviewed_by',
     'result_reviewed_datetime',
     'result_status',
