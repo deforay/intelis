@@ -44,6 +44,9 @@ final class DownloadTokenUtility
     /** Purpose separation, so this key can never be confused with another use of the same bytes. */
     private const string KEY_CONTEXT = 'intelis:download-token:v1';
 
+    /** Its own context again, so the fallback key is not the config values in another guise. */
+    private const string DERIVED_CONTEXT = 'intelis:download-token:derived:v1';
+
     /**
      * Roots a grant may name, keyed by the short code stored in the token.
      * Keep these to named directories: never the whole var/ tree, which also
@@ -219,6 +222,15 @@ final class DownloadTokenUtility
      * This is deliberately its own key rather than a share of CryptoUtility's
      * secretbox key: signing grants and encrypting stored data have different
      * blast radii, and nothing here should ever be a reason to load the other.
+     *
+     * Three sources, in order: the key file, a key freshly written to it, and --
+     * only if the file can neither be read nor written -- a key derived from
+     * config the app already holds. That last one exists because a signing key
+     * is infrastructure, not a feature: a key file left behind by another
+     * account (root, or a developer whose own composer run touched it) is
+     * unopenable by the web server, and downloads must not become a 500 over
+     * something no user did and no user can fix. Deriving keeps every worker in
+     * agreement without a file, which is the property that actually matters.
      */
     private static function key(): string
     {
@@ -227,14 +239,21 @@ final class DownloadTokenUtility
             return $key;
         }
 
-        if (is_readable(self::KEY_FILE)) {
-            $stored = base64_decode((string) file_get_contents(self::KEY_FILE), true);
-            if ($stored !== false && strlen($stored) === 32) {
-                return $key = hash_hmac('sha256', self::KEY_CONTEXT, $stored, true);
-            }
+        $secret = self::storedKey() ?? self::createKey() ?? self::derivedKey();
+
+        return $key = hash_hmac('sha256', self::KEY_CONTEXT, $secret, true);
+    }
+
+    /** The persisted key, or null if the file is absent, unreadable or not a key. */
+    private static function storedKey(): ?string
+    {
+        if (!is_file(self::KEY_FILE) || !is_readable(self::KEY_FILE)) {
+            return null;
         }
 
-        return $key = hash_hmac('sha256', self::KEY_CONTEXT, self::createKey(), true);
+        $stored = base64_decode((string) @file_get_contents(self::KEY_FILE), true);
+
+        return ($stored !== false && strlen($stored) === 32) ? $stored : null;
     }
 
     /**
@@ -250,8 +269,13 @@ final class DownloadTokenUtility
      * world-readable, and anyone who read it in that window could forge a grant
      * for any file and any user. A key that cannot be locked down is refused
      * outright for the same reason.
+     *
+     * Returns null rather than throwing when the key cannot be persisted or
+     * cannot be persisted safely. The caller then derives one: refusing to write
+     * an unsafe key is a security decision, refusing to serve the download is
+     * not, and the two were previously the same act.
      */
-    private static function createKey(): string
+    private static function createKey(): ?string
     {
         $previousUmask = umask(0077);
 
@@ -275,7 +299,7 @@ final class DownloadTokenUtility
 
                 // Tighten an already-existing file too: an earlier build created
                 // this before the umask was in place.
-                if (!chmod(self::KEY_FILE, 0600)) {
+                if (!@chmod(self::KEY_FILE, 0600)) {
                     throw new SystemException('Unable to restrict the download signing key file');
                 }
 
@@ -295,10 +319,44 @@ final class DownloadTokenUtility
                 fclose($handle);
             }
         } catch (Throwable $e) {
-            throw new SystemException('Download signing key is unavailable: ' . $e->getMessage(), 500, $e);
+            LoggerUtility::logWarning('Download signing key could not be persisted; deriving one instead', [
+                'key_file' => self::KEY_FILE,
+                'reason' => $e->getMessage(),
+                'fix' => 'chown the key file to the web server user, or delete it and let it be recreated',
+            ]);
+
+            return null;
         } finally {
             umask($previousUmask);
         }
+    }
+
+    /**
+     * A key derived from configuration the app cannot run without, used only
+     * when the key file is unusable.
+     *
+     * The material is secret to the same degree the key file is -- anyone who
+     * can read the config can read the key file sitting next to it -- and it is
+     * identical in every worker and stable across restarts, which is what a
+     * signing key has to be. It is put through HMAC under its own context, so
+     * these bytes cannot stand in for the config values anywhere else.
+     *
+     * Grants minted this way stop verifying if the database credentials change.
+     * They live 15 minutes, so that is a stale download link, not an outage.
+     */
+    private static function derivedKey(): string
+    {
+        $database = (defined('SYSTEM_CONFIG') ? SYSTEM_CONFIG : [])['database'] ?? [];
+
+        $material = implode("\0", [
+            (string) ($database['host'] ?? ''),
+            (string) ($database['username'] ?? ''),
+            (string) ($database['password'] ?? ''),
+            (string) ($database['db'] ?? ''),
+            defined('ROOT_PATH') ? ROOT_PATH : __DIR__,
+        ]);
+
+        return hash_hmac('sha256', self::DERIVED_CONTEXT, $material, true);
     }
 
     private static function base64UrlEncode(string $raw): string

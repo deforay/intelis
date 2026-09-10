@@ -135,6 +135,67 @@ final class DownloadTokenUtilityTest extends TestCase
         $this->assertSame(0, fileperms($keyFile) & 0077, 'Signing key is readable by other users');
     }
 
+    public function testDownloadsStillWorkWhenTheKeyFileCannotBeOpened(): void
+    {
+        // A key file left behind by another account -- root, or a developer
+        // whose own composer run touched it -- cannot be opened by the web
+        // server, and every export used to 500 on it. Ownership cannot be
+        // faked here without root, so a directory in the file's place stands in
+        // for "exists, cannot be opened".
+        //
+        // The key is cached per process, so this has to be two fresh processes:
+        // the property under test is that they agree without a file to agree
+        // through, which is the only reason a derived key is usable at all.
+        $keyFile = VAR_PATH . '/download-signing.key';
+        $backup = is_file($keyFile) ? (string) file_get_contents($keyFile) : null;
+
+        @unlink($keyFile);
+        mkdir($keyFile);
+
+        try {
+            $token = trim($this->inAFreshProcess('echo DownloadTokenUtility::sign($f);'));
+            $this->assertStringStartsWith(
+                DownloadTokenUtility::TOKEN_PREFIX,
+                $token,
+                'A grant was not minted without a usable key file'
+            );
+
+            $resolved = trim($this->inAFreshProcess(
+                'echo var_export(DownloadTokenUtility::resolve(' . var_export($token, true) . ') !== null, true);'
+            ));
+            $this->assertSame('true', $resolved, 'A grant minted in one process was rejected in another');
+        } finally {
+            rmdir($keyFile);
+            if ($backup !== null) {
+                file_put_contents($keyFile, $backup);
+                chmod($keyFile, 0600);
+            }
+        }
+    }
+
+    /**
+     * Runs a snippet in a new PHP process with the test bootstrap loaded, the
+     * session user this class signs as, and $f pointing at the fixture file.
+     */
+    private function inAFreshProcess(string $snippet): string
+    {
+        $script = sprintf(
+            '<?php require %s; use App\Utilities\DownloadTokenUtility; $_SESSION["userId"] = "42"; $f = %s; %s',
+            var_export(dirname(__DIR__, 2) . '/bootstrap.php', true),
+            var_export($this->file, true),
+            $snippet
+        );
+
+        $path = VAR_PATH . '/download-token-probe.php';
+        file_put_contents($path, $script);
+
+        try {
+            return (string) shell_exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($path) . ' 2>&1');
+        } finally {
+            @unlink($path);
+        }
+    }
+
     public function testAGrantForADeletedFileIsRefused(): void
     {
         $token = DownloadTokenUtility::sign($this->file);
