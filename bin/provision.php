@@ -140,6 +140,39 @@ try {
         }
     }
 
+    // The download signing key has exactly one workable state on a server: owned
+    // by the web-server account, mode 0600. DownloadTokenUtility refuses a key
+    // any other account can read, so there is no group-readable middle ground,
+    // and a key minted by anyone else — root, or a developer whose own composer
+    // post-update touched it — is unopenable by www-data. Every export then 500s
+    // on a permission-denied fopen, and the owner's own provision run sees a
+    // file it can read perfectly well, which is why this checks the owner rather
+    // than readability. Root hands it over; anyone else deletes it, which needs
+    // only write on var/, and the next request mints a fresh one. Grants live 15
+    // minutes, so a new key costs at worst a stale download link.
+    $signingKey = VAR_PATH . '/download-signing.key';
+    $webUid = $haveGroup && function_exists('posix_getpwnam')
+        ? (posix_getpwnam($webGroup)['uid'] ?? null)
+        : null;
+
+    if ($webUid !== null && is_file($signingKey) && fileowner($signingKey) !== $webUid) {
+        if ($dryRun) {
+            $io->text("  would repair  <info>$signingKey</info> (not owned by $webGroup)");
+        } elseif ($isRoot) {
+            if (@chown($signingKey, $webGroup) && @chgrp($signingKey, $webGroup) && @chmod($signingKey, 0600)) {
+                $io->text("  handed over   <info>$signingKey</info> to <info>$webGroup</info>");
+            } else {
+                $problems[] = "could not hand $signingKey to $webGroup";
+            }
+        } elseif (@unlink($signingKey)) {
+            $io->text("  removed       <info>$signingKey</info> (not owned by $webGroup;"
+                . ' it will be recreated on the next request)');
+        } else {
+            $problems[] = "$signingKey is not owned by $webGroup and could not be removed"
+                . ' — downloads will keep failing until it is';
+        }
+    }
+
     if ($dryRun) {
         $io->success("Dry run complete — $created director" . ($created === 1 ? 'y' : 'ies') . " would be created.");
         exit(CLI\OK);
