@@ -162,9 +162,11 @@ try {
           $sWhere[] = ' vl.hbv_vl_count = "' . $db->escape((string) $_POST['hbvVLoad']) . '"';
      }
 
-     if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
-          $sWhere[] = ' vl.result_status = ' . (int) $_POST['status'];
-     }
+     /* Status filter — default to Accepted / Rejected / Awaiting Approval when none picked */
+     $statusFilter = !empty($_POST['status'])
+          ? $db->inIntList($_POST['status'])
+          : implode(',', [SAMPLE_STATUS\ACCEPTED, SAMPLE_STATUS\REJECTED, SAMPLE_STATUS\PENDING_APPROVAL]);
+     $sWhere[] = ' vl.result_status IN (' . $statusFilter . ')';
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
           $sWhere[] = ' vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
      }

@@ -141,9 +141,8 @@ $state = $geolocationService->getProvinces("yes");
 						<tr>
 							<th scope="row"><?php echo _translate("Status"); ?></th>
 							<td>
-								<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
-									<option value=""><?php echo _translate("All Status"); ?></option>
-									<option value="<?= SAMPLE_STATUS\ACCEPTED; ?>" selected=selected><?php echo _translate("Accepted"); ?></option>
+								<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" multiple="multiple" style="width:220px;">
+									<option value="<?= SAMPLE_STATUS\ACCEPTED; ?>"><?php echo _translate("Accepted"); ?></option>
 									<option value="<?= SAMPLE_STATUS\REJECTED; ?>"><?php echo _translate("Rejected"); ?></option>
 									<option value="<?= SAMPLE_STATUS\PENDING_APPROVAL; ?>"><?php echo _translate("Awaiting Approval"); ?></option>
 									<option value="<?= SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB; ?>"><?php echo _translate("Registered At Testing Lab"); ?></option>
@@ -339,6 +338,10 @@ $state = $geolocationService->getProvinces("yes");
 		$("#testingLab").select2({
 			placeholder: "<?php echo _translate("Select Labs"); ?>"
 		});
+		$("#status").select2({
+			placeholder: "<?php echo _translate("Select Status"); ?>",
+			allowClear: true
+		});
 		$('#sampleCollectionDate,#sampleTestDate,#printDate,#sampleRecievedDate').on('cancel.daterangepicker', function(ev, picker) {
 			//do something, like clearing an input
 			$(this).val('');
@@ -508,7 +511,7 @@ $state = $geolocationService->getProvinces("yes");
 				});
 				aoData.push({
 					"name": "status",
-					"value": $("#status").val()
+					"value": ($("#status").val() || []).join(',')
 				});
 				aoData.push({
 					"name": "showReordSample",
@@ -597,7 +600,7 @@ $state = $geolocationService->getProvinces("yes");
 				Viral_Load: $("#result  option:selected").text(),
 				Print_Date: $("#printDate").val(),
 				patientInfo: $("#patientInfo  option:selected").val(),
-				Status: $("#status  option:selected").text(),
+				Status: ($("#status").val() || []).join(', '),
 				withAlphaNum: withAlphaNum
 			},
 			function(data) {
@@ -609,14 +612,6 @@ $state = $geolocationService->getProvinces("yes");
 					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
-	}
-
-	function checkSampleCollectionDate() {
-		if ($("#sampleCollectionDate").val() == "" && $("#status").val() == 4) {
-			alert("<?php echo _translate("Please select Sample Collection Date Range"); ?>");
-		} else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
-			alert("<?php echo _translate("Please select Sample Test Date Range"); ?>");
-		}
 	}
 
 	function getByProvince(provinceId) {

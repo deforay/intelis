@@ -153,9 +153,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							</td>
 							<th scope="row"><?php echo _translate("Status"); ?></th>
 							<td>
-								<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
-									<option value=""><?php echo _translate("All Status"); ?></option>
-									<option value="<?= SAMPLE_STATUS\ACCEPTED; ?>" selected=selected><?php echo _translate("Accepted"); ?></option>
+								<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" multiple="multiple" style="width:220px;">
+									<option value="<?= SAMPLE_STATUS\ACCEPTED; ?>"><?php echo _translate("Accepted"); ?></option>
 									<option value="<?= SAMPLE_STATUS\REJECTED; ?>"><?php echo _translate("Rejected"); ?></option>
 									<option value="<?= SAMPLE_STATUS\PENDING_APPROVAL; ?>"><?php echo _translate("Awaiting Approval"); ?></option>
 									<option value="<?= SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB; ?>"><?php echo _translate("Registered At Testing Lab"); ?></option>
@@ -371,6 +370,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		});
 		$("#district").select2({
 			placeholder: "<?php echo _translate("Select District"); ?>"
+		});
+		$("#status").select2({
+			placeholder: "<?php echo _translate("Select Status"); ?>",
+			allowClear: true
 		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
@@ -600,7 +603,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				});
 				aoData.push({
 					"name": "status",
-					"value": $("#status").val()
+					"value": ($("#status").val() || []).join(',')
 				});
 				aoData.push({
 					"name": "manifestCode",
@@ -686,7 +689,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				Sample_Type: $("#sampleType  option:selected").text(),
 				Viral_Load: $("#vLoad  option:selected").text(),
 				Print_Date: $("#printDate").val(),
-				Status: $("#status  option:selected").text(),
+				Status: ($("#status").val() || []).join(', '),
 				patientInfo: $("#patientInfo  option:selected").val(),
 				withAlphaNum: withAlphaNum
 			},
@@ -701,13 +704,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			});
 	}
 
-	function checkSampleCollectionDate() {
-		if ($("#sampleCollectionDate").val() == "" && $("#status").val() == 4) {
-			alert("<?php echo _translate("Please select Sample Collection Date Range"); ?>");
-		} else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
-			alert("<?php echo _translate("Please select Sample Test Date Range"); ?>");
-		}
-	}
 
 	function getByProvince(provinceId) {
 		$("#district").html('');

@@ -219,9 +219,10 @@ try {
           $sWhere[] =  ' (vl.community_sample IS NOT NULL AND vl.community_sample ="' . $_POST['communitySample'] . '") ';
      }
      /* Sample status filter */
-     if (isset($_POST['status']) && !empty($_POST['status'])) {
-          $sWhere[] = '  (IFNULL(vl.result_status, 0) = ' . $_POST['status'] . ')';
-     }
+     $statusFilter = !empty($_POST['status'])
+          ? $db->inIntList($_POST['status'])
+          : implode(',', [SAMPLE_STATUS\ACCEPTED, SAMPLE_STATUS\REJECTED, SAMPLE_STATUS\PENDING_APPROVAL]);
+     $sWhere[] = ' vl.result_status IN (' . $statusFilter . ')';
      /* Show only recorded sample filter */
      if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) === 'yes') {
           $sWhere[] =  '  (vl.sample_reordered is NOT NULL AND vl.sample_reordered ="yes") ';

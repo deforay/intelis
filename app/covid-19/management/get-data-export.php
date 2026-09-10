@@ -129,10 +129,11 @@ try {
      if (isset($_POST['result']) && trim((string) $_POST['result']) !== '') {
           $sWhere[] = ' vl.result like "' . $db->escape((string) $_POST['result']) . '"';
      }
-     /* Status filter */
-     if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
-          $sWhere[] = ' vl.result_status = ' . (int) $_POST['status'];
-     }
+     /* Status filter — default to Accepted / Rejected / Awaiting Approval when none picked */
+     $statusFilter = !empty($_POST['status'])
+          ? $db->inIntList($_POST['status'])
+          : implode(',', [SAMPLE_STATUS\ACCEPTED, SAMPLE_STATUS\REJECTED, SAMPLE_STATUS\PENDING_APPROVAL]);
+     $sWhere[] = ' vl.result_status IN (' . $statusFilter . ')';
      /* Funding src filter */
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
           $sWhere[] = ' vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';

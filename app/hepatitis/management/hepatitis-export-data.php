@@ -140,9 +140,8 @@ $state = $geolocationService->getProvinces("yes");
 							</td>
 							<th scope="row"><?php echo _translate("Status"); ?></th>
 							<td>
-								<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
-									<option value=""><?php echo _translate("All Status"); ?></option>
-									<option value="<?= SAMPLE_STATUS\ACCEPTED; ?>" selected=selected><?php echo _translate("Accepted"); ?></option>
+								<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" multiple="multiple" style="width:220px;">
+									<option value="<?= SAMPLE_STATUS\ACCEPTED; ?>"><?php echo _translate("Accepted"); ?></option>
 									<option value="<?= SAMPLE_STATUS\REJECTED; ?>"><?php echo _translate("Rejected"); ?></option>
 									<option value="<?= SAMPLE_STATUS\PENDING_APPROVAL; ?>"><?php echo _translate("Awaiting Approval"); ?></option>
 									<option value="<?= SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB; ?>"><?php echo _translate("Registered At Testing Lab"); ?></option>
@@ -346,6 +345,10 @@ $state = $geolocationService->getProvinces("yes");
 		$("#district").select2({
 			placeholder: "<?php echo _translate("Select District"); ?>"
 		});
+		$("#status").select2({
+			placeholder: "<?php echo _translate("Select Status"); ?>",
+			allowClear: true
+		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
@@ -514,7 +517,7 @@ $state = $geolocationService->getProvinces("yes");
 				});
 				aoData.push({
 					"name": "status",
-					"value": $("#status").val()
+					"value": ($("#status").val() || []).join(',')
 				});
 				aoData.push({
 					"name": "showReordSample",
@@ -597,7 +600,7 @@ $state = $geolocationService->getProvinces("yes");
 				HBV_Viral_Load: $("#hbvVLoad  option:selected").text(),
 				Print_Date: $("#printDate").val(),
 				patientInfo: $("#patientInfo  option:selected").val(),
-				Status: $("#status  option:selected").text(),
+				Status: ($("#status").val() || []).join(', '),
 				withAlphaNum: withAlphaNum
 			},
 			function(data) {
@@ -644,13 +647,6 @@ $state = $geolocationService->getProvinces("yes");
 			});
 	}
 
-	function checkSampleCollectionDate() {
-		if ($("#sampleCollectionDate").val() == "" && $("#status").val() == 4) {
-			alert("<?php echo _translate("Please select Sample Collection Date Range"); ?>");
-		} else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
-			alert("<?php echo _translate("Please select Sample Test Date Range"); ?>");
-		}
-	}
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

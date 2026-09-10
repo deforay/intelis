@@ -180,9 +180,13 @@ try {
      }
 
      /* Sample status filter */
-     if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
-          $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status = ' . (int) $_POST['status'] . ')';
+     $statusIds = !empty($_POST['status'])
+          ? array_values(array_filter(array_map('intval', explode(',', (string) $_POST['status'])), fn($v) => $v > 0))
+          : [];
+     if ($statusIds === []) {
+          $statusIds = [SAMPLE_STATUS\ACCEPTED, SAMPLE_STATUS\REJECTED, SAMPLE_STATUS\PENDING_APPROVAL];
      }
+     $sWhere[] = ' vl.result_status IN (' . implode(',', $statusIds) . ')';
      /* Show only recorded sample filter */
      if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) === 'yes') {
           $sWhere[] =  '  (vl.sample_reordered is NOT NULL AND vl.sample_reordered ="yes") ';
@@ -226,7 +230,7 @@ try {
                $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
      }
-     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '' && ($_POST['status'] ?? '') == 7) {
+     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '' && in_array(SAMPLE_STATUS\ACCEPTED, $statusIds, true)) {
           if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
                $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
           } else {
