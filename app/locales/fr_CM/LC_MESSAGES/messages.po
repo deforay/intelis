@@ -20555,6 +20555,9 @@ msgstr "Impossible de générer le fichier d'export"
 #: app/eid/qa/eid-quality-monitoring.php:660
 #: app/reports/export-lab-performance-indicators.php:51
 #: app/reports/lab-performance-indicators.php:632
+msgid "day"
+msgstr "jour"
+
 msgid "days"
 msgstr "jours"
 

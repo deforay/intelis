@@ -326,7 +326,7 @@ try {
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">TRACNET ID:</td>';
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['etb_tracker_number'] . '</td>';
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Age:</td>';
-            $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $ageCalc['year'] . 'Year(s) ' . $ageCalc['months'] . 'Months</td>';
+            $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . (is_array($ageCalc) ? $ageCalc['year'] . 'Year(s) ' . $ageCalc['months'] . 'Months' : _translate('Unknown')) . '</td>';
             $html .= '</tr>';
             $html .= '<tr style="font-size:10px;font-weight:bolt;border-radius:20%;width:100%;">';
             $html .= '   <td colspan="4" style="background-color:#c0c0c0;">SPECIMEN INFORMATION</td>';

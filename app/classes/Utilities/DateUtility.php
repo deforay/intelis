@@ -224,7 +224,15 @@ final class DateUtility
                 return null;
             }
 
-            $diff = Carbon::now()->diff(Carbon::parse(self::normalizeDateString((string) $dateOfBirth)));
+            $dob = Carbon::parse(self::normalizeDateString((string) $dateOfBirth));
+
+            // A date of birth in the future has no age. DateInterval components
+            // are unsigned, so without this a future DOB reads as a real age.
+            if ($dob->greaterThan(Carbon::now())) {
+                return null;
+            }
+
+            $diff = Carbon::now()->diff($dob);
             return [
                 "year" => $diff->y,
                 "months" => $diff->m,
@@ -567,11 +575,29 @@ final class DateUtility
             return $age . ' ' . ($age > 1 ? _translate('years') : _translate('year'));
         }
 
-        // Check for valid DOB and calculate age in years
+        // Check for valid DOB and calculate completed years since birth
         if (!empty($result['patient_dob']) && $result['patient_dob'] !== '0000-00-00' && self::isDateFormatValid($result['patient_dob'])) {
-            $dob = Carbon::createFromFormat('Y-m-d', $result['patient_dob']);
-            $age = Carbon::now()->diffInYears($dob);
-            return $age . ' ' . ($age > 1 ? _translate('years') : _translate('year'));
+            $dob = Carbon::createFromFormat('Y-m-d', $result['patient_dob'])->startOfDay();
+            $now = Carbon::now()->startOfDay();
+
+            // A date of birth in the future cannot produce an age, so fall through
+            if ($dob->lessThanOrEqualTo($now)) {
+                // Carbon 3 returns a signed float here, so ask for the absolute
+                // difference and truncate it to completed whole units
+                $years = (int) $dob->diffInYears($now, true);
+                if ($years > 0) {
+                    return $years . ' ' . ($years > 1 ? _translate('years') : _translate('year'));
+                }
+
+                // Under a year old, report months or days rather than "0 year"
+                $months = (int) $dob->diffInMonths($now, true);
+                if ($months > 0) {
+                    return $months . ' ' . ($months > 1 ? _translate('months') : _translate('month'));
+                }
+
+                $days = (int) $dob->diffInDays($now, true);
+                return $days . ' ' . ($days === 1 ? _translate('day') : _translate('days'));
+            }
         }
 
         // Convert age in months to appropriate format
