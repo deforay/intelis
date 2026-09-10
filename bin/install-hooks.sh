@@ -66,9 +66,12 @@ case "$hp" in
 esac
 hp="${hp%/}"
 
-# A hook there defers to us if it looks up the repo's own hooks dir. Both spellings
-# git offers for that are accepted; a dispatcher using either will find bin/hooks.
-defers() { grep -qE 'git-common-dir|--git-path[[:space:]]+hooks' "$1" 2>/dev/null; }
+# A hook there defers to us only if it resolves the repo's OWN hooks dir, which
+# means --git-common-dir and nothing else: `git rev-parse --git-path hooks` honors
+# core.hooksPath and resolves straight back to the dispatcher's own directory, so
+# a hook using it never reaches bin/hooks. Same reason this script targets
+# --git-common-dir when installing, noted at the top.
+defers() { grep -q 'git-common-dir' "$1" 2>/dev/null; }
 
 same_file() { [ "$(cd "$(dirname "$1")" 2>/dev/null && pwd)/$(basename "$1")" \
               = "$(cd "$(dirname "$2")" 2>/dev/null && pwd)/$(basename "$2")" ]; }
@@ -80,6 +83,14 @@ for name in "${names[@]}"; do
         continue                            # hooksPath IS the repo hooks dir
     elif [ ! -e "$target" ]; then
         shadowed+=("$name|absent")          # git finds nothing, so nothing runs
+    elif [ ! -x "$target" ]; then
+        # git skips a hook without the executable bit, so whatever is in it is
+        # academic -- including a dispatcher that would otherwise defer.
+        if defers "$target"; then
+            shadowed+=("$name|notexec")
+        else
+            shadowed+=("$name|shadowed")
+        fi
     elif defers "$target"; then
         continue                            # a dispatcher that hands off to us
     else
@@ -97,6 +108,7 @@ if [ -z "$delegate" ]; then
         case "${entry#*|}" in
             absent)   printf '    %-12s no %s — git finds no hook of this name at all\n' "$n" "$hp/$n" >&2 ;;
             shadowed) printf '    %-12s %s runs instead, and does not hand off\n' "$n" "$hp/$n" >&2 ;;
+            notexec)  printf '    %-12s %s would defer, but is not executable — git skips it\n' "$n" "$hp/$n" >&2 ;;
         esac
     done
     printf '\n  Make that directory defer to this repo (keeps whatever is already there):\n' >&2
@@ -111,11 +123,31 @@ fi
 # Anything already there is preserved as <name>.local and called first, so a
 # personal guard keeps working rather than being replaced by ours.
 # ---------------------------------------------------------------------------
+mkdir -p "$hp" 2>/dev/null || {
+    echo "ℹ install-hooks: can't create $hp — skipping delegation (non-fatal)." >&2
+    exit 0
+}
+
 for entry in "${shadowed[@]}"; do
     name="${entry%%|*}"
     target="$hp/$name"
 
+    # It already hands off; it just could not run. Nothing to replace.
+    if [ "${entry#*|}" = "notexec" ]; then
+        chmod +x "$target" 2>/dev/null \
+            && echo "✓ made $target executable — it already defers" \
+            || echo "ℹ install-hooks: couldn't chmod +x $target (non-fatal)." >&2
+        continue
+    fi
+
     if [ -e "$target" ] && ! grep -q 'install-hooks.sh --delegate' "$target" 2>/dev/null; then
+        # Never write over an existing backup: that is somebody's hook, and the
+        # second run would be the one that destroys it.
+        if [ -e "$target.local" ]; then
+            echo "ℹ install-hooks: $target.local already exists — leaving $name alone." >&2
+            echo "  Merge or remove it, then re-run --delegate." >&2
+            continue
+        fi
         if ! mv "$target" "$target.local" 2>/dev/null; then
             echo "ℹ install-hooks: couldn't preserve $target — skipping (non-fatal)." >&2
             continue
@@ -138,19 +170,27 @@ here="$(cd "$(dirname "$0")" && pwd)"
 mine="$here/$name.local"
 repo="$(git rev-parse --git-common-dir 2>/dev/null)/hooks/$name"
 
-# Hooks that are handed their payload on stdin can only read it once, so capture
-# it here and replay it to each. Distinguish "no payload" from "empty payload":
-# a pre-push of nothing is a real case and must not be turned into a hang.
-payload=""; piped=""
+# Hooks handed a payload on stdin can only read it once, so capture it and replay
+# it to each. Replay from a FILE, not a pipe: a hook that exits without reading
+# (common, and legitimate) would give the writer SIGPIPE, and under pipefail the
+# shim would exit 141 and reject the push although the hook itself succeeded.
+tmp=""
 case "$name" in
-    pre-push|pre-receive|post-receive|update|proc-receive) payload="$(cat)"; piped=1 ;;
+    pre-push|pre-receive|post-receive|update|proc-receive)
+        tmp="$(mktemp 2>/dev/null)" || tmp=""
+        if [ -n "$tmp" ]; then
+            trap 'rm -f "$tmp"' EXIT
+            cat > "$tmp"
+        fi
+        ;;
 esac
 
 run() {
-    [ -x "$1" ] || return 0
+    h="$1"; shift
+    [ -x "$h" ] || return 0
     # Never recurse into this shim if the repo hooks dir happens to be this one.
-    [ "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")" = "$here/$name" ] && return 0
-    if [ -n "$piped" ]; then printf '%s\n' "$payload" | "$1" "${@:2}"; else "$1" "${@:2}"; fi
+    [ "$(cd "$(dirname "$h")" && pwd)/$(basename "$h")" = "$here/$name" ] && return 0
+    if [ -n "$tmp" ]; then "$h" "$@" < "$tmp"; else "$h" "$@"; fi
 }
 
 run "$mine" "$@" || exit $?
