@@ -203,15 +203,11 @@ try {
     } else {
         $_POST['finalResult'] = null;
     }
-    // Single-test forms (Sierra Leone, South Sudan, Burkina Faso) post a flat
-    // isSampleRejected. Rwanda's multi-test form posts only
-    // testResult[isSampleRejected][] -- read whichever the form sent, taking the
-    // last card, the same one folded into form_tb's is_sample_rejected below.
+    // Rejection is a verdict on the sample, not on one test card. A TB sample is one
+    // specimen transferred from lab to lab, so a rejected specimen is rejected for
+    // every test on the request -- every form posts the one flat isSampleRejected,
+    // and form_tb is the only place any reader looks for it.
     $sampleRejected = $_POST['isSampleRejected'] ?? null;
-    if ($sampleRejected === null && !empty($_POST['testResult']['labId']) && is_array($_POST['testResult']['labId'])) {
-        $lastCardIndex = count($_POST['testResult']['labId']) - 1;
-        $sampleRejected = $_POST['testResult']['isSampleRejected'][$lastCardIndex] ?? null;
-    }
     if ($sampleRejected === 'yes') {
         $_POST['finalResult'] = null;
         $status = REJECTED;
@@ -278,7 +274,7 @@ try {
         'sample_collection_date' => empty($_POST['sampleCollectionDate']) ? null : $_POST['sampleCollectionDate'],
         'sample_dispatched_datetime' => empty($_POST['sampleDispatchedDate']) ? null : $_POST['sampleDispatchedDate'],
         'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
-        'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
+        'is_sample_rejected' => $sampleRejected,
         'recommended_corrective_action' => $_POST['correctiveAction'] ?? null,
         'is_result_finalized' => $_POST['isResultFinalized'] ?? null,
         'result' => $_POST['finalResult'] ?? null,
@@ -306,10 +302,10 @@ try {
         'other_patient_type' => $_POST['typeOfPatientOther'] ?? null,
         'tested_by' => empty($_POST['testedBy']) ? null : $_POST['testedBy'],
         'result_date' => empty($_POST['resultDate']) ? null : $_POST['resultDate'],
-        'rejection_on' => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
+        'rejection_on' => (!empty($_POST['rejectionDate']) && $sampleRejected === 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
         'result_status' => $status,
         'data_sync' => 0,
-        'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
+        'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $sampleRejected === 'yes') ? $_POST['sampleRejectionReason'] : null,
 
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
@@ -391,9 +387,6 @@ try {
                     'lab_id' => $testResult['labId'][$key] ?? null,
                     'specimen_type' => $testResult['specimenType'][$key] ?? null,
                     'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($testResult['sampleReceivedDate'][$key] ?? null, true),
-                    'is_sample_rejected' => $testResult['isSampleRejected'][$key] ?? null,
-                    'reason_for_sample_rejection' => $testResult['sampleRejectionReason'][$key] ?? null,
-                    'rejection_on' => DateUtility::isoDateFormat($testResult['rejectionDate'][$key] ?? null),
                     'test_type' => $testResult['testType'][$key] ?? null,
                     'test_result' => $testResult['testResult'][$key] ?? null,
                     'sample_tested_datetime' => DateUtility::isoDateFormat($testResult['sampleTestedDateTime'][$key] ?? null, true),
@@ -413,9 +406,6 @@ try {
         // Update $tbData with LATEST test's data for form_tb
         $lastIndex = count($testResult['labId']) - 1;
         $tbData['sample_received_at_lab_datetime'] = DateUtility::isoDateFormat($testResult['sampleReceivedDate'][$lastIndex] ?? null, true);
-        $tbData['is_sample_rejected'] = $testResult['isSampleRejected'][$lastIndex] ?? null;
-        $tbData['reason_for_sample_rejection'] = $testResult['sampleRejectionReason'][$lastIndex] ?? null;
-        $tbData['rejection_on'] = DateUtility::isoDateFormat($testResult['rejectionDate'][$lastIndex] ?? null);
         $tbData['sample_tested_datetime'] = DateUtility::isoDateFormat($testResult['sampleTestedDateTime'][$lastIndex] ?? null, true);
         $tbData['tested_by'] = $testResult['testedBy'][$lastIndex] ?? null;
         $tbData['result_reviewed_by'] = $testResult['reviewedBy'][$lastIndex] ?? null;

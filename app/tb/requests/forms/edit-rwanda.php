@@ -692,75 +692,6 @@ if ($isLisInstance) {
                                                                     title="<?php echo _translate("Please enter sample receipt date"); ?>" />
                                                             <?php } ?>
                                                         </td>
-                                                        <td style="width: 33.33%;">
-                                                            <label class="label-control" for="isSampleRejected<?php echo $n; ?>">
-                                                                <?php echo _translate("Is Sample Rejected?"); ?>
-                                                            </label>
-                                                            <select class="form-control sample-rejection-select"
-                                                                name="testResult[isSampleRejected][]"
-                                                                id="isSampleRejected<?php echo $n; ?>"
-                                                                title="<?php echo _translate("Please select if sample was rejected"); ?>"
-                                                                onchange="showRevisedFields(this);updateTestFieldsRequired(this);">
-                                                                <option value=''> --
-                                                                    <?php echo _translate("Select"); ?> --
-                                                                </option>
-                                                                <option value="yes" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>
-                                                                    <?php echo _translate("Yes"); ?>
-                                                                </option>
-                                                                <option value="no" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>
-                                                                    <?php echo _translate("No"); ?>
-                                                                </option>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="rejection-date-field"
-                                                        style="<?php echo (isset($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? '' : 'display:none;'; ?>">
-                                                        <td style="width: 33.33%;" class="rejection-reason-field">
-                                                            <label class="label-control"
-                                                                for="sampleRejectionReason<?php echo $n; ?>">
-                                                                <?php echo _translate("Reason for Rejection"); ?><span
-                                                                    class="mandatory">*</span>
-                                                            </label>
-                                                            <select class="form-control rejection-reason-select"
-                                                                name="testResult[sampleRejectionReason][]"
-                                                                id="sampleRejectionReason<?php echo $n; ?>"
-                                                                title="<?php echo _translate("Please select the reason for rejection"); ?>">
-                                                                <option value=''> --
-                                                                    <?php echo _translate("Select"); ?> --
-                                                                </option>
-                                                                <option value="">-- Select --</option>
-                                                                <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                    <optgroup
-                                                                        label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
-                                                                        <?php
-                                                                        foreach ($rejectionResult as $reject) {
-                                                                            if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-                                                                                <option value="<?php echo $reject['rejection_reason_id']; ?>"
-                                                                                    <?php echo ($test['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
-                                                                                    <?= $reject['rejection_reason_name']; ?>
-                                                                                </option>
-                                                                            <?php }
-                                                                        } ?>
-                                                                    </optgroup>
-                                                                <?php }
-                                                                if ($test['reason_for_sample_rejection'] == 9999) {
-                                                                    echo '<option value="9999" selected="selected">Unspecified</option>';
-                                                                } ?>
-                                                            </select>
-                                                        </td>
-                                                        <td style="width: 33.33%;">
-                                                            <label class="label-control" for="rejectionDate<?php echo $n; ?>">
-                                                                <?php echo _translate("Rejection Date"); ?><span
-                                                                    class="mandatory">*</span>
-                                                            </label>
-                                                            <input class="form-control date rejection-date"
-                                                                value="<?php echo DateUtility::humanReadableDateFormat($test['rejection_on']); ?>"
-                                                                type="text" name="testResult[rejectionDate][]"
-                                                                id="rejectionDate<?php echo $n; ?>"
-                                                                placeholder="<?php echo _translate("Select rejection date"); ?>"
-                                                                title="
-                                                <?php echo _translate("Please select the rejection date"); ?>" />
-                                                        </td>
                                                         <td style="width: 33.33%;"></td>
                                                     </tr>
                                                     <tr>
@@ -971,52 +902,6 @@ if ($isLisInstance) {
                                                                 title="<?php echo _translate("Please enter sample receipt date"); ?>" />
                                                         <?php } ?>
                                                     </td>
-                                                    <td style="width: 33.33%;">
-                                                        <label class="label-control" for="isSampleRejected1">
-                                                            <?php echo _translate("Is Sample Rejected?"); ?>
-                                                        </label>
-                                                        <select class="form-control sample-rejection-select"
-                                                            name="testResult[isSampleRejected][]" id="isSampleRejected1"
-                                                            title="<?php echo _translate("Please select if sample was rejected"); ?>">
-                                                            <option value=''> --
-                                                                <?php echo _translate("Select"); ?> --
-                                                            </option>
-                                                            <option value="yes">
-                                                                <?php echo _translate("Yes"); ?>
-                                                            </option>
-                                                            <option value="no">
-                                                                <?php echo _translate("No"); ?>
-                                                            </option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                <tr class="rejection-date-field" style="display:none;">
-                                                    <td style="width: 33.33%;" class="rejection-reason-field">
-                                                        <label class="label-control" for="sampleRejectionReason1">
-                                                            <?php echo _translate("Reason for Rejection"); ?><span
-                                                                class="mandatory">*</span>
-                                                        </label>
-                                                        <select class="form-control rejection-reason-select"
-                                                            name="testResult[sampleRejectionReason][]"
-                                                            id="sampleRejectionReason1"
-                                                            title="<?php echo _translate("Please select the reason for rejection"); ?>">
-                                                            <option value=''> --
-                                                                <?php echo _translate("Select"); ?> --
-                                                            </option>
-                                                            <?php echo $rejectionReason; ?>
-                                                        </select>
-                                                    </td>
-                                                    <td style="width: 33.33%;">
-                                                        <label class="label-control" for="rejectionDate1">
-                                                            <?php echo _translate("Rejection Date"); ?><span
-                                                                class="mandatory">*</span>
-                                                        </label>
-                                                        <input class="form-control date rejection-date" type="text"
-                                                            name="testResult[rejectionDate][]" id="rejectionDate1"
-                                                            placeholder="<?php echo _translate("Select rejection date"); ?>"
-                                                            title="
-                                                <?php echo _translate("Please select the rejection date"); ?>" />
-                                                    </td>
                                                     <td style="width: 33.33%;"></td>
                                                 </tr>
                                                 <tr>
@@ -1160,7 +1045,7 @@ if ($isLisInstance) {
                                     <?php } ?>
                                 </div>
 
-                                <div class="controls" style="margin-top: 20px;">
+                                <div class="controls test-controls" style="margin-top: 20px;">
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+
                                         <?php echo _translate("Add Test"); ?>
                                     </button>
@@ -1169,6 +1054,54 @@ if ($isLisInstance) {
                                         <?php echo _translate("Remove Test"); ?>
                                     </button>
                                 </div>
+                                <div class="row pr-5">
+                                    <div class="col-md-4">
+                                        <label class="label-control"
+                                            for="isSampleRejected"><?php echo _translate("Is Sample Rejected?"); ?></label>
+                                        <select class="form-control" name="isSampleRejected" id="isSampleRejected"
+                                            title="<?php echo _translate("Please select if sample was rejected"); ?>">
+                                            <option value=""> -- <?php echo _translate("Select"); ?> -- </option>
+                                            <option value="yes" <?php echo (($tbInfo['is_sample_rejected'] ?? '') == 'yes') ? 'selected="selected"' : ''; ?>><?php echo _translate("Yes"); ?></option>
+                                            <option value="no" <?php echo (($tbInfo['is_sample_rejected'] ?? '') == 'no') ? 'selected="selected"' : ''; ?>><?php echo _translate("No"); ?></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 rejection-detail-field" style="display:none;">
+                                        <label class="label-control"
+                                            for="sampleRejectionReason"><?php echo _translate("Reason for Rejection"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <select class="form-control" name="sampleRejectionReason"
+                                            id="sampleRejectionReason"
+                                            title="<?php echo _translate("Please select the reason for rejection"); ?>">
+                                            <option value=""> -- <?php echo _translate("Select"); ?> -- </option>
+                                            <?php foreach ($rejectionTypeResult as $type) { ?>
+                                                <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
+                                                    <?php foreach ($rejectionResult as $reject) {
+                                                        if ($type['rejection_type'] == $reject['rejection_type']) { ?>
+                                                            <option value="<?php echo $reject['rejection_reason_id']; ?>"
+                                                                <?php echo (($tbInfo['reason_for_sample_rejection'] ?? '') == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
+                                                                <?= $reject['rejection_reason_name']; ?>
+                                                            </option>
+                                                        <?php }
+                                                    } ?>
+                                                </optgroup>
+                                            <?php }
+                                            if (($tbInfo['reason_for_sample_rejection'] ?? '') == 9999) {
+                                                echo '<option value="9999" selected="selected">Unspecified</option>';
+                                            } ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 rejection-detail-field" style="display:none;">
+                                        <label class="label-control"
+                                            for="rejectionDate"><?php echo _translate("Rejection Date"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <input class="form-control date" type="text" name="rejectionDate"
+                                            id="rejectionDate"
+                                            value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['rejection_on'] ?? ''); ?>"
+                                            placeholder="<?php echo _translate("Select rejection date"); ?>"
+                                            title="<?php echo _translate("Please select the rejection date"); ?>" />
+                                    </div>
+                                </div>
+                                <br>
                                 <div class="row pr-5 fnal-result" style="display:none;">
                                     <div class="col-md-6">
                                         <label class="label-control"
@@ -1404,19 +1337,14 @@ if ($isLisInstance) {
         $section.find('.revisedFields').show();
     }
 
-    // Make all test fields required when rejected=yes or (testType + testResult both selected)
+    // Make all test fields required once testType + testResult are both selected.
     function updateTestFieldsRequired(el) {
         var $section = $(el).closest('.test-section');
-        var isRejected = $section.find('.sample-rejection-select').val() === 'yes';
         var testType = $section.find('.test-type-select').val();
         var testResult = $section.find('.test-result-select').val();
-        var hasResult = testType && testResult;
 
-        if (isRejected || hasResult) {
-            $section.find('.test-required-field:not(:disabled)').not('.tested-field-td .test-required-field').addClass('isRequired');
-            if (!isRejected) {
-                $section.find('.tested-field-td .test-required-field').addClass('isRequired');
-            }
+        if (testType && testResult && !isSampleRejected()) {
+            $section.find('.test-required-field:not(:disabled)').addClass('isRequired');
         } else {
             $section.find('.test-required-field').removeClass('isRequired');
         }
@@ -1434,23 +1362,6 @@ if ($isLisInstance) {
                 placeholder: "Select option",
                 width: '100%'
             });
-        });
-
-        // Sample rejection change handler
-        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function () {
-            const $row = $(this).closest('.test-section');
-            showRevisedFields(this);
-            updateTestFieldsRequired(this);
-            if ($(this).val() === 'yes') {
-                $row.find('.rejection-reason-field, .rejection-date-field').show();
-                $row.find('.rejection-reason-select, .rejection-date').addClass('isRequired');
-                $row.find('.tested-field-td').hide();
-                $row.find('.tested-field-td .test-required-field').removeClass('isRequired');
-            } else {
-                $row.find('.rejection-reason-field, .rejection-date-field').hide();
-                $row.find('.rejection-reason-select, .rejection-date').removeClass('isRequired').val('');
-                $row.find('.tested-field-td').show();
-            }
         });
 
         // Test type change handler
@@ -1477,7 +1388,7 @@ if ($isLisInstance) {
         $('.test-result-select').each(function () {
             if ($(this).val()) hasAnyResult = true;
         });
-        if (hasAnyResult) {
+        if (hasAnyResult && !isSampleRejected()) {
             $('.fnal-result').show();
         } else {
             $('.fnal-result').hide();
@@ -1485,6 +1396,36 @@ if ($isLisInstance) {
             $('.finalResult').hide();
         }
     }
+
+    function isSampleRejected() {
+        return $('#isSampleRejected').val() === 'yes';
+    }
+
+    // A rejected specimen is rejected for the whole request: it is one sample moving
+    // from lab to lab, so there is no test it can still be used for. Rejecting hides
+    // the test cards rather than leaving a half-filled result behind that the helper
+    // would only null out on save.
+    function applySampleRejection() {
+        var rejected = isSampleRejected();
+        $('.rejection-detail-field').toggle(rejected);
+        $('#sampleRejectionReason, #rejectionDate').toggleClass('isRequired', rejected);
+        if (rejected) {
+            $('#testSections, .test-controls').hide();
+            $('#testSections').find('.test-required-field').removeClass('isRequired');
+        } else {
+            $('#sampleRejectionReason, #rejectionDate').val('');
+            $('#testSections, .test-controls').show();
+            $('.test-result-select').each(function () {
+                updateTestFieldsRequired(this);
+            });
+        }
+        updateFinalInterpretationVisibility();
+    }
+
+    $(function () {
+        $('#isSampleRejected').on('change', applySampleRejection);
+        applySampleRejection();
+    });
 
     // Update Remove Test button visibility
     function updateRemoveButtonVisibility() {
@@ -1554,7 +1495,6 @@ if ($isLisInstance) {
         }
 
         // Hide conditional fields
-        $(newSection).find('.rejection-reason-field, .rejection-date-field').hide();
         $(newSection).find('.revisedFields').hide();
         $(newSection).find('.test-required-field').removeClass('isRequired');
 
@@ -1849,12 +1789,6 @@ if ($isLisInstance) {
             const testTypeSelect = $(this).find('.test-type-select');
             if (testTypeSelect.length && testTypeSelect.val()) {
                 // updateTestResults(sectionNumber);
-            }
-
-            // Apply rejection state on page load
-            var $rejectionSelect = $(this).find('.sample-rejection-select');
-            if ($rejectionSelect.val() === 'yes') {
-                $rejectionSelect.trigger('change.testSection');
             }
         });
 

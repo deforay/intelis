@@ -541,42 +541,6 @@ if ($isLisInstance) {
                                                         placeholder="<?= _translate("Please enter date"); ?>"
                                                         title="<?php echo _translate("Please enter sample receipt date"); ?>" />
                                                 </td>
-                                                <td style="width: 33.33%;">
-                                                    <label class="label-control"
-                                                        for="isSampleRejected1"><?php echo _translate("Is Sample Rejected?"); ?></label>
-                                                    <select class="form-control sample-rejection-select"
-                                                        name="testResult[isSampleRejected][]" id="isSampleRejected1"
-                                                        title="<?php echo _translate("Please select if sample was rejected"); ?>">
-                                                        <option value=''> -- <?php echo _translate("Select"); ?> --
-                                                        </option>
-                                                        <option value="yes"> <?php echo _translate("Yes"); ?> </option>
-                                                        <option value="no"> <?php echo _translate("No"); ?> </option>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <tr class="rejection-date-field" style="display:none;">
-                                                <td style="width: 33.33%;" class="rejection-reason-field">
-                                                    <label class="label-control"
-                                                        for="sampleRejectionReason1"><?php echo _translate("Reason for Rejection"); ?><span
-                                                            class="mandatory">*</span></label>
-                                                    <select class="form-control rejection-reason-select"
-                                                        name="testResult[sampleRejectionReason][]"
-                                                        id="sampleRejectionReason1"
-                                                        title="<?php echo _translate("Please select the reason for rejection"); ?>">
-                                                        <option value=''> -- <?php echo _translate("Select"); ?> --
-                                                        </option>
-                                                        <?php echo $rejectionReason; ?>
-                                                    </select>
-                                                </td>
-                                                <td style="width: 33.33%;">
-                                                    <label class="label-control"
-                                                        for="rejectionDate1"><?php echo _translate("Rejection Date"); ?><span
-                                                            class="mandatory">*</span></label>
-                                                    <input class="form-control date rejection-date" type="text"
-                                                        name="testResult[rejectionDate][]" id="rejectionDate1"
-                                                        placeholder="<?php echo _translate("Select rejection date"); ?>"
-                                                        title="<?php echo _translate("Please select the rejection date"); ?>" />
-                                                </td>
                                                 <td style="width: 33.33%;"></td>
                                             </tr>
                                             <tr>
@@ -677,12 +641,45 @@ if ($isLisInstance) {
                                     </div>
                                 </div>
 
-                                <div class="controls" style="margin-top: 20px;">
+                                <div class="controls test-controls" style="margin-top: 20px;">
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+
                                         <?php echo _translate("Add Test"); ?></button>
                                     <button type="button" id="removeTestBtn" class="btn btn-danger" style="display: none;"
                                         onclick="removeTestSection()">-
                                         <?php echo _translate("Remove Test"); ?></button>
+                                </div>
+                                <br>
+                                <div class="row pr-5">
+                                    <div class="col-md-4">
+                                        <label class="label-control"
+                                            for="isSampleRejected"><?php echo _translate("Is Sample Rejected?"); ?></label>
+                                        <select class="form-control" name="isSampleRejected" id="isSampleRejected"
+                                            title="<?php echo _translate("Please select if sample was rejected"); ?>">
+                                            <option value=""> -- <?php echo _translate("Select"); ?> -- </option>
+                                            <option value="yes"><?php echo _translate("Yes"); ?></option>
+                                            <option value="no"><?php echo _translate("No"); ?></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 rejection-detail-field" style="display:none;">
+                                        <label class="label-control"
+                                            for="sampleRejectionReason"><?php echo _translate("Reason for Rejection"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <select class="form-control" name="sampleRejectionReason"
+                                            id="sampleRejectionReason"
+                                            title="<?php echo _translate("Please select the reason for rejection"); ?>">
+                                            <option value=""> -- <?php echo _translate("Select"); ?> -- </option>
+                                            <?php echo $rejectionReason; ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 rejection-detail-field" style="display:none;">
+                                        <label class="label-control"
+                                            for="rejectionDate"><?php echo _translate("Rejection Date"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <input class="form-control date" type="text" name="rejectionDate"
+                                            id="rejectionDate"
+                                            placeholder="<?php echo _translate("Select rejection date"); ?>"
+                                            title="<?php echo _translate("Please select the rejection date"); ?>" />
+                                    </div>
                                 </div>
                                 <br>
                                 <div class="row pr-5 fnal-result" style="display:none;">
@@ -905,24 +902,6 @@ if ($isLisInstance) {
             });
         });
 
-        // Bind sample rejection change event
-        $section.find('.sample-rejection-select').off('change').on('change', function() {
-            const $row = $(this).closest('.test-section');
-            updateTestFieldsRequired(this);
-            if ($(this).val() === 'yes') {
-                $row.find('.rejection-reason-field, .rejection-date-field').show();
-                $row.find('.rejection-reason-select, .rejection-date').addClass('isRequired');
-                $row.find('.resultSectionInput').prop('disabled', true).removeClass('isRequired').val('');
-                $row.find('.tested-field-td').hide();
-                $row.find('.tested-field-td .test-required-field').removeClass('isRequired');
-            } else {
-                $row.find('.resultSectionInput').prop('disabled', false);
-                $row.find('.rejection-reason-field, .rejection-date-field').hide();
-                $row.find('.rejection-reason-select, .rejection-date').removeClass('isRequired').val('');
-                $row.find('.tested-field-td').show();
-            }
-        });
-
         // Bind test type change event
         $section.find('.test-type-select').on('change', function() {
             updateTestResults(count);
@@ -941,7 +920,7 @@ if ($isLisInstance) {
         $('.test-result-select').each(function() {
             if ($(this).val()) hasAnyResult = true;
         });
-        if (hasAnyResult) {
+        if (hasAnyResult && !isSampleRejected()) {
             $('.fnal-result').show();
         } else {
             $('.fnal-result').hide();
@@ -950,19 +929,44 @@ if ($isLisInstance) {
         }
     }
 
-    // Make all test fields required when rejected=yes or (testType + testResult both selected)
+    function isSampleRejected() {
+        return $('#isSampleRejected').val() === 'yes';
+    }
+
+    // A rejected specimen is rejected for the whole request: it is one sample moving
+    // from lab to lab, so there is no test it can still be used for. Rejecting hides
+    // and clears the test cards rather than leaving a half-filled result behind that
+    // the helper would only null out on save.
+    function applySampleRejection() {
+        var rejected = isSampleRejected();
+        $('.rejection-detail-field').toggle(rejected);
+        $('#sampleRejectionReason, #rejectionDate').toggleClass('isRequired', rejected);
+        if (rejected) {
+            $('#testSections, .test-controls').hide();
+            $('#testSections').find('.test-required-field').removeClass('isRequired');
+        } else {
+            $('#sampleRejectionReason, #rejectionDate').val('');
+            $('#testSections, .test-controls').show();
+            $('.test-result-select').each(function() {
+                updateTestFieldsRequired(this);
+            });
+        }
+        updateFinalInterpretationVisibility();
+    }
+
+    $(function() {
+        $('#isSampleRejected').on('change', applySampleRejection);
+        applySampleRejection();
+    });
+
+    // Make all test fields required once testType + testResult are both selected.
     function updateTestFieldsRequired(el) {
         var $section = $(el).closest('.test-section');
-        var isRejected = $section.find('.sample-rejection-select').val() === 'yes';
         var testType = $section.find('.test-type-select').val();
         var testResult = $section.find('.test-result-select').val();
-        var hasResult = testType && testResult;
 
-        if (isRejected || hasResult) {
-            $section.find('.test-required-field:not(:disabled)').not('.tested-field-td .test-required-field').addClass('isRequired');
-            if (!isRejected) {
-                $section.find('.tested-field-td .test-required-field').addClass('isRequired');
-            }
+        if (testType && testResult && !isSampleRejected()) {
+            $section.find('.test-required-field:not(:disabled)').addClass('isRequired');
         } else {
             $section.find('.test-required-field').removeClass('isRequired');
         }
@@ -1050,8 +1054,7 @@ if ($isLisInstance) {
             $dateInput.after('<input type="hidden" name="testResult[sampleReceivedDate][]" value="' + lastDateVal + '" />');
         }
 
-        // Hide conditional fields and clear required state
-        $(newSection).find('.rejection-reason-field, .rejection-date-field').hide();
+        // Clear required state
         $(newSection).find('.test-required-field').removeClass('isRequired');
 
         container.appendChild(newSection);
