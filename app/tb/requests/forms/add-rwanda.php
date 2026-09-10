@@ -669,6 +669,7 @@ if ($isLisInstance) {
                                             title="<?php echo _translate("Please select the reason for rejection"); ?>">
                                             <option value=""> -- <?php echo _translate("Select"); ?> -- </option>
                                             <?php echo $rejectionReason; ?>
+                                            <option value="9999"><?php echo _translate("Unspecified"); ?></option>
                                         </select>
                                     </div>
                                     <div class="col-md-4 rejection-detail-field" style="display:none;">

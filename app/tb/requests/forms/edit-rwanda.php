@@ -1082,10 +1082,8 @@ if ($isLisInstance) {
                                                         <?php }
                                                     } ?>
                                                 </optgroup>
-                                            <?php }
-                                            if (($tbInfo['reason_for_sample_rejection'] ?? '') == 9999) {
-                                                echo '<option value="9999" selected="selected">Unspecified</option>';
-                                            } ?>
+                                            <?php } ?>
+                                            <option value="9999" <?php echo (($tbInfo['reason_for_sample_rejection'] ?? '') == 9999) ? 'selected="selected"' : ''; ?>><?php echo _translate("Unspecified"); ?></option>
                                         </select>
                                     </div>
                                     <div class="col-md-4 rejection-detail-field" style="display:none;">
