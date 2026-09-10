@@ -621,6 +621,18 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 												</div>
 											</div>
 										</div>
+
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="track_page_usage" class="col-lg-4 control-label"><?php echo _translate("Track Page Usage"); ?>
+												</label>
+												<div class="col-lg-8">
+													<input type="radio" class="readPage" id="track_page_usage_yes" name="track_page_usage" value="yes" <?php echo (($arr['track_page_usage'] ?? 'yes') == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Yes"); ?>&nbsp;&nbsp;
+											    	<input type="radio" class="readPage" id="track_page_usage_no" name="track_page_usage" value="no" <?php echo (($arr['track_page_usage'] ?? 'yes') == 'no') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("No"); ?>
+												</div>
+											</div>
+										</div>
+
 									</div>
 
 									<div class="row">

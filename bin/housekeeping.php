@@ -578,6 +578,10 @@ $tablesToCleanup = [
         'condition' => 'requested_on < NOW() - INTERVAL 365 DAY',
         'description' => 'API requests older than 365 days'
     ],
+    'user_page_usage' => [
+        'condition' => 'usage_date < CURDATE() - INTERVAL 365 DAY',
+        'description' => 'page usage older than 365 days'
+    ],
     // Completed work only: anything not yet processed is pending, however old, and
     // deleting it would lose a sample its code. This table was never pruned, so it had
     // grown to sixteen months of finished rows.

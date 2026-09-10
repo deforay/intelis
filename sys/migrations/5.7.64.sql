@@ -44,3 +44,15 @@ UPDATE `s_app_menu`
 -- privilege. That statement has already run everywhere it applies and is keyed
 -- on nothing this migration touches, so it is left alone; no other table stores
 -- either path.
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

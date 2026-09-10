@@ -32,6 +32,11 @@ class AclMiddleware implements MiddlewareInterface
         // browser having to volunteer a Referer.
         '/download.php',
         '/users/edit-profile-helper.php',
+        // A sendBeacon carries no X-Requested-With header, so the AJAX bypass
+        // above does not cover the last flush of a page being unloaded. The
+        // endpoint authorizes itself: it only updates rows belonging to the
+        // calling session's own user.
+        '/common/track-page-usage.php',
         '/health-check',
         '/status'
     ];

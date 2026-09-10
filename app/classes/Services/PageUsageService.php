@@ -1,0 +1,205 @@
+<?php
+declare(strict_types=1);
+namespace App\Services;
+use Throwable;
+use App\Registries\AppRegistry;
+use App\Utilities\DateUtility;
+use App\Utilities\LoggerUtility;
+use App\Utilities\FileCacheUtility;
+
+/**
+* Which page a user opened, and how long it stayed in front of them.
+*
+* One row per user, page and day. header.php counts the open. The browser
+* reports visible seconds, which land on the row the open created.
+*
+* Nothing here is allowed to break a page. A page that fails to render because
+* it could not count itself is worse than a gap in the counts, so every public
+* method swallows its own failures.
+*/
+final class PageUsageService
+{
+/** Below this, a flush is not time spent on the page. */
+private const MIN_FLUSH_SECONDS = 5;
+/** The browser reports at least every 15 minutes, so nothing real is larger. */
+private const MAX_FLUSH_SECONDS = 4500;
+/** Ceiling for one user on one page on one day. */
+private const MAX_DAY_SECONDS = 28800;
+private ?bool $enabled = null;
+private ?string $pageUrl = null;
+public function __construct(
+private readonly DatabaseService $db,
+private readonly CommonService $general,
+private readonly FileCacheUtility $fileCache
+) {
+}/** False when global_config.track_page_usage is 'no'. */
+public function isEnabled(): bool
+{
+if ($this->enabled === null) {
+$flag = trim((string) ($this->general->getGlobalConfig('track_page_usage') ?? ''));
+$this->enabled = $flag !== 'no';
+}
+return $this->enabled;
+}
+/**
+* The current request as a tracking key: the path, plus a type parameter
+* when the request carries one. '' when the request is not a trackable page.
+*/
+public function currentPageUrl(): string
+{
+$this->pageUrl ??= self::normalize((string) (AppRegistry::get('currentRequestURI') ??
+''));
+return $this->pageUrl;
+}
+/** Counts one page open. Called from header.php. */
+public function recordPageOpen(): void
+{
+try {
+if (CommonService::isCliRequest() || !$this->isEnabled()) {
+return;
+}
+$userId = trim((string) ($_SESSION['userId'] ?? ''));
+$userQuery = "SELECT session_hash
+                            FROM activity_log WHERE user_id= ?";
+$user = $this->db->rawQueryOne($userQuery, [$userId]);
+$page = $this->currentPageUrl();
+if ($userId === '' || $page === '') {
+return;
+}
+$now = DateUtility::getCurrentDateTime();
+$label = $this->label($page);
+$ip = substr((string) CommonService::getClientIpAddress(), 0, 64);
+$this->db->rawQuery(
+"INSERT INTO user_page_usage
+(user_id, page_url, page_name, module, usage_date, visits, duration_seconds,
+first_seen_datetime, last_seen_datetime, last_ip_address, session_hash)VALUES (?, ?, ?, ?, DATE(?), 1, 0, ?, ?, ?, ?)
+ON DUPLICATE KEY UPDATE
+visits = visits + 1,
+last_seen_datetime = ?,
+last_ip_address = ?,
+page_name = ?",
+[
+$userId, $page, $label['name'], $label['module'], $now, $now, $now, $ip,
+$now, $ip, $label['name'], $user['session_hash'],
+]
+);
+} catch (Throwable $e) {
+LoggerUtility::logDebug('Page usage open not recorded: ' . $e->getMessage());
+}
+}
+/**
+* Adds visible seconds to a row this user already opened.
+*
+* Returns false when the flush is out of bounds, or when no row matches.
+* A request naming a page the user never opened matches no row.
+*/
+public function recordTime(string $page, int $seconds): bool
+{
+try {
+if (CommonService::isCliRequest() || !$this->isEnabled()) {
+return false;
+}
+$userId = trim((string) ($_SESSION['userId'] ?? ''));
+$page = self::normalize($page);
+if ($userId === '' || $page === '') {
+return false;
+}
+if ($seconds < self::MIN_FLUSH_SECONDS || $seconds > self::MAX_FLUSH_SECONDS) {
+return false;
+}
+// usage_date reaches back one day so the tail of a visit that crossed
+// midnight lands on the row that was opened, not on a new one.
+$this->db->rawQuery(
+"UPDATE user_page_usage
+SET duration_seconds = LEAST(duration_seconds + ?, ?),
+last_seen_datetime = ?
+WHERE user_id = ?AND page_url = ?
+AND usage_date >= (CURDATE() - INTERVAL 1 DAY)
+ORDER BY usage_date DESC
+LIMIT 1",
+[$seconds, self::MAX_DAY_SECONDS, DateUtility::getCurrentDateTime(), $userId,
+$page]
+);
+return true;
+} catch (Throwable $e) {
+LoggerUtility::logDebug('Page usage time not recorded: ' . $e->getMessage());
+return false;
+}
+}
+/**
+* The path, and a type parameter when there is one, because this application
+* tells its per-test-type pages apart by exactly that parameter.
+* Everything else in a query string is filter state and sample ids.
+*/
+private static function normalize(string $uri): string
+{
+$uri = trim($uri);
+if ($uri === '') {
+return '';
+}
+$path = parse_url($uri, PHP_URL_PATH) ?: '';
+if (!preg_match('#^/[A-Za-z0-9._/\-]{1,200}$#', $path) || !str_ends_with($path, '.php'))
+{
+return '';
+}
+if ($path === '/common/track-page-usage.php') {
+return '';
+}
+parse_str((string) parse_url($uri, PHP_URL_QUERY), $query);
+$type = (string) ($query['type'] ?? $query['t'] ?? '');
+$key = array_key_exists('type', $query) ? 'type' : 't';
+if ($type !== '' && preg_match('#^[a-z0-9\-]{1,20}$#', $type)) {
+$path .= '?' . $key . '=' . $type;
+}return substr($path, 0, 255);
+}
+/** @return array{name:string,module:?string} */
+private function label(string $page): array
+{
+$labels = $this->labels();
+return $labels[$page] ?? ['name' => self::prettyName($page), 'module' => null];
+}
+/**
+* Path to label, from the menu first and the privilege list second.
+* Cached for an hour, so a renamed page catches up without a deploy.
+*
+* @return array<string, array{name:string,module:?string}>
+*/
+private function labels(): array
+{
+$db = $this->db;
+return $this->fileCache->get('page_usage_labels', function () use ($db): array {
+$map = [];
+$menu = $db->rawQuery(
+"SELECT link, display_text, module FROM s_app_menu
+WHERE link IS NOT NULL AND link <> '' AND link NOT LIKE '#%'"
+);
+foreach ($menu as $row) {
+$map[(string) $row['link']] = [
+'name' => (string) $row['display_text'],
+'module' => $row['module'] !== null ? (string) $row['module'] : null,
+];
+}
+$privileges = $db->rawQuery(
+"SELECT p.privilege_name, r.display_name, r.module
+FROM privileges p
+LEFT JOIN resources r ON r.resource_id = p.resource_id
+WHERE p.privilege_name IS NOT NULL AND p.privilege_name <> ''"
+);
+foreach ($privileges as $row) {
+$url = (string) $row['privilege_name'];
+if (isset($map[$url]) || empty($row['display_name'])) {
+continue;
+}$map[$url] = [
+'name' => (string) $row['display_name'],
+'module' => $row['module'] !== null ? (string) $row['module'] : null,
+];
+}
+return $map;
+});
+}
+/** '/vl/results/vl-result-status.php' => 'Vl Result Status' */
+private static function prettyName(string $page): string
+{
+$base = basename(parse_url($page, PHP_URL_PATH) ?: $page, '.php');
+return ucwords(trim(preg_replace('/[^a-z0-9]+/i', ' ', $base) ?? $base));
+}}

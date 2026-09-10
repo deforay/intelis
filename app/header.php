@@ -22,6 +22,9 @@ if ($db->isConnected() === false) {
 	throw new SystemException("Database connection failed. Please check your database settings", 500);
 }
 
+// Page usage tracking. Only real pages include header.php, so this counts
+// pages and not AJAX round trips. The call never throws.
+(ContainerRegistry::get(App\Services\PageUsageService::class))->recordPageOpen();
 $_SESSION['modules'] ??= [];
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();

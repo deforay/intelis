@@ -39,3 +39,15 @@ SET
     f.reason_for_sample_rejection = COALESCE(NULLIF(f.reason_for_sample_rejection, 'N/A'), NULLIF(r.reason, '')),
     f.rejection_on = COALESCE(f.rejection_on, NULLIF(r.rejected_on, ''))
 WHERE COALESCE(LOWER(TRIM(f.is_sample_rejected)), '') <> 'yes';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

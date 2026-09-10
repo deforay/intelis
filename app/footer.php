@@ -329,6 +329,58 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 		}
 	})();
 </script>
+<?php
+// Time on page. The clock runs only while the tab is visible. The count goes out
+// when the reader leaves or switches away, and every 15 minutes so a tab left
+// open all day still reports.
+/** @var App\Services\PageUsageService $pageUsage */$pageUsage = ContainerRegistry::get(App\Services\PageUsageService::class);
+$trackedPage = (!empty($_SESSION['userId']) && $pageUsage->isEnabled()) ? $pageUsage->currentPageUrl() : '';
+if ($trackedPage !== '') { ?>
+<script type="text/javascript">
+(function () {
+var PAGE = <?= json_encode($trackedPage) ?>;
+var ENDPOINT = '/common/track-page-usage.php';
+var startedAt = document.visibilityState === 'visible' ? Date.now() : null;
+var pending = 0;
+function stopClock() {
+if (startedAt !== null) {
+pending += Math.round((Date.now() - startedAt) / 1000);
+startedAt = null;
+}
+}
+function flush(unloading) {
+	stopClock();
+	if (pending < 5) { return; }
+	var seconds = pending;
+	pending = 0;
+	var form = new FormData();
+	form.append('page', PAGE);
+	form.append('seconds', String(seconds));
+	form.append('csrf_token', window.csrf_token || '');
+	if (unloading && navigator.sendBeacon) {
+	navigator.sendBeacon(ENDPOINT, form);
+	return;
+}
+fetch(ENDPOINT, { method: 'POST', body: form, credentials: 'same-origin',
+keepalive: true })
+.catch(function () { /* a lost count is not the reader's problem */ });
+}
+document.addEventListener('visibilitychange', function () {
+if (document.hidden) {
+flush(false);
+} else if (startedAt === null) {
+startedAt = Date.now();
+}
+});
+window.addEventListener('pagehide', function () { flush(true); });window.setInterval(function () {
+if (!document.hidden) {
+flush(false);
+startedAt = Date.now();
+}
+}, 15 * 60 * 1000);
+})();
+</script>
+<?php } ?>
 </body>
 
 </html>
