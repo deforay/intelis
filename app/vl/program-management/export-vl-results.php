@@ -209,16 +209,17 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = $aRow['recommended_corrective_action_name'];
 			if ($formId == DRC) {
 				$formAttributes = json_decode((string) $aRow['form_attributes']);
-				if (is_object($formAttributes->storage)) {
-					$formAttributes->storage = json_encode($formAttributes->storage);
+				$storage = $formAttributes->storage ?? null;
+				if (is_object($storage)) {
+					$storage = json_encode($storage);
 				}
-				$storageObj = json_decode($formAttributes->storage);
+				$storageObj = is_string($storage) ? json_decode($storage) : null;
 
-				$row[] = $storageObj->freezerCode;
-				$row[] = $storageObj->rack;
-				$row[] = $storageObj->box;
-				$row[] = $storageObj->position;
-				$row[] = $storageObj->volume;
+				$row[] = $storageObj->freezerCode ?? '';
+				$row[] = $storageObj->rack ?? '';
+				$row[] = $storageObj->box ?? '';
+				$row[] = $storageObj->position ?? '';
+				$row[] = $storageObj->volume ?? '';
 			}
 
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');

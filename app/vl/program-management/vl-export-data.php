@@ -852,7 +852,7 @@ if ($formId == COUNTRY\CAMEROON) {
 			searchVlRequestData();
 		}
 		var withAlphaNum = null;
-		$.blockUI();
+		// $.blockUI();
 		oTable.fnDraw();
 		$.post('/vl/program-management/export-vl-results.php', {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
