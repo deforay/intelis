@@ -591,7 +591,6 @@ if ($isLisInstance) {
                                                                 for="testType<?php echo $n; ?>"><?php echo _translate("Test Type"); ?></label>
                                                             <select
                                                                 class="form-control isRequired test-type-select resultSectionInput"
-                                                                <?php echo (($tbInfo['is_sample_rejected'] ?? '') == 'yes') ? 'disabled' : ''; ?>
                                                                 name="testResult[testType][]" id="testType<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test type"); ?>"
                                                                 onchange="showRevisedFields(this);">
@@ -612,7 +611,6 @@ if ($isLisInstance) {
                                                                 for="testResult<?php echo $n; ?>"><?php echo _translate("Test Result"); ?></label>
                                                             <select
                                                                 class="form-control isRequired test-result-select resultSectionInput"
-                                                                <?php echo (($tbInfo['is_sample_rejected'] ?? '') == 'yes') ? 'disabled' : ''; ?>
                                                                 name="testResult[testResult][]" id="testResult<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test result"); ?>"
                                                                 onchange="showRevisedFields(this);">

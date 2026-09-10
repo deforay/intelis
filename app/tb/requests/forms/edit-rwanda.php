@@ -701,7 +701,6 @@ if ($isLisInstance) {
                                                             </label>
                                                             <select
                                                                 class="form-control test-type-select resultSectionInput test-required-field"
-                                                                <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?>
                                                                 name="testResult[testType][]" id="testType<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test type"); ?>"
                                                                 onchange="updateTestResults(<?php echo $n; ?>);showRevisedFields(this);updateTestFieldsRequired(this);">
@@ -724,7 +723,6 @@ if ($isLisInstance) {
                                                             </label>
                                                             <select
                                                                 class="form-control test-result-select resultSectionInput test-required-field"
-                                                                <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?>
                                                                 name="testResult[testResult][]" id="testResult<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test result"); ?>"
                                                                 onchange="showRevisedFields(this);updateTestFieldsRequired(this);">
