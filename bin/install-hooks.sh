@@ -76,6 +76,67 @@ defers() { grep -q 'git-common-dir' "$1" 2>/dev/null; }
 same_file() { [ "$(cd "$(dirname "$1")" 2>/dev/null && pwd)/$(basename "$1")" \
               = "$(cd "$(dirname "$2")" 2>/dev/null && pwd)/$(basename "$2")" ]; }
 
+# Our own shim, built once. A shim already in place is compared against this
+# BYTE FOR BYTE rather than merely recognised: a shim contains "git-common-dir",
+# so treating it as "defers, nothing to do" would freeze whatever version got
+# installed first. That is how a fix to the shim would reach nobody who had
+# already run --delegate -- which is precisely who is relying on it.
+ours="$(mktemp 2>/dev/null)" || {
+    echo "ℹ install-hooks: no writable temp dir — skipping the hooksPath check (non-fatal)." >&2
+    exit 0
+}
+trap 'rm -f "$ours"' EXIT
+write_shim() { cat > "$1" <<'SHIM'
+#!/usr/bin/env bash
+# Installed by bin/install-hooks.sh --delegate.
+#
+# core.hooksPath replaces .git/hooks wholesale, so a repo's own hooks never run
+# unless something here calls them. This runs the machine-local hook of this name
+# (kept as <name>.local), then the repo's, and fails the operation if either does.
+set -uo pipefail
+
+name="$(basename "$0")"
+here="$(cd "$(dirname "$0")" && pwd)"
+mine="$here/$name.local"
+repo="$(git rev-parse --git-common-dir 2>/dev/null)/hooks/$name"
+
+# Hooks handed a payload on stdin can only read it once, so capture it and replay
+# it to each. Replay from a FILE, not a pipe: a hook that exits without reading
+# (common, and legitimate) would give the writer SIGPIPE, and under pipefail the
+# shim would exit 141 and reject the push although the hook itself succeeded.
+tmp=""
+case "$name" in
+    pre-push|pre-receive|post-receive|update|proc-receive)
+        # Fail closed. Without the payload the second hook reads EOF, sees no
+        # refs, and passes every check it was meant to run -- a silent bypass of
+        # the guards, reported as success. Refusing is the safe direction.
+        tmp="$(mktemp 2>/dev/null)" || {
+            echo "✋ $name blocked — no writable temp dir to hold the ref list." >&2
+            echo "  Set TMPDIR to somewhere writable and retry." >&2
+            exit 1
+        }
+        trap 'rm -f "$tmp"' EXIT
+        cat > "$tmp"
+        ;;
+esac
+
+run() {
+    h="$1"; shift
+    [ -x "$h" ] || return 0
+    # Never recurse into this shim if the repo hooks dir happens to be this one.
+    [ "$(cd "$(dirname "$h")" && pwd)/$(basename "$h")" = "$here/$name" ] && return 0
+    if [ -n "$tmp" ]; then "$h" "$@" < "$tmp"; else "$h" "$@"; fi
+}
+
+run "$mine" "$@" || exit $?
+run "$repo" "$@" || exit $?
+exit 0
+SHIM
+}
+write_shim "$ours"
+
+is_our_shim() { grep -q 'Installed by bin/install-hooks.sh --delegate' "$1" 2>/dev/null; }
+
 shadowed=()
 for name in "${names[@]}"; do
     target="$hp/$name"
@@ -83,6 +144,11 @@ for name in "${names[@]}"; do
         continue                            # hooksPath IS the repo hooks dir
     elif [ ! -e "$target" ]; then
         shadowed+=("$name|absent")          # git finds nothing, so nothing runs
+    elif is_our_shim "$target"; then
+        if cmp -s "$ours" "$target" && [ -x "$target" ]; then
+            continue                        # current, and able to run
+        fi
+        shadowed+=("$name|stale")
     elif [ ! -x "$target" ]; then
         # git skips a hook without the executable bit, so whatever is in it is
         # academic -- including a dispatcher that would otherwise defer.
@@ -109,6 +175,7 @@ if [ -z "$delegate" ]; then
             absent)   printf '    %-12s no %s — git finds no hook of this name at all\n' "$n" "$hp/$n" >&2 ;;
             shadowed) printf '    %-12s %s runs instead, and does not hand off\n' "$n" "$hp/$n" >&2 ;;
             notexec)  printf '    %-12s %s would defer, but is not executable — git skips it\n' "$n" "$hp/$n" >&2 ;;
+            stale)    printf '    %-12s %s is an out-of-date shim — refresh it\n' "$n" "$hp/$n" >&2 ;;
         esac
     done
     printf '\n  Make that directory defer to this repo (keeps whatever is already there):\n' >&2
@@ -140,7 +207,7 @@ for entry in "${shadowed[@]}"; do
         continue
     fi
 
-    if [ -e "$target" ] && ! grep -q 'install-hooks.sh --delegate' "$target" 2>/dev/null; then
+    if [ -e "$target" ] && ! is_our_shim "$target"; then
         # Never write over an existing backup: that is somebody's hook, and the
         # second run would be the one that destroys it.
         if [ -e "$target.local" ]; then
@@ -156,48 +223,15 @@ for entry in "${shadowed[@]}"; do
         echo "✓ kept your existing $name as $name.local"
     fi
 
-    cat > "$target" <<'SHIM' 2>/dev/null || { echo "ℹ install-hooks: couldn't write $target (non-fatal)." >&2; continue; }
-#!/usr/bin/env bash
-# Installed by bin/install-hooks.sh --delegate.
-#
-# core.hooksPath replaces .git/hooks wholesale, so a repo's own hooks never run
-# unless something here calls them. This runs the machine-local hook of this name
-# (kept as <name>.local), then the repo's, and fails the operation if either does.
-set -uo pipefail
-
-name="$(basename "$0")"
-here="$(cd "$(dirname "$0")" && pwd)"
-mine="$here/$name.local"
-repo="$(git rev-parse --git-common-dir 2>/dev/null)/hooks/$name"
-
-# Hooks handed a payload on stdin can only read it once, so capture it and replay
-# it to each. Replay from a FILE, not a pipe: a hook that exits without reading
-# (common, and legitimate) would give the writer SIGPIPE, and under pipefail the
-# shim would exit 141 and reject the push although the hook itself succeeded.
-tmp=""
-case "$name" in
-    pre-push|pre-receive|post-receive|update|proc-receive)
-        tmp="$(mktemp 2>/dev/null)" || tmp=""
-        if [ -n "$tmp" ]; then
-            trap 'rm -f "$tmp"' EXIT
-            cat > "$tmp"
+    if cp "$ours" "$target" 2>/dev/null; then
+        chmod +x "$target" 2>/dev/null || true
+        if [ "${entry#*|}" = "stale" ]; then
+            echo "✓ refreshed the shim for $name at $target"
+        else
+            echo "✓ $name at $target now defers to this repo"
         fi
-        ;;
-esac
-
-run() {
-    h="$1"; shift
-    [ -x "$h" ] || return 0
-    # Never recurse into this shim if the repo hooks dir happens to be this one.
-    [ "$(cd "$(dirname "$h")" && pwd)/$(basename "$h")" = "$here/$name" ] && return 0
-    if [ -n "$tmp" ]; then "$h" "$@" < "$tmp"; else "$h" "$@"; fi
-}
-
-run "$mine" "$@" || exit $?
-run "$repo" "$@" || exit $?
-exit 0
-SHIM
-    chmod +x "$target" 2>/dev/null || true
-    echo "✓ $name at $target now defers to this repo"
+    else
+        echo "ℹ install-hooks: couldn't write $target (non-fatal)." >&2
+    fi
 done
 exit 0
