@@ -182,11 +182,7 @@ if (!isset($result['labName']) || trim((string) $result['labName']) === '') {
 //Set Age
 $age = 'Unknown';
 if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) !== '' && $result['patient_dob'] != '0000-00-00') {
-    $todayDate = strtotime(date('Y-m-d'));
-    $dob = strtotime((string) $result['patient_dob']);
-    $difference = $todayDate - $dob;
-    $seconds_per_year = 60 * 60 * 24 * 365;
-    $age = round($difference / $seconds_per_year);
+    $age = DateUtility::completedYears($result['patient_dob']) ?? _translate('Unknown');
 } elseif (isset($result['patient_age']) && trim((string) $result['patient_age']) !== '' && trim((string) $result['patient_age']) > 0) {
     $age = $result['patient_age'];
 }

@@ -216,11 +216,39 @@ final class DateUtility
         });
     }
 
+    /**
+     * Completed whole years lived since a date of birth, or null when the date
+     * cannot yield one.
+     *
+     * Result PDFs used to divide a timestamp difference by 365 days and round
+     * the quotient. That rounded a patient of 41 years 7 months up to 42, drifted
+     * by a day every leap year, and turned a date of birth in the future into a
+     * negative age.
+     */
+    public static function completedYears($dateOfBirth): ?int
+    {
+        // A zero date parses as year zero, which would read as an age of 2026
+        if (!self::isDateValid($dateOfBirth) || str_starts_with(trim((string) $dateOfBirth), '0000-00-00')) {
+            return null;
+        }
+
+        $dob = Carbon::parse(self::normalizeDateString((string) $dateOfBirth))->startOfDay();
+        $now = Carbon::now()->startOfDay();
+
+        // Someone not yet born has no age
+        if ($dob->greaterThan($now)) {
+            return null;
+        }
+
+        return (int) $dob->diffInYears($now, true);
+    }
+
     public static function ageInYearMonthDays($dateOfBirth): mixed
     {
         return MemoUtility::remember(function () use ($dateOfBirth): ?array {
 
-            if (!self::isDateValid($dateOfBirth)) {
+            // A zero date parses as year zero, which would read as an age of 2026
+            if (!self::isDateValid($dateOfBirth) || str_starts_with(trim((string) $dateOfBirth), '0000-00-00')) {
                 return null;
             }
 

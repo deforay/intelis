@@ -133,9 +133,37 @@ final class PatientAgeTest extends TestCase
         }
     }
 
+    public static function completedYearsProvider(): array
+    {
+        return [
+            'a birthday already past this year' => ['1984-02-01', 42],
+            'a birthday still to come this year is not counted' => ['1984-12-25', 41],
+            // round($difference / 365 days) called this one 42
+            'seven months short of 42 rounds down, not up' => ['1985-02-01', 41],
+            'the day before a birthday' => ['1985-09-11', 40],
+            'the birthday itself' => ['1985-09-10', 41],
+            // A 365-day year drifts a day every leap year; over a lifetime the
+            // old arithmetic crossed the birthday early
+            'a leap-day birth counts real calendar years' => ['1980-02-29', 46],
+            'an infant has completed no years' => ['2026-04-10', 0],
+            'a date of birth in the future has no age' => ['2031-09-10', null],
+            'tomorrow has no age' => ['2026-09-11', null],
+            'an empty date has no age' => ['', null],
+            'a zero date has no age' => ['0000-00-00', null],
+        ];
+    }
+
+    #[DataProvider('completedYearsProvider')]
+    public function testCompletedYears(string $dob, ?int $expected): void
+    {
+        $this->assertSame($expected, DateUtility::completedYears($dob));
+    }
+
     public function testAFutureDobHasNoYearMonthDayBreakdown(): void
     {
         $this->assertNull(DateUtility::ageInYearMonthDays('2031-09-10'));
+        $this->assertNull(DateUtility::ageInYearMonthDays('0000-00-00'));
+        $this->assertNull(DateUtility::ageInYearMonthDays(''));
         $this->assertSame(42, DateUtility::ageInYearMonthDays('1984-02-01')['year']);
     }
 }

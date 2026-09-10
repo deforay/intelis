@@ -119,11 +119,7 @@ if (!empty($result)) {
     if (isset($result['child_age']) && trim((string) $result['child_age']) !== '' && trim((string) $result['child_age']) > 0) {
         $age = $result['child_age'];
     } elseif (isset($result['child_dob']) && trim((string) $result['child_dob']) !== '' && $result['child_dob'] != '0000-00-00') {
-        $todayDate = strtotime(date('Y-m-d'));
-        $dob = strtotime((string) $result['child_dob']);
-        $difference = $todayDate - $dob;
-        $seconds_per_year = 60 * 60 * 24 * 365;
-        $age = round($difference / $seconds_per_year);
+        $age = DateUtility::completedYears($result['child_dob']) ?? _translate('Unknown');
     }
 
 
