@@ -133,7 +133,16 @@ run "$repo" "$@" || exit $?
 exit 0
 SHIM
 }
-write_shim "$ours"
+# A half-written template is worse than none: it would be copied over working
+# shims as an empty executable that every hook invocation "passes". Refuse to use
+# one unless it wrote cleanly AND still looks like the shim.
+if ! write_shim "$ours" \
+   || [ ! -s "$ours" ] \
+   || ! grep -q 'Installed by bin/install-hooks.sh --delegate' "$ours" \
+   || ! grep -q 'run "\$repo"' "$ours"; then
+    echo "ℹ install-hooks: couldn't build the shim template — leaving hooks as they are (non-fatal)." >&2
+    exit 0
+fi
 
 is_our_shim() { grep -q 'Installed by bin/install-hooks.sh --delegate' "$1" 2>/dev/null; }
 
@@ -224,7 +233,11 @@ for entry in "${shadowed[@]}"; do
     fi
 
     if cp "$ours" "$target" 2>/dev/null; then
-        chmod +x "$target" 2>/dev/null || true
+        # Set the mode outright rather than +x on whatever cp inherited: the
+        # source is a 0600 temp file, so +x alone yields 0711 and a shared
+        # hooksPath becomes unreadable to everyone else -- bash cannot run a
+        # script it cannot read, so their commits fail with permission denied.
+        chmod 0755 "$target" 2>/dev/null || true
         if [ "${entry#*|}" = "stale" ]; then
             echo "✓ refreshed the shim for $name at $target"
         else
