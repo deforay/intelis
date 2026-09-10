@@ -215,11 +215,19 @@ try {
     } elseif (!empty($_POST['finalResult'])) {
         $status = PENDING_APPROVAL; // Awaiting Approval
     }
+    // form_tb.lab_id is the lab currently holding the sample, not the one that first
+    // received it: save-tb-referral-helper.php moves it on every transfer, and
+    // get-referral-samples.php reads it back to decide who may refer the sample next.
+    // Rwanda's test cards are that chain of labs, so the last card is where the
+    // sample is now -- the first card would drag a transferred sample back to the
+    // lab it started at. Every other column folded from the cards below already
+    // takes the last one.
     $labId = null;
     if (isset($_POST['labId']) && !empty($_POST['labId'])) {
         $labId = $_POST['labId'];
-    } else if (isset($_POST['testResult']['labId'][0]) && !empty($_POST['testResult']['labId'][0])) {
-        $labId = $_POST['testResult']['labId'][0];
+    } elseif (!empty($_POST['testResult']['labId']) && is_array($_POST['testResult']['labId'])) {
+        $cardLabIds = array_values(array_filter($_POST['testResult']['labId'], static fn($id) => !empty($id)));
+        $labId = end($cardLabIds) ?: null;
     }
     if (!empty($_POST['riskFactors']) && is_array($_POST['riskFactors'])) {
         $_POST['riskFactors'] = json_encode($_POST['riskFactors']);
