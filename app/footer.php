@@ -372,7 +372,15 @@ flush(false);
 startedAt = Date.now();
 }
 });
-window.addEventListener('pagehide', function () { flush(true); });window.setInterval(function () {
+window.addEventListener('pagehide', function () { flush(true); });
+// A page restored from the back-forward cache fires no visibilitychange, so
+// without this its clock would stay stopped until the next tab switch.
+window.addEventListener('pageshow', function (e) {
+if (e.persisted && !document.hidden && startedAt === null) {
+startedAt = Date.now();
+}
+});
+window.setInterval(function () {
 if (!document.hidden) {
 flush(false);
 startedAt = Date.now();

@@ -768,6 +768,13 @@ foreach ($actions as $list) {
 			$('#sessionHash').val(sh); state.sessionHash = sh; state.page = 1; closeDetailModal(); fetchFeed();
 		});
 
+		// Page Usage links here with a session to follow.
+		var presetSession = new URLSearchParams(window.location.search).get('sessionHash') || '';
+		if (/^[0-9a-f]{1,64}$/.test(presetSession)) {
+			$('#sessionHash').val(presetSession);
+			state.sessionHash = presetSession;
+		}
+
 		fetchFeed();
 	});
 </script>
