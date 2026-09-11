@@ -194,6 +194,79 @@ $exitLabels = [
         text-align: right;
     }
 
+    /* The breakdown sits under a header that spans its column, so the table
+       spans it too and the two edges line up. */
+    #sampleFlow table#sfTable {
+        max-width: none;
+    }
+
+    #sampleFlow .sf-stage-note em {
+        margin-right: 4px;
+        color: #b0b7bd;
+    }
+
+    /* A lab's instruments, one chip each. */
+    #sampleFlow .sf-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 5px;
+    }
+
+    #sampleFlow .sf-chip {
+        display: inline-block;
+        padding: 1px 8px;
+        font-size: 11px;
+        line-height: 16px;
+        color: #4a5560;
+        background-color: #eef2f5;
+        border: 1px solid #dde3e8;
+        border-radius: 10px;
+        white-space: nowrap;
+    }
+
+    #sampleFlow .sf-chip.is-more {
+        background-color: transparent;
+        border-style: dashed;
+        color: #8a9299;
+        cursor: help;
+    }
+
+    /* Filters: labels above their fields, one wrapping row. */
+    #sampleFlow .sf-filters {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 12px 16px;
+        margin: 6px 0 22px;
+        padding: 14px 16px;
+        background-color: #f8fafb;
+        border: 1px solid #e4e8ec;
+        border-radius: 3px;
+    }
+
+    #sampleFlow .sf-filter {
+        flex: 1 1 210px;
+        max-width: 300px;
+        min-width: 0;
+    }
+
+    #sampleFlow .sf-filter label {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #5a6570;
+    }
+
+    #sampleFlow .sf-filter .select2-container {
+        width: 100% !important;
+    }
+
+    #sampleFlow .sf-filter-actions {
+        flex: 0 0 auto;
+    }
+
     /* Every count in the breakdown opens the samples behind it. */
     #sampleFlow table.sf-table td.sf-drill {
         cursor: pointer;
@@ -377,55 +450,50 @@ $exitLabels = [
                             </dl>
                         </div>
 
-                        <table aria-describedby="sf-description" class="table pageFilters" cellspacing="3"
-                            style="margin-left:1%;margin-top:5px;width:98%;">
-                            <tr>
-                                <td><strong><?= _htmlTranslate('Test'); ?>&nbsp;:</strong></td>
-                                <td>
-                                    <select id="testType" class="form-control" style="width:100%;max-width:280px;">
-                                        <?php foreach ($selectableTests as $testKey) { ?>
-                                            <option value="<?= htmlspecialchars($testKey, ENT_QUOTES); ?>" <?= $testKey === $preselectedTest ? 'selected="selected"' : ''; ?>>
-                                                <?= htmlspecialchars(TestsService::getTestName($testKey), ENT_QUOTES); ?>
-                                            </option>
+                        <div class="sf-filters pageFilters" role="search" aria-describedby="sf-description">
+                            <div class="sf-filter">
+                                <label for="testType"><?= _htmlTranslate('Test'); ?></label>
+                                <select id="testType" class="form-control" style="width:100%;">
+                                    <?php foreach ($selectableTests as $testKey) { ?>
+                                        <option value="<?= htmlspecialchars($testKey, ENT_QUOTES); ?>" <?= $testKey === $preselectedTest ? 'selected="selected"' : ''; ?>>
+                                            <?= htmlspecialchars(TestsService::getTestName($testKey), ENT_QUOTES); ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="sf-filter">
+                                <label for="dateRange"><?= _htmlTranslate('Registered'); ?></label>
+                                <input type="text" id="dateRange" class="form-control daterangefield" style="width:100%;" />
+                            </div>
+                            <?php if (!empty($testingLabs)) { ?>
+                                <div class="sf-filter">
+                                    <label for="labId"><?= _htmlTranslate('Testing Lab'); ?></label>
+                                    <select id="labId" class="form-control" style="width:100%;">
+                                        <option value=""><?= _htmlTranslate('-- All Labs --'); ?></option>
+                                        <?php foreach ($testingLabs as $labId => $labName) { ?>
+                                            <option value="<?= (int) $labId; ?>"><?= htmlspecialchars((string) $labName, ENT_QUOTES); ?></option>
                                         <?php } ?>
                                     </select>
-                                </td>
-                                <td><strong><?= _htmlTranslate('Registered'); ?>&nbsp;:</strong></td>
-                                <td>
-                                    <input type="text" id="dateRange" class="form-control daterangefield"
-                                        style="width:100%;max-width:240px;" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <?php if (!empty($testingLabs)) { ?>
-                                    <td><strong><?= _htmlTranslate('Testing Lab'); ?>&nbsp;:</strong></td>
-                                    <td>
-                                        <select id="labId" class="form-control" style="width:100%;max-width:260px;">
-                                            <option value=""><?= _htmlTranslate('-- All Labs --'); ?></option>
-                                            <?php foreach ($testingLabs as $labId => $labName) { ?>
-                                                <option value="<?= (int) $labId; ?>"><?= htmlspecialchars((string) $labName, ENT_QUOTES); ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </td>
-                                <?php } ?>
-                                <?php if (!empty($partners)) { ?>
-                                    <td><strong><?= _htmlTranslate('Implementing Partner'); ?>&nbsp;:</strong></td>
-                                    <td>
-                                        <select id="partnerId" class="form-control" style="width:100%;max-width:260px;">
-                                            <option value=""><?= _htmlTranslate('-- All Implementing Partners --'); ?></option>
-                                            <?php foreach ($partners as $partner) { ?>
-                                                <option value="<?= (int) $partner['i_partner_id']; ?>"><?= htmlspecialchars((string) $partner['i_partner_name'], ENT_QUOTES); ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </td>
-                                <?php } ?>
-                                <td>
-                                    <button type="button" class="btn btn-success btn-sm" onclick="sfApplyFilters();">
-                                        <?= _htmlTranslate('Search'); ?>
-                                    </button>
-                                </td>
-                            </tr>
-                        </table>
+                                </div>
+                            <?php } ?>
+                            <?php if (!empty($partners)) { ?>
+                                <div class="sf-filter">
+                                    <label for="partnerId"><?= _htmlTranslate('Implementing Partner'); ?></label>
+                                    <select id="partnerId" class="form-control" style="width:100%;">
+                                        <option value=""><?= _htmlTranslate('-- All Implementing Partners --'); ?></option>
+                                        <?php foreach ($partners as $partner) { ?>
+                                            <option value="<?= (int) $partner['i_partner_id']; ?>"><?= htmlspecialchars((string) $partner['i_partner_name'], ENT_QUOTES); ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            <?php } ?>
+                            <div class="sf-filter-actions">
+                                <button type="button" class="btn btn-success" onclick="sfApplyFilters();">
+                                    <em class="fa-solid fa-magnifying-glass"></em>
+                                    <?= _htmlTranslate('Search'); ?>
+                                </button>
+                            </div>
+                        </div>
 
 
                         <div class="row">
@@ -767,12 +835,14 @@ $exitLabels = [
         }
         if (sfGroup === 'lab' && row.instruments) {
             var names = String(row.instruments).split(', ');
-            var shown = names.slice(0, SF_LAB_INSTRUMENTS_SHOWN).join(', ');
+            var chips = names.slice(0, SF_LAB_INSTRUMENTS_SHOWN).map(function (name) {
+                return '<span class="sf-chip">' + esc(name) + '</span>';
+            }).join('');
             if (names.length > SF_LAB_INSTRUMENTS_SHOWN) {
-                shown += ' ' + SF_LABELS.andMore.replace('%s', names.length - SF_LAB_INSTRUMENTS_SHOWN);
+                chips += '<span class="sf-chip is-more" title="' + esc(names.slice(SF_LAB_INSTRUMENTS_SHOWN).join(', ')) + '">'
+                    + esc(SF_LABELS.andMore.replace('%s', names.length - SF_LAB_INSTRUMENTS_SHOWN)) + '</span>';
             }
-            return '<small class="sf-stage-note" title="' + esc(row.instruments) + '">'
-                + '<em class="fa-solid fa-microscope"></em> ' + esc(shown) + '</small>';
+            return '<div class="sf-chips">' + chips + '</div>';
         }
         return '';
     }
