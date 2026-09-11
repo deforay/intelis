@@ -91,7 +91,8 @@ final class SampleFlowService
 
     public function __construct(
         private readonly DatabaseService $db,
-        private readonly CommonService $general
+        private readonly CommonService $general,
+        private readonly InstrumentsService $instruments
     ) {
     }
 
@@ -100,7 +101,7 @@ final class SampleFlowService
      * Throws if the test type is not in the registry, so a request value can
      * never reach a query as a table name.
      *
-     * @return array{testKey: string, startDate: string, endDate: string, labId: int}
+     * @return array{testKey: string, startDate: string, endDate: string, labId: int, partnerId: int}
      */
     public function resolveFilters(array $input): array
     {
@@ -115,7 +116,24 @@ final class SampleFlowService
             'startDate' => (string) $startDate,
             'endDate' => (string) $endDate,
             'labId' => (int) ($input['labId'] ?? 0),
+            'partnerId' => (int) ($input['partnerId'] ?? 0),
         ];
+    }
+
+    /**
+     * What separates two test types sharing one table, over the given alias,
+     * or null where the table holds only one. 'recency' and 'vl' share form_vl
+     * and reason_for_vl_testing is the only thing telling them apart; every VL
+     * surface in the app applies it, so anything counting VL rows without it
+     * counts recency samples as viral loads.
+     */
+    public static function testTypeDiscriminator(string $testKey, string $alias): ?string
+    {
+        return match ($testKey) {
+            'vl' => "IFNULL($alias.reason_for_vl_testing, 0) != 9999",
+            'recency' => "$alias.reason_for_vl_testing = 9999",
+            default => null,
+        };
     }
 
     /**
@@ -340,10 +358,19 @@ final class SampleFlowService
         $this->assertStage($stage);
         $this->assertGrouping($groupBy);
 
+        // A facility row also names the labs its samples are assigned to, read
+        // in the same pass: a sample still at the facility is on its way to
+        // somebody, and that is who to call about it.
+        $labs = '';
+        if ($groupBy === 'facility') {
+            $labLabel = $this->groupLabel('lab');
+            $labs = ", GROUP_CONCAT(DISTINCT $labLabel ORDER BY $labLabel SEPARATOR ', ') AS labs";
+        }
+
         $rows = $this->db->rawQuery(
             "SELECT " . $this->groupLabel($groupBy) . " AS label,
                     " . $this->groupKey($groupBy) . " AS group_key,
-                    COUNT(*) AS total, " . $this->bucketSelects() . "
+                    COUNT(*) AS total, " . $this->bucketSelects() . "$labs
                FROM (" . $this->placedSamples($f) . ") AS placed
                " . $this->dimensionJoins() . "
               WHERE placed.stage = '" . $this->db->escape($stage) . "'
@@ -351,9 +378,27 @@ final class SampleFlowService
               ORDER BY total DESC, label ASC"
         ) ?: [];
 
+        // A lab row names what the lab tests on, from its finished work in the
+        // same period. One lookup for every lab in the breakdown.
+        $instruments = [];
+        if ($groupBy === 'lab') {
+            $instruments = $this->instruments->labInstrumentNames(
+                $f['testKey'],
+                array_map(static fn(array $row): int => (int) $row['group_key'], $rows),
+                $f['startDate'],
+                $f['endDate']
+            );
+        }
+
         $out = [];
         foreach ($rows as $row) {
-            $out[] = ['label' => (string) $row['label'], 'key' => (string) $row['group_key']] + $this->counts($row);
+            $item = ['label' => (string) $row['label'], 'key' => (string) $row['group_key']] + $this->counts($row);
+            if ($groupBy === 'facility') {
+                $item['labs'] = (string) ($row['labs'] ?? '');
+            } elseif ($groupBy === 'lab') {
+                $item['instruments'] = $instruments[(int) $row['group_key']] ?? '';
+            }
+            $out[] = $item;
         }
         return $out;
     }
@@ -557,20 +602,19 @@ final class SampleFlowService
         if ($f['labId'] > 0) {
             $clauses[] = "t.lab_id = " . $f['labId'];
         }
+        if (($f['partnerId'] ?? 0) > 0) {
+            $clauses[] = "t.implementing_partner = " . (int) $f['partnerId'];
+        }
         if ($labScope = $this->general->labScopeWhere('t')) {
             $clauses[] = $labScope;
         }
         if (!empty($_SESSION['facilityMap'])) {
             $clauses[] = "t.facility_id IN (" . $_SESSION['facilityMap'] . ")";
         }
-        // 'recency' and 'vl' share form_vl, and reason_for_vl_testing is the only
-        // thing telling them apart. Every other VL surface in the app applies this
-        // discriminator, so without it recency samples are counted as viral loads
-        // here and this report disagrees with the dashboard and the request list.
-        if ($f['testKey'] === 'vl') {
-            $clauses[] = "IFNULL(t.reason_for_vl_testing, 0) != 9999";
-        } elseif ($f['testKey'] === 'recency') {
-            $clauses[] = "t.reason_for_vl_testing = 9999";
+        // Without this, recency samples are counted as viral loads here and
+        // this report disagrees with the dashboard and the request list.
+        if ($discriminator = self::testTypeDiscriminator($f['testKey'], 't')) {
+            $clauses[] = $discriminator;
         }
 
         return $clauses === [] ? '' : ' WHERE ' . implode(' AND ', $clauses);

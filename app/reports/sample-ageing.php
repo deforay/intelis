@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\TestsService;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
@@ -46,10 +47,17 @@ if (!in_array($preselectedTest, $selectableTests, true)) {
 
 $testingLabs = $facilitiesService->getTestingLabs();
 
-// The breakdown answers one of two questions. Partner is worth its own view
-// rather than a column on the lab table, because a lab draws from many
-// collection sites and so from many partners: sixteen on one DRC lab.
+/** @var CommonService $commonService */
+$commonService = ContainerRegistry::get(CommonService::class);
+$partners = $commonService->getImplementationPartners() ?: [];
+
+// The breakdown answers one of three questions. A sample at the facility has
+// not reached a lab, so the facility holding it is the first question there,
+// and each facility row names the labs it is sending to. Partner is worth its
+// own view rather than a column on the lab table, because a lab draws from
+// many collection sites and so from many partners: sixteen on one DRC lab.
 $groupLabels = [
+    'facility' => _translate('Collection Facility'),
     'lab' => _translate('Testing Lab'),
     'partner' => _translate('Implementing Partner'),
 ];
@@ -361,6 +369,9 @@ $exitLabels = [
                                 <dt><?= _htmlTranslate('Age'); ?></dt>
                                 <dd><?= _htmlTranslate('Days since the most recent milestone the sample reached: since lab receipt for a sample awaiting a test, since the test date for one awaiting approval, and so on. A sample that has sat 30 days at a lab shows as 30 days, whatever its collection date. Milestones dated in the future count as zero days.'); ?></dd>
 
+                                <dt><?= _htmlTranslate('Breakdowns'); ?></dt>
+                                <dd><?= _htmlTranslate('A stage can be broken down by collection facility, testing lab or implementing partner. At facility opens on the collection facility, with the labs its samples are assigned to listed under each one. The other stages open on the testing lab, with the instruments the lab used for this test in the selected period listed under each one, read from the results it recorded.'); ?></dd>
+
                                 <dt><?= _htmlTranslate('Exits'); ?></dt>
                                 <dd><?= _htmlTranslate('Rejected, expired, lost and cancelled samples have left the pipeline without a released result. They are listed so the total reconciles, and can be broken down like any stage.'); ?></dd>
                             </dl>
@@ -384,6 +395,8 @@ $exitLabels = [
                                     <input type="text" id="dateRange" class="form-control daterangefield"
                                         style="width:100%;max-width:240px;" />
                                 </td>
+                            </tr>
+                            <tr>
                                 <?php if (!empty($testingLabs)) { ?>
                                     <td><strong><?= _htmlTranslate('Testing Lab'); ?>&nbsp;:</strong></td>
                                     <td>
@@ -391,6 +404,17 @@ $exitLabels = [
                                             <option value=""><?= _htmlTranslate('-- All Labs --'); ?></option>
                                             <?php foreach ($testingLabs as $labId => $labName) { ?>
                                                 <option value="<?= (int) $labId; ?>"><?= htmlspecialchars((string) $labName, ENT_QUOTES); ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </td>
+                                <?php } ?>
+                                <?php if (!empty($partners)) { ?>
+                                    <td><strong><?= _htmlTranslate('Implementing Partner'); ?>&nbsp;:</strong></td>
+                                    <td>
+                                        <select id="partnerId" class="form-control" style="width:100%;max-width:260px;">
+                                            <option value=""><?= _htmlTranslate('-- All Implementing Partners --'); ?></option>
+                                            <?php foreach ($partners as $partner) { ?>
+                                                <option value="<?= (int) $partner['i_partner_id']; ?>"><?= htmlspecialchars((string) $partner['i_partner_name'], ENT_QUOTES); ?></option>
                                             <?php } ?>
                                         </select>
                                     </td>
@@ -408,7 +432,7 @@ $exitLabels = [
                             <div class="col-md-5">
                                 <div class="sf-breakdown-title"><?= _htmlTranslate('All stages'); ?></div>
                                 <div class="sf-breakdown-hint">
-                                    <?= _htmlTranslate('Click a stage to break it down by testing lab.'); ?>
+                                    <?= _htmlTranslate('Click a stage to break it down.'); ?>
                                 </div>
                                 <div class="table-responsive" style="margin-top:12px;">
                                     <table class="table table-bordered table-striped sf-table" id="sfStages"
@@ -533,12 +557,19 @@ $exitLabels = [
         noData: "<?= _jsTranslate('No samples in this stage for the selected filters'); ?>",
         samplesIn: "<?= _jsTranslate('Samples: %s'); ?>",
         wholeStage: "<?= _jsTranslate('every %s'); ?>",
+        instruments: "<?= _jsTranslate('Instruments: %s'); ?>",
+        andMore: "<?= _jsTranslate('and %s more'); ?>",
         exportFailed: "<?= _jsTranslate('Unable to generate the export file'); ?>"
     };
+    // How many instrument names fit under a lab name before the rest go on hover.
+    var SF_LAB_INSTRUMENTS_SHOWN = 3;
 
     var sfFlow = null;
     var sfStage = null;
     var sfGroup = 'lab';
+    // Once the reader picks a grouping it holds across stages; until then each
+    // stage opens on the one that answers it best.
+    var sfGroupChosen = false;
     var sfRows = [];
     var sfPending = 0;
     // The cell currently listed: group key and age bucket within sfStage.
@@ -558,7 +589,8 @@ $exitLabels = [
         return {
             testType: $('#testType').val(),
             dateRange: $('#dateRange').val(),
-            labId: $('#labId').length ? ($('#labId').val() || '') : ''
+            labId: $('#labId').length ? ($('#labId').val() || '') : '',
+            partnerId: $('#partnerId').length ? ($('#partnerId').val() || '') : ''
         };
     }
 
@@ -667,6 +699,11 @@ $exitLabels = [
     function sfSelectStage(stage) {
         if (sfFlow && ((sfFlow[stage] || {}).total || 0) === 0) { return; }
         sfStage = stage;
+        // A sample at the facility has not reached a lab, so the facility
+        // holding it is the first question; everywhere else it is the lab.
+        if (!sfGroupChosen) {
+            sfGroup = stage === 'atFacility' ? 'facility' : 'lab';
+        }
         sfCloseSamples();
         $('#sfStages tr.sf-row').removeClass('is-active');
         $('#sfStages tr[data-stage="' + stage + '"]').addClass('is-active');
@@ -676,6 +713,7 @@ $exitLabels = [
     function sfSelectGroup(group) {
         if (group === sfGroup || !SF_GROUP_LABELS[group]) { return; }
         sfGroup = group;
+        sfGroupChosen = true;
         sfCloseSamples();
         sfLoadBreakdown();
     }
@@ -707,7 +745,7 @@ $exitLabels = [
         rows.forEach(function (row) {
             var key = String(row.key === undefined || row.key === null ? '' : row.key);
             total += row.total;
-            html += '<tr><td>' + esc(row.label) + '</td>'
+            html += '<tr><td>' + esc(row.label) + sfSubLine(row) + '</td>'
                 + '<td class="num sf-drill" data-key="' + esc(key) + '" data-label="' + esc(row.label) + '">'
                 + row.total.toLocaleString() + '</td></tr>';
         });
@@ -719,8 +757,35 @@ $exitLabels = [
         sfMarkDrillCell();
     }
 
+    // The line under a breakdown label: the labs a facility is sending to, or
+    // the instruments a lab tested on in the period. Only the first few
+    // instruments are shown, with the rest on hover, so a lab with a long list
+    // does not push every row taller. A lab that tested nothing shows no line.
+    function sfSubLine(row) {
+        if (sfGroup === 'facility' && row.labs) {
+            return '<small class="sf-stage-note"><em class="fa-solid fa-flask"></em> ' + esc(row.labs) + '</small>';
+        }
+        if (sfGroup === 'lab' && row.instruments) {
+            var names = String(row.instruments).split(', ');
+            var shown = names.slice(0, SF_LAB_INSTRUMENTS_SHOWN).join(', ');
+            if (names.length > SF_LAB_INSTRUMENTS_SHOWN) {
+                shown += ' ' + SF_LABELS.andMore.replace('%s', names.length - SF_LAB_INSTRUMENTS_SHOWN);
+            }
+            return '<small class="sf-stage-note" title="' + esc(row.instruments) + '">'
+                + '<em class="fa-solid fa-microscope"></em> ' + esc(shown) + '</small>';
+        }
+        return '';
+    }
+
+    // The instruments of the lab behind a breakdown key, for the listing title.
+    function sfInstrumentsFor(groupKey) {
+        if (sfGroup !== 'lab') { return ''; }
+        var match = sfRows.filter(function (row) { return String(row.key) === String(groupKey); })[0];
+        return match && match.instruments ? String(match.instruments) : '';
+    }
+
     // The samples behind one count: an empty key lists the whole stage, a key
-    // narrows to one testing lab.
+    // narrows to one breakdown row.
     function sfDrill(groupKey, label) {
         if (!sfStage) { return; }
         sfDrillSel = {
@@ -734,11 +799,14 @@ $exitLabels = [
 
         var stageLabel = SF_STAGE_LABELS[sfStage] || sfStage;
         $('#sfSamplesTitle').text(SF_LABELS.samplesIn.replace('%s', stageLabel));
-        $('#sfSamplesSubtitle').text(
-            label !== ''
-                ? (SF_GROUP_LABELS[sfDrillSel.groupBy] || '') + ': ' + label
-                : SF_LABELS.wholeStage.replace('%s', stageLabel.toLowerCase())
-        );
+        var subtitle = label !== ''
+            ? (SF_GROUP_LABELS[sfDrillSel.groupBy] || '') + ': ' + label
+            : SF_LABELS.wholeStage.replace('%s', stageLabel.toLowerCase());
+        var instruments = label !== '' ? sfInstrumentsFor(groupKey) : '';
+        if (instruments !== '') {
+            subtitle += ' · ' + SF_LABELS.instruments.replace('%s', instruments);
+        }
+        $('#sfSamplesSubtitle').text(subtitle);
         $('#sfSamples').show();
         sfLoadSamples();
         document.getElementById('sfSamples').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -870,6 +938,9 @@ $exitLabels = [
         $('#testType').select2();
         if ($('#labId').length) {
             $('#labId').select2({ allowClear: true, placeholder: "<?= _jsTranslate('-- All Labs --'); ?>" });
+        }
+        if ($('#partnerId').length) {
+            $('#partnerId').select2({ allowClear: true, placeholder: "<?= _jsTranslate('-- All Implementing Partners --'); ?>" });
         }
         $('#testType').on('change', function () {
             sfApplyFilters();

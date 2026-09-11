@@ -49,7 +49,7 @@ final class SampleFlowEndpointTest extends TestCase
         // system_config and global_config are read by the scoping checks the
         // service applies to every query; empty is what a plain install has.
         $db = LegacyAppHarness::boot(self::DATABASE, [
-            'form_eid', 'facility_details', 'r_implementation_partners', 'r_sample_status',
+            'form_eid', 'facility_details', 'r_implementation_partners', 'r_sample_status', 'instruments',
             'system_config', 'global_config',
         ]);
         // Superadmin: the endpoint's privilege guard passes, and no lab or
@@ -283,6 +283,65 @@ final class SampleFlowEndpointTest extends TestCase
     {
         $json = $this->breakdown('atFacility', 'province');
         self::assertSame('North', $json['rows'][0]['label']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheBreakdownByFacilityNamesTheFacilityAndTheLabsItSendsTo(): void
+    {
+        // Both rejected samples came from Riverside Clinic: one assigned to
+        // Central Lab, one never assigned to a lab.
+        $json = $this->breakdown('rejected', 'facility');
+        self::assertCount(1, $json['rows'], json_encode($json));
+        self::assertSame('Riverside Clinic', $json['rows'][0]['label']);
+        self::assertSame((string) self::FACILITY_ID, $json['rows'][0]['key']);
+        self::assertSame(2, $json['rows'][0]['total']);
+        self::assertSame('Central Lab, Not assigned to a lab', $json['rows'][0]['labs']);
+        self::assertArrayNotHasKey('instruments', $json['rows'][0]);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheLabBreakdownNamesTheInstrumentsTheLabTestedOn(): void
+    {
+        $db = LegacyAppHarness::db();
+        $db->rawQuery(
+            "INSERT INTO instruments (instrument_id, machine_name, lab_id, max_no_of_samples_in_a_batch)
+             VALUES ('INS-1', 'GeneXpert IV', " . self::LAB_ID . ", 96)"
+        );
+        // Two results on the configured instrument, one on a typed-in platform
+        // only, and one typed-in platform on a failed test with no result,
+        // which names nothing because nothing was finished on it.
+        $db->rawQuery("UPDATE form_eid SET instrument_id = 'INS-1' WHERE sample_code IN ('S000005', 'S000006')");
+        $db->rawQuery("UPDATE form_eid SET eid_test_platform = 'Abbott m2000' WHERE sample_code = 'S000007'");
+        $db->rawQuery("UPDATE form_eid SET eid_test_platform = 'Never finished' WHERE sample_code = 'S000004'");
+
+        $json = $this->breakdown('rejected', 'lab');
+        $byKey = array_column($json['rows'], null, 'key');
+        self::assertSame('GeneXpert IV, Abbott m2000', $byKey[(string) self::LAB_ID]['instruments'], 'most used first');
+        self::assertSame('', $byKey['0']['instruments'], 'no lab, so no instruments');
+        self::assertArrayNotHasKey('labs', $byKey['0']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testThePartnerFilterNarrowsEveryStage(): void
+    {
+        $json = $this->drive(['section' => 'flow', 'testType' => 'eid', 'dateRange' => '', 'partnerId' => 7]);
+        $total = 0;
+        foreach ($json['flow'] as $counts) {
+            $total += $counts['total'];
+        }
+        self::assertSame(1, $total, 'only the cancelled sample carries partner 7');
+        self::assertSame(1, $json['flow']['cancelled']['total']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheDrilldownListsTheSamplesOfOneFacility(): void
+    {
+        $json = $this->drive([
+            'section' => 'samples', 'testType' => 'eid', 'dateRange' => '',
+            'stage' => 'atFacility', 'groupBy' => 'facility', 'groupKey' => (string) self::FACILITY_ID, 'bucket' => '',
+            'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sEcho' => 1,
+        ]);
+        self::assertSame(2, $json['iTotalRecords'], json_encode($json));
     }
 
     #[RunInSeparateProcess]

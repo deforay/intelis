@@ -29057,6 +29057,27 @@ msgstr "Enregistrés sur la période"
 msgid "Break down by"
 msgstr "Répartir par"
 
+#: app/reports/sample-ageing.php
+msgid "Breakdowns"
+msgstr "Répartitions"
+
+#: app/reports/sample-ageing.php
+msgid "A stage can be broken down by collection facility, testing lab or implementing partner. At facility opens on the collection facility, with the labs its samples are assigned to listed under each one. The other stages open on the testing lab, with the instruments the lab used for this test in the selected period listed under each one, read from the results it recorded."
+msgstr "Une étape peut être répartie par établissement de prélèvement, par laboratoire d'analyse ou par partenaire. « À l'établissement » s'ouvre sur l'établissement de prélèvement, avec sous chacun les laboratoires auxquels ses échantillons sont attribués. Les autres étapes s'ouvrent sur le laboratoire d'analyse, avec sous chacun les instruments que le laboratoire a utilisés pour ce test pendant la période sélectionnée, d'après les résultats qu'il a enregistrés."
+
+#: app/reports/sample-ageing.php
+msgid "Click a stage to break it down."
+msgstr "Cliquez sur une étape pour la répartir."
+
+#: app/reports/sample-ageing.php
+#, php-format
+msgid "Instruments: %s"
+msgstr "Instruments : %s"
+
+#: app/reports/sample-ageing.php
+msgid "-- All Implementing Partners --"
+msgstr "-- Tous les partenaires --"
+
 #: app/reports/sample-ageing.php:470
 msgid "Click a count to list the samples behind it."
 msgstr "Cliquez sur un chiffre pour afficher les échantillons correspondants."

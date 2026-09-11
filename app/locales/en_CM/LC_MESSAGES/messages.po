@@ -26348,3 +26348,27 @@ msgstr ""
 #: app/reports/sample-ageing.php
 msgid "Break down by"
 msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Breakdowns"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "A stage can be broken down by collection facility, testing lab or implementing partner. At facility opens on the collection facility, with the labs its samples are assigned to listed under each one. The other stages open on the testing lab, with the instruments the lab used for this test in the selected period listed under each one, read from the results it recorded."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Click a stage to break it down."
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Instruments: %s"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "and %s more"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "-- All Implementing Partners --"
+msgstr ""
