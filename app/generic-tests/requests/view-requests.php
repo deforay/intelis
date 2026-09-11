@@ -75,6 +75,8 @@ foreach ($sourceOfRequests as $value => $displayText) {
 
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
+
+$sampleStatusData = $general->getSampleStatus();
 ?>
 <style>
 	.select2-selection__choice {
@@ -151,6 +153,19 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 									class="btn btn-success btn-sm" href="javascript:void(0);"
 									onclick="exportTestRequests();"><em
 										class="fa-solid fa-cloud-arrow-down"></em>&nbsp;&nbsp;Export Requests</a></td>
+						</tr>
+						<tr>
+							<td style="width: 10%;"><strong>
+									<?php echo _translate("Status"); ?>&nbsp;:
+								</strong></td>
+							<td style="width: 50%;">
+								<select class="form-control" name="status" id="statusFilter" multiple="multiple"
+									title="<?php echo _translate('Please choose status'); ?>" style="width:100%;">
+									<?php foreach ($sampleStatusData as $sample) { ?>
+										<option value="<?= $sample['status_id']; ?>"><?= $sample['status_name'] ?></option>
+									<?php } ?>
+								</select>
+							</td>
 						</tr>
 					</table>
 					<!-- /.box-header -->
@@ -290,6 +305,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			width: '100%',
 			placeholder: "<?php echo _translate("Select Test Type"); ?>"
 		});
+		$("#statusFilter").select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("Select Status"); ?>",
+			allowClear: true
+		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
@@ -418,6 +438,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				aoData.push({
 					"name": "testType",
 					"value": $("#testType").val()
+				});
+				aoData.push({
+					"name": "status",
+					"value": $("#statusFilter").val()
 				});
 				$.ajax({
 					"dataType": 'json',

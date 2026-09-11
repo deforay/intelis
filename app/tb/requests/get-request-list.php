@@ -166,8 +166,8 @@ try {
           }
      }
      /* Sample status filter */
-     if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
-          $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';
+     if (!empty($_POST['status'])) {
+          $sWhere[] = ' vl.result_status IN (' . $db->inIntList($_POST['status']) . ')';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
           $sWhere[] = ' ' . SampleRejectionUtility::sqlPredicate('vl') . ' ';

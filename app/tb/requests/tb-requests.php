@@ -210,10 +210,9 @@ foreach ($sourceOfRequests as $value => $displayText) {
 
                             <td><strong><?php echo _translate("Status"); ?>&nbsp;:</strong></td>
                             <td>
-                                <select name="status" id="status" class="form-control"
+                                <select name="status" id="status" class="form-control" multiple="multiple"
                                     title="<?php echo _translate('Please choose status'); ?>"
                                     onchange="checkSampleCollectionDate();">
-                                    <option value="" selected=selected><?php echo _translate("All Status"); ?></option>
                                     <option value="7"><?php echo _translate("Accepted"); ?></option>
                                     <option value="4"><?php echo _translate("Rejected"); ?></option>
                                     <option value="8"><?php echo _translate("Awaiting Approval"); ?></option>
@@ -476,6 +475,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
         });
         $("#vlLab").select2({
             placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
+        });
+        $("#status").select2({
+            placeholder: "<?php echo _translate("Select Status"); ?>",
+            allowClear: true
         });
         loadVlRequestData();
         $('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({

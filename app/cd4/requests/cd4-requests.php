@@ -216,10 +216,9 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?php echo _translate("Status"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="status" id="status" class="form-control"
+								<select name="status" id="status" class="form-control" multiple="multiple"
 									title="<?php echo _translate('Please choose status'); ?>"
 									onchange="checkSampleCollectionDate();">
-									<option value="" selected=selected><?php echo _translate("All Status"); ?></option>
 									<?php foreach ($sampleStatusData as $sample) { ?>
 											<option value="<?= $sample['status_id']; ?>"><?= $sample['status_name'] ?></option>
 									<?php } ?>
@@ -820,6 +819,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 		});
 		$("#vlLab").select2({
 			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
+		});
+		$("#status").select2({
+			placeholder: "<?php echo _translate("Select Status"); ?>",
+			allowClear: true
 		});
 
 		loadVlRequestData();

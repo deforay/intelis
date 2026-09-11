@@ -316,10 +316,9 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Status"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="status" id="status" class="form-control"
+								<select name="status" id="status" class="form-control" multiple="multiple"
 									title="<?php echo _translate('Please choose status'); ?>"
 									onchange="checkSampleCollectionDate();">
-									<option value="" <?= ($preselectedStatus === null) ? 'selected="selected"' : ''; ?>><?php echo _translate("All Status"); ?></option>
 									<?php
 									foreach ($sampleStatusData as $sample) { ?>
 										<option value="<?= $sample['status_id']; ?>" <?= ($preselectedStatus === (int) $sample['status_id']) ? 'selected="selected"' : ''; ?>><?= $sample['status_name'] ?></option>
@@ -986,6 +985,10 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 		});
 		$("#vlLab").select2({
 			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
+		});
+		$("#status").select2({
+			placeholder: "<?php echo _translate("Select Status"); ?>",
+			allowClear: true
 		});
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').daterangepicker({
 			locale: {

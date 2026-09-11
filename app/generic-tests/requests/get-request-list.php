@@ -88,6 +88,11 @@ try {
           $sWhere[] = " vl.test_type like " . $_POST['testType'];
      }
 
+     /* Sample status filter */
+     if (!empty($_POST['status'])) {
+          $sWhere[] = ' vl.result_status IN (' . $db->inIntList($_POST['status']) . ')';
+     }
+
      if (!empty($sWhere)) {
           $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
           $sQuery = "$sQuery $sWhere";
