@@ -36,6 +36,10 @@ if (!empty($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
 if (!empty($_POST['userId']) && trim((string) $_POST['userId']) !== '') {
     $where[] = ' u.user_id = "' . $db->escape($_POST['userId']) . '"';
 }
+if (!empty($_POST['sessHash']) && trim((string) $_POST['sessHash']) !== '') {
+    $where[] = ' u.session_hash = "' . $db->escape($_POST['sessHash']) . '"';
+}
+
 if (!empty($_POST['search']) && trim((string) $_POST['search']) !== '') {
     $term = $db->escape(trim((string) $_POST['search']));
     $where[] = ' (u.page_name LIKE "%' . $term . '%" OR u.page_url LIKE "%' . $term . '%" OR ud.user_name LIKE "%' . $term . '%")';
@@ -45,9 +49,9 @@ if ($scope = $general->labAdminScopeWhere('testing_lab_id', 'ud')) {
     $where[] = $scope;
 }
 $whereSql = $where === [] ? '' : ' WHERE ' . implode(' AND ', $where);
-$from = ' FROM user_page_usage AS u LEFT JOIN user_details AS ud ON ud.user_id = u.user_id ';
-
-$rows = $db->rawQuery("SELECT $selectSql, SUM(u.visits) AS visits, SUM(u.duration_seconds) AS seconds, MIN(u.first_seen_datetime) AS first_seen, MAX(u.last_seen_datetime) AS last_seen $from $whereSql GROUP BY $groupSql ORDER BY seconds DESC, visits DESC LIMIT 1000");
+$from = ' FROM user_page_usage AS u LEFT JOIN user_details AS ud ON ud.user_id = u.user_id LEFT JOIN roles as r ON r.role_id = ud.role_id';
+//echo "SELECT $selectSql, SUM(u.visits) AS visits, SUM(u.duration_seconds) AS seconds, MIN(u.first_seen_datetime) AS first_seen, MAX(u.last_seen_datetime) AS last_seen $from $whereSql GROUP BY $groupSql ORDER BY seconds DESC, visits DESC LIMIT 1000"; die;
+$rows = $db->rawQuery("SELECT $selectSql,u.session_hash,r.role_name, SUM(u.visits) AS visits, SUM(u.duration_seconds) AS seconds, MIN(u.first_seen_datetime) AS first_seen, MAX(u.last_seen_datetime) AS last_seen $from $whereSql GROUP BY $groupSql ORDER BY seconds DESC, visits DESC LIMIT 1000");
 $totalRow = $db->rawQueryOne("SELECT SUM(u.visits) AS visits, SUM(u.duration_seconds) AS seconds, COUNT(DISTINCT u.user_id) AS users, COUNT(DISTINCT u.page_url) AS pages $from $whereSql");
 $items = [];
 foreach ($rows as $row) {
@@ -55,6 +59,7 @@ foreach ($rows as $row) {
     $visits = (int) ($row['visits'] ?? 0);
     $items[] = [
         'userName' => (string) ($row['user_name'] ?? ''),
+        'role' => (string) ($row['role_name'] ?? ''),
         'pageName' => (string) ($row['page_name'] ?? ''),
         'pageUrl'=> (string) ($row['page_url'] ?? ''),
         'module'=> (string) ($row['module'] ?? ''),
@@ -62,6 +67,7 @@ foreach ($rows as $row) {
         'seconds'=> $seconds,
         'timeSpent' => DurationUtility::humanReadable($seconds),'average' => DurationUtility::humanReadable($visits > 0 ? intdiv($seconds, $visits) : 0),
         'firstSeen' => DateUtility::humanReadableDateFormat($row['first_seen'] ?? '', true),
+        'sessionHash' => $row['session_hash'],
         'lastSeen' => DateUtility::humanReadableDateFormat($row['last_seen'] ?? '', true),
     ];
 }

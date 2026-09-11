@@ -59,9 +59,8 @@ if (CommonService::isCliRequest() || !$this->isEnabled()) {
 return;
 }
 $userId = trim((string) ($_SESSION['userId'] ?? ''));
-$userQuery = "SELECT session_hash
-                            FROM activity_log WHERE user_id= ?";
-$user = $this->db->rawQueryOne($userQuery, [$userId]);
+$sessionHash = $this->general->sessionHash();
+
 $page = $this->currentPageUrl();
 if ($userId === '' || $page === '') {
 return;
@@ -71,16 +70,28 @@ $label = $this->label($page);
 $ip = substr((string) CommonService::getClientIpAddress(), 0, 64);
 $this->db->rawQuery(
 "INSERT INTO user_page_usage
-(user_id, page_url, page_name, module, usage_date, visits, duration_seconds,
-first_seen_datetime, last_seen_datetime, last_ip_address, session_hash)VALUES (?, ?, ?, ?, DATE(?), 1, 0, ?, ?, ?, ?)
+(
+    user_id,
+    session_hash,
+    page_url,
+    page_name,
+    module,
+    usage_date,
+    visits,
+    duration_seconds,
+    first_seen_datetime,
+    last_seen_datetime,
+    last_ip_address
+)
+VALUES (?, ?, ?, ?, ?, DATE(?), 1, 0, ?, ?, ?)
 ON DUPLICATE KEY UPDATE
-visits = visits + 1,
-last_seen_datetime = ?,
-last_ip_address = ?,
-page_name = ?",
+    visits = visits + 1,
+    last_seen_datetime = ?,
+    last_ip_address = ?,
+    page_name = ?",
 [
-$userId, $page, $label['name'], $label['module'], $now, $now, $now, $ip,
-$now, $ip, $label['name'], $user['session_hash'],
+$userId, $sessionHash, $page, $label['name'], $label['module'], $now, $now, $now, $ip,
+$now, $ip, $label['name'], 
 ]
 );
 } catch (Throwable $e) {
@@ -113,7 +124,7 @@ $this->db->rawQuery(
 "UPDATE user_page_usage
 SET duration_seconds = LEAST(duration_seconds + ?, ?),
 last_seen_datetime = ?
-WHERE user_id = ?AND page_url = ?
+WHERE user_id = ? AND page_url = ?
 AND usage_date >= (CURDATE() - INTERVAL 1 DAY)
 ORDER BY usage_date DESC
 LIMIT 1",

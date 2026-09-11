@@ -53,11 +53,13 @@ _translate('User or page'); ?>" />
 <thead>
 <tr>
 <th><?= _translate("User"); ?></th>
+<th><?= _translate("User Role"); ?></th>
 <th><?= _translate("Page"); ?></th>
 <th><?= _translate("Module"); ?></th>
 <th><?= _translate("Page Opens"); ?></th>
 <th><?= _translate("Time Spent"); ?></th>
 <th><?= _translate("Average Per Open"); ?></th>
+<th><?= _translate("Session Hash"); ?></th>
 <th><?= _translate("Last Seen"); ?></th>
 </tr>
 </thead>
@@ -71,54 +73,56 @@ _translate('User or page'); ?>" />
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="<?=
 _asset('/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script><script type="text/javascript">
-var usageState = { dateRange: '', userId: '', groupBy: 'user-page', search: '' };
+var usageState = { dateRange: '', userId: '', sessHash: '', groupBy: 'user-page', search: '' };
 function usageEscape(value) {
-return $('<div/>').text(value == null ? '' : value).html();
+    return $('<div/>').text(value == null ? '' : value).html();
 }
 function loadUsage() {
-$.post('/admin/monitoring/get-page-usage.php', usageState, function (data) {
-var rows = (data && data.rows) || [];
-var html = '';
-rows.forEach(function (row) {
-html += '<tr>' +
-'<td>' + usageEscape(row.userName) + '</td>' +
-'<td title="' + usageEscape(row.pageUrl) + '">' + usageEscape(row.pageName) +
-'</td>' +
-'<td>' + usageEscape(row.module) + '</td>' +
-'<td>' + usageEscape(row.visits) + '</td>' +
-'<td title="' + usageEscape(row.seconds) + ' seconds">' +
-usageEscape(row.timeSpent) + '</td>' +
-'<td>' + usageEscape(row.average) + '</td>' +
-'<td>' + usageEscape(row.lastSeen) + '</td>' +
-'</tr>';
-});
-$('#usageRows').html(html || '<tr><td colspan="7"><?= _translate("No page usage recorded for this filter."); ?></td></tr>');
-var totals = (data && data.totals) || {};
-$('#usageTotals').text(
-(totals.users || 0) + ' <?= _translate("users"); ?>, ' +
-(totals.pages || 0) + ' <?= _translate("pages"); ?>, ' +
-(totals.visits || 0) + ' <?= _translate("page opens"); ?>, ' +
-(totals.timeSpent || '-') + ' <?= _translate("in total"); ?>'
-);
-}, 'json');
+    $.post('/admin/monitoring/get-page-usage.php', usageState, function (data) {
+    var rows = (data && data.rows) || [];
+    var html = '';
+    rows.forEach(function (row) {
+    html += '<tr>' +
+    '<td>' + usageEscape(row.userName) + '</td>' +
+    '<td>' + usageEscape(row.role) + '</td>' +
+    '<td title="' + usageEscape(row.pageUrl) + '">' + usageEscape(row.pageName) +
+    '</td>' +
+    '<td>' + usageEscape(row.module) + '</td>' +
+    '<td>' + usageEscape(row.visits) + '</td>' +
+    '<td title="' + usageEscape(row.seconds) + ' seconds">' +
+    usageEscape(row.timeSpent) + '</td>' +
+    '<td>' + usageEscape(row.average) + '</td>' +
+    '<td><a href="#" onclick=filterSessionHash("'+row.sessionHash+'")>' + usageEscape(row.sessionHash) + '</a></td>' +
+    '<td>' + usageEscape(row.lastSeen) + '</td>' +
+    '</tr>';
+    });
+    $('#usageRows').html(html || '<tr><td colspan="8"><?= _translate("No page usage recorded for this filter."); ?></td></tr>');
+    var totals = (data && data.totals) || {};
+    $('#usageTotals').text(
+    (totals.users || 0) + ' <?= _translate("users"); ?>, ' +
+    (totals.pages || 0) + ' <?= _translate("pages"); ?>, ' +
+    (totals.visits || 0) + ' <?= _translate("page opens"); ?>, ' +
+    (totals.timeSpent || '-') + ' <?= _translate("in total"); ?>'
+    );
+    }, 'json');
 }
 $(document).ready(function () {
-$('#dateRange').daterangepicker({
-locale: { format: 'DD-MMM-YYYY' },
-showDropdowns: true,
-maxDate: moment(),
-startDate: moment().subtract(29, 'days'),
-endDate: moment(),
-ranges: {'Today': [moment(), moment()],
-'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-'This Month': [moment().startOf('month'), moment().endOf('month')]
-}
-}, function (start, end) {
-usageState.dateRange = start.format('DD-MMM-YYYY') + ' to ' + end.format('DD-MMM-YYYY');
-$('#dateRange').val(usageState.dateRange);
-loadUsage();
-});
+    $('#dateRange').daterangepicker({
+        locale: { format: 'DD-MMM-YYYY' },
+        showDropdowns: true,
+        maxDate: moment(),
+        startDate: moment().subtract(29, 'days'),
+        endDate: moment(),
+        ranges: {'Today': [moment(), moment()],
+        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        'This Month': [moment().startOf('month'), moment().endOf('month')]
+        }
+    }, function (start, end) {
+        usageState.dateRange = start.format('DD-MMM-YYYY') + ' to ' + end.format('DD-MMM-YYYY');
+        $('#dateRange').val(usageState.dateRange);
+        loadUsage();
+    });
 usageState.dateRange = moment().subtract(29, 'days').format('DD-MMM-YYYY') + ' to ' +
 moment().format('DD-MMM-YYYY');
 $('#dateRange').val(usageState.dateRange);
@@ -137,6 +141,17 @@ loadUsage();
 });
 loadUsage();
 });
+function filterSessionHash($sessHash)
+{
+    if(confirm("Do you want to filter by this session?"))
+    {
+        usageState.sessHash = $sessHash;
+        loadUsage();
+    }
+    else{
+        return false;
+    }
+}
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';
