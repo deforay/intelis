@@ -17051,6 +17051,26 @@ msgid "Break down by"
 msgstr ""
 
 #: app/reports/sample-ageing.php
+msgid "Showing %s of %s"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "No rows match the search"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Search facilities or labs"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Search labs or instruments"
+msgstr ""
+
+#: app/reports/sample-ageing.php
+msgid "Search partners"
+msgstr ""
+
+#: app/reports/sample-ageing.php
 msgid "Click a row to list its samples."
 msgstr ""
 

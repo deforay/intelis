@@ -29058,6 +29058,27 @@ msgid "Break down by"
 msgstr "Répartir par"
 
 #: app/reports/sample-ageing.php
+#, php-format
+msgid "Showing %s of %s"
+msgstr "%s affichés sur %s"
+
+#: app/reports/sample-ageing.php
+msgid "No rows match the search"
+msgstr "Aucune ligne ne correspond à la recherche"
+
+#: app/reports/sample-ageing.php
+msgid "Search facilities or labs"
+msgstr "Rechercher un établissement ou un laboratoire"
+
+#: app/reports/sample-ageing.php
+msgid "Search labs or instruments"
+msgstr "Rechercher un laboratoire ou un instrument"
+
+#: app/reports/sample-ageing.php
+msgid "Search partners"
+msgstr "Rechercher un partenaire"
+
+#: app/reports/sample-ageing.php
 msgid "Click a row to list its samples."
 msgstr "Cliquez sur une ligne pour afficher ses échantillons."
 

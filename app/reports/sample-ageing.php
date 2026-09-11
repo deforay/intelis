@@ -307,6 +307,70 @@ $exitLabels = [
         box-shadow: inset 3px 0 0 #3c8dbc;
     }
 
+    /* A breakdown can run to hundreds of collection sites. It scrolls inside
+       its own box with the heading and the total pinned, so the total and the
+       column names never scroll out of sight. */
+    #sampleFlow .sf-scroll {
+        max-height: 560px;
+        overflow-y: auto;
+        border-bottom: 1px solid #e4e8ec;
+    }
+
+    #sampleFlow .sf-scroll table {
+        margin-bottom: 0;
+    }
+
+    #sampleFlow .sf-scroll thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        box-shadow: inset 0 -1px 0 #dde3e8;
+    }
+
+    #sampleFlow .sf-scroll tfoot th {
+        position: sticky;
+        bottom: 0;
+        z-index: 2;
+        background-color: #fff;
+        box-shadow: inset 0 2px 0 #d5dce2;
+    }
+
+    #sampleFlow .sf-breakdown-tools {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 8px;
+    }
+
+    #sampleFlow .sf-find {
+        position: relative;
+    }
+
+    #sampleFlow .sf-find input {
+        width: 240px;
+        max-width: 100%;
+        height: 24px;
+        padding: 2px 8px 2px 24px;
+        font-size: 12px;
+    }
+
+    #sampleFlow .sf-find em {
+        position: absolute;
+        left: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 11px;
+        color: #a6adb4;
+        pointer-events: none;
+    }
+
+    #sampleFlow .sf-find-count {
+        margin-left: 6px;
+        font-size: 11px;
+        font-weight: 400;
+        color: #8a9299;
+    }
+
     #sampleFlow .sf-breakdown-actions {
         display: flex;
         flex-wrap: wrap;
@@ -592,12 +656,18 @@ $exitLabels = [
                                 </div>
                                     <div class="sf-breakdown-hint sf-breakdown-actions">
                                         <span><?= _htmlTranslate('Click a row to list its samples.'); ?></span>
-                                        <button type="button" class="btn btn-default btn-xs" onclick="sfDrill('', '');">
-                                            <em class="fa-solid fa-list"></em>
-                                            <?= _htmlTranslate('List every sample in this stage'); ?>
-                                        </button>
+                                        <div class="sf-breakdown-tools">
+                                            <div class="sf-find" id="sfBreakdownFind" style="display:none;">
+                                                <em class="fa-solid fa-magnifying-glass" aria-hidden="true"></em>
+                                                <input type="search" id="sfBreakdownSearch" class="form-control" autocomplete="off" aria-controls="sfTable" />
+                                            </div>
+                                            <button type="button" class="btn btn-default btn-xs" onclick="sfDrill('', '');">
+                                                <em class="fa-solid fa-list"></em>
+                                                <?= _htmlTranslate('List every sample in this stage'); ?>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="table-responsive" style="margin-top:12px;">
+                                    <div class="table-responsive sf-scroll" id="sfBreakdownScroll" style="margin-top:12px;">
                                         <table class="table table-bordered table-striped sf-table" id="sfTable" aria-describedby="sfBreakdownTitle">
                                             <thead>
                                                 <tr>
@@ -608,7 +678,7 @@ $exitLabels = [
                                             <tbody></tbody>
                                             <tfoot>
                                                 <tr>
-                                                    <th style="text-align:left;"><?= _htmlTranslate('Total'); ?></th>
+                                                    <th style="text-align:left;"><?= _htmlTranslate('Total'); ?><small class="sf-find-count" id="sfBreakdownCount"></small></th>
                                                     <th id="foot-total"></th>
                                                 </tr>
                                             </tfoot>
@@ -662,10 +732,19 @@ $exitLabels = [
         wholeStage: "<?= _jsTranslate('every %s'); ?>",
         instruments: "<?= _jsTranslate('Instruments: %s'); ?>",
         andMore: "<?= _jsTranslate('and %s more'); ?>",
+        showingOf: "<?= _jsTranslate('Showing %s of %s'); ?>",
+        noMatch: "<?= _jsTranslate('No rows match the search'); ?>",
+        search: {
+            facility: "<?= _jsTranslate('Search facilities or labs'); ?>",
+            lab: "<?= _jsTranslate('Search labs or instruments'); ?>",
+            partner: "<?= _jsTranslate('Search partners'); ?>"
+        },
         exportFailed: "<?= _jsTranslate('Unable to generate the export file'); ?>"
     };
     // How many instrument names fit under a lab name before the rest go on hover.
     var SF_LAB_INSTRUMENTS_SHOWN = 3;
+    // A breakdown longer than this gets a search box.
+    var SF_SEARCH_FROM = 10;
 
     var sfFlow = null;
     var sfStage = null;
@@ -828,6 +907,9 @@ $exitLabels = [
         $('#sfGroups a').removeClass('is-active');
         $('#sfGroups a[data-group="' + sfGroup + '"]').addClass('is-active');
         $('#sfBreakdown').show();
+        // A new list starts unsearched and scrolled to its worst row.
+        $('#sfBreakdownSearch').val('').attr('placeholder', SF_LABELS.search[sfGroup] || '');
+        $('#sfBreakdownScroll').scrollTop(0);
         $('#sfTable tbody').html('<tr><td colspan="2" class="text-center text-muted">&hellip;</td></tr>');
         sfPost('breakdown', { stage: sfStage, groupBy: sfGroup }, function (json) {
             sfRows = (json && json.rows) ? json.rows : [];
@@ -842,12 +924,18 @@ $exitLabels = [
         var rows = sfRows.slice().sort(function (a, b) {
             return (b.total - a.total) || String(a.label).localeCompare(String(b.label));
         });
-        var total = 0;
+        var total = rows.reduce(function (sum, row) { return sum + row.total; }, 0);
+
+        // The search narrows what is listed, never the total: the footer
+        // always counts the whole stage, and says how much of it is showing.
+        var query = sfNormalise($('#sfBreakdownSearch').val());
+        var shown = query === '' ? rows : rows.filter(function (row) {
+            return sfNormalise([row.label, row.labs || '', row.instruments || ''].join(' ')).indexOf(query) !== -1;
+        });
 
         var html = '';
-        rows.forEach(function (row) {
+        shown.forEach(function (row) {
             var key = String(row.key === undefined || row.key === null ? '' : row.key);
-            total += row.total;
             html += '<tr class="sf-drill-row" data-key="' + esc(key) + '" data-label="' + esc(row.label) + '">'
                 + '<td>' + esc(row.label) + sfSubLine(row) + '</td>'
                 + '<td class="num sf-drill">' + row.total.toLocaleString()
@@ -855,10 +943,22 @@ $exitLabels = [
         });
         if (rows.length === 0) {
             html = '<tr><td colspan="2" class="text-center text-muted">' + esc(SF_LABELS.noData) + '</td></tr>';
+        } else if (shown.length === 0) {
+            html = '<tr><td colspan="2" class="text-center text-muted">' + esc(SF_LABELS.noMatch) + '</td></tr>';
         }
         $('#sfTable tbody').html(html);
         $('#foot-total').text(total.toLocaleString());
+        $('#sfBreakdownFind').toggle(rows.length > SF_SEARCH_FROM);
+        $('#sfBreakdownCount').text(query === '' ? '' : SF_LABELS.showingOf
+            .replace('%s', shown.length.toLocaleString())
+            .replace('%s', rows.length.toLocaleString()));
         sfMarkDrillCell();
+    }
+
+    // Case and accents ignored, so "sante" finds "CENTRE DE SANTE" and "Santé".
+    function sfNormalise(value) {
+        return String(value === null || value === undefined ? '' : value)
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
     }
 
     // The line under a breakdown label: the labs a facility is sending to, or
@@ -1057,6 +1157,11 @@ $exitLabels = [
 
         $('#sfTable').on('click', 'tr.sf-drill-row', function () {
             sfDrill(String($(this).attr('data-key')), String($(this).attr('data-label')));
+        });
+
+        $('#sfBreakdownSearch').on('input', function () {
+            sfRenderBreakdown();
+            $('#sfBreakdownScroll').scrollTop(0);
         });
 
         sfApplyFilters();
