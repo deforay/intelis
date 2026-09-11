@@ -29058,6 +29058,10 @@ msgid "Break down by"
 msgstr "Répartir par"
 
 #: app/reports/sample-ageing.php
+msgid "Click a row to list its samples."
+msgstr "Cliquez sur une ligne pour afficher ses échantillons."
+
+#: app/reports/sample-ageing.php
 msgid "Breakdowns"
 msgstr "Répartitions"
 

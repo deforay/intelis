@@ -267,20 +267,52 @@ $exitLabels = [
         flex: 0 0 auto;
     }
 
-    /* Every count in the breakdown opens the samples behind it. */
-    #sampleFlow table.sf-table td.sf-drill {
+    /* Every breakdown row opens the samples behind it, and has to look like
+       it does: a bare number gave no hint, and readers missed the listing
+       entirely. The count reads as a link and the row lights up under the
+       pointer. */
+    #sampleFlow #sfTable tbody tr.sf-drill-row {
         cursor: pointer;
     }
 
-    #sampleFlow table.sf-table td.sf-drill:hover {
-        outline: 2px solid #3c8dbc;
-        outline-offset: -2px;
+    #sampleFlow #sfTable tbody tr.sf-drill-row:hover>td {
+        background-color: #f4f8fb;
     }
 
-    #sampleFlow table.sf-table td.sf-drill.is-active {
-        outline: 2px solid #3c8dbc;
-        outline-offset: -2px;
+    #sampleFlow #sfTable td.sf-drill {
+        color: #3c8dbc;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    #sampleFlow #sfTable .sf-drill-icon {
+        margin-left: 6px;
+        font-size: 11px;
+        opacity: 0.45;
+    }
+
+    #sampleFlow #sfTable tr.sf-drill-row:hover td.sf-drill {
+        text-decoration: underline;
+    }
+
+    #sampleFlow #sfTable tr.sf-drill-row:hover .sf-drill-icon {
+        opacity: 1;
+    }
+
+    #sampleFlow #sfTable tr.sf-drill-row.is-active>td {
         background-color: #e3eef5;
+    }
+
+    #sampleFlow #sfTable tr.sf-drill-row.is-active>td:first-child {
+        box-shadow: inset 3px 0 0 #3c8dbc;
+    }
+
+    #sampleFlow .sf-breakdown-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px 12px;
     }
 
     #sampleFlow .sf-samples {
@@ -558,9 +590,12 @@ $exitLabels = [
                                         <?php } ?>
                                     </div>
                                 </div>
-                                    <div class="sf-breakdown-hint">
-                                        <?= _htmlTranslate('Click a count to list the samples behind it.'); ?>
-                                        <a href="javascript:void(0);" onclick="sfDrill('', '');"><?= _htmlTranslate('List every sample in this stage'); ?></a>
+                                    <div class="sf-breakdown-hint sf-breakdown-actions">
+                                        <span><?= _htmlTranslate('Click a row to list its samples.'); ?></span>
+                                        <button type="button" class="btn btn-default btn-xs" onclick="sfDrill('', '');">
+                                            <em class="fa-solid fa-list"></em>
+                                            <?= _htmlTranslate('List every sample in this stage'); ?>
+                                        </button>
                                     </div>
                                     <div class="table-responsive" style="margin-top:12px;">
                                         <table class="table table-bordered table-striped sf-table" id="sfTable" aria-describedby="sfBreakdownTitle">
@@ -813,9 +848,10 @@ $exitLabels = [
         rows.forEach(function (row) {
             var key = String(row.key === undefined || row.key === null ? '' : row.key);
             total += row.total;
-            html += '<tr><td>' + esc(row.label) + sfSubLine(row) + '</td>'
-                + '<td class="num sf-drill" data-key="' + esc(key) + '" data-label="' + esc(row.label) + '">'
-                + row.total.toLocaleString() + '</td></tr>';
+            html += '<tr class="sf-drill-row" data-key="' + esc(key) + '" data-label="' + esc(row.label) + '">'
+                + '<td>' + esc(row.label) + sfSubLine(row) + '</td>'
+                + '<td class="num sf-drill">' + row.total.toLocaleString()
+                + '<em class="fa-solid fa-list sf-drill-icon" aria-hidden="true"></em></td></tr>';
         });
         if (rows.length === 0) {
             html = '<tr><td colspan="2" class="text-center text-muted">' + esc(SF_LABELS.noData) + '</td></tr>';
@@ -882,18 +918,21 @@ $exitLabels = [
         document.getElementById('sfSamples').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    // Compared as attribute strings: jQuery's data() turns "16" into 16, so a
+    // strict comparison against the string key never matched and the listed
+    // row was never marked.
     function sfMarkDrillCell() {
-        $('#sfTable td.sf-drill').removeClass('is-active');
+        $('#sfTable tr.sf-drill-row').removeClass('is-active');
         if (!sfDrillSel || sfDrillSel.groupBy === '') { return; }
-        $('#sfTable td.sf-drill').filter(function () {
-            return $(this).data('key') === sfDrillSel.groupKey;
+        $('#sfTable tr.sf-drill-row').filter(function () {
+            return $(this).attr('data-key') === String(sfDrillSel.groupKey);
         }).addClass('is-active');
     }
 
     function sfCloseSamples() {
         sfDrillSel = null;
         $('#sfSamples').hide();
-        $('#sfTable td.sf-drill').removeClass('is-active');
+        $('#sfTable tr.sf-drill-row').removeClass('is-active');
     }
 
     function sfDrillParams() {
@@ -1016,8 +1055,8 @@ $exitLabels = [
             sfApplyFilters();
         });
 
-        $('#sfTable').on('click', 'td.sf-drill', function () {
-            sfDrill(String($(this).data('key')), String($(this).data('label')));
+        $('#sfTable').on('click', 'tr.sf-drill-row', function () {
+            sfDrill(String($(this).attr('data-key')), String($(this).attr('data-label')));
         });
 
         sfApplyFilters();

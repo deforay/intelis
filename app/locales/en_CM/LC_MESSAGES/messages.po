@@ -26350,6 +26350,10 @@ msgid "Break down by"
 msgstr ""
 
 #: app/reports/sample-ageing.php
+msgid "Click a row to list its samples."
+msgstr ""
+
+#: app/reports/sample-ageing.php
 msgid "Breakdowns"
 msgstr ""
 
