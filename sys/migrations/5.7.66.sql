@@ -44,3 +44,15 @@ WHERE NOT EXISTS (SELECT 1 FROM `s_app_menu` WHERE `link` = '/admin/monitoring/p
 ALTER TABLE `user_page_usage` ADD `session_hash` VARCHAR(20) NULL DEFAULT NULL AFTER `duration_seconds`;
 
 UPDATE `system_config` SET `value` = '5.7.66' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

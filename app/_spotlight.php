@@ -52,6 +52,7 @@ $spotlightLinkKeywords = function (string $link, string $title): array {
         'instruments' => ['analyzer', 'machine', 'equipment', 'device'],
         'audit-trail' => ['changes', 'history', 'who changed'],
         'activity-log' => ['user activity', 'logins', 'actions'],
+        'page-usage|page usage' => ['usage', 'time spent', 'most used pages', 'who uses', 'adoption', 'user activity'],
         'sync' => ['api', 'data sync', 'sts', 'server'],
         'global-config' => ['settings', 'setup', 'preferences'],
         'geographical' => ['province', 'district', 'region', 'location'],
