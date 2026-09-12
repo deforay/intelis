@@ -335,12 +335,15 @@ final class QualityMonitoringService
      */
     public function getSummary(array $f): array
     {
+        $bucket = $this->ageBucketClause($f, 'total_age');
+
         $rows = $this->db->rawQuery(
             "SELECT stage,
                     COUNT(*) AS total,
                     SUM(total_age >= " . (int) $f['overdueDays'] . ") AS overdue
                FROM (" . $this->placedSamples($f) . ") AS placed
               WHERE stage IN (" . $this->stageList(self::CASCADE['pending']) . ")
+                    " . ($bucket === '' ? '' : "AND $bucket") . "
               GROUP BY stage"
         ) ?: [];
 
@@ -382,6 +385,8 @@ final class QualityMonitoringService
     {
         $this->assertGrouping($groupBy);
 
+        $bucket = $this->ageBucketClause($f, 'placed.total_age');
+
         $stageSums = [];
         foreach (self::CASCADE['pending'] as $stage) {
             // The stage names are fixed identifiers, so they are safe as aliases.
@@ -398,6 +403,7 @@ final class QualityMonitoringService
                FROM (" . $this->placedSamples($f) . ") AS placed
                " . $this->dimensionJoins() . "
               WHERE placed.stage IN (" . $this->stageList(self::CASCADE['pending']) . ")
+                    " . ($bucket === '' ? '' : "AND $bucket") . "
               GROUP BY group_key
               ORDER BY total DESC, label ASC"
         ) ?: [];
@@ -886,6 +892,21 @@ final class QualityMonitoringService
         return "'" . implode("', '", array_map(fn(string $s): string => $this->db->escape($s), $stages)) . "'";
     }
 
+    /**
+     * The "Waiting For" filter, as a predicate over a column holding the days
+     * waiting. The cards, the breakdown and the listing all apply it, so a
+     * number on a card is never a different set of samples from the one the
+     * listing behind it shows.
+     */
+    private function ageBucketClause(array $f, string $column): string
+    {
+        if (($f['bucket'] ?? '') === '') {
+            return '';
+        }
+        [$from, $to] = SampleFlowService::AGE_BUCKETS[$f['bucket']];
+        return $to === null ? "$column >= $from" : "$column BETWEEN $from AND $to";
+    }
+
     private function assertNode(string $node): void
     {
         if (!isset(self::CASCADE[$node])) {
@@ -952,11 +973,9 @@ final class QualityMonitoringService
             $where[] = $this->groupWhere($f['groupBy'], $f['groupKey']);
         }
 
-        if ($f['bucket'] !== '') {
-            [$from, $to] = SampleFlowService::AGE_BUCKETS[$f['bucket']];
-            $where[] = $to === null
-                ? "placed.total_age >= $from"
-                : "placed.total_age BETWEEN $from AND $to";
+        $bucket = $this->ageBucketClause($f, 'placed.total_age');
+        if ($bucket !== '') {
+            $where[] = $bucket;
         }
 
         $search = trim($search);

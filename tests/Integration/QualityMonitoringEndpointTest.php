@@ -365,6 +365,30 @@ final class QualityMonitoringEndpointTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testTheWaitingForFilterNarrowsTheCardsAndTheBreakdownWithTheListing(): void
+    {
+        /** @var QualityMonitoringService $service */
+        $service = ContainerRegistry::get(QualityMonitoringService::class);
+        // 15 to 30 days waiting: of the eight pending samples, only the one
+        // collected 25 days ago.
+        $f = $service->resolveFilters(['dateRange' => '', 'bucket' => 'b2']);
+
+        $nodes = $service->getSummary($f)['nodes'];
+        self::assertSame(1, $nodes['pending']['total']);
+        self::assertSame(1, $nodes['atFacility']['total']);
+        self::assertSame(0, $nodes['atTestingLab']['total'], 'nothing in the lab is 15 to 30 days old');
+
+        $byLab = $service->getBreakdown($f, 'lab');
+        self::assertCount(1, $byLab, 'only the group that sample belongs to');
+        self::assertSame(1, $byLab[0]['total']);
+
+        // A card, the breakdown row under it and the listing behind them count
+        // the same samples, so a number is never larger than what it opens.
+        self::assertSame(1, $service->getSamples($f, 'pending', 0, 25)['total']);
+        self::assertSame(0, $service->getSamples($f, 'atTestingLab', 0, 25)['total']);
+    }
+
+    #[RunInSeparateProcess]
     public function testTheOverdueLimitIsTheReadersToPickAndNarrowsTheListingOnRequest(): void
     {
         /** @var QualityMonitoringService $service */
