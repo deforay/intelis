@@ -16,19 +16,35 @@ use const SAMPLE_STATUS\PENDING_APPROVAL;
  * waiting, split by which side of the workflow is holding them, so the people
  * responsible for each side can say why.
  *
- * Two views, and a sample is in exactly one of them:
+ * The page shows the pending samples as a cascade (CASCADE): every pending
+ * sample, then where it is held -- at the collection site, at the testing lab
+ * (split into untested and tested-but-unapproved), or approved with a result
+ * that has not yet reached the facility. Each card is a set of stages, so any
+ * card's samples can be listed below it.
+ *
+ * Who may write a note about a sample is decided by its stage (VIEWS):
  *
  *   clinic - registered at a collection point, no lab has recorded receiving
  *            it. The delay is on the way to the lab, so the clinic side and
  *            its implementing partner are the ones who can explain it.
- *   lab    - a lab has the sample and no usable result has come out of it yet,
- *            whether it is untested or tested and still unapproved. The delay
- *            is inside the lab.
+ *   lab    - a lab has the sample and its result has not reached the facility:
+ *            untested, tested and unapproved, or approved and never printed,
+ *            sent or downloaded. The lab is the side that records all three.
  *
  * Placement and age come from SampleFlowService, which already reads a
  * sample's position off the milestone timestamps rather than off result_status
  * alone. Sharing that means this module and the Sample Ageing report can never
  * disagree about where a sample is or how long it has been there.
+ *
+ * Two ages, because they answer different questions. The one this module leads
+ * with, and measures overdue against, is the days since collection: that is
+ * what the child has been waiting and what a turnaround target is set against.
+ * Beside it is the age SampleFlowService gives, the days since the sample's
+ * most recent milestone, which is what says how long the side holding it now
+ * has been holding it. A sample collected 40 days ago and received at a lab
+ * yesterday is 40 days late and 1 day at the lab, and both are worth seeing.
+ * Where no collection date was recorded the registration date stands in, the
+ * same rule the date filter uses.
  *
  * Samples that have left the pipeline - rejected, expired, lost, cancelled -
  * are not waiting on anybody, so they never appear here. They are excluded by
@@ -46,20 +62,38 @@ final class QualityMonitoringService
 {
     private const TEST_KEY = 'eid';
 
-    /** The stages each side is answerable for, in the order they are listed. */
+    /** The stages each side is answerable for, and so may write notes about. */
     public const VIEWS = [
         'clinic' => ['atFacility'],
-        'lab' => ['atLab', 'awaitingApproval'],
+        'lab' => ['atLab', 'awaitingApproval', 'awaitingRelease'],
     ];
 
     /**
-     * Days waiting at which a sample is called late, and very late. Both are
-     * shown as counts on the page and colour the age cell. EID turnaround
-     * targets differ by country; these are the two marks the ageing report
-     * already uses, kept the same so the two pages agree.
+     * The cards of the pending cascade, in display order, each with the stages
+     * it counts. A parent is exactly the union of the cards under it, so the
+     * numbers on the page always add up: pending is the three branches, and
+     * the testing lab is its two sub-cards.
      */
-    public const LATE_DAYS = 14;
-    public const VERY_LATE_DAYS = 30;
+    public const CASCADE = [
+        'pending' => ['atFacility', 'atLab', 'awaitingApproval', 'awaitingRelease'],
+        'atFacility' => ['atFacility'],
+        'atTestingLab' => ['atLab', 'awaitingApproval'],
+        'atLab' => ['atLab'],
+        'awaitingApproval' => ['awaitingApproval'],
+        'awaitingRelease' => ['awaitingRelease'],
+    ];
+
+    /**
+     * Days waiting after which a sample is overdue. Turnaround targets differ by
+     * country and by test, so the reader picks the limit on the page; this is
+     * only where it starts, and the presets are the limits offered one click
+     * away. Any whole number of days up to the maximum is accepted. The page
+     * opens at 7 because EID turnaround targets are usually 5 to 7 days, and a
+     * looser starting limit makes a backlog look healthier than it is.
+     */
+    public const DEFAULT_OVERDUE_DAYS = 7;
+    public const OVERDUE_PRESETS = [5, 7, 14, 28, 30, 60, 90];
+    public const MAX_OVERDUE_DAYS = 730;
 
     /** How many rows one batch of the export carries before it is yielded. */
     private const EXPORT_BATCH = 200;
@@ -92,11 +126,29 @@ final class QualityMonitoringService
      * Nothing here reaches a query as written: dates are rebuilt from a parsed
      * date, ids are cast, and the age bucket must be one of the fixed set.
      *
-     * @return array{startDate: string, endDate: string, labIds: string, facilityIds: string, provinceId: int, districtId: int, partnerId: int, bucket: string, instrument: string, instrumentLabIds: string}
+     * The group is the breakdown row a listing was drilled into. It narrows the
+     * grid and its export only; the cards and the breakdown itself ignore it,
+     * or drilling into one lab would collapse the table to that lab.
+     *
+     * @return array{startDate: string, endDate: string, labIds: string, facilityIds: string, provinceId: int, districtId: int, partnerId: int, bucket: string, instrument: string, instrumentLabIds: string, groupBy: string, groupKey: int, overdueDays: int, overdueOnly: bool}
      */
     public function resolveFilters(array $input): array
     {
         [$startDate, $endDate] = DateUtility::convertDateRange((string) ($input['dateRange'] ?? ''));
+
+        $groupBy = (string) ($input['groupBy'] ?? '');
+        if ($groupBy !== '') {
+            $this->assertGrouping($groupBy);
+        }
+
+        // Anything that is not a whole number of days in range falls back to
+        // the default rather than failing: a stray limit should not blank the
+        // page, and only a validated integer ever reaches a query.
+        $overdueDays = filter_var(
+            $input['overdueDays'] ?? null,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1, 'max_range' => self::MAX_OVERDUE_DAYS]]
+        );
 
         $bucket = (string) ($input['bucket'] ?? '');
         if ($bucket !== '' && !isset(SampleFlowService::AGE_BUCKETS[$bucket])) {
@@ -130,6 +182,12 @@ final class QualityMonitoringService
             'bucket' => $bucket,
             'instrument' => $instrument,
             'instrumentLabIds' => $instrumentLabIds,
+            'groupBy' => $groupBy,
+            'groupKey' => $groupBy === '' ? 0 : max(0, (int) ($input['groupKey'] ?? 0)),
+            'overdueDays' => $overdueDays === false ? self::DEFAULT_OVERDUE_DAYS : $overdueDays,
+            // Narrows the grid and its export to the overdue samples; the cards
+            // and the breakdown always show both the total and the overdue part.
+            'overdueOnly' => in_array((string) ($input['overdueOnly'] ?? ''), ['1', 'true'], true),
         ];
     }
 
@@ -145,8 +203,7 @@ final class QualityMonitoringService
         'viewed-lab' => 'read the lab side of EID Quality Monitoring',
         'read-notes' => 'read the notes on a sample in EID Quality Monitoring',
         'added-note' => 'added a note in EID Quality Monitoring',
-        'exported-clinic' => 'exported the clinic side of EID Quality Monitoring',
-        'exported-lab' => 'exported the lab side of EID Quality Monitoring',
+        'exported' => 'exported EID Quality Monitoring',
         'visit' => 'had EID Quality Monitoring open',
     ];
 
@@ -237,6 +294,22 @@ final class QualityMonitoringService
         if (($f['instrument'] ?? '') !== '') {
             $parts[] = 'instrument ' . $f['instrument'];
         }
+        if (($f['groupBy'] ?? '') !== '') {
+            $parts[] = $f['groupBy'] . ' ' . (int) ($f['groupKey'] ?? 0);
+        }
+        // The limit is described only when it is not the default, so the lines
+        // written before it could be chosen still read the same.
+        $overdueDays = (int) ($f['overdueDays'] ?? self::DEFAULT_OVERDUE_DAYS);
+        if ($overdueDays !== self::DEFAULT_OVERDUE_DAYS) {
+            $parts[] = 'overdue after ' . $overdueDays . ' days';
+        }
+        if (!empty($f['overdueOnly'])) {
+            $parts[] = 'only overdue';
+        }
+        // Only a node already checked against CASCADE is ever passed in here.
+        if (isset(self::CASCADE[$f['node'] ?? ''])) {
+            $parts[] = 'stage ' . $f['node'];
+        }
 
         return implode(', ', $parts);
     }
@@ -252,65 +325,195 @@ final class QualityMonitoringService
     }
 
     /**
-     * The headline counts: how many samples each side is holding, and how many
-     * of those have been waiting past the two marks. One pass over the same
-     * placed set the grid lists, so the tiles and the grid can never disagree.
+     * The cascade counts: how many samples each card holds, and how many of
+     * those are past the overdue limit the reader chose. One pass over the same
+     * placed set the grid lists, counted per stage and added up per card, so the
+     * cards and the grid can never disagree and a parent always equals its
+     * children.
      *
-     * @return array{clinic: array{total: int, late: int, veryLate: int}, lab: array{total: int, late: int, veryLate: int}, stages: array<string, int>}
+     * @return array{nodes: array<string, array{total: int, overdue: int}>}
      */
     public function getSummary(array $f): array
     {
         $rows = $this->db->rawQuery(
             "SELECT stage,
                     COUNT(*) AS total,
-                    SUM(age >= " . self::LATE_DAYS . ") AS late,
-                    SUM(age >= " . self::VERY_LATE_DAYS . ") AS very_late
+                    SUM(total_age >= " . (int) $f['overdueDays'] . ") AS overdue
                FROM (" . $this->placedSamples($f) . ") AS placed
-              WHERE stage IN (" . $this->stageList(array_merge(...array_values(self::VIEWS))) . ")
+              WHERE stage IN (" . $this->stageList(self::CASCADE['pending']) . ")
               GROUP BY stage"
         ) ?: [];
 
-        $stages = [];
-        foreach (array_merge(...array_values(self::VIEWS)) as $stage) {
-            $stages[$stage] = 0;
-        }
-        $summary = [];
-        foreach (array_keys(self::VIEWS) as $view) {
-            $summary[$view] = ['total' => 0, 'late' => 0, 'veryLate' => 0];
-        }
-
+        $byStage = [];
         foreach ($rows as $row) {
-            $stage = (string) $row['stage'];
-            $stages[$stage] = (int) $row['total'];
-            $view = $this->viewOfStage($stage);
-            if ($view === null) {
-                continue;
-            }
-            $summary[$view]['total'] += (int) $row['total'];
-            $summary[$view]['late'] += (int) $row['late'];
-            $summary[$view]['veryLate'] += (int) $row['very_late'];
+            $byStage[(string) $row['stage']] = [
+                'total' => (int) $row['total'],
+                'overdue' => (int) $row['overdue'],
+            ];
         }
 
-        $summary['stages'] = $stages;
-        return $summary;
+        $nodes = [];
+        foreach (self::CASCADE as $node => $stages) {
+            $nodes[$node] = ['total' => 0, 'overdue' => 0];
+            foreach ($stages as $stage) {
+                foreach (['total', 'overdue'] as $measure) {
+                    $nodes[$node][$measure] += $byStage[$stage][$measure] ?? 0;
+                }
+            }
+        }
+
+        return ['nodes' => $nodes];
+    }
+
+    /** The ways the breakdown table can be grouped, in the order they are offered. */
+    public const GROUPINGS = ['lab', 'facility', 'province', 'district', 'partner'];
+
+    /**
+     * The pending samples grouped by lab, facility, province, district or
+     * partner, one count per pending stage, worst first. The same placed set
+     * and filters as the cards, so each column adds up to its card.
+     *
+     * A sample with no lab or partner is a row of its own rather than a row
+     * that vanishes, so the rows always add up to the total.
+     *
+     * @return list<array{key: string, label: string, stages: array<string, int>, total: int, overdue: int, oldestCollected: string, oldestCollectedSort: string}>
+     */
+    public function getBreakdown(array $f, string $groupBy): array
+    {
+        $this->assertGrouping($groupBy);
+
+        $stageSums = [];
+        foreach (self::CASCADE['pending'] as $stage) {
+            // The stage names are fixed identifiers, so they are safe as aliases.
+            $stageSums[] = "SUM(placed.stage = '" . $this->db->escape($stage) . "') AS `$stage`";
+        }
+
+        $rows = $this->db->rawQuery(
+            "SELECT " . $this->groupKey($groupBy) . " AS group_key,
+                    " . $this->groupLabel($groupBy) . " AS label,
+                    " . implode(', ', $stageSums) . ",
+                    COUNT(*) AS total,
+                    SUM(placed.total_age >= " . (int) $f['overdueDays'] . ") AS overdue,
+                    MIN(NULLIF(placed.sample_collection_date, '0000-00-00 00:00:00')) AS oldest_collected
+               FROM (" . $this->placedSamples($f) . ") AS placed
+               " . $this->dimensionJoins() . "
+              WHERE placed.stage IN (" . $this->stageList(self::CASCADE['pending']) . ")
+              GROUP BY group_key
+              ORDER BY total DESC, label ASC"
+        ) ?: [];
+
+        $out = [];
+        foreach ($rows as $row) {
+            $stages = [];
+            foreach (self::CASCADE['pending'] as $stage) {
+                $stages[$stage] = (int) $row[$stage];
+            }
+            $oldest = (string) ($row['oldest_collected'] ?? '');
+            $out[] = [
+                'key' => (string) $row['group_key'],
+                'label' => (string) $row['label'],
+                'stages' => $stages,
+                'total' => (int) $row['total'],
+                'overdue' => (int) $row['overdue'],
+                'oldestCollected' => $oldest === '' ? '' : (string) (DateUtility::humanReadableDateFormat($oldest) ?? ''),
+                // The shown date does not sort as text, so the table orders on this.
+                'oldestCollectedSort' => substr($oldest, 0, 10),
+            ];
+        }
+        return $out;
+    }
+
+    /** The headings of the groupings, keyed as GROUPINGS. */
+    public static function groupingLabels(): array
+    {
+        return [
+            'lab' => _translate('Testing Lab'),
+            'facility' => _translate('Collection Facility'),
+            'province' => _translate('Province/State'),
+            'district' => _translate('District/County'),
+            'partner' => _translate('Implementing Partner'),
+        ];
     }
 
     /**
-     * One page of the waiting samples for a view, oldest first by default -
-     * the oldest is the one somebody has to chase.
+     * The dimension tables every breakdown and listing joins to the placed
+     * samples, under fixed aliases: f the collection facility, l the lab, p
+     * the partner.
+     */
+    private function dimensionJoins(): string
+    {
+        return "LEFT JOIN facility_details AS f ON f.facility_id = placed.facility_id
+                LEFT JOIN facility_details AS l ON l.facility_id = placed.lab_id
+                LEFT JOIN r_implementation_partners AS p ON p.i_partner_id = placed.implementing_partner";
+    }
+
+    /**
+     * What identifies one breakdown row: an id in every case, 0 when the
+     * sample has none. Province and district are grouped by the facility's
+     * geography ids, so a drill-down can ask for exactly one row by number.
+     */
+    private function groupColumn(string $groupBy): string
+    {
+        return match ($groupBy) {
+            'lab' => 'placed.lab_id',
+            'facility' => 'placed.facility_id',
+            'province' => 'f.facility_state_id',
+            'district' => 'f.facility_district_id',
+            'partner' => 'placed.implementing_partner',
+        };
+    }
+
+    private function groupKey(string $groupBy): string
+    {
+        return 'COALESCE(' . $this->groupColumn($groupBy) . ', 0)';
+    }
+
+    /** The display label of a grouping, over the dimension aliases. */
+    private function groupLabel(string $groupBy): string
+    {
+        $notAssigned = $this->db->escape(_translate('Not assigned to a lab'));
+        $notSpecified = $this->db->escape(_translate('Not specified'));
+        $unknownFacility = $this->db->escape(_translate('Unknown facility'));
+
+        return match ($groupBy) {
+            'lab' => "COALESCE(MAX(l.facility_name), '$notAssigned')",
+            'facility' => "COALESCE(MAX(f.facility_name), '$unknownFacility')",
+            'province' => "COALESCE(MAX(NULLIF(TRIM(f.facility_state), '')), '$notSpecified')",
+            'district' => "COALESCE(MAX(NULLIF(TRIM(f.facility_district), '')), '$notSpecified')",
+            'partner' => "COALESCE(MAX(p.i_partner_name), '$notSpecified')",
+        };
+    }
+
+    /** The WHERE fragment selecting one breakdown row by its key. */
+    private function groupWhere(string $groupBy, int $groupKey): string
+    {
+        $column = $this->groupColumn($groupBy);
+        return $groupKey > 0 ? "$column = $groupKey" : "($column IS NULL OR $column = 0)";
+    }
+
+    private function assertGrouping(string $groupBy): void
+    {
+        if (!in_array($groupBy, self::GROUPINGS, true)) {
+            throw new SystemException('Invalid grouping for quality monitoring');
+        }
+    }
+
+    /**
+     * One page of the waiting samples behind one cascade card, oldest first by
+     * default - the oldest is the one somebody has to chase.
      *
      * @return array{rows: list<array<string, mixed>>, total: int}
      */
     public function getSamples(
         array $f,
-        string $view,
+        string $node,
         int $offset,
         int $limit,
         string $search = '',
         string $sortKey = '',
         string $sortDir = 'desc'
     ): array {
-        $sql = $this->samplesQuery($f, $view, $search, $sortKey, $sortDir);
+        $sql = $this->samplesQuery($f, $node, $search, $sortKey, $sortDir);
         [$rows, $total] = $this->db->getDataAndCount($sql, null, $limit, $offset, false);
 
         $out = [];
@@ -324,18 +527,18 @@ final class QualityMonitoringService
     }
 
     /**
-     * Every waiting sample in a view, one at a time, for an export that must
-     * not hold the whole backlog in memory.
+     * Every waiting sample behind one cascade card, one at a time, for an
+     * export that must not hold the whole backlog in memory.
      *
      * @return \Generator<int, array<string, mixed>>
      */
-    public function streamSamples(array $f, string $view): \Generator
+    public function streamSamples(array $f, string $node): \Generator
     {
-        // Buffered, because the mother lookup is one query for a batch of rows
-        // and not one query per row. The buffer is what bounds that query, so
-        // it stays small even though the export itself does not.
+        // Buffered, because the instrument lookup is one query for a batch of
+        // rows and not one query per row. The buffer is what bounds that query,
+        // so it stays small even though the export itself does not.
         $buffer = [];
-        foreach ($this->db->rawQueryGenerator($this->samplesQuery($f, $view, '', '', 'desc')) as $row) {
+        foreach ($this->db->rawQueryGenerator($this->samplesQuery($f, $node, '', '', 'desc')) as $row) {
             $buffer[] = $this->presentSample($row);
             if (count($buffer) >= self::EXPORT_BATCH) {
                 yield from $this->attachLabInstruments($buffer, $f);
@@ -493,18 +696,16 @@ final class QualityMonitoringService
      * reads. The export keeps them apart -- see exportColumns() -- because a
      * spreadsheet gets sorted and filtered on the parts.
      *
-     * The two views differ in one column, the date that means anything on that
-     * side: a sample no lab has received has no receipt date to show, and its
-     * dispatch date is the one that says whether it has even left the facility.
+     * One grid lists every card, so the stages in it are mixed and no single
+     * milestone date means something on every row: a sample no lab has received
+     * has no receipt date, and an approved one is waiting on its release, not
+     * its receipt. "Waiting since" is the milestone the age is counted from,
+     * named, which is the one date that is true of every row.
      *
      * @return array<string, array{label: string, sort: ?string, numeric?: bool}>
      */
-    public static function sampleColumns(string $view): array
+    public static function sampleColumns(): array
     {
-        $milestone = $view === 'clinic'
-            ? ['dispatched' => ['label' => _translate('Dispatched'), 'sort' => 'placed.sample_dispatched_datetime']]
-            : ['receivedAtLab' => ['label' => _translate('Received at Lab'), 'sort' => 'placed.sample_received_at_lab_datetime']];
-
         return [
             'select' => ['label' => '', 'sort' => null],
             'sampleCode' => ['label' => _translate('Sample ID'), 'sort' => 'placed.sample_code'],
@@ -515,9 +716,9 @@ final class QualityMonitoringService
             'lab' => ['label' => _translate('Testing Lab'), 'sort' => 'l.facility_name'],
             'partner' => ['label' => _translate('Implementing Partner'), 'sort' => 'p.i_partner_name'],
             'collected' => ['label' => _translate('Collected'), 'sort' => 'placed.sample_collection_date'],
-        ] + $milestone + [
+            'waitingSince' => ['label' => _translate('Waiting Since'), 'sort' => null],
             'stage' => ['label' => _translate('Stage'), 'sort' => 'placed.stage'],
-            'age' => ['label' => _translate('Days Waiting'), 'sort' => 'placed.age', 'numeric' => true],
+            'age' => ['label' => _translate('Days Since Collection'), 'sort' => 'placed.total_age', 'numeric' => true],
             'notes' => ['label' => _translate('Notes'), 'sort' => null],
         ];
     }
@@ -546,8 +747,12 @@ final class QualityMonitoringService
             'collected' => _translate('Collected'),
             'dispatched' => _translate('Dispatched'),
             'receivedAtLab' => _translate('Received at Lab'),
+            'tested' => _translate('Tested'),
+            'approved' => _translate('Approved'),
+            'waitingSince' => _translate('Waiting Since'),
             'stageLabel' => _translate('Stage'),
-            'age' => _translate('Days Waiting'),
+            'age' => _translate('Days Since Collection'),
+            'stepAge' => _translate('Days At Current Step'),
             'status' => _translate('Recorded Status'),
             'dataIssue' => _translate('Data Issue'),
         ];
@@ -560,15 +765,36 @@ final class QualityMonitoringService
             'atFacility' => _translate('At facility, not yet at a lab'),
             'atLab' => _translate('At lab, awaiting test'),
             'awaitingApproval' => _translate('Tested, awaiting approval'),
+            'awaitingRelease' => _translate('Result ready, not yet delivered'),
         ];
     }
 
-    /** What each side is being asked to explain, as the heading of its tab. */
-    public static function viewLabels(): array
+    /** The heading of each cascade card, keyed as CASCADE. */
+    public static function cascadeLabels(): array
     {
         return [
-            'clinic' => _translate('Not yet at the lab'),
-            'lab' => _translate('At the lab, no result yet'),
+            'pending' => _translate('Total pending samples'),
+            'atFacility' => _translate('At the collection site'),
+            'atTestingLab' => _translate('At the testing lab'),
+            'atLab' => _translate('Awaiting test'),
+            'awaitingApproval' => _translate('Tested, awaiting approval'),
+            'awaitingRelease' => _translate('Result ready, not yet delivered'),
+        ];
+    }
+
+    /**
+     * One line under each card saying what puts a sample there. Worded as the
+     * Sample Ageing report words the same stages, so the two pages read alike.
+     */
+    public static function cascadeHints(): array
+    {
+        return [
+            'pending' => _translate('Every sample whose result has not yet reached the facility'),
+            'atFacility' => _translate('Registered at the collection point. No lab has recorded receiving it'),
+            'atTestingLab' => _translate('A lab has the sample and no approved result yet'),
+            'atLab' => _translate('Not tested yet. Includes failed, on hold and reordered'),
+            'awaitingApproval' => _translate('Tested. The result is waiting for someone to approve it'),
+            'awaitingRelease' => _translate('Result is ready, but it has not been printed, dispatched, e-mailed, sent to an EMR or pulled over the API, so the facility does not have it'),
         ];
     }
 
@@ -642,6 +868,11 @@ final class QualityMonitoringService
                 'result_not_entered' => _translate('Result is on the instrument but not yet entered'),
                 'awaiting_approval' => _translate('Result entered, awaiting review or approval'),
             ],
+            _translate('Result delivery') => [
+                'result_not_printed' => _translate('Result approved, not yet printed or sent'),
+                'awaiting_return_transport' => _translate('Waiting for transport back to the facility'),
+                'facility_not_collected' => _translate('Facility has not collected or downloaded the result'),
+            ],
             _translate('Something else') => [
                 'data_entry_error' => _translate('Data entry error, the sample is not actually pending'),
                 'other' => _translate('Other (describe below)'),
@@ -649,27 +880,16 @@ final class QualityMonitoringService
         ];
     }
 
-    /** The view a stage belongs to, or null when no side owns it. */
-    private function viewOfStage(string $stage): ?string
-    {
-        foreach (self::VIEWS as $view => $stages) {
-            if (in_array($stage, $stages, true)) {
-                return $view;
-            }
-        }
-        return null;
-    }
-
-    /** A quoted list of stage names, all of them from the fixed VIEWS map. */
+    /** A quoted list of stage names, all of them from the fixed CASCADE map. */
     private function stageList(array $stages): string
     {
         return "'" . implode("', '", array_map(fn(string $s): string => $this->db->escape($s), $stages)) . "'";
     }
 
-    private function assertView(string $view): void
+    private function assertNode(string $node): void
     {
-        if (!isset(self::VIEWS[$view])) {
-            throw new SystemException('Invalid view for quality monitoring');
+        if (!isset(self::CASCADE[$node])) {
+            throw new SystemException('Invalid stage for quality monitoring');
         }
     }
 
@@ -696,31 +916,47 @@ final class QualityMonitoringService
                        t.child_dob,
                        t.child_age,
                        t.mother_id,
-                       t.sample_collection_date,
                        t.sample_dispatched_datetime,
+                       t.sample_received_at_hub_datetime,
                        t.sample_received_at_lab_datetime,
                        t.sample_tested_datetime,
-                       t.result_status";
+                       t.result_dispatched_datetime,
+                       t.result_printed_datetime,
+                       t.result_status,
+                       " . SampleCountUtility::registeredOn('t') . " AS registered_on";
         }
 
         return "SELECT " . SampleFlowService::stageExpression(self::TEST_KEY) . " AS stage,
                        " . SampleFlowService::ageExpression() . " AS age,
+                       GREATEST(DATEDIFF(NOW(), " . SampleCountUtility::registeredOn('t') . "), 0) AS total_age,
                        t.facility_id,
                        t.lab_id,
-                       t.implementing_partner$detail
+                       t.implementing_partner,
+                       t.sample_collection_date$detail
                   FROM $table AS t
                 " . $this->buildWhere($f);
     }
 
-    private function samplesQuery(array $f, string $view, string $search, string $sortKey, string $sortDir): string
+    private function samplesQuery(array $f, string $node, string $search, string $sortKey, string $sortDir): string
     {
-        $this->assertView($view);
+        $this->assertNode($node);
 
-        $where = ["placed.stage IN (" . $this->stageList(self::VIEWS[$view]) . ")"];
+        $where = ["placed.stage IN (" . $this->stageList(self::CASCADE[$node]) . ")"];
+
+        if ($f['overdueOnly']) {
+            $where[] = "placed.total_age >= " . (int) $f['overdueDays'];
+        }
+
+        // One row of the breakdown table, when the reader drilled in from it.
+        if ($f['groupBy'] !== '') {
+            $where[] = $this->groupWhere($f['groupBy'], $f['groupKey']);
+        }
 
         if ($f['bucket'] !== '') {
             [$from, $to] = SampleFlowService::AGE_BUCKETS[$f['bucket']];
-            $where[] = $to === null ? "placed.age >= $from" : "placed.age BETWEEN $from AND $to";
+            $where[] = $to === null
+                ? "placed.total_age >= $from"
+                : "placed.total_age BETWEEN $from AND $to";
         }
 
         $search = trim($search);
@@ -731,8 +967,8 @@ final class QualityMonitoringService
                          OR f.facility_name LIKE $like OR l.facility_name LIKE $like)";
         }
 
-        $columns = self::sampleColumns($view);
-        $order = 'placed.age DESC, placed.sample_code ASC';
+        $columns = self::sampleColumns();
+        $order = 'placed.total_age DESC, placed.sample_code ASC';
         if (isset($columns[$sortKey]) && $columns[$sortKey]['sort'] !== null) {
             $order = $columns[$sortKey]['sort'] . ' ' . (strtolower($sortDir) === 'asc' ? 'ASC' : 'DESC');
         }
@@ -745,9 +981,7 @@ final class QualityMonitoringService
                        p.i_partner_name,
                        ts.status_name
                   FROM (" . $this->placedSamples($f, true) . ") AS placed
-                  LEFT JOIN facility_details AS f ON f.facility_id = placed.facility_id
-                  LEFT JOIN facility_details AS l ON l.facility_id = placed.lab_id
-                  LEFT JOIN r_implementation_partners AS p ON p.i_partner_id = placed.implementing_partner
+                  " . $this->dimensionJoins() . "
                   LEFT JOIN r_sample_status AS ts ON ts.status_id = placed.result_status
                  WHERE " . implode(' AND ', $where) . "
                  ORDER BY $order";
@@ -828,12 +1062,59 @@ final class QualityMonitoringService
             'collected' => $date($row['sample_collection_date'] ?? null),
             'dispatched' => $date($row['sample_dispatched_datetime'] ?? null),
             'receivedAtLab' => $date($row['sample_received_at_lab_datetime'] ?? null),
+            'tested' => $date($row['sample_tested_datetime'] ?? null),
+            'approved' => $date($row['result_approved_datetime'] ?? null),
+            'waitingSince' => $this->waitingSince($row, $date),
             'stage' => $stage,
             'stageLabel' => self::stageLabels()[$stage] ?? $stage,
             'status' => $status,
             'dataIssue' => $conflict,
-            'age' => (int) $row['age'],
+            // What the child has waited, and how long the side holding it now
+            // has had it.
+            'age' => (int) $row['total_age'],
+            'stepAge' => (int) $row['age'],
         ];
+    }
+
+    /**
+     * The milestone a sample's age is counted from, named and dated: the most
+     * recent of the same milestones SampleFlowService::ageExpression() takes
+     * the greatest of, so "Waiting Since" and "Days Waiting" always describe
+     * the same day. Listed oldest first, so on a tie the later step in the
+     * workflow is the one named.
+     *
+     * @param callable(mixed): string $date formats a date, '' for none
+     */
+    private function waitingSince(array $row, callable $date): string
+    {
+        $milestones = [
+            'registered_on' => _translate('Registered'),
+            'sample_dispatched_datetime' => _translate('Dispatched'),
+            'sample_received_at_hub_datetime' => _translate('Received at hub'),
+            'sample_received_at_lab_datetime' => _translate('Received at lab'),
+            'sample_tested_datetime' => _translate('Tested'),
+            'result_approved_datetime' => _translate('Approved'),
+            'result_dispatched_datetime' => _translate('Result dispatched'),
+            'result_printed_datetime' => _translate('Result printed'),
+        ];
+
+        $latest = null;
+        $label = '';
+        foreach ($milestones as $column => $name) {
+            $value = (string) ($row[$column] ?? '');
+            if ($value === '' || str_starts_with($value, '0000-00-00')) {
+                continue;
+            }
+            // Compared by day, as the age is: two steps on the same day are
+            // the same age, and the later step is the truer description.
+            $day = substr($value, 0, 10);
+            if ($latest === null || $day >= $latest) {
+                $latest = $day;
+                $label = $name;
+            }
+        }
+
+        return $latest === null ? '' : $label . ' · ' . $date($latest);
     }
 
     /**

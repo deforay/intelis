@@ -33,9 +33,10 @@ try {
     $filters = $qaService->resolveFilters($_POST);
 
     $section = (string) ($_POST['section'] ?? '');
-    $view = (string) ($_POST['view'] ?? '');
-    if (!in_array($section, ['summary', 'activity'], true) && !isset(QualityMonitoringService::VIEWS[$view])) {
-        throw new SystemException('Invalid view for quality monitoring');
+    // The cascade card whose samples are listed or exported.
+    $node = (string) ($_POST['node'] ?? '');
+    if (in_array($section, ['samples', 'export'], true) && !isset(QualityMonitoringService::CASCADE[$node])) {
+        throw new SystemException('Invalid stage for quality monitoring');
     }
 
     if ($section === 'activity') {
@@ -55,6 +56,11 @@ try {
         ]);
     } elseif ($section === 'summary') {
         echo JsonUtility::encodeUtf8Json(['summary' => $qaService->getSummary($filters)]);
+    } elseif ($section === 'breakdown') {
+        // The grouping is checked against the fixed list inside the service.
+        echo JsonUtility::encodeUtf8Json([
+            'breakdown' => $qaService->getBreakdown($filters, (string) ($_POST['breakdownBy'] ?? '')),
+        ]);
     } elseif ($section === 'samples') {
         // DataTables envelope for the grid. No exit() anywhere in this file:
         // the endpoint is also driven in-process by the tests.
@@ -65,14 +71,14 @@ try {
         }
 
         // The sort column arrives as a grid index; it is resolved against the
-        // view's own column list, so an unknown index simply falls back to
-        // oldest first.
-        $columnKeys = array_keys(QualityMonitoringService::sampleColumns($view));
+        // grid's column list, so an unknown index simply falls back to oldest
+        // first.
+        $columnKeys = array_keys(QualityMonitoringService::sampleColumns());
         $sortKey = $columnKeys[(int) ($_POST['iSortCol_0'] ?? -1)] ?? '';
 
         $result = $qaService->getSamples(
             $filters,
-            $view,
+            $node,
             $offset,
             $limit,
             trim((string) ($_POST['sSearch'] ?? '')),
@@ -87,20 +93,20 @@ try {
             'aaData' => $result['rows'],
         ]);
     } elseif ($section === 'export') {
-        // Every waiting sample in the view, streamed straight into the
-        // workbook so a large backlog never sits in memory. The view was
+        // Every waiting sample behind the card, streamed straight into the
+        // workbook so a large backlog never sits in memory. The node was
         // checked above, so nothing request-supplied reaches the filename raw.
         // The workbook takes the flat column list: what the grid clubs into a
         // child and a mother column is one value per column here, because a
         // spreadsheet gets sorted and filtered on the parts.
         $columns = QualityMonitoringService::exportColumns();
 
-        $filePath = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-EID-Quality-Monitoring-' . $view
+        $filePath = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-EID-Quality-Monitoring-' . $node
             . '-' . date('d-M-Y-H-i-s') . '.xlsx';
         $writer = new XlsxWriter();
         $writer->openToFile($filePath);
         $writer->addRow(Row::fromValues(array_values($columns)));
-        foreach ($qaService->streamSamples($filters, $view) as $row) {
+        foreach ($qaService->streamSamples($filters, $node) as $row) {
             $cells = [];
             foreach (array_keys($columns) as $key) {
                 $cells[] = $row[$key];
@@ -108,7 +114,7 @@ try {
             $writer->addRow(Row::fromValues($cells));
         }
         $writer->close();
-        $qaService->logActivity('exported-' . $view, $filters);
+        $qaService->logActivity('exported', $filters + ['node' => $node]);
         echo _downloadToken($filePath);
     } else {
         throw new SystemException('Invalid section for quality monitoring');

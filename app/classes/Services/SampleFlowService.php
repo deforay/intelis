@@ -147,12 +147,17 @@ final class SampleFlowService
         $result = 't.' . TestsService::getResultColumn($testType);
         $hasResult = "($result IS NOT NULL AND TRIM($result) <> '')";
         $set = static fn(string $column): string => self::milestone($column) . ' IS NOT NULL';
-        // The sent-to-source flag is set by paths that never wrote its datetime
-        // (about 2,000 rows on one instance), so the flag counts on its own.
-        $released = '(' . implode(' OR ', array_merge(
-            array_map($set, self::releaseChannels($testType)),
-            ["t.result_sent_to_source = 'sent'"]
-        )) . ')';
+        // A result is released when it has actually left for the facility:
+        // printed, dispatched, e-mailed, sent to an EMR, or pulled over the API.
+        //
+        // The bare result_sent_to_source flag is NOT one of those, even though
+        // its name suggests it. tasks/remote/results-sender.php sets it on every
+        // result a lab syncs up to the central server, which tells the facility
+        // nothing; only the EMR and API paths (interop senders, api/v1.1
+        // fetch-results) write result_sent_to_source_datetime alongside it, and
+        // that datetime is already in the channel list. On one instance 2,090 of
+        // the 4,598 EID results carrying the flag have no delivery of any kind.
+        $released = '(' . implode(' OR ', array_map($set, self::releaseChannels($testType))) . ')';
         $onBench = "t.result_status IN (" . TEST_FAILED . ", " . ON_HOLD . ", " . REORDERED_FOR_TESTING . ")";
         $approved = "(" . $set('result_approved_datetime') . " OR t.result_status = " . ACCEPTED . ")";
 

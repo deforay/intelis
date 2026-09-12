@@ -27,19 +27,18 @@ $partners = $general->getImplementationPartners();
 $qaService = ContainerRegistry::get(QualityMonitoringService::class);
 $instrumentsInUse = array_keys($qaService->instrumentsInUse());
 
-$viewLabels = QualityMonitoringService::viewLabels();
-$stageLabels = QualityMonitoringService::stageLabels();
-// The two views differ by one column, so each carries its own list.
-$columns = [];
-foreach (array_keys($viewLabels) as $viewKey) {
-    $columns[$viewKey] = QualityMonitoringService::sampleColumns($viewKey);
-}
+$columns = QualityMonitoringService::sampleColumns();
+$cascadeLabels = QualityMonitoringService::cascadeLabels();
+$cascadeHints = QualityMonitoringService::cascadeHints();
+$groupingLabels = QualityMonitoringService::groupingLabels();
+// The breakdown table has a column per pending stage, in cascade order.
+$breakdownStages = QualityMonitoringService::CASCADE['pending'];
 
 // Which side of the workflow this user answers for. A testing-lab account is
 // working the lab queue; everyone else is looking at it from the clinic and
-// implementing-partner side. It decides which tab they may add notes on -- the
-// other tab stays fully readable, because each side needs to see what the
-// other has already said before adding anything.
+// implementing-partner side. It decides which samples they may add notes to --
+// every other sample stays fully readable, because each side needs to see what
+// the other has already said before adding anything.
 $userSide = (($_SESSION['accessType'] ?? '') === 'testing-lab') ? 'lab' : 'clinic';
 
 $sideLabels = [
@@ -52,11 +51,71 @@ $noteReasons = [
     'lab' => QualityMonitoringService::noteReasons('lab'),
 ];
 
-// What each side is being asked for, shown above its grid and in the note form.
+// What the side holding a sample is being asked, by the stage the sample is in.
+$labPrompt = _translate('Why is there no result for this sample yet?');
 $notePrompts = [
-    'clinic' => _translate('Why has this sample not reached the testing lab yet?'),
-    'lab' => _translate('Why is there no result for this sample yet?'),
+    'atFacility' => _translate('Why has this sample not reached the testing lab yet?'),
+    'atLab' => $labPrompt,
+    'awaitingApproval' => $labPrompt,
+    'awaitingRelease' => _translate('Why has this result not reached the facility yet?'),
 ];
+
+// The question and the explanation shown above the grid for each card.
+$labDetail = _translate('A lab is holding these samples and no approved result has come out of them yet. Only the lab side can say what is holding them.');
+$nodePrompts = [
+    'pending' => [
+        'question' => '',
+        'detail' => _translate('Every pending sample, whichever side is holding it. Each side can add notes only to the samples it is holding.'),
+    ],
+    'atFacility' => [
+        'question' => $notePrompts['atFacility'],
+        'detail' => _translate('These samples were registered at a collection point and no lab has recorded receiving them. Only the clinic side can say what is holding them.'),
+    ],
+    'atTestingLab' => ['question' => $labPrompt, 'detail' => $labDetail],
+    'atLab' => ['question' => $labPrompt, 'detail' => $labDetail],
+    'awaitingApproval' => ['question' => $labPrompt, 'detail' => $labDetail],
+    'awaitingRelease' => [
+        'question' => $notePrompts['awaitingRelease'],
+        'detail' => _translate('The lab has an approved result for these samples, and it has not been printed, sent or downloaded. Only the lab side can say what is holding them.'),
+    ],
+];
+
+// One card of the cascade. The layout is fixed below; what each card counts
+// comes from QualityMonitoringService::CASCADE. The card itself lists all its
+// samples, each part inside it lists that part, and the overdue line at the
+// bottom lists only the overdue ones. The overdue label quotes the chosen
+// limit, which can change without a reload, so the page fills it in.
+$card = static function (string $node, string $class = '', array $parts = []) use ($cascadeLabels, $cascadeHints): string {
+    $esc = static fn(string $value): string => htmlspecialchars($value, ENT_QUOTES);
+    $key = $esc($node);
+    $html = '<div class="qa-card ' . $esc($class) . '" data-node="' . $key . '">'
+        . '<button type="button" class="qa-card-main" data-node="' . $key . '" aria-pressed="false">'
+        . '<span class="qa-card-value" id="qa-node-' . $key . '">&ndash;</span>'
+        . '<span class="qa-card-label">' . $esc($cascadeLabels[$node]) . '</span>'
+        . '<span class="qa-card-hint">' . $esc($cascadeHints[$node]) . '</span>'
+        . '</button>';
+
+    if ($parts !== []) {
+        $html .= '<div class="qa-card-parts">';
+        foreach ($parts as $part) {
+            $partKey = $esc($part);
+            $html .= '<button type="button" class="qa-part" data-node="' . $partKey . '" aria-pressed="false"'
+                . ' title="' . $esc($cascadeHints[$part]) . '">'
+                . '<span class="qa-part-value" id="qa-node-' . $partKey . '">&ndash;</span>'
+                . '<span class="qa-part-label">' . $esc($cascadeLabels[$part]) . '</span>'
+                . '<span class="qa-part-overdue"><b id="qa-node-overdue-' . $partKey . '">&ndash;</b> '
+                . $esc(_translate('overdue')) . '</span>'
+                . '</button>';
+        }
+        $html .= '</div>';
+    }
+
+    return $html
+        . '<button type="button" class="qa-card-overdue" data-node="' . $key . '">'
+        . '<span class="qa-overdue-label"></span>: <b id="qa-node-overdue-' . $key . '">&ndash;</b>'
+        . '</button>'
+        . '</div>';
+};
 
 $currentUser = trim((string) ($_SESSION['userName'] ?? ''));
 $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? ''));
@@ -134,41 +193,344 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         font-size: 12px;
     }
 
-    /* The four numbers that say how bad the backlog is on this side. */
-    #qaModule .qa-stats {
+    /* ------------------------------------------------------------ cascade */
+
+    /* The total on the left, and beside it the three places a pending sample
+       can be held. The three add up to the total. */
+    #qaModule .qa-flow {
+        display: grid;
+        grid-template-columns: minmax(190px, 1fr) minmax(0, 3.2fr);
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    #qaModule .qa-flow-branches {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    #qaModule .qa-card {
         display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin: 0 0 14px;
-    }
-
-    #qaModule .qa-stat {
-        flex: 1 1 150px;
+        flex-direction: column;
+        min-width: 0;
+        background: #fff;
         border: 1px solid #e4e7ea;
+        border-top: 3px solid #b8c2ca;
         border-radius: 3px;
-        padding: 10px 14px;
-        background: #fbfcfd;
+        transition: box-shadow 0.15s, background-color 0.15s;
     }
 
-    #qaModule .qa-stat .qa-stat-value {
-        font-size: 24px;
+    /* The stripe says which side holds the samples, in the colours of the bar. */
+    #qaModule .qa-card.qa-accent-clinic {
+        border-top-color: #00a65a;
+    }
+
+    #qaModule .qa-card.qa-accent-lab {
+        border-top-color: #3c8dbc;
+    }
+
+    #qaModule .qa-card.qa-accent-release {
+        border-top-color: #e08e0b;
+    }
+
+    #qaModule .qa-card-total {
+        background: #f4f7f9;
+        border-top-color: #4a5157;
+    }
+
+    #qaModule .qa-card:hover {
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    /* A card is buttons: the card itself lists its samples, a part lists that
+       part, and the overdue line lists only the overdue ones. */
+    #qaModule .qa-card-main,
+    #qaModule .qa-card-overdue,
+    #qaModule .qa-part {
+        display: block;
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: 0;
+        cursor: pointer;
+    }
+
+    #qaModule .qa-card-main {
+        padding: 12px 14px 8px;
+    }
+
+    #qaModule .qa-card-value {
+        display: block;
+        font-size: 26px;
         font-weight: 600;
         line-height: 1.1;
-        color: #3c8dbc;
+        color: #263238;
+        font-variant-numeric: tabular-nums;
     }
 
-    #qaModule .qa-stat.is-late .qa-stat-value {
-        color: #e08e0b;
+    #qaModule .qa-card-total .qa-card-value {
+        font-size: 34px;
     }
 
-    #qaModule .qa-stat.is-very-late .qa-stat-value {
+    #qaModule .qa-card-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #333;
+        margin-top: 4px;
+    }
+
+    #qaModule .qa-card-hint {
+        display: block;
+        font-size: 11px;
+        line-height: 1.4;
+        color: #7a848c;
+        margin-top: 3px;
+    }
+
+    /* The two parts of the testing lab, as compact rows inside its card. */
+    #qaModule .qa-card-parts {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 0 10px 8px;
+    }
+
+    #qaModule .qa-part {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        padding: 5px 8px;
+        background: #f5f7f9;
+        border: 1px solid transparent;
+        border-radius: 3px;
+        font-size: 12px;
+        color: #444;
+    }
+
+    #qaModule .qa-part:hover {
+        border-color: #3c8dbc;
+    }
+
+    #qaModule .qa-part-value {
+        min-width: 2.6em;
+        font-weight: 600;
+        color: #263238;
+        font-variant-numeric: tabular-nums;
+    }
+
+    #qaModule .qa-part-label {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    #qaModule .qa-part-overdue {
+        font-size: 11px;
+        color: #7a848c;
+        white-space: nowrap;
+    }
+
+    #qaModule .qa-part-overdue b,
+    #qaModule .qa-card-overdue b {
         color: #c9302c;
     }
 
-    #qaModule .qa-stat .qa-stat-label {
+    /* Pinned to the bottom of the card, so the overdue lines line up across. */
+    #qaModule .qa-card-overdue {
+        margin-top: auto;
+        padding: 8px 14px 10px;
+        border-top: 1px solid #eef1f3;
         font-size: 12px;
         color: #7a848c;
-        margin-top: 2px;
+    }
+
+    #qaModule .qa-card-overdue:hover .qa-overdue-label {
+        text-decoration: underline;
+    }
+
+    #qaModule .qa-card-main:focus-visible,
+    #qaModule .qa-card-overdue:focus-visible,
+    #qaModule .qa-part:focus-visible {
+        outline: 2px solid #3c8dbc;
+        outline-offset: -2px;
+    }
+
+    #qaModule .qa-card.is-active {
+        background: #f2f8fc;
+        box-shadow: 0 0 0 2px #3c8dbc;
+    }
+
+    #qaModule .qa-part.is-active {
+        background: #e3f0f8;
+        border-color: #3c8dbc;
+    }
+
+    /* Anything holding nothing is dimmed and does not respond to a click. */
+    #qaModule .qa-card.is-empty,
+    #qaModule .qa-part.is-empty {
+        opacity: 0.55;
+    }
+
+    #qaModule .qa-card.is-empty button,
+    #qaModule .qa-part.is-empty {
+        cursor: default;
+    }
+
+    #qaModule .qa-part.is-empty:hover {
+        border-color: transparent;
+    }
+
+    /* How the total splits, one segment per stage. */
+    #qaModule .qa-flow-bar {
+        display: flex;
+        height: 10px;
+        margin-top: 14px;
+        border-radius: 5px;
+        overflow: hidden;
+        background: #eceff1;
+    }
+
+    #qaModule .qa-bar-seg {
+        flex: 0 1 0;
+        height: 100%;
+        transition: flex-grow 0.3s;
+    }
+
+    #qaModule .qa-seg-atFacility {
+        background: #00a65a;
+    }
+
+    #qaModule .qa-seg-atLab {
+        background: #3c8dbc;
+    }
+
+    #qaModule .qa-seg-awaitingApproval {
+        background: #8fbfdc;
+    }
+
+    #qaModule .qa-seg-awaitingRelease {
+        background: #e08e0b;
+    }
+
+    #qaModule .qa-flow-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 18px;
+        margin-top: 8px;
+        font-size: 12px;
+        color: #666;
+    }
+
+    #qaModule .qa-legend-item i {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+        margin-right: 4px;
+        vertical-align: -1px;
+    }
+
+    #qaModule .qa-legend-item b {
+        margin-left: 2px;
+        color: #333;
+    }
+
+    @media (max-width: 991px) {
+        #qaModule .qa-flow {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    @media (max-width: 767px) {
+        #qaModule .qa-flow-branches {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    /* ------------------------------------------------------ overdue limit */
+
+    #qaModule .qa-overdue-control {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 8px;
+        font-size: 13px;
+    }
+
+    #qaModule .qa-overdue-control label {
+        margin: 0;
+    }
+
+    #qaModule .qa-overdue-control input {
+        display: inline-block;
+        width: 72px;
+    }
+
+    #qaModule .qa-overdue-control .fa-circle-info {
+        cursor: help;
+    }
+
+    /* ---------------------------------------------------------- breakdown */
+
+    #qaModule .qa-breakdown-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px 16px;
+        margin-bottom: 8px;
+    }
+
+    #qaModule .qa-head-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 12px;
+    }
+
+    #qaModule .qa-breakdown-head .box-title {
+        margin: 0;
+    }
+
+    #qaModule table.qa-breakdown {
+        font-size: 13px;
+    }
+
+    #qaModule table.qa-breakdown th {
+        vertical-align: bottom;
+    }
+
+    #qaModule table.qa-breakdown a.qa-drill {
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    #qaModule .qa-zero {
+        color: #b3bac0;
+    }
+
+    #qaModule table.qa-breakdown a.qa-overdue-count {
+        color: #c9302c;
+    }
+
+    /* ---------------------------------------------------------------- grid */
+
+    #qaModule .qa-drill-chip {
+        display: inline-block;
+        background: #eef6fb;
+        border: 1px solid #bcd9ea;
+        color: #2b6a8f;
+        border-radius: 14px;
+        padding: 3px 12px;
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    #qaModule .qa-drill-chip a {
+        margin-left: 8px;
+        cursor: pointer;
     }
 
     #qaModule .qa-toolbar {
@@ -210,12 +572,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         color: #4a5157;
     }
 
-    #qaModule .qa-days.is-late {
-        background: #fcefd4;
-        color: #8a6100;
-    }
-
-    #qaModule .qa-days.is-very-late {
+    #qaModule .qa-days.is-overdue {
         background: #f8d7d5;
         color: #a02622;
     }
@@ -375,7 +732,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
                         </div>
 
                         <p class="text-muted" id="qa-description">
-                            <?= _htmlTranslate('Every EID sample that is still waiting, split by the side of the workflow holding it, so the people responsible for each side can record why.'); ?>
+                            <?= _htmlTranslate('Every EID sample whose result has not yet reached the facility, shown by where it is held. Select a card, or a number in the breakdown, to list those samples.'); ?>
                         </p>
 
                         <div class="row qa-filters" aria-describedby="qa-description">
@@ -487,7 +844,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
                                 <?php } ?>
                             </div>
                             <span class="text-muted">
-                                <?= _htmlTranslate('In the finished module this comes from your role. It is a switch here so both sides of the workflow can be seen in one sitting.'); ?>
+                                <?= _htmlTranslate('In the finished module this comes from the signed-in role. It is a switch here so both sides of the workflow can be seen in one sitting.'); ?>
                             </span>
                         </div>
 
@@ -496,104 +853,159 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             </div>
         </div>
 
+        <?php // Where every pending sample is held. The three cards beside the total add up to it, and the bar shows the split. ?>
         <div class="row">
             <div class="col-xs-12">
-                <div class="nav-tabs-custom">
-                    <?php // The page opens on the side this user works, not on whichever tab is first. ?>
-                    <ul class="nav nav-tabs" id="qaTabs">
-                        <?php foreach ($viewLabels as $viewKey => $viewLabel) { ?>
-                            <li class="<?= $viewKey === $userSide ? 'active' : ''; ?>">
-                                <a href="#qa-tab-<?= $viewKey; ?>" data-toggle="tab" data-view="<?= $viewKey; ?>">
-                                    <?= htmlspecialchars($viewLabel, ENT_QUOTES); ?>
-                                    <span class="badge" id="qa-tab-count-<?= $viewKey; ?>">&ndash;</span>
-                                </a>
-                            </li>
-                        <?php } ?>
-                    </ul>
-                    <div class="tab-content">
-                        <?php foreach ($viewLabels as $viewKey => $viewLabel) { ?>
-                            <div class="tab-pane <?= $viewKey === $userSide ? 'active' : ''; ?>" id="qa-tab-<?= $viewKey; ?>">
+                <div class="box">
+                    <div class="box-body" id="qaCascade">
+                        <div class="qa-flow">
+                            <?= $card('pending', 'qa-card-total'); ?>
+                            <div class="qa-flow-branches">
+                                <?= $card('atFacility', 'qa-accent-clinic'); ?>
+                                <?= $card('atTestingLab', 'qa-accent-lab', ['atLab', 'awaitingApproval']); ?>
+                                <?= $card('awaitingRelease', 'qa-accent-release'); ?>
+                            </div>
+                        </div>
+                        <div class="qa-flow-bar" id="qaFlowBar" role="img">
+                            <?php foreach ($breakdownStages as $stage) { ?>
+                                <span class="qa-bar-seg qa-seg-<?= $stage; ?>" data-seg="<?= $stage; ?>"></span>
+                            <?php } ?>
+                        </div>
+                        <div class="qa-flow-legend" aria-hidden="true">
+                            <?php foreach ($breakdownStages as $stage) { ?>
+                                <span class="qa-legend-item">
+                                    <i class="qa-seg-<?= $stage; ?>"></i><?= htmlspecialchars($cascadeLabels[$stage], ENT_QUOTES); ?>
+                                    <b id="qa-share-<?= $stage; ?>">&ndash;</b>
+                                </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                                <p class="qa-prompt">
-                                    <strong><?= htmlspecialchars($notePrompts[$viewKey], ENT_QUOTES); ?></strong>
-                                    <?php if ($viewKey === 'clinic') { ?>
-                                        <?= _htmlTranslate('These samples were registered at a collection point and no lab has recorded receiving them. Only the clinic side can say what is holding them.'); ?>
-                                    <?php } else { ?>
-                                        <?= _htmlTranslate('A lab is holding these samples and no approved result has come out of them yet. Only the lab side can say what is holding them.'); ?>
+        <?php // The same pending samples, one row per lab, facility, province, district or partner. ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="qa-breakdown-head">
+                            <div class="qa-head-group">
+                                <h3 class="box-title"><?= _htmlTranslate('Pending samples by'); ?></h3>
+                                <div class="btn-group btn-group-sm" id="qaGroupBy" role="group">
+                                    <?php foreach ($groupingLabels as $groupKey => $groupLabel) { ?>
+                                        <button type="button" class="btn btn-default <?= $groupKey === 'lab' ? 'active' : ''; ?>"
+                                            data-group-by="<?= $groupKey; ?>">
+                                            <?= htmlspecialchars($groupLabel, ENT_QUOTES); ?>
+                                        </button>
                                     <?php } ?>
-                                </p>
-
-                                <div class="qa-stats">
-                                    <div class="qa-stat">
-                                        <div class="qa-stat-value" id="qa-total-<?= $viewKey; ?>">&ndash;</div>
-                                        <div class="qa-stat-label"><?= _htmlTranslate('Samples waiting'); ?></div>
-                                    </div>
-                                    <div class="qa-stat is-late">
-                                        <div class="qa-stat-value" id="qa-late-<?= $viewKey; ?>">&ndash;</div>
-                                        <div class="qa-stat-label">
-                                            <?= htmlspecialchars(sprintf(_translate('Waiting %d days or more'), QualityMonitoringService::LATE_DAYS), ENT_QUOTES); ?>
-                                        </div>
-                                    </div>
-                                    <div class="qa-stat is-very-late">
-                                        <div class="qa-stat-value" id="qa-verylate-<?= $viewKey; ?>">&ndash;</div>
-                                        <div class="qa-stat-label">
-                                            <?= htmlspecialchars(sprintf(_translate('Waiting %d days or more'), QualityMonitoringService::VERY_LATE_DAYS), ENT_QUOTES); ?>
-                                        </div>
-                                    </div>
-                                    <?php foreach (QualityMonitoringService::VIEWS[$viewKey] as $stageKey) { ?>
-                                        <div class="qa-stat">
-                                            <div class="qa-stat-value" id="qa-stage-<?= $stageKey; ?>">&ndash;</div>
-                                            <div class="qa-stat-label">
-                                                <?= htmlspecialchars($stageLabels[$stageKey], ENT_QUOTES); ?>
-                                            </div>
-                                        </div>
-                                    <?php } ?>
-                                </div>
-
-                                <div class="qa-toolbar">
-                                    <button type="button" class="btn btn-primary btn-sm qa-add-note" disabled="disabled"
-                                        data-view="<?= $viewKey; ?>" onclick="qaOpenAddNote('<?= $viewKey; ?>');">
-                                        <em class="fa-solid fa-note-sticky"></em>
-                                        <?= _htmlTranslate('Add note to selected'); ?>
-                                    </button>
-                                    <span class="qa-selection-count" id="qa-selection-<?= $viewKey; ?>"></span>
-                                    <span style="flex:1 1 auto;"></span>
-                                    <button type="button" class="btn btn-success btn-sm"
-                                        onclick="qaExport('<?= $viewKey; ?>');">
-                                        <em class="fa-solid fa-cloud-arrow-down"></em>
-                                        <?= _htmlTranslate('Export to Excel'); ?>
-                                    </button>
-                                </div>
-
-                                <div class="qa-readonly-hint qa-locked-hint" id="qa-locked-<?= $viewKey; ?>"
-                                    style="display:none;">
-                                    <em class="fa-solid fa-lock"></em>
-                                    <?= _htmlTranslate('These notes belong to the other side of the workflow. You can read them, but only that side can add to them.'); ?>
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped qa-grid"
-                                        id="qaTable-<?= $viewKey; ?>">
-                                        <thead>
-                                            <tr>
-                                                <?php foreach ($columns[$viewKey] as $key => $column) { ?>
-                                                    <th>
-                                                        <?php if ($key === 'select') { ?>
-                                                            <input type="checkbox" class="qa-check-all"
-                                                                data-view="<?= $viewKey; ?>"
-                                                                title="<?= _translate('Select every sample on this page'); ?>" />
-                                                        <?php } else { ?>
-                                                            <?= htmlspecialchars((string) $column['label'], ENT_QUOTES); ?>
-                                                        <?php } ?>
-                                                    </th>
-                                                <?php } ?>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
                                 </div>
                             </div>
-                        <?php } ?>
+                            <?php // Not a filter: it decides what is counted as overdue on the cards, in this table and in the list. ?>
+                            <div class="qa-overdue-control">
+                                <label for="qaOverdueDays"><?= _htmlTranslate('Overdue after'); ?></label>
+                                <div class="btn-group btn-group-sm" role="group" id="qaOverduePresets">
+                                    <?php foreach (QualityMonitoringService::OVERDUE_PRESETS as $presetDays) { ?>
+                                        <button type="button" class="btn btn-default" data-days="<?= (int) $presetDays; ?>">
+                                            <?= (int) $presetDays; ?>
+                                        </button>
+                                    <?php } ?>
+                                </div>
+                                <input type="number" id="qaOverdueDays" class="form-control input-sm" min="1"
+                                    max="<?= QualityMonitoringService::MAX_OVERDUE_DAYS; ?>" step="1"
+                                    value="<?= QualityMonitoringService::DEFAULT_OVERDUE_DAYS; ?>" />
+                                <span><?= _htmlTranslate('days'); ?></span>
+                                <em class="fa-solid fa-circle-info text-muted"
+                                    title="<?= htmlspecialchars(_translate('Turnaround targets differ by country and by test. Pick the limit that applies, or type any number of days. It sets the overdue counts on the cards above, in this table and in the sample list.'), ENT_QUOTES); ?>"></em>
+                            </div>
+                        </div>
+                        <p class="qa-prompt">
+                            <?= _htmlTranslate('Select a number to list those samples below. The filters above apply to this table too.'); ?>
+                        </p>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped qa-breakdown" id="qaBreakdown">
+                                <thead>
+                                    <tr>
+                                        <th id="qaBreakdownGroupHeading"><?= htmlspecialchars($groupingLabels['lab'], ENT_QUOTES); ?></th>
+                                        <?php foreach ($breakdownStages as $stage) { ?>
+                                            <th class="text-right"><?= htmlspecialchars($cascadeLabels[$stage], ENT_QUOTES); ?></th>
+                                        <?php } ?>
+                                        <th class="text-right"><?= htmlspecialchars($cascadeLabels['pending'], ENT_QUOTES); ?></th>
+                                        <th class="text-right" id="qaOverdueHeading"></th>
+                                        <th><?= _htmlTranslate('Oldest Collected'); ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box" id="qaGridBox">
+                    <div class="box-header with-border">
+                        <h3 class="box-title" id="qaGridTitle"><?= htmlspecialchars($cascadeLabels['pending'], ENT_QUOTES); ?></h3>
+                    </div>
+                    <div class="box-body">
+
+                        <p class="qa-prompt">
+                            <strong id="qaNodeQuestion"></strong>
+                            <span id="qaNodeDetail"></span>
+                        </p>
+
+                        <div class="qa-drill-chip" id="qaDrillChip" style="display:none;">
+                            <em class="fa-solid fa-filter"></em>
+                            <span id="qaDrillText"></span>
+                            <a onclick="qaClearGroup(true);">
+                                <em class="fa-solid fa-xmark"></em> <?= _htmlTranslate('Show all'); ?>
+                            </a>
+                        </div>
+
+                        <div class="qa-toolbar">
+                            <button type="button" class="btn btn-primary btn-sm" id="qaAddNote" disabled="disabled"
+                                onclick="qaOpenAddNote();">
+                                <em class="fa-solid fa-note-sticky"></em>
+                                <?= _htmlTranslate('Add note to selected'); ?>
+                            </button>
+                            <span class="qa-selection-count" id="qa-selection"></span>
+                            <span style="flex:1 1 auto;"></span>
+                            <label class="checkbox-inline" style="margin:0 8px 0 0;">
+                                <input type="checkbox" id="qaOverdueOnly" />
+                                <span class="qa-only-overdue-label"></span>
+                            </label>
+                            <button type="button" class="btn btn-success btn-sm" onclick="qaExport();">
+                                <em class="fa-solid fa-cloud-arrow-down"></em>
+                                <?= _htmlTranslate('Export to Excel'); ?>
+                            </button>
+                        </div>
+
+                        <div class="qa-readonly-hint" id="qa-locked" style="display:none;">
+                            <em class="fa-solid fa-lock"></em>
+                            <?= _htmlTranslate('These samples are held by the other side of the workflow. Their notes can be read here, but only that side can add to them.'); ?>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped qa-grid" id="qaTable">
+                                <thead>
+                                    <tr>
+                                        <?php foreach ($columns as $key => $column) { ?>
+                                            <th>
+                                                <?php if ($key === 'select') { ?>
+                                                    <input type="checkbox" class="qa-check-all"
+                                                        title="<?= _translate('Select every sample on this page'); ?>" />
+                                                <?php } else { ?>
+                                                    <?= htmlspecialchars((string) $column['label'], ENT_QUOTES); ?>
+                                                <?php } ?>
+                                            </th>
+                                        <?php } ?>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -648,7 +1060,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
 
                 <p class="qa-readonly-hint">
                     <em class="fa-solid fa-circle-info"></em>
-                    <?= _htmlTranslate('Saved against your name and the time you save it. A note cannot be edited or removed afterwards; add a follow-up note instead.'); ?>
+                    <?= _htmlTranslate('Saved against the author name and the time it is saved. A note cannot be edited or removed afterwards; add a follow-up note instead.'); ?>
                     <span id="qaNoteAttribution" class="text-muted"></span>
                 </p>
             </div>
@@ -689,34 +1101,47 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
     </div>
 </div>
 
+<?php $jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT; ?>
 <script src="/assets/js/tom-select.complete.min.js"></script>
 <script type="text/javascript">
     var QA_URL = '/eid/qa/get-qa-monitoring-data.php';
-    var QA_VIEWS = <?= json_encode(array_keys($viewLabels)); ?>;
-    var QA_COLUMNS = <?= json_encode($columns, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-    var QA_REASONS = <?= json_encode($noteReasons, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-    var QA_PROMPTS = <?= json_encode($notePrompts, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-    var QA_SIDE_LABELS = <?= json_encode($sideLabels, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-    var QA_LATE_DAYS = <?= QualityMonitoringService::LATE_DAYS; ?>;
-    var QA_VERY_LATE_DAYS = <?= QualityMonitoringService::VERY_LATE_DAYS; ?>;
+    var QA_COLUMNS = <?= json_encode($columns, $jsonFlags); ?>;
+    var QA_CASCADE = <?= json_encode(QualityMonitoringService::CASCADE); ?>;
+    var QA_CASCADE_LABELS = <?= json_encode($cascadeLabels, $jsonFlags); ?>;
+    var QA_NODE_PROMPTS = <?= json_encode($nodePrompts, $jsonFlags); ?>;
+    var QA_GROUPING_LABELS = <?= json_encode($groupingLabels, $jsonFlags); ?>;
+    var QA_BREAKDOWN_STAGES = <?= json_encode($breakdownStages); ?>;
+    var QA_REASONS = <?= json_encode($noteReasons, $jsonFlags); ?>;
+    var QA_PROMPTS = <?= json_encode($notePrompts, $jsonFlags); ?>;
+    var QA_SIDE_LABELS = <?= json_encode($sideLabels, $jsonFlags); ?>;
+    var QA_OVERDUE_DEFAULT = <?= QualityMonitoringService::DEFAULT_OVERDUE_DAYS; ?>;
+    var QA_OVERDUE_MAX = <?= QualityMonitoringService::MAX_OVERDUE_DAYS; ?>;
+    // Where the chosen limit is remembered, in this browser only.
+    var QA_OVERDUE_STORAGE_KEY = 'intelis.eidQualityMonitoring.overdueDays';
     // How many instrument names fit under a lab name before the rest go on hover.
     var QA_LAB_INSTRUMENTS_SHOWN = 3;
-    var QA_USER = <?= json_encode($currentUser !== '' ? $currentUser : _translate('You'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-    var QA_ROLE = <?= json_encode($currentRole, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+    var QA_USER = <?= json_encode($currentUser !== '' ? $currentUser : _translate('You'), $jsonFlags); ?>;
+    var QA_ROLE = <?= json_encode($currentRole, $jsonFlags); ?>;
 
     var QA_LABELS = {
-        noData: "<?= _jsTranslate('No samples are waiting on this side for the selected filters'); ?>",
+        noData: "<?= _jsTranslate('No samples are pending here for the selected filters'); ?>",
+        noBreakdown: "<?= _jsTranslate('No pending samples for the selected filters'); ?>",
+        overdue: "<?= _jsTranslate('Overdue (%s+ days)'); ?>",
+        onlyOverdue: "<?= _jsTranslate('Only overdue (%s+ days)'); ?>",
+        overdueRange: "<?= _jsTranslate('Enter a whole number of days from 1 to %s'); ?>",
         selected: "<?= _jsTranslate('%s selected'); ?>",
         andMore: "<?= _jsTranslate('and %s more'); ?>",
+        showingGroup: "<?= _jsTranslate('%s: %s'); ?>",
         chooseReason: "<?= _jsTranslate('-- Choose a reason --'); ?>",
+        mixedPrompt: "<?= _jsTranslate('What is holding these samples?'); ?>",
         reasonRequired: "<?= _jsTranslate('Choose a reason before saving'); ?>",
         detailsRequired: "<?= _jsTranslate('Describe the reason in the details box'); ?>",
         notSaved: "<?= _jsTranslate('Notes are not saved yet. This note is shown here so the workflow can be reviewed, and it disappears when the page is reloaded.'); ?>",
         noNotes: "<?= _jsTranslate('Nothing has been recorded about this sample yet.'); ?>",
-        readOnly: "<?= _jsTranslate('You can read this note, but only the side that wrote it can add to it.'); ?>",
         expectedBy: "<?= _jsTranslate('Expected to be resolved by %s'); ?>",
         exportFailed: "<?= _jsTranslate('Unable to generate the export file'); ?>",
         days: "<?= _jsTranslate('days'); ?>",
+        atThisStep: "<?= _jsTranslate('%s at this step'); ?>",
         sample: "<?= _jsTranslate('Sample'); ?>",
         addNote: "<?= _jsTranslate('Add note'); ?>",
         noneYet: "<?= _jsTranslate('No notes yet'); ?>",
@@ -726,29 +1151,46 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
     };
 
     // Notes live only in the browser for now: the saving side of this module is
-    // not built. Keyed by record id so a note survives paging and sorting
-    // within the session, and so both tabs show the same thread.
+    // not built. Keyed by record id so a note survives paging, sorting and
+    // switching cards within the session.
     var qaNotes = {};
-    var qaTables = {};
-    // Which rows are ticked, per view. Cleared whenever the grid redraws, so a
-    // note is never applied to a sample the user can no longer see.
-    var qaSelection = { clinic: [], lab: [] };
+    var qaTable = null;
+    var qaBreakdownTable = null;
+    // Which rows are ticked. Cleared whenever the grid redraws, so a note is
+    // never applied to a sample the user can no longer see.
+    var qaSelection = [];
     var qaRowCache = {};
     var qaSide = "<?= $userSide; ?>";
-    var qaNoteTarget = { view: null, ids: [] };
+    var qaNoteTarget = { side: null, ids: [] };
+    // The card whose samples the grid lists, and the breakdown row it was
+    // narrowed to, if any.
+    var qaNode = 'pending';
+    var qaBreakdownBy = 'lab';
+    var qaGroup = { by: '', key: 0, label: '' };
+    var qaBreakdownLabels = {};
+    var qaSummary = null;
+    // The overdue limit in days, and whether the grid lists only what is past it.
+    var qaOverdueDays = QA_OVERDUE_DEFAULT;
+    var qaOverdueOnly = false;
 
     // Which side owns a sample, read off the stage it is in. A sample moves
     // between the two over its life, which is why a thread can hold notes from
     // both sides even though each side only ever writes its own.
     var QA_STAGE_VIEW = {};
-    QA_VIEWS.forEach(function (view) {
-        (<?= json_encode(QualityMonitoringService::VIEWS); ?>[view] || []).forEach(function (stage) {
-            QA_STAGE_VIEW[stage] = view;
+    (function (views) {
+        Object.keys(views).forEach(function (view) {
+            views[view].forEach(function (stage) { QA_STAGE_VIEW[stage] = view; });
         });
-    });
+    })(<?= json_encode(QualityMonitoringService::VIEWS); ?>);
 
+    function qaOwns(stage) {
+        return QA_STAGE_VIEW[stage] === qaSide;
+    }
+
+    // Safe inside element content and inside a quoted attribute alike.
     function qaEsc(value) {
-        return $('<div>').text(value === null || value === undefined ? '' : String(value)).html();
+        return $('<div>').text(value === null || value === undefined ? '' : String(value)).html()
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
     function qaSprintf(template, value) {
@@ -764,11 +1206,22 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             labId: ($('#labId').val() || []).join(','),
             partnerId: $('#partnerId').val() || '',
             bucket: $('#bucket').val() || '',
-            instrument: $('#instrument').val() || ''
+            instrument: $('#instrument').val() || '',
+            overdueDays: qaOverdueDays
         };
     }
 
-    // ---------------------------------------------------------------- summary
+    // The grid and its export also carry the card and the breakdown row.
+    function qaGridParams() {
+        return $.extend(qaFilters(), {
+            node: qaNode,
+            groupBy: qaGroup.by,
+            groupKey: qaGroup.key,
+            overdueOnly: qaOverdueOnly ? '1' : ''
+        });
+    }
+
+    // ---------------------------------------------------------------- cascade
 
     function qaLoadSummary() {
         $.ajax({
@@ -778,41 +1231,251 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             data: $.extend({ section: 'summary' }, qaFilters()),
             success: function (json) {
                 if (!json || json.error || !json.summary) { return; }
-                QA_VIEWS.forEach(function (view) {
-                    var s = json.summary[view] || { total: 0, late: 0, veryLate: 0 };
-                    $('#qa-total-' + view).text(s.total.toLocaleString());
-                    $('#qa-late-' + view).text(s.late.toLocaleString());
-                    $('#qa-verylate-' + view).text(s.veryLate.toLocaleString());
-                    $('#qa-tab-count-' + view).text(s.total.toLocaleString());
+                qaSummary = json.summary.nodes || {};
+                Object.keys(QA_CASCADE).forEach(function (node) {
+                    var s = qaSummary[node] || { total: 0, overdue: 0 };
+                    $('#qa-node-' + node).text(s.total.toLocaleString());
+                    $('#qa-node-overdue-' + node).text(s.overdue.toLocaleString());
+                    $('.qa-card[data-node="' + node + '"], .qa-part[data-node="' + node + '"]')
+                        .toggleClass('is-empty', s.total === 0);
                 });
-                Object.keys(json.summary.stages || {}).forEach(function (stage) {
-                    $('#qa-stage-' + stage).text(Number(json.summary.stages[stage]).toLocaleString());
-                });
+                qaPaintFlowBar();
             }
         });
     }
 
+    // How the total splits between the stages, as one bar and a share per
+    // stage under it. The stages are the leaves of the cascade, so together
+    // the segments always fill the bar.
+    function qaPaintFlowBar() {
+        var nodes = qaSummary || {};
+        var total = (nodes.pending || {}).total || 0;
+        var described = [];
+        QA_BREAKDOWN_STAGES.forEach(function (stage) {
+            var count = (nodes[stage] || {}).total || 0;
+            var share = total > 0 ? count / total * 100 : 0;
+            // A stage holding a handful of samples beside a large backlog still
+            // gets a sliver, so the bar never shows a stage as empty when it is not.
+            $('#qaFlowBar .qa-bar-seg[data-seg="' + stage + '"]')
+                .css({ 'flex-grow': share, 'min-width': count > 0 ? '4px' : '0' })
+                .attr('title', QA_CASCADE_LABELS[stage] + ': ' + count.toLocaleString());
+            var shareText = qaShare(share);
+            $('#qa-share-' + stage).text(shareText);
+            described.push(QA_CASCADE_LABELS[stage] + ' ' + shareText);
+        });
+        $('#qaFlowBar').attr('aria-label', described.join(', '));
+    }
+
+    function qaShare(percent) {
+        if (percent > 0 && percent < 1) { return '<1%'; }
+        return Math.round(percent) + '%';
+    }
+
+    // Marks the card and says what its samples are waiting on, without
+    // fetching anything.
+    function qaMarkNode(node) {
+        qaNode = node;
+        $('.qa-card, .qa-part').removeClass('is-active');
+        $('.qa-card-main, .qa-part').attr('aria-pressed', 'false');
+        var $selected = $('.qa-card[data-node="' + node + '"], .qa-part[data-node="' + node + '"]').addClass('is-active');
+        $selected.filter('.qa-part').add($selected.find('.qa-card-main')).attr('aria-pressed', 'true');
+        $('#qaGridTitle').text(QA_CASCADE_LABELS[node] || '');
+        var prompt = QA_NODE_PROMPTS[node] || { question: '', detail: '' };
+        $('#qaNodeQuestion').text(prompt.question);
+        $('#qaNodeDetail').text(prompt.detail);
+        qaUpdateLockHint();
+    }
+
+    // Every way into the grid says whether it lists all of a card's samples or
+    // only the overdue ones, so the checkbox above the grid always tells the
+    // truth about what it is showing.
+    function qaSelectNode(node, fromBreakdown, overdueOnly) {
+        if (!QA_CASCADE[node]) { return; }
+        // A card, or its overdue line, holding nothing has nothing to list. A
+        // number in the breakdown is never zero, so a drill-down is never
+        // refused here.
+        var counts = qaSummary ? (qaSummary[node] || { total: 0, overdue: 0 }) : null;
+        if (!fromBreakdown && counts && (overdueOnly ? counts.overdue : counts.total) === 0) { return; }
+        qaMarkNode(node);
+        qaSetOverdueOnly(!!overdueOnly);
+        if (qaTable) { qaTable.fnDraw(); }
+    }
+
+    // ---------------------------------------------------------- overdue limit
+
+    // Every label that quotes the limit is rewritten together, so no count on
+    // the page is ever described with a limit it was not counted against.
+    function qaPaintOverdueLabels() {
+        var overdue = qaSprintf(QA_LABELS.overdue, qaOverdueDays);
+        $('.qa-overdue-label').text(overdue);
+        $('#qaOverdueHeading').text(overdue);
+        $('.qa-only-overdue-label').text(qaSprintf(QA_LABELS.onlyOverdue, qaOverdueDays));
+        $('#qaOverdueDays').val(qaOverdueDays);
+        $('#qaOverduePresets button').each(function () {
+            $(this).toggleClass('active', parseInt($(this).data('days'), 10) === qaOverdueDays);
+        });
+    }
+
+    function qaReadStoredOverdue() {
+        try {
+            var stored = parseInt(window.localStorage.getItem(QA_OVERDUE_STORAGE_KEY), 10);
+            return stored >= 1 && stored <= QA_OVERDUE_MAX ? stored : QA_OVERDUE_DEFAULT;
+        } catch (e) {
+            return QA_OVERDUE_DEFAULT;
+        }
+    }
+
+    // A new limit changes what every count on the page means, so the cards,
+    // the breakdown and the grid are all fetched again.
+    function qaSetOverdueDays(value) {
+        var days = Number(value);
+        if (!(Number.isInteger(days) && days >= 1 && days <= QA_OVERDUE_MAX)) {
+            alert(qaSprintf(QA_LABELS.overdueRange, QA_OVERDUE_MAX));
+            qaPaintOverdueLabels();
+            return;
+        }
+        if (days === qaOverdueDays) {
+            qaPaintOverdueLabels();
+            return;
+        }
+        qaOverdueDays = days;
+        try {
+            window.localStorage.setItem(QA_OVERDUE_STORAGE_KEY, String(days));
+        } catch (e) {
+            // A browser that refuses storage still applies the limit to this visit.
+        }
+        qaPaintOverdueLabels();
+        qaLoadSummary();
+        qaLoadBreakdown();
+        if (qaTable) { qaTable.fnDraw(); }
+    }
+
+    function qaSetOverdueOnly(on) {
+        qaOverdueOnly = on;
+        $('#qaOverdueOnly').prop('checked', on);
+    }
+
+    // -------------------------------------------------------------- breakdown
+
+    function qaLoadBreakdown() {
+        $.ajax({
+            url: QA_URL,
+            type: 'POST',
+            dataType: 'json',
+            data: $.extend({ section: 'breakdown', breakdownBy: qaBreakdownBy }, qaFilters()),
+            success: function (json) {
+                if (!json || json.error || !json.breakdown) { return; }
+                qaRenderBreakdown(json.breakdown);
+            }
+        });
+    }
+
+    function qaRenderBreakdown(rows) {
+        if (qaBreakdownTable) {
+            qaBreakdownTable.fnDestroy();
+            qaBreakdownTable = null;
+        }
+        qaBreakdownLabels = {};
+        rows.forEach(function (row) { qaBreakdownLabels[row.key] = row.label; });
+
+        $('#qaBreakdownGroupHeading').text(QA_GROUPING_LABELS[qaBreakdownBy] || '');
+        $('#qaBreakdown tbody').empty();
+
+        qaBreakdownTable = $('#qaBreakdown').dataTable({
+            "bAutoWidth": false,
+            "aaData": rows,
+            "aoColumns": qaBreakdownColumns(),
+            // Busiest first: the total column sits after the group and the stages.
+            "aaSorting": [[QA_BREAKDOWN_STAGES.length + 1, 'desc']],
+            "iDisplayLength": 10,
+            "oLanguage": { "sZeroRecords": QA_LABELS.noBreakdown }
+        });
+    }
+
+    // Every cell sorts on its raw value and displays a link, so numbers sort as
+    // numbers and dates as dates rather than as the text they are shown in.
+    function qaBreakdownColumns() {
+        var columns = [{
+            "mData": null,
+            "mRender": function (data, type, row) {
+                return type === 'display' ? qaEsc(row.label) : row.label;
+            }
+        }];
+        QA_BREAKDOWN_STAGES.forEach(function (stage) {
+            columns.push({
+                "mData": null,
+                "sClass": 'text-right',
+                "mRender": function (data, type, row) { return qaDrillCell(row, stage, row.stages[stage], type); }
+            });
+        });
+        columns.push({
+            "mData": null,
+            "sClass": 'text-right',
+            "mRender": function (data, type, row) { return qaDrillCell(row, 'pending', row.total, type); }
+        });
+        columns.push({
+            "mData": null,
+            "sClass": 'text-right',
+            "mRender": function (data, type, row) { return qaDrillCell(row, 'pending', row.overdue, type, true); }
+        });
+        columns.push({
+            "mData": null,
+            "mRender": function (data, type, row) {
+                return type === 'display' ? qaEsc(row.oldestCollected) : row.oldestCollectedSort;
+            }
+        });
+        return columns;
+    }
+
+    function qaDrillCell(row, node, count, type, overdueOnly) {
+        if (type !== 'display') { return count; }
+        if (!count) { return '<span class="qa-zero">0</span>'; }
+        return '<a class="qa-drill' + (overdueOnly ? ' qa-overdue-count' : '') + '" data-node="' + qaEsc(node) +
+            '" data-group-key="' + qaEsc(row.key) + '" data-overdue="' + (overdueOnly ? '1' : '') + '">' +
+            count.toLocaleString() + '</a>';
+    }
+
+    // A number in the breakdown is one group and one card: the grid lists
+    // exactly those samples, and says so above itself until it is cleared.
+    function qaDrill(node, key, overdueOnly) {
+        qaGroup = { by: qaBreakdownBy, key: parseInt(key, 10) || 0, label: qaBreakdownLabels[key] || '' };
+        $('#qaDrillText').text(qaSprintf(qaSprintf(QA_LABELS.showingGroup,
+            QA_GROUPING_LABELS[qaGroup.by] || ''), qaGroup.label));
+        $('#qaDrillChip').show();
+        qaSelectNode(node, true, overdueOnly);
+        $('html, body').animate({ scrollTop: $('#qaGridBox').offset().top - 60 }, 200);
+    }
+
+    function qaClearGroup(redraw) {
+        qaGroup = { by: '', key: 0, label: '' };
+        $('#qaDrillChip').hide();
+        if (redraw && qaTable) { qaTable.fnDraw(); }
+    }
+
     // ------------------------------------------------------------------ grid
 
-    function qaColumnDefs(view) {
-        return Object.keys(QA_COLUMNS[view]).map(function (key) {
-            var column = QA_COLUMNS[view][key];
+    function qaColumnDefs() {
+        return Object.keys(QA_COLUMNS).map(function (key) {
+            var column = QA_COLUMNS[key];
             return {
                 "mData": null,
                 "bSortable": column.sort !== null,
                 "sClass": column.numeric ? 'text-center' : '',
                 "mRender": function (data, type, row) {
-                    return qaRenderCell(key, row, view);
+                    return qaRenderCell(key, row);
                 }
             };
         });
     }
 
-    function qaRenderCell(key, row, view) {
+    function qaRenderCell(key, row) {
         switch (key) {
             case 'select':
-                return '<input type="checkbox" class="qa-row-check" data-view="' + view +
-                    '" value="' + row.recordId + '" />';
+                // Only the side holding a sample can write about it, so only
+                // its rows can be ticked for a note.
+                return qaOwns(row.stage)
+                    ? '<input type="checkbox" class="qa-row-check" value="' + row.recordId + '" />'
+                    : '';
             case 'sampleCode':
                 var code = qaEsc(row.sampleCode || '');
                 if (row.remoteSampleCode && row.remoteSampleCode !== row.sampleCode) {
@@ -832,9 +1495,15 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             case 'mother':
                 return qaPerson(row.motherId, '');
             case 'age':
-                var cls = row.age >= QA_VERY_LATE_DAYS ? ' is-very-late'
-                    : (row.age >= QA_LATE_DAYS ? ' is-late' : '');
-                return '<span class="qa-days' + cls + '">' + row.age + '</span>';
+                // Days since collection, which is what the child has waited and
+                // what the overdue limit is set against, and under it how long
+                // the side holding the sample now has had it.
+                var days = '<span class="qa-days' + (row.age >= qaOverdueDays ? ' is-overdue' : '') + '">' +
+                    row.age + '</span>';
+                if (row.stepAge !== undefined && row.stepAge !== row.age) {
+                    days += '<span class="qa-secondary">' + qaSprintf(QA_LABELS.atThisStep, row.stepAge) + '</span>';
+                }
+                return days;
             case 'stage':
                 var stage = '<span>' + qaEsc(row.stageLabel) + '</span>';
                 if (row.dataIssue) {
@@ -884,7 +1553,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
 
     function qaRenderNoteCell(row) {
         var notes = qaNotes[row.recordId] || [];
-        var mine = QA_STAGE_VIEW[row.stage] === qaSide;
+        var mine = qaOwns(row.stage);
 
         // One row is the common case, so it gets its own link straight into the
         // note form. Ticking boxes is for saying the same thing about many rows
@@ -910,14 +1579,14 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             '</span></a>' + add + '</span>';
     }
 
-    function qaInitTable(view) {
-        if (qaTables[view]) { return qaTables[view]; }
-        qaTables[view] = $('#qaTable-' + view).dataTable({
+    function qaInitTable() {
+        if (qaTable) { return qaTable; }
+        qaTable = $('#qaTable').dataTable({
             "bJQueryUI": false,
             "bAutoWidth": false,
             "bInfo": true,
             "bRetrieve": true,
-            "aoColumns": qaColumnDefs(view),
+            "aoColumns": qaColumnDefs(),
             "aaSorting": [],
             "bProcessing": true,
             "bServerSide": true,
@@ -925,10 +1594,9 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
             "oLanguage": { "sZeroRecords": QA_LABELS.noData },
             "fnServerData": function (sSource, aoData, fnCallback) {
                 aoData.push({ "name": "section", "value": "samples" });
-                aoData.push({ "name": "view", "value": view });
-                var filters = qaFilters();
-                Object.keys(filters).forEach(function (name) {
-                    aoData.push({ "name": name, "value": filters[name] });
+                var params = qaGridParams();
+                Object.keys(params).forEach(function (name) {
+                    aoData.push({ "name": name, "value": params[name] });
                 });
                 $.ajax({
                     "dataType": 'json',
@@ -938,19 +1606,25 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
                     "success": fnCallback
                 });
             },
+            // Every row carries its record id, including the rows with no
+            // checkbox, so a note cell can be repainted wherever it is.
+            "fnRowCallback": function (nRow, aData) {
+                $(nRow).attr('data-record-id', aData.recordId);
+                return nRow;
+            },
             "fnDrawCallback": function (settings) {
                 // A tick means "this row, as it is on screen". A redraw changes
                 // what is on screen, so the ticks go with it.
-                qaSelection[view] = [];
-                $('#qaTable-' + view).find('.qa-check-all, .qa-row-check').prop('checked', false);
-                qaCacheRows(view, settings);
-                qaUpdateSelection(view);
+                qaSelection = [];
+                $('#qaTable').find('.qa-check-all').prop('checked', false);
+                qaCacheRows(settings);
+                qaUpdateSelection();
             }
         });
-        return qaTables[view];
+        return qaTable;
     }
 
-    function qaCacheRows(view, settings) {
+    function qaCacheRows(settings) {
         (settings.aoData || []).forEach(function (entry) {
             var row = entry._aData;
             if (row && row.recordId) { qaRowCache[row.recordId] = row; }
@@ -976,22 +1650,20 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
     // Only the notes column changes when a note is added, so the grid is
     // repainted in place rather than re-fetched: a redraw would drop the ticks
     // and lose the reader's place in a long backlog.
-    function qaRefreshNoteCells(view) {
-        if (!qaTables[view]) { return; }
-        var noteIndex = Object.keys(QA_COLUMNS[view]).indexOf('notes');
-        $('#qaTable-' + view).find('tbody tr').each(function () {
+    function qaRefreshNoteCells() {
+        if (!qaTable) { return; }
+        var noteIndex = Object.keys(QA_COLUMNS).indexOf('notes');
+        $('#qaTable').find('tbody tr').each(function () {
             var $row = $(this);
-            var id = $row.find('.qa-row-check').val();
+            var id = $row.attr('data-record-id');
             if (!id || !qaRowCache[id]) { return; }
             $row.find('td').eq(noteIndex).html(qaRenderNoteCell(qaRowCache[id]));
         });
     }
 
-    function qaOpenAddNote(view) {
-        if (view !== qaSide) { return; }
-        var ids = qaSelection[view].slice();
-        if (!ids.length) { return; }
-        qaShowNoteModal(view, ids);
+    function qaOpenAddNote() {
+        if (!qaSelection.length) { return; }
+        qaShowNoteModal(qaSelection.slice());
     }
 
     // TomSelect and not the Select2 the filter bar uses. Select2 hangs its
@@ -1017,10 +1689,21 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         });
     }
 
-    function qaShowNoteModal(view, ids) {
-        qaNoteTarget = { view: view, ids: ids };
+    // The question depends on where the samples are. Selected rows that are
+    // all asked the same thing get that question; a mix gets a general one.
+    function qaNotePromptFor(ids) {
+        var prompts = [];
+        ids.forEach(function (id) {
+            var prompt = QA_PROMPTS[(qaRowCache[id] || {}).stage] || '';
+            if (prompt !== '' && prompts.indexOf(prompt) === -1) { prompts.push(prompt); }
+        });
+        return prompts.length === 1 ? prompts[0] : QA_LABELS.mixedPrompt;
+    }
 
-        $('#qaNotePrompt').text(QA_PROMPTS[view] || '');
+    function qaShowNoteModal(ids) {
+        qaNoteTarget = { side: qaSide, ids: ids };
+
+        $('#qaNotePrompt').text(qaNotePromptFor(ids));
         $('#qaNoteScope').text('(' + qaSprintf(QA_LABELS.selected, ids.length) + ')');
 
         var chips = ids.slice(0, 12).map(function (id) {
@@ -1032,7 +1715,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         }
         $('#qaNoteChips').html(chips);
 
-        var groups = QA_REASONS[view] || {};
+        var groups = QA_REASONS[qaSide] || {};
         var options = '<option value="">' + qaEsc(QA_LABELS.chooseReason) + '</option>';
         Object.keys(groups).forEach(function (group) {
             options += '<optgroup label="' + qaEsc(group) + '">';
@@ -1079,12 +1762,12 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         }
 
         var note = {
-            side: qaNoteTarget.view,
+            side: qaNoteTarget.side,
             reasonKey: reasonKey,
-            reasonLabel: qaReasonLabel(qaNoteTarget.view, reasonKey),
+            reasonLabel: qaReasonLabel(qaNoteTarget.side, reasonKey),
             text: text,
             author: QA_USER,
-            role: QA_ROLE || QA_SIDE_LABELS[qaNoteTarget.view],
+            role: QA_ROLE || QA_SIDE_LABELS[qaNoteTarget.side],
             when: moment().format('DD-MMM-YYYY HH:mm'),
             expected: $('#qaNoteExpected').val() || ''
         };
@@ -1098,7 +1781,7 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         qaLogActivity('added-note');
 
         $('#qaNoteModal').modal('hide');
-        QA_VIEWS.forEach(qaRefreshNoteCells);
+        qaRefreshNoteCells();
         alert(QA_LABELS.notSaved);
     }
 
@@ -1142,27 +1825,29 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         // is there only when this sample is on the user's own side. The other
         // side's notes stay fully readable above it, which is the point of
         // putting both in one thread.
-        $('#qaThreadAdd').data('recordId', recordId)
-            .toggle(QA_STAGE_VIEW[row.stage] === qaSide);
+        $('#qaThreadAdd').data('recordId', recordId).toggle(qaOwns(row.stage));
         qaShowModal('#qaThreadModal');
     }
 
     function qaAddFromThread() {
         var recordId = String($('#qaThreadAdd').data('recordId') || '');
         if (!recordId) { return; }
-        qaShowNoteModal(qaSide, [recordId]);
+        qaShowNoteModal([recordId]);
     }
 
     // ----------------------------------------------------------- selection
 
-    function qaUpdateSelection(view) {
-        var count = qaSelection[view].length;
-        var owned = view === qaSide;
-        $('#qa-selection-' + view).text(count ? qaSprintf(QA_LABELS.selected, count) : '');
-        $('.qa-add-note[data-view="' + view + '"]')
-            .prop('disabled', !owned || count === 0)
-            .attr('title', owned ? '' : QA_LABELS.readOnly);
-        $('#qa-locked-' + view).toggle(!owned);
+    function qaUpdateSelection() {
+        var count = qaSelection.length;
+        $('#qa-selection').text(count ? qaSprintf(QA_LABELS.selected, count) : '');
+        $('#qaAddNote').prop('disabled', count === 0);
+    }
+
+    // Said once above the grid when nothing on the card is this side's to
+    // explain, rather than leaving the reader to wonder why nothing can be ticked.
+    function qaUpdateLockHint() {
+        var stages = QA_CASCADE[qaNode] || [];
+        $('#qa-locked').toggle(stages.length > 0 && stages.every(function (stage) { return !qaOwns(stage); }));
     }
 
     // ------------------------------------------------------------- activity
@@ -1240,10 +1925,12 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
 
     function qaApplyFilters() {
         qaLogActivity('searched');
+        // The breakdown row a listing was narrowed to may not survive new
+        // filters, so the narrowing goes with them.
+        qaClearGroup(false);
         qaLoadSummary();
-        QA_VIEWS.forEach(function (view) {
-            if (qaTables[view]) { qaTables[view].fnDraw(); }
-        });
+        qaLoadBreakdown();
+        if (qaTable) { qaTable.fnDraw(); }
     }
 
     function qaResetFilters() {
@@ -1253,11 +1940,11 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         qaApplyFilters();
     }
 
-    function qaExport(view) {
+    function qaExport() {
         $.blockUI();
         // The export logs itself where it is written, so the token that comes
         // back is proof the line was recorded alongside the file.
-        $.post(QA_URL, $.extend({ section: 'export', view: view }, qaFilters()), function (token) {
+        $.post(QA_URL, $.extend({ section: 'export' }, qaGridParams()), function (token) {
             $.unblockUI();
             token = $.trim(String(token || ''));
             if (token === '' || token.indexOf('{') === 0) {
@@ -1350,45 +2037,72 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         $('input[name="qaSide"]').on('change', function () {
             qaSide = $(this).val();
             qaLogActivity('viewed-' + qaSide);
-            // Switching side is switching job, so it lands on that side's queue.
-            $('#qaTabs a[data-view="' + qaSide + '"]').tab('show');
-            QA_VIEWS.forEach(qaUpdateSelection);
-            QA_VIEWS.forEach(qaRefreshNoteCells);
+            qaUpdateLockHint();
+            // Which rows can be ticked and written about depends on the side,
+            // so the page is redrawn where it is rather than sent back to page 1.
+            if (qaTable) { qaTable.fnDraw(false); }
         });
 
-        $('#qaTabs a[data-toggle="tab"]').on('shown.bs.tab', function () {
-            var view = $(this).data('view');
-            qaInitTable(view);
-            // A tab that was hidden when its table was built has no width to
-            // measure, so the columns come out wrong until it is asked again.
-            if (qaTables[view]) { qaTables[view].fnAdjustColumnSizing(); }
+        $('#qaCascade').on('click', '.qa-card-main, .qa-part', function () {
+            qaSelectNode(String($(this).data('node')), false, false);
+        });
+
+        $('#qaCascade').on('click', '.qa-card-overdue', function () {
+            qaSelectNode(String($(this).data('node')), false, true);
+        });
+
+        $('#qaOverduePresets').on('click', 'button', function () {
+            qaSetOverdueDays($(this).data('days'));
+        });
+
+        $('#qaOverdueDays').on('change', function () {
+            qaSetOverdueDays($(this).val());
+        }).on('keydown', function (e) {
+            if (e.key === 'Enter') { $(this).trigger('change'); }
+        });
+
+        $('#qaOverdueOnly').on('change', function () {
+            qaSetOverdueOnly(this.checked);
+            if (qaTable) { qaTable.fnDraw(); }
+        });
+
+        $('#qaGroupBy').on('click', 'button', function () {
+            qaBreakdownBy = String($(this).data('groupBy'));
+            $('#qaGroupBy button').removeClass('active');
+            $(this).addClass('active');
+            // A row of the old grouping means nothing in the new one.
+            qaClearGroup(true);
+            qaLoadBreakdown();
+        });
+
+        $('#qaBreakdown').on('click', '.qa-drill', function () {
+            qaDrill(String($(this).data('node')), String($(this).data('groupKey')),
+                String($(this).data('overdue')) === '1');
         });
 
         $(document).on('change', '.qa-row-check', function () {
-            var view = $(this).data('view');
             var id = String($(this).val());
-            var index = qaSelection[view].indexOf(id);
+            var index = qaSelection.indexOf(id);
             if (this.checked && index === -1) {
-                qaSelection[view].push(id);
+                qaSelection.push(id);
             } else if (!this.checked && index !== -1) {
-                qaSelection[view].splice(index, 1);
+                qaSelection.splice(index, 1);
             }
-            qaUpdateSelection(view);
+            qaUpdateSelection();
         });
 
         $(document).on('change', '.qa-check-all', function () {
-            var view = $(this).data('view');
             var checked = this.checked;
-            $('#qaTable-' + view).find('.qa-row-check').prop('checked', checked).each(function () {
+            $('#qaTable').find('.qa-row-check').prop('checked', checked).each(function () {
                 var id = String($(this).val());
-                var index = qaSelection[view].indexOf(id);
+                var index = qaSelection.indexOf(id);
                 if (checked && index === -1) {
-                    qaSelection[view].push(id);
+                    qaSelection.push(id);
                 } else if (!checked && index !== -1) {
-                    qaSelection[view].splice(index, 1);
+                    qaSelection.splice(index, 1);
                 }
             });
-            qaUpdateSelection(view);
+            qaUpdateSelection();
         });
 
         $(document).on('click', '[data-thread]', function () {
@@ -1397,12 +2111,18 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
         });
 
         $(document).on('click', '[data-add]', function () {
-            qaShowNoteModal(qaSide, [String($(this).data('add'))]);
+            qaShowNoteModal([String($(this).data('add'))]);
         });
 
-        QA_VIEWS.forEach(qaInitTable);
-        QA_VIEWS.forEach(qaUpdateSelection);
+        // The limit is read before anything is fetched, so the first counts
+        // are already against it.
+        qaOverdueDays = qaReadStoredOverdue();
+        qaPaintOverdueLabels();
+        qaMarkNode('pending');
+        qaInitTable();
+        qaUpdateSelection();
         qaLoadSummary();
+        qaLoadBreakdown();
         qaLogActivity('opened');
         qaWatchVisit();
     });

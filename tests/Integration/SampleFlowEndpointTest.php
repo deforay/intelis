@@ -182,7 +182,10 @@ final class SampleFlowEndpointTest extends TestCase
             'result_approved_datetime' => self::daysAgo(11),
             'result_mail_datetime' => self::daysAgo(10),
         ]);
-        // Released by the sent-to-source flag alone, no datetime written.
+        // Carries the sent-to-source flag and nothing else. The flag is set on
+        // every result a lab syncs up to the central server, so on its own it
+        // says the result reached the server, not the facility: this sample is
+        // still waiting to be released.
         $this->seed([
             'lab_id' => self::LAB_ID,
             'sample_tested_datetime' => self::daysAgo(12),
@@ -217,10 +220,11 @@ final class SampleFlowEndpointTest extends TestCase
         self::assertSame(1, $flow['awaitingApproval']['total']);
         self::assertSame(1, $flow['awaitingApproval']['b0']);
 
-        self::assertSame(1, $flow['awaitingRelease']['total']);
+        self::assertSame(2, $flow['awaitingRelease']['total']);
         self::assertSame(1, $flow['awaitingRelease']['b4'], 'approved 70 days ago, nothing delivered');
+        self::assertSame(1, $flow['awaitingRelease']['b1'], 'tested 12 days ago and only synced, never delivered');
 
-        self::assertSame(2, $flow['released']['total'], 'e-mailed, and flagged sent to source');
+        self::assertSame(1, $flow['released']['total'], 'the e-mailed one; a sync is not a delivery');
 
         self::assertSame(2, $flow['rejected']['total'], 'by status and by flag alone');
         self::assertSame(1, $flow['expired']['total']);

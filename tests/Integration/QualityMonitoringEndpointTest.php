@@ -99,9 +99,10 @@ final class QualityMonitoringEndpointTest extends TestCase
     }
 
     /**
-     * One form_eid row with the given milestones. Every row is collected 100
-     * days ago so the collection date never decides the age; the most recent
-     * milestone does.
+     * One form_eid row with the given milestones. Most rows are collected 100
+     * days ago; the few that carry their own collection date are the ones the
+     * overdue limits are asserted against, because days waiting is counted
+     * from collection and the milestones only decide the age at the step.
      *
      * @param array<string, mixed> $columns
      */
@@ -157,7 +158,10 @@ final class QualityMonitoringEndpointTest extends TestCase
         $this->seed([]);
         // Dispatched 20 days ago, still no lab receipt: the age counts from the
         // dispatch, but the sample is still the clinic's to explain.
-        $this->seed(['sample_dispatched_datetime' => self::daysAgo(20)]);
+        $this->seed([
+            'sample_collection_date' => self::daysAgo(25),
+            'sample_dispatched_datetime' => self::daysAgo(20),
+        ]);
         // Another province, so the province filter has something to exclude.
         $this->seed(['facility_id' => self::OTHER_FACILITY_ID]);
 
@@ -167,16 +171,19 @@ final class QualityMonitoringEndpointTest extends TestCase
             'lab_id' => self::LAB_ID,
             'sample_received_at_lab_datetime' => self::daysAgo(40),
         ]);
-        // Failed 3 days ago: back in the lab queue.
+        // Failed 3 days ago: back in the lab queue. Collected 6 days ago, so it
+        // is the one sample inside a 7 day turnaround target.
         $this->seed([
             'lab_id' => self::LAB_ID,
+            'sample_collection_date' => self::daysAgo(6),
             'sample_received_at_lab_datetime' => self::daysAgo(10),
             'sample_tested_datetime' => self::daysAgo(3),
             'result_status' => 5,
         ]);
-        // Tested 5 days ago with a result, not approved.
+        // Tested 5 days ago with a result, not approved. Collected 9 days ago.
         $this->seed([
             'lab_id' => self::LAB_ID,
+            'sample_collection_date' => self::daysAgo(9),
             'sample_received_at_lab_datetime' => self::daysAgo(9),
             'sample_tested_datetime' => self::daysAgo(5),
             'result' => 'negative',
@@ -192,10 +199,9 @@ final class QualityMonitoringEndpointTest extends TestCase
             'mother_surname' => 'Okello',
         ]);
 
-        // -- Waiting on nobody ---------------------------------------------
-        // Approved and sitting unreleased is the lab's problem in the ageing
-        // report, but there IS a result, so nobody is being asked why there
-        // isn't one.
+        // Approved 70 days ago and never printed, sent or downloaded: there is
+        // a result, but it has not reached the facility, so it is still pending
+        // and the lab is the side that has to explain it.
         $this->seed([
             'lab_id' => self::LAB_ID,
             'sample_tested_datetime' => self::daysAgo(75),
@@ -203,6 +209,7 @@ final class QualityMonitoringEndpointTest extends TestCase
             'result_status' => 7,
             'result_approved_datetime' => self::daysAgo(70),
         ]);
+        // -- Waiting on nobody ---------------------------------------------
         // Released.
         $this->seed([
             'lab_id' => self::LAB_ID,
@@ -236,23 +243,174 @@ final class QualityMonitoringEndpointTest extends TestCase
     {
         $json = $this->drive(['section' => 'summary', 'dateRange' => '']);
         self::assertArrayHasKey('summary', $json, json_encode($json));
-        $summary = $json['summary'];
+        $nodes = $json['summary']['nodes'];
 
-        self::assertSame(3, $summary['clinic']['total'], 'three registered with no lab receipt');
-        self::assertSame(3, $summary['clinic']['late'], 'all three have been waiting 20 days or more');
-        self::assertSame(2, $summary['clinic']['veryLate'], 'the dispatched one is only 20 days old');
+        // Overdue at the default limit of 7 days, counted from collection.
+        self::assertSame(
+            ['total' => 3, 'overdue' => 3],
+            $nodes['atFacility'],
+            'three registered with no lab receipt, collected 25 to 100 days ago'
+        );
+        self::assertSame(
+            ['total' => 4, 'overdue' => 3],
+            $nodes['atTestingLab'],
+            'three in the lab queue plus one awaiting approval; the one collected 6 days ago is not overdue'
+        );
+        self::assertSame(3, $nodes['atLab']['total']);
+        self::assertSame(1, $nodes['awaitingApproval']['total']);
+        self::assertSame(
+            ['total' => 1, 'overdue' => 1],
+            $nodes['awaitingRelease'],
+            'the result approved 70 days ago that never left the lab'
+        );
 
-        self::assertSame(4, $summary['lab']['total'], 'three in the lab queue plus one awaiting approval');
-        self::assertSame(1, $summary['lab']['late'], 'only the one received 40 days ago');
-        self::assertSame(1, $summary['lab']['veryLate']);
+        // Every parent is exactly the cards under it.
+        self::assertSame(
+            $nodes['atLab']['total'] + $nodes['awaitingApproval']['total'],
+            $nodes['atTestingLab']['total']
+        );
+        self::assertSame(
+            $nodes['atFacility']['total'] + $nodes['atTestingLab']['total'] + $nodes['awaitingRelease']['total'],
+            $nodes['pending']['total']
+        );
 
-        self::assertSame(3, $summary['stages']['atLab']);
-        self::assertSame(1, $summary['stages']['awaitingApproval']);
-        self::assertSame(3, $summary['stages']['atFacility']);
+        // Released and the five exits are nobody's to explain.
+        self::assertSame(['total' => 8, 'overdue' => 7], $nodes['pending']);
+    }
 
-        // Released, approved-unreleased and the five exits are nobody's to
-        // explain, so they are in neither total.
-        self::assertSame(7, $summary['clinic']['total'] + $summary['lab']['total']);
+    #[RunInSeparateProcess]
+    public function testTheResultReadyCardListsApprovedResultsThatNeverLeftTheLab(): void
+    {
+        $json = $this->drive([
+            'section' => 'samples', 'node' => 'awaitingRelease', 'dateRange' => '', 'iDisplayLength' => 25,
+        ]);
+        self::assertSame(1, $json['iTotalRecords'], json_encode($json));
+
+        $row = $json['aaData'][0];
+        self::assertSame('awaitingRelease', $row['stage']);
+        self::assertSame(100, $row['age'], 'collected 100 days ago');
+        self::assertSame(70, $row['stepAge'], 'and approved 70 days ago');
+        self::assertStringStartsWith(
+            'Approved · ',
+            $row['waitingSince'],
+            'named after the milestone the age counts from'
+        );
+        self::assertSame('', $row['dataIssue'], 'an approved row with a result contradicts nothing');
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheTotalCardListsEveryPendingSampleAndNothingElse(): void
+    {
+        $json = $this->drive(['section' => 'samples', 'node' => 'pending', 'dateRange' => '', 'iDisplayLength' => 25]);
+        self::assertSame(8, $json['iTotalRecords'], json_encode($json));
+
+        foreach ($json['aaData'] as $row) {
+            self::assertContains($row['stage'], ['atFacility', 'atLab', 'awaitingApproval', 'awaitingRelease']);
+            self::assertNotSame('', $row['waitingSince']);
+        }
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheBreakdownAddsUpToTheCardsAndDrillsIntoOneRow(): void
+    {
+        /** @var QualityMonitoringService $service */
+        $service = ContainerRegistry::get(QualityMonitoringService::class);
+        $filters = $service->resolveFilters(['dateRange' => '']);
+
+        $byLab = $service->getBreakdown($filters, 'lab');
+        self::assertCount(2, $byLab, 'Central Lab, and the samples no lab has been assigned');
+
+        // Busiest first.
+        self::assertSame('Central Lab', $byLab[0]['label']);
+        self::assertSame((string) self::LAB_ID, $byLab[0]['key']);
+        self::assertSame(
+            ['atFacility' => 0, 'atLab' => 3, 'awaitingApproval' => 1, 'awaitingRelease' => 1],
+            $byLab[0]['stages']
+        );
+        self::assertSame(5, $byLab[0]['total']);
+        self::assertSame(4, $byLab[0]['overdue'], 'all but the one collected 6 days ago, past the default 7');
+
+        self::assertSame('0', $byLab[1]['key']);
+        self::assertSame('Not assigned to a lab', $byLab[1]['label']);
+        self::assertSame(3, $byLab[1]['stages']['atFacility']);
+        self::assertNotSame('', $byLab[1]['oldestCollected']);
+
+        self::assertSame(8, array_sum(array_column($byLab, 'total')), 'the rows add up to the total card');
+
+        // A number in the table lists exactly its samples.
+        $drilled = $service->getSamples(
+            $service->resolveFilters(['dateRange' => '', 'groupBy' => 'lab', 'groupKey' => self::LAB_ID]),
+            'atLab',
+            0,
+            25
+        );
+        self::assertSame(3, $drilled['total']);
+
+        $unassigned = $service->getSamples(
+            $service->resolveFilters(['dateRange' => '', 'groupBy' => 'lab', 'groupKey' => 0]),
+            'pending',
+            0,
+            25
+        );
+        self::assertSame(3, $unassigned['total']);
+
+        // Grouped by province, the other-province clinic is a row of its own.
+        $byProvince = $service->getBreakdown($filters, 'province');
+        self::assertSame(['North', 'South'], array_column($byProvince, 'label'));
+        self::assertSame([7, 1], array_column($byProvince, 'total'));
+
+        // A grouping that is not on the fixed list is refused, not placed in a query.
+        $this->expectException(SystemException::class);
+        $service->resolveFilters(['dateRange' => '', 'groupBy' => 'lab_id; DROP TABLE form_eid']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheOverdueLimitIsTheReadersToPickAndNarrowsTheListingOnRequest(): void
+    {
+        /** @var QualityMonitoringService $service */
+        $service = ContainerRegistry::get(QualityMonitoringService::class);
+
+        // Days since collection: 100, 25 and 100 at the facility; 100, 6 and
+        // 100 in the lab queue; 9 awaiting approval; 100 awaiting release.
+        $at30 = $service->resolveFilters(['dateRange' => '', 'overdueDays' => '30']);
+        self::assertSame(30, $at30['overdueDays']);
+        self::assertSame(
+            ['total' => 8, 'overdue' => 5],
+            $service->getSummary($at30)['nodes']['pending'],
+            'only the five collected 100 days ago'
+        );
+
+        $at10 = $service->resolveFilters(['dateRange' => '', 'overdueDays' => 10]);
+        self::assertSame(
+            6,
+            $service->getSummary($at10)['nodes']['pending']['overdue'],
+            'the one collected 25 days ago joins them'
+        );
+        self::assertSame(2, $service->getBreakdown($at30, 'lab')[1]['overdue'], 'the two at the facility for 100 days');
+
+        // The limit decides what is called overdue; the listing is narrowed to
+        // those samples only when that is asked for.
+        self::assertSame(8, $service->getSamples($at30, 'pending', 0, 25)['total']);
+        $only = $service->getSamples(
+            $service->resolveFilters(['dateRange' => '', 'overdueDays' => '30', 'overdueOnly' => '1']),
+            'pending',
+            0,
+            25
+        );
+        self::assertSame(5, $only['total']);
+        foreach ($only['rows'] as $row) {
+            self::assertGreaterThanOrEqual(30, $row['age']);
+        }
+
+        // Anything that is not a whole number of days in range falls back to the
+        // default instead of reaching a query or blanking the page.
+        foreach (['0', '-5', 'abc', '99999', '14 OR 1=1', ''] as $bad) {
+            self::assertSame(
+                QualityMonitoringService::DEFAULT_OVERDUE_DAYS,
+                $service->resolveFilters(['dateRange' => '', 'overdueDays' => $bad])['overdueDays'],
+                "limit '$bad'"
+            );
+        }
     }
 
     #[RunInSeparateProcess]
@@ -283,7 +441,9 @@ final class QualityMonitoringEndpointTest extends TestCase
         // another lab's line.
         $this->seed(['lab_id' => self::OTHER_FACILITY_ID, 'eid_test_platform' => 'Abbott'] + $released);
 
-        $json = $this->drive(['section' => 'samples', 'view' => 'lab', 'dateRange' => '', 'iDisplayLength' => 25]);
+        $json = $this->drive([
+            'section' => 'samples', 'node' => 'atTestingLab', 'dateRange' => '', 'iDisplayLength' => 25,
+        ]);
 
         foreach ($json['aaData'] as $row) {
             self::assertSame(
@@ -326,12 +486,12 @@ final class QualityMonitoringEndpointTest extends TestCase
             return array_values(array_unique(array_column($rows, 'lab')));
         };
 
-        $all = $service->getSamples($service->resolveFilters(['dateRange' => '']), 'lab', 0, 25);
+        $all = $service->getSamples($service->resolveFilters(['dateRange' => '']), 'atTestingLab', 0, 25);
         self::assertSame(5, $all['total'], 'the four already waiting plus the one at Northern Lab');
 
         $genexpert = $service->getSamples(
             $service->resolveFilters(['dateRange' => '', 'instrument' => 'GeneXpert']),
-            'lab',
+            'atTestingLab',
             0,
             25
         );
@@ -340,7 +500,7 @@ final class QualityMonitoringEndpointTest extends TestCase
 
         $abbott = $service->getSamples(
             $service->resolveFilters(['dateRange' => '', 'instrument' => 'Abbott m2000']),
-            'lab',
+            'atTestingLab',
             0,
             25
         );
@@ -403,11 +563,21 @@ final class QualityMonitoringEndpointTest extends TestCase
     #[RunInSeparateProcess]
     public function testEachViewListsOnlyItsOwnSideOldestFirst(): void
     {
-        $json = $this->drive(['section' => 'samples', 'view' => 'lab', 'dateRange' => '', 'iDisplayLength' => 25]);
+        $json = $this->drive([
+            'section' => 'samples', 'node' => 'atTestingLab', 'dateRange' => '', 'iDisplayLength' => 25,
+        ]);
         self::assertSame(4, $json['iTotalRecords'], json_encode($json));
 
-        $ages = array_column($json['aaData'], 'age');
-        self::assertSame([40, 5, 3, 2], $ages, 'oldest first, counted from the most recent milestone');
+        self::assertSame(
+            [100, 100, 9, 6],
+            array_column($json['aaData'], 'age'),
+            'oldest first, counted from collection'
+        );
+        self::assertSame(
+            [40, 2, 5, 3],
+            array_column($json['aaData'], 'stepAge'),
+            'and beside it how long each has been at the step it is in now'
+        );
 
         foreach ($json['aaData'] as $row) {
             self::assertContains($row['stage'], ['atLab', 'awaitingApproval']);
@@ -419,7 +589,9 @@ final class QualityMonitoringEndpointTest extends TestCase
     #[RunInSeparateProcess]
     public function testTheClinicViewIsEverythingNoLabHasReceived(): void
     {
-        $json = $this->drive(['section' => 'samples', 'view' => 'clinic', 'dateRange' => '', 'iDisplayLength' => 25]);
+        $json = $this->drive([
+            'section' => 'samples', 'node' => 'atFacility', 'dateRange' => '', 'iDisplayLength' => 25,
+        ]);
         self::assertSame(3, $json['iTotalRecords'], json_encode($json));
 
         foreach ($json['aaData'] as $row) {
@@ -431,7 +603,9 @@ final class QualityMonitoringEndpointTest extends TestCase
     #[RunInSeparateProcess]
     public function testTheListingCarriesIdentifiersAndNoPatientNames(): void
     {
-        $json = $this->drive(['section' => 'samples', 'view' => 'lab', 'dateRange' => '', 'iDisplayLength' => 25]);
+        $json = $this->drive([
+            'section' => 'samples', 'node' => 'atTestingLab', 'dateRange' => '', 'iDisplayLength' => 25,
+        ]);
 
         $row = null;
         foreach ($json['aaData'] as $candidate) {
@@ -461,7 +635,7 @@ final class QualityMonitoringEndpointTest extends TestCase
     public function testTheProvinceFilterNarrowsToItsOwnFacilities(): void
     {
         $json = $this->drive([
-            'section' => 'samples', 'view' => 'clinic', 'dateRange' => '',
+            'section' => 'samples', 'node' => 'atFacility', 'dateRange' => '',
             'provinceId' => 11, 'iDisplayLength' => 25,
         ]);
         self::assertSame(2, $json['iTotalRecords'], 'the two Riverside samples, not the Hilltop one');
@@ -471,18 +645,18 @@ final class QualityMonitoringEndpointTest extends TestCase
     public function testTheAgeBucketNarrowsToHowLongTheSampleHasWaited(): void
     {
         $json = $this->drive([
-            'section' => 'samples', 'view' => 'clinic', 'dateRange' => '',
+            'section' => 'samples', 'node' => 'atFacility', 'dateRange' => '',
             'bucket' => 'b2', 'iDisplayLength' => 25,
         ]);
-        self::assertSame(1, $json['iTotalRecords'], 'only the one dispatched 20 days ago falls in 15-30');
-        self::assertSame(20, $json['aaData'][0]['age']);
+        self::assertSame(1, $json['iTotalRecords'], 'only the one collected 25 days ago falls in 15-30');
+        self::assertSame(25, $json['aaData'][0]['age']);
     }
 
     #[RunInSeparateProcess]
     public function testTheImplementingPartnerFilterNarrowsTheListing(): void
     {
         $json = $this->drive([
-            'section' => 'samples', 'view' => 'lab', 'dateRange' => '',
+            'section' => 'samples', 'node' => 'atTestingLab', 'dateRange' => '',
             'partnerId' => 7, 'iDisplayLength' => 25,
         ]);
         self::assertSame(1, $json['iTotalRecords'], json_encode($json));
@@ -492,7 +666,9 @@ final class QualityMonitoringEndpointTest extends TestCase
     #[RunInSeparateProcess]
     public function testARecordThatContradictsItselfIsListedAndSaidSoAbout(): void
     {
-        $json = $this->drive(['section' => 'samples', 'view' => 'lab', 'dateRange' => '', 'iDisplayLength' => 25]);
+        $json = $this->drive([
+            'section' => 'samples', 'node' => 'atTestingLab', 'dateRange' => '', 'iDisplayLength' => 25,
+        ]);
 
         $row = null;
         foreach ($json['aaData'] as $candidate) {
@@ -516,7 +692,7 @@ final class QualityMonitoringEndpointTest extends TestCase
     public function testSearchMatchesTheSampleAndTheFacility(): void
     {
         $json = $this->drive([
-            'section' => 'samples', 'view' => 'clinic', 'dateRange' => '',
+            'section' => 'samples', 'node' => 'atFacility', 'dateRange' => '',
             'sSearch' => 'Hilltop', 'iDisplayLength' => 25,
         ]);
         self::assertSame(1, $json['iTotalRecords'], json_encode($json));
@@ -524,9 +700,9 @@ final class QualityMonitoringEndpointTest extends TestCase
     }
 
     #[RunInSeparateProcess]
-    public function testAnUnknownViewIsRefusedRatherThanGuessed(): void
+    public function testAnUnknownCardIsRefusedRatherThanGuessed(): void
     {
-        $json = $this->drive(['section' => 'samples', 'view' => 'everything', 'dateRange' => '']);
+        $json = $this->drive(['section' => 'samples', 'node' => 'everything', 'dateRange' => '']);
         self::assertArrayHasKey('error', $json, json_encode($json));
         self::assertArrayNotHasKey('aaData', $json);
     }
