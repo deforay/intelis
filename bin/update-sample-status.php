@@ -20,6 +20,7 @@ use const SAMPLE_STATUS\TEST_FAILED;
 use App\Registries\ContainerRegistry;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Services\SampleStatusRepairService;
+use App\Services\LabReceiptService;
 use const SAMPLE_STATUS\REORDERED_FOR_TESTING;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
@@ -40,9 +41,16 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var SampleStatusRepairService $statusRepair */
 $statusRepair = ContainerRegistry::get(SampleStatusRepairService::class);
 
+/** @var LabReceiptService $labReceipt */
+$labReceipt = ContainerRegistry::get(LabReceiptService::class);
+
 // How far back the nightly status repair looks. Older rows are the one-time
 // pass in run-once/reconcile-accepted-without-result.php, not this job's work.
 const REPAIR_WINDOW_MONTHS = 6;
+
+// How far back the reception-date sweep looks. Older rows are the one-time pass
+// in run-once/fill-lab-receipt-from-collection.php.
+const RECEIPT_WINDOW_DAYS = 3;
 
 $lockTargetFile = __FILE__;
 
@@ -230,6 +238,22 @@ try {
             if ($isCli && $repair['repaired'] > 0) {
                 echo $repair['repaired'] . " sample(s) put back to what the record proves ("
                     . $repair['datesCleared'] . " copied test date(s) cleared)." . PHP_EOL;
+            }
+            MiscUtility::touchLockFile($lockTargetFile);
+
+            // BLOCK 3b: RECEPTION DATE FALLBACK
+            // The receipt triggers fill this at write time. They are dropped and
+            // reinstalled around every upgrade, so a sample saved in that window
+            // misses them; this closes the gap over the last few days only.
+            // Caught here so a lock timeout on this sweep cannot stop the expiry
+            // and other blocks below from running; tomorrow's sweep covers it.
+            try {
+                $receiptsFilled = $labReceipt->stampMissing($tableName, $primaryKey, RECEIPT_WINDOW_DAYS);
+                if ($isCli && $receiptsFilled > 0) {
+                    echo "$receiptsFilled lab-registered sample(s) given their collection date as reception date." . PHP_EOL;
+                }
+            } catch (Throwable $e) {
+                LoggerUtility::logError('Reception date sweep failed for ' . $tableName . ': ' . $e->getMessage());
             }
             MiscUtility::touchLockFile($lockTargetFile);
 

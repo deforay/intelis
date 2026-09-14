@@ -52,6 +52,15 @@ final class AuditTriggerService
     public const array LEGACY_SUFFIXES = ['ai', 'au', 'bd'];
 
     /**
+     * Reception-date fallback trigger names: <form>_receipt_<suffix>.
+     *
+     * Not audit triggers, but installed and dropped with them so they share the
+     * same upgrade lifecycle and the same bounded lock wait. See
+     * {@see LabReceiptService} for the rule itself.
+     */
+    public const array RECEIPT_SUFFIXES = ['bi', 'bu'];
+
+    /**
      * Non-form tables we also audit, as table => primary key.
      *
      * These predate the form-centric v1 design: the old columnar `_data__`
@@ -337,7 +346,55 @@ END
 SQL;
         }
 
+        return [...$statements, ...$this->buildReceiptTriggersFor($formTable, $cols)];
+    }
+
+    /**
+     * DROP + CREATE for the reception-date fallback triggers on one table, or
+     * nothing when the table lacks a column the rule reads (user_details, or a
+     * form on an instance whose schema predates one of them).
+     *
+     * BEFORE triggers, so the value is part of the row as written: the audit
+     * trigger that fires after it records the filled date, and there is no second
+     * write. Filling an empty column is the whole body. It never overwrites a
+     * value, and it has no SIGNAL, so it cannot make a save fail.
+     *
+     * @param list<string>|null $cols live column list, when the caller already has it
+     * @return list<string>
+     */
+    public function buildReceiptTriggersFor(string $formTable, ?array $cols = null): array
+    {
+        $cols ??= $this->getFormColumns($formTable);
+        if (!LabReceiptService::appliesTo($cols)) {
+            return [];
+        }
+
+        $form = $this->qIdent($formTable);
+        $received = $this->qIdent(LabReceiptService::RECEIVED_COLUMN);
+        $collected = $this->qIdent(LabReceiptService::COLLECTED_COLUMN);
+        $condition = LabReceiptService::needsFallbackSql('NEW');
+
+        $statements = [];
+        foreach (['bi' => 'BEFORE INSERT', 'bu' => 'BEFORE UPDATE'] as $suffix => $timing) {
+            $trigQ = $this->qIdent($this->receiptTriggerName($formTable, $suffix));
+            $statements[] = "DROP TRIGGER IF EXISTS {$trigQ}";
+            $statements[] = <<<SQL
+CREATE TRIGGER {$trigQ} {$timing} ON {$form}
+FOR EACH ROW
+BEGIN
+  IF {$condition} THEN
+    SET NEW.{$received} = NEW.{$collected};
+  END IF;
+END
+SQL;
+        }
+
         return $statements;
+    }
+
+    public function receiptTriggerName(string $formTable, string $suffix): string
+    {
+        return "{$formTable}_receipt_{$suffix}";
     }
 
     /**
@@ -367,6 +424,9 @@ SQL;
         $out = [];
         foreach (self::SUFFIXES as $suffix) {
             $out[] = 'DROP TRIGGER IF EXISTS ' . $this->qIdent($this->newTriggerName($formTable, $suffix));
+        }
+        foreach (self::RECEIPT_SUFFIXES as $suffix) {
+            $out[] = 'DROP TRIGGER IF EXISTS ' . $this->qIdent($this->receiptTriggerName($formTable, $suffix));
         }
         return $out;
     }
