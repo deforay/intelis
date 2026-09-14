@@ -297,3 +297,530 @@
     position: relative;
     font-weight: 600;
 }
+
+/* Patient Test History: find a patient, then one history across every test. */
+.pt-app [hidden] {
+    display: none !important;
+}
+
+.pt-search {
+    max-width: 760px;
+    margin: 18px auto 10px;
+}
+
+.pt-search-form {
+    display: flex;
+    gap: 8px;
+}
+
+.pt-search-field {
+    position: relative;
+    flex: 1 1 auto;
+}
+
+.pt-search-field > em {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8a939c;
+}
+
+.pt-search-field .pt-search-input {
+    height: 44px;
+    padding-left: 40px;
+    font-size: 16px;
+    border-radius: 6px;
+}
+
+.pt-search-button {
+    height: 44px;
+    padding: 0 22px;
+    border-radius: 6px;
+}
+
+.pt-search-hint,
+.pt-muted {
+    color: #72777c;
+    font-size: 12px;
+}
+
+.pt-search-hint {
+    margin: 6px 2px 0;
+}
+
+.pt-message {
+    padding: 28px 12px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.pt-message.pt-error {
+    color: #b02a37;
+}
+
+.pt-result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 760px;
+    margin: 8px auto 0;
+}
+
+.pt-result {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 14px;
+    text-align: left;
+    background: #fff;
+    border: 1px solid #e1e5e9;
+    border-radius: 6px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pt-result:hover,
+.pt-result:focus {
+    border-color: #3c8dbc;
+    box-shadow: 0 1px 4px rgba(60, 141, 188, 0.2);
+    outline: none;
+}
+
+.pt-avatar {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #e3eef6;
+    color: #2a6d94;
+    font-weight: 600;
+}
+
+.pt-avatar-lg {
+    width: 58px;
+    height: 58px;
+    font-size: 20px;
+}
+
+.pt-result-main {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.pt-result-name {
+    color: #1f2d3d;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.pt-result-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    color: #5a6470;
+    font-size: 12px;
+}
+
+.pt-code {
+    font-family: SFMono-Regular, Menlo, Consolas, monospace;
+    color: #1f2d3d;
+}
+
+.pt-result-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.pt-result-date {
+    color: #72777c;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.pt-more {
+    max-width: 760px;
+    margin: 8px auto;
+    text-align: center;
+}
+
+.pt-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.pt-chip {
+    padding: 1px 8px;
+    background: #eef1f4;
+    border-radius: 10px;
+    color: #3a4550;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.pt-toolbar {
+    display: flex;
+    justify-content: space-between;
+    margin: 14px 0 12px;
+}
+
+.pt-patient {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 18px;
+    background: #f7f9fb;
+    border: 1px solid #e4e7ea;
+    border-radius: 6px;
+}
+
+.pt-patient-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.pt-patient-name {
+    margin: 0 0 2px;
+    color: #1f2d3d;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.pt-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    margin: 10px 0 0;
+}
+
+.pt-facts dt {
+    color: #72777c;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.pt-facts dd {
+    margin: 0;
+    color: #1f2d3d;
+}
+
+.pt-patient-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.pt-patient-total {
+    color: #1f2d3d;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1;
+    text-align: right;
+}
+
+.pt-patient-total small {
+    display: block;
+    color: #72777c;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.pt-insights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+    margin: 12px 0;
+}
+
+.pt-insight {
+    padding: 10px 12px;
+    background: #fff;
+    border: 1px solid #e4e7ea;
+    border-left: 4px solid #7f8c8d;
+    border-radius: 4px;
+}
+
+.pt-insight-title {
+    color: #5a6470;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.pt-insight-text {
+    color: #1f2d3d;
+}
+
+.pt-insight.pt-bad {
+    background: #fdf3f4;
+}
+
+.pt-insight.pt-warn {
+    background: #fdf8ec;
+}
+
+.pt-charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+}
+
+.pt-chart {
+    min-width: 0;
+    padding: 6px;
+    border: 1px solid #e4e7ea;
+    border-radius: 6px;
+}
+
+.pt-chart-wide {
+    grid-column: 1 / -1;
+}
+
+.pt-tip {
+    line-height: 1.5;
+}
+
+.pt-history-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 18px 0 6px;
+}
+
+.pt-history-head h4 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.pt-type-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.pt-type-filter {
+    padding: 3px 12px;
+    background: #fff;
+    border: 1px solid #cfd6dc;
+    border-radius: 14px;
+    color: #72777c;
+    font-size: 12px;
+}
+
+.pt-type-filter.active {
+    background: #3c8dbc;
+    border-color: #3c8dbc;
+    color: #fff;
+}
+
+.pt-timeline {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 0;
+    list-style: none;
+}
+
+/* The spine runs through the dots, between the date column and the cards. */
+.pt-timeline::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 118px;
+    width: 2px;
+    background: #e4e7ea;
+}
+
+.pt-year {
+    position: relative;
+    margin: 14px 0 6px;
+    padding-left: 134px;
+    color: #1f2d3d;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.pt-event {
+    position: relative;
+    display: grid;
+    grid-template-columns: 104px 1fr;
+    gap: 30px;
+    align-items: start;
+    margin-bottom: 8px;
+}
+
+.pt-event-date {
+    padding-top: 10px;
+    color: #5a6470;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.pt-dot {
+    position: absolute;
+    top: 13px;
+    left: 113px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px #d2d6de;
+}
+
+.pt-event-card {
+    min-width: 0;
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid #e4e7ea;
+    border-left: 4px solid #7f8c8d;
+    border-radius: 4px;
+}
+
+.pt-event-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+}
+
+.pt-badge {
+    padding: 1px 7px;
+    background: #1f2d3d;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.pt-event-test {
+    color: #3a4550;
+    font-weight: 600;
+}
+
+.pt-event-result {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.pt-status {
+    color: #72777c;
+    font-size: 12px;
+}
+
+.pt-print-result {
+    margin-left: auto;
+    padding: 0;
+}
+
+.pt-event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 16px;
+    margin-top: 4px;
+    color: #3a4550;
+    font-size: 12px;
+}
+
+.pt-meta-label {
+    color: #8a939c;
+}
+
+.pt-tat {
+    color: #5a6470;
+    font-style: italic;
+}
+
+.pt-event-rejection {
+    margin-top: 4px;
+    color: #8e44ad;
+    font-size: 12px;
+}
+
+@media (max-width: 767px) {
+    .pt-result,
+    .pt-patient {
+        flex-wrap: wrap;
+    }
+
+    .pt-result-side,
+    .pt-patient-side {
+        align-items: flex-start;
+    }
+
+    .pt-charts {
+        grid-template-columns: 1fr;
+    }
+
+    .pt-timeline::before {
+        left: 6px;
+    }
+
+    .pt-year {
+        padding-left: 22px;
+    }
+
+    .pt-event {
+        grid-template-columns: 1fr;
+        gap: 2px;
+        padding-left: 22px;
+    }
+
+    .pt-event-date {
+        padding-top: 0;
+        text-align: left;
+    }
+
+    .pt-dot {
+        top: 2px;
+        left: 1px;
+    }
+}
+
+/* Print only the open patient history. */
+@media print {
+    body.pt-printing * {
+        visibility: hidden;
+    }
+
+    body.pt-printing .pt-view,
+    body.pt-printing .pt-view * {
+        visibility: visible;
+    }
+
+    body.pt-printing .pt-view {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    body.pt-printing .pt-toolbar,
+    body.pt-printing .pt-type-filters,
+    body.pt-printing .pt-print-result {
+        display: none !important;
+    }
+
+    body.pt-printing .pt-event,
+    body.pt-printing .pt-chart {
+        break-inside: avoid;
+    }
+}

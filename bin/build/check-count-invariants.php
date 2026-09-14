@@ -48,8 +48,6 @@ const COUNT_RULE_EXEMPT = [
         'pinned to result_status = ACCEPTED, which cancelled cannot be',
     'app/eid/management/getPositiveEidResultDetails.php' =>
         'pinned to result_status = ACCEPTED, which cancelled cannot be',
-    'app/eid/management/getPatientTestHistoryReport.php' =>
-        'pinned to result_status = ACCEPTED, which cancelled cannot be',
     'app/tb/management/getTbCascadeReport.php' =>
         'excludes cancelled by hand, in a two-status NOT IN that a later step '
         . 'string-matches in order to strip it for one sub-report -- switching to the '

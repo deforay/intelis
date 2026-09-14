@@ -533,80 +533,7 @@ $state = $geolocationService->getProvinces("yes");
 											<div id="sampleTestingResultDetails"></div>
 										</div>
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
-											<div class="box box-default filter-panel filter-panel-collapsed">
-												<div class="box-body pageFilters filter-panel-body">
-												<div class="row">
-													<div class="col-md-4 col-sm-6">
-														<div class="form-group">
-															<label class="control-label" for="patientId"><?php echo _translate("Patient ID"); ?></label>
-															<input type="text" id="patientId" name="patientId" class="form-control patientHistoryFilter" placeholder="<?php echo _htmlTranslate('Enter Patient ID'); ?>" style="background:#fff;" />
-														</div>
-													</div>
-													<div class="col-md-4 col-sm-6">
-														<div class="form-group">
-															<label class="control-label" for="patientName"><?php echo _translate("Patient Name"); ?></label>
-															<input type="text" id="patientName" name="patientName" class="form-control patientHistoryFilter" placeholder="<?php echo _htmlTranslate('Enter Patient Name'); ?>" style="background:#fff;" />
-														</div>
-													</div>
-												</div>
-												</div>
-												<div class="box-footer filter-actions">
-													<input type="button" onclick="searchVlRequestData();" value="<?= _htmlTranslate('Search'); ?>" class="filter-search btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
-													<?php echo _translate("Export to excel"); ?>
-													</button>
-												</div>
-											</div>
-											<table aria-describedby="table" id="patientTestHistoryReport" class="table table-bordered table-striped" aria-hidden="true">
-												<thead>
-													<tr>
-														<th>
-															<?php echo _translate("Patient ID"); ?>
-														</th>
-														<th scope="row">
-															<?php echo _translate("Patient Name"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Age"); ?>.
-														</th>
-														<th>
-															<?php echo _translate("DoB"); ?>
-														</th>
-														<th scope="row">
-															<?php echo _translate("Facility Name"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Sample Collection Date"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Sample Type"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Lab Name"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Sample Tested Date"); ?>
-														</th>
-														<th>
-															<?php echo _translate("HCV VL Count"); ?>
-														</th>
-														<th>
-															<?php echo _translate("HBV VL Count"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Download PDF"); ?>
-														</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td colspan="12" class="dataTables_empty">
-															<?php echo _translate("Loading data from server"); ?>
-														</td>
-													</tr>
-												</tbody>
-											</table>
+											<?php require APPLICATION_PATH . '/reports/_patient-timeline-tab.php'; ?>
 										</div>
 									</div>
 								</div>
@@ -624,13 +551,13 @@ $state = $geolocationService->getProvinces("yes");
 <script type="text/javascript" src="<?= _asset('/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 <link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/clinic-reports.css') ?>">
 <script type="text/javascript" src="<?= _asset('/assets/js/clinic-reports.js') ?>"></script>
+<script type="text/javascript" src="<?= _asset('/assets/js/patient-timeline.js') ?>"></script>
 <script type="text/javascript">
 	let searchExecuted = false;
 	var oTableViralLoad = null;
 	var oTableRjtReport = null;
 	var oTablenotAvailReport = null;
 	var oTableincompleteReport = null;
-	var oTablepatientTestHistoryReport = null;
 	$(document).ready(function() {
 		$("#state,#rjtState,#noResultState,#stState").select2({
 			placeholder: "<?php echo _jsTranslate("Select Province"); ?>",
@@ -676,7 +603,6 @@ $state = $geolocationService->getProvinces("yes");
 		ClinicReports.registerTab('notAvailReport', { init: notAvailReport, table: function () { return oTablenotAvailReport; } });
 		ClinicReports.registerTab('incompleteFormReport', { init: incompleteForm, table: function () { return oTableincompleteReport; } });
 		ClinicReports.registerTab('sampleTestingReport', { init: getSampleTestingResult, search: sampleTestingReport });
-		ClinicReports.registerTab('patientTestHistoryFormReport', { init: patientHistoryReport, table: function () { return oTablepatientTestHistoryReport; } });
 		/* Filters copied in from another tab are applied with a namespaced
 		   event, so the change handlers above never see them. The last
 		   search no longer matches what is on screen. */
@@ -684,7 +610,7 @@ $state = $geolocationService->getProvinces("yes");
 			searchExecuted = false;
 		});
 		ClinicReports.start();
-		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select, #patientTestHistoryFormReport input").on("change", function() {
+		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select").on("change", function() {
 			searchExecuted = false;
 		});
 	});
@@ -994,71 +920,6 @@ $state = $geolocationService->getProvinces("yes");
 		});
 	}
 
-	function patientHistoryReport() {
-				oTablepatientTestHistoryReport = $('#patientTestHistoryReport').dataTable({
-			"bJQueryUI": false,
-			"bAutoWidth": false,
-			"bInfo": true,
-			"bScrollCollapse": true,
-			//"bStateSave" : true,
-			"bRetrieve": true,
-			"aoColumns": [{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-			],
-			"aaSorting": [
-				[8, "desc"]
-			],
-			"bProcessing": true,
-			"bServerSide": true,
-			"sAjaxSource": "get-patient-test-history-report.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
-				aoData.push({
-					"name": "patientId",
-					"value": $("#patientId").val()
-				});
-				aoData.push({
-					"name": "patientName",
-					"value": $("#patientName").val()
-				});
-				ClinicReports.serverData(sSource, aoData, fnCallback);
-			}
-		});
-	}
 
 	/* Every tab is a server-side table over its own endpoint, so redrawing all
 	   of them cost a query per tab to look at one. Only the visible tab is
@@ -1172,27 +1033,6 @@ $state = $geolocationService->getProvinces("yes");
 			});
 	}
 
-	function exportPatientTesthistoryInexcel() {
-		/* The export replays the query the last search stored in the session,
-		   so it has to wait for that search rather than race it. */
-		if (!searchExecuted) {
-			return searchVlRequestData().then(exportPatientTesthistoryInexcel);
-		}
-		$.blockUI();
-		$.post("/hepatitis/management/hepatitis-patient-test-history-in-excel.php", {
-				patient_id: $("#patientId").val(),
-				patient_name: $("#patientName").val()
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
-	}
 
 	/* Copies the range just picked into the other tabs' date filters -- but only
 	   into the ones that mean the same thing by it. The tabs do not all date a
@@ -1275,27 +1115,6 @@ $state = $geolocationService->getProvinces("yes");
 		return currentXHR;
 	}
 
-	function generateResultPDF(id) {
-		$.blockUI();
-		<?php
-		$path = '';
-		$path = '/hepatitis/results/generate-result-pdf.php';
-		?>
-		$.post("<?php echo $path; ?>", {
-				source: 'print',
-				id: id
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?= _jsTranslate("Unable to generate download"); ?>");
-				} else {
-					$.unblockUI();
-					oTablepatientTestHistoryReport.fnDraw();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
-	}
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';
