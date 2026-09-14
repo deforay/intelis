@@ -93,8 +93,8 @@ final class TestResultsService
         $testName = TestsService::getTestTypes();
         $tableName = $testName[$testType]['tableName'];
         $primaryKey = $testName[$testType]['primaryKey'];
-        $this->db->where("$primaryKey IN (" . $emailInfo['samples'] . ")");
-        $result = $this->db->get($tableName, null, "result_dispatched_datetime,form_attributes,is_result_mail_sent");
+        $this->db->where("$primaryKey IN (" . $this->db->inIntList($emailInfo['samples']) . ")");
+        $result = $this->db->get($tableName, null, "$primaryKey,result_dispatched_datetime,form_attributes,is_result_mail_sent");
         foreach ($result as $val) {
             if (!empty($val['form_attributes'])) {
                 $formAttributes = json_decode((string) $val['form_attributes']);
@@ -109,6 +109,9 @@ final class TestResultsService
                 $data['result_dispatched_datetime'] = DateUtility::getCurrentDateTime();
             }
 
+            // get() clears the where(), so each update names its own row; without
+            // this, one emailed sample marked every sample in the table.
+            $this->db->where($primaryKey, $val[$primaryKey]);
             $this->db->update($tableName, $data);
         }
     }
