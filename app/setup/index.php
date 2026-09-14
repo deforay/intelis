@@ -276,7 +276,7 @@ $testName = TestsService::getTestTypes();
     </div>
 
 
-    <div id="loginbox" style="margin-top:80px;float:right;" class="mainbox col-md-6 col-sm-8 ">
+    <div style="margin-top:80px;float:right;" class="mainbox col-md-6 col-sm-8 ">
       <div class="panel panel-default" style="opacity: 0.98;">
 
         <div style="padding-top:10px;" class="panel-body">

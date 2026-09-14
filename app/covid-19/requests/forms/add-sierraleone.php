@@ -684,9 +684,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="district" class="col-lg-4 control-label">District <span class="mandatory">*</span></label>
+                                    <label for="newFacilityDistrict" class="col-lg-4 control-label">District <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="district" name="district" placeholder="District" title="Please enter district" />
+                                        <input type="text" class="form-control isRequired" id="newFacilityDistrict" name="district" placeholder="District" title="Please enter district" />
                                     </div>
                                 </div>
                             </div>

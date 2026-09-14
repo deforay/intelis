@@ -412,7 +412,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												<?php echo _translate("Report Format For VL"); ?>
 											</label>
 											<div class="col-lg-7">
-												<select class="form-control" name='reportFormat[vl]' id='reportFormat' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
+												<select class="form-control" name='reportFormat[vl]' id='reportFormatVl' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
 													<?php if ($count > 1) { ?>
 														<option value="">
 															<?php echo _translate("-- Select --"); ?>
@@ -437,7 +437,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												<?php echo _translate("Report Format For EID"); ?>
 											</label>
 											<div class="col-lg-7">
-												<select class="form-control" name='reportFormat[eid]' id='reportFormat' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
+												<select class="form-control" name='reportFormat[eid]' id='reportFormatEid' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
 													<?php if (($count > 1)) { ?>
 														<option value="">
 															<?php echo _translate("-- Select --"); ?>
@@ -462,7 +462,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												<?php echo _translate("Report Format For Covid-19"); ?>
 											</label>
 											<div class="col-lg-7">
-												<select class="form-control" name='reportFormat[covid19]' id='reportFormat' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
+												<select class="form-control" name='reportFormat[covid19]' id='reportFormatCovid19' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
 													<?php if (($count > 1)) { ?>
 														<option value="">
 															<?php echo _translate("-- Select --"); ?>
@@ -487,7 +487,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												<?php echo _translate("Report Format For Hepatitis"); ?>
 											</label>
 											<div class="col-lg-7">
-												<select class="form-control" name='reportFormat[hepatitis]' id='reportFormat' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
+												<select class="form-control" name='reportFormat[hepatitis]' id='reportFormatHepatitis' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
 													<?php if (($count > 1)) { ?>
 														<option value="">
 															<?php echo _translate("-- Select --"); ?>
@@ -512,7 +512,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												<?php echo _translate("Report Format For TB"); ?>
 											</label>
 											<div class="col-lg-7">
-												<select class="form-control" name='reportFormat[tb]' id='reportFormat' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
+												<select class="form-control" name='reportFormat[tb]' id='reportFormatTb' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
 													<?php if (($count > 1)) { ?>
 														<option value="">
 															<?php echo _translate("-- Select --"); ?>

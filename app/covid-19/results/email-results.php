@@ -199,8 +199,8 @@ $batchResult = $db->rawQuery($batchQuery);
 												<?php echo _translate("Urgency"); ?>&nbsp;:
 											</strong></td>
 										<td class="">
-											<input type="radio" name="urgency" title="<?php echo _translate('Please choose urgency type'); ?>" class="urgent" id="urgentYes" value="normal" />&nbsp;&nbsp;<?php echo _translate("Normal"); ?>
-											<input type="radio" name="urgency" title="<?php echo _translate('Please choose urgency type'); ?>" class="urgent" id="urgentYes" value="urgent" />&nbsp;&nbsp;<?php echo _translate("Urgent"); ?>
+											<input type="radio" name="urgency" title="<?php echo _translate('Please choose urgency type'); ?>" class="urgent" id="urgencyNormal" value="normal" />&nbsp;&nbsp;<?php echo _translate("Normal"); ?>
+											<input type="radio" name="urgency" title="<?php echo _translate('Please choose urgency type'); ?>" class="urgent" id="urgencyUrgent" value="urgent" />&nbsp;&nbsp;<?php echo _translate("Urgent"); ?>
 										</td>
 									</tr>
 									<tr>

@@ -590,14 +590,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                         <td colspan="2" style="text-align:center;">
                                             <input type="radio" class="form-check" name="serologicalTest"
-                                                id="serologicalTest" value="positive" <?php echo (isset($_SESSION['eidData']['serological_test']) && !empty($_SESSION['eidData']['serological_test']) && $_SESSION['eidData']['serological_test'] == 'positive') ? 'selected="selected"' : ''; ?> />&nbsp;&nbsp;<label
-                                                for="positive"><?= _translate('Positive'); ?></label>&nbsp;&nbsp;&nbsp;
+                                                id="serologicalTestPositive" value="positive" <?php echo (isset($_SESSION['eidData']['serological_test']) && !empty($_SESSION['eidData']['serological_test']) && $_SESSION['eidData']['serological_test'] == 'positive') ? 'selected="selected"' : ''; ?> />&nbsp;&nbsp;<label
+                                                for="serologicalTestPositive"><?= _translate('Positive'); ?></label>&nbsp;&nbsp;&nbsp;
                                             <input type="radio" class="form-check" name="serologicalTest"
-                                                id="serologicalTest" value="negative" <?php echo (isset($_SESSION['eidData']['serological_test']) && !empty($_SESSION['eidData']['serological_test']) && $_SESSION['eidData']['serological_test'] == 'negative') ? 'selected="selected"' : ''; ?> />&nbsp;&nbsp;<label
-                                                for="negative"><?= _translate('Negative'); ?>&nbsp;&nbsp;&nbsp;
+                                                id="serologicalTestNegative" value="negative" <?php echo (isset($_SESSION['eidData']['serological_test']) && !empty($_SESSION['eidData']['serological_test']) && $_SESSION['eidData']['serological_test'] == 'negative') ? 'selected="selected"' : ''; ?> />&nbsp;&nbsp;<label
+                                                for="serologicalTestNegative"><?= _translate('Negative'); ?>&nbsp;&nbsp;&nbsp;
                                                 <input type="radio" class="form-check" name="serologicalTest"
-                                                    id="serologicalTest" value="notdone" <?php echo (isset($_SESSION['eidData']['serological_test']) && !empty($_SESSION['eidData']['serological_test']) && $_SESSION['eidData']['serological_test'] == 'notdone') ? 'selected="selected"' : ''; ?> />&nbsp;&nbsp;<label
-                                                    for="notdone"><?= _translate('Not Done'); ?>&nbsp;&nbsp;&nbsp;
+                                                    id="serologicalTestNotDone" value="notdone" <?php echo (isset($_SESSION['eidData']['serological_test']) && !empty($_SESSION['eidData']['serological_test']) && $_SESSION['eidData']['serological_test'] == 'notdone') ? 'selected="selected"' : ''; ?> />&nbsp;&nbsp;<label
+                                                    for="serologicalTestNotDone"><?= _translate('Not Done'); ?>&nbsp;&nbsp;&nbsp;
                                         </td>
                                     </tr>
                                     <tr>
@@ -627,10 +627,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 name="pcr1TestResult" id="pcr1TestResult" /><br>
                                             <input type="text" class="form-control input-sm"
                                                 value="<?php echo $_SESSION['eidData']['pcr_2_test_result']; ?>"
-                                                name="pcr2TestResult" id="pcr1TestResult" /><br>
+                                                name="pcr2TestResult" id="pcr2TestResult" /><br>
                                             <input type="text" class="form-control input-sm"
                                                 value="<?php echo $_SESSION['eidData']['pcr_3_test_result']; ?>"
-                                                name="pcr3TestResult" id="pcr1TestResult" /><br>
+                                                name="pcr3TestResult" id="pcr3TestResult" /><br>
 
                                         </td>
                                         <td><br><br><br>

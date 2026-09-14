@@ -561,10 +561,10 @@ if ($showInterfaceConnections) {
 							$count = count($reportFormats['vl']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
-									<label for="reportFormat"
+									<label for="reportFormatVl"
 										class="col-lg-4 control-label"><?php echo _translate("Report Format For VL"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='reportFormat[vl]' id='reportFormat'
+										<select class="form-control" name='reportFormat[vl]' id='reportFormatVl'
 											title="<?php echo _translate('Please select the status'); ?>"
 											onchange="checkIfExist(this);">
 											<?php if ($count > 1) { ?>
@@ -586,10 +586,10 @@ if ($showInterfaceConnections) {
 							$count = count($reportFormats['eid']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
-									<label for="reportFormat"
+									<label for="reportFormatEid"
 										class="col-lg-4 control-label"><?php echo _translate("Report Format For EID"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='reportFormat[eid]' id='reportFormat'
+										<select class="form-control" name='reportFormat[eid]' id='reportFormatEid'
 											title="<?php echo _translate('Please select the status'); ?>"
 											onchange="checkIfExist(this);">
 											<?php if (($count > 1)) { ?>
@@ -610,10 +610,10 @@ if ($showInterfaceConnections) {
 							$count = count($reportFormats['covid19']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
-									<label for="reportFormat"
+									<label for="reportFormatCovid19"
 										class="col-lg-4 control-label"><?php echo _translate("Report Format For Covid-19"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='reportFormat[covid19]' id='reportFormat'
+										<select class="form-control" name='reportFormat[covid19]' id='reportFormatCovid19'
 											title="<?php echo _translate('Please select the status'); ?>"
 											onchange="checkIfExist(this);">
 											<?php if (($count > 1)) { ?>
@@ -635,10 +635,10 @@ if ($showInterfaceConnections) {
 							$count = count($reportFormats['hepatitis']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
-									<label for="reportFormat"
+									<label for="reportFormatHepatitis"
 										class="col-lg-4 control-label"><?php echo _translate("Report Format For Hepatitis"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='reportFormat[hepatitis]' id='reportFormat'
+										<select class="form-control" name='reportFormat[hepatitis]' id='reportFormatHepatitis'
 											title="<?php echo _translate('Please select the status'); ?>"
 											onchange="checkIfExist(this);">
 											<?php if (($count > 1)) { ?>
@@ -658,10 +658,10 @@ if ($showInterfaceConnections) {
 							$count = count($reportFormats['tb']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
-									<label for="reportFormat"
+									<label for="reportFormatTb"
 										class="col-lg-4 control-label"><?php echo _translate("Report Format For TB"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='reportFormat[tb]' id='reportFormat'
+										<select class="form-control" name='reportFormat[tb]' id='reportFormatTb'
 											title="<?php echo _translate('Please select the status'); ?>"
 											onchange="checkIfExist(this);">
 											<?php if (($count > 1)) { ?>

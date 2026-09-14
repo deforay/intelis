@@ -571,7 +571,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</th>
 										<td>
 											<select class="form-control isRequired"
-												name="isCotrimoxazoleBeingAdministered" id="choiceOfFeeding">
+												name="isCotrimoxazoleBeingAdministered" id="isCotrimoxazoleBeingAdministered">
 												<option value=''> <?= _translate("-- Select --"); ?> </option>
 												<option value="no"> Non </option>
 												<option value="Yes, takes CTX everyday"> Oui, prend CTX chaque jour
