@@ -4,119 +4,50 @@
  * the results themselves below the fold on anything smaller than a desktop.
  */
 
-.report-filter-box {
+.filter-panel {
     margin-top: 15px;
-}
-
-/* One row: title, what the tab is filtered to, and the chevron. */
-.report-filter-header {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    cursor: pointer;
-}
-
-.report-filter-header .box-title {
-    flex: 0 0 auto;
-    margin: 0;
-}
-
-.report-filter-header .box-tools.pull-right {
-    position: static;
-    float: none;
-    flex: 0 0 auto;
-    margin: 0 0 0 auto;
-    padding: 0;
-}
-
-.report-filter-box .box-title {
-    font-size: 15px;
-    font-weight: 600;
-}
-
-/* What the tab is filtered to, readable while the panel is collapsed. */
-.report-filter-summary {
-    display: none;
-    flex: 1 1 auto;
-    min-width: 0;
-    color: #72777c;
-    font-size: 12px;
-    line-height: 20px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.report-filter-summary.is-visible {
-    display: block;
 }
 
 /* Floated columns of unequal height snag on each other and leave holes in the
    grid; the filters are a plain wrapping row, so let them be one. */
-.report-filter-box .box-body > .row {
+.filter-panel .box-body > .row {
     display: flex;
     flex-wrap: wrap;
 }
 
-.report-filter-box .box-body > .row > [class*="col-"] {
+.filter-panel .box-body > .row > [class*="col-"] {
     float: none;
 }
 
-.report-filter-box .form-group {
+.filter-panel .form-group {
     margin-bottom: 12px;
 }
 
-.report-filter-box label.control-label {
+.filter-panel label.control-label {
     display: block;
     margin-bottom: 4px;
     font-weight: 600;
 }
 
-.report-filter-box .form-control,
-.report-filter-box .select2-container {
+.filter-panel .form-control,
+.filter-panel .select2-container {
     width: 100% !important;
 }
 
-.report-filter-box .filter-actions {
-    padding: 8px 10px;
-}
-
-.report-filter-box .filter-actions .btn {
-    margin-right: 5px;
-}
-
-/* With the filters folded away there is nothing to search or reset, so those
-   two go. Export acts on the results already on screen and stays -- running a
-   search is usually the step before exporting it. */
-.report-filter-box.report-filter-collapsed .filter-actions .btn:not(.filter-export):not(.filter-expand) {
-    display: none;
-}
-
-/* A chevron in the corner of a panel is not an obvious way back to the filters.
-   Collapsed, the way back is a button sitting beside the export. */
-.report-filter-box .filter-actions .filter-expand {
-    display: none;
-}
-
-.report-filter-box.report-filter-collapsed .filter-actions .filter-expand {
-    display: inline-block;
-}
-
 /* An age range is one filter in two boxes; keep it inside its column. */
-.report-filter-box .form-group .input-pair {
+.filter-panel .form-group .input-pair {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.report-filter-box .input-pair-sep {
+.filter-panel .input-pair-sep {
     color: #72777c;
     font-size: 12px;
 }
 
 /* Drag for a range, type for an exact one; the two stay in step. */
-.report-filter-box .range-slider {
+.filter-panel .range-slider {
     margin: 14px 6px 4px;
     height: 6px;
     background: #e4e7ea;
@@ -124,12 +55,12 @@
     border-radius: 3px;
 }
 
-.report-filter-box .range-slider .ui-slider-range {
+.filter-panel .range-slider .ui-slider-range {
     background: #3c8dbc;
     border-radius: 3px;
 }
 
-.report-filter-box .range-slider .ui-slider-handle {
+.filter-panel .range-slider .ui-slider-handle {
     width: 16px;
     height: 16px;
     top: -5px;
@@ -139,10 +70,4 @@
     border-radius: 50%;
     cursor: pointer;
     outline: none;
-}
-
-@media (max-width: 767px) {
-    .report-filter-summary {
-        display: none !important;
-    }
 }

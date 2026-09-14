@@ -107,7 +107,7 @@
        "Sample Collection Date") stay apart. */
     function labelledControls(paneId) {
         var map = {};
-        pane(paneId).find('.report-filter-box label.control-label').each(function () {
+        pane(paneId).find('.filter-panel label.control-label').each(function () {
             var key = $.trim($(this).text());
             var el = $('#' + $(this).attr('for'));
             if (key && el.length) {
@@ -212,13 +212,8 @@
 
     /* ------------------------------------------------------- filter summary */
 
-    function controlLabel(el) {
-        return $.trim(el.closest('.form-group').find('label.control-label').first().text());
-    }
-
     /* The placeholder option carries an empty value, and a multi-select reports
-       it as [""] rather than [] -- enough to read as a chosen facility and put
-       "Facility: -- Select --" in the summary. Empty values are not filters. */
+       it as [""] rather than []. Empty values are not filters. */
     function setValues(el) {
         var value = el.val();
         if (value === null || typeof value === 'undefined') {
@@ -227,48 +222,6 @@
         return $.grep($.isArray(value) ? value : [value], function (v) {
             return $.trim(String(v)) !== '';
         });
-    }
-
-    function displayValue(el) {
-        if (el.is('select')) {
-            var texts = el.find('option:selected').map(function () {
-                return $.trim($(this).val()) === '' ? null : $.trim($(this).text());
-            }).get();
-            return texts.join(', ');
-        }
-        return $.trim(el.val());
-    }
-
-    /* A filter counts as applied when it holds a value at all: the placeholder
-       option is empty, so what is left is what the tab is actually filtered to.
-       Comparing against the value the page opened with would hide the date
-       range, which is the one filter always in force and worth showing. */
-    function isApplied(el) {
-        return !el.is(':disabled') && setValues(el).length > 0;
-    }
-
-    function updateSummary(box) {
-        var applied = [];
-        box.find('select, input[type="text"], input[type="number"], textarea').each(function () {
-            var el = $(this);
-            if (isApplied(el)) {
-                var label = controlLabel(el);
-                var value = displayValue(el);
-                if (label && value) {
-                    applied.push(label + ': ' + value);
-                }
-            }
-        });
-        var summary = box.find('.report-filter-summary').first();
-        if (applied.length === 0) {
-            summary.text('').removeClass('is-visible');
-            return;
-        }
-        var shown = applied.slice(0, 2).join(' · ');
-        if (applied.length > 2) {
-            shown += ' · +' + (applied.length - 2);
-        }
-        summary.text(shown).attr('title', applied.join('\n')).addClass('is-visible');
     }
 
     /* The app-wide highlighter tints a filter that holds a value, which is how
@@ -280,33 +233,10 @@
         }
     }
 
+    /* Folding, the summary and the Expand button are the shared FilterPanel in
+       main.js.php. */
     function updateSummaries(scope) {
-        (scope || $(document)).find('.report-filter-box').each(function () {
-            updateSummary($(this));
-        });
-    }
-
-    /* Only the filters fold. The button bar sits below them and stays, but with
-       the filters hidden there is nothing to search, so Search and Reset go and
-       Export -- which acts on the results already on screen, and is usually why
-       the search was run -- stays, next to the button that brings the filters
-       back. Which buttons show is a matter for the stylesheet. */
-    function toggleFilters(box, collapsed) {
-        var grid = box.find('.box-body').first();
-        var icon = box.find('.report-filter-toggle em').first();
-        box.toggleClass('report-filter-collapsed', collapsed);
-        icon.toggleClass('fa-minus', !collapsed).toggleClass('fa-plus', collapsed);
-        if (collapsed) {
-            grid.slideUp(150);
-        } else {
-            grid.slideDown(150);
-        }
-    }
-
-    function collapse(box) {
-        if (box.length && !box.hasClass('report-filter-collapsed')) {
-            toggleFilters(box, true);
-        }
+        window.FilterPanel.refresh(scope.find('.filter-panel'));
     }
 
     /* --------------------------------------------------------- range slider */
@@ -406,9 +336,8 @@
         searchActive: function () {
             var paneId = activePane();
             draw(paneId);
-            var box = pane(paneId).find('.report-filter-box').first();
-            updateSummary(box);
-            collapse(box);
+            var box = pane(paneId).find('.filter-panel').first();
+            window.FilterPanel.collapse(box);
             if (pending === 0) {
                 return $.Deferred().resolve().promise();
             }
@@ -422,16 +351,10 @@
         start: function () {
             var previous = activePane();
 
-            $('.report-filter-box').each(function () {
-                var box = $(this);
-                box.on('change', 'select, input, textarea', function () {
-                    $(this).data('cr-touched', true);
-                    updateSummary(box);
-                });
-                updateSummary(box);
+            $('.filter-panel').on('change', 'select, input, textarea', function () {
+                $(this).data('cr-touched', true);
             });
 
-            /* The whole header is the hit area; the chevron keeps working. */
             initRangeSliders();
 
             /* The pregnancy and breastfeeding filters open enabled with no sex
@@ -441,16 +364,6 @@
                 if (typeof this.onchange === 'function') {
                     this.onchange();
                 }
-            });
-
-            $(document).on('click', '.filter-expand', function () {
-                toggleFilters($(this).closest('.report-filter-box'), false);
-            });
-
-            /* The whole header is the hit area, the chevron included. */
-            $(document).on('click', '.report-filter-header', function () {
-                var box = $(this).closest('.report-filter-box');
-                toggleFilters(box, !box.hasClass('report-filter-collapsed'));
             });
 
             $('a[data-toggle="tab"]').on('shown.bs.tab', function () {

@@ -167,15 +167,8 @@ $implementingPartnerList = $general->getImplementationPartners();
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
-											<div class="box box-default report-filter-box">
-												<div class="box-header with-border report-filter-header">
-													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
-													<span class="report-filter-summary"></span>
-													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
-													</div>
-												</div>
-												<div class="box-body pageFilters">
+											<div class="box box-default filter-panel">
+												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -348,7 +341,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 														<div class="form-group">
 															<label class="control-label" for="patientInfo"><?php echo _translate("Export with Patient Name"); ?></label>
 															<select name="patientInfo" id="patientInfo"
-															class="form-control select2 highViralLoadReportFilter"
+															class="form-control filter-panel-ignore select2 highViralLoadReportFilter"
 															title="<?php echo _htmlTranslate('Please choose community sample'); ?>">
 															<option value="yes">
 															<?php echo _translate("Yes"); ?>
@@ -379,7 +372,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<input type="button"
 													onclick="searchVlRequestData();"
 													value="<?= _htmlTranslate('Search'); ?>"
@@ -450,15 +442,8 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</table>
 										</div>
 										<div class="tab-pane fade" id="highVlVirologicFailureReport">
-											<div class="box box-default report-filter-box">
-												<div class="box-header with-border report-filter-header">
-													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
-													<span class="report-filter-summary"></span>
-													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
-													</div>
-												</div>
-												<div class="box-body pageFilters">
+											<div class="box box-default filter-panel">
+												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -610,7 +595,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<button onclick="vfVlnsExportInexcel();" value="Search"
 													class="filter-export btn btn-success btn-sm"><em
 													class="fa-solid fa-cloud-arrow-down"></em><span><?php echo _translate(" Generate report"); ?></span></button>
@@ -620,15 +604,8 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</div>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
-											<div class="box box-default report-filter-box">
-												<div class="box-header with-border report-filter-header">
-													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
-													<span class="report-filter-summary"></span>
-													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
-													</div>
-												</div>
-												<div class="box-body pageFilters">
+											<div class="box box-default filter-panel">
+												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -819,7 +796,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 														<div class="form-group">
 															<label class="control-label" for="patientRejectedInfo"><?php echo _translate("Export with Patient Name"); ?></label>
 															<select name="patientRejectedInfo" id="patientRejectedInfo"
-															class="form-control select2 sampleRjtReportFilter"
+															class="form-control filter-panel-ignore select2 sampleRjtReportFilter"
 															title="<?php echo _htmlTranslate('Please choose community sample'); ?>">
 															<option value="yes">
 															<?php echo _translate("Yes"); ?>
@@ -850,7 +827,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<input type="button"
 													onclick="searchVlRequestData();"
 													value="<?= _htmlTranslate('Search'); ?>"
@@ -914,15 +890,8 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</table>
 										</div>
 										<div class="tab-pane fade" id="notAvailReport">
-											<div class="box box-default report-filter-box">
-												<div class="box-header with-border report-filter-header">
-													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
-													<span class="report-filter-summary"></span>
-													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
-													</div>
-												</div>
-												<div class="box-body pageFilters">
+											<div class="box box-default filter-panel">
+												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -1088,7 +1057,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 														<div class="form-group">
 															<label class="control-label" for="patientNtAvailInfo"><?php echo _translate("Export with Patient Name"); ?></label>
 															<select name="patientNtAvailInfo" id="patientNtAvailInfo"
-															class="form-control select2 notAvailReportFilter"
+															class="form-control filter-panel-ignore select2 notAvailReportFilter"
 															title="<?php echo _htmlTranslate('Please choose community sample'); ?>">
 															<option value="yes">
 															<?php echo _translate("Yes"); ?>
@@ -1131,7 +1100,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<input type="button"
 													onclick="searchVlRequestData();"
 													value="<?= _htmlTranslate('Search'); ?>"
@@ -1192,15 +1160,8 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</table>
 										</div>
 										<div class="tab-pane fade" id="incompleteFormReport">
-											<div class="box box-default report-filter-box">
-												<div class="box-header with-border report-filter-header">
-													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
-													<span class="report-filter-summary"></span>
-													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
-													</div>
-												</div>
-												<div class="box-body pageFilters">
+											<div class="box box-default filter-panel">
+												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -1261,7 +1222,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 														<div class="form-group">
 															<label class="control-label" for="patientVlQualityInfo"><?php echo _translate("Export with Patient Name"); ?></label>
 															<select name="patientVlQualityInfo" id="patientVlQualityInfo"
-															class="form-control select2 incompleteFormReportFilter"
+															class="form-control filter-panel-ignore select2 incompleteFormReportFilter"
 															title="<?php echo _htmlTranslate('Please choose community sample'); ?>">
 															<option value="yes">
 															<?php echo _translate("Yes"); ?>
@@ -1307,7 +1268,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<input type="button"
 													onclick="searchVlRequestData();"
 													value="<?= _htmlTranslate('Search'); ?>"
@@ -1380,15 +1340,8 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleTestingReport" style="width: 100%; overflow-x: auto;">
-											<div class="box box-default report-filter-box">
-												<div class="box-header with-border report-filter-header">
-													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
-													<span class="report-filter-summary"></span>
-													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
-													</div>
-												</div>
-												<div class="box-body pageFilters">
+											<div class="box box-default filter-panel">
+												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -1460,7 +1413,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<input type="button"
 													onclick="sampleTestingReport();"
 													value="<?= _htmlTranslate('Search'); ?>"
@@ -1478,15 +1430,8 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</figure>
 										</div>
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
-											<div class="box box-default report-filter-box">
-												<div class="box-header with-border report-filter-header">
-													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
-													<span class="report-filter-summary"></span>
-													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
-													</div>
-												</div>
-												<div class="box-body pageFilters">
+											<div class="box box-default filter-panel">
+												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -1526,7 +1471,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													<input type="button" onclick="searchVlRequestData();"
 													value="<?= _htmlTranslate('Search'); ?>"
 													class="btn btn-success btn-sm">

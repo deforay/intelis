@@ -866,10 +866,183 @@ $remoteURL = $general->getRemoteURL();
         }
     }
 
+    /*
+     * Collapsible filter panel. Any page opts in with classes alone:
+     *
+     *   <div class="filter-panel">                 folds, gets a "Filters" header
+     *     <div class="filter-panel-body">...</div>  the controls; this part folds
+     *     <div class="filter-actions">              optional button bar, stays put
+     *       <button class="filter-search">          collapses the panel when clicked
+     *       <button class="filter-export">          stays visible while collapsed
+     *       <button class="filter-keep">            same, for non-export buttons
+     *
+     * Collapsed, the other buttons in the bar hide (there is nothing to search
+     * or reset) and an "Expand Filters" button appears. The header shows what
+     * the panel is filtered to. Add "filter-panel-collapsed" to the panel to
+     * start folded. A page that sets filters without a change event can call
+     * FilterPanel.refresh(panel); FilterPanel.collapse(panel) folds it from code.
+     */
+    window.FilterPanel = (function() {
+        function body(panel) {
+            return panel.find('.filter-panel-body').first();
+        }
+
+        function labelFor(el) {
+            let label = el.attr('id') ? $('label[for="' + el.attr('id') + '"]').first() : $();
+            if (!label.length) {
+                label = el.closest('.form-group').find('label').first();
+            }
+            // Older layouts put a bold caption just before the control, or in
+            // the table cell before the one holding it
+            if (!label.length) {
+                label = el.prevAll('strong, b, label').first();
+            }
+            if (!label.length) {
+                const cell = el.closest('td').prev('td');
+                label = cell.find('select, input, textarea').length ? $() : cell;
+            }
+            return $.trim(label.text()).replace(/\s*:$/, '');
+        }
+
+        // The placeholder option is empty, and a multi-select reports it as
+        // [""], so empty values are dropped rather than read as a filter.
+        function valueText(el) {
+            if (el.is(':disabled')) {
+                return '';
+            }
+            if (el.is('select')) {
+                return el.find('option:selected').map(function() {
+                    return $.trim($(this).val()) === '' ? null : $.trim($(this).text());
+                }).get().join(', ');
+            }
+            return $.trim(el.val() || '');
+        }
+
+        // Every applied filter is shown as a chip; clicking one opens the panel
+        // on that control. Controls that shape the output rather than the
+        // results (export options, say) carry filter-panel-ignore.
+        function refresh(panel) {
+            $(panel).each(function() {
+                const summary = $(this).find('.filter-panel-summary').first().empty();
+                $(this).find('.filter-panel-body')
+                    .find('select, input[type="text"], input[type="number"], textarea')
+                    .not('.select2-search__field, .filter-panel-ignore, .filter-panel-ignore *')
+                    .each(function() {
+                        const el = $(this);
+                        const label = labelFor(el);
+                        const value = valueText(el);
+                        if (!label || !value) {
+                            return;
+                        }
+                        $('<button type="button" class="filter-panel-chip">')
+                            .attr('title', label + ': ' + value)
+                            .append($('<span class="filter-panel-chip-label">').text(label))
+                            .append($('<span class="filter-panel-chip-value">').text(value))
+                            .data('control', el)
+                            .appendTo(summary);
+                    });
+                summary.toggleClass('is-visible', summary.children().length > 0);
+            });
+        }
+
+        function toggle(panel, collapsed) {
+            panel = $(panel).first();
+            if (!panel.length) {
+                return;
+            }
+            if (typeof collapsed === 'undefined') {
+                collapsed = !panel.hasClass('filter-panel-collapsed');
+            }
+            panel.toggleClass('filter-panel-collapsed', collapsed);
+            panel.find('.filter-panel-toggle em').first()
+                .toggleClass('fa-minus', !collapsed).toggleClass('fa-plus', collapsed);
+            if (collapsed) {
+                refresh(panel);
+                body(panel).slideUp(150);
+            } else {
+                body(panel).slideDown(150);
+            }
+        }
+
+        function init(panel) {
+            panel = $(panel);
+            if (panel.data('filter-panel')) {
+                return;
+            }
+            panel.data('filter-panel', true);
+
+            // Built with text() and attr() so a translation holding a quote or
+            // markup character stays text
+            if (!panel.children('.filter-panel-header').length) {
+                const title = $('<h3 class="box-title">')
+                    .append('<em class="fa-solid fa-filter"></em> ')
+                    .append(document.createTextNode("<?= _jsTranslate("Filters"); ?>"));
+                const toggleButton = $('<button type="button" class="btn btn-box-tool filter-panel-toggle"><em class="fa fa-minus"></em></button>')
+                    .attr('title', "<?= _jsTranslate("Show or hide filters"); ?>");
+                $('<div class="box-header with-border filter-panel-header">')
+                    .append(title)
+                    .append('<span class="filter-panel-summary"></span>')
+                    .append($('<div class="box-tools pull-right">').append(toggleButton))
+                    .prependTo(panel);
+            }
+            const actions = panel.find('.filter-actions').first();
+            if (actions.length && !actions.find('.filter-expand').length) {
+                $('<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> </button>')
+                    .append(document.createTextNode("<?= _jsTranslate("Expand Filters"); ?>"))
+                    .prependTo(actions)
+                    .after(' ');
+            }
+            if (panel.hasClass('filter-panel-collapsed')) {
+                body(panel).hide();
+                panel.find('.filter-panel-toggle em').first().removeClass('fa-minus').addClass('fa-plus');
+            }
+            panel.on('change', '.filter-panel-body', function() {
+                refresh(panel);
+            });
+            refresh(panel);
+        }
+
+        $(document).on('click', '.filter-panel-chip', function(e) {
+            e.stopPropagation();
+            const control = $(this).data('control');
+            toggle($(this).closest('.filter-panel'), false);
+            setTimeout(function() {
+                control[0].scrollIntoView({ block: 'center', behavior: 'smooth' });
+                if (control.hasClass('select2-hidden-accessible')) {
+                    control.select2('open');
+                } else {
+                    control.trigger('focus');
+                }
+            }, 200);
+        });
+        $(document).on('click', '.filter-panel-header', function() {
+            toggle($(this).closest('.filter-panel'));
+        });
+        $(document).on('click', '.filter-panel .filter-expand', function() {
+            toggle($(this).closest('.filter-panel'), false);
+        });
+        $(document).on('click', '.filter-panel .filter-search', function() {
+            toggle($(this).closest('.filter-panel'), true);
+        });
+
+        return {
+            init: init,
+            refresh: refresh,
+            collapse: function(panel) {
+                toggle(panel, true);
+            },
+            expand: function(panel) {
+                toggle(panel, false);
+            }
+        };
+    })();
+
 
     $(document).ready(function() {
 
-
+        $('.filter-panel').each(function() {
+            window.FilterPanel.init(this);
+        });
 
         if ($(".pageFilters").length > 0) {
             // Initialize filter highlighter. The handle is kept so a page that

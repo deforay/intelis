@@ -377,6 +377,99 @@ body.sidebar-collapse .vlsm-sidebar-allbtn {
     /* Added shadow here too for consistency */
 }
 
+/* Collapsible filter panel (FilterPanel in main.js.php). Header row: title,
+   what the panel is filtered to, and the chevron. */
+.filter-panel-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.filter-panel-header .box-title {
+    flex: 0 0 auto;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.filter-panel-header .box-tools.pull-right {
+    position: static;
+    float: none;
+    flex: 0 0 auto;
+    margin: 0 0 0 auto;
+    padding: 0;
+}
+
+.filter-panel-summary {
+    display: none;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.filter-panel-summary.is-visible {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* One applied filter: field name muted, value bold. Clicking opens that field. */
+.filter-panel-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    max-width: 100%;
+    padding: 2px 9px;
+    border: 1px solid #d2e3ef;
+    border-radius: 12px;
+    background: #f2f8fc;
+    color: #333;
+    font-size: 12px;
+    line-height: 18px;
+    cursor: pointer;
+}
+
+.filter-panel-chip:hover,
+.filter-panel-chip:focus {
+    border-color: #3c8dbc;
+    background: #e3f0f8;
+    outline: none;
+}
+
+.filter-panel-chip-label {
+    color: #72777c;
+    white-space: nowrap;
+}
+
+.filter-panel-chip-value {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.filter-panel .filter-actions {
+    display: flow-root;
+    padding: 8px 10px;
+}
+
+.filter-panel .filter-actions .btn {
+    margin-right: 5px;
+}
+
+/* Folded, there is nothing to search or reset; Export (and anything marked
+   filter-keep) acts on the results on screen and stays, beside the button that
+   brings the filters back. */
+.filter-panel.filter-panel-collapsed .filter-actions .btn:not(.filter-export):not(.filter-keep):not(.filter-expand),
+.filter-panel .filter-actions .filter-expand {
+    display: none;
+}
+
+.filter-panel.filter-panel-collapsed .filter-actions .filter-expand {
+    display: inline-block;
+}
+
 /* Add smooth transition */
 input:not([type="checkbox"]):not([type="radio"]),
 select,
