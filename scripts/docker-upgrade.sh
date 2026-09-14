@@ -128,10 +128,10 @@ if [ "$skip_code_update" = false ]; then
     trap 'rm -rf "$temp_dir"' EXIT
 
     if command -v wget >/dev/null 2>&1; then
-        wget -q -O "$temp_dir/master.tar.gz" \
+        wget -q --max-redirect=0 -O "$temp_dir/master.tar.gz" \
             "https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master"
     elif command -v curl >/dev/null 2>&1; then
-        curl -sL -o "$temp_dir/master.tar.gz" \
+        curl -fsSL --proto =https --proto-redir =https -o "$temp_dir/master.tar.gz" \
             "https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master"
     else
         echo "Error: Neither wget nor curl found."
@@ -184,17 +184,17 @@ if [ "$need_composer_install" = true ]; then
            "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz"; then
 
         echo "Downloading pre-built vendor packages..."
-        curl -sL -o /tmp/vendor.tar.gz \
+        curl -fsSL --proto =https --proto-redir =https -o /tmp/vendor.tar.gz \
             "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz"
-        curl -sL -o /tmp/vendor.tar.gz.md5 \
-            "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.md5"
+        curl -fsSL --proto =https --proto-redir =https -o /tmp/vendor.tar.gz.sha256 \
+            "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.sha256"
 
-        if (cd /tmp && md5sum -c vendor.tar.gz.md5 >/dev/null 2>&1); then
+        if (cd /tmp && sha256sum -c vendor.tar.gz.sha256 >/dev/null 2>&1); then
             echo "Extracting vendor packages..."
             tar -xzf /tmp/vendor.tar.gz -C "$lis_path"
             vendor_downloaded=true
         fi
-        rm -f /tmp/vendor.tar.gz /tmp/vendor.tar.gz.md5
+        rm -f /tmp/vendor.tar.gz /tmp/vendor.tar.gz.sha256
     fi
 
     # Run composer install in the web container

@@ -133,7 +133,7 @@ SETUP_CWD="$(pwd)"
 cleanup_on_exit() {
     [ -n "${temp_dir:-}" ] && rm -rf "${temp_dir}" 2>/dev/null || true
     rm -f "${SETUP_CWD}/master.tar.gz" "${SETUP_CWD}/lamp-setup.sh" 2>/dev/null || true
-    [ -n "${lis_path:-}" ] && rm -f "${lis_path}/vendor.tar.gz" "${lis_path}/vendor.tar.gz.md5" 2>/dev/null || true
+    [ -n "${lis_path:-}" ] && rm -f "${lis_path}/vendor.tar.gz" "${lis_path}/vendor.tar.gz.sha256" 2>/dev/null || true
     # Plaintext decrypted from an encrypted backup must never be left on disk.
     [ -n "${_GPG_DECRYPT_TMP:-}" ] && rm -rf "${_GPG_DECRYPT_TMP}" 2>/dev/null || true
 }
@@ -1281,14 +1281,14 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
         fi
 
         # Download the checksum file
-        download_file "vendor.tar.gz.md5" "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.md5" "Downloading checksum file..."
+        download_file "vendor.tar.gz.sha256" "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.sha256" "Downloading checksum file..."
         if [ $? -ne 0 ]; then
-            print error "Failed to download vendor.tar.gz.md5"
+            print error "Failed to download vendor.tar.gz.sha256"
             exit 1
         fi
 
         print info "Verifying checksum..."
-        if ! md5sum -c vendor.tar.gz.md5; then
+        if ! sha256sum -c vendor.tar.gz.sha256; then
             print error "Checksum verification failed"
             exit 1
         fi
@@ -1308,7 +1308,7 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
 
         # Clean up downloaded files
         rm vendor.tar.gz
-        rm vendor.tar.gz.md5
+        rm vendor.tar.gz.sha256
 
         # Fix permissions on the vendor directory
         print info "Setting permissions on vendor directory..."
