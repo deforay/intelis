@@ -52,15 +52,8 @@ $state = $geolocationService->getProvinces("yes");
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="sampleTestingReport">
-											<div class="box box-default report-filter-box">
-												<div class="box-header with-border report-filter-header">
-													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
-													<span class="report-filter-summary"></span>
-													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
-													</div>
-												</div>
-												<div class="box-body pageFilters">
+											<div class="box box-default filter-panel">
+												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -94,7 +87,6 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _htmlTranslate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('stReportFilter');"><span>
 													<?= _translate("Reset"); ?>
@@ -109,15 +101,8 @@ $state = $geolocationService->getProvinces("yes");
 											</figure>
 										</div>
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
-											<div class="box box-default report-filter-box">
-												<div class="box-header with-border report-filter-header">
-													<h3 class="box-title"><em class="fa-solid fa-filter"></em> <?php echo _translate("Filters"); ?></h3>
-													<span class="report-filter-summary"></span>
-													<div class="box-tools pull-right">
-														<button type="button" class="btn btn-box-tool report-filter-toggle" title="<?php echo _htmlTranslate("Show or hide filters"); ?>"><em class="fa fa-minus"></em></button>
-													</div>
-												</div>
-												<div class="box-body pageFilters">
+											<div class="box box-default filter-panel">
+												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
@@ -134,7 +119,6 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<button type="button" class="filter-expand btn btn-default btn-sm"><em class="fa-solid fa-filter"></em> <?php echo _translate("Expand Filters"); ?></button>
 													<input type="button" onclick="searchVlRequestData();" value="<?= _htmlTranslate('Search'); ?>" class="btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('patientHistoryFilter');">
 													<span><?= _translate('Reset'); ?></span>
