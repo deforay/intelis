@@ -26396,3 +26396,199 @@ msgstr ""
 #: app/reports/sample-ageing.php
 msgid "-- All Implementing Partners --"
 msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "%s at this step"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "%s: %s"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "A lab has the sample and no approved result yet"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "A lab is holding these samples and no approved result has come out of them yet. Only the lab side can say what is holding them."
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Add note to selected"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "At the collection site"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "At the testing lab"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Awaiting test"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Days At Current Step"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Days Since Collection"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Enter a whole number of days from 1 to %s"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Every EID sample whose result has not yet reached the facility, shown by where it is held. Select a card, or a number in the breakdown, to list those samples."
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Every pending sample, whichever side is holding it. Each side can add notes only to the samples it is holding."
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Every sample whose result has not yet reached the facility"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Facility has not collected or downloaded the result"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "In the finished module this comes from the signed-in role. It is a switch here so both sides of the workflow can be seen in one sitting."
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "No pending samples for the selected filters"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "No samples are pending here for the selected filters"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Not tested yet. Includes failed, on hold and reordered"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Oldest Collected"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Only overdue (%s+ days)"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Overdue (%s+ days)"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Overdue after"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Pending samples by"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Received at hub"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Received at lab"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Result approved, not yet printed or sent"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Result delivery"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Result dispatched"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Result is ready, but it has not been printed, dispatched, e-mailed, sent to an EMR or pulled over the API, so the facility does not have it"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Result printed"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Result ready, not yet delivered"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Saved against the author name and the time it is saved. A note cannot be edited or removed afterwards; add a follow-up note instead."
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Select a number to list those samples below. The filters above apply to this table too."
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Select every sample on this page"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "The lab has an approved result for these samples, and it has not been printed, sent or downloaded. Only the lab side can say what is holding them."
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "These samples are held by the other side of the workflow. Their notes can be read here, but only that side can add to them."
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "These samples were registered at a collection point and no lab has recorded receiving them. Only the clinic side can say what is holding them."
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Total pending samples"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Turnaround targets differ by country and by test. Pick the limit that applies, or type any number of days. It sets the overdue counts on the cards above, in this table and in the sample list."
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Waiting Since"
+msgstr ""
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Waiting for transport back to the facility"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "What is holding these samples?"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Why has this result not reached the facility yet?"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Why has this sample not reached the testing lab yet?"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Why is there no result for this sample yet?"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "You"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "days"
+msgstr ""
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "overdue"
+msgstr ""

@@ -20376,7 +20376,7 @@ msgstr "Période de prélèvement"
 
 #: app/eid/qa/eid-quality-monitoring.php:399
 msgid "Waiting For"
-msgstr "En attente depuis"
+msgstr "Durée d'attente"
 
 #: app/eid/qa/eid-quality-monitoring.php:401
 msgid "-- Any length of time --"
@@ -35402,6 +35402,170 @@ msgstr "Format ISO"
 #: public/assets/js/smart-date-format.js.php:757
 msgid "German Format"
 msgstr "Format allemand"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "%s at this step"
+msgstr "%s à cette étape"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "%s: %s"
+msgstr "%s : %s"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "A lab has the sample and no approved result yet"
+msgstr "Un laboratoire a l'échantillon, sans résultat validé pour l'instant"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "At the collection site"
+msgstr "Au site de prélèvement"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "At the testing lab"
+msgstr "Au laboratoire d'analyse"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Awaiting test"
+msgstr "En attente d'analyse"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Days At Current Step"
+msgstr "Jours à l'étape actuelle"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Days Since Collection"
+msgstr "Jours depuis le prélèvement"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Enter a whole number of days from 1 to %s"
+msgstr "Saisissez un nombre entier de jours de 1 à %s"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Every EID sample whose result has not yet reached the facility, shown by where it is held. Select a card, or a number in the breakdown, to list those samples."
+msgstr "Chaque échantillon EID dont le résultat n'est pas encore parvenu à l'établissement, présenté selon l'endroit où il est retenu. Sélectionnez une carte, ou un nombre dans la répartition, pour lister ces échantillons."
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Every pending sample, whichever side is holding it. Each side can add notes only to the samples it is holding."
+msgstr "Chaque échantillon en attente, quel que soit le côté qui le détient. Chaque côté ne peut ajouter des notes qu'aux échantillons qu'il détient."
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Every sample whose result has not yet reached the facility"
+msgstr "Chaque échantillon dont le résultat n'est pas encore parvenu à l'établissement"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Facility has not collected or downloaded the result"
+msgstr "L'établissement n'a ni récupéré ni téléchargé le résultat"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "In the finished module this comes from the signed-in role. It is a switch here so both sides of the workflow can be seen in one sitting."
+msgstr "Dans le module finalisé, cela dépend du rôle de l'utilisateur connecté. C'est un sélecteur ici, afin de voir les deux côtés du circuit en une seule fois."
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "No pending samples for the selected filters"
+msgstr "Aucun échantillon en attente pour les filtres sélectionnés"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "No samples are pending here for the selected filters"
+msgstr "Aucun échantillon n'est en attente ici pour les filtres sélectionnés"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Not tested yet. Includes failed, on hold and reordered"
+msgstr "Pas encore analysé. Inclut les échecs, les échantillons en suspens et les réanalyses demandées"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Oldest Collected"
+msgstr "Prélèvement le plus ancien"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Only overdue (%s+ days)"
+msgstr "Uniquement en retard (%s+ jours)"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Overdue (%s+ days)"
+msgstr "En retard (%s+ jours)"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Overdue after"
+msgstr "En retard après"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Pending samples by"
+msgstr "Échantillons en attente par"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Received at hub"
+msgstr "Reçu au hub"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Received at lab"
+msgstr "Reçu au laboratoire"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Result approved, not yet printed or sent"
+msgstr "Résultat validé, pas encore imprimé ni envoyé"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Result delivery"
+msgstr "Transmission du résultat"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Result dispatched"
+msgstr "Résultat transmis"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Result is ready, but it has not been printed, dispatched, e-mailed, sent to an EMR or pulled over the API, so the facility does not have it"
+msgstr "Le résultat est prêt, mais il n'a pas été imprimé, transmis, envoyé par e-mail, envoyé vers un DME ni récupéré via l'API : l'établissement ne l'a donc pas"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Result printed"
+msgstr "Résultat imprimé"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Result ready, not yet delivered"
+msgstr "Résultat prêt, pas encore transmis"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Saved against the author name and the time it is saved. A note cannot be edited or removed afterwards; add a follow-up note instead."
+msgstr "Enregistré avec le nom de l'auteur et l'heure d'enregistrement. Une note ne peut être ni modifiée ni supprimée par la suite ; ajoutez plutôt une note de suivi."
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Select a number to list those samples below. The filters above apply to this table too."
+msgstr "Sélectionnez un nombre pour lister ces échantillons ci-dessous. Les filtres ci-dessus s'appliquent aussi à ce tableau."
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "The lab has an approved result for these samples, and it has not been printed, sent or downloaded. Only the lab side can say what is holding them."
+msgstr "Le laboratoire dispose d'un résultat validé pour ces échantillons, mais il n'a été ni imprimé, ni envoyé, ni téléchargé. Seul le côté laboratoire peut indiquer ce qui les retient."
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "These samples are held by the other side of the workflow. Their notes can be read here, but only that side can add to them."
+msgstr "Ces échantillons sont détenus par l'autre côté du circuit. Leurs notes peuvent être consultées ici, mais seul ce côté peut en ajouter."
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Total pending samples"
+msgstr "Total des échantillons en attente"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Turnaround targets differ by country and by test. Pick the limit that applies, or type any number of days. It sets the overdue counts on the cards above, in this table and in the sample list."
+msgstr "Les délais cibles varient selon le pays et selon le test. Choisissez le seuil qui s'applique, ou saisissez un nombre de jours. Il détermine le nombre d'échantillons en retard sur les cartes ci-dessus, dans ce tableau et dans la liste des échantillons."
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Waiting Since"
+msgstr "En attente depuis"
+
+#: app/classes/Services/QualityMonitoringService.php
+msgid "Waiting for transport back to the facility"
+msgstr "En attente du transport de retour vers l'établissement"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "What is holding these samples?"
+msgstr "Qu'est-ce qui retient ces échantillons ?"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "Why has this result not reached the facility yet?"
+msgstr "Pourquoi ce résultat n'est-il pas encore parvenu à l'établissement ?"
+
+#: app/eid/qa/eid-quality-monitoring.php
+msgid "overdue"
+msgstr "en retard"
 
 #~ msgid "Patient Id"
 #~ msgstr "ID Patient"
