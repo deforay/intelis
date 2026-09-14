@@ -117,7 +117,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                     </ul>
                                     <div id="myTabContent" class="tab-content">
                                         <div class="tab-pane fade in active" id="notPrintedData">
-                                            <table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                                            <div class="filter-panel filter-panel-collapsed">
+                                            <table aria-describedby="table" class="table pageFilters filter-panel-body" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                                                 <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
@@ -184,14 +185,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                         <?= _manifestFilter('manifestCode', 'eid', 'collection'); ?>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
-                                                        &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-                                                        &nbsp;<button class="btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _translate("Manage Columns"); ?></span></button>
-                                                    </td>
-                                                </tr>
-
                                             </table>
+                                            <div class="filter-actions">
+                                                <button type="button" onclick="searchVlRequestData();" class="filter-search btn btn-success btn-sm">
+                                                    <?= _htmlTranslate("Search"); ?>
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="document.location.href = document.location">
+                                                    <?= _htmlTranslate('Reset'); ?>
+                                                </button>
+                                                <button type="button" class="filter-keep btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;">
+                                                    <?= _htmlTranslate("Manage Columns"); ?>
+                                                </button>
+                                            </div>
+                                            </div>
                                             <span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="showhide" class="">
                                                 <button class="btn btn-default btn-sm result-pdf-without-print" style="display:none;" onclick="convertSearchResultToPdf('');"><span><?php echo _translate("Print Result PDF"); ?></span></button>
                                                 <div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
@@ -302,7 +308,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                             <input type="hidden" name="totalSamplesList" id="totalSamplesList" />
                                         </div>
                                         <div class="tab-pane fade" id="printedData">
-                                            <table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                                            <div class="filter-panel filter-panel-collapsed">
+                                            <table aria-describedby="table" class="table pageFilters filter-panel-body" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                                                 <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
@@ -370,14 +377,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                         <?= _manifestFilter('printManifestCode', 'eid', 'collection'); ?>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
-                                                        &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-                                                        &nbsp;<button class="btn btn-primary btn-sm" onclick="$('#printShowhide').fadeToggle();return false;"><span><?php echo _translate("Manage Columns"); ?></span></button>
-                                                    </td>
-                                                </tr>
-
                                             </table>
+                                            <div class="filter-actions">
+                                                <button type="button" onclick="searchPrintedVlRequestData();" class="filter-search btn btn-success btn-sm">
+                                                    <?= _htmlTranslate("Search"); ?>
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="document.location.href = document.location">
+                                                    <?= _htmlTranslate('Reset'); ?>
+                                                </button>
+                                                <button type="button" class="filter-keep btn btn-primary btn-sm" onclick="$('#printShowhide').fadeToggle();return false;">
+                                                    <?= _htmlTranslate("Manage Columns"); ?>
+                                                </button>
+                                            </div>
+                                            </div>
                                             <span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="printShowhide" class="">
                                                 <button class="btn btn-default btn-sm result-pdf-without-printed" style="display:none;" onclick="convertSearchResultToPdf('','printData');"><span><?php echo _translate("Print Result PDF"); ?></span></button>
                                                 <div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">

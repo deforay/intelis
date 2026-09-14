@@ -132,7 +132,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="notPrintedData">
-											<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
+											<div class="filter-panel filter-panel-collapsed">
+											<table aria-describedby="table" class="table pageFilters filter-panel-body" aria-hidden="true"
 												style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
 													<td><strong>
@@ -290,23 +291,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 														<?= _manifestFilter('manifestCode', 'vl', 'collection'); ?>
 													</td>
 												</tr>
-												<tr>
-													<td colspan="6">&nbsp;<input type="button"
-															onclick="searchVlRequestData();"
-															value="<?= _translate('Search'); ?>"
-															class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="document.location.href = document.location"><span>
-																<?= _translate('Reset'); ?>
-															</span></button>
-
-														&nbsp;<button class="btn btn-primary btn-sm"
-															onclick="$('#showhide').fadeToggle();return false;"><span>
-																<?php echo _translate("Manage Columns"); ?>
-															</span></button>
-													</td>
-												</tr>
 											</table>
+											<div class="filter-actions">
+												<button type="button" onclick="searchVlRequestData();" class="filter-search btn btn-success btn-sm">
+													<?= _htmlTranslate('Search'); ?>
+												</button>
+												<button type="button" class="btn btn-danger btn-sm" onclick="document.location.href = document.location">
+													<?= _htmlTranslate('Reset'); ?>
+												</button>
+												<button type="button" class="filter-keep btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;">
+													<?= _htmlTranslate("Manage Columns"); ?>
+												</button>
+											</div>
+											</div>
 											<span
 												style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;"
 												id="showhide" class="">
@@ -501,7 +498,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											<input type="hidden" name="totalSamplesList" id="totalSamplesList" />
 										</div>
 										<div class="tab-pane fade" id="printedData">
-											<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
+											<div class="filter-panel filter-panel-collapsed">
+											<table aria-describedby="table" class="table pageFilters filter-panel-body" aria-hidden="true"
 												style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
 													<td><strong>
@@ -660,23 +658,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 														<?= _manifestFilter('printManifestCode', 'vl', 'collection'); ?>
 													</td>
 												</tr>
-												<tr>
-													<td colspan="6">&nbsp;<input type="button"
-															onclick="searchPrintedVlRequestData();"
-															value="<?= _translate('Search'); ?>"
-															class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="document.location.href = document.location"><span>
-																<?= _translate('Reset'); ?>
-															</span></button>
-														&nbsp;<button class="btn btn-primary btn-sm"
-															onclick="$('#printShowhide').fadeToggle();return false;"><span>
-																<?php echo _translate("Manage Columns"); ?>
-															</span></button>
-													</td>
-												</tr>
-
 											</table>
+											<div class="filter-actions">
+												<button type="button" onclick="searchPrintedVlRequestData();" class="filter-search btn btn-success btn-sm">
+													<?= _htmlTranslate('Search'); ?>
+												</button>
+												<button type="button" class="btn btn-danger btn-sm" onclick="document.location.href = document.location">
+													<?= _htmlTranslate('Reset'); ?>
+												</button>
+												<button type="button" class="filter-keep btn btn-primary btn-sm" onclick="$('#printShowhide').fadeToggle();return false;">
+													<?= _htmlTranslate("Manage Columns"); ?>
+												</button>
+											</div>
+											</div>
 											<span
 												style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;"
 												id="printShowhide" class="">

@@ -79,7 +79,7 @@ if ($formId == COUNTRY\CAMEROON) {
 	<section class="content">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="box filter-panel">
+				<div class="box filter-panel filter-panel-collapsed">
 					<table id="filterDiv" aria-describedby="table" class="table pageFilters filter-panel-body" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 
@@ -333,7 +333,7 @@ if ($formId == COUNTRY\CAMEROON) {
 									<?php echo _translate("Export with Patient ID and Name"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="patientInfo" id="patientInfo" class="form-control filter-panel-ignore" title="<?php echo _htmlTranslate('Please choose community sample'); ?>" style="width:100%;">
+								<select name="patientInfo" id="patientInfo" class="form-control filter-panel-ignore" title="<?= _htmlTranslate('Choose whether to include patient ID and name in the export'); ?>" style="width:100%;">
 									<option value="yes">
 										<?php echo _translate("Yes"); ?>
 									</option>

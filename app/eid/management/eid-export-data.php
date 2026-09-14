@@ -76,11 +76,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	<section class="content">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="box" id="filterDiv">
-					<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+				<div class="box filter-panel filter-panel-collapsed" id="filterDiv">
+					<table aria-describedby="table" class="table pageFilters filter-panel-body" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 
-							<th scope="row"><?php echo _translate("Sample Test Date"); ?></th>
+							<td><strong><?= _htmlTranslate("Sample Test Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
@@ -119,25 +119,25 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 						</tr>
 						<tr>
-							<th scope="row"><?php echo _translate("Facility Name"); ?></th>
+							<td><strong><?= _htmlTranslate("Facility Name"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
-							<th scope="row"><?php echo _translate("Testing Lab"); ?></th>
+							<td><strong><?= _htmlTranslate("Testing Lab"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="testingLab" name="testingLab" title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-							<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
+							<td><strong><?= _htmlTranslate("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 						</tr>
 						<tr>
-							<th scope="row"><?php echo _translate("Result"); ?> </th>
+							<td><strong><?= _htmlTranslate("Result"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" id="result" name="result" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
@@ -147,11 +147,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 								</select>
 							</td>
 
-							<th scope="row"><?php echo _translate("Last Print Date"); ?></th>
+							<td><strong><?= _htmlTranslate("Last Print Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control" placeholder="<?php echo _translate('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							<th scope="row"><?php echo _translate("Status"); ?></th>
+							<td><strong><?= _htmlTranslate("Status"); ?>&nbsp;:</strong></td>
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" multiple="multiple" style="width:220px;">
 									<option value="<?= SAMPLE_STATUS\ACCEPTED; ?>"><?php echo _translate("Accepted"); ?></option>
@@ -169,7 +169,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<td>
 								<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
 							</td>
-							<th scope="row"><?php echo _translate("Funding Sources"); ?></th>
+							<td><strong><?= _htmlTranslate("Funding Sources"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _translate('Please choose funding source'); ?>">
 									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
@@ -179,7 +179,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									<?php } ?>
 								</select>
 							</td>
-							<th scope="row"><?php echo _translate("Implementing Partners"); ?></th>
+							<td><strong><?= _htmlTranslate("Implementing Partners"); ?>&nbsp;:</strong></td>
 							<td>
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _translate('Please choose implementing partner'); ?>">
 									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
@@ -195,7 +195,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<tr>
 							<td><strong><?php echo _translate("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
 							<td>
-								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
+								<select name="patientInfo" id="patientInfo" class="form-control filter-panel-ignore" title="<?= _htmlTranslate('Choose whether to include patient ID and name in the export'); ?>" style="width:100%;">
 									<option value="yes"><?php echo _translate("Yes"); ?></option>
 									<option value="no"><?php echo _translate("No"); ?></option>
 								</select>
@@ -232,19 +232,21 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							</td>
 						</tr>
 
-						<tr>
-							<td colspan="6">
-								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>
-
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Clear Search"); ?></span></button>
-
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('export-eid-results.php')"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Download"); ?></button>
-
-								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _translate("Manage Columns"); ?></span></button>
-							</td>
-						</tr>
-
 					</table>
+					<div class="filter-actions">
+						<button type="button" onclick="searchVlRequestData();" class="filter-search btn btn-primary btn-sm"><span>
+								<?= _htmlTranslate("Search"); ?>
+							</span></button>
+						<button type="button" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+								<?= _htmlTranslate("Clear Search"); ?>
+							</span></button>
+						<button class="filter-export btn btn-sm btn-success" type="button" onclick="exportInexcel('export-eid-results.php')"><em class="fa-solid fa-cloud-arrow-down"></em>
+							<?= _htmlTranslate("Download"); ?>
+						</button>
+						<button type="button" class="filter-keep btn btn-sm btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span>
+								<?= _htmlTranslate("Manage Columns"); ?>
+							</span></button>
+					</div>
 					<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="showhide" class="">
 						<div class="row" style="background:#e0e0e0;padding: 15px;margin-top: -25px;">
 							<div class="col-md-12">
