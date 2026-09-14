@@ -15,3 +15,15 @@ ALTER TABLE `user_page_usage` ADD UNIQUE KEY `uniq_user_page_day_session` (`user
 ALTER TABLE `user_page_usage` DROP INDEX `uniq_user_page_day`;
 
 UPDATE `system_config` SET `value` = '5.7.67' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

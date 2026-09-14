@@ -1,6 +1,7 @@
 <?php
 
-use App\Utilities\SampleCountUtility;
+use App\Utilities\SampleStatusUtility;
+use App\Services\SampleStatusDetailsService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -20,14 +21,14 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-if (isset($_POST['type']) && trim((string) $_POST['type']) === 'recency') {
-    $recencyWhere = " sample.reason_for_vl_testing = 9999 ";
+$isRecency = isset($_POST['type']) && trim((string) $_POST['type']) === 'recency';
+$testType = $isRecency ? 'recency' : 'vl';
+if ($isRecency) {
     $sampleStatusOverviewContainer = "recencySampleStatusOverviewContainer";
     $samplesVlOverview = "recencySmplesVlOverview";
     $samplesResultview = "recencySampleResultView";
     $labAverageTat = "recencyLabAverageTat";
 } else {
-    $recencyWhere = " IFNULL(sample.reason_for_vl_testing, 0) != 9999 ";
     $sampleStatusOverviewContainer = "vlSampleStatusOverviewContainer";
     $samplesVlOverview = "vlSmplesVlOverview";
     $samplesResultview = "vlSampleResultView";
@@ -35,62 +36,14 @@ if (isset($_POST['type']) && trim((string) $_POST['type']) === 'recency') {
 }
 
 /*
- * One filter set for the whole page. The status pie, the suppression pie and
- * the turnaround time chart all used to build their own subsets of these
- * conditions, so changing the collection date or batch code moved some charts
- * and left others showing a different population.
+ * One filter set for the whole page. The status pie, the suppression pie, the
+ * turnaround time chart and the drilldown behind each status slice all read it
+ * from SampleStatusDetailsService, so a slice and the samples listed under it
+ * always describe the same population.
  */
-$filters = [];
-$params = [];
-
-$filters[] = SampleCountUtility::countableWhere('sample');
-if (!$general->isSTSInstance()) {
-    $filters[] = " sample.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-}
-if (!empty($_SESSION['facilityMap'])) {
-    $filters[] = " sample.facility_id IN (" . $_SESSION['facilityMap'] . ")";
-}
-if ($labScope = $general->labScopeWhere('sample')) {
-    $filters[] = $labScope;
-}
-$filters[] = $recencyWhere;
-
-if (!empty($_POST['batchCode'])) {
-    $filters[] = ' batch.batch_code = ?';
-    $params[] = (string) $_POST['batchCode'];
-}
-if (!empty($_POST['sampleCollectionDate'])) {
-    [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
-    if ($startDate !== '' && $endDate !== '') {
-        $filters[] = " DATE(sample.sample_collection_date) BETWEEN ? AND ?";
-        $params[] = $startDate;
-        $params[] = $endDate;
-    }
-}
-if (!empty($_POST['sampleReceivedDateAtLab'])) {
-    [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab']);
-    if ($labStartDate !== '' && $labEndDate !== '') {
-        $filters[] = " DATE(sample.sample_received_at_lab_datetime) BETWEEN ? AND ?";
-        $params[] = $labStartDate;
-        $params[] = $labEndDate;
-    }
-}
-if (!empty($_POST['sampleTestedDate'])) {
-    [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate']);
-    if ($testedStartDate !== '' && $testedEndDate !== '') {
-        $filters[] = " DATE(sample.sample_tested_datetime) BETWEEN ? AND ?";
-        $params[] = $testedStartDate;
-        $params[] = $testedEndDate;
-    }
-}
-if (!empty($_POST['sampleType'])) {
-    $filters[] = ' sample.specimen_type = ?';
-    $params[] = (int) $_POST['sampleType'];
-}
-if (!empty($_POST['labName'])) {
-    $filters[] = ' sample.lab_id = ?';
-    $params[] = (int) $_POST['labName'];
-}
+/** @var SampleStatusDetailsService $statusDetails */
+$statusDetails = ContainerRegistry::get(SampleStatusDetailsService::class);
+[$filters, $params] = $statusDetails->conditions($testType, $_POST);
 
 $whereCondition = implode(" AND ", $filters);
 
@@ -101,20 +54,6 @@ $suppression = "VL Suppression";
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
-
-$sampleStatusColors = [];
-
-$sampleStatusColors[1] = "#dda41b"; // HOLD
-$sampleStatusColors[2] = "#9a1c64"; // LOST
-$sampleStatusColors[3] = "#c5c5c5ff"; // Sample Reordered
-$sampleStatusColors[4] = "#d8424d"; // Rejected
-$sampleStatusColors[5] = "#000000"; // Invalid
-$sampleStatusColors[6] = "#e2d44b"; // Sample Received at lab
-$sampleStatusColors[7] = "#639e11"; // Accepted
-$sampleStatusColors[8] = "#7f22e8"; // Sent to Lab
-$sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
-$sampleStatusColors[10] = "#f0ad4e"; // NO_RESULT
-$sampleStatusColors[11] = "#20c997"; // CANCELLED
 
 $tQuery = "SELECT COUNT(sample.vl_sample_id) as total,
                 sample.result_status,
@@ -184,10 +123,10 @@ $tat = $vlService->getTurnaroundTimeSeries(
         var _value = [
             <?php foreach ($tResult as $tRow) {
                 $total += $tRow['total']; ?> {
-                    name: '<?php echo ($tRow['status_name']); ?>',
-                    y: <?php echo ($tRow['total']); ?>,
-                    color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
-                    url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode((string) $tRow['status_id']); ?>&d=<?php echo base64_encode((string) $_POST['sampleCollectionDate']); ?>'
+                    name: <?= json_encode(_translate((string) $tRow['status_name']), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>,
+                    y: <?= (int) $tRow['total']; ?>,
+                    color: '<?= SampleStatusUtility::chartColor((int) $tRow['status_id']); ?>',
+                    url: <?= json_encode(SampleStatusDetailsService::pageUrl($testType, (int) $tRow['status_id'], $_POST), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>
                 },
             <?php } ?>
         ];

@@ -16,7 +16,9 @@ $_GET = _sanitizeInput($request->getQueryParams());
 // query below and out of the inline JS this page prints the id into.
 $id = (isset($_GET['id'])) ? (int) base64_decode((string) $_GET['id']) : null;
 
-$date = base64_decode((string) $_GET['d']);
+// The decoded value is printed into an attribute and a script, and nothing
+// sanitized it after decoding, so it is escaped at each of those places.
+$date = (string) base64_decode((string) ($_GET['d'] ?? ''));
 $tsQuery = "SELECT status_name FROM r_sample_status WHERE status_id = '" . $id . "'";
 $tsResult = $db->rawQuery($tsQuery);
 if (empty($tsResult)) {
@@ -56,7 +58,7 @@ $batResult = $db->rawQuery($batQuery);
 						<tr>
 							<td><strong>Sample Collection Date&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" value="<?php echo $date; ?>"
+								<input type="text" id="sampleCollectionDate" value="<?= htmlspecialchars($date, ENT_QUOTES, 'UTF-8'); ?>"
 									name="sampleCollectionDate" class="form-control"
 									placeholder="Select Collection Date" readonly
 									style="width:220px;background:#fff;" />
@@ -244,7 +246,7 @@ $batResult = $db->rawQuery($batQuery);
 				endDate = end.format('YYYY-MM-DD');
 			});
 		<?php if (!empty($date)) { ?>
-			$('#sampleCollectionDate').val('<?php echo $date; ?>');
+			$('#sampleCollectionDate').val(<?= json_encode($date, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
 		<?php } else { ?>
 			$('#sampleCollectionDate').val("");
 		<?php } ?>

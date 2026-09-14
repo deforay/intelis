@@ -70,6 +70,31 @@ const CANCELLED_RULE_EXEMPT = [
         . 'counted as rejected, which is what the shared clause exists to guarantee',
 ];
 
+/**
+ * Services a report surface may take its whole WHERE from instead of writing it.
+ * A surface naming one passes only while the service itself still applies the
+ * shared clause, so moving the rule into a service cannot quietly drop it.
+ *
+ * @var array<string, string> class name => its file under app/
+ */
+const COUNT_RULE_DELEGATES = [
+    'SampleStatusDetailsService' => 'classes/Services/SampleStatusDetailsService.php',
+];
+
+function delegatesTheCountRule(string $source): bool
+{
+    foreach (COUNT_RULE_DELEGATES as $class => $file) {
+        if (!str_contains($source, $class . '::class')) {
+            continue;
+        }
+        $delegate = file_get_contents(APP_DIR . '/' . $file);
+        if ($delegate !== false && str_contains($delegate, 'SampleCountUtility::countableWhere')) {
+            return true;
+        }
+    }
+    return false;
+}
+
 /** @return list<string> */
 function phpFilesIn(string $dir): array
 {
@@ -156,7 +181,7 @@ foreach (phpFilesIn(APP_DIR) as $path) {
         $countExempt++;
         continue;
     }
-    if (str_contains($source, 'SampleCountUtility::')) {
+    if (str_contains($source, 'SampleCountUtility::') || delegatesTheCountRule($source)) {
         continue;
     }
 
