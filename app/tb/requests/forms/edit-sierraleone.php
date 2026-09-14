@@ -440,7 +440,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 													<input type="text"
 														value="<?php echo (isset($followup['month-of-treatment']) && $followup['month-of-treatment'] != "" && trim((string) $followup['month-of-treatment']) !== "") ? $followup['month-of-treatment'] : ""; ?>"
 														class="form-control followup-uncheck reason-checkbox"
-														id="followUp"
+														id="followUpMonthOfTreatment"
 														name="reasonForTbTest[elaboration][follow-up][month-of-treatment]"
 														placeholder="Enter Month Of Treatment"
 														title="Please enter Month Of Treatment">
@@ -450,7 +450,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 													<input type="text"
 														value="<?php echo (isset($followup['patient-district-tb-no']) && $followup['patient-district-tb-no'] != "" && trim((string) $followup['patient-district-tb-no']) !== "") ? $followup['patient-district-tb-no'] : ""; ?>"
 														class="form-control followup-uncheck reason-checkbox"
-														id="followUp"
+														id="followUpDistrictTbNo"
 														name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]"
 														placeholder="Enter Patient's District TB No."
 														title="Please enter Patient's District TB No.">
@@ -460,7 +460,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 													<input type="text"
 														value="<?php echo (isset($followup['patient-mdr-no']) && $followup['patient-mdr-no'] != "" && trim((string) $followup['patient-mdr-no']) !== "") ? $followup['patient-mdr-no'] : ""; ?>"
 														class="form-control followup-uncheck reason-checkbox"
-														id="followUp"
+														id="followUpMdrNo"
 														name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]"
 														placeholder="Enter Patient's MDR No."
 														title="Please enter Patient's MDR No.">

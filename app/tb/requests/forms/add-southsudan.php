@@ -346,7 +346,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 										<td>
 											<label class="radio-inline" style="margin-left:0;">
 												<input type="radio" class="isRequired followup-uncheck"
-													id="reasonForTbTest1" name="reasonForTbTest[reason]"
+													id="reasonForTbTest2" name="reasonForTbTest[reason]"
 													value="followup" title="Select reason for examination"
 													onchange="checkSubReason(this,'follow-up','diagnosis-check');">
 												<strong>Follow Up</strong>

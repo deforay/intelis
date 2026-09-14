@@ -689,9 +689,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="district" class="col-lg-4 control-label"><?= _translate('District/County'); ?> <span class="mandatory">*</span></label>
+                                    <label for="newFacilityDistrict" class="col-lg-4 control-label"><?= _translate('District/County'); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="district" name="district" placeholder="<?= _translate('District/County'); ?>" title="<?= _translate('Please enter district/county'); ?>" />
+                                        <input type="text" class="form-control isRequired" id="newFacilityDistrict" name="district" placeholder="<?= _translate('District/County'); ?>" title="<?= _translate('Please enter district/county'); ?>" />
                                     </div>
                                 </div>
                             </div>

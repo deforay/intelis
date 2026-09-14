@@ -35,7 +35,7 @@ $userInfo = $db->query($userQuery);
                 <div class="form-group">
                   <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?> <span class="mandatory">*</span></label>
                   <div class="col-lg-7">
-                    <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
+                    <input type="password" class="form-control ppwd isRequired" id="password" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
                     <code><?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                   </div>
                 </div>
@@ -89,7 +89,7 @@ $userInfo = $db->query($userQuery);
   }
 
   function checkPasswordLength() {
-    var pwd = $('#confirmPassword').val();
+    var pwd = $('#password').val();
     var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/;
     if (regex.test(pwd) == false) {
       alert("<?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");

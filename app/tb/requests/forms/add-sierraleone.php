@@ -396,7 +396,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													<label>Month Of Treatment</label>
 													<input type="text"
 														class="form-control followup-uncheck reason-checkbox"
-														id="followUp"
+														id="followUpMonthOfTreatment"
 														name="reasonForTbTest[elaboration][follow-up][month-of-treatment]"
 														placeholder="Enter Month Of Treatment"
 														title="Please enter Month Of Treatment">
@@ -405,7 +405,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													<label>Patient's District TB No.</label>
 													<input type="text"
 														class="form-control followup-uncheck reason-checkbox"
-														id="followUp"
+														id="followUpDistrictTbNo"
 														name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]"
 														placeholder="Enter Patient's District TB No."
 														title="Please enter Patient's District TB No.">
@@ -414,7 +414,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													<label>Patient's MDR No.</label>
 													<input type="text"
 														class="form-control followup-uncheck reason-checkbox"
-														id="followUp"
+														id="followUpMdrNo"
 														name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]"
 														placeholder="Enter Patient's MDR No."
 														title="Please enter Patient's MDR No.">
@@ -1222,7 +1222,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 	function checkSubReason(obj, show, opUncheck) {
 		$('.reason-checkbox').prop("checked", false);
 		if (opUncheck == "followup-uncheck") {
-			$('#followUp').val("");
+			$('ul.followUp input').val("");
 			$("#xPertMTMResult").prop('disabled', false);
 		} else {
 			$("#xPertMTMResult").prop('disabled', true);
