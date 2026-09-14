@@ -108,6 +108,25 @@ if (!function_exists('_requirePrivilege')) {
     }
 }
 
+// The soft check listing endpoints make to decide which row actions to show.
+// Same rule as the guard above, answered instead of thrown.
+if (!function_exists('_isAllowed')) {
+    function _isAllowed($currentRequest, $privileges = null): bool
+    {
+        return (int) ($_SESSION['roleId'] ?? 0) === 1
+            || isset(($privileges ?? $_SESSION['privileges'] ?? [])[(string) $currentRequest]);
+    }
+}
+
+// A title attribute for a row's hover text. Listings build it per row; what
+// it says is not what an endpoint test asserts.
+if (!function_exists('_tooltipAttribute')) {
+    function _tooltipAttribute(array $lines): string
+    {
+        return '';
+    }
+}
+
 // The real helper is one line over DownloadTokenUtility, which works against the
 // TEMP_PATH defined above, so the stub does the same rather than pretend.
 if (!function_exists('_downloadToken')) {

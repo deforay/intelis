@@ -51,8 +51,8 @@ $sTable = $tableName;
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
+    $sOffset = (int) $_POST['iDisplayStart'];
+    $sLimit = (int) $_POST['iDisplayLength'];
 }
 
 
@@ -104,10 +104,10 @@ if (!empty($_POST['sampleTestDate'])) {
 }
 
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-    $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
+    $sWhere[] =  '  b.batch_code LIKE "%' . $db->escapeLike($_POST['batchCode']) . '%"';
 }
 if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-    $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+    $sWhere[] = ' vl.sample_package_code = "' . $db->escape((string) $_POST['manifestCode']) . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
     if (trim((string) $start_date) === trim((string) $end_date)) {
@@ -124,7 +124,7 @@ if (!empty($_POST['sampleTestDate'])) {
     }
 }
 if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-    $sWhere[] =  '  f.facility_id IN (' . $_POST['facilityName'] . ')';
+    $sWhere[] =  '  f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
 }
 $cancellableFilter = (isset($_POST['statusFilter']) && $_POST['statusFilter'] == 'cancellable');
 if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {

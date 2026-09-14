@@ -75,8 +75,8 @@ try {
 
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-          $sOffset = $_POST['iDisplayStart'];
-          $sLimit = $_POST['iDisplayLength'];
+          $sOffset = (int) $_POST['iDisplayStart'];
+          $sLimit = (int) $_POST['iDisplayLength'];
      }
 
      $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
@@ -130,10 +130,10 @@ try {
      }
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-          $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+          $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
      }
      if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+          $sWhere[] = ' vl.sample_package_code = "' . $db->escape((string) $_POST['manifestCode']) . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
           [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
@@ -150,16 +150,16 @@ try {
           $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
      }
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-          $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+          $sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
      }
      if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-          $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+          $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['district'] . ' ';
      }
      if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-          $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+          $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['state'] . ' ';
      }
      if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
-          $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          $sWhere[] = ' vl.lab_id IN (' . $db->inIntList($_POST['vlLab']) . ')';
      }
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) !== '') {
           if (trim((string) $_POST['gender']) === "unreported") {
@@ -167,7 +167,7 @@ try {
                // ORs escape the AND chain and every other filter stops applying.
                $sWhere[] = ' (vl.child_gender="unreported" OR vl.child_gender="" OR vl.child_gender IS NULL)';
           } else {
-               $sWhere[] = ' vl.child_gender IN ("' . $_POST['gender'] . '")';
+               $sWhere[] = ' vl.child_gender IN ("' . $db->escape((string) $_POST['gender']) . '")';
           }
      }
      /* Sample status filter */
@@ -175,7 +175,7 @@ try {
           $sWhere[] = ' vl.result_status IN (' . $db->inIntList($_POST['status']) . ')';
      }
      if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) !== '') {
-          $sWhere[] = ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
+          $sWhere[] = ' vl.sample_reordered IN ("' . $db->escape((string) $_POST['showReordSample']) . '")';
      }
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
           $sWhere[] = ' vl.funding_source IN ("' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '")';
@@ -185,7 +185,7 @@ try {
      }
 
      if (isset($_POST['srcOfReq']) && trim((string) $_POST['srcOfReq']) !== '') {
-          $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
+          $sWhere[] = ' vl.source_of_request like "' . $db->escape((string) $_POST['srcOfReq']) . '"';
      }
 
      if (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) === 'result') {
@@ -198,10 +198,10 @@ try {
           $sWhere[] = ' DATE(vl.sample_collection_date) like "' . DateUtility::isoDateFormat($_POST['dateRangeModel']) . '"';
      }
      if (isset($_POST['srcOfReqModel']) && trim((string) $_POST['srcOfReqModel']) !== '') {
-          $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReqModel'] . '" ';
+          $sWhere[] = ' vl.source_of_request like "' . $db->escape((string) $_POST['srcOfReqModel']) . '" ';
      }
      if (isset($_POST['labIdModel']) && trim((string) $_POST['labIdModel']) !== '') {
-          $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
+          $sWhere[] = ' vl.lab_id = ' . (int) $_POST['labIdModel'] . ' ';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
           $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') like 'yes'";
@@ -216,16 +216,16 @@ try {
           $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
      }
      if (isset($_POST['childId']) && $_POST['childId'] != "") {
-          $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
+          $sWhere[] = ' vl.child_id like "%' . $db->escapeLike($_POST['childId']) . '%"';
      }
      if ($formId != DRC && isset($_POST['childName']) && $_POST['childName'] != "") {
-          $sWhere[] = ' vl.child_name like "%' . $_POST['childName'] . '%"';
+          $sWhere[] = ' vl.child_name like "%' . $db->escapeLike($_POST['childName']) . '%"';
      }
      if (isset($_POST['motherId']) && $_POST['motherId'] != "") {
-          $sWhere[] = ' vl.mother_id like "%' . $_POST['motherId'] . '%"';
+          $sWhere[] = ' vl.mother_id like "%' . $db->escapeLike($_POST['motherId']) . '%"';
      }
      if ($formId != DRC && isset($_POST['motherName']) && $_POST['motherName'] != "") {
-          $sWhere[] = ' vl.mother_name like "%' . $_POST['motherName'] . '%"';
+          $sWhere[] = ' vl.mother_name like "%' . $db->escapeLike($_POST['motherName']) . '%"';
      }
      if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
           $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') not like 'yes' ";
