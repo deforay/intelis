@@ -158,11 +158,11 @@ try {
         $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 
 
-        $status = '<select class="form-control"  name="status[]" id="' . $aRow['hepatitis_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
+        $status = '<select class="form-control"  name="status[]" id="' . $aRow['hepatitis_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . (int) $aRow['result_status'] . ')">
                <option value="">' . _translate("-- Select --") . '</option>
-               <option value="7" ' . ($aRow['status_id'] == "7" ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
-               <option value="4" ' . ($aRow['status_id'] == "4" ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
-               <option value="2" ' . ($aRow['status_id'] == "2" ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
+               <option value="7" ' . ($aRow['result_status'] == "7" ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
+               <option value="4" ' . ($aRow['result_status'] == "4" ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
+               <option value="2" ' . ($aRow['result_status'] == "2" ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
                </select><br><br>';
 
         $row = [];

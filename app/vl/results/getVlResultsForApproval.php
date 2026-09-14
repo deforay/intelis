@@ -132,12 +132,12 @@ $output = [
 
 foreach ($rResult as $aRow) {
 
-     $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
+     $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . (int) $aRow['result_status'] . ')">
                <option value="">' . _translate("-- Select --") . '</option>
-               <option value="' . ACCEPTED . '" ' . ($aRow['status_id'] == ACCEPTED ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
-               <option value="' . REJECTED . '" ' . ($aRow['status_id'] == REJECTED ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
-               <option value="' . LOST_OR_MISSING . '" ' . ($aRow['status_id'] == LOST_OR_MISSING ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
-               <option value="' . CANCELLED . '" ' . ($aRow['status_id'] == CANCELLED ? "selected=selected" : "") . '>' . _translate("Cancelled") . '</option>
+               <option value="' . ACCEPTED . '" ' . ($aRow['result_status'] == ACCEPTED ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
+               <option value="' . REJECTED . '" ' . ($aRow['result_status'] == REJECTED ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
+               <option value="' . LOST_OR_MISSING . '" ' . ($aRow['result_status'] == LOST_OR_MISSING ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
+               <option value="' . CANCELLED . '" ' . ($aRow['result_status'] == CANCELLED ? "selected=selected" : "") . '>' . _translate("Cancelled") . '</option>
                </select><br><br>';
 
      $row = [];
