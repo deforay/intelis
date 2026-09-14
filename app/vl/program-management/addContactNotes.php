@@ -18,10 +18,10 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$contactInfo = "SELECT * from vl_contact_notes where treament_contact_id=$id";
+$contactInfo = "SELECT * from vl_contact_notes where treament_contact_id=" . (int) $id;
 $contact = $db->query($contactInfo);
 //get patient info
-$vlInfo = "SELECT sample_code,patient_first_name,patient_last_name,patient_art_no,sample_collection_date,facility_id from form_vl where vl_sample_id=$id";
+$vlInfo = "SELECT sample_code,patient_first_name,patient_last_name,patient_art_no,sample_collection_date,facility_id from form_vl where vl_sample_id=" . (int) $id;
 $vlResult = $db->query($vlInfo);
 
 // Facility isolation: a mapped STS user may only open samples for facilities in

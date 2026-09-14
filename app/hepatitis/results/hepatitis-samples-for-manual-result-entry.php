@@ -1,5 +1,7 @@
 <?php
 
+use App\Utilities\ListingFilterClauseBuilder;
+use App\Utilities\DataTableUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\REJECTED;
@@ -50,11 +52,7 @@ try {
 
      $sTable = $tableName;
 
-     $sOffset = $sLimit = null;
-     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-          $sOffset = $_POST['iDisplayStart'];
-          $sLimit = $_POST['iDisplayLength'];
-     }
+     [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
      $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
@@ -89,24 +87,17 @@ try {
           LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by";
 
 
-     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-          $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-     }
-     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
-     }
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+          'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
+          'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
+          'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
+          'vlLab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
+     ])];
      if (!empty($_POST['sampleCollectionDate'])) {
           [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
           $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
      }
 
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-          $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-     }
-
-     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
-          $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
-     }
 
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           if ($_POST['status'] == 'no_result') {
@@ -122,10 +113,10 @@ try {
      }
 
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-          $sWhere[] = '  vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+          $sWhere[] = '  vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
      }
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
-          $sWhere[] = '  vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+          $sWhere[] = '  vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
      }
 
      if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {

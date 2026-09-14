@@ -1,5 +1,7 @@
 <?php
 
+use App\Utilities\ListingFilterClauseBuilder;
+use App\Utilities\DataTableUtility;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
@@ -39,11 +41,7 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
 
@@ -53,7 +51,7 @@ if (isset($_POST['iSortCol_0'])) {
     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
         if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
             $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
+               " . (strtolower(trim((string) $_POST['sSortDir_' . $i])) === 'desc' ? 'DESC' : 'ASC') . ", ";
         }
     }
     $sOrder = substr_replace($sOrder, "", -2);
@@ -75,9 +73,9 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
         for ($i = 0; $i < $colSize; $i++) {
             if ($i < $colSize - 1) {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' OR ";
             } else {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' ";
             }
         }
         $sWhereSub .= ")";
@@ -120,12 +118,11 @@ if (!empty($_POST['sampleTestDate'])) {
     }
 }
 
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-    $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
-}
-if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-    $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
-}
+$sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+    'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::CONTAINS],
+    'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
+    'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
+])];
 if (!empty($_POST['sampleCollectionDate'])) {
     if (trim((string) $start_date) === trim((string) $end_date)) {
         $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
@@ -139,9 +136,6 @@ if (!empty($_POST['sampleTestDate'])) {
     } else {
         $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $tested_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $tested_end_date . '"';
     }
-}
-if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-    $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
 $cancellableFilter = (isset($_POST['statusFilter']) && $_POST['statusFilter'] == 'cancellable');
 if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {

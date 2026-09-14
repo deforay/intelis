@@ -38,7 +38,7 @@ $type = $_POST['type'];
 
 $query = "SELECT hepatitis.sample_code,hepatitis.hepatitis_id,hepatitis.facility_id,f.facility_name,f.facility_code FROM form_hepatitis as hepatitis LEFT JOIN facility_details as f ON hepatitis.facility_id=f.facility_id where ((hepatitis.result_status = 7 AND ((hepatitis.hcv_vl_count is NOT NULL AND hepatitis.hcv_vl_count !='') OR (hepatitis.hbv_vl_count is NOT NULL AND hepatitis.hbv_vl_count !=''))) OR (hepatitis.result_status = 4 AND ((hepatitis.hcv_vl_count is NULL AND hepatitis.hcv_vl_count ='') OR (hepatitis.hbv_vl_count is NULL AND hepatitis.hbv_vl_count =''))))";
 if (isset($facility) && array_filter($facility) !== []) {
-  $query = $query . " AND hepatitis.facility_id IN (" . implode(',', $facility) . ")";
+  $query = $query . " AND hepatitis.facility_id IN (" . $db->inIntList($facility) . ")";
 }
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
   $query .= " AND hepatitis.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
@@ -49,28 +49,28 @@ if ($labScope = $general->labScopeWhere('hepatitis')) {
   $query .= " AND $labScope";
 }
 if (trim((string) $sampleType) !== '') {
-  $query = $query . " AND hepatitis.specimen_type='" . $sampleType . "'";
+  $query = $query . " AND hepatitis.specimen_type='" . $db->escape((string) $sampleType) . "'";
 }
 if (trim((string) $gender) !== '') {
-  $query = $query . " AND hepatitis.patient_gender='" . $gender . "'";
+  $query = $query . " AND hepatitis.patient_gender='" . $db->escape((string) $gender) . "'";
 }
 if (trim((string) $state) !== '') {
-  $query = $query . " AND f.facility_state LIKE '%" . $state . "%' ";
+  $query = $query . " AND f.facility_state LIKE '%" . $db->escapeLike($state) . "%' ";
 }
 if (trim((string) $district) !== '') {
-  $query = $query . " AND f.facility_district LIKE '%" . $district . "%' ";
+  $query = $query . " AND f.facility_district LIKE '%" . $db->escapeLike($district) . "%' ";
 }
 if (isset($batch) && array_filter($batch) !== []) {
-  $query = $query . " AND hepatitis.sample_batch_id IN (" . implode(',', $batch) . ")";
+  $query = $query . " AND hepatitis.sample_batch_id IN (" . $db->inIntList($batch) . ")";
 }
 if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
-  $query = $query . " AND hepatitis.result_status='" . $_POST['status'] . "'";
+  $query = $query . " AND hepatitis.result_status='" . $db->escape((string) $_POST['status']) . "'";
 }
 if (trim((string) $mailSentStatus) !== '') {
   if (trim((string) $type) === 'request') {
-    $query = $query . " AND hepatitis.is_request_mail_sent='" . $mailSentStatus . "'";
+    $query = $query . " AND hepatitis.is_request_mail_sent='" . $db->escape((string) $mailSentStatus) . "'";
   } elseif (trim((string) $type) === 'result') {
-    $query = $query . " AND hepatitis.is_result_mail_sent='" . $mailSentStatus . "' AND (hepatitis.hcv_vl_count!= '' OR hepatitis.hbv_vl_count!= '')";
+    $query = $query . " AND hepatitis.is_result_mail_sent='" . $db->escape((string) $mailSentStatus) . "' AND (hepatitis.hcv_vl_count!= '' OR hepatitis.hbv_vl_count!= '')";
   }
 }
 if (!empty($_POST['sampleCollectionDate'])) {

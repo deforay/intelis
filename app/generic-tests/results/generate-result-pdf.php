@@ -1,5 +1,7 @@
 <?php
 
+use App\Utilities\ListingFilterClauseBuilder;
+
 use App\Services\UsersService;
 
 ini_set('memory_limit', -1);
@@ -75,11 +77,12 @@ if ((isset($_POST['id']) && !in_array(trim((string) $_POST['id']), ['', '0'], tr
 
 	$searchQueryWhere = [];
 	if (!in_array(trim((string) $_POST['id']), ['', '0'], true)) {
-		$searchQueryWhere[] = " vl.sample_id IN(" . $_POST['id'] . ") ";
+		$searchQueryWhere[] = " vl.sample_id IN(" . $db->inIntList($_POST['id']) . ") ";
 	}
 
 	if (isset($_POST['sampleCodes']) && !in_array(trim((string) $_POST['sampleCodes']), ['', '0'], true)) {
-		$searchQueryWhere[] = " vl.sample_code IN(" . $_POST['sampleCodes'] . ") ";
+		// Callers send a quoted list ('A', 'B'); a code may contain a comma.
+		$searchQueryWhere[] = " vl.sample_code IN(" . ListingFilterClauseBuilder::quotedTextList($db, (string) $_POST['sampleCodes']) . ") ";
 	}
 	// Facility isolation: a mapped STS user only gets PDFs for their own
 	// facilities. No-op on LIS and for unmapped (all-access) users.

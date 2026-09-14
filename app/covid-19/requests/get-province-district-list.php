@@ -31,11 +31,11 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
     $text = $_GET['q'];
 
     if ($text != "") {
-        $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE $field like '%" . $text . "%' AND $field is not null";
+        $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE $field like '%" . $db->escapeLike($text) . "%' AND $field is not null";
     } elseif ($_GET['zName'] != "") {
-        $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE patient_zone like '%" . $_GET['zName'] . "%' AND $field is not null";
+        $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE patient_zone like '%" . $db->escapeLike($_GET['zName']) . "%' AND $field is not null";
     } elseif ($_GET['pName'] != "") {
-        $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE patient_province like '%" . $_GET['pName'] . "%' AND $field is not null";
+        $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE patient_province like '%" . $db->escapeLike($_GET['pName']) . "%' AND $field is not null";
     } else {
         $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE $field is not null";
     }
@@ -52,7 +52,7 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
     $result = ["result" => $echoResult];
     echo json_encode($result);
 } elseif (isset($_POST['pName']) && $_POST['pName'] != "") {
-    $cQuery = "SELECT DISTINCT patient_zone FROM form_covid19 WHERE patient_province like '%" . $_POST['pName'] . "%' AND patient_zone is not null";
+    $cQuery = "SELECT DISTINCT patient_zone FROM form_covid19 WHERE patient_province like '%" . $db->escapeLike($_POST['pName']) . "%' AND patient_zone is not null";
     $cResult = $db->rawQuery($cQuery);
     $option = [];
     if (!empty($cResult)) {
@@ -63,7 +63,7 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
     }
     echo $general->generateSelectOptions($option, null, '-- Sélectionner --');
 } elseif (isset($_POST['zName']) && $_POST['zName'] != "") {
-    $cQuery = "SELECT DISTINCT patient_district FROM form_covid19 WHERE patient_zone like '%" . $_POST['zName'] . "%' AND patient_district is not null";
+    $cQuery = "SELECT DISTINCT patient_district FROM form_covid19 WHERE patient_zone like '%" . $db->escapeLike($_POST['zName']) . "%' AND patient_district is not null";
     $cResult = $db->rawQuery($cQuery);
     $option = [];
     if (!empty($cResult)) {

@@ -12,11 +12,7 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = \App\Utilities\DataTableUtility::paging($_POST);
 
 
 $sOrder = "";
@@ -25,7 +21,7 @@ if (isset($_POST['iSortCol_0'])) {
     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
         if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
             $sOrder .= $aColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
+				 	" . (strtolower(trim((string) $_POST['sSortDir_' . $i])) === 'desc' ? 'DESC' : 'ASC') . ", ";
         }
     }
     $sOrder = substr_replace($sOrder, "", -2);
@@ -47,9 +43,9 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
         for ($i = 0; $i < $colSize; $i++) {
             if ($i < $colSize - 1) {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' OR ";
             } else {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' ";
             }
         }
         $sWhereSub .= ")";

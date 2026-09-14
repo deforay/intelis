@@ -5,6 +5,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\DataTableUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -26,25 +27,11 @@ $sTable = $tableName;
 /*
  * Paging
  */
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-    $sOrder = "";
-    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-            $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-        }
-    }
-    $sOrder = substr_replace($sOrder, "", -2);
-}
+$sOrder = DataTableUtility::buildOrder($_POST, $orderColumns);
 
 
 
@@ -53,6 +40,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
+        $search = $db->escapeLike($search);
         if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
@@ -86,7 +74,7 @@ if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
     //$sQuery = $sQuery.' '.$sWhere;
     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-        $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
+        $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $db->escapeLike($_POST['batchCode']) . '%"';
     }
     if (!empty($_POST['sampleCollectionDate'])) {
         if (trim((string) $start_date) === trim((string) $end_date)) {
@@ -96,16 +84,16 @@ if ($sWhere !== '' && $sWhere !== '0') {
         }
     }
     if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
-        $sWhere = $sWhere . ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
+        $sWhere = $sWhere . ' AND s.sample_id = "' . $db->escape((string) $_POST['sampleType']) . '"';
     }
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
+        $sWhere = $sWhere . ' AND f.facility_id = "' . $db->escape((string) $_POST['facilityName']) . '"';
     }
 } else {
     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
         $setWhr = 'where';
         $sWhere = ' WHERE ' . $sWhere;
-        $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
+        $sWhere = $sWhere . ' b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
     }
     if (!empty($_POST['sampleCollectionDate'])) {
         if (isset($setWhr)) {
@@ -125,19 +113,19 @@ if ($sWhere !== '' && $sWhere !== '0') {
     }
     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
         if (isset($setWhr)) {
-            $sWhere = $sWhere . ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
+            $sWhere = $sWhere . ' AND s.sample_id = "' . $db->escape((string) $_POST['sampleType']) . '"';
         } else {
             $setWhr = 'where';
             $sWhere = ' WHERE ' . $sWhere;
-            $sWhere = $sWhere . ' s.sample_id = "' . $_POST['sampleType'] . '"';
+            $sWhere = $sWhere . ' s.sample_id = "' . $db->escape((string) $_POST['sampleType']) . '"';
         }
     }
     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
         if (isset($setWhr)) {
-            $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
+            $sWhere = $sWhere . ' AND f.facility_id = "' . $db->escape((string) $_POST['facilityName']) . '"';
         } else {
             $sWhere = ' WHERE ' . $sWhere;
-            $sWhere = $sWhere . ' f.facility_id = "' . $_POST['facilityName'] . '"';
+            $sWhere = $sWhere . ' f.facility_id = "' . $db->escape((string) $_POST['facilityName']) . '"';
         }
     }
 }

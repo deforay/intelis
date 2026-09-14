@@ -23,10 +23,10 @@ $selectedFacilityArray = explode(',', (string) $selectedFacility);
 $facilityQuery = "SELECT facility_id, facility_name FROM facility_details WHERE `status` = 'active' ";
 
 if (isset($province) && $province != "") {
-    $where[] = " facility_state_id = $province ";
+    $where[] = " facility_state_id = " . (int) $province . " ";
 }
 if (isset($district) && $district != "") {
-    $where[] = " facility_district_id = $district ";
+    $where[] = " facility_district_id = " . (int) $district . " ";
 }
 if (isset($where) && count($where) > 0) {
     $whereCondition = implode(" AND ", $where);

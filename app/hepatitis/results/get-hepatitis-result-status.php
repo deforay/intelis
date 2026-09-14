@@ -1,5 +1,7 @@
 <?php
 
+use App\Utilities\ListingFilterClauseBuilder;
+use App\Utilities\DataTableUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -49,11 +51,7 @@ try {
 
     $sTable = $tableName;
 
-    $sOffset = $sLimit = null;
-    if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
-    }
+    [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
@@ -73,12 +71,11 @@ try {
 
 
 
-    if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-        $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
-    }
-    if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-        $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
-    }
+    $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+        'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::CONTAINS],
+        'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
+        'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
+    ])];
     if (!empty($_POST['sampleCollectionDate'])) {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
         $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
@@ -86,9 +83,6 @@ try {
     if (!empty($_POST['sampleTestDate'])) {
         [$tested_start_date, $tested_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
         $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$tested_start_date' AND '$tested_end_date'";
-    }
-    if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
     $cancellableFilter = (isset($_POST['statusFilter']) && $_POST['statusFilter'] == 'cancellable');
     if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {

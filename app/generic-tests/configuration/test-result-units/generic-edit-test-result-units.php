@@ -12,7 +12,7 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$tQuery = "SELECT * from r_generic_test_result_units where unit_id=$id";
+$tQuery = "SELECT * from r_generic_test_result_units where unit_id=" . (int) $id;
 $unitInfo = $db->query($tQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->

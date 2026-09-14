@@ -40,8 +40,8 @@ try {
 
     $sOffset = $sLimit = null;
     if (isset($_POST['start']) && $_POST['length'] != '-1') {
-        $sOffset = $_POST['start'];
-        $sLimit = $_POST['length'];
+        $sOffset = (int) $_POST['start'];
+        $sLimit = (int) $_POST['length'];
     }
 
     // Handle ordering - NEW FORMAT

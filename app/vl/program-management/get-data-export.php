@@ -10,6 +10,8 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
+use App\Utilities\DataTableUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -57,11 +59,7 @@ try {
      $sIndexColumn = $primaryKey;
      $sTable = $tableName;
 
-     $sOffset = $sLimit = null;
-     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-          $sOffset = $_POST['iDisplayStart'];
-          $sLimit = $_POST['iDisplayLength'];
-     }
+     [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
      $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
@@ -178,16 +176,11 @@ try {
                LEFT JOIN instruments as ins ON ins.instrument_id=vl.instrument_id
                LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action";
 
-     /* Sample type filter */
-     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-          $sWhere[] =  ' vl.specimen_type IN (' . $_POST['sampleType'] . ')';
-     }
-     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-          $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
-     }
-     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-          $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
-     }
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+          'sampleType' => ['vl.specimen_type', ListingFilterClauseBuilder::INT_LIST],
+          'state' => ['f.facility_state_id', ListingFilterClauseBuilder::EQUALS],
+          'district' => ['f.facility_district_id', ListingFilterClauseBuilder::EQUALS],
+     ])];
      /* Facility id filter */
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
           $sWhere[] =  ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
@@ -211,13 +204,13 @@ try {
           if (trim((string) $_POST['gender']) === "unreported") {
                $sWhere[] =  ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
           } else {
-               $sWhere[] =  ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['gender'] . '") ';
+               $sWhere[] =  ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $db->escape((string) $_POST['gender']) . '") ';
           }
      }
 
-     if (isset($_POST['communitySample']) && trim((string) $_POST['communitySample']) !== '') {
-          $sWhere[] =  ' (vl.community_sample IS NOT NULL AND vl.community_sample ="' . $_POST['communitySample'] . '") ';
-     }
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+          'communitySample' => ['vl.community_sample', ListingFilterClauseBuilder::EQUALS],
+     ])];
      /* Sample status filter */
      $statusFilter = !empty($_POST['status'])
           ? $db->inIntList($_POST['status'])
@@ -227,21 +220,12 @@ try {
      if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) === 'yes') {
           $sWhere[] =  '  (vl.sample_reordered is NOT NULL AND vl.sample_reordered ="yes") ';
      }
-     /* Is patient pregnant filter */
-     if (isset($_POST['patientPregnant']) && trim((string) $_POST['patientPregnant']) !== '') {
-          $sWhere[] = '  vl.is_patient_pregnant ="' . $_POST['patientPregnant'] . '"';
-     }
-     /* Is patient breast feeding filter */
-     if (isset($_POST['breastFeeding']) && trim((string) $_POST['breastFeeding']) !== '') {
-          $sWhere[] = '  vl.is_patient_breastfeeding ="' . $_POST['breastFeeding'] . '"';
-     }
-     /* Batch code filter */
-     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-          $sWhere[] =  '  b.batch_code = "' . $_POST['batchCode'] . '"';
-     }
-     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
-     }
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+          'patientPregnant' => ['vl.is_patient_pregnant', ListingFilterClauseBuilder::EQUALS],
+          'breastFeeding' => ['vl.is_patient_breastfeeding', ListingFilterClauseBuilder::EQUALS],
+          'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
+          'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
+     ])];
      /* Funding src filter */
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
           $sWhere[] = '  vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
@@ -250,12 +234,10 @@ try {
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
           $sWhere[] =  '  vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
      }
-     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-          $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
-     }
-     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-          $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
-     }
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+          'patientId' => ['vl.patient_art_no', ListingFilterClauseBuilder::CONTAINS],
+          'patientName' => ["CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", ListingFilterClauseBuilder::CONTAINS],
+     ])];
      /* Assign date time filters */
      if (!empty($_POST['sampleCollectionDate'])) {
           [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');

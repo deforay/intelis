@@ -9,6 +9,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use App\Utilities\SampleCountUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 
 // Sanitized values from $request object
 
@@ -69,26 +70,21 @@ if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedD
 	$sWhere[] = " (DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate')";
 }
 
-if (isset($_POST['freezerCode']) && trim((string) $_POST['freezerCode']) !== '') {
-	$sWhere[] = ' h.freezer_id = "' . $_POST['freezerCode'] . '"';
-}
+$sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+	'freezerCode' => ['h.freezer_id', ListingFilterClauseBuilder::EQUALS],
+])];
 
 if ($general->isLISInstance() && $arr['vl_lab_id'] != '') {
 	$sWhere[] = ' s.lab_id = "' . $arr['vl_lab_id'] . '"';
 } elseif (isset($_POST['labId']) && trim((string) $_POST['labId']) !== '') {
-	$sWhere[] = ' s.lab_id = "' . $_POST['labId'] . '"';
+	$sWhere[] = ' s.lab_id = "' . $db->escape((string) $_POST['labId']) . '"';
 }
 
-if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-	$sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
-}
-if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-	$sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
-}
-
-if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-	$sWhere[] = ' f.facility_id IN (' . implode(',', $_POST['facilityName']) . ')';
-}
+$sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+	'district' => ['f.facility_district_id', ListingFilterClauseBuilder::EQUALS],
+	'state' => ['f.facility_state_id', ListingFilterClauseBuilder::EQUALS],
+	'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
+])];
 
 // Facility isolation: mapped STS users only see their facilities' samples
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {

@@ -35,8 +35,8 @@ $aColumns = [
 
 // Paging
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
+    $sOffset = (int) $_POST['iDisplayStart'];
+    $sLimit = (int) $_POST['iDisplayLength'];
 }
 
 // Ordering
@@ -50,7 +50,7 @@ if (isset($_POST['iSortCol_0'])) {
             $_POST['bSortable_' . $sortCol] == "true" &&
             isset($aColumns[$sortCol])
         ) {
-            $sOrder .= $aColumns[$sortCol] . " " . ($_POST['sSortDir_' . $i]) . ", ";
+            $sOrder .= $aColumns[$sortCol] . " " . (strtolower((string) $_POST['sSortDir_' . $i]) === 'desc' ? 'desc' : 'asc') . ", ";
         }
     }
     if ($sOrder !== '' && $sOrder !== '0') {
@@ -61,7 +61,7 @@ if (isset($_POST['iSortCol_0'])) {
 // Filtering
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchValue = $_POST['sSearch'];
+    $searchValue = $db->escape((string) $_POST['sSearch']);
     $sWhere = " AND (";
     $sWhere .= " vl.referral_manifest_code LIKE '%" . $searchValue . "%' ";
     $sWhere .= " OR f2.facility_name LIKE '%" . $searchValue . "%' ";

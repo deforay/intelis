@@ -25,16 +25,25 @@ $fieldName = $_POST['fieldName'];
 $value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
-if ($value !== '') {
 
-    $tableInfo = [];
-    if (!empty($fnct)) {
-        $tableInfo = explode("##", (string) $fnct);
-    }
+// The table and column names are written into the query, so only the ones the
+// request forms send are accepted; anything else is never looked up.
+$allowedTables = ['form_covid19', 'form_hepatitis'];
+$allowedFields = ['sample_code', 'remote_sample_code', 'external_sample_code'];
+$allowedKeyColumns = ['covid19_id', 'hepatitis_id'];
 
-    if ($general->isSTSInstance()) {
-        $fieldName = 'remote_sample_code';
-    }
+$tableInfo = [];
+if (!empty($fnct)) {
+    $tableInfo = explode("##", (string) $fnct);
+}
+if ($general->isSTSInstance()) {
+    $fieldName = 'remote_sample_code';
+}
+$namesAllowed = in_array($tableName, $allowedTables, true)
+    && in_array($fieldName, $allowedFields, true)
+    && ($tableInfo === [] || (in_array($tableInfo[0], $allowedKeyColumns, true) && isset($tableInfo[1])));
+
+if ($value !== '' && $namesAllowed) {
 
     $parameters = [$value];
 

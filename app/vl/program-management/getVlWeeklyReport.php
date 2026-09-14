@@ -6,6 +6,8 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\SampleCountUtility;
+use App\Utilities\DataTableUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 /** @var DatabaseService $db */
@@ -29,26 +31,13 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-  $sOffset = $_POST['iDisplayStart'];
-  $sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
 $sOrder = "";
 
 
-if (isset($_POST['iSortCol_0'])) {
-  $sOrder = "";
-  for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-    if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-      $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-    }
-  }
-  $sOrder = substr_replace($sOrder, "", -2);
-}
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 
 $sWhere = [];
@@ -57,6 +46,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
   $searchArray = explode(" ", (string) $_POST['sSearch']);
   $sWhereSub = "";
   foreach ($searchArray as $search) {
+    $search = $db->escapeLike($search);
     if ($sWhereSub === "") {
       $sWhereSub .= "(";
     } else {
@@ -148,9 +138,9 @@ if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !
 }
 
 
-if (isset($_POST['lab']) && trim((string) $_POST['lab']) !== '') {
-  $sWhere[] =  " vl.lab_id IN (" . $_POST['lab'] . ")";
-}
+$sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+  'lab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
+])];
 
 if (!empty($_SESSION['facilityMap'])) {
   $sWhere[] =  " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";

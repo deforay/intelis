@@ -49,7 +49,7 @@ if (trim((string) $id) !== '') {
     $labname = $result[0]['lab_name'] ?? "";
     $showPatientName = $arr['eid_show_participant_name_in_manifest'];
 
-    $bQuery = "SELECT * from specimen_manifests as pd where manifest_id IN($id)";
+    $bQuery = "SELECT * from specimen_manifests as pd where manifest_id IN(" . $db->inIntList($id) . ")";
     $bResult = $db->query($bQuery);
 
     if (!empty($bResult)) {

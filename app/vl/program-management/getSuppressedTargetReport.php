@@ -50,7 +50,7 @@ if (!empty($_POST['facilityName'])) {
     $out = '';
     $counter = count($fac);
     for ($s = 0; $s < $counter; $s++) {
-        $out = $out !== '' && $out !== '0' ? $out . ',"' . $fac[$s] . '"' : '("' . $fac[$s] . '"';
+        $out = $out !== '' && $out !== '0' ? $out . ',"' . $db->escape((string) $fac[$s]) . '"' : '("' . $db->escape((string) $fac[$s]) . '"';
     }
     $out .= ')';
     if (isset($sWhere)) {

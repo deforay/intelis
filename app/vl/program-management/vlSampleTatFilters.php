@@ -2,6 +2,8 @@
 
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 /**
  * Filter conditions shared by the VL Sample Status / TAT table endpoint
@@ -71,7 +73,7 @@ function vlSampleTatFilterConditions(array $post, CommonService $general): array
         $params[] = (int) $post['labName'];
     }
     if (!empty($post['facilityName'])) {
-        $where[] = ' f.facility_id IN (' . $post['facilityName'] . ')';
+        $where[] = ' f.facility_id IN (' . ContainerRegistry::get(DatabaseService::class)->inIntList($post['facilityName']) . ')';
     }
 
     return [$where, $params];

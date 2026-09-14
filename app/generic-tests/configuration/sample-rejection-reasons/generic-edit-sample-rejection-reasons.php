@@ -22,7 +22,7 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$rsnQuery = "SELECT * from r_generic_sample_rejection_reasons where rejection_reason_id = $id";
+$rsnQuery = "SELECT * from r_generic_sample_rejection_reasons where rejection_reason_id = " . (int) $id;
 $rsnInfo = $db->query($rsnQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->

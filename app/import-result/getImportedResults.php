@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\EidService;
+use App\Utilities\DataTableUtility;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -129,7 +130,7 @@ $inQuery = "SELECT ic.number_of_in_house_controls,ic.number_of_manufacturer_cont
             FROM temp_sample_import as ts
             INNER JOIN instruments as i ON i.machine_name=ts.vl_test_platform
             INNER JOIN instrument_controls as ic ON ic.instrument_id=i.instrument_id
-            WHERE ic.test_type = '$module' limit 0,1";
+            WHERE ic.test_type = '" . $db->escape((string) $module) . "' limit 0,1";
 
 $inResult = $db->rawQuery($inQuery);
 
@@ -145,11 +146,7 @@ if (isset($tsrResult[0]['count']) && $tsrResult[0]['count'] > 0) {
 $aColumns = ['tsr.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y H:i')", "DATE_FORMAT(tsr.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'tsr.sample_type', 'tsr.result', 'ts.status_name'];
 
 
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 

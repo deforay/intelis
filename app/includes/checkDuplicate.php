@@ -21,6 +21,18 @@ $fnct = $_POST['fnct'];
 $data = 0;
 $multiple = [];
 
+// The table, the field and the excluded-row column are written into the query as
+// names (the values are bound). Over a hundred forms call this with their own
+// table and column, so each name has to be a plain identifier rather than one of
+// a list; anything else is not checked.
+$isIdentifier = static fn($name): bool => is_string($name) && preg_match('/^[A-Za-z0-9_]+$/', $name) === 1;
+if (!$isIdentifier($tableName) || !$isIdentifier($fieldName)) {
+    $tableName = $fieldName = null;
+}
+if (!empty($fnct) && $fnct != 'null' && !$isIdentifier(explode("##", (string) $fnct)[0])) {
+    $tableName = $fieldName = null;
+}
+
 if ($value !== '' && $value !== '0' && !empty($fieldName) && !empty($tableName)) {
     $isMultiple = !empty($_POST['type']) && $_POST['type'] == "multiple";
     if ($isMultiple) {

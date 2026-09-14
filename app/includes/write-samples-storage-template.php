@@ -29,11 +29,12 @@ if (!empty($_POST['batchOrManifestCodeValue'])) {
     if (copy($originalFile, $tempFile)) {
         $condition = "";
 
+        $batchOrManifestCode = $db->escape((string) $_POST['batchOrManifestCodeValue']);
         $query = "SELECT vl.sample_code,vl.patient_art_no  FROM form_vl as vl
                     LEFT JOIN specimen_manifests as pd ON vl.sample_package_code = pd.manifest_code
                     LEFT JOIN batch_details as b ON b.batch_id = vl.sample_batch_id
-                    WHERE (pd.manifest_code = '{$_POST['batchOrManifestCodeValue']}'
-                            OR b.batch_code = '{$_POST['batchOrManifestCodeValue']}')";
+                    WHERE (pd.manifest_code = '$batchOrManifestCode'
+                            OR b.batch_code = '$batchOrManifestCode')";
 
         // Facility isolation: mapped STS users only see their facilities' samples
         if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {

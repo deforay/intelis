@@ -24,7 +24,7 @@ try {
         $lastConfirmationManifestId = $db->getInsertId();
 
         foreach ($_POST['sampleCode'] as $sample) {
-            $sampleQuery = "SELECT covid19_id, sample_collection_date, sample_package_code, province_id, sample_code, positive_test_manifest_code FROM form_covid19 where covid19_id IN (" . $sample . ") ORDER BY covid19_id";
+            $sampleQuery = "SELECT covid19_id, sample_collection_date, sample_package_code, province_id, sample_code, positive_test_manifest_code FROM form_covid19 where covid19_id IN (" . $db->inIntList($sample) . ") ORDER BY covid19_id";
             $sampleResult = $db->rawQueryOne($sampleQuery);
             if (isset($sampleResult['covid19_id']) && $sampleResult['covid19_id'] != '' && ($sampleResult['positive_test_manifest_code'] == null || $sampleResult['positive_test_manifest_code'] == '' || $sampleResult['positive_test_manifest_code'] == 'null')) {
                 $covid19Data = [];

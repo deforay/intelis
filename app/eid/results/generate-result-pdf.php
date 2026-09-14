@@ -105,7 +105,7 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 						)
 					)
                     LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
-                    WHERE vl.eid_id IN(" . $_POST['id'] . ")";
+                    WHERE vl.eid_id IN(" . $db->inIntList($_POST['id']) . ")";
     // Facility isolation: a mapped STS user only gets PDFs for their own
     // facilities. No-op on LIS and for unmapped (all-access) users.
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {

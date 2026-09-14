@@ -1,5 +1,7 @@
 <?php
 
+use App\Utilities\ListingFilterClauseBuilder;
+use App\Utilities\DataTableUtility;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\ACCEPTED;
@@ -48,11 +50,7 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
 
@@ -63,7 +61,7 @@ if (isset($_POST['iSortCol_0'])) {
     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
         if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
             $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
+               " . (strtolower((string) $_POST['sSortDir_' . $i]) === 'desc' ? 'desc' : 'asc') . ", ";
         }
     }
     $sOrder = substr_replace($sOrder, "", -2);
@@ -75,6 +73,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
+        $search = $db->escape($search);
         if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
@@ -134,12 +133,12 @@ if (!empty($_POST['sampleCollectionDate'])) {
     }
 }
 
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-    $sWhere[] = '  b.batch_code = "' . $_POST['batchCode'] . '"';
-}
-if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-    $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
-}
+$sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+    'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
+    'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
+    'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
+    'vlLab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
+])];
 if (!empty($_POST['sampleCollectionDate'])) {
     if (trim((string) $start_date) === trim((string) $end_date)) {
         $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
@@ -148,12 +147,6 @@ if (!empty($_POST['sampleCollectionDate'])) {
     }
 }
 
-if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-    $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-}
-if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
-    $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
-}
 if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
     if ($_POST['status'] == 'no_result') {
         $statusCondition = '  (vl.result is NULL OR vl.result = "") AND vl.result_status = ' . RECEIVED_AT_TESTING_LAB;
@@ -169,10 +162,10 @@ if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
 }
 
 if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-    $sWhere[] = ' vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+    $sWhere[] = ' vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
 }
 if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
-    $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+    $sWhere[] = ' vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
 }
 
 // Only approved results can be printed

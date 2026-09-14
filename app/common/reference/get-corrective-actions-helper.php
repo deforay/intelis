@@ -1,6 +1,7 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface;
+use App\Utilities\DataTableUtility;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -38,11 +39,7 @@ try {
 
     $sTable = $tableName;
 
-    $sOffset = $sLimit = null;
-    if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
-    }
+    [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
     $sOrder = "";
@@ -51,7 +48,7 @@ try {
         for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
             if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
                 $sOrder .= $aColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
+				 	" . (strtolower(trim((string) ($_POST['sSortDir_' . $i] ?? ''))) === 'desc' ? 'DESC' : 'ASC') . ", ";
             }
         }
         $sOrder = substr_replace($sOrder, "", -2);
@@ -71,9 +68,9 @@ try {
 
             for ($i = 0; $i < $colSize; $i++) {
                 if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' OR ";
                 } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' ";
                 }
             }
             $sWhereSub .= ")";
@@ -83,7 +80,7 @@ try {
 
     $sQuery = "SELECT * FROM $tableName";
     if (isset($testType) && $testType != "") {
-        $sWhere .= "test_type = '$testType'";
+        $sWhere .= "test_type = '" . $db->escape((string) $testType) . "'";
     }
     if ($sWhere !== '' && $sWhere !== '0') {
         $sQuery = "$sQuery WHERE $sWhere";

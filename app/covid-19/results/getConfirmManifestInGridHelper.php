@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Utilities\DataTableUtility;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -15,11 +16,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $aColumns = ['p.manifest_code', 'p.module', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')"];
 $orderColumns = ['p.manifest_id', 'p.module', 'p.manifest_code', 'p.manifest_id', 'p.request_created_datetime'];
 
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -28,7 +25,7 @@ if (isset($_POST['iSortCol_0'])) {
         if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
 
             $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
+				 	" . (strtolower(trim((string) $_POST['sSortDir_' . $i])) === 'desc' ? 'DESC' : 'ASC') . ", ";
         }
     }
     $sOrder = substr_replace($sOrder, "", -2);
@@ -47,9 +44,9 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
         for ($i = 0; $i < $colSize; $i++) {
             if ($i < $colSize - 1) {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' OR ";
             } else {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' ";
             }
         }
         $sWhereSub .= ")";

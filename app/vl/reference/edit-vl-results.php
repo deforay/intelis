@@ -24,7 +24,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var InstrumentsService $instrumentsService */
 $instrumentsService = ContainerRegistry::get(InstrumentsService::class);
 
-$resultQuery = "SELECT * from r_vl_results where result_id = '" . $id . "' ";
+$resultQuery = "SELECT * from r_vl_results where result_id = '" . $db->escape((string) $id) . "' ";
 $resultInfo = $db->query($resultQuery);
 
 $activeInstruments = $instrumentsService->getInstruments(testType: null, dropDown: true, withFacility: true);

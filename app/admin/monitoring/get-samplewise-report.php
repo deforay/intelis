@@ -1,6 +1,7 @@
 <?php
 
 use App\Utilities\AdminFilterClauseBuilder;
+use App\Utilities\DataTableUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
@@ -53,11 +54,7 @@ try {
         'vl.last_modified_datetime'
     ];
 
-    $sOffset = $sLimit = null;
-    if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
-    }
+    [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
 

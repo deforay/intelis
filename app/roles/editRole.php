@@ -42,7 +42,7 @@ $resourcesQuery = "SELECT module,
 					GROUP BY `module` ORDER BY `module` ASC";
 $rInfo = $db->query($resourcesQuery);
 
-$priQuery = "SELECT * from roles_privileges_map where role_id=$id";
+$priQuery = "SELECT * from roles_privileges_map where role_id=" . (int) $id;
 $priInfo = $db->query($priQuery);
 $priId = [];
 if ($priInfo) {

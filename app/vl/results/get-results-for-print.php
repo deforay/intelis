@@ -16,6 +16,8 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\UsersService;
 use App\Utilities\SampleCountUtility;
+use App\Utilities\DataTableUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -58,11 +60,7 @@ try {
           $orderColumns = array_values(array_diff($orderColumns, ['vl.lab_assigned_code']));
      }
 
-     $sOffset = $sLimit = null;
-     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-          $sOffset = $_POST['iDisplayStart'];
-          $sLimit = $_POST['iDisplayLength'];
-     }
+     [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
      $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
@@ -124,27 +122,14 @@ try {
      [$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '', includeTime: true);
      [$r_start_date, $r_end_date] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '', includeTime: true);
 
-     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-          $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-     }
-
-     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
-     }
-
-     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-          $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
-     }
-     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-          $sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
-     }
-
-     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-          $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
-     }
-     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-          $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
-     }
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+          'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
+          'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
+          'district' => ['f.facility_district_id', ListingFilterClauseBuilder::EQUALS],
+          'state' => ['f.facility_state_id', ListingFilterClauseBuilder::EQUALS],
+          'patientId' => ['vl.patient_art_no', ListingFilterClauseBuilder::CONTAINS],
+          'patientName' => ["CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", ListingFilterClauseBuilder::CONTAINS],
+     ])];
 
      if (!empty($_POST['sampleCollectionDate'])) {
           $sWhere[] = " vl.sample_collection_date BETWEEN '$start_date' AND '$end_date'";
@@ -159,15 +144,11 @@ try {
      }
 
 
-     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-          $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
-     }
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-          $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-     }
-     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
-          $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
-     }
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+          'sampleType' => ['s.sample_id', ListingFilterClauseBuilder::EQUALS],
+          'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
+          'vlLab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
+     ])];
 
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           if ($_POST['status'] == 'no_result') {
@@ -183,14 +164,14 @@ try {
           if (trim((string) $_POST['gender']) === "unreported") {
                $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
           } else {
-               $sWhere[] = ' vl.patient_gender ="' . $_POST['gender'] . '"';
+               $sWhere[] = ' vl.patient_gender ="' . $db->escape((string) $_POST['gender']) . '"';
           }
      }
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-          $sWhere[] = ' vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+          $sWhere[] = ' vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
      }
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
-          $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+          $sWhere[] = ' vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
      }
 
      // Only approved results can be printed

@@ -23,7 +23,12 @@ $fieldName = $_POST['fieldName'];
 $value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
-if ($value !== '') {
+// The table, column and exclusion column are written into the query as names,
+// so only the ones the Custom Tests request and result forms send are accepted.
+$knownTable = $tableName === 'form_generic';
+$knownField = in_array($fieldName, ['sample_code', 'remote_sample_code'], true);
+$knownExclusion = ($fnct == '' || $fnct == 'null') || explode("##", (string) $fnct)[0] === 'sample_id';
+if ($value !== '' && $knownTable && $knownField && $knownExclusion) {
     if ($fnct == '' || $fnct == 'null') {
         $sQuery = "SELECT * FROM $tableName WHERE $fieldName= ?";
         $parameters = [$value];

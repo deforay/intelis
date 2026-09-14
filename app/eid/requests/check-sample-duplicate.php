@@ -19,6 +19,13 @@ $fieldName = $_POST['fieldName'];
 $value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
+// The table, the field and the excluded-row column become identifiers in the
+// query, so each has to be a plain identifier; anything else is not checked.
+$isIdentifier = static fn($name): bool => is_string($name) && preg_match('/^[A-Za-z0-9_]+$/', $name) === 1;
+$fnctColumn = (!empty($fnct) && $fnct != 'null') ? explode("##", (string) $fnct)[0] : null;
+if (!$isIdentifier($tableName) || !$isIdentifier($fieldName) || ($fnctColumn !== null && !$isIdentifier($fnctColumn))) {
+    $tableName = $fieldName = null;
+}
 if ($value !== '' && $value !== '0' && !empty($fieldName) && !empty($tableName)) {
     try {
         $tableCondition = '';

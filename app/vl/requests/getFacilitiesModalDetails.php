@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Utilities\DataTableUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -20,25 +21,11 @@ $sTable = $tableName;
 /*
  * Paging
  */
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-    $sOrder = "";
-    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-            $sOrder .= $aColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-        }
-    }
-    $sOrder = substr_replace($sOrder, "", -2);
-}
+$sOrder = DataTableUtility::buildOrder($_POST, $aColumns);
 
 
 
@@ -47,6 +34,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
+        $search = $db->escapeLike($search);
         if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
@@ -75,31 +63,31 @@ if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
     $sWhere .= ' AND status = "active"';
     if (isset($_POST['hub']) && trim((string) $_POST['hub']) !== '') {
-        $sWhere = $sWhere . " AND f_d.facility_hub_name LIKE '%" . $_POST['hub'] . "%' ";
+        $sWhere = $sWhere . " AND f_d.facility_hub_name LIKE '%" . $db->escapeLike($_POST['hub']) . "%' ";
     }
     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $sWhere = $sWhere . " AND f_d.facility_district LIKE '%" . $_POST['district'] . "%' ";
+        $sWhere = $sWhere . " AND f_d.facility_district LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
     }
     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-        $sWhere = $sWhere . " AND f_d.facility_state LIKE '%" . $_POST['state'] . "%' ";
+        $sWhere = $sWhere . " AND f_d.facility_state LIKE '%" . $db->escapeLike($_POST['state']) . "%' ";
     }
     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-        $sWhere = $sWhere . " AND f_t.facility_type_id='" . $_POST['facilityName'] . "'";
+        $sWhere = $sWhere . " AND f_t.facility_type_id='" . $db->escape((string) $_POST['facilityName']) . "'";
     }
     $sQuery = $sQuery . ' ' . $sWhere;
 } else {
     $sWhere = ' where status = "active"';
     if (isset($_POST['hub']) && trim((string) $_POST['hub']) !== '') {
-        $sWhere = $sWhere . " AND f_d.facility_hub_name LIKE '%" . $_POST['hub'] . "%' ";
+        $sWhere = $sWhere . " AND f_d.facility_hub_name LIKE '%" . $db->escapeLike($_POST['hub']) . "%' ";
     }
     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $sWhere = $sWhere . " AND f_d.facility_district LIKE '%" . $_POST['district'] . "%' ";
+        $sWhere = $sWhere . " AND f_d.facility_district LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
     }
     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-        $sWhere = $sWhere . " AND f_d.facility_state LIKE '%" . $_POST['state'] . "%' ";
+        $sWhere = $sWhere . " AND f_d.facility_state LIKE '%" . $db->escapeLike($_POST['state']) . "%' ";
     }
     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-        $sWhere = $sWhere . " AND f_t.facility_type_id='" . $_POST['facilityName'] . "'";
+        $sWhere = $sWhere . " AND f_t.facility_type_id='" . $db->escape((string) $_POST['facilityName']) . "'";
     }
     $sQuery = $sQuery . ' ' . $sWhere;
 }

@@ -45,7 +45,8 @@ if (!empty($_POST['formType']) && $_POST['formType'] == 'update-form') {
     $disabled = ' disabled ';
 }
 // $resultInterpretation = $_POST['resultInterpretation'] ?? "";
-$testResultUnits = $genericTestsService->getTestResultUnit($_POST['testType']);
+// getTestResultUnit writes the id into its query unquoted.
+$testResultUnits = $genericTestsService->getTestResultUnit((int) $_POST['testType']);
 
 $testTypeQuery = "SELECT * FROM r_test_types WHERE test_type_id= ?";
 $testTypeResult = $db->rawQueryOne($testTypeQuery, [$_POST['testType']]);

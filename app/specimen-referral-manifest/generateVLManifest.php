@@ -54,7 +54,7 @@ if (!empty($id)) {
                 LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id
                 LEFT JOIN r_vl_sample_type as st ON st.sample_id=vl.specimen_type
                 LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by
-                WHERE pd.manifest_id IN($id)
+                WHERE pd.manifest_id IN(" . $db->inIntList($id) . ")
                 ORDER BY remote_sample_code ASC";
 
     $result = $db->query($sQuery);

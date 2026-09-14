@@ -13,7 +13,7 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$tQuery = "SELECT * from r_generic_sample_types where sample_type_id=$id";
+$tQuery = "SELECT * from r_generic_sample_types where sample_type_id=" . (int) $id;
 $sampleTypeInfo = $db->query($tQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->

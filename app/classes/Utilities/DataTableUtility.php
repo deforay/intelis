@@ -111,6 +111,22 @@ final class DataTableUtility
     }
 
     /**
+     * The offset and page size for a legacy DataTables request, as ints.
+     *
+     * Both are null when the request asks for every row (iDisplayLength -1) or
+     * gives no paging, which is when the listings leave LIMIT off.
+     *
+     * @return array{0: ?int, 1: ?int} [offset, limit]
+     */
+    public static function paging(array $request): array
+    {
+        if (!isset($request['iDisplayStart'], $request['iDisplayLength']) || $request['iDisplayLength'] == '-1') {
+            return [null, null];
+        }
+        return [max(0, (int) $request['iDisplayStart']), max(0, (int) $request['iDisplayLength'])];
+    }
+
+    /**
      * Build ORDER BY safely from DataTables params.
      */
     public static function buildOrder(array $request, array $orderColumns): ?string

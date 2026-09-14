@@ -31,14 +31,14 @@ if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) === 'pk2') {
 
 if (trim((string) $id) !== '') {
 
-    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,TRIM(CONCAT(COALESCE(vl.patient_name, ''), ' ', COALESCE(vl.patient_surname, ''))) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.manifest_code, l.facility_name as lab_name from specimen_manifests as pd Join form_hepatitis as vl ON vl.sample_package_id=pd.manifest_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.manifest_id IN($id) ORDER BY remote_sample_code ASC";
+    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,TRIM(CONCAT(COALESCE(vl.patient_name, ''), ' ', COALESCE(vl.patient_surname, ''))) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.manifest_code, l.facility_name as lab_name from specimen_manifests as pd Join form_hepatitis as vl ON vl.sample_package_id=pd.manifest_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.manifest_id IN(" . $db->inIntList($id) . ") ORDER BY remote_sample_code ASC";
     $result = $db->query($sQuery);
 
 
     $labname = $result[0]['lab_name'] ?? "";
 
     $showPatientName = $general->getGlobalConfig('hepatitis_show_participant_name_in_manifest');
-    $bQuery = "SELECT * from specimen_manifests as pd where manifest_id IN($id)";
+    $bQuery = "SELECT * from specimen_manifests as pd where manifest_id IN(" . $db->inIntList($id) . ")";
 
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {

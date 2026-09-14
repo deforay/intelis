@@ -2,6 +2,7 @@
 
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\DataTableUtility;
 
 $tableName = "r_vl_test_reasons";
 $primaryKey = "test_reason_id";
@@ -11,24 +12,10 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $aColumns = ['test_reason_name', 'test_reason_status'];
 
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-    $sOrder = "";
-    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-            $sOrder .= $aColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-        }
-    }
-    $sOrder = substr_replace($sOrder, "", -2);
-}
+$sOrder = $general->generateDataTablesSorting($_POST, $aColumns);
 
 
 
@@ -37,6 +24,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
+        $search = $db->escapeLike($search);
         if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {

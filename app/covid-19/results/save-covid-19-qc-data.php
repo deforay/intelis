@@ -28,7 +28,7 @@ try {
         $exist = false;
         if (isset($_POST['qcDataId']) && $_POST['qcDataId'] != "") {
             /* Suppose while edit they can change the testkit means prev data not needed so we can rease it from DB */
-            $exist = $db->rawQueryOne("SELECT qc_id FROM $tableName1 WHERE qc_id = " . base64_decode((string) $_POST['qcDataId']));
+            $exist = $db->rawQueryOne("SELECT qc_id FROM $tableName1 WHERE qc_id = " . (int) base64_decode((string) $_POST['qcDataId']));
             if (isset($exist) && !empty($exist['qc_id'])) {
                 $db->where("qc_id", $exist['qc_id']);
                 $db->delete($tableName1);

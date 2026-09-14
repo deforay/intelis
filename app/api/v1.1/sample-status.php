@@ -63,13 +63,13 @@ try {
     /* To check the uniqueId filter */
     $uniqueId = $input['uniqueId'] ?? [];
     if (!empty($uniqueId)) {
-        $uniqueId = implode("','", $uniqueId);
+        $uniqueId = implode("','", array_map($db->escape(...), (array) $uniqueId));
         $where[] = " vl.unique_id IN ('$uniqueId')";
     }
     /* To check the sample id filter */
     $sampleCode = $input['sampleCode'] ?? [];
     if (!empty($sampleCode)) {
-        $sampleCode = implode("','", $sampleCode);
+        $sampleCode = implode("','", array_map($db->escape(...), (array) $sampleCode));
         $where[] = " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode')) ";
     }
 

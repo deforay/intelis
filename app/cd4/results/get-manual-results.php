@@ -11,7 +11,9 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
+use App\Utilities\DataTableUtility;
 use App\Registries\ContainerRegistry;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 // Sanitized values from $request object
@@ -54,11 +56,7 @@ try {
 
      $sTable = $tableName;
 
-     $sOffset = $sLimit = null;
-     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-          $sOffset = $_POST['iDisplayStart'];
-          $sLimit = $_POST['iDisplayLength'];
-     }
+     [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
      $sOrder = "";
@@ -67,7 +65,7 @@ try {
           for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
                if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true" && !empty($orderColumns[(int) $_POST['iSortCol_' . $i]])) {
                     $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
+				 	" . (strtolower(trim((string) ($_POST['sSortDir_' . $i] ?? ''))) === 'desc' ? 'DESC' : 'ASC') . ", ";
                }
           }
           $sOrder = substr_replace($sOrder, "", -2);
@@ -89,9 +87,9 @@ try {
 
                for ($i = 0; $i < $colSize; $i++) {
                     if ($i < $colSize - 1) {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' OR ";
                     } else {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' ";
                     }
                }
                $sWhereSub .= ") ";
@@ -150,27 +148,18 @@ try {
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
      [$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
-     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-          $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-     }
-
-     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-        $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
-    }
-
-     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-          $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
-     }
-     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-          $sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
-     }
-
-     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-          $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
-     }
-     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-          $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
-     }
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+          'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
+          'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
+          'district' => ['f.facility_district_id', ListingFilterClauseBuilder::EQUALS],
+          'state' => ['f.facility_state_id', ListingFilterClauseBuilder::EQUALS],
+          'patientId' => ['vl.patient_art_no', ListingFilterClauseBuilder::CONTAINS],
+          'patientName' => ["CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", ListingFilterClauseBuilder::CONTAINS],
+          'sampleType' => ['s.sample_id', ListingFilterClauseBuilder::EQUALS],
+          'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
+          'vlLab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
+          'artNo' => ['vl.patient_art_no', ListingFilterClauseBuilder::CONTAINS],
+     ])];
 
 
      if (!empty($_POST['sampleCollectionDate'])) {
@@ -188,18 +177,6 @@ try {
           } else {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $t_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $t_end_date . '"';
           }
-     }
-     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-          $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
-     }
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-          $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-     }
-     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
-          $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
-     }
-     if (isset($_POST['artNo']) && trim((string) $_POST['artNo']) !== '') {
-          $sWhere[] = " vl.patient_art_no LIKE '%" . $_POST['artNo'] . "%' ";
      }
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           if ($_POST['status'] == 'no_result') {
@@ -219,14 +196,14 @@ try {
           if (trim((string) $_POST['gender']) === "unreported") {
                $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
           } else {
-               $sWhere[] = ' vl.patient_gender ="' . $_POST['gender'] . '"';
+               $sWhere[] = ' vl.patient_gender ="' . $db->escape((string) $_POST['gender']) . '"';
           }
      }
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-          $sWhere[] = ' vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+          $sWhere[] = ' vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
      }
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
-          $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+          $sWhere[] = ' vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
      }
 
      if (!empty($_SESSION['facilityMap'])) {

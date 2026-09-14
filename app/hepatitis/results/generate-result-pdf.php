@@ -79,7 +79,7 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 						AND i.machine_name = vl.hepatitis_test_platform
 					)
 				)
-				WHERE vl.hepatitis_id IN(" . $_POST['id'] . ")";
+				WHERE vl.hepatitis_id IN(" . $db->inIntList($_POST['id']) . ")";
 
 	// Facility isolation: a mapped STS user only gets PDFs for their own
 	// facilities. No-op on LIS and for unmapped (all-access) users.

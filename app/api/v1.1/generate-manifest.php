@@ -73,7 +73,7 @@ try {
     /* To check the sample id filter */
     $sampleCode = $input['sampleCode'] ?? [];
     if (!empty($sampleCode)) {
-        $sampleCode = implode("','", $sampleCode);
+        $sampleCode = implode("','", array_map($db->escape(...), (array) $sampleCode));
         $where[] = " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode') OR vl.app_sample_code IN ('$sampleCode') ) ";
     }
 
