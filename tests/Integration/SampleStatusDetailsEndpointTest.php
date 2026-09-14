@@ -48,7 +48,9 @@ final class SampleStatusDetailsEndpointTest extends TestCase
         $db = LegacyAppHarness::boot(self::DATABASE, [
             // Lookup tables first: form_vl holds foreign keys to some of them.
             'r_sample_status', 'facility_details', 'r_vl_sample_type', 'batch_details',
-            'r_vl_sample_rejection_reasons', 'r_vl_test_failure_reasons', 'roles', 'user_details', 'form_vl',
+            'r_vl_sample_rejection_reasons', 'r_test_failure_reasons', 'r_vl_test_failure_reasons',
+            'roles', 'user_details',
+            'form_vl',
             'system_config', 'global_config',
         ]);
         LegacyAppHarness::withSession(['roleId' => 1]);

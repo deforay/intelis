@@ -80,6 +80,22 @@ if (!function_exists('_translate')) {
     }
 }
 
+// The escaping wrappers pages print into scripts and markup. Stubbed with the
+// same escaping as the real ones, so a test sees what a page would print.
+if (!function_exists('_jsTranslate')) {
+    function _jsTranslate(?string $text): string
+    {
+        $flags = JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP;
+        return substr((string) json_encode((string) $text, $flags), 1, -1);
+    }
+}
+if (!function_exists('_htmlTranslate')) {
+    function _htmlTranslate(?string $text): string
+    {
+        return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8');
+    }
+}
+
 // Same reasoning for the request helpers the swept endpoints call. The real
 // _sanitizeInput() runs HTML Purifier; a test drives endpoints with plain values,
 // so a passthrough keeps the framework out of the suite. _rawInput() mirrors the

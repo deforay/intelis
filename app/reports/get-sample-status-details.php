@@ -31,10 +31,10 @@ try {
         throw new SystemException(_translate('You do not have permission to perform this action.'), 403);
     }
 
-    $columnKeys = array_keys(SampleStatusDetailsService::columns($req['status']));
+    $columns = SampleStatusDetailsService::columns($req['status'], $req['testType']);
+    $columnKeys = array_keys($columns);
 
     if (($_POST['section'] ?? '') === 'export') {
-        $columns = SampleStatusDetailsService::columns($req['status']);
         $filePath = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Sample-Status-' . $req['testType'] . '-' . $req['status']
             . '-' . date('d-M-Y-H-i-s') . '.xlsx';
         $writer = new XlsxWriter();
