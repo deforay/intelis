@@ -1,6 +1,7 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface;
+use const COUNTRY\DRC;
 use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
@@ -23,6 +24,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $key = (string) $general->getGlobalConfig('key');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 
 /** @var FacilitiesService $facilitiesService */
@@ -38,6 +40,10 @@ $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', '
 if ($general->isStandaloneInstance()) {
     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
     $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+}
+if ($formId == DRC) {
+    $aColumns = array_values(array_diff($aColumns, ['vl.child_name']));
+    $orderColumns = array_values(array_diff($orderColumns, ['vl.child_name']));
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -174,7 +180,9 @@ foreach ($rResult as $aRow) {
     }
     $row[] = ($aRow['facility_name']);
     $row[] = $aRow['child_id'];
-    $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+    if ($formId != DRC) {
+        $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+    }
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['labName'];
     $row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);

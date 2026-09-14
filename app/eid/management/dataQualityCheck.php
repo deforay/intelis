@@ -1,6 +1,7 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface;
+use const COUNTRY\DRC;
 use App\Registries\AppRegistry;
 use App\Utilities\SampleCountUtility;
 use App\Registries\ContainerRegistry;
@@ -24,6 +25,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 $key = (string) $general->getGlobalConfig('key');
+$formId = (int) $gconfig['vl_form'];
 
 $tableName = "form_eid";
 $primaryKey = "eid_id";
@@ -34,6 +36,10 @@ $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collectio
 if ($general->isStandaloneInstance()) {
      $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
      $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+}
+if ($formId == DRC) {
+     $aColumns = array_values(array_diff($aColumns, ['vl.child_name']));
+     $orderColumns = array_values(array_diff($orderColumns, ['vl.child_name']));
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -88,6 +94,9 @@ if (isset($_POST['formField']) && trim((string) $_POST['formField']) !== '') {
           'result' => 'vl.result',
           'result_status' => 'vl.result_status',
      ];
+     if ($formId == DRC) {
+          unset($checkableFields['child_name']);
+     }
      $sWhereSub = '';
      $searchArray = explode(",", (string) $_POST['formField']);
      foreach ($searchArray as $search) {
@@ -183,7 +192,9 @@ foreach ($rResult as $aRow) {
      }
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
-     $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+     if ($formId != DRC) {
+          $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+     }
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['facility_state']);
      $row[] = ($aRow['facility_district']);

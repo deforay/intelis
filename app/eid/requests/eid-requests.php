@@ -423,6 +423,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 								<input type="text" id="childId" name="childId" class="form-control"
 									placeholder="<?php echo _translate('Child ID'); ?>" style="background:#fff;" />
 							</td>
+							<?php if ($formId != COUNTRY\DRC) { ?>
 							<td><strong>
 									<?php echo _translate("Child Name"); ?>&nbsp;:
 								</strong></td>
@@ -431,6 +432,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									placeholder="<?php echo _translate('Enter Child Name'); ?>"
 									style="background:#fff;" />
 							</td>
+							<?php } ?>
 						</tr>
 						<tr>
 							<td><strong>
@@ -441,6 +443,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									placeholder="<?php echo _translate('Enter Mother ID'); ?>"
 									style="background:#fff;" />
 							</td>
+							<?php if ($formId != COUNTRY\DRC) { ?>
 							<td><strong>
 									<?php echo _translate("Mother Name"); ?>&nbsp;:
 								</strong></td>
@@ -449,6 +452,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									placeholder="<?php echo _translate('Enter Mother Name'); ?>"
 									style="background:#fff;" />
 							</td>
+							<?php } ?>
 							<td><strong>
 									<?php echo _translate("Show Rejected Samples"); ?>&nbsp;:
 								</strong></td>
@@ -574,15 +578,19 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<th>
 										<?php echo _translate("Child's ID"); ?>
 									</th>
+									<?php if ($formId != COUNTRY\DRC) { ?>
 									<th>
 										<?php echo _translate("Child's Name"); ?>
 									</th>
+									<?php } ?>
 									<th>
 										<?php echo _translate("Mother's ID"); ?>
 									</th>
+									<?php if ($formId != COUNTRY\DRC) { ?>
 									<th>
 										<?php echo _translate("Mother's Name"); ?>
 									</th>
+									<?php } ?>
 									<th>
 										<?php echo _translate("Province/State"); ?>
 									</th>
@@ -840,13 +848,17 @@ foreach ($sourceOfRequests as $value => $displayText) {
 				"sClass": "center"
 			}, {
 				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
+			},
+				<?php if ($formId != COUNTRY\DRC) { ?> {
+					"sClass": "center"
+				},
+				<?php } ?> {
+					"sClass": "center"
+				},
+				<?php if ($formId != COUNTRY\DRC) { ?> {
+					"sClass": "center"
+				},
+				<?php } ?> {
 				"sClass": "center"
 			}, {
 				"sClass": "center"

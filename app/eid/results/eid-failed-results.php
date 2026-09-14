@@ -149,12 +149,14 @@ $sResult = $db->rawQuery($sQuery);
                                 <input type="text" id="childId" name="childId" class="form-control" placeholder="<?php echo _translate('Enter Child ID'); ?>" style="background:#fff;" />
                             </td>
 
+                            <?php if ($formId != COUNTRY\DRC) { ?>
                             <td><strong>
                                     <?php echo _translate("Child Name"); ?>&nbsp;:
                                 </strong></td>
                             <td>
                                 <input type="text" id="childName" name="childName" class="form-control" placeholder="<?php echo _translate('Enter Child Name'); ?>" style="background:#fff;" />
                             </td>
+                            <?php } ?>
                         </tr>
                         <tr>
                             <td><strong>
@@ -164,12 +166,14 @@ $sResult = $db->rawQuery($sQuery);
                                 <input type="text" id="motherId" name="motherId" class="form-control" placeholder="<?php echo _translate('Enter Mother ID'); ?>" style="background:#fff;" />
                             </td>
 
+                            <?php if ($formId != COUNTRY\DRC) { ?>
                             <td><strong>
                                     <?php echo _translate("Mother Name"); ?>&nbsp;:
                                 </strong></td>
                             <td>
                                 <input type="text" id="motherName" name="motherName" class="form-control" placeholder="<?php echo _translate('Enter Mother Name'); ?>" style="background:#fff;" />
                             </td>
+                            <?php } ?>
                             <td><strong>
 									<?php echo _translate("Manifest Code"); ?>&nbsp;:
 								</strong></td>
@@ -218,15 +222,19 @@ $sResult = $db->rawQuery($sQuery);
                                     <th>
                                         <?php echo _translate("Child's ID"); ?>
                                     </th>
+                                    <?php if ($formId != COUNTRY\DRC) { ?>
                                     <th>
                                         <?php echo _translate("Child's Name"); ?>
                                     </th>
+                                    <?php } ?>
                                     <th>
                                         <?php echo _translate("Mother's ID"); ?>
                                     </th>
+                                    <?php if ($formId != COUNTRY\DRC) { ?>
                                     <th>
                                         <?php echo _translate("Mother's Name"); ?>
                                     </th>
+                                    <?php } ?>
                                     <th>
                                         <?php echo _translate("Province/State"); ?>
                                     </th>
@@ -427,13 +435,17 @@ $sResult = $db->rawQuery($sQuery);
                     "sClass": "center"
                 }, {
                     "sClass": "center"
-                }, {
+                },
+                <?php if ($formId != COUNTRY\DRC) { ?> {
+                        "sClass": "center"
+                    },
+                <?php } ?> {
                     "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
+                },
+                <?php if ($formId != COUNTRY\DRC) { ?> {
+                        "sClass": "center"
+                    },
+                <?php } ?> {
                     "sClass": "center"
                 }, {
                     "sClass": "center"

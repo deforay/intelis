@@ -1,6 +1,7 @@
 <?php
 
 use Slim\Psr7\Request;
+use const COUNTRY\DRC;
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
@@ -27,6 +28,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -67,6 +69,8 @@ $authToken = ApiService::extractBearerToken($request);
 $user = $usersService->findUserByApiToken($authToken);
 try {
     $transactionId = MiscUtility::generateULID();
+    $mothersNameSelect = $formId != DRC ? "vl.mother_name                                       as mothersName,\n" : '';
+    $childNameSelect = $formId != DRC ? "vl.child_name                                        as childName,\n" : '';
     $sQuery = "SELECT
         vl.app_sample_code                                   as appSampleCode,
         vl.unique_id                                         as uniqueId,
@@ -84,15 +88,13 @@ try {
         vl.caretaker_contact_consent                         as caretakerConsentForContact,
         vl.caretaker_phone_number                            as caretakerPhoneNumber,
         vl.caretaker_address                                 as caretakerAddress,
-        vl.mother_name                                       as mothersName,
-        vl.mother_dob                                        as mothersDob,
+        {$mothersNameSelect}vl.mother_dob                                        as mothersDob,
         vl.mother_marital_status                             as mothersMaritalStatus,
         vl.mother_treatment                                  as motherTreatment,
         vl.mother_treatment_other                            as motherTreatmentOther,
         vl.mother_treatment_initiation_date                  as motherTreatmentInitiationDate,
         vl.child_id                                          as childId,
-        vl.child_name                                        as childName,
-        vl.child_surname                                     as childSurName,
+        {$childNameSelect}vl.child_surname                                     as childSurName,
         vl.child_dob                                         as childDob,
         vl.child_gender                                      as childGender,
         vl.health_insurance_code                             as healthInsuranceCode,
@@ -222,7 +224,7 @@ try {
         $where[] = " vl.child_id IN ('" . $childId . "') ";
     }
 
-    if (!empty($input['childName'])) {
+    if ($formId != DRC && !empty($input['childName'])) {
         $where[] = " (vl.child_name like '" . $db->escape($input['childName']) . "' OR vl.child_surname like '" . $db->escape($input['childName']) . "')";
     }
 

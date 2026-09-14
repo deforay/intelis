@@ -1,6 +1,7 @@
 <?php
 
 
+use const COUNTRY\DRC;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\MiscUtility;
@@ -22,6 +23,7 @@ $arr = $general->getGlobalConfig();
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 
 if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) !== "") {
@@ -30,6 +32,9 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
      $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child's ID", "Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "Result", "Implementing Partner"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
+     }
+     if ($formId == DRC) {
+          $headings = MiscUtility::removeMatchingElements($headings, ["Child's Name"]);
      }
 
 
@@ -57,7 +62,9 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           }
           $row[] = ($aRow['facility_name']);
           $row[] = $aRow['child_id'];
-          $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+          if ($formId != DRC) {
+               $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+          }
           $row[] = $aRow['caretaker_phone_number'];
           $row[] = $sampleCollectionDate;
           $row[] = $sampleTestDate;

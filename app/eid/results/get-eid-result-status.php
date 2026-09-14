@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\DRC;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -16,6 +17,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $sarr = $general->getSystemConfig();
 $key = (string) $general->getGlobalConfig('key');
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 
 /** @var EidService $eidService */
@@ -35,6 +37,11 @@ if ($general->isSTSInstance()) {
 } elseif ($general->isStandaloneInstance()) {
     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
     $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+}
+
+if ($formId == DRC) {
+    $aColumns = array_values(array_diff($aColumns, ['vl.child_name', 'vl.mother_name']));
+    $orderColumns = array_values(array_diff($orderColumns, ['vl.child_name', 'vl.mother_name']));
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -209,9 +216,13 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['batch_code'];
     $row[] = $aRow['child_id'];
-    $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+    if ($formId != DRC) {
+        $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+    }
     $row[] = $aRow['mother_id'];
-    $row[] = $aRow['mother_name'];
+    if ($formId != DRC) {
+        $row[] = $aRow['mother_name'];
+    }
     $row[] = ($aRow['facility_name']);
     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');

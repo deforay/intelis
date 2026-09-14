@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\DRC;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -16,6 +17,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -256,15 +258,19 @@ $lastUrl2 = '';
 									<th>
 										<?php echo _translate("Child's ID"); ?>
 									</th>
+									<?php if ($formId != DRC) { ?>
 									<th>
 										<?php echo _translate("Child's Name"); ?>
 									</th>
+									<?php } ?>
 									<th>
 										<?php echo _translate("Mother's ID"); ?>
 									</th>
+									<?php if ($formId != DRC) { ?>
 									<th>
 										<?php echo _translate("Mother's Name"); ?>
 									</th>
+									<?php } ?>
 									<th>
 										<?php echo _translate("Result"); ?>
 									</th>
@@ -403,15 +409,19 @@ $lastUrl2 = '';
 			{
 				"sClass": "center"
 			},
+			<?php if ($formId != DRC) { ?>
 			{
 				"sClass": "center"
 			},
+			<?php } ?>
 			{
 				"sClass": "center"
 			},
+			<?php if ($formId != DRC) { ?>
 			{
 				"sClass": "center"
 			},
+			<?php } ?>
 			{
 				"sClass": "center"
 			},

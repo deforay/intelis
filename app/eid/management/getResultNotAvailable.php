@@ -4,6 +4,7 @@ use App\Utilities\SampleCountUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\EXPIRED;
+use const COUNTRY\DRC;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -34,12 +35,17 @@ try {
     $tableName = "form_eid";
     $primaryKey = "eid_id";
     $key = (string) $general->getGlobalConfig('key');
+    $formId = (int) $general->getGlobalConfig('vl_form');
 
     $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
     $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.sample_collection_date', 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
     if ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+    }
+    if ($formId == DRC) {
+        $aColumns = array_values(array_diff($aColumns, ['vl.child_name']));
+        $orderColumns = array_values(array_diff($orderColumns, ['vl.child_name']));
     }
 
     /* Indexed column (used for fast and accurate table cardinality) */
@@ -189,7 +195,9 @@ try {
         }
         $row[] = ($aRow['facility_name']);
         $row[] = $aRow['child_id'];
-        $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        if ($formId != DRC) {
+            $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        }
         $row[] = $aRow['sample_collection_date'];
         $row[] = ($aRow['labName']);
         $row[] = ($aRow['status_name']);

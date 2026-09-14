@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const COUNTRY\CAMEROON;
+use const COUNTRY\DRC;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -59,6 +60,11 @@ try {
      } elseif ($general->isStandaloneInstance()) {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+     }
+
+     if ($formId == DRC) {
+          $aColumns = array_values(array_diff($aColumns, ['vl.child_name', 'vl.mother_name']));
+          $orderColumns = array_values(array_diff($orderColumns, ['vl.child_name', 'vl.mother_name']));
      }
 
 
@@ -212,13 +218,13 @@ try {
      if (isset($_POST['childId']) && $_POST['childId'] != "") {
           $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
      }
-     if (isset($_POST['childName']) && $_POST['childName'] != "") {
+     if ($formId != DRC && isset($_POST['childName']) && $_POST['childName'] != "") {
           $sWhere[] = ' vl.child_name like "%' . $_POST['childName'] . '%"';
      }
      if (isset($_POST['motherId']) && $_POST['motherId'] != "") {
           $sWhere[] = ' vl.mother_id like "%' . $_POST['motherId'] . '%"';
      }
-     if (isset($_POST['motherName']) && $_POST['motherName'] != "") {
+     if ($formId != DRC && isset($_POST['motherName']) && $_POST['motherName'] != "") {
           $sWhere[] = ' vl.mother_name like "%' . $_POST['motherName'] . '%"';
      }
      if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
@@ -341,9 +347,13 @@ try {
           } else {
                $row[] = '<span>' . $aRow['child_id'] . '</span>';
           }
-          $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+          if ($formId != DRC) {
+               $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+          }
           $row[] = $aRow['mother_id'];
-          $row[] = $aRow['mother_name'];
+          if ($formId != DRC) {
+               $row[] = $aRow['mother_name'];
+          }
 
           $row[] = $aRow['facility_state'];
           $row[] = $aRow['facility_district'];

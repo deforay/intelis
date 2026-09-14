@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\DRC;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -15,6 +16,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) !== "") {
     $rResult = $db->rawQuery($_SESSION['resultNotAvailable']);
@@ -25,6 +27,9 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child ID", "Child's Name", "Sample Collection Date", "Lab Name", "Sample Status", "Implementing Partner"];
     if ($general->isStandaloneInstance()) {
         $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
+    }
+    if ($formId == DRC) {
+        $headings = MiscUtility::removeMatchingElements($headings, ["Child's Name"]);
     }
 
     $colNo = 1;
@@ -74,7 +79,9 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         }
         $row[] = $aRow['facility_name'];
         $row[] = $aRow['child_id'];
-        $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        if ($formId != DRC) {
+            $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        }
         $row[] = $sampleCollectionDate;
         $row[] = ($aRow['labName']);
         $row[] = ($aRow['status_name']);

@@ -1,6 +1,7 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface;
+use const COUNTRY\DRC;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -25,6 +26,7 @@ try {
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
     $key = (string) $general->getGlobalConfig('key');
+    $formId = (int) $general->getGlobalConfig('vl_form');
 
     $tableName = "form_eid";
     $primaryKey = "eid_id";
@@ -38,6 +40,11 @@ try {
     } elseif ($general->isStandaloneInstance()) {
         $aColumns = ['vl.sample_code', 'f.facility_name', 'vl.child_name', 'vl.child_id', 'vl.caretaker_phone_number', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result', 'r_i_p.i_partner_name'];
         $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.caretaker_phone_number', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result', 'r_i_p.i_partner_name'];
+    }
+
+    if ($formId == DRC) {
+        $aColumns = array_values(array_diff($aColumns, ['vl.child_name']));
+        $orderColumns = array_values(array_diff($orderColumns, ['vl.child_name']));
     }
 
     /* Indexed column (used for fast and accurate table cardinality) */
@@ -172,7 +179,9 @@ try {
         }
         $row[] = ($aRow['facility_name']);
         $row[] = $aRow['child_id'];
-        $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        if ($formId != DRC) {
+            $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        }
         $row[] = $aRow['caretaker_phone_number'];
         $row[] = $aRow['sample_collection_date'];
         $row[] = $aRow['sample_tested_datetime'];

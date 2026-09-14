@@ -1,6 +1,7 @@
 <?php
 
 use const COUNTRY\CAMEROON;
+use const COUNTRY\DRC;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Services\EidService;
@@ -50,6 +51,10 @@ try {
     if ($formId != CAMEROON) {
         $aColumns = array_values(array_diff($aColumns, ['vl.lab_assigned_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.lab_assigned_code']));
+    }
+    if ($formId == DRC) {
+        $aColumns = array_values(array_diff($aColumns, ['vl.child_name', 'mother_name']));
+        $orderColumns = array_values(array_diff($orderColumns, ['vl.child_name', 'mother_name']));
     }
 
     /* Indexed column (used for fast and accurate table cardinality) */
@@ -107,7 +112,7 @@ try {
     if (isset($_POST['childId']) && $_POST['childId'] != "") {
         $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
     }
-    if (isset($_POST['childName']) && $_POST['childName'] != "") {
+    if ($formId != DRC && isset($_POST['childName']) && $_POST['childName'] != "") {
         $sWhere[] = " CONCAT(COALESCE(vl.child_name,''), COALESCE(vl.child_surname,'')) like '%" . $_POST['childName'] . "%'";
     }
     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
@@ -251,9 +256,13 @@ try {
         }
         $row[] = $aRow['batch_code'];
         $row[] = $aRow['child_id'];
-        $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        if ($formId != DRC) {
+            $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        }
         $row[] = $aRow['mother_id'];
-        $row[] = $aRow['mother_name'];
+        if ($formId != DRC) {
+            $row[] = $aRow['mother_name'];
+        }
         // $row[] = ($patientFname);
         $row[] = $aRow['facility_name'];
         $row[] = $aRow['labName'];

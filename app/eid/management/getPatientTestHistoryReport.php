@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\ACCEPTED;
+use const COUNTRY\DRC;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -29,6 +30,7 @@ try {
     $general = ContainerRegistry::get(CommonService::class);
 
     $key = (string) $general->getGlobalConfig('key');
+    $formId = (int) $general->getGlobalConfig('vl_form');
 
     /** @var FacilitiesService $facilitiesService */
     $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -42,6 +44,11 @@ try {
 
     $aColumns = ['vl.child_id', 'vl.child_name', 'vl.child_age', 'vl.child_dob', 'f.facility_name', 'vl.clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result', 'r_i_p.i_partner_name'];
     $orderColumns = ['vl.child_id', 'vl.child_name', 'vl.child_age', 'vl.child_dob', 'f.facility_name', 'vl.clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result', 'r_i_p.i_partner_name'];
+
+    if ($formId == DRC) {
+        $aColumns = array_values(array_diff($aColumns, ['vl.child_name']));
+        $orderColumns = array_values(array_diff($orderColumns, ['vl.child_name']));
+    }
 
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = $primaryKey;
@@ -97,7 +104,7 @@ try {
     if (isset($_POST['childId']) && $_POST['childId'] != "") {
         $sWhere[] = ' vl.child_id like "%' . $db->escapeLike($_POST['childId']) . '%"';
     }
-    if (isset($_POST['childName']) && $_POST['childName'] != "") {
+    if ($formId != DRC && isset($_POST['childName']) && $_POST['childName'] != "") {
         // CONCAT_WS keeps a space between name and surname, so searching
         // "John Doe" matches; plain CONCAT only matched "JohnDoe".
         $sWhere[] = " CONCAT_WS(' ', NULLIF(vl.child_name,''), NULLIF(vl.child_surname,'')) like '%" . $db->escapeLike($_POST['childName']) . "%'";
@@ -155,7 +162,9 @@ try {
         }
 
         $row[] = $aRow['child_id'];
-        $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        if ($formId != DRC) {
+            $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        }
         $row[] = $aRow['child_age'];
         $row[] = $aRow['child_dob'];
         $row[] = ($aRow['facility_name']);

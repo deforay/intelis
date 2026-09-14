@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\DRC;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -19,6 +20,7 @@ $arr = $general->getGlobalConfig();
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncompleteForm']) !== "") {
 
@@ -27,6 +29,9 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
      $headings = ['Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Child ID", "Child's Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status", "Implementing Partner"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
+     }
+     if ($formId == DRC) {
+          $headings = MiscUtility::removeMatchingElements($headings, ["Child's Name"]);
      }
 
      $resultSet = $db->rawQuery($_SESSION['vlIncompleteForm']);
@@ -50,7 +55,9 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['batch_code'];
           $row[] = $aRow['child_id'];
-          $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+          if ($formId != DRC) {
+               $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+          }
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['facility_state']);
           $row[] = ($aRow['facility_district']);

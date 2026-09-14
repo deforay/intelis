@@ -2,6 +2,7 @@
 
 // app/eid/requests/getManifestInGridHelper.php
 
+use const COUNTRY\DRC;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -10,7 +11,16 @@ use App\Registries\ContainerRegistry;
 /** @var CommonService $general */
 $general = $general ?? ContainerRegistry::get(CommonService::class);
 
+$formId = (int) $general->getGlobalConfig('vl_form');
+
 $eidResults = ContainerRegistry::get(EidService::class)->getEidResults();
+
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
+if ($formId == DRC) {
+    $aColumns = array_values(array_diff($aColumns, ['vl.child_name']));
+    $orderColumns = array_values(array_diff($orderColumns, ['vl.child_name']));
+}
 
 $manifestGrid = [
     'select' => "SELECT vl.sample_collection_date,
@@ -34,10 +44,10 @@ $manifestGrid = [
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id",
-    'aColumns' => ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name'],
-    'orderColumns' => ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'],
+    'aColumns' => $aColumns,
+    'orderColumns' => $orderColumns,
     'manifestWhere' => fn(string $code): string => " vl.sample_package_code = '$code'",
-    'rowMapper' => function (array $aRow) use ($general, $eidResults): array {
+    'rowMapper' => function (array $aRow) use ($general, $eidResults, $formId): array {
         $row = [];
         $row[] = $aRow['sample_code'];
         if (!$general->isStandaloneInstance()) {
@@ -47,9 +57,13 @@ $manifestGrid = [
         $row[] = $aRow['batch_code'];
         $row[] = $aRow['facility_name'];
         $row[] = $aRow['child_id'];
-        $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        if ($formId != DRC) {
+            $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        }
         $row[] = $aRow['mother_id'];
-        $row[] = $aRow['mother_name'];
+        if ($formId != DRC) {
+            $row[] = $aRow['mother_name'];
+        }
         $row[] = $aRow['facility_state'];
         $row[] = $aRow['facility_district'];
         $row[] = $eidResults[$aRow['result']] ?? $aRow['result'] ?? '';

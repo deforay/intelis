@@ -60,6 +60,10 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$headings = MiscUtility::removeMatchingElements($headings, [_translate("Result Turnaround Time - Reception"), _translate("Result Turnaround Time - Collection")]);
 	}
 
+	if ($formId == DRC) {
+		$headings = MiscUtility::removeMatchingElements($headings, [_translate("Child Name")]);
+	}
+
 	$testPlatformResult = $general->getTestingPlatforms('eid');
 	$testPlatformList = [];
 	foreach ($testPlatformResult as $row) {
@@ -115,7 +119,9 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 				//$aRow['mother_name'] = $general->crypto('decrypt', $aRow['mother_name'], $key);
 			}
 			$row[] = $aRow['child_id'];
-			$row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+			if ($formId != DRC) {
+				$row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+			}
 			$row[] = $aRow['mother_id'];
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['child_dob']);

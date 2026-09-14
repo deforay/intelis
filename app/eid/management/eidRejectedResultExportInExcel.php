@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\DRC;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -20,6 +21,7 @@ $arr = $general->getGlobalConfig();
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['rejectedViralLoadResult']) !== "") {
 
@@ -27,6 +29,9 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
      $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child ID", "Child's Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action", "Implementing Partner"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
+     }
+     if ($formId == DRC) {
+          $headings = MiscUtility::removeMatchingElements($headings, ["Child's Name"]);
      }
 
      $resultSet = $db->rawQuery($_SESSION['rejectedViralLoadResult']);
@@ -49,7 +54,9 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           }
           $row[] = ($aRow['facility_name']);
           $row[] = $aRow['child_id'];
-          $row[] = trim(($patientFname ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+          if ($formId != DRC) {
+               $row[] = trim(($patientFname ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+          }
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['labName'];
           $row[] = $aRow['rejection_reason_name'];

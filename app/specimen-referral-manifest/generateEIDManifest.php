@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use const COUNTRY\SIERRA_LEONE;
+use const COUNTRY\DRC;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -74,8 +75,10 @@ if (trim((string) $id) !== '') {
         $tbl = $pdf->renderManifestCodeSection($result[0]['manifest_code'], $general->getBarcodeImageContent($result[0]['manifest_code']));
 
         if (!empty($result) && count($result) > 0) {
+            $motherNameThYes = $arr['vl_form'] != DRC ? '<td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Mother Name</em></strong></td>' : '';
+            $motherNameThNo = $arr['vl_form'] != DRC ? '<td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Mother Name</em></strong></td>' : '';
             $tbl .= '<table style="width:100%;border:1px solid #333;">';
-            if ($showPatientName == "yes") {
+            if ($showPatientName == "yes" && $arr['vl_form'] != DRC) {
                 $tbl .= '<tr nobr="true">
                         <td align="center" style="font-size:11px;width:3%;border:1px solid #333;" ><strong><em>S. No.</em></strong></td>
                         <td align="center" style="font-size:11px;width:11%;border:1px solid #333;"  ><strong><em>SAMPLE ID</em></strong></td>
@@ -84,7 +87,7 @@ if (trim((string) $id) !== '') {
                        <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Child ID</em></strong></td>
                         <td align="center" style="font-size:11px;width:8%;border:1px solid #333;"  ><strong><em>Date of Birth</em></strong></td>
                         <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Child Sex</em></strong></td>
-                        <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Mother Name</em></strong></td>
+                        ' . $motherNameThYes . '
                         <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Sample Collection Date</em></strong></td>
                         <td align="center" style="font-size:11px;width:20%;border:1px solid #333;"  ><strong><em>Sample Barcode</em></strong></td>
                     </tr>';
@@ -96,7 +99,7 @@ if (trim((string) $id) !== '') {
                        <td align="center" style="font-size:11px;width:12%;border:1px solid #333;"  ><strong><em>Child ID</em></strong></td>
                         <td align="center" style="font-size:11px;width:8%;border:1px solid #333;"  ><strong><em>Date of Birth</em></strong></td>
                         <td align="center" style="font-size:11px;width:7%;border:1px solid #333;"  ><strong><em>Child Sex</em></strong></td>
-                        <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Mother Name</em></strong></td>
+                        ' . $motherNameThNo . '
                         <td align="center" style="font-size:11px;width:10%;border:1px solid #333;"  ><strong><em>Sample Collection Date</em></strong></td>
                         <td align="center" style="font-size:11px;width:20%;border:1px solid #333;"  ><strong><em>Sample Barcode</em></strong></td>
                     </tr>';
@@ -118,13 +121,15 @@ if (trim((string) $id) !== '') {
                 $tbl .= '<td align="center" style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sampleCounter . '.</td>';
                 $tbl .= '<td align="center" style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['remote_sample_code'] ?? '') . '</td>';
                 $tbl .= '<td align="center" style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['clinic_name'] ?? '') . ', ' . ($sample['facility_district'] ?? '') . '</td>';
-                if ($showPatientName == "yes") {
+                if ($showPatientName == "yes" && $arr['vl_form'] != DRC) {
                     $tbl .= '<td align="center" style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['child_name'] ?? '') . '</td>';
                 }
                 $tbl .= '<td align="center" style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['child_id'] ?? '') . '</td>';
                 $tbl .= '<td align="center" style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $patientDOB . '</td>';
                 $tbl .= '<td align="center" style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . str_replace("_", " ", (string) ($sample['child_gender'] ?? '')) . '</td>';
-                $tbl .= '<td align="center" style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['mother_name'] ?? '') . '</td>';
+                if ($arr['vl_form'] != DRC) {
+                    $tbl .= '<td align="center" style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['mother_name'] ?? '') . '</td>';
+                }
                 $tbl .= '<td align="center" style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $collectionDate . '</td>';
                 $tbl .= '<td align="center" style="vertical-align:middle;font-size:11px;border:1px solid #333;"><img style="width:180px;height:25px;" src="' . $general->getBarcodeImageContent($sample['remote_sample_code']) . '"/></td>';
                 $tbl .= '</tr>';

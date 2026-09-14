@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\DRC;
 use App\Services\UsersService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
@@ -15,6 +16,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -310,9 +312,13 @@ foreach ($rejectionTypeResult as $type) {
 									<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
 									<th><?php echo _translate("Batch Code"); ?></th>
 									<th><?php echo _translate("Child's ID"); ?></th>
+									<?php if ($formId != DRC) { ?>
 									<th><?php echo _translate("Child's Name"); ?></th>
+									<?php } ?>
 									<th><?php echo _translate("Mother's ID"); ?></th>
+									<?php if ($formId != DRC) { ?>
 									<th><?php echo _translate("Mother's Name"); ?></th>
+									<?php } ?>
 									<th scope="row"><?php echo _translate("Facility Name"); ?></th>
 									<th><?php echo _translate("Result"); ?></th>
 									<th><?php echo _translate("Last Modified on") ?></th>
@@ -454,15 +460,19 @@ foreach ($rejectionTypeResult as $type) {
 				{
 					"sClass": "center"
 				},
+				<?php if ($formId != DRC) { ?>
 				{
 					"sClass": "center"
 				},
+				<?php } ?>
 				{
 					"sClass": "center"
 				},
+				<?php if ($formId != DRC) { ?>
 				{
 					"sClass": "center"
 				},
+				<?php } ?>
 				{
 					"sClass": "center"
 				},

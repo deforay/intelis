@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\ACCEPTED;
+use const COUNTRY\DRC;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -29,6 +30,7 @@ try {
 
      $sarr = $general->getSystemConfig();
      $key = (string) $general->getGlobalConfig('key');
+     $formId = (int) $general->getGlobalConfig('vl_form');
 
 
      /** @var EidService $eidService */
@@ -47,6 +49,10 @@ try {
      } elseif ($general->isStandaloneInstance()) {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+     }
+     if ($formId == DRC) {
+          $aColumns = array_values(array_diff($aColumns, ['vl.child_name', 'vl.mother_name']));
+          $orderColumns = array_values(array_diff($orderColumns, ['vl.child_name', 'vl.mother_name']));
      }
      if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
           array_unshift($orderColumns, "vl.eid_id");
@@ -231,9 +237,13 @@ try {
           $row[] = $aRow['batch_code'];
           $row[] = ($aRow['facility_name']);
           $row[] = $aRow['child_id'];
-          $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+          if ($formId != DRC) {
+               $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+          }
           $row[] = $aRow['mother_id'];
-          $row[] = $aRow['mother_name'];
+          if ($formId != DRC) {
+               $row[] = $aRow['mother_name'];
+          }
           $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
 
           if (isset($aRow['lastModifiedDate']) && trim((string) $aRow['lastModifiedDate']) !== '' && $aRow['lastModifiedDate'] != '0000-00-00 00:00:00') {

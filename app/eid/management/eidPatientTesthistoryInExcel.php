@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\DRC;
 use App\Services\EidService;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -27,6 +28,7 @@ $key = (string) $general->getGlobalConfig('key');
 
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 
 if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['patientTestHistoryResult']) !== "") {
@@ -34,6 +36,9 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
      $output = [];
 
      $headings = ["Child's ID", "Child's Name", "Age", "DoB", "Facility Name", "Requesting Clinican", "Sample Collection Date", "Sample Type", "Lab Name", "Sample Tested Date", "Result", "Implementing Partner"];
+     if ($formId == DRC) {
+          $headings = MiscUtility::removeMatchingElements($headings, ["Child's Name"]);
+     }
 
      $resultSet = $db->rawQuery($_SESSION['patientTestHistoryResult']);
      foreach ($resultSet as $aRow) {
@@ -55,7 +60,9 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
                $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
           }
           $row[] = $aRow['child_id'];
-          $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+          if ($formId != DRC) {
+               $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+          }
           $row[] = $aRow['child_age'];
           $row[] = $aRow['child_dob'];
           $row[] = ($aRow['facility_name']);

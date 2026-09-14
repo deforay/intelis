@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\DRC;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
@@ -45,6 +46,7 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 $state = $geolocationService->getProvinces("yes");
 
 $implementingPartnerList = $general->getImplementationPartners();
+$formId = (int) $general->getGlobalConfig('vl_form');
 
 
 foreach ($rejectionTypeResult as $type) {
@@ -206,7 +208,9 @@ foreach ($rejectionTypeResult as $type) {
 														<?php } ?>
 														<th><?php echo _translate("Facility Name"); ?></th>
 														<th><?php echo _translate("Child's ID"); ?></th>
+														<?php if ($formId != COUNTRY\DRC) { ?>
 														<th><?php echo _translate("Child's Name"); ?></th>
+														<?php } ?>
 														<th><?php echo _translate("Caretaker Phone No"); ?>.</th>
 														<th><?php echo _translate("Sample Collection Date"); ?></th>
 														<th><?php echo _translate("Sample Tested Date"); ?></th>
@@ -334,7 +338,9 @@ foreach ($rejectionTypeResult as $type) {
 														<?php } ?>
 														<th><?php echo _translate("Facility Name"); ?></th>
 														<th><?php echo _translate("Child's ID"); ?></th>
+														<?php if ($formId != COUNTRY\DRC) { ?>
 														<th><?php echo _translate("Child's Name"); ?></th>
+														<?php } ?>
 														<th><?php echo _translate("Sample Collection Date"); ?></th>
 														<th><?php echo _translate("Testing Lab Name"); ?></th>
 														<th><?php echo _translate("Rejection Reason"); ?></th>
@@ -460,7 +466,9 @@ foreach ($rejectionTypeResult as $type) {
 														<?php } ?>
 														<th><?php echo _translate("Facility Name"); ?></th>
 														<th><?php echo _translate("Child's ID"); ?></th>
+														<?php if ($formId != COUNTRY\DRC) { ?>
 														<th><?php echo _translate("Child's Name"); ?></th>
+														<?php } ?>
 														<th><?php echo _translate("Sample Collection Date"); ?></th>
 														<th><?php echo _translate("Testing Lab Name"); ?></th>
 														<th><?php echo _translate("Sample Status"); ?></th>
@@ -493,7 +501,9 @@ foreach ($rejectionTypeResult as $type) {
 															<option value="sample_collection_date"><?php echo _translate("Sample Collection Date"); ?></option>
 															<option value="sample_batch_id"><?php echo _translate("Batch Code"); ?></option>
 															<option value="child_id"><?php echo _translate("Child ID"); ?></option>
+															<?php if ($formId != COUNTRY\DRC) { ?>
 															<option value="child_name"><?php echo _translate("Child's Name"); ?></option>
+															<?php } ?>
 															<option value="facility_id"><?php echo _translate("Facility Name"); ?></option>
 															<option value="facility_state"><?php echo _translate("Province"); ?></option>
 															<option value="facility_district"><?php echo _translate("County"); ?></option>
@@ -531,7 +541,9 @@ foreach ($rejectionTypeResult as $type) {
 														<?php } ?>
 														<th><?php echo _translate("Sample Collection Date"); ?></th>
 														<th><?php echo _translate("Batch Code"); ?></th>
+														<?php if ($formId != COUNTRY\DRC) { ?>
 														<th><?php echo _translate("Child's Name"); ?></th>
+														<?php } ?>
 														<th><?php echo _translate("Facility Name"); ?></th>
 														<th><?php echo _translate("Province/State"); ?></th>
 														<th><?php echo _translate("District/County"); ?></th>
@@ -618,12 +630,14 @@ foreach ($rejectionTypeResult as $type) {
 															<input type="text" id="childId" name="childId" class="form-control patientHistoryFilter" placeholder="<?php echo _htmlTranslate('Enter Child ID'); ?>" style="background:#fff;" />
 														</div>
 													</div>
+													<?php if ($formId != COUNTRY\DRC) { ?>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="childName"><?php echo _translate("Child Name"); ?></label>
 															<input type="text" id="childName" name="childName" class="form-control patientHistoryFilter" placeholder="<?php echo _htmlTranslate('Enter Child Name'); ?>" style="background:#fff;" />
 														</div>
 													</div>
+													<?php } ?>
 													<div class="col-md-4 col-sm-6">
 														<div class="form-group">
 															<label class="control-label" for="pthImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
@@ -653,9 +667,11 @@ foreach ($rejectionTypeResult as $type) {
 														<th>
 															<?php echo _translate("Child's ID"); ?>
 														</th>
+														<?php if ($formId != COUNTRY\DRC) { ?>
 														<th scope="row">
 															<?php echo _translate("Child's Name"); ?>
 														</th>
+														<?php } ?>
 														<th>
 															<?php echo _translate("Age"); ?>.
 														</th>
@@ -811,9 +827,11 @@ foreach ($rejectionTypeResult as $type) {
 				{
 					"sClass": "center"
 				},
+				<?php if ($formId != COUNTRY\DRC) { ?>
 				{
 					"sClass": "center"
 				},
+				<?php } ?>
 				{
 					"sClass": "center"
 				},
@@ -904,9 +922,11 @@ foreach ($rejectionTypeResult as $type) {
 				{
 					"sClass": "center"
 				},
+				<?php if ($formId != COUNTRY\DRC) { ?>
 				{
 					"sClass": "center"
 				},
+				<?php } ?>
 				{
 					"sClass": "center"
 				},
@@ -991,9 +1011,11 @@ foreach ($rejectionTypeResult as $type) {
 				{
 					"sClass": "center"
 				},
+				<?php if ($formId != COUNTRY\DRC) { ?>
 				{
 					"sClass": "center"
 				},
+				<?php } ?>
 				{
 					"sClass": "center"
 				},
@@ -1075,9 +1097,11 @@ foreach ($rejectionTypeResult as $type) {
 				{
 					"sClass": "center"
 				},
+				<?php if ($formId != COUNTRY\DRC) { ?>
 				{
 					"sClass": "center"
 				},
+				<?php } ?>
 				{
 					"sClass": "center"
 				},
@@ -1135,9 +1159,11 @@ foreach ($rejectionTypeResult as $type) {
 			"aoColumns": [{
 					"sClass": "center"
 				},
+				<?php if ($formId != COUNTRY\DRC) { ?>
 				{
 					"sClass": "center"
 				},
+				<?php } ?>
 				{
 					"sClass": "center"
 				},

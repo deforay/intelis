@@ -165,10 +165,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                     <td style="width:20%;">
                                                         <input type="text" id="childId" name="childId" class="form-control" placeholder="<?php echo _translate('Enter Child ID'); ?>" style="background:#fff;" />
                                                     </td>
+                                                    <?php if ($formId != COUNTRY\DRC) { ?>
                                                     <td style="width:10%;"><strong><?php echo _translate("Child Name"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
                                                         <input type="text" id="childName" name="childName" class="form-control" placeholder="<?php echo _translate('Enter Child Name'); ?>" style="background:#fff;" />
                                                     </td>
+                                                    <?php } ?>
                                                 </tr>
                                                 <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
@@ -210,15 +212,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="child_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Child's ID"); ?></label>
                                                         </div>
+                                                        <?php if ($formId != COUNTRY\DRC) { ?>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="child_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Child's Name"); ?></label> <br>
                                                         </div>
+                                                        <?php } ?>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="mother_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Mother's ID"); ?></label>
                                                         </div>
+                                                        <?php if ($formId != COUNTRY\DRC) { ?>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="mother_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Mother's Name"); ?></label>
                                                         </div>
+                                                        <?php } ?>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
                                                         </div>
@@ -264,9 +270,13 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                         <?php } ?>
                                                         <th><?php echo _translate("Batch Code"); ?></th>
                                                         <th><?php echo _translate("Child's ID"); ?></th>
+                                                        <?php if ($formId != COUNTRY\DRC) { ?>
                                                         <th><?php echo _translate("Child's Name"); ?></th>
+                                                        <?php } ?>
                                                         <th><?php echo _translate("Mother ID"); ?></th>
+                                                        <?php if ($formId != COUNTRY\DRC) { ?>
                                                         <th><?php echo _translate("Mother Name"); ?></th>
+                                                        <?php } ?>
                                                         <th scope="row"><?php echo _translate("Facility Name"); ?></th>
                                                         <th scope="row"><?php echo _translate("Testing Lab"); ?></th>
                                                         <?php if ($formId == COUNTRY\CAMEROON) { ?>
@@ -340,10 +350,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                     <td style="width:20%;">
                                                         <input type="text" id="printChildId" name="childId" class="form-control" placeholder="<?php echo _translate('Enter Child ID'); ?>" style="background:#fff;" />
                                                     </td>
+                                                    <?php if ($formId != COUNTRY\DRC) { ?>
                                                     <td style="width:10%;"><strong><?php echo _translate("Child Name"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
                                                         <input type="text" id="printChildName" name="childName" class="form-control" placeholder="<?php echo _translate('Enter Child Name'); ?>" style="background:#fff;" />
                                                     </td>
+                                                    <?php } ?>
 
                                                 </tr>
                                                 <tr>
@@ -386,15 +398,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="child_id" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Child's ID"); ?></label>
                                                         </div>
+                                                        <?php if ($formId != COUNTRY\DRC) { ?>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="child_name" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Child's Name"); ?></label> <br>
                                                         </div>
+                                                        <?php } ?>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="mother_id" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Mother's ID"); ?></label>
                                                         </div>
+                                                        <?php if ($formId != COUNTRY\DRC) { ?>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="mother_name" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Mother's Name"); ?></label>
                                                         </div>
+                                                        <?php } ?>
                                                         <div class="col-md-3">
                                                             <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
                                                         </div>
@@ -440,9 +456,13 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                         <?php } ?>
                                                         <th><?php echo _translate("Batch Code"); ?></th>
                                                         <th><?php echo _translate("Child's ID"); ?></th>
+                                                        <?php if ($formId != COUNTRY\DRC) { ?>
                                                         <th><?php echo _translate("Child's Name"); ?></th>
+                                                        <?php } ?>
                                                         <th><?php echo _translate("Mother ID"); ?></th>
+                                                        <?php if ($formId != COUNTRY\DRC) { ?>
                                                         <th><?php echo _translate("Mother Name"); ?></th>
+                                                        <?php } ?>
                                                         <th scope="row"><?php echo _translate("Facility Name"); ?></th>
                                                         <th scope="row"><?php echo _translate("Testing Lab"); ?></th>
                                                         <?php if ($formId == COUNTRY\CAMEROON) { ?>
@@ -684,15 +704,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                     "sClass": "center"
 
                 },
+                <?php if ($formId != COUNTRY\DRC) { ?>
                 {
                     "sClass": "center"
                 },
+                <?php } ?>
                 {
                     "sClass": "center"
                 },
+                <?php if ($formId != COUNTRY\DRC) { ?>
                 {
                     "sClass": "center"
                 },
+                <?php } ?>
                 <?php
                 if ($formId == COUNTRY\CAMEROON) {
                     echo '{
@@ -842,15 +866,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                 {
                     "sClass": "center"
                 },
+                <?php if ($formId != COUNTRY\DRC) { ?>
                 {
                     "sClass": "center"
                 },
+                <?php } ?>
                 {
                     "sClass": "center"
                 },
+                <?php if ($formId != COUNTRY\DRC) { ?>
                 {
                     "sClass": "center"
                 },
+                <?php } ?>
                 <?php
                 if ($formId == COUNTRY\CAMEROON) {
                     echo '{

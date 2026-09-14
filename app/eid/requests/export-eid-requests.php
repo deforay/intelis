@@ -51,6 +51,9 @@ if ($formId != CAMEROON) {
 if ($formId != DRC) {
     $headings = MiscUtility::removeMatchingElements($headings, ["Freezer", "Rack", "Box", "Position", "Volume (ml)"]);
 }
+if ($formId == DRC) {
+    $headings = MiscUtility::removeMatchingElements($headings, ["Child Name"]);
+}
 
 
 
@@ -94,7 +97,9 @@ $buildRow = function ($aRow, $no) use ($general, $key, $formId): array {
             //$aRow['mother_name'] = $general->crypto('decrypt', $aRow['mother_name'], $key);
         }
         $row[] = $aRow['child_id'];
-        $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        if ($formId != DRC) {
+            $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
+        }
         $row[] = $aRow['mother_id'];
     }
     $row[] = DateUtility::humanReadableDateFormat($aRow['child_dob']);
