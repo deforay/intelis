@@ -317,8 +317,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 								</strong></td>
 							<td>
 								<select name="status" id="status" class="form-control" multiple="multiple"
-									title="<?php echo _translate('Please choose status'); ?>"
-									onchange="checkSampleCollectionDate();">
+									title="<?php echo _translate('Please choose status'); ?>">
 									<?php
 									foreach ($sampleStatusData as $sample) { ?>
 										<option value="<?= $sample['status_id']; ?>" <?= ($preselectedStatus === (int) $sample['status_id']) ? 'selected="selected"' : ''; ?>><?= $sample['status_name'] ?></option>

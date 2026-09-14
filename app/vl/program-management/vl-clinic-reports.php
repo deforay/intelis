@@ -375,7 +375,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 													&nbsp;<input type="button"
 													onclick="searchVlRequestData();"
 													value="<?= _htmlTranslate('Search'); ?>"
-													class="btn btn-success btn-sm">
+													class="filter-search btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm"
 													onclick="resetFilters('highViralLoadReportFilter');"><span>
 													<?= _translate('Reset'); ?>
@@ -838,7 +838,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 													&nbsp;<input type="button"
 													onclick="searchVlRequestData();"
 													value="<?= _htmlTranslate('Search'); ?>"
-													class="btn btn-success btn-sm">
+													class="filter-search btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm"
 													onclick="resetFilters('sampleRjtReportFilter');"><span>
 													<?= _translate('Reset'); ?>
@@ -1111,7 +1111,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 													&nbsp;<input type="button"
 													onclick="searchVlRequestData();"
 													value="<?= _htmlTranslate('Search'); ?>"
-													class="btn btn-success btn-sm">
+													class="filter-search btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm"
 													onclick="resetFilters('notAvailReportFilter');"><span>
 													<?= _translate('Reset'); ?>
@@ -1279,7 +1279,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 													&nbsp;<input type="button"
 													onclick="searchVlRequestData();"
 													value="<?= _htmlTranslate('Search'); ?>"
-													class="btn btn-success btn-sm">
+													class="filter-search btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm"
 													onclick="resetFilters('incompleteFormReportFilter');"><span>
 													<?= _translate('Reset'); ?>
@@ -1424,7 +1424,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 													&nbsp;<input type="button"
 													onclick="sampleTestingReport();"
 													value="<?= _htmlTranslate('Search'); ?>"
-													class="searchBtn btn btn-success btn-sm">
+													class="filter-search searchBtn btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm"
 													onclick="resetFilters('stReportFilter');"><span>
 													<?= _translate("Reset"); ?>
@@ -1481,7 +1481,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 												<div class="box-footer filter-actions">
 													<input type="button" onclick="searchVlRequestData();"
 													value="<?= _htmlTranslate('Search'); ?>"
-													class="btn btn-success btn-sm">
+													class="filter-search btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm"
 													onclick="resetFilters('patientHistoryFilter');">
 													<span><?= _translate('Reset'); ?></span>

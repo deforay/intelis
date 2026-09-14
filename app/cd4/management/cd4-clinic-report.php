@@ -185,7 +185,7 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _htmlTranslate("Search"); ?>" class="btn btn-success btn-sm">
+													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _htmlTranslate("Search"); ?>" class="filter-search btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 												</div>
@@ -301,7 +301,7 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _htmlTranslate("Search"); ?>" class="btn btn-success btn-sm">
+													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _htmlTranslate("Search"); ?>" class="filter-search btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 												</div>
@@ -405,7 +405,7 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _htmlTranslate("Search"); ?>" class="btn btn-success btn-sm">
+													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _htmlTranslate("Search"); ?>" class="filter-search btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 												</div>
@@ -463,7 +463,7 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _htmlTranslate("Search"); ?>" class="btn btn-success btn-sm">
+													&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _htmlTranslate("Search"); ?>" class="filter-search btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 												</div>
@@ -529,7 +529,7 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _htmlTranslate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _htmlTranslate('Search'); ?>" class="filter-search searchBtn btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('stReportFilter');"><span>
 													<?= _translate("Reset"); ?>
 													</span></button>
@@ -561,7 +561,7 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<input type="button" onclick="searchVlRequestData();" value="<?= _htmlTranslate('Search'); ?>" class="btn btn-success btn-sm">
+													<input type="button" onclick="searchVlRequestData();" value="<?= _htmlTranslate('Search'); ?>" class="filter-search btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('patientHistoryFilter');">
 													<span><?= _translate('Reset'); ?></span>
 													</button>
