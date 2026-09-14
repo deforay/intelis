@@ -739,6 +739,34 @@ try {
                     . '  changes to these tables are not being recorded — run: intelis audit-triggers-install',
         );
 
+        // The reception-date fallback rides the same drop/reinstall, so the same
+        // interrupted upgrade leaves lab-registered samples saved with no
+        // reception date. Only tables carrying the columns the rule reads get one.
+        $stmt = $pdo->prepare(
+            'SELECT TABLE_NAME FROM information_schema.COLUMNS
+              WHERE TABLE_SCHEMA = ? AND TABLE_NAME LIKE "form\_%"
+                AND COLUMN_NAME IN ("sample_received_at_lab_datetime", "sample_collection_date", "remote_sample", "result_status")
+              GROUP BY TABLE_NAME HAVING COUNT(*) = 4',
+        );
+        $stmt->execute([$name]);
+        $receiptTables = $stmt->fetchAll(PDO::FETCH_COLUMN) ?: [];
+
+        $noReceiptTrigger = array_values(array_filter(
+            $receiptTables,
+            static fn(string $table): bool => !isset($triggers[$table . '_receipt_bi'], $triggers[$table . '_receipt_bu']),
+        ));
+
+        if ($receiptTables !== []) {
+            check(
+                'Reception date triggers',
+                $noReceiptTrigger === [] ? PF_OK : PF_WARN,
+                $noReceiptTrigger === []
+                    ? count($receiptTables) . ' form table(s) covered'
+                    : 'no reception date trigger on: ' . implode(', ', $noReceiptTrigger) . "\n"
+                        . '  samples registered at a lab can be saved without a reception date — run: intelis audit-triggers-install',
+            );
+        }
+
         // Pre-5.5.3 triggers wrote to the columnar audit_form_* tables. Left in
         // place alongside the v2 triggers they double-write every change.
         //

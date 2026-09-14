@@ -166,8 +166,9 @@ final class AuditTriggersCommand extends Command
         string $mode,
         bool $sweepOrphans = true
     ): int {
-        $successful = [];
-        $failed     = [];
+        $successful   = [];
+        $failed       = [];
+        $triggerCount = 0;
 
         // Bound the metadata-lock wait. MySQL's default lock_wait_timeout is
         // 31536000 seconds -- a year -- so a DDL that cannot get its lock does
@@ -244,6 +245,12 @@ final class AuditTriggersCommand extends Command
                 continue;
             }
             $successful[] = $f['table'];
+            // Counted from what ran: a form table carries the reception-date
+            // triggers as well as the three audit ones, user_details does not.
+            $triggerCount += count(array_filter(
+                $statements,
+                static fn(string $sql): bool => str_starts_with($sql, 'CREATE TRIGGER')
+            ));
         }
 
         // Orphan sweep. The loop above only ever visits trackedTables(), so a
@@ -269,7 +276,7 @@ final class AuditTriggersCommand extends Command
         if ($failed === []) {
             $tableCount = count($successful);
             $summary    = $mode === self::MODE_INSTALL
-                ? "{$tableCount} form table(s), " . ($tableCount * 3) . " triggers"
+                ? "{$tableCount} form table(s), {$triggerCount} triggers"
                 : "{$tableCount} form table(s)";
             $output->writeln("Audit triggers {$verb} ({$summary}).");
             $output->writeln("  " . implode(', ', $successful));
