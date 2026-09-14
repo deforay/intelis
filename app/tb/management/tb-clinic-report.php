@@ -90,7 +90,7 @@ $state = $geolocationService->getProvinces("yes");
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highTbReport">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
@@ -208,7 +208,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
@@ -323,7 +323,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="notAvailReport">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
@@ -427,7 +427,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="incompleteFormReport">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
@@ -487,7 +487,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleTestingReport">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
@@ -534,7 +534,7 @@ $state = $geolocationService->getProvinces("yes");
 											</figure>
 										</div>
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
