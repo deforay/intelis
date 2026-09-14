@@ -688,7 +688,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
         <?php if ($formId == COUNTRY\CAMEROON) { ?>
             sort = '<?= ($general->isStandaloneInstance()) ? 13 : 14; ?>';
         <?php } else { ?>
-            sort = '<?= ($general->isStandaloneInstance()) ? 12 : 13; ?>';
+            sort = '<?= (($general->isStandaloneInstance()) ? 12 : 13) - ($formId == COUNTRY\DRC ? 2 : 0); ?>';
         <?php } ?>
         oTable = $('#vlRequestDataTables').dataTable({
             "bJQueryUI": false,
@@ -850,7 +850,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
         <?php if ($formId == COUNTRY\CAMEROON) { ?>
             sort = '<?= ($general->isStandaloneInstance()) ? 13 : 14; ?>';
         <?php } else { ?>
-            sort = '<?= ($general->isStandaloneInstance()) ? 12 : 13; ?>';
+            sort = '<?= (($general->isStandaloneInstance()) ? 12 : 13) - ($formId == COUNTRY\DRC ? 2 : 0); ?>';
         <?php } ?>
         opTable = $('#printedVlRequestDataTable').dataTable({
             "bJQueryUI": false,

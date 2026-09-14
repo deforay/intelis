@@ -437,7 +437,7 @@ $lastUrl2 = '';
 			}
 			],
 			"aaSorting": [
-				[<?= ($general->isStandaloneInstance()) ? 8 : 9; ?>, "desc"]
+				[<?= ($general->isStandaloneInstance() ? 8 : 9) - ($formId == DRC ? 2 : 0); ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

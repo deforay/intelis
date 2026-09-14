@@ -463,7 +463,7 @@ $sResult = $db->rawQuery($sQuery);
                 <?php } ?>
             ],
             "aaSorting": [
-                [<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>, "desc"]
+                [<?php echo (($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12) - ($formId == COUNTRY\DRC ? 2 : 0) ?>, "desc"]
             ],
             "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");

@@ -831,14 +831,14 @@ foreach ($sourceOfRequests as $value => $displayText) {
 			{
 				"sClass": "center"
 			},
-				<?php if ((_isAllowed("/eid/requests/eid-edit-request.php")) && !$hidesrcofreq) { ?> {
+				<?php if (_isAllowed("/eid/requests/eid-edit-request.php") || _isAllowed("eid-view-request.php") && !$hidesrcofreq) { ?> {
 					"sClass": "center",
 					"bSortable": false
 				},
 				<?php } ?>
 			],
 			"aaSorting": [
-				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>, "desc"]
+				[<?php echo (($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12) - ($formId == COUNTRY\DRC ? 2 : 0) + ($formId == COUNTRY\CAMEROON ? 1 : 0) ?>, "desc"]
 			],
 			"fnDrawCallback": function () {
 				var checkBoxes = document.getElementsByName("chk[]");

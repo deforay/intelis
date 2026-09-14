@@ -485,7 +485,7 @@ foreach ($rejectionTypeResult as $type) {
 
 			],
 			"aaSorting": [
-				[<?= ($general->isStandaloneInstance()) ? 10 : 11; ?>, "desc"]
+				[<?= ($general->isStandaloneInstance() ? 10 : 11) - ($formId == DRC ? 2 : 0); ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
