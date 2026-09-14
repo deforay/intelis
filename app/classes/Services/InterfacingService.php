@@ -101,6 +101,10 @@ final class InterfacingService
      * is false when the sample already held these values, which is a no-op rather
      * than a second import, so callers do not count it as an imported result.
      *
+     * `$explainMisses` looks a missed sample up a second time to tell a locked sample
+     * apart from an unknown one. That second pass runs against every active test
+     * table, so callers that treat both reasons the same should turn it off.
+     *
      * @param array<string, mixed> $row
      * @return array{synced: bool, updated: bool, table: ?string, reason: string}
      */
@@ -109,19 +113,23 @@ final class InterfacingService
         int $labId,
         bool $includeLocked = false,
         bool $updateModifiedTime = true,
-        bool $scopeToLab = false
+        bool $scopeToLab = false,
+        bool $explainMisses = true
     ): array {
-        if (empty($row['order_id']) && empty($row['test_id'])) {
+        $orderId = trim((string) ($row['order_id'] ?? ''));
+        $testId = trim((string) ($row['test_id'] ?? ''));
+
+        if ($orderId === '' && $testId === '') {
             return $this->outcome(false, false, null, 'no_order_or_test_id');
         }
 
-        $orderId = (string) ($row['order_id'] ?? '');
-        $testId = (string) ($row['test_id'] ?? '');
         $scopedLabId = $scopeToLab ? $labId : null;
 
         $sample = $this->findSample($orderId, $testId, $includeLocked, $scopedLabId);
         if ($sample === null) {
-            $reason = $this->explainMiss($orderId, $testId, $includeLocked, $scopedLabId);
+            $reason = $explainMisses
+                ? $this->explainMiss($orderId, $testId, $includeLocked, $scopedLabId)
+                : 'no_matching_sample';
             return $this->outcome(false, false, null, $reason);
         }
 
@@ -304,19 +312,46 @@ final class InterfacingService
         bool $includeLocked,
         ?int $restrictToLabId = null
     ): ?array {
+        // NOTE: the pairing is carried over from bin/interface.php so that moving this
+        // lookup did not change which samples match: sample_code gets order_id,
+        // remote_sample_code gets both, lab_assigned_code gets test_id.
+        //
+        // Empty values are left out. Binding '' matched any sample whose code was blank,
+        // and a column with no value to look for is dropped from the OR entirely.
+        $codesByColumn = [
+            'sample_code' => [$orderId],
+            'remote_sample_code' => [$orderId, $testId],
+            'lab_assigned_code' => [$testId],
+        ];
+        $codeMatches = [];
+        foreach ($codesByColumn as $column => $values) {
+            $values = array_filter(array_map('trim', $values), static fn(string $v): bool => $v !== '');
+            $values = array_values(array_unique($values));
+            if ($values !== []) {
+                $codeMatches[$column] = $values;
+            }
+        }
+
+        if ($codeMatches === []) {
+            return null;
+        }
+
+        $codeConditions = [];
+        $codeParams = [];
+        foreach ($codeMatches as $column => $values) {
+            $codeConditions[] = "$column IN (" . implode(', ', array_fill(0, count($values), '?')) . ')';
+            $codeParams = [...$codeParams, ...$values];
+        }
+
         foreach ($this->activeModules() as $primaryKey => $table) {
             $conditions = [];
-            $params = [$orderId, $orderId, $orderId, $testId, $testId, $testId];
+            $params = $codeParams;
 
             if (!$includeLocked) {
                 $conditions[] = "IFNULL(locked, 'no') = 'no'";
             }
 
-            // NOTE: the bind order is carried over verbatim from bin/interface.php so that
-            // moving this lookup does not change which samples match. It pairs up as
-            // (order_id, order_id), (order_id, test_id), (test_id, test_id) rather than
-            // giving each column both values.
-            $conditions[] = '(sample_code IN (?, ?) OR remote_sample_code IN (?, ?) OR lab_assigned_code IN (?, ?))';
+            $conditions[] = '(' . implode(' OR ', $codeConditions) . ')';
 
             // Callers that cannot be trusted to only send their own samples -- anything
             // arriving over the API -- match strictly on the lab the credential belongs

@@ -172,13 +172,95 @@ if (empty($labId)) {
 $sqliteDb = null;
 $syncedIds = [];
 $unsyncedIds = [];
+$skippedIds = [];
 $latestAddedOn = null; // Track the latest added_on value
+
+// Statuses are written back every this many rows instead of once at the end. A run
+// that is killed part way (memory, timeout, reboot) never reaches `finally`, and
+// without this every row it had already dealt with would stay Pending and be
+// imported again on the next run.
+$syncStatusFlushEvery = 100;
+$consecutiveRowFailures = 0;
 
 
 if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
     $sqliteConnected = true;
     $sqliteDb = new \PDO("sqlite:" . SYSTEM_CONFIG['interfacing']['sqlite3Path']);
 }
+
+$updateSyncStatus = function (array $ids, int $status) use ($db, &$sqliteDb, $mysqlConnected, $sqliteConnected): void {
+    if (empty($ids)) {
+        return;
+    }
+
+    $currentDateTime = DateUtility::getCurrentDateTime();
+
+    foreach (array_chunk($ids, 1000) as $batchIds) {
+        if ($mysqlConnected) {
+            $db->connection('interface')->reset();
+            $db->connection('interface')->where('id', $batchIds, 'IN');
+            $db->connection('interface')->update('orders', [
+                'lims_sync_status' => $status,
+                'lims_sync_date_time' => $currentDateTime,
+            ]);
+        }
+
+        if ($sqliteConnected && $sqliteDb instanceof \PDO) {
+            $placeholders = implode(',', array_fill(0, count($batchIds), '?'));
+            $stmt = $sqliteDb->prepare(
+                "UPDATE orders
+                    SET lims_sync_status = ?, lims_sync_date_time = ?
+                  WHERE id IN ($placeholders)"
+            );
+            $stmt->bindValue(1, $status, PDO::PARAM_INT);
+            $stmt->bindValue(2, $currentDateTime);
+            foreach ($batchIds as $index => $id) {
+                $stmt->bindValue($index + 3, $id, PDO::PARAM_INT);
+            }
+            $stmt->execute();
+        }
+    }
+};
+
+// Writes out the statuses collected so far and forgets them, so a later flush does
+// not write the same rows twice.
+$flushSyncStatuses = function () use (
+    $db,
+    $mysqlConnected,
+    $updateSyncStatus,
+    &$syncedIds,
+    &$unsyncedIds,
+    &$skippedIds
+): void {
+    if ($syncedIds === [] && $unsyncedIds === [] && $skippedIds === []) {
+        return;
+    }
+
+    // The interface connection only exists when interfacing MySQL is configured. On a
+    // SQLite-only install asking for it throws.
+    if ($mysqlConnected) {
+        $db->connection('interface')->beginTransaction();
+    }
+
+    try {
+        $updateSyncStatus($syncedIds, 1);
+        $updateSyncStatus($unsyncedIds, 2);
+        $updateSyncStatus($skippedIds, 2);
+
+        if ($mysqlConnected) {
+            $db->connection('interface')->commitTransaction();
+        }
+    } catch (Throwable $e) {
+        if ($mysqlConnected) {
+            $db->connection('interface')->rollbackTransaction();
+        }
+        throw $e;
+    }
+
+    $syncedIds = [];
+    $unsyncedIds = [];
+    $skippedIds = [];
+};
 
 try {
     $interfaceData = [];
@@ -240,11 +322,10 @@ try {
     // Drop the log-unit row where the same order also reported a copies value.
     $filtered = $interfacingService->filterDuplicateUnits($interfaceData);
 
-    $filteredIds = array_column($filtered, 'id');
-    $skippedIds = [];
+    $filteredIds = array_flip(array_column($filtered, 'id'));
 
     foreach ($interfaceData as $row) {
-        if (!in_array($row['id'], $filteredIds, true)) {
+        if (!isset($filteredIds[$row['id']])) {
             $skippedIds[] = $row['id'];
         }
     }
@@ -271,17 +352,48 @@ try {
             MiscUtility::touchLockFile($lockFile);
         }
 
-        $db->connection('default')->beginTransaction();
+        if ($key > 0 && $key % $syncStatusFlushEvery === 0) {
+            $flushSyncStatuses();
+        }
+
         if ($isCli) {
             MiscUtility::progressBar($key + 1, $totalResults); // Update progress bar
         }
 
-        $outcome = $interfacingService->importResult(
-            $result,
-            (int) $labId,
-            includeLocked: $forceExecution,
-            updateModifiedTime: !$silent
-        );
+        // One row that throws costs only itself. Letting it end the loop left every row
+        // after it unprocessed, and the next run, reading in the same order, stopped at
+        // the same row again. It is left unmarked so it is retried next run, the same
+        // as a failed UPDATE below.
+        try {
+            $db->connection('default')->beginTransaction();
+            $outcome = $interfacingService->importResult(
+                $result,
+                (int) $labId,
+                includeLocked: $forceExecution,
+                updateModifiedTime: !$silent,
+                // A locked sample and an unknown one are both marked 2 here, so the
+                // second lookup that tells them apart is not worth its cost.
+                explainMisses: false
+            );
+            $db->connection('default')->commitTransaction();
+        } catch (Throwable $rowError) {
+            $db->connection('default')->rollbackTransaction();
+            LoggerUtility::logError('Interface result import failed: ' . $rowError->getMessage(), [
+                'interfaceRowId' => $result['id'] ?? null,
+                'file' => $rowError->getFile(),
+                'line' => $rowError->getLine(),
+            ]);
+
+            // Many failures in a row is not a bad row but a lost database, and every
+            // remaining row would fail and log the same way. Stop and let the next run
+            // start over.
+            if (++$consecutiveRowFailures >= 25) {
+                throw $rowError;
+            }
+            continue;
+        }
+
+        $consecutiveRowFailures = 0;
 
         // A failed UPDATE is deliberately left unmarked: the row keeps lims_sync_status = 0
         // so the next run picks it up again, instead of being written off as unsyncable.
@@ -303,8 +415,6 @@ try {
                 $latestAddedOn = $addedOn;
             }
         }
-
-        $db->connection('default')->commitTransaction();
     }
 
     if ($numberOfResults > 0) {
@@ -480,69 +590,10 @@ try {
     }
     LoggerUtility::logError($e->getMessage(), $context);
 } finally {
-
-    $batchSize = 1000;
-
-    $updateSyncStatus = function ($db, $sqliteDb, $ids, $status, $mysqlConnected, $sqliteConnected) use ($batchSize): void {
-        if (!empty($ids)) {
-            $currentDateTime = DateUtility::getCurrentDateTime();
-
-            $totalBatches = ceil(count($ids) / $batchSize);
-
-            for ($i = 0; $i < $totalBatches; $i++) {
-                $batchIds = array_slice($ids, $i * $batchSize, $batchSize);
-
-                // Update MySQL
-                if ($mysqlConnected) {
-                    $interfaceData = [
-                        'lims_sync_status' => $status,
-                        'lims_sync_date_time' => $currentDateTime,
-                    ];
-
-                    $db->connection('interface')->reset();
-                    $db->connection('interface')->where('id', $batchIds, 'IN');
-                    $db->connection('interface')->update('orders', $interfaceData);
-                }
-
-                // Update SQLite
-                if ($sqliteConnected) {
-                    $placeholders = implode(',', array_fill(0, count($batchIds), '?'));
-                    $sql = "UPDATE orders
-                        SET lims_sync_status = ?, lims_sync_date_time = ?
-                        WHERE id IN ($placeholders)";
-                    $stmt = $sqliteDb->prepare($sql);
-                    $stmt->bindValue(1, $status, PDO::PARAM_INT);
-                    $stmt->bindValue(2, $currentDateTime);
-
-                    foreach ($batchIds as $index => $id) {
-                        $stmt->bindValue($index + 3, $id, PDO::PARAM_INT);
-                    }
-
-                    $stmt->execute();
-                }
-            }
-        }
-    };
-
-
+    // Whatever the loop collected since its last flush. Rows it never reached keep
+    // lims_sync_status = 0 and are picked up next run.
     try {
-        // The interface connection only exists when interfacing MySQL is configured. On a
-        // SQLite-only install asking for it throws, and a throw here would escape the
-        // catch below (which would ask for it again) and leave the lock file behind.
-        if ($mysqlConnected) {
-            $db->connection('interface')->beginTransaction();
-        }
-
-        // Update synced IDs
-        $updateSyncStatus($db, $sqliteDb, $syncedIds, 1, $mysqlConnected, $sqliteConnected);
-
-        // Update unsynced IDs
-        $updateSyncStatus($db, $sqliteDb, $unsyncedIds, 2, $mysqlConnected, $sqliteConnected);
-        $updateSyncStatus($db, $sqliteDb, $skippedIds, 2, $mysqlConnected, $sqliteConnected);
-
-        if ($mysqlConnected) {
-            $db->connection('interface')->commitTransaction();
-        }
+        $flushSyncStatuses();
     } catch (Throwable $e) {
         if ($isCli) {
             echo "Error while syncing interface results. Please check error log for more details." . PHP_EOL;
@@ -555,7 +606,6 @@ try {
             'trace' => $e->getTraceAsString()
         ];
         if ($mysqlConnected) {
-            $db->connection('interface')->rollbackTransaction();
             $context['last_interface_db_query'] = $db->connection('interface')->getLastQuery();
             $context['last_interface_db_error'] = $db->connection('interface')->getLastError();
         }
