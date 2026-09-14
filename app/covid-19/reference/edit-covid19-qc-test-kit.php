@@ -24,7 +24,7 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$resultQuery = "SELECT * from r_covid19_qc_testkits where testkit_id = '" . $id . "' ";
+$resultQuery = "SELECT * from r_covid19_qc_testkits where testkit_id = '" . $db->escape((string) $id) . "' ";
 $resultInfo = $db->rawQueryOne($resultQuery);
 $subResult = json_decode((string) $resultInfo['labels_and_expected_results'], true);
 

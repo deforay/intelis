@@ -25,6 +25,13 @@ $importControlTable = "instrument_controls";
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
+// The configuration file is a file name, picked from the instrument files in this
+// folder or generated from the instrument name, and it is joined onto a directory
+// to create the file. basename() keeps it a name, so a path cannot write elsewhere.
+if (isset($_POST['configurationFile']) && is_string($_POST['configurationFile'])) {
+    $_POST['configurationFile'] = basename($_POST['configurationFile']);
+}
+
 $configId = base64_decode((string) $_POST['configId']);
 
 

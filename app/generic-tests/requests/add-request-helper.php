@@ -172,7 +172,7 @@ try {
     }
 
     if (isset($_POST['newRejectionReason']) && trim((string) $_POST['newRejectionReason']) !== "") {
-        $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_generic_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower((string) $_POST['newRejectionReason']) . "' OR rejection_reason_name='" . (strtolower((string) $_POST['newRejectionReason'])) . "'";
+        $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_generic_sample_rejection_reasons where rejection_reason_name='" . $db->escape((string) $_POST['newRejectionReason']) . "' OR rejection_reason_name='" . $db->escape(strtolower((string) $_POST['newRejectionReason'])) . "' OR rejection_reason_name='" . $db->escape(strtolower((string) $_POST['newRejectionReason'])) . "'";
         $rejectionResult = $db->rawQuery($rejectionReasonQuery);
         if (!isset($rejectionResult[0]['rejection_reason_id'])) {
             $data = ['rejection_reason_name' => $_POST['newRejectionReason'], 'rejection_type' => 'general', 'rejection_reason_status' => 'active', 'updated_datetime' => DateUtility::getCurrentDateTime()];
@@ -292,7 +292,7 @@ try {
     } else {
         //check existing sample id
 
-        $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM form_generic where " . $sampleCode . " ='" . trim((string) $_POST['sampleCode']) . "'";
+        $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM form_generic where " . $sampleCode . " ='" . $db->escape(trim((string) $_POST['sampleCode'])) . "'";
         $existResult = $db->rawQuery($existSampleQuery);
         if (isset($existResult[0][$sampleCodeKey]) && $existResult[0][$sampleCodeKey] != '') {
             if ($existResult[0][$sampleCodeKey] != '') {
@@ -344,7 +344,7 @@ try {
         $barcode = "";
         if (isset($_POST['printBarCode']) && $_POST['printBarCode'] == 'on') {
             $s = $_POST['sampleCode'];
-            $facQuery = "SELECT * FROM facility_details where facility_id=" . $_POST['facilityId'];
+            $facQuery = "SELECT * FROM facility_details where facility_id=" . (int) $_POST['facilityId'];
             $facResult = $db->rawQuery($facQuery);
             $f = ($facResult[0]['facility_name']) . " | " . $_POST['sampleCollectionDate'];
             $barcode = "?barcode=true&s=$s&f=$f&p=$patientId";

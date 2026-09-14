@@ -138,7 +138,7 @@ $sQuery = "SELECT
         AND " . SampleCountUtility::countableWhere('vl') . " ";
 
 if (!empty($labId)) {
-    $sQuery .= " AND vl.lab_id IN ($labId)";
+    $sQuery .= " AND vl.lab_id IN (" . $db->inIntList($labId) . ")";
 }
 
 if (isset($_POST['reportedDate']) && trim((string) $_POST['reportedDate']) !== '') {

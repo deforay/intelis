@@ -90,7 +90,7 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 				LEFT JOIN r_funding_sources as rfs ON rfs.funding_source_id=vl.funding_source
 				LEFT JOIN r_covid19_sample_type as rst ON rst.sample_id=vl.specimen_type
 				LEFT JOIN instruments as i ON i.instrument_id = vl.instrument_id
-				WHERE vl.covid19_id IN(" . $_POST['id'] . ")";
+				WHERE vl.covid19_id IN(" . $db->inIntList($_POST['id']) . ")";
 	// Facility isolation: a mapped STS user only gets PDFs for their own
 	// facilities. No-op on LIS and for unmapped (all-access) users.
 	if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {

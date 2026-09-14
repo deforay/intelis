@@ -23,6 +23,17 @@ $fieldName = $_POST['fieldName'];
 $value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
+// Table and column names cannot be bound. The VL forms only ever check a sample
+// code against form_vl, excluding the sample being edited by its id, so anything
+// else is answered as "no duplicate" without reaching the database.
+$fnctIsNull = ($fnct == '' || $fnct == 'null');
+if (
+    $tableName !== 'form_vl'
+    || !in_array($fieldName, ['sample_code', 'remote_sample_code'], true)
+    || (!$fnctIsNull && explode("##", (string) $fnct)[0] !== 'vl_sample_id')
+) {
+    $value = '';
+}
 if ($value !== '') {
     if ($fnct == '' || $fnct == 'null') {
         $sQuery = "SELECT * FROM $tableName WHERE $fieldName= ?";

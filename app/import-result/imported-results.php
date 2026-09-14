@@ -39,7 +39,7 @@ $module = $_GET['t'];
 $machine = base64_decode((string) $_GET['machine']);
 
 
-$condition = " instrument_id = '$machine'";
+$condition = " instrument_id = '" . $db->escape((string) $machine) . "'";
 $getMachineInfo = $general->getDataByTableAndFields('instruments', ['approved_by', 'reviewed_by'], false, $condition);
 
 $approvedByAttr = json_decode((string) $getMachineInfo[0]['approved_by']);

@@ -40,8 +40,8 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$qcDataInfo = $db->rawQueryOne("SELECT * FROM qc_covid19 WHERE qc_id =" . $id . " limit 1");
-$qcResultDataInfo = $db->rawQuery("SELECT * FROM qc_covid19_tests WHERE qc_id =" . $id);
+$qcDataInfo = $db->rawQueryOne("SELECT * FROM qc_covid19 WHERE qc_id =" . (int) $id . " limit 1");
+$qcResultDataInfo = $db->rawQuery("SELECT * FROM qc_covid19_tests WHERE qc_id =" . (int) $id);
 
 $display = "display:none;";
 if (isset($qcResultDataInfo) && count($qcResultDataInfo) > 0) {

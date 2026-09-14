@@ -2,6 +2,7 @@
 
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use App\Utilities\DataTableUtility;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
@@ -40,11 +41,7 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-     $sOffset = $_POST['iDisplayStart'];
-     $sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
 
@@ -57,7 +54,7 @@ if (isset($_POST['iSortCol_0'])) {
      for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
           if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
                $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
+               " . (strtolower(trim((string) $_POST['sSortDir_' . $i])) === 'desc' ? 'DESC' : 'ASC') . ", ";
           }
      }
      $sOrder = substr_replace($sOrder, "", -2);
@@ -78,9 +75,9 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
           for ($i = 0; $i < $colSize; $i++) {
                if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' OR ";
                } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' ";
                }
           }
           $sWhereSub .= ")";
@@ -125,7 +122,7 @@ if (!empty($_POST['sampleCollectionDate'])) {
 if ($sWhere !== '' && $sWhere !== '0') {
      $sWhere = ' WHERE ' . $sWhere;
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-          $sWhere = $sWhere . ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
+          $sWhere = $sWhere . ' AND b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
           if (trim((string) $start_date) === trim((string) $end_date)) {
@@ -136,7 +133,7 @@ if ($sWhere !== '' && $sWhere !== '0') {
      }
 
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-          $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
+          $sWhere = $sWhere . ' AND f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
      }
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           if ($_POST['status'] == 'no_result') {
@@ -150,16 +147,16 @@ if ($sWhere !== '' && $sWhere !== '0') {
      }
 
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-          $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+          $sWhere = $sWhere . ' AND vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
      }
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
-          $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+          $sWhere = $sWhere . ' AND vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
      }
 } else {
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
           $setWhr = 'where';
           $sWhere = ' WHERE ' . $sWhere;
-          $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
+          $sWhere = $sWhere . ' b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
      }
 
      if (!empty($_POST['sampleCollectionDate'])) {
@@ -179,11 +176,11 @@ if ($sWhere !== '' && $sWhere !== '0') {
 
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
           if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
+               $sWhere = $sWhere . ' AND f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
           } else {
                $setWhr = 'where';
                $sWhere = ' WHERE ' . $sWhere;
-               $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+               $sWhere = $sWhere . ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
           }
      }
 
@@ -213,20 +210,20 @@ if ($sWhere !== '' && $sWhere !== '0') {
 
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
           if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+               $sWhere = $sWhere . ' AND vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
           } else {
                $setWhr = 'where';
                $sWhere = ' WHERE ' . $sWhere;
-               $sWhere = $sWhere . ' vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+               $sWhere = $sWhere . ' vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
           }
      }
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
           if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+               $sWhere = $sWhere . ' AND vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
           } else {
                $setWhr = 'where';
                $sWhere = ' WHERE ' . $sWhere;
-               $sWhere = $sWhere . ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+               $sWhere = $sWhere . ' vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
           }
      }
 }

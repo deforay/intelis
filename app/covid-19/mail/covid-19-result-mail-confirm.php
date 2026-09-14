@@ -126,7 +126,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
       $pdfContent .= '</tr>';
       $counter = count($_POST['sample']);
       for ($s = 0; $s < $counter; $s++) {
-         $sampleQuery = "SELECT sample_code FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.covid19_id = '" . $_POST['sample'][$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
+         $sampleQuery = "SELECT sample_code FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.covid19_id = '" . $db->escape((string) $_POST['sample'][$s]) . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
          $sampleResult = $db->rawQuery($sampleQuery);
          if (isset($sampleResult[0]['sample_code'])) {
             $pdfContent .= '<tr>';
@@ -212,13 +212,13 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
                   continue;
                }
                if ($field === 'result_reviewed_by') {
-                  $fValueQuery = "SELECT u.user_name as reviewedBy FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_covid19_sample_type as s_type ON s_type.sample_id=vl.specimen_type LEFT JOIN r_covid19_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN user_details as u ON u.user_id = vl.result_reviewed_by where vl.covid19_id = '" . $_POST['sample'][$s] . "'";
+                  $fValueQuery = "SELECT u.user_name as reviewedBy FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_covid19_sample_type as s_type ON s_type.sample_id=vl.specimen_type LEFT JOIN r_covid19_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN user_details as u ON u.user_id = vl.result_reviewed_by where vl.covid19_id = '" . $db->escape((string) $_POST['sample'][$s]) . "'";
                } elseif ($field === 'result_approved_by') {
-                  $fValueQuery = "SELECT u.user_name as approvedBy FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_covid19_sample_type as s_type ON s_type.sample_id=vl.specimen_type LEFT JOIN r_covid19_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN user_details as u ON u.user_id = vl.result_approved_by where vl.covid19_id = '" . $_POST['sample'][$s] . "'";
+                  $fValueQuery = "SELECT u.user_name as approvedBy FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_covid19_sample_type as s_type ON s_type.sample_id=vl.specimen_type LEFT JOIN r_covid19_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN user_details as u ON u.user_id = vl.result_approved_by where vl.covid19_id = '" . $db->escape((string) $_POST['sample'][$s]) . "'";
                } elseif ($field === 'lab_id') {
-                  $fValueQuery = "SELECT f.facility_name as labName FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id where vl.covid19_id = '" . $_POST['sample'][$s] . "'";
+                  $fValueQuery = "SELECT f.facility_name as labName FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id where vl.covid19_id = '" . $db->escape((string) $_POST['sample'][$s]) . "'";
                } else {
-                  $fValueQuery = "SELECT $field FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_covid19_sample_type as s_type ON s_type.sample_id=vl.specimen_type LEFT JOIN r_covid19_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN r_sample_status as t_s ON t_s.status_id=vl.result_status where vl.covid19_id = '" . $_POST['sample'][$s] . "'";
+                  $fValueQuery = "SELECT $field FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_covid19_sample_type as s_type ON s_type.sample_id=vl.specimen_type LEFT JOIN r_covid19_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN r_sample_status as t_s ON t_s.status_id=vl.result_status where vl.covid19_id = '" . $db->escape((string) $_POST['sample'][$s]) . "'";
                }
                $fValueResult = $db->rawQuery($fValueQuery);
                $fieldValue = '';
@@ -295,7 +295,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
                         $resultOlySamples = [];
                         $counter = count($_POST['sample']);
                         for ($s = 0; $s < $counter; $s++) {
-                           $sampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.covid19_id = '" . $_POST['sample'][$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
+                           $sampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.covid19_id = '" . $db->escape((string) $_POST['sample'][$s]) . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
                            $sampleResult = $db->rawQuery($sampleQuery);
                            if (isset($sampleResult[0]['sample_code'])) {
                               $resultOlySamples[] = $sampleResult[0]['covid19_id'];

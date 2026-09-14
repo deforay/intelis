@@ -83,7 +83,7 @@ try {
                         FROM r_funding_sources
                         WHERE funding_source_status='active' ";
     if ($updatedDateTime) {
-        $fundingSourceQry .= " AND updated_datetime >= '$updatedDateTime'";
+        $fundingSourceQry .= " AND updated_datetime >= '" . $db->escape((string) $updatedDateTime) . "'";
     }
     $fundingSourceQry .= " ORDER BY funding_source_name ASC";
 
@@ -97,7 +97,7 @@ try {
                             FROM r_implementation_partners
                             WHERE i_partner_status='active' ";
     if ($updatedDateTime) {
-        $implementingPartnerQry .= " AND updated_datetime >= '$updatedDateTime'";
+        $implementingPartnerQry .= " AND updated_datetime >= '" . $db->escape((string) $updatedDateTime) . "'";
     }
     $implementingPartnerQry .= " ORDER BY i_partner_name ASC";
 
@@ -171,7 +171,7 @@ try {
 
             $condition = " rejection_reason_status ='active' ";
             if ($updatedDateTime) {
-                $condition .= " AND updated_datetime >= '$updatedDateTime'";
+                $condition .= " AND updated_datetime >= '" . $db->escape((string) $updatedDateTime) . "'";
             }
             $rejectionTypeResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', ['rejection_type'], false, $condition, 'rejection_type');
 
@@ -179,7 +179,7 @@ try {
                 $reasons[$module][$key]['show'] = ucwords((string) $type['rejection_type']);
                 $condition = " rejection_reason_status ='active' AND rejection_type LIKE '" . $type['rejection_type'] . "'";
                 if ($updatedDateTime) {
-                    $condition .= " AND updated_datetime >= '$updatedDateTime'";
+                    $condition .= " AND updated_datetime >= '" . $db->escape((string) $updatedDateTime) . "'";
                 }
                 $rejectionResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', ['rejection_reason_id', 'rejection_reason_name'], false, $condition);
                 foreach ($rejectionResult as $subKey => $reject) {
@@ -374,7 +374,7 @@ try {
         /* Current regimen */
         $aQuery = "SELECT art_code FROM r_vl_art_regimen where art_status ='active' ";
         if ($updatedDateTime) {
-            $aQuery .= " AND updated_datetime >= '$updatedDateTime'";
+            $aQuery .= " AND updated_datetime >= '" . $db->escape((string) $updatedDateTime) . "'";
         }
         $aResult = $db->query($aQuery);
 

@@ -46,10 +46,10 @@ if ($testType == "vl") {
 $query = "SELECT vl.remote_sample_code,vl.$primaryKey,vl.facility_id FROM $tableName as vl WHERE (vl.result is NULL or vl.result = '') AND (vl.remote_sample_code IS NOT NULL OR vl.remote_sample_code NOT LIKE '')";
 
 if (trim((string) $lName) !== '') {
-	$query = $query . " AND vl.lab_id='" . $lName . "'";
+	$query = $query . " AND vl.lab_id='" . $db->escape((string) $lName) . "'";
 }
 if ($_POST['facilityId'] != '') {
-	$query = $query . " AND vl.facility_id='" . $facilityId . "'";
+	$query = $query . " AND vl.facility_id='" . $db->escape((string) $facilityId) . "'";
 }
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
 	$query .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";

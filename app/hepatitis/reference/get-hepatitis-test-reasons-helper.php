@@ -14,8 +14,8 @@ $sTable = $tableName;
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
+    $sOffset = (int) $_POST['iDisplayStart'];
+    $sLimit = (int) $_POST['iDisplayLength'];
 }
 
 
@@ -25,7 +25,7 @@ if (isset($_POST['iSortCol_0'])) {
     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
         if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
             $sOrder .= $aColumns[(int) $_POST['iSortCol_' . $i]] . "
-                     " . ($_POST['sSortDir_' . $i]) . ", ";
+                     " . (strtolower((string) $_POST['sSortDir_' . $i]) === 'desc' ? 'desc' : 'asc') . ", ";
         }
     }
     $sOrder = substr_replace($sOrder, "", -2);
@@ -38,6 +38,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
+        $search = $db->escape($search);
         if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {

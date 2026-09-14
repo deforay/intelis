@@ -12,7 +12,7 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$tQuery = "SELECT * from r_generic_test_categories where test_category_id=$id";
+$tQuery = "SELECT * from r_generic_test_categories where test_category_id=" . (int) $id;
 $testCategoryInfo = $db->query($tQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->

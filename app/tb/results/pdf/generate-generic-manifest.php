@@ -39,13 +39,13 @@ if (trim((string) $id) !== '') {
                 JOIN form_tb as vl ON vl.referral_manifest_code = pd.manifest_code 
                 JOIN facility_details as fd ON fd.facility_id = vl.facility_id 
                 JOIN facility_details as l ON l.facility_id = vl.lab_id 
-                WHERE pd.manifest_code IN('$id')";
+                WHERE pd.manifest_code IN('" . $db->escape((string) $id) . "')";
     $result = $db->query($sQuery);
 
     $labname = $result[0]['lab_name'] ?? "";
 
     $showPatientName = $general->getGlobalConfig('tb_show_participant_name_in_manifest');
-    $bQuery = "SELECT * FROM specimen_manifests as pd WHERE manifest_code IN('$id')";
+    $bQuery = "SELECT * FROM specimen_manifests as pd WHERE manifest_code IN('" . $db->escape((string) $id) . "')";
 
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {

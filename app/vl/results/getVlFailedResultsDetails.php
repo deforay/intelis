@@ -14,6 +14,8 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\SampleCountUtility;
+use App\Utilities\DataTableUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 // Sanitized values from $request object
@@ -52,24 +54,9 @@ try {
 
     $sTable = $tableName;
 
-    $sOffset = $sLimit = null;
-    if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
-    }
+    [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
-
-    $sOrder = "";
-    if (isset($_POST['iSortCol_0'])) {
-        $sOrder = "";
-        for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-            }
-        }
-        $sOrder = substr_replace($sOrder, "", -2);
-    }
+    $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 
 
@@ -78,6 +65,7 @@ try {
         $searchArray = explode(" ", (string) $_POST['sSearch']);
         $sWhereSub = "";
         foreach ($searchArray as $search) {
+            $search = $db->escapeLike($search);
             if ($sWhereSub === "") {
                 $sWhereSub .= "(";
             } else {
@@ -141,35 +129,23 @@ try {
             $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
         }
     }
-    if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
-        $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
-    }
-    if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-    }
-    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
-    }
-    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-        $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
-    }
-    if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
-        $sWhere[] = '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
-    }
+    $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+        'sampleType' => ['s.sample_id', ListingFilterClauseBuilder::EQUALS],
+        'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
+        'district' => ['f.facility_district_id', ListingFilterClauseBuilder::EQUALS],
+        'state' => ['f.facility_state_id', ListingFilterClauseBuilder::EQUALS],
+        'vlLab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
+    ])];
     if (isset($_POST['status']) && !empty($_POST['status'])) {
-        $sWhere[] = ' vl.result_status IN (' . $_POST['status'] . ')';
+        $sWhere[] = ' vl.result_status IN (' . $db->inIntList($_POST['status']) . ')';
     } else {
         $sWhere[] = ' vl.result_status IN (' . implode(',', $failedStatusIds) . ')';
     }
-    if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-        $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
-    }
-    if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-        $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
-    }
-    if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
-    }
+    $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+        'patientId' => ['vl.patient_art_no', ListingFilterClauseBuilder::CONTAINS],
+        'patientName' => ["CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", ListingFilterClauseBuilder::CONTAINS],
+        'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
+    ])];
 
 
     if (!empty($_SESSION['facilityMap'])) {

@@ -23,7 +23,13 @@ $fieldName = $_POST['fieldName'];
 $value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
-if ($value !== '') {
+// The table, field and excluded-row column are written into the query as names,
+// so only the ones the hepatitis request forms send are accepted; anything else
+// is never looked up.
+$namesAllowed = $tableName === 'form_hepatitis'
+    && in_array($fieldName, ['sample_code', 'remote_sample_code', 'external_sample_code'], true)
+    && ($fnct == '' || $fnct == 'null' || explode("##", (string) $fnct)[0] === 'hepatitis_id');
+if ($value !== '' && $namesAllowed) {
     if ($fnct == '' || $fnct == 'null') {
         $sQuery = "SELECT * from $tableName where $fieldName= ?";
         $parameters = [$value];

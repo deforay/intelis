@@ -7,6 +7,8 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\DataTableUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 use App\Services\TestRequestsService;
 
 /** @var DatabaseService $db */
@@ -30,11 +32,7 @@ try {
           array_splice($orderColumns, 1, 0, ['vl.remote_sample_code']);
      }
 
-     $sOffset = $sLimit = null;
-     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-          $sOffset = $_POST['iDisplayStart'];
-          $sLimit = $_POST['iDisplayLength'];
-     }
+     [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
      $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
@@ -84,9 +82,9 @@ try {
           LEFT JOIN r_test_types as ty ON vl.test_type=ty.test_type_id
           LEFT JOIN r_implementation_partners as i ON i.i_partner_id=vl.implementing_partner";
 
-     if (isset($_POST['testType']) && $_POST['testType'] != "") {
-          $sWhere[] = " vl.test_type like " . $_POST['testType'];
-     }
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+          'testType' => ['vl.test_type', ListingFilterClauseBuilder::INT],
+     ])];
 
      /* Sample status filter */
      if (!empty($_POST['status'])) {

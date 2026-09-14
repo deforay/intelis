@@ -109,7 +109,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
          $_POST['sample'] = explode(',', (string) $_POST['sample']);
          $counter = count($_POST['sample']);
          for ($s = 0; $s < $counter; $s++) {
-            $sampleQuery = "SELECT vl_sample_id FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.vl_sample_id = '" . $_POST['sample'][$s] . "'";
+            $sampleQuery = "SELECT vl_sample_id FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.vl_sample_id = '" . $db->escape((string) $_POST['sample'][$s]) . "'";
             $sampleResult = $db->rawQuery($sampleQuery);
             $db->where('vl_sample_id', $sampleResult[0]['vl_sample_id']);
             $db->update($tableName, ['is_result_mail_sent' => 'yes', 'result_mail_datetime' => DateUtility::getCurrentDateTime()]);

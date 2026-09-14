@@ -76,13 +76,13 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
         }
     }
     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+        $sWhere[] = " f.facility_district LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
     }
     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-        $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+        $sWhere[] = " f.facility_state LIKE '%" . $db->escapeLike($_POST['state']) . "%' ";
     }
     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-        $sWhere[] =  ' f.facility_id = "' . $_POST['facilityName'] . '"';
+        $sWhere[] =  ' f.facility_id = "' . $db->escape((string) $_POST['facilityName']) . '"';
     }
     // A cancelled sample was called off before testing, so it is not
     // work this report should count.
@@ -110,13 +110,13 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
         }
     }
     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+        $sWhere[] = " f.facility_district LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
     }
     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-        $sWhere[] =  " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+        $sWhere[] =  " f.facility_state LIKE '%" . $db->escapeLike($_POST['state']) . "%' ";
     }
     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-        $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
+        $sWhere[] = ' f.facility_id = "' . $db->escape((string) $_POST['facilityName']) . '"';
     }
 
     // A cancelled sample was called off before testing, so it is not
@@ -153,13 +153,13 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
             }
 
             if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-                $sWhere[] =  "  f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+                $sWhere[] =  "  f.facility_district LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
             }
             if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-                $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+                $sWhere[] = " f.facility_state LIKE '%" . $db->escapeLike($_POST['state']) . "%' ";
             }
             if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-                $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
+                $sWhere[] = ' f.facility_id = "' . $db->escape((string) $_POST['facilityName']) . '"';
             }
             // A cancelled sample was called off before testing, so it is not
             // work this report should count.
@@ -213,14 +213,14 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
             }
         }
         if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-            $sWhere[] = "  f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+            $sWhere[] = "  f.facility_district LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
         }
         if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-            $sWhere[] =  "  f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+            $sWhere[] =  "  f.facility_state LIKE '%" . $db->escapeLike($_POST['state']) . "%' ";
         }
 
         if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-            $sWhere[] =  '  f.facility_id = "' . $_POST['facilityName'] . '"';
+            $sWhere[] =  '  f.facility_id = "' . $db->escape((string) $_POST['facilityName']) . '"';
         }
         // A cancelled sample was called off before testing, so it is not
         // work this report should count.
@@ -628,7 +628,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
                     AND YEAR(sample_collection_date)='$year'
                     AND " . SampleCountUtility::countableWhere('vl');
             if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-                $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+                $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
             }
             if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
                 if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
@@ -638,10 +638,10 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
                 }
             }
             if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-                $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+                $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $db->escapeLike($_POST['state']) . "%' ";
             }
             if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-                $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
+                $sWhere = $sWhere . ' AND f.facility_id = "' . $db->escape((string) $_POST['facilityName']) . '"';
             }
             $invalidResult[$dFormat] = $db->rawQuery($invalidResultQuery);
 

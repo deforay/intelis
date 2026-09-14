@@ -7,6 +7,8 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\SampleCountUtility;
+use App\Utilities\DataTableUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -35,25 +37,11 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-     $sOffset = $_POST['iDisplayStart'];
-     $sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-     $sOrder = "";
-     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-          if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-               $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
-}
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 $sWhere = [];
 $sWhere[] = " WHERE IFNULL(reason_for_vl_testing, 0)  != 9999 ";
@@ -61,6 +49,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
+          $search = $db->escapeLike($search);
           if ($sWhereSub === "") {
                $sWhereSub .= "(";
           } else {
@@ -119,16 +108,11 @@ if (!empty($_POST['sampleCollectionDate'])) {
           $sWhere[] = '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
-if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-     $sWhere[] = ' vl.lab_id = "' . $_POST['facilityName'] . '"';
-}
-
-if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-     $sWhere[] = " f.facility_district_id LIKE " . $_POST['district'];
-}
-if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-     $sWhere[] = " f.facility_state_id LIKE " . $_POST['state'];
-}
+$sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+     'facilityName' => ['vl.lab_id', ListingFilterClauseBuilder::EQUALS],
+     'district' => ['f.facility_district_id', ListingFilterClauseBuilder::INT],
+     'state' => ['f.facility_state_id', ListingFilterClauseBuilder::INT],
+])];
 
 if ($sWhere !== []) {
      $sWhere[] = ' vl.result!="" AND vl.result_status != ' . RECEIVED_AT_CLINIC;

@@ -5,6 +5,7 @@ use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 // Sanitized values from $request object
@@ -17,10 +18,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 try {
 
-    $sWhere = [];
-    if (isset($_POST['cType']) && trim((string) $_POST['cType']) !== '') {
-        $sWhere[] = ' vl.control_type = "' . $_POST['cType'] . '" ';
-    }
+    $sWhere = ListingFilterClauseBuilder::clauses($db, $_POST, [
+        'cType' => ['vl.control_type', ListingFilterClauseBuilder::EQUALS],
+    ]);
     if (!empty($_POST['sampleTestDate'])) {
         [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
         $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$startDate' AND '$endDate' ";

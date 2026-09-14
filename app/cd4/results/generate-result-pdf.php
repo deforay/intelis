@@ -1,5 +1,7 @@
 <?php
 
+use App\Utilities\ListingFilterClauseBuilder;
+
 use Psr\Http\Message\ServerRequestInterface;
 use const COUNTRY\SOUTH_SUDAN;
 use const COUNTRY\SIERRA_LEONE;
@@ -14,6 +16,7 @@ ini_set('max_execution_time', 300000);
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -89,10 +92,11 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 
 	$searchQueryWhere = [];
 	if (!empty($_POST['id'])) {
-		$searchQueryWhere[] = " vl.cd4_id IN(" . $_POST['id'] . ") ";
+		$searchQueryWhere[] = " vl.cd4_id IN(" . $db->inIntList($_POST['id']) . ") ";
 	}
 	if (!empty($_POST['sampleCodes'])) {
-		$searchQueryWhere[] = " vl.sample_code IN(" . $_POST['sampleCodes'] . ") ";
+		// Callers send a quoted list ('A', 'B'); a code may contain a comma.
+		$searchQueryWhere[] = " vl.sample_code IN(" . ListingFilterClauseBuilder::quotedTextList($db, (string) $_POST['sampleCodes']) . ") ";
 	}
 	// Facility isolation: a mapped STS user only gets PDFs for their own
 	// facilities. No-op on LIS and for unmapped (all-access) users.

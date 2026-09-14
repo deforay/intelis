@@ -27,7 +27,7 @@ if (!isset($_POST['type']) || in_array(trim((string) $_POST['type']), ['', '0'],
 
     $batchId = base64_decode((string) $_POST['id']);
 
-    $vlQuery = "SELECT $testTablePrimaryKey FROM $testTable WHERE sample_batch_id=$batchId";
+    $vlQuery = "SELECT $testTablePrimaryKey FROM $testTable WHERE sample_batch_id=" . (int) $batchId;
     $vlInfo = $db->query($vlQuery);
     if (!empty($vlInfo)) {
 

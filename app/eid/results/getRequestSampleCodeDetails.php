@@ -52,32 +52,32 @@ if ($labScope = $general->labScopeWhere('vl')) {
     $query .= " AND $labScope";
 }
 if (!empty($facility)) {
-  $query .= " AND vl.facility_id = $facility";
+  $query .= " AND vl.facility_id = " . (int) $facility;
 }
 if (trim((string) $sampleType) !== '') {
-  $query = $query . " AND vl.specimen_type='" . $sampleType . "'";
+  $query = $query . " AND vl.specimen_type='" . $db->escape((string) $sampleType) . "'";
 }
 if (trim((string) $gender) !== '') {
-  $query = $query . " AND vl.child_gender='" . $gender . "'";
+  $query = $query . " AND vl.child_gender='" . $db->escape((string) $gender) . "'";
 }
 
 if (trim((string) $state) !== '') {
-  $query = $query . " AND f.facility_state LIKE '%" . $state . "%' ";
+  $query = $query . " AND f.facility_state LIKE '%" . $db->escapeLike($state) . "%' ";
 }
 if (trim((string) $district) !== '') {
-  $query = $query . " AND f.facility_district LIKE '%" . $district . "%' ";
+  $query = $query . " AND f.facility_district LIKE '%" . $db->escapeLike($district) . "%' ";
 }
 if (isset($batch) && array_filter($batch) !== []) {
-  $query = $query . " AND vl.sample_batch_id IN (" . implode(',', $batch) . ")";
+  $query = $query . " AND vl.sample_batch_id IN (" . $db->inIntList($batch) . ")";
 }
 if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
-  $query = $query . " AND vl.result_status='" . $_POST['status'] . "'";
+  $query = $query . " AND vl.result_status='" . $db->escape((string) $_POST['status']) . "'";
 }
 if (trim((string) $mailSentStatus) !== '') {
   if (trim((string) $type) === 'request') {
-    $query = $query . " AND vl.is_request_mail_sent='" . $mailSentStatus . "'";
+    $query = $query . " AND vl.is_request_mail_sent='" . $db->escape((string) $mailSentStatus) . "'";
   } elseif (trim((string) $type) === 'result') {
-    $query = $query . " AND vl.is_result_mail_sent='" . $mailSentStatus . "' AND ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = '')))";
+    $query = $query . " AND vl.is_result_mail_sent='" . $db->escape((string) $mailSentStatus) . "' AND ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = '')))";
   }
 }
 if (!empty($_POST['sampleCollectionDate'])) {

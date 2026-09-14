@@ -8,6 +8,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\TurnaroundTimeUtility;
 use App\Utilities\SampleCountUtility;
+use App\Utilities\DataTableUtility;
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -26,11 +27,7 @@ $sampleCode = ($general->isSTSInstance()) ? 'remote_sample_code' : 'sample_code'
 $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.external_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_dispatched_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_on_sts_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_on_lis_datetime,'%d-%b-%Y')"];
 $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.external_sample_code', 'vl.sample_collection_date', 'vl.sample_dispatched_datetime', 'vl.sample_received_at_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_printed_on_sts_datetime', 'vl.result_printed_on_lis_datetime'];
 
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-	$sOffset = $_POST['iDisplayStart'];
-	$sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);

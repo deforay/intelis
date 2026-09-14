@@ -111,7 +111,7 @@ try {
         LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=tb.implementing_partner
         LEFT JOIN r_funding_sources as rfs ON rfs.funding_source_id=tb.funding_source
         LEFT JOIN r_tb_sample_type as rst ON rst.sample_id=tb.specimen_type
-        WHERE tb.tb_id IN(" . $_POST['id'] . ")";
+        WHERE tb.tb_id IN(" . $db->inIntList($_POST['id']) . ")";
         // Facility isolation: a mapped STS user only gets PDFs for their own
         // facilities. No-op on LIS and for unmapped (all-access) users.
         if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {

@@ -1,6 +1,7 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface;
+use App\Utilities\DataTableUtility;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -65,11 +66,7 @@ try {
     /*
      * Paging
      */
-    $sOffset = $sLimit = null;
-    if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
-    }
+    [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
 
@@ -79,7 +76,7 @@ try {
         for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
             if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
                 $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-                " . ($_POST['sSortDir_' . $i]) . ", ";
+                " . (strtolower(trim((string) ($_POST['sSortDir_' . $i] ?? ''))) === 'desc' ? 'DESC' : 'ASC') . ", ";
             }
         }
         $sOrder = substr_replace($sOrder, "", -2);
@@ -97,9 +94,9 @@ try {
 
             for ($i = 0; $i < $colSize; $i++) {
                 if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' OR ";
                 } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . $db->escape($search) . "%' ";
                 }
             }
             $sWhereSub .= ")";
@@ -146,7 +143,7 @@ try {
         $sWhere[] = ' DATE(vl.sample_tested_datetime) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
     }
     if (isset($_POST['sampleBatchCode']) && trim((string) $_POST['sampleBatchCode']) !== '') {
-        $code = $_POST['sampleBatchCode'];
+        $code = $db->escape((string) $_POST['sampleBatchCode']);
         $sWhere[] = " vl.sample_code = '$code' OR b.batch_code = '$code' ";
     }
 

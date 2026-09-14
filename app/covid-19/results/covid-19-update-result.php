@@ -85,7 +85,7 @@ if (!empty($covid19Info['facility_id'])) {
 	$general->assertFacilityAllowed((int) $covid19Info['facility_id']);
 }
 
-$covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id=$id ORDER BY test_id ASC";
+$covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id=" . (int) $id . " ORDER BY test_id ASC";
 $covid19TestInfo = $db->rawQuery($covid19TestQuery);
 
 $disable = "disabled = 'disabled'";

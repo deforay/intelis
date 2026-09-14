@@ -10,6 +10,8 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\DataTableUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -32,11 +34,7 @@ if ($general->isSTSInstance()) {
      $orderColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
 }
 
-$sOffset = $sLimit = null;
-if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-     $sOffset = $_POST['iDisplayStart'];
-     $sLimit = $_POST['iDisplayLength'];
-}
+[$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
@@ -60,12 +58,10 @@ $sQuery = "SELECT vl.*,
                LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
 
 
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-     $sWhere[] = '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
-}
-if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-     $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
-}
+$sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+     'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::CONTAINS],
+     'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
+])];
 if (!empty($_POST['sampleCollectionDate'])) {
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
      $sWhere[] = "  DATE(vl.sample_collection_date) BEWTEEN '$start_date' AND '$end_date' ";
@@ -74,12 +70,10 @@ if (!empty($_POST['sampleTestDate'])) {
      [$tested_start_date, $tested_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
      $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$tested_start_date' AND '$tested_end_date' ";
 }
-if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
-     $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
-}
-if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-     $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-}
+$sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+     'sampleType' => ['s.sample_id', ListingFilterClauseBuilder::EQUALS],
+     'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
+])];
 $cancellableFilter = (isset($_POST['statusFilter']) && $_POST['statusFilter'] == 'cancellable');
 if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
      if ($_POST['statusFilter'] == 'approvedOrRejected') {

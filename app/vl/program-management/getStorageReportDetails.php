@@ -9,6 +9,8 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\SampleCountUtility;
+use App\Utilities\DataTableUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 // Sanitized values from $request object
@@ -31,17 +33,13 @@ try {
           $sampleCode = 'sample_code';
           $aColumns = ['vl.sample_code', 'h.volume', 'h.rack', 'h.box', 'h.position', 'h.sample_status'];
           $orderColumns = ['vl.sample_code', 'h.volume', 'h.rack', 'h.box', 'h.position', 'h.sample_status'];
-          $sOffset = $sLimit = null;
-          if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-               $sOffset = $_POST['iDisplayStart'];
-               $sLimit = $_POST['iDisplayLength'];
-          }
+          [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
           $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
           $sQuery = "SELECT h.*, s.storage_code, vl.sample_code
      FROM lab_storage_history as h
      INNER JOIN lab_storage as s ON h.freezer_id = s.storage_id
      INNER JOIN form_vl as vl ON vl.unique_id = h.sample_unique_id ";
-          $sWhere[] = ' h.freezer_id = "' . $_POST['freezerId'] . '"';
+          $sWhere[] = ' h.freezer_id = "' . $db->escape((string) $_POST['freezerId']) . '"';
           // Facility isolation: mapped STS users only see their facilities' samples
           if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
                $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
@@ -82,21 +80,17 @@ try {
      } elseif ($_POST['reportType'] == 'historyData') {
           $aColumns = ['vl.patient_art_no', 'vl.sample_collection_date', 's.storage_code', 'h.box', 'h.position', 'h.sample_status'];
           $orderColumns = ['vl.patient_art_no', 'vl.sample_collection_date', 's.storage_code', 'h.box', 'h.position', 'h.sample_status'];
-          $sOffset = $sLimit = null;
-          if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-               $sOffset = $_POST['iDisplayStart'];
-               $sLimit = $_POST['iDisplayLength'];
-          }
+          [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
           $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
           $sQuery = "SELECT h.*, s.storage_code, vl.sample_collection_date,vl.is_encrypted,vl.patient_art_no, rr.removal_reason_name
                FROM lab_storage_history as h
                LEFT JOIN r_reasons_for_sample_removal as rr ON rr.removal_reason_id = sample_removal_reason
                LEFT JOIN lab_storage as s ON h.freezer_id = s.storage_id
                LEFT JOIN form_vl as vl ON vl.unique_id = h.sample_unique_id ";
-          $sWhere[] = ' vl.sample_code = "' . $_POST['sampleCode'] . '"';
-          if (isset($_POST['labId']) && $_POST['labId'] != "") {
-               $sWhere[] = ' vl.lab_id = "' . $_POST['labId'] . '"';
-          }
+          $sWhere[] = ' vl.sample_code = "' . $db->escape((string) $_POST['sampleCode']) . '"';
+          $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
+               'labId' => ['vl.lab_id', ListingFilterClauseBuilder::EQUALS],
+          ])];
           // Facility isolation: mapped STS users only see their facilities' samples
           if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
                $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";

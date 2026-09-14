@@ -67,7 +67,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
                            $resultOlySamples = [];
                            $counter = count($selectedSamplesArray);
                            for ($s = 0; $s < $counter; $s++) {
-                              $sampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.covid19_id = '" . $selectedSamplesArray[$s] . "' ORDER BY f.facility_name ASC";
+                              $sampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.covid19_id = '" . $db->escape((string) $selectedSamplesArray[$s]) . "' ORDER BY f.facility_name ASC";
                               $sampleResult = $db->rawQuery($sampleQuery);
 
                               if (isset($sampleResult[0]['sample_code'])) {
