@@ -34,6 +34,9 @@ const REPO_DIR = __DIR__ . '/../..';
  */
 const COVERED_FILES = [
     'app/vl/program-management/getHighVlResultDetails.php',
+    'app/vl/program-management/getSampleStatus.php',
+    'app/reports/get-sample-status-details.php',
+    'app/reports/sample-status-details.php',
     'app/vl/program-management/getSampleRejectionReport.php',
     'app/vl/program-management/getResultNotAvailable.php',
     'app/vl/program-management/dataQualityCheck.php',
