@@ -1,30 +1,30 @@
 <?php
 
 use const COUNTRY\DRC;
+use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
+
+ini_set('memory_limit', '512M');
+set_time_limit(300);
+ini_set('max_execution_time', 300);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+$key = (string) $general->getGlobalConfig('key');
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) !== "") {
-    $rResult = $db->rawQuery($_SESSION['resultNotAvailable']);
 
-    $excel = new Spreadsheet();
-    $output = [];
-    $sheet = $excel->getActiveSheet();
-    $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child ID", "Child's Name", "Sample Collection Date", "Lab Name", "Sample Status", "Implementing Partner"];
+    $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child ID", "Child's Name", "Sample Collection Date", "Sample Received at Testing Lab", "Lab Name", "Sample Status", "Implementing Partner"];
     if ($general->isStandaloneInstance()) {
         $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
     }
@@ -32,47 +32,19 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $headings = MiscUtility::removeMatchingElements($headings, ["Child's Name"]);
     }
 
-    $colNo = 1;
+    $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
 
-    $styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
+    $writer = new Writer();
+    $writer->openToFile($filename);
+    $writer->addRow(Row::fromValues($headings));
 
-    $sheet->mergeCells('A1:AE1');
-    $nameValue = '';
-    foreach ($_POST as $key => $value) {
-        if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-            $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+    $resultSet = $db->rawQueryGenerator($_SESSION['resultNotAvailable']);
+    foreach ($resultSet as $aRow) {
+        if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+            $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
+            $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
         }
-    }
-    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-        ->setValueExplicit(html_entity_decode($nameValue));
-
-    foreach ($headings as $field => $value) {
-        $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-            ->setValueExplicit(html_entity_decode((string) $value));
-        $colNo++;
-    }
-    $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
-    $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
-    $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
-    $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
-    $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
-    $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
-    $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
-    if (!$general->isStandaloneInstance()) {
-        $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
-    }
-
-
-    foreach ($rResult as $aRow) {
         $row = [];
-        //sample collecion date
-        $sampleCollectionDate = '';
-        if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-            $expStr = explode(" ", (string) $aRow['sample_collection_date']);
-            $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
-        }
-        $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
-        $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow[$decrypt]));
         $row[] = $aRow['sample_code'];
         if (!$general->isStandaloneInstance()) {
             $row[] = $aRow['remote_sample_code'];
@@ -82,22 +54,15 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         if ($formId != DRC) {
             $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
         }
-        $row[] = $sampleCollectionDate;
-        $row[] = ($aRow['labName']);
-        $row[] = ($aRow['status_name']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
+        $row[] = $aRow['labName'];
+        $row[] = $aRow['status_name'];
         $row[] = $aRow['i_partner_name'];
-        $output[] = $row;
+
+        $writer->addRow(Row::fromValues($row));
     }
 
-    $start = (count($output)) + 2;
-    foreach ($output as $rowNo => $rowData) {
-        $rRowCount = $rowNo + 4;
-        $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-    }
-
-
-    $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-    $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-    $writer->save($filename);
+    $writer->close();
     echo _downloadToken($filename);
 }

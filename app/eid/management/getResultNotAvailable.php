@@ -37,8 +37,8 @@ try {
     $key = (string) $general->getGlobalConfig('key');
     $formId = (int) $general->getGlobalConfig('vl_form');
 
-    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
-    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.sample_collection_date', 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
+    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
     if ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
@@ -199,6 +199,7 @@ try {
             $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
         }
         $row[] = $aRow['sample_collection_date'];
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
         $row[] = ($aRow['labName']);
         $row[] = ($aRow['status_name']);
         $row[] = $aRow['i_partner_name'];

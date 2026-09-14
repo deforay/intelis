@@ -1100,7 +1100,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<select name="noResultIncludeExpired" id="noResultIncludeExpired"
 															class="form-control notAvailReportFilter"
 															title="<?php echo _htmlTranslate('Please choose whether expired samples are counted'); ?>">
-															<option value=""><?php echo _translate("Yes"); ?></option>
+															<option value="yes"><?php echo _translate("Yes"); ?></option>
 															<option value="no"><?php echo _translate("No"); ?></option>
 															</select>
 														</div>
@@ -1146,6 +1146,9 @@ $implementingPartnerList = $general->getImplementationPartners();
 														</th>
 														<th scope="row">
 															<?php echo _translate("Sample Collection Date"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Sample Received at Testing Lab"); ?>
 														</th>
 														<th>
 															<?php echo _translate("Testing Lab Name"); ?>
@@ -2007,6 +2010,9 @@ $implementingPartnerList = $general->getImplementationPartners();
 			},
 			{
 				"sClass": "center"
+			},
+			{
+				"sClass": "center"
 			}
 			],
 			"aaSorting": [
@@ -2442,8 +2448,15 @@ $implementingPartnerList = $general->getImplementationPartners();
 
 	function resetFilters(filtersClass) {
 		localStorage.removeItem(getStorageKey(filtersClass));
-		$('.' + filtersClass).val('');
-		$('.' + filtersClass).val(null).trigger('change');
+		$('.' + filtersClass).val(null);
+		// A select with no empty option (Include Expired Samples) has a
+		// default rather than a blank state, so it goes back to its first option
+		$('.' + filtersClass).filter('select:not([multiple])').each(function () {
+			if (this.selectedIndex < 0) {
+				this.selectedIndex = 0;
+			}
+		});
+		$('.' + filtersClass).trigger('change');
 	}
 
 	function sampleTestingReport() {
