@@ -1,12 +1,15 @@
 # Static analysis on SonarQube Cloud (project deforay_vlsm). Findings show up
 # as GitHub code scanning alerts. Needs the SONAR_TOKEN repository secret.
+#
+# Master only, and never a gate: Publish waits on Verify, not on this. Pull
+# requests are not analyzed because SonarCloud fails to fetch the PR ("Something
+# went wrong while trying to get the pullrequest") even with the repository
+# bound to deforay/intelis.
 
 name: SonarCloud analysis
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
     branches: [ "master" ]
   workflow_dispatch:
 
@@ -22,9 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read # lets SonarCloud decorate PRs with the analysis
-    # Pull requests from forks get no secrets, so the scan could only fail there.
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
