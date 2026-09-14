@@ -37006,3 +37006,54 @@ msgstr "Générer le rapport"
 #~ msgstr ""
 #~ "filigrane. Laissez le bloc de droite vide (Désélectionner tout) pour "
 #~ "désactiver ce filigrane"
+
+#: app/reports/_sample-testing-report.php:18
+msgid "Sample Testing by Facility"
+msgstr "Analyse des échantillons par établissement"
+
+#: app/reports/_sample-testing-report.php:19
+#, php-format
+msgid "Top %s of %s facilities by samples collected"
+msgstr "Les %s premiers établissements sur %s, par nombre d'échantillons prélevés"
+
+#: app/reports/_sample-testing-report.php:20
+#, php-format
+msgid "%s facilities"
+msgstr "%s établissements"
+
+#: app/reports/_sample-testing-report.php:22
+msgid "Samples Collected"
+msgstr "Échantillons prélevés"
+
+#: app/reports/_sample-testing-report.php:25
+msgid "Awaiting Testing"
+msgstr "En attente d'analyse"
+
+#: app/reports/_sample-testing-report.php:26
+msgid "Not Yet at Lab"
+msgstr "Pas encore au laboratoire"
+
+#: app/reports/_sample-testing-report.php:27
+msgid "Failed or No Result"
+msgstr "Échec ou aucun résultat"
+
+#: app/reports/_sample-testing-report.php:29
+msgid "Lost, Expired or Referred"
+msgstr "Perdu, expiré ou référé"
+
+#: app/reports/_sample-testing-report.php:31
+msgid "% Tested"
+msgstr "% analysés"
+
+#: app/reports/_sample-testing-report.php:32
+#, php-format
+msgid "%s of samples collected"
+msgstr "%s des échantillons prélevés"
+
+#: app/reports/_sample-testing-report.php:36
+msgid "Facility Breakdown"
+msgstr "Détail par établissement"
+
+#: app/reports/_sample-testing-report.php:37
+msgid "No samples were collected in the selected period for these filters."
+msgstr "Aucun échantillon prélevé sur la période sélectionnée pour ces filtres."

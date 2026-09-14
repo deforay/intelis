@@ -328,9 +328,229 @@
         });
     }
 
+    /* ------------------------------------------------------ sample testing */
+
+    /* Stacking order, and the colours the sample status pies use for the
+       status each bucket is named after. */
+    var TESTING_BUCKETS = [
+        { key: 'tested', color: '#639e11' },
+        { key: 'awaitingApproval', color: '#7f22e8' },
+        { key: 'awaitingTesting', color: '#dda41b' },
+        { key: 'notAtLab', color: '#4bc0d9' },
+        { key: 'failed', color: '#b5651d' },
+        { key: 'rejected', color: '#d8424d' },
+        { key: 'other', color: '#999999' }
+    ];
+    var TESTING_CHART_LIMIT = 20;
+
+    /* Numbers and percentages follow the interface language, so French reads
+       "76,9 %" rather than "76.9%". */
+    var numberLocale;
+
+    function fmt(n) {
+        return Number(n || 0).toLocaleString(numberLocale);
+    }
+
+    function pctText(value) {
+        return (value / 100).toLocaleString(numberLocale, { style: 'percent', maximumFractionDigits: 1 });
+    }
+
+    function pct(part, whole) {
+        return whole > 0 ? Math.round((part / whole) * 1000) / 10 : 0;
+    }
+
+    function sprintf(template) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return String(template).replace(/%s/g, function () {
+            return args.length ? args.shift() : '';
+        });
+    }
+
+    function renderSampleTesting(target, data) {
+        var L = data.labels;
+        try {
+            numberLocale = data.locale ? Intl.NumberFormat.supportedLocalesOf([data.locale])[0] : undefined;
+        } catch (e) {
+            numberLocale = undefined;
+        }
+        var rows = data.rows || [];
+        target.empty();
+
+        if (!rows.length) {
+            target.append($('<div class="clinic-report-note">').append(
+                $('<p>').text(L.noData)
+            ));
+            return;
+        }
+
+        var sums = { total: 0 };
+        $.each(TESTING_BUCKETS, function (i, b) {
+            sums[b.key] = 0;
+        });
+        $.each(rows, function (i, r) {
+            sums.total += r.total;
+            $.each(TESTING_BUCKETS, function (j, b) {
+                sums[b.key] += r[b.key];
+            });
+        });
+        /* A bucket nobody is in (Not Yet at Lab on a lab instance, say) is
+           left out of the legend and the table rather than shown as zeros. */
+        var buckets = $.grep(TESTING_BUCKETS, function (b) {
+            return sums[b.key] > 0;
+        });
+        var pending = sums.awaitingApproval + sums.awaitingTesting + sums.notAtLab;
+
+        /* Headline figures */
+        var cards = $('<div class="st-cards">');
+        function card(label, value, note, color) {
+            var c = $('<div class="st-card">').css('border-top-color', color);
+            c.append($('<div class="st-card-label">').text(label));
+            c.append($('<div class="st-card-value">').text(value));
+            if (note) {
+                c.append($('<div class="st-card-note">').text(note));
+            }
+            cards.append(c);
+        }
+        card(L.total, fmt(sums.total), data.period, '#3c8dbc');
+        card(L.tested, fmt(sums.tested), sprintf(L.ofCollected, pctText(pct(sums.tested, sums.total))), '#639e11');
+        card(L.pending, fmt(pending), sprintf(L.ofCollected, pctText(pct(pending, sums.total))), '#dda41b');
+        card(L.failed, fmt(sums.failed), sprintf(L.ofCollected, pctText(pct(sums.failed, sums.total))), '#b5651d');
+        card(L.rejected, fmt(sums.rejected), sprintf(L.ofCollected, pctText(pct(sums.rejected, sums.total))), '#d8424d');
+        target.append(cards);
+
+        /* Chart: horizontal, so facility names stay readable, and capped so
+           a province with hundreds of facilities still draws legibly. The
+           table below holds all of them. */
+        var shown = rows.slice(0, TESTING_CHART_LIMIT);
+        var chartBox = $('<div class="st-chart">');
+        target.append(chartBox);
+        if (window.Highcharts) {
+            window.Highcharts.chart(chartBox[0], {
+                chart: { type: 'bar', height: Math.max(240, shown.length * 28 + 130) },
+                title: { text: L.title, align: 'left', style: { fontSize: '18px', fontWeight: '600' } },
+                subtitle: {
+                    align: 'left',
+                    style: { fontSize: '13px' },
+                    text: rows.length > shown.length
+                        ? sprintf(L.topFacilities, shown.length, fmt(rows.length))
+                        : sprintf(L.allFacilities, fmt(rows.length))
+                },
+                credits: { enabled: false },
+                exporting: { sourceWidth: 1200 },
+                xAxis: {
+                    categories: $.map(shown, function (r) {
+                        return r.facility;
+                    }),
+                    labels: { style: { fontSize: '13px', color: '#333' } }
+                },
+                yAxis: {
+                    min: 0,
+                    allowDecimals: false,
+                    title: { text: L.samples, style: { fontSize: '13px' } },
+                    labels: {
+                        style: { fontSize: '12px' },
+                        formatter: function () {
+                            return fmt(this.value);
+                        }
+                    },
+                    reversedStacks: false,
+                    stackLabels: {
+                        enabled: true,
+                        formatter: function () {
+                            return fmt(this.total);
+                        },
+                        style: { fontSize: '12px', fontWeight: '600', textOutline: 'none', color: '#1f2d3d' }
+                    }
+                },
+                legend: { align: 'left', verticalAlign: 'top', layout: 'horizontal', itemStyle: { fontSize: '13px', fontWeight: '500' } },
+                tooltip: {
+                    shared: true,
+                    useHTML: true,
+                    style: { fontSize: '13px' },
+                    formatter: function () {
+                        var r = shown[this.points[0].point.index];
+                        var html = '<b>' + window.Highcharts.escapeHTML(r.facility) + '</b><table class="st-tip">';
+                        $.each(this.points, function (i, p) {
+                            if (p.y > 0) {
+                                html += '<tr><td><span style="color:' + p.color + '">●</span> '
+                                    + p.series.name + '</td><td>' + fmt(p.y) + '</td><td>'
+                                    + pctText(pct(p.y, r.total)) + '</td></tr>';
+                            }
+                        });
+                        return html + '<tr class="st-tip-total"><td>' + L.total + '</td><td>'
+                            + fmt(r.total) + '</td><td></td></tr></table>';
+                    }
+                },
+                plotOptions: {
+                    series: { stacking: 'normal', borderWidth: 0, pointPadding: 0.08, groupPadding: 0.08 }
+                },
+                series: $.map(buckets, function (b) {
+                    return {
+                        name: L[b.key],
+                        color: b.color,
+                        data: $.map(shown, function (r) {
+                            return r[b.key];
+                        })
+                    };
+                })
+            });
+        }
+
+        /* Every facility, sortable */
+        var table = $('<table class="table table-bordered table-striped table-hover st-table">');
+        var head = $('<tr>')
+            .append($('<th>').text(L.facility))
+            .append($('<th>').text(L.state))
+            .append($('<th>').text(L.district))
+            .append($('<th class="text-right">').text(L.total));
+        $.each(buckets, function (i, b) {
+            head.append($('<th class="text-right">').append(
+                $('<span class="st-swatch">').css('background', b.color), document.createTextNode(L[b.key])
+            ));
+        });
+        head.append($('<th class="text-right">').text(L.testedRate));
+        table.append($('<thead>').append(head));
+
+        var body = $('<tbody>');
+        $.each(rows, function (i, r) {
+            var rate = pct(r.tested, r.total);
+            var tr = $('<tr>')
+                .append($('<td>').text(r.facility))
+                .append($('<td>').text(r.state))
+                .append($('<td>').text(r.district))
+                .append($('<td class="text-right">').attr('data-order', r.total).text(fmt(r.total)));
+            $.each(buckets, function (j, b) {
+                var cell = $('<td class="text-right">').attr('data-order', r[b.key]).text(fmt(r[b.key]));
+                if (!r[b.key]) {
+                    cell.addClass('st-zero');
+                }
+                tr.append(cell);
+            });
+            tr.append($('<td class="text-right st-rate">').attr('data-order', rate).append(
+                $('<span class="st-rate-bar">').css('width', rate + '%'),
+                $('<span class="st-rate-value">').text(pctText(rate))
+            ));
+            body.append(tr);
+        });
+        table.append(body);
+
+        target.append($('<h4 class="st-heading">').text(L.details));
+        target.append($('<div class="table-responsive">').append(table));
+
+        if ($.fn.dataTable) {
+            table.dataTable({
+                aaSorting: [[3, 'desc']],
+                iDisplayLength: 25,
+                bAutoWidth: false
+            });
+        }
+    }
+
     /* -------------------------------------------------------------- public */
 
     var ClinicReports = {
+
+        renderSampleTesting: renderSampleTesting,
 
         /* DataTables fnServerData. The table's own processing indicator is the
            loading state; this tracks the request so exports can wait on it. */

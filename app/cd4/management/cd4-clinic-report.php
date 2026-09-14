@@ -536,12 +536,7 @@ $state = $geolocationService->getProvinces("yes");
 													</span></button>
 												</div>
 											</div>
-											<figure class="highcharts-figure">
-												<div id="container"></div>
-												<div id="sampleTestingResultDetails">
-													<p class="highcharts-description">
-													</p>
-											</figure>
+											<div id="sampleTestingResultDetails"></div>
 										</div>
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
 											<div class="box box-default filter-panel filter-panel-collapsed">
