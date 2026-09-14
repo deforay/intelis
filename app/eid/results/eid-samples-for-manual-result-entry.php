@@ -64,26 +64,13 @@ try {
 
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-          $sOffset = $_POST['iDisplayStart'];
-          $sLimit = $_POST['iDisplayLength'];
+          $sOffset = (int) $_POST['iDisplayStart'];
+          $sLimit = (int) $_POST['iDisplayLength'];
      }
 
 
 
-     $sOrder = "";
-
-
-
-     if (isset($_POST['iSortCol_0'])) {
-          $sOrder = "";
-          for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-               if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-               }
-          }
-          $sOrder = substr_replace($sOrder, "", -2);
-     }
+     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 
      $sWhere = [];
@@ -91,6 +78,7 @@ try {
           $searchArray = explode(" ", (string) $_POST['sSearch']);
           $sWhereSub = "";
           foreach ($searchArray as $search) {
+               $search = $db->escapeLike($search);
                if ($sWhereSub === "") {
                     $sWhereSub .= "(";
                } else {
@@ -141,10 +129,10 @@ try {
 
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-          $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+          $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
      }
      if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+          $sWhere[] = ' vl.sample_package_code = "' . $db->escape((string) $_POST['manifestCode']) . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
           if (trim((string) $start_date) === trim((string) $end_date)) {
@@ -155,10 +143,10 @@ try {
      }
 
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-          $sWhere[] = '  f.facility_id IN (' . $_POST['facilityName'] . ')';
+          $sWhere[] = '  f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
      }
      if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
-          $sWhere[] = '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
+          $sWhere[] = '  vl.lab_id IN (' . $db->inIntList($_POST['vlLab']) . ')';
      }
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           if ($_POST['status'] == 'no_result') {
@@ -175,10 +163,10 @@ try {
      }
 
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-          $sWhere[] = '  vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+          $sWhere[] = '  vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
      }
      if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
-          $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+          $sWhere[] = ' vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
      }
 
 

@@ -59,23 +59,13 @@ try {
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
+        $sOffset = (int) $_POST['iDisplayStart'];
+        $sLimit = (int) $_POST['iDisplayLength'];
     }
 
 
 
-    $sOrder = "";
-    if (isset($_POST['iSortCol_0'])) {
-        $sOrder = "";
-        for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-            }
-        }
-        $sOrder = substr_replace($sOrder, "", -2);
-    }
+    $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 
 
@@ -84,6 +74,7 @@ try {
         $searchArray = explode(" ", (string) $_POST['sSearch']);
         $sWhereSub = "";
         foreach ($searchArray as $search) {
+            $search = $db->escapeLike($search);
             if ($sWhereSub === "") {
                 $sWhereSub .= "(";
             } else {
@@ -133,40 +124,40 @@ try {
     }
 
     if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
-        $sWhere[] = ' vl.specimen_type = "' . $_POST['sampleType'] . '"';
+        $sWhere[] = ' vl.specimen_type = ' . (int) $_POST['sampleType'];
     }
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+        $sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
     }
     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
+        $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['district'] . ' ';
     }
     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-        $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
+        $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['state'] . ' ';
     }
     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
-        $sWhere[] = '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
+        $sWhere[] = '  vl.lab_id IN (' . $db->inIntList($_POST['vlLab']) . ')';
     }
     if (isset($_POST['status']) && !empty($_POST['status'])) {
-        $sWhere[] = ' vl.result_status IN (' . $_POST['status'] . ')';
+        $sWhere[] = ' vl.result_status IN (' . $db->inIntList($_POST['status']) . ')';
     } else {
         $sWhere[] = ' vl.result_status IN (' . implode(',', $failedStatusIds) . ')';
     }
     if (isset($_POST['childId']) && $_POST['childId'] != "") {
-        $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
+        $sWhere[] = ' vl.child_id like "%' . $db->escapeLike($_POST['childId']) . '%"';
     }
     if ($formId != DRC && isset($_POST['childName']) && $_POST['childName'] != "") {
-        $sWhere[] = " CONCAT(COALESCE(vl.child_name,''), COALESCE(vl.child_surname,'')) like '%" . $_POST['childName'] . "%'";
+        $sWhere[] = " CONCAT(COALESCE(vl.child_name,''), COALESCE(vl.child_surname,'')) like '%" . $db->escapeLike($_POST['childName']) . "%'";
     }
 
     if (isset($_POST['motherId']) && $_POST['motherId'] != "") {
-        $sWhere[] = ' vl.mother_id like "%' . $_POST['motherId'] . '%"';
+        $sWhere[] = ' vl.mother_id like "%' . $db->escapeLike($_POST['motherId']) . '%"';
     }
     if ($formId != DRC && isset($_POST['motherName']) && $_POST['motherName'] != "") {
-        $sWhere[] = " CONCAT(COALESCE(vl.mother_name,''), COALESCE(vl.mother_surname,'')) like '%" . $_POST['motherName'] . "%'";
+        $sWhere[] = " CONCAT(COALESCE(vl.mother_name,''), COALESCE(vl.mother_surname,'')) like '%" . $db->escapeLike($_POST['motherName']) . "%'";
     }
     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-        $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+        $sWhere[] = ' vl.sample_package_code = "' . $db->escape((string) $_POST['manifestCode']) . '"';
     }
 
 

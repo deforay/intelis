@@ -64,8 +64,8 @@ try {
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
+        $sOffset = (int) $_POST['iDisplayStart'];
+        $sLimit = (int) $_POST['iDisplayLength'];
     }
 
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
@@ -103,24 +103,24 @@ try {
 
 
     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
+        $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['district'];
     }
     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-        $sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
+        $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['state'];
     }
 
     if (isset($_POST['childId']) && $_POST['childId'] != "") {
-        $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
+        $sWhere[] = ' vl.child_id like "%' . $db->escapeLike($_POST['childId']) . '%"';
     }
     if ($formId != DRC && isset($_POST['childName']) && $_POST['childName'] != "") {
-        $sWhere[] = " CONCAT(COALESCE(vl.child_name,''), COALESCE(vl.child_surname,'')) like '%" . $_POST['childName'] . "%'";
+        $sWhere[] = " CONCAT(COALESCE(vl.child_name,''), COALESCE(vl.child_surname,'')) like '%" . $db->escapeLike($_POST['childName']) . "%'";
     }
     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-        $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+        $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
     }
 
     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
-        $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+        $sWhere[] = ' vl.sample_package_code = "' . $db->escape((string) $_POST['manifestCode']) . '"';
     }
 
     if (!empty($_POST['sampleCollectionDate'])) {
@@ -140,16 +140,16 @@ try {
 
 
     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-        $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
+        $sWhere[] = ' vl.specimen_type = ' . (int) $_POST['sampleType'];
     }
     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-        $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+        $sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
     }
     if (isset($_POST['labId']) && trim((string) $_POST['labId']) !== '') {
-        $sWhere[] = ' vl.lab_id IN (' . $_POST['labId'] . ')';
+        $sWhere[] = ' vl.lab_id IN (' . $db->inIntList($_POST['labId']) . ')';
     }
     if (isset($_POST['artNo']) && trim((string) $_POST['artNo']) !== '') {
-        $sWhere[] = " vl.child_id LIKE '%" . $_POST['artNo'] . "%' ";
+        $sWhere[] = " vl.child_id LIKE '%" . $db->escapeLike($_POST['artNo']) . "%' ";
     }
     if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
         if ($_POST['status'] == 'no_result') {
@@ -163,16 +163,16 @@ try {
     }
     if (isset($_POST['gender']) && trim((string) $_POST['gender']) !== '') {
         if (trim((string) $_POST['gender']) === "unreported") {
-            $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+            $sWhere[] = ' (vl.child_gender = "unreported" OR vl.child_gender ="" OR vl.child_gender IS NULL)';
         } else {
-            $sWhere[] = ' vl.patient_gender ="' . $_POST['gender'] . '"';
+            $sWhere[] = ' vl.child_gender ="' . $db->escape((string) $_POST['gender']) . '"';
         }
     }
     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
-        $sWhere[] = ' vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
+        $sWhere[] = ' vl.funding_source ="' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '"';
     }
     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
-        $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
+        $sWhere[] = ' vl.implementing_partner ="' . $db->escape(base64_decode((string) $_POST['implementingPartner'])) . '"';
     }
 
     // Only approved results can be printed
