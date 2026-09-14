@@ -167,7 +167,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
@@ -442,7 +442,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</table>
 										</div>
 										<div class="tab-pane fade" id="highVlVirologicFailureReport">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
@@ -604,7 +604,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</div>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
@@ -890,7 +890,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</table>
 										</div>
 										<div class="tab-pane fade" id="notAvailReport">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
@@ -1160,7 +1160,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</table>
 										</div>
 										<div class="tab-pane fade" id="incompleteFormReport">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
@@ -1340,7 +1340,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleTestingReport" style="width: 100%; overflow-x: auto;">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
@@ -1430,7 +1430,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 											</figure>
 										</div>
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
-											<div class="box box-default filter-panel">
+											<div class="box box-default filter-panel filter-panel-collapsed">
 												<div class="box-body pageFilters filter-panel-body">
 												<div class="row">
 													<div class="col-md-4 col-sm-6">
