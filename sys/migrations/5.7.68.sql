@@ -29,3 +29,15 @@ UPDATE `privileges`
    AND NOT JSON_CONTAINS(`shared_privileges`, '"/reports/sample-status-details.php?testType=recency"');
 
 UPDATE `system_config` SET `value` = '5.7.68' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

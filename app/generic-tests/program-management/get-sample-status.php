@@ -1,6 +1,7 @@
 <?php
 
-use App\Utilities\DateUtility;
+use App\Services\SampleStatusDetailsService;
+use App\Utilities\SampleStatusUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -24,60 +25,13 @@ $_POST = _sanitizeInput($request->getParsedBody());
  * of these conditions, so changing a filter moved some charts and left others
  * describing a different population of samples.
  */
-$filters = [];
-$params = [];
-
-if (!empty($_SESSION['facilityMap'])) {
-    $filters[] = " sample.facility_id IN (" . $_SESSION['facilityMap'] . ")";
-}
-if ($labScope = $general->labScopeWhere('sample')) {
-    $filters[] = $labScope;
-}
-if (!$general->isSTSInstance()) {
-    $filters[] = ' sample.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-}
-
-
-if (!empty($_POST['batchCode'])) {
-    $filters[] = ' batch.batch_code = ?';
-    $params[] = (string) $_POST['batchCode'];
-}
-if (!empty($_POST['sampleCollectionDate'])) {
-    [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
-    if ($startDate !== '' && $endDate !== '') {
-        $filters[] = " DATE(sample.sample_collection_date) BETWEEN ? AND ?";
-        $params[] = $startDate;
-        $params[] = $endDate;
-    }
-}
-if (!empty($_POST['sampleReceivedDateAtLab'])) {
-    [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab']);
-    if ($labStartDate !== '' && $labEndDate !== '') {
-        $filters[] = " DATE(sample.sample_received_at_lab_datetime) BETWEEN ? AND ?";
-        $params[] = $labStartDate;
-        $params[] = $labEndDate;
-    }
-}
-if (!empty($_POST['sampleTestedDate'])) {
-    [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate']);
-    if ($testedStartDate !== '' && $testedEndDate !== '') {
-        $filters[] = " DATE(sample.sample_tested_datetime) BETWEEN ? AND ?";
-        $params[] = $testedStartDate;
-        $params[] = $testedEndDate;
-    }
-}
-if (!empty($_POST['sampleType'])) {
-    // This used to read s.sample_id against queries that never joined the
-    // sample type table, so picking a sample type failed with an SQL error.
-    $filters[] = ' sample.specimen_type = ?';
-    $params[] = (int) $_POST['sampleType'];
-}
-if (!empty($_POST['labName'])) {
-    // The test reason chart filtered vl.lab_id against a query that aliased
-    // the form table as c, so picking a testing lab failed with an SQL error.
-    $filters[] = ' sample.lab_id = ?';
-    $params[] = (int) $_POST['labName'];
-}
+/*
+ * The drilldown behind each status slice reads the same conditions, so the
+ * samples it lists are the ones the slice counted.
+ */
+/** @var SampleStatusDetailsService $statusDetails */
+$statusDetails = ContainerRegistry::get(SampleStatusDetailsService::class);
+[$filters, $params] = $statusDetails->conditions('generic-tests', $_POST);
 
 $whereCondition = implode(" AND ", $filters);
 $joins = "JOIN r_sample_status AS status ON status.status_id = sample.result_status
@@ -89,18 +43,6 @@ $tsResult = $db->rawQuery($tsQuery);
 $sampleStatusOverviewContainer = "genericSampleStatusOverviewContainer";
 $samplesVlOverview = "genericSmplesVlOverview";
 $labAverageTat = "genericLabAverageTat";
-
-$sampleStatusColors = [];
-
-$sampleStatusColors[1] = "#dda41b"; // HOLD
-$sampleStatusColors[2] = "#9a1c64"; // LOST
-$sampleStatusColors[3] = "grey"; // Sample Reordered
-$sampleStatusColors[4] = "#d8424d"; // Rejected
-$sampleStatusColors[5] = "black"; // Invalid
-$sampleStatusColors[6] = "#e2d44b"; // Sample Received at lab
-$sampleStatusColors[7] = "#639e11"; // Accepted
-$sampleStatusColors[8] = "#7f22e8"; // Sent to Lab
-$sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 
 $tQuery = "SELECT COUNT(sample.sample_id) as total, status.status_id, status.status_name
         FROM form_generic AS sample
@@ -145,10 +87,10 @@ $tat = $genericTestsService->getTurnaroundTimeSeries(
         var _value = [
             <?php foreach ($tResult as $tRow) {
                 $total += $tRow['total']; ?> {
-                    name: '<?= $tRow['status_name']; ?>',
-                    y: <?= $tRow['total']; ?>,
-                    color: '<?= $sampleStatusColors[$tRow['status_id']]; ?>',
-                    url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode((string) $tRow['status_id']); ?>&d=<?php echo base64_encode((string) $_POST['sampleCollectionDate']); ?>'
+                    name: <?= json_encode(_translate((string) $tRow['status_name']), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>,
+                    y: <?= (int) $tRow['total']; ?>,
+                    color: '<?= SampleStatusUtility::chartColor((int) $tRow['status_id']); ?>',
+                    url: <?= json_encode(SampleStatusDetailsService::pageUrl('generic-tests', (int) $tRow['status_id'], $_POST), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>
                 },
             <?php } ?>
         ];
@@ -160,13 +102,13 @@ $tat = $genericTestsService->getTurnaroundTimeSeries(
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _translate("Samples Status Overview (N = " . $total . ")"); ?>"
+                text: "<?= _jsTranslate("Samples Status Overview"); ?> (N = <?= (int) $total; ?>)"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _translate("Samples"); ?> :<strong>{point.y}</strong>"
+                pointFormat: "<?= _jsTranslate("Samples"); ?>: <strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -210,12 +152,12 @@ $tat = $genericTestsService->getTurnaroundTimeSeries(
                 type: 'line'
             },
             title: {
-                text: "<?php echo _translate("Laboratory Turnaround Time"); ?>"
+                text: "<?= _jsTranslate("Laboratory Turnaround Time"); ?>"
             },
             exporting: {
                 chartOptions: {
                     subtitle: {
-                        text: "<?php echo _translate("Laboratory Turnaround Time"); ?>",
+                        text: "<?= _jsTranslate("Laboratory Turnaround Time"); ?>",
                     }
                 }
             },
@@ -228,7 +170,7 @@ $tat = $genericTestsService->getTurnaroundTimeSeries(
             },
             yAxis: [{
                 title: {
-                    text: "<?php echo _translate("Average TAT in Days"); ?>"
+                    text: "<?= _jsTranslate("Average TAT in Days"); ?>"
                 },
                 labels: {
                     formatter: function () {
@@ -238,7 +180,7 @@ $tat = $genericTestsService->getTurnaroundTimeSeries(
             }, { // Secondary yAxis
                 gridLineWidth: 0,
                 title: {
-                    text: "<?php echo _translate("No. of Tests"); ?>"
+                    text: "<?= _jsTranslate("No. of Tests"); ?>"
                 },
                 labels: {
                     format: '{value}'
@@ -268,7 +210,7 @@ $tat = $genericTestsService->getTurnaroundTimeSeries(
 
 			series: [{
 				type: 'column',
-				name: "<?php echo _translate("No. of Samples Tested", escapeTextOrContext: true); ?>",
+				name: "<?= _jsTranslate("No. of Samples Tested"); ?>",
 				data: [<?php echo implode(",", $tat['samplesTested']); ?>],
 				color: '#7CB5ED',
 				yAxis: 1

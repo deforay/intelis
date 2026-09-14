@@ -23,12 +23,11 @@ if (!SampleStatusDetailsService::canView($req['testType'])) {
 }
 
 $statusName = _translate((string) $details->statusName($req['status']));
-$testName = $req['testType'] === 'recency' ? _translate('Recency') : _translate('VL');
-$heading = $testName . ' ' . _translate('Samples') . ': ' . $statusName;
+$heading = SampleStatusDetailsService::testName($req['testType']) . ' ' . _translate('Samples') . ': ' . $statusName;
 // header.php prints the title without escaping it.
 $title = htmlspecialchars($heading, ENT_QUOTES, 'UTF-8');
 
-$columns = SampleStatusDetailsService::columns($req['status']);
+$columns = SampleStatusDetailsService::columns($req['status'], $req['testType']);
 
 // What the pie was filtered by, named rather than shown as ids.
 $appliedFilters = [];
@@ -46,8 +45,7 @@ if ($f['batchCode'] !== '') {
     $appliedFilters[_translate('Batch Code')] = $f['batchCode'];
 }
 if ((int) $f['sampleType'] > 0) {
-    $row = $db->rawQueryOne("SELECT sample_name FROM r_vl_sample_type WHERE sample_id = ?", [(int) $f['sampleType']]);
-    $appliedFilters[_translate('Sample Type')] = $row['sample_name'] ?? $f['sampleType'];
+    $appliedFilters[_translate('Sample Type')] = $details->sampleTypeName($req['testType'], (int) $f['sampleType']) ?? $f['sampleType'];
 }
 if ((int) $f['labName'] > 0) {
     $row = $db->rawQueryOne("SELECT facility_name FROM facility_details WHERE facility_id = ?", [(int) $f['labName']]);

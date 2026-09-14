@@ -35,6 +35,7 @@ const REPO_DIR = __DIR__ . '/../..';
 const COVERED_FILES = [
     'app/vl/program-management/getHighVlResultDetails.php',
     'app/vl/program-management/getSampleStatus.php',
+    'app/eid/management/getSampleStatus.php',
     'app/reports/get-sample-status-details.php',
     'app/reports/sample-status-details.php',
     'app/vl/program-management/getSampleRejectionReport.php',
@@ -119,7 +120,6 @@ const COVERED_FILES = [
     'app/specimen-referral-manifest/get-manifest-package-code.php',
     'app/facilities/getFacilityDetails.php',
     'app/facilities/facilityExportInExcel.php',
-    'app/dashboard/getVLTestResultStatusDetails.php',
     'app/admin/monitoring/get-sync-status-details.php',
     'app/admin/monitoring/get-api-sync-history-list.php',
     'app/admin/monitoring/get-samplewise-report.php',

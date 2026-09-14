@@ -2,7 +2,6 @@
 
 use App\Utilities\SampleStatusUtility;
 use App\Services\SampleStatusDetailsService;
-use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -48,9 +47,8 @@ $statusDetails = ContainerRegistry::get(SampleStatusDetailsService::class);
 $whereCondition = implode(" AND ", $filters);
 
 $table = "form_vl";
-$highVL = "High Viral Load";
-$lowVL = "Low Viral Load";
-$suppression = "VL Suppression";
+$highVL = _jsTranslate("High Viral Load");
+$lowVL = _jsTranslate("Low Viral Load");
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
@@ -138,13 +136,13 @@ $tat = $vlService->getTurnaroundTimeSeries(
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _translate("Samples Status Overview (N = " . $total . ")"); ?>"
+                text: "<?= _jsTranslate("Samples Status Overview"); ?> (N = <?= (int) $total; ?>)"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _translate("Samples"); ?> :<strong>{point.y}</strong>"
+                pointFormat: "<?= _jsTranslate("Samples"); ?>: <strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -199,13 +197,13 @@ $tat = $vlService->getTurnaroundTimeSeries(
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _translate("VL Suppression (N = " . ($vlSuppressionResult['highVL'] + $vlSuppressionResult['lowVL']) . ")"); ?>"
+                text: "<?= _jsTranslate("VL Suppression"); ?> (N = <?= (int) $vlSuppressionResult['highVL'] + (int) $vlSuppressionResult['lowVL']; ?>)"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _translate("Samples"); ?> :<strong>{point.y}</strong>"
+                pointFormat: "<?= _jsTranslate("Samples"); ?>: <strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -249,12 +247,12 @@ $tat = $vlService->getTurnaroundTimeSeries(
                 type: 'line'
             },
             title: {
-                text: "<?php echo _translate("Laboratory Turnaround Time", escapeTextOrContext: true); ?>"
+                text: "<?= _jsTranslate("Laboratory Turnaround Time"); ?>"
             },
             exporting: {
                 chartOptions: {
                     subtitle: {
-                        text: "<?php echo _translate("Laboratory Turnaround Time", escapeTextOrContext: true); ?>",
+                        text: "<?= _jsTranslate("Laboratory Turnaround Time"); ?>",
                     }
                 },
                 sourceWidth: 1200,
@@ -268,7 +266,7 @@ $tat = $vlService->getTurnaroundTimeSeries(
             },
             yAxis: [{
                 title: {
-                    text: "<?php echo _translate("Average TAT in Days", escapeTextOrContext: true); ?>"
+                    text: "<?= _jsTranslate("Average TAT in Days"); ?>"
                 },
                 labels: {
                     formatter: function () {
@@ -278,7 +276,7 @@ $tat = $vlService->getTurnaroundTimeSeries(
             }, { // Secondary yAxis
                 gridLineWidth: 0,
                 title: {
-                    text: "<?php echo _translate("No. of Tests", escapeTextOrContext: true); ?>"
+                    text: "<?= _jsTranslate("No. of Tests"); ?>"
                 },
                 labels: {
                     format: '{value}'
@@ -308,7 +306,7 @@ $tat = $vlService->getTurnaroundTimeSeries(
 
             series: [{
                 type: 'column',
-                name: "<?php echo _translate("No. of Samples Tested", escapeTextOrContext: true); ?>",
+                name: "<?= _jsTranslate("No. of Samples Tested"); ?>",
                 data: [<?php echo implode(",", $tat['samplesTested']); ?>],
                 color: '#7CB5ED',
                 yAxis: 1

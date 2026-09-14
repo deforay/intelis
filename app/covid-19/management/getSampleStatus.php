@@ -2,6 +2,7 @@
 
 use App\Utilities\SampleCountUtility;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -174,13 +175,13 @@ $testReasonResult = $db->rawQuery($testReasonQuery, $params);
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _translate("Covid-19 Results"); ?>"
+                text: "<?= _jsTranslate("Covid-19 Results"); ?>"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _translate("Samples"); ?> :<strong>{point.y}</strong>"
+                pointFormat: "<?= _jsTranslate("Samples"); ?>: <strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -202,15 +203,15 @@ $testReasonResult = $db->rawQuery($testReasonQuery, $params);
             series: [{
                 colorByPoint: true,
                 data: [{
-                    name: "<?php echo _translate("Positive"); ?>",
+                    name: "<?= _jsTranslate("Positive"); ?>",
                     y: <?php echo (isset($vlSuppressionResult['positiveResult']) && $vlSuppressionResult['positiveResult'] > 0) > 0 ? $vlSuppressionResult['positiveResult'] : 0; ?>
                 },
                 {
-                    name: "<?php echo _translate("Negative"); ?>",
+                    name: "<?= _jsTranslate("Negative"); ?>",
                     y: <?php echo (isset($vlSuppressionResult['negativeResult']) && $vlSuppressionResult['negativeResult'] > 0) > 0 ? $vlSuppressionResult['negativeResult'] : 0; ?>
                 },
                 {
-                    name: "<?php echo _translate("Rejected"); ?>",
+                    name: "<?= _jsTranslate("Rejected"); ?>",
                     y: <?php echo (isset($vlSuppressionResult['rejectedResult']) && $vlSuppressionResult['rejectedResult'] > 0) > 0 ? $vlSuppressionResult['rejectedResult'] : 0; ?>
                 },
                 ]
@@ -225,12 +226,12 @@ $testReasonResult = $db->rawQuery($testReasonQuery, $params);
                 type: 'line'
             },
             title: {
-                text: "<?php echo _translate("COVID-19 Laboratory Turnaround Time"); ?>"
+                text: "<?= _jsTranslate("COVID-19 Laboratory Turnaround Time"); ?>"
             },
             exporting: {
                 chartOptions: {
                     subtitle: {
-                        text: "<?php echo _translate("COVID-19 Laboratory Turnaround Time"); ?>",
+                        text: "<?= _jsTranslate("COVID-19 Laboratory Turnaround Time"); ?>",
                     }
                 }
             },
@@ -243,7 +244,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery, $params);
             },
             yAxis: [{
                 title: {
-                    text: "<?php echo _translate("Average TAT in Days"); ?>"
+                    text: "<?= _jsTranslate("Average TAT in Days"); ?>"
                 },
                 labels: {
                     formatter: function () {
@@ -253,7 +254,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery, $params);
             }, { // Secondary yAxis
                 gridLineWidth: 0,
                 title: {
-                    text: "<?php echo _translate("No. of Tests"); ?>"
+                    text: "<?= _jsTranslate("No. of Tests"); ?>"
                 },
                 labels: {
                     format: '{value}'
@@ -283,7 +284,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery, $params);
 
 			series: [{
 				type: 'column',
-				name: "<?php echo _translate("No. of Samples Tested", escapeTextOrContext: true); ?>",
+				name: "<?= _jsTranslate("No. of Samples Tested"); ?>",
 				data: [<?php echo implode(",", $tat['samplesTested']); ?>],
 				color: '#7CB5ED',
 				yAxis: 1
@@ -308,13 +309,13 @@ $testReasonResult = $db->rawQuery($testReasonQuery, $params);
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _translate("Covid-19 Test Reasons"); ?>"
+                text: "<?= _jsTranslate("Covid-19 Test Reasons"); ?>"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _translate("Test Reasons"); ?> :<strong>{point.y}</strong>"
+                pointFormat: "<?= _jsTranslate("Test Reasons"); ?>: <strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -345,7 +346,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery, $params);
                     <?php
                     foreach ($testReasonResult as $tRow) {
                         ?> {
-                            name: '<?= ($tRow['test_reason_name']); ?>',
+                            name: <?= json_encode((string) $tRow['test_reason_name'], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>,
                             y: <?= ($tRow['total']); ?>,
                             color: '#<?php echo MiscUtility::randomHexColor(); ?>',
                         },
