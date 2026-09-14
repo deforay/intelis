@@ -67,6 +67,28 @@
         return panes.first().attr('id');
     }
 
+    /* A tab is linked by the readable name on its link (data-tab-name, e.g.
+       "sample-rejection"), or by its pane id when it has none. "#tab=" rather
+       than a bare id: a hash naming an element makes the browser scroll to it,
+       which hides the tabs themselves. */
+    function tabName(link) {
+        return link.attr('data-tab-name') || String(link.attr('href')).replace(/^#/, '');
+    }
+
+    function showTabFromHash() {
+        var match = /^#tab=([A-Za-z][\w-]*)$/.exec(window.location.hash);
+        if (!match) {
+            return;
+        }
+        var link = $('a[data-toggle="tab"][data-tab-name="' + match[1] + '"]');
+        if (!link.length) {
+            link = $('a[data-toggle="tab"][href="#' + match[1] + '"]');
+        }
+        if (link.length && activePane() !== String(link.first().attr('href')).replace(/^#/, '')) {
+            link.first().tab('show');
+        }
+    }
+
     /* Builds a tab's table the first time it is looked at. Returns true if this
        call did the building, which also issues the tab's first draw. */
     function ensure(paneId) {
@@ -349,6 +371,9 @@
         /* Wires the page up. Call once from $(document).ready(), after the
            filters have been restored and the tabs registered. */
         start: function () {
+            /* A link can name a tab (vl-clinic-reports.php#tab=sample-rejection). The
+               tab is chosen before anything is built, so only that tab loads. */
+            showTabFromHash();
             var previous = activePane();
 
             $('.filter-panel').on('change', 'select, input, textarea', function () {
@@ -371,7 +396,14 @@
                 shareFilters(previous, current);
                 previous = current;
                 ensure(current);
+                /* Replaced rather than pushed, so Back leaves the page instead
+                   of stepping through every tab looked at. */
+                if (window.history && history.replaceState) {
+                    history.replaceState(null, '', '#tab=' + tabName($(this)));
+                }
             });
+
+            $(window).on('hashchange', showTabFromHash);
 
             ensure(activePane());
         }
