@@ -444,7 +444,7 @@ foreach ($rejectionTypeResult as $type) {
 														<div class="form-group">
 															<label class="control-label" for="noResultIncludeExpired"><?php echo _translate("Include Expired Samples"); ?></label>
 															<select name="noResultIncludeExpired" id="noResultIncludeExpired" class="form-control" title="<?php echo _htmlTranslate('Please choose whether expired samples are counted'); ?>">
-															<option value=""><?php echo _translate("Yes"); ?></option>
+															<option value="yes"><?php echo _translate("Yes"); ?></option>
 															<option value="no"><?php echo _translate("No"); ?></option>
 															</select>
 														</div>
@@ -470,6 +470,7 @@ foreach ($rejectionTypeResult as $type) {
 														<th><?php echo _translate("Child's Name"); ?></th>
 														<?php } ?>
 														<th><?php echo _translate("Sample Collection Date"); ?></th>
+														<th><?php echo _translate("Sample Received at Testing Lab"); ?></th>
 														<th><?php echo _translate("Testing Lab Name"); ?></th>
 														<th><?php echo _translate("Sample Status"); ?></th>
 														<th><?php echo _translate("Implementing Partner"); ?></th>
@@ -1027,10 +1028,13 @@ foreach ($rejectionTypeResult as $type) {
 				},
 				{
 					"sClass": "center"
+				},
+				{
+					"sClass": "center"
 				}
 			],
 			"aaSorting": [
-				[<?= ($general->isStandaloneInstance()) ? 4 : 5; ?>, "desc"]
+				[<?= (($general->isStandaloneInstance()) ? 4 : 5) - ($formId == COUNTRY\DRC ? 1 : 0); ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

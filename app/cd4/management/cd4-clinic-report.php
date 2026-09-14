@@ -421,6 +421,7 @@ $state = $geolocationService->getProvinces("yes");
 														<th><?php echo _translate("Patient ID"); ?></th>
 														<th><?php echo _translate("Patient's Name"); ?></th>
 														<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
+														<th><?php echo _translate("Sample Received at Testing Lab"); ?></th>
 														<th><?php echo _translate("Testing Lab Name"); ?></th>
 														<th><?php echo _translate("Sample Status"); ?></th>
 
@@ -877,6 +878,9 @@ $state = $geolocationService->getProvinces("yes");
 						"sClass": "center"
 					},
 				<?php } ?> {
+					"sClass": "center"
+				},
+				{
 					"sClass": "center"
 				},
 				{

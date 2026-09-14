@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -21,7 +22,7 @@ $key = (string) $general->getGlobalConfig('key');
 
 if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) !== "") {
 
-     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status", "Implementing Partner"];
+     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Sample Received at Testing Lab", "Lab Name", "Sample Status", "Implementing Partner"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
@@ -63,6 +64,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
                $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
           }
           $row[] = $sampleCollectionDate;
+          $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
           $row[] = ($aRow['labName']);
           $row[] = ($aRow['status_name']);
           $row[] = $aRow['i_partner_name'];
