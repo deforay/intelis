@@ -37057,3 +37057,224 @@ msgstr "Détail par établissement"
 #: app/reports/_sample-testing-report.php:37
 msgid "No samples were collected in the selected period for these filters."
 msgstr "Aucun échantillon prélevé sur la période sélectionnée pour ces filtres."
+
+#: app/reports/_patient-timeline-tab.php:82
+#, php-format
+msgid "%s months ago"
+msgstr "il y a %s mois"
+
+#: app/reports/_patient-timeline-tab.php:83
+#, php-format
+msgid "%s of %s viral load results suppressed"
+msgstr "%s résultats de charge virale sur %s indétectables"
+
+#: app/reports/_patient-timeline-tab.php:91
+#, php-format
+msgid "%s samples awaiting a result, oldest collected %s"
+msgstr "%s échantillons en attente de résultat, le plus ancien prélevé le %s"
+
+#: app/reports/_patient-timeline-tab.php:93
+#, php-format
+msgid "%s samples rejected"
+msgstr "%s échantillons rejetés"
+
+#: app/reports/_patient-timeline-tab.php:43
+#, php-format
+msgid "%s years on %s"
+msgstr "%s ans au %s"
+
+#: app/reports/_patient-timeline-tab.php:92
+#, php-format
+msgid "1 sample awaiting a result, collected %s"
+msgstr "1 échantillon en attente de résultat, prélevé le %s"
+
+#: app/reports/_patient-timeline-tab.php:94
+msgid "1 sample rejected"
+msgstr "1 échantillon rejeté"
+
+#: app/reports/_patient-timeline-tab.php:50
+msgid "All Tests Over Time"
+msgstr "Tous les tests dans le temps"
+
+#: app/reports/_patient-timeline-tab.php:49
+msgid "Also recorded as"
+msgstr "Également enregistré sous"
+
+#: app/reports/_patient-timeline-tab.php:67
+msgid "Awaiting result"
+msgstr "En attente de résultat"
+
+#: app/reports/_patient-timeline-tab.php:36
+msgid "Back to search results"
+msgstr "Retour aux résultats de recherche"
+
+#: app/reports/_patient-timeline-tab.php:56
+msgid "Below detection"
+msgstr "Sous le seuil de détection"
+
+#: app/reports/_patient-timeline-tab.php:52
+msgid "CD4 Trend"
+msgstr "Évolution des CD4"
+
+#: app/reports/_patient-timeline-tab.php:20
+msgid "Custom Test"
+msgstr "Test personnalisé"
+
+#: app/reports/_patient-timeline-tab.php:90
+#, php-format
+msgid "Early Infant Diagnosis result was positive on %s"
+msgstr "Résultat du Diagnostic Précoce du Nourrisson positif le %s"
+
+#: app/reports/_patient-timeline-tab.php:73
+msgid "Failed or Invalid"
+msgstr "Échec ou invalide"
+
+#: app/reports/_patient-timeline-tab.php:45
+msgid "First Sample"
+msgstr "Premier échantillon"
+
+#: app/reports/_patient-timeline-tab.php:46
+msgid "Last Sample"
+msgstr "Dernier échantillon"
+
+#: app/reports/_patient-timeline-tab.php:48
+#, php-format
+msgid "Last sample %s"
+msgstr "Dernier échantillon le %s"
+
+#: app/reports/_patient-timeline-tab.php:85
+msgid "Last two viral load results were at or above the threshold"
+msgstr "Les deux derniers résultats de charge virale sont au-dessus du seuil ou égaux au seuil"
+
+#: app/reports/_patient-timeline-tab.php:88
+msgid "Latest CD4"
+msgstr "Dernier CD4"
+
+#: app/reports/_patient-timeline-tab.php:89
+#, php-format
+msgid "Latest CD4 below %s cells/mm³"
+msgstr "Dernier CD4 inférieur à %s cellules/mm³"
+
+#: app/reports/_patient-timeline-tab.php:79
+msgid "Latest Viral Load"
+msgstr "Dernière charge virale"
+
+#: app/reports/_patient-timeline-tab.php:32
+msgid "Loading patient history..."
+msgstr "Chargement de l'historique du patient..."
+
+#: app/reports/_patient-timeline-tab.php:38
+msgid "Name not recorded"
+msgstr "Nom non renseigné"
+
+#: app/reports/_patient-timeline-tab.php:72
+msgid "Needs Attention"
+msgstr "À surveiller"
+
+#: app/reports/_patient-timeline-tab.php:33
+msgid "No patients match this search."
+msgstr "Aucun patient ne correspond à cette recherche."
+
+#: app/reports/_patient-timeline-tab.php:84
+#, php-format
+msgid "No viral load result in the last %s months"
+msgstr "Aucun résultat de charge virale au cours des %s derniers mois"
+
+#: app/reports/_patient-timeline-tab.php:71
+msgid "Normal / Suppressed / Negative"
+msgstr "Normal / Indétectable / Négatif"
+
+#: app/reports/_patient-timeline-tab.php:28
+msgid "Patient ID, ART number, child ID or name"
+msgstr "ID patient, numéro ART, ID de l'enfant ou nom"
+
+#: app/reports/_patient-timeline-tab.php:96
+#, php-format
+msgid "Records under this ID carry different %s: %s. Check that they belong to one patient."
+msgstr "Les dossiers sous cet ID présentent plusieurs %s : %s. Vérifier qu'ils concernent un seul patient."
+
+#: app/reports/_patient-timeline-tab.php:58
+#, php-format
+msgid "Result in %s days"
+msgstr "Résultat en %s jours"
+
+#: app/reports/_patient-timeline-tab.php:59
+msgid "Result in 1 day"
+msgstr "Résultat en 1 jour"
+
+#: app/reports/_patient-timeline-tab.php:60
+msgid "Result the same day"
+msgstr "Résultat le jour même"
+
+#: app/reports/_patient-timeline-tab.php:109
+msgid "Search patients"
+msgstr "Rechercher des patients"
+
+#: app/reports/_patient-timeline-tab.php:31
+msgid "Searching..."
+msgstr "Recherche en cours..."
+
+#: app/reports/_patient-timeline-tab.php:34
+#, php-format
+msgid "Showing the %s most recent matches. Type more of the ID or name to narrow the list."
+msgstr "Affichage des %s correspondances les plus récentes. Saisir davantage de l'ID ou du nom pour affiner la liste."
+
+#: app/reports/_patient-timeline-tab.php:57
+msgid "Test History"
+msgstr "Historique des tests"
+
+#: app/reports/_patient-timeline-tab.php:55
+#, php-format
+msgid "Threshold (%s)"
+msgstr "Seuil (%s)"
+
+#: app/reports/_patient-timeline-tab.php:29
+msgid "Type at least 2 characters. Records are matched across every test type by patient identifier."
+msgstr "Saisir au moins 2 caractères. Les dossiers sont rapprochés entre tous les types de test par l'identifiant du patient."
+
+#: app/reports/_patient-timeline-tab.php:35
+msgid "Unable to load the patient history right now"
+msgstr "Impossible de charger l'historique du patient pour le moment"
+
+#: app/reports/_patient-timeline-tab.php:51
+msgid "Viral Load Trend"
+msgstr "Évolution de la charge virale"
+
+#: app/reports/_patient-timeline-tab.php:87
+msgid "Viral load back below the threshold after a high result"
+msgstr "Charge virale revenue sous le seuil après un résultat élevé"
+
+#: app/reports/_patient-timeline-tab.php:86
+msgid "Viral load rose above the threshold after a suppressed result"
+msgstr "Charge virale passée au-dessus du seuil après un résultat indétectable"
+
+#: app/reports/_patient-timeline-tab.php:54
+msgid "cells/mm³"
+msgstr "cellules/mm³"
+
+#: app/reports/_patient-timeline-tab.php:99
+msgid "dates of birth"
+msgstr "dates de naissance"
+
+#: app/reports/_patient-timeline-tab.php:95
+#, php-format
+msgid "most recently for: %s"
+msgstr "la dernière fois pour : %s"
+
+#: app/reports/_patient-timeline-tab.php:97
+msgid "names"
+msgstr "noms"
+
+#: app/reports/_patient-timeline-tab.php:98
+msgid "sexes"
+msgstr "sexes"
+
+#: app/reports/_patient-timeline-tab.php:61
+#, php-format
+msgid "Open for %s days since collection"
+msgstr "En attente depuis %s jours après le prélèvement"
+
+#: app/reports/_patient-timeline-tab.php:62
+#, php-format
+msgid "Open for %s months since collection"
+msgstr "En attente depuis %s mois après le prélèvement"
