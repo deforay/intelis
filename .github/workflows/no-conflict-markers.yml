@@ -5,10 +5,15 @@ on:
   pull_request:
   workflow_dispatch:
 
+# No token scopes by default; each job grants itself only what it needs.
+permissions: {}
+
 jobs:
   check:
     name: Check for conflict markers
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -32,6 +37,8 @@ jobs:
   di-container:
     name: DI container compiles
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -69,6 +76,8 @@ jobs:
   interface-api-tests:
     name: Interface API tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -127,6 +136,8 @@ jobs:
   php-syntax:
     name: Every PHP file parses
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -156,6 +167,8 @@ jobs:
   fresh-install:
     name: Fresh install migrates
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v7

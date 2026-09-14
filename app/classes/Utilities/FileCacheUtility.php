@@ -120,6 +120,20 @@ class FileCacheUtility
     }
 
     /**
+     * Add owner bits to a stuck entry so this process can remove it, keeping
+     * every group/other bit it already has. chmod only succeeds for the owner
+     * (or root, which needs no bits to unlink), so owner bits are all a retry
+     * can use; widening group or other access would only outlive a failed retry.
+     */
+    private function grantOwner(string $path, int $ownerBits): void
+    {
+        $perms = @fileperms($path);
+        if ($perms !== false) {
+            @chmod($path, ($perms & 07777) | $ownerBits);
+        }
+    }
+
+    /**
      * Best-effort recursive removal of the on-disk cache. Returns true unless
      * an entry that existed when the sweep reached it genuinely refused to go
      * (typically foreign-owned files this process cannot unlink).
@@ -155,7 +169,7 @@ class FileCacheUtility
                     if (@rmdir($path) || !is_dir($path)) {
                         continue;
                     }
-                    @chmod($path, 0775);
+                    $this->grantOwner($path, 0700);
                     // A directory that still won't go is only interesting if we
                     // could not look inside it; otherwise it is either empty and
                     // racing a concurrent request, or its surviving files are
@@ -174,8 +188,8 @@ class FileCacheUtility
                 // modes on files about to be deleted. Note unlink needs write on
                 // the PARENT directory, not on the file; some Symfony shards
                 // land mode 700.
-                @chmod(dirname($path), 0775);
-                @chmod($path, 0664);
+                $this->grantOwner(dirname($path), 0700);
+                $this->grantOwner($path, 0600);
                 if (!@unlink($path) && file_exists($path)) {
                     $stuck[] = $path;
                 }
