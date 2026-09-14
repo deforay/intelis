@@ -110,7 +110,7 @@ try {
                 $created++;
                 continue;
             }
-            if (!MiscUtility::makeDirectory($dir, 0775)) {
+            if (!MiscUtility::makeDirectory($dir, 0770)) {
                 $problems[] = "could not create $dir";
                 continue;
             }
@@ -122,8 +122,13 @@ try {
             continue;
         }
 
-        // Group-writable so the CLI user and www-data can both write.
-        @chmod($dir, 0775);
+        // Group-writable so the CLI user and www-data can both write. Additive,
+        // like scripts/shared-functions.sh::set_permissions (u+rwX,g+rwX):
+        // "other" keeps whatever it had and is never granted anything here.
+        $perms = @fileperms($dir);
+        if ($perms !== false) {
+            @chmod($dir, ($perms & 07777) | 0770);
+        }
 
         // We are (usually) root here, so hand ownership to user:www-data.
         if ($isRoot) {

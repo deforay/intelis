@@ -17,8 +17,8 @@ on:
         type: boolean
         default: false
 
-permissions:
-  contents: write
+# No token scopes by default; the job grants itself only what it needs.
+permissions: {}
 
 concurrency:
   group: vendor-${{ github.ref }}
@@ -28,6 +28,8 @@ jobs:
   build:
     name: Build Vendor Package
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       PHP_VERSION: '8.4'
       PACKAGE_NAME: 'vendor.tar.gz'

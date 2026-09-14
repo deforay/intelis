@@ -34,8 +34,8 @@ on:
         required: false
         type: string
 
-permissions:
-  contents: write
+# No token scopes by default; the job grants itself only what it needs.
+permissions: {}
 
 # Serialized: two runs finishing at once must not race to move the same ref.
 concurrency:
@@ -46,6 +46,8 @@ jobs:
   advance:
     name: Advance stable
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     if: >-
       github.event_name == 'workflow_dispatch' ||
       github.event.workflow_run.conclusion == 'success'

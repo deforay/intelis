@@ -128,7 +128,7 @@ try {
 
         $extension = MiscUtility::getFileExtension($sanitizedSignFile->getClientFilename());
 
-        $imageName = "usign-" . htmlspecialchars((string) $data['user_id']) . "." . $extension;
+        $imageName = "usign-" . preg_replace('/[^A-Za-z0-9_-]/', '', (string) $data['user_id']) . "." . $extension;
 
         $signatureImagePath = realpath($signatureImagePath) . DIRECTORY_SEPARATOR . $imageName;
 
@@ -147,14 +147,25 @@ try {
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
         MiscUtility::makeDirectory($signatureImagePath);
 
-        $signatureImagePath = realpath($signatureImagePath) . DIRECTORY_SEPARATOR . basename((string) $post['signature_image_filename']);
-        file_put_contents($signatureImagePath, base64_decode((string) $post['signature_image_content']));
+        // Never trust the client filename: it picked the name and extension of a
+        // file written into a web-served folder, and an invalid upload was left
+        // behind. Build the name server-side and stage it until it validates.
+        $extension = MiscUtility::getFileExtension((string) $post['signature_image_filename']);
+        $bytes = base64_decode((string) $post['signature_image_content'], true);
+        if (in_array($extension, ['png', 'jpg', 'jpeg', 'gif'], true) && !empty($bytes)) {
+            $imageName = "usign-" . preg_replace('/[^A-Za-z0-9_-]/', '', (string) $data['user_id']) . "." . $extension;
+            $signatureImagePath = realpath($signatureImagePath) . DIRECTORY_SEPARATOR . $imageName;
+            $stagedPath = $signatureImagePath . '.incoming';
+            file_put_contents($stagedPath, $bytes);
 
-        if (MiscUtility::isImageValid($signatureImagePath)) {
-            $resizeObj = new ImageResizeUtility($signatureImagePath);
-            $resizeObj->resizeToWidth(250);
-            $resizeObj->save($signatureImagePath);
-            $data['user_signature'] = basename($signatureImagePath);
+            if (MiscUtility::isImageValid($stagedPath) && rename($stagedPath, $signatureImagePath)) {
+                $resizeObj = new ImageResizeUtility($signatureImagePath);
+                $resizeObj->resizeToWidth(250);
+                $resizeObj->save($signatureImagePath);
+                $data['user_signature'] = basename($signatureImagePath);
+            } else {
+                MiscUtility::deleteFile($stagedPath);
+            }
         }
     }
     $id = false;

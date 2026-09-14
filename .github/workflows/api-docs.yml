@@ -11,10 +11,9 @@ on:
       - '.github/workflows/api-docs.yml'
   workflow_dispatch:
 
-# Least-privilege default for all jobs; the deploy job grants itself the
-# write scopes it needs (see below). Keeps Pages write off the build job.
-permissions:
-  contents: read
+# No token scopes by default; each job grants itself only what it needs.
+# Keeps Pages write off the build job.
+permissions: {}
 
 concurrency:
   group: pages
@@ -24,6 +23,8 @@ jobs:
   build:
     name: Build Documentation
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v7

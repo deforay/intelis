@@ -117,19 +117,23 @@ class ImageResizeUtility implements Stringable
             define('IMAGETYPE_BMP', 6);
         }
 
-        if ($filename === null || empty($filename) || (!str_starts_with($filename, 'data:') && !is_file($filename))) {
+        if ($filename === null || empty($filename)) {
             throw new SystemException('File does not exist');
+        }
+
+        // createFromString() hands in a data: URI; anything else is a real file
+        // that must live under an app-owned directory.
+        if (!str_starts_with((string) $filename, 'data:')) {
+            $filename = self::resolveAllowedPath((string) $filename);
+            if (!is_file($filename)) {
+                throw new SystemException('File does not exist');
+            }
         }
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $checkWebp = false;
         if (!str_contains(finfo_file($finfo, $filename), 'image')) {
-            if (version_compare(PHP_VERSION, '7.0.0', '<=') && str_contains(file_get_contents($filename), 'WEBPVP8')) {
-                $checkWebp = true;
-                $this->source_type = IMAGETYPE_WEBP;
-            } else {
-                throw new SystemException('Unsupported file type');
-            }
+            throw new SystemException('Unsupported file type');
         } elseif (str_contains(finfo_file($finfo, $filename), 'image/webp')) {
             $checkWebp = true;
             $this->source_type = IMAGETYPE_WEBP;
@@ -198,6 +202,39 @@ class ImageResizeUtility implements Stringable
         $this->resize($this->getSourceWidth(), $this->getSourceHeight());
     }
 
+    /**
+     * Images this class reads or writes are always app-owned: uploads, temporary
+     * downloads, cache, or the system temp dir (getImageAsString). Callers build
+     * these paths from upload names and request ids, so resolve the parent
+     * directory and refuse anything that lands outside those roots.
+     *
+     * @throws SystemException
+     */
+    private static function resolveAllowedPath(string $path): string
+    {
+        $name = basename($path);
+        $dir = str_contains($path, "\0") ? false : realpath(dirname($path));
+        if ($dir === false || $name === '' || $name === '.' || $name === '..') {
+            throw new SystemException('Invalid image path');
+        }
+
+        $roots = [sys_get_temp_dir()];
+        foreach (['UPLOAD_PATH', 'TEMP_PATH', 'CACHE_PATH'] as $constant) {
+            if (defined($constant)) {
+                $roots[] = constant($constant);
+            }
+        }
+
+        foreach ($roots as $root) {
+            $root = realpath($root);
+            if ($root !== false && ($dir === $root || str_starts_with($dir, $root . DIRECTORY_SEPARATOR))) {
+                return $dir . DIRECTORY_SEPARATOR . $name;
+            }
+        }
+
+        throw new SystemException('Invalid image path');
+    }
+
     // http://stackoverflow.com/a/28819866
     public function imageCreateJpegfromExif($filename): GdImage|false
     {
@@ -248,6 +285,11 @@ class ImageResizeUtility implements Stringable
     {
         $image_type = $image_type ?: $this->source_type;
         $quality = is_numeric($quality) ? (int) abs($quality) : null;
+
+        // A null filename streams the image to the browser (see output()).
+        if ($filename !== null) {
+            $filename = self::resolveAllowedPath((string) $filename);
+        }
 
         switch ($image_type) {
             case IMAGETYPE_GIF:
@@ -406,7 +448,7 @@ class ImageResizeUtility implements Stringable
                 break;
         }
 
-        if ($permissions) {
+        if ($permissions && $filename !== null) {
             chmod($filename, $permissions);
         }
 

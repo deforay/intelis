@@ -108,7 +108,7 @@ try {
         if ($sanitizedUserSignature instanceof UploadedFile && $sanitizedUserSignature->getError() === UPLOAD_ERR_OK) {
             MiscUtility::makeDirectory($signatureImagePath);
             $extension = MiscUtility::getFileExtension($sanitizedUserSignature->getClientFilename());
-            $signatureImage = "usign-$userId.$extension";
+            $signatureImage = "usign-" . preg_replace('/[^A-Za-z0-9_-]/', '', (string) $userId) . ".$extension";
             $signatureImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . $signatureImage;
 
             // Move the uploaded file to the desired location
