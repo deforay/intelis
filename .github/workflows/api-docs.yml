@@ -8,6 +8,7 @@ on:
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
+      - 'mkdocs-requirements.txt'
       - '.github/workflows/api-docs.yml'
   workflow_dispatch:
 
@@ -32,10 +33,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install mkdocs-material mkdocs-redirects mkdocs-static-i18n
+        run: "pip install --only-binary :all: -r mkdocs-requirements.txt"
 
       - name: Build site
         run: mkdocs build --strict

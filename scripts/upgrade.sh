@@ -1448,7 +1448,7 @@ done
 # ---------------------------------------------------------------------------
 
 VENDOR_TARBALL_URL="https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz"
-VENDOR_TARBALL_MD5_URL="https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.md5"
+VENDOR_TARBALL_SHA256_URL="https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.sha256"
 
 # MASTER_GIT_URL, MASTER_TARBALL_URL, INTELIS_SRC_DIR (the persistent shallow
 # mirror), run_git, and fetch_master_tree now live in shared-functions.sh so
@@ -1502,7 +1502,7 @@ prepare_phase() {
     local master_tar="${staging_dir}/master.tar.gz"
     local master_extract_dir="${staging_dir}/intelis-master"
     local vendor_tar="${staging_dir}/vendor.tar.gz"
-    local vendor_md5="${staging_dir}/vendor.tar.gz.md5"
+    local vendor_sha256="${staging_dir}/vendor.tar.gz.sha256"
     local vendor_extract_dir="${staging_dir}/vendor"
     # The vendor worker runs in a backgrounded subshell, so it hands its
     # download time back through a file rather than a variable. Splitting the
@@ -1534,23 +1534,23 @@ prepare_phase() {
             echo "vendor: already extracted, skipping"
             return 0
         fi
-        if [ ! -f "$vendor_tar" ] || [ ! -f "$vendor_md5" ]; then
+        if [ ! -f "$vendor_tar" ] || [ ! -f "$vendor_sha256" ]; then
             local _dl_started
             _dl_started=$(date +%s)
             echo "vendor: downloading tarball"
             download_file "$vendor_tar" "$VENDOR_TARBALL_URL" "vendor: downloading tarball"
             echo "vendor: downloading checksum"
-            download_file "$vendor_md5" "$VENDOR_TARBALL_MD5_URL" "vendor: downloading checksum"
+            download_file "$vendor_sha256" "$VENDOR_TARBALL_SHA256_URL" "vendor: downloading checksum"
             echo $(( $(date +%s) - _dl_started )) > "$vendor_dl_secs_file"
         else
             echo "vendor: tarball + checksum already present"
         fi
         echo "vendor: verifying checksum"
-        # Normalise filename in md5 file so md5sum finds it alongside the tarball.
+        # Compare the hash alone: the published file names the tarball without the staging path.
         local expected
-        expected=$(awk '{print $1}' "$vendor_md5")
+        expected=$(awk '{print $1}' "$vendor_sha256")
         local actual
-        actual=$(md5sum "$vendor_tar" | awk '{print $1}')
+        actual=$(sha256sum "$vendor_tar" | awk '{print $1}')
         if [ "$expected" != "$actual" ]; then
             echo "vendor: checksum mismatch (expected $expected, got $actual)" >&2
             return 1
@@ -2577,7 +2577,7 @@ fi
 # (e.g. an older in-flight run crashed before cleanup).
 [ -f master.tar.gz ] && rm master.tar.gz
 [ -f "/tmp/vendor.tar.gz" ] && rm /tmp/vendor.tar.gz
-[ -f "/tmp/vendor.tar.gz.md5" ] && rm /tmp/vendor.tar.gz.md5
+[ -f "/tmp/vendor.tar.gz.sha256" ] && rm /tmp/vendor.tar.gz.sha256
 true  # absorb nonzero exit from the tests above
 
 # Reload Apache so the code that just landed is what gets served (mod_php, and

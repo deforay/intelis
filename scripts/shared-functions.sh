@@ -2161,11 +2161,11 @@ ensure_composer() {
     if ! command -v composer >/dev/null 2>&1; then
     print warning "Composer still missing after switch-php; installing verified global composer…"
 
-    sig="$(curl -fsSL https://composer.github.io/installer.sig)" || {
+    sig="$(curl -fsSL --proto =https https://composer.github.io/installer.sig)" || {
         print error "Failed to fetch Composer installer signature."; exit 1; }
 
     installer="$(mktemp)"
-    curl -fsSL https://getcomposer.org/installer -o "$installer" || {
+    curl -fsSL --proto =https --proto-redir =https https://getcomposer.org/installer -o "$installer" || {
         print error "Failed to download Composer installer."; rm -f "$installer"; exit 1; }
 
     actual="$(php -r "echo hash_file('sha384', '${installer}');")"
@@ -2657,7 +2657,7 @@ ensure_gum() {
 
     if [ ! -s "$keyring" ]; then
         mkdir -p /etc/apt/keyrings || return 1
-        if ! curl -fsSL --max-time 20 https://repo.charm.sh/apt/gpg.key 2>/dev/null |
+        if ! curl -fsSL --proto =https --max-time 20 https://repo.charm.sh/apt/gpg.key 2>/dev/null |
             gpg --dearmor -o "$keyring" 2>/dev/null; then
             rm -f "$keyring"
             print info "Continuing with plain prompts."

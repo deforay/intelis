@@ -24,9 +24,9 @@ printf "\033[1;96mℹ️ Info:\033[0m Choose option 2 (a shared folder on a Wind
 if [ ! -f "$UNIFIED" ]; then
   echo "Downloading remote-backup.sh..."
   if command -v wget >/dev/null 2>&1; then
-    wget -q -O "$UNIFIED" "$UNIFIED_URL" || { echo "Could not download remote-backup.sh. Fetch it by hand from $UNIFIED_URL"; exit 1; }
+    wget -q --max-redirect=0 -O "$UNIFIED" "$UNIFIED_URL" || { echo "Could not download remote-backup.sh. Fetch it by hand from $UNIFIED_URL"; exit 1; }
   elif command -v curl >/dev/null 2>&1; then
-    curl -fsSL -o "$UNIFIED" "$UNIFIED_URL" || { echo "Could not download remote-backup.sh. Fetch it by hand from $UNIFIED_URL"; exit 1; }
+    curl -fsSL --proto =https -o "$UNIFIED" "$UNIFIED_URL" || { echo "Could not download remote-backup.sh. Fetch it by hand from $UNIFIED_URL"; exit 1; }
   else
     echo "Neither wget nor curl is installed. Download $UNIFIED_URL by hand and run it."
     exit 1

@@ -48,9 +48,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # workflow_run's branch filter matches the head branch NAME, so a fork PR
+    # from its own `master` would also arrive here. Only a push to this
+    # repository's master is a candidate; the ancestry check below is the
+    # second lock on the same door.
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
     steps:
       - name: Checkout the commit that passed
         uses: actions/checkout@v7
