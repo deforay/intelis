@@ -89,12 +89,12 @@ $state = $geolocationService->getProvinces("yes");
 							<div class="widget-content">
 								<div class="bs bs-tabs">
 									<ul id="myTab" class="nav nav-tabs">
-										<li class="active"><a href="#highViralLoadReport" data-toggle="tab"><?php echo _translate("Positivity Report"); ?></a></li>
-										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _translate("Sample Rejection Report"); ?></a></li>
-										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _translate("Results Not Available Report"); ?></a></li>
-										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _translate("Data Quality Check"); ?></a></li>
-										<li><a href="#sampleTestingReport" data-toggle="tab"><?php echo _translate("Sample Testing Report"); ?></a></li>
-										<li><a href="#patientTestHistoryFormReport" data-toggle="tab"><?php echo _translate("Patient Test History"); ?></a></li>
+										<li class="active"><a href="#highViralLoadReport" data-toggle="tab" data-tab-name="positivity"><?php echo _translate("Positivity Report"); ?></a></li>
+										<li><a href="#sampleRjtReport" data-toggle="tab" data-tab-name="sample-rejection"><?php echo _translate("Sample Rejection Report"); ?></a></li>
+										<li><a href="#notAvailReport" data-toggle="tab" data-tab-name="results-not-available"><?php echo _translate("Results Not Available Report"); ?></a></li>
+										<li><a href="#incompleteFormReport" data-toggle="tab" data-tab-name="data-quality-check"><?php echo _translate("Data Quality Check"); ?></a></li>
+										<li><a href="#sampleTestingReport" data-toggle="tab" data-tab-name="sample-testing"><?php echo _translate("Sample Testing Report"); ?></a></li>
+										<li><a href="#patientTestHistoryFormReport" data-toggle="tab" data-tab-name="patient-test-history"><?php echo _translate("Patient Test History"); ?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">

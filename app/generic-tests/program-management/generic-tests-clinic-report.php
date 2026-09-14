@@ -47,8 +47,8 @@ $state = $geolocationService->getProvinces("yes");
 							<div class="widget-content">
 								<div class="bs bs-tabs">
 									<ul id="myTab" class="nav nav-tabs">
-										<li class="active"><a href="#sampleTestingReport" data-toggle="tab"><?php echo _translate("Sample Testing Report"); ?></a></li>
-										<li><a href="#patientTestHistoryFormReport" data-toggle="tab"><?php echo _translate("Patient Test History"); ?></a></li>
+										<li class="active"><a href="#sampleTestingReport" data-toggle="tab" data-tab-name="sample-testing"><?php echo _translate("Sample Testing Report"); ?></a></li>
+										<li><a href="#patientTestHistoryFormReport" data-toggle="tab" data-tab-name="patient-test-history"><?php echo _translate("Patient Test History"); ?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="sampleTestingReport">

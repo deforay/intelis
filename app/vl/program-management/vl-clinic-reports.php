@@ -144,25 +144,25 @@ $implementingPartnerList = $general->getImplementationPartners();
 								<div class="bs bs-tabs">
 									<ul id="myTab" class="nav nav-tabs">
 										<li class="active"><a href="#highViralLoadReport"
-												data-toggle="tab"><?php echo _translate("High Viral Load"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="high-viral-load"><?php echo _translate("High Viral Load"); ?><br><?php echo _translate("Report"); ?></a>
 										</li>
 										<li><a href="#highVlVirologicFailureReport"
-												data-toggle="tab"><?php echo _translate("High VL and Virologic Failure"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="high-viral-load-virologic-failure"><?php echo _translate("High VL and Virologic Failure"); ?><br><?php echo _translate("Report"); ?></a>
 										</li>
 										<li><a href="#sampleRjtReport"
-												data-toggle="tab"><?php echo _translate("Sample Rejection"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="sample-rejection"><?php echo _translate("Sample Rejection"); ?><br><?php echo _translate("Report"); ?></a>
 										</li>
 										<li><a href="#notAvailReport"
-												data-toggle="tab"><?php echo _translate("Results Not Available"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="results-not-available"><?php echo _translate("Results Not Available"); ?><br><?php echo _translate("Report"); ?></a>
 										</li>
 										<li><a href="#incompleteFormReport"
-												data-toggle="tab"><?php echo _translate("Data Quality Check"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="data-quality-check"><?php echo _translate("Data Quality Check"); ?><br><?php echo _translate("Report"); ?></a>
 										</li>
 										<li><a href="#sampleTestingReport"
-												data-toggle="tab"><?php echo _translate("Sample Testing"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="sample-testing"><?php echo _translate("Sample Testing"); ?><br><?php echo _translate("Report"); ?></a>
 										</li>
 										<li><a href="#patientTestHistoryFormReport"
-												data-toggle="tab"><?php echo _translate("Patient Test History"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="patient-test-history"><?php echo _translate("Patient Test History"); ?><br><?php echo _translate("Report"); ?></a>
 										</li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
