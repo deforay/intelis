@@ -87,7 +87,7 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _htmlTranslate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _htmlTranslate('Search'); ?>" class="filter-search searchBtn btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('stReportFilter');"><span>
 													<?= _translate("Reset"); ?>
 													</span></button>
@@ -119,7 +119,7 @@ $state = $geolocationService->getProvinces("yes");
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													<input type="button" onclick="searchVlRequestData();" value="<?= _htmlTranslate('Search'); ?>" class="btn btn-success btn-sm">
+													<input type="button" onclick="searchVlRequestData();" value="<?= _htmlTranslate('Search'); ?>" class="filter-search btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('patientHistoryFilter');">
 													<span><?= _translate('Reset'); ?></span>
 													</button>

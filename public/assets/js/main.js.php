@@ -918,11 +918,40 @@ $remoteURL = $general->getRemoteURL();
             return $.trim(el.val() || '');
         }
 
-        // Every applied filter is shown as a chip; clicking one opens the panel
-        // on that control. Controls that shape the output rather than the
-        // results (export options, say) carry filter-panel-ignore.
+        // A control can be cleared when "nothing" is a value it can hold: a text
+        // box, a multi-select, or a select with an empty placeholder option.
+        // A select without one (Contact Status: All/...) has no empty state.
+        function clearable(controls) {
+            return controls.toArray().every(function(node) {
+                const el = $(node);
+                if (!el.is('select') || el.prop('multiple')) {
+                    return true;
+                }
+                return el.find('option').filter(function() {
+                    return $.trim($(this).val()) === '';
+                }).length > 0;
+            });
+        }
+
+        function clear(controls) {
+            controls.each(function() {
+                const el = $(this);
+                if (this.tomselect) {
+                    this.tomselect.clear();
+                    return;
+                }
+                el.val(el.is('select[multiple]') ? [] : '').trigger('change');
+            });
+        }
+
+        // Every applied filter, defaults included, is shown as a chip; clicking
+        // one opens the panel on that control. Where the panel has a Search
+        // button to re-run, a clearable filter also gets an x that removes it.
+        // Controls that shape the output rather than the results (export
+        // options, say) carry filter-panel-ignore.
         function refresh(panel) {
             $(panel).each(function() {
+                const canSearch = $(this).find('.filter-search').length > 0;
                 const summary = $(this).find('.filter-panel-summary').first().empty();
                 $(this).find('.filter-panel-body')
                     .find('select, input[type="text"], input[type="number"], textarea')
@@ -934,8 +963,10 @@ $remoteURL = $general->getRemoteURL();
                         // A range in two boxes (.input-pair) is one filter: one
                         // chip on the first box, reading "19 to 89"
                         const pair = el.closest('.input-pair');
+                        let controls = el;
                         if (pair.length) {
                             const boxes = pair.find('input, select');
+                            controls = boxes;
                             if (!boxes.first().is(el)) {
                                 return;
                             }
@@ -947,14 +978,23 @@ $remoteURL = $general->getRemoteURL();
                         if (!label || !value) {
                             return;
                         }
-                        $('<button type="button" class="filter-panel-chip">')
+                        const chip = $('<span class="filter-panel-chip" role="button" tabindex="0">')
                             .attr('title', label + ': ' + value)
                             .append($('<span class="filter-panel-chip-label">').text(label))
                             .append($('<span class="filter-panel-chip-value">').text(value))
                             .data('control', el)
+                            .data('controls', controls)
                             .appendTo(summary);
+                        if (canSearch && clearable(controls)) {
+                            $('<span class="filter-panel-chip-remove" role="button" tabindex="0">&times;</span>')
+                                .attr('title', "<?= _jsTranslate("Remove filter"); ?>")
+                                .appendTo(chip);
+                        }
                     });
-                summary.toggleClass('is-visible', summary.children().length > 0);
+                const count = summary.children().length;
+                summary.toggleClass('is-visible', count > 0);
+                $(this).find('.filter-panel-count').first()
+                    .text(count).toggleClass('is-visible', count > 0);
             });
         }
 
@@ -989,7 +1029,9 @@ $remoteURL = $general->getRemoteURL();
             if (!panel.children('.filter-panel-header').length) {
                 const title = $('<h3 class="box-title">')
                     .append('<em class="fa-solid fa-filter"></em> ')
-                    .append(document.createTextNode("<?= _jsTranslate("Filters"); ?>"));
+                    .append(document.createTextNode("<?= _jsTranslate("Filters"); ?>"))
+                    .append(' ')
+                    .append($('<span class="filter-panel-count">').attr('title', "<?= _jsTranslate("Filters applied"); ?>"));
                 const toggleButton = $('<button type="button" class="btn btn-box-tool filter-panel-toggle"><em class="fa fa-minus"></em></button>')
                     .attr('title', "<?= _jsTranslate("Show or hide filters"); ?>");
                 $('<div class="box-header with-border filter-panel-header">')
@@ -1015,6 +1057,27 @@ $remoteURL = $general->getRemoteURL();
             refresh(panel);
         }
 
+        // Removing a filter re-runs the search, so the results never disagree
+        // with the chips, even when a page's own change handler on the control
+        // throws. The panel stays folded.
+        $(document).on('click', '.filter-panel-chip-remove', function(e) {
+            e.stopPropagation();
+            const chip = $(this).closest('.filter-panel-chip');
+            const panel = chip.closest('.filter-panel');
+            try {
+                clear(chip.data('controls'));
+            } finally {
+                refresh(panel);
+                panel.find('.filter-search').first().trigger('click');
+            }
+        });
+        $(document).on('keydown', '.filter-panel-chip, .filter-panel-chip-remove', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).trigger('click');
+            }
+        });
         $(document).on('click', '.filter-panel-chip', function(e) {
             e.stopPropagation();
             const control = $(this).data('control');

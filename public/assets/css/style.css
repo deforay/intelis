@@ -414,6 +414,34 @@ body.sidebar-collapse .vlsm-sidebar-allbtn {
     gap: 6px;
 }
 
+/* Open, the highlighted controls already show what is applied: the chips give
+   way to a count, and the header keeps one chip row's height so nothing jumps. */
+.filter-panel-header {
+    min-height: 45px;
+}
+
+.filter-panel:not(.filter-panel-collapsed) .filter-panel-summary {
+    display: none;
+}
+
+.filter-panel-count {
+    display: none;
+    min-width: 20px;
+    padding: 1px 7px;
+    border-radius: 10px;
+    background: #3c8dbc;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.filter-panel:not(.filter-panel-collapsed) .filter-panel-count.is-visible {
+    display: inline-block;
+}
+
 /* One applied filter: field name muted, value bold. Clicking opens that field. */
 .filter-panel-chip {
     display: inline-flex;
@@ -447,6 +475,23 @@ body.sidebar-collapse .vlsm-sidebar-allbtn {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.filter-panel-chip-remove {
+    margin: 0 -4px 0 2px;
+    padding: 0 4px;
+    border-radius: 50%;
+    color: #72777c;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 16px;
+}
+
+.filter-panel-chip-remove:hover,
+.filter-panel-chip-remove:focus {
+    background: #c9dbe8;
+    color: #a94442;
+    outline: none;
 }
 
 .filter-panel .filter-actions {

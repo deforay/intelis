@@ -320,8 +320,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 								</strong></td>
 							<td>
 								<select name="status" id="status" class="form-control" multiple="multiple"
-									title="<?php echo _translate('Please choose status'); ?>"
-									onchange="checkSampleCollectionDate();">
+									title="<?php echo _translate('Please choose status'); ?>">
 									<option value="7">
 										<?php echo _translate("Accepted"); ?>
 									</option>
