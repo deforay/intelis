@@ -142,27 +142,27 @@ $implementingPartnerList = $general->getImplementationPartners();
 						<div class="widget">
 							<div class="widget-content">
 								<div class="bs bs-tabs">
-									<ul id="myTab" class="nav nav-tabs">
+									<ul id="myTab" class="nav nav-tabs clinic-tabs">
 										<li class="active"><a href="#highViralLoadReport"
-												data-toggle="tab" data-tab-name="high-viral-load"><?php echo _translate("High Viral Load"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="high-viral-load"><?php echo _translate("High Viral Load"); ?></a>
 										</li>
 										<li><a href="#highVlVirologicFailureReport"
-												data-toggle="tab" data-tab-name="high-viral-load-virologic-failure"><?php echo _translate("High VL and Virologic Failure"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="high-viral-load-virologic-failure"><?php echo _translate("High VL and Virologic Failure"); ?></a>
 										</li>
 										<li><a href="#sampleRjtReport"
-												data-toggle="tab" data-tab-name="sample-rejection"><?php echo _translate("Sample Rejection"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="sample-rejection"><?php echo _translate("Sample Rejection"); ?></a>
 										</li>
 										<li><a href="#notAvailReport"
-												data-toggle="tab" data-tab-name="results-not-available"><?php echo _translate("Results Not Available"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="results-not-available"><?php echo _translate("Results Not Available"); ?></a>
 										</li>
 										<li><a href="#incompleteFormReport"
-												data-toggle="tab" data-tab-name="data-quality-check"><?php echo _translate("Data Quality Check"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="data-quality-check"><?php echo _translate("Data Quality Check"); ?></a>
 										</li>
 										<li><a href="#sampleTestingReport"
-												data-toggle="tab" data-tab-name="sample-testing"><?php echo _translate("Sample Testing"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="sample-testing"><?php echo _translate("Sample Testing"); ?></a>
 										</li>
 										<li><a href="#patientTestHistoryFormReport"
-												data-toggle="tab" data-tab-name="patient-test-history"><?php echo _translate("Patient Test History"); ?><br><?php echo _translate("Report"); ?></a>
+												data-toggle="tab" data-tab-name="patient-test-history"><?php echo _translate("Patient Test History"); ?></a>
 										</li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
@@ -595,11 +595,19 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</div>
 												</div>
 												<div class="box-footer filter-actions">
-													&nbsp;<button onclick="vfVlnsExportInexcel();" value="Search"
+													<button type="button" onclick="vfVlnsExportInexcel();"
 													class="filter-export btn btn-success btn-sm"><em
-													class="fa-solid fa-cloud-arrow-down"></em><span><?php echo _translate(" Generate report"); ?></span></button>
-													&nbsp;<button type="button" class="btn btn-default btn-sm"
-													onclick="resetFilters('vfvlnsfilters');"><span><?php echo _translate("Reset"); ?></span></button>
+													class="fa-solid fa-cloud-arrow-down"></em> <?= _htmlTranslate("Generate report"); ?></button>
+													<button type="button" class="btn btn-default btn-sm"
+													onclick="resetFilters('vfvlnsfilters');"><?= _htmlTranslate("Reset"); ?></button>
+												</div>
+											</div>
+											<!-- This report is a download only; say so, or the empty tab reads as broken. -->
+											<div class="clinic-report-note">
+												<em class="fa-solid fa-file-excel" aria-hidden="true"></em>
+												<div>
+													<strong><?= _htmlTranslate("This report downloads as an Excel file"); ?></strong>
+													<p><?= _htmlTranslate("It is not shown on screen. Set the filters, then choose Generate report."); ?></p>
 												</div>
 											</div>
 										</div>
