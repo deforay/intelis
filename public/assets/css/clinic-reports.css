@@ -71,3 +71,124 @@
     cursor: pointer;
     outline: none;
 }
+
+/* Folder tabs. Each report is its own tab shape, and the open one joins the
+   filter panel below it, so the panel reads as that tab's contents. Stronger
+   than the pages' own `.bs-tabs .nav>li>a` and `#myTab li a` rules. */
+#myTab.clinic-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    /* components-rounded.css gives every .nav-tabs a 10px bottom margin,
+       which opens a gap between the tabs and the folder. */
+    margin: 0;
+    /* No side padding: the first tab's edge lines up with the folder's. */
+    padding: 6px 0 0;
+    border-bottom: 0;
+    /* The baseline the inactive tabs sit on; the open tab paints over it. */
+    box-shadow: inset 0 -1px 0 #d2d6de;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+#myTab.clinic-tabs::before,
+#myTab.clinic-tabs::after {
+    display: none;
+}
+
+#myTab.clinic-tabs > li {
+    float: none;
+    flex: 0 0 auto;
+    margin: 0;
+    /* Tabs sit on the baseline, so the taller open tab rises above the rest. */
+    align-self: flex-end;
+}
+
+/* Closed tabs: pale, borderless and a little shorter. */
+#myTab.clinic-tabs > li > a {
+    margin: 0;
+    padding: 7px 16px;
+    border: 0;
+    border-radius: 6px 6px 0 0;
+    background: #e9edf1;
+    color: #5a6470;
+    font-weight: 500;
+    white-space: nowrap;
+    text-align: center;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+#myTab.clinic-tabs > li > a:hover,
+#myTab.clinic-tabs > li > a:focus {
+    background: #dde3e9;
+    color: #1f2d3d;
+}
+
+/* The open tab stands taller, with a thicker accent, and opens into the
+   folder below it. */
+#myTab.clinic-tabs > li.active > a,
+#myTab.clinic-tabs > li.active > a:hover,
+#myTab.clinic-tabs > li.active > a:focus {
+    padding: 11px 18px 9px;
+    background: #fff;
+    color: #1f2d3d;
+    font-weight: 600;
+    border: 1px solid #d2d6de;
+    border-bottom-color: #fff;
+    box-shadow: inset 0 4px 0 #3c8dbc;
+    cursor: default;
+}
+
+/* The folder: everything in the open tab, filters and results, sits inside
+   one box joined to the tab. */
+.clinic-tabs + .tab-content > .tab-pane {
+    padding: 0 16px 16px;
+    background: #fff;
+    border: 1px solid #d2d6de;
+    border-top: 0;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Inside the folder the filter panel is a section, not a second box. */
+.clinic-tabs + .tab-content > .tab-pane > .filter-panel:first-child {
+    margin: 0 -16px 14px;
+    /* AdminLTE's .box is width:100%, which would keep the negative margins
+       from reaching the folder's edges. */
+    width: auto;
+    border: 0;
+    border-bottom: 1px solid #e4e7ea;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* A tab whose report is a download rather than a table says so, so the empty
+   space under its filters does not read as a page that failed to load. */
+.clinic-report-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-top: 4px;
+    padding: 16px 18px;
+    border: 1px dashed #c9d3dc;
+    border-radius: 6px;
+    background: #f7f9fb;
+    color: #4a5561;
+}
+
+.clinic-report-note > em {
+    flex: 0 0 auto;
+    font-size: 28px;
+    color: #1d7044;
+}
+
+.clinic-report-note strong {
+    display: block;
+    margin-bottom: 2px;
+    color: #1f2d3d;
+    font-size: 15px;
+}
+
+.clinic-report-note p {
+    margin: 0;
+}

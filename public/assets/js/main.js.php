@@ -930,7 +930,20 @@ $remoteURL = $general->getRemoteURL();
                     .each(function() {
                         const el = $(this);
                         const label = labelFor(el);
-                        const value = valueText(el);
+                        let value = valueText(el);
+                        // A range in two boxes (.input-pair) is one filter: one
+                        // chip on the first box, reading "19 to 89"
+                        const pair = el.closest('.input-pair');
+                        if (pair.length) {
+                            const boxes = pair.find('input, select');
+                            if (!boxes.first().is(el)) {
+                                return;
+                            }
+                            const sep = $.trim(pair.find('.input-pair-sep').first().text()) || '-';
+                            value = boxes.map(function() {
+                                return valueText($(this)) || null;
+                            }).get().join(' ' + sep + ' ');
+                        }
                         if (!label || !value) {
                             return;
                         }

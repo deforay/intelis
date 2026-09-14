@@ -35557,6 +35557,30 @@ msgstr "Pourquoi ce résultat n'est-il pas encore parvenu à l'établissement ?"
 msgid "overdue"
 msgstr "en retard"
 
+#: app/cd4/management/cd4-clinic-report.php
+msgid "Positivity"
+msgstr "Positivité"
+
+#: app/vl/requests/vl-requests.php
+msgid "Choose whether to include patient ID and name in the export"
+msgstr "Choisir d'inclure ou non l'identifiant et le nom du patient dans l'exportation"
+
+#: app/vl/program-management/vl-clinic-reports.php
+msgid "Choose whether to include patient name in the export"
+msgstr "Choisir d'inclure ou non le nom du patient dans l'exportation"
+
+#: app/vl/program-management/vl-clinic-reports.php
+msgid "This report downloads as an Excel file"
+msgstr "Ce rapport est téléchargé sous forme de fichier Excel"
+
+#: app/vl/program-management/vl-clinic-reports.php
+msgid "It is not shown on screen. Set the filters, then choose Generate report."
+msgstr "Il ne s'affiche pas à l'écran. Définir les filtres, puis choisir Générer le rapport."
+
+#: app/vl/program-management/vl-clinic-reports.php
+msgid "Generate report"
+msgstr "Générer le rapport"
+
 #~ msgid "Patient Id"
 #~ msgstr "ID Patient"
 

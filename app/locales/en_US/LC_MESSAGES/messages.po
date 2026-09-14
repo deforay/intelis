@@ -17293,3 +17293,27 @@ msgstr ""
 #: app/eid/qa/eid-quality-monitoring.php
 msgid "overdue"
 msgstr ""
+
+#: app/cd4/management/cd4-clinic-report.php
+msgid "Positivity"
+msgstr ""
+
+#: app/vl/requests/vl-requests.php
+msgid "Choose whether to include patient ID and name in the export"
+msgstr ""
+
+#: app/vl/program-management/vl-clinic-reports.php
+msgid "Choose whether to include patient name in the export"
+msgstr ""
+
+#: app/vl/program-management/vl-clinic-reports.php
+msgid "This report downloads as an Excel file"
+msgstr ""
+
+#: app/vl/program-management/vl-clinic-reports.php
+msgid "It is not shown on screen. Set the filters, then choose Generate report."
+msgstr ""
+
+#: app/vl/program-management/vl-clinic-reports.php
+msgid "Generate report"
+msgstr ""
