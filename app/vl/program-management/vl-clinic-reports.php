@@ -342,7 +342,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="patientInfo"><?php echo _translate("Export with Patient Name"); ?></label>
 															<select name="patientInfo" id="patientInfo"
 															class="form-control filter-panel-ignore select2 highViralLoadReportFilter"
-															title="<?php echo _htmlTranslate('Please choose community sample'); ?>">
+															title="<?= _htmlTranslate('Choose whether to include patient name in the export'); ?>">
 															<option value="yes">
 															<?php echo _translate("Yes"); ?>
 															</option>
@@ -797,7 +797,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="patientRejectedInfo"><?php echo _translate("Export with Patient Name"); ?></label>
 															<select name="patientRejectedInfo" id="patientRejectedInfo"
 															class="form-control filter-panel-ignore select2 sampleRjtReportFilter"
-															title="<?php echo _htmlTranslate('Please choose community sample'); ?>">
+															title="<?= _htmlTranslate('Choose whether to include patient name in the export'); ?>">
 															<option value="yes">
 															<?php echo _translate("Yes"); ?>
 															</option>
@@ -1058,7 +1058,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="patientNtAvailInfo"><?php echo _translate("Export with Patient Name"); ?></label>
 															<select name="patientNtAvailInfo" id="patientNtAvailInfo"
 															class="form-control filter-panel-ignore select2 notAvailReportFilter"
-															title="<?php echo _htmlTranslate('Please choose community sample'); ?>">
+															title="<?= _htmlTranslate('Choose whether to include patient name in the export'); ?>">
 															<option value="yes">
 															<?php echo _translate("Yes"); ?>
 															</option>
@@ -1223,7 +1223,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 															<label class="control-label" for="patientVlQualityInfo"><?php echo _translate("Export with Patient Name"); ?></label>
 															<select name="patientVlQualityInfo" id="patientVlQualityInfo"
 															class="form-control filter-panel-ignore select2 incompleteFormReportFilter"
-															title="<?php echo _htmlTranslate('Please choose community sample'); ?>">
+															title="<?= _htmlTranslate('Choose whether to include patient name in the export'); ?>">
 															<option value="yes">
 															<?php echo _translate("Yes"); ?>
 															</option>

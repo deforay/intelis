@@ -122,8 +122,8 @@ $sampleStatusData = $general->getSampleStatus();
 	<section class="content">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="box">
-					<table aria-describedby="table" class="table" aria-hidden="true"
+				<div class="box filter-panel filter-panel-collapsed">
+					<table aria-describedby="table" class="table filter-panel-body" aria-hidden="true"
 						style="margin-left:1%;margin-top:20px;width:100%;margin-bottom: 0px;">
 						<tr>
 							<td style="width: 10%;"><strong>
@@ -141,18 +141,6 @@ $sampleStatusData = $general->getSampleStatus();
 									<?php } ?>
 								</select>
 							</td>
-							<td style="width: 15%;">&nbsp;<input type="button" onclick="searchVlRequestData();"
-									value="<?= _translate('Search'); ?>" class="btn btn-default btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="reset();"><span>
-										<?= _translate('Reset'); ?>
-									</span></button>
-							</td>
-							<td style="width: 25%;"><a class="btn btn-success btn-sm"
-									href="/generic-tests/requests/add-request.php"><em
-										class="fa-solid fa-add"></em>&nbsp;&nbsp;Add Request</a><a
-									class="btn btn-success btn-sm" href="javascript:void(0);"
-									onclick="exportTestRequests();"><em
-										class="fa-solid fa-cloud-arrow-down"></em>&nbsp;&nbsp;Export Requests</a></td>
 						</tr>
 						<tr>
 							<td style="width: 10%;"><strong>
@@ -168,6 +156,20 @@ $sampleStatusData = $general->getSampleStatus();
 							</td>
 						</tr>
 					</table>
+					<div class="filter-actions">
+						<button type="button" onclick="searchVlRequestData();" class="filter-search btn btn-default btn-sm">
+							<?= _htmlTranslate('Search'); ?>
+						</button>
+						<button type="button" class="btn btn-danger btn-sm" onclick="reset();">
+							<?= _htmlTranslate('Reset'); ?>
+						</button>
+						<a class="filter-keep btn btn-success btn-sm pull-right" href="/generic-tests/requests/add-request.php">
+							<em class="fa-solid fa-add"></em> <?= _htmlTranslate("Add Request"); ?>
+						</a>
+						<a class="filter-export btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportTestRequests();">
+							<em class="fa-solid fa-cloud-arrow-down"></em> <?= _htmlTranslate("Export Requests"); ?>
+						</a>
+					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
 						<table class="table pull-right" aria-hidden="true" style="margin-right:5px;">
@@ -556,12 +558,6 @@ $sampleStatusData = $general->getSampleStatus();
 					window.open('/download.php?d=a&f=' + data, '_blank');
 				}
 			});
-	}
-
-
-	function hideAdvanceSearch(hideId, showId) {
-		$("#" + hideId).hide();
-		$("#" + showId).show();
 	}
 
 	<?php if ($general->isLISInstance()) { ?>

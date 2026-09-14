@@ -126,9 +126,9 @@ foreach ($sourceOfRequests as $value => $displayText) {
 	<section class="content">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="box">
-					<table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true"
-						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
+				<div class="box filter-panel filter-panel-collapsed">
+					<table aria-describedby="table" id="advanceFilter" class="table filter-panel-body" aria-hidden="true"
+						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr>
 							<td><strong>
 									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
@@ -444,7 +444,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 								</strong></td>
 							<td>
 								<select name="patientInfo" id="patientInfo" class="form-control"
-									title="<?php echo _translate('Please choose community sample'); ?>"
+									title="<?= _htmlTranslate('Choose whether to include patient ID and name in the export'); ?>"
 									style="width:100%;">
 									<option value="yes">
 										<?php echo _translate("Yes"); ?>
@@ -480,90 +480,36 @@ foreach ($sourceOfRequests as $value => $displayText) {
 								<?= _manifestFilter('manifestCode', 'cd4', 'collection'); ?>
 							</td>
 						</tr>
-
-
-						<tr>
-							<td colspan="2"><input type="button" onclick="searchVlRequestData();"
-									value="<?= _translate('Search'); ?>" class="btn btn-default btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm"
-									onclick="document.location.href = document.location"><span>
-										<?= _translate('Reset'); ?>
-									</span></button>
-								&nbsp;<button class="btn btn-danger btn-sm"
-									onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
-										<?php echo _translate("Hide Advanced Search Options"); ?>
-									</span></button>
-							</td>
-							<td colspan="4">
-								<?php
-								if (_isAllowed("/cd4/requests/cd4-add-request.php") && !$hidesrcofreq) { ?>
-										<a href="/cd4/requests/cd4-add-request.php" class="btn btn-primary btn-sm pull-right">
-											<em class="fa-solid fa-plus"></em>
-											<?php echo _translate("Add CD4 Request Form"); ?>
-										</a>
-								<?php }
-								?>
-								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
-									onclick="$('#showhide').fadeToggle();return false;"><span>
-										<?php echo _translate("Manage Columns"); ?>
-									</span></button>
-								&nbsp;
-								<?php
-								if (_isAllowed("/cd4/requests/export-cd4-requests.php")) {
-									?>
-										<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
-											href="javascript:void(0);" onclick="exportTestRequests();"><em
-												class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
-											<?php echo _translate("Export Excel"); ?>
-										</a>
-								<?php } ?>
-							</td>
-						</tr>
 					</table>
-					<table aria-describedby="table" id="filter" class="table" aria-hidden="true"
-						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
-						<tr>
-							<td>
-
-								<?php
-								if (_isAllowed("/cd4/requests/cd4-add-request.php") && !$hidesrcofreq) { ?>
-										<a href="/cd4/requests/cd4-add-request.php" class="btn btn-primary btn-sm pull-right">
-											<em class="fa-solid fa-plus"></em>
-											<?php echo _translate("Add CD4 Request Form"); ?>
-										</a>
-								<?php }
-								?>
-								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
-									onclick="$('#showhide').fadeToggle();return false;"><span>
-										<?php echo _translate("Manage Columns"); ?>
-									</span></button>
-								<?php if (_isAllowed("/cd4/requests/export-cd4-requests.php")) { ?>
-										&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
-											href="javascript:void(0);" onclick="exportTestRequests();"><em
-												class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
-											<?php echo _translate("Export Excel"); ?>
-										</a>
-								<?php } ?>
-
-								<?php if (!empty($interopConfig['FHIR']['url'])) { ?>
-										&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;"
-											href="javascript:void(0);" onclick="sendEMRDataToFHIR();"><em
-												class="fa-solid fa-paper-plane"></em>
-											<?php echo _translate("EMR/FHIR - SEND RESULTS"); ?>
-										</a>
-										&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;"
-											href="javascript:void(0);" onclick="receiveEMRDataFromFHIR();"><em
-												class="fa-solid fa-download"></em>
-											<?php echo _translate("EMR/FHIR - GET TESTS"); ?>
-										</a>
-								<?php } ?>
-								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
-									onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
-										<?php echo _translate("Show Advanced Search Options"); ?>
-									</span></button>
-							</td>
-						</tr>
-					</table>
+					<div class="filter-actions">
+						<button type="button" onclick="searchVlRequestData();" class="filter-search btn btn-default btn-sm">
+							<?= _htmlTranslate('Search'); ?>
+						</button>
+						<button type="button" class="btn btn-danger btn-sm" onclick="document.location.href = document.location">
+							<?= _htmlTranslate('Reset'); ?>
+						</button>
+						<?php if (_isAllowed("/cd4/requests/cd4-add-request.php") && !$hidesrcofreq) { ?>
+							<a href="/cd4/requests/cd4-add-request.php" class="filter-keep btn btn-primary btn-sm pull-right">
+								<em class="fa-solid fa-plus"></em> <?= _htmlTranslate("Add CD4 Request Form"); ?>
+							</a>
+						<?php } ?>
+						<button type="button" class="filter-keep btn btn-primary btn-sm pull-right" onclick="$('#showhide').fadeToggle();return false;">
+							<?= _htmlTranslate("Manage Columns"); ?>
+						</button>
+						<?php if (_isAllowed("/cd4/requests/export-cd4-requests.php")) { ?>
+							<a class="filter-export btn btn-success btn-sm pull-right" href="javascript:void(0);" onclick="exportTestRequests();">
+								<em class="fa-solid fa-file-excel"></em> <?= _htmlTranslate("Export Excel"); ?>
+							</a>
+						<?php } ?>
+						<?php if (!empty($interopConfig['FHIR']['url'])) { ?>
+							<a class="filter-keep btn btn-warning btn-sm pull-right" href="javascript:void(0);" onclick="sendEMRDataToFHIR();">
+								<em class="fa-solid fa-paper-plane"></em> <?= _htmlTranslate("EMR/FHIR - SEND RESULTS"); ?>
+							</a>
+							<a class="filter-keep btn btn-warning btn-sm pull-right" href="javascript:void(0);" onclick="receiveEMRDataFromFHIR();">
+								<em class="fa-solid fa-download"></em> <?= _htmlTranslate("EMR/FHIR - GET TESTS"); ?>
+							</a>
+						<?php } ?>
+					</div>
 					<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;"
 						id="showhide">
 						<div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;">
@@ -1217,12 +1163,6 @@ foreach ($sourceOfRequests as $value => $displayText) {
 					window.open('/download.php?d=a&f=' + data, '_blank');
 				}
 			});
-	}
-
-
-	function hideAdvanceSearch(hideId, showId) {
-		$("#" + hideId).hide();
-		$("#" + showId).show();
 	}
 
 	<?php if (!empty($remoteURL) && $general->isLISInstance()) { ?>

@@ -83,8 +83,8 @@ $state = $geolocationService->getProvinces("yes");
 		<!-- <pre><?php print_r($arr); ?></pre> -->
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="box" id="filterDiv">
-					<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+				<div class="box filter-panel filter-panel-collapsed" id="filterDiv">
+					<table aria-describedby="table" class="table pageFilters filter-panel-body" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
 							<td>
@@ -185,7 +185,7 @@ $state = $geolocationService->getProvinces("yes");
 							</td>
 							<td><strong><?php echo _translate("Export with Patient ID and Name"); ?>&nbsp;:</strong></td>
 							<td>
-								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
+								<select name="patientInfo" id="patientInfo" class="form-control filter-panel-ignore" title="<?= _htmlTranslate('Choose whether to include patient ID and name in the export'); ?>" style="width:100%;">
 									<option value="yes"><?php echo _translate("Yes"); ?></option>
 									<option value="no"><?php echo _translate("No"); ?></option>
 								</select>
@@ -209,19 +209,21 @@ $state = $geolocationService->getProvinces("yes");
 								<?= _manifestFilter('manifestCode', 'covid19', 'collection'); ?>
 							</td>
 						</tr>
-						<tr>
-							<td colspan="6">
-								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>
-
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Clear Search"); ?></span></button>
-
-								&nbsp;<button class="btn btn-success" type="button" onclick="exportInexcel('<?php echo $reportType; ?>')"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Download"); ?></button>
-
-								&nbsp;<button class="btn btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _translate("Manage Columns"); ?></span></button>
-							</td>
-						</tr>
-
 					</table>
+					<div class="filter-actions">
+						<button type="button" onclick="searchVlRequestData();" class="filter-search btn btn-primary btn-sm"><span>
+								<?= _htmlTranslate("Search"); ?>
+							</span></button>
+						<button type="button" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+								<?= _htmlTranslate("Clear Search"); ?>
+							</span></button>
+						<button type="button" class="filter-export btn btn-sm btn-success" onclick="exportInexcel('<?= htmlspecialchars($reportType, ENT_QUOTES); ?>')"><em class="fa-solid fa-cloud-arrow-down"></em>
+							<?= _htmlTranslate("Download"); ?>
+						</button>
+						<button type="button" class="filter-keep btn btn-sm btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span>
+								<?= _htmlTranslate("Manage Columns"); ?>
+							</span></button>
+					</div>
 					<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="showhide" class="">
 						<div class="row" style="background:#e0e0e0;padding: 15px;margin-top: -25px;">
 							<div class="col-md-12">

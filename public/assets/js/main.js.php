@@ -898,7 +898,7 @@ $remoteURL = $general->getRemoteURL();
                 label = el.prevAll('strong, b, label').first();
             }
             if (!label.length) {
-                const cell = el.closest('td').prev('td');
+                const cell = el.closest('td').prev('td, th');
                 label = cell.find('select, input, textarea').length ? $() : cell;
             }
             return $.trim(label.text()).replace(/\s*:$/, '');

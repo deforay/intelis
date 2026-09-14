@@ -127,9 +127,9 @@ foreach ($sourceOfRequests as $value => $displayText) {
 	<section class="content">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="box">
-					<table aria-describedby="table" id="advanceFilter" class="table pageFilters" aria-hidden="true"
-						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
+				<div class="box filter-panel filter-panel-collapsed">
+					<table aria-describedby="table" id="advanceFilter" class="table pageFilters filter-panel-body" aria-hidden="true"
+						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr>
 							<td><strong>
 									<?php echo _translate("Sample Collection Date"); ?> :
@@ -350,7 +350,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 								</strong></td>
 							<td>
 								<select name="patientInfo" id="patientInfo" class="form-control"
-									title="<?php echo _translate('Please choose community sample'); ?>"
+									title="<?= _htmlTranslate('Choose whether to include patient ID and name in the export'); ?>"
 									style="width:100%;">
 									<option value="yes">
 										<?php echo _translate("Yes"); ?>
@@ -389,85 +389,35 @@ foreach ($sourceOfRequests as $value => $displayText) {
 							</td>
 						</tr>
 
-						<tr>
-							<td colspan="2"><input type="button" onclick="searchVlRequestData();"
-									value="<?php echo _translate("Search"); ?>" class="btn btn-default btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm"
-									onclick="document.location.href = document.location"><span>
-										<?= _translate('Reset'); ?>
-									</span></button>
-								&nbsp;<button class="btn btn-danger btn-sm"
-									onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
-										<?php echo _translate("Hide Advanced Search Options"); ?>
-									</span></button>
-							</td>
-							<td colspan="4">
-								<?php if (_isAllowed("/covid-19/requests/covid-19-add-request.php") && !$hidesrcofreq) { ?>
-									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php"
-										class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
-										<?php echo _translate("Add new Covid-19 Request"); ?>
-									</a>
-									<?php if ($global['vl_form'] == 1 && !$general->isSTSInstance() && !$hidesrcofreq) { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php"
-											class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
-											<?php echo _translate("Bulk Import Covid-19 Request"); ?>
-										</a>
-									<?php }
-									if ($formId == COUNTRY\SOUTH_SUDAN && !$general->isSTSInstance() && !$hidesrcofreq) { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php"
-											class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
-											<?php echo _translate("Quick Add Covid-19 Request"); ?>
-										</a>
-									<?php }
-								}
-								if (_isAllowed("/covid-19/requests/export-covid19-requests.php")) { ?>
-									<a class="btn btn-success btn-sm" href="javascript:void(0);" style=" float: right; "
-										onclick="exportAllCovid19Requests();"><span>
-											<?php echo _translate("Export Requests"); ?>
-										</span></a>
-								<?php } ?>
-							</td>
-						</tr>
 					</table>
-					<table aria-describedby="table" id="filter" class="table" aria-hidden="true"
-						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
-						<tr id="">
-							<td>
-
-								<?php
-								if (_isAllowed("/covid-19/requests/covid-19-add-request.php") && !$hidesrcofreq) { ?>
-									<?php if ($formId == COUNTRY\SOUTH_SUDAN && !$general->isSTSInstance()) { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php"
-											class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
-											<?= _translate("Quick Add Covid-19 Request"); ?>
-										</a>
-									<?php } ?>
-
-									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php"
-										class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
-										<?= _translate("Add new Covid-19 Request"); ?>
-									</a>
-									<?php if ($global['vl_form'] == 1 && !$general->isSTSInstance()) { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php"
-											class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
-											<?= _translate("Bulk Import Covid-19 Requests"); ?>
-										</a>
-									<?php }
-								}
-								if (_isAllowed("/covid-19/requests/export-covid19-requests.php")) { ?>
-									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right"
-										style="margin-right:5px;" onclick="exportAllCovid19Requests();"><span>
-											<?= _translate("Export Requests"); ?>
-										</span></button>
-								<?php } ?>
-								<button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right"
-									style="margin-right:5px;"
-									onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
-										<?= _translate("Show Advanced Search Options"); ?>
-									</span></button>
-							</td>
-						</tr>
-					</table>
+					<div class="filter-actions">
+						<button type="button" onclick="searchVlRequestData();" class="filter-search btn btn-default btn-sm">
+							<?= _htmlTranslate("Search"); ?>
+						</button>
+						<button type="button" class="btn btn-danger btn-sm" onclick="document.location.href = document.location">
+							<?= _htmlTranslate("Reset"); ?>
+						</button>
+						<?php if (_isAllowed("/covid-19/requests/covid-19-add-request.php") && !$hidesrcofreq) { ?>
+							<?php if ($formId == COUNTRY\SOUTH_SUDAN && !$general->isSTSInstance()) { ?>
+								<a href="/covid-19/requests/covid-19-quick-add.php" class="filter-keep btn btn-primary btn-sm pull-right">
+									<em class="fa-solid fa-plus"></em> <?= _htmlTranslate("Quick Add Covid-19 Request"); ?>
+								</a>
+							<?php } ?>
+							<a href="/covid-19/requests/covid-19-add-request.php" class="filter-keep btn btn-primary btn-sm pull-right">
+								<em class="fa-solid fa-plus"></em> <?= _htmlTranslate("Add new Covid-19 Request"); ?>
+							</a>
+							<?php if ($global['vl_form'] == 1 && !$general->isSTSInstance()) { ?>
+								<a href="/covid-19/requests/covid-19-bulk-import-request.php" class="filter-keep btn btn-primary btn-sm pull-right">
+									<em class="fa-solid fa-plus"></em> <?= _htmlTranslate("Bulk Import Covid-19 Requests"); ?>
+								</a>
+							<?php } ?>
+						<?php } ?>
+						<?php if (_isAllowed("/covid-19/requests/export-covid19-requests.php")) { ?>
+							<button type="button" class="filter-export btn btn-success btn-sm pull-right" onclick="exportAllCovid19Requests();">
+								<?= _htmlTranslate("Export Requests"); ?>
+							</button>
+						<?php } ?>
+					</div>
 
 					<!-- /.box-header -->
 					<div class="box-body">
@@ -897,11 +847,6 @@ foreach ($sourceOfRequests as $value => $displayText) {
 		$("#checkedTests").val(selectedTests.join());
 	}
 
-
-	function hideAdvanceSearch(hideId, showId) {
-		$("#" + hideId).hide();
-		$("#" + showId).show();
-	}
 
 	<?php if ($general->isLISInstance()) { ?>
 		let remoteURL = '<?= $general->getRemoteURL(); ?>';
