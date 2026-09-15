@@ -49,6 +49,7 @@ $state = $geolocationService->getProvinces("yes");
 									<ul id="myTab" class="nav nav-tabs clinic-tabs">
 										<li class="active"><a href="#sampleTestingReport" data-toggle="tab" data-tab-name="sample-testing"><?php echo _translate("Sample Testing"); ?></a></li>
 										<li><a href="#patientTestHistoryFormReport" data-toggle="tab" data-tab-name="patient-test-history"><?php echo _translate("Patient Test History"); ?></a></li>
+										<li><a href="#dataQualityReport" data-toggle="tab" data-tab-name="data-quality-check"><?php echo _translate("Data Quality Check"); ?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="sampleTestingReport">
@@ -98,6 +99,9 @@ $state = $geolocationService->getProvinces("yes");
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
 											<?php require APPLICATION_PATH . '/reports/_patient-timeline-tab.php'; ?>
 										</div>
+										<div class="tab-pane fade" id="dataQualityReport">
+											<?php $dqTestType = 'generic-tests'; require APPLICATION_PATH . '/reports/_data-quality-tab.php'; ?>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -115,6 +119,7 @@ $state = $geolocationService->getProvinces("yes");
 <link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/clinic-reports.css') ?>">
 <script type="text/javascript" src="<?= _asset('/assets/js/clinic-reports.js') ?>"></script>
 <script type="text/javascript" src="<?= _asset('/assets/js/patient-timeline.js') ?>"></script>
+<script type="text/javascript" src="<?= _asset('/assets/js/data-quality.js') ?>"></script>
 <script type="text/javascript">
 	let searchExecuted = false;
 	$(document).ready(function() {

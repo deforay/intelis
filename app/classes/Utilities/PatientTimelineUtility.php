@@ -31,81 +31,6 @@ final class PatientTimelineUtility
     public const CD4_LOW = 200;
 
     /**
-     * Per test type: the alias, the patient columns and how to read a result.
-     * Only types whose clinic report the user can open are ever queried.
-     */
-    private const TYPES = [
-        'vl' => [
-            'alias' => 'vl', 'id' => 'patient_art_no', 'pk' => 'vl_sample_id',
-            'first' => 'patient_first_name', 'middle' => 'patient_middle_name', 'last' => 'patient_last_name',
-            'dob' => 'patient_dob', 'sex' => 'patient_gender', 'age' => 'patient_age_in_years',
-            'sampleTypeTable' => 'r_vl_sample_type', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
-            'page' => '/vl/program-management/vl-clinic-reports.php',
-            'print' => '/vl/results/generate-result-pdf.php',
-        ],
-        'eid' => [
-            'alias' => 'eid', 'id' => 'child_id', 'pk' => 'eid_id',
-            'first' => 'child_name', 'middle' => null, 'last' => 'child_surname',
-            'dob' => 'child_dob', 'sex' => 'child_gender', 'age' => null,
-            'sampleTypeTable' => 'r_eid_sample_type', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
-            'page' => '/eid/management/eid-clinic-reports.php',
-            'print' => '/eid/results/generate-result-pdf.php',
-        ],
-        'covid19' => [
-            'alias' => 'covid19', 'id' => 'patient_id', 'pk' => 'covid19_id',
-            'first' => 'patient_name', 'middle' => null, 'last' => 'patient_surname',
-            'dob' => 'patient_dob', 'sex' => 'patient_gender', 'age' => 'patient_age',
-            'sampleTypeTable' => 'r_covid19_sample_type', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
-            'page' => '/covid-19/management/covid-19-clinic-report.php',
-            'print' => '/covid-19/results/generate-result-pdf.php',
-        ],
-        'hepatitis' => [
-            'alias' => 'hepatitis', 'id' => 'patient_id', 'pk' => 'hepatitis_id',
-            'first' => 'patient_name', 'middle' => null, 'last' => 'patient_surname',
-            'dob' => 'patient_dob', 'sex' => 'patient_gender', 'age' => 'patient_age',
-            'sampleTypeTable' => 'r_hepatitis_sample_type', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
-            'page' => '/hepatitis/management/hepatitis-clinic-report.php',
-            'print' => '/hepatitis/results/generate-result-pdf.php',
-        ],
-        'tb' => [
-            'alias' => 'tb', 'id' => 'patient_id', 'pk' => 'tb_id',
-            'first' => 'patient_name', 'middle' => null, 'last' => 'patient_surname',
-            'dob' => 'patient_dob', 'sex' => 'patient_gender', 'age' => 'patient_age',
-            'sampleTypeTable' => 'r_tb_sample_type', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
-            'page' => '/tb/management/tb-clinic-report.php',
-            'print' => '/tb/results/generate-result-pdf.php',
-        ],
-        'cd4' => [
-            'alias' => 'cd4', 'id' => 'patient_art_no', 'pk' => 'cd4_id',
-            'first' => 'patient_first_name', 'middle' => 'patient_middle_name', 'last' => 'patient_last_name',
-            'dob' => 'patient_dob', 'sex' => 'patient_gender', 'age' => 'patient_age_in_years',
-            'sampleTypeTable' => 'r_cd4_sample_types', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
-            'page' => '/cd4/management/cd4-clinic-report.php',
-            'print' => '/cd4/results/generate-result-pdf.php',
-        ],
-        'generic-tests' => [
-            'alias' => 'generic', 'id' => 'patient_id', 'pk' => 'sample_id',
-            'first' => 'patient_first_name', 'middle' => 'patient_middle_name', 'last' => 'patient_last_name',
-            'dob' => 'patient_dob', 'sex' => 'patient_gender', 'age' => 'patient_age_in_years',
-            'sampleTypeTable' => 'r_generic_sample_types', 'sampleTypeId' => 'sample_type_id', 'sampleTypeName' => 'sample_type_name',
-            'page' => '/generic-tests/program-management/generic-tests-clinic-report.php',
-            'print' => '/generic-tests/results/generate-result-pdf.php',
-        ],
-    ];
-
-    /** Test types this user may see, in display order. @return list<string> */
-    public static function visibleTypes(): array
-    {
-        $types = [];
-        foreach (self::TYPES as $type => $cfg) {
-            if (TestsService::isTestActive($type) && _isAllowed($cfg['page'])) {
-                $types[] = $type;
-            }
-        }
-        return $types;
-    }
-
-    /**
      * Patients whose identifier, or whose names, start with what was typed.
      * Prefix matches only: a leading wildcard scans the whole table.
      *
@@ -121,8 +46,8 @@ final class PatientTimelineUtility
         $prefix = $db->escapeLike($term) . '%';
 
         $patients = [];
-        foreach (self::visibleTypes() as $type) {
-            $cfg = self::TYPES[$type];
+        foreach (ClinicReportUtility::visibleTypes() as $type) {
+            $cfg = ClinicReportUtility::type($type);
             $a = $cfg['alias'];
             $nameCols = array_filter([$cfg['first'], $cfg['middle'], $cfg['last']]);
 
@@ -145,7 +70,7 @@ final class PatientTimelineUtility
                     WHERE $match
                         AND $a.{$cfg['id']} IS NOT NULL AND TRIM($a.{$cfg['id']}) != ''
                         AND IFNULL($a.is_encrypted, 'no') != 'yes'
-                        " . self::scopeWhere($type, $general) . "
+                        " . self::scopeWhere($type, $db, $general) . "
                     GROUP BY TRIM($a.{$cfg['id']})
                     ORDER BY last_collected DESC
                     LIMIT " . self::SEARCH_LIMIT;
@@ -191,8 +116,8 @@ final class PatientTimelineUtility
 
         $vlThreshold = (int) ($general->getGlobalConfig('viral_load_threshold_limit') ?: 1000);
 
-        foreach ($patientId === '' ? [] : self::visibleTypes() as $type) {
-            $cfg = self::TYPES[$type];
+        foreach ($patientId === '' ? [] : ClinicReportUtility::visibleTypes() as $type) {
+            $cfg = ClinicReportUtility::type($type);
             $a = $cfg['alias'];
             $table = TestsService::getTestTableName($type);
             $typeNames[$type] = html_entity_decode((string) TestsService::getTestName($type), ENT_QUOTES);
@@ -240,7 +165,7 @@ final class PatientTimelineUtility
                     $joins
                     WHERE $a.{$cfg['id']} = '" . $db->escape($patientId) . "'
                         AND IFNULL($a.is_encrypted, 'no') != 'yes'
-                        " . self::scopeWhere($type, $general) . "
+                        " . self::scopeWhere($type, $db, $general) . "
                     ORDER BY $a.sample_collection_date DESC
                     LIMIT " . self::TIMELINE_LIMIT;
 
@@ -387,25 +312,9 @@ final class PatientTimelineUtility
     }
 
     /** Access scope shared by the search and the timeline. */
-    private static function scopeWhere(string $type, CommonService $general): string
+    private static function scopeWhere(string $type, DatabaseService $db, CommonService $general): string
     {
-        $a = self::TYPES[$type]['alias'];
-        $where = ' AND ' . SampleCountUtility::countableWhere($a);
-        if ($type === 'vl') {
-            $where .= " AND IFNULL($a.reason_for_vl_testing, 0) != 9999";
-        }
-        if ($general->isSTSInstance()) {
-            if (!empty($_SESSION['facilityMap'])) {
-                $ids = implode(',', array_map('intval', explode(',', (string) $_SESSION['facilityMap'])));
-                $where .= " AND $a.facility_id IN ($ids)";
-            }
-        } else {
-            $where .= " AND $a.result_status != " . \SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-        }
-        if ($labScope = $general->labScopeWhere($a)) {
-            $where .= " AND $labScope";
-        }
-        return $where;
+        return ' AND ' . implode(' AND ', ClinicReportUtility::scopeClauses($type, $db, $general));
     }
 
     private static function fullName(?string ...$parts): string

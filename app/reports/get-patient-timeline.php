@@ -7,6 +7,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\ClinicReportUtility;
 use App\Utilities\PatientTimelineUtility;
 
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -23,7 +24,7 @@ try {
     // AJAX requests bypass the access control layer. Each test type is only
     // read when the user can open that module's clinic report, so a user who
     // can open none of them gets nothing.
-    if (PatientTimelineUtility::visibleTypes() === []) {
+    if (ClinicReportUtility::visibleTypes() === []) {
         throw new SystemException(_translate('You do not have permission to perform this action.'), 403);
     }
 
