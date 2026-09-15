@@ -49,7 +49,7 @@ try {
 
         case 'export':
             $labels = array_map(fn($c) => $c['label'], DataQualityReportUtility::checks($testType));
-            $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Data-Quality-' . $testType . '-' . date('d-M-Y-H-i-s') . '.xlsx';
+            $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Data-Quality-' . $testType . '-' . date('d-M-Y-H-i-s') . '-' . bin2hex(random_bytes(4)) . '.xlsx';
 
             $writer = new Writer();
             $writer->openToFile($fileName);

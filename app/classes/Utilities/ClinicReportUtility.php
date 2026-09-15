@@ -46,7 +46,7 @@ final class ClinicReportUtility
             'alias' => 'eid', 'pk' => 'eid_id', 'id' => 'child_id',
             'first' => 'child_name', 'middle' => null, 'last' => 'child_surname',
             'dob' => 'child_dob', 'sex' => 'child_gender', 'age' => null,
-            'ages' => ['child_age', 'child_age_in_weeks'],
+            'ages' => ['child_age', 'child_age_in_weeks', 'child_age_in_days'],
             'reason' => 'reason_for_eid_test',
             'sampleTypeTable' => 'r_eid_sample_type', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
             'page' => '/eid/management/eid-clinic-reports.php',
