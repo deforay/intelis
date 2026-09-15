@@ -129,8 +129,6 @@ try {
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
      [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
      [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
-     // Kept ahead of the sex filter: its "unreported" clause has no parentheses,
-     // so which clauses come before it still decides what it matches.
      $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
           'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
           'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
@@ -166,7 +164,7 @@ try {
 
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) !== '') {
           if (trim((string) $_POST['gender']) === "unreported") {
-               $sWhere[] = ' vl.patient_gender="unreported" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
+               $sWhere[] = ' (vl.patient_gender="unreported" OR vl.patient_gender="" OR vl.patient_gender IS NULL)';
           } else {
                $sWhere[] = ' vl.patient_gender IN ("' . $db->escape((string) $_POST['gender']) . '")';
           }

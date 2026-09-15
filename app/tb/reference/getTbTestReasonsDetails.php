@@ -71,7 +71,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 $sQuery = "SELECT * FROM r_tb_test_reasons";
 
 if ($sWhere !== []) {
-    $sWhere = ' where ' . count($sWhere);
+    $sWhere = ' where ' . implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 

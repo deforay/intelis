@@ -52,19 +52,13 @@ if ($labScope = $general->labScopeWhere('vl')) {
     $query .= " AND $labScope";
 }
 if (!empty($facility)) {
-  $query .= " AND vl.facility_id = " . (int) $facility;
+  $query .= " AND vl.facility_id IN (" . $db->inIntList($facility) . ")";
 }
 if (trim((string) $sampleType) !== '') {
   $query = $query . " AND vl.specimen_type='" . $db->escape((string) $sampleType) . "'";
 }
 if (trim((string) $gender) !== '') {
   $query = $query . " AND vl.patient_gender='" . $db->escape((string) $gender) . "'";
-}
-if (trim((string) $pregnant) !== '') {
-  $query = $query . " AND vl.is_patient_pregnant='" . $db->escape((string) $pregnant) . "'";
-}
-if (trim((string) $urgent) !== '') {
-  $query = $query . " AND vl.test_urgency='" . $db->escape((string) $urgent) . "'";
 }
 if (trim((string) $state) !== '') {
   $query = $query . " AND f.facility_state LIKE '%" . $db->escapeLike($state) . "%' ";
@@ -79,9 +73,7 @@ if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
   $query = $query . " AND vl.result_status='" . $db->escape((string) $_POST['status']) . "'";
 }
 if (trim((string) $mailSentStatus) !== '') {
-  if (trim((string) $type) === 'request') {
-    $query = $query . " AND vl.is_request_mail_sent='" . $db->escape((string) $mailSentStatus) . "'";
-  } elseif (trim((string) $type) === 'result') {
+  if (trim((string) $type) === 'result') {
     $query = $query . " AND vl.is_result_mail_sent='" . $db->escape((string) $mailSentStatus) . "' AND ((vl.result_status = 7 AND vl.hbsag_result is NOT NULL AND vl.hbsag_result !='') OR (vl.result_status = 4 AND (vl.hbsag_result is NULL OR vl.hbsag_result = '')))";
   }
 }

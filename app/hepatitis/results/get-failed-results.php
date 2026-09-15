@@ -100,7 +100,7 @@ try {
 
 
 
-    $sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM form_hepatitis as vl
+    $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*, ts.status_name, b.batch_code FROM form_hepatitis as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
             LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
@@ -148,14 +148,14 @@ try {
     }
 
 
-    $sWhere = $sWhere === [] ? [] : ' where ' . implode(' AND ', $sWhere);
+    $sWhere = $sWhere === [] ? '' : ' where ' . implode(' AND ', $sWhere);
 
     $sQuery .= $sWhere;
     if (isset($sOrder) && !in_array(trim($sOrder), ['', '0'], true)) {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . " ORDER BY " . $sOrder;
     }
-    $_SESSION['covid19RequestSearchResultQuery'] = $sQuery;
+    $_SESSION['hepatitisRequestSearchResultQuery'] = $sQuery;
     if (isset($sLimit) && isset($sOffset)) {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
     }
@@ -164,7 +164,7 @@ try {
     $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
     $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-    $_SESSION['covid19RequestSearchResultQueryCount'] = $iTotal;
+    $_SESSION['hepatitisRequestSearchResultQueryCount'] = $iTotal;
 
     $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 

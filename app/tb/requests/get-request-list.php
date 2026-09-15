@@ -116,8 +116,6 @@ try {
      [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
      [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
-     // The gender "unreported" clause below is not parenthesised, so the filters on
-     // either side of it stay in their own groups to keep the AND/OR grouping as it was.
      $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
           'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
           'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
@@ -151,7 +149,7 @@ try {
 
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) !== '') {
           if (trim((string) $_POST['gender']) === "unreported") {
-               $sWhere[] = ' vl.patient_gender="unreported" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
+               $sWhere[] = ' (vl.patient_gender="unreported" OR vl.patient_gender="" OR vl.patient_gender IS NULL)';
           } else {
                $sWhere[] = ' vl.patient_gender IN ("' . $db->escape((string) $_POST['gender']) . '")';
           }

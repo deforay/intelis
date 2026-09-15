@@ -102,8 +102,6 @@ try {
                LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
 
-     // The reqSampleType "result" clause below is not parenthesised, so the filters on
-     // either side of it stay in their own groups to keep the AND/OR grouping as it was.
      $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
           'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
           'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
@@ -149,7 +147,7 @@ try {
 
 
      if (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) === 'result') {
-          $sWhere[] = ' vl.hcv_vl_count!= "" OR vl.hbv_vl_count != "" ';
+          $sWhere[] = ' (vl.hcv_vl_count != "" OR vl.hbv_vl_count != "") ';
      } elseif (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) === 'noresult') {
           $sWhere[] = ' ((vl.hcv_vl_count IS NULL OR vl.hcv_vl_count = "") AND (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count = "")) ';
      }

@@ -37278,3 +37278,122 @@ msgstr "En attente depuis %s jours après le prélèvement"
 #, php-format
 msgid "Open for %s months since collection"
 msgstr "En attente depuis %s mois après le prélèvement"
+
+#: app/classes/Utilities/DataQualityReportUtility.php
+msgid "Age or Date of Birth"
+msgstr "Âge ou date de naissance"
+
+#: app/reports/_data-quality-tab.php
+msgid "Checking records..."
+msgstr "Vérification des dossiers..."
+
+#: app/reports/_data-quality-tab.php
+msgid "Unable to load the data quality report right now"
+msgstr "Impossible de charger le rapport de qualité des données pour le moment"
+
+#: app/reports/_data-quality-tab.php
+msgid "Samples Checked"
+msgstr "Échantillons vérifiés"
+
+#: app/reports/_data-quality-tab.php
+msgid "Complete Records"
+msgstr "Dossiers complets"
+
+#: app/reports/_data-quality-tab.php
+msgid "Missing Key Fields"
+msgstr "Champs clés manquants"
+
+#: app/reports/_data-quality-tab.php
+msgid "Facilities with Gaps"
+msgstr "Établissements avec des lacunes"
+
+#: app/reports/_data-quality-tab.php
+#, php-format
+msgid "%s of samples"
+msgstr "%s des échantillons"
+
+#: app/reports/_data-quality-tab.php
+#, php-format
+msgid "of %s facilities"
+msgstr "sur %s établissements"
+
+#: app/reports/_data-quality-tab.php
+msgid "Key Fields"
+msgstr "Champs clés"
+
+#: app/reports/_data-quality-tab.php
+msgid "Share of samples where each field is blank or holds a placeholder such as NA or unknown. Lab fields are only expected once a sample reaches the lab."
+msgstr "Part des échantillons dont le champ est vide ou contient une valeur de remplacement comme NA ou inconnu. Les champs du laboratoire ne sont attendus qu'une fois l'échantillon arrivé au laboratoire."
+
+#: app/reports/_data-quality-tab.php
+msgid "Captured on every sample"
+msgstr "Renseigné sur tous les échantillons"
+
+#: app/reports/_data-quality-tab.php
+msgid "No samples at this stage yet"
+msgstr "Aucun échantillon à cette étape pour le moment"
+
+#: app/reports/_data-quality-tab.php
+msgid "Not recorded on any sample. Left out of the counts above."
+msgstr "Renseigné sur aucun échantillon. Exclu des totaux ci-dessus."
+
+#: app/reports/_data-quality-tab.php
+#, php-format
+msgid "%s of %s samples missing"
+msgstr "%s échantillons sur %s sans cette information"
+
+#: app/reports/_data-quality-tab.php
+msgid "View samples"
+msgstr "Voir les échantillons"
+
+#: app/reports/_data-quality-tab.php
+msgid "Gaps by Facility"
+msgstr "Lacunes par établissement"
+
+#: app/reports/_data-quality-tab.php
+msgid "With Gaps"
+msgstr "Avec lacunes"
+
+#: app/reports/_data-quality-tab.php
+msgid "% Complete"
+msgstr "% complet"
+
+#: app/reports/_data-quality-tab.php
+msgid "No facility recorded"
+msgstr "Aucun établissement renseigné"
+
+#: app/reports/_data-quality-tab.php
+msgid "Every key field was captured on every sample in this period."
+msgstr "Tous les champs clés sont renseignés sur tous les échantillons de cette période."
+
+#: app/reports/_data-quality-tab.php
+msgid "Samples missing any key field"
+msgstr "Échantillons avec au moins un champ clé manquant"
+
+#: app/reports/_data-quality-tab.php
+#, php-format
+msgid "Samples missing %s"
+msgstr "Échantillons sans %s"
+
+#: app/reports/_data-quality-tab.php
+#, php-format
+msgid "at %s"
+msgstr "à %s"
+
+#: app/reports/_data-quality-tab.php
+#, php-format
+msgid "Showing the %s most recent. Export for the full list."
+msgstr "Affichage des %s plus récents. Exporter pour la liste complète."
+
+#: app/reports/_data-quality-tab.php
+#, php-format
+msgid "Requested %s"
+msgstr "Demandé le %s"
+
+#: app/reports/_data-quality-tab.php
+msgid "Missing Fields"
+msgstr "Champs manquants"
+
+#: app/reports/_data-quality-tab.php
+msgid "Custom Range"
+msgstr "Période personnalisée"

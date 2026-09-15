@@ -386,7 +386,7 @@ if (!empty($result)) {
           if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
                $viewId = CommonService::encryptViewQRCode($result['unique_id']);
                $remoteURL = $general->getRemoteURL();
-               $pdf->write2DBarcode($remoteURL . '/vl/results/view.php?q=' . $viewId, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
+               $pdf->write2DBarcode($remoteURL . '/vl/results/view.php?q=' . urlencode((string) $viewId), 'QRCODE,H', 150, 170, 30, 30, [], 'N');
           }
           $pdf->lastPage();
           $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

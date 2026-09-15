@@ -93,7 +93,7 @@ $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_sample_types $sWhere order by $sOrder");
+$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_sample_types $sWhere");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */

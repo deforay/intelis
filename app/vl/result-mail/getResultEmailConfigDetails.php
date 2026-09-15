@@ -75,7 +75,7 @@ $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM other_config $sWhere order by $sOrder");
+$aResultFilterTotal = $db->rawQuery("SELECT * FROM other_config $sWhere");
 $iFilteredTotal = count($rResult);
 
 /* Total data set length */

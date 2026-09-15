@@ -192,6 +192,23 @@ final class Covid19ListingSqlEncodingTest extends TestCase
         ]));
     }
 
+    /**
+     * The "unreported" sex clause was pushed without parentheses, so its ORs split
+     * the WHERE: a sample with a blank sex from any other facility was listed too.
+     */
+    #[RunInSeparateProcess]
+    public function testRequestListUnreportedSexStaysInsideTheOtherFilters(): void
+    {
+        $this->seed([
+            'sample_code' => 'C19004', 'patient_id' => 'PT-10', 'patient_name' => 'Di', 'patient_gender' => '',
+            'facility_id' => self::OTHER_FACILITY_ID, 'lab_id' => self::OTHER_FACILITY_ID,
+        ]);
+
+        self::assertSame([], $this->listed('/covid-19/requests/get-request-list.php', [
+            'facilityName' => (string) self::FACILITY_ID, 'gender' => 'unreported', 'hidesrcofreq' => '',
+        ]));
+    }
+
     #[RunInSeparateProcess]
     public function testRequestListDiscardsAnythingButAscOrDescAsTheSortDirection(): void
     {

@@ -537,7 +537,7 @@ if (!empty($requestResult)) {
                 }
                 if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
                     $remoteURL = $general->getRemoteURL();
-                    $pdf->write2DBarcode($remoteURL . '/covid-19/results/view.php?q=' . $viewId, 'QRCODE,H', 170, $h, 20, 20, [], 'N');
+                    $pdf->write2DBarcode($remoteURL . '/covid-19/results/view.php?q=' . urlencode((string) $viewId), 'QRCODE,H', 170, $h, 20, 20, [], 'N');
                 }
             }
             $pdf->lastPage();

@@ -139,7 +139,7 @@ if ($sWhere !== '' && $sWhere !== '0') {
           if ($_POST['status'] == 'no_result') {
               $statusCondition = ' AND (vl.result is NULL OR vl.result ="") AND vl.result_status != ' . REJECTED;
           } elseif ($_POST['status'] == 'result') {
-              $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !="" AND vl. != ' . REJECTED . ')';
+              $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !="" AND vl.result_status != ' . REJECTED . ')';
           } else {
                $statusCondition = ' AND vl.result_status = ' . REJECTED;
           }
@@ -245,7 +245,7 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      } else {
           $sWhere = "WHERE vl.result_status != " . RECEIVED_AT_CLINIC;
      }
-     $dWhere = "WHERE vl.result_statu != " . RECEIVED_AT_CLINIC;
+     $dWhere = "WHERE vl.result_status != " . RECEIVED_AT_CLINIC;
 }
 
 
@@ -262,6 +262,9 @@ if ($labScope = $general->labScopeWhere('vl')) {
 }
 $sQuery = $sQuery . ' ' . $sWhere . ' AND ct.result LIKE "positive" GROUP BY vl.covid19_id';
 $_SESSION['vlResultQuery'] = $sQuery;
+// Counted over the grid's own query, joins and grouping included, so the totals
+// match the rows shown.
+$countQuery = $sQuery;
 //echo $_SESSION['vlResultQuery'];die;
 
 if (!empty($sOrder) && $sOrder !== '') {
@@ -276,11 +279,9 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere ORDER BY $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
+$iFilteredTotal = (int) ($db->rawQueryOne("SELECT COUNT(*) AS total FROM ($countQuery) AS filtered")['total'] ?? 0);
 /* Total data set length */
-$aResultTotal = $db->rawQuery("SELECT * FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere ORDER BY $sOrder");
-$iTotal = count($aResultTotal);
+$iTotal = $iFilteredTotal;
 
 
 $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];

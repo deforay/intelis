@@ -52,7 +52,7 @@ if ($labScope = $general->labScopeWhere('vl')) {
     $query .= " AND $labScope";
 }
 if (!empty($facility)) {
-  $query .= " AND vl.facility_id = " . (int) $facility;
+  $query .= " AND vl.facility_id IN (" . $db->inIntList($facility) . ")";
 }
 if (trim((string) $sampleType) !== '') {
   $query = $query . " AND vl.specimen_type='" . $db->escape((string) $sampleType) . "'";
@@ -74,9 +74,7 @@ if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
   $query = $query . " AND vl.result_status='" . $db->escape((string) $_POST['status']) . "'";
 }
 if (trim((string) $mailSentStatus) !== '') {
-  if (trim((string) $type) === 'request') {
-    $query = $query . " AND vl.is_request_mail_sent='" . $db->escape((string) $mailSentStatus) . "'";
-  } elseif (trim((string) $type) === 'result') {
+  if (trim((string) $type) === 'result') {
     $query = $query . " AND vl.is_result_mail_sent='" . $db->escape((string) $mailSentStatus) . "' AND ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = '')))";
   }
 }

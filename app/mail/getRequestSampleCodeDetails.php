@@ -53,7 +53,7 @@ if ($labScope = $general->labScopeWhere('vl')) {
   $query .= " AND $labScope";
 }
 if (!empty($facility)) {
-  $query .= " AND vl.facility_id = " . (int) $facility;
+  $query .= " AND vl.facility_id IN (" . $db->inIntList($facility) . ")";
 }
 if (trim((string) $sampleType) !== '') {
   $query = $query . " AND vl.specimen_type='" . $db->escape((string) $sampleType) . "'";

@@ -58,7 +58,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
         SUM(CASE WHEN (vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltAgeTotal1000,
         SUM(CASE WHEN (vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtAgeTotal1000,
         SUM(CASE WHEN (is_patient_pregnant = 'yes' AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltPatientPregnant1000,
-        SUM(CASE WHEN (patient_age_in_years = 'yes' AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtPatientPregnant1000,
+        SUM(CASE WHEN (is_patient_pregnant = 'yes' AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtPatientPregnant1000,
         SUM(CASE WHEN (is_patient_breastfeeding = 'yes' AND vl_result_category = 'suppressed') THEN 1 ELSE 0 END) AS ltPatientBreastFeeding1000,
         SUM(CASE WHEN (is_patient_breastfeeding = 'yes' AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtPatientBreastFeeding1000
 		FROM form_vl as vl JOIN facility_details as f ON vl.facility_id=f.facility_id
@@ -87,7 +87,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
     // A cancelled sample was called off before testing, so it is not
     // work this report should count.
     $sWhere[] = SampleCountUtility::countableWhere('vl');
-    $sQuery = $sQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.result!=""';
+    $sQuery = $sQuery . ' AND ' . implode(" AND ", $sWhere) . ' AND vl.result!=""';
 
     $sResult = $db->rawQuery($sQuery);
 
@@ -122,14 +122,14 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
     // A cancelled sample was called off before testing, so it is not
     // work this report should count.
     $sWhere[] = SampleCountUtility::countableWhere('vl');
-    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.sample_tested_datetime IS NULL AND vl.specimen_type!="" AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH AND IFNULL(reason_for_vl_testing, 0)  != 9999';
+    $checkEmptyResultQuery = $checkEmptyResultQuery . ' WHERE ' . implode(" AND ", $sWhere) . ' AND vl.sample_tested_datetime IS NULL AND vl.specimen_type!="" AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH AND IFNULL(reason_for_vl_testing, 0)  != 9999';
     $checkEmptyResult = $db->rawQuery($checkEmptyResultQuery);
     //get all sample type
     $sampleType = "Select * from r_vl_sample_type where status='active'";
     $sampleTypeResult = $db->rawQuery($sampleType);
     if (count($checkEmptyResult) > 0) {
-        $sWhere = [];
         foreach ($sampleTypeResult as $sample) {
+            $sWhere = [];
             $checkEmptyResultSampleQuery = 'SELECT vl.sample_collection_date,
                                                 vl.sample_tested_datetime,
                                                 COUNT(vl_sample_id) as total,
@@ -164,16 +164,16 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
             // A cancelled sample was called off before testing, so it is not
             // work this report should count.
             $sWhere[] = SampleCountUtility::countableWhere('vl');
-            $checkEmptyResultSampleQuery .= implode(" AND ", $sWhere);
+            $checkEmptyResultSampleQuery .= ' AND ' . implode(" AND ", $sWhere);
             $checkEmptySampleResult[$sample['sample_name']] = $db->rawQuery($checkEmptyResultSampleQuery);
         }
     }
 
     //question three
 
-    $s_c_date = explode(" to ", (string) $_POST['sampleCollectionDate']);
+    $s_c_date = explode(" to ", (string) ($_POST['sampleCollectionDate'] ?? ''));
     $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
+    $end_date = DateUtility::isoDateFormat(trim($s_c_date[1] ?? $s_c_date[0]));
     $startMonth = date("Y-m", strtotime((string) $start_date));
     $endMonth = date("Y-m", strtotime((string) $end_date));
     $start = $month = strtotime($startMonth);
@@ -225,7 +225,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
         // A cancelled sample was called off before testing, so it is not
         // work this report should count.
         $sWhere[] = SampleCountUtility::countableWhere('vl');
-        $checkResultAvgQuery = $checkResultAvgQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.result=""';
+        $checkResultAvgQuery = $checkResultAvgQuery . ' AND ' . implode(" AND ", $sWhere) . ' AND vl.result=""';
         $checkResultAvgResult = $db->rawQuery($checkResultAvgQuery);
         if (count($checkResultAvgResult) > 0) {
             $total = 0;

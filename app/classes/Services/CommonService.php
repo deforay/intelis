@@ -2162,7 +2162,7 @@ final class CommonService
         }
 
         if (!$module && $facilityType == 1 && !empty($activeModule)) {
-            $where[] = " hf.test_type IN (" . $this->db->quote($activeModule) . ")";
+            $where[] = " hf.test_type IN (" . $this->db->inTextList(explode(",", (string) $activeModule)) . ")";
         }
 
         if (!empty($testType)) {
@@ -2316,6 +2316,42 @@ final class CommonService
             $encryption_iv
         ) . '#' . bin2hex($encryption_iv);
     }
+    /**
+     * The sample unique_id a result QR code points to, or null.
+     *
+     * Printed reports carry two token formats: encryptViewQRCode()'s
+     * "<ciphertext>#<hex iv>" of "<unique_id>&&&qr", and -- on the Rwanda COVID-19,
+     * EID and hepatitis reports -- encrypt() of the bare unique_id under the
+     * instance key. Several reports wrote the token into the link without
+     * urlencode(), so a + arrives as a space; it is put back first. (Their # is
+     * lost for good: the browser keeps everything after it to itself.)
+     *
+     * $instanceKey is the base64 global_config 'key' the Rwanda reports used.
+     */
+    public static function uniqueIdFromViewQRCode(?string $token, ?string $instanceKey): ?string
+    {
+        // Put the + back before trimming: a token can start with one.
+        $token = trim(str_replace(' ', '+', (string) $token));
+        if ($token === '') {
+            return null;
+        }
+
+        if (!str_contains($token, '#')) {
+            $key = base64_decode((string) $instanceKey);
+            $uniqueId = $key === '' ? '' : self::decrypt($token, $key);
+            if ($uniqueId !== '') {
+                return $uniqueId;
+            }
+        }
+
+        // AES-CTR turns any input into some plaintext, so a token only counts when
+        // it decrypts to the "&&&qr" marker every one of these tokens was made with.
+        $plain = @self::decryptViewQRCode($token);
+        [$uniqueId, $marker] = array_pad(explode('&&&', urldecode((string) $plain), 2), 2, null);
+
+        return $plain !== false && $marker === 'qr' && $uniqueId !== '' ? $uniqueId : null;
+    }
+
     public static function decryptViewQRCode($viewId): string|false
     {
         $ciphering = "AES-128-CTR";

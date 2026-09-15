@@ -172,9 +172,9 @@ if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedD
 
 if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
     if ($_POST['status'] == 'no_result') {
-        $statusCondition = '  (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ="" AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ="")';
+        $statusCondition = '  ((vl.hcv_vl_count IS NULL OR vl.hcv_vl_count = "") AND (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count = ""))';
     } elseif ($_POST['status'] == 'result') {
-        $statusCondition = ' (vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !="" OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !="")';
+        $statusCondition = ' (vl.hcv_vl_count != "" OR vl.hbv_vl_count != "")';
     } else {
         $statusCondition = ' vl.result_status = ' . REJECTED;
     }
