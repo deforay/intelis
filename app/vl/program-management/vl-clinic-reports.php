@@ -131,29 +131,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 						<div class="widget">
 							<div class="widget-content">
 								<div class="bs bs-tabs">
-									<ul id="myTab" class="nav nav-tabs clinic-tabs">
-										<li class="active"><a href="#highViralLoadReport"
-												data-toggle="tab" data-tab-name="high-viral-load"><?php echo _translate("High Viral Load"); ?></a>
-										</li>
-										<li><a href="#highVlVirologicFailureReport"
-												data-toggle="tab" data-tab-name="high-viral-load-virologic-failure"><?php echo _translate("High VL and Virologic Failure"); ?></a>
-										</li>
-										<li><a href="#sampleRjtReport"
-												data-toggle="tab" data-tab-name="sample-rejection"><?php echo _translate("Sample Rejection"); ?></a>
-										</li>
-										<li><a href="#notAvailReport"
-												data-toggle="tab" data-tab-name="results-not-available"><?php echo _translate("Results Not Available"); ?></a>
-										</li>
-										<li><a href="#dataQualityReport"
-												data-toggle="tab" data-tab-name="data-quality-check"><?php echo _translate("Data Quality Check"); ?></a>
-										</li>
-										<li><a href="#sampleTestingReport"
-												data-toggle="tab" data-tab-name="sample-testing"><?php echo _translate("Sample Testing"); ?></a>
-										</li>
-										<li><a href="#patientTestHistoryFormReport"
-												data-toggle="tab" data-tab-name="patient-test-history"><?php echo _translate("Patient Test History"); ?></a>
-										</li>
-									</ul>
+									<?php $crTestType = 'vl'; require APPLICATION_PATH . '/reports/_clinic-report-tabs.php'; ?>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
 											<div class="box box-default filter-panel filter-panel-collapsed">

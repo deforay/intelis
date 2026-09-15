@@ -231,6 +231,16 @@
                 $row.addClass('navigating');
             }
             window.location.href = url;
+            /* A link to another tab of the page already open only changes the
+               hash, so nothing unloads: close the palette instead of leaving
+               it waiting on a navigation that will not come. */
+            var target = new URL(url, window.location.href);
+            if (target.hash && target.pathname === window.location.pathname && target.search === window.location.search) {
+                if ($row && $row.length) {
+                    $row.removeClass('navigating');
+                }
+                this.close();
+            }
         },
 
         expandItem: function(index) {
