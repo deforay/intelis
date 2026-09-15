@@ -17,7 +17,14 @@ $_POST = _sanitizeInput($request->getParsedBody());
 if (!empty($_POST['fileName'])) {
 
     try {
-        if (file_exists($_POST['fileName'])) {
+        // Only the instrument configuration files are ever asked about, so the
+        // answer is limited to that folder; any other path reads as absent.
+        $instrumentsFolder = realpath(APPLICATION_PATH . '/instruments');
+        $fileName = (string) $_POST['fileName'];
+        $folder = realpath(dirname($fileName));
+        $insideInstruments = $instrumentsFolder !== false && $folder !== false
+            && ($folder === $instrumentsFolder || str_starts_with($folder, $instrumentsFolder . DIRECTORY_SEPARATOR));
+        if ($insideInstruments && file_exists($folder . DIRECTORY_SEPARATOR . basename($fileName))) {
             echo 'exists';
         } else {
             echo 'not exists';

@@ -80,7 +80,9 @@ class TestResultImportService
             throw new SystemException("Invalid file format. Allowed: " . implode(', ', $allowedExtensions), 400);
         }
 
-        $fileName = ($this->postData['fileName'] ?? 'import') . "-" . MiscUtility::generateRandomString(12) . "." . $extension;
+        // The prefix comes from the form; basename() keeps the file inside imported-results.
+        $prefix = basename((string) ($this->postData['fileName'] ?? 'import')) ?: 'import';
+        $fileName = $prefix . "-" . MiscUtility::generateRandomString(12) . "." . $extension;
         $uploadPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results";
 
         MiscUtility::makeDirectory($uploadPath);

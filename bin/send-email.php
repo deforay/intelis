@@ -10,6 +10,7 @@ use App\Services\DatabaseService;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MailAttachmentUtility;
 
 
 require_once(__DIR__ . "/../bootstrap.php");
@@ -102,10 +103,17 @@ try {
          }
 
          //Pdf file attach
-         $pathFront = realpath(UPLOAD_PATH);
-         $file = realpath(urldecode(base64_decode((string) $data['attachment'])));
-
-         $file_to_attach =  $file;
+         // The queued path came from a form; only a file inside the temporary or
+         // upload folders is attached.
+         $file_to_attach = MailAttachmentUtility::resolve($data['attachment'] ?? null);
+         if ($file_to_attach === null) {
+            // The results are the point of the email: without them it is not sent,
+            // and the row is marked so it is neither retried nor mistaken for sent.
+            LoggerUtility::logError('Result email ' . $data['id'] . ' not sent: its attachment is missing or outside the allowed folders');
+            $db->where('id', $data['id']);
+            $db->update('temp_mail', ['status' => 'failed']);
+            continue;
+         }
          $mail->AddAttachment($file_to_attach);
          $message = '';
          if (isset($data['text_message']) && trim((string) $data['text_message']) !== "") {

@@ -9,6 +9,7 @@ use App\Utilities\DateUtility;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+use App\Utilities\MailAttachmentUtility;
 
 
 /** @var DatabaseService $db */
@@ -48,11 +49,11 @@ foreach ($geResult as $row) {
 }
 
 if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
-   //  $result_file_to_attach = $pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2'];
-   // $mail->AddAttachment($result_file_to_attach);
-   $tempMailData = ["to_mail" => $_POST['toEmail'], "subject" => $_POST['subject'], "text_message" => $_POST['message'], "report_email" => $_POST['reportEmail'], "test_type" => 'generic-tests', "attachment" => $_POST['pdfFile1'], "samples" => $_POST['sample'], "status" => "pending"];
+   $tempMailData = ["to_mail" => $_POST['toEmail'], "subject" => $_POST['subject'], "text_message" => $_POST['message'], "report_email" => $_POST['reportEmail'], "test_type" => 'generic-tests', "attachment" => MailAttachmentUtility::queueValue($_POST['pdfFile1'] ?? null), "samples" => $_POST['sample'], "status" => "pending"];
 
-   $storeMail = $db->insert('temp_mail', $tempMailData);
+   // Without a PDF that resolves to a real file there is nothing to send; queueing
+   // the row would leave a job the mail sender never picks up.
+   $storeMail = $tempMailData['attachment'] !== null && $db->insert('temp_mail', $tempMailData);
 
    if ($storeMail) {
       $updateInfo = $testResult->updateEmailTestResultsInfo('generic-tests', $tempMailData);

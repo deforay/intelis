@@ -5,6 +5,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MailAttachmentUtility;
 
 
 /** @var DatabaseService $db */
@@ -51,12 +52,14 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
       "text_message" => $_POST['message'],
       "report_email" => $_POST['reportEmail'],
       "test_type" => 'cd4',
-      "attachment" => $_POST['pdfFile1'],
+      "attachment" => MailAttachmentUtility::queueValue($_POST['pdfFile1'] ?? null),
       "samples" => $_POST['sample'],
       "status" => "pending",
    ];
 
-   $storeMail = $db->insert('temp_mail', $tempMailData);
+   // Without a PDF that resolves to a real file there is nothing to send; queueing
+   // the row would leave a job the mail sender never picks up.
+   $storeMail = $tempMailData['attachment'] !== null && $db->insert('temp_mail', $tempMailData);
 
    if ($storeMail) {
       $testResult->updateEmailTestResultsInfo('cd4', $tempMailData);
