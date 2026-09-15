@@ -6,7 +6,7 @@
 # not Ubuntu LTS. So a Debian container could never be upgraded by the same
 # script the rest of the fleet uses, including remotely from the STS: the
 # command was accepted, spent minutes installing packages into a layer the next
-# rebuild discards, and stopped at "This script requires Ubuntu 20.04 or newer".
+# rebuild discards, and stopped at "This script requires Ubuntu 22.04 or newer".
 #
 # Matching the fleet's operating system means the container exercises the same
 # paths a lab does, rather than an approximation of them.

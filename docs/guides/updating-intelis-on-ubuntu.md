@@ -4,6 +4,8 @@ This guide updates an existing InteLIS installation to the current release.
 
 **Prerequisites:** Ubuntu 22.04 LTS or a later LTS release. An account with `sudo` rights. An internet connection.
 
+Ubuntu 22.04 reaches the end of standard support in April 2027. Machines still on 22.04 should move to 24.04 LTS or later; see [Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md).
+
 ## Before updating
 
 Two checks, in this order, before the update command.
