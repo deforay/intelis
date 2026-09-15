@@ -49,7 +49,7 @@ final class GeoLocationsService
             }
 
             if ($updatedDateTime) {
-                $this->db->where("updated_datetime >= '$updatedDateTime'");
+                $this->db->where("updated_datetime >= " . $this->db->quote($updatedDateTime));
             }
 
             if (!empty($facilityMap)) {
@@ -148,6 +148,18 @@ final class GeoLocationsService
         return $this->db->getInsertId();
     }
 
+    /**
+     * The geographical divisions with this exact name. The name usually comes
+     * from a stored facility or sample row, so it is bound: a stored name with an
+     * apostrophe used to break the edit forms that looked it up.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function findByName(?string $geoName): array
+    {
+        return $this->db->rawQuery('SELECT * FROM geographical_divisions WHERE geo_name = ?', [(string) $geoName]);
+    }
+
     public function getProvinceIdByName($geoName)
     {
         $this->db->where("geo_name", $geoName);
@@ -162,17 +174,17 @@ final class GeoLocationsService
             $provinceId = implode(',', $provinceId);
         }
         if ($districts === true) {
-            $districtSql = "SELECT geo_id, geo_name from geographical_divisions WHERE geo_parent IN ($provinceId) AND geo_status='active' ORDER BY geo_name";
+            $districtSql = "SELECT geo_id, geo_name from geographical_divisions WHERE geo_parent IN (" . $this->db->inIntList($provinceId) . ") AND geo_status='active' ORDER BY geo_name";
             $response['districts'] = $this->db->rawQuery($districtSql);
         }
 
         if ($facilities === true) {
-            $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE facility_state_id IN ($provinceId) AND status='active' ORDER BY facility_name";
+            $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE facility_state_id IN (" . $this->db->inIntList($provinceId) . ") AND status='active' ORDER BY facility_name";
             $response['facilities'] = $this->db->rawQuery($facilitySql);
         }
 
         if ($labs === true) {
-            $facilitySql = "SELECT facility_id, facility_name from facility_details WHERE facility_type = 2  AND facility_state_id IN ($provinceId) AND status='active' ORDER BY facility_name";
+            $facilitySql = "SELECT facility_id, facility_name from facility_details WHERE facility_type = 2  AND facility_state_id IN (" . $this->db->inIntList($provinceId) . ") AND status='active' ORDER BY facility_name";
             $response['labs'] = $this->db->rawQuery($facilitySql);
         }
 
@@ -185,12 +197,12 @@ final class GeoLocationsService
         $response = [];
 
         if ($facilities === true) {
-            $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE facility_district_id = $districtId AND status='active' ORDER BY facility_name";
+            $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE facility_district_id = " . (int) $districtId . " AND status='active' ORDER BY facility_name";
             $response['facilities'] = $this->db->rawQuery($facilitySql);
         }
 
         if ($labs === true) {
-            $labSql = "SELECT facility_id, facility_name from facility_details WHERE facility_type = 2  AND facility_district_id = $districtId AND status='active' ORDER BY facility_name";
+            $labSql = "SELECT facility_id, facility_name from facility_details WHERE facility_type = 2  AND facility_district_id = " . (int) $districtId . " AND status='active' ORDER BY facility_name";
             $response['labs'] = $this->db->rawQuery($labSql);
         }
 

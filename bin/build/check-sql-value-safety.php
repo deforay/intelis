@@ -367,6 +367,53 @@ const API_REQUIRED_ENCODERS = [
     '/\\$input\\[\x27patientId\x27\\]/' => '/array_map\\(\\$db->escape\\(\\.\\.\\.\\), /',
 ];
 
+/**
+ * Services and country forms swept for values pasted into quoted SQL literals --
+ * API filters such as latestDateTime that reach a service as a plain parameter,
+ * and values read back from a stored row (a province name, a reason for
+ * testing). Neither is a superglobal, so the patterns above cannot see them;
+ * these match the literal itself. Swept 2026-09-15: text goes through
+ * $db->quote() or a bound parameter, ids through (int) or $db->inIntList().
+ *
+ * @var list<string>
+ */
+const STORED_VALUE_COVERED_FILES = [
+    'app/classes/Repositories/Reference/ReferenceDataRepository.php',
+    'app/classes/Services/CD4Service.php',
+    'app/classes/Services/CommonService.php',
+    'app/classes/Services/Covid19Service.php',
+    'app/classes/Services/EidService.php',
+    'app/classes/Services/FacilitiesService.php',
+    'app/classes/Services/GenericTestsService.php',
+    'app/classes/Services/GeoLocationsService.php',
+    'app/classes/Services/HepatitisService.php',
+    'app/classes/Services/InstrumentsService.php',
+    'app/classes/Services/PatientsService.php',
+    'app/classes/Services/TbService.php',
+    'app/classes/Services/UsersService.php',
+    'app/classes/Services/VlService.php',
+    'app/cd4/requests/forms/edit-rwanda.php',
+    'app/cd4/results/forms/update-rwanda-result.php',
+    'app/vl/requests/forms/edit-cameroon.php',
+    'app/vl/requests/forms/edit-png.php',
+    'app/vl/requests/forms/edit-rwanda.php',
+    'app/vl/requests/forms/edit-southsudan.php',
+    'app/vl/results/forms/update-cameroon-result.php',
+    'app/vl/results/forms/update-png-result.php',
+    'app/vl/results/forms/update-rwanda-result.php',
+    'app/vl/results/forms/update-sierraleone-result.php',
+    'app/vl/results/forms/update-southsudan-result.php',
+];
+
+/** A line that builds SQL, so a quoted literal on it is an SQL string. */
+const SQL_LINE_PATTERN = '/\b(SELECT|UPDATE|DELETE|INSERT|WHERE)\b|->where\(|\$query\s*\.=|\$where\[\]\s*=/i';
+
+const STORED_VALUE_PATTERNS = [
+    'variable interpolated inside a quoted SQL literal' => '/\x27\$[A-Za-z_]\w*\x27/',
+    'variable concatenated inside a quoted SQL literal'
+        => '/\x27"\s*\.\s*(?:trim\(\(string\)\s*)?\$[A-Za-z_]\w*(?:\[[^\]]*\])*\)?\s*\.\s*"\x27/',
+];
+
 const RAW_VALUE_PATTERNS = [
     'concatenated directly after a string' => '/\.\s*\$_(POST|GET|REQUEST)\s*\[/',
     'concatenated after only a string cast' => '/\.\s*\(string\)\s*\$_(POST|GET|REQUEST)\s*\[/',
@@ -426,6 +473,32 @@ foreach ($covered as $name => $rule) {
     }
 }
 
+foreach (STORED_VALUE_COVERED_FILES as $name) {
+    $path = REPO_DIR . '/' . $name;
+    if (!is_file($path)) {
+        $violations[] = [
+            'where' => $name,
+            'hint' => 'listed in STORED_VALUE_COVERED_FILES but missing -- update the list if it moved',
+        ];
+        continue;
+    }
+    $checked++;
+    foreach (file($path) as $i => $line) {
+        if (!preg_match(SQL_LINE_PATTERN, $line)) {
+            continue;
+        }
+        foreach (STORED_VALUE_PATTERNS as $label => $pattern) {
+            if (preg_match($pattern, $line)) {
+                $violations[] = [
+                    'where' => $name . ':' . ($i + 1),
+                    'hint' => $label . ': ' . trim($line),
+                ];
+                break;
+            }
+        }
+    }
+}
+
 // Positive check for the API files: every filter read has its encoder present.
 foreach (API_COVERED_FILES as $name) {
     $path = REPO_DIR . '/' . $name;
@@ -457,7 +530,7 @@ foreach ($violations as $violation) {
 }
 echo PHP_EOL;
 echo 'A request value goes into SQL only through an encoder: (int) for a single id,' . PHP_EOL;
-echo '$db->inIntList() for an IN () list, $db->escape() for text, $db->escapeLike()' . PHP_EOL;
+echo '$db->inIntList() for an IN () list, $db->quote() or $db->escape() for text, $db->escapeLike()' . PHP_EOL;
 echo 'for LIKE patterns, or a whitelist lookup for identifiers. The concatenation' . PHP_EOL;
 echo 'dot must touch the encoder, never $_POST itself.' . PHP_EOL;
 

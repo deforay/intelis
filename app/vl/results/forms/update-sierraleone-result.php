@@ -65,8 +65,7 @@ if ($facilityResult[0]['contact_person'] != '') {
 
 $stateName = $facilityResult[0]['facility_state'];
 if (trim((string) $stateName) !== '') {
-	$stateQuery = "SELECT * from geographical_divisions where geo_name='" . $stateName . "'";
-	$stateResult = $db->query($stateQuery);
+	$stateResult = \App\Registries\ContainerRegistry::get(\App\Services\GeoLocationsService::class)->findByName($stateName);
 }
 if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 	$stateResult[0]['geo_code'] = '';
@@ -74,8 +73,7 @@ if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 //district details
 $districtResult = [];
 if (trim((string) $stateName) !== '') {
-	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "' AND status='active'";
-	$districtResult = $db->query($districtQuery);
+	$districtResult = \App\Registries\ContainerRegistry::get(\App\Services\FacilitiesService::class)->getDistrictNamesInState($stateName);
 	$facilityQuery = "SELECT * from facility_details where `status`='active' AND facility_type='2' Order By facility_name";
 	$lResult = $db->query($facilityQuery);
 }

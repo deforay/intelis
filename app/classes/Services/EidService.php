@@ -49,7 +49,7 @@ final class EidService extends AbstractTestService
     {
         $query = "SELECT * FROM r_eid_results WHERE status='active' ";
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $query .= " ORDER BY result_id";
         $results = $this->db->rawQuery($query);
@@ -158,7 +158,7 @@ final class EidService extends AbstractTestService
     {
         $query = "SELECT * FROM r_eid_sample_type where status='active' ";
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $results = $this->db->rawQuery($query);
         $response = [];

@@ -49,7 +49,7 @@ final class Covid19Service extends AbstractTestService
     {
         $query = "SELECT * FROM r_covid19_sample_type where status='active' ";
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $results = $this->db->rawQuery($query);
         $response = [];
@@ -63,7 +63,7 @@ final class Covid19Service extends AbstractTestService
     {
         $where = "";
         if (!empty($name)) {
-            $where = " AND sample_name LIKE '$name%'";
+            $where = " AND sample_name LIKE '" . $this->db->escape((string) $name) . "%'";
         }
         $query = "SELECT * FROM r_covid19_sample_type where status='active' $where";
         return $this->db->rawQuery($query);
@@ -82,7 +82,7 @@ final class Covid19Service extends AbstractTestService
         }
 
         $response = $this->db->rawQuery("SELECT * FROM covid19_tests
-                        WHERE `covid19_id` = $covid19SampleId
+                        WHERE `covid19_id` = " . (int) $covid19SampleId . "
                         ORDER BY test_id ASC");
 
         foreach ($response as $row) {
@@ -99,7 +99,7 @@ final class Covid19Service extends AbstractTestService
     {
         $query = "SELECT result_id,result FROM r_covid19_results where status='active' ";
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $query .= " ORDER BY result_id DESC";
         $results = $this->db->rawQuery($query);
@@ -116,7 +116,7 @@ final class Covid19Service extends AbstractTestService
                         FROM r_covid19_test_reasons
                         WHERE `test_reason_status` LIKE 'active'";
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $results = $this->db->rawQuery($query);
         $response = [];
@@ -143,7 +143,7 @@ final class Covid19Service extends AbstractTestService
         $query = "SELECT symptom_id,symptom_name
                     FROM r_covid19_symptoms WHERE `symptom_status` LIKE 'active'";
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $results = $this->db->rawQuery($query);
         $response = [];
@@ -172,7 +172,7 @@ final class Covid19Service extends AbstractTestService
                     FROM r_covid19_comorbidities
                     WHERE `comorbidity_status` LIKE 'active'";
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $results = $this->db->rawQuery($query);
         $response = [];
@@ -207,10 +207,10 @@ final class Covid19Service extends AbstractTestService
         if ($api) {
             if (is_array($c19Id)) {
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms
-                                                WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
+                                                WHERE `covid19_id` IN (" . $this->db->inIntList($c19Id) . ")");
             } else {
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms
-                                                WHERE `covid19_id` = $c19Id");
+                                                WHERE `covid19_id` = " . (int) $c19Id);
             }
         }
         $response = [];
@@ -218,7 +218,7 @@ final class Covid19Service extends AbstractTestService
         // Using this in sync requests/results
         if (is_array($c19Id)) {
             $results = $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms
-                                                WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
+                                                WHERE `covid19_id` IN (" . $this->db->inIntList($c19Id) . ")");
 
 
             if ($allData) {
@@ -230,7 +230,7 @@ final class Covid19Service extends AbstractTestService
             }
         } else {
             $results = $this->db->rawQuery("SELECT * FROM covid19_patient_symptoms
-                                                WHERE `covid19_id` = $c19Id");
+                                                WHERE `covid19_id` = " . (int) $c19Id);
 
             if ($allData) {
                 return $results;
@@ -253,10 +253,10 @@ final class Covid19Service extends AbstractTestService
         if ($api) {
             if (is_array($c19Id)) {
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities
-                                                WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
+                                                WHERE `covid19_id` IN (" . $this->db->inIntList($c19Id) . ")");
             } else {
                 return $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities
-                                                WHERE `covid19_id` = $c19Id");
+                                                WHERE `covid19_id` = " . (int) $c19Id);
             }
         }
         $response = [];
@@ -265,7 +265,7 @@ final class Covid19Service extends AbstractTestService
         if (is_array($c19Id)) {
 
             $results = $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities
-                                                WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
+                                                WHERE `covid19_id` IN (" . $this->db->inIntList($c19Id) . ")");
             if ($allData) {
                 return $results;
             }
@@ -275,7 +275,7 @@ final class Covid19Service extends AbstractTestService
         } else {
 
             $results = $this->db->rawQuery("SELECT * FROM covid19_patient_comorbidities
-                                                WHERE `covid19_id` = $c19Id");
+                                                WHERE `covid19_id` = " . (int) $c19Id);
             if ($allData) {
                 return $results;
             }
@@ -296,10 +296,10 @@ final class Covid19Service extends AbstractTestService
         if ($api) {
             if (is_array($c19Id)) {
                 return $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing
-                                                WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
+                                                WHERE `covid19_id` IN (" . $this->db->inIntList($c19Id) . ")");
             } else {
                 return $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing
-                                                WHERE `covid19_id` = $c19Id");
+                                                WHERE `covid19_id` = " . (int) $c19Id);
             }
         }
         $response = [];
@@ -307,7 +307,7 @@ final class Covid19Service extends AbstractTestService
         // Using this in sync requests/results
         if (is_array($c19Id)) {
             $results = $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing
-                                                WHERE `covid19_id` IN (" . implode(",", $c19Id) . ")");
+                                                WHERE `covid19_id` IN (" . $this->db->inIntList($c19Id) . ")");
             if ($allData) {
                 return $results;
             }
@@ -316,7 +316,7 @@ final class Covid19Service extends AbstractTestService
             }
         } else {
             $results = $this->db->rawQuery("SELECT * FROM covid19_reasons_for_testing
-                                                WHERE `covid19_id` = $c19Id");
+                                                WHERE `covid19_id` = " . (int) $c19Id);
             if ($allData) {
                 return $results;
             }

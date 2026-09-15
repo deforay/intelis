@@ -18,7 +18,7 @@ final class InstrumentsService
     {
         $this->db->where('ins.status', 'active');
         if (!empty($testType)) {
-            $this->db->where("(JSON_SEARCH(ins.supported_tests, 'all', '$testType') IS NOT NULL) AND (ins.supported_tests IS NOT NULL)");
+            $this->db->where("(JSON_SEARCH(ins.supported_tests, 'all', " . $this->db->quote($testType) . ") IS NOT NULL) AND (ins.supported_tests IS NOT NULL)");
         }
 
         if ($withFacility) {

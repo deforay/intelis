@@ -164,7 +164,7 @@ final class CD4Service extends AbstractTestService
     {
         $query = "SELECT * FROM r_cd4_sample_types where status='active' ";
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $results = $this->db->rawQuery($query);
         $response = [];

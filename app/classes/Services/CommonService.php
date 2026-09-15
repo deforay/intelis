@@ -389,7 +389,7 @@ final class CommonService
     public function isNonAdmin($userId)
     {
         if (isset($userId) && !empty($userId)) {
-            $this->db->where("status = 'active' and user_id = '$userId'");
+            $this->db->where("status = 'active' and user_id = " . $this->db->quote($userId));
             return $this->db->getValue("user_details", "role_id");
         } else {
             return false;
@@ -755,7 +755,7 @@ final class CommonService
         $labScopeId = $scopeToLab ? (int) ($_SESSION['labId'] ?? 0) : 0;
         return MemoUtility::remember(function () use ($testType, $labScopeId) {
             if (!empty($testType)) {
-                $this->db->where("(JSON_SEARCH(supported_tests, 'all', '$testType') IS NOT NULL) OR (supported_tests IS NULL)");
+                $this->db->where("(JSON_SEARCH(supported_tests, 'all', " . $this->db->quote($testType) . ") IS NOT NULL) OR (supported_tests IS NULL)");
             }
             $this->db->where("status", "active");
             // Lab axis (NULL-tolerant): own lab's instruments plus any not bound to a
@@ -1943,15 +1943,12 @@ final class CommonService
                 $where[] = " f.facility_id IN ($facilityMap)";
             }
         }
-        if (!$module) {
-            $activeModule = str_replace(",", "','", (string) $activeModule);
-            if (!empty($activeModule)) {
-                $where[] = " tl.test_type IN ('$activeModule')";
-            }
+        if (!$module && !empty($activeModule)) {
+            $where[] = " tl.test_type IN (" . $this->db->inTextList(explode(",", (string) $activeModule)) . ")";
         }
 
         if (!empty($testType)) {
-            $where[] = " tl.test_type like '$testType'";
+            $where[] = " tl.test_type like " . $this->db->quote($testType);
         }
 
         if ($onlyActive) {
@@ -1959,7 +1956,7 @@ final class CommonService
         }
 
         if ($updatedDateTime) {
-            $where[] = " f.updated_datetime >= '$updatedDateTime'";
+            $where[] = " f.updated_datetime >= " . $this->db->quote($updatedDateTime);
         }
         $whereStr = "";
         if ($where !== []) {
@@ -2023,7 +2020,7 @@ final class CommonService
 
         // Add last update datetime filter if provided
         if ($updatedDateTime) {
-            $where[] = " p.updated_datetime >= '$updatedDateTime'";
+            $where[] = " p.updated_datetime >= " . $this->db->quote($updatedDateTime);
         }
 
         // Combine all WHERE conditions
@@ -2090,7 +2087,7 @@ final class CommonService
         }
 
         if ($updatedDateTime) {
-            $where[] = " d.updated_datetime >= '" . $this->db->escape($updatedDateTime) . "'";
+            $where[] = " d.updated_datetime >= " . $this->db->quote($updatedDateTime);
         }
 
         if ($where !== []) {
@@ -2165,11 +2162,11 @@ final class CommonService
         }
 
         if (!$module && $facilityType == 1 && !empty($activeModule)) {
-            $where[] = " hf.test_type IN ('$activeModule')";
+            $where[] = " hf.test_type IN (" . $this->db->quote($activeModule) . ")";
         }
 
         if (!empty($testType)) {
-            $where[] = " hf.test_type like '$testType'";
+            $where[] = " hf.test_type like " . $this->db->quote($testType);
         }
 
         if ($onlyActive) {
@@ -2177,10 +2174,10 @@ final class CommonService
         }
 
         if ($facilityType > 0) {
-            $where[] = " f.facility_type = '$facilityType'";
+            $where[] = " f.facility_type = '" . (int) $facilityType . "'";
         }
         if ($updatedDateTime) {
-            $where[] = " f.updated_datetime >= '$updatedDateTime'";
+            $where[] = " f.updated_datetime >= " . $this->db->quote($updatedDateTime);
         }
         $whereStr = "";
         if ($where !== []) {
@@ -2453,7 +2450,7 @@ final class CommonService
         // Construct the SET clause of the update query
         $setClauses = [];
         foreach ($columnsDefaults as $column => $defaultValue) {
-            $setClauses[] = "$column = CASE WHEN $column IS NULL THEN '$defaultValue' ELSE $column END";
+            $setClauses[] = "$column = CASE WHEN $column IS NULL THEN " . $this->db->quote($defaultValue) . " ELSE $column END";
         }
         $setClause = implode(", ", $setClauses);
 

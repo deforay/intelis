@@ -52,8 +52,7 @@ if ($facilityResult[0]['contact_person'] != '') {
 
 $stateName = $facilityResult[0]['facility_state'];
 if (trim((string) $stateName) !== '') {
-	$stateQuery = "SELECT * from geographical_divisions where geo_name='" . $stateName . "'";
-	$stateResult = $db->query($stateQuery);
+	$stateResult = \App\Registries\ContainerRegistry::get(\App\Services\GeoLocationsService::class)->findByName($stateName);
 }
 if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 	$stateResult[0]['geo_code'] = '';
@@ -61,8 +60,7 @@ if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 //district details
 $districtResult = [];
 if (trim((string) $stateName) !== '') {
-	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "' AND status='active'";
-	$districtResult = $db->query($districtQuery);
+	$districtResult = \App\Registries\ContainerRegistry::get(\App\Services\FacilitiesService::class)->getDistrictNamesInState($stateName);
 	$facilityQuery = "SELECT * from facility_details where `status`='active' AND facility_type='2' Order By facility_name";
 	$lResult = $db->query($facilityQuery);
 }
@@ -368,8 +366,8 @@ $disable = "disabled = 'disabled'";
 													<div class="col-lg-12">
 														<label class="radio-inline">
 															<?php
-															$vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim((string) $vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim((string) $vlQueryInfo['reason_for_vl_testing']) . "'";
-															$vlTestReasonResultRow = $db->query($vlTestReasonQueryRow);
+															$vlTestReasonResultRow = \App\Registries\ContainerRegistry::get(\App\Repositories\Reference\ReferenceDataRepository::class)
+															     ->findByIdOrName('test-reason', 'vl', trim((string) $vlQueryInfo['reason_for_vl_testing']));
 															$checked = '';
 															$display = '';
 															$vlValue = '';

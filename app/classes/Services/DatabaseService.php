@@ -102,6 +102,27 @@ final class DatabaseService extends MysqliDb
     }
 
     /**
+     * A value as a quoted SQL string literal, for the queries that are still
+     * assembled as strings: `"... WHERE col >= " . $db->quote($value)`.
+     */
+    public function quote(mixed $value): string
+    {
+        return "'" . $this->escape((string) $value) . "'";
+    }
+
+    /**
+     * Renders a text list for an IN () clause, each element quoted as by quote().
+     */
+    public function inTextList(iterable $values): string
+    {
+        $quoted = [];
+        foreach ($values as $value) {
+            $quoted[] = $this->quote($value);
+        }
+        return implode(',', $quoted);
+    }
+
+    /**
      * Renders an id list for an IN () clause from an array or a CSV string,
      * casting every element to int. Non-numeric elements are dropped; an empty
      * result yields "0" so the IN () stays valid SQL and matches nothing.

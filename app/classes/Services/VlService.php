@@ -196,7 +196,7 @@ final class VlService extends AbstractTestService
     {
         $query = "SELECT * FROM r_vl_sample_type where status='active'";
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $results = $this->db->rawQuery($query);
         $response = [];
@@ -1097,7 +1097,7 @@ final class VlService extends AbstractTestService
         $result = [];
         $this->db->where('status', 'active');
         if ($updatedDateTime) {
-            $this->db->where("updated_datetime >= '$updatedDateTime'");
+            $this->db->where("updated_datetime >= " . $this->db->quote($updatedDateTime));
         }
         $results = $this->db->get('r_vl_test_failure_reasons');
         if ($option) {
@@ -1115,10 +1115,8 @@ final class VlService extends AbstractTestService
         _getFromFileCache('vl_results_for_instrument', function () use ($instrumentId) {
 
             if (!empty($instrumentId)) {
-                $instrumentCondition = $this->db->escape($instrumentId);
-
                 // Using 'one' instead of 'all' if checking for at least one occurrence is sufficient
-                $this->db->where("(JSON_SEARCH(available_for_instruments, 'all', '$instrumentCondition') IS NOT NULL)
+                $this->db->where("(JSON_SEARCH(available_for_instruments, 'all', " . $this->db->quote($instrumentId) . ") IS NOT NULL)
                         OR available_for_instruments IS NULL
                         OR available_for_instruments REGEXP '^\\[\\s*\\]$'");
             }
