@@ -227,6 +227,27 @@ final class Covid19ListingSqlEncodingTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testConfirmatoryTestsTotalCountsEveryMatchNotJustThePage(): void
+    {
+        LegacyAppHarness::db()->rawQuery(
+            "INSERT INTO covid19_tests (covid19_id, test_name, result)
+             VALUES (1, 'PCR', 'positive'), (2, 'PCR', 'positive')"
+        );
+
+        $request = LegacyAppHarness::withPost(
+            ['sEcho' => 1, 'iDisplayStart' => 0, 'iDisplayLength' => 1, 'sSearch' => ''],
+            '/covid-19/results/get-record-confirmatory-tests.php'
+        );
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $json = json_decode((string) $handler->handle($request)->getBody(), true);
+
+        self::assertIsArray($json);
+        self::assertCount(1, $json['aaData']);
+        self::assertSame(2, $json['iTotalRecords']);
+        self::assertSame(2, $json['iTotalDisplayRecords']);
+    }
+
+    #[RunInSeparateProcess]
     public function testRequestListDiscardsAnythingButAscOrDescAsTheSortDirection(): void
     {
         self::assertSame(['C19001', 'C19002', 'C19003'], $this->listed('/covid-19/requests/get-request-list.php', [
