@@ -149,9 +149,9 @@ try {
      ])];
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           if ($_POST['status'] == 'no_result') {
-               $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . REJECTED;
+               $statusCondition = '  (vl.result is NULL OR vl.result ="")';
           } elseif ($_POST['status'] == 'result') {
-               $statusCondition = ' (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status = ' . REJECTED;
+               $statusCondition = ' (vl.result is NOT NULL AND vl.result !="")';
           } else {
                $statusCondition = ' vl.result_status=4 ';
           }

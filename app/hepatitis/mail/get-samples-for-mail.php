@@ -36,7 +36,7 @@ $type = $_POST['type'];
 //print_r($_POST);die;
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
-$query = "SELECT hepatitis.sample_code,hepatitis.hepatitis_id,hepatitis.facility_id,f.facility_name,f.facility_code FROM form_hepatitis as hepatitis LEFT JOIN facility_details as f ON hepatitis.facility_id=f.facility_id where ((hepatitis.result_status = 7 AND ((hepatitis.hcv_vl_count is NOT NULL AND hepatitis.hcv_vl_count !='') OR (hepatitis.hbv_vl_count is NOT NULL AND hepatitis.hbv_vl_count !=''))) OR (hepatitis.result_status = 4 AND ((hepatitis.hcv_vl_count is NULL AND hepatitis.hcv_vl_count ='') OR (hepatitis.hbv_vl_count is NULL AND hepatitis.hbv_vl_count =''))))";
+$query = "SELECT hepatitis.sample_code,hepatitis.hepatitis_id,hepatitis.facility_id,f.facility_name,f.facility_code FROM form_hepatitis as hepatitis LEFT JOIN facility_details as f ON hepatitis.facility_id=f.facility_id where ((hepatitis.result_status = 7 AND ((hepatitis.hcv_vl_count is NOT NULL AND hepatitis.hcv_vl_count !='') OR (hepatitis.hbv_vl_count is NOT NULL AND hepatitis.hbv_vl_count !=''))) OR (hepatitis.result_status = 4 AND ((hepatitis.hcv_vl_count IS NULL OR hepatitis.hcv_vl_count = '') AND (hepatitis.hbv_vl_count IS NULL OR hepatitis.hbv_vl_count = ''))))";
 if (isset($facility) && array_filter($facility) !== []) {
   $query = $query . " AND hepatitis.facility_id IN (" . $db->inIntList($facility) . ")";
 }

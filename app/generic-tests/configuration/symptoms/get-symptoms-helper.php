@@ -94,7 +94,7 @@ $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_symptoms $sWhere order by $sOrder");
+$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_symptoms $sWhere");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */

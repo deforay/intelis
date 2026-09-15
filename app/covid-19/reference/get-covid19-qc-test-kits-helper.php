@@ -77,7 +77,7 @@ $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_covid19_qc_testkits $sWhere order by $sOrder");
+$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_covid19_qc_testkits $sWhere");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */

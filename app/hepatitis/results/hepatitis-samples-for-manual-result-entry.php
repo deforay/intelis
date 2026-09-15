@@ -103,13 +103,13 @@ try {
           if ($_POST['status'] == 'no_result') {
                $statusCondition = ' ((vl.hcv_vl_count is NULL OR vl.hcv_vl_count  = "" OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  = "") AND vl.result_status = ' . RECEIVED_AT_TESTING_LAB . ')';
           } elseif ($_POST['status'] == 'result') {
-               $statusCondition = ' vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  != "" OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  != "" ';
+               $statusCondition = ' (vl.hcv_vl_count != "" OR vl.hbv_vl_count != "") ';
           } else {
                $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . REJECTED;
           }
           $sWhere[] = $statusCondition;
      } else {
-          $sWhere[] = " ((vl.result_status = " . ACCEPTED . " AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = " . REJECTED . " AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
+          $sWhere[] = " ((vl.result_status = " . ACCEPTED . " AND ((vl.hcv_vl_count IS NULL OR vl.hcv_vl_count = '') AND (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count = ''))) OR (vl.result_status = " . REJECTED . " AND ((vl.hcv_vl_count IS NULL OR vl.hcv_vl_count = '') AND (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count = '')))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
      }
 
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {

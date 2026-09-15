@@ -140,7 +140,7 @@ require_once($fileArray[$arr['vl_form']]);
     function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
         if ($.trim($("#" + id).val()) != '') {
             $.blockUI();
-            $.post("/covid-19/requests/check-sample-duplicate.php", {
+            $.post("/hepatitis/requests/check-sample-duplicate.php", {
                     tableName: tableName,
                     fieldName: fieldName,
                     value: $("#" + id).val(),

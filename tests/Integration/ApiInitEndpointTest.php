@@ -176,6 +176,10 @@ final class ApiInitEndpointTest extends TestCase
             self::assertArrayHasKey($field, $facility, $field);
         }
         self::assertArrayNotHasKey('facility_attributes', $facility);
+
+        // Clinics offering any active test type. The list of types used to be
+        // matched as one string ('vl,eid,...'), which no row equals.
+        self::assertCount(2, $data['healthFacilitiesList']);
     }
 
     /**

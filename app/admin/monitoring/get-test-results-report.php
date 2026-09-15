@@ -144,7 +144,7 @@ try {
     }
     if (isset($_POST['sampleBatchCode']) && trim((string) $_POST['sampleBatchCode']) !== '') {
         $code = $db->escape((string) $_POST['sampleBatchCode']);
-        $sWhere[] = " vl.sample_code = '$code' OR b.batch_code = '$code' ";
+        $sWhere[] = " (vl.sample_code = '$code' OR b.batch_code = '$code') ";
     }
 
 

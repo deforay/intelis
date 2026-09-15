@@ -89,7 +89,7 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("select ms.*,lff.facility_name as labNameFrom,lft.facility_name as labNameTo,count(msm.test_type_sample_id) as sample_code from move_samples as ms inner join move_samples_map msm on msm.move_sample_id = ms.move_sample_id LEFT JOIN facility_details as lff ON ms.moved_from_lab_id=lff.facility_id LEFT JOIN facility_details as lft ON ms.moved_to_lab_id=lft.facility_id $sWhere group by ms.move_sample_id order by $sOrder");
+$aResultFilterTotal = $db->rawQuery("select ms.*,lff.facility_name as labNameFrom,lft.facility_name as labNameTo,count(msm.test_type_sample_id) as sample_code from move_samples as ms inner join move_samples_map msm on msm.move_sample_id = ms.move_sample_id LEFT JOIN facility_details as lff ON ms.moved_from_lab_id=lff.facility_id LEFT JOIN facility_details as lft ON ms.moved_to_lab_id=lft.facility_id $sWhere group by ms.move_sample_id");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */

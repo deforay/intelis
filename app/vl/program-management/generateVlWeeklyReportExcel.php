@@ -113,11 +113,11 @@ $sQuery = "SELECT
             ELSE 0
             END) AS pregNotSuppressed,
 		SUM(CASE
-            WHEN (patient_gender = '' OR patient_gender = 'unknown' OR patient_gender = 'unreported' OR patient_gender is NULL AND vl.vl_result_category like 'suppressed') THEN 1
+            WHEN ((patient_gender = '' OR patient_gender = 'unknown' OR patient_gender = 'unreported' OR patient_gender is NULL) AND vl.vl_result_category like 'suppressed') THEN 1
             ELSE 0
             END) AS genderUnknownSuppressed,
 		SUM(CASE
-            WHEN (patient_gender = '' OR patient_gender = 'unknown' OR patient_gender = 'unreported' OR patient_gender is NULL AND vl.vl_result_category like 'not suppressed') THEN 1
+            WHEN ((patient_gender = '' OR patient_gender = 'unknown' OR patient_gender = 'unreported' OR patient_gender is NULL) AND vl.vl_result_category like 'not suppressed') THEN 1
             ELSE 0
             END) AS genderUnknownNotSuppressed,
 		SUM(CASE

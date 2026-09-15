@@ -280,7 +280,7 @@ try {
             $testingPoint[$key]['show'] = $req;
         }
         $data['covid19']['testingPoint'] = $testingPoint;
-        $data['covid19']['testingLabsList'] = $general->getTestingLabsAPI('covid19', null, true, false, $updatedDateTime);
+        $data['covid19']['testingLabsList'] = $general->getTestingLabsAPI('covid19', null, true, false, updatedDateTime: $updatedDateTime);
         /* Type of Test Request */
         $qualityList = [];
         $qualityResults = ['Good', 'Poor'];
