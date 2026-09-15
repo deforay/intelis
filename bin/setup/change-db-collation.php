@@ -537,6 +537,8 @@ function displaySummary(array $results): void
         }
     }
 
+    echo PHP_EOL . "Columns converted: $totalColumnsConverted" . PHP_EOL;
+
     // Final status message
     if (empty($tableErrors) && empty($columnErrors)) {
         echo PHP_EOL . $colors['bold'] . $colors['green'] . "✅ Collation check & conversion completed successfully!" . $colors['reset'] . PHP_EOL;
