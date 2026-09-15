@@ -279,7 +279,9 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
-$iFilteredTotal = (int) ($db->rawQueryOne("SELECT COUNT(*) AS total FROM ($countQuery) AS filtered")['total'] ?? 0);
+// Counted as rows rather than as a derived table: vl.*, b.* and ts.* repeat
+// column names, which a derived table refuses.
+$iFilteredTotal = count($db->rawQuery($countQuery));
 /* Total data set length */
 $iTotal = $iFilteredTotal;
 

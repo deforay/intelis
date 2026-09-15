@@ -53,7 +53,7 @@ final class Covid19ListingSqlEncodingTest extends TestCase
             'roles', 'facility_details', 'r_sample_status', 'batch_details', 'user_details',
             'r_countries', 'r_covid19_results', 'r_covid19_test_reasons', 'r_covid19_sample_type',
             'r_covid19_sample_rejection_reasons', 'r_funding_sources', 'r_implementation_partners',
-            'form_covid19', 'activity_log', 'system_config', 'global_config',
+            'form_covid19', 'covid19_tests', 'activity_log', 'system_config', 'global_config',
         ]);
         LegacyAppHarness::withSession(['roleId' => 1]);
 
@@ -206,6 +206,23 @@ final class Covid19ListingSqlEncodingTest extends TestCase
 
         self::assertSame([], $this->listed('/covid-19/requests/get-request-list.php', [
             'facilityName' => (string) self::FACILITY_ID, 'gender' => 'unreported', 'hidesrcofreq' => '',
+        ]));
+    }
+
+    /**
+     * The confirmatory tests grid lists samples with a positive test. Its totals
+     * came from a different query, and with a search term the "result" status
+     * filter named a column `vl.` that does not exist.
+     */
+    #[RunInSeparateProcess]
+    public function testConfirmatoryTestsListThePositiveSampleWithItsSearchAndStatus(): void
+    {
+        LegacyAppHarness::db()->rawQuery(
+            "INSERT INTO covid19_tests (covid19_id, test_name, result) VALUES (1, 'PCR', 'positive')"
+        );
+
+        self::assertSame(['C19001'], $this->listed('/covid-19/results/get-record-confirmatory-tests.php', [
+            'sSearch' => 'C19001', 'status' => 'result',
         ]));
     }
 
