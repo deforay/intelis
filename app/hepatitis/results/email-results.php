@@ -188,22 +188,6 @@ $batchResult = $db->rawQuery($batchQuery);
 										</td>
 									</tr>
 									<tr>
-										<td><strong class="showPregnant">
-												<?php echo _translate("Pregnant"); ?>&nbsp;:
-											</strong></td>
-										<td>
-											<input type="radio" name="pregnant" title="<?php echo _translate('Please choose type'); ?>" class="pregnant showPregnant" id="prgYes" value="yes" disabled="disabled" />&nbsp;&nbsp;<?php echo _translate("Yes"); ?>
-											<input type="radio" name="pregnant" title="<?php echo _translate('Please choose type'); ?>" class="pregnant showPregnant" id="prgNo" value="no" disabled="disabled" />&nbsp;&nbsp;<?php echo _translate("No"); ?>
-										</td>
-										<td class=""><strong>
-												<?php echo _translate("Urgency"); ?>&nbsp;:
-											</strong></td>
-										<td class="">
-											<input type="radio" name="urgency" title="<?php echo _translate('Please choose urgency type'); ?>" class="urgent" id="urgencyNormal" value="normal" />&nbsp;&nbsp;<?php echo _translate("Normal"); ?>
-											<input type="radio" name="urgency" title="<?php echo _translate('Please choose urgency type'); ?>" class="urgent" id="urgencyUrgent" value="urgent" />&nbsp;&nbsp;<?php echo _translate("Urgent"); ?>
-										</td>
-									</tr>
-									<tr>
 										<td>&nbsp;<strong>
 												<?php echo _translate("Province/State"); ?> &nbsp;:
 											</strong></td>
@@ -468,18 +452,6 @@ $batchResult = $db->rawQuery($batchQuery);
 		var facilityName = $("#facilityName").val();
 		var sTypeName = $("#sampleType").val();
 		var gender = $("#gender").val();
-		var prg = $("input:radio[name=pregnant]");
-		var urgent = $("input:radio[name=urgency]");
-		if (prg[0].checked == false && prg[1].checked == false) {
-			pregnant = "";
-		} else {
-			pregnant = $('input[name=pregnant]:checked').val();
-		}
-		if (urgent[0].checked == false && urgent[1].checked == false) {
-			urgent = "";
-		} else {
-			urgent = $('input[name=urgency]:checked').val();
-		}
 		$("#errorMsg").html("");
 		var state = $('#state').val();
 		var district = $('#district').val();
@@ -492,8 +464,6 @@ $batchResult = $db->rawQuery($batchQuery);
 				sType: sTypeName,
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				gender: gender,
-				pregnant: pregnant,
-				urgent: urgent,
 				state: state,
 				district: district,
 				batch: batch,

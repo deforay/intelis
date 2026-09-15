@@ -105,8 +105,7 @@ if ($isLisInstance) {
                                         <input style="width: 80%;" value="<?php echo $tbInfo['sample_code']; ?>" type="text"
                                             class="form-control isRequired" id="sampleCode" name="sampleCode" readonly
                                             placeholder="Sample ID"
-                                            title="<?php echo _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>"
-                                            onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The Sample ID that you entered already exists. Please try another Sample ID',null)" />
+                                            title="<?php echo _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" />
                                     <?php } ?>
                                 </div>
                             </div>

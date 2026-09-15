@@ -159,25 +159,6 @@ require_once($fileArray[$arr['vl_form']]);
         }
     }
 
-    function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
-        if ($.trim($("#" + id).val()) != '') {
-            $.blockUI();
-            $.post("/tb/requests/check-sample-duplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: $("#" + id).val(),
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
-                    if (data != 0) {
-
-                    }
-                });
-            $.unblockUI();
-        }
-    }
-
     function insertSampleCode(formId, tbSampleId = null, sampleCode = null, sampleCodeKey = null, sampleCodeFormat = null, countryId = null, sampleCollectionDate = null, provinceCode = null, provinceId = null) {
         $.blockUI();
         let formData = $("#" + formId).serialize();

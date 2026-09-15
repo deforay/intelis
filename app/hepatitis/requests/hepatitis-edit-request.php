@@ -182,25 +182,6 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
 <script>
     changeReject($('#isSampleRejected').val());
 
-    function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
-        if ($.trim($("#" + id).val()) != '') {
-            $.blockUI();
-            $.post("/hepatitis/requests/check-sample-duplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: $("#" + id).val(),
-                fnct: fnct,
-                format: "html"
-            },
-                function (data) {
-                    if (data != 0) {
-
-                    }
-                });
-            $.unblockUI();
-        }
-    }
-
     $(document).ready(function () {
 
 

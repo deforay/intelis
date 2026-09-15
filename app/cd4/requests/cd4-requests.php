@@ -376,24 +376,6 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
-							<td><strong>
-									<?php echo _translate("Community Sample"); ?>&nbsp;:
-								</strong></td>
-							<td>
-								<select name="communitySample" id="communitySample" class="form-control"
-									title="<?php echo _translate('Please choose community sample'); ?>"
-									style="width:100%;">
-									<option value="">
-										<?php echo _translate("-- Select --"); ?>
-									</option>
-									<option value="yes">
-										<?php echo _translate("Yes"); ?>
-									</option>
-									<option value="no">
-										<?php echo _translate("No"); ?>
-									</option>
-								</select>
-							</td>
 
 							<td><strong>
 									<?php echo _translate("Province/State"); ?>&nbsp;:
@@ -956,10 +938,6 @@ foreach ($sourceOfRequests as $value => $displayText) {
 					"value": $("#vLoad").val()
 				});
 
-				aoData.push({
-					"name": "communitySample",
-					"value": $("#communitySample").val()
-				});
 				aoData.push({
 					"name": "vlLab",
 					"value": $("#vlLab").val()

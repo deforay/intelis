@@ -158,25 +158,6 @@ if (!$canEdit) {
 require_once($fileArray[$arr['vl_form']]);
 ?>
 <script>
-    function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
-        if ($.trim($("#" + id).val()) != '') {
-            $.blockUI();
-            $.post("/tb/requests/check-sample-duplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: $("#" + id).val(),
-                fnct: fnct,
-                format: "html"
-            },
-                function (data) {
-                    if (data != 0) {
-
-                    }
-                });
-            $.unblockUI();
-        }
-    }
-
     $(document).ready(function () {
 
 

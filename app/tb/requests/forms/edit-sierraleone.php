@@ -145,8 +145,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 													class="form-control isRequired" id="sampleCode" name="sampleCode"
 													readonly="readonly" placeholder="Sample ID"
 													title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>"
-													style="width:100%;"
-													onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
+													style="width:100%;" />
 											</td>
 										<?php } ?>
 										<th scope="row"></th>

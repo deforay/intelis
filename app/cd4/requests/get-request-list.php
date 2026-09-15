@@ -147,7 +147,6 @@ try {
           'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
           'vlLab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
           'showReordSample' => ['vl.sample_reordered', ListingFilterClauseBuilder::EQUALS],
-          'communitySample' => ['vl.community_sample', ListingFilterClauseBuilder::EQUALS],
           'patientPregnant' => ['vl.is_patient_pregnant', ListingFilterClauseBuilder::EQUALS],
           'breastFeeding' => ['vl.is_patient_breastfeeding', ListingFilterClauseBuilder::EQUALS],
           'district' => ['f.facility_district_id', ListingFilterClauseBuilder::EQUALS],
