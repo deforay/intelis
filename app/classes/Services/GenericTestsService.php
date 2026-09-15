@@ -343,7 +343,6 @@ final class GenericTestsService extends AbstractTestService
         }
 
         $latestRow = [];
-        $latestRejected = false;
         $keptIds = [];   // existing test_ids updated in place this save (so we never delete them)
         foreach ($tr['labId'] as $k => $labId) {
             if (empty($labId)) {
@@ -403,7 +402,6 @@ final class GenericTestsService extends AbstractTestService
             }
             if ($k === $lastValidIndex) {
                 $latestRow = $row;
-                $latestRejected = $isRej;
             }
         }
 
@@ -643,7 +641,7 @@ final class GenericTestsService extends AbstractTestService
             $testType = json_decode((string) $testTypeResult['test_form_config'], true);
             $fcodes = [];
             if (isset($testType) && !empty($testType)) {
-                foreach ($testType as $section => $sectionArray) {
+                foreach ($testType as $sectionArray) {
                     foreach ($sectionArray as $key => $value) {
                         if ($value['field_code'] == $fcode) {
                             $fcodes[] = $key;

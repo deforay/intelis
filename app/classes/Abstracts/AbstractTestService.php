@@ -691,7 +691,7 @@ abstract class AbstractTestService
 
         foreach ($this->db->rawQueryGenerator($sql, $params) as $aRow) {
             $values = [];
-            foreach ($columns as [$label, $column, $isDate]) {
+            foreach ($columns as [, $column, $isDate]) {
                 $value = $aRow[$column] ?? '';
                 $values[] = $isDate ? DateUtility::humanReadableDateFormat($value ?? '') : $value;
             }

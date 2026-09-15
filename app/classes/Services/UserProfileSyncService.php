@@ -40,7 +40,6 @@ final class UserProfileSyncService
     public function __construct(
         private readonly DatabaseService $db,
         private readonly CommonService $commonService,
-        private readonly UsersService $usersService,
     ) {
     }
 

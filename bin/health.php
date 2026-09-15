@@ -249,7 +249,6 @@ if ($diskStatus === 'ok') {
 
 // ---- 4) MySQL health (latency check) ----
 $mysqlLatencyStatus = 'ok';
-$mysqlLevel = 'info';
 $latencyMs = null;
 try {
     $start = microtime(true);
@@ -257,18 +256,16 @@ try {
     $latencyMs = (microtime(true) - $start) * 1000.0;
     if ($latencyMs >= $mysqlDegradedMs) {
         $mysqlLatencyStatus = 'warn';
-        $mysqlLevel = 'warn';
     }
 } catch (Throwable) {
     $mysqlLatencyStatus = 'critical';
-    $mysqlLevel = 'critical';
 }
 
 setStateAndMaybeAlert(
     $state,
     'mysql',
     $mysqlLatencyStatus,
-    function ($old, $new) use ($mysqlLevel, $latencyMs): void {
+    function ($old, $new) use ($latencyMs): void {
         if ($new === 'critical') {
             SystemService::insertSystemAlert(
                 'critical',

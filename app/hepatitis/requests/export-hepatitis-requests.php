@@ -69,11 +69,6 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) !== "") {
             $patientLname = '';
         }
 
-        if (isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others") {
-            $sourceOfArtPOE = str_replace("-", " ", (string) $aRow['source_of_alert']);
-        } else {
-            $sourceOfArtPOE = $aRow['source_of_alert_other'];
-        }
         $row = [];
         $row[] = $no;
         if ($general->isStandaloneInstance()) {

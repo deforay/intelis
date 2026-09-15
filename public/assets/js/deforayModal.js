@@ -14,7 +14,6 @@
         lockScroll();
 
         const modal = modalWrapper.querySelector('.dfy-modal');
-        const iframe = qs('dFrame');
 
         if (w) modal.style.width = Math.min(window.innerWidth * 0.95, parseInt(w, 10)) + 'px';
         if (h) modal.style.height = Math.min(window.innerHeight * 0.9, parseInt(h, 10)) + 'px';

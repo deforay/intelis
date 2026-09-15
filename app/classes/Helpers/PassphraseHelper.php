@@ -8,7 +8,6 @@ class PassphraseHelper
 {
     private static array $consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'w', 'y', 'z'];
     private static array $vowels = ['a', 'e', 'i', 'o', 'u'];
-    private static array $separators = ['-', '.', '_', ' '];
     private static array $allowedSeparators = ['-', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 
     /**

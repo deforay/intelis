@@ -138,7 +138,6 @@ is_disabled() {
 
 dispatch_marker() {
     local lp="$1" marker="$2"
-    local pending_dir="$lp/var/remote-commands/pending"
     local results_dir="$lp/var/remote-commands/results"
     local prepared_dir="$lp/var/remote-commands/prepared"
     local nonces_dir="$lp/var/remote-commands/processed-nonces"

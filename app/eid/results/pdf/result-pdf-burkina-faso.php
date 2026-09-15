@@ -163,9 +163,6 @@ if (!empty($result)) {
         } elseif ($result['result'] == 'negative') {
             $finalResult = $result['result'];
             $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-        } elseif ($result['result'] == 'indeterminate') {
-            $finalResult = $result['result'];
-            $smileyContent = '';
         } else {
             $finalResult = $result['result'];
             $smileyContent = '';

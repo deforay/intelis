@@ -39,7 +39,6 @@ final class MiscUtility
             return $returnArray ? [] : null;
         }
 
-        $desqid = null;
         $sqids = new Sqids();
         $ids = $sqids->decode($data);
         return $returnArray === false && count($ids) == 1 ? $ids[0] : $ids;
@@ -1195,7 +1194,7 @@ final class MiscUtility
         $string = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $string);
 
         // Trim Unicode whitespace and control characters from both ends
-        return preg_replace('/^[\p{Z}\p{C}]+|[\p{Z}\p{C}]+$/u', '', $string);
+        return preg_replace('/(?:^[\p{Z}\p{C}]+)|(?:[\p{Z}\p{C}]+$)/u', '', $string);
     }
 
     public static function getFullImagePath(string $imageName, string $basePath): ?string

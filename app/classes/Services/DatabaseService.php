@@ -889,7 +889,7 @@ final class DatabaseService extends MysqliDb
 
     private function sanitizeSqlForSelect(string $sql): string
     {
-        $trimmed = preg_replace('/(?s)\/\*.*?\*\/|--.*?(?=\n|$)|#.*/', '', $sql);
+        $trimmed = preg_replace('/(?s)\/\*.*?\*\/|--[^\n]*|#[^\n]*/', '', $sql);
         $trimmed = ltrim((string) $trimmed);
         return ltrim($trimmed, '(');
     }

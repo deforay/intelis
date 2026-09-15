@@ -111,7 +111,7 @@ class Utilities {
         }
         if (funcs.length === 0) return arg => arg;
         if (funcs.length === 1) return funcs[0];
-        return funcs.reduce((a, b) => (...args) => a(b(...args)));
+        return funcs.slice(1).reduce((a, b) => (...args) => a(b(...args)), funcs[0]);
     }
 
     // 7. PIPE - Combine functions (left to right)
@@ -121,7 +121,7 @@ class Utilities {
         }
         if (funcs.length === 0) return arg => arg;
         if (funcs.length === 1) return funcs[0];
-        return funcs.reduce((a, b) => (...args) => b(a(...args)));
+        return funcs.slice(1).reduce((a, b) => (...args) => b(a(...args)), funcs[0]);
     }
 
     // 8. CURRY - Transform function to accept arguments one at a time
@@ -360,9 +360,19 @@ class Utilities {
     // STRING UTILITIES
     // ========================================
 
+    // Strip every trailing occurrence of a single character without a regex,
+    // so long runs of that character elsewhere cannot cause backtracking.
+    static trimTrailingChar(str, char) {
+        let end = str.length;
+        while (end > 0 && str[end - 1] === char) {
+            end--;
+        }
+        return str.slice(0, end);
+    }
+
     static toSnakeCase(str) {
         if (!str) return '';
-        return str
+        return Utilities.trimTrailingChar(str
             // Handle sequences of uppercase letters as single words
             .replace(/([A-Z])([A-Z][a-z])/g, '$1_$2')
             // Add an underscore before any uppercase letter followed by lowercase letters
@@ -372,7 +382,7 @@ class Utilities {
             // Replace spaces and any non-alphanumeric characters (excluding underscores) with underscores
             .replace(/[\s\W]+/g, '_')
             // Remove leading/trailing underscores
-            .replace(/^_+/, '').replace(/_+$/, '');
+            .replace(/^_+/, ''), '_');
     }
 
     static toCamelCase(str) {
@@ -391,11 +401,11 @@ class Utilities {
 
     static toKebabCase(str) {
         if (!str) return '';
-        return str
+        return Utilities.trimTrailingChar(str
             .replace(/([a-z])([A-Z])/g, '$1-$2')
             .replace(/[\s_]+/g, '-')
             .toLowerCase()
-            .replace(/^-+/, '').replace(/-+$/, '');
+            .replace(/^-+/, ''), '-');
     }
 
     // Capitalize first letter of each word
@@ -409,12 +419,12 @@ class Utilities {
     // Generate slug from string
     static slugify(str) {
         if (!str) return '';
-        return str
+        return Utilities.trimTrailingChar(str
             .toLowerCase()
             .trim()
             .replace(/[^\w\s-]/g, '')
             .replace(/[\s_-]+/g, '-')
-            .replace(/^-+/, '').replace(/-+$/, '');
+            .replace(/^-+/, ''), '-');
     }
 
     // Truncate string with ellipsis

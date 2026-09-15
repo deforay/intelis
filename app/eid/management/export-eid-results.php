@@ -76,7 +76,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$userInfo[$user['user_id']] = ($user['user_name']);
 	}
 	// Row builder function
-	$buildRow = function ($aRow, $no) use ($general, $key, $formId, $testPlatformList, $userInfo): array {
+	$buildRow = function ($aRow, $no) use ($general, $key, $formId, $testPlatformList, $userInfo, $eidResults): array {
 		$row = [];
 
 		//set gender

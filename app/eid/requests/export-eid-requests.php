@@ -57,7 +57,7 @@ if ($formId == DRC) {
 
 
 
-$buildRow = function ($aRow, $no) use ($general, $key, $formId): array {
+$buildRow = function ($aRow, $no) use ($general, $key, $formId, $eidResults): array {
 
     $row = [];
     //set gender

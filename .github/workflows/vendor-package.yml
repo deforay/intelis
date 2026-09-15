@@ -115,7 +115,7 @@ jobs:
           sha256sum "${{ env.PACKAGE_NAME }}" > "${{ env.PACKAGE_NAME }}.sha256"
           
           echo "Package created successfully"
-          ls -lh *.tar.gz
+          ls -lh ./*.tar.gz
           
           # Store package size for release notes
           echo "PACKAGE_SIZE=$(du -h ${{ env.PACKAGE_NAME }} | cut -f1)" >> $GITHUB_ENV

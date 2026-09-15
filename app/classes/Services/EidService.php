@@ -179,7 +179,6 @@ final class EidService extends AbstractTestService
 
             $formId = (int) $this->commonService->getGlobalConfig('vl_form');
 
-            $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 

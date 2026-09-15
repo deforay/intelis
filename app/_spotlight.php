@@ -212,7 +212,7 @@ $spotlightData = \App\Utilities\MemoUtility::memo($spotlightCacheKey, fn() => $f
             <input type="text" id="spotlightInput" class="spotlight-input"
                 placeholder="<?= _translate('Search menus, actions...'); ?>" autocomplete="off"
                 spellcheck="false" role="combobox" aria-expanded="false" aria-autocomplete="list"
-                aria-controls="spotlightResults" aria-activedescendant=""
+                aria-controls="spotlightResults"
                 aria-label="<?= _translate('Quick Search'); ?>">
             <span class="spotlight-shortcut">ESC</span>
         </div>

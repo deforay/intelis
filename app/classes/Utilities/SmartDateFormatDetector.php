@@ -392,11 +392,7 @@ final class SmartDateFormatDetector
         if (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})\s+(AM|PM)$/i', $dateString, $matches)) {
             $month = $matches[1];
             $day = $matches[2];
-            $year = $matches[3];
             $hour = $matches[4];
-            $minute = $matches[5];
-            $second = $matches[6];
-            $ampm = $matches[7];
 
             // Generate appropriate format based on actual lengths
             $monthFormat = strlen($month) === 1 ? 'n' : 'm';

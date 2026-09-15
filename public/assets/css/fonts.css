@@ -70,7 +70,3 @@ font-style:normal;
 font-weight:600;
 src:local('Source Sans Pro Semibold'), local('SourceSansPro-Semibold'), local('SourceSansPro-Black'), url(../fonts/sourcesanspro/SourceSansPro-SemiBold.ttf) format('truetype');
 }
-
-body{
-
-}

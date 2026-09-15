@@ -10,7 +10,6 @@ use App\Services\Covid19Service;
 use App\Registries\ContainerRegistry;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
-use App\Utilities\SampleRejectionUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -65,33 +64,6 @@ $buildRow = function ($aRow, $no) use ($general, $key, $covid19Results): array {
     }
 
     $row = [];
-    $testPlatform = null;
-    $testMethod = null;
-    // Get testing platform and test method
-    $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id= ? ORDER BY test_id DESC LIMIT 1";
-    $covid19TestInfo = $db->rawQueryOne($covid19TestQuery, [$aRow['covid19_id']]);
-    if (!empty($covid19TestInfo)) {
-        foreach ($covid19TestInfo as $indexKey => $rows) {
-            $testPlatform = $rows['testing_platform'] ?? null;
-            $testMethod = $rows['test_name'] ?? null;
-        }
-    }
-
-    //set gender
-    $gender = '';
-    if ($aRow['patient_gender'] == 'male') {
-        $gender = 'M';
-    } elseif ($aRow['patient_gender'] == 'female') {
-        $gender = 'F';
-    } elseif ($aRow['patient_gender'] == 'unreported') {
-        $gender = 'Unreported';
-    }
-
-    //set sample rejection
-    $sampleRejection = 'No';
-    if (SampleRejectionUtility::isRejected($aRow)) {
-        $sampleRejection = 'Yes';
-    }
 
     if (!empty($aRow['patient_name'])) {
         $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));

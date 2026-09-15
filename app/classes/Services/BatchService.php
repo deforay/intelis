@@ -170,7 +170,6 @@ final class BatchService
     {
         $labelNewContent = '';
         $displayOrder = [];
-        $alphaNumeric = $this->generateAlphaNumericRange();
         $jsonToArray = json_decode((string)$batchInfo['label_order'], true);
         $batchControlNames ??= [];
         $content = '';
@@ -202,8 +201,7 @@ final class BatchService
             }
         } else {
             $controls = '';
-            foreach ($jsonToArray as $j => $jsonValue) {
-                $index = ($batchInfo['position_type'] == 'alpha-numeric') ? $alphaNumeric[$j] : $j;
+            foreach ($jsonToArray as $jsonValue) {
                 $displayOrder[] = $jsonValue;
                 $xplodJsonToArray = explode("_", (string)$jsonValue);
 

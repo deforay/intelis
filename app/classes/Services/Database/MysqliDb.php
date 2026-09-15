@@ -1549,7 +1549,7 @@ class MysqliDb
 
         $this->_query .= " GROUP BY ";
 
-        foreach ($this->_groupBy as $key => $value) {
+        foreach ($this->_groupBy as $value) {
             $this->_query .= $value . ", ";
         }
 

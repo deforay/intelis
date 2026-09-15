@@ -141,10 +141,8 @@ try {
                     if ($testType === 'hbv') {
                         $resultField = "hbv_vl_count";
                         $otherField = "hcv_vl_count";
-                    } elseif ($testType === 'hcv') {
-                        $resultField = "hcv_vl_count";
-                        $otherField = "hbv_vl_count";
                     } else {
+                        // HCV, and the default when the test type is missing
                         $resultField = "hcv_vl_count";
                         $otherField = "hbv_vl_count";
                     }

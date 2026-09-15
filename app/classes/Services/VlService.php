@@ -1187,11 +1187,11 @@ final class VlService extends AbstractTestService
             $processed = $this->preprocessViralLoadInput($input);
 
             // Check if it's a pure number (including scientific notation and commas)
-            if (preg_match('/^-?\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?$/', $processed)) {
-                return 'numeric';
-            }
-            // Check if it's a number with < or > operator
-            elseif (preg_match('/^[<>]\s*\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?$/', $processed)) {
+            // or a number with a < or > operator
+            if (
+                preg_match('/^-?\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?$/', $processed)
+                || preg_match('/^[<>]\s*\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?$/', $processed)
+            ) {
                 return 'numeric';
             }
 

@@ -478,7 +478,7 @@ if (file_exists($file)) {
             $logLevel = LogLevelUtility::detectLogLevel($entry);
             $entry = htmlspecialchars((string) $entry);
 
-            $lines = preg_split('/\\\\n|\\n|\n/', $entry);
+            $lines = preg_split('/\\\\n|\n/', $entry);
             $formattedEntry = '';
 
             foreach ($lines as $i => $line) {
@@ -532,7 +532,7 @@ if (file_exists($file)) {
             $logLevel = LogLevelUtility::detectLogLevel($entry);
             $entry = htmlspecialchars((string) $entry);
 
-            $lines = preg_split('/\\\\n|\\n|\n/', $entry);
+            $lines = preg_split('/\\\\n|\n/', $entry);
             $formattedEntry = '';
 
             foreach ($lines as $i => $line) {

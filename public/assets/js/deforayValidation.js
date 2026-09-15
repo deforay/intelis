@@ -185,9 +185,6 @@ function deforayValidatorInternal(formInputs, useTitleToShowMessage) {
 
     for (let i = 0; i < formInputs.length; i++) {
         let classes = formInputs[i].className;
-        if (classes == "" || classes == null) {
-            valid = true;
-        }
         let parts = classes.split(" ");
 
         if (useTitleToShowMessage && formInputs[i].title != null && formInputs[i].title != "") {
@@ -199,7 +196,6 @@ function deforayValidatorInternal(formInputs, useTitleToShowMessage) {
         for (let cCount = 0; cCount < parts.length; cCount++) {
             let required = false;
             if (parts[cCount] == "isRequired") {
-                required = true;
                 if (formInputs[i].type == 'checkbox' || formInputs[i].type == 'radio') {
                     valid = isRequiredCheckBox(formInputs[i].name);
                     if (elementTitle != null && elementTitle != "") {

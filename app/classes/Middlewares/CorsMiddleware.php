@@ -35,8 +35,8 @@ class CorsMiddleware implements MiddlewareInterface
         $allowOrigin = null;
         $allowedOrigin = in_array('*', $this->options['origin'], true) || in_array($origin, $this->options['origin'], true);
         if ($allowedOrigin) {
-            // When "*" is configured we reflect the caller’s origin, otherwise we honour the allowlist entry.
-            $allowOrigin = in_array('*', $this->options['origin'], true) ? $origin : $origin;
+            // Reflect the caller's origin: with "*" configured any origin is allowed, otherwise it matched the allowlist.
+            $allowOrigin = $origin;
         }
 
         $baseHeaders = [];
