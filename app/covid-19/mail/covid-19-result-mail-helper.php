@@ -8,6 +8,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\MailAttachmentUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -91,13 +92,13 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
          }
       }
       //Pdf file attach
-      $pathFront = realpath(TEMP_PATH);
-
-      if (MiscUtility::fileExists($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile1'])) {
-         $mail->AddAttachment($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile1']);
-      }
-      if (MiscUtility::fileExists($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2'])) {
-         $mail->AddAttachment($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2']);
+      // The PDF references come back from the form, so each is resolved to a file
+      // inside the temporary or upload folders before it is attached.
+      foreach (['pdfFile1', 'pdfFile2'] as $pdfField) {
+         $attachment = MailAttachmentUtility::resolve($_POST[$pdfField] ?? null);
+         if ($attachment !== null) {
+            $mail->AddAttachment($attachment);
+         }
       }
       $message = '';
       if (isset($_POST['message']) && trim((string) $_POST['message']) !== "") {

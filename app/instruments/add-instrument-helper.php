@@ -8,6 +8,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestsService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -37,6 +38,10 @@ try {
 
         if (!empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
+                // The test type names a folder that gets created, so it has to be one.
+                if (!is_string($test) || !array_key_exists($test, TestsService::getTestTypes())) {
+                    continue;
+                }
                 $configDir = realpath(__DIR__);
                 MiscUtility::makeDirectory($configDir . DIRECTORY_SEPARATOR . $test);
 
