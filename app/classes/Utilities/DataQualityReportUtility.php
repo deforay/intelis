@@ -22,6 +22,10 @@ use App\Services\DatabaseService;
  * placeholders people type when they have nothing to enter ("NA", "unknown",
  * "-"). Lab fields are only expected once a sample has reached the lab: a
  * sample still at the clinic is not missing its test date.
+ *
+ * Rows stored with encrypted patient identifiers and names are read as stored.
+ * A blank value is never encrypted, so it is still found, but a placeholder
+ * typed into an encrypted field cannot be recognised in SQL.
  */
 final class DataQualityReportUtility
 {
