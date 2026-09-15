@@ -24,7 +24,8 @@ use Tests\Support\LegacyAppHarness;
  */
 final class ResultEmailQueueTest extends TestCase
 {
-    private string $pdf;
+    // Set before setUp can skip: tearDown still runs for a skipped test.
+    private string $pdf = '';
 
     protected function setUp(): void
     {
@@ -53,7 +54,9 @@ final class ResultEmailQueueTest extends TestCase
 
     protected function tearDown(): void
     {
-        @unlink($this->pdf);
+        if ($this->pdf !== '') {
+            @unlink($this->pdf);
+        }
         if ((getenv('INTELIS_TEST_DB_HOST') ?: '') !== '') {
             LegacyAppHarness::shutdown();
         }
