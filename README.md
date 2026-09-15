@@ -3,7 +3,7 @@
 > **Integrated Laboratory Information & Sample Tracking System**
 > Open-source LIS to manage and track samples for HIV viral load, EID, TB, hepatitis, COVID-19, CD4, and other priority diseases.
 
-![PHP](https://img.shields.io/badge/PHP-8.4+-blue) ![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04%2B-orange) ![Status](https://img.shields.io/badge/status-stable-success) ![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue)
+![PHP](https://img.shields.io/badge/PHP-8.4+-blue) ![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04%2B-orange) ![Status](https://img.shields.io/badge/status-stable-success) ![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue)
 
 InteLIS digitizes laboratory workflows from sample collection to result dispatch, for national and sub-national health programs. It is lightweight, self-hostable, and works both online and offline.
 
@@ -29,7 +29,7 @@ InteLIS was previously called VLSM. Some paths and the database keep the old nam
 
 ## Quick start
 
-Ubuntu 22.04 LTS or later is the recommended install. The installer sets up Apache, MySQL, PHP, cron jobs, and the `intelis` command that runs the machine from then on.
+Ubuntu 24.04 LTS or later is the recommended install. The installer sets up Apache, MySQL, PHP, cron jobs, and the `intelis` command that runs the machine from then on.
 
 ```bash
 # Download the script to a file, then run it. Do NOT pipe it (curl ... | bash).

@@ -133,7 +133,7 @@ install_packages() {
 }
 prepare_system() {
     install_packages
-    check_ubuntu_version "20.04"
+    check_ubuntu_version "22.04"
 
     if ! command -v needrestart &>/dev/null; then
         print info "Installing needrestart..."
@@ -338,7 +338,8 @@ check_ubuntu_version() {
 
     # Check if version is greater than or equal to min_version
     if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
-        print error "This script requires Ubuntu ${min_version} or newer."
+        print error "This script requires Ubuntu ${min_version} or newer. This machine runs Ubuntu ${current_version}."
+        print info "Move this lab to a new machine on Ubuntu 24.04 LTS or later: https://deforay.github.io/intelis/guides/migrating-ubuntu-machines/"
         exit 1
     fi
 

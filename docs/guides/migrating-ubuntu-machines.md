@@ -83,7 +83,7 @@ The restore uses that token to rebuild the passphrase.
 
 ## 2. Install on the new machine and restore the latest backup
 
-**Requirement:** Ubuntu 22.04 LTS or newer.
+**Requirement:** Ubuntu 24.04 LTS or newer.
 
 Point `--db latest:` at the folder holding the copied backups (e.g. the mounted
 drive). setup.sh installs the stack and restores the newest backup it finds there

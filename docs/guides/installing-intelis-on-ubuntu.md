@@ -1,4 +1,4 @@
-# Installing InteLIS on Ubuntu 22.04 or above (only Ubuntu LTS)
+# Installing InteLIS on Ubuntu 24.04 or above (only Ubuntu LTS)
 
 This is the recommended way to install a lab. Everything that keeps an
 installation running afterwards — `intelis update`, off-machine backup, restore,
@@ -10,7 +10,7 @@ containerised instance.
 
 This guide installs InteLIS on a fresh Ubuntu server.
 
-**Prerequisites:** Ubuntu 22.04 LTS or a later LTS release. Non-LTS releases are not supported. The installer needs administrator rights and an internet connection.
+**Prerequisites:** Ubuntu 24.04 LTS or a later LTS release. Non-LTS releases are not supported. Ubuntu 22.04 reaches the end of standard support in April 2027, so new installations should not use it. The installer needs administrator rights and an internet connection.
 
 ## Installation steps
 
