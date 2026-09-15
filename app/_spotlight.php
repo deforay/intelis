@@ -77,8 +77,47 @@ $spotlightKeywordsFor = function (string $module, string $link, string $title) u
     return array_map(fn($k) => _jsTranslate($k), $keywords);
 };
 
+// Each clinic report tab is its own entry, opening the page on that tab.
+$spotlightTabKeywords = [
+    'high-viral-load' => ['hvl', 'unsuppressed', 'not suppressed'],
+    'high-viral-load-virologic-failure' => ['virologic failure', 'treatment failure', 'vlns'],
+    'positivity' => ['positive', 'positivity rate'],
+    'sample-rejection' => ['rejected', 'rejection reasons'],
+    'results-not-available' => ['pending results', 'no result', 'awaiting result'],
+    'data-quality-check' => ['data quality', 'missing fields', 'incomplete', 'completeness'],
+    'sample-testing' => ['tested', 'testing status', 'samples by facility'],
+    'patient-test-history' => ['patient history', 'timeline', 'find patient'],
+];
+$spotlightClinicTabs = function (array $menu, string $link, string $menuTitle, string $category, array $parentPath) use ($spotlightModuleKeywords, $spotlightTabKeywords): array {
+    $type = \App\Utilities\ClinicReportUtility::typeForPage($link);
+    if ($type === null) {
+        return [];
+    }
+    $items = [];
+    foreach (\App\Utilities\ClinicReportUtility::tabs($type) as $tab) {
+        $keywords = array_values(array_unique([
+            ...($spotlightModuleKeywords[$menu['module'] ?? ''] ?? []),
+            ...($spotlightTabKeywords[$tab['name']] ?? []),
+            'clinic reports',
+        ]));
+        $items[] = [
+            'id' => 'menu-' . $menu['id'] . '-tab-' . $tab['name'],
+            'title' => $tab['label'],
+            'url' => $link . '#tab=' . $tab['name'],
+            'icon' => 'fa-solid fa-chart-column',
+            'category' => $category,
+            // The group heading already names the parent, as for other entries.
+            'subcategory' => implode(' → ', [...array_slice($parentPath, 0, -1), $menuTitle]),
+            'module' => $menu['module'] ?? '',
+            'sortOrder' => (int) ($menu['sort_order'] ?? 0),
+            'keywords' => array_map(fn($k) => _jsTranslate($k), $keywords),
+        ];
+    }
+    return $items;
+};
+
 // Flatten menu for spotlight - includes parent menus with expandable children
-$flattenMenuForSpotlight = function (array $menuItems, array $parentPath = []) use (&$flattenMenuForSpotlight, $spotlightKeywordsFor): array {
+$flattenMenuForSpotlight = function (array $menuItems, array $parentPath = []) use (&$flattenMenuForSpotlight, $spotlightKeywordsFor, $spotlightClinicTabs): array {
     $flatList = [];
     foreach ($menuItems as $menu) {
         $menuTitle = _jsTranslate($menu['display_text']);
@@ -144,6 +183,7 @@ $flattenMenuForSpotlight = function (array $menuItems, array $parentPath = []) u
                 'sortOrder' => (int) ($menu['sort_order'] ?? 0),
                 'keywords' => $spotlightKeywordsFor($menu['module'] ?? '', $link, $menuTitle),
             ];
+            $flatList = [...$flatList, ...$spotlightClinicTabs($menu, $link, $menuTitle, $category, $parentPath)];
         }
     }
     return $flatList;

@@ -110,10 +110,96 @@ final class ClinicReportUtility
         ],
     ];
 
+    /**
+     * The tabs of each clinic report page, in display order: pane id and the
+     * name used in #tab= links. The first tab opens by default.
+     * The pages draw their tab bar from this and Spotlight lists the same
+     * tabs, so a tab added here reaches both.
+     */
+    private const TABS = [
+        'vl' => [
+            ['highViralLoadReport', 'high-viral-load'],
+            ['highVlVirologicFailureReport', 'high-viral-load-virologic-failure'],
+            ['sampleRjtReport', 'sample-rejection'],
+            ['notAvailReport', 'results-not-available'],
+            ['dataQualityReport', 'data-quality-check'],
+            ['sampleTestingReport', 'sample-testing'],
+            ['patientTestHistoryFormReport', 'patient-test-history'],
+        ],
+        'eid' => self::STANDARD_TABS,
+        'covid19' => self::STANDARD_TABS,
+        'hepatitis' => self::STANDARD_TABS,
+        'tb' => [
+            ['highTbReport', 'positivity'],
+            ['sampleRjtReport', 'sample-rejection'],
+            ['notAvailReport', 'results-not-available'],
+            ['dataQualityReport', 'data-quality-check'],
+            ['sampleTestingReport', 'sample-testing'],
+            ['patientTestHistoryFormReport', 'patient-test-history'],
+        ],
+        'cd4' => self::STANDARD_TABS,
+        'generic-tests' => [
+            ['sampleTestingReport', 'sample-testing'],
+            ['patientTestHistoryFormReport', 'patient-test-history'],
+            ['dataQualityReport', 'data-quality-check'],
+        ],
+    ];
+
+    private const STANDARD_TABS = [
+        ['highViralLoadReport', 'positivity'],
+        ['sampleRjtReport', 'sample-rejection'],
+        ['notAvailReport', 'results-not-available'],
+        ['dataQualityReport', 'data-quality-check'],
+        ['sampleTestingReport', 'sample-testing'],
+        ['patientTestHistoryFormReport', 'patient-test-history'],
+    ];
+
     /** @return array<string, mixed> */
     public static function type(string $type): array
     {
         return self::TYPES[$type] ?? throw new \InvalidArgumentException("Unsupported test type: $type");
+    }
+
+    /**
+     * A clinic report page's tabs, labels translated.
+     *
+     * @return list<array{pane: string, name: string, label: string}>
+     */
+    public static function tabs(string $type): array
+    {
+        self::type($type);
+        return array_map(
+            fn(array $t) => ['pane' => $t[0], 'name' => $t[1], 'label' => self::tabLabel($t[1])],
+            self::TABS[$type]
+        );
+    }
+
+    /** Literal strings, so the translation catalogue still finds them. */
+    private static function tabLabel(string $name): string
+    {
+        return match ($name) {
+            'high-viral-load' => _translate('High Viral Load'),
+            'high-viral-load-virologic-failure' => _translate('High VL and Virologic Failure'),
+            'positivity' => _translate('Positivity'),
+            'sample-rejection' => _translate('Sample Rejection'),
+            'results-not-available' => _translate('Results Not Available'),
+            'data-quality-check' => _translate('Data Quality Check'),
+            'sample-testing' => _translate('Sample Testing'),
+            'patient-test-history' => _translate('Patient Test History'),
+            default => $name,
+        };
+    }
+
+    /** The test type whose clinic report lives at this path, if any. */
+    public static function typeForPage(string $path): ?string
+    {
+        $path = strtok($path, '?#') ?: '';
+        foreach (self::TYPES as $type => $cfg) {
+            if ($cfg['page'] === $path) {
+                return $type;
+            }
+        }
+        return null;
     }
 
     /** Test types this user may see, in display order. @return list<string> */
