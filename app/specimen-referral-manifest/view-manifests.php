@@ -138,7 +138,7 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "module",
-					"value": "<?= $_GET['t']; ?>"
+					"value": <?= _jsEscape((string) ($_GET['t'] ?? '')); ?>
 				});
 				$.ajax({
 					"dataType": 'json',

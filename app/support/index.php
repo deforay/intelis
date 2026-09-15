@@ -67,7 +67,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 									<textarea rows="6" class="form-control isRequired" name="feedback" id="feedback"
 										title="Please enter the feedback" placeholder="Enter Feedback"></textarea>
 									<input type="hidden" class="form-control isRequired" name="feedbackUrl"
-										id="feedbackUrl" value="<?php echo $_GET['fUrl']; ?>">
+										id="feedbackUrl" value="<?= _escapeRequestValue($_GET['fUrl'] ?? ''); ?>">
 								</div>
 							</div>
 							<div class="form-group">

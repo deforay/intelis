@@ -97,13 +97,15 @@
         "check-sync-ownership": "@php bin/build/check-sync-ownership.php",
         "check-sql-value-safety": "@php bin/build/check-sql-value-safety.php",
         "check-repository-boundaries": "@php bin/build/check-repository-boundaries.php",
+        "check-request-output-escaping": "@php bin/build/check-request-output-escaping.php",
         "check-schema-drift": "@php bin/build/check-schema-drift.php",
         "check-interface-seed": "@php bin/build/check-interface-seed.php",
         "check-invariants": [
             "@check-counts",
             "@check-sync-ownership",
             "@check-sql-value-safety",
-            "@check-repository-boundaries"
+            "@check-repository-boundaries",
+            "@check-request-output-escaping"
         ],
         "preflight": "@php bin/preflight.php",
         "duplicate-indexes": "@php bin/duplicate-indexes.php",
@@ -222,6 +224,7 @@
         "check-interface-seed": "Check sql/interface-init.sql still describes what the Interface Tool\u2019s migrations build \u2014 needs a vlsm-interfacing checkout",
         "check-sync-ownership": "Check an incoming sync cannot overwrite a column the lab owns, such as a sample it has cancelled",
         "check-counts": "Check every surface that counts rejected samples also excludes cancelled ones, so two screens cannot disagree",
+        "check-request-output-escaping": "Check no page prints a request value unescaped, or puts htmlspecialchars output inside an inline handler's JS string",
         "check-di": "Compile the DI container in isolation so a broken service definition fails here instead of in production",
         "preflight": "Check this machine can run and serve the app \u2014 PHP, the web server's own php.ini, config, permissions, schema. Runs without booting the app, so it still reports when nothing else does",
         "duplicate-indexes": "List indexes that are exact copies of another on the same table \u2014 same columns, order, prefix and uniqueness. Reports only; --fix drops the copies",

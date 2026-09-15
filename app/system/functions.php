@@ -573,7 +573,17 @@ function _getIteratorCount(mixed $iterator): int
 
 function _sanitizeOutput($string): string
 {
-    return htmlspecialchars((string) $string, ENT_QUOTES, 'UTF-8');
+    return \App\Utilities\OutputEscapeUtility::html($string);
+}
+
+/**
+ * Escape a request value for HTML output (body or quoted attribute) without
+ * encoding entities _sanitizeInput() already produced. Not for inline handlers
+ * or <script>. See OutputEscapeUtility::requestValue().
+ */
+function _escapeRequestValue($value): string
+{
+    return \App\Utilities\OutputEscapeUtility::requestValue($value);
 }
 
 /**
@@ -667,12 +677,16 @@ function _tooltipTableAttribute(array $headers, array $rows): string
  */
 function _jsEscape($value): string
 {
-    // json_encode returns false on invalid UTF-8 (e.g. attacker-supplied bytes);
-    // fall back to an empty JS string so the output is always a valid literal.
-    return json_encode(
-        $value ?? '',
-        JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE
-    ) ?: '""';
+    return \App\Utilities\OutputEscapeUtility::js($value);
+}
+
+/**
+ * Escape a value as a JS literal inside an inline handler: onclick="fn(<?= _jsAttributeEscape($v) ?>)".
+ * Adds its own quotes. See OutputEscapeUtility::jsInAttribute().
+ */
+function _jsAttributeEscape($value): string
+{
+    return \App\Utilities\OutputEscapeUtility::jsInAttribute($value);
 }
 
 /**

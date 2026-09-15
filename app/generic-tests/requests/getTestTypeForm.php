@@ -151,7 +151,7 @@ function getField(array $testAttribute, string $testAttributeId, $value, $inputC
             $testAttribute['field_name'],
             $testAttributeId,
             $testAttributeId,
-            $value,
+            _escapeRequestValue($value),
             $disabled,
             $inputWidth
         );

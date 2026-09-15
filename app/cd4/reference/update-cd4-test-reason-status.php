@@ -23,4 +23,4 @@ try {
     LoggerUtility::logError($exc->getMessage());
     throw $exc;
 }
-echo $result;
+echo _escapeRequestValue($result);

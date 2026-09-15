@@ -217,7 +217,7 @@ $state = $geolocationService->getProvinces("yes");
 						<button type="button" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
 								<?= _htmlTranslate("Clear Search"); ?>
 							</span></button>
-						<button type="button" class="filter-export btn btn-sm btn-success" onclick="exportInexcel('<?= htmlspecialchars($reportType, ENT_QUOTES); ?>')"><em class="fa-solid fa-cloud-arrow-down"></em>
+						<button type="button" class="filter-export btn btn-sm btn-success" onclick="exportInexcel(<?= _jsAttributeEscape($reportType); ?>)"><em class="fa-solid fa-cloud-arrow-down"></em>
 							<?= _htmlTranslate("Download"); ?>
 						</button>
 						<button type="button" class="filter-keep btn btn-sm btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span>

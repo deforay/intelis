@@ -393,7 +393,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			<?php
 		} elseif (($lastUrl1 != '' || $lastUrl2 != '') && isset($_COOKIE['collectionDate'])) {
 			?>
-			$('#sampleCollectionDate').val("<?= ($_COOKIE['collectionDate']); ?>");
+			$('#sampleCollectionDate').val(<?= _jsEscape((string) $_COOKIE['collectionDate']); ?>);
 			<?php
 		} ?>
 

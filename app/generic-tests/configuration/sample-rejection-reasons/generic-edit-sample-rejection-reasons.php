@@ -62,9 +62,9 @@ $rsnInfo = $db->query($rsnQuery);
 											value="<?php echo $rsnInfo[0]['rejection_reason_name']; ?>"
 											placeholder="Rejection Reason Name"
 											title="Please enter Rejection Reason name"
-											onblur="checkNameValidation('r_generic_sample_rejection_reasons','rejection_reason_name',this,'<?php echo "rejection_reason_id##" . htmlspecialchars((string) $id); ?>','This Rejection reason name that you entered already exists.Try another Rejection reason name',null)" />
+											onblur="checkNameValidation('r_generic_sample_rejection_reasons','rejection_reason_name',this,<?= _jsAttributeEscape("rejection_reason_id##" . $id); ?>,'This Rejection reason name that you entered already exists.Try another Rejection reason name',null)" />
 										<input type="hidden" class="form-control isRequired" id="rejectionReasonId"
-											name="rejectionReasonId" value="<?php echo $_GET['id']; ?>" />
+											name="rejectionReasonId" value="<?= _escapeRequestValue($_GET['id'] ?? ''); ?>" />
 									</div>
 								</div>
 							</div>
@@ -92,7 +92,7 @@ $rsnInfo = $db->query($rsnQuery);
 											id="rejectionReasonCode" name="rejectionReasonCode"
 											placeholder="Rejection Reason Code"
 											title="Please enter Rejection Reason Code"
-											onblur="checkNameValidation('r_generic_sample_rejection_reasons','rejection_reason_code',this,'<?php echo "rejection_reason_id##" . htmlspecialchars((string) $id); ?>','This Rejection reason code that you entered already exists.Try another Rejection reason code',null)" />
+											onblur="checkNameValidation('r_generic_sample_rejection_reasons','rejection_reason_code',this,<?= _jsAttributeEscape("rejection_reason_id##" . $id); ?>,'This Rejection reason code that you entered already exists.Try another Rejection reason code',null)" />
 									</div>
 								</div>
 							</div>

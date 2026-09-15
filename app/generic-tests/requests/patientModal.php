@@ -80,7 +80,7 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 	<section class="content-header">
 		<h4 class="pull-left bg-primary" style="width:100%;padding:8px;font-weight:normal;">Results matching your search
 			-
-			<?= ($artNo); ?>
+			<?= _escapeRequestValue($artNo); ?>
 		</h4>
 	</section>
 	<!-- Main content -->

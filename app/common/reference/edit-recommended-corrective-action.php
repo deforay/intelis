@@ -70,8 +70,7 @@ $correctiveInfo = $db->rawQuery($query, [$id]);
                                             placeholder="<?php echo _translate('Recommended Corrective Action Name'); ?>"
                                             value="<?php echo _sanitizeOutput($correctiveInfo[0]['recommended_corrective_action_name']); ?>"
                                             title="<?php echo _translate('Please enter Recommended Corrective Action'); ?>"
-                                            onblur='checkNameValidation("r_recommended_corrective_actions","recommended_corrective_action_name",this,'
-                                            <?php echo "test_type##" . $testType; ?>',"<?php echo _translate("The Corrective action that you entered already exists.Enter another Corrective action"); ?>",null)' />
+                                            onblur='checkNameValidation("r_recommended_corrective_actions","recommended_corrective_action_name",this,<?= _jsAttributeEscape("test_type##" . $testType); ?>,"<?php echo _translate("The Corrective action that you entered already exists.Enter another Corrective action"); ?>",null)' />
                                     </div>
                                 </div>
                             </div>
@@ -140,7 +139,7 @@ $correctiveInfo = $db->rawQuery($query, [$id]);
         $.post("/includes/checkDuplicate.php", {
             tableName: tableName,
             fieldName: fieldName,
-            testType: '<?= $testType; ?>',
+            testType: <?= _jsEscape((string) $testType); ?>,
             value: removeDots.trim(),
             fnct: fnct,
             format: "html"

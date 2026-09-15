@@ -508,7 +508,7 @@ try {
                     <?= _translate("SAMPLES COLLECTED"); ?>
                 </small><br>
                 <small style="color:#2ab4c0;font-size:0.75em;">
-                    <?php echo _translate("Collected in") . " : " . $selectedRange; ?>
+                    <?php echo _translate("Collected in") . " : " . _escapeRequestValue($selectedRange); ?>
                 </small>
             </div>
             <div class="icon">
@@ -530,7 +530,7 @@ try {
                     <?php echo _translate("SAMPLES TESTED"); ?>
                 </small><br>
                 <small style="color:#7cb72a;font-size:0.75em;">
-                    <?php echo _translate("Tested in") . " : " . $selectedRange; ?>
+                    <?php echo _translate("Tested in") . " : " . _escapeRequestValue($selectedRange); ?>
                 </small><br>
                 <small style="color:#7cb72a;font-size:0.7em;">
                     <?php echo _translate("Accepted results only. Includes samples collected before this range."); ?>
@@ -556,7 +556,7 @@ try {
                     <?php echo _translate("SAMPLES REJECTED"); ?>
                 </small><br>
                 <small style="color:#5C9BD1;font-size:0.75em;">
-                    <?php echo _translate("Collected in") . " : " . $selectedRange; ?>
+                    <?php echo _translate("Collected in") . " : " . _escapeRequestValue($selectedRange); ?>
                 </small>
             </div>
             <div class="icon">
@@ -577,7 +577,7 @@ try {
                     <?= _translate("CURRENT SAMPLES STATUS - OVERALL"); ?>
                 </h4>
                 <small class="font-purple-soft" style="font-size:0.75em;">
-                    <?php echo _translate("Status of samples collected in") . " : " . $selectedRange; ?>
+                    <?php echo _translate("Status of samples collected in") . " : " . _escapeRequestValue($selectedRange); ?>
                 </small>
             </div>
             <?php if (!empty($aggregateResult)) { ?>

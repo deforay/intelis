@@ -149,7 +149,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<!-- /.box-body -->
 						<div class="box-footer">
 							<input type="hidden" name="mappingType" class="form-control" id="mappingType"
-								value="<?= $mappingType; ?>" />
+								value="<?= _escapeRequestValue($mappingType); ?>" />
 							<input type="hidden" name="selectedFacilities" id="selectedFacilities" />
 							<a class="btn btn-primary" href="javascript:void(0);"
 								onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
@@ -171,7 +171,7 @@ require_once APPLICATION_PATH . '/header.php';
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script type="text/javascript">
 	$(document).ready(function () {
-		let testType = "<?= empty($testType) ? '' : $testType ?>";
+		let testType = <?= _jsEscape(empty($testType) ? '' : (string) $testType); ?>;
 		if (testType != "") {
 			$("#testType").val(testType);
 			selectedTestType();
@@ -211,7 +211,7 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 
 	function loadMapTestType() {
-		window.location.href = "mapTestType.php?type=<?= $mappingType; ?>&test=" + $('#testType').val();
+		window.location.href = "mapTestType.php?type=" + <?= _jsEscape((string) $mappingType); ?> + "&test=" + $('#testType').val();
 	}
 
 	function selectedTestType() {
@@ -219,7 +219,7 @@ require_once APPLICATION_PATH . '/header.php';
 			message: '<h3><?= _translate("Trying to get mapped facilities", true); ?> <br><?php echo _translate("Please wait", true); ?>...</h3>'
 		});
 		$.post("getTestTypeFacilitiesHelper.php", {
-			mappingType: "<?= $mappingType; ?>",
+			mappingType: <?= _jsEscape((string) $mappingType); ?>,
 			testType: $('#testType').val()
 		},
 			function (toAppend) {

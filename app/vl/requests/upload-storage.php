@@ -132,9 +132,9 @@ $filePath = '/files/storage/storage-bulk-upload.xlsx';
 			</div>
 			<div class="box-body">
 				<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
-					<h3 style="color:green;"><?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?>
+					<h3 style="color:green;"><?= _translate("Total number of records in file"); ?> : <?= (int) $_GET['total']; ?>
 						| <?= _translate("Number of Lab Storage added"); ?> : <?= $addedRecords; ?> |
-						<?= _translate("Number of Storages not added"); ?> : <?= $_GET['notAdded']; ?></h3>
+						<?= _translate("Number of Storages not added"); ?> : <?= (int) $_GET['notAdded']; ?></h3>
 					<?php if ($_GET['notAdded'] > 0) { ?>
 						<a class="text-danger" style="text-decoration:underline;margin-bottom:10px; font-weight: bold;"
 							href="/temporary/INCORRECT-STORAGE-ROWS.xlsx" download>Download the Excel Sheet with not uploaded
@@ -159,7 +159,7 @@ $filePath = '/files/storage/storage-bulk-upload.xlsx';
 							<?php for ($i = 0; $i < $_GET['failedRowCount']; $i++) {
 								echo '<tr>';
 								foreach ($_GET[$i] as $sample) { ?>
-									<td><?php echo $sample; ?></td>
+									<td><?= _escapeRequestValue($sample); ?></td>
 								<?php }
 								echo '</tr>';
 							} ?>

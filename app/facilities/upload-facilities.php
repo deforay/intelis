@@ -103,9 +103,9 @@ if (isset($_GET['total'])) {
 							<div class="col-md-12">
 								<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
 									<h3 style="margin-left:100px; color:green;">
-										<?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?> |
+										<?= _translate("Total number of records in file"); ?> : <?= (int) $_GET['total']; ?> |
 										<?= _translate("Number of Facilities added"); ?> : <?= $addedRecords; ?> |
-										<?= _translate("Number of Facilities not added"); ?> : <?= $_GET['notAdded']; ?>
+										<?= _translate("Number of Facilities not added"); ?> : <?= (int) $_GET['notAdded']; ?>
 									</h3>
 									<?php if ($_GET['notAdded'] > 0) { ?>
 										<a class="text-danger"

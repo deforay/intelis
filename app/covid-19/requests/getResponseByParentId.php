@@ -33,7 +33,7 @@ if (!empty($sampleResult)) {
         $no = (isset($response[$sampleRow['test_reason_id']]) && $response[$sampleRow['test_reason_id']] == 'no') ? "selected='selected'" : '';
         $unknown = (isset($response[$sampleRow['test_reason_id']]) && $response[$sampleRow['test_reason_id']] == 'unknown') ? "selected='selected'" : '';
 
-        echo '<tr class="responseRow' . $_POST['responseParent'] . '" id="' . $_POST['responseParent'] . '">
+        echo '<tr class="responseRow' . _escapeRequestValue($_POST['responseParent']) . '" id="' . _escapeRequestValue($_POST['responseParent']) . '">
                 <th style="width:50%;padding-left:25px;">' . ($sampleRow['test_reason_name']) . '</th>
                 <td style="width:50%;">
                     <input name="responseId[]" type="hidden" value="' . $sampleRow['test_reason_id'] . '">

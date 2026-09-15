@@ -39,4 +39,4 @@ try {
         'trace' => $e->getTraceAsString(),
     ]);
 }
-echo $result;
+echo _escapeRequestValue($result);

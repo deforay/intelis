@@ -584,7 +584,7 @@ foreach ($rejectionTypeResult as $type) {
 								<td style=" width: 10%; ">
 									<br>
 									<input type="hidden" name="print" id="print" />
-									<input type="hidden" name="module" id="module" value="<?= ($module); ?>" />
+									<input type="hidden" name="module" id="module" value="<?= _escapeRequestValue($module); ?>" />
 									<input type="button" onclick="submitTestStatus();" value="<?= _translate("Save"); ?>"
 										class="btn btn-success btn-sm">
 								</td>
@@ -1043,7 +1043,7 @@ foreach ($rejectionTypeResult as $type) {
 				var oSettings = this.fnSettings();
 				var iTotalRecords = oSettings.fnRecordsTotal();
 				if (iTotalRecords == 0) {
-					window.location.href = "/import-result/importedStatistics.php?t=<?= $module; ?>";
+					window.location.href = "/import-result/importedStatistics.php?t=" + encodeURIComponent(<?= _jsEscape((string) $module); ?>);
 				}
 
 				// Initialize datetime pickers after table draw
@@ -1058,7 +1058,7 @@ foreach ($rejectionTypeResult as $type) {
 			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "module",
-					"value": '<?= $module; ?>'
+					"value": <?= _jsEscape((string) $module); ?>
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -1218,7 +1218,7 @@ foreach ($rejectionTypeResult as $type) {
 							convertSearchResultToPdf('');
 						}
 						if (data == 'importedStatistics.php') {
-							window.location.href = "/import-result/importedStatistics.php?t=<?= $module; ?>";
+							window.location.href = "/import-result/importedStatistics.php?t=" + encodeURIComponent(<?= _jsEscape((string) $module); ?>);
 						}
 						oTable.fnDraw();
 						selectedTests = [];

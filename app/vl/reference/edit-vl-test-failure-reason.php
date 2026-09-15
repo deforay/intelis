@@ -49,8 +49,7 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
                                             class="form-control isRequired" id="failureReason" name="failureReason"
                                             placeholder="<?php echo _translate('Enter Test Failure Reason'); ?>"
                                             title="<?php echo _translate('Please enter Test Failure Reason'); ?>"
-                                            onblur='checkNameValidation("r_vl_test_failure_reasons","failure_reason",this,'
-                                            <?php echo "failure_id##" . $id; ?>',"<?php echo _translate("This failure reason that you entered already exists.Try another failure reason"); ?>",null)' />
+                                            onblur='checkNameValidation("r_vl_test_failure_reasons","failure_reason",this,<?= _jsAttributeEscape("failure_id##" . $id); ?>,"<?php echo _translate("This failure reason that you entered already exists.Try another failure reason"); ?>",null)' />
                                     </div>
                                 </div>
                             </div>

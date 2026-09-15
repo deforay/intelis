@@ -77,7 +77,7 @@ if (!empty($sampleType)) { ?>
                 <tr>
                     <td style="text-align:center;"><?= strtoupper(htmlspecialchars((string) $test)); ?></td>
                     <td>
-                        <select name="sampleType[<?php echo $test; ?>][]" id="sampleType<?php echo $test; ?>"
+                        <select name="sampleType[<?= _escapeRequestValue($test); ?>][]" id="sampleType<?= _escapeRequestValue($test); ?>"
                             title="Please select the sample type for <?= htmlspecialchars((string) $test); ?>" multiple>
                             <?php foreach ($sampleType[$test] as $id => $type) { ?>
                                 <option value="<?php echo $id; ?>" <?php echo (in_array($id, $selectedType[$test])) ? "selected='selected'" : ""; ?>><?php echo $type; ?></option>

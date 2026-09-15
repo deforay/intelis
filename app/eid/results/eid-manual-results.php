@@ -350,7 +350,7 @@ $lastUrl2 = '';
 			<?php
 		} elseif (isset($_COOKIE['collectionDate'])) {
 			?>
-			$('#sampleCollectionDate').val("<?= ($_COOKIE['collectionDate']); ?>");
+			$('#sampleCollectionDate').val(<?= _jsEscape((string) $_COOKIE['collectionDate']); ?>);
 			<?php
 		} ?>
 

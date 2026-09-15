@@ -1338,7 +1338,7 @@ if ($showInterfaceConnections) {
 		if ($("#facilityType").val() == '1' || $("#facilityType").val() == '4') {
 			$.post("/facilities/getFacilityMapUser.php", {
 				fType: $("#facilityType").val(),
-				facilityId: <?= ($id); ?>,
+				facilityId: <?= (int) $id; ?>,
 			},
 				function (data) {
 					$("#userDetails").html(data);

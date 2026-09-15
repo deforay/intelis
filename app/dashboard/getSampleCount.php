@@ -140,7 +140,7 @@ $tableResult = $db->rawQuery($sQuery);
                         <?php echo _translate("SAMPLES REGISTERED BY COLLECTION POINT"); ?>
                     </h4>
                     <small class="font-purple-soft" style="font-size:0.75em;">
-                        <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>
+                        <?php echo _translate("In Selected Range") . " : " . _escapeRequestValue($selectedRange); ?>
                     </small>
                 </div>
             </div>

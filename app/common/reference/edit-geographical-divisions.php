@@ -153,7 +153,7 @@ if (!$isProvince) {
                                             value="<?php echo _sanitizeOutput($geoInfo['geo_name']); ?>" id="geoName" name="geoName"
                                             placeholder="<?php echo _translate('Geo Division Name'); ?>"
                                             title="<?php echo _translate('Please enter Geographical Division name'); ?>"
-                                            onblur="checkNameValidation('geographical_divisions','geo_name',this,'<?php echo 'geo_id##' . htmlspecialchars((string) $id); ?>','<?php echo _translate("The Geographical Division name that you entered already exists. Please enter another name"); ?>',null)" />
+                                            onblur="checkNameValidation('geographical_divisions','geo_name',this,<?= _jsAttributeEscape("geo_id##" . $id); ?>,'<?php echo _translate("The Geographical Division name that you entered already exists. Please enter another name"); ?>',null)" />
                                     </div>
                                 </div>
                             </div>
@@ -167,7 +167,7 @@ if (!$isProvince) {
                                             value="<?php echo _sanitizeOutput($geoInfo['geo_code']); ?>" id="geoCode" name="geoCode"
                                             placeholder="<?php echo _translate('Geographical Divisions code'); ?>"
                                             title="<?php echo _translate('Please enter Geographical Division code'); ?>"
-                                            onblur="checkNameValidation('geographical_divisions','geo_code',this,'<?php echo 'geo_id##' . htmlspecialchars((string) $id); ?>','<?php echo _translate("The Geographical Division code that you entered already exists. Please enter another code"); ?>',null)" />
+                                            onblur="checkNameValidation('geographical_divisions','geo_code',this,<?= _jsAttributeEscape("geo_id##" . $id); ?>,'<?php echo _translate("The Geographical Division code that you entered already exists. Please enter another code"); ?>',null)" />
                                     </div>
                                 </div>
                             </div>

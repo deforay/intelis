@@ -195,7 +195,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "type",
-					"value": "<?php echo $_GET['type']; ?>"
+					"value": <?= _jsEscape((string) ($_GET['type'] ?? '')); ?>
 				});
 				aoData.push({
 					"name": "testType",

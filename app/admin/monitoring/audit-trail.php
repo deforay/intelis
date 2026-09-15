@@ -700,7 +700,7 @@ try {
                         columns: ':visible'
                     },
                     text: "<?= _translate("Export To CSV", true); ?>",
-                    title: 'AuditTrailSample-<?php echo $sampleCode ?? ""; ?>',
+                    title: <?= _jsEscape('AuditTrailSample-' . ($sampleCode ?? '')); ?>,
                     extension: '.csv'
                 }],
                 scrollY: '250vh',
