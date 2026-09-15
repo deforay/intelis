@@ -55,14 +55,12 @@ if (!isset($facilityResult[0]['facility_state']) || $facilityResult[0]['facility
 	$facilityResult[0]['facility_state'] = "";
 }
 $stateName = $facilityResult[0]['facility_state'];
-$stateQuery = "SELECT * from geographical_divisions where geo_name='" . $stateName . "'";
-$stateResult = $db->query($stateQuery);
+$stateResult = \App\Registries\ContainerRegistry::get(\App\Services\GeoLocationsService::class)->findByName($stateName);
 if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 	$stateResult[0]['geo_code'] = "";
 }
 //district details
-$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "'";
-$districtResult = $db->query($districtQuery);
+$districtResult = \App\Registries\ContainerRegistry::get(\App\Services\FacilitiesService::class)->getDistrictNamesInState($stateName, false);
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 

@@ -90,8 +90,7 @@ if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 	$stateResult[0]['geo_code'] = "";
 }
 //district details
-$districtQuery = "SELECT DISTINCT facility_district FROM facility_details WHERE facility_state='" . $stateName . "'";
-$districtResult = $db->query($districtQuery);
+$districtResult = \App\Registries\ContainerRegistry::get(\App\Services\FacilitiesService::class)->getDistrictNamesInState($stateName, false);
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
@@ -442,8 +441,8 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 											For Testing</td>
 									</tr>
 									<?php
-									$vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim((string) $vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim((string) $vlQueryInfo['reason_for_vl_testing']) . "'";
-									$vlTestReasonResultRow = $db->query($vlTestReasonQueryRow); ?>
+									$vlTestReasonResultRow = \App\Registries\ContainerRegistry::get(\App\Repositories\Reference\ReferenceDataRepository::class)
+									     ->findByIdOrName('test-reason', 'vl', trim((string) $vlQueryInfo['reason_for_vl_testing'])); ?>
 									<tr>
 										<td colspan="3" class="routine">
 											<label class="labels" for="routine">Routine</label><br />

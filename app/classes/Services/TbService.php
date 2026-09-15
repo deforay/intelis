@@ -54,7 +54,7 @@ final class TbService extends AbstractTestService
     {
         $query = "SELECT * FROM r_tb_sample_type where status='active' ";
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $results = $this->db->rawQuery($query);
         $response = [];
@@ -82,7 +82,7 @@ final class TbService extends AbstractTestService
 
     public function checkAllTbTestsForPositive($tbSampleId): bool
     {
-        $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = $tbSampleId ORDER BY test_id ASC");
+        $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = " . (int) $tbSampleId . " ORDER BY test_id ASC");
 
         foreach ($response as $row) {
             if ($row['result'] == 'positive') {
@@ -99,10 +99,10 @@ final class TbService extends AbstractTestService
     {
         $query = "SELECT result_id,result FROM r_tb_results where status='active' ";
         if (!empty($type)) {
-            $query .= " AND result_type = '$type' ";
+            $query .= " AND result_type = " . $this->db->quote($type) . " ";
         }
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $query .= " ORDER BY result_id DESC";
         $results = $this->db->rawQuery($query);
@@ -117,7 +117,7 @@ final class TbService extends AbstractTestService
     {
         $query = "SELECT test_reason_id,test_reason_name FROM r_tb_test_reasons WHERE `test_reason_status` LIKE 'active' ";
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $results = $this->db->rawQuery($query);
         $response = [];
@@ -142,12 +142,12 @@ final class TbService extends AbstractTestService
         $response = [];
         // Using this in sync requests/results
         if (is_array($tbId) && $tbId !== []) {
-            $results = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` IN (" . implode(",", $tbId) . ") ORDER BY tb_test_id ASC");
+            $results = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` IN (" . $this->db->inIntList($tbId) . ") ORDER BY tb_test_id ASC");
             foreach ($results as $row) {
                 $response[$row['tb_id']][$row['tb_test_id']] = $row;
             }
         } elseif (isset($tbId) && $tbId != "" && !is_array($tbId)) {
-            $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = $tbId ORDER BY tb_test_id ASC");
+            $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = " . (int) $tbId . " ORDER BY tb_test_id ASC");
         } elseif (!is_array($tbId)) {
             $response = $this->db->rawQuery("SELECT * FROM tb_tests ORDER BY tb_test_id ASC");
         }

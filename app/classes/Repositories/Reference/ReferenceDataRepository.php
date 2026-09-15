@@ -287,6 +287,27 @@ final readonly class ReferenceDataRepository
     }
 
     /**
+     * The rows whose id or name equals $value.
+     *
+     * Older request forms stored a reference choice (the reason for testing, say)
+     * by name and newer ones by id, so the edit forms match a stored value both
+     * ways. The value is bound, never interpolated: it comes back from the
+     * sample row, where anyone who could save the form put it.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function findByIdOrName(string $entity, string $testType, string $value): array
+    {
+        $spec = $this->spec($entity);
+        $table = $this->table($spec, $entity, $testType);
+
+        return $this->db->rawQuery(
+            "SELECT * FROM `$table` WHERE `{$spec['id']}` = ? OR `{$spec['name']}` = ?",
+            [$value, $value]
+        );
+    }
+
+    /**
      * @return array{tables: array<string, string>, id: string, name: string,
      *   status: string, fields?: list<string>, defaults?: array<string, string>}
      */

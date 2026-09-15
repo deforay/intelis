@@ -31,7 +31,7 @@ final class PatientsService
         }
 
         $res = $this->db->rawQueryOne("SELECT MAX(`patient_code_key`) AS `max_key`
-                                        FROM $this->table WHERE `patient_code_prefix` = '$prefix' $forUpdate");
+                                        FROM $this->table WHERE `patient_code_prefix` = " . $this->db->quote($prefix) . " $forUpdate");
 
 
         $patientCodeKey = $res && $res['max_key'] !== null ? $res['max_key'] + 1 : 1;

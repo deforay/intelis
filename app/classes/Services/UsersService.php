@@ -209,7 +209,7 @@ final class UsersService
             }
 
             if ($updatedDateTime) {
-                $this->db->where("updated_datetime >= '$updatedDateTime'");
+                $this->db->where("updated_datetime >= " . $this->db->quote($updatedDateTime));
             }
 
             $this->db->orderBy("user_name", "asc");

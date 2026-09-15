@@ -78,7 +78,7 @@ final class HepatitisService extends AbstractTestService
         if (is_array($formId)) {
 
             $results = $this->db->rawQuery("SELECT * FROM hepatitis_patient_comorbidities
-                                                WHERE `hepatitis_id` IN (" . implode(",", $formId) . ")");
+                                                WHERE `hepatitis_id` IN (" . $this->db->inIntList($formId) . ")");
             if ($allData) {
                 $response = $results;
             } else {
@@ -89,7 +89,7 @@ final class HepatitisService extends AbstractTestService
         } else {
 
             $results = $this->db->rawQuery("SELECT * FROM hepatitis_patient_comorbidities
-                                                WHERE `hepatitis_id` = $formId");
+                                                WHERE `hepatitis_id` = " . (int) $formId);
             if ($allData) {
                 $response = $results;
             } else {
@@ -112,7 +112,7 @@ final class HepatitisService extends AbstractTestService
         // Using this in sync requests/results
         if (is_array($formId)) {
             $results = $this->db->rawQuery("SELECT * FROM hepatitis_risk_factors
-                                                WHERE `hepatitis_id` IN (" . implode(",", $formId) . ")");
+                                                WHERE `hepatitis_id` IN (" . $this->db->inIntList($formId) . ")");
             if ($allData) {
                 $response = $results;
             } else {
@@ -122,7 +122,7 @@ final class HepatitisService extends AbstractTestService
             }
         } else {
             $results = $this->db->rawQuery("SELECT * FROM hepatitis_risk_factors
-                                                WHERE `hepatitis_id` = $formId");
+                                                WHERE `hepatitis_id` = " . (int) $formId);
             if ($allData) {
                 $response = $results;
             } else {

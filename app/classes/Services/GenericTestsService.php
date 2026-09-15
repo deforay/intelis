@@ -56,7 +56,7 @@ final class GenericTestsService extends AbstractTestService
     {
         $query = "SELECT * FROM r_generic_sample_types where sample_type_status='active'";
         if ($updatedDateTime) {
-            $query .= " AND updated_datetime >= '$updatedDateTime' ";
+            $query .= " AND updated_datetime >= " . $this->db->quote($updatedDateTime) . " ";
         }
         $results = $this->db->rawQuery($query);
         $response = [];
@@ -517,7 +517,7 @@ final class GenericTestsService extends AbstractTestService
         $result = [];
         $this->db->where('test_failure_reason_status', 'active');
         if ($updatedDateTime) {
-            $this->db->where("updated_datetime >= '$updatedDateTime'");
+            $this->db->where("updated_datetime >= " . $this->db->quote($updatedDateTime));
         }
         $results = $this->db->get('r_generic_test_failure_reasons');
         if ($option) {
@@ -617,7 +617,7 @@ final class GenericTestsService extends AbstractTestService
         $testMethodQry = "SELECT *
                             FROM r_generic_test_methods as tm
                             INNER JOIN generic_test_methods_map as map ON map.test_method_id=tm.test_method_id
-                            WHERE map.test_type_id=$testTypeId
+                            WHERE map.test_type_id=" . (int) $testTypeId . "
                             AND tm.test_method_status='active'";
         return $this->db->query($testMethodQry);
     }
@@ -627,7 +627,7 @@ final class GenericTestsService extends AbstractTestService
         $testResultUnitQry = "SELECT *
                                 FROM r_generic_test_result_units as tu
                                 INNER JOIN generic_test_result_units_map as map ON map.unit_id=tu.unit_id
-                                WHERE map.test_type_id=$testTypeId
+                                WHERE map.test_type_id=" . (int) $testTypeId . "
                                 AND tu.unit_status='active'";
         return $this->db->query($testResultUnitQry);
     }
@@ -636,7 +636,7 @@ final class GenericTestsService extends AbstractTestService
     {
         if (!empty($fcode)) {
             // First get the collection of fcode from the following fcode
-            $this->db->where("(JSON_SEARCH(test_form_config, 'one', '$fcode') IS NOT NULL) OR (test_form_config IS NOT NULL)");
+            $this->db->where("(JSON_SEARCH(test_form_config, 'one', " . $this->db->quote($fcode) . ") IS NOT NULL) OR (test_form_config IS NOT NULL)");
 
             $this->db->orderBy('updated_datetime');
             $testTypeResult = $this->db->getOne('r_test_types', 'test_form_config');
@@ -655,7 +655,7 @@ final class GenericTestsService extends AbstractTestService
             // After that we get the list of available values from following fcodes
             if (isset($fcodes) && $fcodes !== []) {
                 foreach ($fcodes as $value) {
-                    $this->db->where("(JSON_SEARCH(test_type_form, 'all', '$value') IS NOT NULL) OR (test_type_form IS NOT NULL)");
+                    $this->db->where("(JSON_SEARCH(test_type_form, 'all', " . $this->db->quote($value) . ") IS NOT NULL) OR (test_type_form IS NOT NULL)");
                 }
                 $this->db->orderBy('last_modified_datetime');
                 $result =  $this->db->getOne('form_generic', 'test_type_form');

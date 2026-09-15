@@ -401,7 +401,7 @@ final class FacilitiesService
             // subquery
             $healthFacilities = $this->db->subQuery();
             // we want to fetch facilities that have test type is not specified as well as this specific test type
-            $healthFacilities->where("test_type is null or test_type like '$testType'");
+            $healthFacilities->where("test_type is null or test_type like " . $this->db->quote($testType));
             $healthFacilities->get("health_facilities", null, "facility_id");
 
             $this->db->where("facility_id", $healthFacilities, 'IN');
@@ -482,7 +482,7 @@ final class FacilitiesService
             // subquery
             $testingLabs = $this->db->subQuery();
             // we want to fetch facilities that have test type is not specified as well as this specific test type
-            $testingLabs->where("test_type is null or test_type like '$testType'");
+            $testingLabs->where("test_type is null or test_type like " . $this->db->quote($testType));
             $testingLabs->get("testing_labs", null, "facility_id");
 
             $this->db->where("facility_id", $testingLabs, 'IN');
@@ -539,9 +539,9 @@ final class FacilitiesService
     {
         return MemoUtility::remember(function () use ($provinceName, $provinceCode) {
             // check if there is a province matching the input params, if yes then return province id
-            $this->db->where("geo_name ='$provinceName'");
+            $this->db->where("geo_name =" . $this->db->quote($provinceName));
             if ($provinceCode != "") {
-                $this->db->where("geo_code ='$provinceCode'");
+                $this->db->where("geo_code =" . $this->db->quote($provinceCode));
             }
             $provinceInfo = $this->db->getOne('geographical_divisions');
 
@@ -563,13 +563,29 @@ final class FacilitiesService
         });
     }
 
+    /**
+     * The distinct district names of the facilities in a state, as rows with a
+     * facility_district key. The state name comes from a stored facility row, so
+     * it is bound: one with an apostrophe used to break the forms that asked.
+     *
+     * @return list<array{facility_district: ?string}>
+     */
+    public function getDistrictNamesInState(?string $stateName, bool $activeOnly = true): array
+    {
+        return $this->db->rawQuery(
+            'SELECT DISTINCT facility_district FROM facility_details WHERE facility_state = ?'
+            . ($activeOnly ? " AND status='active'" : ''),
+            [(string) $stateName]
+        );
+    }
+
     public function getOrCreateDistrict(?string $districtName, ?string $districtCode = null, ?int $provinceId = null): int
     {
         return MemoUtility::remember(function () use ($districtName, $districtCode, $provinceId) {
             // check if there is a district matching the input params, if yes then return province id
-            $this->db->where("geo_name ='$districtName' AND geo_parent = $provinceId");
+            $this->db->where("geo_name =" . $this->db->quote($districtName) . " AND geo_parent = $provinceId");
             if ($districtCode != "") {
-                $this->db->where("geo_code ='$districtCode'");
+                $this->db->where("geo_code =" . $this->db->quote($districtCode));
             }
             $districtInfo = $this->db->getOne('geographical_divisions');
 

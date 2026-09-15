@@ -108,6 +108,7 @@ final class ApiInitEndpointTest extends TestCase
                 'facility_district' => 'Alpha',
                 'facility_attributes' => '{"big":"' . str_repeat('x', 200) . '"}',
                 'status' => 'active',
+                'updated_datetime' => '2026-01-01 00:00:00',
             ]);
             $db->insert('health_facilities', ['facility_id' => $id, 'test_type' => 'vl']);
             $db->insert('user_facility_map', ['user_id' => 'user-1', 'facility_id' => $id]);
@@ -122,7 +123,7 @@ final class ApiInitEndpointTest extends TestCase
     }
 
     /** @return array<string, mixed> */
-    private function init(): array
+    private function init(string $body = '{}'): array
     {
         $path = '/api/v1.1/init.php';
         $_SERVER['HTTP_HOST'] = 'tests.local';
@@ -132,7 +133,7 @@ final class ApiInitEndpointTest extends TestCase
             ->createServerRequest('POST', $path)
             ->withHeader('Authorization', 'Bearer ' . self::TOKEN)
             ->withHeader('Content-Type', 'application/json')
-            ->withBody((new StreamFactory())->createStream('{}'));
+            ->withBody((new StreamFactory())->createStream($body));
 
         $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
 
@@ -175,5 +176,29 @@ final class ApiInitEndpointTest extends TestCase
             self::assertArrayHasKey($field, $facility, $field);
         }
         self::assertArrayNotHasKey('facility_attributes', $facility);
+    }
+
+    /**
+     * The app asks for what changed since its last sync with latestDateTime, which
+     * init.php hands to every list query. It went into the SQL unencoded, so a
+     * value that closed the quote and added OR '1'='1' listed every facility no
+     * matter the date.
+     */
+    #[RunInSeparateProcess]
+    public function testALatestDateTimeCannotRewriteTheListQueries(): void
+    {
+        $payload = $this->init((string) json_encode(['latestDateTime' => "3000-01-01' OR '1'='1"]));
+
+        self::assertSame(1, $payload['status'], json_encode($payload));
+        self::assertSame([], $payload['data']['facilitiesList']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testALatestDateTimeListsOnlyWhatChangedSince(): void
+    {
+        $payload = $this->init((string) json_encode(['latestDateTime' => '2025-12-31 00:00:00']));
+
+        self::assertSame(1, $payload['status'], json_encode($payload));
+        self::assertCount(2, $payload['data']['facilitiesList']);
     }
 }

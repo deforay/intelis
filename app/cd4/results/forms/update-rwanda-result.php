@@ -49,8 +49,7 @@ if (!isset($facilityResult[0]['facility_district']) || $facilityResult[0]['facil
 
 $stateName = $facilityResult[0]['facility_state'];
 if (trim((string) $stateName) !== '') {
-	$stateQuery = "SELECT * from geographical_divisions where geo_name='" . $stateName . "'";
-	$stateResult = $db->query($stateQuery);
+	$stateResult = \App\Registries\ContainerRegistry::get(\App\Services\GeoLocationsService::class)->findByName($stateName);
 }
 if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 	$stateResult[0]['geo_code'] = '';
@@ -58,8 +57,7 @@ if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 //district details
 $districtResult = [];
 if (trim((string) $stateName) !== '') {
-	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "' AND status='active'";
-	$districtResult = $db->query($districtQuery);
+	$districtResult = \App\Registries\ContainerRegistry::get(\App\Services\FacilitiesService::class)->getDistrictNamesInState($stateName);
 	$facilityQuery = "SELECT * from facility_details where `status`='active' AND facility_type='2' Order By facility_name";
 	$lResult = $db->query($facilityQuery);
 }
@@ -381,8 +379,8 @@ $disable = "disabled = 'disabled'";
 													<div class="col-lg-12">
 														<label class="radio-inline">
 															<?php
-															$cd4TestReasonQueryRow = "SELECT * from r_cd4_test_reasons where test_reason_id='" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "' OR test_reason_name = '" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "'";
-															$cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
+															$cd4TestReasonResultRow = \App\Registries\ContainerRegistry::get(\App\Repositories\Reference\ReferenceDataRepository::class)
+															     ->findByIdOrName('test-reason', 'cd4', trim((string) $cd4QueryInfo['reason_for_cd4_testing']));
 															$checked = '';
 															$display = '';
 															$cd4Date = '';
@@ -443,8 +441,6 @@ $disable = "disabled = 'disabled'";
 													<div class="col-lg-12">
 														<label class="radio-inline">
 															<?php
-															$cd4TestReasonQueryRow = "SELECT * from r_cd4_test_reasons where test_reason_id='" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "' OR test_reason_name = '" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "'";
-															$cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
 															$checked = '';
 															$display = '';
 															if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) === 'assessmentAHD' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'assessmentAHD') {
@@ -501,8 +497,6 @@ $disable = "disabled = 'disabled'";
 													<div class="col-lg-12">
 														<label class="radio-inline">
 															<?php
-															$cd4TestReasonQueryRow = "SELECT * from r_cd4_test_reasons where test_reason_id='" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "' OR test_reason_name = '" . trim((string) $cd4QueryInfo['reason_for_cd4_testing']) . "'";
-															$cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
 															$checked = '';
 															$display = '';
 															if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) === 'treatmentCoinfection' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'treatmentCoinfection') {

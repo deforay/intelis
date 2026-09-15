@@ -67,8 +67,7 @@ $facilityState = $facilityResult[0]['facility_state'] ?? '';
 $facilityDistrict = $facilityResult[0]['facility_district'] ?? '';
 
 if (trim((string) $facilityResult[0]['facility_state']) !== '') {
-     $stateQuery = "SELECT * FROM geographical_divisions where geo_name='" . $facilityResult[0]['facility_state'] . "'";
-     $stateResult = $db->query($stateQuery);
+     $stateResult = \App\Registries\ContainerRegistry::get(\App\Services\GeoLocationsService::class)->findByName($facilityResult[0]['facility_state']);
 }
 if (!isset($stateResult[0]['geo_code'])) {
      $stateResult[0]['geo_code'] = '';
