@@ -312,7 +312,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 			$('#sampleCollectionDate').val("");
 			<?php
 		} elseif (($lastUrl1 != '' || $lastUrl2 != '') && isset($_COOKIE['collectionDate'])) { ?>
-			$('#sampleCollectionDate').val("<?= ($_COOKIE['collectionDate']); ?>");
+			$('#sampleCollectionDate').val(<?= _jsEscape((string) $_COOKIE['collectionDate']); ?>);
 		<?php } ?>
 
 		loadVlRequestData();

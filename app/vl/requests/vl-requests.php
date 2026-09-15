@@ -209,7 +209,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 						?>
 							<div class="na-item">
 								<a href="javascript:void(0);"
-									onclick="showDataIssue('<?= htmlspecialchars($issueKey, ENT_QUOTES); ?>');"
+									onclick="showDataIssue(<?= _jsAttributeEscape($issueKey); ?>);"
 									class="na-action">&rarr; <?= _htmlTranslate('Show them'); ?></a>
 								<div class="na-icon"><em class="fa-solid <?= $copy['icon']; ?>" aria-hidden="true"></em></div>
 								<div class="na-body">
@@ -238,7 +238,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									class="form-control daterangefield"
 									placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly
 									style="background:#fff;"
-									value="<?php echo (empty($_GET['daterange'])) ? "" : $_GET['daterange']; ?>" />
+									value="<?= _escapeRequestValue(empty($_GET['daterange']) ? '' : $_GET['daterange']); ?>" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Sample Received at Lab Date"); ?>&nbsp;:
@@ -1238,7 +1238,7 @@ function fnShowHide(iCol) {
 				});
 				aoData.push({
 					"name": "dateRangeModel",
-					"value": '<?php echo $dateRange; ?>'
+					"value": <?= _jsEscape((string) $dateRange); ?>
 				});
 				aoData.push({
 					"name": "patientId",
@@ -1250,15 +1250,15 @@ function fnShowHide(iCol) {
 				});
 				aoData.push({
 					"name": "labIdModel",
-					"value": '<?php echo $labName; ?>'
+					"value": <?= _jsEscape((string) $labName); ?>
 				});
 				aoData.push({
 					"name": "srcOfReqModel",
-					"value": '<?php echo $srcOfReq; ?>'
+					"value": <?= _jsEscape((string) $srcOfReq); ?>
 				});
 				aoData.push({
 					"name": "srcStatus",
-					"value": '<?php echo $srcStatus; ?>'
+					"value": <?= _jsEscape((string) $srcStatus); ?>
 				});
 				aoData.push({
 					"name": "hidesrcofreq",

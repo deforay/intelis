@@ -69,7 +69,7 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 										<input type="text" class="form-control isRequired" id="resultName"
 											name="resultName" value="<?php echo _sanitizeOutput($resultInfo[0]['result']); ?>"
 											placeholder="Viral Load Result" title="Please enter Result name" readonly
-											onblur="checkNameValidation('r_vl_results','result',this,'<?php echo "result_id##" . htmlspecialchars((string) $id); ?>','The Result name that you entered already exists.Enter another name',null)" />
+											onblur="checkNameValidation('r_vl_results','result',this,<?= _jsAttributeEscape("result_id##" . $id); ?>,'The Result name that you entered already exists.Enter another name',null)" />
 										<input type="hidden" class="form-control" id="resultId" name="resultId"
 											value="<?php echo _sanitizeOutput(base64_encode((string) $id)); ?>" />
 										<input type="hidden" class="form-control" id="oldResultName"

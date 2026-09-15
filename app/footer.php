@@ -76,7 +76,7 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 	</div>
 	<?php if ($supportEmail !== '' && $supportEmail !== '0') { ?>
 		<small>
-			<a href="javascript:void(0);" onclick="showModal('/support/index.php?fUrl=<?php echo htmlspecialchars($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>', 900, 520);">Support</a>
+			<a href="javascript:void(0);" onclick="showModal(<?= _jsAttributeEscape('/support/index.php?fUrl=' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>, 900, 520);">Support</a>
 		</small>
 	<?php } ?>
 </footer>

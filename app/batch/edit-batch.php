@@ -286,7 +286,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											placeholder="<?php echo _translate('Batch Code'); ?>"
 											title="<?php echo _translate('Please enter batch code'); ?>"
 											value="<?php echo _sanitizeOutput($batchInfo[0]['batch_code']); ?>"
-											onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','<?php echo _translate("This batch code already exists.Try another code"); ?>',null)" />
+											onblur="checkNameValidation('batch_details','batch_code',this,<?= _jsAttributeEscape("batch_id##" . $id); ?>,'<?php echo _translate("This batch code already exists.Try another code"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -524,7 +524,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
 			type: '<?php echo $testType; ?>',
 			batchId: $("#batchId").val(),
-			genericTestType: '<?php echo $genericTestType; ?>',
+			genericTestType: <?= _jsEscape((string) $genericTestType); ?>,
 			facilityId: facilityId,
 			sName: $("#sampleType").val(),
 			fundingSource: $("#fundingSource").val(),

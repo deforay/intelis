@@ -702,7 +702,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 						<a class="btn btn-primary" href="javascript:void(0);"
 							onclick="validateNow();return false;">Save</a>
 						<input type="hidden" name="formId" id="formId" value="1" />
-						<input type="hidden" name="tbSampleId" id="tbSampleId" value="<?php echo $id; ?>" />
+						<input type="hidden" name="tbSampleId" id="tbSampleId" value="<?= _escapeRequestValue($id); ?>" />
 						<a href="/tb/requests/tb-requests.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->

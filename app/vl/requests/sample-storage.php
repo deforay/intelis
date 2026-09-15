@@ -195,7 +195,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 										class="form-control daterangefield"
 										placeholder="<?php echo _translate('Select Collection Date'); ?>"
 										style="width:220px;background:#fff;" value="<?php if (isset($_POST['sampleCollectionDate']) && $_POST['sampleCollectionDate'] != "") {
-											echo str_replace('+', ' ', $_POST['sampleCollectionDate']);
+											echo _escapeRequestValue(str_replace('+', ' ', $_POST['sampleCollectionDate']));
 										} ?>" style="width:220px;" />
 								</td>
 							</tr>

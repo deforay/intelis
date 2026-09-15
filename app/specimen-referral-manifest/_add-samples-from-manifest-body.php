@@ -93,7 +93,7 @@ $columnCount = 1 + ($showRemoteColumn ? 1 : 0) + count($columns);
 							</td>
 							<td style="width:10%;">
 								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
-									onclick="verifyManifest('<?php echo htmlspecialchars($testType); ?>');return false;">
+									onclick="verifyManifest(<?= _jsAttributeEscape((string) $testType); ?>);return false;">
 									<span><?php echo _translate("Submit"); ?></span>
 								</button>
 							</td>

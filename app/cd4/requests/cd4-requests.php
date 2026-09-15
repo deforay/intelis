@@ -138,7 +138,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									class="form-control daterange"
 									placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly
 									style="background:#fff;"
-									value="<?php echo (empty($_GET['daterange'])) ? "" : $_GET['daterange']; ?>" />
+									value="<?= _escapeRequestValue(empty($_GET['daterange']) ? '' : $_GET['daterange']); ?>" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Sample Received at Lab Date"); ?>&nbsp;:
@@ -1014,7 +1014,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 				});
 				aoData.push({
 					"name": "dateRangeModel",
-					"value": '<?php echo $dateRange; ?>'
+					"value": <?= _jsEscape((string) $dateRange); ?>
 				});
 				aoData.push({
 					"name": "patientId",
@@ -1026,15 +1026,15 @@ foreach ($sourceOfRequests as $value => $displayText) {
 				});
 				aoData.push({
 					"name": "labIdModel",
-					"value": '<?php echo $labName; ?>'
+					"value": <?= _jsEscape((string) $labName); ?>
 				});
 				aoData.push({
 					"name": "srcOfReqModel",
-					"value": '<?php echo $srcOfReq; ?>'
+					"value": <?= _jsEscape((string) $srcOfReq); ?>
 				});
 				aoData.push({
 					"name": "srcStatus",
-					"value": '<?php echo $srcStatus; ?>'
+					"value": <?= _jsEscape((string) $srcStatus); ?>
 				});
 				aoData.push({
 					"name": "hidesrcofreq",

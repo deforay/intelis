@@ -775,19 +775,19 @@ foreach ($sourceOfRequests as $value => $displayText) {
 				});
 				aoData.push({
 					"name": "dateRangeModel",
-					"value": '<?php echo $dateRange; ?>'
+					"value": <?= _jsEscape((string) $dateRange); ?>
 				});
 				aoData.push({
 					"name": "labIdModel",
-					"value": '<?php echo $labName; ?>'
+					"value": <?= _jsEscape((string) $labName); ?>
 				});
 				aoData.push({
 					"name": "srcOfReqModel",
-					"value": '<?php echo $srcOfReq; ?>'
+					"value": <?= _jsEscape((string) $srcOfReq); ?>
 				});
 				aoData.push({
 					"name": "srcStatus",
-					"value": '<?php echo $srcStatus; ?>'
+					"value": <?= _jsEscape((string) $srcStatus); ?>
 				});
 				aoData.push({
 					"name": "hidesrcofreq",

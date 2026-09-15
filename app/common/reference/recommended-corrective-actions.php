@@ -103,7 +103,7 @@ if (!empty($_GET['testType'])) {
 			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "testType",
-					"value": '<?= $testType; ?>'
+					"value": <?= _jsEscape((string) $testType); ?>
 				});
 				$.ajax({
 					"dataType": 'json',

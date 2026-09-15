@@ -96,6 +96,35 @@ if (!function_exists('_htmlTranslate')) {
     }
 }
 
+// The output escapers pages wrap request values in. The real helpers live in
+// functions.php with the framework, but each is one line over
+// OutputEscapeUtility, so these call the same class and a test sees exactly
+// what the page would print.
+if (!function_exists('_sanitizeOutput')) {
+    function _sanitizeOutput($string): string
+    {
+        return \App\Utilities\OutputEscapeUtility::html($string);
+    }
+}
+if (!function_exists('_escapeRequestValue')) {
+    function _escapeRequestValue($value): string
+    {
+        return \App\Utilities\OutputEscapeUtility::requestValue($value);
+    }
+}
+if (!function_exists('_jsEscape')) {
+    function _jsEscape($value): string
+    {
+        return \App\Utilities\OutputEscapeUtility::js($value);
+    }
+}
+if (!function_exists('_jsAttributeEscape')) {
+    function _jsAttributeEscape($value): string
+    {
+        return \App\Utilities\OutputEscapeUtility::jsInAttribute($value);
+    }
+}
+
 // Same reasoning for the request helpers the swept endpoints call. The real
 // _sanitizeInput() runs HTML Purifier; a test drives endpoints with plain values,
 // so a passthrough keeps the framework out of the suite. _rawInput() mirrors the

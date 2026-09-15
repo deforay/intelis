@@ -72,9 +72,9 @@ $formatFilePath = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR
 							<div class="col-md-12">
 								<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
 									<h3 style="margin-left:100px; color:green;">
-										<?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?> |
+										<?= _translate("Total number of records in file"); ?> : <?= (int) $_GET['total']; ?> |
 										<?= _translate("Number of Controls added"); ?> : <?= $addedRecords; ?> |
-										<?= _translate("Number of Controls not added"); ?> : <?= $_GET['notAdded']; ?></h3>
+										<?= _translate("Number of Controls not added"); ?> : <?= (int) $_GET['notAdded']; ?></h3>
 									<?php if ($_GET['notAdded'] > 0) { ?>
 										<a class="text-danger"
 											style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;"

@@ -458,7 +458,7 @@ if (file_exists($file)) {
 
         $actualLogDate = $_GET['date'] ?? date('d-M-Y');
 
-        echo "<div class='log-header'>" . _translate("Viewing System Log for Date") . " - " . $actualLogDate;
+        echo "<div class='log-header'>" . _translate("Viewing System Log for Date") . " - " . _escapeRequestValue($actualLogDate);
 
         if ($performanceInfo) {
             $sizeFormatted = number_format($performanceInfo['size'] / 1024, 1);
@@ -511,7 +511,7 @@ if (file_exists($file)) {
         $logEntries = $logReader->readLogFileReverse($recentFile, $start, $linesPerPage, $searchTerm);
         $recentFileStats = $logReader->getFileStats($recentFile);
 
-        echo "<div class='log-header'>" . _translate("No data found for the selected date") . " - " . ($_GET['date'] ?? date('d-M-Y')) . "<br>" .
+        echo "<div class='log-header'>" . _translate("No data found for the selected date") . " - " . _escapeRequestValue($_GET['date'] ?? date('d-M-Y')) . "<br>" .
             _translate("Showing the most recent log file") . " : " . basename((string) $recentFile);
 
         if ($recentFileStats) {
@@ -561,5 +561,5 @@ if (file_exists($file)) {
 // Send performance info to frontend for display
 if ($start === 0 && $performanceInfo) {
     echo "<!-- PERFORMANCE_INFO: " . json_encode($performanceInfo) . " -->";
-    echo "<input type='hidden' id='actualLogDate' value='{$actualLogDate}'>";
+    echo "<input type='hidden' id='actualLogDate' value='" . _escapeRequestValue($actualLogDate) . "'>";
 }

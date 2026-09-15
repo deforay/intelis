@@ -89,7 +89,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<title>
-		<?= ($title ?? $shortCode) . " | " . "InteLIS | " . $shortName; ?>
+		<?= _escapeRequestValue($title ?? $shortCode) . " | " . "InteLIS | " . _escapeRequestValue($shortName); ?>
 	</title>
 	<meta name="google" content="notranslate">
 	<meta name="google-translate-customization" content="0">

@@ -23,6 +23,7 @@ $covid19Symptoms = $db->rawQuery($symptomsQuery, [$_POST['symptomParent']]);
 
 $disabled = (isset($_POST['from']) && $_POST['from'] == "update-result") ? "disabled" : "";
 $symptomsArray = [];
+$symptomsParentArray = [];
 if (isset($_POST['covid19Id']) && $_POST['covid19Id'] != '') {
     $results = $db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` = ? ORDER BY symptom_id ASC", [$_POST['covid19Id']]);
     foreach ($results as $key => $val) {
@@ -35,14 +36,14 @@ if (!empty($covid19Symptoms)) {
     foreach ($covid19Symptoms as $key => $symptoms) {
         $checked = (in_array($_POST['symptomParent'], $symptomsParentArray) && in_array($symptoms['symptom_id'], $symptomsArray[$_POST['symptomParent']])) ? "checked" : '';
 
-        $subSymptoms = '<tr class="symptomRow' . $_POST['symptomParent'] . ' hide-symptoms" id="' . $_POST['symptomParent'] . '">
+        $subSymptoms = '<tr class="symptomRow' . _escapeRequestValue($_POST['symptomParent']) . ' hide-symptoms" id="' . _escapeRequestValue($_POST['symptomParent']) . '">
                 <td colspan="2" style="padding-left: 70px;display: flex;">';
         if ($symptoms['symptom_id'] == 16 || trim((string) $symptoms['symptom_name']) === 'Nombre de selles par /24h') {
             $subSymptoms .= '<label class="radio-inline" for="symptomDetails' . $symptoms['symptom_id'] . '" style="padding-left:17px !important;margin-left:0;">' . ($symptoms['symptom_name']) . '</label>
-                                    <input type="text" value="' . end($symptomsArray[$_POST['symptomParent']]) . '" class="form-control reason-checkbox symptoms-checkbox" id="symptomDetails' . $symptoms['symptom_id'] . '" name="symptomDetails[' . $_POST['symptomParent'] . '][]" placeholder="' . $symptoms['symptom_name'] . '" title="' . $symptoms['symptom_name'] . '" ' . $disabled . ' style=" width: 25%; margin-left: 10px; ">';
+                                    <input type="text" value="' . (isset($symptomsArray[$_POST['symptomParent']]) ? end($symptomsArray[$_POST['symptomParent']]) : '') . '" class="form-control reason-checkbox symptoms-checkbox" id="symptomDetails' . $symptoms['symptom_id'] . '" name="symptomDetails[' . _escapeRequestValue($_POST['symptomParent']) . '][]" placeholder="' . $symptoms['symptom_name'] . '" title="' . $symptoms['symptom_name'] . '" ' . $disabled . ' style=" width: 25%; margin-left: 10px; ">';
         } else {
             $subSymptoms .= '<label class="radio-inline" style="width:4%;margin-left:0;">
-                                        <input type="checkbox" class="reason-checkbox symptoms-checkbox" id="symptomDetails' . $symptoms['symptom_id'] . '" name="symptomDetails[' . $_POST['symptomParent'] . '][]" value="' . $symptoms['symptom_id'] . '" title="' . $symptoms['symptom_name'] . '" onclick="checkSubSymptoms(this,' . $symptoms['symptom_id'] . ',' . $index . ', "sub");" ' . $checked . ' ' . $disabled . '>
+                                        <input type="checkbox" class="reason-checkbox symptoms-checkbox" id="symptomDetails' . $symptoms['symptom_id'] . '" name="symptomDetails[' . _escapeRequestValue($_POST['symptomParent']) . '][]" value="' . $symptoms['symptom_id'] . '" title="' . $symptoms['symptom_name'] . '" onclick="checkSubSymptoms(this,' . $symptoms['symptom_id'] . ',' . $index . ', "sub");" ' . $checked . ' ' . $disabled . '>
                                     </label>
                                     <label class="radio-inline" for="symptomDetails' . $symptoms['symptom_id'] . '" style="padding-left:17px !important;margin-left:0;">' . ($symptoms['symptom_name']) . '</label>';
         }

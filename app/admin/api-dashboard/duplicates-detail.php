@@ -67,7 +67,7 @@ $facilityId = $_GET['facilityId'] ?? '';
                     <div class="box-header">
                         <h3 class="box-title"><?= _translate('Potential Duplicate Test Requests'); ?></h3>
                         <div class="box-tools pull-right">
-                            <span class="label label-info">Test Type: <?= strtoupper((string) $testType); ?></span>
+                            <span class="label label-info">Test Type: <?= _escapeRequestValue(strtoupper((string) $testType)); ?></span>
                             <?php if ($dateRange): ?>
                                 <span class="label label-primary">Period:
                                     <?= htmlspecialchars((string) $dateRange); ?></span>
@@ -143,12 +143,12 @@ $facilityId = $_GET['facilityId'] ?? '';
                 "url": "/admin/api-dashboard/get-duplicates-detail.php",
                 "type": "POST",
                 "data": function (d) {
-                    d.testType = "<?= $testType; ?>";
-                    d.dateRange = "<?= $dateRange; ?>";
-                    d.labName = "<?= $labName; ?>";
-                    d.state = "<?= $state; ?>";
-                    d.district = "<?= $district; ?>";
-                    d.facilityId = "<?= $facilityId; ?>";
+                    d.testType = <?= _jsEscape((string) $testType); ?>;
+                    d.dateRange = <?= _jsEscape((string) $dateRange); ?>;
+                    d.labName = <?= _jsEscape((string) $labName); ?>;
+                    d.state = <?= _jsEscape((string) $state); ?>;
+                    d.district = <?= _jsEscape((string) $district); ?>;
+                    d.facilityId = <?= _jsEscape((string) $facilityId); ?>;
                 }
             },
             "columns": [{
@@ -239,12 +239,12 @@ $facilityId = $_GET['facilityId'] ?? '';
 
     function exportDuplicates() {
         const params = new URLSearchParams({
-            testType: "<?= $testType; ?>",
-            dateRange: "<?= $dateRange; ?>",
-            labName: "<?= $labName; ?>",
-            state: "<?= $state; ?>",
-            district: "<?= $district; ?>",
-            facilityId: "<?= $facilityId; ?>"
+            testType: <?= _jsEscape((string) $testType); ?>,
+            dateRange: <?= _jsEscape((string) $dateRange); ?>,
+            labName: <?= _jsEscape((string) $labName); ?>,
+            state: <?= _jsEscape((string) $state); ?>,
+            district: <?= _jsEscape((string) $district); ?>,
+            facilityId: <?= _jsEscape((string) $facilityId); ?>
         });
         window.open('/admin/api-dashboard/export-duplicates.php?' + params.toString(), '_blank');
     }

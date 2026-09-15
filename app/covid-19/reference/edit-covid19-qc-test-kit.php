@@ -64,8 +64,7 @@ $subResult = json_decode((string) $resultInfo['labels_and_expected_results'], tr
                                             class=" form-control isRequired" id="testKitName" name="testKitName"
                                             placeholder="<?php echo _translate('Test Kit Name'); ?>"
                                             title="<?php echo _translate('Please enter Test Kit name'); ?>"
-                                            onblur='checkNameValidation("r_covid19_qc_testkits", "testkit_name" , this , '
-                                            <?php echo "testkit_id##" . $id; ?>', "<?php echo _translate("The test kit name that you entered already exists. Enter another name"); ?>"
+                                            onblur='checkNameValidation("r_covid19_qc_testkits", "testkit_name" , this , <?= _jsAttributeEscape("testkit_id##" . $id); ?>, "<?php echo _translate("The test kit name that you entered already exists. Enter another name"); ?>"
                                             , null)' readonly />
                                     </div>
                                 </div>

@@ -1001,7 +1001,7 @@ if ($isLisInstance) {
                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);"
                                 onclick="validateNow();return false;"><?php echo _translate("Save"); ?></a>
                             <input type="hidden" name="formId" id="formId" value="7" />
-                            <input type="hidden" name="tbSampleId" id="tbSampleId" value="<?php echo $id; ?>" />
+                            <input type="hidden" name="tbSampleId" id="tbSampleId" value="<?= _escapeRequestValue($id); ?>" />
                             <a href="/tb/requests/tb-requests.php"
                                 class="btn btn-default"><?php echo _translate("Cancel"); ?></a>
                         </div>

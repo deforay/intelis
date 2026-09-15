@@ -63,7 +63,7 @@ $dateRange = $_GET['dateRange'] ?? '';
                     <div class="box-header">
                         <h3 class="box-title"><?= _translate('Test Requests Without Sample Receipt'); ?></h3>
                         <div class="box-tools pull-right">
-                            <span class="label label-info">Test Type: <?= strtoupper((string) $testType); ?></span>
+                            <span class="label label-info">Test Type: <?= _escapeRequestValue(strtoupper((string) $testType)); ?></span>
                             <?php if ($dateRange): ?>
                                 <span class="label label-primary">Period:
                                     <?= htmlspecialchars((string) $dateRange); ?></span>
@@ -164,8 +164,8 @@ $dateRange = $_GET['dateRange'] ?? '';
                 "url": "/admin/api-dashboard/get-missing-samples-detail.php",
                 "type": "POST",
                 "data": function (d) {
-                    d.testType = "<?= $testType; ?>";
-                    d.dateRange = "<?= $dateRange; ?>";
+                    d.testType = <?= _jsEscape((string) $testType); ?>;
+                    d.dateRange = <?= _jsEscape((string) $dateRange); ?>;
                 }
             },
             "columns": [{
@@ -258,8 +258,8 @@ $dateRange = $_GET['dateRange'] ?? '';
 
     function loadPriorityCounts() {
         $.post("/admin/api-dashboard/get-missing-samples-priority-counts.php", {
-            testType: "<?= $testType; ?>",
-            dateRange: "<?= $dateRange; ?>"
+            testType: <?= _jsEscape((string) $testType); ?>,
+            dateRange: <?= _jsEscape((string) $dateRange); ?>
         }, function (data) {
             const counts = JSON.parse(data);
             $("#highPriorityCount").text(counts.high || 0);
@@ -286,7 +286,7 @@ $dateRange = $_GET['dateRange'] ?? '';
         if (note && note.trim() !== '') {
             $.post("/admin/api-dashboard/add-sample-note.php", {
                 sampleCode: sampleCode,
-                testType: "<?= $testType; ?>",
+                testType: <?= _jsEscape((string) $testType); ?>,
                 note: note.trim()
             }, function (response) {
                 const result = typeof response === 'string' ? JSON.parse(response) : response;
@@ -305,7 +305,7 @@ $dateRange = $_GET['dateRange'] ?? '';
         if (confirm('Send alert for missing sample: ' + sampleCode + '?')) {
             $.post("/admin/api-dashboard/send-missing-sample-alert.php", {
                 sampleCode: sampleCode,
-                testType: "<?= $testType; ?>"
+                testType: <?= _jsEscape((string) $testType); ?>
             }, function (response) {
                 const result = typeof response === 'string' ? JSON.parse(response) : response;
                 if (result.success) {
@@ -320,7 +320,7 @@ $dateRange = $_GET['dateRange'] ?? '';
     }
 
     function exportMissingSamples() {
-        window.open('/admin/api-dashboard/export-missing-samples.php?testType=<?= $testType; ?>&dateRange=<?= urlencode((string) $dateRange); ?>', '_blank');
+        window.open('/admin/api-dashboard/export-missing-samples.php?testType=<?= urlencode((string) $testType); ?>&dateRange=<?= urlencode((string) $dateRange); ?>', '_blank');
     }
 </script>
 

@@ -32,4 +32,4 @@ try {
 } catch (Exception $exc) {
     error_log($exc->getMessage());
 }
-echo $result;
+echo _escapeRequestValue($result);

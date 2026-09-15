@@ -102,7 +102,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
                      <a class="btn btn-primary" href="javascript:void(0);" onclick="confirmResultMail();"><em
                            class="fa-solid fa-paper-plane"></em> Send</a>
                      <p style="margin-top:10px;"><a class="send-mail" href="#"
-                           onclick="downloadPDF('<?php echo $sampleIds; ?>','printData')"
+                           onclick="downloadPDF(<?= _jsAttributeEscape((string) $sampleIds); ?>,'printData')"
                            style="text-decoration:none;">Click here to download the result only pdf</a></p>
                   </div>
                </div>
