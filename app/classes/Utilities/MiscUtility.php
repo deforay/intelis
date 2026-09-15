@@ -1194,7 +1194,8 @@ final class MiscUtility
         $string = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $string);
 
         // Trim Unicode whitespace and control characters from both ends
-        return preg_replace('/(?:^[\p{Z}\p{C}]+)|(?:[\p{Z}\p{C}]+$)/u', '', $string);
+        $string = preg_replace('/^[\p{Z}\p{C}]+/u', '', (string) $string);
+        return $string === null ? null : preg_replace('/[\p{Z}\p{C}]+$/u', '', $string);
     }
 
     public static function getFullImagePath(string $imageName, string $basePath): ?string
