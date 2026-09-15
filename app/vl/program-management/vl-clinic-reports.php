@@ -144,7 +144,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 										<li><a href="#notAvailReport"
 												data-toggle="tab" data-tab-name="results-not-available"><?php echo _translate("Results Not Available"); ?></a>
 										</li>
-										<li><a href="#incompleteFormReport"
+										<li><a href="#dataQualityReport"
 												data-toggle="tab" data-tab-name="data-quality-check"><?php echo _translate("Data Quality Check"); ?></a>
 										</li>
 										<li><a href="#sampleTestingReport"
@@ -1159,185 +1159,8 @@ $implementingPartnerList = $general->getImplementationPartners();
 												</tbody>
 											</table>
 										</div>
-										<div class="tab-pane fade" id="incompleteFormReport">
-											<div class="box box-default filter-panel filter-panel-collapsed">
-												<div class="box-body pageFilters filter-panel-body">
-												<div class="row">
-													<div class="col-md-4 col-sm-6">
-														<div class="form-group">
-															<label class="control-label" for="sampleCollectionDate"><?php echo _translate("Sample Collection Date"); ?></label>
-															<input type="text" id="sampleCollectionDate"
-															name="sampleCollectionDate"
-															class="form-control incompleteFormReportFilter"
-															placeholder="<?php echo _htmlTranslate('Select Sample Collection Date'); ?>"
-															readonly style="background:#fff;" />
-														</div>
-													</div>
-													<div class="col-md-4 col-sm-6">
-														<div class="form-group">
-															<label class="control-label" for="formField"><?php echo _translate("Fields"); ?></label>
-															<select class="form-control incompleteFormReportFilter"
-															id="formField" name="formField" multiple="multiple"
-															title="<?php echo _htmlTranslate('Please fields'); ?>">
-															<option value="">
-															<?php echo _translate("-- Select --"); ?>
-															</option>
-															<option value="sample_code">
-															<?php echo _translate("Sample ID"); ?>
-															</option>
-															<option value="sample_collection_date">
-															<?php echo _translate("Sample Collection Date"); ?>
-															</option>
-															<option value="sample_batch_id">
-															<?php echo _translate("Batch Code"); ?>
-															</option>
-															<option value="patient_art_no">
-															<?php echo _translate("Unique ART No"); ?>.
-															</option>
-															<option value="patient_first_name">
-															<?php echo _translate("Patient Name"); ?>
-															</option>
-															<option value="facility_id">
-															<?php echo _translate("Facility Name"); ?>
-															</option>
-															<option value="facility_state">
-															<?php echo _translate("Province"); ?>
-															</option>
-															<option value="facility_district">
-															<?php echo _translate("County"); ?>
-															</option>
-															<option value="sample_type">
-															<?php echo _translate("Sample Type"); ?>
-															</option>
-															<option value="result">
-															<?php echo _translate("Result"); ?>
-															</option>
-															<option value="result_status">
-															<?php echo _translate("Status"); ?>
-															</option>
-															</select>
-														</div>
-													</div>
-													<div class="col-md-4 col-sm-6">
-														<div class="form-group">
-															<label class="control-label" for="patientVlQualityInfo"><?php echo _translate("Export with Patient Name"); ?></label>
-															<select name="patientVlQualityInfo" id="patientVlQualityInfo"
-															class="form-control filter-panel-ignore select2 incompleteFormReportFilter"
-															title="<?= _htmlTranslate('Choose whether to include patient name in the export'); ?>">
-															<option value="yes">
-															<?php echo _translate("Yes"); ?>
-															</option>
-															<option value="no">
-															<?php echo _translate("No"); ?>
-															</option>
-															</select>
-														</div>
-													</div>
-													<div class="col-md-4 col-sm-6">
-														<div class="form-group">
-															<label class="control-label" for="dqImplementingPartner"><?php echo _translate("Implementing Partner"); ?></label>
-															<select name="dqImplementingPartner" id="dqImplementingPartner"
-															class="form-control select2Class incompleteFormReportFilter"
-															title="<?php echo _htmlTranslate('Please choose implementing partner'); ?>">
-															<option value="">
-															<?php echo _translate("-- Select --"); ?>
-															</option>
-															<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
-															<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
-															<?= $implementingPartner['i_partner_name']; ?>
-															</option>
-															<?php } ?>
-															</select>
-														</div>
-													</div>
-													<div class="col-md-4 col-sm-6">
-														<div class="form-group">
-															<label class="control-label" for="dqFieldMatch"><?php echo _translate("Field Match"); ?></label>
-															<select name="dqFieldMatch" id="dqFieldMatch"
-															class="form-control select2Class incompleteFormReportFilter"
-															title="<?php echo _htmlTranslate('Please choose how the selected fields combine'); ?>">
-															<option value="any">
-															<?php echo _translate("Any selected field is missing"); ?>
-															</option>
-															<option value="all">
-															<?php echo _translate("All selected fields are missing"); ?>
-															</option>
-															</select>
-														</div>
-													</div>
-												</div>
-												</div>
-												<div class="box-footer filter-actions">
-													&nbsp;<input type="button"
-													onclick="searchVlRequestData();"
-													value="<?= _htmlTranslate('Search'); ?>"
-													class="filter-search btn btn-success btn-sm">
-													&nbsp;<button type="button" class="btn btn-default btn-sm"
-													onclick="resetFilters('incompleteFormReportFilter');"><span>
-													<?= _translate('Reset'); ?>
-													</span></button>
-													<button class="filter-export btn btn-success btn-sm" type="button"
-													onclick="exportDataQualityInexcel()"><em
-													class="fa-solid fa-cloud-arrow-down"></em>
-													<?php echo _translate("Export to excel"); ?>
-													</button>
-												</div>
-											</div>
-											<table aria-describedby="table" id="incompleteReport"
-												class="table table-bordered table-striped" aria-hidden="true">
-												<thead>
-													<tr>
-														<th>
-															<?php echo _translate("Sample ID"); ?>
-														</th>
-														<?php if (!$general->isStandaloneInstance()) { ?>
-															<th>
-																<?php echo _translate("Remote Sample ID"); ?>
-															</th>
-														<?php } ?>
-														<th scope="row">
-															<?php echo _translate("Sample Collection Date"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Batch Code"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Unique ART No"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Patient's Name"); ?>
-														</th>
-														<th scope="row">
-															<?php echo _translate("Facility Name"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Province/State"); ?>
-														</th>
-														<th>
-															<?php echo _translate("District/County"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Sample Type"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Result"); ?>
-														</th>
-														<th scope="row">
-															<?php echo _translate("Status"); ?>
-														</th>
-														<th>
-															<?php echo _translate("Implementing Partner"); ?>
-														</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td colspan="13" class="dataTables_empty">
-															<?php echo _translate("Loading data from server"); ?>
-														</td>
-													</tr>
-												</tbody>
-											</table>
+										<div class="tab-pane fade" id="dataQualityReport">
+											<?php $dqTestType = 'vl'; require APPLICATION_PATH . '/reports/_data-quality-tab.php'; ?>
 										</div>
 										<div class="tab-pane fade" id="sampleTestingReport" style="width: 100%; overflow-x: auto;">
 											<div class="box box-default filter-panel filter-panel-collapsed">
@@ -1444,12 +1267,12 @@ $implementingPartnerList = $general->getImplementationPartners();
 <link rel="stylesheet" media="all" type="text/css" href="<?= _asset('/assets/css/clinic-reports.css') ?>">
 <script type="text/javascript" src="<?= _asset('/assets/js/clinic-reports.js') ?>"></script>
 <script type="text/javascript" src="<?= _asset('/assets/js/patient-timeline.js') ?>"></script>
+<script type="text/javascript" src="<?= _asset('/assets/js/data-quality.js') ?>"></script>
 <script type="text/javascript">
 	let searchExecuted = false;
 	var oTableViralLoad = null;
 	var oTableRjtReport = null;
 	var oTablenotAvailReport = null;
-	var oTableincompleteReport = null;
 	let currentXHR = null;
 	let currentRequestType = null;
 
@@ -1458,7 +1281,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 		'vfvlnsfilters',
 		'sampleRjtReportFilter',
 		'notAvailReportFilter',
-		'incompleteFormReportFilter',
 		'stReportFilter'
 	];
 
@@ -1524,11 +1346,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			width: '100%',
 			placeholder: "<?php echo _jsTranslate("Select Option"); ?>"
 		});
-		$("#formField").select2({
-			width: '100%',
-			placeholder: "<?php echo _jsTranslate("Select Fields"); ?>"
-		});
-		$('#hvlSampleTestDate,#rjtSampleCollectionDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#stSampleCollectionDate').daterangepicker({
+		$('#hvlSampleTestDate,#rjtSampleCollectionDate,#noResultSampleTestDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#stSampleCollectionDate').daterangepicker({
 			locale: {
 				cancelLabel: "<?= _jsTranslate("Clear"); ?>",
 				format: 'DD-MMM-YYYY',
@@ -1596,7 +1414,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$('#hvlSampleTestDate,#rjtSampleCollectionDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#stSampleCollectionDate').on('cancel.daterangepicker', function (ev, picker) {
+		$('#hvlSampleTestDate,#rjtSampleCollectionDate,#noResultSampleTestDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#stSampleCollectionDate').on('cancel.daterangepicker', function (ev, picker) {
 			$(this).val('');
 		});
 		$('#vfVlnsSampleTestDate').val('');
@@ -1604,7 +1422,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 		ClinicReports.registerTab('highViralLoadReport', { init: highViralLoadReport, table: function () { return oTableViralLoad; } });
 		ClinicReports.registerTab('sampleRjtReport', { init: sampleRjtReport, table: function () { return oTableRjtReport; } });
 		ClinicReports.registerTab('notAvailReport', { init: notAvailReport, table: function () { return oTablenotAvailReport; } });
-		ClinicReports.registerTab('incompleteFormReport', { init: incompleteForm, table: function () { return oTableincompleteReport; } });
 		ClinicReports.registerTab('sampleTestingReport', { init: getSampleResult, search: sampleTestingReport });
 		/* Filters copied in from another tab are applied with a namespaced
 		   event, so the change handlers above never see them. The last
@@ -1613,7 +1430,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			searchExecuted = false;
 		});
 		ClinicReports.start();
-		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select").on("change", function () {
+		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select").on("change", function () {
 			searchExecuted = false;
 		});
 		$.each(filterClasses, function (i, cls) {
@@ -1947,82 +1764,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 		});
 	}
 
-	function incompleteForm() {
-		oTableincompleteReport = $('#incompleteReport').dataTable({
-			"bJQueryUI": false,
-			"bAutoWidth": false,
-			"bInfo": true,
-			"bScrollCollapse": true,
-			//"bStateSave" : true,
-			"bRetrieve": true,
-			"aoColumns": [{
-				"sClass": "center"
-			},
-				<?php if (!$general->isStandaloneInstance()) { ?> {
-					"sClass": "center"
-				},
-				<?php } ?> {
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			],
-			"aaSorting": [
-				[<?= ($general->isStandaloneInstance()) ? 1 : 2; ?>, "desc"]
-			],
-			"bProcessing": true,
-			"bServerSide": true,
-			"sAjaxSource": "dataQualityCheck.php",
-			"fnServerData": function (sSource, aoData, fnCallback) {
-				aoData.push({
-					"name": "sampleCollectionDate",
-					"value": $("#sampleCollectionDate").val()
-				});
-				aoData.push({
-					"name": "formField",
-					"value": $("#formField").val()
-				});
-				aoData.push({
-					"name": "dqImplementingPartner",
-					"value": $("#dqImplementingPartner").val()
-				});
-				aoData.push({
-					"name": "dqFieldMatch",
-					"value": $("#dqFieldMatch").val()
-				});
-				ClinicReports.serverData(sSource, aoData, fnCallback);
-			}
-		});
-	}
-
 
 	/* Every tab is a server-side table over its own endpoint, so redrawing all
 	   of them cost five queries to look at one. Only the visible tab is drawn,
@@ -2141,31 +1882,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 				}
 			});
 	}
-
-	function exportDataQualityInexcel() {
-		/* The export replays the query the last search stored in the session,
-		   so it has to wait for that search rather than race it. */
-		if (!searchExecuted) {
-			return searchVlRequestData().then(exportDataQualityInexcel);
-		}
-		$.blockUI();
-		$.post("/vl/program-management/vlDataQualityExportInExcel.php", {
-			Sample_Collection_Date: $("#sampleCollectionDate").val(),
-			Field_Name: $("#formField  option:selected").text(),
-			patientInfo: $("#patientVlQualityInfo  option:selected").val(),
-
-		},
-			function (data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
-	}
-
 
 	function hideFemaleDetails(value, pregnant, breastFeeding) {
 		if (value == 'female') {

@@ -38,16 +38,6 @@ final class SampleTestingReportUtility
         'rejected' => [\SAMPLE_STATUS\REJECTED],
     ];
 
-    private const ALIASES = [
-        'vl' => 'vl',
-        'eid' => 'eid',
-        'covid19' => 'covid19',
-        'hepatitis' => 'hepatitis',
-        'tb' => 'tb',
-        'cd4' => 'cd4',
-        'generic-tests' => 'generic',
-    ];
-
     /**
      * Per-facility counts for the filters posted by the tab.
      *
@@ -56,47 +46,21 @@ final class SampleTestingReportUtility
      */
     public static function fetch(string $testType, array $filters, DatabaseService $db, CommonService $general): array
     {
-        $a = self::ALIASES[$testType] ?? throw new \InvalidArgumentException("Unsupported test type: $testType");
+        $a = ClinicReportUtility::type($testType)['alias'];
         $table = TestsService::getTestTableName($testType);
 
-        [$startDate, $endDate] = self::dateRange((string) ($filters['sampleCollectionDate'] ?? ''));
-        $from = $startDate . ' 00:00:00';
-        $to = (new \DateTimeImmutable($endDate))->modify('+1 day')->format('Y-m-d') . ' 00:00:00';
+        [$startDate, $endDate] = ClinicReportUtility::dateRange((string) ($filters['sampleCollectionDate'] ?? ''));
+        [$from, $to] = ClinicReportUtility::datetimeBounds($startDate, $endDate);
 
         // A bare range rather than DATE(col) BETWEEN, which hides the index.
-        $where = [
-            "$a.sample_collection_date >= '$from'",
-            "$a.sample_collection_date < '$to'",
-            SampleCountUtility::countableWhere($a),
-        ];
-
-        if (!$general->isSTSInstance()) {
-            $where[] = "$a.result_status != " . \SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-        } elseif (!empty($_SESSION['facilityMap'])) {
-            $where[] = "$a.facility_id IN (" . $db->inIntList((string) $_SESSION['facilityMap']) . ")";
-        }
-
-        if ($labScope = $general->labScopeWhere($a)) {
-            $where[] = $labScope;
-        }
-
-        if ($testType === 'vl') {
-            // Recency samples live in form_vl but are reported under Recency.
-            $where[] = "IFNULL($a.reason_for_vl_testing, 0) != 9999";
-        }
-
-        if (trim((string) ($filters['state'] ?? '')) !== '') {
-            $where[] = 'f.facility_state_id = ' . (int) $filters['state'];
-        }
-        if (trim((string) ($filters['district'] ?? '')) !== '') {
-            $where[] = 'f.facility_district_id = ' . (int) $filters['district'];
-        }
-        if (!empty($filters['facilityName'])) {
-            $where[] = 'f.facility_id IN (' . $db->inIntList($filters['facilityName']) . ')';
-        }
-        if (trim((string) ($filters['implementingPartner'] ?? '')) !== '') {
-            $where[] = "$a.implementing_partner = '" . $db->escape(base64_decode((string) $filters['implementingPartner'])) . "'";
-        }
+        $where = array_merge(
+            [
+                "$a.sample_collection_date >= '$from'",
+                "$a.sample_collection_date < '$to'",
+            ],
+            ClinicReportUtility::scopeClauses($testType, $db, $general),
+            ClinicReportUtility::filterClauses($testType, $filters, $db)
+        );
 
         $sums = [];
         foreach (self::BUCKETS as $bucket => $statuses) {
@@ -129,16 +93,5 @@ final class SampleTestingReportUtility
         }
 
         return ['rows' => $rows, 'startDate' => $startDate, 'endDate' => $endDate];
-    }
-
-    /** @return array{0: string, 1: string} Y-m-d bounds, last 7 days when unset */
-    private static function dateRange(string $posted): array
-    {
-        [$start, $end] = $posted !== '' ? DateUtility::convertDateRange($posted) : [null, null];
-        $valid = static fn($d) => is_string($d) && \DateTimeImmutable::createFromFormat('!Y-m-d', $d) !== false;
-        if (!$valid($start) || !$valid($end)) {
-            return [date('Y-m-d', strtotime('-7 days')), date('Y-m-d')];
-        }
-        return [$start, $end];
     }
 }

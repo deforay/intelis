@@ -6,10 +6,10 @@
  */
 
 use App\Services\TestsService;
-use App\Utilities\PatientTimelineUtility;
+use App\Utilities\ClinicReportUtility;
 
 $ptTypes = [];
-foreach (PatientTimelineUtility::visibleTypes() as $ptType) {
+foreach (ClinicReportUtility::visibleTypes() as $ptType) {
     $ptTypes[$ptType] = [
         'name' => html_entity_decode((string) TestsService::getTestName($ptType), ENT_QUOTES),
         'short' => TestsService::getTestShortCode($ptType),

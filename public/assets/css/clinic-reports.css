@@ -298,6 +298,221 @@
     font-weight: 600;
 }
 
+/* Data Quality tab: headline figures, each key field's gap rate, where the
+   gaps come from, and the samples behind any count. Cards and the facility
+   table reuse the Sample Testing styles above. */
+.dq-app {
+    margin-top: 4px;
+}
+
+.dq-app [hidden] {
+    display: none !important;
+}
+
+.dq-loading {
+    padding: 24px 0;
+    color: #5a6470;
+}
+
+.dq-actions {
+    margin: -6px 0 18px;
+}
+
+.dq-section {
+    margin-bottom: 22px;
+}
+
+.dq-hint {
+    margin: -4px 0 12px;
+    color: #72777c;
+    font-size: 13px;
+}
+
+.dq-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.dq-group {
+    padding: 10px 12px 4px;
+    border: 1px solid #e4e7ea;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.dq-group-title {
+    margin-bottom: 6px;
+    color: #5a6470;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.dq-field {
+    display: block;
+    width: 100%;
+    margin: 0 -6px 6px;
+    padding: 6px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    box-sizing: content-box;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+}
+
+button.dq-field {
+    cursor: pointer;
+}
+
+button.dq-field:hover,
+button.dq-field:focus-visible {
+    background: #f2f5f8;
+    outline: none;
+}
+
+.dq-field-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: baseline;
+}
+
+.dq-field-label {
+    color: #1f2d3d;
+    font-weight: 600;
+}
+
+.dq-field-rate {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.dq-field-note {
+    color: #72777c;
+    font-size: 12px;
+}
+
+.dq-field-ok .dq-field-rate {
+    color: #639e11;
+}
+
+.dq-field-muted .dq-field-label,
+.dq-field-muted .dq-field-note {
+    color: #9aa1a8;
+}
+
+.dq-bar {
+    height: 6px;
+    margin: 4px 0 3px;
+    border-radius: 3px;
+    background: #edf0f2;
+    overflow: hidden;
+}
+
+.dq-bar > span {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+}
+
+.dq-high .dq-bar > span { background: #d8424d; }
+.dq-medium .dq-bar > span { background: #dda41b; }
+.dq-low .dq-bar > span { background: #e8c95a; }
+.dq-field.dq-high .dq-field-rate { color: #b3303a; }
+.dq-field.dq-medium .dq-field-rate { color: #9a6d00; }
+
+.dq-table th.dq-col {
+    min-width: 90px;
+    font-weight: 600;
+}
+
+.dq-place {
+    color: #8a9097;
+    font-size: 12px;
+}
+
+.dq-link,
+.dq-cell-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #1f6fa5;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dq-link:hover,
+.dq-cell-button:hover {
+    text-decoration: underline;
+}
+
+.dq-table td.dq-cell {
+    font-weight: 600;
+}
+
+.dq-table td.dq-high { background: rgba(216, 66, 77, 0.16); }
+.dq-table td.dq-medium { background: rgba(221, 164, 27, 0.18); }
+.dq-table td.dq-low { background: rgba(232, 201, 90, 0.16); }
+.dq-table td.dq-high .dq-cell-button { color: #9e2630; }
+.dq-table td.dq-medium .dq-cell-button { color: #7d5800; }
+.dq-table td.dq-low .dq-cell-button { color: #5e4d00; }
+
+.dq-samples {
+    margin-bottom: 22px;
+    padding: 12px 14px;
+    border: 1px solid #cfd8df;
+    border-left: 3px solid #3c8dbc;
+    border-radius: 4px;
+    background: #fbfcfd;
+    scroll-margin-top: 70px;
+}
+
+.dq-samples-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.dq-samples-head h4 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.dq-samples-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.dq-muted {
+    color: #8a9097;
+    font-style: italic;
+}
+
+.dq-chip {
+    display: inline-block;
+    margin: 1px 4px 1px 0;
+    padding: 1px 7px;
+    border-radius: 10px;
+    background: #eef1f4;
+    color: #4a525a;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.dq-chip-active {
+    background: #f7d9dc;
+    color: #9e2630;
+    font-weight: 600;
+}
+
 /* Patient Test History: find a patient, then one history across every test. */
 .pt-app [hidden] {
     display: none !important;
