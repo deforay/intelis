@@ -212,7 +212,6 @@ const COVERED_FILES = [
     'app/hepatitis/reference/get-hepatitis-risk-factor-helper.php',
     'app/hepatitis/reference/get-hepatitis-test-reasons-helper.php',
     'app/hepatitis/reference/getHepatitisComorbiditiesDetails.php',
-    'app/hepatitis/requests/check-sample-duplicate.php',
     'app/hepatitis/requests/get-request-list.php',
     'app/hepatitis/results/email-results-confirm.php',
     'app/hepatitis/results/generate-result-pdf.php',

@@ -28,9 +28,9 @@ $data = 0;
 
 // The table and column names are written into the query, so only the ones the
 // request forms send are accepted; anything else is never looked up.
-$allowedTables = ['form_covid19', 'form_hepatitis'];
+$allowedTables = ['form_covid19'];
 $allowedFields = ['sample_code', 'remote_sample_code', 'external_sample_code'];
-$allowedKeyColumns = ['covid19_id', 'hepatitis_id'];
+$allowedKeyColumns = ['covid19_id'];
 
 $tableInfo = [];
 if (!empty($fnct)) {
