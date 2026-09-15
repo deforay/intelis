@@ -146,64 +146,61 @@ async function waitUntilPrinterReady(maxTotal = 8000, interval = 500) {
 	}
 }
 
-function logPrinterDiagnostics() {
-	return new Promise(async (resolve) => {
-		if (!currentZebraPrinter) {
-			console.warn("No currentZebraPrinter available for diagnostics.");
-			return resolve();
-		}
+async function logPrinterDiagnostics() {
+	if (!currentZebraPrinter) {
+		console.warn("No currentZebraPrinter available for diagnostics.");
+		return;
+	}
 
-		// Status
-		await new Promise(res => {
-			currentZebraPrinter.getStatus(
-				status => {
-					console.log("✅ Printer status:", status.getMessage(), status);
-					if (status.raw !== undefined) {
-						console.log("Raw status (escaped):", String(status.raw).replace(/\r/g, "\\r").replace(/\n/g, "\\n"));
-					}
-					renderPrinterStatus(status);
-					res();
-				},
-				err => {
-					console.warn("⚠️ Status retrieval failed:", err);
-					res();
+	// Status
+	await new Promise(res => {
+		currentZebraPrinter.getStatus(
+			status => {
+				console.log("✅ Printer status:", status.getMessage(), status);
+				if (status.raw !== undefined) {
+					console.log("Raw status (escaped):", String(status.raw).replace(/\r/g, "\\r").replace(/\n/g, "\\n"));
 				}
-			);
-		});
-
-		// Configuration
-		await new Promise(res => {
-			currentZebraPrinter.getConfiguration(
-				cfg => {
-					console.log("✅ Parsed configuration:", cfg);
-					res();
-				},
-				err => {
-					console.warn("⚠️ Configuration error (expected in some cases):", err);
-					if (selected_printer && typeof selected_printer.sendThenReadUntilStringReceived === 'function') {
-						selected_printer.sendThenReadUntilStringReceived(
-							"^XA^HH^XZ",
-							resp => {
-								console.log("🔍 Raw config fallback response:", resp);
-								console.log("Char codes of raw response:", resp.split("").map(c => c.charCodeAt(0)));
-								res();
-							},
-							err2 => {
-								console.error("❌ Failed to get raw config fallback:", err2);
-								res();
-							},
-							String.fromCharCode(3),
-							1
-						);
-					} else {
-						res();
-					}
-				}
-			);
-		});
-
-		resolve();
+				renderPrinterStatus(status);
+				res();
+			},
+			err => {
+				console.warn("⚠️ Status retrieval failed:", err);
+				res();
+			}
+		);
 	});
+
+	// Configuration
+	await new Promise(res => {
+		currentZebraPrinter.getConfiguration(
+			cfg => {
+				console.log("✅ Parsed configuration:", cfg);
+				res();
+			},
+			err => {
+				console.warn("⚠️ Configuration error (expected in some cases):", err);
+				if (selected_printer && typeof selected_printer.sendThenReadUntilStringReceived === 'function') {
+					selected_printer.sendThenReadUntilStringReceived(
+						"^XA^HH^XZ",
+						resp => {
+							console.log("🔍 Raw config fallback response:", resp);
+							console.log("Char codes of raw response:", resp.split("").map(c => c.charCodeAt(0)));
+							res();
+						},
+						err2 => {
+							console.error("❌ Failed to get raw config fallback:", err2);
+							res();
+						},
+						String.fromCharCode(3),
+						1
+					);
+				} else {
+					res();
+				}
+			}
+		);
+	});
+
 }
 
 function setupWebPrint() {
@@ -310,7 +307,8 @@ async function printBarcodeLabel(barcode, facility, patientART) {
 
 	showLoading("Printing...");
 
-	await logPrinterDiagnostics();
+	// Diagnostics only log; a failure there must not stop the print.
+	await logPrinterDiagnostics().catch(err => console.warn("Printer diagnostics failed:", err));
 	await primePrinter();
 
 	try {

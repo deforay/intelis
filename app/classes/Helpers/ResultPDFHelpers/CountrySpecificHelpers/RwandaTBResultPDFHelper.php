@@ -18,7 +18,6 @@ class RwandaTBResultPDFHelper extends TBResultPDFHelper
     public ?string $trainingTxt = null;
     private ?string $pdfTemplatePath = null;
     private bool $templateImported = false;
-    private bool $enableFooter = true; // Default is true to render footer
 
     #[Override]
     public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null, $facilityInfo = [], $pdfTemplatePath = null): void

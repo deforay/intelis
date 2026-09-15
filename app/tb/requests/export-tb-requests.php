@@ -8,7 +8,6 @@ use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
-use App\Utilities\SampleRejectionUtility;
 
 
 /** @var DatabaseService $db */
@@ -48,26 +47,11 @@ $buildRow = function ($aRow, $no) use ($general, $key, $tbResults, $db): array {
     $tbTestQuery = "SELECT * from tb_tests where tb_id= ? ORDER BY tb_test_id ASC";
     $tbTestInfo = $db->rawQuery($tbTestQuery, [$aRow['tb_id']]);
 
-    foreach ($tbTestInfo as $indexKey => $rows) {
+    foreach ($tbTestInfo as $rows) {
         $testPlatform = $rows['testing_platform'];
         $testMethod = $rows['test_name'];
     }
 
-    //set gender
-    $gender = '';
-    if ($aRow['patient_gender'] == 'male') {
-        $gender = 'M';
-    } elseif ($aRow['patient_gender'] == 'female') {
-        $gender = 'F';
-    } elseif ($aRow['patient_gender'] == 'unreported') {
-        $gender = 'Unreported';
-    }
-
-    //set sample rejection
-    $sampleRejection = 'No';
-    if (SampleRejectionUtility::isRejected($aRow)) {
-        $sampleRejection = 'Yes';
-    }
     if (!empty($aRow['patient_name'])) {
         $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
     } else {

@@ -20,8 +20,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $key = (string) $general->getGlobalConfig('key');
 
-$globalConfig = $general->getGlobalConfig();
-$formId = (int) $globalConfig['vl_form'];
 
 
 
@@ -41,10 +39,9 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 	}
 
 
-	$buildRow = function ($aRow, $no) use ($general, $key, $formId): array {
+	$buildRow = function ($aRow, $no) use ($general, $key): array {
 		$row = [];
 
-		$age = _translate('Not Reported');
 		$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
 		$age = DateUtility::ageInYearMonthDays($aRow['patient_dob'] ?? '');
 		if (!empty($age) && $age['year'] > 0) {

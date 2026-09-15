@@ -203,7 +203,6 @@ function some_action_already_applied(DatabaseService $db, string $table, array $
             if (column_exists($db, $table, $m[1])) {
                 return true;
             }
-            continue;
         }
 
         // A DROP whose column is absent is NOT evidence, deliberately. It

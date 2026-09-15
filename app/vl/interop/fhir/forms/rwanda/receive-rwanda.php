@@ -103,9 +103,9 @@ try {
                 // echo "<h1> Entry " . $resource->getIntent() . " </h1>";
                 $status = (string) $resource->getStatus()->getValue();
                 $taskId = (string) $resource->getId();
-                if (empty($resource->getBasedOn()) && empty($resource->getBasedOn()))
-
+                if (empty($resource->getBasedOn())) {
                     throw new SystemException("ServiceRequest is missing for Task/$taskId");
+                }
                 $basedOnServiceRequest = basename((string) $resource->getBasedOn()[0]->getReference());
                 $uniqueId = "FHIR::$basedOnServiceRequest";
                 $organization = $fhir->getFHIRReference($resource->getRequester()->getReference());

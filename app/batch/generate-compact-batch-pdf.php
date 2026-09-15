@@ -265,11 +265,7 @@ try {
                             if (isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])) {
                                 $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
                             }
-                            if ($barcodeFormat == 'QRCODE') {
-                                $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '<br>';
-                            } else {
-                                $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '<br>';
-                            }
+                            $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '<br>';
 
                             if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                                 $tbl .= 'Remote Sample ID : ' . $sampleResult[0]['remote_sample_code'] . '<br>';
@@ -354,11 +350,7 @@ try {
                             if (isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])) {
                                 $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
                             }
-                            if ($barcodeFormat == 'QRCODE') {
-                                $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '<br>';
-                            } else {
-                                $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '<br>';
-                            }
+                            $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '<br>';
                             if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                                 $tbl .= 'Remote Sample ID : ' . $sampleResult[0]['remote_sample_code'] . '<br>';
                                 $tbl .= 'Patient Code : ' . $sampleResult[0][$patientIdColumn] . '<br>';
@@ -506,11 +498,7 @@ try {
                     if (!empty($sample['lab_assigned_code'])) {
                         $tbl .= '(' . $sample['lab_assigned_code'] . ')<br>';
                     }
-                    if ($barcodeFormat == 'QRCODE') {
-                        $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sample['sample_code'], $barcodeFormat) . '<br>';
-                    } else {
-                        $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sample['sample_code'], $barcodeFormat) . '<br>';
-                    }
+                    $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sample['sample_code'], $barcodeFormat) . '<br>';
                     if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                         $tbl .= 'Remote Sample ID : ' . $sample['remote_sample_code'] . '<br>';
                         $tbl .= 'Patient Code : ' . $patientIdentifier . '<br>';

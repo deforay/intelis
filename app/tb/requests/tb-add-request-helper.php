@@ -166,9 +166,8 @@ try {
     if (isset($_POST['tbTestsRequested']) && is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = json_encode($_POST['tbTestsRequested']);
     }
-    if ((isset($_POST['isResultFinalized']) && !empty($_POST['isResultFinalized']) && isset($_POST['finalResult']) && !empty($_POST['finalResult'])) && $_POST['isResultFinalized'] == 'yes') {
-        $_POST['finalResult'] = $_POST['finalResult'];
-    } else {
+    // A result is kept only when the form says it is finalized.
+    if (empty($_POST['isResultFinalized']) || empty($_POST['finalResult']) || $_POST['isResultFinalized'] != 'yes') {
         $_POST['finalResult'] = null;
     }
     // Rejection is a verdict on the sample, not on one test card. A TB sample is one

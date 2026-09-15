@@ -120,12 +120,10 @@ class Covid19ResultPDFHelper extends Fpdi
                 $thirdHeading = '23';
                 $fourthHeading = '28';
                 $hrLine = '36';
-                $marginTop = '14';
             } else {
                 $thirdHeading = '17';
                 $fourthHeading = '23';
                 $hrLine = '30';
-                $marginTop = '9';
             }
             if ($this->lab !== null && $this->lab !== '' && $this->lab !== '0' && trim($this->lab) !== '') {
                 $this->SetFont('helvetica', '', 9);
@@ -144,11 +142,6 @@ class Covid19ResultPDFHelper extends Fpdi
         $this->SetY(-15);
         // Set font
         $this->SetFont('helvetica', '', 8);
-        if ($this->commonService->isLISInstance() && $this->dataSync == 0 && ($this->formId == 1 || $this->formId == 3)) {
-            $generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
-        } else {
-            $generatedAtTestingLab = "";
-        }
         if ($this->enableFooter) {
             // Position at 15 mm from bottom
             // Page number

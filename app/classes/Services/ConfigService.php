@@ -67,7 +67,7 @@ final class ConfigService
 
         // Combine all sections with proper spacing
         $result = '';
-        foreach ($sections as $section => $sectionLines) {
+        foreach ($sections as $sectionLines) {
             $result .= implode("\n", $sectionLines) . "\n\n";
         }
 
@@ -109,7 +109,7 @@ final class ConfigService
     private function getTopLevelSection(string $key): string
     {
         // Extract the top-level key from the full key path
-        if (preg_match('/\$systemConfig\[(\'|")([^\'"]*)/', $key, $matches)) {
+        if (preg_match('/\$systemConfig\[([\'"])([^\'"]*)/', $key, $matches)) {
             return $matches[2];
         }
         return '';

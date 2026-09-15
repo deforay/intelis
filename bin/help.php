@@ -315,7 +315,7 @@ function extract_summary(string $path): string
  */
 function strip_path_prefix(string $line): string
 {
-    $line = preg_replace('#^bin/[a-z0-9/.-]+\s+(?:—|-|:)\s*#u', '', $line);
+    $line = preg_replace('#^bin/[a-z0-9/.-]+\s+[—:-]\s*#u', '', $line);
     if (preg_match('#^bin/[a-z0-9/.-]+\.php\s*$#u', $line)) {
         return '';
     }

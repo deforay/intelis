@@ -1237,7 +1237,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 
 										<div id="auto-sample-eg" class="row"
-											style="display:<?php echo ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
+											style="display:block;">
 											<div class="col-md-12" style="text-align:center;">
 												<code id="auto-sample-code" class="autoSample"
 													style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
@@ -1514,7 +1514,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 
 										<div id="eid_auto-sample-eg" class="row"
-											style="display:<?php echo ($arr['eid_sample_code'] == 'auto' || $arr['eid_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
+											style="display:block;">
 											<div class="col-md-12" style="text-align:center;">
 												<code id="eid_auto-sample-code" class="eid_autoSample"
 													style="display:<?php echo ($arr['eid_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
@@ -1724,7 +1724,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 
 										<div id="covid19_auto-sample-eg" class="row"
-											style="display:<?php echo ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
+											style="display:block;">
 											<div class="col-md-12" style="text-align:center;">
 												<code id="covid19_auto-sample-code" class="covid19_autoSample"
 													style="display:<?php echo ($arr['covid19_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
@@ -1914,7 +1914,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 
 										<div id="hepatitis_auto-sample-eg" class="row"
-											style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto' || $arr['hepatitis_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
+											style="display:block;">
 											<div class="col-md-12" style="text-align:center;">
 												<code id="hepatitis_auto-sample-code" class="hepatitis_autoSample"
 													style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
@@ -2078,7 +2078,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 
 										<div id="tb_auto-sample-eg" class="row"
-											style="display:<?php echo ($arr['tb_sample_code'] == 'auto' || $arr['tb_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
+											style="display:block;">
 											<div class="col-md-12" style="text-align:center;">
 												<code id="tb_auto-sample-code" class="tb_autoSample"
 													style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
@@ -2264,7 +2264,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 
 										<div id="cd4_auto-sample-eg" class="row"
-											style="display:<?php echo ($arr['cd4_sample_code'] == 'auto' || $arr['cd4_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
+											style="display:block;">
 											<div class="col-md-12" style="text-align:center;">
 												<code id="cd4_auto-sample-code" class="cd4_autoSample"
 													style="display:<?php echo ($arr['cd4_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
@@ -2431,7 +2431,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 
 										<div id="generic_auto-sample-eg" class="row"
-											style="display:<?php echo ($arr['generic_sample_code'] == 'auto' || $arr['generic_sample_code'] == 'auto2' || 'MMYY' || 'YY') ? 'block' : 'none'; ?>;">
+											style="display:block;">
 											<div class="col-md-12" style="text-align:center;">
 												<code id="generic_auto-sample-code" class="generic_autoSample"
 													style="display:<?php echo ($arr['generic_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">

@@ -191,7 +191,7 @@ final class ResultsService
                 }
             }
             $counter = 0;
-            foreach ($resultData as $key => $dataFromLIS) {
+            foreach ($resultData as $dataFromLIS) {
                 try {
                     if (empty($dataFromLIS)) {
                         continue;

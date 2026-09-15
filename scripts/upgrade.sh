@@ -1499,7 +1499,6 @@ prepare_phase() {
 
     local master_log="${staging_dir}/master.log"
     local vendor_log="${staging_dir}/vendor.log"
-    local master_tar="${staging_dir}/master.tar.gz"
     local master_extract_dir="${staging_dir}/intelis-master"
     local vendor_tar="${staging_dir}/vendor.tar.gz"
     local vendor_sha256="${staging_dir}/vendor.tar.gz.sha256"
@@ -1515,7 +1514,7 @@ prepare_phase() {
     # VERSION.txt stamp) lives in shared-functions.sh's fetch_master_tree so
     # setup.sh and this prepare phase stay identical. master_extract_dir's parent
     # is $staging_dir, so the helper's tarball fallback (master.tar.gz beside the
-    # extract dir) matches $master_tar exactly.
+    # extract dir) lands in $staging_dir as well.
     _prepare_master_worker() {
         set -e
         fetch_master_tree "$master_extract_dir"

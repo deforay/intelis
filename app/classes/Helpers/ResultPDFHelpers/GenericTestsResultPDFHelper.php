@@ -87,12 +87,10 @@ class GenericTestsResultPDFHelper extends Fpdi
                 $thirdHeading = '21';
                 $fourthHeading = '28';
                 $hrLine = '36';
-                $marginTop = '14';
             } else {
                 $thirdHeading = '14';
                 $fourthHeading = '23';
                 $hrLine = '30';
-                $marginTop = '9';
             }
             if ($this->lab !== null && $this->lab !== '' && $this->lab !== '0' && trim($this->lab) !== '') {
                 $this->SetFont('helvetica', '', 10);
