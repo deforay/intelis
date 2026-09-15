@@ -295,6 +295,19 @@ const COVERED_FILES = [
     'app/vl/results/getRequestSampleCodeDetails.php',
     'app/vl/results/getVlFailedResultsDetails.php',
     'app/vl/results/getVlResultsForApproval.php',
+    // Result mail senders: attachments resolved through MailAttachmentUtility.
+    'app/cd4/results/email-results-helper.php',
+    'app/covid-19/mail/covid-19-result-mail-helper.php',
+    'app/covid-19/results/email-results-helper.php',
+    'app/eid/results/email-results-helper.php',
+    'app/generic-tests/mail/generic-tests-result-mail-helper.php',
+    'app/generic-tests/results/email-results-helper.php',
+    'app/hepatitis/mail/hepatitis-result-mail-helper.php',
+    'app/hepatitis/results/email-results-helper.php',
+    'app/includes/checkFileExists.php',
+    'app/mail/vlResultMailHelper.php',
+    'app/tb/results/email-results-helper.php',
+    'app/vl/results/email-results-helper.php',
 ];
 
 /**
@@ -318,6 +331,7 @@ const API_COVERED_FILES = [
     'app/api/v1.1/init.php',
     'app/api/v1.1/sample-status.php',
     'app/api/v1.1/cancel-requests.php',
+    'app/api/v1.1/generate-manifest.php',
 ];
 
 /**

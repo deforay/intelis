@@ -71,11 +71,21 @@ try {
 
     $where = [];
     /* To check the sample id filter */
-    $sampleCode = $input['sampleCode'] ?? [];
-    if (!empty($sampleCode)) {
-        $sampleCode = implode("','", array_map($db->escape(...), (array) $sampleCode));
-        $where[] = " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode') OR vl.app_sample_code IN ('$sampleCode') ) ";
+    // The request names its samples by code, by unique id, or both. Without
+    // either list the query would select every sample and put all of them in
+    // this manifest, so a request whose lists are empty selects nothing.
+    $identifiers = [];
+    $sampleCode = array_values(array_filter((array) ($input['sampleCode'] ?? []), is_scalar(...)));
+    if ($sampleCode !== []) {
+        $sampleCodeList = implode("','", array_map($db->escape(...), $sampleCode));
+        $identifiers[] = "vl.sample_code IN ('$sampleCodeList') OR vl.remote_sample_code IN ('$sampleCodeList') OR vl.app_sample_code IN ('$sampleCodeList')";
     }
+    $uniqueId = array_values(array_filter((array) ($input['uniqueId'] ?? []), is_scalar(...)));
+    if ($uniqueId !== []) {
+        $uniqueIdList = implode("','", array_map($db->escape(...), $uniqueId));
+        $identifiers[] = "vl.unique_id IN ('$uniqueIdList')";
+    }
+    $where[] = $identifiers === [] ? ' 1 = 0 ' : ' (' . implode(' OR ', $identifiers) . ') ';
 
     // REMOVED: The condition that excludes samples already in manifests
     // $where[] = " ((vl.sample_package_id IS NULL OR vl.sample_package_id = '') AND (vl.sample_package_code IS NULL  OR vl.sample_package_code = ''))";
@@ -143,7 +153,7 @@ try {
         // Create new manifest only if there are samples to add
         if ($samplesToAdd !== []) {
 
-            $manifestHash = $testRequestsService->getManifestHash($selectedSamples, $input['testType']);
+            $manifestHash = $testRequestsService->getManifestHash($selectedSamplesIds, $input['testType']);
             $data = [
                 'manifest_code' => $sampleManifestCode,
                 'module' => $input['testType'],
@@ -179,7 +189,7 @@ try {
         }
 
         // Find samples that were requested but not found
-        $missedSamples = array_values(array_diff($input['sampleCode'], $availableSamples));
+        $missedSamples = array_values(array_diff($sampleCode, $availableSamples));
 
         // Prepare response maintaining backward compatibility
         if ($addedToManifest !== [] || $alreadyInManifest !== []) {
