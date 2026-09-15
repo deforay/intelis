@@ -49,3 +49,15 @@ ALTER TABLE `form_generic` ADD INDEX `idx_remote_sample_code` (`remote_sample_co
 
 
 UPDATE `system_config` SET `value` = '5.7.70' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
