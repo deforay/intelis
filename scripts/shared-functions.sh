@@ -144,8 +144,12 @@ install_packages() {
     for pkg in "${!optional_pkg_to_cmd[@]}"; do
         command -v "${optional_pkg_to_cmd[$pkg]}" &>/dev/null || optional_missing+=("$pkg")
     done
+    # apt's own output stays on screen: the download and unpack take a minute or
+    # more on a slow mirror or disk, and hidden they looked like a hang right
+    # after "Downloaded shared-functions.sh". This runs once per server.
     if [ "${#optional_missing[@]}" -gt 0 ]; then
-        DEBIAN_FRONTEND=noninteractive apt-get install -y "${optional_missing[@]}" >/dev/null 2>&1 ||
+        print info "Installing ${optional_missing[*]} (one-time, optional)..."
+        DEBIAN_FRONTEND=noninteractive apt-get install -y -q "${optional_missing[@]}" ||
             print warning "Could not install ${optional_missing[*]} (optional, continuing)."
     fi
     if ! command -v fd &>/dev/null && command -v fdfind &>/dev/null; then
