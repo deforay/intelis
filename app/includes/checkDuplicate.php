@@ -40,9 +40,10 @@ if ($value !== '' && $value !== '0' && !empty($fieldName) && !empty($tableName))
     }
 
     try {
-        $inCondition = $isMultiple ? "IN (?)" : "= ?";
+        // One placeholder per value: a single `IN (?)` bound to a list matches only the first one.
+        $inCondition = $isMultiple ? "IN (" . implode(',', array_fill(0, count($value), '?')) . ")" : "= ?";
         $tableCondition = '';
-        $parameters = [$value];
+        $parameters = $isMultiple ? $value : [$value];
 
         if (!empty($fnct) && $fnct != 'null') {
             $table = explode("##", (string) $fnct);

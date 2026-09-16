@@ -45,7 +45,12 @@ final class GeoLocationsService
             }
             // Province access mapping should only be applied when fetching provinces (geo_parent = 0)
             if (!empty($_SESSION['mappedProvinces']) && (empty($parent) || $parent === 0 || $parent === "0")) {
-                $this->db->where('geo_id', $_SESSION['mappedProvinces']);
+                // mappedProvinces is a comma-separated string; binding it to `=` makes
+                // MySQL cast "12,4,31" to 12, so only the first province would match.
+                $mappedProvinceIds = array_filter(array_map('intval', explode(',', (string) $_SESSION['mappedProvinces'])));
+                if (!empty($mappedProvinceIds)) {
+                    $this->db->where('geo_id', $mappedProvinceIds, 'IN');
+                }
             }
 
             if ($updatedDateTime) {
