@@ -18,6 +18,7 @@ use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Utilities\ArchiveUtility;
+use App\Utilities\ApiTrackingStorageUtility;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use GuzzleHttp\Client;
@@ -1600,8 +1601,11 @@ final class CommonService
         }
 
         try {
+            // One timestamp for the row and the day folder its bodies go in, so the
+            // viewer finds them from requested_on even across midnight.
+            $requestedOn = DateUtility::getCurrentDateTime();
+
             if ($captureAll || ($bodiesMode === 'data' && !$emptyPoll)) {
-                $folderPath = VAR_PATH . DIRECTORY_SEPARATOR . 'track-api';
                 $bodies = [
                     'requests' => $requestData,
                     'responses' => $responseData,
@@ -1612,7 +1616,7 @@ final class CommonService
                         continue;
                     }
 
-                    $dir = $folderPath . DIRECTORY_SEPARATOR . $folder;
+                    $dir = ApiTrackingStorageUtility::dayDirectory($folder, $requestedOn);
                     MiscUtility::makeDirectory($dir);
 
                     // Use ArchiveUtility with auto-backend selection
@@ -1626,7 +1630,7 @@ final class CommonService
             $data = [
                 'transaction_id' => $transactionId ?? null,
                 'requested_by' => $user ?? 'system',
-                'requested_on' => DateUtility::getCurrentDateTime(),
+                'requested_on' => $requestedOn,
                 'number_of_records' => $numberOfRecords ?? 0,
                 'request_type' => $requestType ?? null,
                 'test_type' => $testType ?? null,

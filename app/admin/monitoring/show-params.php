@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\ArchiveUtility;
+use App\Utilities\ApiTrackingStorageUtility;
 use App\Utilities\LoggerUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -43,9 +44,11 @@ if ($transactionId === '') {
 }
 
 // ---------- Locate archives ----------
-$baseFolder = realpath(VAR_PATH . DIRECTORY_SEPARATOR . 'track-api') ?: (VAR_PATH . DIRECTORY_SEPARATOR . 'track-api');
-$reqDir = $baseFolder . DIRECTORY_SEPARATOR . 'requests';
-$resDir = $baseFolder . DIRECTORY_SEPARATOR . 'responses';
+// Bodies live in a folder for the day of requested_on; calls recorded before that
+// layout are in the flat folder, until their retention runs out.
+$requestedOnRaw = (string) ($result['requested_on'] ?? '');
+$reqDirs = ApiTrackingStorageUtility::candidateDirectories('requests', $requestedOnRaw);
+$resDirs = ApiTrackingStorageUtility::candidateDirectories('responses', $requestedOnRaw);
 $reqName = "$transactionId.json";
 $resName = "$transactionId.json";
 
@@ -53,10 +56,25 @@ $resName = "$transactionId.json";
 /**
  * @return array{decoded: mixed|null, raw: string|null, error: string|null}
  */
-$load = function (string $dir, string $filename): array {
+$load = function (array $dirs, string $filename): array {
     $out = ['decoded' => null, 'raw' => null, 'error' => null];
     try {
-        $raw = ArchiveUtility::findAndDecompressArchive($dir, $filename); // string
+        $raw = null;
+        foreach ($dirs as $dir) {
+            // file_exists per name, never glob: a pre-dated-layout folder can hold
+            // millions of files, and a glob reads every entry.
+            $base = $dir . DIRECTORY_SEPARATOR . $filename;
+            if (array_filter(['.zst', '.gz', '.zip', ''], static fn(string $ext): bool => file_exists($base . $ext)) !== []) {
+                $raw = ArchiveUtility::findAndDecompressArchive($dir, $filename); // string
+                break;
+            }
+        }
+        if ($raw === null) {
+            // Not an error worth logging: calls that moved no data keep no body,
+            // and bodies are cleared after their retention period.
+            $out['error'] = _translate('No request or response body is kept for this call');
+            return $out;
+        }
         // Validate + decode with JsonUtility (UTF-8 tolerant)
         if (!JsonUtility::isJSON($raw, logError: true, checkUtf8Encoding: true)) {
             throw new RuntimeException('Invalid JSON in file');
@@ -75,8 +93,8 @@ $load = function (string $dir, string $filename): array {
 };
 
 // ---------- Load request/response ----------
-$req = $load($reqDir, $reqName);
-$res = $load($resDir, $resName);
+$req = $load($reqDirs, $reqName);
+$res = $load($resDirs, $resName);
 
 $isParamsOnly = !empty($result['api_params']);
 $bothMissing = ($req['decoded'] === null && $res['decoded'] === null);

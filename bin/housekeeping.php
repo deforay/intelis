@@ -13,6 +13,7 @@ if ($isCli === false) {
 }
 
 use App\Utilities\MiscUtility;
+use App\Utilities\ApiTrackingStorageUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -511,14 +512,7 @@ $cleanup = [
         'duration' => 3,
         'max_size_mb' => 500
     ],
-    VAR_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' => [
-        'duration' => 120,
-        'max_size_mb' => 1000
-    ],
-    VAR_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses' => [
-        'duration' => 120,
-        'max_size_mb' => 1000
-    ],
+    // var/track-api is not here: see API TRACKING BODIES below.
 ];
 
 $totalStats = [
@@ -637,6 +631,78 @@ $table->setRows([
     ['Errors', $dbStats['errors'] > 0 ? "<fire>{$dbStats['errors']}</fire>" : "<success>0</success>"],
 ]);
 $table->render();
+
+// API TRACKING BODIES
+//
+// Deliberately not in $cleanup above. That path runs du and a find | sort over
+// every file, and on an STS these folders held millions of them; the walk alone
+// kept the disk busy for hours, on every night and every upgrade. Bodies are now
+// kept in one folder per day, so expiring them is deleting day folders chosen by
+// name. A folder still in the old flat layout is renamed aside in one step --
+// nothing in it is worth keeping, the database rows are -- and deleted at idle
+// I/O priority. This runs last, so a long first purge never holds up the rest.
+$output->writeln("\n<info>API TRACKING BODIES</info>");
+$output->writeln(str_repeat('-', 80));
+
+$purgeLockPath = ApiTrackingStorageUtility::root() . DIRECTORY_SEPARATOR . '.purge.lock';
+MiscUtility::makeDirectory(ApiTrackingStorageUtility::root());
+$purgeLock = @fopen($purgeLockPath, 'c');
+if ($purgeLock === false || !flock($purgeLock, LOCK_EX | LOCK_NB)) {
+    $output->writeln("<info>ℹ Another housekeeping run is already clearing API tracking bodies — skipping</info>");
+} else {
+    try {
+        $now = new DateTimeImmutable();
+        foreach (ApiTrackingStorageUtility::KINDS as $kind) {
+            if (ApiTrackingStorageUtility::hasFlatFiles($kind)) {
+                $aside = ApiTrackingStorageUtility::moveAsideFlatFolder($kind, $now);
+                $output->writeln($aside !== null
+                    ? "  <success>✓ Moved the old flat {$kind} folder aside for deletion</success>"
+                    : "  <fire>✗ Could not move the old flat {$kind} folder aside</fire>");
+                if ($aside === null) {
+                    $totalStats['errors']++;
+                }
+            }
+        }
+
+        $toDelete = ApiTrackingStorageUtility::pendingPurges();
+        foreach (ApiTrackingStorageUtility::KINDS as $kind) {
+            $toDelete = [
+                ...$toDelete,
+                ...ApiTrackingStorageUtility::expiredDayDirectories(
+                    $kind,
+                    $now,
+                    ApiTrackingStorageUtility::RETENTION_DAYS
+                ),
+            ];
+        }
+
+        if ($toDelete === []) {
+            $output->writeln("  <info>ℹ Nothing older than " . ApiTrackingStorageUtility::RETENTION_DAYS . " days</info>");
+        } else {
+            $output->writeln("  <comment>Deleting " . count($toDelete) . " folder(s) at idle I/O priority...</comment>");
+            $started = microtime(true);
+            $failed = ApiTrackingStorageUtility::deleteAtLowPriority($toDelete);
+            foreach (ApiTrackingStorageUtility::KINDS as $kind) {
+                ApiTrackingStorageUtility::removeEmptyDateFolders($kind);
+            }
+            $removed = count($toDelete) - count($failed);
+            $totalStats['dirs_deleted'] += $removed;
+            $totalStats['errors'] += count($failed);
+            $output->writeln("  <success>✓ Removed {$removed} folder(s) in " . round(microtime(true) - $started, 1) . "s</success>");
+            foreach ($failed as $dir) {
+                $output->writeln("  <fire>✗ Could not remove {$dir}</fire>");
+            }
+            LoggerUtility::logInfo('API tracking bodies cleared', ['removed' => $removed, 'failed' => $failed]);
+        }
+    } catch (Throwable $e) {
+        $totalStats['errors']++;
+        $output->writeln("  <fire>✗ {$e->getMessage()}</fire>");
+        LoggerUtility::logError('API tracking body cleanup failed: ' . $e->getMessage());
+    } finally {
+        flock($purgeLock, LOCK_UN);
+        fclose($purgeLock);
+    }
+}
 
 // FINAL SUMMARY
 $output->writeln('');
