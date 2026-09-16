@@ -86,27 +86,52 @@ pour chaque module et vérifier que les noms attendus y figurent.
 | Emplacement du texte en bas de page | Au-dessus du pied de page, ou sous le nom de la plateforme |
 | Afficher le numéro de page dans le pied de page | Si les pages sont numérotées |
 
-## Charger de nombreuses structures en une fois
+## Charger ou mettre à jour de nombreuses structures en une fois
 
 1. Aller à **ADMIN → Structures sanitaires**.
 2. Sélectionner **Chargement groupé**.
-3. Télécharger le format Excel depuis le lien de la page.
-4. Le remplir et le téléverser.
-5. Choisir une option de chargement.
+3. Télécharger le format Excel depuis le lien de la page, ou utiliser
+   **Exporter** sur la page des structures. Les deux ont les mêmes colonnes : un
+   export peut être modifié puis téléversé tel quel.
+4. Remplir ou modifier la feuille. **Type de structure** vaut 1 (structure
+   sanitaire), 2 (laboratoire de test) ou 3 (site de prélèvement). **Statut**
+   vaut `active` ou `inactive`.
+5. Choisir une option de chargement, joindre le fichier et sélectionner
+   **Vérifier le chargement**.
 
 | Option | Effet |
 |---|---|
-| Don't update duplicates | Ajoute les nouvelles structures. Laisse les existantes intactes. C'est la valeur par défaut |
-| Mettre à jour si le code de l'installation correspond | Écrase la structure portant ce code |
-| Mettre à jour si le nom de l'installation correspond | Écrase la structure portant ce nom |
-| Mettre à jour si le nom de l'établissement et le code de l'établissement correspondent | N'écrase que si les deux correspondent |
+| Don't update duplicates | Ajoute les nouvelles structures. Ignore toute ligne dont le nom ou le code existe déjà. C'est la valeur par défaut |
+| Mettre à jour si le code de l'installation correspond | Met à jour la structure portant ce code. Ajoute les lignes sans correspondance |
+| Mettre à jour si le nom de l'installation correspond | Met à jour la structure portant ce nom. Ajoute les lignes sans correspondance |
+| Mettre à jour si le nom de l'établissement et le code de l'établissement correspondent | Met à jour seulement si les deux désignent la même structure. Ajoute les lignes sans correspondance |
 
-La page indique le nombre total de fiches du fichier, le nombre ajouté et le
-nombre non ajouté. Lire les trois. Un fichier qui ajoute moins de structures
-qu'il n'en contient a des lignes en échec.
+Rien n'est encore enregistré. La page de vérification classe chaque ligne en
+**Nouvelle**, **Mise à jour**, **Aucun changement**, **Ignorée** ou **Erreur**,
+avec les champs modifiés par chaque mise à jour. Une cellule facultative vide
+conserve la valeur déjà enregistrée.
 
-Toujours utiliser le format téléchargé. Un fichier aux colonnes différentes
-échoue à l'import.
+Certaines lignes portent un avertissement. Elles sont surlignées et décochées :
+
+| Avertissement | Pourquoi c'est important |
+|---|---|
+| Le nom de la structure change beaucoup | La ligne correspond peut-être à la mauvaise structure |
+| Nom presque identique à une structure existante, ou à une autre ligne | La structure risque d'être ajoutée deux fois |
+| Coordonnées identiques à une structure existante | La structure risque d'être ajoutée deux fois |
+| Le type de structure change | Les listes et formulaires qui dépendent du type changent |
+| Le code d'un laboratoire de test change | Le code fait partie des codes d'échantillon générés par le laboratoire |
+| Le code externe change | Les autres systèmes qui utilisent l'ancien code ne retrouvent plus la structure |
+| Changement de province, ou coordonnées très éloignées | La ligne correspond peut-être à la mauvaise structure |
+| La structure devient inactive | La structure disparaît des listes actives |
+
+6. Examiner chaque avertissement. Cocher les lignes à importer.
+7. Sélectionner **Importer les lignes cochées**, ou **Annuler** pour abandonner
+   le chargement.
+
+Le résultat indique le nombre de structures ajoutées, mises à jour, inchangées,
+laissées de côté et non enregistrées. Une ligne dont la structure a été modifiée
+par quelqu'un d'autre après la vérification n'est pas enregistrée. Télécharger
+les lignes non enregistrées, les corriger et les téléverser à nouveau.
 
 ## Repérer les structures au comportement anormal
 
@@ -167,6 +192,6 @@ cessent d'arriver.
 | Nouvelle structure | La structure apparaît sur le formulaire de demande de chaque type de test coché |
 | Laboratoire de test | Le laboratoire apparaît dans la liste Testing Lab du formulaire |
 | Signataires | Imprimer un PDF de résultat de ce laboratoire et lire le bloc de signatures |
-| Chargement en masse | Le nombre ajouté correspond au nombre total de fiches du fichier |
+| Chargement en masse | Non enregistrées vaut 0, et ajoutées plus mises à jour correspond aux lignes cochées |
 | Structure orpheline corrigée | Elle n'apparaît plus sous Show Orphaned Facilities |
 | Connexion de l'outil d'interface | L'installation figure sous Connected Installations avec une Last Seen récente |

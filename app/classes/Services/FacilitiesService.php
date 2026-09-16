@@ -141,6 +141,29 @@ final class FacilitiesService
     }
 
     /**
+     * Column headings of the bulk facility upload sheet, in column order (A-L).
+     * The facility export writes this same layout so an export can be edited
+     * and uploaded again as-is.
+     */
+    public static function bulkUploadHeadings(): array
+    {
+        return [
+            _translate("Facility Name") . '*',
+            _translate("Facility Code"),
+            _translate("External Facility Code"),
+            _translate("Province/State") . '*',
+            _translate("District/County") . '*',
+            _translate("Facility Type") . '* (1 - ' . _translate("Health Facility") . ', 2 - ' . _translate("Testing Lab") . ', 3 - ' . _translate("Collection Site") . ')',
+            _translate("Address"),
+            _translate("Email"),
+            _translate("Phone Number"),
+            _translate("Latitude"),
+            _translate("Longitude"),
+            _translate("Status") . ' (active/inactive)',
+        ];
+    }
+
+    /**
      * Normalise a user-entered or imported facility code to plain uppercase
      * alphanumerics plus hyphen (A-Z, 0-9, "-"). Accents are folded (É -> E),
      * spaces and every other symbol are dropped, runs of hyphens are collapsed
@@ -539,7 +562,8 @@ final class FacilitiesService
     {
         return MemoUtility::remember(function () use ($provinceName, $provinceCode) {
             // check if there is a province matching the input params, if yes then return province id
-            $this->db->where("geo_name =" . $this->db->quote($provinceName));
+            // geo_parent = 0: a district sharing the name is not the province.
+            $this->db->where("geo_name =" . $this->db->quote($provinceName) . " AND geo_parent = 0");
             if ($provinceCode != "") {
                 $this->db->where("geo_code =" . $this->db->quote($provinceCode));
             }
@@ -553,12 +577,14 @@ final class FacilitiesService
                 // if not then insert and return the new province id
                 $data = ['geo_name' => $provinceName, 'geo_status' => 'active', 'updated_datetime' => DateUtility::getCurrentDateTime()];
                 $this->db->insert('geographical_divisions', $data);
+                // Read the id before activityLog() inserts its own row and replaces it.
+                $geoId = (int) $this->db->getInsertId();
 
                 /** @var CommonService $general */
                 $general = ContainerRegistry::get(CommonService::class);
                 $general->activityLog('add-province', ($_SESSION['userName'] ?? '') . " added a new province $provinceName", 'geographical-divisions');
 
-                return $this->db->getInsertId();
+                return $geoId;
             }
         });
     }
@@ -583,7 +609,7 @@ final class FacilitiesService
     {
         return MemoUtility::remember(function () use ($districtName, $districtCode, $provinceId) {
             // check if there is a district matching the input params, if yes then return province id
-            $this->db->where("geo_name =" . $this->db->quote($districtName) . " AND geo_parent = $provinceId");
+            $this->db->where("geo_name =" . $this->db->quote($districtName) . " AND geo_parent = " . (int) $provinceId);
             if ($districtCode != "") {
                 $this->db->where("geo_code =" . $this->db->quote($districtCode));
             }
@@ -595,12 +621,14 @@ final class FacilitiesService
                 // if not then insert and return the new province id
                 $data = ['geo_name' => $districtName, 'geo_parent' => $provinceId, 'geo_status' => 'active', 'updated_datetime' => DateUtility::getCurrentDateTime()];
                 $this->db->insert('geographical_divisions', $data);
+                // Read the id before activityLog() inserts its own row and replaces it.
+                $geoId = (int) $this->db->getInsertId();
 
                 /** @var CommonService $general */
                 $general = ContainerRegistry::get(CommonService::class);
                 $general->activityLog('add-district', ($_SESSION['userName'] ?? '') . " added a new district $districtName", 'geographical-divisions');
 
-                return $this->db->getInsertId();
+                return $geoId;
             }
         });
     }

@@ -1,10 +1,13 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
+use Psr\Http\Message\ServerRequestInterface;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -16,96 +19,82 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+
 $sWhere = [];
-$facilityType = $_POST['facilityType'] ?? '';
-if (trim((string) $facilityType) !== '') {
-	$sWhere[] = ' f_t.facility_type_id = "' . $facilityType . '"';
+$params = [];
+$joins = '';
+
+$facilityType = trim((string) ($_POST['facilityType'] ?? ''));
+if ($facilityType !== '') {
+	$sWhere[] = 'f_d.facility_type = ?';
+	$params[] = $facilityType;
 }
-if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-	$sWhere[] = " d.geo_name LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
+if (trim((string) ($_POST['district'] ?? '')) !== '') {
+	$sWhere[] = 'd.geo_name LIKE ?';
+	$params[] = '%' . addcslashes(trim((string) $_POST['district']), '%_\\') . '%';
 }
-if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-	$sWhere[] = " p.geo_name LIKE '%" . $db->escapeLike($_POST['state']) . "%' ";
+if (trim((string) ($_POST['state'] ?? '')) !== '') {
+	$sWhere[] = 'p.geo_name LIKE ?';
+	$params[] = '%' . addcslashes(trim((string) $_POST['state']), '%_\\') . '%';
 }
-$qry = "";
-if (isset($_POST['testType']) && trim((string) $_POST['testType']) !== '' && !empty($facilityType)) {
-	if ($facilityType == '2') {
-		$qry = " LEFT JOIN testing_labs tl ON tl.facility_id=f_d.facility_id";
-		$sWhere[] = ' tl.test_type = "' . $db->escape((string) $_POST['testType']) . '"';
-	} else {
-		$qry = " LEFT JOIN health_facilities hf ON hf.facility_id=f_d.facility_id";
-		$sWhere[] = ' hf.test_type = "' . $db->escape((string) $_POST['testType']) . '"';
-	}
+if (trim((string) ($_POST['testType'] ?? '')) !== '' && $facilityType !== '') {
+	// EXISTS instead of a JOIN so a facility never appears once per matching row.
+	$testTypeTable = $facilityType === '2' ? 'testing_labs' : 'health_facilities';
+	$sWhere[] = "EXISTS (SELECT 1 FROM $testTypeTable tt WHERE tt.facility_id = f_d.facility_id AND tt.test_type = ?)";
+	$params[] = trim((string) $_POST['testType']);
 }
-if (isset($_POST['activeFacility']) && trim((string) $_POST['activeFacility']) !== '') {
-	$sWhere[] = " f_d.status = '" . $db->escape((string) $_POST['activeFacility']) . "' ";
+if (trim((string) ($_POST['activeFacility'] ?? '')) !== '') {
+	$sWhere[] = 'f_d.status = ?';
+	$params[] = trim((string) $_POST['activeFacility']);
 }
-if (isset($_POST['orphanFacility']) && $_POST['orphanFacility'] === 'yes') {
+if (($_POST['orphanFacility'] ?? '') === 'yes') {
 	$sWhere[] = "(f_d.status = 'active' AND (p.geo_status IS NULL OR p.geo_status != 'active' OR d.geo_status IS NULL OR d.geo_status != 'active'))";
 }
-$sQuery = "SELECT f_d.*, f_t.*, p.geo_name as province, d.geo_name as district
-            FROM facility_details as f_d
-            LEFT JOIN facility_type as f_t ON f_t.facility_type_id=f_d.facility_type
-            LEFT JOIN geographical_divisions as p ON f_d.facility_state_id = p.geo_id
-            LEFT JOIN geographical_divisions as d ON f_d.facility_district_id = d.geo_id $qry ";
+
+$sQuery = "SELECT f_d.facility_name, f_d.facility_code, f_d.other_id, f_d.facility_type,
+                f_d.status, f_d.address, f_d.facility_emails, f_d.facility_mobile_numbers,
+                f_d.latitude, f_d.longitude,
+                p.geo_name AS province, d.geo_name AS district
+            FROM facility_details AS f_d
+            LEFT JOIN geographical_divisions AS p ON f_d.facility_state_id = p.geo_id
+            LEFT JOIN geographical_divisions AS d ON f_d.facility_district_id = d.geo_id";
 
 if (!empty($sWhere)) {
-	$sQuery = $sQuery . ' where ' . implode(' AND ', $sWhere);
+	$sQuery .= ' WHERE ' . implode(' AND ', $sWhere);
 }
+$sQuery .= ' ORDER BY f_d.facility_name';
 
-/*   Added to activity log */
-$general->activityLog('Export-facilities', $_SESSION['userName'] . ' Exported facilities details to excelsheet' . ($_POST['facilityName'] ?? ''), 'facility');
-
-$headings = [
-	_translate("Facility Name"),
-	_translate("Facility Code"),
-	_translate("External Facility Code"),
-	_translate("Facility Type"),
-	_translate("Status"),
-	_translate("Province/State"),
-	_translate("District/County"),
-	_translate("Address"),
-	_translate("Email"),
-	_translate("Phone Number"),
-	_translate("Latitude"),
-	_translate("Longitude"),
-];
-
-// Build the applied-filters caption (mirrors the legacy title row).
-$nameValue = '';
-foreach ($_POST as $key => $value) {
-	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
-	}
-}
+$general->activityLog('Export-facilities', $_SESSION['userName'] . ' exported facility details to Excel', 'facility');
 
 $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'Facility-Detail-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
 
 $writer = new Writer();
 $writer->openToFile($filename);
 
-// Row 1: applied filters caption, Row 2: blank, Row 3: headings (matches the old layout)
-$writer->addRow(Row::fromValues([html_entity_decode(trim($nameValue))]));
-$writer->addRow(Row::fromValues([]));
-$writer->addRow(Row::fromValues($headings));
+// Same columns and order as the bulk upload template, so an export can be
+// edited and uploaded again without rearranging anything.
+$writer->addRow(Row::fromValues(FacilitiesService::bulkUploadHeadings()));
 
-// Stream data rows straight from the DB so we never hold the full result set in memory.
-$resultSet = $db->rawQueryGenerator($sQuery);
+$resultSet = $db->rawQueryGenerator($sQuery, $params);
 $no = 0;
 foreach ($resultSet as $aRow) {
 	$row = [
 		$aRow['facility_name'],
 		$aRow['facility_code'],
 		$aRow['other_id'],
-		$aRow['facility_type_name'],
-		$aRow['status'],
 		$aRow['province'],
 		$aRow['district'],
+		$aRow['facility_type'],
 		$aRow['address'],
 		$aRow['facility_emails'],
 		$aRow['facility_mobile_numbers'],
 		$aRow['latitude'],
 		$aRow['longitude'],
+		$aRow['status'],
 	];
 	$writer->addRow(Row::fromValues(array_map(fn($v) => html_entity_decode((string) $v), $row)));
 
