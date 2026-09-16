@@ -11,6 +11,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\STS\MetadataSyncScope;
 
 require_once(__DIR__ . "/../../../bootstrap.php");
 
@@ -34,6 +35,7 @@ $payload = [];
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $data = $apiService->getJsonFromRequest($request, decode: true);
+$data = is_array($data) ? $data : [];
 
 
 
@@ -42,11 +44,17 @@ $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
 
 
-$labId = $data['labId'] ?: null;
+$labId = !empty($data['labId']) ? (int) $data['labId'] : null;
+
+// What the lab asked for: see MetadataSyncScope for why both of these matter.
+$sinceCondition = static fn(string $key, string $column = 'updated_datetime'): string|array
+    => MetadataSyncScope::sinceCondition($data, $key, $column);
+$shouldSend = static fn(string $module): bool
+    => MetadataSyncScope::sendsModule($data, $module, SYSTEM_CONFIG['modules'] ?? []);
 
 $response = [];
 
-if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) {
+if ($shouldSend('generic-tests')) {
 
     $toSyncTables = [
         "r_test_types",
@@ -67,238 +75,143 @@ if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']
         "generic_test_result_units_map"
     ];
     foreach ($toSyncTables as $table) {
-        $condition = [];
-        if (!empty($data[$general->stringToCamelCase($table) . 'LastModified'])) {
-            $condition = "updated_datetime > '" . $data[$general->stringToCamelCase($table) . 'LastModified'] . "'";
-        }
+        $condition = $sinceCondition($general->stringToCamelCase($table) . 'LastModified');
         $response[$general->stringToCamelCase($table)] = $general->fetchDataFromTable($table, $condition);
     }
 }
 
-if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
+if ($shouldSend('vl')) {
 
 
-    $condition = [];
-    if (!empty($data['vlRejectionReasonsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['vlRejectionReasonsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('vlRejectionReasonsLastModified');
     $response['vlRejectionReasons'] = $general->fetchDataFromTable('r_vl_sample_rejection_reasons', $condition);
 
-    $condition = [];
-    if (!empty($data['vlTestReasonsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['vlTestReasonsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('vlTestReasonsLastModified');
     $response['vlTestReasons'] = $general->fetchDataFromTable('r_vl_test_reasons', $condition);
 
 
-    $condition = [];
-    if (!empty($data['vlSampleTypesLastModified'])) {
-        $condition = "updated_datetime > '" . $data['vlSampleTypesLastModified'] . "'";
-    }
+    $condition = $sinceCondition('vlSampleTypesLastModified');
     $response['vlSampleTypes'] = $general->fetchDataFromTable('r_vl_sample_type', $condition);
 
-    $condition = [];
-    if (!empty($data['vlArtCodesLastModified'])) {
-        $condition = "updated_datetime > '" . $data['vlArtCodesLastModified'] . "'";
-    }
+    $condition = $sinceCondition('vlArtCodesLastModified');
     $response['vlArtCodes'] = $general->fetchDataFromTable('r_vl_art_regimen', $condition);
 
-    $condition = [];
-    if (!empty($data['vlFailureReasonsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['vlFailureReasonsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('vlFailureReasonsLastModified');
     $response['vlFailureReasons'] = $general->fetchDataFromTable('r_vl_test_failure_reasons', $condition);
 
-    // Reset like every other table: without it, a lab that sent no
-    // vlResultsLastModified got r_vl_results filtered by the failure-reasons date.
-    $condition = [];
-    if (!empty($data['vlResultsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['vlResultsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('vlResultsLastModified');
     $response['vlResults'] = $general->fetchDataFromTable('r_vl_results', $condition);
 
 }
 
 
-if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
+if ($shouldSend('eid')) {
 
-    $condition = [];
-    if (!empty($data['eidRejectionReasonsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['eidRejectionReasonsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('eidRejectionReasonsLastModified');
     $response['eidRejectionReasons'] = $general->fetchDataFromTable('r_eid_sample_rejection_reasons', $condition);
 
 
-    $condition = [];
-    if (!empty($data['eidSampleTypesLastModified'])) {
-        $condition = "updated_datetime > '" . $data['eidSampleTypesLastModified'] . "'";
-    }
+    $condition = $sinceCondition('eidSampleTypesLastModified');
     $response['eidSampleTypes'] = $general->fetchDataFromTable('r_eid_sample_type', $condition);
 
-    $condition = [];
-    if (!empty($data['eidResultsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['eidResultsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('eidResultsLastModified');
     $response['eidResults'] = $general->fetchDataFromTable('r_eid_results', $condition);
 
-    $condition = [];
-    if (!empty($data['eidReasonForTestingLastModified'])) {
-        $condition = "updated_datetime > '" . $data['eidReasonForTestingLastModified'] . "'";
-    }
+    $condition = $sinceCondition('eidReasonForTestingLastModified');
     $response['eidReasonForTesting'] = $general->fetchDataFromTable('r_eid_test_reasons', $condition);
 
 }
 
-if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
+if ($shouldSend('covid19')) {
 
-    $condition = [];
-    if (!empty($data['covid19RejectionReasonsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['covid19RejectionReasonsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('covid19RejectionReasonsLastModified');
     $response['covid19RejectionReasons'] = $general->fetchDataFromTable('r_covid19_sample_rejection_reasons', $condition);
 
 
-    $condition = [];
-    if (!empty($data['covid19SampleTypesLastModified'])) {
-        $condition = "updated_datetime > '" . $data['covid19SampleTypesLastModified'] . "'";
-    }
+    $condition = $sinceCondition('covid19SampleTypesLastModified');
     $response['covid19SampleTypes'] = $general->fetchDataFromTable('r_covid19_sample_type', $condition);
 
-    $condition = [];
-    if (!empty($data['covid19ComorbiditiesLastModified'])) {
-        $condition = "updated_datetime > '" . $data['covid19ComorbiditiesLastModified'] . "'";
-    }
+    $condition = $sinceCondition('covid19ComorbiditiesLastModified');
     $response['covid19Comorbidities'] = $general->fetchDataFromTable('r_covid19_comorbidities', $condition);
 
-    $condition = [];
-    if (!empty($data['covid19ResultsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['covid19ResultsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('covid19ResultsLastModified');
     $response['covid19Results'] = $general->fetchDataFromTable('r_covid19_results', $condition);
 
-    $condition = [];
-    if (!empty($data['covid19SymptomsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['covid19SymptomsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('covid19SymptomsLastModified');
     $response['covid19Symptoms'] = $general->fetchDataFromTable('r_covid19_symptoms', $condition);
 
-    $condition = [];
-    if (!empty($data['covid19ReasonForTestingLastModified'])) {
-        $condition = "updated_datetime > '" . $data['covid19ReasonForTestingLastModified'] . "'";
-    }
+    $condition = $sinceCondition('covid19ReasonForTestingLastModified');
     $response['covid19ReasonForTesting'] = $general->fetchDataFromTable('r_covid19_test_reasons', $condition);
 
-    $condition = [];
-    if (!empty($data['covid19QCTestKitsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['covid19QCTestKitsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('covid19QCTestKitsLastModified');
     $response['covid19QCTestKits'] = $general->fetchDataFromTable('r_covid19_qc_testkits', $condition);
 
 }
 
-if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
+if ($shouldSend('hepatitis')) {
 
-    $condition = [];
-    if (!empty($data['hepatitisRejectionReasonsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['hepatitisRejectionReasonsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('hepatitisRejectionReasonsLastModified');
     $response['hepatitisRejectionReasons'] = $general->fetchDataFromTable('r_hepatitis_sample_rejection_reasons', $condition);
 
 
-    $condition = [];
-    if (!empty($data['hepatitisSampleTypesLastModified'])) {
-        $condition = "updated_datetime > '" . $data['hepatitisSampleTypesLastModified'] . "'";
-    }
+    $condition = $sinceCondition('hepatitisSampleTypesLastModified');
     $response['hepatitisSampleTypes'] = $general->fetchDataFromTable('r_hepatitis_sample_type', $condition);
 
-    $condition = [];
-    if (!empty($data['hepatitisComorbiditiesLastModified'])) {
-        $condition = "updated_datetime > '" . $data['hepatitisComorbiditiesLastModified'] . "'";
-    }
+    $condition = $sinceCondition('hepatitisComorbiditiesLastModified');
     $response['hepatitisComorbidities'] = $general->fetchDataFromTable('r_hepatitis_comorbidities', $condition);
 
-    $condition = [];
-    if (!empty($data['hepatitisResultsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['hepatitisResultsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('hepatitisResultsLastModified');
     $response['hepatitisResults'] = $general->fetchDataFromTable('r_hepatitis_results', $condition);
 
-    $condition = [];
-    if (!empty($data['hepatitisReasonForTestingLastModified'])) {
-        $condition = "updated_datetime > '" . $data['hepatitisReasonForTestingLastModified'] . "'";
-    }
+    $condition = $sinceCondition('hepatitisReasonForTestingLastModified');
     $response['hepatitisReasonForTesting'] = $general->fetchDataFromTable('r_hepatitis_test_reasons', $condition);
 
 }
 
-if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
+if ($shouldSend('tb')) {
 
-    $condition = [];
-    if (!empty($data['tbRejectionReasonsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['tbRejectionReasonsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('tbRejectionReasonsLastModified');
     $response['tbRejectionReasons'] = $general->fetchDataFromTable('r_tb_sample_rejection_reasons', $condition);
 
-    $condition = [];
-    if (!empty($data['tbSampleTypesLastModified'])) {
-        $condition = "updated_datetime > '" . $data['tbSampleTypesLastModified'] . "'";
-    }
+    $condition = $sinceCondition('tbSampleTypesLastModified');
     $response['tbSampleTypes'] = $general->fetchDataFromTable('r_tb_sample_type', $condition);
 
-    $condition = [];
-    if (!empty($data['tbResultsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['tbResultsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('tbResultsLastModified');
     $response['tbResults'] = $general->fetchDataFromTable('r_tb_results', $condition);
 
-    $condition = [];
-    if (!empty($data['tbReasonForTestingLastModified'])) {
-        $condition = "updated_datetime > '" . $data['tbReasonForTestingLastModified'] . "'";
-    }
+    $condition = $sinceCondition('tbReasonForTestingLastModified');
     $response['tbReasonForTesting'] = $general->fetchDataFromTable('r_tb_test_reasons', $condition);
 
 }
 
-if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) {
+if ($shouldSend('cd4')) {
 
-    $condition = [];
-    if (!empty($data['cd4RejectionReasonsLastModified'])) {
-        $condition = "updated_datetime > '" . $data['cd4RejectionReasonsLastModified'] . "'";
-    }
+    $condition = $sinceCondition('cd4RejectionReasonsLastModified');
     $response['cd4RejectionReasons'] = $general->fetchDataFromTable('r_cd4_sample_rejection_reasons', $condition);
 
-    $condition = [];
-    if (!empty($data['cd4SampleTypesLastModified'])) {
-        $condition = "updated_datetime > '" . $data['cd4SampleTypesLastModified'] . "'";
-    }
+    $condition = $sinceCondition('cd4SampleTypesLastModified');
     $response['cd4SampleTypes'] = $general->fetchDataFromTable('r_cd4_sample_types', $condition);
 
-    $condition = [];
-    if (!empty($data['cd4ReasonForTestingLastModified'])) {
-        $condition = "updated_datetime > '" . $data['cd4ReasonForTestingLastModified'] . "'";
-    }
+    $condition = $sinceCondition('cd4ReasonForTestingLastModified');
     $response['cd4ReasonForTesting'] = $general->fetchDataFromTable('r_cd4_test_reasons', $condition);
 
 }
 
 // Global Config
-$condition = [];
-if (empty($data['globalConfigLastModified'])) {
-    $data['globalConfigLastModified'] = '1970-01-01 00:00:00';
-}
-$condition = "COALESCE(remote_sync_needed, 'no') = 'yes' AND updated_datetime > '" . $data['globalConfigLastModified'] . "'";
+$condition = $sinceCondition('globalConfigLastModified') ?: "updated_datetime > '1970-01-01 00:00:00'";
+$condition = "COALESCE(remote_sync_needed, 'no') = 'yes' AND $condition";
 
 $response['globalConfig'] = $general->fetchDataFromTable('global_config', $condition);
 
 $condition = [];
 $signatureCondition = [];
 // Using same facilityLastModified to check if any signatures were added
-if (!empty($data['facilityLastModified'])) {
-    $condition = "(updated_datetime > '" . $data['facilityLastModified'] . "')";
+if ($sinceCondition('facilityLastModified') !== []) {
+    $condition = "(" . $sinceCondition('facilityLastModified') . ")";
     if (!empty($labId)) {
         $condition .= " OR (facility_id = $labId)";
     }
-    $signatureCondition = "added_on > '" . $data['facilityLastModified'] . "'";
+    $signatureCondition = $sinceCondition('facilityLastModified', 'added_on');
 }
 
 // Facilities
@@ -333,8 +246,8 @@ $condition = [];
 if ($updatedFacilities !== []) {
     $condition[] = "facility_id IN (" . implode(',', $updatedFacilities) . ")";
 }
-if (!empty($data['healthFacilityLastModified'])) {
-    $condition[] = "updated_datetime > '" . $data['healthFacilityLastModified'] . "'";
+if ($sinceCondition('healthFacilityLastModified') !== []) {
+    $condition[] = $sinceCondition('healthFacilityLastModified');
 }
 $condition = implode(' OR ', $condition);
 $response['healthFacilities'] = $general->fetchDataFromTable('health_facilities', $condition);
@@ -345,26 +258,20 @@ $condition = [];
 if ($updatedFacilities !== []) {
     $condition[] = "facility_id IN (" . implode(',', $updatedFacilities) . ")";
 }
-if (!empty($data['testingLabsLastModified'])) {
-    $condition[] = "updated_datetime > '" . $data['testingLabsLastModified'] . "'";
+if ($sinceCondition('testingLabsLastModified') !== []) {
+    $condition[] = $sinceCondition('testingLabsLastModified');
 }
 $condition = implode(' OR ', $condition);
 $response['testingLabs'] = $general->fetchDataFromTable('testing_labs', $condition);
 
 
 // Funding Sources
-$condition = [];
-if (!empty($data['fundingSourcesLastModified'])) {
-    $condition = "updated_datetime > '" . $data['fundingSourcesLastModified'] . "'";
-}
+$condition = $sinceCondition('fundingSourcesLastModified');
 $response['fundingSources'] = $general->fetchDataFromTable('r_funding_sources', $condition);
 
 
 // Implementation Partners
-$condition = [];
-if (!empty($data['partnersLastModified'])) {
-    $condition = "updated_datetime > '" . $data['partnersLastModified'] . "'";
-}
+$condition = $sinceCondition('partnersLastModified');
 $response['partners'] = $general->fetchDataFromTable('r_implementation_partners', $condition);
 
 
@@ -374,10 +281,7 @@ $response['partners'] = $general->fetchDataFromTable('r_implementation_partners'
 $db->where("geo_parent is NULL OR geo_parent like ''");
 $db->update('geographical_divisions', ['geo_parent' => 0]);
 
-$condition = [];
-if (!empty($data['geoDivisionsLastModified'])) {
-    $condition = "updated_datetime > '" . $data['geoDivisionsLastModified'] . "'";
-}
+$condition = $sinceCondition('geoDivisionsLastModified');
 
 $response['geoDivisions'] = $general->fetchDataFromTable('geographical_divisions', $condition);
 
