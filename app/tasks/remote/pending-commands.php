@@ -364,7 +364,8 @@ try {
         $payload,
         $parsed,
         'json',
-        $labId
+        $labId,
+        emptyPoll: $newCommands === [] && $statusUpdates === []
     );
 
     // Mark this tick successful by touching the courier heartbeat.

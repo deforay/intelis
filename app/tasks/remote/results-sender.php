@@ -591,7 +591,8 @@ try {
                 $summaryRequest,
                 $summaryResponse,
                 'json',
-                $labId
+                $labId,
+                emptyPoll: $count === 0
             );
         }
     }
@@ -729,7 +730,8 @@ try {
                 $summaryRequest,
                 $summaryResponse,
                 'json',
-                $labId
+                $labId,
+                emptyPoll: $count === 0
             );
         }
     }
@@ -867,7 +869,8 @@ try {
                 $summaryRequest,
                 $summaryResponse,
                 'json',
-                $labId
+                $labId,
+                emptyPoll: $count === 0
             );
         }
     }
@@ -1025,7 +1028,8 @@ try {
                 $summaryRequest,
                 $summaryResponse,
                 'json',
-                $labId
+                $labId,
+                emptyPoll: $count === 0
             );
         }
     }
@@ -1162,7 +1166,8 @@ try {
                 $summaryRequest,
                 $summaryResponse,
                 'json',
-                $labId
+                $labId,
+                emptyPoll: $count === 0
             );
         }
     }
@@ -1321,7 +1326,8 @@ try {
                 $summaryRequest,
                 $summaryResponse,
                 'json',
-                $labId
+                $labId,
+                emptyPoll: $count === 0
             );
         }
     }
@@ -1459,7 +1465,8 @@ try {
                 $summaryRequest,
                 $summaryResponse,
                 'json',
-                $labId
+                $labId,
+                emptyPoll: $count === 0
             );
         }
     }

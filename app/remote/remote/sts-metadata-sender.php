@@ -35,7 +35,6 @@ $payload = [];
 $request = AppRegistry::get('request');
 $data = $apiService->getJsonFromRequest($request, decode: true);
 
-$counter = 0;
 
 
 $apiRequestId = $apiService->getHeader($request, 'X-Request-ID');
@@ -73,7 +72,6 @@ if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']
             $condition = "updated_datetime > '" . $data[$general->stringToCamelCase($table) . 'LastModified'] . "'";
         }
         $response[$general->stringToCamelCase($table)] = $general->fetchDataFromTable($table, $condition);
-        $counter += count($response[$general->stringToCamelCase($table)]);
     }
 }
 
@@ -111,14 +109,14 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
     }
     $response['vlFailureReasons'] = $general->fetchDataFromTable('r_vl_test_failure_reasons', $condition);
 
-    // $condition = [];
-    //$response['vlResults'] = [];
+    // Reset like every other table: without it, a lab that sent no
+    // vlResultsLastModified got r_vl_results filtered by the failure-reasons date.
+    $condition = [];
     if (!empty($data['vlResultsLastModified'])) {
         $condition = "updated_datetime > '" . $data['vlResultsLastModified'] . "'";
     }
     $response['vlResults'] = $general->fetchDataFromTable('r_vl_results', $condition);
 
-    $counter += (count($response['vlRejectionReasons']) + count($response['vlSampleTypes']) + count($response['vlArtCodes']) + count($response['vlFailureReasons']) + count($response['vlResults']));
 }
 
 
@@ -149,7 +147,6 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
     }
     $response['eidReasonForTesting'] = $general->fetchDataFromTable('r_eid_test_reasons', $condition);
 
-    $counter += (count($response['eidRejectionReasons']) + count($response['eidSampleTypes']) + count($response['eidResults']) + count($response['eidReasonForTesting']));
 }
 
 if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
@@ -197,7 +194,6 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
     }
     $response['covid19QCTestKits'] = $general->fetchDataFromTable('r_covid19_qc_testkits', $condition);
 
-    $counter += (count($response['covid19RejectionReasons']) + count($response['covid19SampleTypes']) + count($response['covid19Comorbidities']) + count($response['covid19Results']) + count($response['covid19Symptoms']) + count($response['covid19ReasonForTesting']) + count($response['covid19QCTestKits']));
 }
 
 if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
@@ -233,7 +229,6 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
     }
     $response['hepatitisReasonForTesting'] = $general->fetchDataFromTable('r_hepatitis_test_reasons', $condition);
 
-    $counter += count($response['hepatitisRejectionReasons']) + count($response['hepatitisSampleTypes']) + count($response['hepatitisComorbidities']) + count($response['hepatitisResults']) + count($response['hepatitisReasonForTesting']);
 }
 
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
@@ -262,7 +257,6 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
     }
     $response['tbReasonForTesting'] = $general->fetchDataFromTable('r_tb_test_reasons', $condition);
 
-    $counter += (count($response['tbRejectionReasons']) + count($response['tbSampleTypes']) + count($response['tbResults']) + count($response['tbReasonForTesting']));
 }
 
 if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) {
@@ -285,7 +279,6 @@ if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] ==
     }
     $response['cd4ReasonForTesting'] = $general->fetchDataFromTable('r_cd4_test_reasons', $condition);
 
-    $counter += (count($response['cd4RejectionReasons']) + count($response['cd4SampleTypes']) + count($response['cd4ReasonForTesting']));
 }
 
 // Global Config
@@ -398,7 +391,32 @@ $response['geoDivisions'] = $general->fetchDataFromTable('geographical_divisions
 
 $payload = $response === [] ? json_encode([]) : JsonUtility::encodeUtf8Json(array_filter($response));
 
-$general->addApiTracking($transactionId, 'intelis-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+// Rows this lab is actually being handed, across every table in the response.
+// This used to count only the per-test-type tables (and not all of those), so a
+// changed facility or global setting recorded 0. The lab's own facility,
+// health-facility and testing-lab rows are left out: they go back on every call
+// whether or not they changed, so counting them would make every call look like
+// it moved data. Users are left out for the same reason; they are the contact
+// persons of the facilities returned.
+$alwaysSentForLab = ['facilities', 'healthFacilities', 'testingLabs'];
+$counter = 0;
+foreach ($response as $key => $rows) {
+    if ($key === 'users' || !is_array($rows)) {
+        continue;
+    }
+    foreach ($rows as $row) {
+        if (
+            in_array($key, $alwaysSentForLab, true)
+            && !empty($labId)
+            && (int) ($row['facility_id'] ?? 0) === (int) $labId
+        ) {
+            continue;
+        }
+        $counter++;
+    }
+}
+
+$general->addApiTracking($transactionId, 'intelis-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId, emptyPoll: $counter === 0);
 
 $sql = 'UPDATE facility_details
             SET facility_attributes

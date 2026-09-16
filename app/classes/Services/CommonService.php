@@ -1568,40 +1568,58 @@ final class CommonService
         return $dateTime['dateTime'] ?? null;
     }
 
-    public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null, $apiToken = null)
+    /**
+     * Record a tracked API call: a track_api_requests row, plus the request and
+     * response bodies as compressed files under var/track-api.
+     *
+     * Sync traffic is most of what passes through here, and most of it moves
+     * nothing: every lab asks for requests, commands and metadata on every tick
+     * whether or not there is anything to hand over. On an STS serving 41 labs
+     * that was 7,000 calls and 14,000 files an hour, and the files alone kept the
+     * disk busy most of the time. So:
+     *
+     *  - $emptyPoll marks a call that moved no data. It is recorded only when
+     *    SYSTEM_CONFIG['system']['api_tracking_bodies'] is 'all'. A lab being
+     *    alive is already recorded as its heartbeat on facility_details.
+     *  - $keepRow keeps the row for an empty poll anyway, for the callers whose
+     *    row is read back (the LIS uses its last receive-requests row as the
+     *    next pull's since-date). Its bodies are still skipped.
+     *  - Bodies that are empty once encoded ({}, [], null) are never written.
+     *
+     * api_tracking_bodies: 'data' (default) writes bodies for calls that moved
+     * data; 'all' records everything, for debugging a single server; 'off' keeps
+     * rows but never writes bodies.
+     */
+    public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null, $apiToken = null, bool $emptyPoll = false, bool $keepRow = false)
     {
+        $bodiesMode = $this->getApiTrackingBodiesMode();
+        $captureAll = $bodiesMode === 'all';
+
+        if ($emptyPoll && !$keepRow && !$captureAll) {
+            return 0;
+        }
+
         try {
-            $requestData = JsonUtility::encodeUtf8Json($requestData ?? '{}');
-            $responseData = JsonUtility::encodeUtf8Json($responseData ?? '{}');
+            if ($captureAll || ($bodiesMode === 'data' && !$emptyPoll)) {
+                $folderPath = VAR_PATH . DIRECTORY_SEPARATOR . 'track-api';
+                $bodies = [
+                    'requests' => $requestData,
+                    'responses' => $responseData,
+                ];
+                foreach ($bodies as $folder => $body) {
+                    $json = JsonUtility::encodeUtf8Json($body ?? '{}');
+                    if (self::isEmptyTrackingBody($json)) {
+                        continue;
+                    }
 
-            $folderPath = VAR_PATH . DIRECTORY_SEPARATOR . 'track-api';
+                    $dir = $folderPath . DIRECTORY_SEPARATOR . $folder;
+                    MiscUtility::makeDirectory($dir);
 
-            // Save request data
-            if ($requestData !== null && $requestData !== '' && $requestData !== '0' && $requestData !== '[]') {
-                $requestDir = $folderPath . DIRECTORY_SEPARATOR . 'requests';
-                MiscUtility::makeDirectory($requestDir);
-
-                // Use ArchiveUtility with auto-backend selection
-                $requestFile = ArchiveUtility::compressContent(
-                    $requestData,
-                    "$requestDir/$transactionId.json"
-                );
-                // Keep archives readable to the app group without exposing them to all local users.
-                @chmod($requestFile, 0640);
-            }
-
-            // Save response data
-            if ($responseData !== null && $responseData !== '' && $responseData !== '0' && $responseData !== '[]') {
-                $responseDir = $folderPath . DIRECTORY_SEPARATOR . 'responses';
-                MiscUtility::makeDirectory($responseDir);
-
-                // Use ArchiveUtility with auto-backend selection
-                $responseFile = ArchiveUtility::compressContent(
-                    $responseData,
-                    "$responseDir/$transactionId.json"
-                );
-                // Keep archives readable to the app group without exposing them to all local users.
-                @chmod($responseFile, 0640);
+                    // Use ArchiveUtility with auto-backend selection
+                    $file = ArchiveUtility::compressContent($json, "$dir/$transactionId.json");
+                    // Keep archives readable to the app group without exposing them to all local users.
+                    @chmod($file, 0640);
+                }
             }
 
             $this->db->reset();
@@ -1626,6 +1644,18 @@ final class CommonService
             LoggerUtility::logError($exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage());
             return 0;
         }
+    }
+
+    private function getApiTrackingBodiesMode(): string
+    {
+        $mode = defined('SYSTEM_CONFIG') ? (SYSTEM_CONFIG['system']['api_tracking_bodies'] ?? null) : null;
+        return in_array($mode, ['off', 'data', 'all'], true) ? $mode : 'data';
+    }
+
+    private static function isEmptyTrackingBody(?string $json): bool
+    {
+        $json = trim((string) $json);
+        return in_array($json, ['', '0', '[]', '{}', 'null', '""'], true);
     }
 
     public function updateSyncDateTime($testType, $facilityIds, $labId, $syncType): void

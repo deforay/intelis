@@ -1031,7 +1031,11 @@ try {
                 $requestInfo[$module]['payload'] ?? null,
                 $responsePayload[$module],
                 'json',
-                $labId
+                $labId,
+                // An empty pull keeps its row but no bodies: the newest
+                // receive-requests row is where the next pull starts from.
+                emptyPoll: $successCounter === 0 && $failureCounter === 0,
+                keepRow: true
             );
         }
     }
@@ -1246,7 +1250,11 @@ try {
                 $requestInfo['generic-tests']['payload'] ?? null,
                 $responsePayload['generic-tests'],
                 'json',
-                $labId
+                $labId,
+                // An empty pull keeps its row but no bodies: the newest
+                // receive-requests row is where the next pull starts from.
+                emptyPoll: $successCounter === 0,
+                keepRow: true
             );
         }
     }
