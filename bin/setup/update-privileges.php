@@ -18,7 +18,11 @@ if ($db->isConnected() === false) {
 }
 
 // ON THE LEFT IS THE SHARED (INTERNAL/IMPLICIT) PRIVILEGE THAT IS NOT DIRECTLY ASSIGNED TO A USER
-// ON THE RIGHT IS THE PRIVILEGE TO BE CHECKED
+// ON THE RIGHT IS THE PRIVILEGE TO BE CHECKED -- OR A LIST, WHEN HOLDING ANY ONE OF
+// SEVERAL PRIVILEGES SHOULD GRANT THE PAGE
+//
+// This script replaces every shared_privileges value, so a share added only by a
+// migration is lost on the next update. Add it here.
 
 $sharedPrivileges = [
     '/import-result/imported-results.php?t=vl' => '/import-result/import-file.php?t=vl',
@@ -44,7 +48,15 @@ $sharedPrivileges = [
     '/common/reference/edit-implementation-partners.php' => '/common/reference/geographical-divisions-details.php',
     '/common/reference/funding-sources.php' => '/common/reference/geographical-divisions-details.php',
     '/common/reference/add-funding-sources.php' => '/common/reference/geographical-divisions-details.php',
-    '/common/reference/edit-funding-sources.php' => '/common/reference/geographical-divisions-details.php'
+    '/common/reference/edit-funding-sources.php' => '/common/reference/geographical-divisions-details.php',
+    // Sample status drilldown (5.7.68, 5.7.69)
+    '/reports/sample-status-details.php?testType=vl' => '/vl/program-management/vl-sample-status.php',
+    '/reports/sample-status-details.php?testType=recency' => '/vl/program-management/vl-sample-status.php',
+    '/reports/sample-status-details.php?testType=eid' => '/eid/management/eid-sample-status.php',
+    '/reports/sample-status-details.php?testType=tb' => '/tb/management/tb-sample-status.php',
+    '/reports/sample-status-details.php?testType=cd4' => '/cd4/management/cd4-sample-status.php',
+    '/reports/sample-status-details.php?testType=hepatitis' => '/hepatitis/management/hepatitis-sample-status.php',
+    '/reports/sample-status-details.php?testType=generic-tests' => '/generic-tests/program-management/generic-sample-status.php'
 ];
 
 //Generic Tests Module Shared Privileges
@@ -54,7 +66,11 @@ $sharedGenericPrivileges = [
     '/batch/generate-compact-batch-pdf.php?type=generic-tests' => '/batch/batches.php?type=generic-tests',
     '/batch/add-batch-position.php?type=generic-tests' => '/batch/add-batch.php?type=generic-tests',
     '/batch/edit-batch-position.php?type=generic-tests' => '/batch/edit-batch.php?type=generic-tests',
-    '/generic-tests/requests/patientModal.php' => '/generic-tests/requests/view-requests.php',
+    '/generic-tests/requests/patientModal.php' => [
+        '/generic-tests/requests/view-requests.php',
+        '/generic-tests/requests/add-request.php',
+        '/generic-tests/requests/edit-request.php'
+    ],
     '/generic-tests/results/update-generic-test-result.php' => '/generic-tests/results/generic-test-results.php',
     '/generic-tests/results/email-results-confirm.php' => '/generic-tests/results/email-results.php',
     '/generic-tests/results/add-generic-referral.php' => '/generic-tests/results/generic-referral-list.php',
@@ -92,7 +108,12 @@ $sharedVLPrivileges = [
     '/batch/add-batch-position.php?type=vl' => '/batch/add-batch.php?type=vl',
     '/batch/edit-batch-position.php?type=vl' => '/batch/edit-batch.php?type=vl',
     '/vl/requests/upload-storage.php' => '/vl/requests/vl-requests.php',
-    '/vl/requests/patientModal.php' => '/vl/requests/vl-requests.php',
+    '/vl/requests/patientModal.php' => [
+        '/vl/requests/vl-requests.php',
+        '/vl/requests/addVlRequest.php',
+        '/vl/requests/editVlRequest.php',
+        '/vl/results/vlTestResult.php'
+    ],
     '/vl/requests/sample-storage.php' => '/vl/requests/vl-requests.php',
     '/vl/results/updateVlTestResult.php' => '/vl/results/vlTestResult.php',
     '/vl/results/vl-failed-results.php' => '/vl/results/vlTestResult.php',
@@ -129,7 +150,12 @@ $sharedEIDPrivileges = [
     '/eid/results/eid-update-result.php' => '/eid/results/eid-manual-results.php',
     '/eid/results/eid-failed-results.php' => '/eid/results/eid-manual-results.php',
     '/eid/results/email-results-confirm.php' => '/eid/results/email-results.php',
-    '/eid/requests/patientModal.php' => '/eid/requests/eid-requests.php',
+    '/eid/requests/patientModal.php' => [
+        '/eid/requests/eid-requests.php',
+        '/eid/requests/eid-add-request.php',
+        '/eid/requests/eid-edit-request.php',
+        '/eid/results/eid-manual-results.php'
+    ],
     '/eid/requests/eid-bulk-import-request.php' => '/eid/requests/eid-add-request.php',
     '/eid/reference/eid-sample-rejection-reasons.php' => '/eid/reference/eid-sample-type.php',
     '/eid/reference/add-eid-sample-rejection-reasons.php' => '/eid/reference/eid-sample-type.php',
@@ -154,7 +180,11 @@ $sharedCovid19Privileges = [
     '/batch/generate-compact-batch-pdf.php?type=covid19' => '/batch/batches.php?type=covid19',
     '/batch/add-batch-position.php?type=covid19' => '/batch/add-batch.php?type=covid19',
     '/batch/edit-batch-position.php?type=covid19' => '/batch/edit-batch.php?type=covid19',
-    '/covid-19/requests/patientModal.php' => '/covid-19/requests/covid-19-requests.php',
+    '/covid-19/requests/patientModal.php' => [
+        '/covid-19/requests/covid-19-requests.php',
+        '/covid-19/requests/covid-19-add-request.php',
+        '/covid-19/requests/covid-19-edit-request.php'
+    ],
     '/covid-19/mail/mail-covid-19-results.php' => '/covid-19/results/covid-19-print-results.php',
     '/covid-19/mail/covid-19-result-mail-confirm.php' => '/covid-19/results/covid-19-print-results.php',
     '/covid-19/results/covid-19-update-result.php' => '/covid-19/results/covid-19-manual-results.php',
@@ -220,7 +250,11 @@ $sharedTbPrivileges = [
     '/batch/generate-compact-batch-pdf.php?type=tb' => '/batch/batches.php?type=tb',
     '/batch/add-batch-position.php?type=tb' => '/batch/add-batch.php?type=tb',
     '/batch/edit-batch-position.php?type=tb' => '/batch/edit-batch.php?type=tb',
-    '/tb/requests/patientModal.php' => '/tb/requests/tb-requests.php',
+    '/tb/requests/patientModal.php' => [
+        '/tb/requests/tb-requests.php',
+        '/tb/requests/tb-add-request.php',
+        '/tb/requests/tb-edit-request.php'
+    ],
     '/tb/results/tb-update-result.php' => '/tb/results/tb-manual-results.php',
     '/tb/results/tb-failed-results.php' => '/tb/results/tb-manual-results.php',
     '/tb/results/email-results-confirm.php' => '/tb/results/email-results.php',
@@ -241,7 +275,11 @@ $sharedCD4Privileges = [
     '/batch/generate-compact-batch-pdf.php?type=cd4' => '/batch/batches.php?type=cd4',
     '/batch/add-batch-position.php?type=cd4' => '/batch/add-batch.php?type=cd4',
     '/batch/edit-batch-position.php?type=cd4' => '/batch/edit-batch.php?type=cd4',
-    '/cd4/requests/patientModal.php' => '/cd4/requests/cd4-requests.php',
+    '/cd4/requests/patientModal.php' => [
+        '/cd4/requests/cd4-requests.php',
+        '/cd4/requests/cd4-add-request.php',
+        '/cd4/requests/cd4-edit-request.php'
+    ],
     '/cd4/results/cd4-update-result.php' => '/cd4/results/cd4-manual-results.php',
     '/cd4/results/cd4-failed-results.php' => '/cd4/results/cd4-manual-results.php',
     '/cd4/results/email-results-confirm.php' => '/cd4/results/email-results.php',
@@ -265,11 +303,10 @@ $db->rawQuery($sql);
 
 
 $privilegesToUpdate = [];
-foreach ($sharedPrivileges as $key => $value) {
-    if (!array_key_exists($value, $privilegesToUpdate)) {
-        $privilegesToUpdate[$value] = [];
+foreach ($sharedPrivileges as $key => $owners) {
+    foreach ((array) $owners as $value) {
+        $privilegesToUpdate[$value][] = $key;
     }
-    $privilegesToUpdate[$value][] = $key;
 }
 
 foreach ($privilegesToUpdate as $privilegeName => $sharedPrivileges) {

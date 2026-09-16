@@ -102,8 +102,13 @@ final class UsersService
             $modules = array_unique(array_column($privilegesResult, 'module'));
 
             $privileges = array_column($privilegesResult, 'privilege_name');
-            $matchingKeys = array_keys(array_intersect($this->getSharedPrivileges(), $privileges));
-            $privileges = array_merge($this->getSkippedPrivileges(), $privileges, $matchingKeys);
+            $sharedPages = [];
+            foreach ($this->getSharedPrivileges() as $sharedPage => $owners) {
+                if (array_intersect($owners, $privileges) !== []) {
+                    $sharedPages[] = $sharedPage;
+                }
+            }
+            $privileges = array_merge($this->getSkippedPrivileges(), $privileges, $sharedPages);
             // Create an array with both full paths and basenames
             $fullPathsAndBasenames = [];
             foreach ($privileges as $privilege) {
@@ -121,6 +126,14 @@ final class UsersService
         return [$modules, $privileges];
     }
 
+    /**
+     * Shared page => every privilege that shares it.
+     *
+     * A page can be shared by more than one privilege (the patient search modal
+     * belongs to both the add and the edit request pages), so each page keeps a
+     * list. Keeping only one owner granted the page to holders of the last
+     * privilege read and to nobody else.
+     */
     public function getSharedPrivileges(): array
     {
         $sql = "SELECT privilege_name, shared_privileges
@@ -133,7 +146,7 @@ final class UsersService
             $privileges = json_decode((string) $row['shared_privileges'], true);
             if (!empty($privileges)) {
                 foreach ($privileges as $privilege) {
-                    $sharedPrivileges[$privilege] = $row['privilege_name'];
+                    $sharedPrivileges[$privilege][] = $row['privilege_name'];
                 }
             }
         }
