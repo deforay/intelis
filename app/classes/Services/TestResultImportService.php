@@ -326,7 +326,7 @@ class TestResultImportService
     /**
      * Get user by name
      */
-    public function getUserByName(string $username): ?int
+    public function getUserByName(string $username): ?string
     {
         if ($username === '' || $username === '0') {
             return null;
