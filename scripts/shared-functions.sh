@@ -130,6 +130,27 @@ install_packages() {
             fi
         done
     fi
+
+    # Tools for whoever is on the box: ripgrep searches file contents (logs, the
+    # audit trail) far faster than grep -r, and fd finds files by name. No script
+    # depends on them, so a failed install is not a reason to stop an install or
+    # an upgrade. Ubuntu names fd's binary fdfind; the fd link is the name
+    # everyone types.
+    declare -A optional_pkg_to_cmd=(
+        ["ripgrep"]="rg"
+        ["fd-find"]="fdfind"
+    )
+    local optional_missing=()
+    for pkg in "${!optional_pkg_to_cmd[@]}"; do
+        command -v "${optional_pkg_to_cmd[$pkg]}" &>/dev/null || optional_missing+=("$pkg")
+    done
+    if [ "${#optional_missing[@]}" -gt 0 ]; then
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "${optional_missing[@]}" >/dev/null 2>&1 ||
+            print warning "Could not install ${optional_missing[*]} (optional, continuing)."
+    fi
+    if ! command -v fd &>/dev/null && command -v fdfind &>/dev/null; then
+        ln -sf "$(command -v fdfind)" /usr/local/bin/fd 2>/dev/null || true
+    fi
 }
 prepare_system() {
     install_packages
