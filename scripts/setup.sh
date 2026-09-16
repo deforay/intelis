@@ -1176,6 +1176,7 @@ elif [ -n "$(ls -A ${lis_path} 2>/dev/null)" ]; then
         --exclude 'var/cache/' \
         --exclude 'var/logs/' \
         --exclude 'var/audit-trail/' \
+        --exclude 'var/track-api/' \
         --exclude 'public/temporary/' \
         --exclude 'public/uploads/' \
         "${lis_path}/" "${backup_dir}/"

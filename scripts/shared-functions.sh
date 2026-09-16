@@ -703,15 +703,38 @@ fetch_master_tree() {
 # knows the var/ names misses the whole audit-trail on any instance that has not
 # been migrated yet — which is exactly the long-running instance where it costs
 # the most.
+#
+# var/track-api holds a compressed request and response body for every tracked
+# API call. On an STS serving dozens of labs that is thousands of files an hour,
+# and it had reached several million files in two flat folders before anyone
+# noticed that the hourly refresh was stat-ing every one of them.
 app_heavy_dirs() {
     local lp="${1%/}"
     local d
-    for d in var/audit-trail var/cache backups \
+    for d in var/audit-trail var/cache var/track-api backups \
         audit-trail logs cache metadata \
         public/uploads public/temporary public/files; do
         [ -d "${lp}/${d}" ] && printf '%s\n' "${lp}/${d}"
     done
     return 0
+}
+
+# io_walk_jobs — how many batched setfacl/chown processes a tree walk may run at
+# once.
+#
+# This was $(nproc). On an SSD that is harmless, but on spinning disks every
+# extra process is another head seeking the same platters: an 80-thread server
+# on RAID-5 SAS ran 80 chowns in parallel and left everything else on the
+# machine waiting on the disk. The single-threaded find feeding them is the real
+# limit anyway, so a small cap costs an SSD almost nothing. INTELIS_IO_JOBS
+# overrides it for a machine known to be fast.
+io_walk_jobs() {
+    local cap=${INTELIS_IO_JOBS:-4}
+    local n=1
+    command -v nproc >/dev/null 2>&1 && n=$(nproc)
+    [[ "$cap" =~ ^[1-9][0-9]*$ ]] || cap=4
+    (( n > cap )) && n=$cap
+    printf '%s\n' "$n"
 }
 
 # Set ACL-based permissions (async by default; pass third arg "sync" to wait).
@@ -768,11 +791,21 @@ set_permissions() {
     fi
 
     # Tunables
-    local PARALLEL=${PARALLEL:-$(nproc)}
+    local PARALLEL=${PARALLEL:-$(io_walk_jobs)}
     local BATCH=${ACL_BATCH:-200}                      # files per setfacl call
     local CPU_NICE="nice -n 10"
+    # The find does the stat walk, which is most of the disk work, so it runs at
+    # low I/O priority too, not just the setfacl batches. A background pass gets
+    # the idle class. A sync pass gets the lowest best-effort level instead: the
+    # upgrade waits on it, and on a busy STS the disk may never be idle.
     local IO_NICE=""
-    command -v ionice >/dev/null 2>&1 && IO_NICE="ionice -c3"
+    if command -v ionice >/dev/null 2>&1; then
+        if [[ "$wait_mode" == "sync" ]]; then
+            IO_NICE="ionice -c2 -n7"
+        else
+            IO_NICE="ionice -c3"
+        fi
+    fi
 
     print info "Setting permissions for ${path} (${mode}, ${wait_mode})..."
 
@@ -801,6 +834,9 @@ set_permissions() {
     #   var/cache           — regenerable, and the default ACL below is what
     #                         actually keeps it clearable; walking every shard
     #                         buys nothing.
+    #   var/track-api       — a request and response body per tracked API
+    #                         call, written only by the application. Millions
+    #                         of files on a busy STS.
     #   public/uploads,     — user-uploaded data. Written by the application,
     #   public/temporary,     never by an upgrade, and unbounded.
     #   public/files
@@ -831,30 +867,30 @@ set_permissions() {
     case "$mode" in
         full|deep)
             # Directories: rwx to user + www-data
-            find "$path" "${EXCLUDES[@]}" -type d -print0 \
+            $CPU_NICE $IO_NICE find "$path" "${EXCLUDES[@]}" -type d -print0 \
                 | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
                     setfacl -m "u:${who}:rwx,u:www-data:rwx" 2>>/tmp/acl_failures.log &
             pids+=($!)
 
             # Files: rw to user + www-data
-            find "$path" "${EXCLUDES[@]}" -type f -print0 \
+            $CPU_NICE $IO_NICE find "$path" "${EXCLUDES[@]}" -type f -print0 \
                 | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
                     setfacl -m "u:${who}:rw,u:www-data:rw" 2>>/tmp/acl_failures.log &
             pids+=($!)
         ;;
         quick)
-            find "$path" "${EXCLUDES[@]}" -type d -print0 \
+            $CPU_NICE $IO_NICE find "$path" "${EXCLUDES[@]}" -type d -print0 \
                 | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
                     setfacl -m "u:${who}:rwx,u:www-data:rwx" 2>>/tmp/acl_failures.log &
             pids+=($!)
 
-            find "$path" "${EXCLUDES[@]}" -type f -name "*.php" -print0 \
+            $CPU_NICE $IO_NICE find "$path" "${EXCLUDES[@]}" -type f -name "*.php" -print0 \
                 | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
                     setfacl -m "u:${who}:rw,u:www-data:rw" 2>>/tmp/acl_failures.log &
             pids+=($!)
         ;;
         minimal)
-            find "$path" "${EXCLUDES[@]}" -type d -print0 \
+            $CPU_NICE $IO_NICE find "$path" "${EXCLUDES[@]}" -type d -print0 \
                 | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
                     setfacl -m "u:${who}:rwx,u:www-data:rwx" 2>>/tmp/acl_failures.log &
             pids+=($!)
@@ -890,8 +926,8 @@ set_permissions() {
     # entries to be written.
     for dflt_dir in var/cache var/logs var/temporary public/temporary public/uploads; do
         [[ -d "${root}/${dflt_dir}" ]] || continue
-        find "${root}/${dflt_dir}" -type d -print0 \
-            | xargs -0 -r setfacl -m "$acl_default" 2>>/tmp/acl_failures.log || true
+        $CPU_NICE $IO_NICE find "${root}/${dflt_dir}" -type d -print0 \
+            | $CPU_NICE $IO_NICE xargs -0 -r setfacl -m "$acl_default" 2>>/tmp/acl_failures.log || true
     done
 
     # The pruned trees get the roots and their immediate children only -- going
@@ -1783,8 +1819,12 @@ chown_app_tree() {
 
     # Batched and parallel, for the same reason the ACL pass is: one chown per
     # file is one fork per file, and an instance is tens of thousands of them.
-    local jobs=1
-    command -v nproc >/dev/null 2>&1 && jobs=$(nproc)
+    # Capped, though (see io_walk_jobs), and at idle I/O priority: every caller
+    # runs this in the background after the site is already back up.
+    local jobs
+    jobs=$(io_walk_jobs)
+    local -a io_nice=(nice -n 10)
+    command -v ionice >/dev/null 2>&1 && io_nice+=(ionice -c3)
 
     local -a heavy=()
     mapfile -t heavy < <(app_heavy_dirs "$lp")
@@ -1795,10 +1835,10 @@ chown_app_tree() {
         prune+=(-o -path "$d")
     done
 
-    find "$lp" \
+    "${io_nice[@]}" find "$lp" \
         \( "${prune[@]}" \) -prune \
         -o -print0 \
-        | xargs -0 -r -n 200 -P "$jobs" chown -h www-data:www-data 2>/dev/null || true
+        | "${io_nice[@]}" xargs -0 -r -n 200 -P "$jobs" chown -h www-data:www-data 2>/dev/null || true
 
     # The pruned roots still need the right owner themselves; their contents do
     # not, and set_permissions has given them default ACLs so new entries
