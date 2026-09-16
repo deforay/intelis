@@ -904,8 +904,47 @@ fi
 
 # Clean up vim swap files and setup MySQL config (use first instance for config)
 first_lis_path="${lis_paths[0]}"
+
+# tick_while_running <message> <pid> — a spinner with elapsed time for a step
+# that would otherwise print nothing, so a slow step is visibly slow instead of
+# looking hung. It only watches: the caller still waits on the pid, so the exit
+# status is not lost (wait_with_progress reaps it and throws it away). Prints
+# nothing when stdout is not a terminal.
+tick_while_running() {
+    local message="$1" pid="$2" started frames='|/-\' i=0
+    [ -t 1 ] || return 0
+    started=$(date +%s)
+    while kill -0 "$pid" 2>/dev/null; do
+        printf '\r  %s %s  %s' "${frames:$i:1}" "$message" "$(format_duration $(( $(date +%s) - started )))"
+        i=$(( (i + 1) % 4 ))
+        sleep 0.5
+    done
+    printf '\r\033[K'
+}
+
+# code_tree_prune_args <install> — `find` arguments that skip the data trees of
+# an install: everything app_heavy_dirs lists, plus var/, vendor/, .git and
+# node_modules. The upgrade never ships a file into any of them, so a walk
+# looking for code-level things has no reason to enter them, and on a mature
+# lab they are nearly every file on the disk. Use as
+#   find "$p" \( "${args[@]}" -false \) -prune -o <tests>
+# and never with -delete, which implies -depth and silently disables -prune.
+code_tree_prune_args() {
+    local lp="${1%/}" d
+    while IFS= read -r d; do
+        printf '%s\n' -path "$d" -o
+    done < <(app_heavy_dirs "$lp"; printf '%s\n' "$lp/var" "$lp/vendor" "$lp/.git" "$lp/node_modules")
+}
+
+# Swap files are left by someone editing code, so only code is walked. Unpruned,
+# this stat-ed every audit-trail file of every instance with nothing on screen,
+# which on a slow disk looked exactly like a hang right after "Will update".
 for p in "${lis_paths[@]}"; do
-    find "$p" -name ".*.swp" -delete 2>/dev/null || true
+    mapfile -t prune_args < <(code_tree_prune_args "$p")
+    find "$p" \( "${prune_args[@]}" -false \) -prune \
+        -o -name ".*.swp" -type f -exec rm -f {} + 2>/dev/null &
+    tick_while_running "Removing stale editor swap files in ${p}" $!
+    wait $! || true
 done
 setup_mysql_config "${first_lis_path}/configs/config.production.php" && print info "MySQL config ready"
 
@@ -1601,6 +1640,7 @@ prepare_phase() {
     local master_pid=$!
 
     local master_status=0
+    tick_while_running "Fetching source" "$master_pid"
     wait "$master_pid" || master_status=$?
     local master_elapsed=$(( $(date +%s) - _step_started ))
     phase_record "source download${_prelude_note}" "$master_elapsed"
@@ -1657,6 +1697,7 @@ prepare_phase() {
         _step_started=$(date +%s)
         ( _prepare_vendor_worker ) >"$vendor_log" 2>&1 &
         local vendor_pid=$!
+        tick_while_running "Fetching vendor" "$vendor_pid"
         wait "$vendor_pid" || vendor_status=$?
         local vendor_elapsed=$(( $(date +%s) - _step_started ))
         local vendor_dl_secs=0
@@ -2001,14 +2042,27 @@ upgrade_instance() {
         rm -rf "${lis_path}/run-once"
     fi
 
-    # Find all symlinks in the destination directory and create an exclude pattern
+    # Find the symlinks in the destination so the sync does not overwrite them.
+    # Only code is walked: the release ships nothing into the data trees, so a
+    # symlink there can never collide, and walking them (every audit-trail file,
+    # silently) was minutes of a blank screen on a mature lab.
     local exclude_options=""
     local symlinks_found=0
-    for symlink in $(find "$lis_path" -type l -not -path "*/\.*" 2>/dev/null); do
+    local symlink_list="${temp_dir}/.symlinks"
+    local -a symlink_prune=()
+    mapfile -t symlink_prune < <(code_tree_prune_args "$lis_path")
+    find "$lis_path" \( "${symlink_prune[@]}" -false \) -prune \
+        -o -type l -not -path "*/\.*" -print >"$symlink_list" 2>/dev/null &
+    tick_while_running "Looking for symlinks to preserve in ${lis_path}" $!
+    wait $! || true
+    local symlink
+    while IFS= read -r symlink; do
+        [ -n "$symlink" ] || continue
         local rel_path=${symlink#"$lis_path/"}
         exclude_options="$exclude_options --exclude '$rel_path'"
         symlinks_found=$((symlinks_found + 1))
-    done
+    done <"$symlink_list"
+    rm -f "$symlink_list"
 
     if [ $symlinks_found -gt 0 ]; then
         print info "Preserving $symlinks_found symlinks."
