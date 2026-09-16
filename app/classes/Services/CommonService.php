@@ -676,16 +676,16 @@ final class CommonService
         return MemoUtility::remember(function () use ($facilityMap): string {
             $facilityMap ??= $_SESSION['facilityMap'] ?? null;
 
-            $query = "SELECT gd.geo_name, gd.geo_id, gd.geo_code
+            $query = "SELECT DISTINCT gd.geo_name, gd.geo_id, gd.geo_code
                         FROM geographical_divisions as gd";
 
             if (!empty($facilityMap)) {
                 $query .= " JOIN facility_details as f ON f.facility_state_id=gd.geo_id
                     WHERE gd.geo_parent = 0 AND
                     gd.geo_status='active' AND
-                    f.facility_id IN (?)
+                    f.facility_id IN (" . $this->db->inIntList($facilityMap) . ")
                     ORDER BY gd.geo_name ASC";
-                $result = $this->db->rawQuery($query, [$facilityMap]);
+                $result = $this->db->rawQuery($query);
             } else {
                 $query .= " WHERE gd.geo_parent = 0 AND gd.geo_status='active' ORDER BY gd.geo_name ASC";
                 $result = $this->db->rawQuery($query);

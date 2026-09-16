@@ -57,17 +57,17 @@ if (trim((string) $id) !== '') {
                 JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 JOIN facility_details as l ON l.facility_id=vl.lab_id
                 LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by
-                WHERE pd.manifest_id IN(?)
+                WHERE pd.manifest_id IN(" . $db->inIntList($id) . ")
                 ORDER BY remote_sample_code ASC";
-    $result = $db->rawQuery($sQuery, [$id]);
+    $result = $db->rawQuery($sQuery);
 
 
     $labname = $result[0]['lab_name'] ?? "";
 
     $arr = $general->getGlobalConfig();
     $showPatientName = $arr['covid19_show_participant_name_in_manifest'];
-    $bQuery = "SELECT * FROM specimen_manifests as pd WHERE manifest_id IN(?)";
-    $bResult = $db->rawQuery($bQuery, [$id]);
+    $bQuery = "SELECT * FROM specimen_manifests as pd WHERE manifest_id IN(" . $db->inIntList($id) . ")";
+    $bResult = $db->rawQuery($bQuery);
     if (!empty($bResult)) {
 
         $oldPrintData = json_decode((string) $bResult[0]['manifest_print_history']);
