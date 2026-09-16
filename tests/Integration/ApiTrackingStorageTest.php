@@ -7,6 +7,7 @@ namespace Tests\Integration;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\MiscUtility;
+use App\Utilities\ApiTrackingStorageUtility;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
@@ -145,7 +146,12 @@ final class ApiTrackingStorageTest extends TestCase
 
     private function bodyExists(string $folder, string $txn): bool
     {
-        $pattern = VAR_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . $folder
+        $requestedOn = LegacyAppHarness::db()->rawQueryOne(
+            'SELECT requested_on FROM track_api_requests WHERE transaction_id = ?',
+            [$txn]
+        )['requested_on'] ?? date('Y-m-d H:i:s');
+
+        $pattern = ApiTrackingStorageUtility::dayDirectory($folder, (string) $requestedOn)
             . DIRECTORY_SEPARATOR . $txn . '.json*';
         return glob($pattern) !== [];
     }
