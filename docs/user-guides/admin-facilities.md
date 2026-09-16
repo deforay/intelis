@@ -79,26 +79,47 @@ a result PDF for each module and confirm the expected names appear.
 | Bottom Text Location | Above the footer, or below the platform name |
 | Display Page Number in Footer | Whether pages are numbered |
 
-## Load many facilities at once
+## Load or update many facilities at once
 
 1. Go to **ADMIN → Facilities**.
 2. Select **Bulk Upload**.
-3. Download the Excel format from the link on the page.
-4. Fill it in and upload it.
-5. Choose an upload option.
+3. Download the Excel format from the link on the page, or use **Export** on the
+   Facilities page. Both have the same columns, so an export can be edited and
+   uploaded as it is.
+4. Fill in or edit the sheet. **Facility Type** is 1 (Health Facility), 2
+   (Testing Lab) or 3 (Collection Site). **Status** is `active` or `inactive`.
+5. Choose an upload option, attach the file and select **Review Upload**.
 
 | Upload option | Effect |
 |---|---|
-| Don't update duplicates | Adds new facilities. Leaves existing ones untouched. This is the default |
-| Update if Facility Code matches | Overwrites the facility holding that code |
-| Update if Facility Name matches | Overwrites the facility holding that name |
-| Update if Facility Name and Facility Code match | Overwrites only where both match |
+| Don't update duplicates | Adds new facilities. Skips any row whose name or code already exists. This is the default |
+| Update if Facility Code matches | Updates the facility holding that code. Adds rows that match nothing |
+| Update if Facility Name matches | Updates the facility holding that name. Adds rows that match nothing |
+| Update if Facility Name and Facility Code match | Updates only where both belong to the same facility. Adds rows that match nothing |
 
-The page reports the total records in the file, the number added, and the number
-not added. Read all three. A file that adds fewer facilities than it holds has
-rows that failed.
+Nothing is saved at this point. The review page lists every row as **New**,
+**Update**, **No change**, **Skipped** or **Error**, with the fields each update
+changes. Blank optional cells keep the value already saved.
 
-Always use the downloaded format. A file with different columns fails to import.
+Some rows carry a warning. These rows are highlighted and left unticked:
+
+| Warning | Why it matters |
+|---|---|
+| Facility Name changes a lot | The row may be matched to the wrong facility |
+| Name is almost the same as an existing facility, or another row | The facility may be added twice |
+| Coordinates are the same as an existing facility | The facility may be added twice |
+| Facility Type changes | Lists and forms that depend on the type change |
+| Facility Code of a testing lab changes | The code is part of the sample codes the lab generates |
+| External Facility Code changes | Other systems matching on the old code stop finding the facility |
+| Facility moves to a different Province/State, or coordinates move far | The row may be matched to the wrong facility |
+| Facility will be made inactive | The facility disappears from active lists |
+
+6. Check each warning. Tick the rows to import.
+7. Select **Import ticked rows**, or **Cancel** to discard the upload.
+
+The result reports the number added, updated, unchanged, left out and not saved.
+A row whose facility was changed by someone else after the review is not saved.
+Download the rows that were not saved, correct them and upload them again.
 
 ## Find facilities that behave oddly
 
@@ -150,6 +171,6 @@ status and a **Last Seen** time. Use **Last Seen** when results stop arriving.
 | New facility | The facility appears on the request form of each test type it was ticked for |
 | Testing lab | The lab appears in the Testing Lab list on the request form |
 | Signatories | Print a result PDF from that lab and read the signature block |
-| Bulk upload | The number added matches the total records in the file |
+| Bulk upload | Not saved is 0, and added plus updated matches the rows ticked |
 | Orphaned facility fixed | It no longer appears under Show Orphaned Facilities |
 | Interface Tool connection | The installation shows under Connected Installations with a recent Last Seen |
