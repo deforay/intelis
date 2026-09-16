@@ -105,6 +105,9 @@ try {
     throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }
 
+// Every lab fetches its token on every sync run, so this is an empty poll. The
+// response is never passed in: it is the lab's bearer token, and 'all' capture
+// would otherwise write it to disk.
 $general->addApiTracking(
     $transactionId,
     'system',
@@ -113,9 +116,10 @@ $general->addApiTracking(
     null,
     $_SERVER['REQUEST_URI'],
     JsonUtility::encodeUtf8Json($data),
-    $payload,
+    null,
     'json',
-    $labId
+    $labId,
+    emptyPoll: true
 );
 
 echo ApiService::generateJsonResponse($payload, $request);

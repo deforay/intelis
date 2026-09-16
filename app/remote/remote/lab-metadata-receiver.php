@@ -260,7 +260,10 @@ try {
                     (int) $labId,
                     $reasonRows
                 );
-                $counter += $stats['mapped'];
+                // Only reasons new to this server count. Labs send their whole
+                // reason list on every run, so counting what was mapped made every
+                // metadata sync look like it moved data.
+                $counter += $stats['created'];
                 if ($stats['created'] > 0) {
                     LoggerUtility::logInfo('Lab contributed new rejection reasons', [
                         'labId' => (int) $labId,
@@ -288,7 +291,7 @@ try {
         'message' => 'Metadata synced successfully'
     ]);
 
-    $general->addApiTracking($transactionId, 'intelis-system', $counter, 'system-metadata-sync', 'common', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'intelis-system', $counter, 'system-metadata-sync', 'common', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId, emptyPoll: $counter === 0);
     $db->commitTransaction();
 } catch (Throwable $e) {
     $db->rollbackTransaction();

@@ -117,7 +117,8 @@ try {
         'json',
         $labId,
         null,
-        $authToken
+        $authToken,
+        emptyPoll: count($requests) === 0
     );
 
     if ($facilityIds) {

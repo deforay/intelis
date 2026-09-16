@@ -77,7 +77,9 @@ try {
 
     // Process and get array of sample codes
     $payload = $stsResultsService->receiveResults($testType, $dataInJsonFormat, $isSilent) ?? [];
-    $resultCount = count($payload['results'] ?? []);
+    // receiveResults() returns the list of sample codes it stored, not an array
+    // keyed by 'results', so counting $payload['results'] recorded 0 for every push.
+    $resultCount = count($payload);
 
     // Tracking
     $general->addApiTracking(

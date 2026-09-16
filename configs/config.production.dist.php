@@ -74,6 +74,11 @@ $systemConfig['recency']['crossloginSalt'] = "VALID LIBSODIUM KEY";
 $systemConfig['system'] = [
     'debug_mode' => false, // set to true to enable debug mode
     'cache_di' => true, // set to true to enable DI Container caching
+    // Request/response bodies kept under var/track-api for tracked API calls.
+    // 'data' => only for calls that moved data (default)
+    // 'all'  => every call, including empty sync polls; for debugging one server
+    // 'off'  => never; the track_api_requests rows are still kept
+    'api_tracking_bodies' => 'data',
 ];
 
 
