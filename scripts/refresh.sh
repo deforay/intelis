@@ -146,7 +146,8 @@ wait  # Ensure background ACL jobs are done
 # thing either one did, and it was buying nothing. Unlinking a cache entry needs
 # write access to the DIRECTORY holding it, not ownership of the file, and
 # set_permissions has already swept every directory under var/cache and given it
-# a default ACL. `-m deep` still sweeps the contents for the one-off case where
+# a default ACL. var/track-api is the same case: millions of request and response
+# bodies on a busy STS, all written by the application itself. `-m deep` still sweeps the contents for the one-off case where
 # an existing tree really does have the wrong owner.
 for d in var/logs var/temporary public/temporary; do
     if [ -d "${lis_path}/$d" ]; then
@@ -154,7 +155,7 @@ for d in var/logs var/temporary public/temporary; do
     fi
 done
 
-for d in var/cache public/uploads; do
+for d in var/cache var/track-api public/uploads; do
     if [ -d "${lis_path}/$d" ]; then
         if [ "$mode" = "deep" ]; then
             chown -R www-data:www-data "${lis_path}/$d"
@@ -205,9 +206,60 @@ fi
 print success "✅ LIS refresh complete."
 log_action "LIS refresh complete"
 
-cron_line="5 * * * * /usr/local/bin/intelis-refresh -p ${lis_path} -m quick > /dev/null 2>&1"
+# The hourly pass runs under flock -n so a run that is still going when the next
+# hour comes round makes the new one exit instead of starting a second walk
+# beside it. On slow disks a pass could take longer than an hour, and two were
+# found running at once, each slowing the other down.
+#
+# It stays hourly. The scheduled tasks run from root's crontab, so logs and
+# cache entries keep getting created as root, and this pass is what hands them
+# back to www-data. With the heavy trees pruned, a quick pass only walks the
+# code and the small runtime directories, so running it hourly costs little.
+refresh_bin="/usr/local/bin/intelis-refresh"
+refresh_lock="/run/intelis-refresh.lock"
+flock_prefix=""
+command -v flock >/dev/null 2>&1 && flock_prefix="flock -n ${refresh_lock} "
+
+cron_line="5 * * * * ${flock_prefix}${refresh_bin} -p ${lis_path} -m quick > /dev/null 2>&1"
 cron_marker="# added_by_intelis_refresh"
 full_cron_entry="${cron_line} ${cron_marker}"
+
+# add_flock_to_refresh_cron — put flock in front of cron lines installed before
+# it was added, keeping each line's own schedule and path.
+#
+# An upgrade downloads this script fresh and runs it, which is how every
+# existing install picks this up with nobody logging in. root's crontab also
+# holds the application's cron.sh line, so a crontab that could not be read in
+# full, or a rewrite that changed the number of lines, is left alone.
+add_flock_to_refresh_cron() {
+    [ -n "$flock_prefix" ] || return 0
+
+    local current rewritten
+    current=$(crontab -u root -l 2>/dev/null) || return 0
+    [ -n "$current" ] || return 0
+
+    # Only lines carrying the marker and not already locked.
+    printf '%s\n' "$current" | grep -F "$cron_marker" | grep -vqF "flock " || return 0
+
+    rewritten=$(printf '%s\n' "$current" | awk -v m="$cron_marker" -v bin="$refresh_bin" -v pre="$flock_prefix" '
+        index($0, m) && !index($0, "flock ") {
+            i = index($0, bin)
+            if (i) $0 = substr($0, 1, i - 1) pre substr($0, i)
+        }
+        { print }')
+
+    if [ -z "$rewritten" ] ||
+        [ "$(printf '%s\n' "$rewritten" | wc -l)" -ne "$(printf '%s\n' "$current" | wc -l)" ]; then
+        log_action "Refresh cron line not rewritten: rewrite did not match the original crontab"
+        return 0
+    fi
+
+    if printf '%s\n' "$rewritten" | crontab -u root -; then
+        print success "🕒 Hourly refresh now runs under flock, so runs cannot overlap"
+        log_action "Refresh cron line rewritten to run under flock"
+    fi
+    return 0
+}
 
 if [ "$remove_cron" = true ]; then
     current_crontab=$(mktemp)
@@ -222,6 +274,7 @@ elif [ "$no_cron" = false ]; then
         print success "🕒 Cron job added: $cron_line"
         log_action "Cron job added for path: ${lis_path}"
     else
+        add_flock_to_refresh_cron
         print info "🕒 Cron job already exists for path: ${lis_path} — skipping"
         log_action "Cron job already exists for path: ${lis_path}"
     fi
