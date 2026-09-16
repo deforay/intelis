@@ -259,6 +259,13 @@ final class UsersService
 
     public function getOrCreateUser($name, $status = 'active', $role = 4)
     {
+        // No name, no user. A blank name never matches user_name, so each call used
+        // to insert another nameless user: one per analyzer row with no tester.
+        $name = trim((string) $name);
+        if ($name === '') {
+            return null;
+        }
+
         $uQuery = "SELECT `user_id`
                     FROM $this->table
                     WHERE user_name = ?
