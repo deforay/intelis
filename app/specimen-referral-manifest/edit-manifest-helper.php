@@ -84,7 +84,8 @@ try {
         $pData = [
             'lab_id' => $_POST['testingLab'],
             'number_of_samples' => $numberOfSamples,
-            'manifest_status' => $_POST['packageStatus'],
+            // manifest_status is not taken from the form: printing sets it to
+            // dispatched and activation to received, and a save must not undo them.
             'manifest_change_history' => json_encode($existingChangeReasons),
             'last_modified_datetime' => $currentDateTime
         ];

@@ -9,6 +9,7 @@ use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Helpers\ManifestPdfHelper;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 use App\Utilities\MiscUtility;
 
 
@@ -76,6 +77,8 @@ if (trim((string) $id) !== '') {
         $oldPrintData[] = $newPrintData;
         $db->where('manifest_id', $id);
         $db->update('specimen_manifests', ['manifest_print_history' => json_encode($oldPrintData)]);
+        // Printing the manifest is sending the package: pending becomes dispatched.
+        ContainerRegistry::get(TestRequestsService::class)->markManifestDispatched('manifest_id', $id);
 
         $reasonHistory = json_decode((string) $bResult[0]['manifest_change_history']);
 

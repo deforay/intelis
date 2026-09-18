@@ -151,7 +151,7 @@ foreach ($rResult as $aRow) {
 
     $disable = '';
     $pointerEvent = '';
-    if ($aRow['manifest_status'] == 'dispatch') {
+    if ($aRow['manifest_status'] === TestRequestsService::MANIFEST_RECEIVED) {
         $pointerEvent = "pointer-events:none;";
         $disable = "disabled";
     }

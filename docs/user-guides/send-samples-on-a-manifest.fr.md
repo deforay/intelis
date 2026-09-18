@@ -90,9 +90,9 @@ manifeste dans le groupe de ce test.
 
         ??? failure "Si Modifier est grisé"
 
-            Le manifeste est marqué comme expédié et ne peut plus changer. S'il
-            comporte une erreur, prévenir le laboratoire destinataire. Le
-            laboratoire peut rejeter les échantillons concernés à l'arrivée.
+            Le laboratoire d'analyse a déjà reçu le colis, donc le manifeste ne
+            peut plus changer. S'il comporte une erreur, prévenir le laboratoire
+            d'analyse. Le laboratoire peut rejeter les échantillons concernés.
 
     3. Pour ajouter des échantillons, les passer de la liste de gauche à la
        liste de droite. Pour réduire la liste de gauche, modifier les filtres et
@@ -106,8 +106,14 @@ manifeste dans le groupe de ce test.
 
     ??? info "À propos du champ Statut du manifeste"
 
-        L'écran de modification affiche un champ **Statut du manifeste** réglé
-        sur **En attente**. Ce champ est verrouillé sur cet écran.
+        Le **Statut du manifeste** change tout seul et est verrouillé sur cet
+        écran :
+
+        | Statut | Réglé quand |
+        | --- | --- |
+        | **En attente** | Le manifeste est créé. |
+        | **Dispatch** | Le manifeste est imprimé pour la première fois. |
+        | **Reçu** | Le laboratoire d'analyse réceptionne le colis. Le manifeste ne peut plus être modifié ensuite. |
 
 === "Déplacer des manifestes vers un autre laboratoire"
 

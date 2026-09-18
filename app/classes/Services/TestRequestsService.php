@@ -1190,6 +1190,114 @@ final class TestRequestsService
         return $result;
     }
 
+    /** A manifest nobody has printed or received yet. */
+    public const MANIFEST_PENDING = 'pending';
+
+    /** Printed, so the package is on its way. Set on the first print. */
+    public const MANIFEST_DISPATCHED = 'dispatch';
+
+    /** At the testing lab: activated there, or its samples reached the STS as received. */
+    public const MANIFEST_RECEIVED = 'received';
+
+    /**
+     * Marks a manifest dispatched when it is printed.
+     *
+     * Only a pending manifest moves. Reprinting one the lab has already received
+     * must not send it back to "dispatched".
+     *
+     * Takes the print pages' own id value as it is and ignores anything that is
+     * not a single id, so a print never fails over its status.
+     *
+     * @param 'manifest_id'|'manifest_code' $key
+     */
+    public function markManifestDispatched(string $key, mixed $value): void
+    {
+        if (!in_array($key, ['manifest_id', 'manifest_code'], true) || !is_scalar($value) || trim((string) $value) === '') {
+            return;
+        }
+
+        $this->db->rawQuery(
+            "UPDATE specimen_manifests
+                SET manifest_status = ?, last_modified_datetime = ?
+              WHERE $key = ?
+                AND (manifest_status IS NULL OR manifest_status IN ('', ?))",
+            [self::MANIFEST_DISPATCHED, DateUtility::getCurrentDateTime(), $value, self::MANIFEST_PENDING]
+        );
+    }
+
+    /**
+     * Marks manifests received at the testing lab.
+     *
+     * @param list<string> $manifestCodes
+     */
+    public function markManifestsReceived(array $manifestCodes): void
+    {
+        $manifestCodes = array_values(array_unique(array_filter(
+            $manifestCodes,
+            static fn($code): bool => is_string($code) && trim($code) !== ''
+        )));
+        if ($manifestCodes === []) {
+            return;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($manifestCodes), '?'));
+        $this->db->rawQuery(
+            "UPDATE specimen_manifests
+                SET manifest_status = ?, last_modified_datetime = ?
+              WHERE manifest_code IN ($placeholders)
+                AND (manifest_status IS NULL OR manifest_status IN ('', ?, ?))",
+            [
+                self::MANIFEST_RECEIVED,
+                DateUtility::getCurrentDateTime(),
+                ...$manifestCodes,
+                self::MANIFEST_PENDING,
+                self::MANIFEST_DISPATCHED,
+            ]
+        );
+    }
+
+    /**
+     * Marks received the manifests whose samples, among those given, have reached
+     * the testing lab.
+     *
+     * A collection manifest lives on the STS, but it is activated on the lab's
+     * machine, which usually holds no copy of it. The STS learns the package
+     * arrived when the lab's results sync brings those samples back with a
+     * reception date, so this runs there after each batch.
+     *
+     * @param list<int|string> $primaryKeys
+     */
+    public function markManifestsReceivedForSamples(string $testType, array $primaryKeys): void
+    {
+        $primaryKeys = array_values(array_unique(array_filter($primaryKeys, static fn($id): bool => !empty($id))));
+        if ($primaryKeys === []) {
+            return;
+        }
+
+        $tableName = TestsService::getTestTableName($testType);
+        $primaryKey = TestsService::getPrimaryColumn($testType);
+        $codeColumns = TestsService::isReferrable($testType)
+            ? ['sample_package_code', 'referral_manifest_code']
+            : ['sample_package_code'];
+
+        $placeholders = implode(',', array_fill(0, count($primaryKeys), '?'));
+        $codes = [];
+        foreach ($codeColumns as $column) {
+            $rows = $this->db->rawQuery(
+                "SELECT DISTINCT $column AS manifest_code FROM $tableName
+                  WHERE $primaryKey IN ($placeholders)
+                    AND $column IS NOT NULL AND $column <> ''
+                    AND sample_received_at_lab_datetime IS NOT NULL",
+                $primaryKeys
+            );
+            foreach ($rows ?: [] as $row) {
+                $codes[] = (string) $row['manifest_code'];
+            }
+        }
+
+        $this->markManifestsReceived($codes);
+    }
+
     public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat = 'MMYY', $prefix = null): int
     {
         if (empty($manifestCode)) {
@@ -1312,8 +1420,14 @@ final class TestRequestsService
                 }
 
                 if (!empty($sampleReceivedOn)) {
-                    $data['sample_tested_datetime'] = null;
                     $data['sample_received_at_lab_datetime'] = $sampleReceivedOn;
+                    // Only a sample arriving now (Case 1) starts with no test date.
+                    // Case 2 re-dates samples already past reception, which may be
+                    // tested: clearing their test date here erased real results'
+                    // dates whenever a manifest was activated a second time.
+                    if ($updateStatusAlso) {
+                        $data['sample_tested_datetime'] = null;
+                    }
                 }
 
                 return $data;
@@ -1333,6 +1447,12 @@ final class TestRequestsService
             $this->db->where('sample_code IS NOT NULL');
             $this->db->where($manifestWhere, $manifestParams);
             $this->db->update($tableName, $buildUpdateData(false));
+
+            // Activation is the lab taking the package in. Where this machine
+            // holds the manifest (the STS, or a lab that received a referral),
+            // it is received now. Elsewhere the STS marks it once the samples
+            // sync back with a reception date.
+            $this->markManifestsReceived([(string) $manifestCode]);
 
             return $status;
         }
