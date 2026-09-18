@@ -30,6 +30,23 @@ name, and the guides say so where it matters.
 
     [:octicons-arrow-right-24: Install on Ubuntu](guides/installing-intelis-on-ubuntu.md)
 
+    [:octicons-arrow-right-24: Move a lab or rebuild a dead machine](guides/migrating-ubuntu-machines.md)
+
+-   :material-lifebuoy:{ .lg .middle } __Something is wrong__
+
+    ---
+
+    Start on the machine with `intelis check`, or `intelis doctor` when the
+    site will not open. These pages cover the problems they point to.
+
+    [:octicons-arrow-right-24: MySQL will not start](guides/mysql-will-not-start.md)
+
+    [:octicons-arrow-right-24: Browser shows PHP code](guides/browser-shows-php-code.md)
+
+    [:octicons-arrow-right-24: Permission denied errors](guides/permission-denied-issue.md)
+
+    [:octicons-arrow-right-24: Collation errors](guides/fix-collation-issue.md)
+
 -   :material-printer-outline:{ .lg .middle } __Printable job aids__
 
     ---
@@ -43,21 +60,12 @@ name, and the guides say so where it matters.
 
     [:octicons-arrow-right-24: Cards for the machine](job-aids/index.md#for-the-machine)
 
--   :material-code-braces:{ .lg .middle } __Reference__
-
-    ---
-
-    How a request travels through the codebase, the bar a change has to meet,
-    and the interactive API documentation.
-
-    [:octicons-arrow-right-24: Architecture](ARCHITECTURE.md)
-
-    [:octicons-arrow-right-24: API reference](api/)
-
 </div>
 
 ## Frequently needed
 
-- [Restore from a backup](guides/restoring-from-backup.md): put the data back, or rebuild a machine that died
+- [Restore from a backup](guides/restoring-from-backup.md): put the data back on a machine that still runs InteLIS
 - [Sample statuses](user-guides/sample-statuses.md): every status and what it means
 - [Maintenance scripts](guides/maintenance.md): service guard, resource monitor, db-tools, cleanup, and scheduled tasks
+
+For developers: [Architecture](ARCHITECTURE.md), [Engineering standards](engineering-standards.md) and the [API reference](api/).

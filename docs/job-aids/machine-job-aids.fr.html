@@ -117,6 +117,7 @@
     white-space: nowrap;
   }
   .ui { font-weight: 700; }
+  .route { margin-top: 8px; }
 
   /* A command to be typed, on its own line. Deliberately not nowrap: a long one
      must wrap on the page rather than run off the edge of the paper, because a
@@ -170,12 +171,25 @@
   }
 
   @media print {
-    body { background: #fff; padding: 0; font-size: 10.5pt; }
+    /* Sized so every card fits one A4 page in both languages. The French cards
+       run longer, so check both with a print preview after changing any card. */
+    body { background: #fff; padding: 0; font-size: 9.5pt; line-height: 1.34; }
+    .card > header { margin-bottom: 10px; }
+    h3 { margin: 12px 0 5px; }
+    li { margin-bottom: 3px; }
+    ol.steps > li { margin-bottom: 6px; }
+    .cmd { margin: 5px 0 8px; padding: 5px 9px; font-size: 9pt; }
+    .cmd.big { font-size: 11pt; }
+    .screen { margin: 5px 0 8px; padding: 6px 10px; font-size: 8.5pt; line-height: 1.25; }
+    .warn { margin: 8px 0; padding: 7px 11px; }
+    table { font-size: 9pt; margin-bottom: 8px; }
+    th, td { padding: 3px 7px; }
+    footer.cardfoot { margin-top: 8px; }
     .toolbar { display: none; }
     .card {
       margin: 0; border: 0; box-shadow: none;
       min-height: 0; max-width: none;
-      padding: 12mm 14mm;
+      padding: 6mm 10mm;
       page-break-after: always;
       break-after: page;
     }
@@ -207,24 +221,24 @@
 
   <div class="cmd big">intelis</div>
 
-  <p>Une liste numérotée s'affiche. Saisir un numéro, appuyer sur Entrée. Rien à retenir.</p>
+  <p>Une liste numérotée s'affiche, en anglais. Saisir un numéro, appuyer sur Entrée. Rien à retenir.</p>
 
-  <div class="screen">  1) Vérifier que cette machine fonctionne
-  2) Le site ne s'ouvre pas — trouver la cause et réparer
-  3) Voir si les sauvegardes fonctionnent
-  4) Sauvegarder maintenant
-  5) Mettre à jour InteLIS
-  6) Restaurer depuis une sauvegarde
-  7) Changer la destination des sauvegardes
-  8) Quitter
+  <div class="screen">  1) Check this machine is working
+  2) The site will not open — find out why and fix it
+  3) See whether backups are working
+  4) Back up now
+  5) Update InteLIS
+  6) Restore from a backup
+  7) Change where backups are sent
+  8) Quit
 
-Saisir un numéro et appuyer sur Entrée :</div>
+Type a number and press Enter:</div>
 
   <h3>Ou saisir les mots, si c'est plus rapide</h3>
   <table class="wrapfirst">
     <tr><th>Pour faire ceci</th><th>Saisir</th></tr>
     <tr><td>Vérifier que la machine fonctionne</td><td><span class="path">intelis check</span></td></tr>
-    <tr><td>Le site ne s'ouvre pas</td><td><span class="path">intelis fix-database</span></td></tr>
+    <tr><td>Le site ne s'ouvre pas</td><td><span class="path">intelis doctor</span></td></tr>
     <tr><td>Vérifier disque, base et sauvegardes maintenant</td><td><span class="path">intelis health</span></td></tr>
     <tr><td>Voir si les sauvegardes fonctionnent</td><td><span class="path">intelis backup status</span></td></tr>
     <tr><td>Sauvegarder tout de suite</td><td><span class="path">intelis backup</span></td></tr>
@@ -239,22 +253,21 @@ Saisir un numéro et appuyer sur Entrée :</div>
     <tr><td>Chaque lundi</td><td>Vérifier que les sauvegardes fonctionnent (menu 3). Dix secondes.</td></tr>
     <tr><td>Sur demande</td><td>Mettre à jour InteLIS (menu 5).</td></tr>
     <tr><td>Quand quelque chose cloche</td><td>Vérifier la machine (menu 1) avant d'appeler qui que ce soit.</td></tr>
-    <tr><td>Quand le site ne s'ouvre pas</td><td>Réparer la base (menu 2). Rien n'est modifié sans confirmation.</td></tr>
+    <tr><td>Quand le site ne s'ouvre pas</td><td>Trouver la cause et réparer (menu 2). Rien n'est modifié sans confirmation.</td></tr>
     <tr><td>Jamais, normalement</td><td>Sauvegarder à la main. La machine se sauvegarde toutes les 8 heures.</td></tr>
   </table>
 
   <div class="warn">
     <strong>Ne jamais saisir sudo devant intelis</strong>
     La commande demande elle-même les droits d'administrateur, uniquement pour les
-    étapes qui en ont besoin, et c'est seulement à ce moment-là qu'elle demande le mot
-    de passe. Ajouter <span class="path">sudo</span> est inutile et, pour certaines
-    commandes, aggrave les choses : cela exécute en tant qu'administrateur un travail
-    qui doit s'exécuter sous le compte qu'utilise InteLIS.
+    étapes qui en ont besoin. Ajouter <span class="path">sudo</span> exécute en tant
+    qu'administrateur un travail qui doit s'exécuter sous le compte d'InteLIS, ce qui
+    casse certaines commandes.
   </div>
 
   <h3>Si la saisie de intelis répond « command not found »</h3>
   <p>La machine est une installation ancienne. Lancer la mise à jour une fois avec la
-  commande longue de la fiche 3 ; la commande courte fonctionne ensuite.</p>
+  commande longue de la fiche 3. La commande courte fonctionne ensuite.</p>
 
   <footer class="cardfoot"><span>InteLIS — aide-mémoire machine</span><span>Fiche 1 : une seule commande</span></footer>
 </section>
@@ -269,7 +282,7 @@ Saisir un numéro et appuyer sur Entrée :</div>
 
   <h3>Avant de commencer</h3>
   <table class="wrapfirst">
-    <tr><td>Ubuntu installé</td><td>Ubuntu 22.04 ou plus récent</td></tr>
+    <tr><td>Ubuntu installé</td><td>Ubuntu 24.04 LTS ou plus récent</td></tr>
     <tr><td>Internet</td><td>Nécessaire pendant toute l'installation. Le volume téléchargé est important.</td></tr>
     <tr><td>Mot de passe administrateur</td><td>Celui utilisé pour ouvrir la session sur la machine</td></tr>
     <tr><td>Temps</td><td>Prévoir une heure. Ne pas lancer dix minutes avant de partir.</td></tr>
@@ -277,9 +290,9 @@ Saisir un numéro et appuyer sur Entrée :</div>
 
   <div class="warn">
     <strong>Il s'agit de remettre un ancien laboratoire sur une machine neuve ?</strong>
-    Ne pas utiliser cette fiche. Aller à la fiche 5 et lancer d'abord la restauration.
-    Elle affiche la commande d'installation exacte, avec la sauvegarde déjà rattachée,
-    pour que la machine revienne avec ses données au lieu d'être vide.
+    Ne pas utiliser cette fiche. Utiliser la fiche 5. Elle installe InteLIS et charge la
+    sauvegarde en une seule étape, pour que la machine revienne avec ses données au lieu
+    d'être vide.
   </div>
 
   <h3>Saisir ces trois lignes, une à la fois</h3>
@@ -297,15 +310,15 @@ Saisir un numéro et appuyer sur Entrée :</div>
   <h3>Ce qui sera demandé</h3>
   <table class="wrapfirst">
     <tr><th>Question</th><th>Réponse</th></tr>
-    <tr><td>Où installer</td><td>Appuyer sur Entrée pour l'emplacement standard, sauf indication contraire</td></tr>
-    <tr><td>Mot de passe de la base</td><td>En choisir un et le noter en lieu sûr. Il est irrécupérable.</td></tr>
-    <tr><td>Adresse du STS</td><td>L'adresse fournie par le programme. Laisser vide pour un laboratoire autonome.</td></tr>
-    <tr><td>Quels modules</td><td>Les tests réalisés par ce laboratoire</td></tr>
+    <tr><td>Installation directory</td><td>Appuyer sur Entrée pour l'emplacement standard, sauf indication contraire</td></tr>
+    <tr><td>What is this machine?</td><td>Lab machine (LIS)</td></tr>
+    <tr><td>Remote STS URL</td><td>L'adresse fournie par le programme. Laisser vide pour un laboratoire autonome.</td></tr>
+    <tr><td>New MySQL root password</td><td>En choisir un, le saisir deux fois et le noter en lieu sûr. Il est irrécupérable.</td></tr>
   </table>
 
   <h3>Une fois terminé</h3>
   <ol class="steps">
-    <li>Saisir <span class="path">intelis check</span>. Chaque ligne doit indiquer PASS.</li>
+    <li>Saisir <span class="path">intelis check</span>. Aucune ligne ne doit indiquer FAIL.</li>
     <li>Ouvrir un navigateur sur la machine et se connecter.</li>
     <li>Configurer les sauvegardes immédiatement, avec la fiche 4. Une machine sans sauvegarde est à une panne de disque de tout perdre.</li>
   </ol>
@@ -344,8 +357,8 @@ Saisir un numéro et appuyer sur Entrée :</div>
   <table class="wrapfirst">
     <tr><td>Avant</td><td>Prévenir le laboratoire. Les pages peuvent ne pas s'afficher pendant un court moment.</td></tr>
     <tr><td>Avant</td><td>Vérifier que les sauvegardes sont à jour : <span class="path">intelis backup status</span></td></tr>
-    <tr><td>Après</td><td>Lancer <span class="path">intelis check</span>. Chaque ligne doit indiquer PASS.</td></tr>
-    <tr><td>Après</td><td>Se connecter et ouvrir une page, pour le constater de ses propres yeux.</td></tr>
+    <tr><td>Après</td><td>Lancer <span class="path">intelis check</span>. Aucune ligne ne doit indiquer FAIL.</td></tr>
+    <tr><td>Après</td><td>Se connecter et ouvrir une page, pour vérifier qu'elle s'affiche.</td></tr>
   </table>
 
   <div class="warn">
@@ -376,11 +389,11 @@ Saisir un numéro et appuyer sur Entrée :</div>
   <p>La commande demande où doivent aller les sauvegardes, et teste la connexion avant
   d'enregistrer quoi que ce soit :</p>
   <table class="wrapfirst">
-    <tr><td>1 &mdash; Une autre machine Linux</td><td>Par le réseau. Il faut son adresse, un nom d'utilisateur et son mot de passe une fois.</td></tr>
-    <tr><td>2 &mdash; Un dossier partagé Windows</td><td>Partager d'abord un dossier sur le PC Windows, et donner à l'utilisateur la permission Modifier.</td></tr>
-    <tr><td>3 &mdash; Un disque USB ou externe</td><td>Le brancher d'abord. Le plus simple, mais quelqu'un doit garder le disque en lieu sûr.</td></tr>
+    <tr><td>Une autre machine Linux</td><td>Par le réseau. Il faut son adresse, un nom d'utilisateur et son mot de passe une fois.</td></tr>
+    <tr><td>Un dossier partagé Windows</td><td>Partager d'abord un dossier sur le PC Windows, et donner à l'utilisateur la permission Modifier.</td></tr>
+    <tr><td>Un disque USB ou externe</td><td>Le brancher d'abord. Le plus simple, mais quelqu'un doit garder le disque en lieu sûr.</td></tr>
   </table>
-  <p>La première sauvegarde est ensuite lancée sous vos yeux. Si elle échoue, elle le dit
+  <p>La première sauvegarde est ensuite lancée à l'écran. Si elle échoue, elle le dit
   au lieu de faire croire que tout s'est bien passé.</p>
 
   <h3>Ensuite, elle se lance toute seule</h3>
@@ -401,7 +414,7 @@ Schedule        : every 8 hours and after every restart</div>
     <tr><td>Last good backup : never</td><td>Elle n'a jamais fonctionné. Lancer <span class="path">intelis backup test</span>.</td></tr>
     <tr><td>Plus d'un jour</td><td>Lancer <span class="path">intelis backup test</span> pour en connaître la raison.</td></tr>
     <tr><td>Last attempt : FAILED</td><td>Lire la raison à la ligne suivante. En général, l'autre machine est éteinte.</td></tr>
-    <tr><td>Schedule : OFF</td><td>Les sauvegardes ne sont pas programmées. Appeler le support.</td></tr>
+    <tr><td>Schedule : OFF</td><td>Les sauvegardes ne sont pas programmées. Lancer <span class="path">intelis backup enable</span>.</td></tr>
   </table>
 
   <h3>Les deux autres commandes</h3>
@@ -434,37 +447,37 @@ Schedule        : every 8 hours and after every restart</div>
     appeler le support avant de restaurer.
   </div>
 
-  <h3>Voir quelles sauvegardes existent</h3>
-  <div class="cmd">intelis restore --list</div>
-
-  <h3>En restaurer une</h3>
+  <h3>InteLIS fonctionne encore sur cette machine</h3>
   <div class="cmd big">intelis restore</div>
-  <p>La commande se connecte là où les sauvegardes ont été envoyées, affiche chaque
-  laboratoire qui s'y trouve, recopie celui qui est choisi, et vérifie que les fichiers
-  sont lisibles avant d'en faire quoi que ce soit.</p>
-
-  <h3>La suite dépend de l'état de la machine</h3>
-  <table class="wrapfirst">
-    <tr><th>Situation</th><th>Ce qui se passe</th></tr>
-    <tr><td>InteLIS est installé et fonctionne</td><td>La restauration de la base est proposée sur place. Une copie de sécurité des données actuelles est prise d'abord, ce qui permet de revenir en arrière.</td></tr>
-    <tr><td>La machine est vierge ou vient d'être réinstallée</td><td>Une seule commande est affichée : elle installe InteLIS <em>et</em> charge la sauvegarde dans la même étape. Copier cette ligne et la lancer.</td></tr>
-  </table>
+  <p>La commande se connecte là où les sauvegardes ont été envoyées, recopie le laboratoire
+  choisi et vérifie que les fichiers sont lisibles. Elle propose ensuite de restaurer la base
+  sur place, après une copie de sécurité des données actuelles. Pour seulement voir quelles
+  sauvegardes existent, saisir <span class="path">intelis restore --list</span>.</p>
 
   <h3>Remonter une machine complètement perdue</h3>
+  <p>La commande <span class="path">intelis</span> n'existe pas encore sur une machine neuve. Suivre l'une de ces voies à la place.</p>
   <ol class="steps">
-    <li>Installer Ubuntu sur la nouvelle machine.</li>
-    <li>La raccorder au même réseau que la destination des sauvegardes, ou brancher le disque de sauvegarde.</li>
-    <li>Lancer <span class="path">intelis restore</span> et choisir le laboratoire.</li>
-    <li>Copier la commande affichée et la lancer. Prévoir une heure.</li>
-    <li>Lancer <span class="path">intelis check</span>, puis se connecter et vérifier que les données sont là.</li>
+    <li>Installer Ubuntu 24.04 LTS ou plus récent sur la nouvelle machine, et la connecter à internet.</li>
+    <li>Lancer l'installation avec les sauvegardes, par la voie qui correspond à leur emplacement.
+      <div class="route"><span class="ui">Une copie de l'ancien dossier <span class="path">backups</span> sur une clé USB.</span> La brancher et saisir :</div>
+      <div class="cmd">cd ~ &amp;&amp; wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)"</div>
+      <div class="cmd">sudo bash setup.sh --restore-from-backup-folder</div>
+      Avant d'appuyer sur Entrée, saisir un espace et glisser le dossier <span class="path">backups</span> sur la fenêtre du terminal.
+      <div class="route"><span class="ui">Sauvegardes envoyées vers une autre machine Linux, un partage Windows ou un disque de sauvegarde.</span> Saisir :</div>
+      <div class="cmd">cd ~ &amp;&amp; wget -O restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh</div>
+      <div class="cmd">sudo bash restore-backup.sh</div>
+      Choisir le laboratoire, puis <span class="ui">Just the database backups</span>. Copier la commande affichée à la fin, et la lancer.</li>
+    <li>Répondre à l'installation : <span class="ui">Lab machine (LIS)</span>, l'adresse de l'ancien STS, et un nouveau mot de passe root MySQL. Attendre <span class="path">Setup complete</span>.</li>
+    <li>Se connecter avec un compte administrateur de l'ancienne machine, et vérifier que les données sont là.</li>
     <li>Reconfigurer les sauvegardes avec la fiche 4. La nouvelle machine ne sauvegarde encore rien.</li>
   </ol>
 
   <div class="warn">
-    <strong>Si les sauvegardes sont chiffrées</strong>
-    La commande affichée suffit lorsque la nouvelle machine utilise le même mot de passe
-    de base de données que l'ancienne. Sinon, l'administrateur du STS doit d'abord
-    émettre un jeton de récupération. Le demander avant de commencer, pas à mi-parcours.
+    <strong>Si l'installation s'arrête sur « Failed to decrypt »</strong>
+    L'installation lit la clé dans le dossier <span class="path">config</span> copié avec
+    les sauvegardes. Sans lui, l'administrateur du STS doit émettre un jeton de récupération
+    à usage unique. Relancer la même commande d'installation en ajoutant
+    <span class="path">--sts-url</span> et <span class="path">--recovery-token</span> avec les valeurs fournies.
   </div>
 
   <footer class="cardfoot"><span>InteLIS — aide-mémoire machine</span><span>Fiche 5 : restaurer</span></footer>
@@ -506,7 +519,8 @@ Schedule        : every 8 hours and after every restart</div>
   <h3>Les cas les plus courants</h3>
   <table class="wrapfirst">
     <tr><th>Symptôme</th><th>Cause probable</th></tr>
-    <tr><td>Pages blanches ou qui ne chargent pas</td><td>Lancer <span class="path">intelis check</span>. En général une mise à jour interrompue ou une base arrêtée.</td></tr>
+    <tr><td>Pages blanches ou qui ne chargent pas</td><td>Lancer <span class="path">intelis doctor</span>. La commande trouve la cause et propose de la corriger. En général une mise à jour interrompue ou une base arrêtée.</td></tr>
+    <tr><td>La base de données ne démarre pas</td><td>Lancer <span class="path">intelis fix-database</span>. Rien n'est modifié sans confirmation.</td></tr>
     <tr><td>Disque utilisé à plus de 90 %</td><td>Le disque se remplit. Appeler le support avant d'arriver à 100 %, pas après.</td></tr>
     <tr><td>Tout est lent</td><td>Lancer <span class="path">intelis health</span> et signaler la latence de la base de données.</td></tr>
     <tr><td>Les résultats n'arrivent pas au programme</td><td>Vérifier les lignes STS URL et STS token dans <span class="path">intelis check</span>.</td></tr>

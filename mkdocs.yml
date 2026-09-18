@@ -87,20 +87,21 @@ nav:
       # Connecting an analyzer is a setup task, not a repair. It sat under
       # Troubleshooting, where nobody setting up an instrument would look.
       - Connect an Instrument: guides/setting-up-interfacing-tool.md
-  - Updates & Migration:
+  - Updates:
       - Updating InteLIS on Ubuntu: guides/updating-intelis-on-ubuntu.md
       - Updating InteLIS on Windows: guides/updating-intelis-on-windows.md
-      - Migrating Ubuntu Machines: guides/migrating-ubuntu-machines.md
-  - Backup:
+  # Moving or rebuilding a machine is a restore, so it sits with the backups
+  # it restores from rather than with updates.
+  - Backup & Restore:
+      - Setting Up Off-Machine Backups: guides/setting-up-off-machine-backups.md
       - Google Drive with Rclone: guides/backing-up-to-google-drive-with-rclone.md
-      - Another Linux Machine: guides/backing-up-to-remote-server.md
-      - Windows Machine (Same Network): guides/backing-up-to-windows-machine.md
       - Restoring from a Backup: guides/restoring-from-backup.md
+      - Migrating Ubuntu Machines: guides/migrating-ubuntu-machines.md
   - Maintenance:
       - Scripts & Tools: guides/maintenance.md
-  - Remote Administration:
-      - Remote Command Plane (runbook): guides/remote-command-plane.md
+      - Run Commands on Labs Remotely: guides/remote-command-plane.md
   - Troubleshooting:
+      - MySQL Will Not Start: guides/mysql-will-not-start.md
       - Browser Shows PHP Code: guides/browser-shows-php-code.md
       - Fix Collation Mismatch: guides/fix-collation-issue.md
       - Permission Denied Issue: guides/permission-denied-issue.md
@@ -108,14 +109,16 @@ nav:
       - Architecture: ARCHITECTURE.md
       - Engineering Standards: engineering-standards.md
       - Remote Command Plane (design): remote-command-plane.md
+      - Release Tracks: release-tracks.md
 
 # i18n goes first: it rewrites the file list, and search has to index what it
 # produces. English is the default, so any page without a .fr.md alongside it
 # falls back to English rather than 404ing. That is why the server guides can
 # stay untranslated without breaking the French site.
 #
-# The Windows guides were renamed when VLSM became InteLIS. The redirects keep
-# the published URLs working. Add an entry there whenever a page is renamed.
+# The Windows guides were renamed when VLSM became InteLIS, and the two backup
+# destination guides were merged into one. The redirects keep the published URLs
+# working. Add an entry there whenever a page is renamed or merged.
 plugins:
   - i18n:
       docs_structure: suffix
@@ -169,20 +172,19 @@ plugins:
             InteLIS on Ubuntu (Recommended): InteLIS sur Ubuntu (recommandé)
             Using Docker: Avec Docker
             InteLIS on Windows: InteLIS sur Windows
-            Updates & Migration: Mises à jour et migration
+            Updates: Mises à jour
             Updating InteLIS on Ubuntu: Mettre à jour InteLIS sur Ubuntu
             Updating InteLIS on Windows: Mettre à jour InteLIS sur Windows
             Migrating Ubuntu Machines: Migrer entre machines Ubuntu
-            Backup: Sauvegarde
+            Backup & Restore: Sauvegarde et restauration
+            Setting Up Off-Machine Backups: Configurer les sauvegardes hors de la machine
             Google Drive with Rclone: Google Drive avec Rclone
-            Another Linux Machine: Une autre machine Linux
-            Windows Machine (Same Network): Une machine Windows (même réseau)
             Restoring from a Backup: Restaurer depuis une sauvegarde
             Maintenance: Maintenance
             Scripts & Tools: Scripts et outils
-            Remote Administration: Administration à distance
-            Remote Command Plane (runbook): Plan de commande à distance (procédure)
+            Run Commands on Labs Remotely: Lancer des commandes à distance sur les labos
             Troubleshooting: Dépannage
+            MySQL Will Not Start: MySQL ne démarre pas
             Browser Shows PHP Code: Le navigateur affiche du code PHP
             Fix Collation Mismatch: Corriger une incohérence de collation
             Permission Denied Issue: Corriger une erreur de permission
@@ -191,11 +193,14 @@ plugins:
             Architecture: Architecture
             Engineering Standards: Standards d'ingénierie
             Remote Command Plane (design): Plan de commande à distance (conception)
+            Release Tracks: Canaux de publication
   - search
   - redirects:
       redirect_maps:
         guides/installing-vlsm-on-windows.md: guides/installing-intelis-on-windows.md
         guides/updating-vlsm-on-windows.md: guides/updating-intelis-on-windows.md
+        guides/backing-up-to-remote-server.md: guides/setting-up-off-machine-backups.md
+        guides/backing-up-to-windows-machine.md: guides/setting-up-off-machine-backups.md
 
 markdown_extensions:
   - admonition
@@ -205,6 +210,14 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+  # Content tabs let a guide show only the steps for the reader's situation.
+  # With the theme's content.tabs.link, choosing a tab once switches every tab
+  # set on the page that has the same label.
+  # Keeps an ordered list's first number, so steps split by sub-headings
+  # continue (7, 8, 9...) instead of restarting at 1.
+  - sane_lists
+  - pymdownx.tabbed:
+      alternate_style: true
   - tables
   - toc:
       permalink: true

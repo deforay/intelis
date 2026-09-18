@@ -54,7 +54,7 @@ when the machine cannot show it.
 | 3. Update InteLIS | `intelis update`, what to check before and after | Whoever looks after the machine |
 | 4. Backups | Setting a destination, and the weekly ten-second check | Whoever looks after the machine |
 | 5. Restore from a backup | Restoring in place, and rebuilding a machine that died | Keep printed and near the machine |
-| 6. When something is wrong | Reading `intelis check`, and what to send support | Anyone, before calling support |
+| 6. When something is wrong | Reading `intelis check`, `intelis doctor` for a site that will not open, and what to send support | Anyone, before calling support |
 
 ## How the cards relate to the guides
 
@@ -75,7 +75,9 @@ what to do when something goes wrong.
 | Admin 3 | [How to manage facilities and testing labs](../user-guides/admin-facilities.md) and [How to set up instruments and interfacing](../user-guides/admin-instruments.md) |
 | Admin 4 | [How to maintain the request form lists](../user-guides/admin-module-configuration.md) |
 | Admin 5 | [How to monitor and audit InteLIS](../user-guides/admin-monitoring.md) |
+| Machine 1 | [Maintenance scripts and tools](../guides/maintenance.md) |
 | Machine 2 | [Installing InteLIS on Ubuntu](../guides/installing-intelis-on-ubuntu.md) |
 | Machine 3 | [Updating InteLIS on Ubuntu](../guides/updating-intelis-on-ubuntu.md) |
-| Machine 4 | [Backing up to another Linux machine](../guides/backing-up-to-remote-server.md) and [to a Windows machine](../guides/backing-up-to-windows-machine.md) |
-| Machine 5 | [Restoring from a backup](../guides/restoring-from-backup.md) and [Migrating Ubuntu machines](../guides/migrating-ubuntu-machines.md) |
+| Machine 4 | [Setting up off-machine backups](../guides/setting-up-off-machine-backups.md) |
+| Machine 5 | [Migrating Ubuntu machines](../guides/migrating-ubuntu-machines.md) to rebuild a machine that died, and [Restoring from a backup](../guides/restoring-from-backup.md) to restore in place |
+| Machine 6 | [MySQL will not start](../guides/mysql-will-not-start.md), [Browser shows PHP code](../guides/browser-shows-php-code.md), [Permission denied errors](../guides/permission-denied-issue.md) and [Fix collation errors](../guides/fix-collation-issue.md) |

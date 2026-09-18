@@ -1,231 +1,333 @@
 # Installing InteLIS on a Windows Machine
 
-InteLIS was previously called VLSM. The Windows install folder, the site
-hostname, and the database are still named `vlsm`, and this guide keeps those
-names so they match an existing installation.
+Install InteLIS on a Windows machine with WampServer.
 
-## 0. Download
+The machine needs an internet connection and an account with administrator
+rights. The installation goes into `C:\wamp64\www\vlsm` and opens at
+<http://vlsm>.
 
-- Notepad++ or Microsoft VS Code
-- WampServer from <https://www.wampserver.com/en/>, 32 or 64 bit to match the machine
-- VC Packages from <https://wampserver.aviatechno.net/files/vcpackages/all_vc_redist_x86_x64.zip>
+??? info "Why the folder is named `vlsm`"
 
-## 1. Installing WAMP Server
+    InteLIS was previously called VLSM. The Windows install folder, the site
+    hostname and the database still carry that name, so they match existing
+    installations.
 
-- Update Windows fully
-- Install the VC Packages. Install all of them on 64-bit, and only the 32-bit packages on a 32-bit system
-- Reboot the machine
-- Launch WampServer and confirm the tray icon is green
+**Follow the steps from top to bottom. Each part ends with a check. Do not go
+on until the check passes.**
 
-## 2. Configuring PHP and MySQL
+## Prepare Windows
 
-### 2.1 PHP Setup
+1. Install all pending Windows updates.
+2. Install a text editor: Notepad++ or Microsoft VS Code.
+3. Download the Visual C++ packages:
+   <https://wampserver.aviatechno.net/files/vcpackages/all_vc_redist_x86_x64.zip>
+4. Extract the zip file and install the packages inside it. On 64-bit Windows,
+   install all of them. On 32-bit Windows, install only the x86 packages.
+5. Restart the machine.
+6. Download WampServer from <https://www.wampserver.com/en/>. Choose the 64-bit
+   installer on 64-bit Windows.
+7. Install WampServer into `C:\wamp64`.
+8. Start WampServer.
 
-- Download `cacert.pem` from <https://curl.se/docs/caextract.html> and place it in `C:\wamp\` or `C:\wamp64\`
-- Switch the PHP version to 8.4.1 or newer: WampServer > PHP > version > 8.4.x.
-  The committed `composer.lock` pins the platform to PHP 8.4.1 and contains
-  packages that require it, so `composer install` fails on PHP 8.2 or 8.3.
-- Open `php.ini` via WampServer > PHP > php.ini and change:
-  - `memory_limit` from 128M to 2G, or higher if the machine allows
-  - `post_max_size` from 8M to 500M
-  - `upload_max_filesize` from 2M to 500M
-  - `;openssl.cafile=` to `openssl.cafile='C:\wamp64\cacert.pem'`
-  - `;curl.cainfo =` to `curl.cainfo ='C:\wamp64\cacert.pem'`
-  - `error_reporting` to `error_reporting = E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED & ~E_WARNING`
-  - `max_execution_time` to `max_execution_time = 1200`
-- Repeat the same edits in `C:\wamp64\bin\php\php8.4.1\php.ini`
+**Check:** the WampServer icon in the system tray turns green.
 
-### 2.2 MySQL Setup
+## Configure PHP
 
-#### Fix the MySQL mode
+9. Download `cacert.pem` from <https://curl.se/docs/caextract.html> and save it
+   as `C:\wamp64\cacert.pem`.
+10. Select the WampServer tray icon, then **PHP → Version**. Choose the newest
+    version that starts with `8.4`.
+11. Open `C:\wamp64\bin\php` in File Explorer. Note the name of the folder that
+    starts with `php8.4`, for example `php8.4.1`. The steps below call it
+    `php8.4.x`.
+12. Select the WampServer tray icon, then **PHP → php.ini**. Change these
+    settings, then save the file:
 
-- Open the WampServer icon > MySQL > my.ini
-- Find `sql_mode` and comment it out with a leading `;`
-- Add these lines:
+    | Setting | New value |
+    | --- | --- |
+    | `memory_limit` | `2G`, or higher if the machine allows |
+    | `post_max_size` | `500M` |
+    | `upload_max_filesize` | `500M` |
+    | `max_execution_time` | `1200` |
+    | `error_reporting` | `E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED & ~E_WARNING` |
+    | `;openssl.cafile=` | `openssl.cafile='C:\wamp64\cacert.pem'` (remove the leading `;`) |
+    | `;curl.cainfo =` | `curl.cainfo ='C:\wamp64\cacert.pem'` (remove the leading `;`) |
 
-  ```ini
-  sql_mode =
-  innodb_strict_mode = 0
-  ```
+13. Make the same changes in `C:\wamp64\bin\php\php8.4.x\php.ini`. The command
+    line uses this file.
+14. Open **Command Prompt** and run:
 
-- Find `innodb_default_row_format=compact` and change it to
-  `innodb_default_row_format=dynamic`. Add the line if it is missing.
-- Save and close
+    ```bat
+    set PATH=C:\wamp64\bin\php\php8.4.x;%PATH%
+    php -v
+    php -i | findstr memory_limit
+    ```
 
-#### Change the MySQL password
+**Check:** `php -v` prints `PHP 8.4`, and the second command prints
+`memory_limit => 2G`.
 
-- Open the WampServer icon > MySQL > MySQL Console
-- Username: `root`
-- Password: leave blank and press Enter
-- Run:
+## Configure MySQL
 
-  ```sql
-  ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'PASSWORD';
-  FLUSH PRIVILEGES;
-  exit;
-  ```
+15. Select the WampServer tray icon, then **MySQL → my.ini**.
+16. Find the `sql_mode` line and put `;` at its start.
+17. Add these lines below it:
 
-#### Final steps
+    ```ini
+    sql_mode =
+    innodb_strict_mode = 0
+    ```
 
-- Restart all WampServer services
-- Download the latest Composer from <https://getcomposer.org/download/>
+18. Find `innodb_default_row_format=compact` and change it to
+    `innodb_default_row_format=dynamic`. If the line is missing, add
+    `innodb_default_row_format=dynamic`.
+19. Save the file.
+20. Select the WampServer tray icon, then **MySQL → MySQL Console**. Log in as
+    `root` with an empty password.
+21. Set a root password. Replace `PASSWORD` with a new password, and write it
+    down:
 
-## 3. Setting up InteLIS
+    ```sql
+    ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'PASSWORD';
+    FLUSH PRIVILEGES;
+    exit;
+    ```
 
-### 3.1 InteLIS Application Setup
+    ??? failure "If MySQL rejects `mysql_native_password`"
 
-- Clone or download InteLIS from <https://github.com/deforay/intelis>
-- Extract it into `C:\wamp64\www\vlsm`
-- Place `composer.phar` in that folder
-- Open a terminal and run:
+        Newer MySQL versions do not load `mysql_native_password`, and reply
+        `Plugin 'mysql_native_password' is not loaded`. Use MySQL's default
+        method instead. PHP connects with it.
 
-  ```bat
-  cd C:\wamp64\www\vlsm
-  set PATH=C:\wamp64\bin\php\php8.4.1;%PATH%
-  php composer.phar install --no-dev
-  php composer.phar dump-autoload -o
-  ```
+        ```sql
+        ALTER USER 'root'@'localhost' IDENTIFIED BY 'PASSWORD';
+        FLUSH PRIVILEGES;
+        exit;
+        ```
 
-#### Database setup
+22. Select the WampServer tray icon, then **Restart All Services**.
 
-- Open phpMyAdmin at <http://localhost/phpmyadmin>
-- Click SQL and run:
+**Check:** the tray icon turns green again, and <http://localhost/phpmyadmin>
+accepts `root` with the new password.
 
-  ```sql
-  CREATE DATABASE `vlsm` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-  ```
+## Get InteLIS
 
-- Import `sql/init.sql` into the `vlsm` database
+23. Download the current release:
+    <https://github.com/deforay/intelis/archive/refs/heads/stable.zip>
+24. Extract the zip file. It holds one folder, `intelis-stable`.
+25. Create the folder `C:\wamp64\www\vlsm`.
+26. Copy everything inside `intelis-stable` into `C:\wamp64\www\vlsm`.
+27. Download `composer.phar` from
+    <https://getcomposer.org/download/latest-stable/composer.phar> and save it
+    in `C:\wamp64\www\vlsm`.
+28. In Command Prompt, install the packages:
 
-#### Configuration
+    ```bat
+    cd C:\wamp64\www\vlsm
+    set PATH=C:\wamp64\bin\php\php8.4.x;%PATH%
+    php composer.phar install --no-dev --no-scripts
+    php composer.phar dump-autoload -o
+    ```
 
-- Rename `configs/config.production.dist.php` to `configs/config.production.php`
-- Edit that file and set:
-  - STS URL: `$systemConfig['remoteURL'] = 'https://STSURL';`
-  - Module settings, enabled or disabled as needed
-  - Database credentials
-  - Interfacing database details
+**Check:** the file `C:\wamp64\www\vlsm\vendor\autoload.php` exists.
 
-#### Virtual host setup
+## Create the database
 
-- Open `C:\windows\system32\drivers\etc\hosts` as administrator
-- Add: `127.0.0.1 vlsm`
-- Edit `C:\wamp64\bin\apache\apache2.4.54.2\conf\extra\httpd-vhosts.conf`:
+29. Open <http://localhost/phpmyadmin> and log in as `root`.
+30. Select **SQL**, run this, and select **Go**:
 
-  ```apache
-  <VirtualHost *:80>
-    ServerName localhost
-    ServerAlias vlsm
-    DocumentRoot "${INSTALL_DIR}/www/vlsm/public"
-    <Directory "${INSTALL_DIR}/www/vlsm/public/">
-      AddDefaultCharset UTF-8
-      Options +Indexes +Includes +FollowSymLinks +MultiViews
-      AllowOverride All
-      Require local
-    </Directory>
-  </VirtualHost>
-  ```
+    ```sql
+    CREATE DATABASE `vlsm` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+    ```
 
-  `Require local` allows the site to be opened only from this machine. Where other
-  workstations in the lab use InteLIS on this server, replace it with the lab's
-  own subnet, for example:
+31. Select the `vlsm` database in the left panel.
+32. Select **Import**, choose `C:\wamp64\www\vlsm\sql\init.sql`, and select
+    **Import** or **Go** at the bottom of the page.
 
-  ```apache
-  Require ip 192.168.1
-  ```
+**Check:** the `vlsm` database in the left panel lists its tables.
 
-  Use `Require all granted` only where the machine is not reachable from outside
-  the lab network. After changing this, confirm the site opens from a second
-  workstation, not just from the server itself.
+## Configure InteLIS
 
-- Restart all WampServer services
+33. Copy `C:\wamp64\www\vlsm\configs\config.production.dist.php` to
+    `C:\wamp64\www\vlsm\configs\config.production.php`.
+34. Open `config.production.php` in the text editor and set the database
+    details:
 
-#### Application initialization
+    ```php
+    $systemConfig['database']['host']       = 'localhost';
+    $systemConfig['database']['username']   = 'root';
+    $systemConfig['database']['password']   = 'PASSWORD';
+    $systemConfig['database']['db']         = 'vlsm';
+    ```
 
-- Run in a command prompt:
+    Replace `PASSWORD` with the root password from step 21.
 
-  ```bat
-  cd C:\wamp64\www\vlsm
-  set PATH=C:\wamp64\bin\php\php8.4.1;%PATH%
-  php composer.phar post-install
-  ```
+35. If the lab sends results to an STS, set its address in the same file:
 
-- Generate the audit triggers. Run this after `post-install`, because the
-  generator reads the migrated schema:
+    ```php
+    $systemConfig['remoteURL'] = 'https://sts.example.org';
+    ```
 
-  ```bat
-  php bin\setup\regenerate-audit-triggers.php --apply install
-  ```
+36. Save the file.
 
-- Open <http://vlsm>
-- Register the admin user and log in
-- Click "Force Remote Sync" and wait for it to finish
+## Set up the web server
 
-#### System admin setup
+37. Open Notepad as administrator. Open
+    `C:\Windows\System32\drivers\etc\hosts` and add this line at the end:
 
-- Open <http://vlsm/system-admin>
-- Read the secret key from `C:\wamp64\www\vlsm\var\secret-key.txt`
-- Register the system admin user
-- Set **Instance Type**. The list offers **Standalone**,
-  **LIS - LAB INFORMATION SYSTEM** and **STS - SAMPLE TRACKING SYSTEM**. A lab
-  machine that syncs to a central instance is **LIS - LAB INFORMATION SYSTEM**;
-  choose the lab name once that is selected. A machine with no central instance
-  is **Standalone**.
-- Sign out
+    ```text
+    127.0.0.1 vlsm
+    ```
 
-### 3.2 Task Scheduler
+38. Open `C:\wamp64\bin\apache`. Inside the folder that starts with `apache2.4`,
+    open `conf\extra\httpd-vhosts.conf` and add:
 
-- Open Task Scheduler and create a new task named "InteLIS Task"
-- Select "Run whether user is logged on or not"
-- On the Triggers tab, create a trigger:
-  - Select Daily
-  - Check "Repeat Task Every" and set it to 1 minute indefinitely
-  - Check "Stop task if runs longer than". The default of 3 days is fine.
-- On the Actions tab, create an action:
-  - Program: `C:\wamp64\bin\php\php8.4.1\php.exe`
-  - Arguments: `C:\wamp64\www\vlsm\vendor\bin\crunz schedule:run`
-  - **Start in:** `C:\wamp64\www\vlsm`
+    ```apache
+    <VirtualHost *:80>
+      ServerName localhost
+      ServerAlias vlsm
+      DocumentRoot "${INSTALL_DIR}/www/vlsm/public"
+      <Directory "${INSTALL_DIR}/www/vlsm/public/">
+        AddDefaultCharset UTF-8
+        Options +Indexes +Includes +FollowSymLinks +MultiViews
+        AllowOverride All
+        Require local
+      </Directory>
+    </VirtualHost>
+    ```
 
-  The **Start in** field is required. Task Scheduler otherwise starts the action
-  in a system directory, and Crunz locates `crunz.yml` relative to the current
-  working directory. Without it the task runs and exits silently, and scheduled
-  backups, synchronisation and result imports never happen.
+    ??? info "If other computers in the lab open InteLIS on this machine"
 
-- After the first scheduled run, confirm the schedule is alive: the file
-  `C:\wamp64\www\vlsm\var\.cron_heartbeat` must have a current timestamp.
-- Enter the Windows user password when prompted
+        `Require local` accepts only this machine. Replace it with the lab
+        network's address range, for example:
 
-## 4. Setting up Interfacing
+        ```apache
+        Require ip 192.168.1
+        ```
 
-- Open phpMyAdmin at <http://localhost/phpmyadmin>
-- Run these statements. Replace `interface@12345` with a password chosen for this
-  machine, because the value below is published in this guide, and replace
-  `192.168.1.50` with the address of the machine running the Interface Tool.
+        Use `Require all granted` only on a machine that cannot be reached from
+        outside the lab network. After the change, open InteLIS from a second
+        computer to confirm.
 
-  Scoping the account to that one address matters: `'interfaceadmin'@'%'` accepts
-  password attempts from every host that can reach MySQL, which on a lab network
-  includes any machine an instrument or a visitor plugs in.
+39. Select the WampServer tray icon, then **Restart All Services**.
 
-  ```sql
-  CREATE DATABASE `interfacing` CHARACTER SET utf8mb4
-  COLLATE utf8mb4_general_ci;
+## Initialize InteLIS
 
-  CREATE USER 'interfaceadmin'@'192.168.1.50' IDENTIFIED
-  WITH mysql_native_password BY 'interface@12345';
+40. In Command Prompt, run:
 
-  GRANT USAGE ON *.* TO 'interfaceadmin'@'192.168.1.50' REQUIRE NONE
-  WITH MAX_QUERIES_PER_HOUR 0
-  MAX_CONNECTIONS_PER_HOUR 0
-  MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
+    ```bat
+    cd C:\wamp64\www\vlsm
+    set PATH=C:\wamp64\bin\php\php8.4.x;%PATH%
+    php composer.phar post-install
+    ```
 
-  GRANT ALL PRIVILEGES ON `interfacing`.* TO 'interfaceadmin'@'192.168.1.50';
-  ```
+41. Answer the STS questions at the end:
 
-  Where the Interface Tool runs on this same machine, use
-  `'interfaceadmin'@'localhost'` throughout instead.
+    | Question | Answer |
+    | --- | --- |
+    | Is this STS URL correct? | Press Enter (Yes). |
+    | Enter STS URL (or press Enter to skip) | The STS address. Press Enter if the lab has no STS. |
+    | Number to select, text to filter | Type the number of this lab, then press Enter. Type part of the lab name to shorten the list. |
 
-- Import the interfacing database SQL file
-- Download and install the latest Interfacing executable
-- Log in with `admin` / `admin`
-- Configure the MySQL details and the instrument interface settings
-- Confirm the connection status before releasing results from instruments
+    InteLIS asks only the questions that apply. With a single lab on the STS,
+    it selects that lab without asking.
+
+42. Wait for `STS setup complete!`.
+
+    ??? info "If the lab has no STS"
+
+        After Enter at the STS question, the run ends with
+        `Setup complete. Configure STS URL before proceeding.` and Composer
+        reports an error code for `sts-setup`. Every earlier part of
+        `post-install` has finished. Continue with step 43.
+
+    ??? failure "If it prints `Cannot connect to STS at this URL`"
+
+        Check the address and the internet connection, then type the address
+        again. If it still fails, run `php composer.phar sts-setup` later to
+        repeat only the STS questions.
+
+    ??? failure "If it prints `Metadata refresh failed`"
+
+        The STS did not send the lab list. Check the internet connection, then
+        run `php composer.phar sts-setup`.
+
+## Complete setup in the browser
+
+43. Open <http://vlsm>. The setup page opens.
+44. Under **Database Setup**, check the values match `config.production.php`.
+    Select **Next**.
+45. Fill in **Instance Setup**, then select **Next**:
+
+    | Field | Value |
+    | --- | --- |
+    | Instance type | **LIS with Remote Ordering Enabled** if the lab sends results to an STS. **Standalone (no Remote Ordering)** if it does not. |
+    | STS URL | The STS address. It is filled in from `config.production.php`. |
+    | Testing lab | The lab chosen in step 41. If the list is empty, select the refresh button next to the STS URL. |
+    | Choose Modules to Enable | The tests this lab runs. |
+    | Country of installation | The country the lab is in. |
+    | Timezone | The lab's time zone. |
+    | Choose System Language | The language of the screens. |
+
+46. Fill in **Admin Setup** with the email, full name, login ID and password of
+    the lab's first administrator. Select **Finish**.
+47. Log in with that administrator account.
+48. If the lab uses an STS, select **Force Remote Sync** in the page footer and
+    wait for it to finish.
+
+**Check:** the dashboard opens, and the page footer shows the version, for
+example `v5.7.72`.
+
+## Register the system administrator
+
+49. Open <http://vlsm/system-admin>. The **Register new System Admin** page
+    opens.
+50. Open `C:\wamp64\www\vlsm\var\secret-key.txt` in the text editor. Copy the
+    key.
+51. Paste the key into **Secret Key**. Fill in the user name, email, login ID
+    and password. Select **Submit**.
+52. Sign out of the system admin area.
+
+## Schedule background tasks
+
+53. Open **Task Scheduler** and select **Create Task**. Name it
+    `InteLIS Task`.
+54. On the **General** tab, select **Run whether user is logged on or not**.
+55. On the **Triggers** tab, create a trigger:
+
+    - Select **Daily**.
+    - Select **Repeat task every** and set it to 1 minute, for a duration of
+      **Indefinitely**.
+    - Select **Stop task if it runs longer than** and keep 3 days.
+
+56. On the **Actions** tab, create an action:
+
+    | Field | Value |
+    | --- | --- |
+    | Program/script | `C:\wamp64\bin\php\php8.4.x\php.exe` |
+    | Add arguments | `C:\wamp64\www\vlsm\vendor\bin\crunz schedule:run` |
+    | Start in | `C:\wamp64\www\vlsm` |
+
+    **Start in** is required. Without it, the task runs but does nothing: no
+    backups, no synchronisation and no result imports.
+
+57. Select **OK** and enter the Windows password when asked.
+
+**Check:** after two minutes, the file `C:\wamp64\www\vlsm\var\.cron_heartbeat`
+shows a modified time from the last minute or two.
+
+## Connect instruments
+
+58. If the lab connects instruments, follow
+    [Connect an Instrument](setting-up-interfacing-tool.md).
+
+    ??? info "Differences on Windows"
+
+        - `intelis interface setup` does not exist on Windows. Where the guide
+          offers it, use its steps for doing the same work by hand.
+        - Create the `interfacing` database by importing
+          `C:\wamp64\www\vlsm\sql\interface-init.sql` in phpMyAdmin.
+        - Run the guide's SQL in phpMyAdmin's **SQL** tab.
+        - Edit `C:\wamp64\www\vlsm\configs\config.production.php` instead of
+          the Ubuntu path.
+        - Skip the Ubuntu-only commands: `nano`, `setfacl`, `ufw` and
+          `systemctl`.

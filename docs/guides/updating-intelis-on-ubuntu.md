@@ -1,132 +1,227 @@
-# Updating InteLIS on Ubuntu 22.04 or above (only Ubuntu LTS)
+# Updating InteLIS on Ubuntu
 
-This guide updates an existing InteLIS installation to the current release.
+Update an InteLIS lab machine to the current release.
 
-**Prerequisites:** Ubuntu 22.04 LTS or a later LTS release. An account with `sudo` rights. An internet connection.
+The machine must run **Ubuntu 22.04 LTS or later**, have an internet
+connection, and have an account with `sudo` rights. A machine still on 22.04
+should move to 24.04 LTS with
+[Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md).
 
-Ubuntu 22.04 reaches the end of standard support in April 2027. Machines still on 22.04 should move to 24.04 LTS or later; see [Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md).
+**Choose the situation that fits, then follow its steps from top to bottom.**
+To tell which one fits, open a terminal, type `intelis` and press Enter:
 
-## Before updating
+- A menu headed **InteLIS** with eight numbered options means the first
+  situation. Type `8` and press Enter to leave the menu.
+- `command not found`, or a long list of Composer commands, means the second.
 
-Two checks, in this order, before the update command.
+=== "`intelis` shows a menu"
 
-**1. Install the current commands, once per machine.** This installs the current
-`intelis` and `intelis-update` straight from master, and nothing else. It is safe
-to run on a machine that is already current.
+    ### Before the update
 
-```bash
-sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/deforay/intelis/master/scripts/bootstrap.sh)"
-```
+    1. Tell the lab that InteLIS may not respond for a few minutes.
+    2. Open a terminal on the InteLIS machine and take a fresh backup:
 
-!!! warning "Required on any machine last updated before August 2026"
+        ```bash
+        intelis backup
+        ```
 
-    On those, `/usr/local/bin/intelis` is still a plain composer wrapper, so
-    `intelis update` runs `composer update`, rewriting `composer.lock` to whatever
-    upstream released today and installing the development toolchain onto a server
-    that runs a lab. Running the update before this line is what causes that, which
-    is why this step comes first. The line above replaces the wrapper, after which
-    `intelis update` is correct.
+        Enter the account password if asked. Wait for the line
+        `Database and settings saved on this machine`.
 
-    Note it is `bash -c "$(curl …)"`, not `curl … | bash`. Piping makes the script
-    bash's standard input, which is harmless for the bootstrap but ruins the two
-    interactive scripts it installs.
+        ??? info "If it asks `Set up off-machine backups now?`"
 
-**2. Confirm a current backup exists.** The update takes a code snapshot it can
-roll back to, but that snapshot does not cover the database, and migrations are
-not reversed by a rollback.
+            Press Enter to answer No and continue with the update. Set up
+            off-machine backups later with `intelis backup setup`.
 
-```bash
-intelis backup
-ls -lt /var/www/intelis/backups/db | head
-```
+        ??? failure "If it prints `The local backup did not finish`"
 
-The listing must show a dump from today.
+            Do not update. If MySQL is down, follow
+            [MySQL will not start](mysql-will-not-start.md), then repeat step 2.
+            Otherwise, send the whole output to support.
 
-## Update
+    ### Update
 
-Open a terminal on the InteLIS machine and run:
+    3. Start the update:
 
-```bash
-intelis update
-```
+        ```bash
+        intelis update
+        ```
 
-That is the whole procedure. It fetches the current release, takes a snapshot it
-can roll back to, puts the new files in place, applies database migrations, and
-restarts the web server. Leave the window open until it finishes.
+        Enter the account password if asked.
 
-The update prompts for the MySQL password and the STS URL. Enter both correctly.
-Wrong entries can make the update fail.
+        ??? info "If it asks for the MySQL root password"
 
-## What a lab upgrades to
+            The configuration file holds no MySQL password. Enter the MySQL root
+            password of this machine.
 
-Labs follow the `stable` branch, not the tip of `master`. CI fast-forwards
-`stable` to any commit on `master` that passed the Verify workflow, so
-publishing is automatic and a commit that fails a check reaches no installation.
+            If it asks for the password twice and then for the **Remote STS URL**,
+            the configuration file was missing or damaged and the update is
+            rebuilding it. Enter the MySQL root password twice. Then enter the
+            STS address the lab uses, or press Enter if the lab has no STS.
 
-Verify is what "stable" means here, and it is worth knowing exactly how much it
-claims: every PHP file parses, the DI container compiles, the unit tests pass,
-and a fresh install seeded from `sql/init.sql` migrates all the way up to the
-current version. Nothing runs against real data and no browser opens.
+    4. Wait. Keep the terminal window open until the last line reads
+       `Total time:`.
 
-There is no publish command to remember. A fix pushed to `master` is in labs on
-their next update, usually within a few minutes of the build going green.
+        ??? info "If it asks `Do you want to run maintenance scripts?`"
 
-To hold something back, start its commit subject with `[hold]` and `stable`
-skips it. It has to be the start of the subject, so a commit that merely
-mentions the marker still ships. To publish a specific commit by hand, run the
-Publish workflow from the Actions tab.
+            Press Enter to answer No. After 30 seconds without an answer, the
+            update continues with No.
 
-`stable` only ever fast-forwards. It is never forced, so it cannot be moved back
-onto code an installation has already left behind; un-publishing means shipping
-a revert.
+        ??? failure "If the summary shows `Failed to update`"
 
-### Version numbers
+            The update restores the previous code where it can. Do not repair the
+            machine by hand.
 
-A version number is the schema and feature level, which is what `sc_version`
-records and what preflight compares. It does not control whether an installation
-receives the code: labs follow the `stable` branch, and a push is what ships.
-A version is bumped when there is real DDL or a milestone worth naming, and
-forgetting it costs an accurate version number, not delivery.
+            1. Run `intelis check`.
+            2. Send its whole output to support, together with the newest
+               `/tmp/intelis-upgrade-….log` file.
 
-Bumping is a maintainer task performed in the repository, not on a lab machine,
-so it is out of scope for this guide.
+            Running `intelis update` again is safe.
 
-### Pinning a single machine
+    ### Check the update
 
-`INTELIS_TRACK` overrides what one installation follows:
+    5. Read the **Post-Upgrade Check** near the end of the output. Its last line
+       must show `0 failed`.
 
-| Value | Effect |
-|-------|--------|
-| unset / `latest` | `stable` (default) |
-| `stable` | the same thing, named explicitly |
-| `master` | branch tip, unverified, for hotfixing one lab ahead of everyone |
-| `v5.7.1` | pinned to an exact release tag |
+        ??? failure "If a line starts with `WARN` or `FAIL`"
 
-It has to be set on the command that runs the update, not exported beforehand:
+            Each line prints the command that fixes it. Type that command exactly
+            as printed, then run `intelis check`. If a `FAIL` line remains, send
+            the whole output of `intelis check` to support.
 
-```bash
-sudo INTELIS_TRACK=master intelis update
-```
+    6. Open InteLIS in the browser and log in.
+    7. Check the page footer. It shows the version followed by a short commit
+       code in brackets, for example `v5.7.72 (22928fe)`. The code matches the
+       start of the second code on the `Updated commit … -> …` line of the
+       update output.
 
-Exporting it in the shell and then running the update does not work on its own.
-`sudo` starts the update with a clean environment, so the variable is dropped on
-the way to root. `intelis update` now carries it across that boundary if it is
-set, but anything invoking `intelis-update` or `upgrade.sh` directly still needs
-it on the command line.
+        If the update printed `Already at commit`, the machine was already
+        current and the footer is unchanged.
 
-If `stable` does not exist, a lab falls back to the newest release tag, and then
-to `master`, so an installation is never stuck because a ref is missing.
+=== "`intelis` not found, or shows Composer"
 
-## Before and after
+    ### Before the update
 
-| When | Do this |
-| --- | --- |
-| Before | Check backups are current: `intelis backup status` |
-| Before | Tell the lab. Pages may not load for a short spell. |
-| After | Run `intelis check`. Every line should say PASS. |
-| After | Log in and open one page. |
-| After | Check the version in the page footer has changed. |
+    1. Tell the lab that InteLIS may not respond for a few minutes.
+    2. Open a terminal on the InteLIS machine and install the current `intelis`
+       and `intelis-update` commands:
 
-If the update fails, it keeps its snapshot and reports what went wrong. Do not
-repair the machine by hand. Run `intelis check` and send the whole output to
-support. Re-running `sudo intelis-update` is safe.
+        ```bash
+        sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/deforay/intelis/master/scripts/bootstrap.sh)"
+        ```
+
+        Type the command exactly as shown, with `bash -c` and the quotes. Wait
+        for `Done. This machine's commands are current.`
+
+        ??? info "If `curl` is not installed"
+
+            Use `wget` instead:
+
+            ```bash
+            sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/deforay/intelis/master/scripts/bootstrap.sh)"
+            ```
+
+        ??? failure "If it prints `Could not download` or `is not a script`"
+
+            The machine cannot reach GitHub, or a network portal intercepted the
+            download. Fix the internet connection, then repeat step 2.
+
+    3. Take a fresh backup:
+
+        ```bash
+        intelis backup
+        ```
+
+        Enter the account password if asked. Wait for the line
+        `Database and settings saved on this machine`.
+
+        ??? info "If it asks `Set up off-machine backups now?`"
+
+            Press Enter to answer No and continue with the update. Set up
+            off-machine backups later with `intelis backup setup`.
+
+        ??? failure "If it prints `The local backup did not finish`"
+
+            If MySQL is down, follow [MySQL will not start](mysql-will-not-start.md),
+            then repeat step 3.
+
+            On an installation too old to have the backup command, export the
+            database with this instead:
+
+            ```bash
+            cd ~ && wget -O db-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/db-backup.sh
+            sudo bash db-backup.sh
+            ```
+
+            - Enter the MySQL username and password.
+            - Choose the `vlsm` database, and `interfacing` if the lab uses the
+              interfacing tool.
+            - When asked for the location, enter `/var/www/intelis/backups/db`.
+              On older installs, enter `/var/www/vlsm/backups/db`.
+            - Wait for `Script completed`. An export stopped part way still
+              leaves a file, and restoring it silently loses the newest records.
+
+    ### Update
+
+    4. Start the update:
+
+        ```bash
+        intelis update
+        ```
+
+        Enter the account password if asked.
+
+        ??? info "If it asks for the MySQL root password"
+
+            The configuration file holds no MySQL password. Enter the MySQL root
+            password of this machine.
+
+            If it asks for the password twice and then for the **Remote STS URL**,
+            the configuration file was missing or damaged and the update is
+            rebuilding it. Enter the MySQL root password twice. Then enter the
+            STS address the lab uses, or press Enter if the lab has no STS.
+
+    5. Wait. Keep the terminal window open until the last line reads
+       `Total time:`.
+
+        ??? info "If it asks `Do you want to run maintenance scripts?`"
+
+            Press Enter to answer No. After 30 seconds without an answer, the
+            update continues with No.
+
+        ??? failure "If the summary shows `Failed to update`"
+
+            The update restores the previous code where it can. Do not repair the
+            machine by hand.
+
+            1. Run `intelis check`.
+            2. Send its whole output to support, together with the newest
+               `/tmp/intelis-upgrade-….log` file.
+
+            Running `intelis update` again is safe.
+
+    ### Check the update
+
+    6. Read the **Post-Upgrade Check** near the end of the output. Its last line
+       must show `0 failed`.
+
+        ??? failure "If a line starts with `WARN` or `FAIL`"
+
+            Each line prints the command that fixes it. Type that command exactly
+            as printed, then run `intelis check`. If a `FAIL` line remains, send
+            the whole output of `intelis check` to support.
+
+    7. Open InteLIS in the browser and log in.
+    8. Check the page footer. It shows the version followed by a short commit
+       code in brackets, for example `v5.7.72 (22928fe)`. The code matches the
+       start of the second code on the `Updated commit … -> …` line of the
+       update output.
+
+        If the update printed `Already at commit`, the machine was already
+        current and the footer is unchanged.
+
+    9. Type `intelis` and press Enter. The menu headed **InteLIS** appears. From
+       now on, follow the first situation on this page.
+
+Which code a lab receives, and how it is published, is described in
+[Release tracks](../release-tracks.md).

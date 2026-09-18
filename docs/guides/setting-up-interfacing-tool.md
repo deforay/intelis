@@ -1,326 +1,649 @@
 # Connect an Instrument to InteLIS
 
-This guide connects a laboratory analyzer to InteLIS through the Instrument
-Interfacing Tool, so that results arrive without anybody typing them.
+Send an analyzer's results into InteLIS through the Interfacing Tool, so nobody
+types them in.
 
-## How results travel
+InteLIS must already be installed on the lab's Ubuntu machine. The analyzer must
+be connected to the lab network.
 
-```text
-Analyzer  ──TCP (ASTM or HL7)──►  Interfacing Tool  ──►  shared database  ──►  InteLIS
-```
+**Choose the situation that fits, then follow its steps from top to bottom.**
 
-The Interfacing Tool is a desktop application. It listens for the analyzer,
-stores every result it receives in its own local SQLite database, and can
-additionally write to a MySQL database. InteLIS reads whichever of those two it
-has been given, every minute, and attaches each result to the matching test
-request.
+=== "Tool on this machine"
 
-Two consequences worth knowing before starting:
+    Use this when the Interfacing Tool runs on the InteLIS machine itself.
 
-- The tool has to be **running** for results to arrive. It is an application on a
-  desktop, not a service. Nothing is lost while it is closed, because the
-  analyzer holds its own results, but nothing reaches InteLIS either.
-- Results are never sent from InteLIS to the analyzer. The traffic is one way.
+    ### Install the Interfacing Tool
 
-## The only real decision: where the tool runs
+    1. Open a terminal on the InteLIS machine and download the installer:
 
-Everything else in this guide follows from this one choice.
+        ```bash
+        cd ~ && wget -O install-interfacing.sh "https://raw.githubusercontent.com/deforay/intelis-interfacing/master/scripts/install.sh?v=$(date +%s)"
+        ```
 
-| | Tool on the InteLIS machine | Tool on a separate machine |
-|---|---|---|
-| InteLIS reads | the tool's SQLite file | a MySQL database over the network |
-| MySQL changes needed | none | a dedicated user, a bind address, a firewall rule |
-| Instrument activity and usage reporting | not available | available |
-| Setup effort | one command | one command, and a firewall rule to approve |
+    2. Run it, and type the password when `sudo` asks for it:
 
-**Choose the InteLIS machine whenever the analyzer can reach it.** It needs no
-database exposed to the network, and it is the shorter path by a wide margin.
+        ```bash
+        bash install-interfacing.sh
+        ```
 
-Choose a separate machine when the analyzer must connect to a computer that is
-not the InteLIS server, most often because of where the analyzer physically
-sits, or because the instrument's software only runs on Windows.
+        ??? info "To install a particular version"
 
-## 1. Install the Interfacing Tool
+            Add the version at the end:
 
-On Ubuntu, download the installer and run it. Do not pipe it into a shell: it
-calls `sudo`, and a piped run cannot answer the password prompt.
+            ```bash
+            bash install-interfacing.sh --tag v4.2.1
+            ```
 
-```bash
-cd ~
-wget -O install-interfacing.sh "https://raw.githubusercontent.com/deforay/vlsm-interfacing/master/scripts/install.sh?v=$(date +%s)"
-bash install-interfacing.sh
-```
+    ### Add the analyzer in the tool
 
-To install a specific version rather than the latest:
+    3. Open the Interfacing Tool from the applications menu.
+    4. Sign in with Login ID `admin` and password `admin`. The first sign-in
+       opens **Settings**.
+    5. Under **System**, set **Auto-connect on startup** to **Yes**. With **No**,
+       the tool stops listening after every restart until somebody signs in.
+    6. Under **Instruments**, select **+ Add Instrument** and fill in these fields:
 
-```bash
-bash install-interfacing.sh --tag v4.0.3
-```
+        | Field | Value |
+        | --- | --- |
+        | Connection Mode | **TCP Server** if the analyzer connects to this machine. **TCP Client** if this machine connects to the analyzer. The analyzer's manual says which. |
+        | Communication Protocol | **ASTM**, **ASTM (with checksum)** or **HL7**, as set on the analyzer. |
+        | IP Address | TCP Server: this machine's address on the lab network. TCP Client: the analyzer's address. |
+        | Port Number | The port set on the analyzer. |
+        | Analyzer Type | The analyzer model. |
+        | Instrument Name/Code | A name for this analyzer. Step 15 gives InteLIS the same name. |
 
-On Windows, download the installer from the
-[releases page](https://github.com/deforay/vlsm-interfacing/releases) and run
-it.
+        ??? info "If the lab has more than one analyzer"
 
-## 2. Add the analyzer in the tool
+            Add each one here with its own port. One Interfacing Tool serves
+            them all.
 
-Open the tool and add the instrument in its settings. The tool's
-[User Guide](https://github.com/deforay/vlsm-interfacing/blob/master/USER_GUIDE.md)
-covers the fields per analyzer model. What matters for every instrument:
+    7. Select **Save Settings**.
+    8. Run one sample on the analyzer. Check that it appears under the received
+       results on the tool's console.
 
-- **Protocol**: ASTM or HL7, as the analyzer's manual specifies
-- **Connection mode**: TCP Server if the analyzer connects to this computer, TCP
-  Client if this computer connects to the analyzer
-- **Port**, as configured on the analyzer
+        ??? failure "If the result does not appear in the tool"
 
-Turn on **auto-connect on startup**. Without it, a reboot leaves the tool open
-but not listening, and results stop arriving with nothing visibly wrong.
+            Read the log on the instrument's tab. `Server bound and listening on`
+            means the tool is waiting and the analyzer has not connected. Follow
+            the tool's own
+            [troubleshooting guide](https://deforay.github.io/intelis-interfacing/guide/troubleshooting/).
 
-Before configuring InteLIS, confirm the tool itself is receiving. Run one sample
-on the analyzer and watch it appear in the tool's results table. If it does not
-arrive here, no amount of InteLIS configuration will help.
+            Do not carry on until the tool shows the result. InteLIS can only
+            import what the tool holds.
 
-## 3. Point InteLIS at the results
+    ### Connect InteLIS to the tool
 
-```bash
-sudo intelis interface setup
-```
+    9. In the terminal, run:
 
-It asks two questions, where the tool stores its results, and where the tool
-runs, and does the rest: creates the `interfacing` database and its tables,
-creates the MySQL account the tool connects with, writes the settings into
-`configs/config.production.php`, proves the connection works, and prints the
-host, port, database, username and password to type into the tool's MySQL
-settings.
+        ```bash
+        sudo intelis interface setup
+        ```
 
-There is nothing to type into a configuration file, and nothing to remember
-about switching interfacing on, which is the step most often missed.
+        ??? info "If it shows **What is configured now**"
 
-`sudo intelis interface` runs the same setup by itself when interfacing has not
-been configured yet, and imports results once it has. So an operator who knows
-only the one command reaches the right place either way.
+            Interfacing is set up already. To replace it, answer **Yes** to
+            `Set interfacing up again, replacing this?`. To leave it as it is,
+            press Enter.
 
-To change any of it later, run `sudo intelis interface setup` again. It shows
-what is configured now before it changes anything.
+        ??? failure "If it stops with `The InteLIS database is not reachable`"
 
-## Setting it up by hand
+            Run `sudo intelis fix-database`. Then repeat step 9.
 
-Skip this if step 3 worked; step 4 is next. What follows is the same work done
-by hand, for a machine with no `intelis` command yet, or to see what was
-written.
+        ??? failure "If `intelis` is not recognised"
 
-Both paths edit `configs/config.production.php` in the InteLIS installation
-directory.
+            The install is older. Either
+            [update InteLIS](updating-intelis-on-ubuntu.md) and repeat step 9,
+            or set it up by hand:
 
-```bash
-sudo nano /var/www/intelis/configs/config.production.php
-```
+            1. Open MySQL:
 
-### Path A, the tool runs on the InteLIS machine
+                ```bash
+                sudo mysql
+                ```
 
-Set the path to the tool's SQLite file, and switch interfacing on:
+            2. Create the database and the account. Choose a long password in
+               place of `A-LONG-PASSWORD`:
 
-```php
-$systemConfig['interfacing']['enabled'] = true;
-$systemConfig['interfacing']['sqlite3Path'] = '/home/OPERATOR/.config/vlsm-interfacing/interface.db';
-```
+                ```sql
+                CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+                CREATE USER 'interfacing'@'localhost' IDENTIFIED BY 'A-LONG-PASSWORD';
+                CREATE USER 'interfacing'@'127.0.0.1' IDENTIFIED BY 'A-LONG-PASSWORD';
+                GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'localhost';
+                GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'127.0.0.1';
+                EXIT;
+                ```
 
-Replace `OPERATOR` with the account that runs the tool. On Windows the same file
-lives at `%APPDATA%\vlsm-interfacing\interface.db`.
+            3. Open the InteLIS settings file. On older installs, the folder
+               is `/var/www/vlsm`:
 
-The file does not exist until the tool has run at least once, so complete step 2
-first. InteLIS reads it as the web server account, so that account must be able
-to reach it:
+                ```bash
+                sudo nano /var/www/intelis/configs/config.production.php
+                ```
 
-```bash
-sudo -u www-data test -r /home/OPERATOR/.config/vlsm-interfacing/interface.db && echo readable
-```
+            4. Set these lines, with the same password:
 
-If that prints nothing, the home directory is too restrictive. Grant traversal
-on the directories above the file rather than loosening the file itself:
+                ```php
+                $systemConfig['interfacing']['enabled'] = true;
+                $systemConfig['interfacing']['database']['host'] = '127.0.0.1';
+                $systemConfig['interfacing']['database']['username'] = 'interfacing';
+                $systemConfig['interfacing']['database']['password'] = 'A-LONG-PASSWORD';
+                $systemConfig['interfacing']['database']['db'] = 'interfacing';
+                $systemConfig['interfacing']['database']['port'] = 3306;
+                ```
 
-```bash
-sudo setfacl -m u:www-data:x /home/OPERATOR /home/OPERATOR/.config /home/OPERATOR/.config/vlsm-interfacing
-sudo setfacl -m u:www-data:r /home/OPERATOR/.config/vlsm-interfacing/interface.db
-```
+            5. Save with **Ctrl+O**, then close with **Ctrl+X**.
 
-Path A is now complete. Skip to step 4.
+            Go on to step 12, and enter host `127.0.0.1`, port `3306`, database
+            `interfacing`, username `interfacing` and that password. The tool
+            creates its tables the first time it connects.
 
-### Path B, the tool runs on a separate machine
+    10. Answer the questions:
 
-The tool writes to a MySQL database on the InteLIS machine, so that machine has
-to accept a connection from the tool's machine. Grant exactly that, and nothing
-wider.
+        | Question | Answer |
+        | --- | --- |
+        | How does the Interfacing Tool store the results InteLIS should read? | Press Enter. **MySQL on this machine** is already selected. |
+        | MySQL port | Press Enter (`3306`). |
+        | Database name | Press Enter (`interfacing`). |
+        | Where is the Interfacing Tool installed? | Press Enter. **On this machine** is already selected. |
+        | Enter a MySQL administrator account to use? | Asked only when setup finds no account of its own. Press Enter (Yes), then type the MySQL `root` username and password. |
+        | Name for the account the tool and InteLIS will use | Press Enter (`interfacing`). |
+        | Reuse it, and set its password to the one chosen next? | Asked only when the account exists already. Answer **Yes** if an earlier interfacing setup made it. Otherwise press Enter (No) and choose another name. |
+        | Password for that account | Press Enter. **Use a generated password** is already selected. |
 
-**Create a dedicated database and user.** Not `root`, and not open to every host.
-Substitute the tool machine's address for `TOOL_IP` and choose a long password.
+        ??? info "To have InteLIS read the tool's SQLite file instead"
 
-```bash
-sudo mysql
-```
+            This is the simplest route, but it carries results only. Instrument
+            activity and daily usage reporting need MySQL.
 
-```sql
-CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4;
+            1. At the first question, choose **The tool's own SQLite file on this machine**.
+            2. At `Which file?`, press Enter. The tool's file is already
+               selected. If no file is found, open the tool once, then repeat
+               step 9.
+            3. If asked `Grant www-data just enough access to read it?`, press
+               Enter (Yes).
 
-CREATE USER 'interfacing'@'TOOL_IP' IDENTIFIED BY 'A-LONG-PASSWORD-HERE';
-GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'TOOL_IP';
+            Setup creates no database and no account on this route. Do step 11,
+            then skip steps 12 to 14 and go on to step 15.
 
-CREATE USER 'interfacing'@'localhost' IDENTIFIED BY 'A-LONG-PASSWORD-HERE';
-GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'localhost';
+        ??? info "If the interfacing database is on another server"
 
-FLUSH PRIVILEGES;
-```
+            Setup creates nothing on another server. The database and its
+            account must exist there already.
 
-Two accounts, not one. MySQL treats `'interfacing'@'TOOL_IP'` and
-`'interfacing'@'localhost'` as different accounts, and both connect: the tool
-from its own machine, InteLIS from this one. Creating only the tool's leaves
-InteLIS locked out of the database it is about to be told to read.
+            1. At the first question, choose **MySQL on another server**.
+            2. Enter the server's address, the MySQL port and the database name.
+            3. Enter the username and password of the account InteLIS connects
+               as.
 
-Privileges are wide within that one database because the tool's own migrations
-add columns to its tables, and narrow outside it: nothing else on the server is
-reachable with this account.
+            Setup checks the connection and looks for the tool's `orders`
+            table. In step 12, enter that server's details, not the values
+            below.
 
-If the tool reports that it cannot authenticate, its MySQL client is older than
-this server's default password plugin. Give the account the older one:
+    11. Wait for `interfacing is now switched on`. Setup then prints a table
+        under **Enter these in the Interfacing Tool**. Keep the terminal open.
 
-```sql
-ALTER USER 'interfacing'@'TOOL_IP'
-  IDENTIFIED WITH mysql_native_password BY 'A-LONG-PASSWORD-HERE';
-```
+        ??? failure "If it prints **Still to do**"
 
-**Let MySQL answer on the local network.** Edit its configuration:
+            Run each command it lists, in order. If it says `This MySQL no
+            longer offers mysql_native_password`, the tool may fail to connect
+            in step 13. Contact support with the tool's version.
 
-```bash
-sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
-```
+    ### Enter the database in the tool
 
-Set the bind address to the InteLIS machine's own address on the lab network —
-not `0.0.0.0`, which offers the database to every network the machine is
-attached to:
+    12. In the tool, open **Settings**, then **MySQL**. Enter the values setup
+        printed:
 
-```ini
-bind-address = 192.168.1.10
-```
+        | Printed setting | Tool field |
+        | --- | --- |
+        | Host | **MySQL Host** |
+        | Port | **MySQL Port** |
+        | Database | **Database Name** |
+        | Username | **Database User** |
+        | Password | **Database Password** |
 
-**Open the firewall to the tool's machine only:**
+    13. Select **Test Connection**.
 
-```bash
-sudo ufw allow from TOOL_IP to any port 3306 proto tcp
-```
+        ??? failure "If the tool cannot connect"
 
-Validate the MySQL configuration before restarting. A typo in the file edited
-above stops MySQL from starting again, which takes the laboratory database
-offline until it is found:
+            Compare each value with the printed table. The password is also
+            saved in `/var/www/intelis/configs/config.production.php`, on the
+            line with `['interfacing']['database']['password']`.
 
-```bash
-sudo mysqld --validate-config
-sudo systemctl restart mysql
-sudo systemctl status mysql
-```
+    14. Select **Save Settings**.
 
-Restart only after `--validate-config` reports no error, and confirm MySQL is
-listening on the intended address afterwards:
+    ### Register the analyzer in InteLIS
 
-```bash
-sudo ss -lntp | grep 3306
-```
+    15. Add the analyzer in InteLIS by following
+        [How to set up instruments and interfacing](../user-guides/admin-instruments.md).
+        Enter the tool's **Instrument Name/Code** as the **Machine Name**.
 
-**Tell InteLIS where that database is:**
+    ### Check a result arrives
 
-```php
-$systemConfig['interfacing']['enabled'] = true;
-$systemConfig['interfacing']['database']['host'] = 'localhost';
-$systemConfig['interfacing']['database']['username'] = 'interfacing';
-$systemConfig['interfacing']['database']['password'] = 'A-LONG-PASSWORD-HERE';
-$systemConfig['interfacing']['database']['db'] = 'interfacing';
-```
+    16. Run one sample on the analyzer, or re-send a finished result from the
+        analyzer's screen.
+    17. In the terminal, import it now rather than waiting a minute:
 
-**Then enter the same details in the tool**, in its MySQL settings, using the
-InteLIS machine's network address as the host.
+        ```bash
+        sudo intelis interface
+        ```
 
-## 4. Confirm interfacing is switched on
+        Expect the result counted:
 
-`$systemConfig['interfacing']['enabled'] = true;` is not decoration. The import
-jobs are only scheduled when it is true
-([`sys/cron/ScheduledTasks.php`](https://github.com/deforay/intelis/blob/master/sys/cron/ScheduledTasks.php)).
-With it left false, nothing runs, nothing fails, and nothing is written to any
-log, which looks exactly like a broken analyzer.
+        ```text
+        Connected to MySQL
+        # of records from MySQL : 1
+        Processing 1 filtered results from Interface Tool
+        ```
 
-This is the single most common reason a correctly configured interface delivers
-nothing.
+        On the SQLite route, the first two lines read `Connected to sqlite` and
+        `# of records from SQLITE3 : 1`.
 
-## 5. Confirm the scheduler is running
+        ??? failure "If it counts `0` records"
 
-The import is a scheduled task, so the schedule itself has to be active. It is
-installed with InteLIS, and this is what it looks like:
+            The result has not reached the database InteLIS reads.
 
-```bash
-sudo crontab -l | grep cron.sh
-```
+            - Check the tool's **Sync Status** column. If every result is
+              `Pending`, repeat step 13.
+            - Only final results and failed runs are read. A result the
+              analyzer has not finalised is left in the tool.
 
-Expect a line running `cron.sh` every minute, which is what `setup.sh` installs:
+        ??? failure "If it prints `Error while syncing interface results`"
 
-```
-* * * * * cd /var/www/intelis && ./cron.sh
-```
+            Open the newest file in `/var/www/intelis/var/logs` and search for
+            the error. Send it to support if it does not name a fix.
 
-Older machines may instead show a line calling `crunz schedule:run` directly.
-That form still runs the schedule, but it ignores the `var/cron-paused` marker
-that upgrades rely on, so replace it with the `cron.sh` line above.
+    18. Open the sample in InteLIS. Check that the result is there.
 
-Confirm the schedule is actually firing, rather than merely installed, by
-checking that the heartbeat is current:
+        ??? failure "If the result is counted but not in InteLIS"
 
-```bash
-ls -l /var/www/intelis/var/.cron_heartbeat
-```
+            The sample ID on the analyzer must match the sample code of a
+            registered request in InteLIS, character for character. Register
+            the request, or correct the ID on the analyzer, then repeat steps
+            16 to 18.
 
-If there is no entry at all, see [Maintenance scripts](maintenance.md).
+    19. Leave the tool running. InteLIS now imports results every minute.
 
-## 6. Verify a result actually arrives
+        ??? failure "If results arrive by hand but not on their own"
 
-Do not wait on the schedule the first time. Run the import by hand and read what
-it prints:
+            The scheduler is not running. Check it is installed:
 
-```bash
-cd /var/www/intelis
-sudo -u www-data php bin/interface.php
-```
+            ```bash
+            sudo crontab -l | grep cron.sh
+            ```
 
-It reports which sources it connected to and how many records it found in each,
-which tells the whole story at a glance:
+            Expect this line:
 
-```text
-Connected to sqlite
-# of records from SQLITE3 : 1
-```
+            ```text
+            * * * * * cd /var/www/intelis && ./cron.sh
+            ```
 
-Then open InteLIS and find the sample. A result that reached the tool and was
-counted here but is not visible in InteLIS almost always means the sample ID on
-the analyzer does not match a registered request.
+            If the line is missing, or calls `crunz` directly, see
+            [Maintenance scripts](maintenance.md). If the line is there, check
+            that this file's time is within the last minute:
 
-## Setting up additional machines
+            ```bash
+            ls -l /var/www/intelis/var/.cron_heartbeat
+            ```
 
-Do not repeat this for each analyzer. Configure one machine completely, then use
-the tool's **Export settings**, and **Import settings** on the others. Adjust
-only the instrument name and port per machine.
+=== "Tool on another computer"
 
-## If results do not arrive
+    Use this when the Interfacing Tool runs on a different computer from
+    InteLIS, such as a Windows computer beside the analyzer.
 
-Work down this list; it is ordered by how often each one is the cause.
+    ### Install the Interfacing Tool
 
-| Check | How |
-|---|---|
-| Interfacing is configured at all | `sudo intelis interface setup` prints what is configured now before changing anything |
-| Interfacing is switched on | `enabled` is `true` in `config.production.php` |
-| The tool is running and connected | Its console shows the instrument connected, not just the app open |
-| The tool received the result at all | It appears in the tool's own results table |
-| The scheduler is running | `sudo crontab -l \| grep crunz` |
-| InteLIS can read the source | Run step 6 by hand and read the record counts |
-| The sample ID matches | A registered request exists in InteLIS with exactly that ID |
+    1. On the tool's computer, open a terminal and download the installer:
 
-## What each path does and does not carry
+        ```bash
+        cd ~ && wget -O install-interfacing.sh "https://raw.githubusercontent.com/deforay/intelis-interfacing/master/scripts/install.sh?v=$(date +%s)"
+        ```
 
-Results arrive on both paths. Instrument activity and daily usage statistics are
-read only from the MySQL database, so Path A delivers results but no instrument
-reporting. For a lab whose purpose is getting results in, that is usually the
-right trade.
+        ??? info "If the tool's computer runs Windows"
+
+            Download the file ending in `-setup.exe` from the
+            [releases page](https://github.com/deforay/intelis-interfacing/releases)
+            and run it. Then go on to step 3.
+
+    2. Run it, and type the password when `sudo` asks for it:
+
+        ```bash
+        bash install-interfacing.sh
+        ```
+
+        ??? info "To install a particular version"
+
+            Add the version at the end:
+
+            ```bash
+            bash install-interfacing.sh --tag v4.2.1
+            ```
+
+    ### Add the analyzer in the tool
+
+    3. Open the Interfacing Tool from the applications menu.
+    4. Sign in with Login ID `admin` and password `admin`. The first sign-in
+       opens **Settings**.
+    5. Under **System**, set **Auto-connect on startup** to **Yes**. With **No**,
+       the tool stops listening after every restart until somebody signs in.
+    6. Under **Instruments**, select **+ Add Instrument** and fill in these fields:
+
+        | Field | Value |
+        | --- | --- |
+        | Connection Mode | **TCP Server** if the analyzer connects to this computer. **TCP Client** if this computer connects to the analyzer. The analyzer's manual says which. |
+        | Communication Protocol | **ASTM**, **ASTM (with checksum)** or **HL7**, as set on the analyzer. |
+        | IP Address | TCP Server: this computer's address on the lab network. TCP Client: the analyzer's address. |
+        | Port Number | The port set on the analyzer. |
+        | Analyzer Type | The analyzer model. |
+        | Instrument Name/Code | A name for this analyzer. Step 22 gives InteLIS the same name. |
+
+        ??? info "If the lab has more than one analyzer"
+
+            Add each one here with its own port. One Interfacing Tool serves
+            them all.
+
+    7. Select **Save Settings**.
+    8. Run one sample on the analyzer. Check that it appears under the received
+       results on the tool's console.
+
+        ??? failure "If the result does not appear in the tool"
+
+            Read the log on the instrument's tab. `Server bound and listening on`
+            means the tool is waiting and the analyzer has not connected. Follow
+            the tool's own
+            [troubleshooting guide](https://deforay.github.io/intelis-interfacing/guide/troubleshooting/).
+
+            Do not carry on until the tool shows the result. InteLIS can only
+            import what the tool holds.
+
+    9. Find this computer's address on the lab network, and write it down. On
+       Ubuntu, run `hostname -I` and take the first address. On Windows, run
+       `ipconfig` and take the **IPv4 Address**.
+
+        ??? info "If this computer's address changes after a restart"
+
+            Ask the network administrator to give it a fixed address first.
+            InteLIS admits the tool from this one address only. A new address
+            means repeating steps 10 to 21.
+
+    ### Connect InteLIS to the tool
+
+    10. On the InteLIS machine, open a terminal and run:
+
+        ```bash
+        sudo intelis interface setup
+        ```
+
+        ??? info "If it shows **What is configured now**"
+
+            Interfacing is set up already. To replace it, answer **Yes** to
+            `Set interfacing up again, replacing this?`. To leave it as it is,
+            press Enter.
+
+        ??? failure "If it stops with `The InteLIS database is not reachable`"
+
+            Run `sudo intelis fix-database`. Then repeat step 10.
+
+        ??? failure "If `intelis` is not recognised"
+
+            The install is older. Either
+            [update InteLIS](updating-intelis-on-ubuntu.md) and repeat step 10,
+            or set it up by hand:
+
+            1. Open MySQL:
+
+                ```bash
+                sudo mysql
+                ```
+
+            2. Create the database and the account. Put the address from step
+               9 in place of `TOOL_IP`, and a long password in place of
+               `A-LONG-PASSWORD`:
+
+                ```sql
+                CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+                CREATE USER 'interfacing'@'localhost' IDENTIFIED BY 'A-LONG-PASSWORD';
+                CREATE USER 'interfacing'@'127.0.0.1' IDENTIFIED BY 'A-LONG-PASSWORD';
+                CREATE USER 'interfacing'@'TOOL_IP' IDENTIFIED BY 'A-LONG-PASSWORD';
+                GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'localhost';
+                GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'127.0.0.1';
+                GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'TOOL_IP';
+                EXIT;
+                ```
+
+            3. Open the InteLIS settings file. On older installs, the folder
+               is `/var/www/vlsm`:
+
+                ```bash
+                sudo nano /var/www/intelis/configs/config.production.php
+                ```
+
+            4. Set these lines, with the same password:
+
+                ```php
+                $systemConfig['interfacing']['enabled'] = true;
+                $systemConfig['interfacing']['database']['host'] = '127.0.0.1';
+                $systemConfig['interfacing']['database']['username'] = 'interfacing';
+                $systemConfig['interfacing']['database']['password'] = 'A-LONG-PASSWORD';
+                $systemConfig['interfacing']['database']['db'] = 'interfacing';
+                $systemConfig['interfacing']['database']['port'] = 3306;
+                ```
+
+            5. Save with **Ctrl+O**, then close with **Ctrl+X**.
+            6. Open the firewall to the tool's computer only:
+
+                ```bash
+                sudo ufw allow from TOOL_IP to any port 3306 proto tcp
+                ```
+
+            Then do steps 14 to 17. For the `bind-address`, use this machine's
+            first address from `hostname -I`. In step 19, enter that address as
+            the host, port `3306`, database `interfacing`, username
+            `interfacing` and that password. The tool creates its tables the
+            first time it connects.
+
+    11. Answer the questions:
+
+        | Question | Answer |
+        | --- | --- |
+        | How does the Interfacing Tool store the results InteLIS should read? | Press Enter. **MySQL on this machine** is already selected. |
+        | MySQL port | Press Enter (`3306`). |
+        | Database name | Press Enter (`interfacing`). |
+        | Where is the Interfacing Tool installed? | **On another computer on the lab network**. |
+        | Address of the computer running the tool | The address from step 9. Do not enter `%`, which admits every computer. |
+        | Enter a MySQL administrator account to use? | Asked only when setup finds no account of its own. Press Enter (Yes), then type the MySQL `root` username and password. |
+        | Name for the account the tool and InteLIS will use | Press Enter (`interfacing`). |
+        | Reuse it, and set its password to the one chosen next? | Asked only when the account exists already. Answer **Yes** if an earlier interfacing setup made it. Otherwise press Enter (No) and choose another name. |
+        | Password for that account | Press Enter. **Use a generated password** is already selected. |
+        | Open port 3306 to the tool's address? | Asked only when the firewall is on and the port is closed. Press Enter (Yes). |
+
+        ??? info "If the interfacing database is on another server"
+
+            Setup creates nothing on another server. The database and its
+            account must exist there already, and must admit the tool's
+            computer.
+
+            1. At the first question, choose **MySQL on another server**.
+            2. Enter the server's address, the MySQL port and the database name.
+            3. Enter the username and password of the account InteLIS connects
+               as.
+
+            Setup checks the connection and looks for the tool's `orders`
+            table. Skip steps 13 to 18. In step 19, enter that server's
+            details, not the values below.
+
+    12. Wait for `interfacing is now switched on`. Setup then prints a table
+        under **Enter these in the Interfacing Tool**. Write the five values
+        down. The host is this machine's address on the lab network.
+
+    ### Let the tool's computer reach MySQL
+
+    13. Read the **Still to do** list under the table. If it has no line
+        starting `Set bind-address`, go on to step 18.
+    14. Open the MySQL settings file:
+
+        ```bash
+        sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+        ```
+
+    15. Change the `bind-address` line to the address the note gives, then save
+        with **Ctrl+O** and close with **Ctrl+X**. For example:
+
+        ```ini
+        bind-address = 192.168.1.10
+        ```
+
+        Do not use `0.0.0.0`. It offers the database to every network the
+        machine is attached to.
+
+    16. Check the file, then restart MySQL:
+
+        ```bash
+        sudo mysqld --validate-config && sudo systemctl restart mysql
+        ```
+
+        ??? failure "If `--validate-config` prints an error"
+
+            MySQL was not restarted. Open the file again, correct the line the
+            error names, and repeat step 16.
+
+        ??? failure "If MySQL will not start"
+
+            Follow [MySQL will not start](mysql-will-not-start.md), then come
+            back to step 17.
+
+    17. Check that MySQL listens on the lab address:
+
+        ```bash
+        sudo ss -lntp | grep 3306
+        ```
+
+        Expect the address from step 15, not `127.0.0.1`.
+
+    18. If **Still to do** says port 3306 is closed, run the `sudo ufw allow`
+        command it prints.
+
+    ### Enter the database in the tool
+
+    19. On the tool's computer, open **Settings**, then **MySQL**. Enter the
+        values setup printed:
+
+        | Printed setting | Tool field |
+        | --- | --- |
+        | Host | **MySQL Host** |
+        | Port | **MySQL Port** |
+        | Database | **Database Name** |
+        | Username | **Database User** |
+        | Password | **Database Password** |
+
+    20. Select **Test Connection**.
+
+        ??? failure "If the tool cannot connect"
+
+            - Compare each value with the printed table. The password is also
+              saved on the InteLIS machine in
+              `/var/www/intelis/configs/config.production.php`, on the line
+              with `['interfacing']['database']['password']`.
+            - On the InteLIS machine, repeat the check in step 17.
+            - On the InteLIS machine, run `sudo ufw status`. Port 3306 must be
+              allowed from the address in step 9.
+            - Run step 9 again on the tool's computer. If the address has
+              changed, repeat steps 10 to 20 with the new one.
+            - If **Still to do** said `This MySQL no longer offers
+              mysql_native_password`, contact support with the tool's version.
+
+    21. Select **Save Settings**.
+
+    ### Register the analyzer in InteLIS
+
+    22. Add the analyzer in InteLIS by following
+        [How to set up instruments and interfacing](../user-guides/admin-instruments.md).
+        Enter the tool's **Instrument Name/Code** as the **Machine Name**.
+
+    ### Check a result arrives
+
+    23. Run one sample on the analyzer, or re-send a finished result from the
+        analyzer's screen.
+    24. On the InteLIS machine, import it now rather than waiting a minute:
+
+        ```bash
+        sudo intelis interface
+        ```
+
+        Expect the result counted:
+
+        ```text
+        Connected to MySQL
+        # of records from MySQL : 1
+        Processing 1 filtered results from Interface Tool
+        ```
+
+        ??? failure "If it counts `0` records"
+
+            The result has not reached the database InteLIS reads.
+
+            - Check the tool's **Sync Status** column. If every result is
+              `Pending`, repeat step 20.
+            - Only final results and failed runs are read. A result the
+              analyzer has not finalised is left in the tool.
+
+        ??? failure "If it prints `Error while syncing interface results`"
+
+            Open the newest file in `/var/www/intelis/var/logs` and search for
+            the error. Send it to support if it does not name a fix.
+
+    25. Open the sample in InteLIS. Check that the result is there.
+
+        ??? failure "If the result is counted but not in InteLIS"
+
+            The sample ID on the analyzer must match the sample code of a
+            registered request in InteLIS, character for character. Register
+            the request, or correct the ID on the analyzer, then repeat steps
+            23 to 25.
+
+    26. Leave the tool running. InteLIS now imports results every minute.
+
+        ??? failure "If results arrive by hand but not on their own"
+
+            The scheduler is not running. Check it is installed:
+
+            ```bash
+            sudo crontab -l | grep cron.sh
+            ```
+
+            Expect this line:
+
+            ```text
+            * * * * * cd /var/www/intelis && ./cron.sh
+            ```
+
+            If the line is missing, or calls `crunz` directly, see
+            [Maintenance scripts](maintenance.md). If the line is there, check
+            that this file's time is within the last minute:
+
+            ```bash
+            ls -l /var/www/intelis/var/.cron_heartbeat
+            ```
+
+        ??? info "To add a second tool computer"
+
+            1. On the first tool computer, open **Settings**, then **Backup &
+               Restore**, and select **Export Settings**. Choose **Settings
+               and Credentials**.
+            2. Install the tool on the second computer, as in steps 1 to 4.
+            3. On the second computer, select **Import Settings** and open the
+               exported file.
+            4. Change the instrument names and ports to match the analyzers
+               beside the second computer.
+            5. On the InteLIS machine, repeat steps 10 to 12 with the second
+               computer's address. Answer **Yes** to replace the current setup,
+               and **Yes** to reuse the account. The first computer keeps its
+               own password and goes on working.
+            6. Open the firewall to the second computer. Setup does not offer
+               this once port 3306 is open to the first one:
+
+                ```bash
+                sudo ufw allow from SECOND_TOOL_IP to any port 3306 proto tcp
+                ```
+
+            7. On the second computer, enter the newly printed values as in
+               steps 19 to 21.
