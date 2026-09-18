@@ -444,9 +444,11 @@ choose what db "What should be copied back?" \
   "db:Just the database backups:The right choice for rebuilding a machine." \
   "all:Everything, including uploaded files and attachments:Much larger, and slower over a link."
 # shellcheck disable=SC2154  # set by `choose` above, via printf -v
+# "Just the database" still brings the config backups: they are small, and they
+# hold the old database password that opens an encrypted dump on a new machine.
 case "$what" in
-  db) SUBPATH="/backups/db" ;;
-  *)  SUBPATH="" ;;
+  db) SUBPATHS=("/backups/db:db" "/backups/config:config") ;;
+  *)  SUBPATHS=(":") ;;
 esac
 
 ask STAGING "Where should the files be put on this machine?" "/root/intelis-restore/${CHOSEN}"
@@ -457,19 +459,30 @@ mkdir -p "$STAGING"
 print header "Copying the backup to this machine"
 print info "This can take a while. Leave this window open."
 
-case "$SRC_MODE" in
-  ssh)
-    ssh_cmd="ssh -o ControlPath=${SSH_CONTROL} -o StrictHostKeyChecking=accept-new -p ${SSH_PORT}"
-    [ -n "$SSH_KEY" ] && [ -f "$SSH_KEY" ] && ssh_cmd="${ssh_cmd} -i ${SSH_KEY}"
-    rsync -rtLz --info=progress2 -e "$ssh_cmd" \
-      "${SSH_USER}@${SSH_HOST}:${SRC_DIR}${SUBPATH}/" "${STAGING}/" \
-      || { print error "The copy did not finish."; exit 1; }
-    ;;
-  *)
-    rsync -rtL --info=progress2 "${SRC_DIR}${SUBPATH}/" "${STAGING}/" \
-      || { print error "The copy did not finish."; exit 1; }
-    ;;
-esac
+for pair in "${SUBPATHS[@]}"; do
+  from="${pair%%:*}"; to="${pair#*:}"
+  mkdir -p "${STAGING}/${to}"
+  # Only the dumps are required. An old lab may have no config backups yet.
+  required=true
+  [ "$to" = "config" ] && required=false
+  case "$SRC_MODE" in
+    ssh)
+      ssh_cmd="ssh -o ControlPath=${SSH_CONTROL} -o StrictHostKeyChecking=accept-new -p ${SSH_PORT}"
+      [ -n "$SSH_KEY" ] && [ -f "$SSH_KEY" ] && ssh_cmd="${ssh_cmd} -i ${SSH_KEY}"
+      if ! rsync -rtLz --info=progress2 -e "$ssh_cmd" \
+          "${SSH_USER}@${SSH_HOST}:${SRC_DIR}${from}/" "${STAGING}/${to}/"; then
+        $required && { print error "The copy did not finish."; exit 1; }
+        print warning "No config backups were copied. An encrypted dump may need its key typed in."
+      fi
+      ;;
+    *)
+      if ! rsync -rtL --info=progress2 "${SRC_DIR}${from}/" "${STAGING}/${to}/"; then
+        $required && { print error "The copy did not finish."; exit 1; }
+        print warning "No config backups were copied. An encrypted dump may need its key typed in."
+      fi
+      ;;
+  esac
+done
 print success "Copied to ${STAGING}"
 
 # --- check the dumps are readable --------------------------------------------
@@ -477,8 +490,8 @@ print success "Copied to ${STAGING}"
 
 print header "Checking the database backups"
 
-DUMP_DIR="$STAGING"
-[ -z "$SUBPATH" ] && DUMP_DIR="${STAGING}/backups/db"
+DUMP_DIR="${STAGING}/db"
+[ "$what" = "all" ] && DUMP_DIR="${STAGING}/backups/db"
 
 if [ ! -d "$DUMP_DIR" ]; then
   print warning "No database backups were found in what was copied."
@@ -575,11 +588,11 @@ else
   print info "Install it and restore the backup in one step by running:"
   echo
   echo "    cd ~ && wget -O setup.sh \"https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=\$(date +%s)\" \\"
-  echo "      && sudo bash setup.sh --db latest:${DUMP_DIR}"
+  echo "      && sudo bash setup.sh --restore-from-backup-folder \"${DUMP_DIR}\""
   echo
   if find "$DUMP_DIR" -maxdepth 1 -name '*.gpg' | grep -q .; then
-    print info "These backups are encrypted. If the new machine uses the same MySQL root password as the old one,"
-    print info "the command above is all that is needed. If not, ask the STS administrator for a recovery token and add:"
+    print info "These backups are encrypted. Setup opens them with the old database password, read from the"
+    print info "config backups copied alongside. If that fails, ask the STS administrator for a recovery token and add:"
     echo
     echo "      --sts-url https://your-sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS"
     echo
