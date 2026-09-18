@@ -1,78 +1,117 @@
 # How to receive samples sent on a manifest
 
-Use this guide when a package of samples arrives from a health facility or
-another lab with a manifest. Activating the manifest registers every sample in
-the package at once, without retyping any of them.
+Register every sample in a package that arrives with a manifest, by entering
+the manifest code once.
 
-## Before starting
+The **Add Samples from Manifest** menu appears on a lab's own InteLIS (LIS). On
+the central system (STS), it appears only for users whose role has the
+**Testing Lab** access type. Health facility users never see it.
 
-- The package, physically checked against the manifest
-- The manifest code, printed on the manifest sheet in the package
-- The date the package arrived at the lab
-- Permission to add samples from a manifest
+Before starting:
 
-## Check the package first
+- The package and the printed manifest inside it
+- The date and time the package arrived at the lab
 
-Count the tubes against the manifest before touching InteLIS. Activation marks
-every sample on the manifest as received at the lab. Activating a manifest for a
-package that is short leaves samples recorded as received that are not in the
-building.
+The steps use viral load. For another test, open **Add Samples from Manifest**
+under that test's **Request Management** menu.
 
-If tubes are missing or damaged, activate the manifest anyway, then reject the
-affected samples individually. See
-[How to handle failed and held samples](failed-and-held-samples.md).
+**Choose the situation that fits, then follow its steps from top to bottom.**
 
-## Activate the manifest
+=== "Every tube arrived"
 
-1. Go to **HIV VIRAL LOAD → Request Management → Add Samples from Manifest**.
-2. Enter the manifest code in **Sample Manifest Code**.
-3. Select **Submit**.
+    1. Count the tubes against the printed manifest.
+    2. Go to **HIV VIRAL LOAD → Request Management → Add Samples from
+       Manifest**.
+    3. Type or scan the manifest code into **Enter Sample Manifest Code**.
+    4. Select **Submit**. The samples on the manifest appear in the table.
 
-InteLIS lists every sample on that manifest.
+        ??? failure "If a message appears instead of the samples"
 
-4. Check the listed count against the tubes on the bench.
-5. Set **Sample Received at Testing Lab** to the date the package arrived.
-6. Select **Activate Samples**.
+            | Message | Cause | What to do |
+            | --- | --- | --- |
+            | Please enter the Sample Manifest Code | The code field is empty | Enter the code, then select **Submit** |
+            | No manifest found with code … | No manifest with that code was sent to this lab | Check each character of the code. Ask the sender which lab the manifest names |
+            | Manifest … is registered to a different testing lab and cannot be activated here | The manifest names another lab | Ask the sender to move the manifest to this lab. See [Move manifests to another lab](send-samples-on-a-manifest.md) |
+            | Could not retrieve samples for manifest … Please try again or contact support | The LIS could not fetch the manifest from the STS | Check the internet connection, then select **Submit** again |
+            | Unable to sync manifest … | The STS did not answer | Select **Submit** again. If it repeats, contact support |
 
-InteLIS confirms with a message reading that the samples from the manifest have
-been activated.
+            The table shows **Please enter a valid Manifest Code to activate**
+            until a manifest loads. It is not an error.
 
-## What activation does
+    5. Check that the number of rows matches the tubes on the bench.
+    6. Set **Sample Received at Testing Lab** to the date and time the package
+       arrived.
+    7. Select **Activate Samples**. The message **Samples from this Manifest
+       have been activated** appears.
 
-Activation issues a lab Sample ID for every sample on the manifest that does not
-already have one, and records the received date entered in step 5.
+        ??? warning "Activate a manifest once"
 
-Until the manifest is activated, the samples are not available for testing. The
-health facility has already recorded them, but they carry the facility's own
-reference, not a lab Sample ID.
+            Activating the same manifest again overwrites the received date of
+            every sample on it, and clears the tested date of samples already
+            tested.
 
-The list shows two columns for this reason.
+    8. Add the samples to a batch. See
+       [How to batch samples for testing](batch-samples.md).
 
-| Column | Meaning |
-|---|---|
-| Sample ID | The identifier issued by this lab, used on the analyzer and on the report |
-| Remote Sample ID | The identifier the sending facility used, kept so the facility can trace the sample |
+=== "Tubes missing or damaged"
 
-## If the code is not accepted
+    1. Count the tubes against the printed manifest. Note the Sample IDs of the
+       missing or damaged tubes.
+    2. Go to **HIV VIRAL LOAD → Request Management → Add Samples from
+       Manifest**.
+    3. Type or scan the manifest code into **Enter Sample Manifest Code**.
+    4. Select **Submit**. The samples on the manifest appear in the table.
 
-| Message | Cause | What to do |
-|---|---|---|
-| Enter a valid manifest code | The code does not match any manifest | Check for a mistyped character. Confirm the manifest was sent to this lab |
-| Select when the samples were received | The received date is empty | Set the received date, then activate again |
-| No samples listed | The manifest has already been activated | Search for one of its Sample IDs in View Test Requests |
+        ??? failure "If a message appears instead of the samples"
 
-A manifest created on the central system reaches the lab on a schedule. A
-manifest generated minutes ago may not have arrived yet. Wait, then try again.
+            | Message | Cause | What to do |
+            | --- | --- | --- |
+            | Please enter the Sample Manifest Code | The code field is empty | Enter the code, then select **Submit** |
+            | No manifest found with code … | No manifest with that code was sent to this lab | Check each character of the code. Ask the sender which lab the manifest names |
+            | Manifest … is registered to a different testing lab and cannot be activated here | The manifest names another lab | Ask the sender to move the manifest to this lab. See [Move manifests to another lab](send-samples-on-a-manifest.md) |
+            | Could not retrieve samples for manifest … Please try again or contact support | The LIS could not fetch the manifest from the STS | Check the internet connection, then select **Submit** again |
+            | Unable to sync manifest … | The STS did not answer | Select **Submit** again. If it repeats, contact support |
+
+            The table shows **Please enter a valid Manifest Code to activate**
+            until a manifest loads. It is not an error.
+
+    5. Set **Sample Received at Testing Lab** to the date and time the package
+       arrived.
+    6. Select **Activate Samples**. Activation covers every sample on the
+       manifest, including the missing ones. The message **Samples from this
+       Manifest have been activated** appears.
+
+        ??? warning "Activate a manifest once"
+
+            Activating the same manifest again overwrites the received date of
+            every sample on it, and clears the tested date of samples already
+            tested.
+
+    7. Reject each missing or damaged sample on its own record. See
+       [How to handle failed and held samples](failed-and-held-samples.md).
+    8. Tell the sender which samples were rejected, so they can collect again.
+    9. Add the remaining samples to a batch. See
+       [How to batch samples for testing](batch-samples.md).
 
 ## Confirm it worked
 
-Go to **HIV VIRAL LOAD → Request Management → View Test Requests** and search on
-the manifest code.
+1. Go to **HIV VIRAL LOAD → Request Management → View Test Requests**.
+2. Filter on the manifest code.
 
-Every sample from the package appears with a Sample ID and the status **Sample
-Registered at Testing Lab**.
+Every sample from the package has a Sample ID and the status **Sample Registered
+at Testing Lab**.
 
-## Next
+??? info "What activation does"
 
-Add the activated samples to a batch. See
-[How to batch samples for testing](batch-samples.md).
+    Activation issues a lab Sample ID to every sample on the manifest that does
+    not have one yet. It records the received date and moves each sample to
+    **Sample Registered at Testing Lab**. Until then, the samples carry only
+    the identifier the sending facility used, and are not ready for testing.
+
+    | Column | Meaning |
+    | --- | --- |
+    | **Sample ID** | The identifier this lab issues, used on the analyzer and on the report |
+    | **Remote Sample ID** | The identifier the sending facility used, kept so the facility can trace the sample |
+
+    On a LIS, **Submit** fetches the manifest from the STS when it has not
+    reached the lab yet. This needs an internet connection.

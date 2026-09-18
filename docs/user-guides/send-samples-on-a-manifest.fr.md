@@ -1,97 +1,150 @@
 # Envoyer des échantillons à un laboratoire avec un manifeste
 
-Un manifeste est la liste de colisage d'un lot d'échantillons expédié vers un
-laboratoire de test. Il enregistre les ID d'échantillon contenus dans le colis,
-ce qui permet au laboratoire destinataire d'enregistrer le colis entier en
-saisissant un seul code.
+Lister les échantillons d'un colis sur un manifeste, afin que le laboratoire
+d'analyse enregistre le colis entier en saisissant un seul code.
 
-Utiliser ce guide dans une structure sanitaire qui envoie des échantillons pour
-analyse, ou dans un laboratoire qui réfère des échantillons à un autre
-laboratoire.
+Le menu des manifestes n'existe que sur le système central (STS). Un
+laboratoire qui dispose de sa propre installation InteLIS (LIS) ne le voit
+jamais. Utiliser ce guide sur le STS, dans une structure sanitaire qui envoie
+des échantillons ou dans un laboratoire qui réfère des échantillons.
 
-## Avant de commencer
+Avant de commencer :
 
-- Les demandes de test enregistrées dans InteLIS, une par échantillon du colis.
-  Voir [Enregistrer une demande de test de charge virale](register-a-request.md)
-- Le laboratoire de test destinataire
-- La permission de gérer les manifestes
+- Enregistrer une demande de test pour chaque échantillon du colis. Voir
+  [Enregistrer une demande de test de charge virale](register-a-request.md). Le
+  manifeste se compose à partir de demandes qui existent déjà.
+- Renseigner sur chaque demande le laboratoire d'analyse destinataire du
+  colis.
 
-Enregistrer les demandes avant de constituer le manifeste. Le manifeste se
-compose à partir de demandes qui existent déjà.
+Les étapes portent sur la charge virale. Pour un autre test, ouvrir le menu du
+manifeste dans le groupe de ce test.
 
-## Créer le manifeste
+| Groupe de menu | Menu du manifeste |
+| --- | --- |
+| **CHARGE VIRALE DU VIH** | **Manifeste VL** |
+| **DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)** | **Manifeste de l'EID** |
+| **TUBERCULOSE** | **Manifeste TB** |
+| **COVID-19** | **Manifeste Covid-19** |
+| **HEPATITE** | **Manifeste Hépatite** |
+| **CD4** | **Manifeste CD4** |
+| **AUTRES EXAMENS DE LABORATOIRE** | **Manifeste de test de laboratoire** |
 
-1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Manifeste VL**.
-2. Sélectionner **Ajouter un manifeste d'envoi d'échantillons**.
-3. Choisir le **Labo de test** destinataire.
-4. Saisir ou accepter le **Code du manifeste**.
-5. Renseigner l'**Opérateur/Technicien** qui prépare le colis.
-6. Renseigner le **Point de prélèvement de l'échantillon** si la structure
-   prélève sur plusieurs points.
+**Choisir la situation qui correspond, puis suivre ses étapes de haut en bas.**
 
-## Ajouter les échantillons
+=== "Nouveau colis"
 
-1. Filtrer la liste par **Type d'échantillon** et **Date de prélèvement de
-   l'échantillon**.
-2. Sélectionner **Rechercher**.
-3. Cocher chaque échantillon placé dans le colis.
-4. Sélectionner **Sauvegarder**.
+    ### Constituer le manifeste
 
-Ne cocher que les échantillons physiquement présents dans le colis. Un manifeste
-qui liste un échantillon absent de la boîte conduit le laboratoire destinataire
-à enregistrer un échantillon qu'il n'a jamais reçu.
+    1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Manifeste VL**.
+    2. Sélectionner **Ajouter un manifeste d'envoi d'échantillons**. Le **Code
+       du manifeste** est déjà rempli et ne peut pas être modifié.
+    3. Choisir le **Laboratoire d'analyse** destinataire du colis.
+    4. Choisir l'**Opérateur/Technicien** qui prépare le colis.
+    5. Pour réduire la liste, renseigner **Point de prélèvement de
+       l'échantillon**, **Type d'échantillon** ou **Date de prélèvement de
+       l'échantillon**.
+    6. Sélectionner **Rechercher**. Les échantillons en attente d'envoi
+       apparaissent dans la liste de gauche.
 
-## Imprimer le manifeste
+        ??? question "Si un échantillon manque dans la liste"
 
-1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Manifeste VL**.
-2. Trouver le manifeste.
-3. Sélectionner **Imprimer le manifeste PDF**.
+            La liste n'affiche que les demandes qui :
 
-Placer le manifeste imprimé dans le colis. En conserver une copie sur le site
-expéditeur.
+            - ont été enregistrées sur le STS
+            - indiquent le laboratoire d'analyse choisi
+            - ne figurent pas sur un autre manifeste
+            - ne sont pas annulées
 
-Le laboratoire destinataire a besoin du code du manifeste figurant sur cette
-fiche pour enregistrer le colis. Voir
-[Réceptionner des échantillons envoyés avec un
-manifeste](receive-referred-samples.md).
+            Ouvrir la demande et vérifier son laboratoire d'analyse. Puis
+            sélectionner de nouveau **Rechercher**.
 
-## Modifier un manifeste avant l'expédition
+    7. Passer dans la liste de droite chaque échantillon présent dans le colis.
+       Utiliser les boutons fléchés situés entre les deux listes. Le champ de
+       recherche au-dessus de chaque liste retrouve un ID d'échantillon.
+    8. Vérifier que **Nombre d'échantillons sélectionnés** correspond aux tubes
+       du colis.
 
-Sélectionner **Modifier** sur la ligne du manifeste pour ajouter ou retirer des
-échantillons.
+        Ne sélectionner que les échantillons physiquement présents dans le
+        colis. Le laboratoire destinataire enregistre comme reçu chaque
+        échantillon listé.
 
-Une fois le manifeste expédié, **Modifier** est désactivé. Un manifeste expédié
-est la trace de ce qui a physiquement quitté le site, il ne change donc plus
-ensuite.
+    9. Sélectionner **Sauvegarder**. La liste des manifestes s'ouvre.
 
-Si un manifeste expédié comporte une erreur, prévenir le laboratoire
-destinataire. Il peut rejeter ou mettre en attente les échantillons concernés à
-l'arrivée.
+    ### Imprimer le manifeste
 
-## Rediriger des manifestes vers un autre laboratoire
+    10. Trouver le manifeste dans la liste. Vérifier son **Laboratoire
+        d'analyse** et son **Nombre d'échantillons**.
+    11. Sélectionner **Imprimer le manifeste PDF**.
+    12. Placer le manifeste imprimé dans le colis. En conserver une copie sur le
+        site expéditeur.
 
-Lorsqu'un laboratoire de test est hors service, les manifestes qui lui ont déjà
-été adressés peuvent être réaffectés.
+    Le laboratoire destinataire saisit le code du manifeste figurant sur cette
+    fiche. Voir
+    [Réceptionner des échantillons envoyés avec un manifeste](receive-referred-samples.md).
 
-1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Manifeste VL**.
-2. Sélectionner **Déplacer le manifeste**.
-3. Renseigner **Manifeste du laboratoire d'analyse** et une période pour trouver les
-   manifestes.
-4. Choisir la destination dans **Affectation au laboratoire d'analyse**.
-5. Saisir le motif du déplacement.
-6. Enregistrer.
+=== "Modifier un manifeste"
 
-Saisir un motif qui explique le déplacement. C'est la seule trace de la raison
-pour laquelle les échantillons sont partis vers un autre laboratoire que celui
-choisi initialement.
+    1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Manifeste VL**.
+    2. Sélectionner **Modifier** sur la ligne du manifeste. Les échantillons
+       déjà présents sur le manifeste apparaissent dans la liste de droite.
 
-Déplacer également les colis physiques. Réaffecter le manifeste ne modifie que
-les enregistrements.
+        ??? failure "Si Modifier est grisé"
+
+            Le manifeste est marqué comme expédié et ne peut plus changer. S'il
+            comporte une erreur, prévenir le laboratoire destinataire. Le
+            laboratoire peut rejeter les échantillons concernés à l'arrivée.
+
+    3. Pour ajouter des échantillons, les passer de la liste de gauche à la
+       liste de droite. Pour réduire la liste de gauche, modifier les filtres et
+       sélectionner **Rechercher**.
+    4. Pour retirer des échantillons, les renvoyer dans la liste de gauche.
+    5. Vérifier que **Nombre d'échantillons sélectionnés** correspond aux tubes
+       du colis.
+    6. Sélectionner **Sauvegarder**.
+    7. Sélectionner **Imprimer le manifeste PDF** sur la ligne du manifeste.
+    8. Remplacer l'ancien manifeste imprimé du colis par le nouveau.
+
+    ??? info "À propos du champ Statut du manifeste"
+
+        L'écran de modification affiche un champ **Statut du manifeste** réglé
+        sur **En attente**. Ce champ est verrouillé sur cet écran.
+
+=== "Déplacer des manifestes vers un autre laboratoire"
+
+    À utiliser lorsqu'un laboratoire d'analyse ne peut pas prendre en charge les
+    colis qui lui ont déjà été envoyés. **Déplacer le manifeste** dépend d'une
+    permission distincte. Si le bouton est absent, s'adresser à
+    l'administrateur.
+
+    1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Manifeste VL**.
+    2. Sélectionner **Déplacer le manifeste**.
+    3. Choisir le laboratoire auquel les manifestes ont été envoyés dans
+       **Manifeste du laboratoire d'analyse**.
+    4. Pour réduire la liste, renseigner une **Plage de dates**. Elle filtre sur
+       la date de création de chaque manifeste.
+    5. Sélectionner **Search Manifests**.
+    6. Passer dans la liste de droite chaque manifeste à réaffecter.
+    7. Choisir le nouveau laboratoire dans **Affectation au laboratoire
+       d'analyse**.
+    8. Saisir le **Motif du déménagement Manifeste(s)**. C'est la seule trace de
+       la raison pour laquelle les échantillons sont partis vers un autre
+       laboratoire.
+    9. Sélectionner **Save Changes**. La liste des manifestes s'ouvre.
+    10. Envoyer les colis physiques au nouveau laboratoire. Le déplacement ne
+        modifie que les enregistrements.
+
+    ??? info "Si le premier laboratoire a déjà activé le manifeste"
+
+        Le déplacement efface les ID d'échantillon attribués par le premier
+        laboratoire. Le nouveau laboratoire active le manifeste et attribue ses
+        propres ID d'échantillon. L'identifiant utilisé par la structure
+        expéditrice reste le même.
 
 ## Vérifier que tout fonctionne
 
-Le manifeste apparaît dans la liste avec le bon nombre d'échantillons et le bon
-laboratoire de test.
+Le manifeste apparaît dans la liste avec le bon **Laboratoire d'analyse** et le
+bon **Nombre d'échantillons**.
 
-Après activation par le laboratoire destinataire, les échantillons portent un ID
-du laboratoire en plus de la référence propre à la structure.
+Après activation par le laboratoire destinataire, chaque échantillon porte un
+ID d'échantillon du laboratoire à côté de l'identifiant utilisé par la
+structure.

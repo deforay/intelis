@@ -1,13 +1,12 @@
 # Vérifier et approuver les résultats
 
-Un résultat n'est pas diffusé tant qu'il n'est pas approuvé. L'approbation est
-le
-contrôle qui garantit que le résultat enregistré dans InteLIS est bien celui
-rendu par l'automate, et qu'il appartient au bon échantillon.
+Un résultat ne parvient à la structure demandeuse qu'après son approbation.
+L'approbation confirme que le résultat enregistré dans InteLIS est bien celui
+rendu par l'automate, pour le bon échantillon.
 
-Les résultats saisis via l'outil d'interface peuvent être approuvés
-automatiquement, si le laboratoire est configuré ainsi. Les résultats importés
-depuis un fichier ou saisis à la main passent toujours par cette page.
+Les résultats importés depuis un fichier ou saisis à la main passent toujours
+par cette page. Les résultats transmis par l'outil d'interface peuvent être
+approuvés automatiquement, si le laboratoire est configuré ainsi.
 
 ## Avant de commencer
 
@@ -16,146 +15,203 @@ depuis un fichier ou saisis à la main passent toujours par cette page.
 - La permission de gérer le statut des résultats
 - Le tirage de l'automate ou la liste de travail de la série
 
-## Trouver les résultats en attente
+## Changer le statut d'un échantillon
 
-1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests → Gérer le
-   statut des résultats**.
-2. Régler **Afficher les échantillons qui sont** sur **Non approuvé/rejeté**.
-3. Restreindre avec les filtres si nécessaire.
+**Choisir l'action, puis suivre ses étapes de haut en bas.**
 
-| Filtre | Usage |
-|---|---|
-| Code de batch | Une seule série d'automate |
-| Date du test de l'échantillon | Tout ce qui a été testé à une date |
-| Nom de la structure | Les échantillons d'une seule structure |
-| Date de prélèvement de l'échantillon | Une période de prélèvement |
-| Type d'échantillon | Un seul type de prélèvement |
-| Code du manifeste | Les échantillons d'un colis reçu |
+=== "Accepter"
 
-4. Sélectionner **Rechercher**.
+    À utiliser pour approuver les résultats conformes au tirage de l'automate.
 
-Filtrer par code de batch est la méthode la plus fiable. Elle affiche une seule
-série d'automate à l'écran, qui se vérifie contre un seul tirage.
+    1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests → Gérer le
+       statut des résultats**.
+    2. Régler **Afficher les échantillons qui sont** sur **Non approuvé/rejeté**.
+       Cette liste montre les échantillons qui ont un résultat et attendent
+       l'approbation.
+    3. Régler **Code de batch** sur la série de l'automate. Une seule série à
+       l'écran se vérifie contre un seul tirage.
 
-## Contrôler chaque résultat
+        ??? info "Autres filtres"
 
-Pour chaque ligne, contrôler trois points par rapport au tirage de l'automate.
+            | Filtre | Usage |
+            | --- | --- |
+            | Date du test de l'échantillon | Tout ce qui a été testé à une date |
+            | Nom de la structure | Les échantillons d'une seule structure |
+            | Date de prélèvement de l'échantillon | Une période de prélèvement |
+            | Type d'échantillon | Un seul type de prélèvement |
+            | Code du manifeste | Les échantillons d'un colis reçu |
 
-1. L'ID de l'échantillon correspond.
-2. La valeur du résultat correspond.
-3. Le patient affiché est bien celui attendu pour cet ID.
+    4. Sélectionner **Rechercher**.
+    5. Pour chaque ligne, vérifier sur le tirage que l'**ID de l'échantillon**
+       correspond, que le **Résultat** correspond, et que le patient est bien
+       celui attendu pour cet ID.
 
-Une discordance entre l'ID de l'échantillon et le patient signifie que
-l'échantillon a été enregistré sur le mauvais patient, ou chargé dans la
-mauvaise position de l'automate. Ne pas l'approuver. Mettre l'échantillon en
-attente et investiguer.
+        ??? failure "Si l'ID de l'échantillon et le patient ne correspondent pas"
 
-!!! warning "Tests personnalisés : contrôler chaque fiche de test, pas seulement la ligne"
-    Pour un échantillon en Tests personnalisés, la liste d'approbation affiche
-    l'interprétation finale de l'échantillon. Elle n'affiche pas les fiches de
-    test enregistrées pour cet échantillon. Approuver depuis la seule liste
-    revient donc à approuver une interprétation sans que personne ait contrôlé
-    les résultats d'analyse qui la fondent.
+            L'échantillon a été enregistré sur le mauvais patient, ou chargé dans
+            la mauvaise position de l'automate. Ne pas cocher la ligne. Elle reste
+            sous **Non approuvé/rejeté** et n'est pas diffusée. Corriger
+            l'enregistrement ou le résultat, puis revenir à l'étape 1.
 
-    Ouvrir l'écran de résultat de l'échantillon et contrôler chaque fiche de test
-    avant d'approuver.
+        ??? warning "Tests personnalisés : contrôler d'abord les fiches de test"
 
-## Approuver
+            Pour les Tests personnalisés, aller à **AUTRES EXAMENS DE LABORATOIRE
+            → Gestion des résultats des tests → Gérer le statut des résultats**.
+            Les étapes sont les mêmes. La liste n'affiche que l'interprétation
+            finale de l'échantillon, pas les fiches de test qui la fondent.
+            Ouvrir l'écran de résultat de l'échantillon et contrôler chaque fiche
+            de test avant de cocher la ligne.
 
-1. Cocher les échantillons à approuver.
-2. Dans **Actions groupées**, régler **Statut** sur **Accepté**.
-3. Renseigner **Approbateur**, ainsi que **Tester** et **Réviseur** si le
-   laboratoire les enregistre.
-4. Sélectionner **Appliquer**.
+    6. Cocher les lignes conformes.
+    7. Dans **Actions groupées**, régler **Statut** sur **Accepté**.
+    8. Renseigner **Approbateur**. Renseigner **Tester** et **Réviseur** si le
+       laboratoire les enregistre.
 
-InteLIS demande confirmation avant d'appliquer. Confirmer pour poursuivre.
+        ??? info "Noms déjà enregistrés sur l'échantillon"
 
-| Réglage | Effet |
-|---|---|
-| **Remplacer l'existant** | Écrase les noms déjà enregistrés sur ces échantillons. Laisser désactivé pour ne remplir que les champs vides |
+            Un nom déjà présent sur l'échantillon est conservé. Pour l'écraser,
+            cocher **Remplacer l'existant** sous ce champ.
 
-Lorsque la même personne est choisie pour plusieurs des rôles approbateur,
-testeur et réviseur, InteLIS avertit ou refuse selon la configuration du
-laboratoire. En cas d'avertissement, ne confirmer que si le laboratoire autorise
-une personne à cumuler ces rôles.
+        ??? info "Si la même personne est choisie pour deux rôles"
 
-## Rejeter un échantillon
+            InteLIS demande confirmation. Sélectionner **OK** uniquement si le
+            laboratoire autorise une personne à cumuler ces rôles.
 
-Utiliser le rejet lorsque l'échantillon lui-même n'était pas propre au test, par
-exemple un prélèvement hémolysé ou en quantité insuffisante.
+    9. Sélectionner **Appliquer**.
+    10. Sélectionner **OK** pour confirmer. InteLIS affiche
+        `Mis à jour avec succès.`
 
-1. Cocher les échantillons.
-2. Régler **Statut** sur **Rejeté**.
-3. Choisir un **Motif de rejet**.
-4. Sélectionner **Appliquer**.
+        ??? failure "Si le message liste des échantillons non acceptés"
 
-Le motif figure sur le rapport renvoyé à la structure, et dans le rapport de
-rejet d'échantillons. Choisir le motif qui indique à la structure ce qu'elle
-doit faire différemment la prochaine fois.
+            `Non accepté car aucun résultat n'est enregistré` nomme les
+            échantillons sans résultat. Ils gardent leur statut. Saisir d'abord
+            le résultat. Voir
+            [Saisir les résultats de charge virale](capture-results.md).
 
-## Marquer un échantillon perdu
+        ??? info "Si un échantillon accepté affiche Échec/Invalidité"
 
-Utiliser **Perdu** lorsque l'échantillon est introuvable et ne sera pas testé.
+            Un résultat qui correspond à un échec ou à une série invalide ne peut
+            pas être accepté. InteLIS attribue alors le statut
+            **Échec/Invalidité**. Voir
+            [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
 
-1. Cocher les échantillons.
-2. Régler **Statut** sur **Perdu**.
-3. Sélectionner **Appliquer**.
+    11. Régler **Afficher les échantillons qui sont** sur **Déjà approuvé/rejeté**,
+        puis sélectionner **Rechercher**. La colonne **Statut** des échantillons
+        acceptés affiche `Accepted`.
 
-## Annuler un échantillon
+    Suite : [diffuser les résultats à la structure demandeuse](release-results.md).
 
-Utiliser l'annulation uniquement lorsque le test n'aura pas lieu du tout, par
-exemple une demande saisie deux fois ou retirée par le clinicien.
+=== "Rejeter"
 
-1. Régler **Afficher les échantillons qui sont** sur **Peut être annulé**.
-2. Sélectionner **Rechercher**.
-3. Cocher les échantillons.
-4. Régler **Statut** sur **Annulée**.
-5. Sélectionner **Appliquer**.
+    À utiliser lorsque l'échantillon n'était pas propre au test, par exemple un
+    prélèvement hémolysé ou en quantité insuffisante.
 
-InteLIS demande de saisir un mot de confirmation avant d'annuler. C'est
-volontaire. L'annulation enregistre que l'échantillon n'a jamais été testé, il
-est donc exclu des volumes de test et du délai de rendu.
+    1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests → Gérer le
+       statut des résultats**.
+    2. Régler **Afficher les échantillons qui sont** sur **Non approuvé/rejeté**.
 
-Ne pas annuler un échantillon qui a été testé et a échoué. Échec et annulation
-n'ont pas le même sens dans les rapports. Voir
-[Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
+        ??? info "Si l'échantillon n'a pas encore de résultat"
+
+            **Non approuvé/rejeté** ne liste que les échantillons qui ont un
+            résultat. Régler plutôt **Afficher les échantillons qui sont** sur
+            **Peut être annulé**. Cette liste montre tous les échantillons qui ne
+            sont pas déjà Expiré ou Annulée.
+
+    3. Filtrer jusqu'à l'échantillon, par exemple par **Code de batch** ou **Nom
+       de la structure**.
+    4. Sélectionner **Rechercher**.
+    5. Cocher les échantillons à rejeter.
+    6. Dans **Actions groupées**, régler **Statut** sur **Rejeté**.
+    7. Choisir un **Motif de rejet**. Choisir le motif qui indique à la structure
+       ce qu'elle doit changer la prochaine fois. Il figure sur le rapport envoyé
+       à la structure et dans le rapport de rejet d'échantillons.
+
+        !!! warning "Le rejet efface le résultat"
+
+            Un résultat déjà enregistré est effacé de l'échantillon. InteLIS
+            conserve le résultat effacé dans l'historique des tests de
+            l'échantillon.
+
+    8. Sélectionner **Appliquer**.
+    9. Sélectionner **OK** pour confirmer. InteLIS affiche
+       `Mis à jour avec succès.`
+    10. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
+        demandes de test** et rechercher l'échantillon. La colonne **Statut** affiche `Rejected`.
+
+    Suite : [diffuser le rejet à la structure demandeuse](release-results.md),
+    pour qu'elle puisse effectuer un nouveau prélèvement.
+
+=== "Marquer perdu"
+
+    À utiliser lorsque l'échantillon est introuvable et ne sera pas testé.
+
+    1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests → Gérer le
+       statut des résultats**.
+    2. Régler **Afficher les échantillons qui sont** sur **Peut être annulé**.
+       Cette liste montre tous les échantillons qui ne sont pas déjà Expiré ou
+       Annulée, avec ou sans résultat.
+    3. Filtrer jusqu'à l'échantillon, par exemple par **Nom de la structure** ou
+       **Date de prélèvement de l'échantillon**.
+    4. Sélectionner **Rechercher**.
+    5. Cocher les échantillons.
+    6. Dans **Actions groupées**, régler **Statut** sur **Perdu**.
+    7. Sélectionner **Appliquer**.
+    8. Sélectionner **OK** pour confirmer. InteLIS affiche
+       `Mis à jour avec succès.`
+    9. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
+       demandes de test** et rechercher l'échantillon. La colonne **Statut** affiche `Lost`.
+
+=== "Annuler"
+
+    À utiliser uniquement lorsque le test n'aura pas lieu du tout, par exemple
+    une demande saisie deux fois ou retirée par le clinicien.
+
+    !!! warning "Ne pas annuler un échantillon en échec"
+
+        Un échantillon annulé compte comme jamais testé. Il sort des volumes de
+        test et du délai de rendu. Un échantillon en échec reste dans le taux
+        d'échec. Pour un échantillon en échec, voir
+        [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
+
+    1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests → Gérer le
+       statut des résultats**.
+    2. Régler **Afficher les échantillons qui sont** sur **Peut être annulé**.
+    3. Filtrer jusqu'à l'échantillon, par exemple par **Nom de la structure** ou
+       **Date de prélèvement de l'échantillon**.
+    4. Sélectionner **Rechercher**.
+    5. Cocher les échantillons.
+    6. Dans **Actions groupées**, régler **Statut** sur **Annulée**.
+    7. Sélectionner **Appliquer**. La fenêtre **Confirmer l'annulation** s'ouvre.
+    8. Saisir `CANCEL` dans la case.
+    9. Sélectionner **Confirmer l'annulation**. InteLIS affiche
+       `Mis à jour avec succès.`
+    10. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
+        demandes de test** et rechercher l'échantillon. La colonne **Statut** affiche `Cancelled`.
 
 ## Corriger un résultat approuvé
 
-Ce qu'il faut corriger détermine où la correction se fait.
+La page Gérer le statut des résultats ne modifie que le statut et les noms du
+personnel. Elle ne modifie jamais la valeur du résultat. Pour corriger une
+valeur fausse :
 
-**Pour changer la valeur du résultat**, aller à **CHARGE VIRALE DU VIH → Gestion
-des résultats des tests → Saisir le résultat manuellement**, ouvrir
-l'échantillon, saisir le bon résultat et indiquer le motif du changement.
-L'écran
-d'approbation ne peut pas le faire : il enregistre le statut et les noms du
-personnel, et laisse la valeur du résultat inchangée. Un statut modifié depuis
-cet écran sur un échantillon dont la valeur est fausse laisse la valeur fausse
-en
-place, et c'est la valeur qui parvient à la structure demandeuse.
+1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests → Saisir le
+   résultat manuellement**.
+2. Régler le filtre de la liste sur **Résultats enregistrés**.
+3. Trouver l'échantillon et sélectionner **Saisir le résultat**.
 
-**Pour ne changer que le statut**, par exemple de Rejeté à Accepté :
+    ??? failure "Si la ligne affiche Verrouillé"
 
-1. Régler **Afficher les échantillons qui sont** sur **Déjà approuvé/rejeté**.
-2. Sélectionner **Rechercher** et trouver l'échantillon.
-3. Appliquer le statut corrigé via **Actions groupées**.
+        Les échantillons se verrouillent après le nombre de jours défini dans
+        **Jours de verrouillage des échantillons** sous **ADMIN → Configuration du
+        système → Configuration générale**. Demander à l'administrateur de
+        corriger un échantillon verrouillé.
 
-Après avoir corrigé une valeur, vérifier que le statut est toujours celui voulu,
-et rediffuser le résultat s'il était déjà parti.
+4. Saisir le bon résultat.
+5. Indiquer la raison de la modification du résultat.
+6. Enregistrer le formulaire. L'échantillon revient à **En attente
+   d'approbation**.
+7. L'approuver de nouveau avec les étapes **Accepter** ci-dessus.
 
-Les échantillons se verrouillent après un nombre de jours défini par
-l'administrateur. Un échantillon verrouillé ne peut plus être modifié ici.
-S'adresser à l'administrateur.
-
-## Vérifier que tout fonctionne
-
-Régler **Afficher les échantillons qui sont** sur **Déjà approuvé/rejeté** et
-rechercher le code du batch. Tous les échantillons de la série apparaissent avec
-leur statut final.
-
-Les échantillons encore listés sous **Non approuvé/rejeté** n'ont pas été
-traités.
-
-## Suite
-
+Si le résultat faux avait déjà été imprimé ou envoyé par courriel, diffuser de
+nouveau le résultat corrigé. Voir
 [Diffuser les résultats à la structure demandeuse](release-results.md).

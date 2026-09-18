@@ -1,176 +1,158 @@
 # How to manage facilities and testing labs
 
-This guide maintains the health facilities and testing labs under **ADMIN →
+Add and maintain the health facilities and testing labs under **ADMIN →
 Facilities**. Every sample is attached to one of each.
 
-The page also holds the report templates, the signatories that appear on result
-PDFs, and the Interface Tool connections for each lab.
+Other tasks on the same page have their own guides:
+
+- [Add or update many facilities at once](admin-facilities-bulk-upload.md)
+- [Connect the Interface Tool to a testing lab](admin-interface-tool-connections.md)
 
 ## Before starting
 
-- An account with administrator rights
-- The province and district the facility sits in, created already under
-  **ADMIN → System Configuration → Geographical Divisions**
+- An account with administrator rights on the STS, or on a standalone
+  installation
+- The facility's province and district, created under **ADMIN → System
+  Configuration → Geographical Divisions**
+
+??? info "On a LIS, the Facilities page is read-only"
+
+    A LIS lists facilities with no **Add Facility**, **Edit** or **Bulk
+    Upload** button. Make the change on the STS. To bring it to the LIS at
+    once, select **Force Remote Sync** at the bottom right of any LIS page.
 
 ## Add a facility
 
 1. Go to **ADMIN → Facilities**.
 2. Select **Add Facility**.
-3. Fill in the details.
+3. Enter **Facility Name**. It must not already be in use.
+4. Enter **Facility Code**, the national unique code. It accepts letters,
+   numbers and hyphens.
+5. Set **Facility Type**: **Health Facility**, **Testing Lab** or **Collection
+   Site**.
+6. Set **Province/State** and **District/County**.
+7. Under **Test Type**, tick every test type the facility takes part in.
 
-| Field | What to enter |
-|---|---|
-| Facility Name | The name staff will search for. It must not already be in use |
-| Facility Code | The national unique code |
-| Other/External Code | A second code, where another system uses its own |
-| Facility Type | Health facility, or testing lab |
-| Test Type | Every test type this facility takes part in |
-| Testing Point(s) | The service points, such as VCT or PMTCT |
-| Province/State, District/County | The location |
-| Address, Latitude, Longitude | Where the facility is. Latitude and longitude place it on the referral network map |
-| Email(s) | Addresses for emailed results, separated by commas |
-| Lab Manager, Phone Number | The contact person |
-| Linked Hub Name | The hub this facility routes samples through, if any |
-| Status | Active or inactive |
+    ??? warning "A facility missing from a request form"
 
-4. Select **Submit**.
+        The request form of a test type offers only the facilities ticked for
+        that test type. A facility ticked for viral load only is missing from
+        the EID form.
 
-Set the **Test Type**, and tick every test type the facility takes part in. A
-facility not linked to a test type does not appear in the facility list on that
-test type's request form. A facility ticked for one test type stays missing from
-every other test type's form. This is the usual reason a facility is "missing".
+8. Fill in the optional fields the facility needs:
+
+    | Field | What to enter |
+    | --- | --- |
+    | Other/External Code | A second code, where another system uses its own |
+    | Testing Point(s) | The service points, such as VCT or PMTCT |
+    | Address, Latitude, Longitude | Where the facility is. Latitude and longitude place it on the Sample Referral Network map |
+    | Email(s) | Addresses for emailed results, separated by commas |
+    | Lab Manager, Phone Number | The contact person |
+    | Linked Hub Name (If applicable) | The hub the facility routes samples through |
+
+9. If the facility is a testing lab, fill in the lab settings. See
+   [Set up a testing lab](#set-up-a-testing-lab), steps 5 to 9.
+10. Select **Submit**.
+
+## Link many facilities to a test type
+
+Use this when several facilities are missing from one test type's request
+form, such as after a bulk upload.
+
+1. Go to **ADMIN → Facilities**.
+2. Select **Health Facilities**, or **Testing Lab** for testing labs.
+3. Set **Test Type**.
+4. Move the facilities that take part into the selected list.
+5. Select **Submit**.
+6. Open that test type's request form. The facilities are offered.
 
 ## Set up a testing lab
 
-A testing lab is a facility with **Facility Type** set to testing lab. It carries
-extra settings that a health facility does not.
+A testing lab is a facility whose **Facility Type** is **Testing Lab**. It
+carries settings that a health facility does not.
 
-| Setting | Controls |
-|---|---|
-| Available Platforms | The analyzers this lab runs, such as Xpert, Microscopy, or Lam |
-| Monthly Target | The lab's monthly testing target, used by the reports |
-| Suppressed Monthly Target | The viral load suppression target |
-| Allow Results File Upload | Whether this lab may import result files |
-| Logo Image | The logo on result PDFs from this lab. 80 by 80 pixels |
-| Report Format For VL, EID, TB, Covid-19, Hepatitis | The result PDF layout per test type |
-| Upload Report Template | A PDF template, where the default layout does not fit |
+1. Go to **ADMIN → Facilities**.
+2. Select **Edit** on the lab.
+3. Check that **Facility Type** is **Testing Lab**, and that **Test Type**
+   holds every test the lab runs.
+4. In the targets table, enter the **Monthly Target** for each test type. For
+   viral load, also enter the **Suppressed Monthly Target**. The dashboard
+   compares the lab's work with these targets when **VL Monthly Target** is
+   enabled in [General configuration](admin-general-configuration.md).
+
+    ??? info "No targets table"
+
+        The table exists on **Edit Facility** only. Save the new lab first,
+        then edit it.
+
+5. Set **Allow Results File Upload** to **Yes** if the lab imports result
+   files.
+6. For TB, set **Available Platforms** to the methods the lab runs:
+   **Microscopy**, **Xpert** or **Lam**.
+
+    ??? info "Available Platforms does not appear"
+
+        The field appears only while TB is the only ticked test type.
+
+7. Upload the **Logo Image** printed on this lab's result PDFs. It must be 80 by
+   80 pixels.
+8. Set the result PDF layout for each test type under **Report Format For VL**,
+   **Report Format For EID** and the matching fields for other modules.
+9. Set the report header and footer:
+
+    | Setting | Controls |
+    | --- | --- |
+    | Header Text | The heading printed on the report |
+    | Display Page Number in Footer | Whether pages are numbered |
+    | Display Signature Table | Whether the signature block prints at all |
+    | Report Top Margin | The space above the report |
+    | Bottom Text Location | **Above Footer** or **Below Platform Name** |
+    | Upload Report Template | A PDF template per test type, with its **Header Margin**, where the default layout does not fit |
+
+10. Select **Submit**.
 
 ## Add signatories to result PDFs
 
-Signatories are the names, designations, and signatures printed on the result
-PDFs a lab issues.
-
-1. Open the testing lab under **ADMIN → Facilities**.
-2. Find the signatory section.
-3. For each signatory, enter the **Name of Signatory** and **Designation**, set
-   the **Display Order**, select every applicable **Test Type**, and upload the
-   signature image as jpg or png.
-4. Select **Submit**.
-
-A signatory is printed only on the modules selected in **Test Type**. One saved
-with no test type selected is stored and never appears on any result PDF, which
-looks like the signature block having been switched off. After saving, generate
-a result PDF for each module and confirm the expected names appear.
-
-| Setting | Controls |
-|---|---|
-| Display Signature Table | Whether the signature block prints at all |
-| Header Text, Header Margin, Report Top Margin | The report heading and its spacing |
-| Bottom Text Location | Above the footer, or below the platform name |
-| Display Page Number in Footer | Whether pages are numbered |
-
-## Load or update many facilities at once
+Signatories are the names, designations and signatures printed on a lab's
+result PDFs.
 
 1. Go to **ADMIN → Facilities**.
-2. Select **Bulk Upload**.
-3. Download the Excel format from the link on the page, or use **Export** on the
-   Facilities page. Both have the same columns, so an export can be edited and
-   uploaded as it is.
-4. Fill in or edit the sheet. **Facility Type** is 1 (Health Facility), 2
-   (Testing Lab) or 3 (Collection Site). **Status** is `active` or `inactive`.
-5. Choose an upload option, attach the file and select **Review Upload**.
+2. Select **Edit** on the testing lab.
+3. In the signatory table, enter the **Name of Signatory** and the
+   **Designation**.
+4. Upload the signature under **Upload Signature (jpg, png)**.
+5. Under **Test Types**, select every module whose result PDF carries this
+   signatory.
 
-| Upload option | Effect |
-|---|---|
-| Don't update duplicates | Adds new facilities. Skips any row whose name or code already exists. This is the default |
-| Update if Facility Code matches | Updates the facility holding that code. Adds rows that match nothing |
-| Update if Facility Name matches | Updates the facility holding that name. Adds rows that match nothing |
-| Update if Facility Name and Facility Code match | Updates only where both belong to the same facility. Adds rows that match nothing |
+    ??? warning "A signatory with no test type never prints"
 
-Nothing is saved at this point. The review page lists every row as **New**,
-**Update**, **No change**, **Skipped** or **Error**, with the fields each update
-changes. Blank optional cells keep the value already saved.
+        InteLIS saves the row, but prints it on no result PDF. The signature
+        block then looks switched off.
 
-Some rows carry a warning. These rows are highlighted and left unticked:
+6. Set the **Display Order** and the **Current Status**.
+7. Repeat steps 3 to 6 on a new row for each further signatory.
+8. Select **Submit**.
+9. Print one result PDF per module and read the signature block.
 
-| Warning | Why it matters |
-|---|---|
-| Facility Name changes a lot | The row may be matched to the wrong facility |
-| Name is almost the same as an existing facility, or another row | The facility may be added twice |
-| Coordinates are the same as an existing facility | The facility may be added twice |
-| Facility Type changes | Lists and forms that depend on the type change |
-| Facility Code of a testing lab changes | The code is part of the sample codes the lab generates |
-| External Facility Code changes | Other systems matching on the old code stop finding the facility |
-| Facility moves to a different Province/State, or coordinates move far | The row may be matched to the wrong facility |
-| Facility will be made inactive | The facility disappears from active lists |
-
-6. Check each warning. Tick the rows to import.
-7. Select **Import ticked rows**, or **Cancel** to discard the upload.
-
-The result reports the number added, updated, unchanged, left out and not saved.
-A row whose facility was changed by someone else after the review is not saved.
-Download the rows that were not saved, correct them and upload them again.
-
-## Find facilities that behave oddly
-
-Set **Show Orphaned Facilities** on the Facilities page. It lists facilities
-whose province or district is missing, inactive, or not linked to its province.
-
-Those facilities behave unpredictably in the geographic filters on every report
-until the province and district are fixed.
-
-**Show Only Active** hides retired facilities. **Export** writes the current
-filtered list to Excel.
-
-## Connect the Interface Tool
-
-The Interface Tool passes results from an analyzer into InteLIS without anyone
-typing them. Each installation of the tool connects to InteLIS once.
-
-**Before starting:** the **Interface Tool Connections** panel appears only when
-the global setting **Interface API Enabled** is set to `yes`. It ships set to
-`no`, so on a default installation this panel is not on the page at all. A
-national administrator turns it on under **ADMIN → General Configuration**. The
-panel also appears only on a facility that is a testing lab.
+## Find facilities with a broken location
 
 1. Go to **ADMIN → Facilities**.
-2. Open the testing lab.
-3. Scroll to **Interface Tool Connections**.
-4. Select **Generate Connection Code**.
-5. Enter the three groups of the code, and the InteLIS URL shown above them, into
-   the Interface Tool on the lab computer.
+2. Open **Advanced Search**.
+3. Tick **Show Orphaned Facilities**.
+4. Select **Search**. The list shows facilities whose province or district is
+   missing, inactive or not linked to its province.
+5. Select **Edit** on each one, set a valid **Province/State** and
+   **District/County**, and select **Submit**.
 
-The code expires. The page shows the time remaining. If it expires, generate
-another.
-
-Only one code can be outstanding at a time. To start again, cancel the current
-code first.
-
-Once connected, the installation appears under **Connected Installations** with a
-status and a **Last Seen** time. Use **Last Seen** when results stop arriving.
-
-| Action | When to use it |
-|---|---|
-| Reconnect / Reinstall | The lab computer is rebuilt or the tool is reinstalled |
-| Revoke | The computer is retired or lost. Other installations are unaffected |
+These facilities drop out of the location filters on reports until they are
+fixed.
 
 ## Confirm it worked
 
 | Change | Check |
-|---|---|
-| New facility | The facility appears on the request form of each test type it was ticked for |
-| Testing lab | The lab appears in the Testing Lab list on the request form |
-| Signatories | Print a result PDF from that lab and read the signature block |
-| Bulk upload | Not saved is 0, and added plus updated matches the rows ticked |
-| Orphaned facility fixed | It no longer appears under Show Orphaned Facilities |
-| Interface Tool connection | The installation shows under Connected Installations with a recent Last Seen |
+| --- | --- |
+| New facility | It appears on the request form of each ticked test type |
+| Testing lab | It appears in the **Testing Lab** list on the request form |
+| Targets | The dashboard target charts show the lab's figures |
+| Signatories | A printed result PDF carries the expected names |
+| Orphaned facility fixed | It no longer appears under **Show Orphaned Facilities** |

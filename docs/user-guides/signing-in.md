@@ -14,8 +14,23 @@ If no login exists, ask the administrator.
 ## Sign in
 
 1. Open the InteLIS web address in a browser.
-2. Enter the Login ID and password.
+2. Enter the **Login ID** and **Password**.
+
+    ??? question "If an image with text appears under the password"
+
+        The image appears when the Login ID has 3 or more failed sign-in
+        attempts in the last 15 minutes. Type the text from the image into the
+        box below it. To get a clearer image, select **Get New Image**.
+
 3. Select **Login**.
+
+    ??? failure "If sign-in fails"
+
+        | Message | Cause | What to do |
+        | --- | --- | --- |
+        | Please check your login credentials | The Login ID or password is wrong, or the account is inactive | Check both, then try again. After 3 failures, ask the administrator |
+        | Text you entered from the image is incorrect. Please try again | The text does not match the image | Type the text from the new image |
+        | You have exhausted the maximum number of login attempts. Please retry login after some time. | The image text was missing or wrong | Enter the Login ID again, then type the text from the image |
 
 InteLIS opens on the page set for the role. For most lab users that is the
 dashboard.

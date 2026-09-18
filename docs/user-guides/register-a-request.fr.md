@@ -1,144 +1,219 @@
 # Enregistrer une demande de test de charge virale
 
-Utiliser ce guide lorsqu'un échantillon arrive au laboratoire avec une fiche
-papier et sans ID d'échantillon. L'enregistrement de la demande attribue un ID à
-l'échantillon et le place dans la file d'attente de test.
+Enregistrer un échantillon qui arrive avec une fiche papier et sans ID
+d'échantillon, pour lui attribuer un ID et le placer dans la file de test.
 
 Pour les échantillons qui arrivent dans un colis avec manifeste, ne pas les
 enregistrer un par un. Voir
-[Réceptionner des échantillons envoyés avec un
-manifeste](receive-referred-samples.md).
+[Réceptionner des échantillons envoyés avec un manifeste](receive-referred-samples.md).
 
 ## Avant de commencer
 
 - Une fiche papier de demande remplie
 - La permission d'ajouter des demandes de test
 
-## Ouvrir le formulaire
+## Formulaires par type de test
 
-Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Ajouter une nouvelle
-demande**.
+Chaque type de test a son propre formulaire **Ajouter une nouvelle demande**.
 
-Le formulaire est paramétré pour chaque pays, les champs exacts diffèrent donc
-d'une installation à l'autre. Les sections ci-dessous figurent sur la plupart
-des formulaires. Les champs marqués d'un astérisque rouge sont obligatoires.
-InteLIS refuse d'enregistrer tant que l'un d'eux est vide.
-
-Renseigner aussi les champs facultatifs lorsque la fiche papier contient
-l'information. Les rapports ne comptent que ce qui a été saisi.
-
-## Renseigner les informations sur la structure
-
-Cette section indique la provenance de l'échantillon et sa destination.
-
-| Champ | À saisir |
+| Type de test | Menu |
 |---|---|
-| Province | La province de la structure demandeuse |
-| District | Le district, filtré selon la province choisie |
-| Clinique/Centre de santé | La structure qui a prélevé l'échantillon |
-| Partenaires | Le partenaire qui appuie la structure, si le laboratoire le suit |
-| Sources de financement | Le bailleur qui finance le test, si le laboratoire le suit |
-| Labo de test | Le laboratoire qui réalise le test |
+| Charge virale du VIH | **CHARGE VIRALE DU VIH → Gestion des demandes → Ajouter une nouvelle demande** |
+| Diagnostic précoce du nourrisson | **DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID) → Gestion des demandes → Ajouter une nouvelle demande** |
+| Tuberculose | **TUBERCULOSE → Gestion des demandes → Ajouter une nouvelle demande** |
+| Tests personnalisés | **AUTRES EXAMENS DE LABORATOIRE → Gestion des demandes → Ajouter une nouvelle demande** |
 
-Choisir d'abord la province. La liste des districts n'affiche que les districts
-de cette province, et la liste des structures n'affiche que les structures de ce
-district.
+Les étapes ci-dessous suivent le formulaire de charge virale du VIH. Les autres
+formulaires ont leurs propres champs. Par exemple, le formulaire EID identifie
+l'enfant par le **Code du nourrisson**, et le formulaire des Tests personnalisés
+commence par le **Type de test**. Le formulaire de chaque pays diffère aussi
+par endroits. Les champs marqués d'un astérisque rouge sont obligatoires.
 
-Si la structure est absente de la liste, c'est qu'elle n'a pas encore été créée,
-ou qu'elle n'est pas rattachée au test de charge virale. Demander à
-l'administrateur de l'ajouter. Voir [Administrer
-InteLIS](administer-intelis.md).
+**Choisir le lieu d'enregistrement de la demande, puis suivre ses étapes de haut en bas.**
 
-## Renseigner les informations sur le patient
+=== "Au laboratoire de test"
 
-Saisir l'identifiant du patient exactement tel qu'il figure sur la fiche papier.
-Sur la plupart des formulaires nationaux, il s'agit du numéro ARV.
+    1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Ajouter une
+       nouvelle demande**.
+    2. Si le laboratoire imprime des étiquettes code-barres, laisser **Imprimer
+       une étiquette de code-barres** cochée.
 
-Dès que l'identifiant est saisi, InteLIS recherche les demandes antérieures pour
-le même patient et affiche ce qu'il trouve :
+    ### Informations sur la clinique
 
-- le nombre de tests déjà demandés pour ce patient
-- la date d'ajout de la dernière demande
-- la date de prélèvement de la dernière demande
+    3. Choisir l'**État/Province**.
+    4. Choisir le **District**. La liste n'affiche que les districts de la
+       province choisie.
+    5. Choisir la **Clinique/Centre de santé** qui a prélevé l'échantillon.
 
-Utiliser cette information pour repérer un doublon avant d'enregistrer. Une
-seconde demande pour un échantillon déjà enregistré crée deux fiches pour un
-seul échantillon.
+        ??? failure "Si la structure est absente de la liste"
 
-Saisir la date de naissance si la fiche papier la contient. Sinon, saisir l'âge
-en années, ou l'âge en mois pour un patient de moins d'un an.
+            La structure n'est pas encore créée, ou elle n'est pas rattachée au
+            test de charge virale. Demander à l'administrateur de l'ajouter. Voir
+            [Administrer InteLIS](administer-intelis.md).
 
-## Renseigner les informations sur l'échantillon
+    6. Choisir le **Partenaire** et la **Source de financement**, si la fiche
+       papier les indique.
+    7. Choisir le **Laboratoire d'analyse**.
 
-| Champ | À saisir |
-|---|---|
-| Date de prélèvement de l'échantillon | La date du prélèvement |
-| Échantillon envoyé le | La date de départ de l'échantillon de la structure |
-| Type d'échantillon | Le type de prélèvement, plasma ou goutte de sang séché par exemple |
+    ### Information du patient
 
-La date de prélèvement alimente les rapports de délai de rendu et le contrôle de
-péremption des échantillons. Saisir la date figurant sur la fiche papier, et non
-la date de saisie.
+    8. Saisir l'**ART (TRACNET) No.** exactement tel qu'il figure sur la fiche
+       papier. InteLIS affiche les demandes antérieures du patient : **Nombre de
+       fois où le test a été demandé pour ce patient**, **Dernière demande
+       envoyée par LIS/STS** et **Date de prélèvement de l'échantillon pour la
+       dernière demande**.
 
-## Renseigner le traitement et l'indication
+        ??? warning "Si la dernière demande a la même date de prélèvement que la fiche papier"
 
-Ces sections décrivent le traitement du patient et le motif de la demande. Sur
-la plupart des formulaires nationaux, l'indication est un choix unique dans une
-liste : suivi de routine, test de contrôle après conseil à l'observance, ou
-suspicion d'échec thérapeutique.
+            L'échantillon est probablement déjà enregistré. Ne pas enregistrer de
+            seconde demande. Rechercher d'abord le patient dans **Afficher les
+            demandes de test**.
 
-L'indication alimente les rapports cliniques. Une demande enregistrée sans
-indication se teste normalement, mais elle disparaît de ces rapports.
+    9. Saisir la **Date de naissance**.
 
-## Laisser la section laboratoire vide
+        ??? info "Si la fiche papier n'indique pas de date de naissance"
 
-La section laboratoire contient la date du test, l'automate, le résultat et les
-signatures. La laisser vide à l'enregistrement. Elle est remplie après le test
-de l'échantillon. Voir
-[Saisir les résultats de charge virale](capture-results.md).
+            Saisir **Si la date de naissance est inconnue, l'âge en années**. Pour
+            un patient de moins d'un an, saisir **Si âge < 1, âge en mois**.
 
-## Enregistrer
+    10. Choisir le **Sexe**.
 
-Deux boutons enregistrent la demande.
+    ### Informations sur les échantillons
 
-| Bouton | Effet |
-|---|---|
-| **Sauvegarder** | Enregistre la demande et revient à la liste des demandes |
-| **Sauvegarder et Suivant** | Enregistre la demande et ouvre un formulaire vierge pour l'échantillon suivant |
+    11. Saisir la **Date de prélèvement de l'échantillon** figurant sur la fiche
+        papier, et non la date de saisie. InteLIS remplit l'**ID de
+        l'échantillon**. Il ne peut pas être saisi.
+    12. Saisir la date **Échantillon envoyé le**.
+    13. Choisir le **Type d'échantillon**.
+    14. Saisir la **Date de réception de l'échantillon au laboratoire
+        d'analyse**.
 
-Utiliser **Sauvegarder et Suivant** pour traiter une pile de fiches papier.
-Certains laboratoires le paramètrent pour reporter les informations de la
-structure sur le formulaire suivant. Dans ce cas, vérifier les champs reportés
-par rapport à la fiche papier suivante avant d'enregistrer.
+    ### Traitement et indication
 
-InteLIS génère l'ID de l'échantillon à l'enregistrement de la demande. Ne pas
-tenter d'en saisir un.
+    15. Remplir les **Informations sur le traitement** d'après la fiche papier :
+        **Date de début du traitement**, **Régime actuel**, **Date
+        d'instauration du régime actuel** et **Adhésion aux ARV**.
+    16. Choisir l'**Indications pour l'analyse de la charge virale** : **Routine
+        Monitoring**, **Repeat VL test after suspected treatment failure
+        adherence counselling** ou **Suspect Treatment Failure**.
+    17. Laisser les **Informations sur le laboratoire** vides. Elles sont
+        remplies à la saisie du résultat. Voir
+        [Saisir les résultats de charge virale](capture-results.md).
 
-## Imprimer l'étiquette code-barres
+    ### Enregistrer
 
-Lorsque le laboratoire utilise des étiquettes code-barres, le formulaire propose
-l'option **Imprimer une étiquette de code-barres**. La régler avant
-d'enregistrer.
+    18. Sélectionner **Sauvegarder** pour revenir à la liste des demandes, ou
+        **Sauvegarder et Suivant** pour ouvrir un nouveau formulaire pour la
+        fiche papier suivante.
 
-Si aucune imprimante n'est proposée, sélectionner **Modifier/Réessayer** pour en
-choisir une. L'étiquette porte l'ID de l'échantillon sous forme de code-barres.
-La coller sur le tube.
+        ??? info "Si Sauvegarder et Suivant reporte des informations sur le nouveau formulaire"
 
-## Vérifier que tout fonctionne
+            Le laboratoire est configuré pour copier la demande dans le
+            formulaire suivant. Vérifier chaque champ reporté par rapport à la
+            fiche papier suivante avant d'enregistrer.
 
-Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les demandes de
-test** et rechercher l'identifiant du patient ou l'ID de l'échantillon.
+        ??? failure "Si aucune imprimante code-barres n'est proposée"
 
-La demande apparaît avec le statut **Échantillon enregistré au laboratoire de
-test**. Ce statut signifie que l'échantillon est enregistré et en attente de
-test.
+            Sélectionner **Modifier/Réessayer** pour choisir l'imprimante.
 
-Pour corriger une erreur, sélectionner **Modifier** sur la ligne. Les demandes
-se
-verrouillent après un nombre de jours défini par l'administrateur. Une demande
-verrouillée ne peut plus être modifiée.
+    19. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
+        demandes de test**.
+    20. Rechercher l'identifiant du patient ou l'ID de l'échantillon. La demande
+        porte le statut **Échantillon enregistré au laboratoire d'analyse**.
 
-## Suite
+        Pour corriger une erreur, sélectionner **Modifier** sur la ligne.
 
-Ajouter les échantillons enregistrés à un batch. Voir
-[Créer un batch pour le test](batch-samples.md).
+    Ensuite, ajouter l'échantillon à un batch. Voir
+    [Créer un batch pour le test](batch-samples.md).
+
+=== "Dans une structure sanitaire (STS)"
+
+    1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Ajouter une
+       nouvelle demande**.
+    2. Si la structure imprime des étiquettes code-barres, laisser **Imprimer une
+       étiquette de code-barres** cochée.
+
+    ### Informations sur la clinique
+
+    3. Choisir l'**État/Province**.
+    4. Choisir le **District**. La liste n'affiche que les districts de la
+       province choisie.
+    5. Choisir la **Clinique/Centre de santé** qui a prélevé l'échantillon.
+
+        ??? failure "Si la structure est absente de la liste"
+
+            La structure n'est pas encore créée, ou elle n'est pas rattachée au
+            test de charge virale. Demander à l'administrateur de l'ajouter. Voir
+            [Administrer InteLIS](administer-intelis.md).
+
+    6. Choisir le **Partenaire** et la **Source de financement**, si la fiche
+       papier les indique.
+    7. Choisir le **Laboratoire d'analyse** auquel l'échantillon est destiné.
+
+    ### Information du patient
+
+    8. Saisir l'**ART (TRACNET) No.** exactement tel qu'il figure sur la fiche
+       papier. InteLIS affiche les demandes antérieures du patient : **Nombre de
+       fois où le test a été demandé pour ce patient**, **Dernière demande
+       envoyée par LIS/STS** et **Date de prélèvement de l'échantillon pour la
+       dernière demande**.
+
+        ??? warning "Si la dernière demande a la même date de prélèvement que la fiche papier"
+
+            L'échantillon est probablement déjà enregistré. Ne pas enregistrer de
+            seconde demande. Rechercher d'abord le patient dans **Afficher les
+            demandes de test**.
+
+    9. Saisir la **Date de naissance**.
+
+        ??? info "Si la fiche papier n'indique pas de date de naissance"
+
+            Saisir **Si la date de naissance est inconnue, l'âge en années**. Pour
+            un patient de moins d'un an, saisir **Si âge < 1, âge en mois**.
+
+    10. Choisir le **Sexe**.
+
+    ### Informations sur les échantillons
+
+    11. Saisir la **Date de prélèvement de l'échantillon** figurant sur la fiche
+        papier, et non la date de saisie. InteLIS remplit l'**ID de
+        l'échantillon**. Il ne peut pas être saisi.
+    12. Saisir la date **Échantillon envoyé le**.
+    13. Choisir le **Type d'échantillon**.
+    14. Laisser vide la **Date de réception de l'échantillon au laboratoire
+        d'analyse**. Le laboratoire de test la remplit.
+
+    ### Traitement et indication
+
+    15. Remplir les **Informations sur le traitement** d'après la fiche papier :
+        **Date de début du traitement**, **Régime actuel**, **Date
+        d'instauration du régime actuel** et **Adhésion aux ARV**.
+    16. Choisir l'**Indications pour l'analyse de la charge virale** : **Routine
+        Monitoring**, **Repeat VL test after suspected treatment failure
+        adherence counselling** ou **Suspect Treatment Failure**.
+
+    ### Enregistrer
+
+    17. Sélectionner **Sauvegarder** pour revenir à la liste des demandes, ou
+        **Sauvegarder et Suivant** pour ouvrir un nouveau formulaire pour la
+        fiche papier suivante.
+
+        ??? info "Si Sauvegarder et Suivant reporte des informations sur le nouveau formulaire"
+
+            L'installation est configurée pour copier la demande dans le
+            formulaire suivant. Vérifier chaque champ reporté par rapport à la
+            fiche papier suivante avant d'enregistrer.
+
+        ??? failure "Si aucune imprimante code-barres n'est proposée"
+
+            Sélectionner **Modifier/Réessayer** pour choisir l'imprimante.
+
+    18. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
+        demandes de test**.
+    19. Rechercher l'identifiant du patient ou l'ID de l'échantillon. La demande
+        porte le statut **Échantillon enregistré au centre de santé**.
+
+        Pour corriger une erreur, sélectionner **Modifier** sur la ligne.
+
+    Ensuite, envoyer les échantillons au laboratoire de test. Voir
+    [Envoyer des échantillons à un laboratoire avec un manifeste](send-samples-on-a-manifest.md).

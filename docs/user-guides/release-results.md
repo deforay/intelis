@@ -1,86 +1,113 @@
 # How to release results to the requesting facility
 
-Approved results reach the facility as a printed report or as an email
-attachment. This guide covers both.
+Approved results reach the requesting facility as a printed PDF report, as an
+email attachment, or as a spreadsheet export.
 
 ## Before starting
 
 - Results approved. See [How to review and approve results](approve-results.md)
-- Permission to print or email results
+- Permission to print, email or export results
 
 Two kinds of sample can be released:
 
-- **Accepted** samples that have a result recorded.
-- **Rejected** samples, which carry no result. These are released so the
-  requesting facility learns the sample was rejected and can recollect. Leaving
-  them unreleased is what delays a recollection.
+- **Accepted** samples with a result.
+- **Rejected** samples, which carry no result. Releasing them tells the facility
+  to collect a new sample. Print them: email sends only samples with a result.
 
-A sample still awaiting approval does not appear on either page.
+A sample still awaiting approval is never listed for printing or email.
 
-## Print results
+## Release the results
 
-1. Go to **HIV VIRAL LOAD → Management → Print Result**.
-2. Stay on the **Results not yet Printed** tab.
-3. Filter to the results to print.
+**Choose how the results go out, then follow its steps from top to bottom.**
 
-| Filter | Use |
-|---|---|
-| Facility Name | One facility's results, ready to send together |
-| Sample Test Date | Everything tested on one date |
-| Batch Code | One analyzer run |
-| Patient ID or Patient Name | One patient |
-| Province/State and District/County | A region |
+=== "Print"
 
-4. Select **Search**.
-5. Tick the results to print.
-6. Select **Print Selected Results PDF**.
+    1. Go to **HIV VIRAL LOAD → Management → Print Result**.
+    2. Stay on the **Results not yet Printed** tab.
 
-InteLIS builds one PDF holding every selected report.
+        ??? info "To reprint a result"
 
-The limit is 1000 results at a time. Selecting more than that stops the print.
-Split the work across several prints.
+            Switch to the **Results already Printed** tab and follow the same
+            steps there.
 
-### Reprint a result
+    3. Filter to the results to print, for example by **Facility Name** to
+       print one facility's reports together.
 
-Switch to the **Results already Printed** tab, find the result, and print it
-again. The two tabs exist so a batch of reports can be printed once without
-reprinting what has already gone out.
+        ??? info "Other filters"
 
-## Email results
+            | Filter | Use |
+            | --- | --- |
+            | Sample Test Date | Everything tested on one date |
+            | Batch Code | One analyzer run |
+            | Patient ID or Patient Name | One patient |
+            | Province/State and District/County | A region |
 
-1. Go to **HIV VIRAL LOAD → Test Result Management → E-mail Test Result**.
-2. Choose the facility in **Facility Name (To)**.
-3. Enter a **Subject** and a **Message**.
-4. Filter to the results to send.
+    4. Select **Search**.
+    5. Tick the results to print. The **Print Selected Results PDF** button
+       appears.
 
-Set **Mail Sent Status** to **Samples Not yet Mailed** to leave out anything
-already sent.
+        ??? info "To print one result"
 
-5. Select **Search**.
-6. Tick the results, or use **Select All**.
-7. Select **Next** and confirm.
+            Select **Print** on that result's row instead, then go to step 7.
 
-The limit is 100 samples per email. Selecting more than that stops the send.
+    6. Select **Print Selected Results PDF**.
 
-The results go to the email addresses recorded against the facility. If a
-facility has no address recorded, ask the administrator to add one under
-**ADMIN → Facilities**.
+        ??? failure "If InteLIS refuses more than 1000 results"
 
-## Export results to a spreadsheet
+            One PDF holds at most 1000 results. Tick fewer rows, print them, then
+            print the rest.
 
-Where a facility or programme wants the data rather than the reports, export it.
+    7. The PDF opens in a new browser tab. Print it from there.
+    8. Select the **Results already Printed** tab and search again. The printed
+       results are listed there.
 
-1. Go to **HIV VIRAL LOAD → Management → Export Results**.
-2. Set the filters.
-3. Select the export option.
+=== "Email"
 
-The export gives a spreadsheet, not patient reports. Send patient reports as
-PDFs.
+    1. Go to **HIV VIRAL LOAD → Test Result Management → E-mail Test Result**.
+    2. Choose the facility in **Facility Name (To)**. InteLIS sets the
+       **Facility Name** filter to the same facility, lists its samples, and
+       shows the address the email goes to.
 
-## Confirm it worked
+        ??? failure "If InteLIS shows `No valid Email id available`"
 
-For printing, the results move from **Results not yet Printed** to **Results
-already Printed**.
+            The facility has no email address recorded, and **Next** stays
+            disabled. Ask the administrator to add one under **ADMIN →
+            Facilities**.
 
-For email, set **Mail Sent Status** to **Already Mailed Samples** and search.
-The results appear there.
+    3. Check the **Subject** and the **Message**. Both are filled in already.
+    4. Leave **Mail Sent Status** at **Samples Not yet Mailed**, so results
+       already sent are left out.
+    5. Keep **Facility Name** set to that one facility. Narrow with the other
+       filters if needed, then select **Search**.
+    6. Under **Choose Sample(s)**, select each sample to send, or select
+       **Select All**. Selected samples move to the right-hand list.
+
+        ??? failure "If InteLIS refuses the selection"
+
+            One email holds at most 100 samples. Send the rest in a second
+            email.
+
+    7. Select **Next**. The next page lists the samples that go out.
+
+        ??? info "If a rejected sample is missing from the list"
+
+            Email sends only samples with a result. Print the rejected sample's
+            report instead.
+
+    8. Select **Send**.
+    9. Go back to **E-mail Test Result**, set **Mail Sent Status** to
+       **Already Mailed Samples**, and search. The sent results are listed.
+
+=== "Export"
+
+    Use this when a facility or programme wants the data rather than patient
+    reports. Send patient reports as printed PDFs.
+
+    1. Go to **HIV VIRAL LOAD → Management → Export Results**.
+    2. Set **Status** to **Accepted**, and add **Rejected** if the rejections
+       are wanted too.
+    3. Set the other filters, for example **Facility Name** or **Sample Test
+       Date**.
+    4. Select **Search** and check the rows listed.
+    5. Select **Download**. The spreadsheet opens in a new browser tab as a
+       download.

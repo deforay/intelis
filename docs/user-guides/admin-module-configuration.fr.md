@@ -1,107 +1,130 @@
-# Maintenir les listes du formulaire de demande
+# Entretenir les listes du formulaire de demande
 
-Ce guide entretient les listes déroulantes des formulaires de demande. Chaque
-module de test tient ses propres listes, et quelques listes sont partagées par
-tous les modules.
+Ajouter, corriger et retirer les options des listes déroulantes des
+formulaires de demande. Chaque module a ses propres listes. Quelques listes sont
+partagées par tous les modules.
 
-Une option qu'un utilisateur ne trouve pas sur le formulaire est presque
-toujours
-une entrée inactive, ou une entrée ajoutée sous un autre module.
+Une option introuvable sur le formulaire de demande est presque toujours
+inactive, ou a été ajoutée sous un autre module.
 
 ## Avant de commencer
 
 - Un compte avec des droits d'administrateur
 
-## Une section de configuration par module
+## Où se trouve chaque liste
 
-Le menu ADMIN porte une section de configuration par module actif sur
-l'installation. Une installation qui n'exécute qu'un module ne porte qu'une
-section.
+Chaque module actif sur l'installation a sa propre section de configuration sous
+**ADMIN**.
 
-| Section de configuration | Listes qu'elle contient |
-|---|---|
-| Configuration CV | Type d'échantillon, Motifs de rejet, Motifs de test, Résultats, Régime ART, Raisons de l'échec des tests, Mesures correctives recommandées |
-| Configuration EID | Type d'échantillon, Motifs de rejet, Motifs de test, Résultats |
-| Tuberculose-Configuration | Type d'échantillon, Motifs de rejet, Motifs de test, Résultats |
-| Configuration CD4 | Type d'échantillon, Motifs de rejet, Motifs de test |
-| Configuration Covid-19 | Type d'échantillon, Motifs de rejet, Motifs de test, Résultats, Symptomes, Co-morbidités, Mesures correctives recommandées, Kits de test QC |
-| Configuration Hépatite | Type d'échantillon, Motifs de rejet, Motifs de test, Résultats, Co-morbidités, Facteurs de risque |
-| Autres tests de laboratoire Config | Types d'échantillons, Raisons des tests, Motifs de rejet des échantillons, Raisons de l'échec des tests, Symptomes, Unités de résultat du test, Méthodes de test, Catégories de tests, Configuration du type de test |
+| Section de configuration | Listes |
+| --- | --- |
+| Configuration CV | Régime ART, Motifs de rejet, Type d'échantillon, Résultats, Motifs de test, Raisons de l'échec des tests, Mesures correctives recommandées |
+| Configuration EID | Motifs de rejet, Type d'échantillon, Motifs de test, Résultats |
+| Configuration Covid-19 | Co-morbidités, Motifs de rejet, Type d'échantillon, Symptomes, Motifs de test, Résultats, Kits de test QC, Mesures correctives recommandées |
+| Configuration Hépatite | Co-morbidités, Facteurs de risque, Motifs de rejet, Type d'échantillon, Résultats, Motifs de test |
+| Tuberculose-Configuration | Motifs de rejet, Type d'échantillon, Motifs de test, Résultats |
+| Configuration CD4 | Type d'échantillon, Motifs de test, Motifs de rejet |
+| Autres tests de laboratoire Config | Types d'échantillons, Raisons des tests, Raisons de l'échec des tests, Symptomes, Motifs de rejet des échantillons, Unités de résultat du test, Méthodes de test, Catégories de tests, Configuration du type de test |
+| Configuration du système | Divisions géographiques, Partenaires, Sources de financement, Stockage en laboratoire. Elles servent tous les modules |
 
-Ajouter un type d'échantillon sous un module ne l'ajoute pas au formulaire d'un
-autre module. L'ajouter sous chaque module concerné.
+Un type d'échantillon ajouté sous Configuration CV n'atteint pas le formulaire
+EID. L'ajouter sous chaque module qui en a besoin.
 
-## Ce que contrôle chaque liste
+## Ajouter une entrée
 
-| Liste | Contrôle |
-|---|---|
-| Type d'échantillon | Les types de prélèvement proposés sur le formulaire |
-| Motifs de rejet | Les motifs proposés lors du rejet d'un échantillon |
-| Motifs de test | Les indications de test |
-| Résultats | Les valeurs de résultat pour le rendu qualitatif |
-| Raisons de l'échec des tests | Les motifs proposés en cas d'échec |
-| Symptomes, Co-morbidités, Facteurs de risque | Les listes cliniques à cocher sur le formulaire |
-| Régime ART | Les choix de régime sur le formulaire de charge virale |
-| Mesures correctives recommandées | Les actions suggérées sur les résultats de charge virale élevée |
-| Kits de test QC | Les kits proposés pour les fiches de contrôle qualité |
-| Unités de résultat du test, Méthodes de test, Catégories de tests | Les propriétés disponibles pour un type de test personnalisé |
+**Choisir le type d'installation, puis suivre ses étapes de haut en bas.**
 
-## Ajouter une entrée à une liste
+=== "STS ou autonome"
 
-1. Ouvrir la page de la liste dans la section de configuration de son module.
-2. Sélectionner l'option d'ajout.
-3. Saisir le libellé.
-4. Enregistrer.
-5. Ouvrir le formulaire de demande et vérifier que l'entrée figure dans sa liste
-   déroulante.
+    1. Aller à **ADMIN**, puis à la section de configuration du module, puis à
+       la liste. Par exemple, **ADMIN → Configuration CV → Type d'échantillon**.
+    2. Sélectionner le bouton d'ajout en haut à droite de la liste. Il porte le
+       nom de la liste, par exemple **Ajouter un type d'échantillon VL**.
 
-Chaque liste fonctionne de la même façon.
+        ??? info "Bouton d'ajout de chaque liste"
+
+            | Liste | Bouton |
+            | --- | --- |
+            | Listes de Configuration CV | **Ajouter un type d'échantillon VL**, **Ajouter les raisons du rejet de l'échantillon VL**, **Ajouter les raisons du test VL**, **Ajouter les résultats VL**, **Ajouter un régime ART VL**, **Ajouter le motif du test VL** (sur Raisons de l'échec des tests), **Ajouter les actions correctives recommandées** |
+            | Listes de Configuration EID | **Ajouter un type d'échantillon EID**, **Ajouter les motifs de rejet de l'échantillon de l'EID**, **Ajouter les raisons du test EID**, **Ajouter des résultats EID** |
+            | Listes de Configuration Covid-19 | **Ajouter un type d'échantillon Covid-19**, **Ajouter les raisons du rejet de l'échantillon Covid-19**, **Ajouter des raisons de test Covid-19**, **Ajouter les résultats de Covid-19**, **Ajouter les symptômes de Covid-19**, **Ajouter les comorbidités Covid-19**, **Ajouter un nouveau kit de test Covid-19 QC** |
+            | Listes de Configuration Hépatite | **Ajouter un type d'échantillon d'hépatite**, **Ajouter les raisons du rejet de l'échantillon d'hépatite**, **Ajouter les raisons du test de l'hépatite**, **Ajouter les résultats concernant l'hépatite**, **Ajouter les comorbidités de l'hépatite**, **Ajouter les facteurs de risque de l'hépatite** |
+            | Listes de Tuberculose-Configuration | **Ajouter un type d'échantillon de tuberculose**, **Ajouter les raisons du rejet de l'échantillon de tuberculose**, **Ajouter les motifs du test de dépistage de la tuberculose**, **Ajouter les résultats de la tuberculose** |
+            | Listes de Configuration CD4 | **Ajouter un type d'échantillon CD4**, **Ajouter les raisons du rejet de l'échantillon de CD4**, **Ajouter les raisons du test CD4** |
+            | Listes de Autres tests de laboratoire Config | **Ajouter un type d'échantillon**, **Ajouter un motif de test**, **Ajouter la raison de l'échec du test**, **Ajouter des symptômes**, **Ajouter les raisons du rejet de l'échantillon**, **Ajouter des unités de résultat du test**, **Ajouter des méthodes de test**, **Ajouter des catégories de test**, **Ajouter un type de test** |
+            | Listes de Configuration du système | **Ajouter de nouvelles divisions géographiques**, **Ajouter des partenaires de mise en œuvre**, **Ajouter des sources de financement** |
+
+    3. Saisir le nom de l'entrée, et son code lorsque le formulaire le demande.
+    4. Régler le statut sur **Actif**.
+    5. Sélectionner **Envoyer**.
+    6. Ouvrir le formulaire de demande. L'entrée apparaît dans sa liste
+       déroulante.
+
+    ??? info "Ajouter un district"
+
+        Sur **Divisions géographiques**, laisser **Division géographique de la
+        société mère** vide lors de l'ajout d'une province. Le régler sur la
+        province lors de l'ajout d'un district. Un district sans parent
+        n'apparaît sous aucune province sur le formulaire de demande.
+
+=== "LIS"
+
+    Un LIS affiche ces listes sans bouton d'ajout. Les listes viennent du STS.
+
+    1. Demander à l'administrateur du STS d'ajouter l'entrée sur le STS.
+    2. Une fois l'entrée ajoutée, sélectionner **Forcer la synchronisation à
+       distance** en bas à droite de n'importe quelle page du LIS.
+    3. Ouvrir le formulaire de demande. L'entrée apparaît dans sa liste
+       déroulante.
+
+    ??? info "Le Stockage en laboratoire se tient sur le LIS"
+
+        **ADMIN → Configuration du système → Stockage en laboratoire** relève du
+        laboratoire. Y sélectionner **Ajout d'un congélateur/stockage de
+        laboratoire** pour ajouter un congélateur.
 
 ## Retirer une entrée
 
-1. Ouvrir la page de la liste.
-2. Modifier l'entrée.
-3. La passer en inactif.
-4. Enregistrer.
+Passer les entrées en inactif au lieu de les supprimer. Une entrée inactive
+quitte le formulaire et reste lisible sur les fiches qui l'utilisent déjà.
 
-Passer les entrées en inactif plutôt que les supprimer. Une entrée inactive
-disparaît du formulaire et reste lisible sur les fiches qui l'utilisent déjà. La
-supprimer rend ces fiches illisibles.
+1. Ouvrir la liste, comme à l'étape 1 de [Ajouter une entrée](#ajouter-une-entree).
+2. Sur la ligne de l'entrée, régler le statut sur **Inactif**.
+3. Sélectionner **OK** pour confirmer.
+4. Ouvrir le formulaire de demande. L'entrée n'est plus proposée.
 
-## Maintenir les listes partagées
+??? info "Si la ligne n'a pas de liste de statut"
 
-Quatre listes se trouvent sous **ADMIN → Configuration du système** et servent
-tous les modules.
+    Sélectionner **Modifier** sur la ligne, régler le statut sur **Inactif**,
+    puis sélectionner **Envoyer**. Sur un LIS, le statut ne peut pas être
+    modifié. Retirer l'entrée sur le STS.
 
-| Page | Contrôle |
-|---|---|
-| Divisions géographiques | Provinces et districts |
-| Partenaires | La liste des partenaires du formulaire |
-| Sources de financement | La liste des bailleurs du formulaire |
-| Stockage en laboratoire | Les congélateurs proposés sur la page de stockage |
+??? warning "Renommer ou supprimer une province ou un district"
 
-Pour les divisions géographiques, laisser le parent vide en ajoutant une
-province. Renseigner une province comme parent en ajoutant un district. Un
-district ajouté sans parent n'apparaît sous aucune province dans le formulaire.
+    Les structures rattachées perdent leur lien, et les filtres de localisation
+    de tous les rapports cessent de correspondre. Faire valider la modification
+    par l'équipe nationale d'abord.
 
-Renommer ou supprimer une province ou un district casse les structures
-rattachées, et les filtres géographiques de tous les rapports cessent de
-correspondre. Faire valider ces modifications avec l'équipe nationale.
+## Configurer un test personnalisé
 
-## Configurer un type de test personnalisé
+Un test personnalisé (Custom Test) est un type de test qui n'est pas l'un des
+modules intégrés. Il se définit sous **ADMIN → Autres tests de laboratoire Config
+→ Configuration du type de test**.
 
-**ADMIN → Autres tests de laboratoire Config → Configuration du type de test**
-définit un type de test qui n'est pas l'un des modules intégrés.
-
-Les autres listes de cette section fournissent ce que ce type de test peut
-utiliser : ses unités de résultat, sa méthode de test et sa catégorie de test.
-Créer ces entrées avant de créer le type de test qui s'y réfère.
+1. Ajouter les entrées dont le test a besoin sous **Unités de résultat du
+   test**, **Méthodes de test** et **Catégories de tests**.
+2. Ajouter les types d'échantillons, raisons des tests et motifs de rejet dont
+   il a besoin, sous les listes correspondantes de Autres tests de laboratoire
+   Config.
+3. Aller à **ADMIN → Autres tests de laboratoire Config → Configuration du type
+   de test**.
+4. Sélectionner **Ajouter un type de test** et définir le test.
 
 ## Vérifier que tout fonctionne
 
 | Modification | Contrôle |
-|---|---|
-| Nouvelle entrée | L'entrée apparaît dans sa liste déroulante sur le formulaire |
-| Entrée retirée | L'entrée quitte le formulaire et reste lisible sur une fiche existante |
-| Nouveau district | Il apparaît sous sa province dans le formulaire |
-| Nouveau type de test personnalisé | Il apparaît dans le formulaire Autres tests de laboratoire |
+| --- | --- |
+| Nouvelle entrée | Elle apparaît dans sa liste déroulante sur le formulaire de demande |
+| Entrée retirée | Elle quitte le formulaire et reste lisible sur une fiche existante |
+| Nouveau district | Il apparaît sous sa province sur le formulaire de demande |
+| Nouveau test personnalisé | Il apparaît sur le formulaire de demande des autres tests de laboratoire |

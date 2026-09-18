@@ -1,206 +1,204 @@
 # How to capture viral load results
 
-Once a batch has run on the analyzer, the results have to reach InteLIS. There
-are three ways to do that. Use the highest one on this list that the lab and the
-analyzer support.
-
-| Method | Use it when |
-|---|---|
-| [Interface Tool](#method-1-interface-tool) | The analyzer is connected to the Interface Tool |
-| [File import](#method-2-file-import) | The analyzer cannot connect but can export a result file |
-| [Manual entry](#method-3-manual-entry) | Neither of the above is possible |
-
-Manual entry is a fallback. Every result typed by hand can be mistyped, so it
-always needs a second person to approve it.
+Get the results of a finished analyzer run into InteLIS.
 
 ## Before starting
 
 - A batch that has finished running on the analyzer
 - Permission to record results
 
----
+**Choose how the results reach InteLIS, then follow its steps from top to bottom.**
 
-## Method 1: Interface Tool
+=== "Interface Tool"
 
-The Interface Tool runs on a computer in the lab, listens to the analyzer, and
-passes results to InteLIS. Nobody types a result and nobody uploads a file.
+    Use this when the analyzer is connected to the Interface Tool. The Interface
+    Tool carries HIV viral load, EID and hepatitis results. It does not carry TB
+    or Custom Tests results.
 
-### Check the Interface Tool is ready
+    1. On the analyzer, release the run. Skip this step if the analyzer releases
+       results on its own.
+    2. On the lab computer, open the Interface Tool.
+    3. Check the analyzer shows as **Connected**.
 
-1. Confirm the Interface Tool is installed and running on the lab computer.
-2. Confirm the tool is on the current version.
-3. Open the Interface Tool and check the analyzer shows as **Connected**.
+        ??? info "If the analyzer is not showing Connected between runs"
 
-Some analyzers only open the connection when they have something to send. A tool
-that is not showing **Connected** between runs is not necessarily faulty. Check
-again while the analyzer is releasing results.
+            Some analyzers open the connection only when they have results to
+            send. Check again while the analyzer is releasing the run.
 
-### Release the results
+    4. In InteLIS, go to **HIV VIRAL LOAD → Request Management → View Test
+       Requests**.
+    5. Search on the batch code. Every sample that has arrived carries a result.
 
-Some analyzers hold results until an operator releases them. Where the analyzer
-offers manual release, release the run once the operator has reviewed it.
+        ??? failure "If results do not arrive"
 
-Where the analyzer does not, it releases results on its own schedule. Nothing
-needs to be done at the analyzer.
+            Work through these in order.
 
-### Wait for the results to appear
+            1. Check the analyzer has released the run.
+            2. Check the Interface Tool is running and shows the analyzer as
+               **Connected**.
+            3. Check the Sample IDs on the analyzer match the Sample IDs in
+               InteLIS. A result with an unknown Sample ID attaches to no sample.
+            4. Ask the administrator to open **ADMIN → Facilities**, edit the
+               testing lab, and check the **Interface Tool Connections** panel at
+               the foot of the page. Each connected installation shows a
+               **Status** and a **Last Seen** time. The panel appears only on
+               installations where the lab's support contact has turned on
+               Interface Tool connections. Without the panel, ask the support
+               contact to check the connection.
 
-Results reach InteLIS on their own once the analyzer has released them. There is
-no import step and no button to press.
+            If results still do not arrive, capture the run with **File import**.
 
-Go to **HIV VIRAL LOAD → Request Management → View Test Requests** and search on
-the batch code. Samples that have arrived carry a result.
+    6. Check the status of the results. Interface results arrive approved, with
+       the status **Accepted**, ready to print.
 
-If the lab has turned on automatic approval for interface results, those results
-are ready to print. If not, they wait for approval. See
-[How to review and approve results](approve-results.md).
+        ??? info "If the results show Awaiting Approval"
 
-### If results do not arrive
+            The lab's support contact has turned off automatic approval of
+            interface results for this installation. Approve them. See
+            [How to review and approve results](approve-results.md).
 
-Work through these in order.
+=== "File import"
 
-1. Check the analyzer has actually released the run.
-2. Check the Interface Tool is running and shows the analyzer as **Connected**.
-3. Check the Sample IDs on the analyzer match the Sample IDs in InteLIS. A
-   result carrying an unrecognised ID does not attach to a sample.
-4. Ask the administrator to check the lab's Interface Tool connection under
-   **ADMIN → Facilities**, then the testing lab, then **Interface Tool
-   Connections** at the foot of the page. The installation shows a status and a
-   **Last Seen** time.
+    Use this when the analyzer cannot reach the Interface Tool but can export a
+    result file.
 
-If results still do not arrive, use file import for the run and raise the
-connection problem with the administrator.
+    1. On the analyzer, export the results of the run as an xls, xlsx, csv or txt
+       file. The file carries the Sample IDs from the batch PDF.
+    2. In InteLIS, go to **HIV VIRAL LOAD → Test Result Management → Import
+       Results From File**.
+    3. Choose the analyzer that ran the batch in **Instrument/Platform Name**.
 
----
+        ??? failure "If the import comes out garbled or empty"
 
-## Method 2: File import
+            InteLIS reads the file in the layout of the analyzer chosen here. Start
+            again and choose the analyzer that produced the file.
 
-Use this when the analyzer cannot reach the Interface Tool but can write a
-result file.
+    4. Choose the **Specific Machine Name/Code**.
+    5. Check **Date Format**. If the analyzer has a pre-configured format, it is
+       already filled. If not, paste a date copied from the file. InteLIS works
+       out the format from it.
+    6. Choose the **Testing Lab Name**.
+    7. Select the file under **Upload HIV Viral Load File**.
+    8. Select **Submit**. InteLIS lists every row it read, with a **Sample
+       source** note on each.
+    9. Check the **Sample source** note on each row.
 
-### Export the file from the analyzer
+        | Note | Meaning | Action |
+        |---|---|---|
+        | Result for Sample ID from VLSM | The Sample ID matches a registered sample | Accept it |
+        | Sample ID not from VLSM | The Sample ID matches no registered sample | Do not accept. Find why the Sample ID differs |
+        | Result already exists for this sample | The sample already has a result | Overwrite only if the new result is the correct one |
+        | Test date ~1+ month from collection | The test date is a month or more after collection | Check the date |
+        | Test date ~1+ year from collection | The test date is a year or more after collection | Check the date. A gap of a year is usually a typing error |
 
-Export the results for the run from the analyzer. The file must carry the
-InteLIS Sample IDs, which is what the batch PDF put on the analyzer in the first
-place. Supported file types are xls, xlsx, csv, and txt.
+    10. Set **Status** on each row: **Accepted**, **Hold**, **Rejected** or
+        **Failed**. For a row set to **Rejected**, choose the **Rejection
+        Reason**.
 
-### Upload the file
+        ??? info "To accept every row at once"
 
-1. Go to **HIV VIRAL LOAD → Test Result Management → Import Results From File**.
-2. Choose the **Instrument/Platform Name**.
-3. Choose the **Specific Machine Name/Code**.
-4. Choose the **Testing Lab Name**.
-5. Select the exported file under **Upload File**.
-6. Select **Submit**.
+            Select **Accept All Samples**. It sets only the rows that have no
+            status yet. Rows already set to **Rejected** stay rejected.
 
-Choose the analyzer carefully. Every analyzer writes its file differently, and
-InteLIS reads the file according to the analyzer selected here. The wrong choice
-produces a garbled import or none at all.
+    11. Choose **Tested By**, **Reviewed By** and **Approved By**.
 
-Where the file's date format is not recognised, paste a date copied from the
-file into the date format field. InteLIS works out the format from it.
+        ??? failure "If InteLIS says the same person is reviewing and approving"
 
-### Review what was imported
+            The lab's configuration decides the outcome. Either InteLIS asks for
+            confirmation, or it refuses. If it refuses, choose a different
+            person for **Approved By**.
 
-InteLIS lists every row it read from the file, with a **Sample source** note on
-each.
+    12. Select **Save**.
 
-| Note | Meaning | What to do |
-|---|---|---|
-| Result for Sample ID from VLSM | The Sample ID matches a registered sample | Accept it |
-| Sample ID not from VLSM | The ID does not match any registered sample | Do not accept. Find why the ID differs |
-| Result already exists for this sample | The sample already has a result | Only overwrite if the new result is the correct one |
-| Test date ~1+ month from collection | The test date is a month or more after collection | Check the date is right |
-| Test date ~1+ year from collection | The test date is a year or more after collection | Check the date is right. A year's gap is usually a typing error |
+        ??? failure "If InteLIS says one or more samples do not have a test date"
 
-Set a **Status** on every row. Set **Tested By**, **Reviewed By**, and
-**Approved By**.
+            Enter the missing test date on each row that has none, then select
+            **Save** again.
 
-To mark every row at once, select **Accept All Samples**. It only sets rows that
-have no status yet, so rows already marked as rejected stay rejected.
+=== "Manual entry"
 
-InteLIS refuses to submit while any row is missing a test date.
+    Use this only when the analyzer can neither connect nor export a file.
 
-Depending on the lab's configuration, InteLIS either warns or refuses when the
-same person is set as both reviewer and approver.
+    1. Go to **HIV VIRAL LOAD → Test Result Management → Enter Result
+       Manually**.
+    2. In the drop-down above the list, choose **Results Not Recorded**. The list
+       shows only samples still waiting for a result.
+    3. Select **Enter Result** on the sample's row.
+    4. Fill the **Laboratory Information** section.
 
-7. Select **Save**.
+        | Field | Entry |
+        |---|---|
+        | Date Sample Received at Testing Lab | The date the sample reached the lab |
+        | Sample Testing Date | The date the analyzer ran the sample |
+        | VL Testing Platform | The analyzer that ran the sample |
+        | Viral Load Result (copies/mL) | The result as printed by the analyzer |
+        | Reviewed By, Tested By, Approved By | The staff responsible |
+        | Lab Tech. Comments | Any comment the report must carry |
 
----
+        Country forms differ in places. For example, the South Sudan form labels
+        the analyzer field **Testing Platform**.
 
-## Method 3: Manual entry
+        ??? failure "If the sample was rejected"
 
-Use this only when the analyzer can neither connect nor export a file.
+            Record the rejection in place of a result.
 
-1. Go to **HIV VIRAL LOAD → Test Result Management → Enter Result Manually**.
-2. Filter to find the sample. Set **Status** to **Results Not Recorded** to see
-   only samples still waiting.
-3. Select **Enter Result** on the sample's row.
-4. Fill the laboratory section of the form.
+            1. Set **Is Sample Rejected?** to **Yes**.
+            2. Choose the **Rejection Reason**.
+            3. Set the **Rejection Date**.
 
-| Field | What to enter |
-|---|---|
-| Date Sample Received at Testing Lab | The date the sample reached the lab |
-| Sample Testing Date | The date the analyzer ran the sample |
-| VL Testing Platform | The analyzer that ran it |
-| Viral Load Result | The result as reported by the analyzer |
-| Reviewed By, Tested By, Approved By | The staff responsible |
-| Lab Tech. Comments | Anything the report should carry |
+            The reason appears on the result report and in the sample rejection
+            report.
 
-5. Select **Save**.
+        ??? failure "If the analyzer returned a failure"
 
-Read the result back off the screen against the analyzer printout before saving.
+            1. Enter `Failed` as the **Viral Load Result (copies/mL)**.
+            2. Choose the **Reason for Failure**.
 
-A manually entered result is not released until it is approved. See
-[How to review and approve results](approve-results.md).
+            The sample moves to **Failed/Hold Samples** for a retest. See
+            [How to handle failed and held samples](failed-and-held-samples.md).
 
-### Custom Tests use a different result screen
+    5. Read the result on the screen against the analyzer printout.
+    6. Select **Save**. The result waits at **Awaiting Approval**. See
+       [How to review and approve results](approve-results.md).
 
-The fields above are the viral load form. A Custom Tests sample is recorded
-under **OTHER LAB TESTS → Test Result Management → Enter Result Manually**, and
-its result screen works by test card rather than by a single result field.
+=== "Custom Tests"
 
-1. Open the sample.
-2. Select **Add Test** for each test performed on the sample, and record that
-   test's result on its own card. A card can record a test done at this lab or
-   one referred to another lab.
-3. When every test has been recorded, set **Enter the Final Interpretation?** and
-   enter the **Final Interpretation**.
-4. Select **Save**.
+    Custom Tests have no Interface Tool or file import. Their results are always
+    entered by hand, one test card per test.
 
-The final interpretation is what carries the sample forward. Until it is
-entered, the sample stays at **Sample Registered at Testing Lab** however many
-test cards have been saved, so it never reaches the approval queue and looks to
-a supervisor as though nothing was tested.
+    1. Go to **OTHER LAB TESTS → Test Result Management → Enter Result
+       Manually**.
+    2. Select **Enter Result** on the sample's row.
+    3. Select **Add Test** for a test performed on the sample.
+    4. Record that test's result on its card. A card records a test done at this
+       lab or a test referred to another lab.
+    5. Repeat steps 3 and 4 for every test performed on the sample.
+    6. Set **Enter the Final Interpretation?** to **Yes**.
 
-Entering the final interpretation locks further tests and referral on that
-sample, so record every test card first.
+        ??? warning "Record every test card first"
 
----
+            Entering the final interpretation locks further tests and referrals
+            on the sample.
 
-## If the sample was rejected
+    7. Enter the **Final Interpretation**.
 
-Where the sample cannot be tested, record the rejection instead of a result.
-Set **Is Sample Rejected?** on the form, choose a **Rejection Reason**, and set
-the **Rejection Date**.
+        ??? failure "If the sample stays at Sample Registered at Testing Lab"
 
-A rejected sample carries the reason through to the report and into the sample
-rejection report.
+            The final interpretation is missing. Without it, the sample stays at
+            **Sample Registered at Testing Lab** however many test cards are
+            saved, and it never reaches the approval queue. Open the sample
+            again and complete steps 6 and 7.
 
-## If the test failed
-
-Where the analyzer returned a failure or an invalid reading, record it as failed
-and give the **Reason for Failure**. Failed samples collect on their own page for
-retesting. See [How to handle failed and held samples](failed-and-held-samples.md).
+    8. Select **Save**.
 
 ## Confirm it worked
 
-Go to **HIV VIRAL LOAD → Request Management → View Test Requests** and search on
-the batch code.
+1. Go to **View Test Requests** under **Request Management** for the test type.
+2. Search on the batch code.
 
-Every sample in the run carries either a result, a rejection, or a failure.
-Samples still showing no result did not reach InteLIS. Check their Sample IDs
-against the analyzer.
+Every sample in the run carries a result, a rejection or a failure. A sample
+with none of these did not reach InteLIS. Check its Sample ID against the
+analyzer.
 
 ## Next
 

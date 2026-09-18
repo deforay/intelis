@@ -1,12 +1,7 @@
 # Créer un batch pour le test
 
-Un batch est l'ensemble des échantillons passés ensemble sur un automate.
-Constituer le batch dans InteLIS d'abord, puis imprimer le PDF du batch, est ce
-qui garantit que les ID d'échantillon sur l'automate sont identiques à ceux
-d'InteLIS.
-
-Sauter cette étape est la cause la plus fréquente de résultats qui reviennent
-sans correspondre à aucun échantillon.
+Regrouper des échantillons enregistrés dans un batch pour une série sur un
+automate, et imprimer le PDF du batch qui porte leurs ID jusqu'à l'automate.
 
 ## Avant de commencer
 
@@ -20,116 +15,97 @@ sans correspondre à aucun échantillon.
 
 1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Gérer le batch**.
 2. Sélectionner **Créer un nouveau batch**.
-3. Choisir l'automate dans **Plateforme de test**.
-4. Saisir un **Code de batch**.
-5. Choisir la numérotation des **Positions**, **Numérique** ou **Alphanumérique**,
-   pour correspondre à l'étiquetage des positions sur l'automate.
+3. Choisir l'automate dans **Plateforme de test**. La liste des échantillons en
+   attente de batch s'affiche, avec le nombre maximum d'échantillons accepté par
+   l'automate.
+4. Sélectionner **Afficher la recherche avancée**.
+5. Choisir la numérotation des **Positions**, **Numérique** ou
+   **Alphanumérique**, selon l'étiquetage des positions sur l'automate.
+6. Choisir **Trier par** et **Type de tri** pour fixer l'ordre des échantillons.
+   L'écran des positions, après l'enregistrement, reprend cet ordre.
+7. Renseigner les filtres utiles pour restreindre la liste.
 
-Choisir l'automate en premier. InteLIS limite le nombre d'échantillons d'un
-batch selon l'automate choisi, et refuse d'aller plus loin sans ce choix.
+    | Filtre | Restreint la liste à |
+    |---|---|
+    | Établissement | Les échantillons des structures sanitaires choisies |
+    | Échantillons saisis ou modifiés par | Les échantillons traités par un utilisateur |
+    | Date de prélèvement de l'échantillon | Une période de prélèvement |
+    | Date de réception de l'échantillon au laboratoire | Une période de réception au laboratoire |
+    | Dernière modification | Une période de dernière modification |
+    | Type d'échantillon | Un seul type de prélèvement |
+    | Source de financement | Les échantillons d'un seul bailleur |
 
-Les codes de batch sont uniques. Si le code est déjà utilisé, InteLIS le signale
-et le batch ne peut pas être enregistré tant que le code n'est pas modifié.
-Utiliser la convention de nommage du laboratoire pour pouvoir retrouver le batch
-plus tard.
+8. Sélectionner **Filtrer les échantillons**.
 
-## Trouver les échantillons
+    ??? failure "Si InteLIS demande de choisir une plateforme de test pour procéder"
 
-La liste sous le formulaire affiche les échantillons en attente de test. Pour la
-restreindre, sélectionner **Afficher la recherche avancée** et filtrer.
+        Aucun automate n'est sélectionné. En choisir un dans **Plateforme de
+        test**, puis sélectionner à nouveau **Filtrer les échantillons**.
 
-| Filtre | Usage |
-|---|---|
-| Structure | Les échantillons d'une seule structure sanitaire |
-| Échantillons saisis ou modifiés par | Les échantillons traités par un utilisateur |
-| Date de prélèvement de l'échantillon | Une période de prélèvement |
-| Date de réception de l'échantillon au labo | Une période de réception |
-| Type d'échantillon | Un seul type de prélèvement |
-| Sources de financement | Les échantillons d'un seul bailleur |
+9. Vérifier le **Code de batch**. InteLIS le remplit et il ne peut pas être
+   modifié.
+10. Sélectionner les échantillons de la série. Au choix :
 
-Régler **Trier par** et **Type de tri** pour définir l'ordre d'affichage des
-échantillons. Cet ordre devient l'ordre du PDF du batch, il faut donc le régler
-selon l'ordre de chargement de la série.
+    - Sélectionner **Sélection automatique des échantillons pour le lot**. Les
+      échantillons du haut de la liste passent dans le batch, jusqu'au maximum
+      de l'automate.
+    - Sélectionner des échantillons dans la liste de gauche, puis sélectionner
+      la flèche simple vers la droite pour les passer dans le batch à droite.
 
-Sélectionner **Filtrer les échantillons** pour appliquer. Sélectionner
-**Réinitialiser les filtres**
-pour effacer.
+11. Sélectionner **Sauvegarder et Suivant**. L'écran **Ajouter une position de
+    contrôle de lot** s'ouvre.
 
-## Sélectionner les échantillons
+    ??? failure "Si InteLIS signale un nombre d'échantillons supérieur à celui autorisé"
 
-Cocher les échantillons de la série.
+        Le batch contient plus d'échantillons que l'automate n'en accepte.
+        Renvoyer des échantillons dans la liste de gauche avec la flèche simple
+        vers la gauche, puis sélectionner à nouveau **Sauvegarder et Suivant**.
 
-Pour remplir le batch jusqu'à la capacité de l'automate en une action, utiliser
-**Sélection automatique des échantillons pour le lot**. La sélection se fait dans la liste
-filtrée, selon l'ordre de tri choisi.
+    ??? failure "Si InteLIS demande de sélectionner au moins un échantillon"
 
-InteLIS bloque l'enregistrement dans trois cas.
+        Le batch à droite est vide. Y passer des échantillons, puis sélectionner
+        à nouveau **Sauvegarder et Suivant**.
 
-| Message | Signification |
-|---|---|
-| Choose a testing platform to proceed | Aucun automate sélectionné |
-| Select at least one sample | Aucun échantillon coché |
-| More than the allowed number of samples for this platform | Trop d'échantillons cochés pour cet automate |
-
-## Enregistrer
-
-Sélectionner **Sauvegarder et Suivant**. Le batch est créé et apparaît dans la
-liste des batchs.
+12. Faire glisser les échantillons et les contrôles dans l'ordre de passage sur
+    l'automate.
+13. Sélectionner **Save**. Le batch apparaît dans la liste **Gérer le batch**.
 
 ## Imprimer le PDF du batch
 
-1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Gérer le batch**.
-2. Trouver le batch.
-3. Sélectionner **PDF par lots** ou **PDF par lots compacts** sur la ligne.
+14. Sur la ligne du batch dans **Gérer le batch**, sélectionner **PDF par lots**
+    ou **PDF par lots compacts**.
 
-| Option | Contenu |
-|---|---|
-| PDF par lots | Une zone par échantillon, avec un code-barres pour chaque ID |
-| PDF par lots compacts | La même liste condensée sur moins de pages |
+    | Option | Présentation |
+    |---|---|
+    | PDF par lots | Une zone par échantillon, avec un code-barres pour chaque ID |
+    | PDF par lots compacts | La même liste sur moins de pages |
 
-Certains laboratoires sont configurés pour ne proposer que la version compacte.
-Dans ce cas, **PDF par lots** n'apparaît pas sur la ligne.
+    ??? info "Si PDF par lots n'apparaît pas sur la ligne"
 
-Imprimer le PDF et l'emporter à l'automate.
+        Le laboratoire est configuré pour la seule version compacte. Utiliser
+        **PDF par lots compacts**.
 
-## Enregistrer les échantillons sur l'automate
+15. Imprimer le PDF.
 
-Utiliser le PDF du batch imprimé à l'automate. Scanner ou saisir l'ID de
-l'échantillon depuis le PDF pour chaque position.
-
-Les ID d'échantillon sur l'automate doivent correspondre exactement à ceux
-d'InteLIS. Un résultat portant un ID qu'InteLIS ne reconnaît pas ne se rattache
-à aucun échantillon, et l'échantillon reste dans la file des non testés.
-
-Ne pas saisir les ID depuis la fiche papier, depuis une liste de travail tenue
-en dehors d'InteLIS, ni de mémoire.
-
-## Lancer le test
-
-Passer le batch sur l'automate normalement. Puis saisir les résultats. Voir
-[Saisir les résultats de charge virale](capture-results.md).
+Charger les échantillons sur l'automate avec les ID du PDF imprimé. Puis
+[saisir les résultats](capture-results.md).
 
 ## Modifier ou supprimer un batch
 
-La liste des batchs propose ces actions par ligne.
+Chaque ligne de **Gérer le batch** propose ces actions.
 
-| Action | Effet | Disponibilité |
-|---|---|---|
-| **Modifier** | Modifier les informations du batch et ses échantillons | Toujours |
-| **Modifier le poste** | Modifier la position de chaque échantillon | Toujours |
-| **PDF par lots** | Réimprimer la planche de codes-barres complète | Sauf si le laboratoire n'utilise que la version compacte |
-| **PDF par lots compacts** | Réimprimer la planche condensée | Toujours |
-| **Supprimer** | Supprimer le batch et libérer ses échantillons | Uniquement tant qu'aucun échantillon du batch n'a été testé |
+| Action | Effet |
+|---|---|
+| **Modifier** | Modifier le batch et ses échantillons |
+| **Modifier le poste** | Modifier la position de chaque échantillon |
+| **PDF par lots**, **PDF par lots compacts** | Réimprimer le PDF du batch |
+| **Supprimer** | Supprimer le batch et renvoyer ses échantillons dans la liste en attente de batch. Affiché uniquement tant qu'aucun échantillon du batch n'a de résultat |
 
-Supprimer un batch ne supprime pas ses échantillons. Ils retournent dans la file
-des non testés et peuvent être ajoutés à un autre batch.
-
-Dès qu'un échantillon du batch a un résultat, **Supprimer** disparaît de la
-ligne. Pour retester ces échantillons, utiliser l'action de retest. Voir
+Pour retester des échantillons d'un batch qui a déjà des résultats, voir
 [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
 
 ## Vérifier que tout fonctionne
 
-Le batch apparaît dans **Gérer le batch** avec le bon nombre d'échantillons dans
-**Nombre d'échantillons**. Après la série et après la saisie des résultats, **No. of
-Samples Tested** augmente jusqu'à correspondre.
+Le batch apparaît dans **Gérer le batch** avec le bon nombre dans **Nombre
+d'échantillons**. Une fois les résultats saisis, **Nombre d'échantillons
+testés** augmente jusqu'à correspondre.

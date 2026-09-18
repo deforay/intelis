@@ -1,64 +1,59 @@
 # Sample statuses
 
-Every sample in InteLIS carries one status. This page lists all of them.
-
-Applies to InteLIS 5.7.64.
+Every sample in InteLIS carries one status. This page lists all of them, what
+sets each one, and how each one counts in reports.
 
 ## The statuses
 
 | Status | Meaning |
-|---|---|
+| --- | --- |
 | Sample Currently Registered at Health Center | Registered at a health facility. The testing lab has not received it |
 | Sample Registered at Testing Lab | Received by the testing lab and waiting to be tested |
 | Sample Referred to another Lab | Sent on to a different lab for testing |
 | Awaiting Approval | A result is recorded and waiting for approval |
-| Accepted | The result is approved and available for release |
-| Rejected | The sample was not fit to test. A rejection reason is recorded, and the rejection is released to the requesting facility so the sample can be recollected |
+| Accepted | The result is approved and ready for release |
+| Rejected | The sample was not fit to test. A rejection reason is recorded, and the rejection is released to the requesting facility so the sample can be collected again |
 | Failed/Invalid | The test ran and did not produce a usable result |
 | Hold | Paused pending a decision |
-| Sample Reordered | Legacy status, kept so older records still read correctly. Not set by any current workflow |
+| Sample Reordered | Legacy status, kept so older records still read correctly |
 | Lost | The sample cannot be found and will not be tested |
-| Expired | The sample passed the storage life the installation allows |
-| No Result | The test ran and reported no result. Recorded by entering a result of `no result` |
+| Expired | The sample waited without a result for longer than the installation allows |
+| No Result | The test ran and reported no result |
 | Cancelled | Testing will not be performed. The request stands but no test is done |
 
-## Where each status is set
+## What sets each status
 
 | Status | Set by |
-|---|---|
+| --- | --- |
 | Sample Currently Registered at Health Center | Registering a request at a health facility |
 | Sample Registered at Testing Lab | Registering a request at a lab, activating a manifest, or sending a sample for retest |
 | Sample Referred to another Lab | Referring a sample to another lab |
-| Awaiting Approval | Recording a result |
-| Accepted | Approving a result, or recovering one from the Failed/Hold page |
-| Rejected | Recording a rejection on the result form, or applying Rejected in Manage Results Status |
-| Failed/Invalid | Recording a test failure, or an import marking the row failed |
-| Hold | Applying Hold to a sample |
-| Sample Reordered | Legacy. No current workflow sets this status. Retesting a sample returns it to Sample Registered at Testing Lab, and the **Sample Reordered** checkbox on the request form records a separate flag rather than this status |
-| Lost | Applying Lost in Manage Results Status |
-| Expired | The installation's sample expiry period elapsing |
-| Cancelled | Applying Cancelled in Manage Results Status, with a typed confirmation |
+| Awaiting Approval | Recording a result, or correcting one on the result form |
+| Accepted | Approving a result in **Manage Results Status** or on the **Imported Results** screen, automatic approval of results sent in by the Interface Tool where the lab is configured for it, or recovering a result on the **Failed/Hold Samples** page |
+| Rejected | Recording a rejection on the result form, applying **Rejected** in **Manage Results Status**, or choosing **Rejected** on the **Imported Results** screen |
+| Failed/Invalid | Recording a result that reads as a failure, choosing **Failed** on the **Imported Results** screen, or applying **Accepted** to a result that reads as a failure |
+| Hold | No viral load screen sets it. Choosing **Hold** on the **Imported Results** screen sets that row's result aside and leaves the sample's status unchanged |
+| Sample Reordered | No current workflow. Retesting returns a sample to Sample Registered at Testing Lab. The **Sample Reordered** checkbox on the request form records a separate flag, not this status |
+| Lost | Applying **Lost** in **Manage Results Status** |
+| Expired | The nightly status update. A sample still in Hold, Sample Reordered, Sample Currently Registered at Health Center or Sample Registered at Testing Lab expires once it is older than **Sample Expiry Days** under **ADMIN → System Configuration → General Configuration**. The age counts from the collection date, or from the request date when no collection date is recorded. The default is 365 days |
+| No Result | Entering `no result` as the result |
+| Cancelled | Applying **Cancelled** in **Manage Results Status** and typing `CANCEL` to confirm |
 
-## Statuses that pair with a reason
+## Statuses that record a reason
 
 | Status | Reason recorded |
-|---|---|
+| --- | --- |
 | Rejected | A rejection reason from the list under **ADMIN → VL Config → Rejection Reasons** |
 | Failed/Invalid | A failure reason from the list under **ADMIN → VL Config → Test Failure Reasons** |
-| Cancelled | A typed confirmation, entered at the time of cancelling |
 
-## How statuses affect reports
+## How statuses count in reports
 
-**Cancelled** samples are treated as never tested. They are excluded from testing
-counts and from turnaround time.
-
-**Failed/Invalid** samples stay in the failure rate. Sending a failed sample for
-retest keeps the failed attempt on record, so both the failure and the retest are
-counted.
-
-**Rejected** samples appear in the sample rejection report with their reason.
-
-**Accepted** samples are the only ones available to print and to email.
+| Status | Effect |
+| --- | --- |
+| Accepted | Can be printed and emailed to the requesting facility |
+| Rejected | Can be printed for the requesting facility. Rejected samples carry no result, and email sends only samples with a result. Appears in the sample rejection report with its reason |
+| Failed/Invalid | Stays in the failure rate. Sending a failed sample for retest keeps the failed attempt on record, so both the failure and the retest are counted |
+| Cancelled | Counted as never tested. Excluded from testing counts and from turnaround time |
 
 ## Related guides
 

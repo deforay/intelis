@@ -100,6 +100,3 @@ WampServer must run PHP 8.4.
 
         The database changes did not finish. Run step 11 again and send its
         whole output to support.
-
-14. If the lab uses an STS, select **Force Remote Sync** in the page footer and
-    wait for it to finish.

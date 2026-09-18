@@ -1,158 +1,179 @@
-# Modifier la configuration générale
+# Paramètres de la configuration générale
 
-Ce guide couvre **ADMIN → Configuration du système → Configuration générale**,
-les paramètres qui modifient le comportement d'InteLIS sur toute l'installation.
+Référence de **ADMIN → Configuration du système → Configuration générale**.
+Chaque paramètre s'applique aussitôt à tous les utilisateurs de l'installation.
 
-Chaque paramètre de cette page s'applique d'un coup à tous les utilisateurs.
-Modifier un paramètre à la fois et en vérifier l'effet avant d'en modifier un
-autre.
+Les paramètres listés sous
+[Modifications à faire valider](administer-intelis.md#modifications-a-faire-valider)
+demandent d'abord l'accord de l'équipe nationale.
 
-## Avant de commencer
+## Modifier un paramètre
 
-- Un compte avec des droits d'administrateur
-- L'accord de l'équipe nationale pour les paramètres listés sous
-  [Modifications à faire
-  valider](administer-intelis.md#modifications-a-faire-valider-avant-de-les-appliquer)
+1. Aller à **ADMIN → Configuration du système → Configuration générale**. La
+   page, intitulée **Configuration du système**, s'ouvre en lecture seule.
+2. Sélectionner **Modifier la configuration du système**.
+3. Trouver le paramètre avec **Rechercher les paramètres par mot-clé**, ou
+   choisir son panneau sous **Aller à une section**.
+4. Modifier le paramètre.
+5. Sélectionner **Sauvegarder**.
+6. Vérifier l'effet avec la ligne correspondante de
+   [Vérifier une modification](#verifier-une-modification).
 
-La page est organisée en panneaux. Utiliser le champ de recherche en haut pour
-trouver un paramètre plutôt que de faire défiler.
+Les panneaux ci-dessous suivent l'ordre de la page. Le panneau d'un module
+n'apparaît que si l'installation exécute ce module.
 
-## Instance Settings
-
-| Paramètre | Contrôle |
-|---|---|
-| Format de date | L'affichage des dates dans InteLIS. `DD-MMM-YYYY` ou `DD-MM-YYYY` |
-| Afficher l'option de cryptage des IIP | Si l'option de chiffrement des données identifiantes est proposée |
-
-## Global Settings
+## Réglages de l’instance
 
 | Paramètre | Contrôle |
-|---|---|
+| --- | --- |
+| Format de date | L'affichage des dates dans InteLIS : `d-M-Y` ou `d-m-Y` |
+| Afficher l'option de cryptage des IIP | Si l'option de chiffrement des informations d'identification personnelle est proposée |
+
+## Paramètres globaux
+
+| Paramètre | Contrôle |
+| --- | --- |
 | Pays d'installation | La mise en page du formulaire de demande. Chaque pays a son formulaire |
-| Fuseau horaire par défaut | Le fuseau horaire inscrit sur chaque fiche |
+| Fuseau horaire par défaut | Le fuseau horaire porté par chaque fiche |
 | Paramètres régionaux du système | La langue de l'interface |
-| En-tête | L'en-tête imprimé sur les rapports |
+| En-tête | Le titre imprimé sur les rapports |
 | Image du logo | Le logo imprimé sur les rapports |
 | Permettre aux utilisateurs de modifier leur profil | Si les utilisateurs peuvent modifier leurs propres informations |
+| Track Page Usage | Si InteLIS enregistre les pages ouvertes par chaque utilisateur. **Oui** par défaut. Alimente la page Page Usage |
 | Mode de formation | Marque l'installation comme un entraînement, et affiche le texte saisi à côté |
 | Format du code-barres | `C39`, `C39+`, `C128` ou `QRCODE` |
-| Impression d'étiquettes code-barres des échantillons | `off`, `zebra-printer` ou `dymo-labelwriter-450` |
 | Le même utilisateur peut réviser et approuver | Si une même personne peut réviser et approuver un résultat |
-| Autoriser les échantillons ne correspondant pas aux ID d'échantillons System lors de l'importation manuelle des résultats | Si un import manuel peut introduire des lignes dont l'ID d'échantillon est inconnu d'InteLIS |
-| Email du support | L'adresse indiquée aux utilisateurs qui demandent de l'aide |
-| Version minimale de l'application mobile | La version la plus ancienne d'InteLIS Mobile autorisée à se connecter, par exemple `1.5.0`. Vide autorise toutes les versions |
-| CSV Delimiter, CSV Enclosure | Le séparateur et le guillemet des fichiers CSV exportés |
+| Impression d'étiquettes code-barres des échantillons | `off`, `zebra-printer` ou `dymo-labelwriter-450` |
+| Autoriser les échantillons ne correspondant pas aux ID d'échantillons System lors de l'importation manuelle des résultats | Si un import manuel accepte des lignes dont l'ID de l'échantillon est inconnu d'InteLIS |
+| Email du support | L'adresse affichée aux utilisateurs qui demandent de l'aide |
+| Version minimale de l'application mobile | La plus ancienne version de l'application mobile autorisée à se connecter, par exemple `1.5.0`. Vide, toutes les versions sont autorisées |
+| Séparateur CSV, CSV Enveloppe | Le séparateur et les guillemets des fichiers CSV exportés |
 | Préfixe téléphonique par défaut | L'indicatif téléphonique du pays |
-| Minimum Length of Phone Number, Maximum Length of Phone Number | Les longueurs de numéro acceptées |
-| Mise en page PDF par lots | `standard` ou `compact` |
+| Longueur minimale du numéro de téléphone, Longueur maximale du numéro de téléphone | Les longueurs de numéro acceptées |
+| Mise en page PDF par lots | **Standard** ou **Compact** |
+| Jours d'expiration de l'échantillon | Le nombre de jours avant l'expiration d'un échantillon |
 | Jours de verrouillage des échantillons | Le nombre de jours avant qu'un échantillon cesse d'accepter les modifications |
-| Jours d'expiration de l'échantillon | Le nombre de jours avant péremption d'un échantillon |
+| Modèles de type de test | Un modèle PDF par type de test, avec sa **Marge de l'en-tête**, pour les rapports de résultats |
 
-**Pays d'installation** sélectionne le formulaire de demande. En changer
-change le formulaire vu par tous, et le nouveau formulaire peut ne pas porter
-les
-champs de l'ancien.
+??? warning "Pays d'installation et Mode de formation"
 
-**Mode de formation** ne convient qu'à une installation d'entraînement. Ne jamais
-l'activer sur une installation contenant de vraies fiches patients.
+    Changer le **Pays d'installation** change le formulaire vu par tous les
+    utilisateurs. Le nouveau formulaire peut ne pas porter les champs de
+    l'ancien.
 
-## Paramètres par module
+    Le **Mode de formation** est réservé à une installation d'entraînement. Ne
+    jamais l'activer sur une installation qui contient de vraies fiches de
+    patients.
 
-Chaque module actif porte son propre panneau. Les paramètres se répètent par
-module, donc une modification sous Viral Load Settings n'atteint pas TB
-Settings.
+## Panneaux des modules
+
+Chaque module a son panneau : **Réglages de la charge virale**, **Paramètres
+EID**, **Paramètres Covid-19**, **Paramètres de l'hépatite**, **Réglages TB**,
+**Paramètres CD4** et **Paramètres des autres tests de laboratoire**. Une
+modification dans un panneau n'atteint pas les autres.
+
+| Paramètre | Contrôle | Panneaux |
+| --- | --- | --- |
+| ID de l'échantillon | La construction des ID d'échantillon de ce module. Voir [Formats d'ID d'échantillon](#formats-did-dechantillon) | Tous |
+| Longueur minimale de l'identifiant du patient | Le plus court identifiant de patient accepté par le formulaire | Tous |
+| Demande de copie sur les formulaires Enregistrer et Suivant | Si **Sauvegarder et Suivant** reporte les valeurs de la demande précédente | Tous, sur le formulaire du Cameroun uniquement |
+| Approbation automatique des résultats de l'API (CV, EID, COVID-19 ou TB) | Si les résultats reçus par l'API sont approuvés sans contrôle humain | Charge virale, EID, Covid-19, TB |
+| Afficher le nom du participant dans le manifeste (VL, EID, COVID-19, Hepatitis, TB, tests de laboratoire personnalisés) | Si le nom du participant s'imprime sur le manifeste de ce module | Tous sauf CD4 |
+| Tests de confirmation positifs Covid-19 requis | Si un résultat COVID-19 positif demande un test de confirmation | Covid-19 |
+| Jours d'expiration de l'échantillon | Une expiration propre aux tests personnalisés, lorsqu'elle diffère de l'expiration globale | Autres tests de laboratoire |
+
+Les **Réglages de la charge virale** portent en plus :
 
 | Paramètre | Contrôle |
-|---|---|
-| Format et préfixe des ID d'échantillon | La construction des ID de ce module. Voir plus bas |
-| Longueur minimale de l'identifiant du patient | L'identifiant patient le plus court accepté par le formulaire |
-| Demande de copie sur les formulaires Enregistrer et Suivant | Si Save and Next reporte les valeurs de la demande précédente |
-| Auto Approve API Results | Si les résultats arrivant par l'API sont approuvés sans contrôle humain |
-| Show Participant Name in Manifest | Si le nom du participant s'imprime sur le manifeste de ce module |
-| Jours d'expiration de l'échantillon | Une péremption propre à ce module, lorsqu'elle diffère de la globale |
-
-Viral Load Settings en porte cinq de plus.
-
-| Paramètre | Contrôle |
-|---|---|
-| Limite du seuil de charge virale | La valeur au-delà de laquelle un résultat est élevé |
+| --- | --- |
+| Limite du seuil de charge virale | La valeur à partir de laquelle un résultat est élevé |
 | Cible de suppression VL | L'objectif de suppression utilisé par les rapports |
-| VL Objectif mensuel | L'objectif mensuel de test utilisé par les rapports |
+| VL Objectif mensuel | **Activer** ou **Désactiver**. Activé, le tableau de bord montre le travail de chaque laboratoire face à ses objectifs. Les objectifs eux-mêmes se règlent par laboratoire d'analyse, sous [Configurer un laboratoire d'analyse](admin-facilities.md#configurer-un-laboratoire-danalyse) |
 | Interpréter et convertir les résultats de la LV | Si InteLIS convertit et interprète les valeurs de charge virale importées |
-| Format d'exportation de la charge virale | La disposition des colonnes de l'export charge virale |
+| Format d'exportation de la charge virale | **Format par défaut** ou **Format CRESAR**. Sur le formulaire du Cameroun uniquement |
 
-**Auto Approve API Results** diffuse sans contrôle humain les résultats arrivant
-par l'API. C'est sûr lorsque l'automate est fiable et que le circuit des batchs
-est respecté. Ce ne l'est pas lorsque les ID d'échantillon sont saisis à la main
-sur l'automate.
+??? warning "Approbation automatique des résultats de l'API"
 
-!!! warning "L'outil d'interface a son propre réglage, activé par défaut"
-    Les résultats arrivant par l'outil d'interface dépendent de **Auto Approve
-    Interface Results**, et non des réglages Auto Approve API Results par module
-    ci-dessus. Il est livré à `yes` : sur une installation par défaut, les
-    résultats de l'interface sont donc acceptés sans contrôle même si tous les
-    réglages par module ont été désactivés.
+    Les résultats reçus par l'API sont diffusés sans contrôle humain. C'est sûr
+    lorsque l'automate est fiable et que le circuit des batchs est respecté. Ce
+    n'est pas sûr lorsque les ID d'échantillon sont saisis à la main sur
+    l'automate.
 
-    Un laboratoire qui exige un contrôle humain des résultats de l'interface doit
-    régler ce paramètre sur `no` également, puis vérifier que les résultats
-    arrivant d'un automate se retrouvent dans la file d'approbation et non en
+## Formats d'ID d'échantillon
+
+Chaque module a son format et son préfixe. Le numéro courant compte au moins
+quatre chiffres et repart à zéro chaque année.
+
+| Format | Construit | Exemple avec le préfixe `VL` |
+| --- | --- | --- |
+| AA | Préfixe, année sur 2 chiffres, numéro | `VL260001` |
+| MMYY | Préfixe, mois, année sur 2 chiffres, numéro | `VL08260001` |
+| Auto | Code de province, date au format AAMMJJ, numéro | `122608190001` |
+| Auto 2 | Année sur 2 chiffres, code de province, préfixe, numéro. Sur le formulaire PNG uniquement | `2612VL0001` |
+| Numérique, Alphanumérique | Préfixe, numéro. Sans date | `VL0001` |
+
+Les échantillons enregistrés sur le STS portent un `R` initial. Lorsqu'un code
+de laboratoire est ajouté, un trait d'union le sépare du numéro courant, comme
+dans `VL0826-NMC-0019`.
+
+Un nouveau format ou préfixe s'applique aux échantillons enregistrés à partir de
+ce moment. Les échantillons existants gardent l'ancien : le laboratoire a alors
+deux schémas en même temps.
+
+## Paramètres de l'application mobile
+
+| Paramètre | Contrôle |
+| --- | --- |
+| Nom du menu de l'APP mobile | Le nom que l'application mobile affiche pour cette installation |
+
+## Connecter
+
+| Paramètre | Contrôle |
+| --- | --- |
+| URL du tableau de bord national | Le tableau de bord vers lequel pointe cette installation |
+
+## Paramètres PDF des résultats de charge virale
+
+| Paramètre | Contrôle |
+| --- | --- |
+| Afficher l'émoticône/l'émoticône | Si le PDF de résultats porte un smiley pour un résultat supprimé |
+| Afficher le résultat du journal VL | Si la valeur logarithmique s'imprime à côté des copies par millilitre |
+| Message sur la charge virale élevée | Le message imprimé sur un résultat égal ou supérieur au seuil |
+| Message de faible charge virale | Le message imprimé sur un résultat inférieur au seuil |
+| Format du nom du patient | **Prénom + Nom**, **Nom complet** ou **Cacher le nom du patient** |
+
+Régler **Format du nom du patient** sur **Cacher le nom du patient** lorsque les
+PDF de résultats passent par un circuit qui ne doit pas porter de noms de
+patients.
+
+## Paramètres absents de cette page
+
+| Paramètre | Par défaut | Contrôle |
+| --- | --- | --- |
+| Auto Approve Interface Results | `yes` | Si les résultats reçus par l'outil d'interface sont approuvés sans contrôle humain. Distinct des paramètres API de chaque module |
+| Interface API Enabled | `no` | Si le panneau **Connexions des outils d'interface** apparaît sur les laboratoires d'analyse |
+
+Le support InteLIS modifie ces deux paramètres sur demande.
+
+!!! warning "Les résultats d'interface sont approuvés automatiquement par défaut"
+
+    Avec la valeur par défaut `yes`, les résultats de l'outil d'interface sont
+    acceptés sans revue, même lorsque chaque paramètre d'approbation
+    automatique des résultats de l'API est désactivé. Un laboratoire qui exige
+    une revue humaine des résultats d'interface demande au support de régler
+    Auto Approve Interface Results sur `no`. Vérifier ensuite que le résultat
+    suivant de l'automate arrive dans la file d'approbation, et non comme
     Accepté.
 
-## Formats des ID d'échantillon
-
-Chaque module porte son propre format et son propre préfixe. Le numéro courant
-compte quatre chiffres et repart à chaque année.
-
-| Format | Produit | Exemple avec le préfixe `VL` |
-|---|---|---|
-| YY | préfixe, année sur 2 chiffres, numéro | `VL260001` |
-| MMYY | préfixe, mois, année sur 2 chiffres, numéro | `VL08260001` |
-| alphanumeric | préfixe, numéro. Sans date | `VL0001` |
-| auto | code province, date en AAMMJJ, numéro | `122608190001` |
-| auto2 | année sur 2 chiffres, code province, préfixe, numéro | `2612VL0001` |
-
-Les échantillons créés sur le serveur national portent un `R` en tête. Lorsqu'un
-code de laboratoire est ajouté, un trait d'union le sépare du numéro courant,
-comme dans `VL0826-NMC-0019`.
-
-Changer le format ou le préfixe change tout échantillon enregistré ensuite. Les
-échantillons déjà enregistrés gardent l'ancien format. Le laboratoire porte
-alors
-deux schémas à la fois, et aucun n'est faux.
-
-## Mobile App Settings
-
-| Paramètre | Contrôle |
-|---|---|
-| Nom du menu de l'APP mobile | Le nom sous lequel l'application mobile désigne cette installation |
-
-## Connect
-
-| Paramètre | Contrôle |
-|---|---|
-| URL du tableau de bord national | Le tableau de bord vers lequel cette installation renvoie |
-
-## Viral Load Result PDF Settings
-
-| Paramètre | Contrôle |
-|---|---|
-| Afficher l'émoticône/l'émoticône | Si le PDF de résultat porte un smiley pour un résultat supprimé |
-| Afficher le résultat du journal VL | Si la valeur logarithmique s'imprime à côté des copies par millilitre |
-| Message sur la charge virale élevée | Le message imprimé sur un résultat élevé |
-| Message de faible charge virale | Le message imprimé sur un résultat bas |
-| Format du nom du patient | `flname` pour prénom et nom, `fullname` pour le nom complet, `hidename` pour n'imprimer aucun nom |
-
-Régler **Format du nom du patient** sur `hidename` lorsque les PDF de résultats
-circulent par une voie qui ne doit pas porter de noms de patients.
-
-## Vérifier que tout fonctionne
+## Vérifier une modification
 
 | Modification | Contrôle |
-|---|---|
-| Date Format, Header, Logo | Ouvrir un rapport et le lire |
-| Format des ID d'échantillon | Enregistrer une demande et lire l'ID délivré |
+| --- | --- |
+| Format de date, En-tête, Image du logo | Ouvrir un rapport et le lire |
+| ID de l'échantillon | Enregistrer une demande et lire l'ID de l'échantillon attribué |
 | Format du code-barres | Imprimer un PDF de batch et scanner un code-barres |
-| Le même utilisateur peut réviser et approuver | Se connecter comme réviseur et tenter d'approuver le résultat qui vient d'être révisé |
-| Auto Approve API Results | Envoyer un résultat par l'API et lire son statut |
-| Réglages du PDF de résultat | Imprimer un PDF de résultat |
+| Le même utilisateur peut réviser et approuver | Réviser un résultat, puis tenter d'approuver ce même résultat |
+| Approbation automatique des résultats de l'API | Envoyer un résultat par l'API et lire son statut |
+| VL Objectif mensuel | Ouvrir le tableau de bord et trouver les graphiques d'objectifs |
+| Paramètres PDF des résultats | Imprimer un PDF de résultats |
 | Jours de verrouillage des échantillons | Ouvrir un échantillon plus ancien que la limite et tenter de le modifier |

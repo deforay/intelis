@@ -73,8 +73,6 @@ instead.
     8. Check the lab settings under **Admin → System Configuration → General Configuration**.
     9. Open a request entered shortly before the backup, and check its results
        are there.
-    10. If the lab uses an STS, select **Force Remote Sync** and wait for it to
-        finish.
 
 === "Only the database"
 
@@ -202,9 +200,7 @@ instead.
     12. Check the lab settings under **Admin → System Configuration → General Configuration**.
     13. Open a request entered shortly before the backup, and check its results
         are there.
-    14. If the lab uses an STS, select **Force Remote Sync** and wait for it to
-        finish.
-    15. If the lab uses the interfacing tool, restore its database too. Type
+    14. If the lab uses the interfacing tool, restore its database too. Type
         this, followed by a space. Do not press Enter yet:
 
         ```bash
@@ -218,7 +214,7 @@ instead.
         Always keep `--profile=interfacing` in this command. Without it, the
         file is restored over the main database.
 
-    16. When the lab works, delete the fetched copy. It holds the database
+    15. When the lab works, delete the fetched copy. It holds the database
         password.
 
         ```bash
@@ -387,9 +383,7 @@ instead.
     17. Open a request entered shortly before the backup, and check its results
         are there.
     18. Open a result PDF or an attachment, and check it displays.
-    19. If the lab uses an STS, select **Force Remote Sync** and wait for it to
-        finish.
-    20. If the lab uses the interfacing tool, restore its database too. Type
+    19. If the lab uses the interfacing tool, restore its database too. Type
         this, followed by a space. Do not press Enter yet:
 
         ```bash
@@ -403,7 +397,7 @@ instead.
         Always keep `--profile=interfacing` in this command. Without it, the
         file is restored over the main database.
 
-    21. When the lab works, delete the fetched copy. It holds the database
+    20. When the lab works, delete the fetched copy. It holds the database
         password.
 
         ```bash

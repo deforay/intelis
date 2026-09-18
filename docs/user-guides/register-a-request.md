@@ -1,8 +1,7 @@
 # How to register a viral load test request
 
-Use this guide when a sample arrives at the lab with a paper request form and no
-Sample ID. Registering the request gives the sample an ID and puts it in the
-queue for testing.
+Register a sample that has a paper request form and no Sample ID, so it gets a
+Sample ID and joins the testing queue.
 
 For samples that arrive in a package with a manifest, do not register them one
 by one. See [How to receive samples sent on a manifest](receive-referred-samples.md).
@@ -12,120 +11,191 @@ by one. See [How to receive samples sent on a manifest](receive-referred-samples
 - A completed paper request form
 - Permission to add test requests
 
-## Open the form
+## Forms per test type
 
-Go to **HIV VIRAL LOAD → Request Management → Add New Request**.
+Each test type has its own **Add New Request** form.
 
-The form is set up for each country, so the exact fields differ between
-installations. The sections below appear on most forms. Fields marked with a red
-asterisk are mandatory. InteLIS refuses to save until every one of them is
-filled.
-
-Fill the optional fields too where the paper form has the information. Reports
-can only count what was recorded.
-
-## Fill the clinic information
-
-This section records where the sample came from and where it goes.
-
-| Field | What to enter |
+| Test type | Menu |
 |---|---|
-| State/Province | The province of the requesting facility |
-| District/County | The district, which filters to the chosen province |
-| Clinic/Health Center | The facility that collected the sample |
-| Implementing Partner | The partner supporting the facility, if the lab tracks this |
-| Funding Source | The funder covering the test, if the lab tracks this |
-| Testing Lab | The lab that runs the test |
+| HIV viral load | **HIV VIRAL LOAD → Request Management → Add New Request** |
+| Early infant diagnosis | **EARLY INFANT DIAGNOSIS (EID) → Request Management → Add New Request** |
+| Tuberculosis | **TUBERCULOSIS → Request Management → Add New Request** |
+| Custom Tests | **OTHER LAB TESTS → Request Management → Add New Request** |
 
-Choose the province first. The district list shows only districts in that
-province, and the facility list shows only facilities in that district.
+The steps below follow the HIV viral load form. The other forms have their own
+fields. For example, the EID form identifies the child by **Infant Code**, and
+the Custom Tests form starts with **Test Type**. Each country's form also
+differs in places. Fields marked with a red asterisk are mandatory.
 
-If the facility is missing from the list, it has not been created yet, or it has
-not been linked to viral load testing. Ask the administrator to add it. See
-[How to administer InteLIS](administer-intelis.md).
+**Choose where the request is registered, then follow its steps from top to bottom.**
 
-## Fill the patient information
+=== "At the testing lab"
 
-Enter the patient identifier exactly as it appears on the paper form. On most
-country forms this is the ART number.
+    1. Go to **HIV VIRAL LOAD → Request Management → Add New Request**.
+    2. If the lab prints barcode labels, leave **Print Barcode Label** ticked.
 
-As soon as the identifier is entered, InteLIS looks for earlier requests for the
-same patient and shows what it finds:
+    ### Clinic Information
 
-- the number of times a test has been requested for this patient
-- the date the last request was added
-- the collection date of the last request
+    3. Choose the **State/Province**.
+    4. Choose the **District/County**. The list shows only the districts of the
+       chosen province.
+    5. Choose the **Clinic/Health Center** that collected the sample.
 
-Use this to catch a duplicate before saving. A second request for a sample
-already registered creates two records for one sample.
+        ??? failure "If the facility is missing from the list"
 
-Enter the date of birth if the paper form has it. If it does not, enter the age
-in years instead, or the age in months for a patient under one year old.
+            The facility is not created yet, or it is not linked to viral load
+            testing. Ask the administrator to add it. See
+            [How to administer InteLIS](administer-intelis.md).
 
-## Fill the sample information
+    6. Choose the **Implementing Partner** and the **Funding Source**, if the
+       paper form gives them.
+    7. Choose the **Testing Lab**.
 
-| Field | What to enter |
-|---|---|
-| Date of Sample Collection | The date the sample was drawn |
-| Sample Dispatched On | The date the sample left the facility |
-| Sample Type | The specimen type, such as plasma or dried blood spot |
+    ### Patient Information
 
-The collection date drives the turnaround time reports and the sample expiry
-check. Enter the date from the paper form, not the date of data entry.
+    8. Enter the **ART (TRACNET) No.** exactly as it appears on the paper form.
+       InteLIS shows the patient's earlier requests: **No. of times Test
+       Requested for this Patient**, **Last Test Request Added On LIS/STS** and
+       **Sample Collection Date for Last Request**.
 
-## Fill the treatment information and the indication
+        ??? warning "If the last request has the same collection date as the paper form"
 
-These sections record the patient's treatment and the reason the test was
-requested. On most country forms the indication is a single choice from a list
-such as routine monitoring, repeat test after adherence counselling, or
-suspected treatment failure.
+            The sample is probably registered already. Do not save a second
+            request. Search for the patient in **View Test Requests** first.
 
-The indication drives the clinical reports. A request saved without one still
-tests correctly, but it disappears from those reports.
+    9. Enter the **Date of Birth**.
 
-## Leave the laboratory section empty
+        ??? info "If the paper form has no date of birth"
 
-The laboratory section holds the test date, the analyzer, the result, and the
-signatures. Leave it empty at registration. It is filled after the sample has
-been tested. See [How to capture viral load results](capture-results.md).
+            Enter **If DOB unknown, Age in Years**. For a patient under one year
+            old, enter **If Age < 1, Age in Months**.
 
-## Save
+    10. Choose the **Sex**.
 
-Two buttons save the request.
+    ### Sample Information
 
-| Button | What happens |
-|---|---|
-| **Save** | Saves the request and returns to the request list |
-| **Save and Next** | Saves the request and opens a fresh form for the next sample |
+    11. Enter the **Date of Sample Collection** from the paper form, not the date
+        of data entry. InteLIS fills the **Sample ID**. It cannot be typed.
+    12. Enter the **Sample Dispatched On** date.
+    13. Choose the **Sample Type**.
+    14. Enter the **Date Sample Received at Testing Lab**.
 
-Use **Save and Next** when working through a stack of paper forms. Some labs
-configure it to carry the clinic details over to the next form. Where that is
-turned on, check the carried-over fields against the next paper form before
-saving.
+    ### Treatment and indication
 
-InteLIS generates the Sample ID when the request is saved. Do not try to type
-one in.
+    15. Fill **Treatment Information** from the paper form: **Date of Treatment
+        Initiation**, **Current Regimen**, **Date of Initiation of Current
+        Regimen** and **ARV Adherence**.
+    16. Choose the **Indication for Viral Load Testing**: **Routine Monitoring**,
+        **Repeat VL test after suspected treatment failure adherence
+        counselling** or **Suspect Treatment Failure**.
+    17. Leave **Laboratory Information** empty. It is filled when the result is
+        captured. See [How to capture viral load results](capture-results.md).
 
-## Print the barcode label
+    ### Save
 
-Where the lab uses barcode labels, the form has a **Print Barcode Label**
-option. Set it before saving.
+    18. Select **Save** to return to the request list, or **Save and Next** to
+        open a new form for the next paper form.
 
-If no printer is listed, select **Change/Retry** to pick one. The label carries
-the Sample ID as a barcode. Stick it on the specimen tube.
+        ??? info "If Save and Next carries details over to the new form"
 
-## Confirm it worked
+            The lab is configured to copy the request into the next form. Check
+            every carried-over field against the next paper form before saving.
 
-Go to **HIV VIRAL LOAD → Request Management → View Test Requests** and search
-for the patient identifier or the Sample ID.
+        ??? failure "If no barcode printer is listed"
 
-The request appears with the status **Sample Registered at Testing Lab**. That
-status means the sample is registered and waiting to be tested.
+            Select **Change/Retry** to pick the printer.
 
-To correct a mistake, select **Edit** on the row. Requests lock after a number
-of days set by the administrator. A locked request cannot be edited.
+    19. Go to **HIV VIRAL LOAD → Request Management → View Test Requests**.
+    20. Search for the patient identifier or the Sample ID. The request shows the
+        status **Sample Registered at Testing Lab**.
 
-## Next
+        To correct a mistake, select **Edit** on the row.
 
-Add the registered samples to a batch. See
-[How to batch samples for testing](batch-samples.md).
+    Next, add the sample to a batch. See
+    [How to batch samples for testing](batch-samples.md).
+
+=== "At a health facility (STS)"
+
+    1. Go to **HIV VIRAL LOAD → Request Management → Add New Request**.
+    2. If the facility prints barcode labels, leave **Print Barcode Label**
+       ticked.
+
+    ### Clinic Information
+
+    3. Choose the **State/Province**.
+    4. Choose the **District/County**. The list shows only the districts of the
+       chosen province.
+    5. Choose the **Clinic/Health Center** that collected the sample.
+
+        ??? failure "If the facility is missing from the list"
+
+            The facility is not created yet, or it is not linked to viral load
+            testing. Ask the administrator to add it. See
+            [How to administer InteLIS](administer-intelis.md).
+
+    6. Choose the **Implementing Partner** and the **Funding Source**, if the
+       paper form gives them.
+    7. Choose the **Testing Lab** the sample goes to.
+
+    ### Patient Information
+
+    8. Enter the **ART (TRACNET) No.** exactly as it appears on the paper form.
+       InteLIS shows the patient's earlier requests: **No. of times Test
+       Requested for this Patient**, **Last Test Request Added On LIS/STS** and
+       **Sample Collection Date for Last Request**.
+
+        ??? warning "If the last request has the same collection date as the paper form"
+
+            The sample is probably registered already. Do not save a second
+            request. Search for the patient in **View Test Requests** first.
+
+    9. Enter the **Date of Birth**.
+
+        ??? info "If the paper form has no date of birth"
+
+            Enter **If DOB unknown, Age in Years**. For a patient under one year
+            old, enter **If Age < 1, Age in Months**.
+
+    10. Choose the **Sex**.
+
+    ### Sample Information
+
+    11. Enter the **Date of Sample Collection** from the paper form, not the date
+        of data entry. InteLIS fills the **Sample ID**. It cannot be typed.
+    12. Enter the **Sample Dispatched On** date.
+    13. Choose the **Sample Type**.
+    14. Leave **Date Sample Received at Testing Lab** empty. The testing lab
+        fills it.
+
+    ### Treatment and indication
+
+    15. Fill **Treatment Information** from the paper form: **Date of Treatment
+        Initiation**, **Current Regimen**, **Date of Initiation of Current
+        Regimen** and **ARV Adherence**.
+    16. Choose the **Indication for Viral Load Testing**: **Routine Monitoring**,
+        **Repeat VL test after suspected treatment failure adherence
+        counselling** or **Suspect Treatment Failure**.
+
+    ### Save
+
+    17. Select **Save** to return to the request list, or **Save and Next** to
+        open a new form for the next paper form.
+
+        ??? info "If Save and Next carries details over to the new form"
+
+            The installation is configured to copy the request into the next
+            form. Check every carried-over field against the next paper form
+            before saving.
+
+        ??? failure "If no barcode printer is listed"
+
+            Select **Change/Retry** to pick the printer.
+
+    18. Go to **HIV VIRAL LOAD → Request Management → View Test Requests**.
+    19. Search for the patient identifier or the Sample ID. The request shows the
+        status **Sample Currently Registered at Health Center**.
+
+        To correct a mistake, select **Edit** on the row.
+
+    Next, send the samples to the testing lab. See
+    [How to send samples to a testing lab on a manifest](send-samples-on-a-manifest.md).

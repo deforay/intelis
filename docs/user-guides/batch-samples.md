@@ -1,11 +1,7 @@
 # How to batch samples for testing
 
-A batch is the set of samples that run together on one analyzer. Building the
-batch in InteLIS first, then printing the batch PDF, is what keeps the Sample IDs
-on the analyzer identical to the Sample IDs in InteLIS.
-
-Skipping this step is the most common cause of results that come back and match
-no sample.
+Group registered samples into a batch for one analyzer run, and print the batch
+PDF that carries their Sample IDs to the analyzer.
 
 ## Before starting
 
@@ -19,112 +15,91 @@ no sample.
 
 1. Go to **HIV VIRAL LOAD → Request Management → Manage Batch**.
 2. Select **Create New Batch**.
-3. Choose the analyzer in **Testing Platform**.
-4. Enter a **Batch Code**.
-5. Choose the **Positions** numbering, either **Numeric** or **Alpha Numeric**,
-   to match how positions are labelled on the analyzer.
+3. Choose the analyzer in **Testing Platform**. The list of samples waiting for
+   a batch appears, with the maximum number of samples the analyzer takes.
+4. Select **Show Advanced Search Options**.
+5. Choose the **Positions** numbering, **Numeric** or **Alpha Numeric**, to
+   match how positions are labelled on the analyzer.
+6. Choose **Sort By** and **Sort Type** to set the order of the samples. The
+   position screen after saving starts in this order.
+7. Set any filters needed to narrow the list.
 
-Choose the analyzer first. InteLIS caps the number of samples a batch can hold
-based on the analyzer chosen, and it refuses to go further without one.
+    | Filter | Narrows the list to |
+    |---|---|
+    | Facility | Samples from the chosen health facilities |
+    | Samples Entered or Modified By | Samples handled by one user |
+    | Sample Collection Date | A collection date range |
+    | Date Sample Receieved at Lab | A lab reception date range |
+    | Last Modified | A last-change date range |
+    | Sample Type | One specimen type |
+    | Funding Source | Samples under one funder |
 
-Batch codes are unique. If the code is already used, InteLIS says so and the
-batch cannot be saved until the code is changed. Use the lab's own naming
-convention so the batch can be traced back later.
+8. Select **Filter Samples**.
 
-## Find the samples
+    ??? failure "If InteLIS says to choose a testing platform to proceed"
 
-The sample list below the form shows samples waiting to be tested. To narrow it,
-select **Show Advanced Search Options** and filter on any of these.
+        No analyzer is selected. Choose one in **Testing Platform**, then select
+        **Filter Samples** again.
 
-| Filter | Use |
-|---|---|
-| Facility | Samples from one health facility |
-| Samples Entered or Modified By | Samples handled by one user |
-| Sample Collection Date | A collection date range |
-| Date Sample Received at Lab | A received date range |
-| Sample Type | One specimen type |
-| Funding Source | Samples under one funder |
+9. Check the **Batch Code**. InteLIS fills it and it cannot be changed.
+10. Select the samples for the run. Either:
 
-Set **Sort By** and **Sort Type** to control the order samples appear in. That
-order becomes the order on the batch PDF, so set it to match how the run is
-loaded.
+    - Select **Automatically select samples for Batch**. It moves samples from
+      the top of the list into the batch, up to the analyzer's maximum.
+    - Select samples in the left list, then select the single right arrow to
+      move them into the batch on the right.
 
-Select **Filter Samples** to apply. Select **Reset Filters** to clear.
+11. Select **Save and Next**. The **Add Batch Controls Position** screen opens.
 
-## Select the samples
+    ??? failure "If InteLIS says more than the allowed number of samples are selected"
 
-Tick the samples for the run.
+        The batch holds more samples than the analyzer takes. Move samples back
+        to the left list with the single left arrow, then select **Save and
+        Next** again.
 
-To fill the batch to the analyzer's capacity in one action, use **Automatically
-select samples for Batch**. It selects from the filtered list in the sort order
-chosen.
+    ??? failure "If InteLIS asks to select at least one sample"
 
-InteLIS blocks a save in three cases.
+        The batch on the right is empty. Move samples into it, then select
+        **Save and Next** again.
 
-| Message | Meaning |
-|---|---|
-| Choose a testing platform to proceed | No analyzer selected |
-| Select at least one sample | No samples ticked |
-| More than the allowed number of samples for this platform | Too many samples ticked for that analyzer |
-
-## Save
-
-Select **Save and Next**. The batch is created and appears in the batch list.
+12. Drag the samples and controls into the order they go on the analyzer.
+13. Select **Save**. The batch appears in the **Manage Batch** list.
 
 ## Print the batch PDF
 
-1. Go to **HIV VIRAL LOAD → Request Management → Manage Batch**.
-2. Find the batch.
-3. Select **Batch PDF** or **Compact Batch PDF** on the row.
+14. On the batch's row in **Manage Batch**, select **Batch PDF** or **Compact
+    Batch PDF**.
 
-| Option | What it gives |
-|---|---|
-| Batch PDF | One page per sample area, with a barcode for each Sample ID |
-| Compact Batch PDF | The same list packed into fewer pages |
+    | Option | Layout |
+    |---|---|
+    | Batch PDF | One area per sample, with a barcode for each Sample ID |
+    | Compact Batch PDF | The same list on fewer pages |
 
-Some labs are configured to offer the compact layout only. Where that is the
-case, **Batch PDF** does not appear on the row.
+    ??? info "If Batch PDF is missing from the row"
 
-Print the PDF and take it to the analyzer.
+        The lab is configured for the compact layout only. Use **Compact Batch
+        PDF**.
 
-## Register the samples on the analyzer
+15. Print the PDF.
 
-Use the printed batch PDF at the analyzer. Scan or enter the Sample ID from the
-PDF for each position.
-
-The Sample IDs on the analyzer must match the Sample IDs in InteLIS exactly. A
-result carrying an ID that InteLIS does not recognise does not attach to any
-sample, and the sample stays in the untested queue.
-
-Do not enter IDs from the paper request form, from a worklist kept outside
-InteLIS, or from memory.
-
-## Run the test
-
-Run the batch on the analyzer as normal. Then capture the results. See
-[How to capture viral load results](capture-results.md).
+Load the samples on the analyzer with the Sample IDs from the printed PDF. Then
+[capture the results](capture-results.md).
 
 ## Change or remove a batch
 
-The batch list offers these actions per row.
+Each row in **Manage Batch** offers these actions.
 
-| Action | What it does | When it is available |
-|---|---|---|
-| **Edit** | Change the batch details and its samples | Always |
-| **Edit Position** | Change which position each sample sits in | Always |
-| **Batch PDF** | Reprint the full barcode sheet | Unless the lab uses the compact layout only |
-| **Compact Batch PDF** | Reprint the packed sheet | Always |
-| **Delete** | Remove the batch and release its samples | Only while no sample in the batch has been tested |
+| Action | Effect |
+|---|---|
+| **Edit** | Change the batch and its samples |
+| **Edit Position** | Change the position of each sample |
+| **Batch PDF**, **Compact Batch PDF** | Reprint the batch PDF |
+| **Delete** | Remove the batch and return its samples to the list waiting for a batch. Shown only while no sample in the batch has a result |
 
-Deleting a batch does not delete its samples. The samples return to the untested
-queue and can be added to another batch.
-
-Once any sample in a batch has a result, **Delete** disappears from the row. To
-retest those samples, use the retest action instead. See
+To retest samples in a batch that already has results, see
 [How to handle failed and held samples](failed-and-held-samples.md).
 
 ## Confirm it worked
 
-The batch appears in **Manage Batch** with the correct sample count in **No. of
-Samples**. After the run and after results are captured, **No. of Samples
-Tested** rises to match.
+The batch appears in **Manage Batch** with the right count in **No. of
+Samples**. Once results are captured, **No. of Samples Tested** rises to match.

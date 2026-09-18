@@ -61,15 +61,15 @@ préférence.
 
 | Voie | Comment le résultat arrive | Approbation |
 |---|---|---|
-| Outil d'interface | L'automate envoie le résultat à l'outil d'interface, qui le transmet à InteLIS sans aucune saisie | Automatique, si le laboratoire l'a activée |
+| Outil d'interface | L'automate envoie le résultat à l'outil d'interface, qui le transmet à InteLIS sans aucune saisie | Accepté dès son arrivée. L'approbation automatique des résultats d'interface est activée par défaut |
 | Import de fichier | Un utilisateur exporte un fichier de résultats depuis l'automate et le téléverse | L'utilisateur accepte les lignes importées |
-| Saisie manuelle | Un utilisateur lit le résultat sur l'automate et le saisit | Nécessite toujours une approbation distincte |
+| Saisie manuelle | Un utilisateur lit le résultat sur l'automate et le saisit | Reste à **En attente d'approbation** jusqu'à son approbation |
 
 L'outil d'interface est préférable car il supprime toute recopie. La saisie
 manuelle est la solution de repli lorsque l'automate ne peut ni se connecter ni
 exporter de fichier. Chaque résultat saisi à la main comporte un risque
-d'erreur de recopie, et c'est pourquoi il exige toujours l'approbation d'une
-seconde personne.
+d'erreur de recopie, et c'est pourquoi il attend une approbation avant d'être
+diffusé.
 
 ## Qui fait quoi
 
@@ -84,6 +84,7 @@ seconde personne.
 
 - [Se connecter et naviguer dans InteLIS](signing-in.md)
 - [Enregistrer une demande de test de charge virale](register-a-request.md)
+- [Envoyer des échantillons à un laboratoire avec un manifeste](send-samples-on-a-manifest.md)
 - [Réceptionner des échantillons envoyés avec un manifeste](receive-referred-samples.md)
 - [Créer un batch pour le test](batch-samples.md)
 - [Saisir les résultats de charge virale](capture-results.md)
@@ -91,3 +92,5 @@ seconde personne.
 - [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md)
 - [Diffuser les résultats à la structure demandeuse](release-results.md)
 - [Statuts des échantillons](sample-statuses.md)
+- [Rapports charge virale](reports.md)
+- [Pour les structures demandeuses](for-requesting-facilities.md)

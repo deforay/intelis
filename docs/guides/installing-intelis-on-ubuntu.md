@@ -126,9 +126,7 @@ instead.
 
     13. Log in with the login ID and password from step 10.
     14. Check the lab settings under **Admin → System Configuration → General Configuration**.
-    15. If the lab uses an STS, select **Force Remote Sync** at the bottom of
-        the page and wait for it to finish.
-    16. In a terminal, confirm the backups work:
+    15. In a terminal, confirm the backups work:
 
         ```bash
         intelis backup status
