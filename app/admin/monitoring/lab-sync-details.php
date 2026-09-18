@@ -8,7 +8,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-$title = _translate("Sources of Requests");
+$title = _translate("Lab Sync Details");
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var FacilitiesService $facilitiesService */
@@ -38,24 +38,18 @@ $stateNameList = $geolocationService->getProvinces("yes");
 
 $activeTests = TestsService::getActiveTests();
 
+// No join on track_api_requests: a lab with no tracked calls still gets its name in the header
 $sQuery = "SELECT f.facility_id, f.facility_name,
                     (SELECT MAX(requested_on)
                         FROM track_api_requests
                         WHERE request_type = 'requests'
-                        AND facility_id = f.facility_id
-                        GROUP BY facility_id
-                        ORDER BY requested_on DESC) AS request,
+                        AND facility_id = f.facility_id) AS request,
                     (SELECT MAX(requested_on)
                         FROM track_api_requests
                         WHERE request_type = 'results'
-                        AND facility_id = f.facility_id
-                        GROUP BY facility_id ORDER BY requested_on DESC) AS results,
-                    tar.test_type, tar.requested_on
+                        AND facility_id = f.facility_id) AS results
                 FROM facility_details AS f
-                JOIN track_api_requests AS tar ON tar.facility_id = f.facility_id
-                WHERE f.facility_id = ?
-                GROUP BY f.facility_id
-                ORDER BY tar.requested_on DESC";
+                WHERE f.facility_id = ?";
 $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
 ?>
 <style>
@@ -90,7 +84,7 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
     <section class="content-header">
         <h1><em class="fa-solid fa-sync"></em>
             <?php echo _translate("Lab Sync Details for ") ?><span style="font-weight: 500;">
-                <?php echo $labInfo['facility_name']; ?>
+                <?= htmlspecialchars((string) ($labInfo['facility_name'] ?? '')); ?>
             </span>
         </h1>
         <ol class="breadcrumb">
@@ -138,7 +132,7 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                             <td>
                                 <select class="form-control select2" id="facilityName" name="facilityName"
                                     title="<?php echo _translate('Please select the Lab name'); ?>">
-                                    <?php echo $general->generateSelectOptions($facilityNameList, null, '--Select--'); ?>
+                                    <?php echo $general->generateSelectOptions($facilityNameList, null, _translate('-- Select --')); ?>
                                 </select>
                             </td>
                             <td>
@@ -183,6 +177,17 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                             </td>
                         </tr>
                         <tr>
+                            <td><strong>
+                                    <?php echo _translate("Sample Collection Date"); ?>&nbsp;:
+                                </strong></td>
+                            <td>
+                                <input type="text" id="dateRange" name="dateRange" class="form-control" readonly
+                                    style="background:#fff;"
+                                    title="<?php echo _translate('Please select the sample collection date range'); ?>">
+                            </td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr>
                             <td colspan="4">
                                 &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;"
                                     href="javascript:void(0);" onclick="exportSyncStatus();"><em
@@ -202,11 +207,11 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                     <div class="box-body">
                         <table aria-describedby="table" class="table table-bordered table-striped" style="width: 70%;">
                             <tr>
-                                <th scope="row">Last Request Sent from STS :</th>
+                                <th scope="row"><?= _translate("Last Request Sent from STS"); ?> :</th>
                                 <td align="left">
                                     <?php echo $labInfo['request']; ?>
                                 </td>
-                                <th scope="row">Last Result Received from Lab</th>
+                                <th scope="row"><?= _translate("Last Result Received From Lab"); ?> :</th>
                                 <td align="left">
                                     <?php echo $labInfo['results']; ?>
                                 </td>
@@ -229,6 +234,14 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                                     <th class="center" scope="col">
                                         <?php echo _translate("District"); ?>
                                     </th>
+                                    <th class="center" scope="col"
+                                        title="<?php echo _translate('Requests entered on STS and pulled by the lab, for samples collected in the selected period'); ?>">
+                                        <?php echo _translate("Requests Sent to Lab"); ?>
+                                    </th>
+                                    <th class="center" scope="col"
+                                        title="<?php echo _translate('Samples the lab has sent back as accepted or rejected, for samples collected in the selected period'); ?>">
+                                        <?php echo _translate("Results Received from Lab"); ?>
+                                    </th>
                                     <th class="center" scope="col">
                                         <?php echo _translate("Last Request Sent from STS"); ?>
                                     </th>
@@ -239,7 +252,7 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                             </thead>
                             <tbody id="syncStatusTable">
                                 <tr>
-                                    <td colspan="6" class="dataTables_empty">
+                                    <td colspan="8" class="dataTables_empty">
                                         <?php echo _translate("No data available"); ?>
                                     </td>
                                 </tr>
@@ -258,22 +271,48 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="<?= _asset('/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 <script type="text/javascript">
-    var oTable = 0;
+    var oTable = null;
     $(document).ready(function () {
         $('#facilityName').select2({
             width: '100%',
-            placeholder: "Select Facility Name"
+            placeholder: "<?= _jsTranslate('Select Facility Name'); ?>"
         });
 
         $('#province').select2({
             width: '100%',
-            placeholder: "Select Province"
+            placeholder: "<?= _jsTranslate('Select Province'); ?>"
         });
 
         $('#district').select2({
             width: '100%',
-            placeholder: "Select District"
+            placeholder: "<?= _jsTranslate('Select District'); ?>"
         });
+        $('#dateRange').daterangepicker({
+            locale: {
+                cancelLabel: "<?= _translate("Clear", true); ?>",
+                applyLabel: "<?= _jsTranslate('Apply'); ?>",
+                customRangeLabel: "<?= _jsTranslate('Custom Range'); ?>",
+                format: 'DD-MMM-YYYY',
+                separator: ' to ',
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate: moment(),
+            maxDate: moment(),
+            ranges: {
+                "<?= _jsTranslate('Last 7 Days'); ?>": [moment().subtract(6, 'days'), moment()],
+                "<?= _jsTranslate('Last 30 Days'); ?>": [moment().subtract(29, 'days'), moment()],
+                "<?= _jsTranslate('This Month'); ?>": [moment().startOf('month'), moment().endOf('month')],
+                "<?= _jsTranslate('Last Month'); ?>": [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                "<?= _jsTranslate('Last 90 Days'); ?>": [moment().subtract(89, 'days'), moment()],
+                "<?= _jsTranslate('Last 180 Days'); ?>": [moment().subtract(179, 'days'), moment()],
+                "<?= _jsTranslate('Last 12 Months'); ?>": [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+                "<?= _jsTranslate('Current Year To Date'); ?>": [moment().startOf('year'), moment()]
+            }
+        }).on('cancel.daterangepicker', function () {
+            // An empty range counts every sample, whenever it was collected
+            $(this).val('');
+        });
+
         loadData();
         $('#syncStatusDataTable tbody').on('click', 'tr', function () {
             let url = $(this).attr('data-url');
@@ -289,18 +328,19 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
         $.post("/admin/monitoring/get-sync-status-details.php", {
             labId: <?= _jsEscape($_GET['labId'] ?? '') ?>,
             testType: $('#testType').val(),
+            dateRange: $('#dateRange').val(),
             province: $('#province').val(),
             district: $('#district').val(),
             facilityName: $('#facilityName').val()
         },
             function (data) {
-                $("#syncStatusTable").html(data);
-                if (oTable == 0) {
-                    $('#syncStatusDataTable').dataTable({
-                        "ordering": false
-                    });
-                    oTable = 1;
+                if (oTable) {
+                    oTable.destroy();
                 }
+                $("#syncStatusTable").html(data);
+                oTable = $('#syncStatusDataTable').DataTable({
+                    "ordering": false
+                });
                 $.unblockUI();
             });
     }
