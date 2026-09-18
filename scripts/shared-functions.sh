@@ -2689,6 +2689,47 @@ ui_renderer() {
     fi
 }
 
+# Run one quiet step with a live "<label>... 12s" line, so a slow link reads as
+# progress rather than a hang. The command runs in the background with its
+# output discarded and stdin detached, so nothing it does can wait on the
+# terminal. Ctrl-C stops the step as well as the script: an orphaned apt-get
+# would otherwise keep the dpkg lock while the operator re-runs setup.
+ui_quiet_step() {
+    local label="$1"
+    shift
+    local pid start rc tty=0
+    [ -t 1 ] && tty=1
+    start=$SECONDS
+
+    "$@" </dev/null >/dev/null 2>&1 &
+    pid=$!
+    trap 'kill "$pid" 2>/dev/null; trap - INT; kill -INT $$' INT
+
+    if ((tty)); then
+        while kill -0 "$pid" 2>/dev/null; do
+            printf '\r   \033[2m%s... %ds\033[0m\033[K' "$label" $((SECONDS - start))
+            sleep 1
+        done
+    fi
+    wait "$pid"
+    rc=$?
+    trap - INT
+
+    if ((tty)); then
+        if ((rc == 0)); then
+            printf '\r   \033[2m%s... done (%ds)\033[0m\033[K\n' "$label" $((SECONDS - start))
+        else
+            printf '\r   \033[2m%s... gave up after %ds\033[0m\033[K\n' "$label" $((SECONDS - start))
+        fi
+    fi
+    return "$rc"
+}
+
+_gum_fetch_key() {
+    curl -fsSL --proto =https --max-time 20 https://repo.charm.sh/apt/gpg.key |
+        gpg --batch --yes --dearmor -o "$1"
+}
+
 # gum is a single static binary and a nicety, never a requirement — a lab on a
 # bad link must not have its install blocked by it. Anything that goes wrong here
 # leaves the plain renderer in place and says nothing.
@@ -2718,13 +2759,16 @@ ensure_gum() {
     # transfer cannot hold the install either. Neither failure matters — this is
     # cosmetic, and the plain prompts are already there.
     local apt_opts=(-o DPkg::Lock::Timeout=20)
+    # -k: apt-get can sit out a SIGTERM mid-dpkg, and a timeout that only asks
+    # politely is not a bound.
     local runner=()
-    command -v timeout >/dev/null 2>&1 && runner=(timeout 90)
+    command -v timeout >/dev/null 2>&1 && runner=(timeout -k 10 90)
 
     if [ ! -s "$keyring" ]; then
         mkdir -p /etc/apt/keyrings || return 1
-        if ! curl -fsSL --proto =https --max-time 20 https://repo.charm.sh/apt/gpg.key 2>/dev/null |
-            gpg --dearmor -o "$keyring" 2>/dev/null; then
+        # --batch --yes: an empty keyring left by an interrupted run otherwise
+        # makes gpg ask "Overwrite?" on the tty, with its stderr hidden.
+        if ! ui_quiet_step "Fetching the gum signing key" _gum_fetch_key "$keyring"; then
             rm -f "$keyring"
             print info "Continuing with plain prompts."
             return 1
@@ -2743,17 +2787,19 @@ ensure_gum() {
     # unreachable third-party repo makes every later `apt-get update` on the
     # machine noisy and non-zero — including the ones that run unattended, with
     # nobody there to read the error — and gum is not worth that.
-    if ! DEBIAN_FRONTEND=noninteractive "${runner[@]}" apt-get update "${apt_opts[@]}" \
+    if ! ui_quiet_step "Reading the gum package list" \
+        env DEBIAN_FRONTEND=noninteractive "${runner[@]}" apt-get update "${apt_opts[@]}" \
         -o Dir::Etc::sourcelist="$list" \
         -o Dir::Etc::sourceparts=- \
-        -o APT::Get::List-Cleanup=0 >/dev/null 2>&1; then
+        -o APT::Get::List-Cleanup=0; then
         rm -f "$list" "$keyring"
         print info "Continuing with plain prompts."
         return 1
     fi
 
-    if ! DEBIAN_FRONTEND=noninteractive "${runner[@]}" apt-get install -y \
-        --no-install-recommends "${apt_opts[@]}" gum >/dev/null 2>&1; then
+    if ! ui_quiet_step "Installing gum" \
+        env DEBIAN_FRONTEND=noninteractive "${runner[@]}" apt-get install -y \
+        --no-install-recommends "${apt_opts[@]}" gum; then
         rm -f "$list" "$keyring"
         print info "Continuing with plain prompts."
         return 1
