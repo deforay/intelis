@@ -1,106 +1,104 @@
 # Administrer InteLIS
 
-Ce guide est le point d'entrée de tout ce qui se trouve sous **ADMIN**. Il
-décrit
-ce dont l'administrateur a la charge, les modifications à faire valider avant de
-les appliquer, et où chaque tâche est documentée.
+Cette page relie chaque tâche du menu **ADMIN** à son guide. Elle liste aussi
+les modifications à faire valider avant de les appliquer.
 
-Il ne couvre ni l'installation, ni la mise à jour, ni la sauvegarde d'InteLIS.
-Ce sont des tâches serveur, traitées dans les guides d'installation et de
-maintenance.
+L'installation, la mise à jour et la sauvegarde d'InteLIS sont des tâches
+serveur. Elles sont traitées dans les guides d'installation et de maintenance.
 
-## Avant de commencer
+## Où se trouve chaque tâche
 
-- Un compte avec des droits d'administrateur
-
-## Le menu ADMIN
-
-| Section | Contient | Guide |
-|---|---|---|
-| Contrôle d'accès | Les rôles et les utilisateurs | [Utilisateurs et rôles](admin-users-and-roles.md) |
-| Structures sanitaires | Structures, laboratoires de test, modèles de rapport, signataires, connexions de l'outil d'interface | [Structures et laboratoires](admin-facilities.md) |
-| Configuration du système → Instruments | Les automates et le format de leurs fichiers de résultats | [Automates et interfaçage](admin-instruments.md) |
-| Configuration CV, Configuration EID, Tuberculose-Configuration et les autres sections de module | Les listes déroulantes du formulaire de demande de chaque module | [Configuration des modules](admin-module-configuration.md) |
+| Menu | Contient | Guide |
+| --- | --- | --- |
+| Contrôle d'accès → Utilisateurs, Les rôles | Les identifiants et ce que chacun peut atteindre | [Utilisateurs et rôles](admin-users-and-roles.md) |
+| Structures sanitaires | Structures, laboratoires d'analyse, objectifs des laboratoires, signataires | [Structures et laboratoires](admin-facilities.md) |
+| Structures sanitaires → Chargement groupé | Plusieurs structures ajoutées ou mises à jour depuis un seul fichier Excel | [Ajouter ou mettre à jour plusieurs structures](admin-facilities-bulk-upload.md) |
+| Structures sanitaires → un laboratoire d'analyse → Connexions des outils d'interface | Les codes de connexion de l'outil d'interface | [Connexions de l'outil d'interface](admin-interface-tool-connections.md) |
+| Configuration du système → Instruments | Les automates et la lecture de leurs fichiers de résultats | [Instruments](admin-instruments.md) |
+| Configuration CV, Configuration EID, Tuberculose-Configuration et les autres sections de configuration | Les listes déroulantes du formulaire de demande de chaque module | [Listes du formulaire de demande](admin-module-configuration.md) |
+| Configuration du système → Divisions géographiques, Partenaires, Sources de financement, Stockage en laboratoire | Les listes partagées par tous les modules | [Listes du formulaire de demande](admin-module-configuration.md) |
 | Configuration du système → Configuration générale | Les paramètres qui s'appliquent à toute l'installation | [Configuration générale](admin-general-configuration.md) |
-| Configuration du système → Divisions géographiques, Partenaires, Sources de financement, Stockage en laboratoire | Les listes partagées par tous les modules | [Configuration des modules](admin-module-configuration.md) |
-| Surveillance | Journal d'activité, piste d'audit, historique de synchronisation, activité des automates, performance du laboratoire | [Surveillance et audit](admin-monitoring.md) |
+| Surveillance | Piste d'audit, activité, utilisation des pages, synchronisation, activité des automates, performance du laboratoire | [Surveillance et audit](admin-monitoring.md) |
 
-Le menu ADMIN ne porte une section de configuration que pour les modules actifs
-sur l'installation. Une installation qui n'exécute qu'un module ne porte qu'une
-section.
+Le menu ne montre une section de configuration que pour les modules actifs sur
+l'installation.
 
-Un second espace d'administration se trouve hors de ce menu, à `/system-admin`,
-avec sa propre connexion. Voir [Espace System
-Admin](admin-system-administration.md).
+Un second espace d'administration, **System Admin**, se trouve hors de ce menu, à
+`/system-admin`, avec sa propre connexion. Voir
+[Espace System Admin](admin-system-administration.md).
+
+??? info "Sur un LIS, les structures et les listes sont en lecture seule"
+
+    Un LIS affiche les Structures sanitaires et les listes du formulaire de
+    demande sans bouton d'ajout ni de modification. Elles sont tenues sur le STS
+    et parviennent au LIS lors de sa synchronisation. Les instruments, les
+    utilisateurs et le Stockage en laboratoire restent tenus sur le LIS
+    lui-même.
 
 ## Deux niveaux d'administrateur
 
-Tous les administrateurs n'ont pas besoin de toutes les pages.
-
 | Niveau | A la charge de |
-|---|---|
-| Administrateur de laboratoire | Utilisateurs, structures, automates, listes de configuration des modules, connexions de l'outil d'interface, consultation de la piste d'audit |
-| Administrateur national | Tout ce qui précède, plus les rôles et permissions, la Configuration générale et les Divisions géographiques |
+| --- | --- |
+| Administrateur de laboratoire | Utilisateurs, instruments, connexions de l'outil d'interface, consultation de la piste d'audit |
+| Administrateur national | Tout ce qui précède, plus les rôles, les structures, les listes du formulaire de demande, la Configuration générale et les Divisions géographiques |
 
-Ce que l'application impose dépend du type d'instance :
+**Choisir le type d'installation.**
 
-- **Sur une installation autonome ou LIS**, la séparation n'est imposée que par
-  les permissions de chaque rôle. Elle se construit donc dans les rôles, car la
-  plupart des problèmes sur le terrain viennent de paramètres de niveau national
-  modifiés par du personnel de niveau laboratoire.
-- **Sur une instance cloud**, la séparation est imposée. Tous les rôles autres
-  que le rôle d'administrateur complet voient un menu Administration réduit aux
-  Utilisateurs, aux Instruments, à la Piste d'audit, au Journal d'activité des
-  utilisateurs et au Visualiseur de fichiers journaux, le reste étant décidé par
-  les permissions de page. Les pages hors de cette liste ne sont pas
-  accessibles : les indications données ailleurs dans ces pages qui envoient un
-  administrateur de laboratoire vers les Structures sanitaires, la configuration
-  des modules ou les rôles concernent donc les autres types d'instance.
+=== "Autonome ou LIS"
 
-## Modifications à faire valider avant de les appliquer
+    InteLIS n'impose la séparation que par les privilèges de chaque rôle. Il en
+    va de même pour le personnel national connecté au STS.
 
-Les modifications ci-dessous prennent effet sur toute l'installation dès
-l'enregistrement. Revenir en arrière n'annule pas leur effet sur les fiches déjà
+    1. Donner aux administrateurs de laboratoire un rôle sans les pages de
+       niveau national.
+    2. Réserver **Les rôles**, **Configuration générale** et **Divisions
+       géographiques** au rôle de l'administrateur national.
+
+    La plupart des problèmes sur le terrain viennent de paramètres de niveau
+    national modifiés par du personnel de niveau laboratoire.
+
+=== "Cloud"
+
+    Le personnel du laboratoire se connecte au STS avec un rôle de laboratoire
+    d'analyse. InteLIS impose la séparation à chacun de ces utilisateurs, sauf au
+    super administrateur.
+
+    1. S'attendre à ces cinq pages ADMIN, et à aucune autre : **Utilisateurs**,
+       **Instruments**, **Piste d’audit**, **Journal d’activité de
+       l’utilisateur** et **Visualisateur de fichiers journaux**. Les privilèges
+       du rôle décident lesquelles des cinq apparaissent.
+    2. Adresser toute autre modification à l'administrateur national sur le STS.
+
+    Les utilisateurs et les instruments restent limités au laboratoire de
+    l'utilisateur. La Piste d'audit n'ouvre que les échantillons de ce
+    laboratoire.
+
+## Modifications à faire valider
+
+Chaque modification ci-dessous s'applique à toute l'installation dès
+l'enregistrement. Revenir en arrière n'annule pas son effet sur les fiches déjà
 créées.
 
-| Modification | Emplacement | Pourquoi la faire valider |
-|---|---|---|
-| Format ou préfixe des ID d'échantillon | Configuration générale, par module | Tout échantillon enregistré ensuite porte le nouveau format. Les échantillons déjà enregistrés gardent l'ancien, ce qui laisse deux schémas au laboratoire |
-| Sample Lock Days et Sample Expiry Days | Configuration générale → Global Settings | Détermine quand une fiche cesse d'accepter les modifications. Trop court, le laboratoire ne peut plus corriger un résultat. Trop long, les résultats restent modifiables après diffusion |
-| Le même utilisateur peut réviser et approuver | Configuration générale → Global Settings | Permet à une personne de réviser et d'approuver son propre résultat. L'approbation est le seul contrôle sur la qualité des résultats |
-| Auto Approve API Results | Configuration générale, par module | Diffuse les résultats de l'automate sans contrôle humain. Pas sûr lorsque les ID d'échantillon sont saisis à la main sur l'automate |
-| Pays d'installation | Configuration générale → Global Settings | Sélectionne la mise en page du formulaire de demande. En changer change le formulaire vu par tous |
-| Mode de formation | Configuration générale → Global Settings | Marque l'installation comme un entraînement. Ne jamais l'activer sur une installation réelle |
-| Permissions d'un rôle | Contrôle d'accès → Les rôles | S'applique aussitôt à tous les utilisateurs portant ce rôle |
-| Suppression d'une entrée de liste | Toute page de configuration de module | Passer l'entrée en inactif à la place. La supprimer rend illisibles les fiches qui l'utilisaient |
-| Renommage ou suppression d'une province ou d'un district | Configuration du système → Divisions géographiques | Les structures rattachées perdent leur lien, et les filtres géographiques de tous les rapports cessent de correspondre |
+| Modification | Emplacement | Effet |
+| --- | --- | --- |
+| Format ou préfixe de l'ID de l'échantillon | Configuration générale, par module | Les nouveaux échantillons prennent le nouveau format. Les échantillons existants gardent l'ancien |
+| Jours de verrouillage des échantillons, Jours d'expiration de l'échantillon | Configuration générale → Paramètres globaux | Décident quand une fiche cesse d'accepter les modifications |
+| Le même utilisateur peut réviser et approuver | Configuration générale → Paramètres globaux | Permet à une même personne de réviser et d'approuver le même résultat |
+| Approbation automatique des résultats de l'API (CV, EID, COVID-19 ou TB) | Configuration générale, par module | Les résultats reçus par l'API sont approuvés sans contrôle humain |
+| Pays d'installation | Configuration générale → Paramètres globaux | Change le formulaire de demande vu par tous |
+| Mode de formation | Configuration générale → Paramètres globaux | Marque l'installation comme un entraînement |
+| Privilèges d'un rôle | Contrôle d'accès → Les rôles | S'appliquent aussitôt à tous les utilisateurs de ce rôle |
+| Suppression d'une entrée de liste | Toute section de configuration | Les fiches qui utilisaient l'entrée deviennent illisibles. La passer en inactif à la place |
+| Renommage ou suppression d'une province ou d'un district | Configuration du système → Divisions géographiques | Les structures rattachées perdent leur lien, et les filtres des rapports cessent de correspondre |
 
 ## Règles valables partout
 
-**Ne jamais partager un identifiant.** Le journal d'activité, ainsi que les noms
-du technicien, du réviseur et de l'approbateur sur chaque rapport, enregistrent
-la personne connectée. Un identifiant partagé rend ces enregistrements sans
-valeur.
-
-**Retirer, jamais supprimer.** Passer les entrées de liste et les utilisateurs
-partants en inactif. Une entrée inactive disparaît du formulaire et reste
-lisible
-sur les fiches qui l'utilisent déjà.
-
-**Ne jamais réattribuer un identifiant à une autre personne.** Les anciennes
-fiches restent rattachées à l'ancien nom.
-
-**Modifier un paramètre à la fois**, puis en vérifier l'effet avant d'en modifier
-un autre.
-
-## Vérifier qu'une modification a fonctionné
-
-| Modification | Contrôle |
-|---|---|
-| Nouvel utilisateur | L'utilisateur se connecte et voit le menu attendu |
-| Modification de rôle | Se connecter avec un utilisateur de ce rôle, ou utiliser le filtre Permission sur la page des rôles |
-| Nouvelle structure | La structure apparaît sur le formulaire de demande de chaque type de test coché |
-| Nouvel automate | L'automate apparaît dans Plateforme de test à la création d'un batch |
-| Connexion de l'outil d'interface | L'installation figure sous Connected Installations avec une Last Seen récente |
-| Entrée de liste | L'entrée apparaît dans sa liste déroulante sur le formulaire |
-| Configuration générale | Ouvrir la page concernée par le paramètre et en lire le résultat |
+- **Un identifiant par personne.** Le journal d'activité et les noms du
+  technicien, du réviseur et de l'approbateur enregistrent la personne
+  connectée.
+- **Retirer, jamais supprimer.** Une entrée inactive quitte le formulaire et
+  reste lisible sur les fiches qui l'utilisent.
+- **Ne jamais donner un ancien identifiant à une nouvelle personne.** Les
+  anciennes fiches restent rattachées à l'ancien nom.
+- **Modifier un paramètre à la fois.** En vérifier l'effet avant de modifier le
+  suivant.

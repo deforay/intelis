@@ -116,8 +116,7 @@ internet.
         a new one. The restored database already holds the users, the lab
         settings and all the data.
     15. Check the lab settings under **Admin → System Configuration → General Configuration**.
-    16. If the lab uses an STS, select **Force Remote Sync** and wait for it to finish.
-    17. If the lab uses the interfacing tool, restore its database too.
+    16. If the lab uses the interfacing tool, restore its database too.
 
         1. In a terminal, type `sudo cp` followed by a space. Do not press Enter
            yet.
@@ -232,8 +231,7 @@ internet.
         a new one. The restored database already holds the users, the lab
         settings and all the data.
     11. Check the lab settings under **Admin → System Configuration → General Configuration**.
-    12. If the lab uses an STS, select **Force Remote Sync** and wait for it to finish.
-    13. If the lab uses the interfacing tool, restore its database too.
+    12. If the lab uses the interfacing tool, restore its database too.
 
         1. In a terminal, type `sudo cp` followed by a space. Do not press Enter
            yet.
@@ -319,8 +317,7 @@ internet.
         a new one. The restored database already holds the users, the lab
         settings and all the data.
     12. Check the lab settings under **Admin → System Configuration → General Configuration**.
-    13. If the lab uses an STS, select **Force Remote Sync** and wait for it to finish.
-    14. If the lab uses the interfacing tool, restore its database too.
+    13. If the lab uses the interfacing tool, restore its database too.
 
         1. Copy the newest interfacing backup out of the fetched folder:
 

@@ -15,8 +15,24 @@ l'administrateur.
 ## Se connecter
 
 1. Ouvrir l'adresse web d'InteLIS dans un navigateur.
-2. Saisir l'identifiant de connexion et le mot de passe.
+2. Saisir l'**Identifiant de connexion** et le **Mot de passe**.
+
+    ??? question "Si une image avec du texte apparaît sous le mot de passe"
+
+        L'image apparaît lorsque l'identifiant de connexion compte au moins 3
+        tentatives de connexion échouées dans les 15 dernières minutes. Saisir
+        le texte de l'image dans le champ situé en dessous. Pour obtenir une
+        image plus lisible, sélectionner **Obtenir une nouvelle image**.
+
 3. Sélectionner **Connexion**.
+
+    ??? failure "Si la connexion échoue"
+
+        | Message | Cause | Que faire |
+        | --- | --- | --- |
+        | Veuillez vérifier vos identifiants de connexion | L'identifiant ou le mot de passe est erroné, ou le compte est inactif | Vérifier les deux, puis réessayer. Après 3 échecs, s'adresser à l'administrateur |
+        | Le texte que vous avez saisi dans l'image est incorrect. Veuillez réessayer | Le texte ne correspond pas à l'image | Saisir le texte de la nouvelle image |
+        | Vous avez épuisé le nombre maximum de tentatives de connexion. Veuillez réessayer après un certain temps. | Le texte de l'image est absent ou erroné | Saisir de nouveau l'identifiant de connexion, puis le texte de l'image |
 
 InteLIS ouvre la page définie pour le rôle. Pour la plupart des utilisateurs de
 laboratoire, il s'agit du tableau de bord.

@@ -1,96 +1,146 @@
 # Utiliser l'espace System Admin
 
-Ce guide couvre `/system-admin`, un second espace d'administration situé hors du
-menu ADMIN et doté de sa propre connexion.
+System Admin est un second espace d'administration, à `/system-admin` sur
+l'adresse de l'installation. Il contient les paramètres qui définissent la
+nature de l'installation : sa base de données, son type d'instance, son STS et
+ses modules.
 
-Il contient les paramètres qui déterminent la nature de l'installation : la base
-de données à laquelle elle se connecte, s'il s'agit d'un système de laboratoire
-ou du serveur national, et les modules qu'elle exécute.
+La plupart des laboratoires ne l'ouvrent jamais. Ces paramètres sont réglés une
+fois, à l'installation.
 
 ## Avant de commencer
 
-- Une connexion System Admin. Ce n'est pas un compte utilisateur InteLIS, et un
-  administrateur InteLIS n'en dispose pas automatiquement
-- Une sauvegarde de la base de données, avant toute modification sur la page Edit
-  System Configuration
+- Un identifiant System Admin. Il est distinct des comptes utilisateurs
+  d'InteLIS. Un administrateur InteLIS n'en détient pas automatiquement
+- Une sauvegarde récente de la base de données avant de modifier la
+  **Configuration du système**. Voir [Maintenance](../guides/maintenance.md)
 
-L'espace se trouve à `/system-admin` sur l'adresse de l'installation.
+## La barre latérale
 
-La plupart des laboratoires n'ouvrent jamais cet espace. Ces paramètres sont
-définis une fois à l'installation. Les modifier sur une installation en service
-peut l'empêcher de fonctionner.
+| Élément | Contient |
+| --- | --- |
+| Configuration du système | Connexion à la base de données, type d'instance, URL STS, laboratoire, modules activés, pays, fuseau horaire, paramétrage SMTP |
+| Vue d'ensemble de l'instance | L'ID d'instance et la dernière synchronisation de chaque flux de données |
+| Statistiques API | Les requêtes API traitées par cette installation |
+| Historique de connexion de l’utilisateur | Chaque tentative de connexion à InteLIS, avec l'adresse IP, le navigateur et le système d'exploitation |
+| Réinitialiser le mot de passe | Un nouveau mot de passe pour tout utilisateur InteLIS |
+| Déconnexion | Ferme la session System Admin |
 
-## Ce que contient l'espace
+## Se connecter
 
-| Page | Contient |
-|---|---|
-| Gérer la configuration du système | Connexion à la base, type d'instance, URL STS, modules activés, pays, fuseau horaire, réglages SMTP |
-| Aperçu de l'instance System | L'identifiant de l'instance, son type, et la dernière synchronisation de chaque module |
-| Statistiques API | Le trafic API traité par cette installation |
-| Gérer l'historique des connexions des utilisateurs | Chaque tentative de connexion, avec adresse IP, navigateur et système d'exploitation |
+1. Ouvrir `/system-admin` sur l'adresse de l'installation, par exemple
+   `https://lab.example.org/system-admin`.
+2. Saisir le **Nom d'utilisateur** et le **Mot de passe** System Admin.
+3. Sélectionner **Connexion**. La **Configuration du système** s'ouvre.
 
-## Lire l'aperçu de l'instance
+??? info "S'il n'existe encore aucun identifiant System Admin"
 
-1. Se connecter à `/system-admin`.
-2. Ouvrir **Aperçu de l'instance System**.
+    `/system-admin` ouvre **Enregistrer un nouvel administrateur de système** à
+    la place. Le formulaire demande une **Clé secrète**. Elle se trouve dans le
+    fichier `var/secret-key.txt` du dossier de l'installation, par exemple
+    `/var/www/intelis/var/secret-key.txt`. Sur les installations plus
+    anciennes, le dossier est `/var/www/vlsm`. Remplir le formulaire et
+    sélectionner **Envoyer**.
 
-| Champ | Signifie |
-|---|---|
-| Id d'instance | L'identifiant sous lequel le serveur national connaît cette installation |
-| Type d'instance | LIS, STS ou Standalone |
-| Nom du Labo | Le laboratoire auquel appartient cette installation |
-| Last Sync, par module | La dernière fois que chaque module a échangé des données |
+## Modifier la configuration du système
 
-Un module dont la dernière synchronisation est ancienne n'atteint pas le serveur
-national. Le confirmer avec **ADMIN → Surveillance → Historique de l'API**. Voir
-[Surveillance et audit](admin-monitoring.md).
+1. Faire une sauvegarde de la base de données.
+2. Se connecter à System Admin.
+3. Sélectionner **Configuration du système** dans la barre latérale. La page
+   s'intitule **Modifier la configuration du système**.
+4. Modifier le paramètre :
 
-## Comprendre le type d'instance
+    | Section | Paramètres |
+    | --- | --- |
+    | Paramètres système | **Nom de l'hôte de la base de données**, **Nom d’utilisateur de la base de données**, **Mot de passe de la base de données**, **Nom de la base de données**, **Port de la base de données** |
+    | Réglages de l’instance | **Type d'instance**, **URL STS**, **Nom du Labo**, **Modules activés**, **Pays d'installation**, **Fuseau horaire** |
+    | Paramétrage SMTP | Le serveur de messagerie utilisé pour envoyer les courriels |
 
-| Type | Signifie |
-|---|---|
-| LIS | Un système d'information de laboratoire. Il tourne dans un laboratoire et se synchronise vers le serveur national |
-| STS | Le système de suivi des échantillons. Le serveur national vers lequel les laboratoires se synchronisent |
-| Mode autonome | Ni l'un ni l'autre. Il ne se synchronise nulle part |
+5. Sélectionner **Envoyer**.
+6. Ouvrir InteLIS et vérifier la modification. Voir
+   [Vérifier que tout fonctionne](#verifier-que-tout-fonctionne).
 
-Le type d'instance détermine quelles pages apparaissent. État de la
-synchronisation du laboratoire et Tableau de bord de l'API n'apparaissent que
-sur
-une instance STS.
+??? warning "Un mauvais paramètre de base de données arrête InteLIS pour tous"
 
-Changer le type d'instance sur une installation en service change la destination
-de ses données. Le faire valider avec l'équipe nationale.
+    Un mauvais **Mot de passe de la base de données**, ou toute autre valeur de base de données
+    erronée, rend InteLIS inaccessible à tous les utilisateurs jusqu'à sa
+    correction. Un **Mot de passe de la base de données** vide ne reste pas vide : InteLIS
+    enregistre un mot de passe par défaut à sa place.
+
+??? warning "Type d'instance"
+
+    | Type d'instance | Signifie |
+    | --- | --- |
+    | LIS - SYSTÈME D'INFORMATION DE LABORATOIRE | Fonctionne dans un laboratoire et se synchronise avec le STS |
+    | STS - SYSTÈME DE SUIVI DES ÉCHANTILLONS | Le serveur central avec lequel les laboratoires se synchronisent |
+    | Mode autonome | Ne se synchronise nulle part |
+
+    Changer le type d'instance d'une installation en service change la
+    destination de ses données, et les pages qui apparaissent. Le faire valider
+    par l'équipe nationale d'abord.
+
+??? info "Modules activés"
+
+    Activer un module ajoute son menu et sa section de configuration. En
+    désactiver un les masque. Les fiches déjà créées restent dans la base de
+    données.
+
+## Lire la vue d'ensemble de l'instance
+
+1. Se connecter à System Admin.
+2. Sélectionner **Vue d'ensemble de l'instance** dans la barre latérale.
+3. Lire les lignes :
+
+    | Champ | Signifie |
+    | --- | --- |
+    | ID d'instance | L'identifiant sous lequel cette installation est connue |
+    | Ajouté, Mis à jour le | L'enregistrement de l'instance et sa dernière modification |
+    | VL Dernière synchronisation, Dernière synchronisation EID, Dernière synchronisation Covid-19 | Le dernier envoi des données de chaque module vers le tableau de bord |
+    | Demande à distance Dernière synchronisation | La dernière réception des demandes de test depuis le STS |
+    | Résultats à distance Dernière synchronisation | Le dernier envoi des résultats vers le STS |
+    | Référence à distance Dernière synchronisation | La dernière réception des listes et des structures depuis le STS |
+
+Une ancienne date de synchronisation à distance signifie que l'installation
+n'atteint pas le STS. Le confirmer sous **ADMIN → Surveillance → Historique de
+l’API**. Voir
+[Surveillance et audit](admin-monitoring.md#verifier-que-les-donnees-ont-atteint-le-sts).
+
+Le bouton crayon modifie ces dates. Ne les changer qu'à la demande du support
+InteLIS.
 
 ## Vérifier qui s'est connecté
 
-1. Se connecter à `/system-admin`.
-2. Ouvrir **Gérer l'historique des connexions des utilisateurs**.
+1. Se connecter à System Admin.
+2. Sélectionner **Historique de connexion de l’utilisateur** dans la barre
+   latérale.
+3. Renseigner **Date** et **Identifiant de connexion**, puis sélectionner
+   **Rechercher**.
+4. Lire les lignes : **Date de la tentative**, **Adresse IP**, **Navigateur**,
+   **Système d'exploitation** et **Statut**.
 
-Chaque ligne porte le Login Id, la date et l'heure de la tentative, l'adresse
-IP,
-le navigateur et le système d'exploitation.
+Un même identifiant de connexion utilisé depuis plusieurs endroits à la fois
+signale un compte partagé ou détourné.
 
-À utiliser lorsqu'un compte est soupçonné d'être partagé ou utilisé par
-quelqu'un d'autre. Les lignes montrent si un même Login Id se connecte depuis
-plusieurs endroits.
+## Réinitialiser le mot de passe d'un utilisateur
 
-## Modifier la configuration système
+À utiliser lorsqu'aucun administrateur InteLIS ne peut se connecter pour le
+faire.
 
-**Gérer la configuration du système** contient les identifiants de la base de données, le type
-d'instance, l'URL STS, les modules activés, le pays d'installation, le fuseau
-horaire et les réglages SMTP.
-
-Prendre d'abord une sauvegarde de la base. Un identifiant de base erroné rend
-InteLIS inaccessible à tous les utilisateurs jusqu'à correction.
-
-Activer un module ajoute sa section de menu et sa section de configuration. En
-désactiver un les masque. Les fiches déjà créées restent dans la base.
+1. Se connecter à System Admin.
+2. Sélectionner **Réinitialiser le mot de passe** dans la barre latérale.
+3. Choisir l'**Utilisateur**.
+4. Saisir **Mot de passe** et **Confirmer le mot de passe**, ou sélectionner
+   **Générer**.
+5. Régler **Statut** sur **Actif**.
+6. Sélectionner **Envoyer**.
+7. Remettre le nouveau mot de passe à l'utilisateur en main propre.
 
 ## Vérifier que tout fonctionne
 
 | Modification | Contrôle |
-|---|---|
+| --- | --- |
 | Module activé | Sa section apparaît dans le menu principal et sous ADMIN |
-| Type d'instance | Les pages propres à ce type apparaissent |
-| URL STS | L'historique de l'API enregistre une synchronisation réussie vers la nouvelle adresse |
-| Réglages SMTP | Envoyer un résultat par e-mail et confirmer sa réception |
+| Type d'instance | Les pages de ce type apparaissent |
+| URL STS | L'Historique de l'API enregistre une synchronisation réussie vers la nouvelle adresse |
+| Paramétrage SMTP | Envoyer un résultat par courriel et vérifier qu'il arrive |
+| Mot de passe réinitialisé | L'utilisateur se connecte avec le nouveau mot de passe |

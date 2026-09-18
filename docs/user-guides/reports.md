@@ -1,13 +1,16 @@
 # Viral load reports
 
-This page describes every report under **HIV VIRAL LOAD → Management**, and the
-viral load content of the dashboard and the admin monitoring pages.
+This page describes every report under **HIV VIRAL LOAD → Management**, the
+viral load content of the dashboard, and the Sample Ageing Report.
 
-Applies to InteLIS 5.7.64.
+Applies to InteLIS 5.7.72.
 
 Every report page uses the same controls. Set the filters, select **Search**, and
 use the export control where one is offered. See
 [How to sign in and navigate InteLIS](signing-in.md) for those controls.
+
+The reports under **ADMIN → Monitoring** are described in
+[How to monitor and audit InteLIS](admin-monitoring.md).
 
 ## Dashboard
 
@@ -18,6 +21,9 @@ facility-wise performance. One tab per test type enabled on the installation.
 
 Opens on the last 29 days, today included. The date range control at the top of
 the page changes the period, and its **Last 30 Days** preset covers 30 days.
+
+When **VL Monthly Target** is enabled, the viral load tab also shows the
+testing and suppression targets. See [VL Testing Target Report](#vl-testing-target-report).
 
 ## Sample Status Report
 
@@ -65,16 +71,17 @@ Seven tabular reports on one page. Each exports to a spreadsheet.
 
 | Tab | Content |
 |---|---|
-| High Viral Load Report | Patients whose result is above the viral load threshold set by the administrator |
-| High VL and Virologic Failure Report | High viral load results with the virologic failure assessment |
-| Sample Rejection Report | Rejected samples with their rejection reason |
-| Results Not Available Report | Samples registered with no result recorded |
-| Data Quality Check Report | Records with missing or inconsistent data |
-| Sample Testing Report | Samples tested over the selected period |
-| Patient Test History Report | Every test recorded for one patient |
+| **High Viral Load** | Patients whose result is above the viral load threshold set by the administrator |
+| **High VL and Virologic Failure** | High viral load results with the virologic failure assessment |
+| **Sample Rejection** | Rejected samples with their rejection reason |
+| **Results Not Available** | Samples registered with no result recorded |
+| **Data Quality Check** | Records with missing or inconsistent data |
+| **Sample Testing** | Samples tested over the selected period |
+| **Patient Test History** | Every test recorded for one patient |
 
-The High Viral Load Report supports contact notes. A user records the follow-up
-made with the facility and marks the contact complete.
+The **High Viral Load** tab records the follow-up made with the facility. Its
+**Contact Status** filter separates patients whose contact is complete from the
+rest.
 
 ## VL Lab Weekly Report
 
@@ -107,8 +114,18 @@ spreadsheet.
 
 **Location:** **HIV VIRAL LOAD → Management → VL Testing Target Report**
 
-Compares samples tested against the monthly testing target. The administrator
-sets the target under **ADMIN → System Configuration → General Configuration**.
+Compares samples tested against each testing lab's monthly target.
+
+The targets are set per testing lab, on the lab's record under **ADMIN →
+Facilities**.
+
+| Field | Content |
+|---|---|
+| **Monthly Target** | Samples the lab is expected to test each month |
+| **Suppressed Monthly Target** | Suppressed results expected each month. Viral load only |
+
+**ADMIN → System Configuration → General Configuration** holds only the **VL
+Monthly Target** switch. It shows or hides the target charts on the dashboard.
 
 ## Freezer/Storage Reports
 
@@ -119,52 +136,21 @@ Exports to a spreadsheet.
 
 See [How to record where a sample is stored](store-samples.md).
 
-## Lab Performance Indicators
-
-**Location:** **ADMIN → Monitoring → Lab Performance Indicators**
-
-Reports turnaround time, volume by entry mode, failure rate, rejection rate, and
-repeat patients, across every test type on the installation.
-
-The failure rate counts test events. A sample tested twice counts as two events,
-so a retest after a failure does not hide the original failure.
-
-## Sample Referral Network
-
-**Location:** **ADMIN → Monitoring → Sample Referral Network**
-
-Shows which facilities send samples to which testing labs, as a map and as a
-summary. Set **Date Based On** to choose whether a sample is counted by the date
-it was collected, received, or tested. Counting by tested date is what reproduces
-a testing lab's own figures.
-
 ## Sample Ageing Report
 
-**Location:** **ADMIN → Monitoring → Sample Ageing Report**
+**Location:** Not on the menu. Open `/reports/sample-ageing.php` at the
+InteLIS web address. The role needs the **Sample Ageing Report** permission.
 
-Shows how long samples have been waiting at each stage, so samples stalled
-between registration and result can be found before they expire.
+Shows how long samples have been waiting at each stage, so stalled samples can
+be found before they expire.
 
-## Interface Machine Activity
+| Stage | Content |
+|---|---|
+| At facility | Registered at the collection point. No lab has recorded receiving it |
+| At lab, awaiting test | A lab has the sample but has not tested it yet. Includes failed, on hold and reordered |
+| Tested, awaiting approval | Tested. The result is waiting for someone to approve it |
+| Approved, awaiting release | The result is ready, but has not been printed, sent or downloaded |
+| Released | The result was printed, sent to the facility, or downloaded by the facility system |
 
-**Location:** **ADMIN → Monitoring → Interface Machine Activity**
-
-Shows what each connected analyzer has sent and when it was last heard from,
-which is the quickest way to tell an idle analyzer from a broken connection.
-
-## Source of Requests
-
-**Location:** **ADMIN → Monitoring → Source of Requests**
-
-Reports how requests entered the system, separating requests typed into InteLIS
-from requests received from other systems.
-
-## Reports elsewhere
-
-| Report | Location | Content |
-|---|---|---|
-| User Activity Log | **ADMIN → Monitoring → User Activity Log** | Pages each user opened and actions taken |
-| Audit Trail | **ADMIN → Monitoring → Audit Trail** | Field-level record of changes to data |
-| API History | **ADMIN → Monitoring → API History** | Exchanges with connected systems |
-| Lab Sync Status | **ADMIN → Monitoring → Lab Sync Status** | Whether each lab's data has reached the central system |
-| Test Results Metadata | **ADMIN → Monitoring → Test Results Metadata** | Detail recorded alongside each result |
+The breakdown groups samples by **Collection Facility**, **Testing Lab** or
+**Implementing Partner**.

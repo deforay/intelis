@@ -163,9 +163,7 @@ an internet connection. The lab server steps assume an Ubuntu host.
 
     18. Log in with the login ID and password from step 13.
     19. Check the lab settings under **Admin → System Configuration → General Configuration**.
-    20. If the lab uses an STS, select **Force Remote Sync** at the bottom of
-        the page and wait for it to finish.
-    21. In a terminal on the server, confirm the off-server backups work:
+    20. In a terminal on the server, confirm the off-server backups work:
 
         ```bash
         sudo /usr/local/bin/intelis-backup.sh --status
@@ -249,8 +247,6 @@ an internet connection. The lab server steps assume an Ubuntu host.
         `docker compose exec intelis intelis <command>`.
 
     7. Log in to InteLIS in the browser.
-    8. If the lab uses an STS, select **Force Remote Sync** at the bottom of
-       the page and wait for it to finish.
 
 === "Developer machine"
 

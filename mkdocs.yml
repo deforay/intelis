@@ -69,7 +69,9 @@ nav:
           - Administer InteLIS: user-guides/administer-intelis.md
           - Users and Roles: user-guides/admin-users-and-roles.md
           - Facilities and Testing Labs: user-guides/admin-facilities.md
-          - Instruments and Interfacing: user-guides/admin-instruments.md
+          - Add or Update Many Facilities: user-guides/admin-facilities-bulk-upload.md
+          - Instruments: user-guides/admin-instruments.md
+          - Interface Tool Connections: user-guides/admin-interface-tool-connections.md
           - Module Configuration: user-guides/admin-module-configuration.md
           - General Configuration: user-guides/admin-general-configuration.md
           - Monitoring and Audit: user-guides/admin-monitoring.md
@@ -158,7 +160,9 @@ plugins:
             Administer InteLIS: Administrer InteLIS
             Users and Roles: Utilisateurs et rôles
             Facilities and Testing Labs: Structures et laboratoires
-            Instruments and Interfacing: Automates et interfaçage
+            Add or Update Many Facilities: Ajouter ou mettre à jour plusieurs structures
+            Instruments: Automates
+            Interface Tool Connections: Connexions de l'outil d'interface
             Module Configuration: Configuration des modules
             General Configuration: Configuration générale
             Monitoring and Audit: Surveillance et audit

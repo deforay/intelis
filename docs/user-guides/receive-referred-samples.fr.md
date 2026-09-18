@@ -1,82 +1,131 @@
 # Réceptionner des échantillons envoyés avec un manifeste
 
-Utiliser ce guide lorsqu'un colis d'échantillons arrive d'une structure
-sanitaire ou d'un autre laboratoire avec un manifeste. L'activation du manifeste
-enregistre tous les échantillons du colis en une seule action, sans ressaisie.
+Enregistrer tous les échantillons d'un colis arrivé avec un manifeste, en
+saisissant une seule fois le code du manifeste.
 
-## Avant de commencer
+Le menu **Ajouter des échantillons à partir du manifeste** apparaît sur
+l'installation InteLIS propre au laboratoire (LIS). Sur le système central
+(STS), il n'apparaît que pour les utilisateurs dont le rôle a le type d'accès
+**Laboratoire d'analyse**. Les utilisateurs des structures sanitaires ne le
+voient jamais.
 
-- Le colis, vérifié physiquement par rapport au manifeste
-- Le code du manifeste, imprimé sur la fiche jointe au colis
-- La date d'arrivée du colis au laboratoire
-- La permission d'ajouter des échantillons à partir d'un manifeste
+Avant de commencer :
 
-## Vérifier d'abord le colis
+- Le colis et le manifeste imprimé qu'il contient
+- La date et l'heure d'arrivée du colis au laboratoire
 
-Compter les tubes par rapport au manifeste avant de toucher à InteLIS.
-L'activation marque tous les échantillons du manifeste comme reçus au
-laboratoire. Activer un manifeste pour un colis incomplet laisse des
-échantillons enregistrés comme reçus alors qu'ils ne sont pas dans le bâtiment.
+Les étapes portent sur la charge virale. Pour un autre test, ouvrir **Ajouter
+des échantillons à partir du manifeste** dans le menu **Gestion des demandes**
+de ce test.
 
-Si des tubes manquent ou sont endommagés, activer quand même le manifeste, puis
-rejeter individuellement les échantillons concernés. Voir
-[Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
+**Choisir la situation qui correspond, puis suivre ses étapes de haut en bas.**
 
-## Activer le manifeste
+=== "Tous les tubes sont arrivés"
 
-1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Ajouter des
-   échantillons à partir du manifeste**.
-2. Saisir le code du manifeste dans **Code manifeste de l'échantillon**.
-3. Sélectionner **Envoyer**.
+    1. Compter les tubes par rapport au manifeste imprimé.
+    2. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Ajouter des
+       échantillons à partir du manifeste**.
+    3. Saisir ou scanner le code du manifeste dans **Entrer le code manifeste
+       d'échantillons**.
+    4. Sélectionner **Envoyer**. Les échantillons du manifeste apparaissent dans
+       le tableau.
 
-InteLIS liste tous les échantillons du manifeste.
+        ??? failure "Si un message apparaît à la place des échantillons"
 
-4. Comparer le nombre affiché aux tubes présents sur la paillasse.
-5. Régler **Date de réception de l'échantillon au labo** sur la date d'arrivée du
-   colis.
-6. Sélectionner **Activer les échantillons**.
+            | Message | Cause | Que faire |
+            | --- | --- | --- |
+            | Veuillez saisir l'exemple de code de manifeste | Le champ du code est vide | Saisir le code, puis sélectionner **Envoyer** |
+            | Aucun manifeste n'a été trouvé avec ce code … | Aucun manifeste portant ce code n'a été envoyé à ce laboratoire | Vérifier chaque caractère du code. Demander à l'expéditeur quel laboratoire indique le manifeste |
+            | Manifeste … est enregistré auprès d'un autre laboratoire d'analyse et ne peut pas être activé ici | Le manifeste indique un autre laboratoire | Demander à l'expéditeur de déplacer le manifeste vers ce laboratoire. Voir [Déplacer des manifestes vers un autre laboratoire](send-samples-on-a-manifest.md) |
+            | Impossible de récupérer les échantillons pour le manifeste … Veuillez réessayer ou contacter le service d'assistance | Le LIS n'a pas pu récupérer le manifeste depuis le STS | Vérifier la connexion internet, puis sélectionner de nouveau **Envoyer** |
+            | Impossible de synchroniser le manifeste … | Le STS n'a pas répondu | Sélectionner de nouveau **Envoyer**. Si le message se répète, contacter l'assistance |
 
-InteLIS confirme par un message indiquant que les échantillons du manifeste ont
-été activés.
+            Le tableau affiche **Veuillez saisir un code manifeste valide pour
+            l'activation** tant qu'aucun manifeste n'est chargé. Ce n'est pas
+            une erreur.
 
-## Ce que fait l'activation
+    5. Vérifier que le nombre de lignes correspond aux tubes présents sur la
+       paillasse.
+    6. Régler **Date de réception de l'échantillon au labo** sur la date et
+       l'heure d'arrivée du colis.
+    7. Sélectionner **Activer les échantillons**. Le message **Des échantillons
+       de ce manifeste ont été activés** apparaît.
 
-L'activation attribue un ID d'échantillon du laboratoire à chaque échantillon du
-manifeste qui n'en a pas encore, et enregistre la date de réception saisie à
-l'étape 5.
+        ??? warning "Activer un manifeste une seule fois"
 
-Tant que le manifeste n'est pas activé, les échantillons ne sont pas disponibles
-pour le test. La structure sanitaire les a déjà enregistrés, mais ils portent sa
-propre référence et non un ID du laboratoire.
+            Activer de nouveau le même manifeste écrase la date de réception de
+            tous ses échantillons, et efface la date de test des échantillons
+            déjà testés.
 
-La liste affiche deux colonnes pour cette raison.
+    8. Ajouter les échantillons à un batch. Voir
+       [Créer un batch pour le test](batch-samples.md).
 
-| Colonne | Signification |
-|---|---|
-| ID de l'échantillon | L'identifiant attribué par ce laboratoire, utilisé sur l'automate et sur le rapport |
-| ID de l'échantillon à distance | L'identifiant utilisé par la structure expéditrice, conservé pour lui permettre de suivre l'échantillon |
+=== "Tubes manquants ou endommagés"
 
-## Si le code est refusé
+    1. Compter les tubes par rapport au manifeste imprimé. Noter les ID
+       d'échantillon des tubes manquants ou endommagés.
+    2. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Ajouter des
+       échantillons à partir du manifeste**.
+    3. Saisir ou scanner le code du manifeste dans **Entrer le code manifeste
+       d'échantillons**.
+    4. Sélectionner **Envoyer**. Les échantillons du manifeste apparaissent dans
+       le tableau.
 
-| Message | Cause | Que faire |
-|---|---|---|
-| Saisir un code de manifeste valide | Le code ne correspond à aucun manifeste | Vérifier qu'aucun caractère n'est erroné. Confirmer que le manifeste a bien été envoyé à ce laboratoire |
-| Indiquer la date de réception des échantillons | La date de réception est vide | Renseigner la date de réception, puis activer à nouveau |
-| Aucun échantillon listé | Le manifeste a déjà été activé | Rechercher l'un de ses ID d'échantillon dans Afficher les demandes de test |
+        ??? failure "Si un message apparaît à la place des échantillons"
 
-Un manifeste créé sur le système central parvient au laboratoire selon une
-fréquence définie. Un manifeste généré il y a quelques minutes peut ne pas
-encore être arrivé. Attendre, puis réessayer.
+            | Message | Cause | Que faire |
+            | --- | --- | --- |
+            | Veuillez saisir l'exemple de code de manifeste | Le champ du code est vide | Saisir le code, puis sélectionner **Envoyer** |
+            | Aucun manifeste n'a été trouvé avec ce code … | Aucun manifeste portant ce code n'a été envoyé à ce laboratoire | Vérifier chaque caractère du code. Demander à l'expéditeur quel laboratoire indique le manifeste |
+            | Manifeste … est enregistré auprès d'un autre laboratoire d'analyse et ne peut pas être activé ici | Le manifeste indique un autre laboratoire | Demander à l'expéditeur de déplacer le manifeste vers ce laboratoire. Voir [Déplacer des manifestes vers un autre laboratoire](send-samples-on-a-manifest.md) |
+            | Impossible de récupérer les échantillons pour le manifeste … Veuillez réessayer ou contacter le service d'assistance | Le LIS n'a pas pu récupérer le manifeste depuis le STS | Vérifier la connexion internet, puis sélectionner de nouveau **Envoyer** |
+            | Impossible de synchroniser le manifeste … | Le STS n'a pas répondu | Sélectionner de nouveau **Envoyer**. Si le message se répète, contacter l'assistance |
+
+            Le tableau affiche **Veuillez saisir un code manifeste valide pour
+            l'activation** tant qu'aucun manifeste n'est chargé. Ce n'est pas
+            une erreur.
+
+    5. Régler **Date de réception de l'échantillon au labo** sur la date et
+       l'heure d'arrivée du colis.
+    6. Sélectionner **Activer les échantillons**. L'activation couvre tous les
+       échantillons du manifeste, y compris les manquants. Le message **Des
+       échantillons de ce manifeste ont été activés** apparaît.
+
+        ??? warning "Activer un manifeste une seule fois"
+
+            Activer de nouveau le même manifeste écrase la date de réception de
+            tous ses échantillons, et efface la date de test des échantillons
+            déjà testés.
+
+    7. Rejeter chaque échantillon manquant ou endommagé sur sa propre fiche.
+       Voir [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
+    8. Indiquer à l'expéditeur les échantillons rejetés, afin qu'il prélève de
+       nouveau.
+    9. Ajouter les autres échantillons à un batch. Voir
+       [Créer un batch pour le test](batch-samples.md).
 
 ## Vérifier que tout fonctionne
 
-Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les demandes de
-test** et rechercher le code du manifeste.
+1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
+   demandes de test**.
+2. Filtrer sur le code du manifeste.
 
-Tous les échantillons du colis apparaissent avec un ID d'échantillon et le
-statut **Échantillon enregistré au laboratoire d'analyse**.
+Chaque échantillon du colis a un ID d'échantillon et le statut **Échantillon
+enregistré au laboratoire d'analyse**.
 
-## Suite
+??? info "Ce que fait l'activation"
 
-Ajouter les échantillons activés à un batch. Voir
-[Créer un batch pour le test](batch-samples.md).
+    L'activation attribue un ID d'échantillon du laboratoire à chaque
+    échantillon du manifeste qui n'en a pas encore. Elle enregistre la date de
+    réception et fait passer chaque échantillon au statut **Échantillon
+    enregistré au laboratoire d'analyse**. Jusque-là, les échantillons ne
+    portent que l'identifiant utilisé par la structure expéditrice et ne sont
+    pas prêts pour le test.
+
+    | Colonne | Signification |
+    | --- | --- |
+    | **ID de l'échantillon** | L'identifiant attribué par ce laboratoire, utilisé sur l'automate et sur le rapport |
+    | **ID de l'échantillon à distance** | L'identifiant utilisé par la structure expéditrice, conservé pour lui permettre de suivre l'échantillon |
+
+    Sur un LIS, **Envoyer** récupère le manifeste depuis le STS lorsqu'il n'est
+    pas encore parvenu au laboratoire. Cela nécessite une connexion internet.

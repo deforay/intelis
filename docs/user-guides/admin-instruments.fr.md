@@ -1,106 +1,108 @@
-# Configurer les automates et l'interfaçage
+# Configurer un instrument
 
-Ce guide enregistre un automate sous **ADMIN → Configuration du système →
-Instruments** pour qu'InteLIS puisse lire ses résultats.
+Enregistrer un automate sous **ADMIN → Configuration du système →
+Instruments**, pour qu'InteLIS puisse lire ses résultats. Un instrument non
+enregistré ne peut pas être choisi pour un batch, et ses fichiers de résultats
+ne peuvent pas être importés.
 
-Un automate non enregistré ne peut pas être choisi comme plateforme de test, et
-ses fichiers de résultats ne peuvent pas être importés.
+Deux tâches voisines ont leur propre guide :
+
+- Pour envoyer les résultats directement depuis l'automate, voir
+  [Connecter un instrument à InteLIS](../guides/setting-up-interfacing-tool.md).
+- Pour relier une installation de l'outil d'interface au laboratoire, voir
+  [Connexions de l'outil d'interface](admin-interface-tool-connections.md).
 
 ## Avant de commencer
 
 - Un compte avec des droits d'administrateur
-- Le laboratoire de test déjà créé sous **ADMIN → Structures sanitaires**
-- Un fichier de résultats exporté depuis l'automate
+- Le laboratoire d'analyse, créé sous **ADMIN → Structures sanitaires**
+- Une date copiée exactement telle que l'automate l'écrit dans ses fichiers de
+  résultats
 
-## Ajouter un automate
+## Ajouter un instrument
 
 1. Aller à **ADMIN → Configuration du système → Instruments**.
 2. Sélectionner **Ajouter un instrument**.
-3. Renseigner les informations.
+3. Saisir **Nom de l'instrument**, le fabricant ou la plateforme, par exemple
+   Roche ou Abbott.
+4. Renseigner **Laboratoire d'analyse** avec le laboratoire où se trouve
+   l'automate.
 
-| Champ | Ce qu'il faut saisir |
-|---|---|
-| Nom de l'instrument | Le fabricant ou la plateforme, par exemple Roche ou Abbott |
-| Nom de la machine | Le nom de cette machine en particulier |
-| Laboratoire d'analyse | Le laboratoire où se trouve la machine |
-| Tests pris en charge | Chaque type de test exécuté par cette machine |
-| Fichier des instruments | Le fichier de configuration qui indique à InteLIS comment lire les fichiers de résultats de cette machine |
-| Nombre maximal d'échantillons dans un lot | Le nombre d'échantillons d'une série |
-| S'agit-il d'un dispositif POC ? | S'il s'agit d'un appareil délocalisé |
-| Latitude, Longitude | Où se trouve la machine, pour la carte du réseau de référence |
-| Statut | Actif ou inactif |
+    ??? info "Laboratoire d'analyse sur un LIS ou une instance cloud"
 
+        Un LIS n'affiche pas de champ **Laboratoire d'analyse**. InteLIS
+        utilise le laboratoire de l'installation. Sur une instance cloud, la
+        liste ne propose que le laboratoire de l'utilisateur.
+
+5. Sous **Tests pris en charge**, choisir chaque type de test réalisé par
+   l'automate.
+6. Renseigner **Fichier des instruments**. Il indique à InteLIS comment lire les
+   fichiers de résultats de cet automate. Sans lui, l'import de fichiers
+   échoue.
+7. Saisir les limites de résultat :
+
+    | Champ | Ce qu'il faut saisir |
+    | --- | --- |
+    | Limite inférieure | La plus petite valeur rendue par l'automate, par exemple 20 |
+    | Limite supérieure | La plus grande valeur rendue par l'automate, par exemple 10000000 |
+    | Nombre maximal d'échantillons dans un lot | Le nombre d'échantillons d'une série |
+    | Faible VL Texte de résultat | Chaque texte que l'automate écrit pour un résultat indétectable, séparés par des virgules, par exemple `Target Not Detected, TND, < 20, < 40` |
+
+    ??? warning "Une formulation absente de Faible VL Texte de résultat"
+
+        Un résultat écrit dans une formulation absente de la liste est importé
+        comme résultat non reconnu, et non comme indétectable.
+
+8. Sous **Noms des machines**, saisir le **Nom de la machine** du premier
+   automate de ce modèle.
+9. Dans la cellule **Format de date** de cette ligne, coller la date copiée
+   d'un fichier de résultats, par exemple `06.19.2025 11:19 AM`. Choisir le
+   format proposé par InteLIS.
+
+    ??? failure "Si aucun format n'est proposé"
+
+        Saisir le format à la main, par exemple `d/m/Y H:i`. Un mauvais format
+        de date rend chaque date importée fausse ou vide.
+
+10. Si l'automate est un dispositif de biologie délocalisée, cocher **S'agit-il
+    d'un dispositif POC ?** et saisir sa **Latitude** et sa **Longitude**.
+11. Pour ajouter un autre automate du même modèle, sélectionner **+** sur la
+    ligne, puis répéter les étapes 8 à 10 sur la nouvelle ligne.
+12. Pour chaque type de test, saisir le nombre de contrôles. Il indique à
+    InteLIS combien de positions d'une série ne sont pas des échantillons de
+    patients :
+
+    | Champ | Ce qu'il faut saisir |
+    | --- | --- |
+    | Nombre de contrôles internes | Les positions de contrôle interne par série |
+    | Nombre de contrôles du fabricant | Les positions de contrôle du fabricant par série |
+    | Nombre d'étalonneurs | Les positions d'étalonneur par série |
+
+13. Si les mêmes personnes valident toujours les résultats de cet automate,
+    renseigner **Réviseur par défaut** et **Approbateur par défaut** pour chaque
+    type de test. Laissés vides, chaque résultat enregistre la personne qui l'a
+    réellement révisé et approuvé.
+14. Pour imprimer une mention de méthode fixe sur chaque résultat de cet
+    automate, la saisir sous **Description/Commentaire à ajouter dans le
+    résultat du test**.
+15. Sélectionner **Envoyer**.
+
+## Retirer un instrument
+
+1. Aller à **ADMIN → Configuration du système → Instruments**.
+2. Sélectionner **Modifier** sur l'instrument.
+3. Régler **Statut** sur **Inactif**.
 4. Sélectionner **Envoyer**.
 
-L'**Fichier des instruments** est ce qui fait fonctionner l'import de fichiers.
-Sans lui,
-les résultats exportés de l'automate ne peuvent pas être lus. Voir
-[Saisir les résultats de charge virale](capture-results.md).
-
-## Régler les limites de résultat
-
-Les limites déterminent comment un résultat numérique est affiché et interprété.
-
-| Champ | Ce qu'il faut saisir |
-|---|---|
-| Limite inférieure | La plus petite valeur rendue par la machine, par exemple 20 |
-| Limite supérieure | La plus grande valeur rendue par la machine, par exemple 10000000 |
-| Faible VL Texte de résultat | Le texte exact écrit par la machine pour un résultat indétectable, par exemple `Target Not Detected, TND, < 20, < 40`. Séparer les variantes par des virgules |
-
-Saisir dans **Faible VL Texte de résultat** toutes les formulations employées
-par la
-machine. Une formulation absente de la liste est importée comme un résultat non
-reconnu et non comme indétectable.
-
-## Laisser InteLIS détecter le format de date de la machine
-
-Les fichiers de résultats portent des dates au format propre à la machine.
-InteLIS déduit ce format d'un exemple.
-
-1. Repérer **Format de date**.
-2. Coller une date exactement telle que la machine l'écrit, par exemple
-   `06.19.2025 11:19 AM`.
-3. InteLIS en déduit le format.
-
-Un format de date non détecté rend fausse ou vide chaque date importée.
-
-## Régler les compteurs de contrôle qualité
-
-Chaque type de test exécuté par la machine porte ses propres compteurs de
-contrôle. Ils indiquent à InteLIS combien de positions d'une série ne sont pas
-des échantillons de patients.
-
-| Champ | Ce qu'il faut saisir |
-|---|---|
-| Nombre d'étalonneurs | Le nombre de positions de calibrateurs de ce type de test |
-| Nombre de contrôles du fabricant | Le nombre de positions de contrôles du fabricant |
-| Nombre de contrôles internes | Le nombre de positions de contrôles internes |
-
-Renseigner ces valeurs par type de test. Une machine exécutant la charge virale
-et la tuberculose porte un jeu pour chacun.
-
-## Définir le réviseur et l'approbateur par défaut
-
-**Réviseur par défaut** et **Approbateur par défaut** pré-remplissent les noms du réviseur
-et de l'approbateur sur les résultats venant de cette machine.
-
-Ne les renseigner que lorsque les mêmes personnes valident toujours les
-résultats
-de cette machine. Les laisser vides fait enregistrer sur chaque résultat la
-personne qui l'a réellement validé.
-
-## Ajouter un commentaire aux résultats de cette machine
-
-**Description/Commentaire à ajouter dans le résultat du test** ajoute un commentaire fixe à chaque
-résultat de cette machine. À utiliser pour une mention de méthode qui doit
-figurer sur tous les rapports de cette plateforme.
+**Statut** n'existe que sur la page Modifier l'instrument. Un nouvel instrument
+est enregistré comme actif.
 
 ## Vérifier que tout fonctionne
 
 | Modification | Contrôle |
-|---|---|
-| Nouvel automate | Il apparaît dans Plateforme de test à la création d'un batch |
-| Fichier des instruments | Importer un fichier de résultats de la machine et lire les lignes importées |
-| Format de date | Les dates Sample Tested On importées correspondent à celles de la machine |
-| Faible VL Texte de résultat | Un résultat indétectable s'importe comme indétectable et non comme non reconnu |
-| Compteurs de contrôle | Le nombre de positions du batch correspond à la série |
+| --- | --- |
+| Nouvel instrument | Il est proposé comme plateforme de test à la création d'un batch |
+| Fichier des instruments | Importer un fichier de résultats de l'automate et lire les lignes importées |
+| Format de date | Les dates de test importées correspondent à celles de l'automate |
+| Faible VL Texte de résultat | Un résultat indétectable est importé comme indétectable |
+| Nombre de contrôles | Le nombre de positions du batch correspond à la série |

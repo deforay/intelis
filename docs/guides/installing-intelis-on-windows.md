@@ -271,8 +271,6 @@ accepts `root` with the new password.
 46. Fill in **Admin Setup** with the email, full name, login ID and password of
     the lab's first administrator. Select **Finish**.
 47. Log in with that administrator account.
-48. If the lab uses an STS, select **Force Remote Sync** in the page footer and
-    wait for it to finish.
 
 **Check:** the dashboard opens, and the page footer shows the version, for
 example `v5.7.72`.

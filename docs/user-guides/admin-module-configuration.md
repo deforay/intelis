@@ -1,102 +1,122 @@
 # How to maintain the request form lists
 
-This guide maintains the dropdown lists on the request forms. Each test module
-keeps its own lists, and a few lists are shared by every module.
+Add, correct and retire the options offered in the dropdown lists of the
+request forms. Each module keeps its own lists. A few lists are shared by every
+module.
 
-An option a user cannot find on the request form is almost always an inactive
-entry, or an entry added under a different module.
+An option a user cannot find on the request form is almost always inactive, or
+was added under a different module.
 
 ## Before starting
 
 - An account with administrator rights
 
-## One config section per module
+## Where each list is
 
-The ADMIN menu carries one config section per module the installation runs. An
-installation running one module carries one section.
+Each module the installation runs has its own config section under **ADMIN**.
 
-| Config section | Lists it holds |
-|---|---|
-| VL Config | Sample Type, Rejection Reasons, Test Reasons, Results, ART Regimen, Test Failure Reasons, Recommended Corrective Actions |
-| EID Config | Sample Type, Rejection Reasons, Test Reasons, Results |
-| TB Config | Sample Type, Rejection Reasons, Test Reasons, Results |
-| CD4 Config | Sample Type, Rejection Reasons, Test Reasons |
-| Covid-19 Config | Sample Type, Rejection Reasons, Test Reasons, Results, Symptoms, Co-morbidities, Recommended Corrective Actions, QC Test Kits |
-| Hepatitis Config | Sample Type, Rejection Reasons, Test Reasons, Results, Co-morbidities, Risk Factors |
-| Other Lab Tests Config | Sample Types, Testing Reasons, Sample Rejection Reasons, Test Failure Reasons, Symptoms, Test Result Units, Test Methods, Test Categories, Test Type Configuration |
+| Config section | Lists |
+| --- | --- |
+| VL Config | ART Regimen, Rejection Reasons, Sample Type, Results, Test Reasons, Test Failure Reasons, Recommended Corrective Actions |
+| EID Config | Rejection Reasons, Sample Type, Test Reasons, Results |
+| Covid-19 Config | Co-morbidities, Rejection Reasons, Sample Type, Symptoms, Test Reasons, Results, QC Test Kits, Recommended Corrective Actions |
+| Hepatitis Config | Co-morbidities, Risk Factors, Rejection Reasons, Sample Type, Results, Test Reasons |
+| TB Config | Rejection Reasons, Sample Type, Test Reasons, Results |
+| CD4 Config | Sample Type, Test Reasons, Rejection Reasons |
+| Other Lab Tests Config | Sample Types, Testing Reasons, Test Failure Reasons, Symptoms, Sample Rejection Reasons, Test Result Units, Test Methods, Test Categories, Test Type Configuration |
+| System Configuration | Geographical Divisions, Implementation Partners, Funding Sources, Lab Storage. These serve every module |
 
-Adding a sample type under one module does not add it to another module's form.
-Add it under each module that needs it.
+A sample type added under VL Config does not reach the EID form. Add it under
+each module that needs it.
 
-## What each list controls
+## Add an entry
 
-| List | Controls |
-|---|---|
-| Sample Type | The specimen types offered on the request form |
-| Rejection Reasons | The reasons offered when rejecting a sample |
-| Test Reasons | The indications for testing |
-| Results | The result values for qualitative reporting |
-| Test Failure Reasons | The reasons offered when a test fails |
-| Symptoms, Co-morbidities, Risk Factors | The clinical checklists on the request form |
-| ART Regimen | The regimen choices on the viral load request form |
-| Recommended Corrective Actions | The actions suggested on high viral load results |
-| QC Test Kits | The test kits offered for quality control records |
-| Test Result Units, Test Methods, Test Categories | The properties available to a custom test type |
+**Choose the installation type, then follow its steps from top to bottom.**
 
-## Add an entry to a list
+=== "STS or standalone"
 
-1. Open the list page under its module's config section.
-2. Select the add option.
-3. Enter the name.
-4. Save.
-5. Open the request form and confirm the entry appears in its dropdown.
+    1. Go to **ADMIN**, then the module's config section, then the list. For
+       example, **ADMIN → VL Config → Sample Type**.
+    2. Select the add button at the top right of the list. It is named after
+       the list, such as **Add VL Sample Type**.
 
-Every list works the same way.
+        ??? info "Add button on each list"
+
+            | List | Button |
+            | --- | --- |
+            | VL Config lists | **Add VL Sample Type**, **Add VL Sample Rejection Reasons**, **Add VL Test Reasons**, **Add VL Results**, **Add VL ART Regimen**, **Add VL Test Reason** (on Test Failure Reasons), **Add Recommended Corrective Actions** |
+            | EID Config lists | **Add EID Sample Type**, **Add EID Sample Rejection Reasons**, **Add EID Test Reasons**, **Add EID Results** |
+            | Covid-19 Config lists | **Add Covid-19 Sample Type**, **Add Covid-19 Sample Rejection Reasons**, **Add Covid-19 Test Reasons**, **Add Covid-19 Results**, **Add Covid-19 Symptoms**, **Add Covid-19 Co-morbidities**, **Add New Covid-19 QC Test Kit** |
+            | Hepatitis Config lists | **Add Hepatitis Sample Type**, **Add Hepatitis Sample Rejection Reasons**, **Add Hepatitis Test Reasons**, **Add Hepatitis Results**, **Add Hepatitis Co-morbidities**, **Add Hepatitis Risk Factors** |
+            | TB Config lists | **Add TB Sample Type**, **Add TB Sample Rejection Reasons**, **Add TB Test Reasons**, **Add TB Results** |
+            | CD4 Config lists | **Add CD4 Sample Type**, **Add CD4 Sample Rejection Reasons**, **Add CD4 Test Reasons** |
+            | Other Lab Tests Config lists | **Add Sample Type**, **Add Testing Reason**, **Add Test Failure Reason**, **Add Symptoms**, **Add Sample Rejection Reasons**, **Add Test Result Units**, **Add Test Methods**, **Add Test Categories**, **Add Test Type** |
+            | System Configuration lists | **Add New Geographical Divisions**, **Add Implementation Partners**, **Add Funding Sources** |
+
+    3. Enter the name of the entry, and its code where the form asks for one.
+    4. Set the status to **Active**.
+    5. Select **Submit**.
+    6. Open the request form. The entry appears in its dropdown.
+
+    ??? info "Adding a district"
+
+        On **Geographical Divisions**, leave **Parent Geographical Division**
+        blank when adding a province. Set it to the province when adding a
+        district. A district with no parent appears under no province on the
+        request form.
+
+=== "LIS"
+
+    A LIS shows these lists without add buttons. The lists come from the STS.
+
+    1. Ask the STS administrator to add the entry on the STS.
+    2. Once it is added, select **Force Remote Sync** at the bottom right of any
+       LIS page.
+    3. Open the request form. The entry appears in its dropdown.
+
+    ??? info "Lab Storage is maintained on the LIS"
+
+        **ADMIN → System Configuration → Lab Storage** belongs to the lab. Select
+        **Add Lab Freezer/Storage** there to add a freezer.
 
 ## Retire an entry
 
-1. Open the list page.
-2. Edit the entry.
-3. Set the status to inactive.
-4. Save.
+Set entries inactive instead of deleting them. An inactive entry leaves the
+form, and stays readable on the records that already use it.
 
-Set entries inactive rather than deleting them. An inactive entry disappears from
-the form and stays readable on the records that already use it. Deleting it
-leaves those records unreadable.
+1. Open the list, as in step 1 of [Add an entry](#add-an-entry).
+2. In the entry's row, set the status to **Inactive**.
+3. Select **OK** to confirm.
+4. Open the request form. The entry is no longer offered.
 
-## Maintain the shared lists
+??? info "If the row has no status list"
 
-Four lists sit under **ADMIN → System Configuration** and serve every module.
+    Select **Edit** on the row, set the status to **Inactive**, and select
+    **Submit**. On a LIS, the status cannot be changed. Retire the entry on the
+    STS.
 
-| Page | Controls |
-|---|---|
-| Geographical Divisions | Provinces and districts |
-| Implementation Partners | The partner list on the request form |
-| Funding Sources | The funder list on the request form |
-| Lab Storage | The freezers offered on the storage page |
+??? warning "Renaming or removing a province or district"
 
-For geographical divisions, leave the parent blank when adding a province. Set
-the parent to a province when adding a district. A district added without a
-parent does not appear under any province on the request form.
+    The facilities under it lose their link, and the location filters on every
+    report stop matching. Agree the change with the national team first.
 
-Renaming or removing a province or district breaks the facilities under it, and
-the geographic filters on every report stop matching. Agree those changes with
-the national team first.
+## Set up a Custom Test
 
-## Configure a custom test type
+A Custom Test is a test type that is not one of the built-in modules. It is
+defined under **ADMIN → Other Lab Tests Config → Test Type Configuration**.
 
-**ADMIN → Other Lab Tests Config → Test Type Configuration** defines a test type
-that is not one of the built-in modules.
-
-The other lists under Other Lab Tests Config supply what that test type can use:
-its result units, its test method, and its test category. Create those entries
-before creating the test type that refers to them.
+1. Add the entries the test needs under **Test Result Units**, **Test
+   Methods** and **Test Categories**.
+2. Add the sample types, testing reasons and rejection reasons it needs, under
+   the matching Other Lab Tests Config lists.
+3. Go to **ADMIN → Other Lab Tests Config → Test Type Configuration**.
+4. Select **Add Test Type** and define the test.
 
 ## Confirm it worked
 
 | Change | Check |
-|---|---|
-| New entry | The entry appears in its dropdown on the request form |
-| Retired entry | The entry leaves the form and stays readable on an existing record |
+| --- | --- |
+| New entry | It appears in its dropdown on the request form |
+| Retired entry | It leaves the form and stays readable on an existing record |
 | New district | It appears under its province on the request form |
-| New custom test type | It appears in the Other Lab Tests request form |
+| New Custom Test | It appears in the Other Lab Tests request form |

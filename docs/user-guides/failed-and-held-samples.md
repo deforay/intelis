@@ -1,88 +1,118 @@
 # How to handle failed and held samples
 
-Samples that failed on the analyzer, were put on hold, went missing, or expired
-collect on one page. Use it to send them back for retesting, or to recover
-results that were marked failed by mistake.
+Samples that failed on the analyzer, were put on hold, or went missing collect on
+one page. Use it to send them back for testing, or to recover results marked
+failed by mistake.
 
 ## Before starting
 
 - Permission to view failed and held samples
+- Permission to edit test requests, for the per-row buttons and for recovery
 
-## Find them
-
-1. Go to **HIV VIRAL LOAD → Test Result Management → Failed/Hold Samples**.
-2. Set **Result Status** to the group to work through.
-
-| Status | Meaning |
-|---|---|
-| Failed | The analyzer returned a failure or an invalid reading |
-| Hold | Someone paused the sample pending a decision |
-| Lost | The sample cannot be found |
-| Expired | The sample passed the storage life the lab allows |
-
-3. Narrow with the other filters if needed, then select **Search**.
-
-## Send samples for retesting
-
-Use this when the sample is still viable and the lab has enough volume left.
-
-1. Tick the samples to retest.
-2. Select **Retest the selected samples**.
-
-InteLIS confirms that the retest has been submitted.
-
-Retesting clears the result and returns the sample to the untested queue with
-the status **Sample Registered at Testing Lab**. The sample can then be added to
-a new batch. See [How to batch samples for testing](batch-samples.md).
-
-The failed attempt is not erased. InteLIS keeps it on record, so the lab
-performance reports count both the failed run and the retest. The failure rate
-stays accurate.
-
-## Recover results marked failed by mistake
-
-An import can mark a whole run failed when the results were sound. Use this
-action to put those samples right.
-
-1. Tick the affected samples.
-2. Select **Move selected to Accepted**.
-3. Confirm.
-
-InteLIS moves back only the samples whose recorded result is usable. Samples
-that genuinely failed on the analyzer are skipped, and InteLIS reports how many
-moved.
-
-If nothing moves, the samples are either genuine failures or already accepted.
-Those need a retest, not recovery.
-
-## Reprint a barcode label
-
-Where a tube's label is damaged or missing, reprint it from this page.
-
-1. Find the sample.
-2. Use the printing option on the row.
-
-If no printer is listed, select **Change/Retry** to pick one.
-
-## Decide between retest and cancel
+## Decide what the sample needs
 
 | Situation | Action | Where |
-|---|---|---|
-| Sample viable, enough volume | Retest | This page |
-| Sample not viable, facility should resend | Reject with a reason | [Manage Results Status](approve-results.md) |
-| Sample lost | Mark Lost | [Manage Results Status](approve-results.md) |
-| Request entered twice, or withdrawn | Cancel | [Manage Results Status](approve-results.md) |
+| --- | --- | --- |
+| The test failed, the sample is still usable and enough volume is left | Retest | **Retest** steps below |
+| An import marked a sound run as failed | Recover | **Recover a run marked failed by mistake** steps below |
+| The sample is not fit to test, and the facility must collect again | Reject with a reason | [Reject](approve-results.md) |
+| The sample cannot be found | Mark lost | [Mark lost](approve-results.md) |
+| The request was entered twice, or withdrawn | Cancel | [Cancel](approve-results.md) |
 
-Cancellation and failure are counted differently. A cancelled sample is treated
-as never tested and drops out of testing counts and turnaround time. A failed
-sample stays in the failure rate. Using cancel to clear failures hides a real
-quality signal.
+Do not cancel a sample to clear a failure. A cancelled sample counts as never
+tested and drops out of testing counts and turnaround time. A failed sample
+stays in the failure rate, which is the quality signal the lab needs.
 
-## Confirm it worked
+## What the page lists
 
-After a retest, search for the sample under **HIV VIRAL LOAD → Request
-Management → View Test Requests**. It shows the status **Sample Registered at
-Testing Lab** and no result.
+| Status | Meaning |
+| --- | --- |
+| Failed | The analyzer returned a failure or an invalid reading |
+| Hold | The sample is paused pending a decision |
+| Lost | The sample cannot be found |
 
-After a recovery, the sample no longer appears on the Failed/Hold page under
-**Failed**, and carries its result.
+??? info "How a sample reaches Hold"
+
+    No viral load screen in InteLIS sets Hold on a sample. On the **Imported
+    Results** screen that follows **Import Results From File**, choosing **Hold**
+    for a row sets that row's result aside. The result is not saved to the
+    sample, and the sample keeps waiting for a result. A Hold sample on this page
+    already carried that status before it arrived here.
+
+For every status, see [Sample statuses](sample-statuses.md).
+
+## Follow the steps
+
+**Choose the situation, then follow its steps from top to bottom.**
+
+=== "Retest"
+
+    1. Go to **HIV VIRAL LOAD → Test Result Management → Failed/Hold Samples**.
+    2. Check **Result Status**. **Failed** and **Hold** are selected by default.
+       Add **Lost** if needed.
+    3. Narrow with the other filters if needed, such as **Facility Name**,
+       **Sample Collection Date** or **Manifest Code**.
+    4. Select **Search**.
+    5. Tick the samples to retest. The **Retest the selected samples** button
+       appears.
+
+        ??? info "To retest one sample"
+
+            Select **Retest** on that sample's row instead, then go to step 7.
+
+    6. Select **Retest the selected samples**.
+    7. InteLIS shows `Retest has been submitted.` The samples leave this list.
+
+        ??? info "What retest does"
+
+            The result is cleared and the sample leaves its batch. Its status
+            returns to **Sample Registered at Testing Lab**. InteLIS keeps the
+            failed attempt on record, so lab performance reports count both the
+            failure and the retest.
+
+    8. Go to **HIV VIRAL LOAD → Request Management → View Test Requests** and
+       search for the sample. The **Status** column shows
+       `Sample Registered at Testing Lab`, and the result is empty.
+    9. Add the sample to a new batch. See
+       [How to batch samples for testing](batch-samples.md).
+
+    ??? info "If the tube's barcode label is damaged"
+
+        Reprint it from **HIV VIRAL LOAD → Request Management → View Test
+        Requests**. Search for the sample and select **Barcode** on its row. The
+        button appears only when **Sample ID Barcode Label Printing** under
+        **ADMIN → System Configuration → General Configuration** is not set to
+        **Off**. If no printer is listed, select **Change/Retry** to pick one.
+
+=== "Recover a run marked failed by mistake"
+
+    An import can mark a whole run failed when the results were sound. Recovery
+    moves those samples straight to **Accepted**, with no second approval step.
+    Check each result against the analyzer printout first.
+
+    1. Go to **HIV VIRAL LOAD → Test Result Management → Failed/Hold Samples**.
+    2. Set **Result Status** to **Failed** only.
+    3. Narrow with the other filters if needed.
+    4. Select **Search**.
+    5. Tick the affected samples. The **Move selected to Accepted** button
+       appears.
+
+        ??? info "To recover one sample"
+
+            Select **Accept** on that sample's row instead, then go to step 7.
+            The button appears only on Failed rows that carry a usable result.
+
+    6. Select **Move selected to Accepted**.
+    7. Select **OK** to confirm. InteLIS shows how many samples moved, for
+       example `3 sample(s) moved to Accepted.`
+
+        ??? failure "If InteLIS shows `No samples were moved`"
+
+            The samples carry a genuine failure result, such as Failed, Error or
+            Invalid, or are already accepted. Genuine failures are always
+            skipped. Retest them instead.
+
+    8. Search again with **Result Status** set to **Failed**. The recovered
+       samples no longer appear.
+
+    Next: [release the results to the requesting facility](release-results.md).

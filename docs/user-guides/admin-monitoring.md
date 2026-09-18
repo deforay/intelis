@@ -1,131 +1,234 @@
 # How to monitor and audit InteLIS
 
-This guide covers **ADMIN → Monitoring**, the pages that answer who did what,
-whether data is moving, and how the lab is performing.
-
-Use it when a result is questioned, when results stop arriving, or when a lab
-asks why its data is missing from a national report.
+Find who changed a record, check that data and analyzer results are moving, and
+read how the lab is performing. The pages sit under **ADMIN → Monitoring**.
 
 ## Before starting
 
-- An account with administrator rights
+- An account whose role holds the Monitoring pages needed. The super
+  administrator sees them all
+
+??? info "Which pages appear"
+
+    | Installation | Pages |
+    | --- | --- |
+    | Standalone or LIS | Every page except **Lab Sync Status** and **API Dashboard** |
+    | STS | Every page |
+    | Cloud | **User Activity Log**, **Audit Trail** and **Log File Viewer** only |
+
+    **Page Usage** appears only for the super administrator, and for roles
+    given the **Page Usage** privilege on the Roles page. No other role holds it
+    by default.
 
 ## Which page answers which question
 
 | Question | Page |
-|---|---|
-| Who changed this result, and to what? | Audit Trail |
-| Which pages did this user open, and when? | User Activity Log |
-| Did this installation reach the national server? | API History |
+| --- | --- |
+| Who changed this sample, and to what? | Audit Trail |
+| What did this user do, and when did they sign in? | User Activity Log |
+| Which pages do users open, and for how long? | Page Usage |
+| Did data reach the STS? | API History on a LIS. Lab Sync Status on the STS |
+| Where did the STS requests come from, and did results go back? | API Dashboard |
 | Is this analyzer still sending? | Interface Machine Activity |
-| How long is this lab taking to return results? | Lab Performance Indicators |
-| Where did these requests come from? | Sources of Requests |
-| What does the raw result record hold? | Test Results Metadata |
-| Which facilities refer to which lab? | Sample Referral Network |
-| What is the system reporting to support? | Log File Viewer |
+| How long is the lab taking, and how often do tests fail? | Lab Performance Indicators |
+| Where are samples lost between request and result? | Source of Requests |
+| What does InteLIS hold behind a result? | Test Results Metadata |
+| Which facilities send samples to which lab? | Sample Referral Network |
+| What errors has the system logged? | Log File Viewer |
 
-## Find who changed a record
+## Find who changed a sample
 
 1. Go to **ADMIN → Monitoring → Audit Trail**.
-2. Filter to the record in question.
-3. Read the change history.
+2. Set **Test Type**.
+3. Enter the **Sample ID or Remote Sample ID**.
+4. Select **Submit**.
+5. Read each revision: the field changed, its **Old Value**, its **New Value**,
+   the user who saved it and when.
 
-The Audit Trail shows which field changed, its old value, its new value, and the
-user who saved the change. Use it whenever a result is questioned.
+    ??? info "Other views"
 
-**User Activity Log** answers a different question. It records which pages a user
-opened and when, not what they changed.
+        | View | Shows |
+        | --- | --- |
+        | Changes Only | Only the fields that changed in each revision |
+        | Timeline View | Each revision as an entry on a timeline |
+        | Compare Versions | Two chosen revisions side by side |
+        | Export To CSV | The history as a file, to send to support or an auditor |
 
-## Check whether data reached the national server
+    ??? failure "If the page says the sample does not belong to the lab"
 
-1. Go to **ADMIN → Monitoring → API History**.
-2. Read the most recent rows.
+        On a cloud instance, the Audit Trail opens only samples of the user's
+        own lab.
 
-| Column | Means |
-|---|---|
-| Transaction ID | The identifier of one sync |
-| Number of Records Synced | How many records that sync carried |
-| Sync Type | Which direction and which kind of data moved |
-| Test Type | Which module the records belong to |
-| URL | The server the sync went to |
-| Synced On | When it ran |
+## See what a user did
 
-A lab whose data is missing nationally has either no recent row here, or rows
-carrying zero records.
+1. Go to **ADMIN → Monitoring → User Activity Log**.
+2. Under **Show**, pick **All**, **Actions** or **Logins**.
+3. Set **Date Range** and **User**.
+4. Read the entries. Each carries the user, the action, the IP address and the
+   browser.
+5. To follow one sign-in from start to end, select **Filter by this session** on
+   one of its entries.
 
-**Lab Sync Status** and **API Dashboard** answer the same question from the other
-end. They appear on the national server only, and are absent from a lab
-installation by design.
+The User Activity Log records what users did. To see the old and new values of
+a sample, use the Audit Trail.
 
-## Check whether an analyzer is still sending
+## See which pages are used
+
+1. Go to **ADMIN → Monitoring → Page Usage**.
+2. Set **Date Range**. Set **User** to narrow it to one person.
+3. Read the cards: **Users**, **Sessions**, **Pages Used**, **Page Opens** and
+   **Time on Pages**.
+4. Read **Most Used Pages** and **Most Active Users**.
+5. Under **By User and Page**, follow a session link to open that session in
+   the User Activity Log.
+
+Time counts only while the page is the tab in front of the user. It is not the
+length of the sign-in.
+
+??? info "Page Usage is empty"
+
+    Recording is switched by **Track Page Usage** in
+    [General configuration](admin-general-configuration.md#global-settings).
+    It is on by default.
+
+## Check that data reached the STS
+
+**Choose the installation, then follow its steps from top to bottom.**
+
+=== "LIS"
+
+    1. Go to **ADMIN → Monitoring → API History**.
+    2. Set **Date Range**. Set **Test Type** to narrow it to one module.
+    3. Read the most recent rows:
+
+        | Column | Means |
+        | --- | --- |
+        | Transaction ID | The identifier of one sync |
+        | Number of Records Synced | How many records the sync carried |
+        | Sync Type | Which direction and which kind of data moved |
+        | URL | The server the sync went to |
+        | Synced On | When it ran |
+
+    4. Check for a recent row with a non-zero **Number of Records Synced**.
+
+    A lab whose data is missing nationally has no recent row, or rows carrying
+    zero records.
+
+=== "STS"
+
+    1. Go to **ADMIN → Monitoring → Lab Sync Status**.
+    2. Set **Province/State**, **District/County** or **Lab Name** to narrow the
+       list, and select **Search**.
+    3. Read the lab's row. Its colour follows its most recent activity:
+
+        | Status | Means |
+        | --- | --- |
+        | Active | Synced within 2 weeks |
+        | Falling behind | Synced 2 to 4 weeks ago |
+        | Stopped | Synced before, but not for 4 weeks or more |
+        | Never synced | Registered, never brought up |
+
+    4. Compare **Last Results Sync from Lab** and **Last Requests Sync from
+       STS**. A gap in the first means results are sitting on the lab machine.
+       A gap in the second means the lab does not see new requests.
+
+    To send a command to a lab from this page, see
+    [Remote command plane](../guides/remote-command-plane.md).
+
+    ??? info "API Dashboard"
+
+        **ADMIN → Monitoring → API Dashboard** follows requests that arrived
+        from an EMR or another system through the API. It shows how many were
+        received at the lab, tested and answered, and flags possible duplicate
+        patients. Set the filters and select **Refresh Dashboard**.
+
+## Check that an analyzer is still sending
 
 1. Go to **ADMIN → Monitoring → Interface Machine Activity**.
-2. Filter to the lab.
-3. Read the most recent occurrence for that machine.
+2. Read **Events (last 7 days)**, **Failures (last 7 days)** and **Last event**.
+3. Set **Instrument** to the analyzer, and select **Search**.
+4. Read the most recent **Occurred On**. A failed event carries a **Failure
+   Code**.
+5. If nothing recent appears, open the testing lab's **Interface Tool
+   Connections** and read **Last Seen**. See
+   [Interface Tool connections](admin-interface-tool-connections.md).
 
-If nothing recent appears, open the testing lab under **ADMIN → Facilities** and
-read the **Last Seen** time under Connected Installations. A stale Last Seen
-means the Interface Tool is not reaching InteLIS. See
-[Instruments and interfacing](admin-instruments.md).
+A stale **Last Seen** means the Interface Tool is not reaching InteLIS.
 
 ## Read the lab performance report
 
-**ADMIN → Monitoring → Lab Performance Indicators** covers every module on the
-installation.
+1. Go to **ADMIN → Monitoring → Lab Performance Indicators**.
+2. Set **Test**, **Date Range**, **View By** and **Lab**.
+3. Select **Apply**.
+4. Open the tab needed:
 
-| Indicator | Shows |
-|---|---|
-| Turnaround time | How long samples take at each stage |
-| Volume by entry mode | How many samples arrived by manual entry, file import, and the Interface Tool |
-| Failure rate | How often tests fail |
-| Rejection rate | How often samples are rejected |
-| Repeat patients | Patients tested more than once |
+    | Tab | Shows |
+    | --- | --- |
+    | Overview | Samples registered and tested, results available and awaiting a result |
+    | Turnaround Time | Average days between collection, lab receipt, testing and release |
+    | Testing Volume | Results by entry mode: manual entry, file import, Interface Tool |
+    | Failures | Failed tests, the failure rate and the re-test rate |
+    | Rejections | Rejected samples, the rejection rate and the top reasons |
+    | Repeat Patients | Patients tested more than once, and result changes |
 
-Custom test types are broken out per test type rather than pooled.
+5. To keep a copy, select **Export**.
 
-## Trace where requests came from
+**How are these numbers calculated?** on the page explains each figure. A
+sample tested twice counts as two tests, so a retest does not hide a failure.
 
-**ADMIN → Monitoring → Sources of Requests** counts, per clinic and testing lab,
-the samples requested, received at the lab, acknowledged, tested, and returned.
+## Find where samples are lost
 
-Select the date range and the test type first. The page shows nothing until both
-are set.
+1. Go to **ADMIN → Monitoring → Source of Requests**.
+2. Set **Date Range** and **Test Type**. The page shows nothing until both are
+   set.
+3. Narrow it with **Province/State**, **Name of the Clinic**, **Name of the
+   Testing Lab** or **Source of Request** if needed.
+4. Select **Search**.
+5. Compare the counts along each row: **No. of Samples Requested**,
+   **Acknowledged**, **Received at Testing Lab**, **Tested** and **Results
+   Returned**. The count that drops shows where samples stop.
 
-Use it to find clinics whose samples are requested but never received, and labs
-that receive samples but return no results.
+## Read the record behind a result
 
-## Read the raw result record
-
-**ADMIN → Monitoring → Test Results Metadata** shows what InteLIS holds behind a
-result: the collection, received, tested and modified dates, the result and its
-status, whether the sample was rejected and why, whether the result was entered
-manually, the reason recorded for any change, and the link to the imported file.
-
-Search by sample test date, or by Sample ID or batch code. Export to Excel to
-send it to support.
+1. Go to **ADMIN → Monitoring → Test Results Metadata**.
+2. Set **Test Type**.
+3. Set **Sample Test Date**, or enter a **Sample ID/Batch Code**.
+4. Select **Search**.
+5. Read the row. It holds the collection, receipt and test dates, the result
+   and its status, who tested it and on which instrument, whether it was
+   entered by hand, rejection details, any change with its reason, and a link
+   to the imported file.
+6. To send it to support, select **Export To Excel**.
 
 ## See the referral network
 
-**ADMIN → Monitoring → Sample Referral Network** maps which facilities refer
-samples to which labs, per test type. Select a lab or facility on the map to see
-only its links.
+1. Go to **ADMIN → Monitoring → Sample Referral Network**.
+2. Set **Date Range** and **Test Type**.
+3. Set **Date Based On**: **Sample Collection Date**, **Sample Registration
+   Date** or **Sample Tested Date**. Counting by tested date matches a lab's
+   own testing figures.
+4. Select **Search**.
+5. Select a lab or facility on the map to show only its links. The table
+   **Referrals by Lab and Test Type** lists every link.
 
-Facilities appear on the map only where their latitude and longitude are set. See
-[Facilities and testing labs](admin-facilities.md).
+A facility without latitude and longitude is left off the map and still counted
+in the table. To add coordinates, see
+[Facilities and testing labs](admin-facilities.md#add-a-facility).
 
 ## Read the log files
 
-**ADMIN → Monitoring → Log File Viewer** shows the system messages InteLIS
-records.
+1. Go to **ADMIN → Monitoring → Log File Viewer**.
+2. Set **Date** and **Log Type**: **System Error Logs** or **PHP Error Logs**.
+3. Filter by level, or search the text.
+4. Select **Export Log File** and send the file to support with the request.
 
-Read it before contacting support, and send the relevant entries with the
-request. It reports faults, not user actions.
+The log records faults, not user actions.
 
 ## Confirm it worked
 
 | Task | Check |
-|---|---|
-| Traced a change | The Audit Trail names the field, the old value, the new value, and the user |
-| Confirmed a sync | API History holds a recent row carrying a non-zero record count |
-| Confirmed an analyzer is live | Interface Machine Activity holds a recent entry, and Last Seen is recent |
-| Diagnosed a missing lab | Sources of Requests shows where the count drops between stages |
+| --- | --- |
+| Traced a change | The Audit Trail names the field, the old value, the new value and the user |
+| Confirmed a sync | API History or Lab Sync Status shows a recent sync carrying records |
+| Confirmed an analyzer is live | Interface Machine Activity holds a recent event, and **Last Seen** is recent |
+| Found a missing sample | Source of Requests shows the stage where the count drops |

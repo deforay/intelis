@@ -56,14 +56,14 @@ InteLIS accepts results by three routes. They are listed in order of preference.
 
 | Route | How the result arrives | Approval |
 |---|---|---|
-| Interface Tool | The analyzer sends the result to the Interface Tool, which passes it to InteLIS without anyone typing | Automatic, if the lab has enabled it |
+| Interface Tool | The analyzer sends the result to the Interface Tool, which passes it to InteLIS without anyone typing | Accepted on arrival. Auto approval of interface results is on by default |
 | File import | A lab user exports a result file from the analyzer and uploads it | The user accepts the imported rows |
-| Manual entry | A lab user reads the result off the analyzer and types it in | Always needs a separate approval |
+| Manual entry | A lab user reads the result off the analyzer and types it in | Waits at **Awaiting Approval** until someone approves it |
 
 The Interface Tool is preferred because it removes transcription from the
 process entirely. Manual entry is the fallback when the analyzer cannot connect
 and cannot export a file. Every manually entered result carries the risk of a
-transcription error, which is why it always needs a second person to approve it.
+transcription error, which is why it waits for approval before release.
 
 ## Who does what
 
@@ -78,6 +78,7 @@ transcription error, which is why it always needs a second person to approve it.
 
 - [How to sign in and navigate InteLIS](signing-in.md)
 - [How to register a viral load test request](register-a-request.md)
+- [How to send samples to a testing lab on a manifest](send-samples-on-a-manifest.md)
 - [How to receive samples sent on a manifest](receive-referred-samples.md)
 - [How to batch samples for testing](batch-samples.md)
 - [How to capture viral load results](capture-results.md)
@@ -85,3 +86,5 @@ transcription error, which is why it always needs a second person to approve it.
 - [How to handle failed and held samples](failed-and-held-samples.md)
 - [How to release results to the requesting facility](release-results.md)
 - [Sample statuses](sample-statuses.md)
+- [Viral load reports](reports.md)
+- [For requesting facilities](for-requesting-facilities.md)

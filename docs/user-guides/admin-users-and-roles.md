@@ -1,151 +1,226 @@
 # How to manage users and roles
 
-This guide creates logins and decides what each login can reach. Both live under
-**ADMIN → Access Control**.
+Create a login for each person, and decide what each login can reach. Both live
+under **ADMIN → Access Control**.
 
-InteLIS has no self-registration. Every login is created by an administrator.
+InteLIS has no self-registration. An administrator creates every login.
 
 ## Before starting
 
 - An account with administrator rights
-- The role the new user needs, created already
+- The role the new user needs. To create one, see [Add or change a role](#add-or-change-a-role)
 
 ## Add a user
 
-1. Go to **ADMIN → Access Control → Users**.
-2. Select **Add User**.
-3. Fill in the details.
+**Choose the installation type, then follow its steps from top to bottom.**
 
-| Field | What to enter |
-|---|---|
-| Full Name | The user's name as it appears on reports and in the activity log |
-| Email | The user's address. It must not already be in use |
-| Phone Number | The user's number |
-| Role | The role that sets what this user can reach |
-| Testing Lab | The lab this user operates as. Shown on STS only, and only once a testing-lab role is selected |
-| Province/State, District/County | The user's location |
-| Mobile App Access | Whether the account can use the mobile app |
-| Interface User Name | The user name this person holds on the molecular testing machine. It matches analyzer results to a person |
-| Signature | A signature image for anyone who approves results. 100 by 100 pixels |
-| Login Id | The identifier the user signs in with |
-| Password, Confirm Password | The starting password |
-| User Status | Active or inactive |
+=== "STS"
 
-4. Select **Submit**.
-5. Give the Login Id and password to the user directly.
+    1. Go to **ADMIN → Access Control → Users**.
+    2. Select **Add User**.
+    3. Enter **Full Name**, **Email** and **Phone Number**. The name appears on
+       reports and in the activity log.
+    4. Set **Role**.
+    5. If the role's access type is Testing Lab, set **Testing Lab** to the lab
+       this user works in. The field appears once such a role is selected. It
+       limits what the user sees to that lab's work.
+    6. Fill in the optional fields the user needs:
 
-The Login Id accepts lowercase letters, numbers, hyphens, and underscores. It
-accepts no spaces and no capitals.
+        | Field | What to enter |
+        | --- | --- |
+        | Province/State, District/County | The user's location |
+        | Mobile App Access | **Yes** if the user signs in to the mobile app |
+        | Interface User Name (from your Molecular testing machine) | The name this person uses on the analyzer. Separate several names with commas |
+        | Signature | A signature image for anyone who approves results. It prints on result PDFs |
 
-The password must be at least 8 characters and must include at least one number
-and at least one letter. Special characters are allowed.
+    7. Enter the **Login ID**.
+    8. Enter **Password** and **Confirm Password**, or select **Generate**.
+    9. Select **Submit**.
+    10. Give the Login ID and password to the user in person. InteLIS asks the
+        user to change the password at the first sign-in.
 
-### Testing Lab depends on the instance
+    ??? info "Login ID and password rules"
 
-- **On STS**, set the **Testing Lab** on every testing-lab user. The field appears
-  once a role with that access type is selected, and it scopes what the user sees
-  to their own lab's work.
-- **On a LIS or standalone installation**, the field is not shown at all. Every
-  user is assigned to that installation's own lab automatically, so there is
-  nothing to set.
-- **On a cloud instance**, a lab administrator's users are fixed to that
-  administrator's own lab.
+        The Login ID accepts lowercase letters, numbers, hyphens (-) and
+        underscores (_). It accepts no spaces and no capitals.
+
+        The password needs at least 8 characters, with at least one number and
+        one letter. Special characters are allowed.
+
+    ??? info "To limit a facility user to their own facilities"
+
+        The Add User form has no facility selector. Once the user is saved, follow
+        [Limit a user to certain facilities](#limit-a-user-to-certain-facilities).
+
+=== "LIS or standalone"
+
+    1. Go to **ADMIN → Access Control → Users**.
+    2. Select **Add User**.
+    3. Enter **Full Name**, **Email** and **Phone Number**. The name appears on
+       reports and in the activity log.
+    4. Set **Role**. There is no **Testing Lab** field. InteLIS assigns every
+       user to this installation's lab.
+    5. Fill in the optional fields the user needs:
+
+        | Field | What to enter |
+        | --- | --- |
+        | Province/State, District/County | The user's location |
+        | Mobile App Access | **Yes** if the user signs in to the mobile app |
+        | Interface User Name (from your Molecular testing machine) | The name this person uses on the analyzer. Separate several names with commas |
+        | Signature | A signature image for anyone who approves results. It prints on result PDFs |
+
+    6. Enter the **Login ID**.
+    7. Enter **Password** and **Confirm Password**, or select **Generate**.
+    8. Select **Submit**.
+    9. Give the Login ID and password to the user in person. InteLIS asks the
+       user to change the password at the first sign-in.
+
+    ??? info "Login ID and password rules"
+
+        The Login ID accepts lowercase letters, numbers, hyphens (-) and
+        underscores (_). It accepts no spaces and no capitals.
+
+        The password needs at least 8 characters, with at least one number and
+        one letter. Special characters are allowed.
+
+=== "Cloud"
+
+    Use this when signed in to the STS with a testing-lab role other than the
+    super administrator.
+
+    1. Go to **ADMIN → Access Control → Users**.
+    2. Select **Add User**.
+    3. Enter **Full Name**, **Email** and **Phone Number**. The name appears on
+       reports and in the activity log.
+    4. Set **Role**. The list offers testing-lab roles only. It leaves out the
+       super administrator role and the API role.
+    5. Set **Testing Lab**. The list offers only the administrator's own lab.
+    6. Fill in the optional fields the user needs:
+
+        | Field | What to enter |
+        | --- | --- |
+        | Province/State, District/County | The user's location |
+        | Mobile App Access | **Yes** if the user signs in to the mobile app |
+        | Interface User Name (from your Molecular testing machine) | The name this person uses on the analyzer. Separate several names with commas |
+        | Signature | A signature image for anyone who approves results. It prints on result PDFs |
+
+    7. Enter the **Login ID**.
+    8. Enter **Password** and **Confirm Password**, or select **Generate**.
+    9. Select **Submit**.
+    10. Give the Login ID and password to the user in person. InteLIS asks the
+        user to change the password at the first sign-in.
+
+    ??? info "Login ID and password rules"
+
+        The Login ID accepts lowercase letters, numbers, hyphens (-) and
+        underscores (_). It accepts no spaces and no capitals.
+
+        The password needs at least 8 characters, with at least one number and
+        one letter. Special characters are allowed.
 
 ## Limit a user to certain facilities
 
-Facility mapping narrows a user further than the testing lab does. Use it for
-facility staff who register their own requests, so each sees only their own
-facility.
+This applies to the STS only. Use it for facility staff who register their own
+requests, so each sees only their own facility.
 
-**The Add User form has no facility selector.** The mapping controls exist only
-on Edit User, so a user created and left alone has no facility restriction at
-all, whatever was intended when the account was made.
-
-1. Create the user as above and select **Submit**.
-2. Reopen the same user under **ADMIN → Access Control → Users**.
-3. Use **Map User to Selected Facilities** to move the intended facilities into
-   the selected list.
+1. Go to **ADMIN → Access Control → Users**.
+2. Select **Edit** on the user.
+3. Under **Map User to Selected Facilities (optional)**, move the facilities
+   into the selected list.
 4. Select **Submit**.
-5. Sign in as that user, or check their request list, and confirm only the
-   intended facilities appear.
+5. Ask the user to open the request form. Only the mapped facilities are
+   offered.
 
-Leave the mapping empty for lab staff who should see every facility. An empty
-mapping means no facility limit, and the testing lab still applies.
+??? info "Empty mapping"
+
+    An empty mapping means no facility limit. Leave it empty for lab staff who
+    must see every facility. The Testing Lab still applies.
+
+## Reset a user's password
+
+1. Go to **ADMIN → Access Control → Users**.
+2. Select **Edit** on the user.
+3. Enter **Password** and **Confirm Password**, or select **Generate**.
+4. Select **Submit**.
+5. Give the new password to the user in person. InteLIS asks the user to
+   change it at the next sign-in.
 
 ## Give a user an API token
 
-Users who connect through the API need a token rather than a password.
+Systems that connect through the API use a token instead of a password.
 
-The **AuthToken** field is hidden unless the account's role is the API role, or
-the account already holds a token. Opening an ordinary user does not show it.
+1. Go to **ADMIN → Access Control → Users**.
+2. Select **Edit** on the user.
+3. Set **Role** to the API role. The **AuthToken** field appears.
+4. Select **Generate Another Token**.
+5. Select **Submit**.
+6. Copy the token from **AuthToken** into the connecting system.
 
-1. Open the user under **ADMIN → Access Control → Users**.
-2. Set **Role** to the API role. The **AuthToken** field appears.
-3. Select **Generate**, or **Generate Another Token** to replace the current one.
-4. Select **Submit**.
+??? warning "A new token stops the old one at once"
 
-On a cloud instance, a lab administrator cannot assign the API role, so these
-accounts are created by a full administrator.
+    Anything still using the previous token stops working when the new token
+    is saved.
 
-Generating another token invalidates the previous one at once. Anything still
-using the old token stops working.
+??? info "On a cloud instance"
+
+    The role list of a lab administrator leaves out the API role. The national
+    administrator creates API accounts.
 
 ## Disable a departing user
 
-1. Open the user.
-2. Set **User Status** to inactive.
-3. Select **Submit**.
+1. Go to **ADMIN → Access Control → Users**.
+2. Select **Edit** on the user.
+3. Set **User Status** to **Inactive**.
+4. Select **Submit**.
 
-Do not delete the account, and do not reuse the Login Id for someone else. The
-records the user created stay attached to their name.
+**User Status** exists on Edit User only. A new user is always saved as active.
+
+??? info "What disabling does"
+
+    The Login ID stops signing in. InteLIS also clears the password and any API
+    token. To bring the user back, set **User Status** to **Active** and give
+    the user a new password.
+
+    Do not delete the account, and do not give the Login ID to someone else.
+    The records the user created stay attached to their name.
 
 ## Add or change a role
 
-A role is a named set of permissions. Users get their permissions from their
-role, never individually.
+A role is a named set of privileges. Users get privileges from their role only.
 
 1. Go to **ADMIN → Access Control → Roles**.
-2. Select **Add Role**, or select **Edit** on an existing role.
-3. Fill in the details.
+2. Select **Add Role**, or **Edit** on an existing role.
+3. Enter **Role Name** and **Role Code**. The code must be unique.
+4. Set **Landing Page**. Users with this role open on it after signing in.
+5. Set **Status** to **Active**.
+6. Set **Access Type**: **Testing Lab** for lab staff, **Collection Site** for
+   facility staff. Set it before the privileges. It hides the pages that do not
+   belong to that type, and InteLIS denies hidden pages on save.
+7. Under **Privileges**, open each module's panel and switch on each page this
+   role needs. Use **Search permissions...** to find a page.
+8. Select **Submit**.
 
-| Field | What to enter |
-|---|---|
-| Role Name | A name staff recognise, such as Lab Technician |
-| Role Code | A short unique code |
-| Access Type | **Testing Lab** for lab staff. **Collection Site** for facility staff |
-| Status | Active or inactive |
-| Privileges | Tick each page this role can reach |
+??? info "Which roles hold a privilege"
 
-4. Select **Submit**.
+    On the Roles page, open **Advanced Search** and set **Permission**. The list
+    shows only the roles that hold it.
 
-## How the privilege list works
+??? info "The super administrator role"
 
-The privilege list is one collapsible panel per module. Each panel holds that
-module's pages, and each page carries a yes or no switch.
+    The first role holds every privilege, whatever its privilege list shows.
+    Its access cannot be narrowed.
 
-**Access Type** filters the list. A page that belongs to lab work disappears when
-Access Type is set to Collection Site, and the reverse. Hidden pages are forced
-to deny, and the server enforces that on save. Set Access Type first, then set
-the privileges.
+??? warning "Keep entry and approval apart"
 
-Use the search box to find a page. Do not scroll the list.
-
-Give each role the permissions its work needs and no more. Approval is the check
-on result quality. A role that can both enter and approve its own results removes
-that check.
-
-To find which roles hold a given permission, use the **Permission** filter on the
-Roles page.
-
-The first role is the super administrator. It holds every permission, and its
-permissions cannot be removed.
+    Approval is the check on result quality. A role that can both enter and
+    approve results lets one person sign off their own work.
 
 ## Confirm it worked
 
 | Change | Check |
-|---|---|
-| New user | The user signs in and sees the expected menu |
-| Testing lab set | The user sees their own lab's samples and no others |
-| Facility mapping | The user sees only the mapped facilities on the request form |
-| New or changed role | Sign in as a user holding it, or use the Permission filter on the Roles page |
-| Disabled user | The Login Id no longer signs in |
+| --- | --- |
+| New user | The user signs in, changes the password and sees the expected menu |
+| Testing Lab set | The user sees their own lab's samples and no others |
+| Facility mapping | The request form offers only the mapped facilities |
+| New or changed role | A user holding the role sees the expected pages |
+| Disabled user | The Login ID no longer signs in |

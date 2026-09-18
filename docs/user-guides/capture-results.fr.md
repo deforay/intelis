@@ -1,228 +1,217 @@
 # Saisir les résultats de charge virale
 
-Une fois le batch passé sur l'automate, les résultats doivent parvenir à
-InteLIS. Il existe trois façons de le faire. Utiliser la plus haute de cette
-liste que le laboratoire et l'automate permettent.
-
-| Méthode | Quand l'utiliser |
-|---|---|
-| [Outil d'interface](#methode-1-outil-dinterface) | L'automate est relié à l'outil d'interface |
-| [Import de fichier](#methode-2-import-de-fichier) | L'automate ne peut pas se connecter mais peut exporter un fichier |
-| [Saisie manuelle](#methode-3-saisie-manuelle) | Aucune des deux précédentes n'est possible |
-
-La saisie manuelle est une solution de repli. Tout résultat saisi à la main peut
-comporter une erreur de frappe, il exige donc toujours l'approbation d'une
-seconde personne.
+Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
 
 ## Avant de commencer
 
 - Un batch dont la série est terminée sur l'automate
 - La permission d'enregistrer des résultats
 
----
+**Choisir la façon dont les résultats parviennent à InteLIS, puis suivre ses étapes de haut en bas.**
 
-## Méthode 1 : outil d'interface
+=== "Outil d'interface"
 
-L'outil d'interface s'exécute sur un ordinateur du laboratoire, écoute
-l'automate et transmet les résultats à InteLIS. Personne ne saisit de résultat
-et personne ne téléverse de fichier.
+    À utiliser lorsque l'automate est relié à l'outil d'interface. L'outil
+    d'interface transmet les résultats de charge virale du VIH, d'EID et
+    d'hépatite. Il ne transmet pas les résultats de TB ni de Tests personnalisés.
 
-### Vérifier que l'outil d'interface est prêt
+    1. Sur l'automate, libérer la série. Sauter cette étape si l'automate libère
+       les résultats de lui-même.
+    2. Sur l'ordinateur du laboratoire, ouvrir l'outil d'interface.
+    3. Vérifier que l'automate est indiqué comme **Connected**.
 
-1. Confirmer que l'outil d'interface est installé et en cours d'exécution sur
-   l'ordinateur du laboratoire.
-2. Confirmer que l'outil est à jour.
-3. Ouvrir l'outil d'interface et vérifier que l'automate est indiqué comme
-   connecté.
+        ??? info "Si l'automate n'est pas indiqué comme Connected entre deux séries"
 
-Certains automates n'ouvrent la connexion que lorsqu'ils ont quelque chose à
-envoyer. Un outil qui n'indique pas la connexion entre deux séries n'est pas
-forcément en panne. Vérifier à nouveau pendant que l'automate libère les
-résultats.
+            Certains automates n'ouvrent la connexion que lorsqu'ils ont des
+            résultats à envoyer. Vérifier à nouveau pendant que l'automate libère
+            la série.
 
-### Libérer les résultats
+    4. Dans InteLIS, aller à **CHARGE VIRALE DU VIH → Gestion des demandes →
+       Afficher les demandes de test**.
+    5. Rechercher le code du batch. Chaque échantillon arrivé porte un résultat.
 
-Certains automates retiennent les résultats jusqu'à ce qu'un opérateur les
-libère. Lorsque l'automate propose une libération manuelle, libérer la série une
-fois que l'opérateur l'a vérifiée.
+        ??? failure "Si les résultats n'arrivent pas"
 
-Sinon, l'automate libère les résultats selon sa propre logique. Aucune action
-n'est requise sur l'automate.
+            Procéder dans cet ordre.
 
-### Attendre l'arrivée des résultats
+            1. Vérifier que l'automate a libéré la série.
+            2. Vérifier que l'outil d'interface fonctionne et indique l'automate
+               comme **Connected**.
+            3. Vérifier que les ID d'échantillon sur l'automate correspondent à
+               ceux d'InteLIS. Un résultat portant un ID inconnu ne se rattache à
+               aucun échantillon.
+            4. Demander à l'administrateur d'ouvrir **ADMIN → Structures
+               sanitaires**, de modifier le laboratoire de test et de vérifier le
+               panneau **Connexions des outils d'interface** en bas de page.
+               Chaque installation connectée affiche un **Statut** et une
+               **Dernière connexion**. Le panneau n'apparaît que sur les
+               installations où le contact support du laboratoire a activé les
+               connexions de l'outil d'interface. Sans le panneau, demander au
+               contact support de vérifier la connexion.
 
-Les résultats parviennent à InteLIS d'eux-mêmes une fois libérés par l'automate.
-Il n'y a pas d'étape d'import et aucun bouton à actionner.
+            Si les résultats n'arrivent toujours pas, saisir la série par
+            **Import de fichier**.
 
-Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les demandes de
-test** et rechercher le code du batch. Les échantillons arrivés portent un
-résultat.
+    6. Vérifier le statut des résultats. Les résultats de l'interface arrivent
+       approuvés, avec le statut **Accepté**, prêts à imprimer.
 
-Si le laboratoire a activé l'approbation automatique des résultats d'interface,
-ces résultats sont prêts à imprimer. Sinon, ils attendent une approbation. Voir
-[Vérifier et approuver les résultats](approve-results.md).
+        ??? info "Si les résultats affichent En attente d'approbation"
 
-### Si les résultats n'arrivent pas
+            Le contact support du laboratoire a désactivé l'approbation
+            automatique des résultats de l'interface sur cette installation. Les
+            approuver. Voir
+            [Vérifier et approuver les résultats](approve-results.md).
 
-Procéder dans cet ordre.
+=== "Import de fichier"
 
-1. Vérifier que l'automate a effectivement libéré la série.
-2. Vérifier que l'outil d'interface fonctionne et indique l'automate comme
-   connecté.
-3. Vérifier que les ID d'échantillon sur l'automate correspondent à ceux
-   d'InteLIS. Un résultat portant un ID non reconnu ne se rattache à aucun
-   échantillon.
-4. Demander à l'administrateur de vérifier la connexion de l'outil d'interface
-   du laboratoire sous **ADMIN → Structures sanitaires**, puis le laboratoire de
-   test, puis **Connexions des outils d'interface** en bas de page.
-   L'installation affiche un statut et une **Dernière connexion**.
+    À utiliser lorsque l'automate ne peut pas joindre l'outil d'interface mais
+    peut exporter un fichier de résultats.
 
-Si les résultats n'arrivent toujours pas, utiliser l'import de fichier pour
-cette série et signaler le problème de connexion à l'administrateur.
+    1. Sur l'automate, exporter les résultats de la série en fichier xls, xlsx,
+       csv ou txt. Le fichier porte les ID d'échantillon du PDF du batch.
+    2. Dans InteLIS, aller à **CHARGE VIRALE DU VIH → Gestion des résultats des
+       tests → Importer les résultats d'un fichier**.
+    3. Choisir l'automate qui a passé le batch dans **Nom de
+       l'instrument/plateforme**.
 
----
+        ??? failure "Si l'import est illisible ou vide"
 
-## Méthode 2 : import de fichier
+            InteLIS lit le fichier selon la présentation de l'automate choisi ici.
+            Recommencer et choisir l'automate qui a produit le fichier.
 
-À utiliser lorsque l'automate ne peut pas joindre l'outil d'interface mais peut
-écrire un fichier de résultats.
+    4. Choisir le **Nom/code de la machine spécifique**.
+    5. Vérifier le **Format de date**. Si l'automate a un format préconfiguré, il
+       est déjà rempli. Sinon, coller une date copiée depuis le fichier. InteLIS
+       en déduit le format.
+    6. Choisir le **Nom du laboratoire d'analyse**.
+    7. Sélectionner le fichier sous **Téléverser Charge virale du VIH Fichier**.
+    8. Sélectionner **Envoyer**. InteLIS liste chaque ligne lue, avec une mention
+       **Source de l'échantillon** sur chacune.
+    9. Vérifier la mention **Source de l'échantillon** de chaque ligne.
 
-### Exporter le fichier depuis l'automate
+        | Mention | Signification | Action |
+        |---|---|---|
+        | Résultat pour l'ID de l'échantillon du VLSM | L'ID correspond à un échantillon enregistré | Accepter |
+        | ID de l'échantillon/ID ne provenant pas du VLSM | L'ID ne correspond à aucun échantillon enregistré | Ne pas accepter. Chercher pourquoi l'ID diffère |
+        | Le résultat existe déjà pour cet échantillon | L'échantillon a déjà un résultat | N'écraser que si le nouveau résultat est le bon |
+        | Date du test : environ 1 mois après le prélèvement | La date du test est postérieure d'un mois ou plus au prélèvement | Vérifier la date |
+        | Date du test : environ 1 an après le prélèvement | La date du test est postérieure d'un an ou plus au prélèvement | Vérifier la date. Un écart d'un an est le plus souvent une faute de frappe |
 
-Exporter les résultats de la série depuis l'automate. Le fichier doit porter les
-ID d'échantillon d'InteLIS, ceux que le PDF du batch a placés sur l'automate.
-Les types de fichiers acceptés sont xls, xlsx, csv et txt.
+    10. Régler le **Statut** de chaque ligne : **Accepted**, **Hold**,
+        **Rejected** ou **Failed**. Pour une ligne réglée sur **Rejected**,
+        choisir le **Motif de rejet**.
 
-### Téléverser le fichier
+        ??? info "Pour accepter toutes les lignes en une fois"
 
-1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests → Importer
-   les résultats d'un fichier**.
-2. Choisir le **Nom de l'instrument/plateforme**.
-3. Choisir le **Nom/code de la machine spécifique**.
-4. Choisir le **Nom du laboratoire de test**.
-5. Sélectionner le fichier exporté sous **Fichier**.
-6. Sélectionner **Envoyer**.
+            Sélectionner **Accepter tous les échantillons**. Seules les lignes
+            sans statut sont modifiées. Les lignes déjà réglées sur **Rejected**
+            restent rejetées.
 
-Choisir l'automate avec attention. Chaque automate écrit son fichier
-différemment, et InteLIS lit le fichier selon l'automate sélectionné ici. Un
-mauvais choix produit un import illisible, ou aucun import.
+    11. Choisir **Examiné par**, **Révisé par** et **Approuvé par**.
 
-Si le format de date du fichier n'est pas reconnu, coller une date copiée depuis
-le fichier dans le champ de format de date. InteLIS en déduit le format.
+        ??? failure "Si InteLIS signale que la même personne examine et approuve le résultat"
 
-### Vérifier ce qui a été importé
+            La configuration du laboratoire décide de la suite. Soit InteLIS
+            demande une confirmation, soit il refuse. En cas de refus, choisir une
+            autre personne pour **Approuvé par**.
 
-InteLIS liste chaque ligne lue dans le fichier, avec une mention **Sample
-source** sur chacune.
+    12. Sélectionner **Sauvegarder**.
 
-| Mention | Signification | Que faire |
-|---|---|---|
-| Résultat pour l'ID de l'échantillon du VLSM | L'ID correspond à un échantillon enregistré | Accepter |
-| ID de l'échantillon/ID ne provenant pas du VLSM | L'ID ne correspond à aucun échantillon enregistré | Ne pas accepter. Chercher pourquoi l'ID diffère |
-| Le résultat existe déjà pour cet échantillon | L'échantillon a déjà un résultat | N'écraser que si le nouveau résultat est le bon |
-| Date du test : environ 1 mois après le prélèvement | La date du test est postérieure d'un mois ou plus au prélèvement | Vérifier la date |
-| Date du test : environ 1 an après le prélèvement | La date du test est postérieure d'un an ou plus au prélèvement | Vérifier la date. Un écart d'un an est presque toujours une faute de frappe |
+        ??? failure "Si InteLIS signale qu'un ou plusieurs échantillons n'ont pas de date de test"
 
-Renseigner un **Statut** sur chaque ligne. Renseigner **Examiné par**,
-**Reviewed
-By** et **Approved By**.
+            Saisir la date de test manquante sur chaque ligne qui n'en a pas,
+            puis sélectionner à nouveau **Sauvegarder**.
 
-Pour renseigner toutes les lignes en une action, sélectionner **Accepter tous
-les
-échantillons**. Cette action ne touche que les lignes sans statut, celles déjà
-marquées comme rejetées le restent.
+=== "Saisie manuelle"
 
-InteLIS refuse l'envoi tant qu'une ligne n'a pas de date de test.
+    À utiliser uniquement lorsque l'automate ne peut ni se connecter ni exporter
+    de fichier.
 
-Selon la configuration du laboratoire, InteLIS avertit ou refuse lorsque la même
-personne est à la fois réviseur et approbateur.
+    1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests → Saisir
+       le résultat manuellement**.
+    2. Dans la liste déroulante au-dessus de la liste, choisir **Résultats non
+       enregistrés**. La liste n'affiche plus que les échantillons en attente de
+       résultat.
+    3. Sélectionner **Saisir le résultat** sur la ligne de l'échantillon.
+    4. Remplir la section **Informations sur le laboratoire**.
 
-7. Sélectionner **Sauvegarder**.
+        | Champ | À saisir |
+        |---|---|
+        | Date de réception de l'échantillon au laboratoire d'analyse | La date d'arrivée de l'échantillon au laboratoire |
+        | Date de l'analyse de l'échantillon | La date de passage sur l'automate |
+        | Plate-forme de test VL | L'automate utilisé |
+        | Résultat de la charge virale (copies/mL) | Le résultat tel qu'imprimé par l'automate |
+        | Révisé par, Examiné par, Approuvé par | Le personnel responsable |
+        | Commentaires de Lab Technicien | Tout commentaire que le rapport doit porter |
 
----
+        Les formulaires nationaux diffèrent par endroits. Par exemple, le
+        formulaire du Soudan du Sud nomme le champ de l'automate **Testing
+        Platform**.
 
-## Méthode 3 : saisie manuelle
+        ??? failure "Si l'échantillon a été rejeté"
 
-À utiliser uniquement lorsque l'automate ne peut ni se connecter ni exporter de
-fichier.
+            Enregistrer le rejet au lieu d'un résultat.
 
-1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests → Saisir le
-   résultat manuellement**.
-2. Filtrer pour trouver l'échantillon. Régler **Statut** sur **Résultats non
-   enregistrés** pour n'afficher que les échantillons en attente.
-3. Sélectionner **Saisir le résultat** sur la ligne de l'échantillon.
-4. Remplir la section laboratoire du formulaire.
+            1. Régler **L'échantillon est-il rejeté ?** sur **Oui**.
+            2. Choisir le **Motif de rejet**.
+            3. Renseigner la **Date de rejet**.
 
-| Champ | À saisir |
-|---|---|
-| Date de réception de l'échantillon au labo | La date d'arrivée de l'échantillon au laboratoire |
-| Date de l'analyse de l'échantillon | La date de passage sur l'automate |
-| Plateforme de test | L'automate utilisé |
-| Résultat de la charge virale (copies/mL) | Le résultat tel que rendu par l'automate |
-| Réviseur, Tester, Approbateur | Le personnel responsable |
-| Commentaires de Lab Technicien | Tout ce que le rapport doit porter |
+            Le motif figure sur le rapport de résultat et dans le rapport de rejet
+            d'échantillons.
 
-5. Sélectionner **Sauvegarder**.
+        ??? failure "Si l'automate a rendu un échec"
 
-Relire le résultat à l'écran par rapport au tirage de l'automate avant
-d'enregistrer.
+            1. Saisir `Failed` comme **Résultat de la charge virale (copies/mL)**.
+            2. Choisir la **Raison de l'échec**.
 
-Un résultat saisi manuellement n'est pas diffusé tant qu'il n'est pas approuvé.
-Voir [Vérifier et approuver les résultats](approve-results.md).
+            L'échantillon passe dans **Échec/Echantillons en attente** pour un
+            retest. Voir
+            [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
 
-### Les Tests personnalisés utilisent un autre écran de résultat
+    5. Relire le résultat à l'écran par rapport au tirage de l'automate.
+    6. Sélectionner **Sauvegarder**. Le résultat passe à **En attente
+       d'approbation**. Voir
+       [Vérifier et approuver les résultats](approve-results.md).
 
-Les champs ci-dessus sont ceux du formulaire de charge virale. Un échantillon en
-Tests personnalisés s'enregistre sous **AUTRES TESTS DE LABORATOIRE → Gestion
-des
-résultats des tests → Saisir le résultat manuellement**, et son écran de
-résultat
-fonctionne par fiche de test plutôt qu'avec un champ de résultat unique.
+=== "Tests personnalisés"
 
-1. Ouvrir l'échantillon.
-2. Sélectionner **Ajouter Test** pour chaque test effectué sur l'échantillon, et
-   enregistrer le résultat de ce test sur sa propre fiche. Une fiche peut
-   enregistrer un test réalisé dans ce laboratoire ou confié à un autre.
-3. Une fois tous les tests enregistrés, cocher **Saisir l'interprétation
-   finale ?** et saisir l'**Interprétation finale**.
-4. Sélectionner **Sauvegarder**.
+    Les Tests personnalisés n'ont ni outil d'interface ni import de fichier.
+    Leurs résultats se saisissent toujours à la main, une fiche de test par test.
 
-C'est l'interprétation finale qui fait avancer l'échantillon. Tant qu'elle n'est
-pas saisie, l'échantillon reste à **Échantillon enregistré au laboratoire
-d'analyse**, quel que soit le nombre de fiches de test enregistrées : il
-n'atteint donc jamais la file d'approbation et paraît, pour un superviseur,
-n'avoir fait l'objet d'aucun test.
+    1. Aller à **AUTRES EXAMENS DE LABORATOIRE → Gestion des résultats des tests
+       → Saisir le résultat manuellement**.
+    2. Sélectionner **Saisir le résultat** sur la ligne de l'échantillon.
+    3. Sélectionner **Ajouter Test** pour un test effectué sur l'échantillon.
+    4. Enregistrer le résultat de ce test sur sa fiche. Une fiche enregistre un
+       test réalisé dans ce laboratoire ou un test confié à un autre laboratoire.
+    5. Répéter les étapes 3 et 4 pour chaque test effectué sur l'échantillon.
+    6. Régler **Passer à l'interprétation finale ?** sur **Oui**.
 
-Saisir l'interprétation finale verrouille l'ajout de tests et la référence sur
-cet échantillon : enregistrer d'abord toutes les fiches de test.
+        ??? warning "Enregistrer d'abord toutes les fiches de test"
 
----
+            La saisie de l'interprétation finale verrouille l'ajout de tests et
+            les références sur l'échantillon.
 
-## Si l'échantillon a été rejeté
+    7. Saisir l'**Interprétation finale**.
 
-Lorsque l'échantillon ne peut pas être testé, enregistrer le rejet au lieu d'un
-résultat. Régler **L'échantillon est-il rejeté ?** sur le formulaire, choisir un
-**Motif de
-rejet** et renseigner la date de rejet.
+        ??? failure "Si l'échantillon reste à Échantillon enregistré au laboratoire d'analyse"
 
-Un échantillon rejeté transmet le motif au rapport et au rapport de rejet
-d'échantillons.
+            L'interprétation finale manque. Sans elle, l'échantillon reste à
+            **Échantillon enregistré au laboratoire d'analyse** quel que soit le
+            nombre de fiches enregistrées, et il n'atteint jamais la file
+            d'approbation. Rouvrir l'échantillon et refaire les étapes 6 et 7.
 
-## Si le test a échoué
-
-Lorsque l'automate rend un échec ou une lecture invalide, enregistrer l'échec et
-indiquer la **Raison de l'échec**. Les échantillons en échec sont regroupés sur
-leur propre page en vue d'un retest. Voir
-[Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
+    8. Sélectionner **Sauvegarder**.
 
 ## Vérifier que tout fonctionne
 
-Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les demandes de
-test** et rechercher le code du batch.
+1. Aller à **Afficher les demandes de test** sous **Gestion des demandes** pour
+   le type de test.
+2. Rechercher le code du batch.
 
-Chaque échantillon de la série porte soit un résultat, soit un rejet, soit un
-échec. Les échantillons encore sans résultat ne sont pas parvenus à InteLIS.
-Vérifier leurs ID par rapport à l'automate.
+Chaque échantillon de la série porte un résultat, un rejet ou un échec. Un
+échantillon sans aucun des trois n'est pas parvenu à InteLIS. Vérifier son ID
+par rapport à l'automate.
 
 ## Suite
 

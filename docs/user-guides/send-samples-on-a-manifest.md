@@ -1,86 +1,139 @@
 # How to send samples to a testing lab on a manifest
 
-A manifest is the packing list for a batch of samples travelling to a testing
-lab. It records which Sample IDs are in the package, so the receiving lab
-registers the whole package by typing one code.
+List the samples in a package on a manifest, so the testing lab registers the
+whole package by entering one code.
 
-Use this guide at a health facility sending samples for testing, or at a lab
-referring samples on to another lab.
+The manifest menu exists only on the central system (STS). A lab running its
+own InteLIS (LIS) never sees it. Use this guide on the STS, at a health facility
+sending samples or at a lab referring samples on.
 
-## Before starting
+Before starting:
 
-- The test requests registered in InteLIS, one per sample in the package. See
-  [How to register a viral load test request](register-a-request.md)
-- The testing lab the package goes to
-- Permission to manage manifests
+- Register a test request for every sample in the package. See
+  [How to register a viral load test request](register-a-request.md). The
+  manifest is built from requests that already exist.
+- Set the testing lab on each request to the lab the package goes to.
 
-Register the requests before building the manifest. The manifest is assembled
-from requests that already exist.
+The steps use viral load. For another test, open the manifest menu under that
+test's group.
 
-## Create the manifest
+| Menu group | Manifest menu |
+| --- | --- |
+| **HIV VIRAL LOAD** | **VL Manifest** |
+| **EARLY INFANT DIAGNOSIS (EID)** | **EID Manifest** |
+| **TUBERCULOSIS** | **TB Manifest** |
+| **COVID-19** | **Covid-19 Manifest** |
+| **HEPATITIS** | **Hepatitis Manifest** |
+| **CD4** | **CD4 Manifest** |
+| **OTHER LAB TESTS** | **Lab Test Manifest** |
 
-1. Go to **HIV VIRAL LOAD → Request Management → VL Manifest**.
-2. Select **Add Specimen Referral Manifest**.
-3. Choose the **Testing Lab** the package goes to.
-4. Enter or accept the **Manifest Code**.
-5. Enter the **Operator/Technician** packing the samples.
-6. Set the **Sample Collection Point** if the facility collects at more than one
-   point.
+**Choose the situation that fits, then follow its steps from top to bottom.**
 
-## Add the samples
+=== "New package"
 
-1. Filter the sample list by **Sample Type** and **Sample Collection Date
-   Range**.
-2. Select **Search**.
-3. Tick every sample going into the package.
-4. Select **Save**.
+    ### Build the manifest
 
-Tick only samples physically in the package. A manifest listing a sample that is
-not in the box leaves the receiving lab recording a sample it never got.
+    1. Go to **HIV VIRAL LOAD → Request Management → VL Manifest**.
+    2. Select **Add Specimen Referral Manifest**. The **Manifest Code** is filled
+       in and cannot be changed.
+    3. Choose the **Testing Lab** the package goes to.
+    4. Choose the **Operator/Technician** packing the samples.
+    5. To narrow the list, set any of **Sample Collection Point**, **Sample Type**
+       and **Sample Collection Date Range**.
+    6. Select **Search**. The samples waiting to be sent appear in the left-hand
+       list.
 
-## Print the manifest
+        ??? question "If a sample is missing from the list"
 
-1. Go to **HIV VIRAL LOAD → Request Management → VL Manifest**.
-2. Find the manifest.
-3. Select **Print Manifest PDF**.
+            The list shows only requests that:
 
-Put the printed manifest in the package. Keep a copy at the sending site.
+            - were registered on the STS
+            - name the chosen testing lab
+            - are not on another manifest
+            - are not cancelled
 
-The receiving lab needs the manifest code from this sheet to register the
-package. See [How to receive samples sent on a manifest](receive-referred-samples.md).
+            Open the request and check its testing lab. Then select
+            **Search** again.
 
-## Change a manifest before it ships
+    7. Move each sample that is in the package to the right-hand list. Use the
+       arrow buttons between the two lists. The search box above each list
+       finds a Sample ID.
+    8. Check that **Number of selected samples** matches the tubes in the
+       package.
 
-Select **Edit** on the manifest row to add or remove samples.
+        Select only samples that are physically in the package. The receiving
+        lab records every listed sample as received.
 
-Once a manifest is dispatched, **Edit** is disabled. A dispatched manifest is a
-record of what physically left the site, so it does not change afterwards.
+    9. Select **Save**. The manifest list opens.
 
-If a dispatched manifest is wrong, tell the receiving lab. They can reject or
-hold the affected samples on arrival.
+    ### Print the manifest
 
-## Redirect manifests to a different lab
+    10. Find the manifest in the list. Check its **Testing Lab** and **Number
+        of Samples**.
+    11. Select **Print Manifest PDF**.
+    12. Put the printed manifest in the package. Keep a copy at the sending
+        site.
 
-Where a testing lab is out of service, manifests already sent to it can be
-reassigned.
+    The receiving lab enters the manifest code from this sheet. See
+    [How to receive samples sent on a manifest](receive-referred-samples.md).
 
-1. Go to **HIV VIRAL LOAD → Request Management → VL Manifest**.
-2. Select **Move Manifest**.
-3. Set **Manifest From Testing Lab** and a **Date Range** to find the manifests.
-4. Choose the destination in **Assign to Testing Lab**.
-5. Enter the **Reason for Moving Manifest(s)**.
-6. Save.
+=== "Change a manifest"
 
-Enter a reason that explains the move. It is the only record of why the samples
-went somewhere other than the lab first chosen.
+    1. Go to **HIV VIRAL LOAD → Request Management → VL Manifest**.
+    2. Select **Edit** on the manifest row. The samples already on the manifest
+       appear in the right-hand list.
 
-Move the physical packages as well. Reassigning the manifest changes the records
-only.
+        ??? failure "If Edit is greyed out"
+
+            The manifest is marked as dispatched and can no longer change. If it
+            is wrong, tell the receiving lab. The lab can reject the affected
+            samples on arrival.
+
+    3. To add samples, move them from the left-hand list to the right-hand list.
+       To narrow the left-hand list, change the filters and select **Search**.
+    4. To remove samples, move them back to the left-hand list.
+    5. Check that **Number of selected samples** matches the tubes in the
+       package.
+    6. Select **Save**.
+    7. Select **Print Manifest PDF** on the manifest row.
+    8. Replace the old printed manifest in the package with the new one.
+
+    ??? info "About the Manifest Status field"
+
+        The edit screen shows a **Manifest Status** field set to **Pending**. The
+        field is locked on this screen.
+
+=== "Move manifests to another lab"
+
+    Use this when a testing lab cannot take the packages already sent to it.
+    **Move Manifest** has its own permission. If the button is missing, ask the
+    administrator.
+
+    1. Go to **HIV VIRAL LOAD → Request Management → VL Manifest**.
+    2. Select **Move Manifest**.
+    3. Choose the lab the manifests were sent to in **Manifest From Testing
+       Lab**.
+    4. To narrow the list, set a **Date Range**. It filters on the date each
+       manifest was created.
+    5. Select **Search Manifests**.
+    6. Move each manifest to be reassigned to the right-hand list.
+    7. Choose the new lab in **Assign to Testing Lab**.
+    8. Enter the **Reason for Moving Manifest(s)**. It is the only record of why
+       the samples went to a different lab.
+    9. Select **Save Changes**. The manifest list opens.
+    10. Send the physical packages to the new lab. The move changes the records
+        only.
+
+    ??? info "If the first lab already activated the manifest"
+
+        The move clears the Sample IDs the first lab issued. The new lab
+        activates the manifest and issues its own Sample IDs. The identifier
+        the sending facility used stays the same.
 
 ## Confirm it worked
 
-The manifest appears in the list with the right **Number of Samples** and the
-right **Testing Lab**.
+The manifest appears in the list with the right **Testing Lab** and **Number of
+Samples**.
 
-After the receiving lab activates it, the samples carry a lab Sample ID
-alongside the facility's own reference.
+After the receiving lab activates it, each sample carries a lab Sample ID next
+to the identifier the facility used.
