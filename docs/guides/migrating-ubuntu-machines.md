@@ -85,17 +85,38 @@ The restore uses that token to rebuild the passphrase.
 
 **Requirement:** Ubuntu 24.04 LTS or newer.
 
-Point `--db latest:` at the folder holding the copied backups (e.g. the mounted
-drive). setup.sh installs the stack and restores the newest backup it finds there
-— `.sql.zst` / `.sql.gz` are imported as-is, no need to decompress or rename:
+Point `--restore-from-backup-folder` at the copied backups folder (the one
+holding `db/` and `config/`, e.g. on the mounted drive). setup.sh lists the
+backups it finds there, newest first and already selected, installs the stack,
+and restores the one chosen. `.sql.zst` / `.sql.gz` are imported as-is, no need
+to decompress or rename:
 
 ```bash
-cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)" && sudo bash setup.sh --db latest:/media/USB/backups/db
+cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)" && sudo bash setup.sh --restore-from-backup-folder /media/USB/backups
 ```
 
-- Replace `/media/USB/backups/db` with the actual path to the copied folder, e.g.
-  `/media/<user>/<drive>/backups/db`, `~/Desktop/backups/db`, or
-  `/mnt/old-disk/var/www/intelis/backups/db`.
+- Replace `/media/USB/backups` with the actual path to the copied folder, e.g.
+  `/media/<user>/<drive>/backups`, `~/Desktop/backups`, or
+  `/mnt/old-disk/var/www/intelis/backups`. Pointing at its `db/` folder works too.
+- The path does not have to be typed. Either way below puts it in the terminal
+  for you:
+    1. Open the **Files** app. A USB drive appears in the left sidebar.
+    2. In the terminal, type `sudo bash setup.sh --restore-from-backup-folder`
+       followed by a space. Do not press Enter yet.
+    3. Add the path of the backups folder, in one of two ways:
+        - **Drag and drop:** drag the folder from Files onto the terminal
+          window.
+        - **Copy and paste:** click the folder once in Files, press
+          **Ctrl+C**, then click in the terminal and press **Ctrl+Shift+V**.
+          (Plain Ctrl+V does not paste in the terminal.)
+
+        Either way, the full path of the folder appears in the terminal. If
+        the folder name has spaces and the path is not inside quotes, add
+        `'` at both ends of it.
+    4. Press Enter.
+
+    USB drives are always under `/media/<user>/<drive name>/`.
+- To take the newest backup without being asked, use `--db latest:<folder>`.
 - To restore one specific file instead of the newest, pass it directly:
   `sudo bash setup.sh --db /media/USB/vlsm-20260608-010012.sql.zst`
 
@@ -114,15 +135,17 @@ When prompted, enter the **new** machine's MySQL credentials and the STS URL.
     Recover the key only when the old machine is gone or dead and an encrypted
     backup is all that is left.
 
-If the files end in `.sql.zst.gpg`, setup.sh still restores them with `--db` /
-`--db latest:` exactly as above, it needs the key. Use whichever fits:
+If the files end in `.sql.zst.gpg`, setup.sh still restores them exactly as
+above, it needs the key. Use whichever fits:
 
-- **Easiest, use the same MySQL root password** on the new machine as the old
-  one. setup.sh then derives the key automatically and the restore needs nothing
-  extra. This is the recommended path for a straightforward move, and it works
-  wherever `backup_encryption_enabled` is at its default. Where that setting has
-  been turned on for the lab, the key is escrowed instead of derived, and this
-  route does not work: use the recovery token below.
+- **Easiest, copy the `config/` folder along with `db/`.** The key is derived
+  from the old machine's database password, and the config backups in
+  `config/` hold that password. setup.sh reads it from there and opens the
+  backup with nothing typed in. Using the same MySQL root password on the new
+  machine as the old one also works. Both work wherever
+  `backup_encryption_enabled` is at its default. Where that setting has been
+  turned on for the lab, the key is escrowed instead of derived, and neither
+  route works: use the recovery token below.
 
 - **Recover the key from the STS** (when the new machine has a different MySQL
   password). Ask the STS administrator to approve a one-time key release for the
@@ -135,7 +158,7 @@ If the files end in `.sql.zst.gpg`, setup.sh still restores them with `--db` /
   They provide the short token it prints. On the new machine:
 
   ```bash
-  sudo bash setup.sh --db latest:/media/USB/backups/db \
+  sudo bash setup.sh --restore-from-backup-folder /media/USB/backups \
       --sts-url https://your-sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
   ```
 

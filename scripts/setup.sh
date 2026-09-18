@@ -14,6 +14,13 @@
 #       Supported formats: .sql, .sql.gz, .sql.zst
 #       Equivalent long forms also work: --database <path> | --db <path>
 #
+#   --restore-from-backup-folder=<folder>
+#       Restore the newest backup in a lab's backups folder (the one holding
+#       db/ and config/), e.g. one copied off a machine that has died. An
+#       encrypted backup is opened with the old database password, read from
+#       the config backups in that folder, so no key has to be typed.
+#       --db <folder> and --db latest:<folder> do the same.
+#
 #   --db-strategy=<drop|rename|use>
 #       What to do if a 'vlsm' database already exists:
 #         drop   - delete the existing database and create a fresh one
@@ -39,6 +46,7 @@
 # Examples:
 #   sudo bash setup.sh --database=/root/backup.sql.gz
 #   sudo bash setup.sh --db ./dump.sql --db-strategy=drop
+#   sudo bash setup.sh --restore-from-backup-folder=/media/usb/backups
 #   sudo bash setup.sh --php=8.5 --database=/root/backup.sql.gz
 #   sudo INTELIS_DB_STRATEGY=use bash setup.sh
 
@@ -195,6 +203,24 @@ prompt_db_strategy() {
 
 mysql_exec() { mysql -e "$*"; }
 
+# Dump files newest first, by the timestamp db-tools puts in the name
+# (<db>-YYYYMMDD-HHMMSS-...), falling back to the file's modified time. Backups
+# copied off a dead machine onto a USB drive or through Windows often come out
+# with the copy time as their modified time, so `ls -t` alone can pick an old
+# dump as the newest. Missing paths (unmatched globs) are skipped.
+dumps_newest_first() {
+    local f key
+    for f in "$@"; do
+        [[ -f "$f" ]] || continue
+        if [[ "$(basename "$f")" =~ -([0-9]{8})-([0-9]{6})- ]]; then
+            key="${BASH_REMATCH[1]}${BASH_REMATCH[2]}"
+        else
+            key="$(date -r "$f" +%Y%m%d%H%M%S)"
+        fi
+        printf '%s\t%s\n' "$key" "$f"
+    done | sort -r | cut -f2-
+}
+
 
 handle_database_setup_and_import() {
     local sql_file="${1:-${lis_path}/sql/init.sql}"
@@ -308,6 +334,31 @@ handle_database_setup_and_import() {
         echo "unknown"
     }
 
+    # Database passwords from the config backups (config-*.tgz, written by
+    # bin/backup-configs.php) in the config folder beside the dump folder, newest
+    # first, one per line, without repeats. db-tools keys an encrypted backup on
+    # the database password of the machine that made it, and on a replacement
+    # machine this is the only place that password survives. It is read out of
+    # the PHP source as a literal and never by running the file.
+    old_config_db_passwords() {
+        local config_dir src pw
+        local -A seen=()
+        config_dir="$(dirname "$(dirname "$1")")/config"
+        [[ -d "$config_dir" ]] || return 0
+        while IFS= read -r src; do
+            case "$src" in
+                *.tgz) pw="$(tar -xzOf "$src" --wildcards '*config.production.php' 2>/dev/null || true)" ;;
+                *)     pw="$(cat "$src" 2>/dev/null || true)" ;;
+            esac
+            # The value setup.sh writes: a PHP single-quoted string, where only
+            # \\ and \' are escapes.
+            pw="$(printf '%s' "$pw" | perl -ne 'if (/\$systemConfig\[\x27database\x27\]\[\x27password\x27\]\s*=\s*\x27((?:[^\x27\\]|\\.)*)\x27/) { ($p = $1) =~ s/\\([\\\x27])/$1/g; print $p; exit }')"
+            [[ -n "$pw" && -z "${seen[$pw]:-}" ]] || continue
+            seen[$pw]=1
+            printf '%s\n' "$pw"
+        done < <(ls -1t "$config_dir"/config-*.tgz "$config_dir"/config.production.php 2>/dev/null)
+    }
+
     import_sql_dump_into_vlsm() {
         local import_file="$1"
         local import_pid import_status detected
@@ -317,8 +368,9 @@ handle_database_setup_and_import() {
         # encrypts with gpg --symmetric AES256. The passphrase is resolved in order:
         #   1) --encryption-password  (offline recovery code / fixed key),
         #   2) --recovery-token       (exchanged with the STS for the key),
-        #   3) legacy backups         (this machine's DB password + the 32-char
-        #      filename token — works for a same-machine reinstall).
+        #   3) legacy backups         (a DB password + the 32-char filename
+        #      token: this machine's, then the old machine's from the config
+        #      backups beside the dumps).
         if [[ "$import_file" == *.gpg ]]; then
             if ! command -v gpg >/dev/null 2>&1; then
                 print error "Backup ${import_file} is encrypted but gpg is not installed."
@@ -347,8 +399,25 @@ handle_database_setup_and_import() {
                     log_action "STS backup key release failed for ${import_file}"
                     return 1
                 fi
+            fi
+
+            # Every key worth trying, in order. An explicit key or a token is the
+            # only candidate. Otherwise it is a db-tools backup keyed on the old
+            # machine's database password plus the code in its file name: this
+            # machine's password first (a same-machine reinstall), then each
+            # password found in the config backups beside the dumps (a backup
+            # carried off a machine that no longer exists).
+            local -a _keys=()
+            local _key _opened=false _tried_configs=false
+            if [[ -n "$_pp" ]]; then
+                _keys+=("$_pp")
             elif [[ "$_base" =~ -[0-9]{8}-[0-9]{6}-([A-Za-z0-9]{32})\. ]]; then
-                _pp="${mysql_root_password}${BASH_REMATCH[1]}"
+                local _code="${BASH_REMATCH[1]}" _old_pw
+                _keys+=("${mysql_root_password}${_code}")
+                while IFS= read -r _old_pw; do
+                    _tried_configs=true
+                    [[ "$_old_pw" == "$mysql_root_password" ]] || _keys+=("${_old_pw}${_code}")
+                done < <(old_config_db_passwords "$import_file")
             else
                 print error "Encrypted backup needs a key: ${import_file}"
                 print info  "Re-run with --recovery-token=<token from your STS admin> or --encryption-password=<recovery code>."
@@ -358,12 +427,24 @@ handle_database_setup_and_import() {
 
             _GPG_DECRYPT_TMP="$(mktemp -d)"
             local _decrypted="${_GPG_DECRYPT_TMP}/$(basename "${import_file%.gpg}")"
-            if ! printf '%s' "$_pp" | gpg --batch --yes --pinentry-mode loopback \
-                    --passphrase-fd 0 -o "$_decrypted" --decrypt "$import_file" 2>/dev/null; then
+            # A wrong key fails at the session key, before any data is read, so
+            # trying several costs nothing on a large dump.
+            for _key in "${_keys[@]}"; do
+                if printf '%s' "$_key" | gpg --batch --yes --pinentry-mode loopback \
+                        --passphrase-fd 0 -o "$_decrypted" --decrypt "$import_file" 2>/dev/null; then
+                    _opened=true
+                    break
+                fi
+            done
+            if ! $_opened; then
                 print error "Failed to decrypt ${import_file} (wrong key, or corrupt file)."
                 if [[ -z "${intelis_enc_password}${intelis_recovery_token}" ]]; then
-                    print info "This may be a legacy encrypted backup from another machine."
-                    print info "Pass that machine's key as --encryption-password=<code>, or use --recovery-token."
+                    if $_tried_configs; then
+                        print info "Tried this machine's MySQL password and every password in the config backups beside it."
+                    else
+                        print info "No config backups (config-*.tgz) were found next to the dump folder to read the old password from."
+                    fi
+                    print info "Pass the old machine's key as --encryption-password=<code>, or use --recovery-token."
                 fi
                 log_action "gpg decryption failed for ${import_file}"
                 return 1
@@ -718,36 +799,79 @@ collect_user_inputs() {
         fi
     fi
 
-    # --- Preflight: SQL dump file (path came from --database/--db; asks nothing) ---
+    # --- Preflight: SQL dump file (path came from --database/--db; asks only which
+    #     backup, when restoring from a folder) ---
     # Resolve the "latest" keyword to the newest db-tools backup so you can feed a
     # routine backup straight into a (re)install without hunting for a timestamp:
     #   --db latest            -> newest backup in <lis_path>/backups/db
     #   --db latest:/some/dir  -> newest backup in /some/dir (e.g. a mounted disk)
+    #   --db /some/dir, --restore-from-backup-folder /some/dir -> the same as latest:
+    # The folder may be the dump folder itself or the backups folder copied off a
+    # lab (the one holding db/ and config/); a db/ inside it is where the dumps are.
+    if [[ -n "$intelis_sql_file" && -d "$intelis_sql_file" ]]; then
+        intelis_sql_file="latest:${intelis_sql_file}"
+        intelis_pick_backup=true
+    fi
     if [[ "$intelis_sql_file" == "latest" || "$intelis_sql_file" == latest:* ]]; then
         local _bkdir="${lis_path}/backups/db"
         [[ "$intelis_sql_file" == latest:* ]] && _bkdir="${intelis_sql_file#latest:}"
+        if [[ ! -d "$_bkdir" ]]; then
+            echo "Backup folder not found: ${_bkdir}. Please check the path."
+            log_action "--db latest: folder not found: ${_bkdir}"
+            exit 1
+        fi
+        _bkdir="$(cd "$_bkdir" && pwd)"
+        [[ -d "${_bkdir}/db" ]] && _bkdir="${_bkdir}/db"
         local _newest
         # Include encrypted (.gpg) backups — db-tools encrypts by default — so a
         # routine encrypted backup is picked up like any other.
         # vlsm-* as well as intelis-*: db-tools names a dump after the database,
         # and the main database is still called vlsm on every installation made
         # before the rename, which is most of them.
-        _newest="$(ls -1t "${_bkdir}"/intelis-*.sql.zst "${_bkdir}"/intelis-*.sql.gz "${_bkdir}"/intelis-*.sql.zst.gpg "${_bkdir}"/intelis-*.sql.gz.gpg \
-                          "${_bkdir}"/vlsm-*.sql.zst "${_bkdir}"/vlsm-*.sql.gz "${_bkdir}"/vlsm-*.sql.zst.gpg "${_bkdir}"/vlsm-*.sql.gz.gpg 2>/dev/null | head -1)"
+        local -a _dumps=()
+        mapfile -t _dumps < <(dumps_newest_first "${_bkdir}"/intelis-*.sql.zst "${_bkdir}"/intelis-*.sql.gz "${_bkdir}"/intelis-*.sql.zst.gpg "${_bkdir}"/intelis-*.sql.gz.gpg \
+                                                 "${_bkdir}"/vlsm-*.sql.zst "${_bkdir}"/vlsm-*.sql.gz "${_bkdir}"/vlsm-*.sql.zst.gpg "${_bkdir}"/vlsm-*.sql.gz.gpg)
         # The fallback takes the newest dump of any name, so it has to refuse the
         # one dump in this directory that is certainly the wrong database:
         # `db-tools backup --all` writes interfacing-* after the main dump, which
         # makes it the newest file and therefore the one a plain `ls -1t` picks.
         # Restoring it over the main database would replace a lab's test data
         # with the instrument staging tables.
-        [[ -z "$_newest" ]] && _newest="$(ls -1t "${_bkdir}"/*.sql.zst "${_bkdir}"/*.sql.gz "${_bkdir}"/*.sql "${_bkdir}"/*.sql.zst.gpg "${_bkdir}"/*.sql.gz.gpg "${_bkdir}"/*.sql.gpg 2>/dev/null | grep -v '/interfacing-[^/]*$' | head -1)"
-        if [[ -z "$_newest" ]]; then
+        if [[ ${#_dumps[@]} -eq 0 ]]; then
+            mapfile -t _dumps < <(dumps_newest_first "${_bkdir}"/*.sql.zst "${_bkdir}"/*.sql.gz "${_bkdir}"/*.sql "${_bkdir}"/*.sql.zst.gpg "${_bkdir}"/*.sql.gz.gpg "${_bkdir}"/*.sql.gpg \
+                                  | grep -v '/interfacing-[^/]*$')
+        fi
+        if [[ ${#_dumps[@]} -eq 0 ]]; then
             echo "No db-tools backup found in ${_bkdir}. Pass an explicit file with --db <path>."
             log_action "--db latest: no backup found in ${_bkdir}"
             exit 1
         fi
-        intelis_sql_file="$_newest"
-        print info "Using latest backup: ${intelis_sql_file}"
+        intelis_sql_file="${_dumps[0]}"
+
+        # Restoring from a folder offers the recent dumps to choose from, newest
+        # first and preselected, so an older one can be taken when the newest is
+        # known to be bad. `latest` on its own still takes the newest unasked.
+        if $intelis_pick_backup && [[ ${#_dumps[@]} -gt 1 ]]; then
+            local -a _opts=()
+            local _i _f _day _time _size _pick
+            for _i in "${!_dumps[@]}"; do
+                [[ $_i -ge 20 ]] && break
+                _f="${_dumps[$_i]}"
+                if [[ "$(basename "$_f")" =~ -([0-9]{4})([0-9]{2})([0-9]{2})-([0-9]{2})([0-9]{2})[0-9]{2}- ]]; then
+                    _day="${BASH_REMATCH[1]}-${BASH_REMATCH[2]}-${BASH_REMATCH[3]}"
+                    _time="${BASH_REMATCH[4]}:${BASH_REMATCH[5]}"
+                else
+                    _day="$(date -r "$_f" +%Y-%m-%d)"
+                    _time="$(date -r "$_f" +%H:%M)"
+                fi
+                _size="$(numfmt --to=iec --suffix=B "$(stat -c %s "$_f")" 2>/dev/null || echo "?")"
+                # ask_choice splits on ':', so the time goes after the label.
+                _opts+=("${_i}:${_day}:${_time} · ${_size}$([[ "$_f" == *.gpg ]] && echo " · encrypted")$([[ $_i -eq 0 ]] && echo " · newest")")
+            done
+            ask_choice _pick 0 "Which backup should be restored?" "${_opts[@]}"
+            intelis_sql_file="${_dumps[$_pick]}"
+        fi
+        print info "Using backup: ${intelis_sql_file}"
         log_action "Resolved --db latest to ${intelis_sql_file}"
     fi
 
@@ -1008,6 +1132,9 @@ EOF
 
 # --- Parse CLI flags before any prompts so collect_user_inputs sees them ---
 intelis_sql_file=""
+# Set by --restore-from-backup-folder (or --db <folder>): offer a menu of the
+# dumps in the folder instead of taking the newest unasked.
+intelis_pick_backup=false
 DB_STRATEGY_FLAG=""
 resume_setup=false
 reuse_saved_answers=false
@@ -1056,6 +1183,16 @@ while [[ $# -gt 0 ]]; do
         ;;
         --php)
         PHP_VERSION="$2"
+        shift 2
+        ;;
+        --restore-from-backup-folder=*)
+        intelis_sql_file="latest:${1#*=}"
+        intelis_pick_backup=true
+        shift
+        ;;
+        --restore-from-backup-folder)
+        intelis_sql_file="latest:$2"
+        intelis_pick_backup=true
         shift 2
         ;;
         --encryption-password=*)
