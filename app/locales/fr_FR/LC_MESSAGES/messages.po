@@ -37369,3 +37369,29 @@ msgstr "Champs manquants"
 #: app/reports/_data-quality-tab.php
 msgid "Custom Range"
 msgstr "Période personnalisée"
+
+#: app/admin/monitoring/lab-sync-details.php
+#: app/admin/monitoring/generate-lab-sync-status-details-report.php
+msgid "Requests Sent to Lab"
+msgstr "Demandes envoyées au laboratoire"
+
+#: app/admin/monitoring/lab-sync-details.php
+#: app/admin/monitoring/generate-lab-sync-status-details-report.php
+msgid "Results Received from Lab"
+msgstr "Résultats reçus du laboratoire"
+
+#: app/admin/monitoring/lab-sync-details.php
+msgid "Requests entered on STS and pulled by the lab, for samples collected in the selected period"
+msgstr "Demandes saisies sur STS et récupérées par le laboratoire, pour les échantillons prélevés pendant la période sélectionnée"
+
+#: app/admin/monitoring/lab-sync-details.php
+msgid "Samples the lab has sent back as accepted or rejected, for samples collected in the selected period"
+msgstr "Échantillons renvoyés par le laboratoire comme acceptés ou rejetés, pour les échantillons prélevés pendant la période sélectionnée"
+
+#: app/admin/monitoring/lab-sync-details.php
+msgid "Please select the sample collection date range"
+msgstr "Veuillez sélectionner la période de prélèvement"
+
+#: app/admin/monitoring/lab-sync-details.php
+msgid "Select Facility Name"
+msgstr "Sélectionner l'établissement"

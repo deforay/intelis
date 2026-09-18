@@ -1,10 +1,15 @@
 <?php
 
+use App\Services\TestsService;
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
+
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\CANCELLED;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -17,57 +22,70 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$table = "form_vl";
-$primaryKey = "vl_sample_id";
+$requestPages = [
+    'vl' => '/vl/requests/vl-requests.php',
+    'eid' => '/eid/requests/eid-requests.php',
+    'covid19' => '/covid-19/requests/covid-19-requests.php',
+    'hepatitis' => '/hepatitis/requests/hepatitis-requests.php',
+    'tb' => '/tb/requests/tb-requests.php',
+    'cd4' => '/cd4/requests/cd4-requests.php',
+];
 
-$testType = 'vl';
-if (!empty($_POST['testType'])) {
-    $testType = $_POST['testType'];
+// testType also names the facility_attributes JSON key below, so only known modules pass
+$testType = (string) ($_POST['testType'] ?? 'vl');
+if (!isset($requestPages[$testType]) || !in_array($testType, TestsService::getActiveTests(), true)) {
+    $testType = 'vl';
 }
+$url = $requestPages[$testType];
+$table = TestsService::getTestTableName($testType);
+$labId = (int) base64_decode((string) ($_POST['labId'] ?? ''));
 
-if (isset($testType) && $testType == 'vl') {
-    $url = "/vl/requests/vl-requests.php";
-    $table = "form_vl";
-    $testName = 'Viral Load';
-}
-if (isset($testType) && $testType == 'eid') {
-    $url = "/eid/requests/eid-requests.php";
-    $table = "form_eid";
-    $testName = 'EID';
-}
-if (isset($testType) && $testType == 'covid19') {
-    $url = "/covid-19/requests/covid-19-requests.php";
-    $table = "form_covid19";
-    $testName = 'Covid-19';
-}
-if (isset($testType) && $testType == 'hepatitis') {
-    $url = "/hepatitis/requests/hepatitis-requests.php";
-    $table = "form_hepatitis";
-    $testName = 'Hepatitis';
-}
-if (isset($testType) && $testType == 'tb') {
-    $url = "/tb/requests/tb-requests.php";
-    $table = "form_tb";
-    $testName = 'TB';
+// The lab comes from the request and AJAX skips the ACL check, so a user tied to
+// one lab (cloud-LIS) must not read another lab's counts by changing it
+$labScope = $general->labAdminScopeWhere('lab_id');
+$labScope = $labScope === '' ? '' : " AND $labScope";
+
+[$startDate, $endDate] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
+$countDateClause = '';
+$countParams = [$labId];
+if ($startDate !== '' && $endDate !== '') {
+    $countDateClause = ' AND sample_collection_date BETWEEN ? AND ?';
+    $countParams[] = "$startDate 00:00:00";
+    $countParams[] = "$endDate 23:59:59";
 }
 
-if ($testType == 'generic-tests') {
-    $testType = 'genericTests';
-}
-
+// Requests sent = entered on the STS and pulled by the lab (data_sync = 1).
+// Results received = the lab reported an outcome (accepted or rejected); the results
+// receiver sets data_sync = 1, so a sample rejected on the STS alone is not counted.
 $sQuery = "SELECT f.facility_id,
             f.facility_name, GREATEST(
                     COALESCE(facility_attributes->>'$." . $testType . "RemoteResultsSync', 0),
                     COALESCE(facility_attributes->>'$." . $testType . "RemoteRequestsSync', 0)
                 ) as latestSync,
                 (f.facility_attributes->>'$." . $testType . "RemoteResultsSync') as lastResultsSync,
-                (f.facility_attributes->>'$." . $testType . "RemoteRequestsSync') as lastRequestsSync, g_d_s.geo_name as province, g_d_d.geo_name as district
+                (f.facility_attributes->>'$." . $testType . "RemoteRequestsSync') as lastRequestsSync,
+                g_d_s.geo_name as province, g_d_d.geo_name as district,
+                COALESCE(counts.requestsSent, 0) AS requestsSent,
+                COALESCE(counts.resultsReceived, 0) AS resultsReceived
             FROM facility_details AS f
                 LEFT JOIN geographical_divisions as g_d_s ON g_d_s.geo_id = f.facility_state_id
-                LEFT JOIN geographical_divisions as g_d_d ON g_d_d.geo_id = f.facility_district_id ";
-if (isset($_POST['testType']) && trim((string) $_POST['testType']) !== '' && isset($_POST['labId']) && trim((string) $_POST['labId']) !== '') {
-    $sWhere[] = ' f.facility_id IN (SELECT DISTINCT facility_id from ' . $table . ' WHERE lab_id = ' . base64_decode((string) $_POST['labId']) . ') ';
-}
+                LEFT JOIN geographical_divisions as g_d_d ON g_d_d.geo_id = f.facility_district_id
+                LEFT JOIN (
+                    SELECT facility_id,
+                        SUM(remote_sample = 'yes' AND data_sync = 1) AS requestsSent,
+                        SUM(data_sync = 1 AND result_status IN (" . ACCEPTED . ", " . REJECTED . ")) AS resultsReceived
+                    FROM $table
+                    WHERE lab_id = ?
+                        AND IFNULL(result_status, 0) != " . CANCELLED . "
+                        $labScope
+                        $countDateClause
+                    GROUP BY facility_id
+                ) AS counts ON counts.facility_id = f.facility_id ";
+$params = $countParams;
+
+$sWhere = [];
+$sWhere[] = " f.facility_id IN (SELECT DISTINCT facility_id FROM $table WHERE lab_id = ? $labScope) ";
+$params[] = $labId;
 if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
     $sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
 }
@@ -77,28 +95,36 @@ if (isset($_POST['province']) && trim((string) $_POST['province']) !== '') {
 if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
     $sWhere[] = ' f.facility_district_id = ' . (int) $_POST['district'];
 }
-if (!empty($sWhere)) {
-    $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);
-}
+$sQuery .= " WHERE " . implode(" AND ", $sWhere);
 $sQuery .= " ORDER BY latestSync DESC, f.facility_name ASC";
 
-$_SESSION['labSyncStatusDetails'] = $sQuery;
+$_SESSION['labSyncStatusDetails'] = [
+    'query' => $sQuery,
+    'params' => $params,
+    'testType' => $testType,
+];
 
-$rResult = $db->rawQuery($sQuery);
-foreach ($rResult as $key => $aRow) { ?>
+$rResult = $db->rawQuery($sQuery, $params);
+foreach ($rResult as $aRow) { ?>
     <tr data-facilityId="<?= base64_encode((string) $aRow['facility_id']); ?>"
-        data-labId="<?= htmlspecialchars((string) $_POST['labId']); ?>" data-url="<?php echo urlencode((string) $url); ?>">
+        data-labId="<?= htmlspecialchars((string) $_POST['labId']); ?>" data-url="<?php echo urlencode($url); ?>">
         <td>
             <?= htmlspecialchars((string) $aRow['facility_name']); ?>
         </td>
         <td>
-            <?= htmlspecialchars((string) $_POST['testType']); ?>
+            <?= htmlspecialchars($testType); ?>
         </td>
         <td>
             <?= htmlspecialchars((string) $aRow['province']); ?>
         </td>
         <td>
             <?= htmlspecialchars((string) $aRow['district']); ?>
+        </td>
+        <td class="text-right">
+            <?= (int) $aRow['requestsSent']; ?>
+        </td>
+        <td class="text-right">
+            <?= (int) $aRow['resultsReceived']; ?>
         </td>
         <td>
             <?= DateUtility::humanReadableDateFormat($aRow['lastRequestsSync'], true); ?>
