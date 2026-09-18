@@ -37,6 +37,7 @@ if (!isset($requestPages[$testType]) || !in_array($testType, TestsService::getAc
     $testType = 'vl';
 }
 $url = $requestPages[$testType];
+$testName = TestsService::getTestName($testType);
 $table = TestsService::getTestTableName($testType);
 $labId = (int) base64_decode((string) ($_POST['labId'] ?? ''));
 
@@ -101,18 +102,18 @@ $sQuery .= " ORDER BY latestSync DESC, f.facility_name ASC";
 $_SESSION['labSyncStatusDetails'] = [
     'query' => $sQuery,
     'params' => $params,
-    'testType' => $testType,
+    'testName' => $testName,
 ];
 
 $rResult = $db->rawQuery($sQuery, $params);
 foreach ($rResult as $aRow) { ?>
     <tr data-facilityId="<?= base64_encode((string) $aRow['facility_id']); ?>"
-        data-labId="<?= htmlspecialchars((string) $_POST['labId']); ?>" data-url="<?php echo urlencode($url); ?>">
+        data-labId="<?= htmlspecialchars((string) $_POST['labId']); ?>" data-url="<?= htmlspecialchars($url); ?>">
         <td>
             <?= htmlspecialchars((string) $aRow['facility_name']); ?>
         </td>
         <td>
-            <?= htmlspecialchars($testType); ?>
+            <?= htmlspecialchars($testName); ?>
         </td>
         <td>
             <?= htmlspecialchars((string) $aRow['province']); ?>

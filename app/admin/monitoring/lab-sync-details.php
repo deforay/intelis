@@ -316,10 +316,12 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
         loadData();
         $('#syncStatusDataTable tbody').on('click', 'tr', function () {
             let url = $(this).attr('data-url');
-            let facilityId = $(this).attr('data-facilityId');
-            let labId = $(this).attr('data-labId');
-            let link = url + "?facilityId=" + facilityId + "&labId=" + labId;
-            window.open(link);
+            if (!url) {
+                return;
+            }
+            let link = url + "?facilityId=" + encodeURIComponent($(this).attr('data-facilityId'))
+                + "&labId=" + encodeURIComponent($(this).attr('data-labId'));
+            window.open(link, '_blank');
         });
     });
 
