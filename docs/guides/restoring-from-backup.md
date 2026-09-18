@@ -1,178 +1,411 @@
 # Restoring from a Backup
 
-Get InteLIS data back from the backup server, Windows share, or drive that
-`remote-backup.sh` writes to.
+Put the database back from a backup on a machine where InteLIS already runs.
+Uploaded files and attachments can come back too.
 
-One script fetches the backup, whichever destination it went to. It lists every
-lab stored there, copies the chosen one back to this machine, checks the database
-backups it can open, and then either restores the database or prints the command
-that rebuilds the machine.
+Restoring replaces everything in the database. Records entered after the backup
+was made are lost.
 
-Encrypted backups are listed but not opened. Database backups are encrypted by
-default, so their names end in `.gpg`, and the script reports those as present
-without testing them. A damaged encrypted archive is therefore only discovered at
-the moment of restore. Confirm the key is available before relying on one.
-
-## Before starting
-
-- The lab whose backup is needed is known.
-- The backup destination is reachable from this machine.
-- Commands can be run with `sudo`.
-
-To rebuild a machine from scratch, read
+To set up InteLIS on a new or empty machine from a backup, follow the
+**Backups on a server or share** tab of
 [Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md)
-first. That guide covers the whole rebuild. This one covers fetching the backup.
+instead.
 
-## Fetch the backup
+**Choose the situation that fits, then follow its steps from top to bottom.**
 
-```bash
-intelis restore
-```
+=== "Backup on this machine"
 
-??? info "If `intelis` is not recognised"
+    Use this when the database backup is still on this machine, for example to
+    undo records deleted by mistake.
 
-    On a machine with no InteLIS on it yet, fetch the script directly:
+    ### Restore the database
 
-    ```bash
-    cd ~
-    wget -O restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
-    sudo chmod u+x restore-backup.sh
-    sudo ./restore-backup.sh
-    ```
+    1. Open a terminal and go to the InteLIS folder:
 
-On the machine that made the backups, the script reads the saved settings and
-connects without asking. On a replacement machine, it asks where the backup is
-stored, in the same way `remote-backup.sh` does.
+        ```bash
+        cd /var/www/intelis
+        ```
 
-The script then lists every lab it finds:
+        On older installs, type `cd /var/www/vlsm` instead.
 
-```text
-   1) kigali-central-3f9a2b1c
-      lab: kigali-central  (machine: lis-server-01)
-      backup last updated: 2026-08-07T09:14:22Z
-      newest database dump: vlsm-20260807-091422.sql.zst
+    2. Start the restore:
 
-   2) huye-district-7c04e5aa
-      lab: huye-district  (machine: lis-server-02)
-      backup last updated: 2026-08-06T22:03:10Z
-      newest database dump: vlsm-20260806-220310.sql.zst
-```
+        ```bash
+        sudo -u www-data php vendor/bin/db-tools restore
+        ```
 
-Choose the lab by number. Then choose what to copy back:
+    3. A list of the backups on this machine appears. Choose the newest file
+       starting with `vlsm-` that was made before the problem. Move to it with
+       the arrow keys and press Enter. If the list is numbered, type its number
+       and press Enter.
 
-| Option | Copies | Copied to | Use it when |
-|--------|--------|-----------|-------------|
-| 1 | The database backups only | `/root/intelis-restore/<lab>/` | Rebuilding a machine |
-| 2 | Everything, including uploads and attachments | `/root/intelis-restore/<lab>/backups/db/` for the dumps, with the rest of the installation alongside | Files are missing as well as data |
+        The name gives the date and time of the backup. For example,
+        `vlsm-20260903-100002-…` was made on 3 September 2026 at 10:00.
 
-Both options only fetch. Neither writes anything into a live installation, so
-option 2 does not put uploads or attachments back by itself. Restoring those
-files is a separate, manual step described below.
+        Do not choose a file starting with `interfacing-` or `pre-restore-`.
 
-To see what is stored without copying anything, run
-`intelis restore --list`.
+        ??? failure "If it says `No backup files found`"
 
-## Put the data back
+            There are no database backups on this machine. Follow the
+            **Only the database** tab to fetch one from where the backups are
+            sent.
 
-What happens next depends on the machine.
+    4. Wait for `Restore completed to vlsm`. The restore first saves a safety
+       copy of the current database, in a file starting with `pre-restore-vlsm-`.
 
-### If InteLIS is already installed
+        ??? failure "If it ends with `Restore failed`"
 
-The script offers to restore the database in place. It takes a safety copy of
-the current database first, so the restore can be undone.
+            The database may now be empty. Put the safety copy back. Run step 2
+            again and choose the newest file starting with `pre-restore-vlsm-`.
+            Then contact support with the message shown.
 
-Answer `y` to restore. The script restores the newest main-database backup, then
-applies any pending database migrations.
+    5. Apply the database updates for this version of InteLIS:
 
-To restore a specific backup instead of the newest one, answer `n` and run:
+        ```bash
+        intelis migrate
+        ```
 
-```bash
-# after option 1
-cd /var/www/intelis && sudo -u www-data php vendor/bin/db-tools restore /root/intelis-restore/<lab>/<file>
+    ### Check the lab
 
-# after option 2, the dumps sit one level down
-cd /var/www/intelis && sudo -u www-data php vendor/bin/db-tools restore /root/intelis-restore/<lab>/backups/db/<file>
-```
+    6. Open InteLIS in the browser.
+    7. Log in with an administrator account that existed when the backup was
+       made.
+    8. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    9. Open a request entered shortly before the backup, and check its results
+       are there.
+    10. If the lab uses an STS, select **Force Remote Sync** and wait for it to
+        finish.
 
-If the interfacing database is in use, restore its backup separately. Those
-files start with `interfacing-`.
+=== "Only the database"
 
-### Putting uploaded files back
+    Use this when the backups are sent to another Linux machine, a Windows
+    shared folder or a USB drive, and only the data needs to come back.
 
-The script restores the database only. Uploads and attachments fetched by option 2
-stay in the staging directory until they are copied across by hand.
+    ### Fetch the backup
 
-1. Confirm what is about to be written over, and that the staging copy holds what
-   is expected:
+    1. Open a terminal and go to the InteLIS folder:
 
-   ```bash
-   ls /root/intelis-restore/<lab>/public/uploads | head
-   ls /var/www/intelis/public/uploads | head
-   ```
+        ```bash
+        cd /var/www/intelis
+        ```
 
-2. Copy the files across without deleting anything already in place. Run it first
-   as a dry run and read the list:
+        On older installs, type `cd /var/www/vlsm` instead.
 
-   ```bash
-   sudo rsync -a --dry-run /root/intelis-restore/<lab>/public/uploads/ /var/www/intelis/public/uploads/
-   sudo rsync -a /root/intelis-restore/<lab>/public/uploads/ /var/www/intelis/public/uploads/
-   ```
+    2. Start the restore:
 
-   Do not add `--delete`. The live directory can hold files added since the
-   backup, and they would be removed.
+        ```bash
+        intelis restore
+        ```
 
-3. Repair ownership, or the web server cannot read what was just restored:
+        ??? info "If `intelis` is not recognised"
 
-   ```bash
-   sudo intelis provision
-   ```
+            The install is older. Download the restore script and run it from
+            the same folder:
 
-4. Open a result PDF or an attachment in the application to confirm the files are
-   served.
+            ```bash
+            wget -O ~/restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
+            sudo bash ~/restore-backup.sh
+            ```
 
-### If InteLIS is not installed yet
+    3. At **Fetch the backup from there?**, choose **Yes**. The script uses the
+       backup settings saved on this machine.
 
-The script prints the command that installs the stack and restores the backup in
-one step:
+        ??? info "If it asks **Where is the backup stored?** instead"
 
-```bash
-cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)" \
-  && sudo bash setup.sh --db latest:/root/intelis-restore/<lab>
-```
+            This machine has no saved backup settings. Choose where the backups
+            are, then answer the questions for it:
 
-After option 2, the dumps are one level down, so the path is
-`latest:/root/intelis-restore/<lab>/backups/db`.
+            | Choice | Questions |
+            | --- | --- |
+            | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
+            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
+            | **On a USB or external drive plugged into this machine** | The folder on the drive. The script lists the drives. Type the path shown in the `MOUNTPOINT` column for the USB drive, for example `/media/labuser/BACKUP`. |
 
-If the backups are encrypted, their names end in `.gpg`. Give the new machine the
-same MySQL root password as the old one, and the command above is all that is
-needed. For the other options, see
-[Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md).
+        ??? failure "If it says `Could not connect`"
 
-## Confirm it worked
+            Check the machine or drive is switched on and connected to the
+            network, and that the details are right. Choose **Yes** at
+            **Try again?** and type them again.
 
-1. Log in with an administrator account that existed before the restore.
-2. Open **Admin**, then **System Config**, and check the instance and lab settings.
-3. Open a recent request and confirm its results are present.
-4. If this instance syncs to an STS, run a **Force Sync** and watch it finish.
+    4. At **Which lab should be restored?**, choose this lab. Each row starts
+       with the lab name given when the backups were set up, and shows the
+       newest database backup.
 
-## Troubleshooting
+        ??? failure "If it says `There are no backups in …`"
 
-!!! failure "There are no backups in this folder"
-    The destination holds no lab folders. Confirm the connection is to the right
-    machine or drive. On the InteLIS server, run
-    `intelis backup status` to see where its backups go.
+            The script reached a place that holds no InteLIS backups. On the
+            machine that sends the backups, run `intelis backup status`. The
+            `Backing up to` line shows where they go.
 
-!!! failure "A backup file is damaged"
-    The script reports which file failed its check. Choose an older backup from
-    the same folder. Check the disk on the backup destination.
+    5. At **What should be copied back?**, choose **Just the database backups**.
+    6. At **Where should the files be put on this machine?**, type this and
+       press Enter:
 
-!!! warning "The newest database dump is old"
-    The listing shows when each lab's backup was last updated, and the name of
-    its newest database dump. A dump from weeks ago means the scheduled dump job
-    on the source machine stopped running. Restore it, then check `cron.sh` on
-    that machine.
+        ```text
+        /var/intelis-restore
+        ```
 
-!!! note "Encrypted backups need the key"
-    A file ending in `.gpg` cannot be opened without the key. The script reports
-    these without checking them. Recover the key before restoring. See
-    [Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md).
+        Do not accept the folder it offers under `/root`. The restore runs as
+        the web server's account, which cannot read `/root`, and it fails.
+
+    7. Wait for the copy to finish. The script then checks each database
+       backup. Files listed as encrypted are not checked. They open during the
+       restore.
+
+        ??? failure "If a file is reported as damaged"
+
+            At the next question, choose **No**. Then restore the newest file
+            starting with `vlsm-` that is not damaged. Type this, followed by a
+            space. Do not press Enter yet:
+
+            ```bash
+            sudo -u www-data php vendor/bin/db-tools restore
+            ```
+
+            Open the **Files** app and press **Ctrl+L**. Type
+            `/var/intelis-restore/db` and press Enter. Drag the file onto the
+            terminal window, and press Enter. Then run `intelis migrate` and
+            carry on at step 10.
+
+    ### Restore the database
+
+    8. At **Restore … into /var/www/intelis now?**, check the lab name, then
+       choose **Yes**.
+    9. Wait for `Database restored`. The script first saves a safety copy of the
+       current database, then restores the newest backup starting with `vlsm-`,
+       then applies the database updates.
+
+        ??? failure "If it says `The restore did not finish`"
+
+            The database may now be empty. Put the safety copy back:
+
+            ```bash
+            sudo -u www-data php vendor/bin/db-tools restore
+            ```
+
+            Choose the newest file starting with `pre-restore-vlsm-`. Then
+            contact support with the message shown.
+
+        ??? failure "If it says `Could not apply database migrations`"
+
+            The data is back. Apply the updates by hand:
+
+            ```bash
+            intelis migrate
+            ```
+
+    ### Check the lab
+
+    10. Open InteLIS in the browser.
+    11. Log in with an administrator account that existed when the backup was
+        made.
+    12. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    13. Open a request entered shortly before the backup, and check its results
+        are there.
+    14. If the lab uses an STS, select **Force Remote Sync** and wait for it to
+        finish.
+    15. If the lab uses the interfacing tool, restore its database too. Type
+        this, followed by a space. Do not press Enter yet:
+
+        ```bash
+        sudo -u www-data php vendor/bin/db-tools restore --profile=interfacing
+        ```
+
+        Open the **Files** app and press **Ctrl+L**. Type
+        `/var/intelis-restore/db` and press Enter. Drag the newest file starting
+        with `interfacing-` onto the terminal window, and press Enter.
+
+        Always keep `--profile=interfacing` in this command. Without it, the
+        file is restored over the main database.
+
+    16. When the lab works, delete the fetched copy. It holds the database
+        password.
+
+        ```bash
+        sudo rm -rf /var/intelis-restore
+        ```
+
+=== "Database and uploaded files"
+
+    Use this when the backups are sent to another Linux machine, a Windows
+    shared folder or a USB drive, and uploaded files and attachments are missing
+    as well as data.
+
+    ### Fetch the backup
+
+    1. Open a terminal and go to the InteLIS folder:
+
+        ```bash
+        cd /var/www/intelis
+        ```
+
+        On older installs, type `cd /var/www/vlsm` instead.
+
+    2. Start the restore:
+
+        ```bash
+        intelis restore
+        ```
+
+        ??? info "If `intelis` is not recognised"
+
+            The install is older. Download the restore script and run it from
+            the same folder:
+
+            ```bash
+            wget -O ~/restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
+            sudo bash ~/restore-backup.sh
+            ```
+
+    3. At **Fetch the backup from there?**, choose **Yes**. The script uses the
+       backup settings saved on this machine.
+
+        ??? info "If it asks **Where is the backup stored?** instead"
+
+            This machine has no saved backup settings. Choose where the backups
+            are, then answer the questions for it:
+
+            | Choice | Questions |
+            | --- | --- |
+            | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
+            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
+            | **On a USB or external drive plugged into this machine** | The folder on the drive. The script lists the drives. Type the path shown in the `MOUNTPOINT` column for the USB drive, for example `/media/labuser/BACKUP`. |
+
+        ??? failure "If it says `Could not connect`"
+
+            Check the machine or drive is switched on and connected to the
+            network, and that the details are right. Choose **Yes** at
+            **Try again?** and type them again.
+
+    4. At **Which lab should be restored?**, choose this lab. Each row starts
+       with the lab name given when the backups were set up, and shows the
+       newest database backup.
+
+        ??? failure "If it says `There are no backups in …`"
+
+            The script reached a place that holds no InteLIS backups. On the
+            machine that sends the backups, run `intelis backup status`. The
+            `Backing up to` line shows where they go.
+
+    5. At **What should be copied back?**, choose
+       **Everything, including uploaded files and attachments**.
+    6. At **Where should the files be put on this machine?**, type this and
+       press Enter:
+
+        ```text
+        /var/intelis-restore
+        ```
+
+        Do not accept the folder it offers under `/root`. The restore runs as
+        the web server's account, which cannot read `/root`, and it fails.
+
+    7. Wait for the copy to finish. It copies the whole InteLIS folder and can
+       take hours over a network. The script then checks each database backup.
+       Files listed as encrypted are not checked. They open during the restore.
+
+        ??? failure "If a file is reported as damaged"
+
+            At the next question, choose **No**. Then restore the newest file
+            starting with `vlsm-` that is not damaged. Type this, followed by a
+            space. Do not press Enter yet:
+
+            ```bash
+            sudo -u www-data php vendor/bin/db-tools restore
+            ```
+
+            Open the **Files** app and press **Ctrl+L**. Type
+            `/var/intelis-restore/backups/db` and press Enter. Drag the file
+            onto the terminal window, and press Enter. Then run
+            `intelis migrate` and carry on at step 10.
+
+    ### Restore the database
+
+    8. At **Restore … into /var/www/intelis now?**, check the lab name, then
+       choose **Yes**.
+    9. Wait for `Database restored`. The script first saves a safety copy of the
+       current database, then restores the newest backup starting with `vlsm-`,
+       then applies the database updates.
+
+        ??? failure "If it says `The restore did not finish`"
+
+            The database may now be empty. Put the safety copy back:
+
+            ```bash
+            sudo -u www-data php vendor/bin/db-tools restore
+            ```
+
+            Choose the newest file starting with `pre-restore-vlsm-`. Then
+            contact support with the message shown.
+
+        ??? failure "If it says `Could not apply database migrations`"
+
+            The data is back. Apply the updates by hand:
+
+            ```bash
+            intelis migrate
+            ```
+
+    ### Put the uploaded files back
+
+    10. Check what the copy holds:
+
+        ```bash
+        ls /var/intelis-restore/public/uploads
+        ```
+
+    11. List what would be copied, without changing anything:
+
+        ```bash
+        sudo rsync -a --dry-run --itemize-changes /var/intelis-restore/public/uploads/ /var/www/intelis/public/uploads/
+        ```
+
+        Each line is a file that is missing or different on this machine.
+
+    12. Copy the files across:
+
+        ```bash
+        sudo rsync -a /var/intelis-restore/public/uploads/ /var/www/intelis/public/uploads/
+        ```
+
+        On older installs, type `/var/www/vlsm/public/uploads/` as the last
+        path. Do not add `--delete`. Files added since the backup would be
+        removed.
+
+    13. Repair the file ownership, so the web server can read the restored
+        files:
+
+        ```bash
+        sudo intelis provision
+        ```
+
+    ### Check the lab
+
+    14. Open InteLIS in the browser.
+    15. Log in with an administrator account that existed when the backup was
+        made.
+    16. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    17. Open a request entered shortly before the backup, and check its results
+        are there.
+    18. Open a result PDF or an attachment, and check it displays.
+    19. If the lab uses an STS, select **Force Remote Sync** and wait for it to
+        finish.
+    20. If the lab uses the interfacing tool, restore its database too. Type
+        this, followed by a space. Do not press Enter yet:
+
+        ```bash
+        sudo -u www-data php vendor/bin/db-tools restore --profile=interfacing
+        ```
+
+        Open the **Files** app and press **Ctrl+L**. Type
+        `/var/intelis-restore/backups/db` and press Enter. Drag the newest file
+        starting with `interfacing-` onto the terminal window, and press Enter.
+
+        Always keep `--profile=interfacing` in this command. Without it, the
+        file is restored over the main database.
+
+    21. When the lab works, delete the fetched copy. It holds the database
+        password.
+
+        ```bash
+        sudo rm -rf /var/intelis-restore
+        ```

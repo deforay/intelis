@@ -1,42 +1,75 @@
 # Permission denied errors
 
-InteLIS reports a permission denied error when the web server account cannot
-write to one of the directories the application generates files in, such as
-`var/cache`, `var/logs`, `var/temporary` or `public/uploads`. This usually
-follows a manual file copy, a restore, or Composer having been run as root.
+InteLIS reports `Permission denied` when the web server cannot write to one of
+its folders.
 
-## Repair the installation's own directories
+1. Open a terminal on the InteLIS machine and run:
 
-```bash
-sudo intelis provision
-```
+    ```bash
+    intelis check
+    ```
 
-This creates the runtime directories the application writes to and sets their
-ownership and permissions. It touches only the InteLIS installation.
+    Each folder the web server cannot write to shows as a failed row, such as
+    `var/cache writable`. A `How to fix` row follows with the commands to run.
 
-Then confirm the machine is healthy again:
+    ??? info "If `intelis check` is not recognised"
 
-```bash
-intelis check
-```
+        The install is older. Run the same check under its earlier name:
 
-If `intelis check` still reports a permission problem, run the fuller repair,
-which also restores ownership after a copy or a restore has changed it:
+        ```bash
+        intelis preflight
+        ```
 
-```bash
-sudo intelis-refresh -p /var/www/intelis -m full
-```
+2. Run the repair it prints:
 
-On an installation made before the rename, the path is `/var/www/vlsm`.
+    ```bash
+    intelis provision
+    ```
 
-## Do not widen permissions across /var/www
+    It creates missing folders and resets their ownership and permissions. It
+    asks for the administrator password.
 
-A recursive ACL over the whole of `/var/www`, such as
-`setfacl -R -m u:www-data:rwx /var/www`, grants the web server account write and
-execute access to every application on the machine, including source files,
-configuration, and any other site hosted there. A vulnerability in any one of
-them then reaches all of them. It also masks the real fault rather than fixing
-it, so the problem returns after the next update.
+    ??? failure "If `intelis provision` fails because `var/cache` belongs to root"
 
-Where a specific directory genuinely needs to be shared with another account,
-grant it on that directory alone, never on `/var/www`.
+        `intelis provision` starts the application to find its folders. A
+        `var/cache` folder owned by root stops it before it can repair
+        anything. This usually follows a `composer` command run as root.
+
+        Give the folder back first. `intelis check` prints these lines with the
+        exact folders under `if that cannot start`:
+
+        ```bash
+        sudo chown -R $(logname):www-data /var/www/intelis/var/cache
+        sudo chmod -R g+w /var/www/intelis/var/cache
+        ```
+
+        Then run `intelis provision` again.
+
+3. Run the check again:
+
+    ```bash
+    intelis check
+    ```
+
+    Every `writable` row passes.
+
+    ??? failure "If a folder still fails"
+
+        Run the full permission repair. It also resets ownership across the
+        installation after a copy or a restore:
+
+        ```bash
+        sudo intelis-refresh -p /var/www/intelis -m full
+        ```
+
+        On older installs, use `/var/www/vlsm` in place of `/var/www/intelis`.
+
+??? warning "Do not widen permissions across /var/www"
+
+    A command such as `setfacl -R -m u:www-data:rwx /var/www` gives the web
+    server write access to every file of every site on the machine. A flaw in
+    any one site then reaches all of them. The error also returns after the next
+    update, because the real fault is still there.
+
+    If one folder must be shared with another account, grant access on that
+    folder only.

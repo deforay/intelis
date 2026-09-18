@@ -59,7 +59,7 @@ pièce : la fiche 5 sert un jour où la machine ne peut pas l'afficher.
 | 3. Mettre à jour InteLIS | `intelis update`, quoi vérifier avant et après | La personne qui s'occupe de la machine |
 | 4. Les sauvegardes | Choisir une destination, et la vérification hebdomadaire de dix secondes | La personne qui s'occupe de la machine |
 | 5. Restaurer depuis une sauvegarde | Restaurer sur place, et remonter une machine perdue | À imprimer et garder près de la machine |
-| 6. Quand quelque chose ne va pas | Lire `intelis check`, et quoi envoyer au support | N'importe qui, avant d'appeler le support |
+| 6. Quand quelque chose ne va pas | Lire `intelis check`, `intelis doctor` quand le site ne s'ouvre pas, et quoi envoyer au support | N'importe qui, avant d'appeler le support |
 
 ## Lien entre les fiches et les guides
 
@@ -80,7 +80,9 @@ exceptions et la conduite à tenir en cas de problème.
 | Admin 3 | [Gérer les structures et les laboratoires](../user-guides/admin-facilities.md) et [Configurer les automates et l'interfaçage](../user-guides/admin-instruments.md) |
 | Admin 4 | [Maintenir les listes du formulaire de demande](../user-guides/admin-module-configuration.md) |
 | Admin 5 | [Surveiller et auditer InteLIS](../user-guides/admin-monitoring.md) |
+| Machine 1 | [Scripts et outils de maintenance](../guides/maintenance.md) |
 | Machine 2 | [Installer InteLIS sur Ubuntu](../guides/installing-intelis-on-ubuntu.md) |
 | Machine 3 | [Mettre à jour InteLIS sur Ubuntu](../guides/updating-intelis-on-ubuntu.md) |
-| Machine 4 | [Sauvegarder vers une autre machine Linux](../guides/backing-up-to-remote-server.md) et [vers une machine Windows](../guides/backing-up-to-windows-machine.md) |
-| Machine 5 | [Restaurer depuis une sauvegarde](../guides/restoring-from-backup.md) et [Migrer entre machines Ubuntu](../guides/migrating-ubuntu-machines.md) |
+| Machine 4 | [Configurer les sauvegardes hors de la machine](../guides/setting-up-off-machine-backups.md) |
+| Machine 5 | [Migrer entre machines Ubuntu](../guides/migrating-ubuntu-machines.md) pour remonter une machine perdue, et [Restaurer depuis une sauvegarde](../guides/restoring-from-backup.md) pour restaurer sur place |
+| Machine 6 | [MySQL ne démarre pas](../guides/mysql-will-not-start.md), [Le navigateur affiche du code PHP](../guides/browser-shows-php-code.md), [Corriger une erreur de permission](../guides/permission-denied-issue.md) et [Corriger une incohérence de collation](../guides/fix-collation-issue.md) |

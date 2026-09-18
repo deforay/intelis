@@ -1,55 +1,80 @@
 # Fix illegal or mismatched collation errors
 
-A collation mismatch shows up as an "Illegal mix of collations" error when a
-query joins two tables whose text columns were created with different
-collations. It usually follows a restore from a dump taken on a server with a
-different MySQL or MariaDB version.
+InteLIS shows an `Illegal mix of collations` error, usually after a database was
+restored from another MySQL or MariaDB server.
 
-## Convert with db-tools
+1. Open a terminal on the InteLIS machine and take a backup. The repair rewrites
+   every table.
 
-`db-tools collation` is the supported repair. It detects the collation the server
-recommends rather than forcing a fixed one, which matters because the shipped
-schema uses `utf8mb4_0900_ai_ci` on MySQL 8 while MariaDB does not support that
-collation at all.
+    ```bash
+    intelis backup
+    ```
 
-1. Take a current backup first. This rewrites every table in the database.
+2. Run the collation repair:
 
-   ```bash
-   cd /var/www/intelis
-   sudo -u www-data php vendor/bin/db-tools backup --all
-   ```
+    ```bash
+    intelis db:collation
+    ```
 
-2. Review what would change, without changing anything:
+    It converts the InteLIS database and the interfacing database. It runs as
+    the web server account and may ask for the administrator password first.
 
-   ```bash
-   sudo -u www-data php vendor/bin/db-tools collation --dry-run
-   ```
+    ??? info "If `intelis` is not recognised"
 
-3. Apply the conversion:
+        The install is older. Run the repair directly:
 
-   ```bash
-   sudo -u www-data php vendor/bin/db-tools collation
-   ```
+        ```bash
+        cd /var/www/intelis && sudo -u www-data php vendor/bin/db-tools collation --all
+        ```
 
-   Add `--all` to convert the interfacing database in the same run.
+        On older installs, use `/var/www/vlsm` in place of `/var/www/intelis`.
 
-4. Confirm the database is now consistent:
+3. Check that nothing is left to convert:
 
-   ```bash
-   sudo -u www-data php vendor/bin/db-tools collation --dry-run
-   ```
+    ```bash
+    intelis db:collation -- --dry-run
+    ```
 
-   A clean run reports nothing left to convert.
+    Each database reports `0 need conversion`.
 
-## Do not force utf8mb4_general_ci by hand
+    ??? warning "Keep the `--` before `--dry-run`"
 
-Setting every table and column to `utf8mb4_general_ci` through the phpMyAdmin
-Operations tab, which older copies of this guide described, resolves the
-immediate error and then creates a new one. The shipped schema in `sql/init.sql`
-uses `utf8mb4_0900_ai_ci`, so every table a later migration creates or alters
-arrives with the server's own collation and no longer matches the tables that
-were forced to `general_ci`. The mismatch returns after the next update.
+        Without it, the `--dry-run` option is dropped and the command converts
+        the tables instead of only reporting.
 
-Where a machine genuinely has no CLI access, convert with the collation the
-server reports as its default rather than a hard-coded one, and re-run the
-`--dry-run` check above from any machine that can reach the database afterwards.
+`intelis update` runs the same repair at the end of every update.
+
+??? info "Convert step by step with db-tools"
+
+    To review the changes before applying them, run db-tools directly from the
+    InteLIS folder:
+
+    ```bash
+    cd /var/www/intelis
+    ```
+
+    List what would change, without changing anything:
+
+    ```bash
+    sudo -u www-data php vendor/bin/db-tools collation --all --dry-run
+    ```
+
+    Apply the conversion:
+
+    ```bash
+    sudo -u www-data php vendor/bin/db-tools collation --all
+    ```
+
+    `--all` covers both databases. Without it, only the InteLIS database is
+    converted.
+
+??? info "What this fixes"
+
+    The error appears when a query compares text columns stored with different
+    collations. The repair asks the server which collation to use and converts
+    every table and column to it. MySQL 8 uses `utf8mb4_0900_ai_ci`. MariaDB
+    does not support that collation and gets its own default.
+
+    Do not set tables to `utf8mb4_general_ci` by hand, for example in
+    phpMyAdmin. Tables that later updates create or change get the server's
+    default collation, so the error comes back after the next update.

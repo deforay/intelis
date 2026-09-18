@@ -1,328 +1,347 @@
 # Migrating From One Ubuntu Machine to Another
 
-InteLIS backs up its databases automatically every 6 hours to
-`<install-path>/backups/db/`, compressed `.sql.zst` files for both the main
-(`vlsm-…`) and, if used, the interfacing (`interfacing-…`) database. Migration
-normally reuses those backups directly, with no separate export step. Machines
-that have no backups, or whose backups are stale, take one first: see
-[Exporting by hand](#exporting-by-hand).
-
-Backups are encrypted by default, so on most machines these names end in
-`.sql.zst.gpg`. setup.sh restores them with the same `--db` options as an
-unencrypted file, provided the key can be derived or supplied: see
-[If the backups are encrypted](#if-the-backups-are-encrypted-gpg) below.
-
-What the lab's `backup_encryption_enabled` setting controls is which key is used,
-not whether the backup is encrypted. Left at its default, the key is derived from
-the MySQL root password, which is why reusing that password on the new machine is
-the simplest route. Where the setting has been turned on, the key is the
-instance's own escrowed key and the MySQL password will not open the file, so the
-recovery token is required.
-
-!!! tip "If off-machine backups were set up, there is a shorter route"
-
-    `intelis restore` on the new machine fetches the backup from wherever
-    it was sent, checks the files are readable, and prints the exact install
-    command below with the path already filled in. This page is the manual
-    version of the same thing, for when the backups are on a drive at hand.
-    See [Restoring from a backup](restoring-from-backup.md).
-
-## Start here: check what the old machine actually has
-
-Before anything else, look at the backup folder on the **old** machine:
-
-```bash
-ls -lh /var/www/intelis/backups/db/
-```
-
-What comes back decides which route to take:
-
-| What appears | What to do |
-| --- | --- |
-| A list of `.sql.zst` or `.sql.zst.gpg` files, the newest dated today or yesterday | Normal route. Go to [step 1](#1-put-the-backups-on-the-new-machine). |
-| Nothing, "No such file or directory", or only old files | The install predates automatic backups, or the backup job stopped. Take a fresh export first: [Exporting by hand](#exporting-by-hand). |
-
-If MySQL on the old machine is stopped and will not start, no export of any kind
-is possible until that is fixed. Go to
-[If the old machine's MySQL will not start](#if-the-old-machines-mysql-will-not-start)
-before anything else.
-
-!!! warning "Older printed instructions"
-
-    Some copies of this guide in circulation start with `wget -O db-backup.sh …`
-    and treat a manual export as the first step of every migration. That step is
-    no longer needed on an install that has `backups/db/`, but it still works and
-    is still supported. It is kept below under
-    [Exporting by hand](#exporting-by-hand).
-
-## 1. Put the backups on the new machine
-
-Connect the drive that holds the old machine's `backups` folder, or copy that
-folder onto the new machine (USB/external drive, or by mounting the old disk).
-Only `backups/db/` is needed. Each backup is named after the database it came
-from, so the main-database files start with `vlsm-` and the interfacing files
-start with `interfacing-`:
-
-```text
-vlsm-20260615-095652.sql.zst                                    # unencrypted
-vlsm-20260615-095652-ObzpDjNoe5NkHF0ootx2nYxxfD2wJoPU.sql.zst.gpg   # encrypted
-```
-
-Encrypted backups carry a random token in the filename. Keep the name intact.
-The restore uses that token to rebuild the passphrase.
-
-> Want the freshest possible snapshot and the old machine still runs? Force one
-> first, then copy the new file across:
->
-> ```bash
-> intelis backup
-> ```
->
-> That takes a fresh dump and also sends it to wherever off-machine backups go,
-> so the new machine can be built from either copy.
-
-## 2. Install on the new machine and restore the latest backup
-
-**Requirement:** Ubuntu 24.04 LTS or newer.
-
-Point `--restore-from-backup-folder` at the copied backups folder (the one
-holding `db/` and `config/`, e.g. on the mounted drive). setup.sh lists the
-backups it finds there, newest first and already selected, installs the stack,
-and restores the one chosen. `.sql.zst` / `.sql.gz` are imported as-is, no need
-to decompress or rename:
-
-```bash
-cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)" && sudo bash setup.sh --restore-from-backup-folder /media/USB/backups
-```
-
-- Replace `/media/USB/backups` with the actual path to the copied folder, e.g.
-  `/media/<user>/<drive>/backups`, `~/Desktop/backups`, or
-  `/mnt/old-disk/var/www/intelis/backups`. Pointing at its `db/` folder works too.
-- The path does not have to be typed. Either way below puts it in the terminal
-  for you:
-    1. Open the **Files** app. A USB drive appears in the left sidebar.
-    2. In the terminal, type `sudo bash setup.sh --restore-from-backup-folder`
-       followed by a space. Do not press Enter yet.
-    3. Add the path of the backups folder, in one of two ways:
-        - **Drag and drop:** drag the folder from Files onto the terminal
-          window.
-        - **Copy and paste:** click the folder once in Files, press
-          **Ctrl+C**, then click in the terminal and press **Ctrl+Shift+V**.
-          (Plain Ctrl+V does not paste in the terminal.)
-
-        Either way, the full path of the folder appears in the terminal. If
-        the folder name has spaces and the path is not inside quotes, add
-        `'` at both ends of it.
-    4. Press Enter.
+Move a lab to a new Ubuntu machine, or rebuild a machine that has died, from the
+old machine's backups.
 
-    USB drives are always under `/media/<user>/<drive name>/`.
-- To take the newest backup without being asked, use `--db latest:<folder>`.
-- To restore one specific file instead of the newest, pass it directly:
-  `sudo bash setup.sh --db /media/USB/vlsm-20260608-010012.sql.zst`
+The new machine must run **Ubuntu 24.04 LTS or later** and be connected to the
+internet.
 
-When prompted, enter the **new** machine's MySQL credentials and the STS URL.
+**Choose the situation that fits, then follow its steps from top to bottom.**
 
-## If the backups are encrypted (`.gpg`)
+=== "Old machine still works"
 
-!!! tip "The old machine still runs? Skip this section entirely"
+    ### On the old machine
 
-    Encryption protects a backup that travels or sits on a shelf. Moving to a
-    machine standing next to the old one is neither. If the old machine still
-    works, take a fresh **unencrypted** export instead of recovering a key:
-    see [Exporting by hand](#exporting-by-hand). setup.sh reads that file with
-    the same `--db` option, and no key is involved at any point.
+    1. Open a terminal and take a fresh backup, so nothing entered since the last
+       automatic backup is lost:
 
-    Recover the key only when the old machine is gone or dead and an encrypted
-    backup is all that is left.
+        ```bash
+        intelis backup
+        ```
 
-If the files end in `.sql.zst.gpg`, setup.sh still restores them exactly as
-above, it needs the key. Use whichever fits:
+        ??? info "If `intelis` is not recognised"
 
-- **Easiest, copy the `config/` folder along with `db/`.** The key is derived
-  from the old machine's database password, and the config backups in
-  `config/` hold that password. setup.sh reads it from there and opens the
-  backup with nothing typed in. Using the same MySQL root password on the new
-  machine as the old one also works. Both work wherever
-  `backup_encryption_enabled` is at its default. Where that setting has been
-  turned on for the lab, the key is escrowed instead of derived, and neither
-  route works: use the recovery token below.
+            The install is older. Export the database with this instead:
 
-- **Recover the key from the STS** (when the new machine has a different MySQL
-  password). Ask the STS administrator to approve a one-time key release for the
-  lab, on the STS they run:
+            ```bash
+            cd ~ && wget -O db-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/db-backup.sh
+            sudo bash db-backup.sh
+            ```
 
-  ```bash
-  cd /var/www/intelis && sudo -u www-data composer backup-key-admin approve --lab <your-lab-id>
-  ```
-
-  They provide the short token it prints. On the new machine:
+            - Enter the MySQL username and password.
+            - Choose the `vlsm` database, and `interfacing` if the lab uses the
+              interfacing tool.
+            - When asked for the location, enter `/var/www/intelis/backups/db`.
+              On older installs, enter `/var/www/vlsm/backups/db`.
+            - Wait for `Script completed`. An export stopped part way still
+              leaves a file, and restoring it silently loses the newest records.
 
-  ```bash
-  sudo bash setup.sh --restore-from-backup-folder /media/USB/backups \
-      --sts-url https://your-sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
-  ```
+        ??? failure "If MySQL will not start"
 
-- **Offline (STS unreachable)**, ask the STS administrator for the recovery code
-  (on the STS: `sudo -u www-data composer backup-key-admin show-code --lab <id>`)
-  and pass it directly:
+            Nothing can be backed up until MySQL runs. Follow
+            [MySQL will not start](mysql-will-not-start.md), then come back to
+            step 1.
 
-  ```bash
-  sudo bash setup.sh --db /media/USB/vlsm-….sql.zst.gpg --encryption-password '<recovery-code>'
-  ```
+    2. Plug a USB drive into the old machine.
+    3. In the terminal, type this, followed by a space. Do not press Enter yet:
 
-> The STS-based recovery (token / recovery code) requires the STS to be running a
-> release that includes the key-recovery support. setup.sh itself is always current
-> (downloaded fresh), so the new machine never needs an upgrade first.
+        ```bash
+        sudo cp -r /var/www/intelis/backups
+        ```
 
-## 3. After install
+        On older installs, type `/var/www/vlsm/backups` in place of
+        `/var/www/intelis/backups`.
 
-The restored database already contains the users, lab/instance settings, and
-data, so there is **no** need to create a new admin or re-select the lab:
+    4. Open the **Files** app. Drag the USB drive from the left sidebar onto the
+       terminal window. Its path appears after the command.
+    5. Press Enter. The `backups` folder is copied onto the USB drive.
+    6. Unplug the USB drive.
 
-- Browse to the instance and log in with the existing administrator account.
-- Verify instance/lab settings under **Admin → System Config**.
-- If connected to an STS, run a **Force Sync** and monitor until complete.
+    ### On the new machine
 
-### Interfacing database (only where it is in use)
+    7. Plug in the USB drive.
+    8. Open a terminal and download the installer:
 
-`--db` restores the main database. If the interfacing database is in use, restore
-its backup separately after install:
+        ```bash
+        cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)"
+        ```
 
-```bash
-cd /var/www/intelis && sudo -u www-data php vendor/bin/db-tools restore /media/USB/backups/db/interfacing-20260615-095737.sql.zst
-```
+    9. Type this, followed by a space. Do not press Enter yet:
 
-## Exporting by hand
+        ```bash
+        sudo bash setup.sh --restore-from-backup-folder
+        ```
 
-Use this when `backups/db/` is empty or missing, when the newest backup there is
-too old to move a lab onto, or when a guaranteed-fresh
-**unencrypted** file so no key is needed at the other end. The old machine's
-MySQL has to be running for any of it; if it is not, see the next section.
+    10. Open the USB drive in the **Files** app. Drag the `backups` folder onto
+        the terminal window. Its path appears after the command.
 
-### On a working install
+        Instead of dragging, click the folder once and press **Ctrl+C**. Then
+        click in the terminal and press **Ctrl+Shift+V**. If the path has spaces
+        and no quotes around it, add `'` at both ends.
 
-```bash
-cd /var/www/intelis
-sudo -u www-data php vendor/bin/db-tools backup --all --no-encrypt
-```
+    11. Press Enter, then answer the installer's questions:
 
-`--all` covers the interfacing database as well, if the lab uses one. The files
-land in `/var/www/intelis/backups/db/` alongside the automatic ones. Copy that
-folder to the drive and carry on from [step 2](#2-install-on-the-new-machine-and-restore-the-latest-backup).
+        | Question | Answer |
+        | --- | --- |
+        | Installation directory | Press Enter. |
+        | Which backup should be restored? | Press Enter. The newest backup is on top and already selected. |
+        | What is this machine? | **Lab machine (LIS)**. |
+        | Remote STS URL | The STS address the old machine used. Leave it empty if the lab has no STS. |
+        | New MySQL root password | A new password for this machine, typed twice. Write it down. |
+        | Run the one-off maintenance scripts? | Press Enter (No). |
+        | Is this correct? | Check the summary, then press Enter (Yes). |
 
-!!! note "If the lab has backup encryption switched on"
+    12. Wait 10 to 20 minutes. The installer ends with `Setup complete`.
 
-    A passphrase configured for the instance takes priority over `--no-encrypt`,
-    so on those machines the file still comes out as `.sql.zst.gpg`. The
-    extension shows which was produced. To force a plain file regardless:
+        ??? failure "If it stops with `Failed to decrypt`"
 
-    ```bash
-    cd /var/www/intelis
-    sudo -u www-data php vendor/bin/db-tools export backups/db/vlsm-manual.sql
-    ```
+            The backup is encrypted with a key held by the STS. Ask the STS
+            administrator for a one-time recovery token. They run this on the STS:
 
-    That writes an uncompressed `.sql`, which `--db` accepts like any other. Add
-    the database name as a second argument for the interfacing database.
+            ```bash
+            cd /var/www/intelis && sudo -u www-data composer backup-key-admin approve --lab <lab-id>
+            ```
 
-### If the install is too old or too broken to run db-tools
-
-This route needs nothing but a working MySQL, so it also covers installs that
-predate automatic backups. It is the step the older printed instructions
-describe:
-
-```bash
-cd ~
-wget -O db-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/db-backup.sh
-sudo chmod u+x db-backup.sh
-sudo ./db-backup.sh
-```
-
-- Enter the MySQL username and password when prompted.
-- Choose the databases to export. The main one is normally `vlsm`; export
-  `interfacing` as well if the lab uses the interfacing tool.
-- Choose where to write them, for example the mounted drive.
-
-It produces `.sql.gz` files, which setup.sh imports as they are. Carry on from
-[step 2](#2-install-on-the-new-machine-and-restore-the-latest-backup), pointing
-`--db` at the file it wrote.
-
-!!! warning "Check the script finished"
-
-    A dump interrupted part way through still leaves a file that looks
-    reasonable, and restoring it produces a database that is missing recent
-    records without ever saying so. The script prints a line naming every
-    database it failed on and exits with an error, so read the last few lines
-    before unplugging the drive. Nothing is safe to migrate until it says
-    `Script completed`.
-
-## If the old machine's MySQL will not start
-
-A machine being replaced is often a machine that has already gone wrong, so this
-is common. Nothing can be exported until MySQL runs, but in almost every case the
-data itself is fine and only the server is refusing to come up.
-
-Run this first. It works out the cause, says so in plain language, and offers to
-repair what is safe to repair:
-
-```bash
-sudo intelis fix-database
-```
-
-On a machine whose `intelis` command is missing or too old to have it, which is
-likely, since a machine with a broken database is one that cannot be updated —
-the same thing runs straight from the internet:
-
-```bash
-sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/deforay/intelis/master/scripts/mysql-doctor.sh)"
-```
-
-It asks before changing anything, and it leaves `mysql-report.txt` on the
-desktop of whoever ran it. Send that file on if it cannot fix the problem
-itself: it holds the service log, the database error log, memory, disk and
-settings, with passwords removed.
-
-Whatever it says, do not reinstall or reformat the machine. What it finds is
-almost always one of the following.
-
-In order of how often it turns out to be the cause:
-
-1. **The disk is full.** `df -h /` shows 100% or close to it. MySQL cannot write
-   its logs, so it stops. Delete old backups and rotated logs, then start it
-   again:
-
-    ```bash
-    sudo journalctl --vacuum-time=2d
-    sudo systemctl start mysql
-    ```
-
-    Old `.sql.zst` / `.sql.gz` files under `backups/db/` are usually the largest
-    thing on the disk. Copy them off to the drive being migrated with before
-    deleting any, and keep the newest one.
-
-2. **The machine ran out of memory** and the kernel killed `mysqld`. The error
-   log or `journalctl -k` mentions "Out of memory" or "oom-kill". Close other
-   programs and start MySQL again. If it recurs, the machine needs more RAM or a
-   smaller `innodb_buffer_pool_size`.
-
-3. **A configuration file was edited** and MySQL rejects an option in it. The
-   error log names the exact line. Undo that edit.
-
-4. **The data directory lost its ownership**, usually after a copy or a restore
-   that was run as root. `ls -ld /var/lib/mysql` shows an owner other than
-   `mysql`. MySQL runs under its own account and cannot open files owned by
-   anyone else.
-
-5. **The data directory is damaged**, usually after an unclean shutdown. The
-   error log mentions InnoDB recovery or a specific table. This is the only case
-   that needs care, and it is worth getting help before touching
-   `innodb_force_recovery`. If the machine has a recent backup under
-   `backups/db/`, restoring that is normally faster and safer than repairing
-   damaged files.
-
-!!! danger "Last resort: move the disk, not the data"
-
-    If MySQL cannot be brought up at all, do not give up on the data. Shut the
-    old machine down and copy the whole of `/var/lib/mysql` off the disk, along
-    with `/etc/mysql` and the install folder (`/var/www/intelis`). Those files
-    are the database. A raw copy of them can be recovered on another machine,
-    but only if it is taken before anyone reinstalls the operating system.
+            Then repeat steps 9 to 11, adding the STS address and the token after
+            the folder path:
+
+            ```bash
+            sudo bash setup.sh --restore-from-backup-folder '<folder>' --sts-url https://sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
+            ```
+
+    ### Check the lab
+
+    13. Open InteLIS in the browser.
+    14. Log in with an administrator account from the old machine. Do not create
+        a new one. The restored database already holds the users, the lab
+        settings and all the data.
+    15. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    16. If the lab uses an STS, select **Force Remote Sync** and wait for it to finish.
+    17. If the lab uses the interfacing tool, restore its database too.
+
+        1. In a terminal, type `sudo cp` followed by a space. Do not press Enter
+           yet.
+        2. Drag the newest file starting with `interfacing-` from the `db`
+           folder onto the terminal. Then type ` /tmp/` and press Enter.
+        3. Restore it into the interfacing database:
+
+            ```bash
+            cd /var/www/intelis && sudo -u www-data php vendor/bin/db-tools restore --profile=interfacing /tmp/interfacing-*
+            ```
+
+        4. Delete the copy:
+
+            ```bash
+            sudo rm /tmp/interfacing-*
+            ```
+
+        If step 3 reports that the profile `interfacing` does not exist, set up
+        the interfacing tool first with
+        [Setting up the interfacing tool](setting-up-interfacing-tool.md), then
+        repeat step 3. If it reports that it cannot open an encrypted file,
+        contact support with the file name.
+
+=== "Old machine is dead"
+
+    Use the `backups` folder that was copied off the old machine.
+
+    ### Check the copied folder
+
+    1. Plug the USB drive with the copied folder into the new machine.
+    2. Open the `backups` folder in the **Files** app. Check it holds both of
+       these folders:
+
+        | Folder | What it holds |
+        | --- | --- |
+        | `db` | The database backups. |
+        | `config` | The old machine's settings. The key to the database backups is read from here. |
+
+        If `config` is missing, carry on. Step 8 shows what to do if the backup
+        does not open.
+
+    3. Open `db` and find the newest file starting with `vlsm-`. Its name gives
+       the date and time of the backup. For example, `vlsm-20260903-100002-…`
+       was made on 3 September 2026 at 10:00. The lab returns to that point.
+
+    Do not rename any file. Each file's name is part of its key.
+
+    ### Install and restore
+
+    4. Open a terminal and download the installer:
+
+        ```bash
+        cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)"
+        ```
+
+    5. Type this, followed by a space. Do not press Enter yet:
+
+        ```bash
+        sudo bash setup.sh --restore-from-backup-folder
+        ```
+
+    6. Drag the `backups` folder from the **Files** app onto the terminal window.
+       Its path appears after the command.
+
+        Instead of dragging, click the folder once and press **Ctrl+C**. Then
+        click in the terminal and press **Ctrl+Shift+V**. If the path has spaces
+        and no quotes around it, add `'` at both ends.
+
+    7. Press Enter, then answer the installer's questions:
+
+        | Question | Answer |
+        | --- | --- |
+        | Installation directory | Press Enter. |
+        | Which backup should be restored? | Press Enter. The newest backup is on top and already selected. |
+        | What is this machine? | **Lab machine (LIS)**. |
+        | Remote STS URL | The STS address the old machine used. Leave it empty if the lab has no STS. |
+        | New MySQL root password | A new password for this machine, typed twice. Write it down. |
+        | Run the one-off maintenance scripts? | Press Enter (No). |
+        | Is this correct? | Check the summary, then press Enter (Yes). |
+
+    8. Wait 10 to 20 minutes. The installer ends with `Setup complete`.
+
+        ??? failure "If it stops with `Failed to decrypt`"
+
+            The installer could not find the key. Either the `config` folder was
+            not copied, or the backup uses a key held by the STS. Ask the STS
+            administrator for a one-time recovery token. They run this on the STS:
+
+            ```bash
+            cd /var/www/intelis && sudo -u www-data composer backup-key-admin approve --lab <lab-id>
+            ```
+
+            Then repeat steps 5 to 7, adding the STS address and the token after
+            the folder path:
+
+            ```bash
+            sudo bash setup.sh --restore-from-backup-folder '<folder>' --sts-url https://sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
+            ```
+
+            If this machine cannot reach the STS, ask the STS administrator for
+            the recovery code instead. They get it with
+            `backup-key-admin show-code --lab <lab-id>`. Then run:
+
+            ```bash
+            sudo bash setup.sh --restore-from-backup-folder '<folder>' --encryption-password '<recovery-code>'
+            ```
+
+    ### Check the lab
+
+    9. Open InteLIS in the browser.
+    10. Log in with an administrator account from the old machine. Do not create
+        a new one. The restored database already holds the users, the lab
+        settings and all the data.
+    11. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    12. If the lab uses an STS, select **Force Remote Sync** and wait for it to finish.
+    13. If the lab uses the interfacing tool, restore its database too.
+
+        1. In a terminal, type `sudo cp` followed by a space. Do not press Enter
+           yet.
+        2. Drag the newest file starting with `interfacing-` from the `db`
+           folder onto the terminal. Then type ` /tmp/` and press Enter.
+        3. Restore it into the interfacing database:
+
+            ```bash
+            cd /var/www/intelis && sudo -u www-data php vendor/bin/db-tools restore --profile=interfacing /tmp/interfacing-*
+            ```
+
+        4. Delete the copy:
+
+            ```bash
+            sudo rm /tmp/interfacing-*
+            ```
+
+        If step 3 reports that the profile `interfacing` does not exist, set up
+        the interfacing tool first with
+        [Setting up the interfacing tool](setting-up-interfacing-tool.md), then
+        repeat step 3. If it reports that it cannot open an encrypted file,
+        contact support with the file name.
+
+=== "Backups on a server or share"
+
+    Use this when the old machine sent its backups to another Linux machine or a
+    Windows shared folder.
+
+    ### Fetch the backups
+
+    1. On the new machine, open a terminal and run:
+
+        ```bash
+        cd ~ && wget -O restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
+        sudo bash restore-backup.sh
+        ```
+
+    2. Answer where the backups are stored, and sign in when asked.
+    3. Choose the lab from the list.
+    4. Choose **Just the database backups**.
+    5. Press Enter to accept the folder it offers.
+    6. Wait for the copy to finish. The script ends by printing a command that
+       starts with `cd ~ && wget -O setup.sh`. Select that command and press
+       **Ctrl+Shift+C** to copy it.
+
+    ### Install and restore
+
+    7. Press **Ctrl+Shift+V** to paste the command, then press Enter.
+    8. Answer the installer's questions:
+
+        | Question | Answer |
+        | --- | --- |
+        | Installation directory | Press Enter. |
+        | Which backup should be restored? | Press Enter. The newest backup is on top and already selected. |
+        | What is this machine? | **Lab machine (LIS)**. |
+        | Remote STS URL | The STS address the old machine used. Leave it empty if the lab has no STS. |
+        | New MySQL root password | A new password for this machine, typed twice. Write it down. |
+        | Run the one-off maintenance scripts? | Press Enter (No). |
+        | Is this correct? | Check the summary, then press Enter (Yes). |
+
+    9. Wait 10 to 20 minutes. The installer ends with `Setup complete`.
+
+        ??? failure "If it stops with `Failed to decrypt`"
+
+            The backup uses a key held by the STS. Ask the STS administrator for a
+            one-time recovery token. They run this on the STS:
+
+            ```bash
+            cd /var/www/intelis && sudo -u www-data composer backup-key-admin approve --lab <lab-id>
+            ```
+
+            Then paste the command from step 6 again. Before pressing Enter, add
+            the STS address and the token at the end:
+
+            ```bash
+            --sts-url https://sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
+            ```
+
+    ### Check the lab
+
+    10. Open InteLIS in the browser.
+    11. Log in with an administrator account from the old machine. Do not create
+        a new one. The restored database already holds the users, the lab
+        settings and all the data.
+    12. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    13. If the lab uses an STS, select **Force Remote Sync** and wait for it to finish.
+    14. If the lab uses the interfacing tool, restore its database too.
+
+        1. Copy the newest interfacing backup out of the fetched folder:
+
+            ```bash
+            sudo bash -c 'cp "$(ls -t /root/intelis-restore/*/db/interfacing-* | head -1)" /tmp/'
+            ```
+
+        2. Restore it into the interfacing database:
+
+            ```bash
+            cd /var/www/intelis && sudo -u www-data php vendor/bin/db-tools restore --profile=interfacing /tmp/interfacing-*
+            ```
+
+        3. Delete the copy:
+
+            ```bash
+            sudo rm /tmp/interfacing-*
+            ```
+
+        If step 2 reports that the profile `interfacing` does not exist, set up
+        the interfacing tool first with
+        [Setting up the interfacing tool](setting-up-interfacing-tool.md), then
+        repeat step 2. If it reports that it cannot open an encrypted file,
+        contact support with the file name.

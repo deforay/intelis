@@ -1,57 +1,105 @@
 # Updating InteLIS on a Windows Machine
 
-InteLIS was previously called VLSM. The Windows install folder, the site
-hostname, and the database are still named `vlsm`.
+Update an InteLIS installation on a Windows machine that runs WampServer.
 
-## 0. Backup
+The installation lives in `C:\wamp64\www\vlsm` and opens at <http://vlsm>.
+WampServer must run PHP 8.4.
 
-Take the backup with the application's own command, not with a phpMyAdmin export.
-A phpMyAdmin `.zip` covers the main database only, leaves out the interfacing
-database, uploads, attachments and configuration, and is rejected by
-`setup.sh --db`, so a machine cannot be rebuilt from it.
+??? info "Why the folder is named `vlsm`"
 
-- Open a command prompt and run:
+    InteLIS was previously called VLSM. The Windows install folder, the site
+    hostname and the database still carry that name.
 
-  ```bat
-  cd C:\wamp64\www\vlsm
+**Follow the steps from top to bottom.**
 
-  set PATH=C:\wamp64\bin\php\php8.4.1;%PATH%
+## Back up
 
-  php composer.phar backup
-  ```
+1. Open `C:\wamp64\bin\php` in File Explorer. Note the name of the folder that
+   starts with `php8.4`, for example `php8.4.1`. The steps below call it
+   `php8.4.x`.
+2. Open **Command Prompt**.
+3. Take a backup. Replace `php8.4.x` with the folder name from step 1:
 
-- Confirm the dumps were written, and that their timestamps are from today:
+    ```bat
+    cd C:\wamp64\www\vlsm
+    set PATH=C:\wamp64\bin\php\php8.4.x;%PATH%
+    php composer.phar backup
+    ```
 
-  ```bat
-  dir /o-d C:\wamp64\www\vlsm\backups\db
-  ```
+4. List the backup files, newest first:
 
-  Expect a `vlsm-*` file, plus an `interfacing-*` file where the interfacing
-  database is in use.
+    ```bat
+    dir /o-d C:\wamp64\www\vlsm\backups\db
+    ```
 
-- Copy the `backups` folder to a drive or share that is not this machine. A backup
-  that only exists on the machine being updated protects nothing.
+    The top file carries today's date in its name, for example `20260918`.
 
-## 1. Download InteLIS
+    ??? failure "If the backup stops with an error, or no file carries today's date"
 
-- Obtain InteLIS from <https://github.com/deforay/intelis>
-- Extract the downloaded folder contents
-- Copy all files into `C:\wamp64\www\vlsm`
-- **Important:** Do not delete the existing folder. Copy the files into it.
+        Export the databases from phpMyAdmin instead:
 
-## 2. Completing the Update
+        1. Open <http://localhost/phpmyadmin> and log in as `root`.
+        2. Select the `vlsm` database in the left panel.
+        3. Select **Export**, then **Export** or **Go** at the bottom of the page.
+        4. Save the `.sql` file.
+        5. If the lab uses the interfacing tool, repeat steps 2 to 4 for the
+           `interfacing` database.
+        6. Copy the `C:\wamp64\www\vlsm\configs` folder next to the exported
+           files.
 
-Open a terminal and run the following composer commands:
+        Send the error from step 3 to support.
 
-```bat
-cd C:\wamp64\www\vlsm
+5. Copy the `C:\wamp64\www\vlsm\backups` folder to a USB drive or a network
+   share. Include the phpMyAdmin exports if step 4 needed them.
 
-set PATH=C:\wamp64\bin\php\php8.4.1;%PATH%
+## Replace the files
 
-php composer.phar install --no-dev
-php composer.phar dump-autoload -o
+6. Download the current release:
+   <https://github.com/deforay/intelis/archive/refs/heads/stable.zip>
+7. Extract the zip file. It holds one folder, `intelis-stable`.
+8. Open `intelis-stable`. Press **Ctrl+A**, then **Ctrl+C** to copy everything
+   inside it.
+9. Open `C:\wamp64\www\vlsm`. Press **Ctrl+V**, then choose
+   **Replace the files in the destination**.
 
-php composer.phar post-update
-```
+    Do not delete or rename `C:\wamp64\www\vlsm` first. It holds the
+    configuration, the uploaded files and the backups, and the zip file does
+    not contain them.
 
-Open <http://vlsm> in a browser to verify the update completed successfully.
+## Update
+
+10. In the Command Prompt window, install the packages:
+
+    ```bat
+    cd C:\wamp64\www\vlsm
+    set PATH=C:\wamp64\bin\php\php8.4.x;%PATH%
+    php composer.phar install --no-dev --no-scripts
+    php composer.phar dump-autoload -o
+    ```
+
+    ??? failure "If composer reports that the PHP version does not satisfy a requirement"
+
+        The `set PATH` line points to a PHP older than 8.4. Check the folder
+        name from step 1, then repeat step 10.
+
+11. Apply the database changes:
+
+    ```bat
+    php composer.phar post-update
+    ```
+
+    Wait until the prompt returns.
+
+## Check the update
+
+12. Open <http://vlsm> in the browser and log in.
+13. Check the page footer. It shows the version, for example `v5.7.72`. The
+    number matches the `"version"` line in `C:\wamp64\www\vlsm\composer.json`.
+
+    ??? failure "If the footer shows a red `DB ver.` warning"
+
+        The database changes did not finish. Run step 11 again and send its
+        whole output to support.
+
+14. If the lab uses an STS, select **Force Remote Sync** in the page footer and
+    wait for it to finish.

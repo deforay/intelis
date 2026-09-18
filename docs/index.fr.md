@@ -36,6 +36,29 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
     [:octicons-arrow-right-24: Installer sur
     Ubuntu](guides/installing-intelis-on-ubuntu.md)
 
+    [:octicons-arrow-right-24: Déménager un laboratoire ou remonter une
+    machine perdue](guides/migrating-ubuntu-machines.md)
+
+-   :material-lifebuoy:{ .lg .middle } __Quelque chose ne va pas__
+
+    ---
+
+    Commencer sur la machine par `intelis check`, ou `intelis doctor` quand le
+    site ne s'ouvre pas. Ces pages traitent les problèmes qu'elles signalent.
+    Elles sont disponibles en anglais uniquement.
+
+    [:octicons-arrow-right-24: MySQL ne démarre
+    pas](guides/mysql-will-not-start.md)
+
+    [:octicons-arrow-right-24: Le navigateur affiche du code
+    PHP](guides/browser-shows-php-code.md)
+
+    [:octicons-arrow-right-24: Corriger une erreur de
+    permission](guides/permission-denied-issue.md)
+
+    [:octicons-arrow-right-24: Corriger une incohérence de
+    collation](guides/fix-collation-issue.md)
+
 -   :material-printer-outline:{ .lg .middle } __Aide-mémoires imprimables__
 
     ---
@@ -53,21 +76,13 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
     [:octicons-arrow-right-24: Fiches pour la
     machine](job-aids/index.md#pour-la-machine)
 
--   :material-code-braces:{ .lg .middle } __Référence__
-
-    ---
-
-    Le trajet d'une requête dans le code, le niveau exigé d'une modification et
-    la documentation API interactive.
-
-    [:octicons-arrow-right-24: Architecture](ARCHITECTURE.md)
-
-    [:octicons-arrow-right-24: Référence API](api/)
-
 </div>
 
 ## Fréquemment consultés
 
-- [Restaurer depuis une sauvegarde](guides/restoring-from-backup.md): remettre les données en place, ou reconstruire une machine hors service
+- [Restaurer depuis une sauvegarde](guides/restoring-from-backup.md): remettre les données en place sur une machine où InteLIS fonctionne encore
 - [Statuts des échantillons](user-guides/sample-statuses.md): chaque statut et sa signification
 - [Scripts de maintenance](guides/maintenance.md): surveillance des services, ressources, db-tools, nettoyage et tâches planifiées
+
+Pour les développeurs : [Architecture](ARCHITECTURE.md), [Standards
+d'ingénierie](engineering-standards.md) et la [référence API](api/).
