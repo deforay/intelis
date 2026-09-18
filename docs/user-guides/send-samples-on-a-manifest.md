@@ -85,9 +85,9 @@ test's group.
 
         ??? failure "If Edit is greyed out"
 
-            The manifest is marked as dispatched and can no longer change. If it
-            is wrong, tell the receiving lab. The lab can reject the affected
-            samples on arrival.
+            The testing lab has already received the package, so the manifest
+            can no longer change. If it is wrong, tell the testing lab. The lab
+            can reject the affected samples.
 
     3. To add samples, move them from the left-hand list to the right-hand list.
        To narrow the left-hand list, change the filters and select **Search**.
@@ -100,8 +100,13 @@ test's group.
 
     ??? info "About the Manifest Status field"
 
-        The edit screen shows a **Manifest Status** field set to **Pending**. The
-        field is locked on this screen.
+        **Manifest Status** changes by itself and is locked on this screen:
+
+        | Status | Set when |
+        | --- | --- |
+        | **Pending** | The manifest is created. |
+        | **Dispatch** | The manifest is printed for the first time. |
+        | **Received** | The testing lab takes in the package. From then on, the manifest cannot be edited. |
 
 === "Move manifests to another lab"
 

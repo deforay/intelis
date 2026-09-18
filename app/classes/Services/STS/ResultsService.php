@@ -174,6 +174,7 @@ final class ResultsService
         $localDbFieldArray = $this->commonService->getTableFieldsAsArray($this->tableName, $unwantedColumns);
 
         $sampleCodes = $facilityIds = [];
+        $savedPrimaryKeys = [];
         $labId = null;
 
         if (JsonUtility::isJSON($jsonResponse)) {
@@ -198,6 +199,7 @@ final class ResultsService
                     }
                     $this->db->beginTransaction();
                     $id = false;
+                    $primaryKeyValue = null;
                     $counter++;
                     if ($testType == "covid19" || $testType == "generic-tests" || $testType == "tb") {
                         $originalLISRecord = $dataFromLIS['form_data'] ?? [];
@@ -337,6 +339,9 @@ final class ResultsService
                         $sampleCodes[] = $resultFromLab['sample_code'];
                         $facilityIds[] = $resultFromLab['facility_id'];
                     }
+                    if ($id !== false && !empty($primaryKeyValue)) {
+                        $savedPrimaryKeys[] = $primaryKeyValue;
+                    }
                     $this->db->commitTransaction();
                 } catch (Throwable $e) {
                     $this->db->rollbackTransaction();
@@ -365,6 +370,18 @@ final class ResultsService
                     QueryLoggerUtility::log($errorId . " - " . $this->db->getLastError());
                     QueryLoggerUtility::log($errorId . " - " . $this->db->getLastQuery());
                 }
+            }
+
+            // A lab activates a collection manifest on its own machine, which
+            // holds no copy of it, so the STS learns the package arrived only
+            // from these samples coming back with a reception date.
+            try {
+                $this->testRequestsService->markManifestsReceivedForSamples($testType, $savedPrimaryKeys);
+            } catch (Throwable $e) {
+                LoggerUtility::logError('Could not mark manifests received: ' . $e->getMessage(), [
+                    'test_type' => $this->testType,
+                    'synced_from_lab_id' => $labId,
+                ]);
             }
         }
 

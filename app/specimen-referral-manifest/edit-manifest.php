@@ -6,6 +6,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 
 $title = _translate("Edit Specimen Referral Manifest");
 require_once APPLICATION_PATH . '/header.php';
@@ -41,8 +42,12 @@ $m = $module = $_GET['t'] ?? 'vl';
 $pQuery = "SELECT * FROM specimen_manifests WHERE manifest_id = ?";
 $pResult = $db->rawQueryOne($pQuery, [$id]);
 
-if ($pResult['manifest_status'] == 'dispatch') {
+// Once the lab has the package, its contents are settled. A dispatched manifest
+// stays editable: printing marks it dispatched, and a manifest is often
+// corrected and printed again before it leaves.
+if (($pResult['manifest_status'] ?? null) === TestRequestsService::MANIFEST_RECEIVED) {
 	header("Location:/specimen-referral-manifest/view-manifests.php?t=" . $module);
+	exit;
 }
 
 $testingLabs = $facilitiesService->getTestingLabs($m);
@@ -189,9 +194,9 @@ if ($module == 'generic-tests') {
 										title="<?= _htmlTranslate("Please select manifest status"); ?>"
 										readonly="readonly">
 										<option value="">-- Select --</option>
-										<option value="pending" <?php echo ($pResult['manifest_status'] == 'pending') ? "selected='selected'" : ''; ?>>Pending</option>
-										<option value="dispatch" <?php echo ($pResult['manifest_status'] == 'dispatch') ? "selected='selected'" : ''; ?>>Dispatch</option>
-										<option value="received" <?php echo ($pResult['manifest_status'] == 'received') ? "selected='selected'" : ''; ?>>Received</option>
+										<option value="pending" <?php echo ($pResult['manifest_status'] == 'pending') ? "selected='selected'" : ''; ?>><?= _translate("Pending"); ?></option>
+										<option value="dispatch" <?php echo ($pResult['manifest_status'] == 'dispatch') ? "selected='selected'" : ''; ?>><?= _translate("Dispatch"); ?></option>
+										<option value="received" <?php echo ($pResult['manifest_status'] == 'received') ? "selected='selected'" : ''; ?>><?= _translate("Received"); ?></option>
 									</select>
 								</div>
 							</div>
