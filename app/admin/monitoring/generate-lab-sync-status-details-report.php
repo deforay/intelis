@@ -42,7 +42,7 @@ $writer->addRow(Row::fromValues($headings));
 foreach ($db->rawQuery($saved['query'], $saved['params'] ?? []) as $aRow) {
     $writer->addRow(Row::fromValues([
         $aRow['facility_name'],
-        $saved['testType'] ?? '',
+        $saved['testName'] ?? '',
         $aRow['province'],
         $aRow['district'],
         (int) $aRow['requestsSent'],
