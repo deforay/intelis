@@ -71,7 +71,6 @@ try {
     if (!empty($data['manifests']) && is_array($data['manifests'])) {
         // Process manifests for this module (TB for now; later others will reuse the same call)
         $manifestsStats = $stsResultsService->receiveReferralManifests($testType, $data['manifests']);
-        $payload['manifests'] = $manifestsStats;
     }
 
 
@@ -112,6 +111,10 @@ try {
     ];
     if ($contentLength > 0) {
         $responseHeaders['x-bytes-processed'] = $contentLength;
+    }
+    // The body stays a plain list of sample codes: older LIS senders read it as one.
+    if (!empty($data['manifests'])) {
+        $responseHeaders['x-manifests'] = http_build_query($manifestsStats, '', '; ');
     }
 
     echo ApiService::generateJsonResponse($payload, $request, $responseHeaders);

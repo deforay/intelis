@@ -1407,7 +1407,7 @@ function fnShowHide(iCol) {
 
 			if (remoteSync && remoteURL != null && remoteURL != '') {
 				var jqxhr = $.ajax({
-					url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=vl",
+					url: "/tasks/remote/results-sender.php?sampleCode=" + encodeURIComponent(sampleCode) + "&forceSyncModule=vl",
 				})
 					.done(function (data) {
 						//console.log(data);

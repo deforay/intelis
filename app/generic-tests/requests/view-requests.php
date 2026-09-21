@@ -570,7 +570,7 @@ $sampleStatusData = $general->getSampleStatus();
 
 			if (remoteSync && remoteURL != null && remoteURL != '') {
 				var jqxhr = $.ajax({
-					url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=vl",
+					url: "/tasks/remote/results-sender.php?sampleCode=" + encodeURIComponent(sampleCode) + "&forceSyncModule=generic-tests",
 				})
 					.done(function (data) {
 						////console.log(data);

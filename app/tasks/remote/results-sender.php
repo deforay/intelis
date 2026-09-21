@@ -465,9 +465,19 @@ $nextBatchSize = static function () use (&$chunkSize): int {
     return max(1, $chunkSize);
 };
 
-// Web fallback
+// Web fallback: the request pages' "sync this sample" button passes both values.
+// Without the module, the sample filter never applies and every module syncs.
+if (!$cliMode) {
+    $forceSyncModule ??= is_string($_GET['forceSyncModule'] ?? null) ? $_GET['forceSyncModule'] : null;
+    $sampleCode ??= is_string($_GET['sampleCode'] ?? null) ? trim($_GET['sampleCode']) : null;
+}
 $forceSyncModule = $forceSyncModule ? strtolower(trim($forceSyncModule)) : null;
-$sampleCode ??= $_GET['sampleCode'] ?? null;
+if ($forceSyncModule !== null && !in_array($forceSyncModule, TestsService::getActiveTests() ?: array_keys(TestsService::getTestTypes()), true)) {
+    LoggerUtility::logError("Results sync requested for an inactive or unknown module: $forceSyncModule");
+    exit(0);
+}
+// Exact match on a quoted literal: the value can come from the query string.
+$sampleCodeClause = static fn(string $column): string => " AND $column = " . $db->quote($sampleCode);
 
 // If module is forced, override modules config
 if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0') {
@@ -523,7 +533,7 @@ try {
                 AND IFNULL(generic.sample_code, '') != ''";
 
         if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "generic-tests" && !empty($sampleCode)) {
-            $genericQuery .= " AND generic.sample_code LIKE '$sampleCode'";
+            $genericQuery .= $sampleCodeClause('generic.sample_code');
         }
 
         if (null !== $syncSinceDate) {
@@ -602,7 +612,7 @@ try {
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
                 [$jsonResponse, $chunkSize] = handleApiResponse(
-                    $apiResponse, $cliMode, $io, $chunkCount, 'generic-tests', $maxChunkSize, microtime(true) - $tPost
+                    $apiResponse, $cliMode, $io, $chunkSize, 'generic-tests', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
@@ -687,7 +697,7 @@ try {
             AND IFNULL(vl.sample_code, '') != ''";
 
         if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "vl" && !empty($sampleCode)) {
-            $vlQuery .= " AND sample_code LIKE '$sampleCode'";
+            $vlQuery .= $sampleCodeClause('vl.sample_code');
         }
         if (null !== $syncSinceDate) {
             $vlQuery .= " AND vl.last_modified_datetime >= '$syncSinceDate'";
@@ -751,7 +761,7 @@ try {
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
                 [$jsonResponse, $chunkSize] = handleApiResponse(
-                    $apiResponse, $cliMode, $io, $chunkCount, 'vl', $maxChunkSize, microtime(true) - $tPost
+                    $apiResponse, $cliMode, $io, $chunkSize, 'vl', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
@@ -836,7 +846,7 @@ try {
                 AND IFNULL(vl.sample_code, '') != ''";
 
         if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "eid" && !empty($sampleCode)) {
-            $eidQuery .= " AND sample_code LIKE '$sampleCode'";
+            $eidQuery .= $sampleCodeClause('vl.sample_code');
         }
         if (null !== $syncSinceDate) {
             $eidQuery .= " AND vl.last_modified_datetime >= '$syncSinceDate'";
@@ -900,7 +910,7 @@ try {
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
                 [$jsonResponse, $chunkSize] = handleApiResponse(
-                    $apiResponse, $cliMode, $io, $chunkCount, 'eid', $maxChunkSize, microtime(true) - $tPost
+                    $apiResponse, $cliMode, $io, $chunkSize, 'eid', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
@@ -985,7 +995,7 @@ try {
                 AND IFNULL(c19.sample_code, '') != ''";
 
         if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "covid19" && !empty($sampleCode)) {
-            $covid19Query .= " AND sample_code LIKE '$sampleCode'";
+            $covid19Query .= $sampleCodeClause('c19.sample_code');
         }
         if (null !== $syncSinceDate) {
             $covid19Query .= " AND c19.last_modified_datetime >= '$syncSinceDate'";
@@ -1065,7 +1075,7 @@ try {
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
                 [$jsonResponse, $chunkSize] = handleApiResponse(
-                    $apiResponse, $cliMode, $io, $chunkCount, 'covid19', $maxChunkSize, microtime(true) - $tPost
+                    $apiResponse, $cliMode, $io, $chunkSize, 'covid19', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
@@ -1150,7 +1160,7 @@ try {
                 AND IFNULL(hep.sample_code, '') != ''";
 
         if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "hepatitis" && !empty($sampleCode)) {
-            $hepQuery .= " AND sample_code LIKE '$sampleCode'";
+            $hepQuery .= $sampleCodeClause('hep.sample_code');
         }
         if (null !== $syncSinceDate) {
             $hepQuery .= " AND hep.last_modified_datetime >= '$syncSinceDate'";
@@ -1213,7 +1223,7 @@ try {
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
                 [$jsonResponse, $chunkSize] = handleApiResponse(
-                    $apiResponse, $cliMode, $io, $chunkCount, 'hepatitis', $maxChunkSize, microtime(true) - $tPost
+                    $apiResponse, $cliMode, $io, $chunkSize, 'hepatitis', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
@@ -1301,7 +1311,7 @@ try {
             AND IFNULL(tb.sample_code, '') != ''";
 
         if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "tb" && !empty($sampleCode)) {
-            $tbQuery .= " AND sample_code LIKE '$sampleCode'";
+            $tbQuery .= $sampleCodeClause('tb.sample_code');
         }
         if (null !== $syncSinceDate) {
             $tbQuery .= " AND tb.last_modified_datetime >= '$syncSinceDate'";
@@ -1376,7 +1386,7 @@ try {
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
                 [$jsonResponse, $chunkSize] = handleApiResponse(
-                    $apiResponse, $cliMode, $io, $chunkCount, 'tb', $maxChunkSize, microtime(true) - $tPost
+                    $apiResponse, $cliMode, $io, $chunkSize, 'tb', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
@@ -1461,7 +1471,7 @@ try {
             AND IFNULL(cd4.sample_code, '') != ''";
 
         if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "cd4" && !empty($sampleCode)) {
-            $cd4Query .= " AND sample_code LIKE '$sampleCode'";
+            $cd4Query .= $sampleCodeClause('cd4.sample_code');
         }
         if (null !== $syncSinceDate) {
             $cd4Query .= " AND cd4.last_modified_datetime >= '$syncSinceDate'";
@@ -1525,7 +1535,7 @@ try {
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
                 [$jsonResponse, $chunkSize] = handleApiResponse(
-                    $apiResponse, $cliMode, $io, $chunkCount, 'cd4', $maxChunkSize, microtime(true) - $tPost
+                    $apiResponse, $cliMode, $io, $chunkSize, 'cd4', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
