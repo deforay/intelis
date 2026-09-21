@@ -3,6 +3,13 @@
 Send a copy of InteLIS to another machine or drive, automatically, every 8 hours
 and after every restart. The copy survives if the InteLIS machine fails.
 
+!!! info "Storage needed"
+
+    Use a backup machine or drive with at least 1 TB of space. That covers one
+    STS and up to about 30 LIS machines, with 5 weeks of database history. For
+    a larger network, allow 50 GB for each STS and 20 GB for each LIS machine,
+    plus 30 GB for the operating system, and keep a quarter of the disk free.
+
 **Choose where the backups go, then follow its steps from top to bottom.**
 
 === "Another Linux machine"
