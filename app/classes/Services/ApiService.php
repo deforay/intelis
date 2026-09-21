@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Promise\Create;
 use Psr\Http\Message\ResponseInterface;
 use Exception;
 use Throwable;
@@ -14,12 +15,16 @@ use App\Utilities\MiscUtility;
 use GuzzleHttp\RequestOptions;
 use App\Utilities\LoggerUtility;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ResponseException;
+use GuzzleHttp\Exception\NetworkException;
+use GuzzleHttp\Exception\ConnectException;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ApiService
 {
     protected ?Client $client = null;
     protected ?string $bearerToken = null;
+    /** @var array<string, mixed> */
     protected array $headers = [];
 
     public function __construct(protected CommonService $commonService, ?Client $client = null, protected int $maxRetries = 3, protected int $delayMultiplier = 1000, protected float $jitterFactor = 0.2, protected int $maxRetryDelay = 10000)
@@ -29,8 +34,9 @@ final class ApiService
 
         // Set default headers
         $this->headers = [
-            'X-Instance-ID' => $this->commonService->getInstanceId(),
-            'X-Requestor-Version' => VERSION ?? $this->commonService->getAppVersion()
+            // A new installation can have no instance ID yet. PSR-7 requires a string.
+            'X-Instance-ID' => (string) $this->commonService->getInstanceId(),
+            'X-Requestor-Version' => (string) (defined('VERSION') ? VERSION : $this->commonService->getAppVersion())
         ];
     }
 
@@ -44,8 +50,15 @@ final class ApiService
         ]);
     }
 
+    /** @param array<string, mixed> $headers */
     public function setHeaders(array $headers): void
     {
+        // Preserve Guzzle 7's scalar header coercion at our public boundary.
+        // Leave invalid values to PSR-7 validation rather than hiding bad input.
+        $toString = static fn ($value) => is_scalar($value) || $value === null ? (string) $value : $value;
+        foreach ($headers as $name => $value) {
+            $headers[$name] = is_array($value) ? array_map($toString, $value) : $toString($value);
+        }
         $this->headers = array_merge($this->headers, $headers);
     }
 
@@ -82,30 +95,37 @@ final class ApiService
     }
 
 
-    private function retryDecider()
+    private function retryDecider(): callable
     {
         return function ($retries, $request, $response, $exception): bool {
             if ($retries >= $this->maxRetries) {
                 return false;
             }
-            if ($exception instanceof RequestException) {
-                if ($response) {
-                    $statusCode = $response->getStatusCode();
-                    // Retry on server errors (5xx) or rate limiting errors (429)
-                    return $statusCode >= 500 || $statusCode === 429;
-                }
+            // Retry middleware sees HTTP responses before http_errors turns them
+            // into exceptions. Transport rejections may carry a response separately.
+            $response ??= $exception instanceof ResponseException ? $exception->getResponse() : null;
+            if ($response !== null) {
+                $statusCode = $response->getStatusCode();
+                return $statusCode >= 500 || $statusCode === 429;
+            }
+            if ($exception instanceof ConnectException) {
                 return true;
+            }
+            // A lost response does not prove a POST failed to reach the server.
+            // Only retry ambiguous network failures for read-only requests.
+            if ($exception instanceof NetworkException) {
+                return in_array($request->getMethod(), ['GET', 'HEAD'], true);
             }
             return false;
         };
     }
 
-    private function retryDelay()
+    private function retryDelay(): callable
     {
         return function ($retries) {
             $delay = $this->delayMultiplier * (2 ** $retries);
             $jitter = random_int(0, (int) ($this->jitterFactor * 1000)) / 1000;
-            return min($this->maxRetryDelay, $delay * (1 + $jitter));
+            return (int) min($this->maxRetryDelay, $delay * (1 + $jitter));
         };
     }
 
@@ -136,6 +156,9 @@ final class ApiService
     }
 
 
+    /**
+     * @return array{httpStatusCode: int, body: ?string, headers: array<string, string>}|string|null|PromiseInterface<mixed, mixed>
+     */
     public function post($url, $payload, $gzip = false, $returnWithStatusCode = false, $async = false): array|string|null|PromiseInterface
     {
         $options = [
@@ -194,19 +217,23 @@ final class ApiService
                 }
             }
         } catch (RequestException $e) {
-            // Handle request exceptions
-            $responseBody = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null;
+            if ($async) {
+                return Create::rejectionFor($e);
+            }
+            // Guzzle 8 only exposes a response on ResponseException.
+            $response = $e instanceof ResponseException ? $e->getResponse() : null;
+            $responseBody = $response?->getBody()->getContents();
             $this->logError($e, "Unable to post to $url. Server responded with: " . ($responseBody ?? 'No response body'));
 
             if ($returnWithStatusCode) {
                 $headers = [];
-                if ($e->getResponse() instanceof ResponseInterface) {
-                    foreach ($e->getResponse()->getHeaders() as $name => $values) {
+                if ($response !== null) {
+                    foreach ($response->getHeaders() as $name => $values) {
                         $headers[strtolower($name)] = implode(', ', $values);
                     }
                 }
                 $returnPayload = [
-                    'httpStatusCode' => $e->getResponse() instanceof ResponseInterface ? $e->getResponse()->getStatusCode() : 500,
+                    'httpStatusCode' => $response !== null ? $response->getStatusCode() : 500,
                     'body'           => $responseBody,
                     'headers'        => $headers,
                 ];
@@ -216,7 +243,8 @@ final class ApiService
         } catch (Throwable $e) {
             // Log other errors
             $this->logError($e, "Unable to post to $url");
-            $returnPayload = null;
+            // Async callers attach then()/otherwise() even when request setup fails.
+            $returnPayload = $async ? Create::rejectionFor($e) : null;
         }
 
         return $returnPayload;
@@ -301,11 +329,12 @@ final class ApiService
             $apiResponse = $response->getBody()->getContents();
         } catch (RequestException $e) {
             // Extract the response body from the exception, if available
-            $responseBody = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null;
+            $response = $e instanceof ResponseException ? $e->getResponse() : null;
+            $responseBody = $response?->getBody()->getContents();
             // Only a real response carries a real status. Without one this was a
             // transport failure, and reporting it as 500 would let a caller
             // treat "never left the machine" as "the server said no".
-            $statusCode = $e->getResponse() instanceof ResponseInterface ? $e->getResponse()->getStatusCode() : null;
+            $statusCode = $response !== null ? $response->getStatusCode() : null;
             // Log the error along with the response body
             $this->logError($e, "Unable to post to $url. Server responded with " . ($statusCode ?? 'no response') . " : " . ($responseBody ?? 'No response body'));
 
@@ -594,12 +623,13 @@ final class ApiService
                 ? ['httpStatusCode' => $response->getStatusCode(), 'body' => $responseBody]
                 : $responseBody;
         } catch (RequestException $e) {
-            $responseBody = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null;
+            $response = $e instanceof ResponseException ? $e->getResponse() : null;
+            $responseBody = $response?->getBody()->getContents();
             $this->logError($e, "Unable to GET $url. Server responded with: " . ($responseBody ?? 'No response body'));
 
             $returnPayload = $returnWithStatusCode
                 ? [
-                    'httpStatusCode' => $e->getResponse() instanceof ResponseInterface ? $e->getResponse()->getStatusCode() : 500,
+                    'httpStatusCode' => $response !== null ? $response->getStatusCode() : 500,
                     'body' => $responseBody,
                 ]
                 : $responseBody;
