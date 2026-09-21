@@ -62,6 +62,66 @@ final class ResultSyncBatchTest extends TestCase
         );
     }
 
+    public function testSizeChangesApplyToTheNextFetchWithoutSkippingOrRepeatingIds(): void
+    {
+        $selection = $this->selection(8);
+        $size = 3;
+        $chunks = $selection->chunks(static function () use (&$size): int {
+            return $size;
+        });
+        $sent = [];
+        foreach ($chunks as $index => $chunk) {
+            $sent[] = array_column($chunk, 'id');
+            $size = $index === 0 ? 1 : 4;
+        }
+        self::assertSame([[1, 2, 3], [4], [5, 6, 7, 8]], $sent);
+        self::assertSame($sent, $this->fetches);
+    }
+
+    public function testBulkPreparationRunsOncePerConsumedBatchAndPreservesLegacyLists(): void
+    {
+        $selection = $this->selection(5);
+        $calls = [];
+        $chunks = $selection->chunks(2, prepareBatch: static function (array $rows) use (&$calls): array {
+            $calls[] = array_column($rows, 'id');
+            $children = [];
+            foreach ($rows as $row) {
+                $children[$row['id']][99] = ['test_id' => 99, 'result' => 'negative'];
+            }
+            return ResultSyncBatch::nestedPayload($rows, $children, 'id');
+        });
+        self::assertSame([], $calls);
+        $expected = [];
+        foreach ($this->records as $row) {
+            $expected[$row['unique_id']] = [
+                'form_data' => $row,
+                'data_from_tests' => [['test_id' => 99, 'result' => 'negative']],
+            ];
+        }
+        self::assertSame(array_slice($expected, 0, 2, true), $chunks->current());
+        self::assertSame([[1, 2]], $calls);
+        self::assertSame(array_chunk($expected, 2, true), iterator_to_array($chunks));
+        self::assertSame([[1, 2], [3, 4], [5]], $calls);
+        self::assertGreaterThanOrEqual(0, $selection->timings()['readMs']);
+        self::assertGreaterThanOrEqual(0, $selection->timings()['prepareMs']);
+    }
+
+    public function testCovidChildPayloadKeepsItsParentWrapperAndEmptyChildrenStayEmpty(): void
+    {
+        $row = ['covid19_id' => 42, 'unique_id' => 'uuid-42'];
+        $tests = [8 => ['test_id' => 8, 'result' => 'negative']];
+        self::assertSame(['uuid-42' => [
+            'form_data' => $row,
+            'data_from_tests' => [42 => $tests],
+        ]], ResultSyncBatch::nestedPayload([$row], [42 => $tests], 'covid19_id', wrapParentId: true));
+        foreach ([false, true] as $wrap) {
+            self::assertSame(['uuid-42' => [
+                'form_data' => $row,
+                'data_from_tests' => [],
+            ]], ResultSyncBatch::nestedPayload([$row], [], 'covid19_id', $wrap));
+        }
+    }
+
     public function testNestedPayloadsAreLoadedOnlyForTheCurrentChunkAndKeepUniqueIds(): void
     {
         $selection = $this->selection(5);

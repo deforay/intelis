@@ -72,37 +72,99 @@ final class ResultSyncBatch implements Countable
         return $this->fetch(array_slice($this->ids, 0, 10));
     }
 
-    /**
-     * @param null|callable(Row): mixed $childTests
-     * @return \Iterator<array<array-key, Row>>
-     */
-    public function chunks(int $size, ?callable $childTests = null): \Iterator
+    /** @var array{readMs: float, prepareMs: float} */
+    private array $timings = ['readMs' => 0.0, 'prepareMs' => 0.0];
+
+    /** @return array{readMs: float, prepareMs: float} */
+    public function timings(): array
     {
-        $rows = $this->rows($size);
-        if ($childTests !== null) {
-            $rows = \iter\map(
-                static fn(array $row): array => [
-                    'form_data' => $row,
-                    'data_from_tests' => $childTests($row),
-                ],
-                \iter\reindex(static fn(array $row) => $row['unique_id'], $rows)
-            );
-        }
-        // Preserve the flat numeric keys and nested unique_id keys used on the wire.
-        return \iter\chunk($rows, $size, true);
+        return $this->timings;
     }
 
-    /** @return Generator<int, Row> */
-    private function rows(int $size): Generator
-    {
-        $index = 0;
-        // Never OFFSET over data_sync: acknowledgments remove rows from that selection.
-        // A fixed ID snapshot also leaves newly arriving results for the next run.
-        foreach (\iter\chunk($this->ids, $size) as $ids) {
-            foreach ($this->fetch(array_values($ids)) as $row) {
-                yield $index++ => $row;
+    /**
+     * A callable size is read after each yield, so response hints affect the next batch.
+     * The existing per-row callback remains supported for other callers.
+     *
+     * @param int|callable(): int $size
+     * @param null|callable(Row): mixed $childTests
+     * @param null|callable(array<int, Row>): array<array-key, Row> $prepareBatch
+     * @return Generator<int, array<array-key, Row>>
+     */
+    public function chunks(
+        int|callable $size,
+        ?callable $childTests = null,
+        ?callable $prepareBatch = null
+    ): Generator {
+        $offset = $index = 0;
+        do {
+            $limit = is_int($size) ? $size : $size();
+            if ($limit < 1) {
+                throw new InvalidArgumentException('Chunk size must be positive.');
             }
+            $start = hrtime(true);
+            $rows = [];
+            // Offset into the fixed ID snapshot, never into a shrinking SQL selection.
+            while (count($rows) < $limit && $offset < count($this->ids)) {
+                $ids = array_slice($this->ids, $offset, $limit - count($rows));
+                $offset += count($ids);
+                foreach ($this->fetch($ids) as $row) {
+                    $rows[$index++] = $row;
+                }
+            }
+            $readMs = (hrtime(true) - $start) / 1e6;
+            if ($rows === []) {
+                break;
+            }
+            $start = hrtime(true);
+            if ($prepareBatch !== null) {
+                $rows = $prepareBatch($rows);
+            } elseif ($childTests !== null) {
+                $rows = \iter\toArrayWithKeys(\iter\map(
+                    static fn(array $row): array => [
+                        'form_data' => $row,
+                        'data_from_tests' => $childTests($row),
+                    ],
+                    \iter\reindex(static fn(array $row) => $row['unique_id'], $rows)
+                ));
+            }
+            $this->timings = ['readMs' => $readMs, 'prepareMs' => (hrtime(true) - $start) / 1e6];
+            yield $rows;
+        } while ($offset < count($this->ids));
+    }
+
+    /**
+     * Preserve the v2 child-data shapes when switching from scalar to bulk reads.
+     * COVID-19 includes a parent-ID wrapper; generic and TB send lists of child rows.
+     *
+     * @param array<int, Row> $rows
+     * @param array<array-key, array<array-key, Row>> $children
+     * @return array<array-key, Row>
+     */
+    public static function nestedPayload(
+        array $rows,
+        array $children,
+        string $idField,
+        bool $wrapParentId = false
+    ): array {
+        $payload = [];
+        foreach ($rows as $row) {
+            $id = $row[$idField];
+            if (!is_int($id) && !is_string($id)) {
+                throw new UnexpectedValueException('Result row has an invalid parent ID.');
+            }
+            $tests = $children[$id] ?? [];
+            $key = $row['unique_id'];
+            if ($key !== null && !is_int($key) && !is_string($key)) {
+                throw new UnexpectedValueException('Result row has an invalid unique ID.');
+            }
+            $payload[$key ?? ''] = [
+                'form_data' => $row,
+                'data_from_tests' => $wrapParentId
+                    ? ($tests === [] ? [] : [$id => $tests])
+                    : array_values($tests),
+            ];
         }
+        return $payload;
     }
 
     /**
