@@ -327,7 +327,7 @@ final class ResultsService
                     if ($testType == "covid19") {
                         $this->commonService->syncSubTable('covid19_tests', 'covid19_id', $primaryKeyValue, $dataFromLIS['data_from_tests'] ?? null, ['test_id', 'data_sync'], [], true);
                     } elseif ($testType == "generic-tests") {
-                        $this->commonService->syncSubTable('generic_test_results', 'generic_id', $primaryKeyValue, $dataFromLIS['data_from_tests'] ?? null, ['generic_test_result_id', 'data_sync'], [], true);
+                        $this->commonService->syncSubTable('generic_test_results', 'generic_id', $primaryKeyValue, $dataFromLIS['data_from_tests'] ?? null, ['test_id', 'data_sync'], [], true);
                     } elseif ($testType == 'tb') {
                         $this->commonService->syncSubTable('tb_tests', 'tb_id', $primaryKeyValue, $dataFromLIS['data_from_tests'] ?? null, ['tb_test_id', 'data_sync'], [], true);
                     }

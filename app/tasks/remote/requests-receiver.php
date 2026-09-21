@@ -1189,7 +1189,7 @@ try {
                     $genericId = null;
                 }
 
-                $general->syncSubTable('generic_test_results', 'generic_id', $genericId, $remoteData['data_from_tests'] ?? null, ['generic_test_result_id', 'data_sync'], [], true);
+                $general->syncSubTable('generic_test_results', 'generic_id', $genericId, $remoteData['data_from_tests'] ?? null, ['test_id', 'data_sync'], [], true);
 
                 if ($id === true || $id > 0) {
                     $successCounter++;
