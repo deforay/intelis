@@ -442,12 +442,37 @@ print success "Restoring from ${CHOSEN}"
 
 choose what db "What should be copied back?" \
   "db:Just the database backups:The right choice for rebuilding a machine." \
-  "all:Everything, including uploaded files and attachments:Much larger, and slower over a link."
+  "all:Everything, including uploaded files and attachments:Much larger, and slower over a link." \
+  "older:An older database backup (choose a date):From the dated history kept at the backup, for undoing a mistake noticed late."
 # shellcheck disable=SC2154  # set by `choose` above, via printf -v
 # "Just the database" still brings the config backups: they are small, and they
 # hold the old database password that opens an encrypted dump on a new machine.
+HIST_FILE=""
 case "$what" in
   db) SUBPATHS=("/backups/db:db" "/backups/config:config") ;;
+  older)
+    # .history/ holds one dump per day, then one per week (see remote-backup.sh).
+    # Only the main database is offered; an interfacing dump can be restored by
+    # hand from the same folder.
+    q_hist="$(printf '%q' "${SRC_DIR}/.history/db")"
+    mapfile -t HIST < <(src_exec "ls -1 ${q_hist} 2>/dev/null" | tr -d '\r' \
+      | grep -E '^[A-Za-z0-9._-]+-[0-9]{8}-[0-9]{6}.*\.sql(\.gz|\.zst|\.zip)?(\.gpg)?$' \
+      | grep -v -e '^interfacing-' -e '^pre-restore-' | sort -r || true)
+    if [ "${#HIST[@]}" -eq 0 ]; then
+      print error "There is no dated history in this backup yet. It starts with the first backup made by an updated InteLIS."
+      print info  "Run this again and choose 'Just the database backups' for the newest backup."
+      exit 1
+    fi
+    HIST_OPTIONS=()
+    for f in "${HIST[@]}"; do
+      stamp="$(printf '%s' "$f" | grep -oE -- '-[0-9]{8}-[0-9]{6}' | head -1)"
+      d="${stamp:1:8}"; t="${stamp:10:4}"
+      # ':' separates the fields of a menu row, so the time is written 18h00.
+      HIST_OPTIONS+=("${f}:${d:0:4}-${d:4:2}-${d:6:2} at ${t:0:2}h${t:2:2}:${f}")
+    done
+    choose HIST_FILE "${HIST[0]}" "Which date should be restored?" "${HIST_OPTIONS[@]}"
+    SUBPATHS=("/.history/config:config")
+    ;;
   *)  SUBPATHS=(":") ;;
 esac
 
@@ -484,6 +509,19 @@ for pair in "${SUBPATHS[@]}"; do
       ;;
   esac
 done
+if [ -n "$HIST_FILE" ]; then
+  mkdir -p "${STAGING}/db"
+  if [ "$SRC_MODE" = "ssh" ]; then
+    ssh_cmd="ssh -o ControlPath=${SSH_CONTROL} -o StrictHostKeyChecking=accept-new -p ${SSH_PORT}"
+    [ -n "$SSH_KEY" ] && [ -f "$SSH_KEY" ] && ssh_cmd="${ssh_cmd} -i ${SSH_KEY}"
+    rsync -tLz --info=progress2 -e "$ssh_cmd" \
+      "${SSH_USER}@${SSH_HOST}:${SRC_DIR}/.history/db/${HIST_FILE}" "${STAGING}/db/" ||
+      { print error "The copy did not finish."; exit 1; }
+  else
+    rsync -tL --info=progress2 "${SRC_DIR}/.history/db/${HIST_FILE}" "${STAGING}/db/" ||
+      { print error "The copy did not finish."; exit 1; }
+  fi
+fi
 print success "Copied to ${STAGING}"
 
 # --- check the dumps are readable --------------------------------------------
@@ -563,7 +601,15 @@ if [ -n "$LIS_PATH" ]; then
     # handed to db-tools, which then emptied the database and failed. Files the
     # check above found damaged are skipped too; the newest readable one wins.
     newest_dump=""
-    while IFS= read -r candidate; do
+    # A dated restore restores the date that was chosen, not whatever is newest
+    # in a staging folder that may hold files from an earlier run.
+    if [ -n "$HIST_FILE" ]; then
+      newest_dump="${DUMP_DIR}/${HIST_FILE}"
+      for bad in ${BAD_DUMPS[@]+"${BAD_DUMPS[@]}"}; do
+        [ "$bad" = "$newest_dump" ] && { print error "The chosen backup is damaged. Run this again and choose another date."; exit 1; }
+      done
+    fi
+    [ -n "$newest_dump" ] || while IFS= read -r candidate; do
       damaged=false
       for bad in ${BAD_DUMPS[@]+"${BAD_DUMPS[@]}"}; do
         [ "$bad" = "$candidate" ] && { damaged=true; break; }

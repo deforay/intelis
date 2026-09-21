@@ -377,6 +377,24 @@ if (is_file($backupStatusFile) && !is_readable($backupStatusFile)) {
                 $backupStatus = 'warn';
             }
         }
+
+        // The dated history is what undoes a mistake noticed after the ~2 days
+        // the mirror covers. The runner reports it; a runner from before the
+        // history existed reports nothing, which is not a fault.
+        $historyNewest = (string) ($backupState['history_newest'] ?? '');
+        if (array_key_exists('history_count', $backupState)) {
+            $historyAgeDays = $historyNewest !== '' ? (int) floor((time() - (int) strtotime($historyNewest)) / 86400) : -1;
+            if ($historyNewest === '') {
+                $backupDetail .= '; no database history at the destination yet';
+            } elseif ($historyAgeDays > 2) {
+                $backupDetail .= sprintf('; database history stopped %d days ago', $historyAgeDays);
+                if ($backupStatus === 'ok') {
+                    $backupStatus = 'warn';
+                }
+            } else {
+                $backupDetail .= sprintf('; history %s to %s', (string) ($backupState['history_oldest'] ?? ''), $historyNewest);
+            }
+        }
     }
 } elseif (is_file($backupRunner)) {
     // The runner is installed, so someone set this up, but it has never written
