@@ -451,7 +451,8 @@ case "$what" in
   *)  SUBPATHS=(":") ;;
 esac
 
-ask STAGING "Where should the files be put on this machine?" "/root/intelis-restore/${CHOSEN}"
+# Not under /root: that folder is 0700, and db-tools runs as www-data.
+ask STAGING "Where should the files be put on this machine?" "/var/intelis-restore/${CHOSEN}"
 mkdir -p "$STAGING"
 
 # --- copy it down -------------------------------------------------------------
@@ -491,6 +492,7 @@ print success "Copied to ${STAGING}"
 print header "Checking the database backups"
 
 DUMP_DIR="${STAGING}/db"
+BAD_DUMPS=()
 [ "$what" = "all" ] && DUMP_DIR="${STAGING}/backups/db"
 
 if [ ! -d "$DUMP_DIR" ]; then
@@ -507,18 +509,18 @@ else
       *.zst)
         if command -v zstd >/dev/null 2>&1; then
           if zstd -t "$dump" >/dev/null 2>&1; then printf "  ✅ %s\n" "$name"; ok_count=$((ok_count + 1))
-          else printf "  ❌ %s is damaged\n" "$name"; bad_count=$((bad_count + 1)); fi
+          else printf "  ❌ %s is damaged\n" "$name"; bad_count=$((bad_count + 1)); BAD_DUMPS+=("$dump"); fi
         else
           printf "  ➖ %s (install zstd to check this one)\n" "$name"
         fi
         ;;
       *.gz)
         if gzip -t "$dump" 2>/dev/null; then printf "  ✅ %s\n" "$name"; ok_count=$((ok_count + 1))
-        else printf "  ❌ %s is damaged\n" "$name"; bad_count=$((bad_count + 1)); fi
+        else printf "  ❌ %s is damaged\n" "$name"; bad_count=$((bad_count + 1)); BAD_DUMPS+=("$dump"); fi
         ;;
       *.sql)
         if [ -s "$dump" ]; then printf "  ✅ %s\n" "$name"; ok_count=$((ok_count + 1))
-        else printf "  ❌ %s is empty\n" "$name"; bad_count=$((bad_count + 1)); fi
+        else printf "  ❌ %s is empty\n" "$name"; bad_count=$((bad_count + 1)); BAD_DUMPS+=("$dump"); fi
         ;;
     esac
   done < <(find "$DUMP_DIR" -maxdepth 1 -type f \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst' -o -name '*.gpg' \) | sort)
@@ -556,18 +558,40 @@ if [ -n "$LIS_PATH" ]; then
   # a gum menu is dismissed with Esc, so this confirm is the last point at which
   # restoring the wrong lab's database over this one is still catchable.
   if confirm "Restore ${CHOSEN} into ${LIS_PATH} now?"; then
-    newest_dump="$(find "$DUMP_DIR" -maxdepth 1 -type f -name 'vlsm-*' | sort | tail -1)"
+    # Only real dump files. db-tools writes a .meta.json beside every dump, and
+    # 'vlsm-*' alone matched it: it sorts after the dump, so it was the file
+    # handed to db-tools, which then emptied the database and failed. Files the
+    # check above found damaged are skipped too; the newest readable one wins.
+    newest_dump=""
+    while IFS= read -r candidate; do
+      damaged=false
+      for bad in ${BAD_DUMPS[@]+"${BAD_DUMPS[@]}"}; do
+        [ "$bad" = "$candidate" ] && { damaged=true; break; }
+      done
+      $damaged || { newest_dump="$candidate"; break; }
+    done < <(find "$DUMP_DIR" -maxdepth 1 -type f -name 'vlsm-*' \
+               \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst' -o -name '*.sql.gpg' \
+                  -o -name '*.sql.gz.gpg' -o -name '*.sql.zst.gpg' \) | sort -r)
     if [ -z "$newest_dump" ]; then
-      print error "No main-database backup (a file starting with 'vlsm-') was found in ${DUMP_DIR}."
+      print error "No readable main-database backup (a .sql, .sql.gz, .sql.zst or .gpg file starting with 'vlsm-') was found in ${DUMP_DIR}."
       exit 1
     fi
+    # db-tools reads its settings from the current folder and runs as www-data,
+    # which also writes the safety copy next to the dump.
+    chown -R www-data:www-data "$STAGING"
     print info "Restoring $(basename "$newest_dump")..."
-    if sudo -u www-data php "${LIS_PATH}/vendor/bin/db-tools" restore "$newest_dump"; then
+    if (cd "$LIS_PATH" && sudo -u www-data php vendor/bin/db-tools restore "$newest_dump"); then
       print success "Database restored"
-      sudo -u www-data php "${LIS_PATH}/bin/migrate.php" || print warning "Could not apply database migrations; run 'intelis migrate' by hand."
+      (cd "$LIS_PATH" && sudo -u www-data php bin/migrate.php) || print warning "Could not apply database migrations; run 'intelis migrate' by hand."
       print info "Log in and check Admin → System Config."
     else
-      print error "The restore did not finish. The safety copy of the previous database is in ${LIS_PATH}/backups/db."
+      print error "The restore did not finish."
+      if find "$DUMP_DIR" -maxdepth 1 -type f -name 'pre-restore-*' -newer "$newest_dump" | grep -q .; then
+        print info "A safety copy of the previous database was saved in ${DUMP_DIR} (the file starting with 'pre-restore-')."
+        print info "To put it back: cd ${LIS_PATH} && sudo -u www-data php vendor/bin/db-tools restore ${DUMP_DIR}/<pre-restore-file>"
+      else
+        print info "No safety copy was taken, so the database was not changed."
+      fi
       exit 1
     fi
   else

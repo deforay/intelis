@@ -211,7 +211,9 @@ choose() {
 install_backup_runner() {
 print header "Installing the backup runner"
 
-cat > "$RUNNER" <<'RUNNER_SCRIPT'
+# Written aside and renamed into place: bash reads a script as it runs, so
+# rewriting the file under a backup that is still running corrupts that run.
+cat > "${RUNNER}.new" <<'RUNNER_SCRIPT'
 #!/bin/bash
 # InteLIS backup runner. Installed by remote-backup.sh; reads its settings from
 # /etc/intelis/backup.conf. Safe to run by hand at any time.
@@ -275,12 +277,18 @@ CRON_MARKER="/usr/local/bin/intelis-backup.sh"
 case "$ACTION" in
   disable)
     if crontab -l 2>/dev/null | grep -q "$CRON_MARKER"; then
-      crontab -l 2>/dev/null | grep -v "$CRON_MARKER" | crontab -
+      ( crontab -l 2>/dev/null | grep -v "$CRON_MARKER" || true ) | crontab -
       echo "Scheduled backups stopped. Run 'intelis backup enable' to start them again."
     else
       echo "Scheduled backups were already stopped."
     fi
-    pkill -f "$CRON_MARKER" 2>/dev/null && echo "Stopped the backup that was running." || true
+    # pgrep -f also matches this process, so leave it out; rsync is a child of
+    # the running backup and does not carry the marker, so stop it by parent.
+    running=$(pgrep -f "$CRON_MARKER" | grep -vx "$$" || true)
+    if [ -n "$running" ]; then
+      for pid in $running; do pkill -P "$pid" 2>/dev/null || true; kill "$pid" 2>/dev/null || true; done
+      echo "Stopped the backup that was running."
+    fi
     exit 0
     ;;
   enable)
@@ -432,7 +440,7 @@ fi
 
 # --- destination helpers ------------------------------------------------------
 
-SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new)
+SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=15 -o ServerAliveCountMax=4)
 
 dest_exec() {
   case "$DEST_MODE" in
@@ -467,6 +475,11 @@ print info "From: ${LIS_PATH}/"
 print info "To  : ${DEST_DIR}/"
 
 [ -d "$LIS_PATH" ] || fail "The installation folder ${LIS_PATH} does not exist."
+# The copy mirrors with --delete. A folder without its configuration is an
+# emptied or freshly reinstalled one, and mirroring it would delete the dumps,
+# uploads and audit trail from the only copy that still has them.
+[ -f "${LIS_PATH}/configs/config.production.php" ] ||
+  fail "${LIS_PATH} has no configs/config.production.php, so it looks emptied or freshly reinstalled. The backup was NOT updated, to protect the copy at the destination. Restore the installation first (see the restore guide)."
 
 ensure_destination_available
 
@@ -491,7 +504,7 @@ if [ -d "$DB_DUMP_DIR" ]; then
   if [ -n "${newest_dump:-}" ]; then
     DB_DUMP_AGE_HOURS=$(( ( $(date +%s) - newest_dump ) / 3600 ))
     if [ "$DB_DUMP_AGE_HOURS" -gt 24 ]; then
-      print warning "The newest database dump is ${DB_DUMP_AGE_HOURS} hours old. The scheduled backup job may have stopped running; check that cron.sh is in the crontab."
+      print warning "The newest database dump is ${DB_DUMP_AGE_HOURS} hours old. The scheduled backup job may have stopped running; check that the InteLIS scheduler is running (systemctl list-timers 'intelis*')."
     else
       print info "Newest database dump is ${DB_DUMP_AGE_HOURS} hours old"
     fi
@@ -541,7 +554,7 @@ EXCLUDES
 # WHAT to send. The verification pass below reuses the transport but must not
 # reuse the filters: it works from an explicit file list, and --delete needs a
 # whole-tree walk, which is the cost this is here to avoid.
-RSYNC_FILTER_OPTS=(--delete --partial --timeout=900 --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta)
+RSYNC_FILTER_OPTS=(--delete --partial-dir=.rsync-partial --timeout=900 --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta)
 RSYNC_MODE_OPTS=()
 
 needs_compat_flags() {
@@ -556,7 +569,7 @@ needs_compat_flags() {
 
 case "$DEST_MODE" in
   ssh)
-    RSYNC_MODE_OPTS+=(-aHz -e "ssh -i ${SSH_KEY} -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new -p ${SSH_PORT}")
+    RSYNC_MODE_OPTS+=(-aHz -e "ssh -i ${SSH_KEY} -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -p ${SSH_PORT}")
     RSYNC_TARGET="${SSH_USER}@${SSH_HOST}:${DEST_DIR}/"
     ;;
   smb)
@@ -580,7 +593,13 @@ RSYNC_OPTS=("${RSYNC_FILTER_OPTS[@]}" "${RSYNC_MODE_OPTS[@]}")
 
 if [ "$ACTION" = "test" ]; then
   print info "Test run: nothing will be changed."
-  pending=$(rsync "${RSYNC_OPTS[@]}" --dry-run --itemize-changes "${LIS_PATH}/" "$RSYNC_TARGET" | grep -c '^[<>]f' || true)
+  DRY_LOG="$(mktemp /tmp/intelis-backup-dry.XXXXXX)"
+  if ! rsync "${RSYNC_OPTS[@]}" --dry-run --itemize-changes "${LIS_PATH}/" "$RSYNC_TARGET" >"$DRY_LOG" 2>&1; then
+    tail -20 "$DRY_LOG"; rm -f "$DRY_LOG"
+    fail "The test copy failed. The details are above."
+  fi
+  pending=$(grep -c '^[<>]f' "$DRY_LOG" || true)
+  rm -f "$DRY_LOG"
   print success "Connection works. ${AVAILABLE_GB} GB free at the destination."
   print info    "${pending} file(s) would be copied by a real backup."
   [ "$DB_DUMP_AGE_HOURS" -ge 0 ] && print info "Newest database dump: ${DB_DUMP_AGE_HOURS} hours old."
@@ -607,8 +626,15 @@ print info "Copying files..."
 TRANSFER_LOG="$(mktemp /tmp/intelis-backup-transfer.XXXXXX)"
 trap 'rm -f "$EXCLUDE_LIST" "$TRANSFER_LOG" "${TRANSFER_LOG}.files"' EXIT
 
-rsync "${RSYNC_OPTS[@]}" --out-format='%i|%n' "${LIS_PATH}/" "$RSYNC_TARGET" >"$TRANSFER_LOG" 2>&1 ||
-  fail "The copy did not finish. See ${LOGFILE} for the details."
+rsync_rc=0
+rsync "${RSYNC_OPTS[@]}" --out-format='%i|%n' "${LIS_PATH}/" "$RSYNC_TARGET" >"$TRANSFER_LOG" 2>&1 || rsync_rc=$?
+if [ "$rsync_rc" -eq 24 ]; then
+  print warning "Some files disappeared while they were being copied (usually an old dump being tidied away). The rest was copied."
+elif [ "$rsync_rc" -ne 0 ]; then
+  # The transfer log is deleted on exit; keep rsync's own reason in the log.
+  grep -v '|' "$TRANSFER_LOG" | tail -30 || true
+  fail "The copy did not finish (rsync exit code ${rsync_rc}). See ${LOGFILE} for the details."
+fi
 
 # Regular files that were actually sent. Directories, symlinks and deletions are
 # not re-checked: a stale extra file at the destination is not a loss, and the
@@ -636,15 +662,18 @@ verify_transfer() {
   if grep -q '\\#' "$CHANGED_LIST"; then
     print info "Some file names need escaping; verifying the whole tree instead."
     local remaining
-    remaining=$(rsync "${RSYNC_OPTS[@]}" --dry-run --itemize-changes "${LIS_PATH}/" "$RSYNC_TARGET" | grep -c '^[<>]f' || true)
+    local out
+    out=$(rsync "${RSYNC_OPTS[@]}" --dry-run --itemize-changes "${LIS_PATH}/" "$RSYNC_TARGET" 2>/dev/null) || return 1
+    remaining=$(printf '%s\n' "$out" | grep -c '^[<>]f' || true)
     [ "${remaining:-0}" -eq 0 ]
     return $?
   fi
 
-  local differing
-  differing=$(rsync "${RSYNC_MODE_OPTS[@]}" --files-from="$CHANGED_LIST" \
-                    --checksum --dry-run --out-format='%i|%n' \
-                    "${LIS_PATH}/" "$RSYNC_TARGET" 2>/dev/null | grep -c '^[<>]f' || true)
+  local differing out
+  out=$(rsync "${RSYNC_MODE_OPTS[@]}" --files-from="$CHANGED_LIST" \
+              --checksum --dry-run --out-format='%i|%n' \
+              "${LIS_PATH}/" "$RSYNC_TARGET" 2>/dev/null) || return 1
+  differing=$(printf '%s\n' "$out" | grep -c '^[<>]f' || true)
   [ "${differing:-0}" -eq 0 ]
 }
 
@@ -681,7 +710,8 @@ print success "Backup finished in ${SECONDS}s. ${AVAILABLE_GB} GB free at the de
 [ "$BACKUP_SIZE" = "not measured" ] || print info "Size on the backup: ${BACKUP_SIZE}"
 RUNNER_SCRIPT
 
-chmod 0755 "$RUNNER"
+chmod 0755 "${RUNNER}.new"
+mv -f "${RUNNER}.new" "$RUNNER"
 print success "Backup runner installed at $RUNNER"
 
 # The Windows-only runner from the older setup is replaced by the unified one.
@@ -860,12 +890,34 @@ configure_ssh() {
     fi
 
     print info "Installing the backup key on the server. You will be asked for ${SSH_USER}'s password once."
+    copy_err="$(mktemp)"
     if ! ssh-copy-id -i "${SSH_KEY}.pub" -o StrictHostKeyChecking=accept-new \
-         -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" >/dev/null; then
-      print warning "Could not install the key. The username or password may be wrong, or the server may not allow password logins."
+         -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" 2>"$copy_err" >/dev/null; then
+      # The password prompt goes to the terminal, not stderr, so capturing
+      # stderr hides only ssh-copy-id's own chatter.
+      # "Permission denied (publickey)" with no other method listed means the
+      # server accepts keys only (the default on cloud servers). ssh-copy-id
+      # then never asks for a password, so retrying can never work; the key
+      # has to be added on the server by someone who can already log in.
+      if grep -q 'Permission denied (publickey)' "$copy_err"; then
+        rm -f "$copy_err"
+        print warning "The backup server does not accept passwords, only keys, so the key cannot be installed from here."
+        print info "Log in to the backup server the usual way and run these commands to add the key:"
+        echo
+        echo "    sudo mkdir -p ~${SSH_USER}/.ssh"
+        echo "    echo '$(cat "${SSH_KEY}.pub")' | sudo tee -a ~${SSH_USER}/.ssh/authorized_keys"
+        echo "    sudo chown -R ${SSH_USER}: ~${SSH_USER}/.ssh && sudo chmod 700 ~${SSH_USER}/.ssh && sudo chmod 600 ~${SSH_USER}/.ssh/authorized_keys"
+        echo
+        confirm "Has the key been added? Check the login now?" && continue
+        exit 1
+      fi
+      grep -v '^/usr/bin/ssh-copy-id: INFO' "$copy_err" | tail -3 >&2 || true
+      rm -f "$copy_err"
+      print warning "Could not install the key. The username or password may be wrong."
       confirm "Try again?" && { SSH_USER=""; SSH_HOST=""; SSH_PORT=""; continue; }
       exit 1
     fi
+    rm -f "$copy_err"
 
     if ! ssh -n -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=10 \
          -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" true; then
