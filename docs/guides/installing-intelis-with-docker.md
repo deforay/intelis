@@ -6,6 +6,9 @@ The machine needs [Docker](https://docs.docker.com/get-docker/) with the
 [Docker Compose](https://docs.docker.com/compose/install/) plugin, `git`, and
 an internet connection. The lab server steps assume an Ubuntu host.
 
+The container must run **PHP 8.4+ (minimum 8.4.1)**. PHP 8.2, 8.3, and older
+versions are not supported. The default image uses PHP 8.4.
+
 **Choose the situation that fits, then follow its steps from top to bottom.**
 
 === "Lab server"
@@ -53,7 +56,7 @@ an internet connection. The lab server steps assume an Ubuntu host.
             | `DOMAIN` | `intelis` | The name Apache answers to. Any other address that reaches the server also works. |
             | `APACHE_PORT` | `80` | The port on this machine for the web server. |
             | `UBUNTU_VERSION` | `24.04` | The Ubuntu release the container image is built on. |
-            | `PHP_VERSION` | `8.4` | The PHP version installed in the container image. |
+            | `PHP_VERSION` | `8.4` | The PHP version installed in the container image. Use `8.4` or `8.5`. |
             | `MYSQL_ROOT_PASSWORD` | `root_password` when empty | The MySQL root password. |
             | `MYSQL_PORT` | `3306` | The port on this machine for MySQL. |
             | `MYSQL_DATABASE` | `vlsm` | The main database name. |
@@ -276,7 +279,7 @@ an internet connection. The lab server steps assume an Ubuntu host.
         | `DOMAIN` | `intelis` | The name Apache answers to. `localhost` also works. |
         | `APACHE_PORT` | `80` | The host port for the web server. |
         | `UBUNTU_VERSION` | `24.04` | The Ubuntu release the container image is built on. |
-        | `PHP_VERSION` | `8.4` | The PHP version installed in the container image. |
+        | `PHP_VERSION` | `8.4` | The PHP version installed in the container image. Use `8.4` or `8.5`. |
         | `MYSQL_ROOT_PASSWORD` | `root_password` when empty | The MySQL root password. |
         | `MYSQL_PORT` | `3306` | The host port for MySQL. |
         | `MYSQL_DATABASE` | `vlsm` | The main database name. |

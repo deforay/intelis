@@ -551,7 +551,8 @@ foreach ($systemConfig['modules'] as $module => $status) {
                 showServerHints($io, $headers, $module);
                 $io->text("Received server response for $module");
             }
-        })->otherwise(function (string $reason) use ($module, $cliMode, $io): void {
+        })->otherwise(function (mixed $reason) use ($module, $cliMode, $io): void {
+            $reason = $reason instanceof Throwable ? $reason->getMessage() : (string) $reason;
             if ($cliMode) {
                 $io->error("STS Request sync for $module failed: $reason");
             }

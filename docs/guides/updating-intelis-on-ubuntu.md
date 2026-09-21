@@ -7,6 +7,10 @@ connection, and have an account with `sudo` rights. A machine still on 22.04
 should move to 24.04 LTS with
 [Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md).
 
+The current release requires **PHP 8.4+ (minimum 8.4.1)**. PHP 8.2, 8.3,
+and older versions are not supported. Both Apache and command-line PHP must
+meet this requirement.
+
 **Choose the situation that fits, then follow its steps from top to bottom.**
 To tell which one fits, open a terminal, type `intelis` and press Enter:
 

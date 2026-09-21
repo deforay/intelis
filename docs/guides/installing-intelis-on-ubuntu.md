@@ -5,6 +5,10 @@ Install InteLIS on a new Ubuntu machine, as a lab machine or as a central server
 The machine must run **Ubuntu 24.04 LTS or a later LTS release** and be
 connected to the internet. The account used needs `sudo` rights.
 
+InteLIS requires **PHP 8.4+ (minimum 8.4.1)**. PHP 8.2, 8.3, and older
+versions are not supported. The installer selects PHP 8.4, or 8.5 on Ubuntu
+26.04 and newer.
+
 To move an existing lab onto a new machine with its data, follow
 [Migrating from one Ubuntu machine to another](migrating-ubuntu-machines.md)
 instead.
