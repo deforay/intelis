@@ -6,6 +6,14 @@ Uploaded files and attachments can come back too.
 Restoring replaces everything in the database. Records entered after the backup
 was made are lost.
 
+!!! warning "How far back the backups go"
+
+    A database backup is made every 6 hours and only the newest 7 are kept, so
+    the backups cover about the last 2 days. The off-machine copy mirrors this
+    folder, so it holds the same 2 days. A mistake noticed later than that
+    cannot be undone from these backups. Keep a weekly copy of `backups/db` on a
+    drive that is then unplugged and stored away.
+
 To set up InteLIS on a new or empty machine from a backup, follow the
 **Backups on a server or share** tab of
 [Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md)
@@ -123,7 +131,7 @@ instead.
 
             Check the machine or drive is switched on and connected to the
             network, and that the details are right. Choose **Yes** at
-            **Try again?** and type them again.
+            **Try different details?** (or **Try again?**) and type them again.
 
     4. At **Which lab should be restored?**, choose this lab. Each row starts
        with the lab name given when the backups were set up, and shows the
@@ -143,8 +151,10 @@ instead.
         /var/intelis-restore
         ```
 
-        Do not accept the folder it offers under `/root`. The restore runs as
-        the web server's account, which cannot read `/root`, and it fails.
+        Type exactly this path, so the commands in the later steps match.
+        Older versions of the script offer a folder under `/root`. Do not accept
+        it: the restore runs as the web server's account, which cannot read
+        `/root`, and it fails.
 
     7. Wait for the copy to finish. The script then checks each database
        backup. Files listed as encrypted are not checked. They open during the
@@ -175,14 +185,14 @@ instead.
 
         ??? failure "If it says `The restore did not finish`"
 
-            The database may now be empty. Put the safety copy back:
+            If the next line says `No safety copy was taken`, the database was
+            not changed. Contact support with the message shown.
 
-            ```bash
-            sudo -u www-data php vendor/bin/db-tools restore
-            ```
-
-            Choose the newest file starting with `pre-restore-vlsm-`. Then
-            contact support with the message shown.
+            Otherwise the database may now be empty. Put the safety copy back.
+            The script prints the command to use. Replace `<pre-restore-file>`
+            with the name of the file starting with `pre-restore-vlsm-` in
+            `/var/intelis-restore/db`, run it, then contact support with the
+            message shown.
 
         ??? failure "If it says `Could not apply database migrations`"
 
@@ -271,7 +281,7 @@ instead.
 
             Check the machine or drive is switched on and connected to the
             network, and that the details are right. Choose **Yes** at
-            **Try again?** and type them again.
+            **Try different details?** (or **Try again?**) and type them again.
 
     4. At **Which lab should be restored?**, choose this lab. Each row starts
        with the lab name given when the backups were set up, and shows the
@@ -292,8 +302,10 @@ instead.
         /var/intelis-restore
         ```
 
-        Do not accept the folder it offers under `/root`. The restore runs as
-        the web server's account, which cannot read `/root`, and it fails.
+        Type exactly this path, so the commands in the later steps match.
+        Older versions of the script offer a folder under `/root`. Do not accept
+        it: the restore runs as the web server's account, which cannot read
+        `/root`, and it fails.
 
     7. Wait for the copy to finish. It copies the whole InteLIS folder and can
        take hours over a network. The script then checks each database backup.
@@ -324,14 +336,14 @@ instead.
 
         ??? failure "If it says `The restore did not finish`"
 
-            The database may now be empty. Put the safety copy back:
+            If the next line says `No safety copy was taken`, the database was
+            not changed. Contact support with the message shown.
 
-            ```bash
-            sudo -u www-data php vendor/bin/db-tools restore
-            ```
-
-            Choose the newest file starting with `pre-restore-vlsm-`. Then
-            contact support with the message shown.
+            Otherwise the database may now be empty. Put the safety copy back.
+            The script prints the command to use. Replace `<pre-restore-file>`
+            with the name of the file starting with `pre-restore-vlsm-` in
+            `/var/intelis-restore/db`, run it, then contact support with the
+            message shown.
 
         ??? failure "If it says `Could not apply database migrations`"
 
@@ -366,6 +378,16 @@ instead.
         On older installs, type `/var/www/vlsm/public/uploads/` as the last
         path. Do not add `--delete`. Files added since the backup would be
         removed.
+
+        Then copy back the audit trail, which holds the change history of
+        older samples:
+
+        ```bash
+        sudo rsync -a /var/intelis-restore/var/audit-trail/ /var/www/intelis/var/audit-trail/
+        ```
+
+        On older installs, type `/var/www/vlsm/var/audit-trail/` as the last
+        path.
 
     13. Repair the file ownership, so the web server can read the restored
         files:

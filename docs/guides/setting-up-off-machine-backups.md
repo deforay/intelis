@@ -133,7 +133,18 @@ and after every restart. The copy survives if the InteLIS machine fails.
             intelis backup enable
             ```
 
-    Check the status the same way once a week.
+    Once a week, check the status the same way, then run:
+
+    ```bash
+    intelis health
+    ```
+
+    The backup line must not show a warning. If it mentions `newest DB dump`,
+    the database backups have stopped; see the warning under
+    **Where the backup lands**. Once
+    every three months, restore the newest backup onto a spare or test machine
+    by following [Restoring from a Backup](restoring-from-backup.md). A backup
+    that has never been restored is not yet proven to work.
 
     ### Where the backup lands
 
@@ -146,7 +157,19 @@ and after every restart. The copy survives if the InteLIS machine fails.
 
     It holds the whole InteLIS folder. The database backups are in `backups/db`
     and the settings backups in `backups/config`. It leaves out files rebuilt on
-    install: `vendor/`, caches, logs and version-control folders.
+    install: `vendor/`, `node_modules/`, caches, logs, temporary files and
+version-control folders.
+
+!!! warning "The copy only goes back about 2 days"
+
+    The backup is a mirror of this machine. A database backup is made every 6
+    hours and only the newest 7 are kept, so the copy holds about the last 2
+    days. Files deleted on this machine are deleted from the copy at the next
+    run. Once a week, copy `backups/db` to a drive that is then unplugged and
+    stored away. That copy is the only history older than 2 days.
+
+The copy also holds the settings, which include the database password. Keep
+the backup folder readable only by the people who manage InteLIS.
 
     Two labs with the same name still get separate folders. One lab never
     overwrites another lab's backup.
@@ -319,7 +342,18 @@ and after every restart. The copy survives if the InteLIS machine fails.
             intelis backup enable
             ```
 
-    Check the status the same way once a week.
+    Once a week, check the status the same way, then run:
+
+    ```bash
+    intelis health
+    ```
+
+    The backup line must not show a warning. If it mentions `newest DB dump`,
+    the database backups have stopped; see the warning under
+    **Where the backup lands**. Once
+    every three months, restore the newest backup onto a spare or test machine
+    by following [Restoring from a Backup](restoring-from-backup.md). A backup
+    that has never been restored is not yet proven to work.
 
     ### Where the backup lands
 
@@ -332,7 +366,19 @@ and after every restart. The copy survives if the InteLIS machine fails.
 
     It holds the whole InteLIS folder. The database backups are in `backups\db`
     and the settings backups in `backups\config`. It leaves out files rebuilt on
-    install: `vendor/`, caches, logs and version-control folders.
+    install: `vendor/`, `node_modules/`, caches, logs, temporary files and
+version-control folders.
+
+!!! warning "The copy only goes back about 2 days"
+
+    The backup is a mirror of this machine. A database backup is made every 6
+    hours and only the newest 7 are kept, so the copy holds about the last 2
+    days. Files deleted on this machine are deleted from the copy at the next
+    run. Once a week, copy `backups/db` to a drive that is then unplugged and
+    stored away. That copy is the only history older than 2 days.
+
+The copy also holds the settings, which include the database password. Keep
+the backup folder readable only by the people who manage InteLIS.
 
     Two labs with the same name still get separate folders. One lab never
     overwrites another lab's backup.
@@ -471,7 +517,18 @@ and after every restart. The copy survives if the InteLIS machine fails.
             intelis backup enable
             ```
 
-    Check the status the same way once a week.
+    Once a week, check the status the same way, then run:
+
+    ```bash
+    intelis health
+    ```
+
+    The backup line must not show a warning. If it mentions `newest DB dump`,
+    the database backups have stopped; see the warning under
+    **Where the backup lands**. Once
+    every three months, restore the newest backup onto a spare or test machine
+    by following [Restoring from a Backup](restoring-from-backup.md). A backup
+    that has never been restored is not yet proven to work.
 
     ### Where the backup lands
 
@@ -484,7 +541,19 @@ and after every restart. The copy survives if the InteLIS machine fails.
 
     It holds the whole InteLIS folder. The database backups are in `backups/db`
     and the settings backups in `backups/config`. It leaves out files rebuilt on
-    install: `vendor/`, caches, logs and version-control folders.
+    install: `vendor/`, `node_modules/`, caches, logs, temporary files and
+version-control folders.
+
+!!! warning "The copy only goes back about 2 days"
+
+    The backup is a mirror of this machine. A database backup is made every 6
+    hours and only the newest 7 are kept, so the copy holds about the last 2
+    days. Files deleted on this machine are deleted from the copy at the next
+    run. Once a week, copy `backups/db` to a drive that is then unplugged and
+    stored away. That copy is the only history older than 2 days.
+
+The copy also holds the settings, which include the database password. Keep
+the backup folder readable only by the people who manage InteLIS.
 
     Two labs with the same name still get separate folders. One lab never
     overwrites another lab's backup.
