@@ -572,9 +572,11 @@ final class GenericTestsService extends AbstractTestService
 
         if (!empty($genericSampleIds) && is_array($genericSampleIds)) {
             $placeholders = implode(',', array_fill(0, count($genericSampleIds), '?'));
+            // DESC matches the single-id branch below (orderBy() defaults to DESC).
+            // The STS re-inserts child rows in the order it receives them.
             $results = $this->db->rawQuery("SELECT * FROM generic_test_results
                                             WHERE `generic_id` IN ($placeholders)
-                                            ORDER BY test_id ASC", $genericSampleIds);
+                                            ORDER BY test_id DESC", $genericSampleIds);
             foreach ($results as $row) {
                 $response[$row['generic_id']][$row['test_id']] = $row;
             }
