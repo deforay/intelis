@@ -1152,7 +1152,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 
 				if (remoteSync && remoteURL != null && remoteURL != '') {
 					var jqxhr = $.ajax({
-						url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=cd4",
+						url: "/tasks/remote/results-sender.php?sampleCode=" + encodeURIComponent(sampleCode) + "&forceSyncModule=cd4",
 					})
 						.done(function (data) {
 							////console.log(data);
