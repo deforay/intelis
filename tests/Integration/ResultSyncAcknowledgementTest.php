@@ -33,7 +33,7 @@ final class ResultSyncAcknowledgementTest extends TestCase
     public function testOnlyRowsUnchangedSinceTheyWereReadAreMarkedSynced(): void
     {
         $this->requireDatabase();
-        $db = LegacyAppHarness::boot('intelis_result_sync_ack_test', ['r_sample_status', 'form_vl']);
+        $db = LegacyAppHarness::boot('intelis_result_sync_ack_test_' . getmypid(), ['r_sample_status', 'form_vl']);
         $this->booted = true;
         $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (7, 'Accepted')");
 
@@ -81,11 +81,11 @@ final class ResultSyncAcknowledgementTest extends TestCase
         // getTableFieldsAsArray() reads columns from SYSTEM_CONFIG's database.
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', [
-                'database' => ['db' => 'intelis_result_sync_ack_sts_test'],
+                'database' => ['db' => 'intelis_result_sync_ack_sts_test_' . getmypid()],
                 'modules' => ['vl' => true],
             ]);
         }
-        $db = LegacyAppHarness::boot('intelis_result_sync_ack_sts_test', [
+        $db = LegacyAppHarness::boot('intelis_result_sync_ack_sts_test_' . getmypid(), [
             'system_config', 'global_config', 's_vlsm_instance', 'r_sample_status', 'form_vl', 'roles', 'user_details',
             'r_vl_sample_rejection_reasons', 'facility_details',
         ]);
