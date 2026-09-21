@@ -78,14 +78,23 @@ and after every restart. The copy survives if the InteLIS machine fails.
        press Enter. It is asked once. The script installs a key, and later
        backups connect with the key alone.
 
-        ??? failure "If it says `Could not install the key`"
+        ??? failure "If it says `Could not install the key` or `does not accept passwords`"
 
-            The username or password is wrong, or the backup machine refuses
-            password logins. Choose **Yes** at **Try again?** and check both.
+            At **How should the backup key be added?**, choose one:
 
-            If the backup machine refuses password logins, ask whoever runs it
-            to add the contents of `/root/.ssh/id_ed25519_intelis.pub` from the
-            InteLIS machine to `~/.ssh/authorized_keys` of `lisbackup`.
+            | Choice | Use it when |
+            | --- | --- |
+            | **Type the details again** | The username, address or password was mistyped. |
+            | **Use an administrator account on the backup server** | The backup machine accepts keys only (common on cloud servers), or `lisbackup` does not exist yet. At the next question, type `root` or another account that can log in there and use `sudo`. If asked, type that account's password. The script adds the key, and offers to create `lisbackup` if it is missing. |
+            | **Add the key by hand** | No administrator login is available from this machine. The script prints three commands. Run them on the backup machine, then choose **Yes** at **Has the key been added?**. |
+
+            The script then checks the login again and carries on.
+
+        ??? tip "Logging in to the backup machine by hand"
+
+            Setup adds the backup machine to `/root/.ssh/config`, so
+            `sudo ssh lisbackup@192.168.1.60` from the InteLIS machine uses the
+            backup key. Use the address from step 3.
 
     7. Wait for the first backup to finish. It can take an hour or more. The
        script ends with `Backups are set up and the first one completed`.

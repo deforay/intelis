@@ -985,6 +985,86 @@ choose DEST_MODE "${DEST_MODE:-ssh}" "Where should the backup be sent?" \
 
 # --- destination: another Linux machine over SSH ------------------------------
 
+# Adds the backup key for SSH_USER on the backup server by logging in once as
+# an account that can already get in: root's own key, an ssh-agent, or a
+# password if the server takes one for that account. Needed when the server
+# accepts keys only (the default on cloud servers), so ssh-copy-id can never
+# ask for SSH_USER's password, and when SSH_USER does not exist yet.
+install_key_via_admin() {
+  local admin key create=0 exists b64 run
+  # One connection for both commands, so a password is typed once.
+  local mux=(-o ControlMaster=auto -o "ControlPath=/tmp/intelis-admin-%C" -o ControlPersist=60)
+  ask admin "Administrator account on the backup server (root, or a user with sudo)" "root"
+  [[ "$admin" =~ ^[a-z_][a-z0-9_.-]*$ ]] || { print warning "'$admin' is not a valid username."; return 1; }
+
+  print info "Logging in as ${admin}. If it asks for a password, it is ${admin}'s password on the backup server."
+  exists="$(ssh "${mux[@]}" -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 -p "$SSH_PORT" \
+              "${admin}@${SSH_HOST}" "id -u '${SSH_USER}' >/dev/null 2>&1 && echo yes || echo no" </dev/null)" ||
+    { print warning "Could not log in as ${admin} either."; return 1; }
+  if [ "$(printf '%s' "$exists" | tr -d '\r')" = "no" ]; then
+    print warning "There is no user '${SSH_USER}' on the backup server."
+    confirm "Create '${SSH_USER}' there now, for the backups only?" || return 1
+    create=1
+  fi
+
+  key="$(cat "${SSH_KEY}.pub")"
+  # Sent encoded so no quoting survives two shells; everything in it is a fixed
+  # command, the validated username and the public key line.
+  b64="$(printf '%s\n' \
+    "set -e" \
+    "u='${SSH_USER}'" \
+    "if [ ${create} -eq 1 ] && ! id -u \"\$u\" >/dev/null 2>&1; then useradd -m -s /bin/bash \"\$u\"; fi" \
+    "h=\$(getent passwd \"\$u\" | cut -d: -f6)" \
+    "mkdir -p \"\$h/.ssh\"; touch \"\$h/.ssh/authorized_keys\"" \
+    "grep -qxF '${key}' \"\$h/.ssh/authorized_keys\" || echo '${key}' >> \"\$h/.ssh/authorized_keys\"" \
+    "chown -R \"\$u\": \"\$h/.ssh\"; chmod 700 \"\$h/.ssh\"; chmod 600 \"\$h/.ssh/authorized_keys\"" \
+    | base64 | tr -d '\n')"
+  run="sh"
+  [ "$admin" = "root" ] || run="sudo sh"
+  # -t so sudo can ask for its password on this terminal.
+  ssh -t "${mux[@]}" -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 -p "$SSH_PORT" \
+      "${admin}@${SSH_HOST}" "echo ${b64} | base64 -d | ${run}" ||
+    { print warning "Logged in as ${admin}, but adding the key failed. ${admin} may not be allowed to use sudo."; return 1; }
+  print success "Backup key added for ${SSH_USER}"
+}
+
+print_manual_key_steps() {
+  print info "Log in to the backup server the usual way and run these commands to add the key:"
+  echo
+  echo "    sudo mkdir -p ~${SSH_USER}/.ssh"
+  echo "    echo '$(cat "${SSH_KEY}.pub")' | sudo tee -a ~${SSH_USER}/.ssh/authorized_keys"
+  echo "    sudo chown -R ${SSH_USER}: ~${SSH_USER}/.ssh && sudo chmod 700 ~${SSH_USER}/.ssh && sudo chmod 600 ~${SSH_USER}/.ssh/authorized_keys"
+  echo
+}
+
+# The backup key is not one of ssh's default keys, so a plain
+# `ssh user@backup-server` from this machine was refused even though every
+# backup worked, which sends people hunting for a fault that is not there. A
+# Host entry makes a manual login use the same key. An existing entry for the
+# host is someone's own configuration and is left alone.
+ensure_ssh_config_entry() {
+  local cfg=/root/.ssh/config
+  if [ -f "$cfg" ] && grep -qiE "^[[:space:]]*Host([[:space:]]+[^[:space:]]+)*[[:space:]]+${SSH_HOST//./\\.}([[:space:]]|$)" "$cfg"; then
+    return 0
+  fi
+  {
+    [ -s "$cfg" ] && echo
+    echo "# Added by InteLIS backup setup, so a plain ssh to the backup server uses the backup key."
+    echo "Host ${SSH_HOST}"
+    echo "  User ${SSH_USER}"
+    [ "$SSH_PORT" = "22" ] || echo "  Port ${SSH_PORT}"
+    echo "  IdentityFile ${SSH_KEY}"
+    # An IdentityFile line replaces ssh's default keys for this host, which
+    # would lock out whoever logs in there with their own key. Keep them.
+    local k
+    for k in /root/.ssh/id_ed25519 /root/.ssh/id_ecdsa /root/.ssh/id_rsa; do
+      [ -f "$k" ] && [ "$k" != "$SSH_KEY" ] && echo "  IdentityFile ${k}"
+    done
+  } >> "$cfg"
+  chmod 600 "$cfg"
+  print info "Added ${SSH_HOST} to ${cfg}, so 'ssh ${SSH_HOST}' logs in as ${SSH_USER} with the backup key."
+}
+
 configure_ssh() {
   require_cmd ssh
   require_cmd ssh-keygen
@@ -999,10 +1079,17 @@ configure_ssh() {
   fi
   chmod 600 "$SSH_KEY"; chmod 644 "${SSH_KEY}.pub"
 
+  local recheck=false
   while true; do
-    ask SSH_USER "Username on the backup server" "${SSH_USER:-}"
-    ask SSH_HOST "Hostname or IP of the backup server" "${SSH_HOST:-}"
-    ask SSH_PORT "SSH port" "${SSH_PORT:-22}"
+    # After the key was added another way, check the login with the same
+    # details instead of asking for them again.
+    if $recheck; then
+      recheck=false
+    else
+      ask SSH_USER "Username on the backup server" "${SSH_USER:-}"
+      ask SSH_HOST "Hostname or IP of the backup server" "${SSH_HOST:-}"
+      ask SSH_PORT "SSH port" "${SSH_PORT:-22}"
+    fi
 
     if ! [[ "$SSH_PORT" =~ ^[0-9]+$ ]] || [ "$SSH_PORT" -lt 1 ] || [ "$SSH_PORT" -gt 65535 ]; then
       print warning "'$SSH_PORT' is not a valid port number."
@@ -1032,27 +1119,39 @@ configure_ssh() {
          -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" 2>"$copy_err" >/dev/null; then
       # The password prompt goes to the terminal, not stderr, so capturing
       # stderr hides only ssh-copy-id's own chatter.
+      #
       # "Permission denied (publickey)" with no other method listed means the
       # server accepts keys only (the default on cloud servers). ssh-copy-id
-      # then never asks for a password, so retrying can never work; the key
-      # has to be added on the server by someone who can already log in.
-      if grep -q 'Permission denied (publickey)' "$copy_err"; then
-        rm -f "$copy_err"
-        print warning "The backup server does not accept passwords, only keys, so the key cannot be installed from here."
-        print info "Log in to the backup server the usual way and run these commands to add the key:"
-        echo
-        echo "    sudo mkdir -p ~${SSH_USER}/.ssh"
-        echo "    echo '$(cat "${SSH_KEY}.pub")' | sudo tee -a ~${SSH_USER}/.ssh/authorized_keys"
-        echo "    sudo chown -R ${SSH_USER}: ~${SSH_USER}/.ssh && sudo chmod 700 ~${SSH_USER}/.ssh && sudo chmod 600 ~${SSH_USER}/.ssh/authorized_keys"
-        echo
-        confirm "Has the key been added? Check the login now?" && continue
-        exit 1
+      # then never asks for a password, so retrying the same details can never
+      # work: the key has to go in through an account that can already log in.
+      local key_only=false
+      grep -q 'Permission denied (publickey)' "$copy_err" && key_only=true
+      if $key_only; then
+        print warning "The backup server does not accept passwords, only keys, so ${SSH_USER}'s password cannot be used."
+      else
+        grep -v '^/usr/bin/ssh-copy-id: INFO' "$copy_err" | tail -3 >&2 || true
+        print warning "Could not install the key. The password may be wrong, or '${SSH_USER}' may not exist on the backup server."
       fi
-      grep -v '^/usr/bin/ssh-copy-id: INFO' "$copy_err" | tail -3 >&2 || true
       rm -f "$copy_err"
-      print warning "Could not install the key. The username or password may be wrong."
-      confirm "Try again?" && { SSH_USER=""; SSH_HOST=""; SSH_PORT=""; continue; }
-      exit 1
+
+      local fix_options=("admin:Use an administrator account on the backup server:Logs in once as root or a sudo user to add the key, and creates ${SSH_USER} if needed.")
+      $key_only || fix_options+=("retry:Type the details again:For a mistyped username, host or password.")
+      fix_options+=("manual:Add the key by hand:Shows the commands to run on the backup server."
+                    "stop:Stop:Nothing is changed.")
+      choose key_fix "admin" "How should the backup key be added?" "${fix_options[@]}"
+      case "$key_fix" in
+        admin)
+          install_key_via_admin && recheck=true || print warning "The key was not added."
+          continue ;;
+        retry)
+          SSH_USER=""; SSH_HOST=""; SSH_PORT=""
+          continue ;;
+        manual)
+          print_manual_key_steps
+          confirm "Has the key been added? Check the login now?" && { recheck=true; continue; }
+          exit 1 ;;
+        *) exit 1 ;;
+      esac
     fi
     rm -f "$copy_err"
 
@@ -1065,6 +1164,8 @@ configure_ssh() {
     print success "Password-free login works"
     break
   done
+
+  ensure_ssh_config_entry || print warning "Could not add ${SSH_HOST} to /root/.ssh/config. Backups are not affected."
 
   local remote_home
   remote_home="$(ssh -n -i "$SSH_KEY" -o BatchMode=yes -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" 'printf %s "$HOME"')"
