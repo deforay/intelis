@@ -135,6 +135,25 @@ final class QualityMonitoringEndpointTest extends TestCase
         );
     }
 
+    #[RunInSeparateProcess]
+    public function testExportPreservesRowsAndInstrumentFieldsAcrossBatchBoundaries(): void
+    {
+        for ($i = 0; $i < 201; $i++) {
+            $this->seed(['lab_id' => self::LAB_ID, 'sample_received_at_lab_datetime' => self::daysAgo(2)]);
+        }
+        $service = ContainerRegistry::get(QualityMonitoringService::class);
+        $filters = $service->resolveFilters(['dateRange' => '']);
+        $expected = $service->getSamples($filters, 'pending', 0, 1000)['rows'];
+        // Use a fresh service so the listing cannot warm the export's instrument cache.
+        $export = new QualityMonitoringService(
+            LegacyAppHarness::db(),
+            ContainerRegistry::get(CommonService::class)
+        );
+        $actual = iterator_to_array($export->streamSamples($filters, 'pending'), false);
+        self::assertGreaterThan(200, count($actual));
+        self::assertSame($expected, $actual);
+    }
+
     private static function daysAgo(int $days): string
     {
         return "DATE_SUB(NOW(), INTERVAL $days DAY)";
