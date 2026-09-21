@@ -13,7 +13,6 @@ use App\Utilities\FileCacheUtility;
 use App\Utilities\DownloadTokenUtility;
 use App\Registries\ContainerRegistry;
 use function iter\count as iterCount;
-use function iter\toArray as iterToArray;
 use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Component\String\UnicodeString;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -542,18 +541,31 @@ function _toLowerCase(?string $string): ?string
 }
 
 /**
- * Safely converts an iterator to an array and retrieves a specified key.
+ * Read the first matching key without materializing the remaining iterator.
  *
- * @param mixed $iterator The potential iterator.
- * @param string $key The key to retrieve from the array.
- * @return mixed Returns the value associated with the key, or null if not found or not an iterator.
+ * @param mixed $iterator The potential iterator or IteratorAggregate.
+ * @param string|int $key The key to retrieve.
+ * @return mixed The value, or null for a missing key or non-Traversable input.
  */
-function _getIteratorKey(mixed $iterator, $key)
+function _getIteratorKey(mixed $iterator, $key): mixed
 {
-    if ($iterator instanceof Iterator) {
-        $array = iterToArray($iterator);
-        return $array[$key] ?? null;
+    // JsonMachine Items implements IteratorAggregate, not Iterator.
+    if (!$iterator instanceof Traversable) {
+        return null;
     }
+
+    try {
+        foreach ($iterator as $iteratorKey => $value) {
+            if ((string) $iteratorKey === (string) $key) {
+                return $value;
+            }
+        }
+    } catch (\JsonMachine\Exception\PathNotFoundException) {
+        // appVersion is optional in legacy API payloads. A missing JSON pointer
+        // is reported during iteration and must remain a missing value.
+        return null;
+    }
+
     return null;
 }
 
