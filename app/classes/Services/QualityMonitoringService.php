@@ -534,25 +534,17 @@ final class QualityMonitoringService
 
     /**
      * Every waiting sample behind one cascade card, one at a time, for an
-     * export that must not hold the whole backlog in memory.
+     * export with batched instrument lookups.
      *
      * @return \Generator<int, array<string, mixed>>
      */
     public function streamSamples(array $f, string $node): \Generator
     {
-        // Buffered, because the instrument lookup is one query for a batch of
-        // rows and not one query per row. The buffer is what bounds that query,
-        // so it stays small even though the export itself does not.
-        $buffer = [];
-        foreach ($this->db->rawQueryGenerator($this->samplesQuery($f, $node, '', '', 'desc')) as $row) {
-            $buffer[] = $this->presentSample($row);
-            if (count($buffer) >= self::EXPORT_BATCH) {
-                yield from $this->attachLabInstruments($buffer, $f);
-                $buffer = [];
-            }
-        }
-        if ($buffer !== []) {
-            yield from $this->attachLabInstruments($buffer, $f);
+        // Batch the instrument lookups; the underlying mysqli result is still buffered.
+        $rows = $this->db->rawQueryGenerator($this->samplesQuery($f, $node, '', '', 'desc'));
+        $samples = \iter\map($this->presentSample(...), $rows);
+        foreach (\iter\chunk($samples, self::EXPORT_BATCH) as $batch) {
+            yield from $this->attachLabInstruments($batch, $f);
         }
     }
 

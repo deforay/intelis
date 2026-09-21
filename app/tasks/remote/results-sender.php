@@ -21,6 +21,7 @@ use App\Services\TbService;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\ResultSyncBatch;
 use App\Services\CommonService;
 use App\Services\TestsService;
 use App\Services\Covid19Service;
@@ -265,7 +266,7 @@ function showServerHints(?SymfonyStyle $io, array $headers, ?string $label = nul
  * Report what a dry run would have sent for one module.
  * Rows are either flat records or nested ['form_data' => [...]] payload entries.
  */
-function reportDryRunChunks(SymfonyStyle $io, string $label, array $rows, int $totalChunks): void
+function reportDryRunChunks(SymfonyStyle $io, string $label, array $rows, int $totalChunks, int $count): void
 {
     $codes = [];
     foreach ($rows as $row) {
@@ -278,7 +279,6 @@ function reportDryRunChunks(SymfonyStyle $io, string $label, array $rows, int $t
         }
     }
 
-    $count = count($rows);
     $io->text(sprintf('DRY RUN: would send %d %s row(s) in %d chunk(s)', $count, strtoupper($label), $totalChunks));
     if ($codes !== []) {
         $suffix = $count > count($codes) ? ', ...' : '';
@@ -428,6 +428,11 @@ if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !==
 // Sending results to /v2/results.php for all test types
 $url = "$remoteURL/remote/v2/results.php";
 
+$queryResults = static function (string $sql, array $params) use ($db): array {
+    $db->reset();
+    return $db->rawQuery($sql, $params);
+};
+
 try {
     // Check network
     if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
@@ -462,11 +467,17 @@ try {
         }
 
         $db->reset();
-        $genericLabResult = $db->rawQuery($genericQuery);
-        $count = count($genericLabResult);
+        $resultBatch = new ResultSyncBatch(
+            $queryResults,
+            $genericQuery,
+            'generic.sample_id',
+            keyByUniqueId: true
+        );
+        $count = count($resultBatch);
 
         $acked = 0;
         $totalChunks = 0;
+        $chunksProcessed = 0;
 
         if ($count === 0) {
             if ($cliMode) {
@@ -480,31 +491,19 @@ try {
             /** @var GenericTestsService $genericService */
             $genericService = ContainerRegistry::get(GenericTestsService::class);
 
-            // Build nested payload
-            if ($cliMode) {
-                $io->text("Building payload...");
-            }
-            $tBuild = MiscUtility::startTimer();
-            $customTestResultData = [];
-            foreach ($genericLabResult as $r) {
-                $customTestResultData[$r['unique_id']] = [
-                    'form_data' => $r,
-                    'data_from_tests' => $genericService->getTestsByGenericSampleIds($r['sample_id']),
-                ];
-            }
-            if ($cliMode) {
-                $io->comment("Built payload in " . MiscUtility::elapsedTime($tBuild) . "s");
-            }
-
-            $chunks = array_chunk($customTestResultData, max(1, $chunkSize), true);
-            $totalChunks = count($chunks);
+            $totalChunks = (int) ceil($count / max(1, $chunkSize));
+            $chunks = $resultBatch->chunks(
+                max(1, $chunkSize),
+                static fn(array $r) => $genericService->getTestsByGenericSampleIds($r['sample_id'])
+            );
 
             if ($isDryRun) {
-                reportDryRunChunks($io, 'generic-tests', $customTestResultData, $totalChunks);
+                reportDryRunChunks($io, 'generic-tests', $resultBatch->preview(), $totalChunks, $count);
                 $chunks = [];
             }
 
             foreach ($chunks as $chunkIndex => $chunk) {
+                $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
@@ -575,7 +574,7 @@ try {
         $summaryRequest = [
             'recordsSelected' => $count,
             'chunkSize' => $chunkSize,
-            'chunksProcessed' => $totalChunks,
+            'chunksProcessed' => $chunksProcessed,
         ];
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
@@ -621,11 +620,16 @@ try {
         }
 
         $db->reset();
-        $vlLabResult = $db->rawQuery($vlQuery);
-        $count = count($vlLabResult);
+        $resultBatch = new ResultSyncBatch(
+            $queryResults,
+            $vlQuery,
+            'vl.vl_sample_id'
+        );
+        $count = count($resultBatch);
 
         $acked = 0;
         $totalChunks = 0;
+        $chunksProcessed = 0;
 
         if ($count === 0) {
             if ($cliMode) {
@@ -635,15 +639,16 @@ try {
             if ($cliMode) {
                 $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
-            $chunks = array_chunk($vlLabResult, max(1, $chunkSize), true);
-            $totalChunks = count($chunks);
+            $totalChunks = (int) ceil($count / max(1, $chunkSize));
+            $chunks = $resultBatch->chunks(max(1, $chunkSize));
 
             if ($isDryRun) {
-                reportDryRunChunks($io, 'vl', $vlLabResult, $totalChunks);
+                reportDryRunChunks($io, 'vl', $resultBatch->preview(), $totalChunks, $count);
                 $chunks = [];
             }
 
             foreach ($chunks as $chunkIndex => $chunk) {
+                $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
@@ -714,7 +719,7 @@ try {
         $summaryRequest = [
             'recordsSelected' => $count,
             'chunkSize' => $chunkSize,
-            'chunksProcessed' => $totalChunks,
+            'chunksProcessed' => $chunksProcessed,
         ];
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
@@ -760,11 +765,16 @@ try {
         }
 
         $db->reset();
-        $eidLabResult = $db->rawQuery($eidQuery);
-        $count = count($eidLabResult);
+        $resultBatch = new ResultSyncBatch(
+            $queryResults,
+            $eidQuery,
+            'vl.eid_id'
+        );
+        $count = count($resultBatch);
 
         $acked = 0;
         $totalChunks = 0;
+        $chunksProcessed = 0;
 
         if ($count === 0) {
             if ($cliMode) {
@@ -775,15 +785,16 @@ try {
             if ($cliMode) {
                 $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
-            $chunks = array_chunk($eidLabResult, max(1, $chunkSize), true);
-            $totalChunks = count($chunks);
+            $totalChunks = (int) ceil($count / max(1, $chunkSize));
+            $chunks = $resultBatch->chunks(max(1, $chunkSize));
 
             if ($isDryRun) {
-                reportDryRunChunks($io, 'eid', $eidLabResult, $totalChunks);
+                reportDryRunChunks($io, 'eid', $resultBatch->preview(), $totalChunks, $count);
                 $chunks = [];
             }
 
             foreach ($chunks as $chunkIndex => $chunk) {
+                $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
@@ -853,7 +864,7 @@ try {
         $summaryRequest = [
             'recordsSelected' => $count,
             'chunkSize' => $chunkSize,
-            'chunksProcessed' => $totalChunks,
+            'chunksProcessed' => $chunksProcessed,
         ];
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
@@ -899,11 +910,17 @@ try {
         }
 
         $db->reset();
-        $c19LabResult = $db->rawQuery($covid19Query);
-        $count = count($c19LabResult);
+        $resultBatch = new ResultSyncBatch(
+            $queryResults,
+            $covid19Query,
+            'c19.covid19_id',
+            keyByUniqueId: true
+        );
+        $count = count($resultBatch);
 
         $acked = 0;
         $totalChunks = 0;
+        $chunksProcessed = 0;
 
         if ($count === 0) {
             if ($cliMode) {
@@ -918,31 +935,19 @@ try {
             /** @var Covid19Service $covid19Service */
             $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
-            // Build nested payload
-            if ($cliMode) {
-                $io->text("Building payload...");
-            }
-            $tBuild = MiscUtility::startTimer();
-            $c19ResultData = [];
-            foreach ($c19LabResult as $r) {
-                $c19ResultData[$r['unique_id']] = [
-                    'form_data' => $r,
-                    'data_from_tests' => $covid19Service->getCovid19TestsByFormId($r['covid19_id']),
-                ];
-            }
-            if ($cliMode) {
-                $io->comment("Built payload in " . MiscUtility::elapsedTime($tBuild) . "s");
-            }
-
-            $chunks = array_chunk($c19ResultData, max(1, $chunkSize), true);
-            $totalChunks = count($chunks);
+            $totalChunks = (int) ceil($count / max(1, $chunkSize));
+            $chunks = $resultBatch->chunks(
+                max(1, $chunkSize),
+                static fn(array $r) => $covid19Service->getCovid19TestsByFormId($r['covid19_id'])
+            );
 
             if ($isDryRun) {
-                reportDryRunChunks($io, 'covid19', $c19ResultData, $totalChunks);
+                reportDryRunChunks($io, 'covid19', $resultBatch->preview(), $totalChunks, $count);
                 $chunks = [];
             }
 
             foreach ($chunks as $chunkIndex => $chunk) {
+                $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
@@ -1012,7 +1017,7 @@ try {
         $summaryRequest = [
             'recordsSelected' => $count,
             'chunkSize' => $chunkSize,
-            'chunksProcessed' => $totalChunks,
+            'chunksProcessed' => $chunksProcessed,
         ];
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
@@ -1058,11 +1063,16 @@ try {
         }
 
         $db->reset();
-        $hepLabResult = $db->rawQuery($hepQuery);
-        $count = count($hepLabResult);
+        $resultBatch = new ResultSyncBatch(
+            $queryResults,
+            $hepQuery,
+            'hep.hepatitis_id'
+        );
+        $count = count($resultBatch);
 
         $acked = 0;
         $totalChunks = 0;
+        $chunksProcessed = 0;
 
         if ($count === 0) {
             if ($cliMode) {
@@ -1072,15 +1082,16 @@ try {
             if ($cliMode) {
                 $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
-            $chunks = array_chunk($hepLabResult, max(1, $chunkSize), true);
-            $totalChunks = count($chunks);
+            $totalChunks = (int) ceil($count / max(1, $chunkSize));
+            $chunks = $resultBatch->chunks(max(1, $chunkSize));
 
             if ($isDryRun) {
-                reportDryRunChunks($io, 'hepatitis', $hepLabResult, $totalChunks);
+                reportDryRunChunks($io, 'hepatitis', $resultBatch->preview(), $totalChunks, $count);
                 $chunks = [];
             }
 
             foreach ($chunks as $chunkIndex => $chunk) {
+                $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
@@ -1150,7 +1161,7 @@ try {
         $summaryRequest = [
             'recordsSelected' => $count,
             'chunkSize' => $chunkSize,
-            'chunksProcessed' => $totalChunks,
+            'chunksProcessed' => $chunksProcessed,
         ];
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
@@ -1199,11 +1210,17 @@ try {
         }
 
         $db->reset();
-        $tbLabResult = $db->rawQuery($tbQuery);
-        $count = count($tbLabResult);
+        $resultBatch = new ResultSyncBatch(
+            $queryResults,
+            $tbQuery,
+            'tb.tb_id',
+            keyByUniqueId: true
+        );
+        $count = count($resultBatch);
 
         $acked = 0;
         $totalChunks = 0;
+        $chunksProcessed = 0;
 
         if ($count === 0) {
             if ($cliMode) {
@@ -1213,31 +1230,19 @@ try {
             if ($cliMode) {
                 $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
-            // Build nested payload
-            if ($cliMode) {
-                $io->text("Building payload...");
-            }
-            $tBuild = MiscUtility::startTimer();
-            $tbTestResultData = [];
-            foreach ($tbLabResult as $r) {
-                $tbTestResultData[$r['unique_id']] = [
-                    'form_data' => $r,
-                    'data_from_tests' => $tbService->getTbTestsByFormId($r['tb_id']),
-                ];
-            }
-            if ($cliMode) {
-                $io->comment("Built payload in " . MiscUtility::elapsedTime($tBuild) . "s");
-            }
-
-            $chunks = array_chunk($tbTestResultData, max(1, $chunkSize), true);
-            $totalChunks = count($chunks);
+            $totalChunks = (int) ceil($count / max(1, $chunkSize));
+            $chunks = $resultBatch->chunks(
+                max(1, $chunkSize),
+                static fn(array $r) => $tbService->getTbTestsByFormId($r['tb_id'])
+            );
 
             if ($isDryRun) {
-                reportDryRunChunks($io, 'tb', $tbTestResultData, $totalChunks);
+                reportDryRunChunks($io, 'tb', $resultBatch->preview(), $totalChunks, $count);
                 $chunks = [];
             }
 
             foreach ($chunks as $chunkIndex => $chunk) {
+                $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
@@ -1310,7 +1315,7 @@ try {
         $summaryRequest = [
             'recordsSelected' => $count,
             'chunkSize' => $chunkSize,
-            'chunksProcessed' => $totalChunks,
+            'chunksProcessed' => $chunksProcessed,
         ];
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
@@ -1356,10 +1361,15 @@ try {
         }
 
         $db->reset();
-        $cd4LabResult = $db->rawQuery($cd4Query);
-        $count = count($cd4LabResult);
+        $resultBatch = new ResultSyncBatch(
+            $queryResults,
+            $cd4Query,
+            'cd4.cd4_id'
+        );
+        $count = count($resultBatch);
         $acked = 0;
         $totalChunks = 0;
+        $chunksProcessed = 0;
 
         if ($count === 0) {
             if ($cliMode) {
@@ -1371,15 +1381,16 @@ try {
                 $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
 
-            $chunks = array_chunk($cd4LabResult, max(1, $chunkSize), true);
-            $totalChunks = count($chunks);
+            $totalChunks = (int) ceil($count / max(1, $chunkSize));
+            $chunks = $resultBatch->chunks(max(1, $chunkSize));
 
             if ($isDryRun) {
-                reportDryRunChunks($io, 'cd4', $cd4LabResult, $totalChunks);
+                reportDryRunChunks($io, 'cd4', $resultBatch->preview(), $totalChunks, $count);
                 $chunks = [];
             }
 
             foreach ($chunks as $chunkIndex => $chunk) {
+                $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
@@ -1449,7 +1460,7 @@ try {
         $summaryRequest = [
             'recordsSelected' => $count,
             'chunkSize' => $chunkSize,
-            'chunksProcessed' => $totalChunks,
+            'chunksProcessed' => $chunksProcessed,
         ];
         $summaryResponse = [
             'recordsAcknowledged' => $acked,
