@@ -269,6 +269,10 @@ esac
 : "${SSH_USER:=}"; : "${SSH_HOST:=}"; : "${SSH_PORT:=22}"; : "${SSH_KEY:=/root/.ssh/id_ed25519_intelis}"
 : "${SMB_HOST:=}"; : "${SMB_SHARE:=}"; : "${SMB_VERS:=3.0}"; : "${MOUNT_POINT:=/mnt/intelis-backup}"
 : "${LOCAL_ROOT:=}"
+# Database history kept at the destination: one dump per day for HISTORY_DAYS
+# days, then one per week for HISTORY_WEEKS weeks. Not asked at setup; change it
+# in backup.conf.
+: "${HISTORY_DAYS:=7}"; : "${HISTORY_WEEKS:=4}"
 
 CRON_MARKER="/usr/local/bin/intelis-backup.sh"
 
@@ -331,6 +335,11 @@ if [ "$ACTION" = "status" ]; then
     else
       echo "Last good backup: never"
     fi
+    if [ "${HISTORY_COUNT:-0}" -gt 0 ]; then
+      echo "History         : ${HISTORY_OLDEST} to ${HISTORY_NEWEST} (${HISTORY_COUNT} days)"
+    else
+      echo "History         : none yet"
+    fi
     [ "$LAST_STATUS" = "failed" ] && { echo "Last attempt    : FAILED at ${LAST_FAILURE_AT}"; echo "Reason          : ${LAST_ERROR}"; }
     [ "$LAST_STATUS" = "ok" ]     &&   echo "Last attempt    : succeeded in ${LAST_DURATION}s"
   else
@@ -371,6 +380,7 @@ print() {
 
 LAST_STATUS="never"; LAST_SUCCESS_AT=""; LAST_SUCCESS_EPOCH=0
 LAST_FAILURE_AT=""; LAST_ERROR=""; LAST_SIZE="unknown"; LAST_DURATION=0
+HISTORY_OLDEST=""; HISTORY_NEWEST=""; HISTORY_COUNT=0
 if [ -f "$STATUS_ENV" ]; then
   # shellcheck disable=SC1090
   . "$STATUS_ENV" || true
@@ -401,6 +411,9 @@ LAST_ERROR='$(printf '%s' "$LAST_ERROR" | tr -d "'" | tr -d '\n\r')'
 LAST_SIZE='${LAST_SIZE}'
 LAST_DURATION='${LAST_DURATION}'
 DB_DUMP_AGE_HOURS='${DB_DUMP_AGE_HOURS:--1}'
+HISTORY_OLDEST='${HISTORY_OLDEST}'
+HISTORY_NEWEST='${HISTORY_NEWEST}'
+HISTORY_COUNT='${HISTORY_COUNT:-0}'
 STATUS
   cat > "$STATUS_JSON" <<STATUS
 {
@@ -415,7 +428,10 @@ STATUS
   "last_error": "$(json_escape "$LAST_ERROR")",
   "size": "$(json_escape "$LAST_SIZE")",
   "duration_seconds": ${LAST_DURATION:-0},
-  "db_dump_age_hours": ${DB_DUMP_AGE_HOURS:--1}
+  "db_dump_age_hours": ${DB_DUMP_AGE_HOURS:--1},
+  "history_oldest": "$(json_escape "$HISTORY_OLDEST")",
+  "history_newest": "$(json_escape "$HISTORY_NEWEST")",
+  "history_count": ${HISTORY_COUNT:-0}
 }
 STATUS
   chmod 644 "$STATUS_JSON" "$STATUS_ENV" 2>/dev/null || true
@@ -554,7 +570,7 @@ EXCLUDES
 # WHAT to send. The verification pass below reuses the transport but must not
 # reuse the filters: it works from an explicit file list, and --delete needs a
 # whole-tree walk, which is the cost this is here to avoid.
-RSYNC_FILTER_OPTS=(--delete --partial-dir=.rsync-partial --timeout=900 --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta)
+RSYNC_FILTER_OPTS=(--delete --partial-dir=.rsync-partial --timeout=900 --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta --exclude=/.history/)
 RSYNC_MODE_OPTS=()
 
 needs_compat_flags() {
@@ -683,6 +699,127 @@ elif verify_transfer; then
   print success "Verified: ${CHANGED_COUNT} file(s) match at the destination"
 else
   print warning "Some files still differ after the copy. They may have changed while the backup was running; the next backup should pick them up."
+fi
+
+# --- database history ---------------------------------------------------------
+# The mirror holds what the lab machine holds, and db-tools keeps only its newest
+# 7 dumps: about 2 days. .history/ keeps one dump per day for HISTORY_DAYS days
+# and one per week for HISTORY_WEEKS weeks after that, so a mistake noticed late
+# can still be undone. The mirror excludes it, and rsync never deletes an
+# excluded path, so a wiped or reinstalled lab machine cannot reach it.
+#
+# Every decision is made here, from the timestamps in the file names. The
+# destination only runs ls, ln, cp, mv and rm, so a bare Linux server, a Windows
+# share and a USB drive all behave the same. Copies are made at the destination
+# from the mirror, so no dump crosses the network twice, and ln is tried first:
+# where hard links work, a history entry costs no space at all.
+
+# Prints "label YYYYMMDD" for a dump or config archive name, nothing otherwise.
+history_key() {
+  local n=$1
+  [[ "$n" =~ ^[A-Za-z0-9._-]+$ ]] || return 0
+  case "$n" in *.meta.json|*.part|pre-restore-*) return 0 ;; esac
+  if [[ "$n" =~ ^config-([0-9]{4})-([0-9]{2})-([0-9]{2})_[0-9-]+\.tgz$ ]]; then
+    printf 'config %s%s%s\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}"
+  elif [[ "$n" =~ ^(.+)-([0-9]{8})-[0-9]{6}.*\.sql(\.gz|\.zst|\.zip)?(\.gpg)?$ ]]; then
+    printf '%s %s\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"
+  fi
+}
+
+update_history() {
+  local listing where dir name k key label day
+  # shellcheck disable=SC2016  # expanded at the destination, not here
+  listing="$(dest_exec "cd ${Q_DEST} && mkdir -p .history/db .history/config && rm -f .history/db/*.part .history/config/*.part && for d in db config; do (cd \"backups/\$d\" 2>/dev/null && ls -1) | sed \"s|^|mirror \$d |\"; (cd \".history/\$d\" && ls -1) | sed \"s|^|history \$d |\"; done")" || return 1
+
+  # want: the newest mirror file for each folder|label|day. have: history entries.
+  declare -A want=() have=()
+  while read -r where dir name; do
+    [ -n "${name:-}" ] || continue
+    k="$(history_key "$name")"
+    [ -n "$k" ] || continue
+    key="${dir}|${k% *}|${k#* }"
+    if [ "$where" = "mirror" ]; then
+      if [ -z "${want[$key]:-}" ] || [[ "$name" > "${want[$key]}" ]]; then want[$key]="$name"; fi
+    else
+      have[$key]="${have[$key]:+${have[$key]} }${name}"
+    fi
+  done < <(printf '%s\n' "$listing" | tr -d '\r')
+
+  # One entry per folder|label|day: the newest of the mirror's and history's.
+  local -a cmds=()
+  declare -A final=()
+  local best h
+  for key in "${!want[@]}" "${!have[@]}"; do
+    [ -z "${final[$key]:-}" ] || continue
+    best="${want[$key]:-}"
+    for h in ${have[$key]:-}; do [[ "$h" > "$best" ]] && best="$h"; done
+    final[$key]="$best"
+    dir="${key%%|*}"
+    if [ -n "${want[$key]:-}" ] && [ "$best" = "${want[$key]}" ] && [[ " ${have[$key]:-} " != *" ${best} "* ]]; then
+      cmds+=("{ ln -f \"backups/${dir}/${best}\" \".history/${dir}/${best}\" 2>/dev/null || { cp \"backups/${dir}/${best}\" \".history/${dir}/${best}.part\" && mv -f \".history/${dir}/${best}.part\" \".history/${dir}/${best}\"; }; } || e=1")
+    fi
+    for h in ${have[$key]:-}; do
+      [ "$h" = "$best" ] || cmds+=("rm -f \".history/${dir}/${h}\" || e=1")
+    done
+  done
+
+  # Retention, per folder|label, by count rather than by age: the newest
+  # HISTORY_DAYS days, then the newest day of each of the next HISTORY_WEEKS
+  # weeks. Age would need a trustworthy clock, and labs with a flat CMOS battery
+  # write dumps dated years ahead; measured by age, one such dump pruned every
+  # other entry. Counted, a wrong date costs one slot and nothing else.
+  declare -A days_of=() keep=()
+  for key in "${!final[@]}"; do
+    label="${key%|*}"; day="${key##*|}"
+    days_of[$label]="${days_of[$label]:+${days_of[$label]} }${day}"
+  done
+  local n weeks_seen wk last_wk
+  local -A db_days=()
+  for label in "${!days_of[@]}"; do
+    n=0; weeks_seen=0; last_wk=""
+    for day in $(printf '%s\n' ${days_of[$label]} | sort -r); do
+      n=$((n + 1))
+      if [ "$n" -le "$HISTORY_DAYS" ]; then
+        keep[$label|$day]=1
+        # The oldest daily entry's week is already covered.
+        [ "$n" -eq "$HISTORY_DAYS" ] && last_wk="$(date -u -d "$day" +%G-%V 2>/dev/null || echo "$day")"
+      else
+        wk="$(date -u -d "$day" +%G-%V 2>/dev/null || echo "$day")"
+        # Newest first, so the first day met in a week is that week's newest.
+        if [ "$wk" != "$last_wk" ] && [ "$weeks_seen" -lt "$HISTORY_WEEKS" ]; then
+          keep[$label|$day]=1
+          weeks_seen=$((weeks_seen + 1))
+        fi
+        last_wk="$wk"
+      fi
+      [ -n "${keep[$label|$day]:-}" ] && [ "${label%%|*}" = "db" ] && db_days[$day]=1
+    done
+  done
+  for key in "${!final[@]}"; do
+    [ -n "${keep[$key]:-}" ] || cmds+=("rm -f \".history/${key%%|*}/${final[$key]}\" || e=1")
+  done
+
+  # Reported as days covered, whichever databases they hold.
+  HISTORY_COUNT=${#db_days[@]}; HISTORY_OLDEST=""; HISTORY_NEWEST=""
+  if [ "$HISTORY_COUNT" -gt 0 ]; then
+    HISTORY_OLDEST="$(printf '%s\n' "${!db_days[@]}" | sort | head -1)"
+    HISTORY_NEWEST="$(printf '%s\n' "${!db_days[@]}" | sort | tail -1)"
+  fi
+  [ -n "$HISTORY_OLDEST" ] && HISTORY_OLDEST="${HISTORY_OLDEST:0:4}-${HISTORY_OLDEST:4:2}-${HISTORY_OLDEST:6:2}"
+  [ -n "$HISTORY_NEWEST" ] && HISTORY_NEWEST="${HISTORY_NEWEST:0:4}-${HISTORY_NEWEST:4:2}-${HISTORY_NEWEST:6:2}"
+
+  [ "${#cmds[@]}" -gt 0 ] || return 0
+  local joined
+  joined="$(printf '%s; ' "${cmds[@]}")"
+  dest_exec "cd ${Q_DEST} && e=0; ${joined} exit \$e"
+}
+
+if update_history; then
+  if [ "$HISTORY_COUNT" -gt 0 ]; then
+    print success "History: ${HISTORY_OLDEST} to ${HISTORY_NEWEST} (${HISTORY_COUNT} days)"
+  fi
+else
+  print warning "Could not update the database history at the destination. The copy itself is complete; the next backup tries again."
 fi
 
 # The size on the backup, for `intelis backup status` — measured only where
@@ -1141,6 +1278,10 @@ SMB_VERS='${SMB_VERS}'
 SMB_CRED_FILE='${SMB_CRED_FILE}'
 MOUNT_POINT='${MOUNT_POINT}'
 LOCAL_ROOT='${LOCAL_ROOT}'
+# Database history at the destination: one dump per day for HISTORY_DAYS days,
+# then one per week for HISTORY_WEEKS weeks.
+HISTORY_DAYS='${HISTORY_DAYS:-7}'
+HISTORY_WEEKS='${HISTORY_WEEKS:-4}'
 CONF
 chmod 600 "$CONF_FILE"
 umask 022

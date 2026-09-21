@@ -158,18 +158,25 @@ and after every restart. The copy survives if the InteLIS machine fails.
     It holds the whole InteLIS folder. The database backups are in `backups/db`
     and the settings backups in `backups/config`. It leaves out files rebuilt on
     install: `vendor/`, `node_modules/`, caches, logs, temporary files and
-version-control folders.
+    version-control folders.
 
-!!! warning "The copy only goes back about 2 days"
+    The folder is a mirror of this machine, so it holds the newest database
+    backups only, about the last 2 days. Files deleted on this machine are
+    deleted from the mirror at the next run. Older database backups are kept
+    next to it, in `.history/`:
 
-    The backup is a mirror of this machine. A database backup is made every 6
-    hours and only the newest 7 are kept, so the copy holds about the last 2
-    days. Files deleted on this machine are deleted from the copy at the next
-    run. Once a week, copy `backups/db` to a drive that is then unplugged and
-    stored away. That copy is the only history older than 2 days.
+    | Kept in `.history/` | How many |
+    | --- | --- |
+    | One database backup per day | The newest 7 days |
+    | One database backup per week, after that | 4 more weeks |
+    | The settings backup | One per week, for the same period |
 
-The copy also holds the settings, which include the database password. Keep
-the backup folder readable only by the people who manage InteLIS.
+    That is about 5 weeks in all. A wipe or reinstall of this machine does not
+    touch `.history/`. To keep more, change `HISTORY_DAYS` and `HISTORY_WEEKS`
+    in `/etc/intelis/backup.conf`.
+
+    The backup also holds the settings, which include the database password.
+    Keep the backup folder readable only by the people who manage InteLIS.
 
     Two labs with the same name still get separate folders. One lab never
     overwrites another lab's backup.
@@ -367,18 +374,25 @@ the backup folder readable only by the people who manage InteLIS.
     It holds the whole InteLIS folder. The database backups are in `backups\db`
     and the settings backups in `backups\config`. It leaves out files rebuilt on
     install: `vendor/`, `node_modules/`, caches, logs, temporary files and
-version-control folders.
+    version-control folders.
 
-!!! warning "The copy only goes back about 2 days"
+    The folder is a mirror of this machine, so it holds the newest database
+    backups only, about the last 2 days. Files deleted on this machine are
+    deleted from the mirror at the next run. Older database backups are kept
+    next to it, in `.history/`:
 
-    The backup is a mirror of this machine. A database backup is made every 6
-    hours and only the newest 7 are kept, so the copy holds about the last 2
-    days. Files deleted on this machine are deleted from the copy at the next
-    run. Once a week, copy `backups/db` to a drive that is then unplugged and
-    stored away. That copy is the only history older than 2 days.
+    | Kept in `.history/` | How many |
+    | --- | --- |
+    | One database backup per day | The newest 7 days |
+    | One database backup per week, after that | 4 more weeks |
+    | The settings backup | One per week, for the same period |
 
-The copy also holds the settings, which include the database password. Keep
-the backup folder readable only by the people who manage InteLIS.
+    That is about 5 weeks in all. A wipe or reinstall of this machine does not
+    touch `.history/`. To keep more, change `HISTORY_DAYS` and `HISTORY_WEEKS`
+    in `/etc/intelis/backup.conf`.
+
+    The backup also holds the settings, which include the database password.
+    Keep the backup folder readable only by the people who manage InteLIS.
 
     Two labs with the same name still get separate folders. One lab never
     overwrites another lab's backup.
@@ -542,18 +556,25 @@ the backup folder readable only by the people who manage InteLIS.
     It holds the whole InteLIS folder. The database backups are in `backups/db`
     and the settings backups in `backups/config`. It leaves out files rebuilt on
     install: `vendor/`, `node_modules/`, caches, logs, temporary files and
-version-control folders.
+    version-control folders.
 
-!!! warning "The copy only goes back about 2 days"
+    The folder is a mirror of this machine, so it holds the newest database
+    backups only, about the last 2 days. Files deleted on this machine are
+    deleted from the mirror at the next run. Older database backups are kept
+    next to it, in `.history/`:
 
-    The backup is a mirror of this machine. A database backup is made every 6
-    hours and only the newest 7 are kept, so the copy holds about the last 2
-    days. Files deleted on this machine are deleted from the copy at the next
-    run. Once a week, copy `backups/db` to a drive that is then unplugged and
-    stored away. That copy is the only history older than 2 days.
+    | Kept in `.history/` | How many |
+    | --- | --- |
+    | One database backup per day | The newest 7 days |
+    | One database backup per week, after that | 4 more weeks |
+    | The settings backup | One per week, for the same period |
 
-The copy also holds the settings, which include the database password. Keep
-the backup folder readable only by the people who manage InteLIS.
+    That is about 5 weeks in all. A wipe or reinstall of this machine does not
+    touch `.history/`. To keep more, change `HISTORY_DAYS` and `HISTORY_WEEKS`
+    in `/etc/intelis/backup.conf`.
+
+    The backup also holds the settings, which include the database password.
+    Keep the backup folder readable only by the people who manage InteLIS.
 
     Two labs with the same name still get separate folders. One lab never
     overwrites another lab's backup.
