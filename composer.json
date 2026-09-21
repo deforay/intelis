@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "php": "^8.2 || ^8.3 || ^8.4 || ^8.5",
+        "php": "^8.4.1",
         "ext-bcmath": "*",
         "ext-curl": "*",
         "ext-fileinfo": "*",
@@ -27,7 +27,7 @@
         "ext-sodium": "*",
         "ext-zip": "*",
         "ext-zlib": "*",
-        "amitdugar/db-tools": "^3.1",
+        "amitdugar/db-tools": "^3.3",
         "brick/phonenumber": "^0.6.0",
         "crunzphp/crunz": "^3.9",
         "ezyang/htmlpurifier": "^4.19",

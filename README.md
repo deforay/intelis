@@ -75,7 +75,7 @@ The Ubuntu installer and the Docker image both supply these. A manual install ne
 - Apache 2.x with the `rewrite` and `headers` modules enabled
 - MySQL 8.0 or higher recommended. That is what migrations are written and tested
   against. Older releases may or may not work and are not guaranteed.
-- PHP 8.2 to 8.5. The Ubuntu installer selects 8.4, or 8.5 on Ubuntu 26.04 and newer.
+- PHP 8.4.1 or newer within PHP 8.x. The Ubuntu installer selects 8.4, or 8.5 on Ubuntu 26.04 and newer.
 
 ---
 

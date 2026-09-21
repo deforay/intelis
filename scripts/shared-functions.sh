@@ -382,7 +382,7 @@ check_ubuntu_version() {
 # Ubuntu 24.04 and older carry (and ondrej's PPA still builds) PHP 8.4, our
 # well-tested baseline. Ubuntu 26.04 dropped PHP 8.4 — its archive/PPA ship
 # PHP 8.5 instead — so on 26.04+ we default to 8.5. The app itself supports
-# 8.2–8.5 (see composer.json), so both are safe; this only chooses the default
+# PHP 8.x from 8.4.1 (see composer.json), so both are safe; this only chooses the default
 # when the operator hasn't pinned one with --php.
 default_php_version_for_os() {
     local ubuntu_version
