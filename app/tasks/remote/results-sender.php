@@ -527,6 +527,8 @@ if ($cliMode) {
 // resend passes --wait-for-lock: its command status is final, so it must either
 // run or exit non-zero, never report "completed" for work it skipped.
 $senderLockPath = VAR_PATH . DIRECTORY_SEPARATOR . 'results-sender.lock';
+// Whoever did not create the file (root's cron or the web user) opens it
+// read-only; flock() works on a read-only handle, so no chmod is needed.
 $senderLock = @fopen($senderLockPath, 'c') ?: @fopen($senderLockPath, 'r');
 $lockAcquired = $senderLock !== false && flock($senderLock, LOCK_EX | LOCK_NB);
 if ($senderLock !== false && !$lockAcquired && $waitForLockSeconds !== null) {
@@ -551,9 +553,6 @@ if ($senderLock === false) {
             : 'Another results sync is already running. Exiting.');
     }
     exit($waited ? RESULTS_SENDER_EXIT_LOCKED : 0);
-} else {
-    // Created by root under cron, the web user must still be able to open it.
-    @chmod($senderLockPath, 0666);
 }
 
 // Keep the operator's requested size as a ceiling throughout adaptive batching.
