@@ -82,6 +82,8 @@ $excludeClasses = [
     'App\\Interop\\Dhis2',
     'App\\Interop\\Fhir',
     'App\\Utilities\\ImageResizeUtility',
+    // Built per sync run with a query callable, never resolved from the container
+    'App\\Utilities\\ResultSyncBatch',
     // Add other classes to skip here
 ];
 
