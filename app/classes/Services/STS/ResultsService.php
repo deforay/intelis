@@ -4,7 +4,6 @@ namespace App\Services\STS;
 
 use Throwable;
 use RuntimeException;
-use JsonMachine\Items;
 use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -20,7 +19,7 @@ use App\Utilities\SampleCodeVariantUtility;
 use App\Utilities\QueryLoggerUtility;
 use App\Abstracts\AbstractTestService;
 use App\Exceptions\SystemException;
-use JsonMachine\JsonDecoder\ExtJsonDecoder;
+use App\Utilities\ResultSyncPayload;
 
 final class ResultsService
 {
@@ -156,6 +155,7 @@ final class ResultsService
     }
 
 
+    /** Accepts decoded v2 requests and legacy JSON-string callers. */
     public function receiveResults($testType, $jsonResponse, $isSilent = false): array
     {
         $this->setTestType($testType);
@@ -177,13 +177,10 @@ final class ResultsService
         $savedPrimaryKeys = [];
         $labId = null;
 
-        if (JsonUtility::isJSON($jsonResponse)) {
+        $parsedData = ResultSyncPayload::decode($jsonResponse);
+        if ($parsedData !== null) {
 
             $resultData = [];
-            $options = [
-                'decoder' => new ExtJsonDecoder(true)
-            ];
-            $parsedData = Items::fromString($jsonResponse, $options);
             foreach ($parsedData as $name => $data) {
                 if ($name === 'labId') {
                     $labId = $data;

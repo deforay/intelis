@@ -16,12 +16,19 @@ if (!defined('RESULTS_SENDER_DEFAULT_CHUNK_SIZE')) {
     define('RESULTS_SENDER_DEFAULT_CHUNK_SIZE', 1000);
 }
 
+// Bound decompressed JSON as well as record count. A single sample stays intact.
+if (!defined('RESULTS_SENDER_MAX_PAYLOAD_BYTES')) {
+    define('RESULTS_SENDER_MAX_PAYLOAD_BYTES', 2 * 1024 * 1024);
+}
+
 // Services & utilities
 use App\Services\TbService;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\ResultSyncBatch;
+use App\Utilities\ResultSyncBatchSize;
+use App\Utilities\ResultSyncPayload;
 use App\Services\CommonService;
 use App\Services\TestsService;
 use App\Services\Covid19Service;
@@ -92,6 +99,8 @@ function showHelp(SymfonyStyle $io): void
         ['<days>' => 'Optional. Send results modified in the last N days, e.g. 7'],
         ['silent' => 'Optional. Suppresses certain notifications / timestamp bumps where applicable'],
         ['-c, --chunk-size' => 'Optional. Number of records per request (default ' . RESULTS_SENDER_DEFAULT_CHUNK_SIZE . ')'],
+        ['--max-payload-bytes' => 'Optional. Maximum JSON bytes before gzip (default '
+            . RESULTS_SENDER_MAX_PAYLOAD_BYTES . '). A single sample stays intact'],
         ['--dry-run, dry-run' => 'Optional. Select and chunk rows, report what would be sent, but send nothing and update nothing'],
         ['-h, --help, help' => 'Show this help and exit']
     );
@@ -207,32 +216,24 @@ function unpackApiResponse(array|string|null $response): array
 }
 
 /**
- * Apply server hint for next chunk size if present.
- */
-function applyChunkHint(array $headers, int $currentChunkSize): int
-{
-    $hint = $headers['x-chunk-next'] ?? null;
-    if ($hint !== null && is_numeric($hint)) {
-        $hintValue = (int) $hint;
-        if ($hintValue > 0) {
-            return $hintValue;
-        }
-    }
-    return $currentChunkSize;
-}
-
-/**
  * Unpack an API response, show hints in CLI, and return body + next chunk size.
  *
  * @return array{0:string,1:int}
  */
-function handleApiResponse(array|string|null $apiResponse, bool $cliMode, ?SymfonyStyle $io, int $currentChunkSize, ?string $label = null): array
-{
+function handleApiResponse(
+    array|string|null $apiResponse,
+    bool $cliMode,
+    ?SymfonyStyle $io,
+    int $currentChunkSize,
+    ?string $label = null,
+    int $maximum = 1000,
+    float $seconds = 0
+): array {
     $unpackedResponse = unpackApiResponse($apiResponse);
     if ($cliMode) {
         showServerHints($io, $unpackedResponse['headers'], $label);
     }
-    $nextChunkSize = applyChunkHint($unpackedResponse['headers'], $currentChunkSize);
+    $nextChunkSize = ResultSyncBatchSize::next($currentChunkSize, $maximum, $unpackedResponse['headers'], $seconds);
     return [$unpackedResponse['body'], $nextChunkSize];
 }
 
@@ -262,6 +263,27 @@ function showServerHints(?SymfonyStyle $io, array $headers, ?string $label = nul
     }
 }
 
+/** Report preparation work and payload size without exposing patient data. */
+function reportPreparedResult(?SymfonyStyle $io, ResultSyncBatch $resultBatch, array $preparedRequest): void
+{
+    if ($preparedRequest['oversized']) {
+        LoggerUtility::logWarning('A single result exceeds the sync payload byte limit', [
+            'testType' => $preparedRequest['payload']['testType'],
+            'bytes' => $preparedRequest['bytes'],
+        ]);
+        $io?->warning('One sample exceeds the payload limit. Sending it intact.');
+    }
+    if ($io !== null) {
+        $timings = $resultBatch->timings();
+        $io->comment(sprintf(
+            'Source batch preparation: parent rows %.1f ms, child data/payload %.1f ms',
+            $timings['readMs'],
+            $timings['prepareMs']
+        ));
+        $io->text(sprintf('JSON payload: %s bytes before gzip', number_format($preparedRequest['bytes'])));
+    }
+}
+
 /**
  * Report what a dry run would have sent for one module.
  * Rows are either flat records or nested ['form_data' => [...]] payload entries.
@@ -279,7 +301,7 @@ function reportDryRunChunks(SymfonyStyle $io, string $label, array $rows, int $t
         }
     }
 
-    $io->text(sprintf('DRY RUN: would send %d %s row(s) in %d chunk(s)', $count, strtoupper($label), $totalChunks));
+    $io->text(sprintf('DRY RUN: would send %d %s row(s) in at least %d chunk(s) before payload-size splitting', $count, strtoupper($label), $totalChunks));
     if ($codes !== []) {
         $suffix = $count > count($codes) ? ', ...' : '';
         $io->text('Sample codes: ' . implode(', ', $codes) . $suffix);
@@ -318,6 +340,7 @@ $syncSinceDate = null;
 $forceSyncModule = null;
 $sampleCode = null;
 $chunkSize = RESULTS_SENDER_DEFAULT_CHUNK_SIZE;
+$maxPayloadBytes = RESULTS_SENDER_MAX_PAYLOAD_BYTES;
 
 if ($cliMode) {
     $validModules = TestsService::getActiveTests();
@@ -326,6 +349,7 @@ if ($cliMode) {
     }
     $awaitingTestType = false;
     $awaitingChunkSize = false;
+    $awaitingPayloadBytes = false;
 
     foreach ($argv as $index => $arg) {
         if ($index === 0) {
@@ -333,6 +357,18 @@ if ($cliMode) {
         }
 
         $arg = trim($arg);
+
+        if ($awaitingPayloadBytes || str_starts_with($arg, '--max-payload-bytes=')) {
+            $value = $awaitingPayloadBytes ? $arg : substr($arg, strlen('--max-payload-bytes='));
+            $validated = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+            if ($validated === false) {
+                $io->error("Payload byte limit must be a positive integer. Received: $value");
+                exit(1);
+            }
+            $maxPayloadBytes = $validated;
+            $awaitingPayloadBytes = false;
+            continue;
+        }
 
         if ($awaitingTestType) {
             $moduleCandidate = strtolower($arg);
@@ -359,6 +395,8 @@ if ($cliMode) {
             $isSilent = true;
         } elseif ($arg === '--dry-run' || $arg === 'dry-run') {
             $isDryRun = true;
+        } elseif ($arg === '--max-payload-bytes') {
+            $awaitingPayloadBytes = true;
         } elseif ($arg === '-t' || $arg === '--test') {
             $awaitingTestType = true;
         } elseif ($arg === '-c' || $arg === '--chunk-size') {
@@ -389,6 +427,11 @@ if ($cliMode) {
         }
     }
 
+    if ($awaitingPayloadBytes) {
+        $io->error('Missing value after --max-payload-bytes');
+        exit(1);
+    }
+
     if ($awaitingTestType) {
         $io->error("Missing test type value after -t/--test");
         exit(1);
@@ -408,12 +451,19 @@ if ($cliMode) {
         $io->text("Forcing module sync for: $forceSyncModule");
     }
 
-    $io->text("Chunk size per request: $chunkSize");
+    $io->text("Maximum records per request: $chunkSize");
+    $io->text("Maximum JSON bytes before gzip: $maxPayloadBytes (except oversized single samples)");
 
     if ($isDryRun) {
         $io->warning('DRY RUN: nothing will be sent to STS and no local sync flags will be updated.');
     }
 }
+
+// Keep the operator's requested size as a ceiling throughout adaptive batching.
+$maxChunkSize = max(1, $chunkSize);
+$nextBatchSize = static function () use (&$chunkSize): int {
+    return max(1, $chunkSize);
+};
 
 // Web fallback
 $forceSyncModule = $forceSyncModule ? strtolower(trim($forceSyncModule)) : null;
@@ -431,6 +481,22 @@ $url = "$remoteURL/remote/v2/results.php";
 $queryResults = static function (string $sql, array $params) use ($db): array {
     $db->reset();
     return $db->rawQuery($sql, $params);
+};
+
+$buildResultPayload = static function (array $chunk, string $testType) use ($labId, $general, $isSilent, $db): array {
+    $payload = [
+        'labId' => $labId,
+        'results' => $chunk,
+        'testType' => $testType,
+        'timestamp' => DateUtility::getCurrentTimestamp(),
+        'instanceId' => $general->getInstanceId(),
+    ];
+    if ($testType === 'generic-tests') {
+        $payload['silent'] = $isSilent;
+    } elseif ($testType === 'tb') {
+        $payload['manifests'] = buildReferralManifestsPayload($db, 'tb', $chunk);
+    }
+    return $payload;
 };
 
 try {
@@ -493,8 +559,15 @@ try {
 
             $totalChunks = (int) ceil($count / max(1, $chunkSize));
             $chunks = $resultBatch->chunks(
-                max(1, $chunkSize),
-                static fn(array $r) => $genericService->getTestsByGenericSampleIds($r['sample_id'])
+                $nextBatchSize,
+                prepareBatch: static function (array $rows) use ($genericService): array {
+                    $children = $genericService->getTestsByGenericSampleIds(array_column($rows, 'sample_id'));
+                    return ResultSyncBatch::nestedPayload(
+                        $rows,
+                        $children ?? [],
+                        'sample_id'
+                    );
+                }
             );
 
             if ($isDryRun) {
@@ -502,32 +575,35 @@ try {
                 $chunks = [];
             }
 
-            foreach ($chunks as $chunkIndex => $chunk) {
+            $requests = ResultSyncPayload::requests(
+                $chunks,
+                static fn(array $chunk): array => $buildResultPayload($chunk, 'generic-tests'),
+                $maxPayloadBytes,
+                $nextBatchSize
+            );
+            foreach ($requests as $chunkIndex => $preparedRequest) {
+                $payload = $preparedRequest['payload'];
+                $chunk = $payload['results'];
+                reportPreparedResult($cliMode ? $io : null, $resultBatch, $preparedRequest);
                 $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
                 if ($cliMode) {
                     $io->text(sprintf(
-                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        "Posting chunk %d (%d record%s) to %s...",
                         $chunkNumber,
-                        $totalChunks,
                         $chunkCount,
                         $chunkCount === 1 ? '' : 's',
                         $remoteURL
                     ));
                 }
                 $tPost = MiscUtility::startTimer();
-                $payload = [
-                    "labId" => $labId,
-                    "results" => $chunk,
-                    "testType" => "generic-tests",
-                    'timestamp' => DateUtility::getCurrentTimestamp(),
-                    "instanceId" => $general->getInstanceId(),
-                    "silent" => $isSilent
-                ];
-                $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'generic-tests');
+
+                $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
+                [$jsonResponse, $chunkSize] = handleApiResponse(
+                    $apiResponse, $cliMode, $io, $chunkCount, 'generic-tests', $maxChunkSize, microtime(true) - $tPost
+                );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
@@ -640,23 +716,31 @@ try {
                 $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
             $totalChunks = (int) ceil($count / max(1, $chunkSize));
-            $chunks = $resultBatch->chunks(max(1, $chunkSize));
+            $chunks = $resultBatch->chunks($nextBatchSize);
 
             if ($isDryRun) {
                 reportDryRunChunks($io, 'vl', $resultBatch->preview(), $totalChunks, $count);
                 $chunks = [];
             }
 
-            foreach ($chunks as $chunkIndex => $chunk) {
+            $requests = ResultSyncPayload::requests(
+                $chunks,
+                static fn(array $chunk): array => $buildResultPayload($chunk, 'vl'),
+                $maxPayloadBytes,
+                $nextBatchSize
+            );
+            foreach ($requests as $chunkIndex => $preparedRequest) {
+                $payload = $preparedRequest['payload'];
+                $chunk = $payload['results'];
+                reportPreparedResult($cliMode ? $io : null, $resultBatch, $preparedRequest);
                 $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
                 if ($cliMode) {
                     $io->text(sprintf(
-                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        "Posting chunk %d (%d record%s) to %s...",
                         $chunkNumber,
-                        $totalChunks,
                         $chunkCount,
                         $chunkCount === 1 ? '' : 's',
                         $remoteURL
@@ -664,15 +748,11 @@ try {
                 }
 
                 $tPost = MiscUtility::startTimer();
-                $payload = [
-                    "labId" => $labId,
-                    "results" => $chunk,
-                    "testType" => "vl",
-                    'timestamp' => DateUtility::getCurrentTimestamp(),
-                    "instanceId" => $general->getInstanceId()
-                ];
-                $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'vl');
+
+                $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
+                [$jsonResponse, $chunkSize] = handleApiResponse(
+                    $apiResponse, $cliMode, $io, $chunkCount, 'vl', $maxChunkSize, microtime(true) - $tPost
+                );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
@@ -786,38 +866,42 @@ try {
                 $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
             $totalChunks = (int) ceil($count / max(1, $chunkSize));
-            $chunks = $resultBatch->chunks(max(1, $chunkSize));
+            $chunks = $resultBatch->chunks($nextBatchSize);
 
             if ($isDryRun) {
                 reportDryRunChunks($io, 'eid', $resultBatch->preview(), $totalChunks, $count);
                 $chunks = [];
             }
 
-            foreach ($chunks as $chunkIndex => $chunk) {
+            $requests = ResultSyncPayload::requests(
+                $chunks,
+                static fn(array $chunk): array => $buildResultPayload($chunk, 'eid'),
+                $maxPayloadBytes,
+                $nextBatchSize
+            );
+            foreach ($requests as $chunkIndex => $preparedRequest) {
+                $payload = $preparedRequest['payload'];
+                $chunk = $payload['results'];
+                reportPreparedResult($cliMode ? $io : null, $resultBatch, $preparedRequest);
                 $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
                 if ($cliMode) {
                     $io->text(sprintf(
-                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        "Posting chunk %d (%d record%s) to %s...",
                         $chunkNumber,
-                        $totalChunks,
                         $chunkCount,
                         $chunkCount === 1 ? '' : 's',
                         $remoteURL
                     ));
                 }
                 $tPost = MiscUtility::startTimer();
-                $payload = [
-                    "labId" => $labId,
-                    "results" => $chunk,
-                    "testType" => "eid",
-                    'timestamp' => DateUtility::getCurrentTimestamp(),
-                    "instanceId" => $general->getInstanceId()
-                ];
-                $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'eid');
+
+                $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
+                [$jsonResponse, $chunkSize] = handleApiResponse(
+                    $apiResponse, $cliMode, $io, $chunkCount, 'eid', $maxChunkSize, microtime(true) - $tPost
+                );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
@@ -937,8 +1021,16 @@ try {
 
             $totalChunks = (int) ceil($count / max(1, $chunkSize));
             $chunks = $resultBatch->chunks(
-                max(1, $chunkSize),
-                static fn(array $r) => $covid19Service->getCovid19TestsByFormId($r['covid19_id'])
+                $nextBatchSize,
+                prepareBatch: static function (array $rows) use ($covid19Service): array {
+                    $children = $covid19Service->getCovid19TestsByFormId(array_column($rows, 'covid19_id'));
+                    return ResultSyncBatch::nestedPayload(
+                        $rows,
+                        $children ?? [],
+                        'covid19_id',
+                        wrapParentId: true
+                    );
+                }
             );
 
             if ($isDryRun) {
@@ -946,31 +1038,35 @@ try {
                 $chunks = [];
             }
 
-            foreach ($chunks as $chunkIndex => $chunk) {
+            $requests = ResultSyncPayload::requests(
+                $chunks,
+                static fn(array $chunk): array => $buildResultPayload($chunk, 'covid19'),
+                $maxPayloadBytes,
+                $nextBatchSize
+            );
+            foreach ($requests as $chunkIndex => $preparedRequest) {
+                $payload = $preparedRequest['payload'];
+                $chunk = $payload['results'];
+                reportPreparedResult($cliMode ? $io : null, $resultBatch, $preparedRequest);
                 $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
                 if ($cliMode) {
                     $io->text(sprintf(
-                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        "Posting chunk %d (%d record%s) to %s...",
                         $chunkNumber,
-                        $totalChunks,
                         $chunkCount,
                         $chunkCount === 1 ? '' : 's',
                         $remoteURL
                     ));
                 }
                 $tPost = MiscUtility::startTimer();
-                $payload = [
-                    "labId" => $labId,
-                    "results" => $chunk,
-                    "testType" => "covid19",
-                    'timestamp' => DateUtility::getCurrentTimestamp(),
-                    "instanceId" => $general->getInstanceId()
-                ];
-                $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'covid19');
+
+                $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
+                [$jsonResponse, $chunkSize] = handleApiResponse(
+                    $apiResponse, $cliMode, $io, $chunkCount, 'covid19', $maxChunkSize, microtime(true) - $tPost
+                );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
@@ -1083,38 +1179,42 @@ try {
                 $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
             $totalChunks = (int) ceil($count / max(1, $chunkSize));
-            $chunks = $resultBatch->chunks(max(1, $chunkSize));
+            $chunks = $resultBatch->chunks($nextBatchSize);
 
             if ($isDryRun) {
                 reportDryRunChunks($io, 'hepatitis', $resultBatch->preview(), $totalChunks, $count);
                 $chunks = [];
             }
 
-            foreach ($chunks as $chunkIndex => $chunk) {
+            $requests = ResultSyncPayload::requests(
+                $chunks,
+                static fn(array $chunk): array => $buildResultPayload($chunk, 'hepatitis'),
+                $maxPayloadBytes,
+                $nextBatchSize
+            );
+            foreach ($requests as $chunkIndex => $preparedRequest) {
+                $payload = $preparedRequest['payload'];
+                $chunk = $payload['results'];
+                reportPreparedResult($cliMode ? $io : null, $resultBatch, $preparedRequest);
                 $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
                 if ($cliMode) {
                     $io->text(sprintf(
-                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        "Posting chunk %d (%d record%s) to %s...",
                         $chunkNumber,
-                        $totalChunks,
                         $chunkCount,
                         $chunkCount === 1 ? '' : 's',
                         $remoteURL
                     ));
                 }
                 $tPost = MiscUtility::startTimer();
-                $payload = [
-                    "labId" => $labId,
-                    "results" => $chunk,
-                    "testType" => "hepatitis",
-                    'timestamp' => DateUtility::getCurrentTimestamp(),
-                    "instanceId" => $general->getInstanceId()
-                ];
-                $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'hepatitis');
+
+                $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
+                [$jsonResponse, $chunkSize] = handleApiResponse(
+                    $apiResponse, $cliMode, $io, $chunkCount, 'hepatitis', $maxChunkSize, microtime(true) - $tPost
+                );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
@@ -1232,8 +1332,15 @@ try {
             }
             $totalChunks = (int) ceil($count / max(1, $chunkSize));
             $chunks = $resultBatch->chunks(
-                max(1, $chunkSize),
-                static fn(array $r) => $tbService->getTbTestsByFormId($r['tb_id'])
+                $nextBatchSize,
+                prepareBatch: static function (array $rows) use ($tbService): array {
+                    $children = $tbService->getTbTestsByFormId(array_column($rows, 'tb_id'));
+                    return ResultSyncBatch::nestedPayload(
+                        $rows,
+                        $children ?? [],
+                        'tb_id'
+                    );
+                }
             );
 
             if ($isDryRun) {
@@ -1241,34 +1348,36 @@ try {
                 $chunks = [];
             }
 
-            foreach ($chunks as $chunkIndex => $chunk) {
+            $requests = ResultSyncPayload::requests(
+                $chunks,
+                static fn(array $chunk): array => $buildResultPayload($chunk, 'tb'),
+                $maxPayloadBytes,
+                $nextBatchSize
+            );
+            foreach ($requests as $chunkIndex => $preparedRequest) {
+                $payload = $preparedRequest['payload'];
+                $chunk = $payload['results'];
+                reportPreparedResult($cliMode ? $io : null, $resultBatch, $preparedRequest);
                 $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
-                $manifests = buildReferralManifestsPayload($db, 'tb', $chunk);
 
                 if ($cliMode) {
                     $io->text(sprintf(
-                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        "Posting chunk %d (%d record%s) to %s...",
                         $chunkNumber,
-                        $totalChunks,
                         $chunkCount,
                         $chunkCount === 1 ? '' : 's',
                         $remoteURL
                     ));
                 }
                 $tPost = MiscUtility::startTimer();
-                $payload = [
-                    "labId" => $labId,
-                    "results" => $chunk,
-                    "testType" => "tb",
-                    'manifests' => $manifests,
-                    'timestamp' => DateUtility::getCurrentTimestamp(),
-                    "instanceId" => $general->getInstanceId()
-                ];
-                $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'tb');
+
+                $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
+                [$jsonResponse, $chunkSize] = handleApiResponse(
+                    $apiResponse, $cliMode, $io, $chunkCount, 'tb', $maxChunkSize, microtime(true) - $tPost
+                );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
@@ -1382,38 +1491,42 @@ try {
             }
 
             $totalChunks = (int) ceil($count / max(1, $chunkSize));
-            $chunks = $resultBatch->chunks(max(1, $chunkSize));
+            $chunks = $resultBatch->chunks($nextBatchSize);
 
             if ($isDryRun) {
                 reportDryRunChunks($io, 'cd4', $resultBatch->preview(), $totalChunks, $count);
                 $chunks = [];
             }
 
-            foreach ($chunks as $chunkIndex => $chunk) {
+            $requests = ResultSyncPayload::requests(
+                $chunks,
+                static fn(array $chunk): array => $buildResultPayload($chunk, 'cd4'),
+                $maxPayloadBytes,
+                $nextBatchSize
+            );
+            foreach ($requests as $chunkIndex => $preparedRequest) {
+                $payload = $preparedRequest['payload'];
+                $chunk = $payload['results'];
+                reportPreparedResult($cliMode ? $io : null, $resultBatch, $preparedRequest);
                 $chunksProcessed++;
                 $chunkNumber = $chunkIndex + 1;
                 $chunkCount = count($chunk);
 
                 if ($cliMode) {
                     $io->text(sprintf(
-                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        "Posting chunk %d (%d record%s) to %s...",
                         $chunkNumber,
-                        $totalChunks,
                         $chunkCount,
                         $chunkCount === 1 ? '' : 's',
                         $remoteURL
                     ));
                 }
                 $tPost = MiscUtility::startTimer();
-                $payload = [
-                    "labId" => $labId,
-                    "results" => $chunk,
-                    "testType" => "cd4",
-                    'timestamp' => DateUtility::getCurrentTimestamp(),
-                    "instanceId" => $general->getInstanceId()
-                ];
-                $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'cd4');
+
+                $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
+                [$jsonResponse, $chunkSize] = handleApiResponse(
+                    $apiResponse, $cliMode, $io, $chunkCount, 'cd4', $maxChunkSize, microtime(true) - $tPost
+                );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
