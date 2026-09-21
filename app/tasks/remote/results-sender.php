@@ -29,6 +29,7 @@ use App\Utilities\MiscUtility;
 use App\Utilities\ResultSyncBatch;
 use App\Utilities\ResultSyncBatchSize;
 use App\Utilities\ResultSyncPayload;
+use App\Utilities\ResultSyncAcknowledgement;
 use App\Services\CommonService;
 use App\Services\TestsService;
 use App\Services\Covid19Service;
@@ -216,9 +217,9 @@ function unpackApiResponse(array|string|null $response): array
 }
 
 /**
- * Unpack an API response, show hints in CLI, and return body + next chunk size.
+ * Unpack an API response, show hints in CLI, and return body, next chunk size and headers.
  *
- * @return array{0:string,1:int}
+ * @return array{0:string,1:int,2:array<string,string>}
  */
 function handleApiResponse(
     array|string|null $apiResponse,
@@ -234,7 +235,49 @@ function handleApiResponse(
         showServerHints($io, $unpackedResponse['headers'], $label);
     }
     $nextChunkSize = ResultSyncBatchSize::next($currentChunkSize, $maximum, $unpackedResponse['headers'], $seconds);
-    return [$unpackedResponse['body'], $nextChunkSize];
+    return [$unpackedResponse['body'], $nextChunkSize, $unpackedResponse['headers']];
+}
+
+/**
+ * Mark the sent rows the STS acknowledged, and only while unchanged since read.
+ * An updated STS answers with the lab's own identifiers (X-Ack-Format: unique_id);
+ * an older one answers with sample codes.
+ *
+ * @param array<array-key, mixed> $sentResults The results array that was posted.
+ * @param list<string> $acknowledged
+ * @param array<string, string> $headers
+ */
+function markAcknowledgedResults(
+    DatabaseService $db,
+    string $table,
+    string $primaryKey,
+    array $sentResults,
+    array $acknowledged,
+    array $headers
+): int {
+    $byUniqueId = ($headers['x-ack-format'] ?? '') === ResultSyncAcknowledgement::UNIQUE_ID;
+    $rows = ResultSyncAcknowledgement::acknowledgedRows(
+        ResultSyncAcknowledgement::sentRows($sentResults),
+        $acknowledged,
+        $byUniqueId
+    );
+    return ResultSyncAcknowledgement::markSynced($db, $table, $primaryKey, $rows);
+}
+
+function reportMarkedResults(SymfonyStyle $io, int $acknowledged, int $marked, string $seconds): void
+{
+    $io->text("Marked $marked of $acknowledged acknowledged row(s) as synced in {$seconds}s");
+    if ($marked < $acknowledged) {
+        $io->comment('Unmarked rows stay pending: edited while their request was in flight, or acknowledged under a code this lab did not send.');
+    }
+}
+
+/** An unreadable acknowledgment stops this module only; the next module still runs. */
+function reportModuleSyncFailure(?SymfonyStyle $io, string $label, int $chunkNumber, Throwable $e): void
+{
+    LoggerUtility::logError("Results sync for $label stopped at chunk $chunkNumber: " . $e->getMessage());
+    $io?->error(strtoupper($label) . " sync stopped at chunk $chunkNumber: " . $e->getMessage()
+        . '. Unacknowledged rows stay pending; continuing with the next module.');
 }
 
 /**
@@ -459,6 +502,25 @@ if ($cliMode) {
     }
 }
 
+// One sender at a time: cron, the "sync this sample" button and remote commands
+// can all start it. flock() belongs to this process, not a database connection,
+// so a reconnect cannot silently release it; the OS releases it when we exit.
+$senderLockPath = VAR_PATH . DIRECTORY_SEPARATOR . 'results-sender.lock';
+$senderLock = @fopen($senderLockPath, 'c') ?: @fopen($senderLockPath, 'r');
+if ($senderLock === false) {
+    // Never block syncing over an unwritable lock file; just run unguarded.
+    LoggerUtility::logWarning("Results sender could not open its lock file: $senderLockPath");
+} elseif (!flock($senderLock, LOCK_EX | LOCK_NB)) {
+    LoggerUtility::logInfo('Results sender is already running. Exiting.');
+    if ($cliMode) {
+        $io->warning('Another results sync is already running. Exiting.');
+    }
+    exit(0);
+} else {
+    // Created by root under cron, the web user must still be able to open it.
+    @chmod($senderLockPath, 0666);
+}
+
 // Keep the operator's requested size as a ceiling throughout adaptive batching.
 $maxChunkSize = max(1, $chunkSize);
 $nextBatchSize = static function () use (&$chunkSize): int {
@@ -500,6 +562,8 @@ $buildResultPayload = static function (array $chunk, string $testType) use ($lab
         'testType' => $testType,
         'timestamp' => DateUtility::getCurrentTimestamp(),
         'instanceId' => $general->getInstanceId(),
+        // An updated STS then acknowledges by unique_id; an older one ignores this.
+        'ackFormat' => ResultSyncAcknowledgement::UNIQUE_ID,
     ];
     if ($testType === 'generic-tests') {
         $payload['silent'] = $isSilent;
@@ -611,25 +675,26 @@ try {
                 $tPost = MiscUtility::startTimer();
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse(
+                [$jsonResponse, $chunkSize, $responseHeaders] = handleApiResponse(
                     $apiResponse, $cliMode, $io, $chunkSize, 'generic-tests', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
-                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'generic-tests');
+                try {
+                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'generic-tests');
+                } catch (RuntimeException $e) {
+                    reportModuleSyncFailure($cliMode ? $io : null, 'generic-tests', $chunkNumber, $e);
+                    break;
+                }
                 $acked += count($acknowledgedSamples);
 
                 if ($acknowledgedSamples !== []) {
-                    if ($cliMode) {
-                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
-                    }
                     $tUpd = MiscUtility::startTimer();
-                    $db->where('sample_code', $acknowledgedSamples, 'IN');
-                    $db->update('form_generic', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    $marked = markAcknowledgedResults($db, 'form_generic', 'sample_id', $chunk, $acknowledgedSamples, $responseHeaders);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
+                        reportMarkedResults($io, count($acknowledgedSamples), $marked, MiscUtility::elapsedTime($tUpd));
                     }
                 }
 
@@ -760,25 +825,26 @@ try {
                 $tPost = MiscUtility::startTimer();
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse(
+                [$jsonResponse, $chunkSize, $responseHeaders] = handleApiResponse(
                     $apiResponse, $cliMode, $io, $chunkSize, 'vl', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
-                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'vl');
+                try {
+                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'vl');
+                } catch (RuntimeException $e) {
+                    reportModuleSyncFailure($cliMode ? $io : null, 'vl', $chunkNumber, $e);
+                    break;
+                }
                 $acked += count($acknowledgedSamples);
 
                 if ($acknowledgedSamples !== []) {
-                    if ($cliMode) {
-                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
-                    }
                     $tUpd = MiscUtility::startTimer();
-                    $db->where('sample_code', $acknowledgedSamples, 'IN');
-                    $db->update('form_vl', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    $marked = markAcknowledgedResults($db, 'form_vl', 'vl_sample_id', $chunk, $acknowledgedSamples, $responseHeaders);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
+                        reportMarkedResults($io, count($acknowledgedSamples), $marked, MiscUtility::elapsedTime($tUpd));
                     }
                 }
 
@@ -909,25 +975,26 @@ try {
                 $tPost = MiscUtility::startTimer();
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse(
+                [$jsonResponse, $chunkSize, $responseHeaders] = handleApiResponse(
                     $apiResponse, $cliMode, $io, $chunkSize, 'eid', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
-                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'eid');
+                try {
+                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'eid');
+                } catch (RuntimeException $e) {
+                    reportModuleSyncFailure($cliMode ? $io : null, 'eid', $chunkNumber, $e);
+                    break;
+                }
                 $acked += count($acknowledgedSamples);
 
                 if ($acknowledgedSamples !== []) {
-                    if ($cliMode) {
-                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
-                    }
                     $tUpd = MiscUtility::startTimer();
-                    $db->where('sample_code', $acknowledgedSamples, 'IN');
-                    $db->update('form_eid', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    $marked = markAcknowledgedResults($db, 'form_eid', 'eid_id', $chunk, $acknowledgedSamples, $responseHeaders);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
+                        reportMarkedResults($io, count($acknowledgedSamples), $marked, MiscUtility::elapsedTime($tUpd));
                     }
                 }
 
@@ -1074,25 +1141,26 @@ try {
                 $tPost = MiscUtility::startTimer();
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse(
+                [$jsonResponse, $chunkSize, $responseHeaders] = handleApiResponse(
                     $apiResponse, $cliMode, $io, $chunkSize, 'covid19', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
-                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'covid19');
+                try {
+                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'covid19');
+                } catch (RuntimeException $e) {
+                    reportModuleSyncFailure($cliMode ? $io : null, 'covid19', $chunkNumber, $e);
+                    break;
+                }
                 $acked += count($acknowledgedSamples);
 
                 if ($acknowledgedSamples !== []) {
-                    if ($cliMode) {
-                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
-                    }
                     $tUpd = MiscUtility::startTimer();
-                    $db->where('sample_code', $acknowledgedSamples, 'IN');
-                    $db->update('form_covid19', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    $marked = markAcknowledgedResults($db, 'form_covid19', 'covid19_id', $chunk, $acknowledgedSamples, $responseHeaders);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
+                        reportMarkedResults($io, count($acknowledgedSamples), $marked, MiscUtility::elapsedTime($tUpd));
                     }
                 }
 
@@ -1222,25 +1290,26 @@ try {
                 $tPost = MiscUtility::startTimer();
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse(
+                [$jsonResponse, $chunkSize, $responseHeaders] = handleApiResponse(
                     $apiResponse, $cliMode, $io, $chunkSize, 'hepatitis', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
-                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'hepatitis');
+                try {
+                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'hepatitis');
+                } catch (RuntimeException $e) {
+                    reportModuleSyncFailure($cliMode ? $io : null, 'hepatitis', $chunkNumber, $e);
+                    break;
+                }
                 $acked += count($acknowledgedSamples);
 
                 if ($acknowledgedSamples !== []) {
-                    if ($cliMode) {
-                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
-                    }
                     $tUpd = MiscUtility::startTimer();
-                    $db->where('sample_code', $acknowledgedSamples, 'IN');
-                    $db->update('form_hepatitis', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    $marked = markAcknowledgedResults($db, 'form_hepatitis', 'hepatitis_id', $chunk, $acknowledgedSamples, $responseHeaders);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
+                        reportMarkedResults($io, count($acknowledgedSamples), $marked, MiscUtility::elapsedTime($tUpd));
                     }
                 }
 
@@ -1385,25 +1454,26 @@ try {
                 $tPost = MiscUtility::startTimer();
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse(
+                [$jsonResponse, $chunkSize, $responseHeaders] = handleApiResponse(
                     $apiResponse, $cliMode, $io, $chunkSize, 'tb', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
-                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'tb');
+                try {
+                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'tb');
+                } catch (RuntimeException $e) {
+                    reportModuleSyncFailure($cliMode ? $io : null, 'tb', $chunkNumber, $e);
+                    break;
+                }
                 $acked += count($acknowledgedSamples);
 
                 if ($acknowledgedSamples !== []) {
-                    if ($cliMode) {
-                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
-                    }
                     $tUpd = MiscUtility::startTimer();
-                    $db->where('sample_code', $acknowledgedSamples, 'IN');
-                    $db->update('form_tb', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    $marked = markAcknowledgedResults($db, 'form_tb', 'tb_id', $chunk, $acknowledgedSamples, $responseHeaders);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
+                        reportMarkedResults($io, count($acknowledgedSamples), $marked, MiscUtility::elapsedTime($tUpd));
                     }
                 }
 
@@ -1534,25 +1604,26 @@ try {
                 $tPost = MiscUtility::startTimer();
 
                 $apiResponse = $apiService->post($url, $preparedRequest['json'], gzip: true, returnWithStatusCode: true);
-                [$jsonResponse, $chunkSize] = handleApiResponse(
+                [$jsonResponse, $chunkSize, $responseHeaders] = handleApiResponse(
                     $apiResponse, $cliMode, $io, $chunkSize, 'cd4', $maxChunkSize, microtime(true) - $tPost
                 );
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
-                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'cd4');
+                try {
+                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'cd4');
+                } catch (RuntimeException $e) {
+                    reportModuleSyncFailure($cliMode ? $io : null, 'cd4', $chunkNumber, $e);
+                    break;
+                }
                 $acked += count($acknowledgedSamples);
 
                 if ($acknowledgedSamples !== []) {
-                    if ($cliMode) {
-                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
-                    }
                     $tUpd = MiscUtility::startTimer();
-                    $db->where('sample_code', $acknowledgedSamples, 'IN');
-                    $db->update('form_cd4', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    $marked = markAcknowledgedResults($db, 'form_cd4', 'cd4_id', $chunk, $acknowledgedSamples, $responseHeaders);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
+                        reportMarkedResults($io, count($acknowledgedSamples), $marked, MiscUtility::elapsedTime($tUpd));
                     }
                 }
 
