@@ -155,8 +155,14 @@ final class ResultsService
     }
 
 
-    /** Accepts decoded v2 requests and legacy JSON-string callers. */
-    public function receiveResults($testType, $jsonResponse, $isSilent = false): array
+    /**
+     * Accepts decoded v2 requests and legacy JSON-string callers.
+     *
+     * Returns the sample codes saved, or with $ackByUniqueId the lab's own
+     * identifier for each saved record: its unique_id, else its sample code.
+     * The saved code can be a numbered variant, which the lab could not match.
+     */
+    public function receiveResults($testType, $jsonResponse, $isSilent = false, bool $ackByUniqueId = false): array
     {
         $this->setTestType($testType);
 
@@ -174,6 +180,7 @@ final class ResultsService
         $localDbFieldArray = $this->commonService->getTableFieldsAsArray($this->tableName, $unwantedColumns);
 
         $sampleCodes = $facilityIds = [];
+        $labIdentifiers = [];
         $savedPrimaryKeys = [];
         $labId = null;
 
@@ -336,6 +343,13 @@ final class ResultsService
                         $sampleCodes[] = $resultFromLab['sample_code'];
                         $facilityIds[] = $resultFromLab['facility_id'];
                     }
+                    if ($id !== false) {
+                        $labIdentifier = trim((string) ($originalLISRecord['unique_id'] ?? ''))
+                            ?: trim((string) ($originalLISRecord['sample_code'] ?? ''));
+                        if ($labIdentifier !== '') {
+                            $labIdentifiers[] = $labIdentifier;
+                        }
+                    }
                     if ($id !== false && !empty($primaryKeyValue)) {
                         $savedPrimaryKeys[] = $primaryKeyValue;
                     }
@@ -382,7 +396,7 @@ final class ResultsService
             }
         }
 
-        return $sampleCodes;
+        return $ackByUniqueId ? $labIdentifiers : $sampleCodes;
     }
 
     /**

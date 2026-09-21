@@ -7,6 +7,7 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
+use App\Utilities\ResultSyncAcknowledgement;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\STS\TokensService;
@@ -46,6 +47,8 @@ try {
     $labId = $data['labId'] ?? null;
     $isSilent = (bool) ($data['silent'] ?? false);
     $testType = $data['testType'] ?? null;
+    // Newer labs ask for their own identifiers back; older labs read sample codes.
+    $ackByUniqueId = ($data['ackFormat'] ?? null) === ResultSyncAcknowledgement::UNIQUE_ID;
 
     if (empty($labId)) {
         throw new SystemException('Lab ID is missing in the request', 400);
@@ -75,7 +78,7 @@ try {
 
 
     // Process and get array of sample codes
-    $payload = $stsResultsService->receiveResults($testType, $data, $isSilent) ?? [];
+    $payload = $stsResultsService->receiveResults($testType, $data, $isSilent, $ackByUniqueId) ?? [];
     // receiveResults() returns the list of sample codes it stored, not an array
     // keyed by 'results', so counting $payload['results'] recorded 0 for every push.
     $resultCount = count($payload);
@@ -111,6 +114,9 @@ try {
     ];
     if ($contentLength > 0) {
         $responseHeaders['x-bytes-processed'] = $contentLength;
+    }
+    if ($ackByUniqueId) {
+        $responseHeaders['x-ack-format'] = ResultSyncAcknowledgement::UNIQUE_ID;
     }
     // The body stays a plain list of sample codes: older LIS senders read it as one.
     if (!empty($data['manifests'])) {
