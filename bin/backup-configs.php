@@ -31,6 +31,10 @@ if (!is_dir($CONFIG_PATH)) {
 $ts = date('Y-m-d_H-i-s');
 $file = $PREFIX . $ts . $EXT;
 $out = $DEST_DIR . '/' . $file;
+// Built under a .tmp name (the off-machine backup skips *.tmp) and renamed into
+// place, so a failed or interrupted tar never leaves an archive that looks good
+// and counts toward retention.
+$partial = $out . '.tmp';
 
 // --- collect runtime info into temp (do NOT touch CONFIG_PATH) ---
 $tmp = sys_get_temp_dir() . "/cfginfo-$ts-" . bin2hex(random_bytes(3));
@@ -55,9 +59,10 @@ $excludes = [
 ];
 
 // Build one archive with two inputs: CONFIG_PATH (.) and $tmp (.)
+// The archive holds the database password, so only its owner may read it.
 $cmd = sprintf(
-    'tar -czf %s %s -C %s . -C %s .',
-    escapeshellarg($out),
+    'umask 077 && tar -czf %s %s -C %s . -C %s .',
+    escapeshellarg($partial),
     implode(' ', $excludes),
     escapeshellarg($CONFIG_PATH),
     escapeshellarg($tmp)
@@ -76,9 +81,21 @@ foreach ($it as $p) {
 }
 @rmdir($tmp);
 
-if ($code !== 0 || !file_exists($out)) {
+if ($code !== 0 || !file_exists($partial)) {
+    MiscUtility::deleteFile($partial);
     fwrite(STDERR, "Backup failed (code=$code). Command:\n$cmd\n");
     exit(CLI\ERROR);
+}
+@chmod($partial, 0600);
+if (!rename($partial, $out)) {
+    MiscUtility::deleteFile($partial);
+    fwrite(STDERR, "Backup failed: could not move the archive into place at $out\n");
+    exit(CLI\ERROR);
+}
+
+// Archives written before this change were world-readable.
+foreach (glob($DEST_DIR . '/' . $PREFIX . '*' . $EXT) ?: [] as $existing) {
+    @chmod($existing, 0600);
 }
 
 echo "✅ Config Backed up : $out\n";
