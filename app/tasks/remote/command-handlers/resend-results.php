@@ -48,6 +48,9 @@ if ($days !== null && $days > 0) {
 }
 // Match manual cron convention so timestamp rewrites stay consistent.
 $argv[] = 'silent';
+// Wait out a cron run instead of exiting 0, which would mark this command
+// completed without sending anything.
+$argv[] = '--wait-for-lock';
 
 $descriptorSpec = [
     0 => ['pipe', 'r'],

@@ -21,6 +21,11 @@ if (!defined('RESULTS_SENDER_MAX_PAYLOAD_BYTES')) {
     define('RESULTS_SENDER_MAX_PAYLOAD_BYTES', 2 * 1024 * 1024);
 }
 
+// Exit code when --wait-for-lock gives up: the run did not happen and can be retried.
+if (!defined('RESULTS_SENDER_EXIT_LOCKED')) {
+    define('RESULTS_SENDER_EXIT_LOCKED', 75);
+}
+
 // Services & utilities
 use App\Services\TbService;
 use App\Services\ApiService;
@@ -103,6 +108,8 @@ function showHelp(SymfonyStyle $io): void
         ['--max-payload-bytes' => 'Optional. Maximum JSON bytes before gzip (default '
             . RESULTS_SENDER_MAX_PAYLOAD_BYTES . '). A single sample stays intact'],
         ['--dry-run, dry-run' => 'Optional. Select and chunk rows, report what would be sent, but send nothing and update nothing'],
+        ['--wait-for-lock[=seconds]' => 'Optional. If another sync is running, wait for it (default 900 seconds) instead of exiting.'
+            . ' Exits ' . RESULTS_SENDER_EXIT_LOCKED . ' if it is still running after that'],
         ['-h, --help, help' => 'Show this help and exit']
     );
 
@@ -379,6 +386,7 @@ $apiService->setBearerToken($stsBearerToken);
 
 $isSilent = false;
 $isDryRun = false;
+$waitForLockSeconds = null;
 $syncSinceDate = null;
 $forceSyncModule = null;
 $sampleCode = null;
@@ -438,6 +446,16 @@ if ($cliMode) {
             $isSilent = true;
         } elseif ($arg === '--dry-run' || $arg === 'dry-run') {
             $isDryRun = true;
+        } elseif ($arg === '--wait-for-lock') {
+            $waitForLockSeconds = 900;
+        } elseif (str_starts_with($arg, '--wait-for-lock=')) {
+            $value = substr($arg, strlen('--wait-for-lock='));
+            $validated = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+            if ($validated === false) {
+                $io->error("Lock wait must be a positive number of seconds. Received: $value");
+                exit(1);
+            }
+            $waitForLockSeconds = $validated;
         } elseif ($arg === '--max-payload-bytes') {
             $awaitingPayloadBytes = true;
         } elseif ($arg === '-t' || $arg === '--test') {
@@ -505,17 +523,34 @@ if ($cliMode) {
 // One sender at a time: cron, the "sync this sample" button and remote commands
 // can all start it. flock() belongs to this process, not a database connection,
 // so a reconnect cannot silently release it; the OS releases it when we exit.
+// Cron and the button skip a busy run (the next cron run covers them). A remote
+// resend passes --wait-for-lock: its command status is final, so it must either
+// run or exit non-zero, never report "completed" for work it skipped.
 $senderLockPath = VAR_PATH . DIRECTORY_SEPARATOR . 'results-sender.lock';
 $senderLock = @fopen($senderLockPath, 'c') ?: @fopen($senderLockPath, 'r');
+$lockAcquired = $senderLock !== false && flock($senderLock, LOCK_EX | LOCK_NB);
+if ($senderLock !== false && !$lockAcquired && $waitForLockSeconds !== null) {
+    if ($cliMode) {
+        $io->text("Another results sync is running. Waiting up to {$waitForLockSeconds}s...");
+    }
+    $deadline = time() + $waitForLockSeconds;
+    while (!$lockAcquired && time() < $deadline) {
+        sleep(2);
+        $lockAcquired = flock($senderLock, LOCK_EX | LOCK_NB);
+    }
+}
 if ($senderLock === false) {
     // Never block syncing over an unwritable lock file; just run unguarded.
     LoggerUtility::logWarning("Results sender could not open its lock file: $senderLockPath");
-} elseif (!flock($senderLock, LOCK_EX | LOCK_NB)) {
-    LoggerUtility::logInfo('Results sender is already running. Exiting.');
+} elseif (!$lockAcquired) {
+    $waited = $waitForLockSeconds !== null;
+    LoggerUtility::logInfo('Results sender is already running. ' . ($waited ? 'Gave up waiting.' : 'Exiting.'));
     if ($cliMode) {
-        $io->warning('Another results sync is already running. Exiting.');
+        $io->warning($waited
+            ? 'Another results sync is still running. Nothing was sent; retry later.'
+            : 'Another results sync is already running. Exiting.');
     }
-    exit(0);
+    exit($waited ? RESULTS_SENDER_EXIT_LOCKED : 0);
 } else {
     // Created by root under cron, the web user must still be able to open it.
     @chmod($senderLockPath, 0666);
