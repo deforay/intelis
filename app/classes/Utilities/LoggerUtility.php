@@ -67,6 +67,10 @@ final class LoggerUtility
                     $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
 
                     self::$logger->pushHandler($handler);
+
+                    // Errors are also indexed in var/logs/errors.sqlite so they can be
+                    // found by ID and grouped; the file above stays the record.
+                    self::$logger->pushHandler(new ErrorIndexLogHandler());
                 } else {
                     self::useFallbackHandler("Log directory not writable: $logDir");
                 }
@@ -207,13 +211,19 @@ final class LoggerUtility
         return ini_get('error_log') ?: 'stderr or server default';
     }
 
-    private static function getCallerInfo(int $index = 1): array
+    /**
+     * Where the log call came from: the first frame outside this class. A fixed
+     * depth pointed logError(), logInfo() and the other wrappers at their own
+     * line in this file instead of at the code that logged.
+     */
+    private static function getCallerInfo(): array
     {
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        return [
-            'file' => $backtrace[$index]['file'] ?? '',
-            'line' => $backtrace[$index]['line'] ?? 0,
-        ];
+        foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS) as $frame) {
+            if (isset($frame['file']) && $frame['file'] !== __FILE__) {
+                return ['file' => $frame['file'], 'line' => $frame['line'] ?? 0];
+            }
+        }
+        return ['file' => '', 'line' => 0];
     }
 
     public static function log(Level|string $level, string $message, array $context = []): void
@@ -232,7 +242,7 @@ final class LoggerUtility
             }
 
             $logger = self::getLogger();
-            $callerInfo = self::getCallerInfo(1);
+            $callerInfo = self::getCallerInfo();
             $context['file'] ??= $callerInfo['file'];
             $context['line'] ??= $callerInfo['line'];
 
@@ -266,7 +276,7 @@ final class LoggerUtility
             }
 
             $logger = self::getChannelLogger($channel);
-            $callerInfo = self::getCallerInfo(1);
+            $callerInfo = self::getCallerInfo();
             $context['file'] ??= $callerInfo['file'];
             $context['line'] ??= $callerInfo['line'];
             $context = self::sanitizeContext($context);

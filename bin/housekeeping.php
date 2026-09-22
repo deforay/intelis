@@ -15,6 +15,7 @@ if ($isCli === false) {
 use App\Utilities\MiscUtility;
 use App\Utilities\ApiTrackingStorageUtility;
 use App\Utilities\LoggerUtility;
+use App\Utilities\ErrorIndexUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use Symfony\Component\Console\Helper\Table;
@@ -631,6 +632,28 @@ $table->setRows([
     ['Errors', $dbStats['errors'] > 0 ? "<fire>{$dbStats['errors']}</fire>" : "<success>0</success>"],
 ]);
 $table->render();
+
+// ERROR INDEX
+//
+// var/logs/errors.sqlite indexes error entries by ID and fingerprint. Rows past
+// the retention window go, and the file is compacted once a week. A damaged
+// file is deleted and starts again empty: the log files still hold every entry.
+$output->writeln("\n<info>ERROR INDEX</info>");
+$output->writeln(str_repeat('-', 80));
+try {
+    $indexStats = ErrorIndexUtility::prune(compact: date('w') === '0');
+    if ($indexStats['rebuilt']) {
+        $output->writeln("  <warning>The error index failed its integrity check and was reset</warning>");
+        LoggerUtility::logWarning('Error index failed its integrity check and was reset');
+    } else {
+        $output->writeln("  <success>✓ Removed {$indexStats['deleted']} entries older than " . ErrorIndexUtility::RETENTION_DAYS . " days"
+            . ($indexStats['compacted'] ? ' and compacted the file' : '') . "</success>");
+    }
+} catch (Throwable $e) {
+    $totalStats['errors']++;
+    $output->writeln("  <fire>✗ {$e->getMessage()}</fire>");
+    LoggerUtility::logError('Error index cleanup failed: ' . $e->getMessage());
+}
 
 // API TRACKING BODIES
 //
