@@ -234,10 +234,10 @@ final class StsResultsReceiveTest extends TestCase
             self::stsRequest($db, 'form_vl', $id);
         }
 
-        // u-2 is refused by MySQL: not a status id.
+        // u-2 is refused by MySQL: no such status (a foreign key, so strict mode or not).
         $ack = self::sts()->receiveResults('vl', self::payload([
             self::vlResult('u-1'),
-            self::vlResult('u-2', ['result_status' => 'not-a-number']),
+            self::vlResult('u-2', ['result_status' => 99]),
             self::vlResult('u-3'),
         ]), false, true);
 
