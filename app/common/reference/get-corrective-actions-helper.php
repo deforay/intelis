@@ -104,7 +104,7 @@ try {
         "aaData" => []
     ];
     $editRequest = false;
-    if (_isAllowed("/common/reference/edit-recommended-corrective-action.php?testType=vl")) {
+    if (!$general->isLISInstance() && _isAllowed("/common/reference/edit-recommended-corrective-action.php?testType=$testType")) {
         $editRequest = true;
     }
 

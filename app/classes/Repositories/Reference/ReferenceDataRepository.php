@@ -308,6 +308,19 @@ final readonly class ReferenceDataRepository
     }
 
     /**
+     * One row by its id, or null when there is none.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function findById(string $entity, string $testType, int $id): ?array
+    {
+        $spec = $this->spec($entity);
+        $table = $this->table($spec, $entity, $testType);
+
+        return $this->db->rawQueryOne("SELECT * FROM `$table` WHERE `{$spec['id']}` = ?", [$id]) ?: null;
+    }
+
+    /**
      * @return array{tables: array<string, string>, id: string, name: string,
      *   status: string, fields?: list<string>, defaults?: array<string, string>}
      */

@@ -297,6 +297,22 @@ $sharedCD4Privileges = [
 ];
 $sharedPrivileges = [...$sharedPrivileges, ...$sharedCD4Privileges];
 
+// Recommended corrective actions: one list per test type, managed by whoever
+// holds that module's reference tables. The save step has no test type in its
+// URL, so it is shared with all of them and checks the test type itself.
+$correctiveActionOwners = [
+    'vl' => '/vl/reference/vl-art-code-details.php',
+    'eid' => '/eid/reference/eid-sample-type.php',
+    'covid19' => '/covid-19/reference/covid19-sample-type.php',
+    'tb' => '/tb/reference/tb-sample-type.php',
+];
+foreach ($correctiveActionOwners as $testType => $owner) {
+    foreach (['recommended-corrective-actions', 'add-recommended-corrective-action', 'edit-recommended-corrective-action'] as $page) {
+        $sharedPrivileges["/common/reference/$page.php?testType=$testType"] = $owner;
+    }
+}
+$sharedPrivileges['/common/reference/save-recommended-corrective-action-helper.php'] = array_values($correctiveActionOwners);
+
 
 $sql = "UPDATE `privileges` SET `shared_privileges` = NULL";
 $db->rawQuery($sql);
