@@ -28,6 +28,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use App\Services\RequestReceiptsClient;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -307,6 +308,37 @@ function syncTestRequest(
     ];
 }
 
+/**
+ * The pulled request's unique_id, which a receipt names it by. A request without
+ * one cannot be confirmed; the STS keeps it in flight and sends it again.
+ *
+ * @param array<string, mixed>|null $request
+ */
+function receiptId(?array $request): ?string
+{
+    $value = is_array($request) ? ($request['unique_id'] ?? null) : null;
+    $uniqueId = is_scalar($value) ? trim((string) $value) : '';
+    return $uniqueId === '' ? null : $uniqueId;
+}
+
+/** @param list<string> $saved */
+function noteSaved(array &$saved, ?array $request): void
+{
+    $id = receiptId($request);
+    if ($id !== null) {
+        $saved[] = $id;
+    }
+}
+
+/** @param list<array{unique_id: string, reason: ?string}> $failed */
+function noteFailed(array &$failed, ?array $request, ?string $reason): void
+{
+    $id = receiptId($request);
+    if ($id !== null) {
+        $failed[] = ['unique_id' => $id, 'reason' => $reason];
+    }
+}
+
 function outputSyncResults(SymfonyStyle $io, string $module, int $success, int $failures): void
 {
     if ($success > 0) {
@@ -505,68 +537,6 @@ if ($syncSinceDate === null) {
 
 $stsBearerToken = $general->getSTSToken();
 $apiService->setBearerToken($stsBearerToken);
-
-$promises = [];
-$requestInfo = []; // to retain url+payload for tracking
-$startTime = MiscUtility::startTimer();
-$responsePayload = [];
-
-foreach ($systemConfig['modules'] as $module => $status) {
-    $moduleUrl = "$remoteURL/remote/v2/requests.php";
-    $basePayload = [
-        'labId' => $labId,
-        'transactionId' => $transactionId
-    ];
-    if ($status === true) {
-        $basePayload['testType'] = $module;
-        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == $module && !empty($manifestCode) && trim((string) $manifestCode) !== "") {
-            $basePayload['manifestCode'] = $manifestCode;
-        }
-        $effectiveSyncSinceDate = $syncSinceDate ?? ($moduleSyncSinceDates[$module] ?? null);
-        if (!empty($effectiveSyncSinceDate)) {
-            $basePayload['syncSinceDate'] = $effectiveSyncSinceDate;
-            if ($cliMode && $syncSinceDate === null && isset($moduleSyncSinceDates[$module])) {
-                $io->text("Requesting " . strtoupper((string) $module) . " records updated since $effectiveSyncSinceDate");
-            }
-        }
-
-        // preserve for tracking later
-        $requestInfo[$module] = [
-            'url' => $moduleUrl,
-            'payload' => $basePayload
-        ];
-
-        $promises[$module] = $apiService->post(
-            $moduleUrl,
-            $basePayload,
-            gzip: true,
-            async: true
-        )->then(function ($response) use (&$responsePayload, $module, $cliMode, $io): void {
-            $responsePayload[$module] = $response->getBody()->getContents();
-            if ($cliMode) {
-                $headers = [];
-                foreach ($response->getHeaders() as $name => $values) {
-                    $headers[strtolower($name)] = implode(', ', $values);
-                }
-                showServerHints($io, $headers, $module);
-                $io->text("Received server response for $module");
-            }
-        })->otherwise(function (mixed $reason) use ($module, $cliMode, $io): void {
-            $reason = $reason instanceof Throwable ? $reason->getMessage() : (string) $reason;
-            if ($cliMode) {
-                $io->error("STS Request sync for $module failed: $reason");
-            }
-            LoggerUtility::logError(__FILE__ . ":" . __LINE__ . ":" . "STS Request sync for $module failed: " . $reason);
-        });
-    }
-}
-
-// Wait for all promises
-Utils::settle($promises)->wait();
-
-if ($cliMode) {
-    $io->comment("Total download time for STS Requests: " . MiscUtility::elapsedTime($startTime) . " seconds");
-}
 
 // Define per-module config
 $moduleConfigs = [
@@ -882,419 +852,575 @@ $moduleConfigs = [
     ],
 ];
 
-// Process modules
-try {
-    foreach ($moduleConfigs as $module => $cfg) {
-        if (empty($responsePayload[$module]) || $responsePayload[$module] === '[]' || !JsonUtility::isJSON($responsePayload[$module])) {
+/** Pulling again for waiting requests stops after this, so a run never runs into the next cron. */
+const REQUEST_PULL_BUDGET_SECONDS = 600;
+
+/** @var RequestReceiptsClient $receiptsClient */
+$receiptsClient = ContainerRegistry::get(RequestReceiptsClient::class);
+// Receipts earlier runs could not deliver go first. Never in a dry run, which
+// changes nothing on either side.
+if (!$isDryRun) {
+    $flushed = $receiptsClient->flushOutbox($remoteURL);
+    if ($flushed > 0 && $cliMode) {
+        $io->text("Delivered $flushed receipt(s) kept from an earlier run");
+    }
+}
+
+// Receipts: a lab that asks gets its waiting requests in batches, and pulls
+// again straight away while the STS says more remain, as long as the last
+// receipt got through and the run has time left. A plain pull runs once.
+$pullModules = null;
+$pullDeadline = time() + REQUEST_PULL_BUDGET_SECONDS;
+$previousRemaining = [];
+do {
+    $promises = [];
+    $requestInfo = []; // to retain url+payload for tracking
+    $startTime = MiscUtility::startTimer();
+    $responsePayload = [];
+    $moduleResponseHeaders = [];
+    $receiptDelivered = [];
+
+    foreach ($systemConfig['modules'] as $module => $status) {
+        $moduleUrl = "$remoteURL/remote/v2/requests.php";
+        $basePayload = [
+            'labId' => $labId,
+            'transactionId' => $transactionId
+        ];
+        if ($pullModules !== null && !in_array($module, $pullModules, true)) {
             continue;
         }
-
-        $primaryKeyName = TestsService::getPrimaryColumn($module);
-        $tableName = TestsService::getTestTableName($module);
-
-        if ($cliMode) {
-            $io->section("Processing for " . strtoupper($module) . "...");
-        }
-
-        $options = [
-            'pointer' => '/requests',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($responsePayload[$module], $options);
-
-        $localDbFieldArray = $general->getTableFieldsAsArray($tableName, $cfg['removeKeys']);
-
-        $loopIndex = 0;
-        $successCounter = 0;
-        $failureCounter = 0;
-        $insertCounter = 0;
-        $updateCounter = 0;
-
-        foreach ($parsedData as $key => $remoteData) {
-            // Per record: the catch below logs these, and a record that throws
-            // before setting them must not be reported as the previous one.
-            $request = $localRecord = null;
-            try {
-                $db->beginTransaction();
-
-                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, (array) $remoteData);
-                $syncResult = syncTestRequest(
-                    $request,
-                    $module,
-                    $tableName,
-                    $primaryKeyName,
-                    $cfg['excludeUpdateKeys'],
-                    $transactionId,
-                    $isSilent,
-                    $db,
-                    $testRequestsService
-                );
-                $localRecord = $syncResult['localRecord'];
-
-                if ($syncResult['is_failure']) {
-                    $failureCounter++;
-                    LoggerUtility::logError("Sync operation failed", [
-                        'reason' => $syncResult['failure_reason'],
-                        'unique_id' => $request['unique_id'] ?? null,
-                        'sample_code' => $request['sample_code'] ?? null,
-                        'module' => $module,
-                        'last_db_error' => $db->getLastError()
-                    ]);
-                    $db->rollbackTransaction();
-                    continue; // Skip to next record
+        if ($status === true) {
+            $basePayload['testType'] = $module;
+            // Ask the STS for receipts: an older STS ignores the key. Not for a
+            // manifest pull or a dry run, which confirm nothing.
+            if (!$isDryRun && empty($manifestCode)) {
+                $basePayload['receipts'] = 1;
+            }
+            if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == $module && !empty($manifestCode) && trim((string) $manifestCode) !== "") {
+                $basePayload['manifestCode'] = $manifestCode;
+            }
+            $effectiveSyncSinceDate = $syncSinceDate ?? ($moduleSyncSinceDates[$module] ?? null);
+            if (!empty($effectiveSyncSinceDate)) {
+                $basePayload['syncSinceDate'] = $effectiveSyncSinceDate;
+                if ($cliMode && $syncSinceDate === null && isset($moduleSyncSinceDates[$module])) {
+                    $io->text("Requesting " . strtoupper((string) $module) . " records updated since $effectiveSyncSinceDate");
                 }
-
-                // Module-specific sub-table sync
-                if ($module === 'covid19') {
-                    $covid19Id = $localRecord[$primaryKeyName] ?? null;
-                    $general->syncSubTable('covid19_patient_symptoms', 'covid19_id', $covid19Id, $remoteData['data_from_symptoms'] ?? null, ['id']);
-                    $general->syncSubTable('covid19_patient_comorbidities', 'covid19_id', $covid19Id, $remoteData['data_from_comorbidities'] ?? null, ['id']);
-                    $general->syncSubTable('covid19_tests', 'covid19_id', $covid19Id, $remoteData['data_from_tests'] ?? null, ['test_id', 'data_sync'], [], true);
-                }
-
-                if ($module === 'tb') {
-                    $tbId = $localRecord[$primaryKeyName] ?? null;
-                    $general->syncSubTable('tb_tests', 'tb_id', $tbId, $remoteData['data_from_tests'] ?? null, ['tb_test_id', 'data_sync'], [], true);
-                }
-
-                if ($module === 'hepatitis') {
-                    $hepatitisId = $localRecord[$primaryKeyName] ?? null;
-                    $general->syncSubTable('hepatitis_risk_factors', 'hepatitis_id', $hepatitisId, $remoteData['data_from_risks'] ?? null, ['id'], ['keyField' => 'riskfactors_id', 'valueField' => 'riskfactors_detected']);
-                    $general->syncSubTable('hepatitis_patient_comorbidities', 'hepatitis_id', $hepatitisId, $remoteData['data_from_comorbidities'] ?? null, ['id'], ['keyField' => 'comorbidity_id', 'valueField' => 'comorbidity_detected']);
-                }
-
-                if ($syncResult['success']) {
-                    $successCounter++;
-                    if ($syncResult['is_insert']) {
-                        $insertCounter++;
-                    } else {
-                        $updateCounter++;
-                    }
-                }
-                if ($isDryRun) {
-                    $db->rollbackTransaction();
-                } else {
-                    $db->commitTransaction();
-                }
-            } catch (Throwable $e) {
-                $db->rollbackTransaction();
-                // A record that threw was not saved: count it, or the run reports
-                // no failures and an all-failed pull is recorded as an empty one.
-                $failureCounter++;
-                LoggerUtility::logError($e->getMessage(), [
-                    'error_id' => MiscUtility::generateErrorId(),
-                    'exception_class' => $e::class,
-                    'exception' => $e,
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'last_db_query' => $db->getLastQuery(),
-                    'last_db_error' => $db->getLastError(),
-                    'local_unique_id' => $localRecord['unique_id'] ?? null,
-                    'received_unique_id' => $request['unique_id'] ?? null,
-                    'local_sample_code' => $localRecord['sample_code'] ?? null,
-                    'received_sample_code' => $request['sample_code'] ?? null,
-                    'local_remote_sample_code' => $localRecord['remote_sample_code'] ?? null,
-                    'received_remote_sample_code' => $request['remote_sample_code'] ?? null,
-                    'local_facility_id' => $localRecord['facility_id'] ?? null,
-                    'received_facility_id' => $request['facility_id'] ?? null,
-                    'local_lab_id' => $localRecord['lab_id'] ?? null,
-                    'received_lab_id' => $request['lab_id'] ?? null,
-                    'local_result' => $localRecord['result'] ?? null,
-                    'received_result' => $request['result'] ?? null,
-                    'stacktrace' => $e->getTraceAsString()
-                ]);
-                continue;
             }
 
-            if ($cliMode) {
-                spinner($loopIndex, $successCounter);
-            }
-            $loopIndex++;
-        }
+            // preserve for tracking later
+            $requestInfo[$module] = [
+                'url' => $moduleUrl,
+                'payload' => $basePayload
+            ];
 
-        if ($cliMode) {
-            clearSpinner();
-            echo PHP_EOL;
-            if ($isDryRun) {
-                $io->note(sprintf(
-                    'DRY RUN %s: would insert %d and update %d record(s); %d would fail',
-                    strtoupper($module),
-                    $insertCounter,
-                    $updateCounter,
-                    $failureCounter
-                ));
-            } else {
-                outputSyncResults($io, $module, $successCounter, $failureCounter);
-            }
-        }
-
-        if (!$isDryRun) {
-            $general->addApiTracking(
-                $transactionId,
-                'intelis-system',
-                $successCounter,
-                'receive-requests',
+            $promises[$module] = $apiService->post(
+                $moduleUrl,
+                $basePayload,
+                gzip: true,
+                async: true
+            )->then(function ($response) use (
+                &$responsePayload,
+                &$moduleResponseHeaders,
                 $module,
-                $requestInfo[$module]['url'] ?? null,
-                $requestInfo[$module]['payload'] ?? null,
-                $responsePayload[$module],
-                'json',
-                $labId,
-                // An empty pull keeps its row but no bodies: the newest
-                // receive-requests row is where the next pull starts from.
-                emptyPoll: $successCounter === 0 && $failureCounter === 0,
-                keepRow: true
-            );
+                $cliMode,
+                $io
+            ): void {
+                $responsePayload[$module] = $response->getBody()->getContents();
+                $headers = [];
+                foreach ($response->getHeaders() as $name => $values) {
+                    $headers[strtolower($name)] = implode(', ', $values);
+                }
+                $moduleResponseHeaders[$module] = $headers;
+                if ($cliMode) {
+                    showServerHints($io, $headers, $module);
+                    $io->text("Received server response for $module");
+                }
+            })->otherwise(function (mixed $reason) use ($module, $cliMode, $io): void {
+                $reason = $reason instanceof Throwable ? $reason->getMessage() : (string) $reason;
+                if ($cliMode) {
+                    $io->error("STS Request sync for $module failed: $reason");
+                }
+                LoggerUtility::logError(__FILE__ . ":" . __LINE__ . ":" . "STS Request sync for $module failed: " . $reason);
+            });
         }
     }
 
-    // Special-case generic-tests (preserve its merging logic)
-    if (!empty($responsePayload['generic-tests']) && $responsePayload['generic-tests'] !== '[]' && JsonUtility::isJSON($responsePayload['generic-tests'])) {
-        $module = 'generic-tests';
-        $primaryKeyName = TestsService::getPrimaryColumn($module);
-        $tableName = TestsService::getTestTableName($module);
+    // Wait for all promises
+    Utils::settle($promises)->wait();
 
-        if ($cliMode) {
-            $io->section("Processing for CUSTOM TESTS...");
-        }
+    if ($cliMode) {
+        $io->comment("Total download time for STS Requests: " . MiscUtility::elapsedTime($startTime) . " seconds");
+    }
 
-        $options = [
-            'pointer' => '/requests',
-            'decoder' => new ExtJsonDecoder(true)
-        ];
-        $parsedData = Items::fromString($responsePayload['generic-tests'], $options);
-
-        $removeKeys = [
-            $primaryKeyName,
-            'sample_batch_id',
-            'result',
-            'sample_tested_datetime',
-            'sample_received_at_lab_datetime',
-            'result_dispatched_datetime',
-            'is_sample_rejected',
-            'reason_for_sample_rejection',
-            'result_approved_by',
-            'result_approved_datetime',
-            'data_sync'
-        ];
-        $localDbFieldArray = $general->getTableFieldsAsArray($tableName, $removeKeys);
-
-        $loopIndex = 0;
-        $successCounter = 0;
-        $failureCounter = 0;
-
-        foreach ($parsedData as $key => $remoteData) {
-            $request = $localRecord = null;
-            try {
-                $db->beginTransaction();
-
-                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, (array) $remoteData);
-                $localRecord = $testRequestsService->findMatchingLocalRecord($request, $tableName, $primaryKeyName);
-
-                if (!empty($localRecord)) {
-                    $removeKeysForUpdate = [
-                        'sample_code',
-                        'sample_code_key',
-                        'sample_code_format',
-                        'sample_batch_id',
-                        'lab_id',
-                        'vl_test_platform',
-                        'sample_received_at_hub_datetime',
-                        'sample_received_at_lab_datetime',
-                        'sample_tested_datetime',
-                        'result_dispatched_datetime',
-                        'is_sample_rejected',
-                        'reason_for_sample_rejection',
-                        'rejection_on',
-                        'result',
-                        'result_reviewed_by',
-                        'result_reviewed_datetime',
-                        'tested_by',
-                        'result_approved_by',
-                        'result_approved_datetime',
-                        'lab_tech_comments',
-                        'reason_for_test_result_changes',
-                        'revised_by',
-                        'revised_on',
-                        'last_modified_by',
-                        'last_modified_datetime',
-                        'manual_result_entry',
-                        'result_status',
-                        'data_sync',
-                        'result_printed_datetime',
-                        'data_from_tests'
-                    ];
-                    // Merge test_type_form and form_attributes like original
-                    $testTypeForm = JsonUtility::jsonToSetString(
-                        $localRecord['test_type_form'] ?? null,
-                        'test_type_form',
-                        $request['test_type_form'] ?? null
-                    );
-                    $request['test_type_form'] = $testTypeForm === null || $testTypeForm === '' || $testTypeForm === '0' ? null : $db->func($testTypeForm);
-                    $formAttributes = JsonUtility::jsonToSetString(
-                        $localRecord['form_attributes'] ?? null,
-                        'form_attributes',
-                        $request['form_attributes'] ?? null
-                    );
-                    $request['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes);
-                    $request['is_result_mail_sent'] ??= 'no';
-                    $updatePayload = MiscUtility::excludeKeys($request, $removeKeysForUpdate);
-                    $updatePayload = preserveLocallyOwnedFields($updatePayload, $localRecord);
-                    // Conditional backfill of remote_sample_code
-                    if (!empty($request['remote_sample_code']) && empty($localRecord['remote_sample_code'])) {
-                        $db->rawQuery(
-                            "UPDATE {$tableName} SET remote_sample_code = ? WHERE {$primaryKeyName} = ? AND (remote_sample_code IS NULL OR remote_sample_code = '')",
-                            [$request['remote_sample_code'], $localRecord[$primaryKeyName]]
-                        );
-                        $localRecord['remote_sample_code'] = $request['remote_sample_code'];
-                    }
-                    $needsUpdate = !MiscUtility::isArrayEqual(
-                        $updatePayload,
-                        $localRecord,
-                        ['last_modified_datetime', 'form_attributes']
-                    );
-                    if ($needsUpdate) {
-                        $updatePayload['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-                        if ($isSilent) {
-                            unset($updatePayload['last_modified_datetime']);
-                        }
-                        $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
-                        $id = $db->update($tableName, $updatePayload);
-                    } else {
-                        $id = true;
-                    }
-                    $genericId = $localRecord[$primaryKeyName];
-                } elseif (!TestRequestsService::hasUsableIdentity($request)) {
-                    // See syncTestRequest(): a record with no key to be found
-                    // by would be re-inserted on every sync.
-                    LoggerUtility::logError("Sync operation failed", [
-                        'reason' => 'unidentifiable: no remote_sample_code, no unique_id, and no sample_code paired with a lab or facility',
-                        'unique_id' => $request['unique_id'] ?? null,
-                        'sample_code' => $request['sample_code'] ?? null,
-                        'module' => 'generic-tests',
-                    ]);
-                    $id = false;
-                    $genericId = null;
-                } elseif (!empty($request['sample_collection_date'])) {
-                    // Insert path
-                    $request['source_of_request'] = 'vlsts';
-                    $testTypeForm = JsonUtility::jsonToSetString(
-                        $request['test_type_form'] ?? null,
-                        'test_type_form'
-                    );
-                    $request['test_type_form'] = $testTypeForm === null || $testTypeForm === '' || $testTypeForm === '0' ? null : $db->func($testTypeForm);
-                    $formAttributes = JsonUtility::jsonToSetString(
-                        $request['form_attributes'] ?? null,
-                        'form_attributes',
-                        ['syncTransactionId' => $transactionId]
-                    );
-                    $request['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes);
-                    $request['is_result_mail_sent'] ??= 'no';
-                    $request['data_sync'] = 0;
-                    $id = $db->insert($tableName, $request);
-                    $genericId = $db->getInsertId();
-                } else {
-                    // New to this lab but no collection date: it cannot be
-                    // inserted. This used to be skipped without a word.
-                    LoggerUtility::logError("Sync operation failed", [
-                        'reason' => 'new request has no sample_collection_date',
-                        'unique_id' => $request['unique_id'] ?? null,
-                        'sample_code' => $request['sample_code'] ?? null,
-                        'module' => 'generic-tests',
-                    ]);
-                    $id = false;
-                    $genericId = null;
-                }
-
-                $general->syncSubTable('generic_test_results', 'generic_id', $genericId, $remoteData['data_from_tests'] ?? null, ['test_id', 'data_sync'], [], true);
-
-                if ($id === true || $id > 0) {
-                    $successCounter++;
-                } else {
-                    $failureCounter++;
-                }
-                if ($isDryRun) {
-                    $db->rollbackTransaction();
-                } else {
-                    $db->commitTransaction();
-                }
-            } catch (Throwable $e) {
-                $db->rollbackTransaction();
-                // A record that threw was not saved: count it, or the run reports
-                // no failures and an all-failed pull is recorded as an empty one.
-                $failureCounter++;
-                LoggerUtility::logError($e->getMessage(), [
-                    'error_id' => MiscUtility::generateErrorId(),
-                    'exception_class' => $e::class,
-                    'exception' => $e,
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'last_db_query' => $db->getLastQuery(),
-                    'last_db_error' => $db->getLastError(),
-                    'local_unique_id' => $localRecord['unique_id'] ?? null,
-                    'received_unique_id' => $request['unique_id'] ?? null,
-                    'local_sample_code' => $localRecord['sample_code'] ?? null,
-                    'received_sample_code' => $request['sample_code'] ?? null,
-                    'local_remote_sample_code' => $localRecord['remote_sample_code'] ?? null,
-                    'received_remote_sample_code' => $request['remote_sample_code'] ?? null,
-                    'local_facility_id' => $localRecord['facility_id'] ?? null,
-                    'received_facility_id' => $request['facility_id'] ?? null,
-                    'local_lab_id' => $localRecord['lab_id'] ?? null,
-                    'received_lab_id' => $request['lab_id'] ?? null,
-                    'local_result' => $localRecord['result'] ?? null,
-                    'received_result' => $request['result'] ?? null,
-                    'stacktrace' => $e->getTraceAsString()
-                ]);
+    // Process modules
+    try {
+        foreach ($moduleConfigs as $module => $cfg) {
+            if (empty($responsePayload[$module]) || $responsePayload[$module] === '[]' || !JsonUtility::isJSON($responsePayload[$module])) {
                 continue;
             }
 
-            if ($cliMode) {
-                spinner($loopIndex, $successCounter);
-            }
-            $loopIndex++;
-        }
+            $primaryKeyName = TestsService::getPrimaryColumn($module);
+            $tableName = TestsService::getTestTableName($module);
 
-        if ($cliMode) {
-            clearSpinner();
-            if ($isDryRun) {
-                $io->note("DRY RUN CUSTOM TESTS: would sync $successCounter record(s)");
-            } else {
-                $io->success("Synced $successCounter Custom Tests record(s)");
-                if ($failureCounter > 0) {
-                    $io->error("Failed to sync $failureCounter Custom Tests record(s)");
+            if ($cliMode) {
+                $io->section("Processing for " . strtoupper($module) . "...");
+            }
+
+            $options = [
+                'pointer' => '/requests',
+                'decoder' => new ExtJsonDecoder(true)
+            ];
+            $parsedData = Items::fromString($responsePayload[$module], $options);
+
+            $localDbFieldArray = $general->getTableFieldsAsArray($tableName, $cfg['removeKeys']);
+
+            $loopIndex = 0;
+            $successCounter = 0;
+            $failureCounter = 0;
+            $insertCounter = 0;
+            $updateCounter = 0;
+            $receiptSaved = $receiptFailed = [];
+
+            foreach ($parsedData as $key => $remoteData) {
+                // Per record: the catch below logs these, and a record that throws
+                // before setting them must not be reported as the previous one.
+                $request = $localRecord = null;
+                try {
+                    $db->beginTransaction();
+
+                    $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, (array) $remoteData);
+                    $syncResult = syncTestRequest(
+                        $request,
+                        $module,
+                        $tableName,
+                        $primaryKeyName,
+                        $cfg['excludeUpdateKeys'],
+                        $transactionId,
+                        $isSilent,
+                        $db,
+                        $testRequestsService
+                    );
+                    $localRecord = $syncResult['localRecord'];
+
+                    if ($syncResult['is_failure']) {
+                        $failureCounter++;
+                        noteFailed($receiptFailed, $request, $syncResult['failure_reason'] ?? null);
+                        LoggerUtility::logError("Sync operation failed", [
+                            'reason' => $syncResult['failure_reason'],
+                            'unique_id' => $request['unique_id'] ?? null,
+                            'sample_code' => $request['sample_code'] ?? null,
+                            'module' => $module,
+                            'last_db_error' => $db->getLastError()
+                        ]);
+                        $db->rollbackTransaction();
+                        continue; // Skip to next record
+                    }
+
+                    // Module-specific sub-table sync
+                    if ($module === 'covid19') {
+                        $covid19Id = $localRecord[$primaryKeyName] ?? null;
+                        $general->syncSubTable('covid19_patient_symptoms', 'covid19_id', $covid19Id, $remoteData['data_from_symptoms'] ?? null, ['id']);
+                        $general->syncSubTable('covid19_patient_comorbidities', 'covid19_id', $covid19Id, $remoteData['data_from_comorbidities'] ?? null, ['id']);
+                        $general->syncSubTable('covid19_tests', 'covid19_id', $covid19Id, $remoteData['data_from_tests'] ?? null, ['test_id', 'data_sync'], [], true);
+                    }
+
+                    if ($module === 'tb') {
+                        $tbId = $localRecord[$primaryKeyName] ?? null;
+                        $general->syncSubTable('tb_tests', 'tb_id', $tbId, $remoteData['data_from_tests'] ?? null, ['tb_test_id', 'data_sync'], [], true);
+                    }
+
+                    if ($module === 'hepatitis') {
+                        $hepatitisId = $localRecord[$primaryKeyName] ?? null;
+                        $general->syncSubTable('hepatitis_risk_factors', 'hepatitis_id', $hepatitisId, $remoteData['data_from_risks'] ?? null, ['id'], ['keyField' => 'riskfactors_id', 'valueField' => 'riskfactors_detected']);
+                        $general->syncSubTable('hepatitis_patient_comorbidities', 'hepatitis_id', $hepatitisId, $remoteData['data_from_comorbidities'] ?? null, ['id'], ['keyField' => 'comorbidity_id', 'valueField' => 'comorbidity_detected']);
+                    }
+
+                    if ($syncResult['success']) {
+                        $successCounter++;
+                        if ($syncResult['is_insert']) {
+                            $insertCounter++;
+                        } else {
+                            $updateCounter++;
+                        }
+                    }
+                    if ($isDryRun) {
+                        $db->rollbackTransaction();
+                    } else {
+                        $db->commitTransaction();
+                        // Saved, or already up to date: either way the lab has it.
+                        noteSaved($receiptSaved, $request);
+                    }
+                } catch (Throwable $e) {
+                    $db->rollbackTransaction();
+                    // A record that threw was not saved: count it, or the run reports
+                    // no failures and an all-failed pull is recorded as an empty one.
+                    $failureCounter++;
+                    noteFailed($receiptFailed, $request, $e->getMessage());
+                    LoggerUtility::logError($e->getMessage(), [
+                        'error_id' => MiscUtility::generateErrorId(),
+                        'exception_class' => $e::class,
+                        'exception' => $e,
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'last_db_query' => $db->getLastQuery(),
+                        'last_db_error' => $db->getLastError(),
+                        'local_unique_id' => $localRecord['unique_id'] ?? null,
+                        'received_unique_id' => $request['unique_id'] ?? null,
+                        'local_sample_code' => $localRecord['sample_code'] ?? null,
+                        'received_sample_code' => $request['sample_code'] ?? null,
+                        'local_remote_sample_code' => $localRecord['remote_sample_code'] ?? null,
+                        'received_remote_sample_code' => $request['remote_sample_code'] ?? null,
+                        'local_facility_id' => $localRecord['facility_id'] ?? null,
+                        'received_facility_id' => $request['facility_id'] ?? null,
+                        'local_lab_id' => $localRecord['lab_id'] ?? null,
+                        'received_lab_id' => $request['lab_id'] ?? null,
+                        'local_result' => $localRecord['result'] ?? null,
+                        'received_result' => $request['result'] ?? null,
+                        'stacktrace' => $e->getTraceAsString()
+                    ]);
+                    continue;
+                }
+
+                if ($cliMode) {
+                    spinner($loopIndex, $successCounter);
+                }
+                $loopIndex++;
+            }
+
+            if ($cliMode) {
+                clearSpinner();
+                echo PHP_EOL;
+                if ($isDryRun) {
+                    $io->note(sprintf(
+                        'DRY RUN %s: would insert %d and update %d record(s); %d would fail',
+                        strtoupper($module),
+                        $insertCounter,
+                        $updateCounter,
+                        $failureCounter
+                    ));
+                } else {
+                    outputSyncResults($io, $module, $successCounter, $failureCounter);
+                }
+            }
+
+            if (!$isDryRun) {
+                $general->addApiTracking(
+                    $transactionId,
+                    'intelis-system',
+                    $successCounter,
+                    'receive-requests',
+                    $module,
+                    $requestInfo[$module]['url'] ?? null,
+                    $requestInfo[$module]['payload'] ?? null,
+                    $responsePayload[$module],
+                    'json',
+                    $labId,
+                    // An empty pull keeps its row but no bodies: the newest
+                    // receive-requests row is where the next pull starts from.
+                    emptyPoll: $successCounter === 0 && $failureCounter === 0,
+                    keepRow: true
+                );
+            }
+            if (($moduleResponseHeaders[$module]['x-request-receipts'] ?? '') === '1' && !$isDryRun) {
+                $receiptDelivered[$module] = $receiptsClient->send(
+                    $remoteURL,
+                    (int) $labId,
+                    $module,
+                    $receiptSaved,
+                    $receiptFailed
+                );
+                if ($cliMode && !$receiptDelivered[$module]) {
+                    $io->warning(
+                        'Could not deliver the receipt for ' . strtoupper($module) . '; it will be sent next run.'
+                    );
                 }
             }
         }
 
-        if (!$isDryRun) {
-            $general->addApiTracking(
-                $transactionId,
-                'intelis-system',
-                $successCounter,
-                'receive-requests',
-                'generic-tests',
-                $requestInfo['generic-tests']['url'] ?? null,
-                $requestInfo['generic-tests']['payload'] ?? null,
-                $responsePayload['generic-tests'],
-                'json',
-                $labId,
-                // An empty pull keeps its row but no bodies: the newest
-                // receive-requests row is where the next pull starts from.
-                emptyPoll: $successCounter === 0 && $failureCounter === 0,
-                keepRow: true
-            );
+        // Special-case generic-tests (preserve its merging logic)
+        if (!empty($responsePayload['generic-tests']) && $responsePayload['generic-tests'] !== '[]' && JsonUtility::isJSON($responsePayload['generic-tests'])) {
+            $module = 'generic-tests';
+            $primaryKeyName = TestsService::getPrimaryColumn($module);
+            $tableName = TestsService::getTestTableName($module);
+
+            if ($cliMode) {
+                $io->section("Processing for CUSTOM TESTS...");
+            }
+
+            $options = [
+                'pointer' => '/requests',
+                'decoder' => new ExtJsonDecoder(true)
+            ];
+            $parsedData = Items::fromString($responsePayload['generic-tests'], $options);
+
+            $removeKeys = [
+                $primaryKeyName,
+                'sample_batch_id',
+                'result',
+                'sample_tested_datetime',
+                'sample_received_at_lab_datetime',
+                'result_dispatched_datetime',
+                'is_sample_rejected',
+                'reason_for_sample_rejection',
+                'result_approved_by',
+                'result_approved_datetime',
+                'data_sync'
+            ];
+            $localDbFieldArray = $general->getTableFieldsAsArray($tableName, $removeKeys);
+
+            $loopIndex = 0;
+            $successCounter = 0;
+            $failureCounter = 0;
+            $receiptSaved = $receiptFailed = [];
+
+            foreach ($parsedData as $key => $remoteData) {
+                $request = $localRecord = null;
+                try {
+                    $db->beginTransaction();
+
+                    $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, (array) $remoteData);
+                    $localRecord = $testRequestsService->findMatchingLocalRecord($request, $tableName, $primaryKeyName);
+
+                    if (!empty($localRecord)) {
+                        $removeKeysForUpdate = [
+                            'sample_code',
+                            'sample_code_key',
+                            'sample_code_format',
+                            'sample_batch_id',
+                            'lab_id',
+                            'vl_test_platform',
+                            'sample_received_at_hub_datetime',
+                            'sample_received_at_lab_datetime',
+                            'sample_tested_datetime',
+                            'result_dispatched_datetime',
+                            'is_sample_rejected',
+                            'reason_for_sample_rejection',
+                            'rejection_on',
+                            'result',
+                            'result_reviewed_by',
+                            'result_reviewed_datetime',
+                            'tested_by',
+                            'result_approved_by',
+                            'result_approved_datetime',
+                            'lab_tech_comments',
+                            'reason_for_test_result_changes',
+                            'revised_by',
+                            'revised_on',
+                            'last_modified_by',
+                            'last_modified_datetime',
+                            'manual_result_entry',
+                            'result_status',
+                            'data_sync',
+                            'result_printed_datetime',
+                            'data_from_tests'
+                        ];
+                        // Merge test_type_form and form_attributes like original
+                        $testTypeForm = JsonUtility::jsonToSetString(
+                            $localRecord['test_type_form'] ?? null,
+                            'test_type_form',
+                            $request['test_type_form'] ?? null
+                        );
+                        $request['test_type_form'] = $testTypeForm === null || $testTypeForm === '' || $testTypeForm === '0' ? null : $db->func($testTypeForm);
+                        $formAttributes = JsonUtility::jsonToSetString(
+                            $localRecord['form_attributes'] ?? null,
+                            'form_attributes',
+                            $request['form_attributes'] ?? null
+                        );
+                        $request['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes);
+                        $request['is_result_mail_sent'] ??= 'no';
+                        $updatePayload = MiscUtility::excludeKeys($request, $removeKeysForUpdate);
+                        $updatePayload = preserveLocallyOwnedFields($updatePayload, $localRecord);
+                        // Conditional backfill of remote_sample_code
+                        if (!empty($request['remote_sample_code']) && empty($localRecord['remote_sample_code'])) {
+                            $db->rawQuery(
+                                "UPDATE {$tableName} SET remote_sample_code = ? WHERE {$primaryKeyName} = ? AND (remote_sample_code IS NULL OR remote_sample_code = '')",
+                                [$request['remote_sample_code'], $localRecord[$primaryKeyName]]
+                            );
+                            $localRecord['remote_sample_code'] = $request['remote_sample_code'];
+                        }
+                        $needsUpdate = !MiscUtility::isArrayEqual(
+                            $updatePayload,
+                            $localRecord,
+                            ['last_modified_datetime', 'form_attributes']
+                        );
+                        if ($needsUpdate) {
+                            $updatePayload['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+                            if ($isSilent) {
+                                unset($updatePayload['last_modified_datetime']);
+                            }
+                            $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
+                            $id = $db->update($tableName, $updatePayload);
+                        } else {
+                            $id = true;
+                        }
+                        $genericId = $localRecord[$primaryKeyName];
+                    } elseif (!TestRequestsService::hasUsableIdentity($request)) {
+                        // See syncTestRequest(): a record with no key to be found
+                        // by would be re-inserted on every sync.
+                        LoggerUtility::logError("Sync operation failed", [
+                            'reason' => 'unidentifiable: no remote_sample_code, no unique_id, and no sample_code paired with a lab or facility',
+                            'unique_id' => $request['unique_id'] ?? null,
+                            'sample_code' => $request['sample_code'] ?? null,
+                            'module' => 'generic-tests',
+                        ]);
+                        $id = false;
+                        $genericId = null;
+                    } elseif (!empty($request['sample_collection_date'])) {
+                        // Insert path
+                        $request['source_of_request'] = 'vlsts';
+                        $testTypeForm = JsonUtility::jsonToSetString(
+                            $request['test_type_form'] ?? null,
+                            'test_type_form'
+                        );
+                        $request['test_type_form'] = $testTypeForm === null || $testTypeForm === '' || $testTypeForm === '0' ? null : $db->func($testTypeForm);
+                        $formAttributes = JsonUtility::jsonToSetString(
+                            $request['form_attributes'] ?? null,
+                            'form_attributes',
+                            ['syncTransactionId' => $transactionId]
+                        );
+                        $request['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes);
+                        $request['is_result_mail_sent'] ??= 'no';
+                        $request['data_sync'] = 0;
+                        $id = $db->insert($tableName, $request);
+                        $genericId = $db->getInsertId();
+                    } else {
+                        // New to this lab but no collection date: it cannot be
+                        // inserted. This used to be skipped without a word.
+                        LoggerUtility::logError("Sync operation failed", [
+                            'reason' => 'new request has no sample_collection_date',
+                            'unique_id' => $request['unique_id'] ?? null,
+                            'sample_code' => $request['sample_code'] ?? null,
+                            'module' => 'generic-tests',
+                        ]);
+                        $id = false;
+                        $genericId = null;
+                    }
+
+                    $general->syncSubTable('generic_test_results', 'generic_id', $genericId, $remoteData['data_from_tests'] ?? null, ['test_id', 'data_sync'], [], true);
+
+                    if ($id === true || $id > 0) {
+                        $successCounter++;
+                    } else {
+                        $failureCounter++;
+                    }
+                    if ($isDryRun) {
+                        $db->rollbackTransaction();
+                    } elseif ($id === true || $id > 0) {
+                        $db->commitTransaction();
+                        noteSaved($receiptSaved, $request);
+                    } else {
+                        $db->commitTransaction();
+                        noteFailed($receiptFailed, $request, 'not saved on the lab');
+                    }
+                } catch (Throwable $e) {
+                    $db->rollbackTransaction();
+                    // A record that threw was not saved: count it, or the run reports
+                    // no failures and an all-failed pull is recorded as an empty one.
+                    $failureCounter++;
+                    noteFailed($receiptFailed, $request, $e->getMessage());
+                    LoggerUtility::logError($e->getMessage(), [
+                        'error_id' => MiscUtility::generateErrorId(),
+                        'exception_class' => $e::class,
+                        'exception' => $e,
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'last_db_query' => $db->getLastQuery(),
+                        'last_db_error' => $db->getLastError(),
+                        'local_unique_id' => $localRecord['unique_id'] ?? null,
+                        'received_unique_id' => $request['unique_id'] ?? null,
+                        'local_sample_code' => $localRecord['sample_code'] ?? null,
+                        'received_sample_code' => $request['sample_code'] ?? null,
+                        'local_remote_sample_code' => $localRecord['remote_sample_code'] ?? null,
+                        'received_remote_sample_code' => $request['remote_sample_code'] ?? null,
+                        'local_facility_id' => $localRecord['facility_id'] ?? null,
+                        'received_facility_id' => $request['facility_id'] ?? null,
+                        'local_lab_id' => $localRecord['lab_id'] ?? null,
+                        'received_lab_id' => $request['lab_id'] ?? null,
+                        'local_result' => $localRecord['result'] ?? null,
+                        'received_result' => $request['result'] ?? null,
+                        'stacktrace' => $e->getTraceAsString()
+                    ]);
+                    continue;
+                }
+
+                if ($cliMode) {
+                    spinner($loopIndex, $successCounter);
+                }
+                $loopIndex++;
+            }
+
+            if ($cliMode) {
+                clearSpinner();
+                if ($isDryRun) {
+                    $io->note("DRY RUN CUSTOM TESTS: would sync $successCounter record(s)");
+                } else {
+                    $io->success("Synced $successCounter Custom Tests record(s)");
+                    if ($failureCounter > 0) {
+                        $io->error("Failed to sync $failureCounter Custom Tests record(s)");
+                    }
+                }
+            }
+
+            if (!$isDryRun) {
+                $general->addApiTracking(
+                    $transactionId,
+                    'intelis-system',
+                    $successCounter,
+                    'receive-requests',
+                    'generic-tests',
+                    $requestInfo['generic-tests']['url'] ?? null,
+                    $requestInfo['generic-tests']['payload'] ?? null,
+                    $responsePayload['generic-tests'],
+                    'json',
+                    $labId,
+                    // An empty pull keeps its row but no bodies: the newest
+                    // receive-requests row is where the next pull starts from.
+                    emptyPoll: $successCounter === 0 && $failureCounter === 0,
+                    keepRow: true
+                );
+            }
+            if (($moduleResponseHeaders[$module]['x-request-receipts'] ?? '') === '1' && !$isDryRun) {
+                $receiptDelivered[$module] = $receiptsClient->send(
+                    $remoteURL,
+                    (int) $labId,
+                    $module,
+                    $receiptSaved,
+                    $receiptFailed
+                );
+                if ($cliMode && !$receiptDelivered[$module]) {
+                    $io->warning(
+                        'Could not deliver the receipt for ' . strtoupper($module) . '; it will be sent next run.'
+                    );
+                }
+            }
+        }
+    } catch (Throwable $e) {
+        LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+            'last_db_query' => $db->getLastQuery(),
+            'last_db_error' => $db->getLastError(),
+            'exception' => $e,
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'stacktrace' => $e->getTraceAsString()
+        ]);
+    }
+
+    $pullModules = [];
+    foreach ($receiptDelivered as $pulledModule => $delivered) {
+        $remaining = (int) ($moduleResponseHeaders[$pulledModule]['x-pending-remaining'] ?? 0);
+        // Only while it is going down: a remainder that stays put (requests with
+        // no unique_id cannot be confirmed) would otherwise loop until the budget.
+        $progressing = $remaining < ($previousRemaining[$pulledModule] ?? PHP_INT_MAX);
+        $previousRemaining[$pulledModule] = $remaining;
+        if ($delivered && $remaining > 0 && $progressing) {
+            $pullModules[] = $pulledModule;
         }
     }
-} catch (Throwable $e) {
-    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
-        'last_db_query' => $db->getLastQuery(),
-        'last_db_error' => $db->getLastError(),
-        'exception' => $e,
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
-        'stacktrace' => $e->getTraceAsString()
-    ]);
-}
+    if ($pullModules !== [] && $cliMode) {
+        $io->text('More requests are waiting on the STS for: ' . implode(', ', $pullModules) . '. Pulling again.');
+    }
+// Web runs (the sync button) pull once: a long loop would outlast the request.
+} while ($cliMode && $pullModules !== [] && time() < $pullDeadline);
 
 // Final sync timestamp update
 if (!$isDryRun) {
