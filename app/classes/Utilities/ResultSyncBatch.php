@@ -24,18 +24,27 @@ final class ResultSyncBatch implements Countable
     /** @var Closure(string, list<int|string>): list<Row> */
     private Closure $query;
 
+    /** @var null|Closure(list<int|string>): void */
+    private ?Closure $beforeFetch;
+
     /**
      * SQL and column names come from the sender, never request input.
      * The selection must not already contain ORDER BY or LIMIT.
      *
+     * $beforeFetch runs with each slice of IDs just before chunks() reads their rows,
+     * so the sender can mark them in flight first; preview() never calls it.
+     *
      * @param callable(string, list<int|string>): list<Row> $query
+     * @param null|callable(list<int|string>): void $beforeFetch
      */
     public function __construct(
         callable $query,
         private readonly string $selection,
         private readonly string $idColumn,
-        bool $keyByUniqueId = false
+        bool $keyByUniqueId = false,
+        ?callable $beforeFetch = null
     ) {
+        $this->beforeFetch = $beforeFetch === null ? null : Closure::fromCallable($beforeFetch);
         if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*$/D', $idColumn)) {
             throw new InvalidArgumentException('Expected a qualified result ID column.');
         }
@@ -107,6 +116,9 @@ final class ResultSyncBatch implements Countable
             while (count($rows) < $limit && $offset < count($this->ids)) {
                 $ids = array_slice($this->ids, $offset, $limit - count($rows));
                 $offset += count($ids);
+                if ($this->beforeFetch !== null) {
+                    ($this->beforeFetch)($ids);
+                }
                 foreach ($this->fetch($ids) as $row) {
                     $rows[$index++] = $row;
                 }

@@ -555,6 +555,30 @@ if ($senderLock === false) {
     exit($waited ? RESULTS_SENDER_EXIT_LOCKED : 0);
 }
 
+// A previous run that stopped between sending and its acknowledgment left rows in
+// flight (data_sync = 2). The STS may not have them, so they go back to pending.
+// Only while holding the lock: with it, no other run can have rows out.
+if ($lockAcquired && !$isDryRun) {
+    foreach (ResultSyncAcknowledgement::TABLES as $syncTable => $syncPrimaryKey) {
+        try {
+            $released = ResultSyncAcknowledgement::releaseInFlight($db, $syncTable);
+            if ($released > 0) {
+                LoggerUtility::logInfo("Results sender released $released row(s) a previous run left in flight in $syncTable");
+            }
+        } catch (Throwable $e) {
+            LoggerUtility::logError("Results sender could not release in-flight rows in $syncTable: " . $e->getMessage());
+        }
+    }
+}
+
+// Rows are marked in flight just before each chunk is read, so any change after
+// that point sets data_sync back to 0 and keeps the row pending past its
+// acknowledgment. The selections accept 2 so the marked rows are still read.
+$markInFlight = static fn(string $table, string $primaryKey): Closure =>
+    static function (array $ids) use ($db, $table, $primaryKey): void {
+        ResultSyncAcknowledgement::markInFlight($db, $table, $primaryKey, $ids);
+    };
+
 // Keep the operator's requested size as a ceiling throughout adaptive batching.
 $maxChunkSize = max(1, $chunkSize);
 $nextBatchSize = static function () use (&$chunkSize): int {
@@ -586,7 +610,16 @@ $url = "$remoteURL/remote/v2/results.php";
 
 $queryResults = static function (string $sql, array $params) use ($db): array {
     $db->reset();
-    return $db->rawQuery($sql, $params);
+    $rows = $db->rawQuery($sql, $params);
+    // The in-flight marker is this lab's bookkeeping, not part of the result: send
+    // the pending value it replaced, so no STS ever stores a 2.
+    foreach ($rows as &$row) {
+        if (isset($row['data_sync']) && (int) $row['data_sync'] === ResultSyncAcknowledgement::IN_FLIGHT) {
+            $row['data_sync'] = 0;
+        }
+    }
+    unset($row);
+    return $rows;
 };
 
 $buildResultPayload = static function (array $chunk, string $testType) use ($labId, $general, $isSilent, $db): array {
@@ -637,7 +670,7 @@ try {
         if (null !== $syncSinceDate) {
             $genericQuery .= " AND generic.last_modified_datetime >= '$syncSinceDate'";
         } else {
-            $genericQuery .= " AND generic.data_sync = 0";
+            $genericQuery .= " AND generic.data_sync IN (0, " . ResultSyncAcknowledgement::IN_FLIGHT . ")";
         }
 
         $db->reset();
@@ -645,7 +678,8 @@ try {
             $queryResults,
             $genericQuery,
             'generic.sample_id',
-            keyByUniqueId: true
+            keyByUniqueId: true,
+            beforeFetch: $markInFlight('form_generic', 'sample_id')
         );
         $count = count($resultBatch);
 
@@ -801,14 +835,15 @@ try {
         if (null !== $syncSinceDate) {
             $vlQuery .= " AND vl.last_modified_datetime >= '$syncSinceDate'";
         } else {
-            $vlQuery .= " AND vl.data_sync = 0";
+            $vlQuery .= " AND vl.data_sync IN (0, " . ResultSyncAcknowledgement::IN_FLIGHT . ")";
         }
 
         $db->reset();
         $resultBatch = new ResultSyncBatch(
             $queryResults,
             $vlQuery,
-            'vl.vl_sample_id'
+            'vl.vl_sample_id',
+            beforeFetch: $markInFlight('form_vl', 'vl_sample_id')
         );
         $count = count($resultBatch);
 
@@ -951,14 +986,15 @@ try {
         if (null !== $syncSinceDate) {
             $eidQuery .= " AND vl.last_modified_datetime >= '$syncSinceDate'";
         } else {
-            $eidQuery .= " AND vl.data_sync = 0";
+            $eidQuery .= " AND vl.data_sync IN (0, " . ResultSyncAcknowledgement::IN_FLIGHT . ")";
         }
 
         $db->reset();
         $resultBatch = new ResultSyncBatch(
             $queryResults,
             $eidQuery,
-            'vl.eid_id'
+            'vl.eid_id',
+            beforeFetch: $markInFlight('form_eid', 'eid_id')
         );
         $count = count($resultBatch);
 
@@ -1101,7 +1137,7 @@ try {
         if (null !== $syncSinceDate) {
             $covid19Query .= " AND c19.last_modified_datetime >= '$syncSinceDate'";
         } else {
-            $covid19Query .= " AND c19.data_sync = 0";
+            $covid19Query .= " AND c19.data_sync IN (0, " . ResultSyncAcknowledgement::IN_FLIGHT . ")";
         }
 
         $db->reset();
@@ -1109,7 +1145,8 @@ try {
             $queryResults,
             $covid19Query,
             'c19.covid19_id',
-            keyByUniqueId: true
+            keyByUniqueId: true,
+            beforeFetch: $markInFlight('form_covid19', 'covid19_id')
         );
         $count = count($resultBatch);
 
@@ -1267,14 +1304,15 @@ try {
         if (null !== $syncSinceDate) {
             $hepQuery .= " AND hep.last_modified_datetime >= '$syncSinceDate'";
         } else {
-            $hepQuery .= " AND hep.data_sync = 0";
+            $hepQuery .= " AND hep.data_sync IN (0, " . ResultSyncAcknowledgement::IN_FLIGHT . ")";
         }
 
         $db->reset();
         $resultBatch = new ResultSyncBatch(
             $queryResults,
             $hepQuery,
-            'hep.hepatitis_id'
+            'hep.hepatitis_id',
+            beforeFetch: $markInFlight('form_hepatitis', 'hepatitis_id')
         );
         $count = count($resultBatch);
 
@@ -1419,7 +1457,7 @@ try {
         if (null !== $syncSinceDate) {
             $tbQuery .= " AND tb.last_modified_datetime >= '$syncSinceDate'";
         } else {
-            $tbQuery .= " AND tb.data_sync = 0";
+            $tbQuery .= " AND tb.data_sync IN (0, " . ResultSyncAcknowledgement::IN_FLIGHT . ")";
         }
 
         $db->reset();
@@ -1427,7 +1465,8 @@ try {
             $queryResults,
             $tbQuery,
             'tb.tb_id',
-            keyByUniqueId: true
+            keyByUniqueId: true,
+            beforeFetch: $markInFlight('form_tb', 'tb_id')
         );
         $count = count($resultBatch);
 
@@ -1580,14 +1619,15 @@ try {
         if (null !== $syncSinceDate) {
             $cd4Query .= " AND cd4.last_modified_datetime >= '$syncSinceDate'";
         } else {
-            $cd4Query .= " AND cd4.data_sync = 0";
+            $cd4Query .= " AND cd4.data_sync IN (0, " . ResultSyncAcknowledgement::IN_FLIGHT . ")";
         }
 
         $db->reset();
         $resultBatch = new ResultSyncBatch(
             $queryResults,
             $cd4Query,
-            'cd4.cd4_id'
+            'cd4.cd4_id',
+            beforeFetch: $markInFlight('form_cd4', 'cd4_id')
         );
         $count = count($resultBatch);
         $acked = 0;

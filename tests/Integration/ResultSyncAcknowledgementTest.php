@@ -29,49 +29,97 @@ final class ResultSyncAcknowledgementTest extends TestCase
         }
     }
 
+    /** @return array<int, array<string, mixed>> */
+    private static function syncState($db): array
+    {
+        return array_column(
+            $db->rawQuery(
+                'SELECT vl_sample_id, data_sync, result_sent_to_source, last_modified_datetime
+                    FROM form_vl ORDER BY vl_sample_id'
+            ),
+            null,
+            'vl_sample_id'
+        );
+    }
+
     #[RunInSeparateProcess]
-    public function testOnlyRowsUnchangedSinceTheyWereReadAreMarkedSynced(): void
+    public function testOnlyRowsStillInFlightAreMarkedSynced(): void
     {
         $this->requireDatabase();
         $db = LegacyAppHarness::boot('intelis_result_sync_ack_test_' . getmypid(), ['r_sample_status', 'form_vl']);
         $this->booted = true;
         $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (7, 'Accepted')");
 
-        $rows = [
-            1 => ['unique_id' => 'u-1', 'sample_code' => 'A', 'last_modified_datetime' => '2026-09-01 10:00:00'],
-            2 => ['unique_id' => 'u-2', 'sample_code' => 'B', 'last_modified_datetime' => '2026-09-01 10:00:00'],
-            3 => ['unique_id' => 'u-3', 'sample_code' => 'C', 'last_modified_datetime' => null],
-            4 => ['unique_id' => 'u-4', 'sample_code' => 'D', 'last_modified_datetime' => '2026-09-01 10:00:00'],
-        ];
-        foreach ($rows as $id => $row) {
+        $sent = [];
+        foreach ([1 => 'u-1', 2 => 'u-2', 3 => 'u-3', 4 => 'u-4'] as $id => $uniqueId) {
+            $row = [
+                'unique_id' => $uniqueId, 'sample_code' => "S-$id", 'last_modified_datetime' => '2026-09-01 10:00:00',
+            ];
             $db->insert('form_vl', [
                 'vl_sample_id' => $id, 'data_sync' => 0, 'vlsm_instance_id' => 'test', 'result_status' => 7,
             ] + $row);
-        }
-        // The sender read all four; then row 2 was edited while the request was out.
-        $sent = [];
-        foreach ($rows as $id => $row) {
             $sent[] = ['vl_sample_id' => $id] + $row;
         }
+        ResultSyncAcknowledgement::markInFlight($db, 'form_vl', 'vl_sample_id', [1, 2, 3, 4]);
+
+        // While the request is out: row 2 is edited, row 3 is printed for the first
+        // time. The print, like generate-result-pdf.php, leaves the timestamp alone.
         $db->where('vl_sample_id', 2);
-        $db->update('form_vl', ['last_modified_datetime' => '2026-09-01 10:00:05']);
+        $db->update('form_vl', ['result' => '50', 'data_sync' => 0, 'last_modified_datetime' => '2026-09-01 10:00:05']);
+        $db->where('vl_sample_id', 3);
+        $db->update('form_vl', ['result_printed_on_lis_datetime' => '2026-09-01 10:00:05', 'data_sync' => 0]);
 
         // The STS acknowledged 1, 2 and 3; 4 was not acknowledged.
         $acknowledged = ResultSyncAcknowledgement::acknowledgedRows($sent, ['u-1', 'u-2', 'u-3'], true);
         $marked = ResultSyncAcknowledgement::markSynced($db, 'form_vl', 'vl_sample_id', $acknowledged);
 
-        self::assertSame(2, $marked);
-        $state = array_column(
-            $db->rawQuery('SELECT vl_sample_id, data_sync, result_sent_to_source FROM form_vl ORDER BY vl_sample_id'),
-            null,
-            'vl_sample_id'
-        );
+        self::assertSame(1, $marked);
+        $state = self::syncState($db);
         self::assertSame(1, (int) $state[1]['data_sync'], 'unchanged and acknowledged');
         self::assertSame('sent', $state[1]['result_sent_to_source']);
         self::assertSame(0, (int) $state[2]['data_sync'], 'edited in flight stays pending');
-        self::assertSame(1, (int) $state[3]['data_sync'], 'never-modified row matches on NULL');
-        self::assertSame(0, (int) $state[4]['data_sync'], 'not acknowledged');
+        self::assertSame(0, (int) $state[3]['data_sync'], 'first printed in flight stays pending');
+        self::assertSame(
+            '2026-09-01 10:00:00',
+            $state[3]['last_modified_datetime'],
+            'printing is not an update in the grids'
+        );
+        self::assertSame(
+            ResultSyncAcknowledgement::IN_FLIGHT,
+            (int) $state[4]['data_sync'],
+            'not acknowledged, still out'
+        );
         self::assertSame(0, ResultSyncAcknowledgement::markSynced($db, 'form_vl', 'vl_sample_id', []));
+
+        // The next run starts by putting what the last one left in flight back to pending.
+        self::assertSame(1, ResultSyncAcknowledgement::releaseInFlight($db, 'form_vl'));
+        self::assertSame(0, (int) self::syncState($db)[4]['data_sync']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAResendOfRowsAlreadySyncedCountsThemAsMarked(): void
+    {
+        $this->requireDatabase();
+        $db = LegacyAppHarness::boot('intelis_result_sync_resend_test_' . getmypid(), ['r_sample_status', 'form_vl']);
+        $this->booted = true;
+        $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (7, 'Accepted')");
+
+        // A days or since-date resend reads rows that are already synced.
+        $sent = [];
+        foreach ([1 => 'u-1', 2 => 'u-2', 3 => 'u-3'] as $id => $uniqueId) {
+            $row = ['unique_id' => $uniqueId, 'sample_code' => "S-$id"];
+            $db->insert('form_vl', [
+                'vl_sample_id' => $id, 'data_sync' => 1, 'result_sent_to_source' => 'sent',
+                'vlsm_instance_id' => 'test', 'result_status' => 7,
+            ] + $row);
+            $sent[] = ['vl_sample_id' => $id] + $row;
+        }
+        ResultSyncAcknowledgement::markInFlight($db, 'form_vl', 'vl_sample_id', [1, 2, 3]);
+
+        $acknowledged = ResultSyncAcknowledgement::acknowledgedRows($sent, ['u-1', 'u-2', 'u-3'], true);
+
+        self::assertSame(3, ResultSyncAcknowledgement::markSynced($db, 'form_vl', 'vl_sample_id', $acknowledged));
+        self::assertSame(['1', '1', '1'], array_map('strval', array_column(self::syncState($db), 'data_sync')));
     }
 
     #[RunInSeparateProcess]
