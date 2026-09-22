@@ -24,8 +24,8 @@ final class ErrorIndexUtility
     public const string FILENAME = 'errors.sqlite';
     public const int RETENTION_DAYS = 90;
 
-    /** How long a writer waits for another writer before giving up on the entry. */
-    private const int BUSY_TIMEOUT_MS = 250;
+    /** How long a writer waits for another writer (ms) before giving up on the entry. */
+    private const string BUSY_TIMEOUT_PRAGMA = 'PRAGMA busy_timeout = 250';
     private const int MAX_MESSAGE_LENGTH = 1000;
 
     /** Error IDs from MiscUtility::generateErrorId(): PREFIX-XXXX-XXXX in Crockford base32. */
@@ -286,7 +286,7 @@ final class ErrorIndexUtility
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_TIMEOUT => 1,
             ]);
-            $pdo->exec('PRAGMA busy_timeout = ' . self::BUSY_TIMEOUT_MS);
+            $pdo->exec(self::BUSY_TIMEOUT_PRAGMA);
             // WAL lets the viewer read while requests write; it is stored in the
             // file, so this is a no-op on every open after the first.
             $pdo->exec('PRAGMA journal_mode = WAL');
