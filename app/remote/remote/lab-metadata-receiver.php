@@ -12,6 +12,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\STS\TokensService;
+use App\Services\STS\LabMetadataService;
 use App\Registries\ContainerRegistry;
 use App\Services\InstrumentActivityService;
 use App\Services\InstrumentUsageStatisticsService;
@@ -35,21 +36,6 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var TokensService $stsTokensService */
 $stsTokensService = ContainerRegistry::get(TokensService::class);
-
-function saveUserSignature(array &$data): void
-{
-    if (empty($data['signature_image_content']) || empty($data['signature_image_filename'])) {
-        return;
-    }
-
-    $signatureDir = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
-    MiscUtility::makeDirectory($signatureDir);
-
-    $filePath = $signatureDir . DIRECTORY_SEPARATOR . $data['signature_image_filename'];
-    file_put_contents($filePath, base64_decode((string) $data['signature_image_content']));
-
-    unset($data['signature_image_content'], $data['signature_image_filename']);
-}
 
 try {
     $db->beginTransaction();
@@ -158,73 +144,9 @@ try {
         }
 
 
-        if ($tableInfo !== []) {
-            foreach (array_keys($tableInfo['table']) as $j) {
-                $primaryKey = $checkColumn = $tableInfo['primaryKey'][$j];
-                $tableName = $tableInfo['table'][$j];
-
-                $emptyTableArray = $general->getTableFieldsAsArray($tableName);
-                if (empty($emptyTableArray)) {
-                    continue;
-                }
-                $dataResultSet = $tableInfo['data'][$j];
-                $deletedId = [];
-                foreach ($dataResultSet as $key => $resultRow) {
-                    $counter++;
-                    $data = MiscUtility::updateMatchingKeysOnly($emptyTableArray, $resultRow);
-                    $data['updated_datetime'] = DateUtility::getCurrentDateTime();
-
-                    try {
-                        if ($tableName === 'instrument_controls' || $tableName === 'instrument_machines') {
-                            if ((in_array($data['instrument_id'], $deletedId)) === false &&
-                                !empty($data['instrument_id'])
-                            ) {
-                                $deletedId[] = $data['instrument_id'];
-                                $db->where('instrument_id', $data['instrument_id']);
-                                $db->delete($tableName);
-                            }
-                            $id = $db->setQueryOption(['IGNORE'])->insert($tableName, $data);
-                        } else {
-                            if ($tableName === 'user_details') {
-                                // Unset unwanted columns
-                                foreach (['login_id', 'role_id', 'password', 'status'] as $unsetKey) {
-                                    unset($data[$unsetKey]);
-                                }
-
-                                // update signature image if received
-                                saveUserSignature($data);
-
-                                // Invalidate file cache for users count
-                                _invalidateFileCacheByTags(['users_count']);
-                            }
-
-                            $sResult = null;
-                            if (!empty($data[$checkColumn])) {
-                                $db->reset();
-                                $db->where($checkColumn, $data[$checkColumn]);
-                                $sResult = $db->getOne($tableName, [$primaryKey]);
-                            }
-                            if (!empty($sResult)) {
-                                $db->where($primaryKey, $sResult[$primaryKey]);
-                                $id = $db->update($tableName, $data);
-                            } else {
-                                $id = $db->upsert($tableName, $data);
-                            }
-                        }
-                    } catch (Throwable $e) {
-                        LoggerUtility::logError("Error when processing for $tableName : " . $e->getMessage(), [
-                            'file' => $e->getFile(),
-                            'line' => $e->getLine(),
-                            'last_db_errno' => $db->getLastErrno(),
-                            'last_db_query' => $db->getLastQuery(),
-                            'last_db_error' => $db->getLastError(),
-                            'trace' => $e->getTraceAsString(),
-                        ]);
-                        continue;
-                    }
-                }
-            }
-        }
+        /** @var LabMetadataService $labMetadataService */
+        $labMetadataService = ContainerRegistry::get(LabMetadataService::class);
+        $counter += $labMetadataService->storeTables($tableInfo);
     }
 
     // The lab is the payload's labId -- the same source every table above is stored

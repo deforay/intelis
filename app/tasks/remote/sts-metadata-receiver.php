@@ -38,6 +38,9 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
+/** @var App\Services\StsMetadataWriter $stsMetadataWriter */
+$stsMetadataWriter = ContainerRegistry::get(App\Services\StsMetadataWriter::class);
+
 
 $forceFlag = false;
 $truncateFlag = false;
@@ -509,17 +512,16 @@ try {
                             MiscUtility::progressBar($index + 1, $totalRows); // Update the progress bar for each row
                         }
 
-                        $tableData = MiscUtility::updateMatchingKeysOnly($emptyTableArray, $tableDataValues);
-                        $updateColumns = array_keys($tableData);
-                        $primaryKey = $dataToSync[$dataType]['primaryKey'];
-
-                        if ($dataToSync[$dataType]['tableName'] === 'user_details') {
-                            foreach (['login_id', 'role_id', 'password', 'status'] as $unsetKey) {
-                                unset($tableData[$unsetKey]);
-                            }
+                        // Only the columns the STS sent: see StsMetadataWriter.
+                        $tableData = $stsMetadataWriter->upsertRow(
+                            $dataToSync[$dataType]['tableName'],
+                            $tableDataValues,
+                            $emptyTableArray,
+                            $dataToSync[$dataType]['primaryKey']
+                        );
+                        if ($tableData === null) {
+                            continue;
                         }
-
-                        $db->upsert($dataToSync[$dataType]['tableName'], $tableData, $updateColumns, [$primaryKey]);
 
                         // Updating logo and report template
                         if ($dataType === 'facilities') {
@@ -545,11 +547,8 @@ try {
 
                                 $remoteFileUrl = $remoteURL . "/uploads/labs/{$tableData['facility_id']}/report-template/{$facilityAttributes['report_template']}";
 
-                                _logdump($remoteFileUrl);
                                 $localFilePath = $labDataFolder . "/" . $facilityAttributes['report_template'];
-                                _logdump($localFilePath);
-                                $x = $apiService->downloadFile($remoteFileUrl, $localFilePath);
-                                _logdump($x);
+                                $apiService->downloadFile($remoteFileUrl, $localFilePath);
                             }
 
                         }
@@ -557,18 +556,25 @@ try {
                 }
                 // Global config report template sync
                 if ($dataType === 'globalConfig') {
-                    $reportFormat = empty($tableData['value']) ? [] : json_decode((string) $tableData['value'], true);
-                    if (!empty($reportFormat) && $tableData['name'] = 'report_format') {
+                    // The report_format row itself. This read whichever row came last, and
+                    // `=` in place of `==` made every row count as report_format.
+                    $reportFormatRow = [];
+                    foreach ($dataValues as $configRow) {
+                        if (is_array($configRow) && ($configRow['name'] ?? null) === 'report_format') {
+                            $reportFormatRow = $configRow;
+                        }
+                    }
+                    $reportFormat = empty($reportFormatRow['value'])
+                        ? []
+                        : json_decode((string) $reportFormatRow['value'], true);
+                    if (!empty($reportFormat) && is_array($reportFormat)) {
                         foreach ($reportFormat as $test => $row) {
                             $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test;
                             MiscUtility::makeDirectory($labDataFolder);
 
                             $remoteFileUrl = $general->getRemoteURL() . "/uploads/labs/report-template/{$test}/{$row['file']}";
-                            _logdump($remoteFileUrl);
                             $localFilePath = $labDataFolder . "/" . $row['file'];
-                            _logdump($localFilePath);
-                            $x = $apiService->downloadFile($remoteFileUrl, $localFilePath);
-                            _logdump($x);
+                            $apiService->downloadFile($remoteFileUrl, $localFilePath);
                         }
                     }
                 }
