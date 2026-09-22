@@ -1074,7 +1074,7 @@ try {
     $io->section('What happens next');
     $io->text([
         'Results are imported every minute by the scheduler, which is already running',
-        'if <info>sudo crontab -l | grep crunz</info> shows a line.',
+        'if <info>sudo crontab -l | grep cron.sh</info> shows a line.',
         '',
         'To pull whatever is waiting right now: <info>intelis interface</info>',
     ]);

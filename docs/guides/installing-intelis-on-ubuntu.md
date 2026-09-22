@@ -54,7 +54,6 @@ instead.
         | What is this machine? | **Lab machine (LIS)**. |
         | Remote STS URL | The STS address, for example `https://sts.example.org`. Ask the national programme for it. Leave it empty if the lab has no STS. |
         | New MySQL root password | A new password for this machine, typed twice. Write it down. |
-        | Run the one-off maintenance scripts? | Press Enter (No). |
         | Is this correct? | Check the summary, then press Enter (Yes). |
 
         ??? failure "If it says `Failed to validate the provided STS URL`"
@@ -181,7 +180,6 @@ instead.
         | What is this machine? | **Central server (STS)**. |
         | Web address of this server | The address from step 1, without `http://`. Press Enter if the labs use the IP address. |
         | New MySQL root password | A new password for this machine, typed twice. Write it down. |
-        | Run the one-off maintenance scripts? | Press Enter (No). |
         | Is this correct? | Check the summary, then press Enter (Yes). |
 
         ??? failure "If it says the address `already resolves to` another address"

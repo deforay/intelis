@@ -52,8 +52,6 @@ is_lis=true
 is_sts=false
 DB_STRATEGY_FLAG=""
 remote_sts_url="https://your-sts.example.org"
-run_maintenance_scripts=false
-maintenance_scripts_mode=""
 ANSWERS
 chmod 600 /usr/local/lib/intelis/setup-answers.env
 

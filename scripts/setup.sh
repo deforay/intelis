@@ -633,8 +633,7 @@ handle_database_setup_and_import() {
 
 # Gather every interactive answer up front so the rest of the run is
 # unattended. Anything that needs MySQL or extracted files (password
-# verification, ~/.my.cnf write, vhost config, picking individual maintenance
-# scripts) is deferred to its original place but uses the values collected here.
+# verification, ~/.my.cnf write, vhost config) is deferred to its original place but uses the values collected here.
 # Validator for the local-address answer, passed to ask_text.
 #
 # It rejects, in order: anything that is not a hostname, the STS address, and
@@ -754,7 +753,6 @@ collect_user_inputs() {
     if ! $resume_setup && [ -z "$DB_STRATEGY_FLAG" ] && [ "$vlsm_db_state" != "no" ]; then
         _total=$((_total + 1))
     fi
-    _total=$((_total + 1))
     ui_steps_total "$_total"
 
     # --- 1. Where to install ---
@@ -1063,25 +1061,6 @@ collect_user_inputs() {
         log_action "DB strategy chosen upfront: ${DB_STRATEGY_FLAG}"
     fi
 
-    # --- 6. Maintenance scripts policy ---
-    # The full file list isn't known until the codebase is extracted, so the
-    # "pick individual scripts" mode is the only one that still has to prompt
-    # at the end. "all" and "none" run unattended.
-    if ! $reuse_saved_answers; then
-        run_maintenance_scripts=false
-        maintenance_scripts_mode="none"
-        ui_step_next "Maintenance scripts"
-        if ask_yes_no "Run the one-off maintenance scripts after setup finishes?" "no"; then
-            run_maintenance_scripts=true
-            ask_choice maintenance_scripts_mode "all" "Which ones?" \
-                "all:Run all of them:Unattended. Setup finishes without asking again." \
-                "pick:Let me choose at the end:Lists them once the code is in place."
-            log_action "Maintenance scripts policy: ${maintenance_scripts_mode}"
-        fi
-    else
-        print info "Reusing saved maintenance policy: ${maintenance_scripts_mode:-none}"
-    fi
-
     # Last chance to catch a wrong answer, and the only screen on which the
     # answers appear next to each other — which is what makes a domain name that
     # is really the STS address look as wrong as it is. Nothing has been
@@ -1095,8 +1074,7 @@ collect_user_inputs() {
             "Install path: ${lis_path}" \
             "Reached at: http://${hostname}/" \
             "Sends data to: ${remote_sts_url:-nowhere — syncing not configured}" \
-            "Existing vlsm database: ${DB_STRATEGY_FLAG:-none found}" \
-            "Maintenance scripts: ${maintenance_scripts_mode:-none}"
+            "Existing vlsm database: ${DB_STRATEGY_FLAG:-none found}"
         if ! ask_yes_no "Is this correct?" "yes"; then
             print info "Stopped. Nothing has been installed."
             print info "Run the same command again to start over."
@@ -1116,8 +1094,6 @@ is_lis=${is_lis}
 is_sts=${is_sts}
 DB_STRATEGY_FLAG='${DB_STRATEGY_FLAG}'
 remote_sts_url='${remote_sts_url}'
-run_maintenance_scripts=${run_maintenance_scripts}
-maintenance_scripts_mode='${maintenance_scripts_mode}'
 EOF
     chmod 600 "$answers_file"
     log_action "Saved setup answers to ${answers_file}"
@@ -1854,48 +1830,6 @@ cd "${lis_path}"
 # instead of re-asking. Set it later from Admin or via `composer sts-setup`.
 sudo -u www-data env INTELIS_NONINTERACTIVE=1 composer post-install
 
-# Maintenance scripts policy was decided upfront in collect_user_inputs.
-if [ "${run_maintenance_scripts:-false}" = true ]; then
-    files=("${lis_path}/maintenance/"*.php)
-
-    if [ "$maintenance_scripts_mode" = "all" ]; then
-        echo "Running all maintenance scripts..."
-        for file in "${files[@]}"; do
-            echo "Running $file..."
-            sudo -u www-data php "$file"
-        done
-    elif [ "$maintenance_scripts_mode" = "pick" ]; then
-        echo "Available maintenance scripts:"
-        for i in "${!files[@]}"; do
-            filename=$(basename "${files[$i]}")
-            echo "$((i + 1))) $filename"
-        done
-
-        echo "Enter the numbers of the scripts you want to run separated by commas (e.g., 1,2,4) or type 'all' to run them all."
-        read -r files_to_run
-
-        if [[ "$files_to_run" == "all" ]]; then
-            for file in "${files[@]}"; do
-                echo "Running $file..."
-                sudo -u www-data php "$file"
-            done
-        else
-            IFS=',' read -ra ADDR <<<"$files_to_run"
-            for i in "${ADDR[@]}"; do
-                i=$(echo "$i" | xargs)
-                file_index=$((i - 1))
-                if [[ $file_index -ge 0 ]] && [[ $file_index -lt ${#files[@]} ]]; then
-                    file="${files[$file_index]}"
-                    echo "Running $file..."
-                    sudo -u www-data php "$file"
-                else
-                    echo "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
-                    log_action "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
-                fi
-            done
-        fi
-    fi
-fi
 
 
 

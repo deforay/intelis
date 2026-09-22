@@ -111,6 +111,7 @@ escaped_iface_password=$(escape_php_string_for_sed "$iface_db_password")
 sed -i "s|\$systemConfig\['database'\]\['host'\]\s*=.*|\$systemConfig['database']['host'] = '$main_db_host';|" "$config_file"
 sed -i "s|\$systemConfig\['database'\]\['username'\]\s*=.*|\$systemConfig['database']['username'] = '$main_db_user';|" "$config_file"
 sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_main_password';|" "$config_file"
+sed -i "s|\$systemConfig\['database'\]\['db'\]\s*=.*|\$systemConfig['database']['db'] = '$main_db_name';|" "$config_file"
 
 # Update interfacing database config
 sed -i "s|\$systemConfig\['interfacing'\]\['enabled'\]\s*=.*|\$systemConfig['interfacing']['enabled'] = $interfacing_enabled;|" "$config_file"

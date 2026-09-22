@@ -99,7 +99,6 @@ internet.
         | What is this machine? | **Lab machine (LIS)**. |
         | Remote STS URL | The STS address the old machine used. Leave it empty if the lab has no STS. |
         | New MySQL root password | A new password for this machine, typed twice. Write it down. |
-        | Run the one-off maintenance scripts? | Press Enter (No). |
         | Is this correct? | Check the summary, then press Enter (Yes). |
 
     12. Wait 10 to 20 minutes. The installer ends with `Setup complete`.
@@ -210,7 +209,6 @@ internet.
         | What is this machine? | **Lab machine (LIS)**. |
         | Remote STS URL | The STS address the old machine used. Leave it empty if the lab has no STS. |
         | New MySQL root password | A new password for this machine, typed twice. Write it down. |
-        | Run the one-off maintenance scripts? | Press Enter (No). |
         | Is this correct? | Check the summary, then press Enter (Yes). |
 
     8. Wait 10 to 20 minutes. The installer ends with `Setup complete`.
@@ -314,7 +312,6 @@ internet.
         | What is this machine? | **Lab machine (LIS)**. |
         | Remote STS URL | The STS address the old machine used. Leave it empty if the lab has no STS. |
         | New MySQL root password | A new password for this machine, typed twice. Write it down. |
-        | Run the one-off maintenance scripts? | Press Enter (No). |
         | Is this correct? | Check the summary, then press Enter (Yes). |
 
     9. Wait 10 to 20 minutes. The installer ends with `Setup complete`.
