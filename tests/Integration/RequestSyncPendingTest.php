@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
+use App\Exceptions\SystemException;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -199,6 +200,56 @@ final class RequestSyncPendingTest extends TestCase
 
         self::assertSame(['u-new'], self::sent($data), 'never an empty pull because the table is missing');
         self::assertFalse($data['receiptsEnabled']);
+    }
+
+    /** @return int the status the error middleware answers with */
+    private static function pullRefused(array $body, string $token = 'lab-seven-token'): int
+    {
+        $request = (new ServerRequestFactory())
+            ->createServerRequest('POST', '/remote/v2/requests.php')
+            ->withHeader('Content-Type', 'application/json')
+            ->withHeader('Authorization', "Bearer $token")
+            ->withBody((new StreamFactory())->createStream((string) json_encode($body)));
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        try {
+            $handler->handle($request);
+        } catch (SystemException $e) {
+            return (int) $e->getCode();
+        }
+        self::fail('requests.php answered a request it should refuse');
+    }
+
+    #[RunInSeparateProcess]
+    public function testRequestsPhpRefusesAWrongTokenAndSendsNothing(): void
+    {
+        $db = $this->boot();
+        $before = self::syncState($db);
+
+        self::assertSame(401, self::pullRefused(['labId' => 7, 'testType' => 'vl', 'receipts' => 1], 'wrong'));
+
+        self::assertSame($before, self::syncState($db), 'nothing marked sent');
+    }
+
+    #[RunInSeparateProcess]
+    public function testRequestsPhpRefusesALabIdThatIsNotANumber(): void
+    {
+        $db = $this->boot();
+        $before = self::syncState($db);
+
+        self::assertSame(400, self::pullRefused(['labId' => 'lab seven', 'testType' => 'vl']));
+
+        self::assertSame($before, self::syncState($db));
+    }
+
+    #[RunInSeparateProcess]
+    public function testRequestsPhpTakesTheLabIdAsANumericString(): void
+    {
+        // Older labs send it as read from system_config.
+        $db = $this->boot();
+
+        self::pull(['labId' => '7', 'testType' => 'vl']);
+
+        self::assertSame(1, self::syncState($db)['u-new']);
     }
 
     #[RunInSeparateProcess]

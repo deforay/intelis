@@ -48,6 +48,10 @@ try {
     if (empty($labId)) {
         throw new SystemException('Lab ID is missing in the request', 400);
     }
+    // A number or a numeric string; anything else failed as a TypeError below (500).
+    if (filter_var($labId, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
+        throw new SystemException('Lab ID in the request is not a lab id', 400);
+    }
 
     $token = $stsTokensService->validateToken($authToken, $labId);
     if (!$token) {
