@@ -53,6 +53,13 @@ final class DatabaseService extends MysqliDb
      */
     private ?string $lastFailedQuery = null;
 
+    /**
+     * Client errors that mean the server connection is gone: 2006 server has gone
+     * away, 2013 lost connection during query, 4031 disconnected by the server for
+     * inactivity (MySQL 8.0.24+ answers an idle-timeout disconnect with this).
+     */
+    private const array CONNECTION_LOST_ERRORS = [2006, 2013, 4031];
+
     private string $sessionCollation = 'utf8mb4_unicode_ci';
     private string $sessionCharset = 'utf8mb4';
     private int $countQueryMaxExecutionMs = 10000;
@@ -402,9 +409,10 @@ final class DatabaseService extends MysqliDb
                     $values[] = $val;
                 }
 
-                // Use reference binding
-                $bindReferences = array_merge([&$types], $this->createReferences($values));
-                call_user_func_array($stmt->bind_param(...), $bindReferences);
+                // Spread from a variable, so bind_param() gets the references it wants.
+                // The references array_merge() used to pass had already decayed to
+                // values, which bound but raised a warning on every call.
+                $stmt->bind_param($types, ...$values);
             }
 
             $stmt->execute();
@@ -428,21 +436,6 @@ final class DatabaseService extends MysqliDb
         }
     }
 
-    /**
-     * Create references for bind_param
-     *
-     * @param array $values
-     * @return array
-     */
-    private function createReferences(array $values): array
-    {
-        $references = [];
-        foreach (array_keys($values) as $key) {
-            $references[$key] = &$values[$key];
-        }
-        return $references;
-    }
-
     private function applySessionSettings(): void
     {
         try {
@@ -451,12 +444,12 @@ final class DatabaseService extends MysqliDb
             LoggerUtility::logWarning('Failed to set mysqli charset: ' . $e->getMessage());
         }
 
-        $charset = $this->sessionCharset ?: 'utf8mb4';
-        $collation = $this->sessionCollation ?: 'utf8mb4_unicode_ci';
-
+        // Straight on the handle, not through rawQuery(): this also runs on a reconnect
+        // in the middle of a statement, and rawQuery() would reset that statement's
+        // WHERE, bound values and table. set_charset() has already said SET NAMES for
+        // the charset; this adds the collation, which is the rest of SET NAMES ... COLLATE.
         try {
-            $this->rawQuery("SET NAMES {$charset} COLLATE {$collation}");
-            $this->rawQuery("SET collation_connection = '{$collation}'");
+            $this->setSessionVariable('SET collation_connection = ?', $this->sessionCollation ?: 'utf8mb4_unicode_ci');
         } catch (Throwable $e) {
             LoggerUtility::logWarning('Failed to apply session collation settings: ' . $e->getMessage());
         }
@@ -501,10 +494,20 @@ final class DatabaseService extends MysqliDb
     public function applySessionTimeZone(): void
     {
         try {
-            $offset = (new \DateTimeImmutable('now'))->format('P');
-            $this->rawQuery("SET time_zone = ?", [$offset]);
+            $this->setSessionVariable('SET time_zone = ?', (new \DateTimeImmutable('now'))->format('P'));
         } catch (Throwable $e) {
             LoggerUtility::logWarning('Failed to align database session time zone: ' . $e->getMessage());
+        }
+    }
+
+    private function setSessionVariable(string $statement, string $value): void
+    {
+        $stmt = $this->mysqli()->prepare($statement);
+        try {
+            $stmt->bind_param('s', $value);
+            $stmt->execute();
+        } finally {
+            $stmt->close();
         }
     }
 
@@ -548,25 +551,136 @@ final class DatabaseService extends MysqliDb
     private function reconnect(): void
     {
         try {
-            $this->disconnectAll();
-        } catch (Throwable $e) {
-            LoggerUtility::logWarning('Failed to disconnect database connection cleanly: ' . $e->getMessage());
-        }
-
-        $connectionName = $this->defConnectionName ?? 'default';
-
-        try {
-            $this->connect($connectionName);
-            // The server-side transaction did not survive the reconnect, so neither
-            // does any scope that was counted against it.
-            $this->transactionDepth = [];
-            $this->rollbackOnly = [];
-            $this->savepointStack = [];
-            $this->applySessionSettings();
+            $this->openNewConnection();
         } catch (Throwable $e) {
             LoggerUtility::logError('Database reconnect attempt failed: ' . $e->getMessage());
             throw new SystemException('Unable to reconnect to the database', 500, $e);
         }
+    }
+
+    /**
+     * Replace the current connection with a new one, set up as the first was.
+     *
+     * Only the current connection: another one on this object (bin/interface.php keeps
+     * the analyzer database open beside the application's) may be in a transaction of
+     * its own that is still alive.
+     */
+    private function openNewConnection(): void
+    {
+        $connection = $this->currentConnection();
+        try {
+            $this->disconnect($connection);
+        } catch (Throwable $e) {
+            // Closing a dead handle can fail; it is being dropped either way.
+            unset($this->_mysqli[$connection]);
+            LoggerUtility::logWarning('Failed to disconnect database connection cleanly: ' . $e->getMessage());
+        }
+
+        $this->connect($connection);
+        // The server-side transaction did not survive the reconnect, so neither
+        // does any scope that was counted against it.
+        unset(
+            $this->transactionDepth[$connection],
+            $this->rollbackOnly[$connection],
+            $this->savepointStack[$connection]
+        );
+        $this->_transaction_in_progress = false;
+        $this->applySessionSettings();
+    }
+
+    /**
+     * Send a statement again on a new connection when the old one turns out to be gone.
+     *
+     * MysqliDb had this for errno 2006, but it checked for a false return from
+     * prepare(), and since PHP 8.1 mysqli throws instead, so it never ran: a task that
+     * sat idle past wait_timeout (a sync pull waiting on the network, a long import)
+     * died on its next statement.
+     *
+     * Only here, while preparing: the statement has not run, so sending it again cannot
+     * do its work twice. A connection lost while a statement runs is left to fail, as
+     * the statement may have done its work. And never inside a transaction: the server
+     * has rolled it back with the connection, so going on would commit the rest of it
+     * on its own. The caller has to see that failure.
+     *
+     * The statement keeps its WHERE, bound values and table: the new connection is set
+     * up on the handle directly, without going through the query builder.
+     */
+    #[Override]
+    // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore -- the parent's name
+    protected function _prepareQuery()
+    {
+        try {
+            return parent::_prepareQuery();
+        } catch (\mysqli_sql_exception $lost) {
+            if (!$this->mayReopenAfter($lost)) {
+                throw $lost;
+            }
+        }
+
+        self::logLostConnection($lost);
+        try {
+            $this->openNewConnection();
+        } catch (Throwable $e) {
+            LoggerUtility::logError('Database reconnect attempt failed: ' . $e->getMessage());
+            // What the caller has to know about is the lost connection, not the attempt.
+            throw $lost;
+        }
+
+        return parent::_prepareQuery();
+    }
+
+    /**
+     * Opening a transaction is the first thing a task often does after sitting idle,
+     * and no transaction is open yet, so a lost connection here can be replaced too.
+     */
+    #[Override]
+    public function startTransaction()
+    {
+        try {
+            parent::startTransaction();
+        } catch (\mysqli_sql_exception $lost) {
+            if (!$this->mayReopenAfter($lost)) {
+                throw $lost;
+            }
+            self::logLostConnection($lost);
+            $this->openNewConnection();
+            parent::startTransaction();
+        }
+    }
+
+    /**
+     * A transaction whose connection is gone has already been rolled back by the
+     * server. Throwing here would only bury the error the caller is handling, which is
+     * what a rollback in a catch block usually is.
+     */
+    #[Override]
+    public function rollback()
+    {
+        try {
+            return parent::rollback();
+        } catch (\mysqli_sql_exception $e) {
+            if (!in_array((int) $e->getCode(), self::CONNECTION_LOST_ERRORS, true)) {
+                throw $e;
+            }
+            $this->_transaction_in_progress = false;
+            LoggerUtility::logWarning('Rollback on a lost connection; the server has discarded the transaction');
+            return false;
+        }
+    }
+
+    private static function logLostConnection(\mysqli_sql_exception $lost): void
+    {
+        LoggerUtility::logWarning(
+            'Database connection lost (' . $lost->getCode() . '), reconnecting: ' . $lost->getMessage()
+        );
+    }
+
+    private function mayReopenAfter(\mysqli_sql_exception $e): bool
+    {
+        return $this->autoReconnect === true
+            && in_array((int) $e->getCode(), self::CONNECTION_LOST_ERRORS, true)
+            && !$this->isSubQuery
+            && ($this->transactionDepth[$this->currentConnection()] ?? 0) === 0;
     }
 
     /**
