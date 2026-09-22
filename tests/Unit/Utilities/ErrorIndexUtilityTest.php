@@ -148,6 +148,172 @@ final class ErrorIndexUtilityTest extends TestCase
         $this->assertNotNull(ErrorIndexUtility::find($entry['error_id']), 'a fresh index is created on the next error');
     }
 
+    /** @return list<string> */
+    private function days(string $search): array
+    {
+        return array_column(ErrorIndexUtility::searchDays($search), 'log_date');
+    }
+
+    private function recordSearchFixtures(): void
+    {
+        ErrorIndexUtility::record($this->entry([
+            'logged_at' => '2026-09-01 09:00:00',
+            'message' => 'MySQL server has gone away',
+            'exception_class' => 'mysqli_sql_exception',
+        ]));
+        ErrorIndexUtility::record($this->entry([
+            'logged_at' => '2026-09-03 11:00:00',
+            'message' => 'Deadlock found when trying to get lock on form_vl',
+        ]));
+        ErrorIndexUtility::record($this->entry([
+            'logged_at' => '2026-09-03 12:00:00',
+            'message' => 'Deadlock found when trying to get lock on form_eid',
+            'error_id' => 'ERR-DDDD-3333',
+        ]));
+        ErrorIndexUtility::record($this->entry([
+            'logged_at' => '2026-09-05 08:00:00',
+            'message' => 'Connection timed out',
+            'file' => ROOT_PATH . '/app/tasks/remote/results-sender.php',
+            'url' => '/remote/v2/results.php',
+        ]));
+    }
+
+    public function testSearchListsTheDaysAnErrorHappenedNewestFirst(): void
+    {
+        $this->recordSearchFixtures();
+        ErrorIndexUtility::record($this->entry(['logged_at' => '2026-09-06 08:00:00', 'message' => 'Deadlock again']));
+
+        $days = ErrorIndexUtility::searchDays('deadlock');
+
+        $this->assertSame(['2026-09-06', '2026-09-03'], array_column($days, 'log_date'));
+        $this->assertSame(2, $days[1]['matches']);
+        $this->assertSame('Deadlock found when trying to get lock on form_eid', $days[1]['message'], 'the latest one');
+        $this->assertSame('ERR-DDDD-3333', $days[1]['error_id']);
+    }
+
+    public function testEveryWordHasToMatch(): void
+    {
+        $this->recordSearchFixtures();
+
+        $this->assertSame(['2026-09-03'], $this->days('deadlock form_vl'));
+        $this->assertSame([], $this->days('deadlock timed'));
+    }
+
+    public function testWordsMatchFromTheirStartAndPhrasesAsWritten(): void
+    {
+        $this->recordSearchFixtures();
+
+        $this->assertSame(['2026-09-01'], $this->days('gon'), 'a word matches from its start');
+        $this->assertSame(['2026-09-01'], $this->days('"has gone away"'));
+        $this->assertSame([], $this->days('"gone has away"'), 'a phrase matches in order');
+        $this->assertSame(['2026-09-01'], $this->days('+gone'), 'the viewer markers are read as the word');
+    }
+
+    public function testSearchLooksAtTheClassFileAndUrlToo(): void
+    {
+        $this->recordSearchFixtures();
+
+        $this->assertSame(['2026-09-01'], $this->days('mysqli_sql_exception'));
+        $this->assertSame(['2026-09-05'], $this->days('results-sender'));
+        $this->assertSame(['2026-09-05'], $this->days('remote/v2/results.php'));
+    }
+
+    public function testQuerySyntaxInTheSearchIsSearchedForNotRun(): void
+    {
+        $this->recordSearchFixtures();
+
+        $searches = [
+            'NEAR(deadlock timed)', 'deadlock OR timed', '"unbalanced', 'message:deadlock', '-deadlock', '*', '::', '',
+        ];
+        foreach ($searches as $search) {
+            $days = ErrorIndexUtility::searchDays($search);
+            $this->assertIsArray($days, $search);
+        }
+        $this->assertSame([], $this->days('deadlock OR timed'), 'OR is a word here, not an operator');
+        $this->assertSame([], $this->days('*'));
+        $this->assertSame(['2026-09-03'], $this->days('deadlock "form_vl'), 'a stray quote does not break the search');
+    }
+
+    public function testPrunedErrorsAreNoLongerFound(): void
+    {
+        ErrorIndexUtility::record($this->entry([
+            'logged_at' => date('Y-m-d H:i:s', strtotime('-100 days')),
+            'message' => 'Ancient failure',
+        ]));
+        ErrorIndexUtility::record($this->entry(['message' => 'Recent failure']));
+
+        ErrorIndexUtility::prune(retentionDays: 90);
+
+        $this->assertSame([], $this->days('ancient'));
+        $this->assertCount(1, ErrorIndexUtility::searchDays('failure'));
+    }
+
+    public function testAnIndexFromBeforeFullTextIsSearchable(): void
+    {
+        // An index file written by the previous release: the errors table, no full-text table.
+        $pdo = new \PDO('sqlite:' . ErrorIndexUtility::path());
+        $pdo->exec(
+            'CREATE TABLE errors (id INTEGER PRIMARY KEY, error_id TEXT, logged_at TEXT NOT NULL,
+                log_date TEXT NOT NULL, level TEXT NOT NULL, fingerprint TEXT NOT NULL, exception_class TEXT,
+                message TEXT NOT NULL, file TEXT, line INTEGER, url TEXT, user_id TEXT, ip TEXT)'
+        );
+        $pdo->exec(
+            "INSERT INTO errors (error_id, logged_at, log_date, level, fingerprint, message)
+                VALUES ('ERR-OLDD-0001', '2026-08-30 10:00:00', '2026-08-30', 'ERROR', 'f', 'Disk quota exceeded')"
+        );
+        $pdo = null;
+
+        // Searchable straight away, by LIKE: a request does not build the full-text table.
+        $this->assertSame(['2026-08-30'], $this->days('quota'));
+        $this->assertFalse($this->hasFullTextTable());
+
+        ErrorIndexUtility::record($this->entry([
+            'logged_at' => '2026-09-02 10:00:00', 'message' => 'Disk quota again',
+        ]));
+        ErrorIndexUtility::prune(retentionDays: 3650);
+        $this->assertTrue($this->hasFullTextTable(), 'housekeeping builds it from the rows already there');
+
+        ErrorIndexUtility::record($this->entry([
+            'logged_at' => '2026-09-04 10:00:00', 'message' => 'Disk quota third',
+        ]));
+        $this->assertSame(['2026-09-04', '2026-09-02', '2026-08-30'], $this->days('quota'));
+        $this->assertSame(['2026-09-02'], $this->days('"quota again"'), 'a phrase, which LIKE could not tell apart');
+    }
+
+    private function hasFullTextTable(): bool
+    {
+        $pdo = new \PDO('sqlite:' . ErrorIndexUtility::path());
+        return (bool) $pdo->query("SELECT 1 FROM sqlite_master WHERE name = 'errors_fts'")->fetchColumn();
+    }
+
+    public function testANewIndexHasFullTextFromItsFirstError(): void
+    {
+        ErrorIndexUtility::record($this->entry());
+
+        $this->assertTrue($this->hasFullTextTable());
+    }
+
+    public function testSearchWithoutAnIndexFileDoesNotCreateOne(): void
+    {
+        $this->assertSame([], ErrorIndexUtility::searchDays('anything'));
+        $this->assertFileDoesNotExist(ErrorIndexUtility::path());
+    }
+
+    public function testWithoutFullTextTheSearchStillWorks(): void
+    {
+        ErrorIndexUtility::usePath(ErrorIndexUtility::path(), fullText: false);
+        $this->recordSearchFixtures();
+        ErrorIndexUtility::record($this->entry([
+            'logged_at' => '2026-09-07 08:00:00', 'message' => 'Rate 100% reached',
+        ]));
+
+        $this->assertSame(['2026-09-03'], $this->days('deadlock form_vl'));
+        $this->assertSame(['2026-09-05'], $this->days('results-sender'));
+        $this->assertSame(['2026-09-07'], $this->days('100%'));
+        $this->assertSame([], $this->days('form%vl'), 'a % in the search is a character, not a wildcard');
+        $this->assertSame([], $this->days('form_eid_'), 'nor is an underscore');
+    }
+
     public function testRecordNeverThrowsWhenTheFolderIsMissing(): void
     {
         ErrorIndexUtility::usePath($this->dir . '/missing/errors.sqlite');

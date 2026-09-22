@@ -259,7 +259,11 @@ dans le tableau. Pour ajouter des coordonnées, voir
 2. Renseigner **Date** et **Type de journal** : **Journaux d'erreurs système**
    ou **Journaux d'erreurs PHP**.
 3. Filtrer par niveau, ou rechercher dans le texte.
-4. Sélectionner **Exporter le fichier journal** et envoyer le fichier au
+4. Si l'erreur ne figure pas dans le journal de ce jour, consulter **Jours avec
+   des erreurs correspondant à cette recherche**. La liste donne chaque jour des
+   90 derniers qui a consigné une erreur correspondante. Sélectionner un jour
+   pour ouvrir son journal avec la même recherche.
+5. Sélectionner **Exporter le fichier journal** et envoyer le fichier au
    support avec la demande.
 
 Le journal consigne les défauts, pas les actions des utilisateurs.

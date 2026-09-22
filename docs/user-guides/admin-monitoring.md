@@ -236,7 +236,10 @@ in the table. To add coordinates, see
 1. Go to **ADMIN → Monitoring → Log File Viewer**.
 2. Set **Date** and **Log Type**: **System Error Logs** or **PHP Error Logs**.
 3. Filter by level, or search the text.
-4. Select **Export Log File** and send the file to support with the request.
+4. If the error is not in that day's log, check **Days with errors matching
+   this search**. It lists each day of the last 90 that logged a matching
+   error. Select a day to open its log with the same search.
+5. Select **Export Log File** and send the file to support with the request.
 
 The log records faults, not user actions.
 
