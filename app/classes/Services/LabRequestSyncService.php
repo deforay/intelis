@@ -814,6 +814,40 @@ final class LabRequestSyncService
         return $updatePayload;
     }
 
+    /**
+     * The modules to pull again straight away, in the same run.
+     *
+     * Only while the STS says requests are still waiting for this lab, the number
+     * is going down (a remainder that stays put, such as requests with no unique_id
+     * that cannot be confirmed, would loop until the time runs out), the receipt got
+     * through (else the STS sends the same batch again), and the lab saved at least
+     * one request of the last batch: when every one failed, something is wrong on
+     * the lab, and pulling on would only mark the rest of the backlog failed too.
+     *
+     * @param array<string, bool> $receiptDelivered by module, for those that sent a receipt
+     * @param array<string, array<string, string>> $responseHeaders by module, lower-case names
+     * @param array<string, int> $previousRemaining by module; updated for the next pass
+     * @param array<string, int> $savedCounts by module, requests saved in the last batch
+     * @return list<string>
+     */
+    public static function modulesToPullAgain(
+        array $receiptDelivered,
+        array $responseHeaders,
+        array &$previousRemaining,
+        array $savedCounts
+    ): array {
+        $modules = [];
+        foreach ($receiptDelivered as $module => $delivered) {
+            $remaining = (int) ($responseHeaders[$module]['x-pending-remaining'] ?? 0);
+            $progressing = $remaining < ($previousRemaining[$module] ?? PHP_INT_MAX);
+            $previousRemaining[$module] = $remaining;
+            if ($delivered && $remaining > 0 && $progressing && ($savedCounts[$module] ?? 0) > 0) {
+                $modules[] = $module;
+            }
+        }
+        return $modules;
+    }
+
     /** A JSON_SET() expression from JsonUtility::jsonToSetString(), or NULL when it built none. */
     private function jsonSetOrNull(?string $expression): mixed
     {

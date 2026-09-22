@@ -574,7 +574,7 @@ try {
         // the testing lab already entered. A client re-posting its whole dataset
         // sends the key as null, and this is an update-only payload, so that null
         // would overwrite the lab's own code. Same rule as the STS request sync --
-        // see preserveLocallyOwnedFields() in app/tasks/remote/requests-receiver.php.
+        // see LabRequestSyncService::preserveLocallyOwnedFields().
         if (trim((string) ($data['labSampleCode'] ?? '')) === '') {
             unset($eidData['lab_assigned_code']);
         }

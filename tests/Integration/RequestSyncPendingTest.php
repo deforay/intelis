@@ -164,6 +164,73 @@ final class RequestSyncPendingTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testAPullAgainGetsOnlyWhatIsStillWaiting(): void
+    {
+        $this->boot();
+        $data = ContainerRegistry::get(RequestsService::class)->getRequests('vl', 7, null, null, null, true, true);
+
+        // u-new is in the window but no longer waiting once confirmed; here it is
+        // still pending, so it comes as a waiting request, not as the window.
+        self::assertSame(['u-late', 'u-new'], self::sent($data));
+
+        // Once the first pass is confirmed, only the late one is left.
+        LegacyAppHarness::db()->rawQuery("UPDATE form_vl SET data_sync = 1 WHERE unique_id = 'u-new'");
+        $data = ContainerRegistry::get(RequestsService::class)->getRequests('vl', 7, null, null, null, true, true);
+        self::assertSame(['u-late'], self::sent($data), 'the window is not sent again');
+    }
+
+    #[RunInSeparateProcess]
+    public function testPendingOnlyWithoutReceiptsIsThePlainWindow(): void
+    {
+        $this->boot();
+        LegacyAppHarness::db()->rawQuery("UPDATE form_vl SET data_sync = 1 WHERE unique_id = 'u-new'");
+
+        $data = ContainerRegistry::get(RequestsService::class)->getRequests('vl', 7, null, null, null, false, true);
+
+        self::assertSame(['u-new'], self::sent($data));
+    }
+
+    #[RunInSeparateProcess]
+    public function testPendingOnlyBeforeTheMigrationIsThePlainWindow(): void
+    {
+        $this->boot(withFailuresTable: false);
+
+        $data = ContainerRegistry::get(RequestsService::class)->getRequests('vl', 7, null, null, null, true, true);
+
+        self::assertSame(['u-new'], self::sent($data), 'never an empty pull because the table is missing');
+        self::assertFalse($data['receiptsEnabled']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testRequestsPhpIgnoresPendingOnlyFromALabThatDoesNotAskForReceipts(): void
+    {
+        $db = $this->boot();
+
+        self::pull(['labId' => 7, 'testType' => 'vl', 'pendingOnly' => 1]);
+
+        self::assertSame(
+            ['u-new' => 1, 'u-late' => 0, 'u-done' => 1, 'u-failed-now' => 0, 'u-failed-long' => 0],
+            self::syncState($db),
+            'the plain window, marked 1, as for any lab without receipts'
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testRequestsPhpSendsOnlyWaitingRequestsOnAPullAgain(): void
+    {
+        $db = $this->boot();
+        $db->rawQuery("UPDATE form_vl SET data_sync = 1 WHERE unique_id = 'u-new'");
+
+        self::pull(['labId' => 7, 'testType' => 'vl', 'receipts' => 1, 'pendingOnly' => 1]);
+
+        self::assertSame(
+            ['u-new' => 1, 'u-late' => 2, 'u-done' => 1, 'u-failed-now' => 0, 'u-failed-long' => 0],
+            self::syncState($db),
+            'only u-late went out'
+        );
+    }
+
+    #[RunInSeparateProcess]
     public function testPendingRowsAreCappedAndTheRestCounted(): void
     {
         $db = $this->boot();

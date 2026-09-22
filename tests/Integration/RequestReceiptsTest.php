@@ -139,6 +139,38 @@ final class RequestReceiptsTest extends TestCase
         self::assertNull($db->rawQueryOne("SELECT * FROM request_sync_failures WHERE unique_id = 'u-2'"));
     }
 
+    #[RunInSeparateProcess]
+    public function testAFailureForARequestAlreadyConfirmedIsNotRecorded(): void
+    {
+        $db = $this->boot();
+        $service = new RequestReceiptsService($db);
+
+        // Two receipts for the same pull reach the STS out of order: the one that
+        // saved it (sent on a retry) first, then the older one from the outbox that
+        // said it failed.
+        $service->apply(7, 'vl', ['u-1'], []);
+        $counts = $service->apply(7, 'vl', [], [['unique_id' => 'u-1', 'reason' => 'old news']]);
+
+        self::assertSame(['confirmed' => 0, 'failed' => 0], $counts);
+        self::assertSame(1, self::syncState($db)['u-1'], 'still confirmed');
+        self::assertNull(
+            $db->rawQueryOne("SELECT * FROM request_sync_failures WHERE unique_id = 'u-1'"),
+            'not flagged as needing attention'
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testAFailureForAnotherLabsRequestIsNotRecorded(): void
+    {
+        $db = $this->boot();
+
+        $counts = (new RequestReceiptsService($db))->apply(7, 'vl', [], [['unique_id' => 'u-5', 'reason' => 'x']]);
+
+        self::assertSame(['confirmed' => 0, 'failed' => 0], $counts);
+        self::assertSame(2, self::syncState($db)['u-5']);
+        self::assertNull($db->rawQueryOne('SELECT * FROM request_sync_failures'));
+    }
+
     /** @return array{status: int, body: array<string, mixed>} */
     private static function post(array $body, ?string $token): array
     {

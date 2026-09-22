@@ -344,8 +344,13 @@ $apiService->setBearerToken($stsBearerToken);
 // Define per-module config
 $moduleConfigs = LabRequestSyncService::moduleConfigs();
 
-/** Pulling again for waiting requests stops after this, so a run never runs into the next cron. */
-const REQUEST_PULL_BUDGET_SECONDS = 600;
+/**
+ * No new pull for waiting requests starts after this. Cron runs the receiver
+ * through `composer run sync-sts`, and composer stops a script after 300 seconds
+ * (its process-timeout) and skips the rest of the chain, so this leaves the last
+ * pull time to finish inside that.
+ */
+const REQUEST_PULL_BUDGET_SECONDS = 180;
 
 /** @var RequestReceiptsClient $receiptsClient */
 $receiptsClient = ContainerRegistry::get(RequestReceiptsClient::class);
@@ -371,6 +376,7 @@ do {
     $responsePayload = [];
     $moduleResponseHeaders = [];
     $receiptDelivered = [];
+    $savedCounts = [];
 
     foreach ($systemConfig['modules'] as $module => $status) {
         $moduleUrl = "$remoteURL/remote/v2/requests.php";
@@ -387,6 +393,11 @@ do {
             // manifest pull or a dry run, which confirm nothing.
             if (!$isDryRun && empty($manifestCode)) {
                 $basePayload['receipts'] = 1;
+                // Pulling again: this run has the window already. An older STS
+                // ignores the key and sends the window again, which is harmless.
+                if ($pullModules !== null) {
+                    $basePayload['pendingOnly'] = 1;
+                }
             }
             if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == $module && !empty($manifestCode) && trim((string) $manifestCode) !== "") {
                 $basePayload['manifestCode'] = $manifestCode;
@@ -475,6 +486,7 @@ do {
             $updateCounter = $saveResult['updates'];
             $receiptSaved = $saveResult['saved'];
             $receiptFailed = $saveResult['failed'];
+            $savedCounts[$module] = count($receiptSaved);
 
             if ($cliMode) {
                 clearSpinner();
@@ -551,6 +563,7 @@ do {
             $failureCounter = $saveResult['failures'];
             $receiptSaved = $saveResult['saved'];
             $receiptFailed = $saveResult['failed'];
+            $savedCounts[$module] = count($receiptSaved);
 
             if ($cliMode) {
                 clearSpinner();
@@ -608,17 +621,12 @@ do {
         ]);
     }
 
-    $pullModules = [];
-    foreach ($receiptDelivered as $pulledModule => $delivered) {
-        $remaining = (int) ($moduleResponseHeaders[$pulledModule]['x-pending-remaining'] ?? 0);
-        // Only while it is going down: a remainder that stays put (requests with
-        // no unique_id cannot be confirmed) would otherwise loop until the budget.
-        $progressing = $remaining < ($previousRemaining[$pulledModule] ?? PHP_INT_MAX);
-        $previousRemaining[$pulledModule] = $remaining;
-        if ($delivered && $remaining > 0 && $progressing) {
-            $pullModules[] = $pulledModule;
-        }
-    }
+    $pullModules = LabRequestSyncService::modulesToPullAgain(
+        $receiptDelivered,
+        $moduleResponseHeaders,
+        $previousRemaining,
+        $savedCounts
+    );
     if ($pullModules !== [] && $cliMode) {
         $io->text('More requests are waiting on the STS for: ' . implode(', ', $pullModules) . '. Pulling again.');
     }

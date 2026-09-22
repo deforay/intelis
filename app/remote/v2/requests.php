@@ -78,6 +78,8 @@ try {
     // A newer lab asks for receipts; older labs never send the key and get the
     // plain window they always have.
     $wantsReceipts = in_array($data['receipts'] ?? null, [1, '1', true], true);
+    // Pulling again in the same run: the lab has the window already.
+    $pendingOnly = $wantsReceipts && in_array($data['pendingOnly'] ?? null, [1, '1', true], true);
 
     if (!$testType) {
         throw new SystemException('Test Type is missing in the request', 400);
@@ -94,7 +96,8 @@ try {
         $facilityMapResult ?? [],
         $manifestCode,
         $syncSinceDate,
-        $wantsReceipts
+        $wantsReceipts,
+        $pendingOnly
     );
     // Only when the pending rows could be read; otherwise this pull is the plain
     // window and the lab is not told to send a receipt.
