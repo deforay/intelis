@@ -75,6 +75,9 @@ try {
     $syncSinceDate = $data['syncSinceDate'] ?? null;
     $manifestCode  = $data['manifestCode'] ?? null;
     $testType      = $data['testType'] ?? null;
+    // A newer lab asks for receipts; older labs never send the key and get the
+    // plain window they always have.
+    $wantsReceipts = in_array($data['receipts'] ?? null, [1, '1', true], true);
 
     if (!$testType) {
         throw new SystemException('Test Type is missing in the request', 400);
@@ -90,8 +93,12 @@ try {
         $labId,
         $facilityMapResult ?? [],
         $manifestCode,
-        $syncSinceDate
+        $syncSinceDate,
+        $wantsReceipts
     );
+    // Only when the pending rows could be read; otherwise this pull is the plain
+    // window and the lab is not told to send a receipt.
+    $receiptsEnabled = $requestsData['receiptsEnabled'] ?? false;
 
     $sampleIds   = $requestsData['sampleIds'] ?? [];
     $facilityIds = $requestsData['facilityIds'] ?? [];
@@ -111,7 +118,7 @@ try {
         count($requests),
         'requests',
         $testType,
-        $_SERVER['REQUEST_URI'],
+        $_SERVER['REQUEST_URI'] ?? null,
         JsonUtility::encodeUtf8Json($data),
         $payload,
         'json',
@@ -138,7 +145,11 @@ try {
 
             while (true) {
                 $db->where($primaryKeyName, $batch, 'IN');
-                $updateResult = $db->update($tableName, ['data_sync' => 1]);
+                // In flight until the lab's receipt confirms it; 1 for labs without receipts.
+                $updateResult = $db->update(
+                    $tableName,
+                    ['data_sync' => $receiptsEnabled ? RequestsService::IN_FLIGHT : 1]
+                );
 
                 if ($updateResult !== false) {
                     break;
@@ -173,6 +184,10 @@ try {
     ];
     if ($contentLength > 0) {
         $responseHeaders['x-bytes-processed'] = $contentLength;
+    }
+    if ($receiptsEnabled) {
+        $responseHeaders['x-request-receipts'] = 1;
+        $responseHeaders['x-pending-remaining'] = (int) ($requestsData['pendingRemaining'] ?? 0);
     }
 
     echo ApiService::generateJsonResponse($payload, $request, $responseHeaders);

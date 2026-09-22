@@ -11,10 +11,28 @@ use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use App\Utilities\LoggerUtility;
 use App\Abstracts\AbstractTestService;
+use Throwable;
 
 final class RequestsService
 {
+    /**
+     * Lab receipts. A lab that asks for them gets, besides the usual window, the
+     * requests still waiting for it (data_sync 0, or 2 while its receipt is out)
+     * whatever their timestamp: an API upload that arrived late, a device clock
+     * that was behind, a request that failed on the lab. Sent rows are marked 2
+     * (in flight) and its receipt confirms them. See RequestReceiptsService.
+     */
+    public const int IN_FLIGHT = 2;
+    /** Pending requests added to one pull; the lab pulls again while more remain. */
+    public const int PENDING_LIMIT = 500;
+    public const int PENDING_MAX_AGE_DAYS = 90;
+    /** A request that keeps failing on a lab stops being forced into its pulls after this. */
+    public const int FAILURE_GIVE_UP_DAYS = 7;
+    /** ...and is not retried within the same run, which pulls again straight away. */
+    public const int FAILURE_RETRY_AFTER_MINUTES = 30;
+
     protected DatabaseService $db;
     protected int $dataSyncInterval;
     protected string $testType;
@@ -27,14 +45,51 @@ final class RequestsService
     public function __construct(DatabaseService $db, protected CommonService $commonService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
-        $this->dataSyncInterval = (int) $this->commonService->getGlobalConfig('data_sync_interval') ?? 30;
+        // The cast ran before ??, so a missing setting became 0 and the window
+        // started now, sending nothing. Same default as the lab side: 30 days.
+        $interval = (int) ($this->commonService->getGlobalConfig('data_sync_interval') ?? 30);
+        $this->dataSyncInterval = $interval > 0 ? $interval : 30;
     }
 
-    public function getRequests($testType, $labId, $facilityMapResult = [], $manifestCode = null, $syncSinceDate = null)
-    {
+    /**
+     * With $withPending the result also carries receiptsEnabled and pendingRemaining.
+     * receiptsEnabled is false when the pending rows could not be read, and the pull
+     * is then exactly the plain window it always was.
+     */
+    public function getRequests(
+        $testType,
+        $labId,
+        $facilityMapResult = [],
+        $manifestCode = null,
+        $syncSinceDate = null,
+        bool $withPending = false
+    ) {
         $this->setTestType($testType);
 
-        [$rResult, $resultCount] = $this->runQuery($labId, $facilityMapResult, $manifestCode, $syncSinceDate);
+        $pendingIds = [];
+        $pendingRemaining = 0;
+        $receiptsEnabled = false;
+        if ($withPending && empty($manifestCode)) {
+            try {
+                [$pendingIds, $pendingRemaining] = $this->pendingRequestIds((int) $labId, $facilityMapResult);
+                $receiptsEnabled = true;
+            } catch (Throwable $e) {
+                LoggerUtility::logError('Could not read pending requests for lab receipts: ' . $e->getMessage(), [
+                    'exception_class' => $e::class,
+                    'lab' => $labId,
+                    'test_type' => $testType,
+                ]);
+                $this->db->reset();
+            }
+        }
+
+        [$rResult, $resultCount] = $this->runQuery(
+            $labId,
+            $facilityMapResult,
+            $manifestCode,
+            $syncSinceDate,
+            $pendingIds
+        );
         // Handle specific test types with additional logic
         if ($testType === 'covid19') {
             $requestData = $this->returnCovid19Requests($rResult, $resultCount);
@@ -54,7 +109,63 @@ final class RequestsService
             $requestData = $this->returnRequests($rResult, $resultCount);
         }
 
+        if ($withPending) {
+            $requestData['receiptsEnabled'] = $receiptsEnabled;
+            $requestData['pendingRemaining'] = $pendingRemaining;
+        }
+
         return $requestData;
+    }
+
+    /**
+     * The oldest requests still waiting for this lab, up to PENDING_LIMIT, and how
+     * many more there are.
+     *
+     * @return array{0: list<int|string>, 1: int}
+     */
+    private function pendingRequestIds(int $labId, $facilityMapResult): array
+    {
+        $scope = $this->labScope($labId, $facilityMapResult);
+        $now = DateUtility::getCurrentDateTime();
+        $where = "$scope
+            AND t.data_sync IN (0, " . self::IN_FLIGHT . ")
+            AND t.last_modified_datetime >= SUBDATE(?, INTERVAL " . self::PENDING_MAX_AGE_DAYS . " DAY)
+            AND NOT EXISTS (
+                SELECT 1 FROM request_sync_failures f
+                 WHERE f.lab_id = ? AND f.test_type = ? AND f.unique_id = t.unique_id
+                   AND (f.first_failed_datetime < SUBDATE(?, INTERVAL " . self::FAILURE_GIVE_UP_DAYS . " DAY)
+                        OR f.last_failed_datetime >
+                            SUBDATE(?, INTERVAL " . self::FAILURE_RETRY_AFTER_MINUTES . " MINUTE))
+            )";
+        $params = [$now, $labId, $this->testType, $now, $now];
+
+        $rows = $this->db->rawQuery(
+            "SELECT t.`$this->primaryKeyName` AS id FROM `$this->tableName` t WHERE $where
+                ORDER BY t.last_modified_datetime, t.`$this->primaryKeyName` LIMIT " . self::PENDING_LIMIT,
+            $params
+        );
+        $ids = array_column($rows, 'id');
+        if (count($ids) < self::PENDING_LIMIT) {
+            return [$ids, 0];
+        }
+        $count = $this->db->rawQueryOne("SELECT COUNT(*) AS n FROM `$this->tableName` t WHERE $where", $params);
+        $total = (int) ($count['n'] ?? 0);
+        return [$ids, max(0, $total - count($ids))];
+    }
+
+    /** The rows a lab pulls: its own, and those of the facilities mapped to it. */
+    private function labScope(int $labId, $facilityMapResult, string $alias = 't.'): string
+    {
+        $facilityIds = [];
+        $facilityMap = is_array($facilityMapResult) ? implode(',', $facilityMapResult) : (string) $facilityMapResult;
+        foreach (explode(',', $facilityMap) as $id) {
+            if (ctype_digit(trim($id))) {
+                $facilityIds[] = (int) trim($id);
+            }
+        }
+        return $facilityIds === []
+            ? "{$alias}lab_id = $labId"
+            : "({$alias}lab_id = $labId OR {$alias}facility_id IN (" . implode(',', $facilityIds) . '))';
     }
 
     private function setTestType(string $testType): void
@@ -66,8 +177,13 @@ final class RequestsService
         $this->testTypeService = ContainerRegistry::get($serviceClass);
     }
 
-    private function runQuery($labId, $facilityMapResult, $manifestCode, $syncSinceDate = null): array
-    {
+    private function runQuery(
+        $labId,
+        $facilityMapResult,
+        $manifestCode,
+        $syncSinceDate = null,
+        array $pendingIds = []
+    ): array {
         // Start with selecting all columns
         $columnSelection = "*";
 
@@ -94,10 +210,25 @@ final class RequestsService
         }
 
         [$condition, $params] = $this->buildCondition($labId, $facilityMapResult, $manifestCode, $syncSinceDate);
+        if ($pendingIds !== []) {
+            // Same lab scope; the pending rows ride along with the window.
+            $placeholders = implode(', ', array_fill(0, count($pendingIds), '?'));
+            $condition = "($condition) OR ({$this->labScope((int) $labId, $facilityMapResult, '')}"
+                . " AND `$this->primaryKeyName` IN ($placeholders))";
+            $params = [...$params, ...$pendingIds];
+        }
 
         $sQuery = "SELECT $columnSelection FROM $this->tableName WHERE $condition";
 
         [$rResult, $resultCount] = $this->db->getDataAndCount($sQuery, $params, returnGenerator: false);
+
+        // The in-flight marker is this STS's bookkeeping, not part of the request.
+        foreach ($rResult as &$row) {
+            if (isset($row['data_sync']) && (int) $row['data_sync'] === self::IN_FLIGHT) {
+                $row['data_sync'] = 0;
+            }
+        }
+        unset($row);
 
         return [$rResult, $resultCount];
     }
