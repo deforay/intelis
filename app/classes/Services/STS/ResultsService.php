@@ -197,31 +197,37 @@ final class ResultsService
             }
             $counter = 0;
             foreach ($resultData as $dataFromLIS) {
+                // Per record: the catch below logs it, and must not name the previous one.
+                $localRecord = null;
                 try {
-                    if (empty($dataFromLIS)) {
+                    if (empty($dataFromLIS) || !is_array($dataFromLIS)) {
                         continue;
                     }
-                    $this->db->beginTransaction();
                     $id = false;
                     $primaryKeyValue = null;
                     $counter++;
                     if ($testType == "covid19" || $testType == "generic-tests" || $testType == "tb") {
                         $originalLISRecord = $dataFromLIS['form_data'] ?? [];
                     } else {
-                        $originalLISRecord = $dataFromLIS ?? [];
+                        $originalLISRecord = $dataFromLIS;
                     }
 
-                    if (empty($originalLISRecord)) {
+                    // Checked before the transaction opens: skipping a record with
+                    // its transaction open left every later record in the batch
+                    // inside it, uncommitted, while the lab was told they were saved.
+                    if (empty($originalLISRecord) || !is_array($originalLISRecord)) {
                         continue;
                     }
+                    $this->db->beginTransaction();
 
                     // nullify empty strings
                     $originalLISRecord = MiscUtility::arrayEmptyStringsToNull($originalLISRecord);
 
-                    // Overwrite the values in $localDbFieldArray with the values in $originalLISRecord
-                    // basically we are making sure that we only use columns that are present in the $localDbFieldArray
-                    // which is from local db and not using the ones in the $originalLISRecord
-                    $resultFromLab = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, $originalLISRecord);
+                    // Only the columns the lab sent that this table has. A column the
+                    // lab does not have (it runs an older release) is left out rather
+                    // than set to NULL: NULL blanked the STS's value on every update
+                    // and made an insert fail outright on a NOT NULL column.
+                    $resultFromLab = array_intersect_key($originalLISRecord, $localDbFieldArray);
 
                     if (isset($originalLISRecord['approved_by_name']) && !empty($originalLISRecord['approved_by_name'])) {
 
@@ -341,7 +347,7 @@ final class ResultsService
 
                     if ($id !== false && isset($resultFromLab['sample_code'])) {
                         $sampleCodes[] = $resultFromLab['sample_code'];
-                        $facilityIds[] = $resultFromLab['facility_id'];
+                        $facilityIds[] = $resultFromLab['facility_id'] ?? null;
                     }
                     if ($id !== false) {
                         $labIdentifier = trim((string) ($originalLISRecord['unique_id'] ?? ''))
