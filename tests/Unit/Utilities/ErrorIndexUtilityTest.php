@@ -157,6 +157,45 @@ final class ErrorIndexUtilityTest extends TestCase
         $this->assertFileDoesNotExist($this->dir . '/missing/errors.sqlite');
     }
 
+    public function testOriginUnwrapsToTheOriginalException(): void
+    {
+        $line = __LINE__ + 1;
+        $original = new \PDOException('Deadlock found');
+        $wrapper = new \RuntimeException('Deadlock found', 500, $original);
+
+        $origin = ErrorIndexUtility::originOf($wrapper);
+
+        $this->assertSame($original, $origin['exception']);
+        $this->assertSame(__FILE__, $origin['file']);
+        $this->assertSame($line, $origin['line']);
+    }
+
+    public function testOriginSkipsLibraryFramesToTheCallingCode(): void
+    {
+        $vendorDir = $this->dir . '/vendor';
+        mkdir($vendorDir);
+        $library = $vendorDir . '/library.php';
+        file_put_contents(
+            $library,
+            '<?php return static function (): never { throw new \RuntimeException("driver failure"); };'
+        );
+        $throwFromLibrary = require $library;
+
+        try {
+            $line = __LINE__ + 1;
+            $throwFromLibrary();
+        } catch (\RuntimeException $e) {
+            $origin = ErrorIndexUtility::originOf(new \RuntimeException('wrapped', 0, $e));
+        } finally {
+            unlink($library);
+            rmdir($vendorDir);
+        }
+
+        $this->assertStringEndsWith("/vendor/library.php", $e->getFile(), "thrown inside the library");
+        $this->assertSame(__FILE__, $origin['file'], 'reported at the code that called it');
+        $this->assertSame($line, $origin['line']);
+    }
+
     public function testHandlerIndexesErrorsButNotWarnings(): void
     {
         $logger = new Logger('test', [new ErrorIndexLogHandler()]);
