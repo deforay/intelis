@@ -131,8 +131,14 @@ try {
     $totalSteps = count($metadataTables) + count($reasonTables) + count($instrumentDataTables) + 1;
     $bar = MiscUtility::spinnerStart($totalSteps, 'Collecting table data…');
 
+    // Machines go whole every run: a few rows per lab. STS releases before 5.7.78
+    // dropped a machine whose id another lab also used, and a machine that is not
+    // edited again would never cross the watermark to reach STS once it can keep it.
+    $sentWhole = ['instrument_machines'];
+
     foreach ($metadataTables as $table => $payloadKey) {
-        if ($forceFlag === false && !empty($lastUpdatedOn)) {
+        $db->reset();
+        if ($forceFlag === false && !empty($lastUpdatedOn) && !in_array($table, $sentWhole, true)) {
             $db->where($lastUpdatedOnCondition);
         }
         $records = $db->get($table);
