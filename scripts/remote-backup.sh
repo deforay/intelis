@@ -1148,6 +1148,9 @@ install_key_via_admin() {
 print_manual_key_steps() {
   print info "Log in to the backup server the usual way and run these commands to add the key:"
   echo
+  # Creates the account first: ~${SSH_USER} does not expand for a missing user,
+  # so mkdir would make a literal "~${SSH_USER}" folder instead.
+  echo "    id -u ${SSH_USER} >/dev/null 2>&1 || sudo useradd -m -s /bin/bash ${SSH_USER}"
   echo "    sudo mkdir -p ~${SSH_USER}/.ssh"
   echo "    echo '$(cat "${SSH_KEY}.pub")' | sudo tee -a ~${SSH_USER}/.ssh/authorized_keys"
   echo "    sudo chown -R ${SSH_USER}: ~${SSH_USER}/.ssh && sudo chmod 700 ~${SSH_USER}/.ssh && sudo chmod 600 ~${SSH_USER}/.ssh/authorized_keys"

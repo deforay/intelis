@@ -49,7 +49,55 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
         Write down the first address, for example `192.168.1.60`.
 
     3. Write down the username and password used to manage the backup machine.
-       Each lab's setup logs in with them once.
+       Each lab's setup logs in with them once, and creates the backup account
+       itself. Nothing else needs to be created on the backup machine.
+
+        This is the account used to log in to the backup machine's desktop,
+        created when Ubuntu was installed. To see its username, run this in
+        the same terminal:
+
+        ```bash
+        whoami
+        ```
+
+        ??? info "Check the account can manage the machine"
+
+            Run:
+
+            ```bash
+            groups
+            ```
+
+            The list must include `sudo`. If it does not, log in with the
+            account created when Ubuntu was installed and use that one.
+
+        ??? info "How to add a user on Ubuntu"
+
+            Do this only once, on the backup machine. Every lab then uses the
+            same `lisbackup` account, so it is never repeated for later labs.
+
+            Setup creates `lisbackup` by itself when it logs in as the
+            administrator. Add it by hand only when the administrator's
+            password cannot be typed during setup.
+
+            1. On the backup machine, open a terminal and run:
+
+                ```bash
+                sudo adduser lisbackup
+                ```
+
+            2. If asked for a password first, type the password used to log
+               in to the backup machine. This one is for `sudo`.
+            3. At `New password`, type a strong password for `lisbackup` and
+               press Enter. Type it again at `Retype new password`. Nothing
+               appears on screen while typing. Write the password down.
+            4. At `Full Name`, `Room Number` and the other questions, press
+               Enter to leave them blank.
+            5. At `Is the information correct?`, type `Y` and press Enter.
+
+            During setup on each lab's InteLIS machine, choose **Type the
+            lisbackup password** at **How should it be given?** and type this
+            password.
 
     ### Set up the backup on the InteLIS machine
 
@@ -105,9 +153,10 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
 
         ??? failure "If it says `adding the key failed`"
 
-            The account logged in but is not allowed to use `sudo`. Choose
-            **Log in as the backup machine's administrator** again and type
-            an account that can.
+            The account logged in but is not allowed to use `sudo`. Check the
+            account as in step 3: `groups` on the backup machine must list
+            `sudo`. Choose **Log in as the backup machine's administrator**
+            again and type the account created when Ubuntu was installed.
 
         ??? info "Without the administrator's password"
 
@@ -115,8 +164,8 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
 
             | Choice | Use it when |
             | --- | --- |
-            | **Type the lisbackup password** | `lisbackup` was created on the backup machine with a password. |
-            | **Add it by hand on the backup machine** | Someone else manages the backup machine. The script prints three commands. Send them to that person. When they have run them, choose **Yes** at **Has it been added? Check now?**. |
+            | **Type the lisbackup password** | `lisbackup` already exists on the backup machine with a password. To create it, see **How to add a user on Ubuntu** in step 3. |
+            | **Add it by hand on the backup machine** | Someone else manages the backup machine. The script prints four commands. The first creates the `lisbackup` account if it does not exist yet. Send them to that person. When they have run them, choose **Yes** at **Has it been added? Check now?**. |
 
         ??? tip "Logging in to the backup machine by hand"
 
