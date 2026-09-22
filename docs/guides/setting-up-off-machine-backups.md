@@ -19,13 +19,20 @@ and after every restart. The copy survives if the InteLIS machine fails.
     a larger network, allow 50 GB for each STS and 20 GB for each LIS machine,
     plus 30 GB for the operating system, and keep a quarter of the disk free.
 
+Another Linux machine is the recommended place for backups. One backup machine
+takes the backups of every lab: prepare it once, then run the setup on each
+lab's InteLIS machine. Use a USB drive only when there is no other machine.
+
 **Choose where the backups go, then follow its steps from top to bottom.**
 
 === "Another Linux machine"
 
-    Use this when there is a second Linux machine on the same network.
+    Use this when there is a second Linux machine on the same network. This is
+    the recommended choice.
 
     ### Prepare the backup machine
+
+    Do this once. Every lab then sends its backups to the same machine.
 
     1. On the backup machine, open a terminal and install the SSH server:
 
@@ -33,20 +40,16 @@ and after every restart. The copy survives if the InteLIS machine fails.
         sudo apt install openssh-server
         ```
 
-    2. Create an account for the backups. Set a strong password and write it
-       down:
-
-        ```bash
-        sudo adduser lisbackup
-        ```
-
-    3. Find the backup machine's IP address:
+    2. Find the backup machine's IP address:
 
         ```bash
         hostname -I
         ```
 
         Write down the first address, for example `192.168.1.60`.
+
+    3. Write down the username and password used to manage the backup machine.
+       Each lab's setup logs in with them once.
 
     ### Set up the backup on the InteLIS machine
 
@@ -70,40 +73,56 @@ and after every restart. The copy survives if the InteLIS machine fails.
         | Question | Answer |
         | --- | --- |
         | Lab name or lab code | A short name for this lab, such as `kigali-central`. |
-        | InteLIS folder path | Press Enter. |
-        | Where should the backup be sent? | **Another Linux machine on the network**. |
-        | Username on the backup server | `lisbackup` |
-        | Hostname or IP of the backup server | The address from step 3. |
-        | SSH port | Press Enter (`22`). |
+        | Where should the backup be sent? | **Another Linux machine on the network (recommended)**. |
+        | Address of the backup machine | The address from step 2. |
+        | This machine needs access to … How should it be given? | **Log in as the backup machine's administrator (recommended)**. |
+        | Administrator account on the backup machine | The username from step 3. |
 
-        ??? failure "If it says `Cannot reach … on port 22`"
+        ??? failure "If it says `Cannot reach …`"
 
             Check the backup machine is switched on and on the same network.
             Check the address with `ping 192.168.1.60`, using the address from
-            step 3. Check the SSH server from step 1 is installed. Then choose
-            **Yes** at **Try different details?**.
+            step 2. Check the SSH server from step 1 is installed. Then choose
+            **Yes** at **Try again?**.
 
-    6. When asked for `lisbackup`'s password, type the password from step 2 and
-       press Enter. It is asked once. The script installs a key, and later
-       backups connect with the key alone.
+        ??? info "If the backup machine uses another SSH port or account"
 
-        ??? failure "If it says `Could not install the key` or `does not accept passwords`"
+            Write them into the address: `192.168.1.60:2222` for port 2222,
+            or `backup@192.168.1.60` for the account `backup`. Without them,
+            setup uses port 22 and the account `lisbackup`.
 
-            At **How should the backup key be added?**, choose one:
+    6. When asked for a password, type the password from step 3 and press
+       Enter. It can be asked twice: once to log in, and once more for
+       `sudo`. The first lab creates the `lisbackup` account on the backup
+       machine. Every later lab adds its own access to that account. Later
+       backups need no password.
+
+        ??? failure "If it says `Could not log in as … either`"
+
+            The username or password is wrong, or the backup machine refuses
+            that account's password. Check both on the backup machine. Setup
+            asks **How should it be given?** again.
+
+        ??? failure "If it says `adding the key failed`"
+
+            The account logged in but is not allowed to use `sudo`. Choose
+            **Log in as the backup machine's administrator** again and type
+            an account that can.
+
+        ??? info "Without the administrator's password"
+
+            At **How should it be given?**, choose one:
 
             | Choice | Use it when |
             | --- | --- |
-            | **Type the details again** | The username, address or password was mistyped. |
-            | **Use an administrator account on the backup server** | The backup machine accepts keys only (common on cloud servers), or `lisbackup` does not exist yet. At the next question, type `root` or another account that can log in there and use `sudo`. If asked, type that account's password. The script adds the key, and offers to create `lisbackup` if it is missing. |
-            | **Add the key by hand** | No administrator login is available from this machine. The script prints three commands. Run them on the backup machine, then choose **Yes** at **Has the key been added?**. |
-
-            The script then checks the login again and carries on.
+            | **Type the lisbackup password** | `lisbackup` was created on the backup machine with a password. |
+            | **Add it by hand on the backup machine** | Someone else manages the backup machine. The script prints three commands. Send them to that person. When they have run them, choose **Yes** at **Has it been added? Check now?**. |
 
         ??? tip "Logging in to the backup machine by hand"
 
             Setup adds the backup machine to `/root/.ssh/config`, so
             `sudo ssh lisbackup@192.168.1.60` from the InteLIS machine uses the
-            backup key. Use the address from step 3.
+            backup key. Use the address from step 2.
 
     7. Wait for the first backup to finish. It can take an hour or more. The
        script ends with `Backups are set up and the first one completed`.
@@ -222,7 +241,7 @@ and after every restart. The copy survives if the InteLIS machine fails.
     | Watch a backup as it runs | `tail -f /var/log/intelis-backup.log` |
     | Stop the scheduled backups | `intelis backup disable` |
     | Start them again | `intelis backup enable` |
-    | Change any answer | `intelis backup setup`, then press Enter to keep each saved answer. |
+    | Change where backups go | `intelis backup setup`, then choose **Change where backups go**. The saved answers are offered; press Enter to keep one. |
 
     To get the data back, see [Restoring from a Backup](restoring-from-backup.md).
 
@@ -288,7 +307,6 @@ and after every restart. The copy survives if the InteLIS machine fails.
         | Question | Answer |
         | --- | --- |
         | Lab name or lab code | A short name for this lab, such as `centrallab`. |
-        | InteLIS folder path | Press Enter. |
         | Where should the backup be sent? | **A shared folder on a Windows machine**. |
         | Windows hostname or IP | The address from step 8. |
         | Name of the shared folder | `InteLIS-Backups` |
@@ -430,7 +448,7 @@ and after every restart. The copy survives if the InteLIS machine fails.
     | Watch a backup as it runs | `tail -f /var/log/intelis-backup.log` |
     | Stop the scheduled backups | `intelis backup disable` |
     | Start them again | `intelis backup enable` |
-    | Change any answer | `intelis backup setup`, then press Enter to keep each saved answer. |
+    | Change where backups go | `intelis backup setup`, then choose **Change where backups go**. The saved answers are offered; press Enter to keep one. |
 
     To get the data back, see [Restoring from a Backup](restoring-from-backup.md).
 
@@ -442,9 +460,7 @@ and after every restart. The copy survives if the InteLIS machine fails.
     ### Set up the backup
 
     1. Plug the drive into the InteLIS machine.
-    2. Open the **Files** app and select the drive in the left sidebar. This
-       connects it.
-    3. Open a terminal and run:
+    2. Open a terminal and run:
 
         ```bash
         intelis backup setup
@@ -459,30 +475,35 @@ and after every restart. The copy survives if the InteLIS machine fails.
             sudo bash remote-backup.sh
             ```
 
-    4. Answer the first questions:
+    3. Answer the first questions:
 
         | Question | Answer |
         | --- | --- |
         | Lab name or lab code | A short name for this lab, such as `centrallab`. |
-        | InteLIS folder path | Press Enter. |
         | Where should the backup be sent? | **A USB or external drive plugged into this machine**. |
 
-    5. The script lists the drives. Find the USB drive by its size. At
-       **Folder on the drive to back up into**, type the path shown in its
-       `MOUNTPOINT` column, for example `/media/labuser/BACKUP`, and press
-       Enter.
+    4. At **Which drive should the backups go to?**, choose the USB drive.
+       Each row shows the drive's name and size. The script connects the
+       drive, and connects it again by itself after every restart.
 
-        ??? failure "If it says `does not exist. Is the drive plugged in and mounted?`"
+        ??? failure "If it says `No drive was found apart from this machine's own disk`"
 
-            The path is mistyped, or the drive is not connected. Repeat step 2,
-            then type the path again.
+            The drive is not plugged in, or is not recognised. Plug it in, wait
+            a few seconds, then choose **Look again**.
 
-        ??? failure "If it says `is on the same disk as the installation`"
+        ??? failure "If it says `This drive is formatted as FAT32`"
 
-            The path is on the InteLIS machine's own disk, not on the USB drive.
-            Choose **No** at **Use it anyway?** and type the USB drive's path.
+            FAT32 cannot hold a file of 4 GB or more, and database backups grow
+            past that. Reformat the drive as exFAT or ext4. This erases
+            everything on it. Open the **Disks** app, select the drive, then
+            select **Format Partition**. Then choose **Look again**.
 
-    6. Wait for the first backup to finish. It can take an hour or more. The
+        ??? failure "If it says `The drive is open at …`"
+
+            A window is showing the drive's files. Close it, then choose
+            **Yes** at **Choose again?** and choose the drive again.
+
+    5. Wait for the first backup to finish. It can take an hour or more. The
        script ends with `Backups are set up and the first one completed`.
 
         ??? failure "If it ends with `Setup finished, but the first backup failed`"
@@ -496,7 +517,7 @@ and after every restart. The copy survives if the InteLIS machine fails.
 
     ### Confirm it works
 
-    7. Run:
+    6. Run:
 
         ```bash
         intelis backup status
@@ -506,7 +527,7 @@ and after every restart. The copy survives if the InteLIS machine fails.
 
         ```text
         Lab            : centrallab (centrallab-3f9a2b1c)
-        Backing up to  : /media/labuser/BACKUP/backups/centrallab-3f9a2b1c
+        Backing up to  : /mnt/intelis-usb/backups/centrallab-3f9a2b1c
         Last good backup: 2026-08-07T09:14:22Z (12 minutes ago)
         Size on backup  : 4.2G
         History         : 2026-08-01 to 2026-08-07 (7 days)
@@ -522,10 +543,16 @@ and after every restart. The copy survives if the InteLIS machine fails.
         | Last attempt | `succeeded`. |
         | Schedule | `every 8 hours and after every restart`. |
 
+        ??? failure "If the reason is `The backup drive is not plugged in`"
+
+            Plug the drive in, then run `intelis backup`. The backup connects
+            the drive by itself.
+
         ??? failure "If the reason is `The backup drive at … is not there`"
 
-            The drive was unplugged, or it was not connected after a restart.
-            Plug it in, repeat step 2, then run `intelis backup`.
+            The drive was set up by an older version, which relied on it being
+            opened in the **Files** app. Run `intelis backup setup`, choose
+            **Change where backups go**, and choose the drive from the list.
 
         ??? failure "If `Last attempt` shows `FAILED` for another reason"
 
@@ -560,7 +587,7 @@ and after every restart. The copy survives if the InteLIS machine fails.
     unique to this InteLIS machine:
 
     ```text
-    /media/labuser/BACKUP/backups/centrallab-3f9a2b1c/
+    /mnt/intelis-usb/backups/centrallab-3f9a2b1c/
     ```
 
     It holds the whole InteLIS folder. The database backups are in `backups/db`
@@ -604,7 +631,7 @@ and after every restart. The copy survives if the InteLIS machine fails.
     | Watch a backup as it runs | `tail -f /var/log/intelis-backup.log` |
     | Stop the scheduled backups | `intelis backup disable` |
     | Start them again | `intelis backup enable` |
-    | Change any answer | `intelis backup setup`, then press Enter to keep each saved answer. |
+    | Change where backups go | `intelis backup setup`, then choose **Change where backups go**. The saved answers are offered; press Enter to keep one. |
 
     To get the data back, see [Restoring from a Backup](restoring-from-backup.md).
 
