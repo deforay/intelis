@@ -48,3 +48,15 @@ SELECT 'admin', NULL, 'no', 'Recommended Corrective Actions',
                     WHERE `existing`.`link` = '/common/reference/recommended-corrective-actions.php?testType=tb');
 
 UPDATE `system_config` SET `value` = '5.7.77' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

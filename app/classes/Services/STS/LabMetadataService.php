@@ -56,7 +56,9 @@ final class LabMetadataService
                 $data['updated_datetime'] = DateUtility::getCurrentDateTime();
 
                 try {
-                    if ($tableName === 'instrument_controls' || $tableName === 'instrument_machines') {
+                    if ($tableName === 'instrument_machines') {
+                        $this->storeMachine($data);
+                    } elseif ($tableName === 'instrument_controls') {
                         if (
                             (in_array($data['instrument_id'], $deletedId)) === false &&
                             !empty($data['instrument_id'])
@@ -108,6 +110,38 @@ final class LabMetadataService
             }
         }
         return $counter;
+    }
+
+    /**
+     * A lab's machine, matched on its instrument and the lab's own id for it: every
+     * lab numbers its machines from 1, and results carry that id (import_machine_name)
+     * next to the instrument. A lab never deletes a machine, so one missing from a
+     * batch stays.
+     *
+     * Before 5.7.78 the key is config_machine_id alone, and another lab's machine
+     * with the same id stops the insert rather than being overwritten.
+     */
+    private function storeMachine(array $data): void
+    {
+        $instrumentId = $data['instrument_id'] ?? null;
+        $machineId = filter_var($data['config_machine_id'] ?? null, FILTER_VALIDATE_INT);
+        if (empty($instrumentId) || $machineId === false) {
+            // Stored without both, each resend would add another copy.
+            return;
+        }
+        $data['config_machine_id'] = $machineId;
+
+        $exists = $this->db->rawQueryOne(
+            'SELECT 1 AS found FROM instrument_machines WHERE instrument_id = ? AND config_machine_id = ?',
+            [$instrumentId, $machineId]
+        );
+        if (!empty($exists)) {
+            $this->db->where('instrument_id', $instrumentId);
+            $this->db->where('config_machine_id', $machineId);
+            $this->db->update('instrument_machines', $data);
+            return;
+        }
+        $this->db->setQueryOption(['IGNORE'])->insert('instrument_machines', $data);
     }
 
     /** Image types a signature may be stored as. */
