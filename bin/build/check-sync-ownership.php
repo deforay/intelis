@@ -5,10 +5,10 @@ declare(strict_types=1);
 /**
  * Static check: the columns a lab owns cannot be overwritten by an incoming sync.
  *
- * requests-receiver.php pulls test requests down from the STS and applies them to
- * the local form tables. Some columns belong to the lab and to nobody else: what the
- * sample's status is, whether it was rejected, when it was reviewed, whether it still
- * needs syncing. The STS's copy of those is, by definition, older than the lab's.
+ * requests-receiver.php pulls test requests down from the STS, and
+ * LabRequestSyncService applies them to the local form tables. Some columns belong
+ * to the lab and to nobody else: what the sample's status is, whether it was
+ * rejected, when it was reviewed, whether it still needs syncing. The STS's copy of those is, by definition, older than the lab's.
  *
  * Each test type declares them in its own excludeUpdateKeys list, so there are six
  * near-identical blocks and one of them dropping a column would be invisible. The
@@ -22,7 +22,7 @@ declare(strict_types=1);
  * Usage: php bin/build/check-sync-ownership.php
  */
 
-const RECEIVER = __DIR__ . '/../../app/tasks/remote/requests-receiver.php';
+const RECEIVER = __DIR__ . '/../../app/classes/Services/LabRequestSyncService.php';
 
 /** Test types that must each declare an excludeUpdateKeys list. */
 const TEST_TYPES = ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'cd4'];
@@ -98,7 +98,7 @@ if ($source === false) {
 $problems = [];
 
 foreach (TEST_TYPES as $testType) {
-    $blockPos = preg_match("/^    '$testType' => \[/m", $source, $m, PREG_OFFSET_CAPTURE) === 1
+    $blockPos = preg_match("/^ +'$testType' => \[/m", $source, $m, PREG_OFFSET_CAPTURE) === 1
         ? $m[0][1]
         : null;
 
@@ -137,6 +137,6 @@ echo 'so an incoming request that carries one undoes work somebody did locally -
 echo 'a cancelled sample coming back uncancelled, a rejection coming back accepted.' . PHP_EOL;
 echo PHP_EOL;
 echo 'Add the column to that test type\'s excludeUpdateKeys in' . PHP_EOL;
-echo 'app/tasks/remote/requests-receiver.php.' . PHP_EOL;
+echo 'LabRequestSyncService::moduleConfigs() (app/classes/Services/LabRequestSyncService.php).' . PHP_EOL;
 
 exit(1);
