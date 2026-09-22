@@ -53,6 +53,12 @@ try {
     if (empty($labId)) {
         throw new SystemException('Lab ID is missing in the request', 400);
     }
+    // Labs send it as a number or a numeric string. Anything else is a malformed
+    // request, not a server error: it failed as a TypeError further down and came
+    // back 500, which reads as the STS being down.
+    if (filter_var($labId, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
+        throw new SystemException('Lab ID in the request is not a lab id', 400);
+    }
     if (empty($testType)) {
         throw new SystemException('Test Type is missing in the request', 400);
     }
