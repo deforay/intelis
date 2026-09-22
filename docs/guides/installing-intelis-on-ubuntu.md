@@ -1,3 +1,12 @@
+---
+description: Install InteLIS on a new Ubuntu LTS machine as a lab machine or a central STS server.
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Installing InteLIS on Ubuntu 24.04 or above (only Ubuntu LTS)
 
 Install InteLIS on a new Ubuntu machine, as a lab machine or as a central server.
@@ -31,9 +40,9 @@ instead.
         sudo bash setup.sh
         ```
 
-        ??? failure "If it stops with `This script requires an Ubuntu LTS release`"
+        ??? failure "If it stops with `This script requires an Ubuntu LTS release` or `requires Ubuntu 22.04 or newer`"
 
-            The machine runs a non-LTS or older Ubuntu release. Reinstall the
+            The machine runs a non-LTS or too-old Ubuntu release. Reinstall the
             machine with Ubuntu 24.04 LTS or later, then start again from
             step 1.
 
@@ -158,9 +167,9 @@ instead.
         sudo bash setup.sh
         ```
 
-        ??? failure "If it stops with `This script requires an Ubuntu LTS release`"
+        ??? failure "If it stops with `This script requires an Ubuntu LTS release` or `requires Ubuntu 22.04 or newer`"
 
-            The machine runs a non-LTS or older Ubuntu release. Reinstall the
+            The machine runs a non-LTS or too-old Ubuntu release. Reinstall the
             machine with Ubuntu 24.04 LTS or later, then start again from
             step 2.
 

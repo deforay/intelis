@@ -1,3 +1,12 @@
+---
+description: Liste le travail du personnel des structures sanitaires dans InteLIS, de l'enregistrement d'une demande à la réception du résultat, avec un lien vers chaque tâche.
+audience: [requesting-facility]
+module: [vl]
+type: explanation
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # Pour les structures demandeuses
 
 Le personnel des structures sanitaires utilise InteLIS pour enregistrer les
@@ -26,18 +35,24 @@ tâche.
    demandes → Afficher les demandes de test**. Voir
    [Statuts des échantillons](sample-statuses.md) pour la signification de
    chaque statut.
-5. Récupérer les résultats. Voir
+5. Récupérer les résultats. Une fois le résultat approuvé par le laboratoire et
+   synchronisé, il s'affiche dans la colonne **Résultat** sous **Afficher les
+   demandes de test**. Imprimer le rapport patient sous **CHARGE VIRALE DU VIH
+   → Gestion → Imprimer le résultat**, onglet **Résultats pas encore
+   imprimés**. Voir
    [Diffuser les résultats à la structure demandeuse](release-results.md).
 6. Consulter les résultats antérieurs d'un patient sous **CHARGE VIRALE DU VIH
    → Gestion → Rapports cliniques**, dans l'onglet **Historique des tests du
-   patient**. Voir [Rapports charge virale](reports.md).
+   patient**. Rechercher par ID ou nom du patient. L'historique couvre tous
+   les types de test et uniquement les structures rattachées au compte. Voir
+   [Rapports charge virale](reports.md).
 
 ## En cas de problème
 
 | Problème | Action |
 | --- | --- |
 | La structure est absente du formulaire de demande | Demander à l'administrateur de rattacher la structure au compte et au test |
-| Un échantillon reste à **Échantillon enregistré au centre de santé** après le départ du colis | Le laboratoire n'a pas encore activé le manifeste, ou n'a pas synchronisé depuis. Contacter le laboratoire avec le code du manifeste |
+| Un échantillon reste à **Sample Currently Registered at Health Center** (Échantillon enregistré au centre de santé) après le départ du colis | Le laboratoire n'a pas encore activé le manifeste, ou n'a pas synchronisé depuis. Contacter le laboratoire avec le code du manifeste |
 | Une demande a été saisie deux fois | Demander au laboratoire d'analyse d'annuler le doublon |
 | Un échantillon a été rejeté | Lire le motif de rejet sur la demande, puis prélever et envoyer de nouveau |
 | Un résultat semble incohérent pour le patient | Contacter le laboratoire avec l'ID de l'échantillon avant d'agir |

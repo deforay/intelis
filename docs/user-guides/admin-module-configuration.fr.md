@@ -1,3 +1,12 @@
+---
+description: Ajouter, retirer et situer les entrées des listes déroulantes des formulaires de demande de chaque module, et configurer un test personnalisé.
+audience: [lab-admin, system-admin]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # Entretenir les listes du formulaire de demande
 
 Ajouter, corriger et retirer les options des listes déroulantes des
@@ -67,6 +76,13 @@ EID. L'ajouter sous chaque module qui en a besoin.
         province lors de l'ajout d'un district. Un district sans parent
         n'apparaît sous aucune province sur le formulaire de demande.
 
+    ??? info "Sur une installation autonome"
+
+        Sur une installation autonome, les Divisions géographiques et les
+        listes de Autres tests de laboratoire Config (sauf Configuration du type
+        de test) n'ont pas de bouton d'ajout. Elles se tiennent uniquement sur
+        le STS.
+
 === "LIS"
 
     Un LIS affiche ces listes sans bouton d'ajout. Les listes viennent du STS.
@@ -77,8 +93,10 @@ EID. L'ajouter sous chaque module qui en a besoin.
     3. Ouvrir le formulaire de demande. L'entrée apparaît dans sa liste
        déroulante.
 
-    ??? info "Le Stockage en laboratoire se tient sur le LIS"
+    ??? info "Le Stockage en laboratoire est tenu par le laboratoire"
 
+        Le Stockage en laboratoire est tenu par le laboratoire : sur le LIS, ou
+        sur le STS par un utilisateur de laboratoire d'analyse.
         **ADMIN → Configuration du système → Stockage en laboratoire** relève du
         laboratoire. Y sélectionner **Ajout d'un congélateur/stockage de
         laboratoire** pour ajouter un congélateur.
@@ -97,7 +115,8 @@ quitte le formulaire et reste lisible sur les fiches qui l'utilisent déjà.
 
     Sélectionner **Modifier** sur la ligne, régler le statut sur **Inactif**,
     puis sélectionner **Envoyer**. Sur un LIS, le statut ne peut pas être
-    modifié. Retirer l'entrée sur le STS.
+    modifié. Retirer l'entrée sur le STS. Sur une installation autonome,
+    retirer les entrées de Autres tests de laboratoire Config sur le STS.
 
 ??? warning "Renommer ou supprimer une province ou un district"
 
@@ -105,20 +124,27 @@ quitte le formulaire et reste lisible sur les fiches qui l'utilisent déjà.
     de tous les rapports cessent de correspondre. Faire valider la modification
     par l'équipe nationale d'abord.
 
+    Pour fondre une province ou un district en double dans un autre, utiliser
+    **Fusionner les divisions géographiques** sur la liste des Divisions
+    géographiques. Ce bouton existe uniquement sur le STS.
+
 ## Configurer un test personnalisé
 
 Un test personnalisé (Custom Test) est un type de test qui n'est pas l'un des
 modules intégrés. Il se définit sous **ADMIN → Autres tests de laboratoire Config
 → Configuration du type de test**.
 
-1. Ajouter les entrées dont le test a besoin sous **Unités de résultat du
-   test**, **Méthodes de test** et **Catégories de tests**.
+1. Ajouter au moins une entrée sous **Méthodes de test**. Chaque groupe de
+   résultats en demande une. Ajouter les unités sous **Unités de résultat du
+   test** si les résultats en portent.
 2. Ajouter les types d'échantillons, raisons des tests et motifs de rejet dont
    il a besoin, sous les listes correspondantes de Autres tests de laboratoire
    Config.
 3. Aller à **ADMIN → Autres tests de laboratoire Config → Configuration du type
    de test**.
-4. Sélectionner **Ajouter un type de test** et définir le test.
+4. Sélectionner **Ajouter un type de test** et définir le test, ou
+   **Importer un type de test** pour charger un test exporté d'une autre
+   installation.
 
 ## Vérifier que tout fonctionne
 

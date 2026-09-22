@@ -1,3 +1,11 @@
+---
+description: Add or update many facilities from one Excel file, reviewing every row and warning before anything is saved.
+audience: [system-admin, lab-admin]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # How to add or update many facilities at once
 
 Load a list of facilities from one Excel file, or correct many existing
@@ -24,20 +32,21 @@ facilities in one pass. Nothing is saved until the review is accepted.
         | Column | What to enter |
         | --- | --- |
         | Facility Name | Required |
-        | Facility Code | The national unique code. Left blank on a testing lab, InteLIS generates one |
+        | Facility Code | The national unique code. Left blank on a testing lab, InteLIS generates one. Saved in capitals. The review shows any change |
         | External Facility Code | A second code used by another system |
         | Province/State, District/County | Required. A name InteLIS does not hold is added as a new province or district |
-        | Facility Type | Required. `1` Health Facility, `2` Testing Lab, `3` Collection Site |
+        | Facility Type | Required. `1` Health Facility, `2` Testing Lab, `3` Collection Site. The type name, such as `Testing Lab`, is also accepted |
         | Address, Email, Phone Number | Optional |
         | Latitude, Longitude | Optional. Latitude between -90 and 90, longitude between -180 and 180 |
-        | Status | `active` or `inactive` |
+        | Status | `active` or `inactive`. Blank adds the facility as active |
 
     ### Upload and review
 
     5. Under **How should existing facilities be handled?**, keep **Add new
        only**. Rows that match an existing facility are skipped.
     6. Drop the file on the page, or select **browse** and pick it.
-    7. Select **Review Upload**. Nothing is saved yet.
+    7. Select **Review Upload**. Nothing is saved yet. The review expires after
+       24 hours. After that, upload the file again.
     8. Read the **Result** of each row:
 
         | Result | Meaning |
@@ -46,8 +55,8 @@ facilities in one pass. Nothing is saved until the review is accepted.
         | Skipped | A facility with this name or code already exists |
         | Error | The row cannot be saved. **Details** gives the reason |
 
-    9. Set **Filter rows** to **Warnings**. Read each warning. Rows with a
-       warning start unticked.
+    9. Select the **Warnings** tile above the table. Read each warning. Rows
+       with a warning start unticked.
 
         ??? warning "Warnings on new rows"
 
@@ -61,17 +70,19 @@ facilities in one pass. Nothing is saved until the review is accepted.
     10. Tick each warning row that is a genuinely new facility.
     11. Select **Import ticked rows**. To discard the upload instead, select
         **Cancel**.
+    12. Confirm the prompt about rows with warnings, when it appears.
 
     ### Finish
 
-    12. Read the summary. **Not saved** must be 0.
+    13. Read the summary. **Not saved** must be 0.
 
         ??? failure "If rows were not saved"
 
-            Select **Download rows not saved**. Correct the rows, then upload
-            that file from step 5.
+            A row is not saved when its name, code or external code is already
+            used by another facility. Select **Download rows not saved**.
+            Correct the rows, then upload that file from step 5.
 
-    13. Link the new facilities to their test types. The file carries no test
+    14. Link the new facilities to their test types. The file carries no test
         types, so the new facilities are on no request form yet. See
         [Link many facilities to a test type](admin-facilities.md#link-many-facilities-to-a-test-type).
 
@@ -99,7 +110,8 @@ facilities in one pass. Nothing is saved until the review is accepted.
         Rows that match nothing are added as new facilities.
 
     6. Drop the file on the page, or select **browse** and pick it.
-    7. Select **Review Upload**. Nothing is saved yet.
+    7. Select **Review Upload**. Nothing is saved yet. The review expires after
+       24 hours. After that, upload the file again.
     8. Read the **Result** of each row:
 
         | Result | Meaning |
@@ -110,8 +122,8 @@ facilities in one pass. Nothing is saved until the review is accepted.
         | Skipped | The row cannot be matched with the option chosen |
         | Error | The row cannot be saved. **Details** gives the reason |
 
-    9. Set **Filter rows** to **Warnings**. Read each warning. Rows with a
-       warning start unticked.
+    9. Select the **Warnings** tile above the table. Read each warning. Rows
+       with a warning start unticked.
 
         ??? warning "Warnings on updated rows"
 
@@ -128,16 +140,22 @@ facilities in one pass. Nothing is saved until the review is accepted.
     10. Tick each warning row whose change is intended.
     11. Select **Import ticked rows**. To discard the upload instead, select
         **Cancel**.
+    12. Confirm the prompt about rows with warnings, when it appears.
 
     ### Finish
 
-    12. Read the summary. **Not saved** must be 0.
+    13. Read the summary. **Not saved** must be 0.
 
         ??? failure "If rows were not saved"
 
-            A row is not saved when its facility was changed by someone else
-            after the review. Select **Download rows not saved**, correct the
-            rows, then upload that file from step 5.
+            A row is not saved for one of two reasons:
+
+            - Its facility was changed by someone else after the review.
+            - Its name, code or external code is already used by another
+              facility.
+
+            Select **Download rows not saved**, correct the rows, then upload
+            that file from step 5.
 
 ## Confirm it worked
 

@@ -1,3 +1,11 @@
+---
+description: Trace record changes, confirm that data sync and analyzers are working, and read lab performance, referral and page usage reports.
+audience: [lab-admin, system-admin, lab-supervisor]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # How to monitor and audit InteLIS
 
 Find who changed a record, check that data and analyzer results are moving, and
@@ -5,8 +13,11 @@ read how the lab is performing. The pages sit under **ADMIN → Monitoring**.
 
 ## Before starting
 
-- An account whose role holds the Monitoring pages needed. The super
-  administrator sees them all
+- An account whose role holds the Monitoring pages needed. The built-in Admin
+  role sees them all
+- On the Roles page, **Lab Performance Indicators**, **Interface Machine
+  Activity** and **Sample Referral Network** are granted under **Reports**, not
+  under Monitoring
 
 ??? info "Which pages appear"
 
@@ -14,9 +25,9 @@ read how the lab is performing. The pages sit under **ADMIN → Monitoring**.
     | --- | --- |
     | Standalone or LIS | Every page except **Lab Sync Status** and **API Dashboard** |
     | STS | Every page |
-    | Cloud | **User Activity Log**, **Audit Trail** and **Log File Viewer** only |
+    | Cloud | For users without the built-in Admin role: **User Activity Log**, **Audit Trail** and **Log File Viewer** only |
 
-    **Page Usage** appears only for the super administrator, and for roles
+    **Page Usage** appears only for the built-in Admin role, and for roles
     given the **Page Usage** privilege on the Roles page. No other role holds it
     by default.
 
@@ -42,14 +53,14 @@ read how the lab is performing. The pages sit under **ADMIN → Monitoring**.
 2. Set **Test Type**.
 3. Enter the **Sample ID or Remote Sample ID**.
 4. Select **Submit**.
-5. Read each revision: the field changed, its **Old Value**, its **New Value**,
-   the user who saved it and when.
+5. Read the **Table View**: one row per revision, with the user who saved it
+   and when. Open **Changes Only** to see each changed field with its **Old
+   Value** and **New Value**.
 
     ??? info "Other views"
 
         | View | Shows |
         | --- | --- |
-        | Changes Only | Only the fields that changed in each revision |
         | Timeline View | Each revision as an entry on a timeline |
         | Compare Versions | Two chosen revisions side by side |
         | Export To CSV | The history as a file, to send to support or an auditor |
@@ -79,8 +90,8 @@ a sample, use the Audit Trail.
 3. Read the cards: **Users**, **Sessions**, **Pages Used**, **Page Opens** and
    **Time on Pages**.
 4. Read **Most Used Pages** and **Most Active Users**.
-5. Under **By User and Page**, follow a session link to open that session in
-   the User Activity Log.
+5. Under **By User and Page**, select a session to show only that session, then
+   select **Open in Activity Log** in the filter above the cards.
 
 Time counts only while the page is the tab in front of the user. It is not the
 length of the sign-in.
@@ -131,6 +142,9 @@ length of the sign-in.
     4. Compare **Last Results Sync from Lab** and **Last Requests Sync from
        STS**. A gap in the first means results are sitting on the lab machine.
        A gap in the second means the lab does not see new requests.
+    5. To see which facilities are behind, select the lab's row. **Lab Sync
+       Details** opens in a new tab with **Requests Sent to Lab** and **Results
+       Received from Lab** per facility.
 
     To send a command to a lab from this page, see
     [Remote command plane](../guides/remote-command-plane.md).
@@ -158,15 +172,17 @@ A stale **Last Seen** means the Interface Tool is not reaching InteLIS.
 ## Read the lab performance report
 
 1. Go to **ADMIN → Monitoring → Lab Performance Indicators**.
-2. Set **Test**, **Date Range**, **View By** and **Lab**.
+2. Set **Test**, **Date Range**, **View By** and **Lab**. **Lab** appears only
+   when the instance has testing labs.
 3. Select **Apply**.
-4. Open the tab needed:
+4. Open the tab needed. **Overview** appears when **Test** is **All Tests
+   (Overview)**. The other tabs appear when one test is chosen.
 
     | Tab | Shows |
     | --- | --- |
     | Overview | Samples registered and tested, results available and awaiting a result |
     | Turnaround Time | Average days between collection, lab receipt, testing and release |
-    | Testing Volume | Results by entry mode: manual entry, file import, Interface Tool |
+    | Testing Volume | Results by entry mode: **Manual Entry**, **Analyzer Interface**, **File Import**. Older results show as **Unclassified** |
     | Failures | Failed tests, the failure rate and the re-test rate |
     | Rejections | Rejected samples, the rejection rate and the top reasons |
     | Repeat Patients | Patients tested more than once, and result changes |

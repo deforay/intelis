@@ -1,3 +1,11 @@
+---
+description: Étapes pour enregistrer une demande de test de charge virale à partir d'une fiche papier, au laboratoire ou dans une structure sanitaire sur le STS.
+audience: [lab-staff, requesting-facility]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Enregistrer une demande de test de charge virale
 
 Enregistrer un échantillon qui arrive avec une fiche papier et sans ID
@@ -23,11 +31,12 @@ Chaque type de test a son propre formulaire **Ajouter une nouvelle demande**.
 | Tuberculose | **TUBERCULOSE → Gestion des demandes → Ajouter une nouvelle demande** |
 | Tests personnalisés | **AUTRES EXAMENS DE LABORATOIRE → Gestion des demandes → Ajouter une nouvelle demande** |
 
-Les étapes ci-dessous suivent le formulaire de charge virale du VIH. Les autres
-formulaires ont leurs propres champs. Par exemple, le formulaire EID identifie
-l'enfant par le **Code du nourrisson**, et le formulaire des Tests personnalisés
-commence par le **Type de test**. Le formulaire de chaque pays diffère aussi
-par endroits. Les champs marqués d'un astérisque rouge sont obligatoires.
+Les étapes ci-dessous suivent le formulaire de charge virale d'un pays. Les
+formulaires des autres pays utilisent d'autres libellés et champs. Les autres
+types de test ont leurs propres formulaires. Par exemple, le formulaire EID
+identifie l'enfant par le **Code du nourrisson**, et le formulaire des Tests
+personnalisés commence par le **Type de test**. Les champs marqués d'un
+astérisque rouge sont obligatoires.
 
 **Choisir le lieu d'enregistrement de la demande, puis suivre ses étapes de haut en bas.**
 
@@ -76,33 +85,34 @@ par endroits. Les champs marqués d'un astérisque rouge sont obligatoires.
             Saisir **Si la date de naissance est inconnue, l'âge en années**. Pour
             un patient de moins d'un an, saisir **Si âge < 1, âge en mois**.
 
-    10. Choisir le **Sexe**.
+    10. Saisir le **Nom du patient (prénom, nom)**.
+    11. Choisir le **Sexe**.
 
     ### Informations sur les échantillons
 
-    11. Saisir la **Date de prélèvement de l'échantillon** figurant sur la fiche
+    12. Saisir la **Date de prélèvement de l'échantillon** figurant sur la fiche
         papier, et non la date de saisie. InteLIS remplit l'**ID de
         l'échantillon**. Il ne peut pas être saisi.
-    12. Saisir la date **Échantillon envoyé le**.
-    13. Choisir le **Type d'échantillon**.
-    14. Saisir la **Date de réception de l'échantillon au laboratoire
+    13. Saisir la date **Échantillon envoyé le**.
+    14. Choisir le **Type d'échantillon**.
+    15. Saisir la **Date de réception de l'échantillon au laboratoire
         d'analyse**.
 
     ### Traitement et indication
 
-    15. Remplir les **Informations sur le traitement** d'après la fiche papier :
+    16. Remplir les **Informations sur le traitement** d'après la fiche papier :
         **Date de début du traitement**, **Régime actuel**, **Date
         d'instauration du régime actuel** et **Adhésion aux ARV**.
-    16. Choisir l'**Indications pour l'analyse de la charge virale** : **Routine
+    17. Choisir l'**Indications pour l'analyse de la charge virale** : **Routine
         Monitoring**, **Repeat VL test after suspected treatment failure
         adherence counselling** ou **Suspect Treatment Failure**.
-    17. Laisser les **Informations sur le laboratoire** vides. Elles sont
+    18. Laisser les **Informations sur le laboratoire** vides. Elles sont
         remplies à la saisie du résultat. Voir
         [Saisir les résultats de charge virale](capture-results.md).
 
     ### Enregistrer
 
-    18. Sélectionner **Sauvegarder** pour revenir à la liste des demandes, ou
+    19. Sélectionner **Sauvegarder** pour revenir à la liste des demandes, ou
         **Sauvegarder et Suivant** pour ouvrir un nouveau formulaire pour la
         fiche papier suivante.
 
@@ -116,10 +126,11 @@ par endroits. Les champs marqués d'un astérisque rouge sont obligatoires.
 
             Sélectionner **Modifier/Réessayer** pour choisir l'imprimante.
 
-    19. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
+    20. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
         demandes de test**.
-    20. Rechercher l'identifiant du patient ou l'ID de l'échantillon. La demande
-        porte le statut **Échantillon enregistré au laboratoire d'analyse**.
+    21. Rechercher l'identifiant du patient ou l'ID de l'échantillon. La demande
+        porte le statut **Sample Registered at Testing Lab** (échantillon enregistré
+        au laboratoire d'analyse).
 
         Pour corriger une erreur, sélectionner **Modifier** sur la ligne.
 
@@ -171,30 +182,31 @@ par endroits. Les champs marqués d'un astérisque rouge sont obligatoires.
             Saisir **Si la date de naissance est inconnue, l'âge en années**. Pour
             un patient de moins d'un an, saisir **Si âge < 1, âge en mois**.
 
-    10. Choisir le **Sexe**.
+    10. Saisir le **Nom du patient (prénom, nom)**.
+    11. Choisir le **Sexe**.
 
     ### Informations sur les échantillons
 
-    11. Saisir la **Date de prélèvement de l'échantillon** figurant sur la fiche
+    12. Saisir la **Date de prélèvement de l'échantillon** figurant sur la fiche
         papier, et non la date de saisie. InteLIS remplit l'**ID de
         l'échantillon**. Il ne peut pas être saisi.
-    12. Saisir la date **Échantillon envoyé le**.
-    13. Choisir le **Type d'échantillon**.
-    14. Laisser vide la **Date de réception de l'échantillon au laboratoire
+    13. Saisir la date **Échantillon envoyé le**.
+    14. Choisir le **Type d'échantillon**.
+    15. Laisser vide la **Date de réception de l'échantillon au laboratoire
         d'analyse**. Le laboratoire de test la remplit.
 
     ### Traitement et indication
 
-    15. Remplir les **Informations sur le traitement** d'après la fiche papier :
+    16. Remplir les **Informations sur le traitement** d'après la fiche papier :
         **Date de début du traitement**, **Régime actuel**, **Date
         d'instauration du régime actuel** et **Adhésion aux ARV**.
-    16. Choisir l'**Indications pour l'analyse de la charge virale** : **Routine
+    17. Choisir l'**Indications pour l'analyse de la charge virale** : **Routine
         Monitoring**, **Repeat VL test after suspected treatment failure
         adherence counselling** ou **Suspect Treatment Failure**.
 
     ### Enregistrer
 
-    17. Sélectionner **Sauvegarder** pour revenir à la liste des demandes, ou
+    18. Sélectionner **Sauvegarder** pour revenir à la liste des demandes, ou
         **Sauvegarder et Suivant** pour ouvrir un nouveau formulaire pour la
         fiche papier suivante.
 
@@ -208,10 +220,11 @@ par endroits. Les champs marqués d'un astérisque rouge sont obligatoires.
 
             Sélectionner **Modifier/Réessayer** pour choisir l'imprimante.
 
-    18. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
+    19. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
         demandes de test**.
-    19. Rechercher l'identifiant du patient ou l'ID de l'échantillon. La demande
-        porte le statut **Échantillon enregistré au centre de santé**.
+    20. Rechercher l'identifiant du patient ou l'ID de l'échantillon. La demande
+        porte le statut **Sample Currently Registered at Health Center**
+        (échantillon enregistré au centre de santé).
 
         Pour corriger une erreur, sélectionner **Modifier** sur la ligne.
 

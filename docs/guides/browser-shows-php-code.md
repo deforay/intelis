@@ -1,3 +1,12 @@
+---
+description: Repair an InteLIS server that shows PHP source or offers a file download instead of the sign-in page.
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Browser Shows PHP Code Instead of InteLIS
 
 The browser shows text starting with `<?php declare(strict_types=1);`, or offers
@@ -29,13 +38,14 @@ a file to download, instead of the InteLIS sign-in page.
         ```
 
 2. Answer its questions. It asks before each repair.
-3. Reload the browser when the doctor reports that the site works again.
+3. Reload the browser when the doctor prints `Open InteLIS in the browser.`
 
     ??? failure "If the site still does not open"
 
         The doctor puts `site-report.txt` on the Desktop, or in the home folder
         when there is no Desktop. Send that file when asking for help.
-        Passwords are removed from it.
+        Passwords are removed from it. When the doctor also ran the database
+        doctor, send `mysql-report.txt` instead. It is in the same place.
 
 4. Run an update once the sign-in page loads:
 

@@ -1,3 +1,11 @@
+---
+description: Retracer les modifications, vérifier la synchronisation et les automates, et lire les rapports de performance, de référence et d'utilisation des pages.
+audience: [lab-admin, system-admin, lab-supervisor]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Surveiller et auditer InteLIS
 
 Trouver qui a modifié une fiche, vérifier que les données et les résultats des
@@ -6,8 +14,11 @@ trouvent sous **ADMIN → Surveillance**.
 
 ## Avant de commencer
 
-- Un compte dont le rôle porte les pages de Surveillance nécessaires. Le super
-  administrateur les voit toutes
+- Un compte dont le rôle porte les pages de Surveillance nécessaires. Le rôle
+  Admin intégré les voit toutes
+- Sur la page des rôles, **Indicateurs de performance du laboratoire**,
+  **Activité des machines d'interface** et **Exemple de réseau de
+  recommandation** s'accordent sous **Rapports**, et non sous Surveillance
 
 ??? info "Quelles pages apparaissent"
 
@@ -15,10 +26,11 @@ trouvent sous **ADMIN → Surveillance**.
     | --- | --- |
     | Autonome ou LIS | Toutes les pages sauf **État de la synchronisation du laboratoire** et **Tableau de bord de l’API** |
     | STS | Toutes les pages |
-    | Cloud | **Journal d’activité de l’utilisateur**, **Piste d’audit** et **Visualisateur de fichiers journaux** uniquement |
+    | Cloud | Pour les utilisateurs sans le rôle Admin intégré : **Journal d’activité de l’utilisateur**, **Piste d’audit** et **Visualisateur de fichiers journaux** uniquement |
 
-    **Page Usage** n'apparaît que pour le super administrateur, et pour les
-    rôles qui ont reçu le privilège **Page Usage** sur la page des rôles. Aucun
+    **Utilisation des pages** n'apparaît que pour le rôle Admin intégré, et
+    pour les rôles qui ont reçu le privilège **Utilisation des pages** sur la
+    page des rôles. Aucun
     autre rôle ne le porte par défaut.
 
 ## Quelle page répond à quelle question
@@ -27,7 +39,7 @@ trouvent sous **ADMIN → Surveillance**.
 | --- | --- |
 | Qui a modifié cet échantillon, et en quoi ? | Piste d’audit |
 | Qu'a fait cet utilisateur, et quand s'est-il connecté ? | Journal d’activité de l’utilisateur |
-| Quelles pages les utilisateurs ouvrent-ils, et combien de temps ? | Page Usage |
+| Quelles pages les utilisateurs ouvrent-ils, et combien de temps ? | Utilisation des pages |
 | Les données ont-elles atteint le STS ? | Historique de l’API sur un LIS. État de la synchronisation du laboratoire sur le STS |
 | D'où viennent les demandes du STS, et les résultats sont-ils repartis ? | Tableau de bord de l’API |
 | Cet automate envoie-t-il toujours ? | Activité des machines d'interface |
@@ -43,14 +55,15 @@ trouvent sous **ADMIN → Surveillance**.
 2. Renseigner **Type de test**.
 3. Saisir l'**ID de l'échantillon ou ID de l'échantillon à distance**.
 4. Sélectionner **Envoyer**.
-5. Lire chaque révision : le champ modifié, son **Ancienne Valeur**, sa
-   **Nouvelle Valeur**, l'utilisateur qui l'a enregistrée et le moment.
+5. Lire l'**Affichage Tableau** : une ligne par révision, avec l'utilisateur qui
+   l'a enregistrée et le moment. Ouvrir **Changements uniquement** pour voir
+   chaque champ modifié avec son **Ancienne Valeur** et sa **Nouvelle
+   Valeur**.
 
     ??? info "Autres vues"
 
         | Vue | Montre |
         | --- | --- |
-        | Changements uniquement | Seulement les champs modifiés à chaque révision |
         | Vue de la Chronologie | Chaque révision comme une entrée d'une chronologie |
         | Comparer les versions | Deux révisions choisies côte à côte |
         | Exporter au format CSV | L'historique en fichier, à envoyer au support ou à un auditeur |
@@ -76,21 +89,22 @@ Piste d'audit.
 
 ## Voir quelles pages sont utilisées
 
-1. Aller à **ADMIN → Surveillance → Page Usage**.
+1. Aller à **ADMIN → Surveillance → Utilisation des pages**.
 2. Renseigner **Plage de dates**. Renseigner **Utilisateur** pour se limiter à
    une personne.
-3. Lire les cartes : **Utilisateurs**, **Sessions**, **Pages Used**, **Page
-   Opens** et **Time on Pages**.
-4. Lire **Most Used Pages** et **Most Active Users**.
-5. Sous **By User and Page**, suivre un lien de session pour ouvrir cette
-   session dans le Journal d'activité de l'utilisateur.
+3. Lire les cartes : **Utilisateurs**, **Sessions**, **Pages utilisées**,
+   **Ouvertures de pages** et **Temps passé sur les pages**.
+4. Lire **Pages les plus utilisées** et **Utilisateurs les plus actifs**.
+5. Sous **Par utilisateur et par page**, sélectionner une session pour n'afficher
+   qu'elle, puis sélectionner **Ouvrir dans le journal d'activité** dans le
+   filtre au-dessus des cartes.
 
 Le temps ne compte que lorsque la page est l'onglet affiché devant
 l'utilisateur. Ce n'est pas la durée de la connexion.
 
-??? info "Page Usage est vide"
+??? info "Utilisation des pages est vide"
 
-    L'enregistrement dépend de **Track Page Usage** dans la
+    L'enregistrement dépend de **Suivre l'utilisation des pages** dans la
     [Configuration générale](admin-general-configuration.md#parametres-globaux).
     Il est activé par défaut.
 
@@ -140,6 +154,10 @@ l'utilisateur. Ce n'est pas la durée de la connexion.
        signifie que des résultats restent sur la machine du laboratoire. Un
        retard sur la seconde signifie que le laboratoire ne voit pas les
        nouvelles demandes.
+    5. Pour voir quelles structures sont en retard, sélectionner la ligne du
+       laboratoire. **Détails de la synchronisation des laboratoires** s'ouvre
+       dans un nouvel onglet avec **Demandes envoyées au laboratoire** et
+       **Résultats reçus du laboratoire** par structure.
 
     Pour envoyer une commande à un laboratoire depuis cette page, voir
     [Plan de commande à distance](../guides/remote-command-plane.md).
@@ -171,14 +189,17 @@ pas InteLIS.
 
 1. Aller à **ADMIN → Surveillance → Indicateurs de performance du laboratoire**.
 2. Renseigner **Test**, **Plage de dates**, **Afficher par** et **Labo**.
+   **Labo** n'apparaît que si l'instance compte des laboratoires d'analyse.
 3. Sélectionner **Appliquer**.
-4. Ouvrir l'onglet utile :
+4. Ouvrir l'onglet utile. **Aperçu** apparaît lorsque **Test** vaut **Tous les
+   tests (Aperçu)**. Les autres onglets apparaissent lorsqu'un seul test est
+   choisi.
 
     | Onglet | Montre |
     | --- | --- |
     | Aperçu | Échantillons enregistrés et testés, résultats disponibles et en attente |
     | Délai d'exécution | Le nombre moyen de jours entre prélèvement, réception au laboratoire, test et diffusion |
-    | Volume d'analyses | Les résultats par mode de saisie : saisie manuelle, import de fichier, outil d'interface |
+    | Volume d'analyses | Les résultats par mode de saisie : **Saisie manuelle**, **Interface de l'analyseur**, **Importation de fichiers**. Les anciens résultats apparaissent comme **Non classifié** |
     | Échecs | Les tests en échec, le taux d'échec et le taux de reprise d'analyse |
     | Rejets | Les échantillons rejetés, le taux de rejet et les principaux motifs |
     | Patients avec tests répétés | Les patients testés plus d'une fois, et les changements de résultat |

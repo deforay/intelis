@@ -191,15 +191,16 @@
   <h3>Deux niveaux d'administrateur</h3>
   <table class="wrapfirst">
     <tr><th>Niveau</th><th>Intervient sur</th></tr>
-    <tr><td>Administrateur de laboratoire</td><td>Utilisateurs, structures, automates, listes de configuration des modules, connexions de l'outil d'interface, consultation de la piste d'audit</td></tr>
-    <tr><td>Administrateur national</td><td>Tout ce qui précède, plus les rôles et permissions, la Configuration générale et les Divisions géographiques</td></tr>
+    <tr><td>Administrateur de laboratoire</td><td>Utilisateurs, instruments, connexions de l'outil d'interface, consultation de la piste d'audit</td></tr>
+    <tr><td>Administrateur national</td><td>Tout ce qui précède, plus les rôles, les structures, les listes du formulaire de demande, la Configuration générale et les Divisions géographiques</td></tr>
   </table>
 
   <div class="warn">
     <strong>Faire valider avant de modifier</strong>
     Format ou préfixe des ID d'échantillon. Jours de verrouillage et de péremption.
-    Same user can Review and Approve. Auto Approve Interface Results. Permissions d'un rôle.
-    Suppression d'une entrée de liste. Renommage ou suppression d'une province ou d'un district.
+    Le même utilisateur peut réviser et approuver. Auto Approve API Results pour VL, EID,
+    COVID-19 et TB, et Auto Approve Interface Results (réglés par le support). Permissions
+    d'un rôle. Renommage ou suppression d'une province ou d'un district.
     Chacune s'applique d'un coup à toute l'installation, et revenir en arrière n'annule pas
     son effet sur les fiches déjà créées.
   </div>
@@ -224,16 +225,16 @@
   </header>
 
   <h3>Ajouter l'utilisateur</h3>
-  <p><span class="path">ADMIN &rsaquo; Contrôle d'accès &rsaquo; Utilisateurs &rsaquo; Add User</span></p>
+  <p><span class="path">ADMIN &rsaquo; Contrôle d'accès &rsaquo; Utilisateurs &rsaquo; Ajouter un utilisateur</span></p>
 
   <ol class="steps">
-    <li>Saisir le <span class="ui">Full Name</span> tel qu'il doit figurer sur les rapports et dans le journal d'activité.</li>
+    <li>Saisir le <span class="ui">Nom complet</span> tel qu'il doit figurer sur les rapports et dans le journal d'activité.</li>
     <li>Saisir l'adresse e-mail et le numéro de téléphone.</li>
-    <li>Choisir le <span class="ui">Role</span>. Les permissions viennent du rôle, jamais de l'utilisateur.</li>
-    <li>Renseigner le <span class="ui">Testing Lab</span>. Cela limite ce que l'utilisateur voit au travail de son propre laboratoire.</li>
+    <li>Choisir le <span class="ui">Rôle</span>. Les permissions viennent du rôle, jamais de l'utilisateur.</li>
+    <li>Sur un serveur central (STS), pour un rôle Laboratoire d'analyse, renseigner le <span class="ui">Laboratoire d'analyse</span>. Il limite l'utilisateur au travail de ce laboratoire.</li>
     <li>Téléverser une <span class="ui">Signature</span> pour toute personne qui approuve des résultats. 100 sur 100 pixels.</li>
-    <li>Définir le <span class="ui">Login ID</span> et un mot de passe initial.</li>
-    <li>Sélectionner <span class="ui">Submit</span>, puis remettre l'identifiant et le mot de passe à l'utilisateur en main propre.</li>
+    <li>Définir le <span class="ui">Identifiant de connexion</span> et un mot de passe initial.</li>
+    <li>Sélectionner <span class="ui">Envoyer</span>, puis remettre l'identifiant et le mot de passe à l'utilisateur en main propre.</li>
   </ol>
 
   <div class="warn">
@@ -249,11 +250,11 @@
 
   <table class="wrapfirst">
     <tr><th>Champ</th><th>Ce qu'il faut renseigner</th></tr>
-    <tr><td>Role Name</td><td>Un nom que le personnel reconnaît, par exemple Technicien de laboratoire</td></tr>
-    <tr><td>Role Code</td><td>Un code court et unique</td></tr>
-    <tr><td>Landing Page</td><td>La page d'arrivée de ce rôle. Le personnel de saisie arrive directement sur le formulaire de demande</td></tr>
-    <tr><td>Access Type</td><td>Testing Lab pour le personnel du laboratoire. Collection Site pour le personnel des structures</td></tr>
-    <tr><td>Privileges</td><td>Cocher chaque page accessible au rôle. Utiliser le champ de recherche, ne pas parcourir la liste</td></tr>
+    <tr><td>Nom du rôle</td><td>Un nom que le personnel reconnaît, par exemple Technicien de laboratoire</td></tr>
+    <tr><td>Code de rôle</td><td>Un code court et unique</td></tr>
+    <tr><td>Page de destination</td><td>La page d'arrivée de ce rôle. Le personnel de saisie arrive directement sur le formulaire de demande</td></tr>
+    <tr><td>Type d'Accès</td><td>Laboratoire d'analyse pour le personnel du laboratoire. Site de prélèvement pour le personnel des structures</td></tr>
+    <tr><td>Privilèges</td><td>Cocher chaque page accessible au rôle. Utiliser le champ de recherche, ne pas parcourir la liste</td></tr>
   </table>
 
   <p>Pour savoir quels rôles portent une permission donnée, utiliser le filtre
@@ -277,21 +278,21 @@
   </header>
 
   <h3>Ajouter une structure</h3>
-  <p><span class="path">ADMIN &rsaquo; Structures sanitaires &rsaquo; Add Facility</span></p>
+  <p><span class="path">ADMIN &rsaquo; Structures sanitaires &rsaquo; Ajouter installations</span></p>
 
   <table class="wrapfirst">
     <tr><th>Champ</th><th>Ce qu'il faut saisir</th></tr>
-    <tr><td>Facility Name</td><td>Le nom que le personnel recherchera</td></tr>
-    <tr><td>Facility Code</td><td>Le code national unique</td></tr>
-    <tr><td>Facility Type</td><td>Structure sanitaire, ou laboratoire de test</td></tr>
-    <tr><td>Province/State, District/County</td><td>La localisation. Les deux doivent être renseignés</td></tr>
-    <tr><td>Test Type</td><td>Chaque type de test auquel la structure participe</td></tr>
-    <tr><td>Testing Point(s)</td><td>Les points de service, par exemple CDV ou PTME</td></tr>
+    <tr><td>Nom de la structure</td><td>Le nom que le personnel recherchera</td></tr>
+    <tr><td>Code de la structure</td><td>Le code national unique</td></tr>
+    <tr><td>Type d'installation</td><td>Etablissement de santé, Laboratoire d'analyse ou Site de prélèvement</td></tr>
+    <tr><td>Province, District</td><td>La localisation. Les deux doivent être renseignés</td></tr>
+    <tr><td>Type de test</td><td>Chaque type de test auquel la structure participe</td></tr>
+    <tr><td>Point(s) de contrôle</td><td>Les points de service, par exemple CDV ou PTME</td></tr>
     <tr><td>Email(s), Report Email(s)</td><td>Les adresses pour l'envoi des résultats et la diffusion des rapports</td></tr>
   </table>
 
   <div class="warn">
-    <strong>C'est le Test Type qui fait apparaître une structure</strong>
+    <strong>C'est le Type de test qui fait apparaître une structure</strong>
     Une structure non cochée pour un type de test est absente du formulaire de demande de ce
     type de test. Une structure cochée pour un seul type de test reste absente du formulaire
     de tous les autres. C'est la raison habituelle d'une structure « absente ».
@@ -299,25 +300,25 @@
 
   <p>Pour un laboratoire de test, téléverser les signataires. Ils apparaissent sur les PDF de
   résultats émis par ce laboratoire. Pour charger de nombreuses structures en une fois,
-  utiliser <span class="ui">Bulk Upload</span>.</p>
+  utiliser <span class="ui">Chargement groupé</span>.</p>
 
   <h3>Ajouter un automate</h3>
-  <p><span class="path">ADMIN &rsaquo; Configuration du système &rsaquo; Instruments &rsaquo; Add Instrument</span></p>
+  <p><span class="path">ADMIN &rsaquo; Configuration du système &rsaquo; Instruments &rsaquo; Ajouter un instrument</span></p>
   <p>Saisir le nom, les types de test exécutés, et le fichier de configuration qui indique à
   InteLIS comment lire ses fichiers de résultats. Sans ce fichier, les résultats exportés de
   l'automate ne peuvent pas être importés.</p>
 
   <h3>Connecter l'outil d'interface</h3>
-  <p><span class="path">ADMIN &rsaquo; Structures sanitaires &rsaquo; ouvrir le laboratoire &rsaquo; Interface Tool Connections</span></p>
+  <p>Sur un serveur central ou une installation autonome. <span class="path">ADMIN &rsaquo; Structures sanitaires &rsaquo; ouvrir le laboratoire &rsaquo; Connexions des outils d'interface</span></p>
   <ol class="steps">
-    <li>Sélectionner <span class="ui">Generate Connection Code</span>.</li>
+    <li>Sélectionner <span class="ui">Générer un code de connexion</span>.</li>
     <li>Saisir les trois groupes du code, et l'URL InteLIS affichée au-dessus, dans l'outil d'interface sur l'ordinateur du laboratoire.</li>
-    <li>Vérifier que l'installation figure sous <span class="ui">Connected Installations</span> avec une <span class="ui">Last Seen</span> récente.</li>
+    <li>Vérifier que l'installation figure sous <span class="ui">Installations connectées</span> avec une <span class="ui">Dernière connexion</span> récente.</li>
   </ol>
   <table class="wrapfirst">
     <tr><td>Code expiré</td><td>En générer un autre. Un seul code peut être en attente à la fois</td></tr>
-    <tr><td>Ordinateur réinstallé</td><td>Utiliser Reconnect / Reinstall</td></tr>
-    <tr><td>Ordinateur retiré ou perdu</td><td>Utiliser Revoke. Les autres installations ne sont pas affectées</td></tr>
+    <tr><td>Ordinateur réinstallé</td><td>Utiliser Se reconnecter / Réinstaller</td></tr>
+    <tr><td>Ordinateur retiré ou perdu</td><td>Utiliser Révoquer. Les autres installations ne sont pas affectées</td></tr>
   </table>
 
   <footer class="cardfoot"><span>InteLIS — aide-mémoire administration</span><span>Fiche 3 : structures et automates</span></footer>
@@ -364,9 +365,8 @@
 
   <div class="warn">
     <strong>Retirer, jamais supprimer</strong>
-    Pour retirer une entrée, la modifier et la passer en inactif. Une entrée inactive disparaît
-    du formulaire mais reste lisible sur les fiches qui l'utilisent déjà. La supprimer rend ces
-    fiches illisibles. Après avoir ajouté une entrée, ouvrir le formulaire de demande et
+    Les entrées ne peuvent pas être supprimées. Pour en retirer une, la modifier et la passer
+    en inactif. Elle disparaît du formulaire mais reste lisible sur les fiches existantes. Après avoir ajouté une entrée, ouvrir le formulaire de demande et
     vérifier qu'elle figure dans sa liste déroulante.
   </div>
 
@@ -388,14 +388,14 @@
   <h3>Commencer ici</h3>
   <table class="wrapfirst">
     <tr><th>Plainte</th><th>Cause</th></tr>
-    <tr><td>Une structure manque sur le formulaire de demande</td><td>La structure n'est pas cochée pour ce type de test. L'ouvrir sous Structures sanitaires et renseigner Test Type</td></tr>
+    <tr><td>Une structure manque sur le formulaire de demande</td><td>La structure n'est pas cochée pour ce type de test. L'ouvrir sous Structures sanitaires et renseigner Type de test</td></tr>
     <tr><td>Un district manque sur le formulaire de demande</td><td>Il a été ajouté sans province parente. Ouvrir Divisions géographiques et renseigner le parent</td></tr>
     <tr><td>Une option manque dans une liste déroulante</td><td>Elle est inactive, ou elle a été ajoutée dans la section de configuration d'un autre module</td></tr>
     <tr><td>Un utilisateur voit le mauvais menu</td><td>Les permissions du rôle, pas de l'utilisateur. Vérifier sous Contrôle d'accès &rsaquo; Les rôles</td></tr>
-    <tr><td>Un utilisateur voit les échantillons d'un autre laboratoire</td><td>Testing Lab n'est pas renseigné sur le compte</td></tr>
-    <tr><td>Les résultats n'arrivent plus de l'automate</td><td>Vérifier Last Seen sous Connected Installations, puis Surveillance &rsaquo; Activité des machines d'interface</td></tr>
+    <tr><td>Un utilisateur voit les échantillons d'un autre laboratoire</td><td>Sur un STS : le rôle n'est pas un rôle Laboratoire d'analyse, ou l'utilisateur est rattaché à d'autres structures. Vérifier le Type d'Accès du rôle et ses structures</td></tr>
+    <tr><td>Les résultats n'arrivent plus de l'automate</td><td>Vérifier Dernière connexion sous Installations connectées, puis Surveillance &rsaquo; Activité des machines d'interface</td></tr>
     <tr><td>Un résultat est contesté</td><td>Surveillance &rsaquo; Piste d'audit. Elle indique quel champ a changé, de quoi à quoi, par qui</td></tr>
-    <tr><td>Une structure se comporte mal dans les filtres des rapports</td><td>Activer Show Orphaned Facilities sur la page des structures. Sa province ou son district est absent ou mal rattaché</td></tr>
+    <tr><td>Une structure se comporte mal dans les filtres des rapports</td><td>Activer Afficher les installations orphelines sur la page des structures. Sa province ou son district est absent ou mal rattaché</td></tr>
   </table>
 
   <h3>Où chercher</h3>
@@ -406,7 +406,7 @@
     <tr><td>Historique de l'API</td><td>Si cette installation a atteint le serveur national, et combien de fiches sont parties</td></tr>
     <tr><td>Activité des machines d'interface</td><td>Si chaque automate connecté émet encore</td></tr>
     <tr><td>Indicateurs de performance du laboratoire</td><td>Délai de rendu, volumes par mode de saisie, taux d'échec et de rejet</td></tr>
-    <tr><td>Log File Viewer</td><td>Les messages système, pour les demandes de support</td></tr>
+    <tr><td>Visualisateur de fichiers journaux</td><td>Les messages système, pour les demandes de support</td></tr>
   </table>
   <p>Les six se trouvent sous <span class="path">ADMIN &rsaquo; Surveillance</span>. État de la
   synchronisation du laboratoire et Tableau de bord de l'API n'apparaissent que sur le serveur
@@ -418,7 +418,7 @@
     <tr><td>Modification de rôle</td><td>Se connecter avec un utilisateur de ce rôle, ou utiliser le filtre Permission sur la page des rôles</td></tr>
     <tr><td>Nouvelle structure</td><td>La structure apparaît sur le formulaire de demande de chaque type de test coché</td></tr>
     <tr><td>Nouvel automate</td><td>Il apparaît dans Plateforme de test à la création d'un batch</td></tr>
-    <tr><td>Connexion de l'outil d'interface</td><td>L'installation affiche une Last Seen récente</td></tr>
+    <tr><td>Connexion de l'outil d'interface</td><td>L'installation affiche une Dernière connexion récente</td></tr>
     <tr><td>Entrée de liste</td><td>L'entrée apparaît dans sa liste déroulante sur le formulaire</td></tr>
   </table>
 

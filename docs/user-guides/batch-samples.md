@@ -1,3 +1,11 @@
+---
+description: Group registered viral load samples into a batch for one analyzer run and print the batch PDF.
+audience: [lab-staff]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # How to batch samples for testing
 
 Group registered samples into a batch for one analyzer run, and print the batch
@@ -40,6 +48,12 @@ PDF that carries their Sample IDs to the analyzer.
 
         No analyzer is selected. Choose one in **Testing Platform**, then select
         **Filter Samples** again.
+
+    ??? question "If a sample is missing from the list"
+
+        The list shows only samples that have a Sample ID, are at **Sample
+        Registered at Testing Lab** or **Sample Reordered**, have no result,
+        are not rejected, and are not in another batch.
 
 9. Check the **Batch Code**. InteLIS fills it and it cannot be changed.
 10. Select the samples for the run. Either:
@@ -94,7 +108,7 @@ Each row in **Manage Batch** offers these actions.
 | **Edit** | Change the batch and its samples |
 | **Edit Position** | Change the position of each sample |
 | **Batch PDF**, **Compact Batch PDF** | Reprint the batch PDF |
-| **Delete** | Remove the batch and return its samples to the list waiting for a batch. Shown only while no sample in the batch has a result |
+| **Delete** | Remove the batch and return its samples to the list waiting for a batch. Shown only while no sample in the batch has a result or a rejection |
 
 To retest samples in a batch that already has results, see
 [How to handle failed and held samples](failed-and-held-samples.md).

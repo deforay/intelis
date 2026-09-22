@@ -1,3 +1,12 @@
+---
+description: Lists the work health facility staff do in InteLIS, from registering a request to getting the result, with links to each task.
+audience: [requesting-facility]
+module: [vl]
+type: explanation
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # For requesting facilities
 
 Health facility staff use InteLIS to register the samples they collect, send
@@ -22,18 +31,22 @@ links to the steps for each task.
 4. Follow each sample under **HIV VIRAL LOAD → Request Management → View Test
    Requests**. See [Sample statuses](sample-statuses.md) for what each status
    means.
-5. Get the results. See
+5. Get the results. Once the lab approves a result and syncs, it shows in the
+   **Result** column under **View Test Requests**. Print the patient report
+   under **HIV VIRAL LOAD → Management → Print Result**, on the **Results not
+   yet Printed** tab. See
    [How to release results to the requesting facility](release-results.md).
 6. Look up a patient's earlier results under **HIV VIRAL LOAD → Management →
-   Clinic Reports**, on the **Patient Test History** tab. See
-   [Viral load reports](reports.md).
+   Clinic Reports**, on the **Patient Test History** tab. Search by patient ID
+   or name. The history covers every test type and only the facilities linked
+   to the account. See [Viral load reports](reports.md).
 
 ## When something is wrong
 
 | Problem | Action |
 | --- | --- |
 | The facility is missing from the request form | Ask the administrator to link the facility to the account and to the test |
-| A sample stays at **Sample Registered at Health Center** after the package left | The lab has not activated the manifest, or has not synced since. Contact the lab with the manifest code |
+| A sample stays at **Sample Currently Registered at Health Center** after the package left | The lab has not activated the manifest, or has not synced since. Contact the lab with the manifest code |
 | A request was entered twice | Ask the testing lab to cancel the duplicate |
 | A sample was rejected | Read the rejection reason on the request, then collect and send again |
 | A result looks wrong for the patient | Contact the lab with the Sample ID before acting on it |

@@ -1,3 +1,11 @@
+---
+description: How requests move through the Slim entry points, middleware stacks and legacy app scripts, and where code, data and jobs live.
+audience: [developer]
+module: [all]
+type: explanation
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Architecture
 
 This codebase is a legacy PHP application that has been partially modernized with Slim 4
@@ -39,13 +47,17 @@ flowchart LR
   back to legacy includes via `App\Middlewares\Api\ApiLegacyFallbackMiddleware`.
 - CLI/Tasks: `bin/*`, `app/tasks/*`, and `vendor/bin/crunz` scripts are used for
   maintenance, background jobs, and setup.
+- Server-sent events: `public/sse/alerts.php` requires `bootstrap.php` directly, outside
+  the Slim stacks, and checks the session itself.
 
 ## Bootstrap and Configuration
 
 - `bootstrap.php` sets session/cookie policies, defines paths, loads Composer autoload,
   loads system constants and version, registers DI, and installs error/exception handlers.
 - Environment config is loaded from `configs/config.<env>.php` (defaulting to production).
-- Module toggles and system settings live in the config file (see `configs/`).
+- Module toggles, database credentials and interfacing settings live in the config file
+  (see `configs/`). Other settings are rows in the `global_config` table, edited under
+  ADMIN > System Configuration > General Configuration.
 
 ## Dependency Injection and Registries
 
@@ -122,6 +134,10 @@ legacy includes. They carry their own `InterfaceApiEnabledMiddleware` and
 `InterfaceInstallationAuthMiddleware`, so a lab is always resolved from the
 credential instead of the request.
 
+`/api/v2/*` routes are real Slim handlers under `App\HttpHandlers\Api\V2` with one
+response envelope (`App\Http\ApiV2Response`). `ApiAuthMiddleware` skips them, and each
+handler authenticates its own caller (a user token or a lab token).
+
 ## Legacy Application Layout
 
 Most business logic and UI pages are in legacy include-based modules under `app/`:
@@ -131,6 +147,9 @@ Most business logic and UI pages are in legacy include-based modules under `app/
 - `app/header.php`, `app/footer.php`, `app/index.php` UI scaffolding and redirects
 - `app/api/` versioned API scripts (e.g., `app/api/v1.1/*`)
 - `app/classes/` modern PHP classes (services, utilities, middlewares, registries)
+- `sys/migrations/` versioned schema migrations, applied by `bin/migrate.php`.
+  `sql/init.sql` is the fresh-install seed only.
+- `sys/cron/` the Crunz task definitions
 
 ## Services, Utilities, and Domain Classes
 
@@ -141,12 +160,27 @@ PSR-4 autoloaded classes live under `app/classes/`:
 - `HttpHandlers/` request handlers (legacy bridge)
 - `Utilities/` logging, helpers, and shared tools
 - `Interop/` external system integrations (DHIS2, FHIR)
+- `Repositories/` data access classes. `composer check-repository-boundaries` enforces
+  what may call them.
+- `ErrorHandlers/`, `Exceptions/` error handling and exception types
+- `Factories/` object factories, including `DatabaseFactory`
+- `Http/` response helpers such as `ApiV2Response`
+- `Contracts/`, `Abstracts/`, `Helpers/` interfaces, base classes and small helpers
 
 These are auto-registered into the DI container and can be fetched via `ContainerRegistry`.
 
+## Database
+
+- `App\Services\DatabaseService` is the single database service. The container builds it
+  through `App\Factories\DatabaseFactory` (`app/system/di.php`). Code reaches the
+  database through it and never opens a connection of its own.
+- `App\Services\AuditTriggerService` manages the audit triggers. The post-update run
+  drops them before migrations and reinstalls them afterwards.
+
 ## Background Jobs and Maintenance
 
-- Scheduled jobs are defined for Crunz via `crunz.yml`.
+- Scheduled jobs are defined in `sys/cron/ScheduledTasks.php`. `crunz.yml` points Crunz
+  at that folder.
 - `cron.sh` and `vendor/bin/crunz` run scheduled tasks.
 - CLI scripts live in `bin/` and `app/tasks/` (remote sync, archiving, migrations).
 
@@ -156,6 +190,7 @@ These are auto-registered into the DI container and can be fetched via `Containe
 - Static assets: `public/assets/`
 - Uploads: `public/uploads/`
 - Temporary files: `public/temporary/`
+- Sensitive temporary files: `var/temporary/` (served only through `download.php`)
 - Runtime cache/logs: `var/cache/`, `var/logs/`
 - Backups: `backups/`
 - SQL schema and utilities: `sql/`, `db-tools.php`
@@ -164,6 +199,11 @@ These are auto-registered into the DI container and can be fetched via `Containe
 
 - Remote sync workflows live in `app/remote/` and `app/tasks/remote/`.
 - External service clients are in `app/classes/Interop/`.
+
+## Checks
+
+The CI checks every change must pass are listed in
+[engineering-standards.md](engineering-standards.md).
 
 ## Notes for Ongoing Modernization
 

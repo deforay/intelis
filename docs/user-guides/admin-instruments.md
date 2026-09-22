@@ -1,3 +1,11 @@
+---
+description: Register an analyzer, its machines, date format, limits and control counts so InteLIS can batch and import its results.
+audience: [lab-admin, system-admin]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # How to set up an instrument
 
 Register an analyzer under **ADMIN → System Configuration → Instruments**, so
@@ -13,7 +21,8 @@ Two related tasks have their own guides:
 
 ## Before starting
 
-- An account with administrator rights
+- An administrator account, or on a cloud instance, a lab account allowed to
+  manage instruments (own lab only)
 - The testing lab, created under **ADMIN → Facilities**
 - One date copied exactly as the analyzer writes it in its result files
 
@@ -28,11 +37,14 @@ Two related tasks have their own guides:
     ??? info "Testing Lab on a LIS or a cloud instance"
 
         A LIS shows no **Testing Lab** field. InteLIS uses the installation's
-        own lab. On a cloud instance, the list offers only the user's own lab.
+        own lab. On a cloud instance, a lab user without the built-in Admin role
+        sees only their own lab.
 
 5. Under **Supported Tests**, select every test type the analyzer runs.
 6. Set **Instrument File**. It tells InteLIS how to read this analyzer's
-   result files. Without it, file import fails.
+   result files. Without it, file import fails. Select an existing file. A
+   file named after the instrument is empty and needs a developer to write it
+   before import works.
 7. Enter the result limits:
 
     | Field | What to enter |
@@ -40,7 +52,7 @@ Two related tasks have their own guides:
     | Lower Limit | The lowest value the analyzer reports, such as 20 |
     | Higher Limit | The highest value the analyzer reports, such as 10000000 |
     | Maximum No. of Samples In a Batch | How many samples fit in one run |
-    | Low VL Result Text | Every text the analyzer writes for an undetectable result, separated by commas, such as `Target Not Detected, TND, < 20, < 40` |
+    | Low VL Result Text | Every text the analyzer writes for an undetectable result, separated by commas, such as `Target Not Detected, TND, < 20, < 40`. Shown only when VL or Hepatitis is among the **Supported Tests** |
 
     ??? warning "A wording missing from Low VL Result Text"
 
@@ -57,11 +69,15 @@ Two related tasks have their own guides:
         Enter the format by hand, such as `d/m/Y H:i`. A wrong date format makes
         every imported date wrong or empty.
 
-10. If the analyzer is a point-of-care device, tick **Is this a POC Device?**
-    and enter its **Latitude** and **Longitude**.
-11. To add another analyzer of the same model, select **+** on the row, then
-    repeat steps 8 to 10 on the new row.
-12. For each test type, enter the control counts. They tell InteLIS how many
+10. In **Instrument File Name** on that row, select the file for this
+    analyzer. Left empty, the row uses the **Instrument File** set above.
+11. If the analyzer is a point-of-care device, tick **Is this a POC Device?**
+    and enter its **Latitude** and **Longitude**. Both coordinates are needed.
+    Without them the analyzer is not saved as POC.
+12. To add another analyzer of the same model, select **+** on the row, then
+    repeat steps 8 to 11 on the new row.
+13. For each test type, enter the control counts. A row appears for each test
+    type selected under **Supported Tests**. The counts tell InteLIS how many
     positions in a run are not patient samples:
 
     | Field | What to enter |
@@ -70,12 +86,12 @@ Two related tasks have their own guides:
     | Number of Manufacturer Controls | Manufacturer control positions per run |
     | No. Of Calibrators | Calibrator positions per run |
 
-13. If the same people always sign off this analyzer's results, set
+14. If the same people always sign off this analyzer's results, set
     **Default Reviewer** and **Default Approver** for each test type. Left
     empty, each result records whoever actually reviewed and approved it.
-14. To print a fixed method statement on every result from this analyzer,
+15. To print a fixed method statement on every result from this analyzer,
     enter it under **Description/Comment to add in Test Result**.
-15. Select **Submit**.
+16. Select **Submit**.
 
 ## Retire an instrument
 

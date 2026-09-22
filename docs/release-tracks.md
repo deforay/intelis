@@ -1,3 +1,12 @@
+---
+description: Which code an InteLIS installation receives on update, how the stable branch is published, and how INTELIS_TRACK pins a different ref.
+audience: [system-admin, developer]
+module: [all]
+type: reference
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Release tracks
 
 This page describes which code an InteLIS installation receives when it runs
@@ -26,7 +35,10 @@ passes Verify when all of these hold:
 - Every PHP file parses.
 - The DI container compiles, and `composer check-invariants` passes.
 - The unit tests pass.
+- The Interface API code passes the PSR-12 style check and the OpenAPI file is
+  valid YAML.
 - A fresh install seeded from `sql/init.sql` migrates up to the current version.
+- The integration tests pass against a real MySQL database.
 
 Verify does not run against real data and does not open a browser.
 
@@ -77,12 +89,19 @@ followed by the short commit ID, for example `v5.7.72 (22928fe)`.
 | `master` | `refs/heads/master`. Unverified code. |
 | `vX.Y.Z`, for example `v5.7.1` | `refs/tags/vX.Y.Z` |
 
-`intelis update` passes `INTELIS_TRACK` across `sudo`. Every other entry point,
-such as `sudo intelis-update` or `sudo bash upgrade.sh`, needs the variable on
-the same command line, because `sudo` resets the environment:
+`intelis update` passes `INTELIS_TRACK` across `sudo`, so it needs no `sudo`
+on the command line:
 
 ```bash
-sudo INTELIS_TRACK=master intelis update
+INTELIS_TRACK=master intelis update
+```
+
+Every other entry point, such as `sudo intelis-update` or
+`sudo bash upgrade.sh`, needs the variable on the same command line, because
+`sudo` resets the environment. To run the updater directly:
+
+```bash
+sudo INTELIS_TRACK=master intelis-update -p /var/www/intelis
 ```
 
 `scripts/remote-backup.sh`, `scripts/restore-backup.sh` and

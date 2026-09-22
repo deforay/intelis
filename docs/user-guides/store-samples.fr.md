@@ -1,8 +1,16 @@
+---
+description: Enregistrer le congélateur, le coffret, la boîte et la position des échantillons de charge virale, un par un ou par import, et retrouver un échantillon stocké.
+audience: [lab-staff, lab-supervisor]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Enregistrer le stockage d'un échantillon
 
-Le stockage des échantillons s'enregistre sur l'InteLIS propre au laboratoire
-(LIS), pour les laboratoires qui utilisent le formulaire de demande de la RDC.
-Les autres formulaires de demande n'affichent pas le bouton **Stockage des
+Le stockage des échantillons s'enregistre par le laboratoire d'analyse, sur les
+installations dont le formulaire de demande prévoit le stockage des
+échantillons. Les autres formulaires de demande n'affichent pas le bouton **Stockage des
 échantillons**.
 
 Une position enregistrée dans le congélateur permet de retrouver le tube plus
@@ -39,12 +47,10 @@ toujours celle où il se trouve.
 
         ??? failure "Si un échantillon manque dans la liste"
 
-            Sans **Date de prélèvement de l'échantillon**, la liste ne montre que
-            les échantillons prélevés dans les 30 derniers jours. Régler la
-            période et sélectionner de nouveau **Obtenir des échantillons**. Si
-            un échantillon jamais stocké manque encore, contacter le support :
-            certaines installations de laboratoire ne listent que les
-            échantillons qui ont déjà une position.
+            La **Date de prélèvement de l'échantillon** est préremplie sur les
+            28 derniers jours. L'élargir pour des échantillons plus anciens, puis
+            sélectionner de nouveau **Obtenir des échantillons**. Les
+            échantillons annulés ne sont jamais listés.
 
     6. Sur la ligne de chaque échantillon, renseigner les informations de
        stockage :

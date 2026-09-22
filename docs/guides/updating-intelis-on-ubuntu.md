@@ -1,3 +1,12 @@
+---
+description: Update an InteLIS machine on Ubuntu to the current release with the intelis command.
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Updating InteLIS on Ubuntu
 
 Update an InteLIS lab machine to the current release.
@@ -9,7 +18,8 @@ should move to 24.04 LTS with
 
 The current release requires **PHP 8.4+ (minimum 8.4.1)**. PHP 8.2, 8.3,
 and older versions are not supported. Both Apache and command-line PHP must
-meet this requirement.
+meet this requirement. The update switches PHP to 8.4 (8.5 on Ubuntu 26.04
+and later) automatically.
 
 **Choose the situation that fits, then follow its steps from top to bottom.**
 To tell which one fits, open a terminal, type `intelis` and press Enter:
@@ -68,7 +78,8 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
 
         ??? info "If it asks `Do you want to run maintenance scripts?`"
 
-            Press Enter to answer No. After 30 seconds without an answer, the
+            On some older machines, the update asks this question. Press Enter
+            to answer No. After 30 seconds without an answer, the
             update continues with No.
 
         ??? failure "If the summary shows `Failed to update`"
@@ -84,8 +95,9 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
 
     ### Check the update
 
-    5. Read the **Post-Upgrade Check** near the end of the output. Its last line
-       must show `0 failed`.
+    5. Read the **Post-Upgrade Check** near the end of the output. Its summary
+       line (`… passed, … warning(s), … failed, … skipped`) must show
+       `0 failed`.
 
         ??? failure "If a line starts with `WARN` or `FAIL`"
 
@@ -162,8 +174,8 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
               interfacing tool.
             - When asked for the location, enter `/var/www/intelis/backups/db`.
               On older installs, enter `/var/www/vlsm/backups/db`.
-            - Wait for `Script completed`. An export stopped part way still
-              leaves a file, and restoring it silently loses the newest records.
+            - Wait for `Script completed.` If it prints
+              `These databases were NOT backed up`, do not update.
 
     ### Update
 
@@ -190,7 +202,8 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
 
         ??? info "If it asks `Do you want to run maintenance scripts?`"
 
-            Press Enter to answer No. After 30 seconds without an answer, the
+            On some older machines, the update asks this question. Press Enter
+            to answer No. After 30 seconds without an answer, the
             update continues with No.
 
         ??? failure "If the summary shows `Failed to update`"
@@ -206,8 +219,9 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
 
     ### Check the update
 
-    6. Read the **Post-Upgrade Check** near the end of the output. Its last line
-       must show `0 failed`.
+    6. Read the **Post-Upgrade Check** near the end of the output. Its summary
+       line (`… passed, … warning(s), … failed, … skipped`) must show
+       `0 failed`.
 
         ??? failure "If a line starts with `WARN` or `FAIL`"
 

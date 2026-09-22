@@ -1,3 +1,11 @@
+---
+description: Point d'entrée de la documentation InteLIS pour le laboratoire, la machine, le dépannage, les aide-mémoires et l'API.
+audience: [lab-staff, lab-supervisor, lab-admin, system-admin, requesting-facility, developer]
+module: [all]
+type: reference
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Documentation InteLIS
 
 InteLIS est un système d'information de laboratoire libre pour la charge virale
@@ -38,6 +46,12 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
 
     [:octicons-arrow-right-24: Déménager un laboratoire ou remonter une
     machine perdue](guides/migrating-ubuntu-machines.md)
+
+    [:octicons-arrow-right-24: Connecter un
+    instrument](guides/setting-up-interfacing-tool.md)
+
+    [:octicons-arrow-right-24: Configurer les sauvegardes hors
+    machine](guides/setting-up-off-machine-backups.md)
 
 -   :material-lifebuoy:{ .lg .middle } __Quelque chose ne va pas__
 

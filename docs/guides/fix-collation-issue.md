@@ -1,10 +1,19 @@
+---
+description: "Repair \"Illegal mix of collations\" errors by converting the InteLIS and interfacing databases to one collation."
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Fix illegal or mismatched collation errors
 
 InteLIS shows an `Illegal mix of collations` error, usually after a database was
 restored from another MySQL or MariaDB server.
 
 1. Open a terminal on the InteLIS machine and take a backup. The repair rewrites
-   every table.
+   every table that uses a different collation.
 
     ```bash
     intelis backup
@@ -16,7 +25,8 @@ restored from another MySQL or MariaDB server.
     intelis db:collation
     ```
 
-    It converts the InteLIS database and the interfacing database. It runs as
+    It converts the InteLIS database and the interfacing database, when
+    interfacing is switched on. It runs as
     the web server account and may ask for the administrator password first.
 
     ??? info "If `intelis` is not recognised"
@@ -42,7 +52,7 @@ restored from another MySQL or MariaDB server.
         Without it, the `--dry-run` option is dropped and the command converts
         the tables instead of only reporting.
 
-`intelis update` runs the same repair at the end of every update.
+`intelis update` runs the same repair during every update.
 
 ??? info "Convert step by step with db-tools"
 
@@ -71,9 +81,9 @@ restored from another MySQL or MariaDB server.
 ??? info "What this fixes"
 
     The error appears when a query compares text columns stored with different
-    collations. The repair asks the server which collation to use and converts
-    every table and column to it. MySQL 8 uses `utf8mb4_0900_ai_ci`. MariaDB
-    does not support that collation and gets its own default.
+    collations. The repair picks the collation from the server version and
+    converts every table and column to it. MySQL 8 gets `utf8mb4_0900_ai_ci`.
+    MariaDB and MySQL 5.7 get `utf8mb4_unicode_ci`.
 
     Do not set tables to `utf8mb4_general_ci` by hand, for example in
     phpMyAdmin. Tables that later updates create or change get the server's

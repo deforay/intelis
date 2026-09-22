@@ -1,3 +1,12 @@
+---
+description: Update an InteLIS installation on a WampServer Windows machine by replacing the code and applying database changes.
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: windows
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Updating InteLIS on a Windows Machine
 
 Update an InteLIS installation on a Windows machine that runs WampServer.

@@ -1,3 +1,11 @@
+---
+description: Étapes pour se connecter, lire l'écran d'InteLIS, changer le mot de passe, filtrer les pages de liste et se déconnecter.
+audience: [lab-staff, lab-supervisor, requesting-facility]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Se connecter et naviguer dans InteLIS
 
 Un nouvel utilisateur a besoin d'un compte et d'une présentation rapide de
@@ -37,6 +45,11 @@ l'administrateur.
 InteLIS ouvre la page définie pour le rôle. Pour la plupart des utilisateurs de
 laboratoire, il s'agit du tableau de bord.
 
+À la première connexion, et après une réinitialisation du mot de passe par
+l'administrateur, InteLIS ouvre **Modifier le profil** avec le message
+**Veuillez modifier votre mot de passe pour continuer.** Définir un nouveau mot
+de passe avant de continuer.
+
 ## Lire l'écran
 
 L'écran comporte trois parties.
@@ -75,7 +88,9 @@ avant de saisir de vrais résultats.
 
 1. Sélectionner le nom du compte en haut à droite.
 2. Sélectionner **Modifier le profil**.
-3. Saisir deux fois le nouveau mot de passe.
+3. Saisir le nouveau mot de passe dans **Mot de passe** et **Confirmer le mot
+   de passe**. Il doit comporter au moins 8 caractères, dont au moins un
+   chiffre et une lettre.
 4. Sélectionner **Envoyer**.
 
 Si le menu du compte ne comporte pas d'entrée **Modifier le profil**,
@@ -91,8 +106,8 @@ Toutes les pages de liste d'InteLIS fonctionnent de la même manière.
 3. Pour effacer tous les filtres, sélectionner **Réinitialiser**.
 
 Certaines pages de liste proposent aussi **Gérer les colonnes**, qui masque ou
-affiche les colonnes du tableau. Le choix des colonnes est conservé pour le
-compte.
+affiche les colonnes du tableau. Le choix est perdu au rechargement de la
+page.
 
 ## Se déconnecter
 

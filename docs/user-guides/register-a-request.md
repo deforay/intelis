@@ -1,3 +1,11 @@
+---
+description: Steps to register a viral load test request from a paper form, at the testing lab or at a health facility on the STS.
+audience: [lab-staff, requesting-facility]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # How to register a viral load test request
 
 Register a sample that has a paper request form and no Sample ID, so it gets a
@@ -22,10 +30,11 @@ Each test type has its own **Add New Request** form.
 | Tuberculosis | **TUBERCULOSIS → Request Management → Add New Request** |
 | Custom Tests | **OTHER LAB TESTS → Request Management → Add New Request** |
 
-The steps below follow the HIV viral load form. The other forms have their own
-fields. For example, the EID form identifies the child by **Infant Code**, and
-the Custom Tests form starts with **Test Type**. Each country's form also
-differs in places. Fields marked with a red asterisk are mandatory.
+The steps below follow one country's viral load form. Other country forms use
+different labels and fields. The other test types have their own forms. For
+example, the EID form identifies the child by **Infant Code**, and the Custom
+Tests form starts with **Test Type**. Fields marked with a red asterisk are
+mandatory.
 
 **Choose where the request is registered, then follow its steps from top to bottom.**
 
@@ -70,30 +79,31 @@ differs in places. Fields marked with a red asterisk are mandatory.
             Enter **If DOB unknown, Age in Years**. For a patient under one year
             old, enter **If Age < 1, Age in Months**.
 
-    10. Choose the **Sex**.
+    10. Enter the **Patient Name (First Name, Last Name)**.
+    11. Choose the **Sex**.
 
     ### Sample Information
 
-    11. Enter the **Date of Sample Collection** from the paper form, not the date
+    12. Enter the **Date of Sample Collection** from the paper form, not the date
         of data entry. InteLIS fills the **Sample ID**. It cannot be typed.
-    12. Enter the **Sample Dispatched On** date.
-    13. Choose the **Sample Type**.
-    14. Enter the **Date Sample Received at Testing Lab**.
+    13. Enter the **Sample Dispatched On** date.
+    14. Choose the **Sample Type**.
+    15. Enter the **Date Sample Received at Testing Lab**.
 
     ### Treatment and indication
 
-    15. Fill **Treatment Information** from the paper form: **Date of Treatment
+    16. Fill **Treatment Information** from the paper form: **Date of Treatment
         Initiation**, **Current Regimen**, **Date of Initiation of Current
         Regimen** and **ARV Adherence**.
-    16. Choose the **Indication for Viral Load Testing**: **Routine Monitoring**,
+    17. Choose the **Indication for Viral Load Testing**: **Routine Monitoring**,
         **Repeat VL test after suspected treatment failure adherence
         counselling** or **Suspect Treatment Failure**.
-    17. Leave **Laboratory Information** empty. It is filled when the result is
+    18. Leave **Laboratory Information** empty. It is filled when the result is
         captured. See [How to capture viral load results](capture-results.md).
 
     ### Save
 
-    18. Select **Save** to return to the request list, or **Save and Next** to
+    19. Select **Save** to return to the request list, or **Save and Next** to
         open a new form for the next paper form.
 
         ??? info "If Save and Next carries details over to the new form"
@@ -105,8 +115,8 @@ differs in places. Fields marked with a red asterisk are mandatory.
 
             Select **Change/Retry** to pick the printer.
 
-    19. Go to **HIV VIRAL LOAD → Request Management → View Test Requests**.
-    20. Search for the patient identifier or the Sample ID. The request shows the
+    20. Go to **HIV VIRAL LOAD → Request Management → View Test Requests**.
+    21. Search for the patient identifier or the Sample ID. The request shows the
         status **Sample Registered at Testing Lab**.
 
         To correct a mistake, select **Edit** on the row.
@@ -156,29 +166,30 @@ differs in places. Fields marked with a red asterisk are mandatory.
             Enter **If DOB unknown, Age in Years**. For a patient under one year
             old, enter **If Age < 1, Age in Months**.
 
-    10. Choose the **Sex**.
+    10. Enter the **Patient Name (First Name, Last Name)**.
+    11. Choose the **Sex**.
 
     ### Sample Information
 
-    11. Enter the **Date of Sample Collection** from the paper form, not the date
+    12. Enter the **Date of Sample Collection** from the paper form, not the date
         of data entry. InteLIS fills the **Sample ID**. It cannot be typed.
-    12. Enter the **Sample Dispatched On** date.
-    13. Choose the **Sample Type**.
-    14. Leave **Date Sample Received at Testing Lab** empty. The testing lab
+    13. Enter the **Sample Dispatched On** date.
+    14. Choose the **Sample Type**.
+    15. Leave **Date Sample Received at Testing Lab** empty. The testing lab
         fills it.
 
     ### Treatment and indication
 
-    15. Fill **Treatment Information** from the paper form: **Date of Treatment
+    16. Fill **Treatment Information** from the paper form: **Date of Treatment
         Initiation**, **Current Regimen**, **Date of Initiation of Current
         Regimen** and **ARV Adherence**.
-    16. Choose the **Indication for Viral Load Testing**: **Routine Monitoring**,
+    17. Choose the **Indication for Viral Load Testing**: **Routine Monitoring**,
         **Repeat VL test after suspected treatment failure adherence
         counselling** or **Suspect Treatment Failure**.
 
     ### Save
 
-    17. Select **Save** to return to the request list, or **Save and Next** to
+    18. Select **Save** to return to the request list, or **Save and Next** to
         open a new form for the next paper form.
 
         ??? info "If Save and Next carries details over to the new form"
@@ -191,8 +202,8 @@ differs in places. Fields marked with a red asterisk are mandatory.
 
             Select **Change/Retry** to pick the printer.
 
-    18. Go to **HIV VIRAL LOAD → Request Management → View Test Requests**.
-    19. Search for the patient identifier or the Sample ID. The request shows the
+    19. Go to **HIV VIRAL LOAD → Request Management → View Test Requests**.
+    20. Search for the patient identifier or the Sample ID. The request shows the
         status **Sample Currently Registered at Health Center**.
 
         To correct a mistake, select **Edit** on the row.

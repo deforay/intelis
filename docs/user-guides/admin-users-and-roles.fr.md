@@ -1,3 +1,12 @@
+---
+description: Créer des identifiants, attribuer rôles et laboratoires, limiter les structures, délivrer des jetons d'API et désactiver les utilisateurs partants.
+audience: [lab-admin, system-admin]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # Gérer les utilisateurs et les rôles
 
 Créer un identifiant pour chaque personne, et décider de ce que chaque
@@ -31,7 +40,6 @@ InteLIS n'a pas d'auto-inscription. Un administrateur crée chaque identifiant.
 
         | Champ | Ce qu'il faut saisir |
         | --- | --- |
-        | Province, District | La localisation de l'utilisateur |
         | Accès à l'application mobile | **Oui** si l'utilisateur se connecte à l'application mobile |
         | Nom d'utilisateur de l'interface (de votre machine de test moléculaire) | Le nom que cette personne utilise sur l'automate. Séparer plusieurs noms par des virgules |
         | Signature | Une image de signature pour toute personne qui approuve des résultats. Elle s'imprime sur les PDF de résultats |
@@ -47,11 +55,12 @@ InteLIS n'a pas d'auto-inscription. Un administrateur crée chaque identifiant.
     ??? info "Règles de l'identifiant de connexion et du mot de passe"
 
         L'identifiant de connexion accepte les lettres minuscules, les
-        chiffres, les traits d'union (-) et les tirets bas (_). Il n'accepte ni
-        espaces ni majuscules.
+        chiffres, les traits d'union (-) et les tirets bas (_). Les majuscules
+        sont converties en minuscules et les espaces supprimés à la saisie.
 
         Le mot de passe compte au moins 8 caractères, dont au moins un chiffre
-        et une lettre. Les caractères spéciaux sont autorisés.
+        et une lettre. Caractères spéciaux autorisés : ! @ # $ % ^ & * ( ) + =
+        . _ - et l'espace.
 
     ??? info "Pour limiter un utilisateur de structure à ses propres structures"
 
@@ -72,7 +81,6 @@ InteLIS n'a pas d'auto-inscription. Un administrateur crée chaque identifiant.
 
         | Champ | Ce qu'il faut saisir |
         | --- | --- |
-        | Province, District | La localisation de l'utilisateur |
         | Accès à l'application mobile | **Oui** si l'utilisateur se connecte à l'application mobile |
         | Nom d'utilisateur de l'interface (de votre machine de test moléculaire) | Le nom que cette personne utilise sur l'automate. Séparer plusieurs noms par des virgules |
         | Signature | Une image de signature pour toute personne qui approuve des résultats. Elle s'imprime sur les PDF de résultats |
@@ -88,30 +96,30 @@ InteLIS n'a pas d'auto-inscription. Un administrateur crée chaque identifiant.
     ??? info "Règles de l'identifiant de connexion et du mot de passe"
 
         L'identifiant de connexion accepte les lettres minuscules, les
-        chiffres, les traits d'union (-) et les tirets bas (_). Il n'accepte ni
-        espaces ni majuscules.
+        chiffres, les traits d'union (-) et les tirets bas (_). Les majuscules
+        sont converties en minuscules et les espaces supprimés à la saisie.
 
         Le mot de passe compte au moins 8 caractères, dont au moins un chiffre
-        et une lettre. Les caractères spéciaux sont autorisés.
+        et une lettre. Caractères spéciaux autorisés : ! @ # $ % ^ & * ( ) + =
+        . _ - et l'espace.
 
 === "Cloud"
 
     À utiliser lors d'une connexion au STS avec un rôle de laboratoire
-    d'analyse autre que le super administrateur.
+    d'analyse autre que le rôle Admin intégré.
 
     1. Aller à **ADMIN → Contrôle d'accès → Utilisateurs**.
     2. Sélectionner **Ajouter un utilisateur**.
     3. Saisir **Nom complet**, **Courriel** et **Numéro de téléphone**. Le nom
        figure sur les rapports et dans le journal d'activité.
     4. Renseigner **Rôle**. La liste ne propose que des rôles de laboratoire
-       d'analyse. Elle exclut le rôle de super administrateur et le rôle API.
+       d'analyse. Elle exclut le rôle Admin intégré et le rôle API.
     5. Renseigner **Laboratoire d'analyse**. La liste ne propose que le
        laboratoire de l'administrateur.
     6. Renseigner les champs facultatifs utiles à l'utilisateur :
 
         | Champ | Ce qu'il faut saisir |
         | --- | --- |
-        | Province, District | La localisation de l'utilisateur |
         | Accès à l'application mobile | **Oui** si l'utilisateur se connecte à l'application mobile |
         | Nom d'utilisateur de l'interface (de votre machine de test moléculaire) | Le nom que cette personne utilise sur l'automate. Séparer plusieurs noms par des virgules |
         | Signature | Une image de signature pour toute personne qui approuve des résultats. Elle s'imprime sur les PDF de résultats |
@@ -127,11 +135,19 @@ InteLIS n'a pas d'auto-inscription. Un administrateur crée chaque identifiant.
     ??? info "Règles de l'identifiant de connexion et du mot de passe"
 
         L'identifiant de connexion accepte les lettres minuscules, les
-        chiffres, les traits d'union (-) et les tirets bas (_). Il n'accepte ni
-        espaces ni majuscules.
+        chiffres, les traits d'union (-) et les tirets bas (_). Les majuscules
+        sont converties en minuscules et les espaces supprimés à la saisie.
 
         Le mot de passe compte au moins 8 caractères, dont au moins un chiffre
-        et une lettre. Les caractères spéciaux sont autorisés.
+        et une lettre. Caractères spéciaux autorisés : ! @ # $ % ^ & * ( ) + =
+        . _ - et l'espace.
+
+    ??? info "Utilisateurs des autres laboratoires"
+
+        La liste des utilisateurs ne montre que les utilisateurs du laboratoire
+        de l'administrateur. La modification d'un utilisateur d'un autre
+        laboratoire est refusée avec **Vous n'êtes pas autorisé à modifier cet
+        utilisateur.**
 
 ## Limiter un utilisateur à certaines structures
 
@@ -142,6 +158,9 @@ enregistre ses propres demandes, afin que chacun ne voie que sa structure.
 2. Sélectionner **Modifier** sur l'utilisateur.
 3. Sous **Carte de l'utilisateur vers les installations sélectionnées
    (facultatif)**, faire passer les structures dans la liste sélectionnée.
+   Pour restreindre la liste des structures, sélectionner **Show Advanced
+   Search Options**, renseigner **Province** et **District**, puis
+   sélectionner **Search**.
 4. Sélectionner **Envoyer**.
 5. Demander à l'utilisateur d'ouvrir le formulaire de demande. Seules les
    structures rattachées sont proposées.
@@ -173,6 +192,10 @@ passe.
 4. Sélectionner **Générer un autre jeton**.
 5. Sélectionner **Envoyer**.
 6. Copier le jeton du champ **AuthToken** dans le système qui se connecte.
+
+Sur **Ajouter un utilisateur**, choisir le rôle API remplit **AuthToken**
+automatiquement. Un utilisateur enregistré avec **Accès à l'application
+mobile** sur **Oui** et sans jeton reçoit aussi un jeton à l'enregistrement.
 
 ??? warning "Un nouveau jeton arrête aussitôt l'ancien"
 
@@ -212,16 +235,16 @@ privilèges que de leur rôle.
 
 1. Aller à **ADMIN → Contrôle d'accès → Les rôles**.
 2. Sélectionner **Ajouter rôle**, ou **Modifier** sur un rôle existant.
-3. Saisir **Nom du rôle** et **Code de rôle**. Le code doit être unique.
-4. Renseigner **Page de destination**. Les utilisateurs de ce rôle arrivent sur
+3. Saisir **Nom du rôle** et **Code de rôle**. Les deux doivent être uniques.
+4. Renseigner, si besoin, **Page de destination**. Les utilisateurs de ce rôle arrivent sur
    cette page après la connexion.
 5. Régler **Statut** sur **Actif**.
 6. Renseigner **Type d'Accès** : **Laboratoire d'analyse** pour le personnel du
    laboratoire, **Site de prélèvement** pour le personnel des structures. Le
    renseigner avant les privilèges. Il masque les pages qui ne relèvent pas de
    ce type, et InteLIS refuse les pages masquées à l'enregistrement.
-7. Sous **Privilèges**, ouvrir le panneau de chaque module et activer chaque page
-   dont ce rôle a besoin. Utiliser **Rechercher les permissions...** pour
+7. Sous **Privilèges**, ouvrir le panneau de chaque module et régler sur
+   **Oui** chaque privilège dont ce rôle a besoin. Utiliser **Rechercher les permissions...** pour
    trouver une page.
 8. Sélectionner **Envoyer**.
 
@@ -230,10 +253,16 @@ privilèges que de leur rôle.
     Sur la page des rôles, ouvrir **Recherche avancée** et renseigner
     **Permission**. La liste ne montre que les rôles qui le portent.
 
-??? info "Le rôle de super administrateur"
+??? info "Sur une instance cloud"
 
-    Le premier rôle porte tous les privilèges, quoi qu'affiche sa liste de
-    privilèges. Son accès ne peut pas être restreint.
+    Sur une instance cloud, les administrateurs de laboratoire ne gèrent pas
+    les rôles. L'administrateur national s'en charge.
+
+??? info "Le rôle Admin intégré"
+
+    Le rôle Admin intégré porte tous les privilèges, quoi qu'affiche sa liste
+    de privilèges. Il n'a pas de bouton Modifier et ne peut pas être changé.
+    Le rôle API n'est pas listé.
 
 ??? warning "Séparer la saisie et l'approbation"
 

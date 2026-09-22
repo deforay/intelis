@@ -1,3 +1,11 @@
+---
+description: Explique le parcours d'un échantillon de charge virale dans InteLIS, du prélèvement et de l'enregistrement jusqu'au batch, à la saisie, à l'approbation et à la diffusion du résultat.
+audience: [lab-staff, lab-supervisor, requesting-facility]
+module: [vl]
+type: explanation
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Le parcours d'un échantillon dans InteLIS
 
 Cette page explique le trajet d'un échantillon, du prélèvement jusqu'au résultat

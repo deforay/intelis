@@ -1,3 +1,12 @@
+---
+description: Create user logins, assign roles and testing labs, limit facilities, issue API tokens and disable departing users.
+audience: [lab-admin, system-admin]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # How to manage users and roles
 
 Create a login for each person, and decide what each login can reach. Both live
@@ -28,7 +37,6 @@ InteLIS has no self-registration. An administrator creates every login.
 
         | Field | What to enter |
         | --- | --- |
-        | Province/State, District/County | The user's location |
         | Mobile App Access | **Yes** if the user signs in to the mobile app |
         | Interface User Name (from your Molecular testing machine) | The name this person uses on the analyzer. Separate several names with commas |
         | Signature | A signature image for anyone who approves results. It prints on result PDFs |
@@ -42,10 +50,12 @@ InteLIS has no self-registration. An administrator creates every login.
     ??? info "Login ID and password rules"
 
         The Login ID accepts lowercase letters, numbers, hyphens (-) and
-        underscores (_). It accepts no spaces and no capitals.
+        underscores (_). Capitals are converted to lowercase and spaces are
+        removed while typing.
 
         The password needs at least 8 characters, with at least one number and
-        one letter. Special characters are allowed.
+        one letter. Allowed special characters: ! @ # $ % ^ & * ( ) + = . _ -
+        and space.
 
     ??? info "To limit a facility user to their own facilities"
 
@@ -64,7 +74,6 @@ InteLIS has no self-registration. An administrator creates every login.
 
         | Field | What to enter |
         | --- | --- |
-        | Province/State, District/County | The user's location |
         | Mobile App Access | **Yes** if the user signs in to the mobile app |
         | Interface User Name (from your Molecular testing machine) | The name this person uses on the analyzer. Separate several names with commas |
         | Signature | A signature image for anyone who approves results. It prints on result PDFs |
@@ -78,28 +87,29 @@ InteLIS has no self-registration. An administrator creates every login.
     ??? info "Login ID and password rules"
 
         The Login ID accepts lowercase letters, numbers, hyphens (-) and
-        underscores (_). It accepts no spaces and no capitals.
+        underscores (_). Capitals are converted to lowercase and spaces are
+        removed while typing.
 
         The password needs at least 8 characters, with at least one number and
-        one letter. Special characters are allowed.
+        one letter. Allowed special characters: ! @ # $ % ^ & * ( ) + = . _ -
+        and space.
 
 === "Cloud"
 
     Use this when signed in to the STS with a testing-lab role other than the
-    super administrator.
+    built-in Admin role.
 
     1. Go to **ADMIN → Access Control → Users**.
     2. Select **Add User**.
     3. Enter **Full Name**, **Email** and **Phone Number**. The name appears on
        reports and in the activity log.
     4. Set **Role**. The list offers testing-lab roles only. It leaves out the
-       super administrator role and the API role.
+       built-in Admin role and the API role.
     5. Set **Testing Lab**. The list offers only the administrator's own lab.
     6. Fill in the optional fields the user needs:
 
         | Field | What to enter |
         | --- | --- |
-        | Province/State, District/County | The user's location |
         | Mobile App Access | **Yes** if the user signs in to the mobile app |
         | Interface User Name (from your Molecular testing machine) | The name this person uses on the analyzer. Separate several names with commas |
         | Signature | A signature image for anyone who approves results. It prints on result PDFs |
@@ -113,10 +123,18 @@ InteLIS has no self-registration. An administrator creates every login.
     ??? info "Login ID and password rules"
 
         The Login ID accepts lowercase letters, numbers, hyphens (-) and
-        underscores (_). It accepts no spaces and no capitals.
+        underscores (_). Capitals are converted to lowercase and spaces are
+        removed while typing.
 
         The password needs at least 8 characters, with at least one number and
-        one letter. Special characters are allowed.
+        one letter. Allowed special characters: ! @ # $ % ^ & * ( ) + = . _ -
+        and space.
+
+    ??? info "Users of other labs"
+
+        The Users list shows only the users of the administrator's own lab.
+        Editing a user of another lab is refused with **You are not allowed to
+        edit this user.**
 
 ## Limit a user to certain facilities
 
@@ -126,7 +144,9 @@ requests, so each sees only their own facility.
 1. Go to **ADMIN → Access Control → Users**.
 2. Select **Edit** on the user.
 3. Under **Map User to Selected Facilities (optional)**, move the facilities
-   into the selected list.
+   into the selected list. To narrow the facility list, select **Show Advanced
+   Search Options**, set **Province/State** and **District/County**, and select
+   **Search**.
 4. Select **Submit**.
 5. Ask the user to open the request form. Only the mapped facilities are
    offered.
@@ -155,6 +175,10 @@ Systems that connect through the API use a token instead of a password.
 4. Select **Generate Another Token**.
 5. Select **Submit**.
 6. Copy the token from **AuthToken** into the connecting system.
+
+On **Add User**, selecting the API role fills **AuthToken** automatically. A
+user saved with **Mobile App Access** set to **Yes** and no token also gets a
+token on save.
 
 ??? warning "A new token stops the old one at once"
 
@@ -190,14 +214,15 @@ A role is a named set of privileges. Users get privileges from their role only.
 
 1. Go to **ADMIN → Access Control → Roles**.
 2. Select **Add Role**, or **Edit** on an existing role.
-3. Enter **Role Name** and **Role Code**. The code must be unique.
-4. Set **Landing Page**. Users with this role open on it after signing in.
+3. Enter **Role Name** and **Role Code**. Both must be unique.
+4. Optionally, set **Landing Page**. Users with this role open on it after
+   signing in.
 5. Set **Status** to **Active**.
 6. Set **Access Type**: **Testing Lab** for lab staff, **Collection Site** for
    facility staff. Set it before the privileges. It hides the pages that do not
    belong to that type, and InteLIS denies hidden pages on save.
-7. Under **Privileges**, open each module's panel and switch on each page this
-   role needs. Use **Search permissions...** to find a page.
+7. Under **Privileges**, open each module's panel and set each privilege this
+   role needs to **Yes**. Use **Search permissions...** to find a page.
 8. Select **Submit**.
 
 ??? info "Which roles hold a privilege"
@@ -205,10 +230,16 @@ A role is a named set of privileges. Users get privileges from their role only.
     On the Roles page, open **Advanced Search** and set **Permission**. The list
     shows only the roles that hold it.
 
-??? info "The super administrator role"
+??? info "On a cloud instance"
 
-    The first role holds every privilege, whatever its privilege list shows.
-    Its access cannot be narrowed.
+    On a cloud instance, lab administrators cannot manage roles. The national
+    administrator does.
+
+??? info "The built-in Admin role"
+
+    The built-in Admin role holds every privilege, whatever its privilege list
+    shows. It shows no Edit button and cannot be changed. The API role is not
+    listed.
 
 ??? warning "Keep entry and approval apart"
 

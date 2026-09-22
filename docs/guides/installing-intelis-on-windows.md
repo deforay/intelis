@@ -1,3 +1,12 @@
+---
+description: Install InteLIS on a Windows machine with WampServer, from PHP and MySQL settings to scheduled tasks.
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: windows
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Installing InteLIS on a Windows Machine
 
 Install InteLIS on a Windows machine with WampServer.
@@ -59,35 +68,47 @@ on until the check passes.**
 
 13. Make the same changes in `C:\wamp64\bin\php\php8.4.x\php.ini`. The command
     line uses this file.
-14. Open **Command Prompt** and run:
+14. Turn on the PHP extensions InteLIS needs: `bcmath`, `curl`, `fileinfo`,
+    `gd`, `gettext`, `intl`, `json`, `mbstring`, `openssl`, `pdo`,
+    `pdo_mysql`, `sodium`, `zip` and `zlib`.
+
+    - Select the WampServer tray icon, then **PHP → PHP extensions**. Select
+      each of these extensions that has no tick. An extension missing from
+      the list is built into PHP.
+    - In `C:\wamp64\bin\php\php8.4.x\php.ini`, remove the leading `;` from
+      the `extension=` line of each of these extensions, for example
+      `;extension=intl`. Save the file.
+
+15. Open **Command Prompt** and run:
 
     ```bat
     set PATH=C:\wamp64\bin\php\php8.4.x;%PATH%
     php -v
     php -i | findstr memory_limit
+    php -m
     ```
 
-**Check:** `php -v` reports PHP 8.4.1 or newer, and the second command prints
-`memory_limit => 2G`.
+**Check:** `php -v` reports PHP 8.4.1 or newer, the second command prints
+`memory_limit => 2G`, and `php -m` lists every extension from step 14.
 
 ## Configure MySQL
 
-15. Select the WampServer tray icon, then **MySQL → my.ini**.
-16. Find the `sql_mode` line and put `;` at its start.
-17. Add these lines below it:
+16. Select the WampServer tray icon, then **MySQL → my.ini**.
+17. Find the `sql_mode` line and put `;` at its start.
+18. Add these lines below it:
 
     ```ini
     sql_mode =
     innodb_strict_mode = 0
     ```
 
-18. Find `innodb_default_row_format=compact` and change it to
+19. Find `innodb_default_row_format=compact` and change it to
     `innodb_default_row_format=dynamic`. If the line is missing, add
     `innodb_default_row_format=dynamic`.
-19. Save the file.
-20. Select the WampServer tray icon, then **MySQL → MySQL Console**. Log in as
+20. Save the file.
+21. Select the WampServer tray icon, then **MySQL → MySQL Console**. Log in as
     `root` with an empty password.
-21. Set a root password. Replace `PASSWORD` with a new password, and write it
+22. Set a root password. Replace `PASSWORD` with a new password, and write it
     down:
 
     ```sql
@@ -108,22 +129,22 @@ on until the check passes.**
         exit;
         ```
 
-22. Select the WampServer tray icon, then **Restart All Services**.
+23. Select the WampServer tray icon, then **Restart All Services**.
 
 **Check:** the tray icon turns green again, and <http://localhost/phpmyadmin>
 accepts `root` with the new password.
 
 ## Get InteLIS
 
-23. Download the current release:
+24. Download the current release:
     <https://github.com/deforay/intelis/archive/refs/heads/stable.zip>
-24. Extract the zip file. It holds one folder, `intelis-stable`.
-25. Create the folder `C:\wamp64\www\vlsm`.
-26. Copy everything inside `intelis-stable` into `C:\wamp64\www\vlsm`.
-27. Download `composer.phar` from
+25. Extract the zip file. It holds one folder, `intelis-stable`.
+26. Create the folder `C:\wamp64\www\vlsm`.
+27. Copy everything inside `intelis-stable` into `C:\wamp64\www\vlsm`.
+28. Download `composer.phar` from
     <https://getcomposer.org/download/latest-stable/composer.phar> and save it
     in `C:\wamp64\www\vlsm`.
-28. In Command Prompt, install the packages:
+29. In Command Prompt, install the packages:
 
     ```bat
     cd C:\wamp64\www\vlsm
@@ -136,24 +157,24 @@ accepts `root` with the new password.
 
 ## Create the database
 
-29. Open <http://localhost/phpmyadmin> and log in as `root`.
-30. Select **SQL**, run this, and select **Go**:
+30. Open <http://localhost/phpmyadmin> and log in as `root`.
+31. Select **SQL**, run this, and select **Go**:
 
     ```sql
     CREATE DATABASE `vlsm` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
     ```
 
-31. Select the `vlsm` database in the left panel.
-32. Select **Import**, choose `C:\wamp64\www\vlsm\sql\init.sql`, and select
+32. Select the `vlsm` database in the left panel.
+33. Select **Import**, choose `C:\wamp64\www\vlsm\sql\init.sql`, and select
     **Import** or **Go** at the bottom of the page.
 
 **Check:** the `vlsm` database in the left panel lists its tables.
 
 ## Configure InteLIS
 
-33. Copy `C:\wamp64\www\vlsm\configs\config.production.dist.php` to
+34. Copy `C:\wamp64\www\vlsm\configs\config.production.dist.php` to
     `C:\wamp64\www\vlsm\configs\config.production.php`.
-34. Open `config.production.php` in the text editor and set the database
+35. Open `config.production.php` in the text editor and set the database
     details:
 
     ```php
@@ -163,26 +184,26 @@ accepts `root` with the new password.
     $systemConfig['database']['db']         = 'vlsm';
     ```
 
-    Replace `PASSWORD` with the root password from step 21.
+    Replace `PASSWORD` with the root password from step 22.
 
-35. If the lab sends results to an STS, set its address in the same file:
+36. If the lab sends results to an STS, set its address in the same file:
 
     ```php
     $systemConfig['remoteURL'] = 'https://sts.example.org';
     ```
 
-36. Save the file.
+37. Save the file.
 
 ## Set up the web server
 
-37. Open Notepad as administrator. Open
+38. Open Notepad as administrator. Open
     `C:\Windows\System32\drivers\etc\hosts` and add this line at the end:
 
     ```text
     127.0.0.1 vlsm
     ```
 
-38. Open `C:\wamp64\bin\apache`. Inside the folder that starts with `apache2.4`,
+39. Open `C:\wamp64\bin\apache`. Inside the folder that starts with `apache2.4`,
     open `conf\extra\httpd-vhosts.conf` and add:
 
     ```apache
@@ -212,11 +233,11 @@ accepts `root` with the new password.
         outside the lab network. After the change, open InteLIS from a second
         computer to confirm.
 
-39. Select the WampServer tray icon, then **Restart All Services**.
+40. Select the WampServer tray icon, then **Restart All Services**.
 
 ## Initialize InteLIS
 
-40. In Command Prompt, run:
+41. In Command Prompt, run:
 
     ```bat
     cd C:\wamp64\www\vlsm
@@ -224,7 +245,7 @@ accepts `root` with the new password.
     php composer.phar post-install
     ```
 
-41. Answer the STS questions at the end:
+42. Answer the STS questions at the end:
 
     | Question | Answer |
     | --- | --- |
@@ -235,14 +256,14 @@ accepts `root` with the new password.
     InteLIS asks only the questions that apply. With a single lab on the STS,
     it selects that lab without asking.
 
-42. Wait for `STS setup complete!`.
+43. Wait for `STS setup complete!`.
 
     ??? info "If the lab has no STS"
 
         After Enter at the STS question, the run ends with
         `Setup complete. Configure STS URL before proceeding.` and Composer
         reports an error code for `sts-setup`. Every earlier part of
-        `post-install` has finished. Continue with step 43.
+        `post-install` has finished. Continue with step 44.
 
     ??? failure "If it prints `Cannot connect to STS at this URL`"
 
@@ -257,24 +278,24 @@ accepts `root` with the new password.
 
 ## Complete setup in the browser
 
-43. Open <http://vlsm>. The setup page opens.
-44. Under **Database Setup**, check the values match `config.production.php`.
+44. Open <http://vlsm>. The setup page opens.
+45. Under **Database Setup**, check the values match `config.production.php`.
     Select **Next**.
-45. Fill in **Instance Setup**, then select **Next**:
+46. Fill in **Instance Setup**, then select **Next**:
 
     | Field | Value |
     | --- | --- |
     | Instance type | **LIS with Remote Ordering Enabled** if the lab sends results to an STS. **Standalone (no Remote Ordering)** if it does not. |
     | STS URL | The STS address. It is filled in from `config.production.php`. |
-    | Testing lab | The lab chosen in step 41. If the list is empty, select the refresh button next to the STS URL. |
+    | Testing lab | The lab chosen in step 42. If the list is empty, select the refresh button next to the STS URL. |
     | Choose Modules to Enable | The tests this lab runs. |
     | Country of installation | The country the lab is in. |
     | Timezone | The lab's time zone. |
     | Choose System Language | The language of the screens. |
 
-46. Fill in **Admin Setup** with the email, full name, login ID and password of
+47. Fill in **Admin Setup** with the email, full name, login ID and password of
     the lab's first administrator. Select **Finish**.
-47. Log in with that administrator account.
+48. Log in with that administrator account.
 
 **Check:** the dashboard opens, and the page footer shows the version, for
 example `v5.7.72`.

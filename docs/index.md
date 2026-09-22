@@ -1,3 +1,11 @@
+---
+description: Entry point to InteLIS documentation for lab work, machine care, troubleshooting, job aids and the API.
+audience: [lab-staff, lab-supervisor, lab-admin, system-admin, requesting-facility, developer]
+module: [all]
+type: reference
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # InteLIS Documentation
 
 InteLIS is an open-source laboratory information system for HIV viral load, EID,
@@ -31,6 +39,10 @@ name, and the guides say so where it matters.
     [:octicons-arrow-right-24: Install on Ubuntu](guides/installing-intelis-on-ubuntu.md)
 
     [:octicons-arrow-right-24: Move a lab or rebuild a dead machine](guides/migrating-ubuntu-machines.md)
+
+    [:octicons-arrow-right-24: Connect an instrument](guides/setting-up-interfacing-tool.md)
+
+    [:octicons-arrow-right-24: Set up off-machine backups](guides/setting-up-off-machine-backups.md)
 
 -   :material-lifebuoy:{ .lg .middle } __Something is wrong__
 

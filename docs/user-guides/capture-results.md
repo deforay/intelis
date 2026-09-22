@@ -1,3 +1,11 @@
+---
+description: Bring viral load results into InteLIS from the Interface Tool, an analyzer result file or manual entry.
+audience: [lab-staff]
+module: [vl, custom-tests]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # How to capture viral load results
 
 Get the results of a finished analyzer run into InteLIS.
@@ -79,11 +87,12 @@ Get the results of a finished analyzer run into InteLIS.
        out the format from it.
     6. Choose the **Testing Lab Name**.
     7. Select the file under **Upload HIV Viral Load File**.
-    8. Select **Submit**. InteLIS lists every row it read, with a **Sample
-       source** note on each.
-    9. Check the **Sample source** note on each row.
+    8. Select **Submit**. InteLIS lists every row it read. The colour of each
+       Sample ID box matches a **Sample source** entry in the legend above the
+       list. A coloured mark on the test date matches a **Date gap** entry.
+    9. Check each row against the legend.
 
-        | Note | Meaning | Action |
+        | Legend entry | Meaning | Action |
         |---|---|---|
         | Result for Sample ID from VLSM | The Sample ID matches a registered sample | Accept it |
         | Sample ID not from VLSM | The Sample ID matches no registered sample | Do not accept. Find why the Sample ID differs |
@@ -97,8 +106,12 @@ Get the results of a finished analyzer run into InteLIS.
 
         ??? info "To accept every row at once"
 
-            Select **Accept All Samples**. It sets only the rows that have no
-            status yet. Rows already set to **Rejected** stay rejected.
+            Select **Accept All Samples**. Rows whose result reads as a failure
+            are set to **Failed**. Other rows with no status yet are set to
+            **Accepted** only if the file gave them a result. Rows set to
+            **Hold** or **Rejected** keep their status unless the result reads
+            as a failure. InteLIS names any row it did not accept because no
+            result was read. Set those rows by hand.
 
     11. Choose **Tested By**, **Reviewed By** and **Approved By**.
 

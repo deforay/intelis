@@ -1,3 +1,12 @@
+---
+description: Reference for intelis commands, scheduled tasks, retention rules and server maintenance scripts, with steps for freeing disk space and restarting services.
+audience: [system-admin]
+module: [all]
+type: reference
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Maintenance Scripts and Tools
 
 Commands, scheduled tasks and scripts for keeping an InteLIS server running.
@@ -232,10 +241,18 @@ backup. To restore on a new machine, see
     Before restoring, db-tools backs up the current database to `backups/db/`.
     The name of that backup starts with `pre-restore-`.
 
-4. Log in to InteLIS and check the newest samples are the ones expected.
+4. Apply the database updates:
+
+    ```bash
+    intelis migrate
+    ```
+
+5. Log in to InteLIS and check the newest samples are the ones expected.
 
 Do not rename a backup file. The 32 characters in its name are part of its
-decryption key. The date and time in the name are in UTC.
+decryption key. The date and time in the name are in UTC. When backup
+encryption with an STS-held key is on, the name has no random part, and the
+key comes from the STS.
 
 ---
 
@@ -384,8 +401,8 @@ Every 60 seconds the guard:
 - restarts Apache when `apachectl -t` fails or `http://127.0.0.1/` does not answer within 3 seconds
 - restarts MySQL when `mysqladmin ping` fails
 
-It also sets Apache and MySQL to restart on failure, up to 10 restarts within
-2 minutes.
+It also sets Apache and MySQL to restart whenever they stop, up to 10 times
+within 2 minutes.
 
 ```bash
 systemctl status service-guard.timer
@@ -437,7 +454,9 @@ name.
 
 Backups are saved in `backups/db/` as
 `vlsm-YYYYMMDD-HHMMSS-<32 characters>.sql.zst.gpg` and
-`interfacing-YYYYMMDD-HHMMSS-<32 characters>.sql.zst.gpg`.
+`interfacing-YYYYMMDD-HHMMSS-<32 characters>.sql.zst.gpg`. When backup
+encryption with an STS-held key is on, the name has no random part, and the
+key comes from the STS.
 
 ```bash
 cd /var/www/intelis

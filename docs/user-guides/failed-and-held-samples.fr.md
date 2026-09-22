@@ -1,3 +1,12 @@
+---
+description: Renvoyer au test les échantillons de charge virale en échec, en attente ou perdus, ou récupérer des résultats valables marqués en échec.
+audience: [lab-staff, lab-supervisor]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # Gérer les échecs et les échantillons en attente
 
 Les échantillons en échec sur l'automate, mis en attente ou perdus sont regroupés
@@ -37,7 +46,7 @@ dont le laboratoire a besoin.
 
     Aucun écran de charge virale d'InteLIS n'attribue En attente à un
     échantillon. Sur l'écran **Résultats importés** qui suit **Importer les
-    résultats d'un fichier**, choisir **En attente** pour une ligne met le
+    résultats d'un fichier**, choisir **Hold** (libellé affiché en anglais) pour une ligne met le
     résultat de cette ligne de côté. Le résultat n'est pas enregistré sur
     l'échantillon, et l'échantillon reste en attente d'un résultat. Un
     échantillon En attente sur cette page portait déjà ce statut avant d'y
@@ -91,13 +100,13 @@ Pour tous les statuts, voir [Statuts des échantillons](sample-statuses.md).
         sélectionner **Code barre** sur sa ligne. Le bouton n'apparaît que si
         **Impression d'étiquettes code-barres des échantillons** sous **ADMIN →
         Configuration du système → Configuration générale** n'est pas réglé sur
-        **Désactivé**. Si aucune imprimante n'est proposée, sélectionner
+        **Désactivé**. Avec une imprimante Zebra, si aucune imprimante n'est proposée, sélectionner
         **Modifier/Réessayer** pour en choisir une.
 
 === "Récupérer une série marquée en échec par erreur"
 
-    Un import peut marquer toute une série en échec alors que les résultats
-    étaient valables. La récupération fait passer ces échantillons directement à
+    Les imports faits avant la version 5.5.20 pouvaient marquer toute une série
+    en échec alors que les résultats étaient valables. La récupération fait passer ces échantillons directement à
     **Accepté**, sans nouvelle étape d'approbation. Vérifier d'abord chaque
     résultat sur le tirage de l'automate.
 

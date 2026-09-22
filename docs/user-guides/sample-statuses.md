@@ -1,3 +1,12 @@
+---
+description: Reference list of viral load sample statuses, what sets each one, and how each one counts in reports.
+audience: [lab-staff, lab-supervisor, lab-admin]
+module: [vl]
+type: reference
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # Sample statuses
 
 Every sample in InteLIS carries one status. This page lists all of them, what
@@ -27,9 +36,9 @@ sets each one, and how each one counts in reports.
 | --- | --- |
 | Sample Currently Registered at Health Center | Registering a request at a health facility |
 | Sample Registered at Testing Lab | Registering a request at a lab, activating a manifest, or sending a sample for retest |
-| Sample Referred to another Lab | Referring a sample to another lab |
+| Sample Referred to another Lab | No viral load screen sets it. It is used by TB and Custom Tests referrals |
 | Awaiting Approval | Recording a result, or correcting one on the result form |
-| Accepted | Approving a result in **Manage Results Status** or on the **Imported Results** screen, automatic approval of results sent in by the Interface Tool where the lab is configured for it, or recovering a result on the **Failed/Hold Samples** page |
+| Accepted | Approving a result in **Manage Results Status** or on the **Imported Results** screen, automatic approval of results sent in by the Interface Tool where the lab is configured for it, automatic approval of results received through the API where that option is on, or recovering a result on the **Failed/Hold Samples** page |
 | Rejected | Recording a rejection on the result form, applying **Rejected** in **Manage Results Status**, or choosing **Rejected** on the **Imported Results** screen |
 | Failed/Invalid | Recording a result that reads as a failure, choosing **Failed** on the **Imported Results** screen, or applying **Accepted** to a result that reads as a failure |
 | Hold | No viral load screen sets it. Choosing **Hold** on the **Imported Results** screen sets that row's result aside and leaves the sample's status unchanged |
@@ -44,7 +53,7 @@ sets each one, and how each one counts in reports.
 | Status | Reason recorded |
 | --- | --- |
 | Rejected | A rejection reason from the list under **ADMIN → VL Config → Rejection Reasons** |
-| Failed/Invalid | A failure reason from the list under **ADMIN → VL Config → Test Failure Reasons** |
+| Failed/Invalid | A failure reason from the list under **ADMIN → VL Config → Test Failure Reasons**, on result forms that include a failure reason field |
 
 ## How statuses count in reports
 

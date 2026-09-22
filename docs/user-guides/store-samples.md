@@ -1,7 +1,16 @@
+---
+description: Record the freezer, rack, box and position of viral load samples, one at a time or by bulk upload, and find stored samples.
+audience: [lab-staff, lab-supervisor]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # How to record where a sample is stored
 
-Sample storage is recorded on the lab's own InteLIS (LIS), for labs that use the
-DRC request form. Other request forms do not show the **Samples Storage** button.
+Sample storage is recorded by the testing lab, on installs whose request form
+includes sample storage. Other request forms do not show the **Samples
+Storage** button.
 
 A recorded freezer position lets anyone find the physical tube later, without
 opening every box. This matters most for samples kept for retesting, for
@@ -35,11 +44,9 @@ is.
 
         ??? failure "If a sample is missing from the list"
 
-            Without a **Sample Collection Date**, the list shows only samples
-            collected in the last 30 days. Set the date range and select **Get
-            Samples** again. If a sample never stored before is still missing,
-            contact support: some lab installs list only samples that already
-            have a position.
+            The **Sample Collection Date** starts at the last 28 days. Widen it
+            for older samples, then select **Get Samples** again. Cancelled
+            samples are never listed.
 
     6. On each sample's row, fill in the storage details:
 
