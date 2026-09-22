@@ -214,7 +214,7 @@ print header "InteLIS restore"
 
 SRC_MODE=""; SSH_USER=""; SSH_HOST=""; SSH_PORT="22"; SSH_KEY=""
 SMB_HOST=""; SMB_SHARE=""; SMB_USER=""; SMB_VERS=""
-LOCAL_ROOT=""; SRC_BASE=""
+LOCAL_ROOT=""; LOCAL_UUID=""; SRC_BASE=""
 
 # On the original machine the backup settings are already known, so there is
 # nothing to type. On a replacement machine they are not, so ask.
@@ -344,6 +344,16 @@ connect_smb() {
 }
 
 connect_local() {
+  # A drive chosen from the list at backup setup is mounted from /etc/fstab, and
+  # its folder exists even when the drive is unplugged. Connect it first, or the
+  # check below would read that empty folder on this machine's own disk.
+  if [ -n "$LOCAL_UUID" ] && [ -n "$LOCAL_ROOT" ] && ! mountpoint -q "$LOCAL_ROOT"; then
+    mount "$LOCAL_ROOT" >/dev/null 2>&1 || true
+    if ! mountpoint -q "$LOCAL_ROOT"; then
+      print warning "The backup drive is not plugged in. Plug it in and run this again, or type where the backups are."
+      SRC_BASE=""
+    fi
+  fi
   # The settings file already names the drive on the machine that made the backup.
   if [ -n "$SRC_BASE" ] && [ -d "$SRC_BASE" ]; then
     print success "Reading from $SRC_BASE"

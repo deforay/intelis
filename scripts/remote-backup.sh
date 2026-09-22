@@ -17,8 +17,13 @@ set -Eeuo pipefail
 #   2. A Windows shared folder, over SMB
 #   3. A USB or external drive plugged into this machine
 #
-# Answers are saved to /etc/intelis/backup.conf, so re-running this script is a
-# matter of pressing Enter through the prompts. The backup runner installed at
+# One backup machine can take the backups of many labs: each lab gets its own
+# folder there, named from a UUID, and its own key on the same account.
+#
+# Answers are saved to /etc/intelis/backup.conf. Re-running this script while
+# the saved destination still works asks one question, keep it or change it;
+# when it no longer works, setup runs as it did the first time, with the saved
+# answers offered. The backup runner installed at
 # /usr/local/bin/intelis-backup.sh reads that file, so nothing is hard-coded
 # into the runner and it can be replaced without losing the configuration.
 
@@ -31,6 +36,7 @@ LEGACY_WINDOWS_RUNNER="/usr/local/bin/intelis-backup-windows.sh"
 LAB_UUID_FILE="${CONF_DIR}/lab-uuid"
 SSH_KEY="/root/.ssh/id_ed25519_intelis"
 MOUNT_POINT="/mnt/intelis-backup"
+USB_MOUNT="/mnt/intelis-usb"
 SMB_CRED_FILE="${CONF_DIR}/smb-backup.cred"
 
 # --- arguments ----------------------------------------------------------------
@@ -41,7 +47,9 @@ case "${1:-}" in
   "") ;;
   --refresh-runner) SETUP_ACTION="refresh-runner" ;;
   --help | -h)
-    sed -n '3,24p' "$0" | sed 's/^# \{0,1\}//'
+    # The whole header comment, up to the first blank line, so it cannot be
+    # cut short again when the header grows.
+    sed -n '3,/^$/{/^#/p}' "$0" | sed 's/^# \{0,1\}//'
     exit 0
     ;;
   *)
@@ -268,7 +276,7 @@ esac
 : "${DEST_MODE:=}"; : "${DEST_BASE:=}"; : "${DEST_DIR:=}"
 : "${SSH_USER:=}"; : "${SSH_HOST:=}"; : "${SSH_PORT:=22}"; : "${SSH_KEY:=/root/.ssh/id_ed25519_intelis}"
 : "${SMB_HOST:=}"; : "${SMB_SHARE:=}"; : "${SMB_VERS:=3.0}"; : "${MOUNT_POINT:=/mnt/intelis-backup}"
-: "${LOCAL_ROOT:=}"
+: "${LOCAL_ROOT:=}"; : "${LOCAL_UUID:=}"
 # Database history kept at the destination: one dump per day for HISTORY_DAYS
 # days, then one per week for HISTORY_WEEKS weeks. Not asked at setup; change it
 # in backup.conf.
@@ -477,7 +485,18 @@ ensure_destination_available() {
       fi
       ;;
     local)
-      [ -d "$LOCAL_ROOT" ] || fail "The backup drive at ${LOCAL_ROOT} is not there. Is it plugged in?"
+      if [ -n "$LOCAL_UUID" ]; then
+        # LOCAL_ROOT is a fixed folder that exists whether or not the drive is
+        # mounted on it, so its presence proves nothing: an unmounted one is a
+        # folder on this machine's own disk. Only a mount point counts.
+        if ! mountpoint -q "$LOCAL_ROOT"; then
+          print warning "The backup drive is not connected; connecting it."
+          mount "$LOCAL_ROOT" >/dev/null 2>&1 || true
+          mountpoint -q "$LOCAL_ROOT" || fail "The backup drive is not plugged in. Plug it in, then run: intelis backup"
+        fi
+      else
+        [ -d "$LOCAL_ROOT" ] || fail "The backup drive at ${LOCAL_ROOT} is not there. Is it plugged in? Run 'intelis backup setup' and choose the drive from the list, so it is connected by itself after a restart."
+      fi
       ;;
   esac
 }
@@ -573,15 +592,36 @@ EXCLUDES
 RSYNC_FILTER_OPTS=(--delete --partial-dir=.rsync-partial --timeout=900 --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta --exclude=/.history/)
 RSYNC_MODE_OPTS=()
 
+# findmnt names the filesystem as the kernel mounted it. stat -f is kept as the
+# fallback only: older coreutils print "UNKNOWN (0x2011bab0)" for exFAT, which
+# then got full POSIX flags, and rsync failed setting owners the drive cannot
+# hold.
+dest_fstype() {
+  findmnt -no FSTYPE -T "$1" 2>/dev/null || stat -f -c %T "$1" 2>/dev/null || echo unknown
+}
+
 needs_compat_flags() {
   # Filesystems that cannot hold POSIX ownership, permissions, or symlinks.
-  local fstype
-  fstype=$(stat -f -c %T "$1" 2>/dev/null || echo unknown)
-  case "$fstype" in
-    vfat|exfat|msdos|ntfs|fuseblk|cifs|smb2) return 0 ;;
+  case "$(dest_fstype "$1")" in
+    vfat|exfat|msdos|ntfs|ntfs3|fuseblk|cifs|smb2|smb3) return 0 ;;
     *) return 1 ;;
   esac
 }
+
+# FAT32 cannot hold a file of 4 GB or more. A dump that size makes rsync fail
+# with "File too large" on every run from then on, which reads like a disk
+# fault. Say what it is instead. Setup no longer offers FAT32 drives; this is
+# for drives set up before it refused them. Only backups/ is searched: the dumps
+# are the only files that grow that large, and a walk of the whole tree is the
+# cost the verification pass was rewritten to avoid.
+if [ "$DEST_MODE" = "local" ]; then
+  case "$(dest_fstype "$LOCAL_ROOT")" in
+    vfat|msdos)
+      too_big="$(find "${LIS_PATH}/backups" -type f -size +4095M -print -quit 2>/dev/null || true)"
+      [ -z "$too_big" ] || fail "The backup drive is formatted as FAT32, which cannot hold files of 4 GB or more, and $(basename "$too_big") is larger. Reformat the drive as exFAT or ext4 (this erases it), then run 'intelis backup setup'."
+      ;;
+  esac
+fi
 
 case "$DEST_MODE" in
   ssh)
@@ -900,11 +940,10 @@ fi
 INSTANCE_NAME=""; LIS_PATH=""; DEST_MODE=""
 SSH_USER=""; SSH_HOST=""; SSH_PORT=""
 SMB_HOST=""; SMB_SHARE=""; SMB_USER=""; SMB_VERS=""
-LOCAL_ROOT=""
+LOCAL_ROOT=""; LOCAL_UUID=""; DEST_BASE=""
 if [ -f "$CONF_FILE" ]; then
   # shellcheck disable=SC1090
   . "$CONF_FILE"
-  print info "Found an existing configuration at $CONF_FILE. Press Enter to keep each saved answer."
 fi
 
 # Best-effort, bounded, and never fatal: gum is a nicety here exactly as it is
@@ -913,9 +952,69 @@ ensure_gum || true
 
 print header "InteLIS backup setup"
 
+# --- re-running setup ---------------------------------------------------------
+# Setup is re-run to repair or update a lab far more often than to move its
+# backups, and walking through every question to keep every answer is where a
+# mistyped Enter changes one. So when the saved destination still works, the
+# only question is whether to keep it. When it does not work, keeping it would
+# be keeping something broken, and setup runs as it would the first time, with
+# the saved answers offered as defaults.
+
+describe_destination() {
+  case "$DEST_MODE" in
+    ssh)   printf '%s@%s' "$SSH_USER" "$SSH_HOST" ;;
+    smb)   printf '//%s/%s' "$SMB_HOST" "$SMB_SHARE" ;;
+    local) printf '%s' "$LOCAL_ROOT" ;;
+  esac
+}
+
+# Checks the saved destination can be reached and written to, without asking
+# anything: no password and no key installation. The only change it can make
+# is creating the shared backups folder, which the first backup creates anyway.
+saved_destination_works() {
+  case "$DEST_MODE" in
+    ssh)
+      [ -n "$SSH_HOST" ] && [ -n "$SSH_USER" ] && [ -f "$SSH_KEY" ] || return 1
+      ssh -n -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new \
+          -p "${SSH_PORT:-22}" "${SSH_USER}@${SSH_HOST}" "mkdir -p $(printf '%q' "$DEST_BASE") && test -w $(printf '%q' "$DEST_BASE")" >/dev/null 2>&1
+      ;;
+    smb)
+      [ -n "$SMB_HOST" ] && [ -f "$SMB_CRED_FILE" ] || return 1
+      mountpoint -q "$MOUNT_POINT" || mount "$MOUNT_POINT" >/dev/null 2>&1 || return 1
+      ( : > "${MOUNT_POINT}/.intelis-writetest" && rm -f "${MOUNT_POINT}/.intelis-writetest" ) 2>/dev/null
+      ;;
+    local)
+      [ -n "$LOCAL_ROOT" ] || return 1
+      if [ -n "$LOCAL_UUID" ]; then
+        mountpoint -q "$LOCAL_ROOT" || mount "$LOCAL_ROOT" >/dev/null 2>&1 || return 1
+        mountpoint -q "$LOCAL_ROOT" || return 1
+      fi
+      ( : > "${LOCAL_ROOT}/.intelis-writetest" && rm -f "${LOCAL_ROOT}/.intelis-writetest" ) 2>/dev/null
+      ;;
+    *) return 1 ;;
+  esac
+}
+
+KEEP_DEST=false
+if [ -n "$DEST_MODE" ] && [ -n "$DEST_BASE" ] && [ -n "$INSTANCE_NAME" ] &&
+   [ -f "${LIS_PATH}/configs/config.production.php" ]; then
+  print info "Checking the saved backup destination, $(describe_destination)..."
+  if saved_destination_works; then
+    print success "Backups from this machine go to $(describe_destination), and it can be reached."
+    choose keep_choice keep "Keep sending backups there?" \
+      "keep:Keep it:Nothing is asked. The backup runner and schedule are refreshed and a backup runs now." \
+      "change:Change where backups go:Asks every question again, with the saved answers offered."
+    # shellcheck disable=SC2154  # set by `choose` above, via printf -v
+    [ "$keep_choice" = "keep" ] && KEEP_DEST=true
+  else
+    print warning "The saved backup destination, $(describe_destination), cannot be reached or written to."
+    print info    "Setting up as if for the first time. The saved answers are offered; press Enter to keep one."
+  fi
+fi
+
 # --- instance name ------------------------------------------------------------
 
-ask INSTANCE_NAME "Lab name or lab code" "${INSTANCE_NAME:-$(hostname -s 2>/dev/null || echo lab)}"
+$KEEP_DEST || ask INSTANCE_NAME "Lab name or lab code" "${INSTANCE_NAME:-$(hostname -s 2>/dev/null || echo lab)}"
 SANITIZED_NAME=$(printf '%s' "$INSTANCE_NAME" | tr -s '[:space:]' '-' | tr -cd '[:alnum:]-' | sed 's/-*$//;s/^-*//')
 if [ -z "$SANITIZED_NAME" ]; then
   print error "That name has no letters or numbers in it. Use something like 'kigali-central'."
@@ -944,6 +1043,7 @@ print info    "Its backups will live in a folder called: ${DEST_FOLDER}"
 
 looks_like_lis() { [ -f "$1/configs/config.production.php" ] && [ -d "$1/public" ]; }
 
+if ! $KEEP_DEST; then
 print header "Which installation should be backed up?"
 
 if [ -z "$LIS_PATH" ]; then
@@ -959,7 +1059,19 @@ if [ -z "$LIS_PATH" ]; then
 fi
 [ -n "$LIS_PATH" ] && print info "Detected an installation at $LIS_PATH"
 
-while true; do
+# Asked only when there is a choice to make. With one installation on the
+# machine, the question only ever had one right answer.
+lis_count=0
+for candidate in /var/www/*/; do
+  looks_like_lis "${candidate%/}" && lis_count=$((lis_count + 1))
+done
+if [ -n "$LIS_PATH" ] && looks_like_lis "$LIS_PATH" && [ "$lis_count" -le 1 ]; then
+  lis_asked=false
+else
+  lis_asked=true
+fi
+
+while $lis_asked; do
   ask LIS_PATH "InteLIS folder path" "${LIS_PATH:-/var/www/intelis}"
   [[ "$LIS_PATH" != /* ]] && LIS_PATH="$(realpath "$LIS_PATH" 2>/dev/null || printf '%s' "$LIS_PATH")"
   if [ ! -d "$LIS_PATH" ]; then
@@ -975,13 +1087,14 @@ while true; do
   break
 done
 print success "Backing up: $LIS_PATH"
+fi
 
 # --- destination --------------------------------------------------------------
 
-choose DEST_MODE "${DEST_MODE:-ssh}" "Where should the backup be sent?" \
-  "ssh:Another Linux machine on the network:Sent over SSH. The usual choice where there is a server in the building." \
+$KEEP_DEST || choose DEST_MODE "${DEST_MODE:-ssh}" "Where should the backup be sent?" \
+  "ssh:Another Linux machine on the network (recommended):One backup machine can take the backups of every lab." \
   "smb:A shared folder on a Windows machine:Sent over SMB to a folder shared from Windows." \
-  "local:A USB or external drive plugged into this machine:Written to a drive attached to this machine."
+  "local:A USB or external drive plugged into this machine:Only when there is no other machine. A drive is easily unplugged, and is lost with this computer in a theft or fire."
 
 # --- destination: another Linux machine over SSH ------------------------------
 
@@ -994,16 +1107,20 @@ install_key_via_admin() {
   local admin key create=0 exists b64 run
   # One connection for both commands, so a password is typed once.
   local mux=(-o ControlMaster=auto -o "ControlPath=/tmp/intelis-admin-%C" -o ControlPersist=60)
-  ask admin "Administrator account on the backup server (root, or a user with sudo)" "root"
+  # No default. Ubuntu refuses root logins by password, so "root" is the wrong
+  # guess on most backup machines; the account is the one used to manage it.
+  ask admin "Administrator account on the backup machine (the account used to manage it)" ""
   [[ "$admin" =~ ^[a-z_][a-z0-9_.-]*$ ]] || { print warning "'$admin' is not a valid username."; return 1; }
 
   print info "Logging in as ${admin}. If it asks for a password, it is ${admin}'s password on the backup server."
   exists="$(ssh "${mux[@]}" -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 -p "$SSH_PORT" \
               "${admin}@${SSH_HOST}" "id -u '${SSH_USER}' >/dev/null 2>&1 && echo yes || echo no" </dev/null)" ||
     { print warning "Could not log in as ${admin} either."; return 1; }
+  # Not confirmed first. The first lab to use a backup machine always lands
+  # here, the account is a fixed name rather than something typed, and it is
+  # created for backups only.
   if [ "$(printf '%s' "$exists" | tr -d '\r')" = "no" ]; then
-    print warning "There is no user '${SSH_USER}' on the backup server."
-    confirm "Create '${SSH_USER}' there now, for the backups only?" || return 1
+    print info "Creating the account '${SSH_USER}' on the backup machine, for backups only."
     create=1
   fi
 
@@ -1025,7 +1142,7 @@ install_key_via_admin() {
   ssh -t "${mux[@]}" -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 -p "$SSH_PORT" \
       "${admin}@${SSH_HOST}" "echo ${b64} | base64 -d | ${run}" ||
     { print warning "Logged in as ${admin}, but adding the key failed. ${admin} may not be allowed to use sudo."; return 1; }
-  print success "Backup key added for ${SSH_USER}"
+  print success "This machine can now send backups to ${SSH_HOST} as ${SSH_USER}"
 }
 
 print_manual_key_steps() {
@@ -1065,12 +1182,50 @@ ensure_ssh_config_entry() {
   print info "Added ${SSH_HOST} to ${cfg}, so 'ssh ${SSH_HOST}' logs in as ${SSH_USER} with the backup key."
 }
 
+# One question for where the backups go. Most answers are a bare address; the
+# rare other account or port is written into it (backup@host, host:2222)
+# rather than asked on every run, where the answer is nearly always the same.
+compose_address() {
+  local a="${SSH_HOST}"
+  [ -n "$a" ] || return 0
+  if [ "${SSH_PORT:-22}" != "22" ]; then
+    [[ "$a" == *:* ]] && a="[${a}]" # an IPv6 address needs brackets before a port
+    a="${a}:${SSH_PORT}"
+  fi
+  [ "${SSH_USER:-lisbackup}" = "lisbackup" ] || a="${SSH_USER}@${a}"
+  printf '%s' "$a"
+}
+
+parse_address() {
+  local a=$1
+  SSH_USER="lisbackup"; SSH_PORT="22"
+  if [[ "$a" == *@* ]]; then SSH_USER="${a%%@*}"; a="${a#*@}"; fi
+  if [[ "$a" =~ ^\[(.+)\]:([0-9]+)$ ]] || [[ "$a" =~ ^([^:]+):([0-9]+)$ ]]; then
+    a="${BASH_REMATCH[1]}"; SSH_PORT="${BASH_REMATCH[2]}"
+  fi
+  SSH_HOST="${a#[}"; SSH_HOST="${SSH_HOST%]}"
+  if ! [[ "$SSH_USER" =~ ^[a-z_][a-z0-9_.-]*$ ]]; then
+    print warning "'${SSH_USER}' is not a valid account name."; return 1
+  fi
+  if [ -z "$SSH_HOST" ] || [[ "$SSH_HOST" =~ [[:space:]/] ]]; then
+    print warning "'$1' is not an address. Type an IP address such as 192.168.1.60, or a machine name."; return 1
+  fi
+  if [ "$SSH_PORT" -lt 1 ] || [ "$SSH_PORT" -gt 65535 ]; then
+    print warning "'${SSH_PORT}' is not a valid port number."; return 1
+  fi
+}
+
+backup_key_works() {
+  ssh -n -i "$SSH_KEY" -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 \
+      -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" true 2>/dev/null
+}
+
 configure_ssh() {
   require_cmd ssh
   require_cmd ssh-keygen
   require_cmd ssh-copy-id
 
-  print header "Backup server details"
+  print header "Backup machine"
 
   mkdir -p /root/.ssh; chmod 700 /root/.ssh
   if [ ! -f "$SSH_KEY" ]; then
@@ -1079,90 +1234,80 @@ configure_ssh() {
   fi
   chmod 600 "$SSH_KEY"; chmod 644 "${SSH_KEY}.pub"
 
-  local recheck=false
+  # recheck: the address is already known, so go straight to the checks. Set
+  # after access was added, and after an attempt that failed, so a failure
+  # returns to the choice of how to add access rather than to the address.
+  local recheck=false just_added=false addr access copy_err key_only
   while true; do
-    # After the key was added another way, check the login with the same
-    # details instead of asking for them again.
     if $recheck; then
       recheck=false
     else
-      ask SSH_USER "Username on the backup server" "${SSH_USER:-}"
-      ask SSH_HOST "Hostname or IP of the backup server" "${SSH_HOST:-}"
-      ask SSH_PORT "SSH port" "${SSH_PORT:-22}"
+      ask addr "Address of the backup machine (its IP address or name)" "$(compose_address)"
+      parse_address "$addr" || continue
     fi
 
-    if ! [[ "$SSH_PORT" =~ ^[0-9]+$ ]] || [ "$SSH_PORT" -lt 1 ] || [ "$SSH_PORT" -gt 65535 ]; then
-      print warning "'$SSH_PORT' is not a valid port number."
-      SSH_PORT=""
-      continue
-    fi
-
-    print info "Checking that ${SSH_HOST}:${SSH_PORT} is reachable..."
+    print info "Checking that ${SSH_HOST} is reachable..."
     if ! timeout 10 bash -c "</dev/tcp/${SSH_HOST}/${SSH_PORT}" 2>/dev/null; then
       print warning "Cannot reach ${SSH_HOST} on port ${SSH_PORT}."
-      print info    "Check that the machine is switched on, on the same network, and that its SSH port is open."
-      confirm "Try different details?" && { SSH_HOST=""; SSH_PORT=""; continue; }
-      exit 1
-    fi
-    print success "Backup server is reachable"
-
-    # Already trusted from a previous run?
-    if ssh -n -i "$SSH_KEY" -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 \
-         -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" true 2>/dev/null; then
-      print success "Password-free login already works"
-      break
-    fi
-
-    print info "Installing the backup key on the server. You will be asked for ${SSH_USER}'s password once."
-    copy_err="$(mktemp)"
-    if ! ssh-copy-id -i "${SSH_KEY}.pub" -o StrictHostKeyChecking=accept-new \
-         -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" 2>"$copy_err" >/dev/null; then
-      # The password prompt goes to the terminal, not stderr, so capturing
-      # stderr hides only ssh-copy-id's own chatter.
-      #
-      # "Permission denied (publickey)" with no other method listed means the
-      # server accepts keys only (the default on cloud servers). ssh-copy-id
-      # then never asks for a password, so retrying the same details can never
-      # work: the key has to go in through an account that can already log in.
-      local key_only=false
-      grep -q 'Permission denied (publickey)' "$copy_err" && key_only=true
-      if $key_only; then
-        print warning "The backup server does not accept passwords, only keys, so ${SSH_USER}'s password cannot be used."
-      else
-        grep -v '^/usr/bin/ssh-copy-id: INFO' "$copy_err" | tail -3 >&2 || true
-        print warning "Could not install the key. The password may be wrong, or '${SSH_USER}' may not exist on the backup server."
-      fi
-      rm -f "$copy_err"
-
-      local fix_options=("admin:Use an administrator account on the backup server:Logs in once as root or a sudo user to add the key, and creates ${SSH_USER} if needed.")
-      $key_only || fix_options+=("retry:Type the details again:For a mistyped username, host or password.")
-      fix_options+=("manual:Add the key by hand:Shows the commands to run on the backup server."
-                    "stop:Stop:Nothing is changed.")
-      choose key_fix "admin" "How should the backup key be added?" "${fix_options[@]}"
-      case "$key_fix" in
-        admin)
-          install_key_via_admin && recheck=true || print warning "The key was not added."
-          continue ;;
-        retry)
-          SSH_USER=""; SSH_HOST=""; SSH_PORT=""
-          continue ;;
-        manual)
-          print_manual_key_steps
-          confirm "Has the key been added? Check the login now?" && { recheck=true; continue; }
-          exit 1 ;;
-        *) exit 1 ;;
-      esac
-    fi
-    rm -f "$copy_err"
-
-    if ! ssh -n -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=10 \
-         -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" true; then
-      print warning "The key was installed but password-free login still does not work."
+      print info    "Check that the machine is switched on, on the same network, and has the SSH server installed (sudo apt install openssh-server)."
       confirm "Try again?" && continue
       exit 1
     fi
-    print success "Password-free login works"
-    break
+
+    if backup_key_works; then
+      print success "This machine can send backups to ${SSH_HOST}"
+      break
+    fi
+    if $just_added; then
+      print warning "Access was added, but logging in with it still fails. The backup machine may refuse key logins for ${SSH_USER}."
+    fi
+    just_added=false
+
+    # Asked before anything is tried, rather than after a failed password
+    # attempt. With many labs sending to one backup machine, the administrator
+    # route is the one that works every time: for the first lab it creates the
+    # account, and for every later lab it adds that lab's access to it.
+    choose access admin "This machine needs access to ${SSH_HOST}. How should it be given?" \
+      "admin:Log in as the backup machine's administrator (recommended):Creates the ${SSH_USER} account the first time, then gives this lab access. The same for every lab." \
+      "password:Type the ${SSH_USER} password:Only where ${SSH_USER} was given a password on the backup machine." \
+      "manual:Add it by hand on the backup machine:Shows the commands to run there." \
+      "retry:Type the address again:For a mistyped address." \
+      "stop:Stop:Nothing is changed."
+
+    case "$access" in
+      admin)
+        install_key_via_admin && just_added=true || print warning "Access was not added."
+        recheck=true ;;
+      password)
+        print info "Type ${SSH_USER}'s password on the backup machine when asked."
+        copy_err="$(mktemp)"
+        if ssh-copy-id -i "${SSH_KEY}.pub" -o StrictHostKeyChecking=accept-new \
+             -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" 2>"$copy_err" >/dev/null; then
+          just_added=true
+        else
+          # The password prompt goes to the terminal, not stderr, so stderr
+          # holds only ssh-copy-id's own chatter. "Permission denied
+          # (publickey)" with no other method listed means the machine takes
+          # keys only (the default on cloud servers): no password can work.
+          key_only=false
+          grep -q 'Permission denied (publickey)' "$copy_err" && key_only=true
+          if $key_only; then
+            print warning "The backup machine does not accept passwords, only keys. Choose the administrator login instead."
+          else
+            grep -v '^/usr/bin/ssh-copy-id: INFO' "$copy_err" | tail -3 >&2 || true
+            print warning "That did not work. The password may be wrong, or ${SSH_USER} may have no password. Choose the administrator login instead."
+          fi
+        fi
+        rm -f "$copy_err"
+        recheck=true ;;
+      manual)
+        print_manual_key_steps
+        confirm "Has it been added? Check now?" || exit 1
+        just_added=true
+        recheck=true ;;
+      retry) ;;
+      *) exit 1 ;;
+    esac
   done
 
   ensure_ssh_config_entry || print warning "Could not add ${SSH_HOST} to /root/.ssh/config. Backups are not affected."
@@ -1252,18 +1397,145 @@ configure_smb() {
 }
 
 # --- destination: local USB or external drive ---------------------------------
+#
+# The drive is picked from a list and mounted at a fixed folder, by its UUID,
+# through /etc/fstab. It used to be a path typed from lsblk's MOUNTPOINT column,
+# and on a desktop that is where the Files app mounted the drive for whoever was
+# logged in: /media/<user>/<label>. That folder exists only while someone is
+# logged in and has opened the drive, so after an unattended restart every
+# backup failed with "drive not there" until somebody did. Mounted from fstab,
+# the drive is there at boot, and the runner remounts it after a replug.
 
-configure_local() {
-  print header "External drive details"
-  print info "Plug the drive in and make sure it is mounted before continuing."
-  if command -v lsblk >/dev/null 2>&1; then
-    echo
-    lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT 2>/dev/null | grep -v '^loop' || true
-    echo
+# The whole disks holding this machine's own system or installation, one per
+# line. Nothing on them is offered: a backup on the disk it protects is not a
+# backup.
+system_disks() {
+  local m src
+  for m in / /boot /boot/efi "$LIS_PATH"; do
+    src="$(findmnt -no SOURCE -T "$m" 2>/dev/null)" || continue
+    src="${src%%\[*}" # btrfs subvolumes read /dev/sda2[/@]
+    [[ "$src" == /dev/* ]] || continue
+    lsblk -lspno NAME,TYPE "$src" 2>/dev/null | awk '$2=="disk"{print $1}'
+  done | sort -u
+}
+
+# lsblk -P prints KEY="value" pairs and escapes anything unusual in a value as
+# \xNN, so a label with a space or a quote in it cannot break the parsing.
+lsblk_field() {
+  local re="(^|[[:space:]])${2}=\"([^\"]*)\""
+  [[ "$1" =~ $re ]] || return 0
+  printf '%b' "${BASH_REMATCH[2]}"
+}
+
+# ':' separates the fields of a menu row.
+menu_safe() { printf '%s' "$1" | tr ':' '-'; }
+
+# Fills DRIVE_KEYS (UUIDs, in lsblk order) and the per-UUID maps.
+declare -a DRIVE_KEYS=()
+declare -A DRIVE_DEV=() DRIVE_FS=() DRIVE_LABEL=() DRIVE_DESC=()
+list_drives() {
+  DRIVE_KEYS=(); DRIVE_DEV=(); DRIVE_FS=(); DRIVE_LABEL=(); DRIVE_DESC=()
+  local sys line dev type fs size uuid label mnt disk model
+  sys="$(system_disks)"
+  while IFS= read -r line; do
+    dev="$(lsblk_field "$line" NAME)";  type="$(lsblk_field "$line" TYPE)"
+    fs="$(lsblk_field "$line" FSTYPE)"; size="$(lsblk_field "$line" SIZE)"
+    uuid="$(lsblk_field "$line" UUID)"; label="$(lsblk_field "$line" LABEL)"
+    mnt="$(lsblk_field "$line" MOUNTPOINT)"
+    case "$type" in part|disk) ;; *) continue ;; esac
+    # lsblk reads these from udev's database. Where udev has not probed the
+    # drive (a minimal system, or a drive that has just been plugged in), ask
+    # the drive itself.
+    if [ -z "$uuid" ] && command -v blkid >/dev/null 2>&1; then
+      fs="$(blkid -s TYPE -o value "$dev" 2>/dev/null || true)"
+      uuid="$(blkid -s UUID -o value "$dev" 2>/dev/null || true)"
+      label="$(blkid -s LABEL -o value "$dev" 2>/dev/null || true)"
+    fi
+    [ -n "$uuid" ] && [ -n "$fs" ] || continue
+    case "$fs" in swap|LVM2_member|crypto_LUKS|linux_raid_member|zfs_member|squashfs|erofs|iso9660|udf) continue ;; esac
+    case "$mnt" in /|/boot|/boot/*|/snap/*|"[SWAP]") continue ;; esac
+    [ -z "${DRIVE_DEV[$uuid]:-}" ] || continue # a cloned drive repeats a UUID
+    disk="$(lsblk -lspno NAME,TYPE "$dev" 2>/dev/null | awk '$2=="disk"{print $1; exit}')"
+    if [ -n "$disk" ] && [ -n "$sys" ] && grep -qxF "$disk" <<<"$sys"; then continue; fi
+    model="$(lsblk -dno VENDOR,MODEL "${disk:-$dev}" 2>/dev/null | tr -s '[:space:]' ' ' | sed 's/^ //;s/ $//')"
+    DRIVE_KEYS+=("$uuid")
+    DRIVE_DEV[$uuid]="$dev"
+    DRIVE_FS[$uuid]="$fs"
+    DRIVE_LABEL[$uuid]="$(menu_safe "${label:-Unnamed drive} (${size})")"
+    DRIVE_DESC[$uuid]="$(menu_safe "${model:+${model} · }${fs} · ${dev}")"
+  done < <(lsblk -Ppno NAME,TYPE,FSTYPE,SIZE,UUID,LABEL,MOUNTPOINT 2>/dev/null)
+}
+
+apt_install_quiet() {
+  apt-get update -y >/dev/null 2>&1 || true
+  apt-get install -y "$@" >/dev/null 2>&1
+}
+
+# Mounts the drive with this UUID at USB_MOUNT and records it in /etc/fstab.
+# fstab is written only after the mount has worked, so a drive that cannot be
+# mounted leaves no entry behind.
+mount_backup_drive() {
+  local uuid=$1 dev fs type opts="defaults" t
+  dev="${DRIVE_DEV[$uuid]}"; fs="${DRIVE_FS[$uuid]}"; type="$fs"
+
+  case "$fs" in
+    ntfs)
+      type="ntfs-3g"
+      command -v ntfs-3g >/dev/null 2>&1 || { print info "Installing the tools needed to write to NTFS drives..."; apt_install_quiet ntfs-3g; }
+      ;;
+  esac
+  # Drives that cannot store owners get root's, and are readable by root alone:
+  # the backup holds the database password.
+  case "$fs" in vfat|exfat|ntfs) opts="uid=0,gid=0,umask=077" ;; esac
+
+  # The desktop mounts a plugged-in drive under /media for whoever is logged
+  # in. Move it: a FUSE filesystem (NTFS) cannot be mounted twice.
+  while IFS= read -r t; do
+    [ -n "$t" ] || continue
+    t="$(printf '%b' "$t")" # -r escapes a space in the folder name as \x20
+    case "$t" in
+      "$USB_MOUNT") ;;
+      /media/*|/run/media/*)
+        umount "$t" 2>/dev/null || {
+          print warning "The drive is open at ${t}. Close any window showing it, then try again."
+          return 1
+        } ;;
+    esac
+  done < <(findmnt -rno TARGET -S "UUID=${uuid}" 2>/dev/null || true)
+
+  # Switching drives: whatever is on the backup folder now is the old one.
+  if mountpoint -q "$USB_MOUNT" && [ "$(findmnt -no UUID "$USB_MOUNT" 2>/dev/null)" != "$uuid" ]; then
+    umount "$USB_MOUNT" 2>/dev/null || { print warning "The previous backup drive at ${USB_MOUNT} is still in use."; return 1; }
   fi
 
+  mkdir -p "$USB_MOUNT"
+  if ! mountpoint -q "$USB_MOUNT"; then
+    if ! mount -t "$type" -o "$opts" "UUID=${uuid}" "$USB_MOUNT" 2>/dev/null; then
+      # exFAT is in the kernel from 5.7 on; older kernels need the FUSE driver.
+      if [ "$fs" = "exfat" ]; then
+        print info "Installing the tools needed to write to exFAT drives..."
+        apt_install_quiet exfat-fuse || true
+      fi
+      mount -t "$type" -o "$opts" "UUID=${uuid}" "$USB_MOUNT" 2>/dev/null || {
+        print warning "Could not connect ${dev} (${fs})."
+        return 1
+      }
+    fi
+  fi
+
+  # nofail: a restart with the drive unplugged must still boot. The short
+  # device timeout stops it waiting 90 seconds for a drive that is not there.
+  sed -i "\#[[:space:]]${USB_MOUNT}[[:space:]]#d" /etc/fstab
+  echo "UUID=${uuid} ${USB_MOUNT} ${type} ${opts},nofail,x-systemd.device-timeout=10s 0 0" >> /etc/fstab
+  systemctl daemon-reload >/dev/null 2>&1 || true
+  return 0
+}
+
+# The older way, kept for a drive or network folder this machine already
+# connects by itself. The folder is used as typed and nothing is mounted.
+configure_local_folder() {
   while true; do
-    ask LOCAL_ROOT "Folder on the drive to back up into" "${LOCAL_ROOT:-/media/backup}"
+    ask LOCAL_ROOT "Folder to back up into" "${LOCAL_ROOT:-/media/backup}"
     if [ ! -d "$LOCAL_ROOT" ]; then
       print warning "'$LOCAL_ROOT' does not exist. Is the drive plugged in and mounted?"
       LOCAL_ROOT=""
@@ -1281,17 +1553,70 @@ configure_local() {
     fi
     break
   done
+  LOCAL_UUID=""
+}
+
+configure_local() {
+  print header "External drive details"
+  require_cmd lsblk
+  require_cmd findmnt
+  print info "Plug the backup drive in before continuing."
+
+  local choice default key
+  local -a options
+  while true; do
+    list_drives
+    options=()
+    for key in "${DRIVE_KEYS[@]}"; do
+      options+=("${key}:${DRIVE_LABEL[$key]}:${DRIVE_DESC[$key]}")
+    done
+    options+=("rescan:Look again:After plugging the drive in."
+              "folder:Type a folder instead:For a drive or network folder this machine already connects by itself.")
+    [ "${#DRIVE_KEYS[@]}" -gt 0 ] ||
+      print warning "No drive was found apart from this machine's own disk. Plug the backup drive in, then choose Look again."
+
+    default="${LOCAL_UUID:-}"
+    [ -n "$default" ] && [ -n "${DRIVE_DEV[$default]:-}" ] || default="${DRIVE_KEYS[0]:-rescan}"
+    choose choice "$default" "Which drive should the backups go to?" "${options[@]}"
+
+    case "$choice" in
+      rescan) continue ;;
+      folder) configure_local_folder; break ;;
+    esac
+
+    case "${DRIVE_FS[$choice]}" in
+      vfat|msdos)
+        print warning "This drive is formatted as FAT32, which cannot hold a file of 4 GB or more. Database backups grow past that, and every backup would then fail."
+        print info    "Reformat it as exFAT or ext4 (this erases it): open the Disks app, select the drive, then Format Partition. Then choose Look again."
+        continue ;;
+    esac
+
+    mount_backup_drive "$choice" || { confirm "Choose again?" && continue; exit 1; }
+    if ! ( : > "${USB_MOUNT}/.intelis-writetest" && rm -f "${USB_MOUNT}/.intelis-writetest" ); then
+      print warning "The drive is connected but cannot be written to. It may be write-protected, or damaged."
+      confirm "Choose again?" && continue
+      exit 1
+    fi
+    LOCAL_UUID="$choice"
+    LOCAL_ROOT="$USB_MOUNT"
+    print success "The drive is connected at ${USB_MOUNT}, and will be connected by itself after a restart"
+    break
+  done
 
   print success "Backing up to $LOCAL_ROOT"
   DEST_BASE="${LOCAL_ROOT}/backups"
   DEST_DIR="${DEST_BASE}/${DEST_FOLDER}"
 }
 
-case "$DEST_MODE" in
-  ssh)   configure_ssh ;;
-  smb)   configure_smb ;;
-  local) configure_local ;;
-esac
+if $KEEP_DEST; then
+  DEST_DIR="${DEST_BASE}/${DEST_FOLDER}"
+else
+  case "$DEST_MODE" in
+    ssh)   configure_ssh ;;
+    smb)   configure_smb ;;
+    local) configure_local ;;
+  esac
+fi
 
 # --- destination folder -------------------------------------------------------
 # dest_exec runs a command wherever the backup lands, so the folder handling
@@ -1379,6 +1704,9 @@ SMB_VERS='${SMB_VERS}'
 SMB_CRED_FILE='${SMB_CRED_FILE}'
 MOUNT_POINT='${MOUNT_POINT}'
 LOCAL_ROOT='${LOCAL_ROOT}'
+# Set when the backup drive was chosen from the list: the drive is then mounted
+# at LOCAL_ROOT by this UUID, through /etc/fstab. Empty for a typed folder.
+LOCAL_UUID='${LOCAL_UUID}'
 # Database history at the destination: one dump per day for HISTORY_DAYS days,
 # then one per week for HISTORY_WEEKS weeks.
 HISTORY_DAYS='${HISTORY_DAYS:-7}'
