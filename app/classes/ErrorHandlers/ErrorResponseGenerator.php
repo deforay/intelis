@@ -5,6 +5,8 @@ namespace App\ErrorHandlers;
 use Throwable;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 use Slim\Psr7\Response;
 use App\Utilities\LoggerUtility;
 use App\Utilities\ErrorIndexUtility;
@@ -111,6 +113,7 @@ class ErrorResponseGenerator
             'file' => $origin['file'],
             'line' => $origin['line'],
             'thrown_at' => $cause->getFile() . ':' . $cause->getLine(),
+            'sql' => $cause instanceof \mysqli_sql_exception ? self::failedQuery() : null,
             'stacktrace' => $cause->getTraceAsString(),
             'user_agent' => $request->getHeaderLine('User-Agent'),
             'ip_address' => CommonService::getClientIpAddress($request),
@@ -118,6 +121,16 @@ class ErrorResponseGenerator
         ]);
 
         return $errorId;
+    }
+
+    /** The statement that failed, as prepared (placeholders, no values). */
+    private static function failedQuery(): ?string
+    {
+        try {
+            return ContainerRegistry::get(DatabaseService::class)->getLastFailedQuery();
+        } catch (Throwable) {
+            return null;
+        }
     }
 
     private function handleApiErrorResponse(Throwable $exception, ResponseInterface $response, int $httpCode, string $errorId): ResponseInterface

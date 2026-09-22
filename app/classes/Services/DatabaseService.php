@@ -46,6 +46,13 @@ final class DatabaseService extends MysqliDb
      */
     private array $savepointStack = [];
 
+    /**
+     * The statement that last failed, as prepared: placeholders, not values, so
+     * it can go into an error log without carrying patient data. getLastQuery()
+     * has the values inlined and, for raw queries, was never set on failure.
+     */
+    private ?string $lastFailedQuery = null;
+
     private string $sessionCollation = 'utf8mb4_unicode_ci';
     private string $sessionCharset = 'utf8mb4';
     private int $countQueryMaxExecutionMs = 10000;
@@ -318,6 +325,10 @@ final class DatabaseService extends MysqliDb
         if (is_array($bindParams) && $bindParams === []) {
             $bindParams = null;
         }
+        // The parent records the last query only after execute() returns, so a
+        // failing statement left getLastQuery() naming the one before it. Record
+        // the SQL up front; on success the parent replaces it with the bound form.
+        $this->_lastQuery = $query;
         return $this->resetStateOnFailure(fn() => parent::rawQuery($query, $bindParams));
     }
 
@@ -1149,6 +1160,11 @@ final class DatabaseService extends MysqliDb
     }
 
 
+    public function getLastFailedQuery(): ?string
+    {
+        return $this->lastFailedQuery;
+    }
+
     #[Override]
     public function reset(): void
     {
@@ -1184,6 +1200,7 @@ final class DatabaseService extends MysqliDb
      */
     private function resetStateOnFailure(callable $query): mixed
     {
+        $this->lastFailedQuery = null;
         try {
             return $query();
         } catch (Throwable $e) {
@@ -1196,6 +1213,7 @@ final class DatabaseService extends MysqliDb
                     $this->_stmtError = $e->getMessage();
                     $this->_stmtErrno = (int) $e->getCode();
                 }
+                $this->lastFailedQuery = is_string($this->_query) ? $this->_query : null;
                 $this->reset();
             }
             throw $e;

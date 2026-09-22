@@ -1705,7 +1705,14 @@ class MysqliDb
         if (!isset($this->_mysqli[$this->defConnectionName])) {
             return "mysqli is null";
         }
-        return trim($this->_stmtError . " " . $this->mysqli()->error);
+        // A failed statement leaves the same message on the statement and on the
+        // connection; joining both printed every error twice.
+        $stmtError = trim((string) $this->_stmtError);
+        $connectionError = trim((string) $this->mysqli()->error);
+        if ($stmtError === '' || $stmtError === $connectionError) {
+            return $connectionError;
+        }
+        return $connectionError === '' ? $stmtError : $stmtError . ' ' . $connectionError;
     }
 
     /**
