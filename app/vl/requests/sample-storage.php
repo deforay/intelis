@@ -421,7 +421,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 																class="fa-solid fa-xmark"></em>&nbsp; <?= _translate("Remove"); ?></a>
 														<select id="sampleRemovalReason<?= $i;
 														?>" name="sampleRemovalReason[<?= $i; ?>]" class="form-control"
-															title="<?= _translate("Please enter sample removal reason", true); ?>" onchange="removeSampleFromFreezer(this.value,<?= $i;
+															title="<?= _htmlTranslate("Please enter sample removal reason"); ?>" onchange="removeSampleFromFreezer(this.value,<?= $i;
 															?>);" style="width:100%; display:none;">
 															<option value=""><?= _translate("-- Select --");
 															?> </option>

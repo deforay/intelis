@@ -51,7 +51,7 @@ if ($general->isSTSInstance()) {
 // user must pick some OTHER lab just to save, silently reassigning the sample.
 $lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true, alwaysIncludeLabId: $vlQueryInfo['lab_id'] ?? null);
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
-$facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '<?= _translate("-- Select --"); ?>');
+$facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], _translate("-- Select --"));
 
 //facility details
 if (isset($vlQueryInfo['facility_id']) && $vlQueryInfo['facility_id'] > 0) {
@@ -678,7 +678,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", ["request_clin
                                                                            <label class="col-lg-5 control-label" for="reviewedBy"><?= _translate('Reviewed By'); ?> </label>
                                                                            <div class="col-lg-7">
                                                                                 <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="<?= _translate('Please choose reviewed by'); ?>" style="width: 100%;">
-                                                                                     <?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '<?= _translate("-- Select --"); ?>'); ?>
+                                                                                     <?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], _translate("-- Select --")); ?>
                                                                                 </select>
                                                                            </div>
                                                                       </div>

@@ -233,21 +233,21 @@ foreach ($rResult as $aRow) {
         $sampleSourceClass = 'source-known';
     }
     //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['temp_sample_id'] . '"  value="' . $aRow['temp_sample_id'] . '" onclick="toggleTest(this);"  />';
-    $status = '<select class="form-control"  name="status[]" id="' . $aRow['temp_sample_id'] . '" title="Please select status" onchange="toggleTest(this,' . $sampleCode . ')">
-			<option value="">-- Select --</option>
-			<option value="' . ACCEPTED . '" ' . ($aRow['result_status'] == ACCEPTED ? "selected=selected" : "") . '>Accepted</option>
-			<option value="' . ON_HOLD . '" ' . ($aRow['result_status'] == ON_HOLD ? "selected=selected" : "") . '>Hold</option>
-			<option value="' . REJECTED . '" ' . ($aRow['result_status'] == REJECTED ? "selected=selected" : "") . '>Rejected</option>
-			<option value="' . TEST_FAILED . '" ' . ($aRow['result_status'] == TEST_FAILED ? "selected=selected" : "") . '>Failed</option>
+    $status = '<select class="form-control"  name="status[]" id="' . $aRow['temp_sample_id'] . '" title="' . _htmlTranslate("Please select status") . '" onchange="toggleTest(this,' . $sampleCode . ')">
+			<option value="">' . _translate("-- Select --") . '</option>
+			<option value="' . ACCEPTED . '" ' . ($aRow['result_status'] == ACCEPTED ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
+			<option value="' . ON_HOLD . '" ' . ($aRow['result_status'] == ON_HOLD ? "selected=selected" : "") . '>' . _translate("Hold") . '</option>
+			<option value="' . REJECTED . '" ' . ($aRow['result_status'] == REJECTED ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
+			<option value="' . TEST_FAILED . '" ' . ($aRow['result_status'] == TEST_FAILED ? "selected=selected" : "") . '>' . _translate("Failed") . '</option>
 			</select><br><br>';
     //}
     //sample to control & control to sample
     if (!empty($scResult) && !empty($inResult) && !empty($inResult[0]) && !empty($scResult) && $inResult[0]['number_of_in_house_controls'] > 0 && $tsrResult[0]['count'] > 0 && $tsrResult[0]['count'] > $refno) {
-        $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">-- Select --</option>';
+        $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">' . _translate("-- Select --") . '</option>';
     } elseif ($aRow['sample_type'] == 'S' || $aRow['sample_type'] == 's') {
-        $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControlAlert(' . $totalControls . ')"><option value="">-- Select --</option>';
+        $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControlAlert(' . $totalControls . ')"><option value="">' . _translate("-- Select --") . '</option>';
     } else {
-        $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">-- Select --</option>';
+        $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">' . _translate("-- Select --") . '</option>';
     }
 
     foreach ($scResult as $control) {

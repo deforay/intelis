@@ -158,7 +158,7 @@ foreach ($rResult as $aRow) {
 
     $editBtn = '';
     if ($editAllowed) {
-        $editBtn = '<a href="' . $editUrl . '&id=' . base64_encode((string) $aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
+        $editBtn = '<a href="' . $editUrl . '&id=' . base64_encode((string) $aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="' . _htmlTranslate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</a>';
     }
     if ($testType == 'generic-tests') {
         $aRow['module'] = "OTHER LAB TESTS ";

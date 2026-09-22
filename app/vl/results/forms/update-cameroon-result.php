@@ -666,7 +666,7 @@ foreach ($testReasonsResultDetails as $row) {
 													<label class="col-lg-5 control-label" for="reviewedBy"><?= _translate('Reviewed By'); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
 														<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="<?= _translate('Please choose reviewed by'); ?>" style="width: 100%;">
-															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '<?= _translate("-- Select --"); ?>'); ?>
+															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], _translate("-- Select --")); ?>
 														</select>
 													</div>
 												</div>

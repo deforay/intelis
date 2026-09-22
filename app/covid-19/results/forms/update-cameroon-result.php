@@ -352,7 +352,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             <td>
                                                 <select name="labTechnician" id="labTechnician" class="form-control isRequired" title="<?= _translate("Please select a Lab Technician"); ?>" style="width:100%;">
                                                     <option value=""><?= _translate("-- Select --"); ?></option>
-                                                    <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['lab_technician'], '<?= _translate("-- Select --"); ?>'); ?>
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['lab_technician'], _translate("-- Select --")); ?>
                                                 </select>
                                             </td>
                                         </tr>

@@ -299,8 +299,8 @@ if ($module == 'generic-tests') {
 			<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title=""
 				readonly value="<?= _sanitizeOutput((string) $module); ?>" />
 			<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);"
-				onclick="validateNow();return false;">Submit</a>
-			<a href="/specimen-referral-manifest/view-manifests.php" class="btn btn-default"> Cancel</a>
+				onclick="validateNow();return false;"><?= _translate("Submit"); ?></a>
+			<a href="/specimen-referral-manifest/view-manifests.php" class="btn btn-default"> <?= _translate("Cancel"); ?></a>
 		</div>
 		<!-- /.box-footer -->
 		</form>

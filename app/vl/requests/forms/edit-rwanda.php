@@ -141,7 +141,7 @@ if (trim((string) $facilityResult[0]['facility_state']) !== '') {
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="">
                                                             <label for="sampleReordered">
-                                                                 <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample"> Sample Reordered
+                                                                 <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> title="<?= _htmlTranslate("Please indicate if this is a reordered sample"); ?>"> <?= _translate("Sample Reordered"); ?>
                                                             </label>
                                                        </div>
                                                   </div>
