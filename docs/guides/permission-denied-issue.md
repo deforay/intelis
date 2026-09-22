@@ -1,3 +1,12 @@
+---
+description: "Find and repair folders the web server cannot write to when InteLIS reports \"Permission denied\"."
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Permission denied errors
 
 InteLIS reports `Permission denied` when the web server cannot write to one of

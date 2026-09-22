@@ -1,3 +1,12 @@
+---
+description: Diagnose and repair a MySQL server that will not start, using the InteLIS database doctor or by hand.
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # MySQL Will Not Start
 
 MySQL refuses to start, so InteLIS cannot open and nothing can be backed up.
@@ -21,7 +30,8 @@ MySQL refuses to start, so InteLIS cannot open and nothing can be backed up.
 
 2. Answer its questions. It asks before each repair, and starts MySQL again
    after a repair.
-3. Wait for `The database is running again.`
+3. Wait for `The database is running again.` If MySQL was already running,
+   the doctor reports what it fixed instead.
 
     ??? failure "If it reports `It still will not start.`"
 
@@ -41,8 +51,8 @@ The doctor checks each cause below. Open one to repair it by hand.
 
 ??? info "The disk is full"
 
-    `df -h /` shows 100% or close to it. MySQL stops when it cannot write. The
-    doctor also reports a disk that has space left but no room for more files:
+    `df -h /` shows less than 500 MB free. MySQL stops when it cannot write.
+    The doctor offers to trim the system logs itself. It also reports a disk that has space left but no room for more files:
     `df -i /` shows 95% or more.
 
     1. Trim the system logs:
@@ -67,7 +77,8 @@ The doctor checks each cause below. Open one to repair it by hand.
     The system stopped MySQL to free memory. `sudo journalctl -k` mentions
     `Out of memory` or `oom-kill`. The doctor also checks
     `innodb_buffer_pool_size`. If it is set above 70% of the machine's memory,
-    the doctor offers to lower it.
+    the doctor offers to switch that setting off, which returns MySQL to its
+    default size.
 
     Close other programs, then start MySQL:
 
@@ -118,8 +129,9 @@ The doctor checks each cause below. Open one to repair it by hand.
     See [Restoring from a backup](restoring-from-backup.md).
 
 The doctor also checks for a blocked MySQL service, a missing connection folder,
-another program on the MySQL port, and a wrong database password saved in
-InteLIS.
+settings placed under the wrong heading in a MySQL configuration file (the
+doctor switches them off), another program on the MySQL port, and a wrong
+database password saved in InteLIS.
 
 ## Last resort: copy the disk
 

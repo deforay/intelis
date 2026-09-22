@@ -1,3 +1,11 @@
+---
+description: Constituer un manifeste d'envoi d'échantillons sur le STS, l'imprimer pour le colis, puis le modifier ou le déplacer vers un autre laboratoire.
+audience: [requesting-facility, lab-staff]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Envoyer des échantillons à un laboratoire avec un manifeste
 
 Lister les échantillons d'un colis sur un manifeste, afin que le laboratoire
@@ -54,6 +62,9 @@ manifeste dans le groupe de ce test.
             - indiquent le laboratoire d'analyse choisi
             - ne figurent pas sur un autre manifeste
             - ne sont pas annulées
+            - ont été prélevés dans la période **Date de prélèvement de
+              l'échantillon**, préremplie sur les 28 derniers jours. L'élargir
+              pour des échantillons plus anciens.
 
             Ouvrir la demande et vérifier son laboratoire d'analyse. Puis
             sélectionner de nouveau **Rechercher**.
@@ -85,14 +96,21 @@ manifeste dans le groupe de ce test.
 === "Modifier un manifeste"
 
     1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Manifeste VL**.
-    2. Sélectionner **Modifier** sur la ligne du manifeste. Les échantillons
+    2. Sélectionner **Edit** sur la ligne du manifeste. Les échantillons
        déjà présents sur le manifeste apparaissent dans la liste de droite.
 
-        ??? failure "Si Modifier est grisé"
+        ??? failure "Si Edit est grisé"
 
             Le laboratoire d'analyse a déjà reçu le colis, donc le manifeste ne
             peut plus changer. S'il comporte une erreur, prévenir le laboratoire
             d'analyse. Le laboratoire peut rejeter les échantillons concernés.
+
+        Si un échantillon a été annulé après son ajout au manifeste, l'écran de
+        modification l'affiche sous **Les échantillons annulés seront retirés
+        de ce manifeste**. L'enregistrement le retire.
+
+        Le **Laboratoire d'analyse** ne peut plus être modifié sur cet écran une
+        fois renseigné.
 
     3. Pour ajouter des échantillons, les passer de la liste de gauche à la
        liste de droite. Pour réduire la liste de gauche, modifier les filtres et
@@ -100,9 +118,11 @@ manifeste dans le groupe de ce test.
     4. Pour retirer des échantillons, les renvoyer dans la liste de gauche.
     5. Vérifier que **Nombre d'échantillons sélectionnés** correspond aux tubes
        du colis.
-    6. Sélectionner **Sauvegarder**.
-    7. Sélectionner **Imprimer le manifeste PDF** sur la ligne du manifeste.
-    8. Remplacer l'ancien manifeste imprimé du colis par le nouveau.
+    6. Saisir la **Raison du changement de manifeste**. Ce champ est
+       obligatoire.
+    7. Sélectionner **Submit**.
+    8. Sélectionner **Imprimer le manifeste PDF** sur la ligne du manifeste.
+    9. Remplacer l'ancien manifeste imprimé du colis par le nouveau.
 
     ??? info "À propos du champ Statut du manifeste"
 
@@ -112,7 +132,7 @@ manifeste dans le groupe de ce test.
         | Statut | Réglé quand |
         | --- | --- |
         | **En attente** | Le manifeste est créé. |
-        | **Dispatch** | Le manifeste est imprimé pour la première fois. |
+        | **Expédié** | Le manifeste est imprimé pour la première fois. |
         | **Reçu** | Le laboratoire d'analyse réceptionne le colis. Le manifeste ne peut plus être modifié ensuite. |
 
 === "Déplacer des manifestes vers un autre laboratoire"

@@ -1,3 +1,12 @@
+---
+description: Diffuser les résultats de charge virale approuvés et rejetés à la structure demandeuse par PDF imprimé, courriel ou export tableur.
+audience: [lab-staff, lab-supervisor]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # Diffuser les résultats à la structure demandeuse
 
 Les résultats approuvés parviennent à la structure demandeuse sous forme de
@@ -31,7 +40,9 @@ l'impression ni au courriel.
         ??? info "Pour réimprimer un résultat"
 
             Passer sur l'onglet **Résultats déjà imprimés** et y suivre les
-            mêmes étapes.
+            mêmes étapes. Un résultat corrigé après impression revient dans
+            **Résultats pas encore imprimés** et porte la mention **Résultat
+            modifié**.
 
     3. Filtrer les résultats à imprimer, par exemple par **Nom de la structure**
        pour imprimer ensemble les rapports d'une structure.

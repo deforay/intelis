@@ -1,3 +1,12 @@
+---
+description: Send failed, held or lost viral load samples for retest, or recover valid results that an import marked as failed.
+audience: [lab-staff, lab-supervisor]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # How to handle failed and held samples
 
 Samples that failed on the analyzer, were put on hold, or went missing collect on
@@ -82,11 +91,12 @@ For every status, see [Sample statuses](sample-statuses.md).
         Requests**. Search for the sample and select **Barcode** on its row. The
         button appears only when **Sample ID Barcode Label Printing** under
         **ADMIN → System Configuration → General Configuration** is not set to
-        **Off**. If no printer is listed, select **Change/Retry** to pick one.
+        **Off**. With a Zebra printer, if no printer is listed, select **Change/Retry** to pick one.
 
 === "Recover a run marked failed by mistake"
 
-    An import can mark a whole run failed when the results were sound. Recovery
+    Imports made before version 5.5.20 could mark a whole run failed when the
+    results were sound. Recovery
     moves those samples straight to **Accepted**, with no second approval step.
     Check each result against the analyzer printout first.
 

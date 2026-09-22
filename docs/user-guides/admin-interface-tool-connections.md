@@ -1,3 +1,11 @@
+---
+description: Generate a one-time connection code to link, reconnect or revoke an Interface Tool installation for a testing lab.
+audience: [lab-admin, system-admin]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # How to connect the Interface Tool with a connection code
 
 Link one installation of the Interface Tool to a testing lab, so its analyzer
@@ -8,7 +16,9 @@ To install the tool and add the analyzer in it, see
 
 ## Before starting
 
-- An administrator account on the STS or on a standalone installation
+- On the STS, an account with the built-in Admin role, or an account with the
+  testing lab mapped to it. On a standalone installation, an account with the
+  testing lab mapped to it
 - The testing lab created under **ADMIN → Facilities**
 - The Interface Tool installed on the lab computer
 - The **Interface API Enabled** setting switched on. No page shows this
@@ -29,17 +39,18 @@ To install the tool and add the analyzer in it, see
     3. Scroll to **Interface Tool Connections**.
     4. Select **Generate Connection Code**.
     5. In the Interface Tool on the lab computer, enter the **InteLIS URL** shown
-       on the page.
+       on the page. **Copy** puts the value on the clipboard.
     6. Enter the three groups of the **Connection Code** in the Interface Tool.
 
         ??? info "The code works once"
 
             The code is shown only once and can be used only once. It expires
-            at the time shown under **Expires in**. If it expires, select
-            **Generate Connection Code** again.
+            after 30 minutes, when the **Expires in** countdown reaches 00:00.
+            If it expires, select **Generate Connection Code** again.
 
-            Only one code can be outstanding at a time. To start again, select
-            **Cancel Code** first.
+            The page holds one code at a time. To make another before it
+            expires, select **Cancel Code** first. Reloading the page hides the
+            code but does not cancel it.
 
     7. Reload the page. The installation appears under **Connected
        Installations**.
@@ -74,9 +85,11 @@ To install the tool and add the analyzer in it, see
     4. Under **Connected Installations**, find the installation by its **Display
        Name**.
     5. Select **Revoke**.
+    6. Confirm the prompt.
 
     The revoked installation can no longer send results. Other installations of
-    the lab are unaffected.
+    the lab are unaffected. To bring a revoked installation back, use
+    **Reconnect / Reinstall** on its row.
 
 ## Confirm it worked
 

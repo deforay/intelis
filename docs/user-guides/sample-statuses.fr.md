@@ -1,3 +1,12 @@
+---
+description: Liste de référence des statuts d'échantillon de charge virale, de ce qui attribue chacun et de leur effet dans les rapports.
+audience: [lab-staff, lab-supervisor, lab-admin]
+module: [vl]
+type: reference
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # Statuts des échantillons
 
 Chaque échantillon dans InteLIS porte un statut. Cette page les liste tous,
@@ -29,9 +38,9 @@ entre parenthèses.
 | --- | --- |
 | Échantillon enregistré au centre de santé | L'enregistrement d'une demande dans une structure sanitaire |
 | Échantillon enregistré au laboratoire d'analyse | L'enregistrement d'une demande au laboratoire, l'activation d'un manifeste, ou l'envoi au retest |
-| Échantillon envoyé à un autre laboratoire | La référence d'un échantillon à un autre laboratoire |
+| Échantillon envoyé à un autre laboratoire | Aucun écran de charge virale ne l'attribue. Il sert aux références TB et Tests personnalisés |
 | En attente d'approbation | L'enregistrement d'un résultat, ou sa correction sur le formulaire de résultat |
-| Accepté | L'approbation d'un résultat dans **Gérer le statut des résultats** ou sur l'écran **Résultats importés**, l'approbation automatique des résultats transmis par l'outil d'interface si le laboratoire est configuré ainsi, ou la récupération d'un résultat sur la page **Échec/Echantillons en attente** |
+| Accepté | L'approbation d'un résultat dans **Gérer le statut des résultats** ou sur l'écran **Résultats importés**, l'approbation automatique des résultats transmis par l'outil d'interface si le laboratoire est configuré ainsi, l'approbation automatique des résultats reçus par l'API lorsque cette option est activée, ou la récupération d'un résultat sur la page **Échec/Echantillons en attente** |
 | Rejeté | L'enregistrement d'un rejet sur le formulaire de résultat, l'application de **Rejeté** dans **Gérer le statut des résultats**, ou le choix de **Rejected** sur l'écran **Résultats importés** |
 | Échec/Invalidité | L'enregistrement d'un résultat qui correspond à un échec, le choix de **Failed** sur l'écran **Résultats importés**, ou l'application de **Accepté** à un résultat qui correspond à un échec |
 | En attente | Aucun écran de charge virale ne l'attribue. Choisir **Hold** sur l'écran **Résultats importés** met de côté le résultat de cette ligne et laisse le statut de l'échantillon inchangé |
@@ -46,7 +55,7 @@ entre parenthèses.
 | Statut | Motif enregistré |
 | --- | --- |
 | Rejeté | Un motif de rejet issu de la liste sous **ADMIN → Configuration CV → Motifs de rejet** |
-| Échec/Invalidité | Un motif d'échec issu de la liste sous **ADMIN → Configuration CV → Raisons de l'échec des tests** |
+| Échec/Invalidité | Un motif d'échec issu de la liste sous **ADMIN → Configuration CV → Raisons de l'échec des tests**, sur les formulaires de résultat qui comportent un champ de motif d'échec |
 
 ## Effet des statuts dans les rapports
 

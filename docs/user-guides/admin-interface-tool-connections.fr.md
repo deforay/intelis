@@ -1,3 +1,11 @@
+---
+description: Générer un code de connexion à usage unique pour relier, reconnecter ou révoquer une installation de l'outil d'interface d'un laboratoire.
+audience: [lab-admin, system-admin]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Connecter l'outil d'interface avec un code de connexion
 
 Relier une installation de l'outil d'interface à un laboratoire d'analyse, pour
@@ -9,7 +17,9 @@ Pour installer l'outil et y ajouter l'automate, voir
 
 ## Avant de commencer
 
-- Un compte administrateur sur le STS ou sur une installation autonome
+- Sur le STS, un compte avec le rôle Admin intégré ou un compte auquel le
+  laboratoire d'analyse est rattaché. Sur une installation autonome, un compte
+  auquel le laboratoire d'analyse est rattaché
 - Le laboratoire d'analyse créé sous **ADMIN → Structures sanitaires**
 - L'outil d'interface installé sur l'ordinateur du laboratoire
 - Le paramètre **Interface API Enabled** activé. Aucune page n'affiche ce
@@ -30,18 +40,21 @@ Pour installer l'outil et y ajouter l'automate, voir
     3. Descendre jusqu'à **Connexions des outils d'interface**.
     4. Sélectionner **Générer un code de connexion**.
     5. Dans l'outil d'interface de l'ordinateur du laboratoire, saisir l'**URL
-       InteLIS** affichée sur la page.
+       InteLIS** affichée sur la page. **Copier** place la valeur dans le
+       presse-papiers.
     6. Saisir les trois groupes du **Code de connexion** dans l'outil
        d'interface.
 
         ??? info "Le code ne sert qu'une fois"
 
-            Le code ne s'affiche qu'une fois et ne sert qu'une fois. Il expire à
-            l'heure indiquée sous **Expire dans**. S'il expire, sélectionner de
-            nouveau **Générer un code de connexion**.
+            Le code ne s'affiche qu'une fois et ne sert qu'une fois. Il expire
+            après 30 minutes, quand le compte à rebours **Expire dans** atteint
+            00:00. S'il expire, sélectionner de nouveau **Générer un code de
+            connexion**.
 
-            Un seul code peut être en attente à la fois. Pour recommencer,
-            sélectionner d'abord **Code d'annulation**.
+            La page ne garde qu'un code à la fois. Pour en créer un autre avant
+            l'expiration, sélectionner d'abord **Code d'annulation**. Recharger
+            la page masque le code sans l'annuler.
 
     7. Recharger la page. L'installation apparaît sous **Installations
        connectées**.
@@ -78,9 +91,12 @@ Pour installer l'outil et y ajouter l'automate, voir
     4. Sous **Installations connectées**, trouver l'installation par son **Nom
        d'affichage**.
     5. Sélectionner **Révoquer**.
+    6. Confirmer l'invite.
 
     L'installation révoquée ne peut plus envoyer de résultats. Les autres
-    installations du laboratoire ne sont pas touchées.
+    installations du laboratoire ne sont pas touchées. Pour rétablir une
+    installation révoquée, utiliser **Se reconnecter / Réinstaller** sur sa
+    ligne.
 
 ## Vérifier que tout fonctionne
 

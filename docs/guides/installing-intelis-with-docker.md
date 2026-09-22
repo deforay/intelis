@@ -1,3 +1,12 @@
+---
+description: Run InteLIS in Docker containers on a lab server or developer machine, including updates and resetting the database.
+audience: [system-admin, developer]
+module: [all]
+type: how-to
+platform: docker
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Installing InteLIS with Docker
 
 Run InteLIS in Docker containers, on a lab server or on a developer machine.
@@ -59,7 +68,7 @@ versions are not supported. The default image uses PHP 8.4.
             | `PHP_VERSION` | `8.4` | The PHP version installed in the container image. Use `8.4` or `8.5`. |
             | `MYSQL_ROOT_PASSWORD` | `root_password` when empty | The MySQL root password. |
             | `MYSQL_PORT` | `3306` | The port on this machine for MySQL. |
-            | `MYSQL_DATABASE` | `vlsm` | The main database name. |
+            | `MYSQL_DATABASE` | `vlsm` | The main database name. Leave it as `vlsm`. |
             | `INTERFACING_ENABLED` | `true` | Creates the interfacing database. |
             | `INTERFACE_DB_HOST` | `intelis-db` | The interfacing database host. |
             | `INTERFACE_DB_PORT` | `3306` | The interfacing database port. |
@@ -91,7 +100,8 @@ versions are not supported. The default image uses PHP 8.4.
         The first start builds the container image, creates the databases
         and runs every migration. It takes several minutes. Wait for a line
         that starts with `Run-once:`, then press **Ctrl+C** to stop following.
-        The containers keep running.
+        The containers keep running. Scroll up and check that no line above
+        it reports an error. Step 8's `intelis check` confirms.
 
         ??? failure "If the log shows `Access denied for user 'root'`"
 
@@ -224,6 +234,8 @@ versions are not supported. The default image uses PHP 8.4.
         ```
 
         Wait for a line that starts with `Run-once:`, then press **Ctrl+C**.
+        Scroll up and check that no line above it reports an error. Step 6's
+        `intelis check` confirms.
 
         ??? failure "If the update stopped part way"
 
@@ -282,7 +294,7 @@ versions are not supported. The default image uses PHP 8.4.
         | `PHP_VERSION` | `8.4` | The PHP version installed in the container image. Use `8.4` or `8.5`. |
         | `MYSQL_ROOT_PASSWORD` | `root_password` when empty | The MySQL root password. |
         | `MYSQL_PORT` | `3306` | The host port for MySQL. |
-        | `MYSQL_DATABASE` | `vlsm` | The main database name. |
+        | `MYSQL_DATABASE` | `vlsm` | The main database name. Leave it as `vlsm`. |
         | `INTERFACING_ENABLED` | `true` | Creates the interfacing database. |
         | `INTERFACE_DB_HOST` | `intelis-db` | The interfacing database host. |
         | `INTERFACE_DB_PORT` | `3306` | The interfacing database port. |

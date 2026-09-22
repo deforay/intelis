@@ -257,7 +257,7 @@
     <tr><td>Red asterisk</td><td>Mandatory. InteLIS refuses to save without it.</td></tr>
     <tr><td>Optional fields</td><td>Fill them where the paper form has the data. Reports count only what was recorded.</td></tr>
     <tr><td>Barcode label</td><td>Set <span class="ui">Print Barcode Label</span> before saving. Use <span class="ui">Change/Retry</span> if no printer is listed.</td></tr>
-    <tr><td>Mistake after saving</td><td>Find it in View Test Requests and select <span class="ui">Edit</span>. Requests lock after a set number of days.</td></tr>
+    <tr><td>Mistake after saving</td><td>Find it in View Test Requests and select <span class="ui">Edit</span>. Approved and rejected requests lock a set number of days after their last change.</td></tr>
   </table>
 
   <h3>Receiving a package instead</h3>
@@ -345,14 +345,14 @@
     <li>Choose <span class="ui">Instrument/Platform Name</span> and <span class="ui">Specific Machine Name/Code</span>. The wrong choice garbles the import.</li>
     <li>Choose the <span class="ui">Testing Lab Name</span> and select the file. Accepts xls, xlsx, csv, txt.</li>
     <li>Select <span class="ui">Submit</span>.</li>
-    <li>Check the <span class="ui">Sample source</span> note on every row before accepting.</li>
+    <li>Check each row's colour against the <span class="ui">Sample source</span> and <span class="ui">Date gap</span> legend before accepting.</li>
     <li>Set a status on each row, set tester, reviewer, and approver, then <span class="ui">Save</span>.</li>
   </ol>
   <table class="wrapfirst">
-    <tr><th>Sample source note</th><th>Action</th></tr>
+    <tr><th>Row colour</th><th>Action</th></tr>
     <tr><td>Result for Sample ID from VLSM</td><td>Accept</td></tr>
     <tr><td>Sample ID not from VLSM</td><td>Do not accept. Find why the ID differs</td></tr>
-    <tr><td>Result already exists</td><td>Overwrite only if the new result is correct</td></tr>
+    <tr><td>Result already exists for this sample</td><td>Overwrite only if the new result is correct</td></tr>
     <tr><td>Test date 1+ month or 1+ year from collection</td><td>Check the date. A year's gap is usually a typing error</td></tr>
   </table>
 
@@ -420,7 +420,7 @@
     <li>Results go to the addresses held against the facility.</li>
   </ul>
 
-  <p>Only approved results appear on the print and email pages.</p>
+  <p>Only approved results, and rejected samples, appear on the print and email pages.</p>
 
   <footer class="cardfoot"><span>InteLIS viral load job aid</span><span>Card 5: approve and release</span></footer>
 </section>
@@ -499,7 +499,7 @@
     <tr><td>Hold</td><td>Paused pending a decision</td></tr>
     <tr><td>Sample Reordered</td><td>Sent back for testing again</td></tr>
     <tr><td>Lost</td><td>Cannot be found, will not be tested</td></tr>
-    <tr><td>Expired</td><td>Past the storage life the installation allows</td></tr>
+    <tr><td>Expired</td><td>Not tested within the Sample Expiry Days (365 by default)</td></tr>
     <tr><td>No Result</td><td>No result recorded</td></tr>
     <tr><td>Cancelled</td><td>Testing will not be performed</td></tr>
   </table>
@@ -509,7 +509,7 @@
     <tr><td>Cancelled</td><td>Treated as never tested. Out of testing counts and turnaround time</td></tr>
     <tr><td>Failed/Invalid</td><td>Counted in the failure rate. A retest keeps the failed attempt on record</td></tr>
     <tr><td>Rejected</td><td>Appears in the sample rejection report with its reason</td></tr>
-    <tr><td>Accepted</td><td>The only status that can be printed or emailed</td></tr>
+    <tr><td>Accepted and Rejected</td><td>The only statuses that can be printed or emailed</td></tr>
   </table>
 
   <h3>Common situations</h3>

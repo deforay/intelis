@@ -1,3 +1,11 @@
+---
+description: Steps to sign in, read the InteLIS screen, change the password, filter list pages and sign out.
+audience: [lab-staff, lab-supervisor, requesting-facility]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # How to sign in and navigate InteLIS
 
 New users need a login and a short tour of the screen before they can do
@@ -35,6 +43,10 @@ If no login exists, ask the administrator.
 InteLIS opens on the page set for the role. For most lab users that is the
 dashboard.
 
+On the first sign-in, and after the administrator resets the password, InteLIS
+opens **Edit Profile** with the message **Please change your password to
+proceed.** Set a new password there before continuing.
+
 ## Read the screen
 
 The screen has three parts.
@@ -71,7 +83,8 @@ system does. Check the banner before entering real results.
 
 1. Select the account name in the top right.
 2. Select **Edit Profile**.
-3. Enter the new password twice.
+3. Enter the new password in **Password** and **Confirm Password**. It needs
+   at least 8 characters, with at least one number and one letter.
 4. Select **Submit**.
 
 If the account menu has no **Edit Profile** entry, the administrator has turned
@@ -86,7 +99,7 @@ Every list page in InteLIS works the same way.
 3. To clear every filter, select **Reset**.
 
 Some list pages also offer **Manage Columns**, which hides or shows columns in
-the table. Column choices persist for the account.
+the table. The choice lasts until the page is reloaded.
 
 ## Sign out
 

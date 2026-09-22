@@ -1,3 +1,12 @@
+---
+description: Copy InteLIS database and settings backups to Google Drive every 6 hours with Rclone, and download them onto a replacement machine.
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Backing up to Google Drive with Rclone on Ubuntu
 
 Upload the InteLIS backups to Google Drive every 6 hours, so a copy survives a
@@ -123,7 +132,7 @@ hand, as shown in [Get the backups back](#get-the-backups-back).
     sudo rclone lsl gdrive:intelis/centrallab-01/backups/db
     ```
 
-    The list must include a file starting with `vlsm-` with today's date.
+    The list must include a file starting with `vlsm-` with today's date (UTC).
 
 ### Run it automatically
 

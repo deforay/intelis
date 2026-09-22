@@ -1,3 +1,11 @@
+---
+description: The review process, standing invariants and pre-push checks every change to InteLIS is held to.
+audience: [developer]
+module: [all]
+type: reference
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Engineering Standards
 
 The bar this codebase is held to, and the review that enforces it.
@@ -11,7 +19,14 @@ bin/dev/review                  # the working branch against master
 bin/dev/review <commit-sha>     # one commit
 bin/dev/review --uncommitted    # the working tree, before committing
 bin/dev/review --verify <...>   # add a second pass that tries to refute the first's findings
+bin/dev/review --pending        # list commits not yet recorded as reviewed
+bin/dev/review --since-last     # review everything since the last recorded commit
+bin/dev/review --mark [sha]     # record a commit (default HEAD) as reviewed
 ```
+
+The last three keep a ledger of reviewed commits in
+`$(git rev-parse --git-common-dir)/reviewed-commits.txt`. The ledger is per clone and never
+committed. Set `REVIEW_LEDGER` to keep it elsewhere.
 
 `--verify` exists because one pass that both finds and reports has nothing pushing back on
 it, and that is where the false positives are: a run of this once produced several
@@ -20,8 +35,8 @@ the findings and one job — break them — and reports only what survives, with
 line that settles each. It doubles the cost of a run, so it is opt-in; `REVIEW_VERIFY=1`
 in `.env` makes it the default.
 
-The reviewing CLI is named by `$REVIEW_AGENT`, read from the untracked `.env` and falling
-back to your shell profile. It is deliberately not written down here: the tool can be
+The reviewing CLI is named by `$REVIEW_AGENT`, read from the shell environment, falling
+back to the untracked `.env`. It is deliberately not written down here: the tool can be
 swapped without editing anything, and no vendor name enters the repository. `REVIEW_AGENT`
 is a command line rather than a bare binary, so a reviewer that wants a subcommand and one
 that wants a flag are both a setting; set `REVIEW_AGENT_STDIN=1` for a reviewer that reads
@@ -108,8 +123,9 @@ against them without running a review.
   re-runnable seed row is safe but a data migration relying on a duplicate to stop is
   not, and 1146 on anything naming `audit_form_*`, left over from Audit Trail v2. Some
   messages are matched textually as well — "Duplicate column name", "Duplicate key name",
-  "already exists". Anything else halts the upgrade and strands the instance at the
-  version before. A statement that fails benignly is skipped silently while `sc_version`
+  "already exists". Anything else is counted as an error. The rest of that file
+  still runs and what succeeded is committed, but `sc_version` is not advanced and no later
+  migration runs. A statement that fails benignly is skipped silently while `sc_version`
   advances, so a data migration that quietly does nothing is the failure to think about,
   not just a hard stop.
 - **An integration test that owns a database names it with the process id.** Two suites run
@@ -127,7 +143,8 @@ against them without running a review.
   context.
 - **Exports use OpenSpout.**
 - **A caught error still has to reach someone.** `LegacyRequestHandler` discards the page
-  buffer on a throw and hands off to `ErrorResponseGenerator`, which renders the styled page
+  buffer on a throw, logs it and rethrows. `ErrorHandlerMiddleware` passes it to
+  `ErrorResponseGenerator`, which renders the styled page
   for a browser, JSON for an AJAX caller, and logs both with an error ID the user can quote.
   A terminal `try/catch` that only logs bypasses all of that and returns a blank 200: the
   page looks like it worked. Log and rethrow, or handle it visibly (flash message plus
@@ -139,6 +156,10 @@ against them without running a review.
 
 - `composer test` green.
 - `php -l` clean on every changed PHP file.
+- `composer check-invariants` and `composer check-di` clean.
+- The Integration suite (`vendor/bin/phpunit --testsuite Integration`) needs a real MySQL.
+  It skips itself when `INTELIS_TEST_DB_HOST` and `INTELIS_TEST_DB_USER` are unset, so a
+  green `composer test` without them has not run it. CI runs it against MySQL.
 - `bin/dev/review` run, and every finding addressed or rebutted.
 - Shell scripts under `scripts/` run, not just read. `bash -n` proves syntax and nothing
   else. Use a privileged systemd container and stage the machine the way the fleet actually

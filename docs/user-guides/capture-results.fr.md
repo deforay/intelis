@@ -1,3 +1,11 @@
+---
+description: Faire entrer les résultats de charge virale dans InteLIS par l'outil d'interface, un fichier de l'automate ou la saisie manuelle.
+audience: [lab-staff]
+module: [vl, custom-tests]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Saisir les résultats de charge virale
 
 Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
@@ -53,9 +61,9 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
             **Import de fichier**.
 
     6. Vérifier le statut des résultats. Les résultats de l'interface arrivent
-       approuvés, avec le statut **Accepté**, prêts à imprimer.
+       approuvés, avec le statut **Accepted** (accepté), prêts à imprimer.
 
-        ??? info "Si les résultats affichent En attente d'approbation"
+        ??? info "Si les résultats affichent Awaiting Approval"
 
             Le contact support du laboratoire a désactivé l'approbation
             automatique des résultats de l'interface sur cette installation. Les
@@ -85,11 +93,13 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
        en déduit le format.
     6. Choisir le **Nom du laboratoire d'analyse**.
     7. Sélectionner le fichier sous **Téléverser Charge virale du VIH Fichier**.
-    8. Sélectionner **Envoyer**. InteLIS liste chaque ligne lue, avec une mention
-       **Source de l'échantillon** sur chacune.
-    9. Vérifier la mention **Source de l'échantillon** de chaque ligne.
+    8. Sélectionner **Envoyer**. InteLIS liste chaque ligne lue. La couleur de
+       la case ID de chaque ligne correspond à une entrée **Source de
+       l'échantillon** de la légende située au-dessus de la liste. Une marque
+       colorée sur la date du test correspond à une entrée **Écart de date**.
+    9. Vérifier chaque ligne par rapport à la légende.
 
-        | Mention | Signification | Action |
+        | Entrée de la légende | Signification | Action |
         |---|---|---|
         | Résultat pour l'ID de l'échantillon du VLSM | L'ID correspond à un échantillon enregistré | Accepter |
         | ID de l'échantillon/ID ne provenant pas du VLSM | L'ID ne correspond à aucun échantillon enregistré | Ne pas accepter. Chercher pourquoi l'ID diffère |
@@ -103,9 +113,13 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
 
         ??? info "Pour accepter toutes les lignes en une fois"
 
-            Sélectionner **Accepter tous les échantillons**. Seules les lignes
-            sans statut sont modifiées. Les lignes déjà réglées sur **Rejected**
-            restent rejetées.
+            Sélectionner **Accepter tous les échantillons**. Les lignes dont le
+            résultat indique un échec passent à **Failed**. Les autres lignes
+            sans statut passent à **Accepted** uniquement si le fichier leur a
+            donné un résultat. Les lignes réglées sur **Hold** ou **Rejected**
+            gardent leur statut, sauf si le résultat indique un échec. InteLIS
+            nomme chaque ligne non acceptée faute de résultat lu. Régler ces
+            lignes à la main.
 
     11. Choisir **Examiné par**, **Révisé par** et **Approuvé par**.
 
@@ -169,8 +183,8 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
             [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
 
     5. Relire le résultat à l'écran par rapport au tirage de l'automate.
-    6. Sélectionner **Sauvegarder**. Le résultat passe à **En attente
-       d'approbation**. Voir
+    6. Sélectionner **Sauvegarder**. Le résultat passe à **Awaiting Approval**
+       (en attente d'approbation). Voir
        [Vérifier et approuver les résultats](approve-results.md).
 
 === "Tests personnalisés"
@@ -194,11 +208,11 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
 
     7. Saisir l'**Interprétation finale**.
 
-        ??? failure "Si l'échantillon reste à Échantillon enregistré au laboratoire d'analyse"
+        ??? failure "Si l'échantillon reste à Sample Registered at Testing Lab"
 
             L'interprétation finale manque. Sans elle, l'échantillon reste à
-            **Échantillon enregistré au laboratoire d'analyse** quel que soit le
-            nombre de fiches enregistrées, et il n'atteint jamais la file
+            **Sample Registered at Testing Lab** (échantillon enregistré au
+            laboratoire d'analyse) quel que soit le nombre de fiches enregistrées, et il n'atteint jamais la file
             d'approbation. Rouvrir l'échantillon et refaire les étapes 6 et 7.
 
     8. Sélectionner **Sauvegarder**.

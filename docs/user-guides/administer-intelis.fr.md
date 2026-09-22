@@ -1,10 +1,20 @@
+---
+description: Relie chaque tâche du menu ADMIN à son guide et liste les modifications globales à faire valider avant de les appliquer.
+audience: [lab-admin, system-admin]
+module: [all]
+type: reference
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Administrer InteLIS
 
 Cette page relie chaque tâche du menu **ADMIN** à son guide. Elle liste aussi
 les modifications à faire valider avant de les appliquer.
 
 L'installation, la mise à jour et la sauvegarde d'InteLIS sont des tâches
-serveur. Elles sont traitées dans les guides d'installation et de maintenance.
+serveur. Elles sont traitées dans les guides
+d'[installation](../guides/installing-intelis-on-ubuntu.md) et de
+[maintenance](../guides/maintenance.md).
 
 ## Où se trouve chaque tâche
 
@@ -60,8 +70,8 @@ Un second espace d'administration, **System Admin**, se trouve hors de ce menu, 
 === "Cloud"
 
     Le personnel du laboratoire se connecte au STS avec un rôle de laboratoire
-    d'analyse. InteLIS impose la séparation à chacun de ces utilisateurs, sauf au
-    super administrateur.
+    d'analyse. InteLIS impose la séparation à chacun de ces utilisateurs, sauf à
+    ceux qui ont le rôle Admin intégré.
 
     1. S'attendre à ces cinq pages ADMIN, et à aucune autre : **Utilisateurs**,
        **Instruments**, **Piste d’audit**, **Journal d’activité de
@@ -84,7 +94,7 @@ créées.
 | Format ou préfixe de l'ID de l'échantillon | Configuration générale, par module | Les nouveaux échantillons prennent le nouveau format. Les échantillons existants gardent l'ancien |
 | Jours de verrouillage des échantillons, Jours d'expiration de l'échantillon | Configuration générale → Paramètres globaux | Décident quand une fiche cesse d'accepter les modifications |
 | Le même utilisateur peut réviser et approuver | Configuration générale → Paramètres globaux | Permet à une même personne de réviser et d'approuver le même résultat |
-| Approbation automatique des résultats de l'API (CV, EID, COVID-19 ou TB) | Configuration générale, par module | Les résultats reçus par l'API sont approuvés sans contrôle humain |
+| Approbation automatique des résultats de l'API (CV, EID, COVID-19 ou TB, libellé exact selon le module) | Configuration générale, par module | Les résultats reçus par l'API sont approuvés sans contrôle humain |
 | Pays d'installation | Configuration générale → Paramètres globaux | Change le formulaire de demande vu par tous |
 | Mode de formation | Configuration générale → Paramètres globaux | Marque l'installation comme un entraînement |
 | Privilèges d'un rôle | Contrôle d'accès → Les rôles | S'appliquent aussitôt à tous les utilisateurs de ce rôle |

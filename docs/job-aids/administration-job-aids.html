@@ -191,15 +191,15 @@
   <h3>Two levels of administrator</h3>
   <table class="wrapfirst">
     <tr><th>Level</th><th>Does</th></tr>
-    <tr><td>Lab administrator</td><td>Users, facilities, analyzers, module config lists, Interface Tool connections, audit trail lookups</td></tr>
-    <tr><td>National administrator</td><td>All of the above, plus roles and privileges, General Configuration, and Geographical Divisions</td></tr>
+    <tr><td>Lab administrator</td><td>Users, instruments, Interface Tool connections, audit trail lookups</td></tr>
+    <tr><td>National administrator</td><td>All of the above, plus roles, facilities, request form lists, General Configuration and Geographical Divisions</td></tr>
   </table>
 
   <div class="warn">
     <strong>Get approval before changing these</strong>
     Sample ID format or prefix. Locking and expiry days. Same user can Review and Approve.
-    Auto Approve Interface Results. Role privileges. Deleting a list entry. Renaming or
-    removing a province or district. Each one applies across the whole installation at once,
+    VL, EID, COVID-19 and TB Auto Approve API Results, and Auto Approve Interface Results
+    (set by support). Role privileges. Renaming or removing a province or district. Each one applies across the whole installation at once,
     and setting it back does not undo its effect on the records already created.
   </div>
 
@@ -229,7 +229,7 @@
     <li>Enter the <span class="ui">Full Name</span> as it should appear on reports and in the activity log.</li>
     <li>Enter the email and phone number.</li>
     <li>Choose the <span class="ui">Role</span>. Permissions come from the role, never from the user.</li>
-    <li>Set the <span class="ui">Testing Lab</span>. This scopes what the user sees to their own lab's work.</li>
+    <li>On a central server (STS), for a Testing Lab role, set the <span class="ui">Testing Lab</span>. It limits the user to that lab's work.</li>
     <li>Upload a <span class="ui">Signature</span> for anyone who approves results. 100 by 100 pixels.</li>
     <li>Set the <span class="ui">Login ID</span> and a starting password.</li>
     <li>Select <span class="ui">Submit</span>, then hand the Login ID and password to the user directly.</li>
@@ -280,7 +280,7 @@
     <tr><th>Field</th><th>What to enter</th></tr>
     <tr><td>Facility Name</td><td>The name staff will search for</td></tr>
     <tr><td>Facility Code</td><td>The national unique code</td></tr>
-    <tr><td>Facility Type</td><td>Health facility, or testing lab</td></tr>
+    <tr><td>Facility Type</td><td>Health Facility, Testing Lab or Collection Site</td></tr>
     <tr><td>Province/State, District/County</td><td>The location. Both must be set</td></tr>
     <tr><td>Test Type</td><td>Every test type the facility takes part in</td></tr>
     <tr><td>Testing Point(s)</td><td>The service points, such as VCT or PMTCT</td></tr>
@@ -303,7 +303,7 @@
   to read its result files. Without that file, results exported from the analyzer cannot be imported.</p>
 
   <h3>Connect the Interface Tool</h3>
-  <p><span class="path">ADMIN &rsaquo; Facilities &rsaquo; open the testing lab &rsaquo; Interface Tool Connections</span></p>
+  <p>On a central server or standalone installation. <span class="path">ADMIN &rsaquo; Facilities &rsaquo; open the testing lab &rsaquo; Interface Tool Connections</span></p>
   <ol class="steps">
     <li>Select <span class="ui">Generate Connection Code</span>.</li>
     <li>Enter the three groups of the code, and the InteLIS URL shown above them, into the Interface Tool on the lab computer.</li>
@@ -359,9 +359,8 @@
 
   <div class="warn">
     <strong>Retire, never delete</strong>
-    To retire an entry, edit it and set the status to inactive. An inactive entry disappears
-    from the form but stays readable on the records that already use it. Deleting it leaves
-    those records unreadable. After adding an entry, open the request form and confirm it
+    Entries cannot be deleted. To retire one, edit it and set the status to inactive. It
+    disappears from the form but stays readable on existing records. After adding an entry, open the request form and confirm it
     appears in its dropdown.
   </div>
 
@@ -387,7 +386,7 @@
     <tr><td>A district is missing from the request form</td><td>It was added without a parent province. Open Geographical Divisions and set the parent</td></tr>
     <tr><td>An option is missing from a dropdown</td><td>It is inactive, or it was added under a different module's config section</td></tr>
     <tr><td>A user sees the wrong menu</td><td>The role's privileges, not the user. Check under Access Control &rsaquo; Roles</td></tr>
-    <tr><td>A user sees another lab's samples</td><td>Testing Lab is not set on the user account</td></tr>
+    <tr><td>A user sees another lab's samples</td><td>On an STS: the role is not a Testing Lab role, or the user is mapped to other facilities. Check the role's Access Type and the user's facilities</td></tr>
     <tr><td>Results stopped arriving from the analyzer</td><td>Check Last Seen under Connected Installations, then Monitoring &rsaquo; Interface Machine Activity</td></tr>
     <tr><td>A result was questioned</td><td>Monitoring &rsaquo; Audit Trail. It shows which field changed, from what to what, by whom</td></tr>
     <tr><td>A facility behaves oddly in report filters</td><td>Set Show Orphaned Facilities on the Facilities page. Its province or district is missing or wrongly linked</td></tr>

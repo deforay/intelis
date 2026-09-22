@@ -199,6 +199,13 @@ plugins:
             Remote Command Plane (design): Plan de commande à distance (conception)
             Release Tracks: Canaux de publication
   - search
+  # Shows each page's last change date, read from git. CI must check out
+  # the full history (fetch-depth: 0) or every page shows the build date.
+  - git-revision-date-localized:
+      type: date
+      fallback_to_build_date: true
+      exclude:
+        - api/*
   - redirects:
       redirect_maps:
         guides/installing-vlsm-on-windows.md: guides/installing-intelis-on-windows.md

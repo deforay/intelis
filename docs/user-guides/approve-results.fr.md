@@ -1,11 +1,21 @@
+---
+description: Accepter, rejeter, marquer perdu ou annuler des échantillons de charge virale, et corriger un résultat approuvé.
+audience: [lab-staff, lab-supervisor]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # Vérifier et approuver les résultats
 
 Un résultat ne parvient à la structure demandeuse qu'après son approbation.
 L'approbation confirme que le résultat enregistré dans InteLIS est bien celui
 rendu par l'automate, pour le bon échantillon.
 
-Les résultats importés depuis un fichier ou saisis à la main passent toujours
-par cette page. Les résultats transmis par l'outil d'interface peuvent être
+Les résultats saisis à la main passent toujours par cette page. Les résultats
+importés depuis un fichier peuvent aussi être acceptés sur l'écran **Résultats
+importés** pendant l'import. Les résultats transmis par l'outil d'interface peuvent être
 approuvés automatiquement, si le laboratoire est configuré ainsi.
 
 ## Avant de commencer
@@ -65,7 +75,9 @@ approuvés automatiquement, si le laboratoire est configuré ainsi.
     6. Cocher les lignes conformes.
     7. Dans **Actions groupées**, régler **Statut** sur **Accepté**.
     8. Renseigner **Approbateur**. Renseigner **Tester** et **Réviseur** si le
-       laboratoire les enregistre.
+       laboratoire les enregistre. Si **Approbateur** reste vide et que
+       l'échantillon n'a pas encore d'approbateur, InteLIS enregistre
+       l'utilisateur connecté comme approbateur et réviseur.
 
         ??? info "Noms déjà enregistrés sur l'échantillon"
 
@@ -96,8 +108,7 @@ approuvés automatiquement, si le laboratoire est configuré ainsi.
             [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
 
     11. Régler **Afficher les échantillons qui sont** sur **Déjà approuvé/rejeté**,
-        puis sélectionner **Rechercher**. La colonne **Statut** des échantillons
-        acceptés affiche `Accepted`.
+        puis sélectionner **Rechercher**. Les échantillons acceptés sont listés.
 
     Suite : [diffuser les résultats à la structure demandeuse](release-results.md).
 
@@ -122,7 +133,7 @@ approuvés automatiquement, si le laboratoire est configuré ainsi.
     4. Sélectionner **Rechercher**.
     5. Cocher les échantillons à rejeter.
     6. Dans **Actions groupées**, régler **Statut** sur **Rejeté**.
-    7. Choisir un **Motif de rejet**. Choisir le motif qui indique à la structure
+    7. Choisir un **Motif de rejet** (obligatoire). Choisir le motif qui indique à la structure
        ce qu'elle doit changer la prochaine fois. Il figure sur le rapport envoyé
        à la structure et dans le rapport de rejet d'échantillons.
 
@@ -201,10 +212,12 @@ valeur fausse :
 
     ??? failure "Si la ligne affiche Verrouillé"
 
-        Les échantillons se verrouillent après le nombre de jours défini dans
-        **Jours de verrouillage des échantillons** sous **ADMIN → Configuration du
-        système → Configuration générale**. Demander à l'administrateur de
-        corriger un échantillon verrouillé.
+        Les échantillons acceptés et rejetés se verrouillent lorsqu'ils n'ont pas
+        été modifiés depuis le nombre de jours défini dans **Jours de
+        verrouillage des échantillons** sous **ADMIN → Configuration du système
+        → Configuration générale**. Seul un utilisateur disposant de la
+        permission Editer les échantillons VL verrouillés peut corriger un
+        échantillon verrouillé.
 
 4. Saisir le bon résultat.
 5. Indiquer la raison de la modification du résultat.
@@ -213,5 +226,7 @@ valeur fausse :
 7. L'approuver de nouveau avec les étapes **Accepter** ci-dessus.
 
 Si le résultat faux avait déjà été imprimé ou envoyé par courriel, diffuser de
-nouveau le résultat corrigé. Voir
+nouveau le résultat corrigé. Le résultat corrigé réapparaît dans l'onglet
+**Résultats pas encore imprimés**. Pour l'envoyer de nouveau par courriel,
+régler **Statut du courrier envoyé** sur **Échantillons déjà envoyés**. Voir
 [Diffuser les résultats à la structure demandeuse](release-results.md).

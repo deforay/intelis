@@ -1,3 +1,12 @@
+---
+description: Install the Interfacing Tool, connect an analyzer, and have InteLIS import its results automatically.
+audience: [system-admin, lab-admin]
+module: [vl, eid, covid19, hepatitis, tb, cd4, custom-tests]
+type: how-to
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Connect an Instrument to InteLIS
 
 Send an analyzer's results into InteLIS through the Interfacing Tool, so nobody
@@ -108,10 +117,16 @@ be connected to the lab network.
                 CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
                 CREATE USER 'interfacing'@'localhost' IDENTIFIED BY 'A-LONG-PASSWORD';
                 CREATE USER 'interfacing'@'127.0.0.1' IDENTIFIED BY 'A-LONG-PASSWORD';
+                ALTER USER 'interfacing'@'localhost' IDENTIFIED WITH mysql_native_password BY 'A-LONG-PASSWORD';
+                ALTER USER 'interfacing'@'127.0.0.1' IDENTIFIED WITH mysql_native_password BY 'A-LONG-PASSWORD';
                 GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'localhost';
                 GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'127.0.0.1';
                 EXIT;
                 ```
+
+               MySQL 8.4 and later reject the `ALTER USER` lines with
+               `Plugin 'mysql_native_password' is not loaded`. On those
+               servers, leave them out.
 
             3. Open the InteLIS settings file. On older installs, the folder
                is `/var/www/vlsm`:
@@ -134,8 +149,9 @@ be connected to the lab network.
             5. Save with **Ctrl+O**, then close with **Ctrl+X**.
 
             Go on to step 12, and enter host `127.0.0.1`, port `3306`, database
-            `interfacing`, username `interfacing` and that password. The tool
-            creates its tables the first time it connects.
+            `interfacing`, username `interfacing` and that password. Open the
+            tool once so it creates its tables, then run
+            `intelis interface-migrate`.
 
     10. Answer the questions:
 
@@ -404,11 +420,18 @@ be connected to the lab network.
                 CREATE USER 'interfacing'@'localhost' IDENTIFIED BY 'A-LONG-PASSWORD';
                 CREATE USER 'interfacing'@'127.0.0.1' IDENTIFIED BY 'A-LONG-PASSWORD';
                 CREATE USER 'interfacing'@'TOOL_IP' IDENTIFIED BY 'A-LONG-PASSWORD';
+                ALTER USER 'interfacing'@'localhost' IDENTIFIED WITH mysql_native_password BY 'A-LONG-PASSWORD';
+                ALTER USER 'interfacing'@'127.0.0.1' IDENTIFIED WITH mysql_native_password BY 'A-LONG-PASSWORD';
+                ALTER USER 'interfacing'@'TOOL_IP' IDENTIFIED WITH mysql_native_password BY 'A-LONG-PASSWORD';
                 GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'localhost';
                 GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'127.0.0.1';
                 GRANT ALL PRIVILEGES ON interfacing.* TO 'interfacing'@'TOOL_IP';
                 EXIT;
                 ```
+
+               MySQL 8.4 and later reject the `ALTER USER` lines with
+               `Plugin 'mysql_native_password' is not loaded`. On those
+               servers, leave them out.
 
             3. Open the InteLIS settings file. On older installs, the folder
                is `/var/www/vlsm`:
@@ -438,8 +461,8 @@ be connected to the lab network.
             Then do steps 14 to 17. For the `bind-address`, use this machine's
             first address from `hostname -I`. In step 19, enter that address as
             the host, port `3306`, database `interfacing`, username
-            `interfacing` and that password. The tool creates its tables the
-            first time it connects.
+            `interfacing` and that password. Open the tool once so it creates
+            its tables, then run `intelis interface-migrate`.
 
     11. Answer the questions:
 

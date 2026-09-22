@@ -29,6 +29,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+        with:
+          # Full history, so each page's "last updated" date comes from git
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v6

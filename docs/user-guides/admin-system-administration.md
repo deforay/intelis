@@ -1,3 +1,12 @@
+---
+description: Sign in to the separate System Admin area to change instance configuration, read sync times, review sign-ins and reset passwords.
+audience: [system-admin]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # How to use the System Admin area
 
 System Admin is a second administration area at `/system-admin` on the
@@ -17,7 +26,7 @@ Most labs never open it. These settings are set once, at installation.
 
 | Sidebar item | Holds |
 | --- | --- |
-| System Configuration | Database connection, instance type, STS URL, lab, enabled modules, country, time zone, SMTP settings |
+| System Configuration | Database connection, instance type, STS URL, lab, enabled modules, country, time zone, the Gmail account that sends support requests |
 | Instance Overview | The instance ID and the last sync time of each data stream |
 | API Stats | The API requests this installation has handled |
 | User Login History | Every sign-in attempt to InteLIS, with IP address, browser and operating system |
@@ -28,7 +37,8 @@ Most labs never open it. These settings are set once, at installation.
 
 1. Open `/system-admin` on the installation's address, such as
    `https://lab.example.org/system-admin`.
-2. Enter the System Admin **User Name** and **Password**.
+2. In **User Name**, enter the Login ID chosen at registration, then the
+   **Password**.
 3. Select **Login**. **System Configuration** opens.
 
 ??? info "If no System Admin login exists yet"
@@ -36,8 +46,20 @@ Most labs never open it. These settings are set once, at installation.
     `/system-admin` opens **Register new System Admin** instead. The form asks
     for a **Secret Key**. It is in the file `var/secret-key.txt` of the
     installation folder, such as `/var/www/intelis/var/secret-key.txt`. On older
-    installs, the folder is `/var/www/vlsm`. Fill in the form and select
-    **Submit**.
+    installs, the folder is `/var/www/vlsm`. Open the page first, then read the
+    key. It changes each time the page loads.
+
+    Fill in **Secret Key**, **User Name**, **Email ID**, **Login ID**,
+    **Password** and **Confirm Password**, and select **Submit**. The Login ID
+    is the name used to sign in.
+
+## Change the System Admin password
+
+1. Sign in to System Admin.
+2. Open the user menu at the top right and select **Change Password**. The
+   **Edit Password** page opens.
+3. Enter **Password** and **Confirm Password**.
+4. Select **Submit**.
 
 ## Change the system configuration
 
@@ -50,8 +72,8 @@ Most labs never open it. These settings are set once, at installation.
     | Section | Settings |
     | --- | --- |
     | System Settings | **Database Host Name**, **Database Username**, **Database Password**, **Database Name**, **Database Port** |
-    | Instance Settings | **Instance Type**, **STS URL**, **Lab Name**, **Enabled Modules**, **Country of Installation**, **Timezone** |
-    | SMTP Settings | The mail server used to send email |
+    | Instance Settings | **Instance Type**, **STS URL** and **Lab Name** (LIS only. Lab Name required), **Enabled Modules**, **Country of Installation**, **Timezone** |
+    | SMTP Settings | **Email** and **Password** of the Gmail account that sends support requests |
 
 5. Select **Submit**.
 6. Open InteLIS and check the change. See [Confirm it worked](#confirm-it-worked).
@@ -106,7 +128,7 @@ asks.
 1. Sign in to System Admin.
 2. Select **User Login History** in the sidebar.
 3. Set **Date** and **Login ID**, and select **Search**.
-4. Read the rows: **Attempted Datetime**, **IP Address**, **Browser**,
+4. Read the rows: **Login ID**, **Attempted Datetime**, **IP Address**, **Browser**,
    **Operating System** and **Status**.
 
 One Login ID signing in from several places at once points to a shared or
@@ -122,7 +144,8 @@ Use this when no InteLIS administrator can sign in to reset it.
 4. Enter **Password** and **Confirm Password**, or select **Generate**.
 5. Set **Status** to **Active**.
 6. Select **Submit**.
-7. Give the new password to the user in person.
+7. Give the new password to the user in person. InteLIS does not ask the user
+   to change this password.
 
 ## Confirm it worked
 
@@ -131,5 +154,5 @@ Use this when no InteLIS administrator can sign in to reset it.
 | Module enabled | Its section appears in the main menu and under ADMIN |
 | Instance Type | The pages of that type appear |
 | STS URL | API History records a successful sync to the new address |
-| SMTP Settings | Email one result and confirm it arrives |
+| SMTP Settings | Send a support request and confirm it arrives |
 | Password reset | The user signs in with the new password |

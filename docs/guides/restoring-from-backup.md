@@ -1,3 +1,12 @@
+---
+description: Restore the InteLIS database, an older dated backup, or uploaded files onto a machine where InteLIS already runs.
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Restoring from a Backup
 
 Put the database back from a backup on a machine where InteLIS already runs.
@@ -156,18 +165,8 @@ was made are lost.
 
         ??? failure "If a file is reported as damaged"
 
-            At the next question, choose **No**. Then restore the newest file
-            starting with `vlsm-` that is not damaged. Type this, followed by a
-            space. Do not press Enter yet:
-
-            ```bash
-            sudo -u www-data php vendor/bin/db-tools restore
-            ```
-
-            Open the **Files** app and press **Ctrl+L**. Type
-            `/var/intelis-restore/db` and press Enter. Drag the file onto the
-            terminal window, and press Enter. Then run `intelis migrate` and
-            carry on at step 10.
+            Choose **Yes** at the next question. The script skips damaged
+            files and restores the newest readable backup.
 
     ### Restore the database
 
@@ -185,8 +184,8 @@ was made are lost.
             Otherwise the database may now be empty. Put the safety copy back.
             The script prints the command to use. Replace `<pre-restore-file>`
             with the name of the file starting with `pre-restore-vlsm-` in
-            `/var/intelis-restore/db`, run it, then contact support with the
-            message shown.
+            `/var/www/intelis/backups/db` (`/var/www/vlsm/backups/db` on older
+            installs), run it, then contact support with the message shown.
 
         ??? failure "If it says `Could not apply database migrations`"
 
@@ -332,8 +331,8 @@ was made are lost.
             Otherwise the database may now be empty. Put the safety copy back.
             The script prints the command to use. Replace `<pre-restore-file>`
             with the name of the file starting with `pre-restore-vlsm-` in
-            `/var/intelis-restore/db`, run it, then contact support with the
-            message shown.
+            `/var/www/intelis/backups/db` (`/var/www/vlsm/backups/db` on older
+            installs), run it, then contact support with the message shown.
 
         ??? failure "If it says `Could not apply database migrations`"
 
@@ -443,18 +442,8 @@ was made are lost.
 
         ??? failure "If a file is reported as damaged"
 
-            At the next question, choose **No**. Then restore the newest file
-            starting with `vlsm-` that is not damaged. Type this, followed by a
-            space. Do not press Enter yet:
-
-            ```bash
-            sudo -u www-data php vendor/bin/db-tools restore
-            ```
-
-            Open the **Files** app and press **Ctrl+L**. Type
-            `/var/intelis-restore/backups/db` and press Enter. Drag the file
-            onto the terminal window, and press Enter. Then run
-            `intelis migrate` and carry on at step 10.
+            Choose **Yes** at the next question. The script skips damaged
+            files and restores the newest readable backup.
 
     ### Restore the database
 
@@ -472,8 +461,8 @@ was made are lost.
             Otherwise the database may now be empty. Put the safety copy back.
             The script prints the command to use. Replace `<pre-restore-file>`
             with the name of the file starting with `pre-restore-vlsm-` in
-            `/var/intelis-restore/db`, run it, then contact support with the
-            message shown.
+            `/var/www/intelis/backups/db` (`/var/www/vlsm/backups/db` on older
+            installs), run it, then contact support with the message shown.
 
         ??? failure "If it says `Could not apply database migrations`"
 

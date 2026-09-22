@@ -1,3 +1,11 @@
+---
+description: Fiches imprimables d'une page pour la charge virale, l'administration d'InteLIS et l'entretien de la machine, avec les guides correspondants.
+audience: [lab-staff, lab-supervisor, lab-admin, system-admin]
+module: [vl]
+type: reference
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Aide-mémoires imprimables
 
 Des fiches d'une page, chacune imprimée sur une page A4. Trois séries : une pour
@@ -80,9 +88,9 @@ exceptions et la conduite à tenir en cas de problème.
 | Admin 3 | [Gérer les structures et les laboratoires](../user-guides/admin-facilities.md) et [Configurer les automates et l'interfaçage](../user-guides/admin-instruments.md) |
 | Admin 4 | [Maintenir les listes du formulaire de demande](../user-guides/admin-module-configuration.md) |
 | Admin 5 | [Surveiller et auditer InteLIS](../user-guides/admin-monitoring.md) |
-| Machine 1 | [Scripts et outils de maintenance](../guides/maintenance.md) |
-| Machine 2 | [Installer InteLIS sur Ubuntu](../guides/installing-intelis-on-ubuntu.md) |
-| Machine 3 | [Mettre à jour InteLIS sur Ubuntu](../guides/updating-intelis-on-ubuntu.md) |
-| Machine 4 | [Configurer les sauvegardes hors de la machine](../guides/setting-up-off-machine-backups.md) |
-| Machine 5 | [Migrer entre machines Ubuntu](../guides/migrating-ubuntu-machines.md) pour remonter une machine perdue, et [Restaurer depuis une sauvegarde](../guides/restoring-from-backup.md) pour restaurer sur place |
-| Machine 6 | [MySQL ne démarre pas](../guides/mysql-will-not-start.md), [Le navigateur affiche du code PHP](../guides/browser-shows-php-code.md), [Corriger une erreur de permission](../guides/permission-denied-issue.md) et [Corriger une incohérence de collation](../guides/fix-collation-issue.md) |
+| Machine 1 | [Scripts et outils de maintenance](../guides/maintenance.md) (en anglais) |
+| Machine 2 | [Installer InteLIS sur Ubuntu](../guides/installing-intelis-on-ubuntu.md) (en anglais) |
+| Machine 3 | [Mettre à jour InteLIS sur Ubuntu](../guides/updating-intelis-on-ubuntu.md) (en anglais) |
+| Machine 4 | [Configurer les sauvegardes hors de la machine](../guides/setting-up-off-machine-backups.md) (en anglais) |
+| Machine 5 | [Migrer entre machines Ubuntu](../guides/migrating-ubuntu-machines.md) (en anglais) pour remonter une machine perdue, et [Restaurer depuis une sauvegarde](../guides/restoring-from-backup.md) (en anglais) pour restaurer sur place |
+| Machine 6 | [MySQL ne démarre pas](../guides/mysql-will-not-start.md) (en anglais), [Le navigateur affiche du code PHP](../guides/browser-shows-php-code.md) (en anglais), [Corriger une erreur de permission](../guides/permission-denied-issue.md) (en anglais) et [Corriger une incohérence de collation](../guides/fix-collation-issue.md) (en anglais) |

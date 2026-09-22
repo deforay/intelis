@@ -1,10 +1,19 @@
+---
+description: Maps each ADMIN menu task to its guide and lists installation-wide changes that need agreement before anyone makes them.
+audience: [lab-admin, system-admin]
+module: [all]
+type: reference
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Administer InteLIS
 
 This page maps every task under **ADMIN** to its guide. It also lists the
 changes that need agreement before anyone makes them.
 
 Installing, updating and backing up InteLIS are server tasks. They are covered
-by the installation and maintenance guides.
+by the [installation](../guides/installing-intelis-on-ubuntu.md) and
+[maintenance](../guides/maintenance.md) guides.
 
 ## Where each task is
 
@@ -56,7 +65,7 @@ A second administration area, **System Admin**, sits outside this menu at
 === "Cloud"
 
     Lab staff sign in to the STS with a testing-lab role. InteLIS enforces the
-    split for every such user except the super administrator.
+    split for every such user except those holding the built-in Admin role.
 
     1. Expect these five ADMIN pages, and no others: **Users**,
        **Instruments**, **Audit Trail**, **User Activity Log** and **Log File

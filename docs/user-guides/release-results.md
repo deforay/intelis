@@ -1,3 +1,12 @@
+---
+description: Release approved and rejected viral load results to the requesting facility by printed PDF, email, or spreadsheet export.
+audience: [lab-staff, lab-supervisor]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # How to release results to the requesting facility
 
 Approved results reach the requesting facility as a printed PDF report, as an
@@ -28,7 +37,8 @@ A sample still awaiting approval is never listed for printing or email.
         ??? info "To reprint a result"
 
             Switch to the **Results already Printed** tab and follow the same
-            steps there.
+            steps there. A result corrected after printing returns to **Results
+            not yet Printed** and carries a **Result Modified** label.
 
     3. Filter to the results to print, for example by **Facility Name** to
        print one facility's reports together.

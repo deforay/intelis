@@ -1,3 +1,12 @@
+---
+description: How the STS queues commands that labs pull over their outbound sync, and the layers, switches and checks that keep them safe.
+audience: [system-admin, developer]
+module: [all]
+type: explanation
+platform: any
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # About the Remote Command Plane
 
 Why the STS can run commands on a lab without ever connecting into the lab's
@@ -72,7 +81,7 @@ the runner decides whether that name means anything.
 | `ping` | www-data | `command-handlers/ping.php`. No side effects. |
 | `resend-results` | www-data | `command-handlers/resend-results.php`, which runs `results-sender.php` with the module and days filters. |
 | `resend-requests` | www-data | `command-handlers/resend-requests.php`, which runs `requests-receiver.php` with the module filter. |
-| `metadata-resync` | www-data | `command-handlers/metadata-resync.php`, which runs `sts-metadata-receiver.php -f` and `lab-metadata-sender.php`. |
+| `metadata-resync` | www-data | `command-handlers/metadata-resync.php`, which runs `sts-metadata-receiver.php -f` and `lab-metadata-sender.php -f`. |
 | `refresh-cache` | www-data | `command-handlers/refresh-cache.php`. Clears the file cache, or only the given tags. |
 | `rotate-token` | www-data | `command-handlers/rotate-token.php`. Drops the STS token and fetches a new one. |
 | `refresh-perms` | root | `intelis-refresh -p <path> -m full` |
@@ -132,8 +141,9 @@ Two `global_config` rows on the lab turn the plane on and off.
   24 hours the STS stops offering the lab at all.
 - `allow_remote_upgrade` gates root commands. The courier mirrors it into a
   `var/remote-commands/disabled` flag file, because the runner has no database
-  access. While the flag exists, the runner fails every marker with
-  `runner disabled on this instance`.
+  access. The courier also writes the flag when the database is on another
+  host or the machine has no systemd. While the flag exists, the runner fails
+  every marker with `runner disabled on this instance`.
 
 The flag file is a second lock, not the only one. The courier also stops
 advertising root commands, so the STS stops offering them.
@@ -271,7 +281,7 @@ On the lab, state lives in files under `var/remote-commands/`:
 | `results/` | runner and courier | Statuses waiting to go to the STS. |
 | `prepared/` | root | The runner's record of each staged release. |
 | `processed-nonces/` | root | Nonces already run. |
-| `disabled` | courier | Present when `allow_remote_upgrade` is off. |
+| `disabled` | courier | Present when root commands are not allowed: `allow_remote_upgrade` is off, the database is on another host, or the machine has no systemd. |
 | `courier.heartbeat`, `runner.heartbeat` | courier, runner | Shown as the chips in the **Command plane** column. |
 
 ## How it was built

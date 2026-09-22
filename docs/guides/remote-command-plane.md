@@ -1,3 +1,12 @@
+---
+description: Queue resends, cache refreshes, upgrades and rollbacks on a connected lab from the STS, and check or switch off remote commands.
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Running Commands on a Lab from the STS
 
 Resend data, refresh, upgrade or roll back a connected lab from the STS, with
@@ -237,8 +246,8 @@ Choose one way, then follow its steps from top to bottom.
 
         ??? failure "If it reports `Unknown command`"
 
-            This STS does not accept rollbacks from the queue yet. Use the
-            **On the lab machine** tab instead.
+            An STS older than this release does not accept rollbacks from the
+            queue. Use the **On the lab machine** tab instead.
 
     6. Wait for the lab's next sync, about 5 minutes. The `rollback` badge
        disappears when the command finishes.
@@ -374,8 +383,9 @@ its row.
 
 ??? failure "If the result says `runner disabled on this instance`"
 
-    **Allow Remote Upgrade** is off on the lab, so the runner refuses root
-    commands. See
+    **Allow Remote Upgrade** is off on the lab, or the lab's database is on
+    another machine, or the machine has no systemd. The runner then refuses
+    root commands. See
     [Turn remote commands on or off for a lab](#turn-remote-commands-on-or-off-for-a-lab).
 
 ## Turn remote commands on or off for a lab

@@ -1,10 +1,20 @@
+---
+description: Accept, reject, mark lost or cancel viral load samples on the Manage Results Status page, and correct an approved result.
+audience: [lab-staff, lab-supervisor]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # How to review and approve results
 
 A result reaches the requesting facility only after it is approved. Approval
 confirms that the result in InteLIS is the one the analyzer produced, for the
 right sample.
 
-Results imported from a file or entered by hand always pass through this page.
+Results entered by hand always pass through this page. Results imported from a
+file can also be accepted on the **Imported Results** screen during the import.
 Results sent in through the Interface Tool may be approved automatically, if the
 lab is configured that way.
 
@@ -61,6 +71,8 @@ lab is configured that way.
     6. Tick the rows that match.
     7. In **Bulk Actions**, set **Status** to **Accepted**.
     8. Set **Approver**. Set **Tester** and **Reviewer** if the lab records them.
+       If **Approver** is left empty and the sample has no approver yet, InteLIS
+       records the signed-in user as approver and reviewer.
 
         ??? info "Names already recorded on the sample"
 
@@ -88,8 +100,7 @@ lab is configured that way.
             [How to handle failed and held samples](failed-and-held-samples.md).
 
     11. Set **Show Samples that are** to **Already Approved/Rejected**, then
-        select **Search**. The **Status** column of the accepted samples shows
-        `Accepted`.
+        select **Search**. The accepted samples are listed.
 
     Next: [release the results to the requesting facility](release-results.md).
 
@@ -111,7 +122,7 @@ lab is configured that way.
     4. Select **Search**.
     5. Tick the samples to reject.
     6. In **Bulk Actions**, set **Status** to **Rejected**.
-    7. Choose a **Rejection Reason**. Choose the reason that tells the facility
+    7. Choose a **Rejection Reason** (required). Choose the reason that tells the facility
        what to change next time. It appears on the report sent to the facility
        and in the sample rejection report.
 
@@ -182,9 +193,10 @@ never changes the result value. To correct a wrong value:
 
     ??? failure "If the row shows Locked"
 
-        Samples lock after the number of days set in **Sample Lock Days** under
-        **ADMIN → System Configuration → General Configuration**. Ask the
-        administrator to correct a locked sample.
+        Accepted and rejected samples lock once they have not been modified for
+        the number of days set in **Sample Lock Days** under **ADMIN → System
+        Configuration → General Configuration**. Only a user with the Edit
+        Locked VL Samples permission can correct a locked sample.
 
 4. Enter the correct result.
 5. Fill in the reason for changing the result.
@@ -192,4 +204,6 @@ never changes the result value. To correct a wrong value:
 7. Approve it again with the **Accept** steps above.
 
 If the wrong result had already been printed or emailed, release the corrected
-result again. See [How to release results](release-results.md).
+result again. The corrected result reappears on the **Results not yet Printed**
+tab. To email it again, set **Mail Sent Status** to **Already Mailed Samples**.
+See [How to release results](release-results.md).

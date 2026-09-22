@@ -1,3 +1,12 @@
+---
+description: Reference for every setting on the General Configuration page, what each controls, and how to confirm a change took effect.
+audience: [system-admin, lab-admin]
+module: [all]
+type: reference
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # General configuration settings
 
 Reference for **ADMIN → System Configuration → General Configuration**. Every
@@ -26,7 +35,7 @@ when the installation runs that module.
 
 | Setting | Controls |
 | --- | --- |
-| Date Format | How dates display across InteLIS: `d-M-Y` or `d-m-Y` |
+| Date Format | How dates display across InteLIS: **DD-MMM-YYYY** (22-Sep-2026) or **DD-MM-YYYY** (22-09-2026) |
 | Display Encrypt PII Option | Whether the option to encrypt personally identifying information is offered |
 
 ## Global Settings
@@ -43,7 +52,7 @@ when the installation runs that module.
 | Training Mode | Marks the installation as practice, and shows the text set beside it |
 | Barcode Format | `C39`, `C39+`, `C128` or `QRCODE` |
 | Same user can Review and Approve | Whether one person may both review and approve a result |
-| Sample ID Barcode Label Printing | `off`, `zebra-printer` or `dymo-labelwriter-450` |
+| Sample ID Barcode Label Printing | **Off**, **Zebra Printer** or **Dymo LabelWriter 450**. Zebra and Dymo add a required **Zebra Label Format** or **DYMO Label Format** box holding the label template |
 | Allow Samples not matching the System Sample IDs while importing results manually | Whether a manual import accepts rows whose Sample ID InteLIS does not hold |
 | Support Email | The address shown to users asking for help |
 | Minimum Mobile App Version | The oldest mobile app version allowed to sign in, such as `1.5.0`. Blank allows every version |
@@ -51,8 +60,8 @@ when the installation runs that module.
 | Default Phone Prefix | The country dialling prefix |
 | Minimum Length of Phone Number, Maximum Length of Phone Number | The accepted phone number lengths |
 | Batch PDF Layout | **Standard** or **Compact** |
-| Sample Expiry Days | Days before a sample expires |
-| Sample Lock Days | Days before a sample stops accepting edits |
+| Sample Expiry Days | Days after collection before a sample still awaiting a result is marked Expired. Required, at least 90 |
+| Sample Lock Days | Days after the last change before an Accepted or Rejected sample is locked against edits. Required, at least 7 |
 | Test Type Templates | A PDF template per test type, with its **Header Margin**, for result reports |
 
 ??? warning "Country of Installation and Training Mode"
@@ -76,16 +85,14 @@ reach the others.
 | Minimum Patient ID Length | The shortest patient identifier the request form accepts | All |
 | Copy Request On Save and Next Form | Whether **Save and Next** carries the previous request's values forward | All, on the Cameroon form only |
 | VL, EID, COVID-19 or TB Auto Approve API Results | Whether results arriving through the API are approved with no human check | Viral Load, EID, Covid-19, TB |
-| Show Participant Name in VL, EID, COVID-19, Hepatitis or TB Manifest, Show Participant Name in Custom Lab Tests Manifest | Whether the participant name prints on this module's manifest | All except CD4 |
+| Show Participant Name in VL, EID, COVID-19, Hepatitis, TB or CD4 Manifest, Show Participant Name in Custom Lab Tests Manifest | Whether the participant name prints on this module's manifest | All |
 | Covid-19 Positive Confirmatory Tests Required | Whether a positive COVID-19 result needs a confirmatory test | Covid-19 |
-| Sample Expiry Days | An expiry for Custom Tests, where it differs from the global one | Other Lab Tests |
 
 **Viral Load Settings** carries these as well:
 
 | Setting | Controls |
 | --- | --- |
 | Viral Load Threshold Limit | The value from which a result counts as high |
-| VL Suppression Target | The suppression target used by the reports |
 | VL Monthly Target | **Enable** or **Disable**. Enabled, the dashboard shows each lab's work against its targets. The targets themselves are set per testing lab, under [Set up a testing lab](admin-facilities.md#set-up-a-testing-lab) |
 | Interpret and Convert VL Results | Whether InteLIS converts and interprets imported viral load values |
 | Viral Load Export Format | **Default Format** or **CRESAR Format**. On the Cameroon form only |
@@ -109,7 +116,9 @@ digits and restarts each year.
 | Auto 2 | 2-digit year, province code, prefix, number. On the PNG form only | `2612VL0001` |
 | Numeric, Alpha Numeric | Prefix, number. No date | `VL0001` |
 
-Samples registered on the STS carry a leading `R`. Where a lab code is
+Samples registered on the STS carry a leading `R`. On some country forms every
+Sample ID carries an extra leading `R`, and **Auto** is labelled **Auto 1**.
+Where a lab code is
 appended, a hyphen separates it from the running number, as in
 `VL0826-NMC-0019`.
 
@@ -146,7 +155,7 @@ a route that must not carry patient names.
 | Setting | Default | Controls |
 | --- | --- | --- |
 | Auto Approve Interface Results | `yes` | Whether results arriving through the Interface Tool are approved with no human check. It is separate from the per-module API settings |
-| Interface API Enabled | `no` | Whether the **Interface Tool Connections** panel appears on testing labs |
+| Interface API Enabled | `no` | Whether the Interface Tool API is open, and whether the **Interface Tool Connections** panel appears on testing labs |
 
 InteLIS support changes these two settings on request.
 
@@ -169,4 +178,4 @@ InteLIS support changes these two settings on request.
 | Auto Approve API Results | Send one result through the API and read its status |
 | VL Monthly Target | Open the dashboard and find the target charts |
 | Result PDF settings | Print one result PDF |
-| Sample Lock Days | Open a sample older than the limit and try to edit it |
+| Sample Lock Days | Open an Accepted or Rejected sample not changed for longer than the limit and try to edit it |

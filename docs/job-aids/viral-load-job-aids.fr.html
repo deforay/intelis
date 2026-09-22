@@ -232,12 +232,12 @@
   <p><span class="path">CHARGE VIRALE DU VIH &rsaquo; Gestion des demandes &rsaquo; Ajouter une nouvelle demande</span></p>
 
   <ol class="steps">
-    <li>Choisir la <span class="ui">Province</span>, puis le <span class="ui">District</span>, puis la <span class="ui">Clinique/Centre de santé</span>. Chaque liste filtre la suivante.</li>
-    <li>Choisir le <span class="ui">Labo de test</span>.</li>
+    <li>Choisir <span class="ui">État/Province</span>, puis <span class="ui">District</span>, puis la <span class="ui">Clinique/Centre de santé</span>. Chaque liste filtre la suivante.</li>
+    <li>Choisir le <span class="ui">Laboratoire d'analyse</span>.</li>
     <li>Saisir l'identifiant du patient exactement comme sur la fiche papier.</li>
     <li>Lire l'avis sur les demandes antérieures qui s'affiche. S'arrêter si cet échantillon est déjà enregistré.</li>
     <li>Saisir la date de naissance, ou l'âge en années, ou l'âge en mois pour un nourrisson.</li>
-    <li>Saisir la <span class="ui">Date de prélèvement</span> et <span class="ui">Échantillon envoyé le</span> depuis la fiche papier, pas la date du jour.</li>
+    <li>Saisir la <span class="ui">Date de prélèvement de l'échantillon</span> et <span class="ui">Échantillon envoyé le</span> depuis la fiche papier, pas la date du jour.</li>
     <li>Choisir le <span class="ui">Type d'échantillon</span>.</li>
     <li>Remplir la section traitement et l'indication du test.</li>
     <li>Laisser la section laboratoire vide. Le laboratoire la remplit après le test.</li>
@@ -255,8 +255,8 @@
     <tr><td>Structure absente de la liste</td><td>Elle n'est pas rattachée au test de charge virale. S'adresser à l'administrateur.</td></tr>
     <tr><td>Astérisque rouge</td><td>Champ obligatoire. InteLIS refuse d'enregistrer sans lui.</td></tr>
     <tr><td>Champs facultatifs</td><td>Les remplir quand la fiche papier a l'information. Les rapports ne comptent que ce qui est saisi.</td></tr>
-    <tr><td>Étiquette code-barres</td><td>Régler <span class="ui">Imprimer une étiquette de code-barres</span> avant d'enregistrer. Utiliser <span class="ui">Change/Retry</span> si aucune imprimante n'apparaît.</td></tr>
-    <tr><td>Erreur après enregistrement</td><td>La retrouver dans Afficher les demandes de test et sélectionner <span class="ui">Modifier</span>. Les demandes se verrouillent après quelques jours.</td></tr>
+    <tr><td>Étiquette code-barres</td><td>Régler <span class="ui">Imprimer une étiquette de code-barres</span> avant d'enregistrer. Utiliser <span class="ui">Modifier/Réessayer</span> si aucune imprimante n'apparaît.</td></tr>
+    <tr><td>Erreur après enregistrement</td><td>La retrouver dans Afficher les demandes de test et sélectionner <span class="ui">Modifier</span>. Les demandes approuvées et rejetées se verrouillent après un nombre de jours défini depuis leur dernière modification.</td></tr>
   </table>
 
   <h3>Réceptionner un colis à la place</h3>
@@ -283,8 +283,8 @@
     <li>Choisir d'abord la <span class="ui">Plateforme de test</span>. Elle fixe la capacité du batch.</li>
     <li>Saisir un <span class="ui">Code de batch</span> unique.</li>
     <li>Régler les <span class="ui">Positions</span> selon l'étiquetage de l'automate.</li>
-    <li>Filtrer la liste, puis régler <span class="ui">Sort By</span> sur l'ordre de chargement de la série.</li>
-    <li>Cocher les échantillons, ou utiliser <span class="ui">Automatically select samples for Batch</span>.</li>
+    <li>Filtrer la liste, puis régler <span class="ui">Trier par</span> sur l'ordre de chargement de la série.</li>
+    <li>Cocher les échantillons, ou utiliser <span class="ui">Sélection automatique des échantillons pour le lot</span>.</li>
     <li>Sélectionner <span class="ui">Sauvegarder et Suivant</span>.</li>
     <li>De retour sur la liste, sélectionner <span class="ui">PDF par lots</span> ou <span class="ui">PDF par lots compacts</span>.</li>
     <li>Imprimer le PDF et l'emporter à l'automate.</li>
@@ -302,16 +302,16 @@
   <h3>Si InteLIS bloque l'enregistrement</h3>
   <table class="wrapfirst">
     <tr><th>Message</th><th>Correction</th></tr>
-    <tr><td>Choose a testing platform to proceed</td><td>Sélectionner l'automate.</td></tr>
-    <tr><td>Select at least one sample</td><td>Cocher des échantillons dans la liste.</td></tr>
-    <tr><td>More than the allowed number for this platform</td><td>Décocher jusqu'à la capacité de l'automate.</td></tr>
-    <tr><td>Batch code already exists</td><td>Utiliser un code différent.</td></tr>
+    <tr><td>Vous devez choisir une plateforme de test pour procéder</td><td>Sélectionner l'automate.</td></tr>
+    <tr><td>Veuillez sélectionner au moins un échantillon</td><td>Cocher des échantillons dans la liste.</td></tr>
+    <tr><td>Vous avez sélectionné un nombre d'échantillons supérieur à celui autorisé pour cette plate-forme</td><td>Décocher jusqu'à la capacité de l'automate.</td></tr>
+    <tr><td>Ce code de lot existe déjà. Essayez un autre code de lot</td><td>Utiliser un code différent.</td></tr>
   </table>
 
   <h3>Actions sur une ligne de batch</h3>
   <table class="wrapfirst">
     <tr><td>Modifier</td><td>Changer les informations du batch et ses échantillons</td></tr>
-    <tr><td>Edit Position</td><td>Changer la position de chaque échantillon</td></tr>
+    <tr><td>Modifier le poste</td><td>Changer la position de chaque échantillon</td></tr>
     <tr><td>PDF par lots / compacts</td><td>Réimprimer la planche de codes-barres</td></tr>
     <tr><td>Supprimer</td><td>Disparaît dès qu'un échantillon du batch a un résultat. La suppression libère les échantillons vers la file des non testés. Elle ne supprime pas les échantillons.</td></tr>
   </table>
@@ -341,18 +341,18 @@
   <p><span class="path">Gestion des résultats des tests &rsaquo; Importer les résultats d'un fichier</span></p>
   <ol class="steps">
     <li>Exporter le fichier depuis l'automate. Il doit porter les ID d'InteLIS.</li>
-    <li>Choisir le <span class="ui">Nom de l'instrument/plateforme</span> et le <span class="ui">Specific Machine Name/Code</span>. Un mauvais choix rend l'import illisible.</li>
-    <li>Choisir le <span class="ui">Nom du laboratoire de test</span> et le fichier. Formats acceptés : xls, xlsx, csv, txt.</li>
+    <li>Choisir le <span class="ui">Nom de l'instrument/plateforme</span> et le <span class="ui">Nom/code de la machine spécifique</span>. Un mauvais choix rend l'import illisible.</li>
+    <li>Choisir le <span class="ui">Nom du laboratoire d'analyse</span> et le fichier. Formats acceptés : xls, xlsx, csv, txt.</li>
     <li>Sélectionner <span class="ui">Envoyer</span>.</li>
-    <li>Vérifier la mention <span class="ui">Sample source</span> sur chaque ligne avant d'accepter.</li>
+    <li>Vérifier la couleur de chaque ligne selon la légende <span class="ui">Source de l'échantillon</span> et <span class="ui">Écart de date</span> avant d'accepter.</li>
     <li>Renseigner un statut par ligne, puis testeur, réviseur et approbateur, et <span class="ui">Sauvegarder</span>.</li>
   </ol>
   <table class="wrapfirst">
-    <tr><th>Mention Sample source</th><th>Action</th></tr>
-    <tr><td>Result for Sample ID from VLSM</td><td>Accepter</td></tr>
-    <tr><td>Sample ID not from VLSM</td><td>Ne pas accepter. Chercher pourquoi l'ID diffère</td></tr>
-    <tr><td>Result already exists</td><td>N'écraser que si le nouveau résultat est le bon</td></tr>
-    <tr><td>Test date 1+ mois ou 1+ an après le prélèvement</td><td>Vérifier la date. Un écart d'un an est presque toujours une faute de frappe</td></tr>
+    <tr><th>Couleur de la ligne</th><th>Action</th></tr>
+    <tr><td>Résultat pour l'ID de l'échantillon du VLSM</td><td>Accepter</td></tr>
+    <tr><td>ID de l'échantillon/ID ne provenant pas du VLSM</td><td>Ne pas accepter. Chercher pourquoi l'ID diffère</td></tr>
+    <tr><td>Le résultat existe déjà pour cet échantillon</td><td>N'écraser que si le nouveau résultat est le bon</td></tr>
+    <tr><td>Date du test : environ 1 mois ou 1 an après le prélèvement</td><td>Vérifier la date. Un écart d'un an est le plus souvent une faute de frappe</td></tr>
   </table>
 
   <h3>Méthode 3 &mdash; Saisie manuelle (dernier recours)</h3>
@@ -414,13 +414,13 @@
   <h3>Envoyer par courriel</h3>
   <p><span class="path">Gestion des résultats des tests &rsaquo; Envoyer le résultat du test par courriel</span></p>
   <ul>
-    <li>Choisir <span class="ui">Facility Name (To)</span>, saisir l'objet et le message.</li>
-    <li>Régler <span class="ui">Mail Sent Status</span> sur <span class="ui">Samples Not yet Mailed</span>.</li>
+    <li>Choisir <span class="ui">Nom de l'installation (à)</span>, saisir l'objet et le message.</li>
+    <li>Régler <span class="ui">Statut du courrier envoyé</span> sur <span class="ui">Échantillons non encore envoyés</span>.</li>
     <li>Cocher les résultats, sélectionner <span class="ui">Suivante</span>, confirmer. Limite de 100 par courriel.</li>
     <li>Les résultats partent vers les adresses enregistrées pour la structure.</li>
   </ul>
 
-  <p>Seuls les résultats approuvés apparaissent sur les pages d'impression et d'envoi.</p>
+  <p>Seuls les résultats approuvés, et les échantillons rejetés, apparaissent sur les pages d'impression et d'envoi.</p>
 
   <footer class="cardfoot"><span>InteLIS — aide-mémoire charge virale</span><span>Fiche 5 : approuver et diffuser</span></footer>
 </section>
@@ -453,12 +453,12 @@
   <h3>Retester</h3>
   <p><span class="path">Gestion des résultats des tests &rsaquo; Échec/Echantillons en attente</span></p>
   <ol class="steps">
-    <li>Régler <span class="ui">Résultat Statut</span> sur <span class="ui">Échec</span> et sélectionner <span class="ui">Rechercher</span>.</li>
+    <li>Régler <span class="ui">Résultat Statut</span> sur <span class="ui">Echec</span> et sélectionner <span class="ui">Rechercher</span>.</li>
     <li>Cocher les échantillons.</li>
     <li>Sélectionner <span class="ui">Retester les échantillons sélectionnés</span>.</li>
   </ol>
   <p>Le résultat est effacé et l'échantillon retourne dans la file des non testés avec le
-  statut <span class="ui">Échantillon enregistré au laboratoire de test</span>. L'ajouter à un
+  statut <span class="ui">Sample Registered at Testing Lab</span> (échantillon enregistré au laboratoire d'analyse). L'ajouter à un
   nouveau batch. La tentative en échec reste enregistrée, le taux d'échec reste exact.</p>
 
   <h3>Récupérer des résultats marqués en échec par erreur</h3>
@@ -489,36 +489,36 @@
 
   <table class="wrapfirst">
     <tr><th>Statut</th><th>Signification</th></tr>
-    <tr><td>Échantillon actuellement enregistré au centre de santé</td><td>Enregistré dans une structure. Le laboratoire ne l'a pas reçu</td></tr>
-    <tr><td>Échantillon enregistré au laboratoire de test</td><td>Reçu par le laboratoire, en attente de test</td></tr>
-    <tr><td>Échantillon envoyé à un autre laboratoire</td><td>Transmis à un autre laboratoire</td></tr>
-    <tr><td>En attente d'approbation</td><td>Un résultat est enregistré, en attente de validation</td></tr>
-    <tr><td>Accepté</td><td>Approuvé et disponible à l'impression ou à l'envoi</td></tr>
-    <tr><td>Rejeté</td><td>Non propre au test. Un motif de rejet est enregistré</td></tr>
-    <tr><td>Échec/Invalidité</td><td>Le test a eu lieu sans résultat exploitable</td></tr>
-    <tr><td>En attente</td><td>Suspendu dans l'attente d'une décision</td></tr>
-    <tr><td>Échantillon réorganisé</td><td>Renvoyé au test</td></tr>
-    <tr><td>Perdu</td><td>Introuvable, ne sera pas testé</td></tr>
-    <tr><td>Expiré</td><td>Au-delà de la durée de conservation autorisée</td></tr>
-    <tr><td>Aucun résultats</td><td>Aucun résultat enregistré</td></tr>
-    <tr><td>Annulée</td><td>Le test ne sera pas réalisé</td></tr>
+    <tr><td><span class="ui">Sample Currently Registered at Health Center</span> (Échantillon enregistré au centre de santé)</td><td>Enregistré dans une structure. Le laboratoire ne l'a pas reçu</td></tr>
+    <tr><td><span class="ui">Sample Registered at Testing Lab</span> (Échantillon enregistré au laboratoire d'analyse)</td><td>Reçu par le laboratoire, en attente de test</td></tr>
+    <tr><td><span class="ui">Sample Referred to another Lab</span> (Échantillon envoyé à un autre laboratoire)</td><td>Transmis à un autre laboratoire</td></tr>
+    <tr><td><span class="ui">Awaiting Approval</span> (En attente d'approbation)</td><td>Un résultat est enregistré, en attente de validation</td></tr>
+    <tr><td><span class="ui">Accepted</span> (Accepté)</td><td>Approuvé et disponible à l'impression ou à l'envoi</td></tr>
+    <tr><td><span class="ui">Rejected</span> (Rejeté)</td><td>Non propre au test. Un motif de rejet est enregistré</td></tr>
+    <tr><td><span class="ui">Failed/Invalid</span> (Échec/Invalidité)</td><td>Le test a eu lieu sans résultat exploitable</td></tr>
+    <tr><td><span class="ui">Hold</span> (En attente)</td><td>Suspendu dans l'attente d'une décision</td></tr>
+    <tr><td><span class="ui">Sample Reordered</span> (Échantillon réorganisé)</td><td>Renvoyé au test</td></tr>
+    <tr><td><span class="ui">Lost</span> (Perdu)</td><td>Introuvable, ne sera pas testé</td></tr>
+    <tr><td><span class="ui">Expired</span> (Expiré)</td><td>Non testé dans le délai fixé (Jours d'expiration de l'échantillon, 365 par défaut)</td></tr>
+    <tr><td><span class="ui">No Result</span> (Aucun résultats)</td><td>Aucun résultat enregistré</td></tr>
+    <tr><td><span class="ui">Cancelled</span> (Annulée)</td><td>Le test ne sera pas réalisé</td></tr>
   </table>
 
   <h3>Effet sur les rapports</h3>
   <table class="wrapfirst">
-    <tr><td>Annulée</td><td>Considéré comme jamais testé. Hors volumes de test et délai de rendu</td></tr>
-    <tr><td>Échec/Invalidité</td><td>Compté dans le taux d'échec. Un retest conserve la tentative en échec</td></tr>
-    <tr><td>Rejeté</td><td>Figure dans le rapport de rejet d'échantillons avec son motif</td></tr>
-    <tr><td>Accepté</td><td>Le seul statut imprimable ou envoyable par courriel</td></tr>
+    <tr><td><span class="ui">Cancelled</span></td><td>Considéré comme jamais testé. Hors volumes de test et délai de rendu</td></tr>
+    <tr><td><span class="ui">Failed/Invalid</span></td><td>Compté dans le taux d'échec. Un retest conserve la tentative en échec</td></tr>
+    <tr><td><span class="ui">Rejected</span></td><td>Figure dans le rapport de rejet d'échantillons avec son motif</td></tr>
+    <tr><td><span class="ui">Accepted</span> et <span class="ui">Rejected</span></td><td>Les seuls statuts imprimables ou envoyables par courriel</td></tr>
   </table>
 
   <h3>Situations courantes</h3>
   <table class="wrapfirst">
     <tr><th>Constat</th><th>Cause habituelle</th></tr>
-    <tr><td>Bloqué à Échantillon actuellement enregistré au centre de santé</td><td>Le laboratoire n'a pas encore activé le manifeste</td></tr>
-    <tr><td>Bloqué à Échantillon enregistré au laboratoire de test après une série</td><td>Le résultat ne s'est pas rattaché. Vérifier l'ID sur l'automate</td></tr>
-    <tr><td>Bloqué à En attente d'approbation</td><td>Personne ne l'a encore approuvé</td></tr>
-    <tr><td>Toute une série affichée en Échec/Invalidité</td><td>Souvent un problème d'import. Essayer Déplacer vers Accepté avant de retester</td></tr>
+    <tr><td>Bloqué à <span class="ui">Sample Currently Registered at Health Center</span></td><td>Le laboratoire n'a pas encore activé le manifeste</td></tr>
+    <tr><td>Bloqué à <span class="ui">Sample Registered at Testing Lab</span> après une série</td><td>Le résultat ne s'est pas rattaché. Vérifier l'ID sur l'automate</td></tr>
+    <tr><td>Bloqué à <span class="ui">Awaiting Approval</span></td><td>Personne ne l'a encore approuvé</td></tr>
+    <tr><td>Toute une série affichée en <span class="ui">Failed/Invalid</span></td><td>Souvent un problème d'import. Essayer Déplacer vers Accepté avant de retester</td></tr>
   </table>
 
   <footer class="cardfoot"><span>InteLIS — aide-mémoire charge virale</span><span>Fiche 7 : statuts des échantillons</span></footer>

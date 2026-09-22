@@ -1,3 +1,11 @@
+---
+description: Regrouper des échantillons de charge virale enregistrés dans un batch pour une série sur automate et imprimer le PDF du batch.
+audience: [lab-staff]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Créer un batch pour le test
 
 Regrouper des échantillons enregistrés dans un batch pour une série sur un
@@ -41,6 +49,14 @@ automate, et imprimer le PDF du batch qui porte leurs ID jusqu'à l'automate.
 
         Aucun automate n'est sélectionné. En choisir un dans **Plateforme de
         test**, puis sélectionner à nouveau **Filtrer les échantillons**.
+
+    ??? question "Si un échantillon manque dans la liste"
+
+        La liste ne montre que les échantillons qui ont un ID d'échantillon,
+        sont à **Sample Registered at Testing Lab** (échantillon enregistré au
+        laboratoire d'analyse) ou **Sample Reordered** (échantillon redemandé),
+        n'ont pas de résultat, ne sont pas rejetés et ne sont pas dans un autre
+        batch.
 
 9. Vérifier le **Code de batch**. InteLIS le remplit et il ne peut pas être
    modifié.
@@ -99,7 +115,7 @@ Chaque ligne de **Gérer le batch** propose ces actions.
 | **Modifier** | Modifier le batch et ses échantillons |
 | **Modifier le poste** | Modifier la position de chaque échantillon |
 | **PDF par lots**, **PDF par lots compacts** | Réimprimer le PDF du batch |
-| **Supprimer** | Supprimer le batch et renvoyer ses échantillons dans la liste en attente de batch. Affiché uniquement tant qu'aucun échantillon du batch n'a de résultat |
+| **Supprimer** | Supprimer le batch et renvoyer ses échantillons dans la liste en attente de batch. Affiché uniquement tant qu'aucun échantillon du batch n'a de résultat ni de rejet |
 
 Pour retester des échantillons d'un batch qui a déjà des résultats, voir
 [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).

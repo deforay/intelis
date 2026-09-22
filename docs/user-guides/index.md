@@ -1,3 +1,11 @@
+---
+description: Explains the path a viral load sample takes in InteLIS, from collection and registration through batching, result capture, approval and release.
+audience: [lab-staff, lab-supervisor, requesting-facility]
+module: [vl]
+type: explanation
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # How a viral load sample moves through InteLIS
 
 This page explains the path a sample takes, from the moment it is collected to

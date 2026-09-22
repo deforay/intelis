@@ -1,3 +1,12 @@
+---
+description: Add, retire and locate the dropdown list entries used on request forms for each module, and set up a Custom Test type.
+audience: [lab-admin, system-admin]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # How to maintain the request form lists
 
 Add, correct and retire the options offered in the dropdown lists of the
@@ -65,6 +74,12 @@ each module that needs it.
         district. A district with no parent appears under no province on the
         request form.
 
+    ??? info "On a standalone installation"
+
+        On a standalone installation, Geographical Divisions and the Other Lab
+        Tests Config lists (except Test Type Configuration) show no add button.
+        They are maintained on the STS only.
+
 === "LIS"
 
     A LIS shows these lists without add buttons. The lists come from the STS.
@@ -74,10 +89,12 @@ each module that needs it.
        LIS page.
     3. Open the request form. The entry appears in its dropdown.
 
-    ??? info "Lab Storage is maintained on the LIS"
+    ??? info "Lab Storage is maintained by the lab"
 
-        **ADMIN → System Configuration → Lab Storage** belongs to the lab. Select
-        **Add Lab Freezer/Storage** there to add a freezer.
+        Lab Storage is maintained by the lab: on the LIS, or on the STS by a
+        testing-lab user. **ADMIN → System Configuration → Lab Storage**
+        belongs to the lab. Select **Add Lab Freezer/Storage** there to add a
+        freezer.
 
 ## Retire an entry
 
@@ -93,24 +110,30 @@ form, and stays readable on the records that already use it.
 
     Select **Edit** on the row, set the status to **Inactive**, and select
     **Submit**. On a LIS, the status cannot be changed. Retire the entry on the
-    STS.
+    STS. On a standalone installation, retire Other Lab Tests Config entries on
+    the STS.
 
 ??? warning "Renaming or removing a province or district"
 
     The facilities under it lose their link, and the location filters on every
     report stop matching. Agree the change with the national team first.
 
+    To fold a duplicate province or district into another, use **Merge
+    Geographical Divisions** on the Geographical Divisions list. It is on the
+    STS only.
+
 ## Set up a Custom Test
 
 A Custom Test is a test type that is not one of the built-in modules. It is
 defined under **ADMIN → Other Lab Tests Config → Test Type Configuration**.
 
-1. Add the entries the test needs under **Test Result Units**, **Test
-   Methods** and **Test Categories**.
+1. Add at least one entry under **Test Methods**. Every result group needs
+   one. Add units under **Test Result Units** if results carry a unit.
 2. Add the sample types, testing reasons and rejection reasons it needs, under
    the matching Other Lab Tests Config lists.
 3. Go to **ADMIN → Other Lab Tests Config → Test Type Configuration**.
-4. Select **Add Test Type** and define the test.
+4. Select **Add Test Type** and define the test, or select **Import Test
+   Type** to load one exported from another installation.
 
 ## Confirm it worked
 

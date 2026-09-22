@@ -1,3 +1,12 @@
+---
+description: Se connecter à l'espace System Admin pour modifier la configuration, lire les synchronisations, consulter les connexions et réinitialiser des mots de passe.
+audience: [system-admin]
+module: [all]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
+
 # Utiliser l'espace System Admin
 
 System Admin est un second espace d'administration, à `/system-admin` sur
@@ -19,7 +28,7 @@ fois, à l'installation.
 
 | Élément | Contient |
 | --- | --- |
-| Configuration du système | Connexion à la base de données, type d'instance, URL STS, laboratoire, modules activés, pays, fuseau horaire, paramétrage SMTP |
+| Configuration du système | Connexion à la base de données, type d'instance, URL STS, laboratoire, modules activés, pays, fuseau horaire, compte Gmail qui envoie les demandes d'assistance |
 | Vue d'ensemble de l'instance | L'ID d'instance et la dernière synchronisation de chaque flux de données |
 | Statistiques API | Les requêtes API traitées par cette installation |
 | Historique de connexion de l’utilisateur | Chaque tentative de connexion à InteLIS, avec l'adresse IP, le navigateur et le système d'exploitation |
@@ -30,7 +39,8 @@ fois, à l'installation.
 
 1. Ouvrir `/system-admin` sur l'adresse de l'installation, par exemple
    `https://lab.example.org/system-admin`.
-2. Saisir le **Nom d'utilisateur** et le **Mot de passe** System Admin.
+2. Dans **Nom d'utilisateur**, saisir l'identifiant de connexion choisi à
+   l'enregistrement, puis le **Mot de passe**.
 3. Sélectionner **Connexion**. La **Configuration du système** s'ouvre.
 
 ??? info "S'il n'existe encore aucun identifiant System Admin"
@@ -39,8 +49,21 @@ fois, à l'installation.
     la place. Le formulaire demande une **Clé secrète**. Elle se trouve dans le
     fichier `var/secret-key.txt` du dossier de l'installation, par exemple
     `/var/www/intelis/var/secret-key.txt`. Sur les installations plus
-    anciennes, le dossier est `/var/www/vlsm`. Remplir le formulaire et
-    sélectionner **Envoyer**.
+    anciennes, le dossier est `/var/www/vlsm`. Ouvrir d'abord la page, puis
+    lire la clé. Elle change à chaque chargement de la page.
+
+    Renseigner **Clé secrète**, **Nom d'utilisateur**, **Email ID**,
+    **Identifiant de connexion**, **Mot de passe** et **Confirmer le mot de
+    passe**, puis sélectionner **Envoyer**. L'identifiant de connexion est le
+    nom utilisé pour se connecter.
+
+## Modifier le mot de passe System Admin
+
+1. Se connecter à System Admin.
+2. Ouvrir le menu utilisateur en haut à droite et sélectionner **Modifier le
+   mot de passe**. La page **Modifier le mot de passe** s'ouvre.
+3. Saisir **Mot de passe** et **Confirmer le mot de passe**.
+4. Sélectionner **Envoyer**.
 
 ## Modifier la configuration du système
 
@@ -53,8 +76,8 @@ fois, à l'installation.
     | Section | Paramètres |
     | --- | --- |
     | Paramètres système | **Nom de l'hôte de la base de données**, **Nom d’utilisateur de la base de données**, **Mot de passe de la base de données**, **Nom de la base de données**, **Port de la base de données** |
-    | Réglages de l’instance | **Type d'instance**, **URL STS**, **Nom du Labo**, **Modules activés**, **Pays d'installation**, **Fuseau horaire** |
-    | Paramétrage SMTP | Le serveur de messagerie utilisé pour envoyer les courriels |
+    | Réglages de l’instance | **Type d'instance**, **URL STS** et **Nom du Labo** (LIS uniquement. Nom du Labo obligatoire), **Modules activés**, **Pays d'installation**, **Fuseau horaire** |
+    | Paramétrage SMTP | **Email** et **Password** du compte Gmail qui envoie les demandes d'assistance |
 
 5. Sélectionner **Envoyer**.
 6. Ouvrir InteLIS et vérifier la modification. Voir
@@ -115,7 +138,7 @@ InteLIS.
    latérale.
 3. Renseigner **Date** et **Identifiant de connexion**, puis sélectionner
    **Rechercher**.
-4. Lire les lignes : **Date de la tentative**, **Adresse IP**, **Navigateur**,
+4. Lire les lignes : **Identifiant de connexion**, **Date de la tentative**, **Adresse IP**, **Navigateur**,
    **Système d'exploitation** et **Statut**.
 
 Un même identifiant de connexion utilisé depuis plusieurs endroits à la fois
@@ -133,7 +156,8 @@ faire.
    **Générer**.
 5. Régler **Statut** sur **Actif**.
 6. Sélectionner **Envoyer**.
-7. Remettre le nouveau mot de passe à l'utilisateur en main propre.
+7. Remettre le nouveau mot de passe à l'utilisateur en main propre. InteLIS
+   ne demande pas à l'utilisateur de changer ce mot de passe.
 
 ## Vérifier que tout fonctionne
 
@@ -142,5 +166,5 @@ faire.
 | Module activé | Sa section apparaît dans le menu principal et sous ADMIN |
 | Type d'instance | Les pages de ce type apparaissent |
 | URL STS | L'Historique de l'API enregistre une synchronisation réussie vers la nouvelle adresse |
-| Paramétrage SMTP | Envoyer un résultat par courriel et vérifier qu'il arrive |
+| Paramétrage SMTP | Envoyer une demande d'assistance et vérifier qu'elle arrive |
 | Mot de passe réinitialisé | L'utilisateur se connecte avec le nouveau mot de passe |

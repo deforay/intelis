@@ -1,3 +1,12 @@
+---
+description: Send InteLIS backups every 8 hours to another Linux machine, a Windows shared folder or a USB drive, and confirm they work.
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Setting Up Off-Machine Backups
 
 Send a copy of InteLIS to another machine or drive, automatically, every 8 hours
@@ -123,6 +132,7 @@ and after every restart. The copy survives if the InteLIS machine fails.
         Backing up to  : lisbackup@192.168.1.60:/home/lisbackup/backups/kigali-central-3f9a2b1c
         Last good backup: 2026-08-07T09:14:22Z (12 minutes ago)
         Size on backup  : 4.2G
+        History         : 2026-08-01 to 2026-08-07 (7 days)
         Last attempt    : succeeded in 47s
         Schedule        : every 8 hours and after every restart
         ```
@@ -200,17 +210,8 @@ and after every restart. The copy survives if the InteLIS machine fails.
     ??? warning "If a backup warns that the newest database dump is old"
 
         The InteLIS scheduler has stopped, so no new database backups are being
-        made. The copy still runs and looks healthy. Check the scheduler:
-
-        ```bash
-        systemctl status intelis.timer
-        ```
-
-        If it does not show `active`, start it:
-
-        ```bash
-        sudo systemctl enable --now intelis.timer
-        ```
+        made. The copy still runs and looks healthy. Check the scheduler by
+        following [Check the scheduled tasks are running](maintenance.md#check-the-scheduled-tasks-are-running).
 
     ### Other commands
 
@@ -338,6 +339,7 @@ and after every restart. The copy survives if the InteLIS machine fails.
         Backing up to  : //192.168.1.50/InteLIS-Backups -> /mnt/intelis-backup/backups/centrallab-3f9a2b1c
         Last good backup: 2026-08-07T09:14:22Z (12 minutes ago)
         Size on backup  : not measured
+        History         : 2026-08-01 to 2026-08-07 (7 days)
         Last attempt    : succeeded in 96s
         Schedule        : every 8 hours and after every restart
         ```
@@ -416,17 +418,8 @@ and after every restart. The copy survives if the InteLIS machine fails.
     ??? warning "If a backup warns that the newest database dump is old"
 
         The InteLIS scheduler has stopped, so no new database backups are being
-        made. The copy still runs and looks healthy. Check the scheduler:
-
-        ```bash
-        systemctl status intelis.timer
-        ```
-
-        If it does not show `active`, start it:
-
-        ```bash
-        sudo systemctl enable --now intelis.timer
-        ```
+        made. The copy still runs and looks healthy. Check the scheduler by
+        following [Check the scheduled tasks are running](maintenance.md#check-the-scheduled-tasks-are-running).
 
     ### Other commands
 
@@ -516,6 +509,7 @@ and after every restart. The copy survives if the InteLIS machine fails.
         Backing up to  : /media/labuser/BACKUP/backups/centrallab-3f9a2b1c
         Last good backup: 2026-08-07T09:14:22Z (12 minutes ago)
         Size on backup  : 4.2G
+        History         : 2026-08-01 to 2026-08-07 (7 days)
         Last attempt    : succeeded in 52s
         Schedule        : every 8 hours and after every restart
         ```
@@ -598,17 +592,8 @@ and after every restart. The copy survives if the InteLIS machine fails.
     ??? warning "If a backup warns that the newest database dump is old"
 
         The InteLIS scheduler has stopped, so no new database backups are being
-        made. The copy still runs and looks healthy. Check the scheduler:
-
-        ```bash
-        systemctl status intelis.timer
-        ```
-
-        If it does not show `active`, start it:
-
-        ```bash
-        sudo systemctl enable --now intelis.timer
-        ```
+        made. The copy still runs and looks healthy. Check the scheduler by
+        following [Check the scheduled tasks are running](maintenance.md#check-the-scheduled-tasks-are-running).
 
     ### Other commands
 

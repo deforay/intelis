@@ -1,3 +1,11 @@
+---
+description: Build a specimen referral manifest on the STS, print it for the package, and change or move it to another lab.
+audience: [requesting-facility, lab-staff]
+module: [vl]
+type: how-to
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # How to send samples to a testing lab on a manifest
 
 List the samples in a package on a manifest, so the testing lab registers the
@@ -51,6 +59,8 @@ test's group.
             - name the chosen testing lab
             - are not on another manifest
             - are not cancelled
+            - were collected within the **Sample Collection Date Range**, which
+              starts at the last 28 days. Widen it for older samples.
 
             Open the request and check its testing lab. Then select
             **Search** again.
@@ -89,14 +99,21 @@ test's group.
             can no longer change. If it is wrong, tell the testing lab. The lab
             can reject the affected samples.
 
+        If a sample was cancelled after it went on the manifest, the edit
+        screen lists it under **Cancelled samples will be removed from this
+        manifest**. Saving removes it.
+
+        The **Testing Lab** cannot be changed on this screen once it is set.
+
     3. To add samples, move them from the left-hand list to the right-hand list.
        To narrow the left-hand list, change the filters and select **Search**.
     4. To remove samples, move them back to the left-hand list.
     5. Check that **Number of selected samples** matches the tubes in the
        package.
-    6. Select **Save**.
-    7. Select **Print Manifest PDF** on the manifest row.
-    8. Replace the old printed manifest in the package with the new one.
+    6. Enter the **Reason for changing manifest**. It is required.
+    7. Select **Submit**.
+    8. Select **Print Manifest PDF** on the manifest row.
+    9. Replace the old printed manifest in the package with the new one.
 
     ??? info "About the Manifest Status field"
 

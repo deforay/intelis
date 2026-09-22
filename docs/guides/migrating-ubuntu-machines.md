@@ -1,3 +1,12 @@
+---
+description: Move an InteLIS lab to a new Ubuntu machine, or rebuild a dead one, by restoring from its backups.
+audience: [system-admin]
+module: [all]
+type: how-to
+platform: ubuntu
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Migrating From One Ubuntu Machine to Another
 
 Move a lab to a new Ubuntu machine, or rebuild a machine that has died, from the
@@ -19,6 +28,8 @@ internet.
         intelis backup
         ```
 
+        If it asks `Set up off-machine backups now?`, press Enter (No).
+
         ??? info "If `intelis` is not recognised"
 
             The install is older. Export the database with this instead:
@@ -33,8 +44,8 @@ internet.
               interfacing tool.
             - When asked for the location, enter `/var/www/intelis/backups/db`.
               On older installs, enter `/var/www/vlsm/backups/db`.
-            - Wait for `Script completed`. An export stopped part way still
-              leaves a file, and restoring it silently loses the newest records.
+            - Wait for `Script completed.` If it prints
+              `These databases were NOT backed up`, stop.
 
         ??? failure "If MySQL will not start"
 
@@ -95,11 +106,12 @@ internet.
 
         ??? failure "If it stops with `Failed to decrypt`"
 
-            The backup is encrypted with a key held by the STS. Ask the STS
-            administrator for a one-time recovery token. They run this on the STS:
+            Setup could not open the backup with the old machine's settings in
+            `backups/config`. Ask the STS administrator for a one-time recovery
+            token. They run this on the STS:
 
             ```bash
-            cd /var/www/intelis && sudo -u www-data composer backup-key-admin approve --lab <lab-id>
+            cd /var/www/intelis && sudo -u www-data php bin/backup-key-admin.php approve --lab <lab-id>
             ```
 
             Then repeat steps 9 to 11, adding the STS address and the token after
@@ -108,6 +120,10 @@ internet.
             ```bash
             sudo bash setup.sh --restore-from-backup-folder '<folder>' --sts-url https://sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
             ```
+
+            The second run asks `Reuse your previous setup answers and skip the prompts?`.
+            Press Enter (Yes) to reuse the answers. If it says
+            `An existing database was found`, choose **Keep a copy, then start fresh**.
 
     ### Check the lab
 
@@ -206,7 +222,7 @@ internet.
             administrator for a one-time recovery token. They run this on the STS:
 
             ```bash
-            cd /var/www/intelis && sudo -u www-data composer backup-key-admin approve --lab <lab-id>
+            cd /var/www/intelis && sudo -u www-data php bin/backup-key-admin.php approve --lab <lab-id>
             ```
 
             Then repeat steps 5 to 7, adding the STS address and the token after
@@ -216,9 +232,18 @@ internet.
             sudo bash setup.sh --restore-from-backup-folder '<folder>' --sts-url https://sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
             ```
 
+            The second run asks `Reuse your previous setup answers and skip the prompts?`.
+            Press Enter (Yes) to reuse the answers. If it says
+            `An existing database was found`, choose **Keep a copy, then start fresh**.
+
             If this machine cannot reach the STS, ask the STS administrator for
-            the recovery code instead. They get it with
-            `backup-key-admin show-code --lab <lab-id>`. Then run:
+            the recovery code instead. They get it by running this on the STS:
+
+            ```bash
+            cd /var/www/intelis && sudo -u www-data php bin/backup-key-admin.php show-code --lab <lab-id>
+            ```
+
+            Then run:
 
             ```bash
             sudo bash setup.sh --restore-from-backup-folder '<folder>' --encryption-password '<recovery-code>'
@@ -273,9 +298,9 @@ internet.
     3. Choose the lab from the list.
     4. Choose **Just the database backups**.
     5. Press Enter to accept the folder it offers.
-    6. Wait for the copy to finish. The script ends by printing a command that
-       starts with `cd ~ && wget -O setup.sh`. Select that command and press
-       **Ctrl+Shift+C** to copy it.
+    6. Wait for the copy to finish. Near the end it prints a two-line command
+       starting with `cd ~ && wget -O setup.sh`. Select both lines and press
+       **Ctrl+Shift+C** to copy them.
 
     ### Install and restore
 
@@ -300,7 +325,7 @@ internet.
             one-time recovery token. They run this on the STS:
 
             ```bash
-            cd /var/www/intelis && sudo -u www-data composer backup-key-admin approve --lab <lab-id>
+            cd /var/www/intelis && sudo -u www-data php bin/backup-key-admin.php approve --lab <lab-id>
             ```
 
             Then paste the command from step 6 again. Before pressing Enter, add
@@ -309,6 +334,10 @@ internet.
             ```bash
             --sts-url https://sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
             ```
+
+            The second run asks `Reuse your previous setup answers and skip the prompts?`.
+            Press Enter (Yes) to reuse the answers. If it says
+            `An existing database was found`, choose **Keep a copy, then start fresh**.
 
     ### Check the lab
 
@@ -322,7 +351,7 @@ internet.
         1. Copy the newest interfacing backup out of the fetched folder:
 
             ```bash
-            sudo bash -c 'cp "$(ls -t /root/intelis-restore/*/db/interfacing-* | head -1)" /tmp/'
+            sudo bash -c 'cp "$(ls -t /var/intelis-restore/*/db/interfacing-* | head -1)" /tmp/'
             ```
 
         2. Restore it into the interfacing database:

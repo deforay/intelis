@@ -1,3 +1,11 @@
+---
+description: Printable one-page cards for viral load lab work, InteLIS administration and machine care, with links to the matching guides.
+audience: [lab-staff, lab-supervisor, lab-admin, system-admin]
+module: [vl]
+type: reference
+reviewed: 2026-09-22
+reviewed_against: 5.7.74
+---
 # Printable job aids
 
 Single-page cards, each printing on one A4 page. Three sets: one for the people
