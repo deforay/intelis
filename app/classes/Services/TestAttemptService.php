@@ -140,17 +140,30 @@ final class TestAttemptService
      * archived afterwards with no transaction, so a failure in between destroyed the result
      * and recorded nothing in its place.
      *
-     * @param int[] $sampleIds form_* primary keys.
-     * @param int   $status    Status to return the samples to.
+     * @param int[]  $sampleIds form_* primary keys.
+     * @param int    $status    Status to return the samples to.
+     * @param string $labScope  Unaliased lab predicate from CommonService::labScopeWhere('');
+     *                          ids outside it are dropped, so one lab cannot reset another's.
      * @return int Rows reset.
      */
-    public function resetForRetest(string $testType, array $sampleIds, int $status): int
+    public function resetForRetest(string $testType, array $sampleIds, int $status, string $labScope = ''): int
     {
         $ids = self::positiveIds($sampleIds);
         $module = TestsService::getTestTypes()[$testType] ?? null;
 
         if ($ids === [] || empty($module['tableName']) || empty($module['clearOnRetest'])) {
             return 0;
+        }
+
+        if (trim($labScope) !== '') {
+            $rows = $this->db->rawQuery(
+                "SELECT {$module['primaryKey']} AS id FROM {$module['tableName']}
+                    WHERE {$module['primaryKey']} IN (" . implode(',', $ids) . ") AND $labScope"
+            );
+            $ids = array_map(static fn(array $row): int => (int) $row['id'], $rows);
+            if ($ids === []) {
+                return 0;
+            }
         }
 
         $this->db->beginTransaction();

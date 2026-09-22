@@ -9,6 +9,9 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\TestAttemptService;
 
+// AJAX skips the page ACL, so check the privilege of the page that calls this.
+_requirePrivilege('/covid-19/results/covid-19-failed-results.php');
+
 try {
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
@@ -32,7 +35,8 @@ try {
     echo $attempts->resetForRetest(
         'covid19',
         TestAttemptService::sampleIdsFromRequest($_POST, 'covid19Id'),
-        $status
+        $status,
+        $general->labScopeWhere('')
     );
 } catch (Throwable $e) {
     throw new SystemException($e->getMessage(), $e->getCode(), $e);
