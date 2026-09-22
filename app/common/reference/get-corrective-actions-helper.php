@@ -115,7 +115,7 @@ try {
         $row[] = $aRow['status'];
 
         if ($editRequest) {
-            $edit = '<a href="/common/reference/edit-recommended-corrective-action.php?testType=vl&id=' . base64_encode((string) $aRow[$primaryKey]) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+            $edit = '<a href="/common/reference/edit-recommended-corrective-action.php?testType=' . urlencode((string) $testType) . '&id=' . base64_encode((string) $aRow[$primaryKey]) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
         }
 
         $actions = "";
