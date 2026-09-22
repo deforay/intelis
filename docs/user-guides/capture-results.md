@@ -148,8 +148,8 @@ Get the results of a finished analyzer run into InteLIS.
         | Reviewed By, Tested By, Approved By | The staff responsible |
         | Lab Tech. Comments | Any comment the report must carry |
 
-        Country forms differ in places. For example, the South Sudan form labels
-        the analyzer field **Testing Platform**.
+        Country forms differ in places. For example, some forms label the
+        analyzer field **Testing Platform**.
 
         ??? failure "If the sample was rejected"
 

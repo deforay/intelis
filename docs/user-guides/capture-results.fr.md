@@ -158,8 +158,8 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
         | Révisé par, Examiné par, Approuvé par | Le personnel responsable |
         | Commentaires de Lab Technicien | Tout commentaire que le rapport doit porter |
 
-        Les formulaires nationaux diffèrent par endroits. Par exemple, le
-        formulaire du Soudan du Sud nomme le champ de l'automate **Testing
+        Les formulaires nationaux diffèrent par endroits. Par exemple,
+        certains formulaires nomment le champ de l'automate **Testing
         Platform**.
 
         ??? failure "Si l'échantillon a été rejeté"

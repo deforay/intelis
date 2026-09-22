@@ -85,7 +85,7 @@ modification dans un panneau n'atteint pas les autres.
 | --- | --- | --- |
 | ID de l'échantillon | La construction des ID d'échantillon de ce module. Voir [Formats d'ID d'échantillon](#formats-did-dechantillon) | Tous |
 | Longueur minimale de l'identifiant du patient | Le plus court identifiant de patient accepté par le formulaire | Tous |
-| Demande de copie sur les formulaires Enregistrer et Suivant | Si **Sauvegarder et Suivant** reporte les valeurs de la demande précédente | Tous, sur le formulaire du Cameroun uniquement |
+| Demande de copie sur les formulaires Enregistrer et Suivant | Si **Sauvegarder et Suivant** reporte les valeurs de la demande précédente | Tous. Seuls certains formulaires nationaux l'utilisent |
 | VL Auto Approve API Results (Approbation automatique des résultats de l'API), Approbation automatique des résultats de l'API par l'EID, COVID-19 Approbation automatique des résultats de l'API, Approbation automatique des résultats de l'API TB | Si les résultats reçus par l'API sont approuvés sans contrôle humain | Charge virale, EID, Covid-19, TB |
 | Afficher le nom du participant dans le manifeste VL / EID / COVID-19 / TB / CD4, Afficher le nom du participant dans Hepatitis Manifest, Afficher le nom du participant dans le manifeste des tests de laboratoire personnalisés | Si le nom du participant s'imprime sur le manifeste de ce module | Tous |
 | Tests de confirmation positifs Covid-19 requis | Si un résultat COVID-19 positif demande un test de confirmation | Covid-19 |
@@ -97,7 +97,7 @@ Les **Réglages de la charge virale** portent en plus :
 | Limite du seuil de charge virale | La valeur à partir de laquelle un résultat est élevé |
 | VL Objectif mensuel | **Activer** ou **Désactiver**. Activé, le tableau de bord montre le travail de chaque laboratoire face à ses objectifs. Les objectifs eux-mêmes se règlent par laboratoire d'analyse, sous [Configurer un laboratoire d'analyse](admin-facilities.md#configurer-un-laboratoire-danalyse) |
 | Interpréter et convertir les résultats de la LV | Si InteLIS convertit et interprète les valeurs de charge virale importées |
-| Format d'exportation de la charge virale | **Format par défaut** ou **Format CRESAR**. Sur le formulaire du Cameroun uniquement |
+| Format d'exportation de la charge virale | **Format par défaut** ou **Format CRESAR**. Seuls certains formulaires nationaux l'utilisent |
 
 ??? warning "Approbation automatique des résultats de l'API"
 
@@ -116,7 +116,7 @@ quatre chiffres et repart à zéro chaque année.
 | AA | Préfixe, année sur 2 chiffres, numéro | `VL260001` |
 | MMYY | Préfixe, mois, année sur 2 chiffres, numéro | `VL08260001` |
 | Auto | Code de province, date au format AAMMJJ, numéro | `122608190001` |
-| Auto 2 | Année sur 2 chiffres, code de province, préfixe, numéro. Sur le formulaire PNG uniquement | `2612VL0001` |
+| Auto 2 | Année sur 2 chiffres, code de province, préfixe, numéro. Seuls certains formulaires nationaux l'utilisent | `2612VL0001` |
 | Numérique, Alphanumérique | Préfixe, numéro. Sans date | `VL0001` |
 
 Les échantillons enregistrés sur le STS portent un `R` initial. Sur certains

@@ -83,7 +83,7 @@ reach the others.
 | --- | --- | --- |
 | Sample ID | How this module's Sample IDs are built. See [Sample ID formats](#sample-id-formats) | All |
 | Minimum Patient ID Length | The shortest patient identifier the request form accepts | All |
-| Copy Request On Save and Next Form | Whether **Save and Next** carries the previous request's values forward | All, on the Cameroon form only |
+| Copy Request On Save and Next Form | Whether **Save and Next** carries the previous request's values forward | All. Only some country forms use it |
 | VL, EID, COVID-19 or TB Auto Approve API Results | Whether results arriving through the API are approved with no human check | Viral Load, EID, Covid-19, TB |
 | Show Participant Name in VL, EID, COVID-19, Hepatitis, TB or CD4 Manifest, Show Participant Name in Custom Lab Tests Manifest | Whether the participant name prints on this module's manifest | All |
 | Covid-19 Positive Confirmatory Tests Required | Whether a positive COVID-19 result needs a confirmatory test | Covid-19 |
@@ -95,7 +95,7 @@ reach the others.
 | Viral Load Threshold Limit | The value from which a result counts as high |
 | VL Monthly Target | **Enable** or **Disable**. Enabled, the dashboard shows each lab's work against its targets. The targets themselves are set per testing lab, under [Set up a testing lab](admin-facilities.md#set-up-a-testing-lab) |
 | Interpret and Convert VL Results | Whether InteLIS converts and interprets imported viral load values |
-| Viral Load Export Format | **Default Format** or **CRESAR Format**. On the Cameroon form only |
+| Viral Load Export Format | **Default Format** or **CRESAR Format**. Only some country forms use it |
 
 ??? warning "Auto Approve API Results"
 
@@ -113,7 +113,7 @@ digits and restarts each year.
 | YY | Prefix, 2-digit year, number | `VL260001` |
 | MMYY | Prefix, month, 2-digit year, number | `VL08260001` |
 | Auto | Province code, date as YYMMDD, number | `122608190001` |
-| Auto 2 | 2-digit year, province code, prefix, number. On the PNG form only | `2612VL0001` |
+| Auto 2 | 2-digit year, province code, prefix, number. Only some country forms use it | `2612VL0001` |
 | Numeric, Alpha Numeric | Prefix, number. No date | `VL0001` |
 
 Samples registered on the STS carry a leading `R`. On some country forms every
