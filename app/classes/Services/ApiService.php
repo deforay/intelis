@@ -50,6 +50,18 @@ final class ApiService
         ]);
     }
 
+    /**
+     * The server answered with an error status, and the caller asked for the status,
+     * so the caller decides what it means and logs it if it matters: an expired
+     * token is re-enrolled, a 413 is split and retried. Logged here as an error too,
+     * with a trace through the HTTP client, the same failure showed up two or three
+     * times over. One warning keeps the answer on record.
+     */
+    private function logAnswered(string $url, int $status, ?string $body): void
+    {
+        LoggerUtility::logWarning("$url answered HTTP $status: " . mb_substr((string) ($body ?? ''), 0, 500));
+    }
+
     /** @param array<string, mixed> $headers */
     public function setHeaders(array $headers): void
     {
@@ -223,7 +235,11 @@ final class ApiService
             // Guzzle 8 only exposes a response on ResponseException.
             $response = $e instanceof ResponseException ? $e->getResponse() : null;
             $responseBody = $response?->getBody()->getContents();
-            $this->logError($e, "Unable to post to $url. Server responded with: " . ($responseBody ?? 'No response body'));
+            if ($response !== null && $returnWithStatusCode) {
+                $this->logAnswered($url, $response->getStatusCode(), $responseBody);
+            } else {
+                $this->logError($e, "Unable to post to $url. Server responded with: " . ($responseBody ?? 'No response body'));
+            }
 
             if ($returnWithStatusCode) {
                 $headers = [];
@@ -335,8 +351,11 @@ final class ApiService
             // transport failure, and reporting it as 500 would let a caller
             // treat "never left the machine" as "the server said no".
             $statusCode = $response !== null ? $response->getStatusCode() : null;
-            // Log the error along with the response body
-            $this->logError($e, "Unable to post to $url. Server responded with " . ($statusCode ?? 'no response') . " : " . ($responseBody ?? 'No response body'));
+            if ($statusCode !== null && $returnWithStatusCode) {
+                $this->logAnswered($url, $statusCode, $responseBody);
+            } else {
+                $this->logError($e, "Unable to post to $url. Server responded with " . ($statusCode ?? 'no response') . " : " . ($responseBody ?? 'No response body'));
+            }
 
             $apiResponse = $responseBody ?? null;
         } catch (Throwable $e) {

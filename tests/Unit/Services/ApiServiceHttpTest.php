@@ -25,6 +25,8 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
 use Throwable;
+use App\Utilities\LoggerUtility;
+use Monolog\Handler\TestHandler;
 
 /** @phpstan-type HttpTransaction array{request: RequestInterface, response: ?ResponseInterface, error: mixed, options: array<mixed>} */
 final class ApiServiceHttpTest extends TestCase
@@ -191,6 +193,74 @@ final class ApiServiceHttpTest extends TestCase
                 ['httpStatusCode' => null, 'body' => null],
                 $service->postFile('https://sts.example/upload', 'file', $file, [], true, true)
             );
+        } finally {
+            unlink($file);
+        }
+    }
+
+    /** Records what the application logger is given while $run runs. */
+    private function logsOf(callable $run): TestHandler
+    {
+        $handler = new TestHandler();
+        $logger = LoggerUtility::getLogger();
+        $logger->pushHandler($handler);
+        try {
+            $run();
+        } finally {
+            $logger->popHandler();
+        }
+        return $handler;
+    }
+
+    public function testAnErrorAnswerTheCallerReadsIsOneWarningWithoutATrace(): void
+    {
+        $service = $this->service([new Response(401, [], '{"message":"Invalid enrollment key"}')]);
+
+        $logs = $this->logsOf(function () use ($service): void {
+            $result = $service->post('https://sc.example/api/v2/enroll', [], returnWithStatusCode: true);
+            self::assertSame(401, $result['httpStatusCode']);
+        });
+
+        // The caller has the status and decides what the failure means; this layer
+        // repeating it as an error, with a trace through Guzzle, only doubled the log.
+        self::assertFalse($logs->hasErrorRecords() || $logs->hasCriticalRecords());
+        self::assertCount(1, $logs->getRecords());
+        self::assertTrue($logs->hasWarningThatContains('HTTP 401'));
+        self::assertTrue($logs->hasWarningThatContains('Invalid enrollment key'));
+        self::assertArrayNotHasKey('stacktrace', $logs->getRecords()[0]->context);
+    }
+
+    public function testAnErrorAnswerForACallerThatOnlyGetsTheBodyIsStillAnError(): void
+    {
+        $service = $this->service([new Response(500, [], 'boom')]);
+
+        $logs = $this->logsOf(fn() => $service->post('https://sts.example/sync', []));
+
+        self::assertTrue($logs->hasErrorThatContains('Unable to post to https://sts.example/sync'));
+    }
+
+    public function testNoAnswerAtAllIsStillAnError(): void
+    {
+        $failure = new ConnectException('Connection refused', new Request('POST', 'https://sts.example/sync'));
+        $service = $this->service([$failure]);
+
+        $logs = $this->logsOf(fn() => $service->post('https://sts.example/sync', [], returnWithStatusCode: true));
+
+        self::assertTrue($logs->hasErrorThatContains('Connection refused'));
+    }
+
+    public function testAnUploadErrorAnswerTheCallerReadsIsOneWarning(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'intelis-upload-');
+        self::assertNotFalse($file);
+        file_put_contents($file, '{}');
+        try {
+            $service = $this->service([new Response(401, [], 'unauthorized')]);
+            $logs = $this->logsOf(
+                fn() => $service->postFile('https://sc.example/api/v2/vl', 'file', $file, [], true, true)
+            );
+            self::assertFalse($logs->hasErrorRecords() || $logs->hasCriticalRecords());
+            self::assertTrue($logs->hasWarningThatContains('HTTP 401'));
         } finally {
             unlink($file);
         }
