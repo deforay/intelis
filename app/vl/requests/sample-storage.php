@@ -116,17 +116,14 @@ $_SESSION['sampleStorageQuery'] = $vlQuery;
 $vlQueryInfo = $db->rawQuery($vlQuery);
 
 $storageInfo = $storageService->getLabStorage();
-$uniqueId = [];
-foreach ($vlQueryInfo as $info) {
-	$uniqueId[] = "'" . $info['unique_id'] . "'";
-}
 
-$sampleUniqueId = implode(',', $uniqueId);
-$currentStorage = "";
-if ($sampleUniqueId !== '' && $sampleUniqueId !== '0') {
-	$getCurrentStorage = "SELECT sh.*,s.storage_code,s.storage_id FROM lab_storage_history as sh
-	LEFT JOIN lab_storage as s ON s.storage_id=sh.freezer_id WHERE sh.sample_unique_id IN ($sampleUniqueId) ";
-	$currentStorage = $db->rawQuery($getCurrentStorage);
+// Each row is one storage history entry, so a sample moved between freezers
+// appears once per move. Only its latest entry can still be removed.
+$latestHistoryId = [];
+foreach ($vlQueryInfo as $info) {
+	if (!empty($info['history_id'])) {
+		$latestHistoryId[$info['unique_id']] = max((int) $info['history_id'], $latestHistoryId[$info['unique_id']] ?? 0);
+	}
 }
 
 $testingLabs = $facilitiesService->getTestingLabs('vl');
@@ -333,10 +330,17 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 									$i = 0;
 									if (!empty($vlQueryInfo)) {
 										foreach ($vlQueryInfo as $vl) {
-											if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
+											if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($vl['is_encrypted']) && $vl['is_encrypted'] == 'yes') {
 												$key = (string) $general->getGlobalConfig('key');
 												$vl['patient_art_no'] = $general->crypto('decrypt', $vl['patient_art_no'], $key);
-											} ?>
+											}
+											$existingStorage = '';
+											if (!empty($vl['history_id']) && !empty($vl['freezer_id'])) {
+												$existingStorage = $vl['storage_code'] . '-' . $vl['rack'] . '-' . $vl['box'] . '-' . $vl['position'] . ' ' . $vl['volume'] . ' ml';
+											}
+											$canRemove = $existingStorage !== ''
+												&& strtolower((string) $vl['sample_status']) !== 'removed'
+												&& (int) $vl['history_id'] === ($latestHistoryId[$vl['unique_id']] ?? 0); ?>
 											<tr>
 												<td class="dataTables_empty">
 													<?php echo $vl['sample_code'];
@@ -357,13 +361,13 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 												</td>
 												<td class="dataTables_empty">
 													<input type="hidden" name="storageId[<?= $i; ?>]" id="storageId<?= $i; ?>"
-														class="form-control" value="<?= $currentStorage[$i]['storage_id']; ?>"
+														class="form-control" value="<?= htmlspecialchars((string) ($vl['freezer_id'] ?? '')); ?>"
 														size="5" />
 													<input type="hidden" name="historyId[<?= $i; ?>]" id="historyId<?= $i; ?>"
-														class="form-control" value="<?= $currentStorage[$i]['history_id']; ?>"
+														class="form-control" value="<?= (int) ($vl['history_id'] ?? 0); ?>"
 														size="5" />
 
-													<span id="currentStorage<?= $i; ?>"><?php echo $existingStorage; ?></span>
+													<span id="currentStorage<?= $i; ?>"><?= htmlspecialchars($existingStorage); ?></span>
 												</td>
 												<td class="dataTables_empty">
 													<input type="text" name="volume[<?= $i; ?>]" id="volume<?= $i; ?>"
@@ -410,14 +414,14 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 													< ?php echo ucfirst($vl['sample_status']); ?>
 												</td>-->
 												<td class="dataTables_empty">
-													<?php if ($existingStorage != "" && (strtolower((string) $vl['sample_status']) !== "removed")) {
+													<?php if ($canRemove) {
 														?>
 														<a href="#" class="btn btn-danger btn-xs"
 															onclick="showRemovalReason(<?= $i; ?>);"><em
-																class="fa-solid fa-xmark"></em>&nbsp; Remove</a>
+																class="fa-solid fa-xmark"></em>&nbsp; <?= _translate("Remove"); ?></a>
 														<select id="sampleRemovalReason<?= $i;
 														?>" name="sampleRemovalReason[<?= $i; ?>]" class="form-control"
-															title="Please Enter Sample Removal Reason" onchange="removeSampleFromFreezer(this.value,<?= $i;
+															title="<?= _translate("Please enter sample removal reason", true); ?>" onchange="removeSampleFromFreezer(this.value,<?= $i;
 															?>);" style="width:100%; display:none;">
 															<option value=""><?= _translate("-- Select --");
 															?> </option>
@@ -427,7 +431,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 																	<?php echo ($reason['removal_reason_name']); ?></option>
 															<?php }
 															?>
-															<option value="other">Other</option>
+															<option value="other"><?= _translate("Other"); ?></option>
 														</select>
 														<input type="text" class="form-control"
 															name="newSampleRemovalReason[<?= $i; ?>]" id="newSampleRemovalReason<?= $i;

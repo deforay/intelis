@@ -9,6 +9,9 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\TestAttemptService;
 
+// AJAX skips the page ACL, so check the privilege of the page that calls this.
+_requirePrivilege('/generic-tests/results/generic-failed-results.php');
+
 try {
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
@@ -32,7 +35,8 @@ try {
     echo $attempts->resetForRetest(
         'generic-tests',
         TestAttemptService::sampleIdsFromRequest($_POST, 'vlId'),
-        $status
+        $status,
+        $general->labScopeWhere('')
     );
 } catch (Throwable $e) {
     throw new SystemException($e->getMessage(), $e->getCode(), $e);

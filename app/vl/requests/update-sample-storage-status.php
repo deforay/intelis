@@ -22,12 +22,13 @@ $storageService = ContainerRegistry::get(StorageService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$currentStorage = explode("-", (string) $_POST['currentStorage']);
-
-$getFreezer = $storageService->getStorageByCode($currentStorage[0]);
-$currentFreezerId = $getFreezer['storage_id'];
-
 $currentStorageInfo = $storageService->getFreezerHistoryById($_POST['historyId']);
+if (empty($currentStorageInfo)) {
+    exit;
+}
+// The history row already names its freezer; the displayed storage text is
+// "code-rack-box-position", which cannot be split when a code contains "-".
+$currentFreezerId = $currentStorageInfo['freezer_id'];
 $data = [];
 
 if (is_numeric($_POST['removalReason']) === false) {
