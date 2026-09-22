@@ -911,6 +911,9 @@ try {
         $updateCounter = 0;
 
         foreach ($parsedData as $key => $remoteData) {
+            // Per record: the catch below logs these, and a record that throws
+            // before setting them must not be reported as the previous one.
+            $request = $localRecord = null;
             try {
                 $db->beginTransaction();
 
@@ -975,8 +978,12 @@ try {
                 }
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
+                // A record that threw was not saved: count it, or the run reports
+                // no failures and an all-failed pull is recorded as an empty one.
+                $failureCounter++;
                 LoggerUtility::logError($e->getMessage(), [
                     'error_id' => MiscUtility::generateErrorId(),
+                    'exception_class' => $e::class,
                     'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
@@ -1074,8 +1081,10 @@ try {
 
         $loopIndex = 0;
         $successCounter = 0;
+        $failureCounter = 0;
 
         foreach ($parsedData as $key => $remoteData) {
+            $request = $localRecord = null;
             try {
                 $db->beginTransaction();
 
@@ -1185,6 +1194,14 @@ try {
                     $id = $db->insert($tableName, $request);
                     $genericId = $db->getInsertId();
                 } else {
+                    // New to this lab but no collection date: it cannot be
+                    // inserted. This used to be skipped without a word.
+                    LoggerUtility::logError("Sync operation failed", [
+                        'reason' => 'new request has no sample_collection_date',
+                        'unique_id' => $request['unique_id'] ?? null,
+                        'sample_code' => $request['sample_code'] ?? null,
+                        'module' => 'generic-tests',
+                    ]);
                     $id = false;
                     $genericId = null;
                 }
@@ -1193,6 +1210,8 @@ try {
 
                 if ($id === true || $id > 0) {
                     $successCounter++;
+                } else {
+                    $failureCounter++;
                 }
                 if ($isDryRun) {
                     $db->rollbackTransaction();
@@ -1201,8 +1220,12 @@ try {
                 }
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
+                // A record that threw was not saved: count it, or the run reports
+                // no failures and an all-failed pull is recorded as an empty one.
+                $failureCounter++;
                 LoggerUtility::logError($e->getMessage(), [
                     'error_id' => MiscUtility::generateErrorId(),
+                    'exception_class' => $e::class,
                     'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
@@ -1237,6 +1260,9 @@ try {
                 $io->note("DRY RUN CUSTOM TESTS: would sync $successCounter record(s)");
             } else {
                 $io->success("Synced $successCounter Custom Tests record(s)");
+                if ($failureCounter > 0) {
+                    $io->error("Failed to sync $failureCounter Custom Tests record(s)");
+                }
             }
         }
 
@@ -1254,7 +1280,7 @@ try {
                 $labId,
                 // An empty pull keeps its row but no bodies: the newest
                 // receive-requests row is where the next pull starts from.
-                emptyPoll: $successCounter === 0,
+                emptyPoll: $successCounter === 0 && $failureCounter === 0,
                 keepRow: true
             );
         }
