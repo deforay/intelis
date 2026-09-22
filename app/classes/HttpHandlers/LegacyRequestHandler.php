@@ -68,14 +68,9 @@ class LegacyRequestHandler implements RequestHandlerInterface
                 throw $e;
             }
 
-            $fileContext = $filePath ?? $request->getUri()->getPath();
-            LoggerUtility::logError("Error in $fileContext : " . $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
-                'request' => $request->getUri()->getPath(),
-                'trace' => $e->getTraceAsString(),
-                'code' => $e->getCode(),
-                'line' => $e->getLine(),
-                'file' => $e->getFile()
-            ]);
+            // Not logged here: the global error handler logs it once, with the error
+            // ID the user sees, unwound to $e and its real location. Logging here as
+            // well wrote every failure twice, once without the ID.
             throw new SystemException($e->getMessage(), $e->getCode() ?? 500, $e);
         }
     }

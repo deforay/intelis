@@ -7,6 +7,7 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use Slim\Psr7\Response;
 use App\Utilities\LoggerUtility;
+use App\Utilities\ErrorIndexUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -98,13 +99,19 @@ class ErrorResponseGenerator
         // Generate a unique error ID for tracking
         $errorId = MiscUtility::generateErrorId();
 
+        // Pages run inside LegacyRequestHandler, which rethrows every failure as a
+        // SystemException of its own, so $exception's file and line are always the
+        // handler's. Log the original, and the line of our code it came from.
+        $origin = ErrorIndexUtility::originOf($exception);
+        $cause = $origin['exception'];
+
         LoggerUtility::logError($errorReason . ' : ' . $exception->getCode() . ' : ' . ($request->getUri() ?? 'UNABLE TO GET URI') . ': ' . $exception->getMessage(), [
             'error_id' => $errorId,
-            'exception' => $exception,
-            'exception_class' => $exception::class,
-            'file' => $exception->getFile(),
-            'line' => $exception->getLine(),
-            'stacktrace' => $exception->getTraceAsString(),
+            'exception_class' => $cause::class,
+            'file' => $origin['file'],
+            'line' => $origin['line'],
+            'thrown_at' => $cause->getFile() . ':' . $cause->getLine(),
+            'stacktrace' => $cause->getTraceAsString(),
             'user_agent' => $request->getHeaderLine('User-Agent'),
             'ip_address' => CommonService::getClientIpAddress($request),
             'session_id' => session_id() ?: 'no-session'

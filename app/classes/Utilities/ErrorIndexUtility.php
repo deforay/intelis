@@ -64,6 +64,44 @@ final class ErrorIndexUtility
         return substr(sha1($key), 0, 16);
     }
 
+    /** Infrastructure a failure passes through but never starts in. */
+    private const array PASS_THROUGH = [
+        '/vendor/',
+        '/app/classes/Services/DatabaseService.php',
+        '/app/classes/Services/Database/',
+    ];
+
+    /**
+     * The exception that actually went wrong, and the line of our code where it
+     * did. Wrappers are unwound to the original, and when that was thrown inside
+     * a library (a MySQL error surfaces in the database driver) the location is
+     * the first line of application code that called into it.
+     *
+     * @return array{exception: Throwable, file: string, line: int}
+     */
+    public static function originOf(Throwable $e): array
+    {
+        while ($e->getPrevious() !== null) {
+            $e = $e->getPrevious();
+        }
+
+        $frames = [['file' => $e->getFile(), 'line' => $e->getLine()], ...$e->getTrace()];
+        foreach ($frames as $frame) {
+            $file = $frame['file'] ?? null;
+            if (!is_string($file) || $file === '') {
+                continue;
+            }
+            foreach (self::PASS_THROUGH as $marker) {
+                if (str_contains($file, $marker)) {
+                    continue 2;
+                }
+            }
+            return ['exception' => $e, 'file' => $file, 'line' => (int) ($frame['line'] ?? 0)];
+        }
+
+        return ['exception' => $e, 'file' => $e->getFile(), 'line' => $e->getLine()];
+    }
+
     /**
      * @param array{
      *     logged_at: string, level: string, message: string, error_id?: ?string,
