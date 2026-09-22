@@ -38,7 +38,7 @@ asks for the password.
 | `intelis health` | Checks disk usage, MySQL response time, writable paths and off-machine backups. | To see whether a running server is well right now. |
 | `intelis doctor` | Finds out why InteLIS will not open in the browser and offers each safe repair. Runs `fix-database` itself when the database is at fault. `--check` only reports. `--yes` applies every safe repair without asking. `--quiet` prints only the verdict and the report path. | When the site will not open. See [Browser Shows PHP Code Instead of InteLIS](browser-shows-php-code.md). |
 | `intelis fix-database` | Finds out why MySQL is down and offers each safe repair. Takes the same options as `doctor`. | When MySQL will not start. See [MySQL Will Not Start](mysql-will-not-start.md). |
-| `intelis interface` | Imports the results the Interfacing Tool is holding. | To import results now instead of waiting for the scheduled import. |
+| `intelis interface` | Imports the results the Interfacing Tool is holding. | To import results now instead of waiting for the scheduled import. See [Analyzer Results Not Arriving](interfacing-results-not-arriving.md). |
 | `intelis interface setup` | Creates the interfacing database and the account the Interfacing Tool connects with, and writes the settings. | Once, when connecting the Interfacing Tool. See [Connect an Instrument to InteLIS](setting-up-interfacing-tool.md). |
 | `intelis interface migrate` | Brings the interfacing database up to date with the Interfacing Tool's own migrations. | When `intelis check` or support asks for it. |
 | `intelis provision` | Creates the directories InteLIS writes to and fixes their owner and permissions. | When `intelis check` reports a path that is missing or not writable. |

@@ -107,6 +107,7 @@ nav:
       - Browser Shows PHP Code: guides/browser-shows-php-code.md
       - Fix Collation Mismatch: guides/fix-collation-issue.md
       - Permission Denied Issue: guides/permission-denied-issue.md
+      - Analyzer Results Not Arriving: guides/interfacing-results-not-arriving.md
   - Reference:
       - Architecture: ARCHITECTURE.md
       - Engineering Standards: engineering-standards.md
@@ -192,6 +193,7 @@ plugins:
             Browser Shows PHP Code: Le navigateur affiche du code PHP
             Fix Collation Mismatch: Corriger une incohérence de collation
             Permission Denied Issue: Corriger une erreur de permission
+            Analyzer Results Not Arriving: Les résultats de l'automate n'arrivent pas
             Connect an Instrument: Connecter un automate
             Reference: Référence
             Architecture: Architecture
