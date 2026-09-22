@@ -172,6 +172,11 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                                         <option value='cd4'>
                                             <?php echo _translate("CD4"); ?>
                                         </option>
+                                    <?php }
+                                    if ($activeTests !== [] && in_array('generic-tests', $activeTests)) { ?>
+                                        <option value='generic-tests'>
+                                            <?php echo _translate("Custom Tests"); ?>
+                                        </option>
                                     <?php } ?>
                                 </select>
                             </td>
@@ -239,6 +244,10 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                                         <?php echo _translate("Requests Sent to Lab"); ?>
                                     </th>
                                     <th class="center" scope="col"
+                                        title="<?php echo _translate('Requests the lab has pulled but not yet confirmed it saved. Only labs on a release that sends receipts confirm them'); ?>">
+                                        <?php echo _translate("Awaiting Lab Confirmation"); ?>
+                                    </th>
+                                    <th class="center" scope="col"
                                         title="<?php echo _translate('Samples the lab has sent back as accepted or rejected, for samples collected in the selected period'); ?>">
                                         <?php echo _translate("Results Received from Lab"); ?>
                                     </th>
@@ -252,7 +261,32 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                             </thead>
                             <tbody id="syncStatusTable">
                                 <tr>
-                                    <td colspan="8" class="dataTables_empty">
+                                    <td colspan="9" class="dataTables_empty">
+                                        <?php echo _translate("No data available"); ?>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr>
+                        <h4><?= _translate("Requests the Lab Could Not Save"); ?></h4>
+                        <p class="text-muted">
+                            <?= _translate("The lab received these requests but could not save them, for the reason it gave. The STS sends them again for a few days, then stops until the request is corrected."); ?>
+                        </p>
+                        <table aria-describedby="table" id="syncFailuresTable"
+                            class="table table-bordered table-hover" aria-hidden="true">
+                            <thead>
+                                <tr>
+                                    <th class="center" scope="col"><?= _translate("Sample ID"); ?></th>
+                                    <th class="center" scope="col"><?= _translate("Facility Name"); ?></th>
+                                    <th class="center" scope="col"><?= _translate("Reason Given by the Lab"); ?></th>
+                                    <th class="center" scope="col"><?= _translate("Attempts"); ?></th>
+                                    <th class="center" scope="col"><?= _translate("First and Last Failure"); ?></th>
+                                    <th class="center" scope="col"><?= _translate("Status"); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody id="syncFailures">
+                                <tr>
+                                    <td colspan="6" class="dataTables_empty">
                                         <?php echo _translate("No data available"); ?>
                                     </td>
                                 </tr>
@@ -344,6 +378,13 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                     "ordering": false
                 });
                 $.unblockUI();
+            });
+        $.post("/admin/monitoring/get-lab-sync-failures.php", {
+            labId: <?= _jsEscape($_GET['labId'] ?? '') ?>,
+            testType: $('#testType').val()
+        },
+            function (data) {
+                $("#syncFailures").html(data);
             });
     }
 
