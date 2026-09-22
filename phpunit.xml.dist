@@ -17,6 +17,9 @@
         <testsuite name="Utilities">
             <directory>tests/Unit/Utilities</directory>
         </testsuite>
+        <testsuite name="Error handlers">
+            <directory>tests/Unit/ErrorHandlers</directory>
+        </testsuite>
         <!--
             Needs a real MySQL, because what it tests is what the server does with
             SAVEPOINT and an implicit commit. Skips itself when INTELIS_TEST_DB_HOST
