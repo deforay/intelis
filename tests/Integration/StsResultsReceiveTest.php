@@ -53,7 +53,7 @@ final class StsResultsReceiveTest extends TestCase
         $db = LegacyAppHarness::boot($this->database, [
             'system_config', 'global_config', 's_vlsm_instance', 'r_sample_status', 'form_vl', 'form_tb',
             'tb_tests', 'roles', 'user_details', 'r_vl_sample_rejection_reasons', 'r_tb_sample_rejection_reasons',
-            'facility_details',
+            'facility_details', 'specimen_manifests',
         ]);
         $this->booted = true;
         $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (6, 'Registered'), (7, 'Accepted')");
@@ -318,5 +318,96 @@ final class StsResultsReceiveTest extends TestCase
             static fn(array $row): array => ['tb_id' => (int) $row['tb_id'], 'test_result' => $row['test_result']],
             $tests
         ), 'on the STS row, not the lab row id');
+    }
+
+    /** A referral manifest as a lab sends it with its TB results. */
+    private static function manifest(string $code, array $values = []): array
+    {
+        return $values + [
+            'manifest_id' => 77, 'manifest_code' => $code, 'manifest_type' => 'referral', 'module' => 'tb',
+            'added_by' => 'lab-user', 'manifest_status' => 'pending', 'lab_id' => self::LAB,
+            'number_of_samples' => 2, 'last_modified_datetime' => '2026-09-01 10:00:00',
+        ];
+    }
+
+    #[RunInSeparateProcess]
+    public function testReferralManifestsAreAddedUpdatedAndLeftAloneWhenUnchanged(): void
+    {
+        $db = $this->boot();
+
+        self::assertSame(
+            ['inserted' => 1, 'updated' => 0, 'skipped' => 0, 'errors' => 0],
+            self::sts()->receiveReferralManifests('tb', [self::manifest('REF-1')])
+        );
+        self::assertSame(
+            ['inserted' => 0, 'updated' => 0, 'skipped' => 1, 'errors' => 0],
+            self::sts()->receiveReferralManifests('tb', [self::manifest('REF-1')]),
+            'sent again unchanged'
+        );
+        self::assertSame(
+            ['inserted' => 0, 'updated' => 1, 'skipped' => 0, 'errors' => 0],
+            self::sts()->receiveReferralManifests('tb', [self::manifest('REF-1', ['number_of_samples' => 3])])
+        );
+
+        $rows = $db->rawQuery('SELECT * FROM specimen_manifests');
+        self::assertCount(1, $rows);
+        self::assertNotSame(77, (int) $rows[0]['manifest_id'], 'the lab row id is not the STS one');
+        self::assertSame(3, (int) $rows[0]['number_of_samples']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testOnlyReferralManifestsWithACodeAreTaken(): void
+    {
+        $db = $this->boot();
+
+        $stats = self::sts()->receiveReferralManifests('tb', [
+            self::manifest('COL-1', ['manifest_type' => 'collection']),
+            self::manifest('', ['manifest_code' => null]),
+            null,
+            'junk',
+            self::manifest('REF-1'),
+        ]);
+
+        self::assertSame(['inserted' => 1, 'updated' => 0, 'skipped' => 4, 'errors' => 0], $stats);
+        $stored = array_column($db->rawQuery('SELECT manifest_code FROM specimen_manifests'), 'manifest_code');
+        self::assertSame(['REF-1'], $stored);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAManifestFromALabOnAnOlderReleaseDoesNotBlankWhatItDoesNotHave(): void
+    {
+        $db = $this->boot();
+        self::sts()->receiveReferralManifests('tb', [self::manifest('REF-1')]);
+        $db->rawQuery(
+            "UPDATE specimen_manifests SET manifest_print_history = JSON_ARRAY('printed') WHERE manifest_code = 'REF-1'"
+        );
+
+        $older = self::manifest('REF-1', ['manifest_status' => 'received']);
+        unset($older['manifest_print_history']);
+        self::sts()->receiveReferralManifests('tb', [$older]);
+
+        $row = $db->rawQueryOne("SELECT * FROM specimen_manifests WHERE manifest_code = 'REF-1'");
+        self::assertSame('received', $row['manifest_status']);
+        self::assertSame('["printed"]', $row['manifest_print_history']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAManifestThatCannotBeSavedCostsOnlyItself(): void
+    {
+        $db = $this->boot();
+        // Stands in for any failure saving a manifest.
+        $db->rawQuery(
+            "ALTER TABLE specimen_manifests ADD CONSTRAINT refuse_manifest CHECK (manifest_status <> 'refused')"
+        );
+
+        $stats = self::sts()->receiveReferralManifests('tb', [
+            self::manifest('REF-1'),
+            self::manifest('REF-2', ['manifest_status' => 'refused']),
+            self::manifest('REF-3'),
+        ]);
+
+        self::assertSame(['inserted' => 2, 'updated' => 0, 'skipped' => 0, 'errors' => 1], $stats);
+        $stored = $db->rawQuery('SELECT manifest_code FROM specimen_manifests ORDER BY manifest_code');
+        self::assertSame(['REF-1', 'REF-3'], array_column($stored, 'manifest_code'));
     }
 }

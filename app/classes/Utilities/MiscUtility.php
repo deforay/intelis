@@ -1230,10 +1230,16 @@ final class MiscUtility
             $other = $a;
         }
 
-        // Trim the other array to only contain keys from the reference
-        $otherSubset = array_intersect_key($other, $reference);
-
-        return $reference === $otherSubset;
+        // Every key of the reference must be in the other with an identical value.
+        // Compared key by key rather than with === on the arrays, which also
+        // requires the same key order: a record built in the sender's column order
+        // then read as changed against the same record read back from the table.
+        foreach ($reference as $key => $value) {
+            if (!array_key_exists($key, $other) || $other[$key] !== $value) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

@@ -108,8 +108,9 @@ final class ResultsService
                 // If remote didn't set last_modified_datetime, set now (keeps audit/logical order sane)
                 $row['last_modified_datetime'] ??= DateUtility::getCurrentDateTime();
 
-                // Keep only columns present locally
-                $incoming = MiscUtility::updateMatchingKeysOnly($localFields, $row);
+                // Only the columns the lab sent that this table has: one the lab does
+                // not have is left alone, not set to NULL.
+                $incoming = array_intersect_key($row, $localFields);
 
                 // Find existing by manifest_code
                 $this->db->reset();
