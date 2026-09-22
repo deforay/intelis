@@ -371,6 +371,27 @@ require_once APPLICATION_PATH . '/header.php';
 		font-weight: bold;
 	}
 
+	.error-days {
+		margin-bottom: 15px;
+		padding: 8px 12px;
+		border: 1px solid #d6d8db;
+		border-radius: 4px;
+		background: #f8f9fa;
+	}
+
+	.error-days-title {
+		font-weight: bold;
+		margin-bottom: 6px;
+	}
+
+	.error-days-list .error-day {
+		margin: 0 6px 6px 0;
+	}
+
+	.error-days-note {
+		font-size: 12px;
+	}
+
 	.recurring-errors {
 		margin-bottom: 15px;
 		border: 1px solid #f5c6cb;
@@ -693,6 +714,17 @@ require_once APPLICATION_PATH . '/header.php';
 								</div>
 							</details>
 						<?php endif; ?>
+
+						<div id="errorDays" class="error-days" style="display: none;" role="status" aria-live="polite">
+							<div class="error-days-title"><?= _translate("Days with errors matching this search"); ?></div>
+							<div id="errorDaysList" class="error-days-list"></div>
+							<div id="errorDaysNone" class="text-muted" style="display: none;">
+								<?= _translate("No errors match this search in the last 90 days."); ?>
+							</div>
+							<div class="error-days-note text-muted">
+								<?= _translate("From the error index, which keeps errors for 90 days. Pick a day to open its log with this search."); ?>
+							</div>
+						</div>
 
 						<div id="logSummary" class="log-summary" role="status" aria-live="polite"></div>
 						<div id="logFilterChips" class="filter-chips" aria-label="<?php echo _translate("Active filters"); ?>"></div>
@@ -1321,6 +1353,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function clearFilters() {
 		searchTerm = '';
+		findErrorDays('');
 		currentFilter = 'all';
 		$('#logSearchInput').val('');
 		$('#logLevelFilters button').removeClass('active');
@@ -1595,8 +1628,50 @@ require_once APPLICATION_PATH . '/header.php';
 		URL.revokeObjectURL(a.href);
 	}
 
+	// The error index knows which days logged a matching error; the log search
+	// only reads the day that is open. Everything shown is set as text.
+	let errorDaysRequest = null;
+
+	function findErrorDays(term) {
+		term = (term || '').trim();
+		if (errorDaysRequest) {
+			errorDaysRequest.abort();
+			errorDaysRequest = null;
+		}
+		if (term === '' || logType !== 'application') {
+			$('#errorDays').hide();
+			return;
+		}
+		errorDaysRequest = $.ajax({
+			url: '/admin/monitoring/get-error-index-days.php',
+			data: { search: term },
+			dataType: 'json',
+			timeout: 15000
+		}).done(function (data) {
+			const days = data && Array.isArray(data.days) ? data.days : [];
+			const current = $('#userDate').val();
+			const $list = $('#errorDaysList').empty();
+			days.forEach(function (day) {
+				const $day = $('<button type="button" class="btn btn-default btn-xs error-day"></button>')
+					.toggleClass('active', day.date === current)
+					.attr('title', day.message + ' (' + day.lastSeen + ')')
+					.attr('data-date', day.date);
+				$day.append($('<span></span>').text(day.date + ' '));
+				$day.append($('<span class="badge"></span>').text(day.matches));
+				$list.append($day);
+			});
+			$('#errorDaysNone').toggle(days.length === 0);
+			$('#errorDays').show();
+		}).fail(function (xhr, status) {
+			if (status !== 'abort') {
+				$('#errorDays').hide();
+			}
+		});
+	}
+
 	function viewPhpErrorLogs() {
 		logType = 'php_error';
+		$('#errorDays').hide();
 		$('#logTypePhp').addClass('active');
 		$('#logTypeApplication').removeClass('active');
 		resetAndLoadLogs();
@@ -1717,6 +1792,7 @@ require_once APPLICATION_PATH . '/header.php';
 			searchTerm = $('#logSearchInput').val();
 			if (openErrorIdIfTyped(searchTerm)) return;
 			applyFilters();
+			findErrorDays(searchTerm);
 			});
 
 		$('#logSearchInput').on('keydown', function (e) {
@@ -1725,6 +1801,7 @@ require_once APPLICATION_PATH . '/header.php';
 				searchTerm = $('#logSearchInput').val();
 				if (openErrorIdIfTyped(searchTerm)) return;
 				applyFilters();
+				findErrorDays(searchTerm);
 					}
 		});
 
@@ -1734,6 +1811,13 @@ require_once APPLICATION_PATH . '/header.php';
 			currentFilter = $(this).data('level');
 			applyFilters();
 			});
+
+		$(document).on('click', '.error-day', function () {
+			$('#userDate').val($(this).attr('data-date'));
+			$('.error-day').removeClass('active');
+			$(this).addClass('active');
+			resetAndLoadLogs();
+		});
 
 		$('#exportTxtButton').click(exportLogFile);
 		$('#clearFiltersButton').click(clearFilters);

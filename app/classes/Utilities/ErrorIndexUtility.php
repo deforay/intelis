@@ -31,14 +31,25 @@ final class ErrorIndexUtility
     /** Error IDs from MiscUtility::generateErrorId(): PREFIX-XXXX-XXXX in Crockford base32. */
     public const string ERROR_ID_PATTERN = '/^[A-Z]{2,8}-[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}$/';
 
+    /** How many days a search lists at most; retention keeps 90 anyway. */
+    private const int SEARCH_DAY_LIMIT = 90;
+
     private static ?PDO $pdo = null;
     private static ?string $path = null;
 
-    /** Point the index at another file (tests), or back at the default with null. */
-    public static function usePath(?string $path): void
+    /** Whether the open connection has the full-text table; false means search by LIKE. */
+    private static bool $fullText = false;
+    private static bool $fullTextAllowed = true;
+
+    /**
+     * Point the index at another file (tests), or back at the default with null.
+     * $fullText false stands in for an SQLite built without FTS5.
+     */
+    public static function usePath(?string $path, bool $fullText = true): void
     {
         self::$pdo = null;
         self::$path = $path;
+        self::$fullTextAllowed = $fullText;
     }
 
     public static function path(): string
@@ -204,6 +215,96 @@ final class ErrorIndexUtility
     }
 
     /**
+     * The days that logged an error matching every word of the search, newest day
+     * first, with how many matched and the latest of them.
+     *
+     * The log viewer searches one day's file; this says which days to look at. Words
+     * match from their start ("conn" finds "connection"), a quoted phrase matches as
+     * written, and the viewer's own markers (+word, ^word, word$, *) are read as the
+     * plain word. Without FTS5 in this SQLite build it falls back to substring matching.
+     *
+     * @return list<array{log_date: string, matches: int, last_seen: string, message: string,
+     *     exception_class: ?string, error_id: ?string}>
+     */
+    public static function searchDays(string $search, int $limit = self::SEARCH_DAY_LIMIT): array
+    {
+        $terms = self::searchTerms($search);
+        if ($terms === []) {
+            return [];
+        }
+        try {
+            $pdo = self::connection(create: false);
+            if ($pdo === null) {
+                return [];
+            }
+
+            if (self::$fullText) {
+                $matching = 'SELECT rowid AS id FROM errors_fts WHERE errors_fts MATCH ?';
+                $params = [implode(' ', array_map(self::ftsTerm(...), $terms))];
+            } else {
+                $conditions = [];
+                $params = [];
+                foreach ($terms as $term) {
+                    $like = '%' . addcslashes($term['value'], '\\%_') . '%';
+                    $conditions[] = "(message LIKE ? ESCAPE '\\' OR exception_class LIKE ? ESCAPE '\\'"
+                        . " OR file LIKE ? ESCAPE '\\' OR url LIKE ? ESCAPE '\\')";
+                    array_push($params, $like, $like, $like, $like);
+                }
+                $matching = 'SELECT id FROM errors WHERE ' . implode(' AND ', $conditions);
+            }
+
+            $stmt = $pdo->prepare(
+                "SELECT g.log_date, g.matches, g.last_seen, e.message, e.exception_class, e.error_id
+                   FROM (SELECT e.log_date, COUNT(*) AS matches, MAX(e.logged_at) AS last_seen, MAX(e.id) AS last_id
+                           FROM errors e WHERE e.id IN ($matching) GROUP BY e.log_date) g
+                   JOIN errors e ON e.id = g.last_id
+                  ORDER BY g.log_date DESC
+                  LIMIT " . max(1, $limit)
+            );
+            $stmt->execute($params);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($rows as &$row) {
+                $row['matches'] = (int) $row['matches'];
+            }
+            return $rows;
+        } catch (Throwable) {
+            return [];
+        }
+    }
+
+    /**
+     * The words and quoted phrases of a search, with the viewer's markers taken off.
+     *
+     * @return list<array{value: string, phrase: bool}>
+     */
+    private static function searchTerms(string $search): array
+    {
+        $terms = [];
+        preg_match_all('/"([^"]*)"|\'([^\']*)\'|(\S+)/u', $search, $matches, PREG_SET_ORDER);
+        foreach ($matches as $match) {
+            $phrase = ($match[3] ?? '') === '';
+            $value = $phrase ? ($match[1] !== '' ? $match[1] : ($match[2] ?? '')) : trim($match[3], '+^$*"\'');
+            // Nothing a word can be made of, such as "::" or "-", matches nothing
+            // useful and only makes the query harder to read.
+            if (preg_match('/[\p{L}\p{N}]/u', $value) === 1) {
+                $terms[] = ['value' => $value, 'phrase' => $phrase];
+            }
+        }
+        return $terms;
+    }
+
+    /**
+     * A term as an FTS5 string, so what the user typed is always searched for and
+     * never read as query syntax (OR, NEAR, column filters, a stray quote).
+     *
+     * @param array{value: string, phrase: bool} $term
+     */
+    private static function ftsTerm(array $term): string
+    {
+        return '"' . str_replace('"', '""', $term['value']) . '"' . ($term['phrase'] ? '' : '*');
+    }
+
+    /**
      * Housekeeping: check the file, then drop old rows. A damaged file is
      * deleted and the next error starts a new one; the log files still hold
      * every entry, so nothing is lost but the history of the index itself.
@@ -235,6 +336,10 @@ final class ErrorIndexUtility
         $stmt = $pdo->prepare('DELETE FROM errors WHERE logged_at < ?');
         $stmt->execute([$cutoff]);
         $result['deleted'] = $stmt->rowCount();
+
+        if (self::$fullTextAllowed && !self::$fullText) {
+            self::$fullText = self::ensureFullText($pdo);
+        }
 
         if ($compact) {
             $pdo->exec('PRAGMA wal_checkpoint(TRUNCATE)');
@@ -280,6 +385,7 @@ final class ErrorIndexUtility
         if (!extension_loaded('pdo_sqlite') || !is_dir(dirname($path)) || !is_writable(dirname($path))) {
             return null;
         }
+        $isNew = !is_file($path);
 
         try {
             $pdo = new PDO('sqlite:' . $path, null, null, [
@@ -311,12 +417,81 @@ final class ErrorIndexUtility
             $pdo->exec('CREATE INDEX IF NOT EXISTS idx_errors_error_id ON errors (error_id)');
             $pdo->exec('CREATE INDEX IF NOT EXISTS idx_errors_logged_at ON errors (logged_at)');
             $pdo->exec('CREATE INDEX IF NOT EXISTS idx_errors_fingerprint ON errors (fingerprint, logged_at)');
+            // A new file is empty, so its full-text table costs nothing to make now. An
+            // older file's is filled from its rows, which is housekeeping's job (prune()),
+            // not a request's: until then its search runs on LIKE.
+            if ($isNew && self::$fullTextAllowed) {
+                self::ensureFullText($pdo);
+            }
+            self::$fullText = self::$fullTextAllowed && self::hasFullText($pdo);
             self::$pdo = $pdo;
         } catch (Throwable) {
             return null;
         }
 
         return self::$pdo;
+    }
+
+    /**
+     * The full-text table over message, exception class, file and URL, kept in step
+     * with errors by triggers, so prune() and a reset keep it right without knowing
+     * it is there.
+     *
+     * An index file from before this has rows and no full-text table; it is filled
+     * from them when the table is made, by prune(). Made in one transaction, so a second request
+     * opening the file at the same moment sees all of it or none. A build without
+     * FTS5 fails the CREATE, the transaction leaves nothing behind, and search falls
+     * back to LIKE.
+     */
+    private static function hasFullText(PDO $pdo): bool
+    {
+        return (bool) $pdo->query(
+            "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'errors_fts'"
+        )->fetchColumn();
+    }
+
+    private static function ensureFullText(PDO $pdo): bool
+    {
+        try {
+            if (self::hasFullText($pdo)) {
+                return true;
+            }
+            $pdo->exec('BEGIN IMMEDIATE');
+            if (!self::hasFullText($pdo)) {
+                $pdo->exec(
+                    "CREATE VIRTUAL TABLE errors_fts USING fts5(
+                        message, exception_class, file, url,
+                        content = 'errors', content_rowid = 'id', tokenize = 'unicode61'
+                    )"
+                );
+                $pdo->exec(
+                    'CREATE TRIGGER errors_fts_insert AFTER INSERT ON errors BEGIN
+                        INSERT INTO errors_fts (rowid, message, exception_class, file, url)
+                        VALUES (new.id, new.message, new.exception_class, new.file, new.url);
+                    END'
+                );
+                $pdo->exec(
+                    "CREATE TRIGGER errors_fts_delete AFTER DELETE ON errors BEGIN
+                        INSERT INTO errors_fts (errors_fts, rowid, message, exception_class, file, url)
+                        VALUES ('delete', old.id, old.message, old.exception_class, old.file, old.url);
+                    END"
+                );
+                $pdo->exec("INSERT INTO errors_fts (errors_fts) VALUES ('rebuild')");
+            }
+            $pdo->exec('COMMIT');
+            return true;
+        } catch (Throwable) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            } else {
+                try {
+                    $pdo->exec('ROLLBACK');
+                } catch (Throwable) {
+                    // No transaction was open.
+                }
+            }
+            return false;
+        }
     }
 
     private static function relativePath(?string $file): ?string
