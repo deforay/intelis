@@ -1237,9 +1237,20 @@ final class MiscUtility
     }
 
 
+    /**
+     * Short, phone-friendly error reference, e.g. ERR-7K3Q-X9M2.
+     * Crockford base32 (no I, L, O, U) so it survives being read aloud; the
+     * time lives in the log line and the error page, not in the ID.
+     */
     public static function generateErrorId(string $prefix = 'ERR'): string
     {
-        return $prefix . '-' . date('Ymd-His') . '-' . substr(uniqid(), -6);
+        $alphabet = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+        $bytes = random_bytes(8);
+        $code = '';
+        for ($i = 0; $i < 8; $i++) {
+            $code .= $alphabet[ord($bytes[$i]) & 31];
+        }
+        return $prefix . '-' . substr($code, 0, 4) . '-' . substr($code, 4);
     }
 
     /** Lazily-created global console output */
