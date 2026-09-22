@@ -101,6 +101,7 @@ class ErrorResponseGenerator
         LoggerUtility::logError($errorReason . ' : ' . $exception->getCode() . ' : ' . ($request->getUri() ?? 'UNABLE TO GET URI') . ': ' . $exception->getMessage(), [
             'error_id' => $errorId,
             'exception' => $exception,
+            'exception_class' => $exception::class,
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
             'stacktrace' => $exception->getTraceAsString(),

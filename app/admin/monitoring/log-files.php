@@ -1,6 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\ErrorIndexUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -8,6 +9,20 @@ use App\Registries\ContainerRegistry;
 $db = ContainerRegistry::get(DatabaseService::class);
 
 $title = _translate("Log File Viewer") . " - " . _translate("Admin");
+
+// An error ID says nothing about its day, so look it up in the error index and
+// open the viewer on the day it was logged. Unknown IDs fall back to today.
+$initialLogDate = DateUtility::getCurrentDateTime();
+$deepLinkQuery = isset($_GET['q']) && is_string($_GET['q']) ? trim($_GET['q']) : '';
+$deepLinkError = null;
+if ($deepLinkQuery !== '' && ErrorIndexUtility::isErrorId($deepLinkQuery)) {
+	$deepLinkError = ErrorIndexUtility::find($deepLinkQuery);
+	if ($deepLinkError !== null) {
+		$initialLogDate = $deepLinkError['log_date'];
+	}
+}
+
+$recurringErrors = ErrorIndexUtility::recurring(days: 7, limit: 20);
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -356,6 +371,31 @@ require_once APPLICATION_PATH . '/header.php';
 		font-weight: bold;
 	}
 
+	.recurring-errors {
+		margin-bottom: 15px;
+		border: 1px solid #f5c6cb;
+		border-radius: 4px;
+		background: #fff;
+	}
+
+	.recurring-errors summary {
+		cursor: pointer;
+		padding: 8px 12px;
+		font-weight: bold;
+		color: #a94442;
+		background: #fdf2f2;
+	}
+
+	.recurring-errors table {
+		margin: 0;
+		font-size: 12px;
+	}
+
+	.recurring-errors .recurring-message,
+	.recurring-errors .recurring-where {
+		word-break: break-word;
+	}
+
 	#logSearchInput {
 		font-family: 'Courier New', Courier, monospace;
 		font-size: 13px;
@@ -480,7 +520,7 @@ require_once APPLICATION_PATH . '/header.php';
 										<td>
 											<input type="text" id="userDate" name="userDate" class="form-control date"
 												placeholder="<?php echo _translate('Select Date'); ?>" readonly
-												value="<?= DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime()); ?>"
+												value="<?= DateUtility::humanReadableDateFormat($initialLogDate); ?>"
 												style="width:220px;background:#fff;" />
 										</td>
 										<td>
@@ -598,6 +638,61 @@ require_once APPLICATION_PATH . '/header.php';
 								</div>
 							</div>
 						</div>
+
+						<?php if ($deepLinkQuery !== '' && ErrorIndexUtility::isErrorId($deepLinkQuery) && $deepLinkError === null): ?>
+							<div class="alert alert-warning">
+								<?= _translate("This error ID is not in the error index, so the logs for today are shown. Pick the day the error happened to search that day's log."); ?>
+							</div>
+						<?php endif; ?>
+
+						<?php if ($recurringErrors !== []): ?>
+							<details class="recurring-errors">
+								<summary>
+									<?= _translate("Recurring errors in the last 7 days"); ?>
+									<span class="badge"><?= count($recurringErrors); ?></span>
+								</summary>
+								<div class="table-responsive">
+									<table class="table table-condensed table-striped" aria-label="<?= _translate("Recurring errors in the last 7 days"); ?>">
+										<thead>
+											<tr>
+												<th><?= _translate("Times"); ?></th>
+												<th><?= _translate("Last seen"); ?></th>
+												<th><?= _translate("Error"); ?></th>
+												<th><?= _translate("Where"); ?></th>
+												<th><?= _translate("Latest error ID"); ?></th>
+											</tr>
+										</thead>
+										<tbody>
+											<?php foreach ($recurringErrors as $group): ?>
+												<tr>
+													<td><?= (int) $group['occurrences']; ?></td>
+													<td style="white-space: nowrap;"><?= DateUtility::humanReadableDateFormat($group['last_seen'], includeTime: true); ?></td>
+													<td class="recurring-message">
+														<?php if (!empty($group['exception_class'])): ?>
+															<code><?= htmlspecialchars((string) $group['exception_class'], ENT_QUOTES, 'UTF-8'); ?></code>
+														<?php endif; ?>
+														<?= htmlspecialchars((string) $group['message'], ENT_QUOTES, 'UTF-8'); ?>
+													</td>
+													<td class="recurring-where">
+														<?php if (!empty($group['file'])): ?>
+															<code><?= htmlspecialchars($group['file'] . ':' . (int) $group['line'], ENT_QUOTES, 'UTF-8'); ?></code>
+														<?php endif; ?>
+														<?php if (!empty($group['url'])): ?>
+															<div class="text-muted"><?= htmlspecialchars((string) $group['url'], ENT_QUOTES, 'UTF-8'); ?></div>
+														<?php endif; ?>
+													</td>
+													<td style="white-space: nowrap;">
+														<?php if (!empty($group['latest_error_id'])): ?>
+															<a href="/admin/monitoring/log-files.php?q=<?= rawurlencode((string) $group['latest_error_id']); ?>"><?= htmlspecialchars((string) $group['latest_error_id'], ENT_QUOTES, 'UTF-8'); ?></a>
+														<?php endif; ?>
+													</td>
+												</tr>
+											<?php endforeach; ?>
+										</tbody>
+									</table>
+								</div>
+							</details>
+						<?php endif; ?>
 
 						<div id="logSummary" class="log-summary" role="status" aria-live="polite"></div>
 						<div id="logFilterChips" class="filter-chips" aria-label="<?php echo _translate("Active filters"); ?>"></div>
@@ -1603,9 +1698,24 @@ require_once APPLICATION_PATH . '/header.php';
 			}
 		})();
 
+		// An error ID can be on any day. Reload through ?q= so the server looks up
+		// which day it was logged and opens the viewer there.
+		function openErrorIdIfTyped(term) {
+			var id = (term || '').trim().toUpperCase();
+			if (!/^[A-Z]{2,8}-[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}$/.test(id)) {
+				return false;
+			}
+			if (new URLSearchParams(window.location.search).get('q') === id) {
+				return false;
+			}
+			window.location.href = window.location.pathname + '?q=' + encodeURIComponent(id);
+			return true;
+		}
+
 		$('#searchLogsButton').on('click', function () {
 			clearTimeout(searchTimeout);
 			searchTerm = $('#logSearchInput').val();
+			if (openErrorIdIfTyped(searchTerm)) return;
 			applyFilters();
 			});
 
@@ -1613,6 +1723,7 @@ require_once APPLICATION_PATH . '/header.php';
 			if (e.keyCode === 13) {
 				clearTimeout(searchTimeout);
 				searchTerm = $('#logSearchInput').val();
+				if (openErrorIdIfTyped(searchTerm)) return;
 				applyFilters();
 					}
 		});
