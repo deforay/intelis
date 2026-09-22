@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\TestsService;
+use App\Services\STS\RequestReceiptsService;
 use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -29,6 +30,7 @@ $requestPages = [
     'hepatitis' => '/hepatitis/requests/hepatitis-requests.php',
     'tb' => '/tb/requests/tb-requests.php',
     'cd4' => '/cd4/requests/cd4-requests.php',
+    'generic-tests' => '/generic-tests/requests/view-requests.php',
 ];
 
 // testType also names the facility_attributes JSON key below, so only known modules pass
@@ -40,6 +42,8 @@ $url = $requestPages[$testType];
 $testName = TestsService::getTestName($testType);
 $table = TestsService::getTestTableName($testType);
 $labId = (int) base64_decode((string) ($_POST['labId'] ?? ''));
+// The key the sync endpoints stamp in facility_attributes (CommonService::updateSyncDateTime)
+$syncKey = $testType === 'generic-tests' ? 'genericTests' : $testType;
 
 // The lab comes from the request and AJAX skips the ACL check, so a user tied to
 // one lab (cloud-LIS) must not read another lab's counts by changing it
@@ -56,17 +60,20 @@ if ($startDate !== '' && $endDate !== '') {
 }
 
 // Requests sent = entered on the STS and pulled by the lab (data_sync = 1).
+// Awaiting confirmation = pulled by a lab that sends receipts (data_sync = 2) and not
+// yet confirmed saved; always 0 for a lab on a release without receipts.
 // Results received = the lab reported an outcome (accepted or rejected); the results
 // receiver sets data_sync = 1, so a sample rejected on the STS alone is not counted.
 $sQuery = "SELECT f.facility_id,
             f.facility_name, GREATEST(
-                    COALESCE(facility_attributes->>'$." . $testType . "RemoteResultsSync', 0),
-                    COALESCE(facility_attributes->>'$." . $testType . "RemoteRequestsSync', 0)
+                    COALESCE(facility_attributes->>'$." . $syncKey . "RemoteResultsSync', 0),
+                    COALESCE(facility_attributes->>'$." . $syncKey . "RemoteRequestsSync', 0)
                 ) as latestSync,
-                (f.facility_attributes->>'$." . $testType . "RemoteResultsSync') as lastResultsSync,
-                (f.facility_attributes->>'$." . $testType . "RemoteRequestsSync') as lastRequestsSync,
+                (f.facility_attributes->>'$." . $syncKey . "RemoteResultsSync') as lastResultsSync,
+                (f.facility_attributes->>'$." . $syncKey . "RemoteRequestsSync') as lastRequestsSync,
                 g_d_s.geo_name as province, g_d_d.geo_name as district,
                 COALESCE(counts.requestsSent, 0) AS requestsSent,
+                COALESCE(counts.awaitingConfirmation, 0) AS awaitingConfirmation,
                 COALESCE(counts.resultsReceived, 0) AS resultsReceived
             FROM facility_details AS f
                 LEFT JOIN geographical_divisions as g_d_s ON g_d_s.geo_id = f.facility_state_id
@@ -74,6 +81,8 @@ $sQuery = "SELECT f.facility_id,
                 LEFT JOIN (
                     SELECT facility_id,
                         SUM(remote_sample = 'yes' AND data_sync = 1) AS requestsSent,
+                        SUM(remote_sample = 'yes' AND data_sync = " . RequestReceiptsService::IN_FLIGHT . ")
+                            AS awaitingConfirmation,
                         SUM(data_sync = 1 AND result_status IN (" . ACCEPTED . ", " . REJECTED . ")) AS resultsReceived
                     FROM $table
                     WHERE lab_id = ?
@@ -123,6 +132,9 @@ foreach ($rResult as $aRow) { ?>
         </td>
         <td class="text-right">
             <?= (int) $aRow['requestsSent']; ?>
+        </td>
+        <td class="text-right">
+            <?= (int) $aRow['awaitingConfirmation']; ?>
         </td>
         <td class="text-right">
             <?= (int) $aRow['resultsReceived']; ?>

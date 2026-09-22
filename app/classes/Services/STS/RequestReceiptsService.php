@@ -10,6 +10,8 @@ use App\Services\DatabaseService;
 use Throwable;
 use InvalidArgumentException;
 
+use const SAMPLE_STATUS\CANCELLED;
+
 /**
  * Applies a lab's receipt for the requests it pulled.
  *
@@ -130,6 +132,50 @@ final class RequestReceiptsService
         }
 
         return ['confirmed' => $confirmed, 'failed' => $failedCount];
+    }
+
+    /**
+     * Requests a lab could not save and that are still not on it, for the sync
+     * monitor. Ones the STS has stopped sending first (see
+     * RequestsService::FAILURE_GIVE_UP_DAYS), then the most recent.
+     *
+     * A failure the request has since moved past is left out: synced some other
+     * way (a lab back on a release without receipts), cancelled, or deleted.
+     *
+     * @param string $labScope an extra predicate on f.lab_id, from labAdminScopeWhere()
+     * @return list<array<string, mixed>>
+     */
+    public function unsaved(int $labId, string $testType, string $labScope = '', int $limit = 500): array
+    {
+        try {
+            $table = TestsService::getTestTableName($testType);
+        } catch (Throwable) {
+            return [];
+        }
+        if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/D', $table) || !$this->db->tableExists('request_sync_failures')) {
+            return [];
+        }
+        $now = DateUtility::getCurrentDateTime();
+        $rows = $this->db->rawQuery(
+            "SELECT COALESCE(NULLIF(t.remote_sample_code, ''), t.sample_code) AS sample_code,
+                    fd.facility_name, f.reason, f.attempts, f.first_failed_datetime, f.last_failed_datetime,
+                    f.first_failed_datetime < SUBDATE(?, INTERVAL " . RequestsService::FAILURE_GIVE_UP_DAYS . " DAY)
+                        AS gave_up
+                FROM request_sync_failures f
+                    JOIN `$table` t ON t.unique_id = f.unique_id
+                    LEFT JOIN facility_details fd ON fd.facility_id = t.facility_id
+                WHERE f.lab_id = ? AND f.test_type = ?
+                    AND IFNULL(t.data_sync, 0) != 1
+                    AND IFNULL(t.result_status, 0) != " . CANCELLED
+                . ($labScope !== '' ? " AND $labScope" : '') . "
+                ORDER BY gave_up DESC, f.last_failed_datetime DESC
+                LIMIT " . max(1, $limit),
+            [$now, $labId, $testType]
+        );
+        foreach ($rows as &$row) {
+            $row['gave_up'] = (bool) $row['gave_up'];
+        }
+        return $rows;
     }
 
     /**
