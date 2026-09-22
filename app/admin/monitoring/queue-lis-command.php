@@ -64,8 +64,9 @@ $commandWhitelist = [
     'upgrade',
     'upgrade-prepare',
     'upgrade-apply',
+    'rollback',
 ];
-$rootCommands = ['refresh-perms', 'restart-apache', 'upgrade', 'upgrade-prepare', 'upgrade-apply'];
+$rootCommands = ['refresh-perms', 'restart-apache', 'upgrade', 'upgrade-prepare', 'upgrade-apply', 'rollback'];
 
 if ($labId <= 0) {
     http_response_code(400);

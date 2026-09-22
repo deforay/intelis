@@ -77,6 +77,9 @@ if (trim((string) $mailSentStatus) !== '') {
   if (trim((string) $type) === 'result') {
     $query = $query . " AND vl.is_result_mail_sent='" . $db->escape((string) $mailSentStatus) . "' AND ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = '')))";
   }
+} elseif (trim((string) $type) === 'result') {
+  // "All Samples" must still list only approved or rejected results.
+  $query = $query . " AND ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = '')))";
 }
 if (!empty($_POST['sampleCollectionDate'])) {
   if (trim((string) $start_date) === trim((string) $end_date)) {

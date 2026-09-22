@@ -41,6 +41,7 @@ $commandOptions = [
     'upgrade' => 'upgrade',
     'upgrade-prepare' => 'upgrade-prepare',
     'upgrade-apply' => 'upgrade-apply',
+    'rollback' => 'rollback',
 ];
 
 $statusOptions = [

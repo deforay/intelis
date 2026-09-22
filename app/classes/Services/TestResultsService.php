@@ -8,6 +8,9 @@ use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\REJECTED;
+
 final class TestResultsService
 {
     public function __construct(protected ?DatabaseService $db)
@@ -114,5 +117,26 @@ final class TestResultsService
             $this->db->where($primaryKey, $val[$primaryKey]);
             $this->db->update($tableName, $data);
         }
+    }
+
+    /**
+     * True when every listed sample may be emailed: approved, or rejected.
+     * The email page only offers those, but the list comes back from the
+     * browser, so the send path checks it again before queuing the mail.
+     */
+    public function canEmailResults(string $testType, mixed $sampleIds): bool
+    {
+        $ids = array_values(array_unique(array_filter(
+            array_map('intval', is_array($sampleIds) ? $sampleIds : explode(',', (string) $sampleIds))
+        )));
+        if ($ids === []) {
+            return false;
+        }
+        $testName = TestsService::getTestTypes();
+        $tableName = $testName[$testType]['tableName'];
+        $primaryKey = $testName[$testType]['primaryKey'];
+        $this->db->where("$primaryKey IN (" . $this->db->inIntList($ids) . ")");
+        $this->db->where('result_status IN (' . ACCEPTED . ', ' . REJECTED . ')');
+        return (int) $this->db->getValue($tableName, 'COUNT(*)') === count($ids);
     }
 }
