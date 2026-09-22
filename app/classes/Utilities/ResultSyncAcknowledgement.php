@@ -6,6 +6,7 @@ namespace App\Utilities;
 
 use App\Services\DatabaseService;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Match an STS acknowledgment to the rows a lab sent, and mark only those synced.
@@ -22,6 +23,47 @@ final class ResultSyncAcknowledgement
 {
     /** Request key, and the X-Ack-Format header value an STS returns when it honours it. */
     public const UNIQUE_ID = 'unique_id';
+
+    /**
+     * The codes (or unique_ids) the STS acknowledged, from ApiService::post()'s answer.
+     *
+     * Throws when there is no acknowledgment to read: no answer (the STS is down),
+     * an HTTP error, or a body that is not JSON. The sender then stops that module,
+     * and the rows it had in flight go back to pending on the next run. An error
+     * answer must not be read as an empty acknowledgment: the module would carry on
+     * sending every remaining chunk to an STS that is refusing them.
+     *
+     * The body is a list of strings. Older STS releases can send it as an object
+     * keyed by position, so only the values are read.
+     *
+     * @param array{httpStatusCode?: int|null, body?: string|null}|string|null $apiResponse
+     * @return list<string>
+     */
+    public static function fromResponse(array|string|null $apiResponse, string $testType): array
+    {
+        if ($apiResponse === null) {
+            throw new RuntimeException("No answer from the STS for $testType results.");
+        }
+        $body = $apiResponse;
+        if (is_array($apiResponse)) {
+            $status = $apiResponse['httpStatusCode'] ?? null;
+            if ($status !== null && ((int) $status < 200 || (int) $status > 299)) {
+                throw new RuntimeException("The STS answered HTTP $status for $testType results.");
+            }
+            $body = (string) ($apiResponse['body'] ?? '');
+        }
+
+        $decoded = json_decode($body, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new RuntimeException("Failed to decode $testType acknowledgement: " . json_last_error_msg());
+        }
+        if (!is_array($decoded)) {
+            throw new RuntimeException("Unexpected acknowledgement format received for $testType results.");
+        }
+
+        $codes = array_filter($decoded, static fn($code): bool => is_string($code) && $code !== '');
+        return array_values(array_unique($codes));
+    }
 
     /**
      * Form rows from a results payload, flat or nested under form_data.

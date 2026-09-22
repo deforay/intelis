@@ -183,32 +183,6 @@ function buildReferralManifestsPayload(DatabaseService $db, string $testType, ?a
 }
 
 /**
- * Decode list of acknowledged sample codes returned by STS.
- *
- * @return array<int,string>
- */
-function decodeAcknowledgedSampleCodes(string $jsonResponse, string $testType): array
-{
-    $decoded = json_decode($jsonResponse, true);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        $message = json_last_error_msg();
-        throw new RuntimeException("Failed to decode $testType acknowledgement: $message");
-    }
-
-    if (!is_array($decoded)) {
-        throw new RuntimeException("Unexpected acknowledgement format received for $testType results.");
-    }
-
-    $filtered = array_filter(
-        $decoded,
-        static fn($code): bool => is_string($code) && $code !== ''
-    );
-
-    return array_values(array_unique($filtered));
-}
-
-/**
  * Unpack API responses that include status/headers.
  *
  * @return array{body:string,headers:array<string,string>}
@@ -751,7 +725,7 @@ try {
                 }
 
                 try {
-                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'generic-tests');
+                    $acknowledgedSamples = ResultSyncAcknowledgement::fromResponse($apiResponse, 'generic-tests');
                 } catch (RuntimeException $e) {
                     reportModuleSyncFailure($cliMode ? $io : null, 'generic-tests', $chunkNumber, $e);
                     break;
@@ -902,7 +876,7 @@ try {
                 }
 
                 try {
-                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'vl');
+                    $acknowledgedSamples = ResultSyncAcknowledgement::fromResponse($apiResponse, 'vl');
                 } catch (RuntimeException $e) {
                     reportModuleSyncFailure($cliMode ? $io : null, 'vl', $chunkNumber, $e);
                     break;
@@ -1053,7 +1027,7 @@ try {
                 }
 
                 try {
-                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'eid');
+                    $acknowledgedSamples = ResultSyncAcknowledgement::fromResponse($apiResponse, 'eid');
                 } catch (RuntimeException $e) {
                     reportModuleSyncFailure($cliMode ? $io : null, 'eid', $chunkNumber, $e);
                     break;
@@ -1220,7 +1194,7 @@ try {
                 }
 
                 try {
-                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'covid19');
+                    $acknowledgedSamples = ResultSyncAcknowledgement::fromResponse($apiResponse, 'covid19');
                 } catch (RuntimeException $e) {
                     reportModuleSyncFailure($cliMode ? $io : null, 'covid19', $chunkNumber, $e);
                     break;
@@ -1370,7 +1344,7 @@ try {
                 }
 
                 try {
-                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'hepatitis');
+                    $acknowledgedSamples = ResultSyncAcknowledgement::fromResponse($apiResponse, 'hepatitis');
                 } catch (RuntimeException $e) {
                     reportModuleSyncFailure($cliMode ? $io : null, 'hepatitis', $chunkNumber, $e);
                     break;
@@ -1535,7 +1509,7 @@ try {
                 }
 
                 try {
-                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'tb');
+                    $acknowledgedSamples = ResultSyncAcknowledgement::fromResponse($apiResponse, 'tb');
                 } catch (RuntimeException $e) {
                     reportModuleSyncFailure($cliMode ? $io : null, 'tb', $chunkNumber, $e);
                     break;
@@ -1686,7 +1660,7 @@ try {
                 }
 
                 try {
-                    $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'cd4');
+                    $acknowledgedSamples = ResultSyncAcknowledgement::fromResponse($apiResponse, 'cd4');
                 } catch (RuntimeException $e) {
                     reportModuleSyncFailure($cliMode ? $io : null, 'cd4', $chunkNumber, $e);
                     break;
