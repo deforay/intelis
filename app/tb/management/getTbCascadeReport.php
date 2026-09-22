@@ -3,7 +3,6 @@
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -16,39 +15,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-/**
- * Emit a JSON error and log the actual failing SQL + DB error so we can
- * diagnose without exposing internals to the client. The framework's
- * generic 500 handler hides $db->getLastQuery(), which is what we need
- * to see for syntax errors like "near ''".
- */
-function tbcReportError(Throwable $e, DatabaseService $db, string $action, ?string $attemptedSql = null): void
-{
-    $errorId = 'TBC-' . date('Ymd-His') . '-' . substr(bin2hex(random_bytes(3)), 0, 6);
-    LoggerUtility::log('error', 'TB Cascade Report error', [
-        'error_id'      => $errorId,
-        'action'        => $action,
-        'message'       => $e->getMessage(),
-        'attempted_sql' => $attemptedSql,
-        'last_db_query' => $db->getLastQuery(),
-        'last_db_error' => $db->getLastError(),
-        'post'          => $_POST,
-        'file'          => $e->getFile(),
-        'line'          => $e->getLine(),
-        'trace'         => $e->getTraceAsString(),
-    ]);
-    if (!headers_sent()) {
-        http_response_code(500);
-        header('Content-Type: application/json');
-    }
-    echo json_encode([
-        'error' => true,
-        'action' => $action,
-        'error_id' => $errorId,
-        'message' => 'TB Cascade query failed. See server logs for ' . $errorId . '.',
-    ]);
-}
 
 /**
  * Build the shared WHERE clause fragment from POSTed filters.
@@ -129,7 +95,7 @@ $action = $_POST['action'] ?? 'summary';
 // ---------------------------------------------------------------------------
 // SUMMARY action — sample-grain KPIs + funnel counts
 // ---------------------------------------------------------------------------
-if ($action === 'summary') { try {
+if ($action === 'summary') {
     $where = tbcBuildFilterConditions($_POST);
     [$ttJoin, $_unused] = tbcTestTypeJoinAndWhere($_POST);
     $whereSql = !empty($where) ? implode(' AND ', $where) : '1=1';
@@ -223,14 +189,14 @@ if ($action === 'summary') { try {
     header('Content-Type: application/json');
     echo json_encode($payload);
     return;
-} catch (Throwable $e) { tbcReportError($e, $db, 'summary', $sql ?? null); return; } }
+}
 
 // ---------------------------------------------------------------------------
 // PER-LAB action — DataTables server-side, one row per lab
 // Sample-grain aggregation (originator samples), plus test-grain counts
 // from tb_tests for tests-performed columns.
 // ---------------------------------------------------------------------------
-if ($action === 'per-lab') { try {
+if ($action === 'per-lab') {
     $where = tbcBuildFilterConditions($_POST);
     [$ttJoin, $_unused] = tbcTestTypeJoinAndWhere($_POST);
     $whereSql = !empty($where) ? implode(' AND ', $where) : '1=1';
@@ -353,13 +319,13 @@ if ($action === 'per-lab') { try {
     header('Content-Type: application/json');
     echo json_encode($out);
     return;
-} catch (Throwable $e) { tbcReportError($e, $db, 'per-lab', ($countQuery ?? null) . "\n---\n" . ($dataQuery ?? '')); return; } }
+}
 
 // ---------------------------------------------------------------------------
 // REFERRAL-MATRIX action — DataTables server-side, one row per (from_lab, to_lab)
 // pair. Empty whenever the period has no referrals.
 // ---------------------------------------------------------------------------
-if ($action === 'referral-matrix') { try {
+if ($action === 'referral-matrix') {
     $where = tbcBuildFilterConditions($_POST);
     [$ttJoin, $_unused] = tbcTestTypeJoinAndWhere($_POST);
     $whereSql = implode(' AND ', $where);
@@ -438,14 +404,14 @@ if ($action === 'referral-matrix') { try {
     header('Content-Type: application/json');
     echo json_encode($out);
     return;
-} catch (Throwable $e) { tbcReportError($e, $db, 'referral-matrix', $countQuery ?? ($matrixSql ?? null)); return; } }
+}
 
 // ---------------------------------------------------------------------------
 // DETAIL action — DataTables server-side, one row per (sample × test × lab)
 // Joins form_tb to tb_tests; samples without tb_tests rows still appear once
 // using the sample's primary lab so the explorer mirrors the dashboard total.
 // ---------------------------------------------------------------------------
-if ($action === 'detail') { try {
+if ($action === 'detail') {
     $where = tbcBuildFilterConditions($_POST);
     [$ttJoin, $_unused] = tbcTestTypeJoinAndWhere($_POST);
     $whereSql = !empty($where) ? implode(' AND ', $where) : '1=1';
@@ -574,7 +540,7 @@ if ($action === 'detail') { try {
     header('Content-Type: application/json');
     echo json_encode($out);
     return;
-} catch (Throwable $e) { tbcReportError($e, $db, 'detail', $countQuery ?? null); return; } }
+}
 
 // ---------------------------------------------------------------------------
 // STUCK action — counts and average age (days) of samples currently sitting
@@ -583,7 +549,7 @@ if ($action === 'detail') { try {
 // the calculation so the "stuck at CS" row is visible on instances that have
 // the data — otherwise the panel would falsely show 0.
 // ---------------------------------------------------------------------------
-if ($action === 'stuck') { try {
+if ($action === 'stuck') {
     // Reuse the standard filter conditions but strip out the non-STS exclusion
     // of RECEIVED_AT_CLINIC so the CS rows can be counted when the data exists.
     $where = tbcBuildFilterConditions($_POST);
@@ -655,7 +621,7 @@ if ($action === 'stuck') { try {
     header('Content-Type: application/json');
     echo json_encode(['rows' => $rows]);
     return;
-} catch (Throwable $e) { tbcReportError($e, $db, 'stuck', $sql ?? null); return; } }
+}
 
 // Unknown action — empty payload.
 header('Content-Type: application/json');
