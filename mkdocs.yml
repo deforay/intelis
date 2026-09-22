@@ -103,10 +103,14 @@ nav:
       - Scripts & Tools: guides/maintenance.md
       - Run Commands on Labs Remotely: guides/remote-command-plane.md
   - Troubleshooting:
+      - Where to Start: guides/troubleshooting.md
       - MySQL Will Not Start: guides/mysql-will-not-start.md
       - Browser Shows PHP Code: guides/browser-shows-php-code.md
       - Fix Collation Mismatch: guides/fix-collation-issue.md
       - Permission Denied Issue: guides/permission-denied-issue.md
+      - Update Stuck at Database Migrations: guides/update-stuck-at-migrations.md
+      - Connect a Lab to the STS: guides/connect-lab-to-sts.md
+      - Results Not Reaching the STS: guides/sts-sync-not-working.md
       - Analyzer Results Not Arriving: guides/interfacing-results-not-arriving.md
   - Reference:
       - Architecture: ARCHITECTURE.md
@@ -194,6 +198,10 @@ plugins:
             Fix Collation Mismatch: Corriger une incohérence de collation
             Permission Denied Issue: Corriger une erreur de permission
             Analyzer Results Not Arriving: Les résultats de l'automate n'arrivent pas
+            Where to Start: Par où commencer
+            Update Stuck at Database Migrations: Mise à jour bloquée sur les migrations
+            Connect a Lab to the STS: Connecter un laboratoire au STS
+            Results Not Reaching the STS: Les résultats n'arrivent pas au STS
             Connect an Instrument: Connecter un automate
             Reference: Référence
             Architecture: Architecture
