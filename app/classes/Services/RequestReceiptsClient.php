@@ -55,7 +55,7 @@ final class RequestReceiptsClient
      * Send what earlier runs could not, oldest first. Stops at the first failure:
      * the STS is still unreachable, and the rest can wait for the next run.
      *
-     * @return int Receipts delivered.
+     * @return int Receipts the STS took.
      */
     public function flushOutbox(string $stsUrl): int
     {
@@ -86,8 +86,11 @@ final class RequestReceiptsClient
                 );
                 break;
             }
+            // A refused receipt is dropped too, but it was not delivered.
             $this->db->rawQuery('DELETE FROM request_receipt_outbox WHERE receipt_id = ?', [$row['receipt_id']]);
-            $delivered++;
+            if ($status === 200) {
+                $delivered++;
+            }
         }
         return $delivered;
     }
