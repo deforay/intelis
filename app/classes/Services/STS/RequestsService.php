@@ -55,6 +55,9 @@ final class RequestsService
      * With $withPending the result also carries receiptsEnabled and pendingRemaining.
      * receiptsEnabled is false when the pending rows could not be read, and the pull
      * is then exactly the plain window it always was.
+     *
+     * $pendingOnly (with $withPending) leaves the window out: a lab pulling again in
+     * the same run already has it, and wants only the requests still waiting.
      */
     public function getRequests(
         $testType,
@@ -62,7 +65,8 @@ final class RequestsService
         $facilityMapResult = [],
         $manifestCode = null,
         $syncSinceDate = null,
-        bool $withPending = false
+        bool $withPending = false,
+        bool $pendingOnly = false
     ) {
         $this->setTestType($testType);
 
@@ -88,7 +92,9 @@ final class RequestsService
             $facilityMapResult,
             $manifestCode,
             $syncSinceDate,
-            $pendingIds
+            $pendingIds,
+            // Only when the pending rows were read: else the plain window.
+            withWindow: !($pendingOnly && $receiptsEnabled)
         );
         // Handle specific test types with additional logic
         if ($testType === 'covid19') {
@@ -182,7 +188,8 @@ final class RequestsService
         $facilityMapResult,
         $manifestCode,
         $syncSinceDate = null,
-        array $pendingIds = []
+        array $pendingIds = [],
+        bool $withWindow = true
     ): array {
         // Start with selecting all columns
         $columnSelection = "*";
@@ -210,6 +217,10 @@ final class RequestsService
         }
 
         [$condition, $params] = $this->buildCondition($labId, $facilityMapResult, $manifestCode, $syncSinceDate);
+        if (!$withWindow) {
+            // Nothing matches until the pending rows are ORed in below.
+            [$condition, $params] = ['1 = 0', []];
+        }
         if ($pendingIds !== []) {
             // Same lab scope; the pending rows ride along with the window.
             $placeholders = implode(', ', array_fill(0, count($pendingIds), '?'));

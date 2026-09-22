@@ -92,16 +92,31 @@ final class RequestReceiptsService
         }
 
         $now = DateUtility::getCurrentDateTime();
+        $failedCount = 0;
         foreach (array_chunk(array_keys($failures), self::CHUNK) as $chunk) {
             $chunk = array_map('strval', $chunk);
-            // Back to pending, so the next pull sends it again.
-            $this->db->rawQuery(
-                "UPDATE `$table` SET `data_sync` = 0
+            // Only what is still out with this lab. A request already confirmed (a
+            // later receipt for it arrived first) or edited since, or another lab's,
+            // is not this receipt's to fail, and recording it would flag a saved
+            // request as needing attention.
+            $inFlight = array_map('strval', array_column($this->db->rawQuery(
+                "SELECT `unique_id` FROM `$table`
                     WHERE `unique_id` IN (" . self::placeholders($chunk) . ") AND `data_sync` = " . self::IN_FLIGHT
                     . " AND $scope",
                 [...$chunk, ...$scopeParams]
+            ), 'unique_id'));
+            if ($inFlight === []) {
+                continue;
+            }
+            // Back to pending, so the next pull sends it again.
+            $this->db->rawQuery(
+                "UPDATE `$table` SET `data_sync` = 0
+                    WHERE `unique_id` IN (" . self::placeholders($inFlight) . ") AND `data_sync` = " . self::IN_FLIGHT
+                    . " AND $scope",
+                [...$inFlight, ...$scopeParams]
             );
-            foreach ($chunk as $id) {
+            $failedCount += count($inFlight);
+            foreach ($inFlight as $id) {
                 $this->db->rawQuery(
                     "INSERT INTO `request_sync_failures`
                         (`lab_id`, `test_type`, `unique_id`, `reason`, `attempts`,
@@ -114,7 +129,7 @@ final class RequestReceiptsService
             }
         }
 
-        return ['confirmed' => $confirmed, 'failed' => count($failures)];
+        return ['confirmed' => $confirmed, 'failed' => $failedCount];
     }
 
     /**
