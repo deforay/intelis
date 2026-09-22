@@ -16,6 +16,11 @@ $_GET = _sanitizeInput($request->getQueryParams());
 if (!empty($_GET['testType'])) {
 	$testType = $_GET['testType'];
 }
+// Reference data is managed on the STS; a LIS receives it by sync.
+$canAdd = !$general->isLISInstance()
+	&& _isAllowed("/common/reference/add-recommended-corrective-action.php?testType=$testType");
+$canEdit = !$general->isLISInstance()
+	&& _isAllowed("/common/reference/edit-recommended-corrective-action.php?testType=$testType");
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -34,7 +39,7 @@ if (!empty($_GET['testType'])) {
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("recommended-corrective-actions.php") && $general->isLISInstance() === false) { ?>
+						<?php if ($canAdd) { ?>
 							<a href="add-recommended-corrective-action.php?testType=<?= urlencode((string) $testType); ?>" class="btn btn-primary pull-right">
 								<em class="fa-solid fa-plus"></em>
 								<?php echo _translate("Add Recommended Corrective Actions"); ?></a>
@@ -48,8 +53,8 @@ if (!empty($_GET['testType'])) {
 								<tr>
 									<th scope="row"><?php echo _translate("Recommended Corrective Action Name"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (_isAllowed("recommended-corrective-actions.php") && $general->isLISInstance() === false) { ?>
-										<th scope="row">Action</th>
+									<?php if ($canEdit) { ?>
+										<th scope="row"><?php echo _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>

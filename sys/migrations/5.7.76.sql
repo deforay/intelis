@@ -31,3 +31,15 @@ UPDATE `s_app_menu`
    AND `link` = '/covid-19/reference/covid-19-results.php';
 
 UPDATE `system_config` SET `value` = '5.7.76' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

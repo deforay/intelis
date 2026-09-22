@@ -27,7 +27,8 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = "Something went wrong in Implementation Partners edit page";
-    header("Location:recommended-corrective-actions.php?testType=" . $testType);
+    header("Location:recommended-corrective-actions.php?testType=" . urlencode((string) $testType));
+    exit;
 }
 $query = "SELECT * from r_recommended_corrective_actions where recommended_corrective_action_id = ?";
 $correctiveInfo = $db->rawQuery($query, [$id]);
