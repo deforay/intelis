@@ -136,33 +136,7 @@ if (APPLICATION_ENV === 'production' && $debugMode !== true) {
 // some old scripts that are still depending on this variable being available.
 $db = ContainerRegistry::get(DatabaseService::class);
 
-set_error_handler(function ($severity, $message, $file, $line) use ($debugMode) {
-    $exception = new ErrorException($message, 0, $severity, $file, $line);
-    $trace = debug_backtrace();
-
-    // Check if debug mode is enabled
-    if ($debugMode === true || APPLICATION_ENV === 'development') {
-        // In debug mode, log all error levels but only throw exceptions for severe errors
-        LoggerUtility::log('error', $exception->getMessage(), [
-            'exception' => $exception,
-            'trace' => $trace
-        ]);
-        if (in_array($severity, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE])) {
-            throw $exception;
-        }
-    } else {
-        // In production mode, log and throw exceptions only for severe errors
-        if (in_array($severity, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE])) {
-            LoggerUtility::log('error', $exception->getMessage(), [
-                'exception' => $exception,
-                'trace' => $trace
-            ]);
-            throw $exception;
-        }
-        // Optionally, log other errors without throwing exceptions
-        // LoggerUtility::log('warning', $exception->getMessage(), ['exception' => $exception]);
-    }
-});
+set_error_handler(new \App\ErrorHandlers\PhpErrorHandler($debugMode === true || APPLICATION_ENV === 'development'));
 
 set_exception_handler(function ($exception) {
     LoggerUtility::logError($exception->getMessage(), [
