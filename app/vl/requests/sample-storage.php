@@ -75,7 +75,9 @@ $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
 ])];
 
 if ($general->isLISInstance() && $arr['vl_lab_id'] != '') {
-	$sWhere[] = ' s.lab_id = "' . $arr['vl_lab_id'] . '"';
+	// Scope by the sample's lab. The storage row is a LEFT JOIN, so filtering on
+	// its lab hid every sample that has not been stored yet.
+	$sWhere[] = ' vl.lab_id = ' . (int) $arr['vl_lab_id'];
 } elseif (isset($_POST['labId']) && trim((string) $_POST['labId']) !== '') {
 	$sWhere[] = ' s.lab_id = "' . $db->escape((string) $_POST['labId']) . '"';
 }

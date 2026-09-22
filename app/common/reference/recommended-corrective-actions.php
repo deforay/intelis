@@ -35,7 +35,7 @@ if (!empty($_GET['testType'])) {
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (_isAllowed("recommended-corrective-actions.php") && $general->isLISInstance() === false) { ?>
-							<a href="add-recommended-corrective-action.php?testType=vl" class="btn btn-primary pull-right">
+							<a href="add-recommended-corrective-action.php?testType=<?= urlencode((string) $testType); ?>" class="btn btn-primary pull-right">
 								<em class="fa-solid fa-plus"></em>
 								<?php echo _translate("Add Recommended Corrective Actions"); ?></a>
 						<?php } ?>

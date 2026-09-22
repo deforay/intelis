@@ -622,19 +622,26 @@ if [ -n "$LIS_PATH" ]; then
       print error "No readable main-database backup (a .sql, .sql.gz, .sql.zst or .gpg file starting with 'vlsm-') was found in ${DUMP_DIR}."
       exit 1
     fi
-    # db-tools reads its settings from the current folder and runs as www-data,
-    # which also writes the safety copy next to the dump.
+    # db-tools reads its settings from the current folder and runs as www-data.
+    # It writes the safety copy to its profile's output folder (backups/db of
+    # the install), not next to the dump being restored.
     chown -R www-data:www-data "$STAGING"
+    SAFETY_DIR="${LIS_PATH}/backups/db"
+    # Only a safety copy made by this run counts, not one left by an earlier run.
+    restore_started=$(mktemp)
     print info "Restoring $(basename "$newest_dump")..."
     if (cd "$LIS_PATH" && sudo -u www-data php vendor/bin/db-tools restore "$newest_dump"); then
+      rm -f "$restore_started"
       print success "Database restored"
       (cd "$LIS_PATH" && sudo -u www-data php bin/migrate.php) || print warning "Could not apply database migrations; run 'intelis migrate' by hand."
       print info "Log in and check Admin → System Config."
     else
       print error "The restore did not finish."
-      if find "$DUMP_DIR" -maxdepth 1 -type f -name 'pre-restore-*' -newer "$newest_dump" | grep -q .; then
-        print info "A safety copy of the previous database was saved in ${DUMP_DIR} (the file starting with 'pre-restore-')."
-        print info "To put it back: cd ${LIS_PATH} && sudo -u www-data php vendor/bin/db-tools restore ${DUMP_DIR}/<pre-restore-file>"
+      safety_copy=$(find "$SAFETY_DIR" "$DUMP_DIR" -maxdepth 1 -type f -name 'pre-restore-*' -newer "$restore_started" 2>/dev/null | head -1)
+      rm -f "$restore_started"
+      if [ -n "$safety_copy" ]; then
+        print info "A safety copy of the previous database was saved: ${safety_copy}"
+        print info "To put it back: cd ${LIS_PATH} && sudo -u www-data php vendor/bin/db-tools restore ${safety_copy}"
       else
         print info "No safety copy was taken, so the database was not changed."
       fi
