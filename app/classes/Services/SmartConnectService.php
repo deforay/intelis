@@ -57,6 +57,13 @@ class SmartConnectService
     /** @var ApiService */
     private $apiService;
 
+    /**
+     * Set once the dashboard has refused enrollment in this run. Every module and the
+     * reference-data upload asks for a token, and asking again would only be refused
+     * again, and logged again, once per module.
+     */
+    private bool $enrollmentRefused = false;
+
     public function __construct(DatabaseService $db, CommonService $general, ApiService $apiService)
     {
         $this->db = $db;
@@ -136,6 +143,10 @@ class SmartConnectService
      */
     public function enroll(): ?string
     {
+        if ($this->enrollmentRefused) {
+            return null;
+        }
+
         $payload = [
             'enrollment_key' => $this->general->getGlobalConfig('smart_connect_enrollment_key') ?: null,
             'instance_uuid' => $this->general->getInstanceId(),
@@ -147,21 +158,38 @@ class SmartConnectService
         // Fourth argument returns httpStatusCode alongside the body.
         $result = $this->apiService->post($this->baseUrl() . '/api/v2/enroll', $payload, false, true);
 
-        if (($result['httpStatusCode'] ?? 0) !== 201) {
-            LoggerUtility::logError('Smart Connect enrollment failed', [
-                'status' => $result['httpStatusCode'] ?? null,
-                'body' => $result['body'] ?? null,
-            ]);
+        $status = $result['httpStatusCode'] ?? null;
+        $token = $status === 201 ? (json_decode((string) $result['body'], true)['data']['token'] ?? null) : null;
+
+        if (empty($token)) {
+            // The one place this failure is logged: nothing can be uploaded until it is fixed.
+            $this->enrollmentRefused = true;
+            $message = is_array($decoded = json_decode((string) ($result['body'] ?? ''), true))
+                ? ($decoded['message'] ?? null) : null;
+            LoggerUtility::logError(sprintf(
+                'Smart Connect enrollment failed (HTTP %s%s). %s',
+                $status ?? 'no answer',
+                $message ? ": $message" : '',
+                self::enrollmentHint($status)
+            ), ['url' => $this->baseUrl() . '/api/v2/enroll']);
             return null;
         }
 
-        $token = json_decode((string) $result['body'], true)['data']['token'] ?? null;
-
-        if (!empty($token)) {
-            $this->db->update('s_vlsm_instance', ['sc_api_token' => $token]);
-        }
+        $this->db->update('s_vlsm_instance', ['sc_api_token' => $token]);
 
         return $token;
+    }
+
+    private static function enrollmentHint(?int $status): string
+    {
+        return match ($status) {
+            401 => 'Check the Smart Connect enrollment key in System Configuration.',
+            403 => 'The Smart Connect dashboard has no enrollment key set.',
+            422 => 'This instance has no instance ID.',
+            201 => 'The dashboard accepted the enrollment but sent no token.',
+            null => 'The Smart Connect dashboard could not be reached.',
+            default => 'Nothing will be uploaded until enrollment succeeds.',
+        };
     }
 
     /**
@@ -197,7 +225,7 @@ class SmartConnectService
             $token = $this->token();
 
             if (empty($token)) {
-                LoggerUtility::logError('Smart Connect: no API token and enrollment failed', ['url' => $url]);
+                // enroll() has logged why.
                 return ['httpStatusCode' => null, 'body' => null];
             }
 
