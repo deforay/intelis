@@ -520,7 +520,7 @@ if [ -d "$DB_DUMP_DIR" ]; then
   if [ -n "${newest_dump:-}" ]; then
     DB_DUMP_AGE_HOURS=$(( ( $(date +%s) - newest_dump ) / 3600 ))
     if [ "$DB_DUMP_AGE_HOURS" -gt 24 ]; then
-      print warning "The newest database dump is ${DB_DUMP_AGE_HOURS} hours old. The scheduled backup job may have stopped running; check that the InteLIS scheduler is running (systemctl list-timers 'intelis*')."
+      print warning "The newest database dump is ${DB_DUMP_AGE_HOURS} hours old. The scheduled backup job may have stopped running; check that root's crontab still has the InteLIS scheduler line (sudo crontab -l | grep cron.sh)."
     else
       print info "Newest database dump is ${DB_DUMP_AGE_HOURS} hours old"
     fi
