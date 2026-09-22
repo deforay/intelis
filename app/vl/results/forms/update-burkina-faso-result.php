@@ -192,7 +192,7 @@ $disable = "disabled = 'disabled'";
                                         <div class="col-xs-4 col-md-4">
                                              <div class="form-group" style=" width: 100%; ">
                                                   <label for="sampleReordered">
-                                                       <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please indicate if this is a reordered sample"> <?= _translate("Sample Reordered") ?>
+                                                       <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="<?= _htmlTranslate("Please indicate if this is a reordered sample"); ?>"> <?= _translate("Sample Reordered") ?>
                                                   </label>
                                              </div>
                                         </div>

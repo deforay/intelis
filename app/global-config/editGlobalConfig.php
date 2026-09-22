@@ -896,7 +896,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 														placeholder="<?php echo _translate('Enter the sample expiry days'); ?>"
 														class="form-control forceNumeric readPage isRequired"
 														title="<?php echo _translate('Please enter the sample expiry days'); ?>"
-														onblur="validateLessThanDays('expiry_days_error',90,'Expiry days cannot be less than 90 days')">
+														onblur="validateLessThanDays('expiry_days_error',90,'<?= _jsTranslate("Expiry days cannot be less than 90 days"); ?>')">
 												</div>
 												<div class="col-lg-4">
 													<span id="expiry_days_error" class="text-danger"></span>
@@ -915,7 +915,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 														placeholder="<?php echo _translate('Enter the sample lock days'); ?>"
 														class="form-control forceNumeric readPage isRequired"
 														title="<?php echo _translate('Please enter the sample lock days'); ?>"
-														onblur="validateLessThanDays('lock_days_error',7,'Lock days cannot be less than 7 days')">
+														onblur="validateLessThanDays('lock_days_error',7,'<?= _jsTranslate("Lock days cannot be less than 7 days"); ?>')">
 												</div>
 												<div class="col-lg-4">
 													<span id="lock_days_error" class="text-danger"></span>

@@ -111,7 +111,7 @@ foreach ($testReasonsResultDetails as $row) {
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group" style=" width: 100%; ">
                                                        <label for="sampleReordered">
-                                                            <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" title="Please indicate if this is a reordered sample"> <?= _translate("Sample Reordered") ?>
+                                                            <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" title="<?= _htmlTranslate("Please indicate if this is a reordered sample"); ?>"> <?= _translate("Sample Reordered") ?>
                                                        </label>
                                                   </div>
                                              </div>

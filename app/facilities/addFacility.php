@@ -143,7 +143,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											</option>
 											<?php
 											foreach ($fResult as $type) { ?>
-												<option value="<?php echo $type['facility_type_id']; ?>"><?php echo ($type['facility_type_name']); ?></option>
+												<option value="<?php echo $type['facility_type_id']; ?>"><?php echo _translate((string) $type['facility_type_name']); ?></option>
 											<?php
 											} ?>
 										</select>

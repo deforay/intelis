@@ -207,9 +207,9 @@ $globalConfig = $general->getGlobalConfig();
                 <div class="row">
                   <div class="col-md-7">
                     <div class="form-group">
-                      <label for="sup_email" class="col-lg-4 control-label">Email </label>
+                      <label for="sup_email" class="col-lg-4 control-label"><?php echo _translate("Email"); ?></label>
                       <div class="col-lg-8">
-                        <input type="text" class="form-control isEmail" id="sup_email" name="sup_email" placeholder="Email" title="Please enter email" value="<?php echo $sarr['sup_email']; ?>">
+                        <input type="text" class="form-control isEmail" id="sup_email" name="sup_email" placeholder="<?php echo _htmlTranslate("Email"); ?>" title="<?php echo _htmlTranslate("Please enter email"); ?>" value="<?php echo htmlspecialchars((string) ($sarr['sup_email'] ?? '')); ?>">
                       </div>
                     </div>
                   </div>
@@ -217,9 +217,9 @@ $globalConfig = $general->getGlobalConfig();
                 <div class="row">
                   <div class="col-md-7">
                     <div class="form-group">
-                      <label for="sup_password" class="col-lg-4 control-label">Password </label>
+                      <label for="sup_password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?></label>
                       <div class="col-lg-8">
-                        <input type="text" class="form-control" id="sup_password" name="sup_password" placeholder="Password" title="Please enter password" value="<?php echo $sarr['sup_password']; ?>">
+                        <input type="password" autocomplete="new-password" class="form-control" id="sup_password" name="sup_password" placeholder="<?php echo _htmlTranslate("Password"); ?>" title="<?php echo _htmlTranslate("Please enter password"); ?>" value="<?php echo htmlspecialchars((string) ($sarr['sup_password'] ?? '')); ?>">
                       </div>
                     </div>
                   </div>

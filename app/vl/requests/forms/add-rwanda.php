@@ -101,7 +101,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="sampleReordered">
-                                                            <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" title="Please indicate if this is a reordered sample"> Sample Reordered
+                                                            <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" title="<?= _htmlTranslate("Please indicate if this is a reordered sample"); ?>"> <?= _translate("Sample Reordered"); ?>
                                                        </label>
                                                   </div>
                                              </div>

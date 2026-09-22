@@ -252,7 +252,7 @@ if ($showInterfaceConnections) {
 											foreach ($fResult as $type) { ?>
 												<option data-disable="<?php echo $k; ?>"
 													value="<?= ((string) $type['facility_type_id']); ?>" <?php echo ($facilityInfo['facility_type'] == $type['facility_type_id']) ? "selected='selected'" : "" ?>>
-													<?php echo ($type['facility_type_name']); ?>
+													<?php echo _translate((string) $type['facility_type_name']); ?>
 												</option>
 												<?php
 												$k += 10;

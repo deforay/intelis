@@ -425,8 +425,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                    <div class="col-md-12">
                                         <button type="button" class="btn btn-primary btn-sm pull-left"
                                              style="margin-right:5px;line-height: 2;"
-                                             onclick="hideAdvanceSearch();"><span>Show Advanced Search
-                                                  Options</span></button>
+                                             onclick="hideAdvanceSearch();"><span><?= _translate("Show Advanced Search Options"); ?></span></button>
                                    </div>
                               </div>
                               <div class="row" style="margin: 15px;<?php echo $display; ?>">

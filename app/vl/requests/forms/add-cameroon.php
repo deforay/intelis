@@ -48,7 +48,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
-$facility = $general->generateSelectOptions($healthFacilities, null, '<?= _translate("-- Select --"); ?>');
+$facility = $general->generateSelectOptions($healthFacilities, null, _translate("-- Select --"));
 $testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", ['test_reason_id', 'test_reason_name', 'parent_reason'], false, " test_reason_status like 'active' ");
 $subTestReasons = $testReasonsResult = [];
 foreach ($testReasonsResultDetails as $row) {
@@ -621,7 +621,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                       <label class="col-lg-5 control-label" for="reviewedBy"><?= _translate('Reviewed By'); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="<?= _translate('Please choose reviewed by'); ?>" style="width: 100%;">
-                                                                                <?= $general->generateSelectOptions($userInfo, null, '<?= _translate("-- Select --"); ?>'); ?>
+                                                                                <?= $general->generateSelectOptions($userInfo, null, _translate("-- Select --")); ?>
                                                                            </select>
                                                                       </div>
                                                                  </div>

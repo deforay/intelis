@@ -5813,7 +5813,7 @@ msgstr "Impossible de charger l'historique."
 #: app/admin/monitoring/log-files.php:10 app/admin/monitoring/log-files.php:462
 #: app/system/translate-strings.php:97
 msgid "Log File Viewer"
-msgstr "Journal d'audit"
+msgstr "Visualisateur de fichiers journaux"
 
 #: app/admin/monitoring/log-files.php:466
 msgid "Manage Log File Viewer"
@@ -12100,11 +12100,11 @@ msgstr "Veuillez sélectionner le type d'échantillon demandé"
 
 #: app/cd4/requests/cd4-requests.php:253 app/vl/requests/vl-requests.php:462
 msgid "Show samples with result"
-msgstr "Afficher des exemples avec les résultats"
+msgstr "Afficher les échantillons avec résultat"
 
 #: app/cd4/requests/cd4-requests.php:256 app/vl/requests/vl-requests.php:465
 msgid "Show samples without result"
-msgstr "Afficher les exemples sans résultat"
+msgstr "Afficher les échantillons sans résultat"
 
 #: app/cd4/requests/cd4-requests.php:333 app/cd4/results/email-results.php:190
 #: app/covid-19/results/email-results.php:192
@@ -19817,13 +19817,13 @@ msgstr ""
 #: app/eid/management/pmtctCascadeReportExport.php:389
 #: app/eid/management/pmtctCascadeReportExport.php:587
 msgid "EID Sample Code"
-msgstr "Exemple de code EID"
+msgstr "Code d'échantillon EID"
 
 #: app/eid/management/pmtct-cascade-report.php:440
 #: app/eid/management/pmtctCascadeReportExport.php:390
 #: app/eid/management/pmtctCascadeReportExport.php:588
 msgid "Remote EID Sample Code"
-msgstr "Exemple de code pour l'EID à distance"
+msgstr "Code d'échantillon EID à distance"
 
 #: app/eid/management/pmtct-cascade-report.php:442
 msgid "EID Test Date"
@@ -19851,7 +19851,7 @@ msgstr "Laboratoire d'analyse EID"
 #: app/eid/management/pmtct-cascade-report.php:951
 #: app/eid/management/pmtctCascadeReportExport.php:491
 msgid "VL Sample Code"
-msgstr "Exemple de code VL"
+msgstr "Code d'échantillon VL"
 
 #: app/eid/management/pmtct-cascade-report.php:448
 #: app/eid/management/pmtctCascadeReportExport.php:493
@@ -20433,7 +20433,7 @@ msgstr "Date de naissance du patient"
 
 #: app/eid/management/pmtctCascadeReportExport.php:492
 msgid "Remote VL Sample Code"
-msgstr "Exemple de code VL à distance"
+msgstr "Code d'échantillon VL à distance"
 
 #: app/eid/management/pmtctCascadeReportExport.php:494
 msgid "VL Sample Tested Date"
@@ -23281,7 +23281,7 @@ msgstr "Expire dans"
 
 #: app/facilities/partials/interface-connections.php:216
 msgid "Cancel Code"
-msgstr "Code d'annulation"
+msgstr "Annuler le code"
 
 #: app/facilities/partials/interface-connections.php:223
 msgid "Connected Installations"
@@ -25034,7 +25034,7 @@ msgstr ""
 #: app/vl/results/forms/update-burkina-faso-result.php:195
 #: app/vl/results/forms/update-cameroon-result.php:192
 msgid "Sample Reordered"
-msgstr "Échantillon réorganisé"
+msgstr "Échantillon redemandé"
 
 #: app/generic-tests/requests/_request-form-body.php:199
 #: app/vl/requests/forms/add-cameroon.php:118
@@ -25496,7 +25496,7 @@ msgstr "Supprimer le test"
 
 #: app/generic-tests/requests/_test-section.php:357
 msgid "SAMPLE OUTCOME"
-msgstr "EXEMPLE DE RÉSULTAT"
+msgstr "RÉSULTAT DE L'ÉCHANTILLON"
 
 #: app/generic-tests/requests/_test-section.php:362
 msgid "Is the sample rejected?"
@@ -25932,7 +25932,7 @@ msgstr "Imprimer le bordereau de référence en PDF"
 
 #: app/generic-tests/results/pdf/generate-generic-manifest.php:81
 msgid " Sample Referral Manifest"
-msgstr " Exemple de bordereau d'envoi d'échantillons"
+msgstr " Bordereau d'envoi d'échantillons"
 
 #: app/generic-tests/results/save-generic-referral-helper.php:44
 #: app/tb/results/save-tb-referral-helper.php:43
@@ -27616,7 +27616,7 @@ msgstr "Veuillez sélectionner le statut du résultat"
 
 #: app/import-result/imported-results.php:1291
 msgid "Failed to update sample code"
-msgstr "Échec de la mise à jour du code de l'échantillon"
+msgstr "Échec de la mise à jour du code d'échantillon"
 
 #: app/import-result/imported-results.php:1300
 #: app/import-result/imported-results.php:1335
@@ -29968,7 +29968,7 @@ msgstr "Rechercher un partenaire"
 #: app/reports/sample-referral-network.php:346
 #: app/system/translate-strings.php:103
 msgid "Sample Referral Network"
-msgstr "Exemple de réseau de recommandation"
+msgstr "Réseau de référencement des échantillons"
 
 #: app/reports/sample-referral-network.php:356
 msgid "Click any lab or facility on the map to see only its referral links."
@@ -32404,7 +32404,7 @@ msgstr "Paires de référence"
 
 #: app/tb/management/tb-cascade-report.php:256
 msgid "Detail Samples"
-msgstr "Exemples détaillés"
+msgstr "Détail des échantillons"
 
 #: app/tb/management/tb-cascade-report.php:259
 msgid "Tables load on demand. Click a button to open."
@@ -32466,7 +32466,7 @@ msgstr "Testé et rejeté / Échec"
 
 #: app/tb/management/tb-cascade-report.php:340
 msgid "Detail Samples — One Row per Test"
-msgstr "Exemples détaillés — Une ligne par test"
+msgstr "Détail des échantillons — une ligne par test"
 
 #: app/tb/management/tb-cascade-report.php:342
 msgid "Each row is one (sample × test × lab) combination."
@@ -35412,7 +35412,7 @@ msgstr "Date d'impression"
 
 #: app/vl/requests/vl-requests.php:453
 msgid "Sample Result Status"
-msgstr "Exemple de statut de résultat"
+msgstr "Statut du résultat de l'échantillon"
 
 #: app/vl/requests/vl-requests.php:580 app/vl/requests/vl-requests.php:584
 msgid "Include Recency Samples"
@@ -35879,7 +35879,7 @@ msgstr "Veuillez patienter..."
 
 #: public/assets/js/main.js.php:242
 msgid "Please enter the Sample Manifest Code"
-msgstr "Veuillez saisir le code manifeste de l'échantillon"
+msgstr "Veuillez saisir le code du manifeste d'échantillons"
 
 #: public/assets/js/main.js.php:258
 msgid "Unable to verify manifest"
@@ -35930,7 +35930,7 @@ msgstr ""
 
 #: public/assets/js/main.js.php:377
 msgid "Please enter a valid Sample Manifest Code"
-msgstr "Veuillez saisir un code manifeste d'échantillon valide"
+msgstr "Veuillez saisir un code de manifeste d'échantillons valide"
 
 #: public/assets/js/main.js.php:390 public/assets/js/main.js.php:417
 msgid "Please connect to internet to sync with STS"

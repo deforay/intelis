@@ -191,7 +191,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] === "Other") {
 									<div class="col-xs-4 col-md-4">
 										<div class="form-group">
 											<label for="sampleReordered">
-												<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample"> Sample Reordered
+												<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> title="<?= _htmlTranslate("Please indicate if this is a reordered sample"); ?>"> <?= _translate("Sample Reordered"); ?>
 											</label>
 										</div>
 									</div>
