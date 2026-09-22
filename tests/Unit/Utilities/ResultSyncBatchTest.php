@@ -34,6 +34,37 @@ final class ResultSyncBatchTest extends TestCase
         }, 'SELECT r.* FROM results r WHERE r.data_sync = 0', 'r.id');
     }
 
+    public function testEachSliceIsMarkedBeforeItsRowsAreRead(): void
+    {
+        $events = [];
+        $selection = new ResultSyncBatch(
+            function (string $sql, array $ids) use (&$events): array {
+                if ($ids === []) {
+                    return [['id' => 1], ['id' => 2], ['id' => 3]];
+                }
+                $events[] = ['read', $ids];
+                return array_map(static fn(int $id): array => ['id' => $id], $ids);
+            },
+            'SELECT r.* FROM results r WHERE r.data_sync = 0',
+            'r.id',
+            beforeFetch: static function (array $ids) use (&$events): void {
+                $events[] = ['mark', $ids];
+            }
+        );
+
+        $selection->preview();
+        self::assertSame([['read', [1, 2, 3]]], $events, 'a preview marks nothing');
+
+        $events = [];
+        iterator_to_array($selection->chunks(2));
+
+        self::assertSame(
+            [['mark', [1, 2]], ['read', [1, 2]], ['mark', [3]], ['read', [3]]],
+            $events,
+            'a change made after the mark resets data_sync, so the mark has to come first'
+        );
+    }
+
     public function testAcknowledgmentsDoNotSkipRowsOrRetryFailedRowsWithinTheRun(): void
     {
         $selection = $this->selection(5);
