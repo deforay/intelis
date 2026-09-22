@@ -50,16 +50,17 @@ final class LabRequestSyncTest extends TestCase
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', [
                 'database' => ['db' => $this->database],
-                'modules' => ['vl' => true, 'tb' => true, 'generic-tests' => true],
+                'modules' => ['vl' => true, 'tb' => true, 'covid19' => true, 'generic-tests' => true],
             ]);
         }
         $db = LegacyAppHarness::boot($this->database, [
             'system_config', 'global_config', 's_vlsm_instance', 'r_sample_status', 'form_vl', 'form_tb',
-            'tb_tests', 'form_generic', 'generic_test_results',
+            'tb_tests', 'form_generic', 'generic_test_results', 'form_covid19', 'covid19_tests',
+            'covid19_patient_symptoms', 'covid19_patient_comorbidities',
         ]);
         $this->booted = true;
         $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (6, 'Registered'), (7, 'Accepted')");
-        foreach (['form_vl', 'form_tb', 'form_generic'] as $table) {
+        foreach (['form_vl', 'form_tb', 'form_generic', 'form_covid19'] as $table) {
             $db->rawQuery("CREATE TABLE `sts_$table` LIKE `$table`");
         }
         return $db;
@@ -306,6 +307,191 @@ final class LabRequestSyncTest extends TestCase
         self::assertSame(['t-1'], array_column($result['failed'], 'unique_id'));
         self::assertSame([], $this->committed('form_tb'), 'the request goes with its tests or not at all');
         self::assertSame([], $this->committed('tb_tests', 'tb_test_id'));
+    }
+
+    /** @return list<array{int, string}> [parent id, result] per test row, as another connection sees them */
+    private function testRows(string $table, string $parentKey, string $resultKey, string $key): array
+    {
+        return array_values(array_map(
+            static fn(array $row): array => [(int) $row[$parentKey], (string) $row[$resultKey]],
+            $this->committed($table, $key)
+        ));
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheLabsOwnTbTestsSurviveARePull(): void
+    {
+        $db = $this->boot();
+        $request = self::stsRow($db, 'form_tb', ['unique_id' => 't-1', 'remote_sample_code' => 'R-t-1']);
+        $request['data_from_tests'] = [['tb_test_id' => 31, 'test_result' => 'From the STS']];
+        self::sync()->saveModule('tb', [$request], 'tx-1');
+        $tbId = (int) $this->committed('form_tb')['t-1']['tb_id'];
+        // The lab tests the sample: its own rows now.
+        $db->rawQuery('DELETE FROM tb_tests');
+        $db->insert('tb_tests', ['tb_id' => $tbId, 'lab_id' => self::LAB, 'test_result' => 'MTB detected']);
+        $db->insert('tb_tests', ['tb_id' => $tbId, 'lab_id' => self::LAB, 'test_result' => 'Rif resistant']);
+        $before = $this->committed('tb_tests', 'tb_test_id');
+
+        // The STS sends the request again (edited there), with its older copy of the tests.
+        $request['patient_name'] = 'Edited on the STS';
+        $result = self::sync()->saveModule('tb', [$request], 'tx-2');
+
+        self::assertSame(['t-1'], $result['saved']);
+        self::assertSame('Edited on the STS', $this->committed('form_tb')['t-1']['patient_name']);
+        self::assertSame($before, $this->committed('tb_tests', 'tb_test_id'), 'not replaced, not added to');
+    }
+
+    #[RunInSeparateProcess]
+    public function testTbTestsFromTheStsArriveWhenTheLabHasNoneYet(): void
+    {
+        $db = $this->boot();
+        $request = self::stsRow($db, 'form_tb', ['unique_id' => 't-1', 'remote_sample_code' => 'R-t-1']);
+        self::sync()->saveModule('tb', [$request], 'tx-1');
+
+        // Tested at the referring lab after the first pull.
+        $request['data_from_tests'] = [['tb_test_id' => 31, 'test_result' => 'MTB detected']];
+        self::sync()->saveModule('tb', [$request], 'tx-2');
+
+        $tbId = (int) $this->committed('form_tb')['t-1']['tb_id'];
+        self::assertSame(
+            [[$tbId, 'MTB detected']],
+            $this->testRows('tb_tests', 'tb_id', 'test_result', 'tb_test_id')
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheLabsOwnCovid19TestsSurviveARePull(): void
+    {
+        $db = $this->boot();
+        $stsTest = static fn(string $result): array => [
+            'test_id' => 5, 'test_name' => 'PCR', 'sample_tested_datetime' => '2026-09-01 12:00:00',
+            'result' => $result,
+        ];
+        $request = self::stsRow($db, 'form_covid19', ['unique_id' => 'c-1', 'remote_sample_code' => 'R-c-1']);
+        $request['data_from_tests'] = [$stsTest('negative')];
+        self::sync()->saveModule('covid19', [$request], 'tx-1');
+        $covidId = (int) $this->committed('form_covid19')['c-1']['covid19_id'];
+        self::assertSame([[$covidId, 'negative']], $this->testRows('covid19_tests', 'covid19_id', 'result', 'test_id'));
+        $db->rawQuery("UPDATE covid19_tests SET result = 'positive'");
+
+        $request['data_from_tests'] = [$stsTest('negative')];
+        self::sync()->saveModule('covid19', [$request], 'tx-2');
+
+        self::assertSame([[$covidId, 'positive']], $this->testRows('covid19_tests', 'covid19_id', 'result', 'test_id'));
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheLabsOwnCustomTestsResultsSurviveARePull(): void
+    {
+        $db = $this->boot();
+        $request = self::stsRow($db, 'form_generic', ['unique_id' => 'g-1', 'remote_sample_code' => 'R-g-1']);
+        self::sync()->saveCustomTests([$request], 'tx-1');
+        $genericId = (int) $this->committed('form_generic')['g-1']['sample_id'];
+        $db->insert('generic_test_results', [
+            'generic_id' => $genericId, 'test_name' => 'HBsAg', 'result' => 'Reactive',
+        ]);
+
+        $request['data_from_tests'] = [['test_id' => 9, 'test_name' => 'HBsAg', 'result' => 'From the STS']];
+        $result = self::sync()->saveCustomTests([$request], 'tx-2');
+
+        self::assertSame(['g-1'], $result['saved']);
+        self::assertSame(
+            [[$genericId, 'Reactive']],
+            $this->testRows('generic_test_results', 'generic_id', 'result', 'test_id')
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testCustomTestsResultsFromTheStsArriveWithANewRequest(): void
+    {
+        $db = $this->boot();
+        $request = self::stsRow($db, 'form_generic', ['unique_id' => 'g-1', 'remote_sample_code' => 'R-g-1']);
+        $request['data_from_tests'] = [['test_id' => 9, 'test_name' => 'HBsAg', 'result' => 'Reactive']];
+
+        self::sync()->saveCustomTests([$request], 'tx-1');
+
+        $genericId = (int) $this->committed('form_generic')['g-1']['sample_id'];
+        self::assertSame(
+            [[$genericId, 'Reactive']],
+            $this->testRows('generic_test_results', 'generic_id', 'result', 'test_id')
+        );
+    }
+
+    /**
+     * A TB request already on this lab with $localStatus, then sent again by the STS
+     * as referred to this lab by lab 3. Returns the lab's result_status after.
+     */
+    private function tbReferredHere(
+        mixed $db,
+        ?int $localStatus,
+        array $local = [],
+        array $referral = [],
+        string $uniqueId = 't-1'
+    ): ?int {
+        $request = self::stsRow($db, 'form_tb', [
+            'unique_id' => $uniqueId, 'remote_sample_code' => "R-$uniqueId", 'result_status' => 9,
+        ]);
+        self::sync()->saveModule('tb', [$request], 'tx-1');
+        $db->where('unique_id', $uniqueId);
+        $db->update('form_tb', ['result_status' => $localStatus] + $local);
+
+        $request = $referral + ['referred_to_lab_id' => self::LAB, 'referred_by_lab_id' => 3] + $request;
+        $result = self::sync()->saveModule('tb', [$request], 'tx-2');
+        self::assertSame([$uniqueId], $result['saved']);
+
+        $status = $this->committed('form_tb')[$uniqueId]['result_status'];
+        return $status === null ? null : (int) $status;
+    }
+
+    #[RunInSeparateProcess]
+    public function testATbSampleReferredToThisLabIsMarkedReceived(): void
+    {
+        $db = $this->boot();
+        self::assertSame(6, $this->tbReferredHere($db, 9));
+    }
+
+    #[RunInSeparateProcess]
+    public function testATbSampleWithNoStatusYetReferredToThisLabIsMarkedReceived(): void
+    {
+        $db = $this->boot();
+        self::assertSame(6, $this->tbReferredHere($db, null));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAReferralNeverUndoesWhatTheLabHasDecided(): void
+    {
+        // Accepted, awaiting approval, rejected, cancelled, on hold, failed, lost, expired.
+        $db = $this->boot();
+        foreach ([7, 8, 4, 12, 1, 5, 2, 10] as $status) {
+            $db->rawQuery("INSERT IGNORE INTO r_sample_status (status_id, status_name) VALUES ($status, 'S$status')");
+            self::assertSame($status, $this->tbReferredHere($db, $status, [], [], "t-$status"), "status $status");
+        }
+    }
+
+    #[RunInSeparateProcess]
+    public function testATbSampleThisLabReferredAwayIsReceivedWhenReferredBack(): void
+    {
+        $db = $this->boot();
+        $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (13, 'Referred')");
+        // This lab referred it to lab 3; lab 3 sends it back.
+        $local = ['referred_by_lab_id' => self::LAB, 'referred_to_lab_id' => 3];
+        self::assertSame(6, $this->tbReferredHere($db, 13, $local));
+    }
+
+    #[RunInSeparateProcess]
+    public function testATbSampleThisLabReferredAwayStaysReferredOtherwise(): void
+    {
+        $db = $this->boot();
+        $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (13, 'Referred')");
+        // Referred away by another lab, not this one: not coming back here.
+        self::assertSame(13, $this->tbReferredHere($db, 13, ['referred_by_lab_id' => 4, 'referred_to_lab_id' => 3]));
+    }
+
+    #[RunInSeparateProcess]
+    public function testATbSampleALabReferredToItselfIsNotMarkedReceived(): void
+    {
+        $db = $this->boot();
+        self::assertSame(9, $this->tbReferredHere($db, 9, [], ['referred_by_lab_id' => self::LAB]));
     }
 
     #[RunInSeparateProcess]

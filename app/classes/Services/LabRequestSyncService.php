@@ -8,7 +8,8 @@ use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 
-use const SAMPLE_STATUS\CANCELLED;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\REFERRED;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
 /**
@@ -436,27 +437,23 @@ final class LabRequestSyncService
                         $remoteData['data_from_comorbidities'] ?? null,
                         ['id']
                     );
-                    $this->general->syncSubTable(
+                    $this->syncTestRowsUnlessLabHasThem(
                         'covid19_tests',
                         'covid19_id',
                         $covid19Id,
                         $remoteData['data_from_tests'] ?? null,
-                        ['test_id', 'data_sync'],
-                        [],
-                        true
+                        ['test_id', 'data_sync']
                     );
                 }
 
                 if ($module === 'tb') {
                     $tbId = $localRecord[$primaryKeyName] ?? null;
-                    $this->general->syncSubTable(
+                    $this->syncTestRowsUnlessLabHasThem(
                         'tb_tests',
                         'tb_id',
                         $tbId,
                         $remoteData['data_from_tests'] ?? null,
-                        ['tb_test_id', 'data_sync'],
-                        [],
-                        true
+                        ['tb_test_id', 'data_sync']
                     );
                 }
 
@@ -713,14 +710,12 @@ final class LabRequestSyncService
                     $genericId = null;
                 }
 
-                $this->general->syncSubTable(
+                $this->syncTestRowsUnlessLabHasThem(
                     'generic_test_results',
                     'generic_id',
                     $genericId,
                     $remoteData['data_from_tests'] ?? null,
-                    ['test_id', 'data_sync'],
-                    [],
-                    true
+                    ['test_id', 'data_sync']
                 );
 
                 if ($id === true || $id > 0) {
@@ -780,6 +775,32 @@ final class LabRequestSyncService
             'saved' => $receiptSaved,
             'failed' => $receiptFailed,
         ];
+    }
+
+    /**
+     * A request's test rows (tb_tests, covid19_tests, generic_test_results) from the
+     * STS, written only while the lab has none of its own for it. Once the lab has
+     * tested the sample these rows are its own work, and the STS's copy is older:
+     * replacing them on every re-pull lost what the lab entered since.
+     */
+    private function syncTestRowsUnlessLabHasThem(
+        string $table,
+        string $foreignKey,
+        mixed $parentId,
+        ?array $remoteRows,
+        array $excludeFields
+    ): void {
+        if (empty($remoteRows) || empty($parentId)) {
+            return;
+        }
+        $labRow = $this->db->rawQueryOne(
+            "SELECT 1 AS found FROM `$table` WHERE `$foreignKey` = ? LIMIT 1",
+            [$parentId]
+        );
+        if (!empty($labRow)) {
+            return;
+        }
+        $this->general->syncSubTable($table, $foreignKey, $parentId, $remoteRows, $excludeFields, [], true);
     }
 
     /**
@@ -933,20 +954,8 @@ final class LabRequestSyncService
                 // result_status is stripped from every incoming update, so the STS cannot
                 // move a sample the lab has already decided about. This is the one branch
                 // that puts it back: a TB sample referred to this lab arrives as received.
-                //
-                // Not when the lab has cancelled it. A cancellation is the lab saying the
-                // sample will not be tested, and a later referral does not undo that -- it
-                // would reopen a sample nobody is going to test, which is the kind of thing
-                // a lab finds months later in a count it cannot explain.
-                if ($testType == 'tb' && isset($updatePayload['referred_to_lab_id'])) {
-                    $alreadyCancelled = (int) ($localRecord['result_status'] ?? 0) === CANCELLED;
-                    if (
-                        !$alreadyCancelled
-                        && ($updatePayload['lab_id'] == $updatePayload['referred_to_lab_id'])
-                        && ($updatePayload['referred_to_lab_id'] != $updatePayload['referred_by_lab_id'])
-                    ) {
-                        $updatePayload['result_status'] = RECEIVED_AT_TESTING_LAB;
-                    }
+                if ($testType == 'tb' && self::isReferredHereUndecided($incoming, $localRecord)) {
+                    $updatePayload['result_status'] = RECEIVED_AT_TESTING_LAB;
                 }
                 $this->db->where($primaryKeyName, $localRecord[$primaryKeyName]);
                 $res = $this->db->update($tableName, $updatePayload);
@@ -1007,6 +1016,37 @@ final class LabRequestSyncService
             'failure_reason' => $failureReason,
             'localRecord' => $resultRecord,
         ];
+    }
+
+    /**
+     * A TB sample the STS now shows referred to this lab (lab_id is the lab it was
+     * referred to, by a different lab), which the lab has not decided about yet: no
+     * status, received at the clinic, or referred away by this lab and now sent back.
+     *
+     * Never once the lab has tested, rejected, cancelled, held, failed, lost or
+     * expired it. A referral does not undo that: reopening a cancelled sample leaves
+     * a count nobody can explain months later.
+     *
+     * lab_id is compared as the STS sent it; it is not written on an update.
+     *
+     * @param array<string, mixed> $incoming
+     * @param array<string, mixed> $localRecord
+     */
+    public static function isReferredHereUndecided(array $incoming, array $localRecord): bool
+    {
+        $referredTo = $incoming['referred_to_lab_id'] ?? null;
+        if (empty($referredTo) || ($incoming['lab_id'] ?? null) != $referredTo) {
+            return false;
+        }
+        if ($referredTo == ($incoming['referred_by_lab_id'] ?? null)) {
+            return false;
+        }
+        $status = $localRecord['result_status'] ?? null;
+        if ($status === null || $status === '' || in_array((int) $status, [0, RECEIVED_AT_CLINIC], true)) {
+            return true;
+        }
+        // Referred away by this lab: the lab it referred from is the one it goes back to.
+        return (int) $status === REFERRED && $referredTo == ($localRecord['referred_by_lab_id'] ?? null);
     }
 
     /**
