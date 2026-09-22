@@ -92,7 +92,9 @@ try {
             $batchSize = 100;
             $offset = 0;
             $lockAfterDays = (int) ($general->getGlobalConfig('sample_lock_after_days') ?? 14);
-            $lockAfterDays = $lockAfterDays > 7 ? $lockAfterDays : 14;
+            // The settings form accepts 7 or more. Unset or 0 means the default of
+            // 14; anything below the minimum is raised to it rather than doubled.
+            $lockAfterDays = $lockAfterDays <= 0 ? 14 : max($lockAfterDays, 7);
 
             $statusCodes = [
                 REJECTED,
