@@ -28,10 +28,10 @@ $systemConfigFields = [
     'sup_password'
 ];
 
+// app_locale is edited under General Configuration, not on this form.
 $globalConfigFields = [
     'vl_form',
-    'default_time_zone',
-    'app_locale'
+    'default_time_zone'
 ];
 
 
@@ -51,6 +51,10 @@ try {
     }
 
     foreach ($globalConfigFields as $fieldName) {
+        // A setting this form did not send must keep its value, not become NULL.
+        if (!array_key_exists($fieldName, $_POST)) {
+            continue;
+        }
         $data = [
             'value' => $_POST[$fieldName] ?? null,
             'updated_datetime' => $currentDateTime

@@ -301,7 +301,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 						$classNames = trim((string) ($menu['additional_class_names'] ?? '' . ($menu['has_children'] == "yes" ? ' treeview' : '')));
 
 						if ($menu['is_header'] == 'yes') {
-							echo '<li class="header">' . $menu['display_text'];
+							echo '<li class="header">' . _translate($menu['display_text']);
 						} else {
 							?>
 

@@ -53,7 +53,10 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
 
    // Without a PDF that resolves to a real file there is nothing to send; queueing
    // the row would leave a job the mail sender never picks up.
-   $storeMail = $tempMailData['attachment'] !== null && $db->insert('temp_mail', $tempMailData);
+   // Only approved or rejected results may go out, whatever the browser posted.
+   $storeMail = $tempMailData['attachment'] !== null
+      && $testResult->canEmailResults($tempMailData['test_type'], $tempMailData['samples'])
+      && $db->insert('temp_mail', $tempMailData);
 
    if ($storeMail) {
       $updateInfo = $testResult->updateEmailTestResultsInfo('eid', $tempMailData);
