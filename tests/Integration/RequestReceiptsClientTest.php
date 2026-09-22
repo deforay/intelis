@@ -8,6 +8,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\ApiService;
 use App\Services\CommonService;
 use App\Services\RequestReceiptsClient;
+use App\Services\STS\RequestReceiptsService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -123,6 +124,24 @@ final class RequestReceiptsClientTest extends TestCase
 
         self::assertFalse($client->send('https://sts.test', 7, 'vl', ['u-1'], []));
         self::assertSame(0, self::outboxCount(), 'sending it again would get the same answer');
+    }
+
+    #[RunInSeparateProcess]
+    public function testARefusedReceiptInTheOutboxIsDroppedButNotCountedAsDelivered(): void
+    {
+        // Two kept while the STS was down; once it is back it refuses the first.
+        $client = $this->client([503, 503, 400, 200]);
+        self::assertFalse($client->send('https://sts.test', 7, 'vl', ['u-1'], []));
+        self::assertFalse($client->send('https://sts.test', 7, 'vl', ['u-2'], []));
+
+        self::assertSame(1, $client->flushOutbox('https://sts.test'));
+        self::assertSame(0, self::outboxCount());
+    }
+
+    public function testTheLabsReceiptSizeStaysUnderTheStsCap(): void
+    {
+        // The STS refuses a larger receipt with 400, and a refused receipt is not kept.
+        self::assertLessThan(RequestReceiptsService::MAX_IDS, RequestReceiptsClient::MAX_IDS_PER_RECEIPT);
     }
 
     public function testALargeReceiptIsSplitBelowTheStsCap(): void
