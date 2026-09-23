@@ -18,9 +18,9 @@ use const COUNTRY\RWANDA;
 /**
  * GeneXpert MTB/RIF Ultra results reaching TB samples, pooled or not.
  *
- * The per-test form (one tb_tests row per test) is saved by deleting and
- * recreating those rows, so an import only ever adds a row and recognises its own
- * rows by their content. The single-result forms keep the Xpert result on form_tb.
+ * On the per-test form (one tb_tests row per test) an import only ever adds a row,
+ * and recognises its own rows by their content, which is what survives a save of
+ * the result page. The single-result forms keep the Xpert result on form_tb.
  * Neither ever writes the final interpretation or the sample's status.
  *
  * A pool is one run whose sample ID lists its members. It is applied whole or not
@@ -224,6 +224,37 @@ final class InterfacingTbImportTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testAnXpertRunAfterEveryOtherTestBecomesTheSamplesLatestTest(): void
+    {
+        // As the result page leaves a sample whose latest test is the smear.
+        $tbId = $this->seedTb([
+            'lab_assigned_code' => '0734',
+            'sample_tested_datetime' => '2026-09-17 09:00:00',
+            'tested_by' => 'smear-reader',
+            'result_reviewed_by' => 'smear-reviewer',
+        ]);
+        LegacyAppHarness::db()->insert('tb_tests', [
+            'tb_id' => $tbId,
+            'lab_id' => 1,
+            'test_type' => 'Smear Microscopy',
+            'test_result' => 'Negative',
+            'sample_tested_datetime' => '2026-09-17 09:00:00',
+            'tested_by' => 'smear-reader',
+            'result_reviewed_by' => 'smear-reviewer',
+        ]);
+
+        $outcome = $this->service(RWANDA)->importResult($this->ultra('0734', 'NOT DETECTED'), 1);
+
+        self::assertSame('updated', $outcome['reason']);
+        $sample = $this->sample($tbId);
+        self::assertSame('2026-09-18 19:34:31', $sample['sample_tested_datetime']);
+        self::assertNotSame('smear-reader', $sample['tested_by']);
+        // Not reviewed yet: the smear's reviewer is not this test's.
+        self::assertNull($sample['result_reviewed_by']);
+        self::assertSame('interface', $sample['import_machine_file_name']);
+    }
+
+    #[RunInSeparateProcess]
     public function testAnXpertRunIsRecordedAfterALaterSmearWithoutTakingOverTheSample(): void
     {
         // The smear was entered first; the GeneXpert run reached VLSM later.
@@ -234,11 +265,19 @@ final class InterfacingTbImportTest extends TestCase
                 'tested_by' => 'smear-reader'
             ]
         );
+        LegacyAppHarness::db()->insert('tb_tests', [
+            'tb_id' => $tbId,
+            'lab_id' => 1,
+            'test_type' => 'Smear Microscopy',
+            'test_result' => 'Negative',
+            'sample_tested_datetime' => '2026-09-20 09:00:00',
+            'tested_by' => 'smear-reader',
+        ]);
 
         $outcome = $this->service(RWANDA)->importResult($this->ultra('0733', 'NOT DETECTED'), 1);
 
         self::assertSame('updated', $outcome['reason']);
-        self::assertSame(['MTB not detected'], array_column($this->tests($tbId), 'test_result'));
+        self::assertSame(['Negative', 'MTB not detected'], array_column($this->tests($tbId), 'test_result'));
         $sample = $this->sample($tbId);
         self::assertSame(
             '2026-09-20 09:00:00',

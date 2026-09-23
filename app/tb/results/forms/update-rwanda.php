@@ -906,6 +906,7 @@ if ($isLisInstance) {
                                         </div>
                                     <?php } ?>
                                 </div>
+                                <div id="deletedTestIds"></div>
                                 <div class="controls test-controls" style="margin-top: 20px;">
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+
                                         <?php echo _translate("Add Test"); ?></button>
@@ -1325,6 +1326,16 @@ if ($isLisInstance) {
             const container = document.getElementById('testSections');
             const lastSection = container.querySelector('.test-section:last-child');
             if (lastSection) {
+                // A saved test is deleted only because its card was removed here:
+                // send its id. A test not on this page is never touched.
+                const savedTestId = $(lastSection).find('input[name="testResult[testId][]"]').val() || '';
+                if (savedTestId.trim() !== '') {
+                    $('#deletedTestIds').append($('<input>', {
+                        type: 'hidden',
+                        name: 'deletedTestIds[]',
+                        value: savedTestId.trim()
+                    }));
+                }
                 lastSection.remove();
                 testCount--;
                 updateRemoveButtonVisibility();

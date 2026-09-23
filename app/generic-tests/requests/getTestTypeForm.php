@@ -307,6 +307,7 @@ if (!empty($testResultsAttribute)) {
                         $resultSection .= $general->generateSelectOptions($testMethods, $row['test_name'], '-- Select --');
                         $resultSection .= '</select>
                                         <input type="text" name="testNameOther[' . $subTest . '][]" id="testNameOther' . $key . $i . '" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+                                        <input type="hidden" name="testRowId[' . $subTest . '][]" value="' . (int) $row['test_id'] . '" />
                                 </td>
                                 <td><input type="text" value="' . DateUtility::humanReadableDateFormat($row['sample_tested_datetime'], true) . '" name="testDate[' . $subTest . '][]" id="testDate' . $key . $i . '" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ' . $i . '" /></td>
                                 <td>
@@ -356,6 +357,7 @@ if (!empty($testResultsAttribute)) {
                 $resultSection .= $general->generateSelectOptions($testMethods, $row['test_name'], '-- Select --');
                 $resultSection .= '</select>
                                 <input type="text" name="testNameOther[' . $subTest . '][]" id="testNameOther' . $key . $n . '" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+                                <input type="hidden" name="testRowId[' . $subTest . '][]" value="" />
                         </td>
                         <td><input type="text" name="testDate[' . $subTest . '][]" id="testDate' . $key . $n . '" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ' . $n . '" /></td>
                         <td>
