@@ -2185,6 +2185,29 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<label for="tb_interface_release_negative_pools"
+														class="col-lg-4 control-label"><?php echo _translate("Record a negative GeneXpert pool on every sample in it"); ?></label>
+													<div class="col-lg-4">
+														<select id="tb_interface_release_negative_pools"
+															name="tb_interface_release_negative_pools" type="text"
+															class="form-control readPage"
+															title="<?php echo _translate('Please choose whether a negative GeneXpert pool is recorded on every sample in it'); ?>">
+															<option value="no" <?php echo (($arr['tb_interface_release_negative_pools'] ?? 'no') !== 'yes') ? "selected='selected'" : ''; ?>>
+																<?php echo _translate("No"); ?>
+															</option>
+															<option value="yes" <?php echo (($arr['tb_interface_release_negative_pools'] ?? '') === 'yes') ? "selected='selected'" : ''; ?>>
+																<?php echo _translate("Yes"); ?>
+															</option>
+														</select>
+														<small class="help-block"><?php echo _translate("Only if your programme accepts pooled testing for release. A pool that is not negative is never recorded; test its samples one by one."); ?></small>
+													</div>
+												</div>
+											</div>
+										</div>
+
 									</div>
 								</div>
 							<?php }
