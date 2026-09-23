@@ -8,3 +8,15 @@
 -- On a lab config_machine_id stays unique; its index keeps AUTO_INCREMENT working.
 ALTER TABLE `instrument_machines` ADD INDEX `idx_instrument_machines_config_machine_id` (`config_machine_id`);
 ALTER TABLE `instrument_machines` DROP PRIMARY KEY, ADD PRIMARY KEY (`instrument_id`, `config_machine_id`);
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

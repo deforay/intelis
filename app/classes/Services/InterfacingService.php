@@ -7,9 +7,11 @@ namespace App\Services;
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;
 use App\Utilities\MiscUtility;
+use RuntimeException;
 use Throwable;
 
 use const COUNTRY\CAMEROON;
+use const COUNTRY\RWANDA;
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\TEST_FAILED;
@@ -124,6 +126,21 @@ final class InterfacingService
         }
 
         $scopedLabId = $scopeToLab ? $labId : null;
+
+        // A TB result is only ever looked for among TB samples. The codes a GeneXpert
+        // reports are often a lab's own register numbers, which a VL or EID sample can
+        // carry too.
+        if ($this->isTbTest($row)) {
+            return $this->importTbResult(
+                $row,
+                $orderId,
+                $testId,
+                $labId,
+                $includeLocked,
+                $updateModifiedTime,
+                $scopedLabId
+            );
+        }
 
         $sample = $this->findSample($orderId, $testId, $includeLocked, $scopedLabId);
         if ($sample === null) {
@@ -251,7 +268,7 @@ final class InterfacingService
         // 1 dealt with, 2 will not apply, 0 leave for the next run.
         [$outcome, $syncStatus] = match ($reason) {
             'updated' => ['accepted', 1],
-            'already_up_to_date' => ['unchanged', 1],
+            'already_up_to_date', 'newer_result_on_record' => ['unchanged', 1],
             'update_failed' => ['retry', 0],
             default => ['rejected', 2],
         };
@@ -304,13 +321,18 @@ final class InterfacingService
     /**
      * Searches every active test table for the sample this result belongs to.
      *
-     * @return array{table: string, primaryKey: string, row: array<string, mixed>}|null
+     * With `$onlyTable` the search is confined to that table and a code that more than
+     * one sample carries matches none of them: the result comes back with `ambiguous`
+     * set and no row.
+     *
+     * @return array{table: string, primaryKey: string, row: array<string, mixed>|null, ambiguous?: bool}|null
      */
     private function findSample(
         string $orderId,
         string $testId,
         bool $includeLocked,
-        ?int $restrictToLabId = null
+        ?int $restrictToLabId = null,
+        ?string $onlyTable = null
     ): ?array {
         // NOTE: the pairing is carried over from bin/interface.php so that moving this
         // lookup did not change which samples match: sample_code gets order_id,
@@ -344,6 +366,10 @@ final class InterfacingService
         }
 
         foreach ($this->activeModules() as $primaryKey => $table) {
+            if ($onlyTable !== null && $table !== $onlyTable) {
+                continue;
+            }
+
             $conditions = [];
             $params = $codeParams;
 
@@ -364,6 +390,17 @@ final class InterfacingService
             }
 
             $conditions = implode(' AND ', $conditions);
+
+            if ($onlyTable !== null) {
+                $matches = $this->db->connection('default')->rawQuery(
+                    "SELECT * FROM $table WHERE $conditions LIMIT 2",
+                    $params
+                ) ?: [];
+                if (count($matches) > 1) {
+                    return ['table' => $table, 'primaryKey' => $primaryKey, 'row' => null, 'ambiguous' => true];
+                }
+                return $matches === [] ? null : ['table' => $table, 'primaryKey' => $primaryKey, 'row' => $matches[0]];
+            }
 
             $existing = $this->db->connection('default')->rawQueryOne(
                 "SELECT * FROM $table WHERE $conditions",
@@ -610,6 +647,526 @@ final class InterfacingService
         }
 
         return $data;
+    }
+
+    // -----------------------------------------------------------------
+    // TB (GeneXpert MTB/RIF and MTB/RIF Ultra)
+    // -----------------------------------------------------------------
+
+    /**
+     * The MTB/RIF Ultra results the per-test result form offers, exactly as it
+     * lists them (app/tb/results/forms/update-rwanda.php and the request forms).
+     * A result the form cannot show is not written.
+     */
+    private const PER_TEST_FORM_ULTRA_RESULTS = [
+        'MTB not detected',
+        'MTB detected TRACE/RIF indeterminate',
+        'MTB Detected Very Low/RIF not detected',
+        'MTB Detected Very Low/RIF detected',
+        'MTB Detected Low/RIF not detected',
+        'MTB Detected Low/RIF detected',
+        'MTB Detected Medium/RIF Not Detected',
+        'MTB Detected Medium/RIF Detected',
+        'MTB Detected High/RIF Not Detected',
+        'MTB Detected High/RIF Detected',
+        'No result/ invalid',
+    ];
+
+    private const PER_TEST_FORM_ULTRA_TEST_TYPE = 'MTB/ RIF Ultra';
+
+    /** @var array<string, int>|null Xpert code (N, T, TI, RR, TT, I) => r_tb_results id */
+    private ?array $xpertResultIds = null;
+    private ?bool $releaseNegativePools = null;
+
+    /** @param array<string, mixed> $row */
+    private function isTbTest(array $row): bool
+    {
+        // UV2 and MTBXDR are the host test codes GeneXpert ships with; over HL7 the
+        // assay name comes through instead ("MTB-RIF_ULTRA").
+        return preg_match('/UV2|MTB|XDR/i', (string) ($row['test_type'] ?? '')) === 1;
+    }
+
+    /**
+     * What an MTB/RIF or MTB/RIF Ultra result says, read from what the Interfacing
+     * Tool stores: the first outcome that has a value as the result ("DETECTED LOW",
+     * "MTB Trace DETECTED", "NOT DETECTED", "ERROR") and the rest in the notes
+     * ("RIF Resistance NOT DETECTED").
+     *
+     * null when the result cannot be read. A detected result without its rifampicin
+     * reading is one of them: rows stored before Interfacing Tool 4.7.0 carry no
+     * notes, and a guess at resistance is worse than a result entered by hand.
+     *
+     * @return array{mtb: 'not_detected'|'detected'|'trace'|'invalid', level: ?string, rif: ?string}|null
+     */
+    public static function readXpertMtbRif(mixed $result, mixed $notes): ?array
+    {
+        $value = strtoupper(trim((string) preg_replace('/\s+/', ' ', (string) $result)));
+
+        if ($value === 'NOT DETECTED') {
+            return ['mtb' => 'not_detected', 'level' => null, 'rif' => null];
+        }
+        if ($value === 'MTB TRACE DETECTED' || $value === 'TRACE DETECTED') {
+            // Ultra cannot read rifampicin resistance on a trace result.
+            return ['mtb' => 'trace', 'level' => null, 'rif' => 'indeterminate'];
+        }
+        if (in_array($value, ['ERROR', 'INVALID', 'NO RESULT', 'FAILED', 'FAIL'], true)) {
+            return ['mtb' => 'invalid', 'level' => null, 'rif' => null];
+        }
+        if (preg_match('/^DETECTED(?: (VERY LOW|LOW|MEDIUM|HIGH))?$/', $value, $detected) !== 1) {
+            return null;
+        }
+        if (preg_match('/RIF RESISTANCE (NOT DETECTED|INDETERMINATE|DETECTED)\b/i', (string) $notes, $rif) !== 1) {
+            return null;
+        }
+
+        return [
+            'mtb' => 'detected',
+            'level' => isset($detected[1]) ? ucwords(strtolower($detected[1])) : null,
+            'rif' => str_replace(' ', '_', strtolower($rif[1])),
+        ];
+    }
+
+    /**
+     * The result as the per-test form lists it, or null when the form has no entry
+     * for it (MTB detected with rifampicin resistance indeterminate, or no level).
+     *
+     * @param array{mtb: string, level: ?string, rif: ?string} $reading
+     */
+    public static function perTestFormUltraResult(array $reading): ?string
+    {
+        $wanted = match ($reading['mtb']) {
+            'not_detected' => 'MTB not detected',
+            'trace' => 'MTB detected TRACE/RIF indeterminate',
+            'invalid' => 'No result/ invalid',
+            default => match (true) {
+                $reading['level'] === null => null,
+                $reading['rif'] === 'not_detected' => "MTB Detected {$reading['level']}/RIF not detected",
+                $reading['rif'] === 'detected' => "MTB Detected {$reading['level']}/RIF detected",
+                default => null,
+            },
+        };
+        if ($wanted === null) {
+            return null;
+        }
+
+        // The form's own wording, whose capitalisation varies from line to line.
+        foreach (self::PER_TEST_FORM_ULTRA_RESULTS as $listed) {
+            if (strcasecmp($listed, $wanted) === 0) {
+                return $listed;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * The Xpert code the single-result forms record (r_tb_results, result_type x-pert).
+     *
+     * @param array{mtb: string, level: ?string, rif: ?string} $reading
+     */
+    public static function xpertResultCode(array $reading): ?string
+    {
+        return match ($reading['mtb']) {
+            'not_detected' => 'N',
+            'trace' => 'TT',
+            'invalid' => 'I',
+            default => match ($reading['rif']) {
+                'not_detected' => 'T',
+                'indeterminate' => 'TI',
+                'detected' => 'RR',
+                default => null,
+            },
+        };
+    }
+
+    /**
+     * The sample codes in a pooled run: a GeneXpert pool is one test whose sample ID
+     * lists its members, separated by commas.
+     *
+     * @return list<string>
+     */
+    public static function poolMembers(string $orderId): array
+    {
+        $members = array_filter(array_map('trim', explode(',', $orderId)), static fn(string $m): bool => $m !== '');
+        return array_values(array_unique($members));
+    }
+
+    /**
+     * @param array<string, mixed> $row
+     * @return array{synced: bool, updated: bool, table: ?string, reason: string}
+     */
+    private function importTbResult(
+        array $row,
+        string $orderId,
+        string $testId,
+        int $labId,
+        bool $includeLocked,
+        bool $updateModifiedTime,
+        ?int $scopedLabId
+    ): array {
+        if (!in_array('form_tb', $this->activeModules(), true)) {
+            return $this->outcome(false, false, null, 'unsupported_test_type');
+        }
+
+        // MTB/XDR reports one outcome per drug, and neither result form has a place
+        // for most of them yet.
+        if (stripos((string) ($row['test_type'] ?? ''), 'XDR') !== false) {
+            return $this->outcome(false, false, 'form_tb', 'unsupported_tb_test');
+        }
+
+        $reading = self::readXpertMtbRif($row['results'] ?? null, $row['notes'] ?? null);
+        if ($reading === null) {
+            return $this->outcome(false, false, 'form_tb', 'unreadable_tb_result');
+        }
+
+        $members = self::poolMembers($orderId !== '' ? $orderId : $testId);
+        if (count($members) <= 1) {
+            $code = $members[0] ?? $orderId;
+            $sample = $this->findSample(
+                $code,
+                $orderId === '' ? $code : $testId,
+                $includeLocked,
+                $scopedLabId,
+                'form_tb'
+            );
+            if ($sample === null) {
+                return $this->outcome(false, false, null, 'no_matching_sample');
+            }
+            if (!empty($sample['ambiguous'])) {
+                return $this->outcome(false, false, 'form_tb', 'ambiguous_sample');
+            }
+            return $this->writeTbResult($row, $sample, $reading, null, $labId, $updateModifiedTime);
+        }
+
+        // A pool is applied whole or not at all: every member has to be one known
+        // sample before anything is written.
+        $samples = [];
+        foreach ($members as $member) {
+            $sample = $this->findSample($member, $member, $includeLocked, $scopedLabId, 'form_tb');
+            if ($sample === null) {
+                return $this->outcome(false, false, 'form_tb', 'pool_member_not_found');
+            }
+            if (!empty($sample['ambiguous'])) {
+                return $this->outcome(false, false, 'form_tb', 'pool_member_ambiguous');
+            }
+            $samples[$member] = $sample;
+        }
+        $tbIds = array_map(static fn(array $s): mixed => $s['row']['tb_id'], $samples);
+        if (count(array_unique($tbIds)) !== count($tbIds)) {
+            return $this->outcome(false, false, 'form_tb', 'pool_member_ambiguous');
+        }
+
+        // Anything but a negative pool means each member is tested on its own, and
+        // those results arrive as rows of their own.
+        if ($reading['mtb'] === 'invalid') {
+            return $this->outcome(false, false, 'form_tb', 'pool_invalid_retest');
+        }
+        if ($reading['mtb'] !== 'not_detected') {
+            return $this->outcome(false, false, 'form_tb', 'pool_positive_test_individually');
+        }
+        if (!$this->releaseNegativePools()) {
+            return $this->outcome(false, false, 'form_tb', 'pool_release_off');
+        }
+
+        // Anything that would stop one member being recorded stops the pool. A member
+        // that already has a later Xpert run of its own is only passed over.
+        foreach ($samples as $sample) {
+            $refusal = $this->tbRefusal($row, $sample['row'], $reading);
+            if ($refusal !== null && !$refusal['synced']) {
+                return $this->outcome(false, false, 'form_tb', 'pool_member_' . $refusal['reason']);
+            }
+        }
+
+        $updated = false;
+        foreach ($samples as $member => $sample) {
+            $others = array_values(array_diff($members, [$member]));
+            $note = 'Pooled with ' . implode(', ', $others) . ': pool NOT DETECTED';
+            $outcome = $this->writeTbResult($row, $sample, $reading, $note, $labId, $updateModifiedTime);
+            if ($outcome['reason'] === 'update_failed') {
+                // Thrown rather than returned, so the caller rolls back the members
+                // already written instead of committing part of the pool.
+                throw new RuntimeException("Could not record pool $orderId on sample $member");
+            }
+            $updated = $updated || $outcome['updated'];
+        }
+
+        return $this->outcome(true, $updated, 'form_tb', $updated ? 'updated' : 'already_up_to_date');
+    }
+
+    /**
+     * Records one Xpert result on one TB sample. The final interpretation
+     * (form_tb.result) and the sample's status are the clinician's and are never
+     * written here.
+     *
+     * @param array<string, mixed> $row
+     * @param array{table: string, primaryKey: string, row: array<string, mixed>} $sample
+     * @param array{mtb: string, level: ?string, rif: ?string} $reading
+     * @return array{synced: bool, updated: bool, table: ?string, reason: string}
+     */
+    private function writeTbResult(
+        array $row,
+        array $sample,
+        array $reading,
+        ?string $poolNote,
+        int $labId,
+        bool $updateModifiedTime
+    ): array {
+        $existing = $sample['row'];
+        $tbId = (int) $existing['tb_id'];
+
+        $refusal = $this->tbRefusal($row, $existing, $reading);
+        if ($refusal !== null) {
+            return $refusal;
+        }
+        $testedAt = (string) $this->tbTestedAt($row);
+
+        $instrument = $this->findInstrument($row['instrument_id'] ?? $row['machine_used'] ?? null);
+        $testedBy = $this->usersService->getOrCreateUser($this->testerName($row));
+        $comment = $poolNote;
+        if ($reading['mtb'] === 'invalid' && trim((string) ($row['notes'] ?? '')) !== '') {
+            $comment = trim(($comment ?? '') . ' ' . trim((string) $row['notes']));
+        }
+
+        $formData = [
+            'sample_tested_datetime' => $testedAt,
+            'tested_by' => $testedBy === null ? null : (string) $testedBy,
+            'instrument_id' => isset($instrument['instrument_id']) ? (string) $instrument['instrument_id'] : null,
+            'tb_test_platform' => $instrument['machine_name'] ?? $row['machine_used'] ?? null,
+            'manual_result_entry' => 'no',
+            'import_machine_file_name' => 'interface',
+        ];
+        // A sample referred in from another lab keeps that lab, as on the result page.
+        if (empty($existing['lab_id'])) {
+            $formData['lab_id'] = (string) $labId;
+        }
+        // The sample's tested date, tester and platform are those of its latest test
+        // of any kind. A run older than that is still recorded but leaves them alone.
+        $recordedAt = trim((string) ($existing['sample_tested_datetime'] ?? ''));
+        if ($recordedAt !== '' && substr($testedAt, 0, 16) < substr($recordedAt, 0, 16)) {
+            $formData = array_intersect_key($formData, ['lab_id' => true]);
+        }
+
+        if ($this->formId() === RWANDA) {
+            return $this->writeTbTestRow(
+                $existing,
+                $reading,
+                $comment,
+                $formData,
+                $testedAt,
+                $testedBy === null ? null : (string) $testedBy,
+                $labId,
+                $updateModifiedTime
+            );
+        }
+
+        $code = self::xpertResultCode($reading);
+        $resultId = $code === null ? null : ($this->xpertResultIds()[$code] ?? null);
+        if ($resultId === null) {
+            return $this->outcome(false, false, 'form_tb', 'tb_result_not_on_form');
+        }
+
+        $data = $formData + [
+            'xpert_mtb_result' => (string) $resultId,
+            'xpert_result_date' => substr($testedAt, 0, 10),
+        ];
+        // The lab's own comments are never overwritten.
+        if ($comment !== null && trim((string) ($existing['lab_tech_comments'] ?? '')) === '') {
+            $data['lab_tech_comments'] = $comment;
+        }
+
+        if (MiscUtility::isArrayEqual($data, $existing)) {
+            return $this->outcome(true, false, 'form_tb', 'already_up_to_date');
+        }
+
+        $this->attempts()->archive('tb', $tbId, TestAttemptService::BY_INTERFACE);
+
+        $data['data_sync'] = 0;
+        if ($updateModifiedTime) {
+            $data['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+        }
+
+        $this->db->connection('default')->where('tb_id', $tbId);
+        $updated = $this->db->connection('default')->update('form_tb', $data) === true;
+
+        return $this->outcome($updated, $updated, 'form_tb', $updated ? 'updated' : 'update_failed');
+    }
+
+    /**
+     * Why this run cannot be recorded on this sample, or null when it can.
+     *
+     * An outcome with `synced` true is not a failure: the sample already has a later
+     * Xpert run, so this one is passed over. Everything else is left for the lab,
+     * and a pool with any member in that state is not recorded at all.
+     *
+     * @param array<string, mixed> $row
+     * @param array<string, mixed> $existing
+     * @param array{mtb: string, level: ?string, rif: ?string} $reading
+     * @return array{synced: bool, updated: bool, table: ?string, reason: string}|null
+     */
+    private function tbRefusal(array $row, array $existing, array $reading): ?array
+    {
+        if (($existing['is_sample_rejected'] ?? null) === 'yes') {
+            return $this->outcome(false, false, 'form_tb', 'sample_rejected');
+        }
+        // Once the clinician has written the final interpretation, a result that
+        // arrives after it is theirs to weigh, not ours to slip in underneath.
+        if (trim((string) ($existing['result'] ?? '')) !== '') {
+            return $this->outcome(false, false, 'form_tb', 'result_finalized');
+        }
+
+        $testedAt = $this->tbTestedAt($row);
+        if ($testedAt === null) {
+            return $this->outcome(false, false, 'form_tb', 'no_test_datetime');
+        }
+
+        if ($this->formId() === RWANDA) {
+            if (self::perTestFormUltraResult($reading) === null) {
+                return $this->outcome(false, false, 'form_tb', 'tb_result_not_on_form');
+            }
+            // Against the sample's Xpert runs only: a smear entered later says
+            // nothing about whether this run is still to be recorded.
+            $latest = $this->db->connection('default')->rawQueryOne(
+                "SELECT DATE_FORMAT(MAX(sample_tested_datetime), '%Y-%m-%d %H:%i') AS latest
+                    FROM tb_tests WHERE tb_id = ? AND test_type = ?",
+                [(int) $existing['tb_id'], self::PER_TEST_FORM_ULTRA_TEST_TYPE]
+            );
+            $latest = (string) ($latest['latest'] ?? '');
+            if ($latest !== '' && substr($testedAt, 0, 16) < $latest) {
+                return $this->outcome(true, false, 'form_tb', 'newer_result_on_record');
+            }
+            return null;
+        }
+
+        $code = self::xpertResultCode($reading);
+        $resultId = $code === null ? null : ($this->xpertResultIds()[$code] ?? null);
+        if ($resultId === null) {
+            return $this->outcome(false, false, 'form_tb', 'tb_result_not_on_form');
+        }
+
+        // The single-result forms hold one Xpert result, and the attempt history
+        // keeps nothing of it until there is a final interpretation. So a recorded
+        // result is only ever replaced when it was I (invalid, error or no result)
+        // and this is the retest; any other difference is the lab's to resolve.
+        $recorded = trim((string) ($existing['xpert_mtb_result'] ?? ''));
+        if ($recorded === '' || $recorded === (string) $resultId) {
+            return null;
+        }
+        if ($recorded !== (string) ($this->xpertResultIds()['I'] ?? '')) {
+            return $this->outcome(false, false, 'form_tb', 'xpert_result_on_record');
+        }
+        $recordedOn = trim((string) ($existing['xpert_result_date'] ?? ''));
+        if ($recordedOn !== '' && substr($testedAt, 0, 10) < $recordedOn) {
+            return $this->outcome(true, false, 'form_tb', 'newer_result_on_record');
+        }
+        return null;
+    }
+
+    /** @param array<string, mixed> $row */
+    private function tbTestedAt(array $row): ?string
+    {
+        return DateUtility::getDateTime(
+            (string) (($row['result_accepted_date_time'] ?? null) ?: ($row['analysed_date_time'] ?? ''))
+        );
+    }
+
+    /**
+     * The per-test form keeps each test as a tb_tests row. The result page deletes
+     * and recreates those rows from what it posts, so an import only ever adds one:
+     * it never rewrites or removes a row the lab has seen.
+     *
+     * Whether a run is already recorded is decided by the row's own content -- the
+     * test type and when it was tested, to the minute -- because that is what
+     * survives a save of the result page, which keeps no column of ours and
+     * drops the seconds.
+     *
+     * @param array<string, mixed> $existing
+     * @param array{mtb: string, level: ?string, rif: ?string} $reading
+     * @param array<string, mixed> $formData
+     * @return array{synced: bool, updated: bool, table: ?string, reason: string}
+     */
+    private function writeTbTestRow(
+        array $existing,
+        array $reading,
+        ?string $comment,
+        array $formData,
+        string $testedAt,
+        ?string $testedBy,
+        int $labId,
+        bool $updateModifiedTime
+    ): array {
+        $tbId = (int) $existing['tb_id'];
+        $testResult = (string) self::perTestFormUltraResult($reading);
+
+        $db = $this->db->connection('default');
+        $recorded = $db->rawQueryOne(
+            "SELECT tb_test_id FROM tb_tests
+                WHERE tb_id = ? AND test_type = ?
+                AND DATE_FORMAT(sample_tested_datetime, '%Y-%m-%d %H:%i') = ?",
+            [$tbId, self::PER_TEST_FORM_ULTRA_TEST_TYPE, substr($testedAt, 0, 16)]
+        );
+        if (!empty($recorded)) {
+            // Also when the lab has since changed that row's result: theirs stands.
+            return $this->outcome(true, false, 'form_tb', 'already_up_to_date');
+        }
+
+        $inserted = $db->insert('tb_tests', [
+            'tb_id' => $tbId,
+            'lab_id' => $labId,
+            'specimen_type' => $existing['specimen_type'] ?? null,
+            'sample_received_at_lab_datetime' => $existing['sample_received_at_lab_datetime'] ?? null,
+            'test_type' => self::PER_TEST_FORM_ULTRA_TEST_TYPE,
+            'test_result' => $testResult,
+            'sample_tested_datetime' => $testedAt,
+            'tested_by' => $testedBy,
+            'comments' => $comment,
+            'updated_datetime' => DateUtility::getCurrentDateTime(),
+        ]);
+        if (!$inserted) {
+            return $this->outcome(false, false, 'form_tb', 'update_failed');
+        }
+
+        // form_tb carries the latest test's details, as the result page leaves them.
+        $formData['data_sync'] = 0;
+        if ($updateModifiedTime) {
+            $formData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+        }
+        $db->where('tb_id', $tbId);
+        if ($db->update('form_tb', $formData) !== true) {
+            throw new RuntimeException("Recorded a TB test on sample $tbId but could not update the sample");
+        }
+
+        return $this->outcome(true, true, 'form_tb', 'updated');
+    }
+
+    /** @return array<string, int> */
+    private function xpertResultIds(): array
+    {
+        if ($this->xpertResultIds === null) {
+            $this->xpertResultIds = [];
+            // By the code each entry starts with rather than by id: ids are
+            // AUTO_INCREMENT and differ between installs. Only what the forms list
+            // as Xpert results: an entry filed under another type (RR was, before
+            // 5.7.79, and an STS that has not upgraded sends it back that way) is
+            // not shown on the form, and its next save would blank it.
+            $rows = $this->db->connection('default')->rawQuery(
+                "SELECT result_id, result FROM r_tb_results
+                    WHERE status = 'active' AND result_type = 'x-pert'
+                    AND result REGEXP '^(N|T|TI|RR|TT|I) \\\\('
+                    ORDER BY result_id ASC"
+            ) ?: [];
+            foreach ($rows as $result) {
+                $code = strstr((string) $result['result'], ' (', true);
+                $this->xpertResultIds[$code] ??= (int) $result['result_id'];
+            }
+        }
+
+        return $this->xpertResultIds;
+    }
+
+    private function releaseNegativePools(): bool
+    {
+        return $this->releaseNegativePools ??= $this->commonService->getGlobalConfig(
+            'tb_interface_release_negative_pools'
+        ) === 'yes';
     }
 
     // -----------------------------------------------------------------

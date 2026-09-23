@@ -1087,7 +1087,8 @@ if ($isLisInstance) {
             "MTB Detected Medium/RIF Not Detected",
             "MTB Detected Medium/RIF Detected",
             "MTB Detected High/RIF Not Detected",
-            "MTB Detected High/RIF Detected"
+            "MTB Detected High/RIF Detected",
+            "No result/ invalid"
         ],
         "MTB/ XDR (if RIF detected)": [
             "XDR not detected",
