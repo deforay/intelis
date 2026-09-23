@@ -325,7 +325,33 @@ final class GenericTestsService extends AbstractTestService
         }
         $this->commonService->assertFacilityAllowed($targetFacilityId);
 
-        $tr = $post['testResult'];
+        // An edit that only removes saved tests posts deletedTestIds[] and no cards.
+        $tr = (array) ($post['testResult'] ?? []);
+        $cardLabIds = (array) ($tr['labId'] ?? []);
+
+        // The rows, the sample's summary of them and the kept copy of the result they
+        // replace are one change: all of it lands or none of it does.
+        $this->db->beginTransaction();
+        try {
+            $this->writeMultiTestResults($sampleId, $post, $userId, $tr, $cardLabIds);
+            $this->db->commitTransaction();
+        } catch (Throwable $e) {
+            $this->db->rollbackTransaction();
+            throw $e;
+        }
+    }
+
+    /**
+     * @param array<string, mixed> $tr         The posted testResult[field][] arrays.
+     * @param array<int, mixed>    $cardLabIds testResult[labId][]
+     */
+    private function writeMultiTestResults(int $sampleId, array $post, string $userId, array $tr, array $cardLabIds): void
+    {
+        $tableName = 'form_generic';
+        $testTableName = 'generic_test_results';
+
+        // The result these cards replace is kept first, as on every other result edit.
+        (new TestAttemptService($this->db))->archive('generic-tests', $sampleId, TestAttemptService::BY_RESULT_EDIT);
 
         // Existing rows keyed by test_id -- drives three things: server-side accumulation of
         // the per-test change history (cannot be spoofed by the client), upserting each card
@@ -335,16 +361,8 @@ final class GenericTestsService extends AbstractTestService
             $existingById[(string) $r['test_id']] = $r;
         }
 
-        $lastValidIndex = -1;
-        foreach ($tr['labId'] as $k => $labId) {
-            if (!empty($labId)) {
-                $lastValidIndex = $k;
-            }
-        }
-
-        $latestRow = [];
         $keptIds = [];   // existing test_ids updated in place this save (so we never delete them)
-        foreach ($tr['labId'] as $k => $labId) {
+        foreach ($cardLabIds as $k => $labId) {
             if (empty($labId)) {
                 continue;
             }
@@ -395,13 +413,14 @@ final class GenericTestsService extends AbstractTestService
             // No blanket delete -- a card the user did not touch is updated, never recreated.
             if ($isExisting) {
                 $this->db->where('test_id', (int) $submittedTestId);
-                $this->db->update($testTableName, $row);
+                $this->db->where('generic_id', $sampleId);
+                $written = $this->db->update($testTableName, $row);
                 $keptIds[$submittedTestId] = true;
             } else {
-                $this->db->insert($testTableName, $row);
+                $written = $this->db->insert($testTableName, $row);
             }
-            if ($k === $lastValidIndex) {
-                $latestRow = $row;
+            if (!$written) {
+                throw new SystemException("Could not save a test on sample $sampleId: " . $this->db->getLastError(), 500);
             }
         }
 
@@ -414,10 +433,22 @@ final class GenericTestsService extends AbstractTestService
             if ($delId === '' || !isset($existingById[$delId]) || isset($keptIds[$delId])) {
                 continue;
             }
-            $this->snapshotToAuditLog($testTableName, (int) $delId, $existingById[$delId]);
+            (new TestAttemptService($this->db))->snapshotBeforeDelete($testTableName, (int) $delId, $existingById[$delId]);
             $this->db->where('test_id', (int) $delId);
-            $this->db->delete($testTableName);
+            $this->db->where('generic_id', $sampleId);
+            if (!$this->db->delete($testTableName)) {
+                throw new SystemException("Could not delete test $delId on sample $sampleId", 500);
+            }
         }
+
+        // The sample's latest test is the one tested last, of all its tests -- including
+        // any this form did not post -- and until one is tested, the last one added.
+        $latestRow = $this->db->rawQueryOne(
+            "SELECT * FROM $testTableName WHERE generic_id = ?
+                ORDER BY sample_tested_datetime IS NULL, sample_tested_datetime DESC, test_id DESC
+                LIMIT 1",
+            [$sampleId]
+        ) ?: [];
 
         // Sample-level outcome (from the SAMPLE OUTCOME section, NOT inferred from a card):
         // rejecting the whole sample and entering a final interpretation are mutually exclusive --
@@ -429,10 +460,11 @@ final class GenericTestsService extends AbstractTestService
             $finalInterp = null;
         }
 
-        // Always-written columns: the result + the per-test-derived chain (from the latest card).
+        // Always-written columns: the result + the per-test-derived chain (from the latest test).
         // Sample-level rejection is NOT derived from the latest card -- it is written below from the
         // SAMPLE OUTCOME control (present-only).
-        $formUpdate = [
+        // With no tests left the sample keeps its lab and dates rather than losing them.
+        $latestColumns = $latestRow === [] ? [] : [
             'lab_id' => $latestRow['lab_id'] ?? null,
             'sample_received_at_lab_datetime' => $latestRow['sample_received_at_lab_datetime'] ?? null,
             'tested_by' => $latestRow['tested_by'] ?? null,
@@ -441,6 +473,8 @@ final class GenericTestsService extends AbstractTestService
             'result_reviewed_datetime' => $latestRow['result_reviewed_datetime'] ?? null,
             'result_approved_by' => $latestRow['result_approved_by'] ?? null,
             'result_approved_datetime' => $latestRow['result_approved_datetime'] ?? null,
+        ];
+        $formUpdate = $latestColumns + [
             'result' => $finalInterp,
             'final_result_interpretation' => $finalInterp,
             'manual_result_entry' => 'yes',
@@ -482,32 +516,9 @@ final class GenericTestsService extends AbstractTestService
         }
 
         $this->db->where('sample_id', $sampleId);
-        $this->db->update($tableName, $formUpdate);
-    }
-
-    /**
-     * Snapshot a row into audit_log (action='delete') just before a hard delete, matching the
-     * Audit Trail v2 format (form_table, record_id, revision, action, dt_datetime, row_data).
-     * generic_test_results has no audit triggers, so this is how a deleted per-test result
-     * stays recoverable.
-     */
-    private function snapshotToAuditLog(string $formTable, int $recordId, array $row): void
-    {
-        if ($recordId <= 0) {
-            return;
+        if ($this->db->update($tableName, $formUpdate) !== true) {
+            throw new SystemException("Could not save sample $sampleId: " . $this->db->getLastError(), 500);
         }
-        $rev = $this->db->rawQueryOne(
-            "SELECT COALESCE(MAX(revision),0)+1 AS next_rev FROM audit_log WHERE form_table = ? AND record_id = ?",
-            [$formTable, (string) $recordId]
-        );
-        $this->db->insert('audit_log', [
-            'form_table' => $formTable,
-            'record_id' => (string) $recordId,
-            'revision' => (int) ($rev['next_rev'] ?? 1),
-            'action' => 'delete',
-            'dt_datetime' => DateUtility::getCurrentDateTime(),
-            'row_data' => json_encode($row, JSON_UNESCAPED_UNICODE),
-        ]);
     }
 
     public function getReasonForFailure($option = true, $updatedDateTime = null)

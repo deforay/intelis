@@ -1216,6 +1216,7 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 					<td>
 						 <select class="form-control test-name-table-input" id="testName${row}${testCounter}" name="testName[${subTest}][]" title="<?= _translate('Please enter the name of the Testkit (or) Test Method used'); ?>">${testMethodOptions}</select>
 						 <input type="text" name="testNameOther[${subTest}][]" id="testNameOther${row}${testCounter}" class="form-control testNameOther${testCounter}" title="<?= _translate('Please enter the name of the Testkit (or) Test Method used'); ?>" placeholder="<?= _translate('Please enter the name of the Testkit (or) Test Method used'); ?>" style="display: none;margin-top: 10px;" />
+						 <input type="hidden" name="testRowId[${subTest}][]" value="" />
 					</td>
 					<td><input type="text" name="testDate[${subTest}][]" id="testDate${row}${testCounter}" class="form-control test-name-table-input dateTime" placeholder="<?= _translate('Tested on'); ?>" title="Please enter the tested on for row ${testCounter}" /></td>
 					<td><select name="testingPlatform[${subTest}][]" id="testingPlatform${row}${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
@@ -1273,6 +1274,11 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 	}
 
 	function removeTestRow(el, row, subrow) {
+		// A saved row is deleted only because the user removed it here: send its id.
+		var savedRowId = ($(el).find('input[name^="testRowId["]').val() || '').trim();
+		if (savedRowId !== '') {
+			$('#vlRequestFormRwd').append($('<input>', { type: 'hidden', name: 'deletedTestIds[]', value: savedRowId }));
+		}
 		$('.ins-row-' + row + subrow).attr('disabled', false);
 		$('.ins-row-' + row + subrow).removeClass('disabled');
 		$(el).fadeOut("slow", function() {

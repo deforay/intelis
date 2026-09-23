@@ -1,12 +1,12 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
+use App\Services\TbTestsService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use Psr\Http\Message\ServerRequestInterface;
@@ -351,75 +351,48 @@ try {
      *
      * This system supports two types of TB forms:
      *
-     * 1. MULTIPLE TESTS PER SAMPLE (e.g., Rwanda):
-     *    - Form sends nested array: testResult[fieldName][]
+     * 1. MULTIPLE TESTS PER SAMPLE (per-test form):
+     *    - Form sends nested array: testResult[fieldName][], one card per test
      *    - Each test has its own lab, specimen type, reviewer, approver, etc.
-     *    - Tests are stored in `tb_tests` table (one row per test)
-     *    - The LATEST test's data is also stored in `form_tb` for quick access
+     *    - Tests are stored in `tb_tests` table (one row per test), saved in place:
+     *      a card updates its own row, and a saved test is deleted only when its card
+     *      was removed (deletedTestIds[]). A test the page did not show -- one an
+     *      analyzer added while it was open -- is kept.
+     *    - The LATEST test's details (latest tested date) are also stored in `form_tb`
      *
-     * 2. SINGLE TEST PER SAMPLE (e.g., Sierra Leone, South Sudan, Burkina Faso):
-     *    - Form sends flat array: testResult[] (just result values)
+     * 2. SINGLE TEST PER SAMPLE (single-result forms):
+     *    - Form sends flat array: testResult[] (microscopy results only)
      *    - Test-level fields (reviewer, approver, etc.) are direct POST fields
-     *    - All data goes directly to `form_tb` table
-     *    - `tb_tests` table is NOT used
+     *    - The Xpert result and everything else goes directly to `form_tb`
+     *    - `tb_tests` holds only the microscopy rows, rebuilt from what was posted
      *
-     * Detection: If testResult[labId][] exists as array = multiple tests
+     * Detection: If testResult[labId][] exists as array = multiple tests. A form
+     * that posts no testResult at all -- the per-test form hides its cards on an
+     * STS and from users who cannot enter results -- leaves `tb_tests` alone.
      */
     $hasMultipleTests = !empty($_POST['testResult']['labId']) && is_array($_POST['testResult']['labId']);
 
-    if ($hasMultipleTests) {
-        // tb_tests rows are delete-recreated on save, so capture each test's prior reason history
-        // server-side (keyed by tb_test_id) BEFORE deleting -- never trust client-sent history.
-        $priorReasonByTestId = [];
-        if (!empty($_POST['tbSampleId'])) {
-            foreach ($db->rawQuery("SELECT tb_test_id, reason_for_result_change FROM tb_tests WHERE tb_id = ?", [$_POST['tbSampleId']]) as $prevTest) {
-                $priorReasonByTestId[$prevTest['tb_test_id']] = $prevTest['reason_for_result_change'];
-            }
-            $db->where('tb_id', $_POST['tbSampleId']);
-            $db->delete($testTableName);
+    // The tests and the sample are one change.
+    $db->beginTransaction();
+    if ($hasMultipleTests || !empty($_POST['deletedTestIds'])) {
+        /** @var TbTestsService $tbTests */
+        $tbTests = ContainerRegistry::get(TbTestsService::class);
+        $tbTests->saveCards(
+            (int) $_POST['tbSampleId'],
+            (array) ($_POST['testResult'] ?? []),
+            (array) ($_POST['deletedTestIds'] ?? []),
+            $_SESSION['userId'] ?? null
+        );
+        // The latest test's details come from the tests, whatever the form posted
+        // at the sample level.
+        $latestTestColumns = $tbTests->latestTestColumns((int) $_POST['tbSampleId']);
+        $tbData = array_merge($tbData, $latestTestColumns);
+        // Neither the latest test nor the form gives a received date: the sample keeps its own.
+        if (!isset($latestTestColumns['sample_received_at_lab_datetime'])
+            && empty($tbData['sample_received_at_lab_datetime'])) {
+            unset($tbData['sample_received_at_lab_datetime']);
         }
-        $testResult = $_POST['testResult'];
-        foreach ($testResult['labId'] as $key => $labid) {
-            // Insert all tests into tb_tests
-            if (!empty($labid)) {
-                // Append the new reason to the server-fetched prior history (matched by tb_test_id).
-                // The client only supplies the lookup key, not the history content, so it cannot be forged.
-                $tbReasonHistory = MiscUtility::parseResultChangeHistory($priorReasonByTestId[$testResult['testId'][$key] ?? ''] ?? null);
-                $tbReasonText = trim((string) ($testResult['reasonForChange'][$key] ?? ''));
-                if ($tbReasonText !== '') {
-                    $tbReasonHistory[] = ['usr' => $_SESSION['userId'] ?? null, 'dtime' => DateUtility::getCurrentDateTime(), 'msg' => $tbReasonText];
-                }
-                $db->insert($testTableName, [
-                    'tb_id' => $_POST['tbSampleId'] ?? null,
-                    'lab_id' => $testResult['labId'][$key] ?? null,
-                    'specimen_type' => $testResult['specimenType'][$key] ?? null,
-                    'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($testResult['sampleReceivedDate'][$key] ?? null, true),
-                    'test_type' => $testResult['testType'][$key] ?? null,
-                    'test_result' => $testResult['testResult'][$key] ?? null,
-                    'sample_tested_datetime' => DateUtility::isoDateFormat($testResult['sampleTestedDateTime'][$key] ?? null, true),
-                    'tested_by' => $testResult['testedBy'][$key] ?? null,
-                    'result_reviewed_by' => $testResult['reviewedBy'][$key] ?? null,
-                    'result_reviewed_datetime' => DateUtility::isoDateFormat($testResult['reviewedOn'][$key] ?? null, true),
-                    'result_approved_by' => $testResult['approvedBy'][$key] ?? null,
-                    'result_approved_datetime' => DateUtility::isoDateFormat($testResult['approvedOn'][$key] ?? null, true),
-                    'revised_by' => $testResult['revisedBy'][$key] ?? null,
-                    'revised_on' => DateUtility::isoDateFormat($testResult['revisedOn'][$key] ?? null, true),
-                    'reason_for_result_change' => !empty($tbReasonHistory) ? json_encode($tbReasonHistory) : null,
-                    'comments' => $testResult['comments'][$key] ?? null,
-                    'updated_datetime' => DateUtility::getCurrentDateTime()
-                ]);
-            }
-        }
-        // Update $tbData with LATEST test's data for form_tb
-        $lastIndex = count($testResult['labId']) - 1;
-        $tbData['sample_received_at_lab_datetime'] = DateUtility::isoDateFormat($testResult['sampleReceivedDate'][$lastIndex] ?? null, true);
-        $tbData['sample_tested_datetime'] = DateUtility::isoDateFormat($testResult['sampleTestedDateTime'][$lastIndex] ?? null, true);
-        $tbData['tested_by'] = $testResult['testedBy'][$lastIndex] ?? null;
-        $tbData['result_reviewed_by'] = $testResult['reviewedBy'][$lastIndex] ?? null;
-        $tbData['result_reviewed_datetime'] = DateUtility::isoDateFormat($testResult['reviewedOn'][$lastIndex] ?? null, true);
-        $tbData['result_approved_by'] = $testResult['approvedBy'][$lastIndex] ?? null;
-        $tbData['result_approved_datetime'] = DateUtility::isoDateFormat($testResult['approvedOn'][$lastIndex] ?? null, true);
-    } else {
+    } elseif (isset($_POST['testResult']) && is_array($_POST['testResult'])) {
         $testResult = $_POST['testResult'];
         $db->where('tb_id', $_POST['tbSampleId']);
         $db->delete($testTableName);
@@ -433,7 +406,6 @@ try {
             ]);
         }
     }
-    // For flat testResult[] (other countries): no tb_tests operations, form_tb already has all data from direct POST fields
 
     $tbData['is_encrypted'] = 'no';
     if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
@@ -452,6 +424,8 @@ try {
         $db->where('tb_id', $_POST['tbSampleId']);
         $id = $db->update($tableName, $tbData);
     }
+    // The tests are kept only with the sample they belong to.
+    $id === true ? $db->commitTransaction() : $db->rollbackTransaction();
 
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("TB test request updated successfully");
@@ -471,6 +445,7 @@ try {
         header("Location:/tb/requests/tb-requests.php");
     }
 } catch (Throwable $e) {
+    $db->rollbackTransaction();
     LoggerUtility::log("error", $e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),

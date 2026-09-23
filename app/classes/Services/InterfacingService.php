@@ -938,12 +938,6 @@ final class InterfacingService
         if (empty($existing['lab_id'])) {
             $formData['lab_id'] = (string) $labId;
         }
-        // The sample's tested date, tester and platform are those of its latest test
-        // of any kind. A run older than that is still recorded but leaves them alone.
-        $recordedAt = trim((string) ($existing['sample_tested_datetime'] ?? ''));
-        if ($recordedAt !== '' && substr($testedAt, 0, 16) < substr($recordedAt, 0, 16)) {
-            $formData = array_intersect_key($formData, ['lab_id' => true]);
-        }
 
         if ($this->formId() === RWANDA) {
             return $this->writeTbTestRow(
@@ -956,6 +950,13 @@ final class InterfacingService
                 $labId,
                 $updateModifiedTime
             );
+        }
+
+        // The sample's tested date, tester and platform are those of its latest test
+        // of any kind. A run older than that is still recorded but leaves them alone.
+        $recordedAt = trim((string) ($existing['sample_tested_datetime'] ?? ''));
+        if ($recordedAt !== '' && substr($testedAt, 0, 16) < substr($recordedAt, 0, 16)) {
+            $formData = array_intersect_key($formData, ['lab_id' => true]);
         }
 
         $code = self::xpertResultCode($reading);
@@ -1069,13 +1070,13 @@ final class InterfacingService
     }
 
     /**
-     * The per-test form keeps each test as a tb_tests row. The result page deletes
-     * and recreates those rows from what it posts, so an import only ever adds one:
-     * it never rewrites or removes a row the lab has seen.
+     * The per-test form keeps each test as a tb_tests row, and its pages save those
+     * rows in place and keep a row they did not show. An import only ever adds a
+     * row: it never rewrites or removes one the lab has seen.
      *
      * Whether a run is already recorded is decided by the row's own content -- the
      * test type and when it was tested, to the minute -- because that is what
-     * survives a save of the result page, which keeps no column of ours and
+     * survives a save of the result page, which posts no column of ours back and
      * drops the seconds.
      *
      * @param array<string, mixed> $existing
@@ -1124,13 +1125,25 @@ final class InterfacingService
             return $this->outcome(false, false, 'form_tb', 'update_failed');
         }
 
-        // form_tb carries the latest test's details, as the result page leaves them.
-        $formData['data_sync'] = 0;
+        // form_tb carries the details of the test with the latest tested date, as the
+        // result page leaves them. The analyzer and platform are this run's only when
+        // this run is that test.
+        $latest = (new TbTestsService($db))->latestTest($tbId);
+        $sampleData = TbTestsService::sampleColumnsOf($latest);
+        if ((int) ($latest['tb_test_id'] ?? 0) === (int) $inserted) {
+            $sampleData += array_intersect_key($formData, array_flip([
+                'instrument_id', 'tb_test_platform', 'manual_result_entry', 'import_machine_file_name',
+            ]));
+        }
+        if (isset($formData['lab_id'])) {
+            $sampleData['lab_id'] = $formData['lab_id'];
+        }
+        $sampleData['data_sync'] = 0;
         if ($updateModifiedTime) {
-            $formData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+            $sampleData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
         }
         $db->where('tb_id', $tbId);
-        if ($db->update('form_tb', $formData) !== true) {
+        if ($db->update('form_tb', $sampleData) !== true) {
             throw new RuntimeException("Recorded a TB test on sample $tbId but could not update the sample");
         }
 

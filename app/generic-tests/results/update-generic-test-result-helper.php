@@ -52,8 +52,8 @@ try {
     // ---------------------------------------------------------------------
     // Multi-test (TB-style) result entry. One generic_test_results row per
     // test card, each with its own lab + receipt/rejection/tested/reviewed/
-    // approved chain. Delete-and-reinsert the per-test rows, then sync the
-    // LATEST test + the sample-level Final Interpretation onto form_generic.
+    // approved chain. The per-test rows are saved in place, then the LATEST
+    // test + the sample-level Final Interpretation are synced onto form_generic.
     // (The old single-result path below remains for any legacy caller.)
     // ---------------------------------------------------------------------
     if (!empty($_POST['testResult']['labId']) && is_array($_POST['testResult']['labId'])) {
@@ -193,11 +193,13 @@ try {
     $resultChangeHistoryJson = !empty($resultChangeHistory) ? json_encode($resultChangeHistory) : null;
 
     // Retain the outgoing result before anything below mutates it. This runs ahead of the
-    // generic_test_results deletes further down, and captures those per-test rows into the
+    // generic_test_results writes further down, and captures those per-test rows into the
     // snapshot -- that table carries no audit triggers. Nothing is written when there is no
     // prior result to keep.
     /** @var TestAttemptService $attempts */
     $attempts = ContainerRegistry::get(TestAttemptService::class);
+    // The kept copy, the test rows and the sample's result are one change.
+    $db->beginTransaction();
     $attempts->archive(
         'generic-tests',
         (int) ($_POST['requestSampleId'] ?? 0),
@@ -261,14 +263,41 @@ try {
     if (isset($_POST['requestSampleId']) && $_POST['requestSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         $finalResult = "";
         if (!empty($_POST['testName'])) {
-            $db->where('generic_id', $_POST['requestSampleId']);
-            $db->delete('generic_test_results');
+            // Rows are saved in place. Each row the form draws carries its test_id in
+            // testRowId[], parallel to testName[]: a posted id updates that row, a row
+            // without one is added, and a saved row is deleted only when the user
+            // removed it (deletedTestIds[]) or dropped its sub-test. A row the form did
+            // not draw is left alone. The form used to delete every row and insert
+            // what it posted.
+            $sampleId = (int) $_POST['requestSampleId'];
+            $savedRows = [];
+            foreach ($db->rawQuery("SELECT * FROM generic_test_results WHERE generic_id = ?", [$sampleId]) ?: [] as $savedRow) {
+                $savedRows[(string) $savedRow['test_id']] = $savedRow;
+            }
+            $keptRowIds = [];
+            $saveTestRow = static function (array $testData, $postedId) use ($db, $sampleId, $savedRows, &$keptRowIds): void {
+                $postedId = trim((string) $postedId);
+                // A row with no sub-test is drawn under every selected sub-test, so its
+                // id can arrive more than once. The first copy updates it; each later
+                // copy is that sub-test's own row, as it always was.
+                if ($postedId !== '' && isset($savedRows[$postedId]) && !isset($keptRowIds[$postedId])) {
+                    $db->where('test_id', (int) $postedId);
+                    $db->where('generic_id', $sampleId);
+                    $written = $db->update('generic_test_results', $testData);
+                    $keptRowIds[$postedId] = true;
+                } else {
+                    $written = $db->insert('generic_test_results', $testData);
+                }
+                if (!$written) {
+                    throw new SystemException("Could not save a test on sample $sampleId: " . $db->getLastError(), 500);
+                }
+            };
             if (isset($_POST['subTestResult']) && !empty($_POST['subTestResult'])) {
                 foreach ($_POST['testName'] as $subTestName => $subTests) {
                     foreach ($subTests as $testKey => $testKitName) {
                         if (!empty($testKitName)) {
                             $testData = ['generic_id' => $_POST['requestSampleId'], 'sub_test_name' => $subTestName, 'result_type' => $_POST['resultType'][$subTestName], 'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName, 'facility_id' => $_POST['labId'] ?? null, 'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? '', true), 'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null, 'kit_lot_no' => (str_contains((string)$testKitName, 'RDT')) ? $_POST['lotNo'][$subTestName][$testKey] : null, 'kit_expiry_date' => (str_contains((string)$testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null, 'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey], 'result' => $_POST['testResult'][$subTestName][$testKey], 'final_result' => $_POST['finalResult'][$subTestName], 'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName], 'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]];
-                            $db->insert('generic_test_results', $testData);
+                            $saveTestRow($testData, $_POST['testRowId'][$subTestName][$testKey] ?? '');
                             if (isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName]) && !empty($finalResult)) {
                                 $finalResult = $_POST['finalResult'][$subTestName];
                             } else {
@@ -296,23 +325,55 @@ try {
                                 $testData['final_result_interpretation'] = $_POST['resultInterpretation'][$key];
                             }
                         }
-                        $db->insert('generic_test_results', $testData);
+                        $saveTestRow($testData, $_POST['testRowId'][$testKey][0] ?? '');
                         if (isset($testData['final_result']) && !empty($testData['final_result'])) {
                             $finalResult = $testData['final_result'];
                         }
                     }
                 }
             }
+
+            // A saved row goes when the user removed it, or when its sub-test is no
+            // longer selected (the form no longer draws it). Kept in audit_log first.
+            $selectedSubTests = $_POST['subTestResult'] === 'default'
+                ? null
+                : array_map('strtolower', explode('##', (string) $_POST['subTestResult']));
+            $removedIds = array_map('strval', (array) ($_POST['deletedTestIds'] ?? []));
+            foreach ($savedRows as $savedId => $savedRow) {
+                if (isset($keptRowIds[$savedId])) {
+                    continue;
+                }
+                $subTestName = strtolower(trim((string) ($savedRow['sub_test_name'] ?? '')));
+                $subTestDropped = $selectedSubTests !== null && $subTestName !== ''
+                    && !in_array($subTestName, $selectedSubTests, true);
+                if (!$subTestDropped && !in_array((string) $savedId, $removedIds, true)) {
+                    continue;
+                }
+                $attempts->snapshotBeforeDelete('generic_test_results', (int) $savedId, $savedRow);
+                $db->where('test_id', (int) $savedId);
+                $db->where('generic_id', $sampleId);
+                if (!$db->delete('generic_test_results')) {
+                    throw new SystemException("Could not delete test $savedId on sample $sampleId", 500);
+                }
+            }
         }
         $dataToUpdate['result'] = $finalResult;
     } else {
-        $db->where('generic_id', $_POST['requestSampleId']);
-        $db->delete('generic_test_results');
+        // A rejected sample has no tests. Each is kept in audit_log before it goes.
+        $rejectedSampleId = (int) ($_POST['requestSampleId'] ?? 0);
+        foreach ($db->rawQuery("SELECT * FROM generic_test_results WHERE generic_id = ?", [$rejectedSampleId]) ?: [] as $savedRow) {
+            $attempts->snapshotBeforeDelete('generic_test_results', (int) $savedRow['test_id'], $savedRow);
+        }
+        $db->where('generic_id', $rejectedSampleId);
+        if (!$db->delete('generic_test_results')) {
+            throw new SystemException("Could not remove the tests of rejected sample $rejectedSampleId", 500);
+        }
         $genericData['sample_tested_datetime'] = null;
     }
 
     $db->where('sample_id', $_POST['requestSampleId']);
     $id = $db->update($tableName, $dataToUpdate);
+    $db->commitTransaction();
 
     $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';
     if ($id === true) {
@@ -329,6 +390,7 @@ try {
 
     header("Location:generic-test-results.php");
 } catch (Throwable $e) {
+    $db->rollbackTransaction();
     LoggerUtility::logError($e->getMessage(), [
         'last_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
