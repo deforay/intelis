@@ -277,17 +277,50 @@ final class ManifestTestingLabTest extends TestCase
     }
 
     #[RunInSeparateProcess]
-    public function testThePickerNamesOnlySamplesTheUserMaySee(): void
+    public function testThePickerNamesNoSampleOfAnotherLab(): void
     {
-        $manifest = $this->manifest('M-10', self::LAB_A);
-        $this->sample('A', self::LAB_A, 'M-10', $manifest);
-        $this->sample('CX', self::LAB_A, 'M-10', $manifest, CANCELLED);
-        $_SESSION['facilityMap'] = '99';
+        // Lab B's manifest, seen by an operator of lab A on a LIS. Same facility,
+        // so only the lab scope can keep lab B's codes out of the response.
+        $manifest = $this->manifest('M-10', self::LAB_B);
+        $this->sample('B1', self::LAB_B, 'M-10', $manifest);
+        $this->sample('BX', self::LAB_B, 'M-10', $manifest, CANCELLED);
 
-        $html = $this->picker($manifest, self::LAB_B, '');
+        $html = $this->picker($manifest, self::LAB_A, '', ['type' => 'vluser'], self::LAB_A);
 
-        self::assertStringNotContainsString('R-A', $html);
-        self::assertStringNotContainsString('R-CX', $html);
+        self::assertStringNotContainsString('S-B1', $html);
+        self::assertStringNotContainsString('S-BX', $html);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnotherLabsManifestCannotBeEdited(): void
+    {
+        $manifest = $this->manifest('M-11', self::LAB_B);
+        $b = $this->sample('B1', self::LAB_B, 'M-11', $manifest);
+        $a = $this->sample('A', self::LAB_A);
+        $_SESSION['instance']['type'] = 'vluser';
+        $_SESSION['labId'] = self::LAB_A;
+
+        $this->edit($manifest, self::LAB_A, [$a]);
+
+        self::assertSame($manifest, (int) $this->row($b)['sample_package_id']);
+        self::assertNull($this->row($a)['sample_package_id']);
+        self::assertSame(self::LAB_B, (int) $this->manifestRow($manifest)['lab_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAddingAManifestTakesNoSampleOfAnotherLab(): void
+    {
+        $b = $this->sample('B1', self::LAB_B);
+        $_SESSION['instance']['type'] = 'vluser';
+        $_SESSION['labId'] = self::LAB_A;
+
+        $this->drive('/specimen-referral-manifest/add-manifest-helper.php', [
+            'module' => 'vl', 'testingLab' => self::LAB_B, 'packageCode' => 'M-ALIEN',
+            'selectedSample' => (new Sqids())->encode([$b]),
+        ]);
+
+        self::assertNull($this->row($b)['sample_package_id']);
+        self::assertSame(0, (int) LegacyAppHarness::db()->getValue('specimen_manifests', 'COUNT(*)'));
     }
 
     /** @param list<int> $samples */
@@ -300,10 +333,19 @@ final class ManifestTestingLabTest extends TestCase
         ]);
     }
 
-    private function picker(int $manifest, int $lab, string $dateRange): string
-    {
-        // The picker shows remote_sample_code on an STS.
-        $_SESSION['instance']['type'] = 'remoteuser';
+    /** @param array<string, string> $instance */
+    private function picker(
+        int $manifest,
+        int $lab,
+        string $dateRange,
+        array $instance = ['type' => 'remoteuser'],
+        int $ownLab = 0
+    ): string {
+        // An STS by default, where the picker shows remote_sample_code.
+        $_SESSION['instance'] = $instance;
+        if ($ownLab > 0) {
+            $_SESSION['labId'] = $ownLab;
+        }
         $request = LegacyAppHarness::withPost([
             'module' => 'vl', 'testingLab' => $lab, 'pkgId' => $manifest, 'daterange' => $dateRange,
             'facility' => '', 'sampleType' => '', 'testType' => '',

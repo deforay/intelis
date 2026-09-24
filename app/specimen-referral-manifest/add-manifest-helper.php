@@ -77,6 +77,11 @@ try {
         $db->where('lab_id', $testingLab);
         $db->where('result_status', CANCELLED, '!=');
         $db->where('(sample_package_id IS NULL OR sample_package_id = 0)');
+        // Lab isolation (cloud-LIS): never another lab's sample. Empty for
+        // everyone not acting as one lab.
+        if ($labScope = $general->labScopeWhere('')) {
+            $db->where($labScope);
+        }
         $db->update($tableName, [
             'sample_package_id' => $lastId,
             'sample_package_code' => $manifestCode,

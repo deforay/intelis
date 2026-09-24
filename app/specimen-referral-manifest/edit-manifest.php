@@ -45,7 +45,12 @@ $pResult = $db->rawQueryOne($pQuery, [$id]);
 // Once the lab has the package, its contents are settled. A dispatched manifest
 // stays editable: printing marks it dispatched, and a manifest is often
 // corrected and printed again before it leaves.
-if (($pResult['manifest_status'] ?? null) === TestRequestsService::MANIFEST_RECEIVED) {
+// Lab isolation (cloud-LIS): a lab opens only a manifest bound for it. The
+// save refuses the same way.
+$notOurs = $general->labScopeWhere('') !== ''
+	&& (int) ($pResult['lab_id'] ?? 0) > 0
+	&& (int) $pResult['lab_id'] !== (int) ($_SESSION['labId'] ?? 0);
+if ($notOurs || empty($pResult) || ($pResult['manifest_status'] ?? null) === TestRequestsService::MANIFEST_RECEIVED) {
 	header("Location:/specimen-referral-manifest/view-manifests.php?t=" . $module);
 	exit;
 }
