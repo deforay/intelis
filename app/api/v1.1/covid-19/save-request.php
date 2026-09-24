@@ -64,6 +64,10 @@ try {
         throw new SystemException("Invalid JSON Payload", 400);
     }
 
+    // A client that declares result-version has each post checked against the
+    // result it last pulled. See SavedResultGuard::isStale().
+    $declaresResultVersion = SavedResultGuard::declaresResultVersion(ApiService::payloadCapabilities($origJson));
+
     // Attempt to extract appVersion
     try {
         $appVersion = Items::fromString($origJson, [
@@ -609,9 +613,14 @@ try {
         $storedSample = empty($data['covid19SampleId'])
             ? []
             : SavedResultGuard::lockedSample($db, 'form_covid19', 'covid19_id', $data['covid19SampleId']);
-        $staleRepost = SavedResultGuard::hasLabDecision($storedSample)
+        // Posted on a result the lab has since changed, by a client that said it
+        // sends the version it pulled: the lab's tests stay, whatever it posts.
+        $storedTests = $storedSample === [] ? [] : SavedResultGuard::testRows($db, 'covid19', $data['covid19SampleId']);
+        $staleResult = $declaresResultVersion
+            && SavedResultGuard::isStale($storedSample, $data['resultVersion'] ?? null, $storedTests, 'covid19');
+        $staleRepost = $staleResult || (SavedResultGuard::hasLabDecision($storedSample)
             && trim((string) ($data['result'] ?? '')) === ''
-            && ($data['isSampleRejected'] ?? '') !== 'yes';
+            && ($data['isSampleRejected'] ?? '') !== 'yes');
         if (isset($data['covid19SampleId']) && $data['covid19SampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
             if (!empty($data['c19Tests']) && !$staleRepost) {
                 $db->where('covid19_id', $data['covid19SampleId']);
@@ -638,7 +647,7 @@ try {
                     }
                 }
             }
-        } else {
+        } elseif (!$staleResult) {
             $db->where('covid19_id', $data['covid19SampleId']);
             $db->delete($testTableName);
             $covid19Data['sample_tested_datetime'] = null;
@@ -656,12 +665,20 @@ try {
         $covid19Data = MiscUtility::arrayEmptyStringsToNull($covid19Data);
         if (!empty($data['covid19SampleId'])) {
             // A re-post does not undo what the lab decided. See SavedResultGuard.
-            $covid19Data = SavedResultGuard::protectAndLog($covid19Data, $storedSample, 'covid19', $transactionId ?? null);
+            [$covid19Data, $staleResult] = SavedResultGuard::guard(
+                $covid19Data,
+                $storedSample,
+                'covid19',
+                $transactionId ?? null,
+                $declaresResultVersion,
+                $data['resultVersion'] ?? null,
+                $storedTests
+            );
             $db->where('covid19_id', $data['covid19SampleId']);
             $id = $db->update($tableName, $covid19Data);
         }
         if ($id === true) {
-            $responseData[$rootKey] = [
+            $sampleResponse = [
                 'status' => 'success',
                 'action' => $currentSampleData['action'] ?? null,
                 'sampleCode' => ($currentSampleData['remoteSampleCode'] ?? null) ?: ($currentSampleData['sampleCode'] ?? null),
@@ -669,6 +686,16 @@ try {
                 'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
+
+            // The version the client holds from now on, and whether its result was
+            // set aside for the lab's newer one, which it should pull again.
+            if ($declaresResultVersion) {
+                $sampleResponse['resultVersion'] = SavedResultGuard::currentVersion($db, 'covid19', $data['covid19SampleId']);
+                if ($staleResult) {
+                    $sampleResponse['resultKept'] = true;
+                }
+            }
+            $responseData[$rootKey] = $sampleResponse;
         } else {
             $noOfFailedRecords++;
             $responseData[$rootKey] = [
@@ -717,6 +744,11 @@ try {
         'transactionId' => $transactionId,
         'data' => array_values($responseData ?? [])
     ];
+
+    // Tells a client that declared result-version that this server checked it.
+    if ($declaresResultVersion) {
+        $payload['capabilities'] = ['supports' => [SavedResultGuard::RESULT_VERSION]];
+    }
 } catch (Throwable $exc) {
     $db->rollbackTransaction();
     http_response_code(500);

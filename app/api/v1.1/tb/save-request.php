@@ -72,6 +72,10 @@ try {
         throw new SystemException("Invalid JSON Payload", 400);
     }
 
+    // A client that declares result-version has each post checked against the
+    // result it last pulled. See SavedResultGuard::isStale().
+    $declaresResultVersion = SavedResultGuard::declaresResultVersion(ApiService::payloadCapabilities($origJson));
+
     // Attempt to extract appVersion
     try {
         $appVersion = Items::fromString($origJson, [
@@ -508,10 +512,20 @@ try {
         $formAttributesStr = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
         $tbData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
 
+        // Read and locked before the tests: a client posting on a result the lab has
+        // since changed, having said it sends the version it pulled, changes neither.
+        $storedSample = empty($data['tbSampleId'])
+            ? []
+            : SavedResultGuard::lockedSample($db, 'form_tb', 'tb_id', $data['tbSampleId']);
+        $storedTests = $storedSample === [] ? [] : SavedResultGuard::testRows($db, 'tb', $data['tbSampleId']);
+        $staleResult = $declaresResultVersion
+            && SavedResultGuard::isStale($storedSample, $data['resultVersion'] ?? null, $storedTests, 'tb');
+
         // Saved in place, and never deleted: a rejected sample keeps the tests it has,
         // as it does on the result page. See TbTestsService::saveApiTests().
         if (
             !empty($data['tbSampleId'])
+            && !$staleResult
             && ($data['isSampleRejected'] ?? '') !== 'yes'
             && !empty($data['testResults'])
             && is_array($data['testResults'])
@@ -530,8 +544,15 @@ try {
         $id = false;
         if (!empty($data['tbSampleId'])) {
             // A re-post does not undo what the lab decided. See SavedResultGuard.
-            $storedSample = SavedResultGuard::lockedSample($db, 'form_tb', 'tb_id', $data['tbSampleId']);
-            $tbData = SavedResultGuard::protectAndLog($tbData, $storedSample, 'tb', $transactionId ?? null);
+            [$tbData, $staleResult] = SavedResultGuard::guard(
+                $tbData,
+                $storedSample,
+                'tb',
+                $transactionId ?? null,
+                $declaresResultVersion,
+                $data['resultVersion'] ?? null,
+                $storedTests
+            );
             $db->where('tb_id', $data['tbSampleId']);
             $id = $db->update($tableName, $tbData);
         }
@@ -554,6 +575,15 @@ try {
             // Add duplicate detection info if available
             if (isset($duplicateInfo[$rootKey]) && !isset($duplicateInfo[$rootKey]['error'])) {
                 $sampleResponse['duplicateInfo'] = $duplicateInfo[$rootKey];
+            }
+
+            // The version the client holds from now on, and whether its result was
+            // set aside for the lab's newer one, which it should pull again.
+            if ($declaresResultVersion) {
+                $sampleResponse['resultVersion'] = SavedResultGuard::currentVersion($db, 'tb', $data['tbSampleId']);
+                if ($staleResult) {
+                    $sampleResponse['resultKept'] = true;
+                }
             }
 
             $responseData[$rootKey] = $sampleResponse;
@@ -607,6 +637,11 @@ try {
             'failedRecords' => $noOfFailedRecords,
         ]
     ];
+
+    // Tells a client that declared result-version that this server checked it.
+    if ($declaresResultVersion) {
+        $payload['capabilities'] = ['supports' => [SavedResultGuard::RESULT_VERSION]];
+    }
 
     // Add detailed duplicate information only if duplicates were detected
     if ($enableDuplicateDetection && $duplicateInfo !== []) {

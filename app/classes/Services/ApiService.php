@@ -8,6 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Exception;
 use Throwable;
 use GuzzleHttp\Client;
+use JsonMachine\Items;
+use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
 use App\Utilities\JsonUtility;
@@ -595,6 +597,26 @@ final class ApiService
 
 
 
+
+    /**
+     * The "capabilities" object a client posts at the top of its payload, e.g.
+     * {"supports": ["result-version"]}, read without decoding the whole payload.
+     * Empty when the client declares nothing, which is every client built before
+     * the capability it would name.
+     *
+     * @return array<string, mixed>
+     */
+    public static function payloadCapabilities(string $json): array
+    {
+        try {
+            return iterator_to_array(Items::fromString($json, [
+                'pointer' => '/capabilities',
+                'decoder' => new ExtJsonDecoder(true),
+            ]));
+        } catch (Throwable) {
+            return [];
+        }
+    }
 
     /**
      * Retrieves the bearer token from the Authorization header using ServerRequestInterface.

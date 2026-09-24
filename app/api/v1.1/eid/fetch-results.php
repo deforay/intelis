@@ -5,6 +5,7 @@ use const COUNTRY\DRC;
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
+use App\Utilities\SavedResultGuard;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -240,11 +241,25 @@ try {
     }
     $sQuery .= "$whereString ORDER BY vl.last_modified_datetime DESC LIMIT $limit OFFSET $offset";
 
+    // One snapshot for the samples, their tests and their result versions, so a
+    // result the lab saves meanwhile cannot go out under the version of another.
+    $db->beginReadOnlyTransaction('REPEATABLE READ');
     $rowData = $db->rawQuery($sQuery);
     $total = (int) ($db->rawQueryOne("SELECT COUNT(*) AS total FROM form_eid AS vl $whereString")['total'] ?? 0);
 
     $now = DateUtility::getCurrentDateTime();
     $affectedSamples = array_values(array_filter(array_unique(array_column($rowData, 'testRequestId'))));
+
+    // Each sample's result version, which a client that declares result-version
+    // sends back when it posts the sample. See SavedResultGuard::resultVersion().
+    if ($affectedSamples !== []) {
+        $resultVersions = SavedResultGuard::resultVersions($db, 'eid', $affectedSamples);
+        foreach ($rowData as &$row) {
+            $row['resultVersion'] = $resultVersions[(string) ($row['testRequestId'] ?? '')] ?? null;
+        }
+        unset($row);
+    }
+    $db->commitTransaction();
     if ($markAsSent && $affectedSamples !== []) {
         // 1) result_sent_to_source / result_sent_to_source_datetime — set once
         $db->where($primaryKey, $affectedSamples, 'IN');
@@ -280,6 +295,9 @@ try {
         'offset' => $offset
     ];
 } catch (Throwable $e) {
+    if ($db->isTransactionActive()) {
+        $db->rollbackTransaction();
+    }
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),

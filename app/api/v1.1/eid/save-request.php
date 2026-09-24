@@ -70,6 +70,10 @@ try {
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload", 400);
     }
+
+    // A client that declares result-version has each post checked against the
+    // result it last pulled. See SavedResultGuard::isStale().
+    $declaresResultVersion = SavedResultGuard::declaresResultVersion(ApiService::payloadCapabilities($origJson));
     // Attempt to extract appVersion
     try {
         $appVersion = Items::fromString($origJson, [
@@ -581,11 +585,20 @@ try {
         }
 
         $id = false;
+        $storedSample = [];
+        $staleResult = false;
         $eidData = MiscUtility::arrayEmptyStringsToNull($eidData);
         if (!empty($data['eidSampleId'])) {
             // A re-post does not undo what the lab decided. See SavedResultGuard.
             $storedSample = SavedResultGuard::lockedSample($db, 'form_eid', 'eid_id', $data['eidSampleId']);
-            $eidData = SavedResultGuard::protectAndLog($eidData, $storedSample, 'eid', $transactionId ?? null);
+            [$eidData, $staleResult] = SavedResultGuard::guard(
+                $eidData,
+                $storedSample,
+                'eid',
+                $transactionId ?? null,
+                $declaresResultVersion,
+                $data['resultVersion'] ?? null
+            );
             $db->where('eid_id', $data['eidSampleId']);
             $id = $db->update('form_eid', $eidData);
         }
@@ -609,6 +622,15 @@ try {
             // Add duplicate detection info if available
             if (isset($duplicateInfo[$rootKey]) && !isset($duplicateInfo[$rootKey]['error'])) {
                 $sampleResponse['duplicateInfo'] = $duplicateInfo[$rootKey];
+            }
+
+            // The version the client holds from now on, and whether its result was
+            // set aside for the lab's newer one, which it should pull again.
+            if ($declaresResultVersion) {
+                $sampleResponse['resultVersion'] = SavedResultGuard::currentVersion($db, 'eid', $data['eidSampleId']);
+                if ($staleResult) {
+                    $sampleResponse['resultKept'] = true;
+                }
             }
 
             $responseData[$rootKey] = $sampleResponse;
@@ -665,6 +687,11 @@ try {
             'failedRecords' => $noOfFailedRecords,
         ]
     ];
+
+    // Tells a client that declared result-version that this server checked it.
+    if ($declaresResultVersion) {
+        $payload['capabilities'] = ['supports' => [SavedResultGuard::RESULT_VERSION]];
+    }
 
     // Add detailed duplicate information only if duplicates were detected
     if ($enableDuplicateDetection && $duplicateInfo !== []) {

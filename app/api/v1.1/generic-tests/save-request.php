@@ -60,6 +60,10 @@ try {
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload", 400);
     }
+
+    // A client that declares result-version has each post checked against the
+    // result it last pulled. See SavedResultGuard::isStale().
+    $declaresResultVersion = SavedResultGuard::declaresResultVersion(ApiService::payloadCapabilities($origJson));
     $appVersion = null;
     try {
         $appVersion = Items::fromString($origJson, [
@@ -411,6 +415,15 @@ try {
                 $genericData['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
                 $genericData['request_created_by'] = $user['user_id'];
             }
+            // Read and locked before the tests: a client posting on a result the lab has
+            // since changed, having said it sends the version it pulled, changes neither.
+            $storedSample = empty($data['genericSampleId'])
+                ? []
+                : SavedResultGuard::lockedSample($db, 'form_generic', 'sample_id', $data['genericSampleId']);
+            $storedTests = $storedSample === [] ? [] : SavedResultGuard::testRows($db, 'generic-tests', $data['genericSampleId']);
+            $staleResult = $declaresResultVersion
+                && SavedResultGuard::isStale($storedSample, $data['resultVersion'] ?? null, $storedTests, 'generic-tests');
+
             // A client re-posts its whole dataset, so a test the sample already has,
             // with every field as sent, is not added again. A test that differs in any
             // field is added: that is the client's correction.
@@ -442,7 +455,7 @@ try {
             };
 
             $isRejected = ($data['isSampleRejected'] ?? '') === 'yes';
-            if (!empty($data['genericSampleId']) && !$isRejected) {
+            if (!empty($data['genericSampleId']) && !$isRejected && !$staleResult) {
                 if (!empty($data['testName'])) {
                     $finalResult = "";
                     if (isset($data['subTestResult']) && !empty($data['subTestResult'])) {
@@ -486,7 +499,7 @@ try {
                         $genericData['result_status'] = PENDING_APPROVAL;
                     }
                 }
-            } elseif (!empty($data['genericSampleId']) && $isRejected) {
+            } elseif (!empty($data['genericSampleId']) && $isRejected && !$staleResult) {
                 // A rejected sample has no tests, as on the result page.
                 $db->where('generic_id', $data['genericSampleId']);
                 $db->delete($testTableName);
@@ -505,13 +518,20 @@ try {
             $genericData = MiscUtility::arrayEmptyStringsToNull($genericData);
             if (!empty($data['genericSampleId'])) {
                 // A re-post does not undo what the lab decided. See SavedResultGuard.
-                $storedSample = SavedResultGuard::lockedSample($db, 'form_generic', 'sample_id', $data['genericSampleId']);
-                $genericData = SavedResultGuard::protectAndLog($genericData, $storedSample, 'generic-tests', $transactionId ?? null);
+                [$genericData, $staleResult] = SavedResultGuard::guard(
+                    $genericData,
+                    $storedSample,
+                    'generic-tests',
+                    $transactionId ?? null,
+                    $declaresResultVersion,
+                    $data['resultVersion'] ?? null,
+                    $storedTests
+                );
                 $db->where('sample_id', $data['genericSampleId']);
                 $id = $db->update($tableName, $genericData);
             }
             if ($id === true) {
-                $responseData[$rootKey] = [
+                $sampleResponse = [
                     'status' => 'success',
                     'action' => $currentSampleData['action'] ?? null,
                     'sampleCode' => ($currentSampleData['remoteSampleCode'] ?? null) ?: ($currentSampleData['sampleCode'] ?? null),
@@ -519,6 +539,16 @@ try {
                     'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                     'appSampleCode' => $data['appSampleCode'] ?? null,
                 ];
+
+                // The version the client holds from now on, and whether its result was
+                // set aside for the lab's newer one, which it should pull again.
+                if ($declaresResultVersion) {
+                    $sampleResponse['resultVersion'] = SavedResultGuard::currentVersion($db, 'generic-tests', $data['genericSampleId']);
+                    if ($staleResult) {
+                        $sampleResponse['resultKept'] = true;
+                    }
+                }
+                $responseData[$rootKey] = $sampleResponse;
             } else {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [
@@ -564,6 +594,11 @@ try {
         'transactionId' => $transactionId,
         'data' => array_values($responseData ?? [])
     ];
+
+    // Tells a client that declared result-version that this server checked it.
+    if ($declaresResultVersion) {
+        $payload['capabilities'] = ['supports' => [SavedResultGuard::RESULT_VERSION]];
+    }
     http_response_code(200);
     $db->commitTransaction();
 } catch (Throwable $exc) {
