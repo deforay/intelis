@@ -67,7 +67,17 @@ try {
 
     $labs = $facilitiesService->getTestingLabs($module, alwaysIncludeLabId: $previousLab) ?: [];
 
-    if (empty($manifest) || (!empty($manifest['module']) && strcasecmp((string) $manifest['module'], $module) !== 0)) {
+    // Lab isolation (cloud-LIS): a lab edits only a manifest bound for it, and
+    // no save below reads or writes another lab's sample. Empty for everyone
+    // not acting as one lab.
+    $labScope = $general->labScopeWhere('');
+    $ownLab = (int) ($_SESSION['labId'] ?? 0);
+    $notOurs = $labScope !== '' && $previousLab > 0 && $previousLab !== $ownLab;
+
+    if (
+        empty($manifest) || $notOurs
+        || (!empty($manifest['module']) && strcasecmp((string) $manifest['module'], $module) !== 0)
+    ) {
         $refusal = [_translate("This manifest could not be found"), $listUrl];
     } elseif ($manifest['manifest_status'] === TestRequestsService::MANIFEST_RECEIVED) {
         // The page refuses too, but only the page; this is where it holds.
@@ -94,6 +104,9 @@ try {
         $db->where($primaryKey, $selectedSamples, 'IN');
         $db->where('result_status', CANCELLED, '!=');
         $db->where($ofThisLab, [$testingLab, $manifestId, $manifestId]);
+        if ($labScope !== '') {
+            $db->where($labScope);
+        }
         $db->update($tableName, [
             'sample_package_id' => $manifestId,
             'sample_package_code' => $manifestCode,
@@ -108,6 +121,9 @@ try {
         $db->where($primaryKey, $selectedSamples, 'IN');
         $db->where('(lab_id = ? OR lab_id IS NULL)', [$testingLab]);
         $db->where('result_status', CANCELLED, '!=');
+        if ($labScope !== '') {
+            $db->where($labScope);
+        }
         $keptSamples = array_map('intval', $db->getValue($tableName, $primaryKey, null) ?: []);
 
         if ($keptSamples !== []) {
@@ -129,6 +145,9 @@ try {
             $db->reset();
             $db->where('(sample_package_id = ? OR sample_package_code = ?)', [$manifestId, $manifestCode]);
             $db->where($primaryKey, $keptSamples, 'NOT IN');
+            if ($labScope !== '') {
+                $db->where($labScope);
+            }
             $db->update($tableName, [
                 'sample_package_id' => null,
                 'sample_package_code' => null,
