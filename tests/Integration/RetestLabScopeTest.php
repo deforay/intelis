@@ -103,4 +103,30 @@ final class RetestLabScopeTest extends TestCase
         $this->assertSame(2, $reset);
         $this->assertSame(RECEIVED_AT_TESTING_LAB, self::statusOf($b));
     }
+
+    /**
+     * A retest clears the result on the lab. Unless the row is marked unsent, the
+     * STS keeps showing the failed result and the next pull brings it back.
+     */
+    public function testRetestMarksTheSampleForSending(): void
+    {
+        $sent = $this->seedFailed('SENT-1', 5);
+        $untouched = $this->seedFailed('UNTOUCHED-1', 9);
+
+        (new TestAttemptService(LegacyAppHarness::db()))
+            ->resetForRetest('vl', [$sent], RECEIVED_AT_TESTING_LAB);
+
+        $row = LegacyAppHarness::db()->rawQueryOne(
+            'SELECT data_sync, last_modified_datetime FROM form_vl WHERE vl_sample_id = ?',
+            [$sent]
+        );
+        $this->assertSame(0, (int) $row['data_sync']);
+        $this->assertNotNull($row['last_modified_datetime']);
+
+        $other = LegacyAppHarness::db()->rawQueryOne(
+            'SELECT data_sync FROM form_vl WHERE vl_sample_id = ?',
+            [$untouched]
+        );
+        $this->assertSame(1, (int) $other['data_sync']);
+    }
 }
