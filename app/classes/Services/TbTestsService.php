@@ -148,13 +148,14 @@ final class TbTestsService
         if ($tbId <= 0) {
             throw new RuntimeException('Cannot save TB tests without a sample');
         }
-        // Another lab's rows are that lab's: the form never changes or deletes them.
-        $labScope = ContainerRegistry::get(CommonService::class)->labScopeWhere('');
-        $scoped = $labScope !== '' ? " AND $labScope" : '';
-        $existing = $this->db->rawQuery(
-            "SELECT * FROM tb_tests WHERE tb_id = ?$scoped ORDER BY tb_test_id",
-            [$tbId]
-        ) ?: [];
+        // Every row, as the page drew them; acting as one lab, another lab's rows are
+        // that lab's and the form never changes or deletes them. A row the form adds
+        // belongs to the lab acting, not to a lab the sample was referred from.
+        $ownLabId = ContainerRegistry::get(CommonService::class)->getOwnLabId();
+        $isAnotherLabs = static fn(array $row): bool => $ownLabId !== null
+            && !empty($row['lab_id']) && (int) $row['lab_id'] !== $ownLabId;
+        $newRowLabId = $ownLabId ?? (empty($labId) ? null : $labId);
+        $existing = $this->db->rawQuery('SELECT * FROM tb_tests WHERE tb_id = ? ORDER BY tb_test_id', [$tbId]) ?: [];
         $byId = array_column($existing, null, 'tb_test_id');
         $actualNos = array_values($actualNos);
         $testIds = $testIds === null ? null : array_values($testIds);
@@ -175,6 +176,9 @@ final class TbTestsService
                 }
                 $row = $testId === '' ? null : $byId[$testId];
             }
+            if ($row !== null && $isAnotherLabs($row)) {
+                continue;
+            }
 
             if ($row === null) {
                 if ($result === '' && $actualNo === '') {
@@ -182,7 +186,7 @@ final class TbTestsService
                 }
                 $written = $this->db->insert('tb_tests', [
                     'tb_id' => $tbId,
-                    'lab_id' => empty($labId) ? null : $labId,
+                    'lab_id' => $newRowLabId,
                     'actual_no' => $actualNo === '' ? null : $actualNo,
                     'test_result' => $result === '' ? null : $result,
                     'updated_datetime' => DateUtility::getCurrentDateTime(),
@@ -197,7 +201,7 @@ final class TbTestsService
                 $this->db->where('tb_test_id', (int) $row['tb_test_id']);
                 $written = $this->db->update('tb_tests', [
                     // A row the lab changed is the lab's.
-                    'lab_id' => $row['lab_id'] ?? (empty($labId) ? null : $labId),
+                    'lab_id' => $row['lab_id'] ?? $newRowLabId,
                     'actual_no' => $actualNo === '' ? null : $actualNo,
                     'test_result' => $result === '' ? null : $result,
                     'updated_datetime' => DateUtility::getCurrentDateTime(),

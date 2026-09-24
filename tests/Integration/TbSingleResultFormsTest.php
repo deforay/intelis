@@ -343,13 +343,21 @@ final class TbSingleResultFormsTest extends TestCase
         $tbId = $this->seedTb();
         $otherLab = $this->seedTbTest($tbId, ['lab_id' => 2, 'actual_no' => '1', 'test_result' => '1+']);
 
-        ContainerRegistry::get(TbTestsService::class)
-            ->saveMicroscopyRows($tbId, ['', '', ''], ['', '', ''], 1, [(string) $otherLab, '', '']);
+        $own = $this->seedTbTest($tbId, ['lab_id' => 1, 'actual_no' => '2', 'test_result' => 'No AFB']);
+        $tbTests = ContainerRegistry::get(TbTestsService::class);
 
-        self::assertSame([[$otherLab, '1+']], array_map(
-            static fn($t) => [(int) $t['tb_test_id'], $t['test_result']],
-            $this->tbTests($tbId)
-        ));
+        // A page with the row ids, and one from before them: slot 1 is the other lab's
+        // row either way, and slot 2 the lab's own.
+        $tbTests->saveMicroscopyRows($tbId, ['', '2+', ''], ['', '2', ''], 2, [(string) $otherLab, (string) $own, '']);
+        $tbTests->saveMicroscopyRows($tbId, ['3+', '2+', '1+'], ['1', '2', '3'], 2);
+
+        self::assertSame(
+            [[$otherLab, '2', '1+'], [$own, '1', '2+'], [$own + 1, '1', '1+']],
+            array_map(
+                static fn($t) => [(int) $t['tb_test_id'], (string) $t['lab_id'], $t['test_result']],
+                $this->tbTests($tbId)
+            )
+        );
     }
 
     /**
