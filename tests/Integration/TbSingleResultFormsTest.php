@@ -455,6 +455,33 @@ final class TbSingleResultFormsTest extends TestCase
         self::assertSame(6, (int) $sample['result_status']);
     }
 
+    /** Saving a request with "not rejected" and no result keeps the sample where it is. */
+    #[RunInSeparateProcess]
+    public function testARequestSaveDoesNotSendASampleBack(): void
+    {
+        $tbId = $this->seedTb();
+        LegacyAppHarness::db()->rawQuery('UPDATE form_tb SET result_status = 8 WHERE tb_id = ?', [$tbId]);
+
+        $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, ['patientId' => 'P-4']));
+
+        self::assertSame(8, (int) $this->formTb($tbId)['result_status']);
+    }
+
+    /** Lifting a rejection on the request still moves the sample back to the lab. */
+    #[RunInSeparateProcess]
+    public function testLiftingARejectionOnTheRequestMovesTheSample(): void
+    {
+        $tbId = $this->seedTb();
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE form_tb SET result_status = 4, is_sample_rejected = 'yes' WHERE tb_id = ?",
+            [$tbId]
+        );
+
+        $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, ['patientId' => 'P-4']));
+
+        self::assertSame(6, (int) $this->formTb($tbId)['result_status']);
+    }
+
     /** A row the client sent and the lab then changed becomes the lab's. */
     #[RunInSeparateProcess]
     public function testAClientRowTheLabChangesTakesTheLab(): void
