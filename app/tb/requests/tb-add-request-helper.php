@@ -34,9 +34,8 @@ try {
     $request = AppRegistry::get('request');
 
     $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
-    // The request forms show the result section only to a user who may enter results
-    // or who is not at a collection site. Anyone else's post carries no results.
-    if (!_isAllowed('/tb/results/tb-update-result.php') && ($_SESSION['accessType'] ?? null) === 'collection-site') {
+    // A post from a user the form hides its result section from carries no results.
+    if (!TbTestsService::requestFormShowsResults($general)) {
         foreach (TbTestsService::REQUEST_FORM_RESULT_KEYS as $resultKey) {
             unset($_POST[$resultKey]);
         }
