@@ -2,6 +2,8 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -39,7 +41,6 @@ $tableName = "form_generic";
 $testTableName = "generic_test_results";
 $vlTestReasonTable = "r_generic_test_reasons";
 $fDetails = "facility_details";
-$vl_result_category = null;
 $vlResult = null;
 $resultStatus = null;
 try {
@@ -189,11 +190,21 @@ try {
           }
      }
 
-     $isRejected = false;
-     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
-          $vl_result_category = 'rejected';
-          $isRejected = true;
-          $genericData['result_status'] = REJECTED;
+     // 'yes' or 'no' when the form showed the question; null when it did not (the
+     // multi-test form hides it), and then the saved rejection is left as it is.
+     // The status used to be set on an array that was replaced below, so a
+     // rejection saved here never moved the sample.
+     $rejectionAnswer = $_POST['isSampleRejected'] ?? null;
+     if ($rejectionAnswer === 'yes') {
+          $resultStatus = REJECTED;
+     } elseif ($rejectionAnswer === 'no') {
+          // Un-rejected: back to where a received sample waits, as on the result page.
+          $db->where('sample_id', $_POST['requestSampleId'] ?? 0);
+          if ((int) $db->getValue($tableName, 'result_status') === REJECTED) {
+               $resultStatus = ($general->isSTSInstance() && ($_SESSION['accessType'] ?? '') === 'collection-site')
+                    ? RECEIVED_AT_CLINIC
+                    : RECEIVED_AT_TESTING_LAB;
+          }
      }
 
      // Result-change history is stored as a JSON array of {usr, msg, dtime} entries.
@@ -276,13 +287,16 @@ try {
           'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') ? base64_decode((string) $_POST['fundingSource']) : null,
           'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') ? base64_decode((string) $_POST['implementingPartner']) : null,
           'test_number' => (isset($_POST['viralLoadNo']) && $_POST['viralLoadNo'] != '') ? $_POST['viralLoadNo'] : null,
-          'request_created_datetime' => DateUtility::getCurrentDateTime(),
           'last_modified_datetime' => DateUtility::getCurrentDateTime(),
           'test_type' => $_POST['testType'],
           'sub_tests' => (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) ? implode("##", $_POST['subTestResult']) : $_POST['subTestResult'],
           'test_type_form' => json_encode($_POST['dynamicFields']),
           'data_sync' => 0,
      ];
+
+     if ($rejectionAnswer !== 'yes' && $rejectionAnswer !== 'no') {
+          unset($genericData['is_sample_rejected'], $genericData['reason_for_sample_rejection'], $genericData['rejection_on']);
+     }
 
      // only if result status has changed, let us update
      if ($resultStatus !== null) {

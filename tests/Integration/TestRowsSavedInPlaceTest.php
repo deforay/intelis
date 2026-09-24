@@ -604,6 +604,67 @@ final class TestRowsSavedInPlaceTest extends TestCase
         self::assertSame('Negative', $tests[0]['result']);
     }
 
+    // ---------------------------------------------------------------- Custom tests, request edit
+
+    /** @param array<string, mixed> $post */
+    private function driveCustomTestRequestEdit(int $sampleId, array $post): void
+    {
+        $this->drive('/generic-tests/requests/edit-request-helper.php', $post + [
+            'requestSampleId' => (string) $sampleId,
+            'sampleCode' => 'GT-1',
+            'facilityId' => '1',
+            'labId' => '1',
+            'sampleCollectionDate' => '15-Sep-2026 09:00',
+            'testType' => '1',
+            'artNo' => 'P-1',
+            'facilityCode' => '',
+            'dynamicFields' => [],
+            'sampleCodeCol' => 'GT-1',
+            'patientFirstName' => '',
+        ]);
+    }
+
+    private function formGeneric(int $sampleId): array
+    {
+        return LegacyAppHarness::db()->rawQueryOne('SELECT * FROM form_generic WHERE sample_id = ?', [$sampleId]);
+    }
+
+    /** The multi-test form hides the rejection question; an edit without it keeps the rejection. */
+    #[RunInSeparateProcess]
+    public function testACustomTestRequestEditWithoutTheRejectionQuestionKeepsTheRejection(): void
+    {
+        $sampleId = $this->seedGeneric([
+            'is_sample_rejected' => 'yes',
+            'reason_for_sample_rejection' => 3,
+            'rejection_on' => '2026-09-16',
+            'result_status' => 4,
+            'request_created_datetime' => '2026-09-15 09:30:00',
+        ]);
+
+        $this->driveCustomTestRequestEdit($sampleId, []);
+
+        $row = $this->formGeneric($sampleId);
+        self::assertSame('P-1', $row['patient_id']);
+        self::assertSame('yes', $row['is_sample_rejected']);
+        self::assertSame('3', (string) $row['reason_for_sample_rejection']);
+        self::assertSame('2026-09-16', $row['rejection_on']);
+        self::assertSame(4, (int) $row['result_status']);
+        // An edit is not the request's creation.
+        self::assertSame('2026-09-15 09:30:00', $row['request_created_datetime']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testRejectingOnACustomTestRequestEditMovesTheSample(): void
+    {
+        $sampleId = $this->seedGeneric();
+
+        $this->driveCustomTestRequestEdit($sampleId, ['isSampleRejected' => 'yes', 'rejectionReason' => '3']);
+
+        $row = $this->formGeneric($sampleId);
+        self::assertSame('yes', $row['is_sample_rejected']);
+        self::assertSame(4, (int) $row['result_status']);
+    }
+
     // ---------------------------------------------------------------- Custom tests, sub-test rows
 
     /** @param array<string, mixed> $post */

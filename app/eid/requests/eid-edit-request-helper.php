@@ -335,7 +335,6 @@ try {
 		'data_sync' => 0,
 		'reason_for_sample_rejection' => $_POST['sampleRejectionReason'] ?? null,
 		'rejection_on' => isset($_POST['rejectionDate']) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-		'request_created_datetime' => DateUtility::getCurrentDateTime(),
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
 	];
 

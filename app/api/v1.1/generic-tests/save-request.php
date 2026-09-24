@@ -410,15 +410,44 @@ try {
                 $genericData['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
                 $genericData['request_created_by'] = $user['user_id'];
             }
-            if (isset($data['genericSampleId']) && $data['genericSampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
+            // A client re-posts its whole dataset, so a test the sample already has
+            // exactly as sent is not added again.
+            $savedTests = [];
+            $testSignature = static fn(array $row): string => json_encode([
+                ...array_map(
+                    static fn($value): string => trim((string) $value),
+                    [
+                        $row['sub_test_name'] ?? '', $row['test_name'] ?? '', $row['result'] ?? '',
+                        $row['result_unit'] ?? '', $row['final_result'] ?? '',
+                    ]
+                ),
+                // Stored as a datetime, posted as a date: compared as the same instant.
+                (string) DateUtility::isoDateFormat((string) ($row['sample_tested_datetime'] ?? ''), true),
+            ]) ?: '';
+            if (!empty($data['genericSampleId'])) {
+                foreach ($db->rawQuery("SELECT * FROM $testTableName WHERE generic_id = ?", [$data['genericSampleId']]) ?: [] as $savedTest) {
+                    $savedTests[$testSignature($savedTest)] = true;
+                }
+            }
+            $insertTest = static function (array $testData) use ($db, $testTableName, $testSignature, &$savedTests): void {
+                $signature = $testSignature($testData);
+                if (isset($savedTests[$signature])) {
+                    return;
+                }
+                $db->insert($testTableName, $testData);
+                $savedTests[$signature] = true;
+            };
+
+            $isRejected = ($data['isSampleRejected'] ?? '') === 'yes';
+            if (!empty($data['genericSampleId']) && !$isRejected) {
                 if (!empty($data['testName'])) {
                     $finalResult = "";
                     if (isset($data['subTestResult']) && !empty($data['subTestResult'])) {
                         foreach ($data['testName'] as $subTestName => $subTests) {
                             foreach ($subTests as $testKey => $testKitName) {
                                 if (!empty($testKitName)) {
-                                    $testData = ['generic_id' => $data['vlSamplgenericSampleIdeId'], 'sub_test_name' => $subTestName, 'result_type' => $data['resultType'][$subTestName], 'test_name' => ($testKitName == 'other') ? $data['testNameOther'][$subTestName][$testKey] : $testKitName, 'facility_id' => $data['labId'] ?? null, 'sample_tested_datetime' => DateUtility::isoDateFormat($data['testDate'][$subTestName][$testKey] ?? ''), 'testing_platform' => $data['testingPlatform'][$subTestName][$testKey] ?? null, 'kit_lot_no' => (str_contains((string) $testKitName, 'RDT')) ? $data['lotNo'][$subTestName][$testKey] : null, 'kit_expiry_date' => (str_contains((string) $testKitName, 'RDT')) ? DateUtility::isoDateFormat($data['expDate'][$subTestName][$testKey]) : null, 'result_unit' => $data['testResultUnit'][$subTestName][$testKey], 'result' => $data['testResult'][$subTestName][$testKey], 'final_result' => $data['finalResult'][$subTestName], 'final_result_unit' => $data['finalTestResultUnit'][$subTestName], 'final_result_interpretation' => $data['resultInterpretation'][$subTestName]];
-                                    $db->insert('generic_test_results', $testData);
+                                    $testData = ['generic_id' => $data['genericSampleId'], 'sub_test_name' => $subTestName, 'result_type' => $data['resultType'][$subTestName], 'test_name' => ($testKitName == 'other') ? $data['testNameOther'][$subTestName][$testKey] : $testKitName, 'facility_id' => $data['labId'] ?? null, 'sample_tested_datetime' => DateUtility::isoDateFormat($data['testDate'][$subTestName][$testKey] ?? ''), 'testing_platform' => $data['testingPlatform'][$subTestName][$testKey] ?? null, 'kit_lot_no' => (str_contains((string) $testKitName, 'RDT')) ? $data['lotNo'][$subTestName][$testKey] : null, 'kit_expiry_date' => (str_contains((string) $testKitName, 'RDT')) ? DateUtility::isoDateFormat($data['expDate'][$subTestName][$testKey]) : null, 'result_unit' => $data['testResultUnit'][$subTestName][$testKey], 'result' => $data['testResult'][$subTestName][$testKey], 'final_result' => $data['finalResult'][$subTestName], 'final_result_unit' => $data['finalTestResultUnit'][$subTestName], 'final_result_interpretation' => $data['resultInterpretation'][$subTestName]];
+                                    $insertTest($testData);
                                     if (isset($data['finalResult'][$subTestName]) && !empty($data['finalResult'][$subTestName])) {
                                         $finalResult = $data['finalResult'][$subTestName];
                                     }
@@ -440,7 +469,7 @@ try {
                                         $testData['final_result_interpretation'] = $data['resultInterpretation'][$key];
                                     }
                                 }
-                                $db->insert('generic_test_results', $testData);
+                                $insertTest($testData);
                                 if (isset($testData['final_result']) && !empty($testData['final_result'])) {
                                     $finalResult = $testData['final_result'];
                                 }
@@ -448,8 +477,14 @@ try {
                         }
                     }
                     $genericData['result'] = $finalResult;
+                    // The result came with the tests, not in "result": the status has to
+                    // follow it, or the sample stays received with a result on it.
+                    if ($finalResult !== '') {
+                        $genericData['result_status'] = PENDING_APPROVAL;
+                    }
                 }
-            } else {
+            } elseif (!empty($data['genericSampleId']) && $isRejected) {
+                // A rejected sample has no tests, as on the result page.
                 $db->where('generic_id', $data['genericSampleId']);
                 $db->delete($testTableName);
                 $genericData['sample_tested_datetime'] = null;
