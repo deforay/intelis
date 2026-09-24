@@ -215,7 +215,7 @@ try {
         $_POST['finalResult'] = null;
         $status = REJECTED;
         $resultSentToSource = 'pending';
-    } elseif (!empty($_POST['finalResult'])) {
+    } elseif (trim((string) ($_POST['finalResult'] ?? '')) !== '') {
         $status = PENDING_APPROVAL; // Awaiting Approval
     }
     // form_tb.lab_id is the lab currently holding the sample, not the one that first

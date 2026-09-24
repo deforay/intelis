@@ -170,6 +170,19 @@ final class TbSingleResultFormsTest extends TestCase
         self::assertSame('2026-09-18', $row['identification_result_date']);
     }
 
+    /** A final result of "0" is a result: it stays and goes for approval. */
+    #[RunInSeparateProcess]
+    public function testAFinalResultOfZeroGoesForApproval(): void
+    {
+        $tbId = $this->seedTb();
+
+        $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, ['finalResult' => '0']));
+
+        $row = $this->formTb($tbId);
+        self::assertSame('0', $row['result']);
+        self::assertSame(8, (int) $row['result_status']);
+    }
+
     /** A form that asks, and was told no, still keeps no result. */
     #[RunInSeparateProcess]
     public function testAResultNotMarkedFinalIsNotKept(): void
