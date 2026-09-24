@@ -196,6 +196,9 @@ cleanup() {
   if mountpoint -q "$RESTORE_MOUNT" 2>/dev/null; then
     umount "$RESTORE_MOUNT" 2>/dev/null || true
   fi
+  # Only symlinks to the drive; removing them leaves the drive untouched.
+  [ -n "${FLAT_TMP:-}" ] && rm -rf "$FLAT_TMP"
+  return 0
 }
 trap cleanup EXIT
 
@@ -214,7 +217,7 @@ print header "InteLIS restore"
 
 SRC_MODE=""; SSH_USER=""; SSH_HOST=""; SSH_PORT="22"; SSH_KEY=""
 SMB_HOST=""; SMB_SHARE=""; SMB_USER=""; SMB_VERS=""
-LOCAL_ROOT=""; LOCAL_UUID=""; SRC_BASE=""
+LOCAL_ROOT=""; LOCAL_UUID=""; SRC_BASE=""; FLAT_TMP=""
 
 # On the original machine the backup settings are already known, so there is
 # nothing to type. On a replacement machine they are not, so ask.
@@ -364,14 +367,130 @@ connect_local() {
     lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT 2>/dev/null | grep -v '^loop' || true
     echo
   fi
+  # With one drive plugged in, its mount point is the answer nearly every time.
+  local default_root="${LOCAL_ROOT:-}" answer resolved flat mounts rc
+  if [ -z "$default_root" ]; then
+    mapfile -t mounts < <(local_mounts)
+    [ "${#mounts[@]}" -eq 1 ] && default_root="${mounts[0]}"
+  fi
   while true; do
-    ask LOCAL_ROOT "Folder on the drive that holds the backups" "${LOCAL_ROOT:-/media/backup}"
-    if [ -d "${LOCAL_ROOT}/backups" ]; then SRC_BASE="${LOCAL_ROOT}/backups"; break; fi
-    if [ -d "$LOCAL_ROOT" ]; then SRC_BASE="$LOCAL_ROOT"; break; fi
-    print warning "'$LOCAL_ROOT' does not exist. Is the drive plugged in and mounted?"
-    LOCAL_ROOT=""
+    ask answer "Folder on the drive that holds the backups (the MOUNTPOINT shown above)" "$default_root"
+    rc=0; resolved="$(resolve_local_root "$answer")" || rc=$?
+    if [ "$rc" -eq 2 ]; then
+      print warning "'$answer' is on more than one drive. Type the full path, starting with the MOUNTPOINT shown above."
+      continue
+    elif [ "$rc" -ne 0 ]; then
+      print warning "'$answer' was not found. Type the full path from the MOUNTPOINT column, for example /media/labuser/BACKUP."
+      continue
+    fi
+    case "$resolved/" in
+      /var/intelis-restore/*|/root/intelis-restore/*)
+        print warning "'$resolved' is where this script puts its copy, not where the backup is. Type the drive's path."
+        continue ;;
+    esac
+    LOCAL_ROOT="$resolved"
+    # A backups folder copied by hand from an InteLIS machine, as the migration
+    # guide describes, holds the dumps directly rather than one folder per lab.
+    # Present it as a single lab so the rest of the script reads it unchanged.
+    if flat="$(flat_dump_dir "$LOCAL_ROOT")"; then
+      FLAT_TMP="$(mktemp -d)"
+      # Named after the drive or folder, not "backups" or "db", so the menu and
+      # the final "Restore ... now?" show which copy is about to be used.
+      local lab_name="$LOCAL_ROOT"
+      while case "$(basename "$lab_name")" in backups|db) true ;; *) false ;; esac; do
+        lab_name="$(dirname "$lab_name")"
+      done
+      lab_name="$(basename "$lab_name")"
+      mkdir -p "${FLAT_TMP}/${lab_name}/backups"
+      ln -s "$flat" "${FLAT_TMP}/${lab_name}/backups/db"
+      # The config backups hold the old database password an encrypted dump needs.
+      if [ "$(basename "$flat")" = "db" ] && [ -d "$(dirname "$flat")/config" ]; then
+        ln -s "$(dirname "$flat")/config" "${FLAT_TMP}/${lab_name}/backups/config"
+      fi
+      SRC_BASE="$FLAT_TMP"
+      print success "Found InteLIS database backups in ${flat}"
+      return
+    fi
+    if [ -d "${LOCAL_ROOT}/backups" ]; then SRC_BASE="${LOCAL_ROOT}/backups"; else SRC_BASE="$LOCAL_ROOT"; fi
+    break
   done
   print success "Reading from $SRC_BASE"
+}
+
+# Mount points of attached drives, where Ubuntu and the backup setup put them.
+# lsblk -r writes a space in a name as \x20, which printf %b turns back.
+local_mounts() {
+  local m
+  lsblk -rno MOUNTPOINT 2>/dev/null | while IFS= read -r m; do
+    printf '%b\n' "$m"
+  done | grep -E '^/(media|run/media|mnt)/' || true
+}
+
+# Accepts a full path, or the name of a drive or of a folder on one, since the
+# drive's label is what people see and type. A relative name is never tried
+# against the current folder: run from the InteLIS folder, "backups" would
+# otherwise pick this machine's own backups.
+# Returns 2 when the name fits more than one drive: picking the first would
+# restore whichever drive happens to be listed first.
+resolve_local_root() {
+  local answer=${1%/} m lower
+  local -a found=()
+  case "$answer" in
+    /*) [ -d "$answer" ] && { printf '%s' "$answer"; return 0; }; return 1 ;;
+  esac
+  lower="$(printf '%s' "$answer" | tr '[:upper:]' '[:lower:]')"
+  while IFS= read -r m; do
+    if [ -d "${m}/${answer}" ]; then
+      found+=("${m}/${answer}")
+    elif [ "$(basename "$m" | tr '[:upper:]' '[:lower:]')" = "$lower" ]; then
+      found+=("$m")
+    fi
+  done < <(local_mounts)
+  [ "${#found[@]}" -eq 0 ] && return 1
+  [ "${#found[@]}" -gt 1 ] && return 2
+  printf '%s' "${found[0]}"
+}
+
+# The main database's dumps, in every form db-tools restores. A dump is named
+# after its database: vlsm on most installs, intelis on newer ones. The names
+# are listed rather than "anything but interfacing-": the interfacing database
+# can be given another name, its dumps share this folder, and restoring one
+# over the lab's database would replace the lab's data with instrument tables.
+# Safety copies start with pre-restore-, so they never match.
+MAIN_DUMP=( \( -name 'vlsm-*' -o -name 'intelis-*' \)
+            \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst' -o -name '*.sql.gpg'
+               -o -name '*.sql.gz.gpg' -o -name '*.sql.zst.gpg' -o -name '*.sql.zip' \) )
+
+# -print -quit, not "| grep -q .": grep exits at the first line, find then dies
+# of SIGPIPE on a big folder, and pipefail turns that into "nothing found".
+has_main_dumps() {
+  [ -n "$(find "$1" -maxdepth 1 -type f "${MAIN_DUMP[@]}" -print -quit 2>/dev/null)" ]
+}
+
+# The main-database dumps in a folder, newest first. Sorting names would put
+# every vlsm- dump ahead of any intelis- one whatever its date, so this sorts
+# on the timestamp db-tools writes into the name (<db>-YYYYMMDD-HHMMSS-...),
+# falling back to the modified time. Same ordering as setup.sh.
+main_dumps_newest_first() {
+  local f key
+  find "$1" -maxdepth 1 -type f "${MAIN_DUMP[@]}" 2>/dev/null | while IFS= read -r f; do
+    if [[ "$(basename "$f")" =~ -([0-9]{8})-([0-9]{6})- ]]; then
+      key="${BASH_REMATCH[1]}${BASH_REMATCH[2]}"
+    else
+      key="$(date -r "$f" +%Y%m%d%H%M%S)"
+    fi
+    printf '%s\t%s\n' "$key" "$f"
+  done | sort -r | cut -f2-
+}
+
+# Prints the folder of dumps when the answer is, or holds, a copy made by hand:
+# the whole backups folder, its db folder, or the dump files on their own.
+flat_dump_dir() {
+  local root=$1 dir
+  for dir in "${root}/backups/db" "${root}/db" "$root"; do
+    if has_main_dumps "$dir"; then printf '%s' "$dir"; return 0; fi
+  done
+  return 1
 }
 
 case "$SRC_MODE" in
@@ -410,7 +529,8 @@ for folder in "${FOLDERS[@]}"; do
   instance="$(printf '%s' "$meta" | awk -F= '/^instance=/{print $2}')"
   host="$(printf '%s' "$meta" | awk -F= '/^hostname=/{print $2}')"
   updated="$(printf '%s' "$meta" | awk -F= '/^updated_at=|^created_at=/{print $2}' | head -1)"
-  newest="$(src_exec "ls -1t ${q_folder}/backups/db 2>/dev/null | head -1 || true" | tr -d '\r')"
+  # Dumps only: db-tools writes a .meta.json beside each one, and it sorts newest.
+  newest="$(src_exec "ls -1t ${q_folder}/backups/db 2>/dev/null | grep -E '\.sql(\.gz|\.zst|\.zip)?(\.gpg)?$' | head -1 || true" | tr -d '\r')"
 
   idx=$((idx + 1))
   CHOICES+=("$folder")
@@ -543,8 +663,12 @@ DUMP_DIR="${STAGING}/db"
 BAD_DUMPS=()
 [ "$what" = "all" ] && DUMP_DIR="${STAGING}/backups/db"
 
-if [ ! -d "$DUMP_DIR" ]; then
-  print warning "No database backups were found in what was copied."
+# Nothing to restore means stop here. Going on offered "Restore now?" and then
+# failed partway, after the operator had already agreed to replace the database.
+if ! has_main_dumps "$DUMP_DIR"; then
+  print error "No main database backup was found in what was copied from ${CHOSEN}."
+  print info  "Nothing was changed. Check that the folder given holds the backups, then run this again."
+  exit 1
 else
   ok_count=0; bad_count=0; gpg_count=0
   while IFS= read -r dump; do
@@ -553,6 +677,12 @@ else
       *.gpg)
         gpg_count=$((gpg_count + 1))
         printf "  🔒 %s (encrypted — the key is needed to open it)\n" "$name"
+        ;;
+      *.zip)
+        # Not tested here: a password-protected zip would stop to ask for the
+        # password. db-tools opens it during the restore.
+        gpg_count=$((gpg_count + 1))
+        printf "  🔒 %s (zip — opened during the restore)\n" "$name"
         ;;
       *.zst)
         if command -v zstd >/dev/null 2>&1; then
@@ -571,7 +701,7 @@ else
         else printf "  ❌ %s is empty\n" "$name"; bad_count=$((bad_count + 1)); BAD_DUMPS+=("$dump"); fi
         ;;
     esac
-  done < <(find "$DUMP_DIR" -maxdepth 1 -type f \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst' -o -name '*.gpg' \) | sort)
+  done < <(find "$DUMP_DIR" -maxdepth 1 -type f \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst' -o -name '*.gpg' -o -name '*.sql.zip' \) | sort)
 
   echo
   if [ "$bad_count" -gt 0 ]; then
@@ -625,11 +755,9 @@ if [ -n "$LIS_PATH" ]; then
         [ "$bad" = "$candidate" ] && { damaged=true; break; }
       done
       $damaged || { newest_dump="$candidate"; break; }
-    done < <(find "$DUMP_DIR" -maxdepth 1 -type f -name 'vlsm-*' \
-               \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst' -o -name '*.sql.gpg' \
-                  -o -name '*.sql.gz.gpg' -o -name '*.sql.zst.gpg' \) | sort -r)
+    done < <(main_dumps_newest_first "$DUMP_DIR")
     if [ -z "$newest_dump" ]; then
-      print error "No readable main-database backup (a .sql, .sql.gz, .sql.zst or .gpg file starting with 'vlsm-') was found in ${DUMP_DIR}."
+      print error "No readable main-database backup (a .sql, .sql.gz, .sql.zst, .gpg or .zip file) was found in ${DUMP_DIR}."
       exit 1
     fi
     # db-tools reads its settings from the current folder and runs as www-data.
@@ -663,7 +791,7 @@ if [ -n "$LIS_PATH" ]; then
     echo "    cd ${LIS_PATH} && sudo -u www-data php vendor/bin/db-tools restore ${DUMP_DIR}/<file>"
     echo
   fi
-  if find "$DUMP_DIR" -maxdepth 1 -name 'interfacing-*' | grep -q .; then
+  if [ -n "$(find "$DUMP_DIR" -maxdepth 1 -name 'interfacing-*' -print -quit)" ]; then
     print info "There are interfacing-database backups here too. Restore one separately if that database is in use:"
     echo
     echo "    cd ${LIS_PATH} && sudo -u www-data php vendor/bin/db-tools restore ${DUMP_DIR}/<interfacing-file>"
@@ -672,12 +800,26 @@ if [ -n "$LIS_PATH" ]; then
 else
   # Bare machine: setup.sh installs the stack and restores in one step.
   print info "InteLIS is not installed on this machine yet."
+  # setup.sh imports .sql, .gz and .zst dumps (optionally .gpg), not .zip. When
+  # the newest dump is a zip, setup would quietly restore an older one instead,
+  # so it has to go in after a plain install.
+  mapfile -t newest_first < <(main_dumps_newest_first "$DUMP_DIR")
+  if [[ "${newest_first[0]:-}" == *.zip ]]; then
+    print info "The newest backup is a .zip file, which the installer cannot read. Install InteLIS first:"
+    echo
+    echo "    cd ~ && wget -O setup.sh \"https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=\$(date +%s)\" && sudo bash setup.sh"
+    echo
+    print info "Then run 'intelis restore' again. It restores the newest backup into the new installation."
+    echo
+    print success "The backup is on this machine, in ${STAGING}"
+    exit 0
+  fi
   print info "Install it and restore the backup in one step by running:"
   echo
   echo "    cd ~ && wget -O setup.sh \"https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=\$(date +%s)\" \\"
   echo "      && sudo bash setup.sh --restore-from-backup-folder \"${DUMP_DIR}\""
   echo
-  if find "$DUMP_DIR" -maxdepth 1 -name '*.gpg' | grep -q .; then
+  if [ -n "$(find "$DUMP_DIR" -maxdepth 1 -name '*.gpg' -print -quit)" ]; then
     print info "These backups are encrypted. Setup opens them with the old database password, read from the"
     print info "config backups copied alongside. If that fails, ask the STS administrator for a recovery token and add:"
     echo
