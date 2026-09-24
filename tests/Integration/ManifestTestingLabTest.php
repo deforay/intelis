@@ -249,6 +249,47 @@ final class ManifestTestingLabTest extends TestCase
         self::assertStringContainsString('<li>R-A</li>', $html);
     }
 
+    #[RunInSeparateProcess]
+    public function testASampleWithNoLabYetStaysOnTheManifestAndTakesItsLab(): void
+    {
+        $manifest = $this->manifest('M-8', self::LAB_A);
+        $a = $this->sample('A', self::LAB_A, 'M-8', $manifest);
+        $n = $this->sample('N', 0, 'M-8', $manifest);
+
+        $this->edit($manifest, self::LAB_A, [$a, $n]);
+
+        $row = $this->row($n);
+        self::assertSame($manifest, (int) $row['sample_package_id']);
+        self::assertSame(self::LAB_A, (int) $row['lab_id']);
+        self::assertSame(2, (int) $this->manifestRow($manifest)['number_of_samples']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testThePickerKeepsASampleWithNoLabYetAndDoesNotWarnAboutIt(): void
+    {
+        $manifest = $this->manifest('M-9', self::LAB_A);
+        $this->sample('N', 0, 'M-9', $manifest);
+
+        $html = $this->picker($manifest, self::LAB_A, '');
+
+        self::assertStringContainsString('R-N', $this->rightBox($html));
+        self::assertStringNotContainsString('Samples from another testing lab', $html);
+    }
+
+    #[RunInSeparateProcess]
+    public function testThePickerNamesOnlySamplesTheUserMaySee(): void
+    {
+        $manifest = $this->manifest('M-10', self::LAB_A);
+        $this->sample('A', self::LAB_A, 'M-10', $manifest);
+        $this->sample('CX', self::LAB_A, 'M-10', $manifest, CANCELLED);
+        $_SESSION['facilityMap'] = '99';
+
+        $html = $this->picker($manifest, self::LAB_B, '');
+
+        self::assertStringNotContainsString('R-A', $html);
+        self::assertStringNotContainsString('R-CX', $html);
+    }
+
     /** @param list<int> $samples */
     private function edit(int $manifest, int $lab, array $samples): ?string
     {
@@ -322,7 +363,7 @@ final class ManifestTestingLabTest extends TestCase
             'remote_sample_code' => 'R-' . $code,
             'remote_sample' => 'yes',
             'facility_id' => 11,
-            'lab_id' => $lab,
+            'lab_id' => $lab > 0 ? $lab : null,
             'sample_package_id' => $manifestId,
             'sample_package_code' => $manifestCode,
             'result_status' => $status,
