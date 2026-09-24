@@ -19,6 +19,18 @@ use App\Registries\ContainerRegistry;
  */
 final class TbTestsService
 {
+    /**
+     * Everything a TB request form posts from its result section: a request save takes
+     * none of it from a user the form does not show that section to.
+     */
+    public const array REQUEST_FORM_RESULT_KEYS = [
+        'finalResult', 'isResultFinalized', 'testResult', 'actualNo', 'microscopyTestId', 'deletedTestIds',
+        'tbLamResult', 'xPertMTMResult', 'cultureResult', 'identicationResult', 'drugMGITResult', 'drugLPAResult',
+        'xpertDateOfResult', 'cultureDateOfResult', 'tbLamDateOfResult', 'identificationDateOfResult',
+        'drugMGITDateOfResult', 'drugLPADateOfResult', 'resultDispatchedDatetime', 'reviewedBy', 'reviewedOn',
+        'approvedBy', 'approvedOn', 'sampleTestedDateTime', 'testedBy', 'resultDate', 'labComments',
+    ];
+
     /** The microscopy results the single-result forms offer. */
     private const array MICROSCOPY_RESULTS = ['No AFB', '1+', '2+', '3+'];
 

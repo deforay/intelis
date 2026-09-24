@@ -401,6 +401,8 @@ final class TbSingleResultFormsTest extends TestCase
 
         $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, [
             'finalResult' => 'MTB not detected',
+            'xPertMTMResult' => 'MTB not detected',
+            'labComments' => 'changed',
             'testResult' => ['', '', ''],
             'actualNo' => ['', '', ''],
             'microscopyTestId' => [(string) $row, '', ''],
@@ -410,6 +412,8 @@ final class TbSingleResultFormsTest extends TestCase
         $sample = $this->formTb($tbId);
         self::assertSame('P-2', $sample['patient_id']);
         self::assertSame('MTB detected', $sample['result']);
+        self::assertNull($sample['xpert_mtb_result']);
+        self::assertNotSame('changed', $sample['lab_tech_comments']);
         self::assertSame([[$row, '1+']], array_map(
             static fn($t) => [(int) $t['tb_test_id'], $t['test_result']],
             $this->tbTests($tbId)
