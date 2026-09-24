@@ -148,8 +148,10 @@ final class TbTestsService
         if ($tbId <= 0) {
             throw new RuntimeException('Cannot save TB tests without a sample');
         }
-        // Every row, as the page drew them; acting as one lab, another lab's rows are
-        // that lab's and the form never changes or deletes them. A row the form adds
+        // Every row, as the page drew them, so a page without row ids lines its slots
+        // up with the right rows. Read only to match slots, never returned. Acting as
+        // one lab, another lab's rows are that lab's and the form never changes or
+        // deletes them. A row the form adds
         // belongs to the lab acting, not to a lab the sample was referred from.
         $ownLabId = ContainerRegistry::get(CommonService::class)->getOwnLabId();
         $isAnotherLabs = static fn(array $row): bool => $ownLabId !== null
