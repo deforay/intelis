@@ -530,8 +530,8 @@ try {
         $id = false;
         if (!empty($data['tbSampleId'])) {
             // A re-post does not undo what the lab decided. See SavedResultGuard.
-            $db->where('tb_id', $data['tbSampleId']);
-            $tbData = SavedResultGuard::protectAndLog($tbData, $db->getOne($tableName) ?: [], 'tb', $transactionId ?? null);
+            $storedSample = SavedResultGuard::lockedSample($db, 'form_tb', 'tb_id', $data['tbSampleId']);
+            $tbData = SavedResultGuard::protectAndLog($tbData, $storedSample, 'tb', $transactionId ?? null);
             $db->where('tb_id', $data['tbSampleId']);
             $id = $db->update($tableName, $tbData);
         }

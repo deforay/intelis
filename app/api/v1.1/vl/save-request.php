@@ -621,17 +621,17 @@ try {
         $id = false;
 
         if (!empty($data['vlSampleId'])) {
-            // Retain the outgoing result before the API write replaces it. There is no
-            // "already has a result" guard here -- the duplicate check above covers
-            // duplicate registrations, not repeated results -- so a re-posted sample
-            // overwrites whatever was stored, including a failure.
-            /** @var TestAttemptService $attempts */
-            $attempts = ContainerRegistry::get(TestAttemptService::class);
-            $attempts->archive('vl', (int) $data['vlSampleId'], TestAttemptService::BY_API);
-
             // A re-post does not undo what the lab decided. See SavedResultGuard.
-            $db->where('vl_sample_id', $data['vlSampleId']);
-            $vlFulldata = SavedResultGuard::protectAndLog($vlFulldata, $db->getOne('form_vl') ?: [], 'vl', $transactionId ?? null);
+            $storedSample = SavedResultGuard::lockedSample($db, 'form_vl', 'vl_sample_id', $data['vlSampleId']);
+            $vlFulldata = SavedResultGuard::protectAndLog($vlFulldata, $storedSample, 'vl', $transactionId ?? null);
+
+            // Retain the outgoing result before a post that still replaces it, and only
+            // then: a re-post the guard kept the result through replaces nothing.
+            if (SavedResultGuard::replacesResult($vlFulldata, $storedSample)) {
+                /** @var TestAttemptService $attempts */
+                $attempts = ContainerRegistry::get(TestAttemptService::class);
+                $attempts->archive('vl', (int) $data['vlSampleId'], TestAttemptService::BY_API);
+            }
             $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);
         }

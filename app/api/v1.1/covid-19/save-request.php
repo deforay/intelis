@@ -604,8 +604,16 @@ try {
                 $db->insert("covid19_patient_comorbidities", $comorbidityData);
             }
         }
+        // Read and locked before the tests: a re-post the lab has already decided
+        // on, carrying no result, must not replace the lab's tests either.
+        $storedSample = empty($data['covid19SampleId'])
+            ? []
+            : SavedResultGuard::lockedSample($db, 'form_covid19', 'covid19_id', $data['covid19SampleId']);
+        $staleRepost = SavedResultGuard::hasLabDecision($storedSample)
+            && trim((string) ($data['result'] ?? '')) === ''
+            && ($data['isSampleRejected'] ?? '') !== 'yes';
         if (isset($data['covid19SampleId']) && $data['covid19SampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
-            if (!empty($data['c19Tests'])) {
+            if (!empty($data['c19Tests']) && !$staleRepost) {
                 $db->where('covid19_id', $data['covid19SampleId']);
                 $db->delete($testTableName);
                 foreach ($data['c19Tests'] as $testKey => $test) {
@@ -648,8 +656,7 @@ try {
         $covid19Data = MiscUtility::arrayEmptyStringsToNull($covid19Data);
         if (!empty($data['covid19SampleId'])) {
             // A re-post does not undo what the lab decided. See SavedResultGuard.
-            $db->where('covid19_id', $data['covid19SampleId']);
-            $covid19Data = SavedResultGuard::protectAndLog($covid19Data, $db->getOne($tableName) ?: [], 'covid19', $transactionId ?? null);
+            $covid19Data = SavedResultGuard::protectAndLog($covid19Data, $storedSample, 'covid19', $transactionId ?? null);
             $db->where('covid19_id', $data['covid19SampleId']);
             $id = $db->update($tableName, $covid19Data);
         }

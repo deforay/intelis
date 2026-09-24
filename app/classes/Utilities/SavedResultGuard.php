@@ -2,6 +2,8 @@
 
 namespace App\Utilities;
 
+use App\Services\DatabaseService;
+
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
@@ -16,7 +18,8 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
  *
  * Once the lab has decided -- a result, a rejection, or any status past received
  * -- a post is taken only for what it says:
- * - an empty value never replaces a saved one;
+ * - an empty value never replaces a saved one in a column the lab fills in
+ *   (LAB_COLUMNS); request details stay the client's to correct, cleared or not;
  * - a "received" status never replaces a decided one;
  * - "not rejected" without a result does not undo a rejection.
  * A post that rejects the sample, or carries a result, still goes through as
@@ -25,6 +28,25 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 final class SavedResultGuard
 {
     private const UNDECIDED_STATUSES = [RECEIVED_AT_CLINIC, RECEIVED_AT_TESTING_LAB];
+
+    /**
+     * Columns the testing lab fills in, across the VL, EID, COVID-19, TB and
+     * Custom Tests endpoints. Named one by one: patient history such as
+     * last_viral_load_result is the client's, so no pattern on "result" will do.
+     */
+    public const LAB_COLUMNS = [
+        'result', 'result_value_log', 'result_value_absolute', 'result_value_absolute_decimal',
+        'result_value_text', 'result_value_hiv_detection', 'vl_result_category', 'xpert_mtb_result',
+        'final_result', 'final_result_unit', 'final_result_interpretation', 'result_unit', 'result_type',
+        'tested_by', 'sample_tested_datetime', 'lab_technician', 'lab_reception_person',
+        'result_reviewed_by', 'result_reviewed_datetime', 'result_approved_by', 'result_approved_datetime',
+        'is_result_authorised', 'authorized_by', 'authorized_on',
+        'is_sample_rejected', 'reason_for_sample_rejection', 'rejection_on',
+        'lab_tech_comments', 'revised_by', 'revised_on', 'reason_for_changing',
+        'reason_for_result_changes', 'reason_for_test_result_changes',
+        'sample_received_at_lab_datetime', 'result_dispatched_datetime', 'lab_assigned_code',
+        'vl_test_platform', 'eid_test_platform', 'testing_platform', 'test_platform',
+    ];
 
     /** @param array<string, mixed> $stored the sample as saved */
     public static function hasLabDecision(array $stored): bool
@@ -54,8 +76,11 @@ final class SavedResultGuard
         $postsResult = !self::isEmpty($update['result'] ?? null);
 
         $kept = [];
-        foreach ($update as $column => $value) {
-            if (array_key_exists($column, $stored) && self::isEmpty($value) && !self::isEmpty($stored[$column])) {
+        foreach (self::LAB_COLUMNS as $column) {
+            if (
+                array_key_exists($column, $update) && array_key_exists($column, $stored)
+                && self::isEmpty($update[$column]) && !self::isEmpty($stored[$column])
+            ) {
                 $kept[] = $column;
             }
         }
@@ -82,6 +107,34 @@ final class SavedResultGuard
             unset($update[$column]);
         }
         return [$update, $kept];
+    }
+
+    /**
+     * The sample as saved, locked for the rest of the caller's transaction, so a
+     * result the lab saves meanwhile is either seen here or waits for this save.
+     *
+     * @return array<string, mixed>
+     */
+    public static function lockedSample(DatabaseService $db, string $table, string $primaryKey, mixed $id): array
+    {
+        return $db->rawQueryOne("SELECT * FROM `$table` WHERE `$primaryKey` = ? FOR UPDATE", [$id]) ?: [];
+    }
+
+    /**
+     * Whether a post the guard has let through still replaces the saved result:
+     * what the attempt history is kept for.
+     *
+     * @param array<string, mixed> $update
+     * @param array<string, mixed> $stored
+     */
+    public static function replacesResult(array $update, array $stored): bool
+    {
+        foreach (['result', 'result_status', 'is_sample_rejected'] as $column) {
+            if (array_key_exists($column, $update) && (string) $update[$column] !== (string) ($stored[$column] ?? '')) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
