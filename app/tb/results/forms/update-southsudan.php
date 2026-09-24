@@ -552,6 +552,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													</thead>
 													<tbody id="testKitNameTable">
 														<?php
+														// Another lab's rows are not this lab's to change.
+														$tbTestInfo = \App\Services\TbTestsService::microscopyRowsForLab($tbTestInfo);
 														$n = count($tbTestInfo);
 														foreach (range(1, 3) as $no) {
 															if ($n >= $no) { ?>

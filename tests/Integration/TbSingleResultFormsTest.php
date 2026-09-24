@@ -374,6 +374,16 @@ final class TbSingleResultFormsTest extends TestCase
         );
 
         self::assertSame(
+            [$own],
+            array_map(
+                static fn($t) => (int) $t['tb_test_id'],
+                TbTestsService::microscopyRowsForLab([
+                    ['tb_test_id' => $otherLab, 'lab_id' => 2],
+                    ['tb_test_id' => $own, 'lab_id' => 1],
+                ])
+            )
+        );
+        self::assertSame(
             [[$otherLab, '2', '1+'], [$own, '1', '2+'], [$own + 1, '1', '1+']],
             array_map(
                 static fn($t) => [(int) $t['tb_test_id'], (string) $t['lab_id'], $t['test_result']],
@@ -406,6 +416,9 @@ final class TbSingleResultFormsTest extends TestCase
                 $form
             );
             self::assertSame(2, substr_count($source, 'name="actualNo[]"'), $form);
+            // The slots show only the rows the save may change.
+            $filter = '$tbTestInfo = \\App\\Services\\TbTestsService::microscopyRowsForLab($tbTestInfo);';
+            self::assertSame(1, substr_count($source, $filter), $form);
         }
     }
 
