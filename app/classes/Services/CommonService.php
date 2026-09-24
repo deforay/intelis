@@ -716,7 +716,8 @@ final class CommonService
             foreach ($optionList as $optId => $optName) {
                 $selectedText = '';
                 if (
-                    !empty($selectedOptions) &&
+                    // A stored "0" is a value: empty() would leave it unselected.
+                    (!empty($selectedOptions) || $selectedOptions === '0') &&
                     (
                         ($optId == $selectedOptions) ||
                         (is_array($selectedOptions) && in_array($optId, $selectedOptions))
