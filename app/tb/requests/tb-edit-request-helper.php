@@ -349,13 +349,16 @@ try {
             unset($tbData[$column]);
         }
     }
-    // Neither a rejection nor a result was posted: the save decides no status.
-    if (!in_array('is_sample_rejected', $resultColumnsPosted, true) && !in_array('result', $resultColumnsPosted, true)) {
-        unset($tbData['result_status']);
-    }
-
     $db->where('tb_id', $_POST['tbSampleId']);
     $getPrevResult = $db->getOne('form_tb');
+
+    // The save decides a status only on a rejection, a kept result, or lifting a
+    // rejection, as the result page does. Otherwise saving the request would send a
+    // sample awaiting approval, or an approved one, back to Received.
+    $liftsRejection = $sampleRejected === 'no' && (int) ($getPrevResult['result_status'] ?? 0) === REJECTED;
+    if ($sampleRejected !== 'yes' && trim((string) ($_POST['finalResult'] ?? '')) === '' && !$liftsRejection) {
+        unset($tbData['result_status']);
+    }
 
     // Only meaningful when this form carried a result. Without one there is nothing
     // to compare against, and the old comparison read an absent key as a change.
