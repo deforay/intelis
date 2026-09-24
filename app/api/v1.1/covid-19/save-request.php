@@ -10,6 +10,7 @@ use const SAMPLE_STATUS\PENDING_APPROVAL;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
+use App\Utilities\SavedResultGuard;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -646,6 +647,9 @@ try {
         $id = false;
         $covid19Data = MiscUtility::arrayEmptyStringsToNull($covid19Data);
         if (!empty($data['covid19SampleId'])) {
+            // A re-post does not undo what the lab decided. See SavedResultGuard.
+            $db->where('covid19_id', $data['covid19SampleId']);
+            $covid19Data = SavedResultGuard::protectAndLog($covid19Data, $db->getOne($tableName) ?: [], 'covid19', $transactionId ?? null);
             $db->where('covid19_id', $data['covid19SampleId']);
             $id = $db->update($tableName, $covid19Data);
         }

@@ -11,6 +11,7 @@ use JsonMachine\Items;
 use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\UsersService;
+use App\Utilities\SavedResultGuard;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -628,6 +629,9 @@ try {
             $attempts = ContainerRegistry::get(TestAttemptService::class);
             $attempts->archive('vl', (int) $data['vlSampleId'], TestAttemptService::BY_API);
 
+            // A re-post does not undo what the lab decided. See SavedResultGuard.
+            $db->where('vl_sample_id', $data['vlSampleId']);
+            $vlFulldata = SavedResultGuard::protectAndLog($vlFulldata, $db->getOne('form_vl') ?: [], 'vl', $transactionId ?? null);
             $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);
         }
