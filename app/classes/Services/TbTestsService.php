@@ -114,6 +114,70 @@ final class TbTestsService
     }
 
     /**
+     * Save the microscopy rows a single-result form posted (testResult[], actualNo[]).
+     *
+     * The form draws the sample's first rows, oldest first, into its fixed slots, so
+     * slot n answers for the n-th row: a changed slot updates that row, a slot the user
+     * emptied deletes it, and a filled slot with no row behind it adds one. Rows past
+     * the slots the form drew, and rows posted back unchanged, are left as they are:
+     * an unchanged row the API client sent stays the client's, so its next post
+     * matches it instead of adding it again. The forms used to delete every row and
+     * insert all their slots, blank ones included.
+     *
+     * Call inside the caller's transaction. Throws when a row cannot be written.
+     *
+     * @param array<array-key, mixed> $results   The posted testResult[].
+     * @param array<array-key, mixed> $actualNos The posted actualNo[].
+     */
+    public function saveMicroscopyRows(int $tbId, array $results, array $actualNos, mixed $labId): void
+    {
+        if ($tbId <= 0) {
+            throw new RuntimeException('Cannot save TB tests without a sample');
+        }
+        $existing = $this->db->rawQuery('SELECT * FROM tb_tests WHERE tb_id = ? ORDER BY tb_test_id', [$tbId]) ?: [];
+        $actualNos = array_values($actualNos);
+
+        foreach (array_values($results) as $slot => $result) {
+            $result = is_scalar($result) ? trim((string) $result) : '';
+            $actualNo = is_scalar($actualNos[$slot] ?? null) ? trim((string) $actualNos[$slot]) : '';
+            $row = $existing[$slot] ?? null;
+
+            if ($row === null) {
+                if ($result === '' && $actualNo === '') {
+                    continue;
+                }
+                $written = $this->db->insert('tb_tests', [
+                    'tb_id' => $tbId,
+                    'lab_id' => empty($labId) ? null : $labId,
+                    'actual_no' => $actualNo === '' ? null : $actualNo,
+                    'test_result' => $result === '' ? null : $result,
+                    'updated_datetime' => DateUtility::getCurrentDateTime(),
+                ]);
+            } elseif ($result === '' && $actualNo === '') {
+                $this->db->where('tb_test_id', (int) $row['tb_test_id']);
+                $written = $this->db->delete('tb_tests');
+            } elseif (
+                $result !== (string) ($row['test_result'] ?? '')
+                || $actualNo !== (string) ($row['actual_no'] ?? '')
+            ) {
+                $this->db->where('tb_test_id', (int) $row['tb_test_id']);
+                $written = $this->db->update('tb_tests', [
+                    // A row the lab changed is the lab's.
+                    'lab_id' => $row['lab_id'] ?? (empty($labId) ? null : $labId),
+                    'actual_no' => $actualNo === '' ? null : $actualNo,
+                    'test_result' => $result === '' ? null : $result,
+                    'updated_datetime' => DateUtility::getCurrentDateTime(),
+                ]);
+            } else {
+                continue;
+            }
+            if (!$written) {
+                throw new RuntimeException("Could not save a test on TB sample $tbId: " . $this->db->getLastError());
+            }
+        }
+    }
+
+    /**
      * The sample's latest test: the one with the latest tested date, or when none has
      * been tested yet, the last one added. Empty when the sample has no tests.
      *

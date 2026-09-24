@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -61,8 +62,12 @@ try {
     }
     $_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true);
 
-    //Set sample received date
-    $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['testResult']['sampleReceivedDate'][0] ?? null, true);
+    // The single-result forms post the received date; the per-test form posts it on
+    // each card, and its latest test sets it below.
+    $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat(
+        $_POST['sampleReceivedDate'] ?? $_POST['testResult']['sampleReceivedDate'][0] ?? null,
+        true
+    );
     $_POST['resultDispatchedDatetime'] = DateUtility::isoDateFormat($_POST['resultDispatchedDatetime'] ?? '', true);
     $_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($_POST['sampleTestedDateTime'] ?? '', true);
     $_POST['sampleDispatchedDate'] = DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true);
@@ -167,8 +172,12 @@ try {
     if (isset($_POST['tbTestsRequested']) && is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = json_encode($_POST['tbTestsRequested']);
     }
-    // A result is kept only when the form says it is finalized.
-    if (empty($_POST['isResultFinalized']) || empty($_POST['finalResult']) || $_POST['isResultFinalized'] != 'yes') {
+    // A result is kept only when the form says it is finalized. A form without that
+    // question keeps the final interpretation it posted.
+    if (
+        trim((string) ($_POST['finalResult'] ?? '')) === ''
+        || (array_key_exists('isResultFinalized', $_POST) && $_POST['isResultFinalized'] != 'yes')
+    ) {
         $_POST['finalResult'] = null;
     }
     // Rejection is a verdict on the sample, not on one test card. A TB sample is one
@@ -180,6 +189,8 @@ try {
         $_POST['finalResult'] = null;
         $status = REJECTED;
         $resultSentToSource = 'pending';
+    } elseif (!empty($_POST['finalResult'])) {
+        $status = PENDING_APPROVAL; // Awaiting Approval, as the edit saves it
     }
     // form_tb.lab_id is the lab currently holding the sample, not the one that first
     // received it: save-tb-referral-helper.php moves it on every transfer, and
@@ -260,10 +271,10 @@ try {
         'identification_result' => empty($_POST['identicationResult']) ? null : $_POST['identicationResult'],
         'drug_mgit_result' => empty($_POST['drugMGITResult']) ? null : $_POST['drugMGITResult'],
         'drug_lpa_result' => empty($_POST['drugLPAResult']) ? null : $_POST['drugLPAResult'],
-        'xpert_result_date' => empty($_POST['xPertDateOfResult']) ? null : $_POST['xPertDateOfResult'],
+        'xpert_result_date' => empty($_POST['xpertDateOfResult']) ? null : $_POST['xpertDateOfResult'],
         'culture_result_date' => empty($_POST['cultureDateOfResult']) ? null : $_POST['cultureDateOfResult'],
         'tblam_result_date' => empty($_POST['tbLamDateOfResult']) ? null : $_POST['tbLamDateOfResult'],
-        'identification_result_date' => empty($_POST['identicationDateOfResult']) ? null : $_POST['identicationDateOfResult'],
+        'identification_result_date' => empty($_POST['identificationDateOfResult']) ? null : $_POST['identificationDateOfResult'],
         'drug_mgit_result_date' => empty($_POST['drugMGITDateOfResult']) ? null : $_POST['drugMGITDateOfResult'],
         'drug_lpa_result_date' => empty($_POST['drugLPADateOfResult']) ? null : $_POST['drugLPADateOfResult'],
         'result_sent_to_source' => $resultSentToSource,
@@ -348,6 +359,13 @@ try {
             && empty($tbData['sample_received_at_lab_datetime'])) {
             unset($tbData['sample_received_at_lab_datetime']);
         }
+    } elseif (!empty($_POST['tbSampleId']) && isset($_POST['testResult']) && is_array($_POST['testResult'])) {
+        ContainerRegistry::get(TbTestsService::class)->saveMicroscopyRows(
+            (int) $_POST['tbSampleId'],
+            $_POST['testResult'],
+            (array) ($_POST['actualNo'] ?? []),
+            $labId
+        );
     }
 
     $tbData['is_encrypted'] = 'no';

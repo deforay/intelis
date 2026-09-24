@@ -198,8 +198,12 @@ try {
     if (isset($_POST['tbTestsRequested']) && is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = json_encode($_POST['tbTestsRequested']);
     }
-    // A result is kept only when the form says it is finalized.
-    if (empty($_POST['isResultFinalized']) || empty($_POST['finalResult']) || $_POST['isResultFinalized'] != 'yes') {
+    // A result is kept only when the form says it is finalized. A form without that
+    // question keeps the final interpretation it posted.
+    if (
+        trim((string) ($_POST['finalResult'] ?? '')) === ''
+        || (array_key_exists('isResultFinalized', $_POST) && $_POST['isResultFinalized'] != 'yes')
+    ) {
         $_POST['finalResult'] = null;
     }
     // Rejection is a verdict on the sample, not on one test card. A TB sample is one
@@ -393,18 +397,12 @@ try {
             unset($tbData['sample_received_at_lab_datetime']);
         }
     } elseif (isset($_POST['testResult']) && is_array($_POST['testResult'])) {
-        $testResult = $_POST['testResult'];
-        $db->where('tb_id', $_POST['tbSampleId']);
-        $db->delete($testTableName);
-        foreach ($testResult as $key => $result) {
-            $db->insert($testTableName, [
-                'tb_id' => $_POST['tbSampleId'] ?? null,
-                'lab_id' => $_POST['labId'] ?? null,
-                'actual_no' => $_POST['actualNo'][$key] ?? null,
-                'test_result' => $result ?? null,
-                'updated_datetime' => DateUtility::getCurrentDateTime()
-            ]);
-        }
+        ContainerRegistry::get(TbTestsService::class)->saveMicroscopyRows(
+            (int) $_POST['tbSampleId'],
+            $_POST['testResult'],
+            (array) ($_POST['actualNo'] ?? []),
+            $_POST['labId'] ?? null
+        );
     }
 
     $tbData['is_encrypted'] = 'no';
