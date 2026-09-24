@@ -19,6 +19,9 @@ use App\Registries\ContainerRegistry;
  */
 final class TbTestsService
 {
+    /** The microscopy results the single-result forms offer. */
+    private const array MICROSCOPY_RESULTS = ['No AFB', '1+', '2+', '3+'];
+
     public function __construct(private ?DatabaseService $db = null)
     {
         $this->db ??= ContainerRegistry::get(DatabaseService::class);
@@ -141,6 +144,12 @@ final class TbTestsService
             $result = is_scalar($result) ? trim((string) $result) : '';
             $actualNo = is_scalar($actualNos[$slot] ?? null) ? trim((string) $actualNos[$slot]) : '';
             $row = $existing[$slot] ?? null;
+            // A result the API or an import stored that the form's list does not
+            // offer came back blank from a page that could not show it. It stays.
+            $stored = trim((string) ($row['test_result'] ?? ''));
+            if ($result === '' && $stored !== '' && !in_array($stored, self::MICROSCOPY_RESULTS, true)) {
+                $result = $stored;
+            }
 
             if ($row === null) {
                 if ($result === '' && $actualNo === '') {
@@ -175,6 +184,22 @@ final class TbTestsService
                 throw new RuntimeException("Could not save a test on TB sample $tbId: " . $this->db->getLastError());
             }
         }
+    }
+
+    /**
+     * A microscopy slot's options, with the row's stored result added when the
+     * form's list does not offer it, so the page shows it and posts it back.
+     *
+     * @param array<string, string> $options
+     * @return array<string, string>
+     */
+    public static function microscopyOptions(array $options, mixed $stored): array
+    {
+        $stored = is_scalar($stored) ? trim((string) $stored) : '';
+        if ($stored !== '' && !array_key_exists($stored, $options)) {
+            $options[$stored] = $stored;
+        }
+        return $options;
     }
 
     /**
