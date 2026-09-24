@@ -32,9 +32,12 @@ if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) === 'pk2') {
 
 if (trim((string) $id) !== '') {
 
-    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,vl.patient_name,vl.patient_surname,vl.is_encrypted,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.manifest_code, l.facility_name as lab_name from specimen_manifests as pd Join form_hepatitis as vl ON vl.sample_package_id=pd.manifest_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.manifest_id IN(" . $db->inIntList($id) . ") ORDER BY remote_sample_code ASC";
     /** @var TestRequestsService $testRequestsService */
     $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
+    // A session acting as one lab prints only its own samples.
+    $printScope = $testRequestsService->manifestPrintScope();
+
+    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,vl.patient_name,vl.patient_surname,vl.is_encrypted,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.manifest_code, l.facility_name as lab_name from specimen_manifests as pd Join form_hepatitis as vl ON vl.sample_package_id=pd.manifest_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.manifest_id IN(" . $db->inIntList($id) . ")" . $printScope . " ORDER BY remote_sample_code ASC";
     $result = $testRequestsService->decryptManifestRows(
         $db->query($sQuery) ?: [],
         ['patient_id', 'patient_name', 'patient_surname'],
@@ -47,6 +50,9 @@ if (trim((string) $id) !== '') {
     $bQuery = "SELECT * from specimen_manifests as pd where manifest_id IN(" . $db->inIntList($id) . ")";
 
     $bResult = $db->query($bQuery);
+    if (!$testRequestsService->mayPrintManifests($bResult ?: [], $result)) {
+        $bResult = [];
+    }
     $showPatientName = $testRequestsService->showsPatientNamesOnManifest('hepatitis', $bResult[0] ?? null);
     if (!empty($bResult)) {
 

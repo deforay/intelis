@@ -37,6 +37,11 @@ if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) === 'pk2') {
 
 if (trim((string) $id) !== '') {
 
+    /** @var TestRequestsService $testRequestsService */
+    $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
+    // A session acting as one lab prints only its own samples.
+    $printScope = $testRequestsService->manifestPrintScope();
+
     $sQuery = "SELECT remote_sample_code,
                     pd.number_of_samples,
                     fd.facility_name as clinic_name,
@@ -58,10 +63,8 @@ if (trim((string) $id) !== '') {
                 JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 JOIN facility_details as l ON l.facility_id=vl.lab_id
                 LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by
-                WHERE pd.manifest_id IN(" . $db->inIntList($id) . ")
+                WHERE pd.manifest_id IN(" . $db->inIntList($id) . ")" . $printScope . "
                 ORDER BY remote_sample_code ASC";
-    /** @var TestRequestsService $testRequestsService */
-    $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
     $result = $testRequestsService->decryptManifestRows(
         $db->rawQuery($sQuery) ?: [],
         ['patient_id', 'patient_name', 'patient_surname'],
@@ -74,6 +77,9 @@ if (trim((string) $id) !== '') {
     $arr = $general->getGlobalConfig();
     $bQuery = "SELECT * FROM specimen_manifests as pd WHERE manifest_id IN(" . $db->inIntList($id) . ")";
     $bResult = $db->rawQuery($bQuery);
+    if (!$testRequestsService->mayPrintManifests($bResult ?: [], $result)) {
+        $bResult = [];
+    }
     $showPatientName = $testRequestsService->showsPatientNamesOnManifest('covid19', $bResult[0] ?? null);
     if (!empty($bResult)) {
 

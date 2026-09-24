@@ -2246,4 +2246,53 @@ final class TestRequestsService
         }
         return $rows;
     }
+
+    /**
+     * The condition a manifest print adds to its sample query, so a session
+     * acting as one lab (cloud-LIS) prints only its own samples.
+     *
+     * A referral manifest travels from the referring lab to the one it refers
+     * to, and either may print it. Empty for everyone not acting as one lab.
+     */
+    public function manifestPrintScope(bool $referral = false, string $alias = 'vl'): string
+    {
+        $scope = $this->commonService->labScopeWhere($alias);
+        if ($scope === '') {
+            return '';
+        }
+        if ($referral) {
+            $labId = (int) ($_SESSION['labId'] ?? 0);
+            return " AND ($alias.referred_by_lab_id = $labId OR $alias.referred_to_lab_id = $labId) ";
+        }
+        return " AND $scope ";
+    }
+
+    /**
+     * Whether this session may print these manifests, and so record the print
+     * and mark them dispatched.
+     *
+     * A session acting as one lab prints only manifests bound for that lab (or
+     * not yet bound), and a referral manifest only when it sent or receives one
+     * of its samples, which the scoped sample query has already decided.
+     *
+     * @param list<array<string, mixed>> $manifests specimen_manifests rows
+     * @param list<array<string, mixed>> $samples the rows the scoped sample query returned
+     */
+    public function mayPrintManifests(array $manifests, array $samples, bool $referral = false): bool
+    {
+        if ($this->commonService->labScopeWhere('') === '') {
+            return true;
+        }
+        if ($referral) {
+            return $samples !== [];
+        }
+        $labId = (int) ($_SESSION['labId'] ?? 0);
+        foreach ($manifests as $manifest) {
+            $manifestLab = (int) ($manifest['lab_id'] ?? 0);
+            if ($manifestLab > 0 && $manifestLab !== $labId) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
