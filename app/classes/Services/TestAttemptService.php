@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Throwable;
-use RuntimeException;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
@@ -308,34 +307,6 @@ final class TestAttemptService
         );
 
         return (int) ($row['next'] ?? 1);
-    }
-
-    /**
-     * Keep a row in audit_log (action 'delete') just before it is deleted, in the Audit
-     * Trail v2 format. The per-test tables (tb_tests, generic_test_results) have no audit
-     * triggers, so this is how a test the user removed stays recoverable. Throws when the
-     * copy cannot be written, so the caller does not go on to delete the only one.
-     */
-    public function snapshotBeforeDelete(string $table, int $recordId, array $row): void
-    {
-        if ($recordId <= 0) {
-            return;
-        }
-        $rev = $this->db->rawQueryOne(
-            "SELECT COALESCE(MAX(revision),0)+1 AS next_rev FROM audit_log WHERE form_table = ? AND record_id = ?",
-            [$table, (string) $recordId]
-        );
-        $saved = $this->db->insert('audit_log', [
-            'form_table' => $table,
-            'record_id' => (string) $recordId,
-            'revision' => (int) ($rev['next_rev'] ?? 1),
-            'action' => 'delete',
-            'dt_datetime' => DateUtility::getCurrentDateTime(),
-            'row_data' => json_encode($row, JSON_UNESCAPED_UNICODE),
-        ]);
-        if ($saved === false) {
-            throw new RuntimeException("Could not keep a copy of $table row $recordId before deleting it");
-        }
     }
 
     /** @return int[] */

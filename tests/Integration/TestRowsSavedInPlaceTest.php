@@ -50,6 +50,7 @@ final class TestRowsSavedInPlaceTest extends TestCase
             'audit_log', 'test_result_attempts', 'activity_log', 'system_config', 'global_config',
         ]);
         LegacyAppHarness::withSession();
+        LegacyAppHarness::withAuditTriggers(['tb_tests' => 'tb_test_id', 'generic_test_results' => 'test_id']);
         LegacyAppHarness::db()->rawQuery(
             "INSERT INTO r_sample_status (status_id, status_name)
                 VALUES (6, 'Received at lab'), (8, 'Awaiting approval')"
@@ -224,7 +225,7 @@ final class TestRowsSavedInPlaceTest extends TestCase
             array_map(static fn($t) => (int) $t['tb_test_id'], $this->tbTests($tbId))
         );
         $copy = LegacyAppHarness::db()->rawQueryOne(
-            "SELECT * FROM audit_log WHERE form_table = 'tb_tests' AND record_id = ?",
+            "SELECT * FROM audit_log WHERE form_table = 'tb_tests' AND record_id = ? AND action = 'delete'",
             [(string) $removed]
         );
         self::assertSame('delete', $copy['action'] ?? null);

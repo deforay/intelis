@@ -3967,6 +3967,9 @@ msgstr "Envoyer"
 msgid "Audit Trail for Sample"
 msgstr "Piste d'audit pour l'échantillon"
 
+msgid "Tests History for Sample"
+msgstr "Historique des tests de l'échantillon"
+
 #: app/admin/monitoring/audit-trail.php:322
 msgid "Show/Hide Columns"
 msgstr "Afficher/masquer les colonnes"

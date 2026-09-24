@@ -78,6 +78,11 @@ final class AuditTriggerService
      */
     public const array EXTRA_AUDITED_TABLES = [
         'user_details' => 'user_id',
+        // A sample's per-test rows: the tests are as much its history as the sample
+        // row is. The archive files them with their sample (AuditArchiveService).
+        'tb_tests' => 'tb_test_id',
+        'covid19_tests' => 'test_id',
+        'generic_test_results' => 'test_id',
     ];
 
     /**

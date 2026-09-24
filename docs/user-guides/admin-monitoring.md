@@ -70,6 +70,11 @@ read how the lab is performing. The pages sit under **ADMIN → Monitoring**.
         On a cloud instance, the Audit Trail opens only samples of the user's
         own lab.
 
+6. For TB, COVID-19 and Custom Tests, read **Tests History** below the sample's
+   history: one row per change to one of the sample's tests, each change marked
+   against that test's previous revision. The history starts from the update
+   that added this section.
+
 ## See what a user did
 
 1. Go to **ADMIN → Monitoring → User Activity Log**.
