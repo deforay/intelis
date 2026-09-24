@@ -60,6 +60,22 @@ final class TbSingleResultFormsTest extends TestCase
     {
         if (self::booted()) {
             LegacyAppHarness::shutdown();
+            self::clearFileCache();
+        }
+    }
+
+    private static function clearFileCache(): void
+    {
+        $dir = CACHE_PATH . DIRECTORY_SEPARATOR . 'file_cache';
+        if (!is_dir($dir)) {
+            return;
+        }
+        $items = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($items as $item) {
+            $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
         }
     }
 
@@ -480,6 +496,27 @@ final class TbSingleResultFormsTest extends TestCase
         $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, ['patientId' => 'P-4']));
 
         self::assertSame(6, (int) $this->formTb($tbId)['result_status']);
+    }
+
+    /** On an STS the Rwanda request form shows no results, so its save takes none. */
+    #[RunInSeparateProcess]
+    public function testTheRwandaRequestFormOnAnStsTakesNoResult(): void
+    {
+        LegacyAppHarness::withSession(['instance' => ['type' => 'remoteuser']]);
+        LegacyAppHarness::db()->insert('global_config', ['name' => 'vl_form', 'value' => '7']);
+        // Global config is file-cached across processes.
+        self::clearFileCache();
+        $tbId = $this->seedTb();
+
+        $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, [
+            'isResultFinalized' => 'yes',
+            'finalResult' => 'MTB detected',
+            'patientId' => 'P-5',
+        ]));
+
+        $sample = $this->formTb($tbId);
+        self::assertSame('P-5', $sample['patient_id']);
+        self::assertNull($sample['result']);
     }
 
     /** A row the client sent and the lab then changed becomes the lab's. */

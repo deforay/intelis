@@ -34,6 +34,20 @@ final class TbTestsService
         'correctiveAction',
     ];
 
+    /**
+     * Whether the instance's TB request form shows its result section to this user,
+     * by the rule the forms themselves use: to a user who may enter results or who is
+     * not at a collection site, and on the Rwanda form never on an STS.
+     */
+    public static function requestFormShowsResults(CommonService $general): bool
+    {
+        if ($general->isSTSInstance() && (int) $general->getGlobalConfig('vl_form') === \COUNTRY\RWANDA) {
+            return false;
+        }
+        return _isAllowed('/tb/results/tb-update-result.php')
+            || ($_SESSION['accessType'] ?? null) !== 'collection-site';
+    }
+
     /** The microscopy results the single-result forms offer. */
     private const array MICROSCOPY_RESULTS = ['No AFB', '1+', '2+', '3+'];
 
