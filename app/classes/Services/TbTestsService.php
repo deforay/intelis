@@ -21,7 +21,8 @@ final class TbTestsService
 {
     /**
      * Everything a TB request form posts from its result section: a request save takes
-     * none of it from a user the form does not show that section to.
+     * none of it from a user the form does not show that section to. The received date
+     * is not here: most forms show it to everyone, outside that section.
      */
     public const array REQUEST_FORM_RESULT_KEYS = [
         'finalResult', 'isResultFinalized', 'testResult', 'actualNo', 'microscopyTestId', 'deletedTestIds',
