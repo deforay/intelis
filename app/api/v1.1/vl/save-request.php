@@ -82,7 +82,10 @@ try {
 
     // A client that declares result-version has each post checked against the
     // result it last pulled. See SavedResultGuard::isStale().
-    $declaresResultVersion = SavedResultGuard::declaresResultVersion(ApiService::payloadCapabilities($origJson));
+    $capabilities = ApiService::payloadCapabilities($origJson);
+    $declaresResultVersion = SavedResultGuard::declaresResultVersion($capabilities);
+    // Country request form fields are written only for a client that asks. See ApiService::REQUEST_FORM_FIELDS.
+    $declaresFormFields = ApiService::declares($capabilities, ApiService::REQUEST_FORM_FIELDS);
 
     try {
         $input = Items::fromString($origJson, [
@@ -341,7 +344,7 @@ try {
             $status = RECEIVED_AT_CLINIC;
         }
 
-        $data['sampleDispatchedOn'] = (isset($data['dateDispatchedFromClinicToLab']) && !empty($data['dateDispatchedFromClinicToLab'])) ? $data['dateDispatchedFromClinicToLab'] : $data['sampleDispatchedOn'];
+        $data['sampleDispatchedOn'] = (isset($data['dateDispatchedFromClinicToLab']) && !empty($data['dateDispatchedFromClinicToLab'])) ? $data['dateDispatchedFromClinicToLab'] : ($data['sampleDispatchedOn'] ?? null);
 
         if (isset($data['patientGender']) && trim((string) $data['patientGender']) === 'male') {
             $data['patientPregnant'] = null;
@@ -516,6 +519,36 @@ try {
 
         $vlFulldata['last_modified_by'] = $user['user_id'];
 
+        // Fields of the country request forms this endpoint took on later, for a client
+        // that declared REQUEST_FORM_FIELDS: written only when the record carries the key.
+        // Not the lab's result entry (instrument, corrective action): SavedResultGuard
+        // does not cover those columns, so a stale re-post would undo them.
+        $vlFulldata = array_merge($vlFulldata, !$declaresFormFields ? [] : ApiService::postedColumns($data, [
+            'noOfPregnancyWeeks' => ['no_of_pregnancy_weeks', 'int'],
+            'activeTB' => ['patient_has_active_tb'],
+            'tbPhase' => ['patient_active_tb_phase'],
+            'treatmentDuration' => ['treatment_duration'],
+            'treatmentDurationPrecise' => ['treatment_duration_precise'],
+            'treatmentIndication' => ['treatment_indication'],
+            'cd4Result' => ['last_cd4_result'],
+            'cd4Percentage' => ['last_cd4_percentage'],
+            'cd4Date' => ['last_cd4_date', 'date'],
+            'cd8Result' => ['last_cd8_result'],
+            'cd8Date' => ['last_cd8_date', 'date'],
+            'lineOfTreatmentFailureAssessed' => ['line_of_treatment_failure_assessed'],
+            'locationOfSampleCollection' => ['location_of_sample_collection'],
+            'conservationTemperature' => ['plasma_conservation_temperature', 'float'],
+            'durationOfConservation' => ['plasma_conservation_duration'],
+            'reasonForVLTestingOther' => ['reason_for_vl_testing_other'],
+            'rmLastVLTestSampleType' => ['last_vl_sample_type_routine', 'int'],
+            'repeatLastVLTestSampleType' => ['last_vl_sample_type_failure_ac', 'int'],
+            'suspendLastVLTestSampleType' => ['last_vl_sample_type_failure', 'int'],
+            'confirmRecencyTestingLastVLDate' => ['last_vl_date_recency', 'date'],
+            'confirmRecencyTestingVlValue' => ['last_vl_result_recency'],
+            'testRequestDate' => ['test_request_date', 'datetime'],
+            'cvNumber' => ['cv_number'],
+        ]));
+
         // Process result category
         $vlFulldata['vl_result_category'] = $vlService->getVLResultCategory($vlFulldata['result_status'], $vlFulldata['result']);
         if ($vlFulldata['vl_result_category'] == 'failed' || $vlFulldata['vl_result_category'] == 'invalid') {
@@ -623,6 +656,11 @@ try {
         // see LabRequestSyncService::preserveLocallyOwnedFields().
         if (trim((string) ($data['labSampleCode'] ?? '')) === '') {
             unset($vlFulldata['lab_assigned_code']);
+        }
+        // The CV number is the testing lab's code, and the sample's own always wins, as
+        // in the STS request sync (preserveLocallyOwnedFields()): a post only fills it in.
+        if (trim((string) ($data['cvNumber'] ?? '')) === '' || trim((string) ($rowData['cv_number'] ?? '')) !== '') {
+            unset($vlFulldata['cv_number']);
         }
 
         $id = false;
@@ -739,9 +777,13 @@ try {
         ]
     ];
 
-    // Tells a client that declared result-version that this server checked it.
-    if ($declaresResultVersion) {
-        $payload['capabilities'] = ['supports' => [SavedResultGuard::RESULT_VERSION]];
+    // Tells a client which of the capabilities it declared this server honoured.
+    $honoured = array_keys(array_filter([
+        SavedResultGuard::RESULT_VERSION => $declaresResultVersion,
+        ApiService::REQUEST_FORM_FIELDS => $declaresFormFields,
+    ]));
+    if ($honoured !== []) {
+        $payload['capabilities'] = ['supports' => $honoured];
     }
 
     // Additive, and only once the feature is switched on, so a client parsing this

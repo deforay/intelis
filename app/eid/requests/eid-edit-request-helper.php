@@ -337,6 +337,10 @@ try {
 		'rejection_on' => isset($_POST['rejectionDate']) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
 	];
+	// Only one country form has the box: another form's save must not clear it.
+	if (array_key_exists('labTestingPointOther', $_POST)) {
+		$eidData['lab_testing_point_other'] = $_POST['labTestingPointOther'];
+	}
 
 	$db->where('eid_id', $_POST['eidSampleId']);
 	$getPrevResult = $db->getOne('form_eid');

@@ -12,6 +12,7 @@ use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
+use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use GuzzleHttp\RequestOptions;
@@ -616,6 +617,72 @@ final class ApiService
         } catch (Throwable) {
             return [];
         }
+    }
+
+    /**
+     * The capability a client declares to have the country request form fields of a
+     * save-request written (postedColumns()). Builds of the app released before
+     * the server took these fields already post many of them, some always empty;
+     * saving those unasked would change what an old build's re-post does to a
+     * sample, so a client that does not declare it is answered as before.
+     */
+    public const string REQUEST_FORM_FIELDS = 'request-form-fields';
+
+    /** @param array<string, mixed> $capabilities payloadCapabilities() */
+    public static function declares(array $capabilities, string $capability): bool
+    {
+        $supports = $capabilities['supports'] ?? [];
+        return is_array($supports) && in_array($capability, $supports, true);
+    }
+
+    /**
+     * Columns for the keys a posted record carries, for fields a save endpoint took
+     * on after clients were already posting to it.
+     *
+     * Only a key the record carries is written; a key sent empty clears its column.
+     * Written as `$data[key] ?? null`, a client that leaves a field out would blank
+     * what the web form saved on every re-post.
+     *
+     * Kinds: 'text' (the default), 'int', 'float', 'date' and 'datetime'. An array
+     * is stored comma-separated, as the forms store a multi-select.
+     * A number or date that does not parse is not written, and the saved value
+     * stands: under the fleet's empty sql_mode MySQL would store 0 or a zero date
+     * without a word, and clearing the field would lose a value that was right.
+     *
+     * @param array<string, mixed> $record one record of the payload
+     * @param array<string, array{0: string, 1?: string}> $fields payload key => [column, kind]
+     * @return array<string, mixed> column => value
+     */
+    public static function postedColumns(array $record, array $fields): array
+    {
+        $columns = [];
+        foreach ($fields as $key => $field) {
+            if (!array_key_exists($key, $record)) {
+                continue;
+            }
+            [$column, $kind] = [$field[0], $field[1] ?? 'text'];
+            $value = $record[$key];
+
+            if (is_array($value)) {
+                $value = implode(',', $value);
+            }
+            if ($value === null || (is_string($value) && trim($value) === '')) {
+                $columns[$column] = null;
+                continue;
+            }
+
+            $parsed = match ($kind) {
+                'int' => is_numeric($value) ? (int) $value : null,
+                'float' => is_numeric($value) ? (float) $value : null,
+                'date' => DateUtility::isoDateFormat($value),
+                'datetime' => DateUtility::isoDateFormat($value, true),
+                default => is_bool($value) ? ($value ? 'yes' : 'no') : trim((string) $value),
+            };
+            if ($parsed !== null) {
+                $columns[$column] = $parsed;
+            }
+        }
+        return $columns;
     }
 
     /**
