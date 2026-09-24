@@ -136,6 +136,27 @@ if (!function_exists('_sanitizeInput')) {
     }
 }
 
+// The API endpoints read appVersion off the streamed payload with this. Copied
+// as it is, since it needs nothing of the framework.
+if (!function_exists('_getIteratorKey')) {
+    function _getIteratorKey(mixed $iterator, $key): mixed
+    {
+        if (!$iterator instanceof Traversable) {
+            return null;
+        }
+        try {
+            foreach ($iterator as $iteratorKey => $value) {
+                if ((string) $iteratorKey === (string) $key) {
+                    return $value;
+                }
+            }
+        } catch (\JsonMachine\Exception\PathNotFoundException) {
+            return null;
+        }
+        return null;
+    }
+}
+
 // The AJAX guard the endpoints call. The real one asks UsersService, which the
 // suite does not boot; this keeps the one rule a test relies on -- superadmin
 // (role 1) always passes, anyone else needs the privilege in their session --
