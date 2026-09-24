@@ -9,18 +9,30 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 
+use const SAMPLE_STATUS\CANCELLED;
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
-if (empty($_POST['testingLab']) || 0 === (int) $_POST['testingLab']) {
+$module = (string) ($_POST['module'] ?? '');
+$manifestId = (int) ($_POST['packageId'] ?? 0);
+$testingLab = (int) ($_POST['testingLab'] ?? 0);
+$listUrl = "/specimen-referral-manifest/view-manifests.php?t=" . urlencode($module);
+$editUrl = "/specimen-referral-manifest/edit-manifest.php?t=" . urlencode($module)
+    . "&id=" . base64_encode((string) $manifestId);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+if ($testingLab <= 0) {
     $_SESSION['alertMsg'] = _translate("Please select the Testing lab", true);
-    header("Location:/specimen-referral-manifest/edit-manifest.php?t=" . ($_POST['module']));
+    MiscUtility::redirect($editUrl);
 }
 
 
@@ -33,114 +45,136 @@ $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$tableName = TestsService::getTestTableName($_POST['module']);
-$primaryKey = TestsService::getPrimaryColumn($_POST['module']);
+$tableName = TestsService::getTestTableName($module);
+$primaryKey = TestsService::getPrimaryColumn($module);
 
 $packageTable = "specimen_manifests";
+
+// Decided inside the transaction, acted on after it: a redirect is an exit, and
+// one thrown inside the try would be caught below as a failure.
+$refusal = null;
 try {
     $db->beginTransaction();
-    $selectedSamples = MiscUtility::desqid($_POST['selectedSample'], returnArray: true);
-    if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) !== "" && !empty($selectedSamples)) {
 
-        // clear out existing samples from this manifest first
+    // Locked, so the lab receiving the package cannot slip in between the check
+    // and the save.
+    $manifest = $db->rawQueryOne("SELECT * FROM $packageTable WHERE manifest_id = ? FOR UPDATE", [$manifestId]);
+    $selectedSamples = array_values(array_unique(array_map(
+        'intval',
+        MiscUtility::desqid((string) ($_POST['selectedSample'] ?? ''), returnArray: true)
+    )));
+    $previousLab = (int) ($manifest['lab_id'] ?? 0);
+
+    $labs = $facilitiesService->getTestingLabs($module, alwaysIncludeLabId: $previousLab) ?: [];
+
+    if (empty($manifest) || (!empty($manifest['module']) && strcasecmp((string) $manifest['module'], $module) !== 0)) {
+        $refusal = [_translate("This manifest could not be found"), $listUrl];
+    } elseif ($manifest['manifest_status'] === TestRequestsService::MANIFEST_RECEIVED) {
+        // The page refuses too, but only the page; this is where it holds.
+        $refusal = [
+            _translate("This manifest has been received at the testing lab and can no longer be changed"),
+            $listUrl,
+        ];
+    } elseif (!array_key_exists($testingLab, $labs)) {
+        $refusal = [_translate("Please select the Testing lab", true), $editUrl];
+    } elseif ($selectedSamples === []) {
+        $refusal = [_translate("Please select one or more samples", true), $editUrl];
+    } else {
+        $manifestCode = (string) $manifest['manifest_code'];
         $currentDateTime = DateUtility::getCurrentDateTime();
 
-        $dataToUpdate = [];
-        $formAttributes['manifest'] = [];
-        $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
-        $dataToUpdate['form_attributes'] = $db->func($formAttributes);
-        $dataToUpdate['sample_package_id'] = null;
-        $dataToUpdate['sample_package_code'] = null;
-
-
-        $db->where('sample_package_code', $_POST['packageCode']);
-        $db->update($tableName, $dataToUpdate);
-
-
-        // now let's update the manifest details
-        $selectedSamples = array_unique($selectedSamples);
-
-
-        $manifestHash = $testRequestsService->getManifestHash($selectedSamples, $_POST['module'], $_POST['packageCode']);
-        $numberOfSamples = count($selectedSamples);
-
-        $lastId = $_POST['packageId'];
-
+        // A manifest holds the samples of its one testing lab. Editing it never
+        // moves a sample to another lab (that is Move Manifest): a sample from any
+        // other lab, one already on a different manifest, or a cancelled one is
+        // simply not taken.
         $db->reset();
-        $db->where('manifest_id', $lastId);
-        $previousData = $db->getOne($packageTable);
+        $db->where($primaryKey, $selectedSamples, 'IN');
+        $db->where('lab_id', $testingLab);
+        $db->where('result_status', CANCELLED, '!=');
+        $db->where('(sample_package_id IS NULL OR sample_package_id = 0 OR sample_package_id = ?)', [$manifestId]);
+        $db->update($tableName, [
+            'sample_package_id' => $manifestId,
+            'sample_package_code' => $manifestCode,
+            'last_modified_datetime' => $currentDateTime,
+            'data_sync' => 0,
+        ]);
 
-        //echo "<pre>"; print_r($previousData); die;
-        $existingChangeReasons = json_decode((string) $previousData['manifest_change_history'], true);
-        // echo "<pre>"; print_r($existingChangeReasons); die;
+        // Same conditions again: a sample of the old lab is already on this
+        // manifest, and is not kept just because it was selected.
+        $db->reset();
+        $db->where('sample_package_id', $manifestId);
+        $db->where($primaryKey, $selectedSamples, 'IN');
+        $db->where('lab_id', $testingLab);
+        $db->where('result_status', CANCELLED, '!=');
+        $keptSamples = array_map('intval', $db->getValue($tableName, $primaryKey, null) ?: []);
 
+        if ($keptSamples === []) {
+            $refusal = [_translate("None of the selected samples belong to the chosen testing lab"), $editUrl];
+        } else {
+            $numberOfSamples = count($keptSamples);
 
-        $existingChangeReasons[] = [
-            'reason' => $_POST['reasonForChange'],
-            'changedBy' => $_SESSION['userId'],
-            'date' => DateUtility::getCurrentDateTime()
-        ];
+            // Everything else on this manifest comes off it: samples left out of
+            // the selection, and, after a lab change, every sample of the old lab.
+            // Re-sent, so the STS stops listing them under this manifest.
+            $removed = JsonUtility::jsonToSetString(json_encode(['manifest' => []]), 'form_attributes');
+            $db->reset();
+            $db->where('(sample_package_id = ? OR sample_package_code = ?)', [$manifestId, $manifestCode]);
+            $db->where($primaryKey, $keptSamples, 'NOT IN');
+            $db->update($tableName, [
+                'sample_package_id' => null,
+                'sample_package_code' => null,
+                'form_attributes' => $db->func($removed),
+                'last_modified_datetime' => $currentDateTime,
+                'data_sync' => 0,
+            ]);
 
-        $pData = [
-            'lab_id' => $_POST['testingLab'],
-            'number_of_samples' => $numberOfSamples,
-            // manifest_status is not taken from the form: printing sets it to
-            // dispatched and activation to received, and a save must not undo them.
-            'manifest_change_history' => json_encode($existingChangeReasons),
-            'last_modified_datetime' => $currentDateTime
-        ];
-
-
-        $db->where('manifest_id', $lastId);
-        $db->update($packageTable, $pData);
-
-        if ($lastId > 0) {
-            //for ($j = 0; $j < count($selectedSamples); $j++) {
-            $dataToUpdate = [
-                'sample_package_id' => $lastId,
-                'sample_package_code' => $_POST['packageCode'],
-                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-                'data_sync' => 0
-            ];
-
-            $formAttributes = [
+            $kept = JsonUtility::jsonToSetString(json_encode([
                 'manifest' => [
-                    "number_of_samples" => $numberOfSamples,
-                    'last_modified_datetime' => $currentDateTime
+                    'number_of_samples' => $numberOfSamples,
+                    'last_modified_datetime' => $currentDateTime,
                 ],
+            ]), 'form_attributes');
+            $db->reset();
+            $db->where($primaryKey, $keptSamples, 'IN');
+            $db->update($tableName, ['form_attributes' => $db->func($kept)]);
+
+            $change = [
+                'reason' => $_POST['reasonForChange'] ?? null,
+                'changedBy' => $_SESSION['userId'],
+                'date' => $currentDateTime,
             ];
+            if ($previousLab !== $testingLab) {
+                $change['previousLabId'] = $previousLab;
+                $change['labId'] = $testingLab;
+            }
+            $history = json_decode((string) $manifest['manifest_change_history'], true);
+            $history = is_array($history) ? $history : [];
+            $history[] = $change;
 
-            $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
-            $dataToUpdate['form_attributes'] = $db->func($formAttributes);
+            $db->reset();
+            $db->where('manifest_id', $manifestId);
+            $db->update($packageTable, [
+                'lab_id' => $testingLab,
+                'number_of_samples' => $numberOfSamples,
+                // manifest_status is not taken from the form: printing sets it to
+                // dispatched and activation to received, and a save must not undo them.
+                'manifest_change_history' => json_encode($history),
+                'last_modified_datetime' => $currentDateTime,
+            ]);
 
-            $db->where($primaryKey, $selectedSamples, 'IN');
-            $db->update($tableName, $dataToUpdate);
-
-
-            // In case some records dont have lab_id in the testing table
-            // let us update them to the selected lab
-            $dataToUpdate = [
-                'lab_id' => $_POST['testingLab'],
-                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-                'data_sync' => 0
-            ];
-
-            $db->where('sample_package_code', $_POST['packageCode']);
-            $db->where('lab_id IS NULL OR lab_id = 0');
-            $db->update($tableName, $dataToUpdate);
-
-            $_SESSION['alertMsg'] = "Manifest details updated successfully";
+            $action = $_SESSION['userName'] . ' updated Manifest - ' . $manifestCode;
+            if ($previousLab !== $testingLab) {
+                $action .= " (testing lab $previousLab -> $testingLab)";
+            }
+            $general->activityLog('edit-manifest', $action, 'specimen-manifest');
         }
     }
 
-    //Add event log
-    $eventType = 'edit-manifest';
-    $action = $_SESSION['userName'] . ' updated Manifest - ' . $_POST['packageCode'];
-    $resource = 'specimen-manifest';
-
-    $general->activityLog($eventType, $action, $resource);
-    $db->commitTransaction();
-    header("Location:view-manifests.php?t=" . ($_POST['module']));
+    if ($refusal === null) {
+        $db->commitTransaction();
+    } else {
+        $db->rollbackTransaction();
+    }
 } catch (Throwable $e) {
     $db->rollbackTransaction();
     LoggerUtility::logError($e->getMessage(), [
@@ -152,3 +186,10 @@ try {
     ]);
     throw $e;
 }
+
+if ($refusal !== null) {
+    [$_SESSION['alertMsg'], $url] = $refusal;
+    MiscUtility::redirect($url);
+}
+$_SESSION['alertMsg'] = _translate("Manifest details updated successfully");
+MiscUtility::redirect($listUrl);

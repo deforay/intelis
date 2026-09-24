@@ -51,11 +51,16 @@ $where[] = " (vl.remote_sample_code IS NOT NULL) ";
 // refer. Nothing downstream re-checks this: save-tb-referral-helper.php sets
 // REFERRED on whatever it is handed, so the picker is where it has to hold.
 $where[] = SampleCountUtility::countableWhere('vl');
+
+// The search filters narrow the samples on offer, never the ones already on the
+// manifest being edited: saving rewrites the manifest from the right-hand box,
+// so a member a filter hid would be dropped without anyone choosing to.
+$filters = [];
 if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) !== '') {
 
 	[$startDate, $endDate] = DateUtility::convertDateRange($_POST['daterange'], includeTime: true);
 
-	$where[] = " vl.sample_collection_date BETWEEN '$startDate' AND '$endDate' ";
+	$filters[] = " vl.sample_collection_date BETWEEN '$startDate' AND '$endDate' ";
 }
 
 if (!empty($_SESSION['facilityMap'])) {
@@ -72,7 +77,7 @@ if (!empty($_POST['testingLab']) && $_POST['testingLab'] > 0) {
 }
 
 if (!empty($_POST['testingLab']) && is_numeric($_POST['facility'])) {
-	$where[] = " facility_id = " . (int) $_POST['facility'];
+	$filters[] = " facility_id = " . (int) $_POST['facility'];
 }
 
 
@@ -81,14 +86,22 @@ if (!empty($_POST['testType'])) {
 }
 
 
-if (!empty($_POST['pkgId'])) {
-	$where[] = " (vl.sample_package_id = " . (int) $_POST['pkgId'] . " OR vl.sample_package_id IS NULL OR vl.sample_package_id = '')";
-} else {
-	$where[] = " (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
-}
 if (!empty($_POST['sampleType'])) {
-	$where[] = " specimen_type IN(" . $db->inIntList($_POST['sampleType']) . ") ";
+	$filters[] = " specimen_type IN(" . $db->inIntList($_POST['sampleType']) . ") ";
 }
+
+$onOffer = " (vl.sample_package_id IS NULL OR vl.sample_package_id = '') ";
+if (empty($_POST['pkgId'])) {
+	$onOffer .= " AND (remote_sample = 'yes') ";
+}
+if ($filters !== []) {
+	$onOffer .= " AND " . implode(" AND ", $filters);
+}
+// The lab clause above still applies to the manifest's own samples, so after
+// the testing lab is changed only the new lab's samples are listed at all.
+$where[] = empty($_POST['pkgId'])
+	? " ($onOffer) "
+	: " (($onOffer) OR vl.sample_package_id = " . (int) $_POST['pkgId'] . ") ";
 if ($where !== []) {
 	$query .= " WHERE " . implode(" AND ", $where);
 }
@@ -109,6 +122,19 @@ if (!empty($_POST['pkgId'])) {
 		[$_POST['pkgId'], CANCELLED]
 	) ?: [];
 }
+// Same for a changed testing lab: the lab clause keeps samples of the old lab
+// out of the dual-box, so saving takes them off this manifest. They stay with
+// their own lab; they are not moved to the new one.
+$otherLabOnManifest = [];
+if (!empty($_POST['pkgId']) && !empty($_POST['testingLab'])) {
+	$otherLabOnManifest = $db->rawQuery(
+		"SELECT vl.$sampleCode AS code FROM $testTable AS vl
+		 WHERE vl.sample_package_id = ? AND vl.result_status != ?
+		   AND (vl.lab_id IS NULL OR vl.lab_id != ?)
+		 ORDER BY vl.$sampleCode",
+		[$_POST['pkgId'], CANCELLED, (int) $_POST['testingLab']]
+	) ?: [];
+}
 $key = (string) $general->getGlobalConfig('key');
 
 ?>
@@ -124,6 +150,21 @@ $key = (string) $general->getGlobalConfig('key');
 			<ul style="margin:5px 0 0;">
 				<?php foreach ($cancelledOnManifest as $cancelledSample) { ?>
 					<li><?= htmlspecialchars((string) $cancelledSample["code"], ENT_QUOTES, "UTF-8"); ?></li>
+				<?php } ?>
+			</ul>
+		</div>
+	</div>
+<?php } ?>
+<?php if ($otherLabOnManifest !== []) { ?>
+	<div class="col-md-12">
+		<div class="alert alert-warning">
+			<strong><?= _htmlTranslate("Samples from another testing lab will be removed from this manifest"); ?></strong>
+			<p style="margin:5px 0 0;">
+				<?= _htmlTranslate("These samples are on this manifest but belong to a different testing lab. Saving will remove them from it. They stay with their own testing lab."); ?>
+			</p>
+			<ul style="margin:5px 0 0;">
+				<?php foreach ($otherLabOnManifest as $otherLabSample) { ?>
+					<li><?= htmlspecialchars((string) $otherLabSample["code"], ENT_QUOTES, "UTF-8"); ?></li>
 				<?php } ?>
 			</ul>
 		</div>
