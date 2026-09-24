@@ -42,7 +42,7 @@ if (!empty($id)) {
                         sample_name,
                         sample_collection_date,
                         patient_gender,
-                        patient_art_no,pd.manifest_code,
+                        patient_art_no,vl.is_encrypted,pd.manifest_code,
                         l.facility_name as lab_name,
                         u_d.user_name as releaser_name,
                         u_d.phone_number as phone,
@@ -57,16 +57,20 @@ if (!empty($id)) {
                 WHERE pd.manifest_id IN(" . $db->inIntList($id) . ")
                 ORDER BY remote_sample_code ASC";
 
-    $result = $db->query($sQuery);
+    /** @var TestRequestsService $testRequestsService */
+    $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
+    $result = $testRequestsService->decryptManifestRows(
+        $db->query($sQuery) ?: [],
+        ['patient_art_no', 'patient_first_name', 'patient_middle_name', 'patient_last_name']
+    );
 
     $labname = $result[0]['lab_name'] ?? "";
 
     $globalConfig = $general->getGlobalConfig();
-    $showPatientName = $globalConfig['cd4_show_participant_name_in_manifest'];
-
 
     $db->where('manifest_id', $id);
     $bResult = $db->getOne('specimen_manifests');
+    $showPatientName = $testRequestsService->showsPatientNamesOnManifest('cd4', $bResult ?: null);
 
     if (!empty($bResult)) {
 
@@ -77,7 +81,7 @@ if (!empty($id)) {
         $db->where('manifest_id', $id);
         $db->update('specimen_manifests', ['manifest_print_history' => json_encode($oldPrintData)]);
         // Printing the manifest is sending the package: pending becomes dispatched.
-        ContainerRegistry::get(TestRequestsService::class)->markManifestDispatched('manifest_id', $id);
+        $testRequestsService->markManifestDispatched('manifest_id', $id);
 
         $reasonHistory = json_decode((string) $bResult['manifest_change_history']);
 
@@ -123,7 +127,7 @@ if (!empty($id)) {
                 $tbl .= '<td style="font-size:11px;width:5%;">' . $sampleCounter . '.</td>';
                 $tbl .= '<td style="font-size:11px;width:12%;">' . $sample['remote_sample_code'] . '</td>';
                 $tbl .= '<td style="font-size:11px;width:15%;">' . ($sample['clinic_name']) . ', ' . ($sample['facility_district']) . '</td>';
-                if (isset($showPatientName) && $showPatientName == "no") {
+                if (!$showPatientName) {
                     $tbl .= '<td style="font-size:11px;width:15%;">' . $sample['patient_art_no'] . '</td>';
                 } else {
                     $tbl .= '<td style="font-size:11px;width:15%;">' . ($sample['patient_first_name'] . " " . $sample['patient_middle_name'] . " " . $sample['patient_last_name']) . '<br>' . $sample['patient_art_no'] . '</td>';

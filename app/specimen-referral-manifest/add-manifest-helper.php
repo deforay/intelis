@@ -22,6 +22,9 @@ $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 $module = (string) ($_POST['module'] ?? '');
 $testingLab = (int) ($_POST['testingLab'] ?? 0);
 $manifestCode = trim((string) ($_POST['packageCode'] ?? ''));
+// Left NULL when not posted, so the print follows the module's setting.
+$showPatientNames = $_POST['showPatientNames'] ?? null;
+$showPatientNames = in_array($showPatientNames, ['yes', 'no'], true) ? $showPatientNames : null;
 $addUrl = "/specimen-referral-manifest/add-manifest.php?t=" . urlencode($module);
 
 /** @var FacilitiesService $facilitiesService */
@@ -40,6 +43,11 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $tableName = TestsService::getTestTableName($module);
 $primaryKey = TestsService::getPrimaryColumn($module);
+
+// Lab isolation (cloud-LIS): never another lab's sample. Empty for everyone
+// not acting as one lab. Read before any query is built: on a cold cache it
+// queries the database itself, and would take a half-built WHERE with it.
+$labScope = $general->labScopeWhere('');
 
 // Decided inside the transaction, acted on after it: a redirect is an exit, and
 // one thrown inside the try would be caught below as a failure.
@@ -62,6 +70,7 @@ try {
             'module' => $module,
             'added_by' => $_SESSION['userId'],
             'lab_id' => $testingLab,
+            'show_patient_names' => $showPatientNames,
             'number_of_samples' => count($selectedSamples),
             'manifest_status' => 'pending',
             'request_created_datetime' => $currentDateTime,
@@ -77,9 +86,7 @@ try {
         $db->where('lab_id', $testingLab);
         $db->where('result_status', CANCELLED, '!=');
         $db->where('(sample_package_id IS NULL OR sample_package_id = 0)');
-        // Lab isolation (cloud-LIS): never another lab's sample. Empty for
-        // everyone not acting as one lab.
-        if ($labScope = $general->labScopeWhere('')) {
+        if ($labScope !== '') {
             $db->where($labScope);
         }
         $db->update($tableName, [

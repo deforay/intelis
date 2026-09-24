@@ -56,6 +56,10 @@ if ($notOurs || empty($pResult) || ($pResult['manifest_status'] ?? null) === Tes
 }
 
 $testingLabs = $facilitiesService->getTestingLabs($m);
+
+// This manifest's own choice, or the module's setting for one saved before it.
+$showPatientNames = ContainerRegistry::get(TestRequestsService::class)
+	->showsPatientNamesOnManifest((string) $module, $pResult) ? 'yes' : 'no';
 $facilities = $facilitiesService->getHealthFacilities($module);
 
 
@@ -264,6 +268,22 @@ if ($module == 'generic-tests') {
 						</div>
 					</div>
 					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="showPatientNames" class="col-lg-4 control-label">
+									<?= _translate("Show patient names on the printed manifest"); ?>
+								</label>
+								<div class="col-lg-7" style="margin-left:3%;">
+									<select class="form-control" id="showPatientNames" name="showPatientNames"
+										title="<?= _htmlTranslate("Choose whether the printed manifest shows patient names"); ?>">
+										<option value="yes" <?= $showPatientNames === 'yes' ? 'selected' : ''; ?>><?= _translate("Yes"); ?></option>
+										<option value="no" <?= $showPatientNames === 'no' ? 'selected' : ''; ?>><?= _translate("No"); ?></option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
 						<div class="col-md-12 text-center">
 							<div class="form-group">
 								<a class="btn btn-primary" href="javascript:void(0);" title="<?= _htmlTranslate("Please select testing lab"); ?>"
@@ -301,6 +321,7 @@ if ($module == 'generic-tests') {
 		<!-- /.box-body -->
 		<div class="box-footer">
 			<input type="hidden" name="selectedSample" id="selectedSample" />
+			<input type="hidden" name="samplesListedForLab" id="samplesListedForLab" />
 			<input type="hidden" name="packageId" id="packageId" value="<?php echo _sanitizeOutput($pResult['manifest_id']); ?>" />
 			<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title=""
 				readonly value="<?= _sanitizeOutput((string) $module); ?>" />
@@ -335,6 +356,13 @@ if ($module == 'generic-tests') {
 			alert("<?= _translate("Please select one or more samples", true); ?>");
 			return false;
 		}
+		// The list must be the one for the lab now selected; the save checks too.
+		const listedLab = $('#sampleDetails').data('lab');
+		if (listedLab == null || String(listedLab) !== String($('#testingLab').val())) {
+			alert("<?= _translate("The sample list is still loading for the selected testing lab. Please wait and try again.", true); ?>");
+			return false;
+		}
+		$('#samplesListedForLab').val(listedLab);
 		flag = deforayValidator.init({
 			formId: 'editManifestForm'
 		});
@@ -484,8 +512,16 @@ if ($module == 'generic-tests') {
 			});
 	}
 
+	// Only the latest request's list is shown. A slower response for a lab the
+	// user already moved away from would otherwise replace it, and saving
+	// rewrites the manifest from that list, dropping samples nobody removed.
+	let samplesRequest = 0;
+
 	function getSamplesForManifest() {
 		if ($('#testingLab').val() != '') {
+			const request = ++samplesRequest;
+			const lab = String($('#testingLab').val());
+			$('#sampleDetails').data('lab', null);
 			$.blockUI();
 
 			$.post("/specimen-referral-manifest/get-samples-for-manifest.php", {
@@ -499,13 +535,19 @@ if ($module == 'generic-tests') {
 				operator: $('#operator').val()
 			},
 				function (data) {
+					if (request !== samplesRequest) {
+						return;
+					}
 					if (data != "") {
-						$("#sampleDetails").html(data);
+						$("#sampleDetails").html(data).data('lab', lab);
 						$("#packageSubmit").attr("disabled", true);
 						$("#packageSubmit").css("pointer-events", "none");
 					}
+				}).always(function () {
+					if (request === samplesRequest) {
+						$.unblockUI();
+					}
 				});
-			$.unblockUI();
 		} else {
 			alert("<?= _translate("Please select the Testing Lab", true); ?>");
 		}

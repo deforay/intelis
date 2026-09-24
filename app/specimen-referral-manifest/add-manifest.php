@@ -12,6 +12,7 @@ use App\Services\Covid19Service;
 use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
+use App\Services\TestRequestsService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
@@ -34,6 +35,10 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $module = $_GET['t'];
 $testingLabs = $facilitiesService->getTestingLabs($module);
+
+// Starts from the module's "Show participant name in manifest" setting.
+$showPatientNames = ContainerRegistry::get(TestRequestsService::class)
+	->showsPatientNamesOnManifest((string) $module) ? 'yes' : 'no';
 
 
 /** @var UsersService $usersService */
@@ -257,6 +262,22 @@ if ($module == 'generic-tests') {
 									<input type="text" class="form-control" id="daterange" name="daterange"
 										placeholder="<?= _htmlTranslate('Sample Collection Date Range'); ?>"
 										title="<?= _htmlTranslate("Choose one sample collection date range"); ?>">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="showPatientNames" class="col-lg-4 control-label">
+									<?= _translate("Show patient names on the printed manifest"); ?>
+								</label>
+								<div class="col-lg-7" style="margin-left:3%;">
+									<select class="form-control" id="showPatientNames" name="showPatientNames"
+										title="<?= _htmlTranslate("Choose whether the printed manifest shows patient names"); ?>">
+										<option value="yes" <?= $showPatientNames === 'yes' ? 'selected' : ''; ?>><?= _translate("Yes"); ?></option>
+										<option value="no" <?= $showPatientNames === 'no' ? 'selected' : ''; ?>><?= _translate("No"); ?></option>
+									</select>
 								</div>
 							</div>
 						</div>
