@@ -80,6 +80,10 @@ try {
         $appVersion = null;
     }
 
+    // A client that declares result-version has each post checked against the
+    // result it last pulled. See SavedResultGuard::isStale().
+    $declaresResultVersion = SavedResultGuard::declaresResultVersion(ApiService::payloadCapabilities($origJson));
+
     try {
         $input = Items::fromString($origJson, [
             'pointer' => '/data',
@@ -554,6 +558,9 @@ try {
                         'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                     ];
+                    if ($declaresResultVersion) {
+                        $responseData[$rootKey]['resultVersion'] = SavedResultGuard::currentVersion($db, 'vl', $rowData['vl_sample_id']);
+                    }
                     continue;
                 }
             } else {
@@ -619,11 +626,20 @@ try {
         }
 
         $id = false;
+        $storedSample = [];
+        $staleResult = false;
 
         if (!empty($data['vlSampleId'])) {
             // A re-post does not undo what the lab decided. See SavedResultGuard.
             $storedSample = SavedResultGuard::lockedSample($db, 'form_vl', 'vl_sample_id', $data['vlSampleId']);
-            $vlFulldata = SavedResultGuard::protectAndLog($vlFulldata, $storedSample, 'vl', $transactionId ?? null);
+            [$vlFulldata, $staleResult] = SavedResultGuard::guard(
+                $vlFulldata,
+                $storedSample,
+                'vl',
+                $transactionId ?? null,
+                $declaresResultVersion,
+                $data['resultVersion'] ?? null
+            );
 
             // Retain the outgoing result before a post that still replaces it, and only
             // then: a re-post the guard kept the result through replaces nothing.
@@ -656,6 +672,15 @@ try {
             // Add duplicate detection info if available
             if (isset($duplicateInfo[$rootKey]) && !isset($duplicateInfo[$rootKey]['error'])) {
                 $sampleResponse['duplicateInfo'] = $duplicateInfo[$rootKey];
+            }
+
+            // The version the client holds from now on, and whether its result was
+            // set aside for the lab's newer one, which it should pull again.
+            if ($declaresResultVersion) {
+                $sampleResponse['resultVersion'] = SavedResultGuard::currentVersion($db, 'vl', $data['vlSampleId']);
+                if ($staleResult) {
+                    $sampleResponse['resultKept'] = true;
+                }
             }
 
             $responseData[$rootKey] = $sampleResponse;
@@ -713,6 +738,11 @@ try {
             'failedRecords' => $noOfFailedRecords,
         ]
     ];
+
+    // Tells a client that declared result-version that this server checked it.
+    if ($declaresResultVersion) {
+        $payload['capabilities'] = ['supports' => [SavedResultGuard::RESULT_VERSION]];
+    }
 
     // Additive, and only once the feature is switched on, so a client parsing this
     // response strictly sees exactly the summary it saw before.

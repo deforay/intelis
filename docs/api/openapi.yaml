@@ -1105,7 +1105,14 @@ paths:
       tags:
       - Custom Tests API
       summary: Fetch Custom Test Results
-      description: Returns test requests with their results, newest first. Every row returned is marked as sent to the source unless markAsSent is false.
+      description: |
+        Returns test requests with their results, newest first. Every row returned is marked as
+        sent to the source unless markAsSent is false.
+
+        Each row carries `resultVersion`, a short token for the lab's decision on the sample: its
+        result, its status, the other fields the lab fills in (rejection, tester, approver and so
+        on) and its tests as the lab saved them. It changes when the lab approves the result, too. A client that declares the result-version
+        capability sends it back with the sample on save-request.
       requestBody:
         required: true
         content:
@@ -1315,11 +1322,22 @@ paths:
       tags:
       - Custom Tests API
       summary: Save Custom Test Requests
-      description: Creates or updates custom test requests, one per element of the
-        body array. Rows are matched on labId and appSampleCode. Each record needs
-        sampleCollectionDate, facilityId, appSampleCode and labId; testType names
-        the custom test and testTypeForm carries its fields as a JSON object.
-        Cannot be used to change a sample that is locked or finalised.
+      description: |
+        Creates or updates custom test requests, one per element of the body array. Rows are
+        matched on labId and appSampleCode. Each record needs sampleCollectionDate, facilityId,
+        appSampleCode and labId; testType names the custom test and testTypeForm carries its
+        fields as a JSON object. Cannot be used to change a sample that is locked or finalised.
+
+        Result versions. A client that sends `"capabilities": {"supports": ["result-version"]}` at
+        the top of the body has each sample checked against the result it last pulled. Each record
+        then carries `resultVersion`, the value fetch-results returned for that sample, left out
+        for a sample never pulled. When the version is older than the saved decision (a retest
+        the lab has ordered since included), or it is missing and the lab has decided on the
+        sample, the lab's result, rejection, status and other lab fields are kept, the rest of the record is saved, and that record's response carries
+        `"resultKept": true`, a sign to pull its result again. Every saved record's response
+        carries `resultVersion`, the version to send with the sample's next post, and the response
+        carries the same `capabilities` object to confirm the check ran. A client that sends no
+        capabilities is answered exactly as before.
       requestBody:
         required: true
         content:
@@ -1842,6 +1860,17 @@ paths:
       tags:
       - VL API
       summary: SAVE TEST REQUEST
+      description: |
+        Result versions. A client that sends `"capabilities": {"supports": ["result-version"]}` at
+        the top of the body has each sample checked against the result it last pulled. Each record
+        then carries `resultVersion`, the value fetch-results returned for that sample, left out
+        for a sample never pulled. When the version is older than the saved decision (a retest
+        the lab has ordered since included), or it is missing and the lab has decided on the
+        sample, the lab's result, rejection, status and other lab fields are kept, the rest of the record is saved, and that record's response carries
+        `"resultKept": true`, a sign to pull its result again. Every saved record's response
+        carries `resultVersion`, the version to send with the sample's next post, and the response
+        carries the same `capabilities` object to confirm the check ran. A client that sends no
+        capabilities is answered exactly as before.
       requestBody:
         required: true
         content:
@@ -2318,6 +2347,11 @@ paths:
       tags:
       - VL API
       summary: Fetch Test Results
+      description: |
+        Each row carries `resultVersion`, a short token for the lab's decision on the sample: its
+        result, its status, the other fields the lab fills in (rejection, tester, approver and so
+        on) and its tests as the lab saved them. It changes when the lab approves the result, too. A client that declares the result-version
+        capability sends it back with the sample on save-request.
       requestBody:
         required: true
         content:
@@ -2523,6 +2557,17 @@ paths:
       tags:
       - EID API
       summary: SAVE TEST REQUEST
+      description: |
+        Result versions. A client that sends `"capabilities": {"supports": ["result-version"]}` at
+        the top of the body has each sample checked against the result it last pulled. Each record
+        then carries `resultVersion`, the value fetch-results returned for that sample, left out
+        for a sample never pulled. When the version is older than the saved decision (a retest
+        the lab has ordered since included), or it is missing and the lab has decided on the
+        sample, the lab's result, rejection, status and other lab fields are kept, the rest of the record is saved, and that record's response carries
+        `"resultKept": true`, a sign to pull its result again. Every saved record's response
+        carries `resultVersion`, the version to send with the sample's next post, and the response
+        carries the same `capabilities` object to confirm the check ran. A client that sends no
+        capabilities is answered exactly as before.
       requestBody:
         required: true
         content:
@@ -3020,6 +3065,11 @@ paths:
       tags:
       - EID API
       summary: Fetch Test Results
+      description: |
+        Each row carries `resultVersion`, a short token for the lab's decision on the sample: its
+        result, its status, the other fields the lab fills in (rejection, tester, approver and so
+        on) and its tests as the lab saved them. It changes when the lab approves the result, too. A client that declares the result-version
+        capability sends it back with the sample on save-request.
       requestBody:
         required: true
         content:
@@ -4929,6 +4979,11 @@ paths:
       tags:
       - TB API
       summary: Fetch Test Results
+      description: |
+        Each row carries `resultVersion`, a short token for the lab's decision on the sample: its
+        result, its status, the other fields the lab fills in (rejection, tester, approver and so
+        on) and its tests as the lab saved them. It changes when the lab approves the result, too. A client that declares the result-version
+        capability sends it back with the sample on save-request.
       requestBody:
         required: true
         content:
@@ -5119,6 +5174,17 @@ paths:
       tags:
       - TB API
       summary: ADD NEW REQUEST
+      description: |
+        Result versions. A client that sends `"capabilities": {"supports": ["result-version"]}` at
+        the top of the body has each sample checked against the result it last pulled. Each record
+        then carries `resultVersion`, the value fetch-results returned for that sample, left out
+        for a sample never pulled. When the version is older than the saved decision (a retest
+        the lab has ordered since included), or it is missing and the lab has decided on the
+        sample, the lab's result, rejection, status and other lab fields are kept, the rest of the record is saved, and that record's response carries
+        `"resultKept": true`, a sign to pull its result again. Every saved record's response
+        carries `resultVersion`, the version to send with the sample's next post, and the response
+        carries the same `capabilities` object to confirm the check ran. A client that sends no
+        capabilities is answered exactly as before.
       requestBody:
         required: true
         content:
@@ -5410,6 +5476,11 @@ paths:
       tags:
       - COVID-19 API
       summary: Fetch Test Results
+      description: |
+        Each row carries `resultVersion`, a short token for the lab's decision on the sample: its
+        result, its status, the other fields the lab fills in (rejection, tester, approver and so
+        on) and its tests as the lab saved them. It changes when the lab approves the result, too. A client that declares the result-version
+        capability sends it back with the sample on save-request.
       requestBody:
         required: true
         content:
@@ -16506,6 +16577,17 @@ paths:
       tags:
       - COVID-19 API
       summary: SAVE TEST REQUESTS
+      description: |
+        Result versions. A client that sends `"capabilities": {"supports": ["result-version"]}` at
+        the top of the body has each sample checked against the result it last pulled. Each record
+        then carries `resultVersion`, the value fetch-results returned for that sample, left out
+        for a sample never pulled. When the version is older than the saved decision (a retest
+        the lab has ordered since included), or it is missing and the lab has decided on the
+        sample, the lab's result, rejection, status and other lab fields are kept, the rest of the record is saved, and that record's response carries
+        `"resultKept": true`, a sign to pull its result again. Every saved record's response
+        carries `resultVersion`, the version to send with the sample's next post, and the response
+        carries the same `capabilities` object to confirm the check ran. A client that sends no
+        capabilities is answered exactly as before.
       requestBody:
         required: true
         content:
