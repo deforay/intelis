@@ -7,6 +7,7 @@ use App\Services\TbService;
 use App\Services\TbTestsService;
 use App\Services\ApiService;
 use App\Services\UsersService;
+use App\Utilities\SavedResultGuard;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -528,6 +529,9 @@ try {
 
         $id = false;
         if (!empty($data['tbSampleId'])) {
+            // A re-post does not undo what the lab decided. See SavedResultGuard.
+            $db->where('tb_id', $data['tbSampleId']);
+            $tbData = SavedResultGuard::protectAndLog($tbData, $db->getOne($tableName) ?: [], 'tb', $transactionId ?? null);
             $db->where('tb_id', $data['tbSampleId']);
             $id = $db->update($tableName, $tbData);
         }

@@ -9,6 +9,7 @@ use const SAMPLE_STATUS\PENDING_APPROVAL;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
+use App\Utilities\SavedResultGuard;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -503,6 +504,9 @@ try {
             $id = false;
             $genericData = MiscUtility::arrayEmptyStringsToNull($genericData);
             if (!empty($data['genericSampleId'])) {
+                // A re-post does not undo what the lab decided. See SavedResultGuard.
+                $db->where('sample_id', $data['genericSampleId']);
+                $genericData = SavedResultGuard::protectAndLog($genericData, $db->getOne($tableName) ?: [], 'generic-tests', $transactionId ?? null);
                 $db->where('sample_id', $data['genericSampleId']);
                 $id = $db->update($tableName, $genericData);
             }

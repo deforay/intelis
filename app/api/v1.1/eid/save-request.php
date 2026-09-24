@@ -11,6 +11,7 @@ use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\EidService;
 use App\Services\UsersService;
+use App\Utilities\SavedResultGuard;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -582,6 +583,9 @@ try {
         $id = false;
         $eidData = MiscUtility::arrayEmptyStringsToNull($eidData);
         if (!empty($data['eidSampleId'])) {
+            // A re-post does not undo what the lab decided. See SavedResultGuard.
+            $db->where('eid_id', $data['eidSampleId']);
+            $eidData = SavedResultGuard::protectAndLog($eidData, $db->getOne('form_eid') ?: [], 'eid', $transactionId ?? null);
             $db->where('eid_id', $data['eidSampleId']);
             $id = $db->update('form_eid', $eidData);
         }
