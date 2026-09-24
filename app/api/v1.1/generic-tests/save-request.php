@@ -410,32 +410,34 @@ try {
                 $genericData['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
                 $genericData['request_created_by'] = $user['user_id'];
             }
-            // A client re-posts its whole dataset, so a test the sample already has
-            // exactly as sent is not added again.
-            $savedTests = [];
-            $testSignature = static fn(array $row): string => json_encode([
-                ...array_map(
-                    static fn($value): string => trim((string) $value),
-                    [
-                        $row['sub_test_name'] ?? '', $row['test_name'] ?? '', $row['result'] ?? '',
-                        $row['result_unit'] ?? '', $row['final_result'] ?? '',
-                    ]
-                ),
-                // Stored as a datetime, posted as a date: compared as the same instant.
-                (string) DateUtility::isoDateFormat((string) ($row['sample_tested_datetime'] ?? ''), true),
-            ]) ?: '';
-            if (!empty($data['genericSampleId'])) {
-                foreach ($db->rawQuery("SELECT * FROM $testTableName WHERE generic_id = ?", [$data['genericSampleId']]) ?: [] as $savedTest) {
-                    $savedTests[$testSignature($savedTest)] = true;
+            // A client re-posts its whole dataset, so a test the sample already has,
+            // with every field as sent, is not added again. A test that differs in any
+            // field is added: that is the client's correction.
+            $savedTests = empty($data['genericSampleId']) ? [] : ($db->rawQuery(
+                "SELECT * FROM $testTableName WHERE generic_id = ?",
+                [$data['genericSampleId']]
+            ) ?: []);
+            $sameValue = static function (string $column, mixed $posted, mixed $saved): bool {
+                if (str_ends_with($column, '_datetime') || str_ends_with($column, '_date')) {
+                    return DateUtility::isoDateFormat((string) $posted, true) === DateUtility::isoDateFormat((string) $saved, true);
                 }
-            }
-            $insertTest = static function (array $testData) use ($db, $testTableName, $testSignature, &$savedTests): void {
-                $signature = $testSignature($testData);
-                if (isset($savedTests[$signature])) {
-                    return;
+                return trim((string) $posted) === trim((string) $saved);
+            };
+            $insertTest = static function (array $testData) use ($db, $testTableName, $sameValue, &$savedTests): void {
+                foreach ($savedTests as $savedTest) {
+                    $same = true;
+                    foreach ($testData as $column => $value) {
+                        if (!$sameValue($column, $value, $savedTest[$column] ?? null)) {
+                            $same = false;
+                            break;
+                        }
+                    }
+                    if ($same) {
+                        return;
+                    }
                 }
                 $db->insert($testTableName, $testData);
-                $savedTests[$signature] = true;
+                $savedTests[] = $testData;
             };
 
             $isRejected = ($data['isSampleRejected'] ?? '') === 'yes';
