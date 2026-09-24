@@ -7,6 +7,7 @@ namespace Tests\Integration;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
@@ -43,8 +44,17 @@ final class ReferralLabUpdateTest extends TestCase
 
         LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
             'form_tb', 'form_generic', 'activity_log', 'system_config', 'global_config',
+            'facility_details', 'testing_labs',
         ]);
         LegacyAppHarness::withSession(['labId' => 5]);
+        foreach ([5 => 'active', 7 => 'active', 8 => 'active', 6 => 'inactive'] as $lab => $status) {
+            LegacyAppHarness::db()->insert('facility_details', [
+                'facility_id' => $lab, 'facility_name' => "Lab $lab", 'facility_type' => 2, 'status' => $status,
+            ]);
+            foreach (['tb', 'generic-tests'] as $testType) {
+                LegacyAppHarness::db()->insert('testing_labs', ['test_type' => $testType, 'facility_id' => $lab]);
+            }
+        }
     }
 
     protected function tearDown(): void
@@ -128,6 +138,44 @@ final class ReferralLabUpdateTest extends TestCase
 
         $this->assertSame('error', $response['status'] ?? null);
         $this->assertSame(7, (int) self::row('form_tb', 'tb_id', $own)['referred_to_lab_id']);
+    }
+
+    /** @return array<string, array{int}> */
+    public static function notTestingLabs(): array
+    {
+        return ['an inactive lab' => [6], 'no such facility' => [4040]];
+    }
+
+    #[RunInSeparateProcess]
+    #[DataProvider('notTestingLabs')]
+    public function testASampleCannotBeMovedToALabThatIsNotAnActiveTestingLab(int $notALab): void
+    {
+        $own = $this->seedReferral('form_tb', 'TB-OWN', 5);
+
+        $response = $this->drive('/tb/results/update-tb-referral-helper.php', [
+            'newReferralLabId' => $notALab,
+            'sampleIds' => [$own],
+        ]);
+
+        $this->assertSame('error', $response['status'] ?? null);
+        $this->assertSame(7, (int) self::row('form_tb', 'tb_id', $own)['referred_to_lab_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testACloudLisOperatorWithoutALabMovesNothing(): void
+    {
+        LegacyAppHarness::withSession([
+            'instance' => ['type' => 'remoteuser'], 'roleId' => 4, 'accessType' => 'testing-lab',
+        ]);
+        $other = $this->seedReferral('form_tb', 'TB-OTHER', 9);
+
+        $response = $this->drive('/tb/results/update-tb-referral-helper.php', [
+            'newReferralLabId' => 8,
+            'sampleIds' => [$other],
+        ]);
+
+        $this->assertSame('error', $response['status'] ?? null);
+        $this->assertSame(7, (int) self::row('form_tb', 'tb_id', $other)['referred_to_lab_id']);
     }
 
     #[RunInSeparateProcess]
