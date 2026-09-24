@@ -117,10 +117,6 @@ try {
         $_POST['firstSputumSamplesCollectionDate'] = DateUtility::isoDateFormat($_POST['firstSputumSamplesCollectionDate']);
     }
 
-    if (trim((string) ($_POST['finalResult'] ?? '')) !== '') {
-        $resultSentToSource = 'pending';
-    }
-
     $_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
     $_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
 
@@ -179,6 +175,9 @@ try {
         || (array_key_exists('isResultFinalized', $_POST) && $_POST['isResultFinalized'] != 'yes')
     ) {
         $_POST['finalResult'] = null;
+    }
+    if (trim((string) ($_POST['finalResult'] ?? '')) !== '') {
+        $resultSentToSource = 'pending';
     }
     // Rejection is a verdict on the sample, not on one test card. A TB sample is one
     // specimen transferred from lab to lab, so a rejected specimen is rejected for

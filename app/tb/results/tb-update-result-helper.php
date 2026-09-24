@@ -280,7 +280,8 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
             (int) $_POST['tbSampleId'],
             $_POST['testResult'],
             (array) ($_POST['actualNo'] ?? []),
-            $_POST['labId'] ?? null
+            $_POST['labId'] ?? null,
+            isset($_POST['microscopyTestId']) ? (array) $_POST['microscopyTestId'] : null
         );
     }
 

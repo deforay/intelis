@@ -119,36 +119,55 @@ final class TbTestsService
     /**
      * Save the microscopy rows a single-result form posted (testResult[], actualNo[]).
      *
-     * The form draws the sample's first rows, oldest first, into its fixed slots, so
-     * slot n answers for the n-th row: a changed slot updates that row, a slot the user
-     * emptied deletes it, and a filled slot with no row behind it adds one. Rows past
-     * the slots the form drew, and rows posted back unchanged, are left as they are:
-     * an unchanged row the API client sent stays the client's, so its next post
-     * matches it instead of adding it again. The forms used to delete every row and
-     * insert all their slots, blank ones included.
+     * Each slot the page drew posts the id of the row it showed (microscopyTestId[],
+     * blank for an empty slot): a changed slot updates its row, a slot the user
+     * emptied deletes it, and a filled empty slot adds a row. A row no slot names --
+     * past the slots the page drew, or added while it was open -- is left alone, as
+     * is a slot whose row is no longer on the sample. Rows posted back unchanged are
+     * not touched: an unchanged row the API client sent stays the client's, so its
+     * next post matches it instead of adding it again. The forms used to delete every
+     * row and insert all their slots, blank ones included.
+     *
+     * A page from before the ids ($testIds null) drew the rows oldest first, so slot n
+     * stands for the n-th row. Such a page could not show a result outside its list,
+     * and posts it blank: that result is kept.
      *
      * Call inside the caller's transaction. Throws when a row cannot be written.
      *
-     * @param array<array-key, mixed> $results   The posted testResult[].
-     * @param array<array-key, mixed> $actualNos The posted actualNo[].
+     * @param array<array-key, mixed>      $results   The posted testResult[].
+     * @param array<array-key, mixed>      $actualNos The posted actualNo[].
+     * @param array<array-key, mixed>|null $testIds   The posted microscopyTestId[], null when not posted.
      */
-    public function saveMicroscopyRows(int $tbId, array $results, array $actualNos, mixed $labId): void
-    {
+    public function saveMicroscopyRows(
+        int $tbId,
+        array $results,
+        array $actualNos,
+        mixed $labId,
+        ?array $testIds = null
+    ): void {
         if ($tbId <= 0) {
             throw new RuntimeException('Cannot save TB tests without a sample');
         }
         $existing = $this->db->rawQuery('SELECT * FROM tb_tests WHERE tb_id = ? ORDER BY tb_test_id', [$tbId]) ?: [];
+        $byId = array_column($existing, null, 'tb_test_id');
         $actualNos = array_values($actualNos);
+        $testIds = $testIds === null ? null : array_values($testIds);
 
         foreach (array_values($results) as $slot => $result) {
             $result = is_scalar($result) ? trim((string) $result) : '';
             $actualNo = is_scalar($actualNos[$slot] ?? null) ? trim((string) $actualNos[$slot]) : '';
-            $row = $existing[$slot] ?? null;
-            // A result the API or an import stored that the form's list does not
-            // offer came back blank from a page that could not show it. It stays.
-            $stored = trim((string) ($row['test_result'] ?? ''));
-            if ($result === '' && $stored !== '' && !in_array($stored, self::MICROSCOPY_RESULTS, true)) {
-                $result = $stored;
+            if ($testIds === null) {
+                $row = $existing[$slot] ?? null;
+                $stored = trim((string) ($row['test_result'] ?? ''));
+                if ($result === '' && $stored !== '' && !in_array($stored, self::MICROSCOPY_RESULTS, true)) {
+                    $result = $stored;
+                }
+            } else {
+                $testId = is_scalar($testIds[$slot] ?? null) ? trim((string) $testIds[$slot]) : '';
+                if ($testId !== '' && !isset($byId[$testId])) {
+                    continue;
+                }
+                $row = $testId === '' ? null : $byId[$testId];
             }
 
             if ($row === null) {
