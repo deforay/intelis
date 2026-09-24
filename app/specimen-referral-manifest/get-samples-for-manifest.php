@@ -40,8 +40,13 @@ $testType = (empty($_POST['testType'])) ? "" : $_POST['testType'];
 $testTable = TestsService::getTestTableName($module);
 $testPrimaryKey = TestsService::getPrimaryColumn($module);
 $patientId = TestsService::getPatientIdColumn($module);
+$patientName = '';
+if($module == 'tb')
+{
+	$patientName = " vl.patient_name ,";
+}
 
-$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.$testPrimaryKey,vl.$patientId,vl.sample_package_id,vl.is_encrypted,pd.manifest_id
+$query = "SELECT vl.sample_code,vl.remote_sample_code, $patientName vl.$testPrimaryKey,vl.$patientId,vl.sample_package_id,vl.is_encrypted,pd.manifest_id
 			FROM $testTable as vl
 			LEFT JOIN specimen_manifests as pd ON vl.sample_package_id = pd.manifest_id ";
 
@@ -185,11 +190,16 @@ $key = (string) $general->getGlobalConfig('key');
 			if ($sample['is_encrypted'] == 'yes') {
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
+			$showPatient = '';
+			if($module == 'tb')
+				{
+					$showPatient = ' - ' . $sample['patient_name'];
+				}
 			if (!empty($sample[$sampleCode]) && ((!isset($sample['sample_package_id']) || !isset($sample['manifest_id'])) || ($sample['sample_package_id'] != $sample['manifest_id']))) {
 				?>
 				<option value="<?php
 				echo $sample[$testPrimaryKey];
-				?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
+				?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId] .  $showPatient; ?></option>
 				<?php
 			}
 		} ?>
@@ -213,11 +223,16 @@ $key = (string) $general->getGlobalConfig('key');
 			if ($sample['is_encrypted'] == 'yes') {
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
+			$showPatient = '';
+			if($module == 'tb')
+				{
+					$showPatient = ' - ' . $sample['patient_name'];
+				}
 			if (!empty($sample[$sampleCode]) && (isset($sample['manifest_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['manifest_id'])) {
 				?>
 				<option value="<?php
 				echo $sample[$testPrimaryKey];
-				?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
+				?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId] . $showPatient; ?></option>
 				<?php
 			}
 		} ?>
