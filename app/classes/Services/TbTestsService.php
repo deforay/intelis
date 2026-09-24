@@ -48,11 +48,16 @@ final class TbTestsService
 
         $kept = [];
         foreach ((array) ($cards['labId'] ?? []) as $key => $labId) {
-            if (empty($labId)) {
-                continue;
-            }
             $testId = trim((string) ($cards['testId'][$key] ?? ''));
             $isSaved = $testId !== '' && isset($existing[$testId]);
+            // A new card without a lab is a blank card. A saved test posted without
+            // one keeps its own lab: the edits are saved rather than dropped.
+            if (empty($labId)) {
+                if (!$isSaved) {
+                    continue;
+                }
+                $labId = $existing[$testId]['lab_id'];
+            }
 
             $history = MiscUtility::parseResultChangeHistory(
                 $isSaved ? ($existing[$testId]['reason_for_result_change'] ?? null) : null

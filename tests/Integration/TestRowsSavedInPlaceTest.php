@@ -47,7 +47,7 @@ final class TestRowsSavedInPlaceTest extends TestCase
 
         LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
             'r_sample_status', 'form_tb', 'tb_tests', 'form_generic', 'generic_test_results',
-            'audit_log', 'test_result_attempts', 'activity_log',
+            'audit_log', 'test_result_attempts', 'activity_log', 'system_config', 'global_config',
         ]);
         LegacyAppHarness::withSession();
         LegacyAppHarness::db()->rawQuery(
@@ -745,5 +745,160 @@ final class TestRowsSavedInPlaceTest extends TestCase
         self::assertSame($shared, (int) $tests[0]['test_id']);
         self::assertSame(['hiv', 'hcv'], array_column($tests, 'sub_test_name'));
         self::assertSame(['Method A', 'Method C'], array_column($tests, 'test_name'));
+    }
+
+    /**
+     * A saved test posted without a lab keeps its own lab, and its edits are saved.
+     * Such a card used to be skipped, so what the user changed on it was lost.
+     */
+    #[RunInSeparateProcess]
+    public function testASavedTestPostedWithoutALabKeepsItsLabAndItsEdits(): void
+    {
+        $tbId = $this->seedTb();
+        $test = $this->seedTbTest($tbId, ['lab_id' => 7]);
+
+        $this->driveTbResultPage([
+            'tbSampleId' => (string) $tbId,
+            'testResult' => self::cards([
+                'labId' => '', 'testType' => 'Smear Microscopy', 'testResult' => '2+',
+                'sampleTestedDateTime' => '17-Sep-2026 08:00', 'testId' => (string) $test,
+            ]),
+        ]);
+
+        $tests = $this->tbTests($tbId);
+        self::assertCount(1, $tests);
+        self::assertSame($test, (int) $tests[0]['tb_test_id']);
+        self::assertSame('2+', $tests[0]['test_result']);
+        self::assertSame(7, (int) $tests[0]['lab_id']);
+    }
+
+    /**
+     * A request edit posts its cards on every save. One that changes no result keeps
+     * no copy of the unchanged result.
+     */
+    #[RunInSeparateProcess]
+    public function testACustomTestSaveThatChangesNoResultKeepsNoCopy(): void
+    {
+        // Awaiting approval, which is where a save with this result leaves it.
+        $sampleId = $this->seedGeneric(['result' => 'Positive', 'result_status' => 8]);
+        $test = $this->seedGenericTest($sampleId, ['result' => 'Positive']);
+
+        ContainerRegistry::get(GenericTestsService::class)->saveMultiTestResults($sampleId, [
+            'testResult' => [
+                'labId' => ['1'], 'testType' => ['Method A'], 'testResult' => ['Positive'],
+                'comments' => ['checked again'],
+                'sampleTestedDateTime' => ['17-Sep-2026 08:00'], 'testId' => [(string) $test],
+            ],
+            'isResultFinalized' => 'yes',
+            'finalResult' => 'Positive',
+        ], 'user-a');
+
+        self::assertSame(0, (int) LegacyAppHarness::db()->rawQueryOne(
+            "SELECT COUNT(*) AS n FROM test_result_attempts WHERE record_id = ?",
+            [$sampleId]
+        )['n']);
+        self::assertSame('checked again', $this->genericTests($sampleId)[0]['comments']);
+    }
+
+    /**
+     * Saving the cards of an approved sample sends it back for approval even with the
+     * same result, so the approved result is kept.
+     */
+    #[RunInSeparateProcess]
+    public function testACustomTestSaveThatMovesTheStatusKeepsACopy(): void
+    {
+        $sampleId = $this->seedGeneric(['result' => 'Positive', 'result_status' => 7]);
+        $test = $this->seedGenericTest($sampleId, ['result' => 'Positive']);
+
+        ContainerRegistry::get(GenericTestsService::class)->saveMultiTestResults($sampleId, [
+            'testResult' => [
+                'labId' => ['1'], 'testType' => ['Method A'], 'testResult' => ['Positive'],
+                'sampleTestedDateTime' => ['17-Sep-2026 08:00'], 'testId' => [(string) $test],
+            ],
+            'isResultFinalized' => 'yes',
+            'finalResult' => 'Positive',
+        ], 'user-a');
+
+        $attempt = LegacyAppHarness::db()->rawQueryOne(
+            'SELECT * FROM test_result_attempts WHERE record_id = ?',
+            [$sampleId]
+        );
+        self::assertSame(7, (int) ($attempt['result_status'] ?? 0));
+    }
+
+    /** A test's unit is part of its result: changing it keeps a copy. */
+    #[RunInSeparateProcess]
+    public function testChangingATestsUnitKeepsACopy(): void
+    {
+        $sampleId = $this->seedGeneric(['result' => 'Positive', 'result_status' => 8]);
+        $test = $this->seedGenericTest($sampleId, ['result' => '50', 'result_unit' => 1]);
+
+        ContainerRegistry::get(GenericTestsService::class)->saveMultiTestResults($sampleId, [
+            'testResult' => [
+                'labId' => ['1'], 'testType' => ['Method A'], 'testResult' => ['50'], 'resultUnit' => ['2'],
+                'sampleTestedDateTime' => ['17-Sep-2026 08:00'], 'testId' => [(string) $test],
+            ],
+            'isResultFinalized' => 'yes',
+            'finalResult' => 'Positive',
+        ], 'user-a');
+
+        self::assertNotNull(LegacyAppHarness::db()->rawQueryOne(
+            'SELECT attempt_id FROM test_result_attempts WHERE record_id = ?',
+            [$sampleId]
+        ));
+    }
+
+    /** A saved custom test posted without a lab keeps its lab, and its edits are saved. */
+    #[RunInSeparateProcess]
+    public function testASavedCustomTestPostedWithoutALabKeepsItsLabAndItsEdits(): void
+    {
+        $sampleId = $this->seedGeneric();
+        $test = $this->seedGenericTest($sampleId, ['lab_id' => 7]);
+
+        ContainerRegistry::get(GenericTestsService::class)->saveMultiTestResults($sampleId, [
+            'testResult' => [
+                'labId' => [''], 'testType' => ['Method A'], 'testResult' => ['Positive'],
+                'testId' => [(string) $test],
+            ],
+        ], 'user-a');
+
+        $tests = $this->genericTests($sampleId);
+        self::assertSame('Positive', $tests[0]['result']);
+        self::assertSame(7, (int) $tests[0]['lab_id']);
+    }
+
+    /**
+     * A custom test type with no sub-tests posts testName[][]: each row under its own
+     * key. Those rows are saved in place too.
+     */
+    #[RunInSeparateProcess]
+    public function testRowsOfATestTypeWithoutSubTestsAreSavedInPlace(): void
+    {
+        $sampleId = $this->seedGeneric();
+        $first = $this->seedGenericTest($sampleId, ['sub_test_name' => '0']);
+
+        $this->driveCustomTestResultPage([
+            'requestSampleId' => (string) $sampleId,
+            'isSampleRejected' => 'no',
+            'testName' => [['Method A'], ['Method B']],
+            'testRowId' => [[(string) $first], ['']],
+            'testDate' => [['17-Sep-2026 08:00'], ['18-Sep-2026 08:00']],
+            'testingPlatform' => [[''], ['']],
+            'testResult' => [['Positive'], ['Negative']],
+            'testResultUnit' => [[''], ['']],
+            // Posted once for the test type, not once per row.
+            'resultType' => ['qualitative'],
+            'finalResult' => ['Positive'],
+            'finalTestResultUnit' => [''],
+            'resultInterpretation' => [''],
+        ]);
+
+        $tests = $this->genericTests($sampleId);
+        self::assertCount(2, $tests);
+        self::assertSame($first, (int) $tests[0]['test_id']);
+        self::assertSame('Positive', $tests[0]['result']);
+        self::assertSame('Method B', $tests[1]['test_name']);
+        // The test type's fields are posted once and belong to every row.
+        self::assertSame(['qualitative', 'qualitative'], array_column($tests, 'result_type'));
     }
 }

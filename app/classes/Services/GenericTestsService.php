@@ -350,8 +350,15 @@ final class GenericTestsService extends AbstractTestService
         $tableName = 'form_generic';
         $testTableName = 'generic_test_results';
 
-        // The result these cards replace is kept first, as on every other result edit.
-        (new TestAttemptService($this->db))->archive('generic-tests', $sampleId, TestAttemptService::BY_RESULT_EDIT);
+        // Sample-level outcome (from the SAMPLE OUTCOME section, NOT inferred from a card):
+        // rejecting the whole sample and entering a final interpretation are mutually exclusive --
+        // a rejected sample has no final interpretation.
+        $sampleRejected = (($post['sampleRejected'] ?? '') === 'yes');
+        $finalInterp = (!$sampleRejected && ($post['isResultFinalized'] ?? '') === 'yes')
+            ? trim((string) ($post['finalResult'] ?? '')) : null;
+        if ($finalInterp === '') {
+            $finalInterp = null;
+        }
 
         // Existing rows keyed by test_id -- drives three things: server-side accumulation of
         // the per-test change history (cannot be spoofed by the client), upserting each card
@@ -361,10 +368,23 @@ final class GenericTestsService extends AbstractTestService
             $existingById[(string) $r['test_id']] = $r;
         }
 
+        // The result these cards replace is kept first, as on every other result edit --
+        // but only when this save replaces one. A request edit posts its cards every
+        // time, and a save that changes no result would only add a copy of the same one.
+        if ($this->replacesAResult($sampleId, $post, $tr, $cardLabIds, $existingById, $sampleRejected, $finalInterp)) {
+            (new TestAttemptService($this->db))->archive('generic-tests', $sampleId, TestAttemptService::BY_RESULT_EDIT);
+        }
+
         $keptIds = [];   // existing test_ids updated in place this save (so we never delete them)
         foreach ($cardLabIds as $k => $labId) {
+            // A new card without a lab is a blank card. A saved test posted without
+            // one keeps its own lab: the edits are saved rather than dropped.
+            $postedTestId = trim((string) ($tr['testId'][$k] ?? ''));
             if (empty($labId)) {
-                continue;
+                if ($postedTestId === '' || !isset($existingById[$postedTestId])) {
+                    continue;
+                }
+                $labId = $existingById[$postedTestId]['lab_id'];
             }
             $rejected = $tr['isSampleRejected'][$k] ?? null;
             $isRej = ($rejected === 'yes');
@@ -450,15 +470,6 @@ final class GenericTestsService extends AbstractTestService
             [$sampleId]
         ) ?: [];
 
-        // Sample-level outcome (from the SAMPLE OUTCOME section, NOT inferred from a card):
-        // rejecting the whole sample and entering a final interpretation are mutually exclusive --
-        // a rejected sample has no final interpretation.
-        $sampleRejected = (($post['sampleRejected'] ?? '') === 'yes');
-        $finalInterp = (!$sampleRejected && ($post['isResultFinalized'] ?? '') === 'yes')
-            ? trim((string) ($post['finalResult'] ?? '')) : null;
-        if ($finalInterp === '') {
-            $finalInterp = null;
-        }
 
         // Always-written columns: the result + the per-test-derived chain (from the latest test).
         // Sample-level rejection is NOT derived from the latest card -- it is written below from the
@@ -519,6 +530,65 @@ final class GenericTestsService extends AbstractTestService
         if ($this->db->update($tableName, $formUpdate) !== true) {
             throw new SystemException("Could not save sample $sampleId: " . $this->db->getLastError(), 500);
         }
+    }
+
+    /**
+     * Whether a multi-test save changes a result: the sample's final interpretation,
+     * rejection or status, a saved test's result, unit or rejection, or removes a
+     * saved test.
+     *
+     * @param array<string, mixed>                $tr
+     * @param array<int, mixed>                   $cardLabIds
+     * @param array<string, array<string, mixed>> $existingById
+     */
+    private function replacesAResult(
+        int $sampleId,
+        array $post,
+        array $tr,
+        array $cardLabIds,
+        array $existingById,
+        bool $sampleRejected,
+        ?string $finalInterp
+    ): bool {
+        $sample = $this->db->rawQueryOne(
+            'SELECT result, is_sample_rejected, result_status FROM form_generic WHERE sample_id = ?',
+            [$sampleId]
+        ) ?: [];
+        if ((string) ($sample['result'] ?? '') !== (string) $finalInterp) {
+            return true;
+        }
+        // The status this save writes (see writeMultiTestResults).
+        $status = $sampleRejected ? REJECTED : ($finalInterp !== null ? PENDING_APPROVAL : RECEIVED_AT_TESTING_LAB);
+        if ((int) ($sample['result_status'] ?? 0) !== $status) {
+            return true;
+        }
+        $wasRejected = ($sample['is_sample_rejected'] ?? '') === 'yes';
+        if (array_key_exists('sampleRejected', $post) && $wasRejected !== $sampleRejected) {
+            return true;
+        }
+        foreach ((array) ($post['deletedTestIds'] ?? []) as $deletedId) {
+            if (isset($existingById[(string) $deletedId])) {
+                return true;
+            }
+        }
+        foreach ($cardLabIds as $k => $labId) {
+            $testId = trim((string) ($tr['testId'][$k] ?? ''));
+            if (!isset($existingById[$testId])) {
+                continue;
+            }
+            $saved = $existingById[$testId];
+            $cardRejected = ($tr['isSampleRejected'][$k] ?? null) === 'yes';
+            $posted = $cardRejected ? '' : trim((string) ($tr['testResult'][$k] ?? ''));
+            $postedUnit = (string) ($tr['resultUnit'][$k] ?? '');
+            if (
+                $posted !== (string) ($saved['result'] ?? '')
+                || $postedUnit !== (string) ($saved['result_unit'] ?? '')
+                || $cardRejected !== (($saved['is_sample_rejected'] ?? '') === 'yes')
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getReasonForFailure($option = true, $updatedDateTime = null)
