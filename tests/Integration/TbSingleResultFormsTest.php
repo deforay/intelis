@@ -258,6 +258,15 @@ final class TbSingleResultFormsTest extends TestCase
             ['No AFB' => 'No AFB', 'Negative' => 'Negative'],
             TbTestsService::microscopyOptions(['No AFB' => 'No AFB'], 'Negative')
         );
+        // A stored "0" is shown selected, so the page posts it back.
+        self::assertStringContainsString(
+            "value='0' selected='selected'",
+            ContainerRegistry::get(CommonService::class)->generateSelectOptions(
+                TbTestsService::microscopyOptions(['No AFB' => 'No AFB'], '0'),
+                '0',
+                '-- Select --'
+            )
+        );
     }
 
     /**
@@ -324,6 +333,50 @@ final class TbSingleResultFormsTest extends TestCase
         ]));
 
         self::assertNull($this->formTb($tbId)['result_sent_to_source']);
+    }
+
+    /** Acting as one lab, the form never changes or deletes another lab's row. */
+    #[RunInSeparateProcess]
+    public function testAnotherLabsRowIsLeftAlone(): void
+    {
+        LegacyAppHarness::withSession(['labId' => 1, 'instance' => ['type' => 'vluser']]);
+        $tbId = $this->seedTb();
+        $otherLab = $this->seedTbTest($tbId, ['lab_id' => 2, 'actual_no' => '1', 'test_result' => '1+']);
+
+        ContainerRegistry::get(TbTestsService::class)
+            ->saveMicroscopyRows($tbId, ['', '', ''], ['', '', ''], 1, [(string) $otherLab, '', '']);
+
+        self::assertSame([[$otherLab, '1+']], array_map(
+            static fn($t) => [(int) $t['tb_test_id'], $t['test_result']],
+            $this->tbTests($tbId)
+        ));
+    }
+
+    /**
+     * Every single-result edit and result form posts the id of the row behind each
+     * slot, and a blank one for an empty slot; without them a save falls back to
+     * matching by position.
+     */
+    public function testEveryFormPostsTheRowIdOfEachSlot(): void
+    {
+        foreach (
+            [
+                'requests/forms/edit-burkina-faso.php', 'requests/forms/edit-sierraleone.php',
+                'requests/forms/edit-southsudan.php', 'results/forms/update-burkina-faso.php',
+                'results/forms/update-sierraleone.php', 'results/forms/update-southsudan.php',
+            ] as $form
+        ) {
+            $source = (string) file_get_contents(dirname(__DIR__, 2) . '/app/tb/' . $form);
+            $savedSlot = '<input type="hidden" name="microscopyTestId[]" '
+                . 'value="<?= (int) $tbTestInfo[$no - 1][\'tb_test_id\']; ?>" />';
+            self::assertSame(1, substr_count($source, $savedSlot), $form);
+            self::assertSame(
+                1,
+                substr_count($source, '<input type="hidden" name="microscopyTestId[]" value="" />'),
+                $form
+            );
+            self::assertSame(2, substr_count($source, 'name="actualNo[]"'), $form);
+        }
     }
 
     /** A row the client sent and the lab then changed becomes the lab's. */

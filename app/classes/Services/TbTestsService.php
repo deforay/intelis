@@ -148,7 +148,13 @@ final class TbTestsService
         if ($tbId <= 0) {
             throw new RuntimeException('Cannot save TB tests without a sample');
         }
-        $existing = $this->db->rawQuery('SELECT * FROM tb_tests WHERE tb_id = ? ORDER BY tb_test_id', [$tbId]) ?: [];
+        // Another lab's rows are that lab's: the form never changes or deletes them.
+        $labScope = ContainerRegistry::get(CommonService::class)->labScopeWhere('');
+        $scoped = $labScope !== '' ? " AND $labScope" : '';
+        $existing = $this->db->rawQuery(
+            "SELECT * FROM tb_tests WHERE tb_id = ?$scoped ORDER BY tb_test_id",
+            [$tbId]
+        ) ?: [];
         $byId = array_column($existing, null, 'tb_test_id');
         $actualNos = array_values($actualNos);
         $testIds = $testIds === null ? null : array_values($testIds);
