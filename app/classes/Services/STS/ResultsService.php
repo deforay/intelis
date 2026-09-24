@@ -14,6 +14,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use App\Services\TestAttemptService;
 use App\Services\RejectionReasonMappingService;
 use App\Utilities\SampleCodeVariantUtility;
 use App\Utilities\QueryLoggerUtility;
@@ -264,6 +265,8 @@ final class ResultsService
                     // }
 
                     $localRecord = $this->testRequestsService->findMatchingLocalRecord($resultFromLab, $this->tableName, $this->primaryKeyName);
+                    // Who owns the sample as stored, before this update can change it.
+                    $storedOwner = empty($localRecord) ? [] : $this->storedOwner($localRecord[$this->primaryKeyName]);
 
                     $resultFromLab['form_attributes'] = $this->buildSafeFormAttributesExpression(
                         $localRecord['form_attributes'] ?? null,
@@ -338,12 +341,13 @@ final class ResultsService
                         }
                     }
                     // Sub-table sync for test types with additional data
+                    $testRows = $dataFromLIS['data_from_tests'] ?? null;
                     if ($testType == "covid19") {
-                        $this->commonService->syncSubTable('covid19_tests', 'covid19_id', $primaryKeyValue, $dataFromLIS['data_from_tests'] ?? null, ['test_id', 'data_sync'], [], true);
+                        $this->syncTestRows('covid19_tests', 'covid19_id', $primaryKeyValue, self::unwrapCovid19Tests($testRows), ['test_id', 'data_sync'], $storedOwner, $labId);
                     } elseif ($testType == "generic-tests") {
-                        $this->commonService->syncSubTable('generic_test_results', 'generic_id', $primaryKeyValue, $dataFromLIS['data_from_tests'] ?? null, ['test_id', 'data_sync'], [], true);
+                        $this->syncTestRows('generic_test_results', 'generic_id', $primaryKeyValue, $testRows, ['test_id', 'data_sync'], $storedOwner, $labId);
                     } elseif ($testType == 'tb') {
-                        $this->commonService->syncSubTable('tb_tests', 'tb_id', $primaryKeyValue, $dataFromLIS['data_from_tests'] ?? null, ['tb_test_id', 'data_sync'], [], true);
+                        $this->syncTestRows('tb_tests', 'tb_id', $primaryKeyValue, $testRows, ['tb_test_id', 'data_sync'], $storedOwner, $labId);
                     }
 
                     if ($id !== false && isset($resultFromLab['sample_code'])) {
@@ -404,6 +408,87 @@ final class ResultsService
         }
 
         return $ackByUniqueId ? $labIdentifiers : $sampleCodes;
+    }
+
+    /**
+     * Replaces the STS's test rows for a sample with the set the lab sent.
+     *
+     * No data_from_tests at all means the sender said nothing about test rows, so
+     * the STS keeps what it has. An empty list means the lab has none -- it deleted
+     * the last one -- and is taken as that only from the sample's testing lab as the
+     * STS has it stored, never as the payload claims: a lab that referred the sample
+     * away has no rows of its own, and its empty list must not clear the rows the
+     * receiving lab sent. Each row is copied to audit_log first; generic_test_results
+     * has no audit trigger, so a wrong delete would otherwise be unrecoverable.
+     *
+     * @param array{lab_id?: mixed, referred_to_lab_id?: mixed} $storedOwner
+     */
+    private function syncTestRows(
+        string $table,
+        string $foreignKey,
+        mixed $parentId,
+        mixed $rows,
+        array $excludeFields,
+        array $storedOwner,
+        mixed $senderLabId
+    ): void {
+        if (!is_array($rows) || empty($parentId)) {
+            return;
+        }
+        if ($rows !== []) {
+            $this->commonService->syncSubTable($table, $foreignKey, $parentId, $rows, $excludeFields, [], true);
+            return;
+        }
+
+        $sender = (int) $senderLabId;
+        $referredTo = (int) ($storedOwner['referred_to_lab_id'] ?? 0);
+        if ($sender <= 0
+            || $sender !== (int) ($storedOwner['lab_id'] ?? 0)
+            || ($referredTo !== 0 && $referredTo !== $sender)
+        ) {
+            return;
+        }
+
+        $primaryKey = $excludeFields[0];
+        $attempts = ContainerRegistry::get(TestAttemptService::class);
+        foreach ($this->db->rawQuery("SELECT * FROM `$table` WHERE `$foreignKey` = ?", [$parentId]) as $row) {
+            $attempts->snapshotBeforeDelete($table, (int) $row[$primaryKey], $row);
+        }
+        $this->db->where($foreignKey, $parentId);
+        $this->db->delete($table);
+    }
+
+    /**
+     * The sample's testing lab and referral as the STS has them stored.
+     *
+     * @return array{lab_id?: mixed, referred_to_lab_id?: mixed}
+     */
+    private function storedOwner(mixed $primaryKeyValue): array
+    {
+        $row = $this->db->rawQueryOne(
+            "SELECT * FROM `{$this->tableName}` WHERE `{$this->primaryKeyName}` = ?",
+            [$primaryKeyValue]
+        );
+        return is_array($row) ? array_intersect_key($row, ['lab_id' => 1, 'referred_to_lab_id' => 1]) : [];
+    }
+
+    /**
+     * COVID-19 test rows arrive keyed by the lab's sample id and then by test id
+     * ([labSampleId => [testId => row]]), unlike the flat lists of TB and Custom
+     * Tests. Saving that shape as rows wrote one empty row per sample, so it is
+     * flattened first; a flat list is left as it is.
+     */
+    private static function unwrapCovid19Tests(mixed $rows): mixed
+    {
+        if (!is_array($rows) || $rows === []) {
+            return $rows;
+        }
+        foreach ($rows as $group) {
+            if (!is_array($group) || $group === [] || count(array_filter($group, 'is_array')) !== count($group)) {
+                return $rows;
+            }
+        }
+        return array_merge(...array_map('array_values', array_values($rows)));
     }
 
     /**

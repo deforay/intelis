@@ -180,6 +180,10 @@ final class TestAttemptService
 
             $clear = array_fill_keys(TestsService::getColumnsClearedOnRetest($testType), null);
             $clear['result_status'] = $status;
+            // Cleared on the lab only unless it is sent: the STS would keep the
+            // failed result, and the next pull would bring it back.
+            $clear['data_sync'] = 0;
+            $clear['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
             $this->db->where($module['primaryKey'], $ids, 'IN');
             $this->db->update($module['tableName'], $clear);

@@ -47,13 +47,13 @@ final class StsResultsReceiveTest extends TestCase
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', [
                 'database' => ['db' => $this->database],
-                'modules' => ['vl' => true, 'tb' => true],
+                'modules' => ['vl' => true, 'tb' => true, 'covid19' => true],
             ]);
         }
         $db = LegacyAppHarness::boot($this->database, [
             'system_config', 'global_config', 's_vlsm_instance', 'r_sample_status', 'form_vl', 'form_tb',
             'tb_tests', 'roles', 'user_details', 'r_vl_sample_rejection_reasons', 'r_tb_sample_rejection_reasons',
-            'facility_details', 'specimen_manifests',
+            'facility_details', 'specimen_manifests', 'form_covid19', 'covid19_tests', 'audit_log',
         ]);
         $this->booted = true;
         $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (6, 'Registered'), (7, 'Accepted')");
@@ -318,6 +318,105 @@ final class StsResultsReceiveTest extends TestCase
             static fn(array $row): array => ['tb_id' => (int) $row['tb_id'], 'test_result' => $row['test_result']],
             $tests
         ), 'on the STS row, not the lab row id');
+    }
+
+    /** A TB result with its test rows, as the lab sends it. */
+    private static function tbRecord(?array $tests, array $form = []): array
+    {
+        $record = ['form_data' => self::vlResult('t-1', $form + ['result' => 'Positive'])];
+        if ($tests !== null) {
+            $record['data_from_tests'] = $tests;
+        }
+        return $record;
+    }
+
+    private static function tbTest(string $result): array
+    {
+        return [
+            'tb_test_id' => 9, 'tb_id' => 55, 'test_result' => $result, 'updated_datetime' => '2026-09-01 11:00:00',
+        ];
+    }
+
+    #[RunInSeparateProcess]
+    public function testTbTestRowsTheLabRemovedAreRemovedOnTheSts(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_tb', 't-1', ['tb_id' => 1]);
+
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('MTB')])]));
+        // The lab deleted its only test.
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord([])]));
+
+        self::assertSame(0, (int) $db->rawQueryOne('SELECT COUNT(*) AS n FROM tb_tests')['n']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTbTestRowsAreKeptWhenTheLabSentNone(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_tb', 't-1', ['tb_id' => 1]);
+
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('MTB')])]));
+        // No data_from_tests at all: the sender said nothing about test rows.
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord(null)]));
+
+        self::assertSame(1, (int) $db->rawQueryOne('SELECT COUNT(*) AS n FROM tb_tests')['n']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testALabThatReferredTheSampleAwayDoesNotClearTheTestRows(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_tb', 't-1', ['tb_id' => 1]);
+
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('MTB')])]));
+        // The sample is referred to lab 8, so lab 7 has no rows of its own.
+        $db->rawQuery('UPDATE form_tb SET referred_to_lab_id = 8');
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord([], ['referred_to_lab_id' => 8])]));
+        $db->rawQuery('UPDATE form_tb SET referred_to_lab_id = NULL');
+        // A lab that is not the sample's testing lab cannot claim to be it.
+        self::sts()->receiveResults('tb', ['labId' => 9, 'results' => [self::tbRecord([], ['lab_id' => 9])]]);
+
+        self::assertSame(1, (int) $db->rawQueryOne('SELECT COUNT(*) AS n FROM tb_tests')['n']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testClearedTestRowsAreKeptInTheAuditLog(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_tb', 't-1', ['tb_id' => 1]);
+
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('MTB')])]));
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord([])]));
+
+        $kept = $db->rawQueryOne("SELECT action, row_data FROM audit_log WHERE form_table = 'tb_tests'");
+        self::assertSame('delete', $kept['action'] ?? null);
+        self::assertSame('MTB', json_decode((string) $kept['row_data'], true)['test_result'] ?? null);
+    }
+
+    #[RunInSeparateProcess]
+    public function testCovid19TestRowsArriveWithTheirValues(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_covid19', 'c-1', ['covid19_id' => 1]);
+
+        // The lab sends COVID-19 rows keyed by its own sample id, then by test id.
+        self::sts()->receiveResults('covid19', self::payload([[
+            'form_data' => self::vlResult('c-1', ['result' => 'negative']),
+            'data_from_tests' => [55 => [
+                3 => ['test_id' => 3, 'covid19_id' => 55, 'test_name' => 'PCR', 'result' => 'negative'],
+                4 => ['test_id' => 4, 'covid19_id' => 55, 'test_name' => 'Antigen', 'result' => 'positive'],
+            ]],
+        ]]));
+
+        $tests = $db->rawQuery('SELECT covid19_id, test_name, result FROM covid19_tests ORDER BY test_id');
+        self::assertSame([
+            ['covid19_id' => 1, 'test_name' => 'PCR', 'result' => 'negative'],
+            ['covid19_id' => 1, 'test_name' => 'Antigen', 'result' => 'positive'],
+        ], array_map(
+            static fn(array $row): array => ['covid19_id' => (int) $row['covid19_id']] + $row,
+            $tests
+        ));
     }
 
     /** A referral manifest as a lab sends it with its TB results. */
