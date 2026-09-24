@@ -4,6 +4,7 @@ use const COUNTRY\PNG;
 use JsonMachine\Items;
 use Slim\Psr7\Request;
 use App\Services\TbService;
+use App\Services\TbTestsService;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -43,6 +44,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
+
+/** @var TbTestsService $tbTestsService */
+$tbTestsService = ContainerRegistry::get(TbTestsService::class);
 
 /** @var TestRequestsService $testRequestsService */
 $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
@@ -95,7 +99,6 @@ try {
     $user = null;
     $tableName = "form_tb";
     $tableName1 = "activity_log";
-    $testTableName = 'tb_tests';
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
 
@@ -504,25 +507,15 @@ try {
         $formAttributesStr = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
         $tbData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
 
-        if (isset($data['tbSampleId']) && $data['tbSampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
-            if (!empty($data['testResults'])) {
-                $db->where('tb_id', $data['tbSampleId']);
-                $db->delete($testTableName);
-
-                foreach ($data['testResults'] as $testKey => $testResult) {
-                    if (isset($testResult['testResult']) && !empty($testResult['testResult'])) {
-                        $db->insert($testTableName, [
-                            'tb_id' => $data['tbSampleId'],
-                            'actual_no' => $testResult['actualNo'] ?? null,
-                            'test_result' => $testResult['testResult'],
-                            'updated_datetime' => DateUtility::getCurrentDateTime()
-                        ]);
-                    }
-                }
-            }
-        } else {
-            $db->where('tb_id', $data['tbSampleId']);
-            $db->delete($testTableName);
+        // Saved in place, and never deleted: a rejected sample keeps the tests it has,
+        // as it does on the result page. See TbTestsService::saveApiTests().
+        if (
+            !empty($data['tbSampleId'])
+            && ($data['isSampleRejected'] ?? '') !== 'yes'
+            && !empty($data['testResults'])
+            && is_array($data['testResults'])
+        ) {
+            $tbTestsService->saveApiTests((int) $data['tbSampleId'], $data['testResults']);
         }
         // Never let a payload that omits the lab assigned code blank out the one
         // the testing lab already entered. A client re-posting its whole dataset

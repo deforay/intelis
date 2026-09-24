@@ -132,6 +132,64 @@ final class TbTestsService
     }
 
     /**
+     * Save the test results an API client sent for one sample.
+     *
+     * The client knows nothing of tb_tests ids, only the test number (actualNo) and
+     * its result. A result for a number the sample already has updates that row; a
+     * new one is added, and a result the sample already has without a number is not
+     * added twice. Nothing is deleted: the rows the lab entered or an analyzer
+     * imported are not the client's to remove, and a client re-posting its whole
+     * dataset used to wipe them on every post.
+     *
+     * @param array<array-key, mixed> $testResults The payload's testResults.
+     */
+    public function saveApiTests(int $tbId, array $testResults): void
+    {
+        if ($tbId <= 0) {
+            return;
+        }
+        $existing = $this->db->rawQuery('SELECT * FROM tb_tests WHERE tb_id = ?', [$tbId]) ?: [];
+
+        foreach ($testResults as $test) {
+            $result = is_array($test) ? trim((string) ($test['testResult'] ?? '')) : '';
+            if ($result === '') {
+                continue;
+            }
+            $actualNo = trim((string) ($test['actualNo'] ?? ''));
+
+            $match = null;
+            foreach ($existing as $row) {
+                $sameNo = $actualNo !== '' && (string) $row['actual_no'] === $actualNo;
+                $sameUnnumbered = $actualNo === '' && (string) ($row['actual_no'] ?? '') === ''
+                    && (string) $row['test_result'] === $result;
+                if ($sameNo || $sameUnnumbered) {
+                    $match = $row;
+                    break;
+                }
+            }
+
+            if ($match === null) {
+                $row = [
+                    'tb_id' => $tbId,
+                    'actual_no' => $actualNo === '' ? null : $actualNo,
+                    'test_result' => $result,
+                    'updated_datetime' => DateUtility::getCurrentDateTime(),
+                ];
+                if (!$this->db->insert('tb_tests', $row)) {
+                    throw new RuntimeException('Could not save a TB test: ' . $this->db->getLastError());
+                }
+                $existing[] = ['tb_test_id' => $this->db->getInsertId()] + $row;
+            } elseif ((string) $match['test_result'] !== $result) {
+                $this->db->where('tb_test_id', $match['tb_test_id']);
+                $this->db->update('tb_tests', [
+                    'test_result' => $result,
+                    'updated_datetime' => DateUtility::getCurrentDateTime(),
+                ]);
+            }
+        }
+    }
+
+    /**
      * The form_tb columns that describe the sample's latest test. Empty when the
      * sample has no tests, and without the received date when that test has none:
      * the caller leaves what is missing as it is on the sample.

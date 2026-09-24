@@ -78,6 +78,7 @@ try {
                vl.patient_age,
                vl.sample_collection_date,
                vl.sample_tested_datetime,
+               vl.tb_test_platform,
                vl.sample_received_at_lab_datetime,
                vl.is_sample_rejected,
                vl.result,
