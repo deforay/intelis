@@ -312,7 +312,6 @@ try {
           'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') ? base64_decode((string) $_POST['fundingSource']) : null,
           'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') ? base64_decode((string) $_POST['implementingPartner']) : null,
           'vl_test_number' => $_POST['viralLoadNo'] ?? null,
-          'request_created_datetime' => DateUtility::getCurrentDateTime(),
           'last_modified_datetime' => DateUtility::getCurrentDateTime(),
           'manual_result_entry' => 'yes',
           'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'] ?? null,

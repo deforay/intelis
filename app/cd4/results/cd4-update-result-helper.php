@@ -117,7 +117,6 @@ try {
         'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
         'lab_tech_comments' => $_POST['labComments'] ?? null,
         'result_status' => PENDING_APPROVAL,
-        'request_created_datetime' => DateUtility::getCurrentDateTime(),
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         'result_modified' => 'no',
         'manual_result_entry' => 'yes',
