@@ -148,43 +148,63 @@ final class TbTestsService
         if ($tbId <= 0) {
             return;
         }
-        $existing = $this->db->rawQuery('SELECT * FROM tb_tests WHERE tb_id = ? AND lab_id IS NULL', [$tbId]) ?: [];
+        $existing = $this->db->rawQuery(
+            'SELECT * FROM tb_tests WHERE tb_id = ? AND lab_id IS NULL ORDER BY tb_test_id',
+            [$tbId]
+        ) ?: [];
 
+        $posted = [];
         foreach ($testResults as $test) {
             $result = is_array($test) ? trim((string) ($test['testResult'] ?? '')) : '';
-            if ($result === '') {
-                continue;
+            if ($result !== '') {
+                $posted[] = ['actualNo' => trim((string) ($test['actualNo'] ?? '')), 'result' => $result];
             }
-            $actualNo = trim((string) ($test['actualNo'] ?? ''));
+        }
 
-            // A stored row answers for one posted test at most, so two tests with
-            // the same result and no number stay two rows.
-            $match = null;
-            foreach ($existing as $key => $row) {
-                $sameNo = $actualNo !== '' && (string) $row['actual_no'] === $actualNo;
-                $sameUnnumbered = $actualNo === '' && (string) ($row['actual_no'] ?? '') === ''
-                    && (string) $row['test_result'] === $result;
-                if ($sameNo || $sameUnnumbered) {
-                    $match = $row;
-                    unset($existing[$key]);
-                    break;
+        // Pair each posted test with a stored row: by number, then an unnumbered
+        // test by its result, then any unnumbered test left over with an unnumbered
+        // row left over, in order -- that is a changed result. A stored row answers
+        // for one posted test at most, so two tests with the same result stay two.
+        $pairs = array_fill(0, count($posted), null);
+        $isUnnumbered = static fn(array $row): bool => (string) ($row['actual_no'] ?? '') === '';
+        $passes = [
+            static fn(array $test, array $row): bool => $test['actualNo'] !== ''
+                && (string) $row['actual_no'] === $test['actualNo'],
+            static fn(array $test, array $row): bool => $test['actualNo'] === '' && $isUnnumbered($row)
+                && (string) $row['test_result'] === $test['result'],
+            static fn(array $test, array $row): bool => $test['actualNo'] === '' && $isUnnumbered($row),
+        ];
+        foreach ($passes as $matches) {
+            foreach ($posted as $i => $test) {
+                if ($pairs[$i] !== null) {
+                    continue;
+                }
+                foreach ($existing as $key => $row) {
+                    if ($matches($test, $row)) {
+                        $pairs[$i] = $row;
+                        unset($existing[$key]);
+                        break;
+                    }
                 }
             }
+        }
 
+        foreach ($posted as $i => $test) {
+            $match = $pairs[$i];
             if ($match === null) {
                 $row = [
                     'tb_id' => $tbId,
-                    'actual_no' => $actualNo === '' ? null : $actualNo,
-                    'test_result' => $result,
+                    'actual_no' => $test['actualNo'] === '' ? null : $test['actualNo'],
+                    'test_result' => $test['result'],
                     'updated_datetime' => DateUtility::getCurrentDateTime(),
                 ];
                 if (!$this->db->insert('tb_tests', $row)) {
                     throw new RuntimeException('Could not save a TB test: ' . $this->db->getLastError());
                 }
-            } elseif ((string) $match['test_result'] !== $result) {
+            } elseif ((string) $match['test_result'] !== $test['result']) {
                 $this->db->where('tb_test_id', $match['tb_test_id']);
                 $this->db->update('tb_tests', [
-                    'test_result' => $result,
+                    'test_result' => $test['result'],
                     'updated_datetime' => DateUtility::getCurrentDateTime(),
                 ]);
             }
