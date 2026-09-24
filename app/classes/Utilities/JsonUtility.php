@@ -53,18 +53,24 @@ final class JsonUtility
     }
 
     private const int MAX_LOG_PREVIEW = 2000;
+
+    private const int JSON_FLAGS = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE;
     private static function previewString(string $s, int $max = self::MAX_LOG_PREVIEW): string
     {
         $len = mb_strlen($s, 'UTF-8');
         $p = mb_substr($s, 0, $max, 'UTF-8');
         $p = preg_replace('/[\x00-\x1F\x7F]/u', ' ', $p);
         // redact common secrets
-        $p = preg_replace('/("?(password|token|secret|authorization|api[_-]?key)"?\s*:\s*)"[^"]*"/i', '$1"***"', (string) $p);
+        $p = preg_replace(
+            '/("?(password|token|secret|authorization|api[_-]?key)"?\s*:\s*)"[^"]*"/i',
+            '$1"***"',
+            (string) $p
+        );
         return $len > $max ? ($p . '… (len=' . $len . ')') : $p . " (len={$len})";
     }
 
     // Encode data to JSON with UTF-8 encoding
-    public static function encodeUtf8Json(mixed $data, int $flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE): ?string
+    public static function encodeUtf8Json(mixed $data, int $flags = self::JSON_FLAGS): ?string
     {
         if (is_string($data)) {
             if (self::isJSON($data, checkUtf8Encoding: true)) {
@@ -106,7 +112,7 @@ final class JsonUtility
             return htmlspecialchars("Error in JSON decoding: " . json_last_error_msg(), ENT_QUOTES, 'UTF-8');
         }
 
-        $encodedJson = json_encode($decodedJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+        $encodedJson = json_encode($decodedJson, JSON_PRETTY_PRINT | self::JSON_FLAGS);
         if (json_last_error() !== JSON_ERROR_NONE) {
             return htmlspecialchars("Error in JSON encoding: " . json_last_error_msg(), ENT_QUOTES, 'UTF-8');
         }
@@ -174,7 +180,7 @@ final class JsonUtility
         if ($decoded === null) {
             return '';
         }
-        return self::toJSON($decoded, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE) ?? '';
+        return self::toJSON($decoded, self::JSON_FLAGS) ?? '';
     }
 
     // Get keys from JSON object
@@ -191,36 +197,34 @@ final class JsonUtility
         return is_array($data) ? array_values($data) : [];
     }
 
-    // Convert a value to a JSON-compatible string representation
-    private static function sqlQuote(string $s): string
+    /**
+     * A string as an SQL expression that MySQL reads as that exact utf8mb4 text.
+     *
+     * A hex literal holds nothing MySQL parses, so no quote or backslash in the
+     * text can end it, under any sql_mode. Doubling single quotes did not do that:
+     * a backslash still escaped the quote after it, and a JSON path wrapped its key
+     * in double quotes that nothing escaped at all.
+     */
+    private static function sqlTextLiteral(string $text): string
     {
-        // Double single quotes for MySQL/MariaDB string literal safety
-        return "'" . str_replace("'", "''", $s) . "'";
+        return "CONVERT(X'" . bin2hex($text) . "' USING utf8mb4)";
     }
 
-    public static function jsonValueToString($value): string
-    {
-        if ($value === null) {
-            return 'null';
-        }
-        if (is_bool($value)) {
-            return $value ? 'true' : 'false';
-        }
-        if (is_numeric($value)) {
-            return (string) $value;
-        }
-        if (is_array($value) || is_object($value)) {
-            $json = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
-            $json = str_replace("'", "''", $json);
-            return "'" . $json . "'";
-        }
-        // string
-        return self::sqlQuote((string) $value);
-    }
-
-    // Convert a JSON string to a string that can be used with JSON_SET()
+    /**
+     * A JSON_SET() expression that writes $newData (and $json, the keys already
+     * held) into $column, for $db->func().
+     *
+     * The expression is SQL text, not a bound value, and keys and values reach it
+     * from API clients and the STS sync, so both go in as hex literals. Each key is
+     * a quoted member name, so "a.b" or "$[0]" is stored as that key, not read as a
+     * path.
+     */
     public static function jsonToSetString(?string $json, string $column, $newData = []): ?string
     {
+        if (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $column) !== 1) {
+            throw new \InvalidArgumentException('Not a column name: ' . self::previewString($column, 64));
+        }
+
         // Normalize existing JSON data
         $jsonData = [];
         if (is_array($json)) {
@@ -261,7 +265,8 @@ final class JsonUtility
         }
 
         // Combine original data and new data
-        $data = array_merge($jsonData, $newData);
+        // array_replace, not array_merge: a numeric key such as "123" stays "123".
+        $data = array_replace($jsonData, $newData);
 
         // Return null if there's nothing to set
         if ($data === []) {
@@ -273,7 +278,7 @@ final class JsonUtility
         $rawDataFallback = [];
 
         foreach ($data as $key => $value) {
-            $encoded = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            $encoded = json_encode($value, self::JSON_FLAGS);
             if ($encoded === false) {
                 // Failed to encode - save the raw value as string under fallback key
                 LoggerUtility::logWarning('JSON encoding failed, saving to raw_data fallback', [
@@ -295,18 +300,16 @@ final class JsonUtility
                 continue;
             }
 
-            // Escape single quotes for SQL literal (standard MySQL escaping)
-            $encoded = str_replace("'", "''", $encoded);
-
-            $setString .= ', "$.' . $key . '", CAST(\'' . $encoded . '\' AS JSON)';
+            $path = '$.' . json_encode((string) $key, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $setString .= ', ' . self::sqlTextLiteral($path)
+                . ', CAST(' . self::sqlTextLiteral($encoded) . ' AS JSON)';
         }
 
         // Add fallback raw data if any values failed validation
         if (!empty($rawDataFallback)) {
-            $rawEncoded = json_encode($rawDataFallback, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            $rawEncoded = json_encode($rawDataFallback, self::JSON_FLAGS);
             if ($rawEncoded !== false) {
-                $rawEncoded = str_replace("'", "''", $rawEncoded);
-                $setString .= ', "$.raw_data", CAST(\'' . $rawEncoded . '\' AS JSON)';
+                $setString .= ', \'$.raw_data\', CAST(' . self::sqlTextLiteral($rawEncoded) . ' AS JSON)';
             }
         }
 
