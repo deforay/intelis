@@ -120,7 +120,7 @@ try {
         $_POST['dob'] = DateUtility::isoDateFormat($_POST['dob'] ?? '');
     }
 
-    if (!empty($_POST['finalResult'])) {
+    if (trim((string) ($_POST['finalResult'] ?? '')) !== '') {
         $resultSentToSource = 'pending';
     }
 

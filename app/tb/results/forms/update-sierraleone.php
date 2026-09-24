@@ -660,7 +660,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 																			class="form-control test-result test-name-table-input"
 																			name="testResult[]" id="testResult<?php echo $no; ?>"
 																			title="Please select the result for row <?php echo $no; ?>">
-																			<?= $general->generateSelectOptions($microscope, $tbTestInfo[$no - 1]['test_result'], '-- Select --'); ?>
+																			<?= $general->generateSelectOptions(\App\Services\TbTestsService::microscopyOptions($microscope, $tbTestInfo[$no - 1]['test_result']), $tbTestInfo[$no - 1]['test_result'], '-- Select --'); ?>
 																		</select>
 																	</td>
 																	<td>

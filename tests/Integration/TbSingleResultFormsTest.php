@@ -8,6 +8,7 @@ use App\Exceptions\RedirectException;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\TbTestsService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Throwable;
@@ -181,6 +182,7 @@ final class TbSingleResultFormsTest extends TestCase
         $row = $this->formTb($tbId);
         self::assertSame('0', $row['result']);
         self::assertSame(8, (int) $row['result_status']);
+        self::assertSame('pending', $row['result_sent_to_source']);
     }
 
     /** A form that asks, and was told no, still keeps no result. */
@@ -230,6 +232,32 @@ final class TbSingleResultFormsTest extends TestCase
             )
         );
         self::assertNotContains($cleared, array_map(static fn($t) => (int) $t['tb_test_id'], $this->tbTests($tbId)));
+    }
+
+    /**
+     * The form lists only No AFB and 1+ to 3+. A result the API stored outside that
+     * list is shown as an extra option, and a page that still posts it blank keeps it.
+     */
+    #[RunInSeparateProcess]
+    public function testAResultTheFormDoesNotListIsNotLost(): void
+    {
+        $tbId = $this->seedTb();
+        $numbered = $this->seedTbTest($tbId, ['lab_id' => null, 'actual_no' => '1', 'test_result' => 'Negative']);
+        $unnumbered = $this->seedTbTest($tbId, ['lab_id' => null, 'actual_no' => null, 'test_result' => 'Scanty']);
+
+        $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, [
+            'testResult' => ['', '', ''],
+            'actualNo' => ['1', '', ''],
+        ]));
+
+        self::assertSame(
+            [[$numbered, 'Negative'], [$unnumbered, 'Scanty']],
+            array_map(static fn($t) => [(int) $t['tb_test_id'], $t['test_result']], $this->tbTests($tbId))
+        );
+        self::assertSame(
+            ['No AFB' => 'No AFB', 'Negative' => 'Negative'],
+            TbTestsService::microscopyOptions(['No AFB' => 'No AFB'], 'Negative')
+        );
     }
 
     /** A row the client sent and the lab then changed becomes the lab's. */

@@ -117,7 +117,7 @@ try {
         $_POST['firstSputumSamplesCollectionDate'] = DateUtility::isoDateFormat($_POST['firstSputumSamplesCollectionDate']);
     }
 
-    if (!empty($_POST['finalResult'])) {
+    if (trim((string) ($_POST['finalResult'] ?? '')) !== '') {
         $resultSentToSource = 'pending';
     }
 
