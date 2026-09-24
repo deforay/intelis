@@ -97,12 +97,16 @@ final class ManifestTestingLabTest extends TestCase
         $manifest = $this->manifest('M-1', self::LAB_A);
         $a = $this->sample('A', self::LAB_A, 'M-1', $manifest);
         $b = $this->sample('B', self::LAB_A, 'M-1', $manifest);
+        // Older rows can carry only the manifest code, and a cancelled sample
+        // stays linked until a save takes it off.
+        $codeOnly = $this->sample('CODEONLY', self::LAB_A, 'M-1');
+        $cancelled = $this->sample('CX', self::LAB_A, 'M-1', $manifest, CANCELLED);
         $c = $this->sample('C', self::LAB_B);
 
         $url = $this->edit($manifest, self::LAB_B, [$c]);
 
         self::assertStringContainsString('view-manifests.php', (string) $url);
-        foreach ([$a, $b] as $id) {
+        foreach ([$a, $b, $codeOnly, $cancelled] as $id) {
             $row = $this->row($id);
             self::assertNull($row['sample_package_id']);
             self::assertNull($row['sample_package_code']);
