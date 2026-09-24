@@ -456,15 +456,13 @@ final class GenericTestsService extends AbstractTestService
         }
 
         // Targeted delete: ONLY the existing tests the user explicitly confirmed removing
-        // (client sends deletedTestIds[]). Snapshot each to audit_log first so it stays
-        // recoverable (generic_test_results has no audit triggers). An existing test that was
-        // neither updated nor confirmed-deleted is PRESERVED -- never silently wiped. Ids that
+        // (client sends deletedTestIds[]); its audit trigger keeps a copy. An existing test that
+        // was neither updated nor confirmed-deleted is PRESERVED -- never silently wiped. Ids that
         // do not belong to THIS sample are ignored.
         foreach (array_unique(array_map('strval', (array) ($post['deletedTestIds'] ?? []))) as $delId) {
             if ($delId === '' || !isset($existingById[$delId]) || isset($keptIds[$delId])) {
                 continue;
             }
-            (new TestAttemptService($this->db))->snapshotBeforeDelete($testTableName, (int) $delId, $existingById[$delId]);
             $this->db->where('test_id', (int) $delId);
             $this->db->where('generic_id', $sampleId);
             if (!$this->db->delete($testTableName)) {

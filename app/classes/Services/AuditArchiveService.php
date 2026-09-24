@@ -65,6 +65,13 @@ final readonly class AuditArchiveService
      */
     private const LEGACY_CSV_ESCAPE = '\\';
 
+    /** Account changes are audited too (AuditTriggerService::EXTRA_AUDITED_TABLES), filed by user id. */
+    private const USERS_TABLE = 'user_details';
+    private const USERS_FOLDER = 'users';
+
+    /** A test type's per-test rows are filed in "{testKey}-test-rows/{sample unique_id}". */
+    private const TEST_ROWS_SUFFIX = '-test-rows';
+
     private string $archiveRoot;
     private string $metadataPath;
 
@@ -658,6 +665,10 @@ final readonly class AuditArchiveService
             );
             if ($recordId !== null && $recordId !== false && $recordId !== '') {
                 $this->runFromAuditLog($formTable, (string) $recordId, $progress, false);
+                $child = TestsService::getChildResultTable($testType);
+                if ($child !== null) {
+                    $this->drainTestRowsFor($child['table'], $child['key'], (string) $recordId, $progress);
+                }
             }
         }
     }
@@ -715,6 +726,8 @@ final readonly class AuditArchiveService
                 }
             }
 
+            $childTables = self::childTables();
+
             $batchSize = 500;
             // Samples that threw this run (corrupt file, bad read, disk error).
             // Their rows stay in audit_log; we skip re-attempting them on later
@@ -760,20 +773,49 @@ final readonly class AuditArchiveService
                 // them so the queue still drains.
                 $groups    = [];
                 $orphanIds = [];
+                $pendingChildren = [];
                 foreach ($batch as $r) {
                     $form = (string) $r['form_table'];
-                    if (!isset($formToKey[$form])) {
-                        $orphanIds[] = (int) $r['id'];
-                        continue;
-                    }
                     $data = json_decode((string) $r['row_data'], true);
-                    if (!is_array($data) || empty($data['unique_id'])) {
+                    if (!is_array($data)) {
                         $orphanIds[] = (int) $r['id'];
                         continue;
                     }
-                    $folder = preg_replace('/[^\w\-]+/', '-', (string) $formToKey[$form]);
-                    $uid    = (string) $data['unique_id'];
-                    $groups[$folder][$uid][] = ['row' => $r, 'data' => $data];
+                    if (isset($formToKey[$form])) {
+                        if (empty($data['unique_id'])) {
+                            $orphanIds[] = (int) $r['id'];
+                            continue;
+                        }
+                        $folder = preg_replace('/[^\w\-]+/', '-', (string) $formToKey[$form]);
+                        $groups[$folder][(string) $data['unique_id']][] = ['row' => $r, 'data' => $data];
+                    } elseif (isset($childTables[$form])) {
+                        // A test row is filed with its sample, found by the sample's
+                        // own id in the row; the sample's unique_id is looked up below.
+                        $parentId = $data[$childTables[$form]['key']] ?? null;
+                        if ($parentId === null || $parentId === '') {
+                            $orphanIds[] = (int) $r['id'];
+                            continue;
+                        }
+                        $pendingChildren[$form][(string) $parentId][] = ['row' => $r, 'data' => $data];
+                    } elseif ($form === self::USERS_TABLE) {
+                        $groups[self::USERS_FOLDER][(string) $r['record_id']][] = ['row' => $r, 'data' => $data];
+                    } else {
+                        $orphanIds[] = (int) $r['id'];
+                    }
+                }
+                // A test row whose sample cannot be found stays in audit_log: it
+                // is never dropped, and is filed once the sample can be named.
+                foreach ($pendingChildren as $form => $byParent) {
+                    $child = $childTables[$form];
+                    $uids = $this->parentUniqueIds($child['parentTable'], $child['parentKey'], array_keys($byParent));
+                    foreach ($byParent as $parentId => $entries) {
+                        if (!isset($uids[$parentId])) {
+                            continue;
+                        }
+                        foreach ($entries as $entry) {
+                            $groups[$child['folder']][$uids[$parentId]][] = $entry;
+                        }
+                    }
                 }
 
                 $archivedIds = [];
@@ -782,6 +824,8 @@ final readonly class AuditArchiveService
                     MiscUtility::makeDirectory($targetDir);
 
                     foreach ($byUid as $uniqueId => $entries) {
+                        // A user id is numeric, and PHP made the key an int.
+                        $uniqueId = (string) $uniqueId;
                         // Already failed earlier this run — leave its rows in
                         // audit_log and don't retry until the next run.
                         if (isset($failedUids[$uniqueId])) {
@@ -895,8 +939,9 @@ final readonly class AuditArchiveService
 
                 // DELETE everything we processed in this batch. Files were
                 // synced to disk above, so this is the point of no return for
-                // these rows. Orphans (no unique_id / unknown form_table) are
-                // dropped too so the queue keeps draining.
+                // these rows. Orphans (unreadable, or a table nothing files) are
+                // dropped too so the queue keeps draining. Test rows and user
+                // accounts are filed above, not dropped: they used to be.
                 $toDelete = array_merge($archivedIds, $orphanIds);
                 if ($toDelete !== []) {
                     $placeholders = implode(',', array_fill(0, count($toDelete), '?'));
@@ -925,6 +970,89 @@ final readonly class AuditArchiveService
             if ($useLock && $lockFile) {
                 MiscUtility::deleteLockFile($lockFile);
             }
+        }
+    }
+
+    /**
+     * Per-test child tables, keyed by table: the sample table and key they hang
+     * off, and the folder their history is filed in.
+     *
+     * @return array<string, array{key: string, parentTable: string, parentKey: string, folder: string}>
+     */
+    private static function childTables(): array
+    {
+        $out = [];
+        foreach (TestsService::getTestTypes() as $testKey => $meta) {
+            $table = $meta['childResultTable'] ?? null;
+            if (!is_string($table) || $table === '' || isset($out[$table])) {
+                continue;
+            }
+            $out[$table] = [
+                'key' => (string) $meta['childResultKey'],
+                'parentTable' => (string) $meta['tableName'],
+                'parentKey' => (string) $meta['primaryKey'],
+                'folder' => self::testRowsFolder((string) $testKey),
+            ];
+        }
+        return $out;
+    }
+
+    private static function testRowsFolder(string $testKey): string
+    {
+        return preg_replace('/[^\w\-]+/', '-', $testKey) . self::TEST_ROWS_SUFFIX;
+    }
+
+    /**
+     * @param list<int|string> $ids
+     * @return array<string, string> sample id => unique_id
+     */
+    private function parentUniqueIds(string $table, string $key, array $ids): array
+    {
+        if ($ids === []) {
+            return [];
+        }
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $rows = $this->db->rawQuery(
+            "SELECT `$key` AS id, unique_id FROM `$table` WHERE `$key` IN ($placeholders)",
+            array_map('strval', $ids)
+        ) ?: [];
+        $out = [];
+        foreach ($rows as $row) {
+            if (!empty($row['unique_id'])) {
+                $out[(string) $row['id']] = (string) $row['unique_id'];
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * The archived history of a sample's per-test rows, or null when the test type
+     * keeps none or nothing has been archived for it yet. Lifts the file out of a
+     * month bundle when it has settled into one.
+     */
+    public function resolveTestRowsFilePath(string $testType, string $uniqueId): ?string
+    {
+        if (TestsService::getChildResultTable($testType) === null || $uniqueId === '') {
+            return null;
+        }
+        $dir = $this->archiveRoot . DIRECTORY_SEPARATOR . self::testRowsFolder($testType);
+        return is_dir($dir) ? $this->resolveExistingCompressed($dir, $uniqueId) : null;
+    }
+
+    /**
+     * Drain one sample's per-test audit rows into its file, so the viewer shows
+     * them between cron drains.
+     */
+    private function drainTestRowsFor(string $childTable, string $childKey, string $parentId, ?callable $progress): void
+    {
+        $recordIds = $this->db->rawQuery(
+            "SELECT DISTINCT record_id FROM audit_log
+              WHERE form_table = ?
+                AND JSON_UNQUOTE(JSON_EXTRACT(row_data, CONCAT('$.', ?))) = ?",
+            [$childTable, $childKey, $parentId]
+        ) ?: [];
+        foreach ($recordIds as $row) {
+            $this->runFromAuditLog($childTable, (string) $row['record_id'], $progress, false);
         }
     }
 
@@ -1117,6 +1245,11 @@ final readonly class AuditArchiveService
 
         // Final fallback: scan ALL subfolders for a matching file (legacy layouts)
         foreach (glob(VAR_PATH . '/audit-trail/*', GLOB_ONLYDIR) as $dir) {
+            // Test-row and user histories are not a sample's own history.
+            $folder = basename($dir);
+            if ($folder === self::USERS_FOLDER || str_ends_with($folder, self::TEST_ROWS_SUFFIX)) {
+                continue;
+            }
             foreach (['.csv.zst', '.csv.gz', '.csv.zip', '.csv'] as $ext) {
                 $p = $dir . '/' . $uniqueId . $ext;
                 if (is_file($p)) {

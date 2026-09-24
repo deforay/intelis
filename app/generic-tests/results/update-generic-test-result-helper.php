@@ -318,7 +318,7 @@ try {
             }
 
             // A saved row goes when the user removed it, or when its sub-test is no
-            // longer selected (the form no longer draws it). Kept in audit_log first.
+            // longer selected (the form no longer draws it). Its audit trigger keeps a copy.
             $selectedSubTests = $_POST['subTestResult'] === 'default'
                 ? null
                 : array_map('strtolower', explode('##', (string) $_POST['subTestResult']));
@@ -333,7 +333,6 @@ try {
                 if (!$subTestDropped && !in_array((string) $savedId, $removedIds, true)) {
                     continue;
                 }
-                $attempts->snapshotBeforeDelete('generic_test_results', (int) $savedId, $savedRow);
                 $db->where('test_id', (int) $savedId);
                 $db->where('generic_id', $sampleId);
                 if (!$db->delete('generic_test_results')) {
@@ -343,11 +342,8 @@ try {
         }
         $dataToUpdate['result'] = $finalResult;
     } else {
-        // A rejected sample has no tests. Each is kept in audit_log before it goes.
+        // A rejected sample has no tests. Their audit trigger keeps a copy of each.
         $rejectedSampleId = (int) ($_POST['requestSampleId'] ?? 0);
-        foreach ($db->rawQuery("SELECT * FROM generic_test_results WHERE generic_id = ?", [$rejectedSampleId]) ?: [] as $savedRow) {
-            $attempts->snapshotBeforeDelete('generic_test_results', (int) $savedRow['test_id'], $savedRow);
-        }
         $db->where('generic_id', $rejectedSampleId);
         if (!$db->delete('generic_test_results')) {
             throw new SystemException("Could not remove the tests of rejected sample $rejectedSampleId", 500);

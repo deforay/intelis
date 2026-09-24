@@ -9,6 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\AuditArchiveService;
+use App\Services\AuditTriggerService;
 
 
 $title = _translate("Audit Trail");
@@ -629,6 +630,72 @@ try {
                             </div>
                         </div>
                     </div>
+
+                    <?php
+                    // The sample's per-test rows (TB, COVID-19 and Custom Tests) have their own
+                    // history, filed next to the sample's. Each test row is compared with its own
+                    // previous revision.
+                    $testRowsFile = $auditArchiveService->resolveTestRowsFilePath($_POST['testType'], (string) $uniqueId);
+                    $testRowsHistory = $testRowsFile ? $auditArchiveService->readAuditDataFromCsvFlexible($testRowsFile) : [];
+                    if ($testRowsHistory !== []) {
+                        usort($testRowsHistory, fn($a, $b): int => (int) ($a['revision'] ?? 0) <=> (int) ($b['revision'] ?? 0));
+                        $childTable = TestsService::getChildResultTable($_POST['testType']);
+                        $testRowsColumns = ['action', 'revision', 'dt_datetime'];
+                        foreach ($auditArchiveService->getColumns($db, $childTable['table']) as $col) {
+                            $testRowsColumns[] = $col['COLUMN_NAME'];
+                        }
+                        foreach ($testRowsHistory as $entry) {
+                            foreach (array_keys($entry) as $colName) {
+                                if (!in_array($colName, $testRowsColumns, true)) {
+                                    $testRowsColumns[] = $colName;
+                                }
+                            }
+                        }
+                        $previousByTest = [];
+                    ?>
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <div class="box-body current">
+                                    <h3><?= _translate("Tests History for Sample"); ?> <?= htmlspecialchars((string) $sampleCode); ?></h3>
+                                    <table id="testRowsAuditTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
+                                        <thead>
+                                            <tr>
+                                                <?php foreach ($testRowsColumns as $colName) { ?>
+                                                    <th><?= htmlspecialchars((string) $colName); ?></th>
+                                                <?php } ?>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($testRowsHistory as $entry) {
+                                                $testRowId = (string) ($entry[AuditTriggerService::EXTRA_AUDITED_TABLES[$childTable['table']]] ?? '');
+                                                $previous = $previousByTest[$testRowId] ?? null;
+                                                echo '<tr>';
+                                                foreach ($testRowsColumns as $j => $colName) {
+                                                    $value = (string) ($entry[$colName] ?? '');
+                                                    $previousValue = $previous[$colName] ?? null;
+                                                    if ($j > 2 && $previousValue !== null && $value !== $previousValue) {
+                                                        echo "<td class='diff-cell'><span class='diff-old'>" . htmlspecialchars((string) $previousValue)
+                                                            . "</span> <span class='diff-new'>" . htmlspecialchars($value) . '</span></td>';
+                                                        continue;
+                                                    }
+                                                    if (in_array($colName, $usernameFields, true) && $value !== '') {
+                                                        if (!isset($userCache[$value])) {
+                                                            $user = $usersService->getUserByID($value, ['user_name']);
+                                                            $userCache[$value] = $user['user_name'] ?? $value;
+                                                        }
+                                                        $value = (string) $userCache[$value];
+                                                    }
+                                                    echo '<td>' . htmlspecialchars($value) . '</td>';
+                                                }
+                                                echo '</tr>';
+                                                $previousByTest[$testRowId] = $entry;
+                                            } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
 
                     <!-- Current data section -->
                     <div class="col-xs-12">

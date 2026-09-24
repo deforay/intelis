@@ -100,13 +100,11 @@ final class TbTestsService
             }
         }
 
-        // Only a test whose card the user removed. Each is kept in audit_log first,
-        // as tb_tests has no audit triggers.
+        // Only a test whose card the user removed. Its audit trigger keeps a copy.
         foreach (array_unique(array_map('strval', $deletedTestIds)) as $testId) {
             if (!isset($existing[$testId]) || isset($kept[$testId])) {
                 continue;
             }
-            $this->attempts()->snapshotBeforeDelete('tb_tests', (int) $testId, $existing[$testId]);
             $this->db->where('tb_test_id', (int) $testId);
             $this->db->where('tb_id', $tbId);
             if (!$this->db->delete('tb_tests')) {
@@ -250,10 +248,5 @@ final class TbTestsService
     private static function dateTime(mixed $value): ?string
     {
         return DateUtility::isoDateFormat($value, true);
-    }
-
-    private function attempts(): TestAttemptService
-    {
-        return new TestAttemptService($this->db);
     }
 }

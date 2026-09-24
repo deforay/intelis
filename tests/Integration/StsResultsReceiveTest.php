@@ -56,6 +56,7 @@ final class StsResultsReceiveTest extends TestCase
             'facility_details', 'specimen_manifests', 'form_covid19', 'covid19_tests', 'audit_log',
         ]);
         $this->booted = true;
+        LegacyAppHarness::withAuditTriggers(['tb_tests' => 'tb_test_id']);
         $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (6, 'Registered'), (7, 'Accepted')");
         return $db;
     }
@@ -419,10 +420,11 @@ final class StsResultsReceiveTest extends TestCase
 
         self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('MTB')])]));
         $id = $db->rawQueryOne('SELECT tb_test_id FROM tb_tests')['tb_test_id'];
+        $logged = (int) $db->rawQueryOne('SELECT COUNT(*) AS n FROM audit_log')['n'];
         self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('MTB')])]));
 
         self::assertSame($id, $db->rawQueryOne('SELECT tb_test_id FROM tb_tests')['tb_test_id']);
-        self::assertSame(0, (int) $db->rawQueryOne('SELECT COUNT(*) AS n FROM audit_log')['n']);
+        self::assertSame($logged, (int) $db->rawQueryOne('SELECT COUNT(*) AS n FROM audit_log')['n']);
     }
 
     #[RunInSeparateProcess]
@@ -435,7 +437,9 @@ final class StsResultsReceiveTest extends TestCase
         self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('Negative')])]));
 
         self::assertSame(['Negative'], self::tbResults($db));
-        $kept = $db->rawQueryOne("SELECT row_data FROM audit_log WHERE form_table = 'tb_tests'");
+        $kept = $db->rawQueryOne(
+            "SELECT row_data FROM audit_log WHERE form_table = 'tb_tests' AND action = 'delete'"
+        );
         self::assertSame('MTB', json_decode((string) $kept['row_data'], true)['test_result'] ?? null);
     }
 
@@ -448,7 +452,9 @@ final class StsResultsReceiveTest extends TestCase
         self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('MTB')])]));
         self::sts()->receiveResults('tb', self::payload([self::tbRecord([])]));
 
-        $kept = $db->rawQueryOne("SELECT action, row_data FROM audit_log WHERE form_table = 'tb_tests'");
+        $kept = $db->rawQueryOne(
+            "SELECT action, row_data FROM audit_log WHERE form_table = 'tb_tests' AND action = 'delete'"
+        );
         self::assertSame('delete', $kept['action'] ?? null);
         self::assertSame('MTB', json_decode((string) $kept['row_data'], true)['test_result'] ?? null);
     }

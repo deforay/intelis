@@ -14,7 +14,6 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
-use App\Services\TestAttemptService;
 use App\Services\RejectionReasonMappingService;
 use App\Utilities\SampleCodeVariantUtility;
 use App\Utilities\QueryLoggerUtility;
@@ -423,9 +422,8 @@ final class ResultsService
      *   replace the receiving lab's results.
      * - An empty list means the lab deleted its last test, and is taken only from
      *   the lab doing the testing.
-     * - A set that matches what the STS holds changes nothing. Otherwise the rows
-     *   are copied to audit_log before they are replaced: none of these tables has
-     *   an audit trigger, so a wrong replacement would be unrecoverable.
+     * - A set that matches what the STS holds changes nothing, so a resend does not
+     *   fill the audit trail with deletes and reinserts of the same rows.
      *
      * @param array{lab_id?: mixed, referred_to_lab_id?: mixed} $storedOwner
      */
@@ -458,10 +456,6 @@ final class ResultsService
             return;
         }
 
-        $attempts = ContainerRegistry::get(TestAttemptService::class);
-        foreach ($existing as $row) {
-            $attempts->snapshotBeforeDelete($table, (int) $row[$excludeFields[0]], $row);
-        }
         if ($rows === []) {
             $this->db->where($foreignKey, $parentId);
             $this->db->delete($table);

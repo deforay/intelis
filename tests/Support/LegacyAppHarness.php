@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Support;
 
 use App\Registries\ContainerRegistry;
+use App\Services\AuditTriggerService;
 use App\Services\DatabaseService;
 use DI\ContainerBuilder;
 use mysqli;
@@ -82,6 +83,24 @@ final class LegacyAppHarness
         ContainerRegistry::setContainer($builder->build());
 
         return self::$db;
+    }
+
+    /**
+     * The real audit triggers on the given tables, as a deploy installs them.
+     *
+     * @param array<string, string> $tables table => primary key
+     */
+    public static function withAuditTriggers(array $tables): void
+    {
+        $service = new AuditTriggerService(self::db());
+        foreach ($tables as $table => $primaryKey) {
+            foreach ($service->buildTriggersFor($table, $primaryKey) as $statement) {
+                $mysqli = self::db()->mysqli();
+                if ($mysqli->query($statement) === false) {
+                    throw new RuntimeException("Could not install audit triggers on $table: " . $mysqli->error);
+                }
+            }
+        }
     }
 
     public static function db(): DatabaseService

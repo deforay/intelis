@@ -73,6 +73,12 @@ trouvent sous **ADMIN → Surveillance**.
         Sur une instance cloud, la Piste d'audit n'ouvre que les échantillons du
         laboratoire de l'utilisateur.
 
+6. Pour la TB, la COVID-19 et les tests personnalisés, lire **Historique des
+   tests** sous l'historique de l'échantillon : une ligne par modification d'un
+   des tests de l'échantillon, chaque modification étant signalée par rapport à
+   la révision précédente de ce test. L'historique commence avec la mise à jour
+   qui a ajouté cette section.
+
 ## Voir ce qu'a fait un utilisateur
 
 1. Aller à **ADMIN → Surveillance → Journal d’activité de l’utilisateur**.
