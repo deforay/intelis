@@ -29,6 +29,8 @@ final class TbTestsService
         'xpertDateOfResult', 'cultureDateOfResult', 'tbLamDateOfResult', 'identificationDateOfResult',
         'drugMGITDateOfResult', 'drugLPADateOfResult', 'resultDispatchedDatetime', 'reviewedBy', 'reviewedOn',
         'approvedBy', 'approvedOn', 'sampleTestedDateTime', 'testedBy', 'resultDate', 'labComments',
+        'sampleDispatchedDate', 'isSampleRejected', 'sampleRejectionReason', 'newRejectionReason', 'rejectionDate',
+        'correctiveAction',
     ];
 
     /** The microscopy results the single-result forms offer. */
