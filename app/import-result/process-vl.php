@@ -282,7 +282,6 @@ try {
                 'sample_tested_datetime' => $accResult[$i]['sample_tested_datetime'],
                 'lab_id' => $accResult[$i]['lab_id'],
                 'tested_by' => $_POST['testBy'],
-                'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'] ?? null,
                 'result_approved_by' => $_POST['appBy'],

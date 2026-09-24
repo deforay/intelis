@@ -123,7 +123,6 @@ try {
                     $data['tested_by'] = $_POST['testBy'];
                     $data['sample_tested_datetime'] = $rResult['sample_tested_datetime'] ?? DateUtility::getCurrentDateTime();
                     $data['result_reviewed_by'] = $rResult['result_reviewed_by'];
-                    $data['request_created_datetime'] = DateUtility::getCurrentDateTime();
                     $data['last_modified_by'] = $rResult['result_reviewed_by'];
                     $data['last_modified_datetime'] = DateUtility::getCurrentDateTime();
                     $data['result_approved_by'] = $_POST['appBy'];
@@ -195,6 +194,8 @@ try {
                         $data['sample_code'] = $rResult['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
+                        // Created here, so this is its creation; an update above is not.
+                        $data['request_created_datetime'] = DateUtility::getCurrentDateTime();
                         $hepatitisId = $db->insert('form_hepatitis', $data);
                     }
                     $printSampleCode[] = "'" . $rResult['sample_code'] . "'";
@@ -271,7 +272,6 @@ try {
                 'sample_tested_datetime' => $accResult[$i]['sample_tested_datetime'] ?? DateUtility::getCurrentDateTime(),
                 'lab_id' => $accResult[$i]['lab_id'],
                 'tested_by' => $_POST['testBy'],
-                'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'] ?? null,
                 'result_approved_by' => $_POST['appBy'],
