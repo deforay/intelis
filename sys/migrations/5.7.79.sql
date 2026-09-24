@@ -16,3 +16,15 @@ VALUES
 ('Record a negative GeneXpert pool on every sample in it', 'tb_interface_release_negative_pools', 'no', 'tb', 'no', CURRENT_TIMESTAMP, NULL, 'active');
 
 UPDATE `system_config` SET `value` = '5.7.79' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

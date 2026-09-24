@@ -33,7 +33,7 @@ if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) === 'pk2') {
 if (trim((string) $id) !== '') {
 
     $sQuery = "SELECT vl.tb_id, COALESCE(NULLIF(vl.remote_sample_code, ''), vl.sample_code) as remote_sample_code, fd.facility_name as clinic_name, fd.facility_district,
-                TRIM(CONCAT(COALESCE(vl.patient_name, ''), ' ', COALESCE(vl.patient_surname, ''))) as `patient_fullname`,
+                vl.patient_name, vl.patient_surname, vl.is_encrypted,
                 patient_dob, patient_age, sample_collection_date, patient_gender, patient_id, 
                 pd.manifest_code, l.facility_name as lab_name 
                 FROM specimen_manifests as pd 
@@ -41,14 +41,20 @@ if (trim((string) $id) !== '') {
                 JOIN facility_details as fd ON fd.facility_id = vl.facility_id 
                 JOIN facility_details as l ON l.facility_id = vl.lab_id 
                 WHERE pd.manifest_code IN('" . $db->escape((string) $id) . "')";
-    $result = $db->query($sQuery);
+    /** @var TestRequestsService $testRequestsService */
+    $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
+    $result = $testRequestsService->decryptManifestRows(
+        $db->query($sQuery) ?: [],
+        ['patient_id', 'patient_name', 'patient_surname'],
+        ['patient_name', 'patient_surname']
+    );
 
     $labname = $result[0]['lab_name'] ?? "";
 
-    $showPatientName = $general->getGlobalConfig('tb_show_participant_name_in_manifest');
     $bQuery = "SELECT * FROM specimen_manifests as pd WHERE manifest_code IN('" . $db->escape((string) $id) . "')";
 
     $bResult = $db->query($bQuery);
+    $showPatientName = $testRequestsService->showsPatientNamesOnManifest('tb', $bResult[0] ?? null);
     if (!empty($bResult)) {
 
         $oldPrintData = json_decode((string) $bResult[0]['manifest_print_history']);
@@ -57,7 +63,7 @@ if (trim((string) $id) !== '') {
         $db->where('manifest_code', $id);
         $db->update('specimen_manifests', ['manifest_print_history' => json_encode($oldPrintData)]);
         // Printing the manifest is sending the package: pending becomes dispatched.
-        ContainerRegistry::get(TestRequestsService::class)->markManifestDispatched('manifest_code', $id);
+        $testRequestsService->markManifestDispatched('manifest_code', $id);
 
         $reasonHistory = json_decode((string) $bResult[0]['manifest_change_history']);
 
@@ -131,7 +137,7 @@ if (trim((string) $id) !== '') {
             $tbl .= '<td style="font-size:10px;width:12%;border:1px solid #333;"><strong>Sample ID</strong></td>';
             $tbl .= '<td style="font-size:10px;width:18%;border:1px solid #333;"><strong>Health Facility, District</strong></td>';
 
-            if ($showPatientName == "yes") {
+            if ($showPatientName) {
                 $tbl .= '<td style="font-size:10px;width:15%;border:1px solid #333;"><strong>Patient Name, ID</strong></td>';
             } else {
                 $tbl .= '<td style="font-size:10px;width:15%;border:1px solid #333;"><strong>Patient ID</strong></td>';
@@ -159,7 +165,7 @@ if (trim((string) $id) !== '') {
                 $tbl .= '<td align="center" style="font-size:10px;border:1px solid #333;">' . $sample['remote_sample_code'] . '</td>';
                 $tbl .= '<td style="font-size:10px;border:1px solid #333;">' . ucwords((string) $sample['clinic_name']) . ', ' . $sample['facility_district'] . '</td>';
 
-                if ($showPatientName == "yes") {
+                if ($showPatientName) {
                     $tbl .= '<td style="font-size:10px;border:1px solid #333;">' . $sample['patient_fullname'] . '<br>' . $sample['patient_id'] . '</td>';
                 } else {
                     $tbl .= '<td style="font-size:10px;border:1px solid #333;">' . $sample['patient_id'] . '</td>';

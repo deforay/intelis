@@ -2187,4 +2187,63 @@ final class TestRequestsService
             return ['error' => $e->getMessage()];
         }
     }
+
+    /**
+     * Whether a printed manifest shows patient names.
+     *
+     * A manifest's own choice, made on Add/Edit Manifest, wins. A manifest saved
+     * before that choice existed (NULL), or none at all (a new one), follows the
+     * module's "Show participant name in manifest" setting. VL and CD4 have always
+     * printed names unless that setting says no; the other modules only when it
+     * says yes. Kept as it was, so no manifest changes on a reprint.
+     *
+     * @param array<string, mixed>|null $manifest a specimen_manifests row
+     */
+    public function showsPatientNamesOnManifest(string $module, ?array $manifest = null): bool
+    {
+        $own = $manifest['show_patient_names'] ?? null;
+        if ($own === 'yes' || $own === 'no') {
+            return $own === 'yes';
+        }
+
+        $prefix = $module === 'generic-tests' ? 'generic' : $module;
+        $setting = $this->commonService->getGlobalConfig("{$prefix}_show_participant_name_in_manifest");
+
+        return in_array($module, ['vl', 'cd4'], true) ? $setting !== 'no' : $setting === 'yes';
+    }
+
+    /**
+     * Patient identifiers as a person reads them, for a printed manifest.
+     *
+     * A request saved with patient data encryption on stores its patient id and
+     * names encrypted (is_encrypted = 'yes'). The manifests printed them as they
+     * were stored, so an encrypted sample showed ciphertext.
+     *
+     * The full name is put together here too, for the same reason: joined in
+     * SQL it joined ciphertext, and some manifests joined it with no space.
+     *
+     * @param list<array<string, mixed>> $rows each carrying is_encrypted
+     * @param list<string> $columns the patient columns the manifest prints
+     * @param list<string> $nameColumns joined, in order, into patient_fullname
+     * @return list<array<string, mixed>>
+     */
+    public function decryptManifestRows(array $rows, array $columns, array $nameColumns = []): array
+    {
+        $key = null;
+        foreach ($rows as $i => $row) {
+            if (($row['is_encrypted'] ?? null) === 'yes') {
+                $key ??= (string) $this->commonService->getGlobalConfig('key');
+                foreach ($columns as $column) {
+                    if (isset($row[$column]) && $row[$column] !== '') {
+                        $rows[$i][$column] = CommonService::crypto('decrypt', (string) $row[$column], $key);
+                    }
+                }
+            }
+            if ($nameColumns !== []) {
+                $parts = array_map(static fn($column) => trim((string) ($rows[$i][$column] ?? '')), $nameColumns);
+                $rows[$i]['patient_fullname'] = implode(' ', array_filter($parts, static fn($part) => $part !== ''));
+            }
+        }
+        return $rows;
+    }
 }

@@ -87,6 +87,10 @@ try {
         ];
     } elseif (!array_key_exists($testingLab, $labs)) {
         $refusal = [_translate("Please select the Testing lab", true), $editUrl];
+    } elseif (isset($_POST['samplesListedForLab']) && (int) $_POST['samplesListedForLab'] !== $testingLab) {
+        // The samples were picked from another lab's list: a slow response for a
+        // lab the user had moved away from. Saving would drop samples nobody removed.
+        $refusal = [_translate("The sample list did not match the selected testing lab. Please try again."), $editUrl];
     } elseif ($selectedSamples === []) {
         $refusal = [_translate("Please select one or more samples", true), $editUrl];
     } else {
@@ -179,16 +183,21 @@ try {
             $history = is_array($history) ? $history : [];
             $history[] = $change;
 
-            $db->reset();
-            $db->where('manifest_id', $manifestId);
-            $db->update($packageTable, [
+            $manifestData = [
                 'lab_id' => $testingLab,
                 'number_of_samples' => $numberOfSamples,
                 // manifest_status is not taken from the form: printing sets it to
                 // dispatched and activation to received, and a save must not undo them.
                 'manifest_change_history' => json_encode($history),
                 'last_modified_datetime' => $currentDateTime,
-            ]);
+            ];
+            // Unchanged when not posted, so a form without the field keeps the choice.
+            if (in_array($_POST['showPatientNames'] ?? null, ['yes', 'no'], true)) {
+                $manifestData['show_patient_names'] = $_POST['showPatientNames'];
+            }
+            $db->reset();
+            $db->where('manifest_id', $manifestId);
+            $db->update($packageTable, $manifestData);
 
             $action = $_SESSION['userName'] . ' updated Manifest - ' . $manifestCode;
             if ($previousLab !== $testingLab) {
