@@ -67,6 +67,16 @@ try {
 
     $resultSentToSource = null;
 
+    // A result is kept only when the form says it is finalized. A form without that
+    // question keeps the final interpretation it posted. Decided before the status,
+    // so a result that is not kept does not send the sample for approval.
+    if (
+        trim((string) ($_POST['finalResult'] ?? '')) === ''
+        || (array_key_exists('isResultFinalized', $_POST) && $_POST['isResultFinalized'] != 'yes')
+    ) {
+        $_POST['finalResult'] = null;
+    }
+
     // null means leave result_status alone. Awaiting Approval is reached only when
     // a final result was entered, and once one has been the sample cannot go back to
     // Received at Testing Lab -- so a save carrying no result must not rewrite the
@@ -162,11 +172,6 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
     }
     if (is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = json_encode($_POST['tbTestsRequested']);
-    }
-
-    // A result is kept only when the form says it is finalized.
-    if (empty($_POST['isResultFinalized']) || empty($_POST['finalResult']) || $_POST['isResultFinalized'] != 'yes') {
-        $_POST['finalResult'] = null;
     }
 
      $labId = null;
@@ -271,18 +276,12 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
         );
         $latestTestColumns = $tbTests->latestTestColumns((int) $_POST['tbSampleId']);
     } elseif (isset($_POST['testResult']) && is_array($_POST['testResult'])) {
-        $testResult = $_POST['testResult'];
-        $db->where('tb_id', $_POST['tbSampleId']);
-        $db->delete($testTableName);
-        foreach ($testResult as $key => $result) {
-            $db->insert($testTableName, [
-                'tb_id' => $_POST['tbSampleId'] ?? null,
-                'lab_id' => $_POST['labId'] ?? null,
-                'actual_no' => $_POST['actualNo'][$key] ?? null,
-                'test_result' => $result ?? null,
-                'updated_datetime' => DateUtility::getCurrentDateTime()
-            ]);
-        }
+        ContainerRegistry::get(TbTestsService::class)->saveMicroscopyRows(
+            (int) $_POST['tbSampleId'],
+            $_POST['testResult'],
+            (array) ($_POST['actualNo'] ?? []),
+            $_POST['labId'] ?? null
+        );
     }
 
     if (!empty($_POST['tbSampleId'])) {
