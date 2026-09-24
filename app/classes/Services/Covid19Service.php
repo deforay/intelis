@@ -59,16 +59,6 @@ final class Covid19Service extends AbstractTestService
         return $response;
     }
 
-    public function getCovid19SampleTypesByName($name = "")
-    {
-        $where = "";
-        if (!empty($name)) {
-            $where = " AND sample_name LIKE '" . $this->db->escape((string) $name) . "%'";
-        }
-        $query = "SELECT * FROM r_covid19_sample_type where status='active' $where";
-        return $this->db->rawQuery($query);
-    }
-
     public function insertCovid19Tests($covid19SampleId, $testKitName = null, $labId = null, $sampleTestedDatetime = null, $result = null): bool
     {
         $covid19TestData = ['covid19_id' => $covid19SampleId, 'test_name' => $testKitName, 'facility_id' => $labId, 'sample_tested_datetime' => $sampleTestedDatetime, 'result' => $result];

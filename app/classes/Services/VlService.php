@@ -178,20 +178,6 @@ final class VlService extends AbstractTestService
         }
     }
 
-    public function getVlSampleTypesByName($name = "")
-    {
-        $where = "";
-        if (!empty($name)) {
-            $where = " AND sample_name LIKE '$name%'";
-        }
-        $query = "SELECT * FROM r_vl_sample_type WHERE `status` like 'active' $where";
-        try {
-            return $this->db->rawQuery($query);
-        } catch (Throwable) {
-            return [];
-        }
-    }
-
     public function getVlSampleTypes($updatedDateTime = null): array
     {
         $query = "SELECT * FROM r_vl_sample_type where status='active'";

@@ -49,14 +49,12 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 	foreach ($resultSet as $aRow) {
 		$row = [];
 
-		// Get testing platform and test method
-		$tbTestQuery = "SELECT * from tb_tests where tb_id= ? ORDER BY tb_test_id ASC";
-		$tbTestInfo = $db->rawQuery($tbTestQuery, [$aRow['tb_id']]);
-
-		foreach ($tbTestInfo as $indexKey => $rows) {
-			$testPlatform = $rows['testing_platform'];
-			$testMethod = $rows['test_name'];
-		}
+		// The platform is the sample's; the method is each test's type, in test order.
+		$testPlatform = $aRow['tb_test_platform'] ?? '';
+		$testMethod = implode(', ', array_unique(array_filter(array_column(
+			$db->rawQuery("SELECT test_type FROM tb_tests WHERE tb_id = ? ORDER BY tb_test_id ASC", [$aRow['tb_id']]),
+			'test_type'
+		))));
 
 
 		//set gender
@@ -145,7 +143,7 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 		}
 
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
+		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-TB-Export-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 		$writer->save($filename);
 		echo _downloadToken($filename);
 	}

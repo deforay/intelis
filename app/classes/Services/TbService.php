@@ -64,37 +64,6 @@ final class TbService extends AbstractTestService
         return $response;
     }
 
-    public function getTbSampleTypesByName($name = "")
-    {
-        $where = "";
-        if (!empty($name)) {
-            $where = " AND sample_name LIKE '$name%'";
-        }
-        $query = "SELECT * FROM r_tb_sample_type where status='active'$where";
-        return $this->db->rawQuery($query);
-    }
-
-    public function insertTbTests($tbSampleId, $testKitName = null, $labId = null, $sampleTestedDatetime = null, $result = null)
-    {
-        $tbTestData = ['tb_id' => $tbSampleId, 'test_name' => $testKitName, 'facility_id' => $labId, 'sample_tested_datetime' => $sampleTestedDatetime, 'result' => $result];
-        return $this->db->insert("tb_tests", $tbTestData);
-    }
-
-    public function checkAllTbTestsForPositive($tbSampleId): bool
-    {
-        $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = " . (int) $tbSampleId . " ORDER BY test_id ASC");
-
-        foreach ($response as $row) {
-            if ($row['result'] == 'positive') {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-
     public function getTbResults($type = null, $updatedDateTime = null): array
     {
         $query = "SELECT result_id,result FROM r_tb_results where status='active' ";
