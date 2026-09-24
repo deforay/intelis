@@ -157,13 +157,16 @@ final class TbTestsService
             }
             $actualNo = trim((string) ($test['actualNo'] ?? ''));
 
+            // A stored row answers for one posted test at most, so two tests with
+            // the same result and no number stay two rows.
             $match = null;
-            foreach ($existing as $row) {
+            foreach ($existing as $key => $row) {
                 $sameNo = $actualNo !== '' && (string) $row['actual_no'] === $actualNo;
                 $sameUnnumbered = $actualNo === '' && (string) ($row['actual_no'] ?? '') === ''
                     && (string) $row['test_result'] === $result;
                 if ($sameNo || $sameUnnumbered) {
                     $match = $row;
+                    unset($existing[$key]);
                     break;
                 }
             }
@@ -178,7 +181,6 @@ final class TbTestsService
                 if (!$this->db->insert('tb_tests', $row)) {
                     throw new RuntimeException('Could not save a TB test: ' . $this->db->getLastError());
                 }
-                $existing[] = ['tb_test_id' => $this->db->getInsertId()] + $row;
             } elseif ((string) $match['test_result'] !== $result) {
                 $this->db->where('tb_test_id', $match['tb_test_id']);
                 $this->db->update('tb_tests', [

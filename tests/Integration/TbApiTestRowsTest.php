@@ -90,13 +90,19 @@ final class TbApiTestRowsTest extends TestCase
     public function testRepostingTheSameResultsAddsNothing(): void
     {
         $service = new TbTestsService(LegacyAppHarness::db());
-        $payload = [['actualNo' => '1', 'testResult' => 'Negative'], ['testResult' => 'Scanty']];
+        $payload = [
+            ['actualNo' => '1', 'testResult' => 'Negative'],
+            ['testResult' => 'Scanty'],
+            ['testResult' => 'Scanty'],
+        ];
 
         $service->saveApiTests($this->tbId, $payload);
         $service->saveApiTests($this->tbId, $payload);
 
+        // Two unnumbered tests with the same result are two tests.
         self::assertSame([
             ['actual_no' => '1', 'test_result' => 'Negative', 'lab_id' => null],
+            ['actual_no' => null, 'test_result' => 'Scanty', 'lab_id' => null],
             ['actual_no' => null, 'test_result' => 'Scanty', 'lab_id' => null],
         ], $this->rows());
     }
