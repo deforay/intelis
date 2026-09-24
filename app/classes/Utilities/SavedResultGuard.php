@@ -24,8 +24,9 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
  *   (labColumns()); request details stay the client's to correct, cleared or not;
  * - a "received" status never replaces a decided one;
  * - "not rejected" without a result does not undo a rejection.
- * A post that rejects the sample, or carries a result, still goes through as
- * before. Nothing changes for a sample the lab has not decided on.
+ * A post that rejects the sample, or carries a result other than the saved one,
+ * still goes through as before. Nothing changes for a sample the lab has not
+ * decided on.
  */
 final class SavedResultGuard
 {
@@ -91,11 +92,11 @@ final class SavedResultGuard
             return [$update, []];
         }
 
-        // A rejection, or a result, is the poster deciding: it goes through as it
-        // always did, clearing what it clears.
-        if (($update['is_sample_rejected'] ?? null) === 'yes' || !self::isEmpty($update['result'] ?? null)) {
+        // A decision goes through as it always did, clearing what it clears.
+        if (self::decides($update, $stored)) {
             return [$update, []];
         }
+        $storedRejected = ($stored['is_sample_rejected'] ?? null) === 'yes';
 
         $kept = [];
         foreach (self::labColumns($testType) as $column) {
@@ -115,7 +116,7 @@ final class SavedResultGuard
             $kept[] = 'result_status';
         }
 
-        if (($stored['is_sample_rejected'] ?? null) === 'yes') {
+        if ($storedRejected && ($update['is_sample_rejected'] ?? null) !== 'yes') {
             foreach (['is_sample_rejected', 'reason_for_sample_rejection', 'rejection_on'] as $column) {
                 if (array_key_exists($column, $update)) {
                     $kept[] = $column;
@@ -128,6 +129,42 @@ final class SavedResultGuard
             unset($update[$column]);
         }
         return [$update, $kept];
+    }
+
+    /**
+     * Whether a post decides on the sample: it rejects a sample the lab has not
+     * rejected, or carries a result other than the saved one. The result or the
+     * rejection the lab already saved, posted back as clients re-post what they
+     * pulled, decides nothing.
+     *
+     * @param array<string, mixed> $update the columns the endpoint is about to write
+     * @param array<string, mixed> $stored the sample as saved
+     */
+    public static function decides(array $update, array $stored): bool
+    {
+        if (($update['is_sample_rejected'] ?? null) === 'yes' && ($stored['is_sample_rejected'] ?? null) !== 'yes') {
+            return true;
+        }
+        $posted = $update['result'] ?? null;
+        return !self::isEmpty($posted) && trim((string) $posted) !== trim((string) ($stored['result'] ?? ''));
+    }
+
+    /**
+     * Whether a client that declared RESULT_VERSION, posting on the current
+     * version, leaves the lab's fields and tests as saved: the lab has decided,
+     * and the post brings no new result or rejection (decides()). The endpoints
+     * ask before writing the tests; guard() applies it to the form.
+     *
+     * @param array<string, mixed> $stored the sample as saved
+     */
+    public static function keepsLabFields(
+        bool $declared,
+        array $stored,
+        mixed $postedResult,
+        mixed $postedRejected
+    ): bool {
+        return $declared && self::hasLabDecision($stored)
+            && !self::decides(['result' => $postedResult, 'is_sample_rejected' => $postedRejected], $stored);
     }
 
     /**
@@ -172,18 +209,23 @@ final class SavedResultGuard
     }
 
     /**
-     * The per-test rows each test type keeps its results in, and the columns of
-     * them the version covers: every column but keys and bookkeeping, since a save
-     * rewrites a row whole and a correction to any of them is the lab's to keep.
-     * TB lists fewer because its API save writes no more than those. VL and EID
-     * keep their results on the form.
+     * The per-test rows each test type keeps its results in, the columns of them
+     * the version covers, and which of the rows are the lab's: every column but
+     * keys and bookkeeping, since a save rewrites a row whole and a correction to
+     * any of them is the lab's to keep. TB lists fewer because its API save writes
+     * no more than those, and leaves out the rows without a lab: those are the
+     * client's own (TbTestsService::saveApiTests()). VL and EID keep their
+     * results on the form.
      */
     private const TEST_ROWS = [
         'covid19' => ['covid19_tests', 'covid19_id', [
             'facility_id', 'test_name', 'tested_by', 'sample_tested_datetime', 'testing_platform', 'instrument_id',
             'kit_lot_no', 'kit_expiry_date', 'result',
         ]],
-        'tb' => ['tb_tests', 'tb_id', ['lab_id', 'test_type', 'actual_no', 'test_result', 'is_sample_rejected']],
+        'tb' => [
+            'tb_tests', 'tb_id', ['lab_id', 'test_type', 'actual_no', 'test_result', 'is_sample_rejected'],
+            'lab_id IS NOT NULL',
+        ],
         'generic-tests' => ['generic_test_results', 'generic_id', [
             'facility_id', 'lab_id', 'sub_test_name', 'result_type', 'test_name', 'tested_by', 'sample_tested_datetime',
             'testing_platform', 'kit_lot_no', 'kit_expiry_date', 'result', 'result_unit', 'final_result',
@@ -357,10 +399,11 @@ final class SavedResultGuard
             return [];
         }
         [$table, $foreignKey, $columns] = self::TEST_ROWS[$testType];
+        $labRows = isset(self::TEST_ROWS[$testType][3]) ? ' AND ' . self::TEST_ROWS[$testType][3] : '';
         $select = implode(', ', array_map(static fn($column) => "`$column`", $columns));
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $rows = $db->rawQuery(
-            "SELECT `$foreignKey` AS sample_id, $select FROM `$table` WHERE `$foreignKey` IN ($placeholders)"
+            "SELECT `$foreignKey` AS sample_id, $select FROM `$table` WHERE `$foreignKey` IN ($placeholders)$labRows"
                 . ($lock ? ' FOR UPDATE' : ''),
             array_values($ids)
         ) ?: [];
@@ -376,6 +419,11 @@ final class SavedResultGuard
     /**
      * The guard for one post: keepLabDecision() when a client that declared
      * RESULT_VERSION posted stale, else protect(). Logs what was kept.
+     *
+     * A declared client posting on the current version, without a new decision
+     * (decides()), is correcting the request: it re-posts the whole sample with
+     * the lab's fields as it pulled them, or empty, or filled with its own
+     * defaults. None of them is written, so the version stays as it was.
      *
      * @param array<string, mixed> $update
      * @param array<string, mixed> $stored
@@ -401,6 +449,21 @@ final class SavedResultGuard
                 'transaction_id' => $transactionId,
             ]);
             return [$update, true];
+        }
+        if (
+            self::keepsLabFields($declared, $stored, $update['result'] ?? null, $update['is_sample_rejected'] ?? null)
+        ) {
+            [$update, $kept] = self::keepLabDecision($update, $testType);
+            if ($kept !== []) {
+                LoggerUtility::logInfo('API post made no new decision; kept the lab\'s fields', [
+                    'test_type' => $testType,
+                    'unique_id' => $stored['unique_id'] ?? null,
+                    'sample_code' => $stored['sample_code'] ?? null,
+                    'columns' => $kept,
+                    'transaction_id' => $transactionId,
+                ]);
+            }
+            return [$update, false];
         }
         return [self::protectAndLog($update, $stored, $testType, $transactionId), false];
     }

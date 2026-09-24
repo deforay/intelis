@@ -119,7 +119,7 @@ final class ApiResultVersionTest extends TestCase
      */
     private function post(array $extra, ?array $capabilities): array
     {
-        $body = ['appVersion' => '1.5.1', 'data' => [[
+        $body = ['appVersion' => '1.5.1', 'data' => [array_merge([
             'appSampleCode' => 'APP-1',
             'labId' => '5',
             'facilityId' => '1',
@@ -129,7 +129,7 @@ final class ApiResultVersionTest extends TestCase
             'result' => 'MTB detected',
             'isSampleRejected' => 'no',
             'testResults' => [['actualNo' => '1', 'testResult' => 'MTB detected']],
-        ] + $extra]];
+        ], $extra)]];
         if ($capabilities !== null) {
             $body['capabilities'] = $capabilities;
         }
@@ -203,6 +203,29 @@ final class ApiResultVersionTest extends TestCase
         self::assertArrayNotHasKey('resultKept', $sample);
         self::assertSame(SavedResultGuard::currentVersion(LegacyAppHarness::db(), 'tb', 30), $sample['resultVersion']);
         self::assertNotSame($current, $sample['resultVersion']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAPostOfTheSavedResultKeepsTheLabsFieldsAndItsVersion(): void
+    {
+        // The client re-posts the whole sample, the result it pulled included, to
+        // correct a request detail; it holds no testing date.
+        $db = LegacyAppHarness::db();
+        $db->rawQuery("UPDATE form_tb SET sample_tested_datetime = '2026-09-21 11:00:00' WHERE tb_id = 30");
+        $current = SavedResultGuard::currentVersion($db, 'tb', 30);
+
+        $response = $this->post([
+            'result' => 'MTB not detected',
+            'resultVersion' => $current,
+            'testResults' => [['actualNo' => '1', 'testResult' => 'MTB not detected']],
+        ], self::DECLARED);
+
+        [$form] = $this->saved();
+        self::assertSame('2026-09-21 11:00:00', $form['sample_tested_datetime']);
+        self::assertSame('lab-user', $form['tested_by']);
+        self::assertSame('P-2', $form['patient_id']);
+        self::assertArrayNotHasKey('resultKept', $response['data'][0]);
+        self::assertSame($current, $response['data'][0]['resultVersion']);
     }
 
     #[RunInSeparateProcess]

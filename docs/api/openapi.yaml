@@ -1334,7 +1334,10 @@ paths:
         for a sample never pulled. When the version is older than the saved decision (a retest
         the lab has ordered since included), or it is missing and the lab has decided on the
         sample, the lab's result, rejection, status and other lab fields are kept, the rest of the record is saved, and that record's response carries
-        `"resultKept": true`, a sign to pull its result again. Every saved record's response
+        `"resultKept": true`, a sign to pull its result again. A post on the current version that
+        brings no new result or rejection, such as a correction to the request, saves the request
+        fields only: the lab's fields stay as saved, empty or not, and the version does not
+        change. Every saved record's response
         carries `resultVersion`, the version to send with the sample's next post, and the response
         carries the same `capabilities` object to confirm the check ran. A client that sends no
         capabilities is answered exactly as before.
@@ -1867,7 +1870,10 @@ paths:
         for a sample never pulled. When the version is older than the saved decision (a retest
         the lab has ordered since included), or it is missing and the lab has decided on the
         sample, the lab's result, rejection, status and other lab fields are kept, the rest of the record is saved, and that record's response carries
-        `"resultKept": true`, a sign to pull its result again. Every saved record's response
+        `"resultKept": true`, a sign to pull its result again. A post on the current version that
+        brings no new result or rejection, such as a correction to the request, saves the request
+        fields only: the lab's fields stay as saved, empty or not, and the version does not
+        change. Every saved record's response
         carries `resultVersion`, the version to send with the sample's next post, and the response
         carries the same `capabilities` object to confirm the check ran. A client that sends no
         capabilities is answered exactly as before.
@@ -2564,7 +2570,10 @@ paths:
         for a sample never pulled. When the version is older than the saved decision (a retest
         the lab has ordered since included), or it is missing and the lab has decided on the
         sample, the lab's result, rejection, status and other lab fields are kept, the rest of the record is saved, and that record's response carries
-        `"resultKept": true`, a sign to pull its result again. Every saved record's response
+        `"resultKept": true`, a sign to pull its result again. A post on the current version that
+        brings no new result or rejection, such as a correction to the request, saves the request
+        fields only: the lab's fields stay as saved, empty or not, and the version does not
+        change. Every saved record's response
         carries `resultVersion`, the version to send with the sample's next post, and the response
         carries the same `capabilities` object to confirm the check ran. A client that sends no
         capabilities is answered exactly as before.
@@ -5181,7 +5190,10 @@ paths:
         for a sample never pulled. When the version is older than the saved decision (a retest
         the lab has ordered since included), or it is missing and the lab has decided on the
         sample, the lab's result, rejection, status and other lab fields are kept, the rest of the record is saved, and that record's response carries
-        `"resultKept": true`, a sign to pull its result again. Every saved record's response
+        `"resultKept": true`, a sign to pull its result again. A post on the current version that
+        brings no new result or rejection, such as a correction to the request, saves the request
+        fields only: the lab's fields stay as saved, empty or not, and the version does not
+        change. Every saved record's response
         carries `resultVersion`, the version to send with the sample's next post, and the response
         carries the same `capabilities` object to confirm the check ran. A client that sends no
         capabilities is answered exactly as before.
@@ -16584,7 +16596,10 @@ paths:
         for a sample never pulled. When the version is older than the saved decision (a retest
         the lab has ordered since included), or it is missing and the lab has decided on the
         sample, the lab's result, rejection, status and other lab fields are kept, the rest of the record is saved, and that record's response carries
-        `"resultKept": true`, a sign to pull its result again. Every saved record's response
+        `"resultKept": true`, a sign to pull its result again. A post on the current version that
+        brings no new result or rejection, such as a correction to the request, saves the request
+        fields only: the lab's fields stay as saved, empty or not, and the version does not
+        change. Every saved record's response
         carries `resultVersion`, the version to send with the sample's next post, and the response
         carries the same `capabilities` object to confirm the check ran. A client that sends no
         capabilities is answered exactly as before.

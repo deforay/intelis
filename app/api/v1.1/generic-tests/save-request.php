@@ -458,12 +458,13 @@ try {
             if (!empty($data['genericSampleId']) && !$isRejected && !$staleResult) {
                 if (!empty($data['testName'])) {
                     $finalResult = "";
+                    $postedTests = [];
                     if (isset($data['subTestResult']) && !empty($data['subTestResult'])) {
                         foreach ($data['testName'] as $subTestName => $subTests) {
                             foreach ($subTests as $testKey => $testKitName) {
                                 if (!empty($testKitName)) {
                                     $testData = ['generic_id' => $data['genericSampleId'], 'sub_test_name' => $subTestName, 'result_type' => $data['resultType'][$subTestName], 'test_name' => ($testKitName == 'other') ? $data['testNameOther'][$subTestName][$testKey] : $testKitName, 'facility_id' => $data['labId'] ?? null, 'sample_tested_datetime' => DateUtility::isoDateFormat($data['testDate'][$subTestName][$testKey] ?? ''), 'testing_platform' => $data['testingPlatform'][$subTestName][$testKey] ?? null, 'kit_lot_no' => (str_contains((string) $testKitName, 'RDT')) ? $data['lotNo'][$subTestName][$testKey] : null, 'kit_expiry_date' => (str_contains((string) $testKitName, 'RDT')) ? DateUtility::isoDateFormat($data['expDate'][$subTestName][$testKey]) : null, 'result_unit' => $data['testResultUnit'][$subTestName][$testKey], 'result' => $data['testResult'][$subTestName][$testKey], 'final_result' => $data['finalResult'][$subTestName], 'final_result_unit' => $data['finalTestResultUnit'][$subTestName], 'final_result_interpretation' => $data['resultInterpretation'][$subTestName]];
-                                    $insertTest($testData);
+                                    $postedTests[] = $testData;
                                     if (isset($data['finalResult'][$subTestName]) && !empty($data['finalResult'][$subTestName])) {
                                         $finalResult = $data['finalResult'][$subTestName];
                                     }
@@ -485,11 +486,25 @@ try {
                                         $testData['final_result_interpretation'] = $data['resultInterpretation'][$key];
                                     }
                                 }
-                                $insertTest($testData);
+                                $postedTests[] = $testData;
                                 if (isset($testData['final_result']) && !empty($testData['final_result'])) {
                                     $finalResult = $testData['final_result'];
                                 }
                             }
+                        }
+                    }
+                    // Posted on the current version with the result the lab saved: the
+                    // client's copy of the lab's tests, not a correction to them.
+                    if (
+                        !SavedResultGuard::keepsLabFields(
+                            $declaresResultVersion,
+                            $storedSample,
+                            $finalResult,
+                            $data['isSampleRejected'] ?? null
+                        )
+                    ) {
+                        foreach ($postedTests as $testData) {
+                            $insertTest($testData);
                         }
                     }
                     $genericData['result'] = $finalResult;
@@ -499,7 +514,10 @@ try {
                         $genericData['result_status'] = PENDING_APPROVAL;
                     }
                 }
-            } elseif (!empty($data['genericSampleId']) && $isRejected && !$staleResult) {
+            } elseif (
+                !empty($data['genericSampleId']) && $isRejected && !$staleResult
+                && !SavedResultGuard::keepsLabFields($declaresResultVersion, $storedSample, $data['result'] ?? null, 'yes')
+            ) {
                 // A rejected sample has no tests, as on the result page.
                 $db->where('generic_id', $data['genericSampleId']);
                 $db->delete($testTableName);

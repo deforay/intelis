@@ -244,7 +244,7 @@ try {
             }
             $data['patientNationality'] = $general->getValueByName($data['patientNationality'], 'iso_name', 'r_countries', 'id');
         }
-        $pprovince = explode("##", (string) $data['patientProvince']);
+        $pprovince = explode("##", (string) ($data['patientProvince'] ?? ''));
         if ($pprovince !== []) {
             $data['patientProvince'] = $pprovince[0];
         }
@@ -618,7 +618,15 @@ try {
         $storedTests = $storedSample === [] ? [] : SavedResultGuard::testRows($db, 'covid19', $data['covid19SampleId']);
         $staleResult = $declaresResultVersion
             && SavedResultGuard::isStale($storedSample, $data['resultVersion'] ?? null, $storedTests, 'covid19');
-        $staleRepost = $staleResult || (SavedResultGuard::hasLabDecision($storedSample)
+        // The same, posted on the current version without a new result or rejection:
+        // the client re-posts the tests it pulled, in its own copy.
+        $keepsLabFields = SavedResultGuard::keepsLabFields(
+            $declaresResultVersion,
+            $storedSample,
+            $data['result'] ?? null,
+            $data['isSampleRejected'] ?? null
+        );
+        $staleRepost = $staleResult || $keepsLabFields || (SavedResultGuard::hasLabDecision($storedSample)
             && trim((string) ($data['result'] ?? '')) === ''
             && ($data['isSampleRejected'] ?? '') !== 'yes');
         if (isset($data['covid19SampleId']) && $data['covid19SampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
@@ -647,7 +655,7 @@ try {
                     }
                 }
             }
-        } elseif (!$staleResult) {
+        } elseif (!$staleResult && !$keepsLabFields) {
             $db->where('covid19_id', $data['covid19SampleId']);
             $db->delete($testTableName);
             $covid19Data['sample_tested_datetime'] = null;

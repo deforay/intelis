@@ -66,6 +66,32 @@ final class SavedResultGuardTest extends TestCase
         self::assertSame($post, $update);
     }
 
+    public function testTheSavedResultPostedBackDecidesNothing(): void
+    {
+        // A client re-posts the result it pulled, with the lab's other fields empty.
+        $post = [
+            'result' => ' 1200 ', 'sample_tested_datetime' => null, 'tested_by' => '',
+            'result_status' => RECEIVED_AT_TESTING_LAB, 'patient_phone' => '777',
+        ];
+        $stored = self::RESULTED + ['sample_tested_datetime' => '2026-09-21 11:00:00'];
+
+        [$update, $kept] = SavedResultGuard::protect($post, $stored);
+
+        self::assertSame(['result' => ' 1200 ', 'patient_phone' => '777'], $update);
+        self::assertSame(['tested_by', 'sample_tested_datetime', 'result_status'], $kept);
+    }
+
+    public function testTheSavedRejectionPostedBackKeepsItsDateAndTakesANewReason(): void
+    {
+        $rejected = ['result' => null, 'result_status' => REJECTED, 'is_sample_rejected' => 'yes',
+            'reason_for_sample_rejection' => '3', 'rejection_on' => '2026-09-01'];
+        $post = ['is_sample_rejected' => 'yes', 'reason_for_sample_rejection' => '4', 'rejection_on' => null];
+
+        [$update] = SavedResultGuard::protect($post, $rejected);
+
+        self::assertSame(['is_sample_rejected' => 'yes', 'reason_for_sample_rejection' => '4'], $update);
+    }
+
     public function testTheClientCanStillClearItsOwnRequestDetails(): void
     {
         [$update] = SavedResultGuard::protect(['patient_phone' => '', 'result' => null], self::RESULTED);
@@ -305,6 +331,27 @@ final class SavedResultGuardTest extends TestCase
 
         self::assertFalse($stale);
         self::assertSame(['result' => '900', 'patient_phone' => '777'], $update);
+    }
+
+    public function testADeclaredPostOnTheCurrentResultWithoutANewOneWritesNoLabField(): void
+    {
+        // The endpoint fills in its own defaults, such as the poster as technician.
+        $post = [
+            'result' => '1200', 'lab_technician' => 'app-user', 'tested_by' => 'app-user',
+            'result_status' => PENDING_APPROVAL, 'patient_phone' => '777',
+        ];
+
+        [$update, $stale] = SavedResultGuard::guard(
+            $post,
+            self::RESULTED,
+            'vl',
+            null,
+            true,
+            SavedResultGuard::resultVersion(self::RESULTED, [], 'vl')
+        );
+
+        self::assertFalse($stale);
+        self::assertSame(['patient_phone' => '777'], $update);
     }
 
     public function testAClientThatDeclaresNothingIsGuardedAsBefore(): void
