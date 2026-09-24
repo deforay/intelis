@@ -347,11 +347,17 @@ try {
     $db->where('tb_id', $_POST['tbSampleId']);
     $getPrevResult = $db->getOne('form_tb');
 
-    // The save decides a status only on a rejection, a kept result, or lifting a
-    // rejection, as the result page does. Otherwise saving the request would send a
-    // sample awaiting approval, or an approved one, back to Received.
-    $liftsRejection = $sampleRejected === 'no' && (int) ($getPrevResult['result_status'] ?? 0) === REJECTED;
-    if ($sampleRejected !== 'yes' && trim((string) ($_POST['finalResult'] ?? '')) === '' && !$liftsRejection) {
+    // Without a rejection or a kept result, the save still receives a sample that is
+    // at the clinic or already received, and lifts a rejection; any later status --
+    // awaiting approval, approved, referred -- stays, so saving the request does not
+    // send the sample back to Received.
+    $storedStatus = (int) ($getPrevResult['result_status'] ?? 0);
+    $liftsRejection = $sampleRejected === 'no' && $storedStatus === REJECTED;
+    $isBeforeTesting = in_array($storedStatus, [0, RECEIVED_AT_CLINIC, RECEIVED_AT_TESTING_LAB], true);
+    if (
+        $sampleRejected !== 'yes' && trim((string) ($_POST['finalResult'] ?? '')) === ''
+        && !$liftsRejection && !$isBeforeTesting
+    ) {
         unset($tbData['result_status']);
     }
 
