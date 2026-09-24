@@ -46,6 +46,13 @@ final class SavedResultGuardTest extends TestCase
         self::assertSame(['result', 'tested_by', 'is_sample_rejected', 'result_status'], $kept);
     }
 
+    public function testTheClientCanStillClearItsOwnRequestDetails(): void
+    {
+        [$update] = SavedResultGuard::protect(['patient_phone' => '', 'result' => null], self::RESULTED);
+
+        self::assertSame(['patient_phone' => ''], $update);
+    }
+
     public function testARepostDoesNotUndoARejection(): void
     {
         $rejected = ['result' => null, 'result_status' => REJECTED, 'is_sample_rejected' => 'yes',

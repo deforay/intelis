@@ -505,8 +505,8 @@ try {
             $genericData = MiscUtility::arrayEmptyStringsToNull($genericData);
             if (!empty($data['genericSampleId'])) {
                 // A re-post does not undo what the lab decided. See SavedResultGuard.
-                $db->where('sample_id', $data['genericSampleId']);
-                $genericData = SavedResultGuard::protectAndLog($genericData, $db->getOne($tableName) ?: [], 'generic-tests', $transactionId ?? null);
+                $storedSample = SavedResultGuard::lockedSample($db, 'form_generic', 'sample_id', $data['genericSampleId']);
+                $genericData = SavedResultGuard::protectAndLog($genericData, $storedSample, 'generic-tests', $transactionId ?? null);
                 $db->where('sample_id', $data['genericSampleId']);
                 $id = $db->update($tableName, $genericData);
             }

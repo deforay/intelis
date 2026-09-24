@@ -584,8 +584,8 @@ try {
         $eidData = MiscUtility::arrayEmptyStringsToNull($eidData);
         if (!empty($data['eidSampleId'])) {
             // A re-post does not undo what the lab decided. See SavedResultGuard.
-            $db->where('eid_id', $data['eidSampleId']);
-            $eidData = SavedResultGuard::protectAndLog($eidData, $db->getOne('form_eid') ?: [], 'eid', $transactionId ?? null);
+            $storedSample = SavedResultGuard::lockedSample($db, 'form_eid', 'eid_id', $data['eidSampleId']);
+            $eidData = SavedResultGuard::protectAndLog($eidData, $storedSample, 'eid', $transactionId ?? null);
             $db->where('eid_id', $data['eidSampleId']);
             $id = $db->update('form_eid', $eidData);
         }
