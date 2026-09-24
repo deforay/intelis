@@ -33,6 +33,13 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
+// The request forms show the result section only to a user who may enter results
+// or who is not at a collection site. Anyone else's post carries no results.
+if (!_isAllowed('/tb/results/tb-update-result.php') && ($_SESSION['accessType'] ?? null) === 'collection-site') {
+    foreach (['finalResult', 'isResultFinalized', 'testResult', 'actualNo', 'microscopyTestId'] as $resultKey) {
+        unset($_POST[$resultKey]);
+    }
+}
 
 // Which result fields this form actually sent. Taken here, before anything below
 // mutates $_POST -- line ~170 assigns $_POST['finalResult'] = null, which would create

@@ -34,6 +34,13 @@ try {
     $request = AppRegistry::get('request');
 
     $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
+    // The request forms show the result section only to a user who may enter results
+    // or who is not at a collection site. Anyone else's post carries no results.
+    if (!_isAllowed('/tb/results/tb-update-result.php') && ($_SESSION['accessType'] ?? null) === 'collection-site') {
+        foreach (['finalResult', 'isResultFinalized', 'testResult', 'actualNo', 'microscopyTestId'] as $resultKey) {
+            unset($_POST[$resultKey]);
+        }
+    }
     $tableName = "form_tb";
     // Acting as a LIS: the Testing Lab is this install's own lab, not a free
     // choice. The forms already constrain the dropdown, but AJAX endpoints
