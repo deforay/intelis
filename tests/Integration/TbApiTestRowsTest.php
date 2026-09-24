@@ -117,6 +117,19 @@ final class TbApiTestRowsTest extends TestCase
         self::assertSame([['actual_no' => '1', 'test_result' => '1+', 'lab_id' => null]], $this->rows());
     }
 
+    public function testAChangedUnnumberedResultReplacesTheOldOne(): void
+    {
+        $service = new TbTestsService(LegacyAppHarness::db());
+
+        $service->saveApiTests($this->tbId, [['testResult' => 'Scanty'], ['testResult' => '1+']]);
+        $service->saveApiTests($this->tbId, [['testResult' => '1+'], ['testResult' => 'Negative']]);
+
+        self::assertSame([
+            ['actual_no' => null, 'test_result' => 'Negative', 'lab_id' => null],
+            ['actual_no' => null, 'test_result' => '1+', 'lab_id' => null],
+        ], $this->rows());
+    }
+
     public function testEmptyResultsAreIgnored(): void
     {
         (new TbTestsService(LegacyAppHarness::db()))
