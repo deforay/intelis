@@ -184,6 +184,7 @@ final class TbSingleResultFormsTest extends TestCase
         self::assertSame('MTB detected', $row['result']);
         self::assertSame(8, (int) $row['result_status']);
         self::assertSame('2026-09-17', $row['xpert_result_date']);
+        self::assertSame('yes', $row['is_result_finalized']);
         self::assertSame('2026-09-18', $row['identification_result_date']);
     }
 
@@ -197,6 +198,7 @@ final class TbSingleResultFormsTest extends TestCase
 
         $row = $this->formTb($tbId);
         self::assertSame('0', $row['result']);
+        self::assertSame('yes', $row['is_result_finalized']);
         self::assertSame(8, (int) $row['result_status']);
         self::assertSame('pending', $row['result_sent_to_source']);
     }
@@ -644,6 +646,7 @@ final class TbSingleResultFormsTest extends TestCase
         self::assertSame('MTB detected', $row['result']);
         self::assertSame(8, (int) $row['result_status']);
         self::assertCount(1, $this->tbTests($tbId));
+        self::assertSame('yes', $row['is_result_finalized']);
     }
 
     /** A result the form was told is not final neither stays nor sends the sample for approval. */

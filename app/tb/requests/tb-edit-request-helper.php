@@ -211,6 +211,10 @@ try {
         || (array_key_exists('isResultFinalized', $_POST) && $_POST['isResultFinalized'] != 'yes')
     ) {
         $_POST['finalResult'] = null;
+    } elseif (!array_key_exists('isResultFinalized', $_POST)) {
+        // The form does not ask: a final interpretation it posted is final.
+        $_POST['isResultFinalized'] = 'yes';
+        $resultColumnsPosted[] = 'is_result_finalized';
     }
     if (trim((string) ($_POST['finalResult'] ?? '')) !== '') {
         $resultSentToSource = 'pending';
