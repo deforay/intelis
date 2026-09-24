@@ -3,6 +3,7 @@
 namespace App\Utilities;
 
 use App\Services\DatabaseService;
+use App\Services\LabRequestSyncService;
 
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
@@ -19,7 +20,7 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
  * Once the lab has decided -- a result, a rejection, or any status past received
  * -- a post is taken only for what it says:
  * - an empty value never replaces a saved one in a column the lab fills in
- *   (LAB_COLUMNS); request details stay the client's to correct, cleared or not;
+ *   (labColumns()); request details stay the client's to correct, cleared or not;
  * - a "received" status never replaces a decided one;
  * - "not rejected" without a result does not undo a rejection.
  * A post that rejects the sample, or carries a result, still goes through as
@@ -33,6 +34,7 @@ final class SavedResultGuard
      * Columns the testing lab fills in, across the VL, EID, COVID-19, TB and
      * Custom Tests endpoints. Named one by one: patient history such as
      * last_viral_load_result is the client's, so no pattern on "result" will do.
+     * labColumns() adds what the STS request pull already treats as the lab's.
      */
     public const LAB_COLUMNS = [
         'result', 'result_value_log', 'result_value_absolute', 'result_value_absolute_decimal',
@@ -44,9 +46,27 @@ final class SavedResultGuard
         'is_sample_rejected', 'reason_for_sample_rejection', 'rejection_on',
         'lab_tech_comments', 'revised_by', 'revised_on', 'reason_for_changing',
         'reason_for_result_changes', 'reason_for_test_result_changes',
-        'sample_received_at_lab_datetime', 'result_dispatched_datetime', 'lab_assigned_code',
+        'sample_received_at_hub_datetime', 'sample_received_at_lab_datetime', 'result_dispatched_datetime',
+        'lab_assigned_code',
         'vl_test_platform', 'eid_test_platform', 'testing_platform', 'test_platform',
     ];
+
+    /**
+     * The lab's columns for a test type: LAB_COLUMNS, and the columns the STS
+     * request pull never takes on an update because the lab owns them
+     * (LabRequestSyncService::moduleConfigs()), so the two lists cannot drift.
+     *
+     * @return list<string>
+     */
+    public static function labColumns(string $testType): array
+    {
+        $pulled = LabRequestSyncService::moduleConfigs()[$testType]['excludeUpdateKeys'] ?? [];
+        return array_values(array_diff(
+            array_unique([...self::LAB_COLUMNS, ...$pulled]),
+            // Not values a client re-post blanks: bookkeeping, and the status, ruled on below.
+            ['result_status', 'data_sync', 'last_modified_by', 'last_modified_datetime']
+        ));
+    }
 
     /** @param array<string, mixed> $stored the sample as saved */
     public static function hasLabDecision(array $stored): bool
@@ -61,22 +81,23 @@ final class SavedResultGuard
     /**
      * @param array<string, mixed> $update the columns the endpoint is about to write
      * @param array<string, mixed> $stored the sample as saved
+     * @param string $testType a TestsService key; covid19, not covid-19
      * @return array{0: array<string, mixed>, 1: list<string>} the update to write, and the columns kept as saved
      */
-    public static function protect(array $update, array $stored): array
+    public static function protect(array $update, array $stored, string $testType = ''): array
     {
         if ($stored === [] || !self::hasLabDecision($stored)) {
             return [$update, []];
         }
 
-        // Rejecting is an explicit decision, and clears the result on purpose.
-        if (($update['is_sample_rejected'] ?? null) === 'yes') {
+        // A rejection, or a result, is the poster deciding: it goes through as it
+        // always did, clearing what it clears.
+        if (($update['is_sample_rejected'] ?? null) === 'yes' || !self::isEmpty($update['result'] ?? null)) {
             return [$update, []];
         }
-        $postsResult = !self::isEmpty($update['result'] ?? null);
 
         $kept = [];
-        foreach (self::LAB_COLUMNS as $column) {
+        foreach (self::labColumns($testType) as $column) {
             if (
                 array_key_exists($column, $update) && array_key_exists($column, $stored)
                 && self::isEmpty($update[$column]) && !self::isEmpty($stored[$column])
@@ -86,15 +107,14 @@ final class SavedResultGuard
         }
 
         if (
-            !$postsResult
-            && array_key_exists('result_status', $update)
+            array_key_exists('result_status', $update)
             && in_array((int) $update['result_status'], self::UNDECIDED_STATUSES, true)
             && !in_array((int) ($stored['result_status'] ?? 0), [0, ...self::UNDECIDED_STATUSES], true)
         ) {
             $kept[] = 'result_status';
         }
 
-        if (!$postsResult && ($stored['is_sample_rejected'] ?? null) === 'yes') {
+        if (($stored['is_sample_rejected'] ?? null) === 'yes') {
             foreach (['is_sample_rejected', 'reason_for_sample_rejection', 'rejection_on'] as $column) {
                 if (array_key_exists($column, $update)) {
                     $kept[] = $column;
@@ -147,7 +167,7 @@ final class SavedResultGuard
      */
     public static function protectAndLog(array $update, array $stored, string $testType, ?string $transactionId): array
     {
-        [$update, $kept] = self::protect($update, $stored);
+        [$update, $kept] = self::protect($update, $stored, $testType);
         if ($kept !== []) {
             LoggerUtility::logInfo('API post kept the lab\'s saved values', [
                 'test_type' => $testType,

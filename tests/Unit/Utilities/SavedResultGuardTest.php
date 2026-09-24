@@ -46,6 +46,26 @@ final class SavedResultGuardTest extends TestCase
         self::assertSame(['result', 'tested_by', 'is_sample_rejected', 'result_status'], $kept);
     }
 
+    public function testALabColumnTheRequestPullProtectsIsKeptToo(): void
+    {
+        [$update] = SavedResultGuard::protect(
+            ['vl_focal_person' => '', 'result' => null],
+            self::RESULTED + ['vl_focal_person' => 'Dr Lab'],
+            'vl'
+        );
+
+        self::assertSame([], $update);
+    }
+
+    public function testANewResultReplacesTheApprovalOfTheOldOne(): void
+    {
+        $post = ['result' => '40', 'result_approved_by' => null, 'result_status' => PENDING_APPROVAL];
+
+        [$update] = SavedResultGuard::protect($post, self::RESULTED + ['result_approved_by' => 'approver']);
+
+        self::assertSame($post, $update);
+    }
+
     public function testTheClientCanStillClearItsOwnRequestDetails(): void
     {
         [$update] = SavedResultGuard::protect(['patient_phone' => '', 'result' => null], self::RESULTED);
