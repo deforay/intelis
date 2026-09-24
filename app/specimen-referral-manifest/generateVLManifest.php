@@ -31,6 +31,11 @@ $id = base64_decode((string) $_POST['id']);
 
 if (!empty($id)) {
 
+    /** @var TestRequestsService $testRequestsService */
+    $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
+    // A session acting as one lab prints only its own samples.
+    $printScope = $testRequestsService->manifestPrintScope();
+
     $sQuery = "SELECT remote_sample_code,
                         pd.number_of_samples,
                         fd.facility_name as clinic_name,
@@ -55,11 +60,9 @@ if (!empty($id)) {
                 LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id
                 LEFT JOIN r_vl_sample_type as st ON st.sample_id=vl.specimen_type
                 LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by
-                WHERE pd.manifest_id IN(" . $db->inIntList($id) . ")
+                WHERE pd.manifest_id IN(" . $db->inIntList($id) . ")" . $printScope . "
                 ORDER BY remote_sample_code ASC";
 
-    /** @var TestRequestsService $testRequestsService */
-    $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
     $result = $testRequestsService->decryptManifestRows(
         $db->query($sQuery) ?: [],
         ['patient_art_no', 'patient_first_name', 'patient_middle_name', 'patient_last_name']
@@ -71,6 +74,9 @@ if (!empty($id)) {
 
     $db->where('manifest_id', $id);
     $bResult = $db->getOne('specimen_manifests');
+    if (!empty($bResult) && !$testRequestsService->mayPrintManifests([$bResult], $result)) {
+        $bResult = [];
+    }
     $showPatientName = $testRequestsService->showsPatientNamesOnManifest('vl', $bResult ?: null);
 
     if (!empty($bResult)) {

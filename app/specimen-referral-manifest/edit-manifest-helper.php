@@ -85,7 +85,9 @@ try {
             _translate("This manifest has been received at the testing lab and can no longer be changed"),
             $listUrl,
         ];
-    } elseif (!array_key_exists($testingLab, $labs)) {
+    } elseif (!array_key_exists($testingLab, $labs) || ($labScope !== '' && $testingLab !== $ownLab)) {
+        // A lab-bound operator keeps the manifest on their own lab: another lab
+        // would take its samples out of their reach.
         $refusal = [_translate("Please select the Testing lab", true), $editUrl];
     } elseif (isset($_POST['samplesListedForLab']) && (int) $_POST['samplesListedForLab'] !== $testingLab) {
         // The samples were picked from another lab's list: a slow response for a

@@ -186,6 +186,65 @@ final class ManifestPatientNamesTest extends TestCase
         self::assertSame($manifest, (int) $row['sample_package_id']);
     }
 
+    #[RunInSeparateProcess]
+    public function testALabPrintsOnlyManifestsBoundForIt(): void
+    {
+        $this->actAsLab(self::LAB);
+
+        self::assertFalse($this->service()->mayPrintManifests([['lab_id' => 99]], [['x' => 1]]));
+        self::assertTrue($this->service()->mayPrintManifests([['lab_id' => self::LAB]], []));
+        self::assertTrue($this->service()->mayPrintManifests([['lab_id' => null]], []));
+        self::assertStringContainsString('vl.lab_id = ' . self::LAB, $this->service()->manifestPrintScope());
+    }
+
+    #[RunInSeparateProcess]
+    public function testAReferralManifestPrintsForTheLabThatSentOrReceivesIt(): void
+    {
+        $this->actAsLab(self::LAB);
+
+        $scope = $this->service()->manifestPrintScope(referral: true);
+        self::assertStringContainsString('vl.referred_by_lab_id = ' . self::LAB, $scope);
+        self::assertStringContainsString('vl.referred_to_lab_id = ' . self::LAB, $scope);
+        self::assertFalse($this->service()->mayPrintManifests([['lab_id' => 99]], [], referral: true));
+        self::assertTrue($this->service()->mayPrintManifests([['lab_id' => 99]], [['x' => 1]], referral: true));
+    }
+
+    #[RunInSeparateProcess]
+    public function testASessionNotActingAsALabPrintsAsBefore(): void
+    {
+        self::assertSame('', $this->service()->manifestPrintScope());
+        self::assertTrue($this->service()->mayPrintManifests([['lab_id' => 99]], []));
+    }
+
+    #[RunInSeparateProcess]
+    public function testALabCannotMoveItsManifestToAnotherLab(): void
+    {
+        LegacyAppHarness::db()->insert('facility_details', [
+            'facility_id' => 6, 'facility_name' => 'Other lab', 'facility_type' => 2, 'status' => 'active',
+        ]);
+        LegacyAppHarness::db()->insert('testing_labs', ['test_type' => 'vl', 'facility_id' => 6]);
+        $manifest = $this->manifest('M-4');
+        $sample = $this->sample('N', 'M-4', $manifest);
+        LegacyAppHarness::db()->rawQuery('UPDATE form_vl SET lab_id = NULL WHERE vl_sample_id = ?', [$sample]);
+        $this->actAsLab(self::LAB);
+
+        $this->drive('/specimen-referral-manifest/edit-manifest-helper.php', [
+            'module' => 'vl', 'packageId' => $manifest, 'testingLab' => 6, 'reasonForChange' => 'Away',
+            'selectedSample' => (new Sqids())->encode([$sample]),
+        ]);
+
+        $db = LegacyAppHarness::db();
+        $row = $db->rawQueryOne('SELECT lab_id FROM specimen_manifests WHERE manifest_id = ?', [$manifest]);
+        self::assertSame(self::LAB, (int) $row['lab_id']);
+        self::assertNull($db->rawQueryOne('SELECT lab_id FROM form_vl WHERE vl_sample_id = ?', [$sample])['lab_id']);
+    }
+
+    private function actAsLab(int $lab): void
+    {
+        $_SESSION['instance']['type'] = 'vluser';
+        $_SESSION['labId'] = $lab;
+    }
+
     private static function clearFileCache(): void
     {
         $dir = CACHE_PATH . DIRECTORY_SEPARATOR . 'file_cache';

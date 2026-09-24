@@ -37,16 +37,19 @@ if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) === 'pk2') {
 
 if (trim((string) $id) !== '') {
 
+    /** @var TestRequestsService $testRequestsService */
+    $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
+    // A session acting as one lab prints only its own samples.
+    $printScope = $testRequestsService->manifestPrintScope();
+
     $sQuery = "SELECT remote_sample_code,pd.number_of_samples,fd.facility_name as clinic_name,fd.facility_district,vl.child_name,vl.child_surname,vl.is_encrypted,vl.child_dob,vl.child_age,vl.mother_name,sample_collection_date,child_gender,child_id,pd.manifest_code, l.facility_name as lab_name, u_d.user_name as releaser_name,
                 u_d.phone_number as phone,u_d.email as email,DATE_FORMAT(pd.request_created_datetime,'%d-%b-%Y') as created_date
                 from specimen_manifests as pd Join form_eid as vl ON vl.sample_package_id=pd.manifest_id
                 Join facility_details as fd ON fd.facility_id=vl.facility_id
                 Join facility_details as l ON l.facility_id=vl.lab_id
                 LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by
-                where pd.manifest_id IN(" . $db->inIntList($id) . ")
+                where pd.manifest_id IN(" . $db->inIntList($id) . ")" . $printScope . "
                 ORDER BY remote_sample_code ASC";
-    /** @var TestRequestsService $testRequestsService */
-    $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
     $result = $testRequestsService->decryptManifestRows(
         $db->rawQuery($sQuery) ?: [],
         ['child_id', 'child_name', 'child_surname', 'mother_name'],
@@ -56,6 +59,9 @@ if (trim((string) $id) !== '') {
     $labname = $result[0]['lab_name'] ?? "";
     $bQuery = "SELECT * from specimen_manifests as pd where manifest_id IN(" . $db->inIntList($id) . ")";
     $bResult = $db->query($bQuery);
+    if (!$testRequestsService->mayPrintManifests($bResult ?: [], $result)) {
+        $bResult = [];
+    }
     $showPatientName = $testRequestsService->showsPatientNamesOnManifest('eid', $bResult[0] ?? null);
 
     if (!empty($bResult)) {

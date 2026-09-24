@@ -32,6 +32,11 @@ if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) === 'pk2') {
 }
 if (trim((string) $id) !== '') {
 
+    /** @var TestRequestsService $testRequestsService */
+    $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
+    // A session acting as one lab prints only its own samples.
+    $printScope = $testRequestsService->manifestPrintScope(referral: true);
+
     $sQuery = "SELECT vl.tb_id, COALESCE(NULLIF(vl.remote_sample_code, ''), vl.sample_code) as remote_sample_code, fd.facility_name as clinic_name, fd.facility_district,
                 vl.patient_name, vl.patient_surname, vl.is_encrypted,
                 patient_dob, patient_age, sample_collection_date, patient_gender, patient_id, 
@@ -40,9 +45,7 @@ if (trim((string) $id) !== '') {
                 JOIN form_tb as vl ON vl.referral_manifest_code = pd.manifest_code 
                 JOIN facility_details as fd ON fd.facility_id = vl.facility_id 
                 JOIN facility_details as l ON l.facility_id = vl.lab_id 
-                WHERE pd.manifest_code IN('" . $db->escape((string) $id) . "')";
-    /** @var TestRequestsService $testRequestsService */
-    $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
+                WHERE pd.manifest_code IN('" . $db->escape((string) $id) . "')" . $printScope;
     $result = $testRequestsService->decryptManifestRows(
         $db->query($sQuery) ?: [],
         ['patient_id', 'patient_name', 'patient_surname'],
@@ -54,6 +57,9 @@ if (trim((string) $id) !== '') {
     $bQuery = "SELECT * FROM specimen_manifests as pd WHERE manifest_code IN('" . $db->escape((string) $id) . "')";
 
     $bResult = $db->query($bQuery);
+    if (!$testRequestsService->mayPrintManifests($bResult ?: [], $result, referral: true)) {
+        $bResult = [];
+    }
     $showPatientName = $testRequestsService->showsPatientNamesOnManifest('tb', $bResult[0] ?? null);
     if (!empty($bResult)) {
 
