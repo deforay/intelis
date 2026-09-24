@@ -7,3 +7,15 @@
 ALTER TABLE `specimen_manifests` ADD COLUMN `show_patient_names` ENUM('yes','no') NULL DEFAULT NULL AFTER `lab_id`;
 
 UPDATE `system_config` SET `value` = '5.7.80' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

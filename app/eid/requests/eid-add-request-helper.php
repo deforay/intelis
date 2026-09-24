@@ -158,6 +158,7 @@ try {
 		'lab_id' => $_POST['labId'] ?? null,
 		// 'system_patient_code' => $systemGeneratedCode,
 		'lab_testing_point' => $_POST['labTestingPoint'] ?? null,
+		'lab_testing_point_other' => $_POST['labTestingPointOther'] ?? null,
 		'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') ? base64_decode((string) $_POST['fundingSource']) : null,
 		'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') ? base64_decode((string) $_POST['implementingPartner']) : null,
 		'mother_id' => $_POST['mothersId'] ?? null,

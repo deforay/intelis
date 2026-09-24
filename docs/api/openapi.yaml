@@ -38,8 +38,9 @@ components:
     ResultVersionCapabilities:
       type: object
       description: Optional. What the client supports, at the top level of the body. A server
-        that applied the check repeats the object at the top level of its response. A client
-        that sends none is answered exactly as before.
+        repeats, at the top level of its response, the capabilities it honoured. A client that
+        sends none is answered exactly as before. `request-form-fields` is honoured by
+        /vl/save-request.php and /eid/save-request.php only.
       properties:
         supports:
           type: array
@@ -47,6 +48,7 @@ components:
             type: string
             enum:
             - result-version
+            - request-form-fields
       example:
         supports:
         - result-version
@@ -1941,6 +1943,15 @@ paths:
         carries `resultVersion`, the version to send with the sample's next post, and the response
         carries the same `capabilities` object to confirm the check ran. A client that sends no
         capabilities is answered exactly as before.
+
+        Request form fields. Some country request forms record fields the rest do not
+        (for example cvNumber, cd4Result, activeTB). They are saved only for a client that sends
+        `"capabilities": {"supports": ["request-form-fields"]}`; the response then repeats
+        `request-form-fields` in its `capabilities`. Each field is optional and is written only
+        when the record carries its key, and a key sent empty clears the field. A number or date
+        that does not parse is not written, and the saved value stays. A client that
+        does not declare the capability is answered exactly as before: these keys are ignored,
+        whatever it sends. Older servers ignore them too.
       requestBody:
         required: true
         content:
@@ -2027,12 +2038,6 @@ paths:
                       lastViralLoadTestDate:
                         type: string
                         description: Last VL Test Date
-                      conservationTemperature:
-                        type: string
-                        description: ''
-                      durationOfConservation:
-                        type: string
-                        description: ''
                       dateOfCompletionOfViralLoad:
                         type: string
                         description: ''
@@ -2161,6 +2166,79 @@ paths:
                         items:
                           type: string
                         description: ''
+                      noOfPregnancyWeeks:
+                        type: integer
+                        description: 'Weeks of pregnancy.'
+                      activeTB:
+                        type: string
+                        description: 'Whether the patient has active TB (yes, no).'
+                      tbPhase:
+                        type: string
+                        description: 'Phase of TB treatment.'
+                      treatmentDuration:
+                        type: string
+                        description: 'Time on ART.'
+                      treatmentDurationPrecise:
+                        type: string
+                        description: 'Time on ART, as the precise value the form records.'
+                      treatmentIndication:
+                        type: string
+                        description: 'Indication for treatment.'
+                      cd4Result:
+                        type: string
+                        description: 'Last CD4 result.'
+                      cd4Percentage:
+                        type: string
+                        description: 'Last CD4 percentage.'
+                      cd4Date:
+                        type: string
+                        format: date
+                        description: 'Date of the last CD4 test.'
+                      cd8Result:
+                        type: string
+                        description: 'Last CD8 result.'
+                      cd8Date:
+                        type: string
+                        format: date
+                        description: 'Date of the last CD8 test.'
+                      lineOfTreatmentFailureAssessed:
+                        type: string
+                        description: 'Line of treatment on which failure was assessed.'
+                      locationOfSampleCollection:
+                        type: string
+                        description: 'Where the sample was collected.'
+                      conservationTemperature:
+                        type: number
+                        description: 'Plasma storage temperature, in degrees Celsius.'
+                      durationOfConservation:
+                        type: string
+                        description: 'How long the plasma was stored.'
+                      reasonForVLTestingOther:
+                        type: string
+                        description: 'The reason for testing, when it is "other".'
+                      rmLastVLTestSampleType:
+                        type: integer
+                        description: 'Sample type of the last routine VL test (sample type ID).'
+                      repeatLastVLTestSampleType:
+                        type: integer
+                        description: 'Sample type of the last VL test before the repeat (sample type ID).'
+                      suspendLastVLTestSampleType:
+                        type: integer
+                        description: 'Sample type of the last VL test before suspected failure (sample type ID).'
+                      confirmRecencyTestingLastVLDate:
+                        type: string
+                        format: date
+                        description: 'Date of the last VL test, for confirming recency.'
+                      confirmRecencyTestingVlValue:
+                        type: string
+                        description: 'Result of the last VL test, for confirming recency.'
+                      testRequestDate:
+                        type: string
+                        format: date-time
+                        description: 'Date the test was requested.'
+                      cvNumber:
+                        type: string
+                        description: 'CV number, the testing lab''s code. Written only when the sample has none: the saved number stands.'
                       sortOrder:
                         type: integer
                         description: Optional sort order for processing records. When
@@ -2652,6 +2730,15 @@ paths:
         carries `resultVersion`, the version to send with the sample's next post, and the response
         carries the same `capabilities` object to confirm the check ran. A client that sends no
         capabilities is answered exactly as before.
+
+        Request form fields. Some country request forms record fields the rest do not
+        (for example clinicianName, pcr1TestDate, motherRegimen). They are saved only for a client that sends
+        `"capabilities": {"supports": ["request-form-fields"]}`; the response then repeats
+        `request-form-fields` in its `capabilities`. Each field is optional and is written only
+        when the record carries its key, and a key sent empty clears the field. A number or date
+        that does not parse is not written, and the saved value stays. A client that
+        does not declare the capability is answered exactly as before: these keys are ignored,
+        whatever it sends. Older servers ignore them too.
       requestBody:
         required: true
         content:
@@ -2747,7 +2834,7 @@ paths:
                         description: ''
                       childSurName:
                         type: string
-                        description: ''
+                        description: 'Child surname. On an instance using the South Sudan form, which holds the whole name in one field, it is joined into childName and not kept apart.'
                       childDob:
                         type: string
                         description: ''
@@ -2882,6 +2969,182 @@ paths:
                         items:
                           type: string
                         description: ''
+                      labTestingPoint:
+                        type: string
+                        description: 'Testing point within the lab.'
+                      labTestingPointOther:
+                        type: string
+                        description: 'Testing point, when it is "other".'
+                      previousSampleCode:
+                        type: string
+                        description: 'Sample code of an earlier test on this infant.'
+                      clinicalAssessment:
+                        type: string
+                        description: 'Clinical assessment.'
+                      clinicianName:
+                        type: string
+                        description: 'Name of the requesting clinician.'
+                      reqClinicianPhoneNumber:
+                        type: string
+                        description: 'Phone number of the requesting clinician.'
+                      isMotherAlive:
+                        type: string
+                        description: 'Whether the mother is alive (yes, no).'
+                      motherAgeInYears:
+                        type: string
+                        description: 'Mother''s age in years.'
+                      mothersSurname:
+                        type: string
+                        description: 'Mother''s surname.'
+                      motherRegimen:
+                        type: string
+                        description: 'Mother''s ART regimen code. A code the regimen list does not hold is added to it.'
+                      motherArvProtocol:
+                        type: integer
+                        description: 'Mother''s ARV protocol (protocol ID).'
+                      motherHivTestDate:
+                        type: string
+                        format: date
+                        description: 'Date of the mother''s HIV test.'
+                      motherArtStatus:
+                        type: string
+                        description: 'Mother''s ART status.'
+                      motherMtctRisk:
+                        type: string
+                        description: 'Mother''s risk of mother-to-child transmission.'
+                      startedArtDate:
+                        type: string
+                        format: date
+                        description: 'Date the mother started ART.'
+                      modeOfDelivery:
+                        type: string
+                        description: 'Mode of delivery.'
+                      modeOfDeliveryOther:
+                        type: string
+                        description: 'Mode of delivery, when it is "other".'
+                      nextAppointmentDate:
+                        type: string
+                        format: date
+                        description: 'Date of the next appointment.'
+                      noOfExposedChildren:
+                        type: integer
+                        description: 'Number of HIV-exposed children.'
+                      noOfInfectedChildren:
+                        type: integer
+                        description: 'Number of HIV-infected children.'
+                      childWeight:
+                        type: integer
+                        description: 'Infant''s weight.'
+                      childAgeInDays:
+                        type: integer
+                        description: 'Infant''s age in days.'
+                      childProphylacticArv:
+                        type: string
+                        description: 'Prophylactic ARV given to the infant.'
+                      childProphylacticArvOther:
+                        type: string
+                        description: 'Prophylactic ARV, when it is "other".'
+                      childTreatmentInitiationDate:
+                        type: string
+                        format: date
+                        description: 'Date the infant''s treatment started.'
+                      isChildSymptomatic:
+                        type: string
+                        description: 'Whether the infant has symptoms (yes, no).'
+                      wasChildBreastfed:
+                        type: string
+                        description: 'Whether the infant was breastfed (yes, no).'
+                      dateOfWeaning:
+                        type: string
+                        format: date
+                        description: 'Date of weaning.'
+                      isChildOnCotrim:
+                        type: string
+                        description: 'Whether the infant is on cotrimoxazole (yes, no).'
+                      childStartedCotrimDate:
+                        type: string
+                        format: date
+                        description: 'Date the infant started cotrimoxazole.'
+                      childStartedArtDate:
+                        type: string
+                        format: date
+                        description: 'Date the infant started ART.'
+                      infantEmail:
+                        type: string
+                        description: 'Email address for the infant (or caretaker).'
+                      infantPhone:
+                        type: string
+                        description: 'Phone number for the infant (or caretaker).'
+                      isInfantReceivingTreatment:
+                        type: string
+                        description: 'Whether the infant is receiving treatment (yes, no).'
+                      specificInfantTreatment:
+                        type: string
+                        description: 'Treatment the infant is receiving.'
+                      infantArtStatus:
+                        type: string
+                        description: 'Infant''s ART status.'
+                      infantArtStatusOther:
+                        type: string
+                        description: 'ART status, when it is "other".'
+                      infantOnPMTCTProphylaxis:
+                        type: string
+                        description: 'Whether the infant is on PMTCT prophylaxis.'
+                      infantOnCTXProphylaxis:
+                        type: string
+                        description: 'Whether the infant is on cotrimoxazole prophylaxis.'
+                      testRequestDate:
+                        type: string
+                        format: date
+                        description: 'Date the test was requested.'
+                      eidNumber:
+                        type: string
+                        description: 'EID number.'
+                      sampleCollectionReason:
+                        type: string
+                        description: 'Reason the sample was collected.'
+                      isSampleRecollected:
+                        type: string
+                        description: 'Whether this sample is a recollection (yes, no).'
+                      locationOfSampleCollection:
+                        type: string
+                        description: 'Where the sample was collected.'
+                      sampleDispatcherName:
+                        type: string
+                        description: 'Name of the person who dispatched the sample.'
+                      sampleDispatcherPhone:
+                        type: string
+                        description: 'Phone number of the person who dispatched the sample.'
+                      pcrTestNumber:
+                        type: integer
+                        description: 'Which PCR test this is (1, 2, 3...).'
+                      reasonForRepeatPcrOther:
+                        type: string
+                        description: 'Reason for a repeat PCR, when it is "other".'
+                      pcr1TestDate:
+                        type: string
+                        format: date
+                        description: 'Date of the first PCR test.'
+                      pcr1TestResult:
+                        type: string
+                        description: 'Result of the first PCR test.'
+                      pcr2TestDate:
+                        type: string
+                        format: date
+                        description: 'Date of the second PCR test.'
+                      pcr2TestResult:
+                        type: string
+                        description: 'Result of the second PCR test.'
+                      pcr3TestDate:
+                        type: string
+                        format: date
+                        description: 'Date of the third PCR test.'
+                      pcr3TestResult:
+                        type: string
+                        description: 'Result of the third PCR test.'
+                      serologicalTest:
+                        type: string
+                        description: 'Serological test result.'
                       sortOrder:
                         type: integer
                         description: Optional sort order for processing records. When

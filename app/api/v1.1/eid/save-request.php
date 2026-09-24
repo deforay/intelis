@@ -2,6 +2,7 @@
 
 use Slim\Psr7\Request;
 use const COUNTRY\PNG;
+use const COUNTRY\SOUTH_SUDAN;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\REJECTED;
@@ -10,6 +11,7 @@ use const SAMPLE_STATUS\PENDING_APPROVAL;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\EidService;
+use App\Services\VlService;
 use App\Services\UsersService;
 use App\Utilities\SavedResultGuard;
 use App\Utilities\DateUtility;
@@ -48,6 +50,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);
 
+/** @var VlService $vlService EID shares the ART regimen list with VL */
+$vlService = ContainerRegistry::get(VlService::class);
+
 /** @var TestRequestsService $testRequestsService */
 $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
@@ -73,7 +78,10 @@ try {
 
     // A client that declares result-version has each post checked against the
     // result it last pulled. See SavedResultGuard::isStale().
-    $declaresResultVersion = SavedResultGuard::declaresResultVersion(ApiService::payloadCapabilities($origJson));
+    $capabilities = ApiService::payloadCapabilities($origJson);
+    $declaresResultVersion = SavedResultGuard::declaresResultVersion($capabilities);
+    // Country request form fields are written only for a client that asks. See ApiService::REQUEST_FORM_FIELDS.
+    $declaresFormFields = ApiService::declares($capabilities, ApiService::REQUEST_FORM_FIELDS);
     // Attempt to extract appVersion
     try {
         $appVersion = Items::fromString($origJson, [
@@ -116,6 +124,7 @@ try {
 
     $instanceId = $general->getInstanceId();
     $formId = (int) $general->getGlobalConfig('vl_form');
+    $childNameWidth = null;
 
     /* Update form attributes */
     $version = $general->getAppVersion();
@@ -227,10 +236,10 @@ try {
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id');
         }
-        if (!is_numeric($data['implementingPartner'])) {
+        if (!empty($data['implementingPartner']) && !is_numeric($data['implementingPartner'])) {
             $data['implementingPartner'] = $general->getValueByName($data['implementingPartner'], 'i_partner_name', 'r_implementation_partners', 'i_partner_id');
         }
-        if (!is_numeric($data['fundingSource'])) {
+        if (!empty($data['fundingSource']) && !is_numeric($data['fundingSource'])) {
             $data['fundingSource'] = $general->getValueByName($data['fundingSource'], 'funding_source_name', 'r_funding_sources', 'funding_source_id');
         }
 
@@ -445,6 +454,9 @@ try {
 
         /* New API changes start */
         foreach (["motherTreatment", "childTreatment", "childTreatmentOther"] as $key) {
+            if (!isset($data[$key])) {
+                continue;
+            }
             if (is_array($data[$key])) {
                 $data[$key] = implode(",", $data[$key]);
             } elseif (str_contains((string) $data[$key], '##')) {
@@ -525,6 +537,95 @@ try {
             'rejection_on' => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
             'source_of_request' => $data['sourceOfRequest'] ?? "API"
         ];
+
+        // South Sudan's form holds the child's whole name in one field, and the app
+        // posts it in two. A surname kept apart is one the form never shows, so it
+        // joins the name, as VL joins a patient's names.
+        // A name longer than the column stays in its parts rather than being cut short:
+        // installs upgraded from before 5.2.2 hold child_name as VARCHAR(100).
+        if ($formId == SOUTH_SUDAN) {
+            $childNameWidth ??= (int) ($db->rawQueryOne(
+                "SELECT CHARACTER_MAXIMUM_LENGTH AS width FROM information_schema.COLUMNS
+                 WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'form_eid' AND COLUMN_NAME = 'child_name'"
+            )['width'] ?? 0);
+            $childNames = array_filter(
+                [trim((string) ($eidData['child_name'] ?? '')), trim((string) ($eidData['child_surname'] ?? ''))],
+                static fn(string $part): bool => !in_array($part, ['', '0'], true)
+            );
+            $childName = implode(' ', $childNames);
+            if (mb_strlen($childName) <= $childNameWidth) {
+                $eidData['child_name'] = $childName === '' ? null : $childName;
+                $eidData['child_surname'] = null;
+            }
+        }
+
+        // Fields of the country request forms this endpoint took on later, for a client
+        // that declared REQUEST_FORM_FIELDS: written only when the record carries the key.
+        // Not the lab's result entry (instrument, corrective action, the test blocks):
+        // SavedResultGuard does not cover those columns, so a stale re-post would undo them.
+        $eidData = array_merge($eidData, !$declaresFormFields ? [] : ApiService::postedColumns($data, [
+            'labTestingPoint' => ['lab_testing_point'],
+            'labTestingPointOther' => ['lab_testing_point_other'],
+            'previousSampleCode' => ['previous_sample_code'],
+            'clinicalAssessment' => ['clinical_assessment'],
+            'clinicianName' => ['clinician_name'],
+            'reqClinicianPhoneNumber' => ['request_clinician_phone_number'],
+            'isMotherAlive' => ['is_mother_alive'],
+            'motherAgeInYears' => ['mother_age_in_years'],
+            'mothersSurname' => ['mother_surname'],
+            'motherRegimen' => ['mother_regimen'],
+            'motherArvProtocol' => ['mother_arv_protocol', 'int'],
+            'motherHivTestDate' => ['mother_hiv_test_date', 'date'],
+            'motherArtStatus' => ['mother_art_status'],
+            'motherMtctRisk' => ['mother_mtct_risk'],
+            'startedArtDate' => ['started_art_date', 'date'],
+            'modeOfDelivery' => ['mode_of_delivery'],
+            'modeOfDeliveryOther' => ['mode_of_delivery_other'],
+            'nextAppointmentDate' => ['next_appointment_date', 'date'],
+            'noOfExposedChildren' => ['no_of_exposed_children', 'int'],
+            'noOfInfectedChildren' => ['no_of_infected_children', 'int'],
+            'childWeight' => ['child_weight', 'int'],
+            'childAgeInDays' => ['child_age_in_days', 'int'],
+            'childProphylacticArv' => ['child_prophylactic_arv'],
+            'childProphylacticArvOther' => ['child_prophylactic_arv_other'],
+            'childTreatmentInitiationDate' => ['child_treatment_initiation_date', 'date'],
+            'isChildSymptomatic' => ['is_child_symptomatic'],
+            'wasChildBreastfed' => ['was_child_breastfed'],
+            'dateOfWeaning' => ['date_of_weaning', 'date'],
+            'isChildOnCotrim' => ['is_child_on_cotrim'],
+            'childStartedCotrimDate' => ['child_started_cotrim_date', 'date'],
+            'childStartedArtDate' => ['child_started_art_date', 'date'],
+            'infantEmail' => ['infant_email'],
+            'infantPhone' => ['infant_phone'],
+            'isInfantReceivingTreatment' => ['is_infant_receiving_treatment'],
+            'specificInfantTreatment' => ['specific_infant_treatment'],
+            'infantArtStatus' => ['infant_art_status'],
+            'infantArtStatusOther' => ['infant_art_status_other'],
+            'infantOnPMTCTProphylaxis' => ['infant_on_pmtct_prophylaxis'],
+            'infantOnCTXProphylaxis' => ['infant_on_ctx_prophylaxis'],
+            'testRequestDate' => ['test_request_date', 'date'],
+            'eidNumber' => ['eid_number'],
+            'sampleCollectionReason' => ['sample_collection_reason'],
+            'isSampleRecollected' => ['is_sample_recollected'],
+            'locationOfSampleCollection' => ['location_of_sample_collection'],
+            'sampleDispatcherName' => ['sample_dispatcher_name'],
+            'sampleDispatcherPhone' => ['sample_dispatcher_phone'],
+            'pcrTestNumber' => ['pcr_test_number', 'int'],
+            'reasonForRepeatPcrOther' => ['reason_for_repeat_pcr_other'],
+            'pcr1TestDate' => ['pcr_1_test_date', 'date'],
+            'pcr1TestResult' => ['pcr_1_test_result'],
+            'pcr2TestDate' => ['pcr_2_test_date', 'date'],
+            'pcr2TestResult' => ['pcr_2_test_result'],
+            'pcr3TestDate' => ['pcr_3_test_date', 'date'],
+            'pcr3TestResult' => ['pcr_3_test_result'],
+            'serologicalTest' => ['serological_test'],
+        ]));
+
+        // Resolved like the web form's, so a regimen the dropdown does not know is
+        // registered rather than stored as a value the form cannot show.
+        if (!empty($eidData['mother_regimen'])) {
+            $eidData['mother_regimen'] = $vlService->resolveArtRegimen($eidData['mother_regimen']);
+        }
 
         if (!empty($rowData)) {
             $eidData['last_modified_datetime'] = (empty($data['updatedOn'])) ? DateUtility::getCurrentDateTime() : DateUtility::isoDateFormat($data['updatedOn'], true);
@@ -688,9 +789,13 @@ try {
         ]
     ];
 
-    // Tells a client that declared result-version that this server checked it.
-    if ($declaresResultVersion) {
-        $payload['capabilities'] = ['supports' => [SavedResultGuard::RESULT_VERSION]];
+    // Tells a client which of the capabilities it declared this server honoured.
+    $honoured = array_keys(array_filter([
+        SavedResultGuard::RESULT_VERSION => $declaresResultVersion,
+        ApiService::REQUEST_FORM_FIELDS => $declaresFormFields,
+    ]));
+    if ($honoured !== []) {
+        $payload['capabilities'] = ['supports' => $honoured];
     }
 
     // Add detailed duplicate information only if duplicates were detected
