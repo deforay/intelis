@@ -260,6 +260,72 @@ final class TbSingleResultFormsTest extends TestCase
         );
     }
 
+    /**
+     * The page posts the id of the row each slot showed. A row deleted while the page
+     * was open is not written back onto the next row, and a row added meanwhile stays.
+     */
+    #[RunInSeparateProcess]
+    public function testEachSlotSavesTheRowItShowed(): void
+    {
+        $tbId = $this->seedTb();
+        $first = $this->seedTbTest($tbId, ['actual_no' => '1', 'test_result' => 'No AFB']);
+        $second = $this->seedTbTest($tbId, ['actual_no' => '2', 'test_result' => '1+']);
+        LegacyAppHarness::db()->rawQuery('DELETE FROM tb_tests WHERE tb_test_id = ?', [$first]);
+        $addedMeanwhile = $this->seedTbTest($tbId, ['actual_no' => '5', 'test_result' => '3+']);
+
+        $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, [
+            'testResult' => ['No AFB', '2+', ''],
+            'actualNo' => ['1', '2', ''],
+            'microscopyTestId' => [(string) $first, (string) $second, ''],
+        ]));
+
+        self::assertSame(
+            [[$second, '2', '2+'], [$addedMeanwhile, '5', '3+']],
+            array_map(
+                static fn($t) => [(int) $t['tb_test_id'], $t['actual_no'], $t['test_result']],
+                $this->tbTests($tbId)
+            )
+        );
+    }
+
+    /** On a page that shows it, a result outside the list can be cleared. */
+    #[RunInSeparateProcess]
+    public function testAShownResultOutsideTheListCanBeCleared(): void
+    {
+        $tbId = $this->seedTb();
+        $row = $this->seedTbTest($tbId, ['lab_id' => null, 'actual_no' => '1', 'test_result' => 'Negative']);
+
+        $this->drive('/tb/results/tb-update-result-helper.php', [
+            'tbSampleId' => (string) $tbId,
+            'labId' => '1',
+            'instanceId' => 'test',
+            'isSampleRejected' => 'no',
+            'tbTestsRequested' => '',
+            'testResult' => ['', '', ''],
+            'actualNo' => ['1', '', ''],
+            'microscopyTestId' => [(string) $row, '', ''],
+        ]);
+
+        self::assertSame([[$row, null]], array_map(
+            static fn($t) => [(int) $t['tb_test_id'], $t['test_result']],
+            $this->tbTests($tbId)
+        ));
+    }
+
+    /** A result that is not kept is not queued to go back to the source. */
+    #[RunInSeparateProcess]
+    public function testAResultNotKeptIsNotSentToTheSource(): void
+    {
+        $tbId = $this->seedTb();
+
+        $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, [
+            'isResultFinalized' => 'no',
+            'finalResult' => '0',
+        ]));
+
+        self::assertNull($this->formTb($tbId)['result_sent_to_source']);
+    }
+
     /** A row the client sent and the lab then changed becomes the lab's. */
     #[RunInSeparateProcess]
     public function testAClientRowTheLabChangesTakesTheLab(): void

@@ -474,6 +474,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 																	</td>
 																	<td>
 																		<input type="text" value="<?php echo $tbTestInfo[$no - 1]['actual_no']; ?>" class="form-control test-name-table-input" id="actualNo<?php echo $no; ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
+																		<input type="hidden" name="microscopyTestId[]" value="<?= (int) $tbTestInfo[$no - 1]['tb_test_id']; ?>" />
 																	</td>
 																</tr>
 															<?php
@@ -487,6 +488,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 																	</td>
 																	<td>
 																		<input type="text" class="form-control test-name-table-input" id="actualNo<?php echo $no; ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
+																		<input type="hidden" name="microscopyTestId[]" value="" />
 																	</td>
 																</tr>
 														<?php }

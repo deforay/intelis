@@ -758,6 +758,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 																			id="actualNo<?php echo $no; ?>" name="actualNo[]"
 																			placeholder="Enter the actual number"
 																			title="Please enter the actual number" />
+																		<input type="hidden" name="microscopyTestId[]" value="<?= (int) $tbTestInfo[$no - 1]['tb_test_id']; ?>" />
 																	</td>
 																</tr>
 															<?php
@@ -778,6 +779,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 																			id="actualNo<?php echo $no; ?>" name="actualNo[]"
 																			placeholder="Enter the actual number"
 																			title="Please enter the actual number" />
+																		<input type="hidden" name="microscopyTestId[]" value="" />
 																	</td>
 																</tr>
 														<?php }
