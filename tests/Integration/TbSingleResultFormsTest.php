@@ -396,13 +396,20 @@ final class TbSingleResultFormsTest extends TestCase
     {
         LegacyAppHarness::withSession(['accessType' => 'collection-site', 'roleCode' => 'clinic', 'privileges' => []]);
         $tbId = $this->seedTb();
-        LegacyAppHarness::db()->rawQuery("UPDATE form_tb SET result = 'MTB detected' WHERE tb_id = ?", [$tbId]);
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE form_tb SET result = 'MTB detected', result_status = 8,
+                sample_dispatched_datetime = '2026-09-15 12:00:00', recommended_corrective_action = 2
+                WHERE tb_id = ?",
+            [$tbId]
+        );
         $row = $this->seedTbTest($tbId, ['actual_no' => '1', 'test_result' => '1+']);
 
         $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, [
             'finalResult' => 'MTB not detected',
             'xPertMTMResult' => 'MTB not detected',
             'labComments' => 'changed',
+            'isSampleRejected' => 'yes',
+            'correctiveAction' => '5',
             'testResult' => ['', '', ''],
             'actualNo' => ['', '', ''],
             'microscopyTestId' => [(string) $row, '', ''],
@@ -413,11 +420,39 @@ final class TbSingleResultFormsTest extends TestCase
         self::assertSame('P-2', $sample['patient_id']);
         self::assertSame('MTB detected', $sample['result']);
         self::assertNull($sample['xpert_mtb_result']);
+        self::assertSame(8, (int) $sample['result_status']);
+        self::assertNotSame('yes', $sample['is_sample_rejected']);
+        self::assertSame('2026-09-15 12:00:00', $sample['sample_dispatched_datetime']);
+        self::assertSame(2, (int) $sample['recommended_corrective_action']);
         self::assertNotSame('changed', $sample['lab_tech_comments']);
         self::assertSame([[$row, '1+']], array_map(
             static fn($t) => [(int) $t['tb_test_id'], $t['test_result']],
             $this->tbTests($tbId)
         ));
+    }
+
+    /**
+     * A form that keeps the received date in the section it hides from a collection
+     * site posts none: the saved date stays.
+     */
+    #[RunInSeparateProcess]
+    public function testAHiddenReceivedDateIsKept(): void
+    {
+        LegacyAppHarness::withSession(['accessType' => 'collection-site', 'roleCode' => 'clinic', 'privileges' => []]);
+        $tbId = $this->seedTb();
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE form_tb SET sample_received_at_lab_datetime = '2026-09-16 10:00:00' WHERE tb_id = ?",
+            [$tbId]
+        );
+        $post = self::requestPost($tbId, ['patientId' => 'P-3']);
+        unset($post['isSampleRejected']);
+
+        $this->drive('/tb/requests/tb-edit-request-helper.php', $post);
+
+        $sample = $this->formTb($tbId);
+        self::assertSame('P-3', $sample['patient_id']);
+        self::assertSame('2026-09-16 10:00:00', $sample['sample_received_at_lab_datetime']);
+        self::assertSame(6, (int) $sample['result_status']);
     }
 
     /** A row the client sent and the lab then changed becomes the lab's. */

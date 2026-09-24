@@ -74,6 +74,14 @@ $resultColumnsOwnedByTheForm = [
     'tested_by'                  => 'testedBy',
     'result_date'                => 'resultDate',
     'lab_tech_comments'          => 'labComments',
+    // The rest of the section the form shows only to a user who may enter results,
+    // and the received date, which one form keeps there too.
+    'sample_received_at_lab_datetime' => 'sampleReceivedDate',
+    'sample_dispatched_datetime'      => 'sampleDispatchedDate',
+    'is_sample_rejected'              => 'isSampleRejected',
+    'reason_for_sample_rejection'     => 'isSampleRejected',
+    'rejection_on'                    => 'isSampleRejected',
+    'recommended_corrective_action'   => 'correctiveAction',
 ];
 $resultColumnsPosted = [];
 foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
@@ -340,6 +348,10 @@ try {
         if (!in_array($column, $resultColumnsPosted, true)) {
             unset($tbData[$column]);
         }
+    }
+    // Neither a rejection nor a result was posted: the save decides no status.
+    if (!in_array('is_sample_rejected', $resultColumnsPosted, true) && !in_array('result', $resultColumnsPosted, true)) {
+        unset($tbData['result_status']);
     }
 
     $db->where('tb_id', $_POST['tbSampleId']);
