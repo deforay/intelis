@@ -380,6 +380,65 @@ final class StsResultsReceiveTest extends TestCase
         self::assertSame(1, (int) $db->rawQueryOne('SELECT COUNT(*) AS n FROM tb_tests')['n']);
     }
 
+    /** @return list<string> */
+    private static function tbResults($db): array
+    {
+        return array_column($db->rawQuery('SELECT test_result FROM tb_tests ORDER BY tb_test_id'), 'test_result');
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheReferringLabDoesNotReplaceTheReceivingLabsTests(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_tb', 't-1', ['tb_id' => 1, 'referred_to_lab_id' => 8]);
+
+        self::sts()->receiveResults('tb', ['labId' => 8, 'results' => [self::tbRecord([self::tbTest('MTB')])]]);
+        // Lab 7 referred the sample away and resends its older copy.
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('Negative')])]));
+
+        self::assertSame(['MTB'], self::tbResults($db));
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheReceivingLabCanClearItsTests(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_tb', 't-1', ['tb_id' => 1, 'referred_to_lab_id' => 8]);
+
+        self::sts()->receiveResults('tb', ['labId' => 8, 'results' => [self::tbRecord([self::tbTest('MTB')])]]);
+        self::sts()->receiveResults('tb', ['labId' => 8, 'results' => [self::tbRecord([])]]);
+
+        self::assertSame([], self::tbResults($db));
+    }
+
+    #[RunInSeparateProcess]
+    public function testResendingTheSameTestsKeepsTheRowsAndLogsNothing(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_tb', 't-1', ['tb_id' => 1]);
+
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('MTB')])]));
+        $id = $db->rawQueryOne('SELECT tb_test_id FROM tb_tests')['tb_test_id'];
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('MTB')])]));
+
+        self::assertSame($id, $db->rawQueryOne('SELECT tb_test_id FROM tb_tests')['tb_test_id']);
+        self::assertSame(0, (int) $db->rawQueryOne('SELECT COUNT(*) AS n FROM audit_log')['n']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testReplacedTestRowsAreKeptInTheAuditLog(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_tb', 't-1', ['tb_id' => 1]);
+
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('MTB')])]));
+        self::sts()->receiveResults('tb', self::payload([self::tbRecord([self::tbTest('Negative')])]));
+
+        self::assertSame(['Negative'], self::tbResults($db));
+        $kept = $db->rawQueryOne("SELECT row_data FROM audit_log WHERE form_table = 'tb_tests'");
+        self::assertSame('MTB', json_decode((string) $kept['row_data'], true)['test_result'] ?? null);
+    }
+
     #[RunInSeparateProcess]
     public function testClearedTestRowsAreKeptInTheAuditLog(): void
     {

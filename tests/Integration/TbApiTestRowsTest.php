@@ -72,6 +72,21 @@ final class TbApiTestRowsTest extends TestCase
         ], $this->rows());
     }
 
+    public function testALabTestWithTheSameNumberIsNotOverwritten(): void
+    {
+        LegacyAppHarness::db()->insert('tb_tests', [
+            'tb_id' => $this->tbId, 'lab_id' => 5, 'actual_no' => '1', 'test_result' => 'MTB detected',
+        ]);
+
+        (new TbTestsService(LegacyAppHarness::db()))
+            ->saveApiTests($this->tbId, [['actualNo' => '1', 'testResult' => 'Negative']]);
+
+        self::assertSame([
+            ['actual_no' => '1', 'test_result' => 'MTB detected', 'lab_id' => 5],
+            ['actual_no' => '1', 'test_result' => 'Negative', 'lab_id' => null],
+        ], $this->rows());
+    }
+
     public function testRepostingTheSameResultsAddsNothing(): void
     {
         $service = new TbTestsService(LegacyAppHarness::db());

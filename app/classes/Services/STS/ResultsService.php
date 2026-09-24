@@ -414,12 +414,18 @@ final class ResultsService
      * Replaces the STS's test rows for a sample with the set the lab sent.
      *
      * No data_from_tests at all means the sender said nothing about test rows, so
-     * the STS keeps what it has. An empty list means the lab has none -- it deleted
-     * the last one -- and is taken as that only from the sample's testing lab as the
-     * STS has it stored, never as the payload claims: a lab that referred the sample
-     * away has no rows of its own, and its empty list must not clear the rows the
-     * receiving lab sent. Each row is copied to audit_log first; generic_test_results
-     * has no audit trigger, so a wrong delete would otherwise be unrecoverable.
+     * the STS keeps what it has. Otherwise the rows belong to the lab doing the
+     * testing, as the STS has it stored before this update: the lab the sample was
+     * referred to, or else its testing lab.
+     *
+     * - Once a sample is referred, only the receiving lab's rows are taken. The
+     *   referring lab resending later -- it has none, or older ones -- used to
+     *   replace the receiving lab's results.
+     * - An empty list means the lab deleted its last test, and is taken only from
+     *   the lab doing the testing.
+     * - A set that matches what the STS holds changes nothing. Otherwise the rows
+     *   are copied to audit_log before they are replaced: none of these tables has
+     *   an audit trigger, so a wrong replacement would be unrecoverable.
      *
      * @param array{lab_id?: mixed, referred_to_lab_id?: mixed} $storedOwner
      */
@@ -435,27 +441,69 @@ final class ResultsService
         if (!is_array($rows) || empty($parentId)) {
             return;
         }
-        if ($rows !== []) {
-            $this->commonService->syncSubTable($table, $foreignKey, $parentId, $rows, $excludeFields, [], true);
-            return;
-        }
 
         $sender = (int) $senderLabId;
         $referredTo = (int) ($storedOwner['referred_to_lab_id'] ?? 0);
-        if ($sender <= 0
-            || $sender !== (int) ($storedOwner['lab_id'] ?? 0)
-            || ($referredTo !== 0 && $referredTo !== $sender)
-        ) {
+        $testingLab = $referredTo ?: (int) ($storedOwner['lab_id'] ?? 0);
+        if ($referredTo > 0 && $sender !== $referredTo) {
+            return;
+        }
+        if ($rows === [] && ($sender <= 0 || $sender !== $testingLab)) {
             return;
         }
 
-        $primaryKey = $excludeFields[0];
-        $attempts = ContainerRegistry::get(TestAttemptService::class);
-        foreach ($this->db->rawQuery("SELECT * FROM `$table` WHERE `$foreignKey` = ?", [$parentId]) as $row) {
-            $attempts->snapshotBeforeDelete($table, (int) $row[$primaryKey], $row);
+        $existing = $this->db->rawQuery("SELECT * FROM `$table` WHERE `$foreignKey` = ?", [$parentId]) ?: [];
+        $ignored = array_merge($excludeFields, [$foreignKey, 'updated_datetime']);
+        if (self::sameTestRows($existing, $rows, $ignored)) {
+            return;
         }
-        $this->db->where($foreignKey, $parentId);
-        $this->db->delete($table);
+
+        $attempts = ContainerRegistry::get(TestAttemptService::class);
+        foreach ($existing as $row) {
+            $attempts->snapshotBeforeDelete($table, (int) $row[$excludeFields[0]], $row);
+        }
+        if ($rows === []) {
+            $this->db->where($foreignKey, $parentId);
+            $this->db->delete($table);
+            return;
+        }
+        $this->commonService->syncSubTable($table, $foreignKey, $parentId, $rows, $excludeFields, [], true);
+    }
+
+    /**
+     * Whether the incoming rows say what the stored rows say, compared on the
+     * columns the lab sent, in any order.
+     *
+     * @param list<array<string, mixed>> $existing
+     * @param array<array-key, mixed>    $incoming
+     * @param list<string>               $ignored  ids, the parent key and timestamps
+     */
+    private static function sameTestRows(array $existing, array $incoming, array $ignored): bool
+    {
+        if (count($existing) !== count($incoming)) {
+            return false;
+        }
+        $columns = [];
+        foreach ($incoming as $row) {
+            if (!is_array($row)) {
+                return false;
+            }
+            $columns += array_flip(array_keys($row));
+        }
+        $columns = array_diff_key($columns, array_flip($ignored));
+        $signature = static function (array $row) use ($columns): string {
+            $values = [];
+            foreach (array_keys($columns) as $column) {
+                $values[$column] = trim((string) ($row[$column] ?? ''));
+            }
+            ksort($values);
+            return json_encode($values) ?: '';
+        };
+        $a = array_map($signature, $existing);
+        $b = array_map($signature, array_values($incoming));
+        sort($a);
+        sort($b);
+        return $a === $b;
     }
 
     /**
