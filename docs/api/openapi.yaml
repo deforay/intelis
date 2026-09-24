@@ -34,6 +34,63 @@ components:
       type: http
       scheme: bearer
       description: Per-installation Interface Tool credential returned once during activation.
+  schemas:
+    ResultVersionCapabilities:
+      type: object
+      description: Optional. What the client supports, at the top level of the body. A server
+        that applied the check repeats the object at the top level of its response. A client
+        that sends none is answered exactly as before.
+      properties:
+        supports:
+          type: array
+          items:
+            type: string
+            enum:
+            - result-version
+      example:
+        supports:
+        - result-version
+    FetchedResult:
+      type: object
+      additionalProperties: true
+      description: One sample. The example shows the full set of fields.
+      properties:
+        resultVersion:
+          type: string
+          description: A short token for the lab's decision on the sample. Send it back with
+            the sample on save-request, after declaring result-version. Its value has no
+            meaning to the client; compare it only for equality.
+          example: 95d8e2c4a1f07b36
+    SaveRecordOutcome:
+      type: object
+      additionalProperties: true
+      description: The outcome for one record of the batch, in the order posted.
+      properties:
+        status:
+          type: string
+          description: success or failed.
+        action:
+          type: string
+          description: inserted, updated or skipped.
+        appSampleCode:
+          type: string
+        sampleCode:
+          type: string
+        uniqueId:
+          type: string
+        transactionId:
+          type: string
+        resultVersion:
+          type: string
+          description: Only for a client that declared result-version. The sample's version
+            after this save, to send with its next post.
+          example: 5972a0c3e18d4f6b
+        resultKept:
+          type: boolean
+          enum:
+          - true
+          description: Only for a client that declared result-version, and only when the
+            lab's decision was kept instead of the posted one. Pull the sample's result again.
 security:
 - BearerAuth: []
 paths:
@@ -1204,8 +1261,7 @@ paths:
                   data:
                     type: array
                     items:
-                      type: object
-                      additionalProperties: true
+                      $ref: "#/components/schemas/FetchedResult"
         '500':
           description: Response 500
           content:
@@ -1348,6 +1404,8 @@ paths:
             schema:
               type: object
               properties:
+                capabilities:
+                  $ref: "#/components/schemas/ResultVersionCapabilities"
                 appVersion:
                   type: string
                   description: Version of the calling app, recorded against each request.
@@ -1356,6 +1414,11 @@ paths:
                   items:
                     type: object
                     properties:
+                      resultVersion:
+                        type: string
+                        description: The resultVersion that fetch-results last returned for this sample. Read
+                          only when the body declares result-version. Leave it out for a sample never pulled.
+                        example: 95d8e2c4a1f07b36
                       appSampleCode:
                         type: string
                       labId:
@@ -1403,8 +1466,9 @@ paths:
                   data:
                     type: array
                     items:
-                      type: object
-                      additionalProperties: true
+                      $ref: "#/components/schemas/SaveRecordOutcome"
+                  capabilities:
+                    $ref: "#/components/schemas/ResultVersionCapabilities"
               example:
                 status: success
                 timestamp: 1756800000
@@ -1884,6 +1948,8 @@ paths:
             schema:
               type: object
               properties:
+                capabilities:
+                  $ref: "#/components/schemas/ResultVersionCapabilities"
                 appVersion:
                   type: string
                 data:
@@ -1891,6 +1957,11 @@ paths:
                   items:
                     type: object
                     properties:
+                      resultVersion:
+                        type: string
+                        description: The resultVersion that fetch-results last returned for this sample. Read
+                          only when the body declares result-version. Leave it out for a sample never pulled.
+                        example: 95d8e2c4a1f07b36
                       appSampleCode:
                         type: string
                         description: This is the external system's Sample Identifier
@@ -2292,15 +2363,17 @@ paths:
                 type: object
                 properties:
                   status:
-                    type: object
-                    additionalProperties: true
+                    type: string
                   timestamp:
                     type: integer
                   transactionId:
                     type: string
                   data:
-                    type: object
-                    additionalProperties: true
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SaveRecordOutcome"
+                  capabilities:
+                    $ref: "#/components/schemas/ResultVersionCapabilities"
                   summary:
                     type: object
                     additionalProperties: true
@@ -2436,13 +2509,15 @@ paths:
                   transactionId:
                     type: string
                   data:
-                    type: object
-                    additionalProperties: true
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/FetchedResult"
               example:
                 status: success
                 timestamp: 1644844958
                 data:
                 - appSampleCode: UNIQVL001
+                  resultVersion: 95d8e2c4a1f07b36
                   uniqueId: 85221ea3c053ac3a2b41d92879746a1b
                   vlSampleId: 1
                   sampleCode: VL21001
@@ -2584,6 +2659,8 @@ paths:
             schema:
               type: object
               properties:
+                capabilities:
+                  $ref: "#/components/schemas/ResultVersionCapabilities"
                 appVersion:
                   type: string
                 data:
@@ -2591,6 +2668,11 @@ paths:
                   items:
                     type: object
                     properties:
+                      resultVersion:
+                        type: string
+                        description: The resultVersion that fetch-results last returned for this sample. Read
+                          only when the body declares result-version. Leave it out for a sample never pulled.
+                        example: 95d8e2c4a1f07b36
                       appSampleCode:
                         type: string
                         description: ''
@@ -3016,15 +3098,17 @@ paths:
                 type: object
                 properties:
                   status:
-                    type: object
-                    additionalProperties: true
+                    type: string
                   timestamp:
                     type: integer
                   transactionId:
                     type: string
                   data:
-                    type: object
-                    additionalProperties: true
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SaveRecordOutcome"
+                  capabilities:
+                    $ref: "#/components/schemas/ResultVersionCapabilities"
               example:
                 status: success
                 timestamp: 1644839862
@@ -3175,7 +3259,7 @@ paths:
                   data:
                     type: array
                     items:
-                      type: string
+                      $ref: "#/components/schemas/FetchedResult"
                   error:
                     type: string
               example:
@@ -3183,6 +3267,7 @@ paths:
                 timestamp: 1644840289
                 data:
                 - appSampleCode: UNIQEID001
+                  resultVersion: 95d8e2c4a1f07b36
                   uniqueId: ou4xzblq84jghh4nmsjo7g2dvarqyat
                   eidId: 1
                   sampleCode: EID0122001
@@ -5082,13 +5167,15 @@ paths:
                   transactionId:
                     type: string
                   data:
-                    type: object
-                    additionalProperties: true
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/FetchedResult"
               example:
                 status: success
                 timestamp: 1644845229
                 data:
                 - appSampleCode: AC192021060001
+                  resultVersion: 95d8e2c4a1f07b36
                   uniqueId: ''
                   tbId: 1
                   sampleCode: TB21001
@@ -5204,180 +5291,191 @@ paths:
             schema:
               type: object
               properties:
-                appSampleCode:
+                appVersion:
                   type: string
-                  description: ''
-                sampleCode:
-                  type: string
-                  description: ''
-                sampleReordered:
-                  type: string
-                  description: ''
-                formId:
-                  type: string
-                  description: ''
-                facilityId:
-                  type: string
-                  description: ''
-                referringUnit:
-                  type: string
-                  description: ''
-                otherReferringUnit:
-                  type: string
-                  description: ''
-                sampleRequestorName:
-                  type: string
-                  description: ''
-                sampleRequestorPhone:
-                  type: string
-                  description: ''
-                provinceId:
-                  type: string
-                  description: ''
-                labId:
-                  type: string
-                  description: ''
-                testingPoint:
-                  type: string
-                  description: ''
-                implementingPartner:
-                  type: string
-                  description: ''
-                sourceOfAlertPOE:
-                  type: string
-                  description: ''
-                alertPoeOthers:
-                  type: string
-                  description: ''
-                fundingSource:
-                  type: string
-                  description: ''
-                patientId:
-                  type: string
-                  description: ''
-                firstName:
-                  type: string
-                  description: ''
-                lastName:
-                  type: string
-                  description: ''
-                patientDob:
-                  type: string
-                  description: ''
-                patientGender:
-                  type: string
-                  description: ''
-                patientAge:
-                  type: string
-                  description: ''
-                patientAddress:
-                  type: string
-                  description: ''
-                patientType:
-                  type: string
-                  description: ''
-                hivStatus:
-                  type: string
-                  description: ''
-                reasonFortbTest:
-                  type: string
-                  description: ''
-                specimenType:
-                  type: string
-                  description: ''
-                sampleCollectionDate:
-                  type: string
-                  description: ''
-                sampleDispatchedDate:
-                  type: string
-                  description: ''
-                sampleTestedDateTime:
-                  type: string
-                  description: ''
-                sampleReceivedHubDate:
-                  type: string
-                  description: ''
-                sampleReceivedDate:
-                  type: string
-                  description: ''
-                sampleCondition:
-                  type: string
-                  description: ''
-                isSampleRejected:
-                  type: string
-                  description: ''
-                rejectionDate:
-                  type: string
-                  description: ''
-                sampleRejectionReason:
-                  type: string
-                  description: ''
-                result:
-                  type: string
-                  description: ''
-                xpertMtbResult:
-                  type: string
-                  description: ''
-                reviewedBy:
-                  type: string
-                  description: ''
-                reviewedOn:
-                  type: string
-                  description: ''
-                approvedBy:
-                  type: string
-                  description: ''
-                approvedOn:
-                  type: string
-                  description: ''
-                testedBy:
-                  type: string
-                  description: ''
-                isResultAuthorized:
-                  type: string
-                  description: ''
-                authorizedBy:
-                  type: string
-                  description: ''
-                authorizedOn:
-                  type: string
-                  description: ''
-                labTechnician:
-                  type: string
-                  description: ''
-                labReceptionPerson:
-                  type: string
-                  description: ''
-                revisedBy:
-                  type: string
-                  description: ''
-                revisedOn:
-                  type: string
-                  description: ''
-                reasonForTbResultChanges:
-                  type: string
-                  description: ''
-                approverComments:
-                  type: string
-                  description: ''
-                uniqueId:
-                  type: string
-                  description: ''
-                reasonForResultChanges:
+                capabilities:
+                  $ref: "#/components/schemas/ResultVersionCapabilities"
+                data:
                   type: array
                   items:
-                    type: string
-                  description: ''
+                    type: object
+                    properties:
+                      resultVersion:
+                        type: string
+                        description: The resultVersion that fetch-results last returned for this sample. Read
+                          only when the body declares result-version. Leave it out for a sample never pulled.
+                        example: 95d8e2c4a1f07b36
+                      appSampleCode:
+                        type: string
+                        description: ''
+                      sampleCode:
+                        type: string
+                        description: ''
+                      sampleReordered:
+                        type: string
+                        description: ''
+                      formId:
+                        type: string
+                        description: ''
+                      facilityId:
+                        type: string
+                        description: ''
+                      referringUnit:
+                        type: string
+                        description: ''
+                      otherReferringUnit:
+                        type: string
+                        description: ''
+                      sampleRequestorName:
+                        type: string
+                        description: ''
+                      sampleRequestorPhone:
+                        type: string
+                        description: ''
+                      provinceId:
+                        type: string
+                        description: ''
+                      labId:
+                        type: string
+                        description: ''
+                      testingPoint:
+                        type: string
+                        description: ''
+                      implementingPartner:
+                        type: string
+                        description: ''
+                      sourceOfAlertPOE:
+                        type: string
+                        description: ''
+                      alertPoeOthers:
+                        type: string
+                        description: ''
+                      fundingSource:
+                        type: string
+                        description: ''
+                      patientId:
+                        type: string
+                        description: ''
+                      firstName:
+                        type: string
+                        description: ''
+                      lastName:
+                        type: string
+                        description: ''
+                      patientDob:
+                        type: string
+                        description: ''
+                      patientGender:
+                        type: string
+                        description: ''
+                      patientAge:
+                        type: string
+                        description: ''
+                      patientAddress:
+                        type: string
+                        description: ''
+                      patientType:
+                        type: string
+                        description: ''
+                      hivStatus:
+                        type: string
+                        description: ''
+                      reasonFortbTest:
+                        type: string
+                        description: ''
+                      specimenType:
+                        type: string
+                        description: ''
+                      sampleCollectionDate:
+                        type: string
+                        description: ''
+                      sampleDispatchedDate:
+                        type: string
+                        description: ''
+                      sampleTestedDateTime:
+                        type: string
+                        description: ''
+                      sampleReceivedHubDate:
+                        type: string
+                        description: ''
+                      sampleReceivedDate:
+                        type: string
+                        description: ''
+                      sampleCondition:
+                        type: string
+                        description: ''
+                      isSampleRejected:
+                        type: string
+                        description: ''
+                      rejectionDate:
+                        type: string
+                        description: ''
+                      sampleRejectionReason:
+                        type: string
+                        description: ''
+                      result:
+                        type: string
+                        description: ''
+                      xpertMtbResult:
+                        type: string
+                        description: ''
+                      reviewedBy:
+                        type: string
+                        description: ''
+                      reviewedOn:
+                        type: string
+                        description: ''
+                      approvedBy:
+                        type: string
+                        description: ''
+                      approvedOn:
+                        type: string
+                        description: ''
+                      testedBy:
+                        type: string
+                        description: ''
+                      isResultAuthorized:
+                        type: string
+                        description: ''
+                      authorizedBy:
+                        type: string
+                        description: ''
+                      authorizedOn:
+                        type: string
+                        description: ''
+                      labTechnician:
+                        type: string
+                        description: ''
+                      labReceptionPerson:
+                        type: string
+                        description: ''
+                      revisedBy:
+                        type: string
+                        description: ''
+                      revisedOn:
+                        type: string
+                        description: ''
+                      reasonForTbResultChanges:
+                        type: string
+                        description: ''
+                      approverComments:
+                        type: string
+                        description: ''
+                      uniqueId:
+                        type: string
+                        description: ''
+                      reasonForResultChanges:
+                        type: array
+                        items:
+                          type: string
+                        description: ''
+                    required:
+                    - appSampleCode
+                    - facilityId
+                    - labId
+                    - sampleCollectionDate
               required:
-              - appSampleCode
-              - facilityId
-              - labId
-              - patientId
-              - patientGender
-              - reasonFortbTest
-              - specimenType
-              - sampleCollectionDate
-              - uniqueId
+              - data
             example: "{\n    \"appVersion\": \"v1.1\",\n    \"data\": [\n        {\n
               \           \"api_token\": \"1f6b45e5ff3763be776642ca84cd93d9\",\n            \"uniqueId\":
               \"\",\n            \"sampleCode\": \"\",\n            \"appSampleCode\":
@@ -5454,6 +5552,13 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SaveRecordOutcome"
+                  capabilities:
+                    $ref: "#/components/schemas/ResultVersionCapabilities"
               example:
                 status: success
                 timestamp: 1644845201
@@ -5582,13 +5687,15 @@ paths:
                   transactionId:
                     type: string
                   data:
-                    type: object
-                    additionalProperties: true
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/FetchedResult"
               example:
                 status: success
                 timestamp: 1644838636
                 data:
                 - appSampleCode: 
+                  resultVersion: 95d8e2c4a1f07b36
                   uniqueId: h1wipg6r08p8gaxbpig74rnas7fbxoen
                   covid19Id: 1
                   sampleCode: RDC-21-COV-1221001
@@ -16610,6 +16717,8 @@ paths:
             schema:
               type: object
               properties:
+                capabilities:
+                  $ref: "#/components/schemas/ResultVersionCapabilities"
                 appVersion:
                   type: string
                 data:
@@ -16617,6 +16726,11 @@ paths:
                   items:
                     type: object
                     properties:
+                      resultVersion:
+                        type: string
+                        description: The resultVersion that fetch-results last returned for this sample. Read
+                          only when the body declares result-version. Leave it out for a sample never pulled.
+                        example: 95d8e2c4a1f07b36
                       appSampleCode:
                         type: string
                         description: ''
@@ -17039,15 +17153,17 @@ paths:
                 type: object
                 properties:
                   status:
-                    type: object
-                    additionalProperties: true
+                    type: string
                   timestamp:
                     type: integer
                   transactionId:
                     type: string
                   data:
-                    type: object
-                    additionalProperties: true
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SaveRecordOutcome"
+                  capabilities:
+                    $ref: "#/components/schemas/ResultVersionCapabilities"
               example:
                 status: success
                 timestamp: 1621250435
