@@ -206,11 +206,7 @@ final class TbTestsService
                 . ' ORDER BY tb_test_id',
             [$tbId]
         ) ?: [];
-        $existing = array_values(array_filter(
-            $existing,
-            static fn(array $row): bool => $ownLabId === null || empty($row['lab_id'])
-                || (int) $row['lab_id'] === $ownLabId
-        ));
+        $existing = self::microscopyRowsForLab($existing);
         if ($testIds === null) {
             if ($existing !== []) {
                 return;
@@ -284,6 +280,23 @@ final class TbTestsService
                 throw new RuntimeException("Could not save a test on TB sample $tbId: " . $this->db->getLastError());
             }
         }
+    }
+
+    /**
+     * The microscopy rows a single-result form shows and may change: acting as one lab,
+     * that lab's rows and the unassigned ones, never another lab's.
+     *
+     * @param list<array<string, mixed>> $rows tb_tests rows, oldest first.
+     * @return list<array<string, mixed>>
+     */
+    public static function microscopyRowsForLab(array $rows): array
+    {
+        $ownLabId = ContainerRegistry::get(CommonService::class)->getOwnLabId();
+        return array_values(array_filter(
+            $rows,
+            static fn(array $row): bool => $ownLabId === null || empty($row['lab_id'])
+                || (int) $row['lab_id'] === $ownLabId
+        ));
     }
 
     /**
