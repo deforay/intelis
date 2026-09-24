@@ -77,10 +77,13 @@ against them without running a review.
   must be re-runnable and must not assume an upgraded database. A new migration means a
   version bump in `composer.json` and `version.php`, and `composer update --lock` so the
   lockfile hash stays current.
-- **Request saves do not touch result columns.** Add/edit request helpers write request
-  fields only. The per-test tables (`tb_tests`, `covid19_tests`, `generic_test_results`)
-  are audited like the forms, but a bad write there still means a manual repair from the
-  audit trail.
+- **Request saves touch only the result fields their form shows.** Add/edit request
+  helpers write request fields. Some country request forms also show a result section to
+  users who may enter results; a save takes those results only from such a user, and never
+  writes a result column or test row the form did not post (an absent field is left as it
+  is, not blanked). The per-test tables (`tb_tests`, `covid19_tests`,
+  `generic_test_results`) are audited like the forms, but a bad write there still means a
+  manual repair from the audit trail.
 - **One name per field.** Two controls sharing a `name` in one form means PHP keeps the last
   and silently discards the first. Same for a duplicate `id`, which quietly breaks the
   `#id` handler and `label[for]`.
