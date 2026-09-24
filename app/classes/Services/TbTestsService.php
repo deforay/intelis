@@ -22,9 +22,9 @@ final class TbTestsService
     /**
      * Everything a TB request form posts from its result section: a request save takes
      * none of it from a user the form does not show that section to. The received date
-     * is not here: most forms show it to everyone, outside that section.
+     * is added for the one form that keeps it there; the others show it to everyone.
      */
-    public const array REQUEST_FORM_RESULT_KEYS = [
+    private const array REQUEST_FORM_RESULT_KEYS = [
         'finalResult', 'isResultFinalized', 'testResult', 'actualNo', 'microscopyTestId', 'deletedTestIds',
         'tbLamResult', 'xPertMTMResult', 'cultureResult', 'identicationResult', 'drugMGITResult', 'drugLPAResult',
         'xpertDateOfResult', 'cultureDateOfResult', 'tbLamDateOfResult', 'identificationDateOfResult',
@@ -46,6 +46,25 @@ final class TbTestsService
         }
         return _isAllowed('/tb/results/tb-update-result.php')
             || ($_SESSION['accessType'] ?? null) !== 'collection-site';
+    }
+
+    /**
+     * A request form's post without its result section when the form hid that section
+     * from this user: such a post carries no results.
+     *
+     * @param array<array-key, mixed> $post
+     * @return array<array-key, mixed>
+     */
+    public static function withoutHiddenResults(CommonService $general, array $post): array
+    {
+        if (self::requestFormShowsResults($general)) {
+            return $post;
+        }
+        $hidden = self::REQUEST_FORM_RESULT_KEYS;
+        if ((int) $general->getGlobalConfig('vl_form') === \COUNTRY\SIERRA_LEONE) {
+            $hidden[] = 'sampleReceivedDate';
+        }
+        return array_diff_key($post, array_flip($hidden));
     }
 
     /** The microscopy results the single-result forms offer. */

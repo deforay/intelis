@@ -519,6 +519,26 @@ final class TbSingleResultFormsTest extends TestCase
         self::assertNull($sample['result']);
     }
 
+    /** The Sierra Leone form keeps the received date in that section: a hidden one is not taken. */
+    #[RunInSeparateProcess]
+    public function testAHiddenSierraLeoneReceivedDateIsNotTaken(): void
+    {
+        LegacyAppHarness::withSession(['accessType' => 'collection-site', 'roleCode' => 'clinic', 'privileges' => []]);
+        LegacyAppHarness::db()->insert('global_config', ['name' => 'vl_form', 'value' => '2']);
+        self::clearFileCache();
+        $tbId = $this->seedTb();
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE form_tb SET sample_received_at_lab_datetime = '2026-09-16 10:00:00' WHERE tb_id = ?",
+            [$tbId]
+        );
+
+        $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, [
+            'sampleReceivedDate' => '20-Sep-2026 10:00',
+        ]));
+
+        self::assertSame('2026-09-16 10:00:00', $this->formTb($tbId)['sample_received_at_lab_datetime']);
+    }
+
     /** A row the client sent and the lab then changed becomes the lab's. */
     #[RunInSeparateProcess]
     public function testAClientRowTheLabChangesTakesTheLab(): void
