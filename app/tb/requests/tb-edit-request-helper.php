@@ -34,11 +34,7 @@ $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 // A post from a user the form hides its result section from carries no results.
-if (!TbTestsService::requestFormShowsResults($general)) {
-    foreach (TbTestsService::REQUEST_FORM_RESULT_KEYS as $resultKey) {
-        unset($_POST[$resultKey]);
-    }
-}
+$_POST = TbTestsService::withoutHiddenResults($general, (array) $_POST);
 
 // Which result fields this form actually sent. Taken here, before anything below
 // mutates $_POST -- line ~170 assigns $_POST['finalResult'] = null, which would create

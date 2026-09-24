@@ -35,11 +35,7 @@ try {
 
     $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
     // A post from a user the form hides its result section from carries no results.
-    if (!TbTestsService::requestFormShowsResults($general)) {
-        foreach (TbTestsService::REQUEST_FORM_RESULT_KEYS as $resultKey) {
-            unset($_POST[$resultKey]);
-        }
-    }
+    $_POST = TbTestsService::withoutHiddenResults($general, (array) $_POST);
     $tableName = "form_tb";
     // Acting as a LIS: the Testing Lab is this install's own lab, not a free
     // choice. The forms already constrain the dropdown, but AJAX endpoints
