@@ -176,7 +176,8 @@ if ($module == 'generic-tests') {
 								<div class="col-lg-7" style="margin-left:3%;">
 									<select class="form-control" id="testingLab" name="testingLab"
 										title="<?= _htmlTranslate("Choose one test lab"); ?>"
-										<?= empty($pResult['lab_id']) ? '' : 'readonly="readonly"'; ?>>
+										data-saved-lab="<?= _sanitizeOutput((string) ($pResult['lab_id'] ?? '')); ?>"
+										onchange="changeTestingLab(this);">
 										<?= $general->generateSelectOptions($testingLabs, $pResult['lab_id'], '-- Select --'); ?>
 									</select>
 								</div>
@@ -503,6 +504,23 @@ if ($module == 'generic-tests') {
 		} else {
 			alert("<?= _translate("Please select the Testing Lab", true); ?>");
 		}
+	}
+
+	// A manifest travels to one testing lab, so changing the lab empties it: the
+	// samples listed next are the new lab's, and the old lab's samples come off
+	// this manifest on save. No sample is moved to another lab from here.
+	function changeTestingLab(select) {
+		const previous = $(select).data('current-lab') ?? $(select).data('saved-lab');
+		if (String(select.value) === String(previous)) {
+			return;
+		}
+		if (String(select.value) !== String($(select).data('saved-lab'))
+			&& !confirm("<?= _translate("Changing the testing lab removes the samples now on this manifest. Only samples of the new testing lab can be added. Continue?", true); ?>")) {
+			select.value = previous;
+			return;
+		}
+		$(select).data('current-lab', select.value);
+		getSamplesForManifest();
 	}
 
 	function clearSelection() {
