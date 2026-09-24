@@ -86,12 +86,14 @@ try {
         // A manifest holds the samples of its one testing lab. Editing it never
         // moves a sample to another lab (that is Move Manifest): a sample from any
         // other lab, one already on a different manifest, or a cancelled one is
-        // simply not taken.
+        // simply not taken. One already on this manifest with no lab yet (lab_id
+        // is often empty before a result) is kept, and given the manifest's lab.
+        $ofThisLab = '((lab_id = ? AND (sample_package_id IS NULL OR sample_package_id = 0 OR sample_package_id = ?))'
+            . ' OR (lab_id IS NULL AND sample_package_id = ?))';
         $db->reset();
         $db->where($primaryKey, $selectedSamples, 'IN');
-        $db->where('lab_id', $testingLab);
         $db->where('result_status', CANCELLED, '!=');
-        $db->where('(sample_package_id IS NULL OR sample_package_id = 0 OR sample_package_id = ?)', [$manifestId]);
+        $db->where($ofThisLab, [$testingLab, $manifestId, $manifestId]);
         $db->update($tableName, [
             'sample_package_id' => $manifestId,
             'sample_package_code' => $manifestCode,
@@ -104,9 +106,16 @@ try {
         $db->reset();
         $db->where('sample_package_id', $manifestId);
         $db->where($primaryKey, $selectedSamples, 'IN');
-        $db->where('lab_id', $testingLab);
+        $db->where('(lab_id = ? OR lab_id IS NULL)', [$testingLab]);
         $db->where('result_status', CANCELLED, '!=');
         $keptSamples = array_map('intval', $db->getValue($tableName, $primaryKey, null) ?: []);
+
+        if ($keptSamples !== []) {
+            $db->reset();
+            $db->where($primaryKey, $keptSamples, 'IN');
+            $db->where('lab_id IS NULL');
+            $db->update($tableName, ['lab_id' => $testingLab]);
+        }
 
         if ($keptSamples === []) {
             $refusal = [_translate("None of the selected samples belong to the chosen testing lab"), $editUrl];

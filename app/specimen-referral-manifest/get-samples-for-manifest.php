@@ -63,17 +63,23 @@ if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) !== '') {
 	$filters[] = " vl.sample_collection_date BETWEEN '$startDate' AND '$endDate' ";
 }
 
+// Who may see which samples. Also applied to the two lists of samples leaving
+// the manifest below, which print sample codes too.
+$scope = [];
 if (!empty($_SESSION['facilityMap'])) {
-	$where[] = " facility_id IN(" . $_SESSION['facilityMap'] . ")";
+	$scope[] = " vl.facility_id IN(" . $_SESSION['facilityMap'] . ")";
 }
 // Lab isolation (cloud-LIS): scope to this user's lab. No-op unless the session
 // carries a lab id, so byte-identical for every existing LIS/STS user.
 if ($labScope = $general->labScopeWhere('vl')) {
-	$where[] = $labScope;
+	$scope[] = $labScope;
 }
+$where = array_merge($where, $scope);
+$scopeSql = $scope === [] ? '' : ' AND ' . implode(' AND ', $scope);
 
-if (!empty($_POST['testingLab']) && $_POST['testingLab'] > 0) {
-	$where[] = " vl.lab_id = " . (int) $_POST['testingLab'] . " ";
+$testingLab = (int) ($_POST['testingLab'] ?? 0);
+if ($testingLab > 0) {
+	$filters[] = " vl.lab_id = $testingLab ";
 }
 
 if (!empty($_POST['testingLab']) && is_numeric($_POST['facility'])) {
@@ -97,11 +103,14 @@ if (empty($_POST['pkgId'])) {
 if ($filters !== []) {
 	$onOffer .= " AND " . implode(" AND ", $filters);
 }
-// The lab clause above still applies to the manifest's own samples, so after
-// the testing lab is changed only the new lab's samples are listed at all.
+// The manifest's own samples are listed when they are of the chosen lab, so
+// after the testing lab is changed only the new lab's samples are listed at
+// all. One with no lab yet stays: saving gives it the manifest's lab.
+$onManifest = " vl.sample_package_id = " . (int) ($_POST['pkgId'] ?? 0)
+	. ($testingLab > 0 ? " AND (vl.lab_id = $testingLab OR vl.lab_id IS NULL)" : '');
 $where[] = empty($_POST['pkgId'])
 	? " ($onOffer) "
-	: " (($onOffer) OR vl.sample_package_id = " . (int) $_POST['pkgId'] . ") ";
+	: " (($onOffer) OR ($onManifest)) ";
 if ($where !== []) {
 	$query .= " WHERE " . implode(" AND ", $where);
 }
@@ -117,7 +126,7 @@ $cancelledOnManifest = [];
 if (!empty($_POST['pkgId'])) {
 	$cancelledOnManifest = $db->rawQuery(
 		"SELECT vl.$sampleCode AS code FROM $testTable AS vl
-		 WHERE vl.sample_package_id = ? AND vl.result_status = ?
+		 WHERE vl.sample_package_id = ? AND vl.result_status = ? $scopeSql
 		 ORDER BY vl.$sampleCode",
 		[$_POST['pkgId'], CANCELLED]
 	) ?: [];
@@ -126,13 +135,13 @@ if (!empty($_POST['pkgId'])) {
 // out of the dual-box, so saving takes them off this manifest. They stay with
 // their own lab; they are not moved to the new one.
 $otherLabOnManifest = [];
-if (!empty($_POST['pkgId']) && !empty($_POST['testingLab'])) {
+if (!empty($_POST['pkgId']) && $testingLab > 0) {
 	$otherLabOnManifest = $db->rawQuery(
 		"SELECT vl.$sampleCode AS code FROM $testTable AS vl
 		 WHERE vl.sample_package_id = ? AND vl.result_status != ?
-		   AND (vl.lab_id IS NULL OR vl.lab_id != ?)
+		   AND vl.lab_id IS NOT NULL AND vl.lab_id != ? $scopeSql
 		 ORDER BY vl.$sampleCode",
-		[$_POST['pkgId'], CANCELLED, (int) $_POST['testingLab']]
+		[$_POST['pkgId'], CANCELLED, $testingLab]
 	) ?: [];
 }
 $key = (string) $general->getGlobalConfig('key');
