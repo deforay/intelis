@@ -67,9 +67,6 @@ final class TbTestsService
         return array_diff_key($post, array_flip($hidden));
     }
 
-    /** The microscopy results the single-result forms offer. */
-    private const array MICROSCOPY_RESULTS = ['No AFB', '1+', '2+', '3+'];
-
     public function __construct(private ?DatabaseService $db = null)
     {
         $this->db ??= ContainerRegistry::get(DatabaseService::class);
@@ -169,16 +166,18 @@ final class TbTestsService
      *
      * Each slot the page drew posts the id of the row it showed (microscopyTestId[],
      * blank for an empty slot): a changed slot updates its row, a slot the user
-     * emptied deletes it, and a filled empty slot adds a row. A row no slot names --
-     * past the slots the page drew, or added while it was open -- is left alone, as
-     * is a slot whose row is no longer on the sample. Rows posted back unchanged are
-     * not touched: an unchanged row the API client sent stays the client's, so its
-     * next post matches it instead of adding it again. The forms used to delete every
-     * row and insert all their slots, blank ones included.
+     * emptied deletes it, and a filled empty slot adds a row -- unless a row with the
+     * same number and result is already there, as when a form is posted twice. A row
+     * no slot names -- past the slots the page drew, added while it was open, or
+     * another lab's -- is left alone, as is a slot whose row is no longer on the
+     * sample. Rows posted back unchanged are not touched: an unchanged row the API
+     * client sent stays the client's, so its next post matches it instead of adding
+     * it again. The forms used to delete every row and insert all their slots, blank
+     * ones included.
      *
-     * A page from before the ids ($testIds null) drew the rows oldest first, so slot n
-     * stands for the n-th row. Such a page could not show a result outside its list,
-     * and posts it blank: that result is kept.
+     * A page from before the ids ($testIds null) cannot say which row a slot showed,
+     * so it only adds rows to a sample that has none; the rows already there are left
+     * as they are.
      *
      * Call inside the caller's transaction. Throws when a row cannot be written.
      *
@@ -196,44 +195,66 @@ final class TbTestsService
         if ($tbId <= 0) {
             throw new RuntimeException('Cannot save TB tests without a sample');
         }
-        // Every row, as the page drew them, so a page without row ids lines its slots
-        // up with the right rows. Read only to match slots, never returned. Acting as
-        // one lab, another lab's rows are that lab's and the form never changes or
-        // deletes them. A row the form adds
-        // belongs to the lab acting, not to a lab the sample was referred from.
-        $ownLabId = ContainerRegistry::get(CommonService::class)->getOwnLabId();
-        $isAnotherLabs = static fn(array $row): bool => $ownLabId !== null
-            && !empty($row['lab_id']) && (int) $row['lab_id'] !== $ownLabId;
-        $newRowLabId = $ownLabId ?? (empty($labId) ? null : $labId);
-        $existing = $this->db->rawQuery('SELECT * FROM tb_tests WHERE tb_id = ? ORDER BY tb_test_id', [$tbId]) ?: [];
+        // Acting as one lab, another lab's rows are that lab's: the form neither reads,
+        // changes nor deletes them. A row the form adds belongs to the lab acting, not
+        // to a lab the sample was referred from.
+        $general = ContainerRegistry::get(CommonService::class);
+        $ownLabId = $general->getOwnLabId();
+        $labScope = $general->labScopeWhere('');
+        $existing = $this->db->rawQuery(
+            'SELECT * FROM tb_tests WHERE tb_id = ?' . ($labScope !== '' ? " AND $labScope" : '')
+                . ' ORDER BY tb_test_id',
+            [$tbId]
+        ) ?: [];
+        $existing = array_values(array_filter(
+            $existing,
+            static fn(array $row): bool => $ownLabId === null || empty($row['lab_id'])
+                || (int) $row['lab_id'] === $ownLabId
+        ));
+        if ($testIds === null) {
+            if ($existing !== []) {
+                return;
+            }
+            $testIds = [];
+        }
         $byId = array_column($existing, null, 'tb_test_id');
+        $newRowLabId = $ownLabId ?? (empty($labId) ? null : $labId);
         $actualNos = array_values($actualNos);
-        $testIds = $testIds === null ? null : array_values($testIds);
+        $testIds = array_map(
+            static fn($id): string => is_scalar($id) ? trim((string) $id) : '',
+            array_values($testIds)
+        );
 
+        $claimed = [];
         foreach (array_values($results) as $slot => $result) {
             $result = is_scalar($result) ? trim((string) $result) : '';
             $actualNo = is_scalar($actualNos[$slot] ?? null) ? trim((string) $actualNos[$slot]) : '';
-            if ($testIds === null) {
-                $row = $existing[$slot] ?? null;
-                $stored = trim((string) ($row['test_result'] ?? ''));
-                if ($result === '' && $stored !== '' && !in_array($stored, self::MICROSCOPY_RESULTS, true)) {
-                    $result = $stored;
-                }
-            } else {
-                $testId = is_scalar($testIds[$slot] ?? null) ? trim((string) $testIds[$slot]) : '';
-                if ($testId !== '' && !isset($byId[$testId])) {
+            $testId = $testIds[$slot] ?? '';
+            if ($testId !== '') {
+                if (!isset($byId[$testId])) {
                     continue;
                 }
-                $row = $testId === '' ? null : $byId[$testId];
-            }
-            if ($row !== null && $isAnotherLabs($row)) {
-                continue;
-            }
-
-            if ($row === null) {
+                $row = $byId[$testId];
+                $claimed[$testId] = true;
+            } else {
                 if ($result === '' && $actualNo === '') {
                     continue;
                 }
+                $row = null;
+                foreach ($existing as $candidate) {
+                    $candidateId = (string) $candidate['tb_test_id'];
+                    if (
+                        !isset($claimed[$candidateId]) && !in_array($candidateId, $testIds, true)
+                        && (string) ($candidate['actual_no'] ?? '') === $actualNo
+                        && (string) ($candidate['test_result'] ?? '') === $result
+                    ) {
+                        $claimed[$candidateId] = true;
+                        continue 2;
+                    }
+                }
+            }
+
+            if ($row === null) {
                 $written = $this->db->insert('tb_tests', [
                     'tb_id' => $tbId,
                     'lab_id' => $newRowLabId,

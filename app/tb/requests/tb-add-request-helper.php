@@ -365,7 +365,9 @@ try {
             (int) $_POST['tbSampleId'],
             $_POST['testResult'],
             (array) ($_POST['actualNo'] ?? []),
-            $labId
+            $labId,
+            // The add form's slots are all empty: none stands for a row already there.
+            array_fill(0, count($_POST['testResult']), '')
         );
     }
 

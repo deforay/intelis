@@ -229,6 +229,7 @@ final class TbSingleResultFormsTest extends TestCase
         $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, [
             'testResult' => ['Negative', 'Scanty', ''],
             'actualNo' => ['1', '2', ''],
+            'microscopyTestId' => [(string) $fromClient, (string) $changed, (string) $cleared],
         ]));
 
         self::assertSame(
@@ -252,7 +253,8 @@ final class TbSingleResultFormsTest extends TestCase
 
     /**
      * The form lists only No AFB and 1+ to 3+. A result the API stored outside that
-     * list is shown as an extra option, and a page that still posts it blank keeps it.
+     * list is shown as an extra option. A page from before the row ids, which could not
+     * show it and posts it blank, leaves the sample's rows alone.
      */
     #[RunInSeparateProcess]
     public function testAResultTheFormDoesNotListIsNotLost(): void
@@ -362,10 +364,14 @@ final class TbSingleResultFormsTest extends TestCase
         $own = $this->seedTbTest($tbId, ['lab_id' => 1, 'actual_no' => '2', 'test_result' => 'No AFB']);
         $tbTests = ContainerRegistry::get(TbTestsService::class);
 
-        // A page with the row ids, and one from before them: slot 1 is the other lab's
-        // row either way, and slot 2 the lab's own.
-        $tbTests->saveMicroscopyRows($tbId, ['', '2+', ''], ['', '2', ''], 2, [(string) $otherLab, (string) $own, '']);
-        $tbTests->saveMicroscopyRows($tbId, ['3+', '2+', '1+'], ['1', '2', '3'], 2);
+        // Slot 1 names the other lab's row, slot 2 the lab's own; slot 3 adds a row.
+        $tbTests->saveMicroscopyRows(
+            $tbId,
+            ['', '2+', '1+'],
+            ['', '2', '3'],
+            2,
+            [(string) $otherLab, (string) $own, '']
+        );
 
         self::assertSame(
             [[$otherLab, '2', '1+'], [$own, '1', '2+'], [$own + 1, '1', '1+']],
@@ -539,6 +545,50 @@ final class TbSingleResultFormsTest extends TestCase
         self::assertSame('2026-09-16 10:00:00', $this->formTb($tbId)['sample_received_at_lab_datetime']);
     }
 
+    /**
+     * The add form draws empty slots, so none stands for a row already on the sample --
+     * one an import added after the sample was created -- and a form posted twice does
+     * not add its rows twice.
+     */
+    #[RunInSeparateProcess]
+    public function testTheAddFormNeitherDeletesAnUnseenRowNorAddsItsRowsTwice(): void
+    {
+        $tbId = $this->seedTb();
+        $imported = $this->seedTbTest($tbId, ['lab_id' => null, 'actual_no' => '9', 'test_result' => '3+']);
+        $this->seedTbTest($tbId, ['actual_no' => '1', 'test_result' => 'No AFB']);
+
+        $this->drive('/tb/requests/tb-add-request-helper.php', self::requestPost($tbId, [
+            'testResult' => ['No AFB', '', ''],
+            'actualNo' => ['1', '', ''],
+        ]));
+
+        self::assertSame(
+            [[$imported, '9', '3+'], [$imported + 1, '1', 'No AFB']],
+            array_map(
+                static fn($t) => [(int) $t['tb_test_id'], $t['actual_no'], $t['test_result']],
+                $this->tbTests($tbId)
+            )
+        );
+    }
+
+    /** A page from before the row ids cannot say which row a slot showed: rows stay. */
+    #[RunInSeparateProcess]
+    public function testAPageWithoutRowIdsLeavesTheRowsAlone(): void
+    {
+        $tbId = $this->seedTb();
+        $row = $this->seedTbTest($tbId, ['actual_no' => '1', 'test_result' => '1+']);
+
+        $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, [
+            'testResult' => ['', '2+', ''],
+            'actualNo' => ['', '2', ''],
+        ]));
+
+        self::assertSame([[$row, '1+']], array_map(
+            static fn($t) => [(int) $t['tb_test_id'], $t['test_result']],
+            $this->tbTests($tbId)
+        ));
+    }
+
     /** A row the client sent and the lab then changed becomes the lab's. */
     #[RunInSeparateProcess]
     public function testAClientRowTheLabChangesTakesTheLab(): void
@@ -549,6 +599,7 @@ final class TbSingleResultFormsTest extends TestCase
         $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, [
             'testResult' => ['1+', '', ''],
             'actualNo' => ['1', '', ''],
+            'microscopyTestId' => [(string) $fromClient, '', ''],
         ]));
 
         self::assertSame(
