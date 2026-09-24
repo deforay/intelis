@@ -135,11 +135,11 @@ final class TbTestsService
      * Save the test results an API client sent for one sample.
      *
      * The client knows nothing of tb_tests ids, only the test number (actualNo) and
-     * its result. A result for a number the sample already has updates that row; a
-     * new one is added, and a result the sample already has without a number is not
-     * added twice. Nothing is deleted: the rows the lab entered or an analyzer
-     * imported are not the client's to remove, and a client re-posting its whole
-     * dataset used to wipe them on every post.
+     * its result, and its rows carry no lab. A result for a number it sent before
+     * updates that row; a new one is added, and a result it already sent without a
+     * number is not added twice. Rows with a lab -- the ones the lab entered or an
+     * analyzer imported -- are never matched, changed or deleted: a client
+     * re-posting its whole dataset used to wipe them on every post.
      *
      * @param array<array-key, mixed> $testResults The payload's testResults.
      */
@@ -148,7 +148,7 @@ final class TbTestsService
         if ($tbId <= 0) {
             return;
         }
-        $existing = $this->db->rawQuery('SELECT * FROM tb_tests WHERE tb_id = ?', [$tbId]) ?: [];
+        $existing = $this->db->rawQuery('SELECT * FROM tb_tests WHERE tb_id = ? AND lab_id IS NULL', [$tbId]) ?: [];
 
         foreach ($testResults as $test) {
             $result = is_array($test) ? trim((string) ($test['testResult'] ?? '')) : '';
