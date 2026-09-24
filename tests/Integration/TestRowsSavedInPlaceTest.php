@@ -801,11 +801,11 @@ final class TestRowsSavedInPlaceTest extends TestCase
     }
 
     /**
-     * Saving the cards of an approved sample sends it back for approval even with the
-     * same result, so the approved result is kept.
+     * Saving the cards of an approved sample with nothing changed leaves it approved.
+     * It used to go back to Awaiting Approval.
      */
     #[RunInSeparateProcess]
-    public function testACustomTestSaveThatMovesTheStatusKeepsACopy(): void
+    public function testAnApprovedSampleSavedWithNothingChangedStaysApproved(): void
     {
         $sampleId = $this->seedGeneric(['result' => 'Positive', 'result_status' => 7]);
         $test = $this->seedGenericTest($sampleId, ['result' => 'Positive']);
@@ -819,6 +819,38 @@ final class TestRowsSavedInPlaceTest extends TestCase
             'finalResult' => 'Positive',
         ], 'user-a');
 
+        $sample = LegacyAppHarness::db()->rawQueryOne('SELECT * FROM form_generic WHERE sample_id = ?', [$sampleId]);
+        self::assertSame(7, (int) $sample['result_status']);
+        self::assertNull(LegacyAppHarness::db()->rawQueryOne(
+            'SELECT attempt_id FROM test_result_attempts WHERE record_id = ?',
+            [$sampleId]
+        ));
+    }
+
+    /**
+     * A new test with a result is new information: the approved sample goes back for
+     * approval, and the approved result is kept.
+     */
+    #[RunInSeparateProcess]
+    public function testANewTestOnAnApprovedSampleSendsItBackForApproval(): void
+    {
+        $sampleId = $this->seedGeneric(['result' => 'Positive', 'result_status' => 7]);
+        $test = $this->seedGenericTest($sampleId, ['result' => 'Positive']);
+
+        ContainerRegistry::get(GenericTestsService::class)->saveMultiTestResults($sampleId, [
+            'testResult' => [
+                'labId' => ['1', '1'],
+                'testType' => ['Method A', 'Method B'],
+                'testResult' => ['Positive', 'Negative'],
+                'sampleTestedDateTime' => ['17-Sep-2026 08:00', '18-Sep-2026 08:00'],
+                'testId' => [(string) $test, ''],
+            ],
+            'isResultFinalized' => 'yes',
+            'finalResult' => 'Positive',
+        ], 'user-a');
+
+        $sample = LegacyAppHarness::db()->rawQueryOne('SELECT * FROM form_generic WHERE sample_id = ?', [$sampleId]);
+        self::assertSame(8, (int) $sample['result_status']);
         $attempt = LegacyAppHarness::db()->rawQueryOne(
             'SELECT * FROM test_result_attempts WHERE record_id = ?',
             [$sampleId]
@@ -900,5 +932,27 @@ final class TestRowsSavedInPlaceTest extends TestCase
         self::assertSame('Method B', $tests[1]['test_name']);
         // The test type's fields are posted once and belong to every row.
         self::assertSame(['qualitative', 'qualitative'], array_column($tests, 'result_type'));
+    }
+
+    /**
+     * Lifting a rejection with the cards unchanged moves the sample out of Rejected,
+     * even when the request edit has already blanked the rejection flag.
+     */
+    #[RunInSeparateProcess]
+    public function testLiftingARejectionWithNothingElseChangedMovesTheSample(): void
+    {
+        $sampleId = $this->seedGeneric(['result_status' => 4, 'is_sample_rejected' => null]);
+        $test = $this->seedGenericTest($sampleId, ['result' => '']);
+
+        ContainerRegistry::get(GenericTestsService::class)->saveMultiTestResults($sampleId, [
+            'testResult' => [
+                'labId' => ['1'], 'testType' => ['Method A'], 'testResult' => [''],
+                'sampleTestedDateTime' => ['17-Sep-2026 08:00'], 'testId' => [(string) $test],
+            ],
+            'sampleRejected' => 'no',
+        ], 'user-a');
+
+        $sample = LegacyAppHarness::db()->rawQueryOne('SELECT * FROM form_generic WHERE sample_id = ?', [$sampleId]);
+        self::assertSame(6, (int) $sample['result_status']);
     }
 }

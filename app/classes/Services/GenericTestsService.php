@@ -7,6 +7,7 @@ use const COUNTRY\PNG;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\MiscUtility;
 use COUNTRY;
@@ -368,10 +369,20 @@ final class GenericTestsService extends AbstractTestService
             $existingById[(string) $r['test_id']] = $r;
         }
 
-        // The result these cards replace is kept first, as on every other result edit --
-        // but only when this save replaces one. A request edit posts its cards every
-        // time, and a save that changes no result would only add a copy of the same one.
-        if ($this->replacesAResult($sampleId, $post, $tr, $cardLabIds, $existingById, $sampleRejected, $finalInterp)) {
+        // A request edit posts its cards on every save. One that changes no result adds
+        // no copy of the same result, and leaves an approved sample approved (below).
+        // Otherwise the result these cards replace is kept first, as on every other
+        // result edit.
+        $changesAResult = $this->changesAResult(
+            $sampleId,
+            $post,
+            $tr,
+            $cardLabIds,
+            $existingById,
+            $sampleRejected,
+            $finalInterp
+        );
+        if ($changesAResult) {
             (new TestAttemptService($this->db))->archive('generic-tests', $sampleId, TestAttemptService::BY_RESULT_EDIT);
         }
 
@@ -496,6 +507,16 @@ final class GenericTestsService extends AbstractTestService
             'last_modified_by' => $userId,
             'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         ];
+        // An approved sample saved with nothing changed stays approved. Any other
+        // status out of step with the sample -- a rejection lifted, a result waiting
+        // for approval -- still moves.
+        $stored = (int) ($this->db->rawQueryOne(
+            'SELECT result_status FROM form_generic WHERE sample_id = ?',
+            [$sampleId]
+        )['result_status'] ?? 0);
+        if (!$changesAResult && $stored === ACCEPTED && $formUpdate['result_status'] === PENDING_APPROVAL) {
+            unset($formUpdate['result_status']);
+        }
 
         // Sample-level fields that come straight from a form input are written ONLY when the
         // form actually submitted them. A field absent from POST (e.g. not rendered in this
@@ -533,15 +554,15 @@ final class GenericTestsService extends AbstractTestService
     }
 
     /**
-     * Whether a multi-test save changes a result: the sample's final interpretation,
-     * rejection or status, a saved test's result, unit or rejection, or removes a
-     * saved test.
+     * Whether a multi-test save changes a result: the sample's final interpretation or
+     * rejection, a saved test's result, unit, method, tested time or rejection, a new
+     * test with a result, or a removed saved test.
      *
      * @param array<string, mixed>                $tr
      * @param array<int, mixed>                   $cardLabIds
      * @param array<string, array<string, mixed>> $existingById
      */
-    private function replacesAResult(
+    private function changesAResult(
         int $sampleId,
         array $post,
         array $tr,
@@ -554,15 +575,13 @@ final class GenericTestsService extends AbstractTestService
             'SELECT result, is_sample_rejected, result_status FROM form_generic WHERE sample_id = ?',
             [$sampleId]
         ) ?: [];
-        if ((string) ($sample['result'] ?? '') !== (string) $finalInterp) {
+        if (trim((string) ($sample['result'] ?? '')) !== (string) $finalInterp) {
             return true;
         }
-        // The status this save writes (see writeMultiTestResults).
-        $status = $sampleRejected ? REJECTED : ($finalInterp !== null ? PENDING_APPROVAL : RECEIVED_AT_TESTING_LAB);
-        if ((int) ($sample['result_status'] ?? 0) !== $status) {
-            return true;
-        }
-        $wasRejected = ($sample['is_sample_rejected'] ?? '') === 'yes';
+        // The request edit writes the sample's own fields first and can blank the flag,
+        // so a rejected status counts as rejected too.
+        $wasRejected = ($sample['is_sample_rejected'] ?? '') === 'yes'
+            || (int) ($sample['result_status'] ?? 0) === REJECTED;
         if (array_key_exists('sampleRejected', $post) && $wasRejected !== $sampleRejected) {
             return true;
         }
@@ -573,16 +592,23 @@ final class GenericTestsService extends AbstractTestService
         }
         foreach ($cardLabIds as $k => $labId) {
             $testId = trim((string) ($tr['testId'][$k] ?? ''));
+            $cardRejected = ($tr['isSampleRejected'][$k] ?? null) === 'yes';
+            $posted = $cardRejected ? '' : trim((string) ($tr['testResult'][$k] ?? ''));
             if (!isset($existingById[$testId])) {
+                // A new test changes the sample only when it says something.
+                if (!empty($labId) && ($posted !== '' || $cardRejected)) {
+                    return true;
+                }
                 continue;
             }
             $saved = $existingById[$testId];
-            $cardRejected = ($tr['isSampleRejected'][$k] ?? null) === 'yes';
-            $posted = $cardRejected ? '' : trim((string) ($tr['testResult'][$k] ?? ''));
             $postedUnit = (string) ($tr['resultUnit'][$k] ?? '');
+            $postedTestedAt = (string) DateUtility::isoDateFormat($tr['sampleTestedDateTime'][$k] ?? '', true);
             if (
-                $posted !== (string) ($saved['result'] ?? '')
+                $posted !== trim((string) ($saved['result'] ?? ''))
                 || $postedUnit !== (string) ($saved['result_unit'] ?? '')
+                || (string) ($tr['testType'][$k] ?? '') !== (string) ($saved['test_name'] ?? '')
+                || substr($postedTestedAt, 0, 16) !== substr((string) ($saved['sample_tested_datetime'] ?? ''), 0, 16)
                 || $cardRejected !== (($saved['is_sample_rejected'] ?? '') === 'yes')
             ) {
                 return true;
