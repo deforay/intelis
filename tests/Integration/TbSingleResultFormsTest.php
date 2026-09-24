@@ -387,6 +387,35 @@ final class TbSingleResultFormsTest extends TestCase
         }
     }
 
+    /**
+     * The request forms show the results only to a user who may enter them or who is
+     * not at a collection site. A post from anyone else changes no result.
+     */
+    #[RunInSeparateProcess]
+    public function testACollectionSiteUserWithoutResultAccessChangesNoResult(): void
+    {
+        LegacyAppHarness::withSession(['accessType' => 'collection-site', 'roleCode' => 'clinic', 'privileges' => []]);
+        $tbId = $this->seedTb();
+        LegacyAppHarness::db()->rawQuery("UPDATE form_tb SET result = 'MTB detected' WHERE tb_id = ?", [$tbId]);
+        $row = $this->seedTbTest($tbId, ['actual_no' => '1', 'test_result' => '1+']);
+
+        $this->drive('/tb/requests/tb-edit-request-helper.php', self::requestPost($tbId, [
+            'finalResult' => 'MTB not detected',
+            'testResult' => ['', '', ''],
+            'actualNo' => ['', '', ''],
+            'microscopyTestId' => [(string) $row, '', ''],
+            'patientId' => 'P-2',
+        ]));
+
+        $sample = $this->formTb($tbId);
+        self::assertSame('P-2', $sample['patient_id']);
+        self::assertSame('MTB detected', $sample['result']);
+        self::assertSame([[$row, '1+']], array_map(
+            static fn($t) => [(int) $t['tb_test_id'], $t['test_result']],
+            $this->tbTests($tbId)
+        ));
+    }
+
     /** A row the client sent and the lab then changed becomes the lab's. */
     #[RunInSeparateProcess]
     public function testAClientRowTheLabChangesTakesTheLab(): void
