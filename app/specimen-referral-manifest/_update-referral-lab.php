@@ -12,6 +12,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -26,6 +27,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $response = [
     'status' => 'error',
@@ -44,6 +48,12 @@ try {
         $response['message'] = _translate("Please select at least one sample");
     } elseif ($ownLabId > 0 && $newReferralLabId === $ownLabId) {
         $response['message'] = _translate("A sample cannot be referred to the lab that is sending it");
+    } elseif ($ownLabId <= 0 && $general->isCloudLisNonAdmin()) {
+        // No lab to scope by is not the same as every lab.
+        $response['message'] = _translate("You do not have permission to perform this action.");
+    } elseif (!array_key_exists($newReferralLabId, $facilitiesService->getTestingLabs($referralTestType) ?: [])) {
+        // The same list the lab picker offers; the picker is not a control.
+        $response['message'] = _translate("Please select a referral lab");
     } else {
         $table = TestsService::getTestTableName($referralTestType);
         $primaryKeyColumn = TestsService::getPrimaryColumn($referralTestType);
@@ -70,7 +80,7 @@ try {
                 'reason_for_referral' => $_POST['reasonForReferralLabChange'] ?? null,
                 'last_modified_by' => $_SESSION['userId'] ?? null,
                 'last_modified_datetime' => $currentDateTime,
-                // The STS routes the sample to the new lab only once it has the change.
+                // Otherwise the STS never hears of the change.
                 'data_sync' => 0,
             ]);
 
