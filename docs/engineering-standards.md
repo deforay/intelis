@@ -46,10 +46,12 @@ its prompt from standard input. See `.env.example`.
 script switches only when the first exits non-zero with a message matching
 `REVIEW_LIMIT_PATTERN` (default `usage limit|rate limit|quota`), so a finding that mentions
 a limit never triggers it, and the fallback then handles the verify pass too. The fallback
-has to read the repository without prompting; a reviewer that cannot run `git diff`
-reviews nothing. A run that neither reviewer finishes records nothing in the ledger. With a
-fallback configured the reviewer's output is copied through a pipe, so it does not see a
-terminal; without one it runs exactly as before.
+has to read the repository without prompting; a reviewer that cannot run `git diff` reviews
+nothing. With a fallback configured, either reviewer that exits cleanly without printing
+anything on standard output counts as not having reviewed, since some CLIs exit 0 after
+refusing a command they needed. A run that neither reviewer finishes records nothing in the
+ledger. With a fallback configured the reviewer's output is copied through a pipe, so it
+does not see a terminal; without one it runs exactly as before.
 
 The review is a local step, not a CI job — the reviewing CLI is authenticated on your
 machine. CI enforces the deterministic checks; this one is a discipline.

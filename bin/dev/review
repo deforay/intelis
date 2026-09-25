@@ -268,7 +268,14 @@ run_with_fallback() {
             attempt "$REVIEW_AGENT_FALLBACK" "$REVIEW_AGENT_FALLBACK_STDIN" "$1" "$log" || status=$?
         fi
     fi
-    [ "$status" -ne 0 ] || cp "$log.out" "$SCRATCH/findings" 2>/dev/null || : > "$SCRATCH/findings"
+    # A review always says something. A reviewer that exits cleanly with nothing on stdout
+    # was stopped before it could review -- one refused a command it needed, and still
+    # exited 0 -- so the run has not been reviewed and must not reach the ledger.
+    if [ "$status" -eq 0 ] && [ ! -s "$log.out" ]; then
+        echo "The reviewer exited without printing a review, so nothing was reviewed." >&2
+        status=1
+    fi
+    [ "$status" -ne 0 ] || cp "$log.out" "$SCRATCH/findings"
     return "$status"
 }
 
