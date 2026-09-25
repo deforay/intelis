@@ -132,8 +132,13 @@ case "${1:-}" in
         ;;
 esac
 
-[ -n "${REVIEW_AGENT:-}" ]       || REVIEW_AGENT="$(read_env REVIEW_AGENT)"
-[ -n "${REVIEW_AGENT_STDIN:-}" ] || REVIEW_AGENT_STDIN="$(read_env REVIEW_AGENT_STDIN)"
+[ -n "${REVIEW_AGENT:-}" ]                || REVIEW_AGENT="$(read_env REVIEW_AGENT)"
+[ -n "${REVIEW_AGENT_STDIN:-}" ]          || REVIEW_AGENT_STDIN="$(read_env REVIEW_AGENT_STDIN)"
+# A second reviewer for when the first is out of usage. Optional; see run_with_fallback.
+[ -n "${REVIEW_AGENT_FALLBACK:-}" ]       || REVIEW_AGENT_FALLBACK="$(read_env REVIEW_AGENT_FALLBACK)"
+[ -n "${REVIEW_AGENT_FALLBACK_STDIN:-}" ] || REVIEW_AGENT_FALLBACK_STDIN="$(read_env REVIEW_AGENT_FALLBACK_STDIN)"
+[ -n "${REVIEW_LIMIT_PATTERN:-}" ]        || REVIEW_LIMIT_PATTERN="$(read_env REVIEW_LIMIT_PATTERN)"
+[ -n "$REVIEW_LIMIT_PATTERN" ]            || REVIEW_LIMIT_PATTERN='usage limit|rate limit|quota'
 
 if [ -z "${REVIEW_AGENT:-}" ]; then
     echo "REVIEW_AGENT is not set — it names the CLI that performs the review." >&2
@@ -205,15 +210,17 @@ PROMPT="$SCOPE
 
 $CONTEXT"
 
+# Scratch files for this run, removed however it ends. Spelled out rather than `mktemp -t`,
+# whose meaning differs between BSD and GNU: BSD takes a prefix, GNU takes a template and
+# insists on the trailing Xs.
+SCRATCH="$(mktemp -d "${TMPDIR:-/tmp}/review.XXXXXX")"
+trap 'rm -rf "$SCRATCH"' EXIT
+
 # REVIEW_AGENT is a command line, not just a binary, so a reviewer that wants a subcommand
 # and one that wants a flag are both a setting rather than an edit here. Word-splitting is
 # intended. Reviewers that read the prompt from stdin get REVIEW_AGENT_STDIN=1.
-#
-# exec everywhere except --since-last, which has to outlive the reviewer to write the
-# ledger. Recording happens only on a clean exit: quitting a reviewer early is how you
-# abandon a review, and an abandoned review must not advance the bookmark.
 # shellcheck disable=SC2086
-run_reviewer() {
+run_direct() {
     if [ "${REVIEW_AGENT_STDIN:-}" = "1" ]; then
         printf '%s' "$1" | $REVIEW_AGENT
     else
@@ -221,27 +228,81 @@ run_reviewer() {
     fi
 }
 
-# Without --verify nothing changes: one pass, streamed straight through, and exec'd where
-# there is no ledger to write afterwards.
-if [ "$VERIFY" != "1" ]; then
-    # shellcheck disable=SC2086
-    if [ -z "$MARK_AFTER" ]; then
-        if [ "${REVIEW_AGENT_STDIN:-}" = "1" ]; then
-            printf '%s' "$PROMPT" | exec $REVIEW_AGENT
-        else
-            exec $REVIEW_AGENT "$PROMPT"
+# One run of one reviewer, for when a fallback is configured. Output still streams, and
+# copies go to $4 (both streams, to recognise a refusal for lack of usage) and $4.out
+# (stdout alone: the findings). fd 3 carries stdout past the pipe that copies stderr, since
+# bash 3.2 has no process substitution to wait on. The reviewer's output is a pipe here,
+# not a terminal, which is why this path is taken only when there is a fallback to use.
+# shellcheck disable=SC2086
+attempt() {
+    local agent="$1" stdin="$2" prompt="$3" log="$4"
+    if [ "$stdin" = "1" ]; then
+        { { printf '%s' "$prompt" | $agent | tee -a "$log" "$log.out"; } 2>&1 1>&3 | tee -a "$log" >&2; } 3>&1
+    else
+        { { $agent "$prompt" | tee -a "$log" "$log.out"; } 2>&1 1>&3 | tee -a "$log" >&2; } 3>&1
+    fi
+}
+
+# With a fallback configured: runs the review, and when the reviewer stops because it is out
+# of usage -- a non-zero exit AND a message matching REVIEW_LIMIT_PATTERN, so a finding that
+# merely mentions a limit cannot trigger it -- runs the same prompt through
+# REVIEW_AGENT_FALLBACK, which then handles the rest of the run, verify pass included. The
+# stdout of the reviewer that finished is left in $SCRATCH/findings, so nothing a refused
+# reviewer printed can pass for a finding.
+#
+# A failed run still stops the script (set -e), so an abandoned or refused review never
+# advances the bookmark.
+run_with_fallback() {
+    local log="$SCRATCH/run.$RANDOM" status=0
+    if [ -f "$SCRATCH/fallback" ]; then
+        attempt "$REVIEW_AGENT_FALLBACK" "$REVIEW_AGENT_FALLBACK_STDIN" "$1" "$log" || status=$?
+    else
+        attempt "$REVIEW_AGENT" "$REVIEW_AGENT_STDIN" "$1" "$log" || status=$?
+        if [ "$status" -ne 0 ] && grep -qiE "$REVIEW_LIMIT_PATTERN" "$log"; then
+            echo >&2
+            echo "── the reviewer is out of usage: continuing with REVIEW_AGENT_FALLBACK ──────────" >&2
+            echo >&2
+            : > "$SCRATCH/fallback"
+            log="$log.fallback"
+            status=0
+            attempt "$REVIEW_AGENT_FALLBACK" "$REVIEW_AGENT_FALLBACK_STDIN" "$1" "$log" || status=$?
         fi
     fi
+    [ "$status" -ne 0 ] || cp "$log.out" "$SCRATCH/findings" 2>/dev/null || : > "$SCRATCH/findings"
+    return "$status"
+}
+
+# Without a fallback nothing changes from before: the reviewer runs directly on the
+# terminal, exec'd where there is no ledger to write afterwards.
+if [ -z "$REVIEW_AGENT_FALLBACK" ] && [ "$VERIFY" != "1" ] && [ -z "$MARK_AFTER" ]; then
+    # shellcheck disable=SC2086
+    if [ "${REVIEW_AGENT_STDIN:-}" = "1" ]; then
+        printf '%s' "$PROMPT" | exec $REVIEW_AGENT
+    else
+        exec $REVIEW_AGENT "$PROMPT"
+    fi
+fi
+
+# The reviewer for one pass: directly, or through the fallback when one is configured.
+run_reviewer() {
+    if [ -n "$REVIEW_AGENT_FALLBACK" ]; then
+        run_with_fallback "$1"
+    else
+        run_direct "$1"
+    fi
+}
+
+if [ "$VERIFY" != "1" ]; then
     run_reviewer "$PROMPT"
 else
-    # The first pass is teed rather than exec'd, because the second one needs to read it.
-    # It still streams, so the wait feels the same as an unverified run.
-    # Spelled out rather than `mktemp -t`, whose meaning differs between BSD and GNU:
-    # BSD takes a prefix, GNU takes a template and insists on the trailing Xs.
-    FINDINGS="$(mktemp "${TMPDIR:-/tmp}/review-findings.XXXXXX")"
-    trap 'rm -f "$FINDINGS"' EXIT
-
-    run_reviewer "$PROMPT" | tee "$FINDINGS"
+    # The first pass is kept, because the second one needs to read it. It still streams,
+    # so the wait feels the same as an unverified run.
+    FINDINGS="$SCRATCH/findings"
+    if [ -n "$REVIEW_AGENT_FALLBACK" ]; then
+        run_with_fallback "$PROMPT"
+    else
+        run_direct "$PROMPT" | tee "$FINDINGS"
+    fi
 
     if [ ! -s "$FINDINGS" ]; then
         echo
