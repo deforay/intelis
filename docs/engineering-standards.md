@@ -42,6 +42,15 @@ is a command line rather than a bare binary, so a reviewer that wants a subcomma
 that wants a flag are both a setting; set `REVIEW_AGENT_STDIN=1` for a reviewer that reads
 its prompt from standard input. See `.env.example`.
 
+`REVIEW_AGENT_FALLBACK` names a second reviewer for when the first is out of usage. The
+script switches only when the first exits non-zero with a message matching
+`REVIEW_LIMIT_PATTERN` (default `usage limit|rate limit|quota`), so a finding that mentions
+a limit never triggers it, and the fallback then handles the verify pass too. The fallback
+has to read the repository without prompting; a reviewer that cannot run `git diff`
+reviews nothing. A run that neither reviewer finishes records nothing in the ledger. With a
+fallback configured the reviewer's output is copied through a pipe, so it does not see a
+terminal; without one it runs exactly as before.
+
 The review is a local step, not a CI job — the reviewing CLI is authenticated on your
 machine. CI enforces the deterministic checks; this one is a discipline.
 
