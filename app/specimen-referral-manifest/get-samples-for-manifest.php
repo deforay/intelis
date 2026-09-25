@@ -185,21 +185,27 @@ $key = (string) $general->getGlobalConfig('key');
 	</div>
 <?php } ?>
 <div class="col-md-5">
+<?php
+// Patient IDs and names arrive from API clients and synced labs, so they are escaped here.
+$optionLabel = static function (array $sample) use ($general, $key, $sampleCode, $patientId, $module): string {
+	$parts = [$sample[$sampleCode], $sample[$patientId]];
+	if ($module == 'tb') {
+		$parts[] = $sample['patient_name'];
+	}
+	if ($sample['is_encrypted'] == 'yes') {
+		$parts[1] = $general->crypto('decrypt', $parts[1], $key);
+		if ($module == 'tb') {
+			$parts[2] = $general->crypto('decrypt', $parts[2], $key);
+		}
+	}
+	return htmlspecialchars(implode(' - ', array_map('strval', $parts)), ENT_QUOTES, 'UTF-8');
+};
+?>
 	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 		<?php foreach ($result as $sample) {
-			if ($sample['is_encrypted'] == 'yes') {
-				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
-			}
-			$showPatient = '';
-			if($module == 'tb')
-				{
-					$showPatient = ' - ' . $sample['patient_name'];
-				}
 			if (!empty($sample[$sampleCode]) && ((!isset($sample['sample_package_id']) || !isset($sample['manifest_id'])) || ($sample['sample_package_id'] != $sample['manifest_id']))) {
 				?>
-				<option value="<?php
-				echo $sample[$testPrimaryKey];
-				?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId] .  $showPatient; ?></option>
+				<option value="<?= htmlspecialchars((string) $sample[$testPrimaryKey], ENT_QUOTES, 'UTF-8'); ?>"><?= $optionLabel($sample); ?></option>
 				<?php
 			}
 		} ?>
@@ -220,19 +226,9 @@ $key = (string) $general->getGlobalConfig('key');
 <div class="col-md-5">
 	<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 		<?php foreach ($result as $sample) {
-			if ($sample['is_encrypted'] == 'yes') {
-				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
-			}
-			$showPatient = '';
-			if($module == 'tb')
-				{
-					$showPatient = ' - ' . $sample['patient_name'];
-				}
 			if (!empty($sample[$sampleCode]) && (isset($sample['manifest_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['manifest_id'])) {
 				?>
-				<option value="<?php
-				echo $sample[$testPrimaryKey];
-				?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId] . $showPatient; ?></option>
+				<option value="<?= htmlspecialchars((string) $sample[$testPrimaryKey], ENT_QUOTES, 'UTF-8'); ?>"><?= $optionLabel($sample); ?></option>
 				<?php
 			}
 		} ?>
