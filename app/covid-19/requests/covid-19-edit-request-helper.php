@@ -184,6 +184,8 @@ try {
 	//$systemPatientCode = $patientsService->savePatient($_POST, 'form_covid19');
 
 
+	$patientAge = trim((string) ($_POST['ageInYears'] ?? $_POST['patientAge'] ?? ''));
+
 	$covid19Data = [
 		'external_sample_code' => empty($_POST['externalSampleCode']) ? null : $_POST['externalSampleCode'],
 		'facility_id' => empty($_POST['facilityId']) ? null : $_POST['facilityId'],
@@ -209,7 +211,8 @@ try {
 		'patient_gender' => empty($_POST['patientGender']) ? null : $_POST['patientGender'],
 		'health_insurance_code' => $_POST['healthInsuranceCode'] ?? null,
 		'is_patient_pregnant' => empty($_POST['isPatientPregnant']) ? null : $_POST['isPatientPregnant'],
-		'patient_age' => empty($_POST['ageInYears']) ? null : $_POST['ageInYears'],
+		// Cameroon forms post ageInYears; the other country forms post patientAge
+		'patient_age' => $patientAge === '' ? null : $patientAge,
 		'patient_phone_number' => empty($_POST['patientPhoneNumber']) ? null : $_POST['patientPhoneNumber'],
 		'patient_email' => empty($_POST['patientEmail']) ? null : $_POST['patientEmail'],
 		'patient_address' => empty($_POST['patientAddress']) ? null : $_POST['patientAddress'],
@@ -446,7 +449,9 @@ try {
 		}
 
 		$id = $db->update($tableName, $covid19Data);
-		error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+		if ($db->getLastError() !== '') {
+			error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+		}
 	}
 
 	if ($id > 0 || $sid > 0 || $pid > 0) {
@@ -460,7 +465,6 @@ try {
 	} else {
 		$_SESSION['alertMsg'] = _translate("Please try again later");
 	}
-	error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
 	header("Location:/covid-19/requests/covid-19-requests.php");
 } catch (Exception $exc) {
 	throw new SystemException($exc->getMessage(), $exc->getCode(), $exc);

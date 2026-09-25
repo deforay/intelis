@@ -671,7 +671,7 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
         $("#lastName").val(patientArray['lastname']);
         $("#patientPhoneNumber").val(patientArray['patient_phone_number']);
         $("#patientGender").val(patientArray['gender']);
-        $("#patientAge").val(patientArray['age']);
+        $("#ageInYears").val(patientArray['age']);
         $("#dob").val(patientArray['dob']);
         $("#patientId").val(patientArray['patient_id']);
         $("#patientPassportNumber").val(patientArray['patient_passport_number']);

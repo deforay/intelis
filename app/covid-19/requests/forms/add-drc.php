@@ -201,7 +201,7 @@ if ($generateAutomatedPatientCode !== '' && $generateAutomatedPatientCode !== '0
                                         </td>
                                         <th scope="row"><label for="dob">Date de naissance</label></th>
                                         <td>
-                                            <input type="text" class="dateTime form-control" id="dob" name="dob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears();" />
+                                            <input type="text" class="dateTime form-control" id="dob" name="dob" placeholder="Date de naissance" title="Date de naissance" style="width:100%;" onchange="calculateAgeInYears('dob', 'patientAge');" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -1238,7 +1238,7 @@ if ($generateAutomatedPatientCode !== '' && $generateAutomatedPatientCode !== '0
 
     function validateNow() {
 
-        if ($("#patientDob").val() == "" && $("#patientAge").val() == "") {
+        if ($("#dob").val() == "" && $("#patientAge").val() == "") {
             alert("<?= _translate("Please enter Patient Age or Date of Birth"); ?>");
             return false;
         }

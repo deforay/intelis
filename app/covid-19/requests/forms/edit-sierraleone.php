@@ -259,7 +259,7 @@ $patientProvince = $patientProvinceInfo[0];
                                         <td>
                                             <input type="text" class="form-control date" id="dob" name="dob"
                                                 placeholder="Date of Birth" title="Please enter Date of birth"
-                                                style="width:100%;" onchange="calculateAgeInYears();"
+                                                style="width:100%;" onchange="calculateAgeInYears('dob', 'patientAge');"
                                                 value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
                                         </td>
                                         <th scope="row">Case Age (years)</th>

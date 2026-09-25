@@ -95,7 +95,7 @@ $pResult = $db->rawQuery($pQuery);
 								<?php
 								$artNoList = [];
 								foreach ($pResult as $patient) {
-									$value = $patient['patient_id'] . strtolower((string) $patient['patient_name']) . strtolower((string) $patient['patient_surname']) . $patient['patient_age_in_years'] . strtolower((string) $patient['patient_gender']) . strtolower((string) $patient['facility_name']);
+									$value = $patient['patient_id'] . strtolower((string) $patient['patient_name']) . strtolower((string) $patient['patient_surname']) . $patient['patient_age'] . strtolower((string) $patient['patient_gender']) . strtolower((string) $patient['facility_name']);
 									//if (!in_array($value, $artNoList)) {
 									$artNoList[] = $value;
 
