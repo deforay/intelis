@@ -40,13 +40,10 @@ $testType = (empty($_POST['testType'])) ? "" : $_POST['testType'];
 $testTable = TestsService::getTestTableName($module);
 $testPrimaryKey = TestsService::getPrimaryColumn($module);
 $patientId = TestsService::getPatientIdColumn($module);
-$patientName = '';
-if($module == 'tb')
-{
-	$patientName = " vl.patient_name ,";
-}
+$patientFirstName = TestsService::getPatientFirstNameColumn($module);
+$patientLastName = TestsService::getPatientLastNameColumn($module);
 
-$query = "SELECT vl.sample_code,vl.remote_sample_code, $patientName vl.$testPrimaryKey,vl.$patientId,vl.sample_package_id,vl.is_encrypted,pd.manifest_id
+$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.$patientFirstName,vl.$patientLastName,vl.$testPrimaryKey,vl.$patientId,vl.sample_package_id,vl.is_encrypted,pd.manifest_id
 			FROM $testTable as vl
 			LEFT JOIN specimen_manifests as pd ON vl.sample_package_id = pd.manifest_id ";
 
@@ -187,18 +184,19 @@ $key = (string) $general->getGlobalConfig('key');
 <div class="col-md-5">
 <?php
 // Patient IDs and names arrive from API clients and synced labs, so they are escaped here.
-$optionLabel = static function (array $sample) use ($general, $key, $sampleCode, $patientId, $module): string {
-	$parts = [$sample[$sampleCode], $sample[$patientId]];
-	if ($module == 'tb') {
-		$parts[] = $sample['patient_name'];
-	}
+$optionLabel = static function (array $sample) use ($general, $key, $sampleCode, $patientId, $patientFirstName, $patientLastName): string {
+	$id = $sample[$patientId];
+	$names = [$sample[$patientFirstName], $sample[$patientLastName]];
 	if ($sample['is_encrypted'] == 'yes') {
-		$parts[1] = $general->crypto('decrypt', $parts[1], $key);
-		if ($module == 'tb') {
-			$parts[2] = $general->crypto('decrypt', $parts[2], $key);
-		}
+		$id = $general->crypto('decrypt', $id, $key);
+		$names = array_map(static fn($name) => $general->crypto('decrypt', $name, $key), $names);
 	}
-	return htmlspecialchars(implode(' - ', array_map('strval', $parts)), ENT_QUOTES, 'UTF-8');
+	$label = $sample[$sampleCode] . ' - ' . $id;
+	$name = trim(implode(' ', array_filter(array_map('strval', $names), static fn($n) => trim($n) !== '')));
+	if ($name !== '') {
+		$label .= ' - ' . $name;
+	}
+	return htmlspecialchars($label, ENT_QUOTES, 'UTF-8');
 };
 ?>
 	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
