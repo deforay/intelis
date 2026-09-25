@@ -230,7 +230,7 @@ $sampleResult = $general->fetchDataFromTable('r_covid19_sample_type', "status = 
                                     <td>
                                         <input type="text" class="form-control isRequired" id="dob" name="dob"
                                             placeholder="Date de naissance" title="Date de naissance"
-                                            style="width:100%;" onchange="calculateAgeInYears();"
+                                            style="width:100%;" onchange="calculateAgeInYears('dob', 'patientAge');"
                                             value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
                                     </td>
                                 </tr>

@@ -154,6 +154,8 @@ try {
 
 	// $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
+	$patientAge = trim((string) ($_POST['ageInYears'] ?? $_POST['patientAge'] ?? ''));
+
 	$covid19Data = [
 		'vlsm_instance_id' => $instanceId,
 		'vlsm_country_id' => $_POST['formId'],
@@ -181,7 +183,8 @@ try {
 		'patient_gender' => empty($_POST['patientGender']) ? null : $_POST['patientGender'],
 		'health_insurance_code' => $_POST['healthInsuranceCode'] ?? null,
 		'is_patient_pregnant' => empty($_POST['isPatientPregnant']) ? null : $_POST['isPatientPregnant'],
-		'patient_age' => empty($_POST['ageInYears']) ? null : $_POST['ageInYears'],
+		// Cameroon forms post ageInYears; the other country forms post patientAge
+		'patient_age' => $patientAge === '' ? null : $patientAge,
 		'patient_phone_number' => empty($_POST['patientPhoneNumber']) ? null : $_POST['patientPhoneNumber'],
 		'patient_email' => empty($_POST['patientEmail']) ? null : $_POST['patientEmail'],
 		'patient_address' => empty($_POST['patientAddress']) ? null : $_POST['patientAddress'],

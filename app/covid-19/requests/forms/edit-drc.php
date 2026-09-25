@@ -276,7 +276,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <td>
                                             <input type="text" class="dateTime form-control" id="dob" name="dob"
                                                 placeholder="Date de naissance" title="Date de naissance"
-                                                style="width:100%;" onchange="calculateAgeInYears();"
+                                                style="width:100%;" onchange="calculateAgeInYears('dob', 'patientAge');"
                                                 value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['patient_dob']); ?>" />
                                         </td>
                                     </tr>
