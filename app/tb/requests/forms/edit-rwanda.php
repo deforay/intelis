@@ -642,7 +642,9 @@ if ($isLisInstance) {
                                     <?php if (isset($tbTestInfo) && !empty($tbTestInfo)) {
                                         $n = 1;
                                         foreach ($tbTestInfo as $key => $test) { ?>
-                                            <div class="test-section" data-count="<?php echo $n; ?>">
+                                            <div class="test-section" data-count="<?php echo $n; ?>"
+                                                data-original-test-type="<?= htmlspecialchars((string) ($test['test_type'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
+                                                data-original-test-result="<?= htmlspecialchars((string) ($test['test_result'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                                 <div class="section-header"><strong>Test #<span class="section-number">
                                                             <?php echo $n; ?>
                                                         </span></strong></div>
@@ -1328,10 +1330,42 @@ if ($isLisInstance) {
         });
     }
 
-    // Show revised fields when result part is modified
+
+    // A stored result is being changed: the card's type or result differs from what was saved.
+    // Entering a first result, or touching a field and putting it back, is not a change.
+    function isStoredResultChanged($section) {
+        var originalResult = $section.attr('data-original-test-result') || '';
+        if (originalResult === '') {
+            return false;
+        }
+        var originalType = $section.attr('data-original-test-type') || '';
+        return ($section.find('.test-type-select').val() || '') !== originalType
+            || ($section.find('.test-result-select').val() || '') !== originalResult;
+    }
+
+    // Show revised fields only when a stored result is changed
     function showRevisedFields(el) {
         var $section = $(el).closest('.test-section');
-        $section.find('.revisedFields').show();
+        var changed = isStoredResultChanged($section);
+        $section.find('.revisedFields').toggle(changed);
+        // Only a card drawn from a saved test has its own defaults to go back to.
+        if (!changed && $section.is("[data-original-test-result]")) {
+            resetRevisedFields($section);
+        }
+    }
+
+    // Put the revision fields back as the page drew them, so a change that was undone
+    // posts no reason and leaves the stored modified-by/on as they were.
+    function resetRevisedFields($section) {
+        $section.find('.revisedFields').find('input, textarea').each(function () {
+            this.value = this.defaultValue;
+        });
+        $section.find('.revisedFields select').each(function () {
+            $(this).find('option').each(function () {
+                this.selected = this.defaultSelected;
+            });
+            $(this).trigger('change.select2');
+        });
     }
 
     // Make all test fields required once testType + testResult are both selected.
@@ -1490,6 +1524,10 @@ if ($isLisInstance) {
                 .addClass('date-time')
                 .attr('placeholder', '<?= _translate("Please enter date"); ?>');
         }
+
+        // A new card has no stored result to change
+        newSection.removeAttribute('data-original-test-type');
+        newSection.removeAttribute('data-original-test-result');
 
         // Hide conditional fields
         $(newSection).find('.revisedFields').hide();
