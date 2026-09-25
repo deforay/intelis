@@ -9,6 +9,7 @@ use App\HttpHandlers\LegacyRequestHandler;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\TbTestsService;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Throwable;
@@ -668,5 +669,81 @@ final class TbSingleResultFormsTest extends TestCase
         $row = $this->formTb($tbId);
         self::assertNull($row['result']);
         self::assertSame(6, (int) $row['result_status']);
+    }
+
+    /** @return array<string, array{string, array<string, mixed>}> */
+    public static function microscopyPages(): array
+    {
+        $resultPage = [
+            'labId' => '1',
+            'instanceId' => 'test',
+            'isSampleRejected' => 'no',
+            'tbTestsRequested' => '',
+        ];
+        return [
+            'request edit' => ['/tb/requests/tb-edit-request-helper.php', []],
+            'result page' => ['/tb/results/tb-update-result-helper.php', $resultPage],
+        ];
+    }
+
+    private function driveMicroscopy(string $page, array $pagePost, int $tbId, array $slots): void
+    {
+        $post = $slots + ['tbSampleId' => (string) $tbId];
+        $this->drive($page, $pagePost === [] ? self::requestPost($tbId, $post) : $post + $pagePost);
+    }
+
+    /**
+     * A filled slot whose row was removed while the page was open (a retest, a sync) is not
+     * saved, and the save says so instead of dropping it quietly. The row is not brought back:
+     * it may belong to an attempt the lab just replaced.
+     */
+    #[DataProvider('microscopyPages')]
+    #[RunInSeparateProcess]
+    public function testAFilledSlotWhoseRowIsGoneIsReported(string $page, array $pagePost): void
+    {
+        $tbId = $this->seedTb();
+        $gone = $this->seedTbTest($tbId, ['actual_no' => '1', 'test_result' => 'No AFB']);
+        $kept = $this->seedTbTest($tbId, ['actual_no' => '2', 'test_result' => '1+']);
+        LegacyAppHarness::db()->rawQuery('DELETE FROM tb_tests WHERE tb_test_id = ?', [$gone]);
+
+        $this->driveMicroscopy($page, $pagePost, $tbId, [
+            'testResult' => ['2+', '1+', ''],
+            'actualNo' => ['1', '2', ''],
+            'microscopyTestId' => [(string) $gone, (string) $kept, ''],
+        ]);
+
+        self::assertSame(
+            [[$kept, '2', '1+']],
+            array_map(
+                static fn($t) => [(int) $t['tb_test_id'], $t['actual_no'], $t['test_result']],
+                $this->tbTests($tbId)
+            )
+        );
+        self::assertStringContainsString('successfully', (string) $_SESSION['alertMsg']);
+        self::assertStringContainsString(
+            '1 microscopy result was not saved because it was removed from this sample',
+            (string) $_SESSION['alertMsg']
+        );
+    }
+
+    /** An emptied slot whose row is gone loses nothing, and a save with every row present warns of nothing. */
+    #[DataProvider('microscopyPages')]
+    #[RunInSeparateProcess]
+    public function testNoWarningWhenNothingIsLost(string $page, array $pagePost): void
+    {
+        $tbId = $this->seedTb();
+        $gone = $this->seedTbTest($tbId, ['actual_no' => '1', 'test_result' => 'No AFB']);
+        $kept = $this->seedTbTest($tbId, ['actual_no' => '2', 'test_result' => '1+']);
+        LegacyAppHarness::db()->rawQuery('DELETE FROM tb_tests WHERE tb_test_id = ?', [$gone]);
+
+        $this->driveMicroscopy($page, $pagePost, $tbId, [
+            'testResult' => ['', '3+', ''],
+            'actualNo' => ['', '2', ''],
+            'microscopyTestId' => [(string) $gone, (string) $kept, ''],
+        ]);
+
+        self::assertSame('3+', $this->tbTests($tbId)[0]['test_result']);
+        self::assertStringNotContainsString('not saved', (string) $_SESSION['alertMsg']);
+        self::assertStringContainsString('successfully', (string) $_SESSION['alertMsg']);
     }
 }

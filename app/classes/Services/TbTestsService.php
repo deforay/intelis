@@ -181,9 +181,14 @@ final class TbTestsService
      *
      * Call inside the caller's transaction. Throws when a row cannot be written.
      *
+     * Returns how many filled slots named a row that is gone -- removed by a retest or a
+     * sync while the page was open. Those values are not saved: bringing the row back
+     * could revive an attempt the lab just replaced, so the caller tells the user instead.
+     *
      * @param array<array-key, mixed>      $results   The posted testResult[].
      * @param array<array-key, mixed>      $actualNos The posted actualNo[].
      * @param array<array-key, mixed>|null $testIds   The posted microscopyTestId[], null when not posted.
+     * @return int Filled slots not saved because their row is gone.
      */
     public function saveMicroscopyRows(
         int $tbId,
@@ -191,7 +196,7 @@ final class TbTestsService
         array $actualNos,
         mixed $labId,
         ?array $testIds = null
-    ): void {
+    ): int {
         if ($tbId <= 0) {
             throw new RuntimeException('Cannot save TB tests without a sample');
         }
@@ -209,7 +214,7 @@ final class TbTestsService
         $existing = self::microscopyRowsForLab($existing);
         if ($testIds === null) {
             if ($existing !== []) {
-                return;
+                return 0;
             }
             $testIds = [];
         }
@@ -222,12 +227,16 @@ final class TbTestsService
         );
 
         $claimed = [];
+        $notSaved = 0;
         foreach (array_values($results) as $slot => $result) {
             $result = is_scalar($result) ? trim((string) $result) : '';
             $actualNo = is_scalar($actualNos[$slot] ?? null) ? trim((string) $actualNos[$slot]) : '';
             $testId = $testIds[$slot] ?? '';
             if ($testId !== '') {
                 if (!isset($byId[$testId])) {
+                    if ($result !== '' || $actualNo !== '') {
+                        $notSaved++;
+                    }
                     continue;
                 }
                 $row = $byId[$testId];
@@ -280,6 +289,27 @@ final class TbTestsService
                 throw new RuntimeException("Could not save a test on TB sample $tbId: " . $this->db->getLastError());
             }
         }
+        return $notSaved;
+    }
+
+    /** The warning for microscopy results saveMicroscopyRows() could not save; '' when none. */
+    public static function microscopyNotSavedMessage(int $notSaved): string
+    {
+        if ($notSaved <= 0) {
+            return '';
+        }
+        if ($notSaved === 1) {
+            return _translate(
+                '1 microscopy result was not saved because it was removed from this sample'
+                    . ' while the form was open (for example by a retest).'
+                    . ' Open the sample again to check the microscopy results.'
+            );
+        }
+        return sprintf(_translate(
+            '%d microscopy results were not saved because they were removed from this sample'
+                . ' while the form was open (for example by a retest).'
+                . ' Open the sample again to check the microscopy results.'
+        ), $notSaved);
     }
 
     /**
