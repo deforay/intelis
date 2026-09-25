@@ -423,7 +423,7 @@ try {
             unset($tbData['sample_received_at_lab_datetime']);
         }
     } elseif (isset($_POST['testResult']) && is_array($_POST['testResult'])) {
-        ContainerRegistry::get(TbTestsService::class)->saveMicroscopyRows(
+        $microscopyNotSaved = ContainerRegistry::get(TbTestsService::class)->saveMicroscopyRows(
             (int) $_POST['tbSampleId'],
             $_POST['testResult'],
             (array) ($_POST['actualNo'] ?? []),
@@ -454,6 +454,10 @@ try {
 
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("TB test request updated successfully");
+        $notSavedWarning = TbTestsService::microscopyNotSavedMessage($microscopyNotSaved ?? 0);
+        if ($notSavedWarning !== '') {
+            $_SESSION['alertMsg'] .= ' ' . $notSavedWarning;
+        }
         //Add event log
         $eventType = 'tb-add-request';
         $action = $_SESSION['userName'] . ' pdated a TB request with the Sample ID/Code  ' . $_POST['tbSampleId'];

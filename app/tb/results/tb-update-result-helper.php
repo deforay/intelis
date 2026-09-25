@@ -279,7 +279,7 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
         );
         $latestTestColumns = $tbTests->latestTestColumns((int) $_POST['tbSampleId']);
     } elseif (isset($_POST['testResult']) && is_array($_POST['testResult'])) {
-        ContainerRegistry::get(TbTestsService::class)->saveMicroscopyRows(
+        $microscopyNotSaved = ContainerRegistry::get(TbTestsService::class)->saveMicroscopyRows(
             (int) $_POST['tbSampleId'],
             $_POST['testResult'],
             (array) ($_POST['actualNo'] ?? []),
@@ -319,6 +319,10 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
 
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("TB test result updated successfully");
+        $notSavedWarning = TbTestsService::microscopyNotSavedMessage($microscopyNotSaved ?? 0);
+        if ($notSavedWarning !== '') {
+            $_SESSION['alertMsg'] .= ' ' . $notSavedWarning;
+        }
         //Add event log
         $eventType = 'tb-update-result';
         $action = $_SESSION['userName'] . ' updated result for TB Sample ID/Code  ' . $_POST['tbSampleId'];

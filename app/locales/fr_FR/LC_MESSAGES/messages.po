@@ -36364,3 +36364,9 @@ msgstr "Testé - Imprimé"
 
 msgid "VLSM"
 msgstr "VLSM"
+
+msgid "1 microscopy result was not saved because it was removed from this sample while the form was open (for example by a retest). Open the sample again to check the microscopy results."
+msgstr "1 résultat de microscopie n'a pas été enregistré car il a été retiré de cet échantillon pendant que le formulaire était ouvert (par exemple lors d'une reprise du test). Rouvrir l'échantillon pour vérifier les résultats de microscopie."
+
+msgid "%d microscopy results were not saved because they were removed from this sample while the form was open (for example by a retest). Open the sample again to check the microscopy results."
+msgstr "%d résultats de microscopie n'ont pas été enregistrés car ils ont été retirés de cet échantillon pendant que le formulaire était ouvert (par exemple lors d'une reprise du test). Rouvrir l'échantillon pour vérifier les résultats de microscopie."
