@@ -31,14 +31,13 @@ $db->where("login_id", $_SESSION['loginId']);
 $db->orWhere('user_id', $_SESSION['userId']);
 $data = $db->get("user_login_history", 25);
 
-//echo $totpService->isEnabled(). ' --------- '.$totpService->isActive($_SESSION['userId']); die;
 ?>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <em class="fa-solid fa-gears"></em> <?php echo _translate("Edit Profile"); ?></h1>
+    <h1> <em class="fa-solid fa-key"></em> <?php echo _translate("Change Password"); ?></h1>
     <ol class="breadcrumb">
       <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
       <li class="active"><?php echo _translate("Users"); ?></li>
@@ -67,19 +66,16 @@ $data = $db->get("user_login_history", 25);
                   <div class="col-lg-8">
                     <input type="password" class="form-control" id="currentPassword" name="currentPassword" placeholder="<?php echo _translate('Current Password'); ?>" title="" />
                     <div id="currentPasswordError" style="color: red;"></div>
-
                   </div>
-
                 </div>
               </div>
             </div>
-            
 
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?></label>
-                  <div class="col-lg-7">
+                  <div class="col-lg-8">
                     <div class="input-group">
                       <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
                       <span class="input-group-btn">
@@ -143,7 +139,6 @@ responsive: true
 
     if (flag) {
       currentPwd = password_verify();
-      alert(currentPwd);
       if ($('.ppwd').val() != '') {
         pwdflag = checkPasswordLength();
       }
@@ -220,12 +215,12 @@ responsive: true
   }
 
   async function passwordType() {
-    document.getElementById('password').type = "text";
+    document.getElementById('newPassword').type = "text";
     document.getElementById('confirmPassword').type = "text";
     const data = await $.post("/includes/generate-password.php", {
       size: 32
     });
-    $("#password").val(data);
+    $("#newPassword").val(data);
     $("#confirmPassword").val(data);
     try {
       const success = await Utilities.copyToClipboard(data);
