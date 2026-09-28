@@ -4,10 +4,10 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-09-28
+reviewed_against: 5.7.81
 ---
-# Setting Up Off-Machine Backups
+# How to set up off-machine backups
 
 Send a copy of InteLIS to another machine or drive, automatically, every 8 hours
 and after every restart. The copy survives if the InteLIS machine fails.
@@ -101,19 +101,25 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
 
     ### Set up the backup on the InteLIS machine
 
-    4. On the InteLIS machine, open a terminal and run:
+    4. On the InteLIS machine, open a terminal. Download the current backup
+       setup script, then run it:
 
         ```bash
-        intelis backup setup
+        cd ~
+        wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
+        sudo bash remote-backup.sh
         ```
 
-        ??? info "If `intelis` is not recognised"
+        The download replaces only the setup script in your home folder. It
+        does not update InteLIS. Running it installs the current scheduled
+        backup runner.
 
-            The install is older. Download the setup script and run it:
+        ??? info "If this machine cannot reach the internet"
+
+            Use the script included with the installed InteLIS version:
 
             ```bash
-            cd ~ && wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
-            sudo bash remote-backup.sh
+            intelis backup setup
             ```
 
     5. Answer the questions:
@@ -234,7 +240,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     ```
 
     The backup line must not show a warning. If it mentions `newest DB dump`,
-    the database backups have stopped; see the warning under
+    the database backups have stopped. See the warning under
     **Where the backup lands**. Once
     every three months, restore the newest backup onto a spare or test machine
     by following [Restoring from a Backup](restoring-from-backup.md). A backup
@@ -275,11 +281,12 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     Two labs with the same name still get separate folders. One lab never
     overwrites another lab's backup.
 
-    ??? warning "If a backup warns that the newest database dump is old"
+    ??? failure "If a backup says that the newest database dump is old"
 
         The InteLIS scheduler has stopped, so no new database backups are being
-        made. The copy still runs and looks healthy. Check the scheduler by
-        following [Check the scheduled tasks are running](maintenance.md#check-the-scheduled-tasks-are-running).
+        made. The backup stops before changing the destination. Check the
+        scheduler by following [Check the scheduled tasks are running](maintenance.md#check-the-scheduled-tasks-are-running).
+        Then run `intelis backup`.
 
     ### Other commands
 
@@ -290,7 +297,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     | Watch a backup as it runs | `tail -f /var/log/intelis-backup.log` |
     | Stop the scheduled backups | `intelis backup disable` |
     | Start them again | `intelis backup enable` |
-    | Change where backups go | `intelis backup setup`, then choose **Change where backups go**. The saved answers are offered; press Enter to keep one. |
+    | Change where backups go | Run `intelis backup setup`, then choose **Change where backups go**. The saved answers are offered. Press Enter to keep one. |
 
     To get the data back, see [Restoring from a Backup](restoring-from-backup.md).
 
@@ -336,19 +343,25 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
 
     ### Set up the backup on the InteLIS machine
 
-    10. On the InteLIS machine, open a terminal and run:
+    10. On the InteLIS machine, open a terminal. Download the current backup
+        setup script, then run it:
 
         ```bash
-        intelis backup setup
+        cd ~
+        wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
+        sudo bash remote-backup.sh
         ```
 
-        ??? info "If `intelis` is not recognised"
+        The download replaces only the setup script in your home folder. It
+        does not update InteLIS. Running it installs the current scheduled
+        backup runner.
 
-            The install is older. Download the setup script and run it:
+        ??? info "If this machine cannot reach the internet"
+
+            Use the script included with the installed InteLIS version:
 
             ```bash
-            cd ~ && wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
-            sudo bash remote-backup.sh
+            intelis backup setup
             ```
 
     11. Answer the questions:
@@ -441,7 +454,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     ```
 
     The backup line must not show a warning. If it mentions `newest DB dump`,
-    the database backups have stopped; see the warning under
+    the database backups have stopped. See the warning under
     **Where the backup lands**. Once
     every three months, restore the newest backup onto a spare or test machine
     by following [Restoring from a Backup](restoring-from-backup.md). A backup
@@ -482,11 +495,12 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     Two labs with the same name still get separate folders. One lab never
     overwrites another lab's backup.
 
-    ??? warning "If a backup warns that the newest database dump is old"
+    ??? failure "If a backup says that the newest database dump is old"
 
         The InteLIS scheduler has stopped, so no new database backups are being
-        made. The copy still runs and looks healthy. Check the scheduler by
-        following [Check the scheduled tasks are running](maintenance.md#check-the-scheduled-tasks-are-running).
+        made. The backup stops before changing the destination. Check the
+        scheduler by following [Check the scheduled tasks are running](maintenance.md#check-the-scheduled-tasks-are-running).
+        Then run `intelis backup`.
 
     ### Other commands
 
@@ -497,7 +511,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     | Watch a backup as it runs | `tail -f /var/log/intelis-backup.log` |
     | Stop the scheduled backups | `intelis backup disable` |
     | Start them again | `intelis backup enable` |
-    | Change where backups go | `intelis backup setup`, then choose **Change where backups go**. The saved answers are offered; press Enter to keep one. |
+    | Change where backups go | Run `intelis backup setup`, then choose **Change where backups go**. The saved answers are offered. Press Enter to keep one. |
 
     To get the data back, see [Restoring from a Backup](restoring-from-backup.md).
 
@@ -509,19 +523,24 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     ### Set up the backup
 
     1. Plug the drive into the InteLIS machine.
-    2. Open a terminal and run:
+    2. Open a terminal. Download the current backup setup script, then run it:
 
         ```bash
-        intelis backup setup
+        cd ~
+        wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
+        sudo bash remote-backup.sh
         ```
 
-        ??? info "If `intelis` is not recognised"
+        The download replaces only the setup script in your home folder. It
+        does not update InteLIS. Running it installs the current scheduled
+        backup runner.
 
-            The install is older. Download the setup script and run it:
+        ??? info "If this machine cannot reach the internet"
+
+            Use the script included with the installed InteLIS version:
 
             ```bash
-            cd ~ && wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
-            sudo bash remote-backup.sh
+            intelis backup setup
             ```
 
     3. Answer the first questions:
@@ -624,7 +643,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     ```
 
     The backup line must not show a warning. If it mentions `newest DB dump`,
-    the database backups have stopped; see the warning under
+    the database backups have stopped. See the warning under
     **Where the backup lands**. Once
     every three months, restore the newest backup onto a spare or test machine
     by following [Restoring from a Backup](restoring-from-backup.md). A backup
@@ -665,11 +684,12 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     Two labs with the same name still get separate folders. One lab never
     overwrites another lab's backup.
 
-    ??? warning "If a backup warns that the newest database dump is old"
+    ??? failure "If a backup says that the newest database dump is old"
 
         The InteLIS scheduler has stopped, so no new database backups are being
-        made. The copy still runs and looks healthy. Check the scheduler by
-        following [Check the scheduled tasks are running](maintenance.md#check-the-scheduled-tasks-are-running).
+        made. The backup stops before changing the destination. Check the
+        scheduler by following [Check the scheduled tasks are running](maintenance.md#check-the-scheduled-tasks-are-running).
+        Then run `intelis backup`.
 
     ### Other commands
 
@@ -680,7 +700,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     | Watch a backup as it runs | `tail -f /var/log/intelis-backup.log` |
     | Stop the scheduled backups | `intelis backup disable` |
     | Start them again | `intelis backup enable` |
-    | Change where backups go | `intelis backup setup`, then choose **Change where backups go**. The saved answers are offered; press Enter to keep one. |
+    | Change where backups go | Run `intelis backup setup`, then choose **Change where backups go**. The saved answers are offered. Press Enter to keep one. |
 
     To get the data back, see [Restoring from a Backup](restoring-from-backup.md).
 

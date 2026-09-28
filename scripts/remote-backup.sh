@@ -49,7 +49,7 @@ case "${1:-}" in
   --help | -h)
     # The whole header comment, up to the first blank line, so it cannot be
     # cut short again when the header grows.
-    sed -n '3,/^$/{/^#/p}' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '3,/^$/{ /^#/p; }' "$0" | sed 's/^# \{0,1\}//'
     exit 0
     ;;
   *)
@@ -398,7 +398,7 @@ json_escape() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr -d '\n\r'; 
 
 write_status() {
   local st=$1 msg=${2:-} size=${3:-unknown} duration=${4:-0}
-  local now epoch
+  local now epoch env_tmp json_tmp
   now="$(date -u +%FT%TZ)"; epoch="$(date +%s)"
   if [ "$st" = "ok" ]; then
     LAST_SUCCESS_AT="$now"; LAST_SUCCESS_EPOCH="$epoch"; LAST_SIZE="$size"; LAST_ERROR=""
@@ -409,21 +409,27 @@ write_status() {
 
   mkdir -p "$STATE_DIR"
   umask 022
-  cat > "$STATUS_ENV" <<STATUS
-LAST_STATUS='${LAST_STATUS}'
-LAST_RUN_AT='${now}'
-LAST_SUCCESS_AT='${LAST_SUCCESS_AT}'
-LAST_SUCCESS_EPOCH='${LAST_SUCCESS_EPOCH}'
-LAST_FAILURE_AT='${LAST_FAILURE_AT}'
-LAST_ERROR='$(printf '%s' "$LAST_ERROR" | tr -d "'" | tr -d '\n\r')'
-LAST_SIZE='${LAST_SIZE}'
-LAST_DURATION='${LAST_DURATION}'
-DB_DUMP_AGE_HOURS='${DB_DUMP_AGE_HOURS:--1}'
-HISTORY_OLDEST='${HISTORY_OLDEST}'
-HISTORY_NEWEST='${HISTORY_NEWEST}'
-HISTORY_COUNT='${HISTORY_COUNT:-0}'
-STATUS
-  cat > "$STATUS_JSON" <<STATUS
+  env_tmp="$(mktemp "${STATE_DIR}/backup-status.env.XXXXXX")"
+  json_tmp="$(mktemp "${STATE_DIR}/backup-status.json.XXXXXX")"
+
+  # The status file is sourced by the status command. %q keeps every value data,
+  # even when an external command returns quotes or shell punctuation in an error.
+  {
+    printf 'LAST_STATUS=%q\n' "$LAST_STATUS"
+    printf 'LAST_RUN_AT=%q\n' "$now"
+    printf 'LAST_SUCCESS_AT=%q\n' "$LAST_SUCCESS_AT"
+    printf 'LAST_SUCCESS_EPOCH=%q\n' "$LAST_SUCCESS_EPOCH"
+    printf 'LAST_FAILURE_AT=%q\n' "$LAST_FAILURE_AT"
+    printf 'LAST_ERROR=%q\n' "$LAST_ERROR"
+    printf 'LAST_SIZE=%q\n' "$LAST_SIZE"
+    printf 'LAST_DURATION=%q\n' "$LAST_DURATION"
+    printf 'DB_DUMP_AGE_HOURS=%q\n' "${DB_DUMP_AGE_HOURS:--1}"
+    printf 'HISTORY_OLDEST=%q\n' "$HISTORY_OLDEST"
+    printf 'HISTORY_NEWEST=%q\n' "$HISTORY_NEWEST"
+    printf 'HISTORY_COUNT=%q\n' "${HISTORY_COUNT:-0}"
+  } > "$env_tmp"
+
+  cat > "$json_tmp" <<STATUS
 {
   "instance": "$(json_escape "$INSTANCE_NAME")",
   "folder": "$(json_escape "$DEST_FOLDER")",
@@ -442,6 +448,10 @@ STATUS
   "history_count": ${HISTORY_COUNT:-0}
 }
 STATUS
+  # Readers must see either the previous complete status or the new complete
+  # status. A killed backup must not leave a half-written file behind.
+  mv -f "$env_tmp" "$STATUS_ENV"
+  mv -f "$json_tmp" "$STATUS_JSON"
   chmod 644 "$STATUS_JSON" "$STATUS_ENV" 2>/dev/null || true
 }
 
@@ -534,18 +544,26 @@ fi
 # the data lives in the dump written by the scheduled job every 6 hours.
 DB_DUMP_AGE_HOURS=-1
 DB_DUMP_DIR="${LIS_PATH}/backups/db"
+# The supported main-database names and archive formats. Keep this specific so
+# interfacing dumps and pre-restore safety copies never stand in for lab data.
+MAIN_DUMP=( \( -name 'vlsm-*' -o -name 'intelis-*' \)
+            \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst'
+               -o -name '*.sql.gpg' -o -name '*.sql.gz.gpg' -o -name '*.sql.zst.gpg' \) )
 if [ -d "$DB_DUMP_DIR" ]; then
-  newest_dump=$(find "$DB_DUMP_DIR" -maxdepth 1 -type f \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst' -o -name '*.gpg' \) -printf '%T@\n' 2>/dev/null | sort -nr | head -1 | cut -d. -f1)
+  newest_dump=$(find "$DB_DUMP_DIR" -maxdepth 1 -type f "${MAIN_DUMP[@]}" \
+    -printf '%T@\n' 2>/dev/null | sort -nr | head -1 | cut -d. -f1)
   if [ -n "${newest_dump:-}" ]; then
     DB_DUMP_AGE_HOURS=$(( ( $(date +%s) - newest_dump ) / 3600 ))
     if [ "$DB_DUMP_AGE_HOURS" -gt 24 ]; then
-      print warning "The newest database dump is ${DB_DUMP_AGE_HOURS} hours old. The scheduled backup job may have stopped running; check that root's crontab still has the InteLIS scheduler line (sudo crontab -l | grep cron.sh)."
+      fail "The newest database dump is ${DB_DUMP_AGE_HOURS} hours old. The destination was not changed. Check that root's crontab still has the InteLIS scheduler line (sudo crontab -l | grep cron.sh), then run: intelis backup"
     else
       print info "Newest database dump is ${DB_DUMP_AGE_HOURS} hours old"
     fi
   else
-    print warning "No database dump found in ${DB_DUMP_DIR}. Only files will be copied, not the data."
+    fail "No database dump was found in ${DB_DUMP_DIR}. The destination was not changed. Run 'intelis backup' to create and send a complete backup."
   fi
+else
+  fail "The database backup folder ${DB_DUMP_DIR} does not exist. The destination was not changed. Run 'intelis backup' to create and send a complete backup."
 fi
 
 # --- what to leave out --------------------------------------------------------
@@ -738,7 +756,33 @@ if [ "$CHANGED_COUNT" -eq 0 ]; then
 elif verify_transfer; then
   print success "Verified: ${CHANGED_COUNT} file(s) match at the destination"
 else
-  print warning "Some files still differ after the copy. They may have changed while the backup was running; the next backup should pick them up."
+  fail "Verification found files that differ at the destination. The backup is not marked successful. Run 'intelis backup' again."
+fi
+
+# Check the files needed for recovery on every run, including files rsync did not
+# copy this time. Size and timestamp comparisons cannot detect same-size damage
+# at rest. Restricting the checksum walk to db and config keeps it inexpensive.
+verify_recovery_files() {
+  local out differing
+  out=$(rsync "${RSYNC_MODE_OPTS[@]}" --checksum --dry-run --out-format='%i|%n' \
+              --include='/backups/' \
+              --include='/backups/db/' --include='/backups/db/***' \
+              --include='/backups/config/' --include='/backups/config/***' \
+              --exclude='*' "${LIS_PATH}/" "$RSYNC_TARGET" 2>/dev/null) || return 1
+  differing=$(printf '%s\n' "$out" | grep -c '^[<>]f' || true)
+  [ "${differing:-0}" -eq 0 ]
+}
+
+if verify_recovery_files; then
+  print success "Verified: database and settings backups match by checksum"
+else
+  fail "A database or settings backup differs at the destination. The backup is not marked successful. Run 'intelis backup' again."
+fi
+
+# Housekeeping can run while rsync works. Refuse success if it removed the last
+# main dump after the preflight check, even if rsync itself completed cleanly.
+if [ -z "$(find "$DB_DUMP_DIR" -maxdepth 1 -type f "${MAIN_DUMP[@]}" -print -quit 2>/dev/null)" ]; then
+  fail "The main database dump disappeared while files were being copied. The backup is not marked successful. Run 'intelis backup' again."
 fi
 
 # --- database history ---------------------------------------------------------
@@ -881,6 +925,18 @@ case "$DEST_MODE" in
     ;;
 esac
 BACKUP_SIZE=${BACKUP_SIZE:-unknown}
+
+# Restore listings use this timestamp. Write it only after the copy and checksum
+# verification finish, so it never claims that a failed run updated the backup.
+meta_tmp="${DEST_DIR}/.lab-meta.tmp.$$"
+q_meta_tmp="$(printf '%q' "$meta_tmp")"
+q_meta="$(printf '%q' "${DEST_DIR}/.lab-meta")"
+if ! dest_exec "printf 'lab_uuid=%s\ninstance=%s\nhostname=%s\nupdated_at=%s\n' \
+  $(printf '%q' "$LAB_UUID") $(printf '%q' "$INSTANCE_NAME") \
+  $(printf '%q' "$(hostname -f 2>/dev/null || hostname)") \
+  $(printf '%q' "$(date -u +%FT%TZ)") > ${q_meta_tmp} && mv -f ${q_meta_tmp} ${q_meta}"; then
+  fail "The files were copied, but the destination metadata could not be updated. Run 'intelis backup' again."
+fi
 
 write_status ok "" "$BACKUP_SIZE" "$SECONDS"
 print success "Backup finished in ${SECONDS}s. ${AVAILABLE_GB} GB free at the destination."
@@ -1672,6 +1728,11 @@ fi
 
 dest_exec "mkdir -p ${q_dest} && printf 'lab_uuid=%s\ninstance=%s\nhostname=%s\nupdated_at=%s\n' \
   $(printf '%q' "$LAB_UUID") $(printf '%q' "$SANITIZED_NAME") $(printf '%q' "$(hostname -f 2>/dev/null || hostname)") $(printf '%q' "$(date -u +%FT%TZ)") > ${q_meta}"
+# On an SSH backup machine, every lab writes as the same dedicated account. Keep
+# other local accounts from traversing the shared root and reading DB passwords.
+if [ "$DEST_MODE" = "ssh" ]; then
+  dest_exec "chmod 700 $(printf '%q' "$DEST_BASE") ${q_dest}"
+fi
 print success "Backup folder ready: ${DEST_DIR}"
 
 # --- tools --------------------------------------------------------------------
@@ -1686,36 +1747,38 @@ require_cmd rsync
 # --- save configuration -------------------------------------------------------
 
 umask 077
-cat > "$CONF_FILE" <<CONF
-# InteLIS backup configuration. Written by remote-backup.sh.
-# Re-run 'intelis backup setup' to change any of this.
-INSTANCE_NAME='${SANITIZED_NAME}'
-LAB_UUID='${LAB_UUID}'
-DEST_FOLDER='${DEST_FOLDER}'
-LIS_PATH='${LIS_PATH}'
-DEST_MODE='${DEST_MODE}'
-DEST_BASE='${DEST_BASE}'
-DEST_DIR='${DEST_DIR}'
-SSH_USER='${SSH_USER}'
-SSH_HOST='${SSH_HOST}'
-SSH_PORT='${SSH_PORT}'
-SSH_KEY='${SSH_KEY}'
-SMB_HOST='${SMB_HOST}'
-SMB_SHARE='${SMB_SHARE}'
-SMB_USER='${SMB_USER}'
-SMB_VERS='${SMB_VERS}'
-SMB_CRED_FILE='${SMB_CRED_FILE}'
-MOUNT_POINT='${MOUNT_POINT}'
-LOCAL_ROOT='${LOCAL_ROOT}'
-# Set when the backup drive was chosen from the list: the drive is then mounted
-# at LOCAL_ROOT by this UUID, through /etc/fstab. Empty for a typed folder.
-LOCAL_UUID='${LOCAL_UUID}'
-# Database history at the destination: one dump per day for HISTORY_DAYS days,
-# then one per week for HISTORY_WEEKS weeks.
-HISTORY_DAYS='${HISTORY_DAYS:-7}'
-HISTORY_WEEKS='${HISTORY_WEEKS:-4}'
-CONF
-chmod 600 "$CONF_FILE"
+config_tmp="$(mktemp "${CONF_FILE}.XXXXXX")"
+{
+  echo '# InteLIS backup configuration. Written by remote-backup.sh.'
+  echo "# Re-run 'intelis backup setup' to change any of this."
+  printf 'INSTANCE_NAME=%q\n' "$SANITIZED_NAME"
+  printf 'LAB_UUID=%q\n' "$LAB_UUID"
+  printf 'DEST_FOLDER=%q\n' "$DEST_FOLDER"
+  printf 'LIS_PATH=%q\n' "$LIS_PATH"
+  printf 'DEST_MODE=%q\n' "$DEST_MODE"
+  printf 'DEST_BASE=%q\n' "$DEST_BASE"
+  printf 'DEST_DIR=%q\n' "$DEST_DIR"
+  printf 'SSH_USER=%q\n' "$SSH_USER"
+  printf 'SSH_HOST=%q\n' "$SSH_HOST"
+  printf 'SSH_PORT=%q\n' "$SSH_PORT"
+  printf 'SSH_KEY=%q\n' "$SSH_KEY"
+  printf 'SMB_HOST=%q\n' "$SMB_HOST"
+  printf 'SMB_SHARE=%q\n' "$SMB_SHARE"
+  printf 'SMB_USER=%q\n' "$SMB_USER"
+  printf 'SMB_VERS=%q\n' "$SMB_VERS"
+  printf 'SMB_CRED_FILE=%q\n' "$SMB_CRED_FILE"
+  printf 'MOUNT_POINT=%q\n' "$MOUNT_POINT"
+  printf 'LOCAL_ROOT=%q\n' "$LOCAL_ROOT"
+  echo '# Set when the backup drive was chosen from the list. The drive is mounted'
+  echo '# at LOCAL_ROOT by this UUID through /etc/fstab. Empty for a typed folder.'
+  printf 'LOCAL_UUID=%q\n' "$LOCAL_UUID"
+  echo '# Database history at the destination: one dump per day for HISTORY_DAYS days,'
+  echo '# then one per week for HISTORY_WEEKS weeks.'
+  printf 'HISTORY_DAYS=%q\n' "${HISTORY_DAYS:-7}"
+  printf 'HISTORY_WEEKS=%q\n' "${HISTORY_WEEKS:-4}"
+} > "$config_tmp"
+chmod 600 "$config_tmp"
+mv -f "$config_tmp" "$CONF_FILE"
 umask 022
 print success "Settings saved to $CONF_FILE"
 
@@ -1747,7 +1810,23 @@ print success "Backups will run every 8 hours and after every restart"
 # The operator must not walk away believing this worked when it did not.
 
 print header "Running the first backup now"
-print info "This can take a while the first time. Leave this window open."
+if php -r '$c = json_decode(file_get_contents($argv[1]), true); exit(isset($c["scripts"]["backup"]) ? 0 : 1);' \
+    "${LIS_PATH}/composer.json"; then
+  print info "Creating a fresh database and settings backup before anything is sent."
+  if ! (cd "$LIS_PATH" && sudo -u www-data composer backup); then
+    print error "The local database and settings backup did not finish. Nothing was sent off this machine."
+    print info  "Fix the error above, then run: intelis backup"
+    exit 1
+  fi
+  print success "Fresh database and settings backup created"
+else
+  # Releases before the combined Composer command still create database dumps
+  # through cron. The runner below accepts those installs only when their main
+  # dump is present and no more than 24 hours old.
+  print warning "This older InteLIS release cannot create a fresh backup with Composer."
+  print info "Checking that its scheduled database dump is complete and recent before sending anything."
+fi
+print info "Sending the backup can take a while the first time. Leave this window open."
 echo
 
 if "$RUNNER"; then

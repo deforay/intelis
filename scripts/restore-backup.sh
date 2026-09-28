@@ -35,7 +35,7 @@ ACTION="restore"
 case "${1:-}" in
   "")        ACTION="restore" ;;
   --list)    ACTION="list" ;;
-  --help|-h) sed -n '3,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  --help|-h) sed -n '4,/^$/{ /^#/p; }' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
   *)         echo "Unknown option: $1"; echo "Try --help"; exit 2 ;;
 esac
 
@@ -196,6 +196,9 @@ cleanup() {
   if mountpoint -q "$RESTORE_MOUNT" 2>/dev/null; then
     umount "$RESTORE_MOUNT" 2>/dev/null || true
   fi
+  # Ad-hoc SMB credentials are needed only for this run. The backup machine's
+  # saved credential file has a different path and is never removed here.
+  [ "${REMOVE_RESTORE_CRED:-false}" = true ] && rm -f "$RESTORE_CRED"
   # Only symlinks to the drive; removing them leaves the drive untouched.
   [ -n "${FLAT_TMP:-}" ] && rm -rf "$FLAT_TMP"
   return 0
@@ -218,6 +221,7 @@ print header "InteLIS restore"
 SRC_MODE=""; SSH_USER=""; SSH_HOST=""; SSH_PORT="22"; SSH_KEY=""
 SMB_HOST=""; SMB_SHARE=""; SMB_USER=""; SMB_VERS=""
 LOCAL_ROOT=""; LOCAL_UUID=""; SRC_BASE=""; FLAT_TMP=""
+REMOVE_RESTORE_CRED=false
 
 # On the original machine the backup settings are already known, so there is
 # nothing to type. On a replacement machine they are not, so ask.
@@ -331,6 +335,7 @@ connect_smb() {
 
     umask 077
     printf 'username=%s\npassword=%s\n' "$SMB_USER" "$smb_pass" > "$RESTORE_CRED"
+    REMOVE_RESTORE_CRED=true
     chmod 600 "$RESTORE_CRED"
     umask 022
 
@@ -530,7 +535,7 @@ for folder in "${FOLDERS[@]}"; do
   host="$(printf '%s' "$meta" | awk -F= '/^hostname=/{print $2}')"
   updated="$(printf '%s' "$meta" | awk -F= '/^updated_at=|^created_at=/{print $2}' | head -1)"
   # Dumps only: db-tools writes a .meta.json beside each one, and it sorts newest.
-  newest="$(src_exec "ls -1t ${q_folder}/backups/db 2>/dev/null | grep -E '\.sql(\.gz|\.zst|\.zip)?(\.gpg)?$' | head -1 || true" | tr -d '\r')"
+  newest="$(src_exec "ls -1t ${q_folder}/backups/db 2>/dev/null | grep -E '^(vlsm|intelis)-.*\.sql(\.gz|\.zst|\.zip)?(\.gpg)?$' | head -1 || true" | tr -d '\r')"
 
   idx=$((idx + 1))
   CHOICES+=("$folder")
@@ -606,9 +611,25 @@ case "$what" in
   *)  SUBPATHS=(":") ;;
 esac
 
-# Not under /root: that folder is 0700, and db-tools runs as www-data.
-ask STAGING "Where should the files be put on this machine?" "/var/intelis-restore/${CHOSEN}"
-mkdir -p "$STAGING"
+# Keep the configurable location supported by earlier releases, but create a
+# new child for every run. Reusing the location itself can leave a newer dump
+# from another source behind, and the restore would select that stale file.
+ask STAGING_ROOT "Where should the restore folder be created?" "/var/intelis-restore"
+case "$STAGING_ROOT" in
+  /*) ;;
+  *) print error "The restore folder must be an absolute path, starting with /."; exit 1 ;;
+esac
+[ ! -e "$STAGING_ROOT" ] || [ -d "$STAGING_ROOT" ] || {
+  print error "${STAGING_ROOT} exists and is not a folder."
+  exit 1
+}
+mkdir -p "$STAGING_ROOT"
+staging_label="$(printf '%s' "$CHOSEN" | tr -cd '[:alnum:]_.-')"
+[ -n "$staging_label" ] || staging_label="lab"
+STAGING="$(mktemp -d "${STAGING_ROOT%/}/${staging_label}-$(date -u +%Y%m%d-%H%M%S).XXXXXX")"
+chmod 0750 "$STAGING"
+print info "Using a new restore folder so files from an earlier restore cannot be selected:"
+print info "$STAGING"
 
 # --- copy it down -------------------------------------------------------------
 
@@ -732,34 +753,35 @@ if [ -n "$LIS_PATH" ]; then
   print warning "Restoring the database REPLACES everything currently in it."
   print info    "A safety copy of the current database is taken first, so this can be undone."
   echo
-  # Names the lab, not just the path. ask_choice falls back to its default when
-  # a gum menu is dismissed with Esc, so this confirm is the last point at which
+  # Resolve the exact file before asking for destructive confirmation. The
+  # operator sees both the source lab and the dump that is about to replace the
+  # live database, including when a damaged newest dump has been skipped.
+  newest_dump=""
+  if [ -n "$HIST_FILE" ]; then
+    newest_dump="${DUMP_DIR}/${HIST_FILE}"
+    for bad in ${BAD_DUMPS[@]+"${BAD_DUMPS[@]}"}; do
+      [ "$bad" = "$newest_dump" ] && { print error "The chosen backup is damaged. Run this again and choose another date."; exit 1; }
+    done
+  fi
+  [ -n "$newest_dump" ] || while IFS= read -r candidate; do
+    damaged=false
+    for bad in ${BAD_DUMPS[@]+"${BAD_DUMPS[@]}"}; do
+      [ "$bad" = "$candidate" ] && { damaged=true; break; }
+    done
+    $damaged || { newest_dump="$candidate"; break; }
+  done < <(main_dumps_newest_first "$DUMP_DIR")
+  if [ -z "$newest_dump" ]; then
+    print error "No readable main-database backup (a .sql, .sql.gz, .sql.zst, .gpg or .zip file) was found in ${DUMP_DIR}."
+    exit 1
+  fi
+  print info "Backup file: $(basename "$newest_dump")"
+  print info "Target installation: ${LIS_PATH}"
+  echo
+  # Require the backup name, not a generic yes. This is the last point at which
   # restoring the wrong lab's database over this one is still catchable.
-  if confirm "Restore ${CHOSEN} into ${LIS_PATH} now?"; then
-    # Only real dump files. db-tools writes a .meta.json beside every dump, and
-    # 'vlsm-*' alone matched it: it sorts after the dump, so it was the file
-    # handed to db-tools, which then emptied the database and failed. Files the
-    # check above found damaged are skipped too; the newest readable one wins.
-    newest_dump=""
-    # A dated restore restores the date that was chosen, not whatever is newest
-    # in a staging folder that may hold files from an earlier run.
-    if [ -n "$HIST_FILE" ]; then
-      newest_dump="${DUMP_DIR}/${HIST_FILE}"
-      for bad in ${BAD_DUMPS[@]+"${BAD_DUMPS[@]}"}; do
-        [ "$bad" = "$newest_dump" ] && { print error "The chosen backup is damaged. Run this again and choose another date."; exit 1; }
-      done
-    fi
-    [ -n "$newest_dump" ] || while IFS= read -r candidate; do
-      damaged=false
-      for bad in ${BAD_DUMPS[@]+"${BAD_DUMPS[@]}"}; do
-        [ "$bad" = "$candidate" ] && { damaged=true; break; }
-      done
-      $damaged || { newest_dump="$candidate"; break; }
-    done < <(main_dumps_newest_first "$DUMP_DIR")
-    if [ -z "$newest_dump" ]; then
-      print error "No readable main-database backup (a .sql, .sql.gz, .sql.zst, .gpg or .zip file) was found in ${DUMP_DIR}."
-      exit 1
-    fi
+  restore_confirmation=""
+  ask_text restore_confirmation "" "Type ${CHOSEN} to confirm that this is the backup to restore"
+  if [ "$restore_confirmation" = "$CHOSEN" ]; then
     # db-tools reads its settings from the current folder and runs as www-data.
     # It writes the safety copy to its profile's output folder (backups/db of
     # the install), not next to the dump being restored.
@@ -771,7 +793,10 @@ if [ -n "$LIS_PATH" ]; then
     if (cd "$LIS_PATH" && sudo -u www-data php vendor/bin/db-tools restore "$newest_dump"); then
       rm -f "$restore_started"
       print success "Database restored"
-      (cd "$LIS_PATH" && sudo -u www-data php bin/migrate.php) || print warning "Could not apply database migrations; run 'intelis migrate' by hand."
+      if ! (cd "$LIS_PATH" && sudo -u www-data php bin/migrate.php); then
+        print error "The database is restored, but its migrations did not finish. Run 'intelis migrate' before using InteLIS."
+        exit 1
+      fi
       print info "Log in and check Admin → System Config."
     else
       print error "The restore did not finish."
@@ -831,3 +856,5 @@ fi
 
 echo
 print success "The backup is on this machine, in ${STAGING}"
+print info "After InteLIS is checked, remove only this fetched copy:"
+printf '    sudo rm -rf -- %q\n' "$STAGING"

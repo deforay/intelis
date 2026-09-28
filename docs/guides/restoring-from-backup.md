@@ -4,10 +4,10 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-09-28
+reviewed_against: 5.7.81
 ---
-# Restoring from a Backup
+# How to restore from a backup
 
 Put the database back from a backup on a machine where InteLIS already runs.
 Uploaded files and attachments can come back too.
@@ -100,20 +100,22 @@ was made are lost.
 
         On older installs, type `cd /var/www/vlsm` instead.
 
-    2. Start the restore:
+    2. Download the current restore script and run it:
 
         ```bash
-        intelis restore
+        wget -O ~/restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
+        sudo bash ~/restore-backup.sh
         ```
 
-        ??? info "If `intelis` is not recognised"
+        The download replaces only the restore script in your home folder. It
+        does not update InteLIS.
 
-            The install is older. Download the restore script and run it from
-            the same folder:
+        ??? info "If this machine cannot reach the internet"
+
+            Use the script included with the installed InteLIS version:
 
             ```bash
-            wget -O ~/restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
-            sudo bash ~/restore-backup.sh
+            intelis restore
             ```
 
     3. At **Fetch the backup from there?**, choose **Yes**. The script uses the
@@ -147,17 +149,16 @@ was made are lost.
             `Backing up to` line shows where they go.
 
     5. At **What should be copied back?**, choose **Just the database backups**.
-    6. At **Where should the files be put on this machine?**, type this and
-       press Enter:
+    6. At **Where should the restore folder be created?**, press Enter to use
+       `/var/intelis-restore`. Write down the new restore folder shown next. It
+       looks like this:
 
         ```text
-        /var/intelis-restore
+        /var/intelis-restore/centrallab-12345678-20260928-120000.ABCDEF
         ```
 
-        Type exactly this path, so the commands in the later steps match.
-        Older versions of the script offer a folder under `/root`. Do not accept
-        it: the restore runs as the web server's account, which cannot read
-        `/root`, and it fails.
+        Each restore uses a new folder. Files fetched by an earlier restore
+        cannot be selected by mistake.
 
     7. Wait for the copy to finish. The script then checks each database
        backup. Files listed as encrypted are not checked. They open during the
@@ -165,13 +166,15 @@ was made are lost.
 
         ??? failure "If a file is reported as damaged"
 
-            Choose **Yes** at the next question. The script skips damaged
-            files and restores the newest readable backup.
+            Check that another backup is listed as readable. At the confirmation,
+            type the backup name. The script skips damaged files and restores
+            the newest readable backup.
 
     ### Restore the database
 
-    8. At **Restore … into /var/www/intelis now?**, check the lab name, then
-       choose **Yes**.
+    8. Check the displayed backup file and target installation. At
+       **Type … to confirm that this is the backup to restore**, type the lab
+       name exactly as shown.
     9. Wait for `Database restored`. The script first saves a safety copy of the
        current database, then restores the newest backup starting with `vlsm-`,
        then applies the database updates.
@@ -187,7 +190,7 @@ was made are lost.
             `/var/www/intelis/backups/db` (`/var/www/vlsm/backups/db` on older
             installs), run it, then contact support with the message shown.
 
-        ??? failure "If it says `Could not apply database migrations`"
+        ??? failure "If it says `The database is restored, but its migrations did not finish`"
 
             The data is back. Apply the updates by hand:
 
@@ -210,19 +213,15 @@ was made are lost.
         sudo -u www-data php vendor/bin/db-tools restore --profile=interfacing
         ```
 
-        Open the **Files** app and press **Ctrl+L**. Type
-        `/var/intelis-restore/db` and press Enter. Drag the newest file starting
+        Open the **Files** app and press **Ctrl+L**. Type the restore folder from
+        step 6, followed by `/db`, and press Enter. Drag the newest file starting
         with `interfacing-` onto the terminal window, and press Enter.
 
         Always keep `--profile=interfacing` in this command. Without it, the
         file is restored over the main database.
 
-    15. When the lab works, delete the fetched copy. It holds the database
-        password.
-
-        ```bash
-        sudo rm -rf /var/intelis-restore
-        ```
+    15. When the lab works, run the exact cleanup command printed by the script.
+        It removes only this fetched copy, which holds the database password.
 
 === "Older date"
 
@@ -241,20 +240,22 @@ was made are lost.
 
         On older installs, type `cd /var/www/vlsm` instead.
 
-    2. Start the restore:
+    2. Download the current restore script and run it:
 
         ```bash
-        intelis restore
+        wget -O ~/restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
+        sudo bash ~/restore-backup.sh
         ```
 
-        ??? info "If `intelis` is not recognised"
+        The download replaces only the restore script in your home folder. It
+        does not update InteLIS.
 
-            The install is older. Download the restore script and run it from
-            the same folder:
+        ??? info "If this machine cannot reach the internet"
+
+            Use the script included with the installed InteLIS version:
 
             ```bash
-            wget -O ~/restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
-            sudo bash ~/restore-backup.sh
+            intelis restore
             ```
 
     3. At **Fetch the backup from there?**, choose **Yes**. The script uses the
@@ -298,27 +299,30 @@ was made are lost.
             updated. Until then, only the newest backups exist. Follow the
             **Only the database** tab instead.
 
-    7. At **Where should the files be put on this machine?**, type this and
-       press Enter:
+    7. At **Where should the restore folder be created?**, press Enter to use
+       `/var/intelis-restore`. Write down the new restore folder shown next. It
+       looks like this:
 
         ```text
-        /var/intelis-restore
+        /var/intelis-restore/centrallab-12345678-20260928-120000.ABCDEF
         ```
 
-        Type exactly this path, so the commands in the later steps match.
+        Each restore uses a new folder. Files fetched by an earlier restore
+        cannot be selected by mistake.
 
     8. Wait for the copy to finish. The script then checks the backup. A file
        listed as encrypted is not checked. It opens during the restore.
 
         ??? failure "If the file is reported as damaged"
 
-            At the next question, choose **No**. Run `intelis restore` again
-            and choose another date.
+            Do not type the backup name at the confirmation. Run
+            `intelis restore` again and choose another date.
 
     ### Restore the database
 
-    9. At **Restore … into /var/www/intelis now?**, check the lab name, then
-       choose **Yes**.
+    9. Check the displayed backup file and target installation. At
+       **Type … to confirm that this is the backup to restore**, type the lab
+       name exactly as shown.
     10. Wait for `Database restored`. The script first saves a safety copy of
         the current database, then restores the chosen backup, then applies the
         database updates.
@@ -334,7 +338,7 @@ was made are lost.
             `/var/www/intelis/backups/db` (`/var/www/vlsm/backups/db` on older
             installs), run it, then contact support with the message shown.
 
-        ??? failure "If it says `Could not apply database migrations`"
+        ??? failure "If it says `The database is restored, but its migrations did not finish`"
 
             The data is back. Apply the updates by hand:
 
@@ -353,12 +357,8 @@ was made are lost.
     15. If the lab uses the interfacing tool, its database stays as it is. To
         put it back to the same day too, contact support.
 
-    16. When the lab works, delete the fetched copy. It holds the database
-        password.
-
-        ```bash
-        sudo rm -rf /var/intelis-restore
-        ```
+    16. When the lab works, run the exact cleanup command printed by the script.
+        It removes only this fetched copy, which holds the database password.
 
 === "Database and uploaded files"
 
@@ -376,20 +376,22 @@ was made are lost.
 
         On older installs, type `cd /var/www/vlsm` instead.
 
-    2. Start the restore:
+    2. Download the current restore script and run it:
 
         ```bash
-        intelis restore
+        wget -O ~/restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
+        sudo bash ~/restore-backup.sh
         ```
 
-        ??? info "If `intelis` is not recognised"
+        The download replaces only the restore script in your home folder. It
+        does not update InteLIS.
 
-            The install is older. Download the restore script and run it from
-            the same folder:
+        ??? info "If this machine cannot reach the internet"
+
+            Use the script included with the installed InteLIS version:
 
             ```bash
-            wget -O ~/restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
-            sudo bash ~/restore-backup.sh
+            intelis restore
             ```
 
     3. At **Fetch the backup from there?**, choose **Yes**. The script uses the
@@ -424,17 +426,16 @@ was made are lost.
 
     5. At **What should be copied back?**, choose
        **Everything, including uploaded files and attachments**.
-    6. At **Where should the files be put on this machine?**, type this and
-       press Enter:
+    6. At **Where should the restore folder be created?**, press Enter to use
+       `/var/intelis-restore`. Write down the new restore folder shown next. It
+       looks like this:
 
         ```text
-        /var/intelis-restore
+        /var/intelis-restore/centrallab-12345678-20260928-120000.ABCDEF
         ```
 
-        Type exactly this path, so the commands in the later steps match.
-        Older versions of the script offer a folder under `/root`. Do not accept
-        it: the restore runs as the web server's account, which cannot read
-        `/root`, and it fails.
+        Each restore uses a new folder. Files fetched by an earlier restore
+        cannot be selected by mistake.
 
     7. Wait for the copy to finish. It copies the whole InteLIS folder and can
        take hours over a network. The script then checks each database backup.
@@ -442,13 +443,15 @@ was made are lost.
 
         ??? failure "If a file is reported as damaged"
 
-            Choose **Yes** at the next question. The script skips damaged
-            files and restores the newest readable backup.
+            Check that another backup is listed as readable. At the confirmation,
+            type the backup name. The script skips damaged files and restores
+            the newest readable backup.
 
     ### Restore the database
 
-    8. At **Restore … into /var/www/intelis now?**, check the lab name, then
-       choose **Yes**.
+    8. Check the displayed backup file and target installation. At
+       **Type … to confirm that this is the backup to restore**, type the lab
+       name exactly as shown.
     9. Wait for `Database restored`. The script first saves a safety copy of the
        current database, then restores the newest backup starting with `vlsm-`,
        then applies the database updates.
@@ -464,7 +467,7 @@ was made are lost.
             `/var/www/intelis/backups/db` (`/var/www/vlsm/backups/db` on older
             installs), run it, then contact support with the message shown.
 
-        ??? failure "If it says `Could not apply database migrations`"
+        ??? failure "If it says `The database is restored, but its migrations did not finish`"
 
             The data is back. Apply the updates by hand:
 
@@ -474,24 +477,31 @@ was made are lost.
 
     ### Put the uploaded files back
 
-    10. Check what the copy holds:
+    10. Save the restore folder from step 6 in the terminal. Replace the example
+        with the path shown by the script:
 
         ```bash
-        ls /var/intelis-restore/public/uploads
+        restore_dir="/var/intelis-restore/centrallab-12345678-20260928-120000.ABCDEF"
         ```
 
-    11. List what would be copied, without changing anything:
+    11. Check what the copy holds:
 
         ```bash
-        sudo rsync -a --dry-run --itemize-changes /var/intelis-restore/public/uploads/ /var/www/intelis/public/uploads/
+        ls "$restore_dir/public/uploads"
+        ```
+
+    12. List what would be copied, without changing anything:
+
+        ```bash
+        sudo rsync -a --dry-run --itemize-changes "$restore_dir/public/uploads/" /var/www/intelis/public/uploads/
         ```
 
         Each line is a file that is missing or different on this machine.
 
-    12. Copy the files across:
+    13. Copy the files across:
 
         ```bash
-        sudo rsync -a /var/intelis-restore/public/uploads/ /var/www/intelis/public/uploads/
+        sudo rsync -a "$restore_dir/public/uploads/" /var/www/intelis/public/uploads/
         ```
 
         On older installs, type `/var/www/vlsm/public/uploads/` as the last
@@ -502,13 +512,13 @@ was made are lost.
         older samples:
 
         ```bash
-        sudo rsync -a /var/intelis-restore/var/audit-trail/ /var/www/intelis/var/audit-trail/
+        sudo rsync -a "$restore_dir/var/audit-trail/" /var/www/intelis/var/audit-trail/
         ```
 
         On older installs, type `/var/www/vlsm/var/audit-trail/` as the last
         path.
 
-    13. Repair the file ownership, so the web server can read the restored
+    14. Repair the file ownership, so the web server can read the restored
         files:
 
         ```bash
@@ -517,30 +527,26 @@ was made are lost.
 
     ### Check the lab
 
-    14. Open InteLIS in the browser.
-    15. Log in with an administrator account that existed when the backup was
+    15. Open InteLIS in the browser.
+    16. Log in with an administrator account that existed when the backup was
         made.
-    16. Check the lab settings under **Admin → System Configuration → General Configuration**.
-    17. Open a request entered shortly before the backup, and check its results
+    17. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    18. Open a request entered shortly before the backup, and check its results
         are there.
-    18. Open a result PDF or an attachment, and check it displays.
-    19. If the lab uses the interfacing tool, restore its database too. Type
+    19. Open a result PDF or an attachment, and check it displays.
+    20. If the lab uses the interfacing tool, restore its database too. Type
         this, followed by a space. Do not press Enter yet:
 
         ```bash
         sudo -u www-data php vendor/bin/db-tools restore --profile=interfacing
         ```
 
-        Open the **Files** app and press **Ctrl+L**. Type
-        `/var/intelis-restore/backups/db` and press Enter. Drag the newest file
+        Open the **Files** app and press **Ctrl+L**. Type the restore folder from
+        step 6, followed by `/backups/db`, and press Enter. Drag the newest file
         starting with `interfacing-` onto the terminal window, and press Enter.
 
         Always keep `--profile=interfacing` in this command. Without it, the
         file is restored over the main database.
 
-    20. When the lab works, delete the fetched copy. It holds the database
-        password.
-
-        ```bash
-        sudo rm -rf /var/intelis-restore
-        ```
+    21. When the lab works, run the exact cleanup command printed by the script.
+        It removes only this fetched copy, which holds the database password.
