@@ -121,7 +121,7 @@ was made are lost.
             | --- | --- |
             | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
             | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
-            | **On a USB or external drive plugged into this machine** | The folder on the drive. The script lists the drives. Type the path shown in the `MOUNTPOINT` column for the USB drive, for example `/media/labuser/BACKUP`, or press Enter when it is offered. A `backups` folder copied onto the drive by hand also works. |
+            | **On a USB or external drive plugged into this machine** | Choose the drive from the list. The script finds its `backups` folder, then asks which lab to restore. If the backup is elsewhere, choose **Browse folders inside a drive**. Open folders until you reach the backup, then choose **Use this folder**. |
 
         ??? failure "If it says `Could not connect`"
 
@@ -252,7 +252,7 @@ was made are lost.
             | --- | --- |
             | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
             | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
-            | **On a USB or external drive plugged into this machine** | The folder on the drive. The script lists the drives. Type the path shown in the `MOUNTPOINT` column for the USB drive, for example `/media/labuser/BACKUP`, or press Enter when it is offered. A `backups` folder copied onto the drive by hand also works. |
+            | **On a USB or external drive plugged into this machine** | Choose the drive from the list. The script finds its `backups` folder, then asks which lab to restore. If the backup is elsewhere, choose **Browse folders inside a drive**. Open folders until you reach the backup, then choose **Use this folder**. |
 
         ??? failure "If it says `Could not connect`"
 
@@ -379,7 +379,7 @@ was made are lost.
             | --- | --- |
             | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
             | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
-            | **On a USB or external drive plugged into this machine** | The folder on the drive. The script lists the drives. Type the path shown in the `MOUNTPOINT` column for the USB drive, for example `/media/labuser/BACKUP`, or press Enter when it is offered. A `backups` folder copied onto the drive by hand also works. |
+            | **On a USB or external drive plugged into this machine** | Choose the drive from the list. The script finds its `backups` folder, then asks which lab to restore. If the backup is elsewhere, choose **Browse folders inside a drive**. Open folders until you reach the backup, then choose **Use this folder**. |
 
         ??? failure "If it says `Could not connect`"
 

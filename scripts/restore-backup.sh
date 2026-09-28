@@ -367,30 +367,72 @@ connect_local() {
     print success "Reading from $SRC_BASE"
     return
   fi
-  if command -v lsblk >/dev/null 2>&1; then
-    echo
-    lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT 2>/dev/null | grep -v '^loop' || true
-    echo
-  fi
-  # With one drive plugged in, its mount point is the answer nearly every time.
-  local default_root="${LOCAL_ROOT:-}" answer resolved flat mounts rc
-  if [ -z "$default_root" ]; then
-    mapfile -t mounts < <(local_mounts)
-    [ "${#mounts[@]}" -eq 1 ] && default_root="${mounts[0]}"
-  fi
+  local default_root="${LOCAL_ROOT:-}" answer resolved flat rc choice key browse_key
+  local -a options=() browse_options=()
   while true; do
-    ask answer "Folder on the drive that holds the backups (the MOUNTPOINT shown above)" "$default_root"
+    list_local_mounts
+    options=()
+    for key in "${!LOCAL_MOUNT_PATHS[@]}"; do
+      options+=("${key}:${LOCAL_MOUNT_LABELS[$key]}:$(menu_safe "${LOCAL_MOUNT_PATHS[$key]}")")
+    done
+    options+=("rescan:Look again:Use this after plugging in the drive."
+              "browse:Browse folders inside a drive:Open folders until you reach the backup."
+              "folder:Drag or type a folder:Use this when you already have the folder open in Files.")
+
+    if [ "${#LOCAL_MOUNT_PATHS[@]}" -eq 0 ]; then
+      print warning "No mounted external drive was found. Plug it in, wait a few seconds, then choose Look again."
+      choose choice "rescan" "Which drive holds the backup?" "${options[@]}"
+    else
+      choice=""
+      for key in "${!LOCAL_MOUNT_PATHS[@]}"; do
+        [ "${LOCAL_MOUNT_PATHS[$key]}" = "$default_root" ] && choice="$key"
+      done
+      [ -n "$choice" ] || choice=0
+      choose choice "$choice" "Which drive holds the backup?" "${options[@]}"
+    fi
+
+    case "$choice" in
+      rescan) default_root=""; continue ;;
+      browse)
+        if [ "${#LOCAL_MOUNT_PATHS[@]}" -eq 0 ]; then
+          print warning "No mounted external drive was found."
+          continue
+        fi
+        browse_key=0
+        if [ "${#LOCAL_MOUNT_PATHS[@]}" -gt 1 ]; then
+          browse_options=()
+          for key in "${!LOCAL_MOUNT_PATHS[@]}"; do
+            browse_options+=("${key}:${LOCAL_MOUNT_LABELS[$key]}:$(menu_safe "${LOCAL_MOUNT_PATHS[$key]}")")
+          done
+          choose browse_key "0" "Which drive should be browsed?" "${browse_options[@]}"
+        fi
+        if ! browse_local_folder "${LOCAL_MOUNT_PATHS[$browse_key]}"; then
+          default_root=""
+          continue
+        fi
+        answer="$BROWSED_FOLDER"
+        ;;
+      folder)
+        ask answer "Drag the backup folder here from Files, or type its full path" "$default_root"
+        answer="$(normalize_path_input "$answer")"
+        ;;
+      *) answer="${LOCAL_MOUNT_PATHS[$choice]}" ;;
+    esac
+
     rc=0; resolved="$(resolve_local_root "$answer")" || rc=$?
     if [ "$rc" -eq 2 ]; then
-      print warning "'$answer' is on more than one drive. Type the full path, starting with the MOUNTPOINT shown above."
+      print warning "'$answer' matches more than one drive. Choose the drive from the list."
+      default_root=""
       continue
     elif [ "$rc" -ne 0 ]; then
-      print warning "'$answer' was not found. Type the full path from the MOUNTPOINT column, for example /media/labuser/BACKUP."
+      print warning "'$answer' was not found. Check that the drive is plugged in, then choose Look again."
+      default_root=""
       continue
     fi
     case "$resolved/" in
       /var/intelis-restore/*|/root/intelis-restore/*)
-        print warning "'$resolved' is where this script puts its copy, not where the backup is. Type the drive's path."
+        print warning "'$resolved' is where this script puts its copy, not where the backup is. Choose the flash drive."
+        default_root=""
         continue ;;
     esac
     LOCAL_ROOT="$resolved"
@@ -422,13 +464,120 @@ connect_local() {
   print success "Reading from $SRC_BASE"
 }
 
+# lsblk -P escapes spaces and quotes in field values as \xNN. Decode those
+# values before showing labels and mount points in the drive menu.
+lsblk_field() {
+  local re="(^|[[:space:]])${2}=\"([^\"]*)\""
+  [[ "$1" =~ $re ]] || return 0
+  printf '%b' "${BASH_REMATCH[2]}"
+}
+
+menu_safe() { printf '%s' "$1" | tr ':' '-'; }
+
+# Ubuntu's Files app pastes shell-safe paths into a terminal. Remove the outer
+# quotes and backslash escaping without evaluating any part of the input.
+normalize_path_input() {
+  local value=$1 before rest out=""
+  case "$value" in
+    \'*\'|\"*\") value="${value:1:${#value}-2}" ;;
+  esac
+  while [[ "$value" == *\\* ]]; do
+    before="${value%%\\*}"
+    rest="${value#*\\}"
+    if [ -z "$rest" ]; then
+      out="${out}${before}\\"
+      value=""
+      break
+    fi
+    out="${out}${before}${rest:0:1}"
+    value="${rest:1}"
+  done
+  printf '%s' "${out}${value}"
+}
+
+declare -a LOCAL_MOUNT_PATHS=() LOCAL_MOUNT_LABELS=()
+list_local_mounts() {
+  LOCAL_MOUNT_PATHS=(); LOCAL_MOUNT_LABELS=()
+  command -v lsblk >/dev/null 2>&1 || return 0
+
+  local line type size label mount display seen existing
+  while IFS= read -r line; do
+    type="$(lsblk_field "$line" TYPE)"
+    size="$(lsblk_field "$line" SIZE)"
+    label="$(lsblk_field "$line" LABEL)"
+    mount="$(lsblk_field "$line" MOUNTPOINT)"
+    case "$type" in part|disk) ;; *) continue ;; esac
+    case "$mount" in /media/*|/run/media/*|/mnt/*) ;; *) continue ;; esac
+    [ -d "$mount" ] || continue
+
+    seen=false
+    for existing in "${LOCAL_MOUNT_PATHS[@]}"; do
+      [ "$existing" = "$mount" ] && seen=true
+    done
+    $seen && continue
+
+    display="${label:-$(basename "$mount")}"
+    [ -n "$size" ] && display="${display} (${size})"
+    LOCAL_MOUNT_PATHS+=("$mount")
+    LOCAL_MOUNT_LABELS+=("$(menu_safe "$display")")
+  done < <(lsblk -Ppno TYPE,SIZE,LABEL,MOUNTPOINT 2>/dev/null)
+}
+
+BROWSED_FOLDER=""
+browse_local_folder() {
+  local root=${1%/} current choice default key folder
+  local -a folders=() options=()
+  [ -n "$root" ] || root="/"
+  current="$root"
+
+  while true; do
+    folders=()
+    while IFS= read -r folder; do
+      folders+=("$folder")
+    done < <(find "$current" -mindepth 1 -maxdepth 1 -type d ! -name '.*' -print 2>/dev/null | sort)
+
+    options=()
+    for key in "${!folders[@]}"; do
+      options+=("d${key}:$(menu_safe "$(basename "${folders[$key]}")"):Open this folder.")
+    done
+    [ "$current" = "$root" ] || options+=("up:Go up:Return to $(menu_safe "$(basename "$(dirname "$current")")").")
+    options+=("use:Use this folder:$(menu_safe "$current")"
+              "cancel:Stop browsing:Return to the drive list.")
+
+    if folder_looks_like_backup "$current"; then
+      default="use"
+    elif [ "${#folders[@]}" -gt 0 ]; then
+      default="d0"
+    else
+      default="up"
+      [ "$current" = "$root" ] && default="cancel"
+    fi
+
+    print info "Current folder: $current"
+    choose choice "$default" "Open a folder or use the current one" "${options[@]}"
+    case "$choice" in
+      use)
+        if ! folder_looks_like_backup "$current"; then
+          print warning "No InteLIS backup was found directly in this folder."
+          confirm "Use this folder anyway?" || continue
+        fi
+        BROWSED_FOLDER="$current"
+        return 0
+        ;;
+      up) current="$(dirname "$current")" ;;
+      cancel) BROWSED_FOLDER=""; return 1 ;;
+      d*) current="${folders[${choice#d}]}" ;;
+    esac
+  done
+}
+
 # Mount points of attached drives, where Ubuntu and the backup setup put them.
-# lsblk -r writes a space in a name as \x20, which printf %b turns back.
 local_mounts() {
-  local m
-  lsblk -rno MOUNTPOINT 2>/dev/null | while IFS= read -r m; do
-    printf '%b\n' "$m"
-  done | grep -E '^/(media|run/media|mnt)/' || true
+  local mount
+  list_local_mounts
+  for mount in "${LOCAL_MOUNT_PATHS[@]}"; do
+    printf '%s\n' "$mount"
+  done
 }
 
 # Accepts a full path, or the name of a drive or of a folder on one, since the
@@ -496,6 +645,15 @@ flat_dump_dir() {
     if has_main_dumps "$dir"; then printf '%s' "$dir"; return 0; fi
   done
   return 1
+}
+
+# Recognize a drive root, a collection of lab folders, one lab folder, or a
+# folder holding dump files. The browser uses this only to suggest its default.
+folder_looks_like_backup() {
+  local root=$1
+  [ -d "${root}/backups" ] && return 0
+  flat_dump_dir "$root" >/dev/null && return 0
+  [ -n "$(find "$root" -mindepth 2 -maxdepth 3 -type d -path '*/backups/db' -print -quit 2>/dev/null)" ]
 }
 
 case "$SRC_MODE" in
