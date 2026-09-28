@@ -374,6 +374,35 @@ final class VlService extends AbstractTestService
         }, 3600);
     }
 
+    /**
+     * Removes the HIV detection from the front of a result, however many times it is
+     * repeated there, so the caller can put it back exactly once.
+     *
+     * A stored GeneXpert result already starts with the detection ("HIV-1 Detected 121"),
+     * and an API client posting a saved record back sends that whole result along with
+     * hivDetection. Only the chosen detection is removed: a result that says the opposite
+     * is left in place, so the contradiction stays visible instead of being settled by
+     * guesswork.
+     */
+    public static function stripHivDetectionPrefix(string $result, ?string $hivDetection): string
+    {
+        $hivDetection = trim((string) $hivDetection);
+        if ($hivDetection === '' || trim($result) === '') {
+            return trim($result);
+        }
+
+        // Covers the spellings the edit forms already recognise: "HIV-1 Not Detected",
+        // "HIV1 NotDetected", "HIV Detected" and so on.
+        if (preg_match('/^HIV[\s-]*1?\s*(Not\s*)?Detected$/i', $hivDetection, $matches)) {
+            $not = empty($matches[1]) ? '' : 'Not\s*';
+            $phrase = 'HIV[\s-]*1?\s*' . $not . 'Detected\b';
+        } else {
+            $phrase = preg_quote($hivDetection, '/');
+        }
+
+        return trim((string) preg_replace('/^(?:\s*' . $phrase . ')+/i', '', $result));
+    }
+
     public function processViralLoadResultFromForm(array $params): array
     {
         $isRejected = 'no';
@@ -429,7 +458,8 @@ final class VlService extends AbstractTestService
         }
 
         $hivDetection ??= '';
-        $finalResult = trim("$hivDetection $finalResult");
+        $enteredResult = self::stripHivDetectionPrefix((string) $finalResult, $hivDetection);
+        $finalResult = trim("$hivDetection $enteredResult");
 
         if (
             !empty($params['api']) &&
