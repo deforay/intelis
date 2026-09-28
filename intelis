@@ -190,9 +190,9 @@ install_script() { # install_script <script-name.sh> <destination-name>
     tmp="$(mktemp)" || return 1
 
     if command -v wget >/dev/null 2>&1; then
-        wget -q -O "$tmp" "$url" || { rm -f "$tmp"; return 1; }
+        wget -q --timeout=15 --tries=1 -O "$tmp" "$url" || { rm -f "$tmp"; return 1; }
     elif command -v curl >/dev/null 2>&1; then
-        curl -fsSL -o "$tmp" "$url" || { rm -f "$tmp"; return 1; }
+        curl -fsSL --connect-timeout 10 --max-time 30 -o "$tmp" "$url" || { rm -f "$tmp"; return 1; }
     else
         rm -f "$tmp"
         error "Neither wget nor curl is installed, so nothing can be downloaded."
@@ -202,9 +202,9 @@ install_script() { # install_script <script-name.sh> <destination-name>
     # A truncated download is still a file. Refusing to install something that
     # is not a script beats installing it and failing later with a syntax error
     # from a line nobody wrote.
-    if [ "$(head -c 2 "$tmp")" != '#!' ]; then
+    if [ "$(head -c 2 "$tmp")" != '#!' ] || ! bash -n "$tmp"; then
         rm -f "$tmp"
-        error "What was downloaded is not a script. The machine may be behind a portal that intercepted the download."
+        error "What was downloaded is not a valid script. The machine may be behind a portal that intercepted the download."
         return 1
     fi
 
@@ -240,6 +240,21 @@ locate_script() { # locate_script <script-name.sh> <installed-name>
 
     error "Could not download ${script}. Check this machine's internet connection."
     return 1
+}
+
+# Prefer the current script, but keep recovery and backups usable without a
+# network connection. install_script validates and atomically replaces it.
+locate_current_script() { # locate_current_script <script-name.sh> <installed-name> [label]
+    local script=$1 installed=$2 label=${3:-$2}
+
+    info "Checking for the current ${label}..." >&2
+    if install_script "$script" "$installed" >&2; then
+        printf '%s' "/usr/local/bin/${installed}"
+        return 0
+    fi
+
+    warning "Could not check for a newer ${label}. Using the local copy." >&2
+    locate_script "$script" "$installed"
 }
 
 # --- the commands -------------------------------------------------------------
@@ -306,6 +321,11 @@ cmd_backup() {
 backup_now() {
     header "Backing up"
 
+    if [ -x /usr/local/bin/intelis-backup.sh ]; then
+        refresh_backup_runner
+        say ""
+    fi
+
     say "Step 1 of 2 — saving a fresh copy of the database and settings on this machine"
     if ! run_app_composer backup; then
         error "The local backup did not finish. Nothing has been sent off this machine."
@@ -339,15 +359,29 @@ backup_runner_action() {
     as_root /usr/local/bin/intelis-backup.sh "$@"
 }
 
+# Refresh only the generated runner. If the network or refresh fails, keep the
+# previous runner and continue. A backup must not depend on internet access.
+refresh_backup_runner() {
+    local script
+    if ! script="$(locate_current_script remote-backup.sh intelis-backup-setup 'backup setup script')"; then
+        warning "Could not check for a newer backup runner. Using the installed runner."
+        return 0
+    fi
+
+    if ! as_root bash "$script" --refresh-runner; then
+        warning "Could not refresh the backup runner. Using the installed runner."
+    fi
+}
+
 backup_setup() {
     local script
-    script="$(locate_script remote-backup.sh intelis-backup-setup)" || return 1
+    script="$(locate_current_script remote-backup.sh intelis-backup-setup 'backup setup script')" || return 1
     as_root bash "$script" "$@"
 }
 
 cmd_restore() {
     local script
-    script="$(locate_script restore-backup.sh intelis-restore)" || return 1
+    script="$(locate_current_script restore-backup.sh intelis-restore 'restore script')" || return 1
     as_root bash "$script" "$@"
 }
 

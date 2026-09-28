@@ -100,23 +100,14 @@ was made are lost.
 
         On older installs, type `cd /var/www/vlsm` instead.
 
-    2. Download the current restore script and run it:
+    2. Start the restore:
 
         ```bash
-        wget -O ~/restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
-        sudo bash ~/restore-backup.sh
+        intelis restore
         ```
 
-        The download replaces only the restore script in your home folder. It
-        does not update InteLIS.
-
-        ??? info "If this machine cannot reach the internet"
-
-            Use the script included with the installed InteLIS version:
-
-            ```bash
-            intelis restore
-            ```
+        The command checks for the current restore script before it runs. If
+        the machine is offline, it uses the installed script.
 
     3. At **Fetch the backup from there?**, choose **Yes**. The script uses the
        backup settings saved on this machine.
@@ -240,23 +231,14 @@ was made are lost.
 
         On older installs, type `cd /var/www/vlsm` instead.
 
-    2. Download the current restore script and run it:
+    2. Start the restore:
 
         ```bash
-        wget -O ~/restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
-        sudo bash ~/restore-backup.sh
+        intelis restore
         ```
 
-        The download replaces only the restore script in your home folder. It
-        does not update InteLIS.
-
-        ??? info "If this machine cannot reach the internet"
-
-            Use the script included with the installed InteLIS version:
-
-            ```bash
-            intelis restore
-            ```
+        The command checks for the current restore script before it runs. If
+        the machine is offline, it uses the installed script.
 
     3. At **Fetch the backup from there?**, choose **Yes**. The script uses the
        backup settings saved on this machine.
@@ -376,23 +358,14 @@ was made are lost.
 
         On older installs, type `cd /var/www/vlsm` instead.
 
-    2. Download the current restore script and run it:
+    2. Start the restore:
 
         ```bash
-        wget -O ~/restore-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/restore-backup.sh
-        sudo bash ~/restore-backup.sh
+        intelis restore
         ```
 
-        The download replaces only the restore script in your home folder. It
-        does not update InteLIS.
-
-        ??? info "If this machine cannot reach the internet"
-
-            Use the script included with the installed InteLIS version:
-
-            ```bash
-            intelis restore
-            ```
+        The command checks for the current restore script before it runs. If
+        the machine is offline, it uses the installed script.
 
     3. At **Fetch the backup from there?**, choose **Yes**. The script uses the
        backup settings saved on this machine.

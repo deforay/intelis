@@ -86,9 +86,9 @@ SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
 
 if command -v wget >/dev/null 2>&1; then
-  download_to() { wget -q -O "$1" "$2"; }
+  download_to() { wget -q --timeout=15 --tries=1 -O "$1" "$2"; }
 elif command -v curl >/dev/null 2>&1; then
-  download_to() { curl -fsSL -o "$1" "$2"; }
+  download_to() { curl -fsSL --connect-timeout 10 --max-time 30 -o "$1" "$2"; }
 else
   download_to() { return 1; }
 fi

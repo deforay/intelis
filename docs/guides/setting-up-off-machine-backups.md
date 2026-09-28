@@ -101,26 +101,14 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
 
     ### Set up the backup on the InteLIS machine
 
-    4. On the InteLIS machine, open a terminal. Download the current backup
-       setup script, then run it:
+    4. On the InteLIS machine, open a terminal and run:
 
         ```bash
-        cd ~
-        wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
-        sudo bash remote-backup.sh
+        intelis backup setup
         ```
 
-        The download replaces only the setup script in your home folder. It
-        does not update InteLIS. Running it installs the current scheduled
-        backup runner.
-
-        ??? info "If this machine cannot reach the internet"
-
-            Use the script included with the installed InteLIS version:
-
-            ```bash
-            intelis backup setup
-            ```
+        The command checks for the current backup setup script before it runs.
+        If the machine is offline, it uses the installed script.
 
     5. Answer the questions:
 
@@ -343,26 +331,14 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
 
     ### Set up the backup on the InteLIS machine
 
-    10. On the InteLIS machine, open a terminal. Download the current backup
-        setup script, then run it:
+    10. On the InteLIS machine, open a terminal and run:
 
         ```bash
-        cd ~
-        wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
-        sudo bash remote-backup.sh
+        intelis backup setup
         ```
 
-        The download replaces only the setup script in your home folder. It
-        does not update InteLIS. Running it installs the current scheduled
-        backup runner.
-
-        ??? info "If this machine cannot reach the internet"
-
-            Use the script included with the installed InteLIS version:
-
-            ```bash
-            intelis backup setup
-            ```
+        The command checks for the current backup setup script before it runs.
+        If the machine is offline, it uses the installed script.
 
     11. Answer the questions:
 
@@ -523,25 +499,14 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     ### Set up the backup
 
     1. Plug the drive into the InteLIS machine.
-    2. Open a terminal. Download the current backup setup script, then run it:
+    2. Open a terminal and run:
 
         ```bash
-        cd ~
-        wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
-        sudo bash remote-backup.sh
+        intelis backup setup
         ```
 
-        The download replaces only the setup script in your home folder. It
-        does not update InteLIS. Running it installs the current scheduled
-        backup runner.
-
-        ??? info "If this machine cannot reach the internet"
-
-            Use the script included with the installed InteLIS version:
-
-            ```bash
-            intelis backup setup
-            ```
+        The command checks for the current backup setup script before it runs.
+        If the machine is offline, it uses the installed script.
 
     3. Answer the first questions:
 
