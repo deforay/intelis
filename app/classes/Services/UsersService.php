@@ -490,6 +490,29 @@ final class UsersService
         return $verified;
     }
 
+    public function validateCurrentPassword(int $userId, string $currentPassword): bool {
+        if ($userId <= 0 || empty($currentPassword)) {
+            return false;
+        }
+
+        $user = $this->db->rawQueryOne(
+            "SELECT password
+            FROM {$this->table}
+            WHERE user_id = ?
+            LIMIT 1",
+            [$userId]
+        );
+
+        if (empty($user) || empty($user['password'])) {
+            return false;
+        }
+
+        return password_verify($currentPassword, $user['password']);
+    }
+
+
+
+
     public function saveUserAttributes($data, $userId)
     {
         if (!isset($data) || empty($data) || !isset($userId) || empty($userId)) {

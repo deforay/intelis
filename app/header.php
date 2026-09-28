@@ -268,6 +268,11 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 									</li>
 								<?php } ?>
 								<li class="user-footer">
+									<a href="/users/change-password.php" class="">
+										<?= _translate("Change Password"); ?>
+									</a>
+								</li>
+								<li class="user-footer">
 									<a href="/login/logout.php">
 										<?= _translate("Sign out"); ?>
 									</a>
