@@ -2,6 +2,7 @@
 
 
 
+use App\Utilities\ExportJobUtility;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Utilities\MiscUtility;
@@ -10,6 +11,12 @@ use App\Services\Covid19Service;
 use App\Registries\ContainerRegistry;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, 'covid19RequestSearchResultQuery')) {
+	return;
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -186,6 +193,7 @@ $resultSet = $db->rawQueryGenerator($_SESSION['covid19RequestSearchResultQuery']
 $no = 1;
 
 foreach ($resultSet as $aRow) {
+    ExportJobUtility::tick();
     $row = $buildRow($aRow, $no++);
     $writer->addRow(Row::fromValues($row));
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\ExportJobUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\MiscUtility;
@@ -12,6 +13,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, 'genericRequestQuery')) {
+	return;
+}
 
 
 
@@ -72,6 +79,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 	$no = 1;
 	$resultSet = $db->rawQuery($_SESSION['genericRequestQuery']);
 	foreach ($resultSet as $key => $aRow) {
+		ExportJobUtility::tick();
 		$row = [];
 
 

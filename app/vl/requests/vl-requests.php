@@ -1374,27 +1374,17 @@ function fnShowHide(iCol) {
 
 	function exportTestRequests() {
 
-		const exportButton = $('[onclick="exportTestRequests();"]');
-		const originalButtonHtml = exportButton.html();
-
-		exportButton.html('<i class="fa fa-spinner fa-spin"></i> <?php echo _translate("Generating..."); ?>').prop('disabled', true);
+		// No blocking overlay: progress shows in the export tray instead.
 		if (searchExecuted === false) {
-			searchVlRequestData();
+			searchExecuted = true;
+			oTable.fnDraw();
 		}
-		$.blockUI();
-		$.post("/vl/requests/export-vl-requests.php", {
+		// Runs in the background with a progress tray; the file downloads when ready,
+		// even if the user has moved on to another page by then.
+		IntelisExport.start("/vl/requests/export-vl-requests.php", {
 			reqSampleType: $('#requestSampleType').val(),
 			patientInfo: $('#patientInfo').val(),
-		},
-			function (data) {
-				$.unblockUI();
-				exportButton.html(originalButtonHtml).prop('disabled', false);
-				if (data === "" || data === null || data === undefined) {
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
-				} else {
-					window.open('/download.php?d=a&f=' + data, '_blank');
-				}
-			});
+		}, <?= json_encode(_translate("VL Requests Export")) ?>);
 	}
 
 	<?php if ($general->isLISInstance()) { ?>

@@ -544,20 +544,14 @@ $sampleStatusData = $general->getSampleStatus();
 
 	function exportTestRequests() {
 		if (searchExecuted === false) {
-			searchVlRequestData();
+			searchExecuted = true;
+			oTable.fnDraw();
 		}
-		$.blockUI();
-		$.post("/generic-tests/requests/export-generic-tests-requests.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/generic-tests/requests/export-generic-tests-requests.php", {
 			patientInfo: $('#patientInfo').val(),
-		},
-			function (data) {
-				$.unblockUI();
-				if (data === "" || data === null || data === undefined) {
-					alert("<?php echo _translate("Unable to generate the export"); ?>");
-				} else {
-					window.open('/download.php?d=a&f=' + data, '_blank');
-				}
-			});
+		}, <?= json_encode(_translate("Other Lab Tests Requests Export")) ?>);
 	}
 
 	<?php if ($general->isLISInstance()) { ?>

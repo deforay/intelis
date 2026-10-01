@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\ExportJobUtility;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -9,6 +10,12 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Utilities\SampleRejectionUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, 'cd4RequestQuery')) {
+	return;
+}
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -152,6 +159,7 @@ $resultSet = $db->rawQueryGenerator($_SESSION['cd4RequestQuery']);
 $no = 1;
 
 foreach ($resultSet as $aRow) {
+	ExportJobUtility::tick();
 	$row = $buildRow($aRow, $no++);
 	$writer->addRow(Row::fromValues($row));
 

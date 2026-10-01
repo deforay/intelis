@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\ExportJobUtility;
 use const COUNTRY\CAMEROON;
 use const COUNTRY\DRC;
 use const COUNTRY\BURKINA_FASO;
@@ -14,6 +15,12 @@ use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Utilities\SampleRejectionUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, 'eidExportResultQuery')) {
+	return;
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -190,6 +197,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 	$no = 1;
 
 	foreach ($resultSet as $aRow) {
+		ExportJobUtility::tick();
 		$row = $buildRow($aRow, $no++);
 		$writer->addRow(Row::fromValues($row));
 

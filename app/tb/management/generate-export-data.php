@@ -3,6 +3,7 @@
 
 
 
+use App\Utilities\ExportJobUtility;
 use App\Services\TbService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -13,6 +14,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use App\Utilities\SampleRejectionUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, 'tbResultQuery')) {
+	return;
+}
 
 
 /** @var DatabaseService $db */
@@ -47,6 +54,7 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 	$no = 1;
 	$resultSet = $db->rawQuery($_SESSION['tbResultQuery']);
 	foreach ($resultSet as $aRow) {
+		ExportJobUtility::tick();
 		$row = [];
 
 		// The platform is the sample's; the method is each test's type, in test order.

@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\ExportJobUtility;
 use const COUNTRY\CAMEROON;
 use const COUNTRY\DRC;
 use App\Services\EidService;
@@ -12,10 +13,19 @@ use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\DateUtility;
 use App\Utilities\SampleRejectionUtility;
 
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, 'eidRequestSearchResultQuery')) {
+	return;
+}
+
 
 ini_set('memory_limit', '512M');
-set_time_limit(300);
-ini_set('max_execution_time', 300);
+// A background job has no request to time out; a direct request keeps its limit.
+if (!ExportJobUtility::inBackground()) {
+	set_time_limit(300);
+	ini_set('max_execution_time', 300);
+}
 
 
 /** @var DatabaseService $db */
@@ -174,6 +184,7 @@ $resultSet = $db->rawQueryGenerator($_SESSION['eidRequestSearchResultQuery']);
 $no = 1;
 
 foreach ($resultSet as $aRow) {
+    ExportJobUtility::tick();
     $row = $buildRow($aRow, $no++);
     $writer->addRow(Row::fromValues($row));
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\ExportJobUtility;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Utilities\MiscUtility;
@@ -9,6 +10,12 @@ use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use App\Utilities\SampleRejectionUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, 'hepatitisResultQuery')) {
+	return;
+}
 
 
 /** @var DatabaseService $db */
@@ -40,6 +47,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 	$no = 1;
 	$resultSet = $db->rawQuery($_SESSION['hepatitisResultQuery']);
 	foreach ($resultSet as $aRow) {
+		ExportJobUtility::tick();
 		$row = [];
 		//set gender
 		$gender = match (strtolower((string)$aRow['patient_gender'])) {

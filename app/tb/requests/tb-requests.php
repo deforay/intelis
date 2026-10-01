@@ -727,21 +727,15 @@ foreach ($sourceOfRequests as $value => $displayText) {
 
     function exportAllPendingTbRequest() {
         if (searchExecuted === false) {
-            searchVlRequestData();
+            searchExecuted = true;
+            oTable.fnDraw();
         }
-        $.blockUI();
-        $.post("/tb/requests/export-tb-requests.php", {
+        // Runs in the background; progress shows in the navbar Exports menu and the
+        // file downloads when ready, even if the user has moved to another page.
+        IntelisExport.start("/tb/requests/export-tb-requests.php", {
                 reqSampleType: $('#requestSampleType').val(),
                 patientInfo: $('#patientInfo').val(),
-            },
-            function(data) {
-                $.unblockUI();
-                if (data === "" || data === null || data === undefined) {
-                    alert("<?php echo _translate("Unable to generate the excel file"); ?>");
-                } else {
-                    window.open('/download.php?d=a&f=' + data, '_blank');
-                }
-            });
+            }, <?= json_encode(_translate("TB Requests Export")) ?>);
     }
 
     <?php if ($general->isLISInstance()) { ?>

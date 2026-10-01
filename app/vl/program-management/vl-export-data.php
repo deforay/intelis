@@ -843,13 +843,13 @@ if ($formId == COUNTRY\CAMEROON) {
 	}
 
 	function exportInexcel() {
-		if (searchExecuted === false) {
-			searchVlRequestData();
-		}
+		// No blocking overlay: progress shows in the export tray instead.
+		searchExecuted = true;
 		var withAlphaNum = null;
-		$.blockUI();
 		oTable.fnDraw();
-		$.post('/vl/program-management/export-vl-results.php', {
+		// Runs in the background with a progress tray; the file downloads when ready,
+		// even if the user has moved on to another page by then.
+		IntelisExport.start('/vl/program-management/export-vl-results.php', {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				Batch_Code: $("#batchCode  option:selected").text(),
 				Sample_Type: $("#sampleType  option:selected").text(),
@@ -864,15 +864,7 @@ if ($formId == COUNTRY\CAMEROON) {
 				Show_Reorder_Sample: $("#showReordSample option:selected").text(),
 				withAlphaNum: withAlphaNum
 			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate excel"); ?>.");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+			<?= json_encode(_translate("VL Results Export")) ?>);
 	}
 
 	function hideFemaleDetails(value) {

@@ -646,13 +646,12 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function exportInexcel() {
-		if (searchExecuted === false) {
-			searchVlRequestData();
-		}
+		searchExecuted = true;
 		var withAlphaNum = null;
-		$.blockUI();
 		oTable.fnDraw();
-		$.post('generic-result-export-in-excel.php', {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start('generic-result-export-in-excel.php', {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				Batch_Code: $("#batchCode  option:selected").text(),
 				Sample_Type: $("#sampleType  option:selected").text(),
@@ -665,16 +664,7 @@ $state = $geolocationService->getProvinces("yes");
 				Status: ($("#status").val() || []).join(', '),
 				Show_Reorder_Sample: $("#showReordSample option:selected").text(),
 				withAlphaNum: withAlphaNum
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate excel"); ?>.");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+			}, <?= json_encode(_translate("Other Lab Tests Results Export")) ?>);
 	}
 
 	function hideFemaleDetails(value) {

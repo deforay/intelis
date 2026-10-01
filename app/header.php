@@ -248,6 +248,26 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 							</li>
 						<?php } ?>
 
+						<?php // Background export progress; filled in and shown by /assets/js/export-jobs.js. ?>
+						<li class="dropdown" id="exportJobsMenu" style="display:none;">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" title="<?= _htmlTranslate('Exports'); ?>">
+								<i class="fa-solid fa-file-arrow-down" id="exportJobsIcon"></i>
+								<span class="label label-warning" id="exportJobsCount"></span>
+							</a>
+							<ul class="dropdown-menu dropdown-menu-right" style="width:340px;max-width:calc(100vw - 32px);padding:0;">
+								<li class="header" style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f4f4f4;display:flex;justify-content:space-between;align-items:center;">
+									<span><?= _translate('Exports'); ?></span>
+									<?php // Wrapped in a span so the dropdown's "li > a" menu-item styling does not make it a block button. ?>
+									<span>
+										<a href="javascript:void(0);" id="exportJobsClearAll" style="display:none;font-weight:normal;font-size:12px;padding:0;background:none;color:#3c8dbc;text-decoration:underline;">
+											<?= _translate('Clear all'); ?>
+										</a>
+									</span>
+								</li>
+								<li id="exportJobsList" style="padding:8px;max-height:60vh;overflow-y:auto;"></li>
+							</ul>
+						</li>
+
 						<li class="dropdown user user-menu">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								<i class="fa-solid fa-hospital-user"></i>

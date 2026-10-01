@@ -587,13 +587,12 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function exportInexcel(fileName) {
-		if (searchExecuted === false) {
-			searchTbRequestData();
-		}
+		searchExecuted = true;
 		var withAlphaNum = null;
-		$.blockUI();
 		oTable.fnDraw();
-		$.post(fileName, {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start(fileName, {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				Sample_Recieved_Date: $("#sampleRecievedDate").val(),
 				Batch_Code: $("#batchCode").val(),
@@ -604,16 +603,7 @@ $state = $geolocationService->getProvinces("yes");
 				patientInfo: $("#patientInfo  option:selected").val(),
 				Status: ($("#status").val() || []).join(', '),
 				withAlphaNum: withAlphaNum
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate excel"); ?>.");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+			}, <?= json_encode(_translate("TB Results Export")) ?>);
 	}
 
 	function getByProvince(provinceId) {

@@ -5,6 +5,7 @@
 
 
 
+use App\Utilities\ExportJobUtility;
 use const COUNTRY\SOUTH_SUDAN;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -19,6 +20,12 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use App\Utilities\SampleRejectionUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, 'covid19ResultQuery')) {
+	return;
+}
 
 
 /** @var DatabaseService $db */
@@ -87,6 +94,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 
 	$no = 1;
 	foreach ($rResult as $aRow) {
+		ExportJobUtility::tick();
 		$row = [];
 		if ($arr['vl_form'] == SOUTH_SUDAN) {
 			// Get testing platform and test method

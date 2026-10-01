@@ -86,6 +86,23 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 <?php require_once WEB_ROOT . '/assets/js/dates.js.php'; ?>
 <?php require_once APPLICATION_PATH . '/_spotlight.php'; ?>
 
+<?php // Background exports keep their progress tray, and still download, on whatever page the user moves to. ?>
+<?php if (!empty($_SESSION['userId'])) { ?>
+	<script type="text/javascript">
+		window.IntelisExportStrings = <?= json_encode([
+			'preparing' => _translate('Preparing export...'),
+			'rows' => _translate('rows'),
+			'ready' => _translate('Download started'),
+			'downloadAgain' => _translate('Download again'),
+			'failed' => _translate('Unable to generate the excel file'),
+			'noData' => _translate('No data available to export. Please change the filters and search again.'),
+			'dismiss' => _translate('Dismiss'),
+			'inProgress' => _translate('Export started. You can keep working; the file will download automatically when it is ready.'),
+		]) ?>;
+	</script>
+	<script type="text/javascript" src="<?= _asset('/assets/js/export-jobs.js') ?>"></script>
+<?php } ?>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 		<?php

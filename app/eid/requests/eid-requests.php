@@ -1043,22 +1043,16 @@ foreach ($sourceOfRequests as $value => $displayText) {
 	<?php } ?>
 
 	function exportAllEidRequests() {
-		$.blockUI();
 		if (searchExecuted === false) {
-			searchVlRequestData();
+			searchExecuted = true;
+			oTable.fnDraw();
 		}
-		$.post("/eid/requests/export-eid-requests.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/eid/requests/export-eid-requests.php", {
 			reqSampleType: $('#requestSampleType').val(),
 			patientInfo: $('#patientInfo').val(),
-		},
-			function (data) {
-				$.unblockUI();
-				if (data === "" || data === null || data === undefined) {
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
-				} else {
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+		}, <?= json_encode(_translate("EID Requests Export")) ?>);
 	}
 
 	function getByProvince(provinceId) {

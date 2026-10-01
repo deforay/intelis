@@ -687,13 +687,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	}
 
 	function exportInexcel(fileName) {
-		if (searchExecuted === false) {
-			searchVlRequestData();
-		}
+		searchExecuted = true;
 		var withAlphaNum = null;
-		$.blockUI();
 		oTable.fnDraw();
-		$.post(fileName, {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start(fileName, {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				Batch_Code: $("#batchCode").val(),
 				Facility_Name: $("#facilityName  option:selected").text(),
@@ -704,16 +703,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				Status: ($("#status").val() || []).join(', '),
 				patientInfo: $("#patientInfo  option:selected").val(),
 				withAlphaNum: withAlphaNum
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate excel"); ?>.");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+			}, <?= json_encode(_translate("EID Results Export")) ?>);
 	}
 
 

@@ -6,6 +6,7 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
+use App\Utilities\ExportJobUtility;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Utilities\MiscUtility;
@@ -14,6 +15,12 @@ use App\Registries\ContainerRegistry;
 use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Common\Entity\Row;
 use App\Utilities\SampleRejectionUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, 'hepatitisRequestSearchResultQuery')) {
+	return;
+}
 
 
 /** @var DatabaseService $db */
@@ -147,6 +154,7 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) !== "") {
     $no = 1;
 
     foreach ($resultSet as $aRow) {
+        ExportJobUtility::tick();
         $row = $buildRow($aRow, $no++);
         $writer->addRow(Row::fromValues($row));
 

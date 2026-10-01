@@ -6,6 +6,7 @@ use const COUNTRY\DRC;
 use const COUNTRY\BURKINA_FASO;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\ExportJobUtility;
 use App\Utilities\SampleRejectionUtility;
 use App\Services\CommonService;
 use OpenSpout\Common\Entity\Row;
@@ -13,9 +14,18 @@ use App\Services\DatabaseService;
 use OpenSpout\Writer\XLSX\Writer;
 use App\Registries\ContainerRegistry;
 
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, 'vlResultQuery')) {
+	return;
+}
+
 ini_set('memory_limit', '512M'); // Changed from -1 to reasonable limit
-set_time_limit(300); // 5 minutes is usually enough
-ini_set('max_execution_time', 300);
+// A background job has no request to time out; a direct request keeps its limit.
+if (!ExportJobUtility::inBackground()) {
+	set_time_limit(300);
+	ini_set('max_execution_time', 300);
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -256,6 +266,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 	foreach ($resultSet as $aRow) {
 		$row = $buildRow($aRow, $no++);
 		$writer->addRow(Row::fromValues($row));
+		ExportJobUtility::tick();
 
 		// Periodic garbage collection every 5000 rows (reduced frequency)
 		if ($no % 5000 === 0) {

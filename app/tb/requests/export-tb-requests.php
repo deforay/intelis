@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\ExportJobUtility;
 use App\Services\DatabaseService;
 use App\Services\TbService;
 use App\Utilities\DateUtility;
@@ -8,6 +9,12 @@ use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, 'tbRequestSearchResultQuery')) {
+	return;
+}
 
 
 /** @var DatabaseService $db */
@@ -138,6 +145,7 @@ $resultSet = $db->rawQueryGenerator($sQuery);
 $no = 1;
 
 foreach ($resultSet as $aRow) {
+    ExportJobUtility::tick();
     $row = $buildRow($aRow, $no++);
     $writer->addRow(Row::fromValues($row));
 
