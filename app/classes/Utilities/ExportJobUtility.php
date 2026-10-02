@@ -749,10 +749,10 @@ final class ExportJobUtility
     }
 
     /**
-     * The command-line PHP to run the worker with. PHP_BINDIR is fixed when
-     * PHP is built, so after a package upgrade it can name a directory that
-     * no longer exists; the usual places for this same PHP version come next,
-     * before an unversioned "php" that may be a different version altogether.
+     * The command-line PHP to run the worker with, of the same version as the
+     * PHP serving this request. PHP_BINDIR is fixed when PHP is built, so after
+     * a package upgrade it can name a directory that no longer exists. On
+     * Ubuntu this resolves to /usr/bin/php8.x, so nothing needs configuring.
      */
     private static function phpBinary(): ?string
     {
@@ -760,22 +760,42 @@ final class ExportJobUtility
             return PHP_BINARY;
         }
         $version = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
+        // Each entry: a path, and whether its name alone vouches for the
+        // version. An unversioned "php" follows update-alternatives or PATH and
+        // can be a stray other install, so it is run once to ask its version.
+        // The serving build's own directory comes first.
         $candidates = [
-            SYSTEM_CONFIG['system']['php_path'] ?? null,
-            PHP_BINDIR . '/php',
-            "/usr/bin/php$version",
-            "/opt/homebrew/opt/php@$version/bin/php",
-            "/usr/local/opt/php@$version/bin/php",
-            '/usr/bin/php',
-            '/usr/local/bin/php',
-            '/opt/homebrew/bin/php',
+            [SYSTEM_CONFIG['system']['php_path'] ?? null, true],
+            [PHP_BINDIR . "/php$version", true],
+            [PHP_BINDIR . '/php', false],
+            ["/usr/bin/php$version", true],
+            ["/opt/homebrew/opt/php@$version/bin/php", true],
+            ["/usr/local/opt/php@$version/bin/php", true],
+            ['/usr/bin/php', false],
+            ['/usr/local/bin/php', false],
+            ['/opt/homebrew/bin/php', false],
         ];
-        foreach ($candidates as $candidate) {
-            if (!empty($candidate) && is_file($candidate) && is_executable($candidate)) {
+        foreach ($candidates as [$candidate, $trusted]) {
+            if (empty($candidate) || !is_file($candidate) || !is_executable($candidate)) {
+                continue;
+            }
+            if ($trusted || self::binaryVersion($candidate) === $version) {
                 return $candidate;
             }
         }
         return null;
+    }
+
+    /** The major.minor version a PHP binary reports, or null if it cannot be run. */
+    private static function binaryVersion(string $binary): ?string
+    {
+        try {
+            $code = escapeshellarg('echo PHP_MAJOR_VERSION, ".", PHP_MINOR_VERSION;');
+            $output = shell_exec(escapeshellarg($binary) . " -n -r $code 2>/dev/null");
+        } catch (Throwable) {
+            return null;
+        }
+        return is_string($output) ? trim($output) : null;
     }
 
     /** Removes old job files and the exports they produced. */
