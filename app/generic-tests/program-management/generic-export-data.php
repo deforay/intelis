@@ -664,7 +664,7 @@ $state = $geolocationService->getProvinces("yes");
 				Status: ($("#status").val() || []).join(', '),
 				Show_Reorder_Sample: $("#showReordSample option:selected").text(),
 				withAlphaNum: withAlphaNum
-			}, <?= json_encode(_translate("Other Lab Tests Results Export")) ?>);
+			}, <?= json_encode(_translate("Custom Tests Results Export")) ?>);
 	}
 
 	function hideFemaleDetails(value) {

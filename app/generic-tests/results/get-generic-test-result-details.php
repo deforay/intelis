@@ -193,7 +193,6 @@ try {
      if ($sWhere !== []) {
           $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
      }
-     $_SESSION['vlResultQuery'] = $sQuery;
 
      if (isset($sOrder) && $sOrder != "") {
           $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);

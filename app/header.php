@@ -174,7 +174,17 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 		border: 1px solid red;
 	}
 
-	input.checkNum:not([value*="+"])
+	/* The theme draws a dropdown's pointer at its left edge unless the menu is
+	   "pull-right"; the Exports menu opens to the left, so point at its icon. */
+	#exportJobsMenu > .dropdown-menu:before {
+		left: auto;
+		right: 15px;
+	}
+
+	#exportJobsMenu > .dropdown-menu:after {
+		left: auto;
+		right: 16px;
+	}
 </style>
 
 <body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" <?= $margin; ?> translate="no"
@@ -256,11 +266,11 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 							</a>
 							<ul class="dropdown-menu dropdown-menu-right" style="width:340px;max-width:calc(100vw - 32px);padding:0;">
 								<li class="header" style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f4f4f4;display:flex;justify-content:space-between;align-items:center;">
-									<span><?= _translate('Exports'); ?></span>
+									<span><?= _htmlTranslate('Exports'); ?></span>
 									<?php // Wrapped in a span so the dropdown's "li > a" menu-item styling does not make it a block button. ?>
 									<span>
 										<a href="javascript:void(0);" id="exportJobsClearAll" style="display:none;font-weight:normal;font-size:12px;padding:0;background:none;color:#3c8dbc;text-decoration:underline;">
-											<?= _translate('Clear all'); ?>
+											<?= _htmlTranslate('Clear all'); ?>
 										</a>
 									</span>
 								</li>

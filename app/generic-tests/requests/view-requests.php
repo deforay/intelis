@@ -551,7 +551,7 @@ $sampleStatusData = $general->getSampleStatus();
 		// file downloads when ready, even if the user has moved to another page.
 		IntelisExport.start("/generic-tests/requests/export-generic-tests-requests.php", {
 			patientInfo: $('#patientInfo').val(),
-		}, <?= json_encode(_translate("Other Lab Tests Requests Export")) ?>);
+		}, <?= json_encode(_translate("Custom Tests Requests Export")) ?>);
 	}
 
 	<?php if ($general->isLISInstance()) { ?>

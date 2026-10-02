@@ -184,7 +184,6 @@ try {
           $sQuery = $sQuery . ' WHERE ' . $sWhere;
      }
 
-     $_SESSION['vlResultQuery'] = $sQuery;
 
      if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/\s+/', ' ', $sOrder);

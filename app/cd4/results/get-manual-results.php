@@ -217,7 +217,6 @@ try {
      if ($sWhere !== []) {
           $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
      }
-     $_SESSION['vlResultQuery'] = $sQuery;
 
      if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/\s+/', ' ', $sOrder);
@@ -230,7 +229,6 @@ try {
 
      [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-     $_SESSION['vlResultQueryCount'] = $resultCount;
 
 
      $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];

@@ -12,6 +12,9 @@ require_once __DIR__ . "/../bootstrap.php";
 
 use App\Utilities\ExportJobUtility;
 
+// Anything PHP prints goes to the worker log, never into the captured output
+// that carries the export's download grant.
+ini_set('display_errors', 'stderr');
 ini_set('memory_limit', '1G');
 set_time_limit(0);
 

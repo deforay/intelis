@@ -36370,3 +36370,84 @@ msgstr "1 résultat de microscopie n'a pas été enregistré car il a été reti
 
 msgid "%d microscopy results were not saved because they were removed from this sample while the form was open (for example by a retest). Open the sample again to check the microscopy results."
 msgstr "%d résultats de microscopie n'ont pas été enregistrés car ils ont été retirés de cet échantillon pendant que le formulaire était ouvert (par exemple lors d'une reprise du test). Rouvrir l'échantillon pour vérifier les résultats de microscopie."
+
+msgid "Preparing export..."
+msgstr "Préparation de l'export..."
+
+msgid "rows"
+msgstr "lignes"
+
+msgid "Download started"
+msgstr "Téléchargement lancé"
+
+msgid "Download again"
+msgstr "Télécharger à nouveau"
+
+msgid "No data available to export. Please change the filters and search again."
+msgstr "Aucune donnée à exporter. Modifier les filtres et relancer la recherche."
+
+msgid "Dismiss"
+msgstr "Fermer"
+
+msgid "Export started. You can keep working; the file will download automatically when it is ready."
+msgstr "Export lancé. Le travail peut continuer ; le fichier sera téléchargé automatiquement dès qu'il sera prêt."
+
+msgid "Exports"
+msgstr "Exports"
+
+msgid "The exported file is no longer available. Please export again."
+msgstr "Le fichier exporté n'est plus disponible. Relancer l'export."
+
+msgid "The export could not be started. Please try again."
+msgstr "L'export n'a pas pu démarrer. Réessayer."
+
+msgid "The export stopped unexpectedly. Please try again."
+msgstr "L'export s'est arrêté de façon inattendue. Réessayer."
+
+msgid "The export took too long and was stopped. Please narrow the filters."
+msgstr "L'export a pris trop de temps et a été arrêté. Restreindre les filtres."
+
+msgid "CD4 Requests Export"
+msgstr "Export des demandes de CD4"
+
+msgid "CD4 Results Export"
+msgstr "Export des résultats de CD4"
+
+msgid "COVID-19 Requests Export"
+msgstr "Export des demandes COVID-19"
+
+msgid "COVID-19 Results Export"
+msgstr "Export des résultats COVID-19"
+
+msgid "EID Requests Export"
+msgstr "Export des demandes EID"
+
+msgid "EID Results Export"
+msgstr "Export des résultats EID"
+
+msgid "Hepatitis Requests Export"
+msgstr "Export des demandes Hépatite"
+
+msgid "Hepatitis Results Export"
+msgstr "Export des résultats Hépatite"
+
+msgid "Custom Tests Requests Export"
+msgstr "Export des demandes de tests personnalisés"
+
+msgid "Custom Tests Results Export"
+msgstr "Export des résultats de tests personnalisés"
+
+msgid "TB Requests Export"
+msgstr "Export des demandes de tuberculose"
+
+msgid "TB Results Export"
+msgstr "Export des résultats de tuberculose"
+
+msgid "VL Requests Export"
+msgstr "Export des demandes VL"
+
+msgid "VL Results Export"
+msgstr "Export des résultats VL"
+
+msgid "The server is busy with other exports. Please try again later."
+msgstr "Le serveur est occupé par d'autres exports. Réessayer plus tard."
