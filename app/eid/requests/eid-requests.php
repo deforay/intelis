@@ -734,7 +734,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 	// been read: rendering it and then hiding it would flash the thing someone
 	// dismissed on every page load. What is remembered is the signature of what
 	// was wrong, not "hidden".
-	var NEEDS_ATTENTION_KEY = 'eidNeedsAttentionDismissed';
+	var NEEDS_ATTENTION_KEY = 'eidNeedsAttentionDismissed.' + window.IntelisUserKey;
 
 	function initNeedsAttention() {
 		var card = document.getElementById('needsAttention');

@@ -92,6 +92,17 @@ try {
         session_regenerate_id(true);
         $_SESSION = [];
         $_SESSION['APP_LOCALE'] = $appLocale;
+
+        // The result-entry lists remember their filters in cookies set by page
+        // script (no path given, so each lands on its module's /results path).
+        // Drop them so the next user on a shared browser starts unfiltered.
+        $resultFilterPaths = ['/vl/results', '/eid/results', '/covid-19/results', '/cd4/results',
+            '/tb/results', '/hepatitis/results', '/generic-tests/results'];
+        foreach ($resultFilterPaths as $path) {
+            foreach (['collectionDate', 'batchCode', 'sampleType', 'facilityName', 'gender', 'status'] as $name) {
+                setcookie($name, '', ['expires' => time() - 3600, 'path' => $path]);
+            }
+        }
         $usersService->recordLoginAttempt($_POST['username'], 'successful', $userRow['user_id']);
         $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 

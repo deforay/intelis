@@ -1263,7 +1263,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 	];
 
 	function getStorageKey(filtersClass) {
-		return 'vlClinicReport_' + filtersClass;
+		return 'vlClinicReport_' + filtersClass + '.' + window.IntelisUserKey;
 	}
 
 	function saveFiltersToStorage(filtersClass) {

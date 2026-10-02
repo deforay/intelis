@@ -1010,7 +1010,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 // count moves or a new kind of problem appears the signature changes, and the
 // card returns rather than staying dismissed on the strength of a decision
 // about a different day.
-var NEEDS_ATTENTION_KEY = 'vlNeedsAttentionDismissed';
+var NEEDS_ATTENTION_KEY = 'vlNeedsAttentionDismissed.' + window.IntelisUserKey;
 
 function initNeedsAttention() {
 	var card = document.getElementById('needsAttention');

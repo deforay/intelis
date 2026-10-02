@@ -136,6 +136,12 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 		src="<?= _asset('/assets/js/utils.js') ?>"></script>
 	<script type="text/javascript"
 		src="<?= _asset('/assets/js/error-logger.js') ?>"></script>
+	<script type="text/javascript">
+		// Prefix for anything a page keeps in localStorage that belongs to the
+		// signed-in user (dismissals, saved filters), so the next user on a shared
+		// browser starts clean.
+		window.IntelisUserKey = <?= json_encode(empty($_SESSION['userId']) ? 'anonymous' : hash('sha256', 'browser-storage|' . $_SESSION['userId'])) ?>;
+	</script>
 
 </head>
 <style>
