@@ -18,3 +18,12 @@ Header set X-Content-Type-Options "nosniff"
 <IfModule mod_php8.c>
   php_flag engine off
 </IfModule>
+
+# Background export progress (see ExportJobUtility::publishStatus): polled by
+# the browser as plain JSON, never cached, served without starting PHP.
+<FilesMatch "\.status$">
+  ForceType application/json
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-store"
+  </IfModule>
+</FilesMatch>

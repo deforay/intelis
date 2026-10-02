@@ -20,9 +20,10 @@ if (ExportJobUtility::queueRequested(__FILE__, 'vlRequestQuery')) {
 	return;
 }
 
-ini_set('memory_limit', '512M');
-// A background job has no request to time out; a direct request keeps its limit.
+// A background job has no request to time out, and the worker sets its own
+// memory limit; a direct request keeps these.
 if (!ExportJobUtility::inBackground()) {
+	ini_set('memory_limit', '512M');
 	set_time_limit(300);
 	ini_set('max_execution_time', 300);
 }

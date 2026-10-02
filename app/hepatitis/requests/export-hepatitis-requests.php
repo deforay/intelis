@@ -2,10 +2,6 @@
 
 
 
-ini_set('memory_limit', -1);
-set_time_limit(0);
-ini_set('max_execution_time', 300000);
-
 use App\Utilities\ExportJobUtility;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -20,6 +16,14 @@ use App\Utilities\SampleRejectionUtility;
 // user can move on while bin/export-worker.php runs this same script.
 if (ExportJobUtility::queueRequested(__FILE__, 'hepatitisRequestSearchResultQuery')) {
 	return;
+}
+
+// A background job has no request to time out, and the worker sets its own
+// memory limit; a direct request keeps these.
+if (!ExportJobUtility::inBackground()) {
+	ini_set('memory_limit', -1);
+	set_time_limit(0);
+	ini_set('max_execution_time', 300000);
 }
 
 

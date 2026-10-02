@@ -181,7 +181,6 @@ try {
      $sWhere = $sWhere === [] ? [] : ' WHERE ' . implode(' AND ', $sWhere);
 
      $sQuery .= $sWhere;
-     $_SESSION['vlResultQuery'] = $sQuery;
 
      if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/\s+/', ' ', $sOrder);

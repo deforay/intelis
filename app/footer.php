@@ -89,6 +89,9 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 <?php // Background exports keep their progress tray, and still download, on whatever page the user moves to. ?>
 <?php if (!empty($_SESSION['userId'])) { ?>
 	<script type="text/javascript">
+		// Each user's exports are kept apart in the browser, so whoever signs in
+		// next on the same machine never sees (or polls) another user's jobs.
+		window.IntelisExportOwner = <?= json_encode(hash('sha256', 'export-jobs|' . $_SESSION['userId'])) ?>;
 		window.IntelisExportStrings = <?= json_encode([
 			'preparing' => _translate('Preparing export...'),
 			'rows' => _translate('rows'),

@@ -261,11 +261,9 @@ if ($labScope = $general->labScopeWhere('vl')) {
     $dWhere .= " AND $labScope";
 }
 $sQuery = $sQuery . ' ' . $sWhere . ' AND ct.result LIKE "positive" GROUP BY vl.covid19_id';
-$_SESSION['vlResultQuery'] = $sQuery;
 // Counted over the grid's own query, joins and grouping included, so the totals
 // match the rows shown.
 $countQuery = $sQuery;
-//echo $_SESSION['vlResultQuery'];die;
 
 if (!empty($sOrder) && $sOrder !== '') {
      $sOrder = preg_replace('/\s+/', ' ', $sOrder);

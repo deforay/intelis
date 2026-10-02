@@ -11,9 +11,21 @@
 (function (window, $) {
     'use strict';
 
-    var STORAGE_KEY = 'intelisExportJobs';
+    var STORAGE_KEY = 'intelisExportJobs.' + (window.IntelisExportOwner || 'anonymous');
     var STATUS_URL = '/common/export-job-status.php';
     var POLL_MS = 2000;
+    // Right after an export starts, look sooner: a small export is usually
+    // ready within a second, and should not wait out a full POLL_MS.
+    var FAST_POLL_MS = [300, 600, 1000];
+    // Progress comes from a static file the web server serves without PHP. Only
+    // when it has not changed for this long is the server asked, which also
+    // lets it notice a worker that died.
+    var QUIET_MS = 60000;
+    // A download grant lasts 15 minutes; past that, "Download again" for an
+    // export that ran in the request has nothing to use.
+    var GRANT_REUSE_MS = 14 * 60000;
+    // Finished exports clear themselves from the menu after this long.
+    var FINISHED_KEEP_MS = 5 * 60000;
     var HIDDEN_POLL_MS = 5000;
 
     var T = $.extend({
@@ -28,6 +40,8 @@
     }, window.IntelisExportStrings || {});
 
     var timer = null;
+    var pruneTimer = null;
+    var fastPolls = FAST_POLL_MS.length;
 
     // Finished one way or another: nothing left to poll for.
     function isFinished(job) {
@@ -56,6 +70,9 @@
         for (var i = 0; i < jobs.length; i++) {
             if (jobs[i].id === id) {
                 $.extend(jobs[i], changes);
+                if (isFinished(jobs[i]) && !jobs[i].finishedAt) {
+                    jobs[i].finishedAt = Date.now();
+                }
             }
         }
         writeJobs(jobs);
@@ -114,8 +131,38 @@
         return Number(n || 0).toLocaleString();
     }
 
-    function render() {
+    // Drops finished cards older than FINISHED_KEEP_MS, and wakes up again for
+    // the next one due, so the menu empties itself without a page change.
+    function pruneFinished() {
+        var now = Date.now();
         var jobs = readJobs();
+        var next = null;
+        var changed = false;
+        var kept = jobs.filter(function (job) {
+            if (!isFinished(job)) {
+                return true;
+            }
+            if (!job.finishedAt) {
+                job.finishedAt = now;
+                changed = true;
+            }
+            var due = job.finishedAt + FINISHED_KEEP_MS;
+            if (due <= now) {
+                return false;
+            }
+            next = next === null ? due : Math.min(next, due);
+            return true;
+        });
+        if (changed || kept.length !== jobs.length) {
+            writeJobs(kept);
+        }
+        window.clearTimeout(pruneTimer);
+        pruneTimer = next === null ? null : window.setTimeout(render, next - now + 50);
+        return kept;
+    }
+
+    function render() {
+        var jobs = pruneFinished();
         var $tray = tray();
         $tray.empty();
 
@@ -194,7 +241,7 @@
                 .appendTo($body);
 
             var $detail = $('<small></small>').text(detail).appendTo($body);
-            if (job.status === 'done') {
+            if (job.status === 'done' && (!job.token || Date.now() - job.tokenAt < GRANT_REUSE_MS)) {
                 $detail.append(' &middot; ').append(
                     $('<a href="javascript:void(0);"></a>').text(T.downloadAgain)
                         .on('click', function () { downloadAgain(job.id); })
@@ -205,8 +252,20 @@
         });
     }
 
-    // The grant from the first download is short-lived, so fetch a fresh one.
+    // The grant from the first download is short-lived, so fetch a fresh one,
+    // unless the export ran in the request and its own grant is still good.
     function downloadAgain(id) {
+        var job = readJobs().filter(function (j) { return j.id === id; })[0];
+        if (job && job.token) {
+            // An export that ran in the request has only its own grant; once
+            // that has expired, redrawing drops the link instead.
+            if (Date.now() - job.tokenAt < GRANT_REUSE_MS) {
+                download(job.token);
+            } else {
+                render();
+            }
+            return;
+        }
         $.ajax({
             url: STATUS_URL,
             data: { id: id, again: 1 },
@@ -225,10 +284,9 @@
         });
     }
 
-    function pollJob(job) {
-        if (isFinished(job)) {
-            return $.Deferred().resolve().promise();
-        }
+    // Asks PHP: to claim a finished file (handed out once across tabs), or to
+    // check on a job whose static progress has gone quiet.
+    function askServer(job) {
         return $.ajax({
             url: STATUS_URL,
             data: { id: job.id, claim: 1 },
@@ -244,7 +302,8 @@
                 status: status.status,
                 processed: status.processed,
                 total: status.total,
-                error: status.error
+                error: status.error,
+                seenAt: Date.now()
             });
             if (status.status === 'done' && status.token) {
                 download(status.token);
@@ -254,6 +313,37 @@
                 // Expired, swept, or started by another user on this browser.
                 removeJob(job.id);
             }
+        });
+    }
+
+    function pollJob(job) {
+        if (isFinished(job)) {
+            return $.Deferred().resolve().promise();
+        }
+        if (!job.statusUrl) {
+            return askServer(job);
+        }
+        return $.ajax({ url: job.statusUrl, dataType: 'json', cache: false }).then(function (status) {
+            if (status.status === 'done') {
+                return askServer(job);
+            }
+            var now = Date.now();
+            var changed = status.updatedAt !== job.updatedAt;
+            var seenAt = changed ? now : (job.seenAt || now);
+            updateJob(job.id, {
+                status: status.status,
+                processed: status.processed,
+                total: status.total,
+                error: status.error,
+                updatedAt: status.updatedAt,
+                seenAt: seenAt
+            });
+            if (!isFinished(status) && now - seenAt > QUIET_MS) {
+                return askServer(job);
+            }
+        }, function () {
+            // No static copy (yet, or any more): the server knows.
+            return askServer(job);
         });
     }
 
@@ -282,7 +372,11 @@
             return !isFinished(job);
         });
         if (hasActive) {
-            timer = window.setTimeout(poll, document.hidden ? HIDDEN_POLL_MS : POLL_MS);
+            var delay = document.hidden ? HIDDEN_POLL_MS : POLL_MS;
+            if (fastPolls < FAST_POLL_MS.length) {
+                delay = FAST_POLL_MS[fastPolls++];
+            }
+            timer = window.setTimeout(poll, delay);
         }
     }
 
@@ -290,17 +384,52 @@
         return $.post(url, $.extend({}, data, { async: 'yes' }), null, 'json')
             .done(function (response) {
                 var jobs = readJobs();
-                if (response && response.empty) {
+                var now = Date.now();
+                if (response && response.token) {
+                    // A small export ran in the request itself: done already, same card.
+                    jobs.push({
+                        id: 'inline-' + now,
+                        label: label,
+                        status: 'done',
+                        token: response.token,
+                        tokenAt: now,
+                        finishedAt: now
+                    });
+                    download(response.token);
+                } else if (response && response.empty) {
                     // Nothing to export: a card with the reason, under a local-only id.
-                    jobs.push({ id: 'empty-' + Date.now(), label: label, status: 'empty', error: response.error || T.noData });
+                    jobs.push({
+                        id: 'empty-' + now,
+                        label: label,
+                        status: 'empty',
+                        error: response.error || T.noData,
+                        finishedAt: now
+                    });
                 } else if (!response || !response.jobId) {
-                    alert(T.failed);
+                    alert((response && response.error) || T.failed);
                     return;
-                } else {
-                    jobs.push({ id: response.jobId, label: label, status: 'queued', processed: 0, total: null });
+                } else if (!jobs.some(function (job) { return job.id === response.jobId; })) {
+                    // The server hands back the job already running for this export
+                    // rather than starting a second one; it already has its card.
+                    jobs.push({
+                        id: response.jobId,
+                        statusUrl: response.statusUrl,
+                        label: label,
+                        status: 'queued',
+                        processed: 0,
+                        total: null,
+                        seenAt: now
+                    });
                 }
                 writeJobs(jobs);
                 render();
+                // Start over on the quick checks, even if a slower one for an
+                // earlier export is already pending.
+                if (timer !== null) {
+                    window.clearTimeout(timer);
+                    timer = null;
+                }
+                fastPolls = 0;
                 schedule();
                 // Open the navbar menu so the user sees the export has started.
                 $('#exportJobsMenu').addClass('open');
