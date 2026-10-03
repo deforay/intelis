@@ -36451,3 +36451,147 @@ msgstr "Export des résultats VL"
 
 msgid "The server is busy with other exports. Please try again later."
 msgstr "Le serveur est occupé par d'autres exports. Réessayer plus tard."
+
+msgid "Age Breastfeeding Stopped (Months)"
+msgstr "Âge à l'arrêt de l'allaitement (mois)"
+
+msgid "Age in Months"
+msgstr "Âge en mois"
+
+msgid "Child Phone Number"
+msgstr "N° de téléphone de l'enfant"
+
+msgid "Child Treatment"
+msgstr "Traitement de l'enfant"
+
+msgid "Choice of Feeding"
+msgstr "Choix d'allaitement"
+
+msgid "Collection to Lab Reception (days)"
+msgstr "Prélèvement à réception au laboratoire (jours)"
+
+msgid "Collection to Result Approval (days)"
+msgstr "Prélèvement à approbation du résultat (jours)"
+
+msgid "Date Sample Sent to Lab"
+msgstr "Date d'envoi de l'échantillon au laboratoire"
+
+msgid "Has Infant Stopped Breastfeeding?"
+msgstr "Le bébé a-t-il arrêté l'allaitement ?"
+
+msgid "Has Regimen Changed?"
+msgstr "Le régime a-t-il changé ?"
+
+msgid "Is Cotrimoxazole Being Administered to the Infant?"
+msgstr "Le cotrimoxazole est-il administré au bébé ?"
+
+msgid "Is Infant Receiving Treatment?"
+msgstr "Le bébé reçoit-il un traitement ?"
+
+msgid "Last Viral Load Date"
+msgstr "Date dernière charge virale"
+
+msgid "Last Viral Load Result"
+msgstr "Résultat dernière charge virale"
+
+msgid "Mother Date of Birth"
+msgstr "Date de naissance de la mère"
+
+msgid "Mother Treatment"
+msgstr "Traitement de la mère"
+
+msgid "Mother Viral Load Result"
+msgstr "Charge virale de la mère"
+
+msgid "Patient on ART?"
+msgstr "Patient sous ARV ?"
+
+msgid "Plasma Conservation Duration (Days/Hours)"
+msgstr "Durée de conservation du plasma (jours/heures)"
+
+msgid "Plasma Conservation Temperature (°C)"
+msgstr "Température de conservation du plasma (°C)"
+
+msgid "Pregnancy Trimester"
+msgstr "Trimestre de grossesse"
+
+msgid "Rapid Test Date"
+msgstr "Date du test rapide"
+
+msgid "Rapid Test Performed?"
+msgstr "Test rapide effectué ?"
+
+msgid "Rapid Test Result"
+msgstr "Résultat du test rapide"
+
+msgid "Reason for Regimen Change"
+msgstr "Motif du changement de régime"
+
+msgid "Reason for Result Change"
+msgstr "Motif de modification du résultat"
+
+msgid "Reception to Result Approval (days)"
+msgstr "Réception à approbation du résultat (jours)"
+
+msgid "Result Sent On"
+msgstr "Résultat envoyé le"
+
+msgid "Sample Requestor Name"
+msgstr "Nom du demandeur"
+
+msgid "Specific Infant Treatment"
+msgstr "Traitement spécifique du bébé"
+
+msgid "Viral Load Test Number"
+msgstr "Charge virale N°"
+
+msgid "ARV Initiated during Pregnancy"
+msgstr "ARV débutés durant la grossesse"
+
+msgid "ARV Initiated prior to Pregnancy"
+msgstr "ARV débutés avant la grossesse"
+
+msgid "ARV at Child Birth"
+msgstr "ARV à l’accouchement"
+
+msgid "Breastfeeding only"
+msgstr "Allaitement seul"
+
+msgid "Milk substitute"
+msgstr "Substitut de lait"
+
+msgid "Combination"
+msgstr "Mixte"
+
+msgid "Yes, takes CTX everyday"
+msgstr "Oui, prend CTX chaque jour"
+
+msgid "Starting on CTX today"
+msgstr "Commence CTX aujourd’hui"
+
+msgid "First Test for exposed baby"
+msgstr "1st test pour bébé exposé"
+
+msgid "First test for sick baby"
+msgstr "1st test pour bébé malade"
+
+msgid "Repeat due to problem with first test"
+msgstr "Répéter car problème avec 1er test"
+
+msgid "Repeat to confirm the first result"
+msgstr "Répéter pour confirmer 1er résultat"
+
+msgid "Repeat test once breastfeeding is stopped"
+msgstr "Répéter test après arrêt allaitement maternel (6 semaines au moins après arrêt allaitement)"
+
+msgid "Single"
+msgstr "Célibataire"
+
+msgid "Married"
+msgstr "Marié(e)"
+
+msgid "Cohabitating"
+msgstr "Union libre"
+
+msgid "Widow"
+msgstr "Veuf/Veuve"
