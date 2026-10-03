@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Utilities;
 
-use App\Registries\ContainerRegistry;
 use App\Utilities\DateUtility;
-use App\Utilities\FileCacheUtility;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
 
 /**
  * DateUtility::dayRange() turns a picked range into the two datetimes that
@@ -18,45 +15,6 @@ use Psr\Container\ContainerInterface;
  */
 final class DateRangeTest extends TestCase
 {
-    /**
-     * The date parsing resolves a cache through MemoUtility, which reads it from
-     * the container. Nothing sets one in a bare unit test, so register a
-     * pass-through cache -- same technique as AdminFilterClauseBuilderTest.
-     */
-    protected function setUp(): void
-    {
-        $passThroughCache = new class extends FileCacheUtility {
-            public function __construct()
-            {
-            }
-
-            public function get(
-                string $key,
-                callable $computeValueCallback,
-                ?array $tags = [],
-                int $expiration = 3600
-            ): mixed {
-                return $computeValueCallback();
-            }
-        };
-
-        ContainerRegistry::setContainer(new class ($passThroughCache) implements ContainerInterface {
-            public function __construct(private readonly FileCacheUtility $cache)
-            {
-            }
-
-            public function get(string $id): mixed
-            {
-                return $this->cache;
-            }
-
-            public function has(string $id): bool
-            {
-                return true;
-            }
-        });
-    }
-
     public static function rangeProvider(): array
     {
         return [
