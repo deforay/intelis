@@ -6,7 +6,6 @@ use Exception;
 use Throwable;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use App\Utilities\MemoUtility;
 use App\Exceptions\SystemException;
 
 final class DateUtility
@@ -30,55 +29,31 @@ final class DateUtility
             return null;
         }
 
-        return MemoUtility::remember(function () use ($date, $format, $inputFormat): ?string {
+        $inputFormat = ($inputFormat === '' || $inputFormat === '0') ? null : $inputFormat;
+        $normalizedDate = self::normalizeDateString(trim($date));
 
-            $trimmedDate = trim($date);
-            $normalizedDate = self::normalizeDateString($trimmedDate);
+        // Not a date (in the expected format): there is nothing to convert
+        $isDate = $inputFormat === null
+            ? self::isDateValid($normalizedDate)
+            : self::isDateFormatValid($normalizedDate, $inputFormat, true);
+        if (!$isDate) {
+            return null;
+        }
 
-            // Perform preliminary checks for obviously invalid date strings
-            if (($inputFormat !== null && $inputFormat !== '' && $inputFormat !== '0' && self::isDateFormatValid($normalizedDate, $inputFormat, true) === false)
-                || (($inputFormat === null || $inputFormat === '' || $inputFormat === '0') && self::isDateValid($normalizedDate) === false)
-            ) {
-                return null;
+        try {
+            if ($inputFormat !== null) {
+                $carbonDate = Carbon::createFromFormat($inputFormat, $normalizedDate);
+            } elseif (ctype_digit($normalizedDate)) {
+                // isDateValid only lets 10+ digit numbers through: Unix timestamps
+                $carbonDate = Carbon::createFromTimestamp((int) $normalizedDate);
+            } else {
+                $carbonDate = Carbon::parse($normalizedDate);
             }
-
-            try {
-                $carbonDate = null;
-
-                // Handle Unix timestamps first (when no specific input format is provided)
-                if (null === $inputFormat && ctype_digit($normalizedDate) && strlen($normalizedDate) >= 10) {
-                    // This is likely a Unix timestamp
-                    $timestamp = (int)$normalizedDate;
-                    $carbonDate = Carbon::createFromTimestamp($timestamp);
-                } elseif (null !== $inputFormat) {
-                    // If a specific input format is provided, use createFromFormat
-                    $carbonDate = Carbon::createFromFormat($inputFormat, $normalizedDate);
-                    // createFromFormat returns false on failure
-                    if ($carbonDate === false) {
-                        LoggerUtility::logWarning("DateUtility::getDateTime: Failed to parse date '$trimmedDate' with format '$inputFormat'.");
-                        $procssedDateTime = null;
-                    }
-                } else {
-                    // Original behavior: use Carbon::parse for general date strings
-                    // The previous isDateValid() check's core parsing is covered by Carbon::parse() throwing an exception on failure.
-                    $carbonDate = Carbon::parse($normalizedDate);
-                }
-
-                // If parsing was successful, format and return the date string
-                $procssedDateTime = $carbonDate instanceof Carbon ? $carbonDate->format($format) : null;
-            } catch (Throwable $e) {
-                // Catches exceptions from Carbon::parse (e.g., InvalidFormatException)
-                // or any other errors during the process.
-                LoggerUtility::logError("DateUtility::getDateTime: Error processing date '$trimmedDate': " . $e->getMessage(), [
-                    'line' => $e->getLine(),
-                    'file' => $e->getFile(),
-                    'trace' => $e->getTraceAsString()
-                ]);
-                $procssedDateTime = null;
-            }
-
-            return $procssedDateTime;
-        });
+            return $carbonDate instanceof Carbon ? $carbonDate->format($format) : null;
+        } catch (Throwable $e) {
+            LoggerUtility::logError("DateUtility::getDateTime: Error processing date '$date': " . $e->getMessage());
+            return null;
+        }
     }
 
     /**
@@ -123,79 +98,60 @@ final class DateUtility
     }
 
     /**
-     * @return bool
+     * Whether a value holds a date. "No" is an answer, not an error, so
+     * nothing is logged: a listing or an export asks this for every date cell,
+     * and logging each blank or junk value used to fill the error log.
      */
     public static function isDateValid(mixed $date): bool
     {
-        $isValid = false;
-
         $date = trim((string) $date);
 
         if (
             $date === '' || $date === '0'
-            || in_array($date, ['undefined', 'null', ''], true)
+            || in_array($date, ['undefined', 'null'], true)
             || preg_match('/[_*]|--/', $date)
+            // MySQL's zero date: parses as 30-Nov--0001, and is never a real date
+            || str_starts_with($date, '0000-00-00')
         ) {
-            $isValid = false;
-        } elseif (ctype_digit($date)) {
-            // Handle Unix timestamps
-            if (strlen($date) >= 10) {
-                // Valid Unix timestamp length (10+ digits)
-                try {
-                    $timestamp = (int)$date;
-                    // Check if timestamp is within reasonable range
-                    // (after 1970-01-01 and before year 2100)
-                    if ($timestamp >= 0 && $timestamp <= 4102444800) {
-                        $isValid = true;
-                    } else {
-                        LoggerUtility::logError("DateUtility::isDateValid: Timestamp out of reasonable range: '$date'");
-                        $isValid = false;
-                    }
-                } catch (Throwable $e) {
-                    LoggerUtility::logError("DateUtility::isDateValid: Error processing timestamp '$date': " . $e->getMessage());
-                    $isValid = false;
-                }
-            } else {
-                LoggerUtility::logError("DateUtility::isDateValid: Numeric input too short to be a valid timestamp: '$date'");
-                $isValid = false;
-            }
-        } else {
-            try {
-                $isValid = self::parseDate($date, ignoreTime: true) instanceof Carbon;
-            } catch (Throwable $e) {
-                LoggerUtility::logError("DateUtility::isDateValid: Exception while validating date '$date': " . $e->getMessage(), [
-                    'line' => $e->getLine(),
-                    'file' => $e->getFile(),
-                    'trace' => $e->getTraceAsString()
-                ]);
-                $isValid = false;
-            }
+            return false;
         }
 
-        return $isValid;
+        if (ctype_digit($date)) {
+            // A Unix timestamp (10+ digits) between 1970 and 2100; shorter
+            // numbers are ages, counts or codes, not dates
+            return strlen($date) >= 10 && (int) $date <= 4102444800;
+        }
+
+        return self::parseDate($date, ignoreTime: true) instanceof Carbon;
     }
 
 
-    public static function humanReadableDateFormat($date, $includeTime = false, ?string $format = null, $withSeconds = false): mixed
-    {
-        return MemoUtility::remember(function () use ($date, $includeTime, $format, $withSeconds): ?string {
+    /**
+     * The date in the user's display format, or null when it is not a date.
+     *
+     * Not memoized: formatting takes microseconds, while the cross-request
+     * memo it used to go through wrote a cache file for every distinct date
+     * shown (an export of 20,000 rows wrote tens of thousands) and, keyed
+     * without the user's date format, could show one user's format to another.
+     */
+    public static function humanReadableDateFormat(
+        $date,
+        $includeTime = false,
+        ?string $format = null,
+        $withSeconds = false
+    ): ?string {
+        if (!self::isDateValid($date)) {
+            return null;
+        }
 
-            if (!self::isDateValid($date)) {
-                return null;
-            }
+        $format ??= $_SESSION['phpDateFormat'] ?? 'd-M-Y';
 
-            $format ??= $_SESSION['phpDateFormat'] ?? 'd-M-Y';
+        // Append the time unless the format already carries it
+        if ($includeTime && !preg_match('/[HhGgis]/', $format)) {
+            $format .= $withSeconds ? ' H:i:s' : ' H:i';
+        }
 
-            // Check if the format already includes time components
-            $hasTimeComponent = preg_match('/[HhGgis]/', (string) $format);
-
-            // If the format doesn't have a time component and $includeTime is true, append the appropriate time format
-            if ($includeTime && !$hasTimeComponent) {
-                $format .= $withSeconds ? ' H:i:s' : ' H:i';
-            }
-
-            return Carbon::parse(self::normalizeDateString((string) $date))->format($format);
-        });
+        return Carbon::parse(self::normalizeDateString((string) $date))->format($format);
     }
 
 
@@ -204,16 +160,15 @@ final class DateUtility
         return Carbon::now()->format($format);
     }
 
-    public static function isoDateFormat($date, $includeTime = false): mixed
+    /** The date as Y-m-d (or Y-m-d H:i:s), or null when it is not a date. Not memoized, see above. */
+    public static function isoDateFormat($date, $includeTime = false): ?string
     {
-        return MemoUtility::remember(function () use ($date, $includeTime): ?string {
-            if (!self::isDateValid($date)) {
-                return null;
-            }
+        if (!self::isDateValid($date)) {
+            return null;
+        }
 
-            $format = ($includeTime !== true) ? "Y-m-d" : "Y-m-d H:i:s";
-            return Carbon::parse(self::normalizeDateString((string) $date))->format($format);
-        });
+        $format = ($includeTime !== true) ? "Y-m-d" : "Y-m-d H:i:s";
+        return Carbon::parse(self::normalizeDateString((string) $date))->format($format);
     }
 
     /**
@@ -227,8 +182,7 @@ final class DateUtility
      */
     public static function completedYears($dateOfBirth): ?int
     {
-        // A zero date parses as year zero, which would read as an age of 2026
-        if (!self::isDateValid($dateOfBirth) || str_starts_with(trim((string) $dateOfBirth), '0000-00-00')) {
+        if (!self::isDateValid($dateOfBirth)) {
             return null;
         }
 
@@ -243,30 +197,27 @@ final class DateUtility
         return (int) $dob->diffInYears($now, true);
     }
 
-    public static function ageInYearMonthDays($dateOfBirth): mixed
+    /** @return array{year: int, months: int, days: int}|null */
+    public static function ageInYearMonthDays($dateOfBirth): ?array
     {
-        return MemoUtility::remember(function () use ($dateOfBirth): ?array {
+        if (!self::isDateValid($dateOfBirth)) {
+            return null;
+        }
 
-            // A zero date parses as year zero, which would read as an age of 2026
-            if (!self::isDateValid($dateOfBirth) || str_starts_with(trim((string) $dateOfBirth), '0000-00-00')) {
-                return null;
-            }
+        $dob = Carbon::parse(self::normalizeDateString((string) $dateOfBirth));
 
-            $dob = Carbon::parse(self::normalizeDateString((string) $dateOfBirth));
+        // A date of birth in the future has no age. DateInterval components
+        // are unsigned, so without this a future DOB reads as a real age.
+        if ($dob->greaterThan(Carbon::now())) {
+            return null;
+        }
 
-            // A date of birth in the future has no age. DateInterval components
-            // are unsigned, so without this a future DOB reads as a real age.
-            if ($dob->greaterThan(Carbon::now())) {
-                return null;
-            }
-
-            $diff = Carbon::now()->diff($dob);
-            return [
-                "year" => $diff->y,
-                "months" => $diff->m,
-                "days" => $diff->d
-            ];
-        });
+        $diff = Carbon::now()->diff($dob);
+        return [
+            "year" => $diff->y,
+            "months" => $diff->m,
+            "days" => $diff->d
+        ];
     }
 
     public static function dateDiff($dateString1, $dateString2, $format = null): ?string
@@ -304,37 +255,20 @@ final class DateUtility
         if ($ignoreTime === true) {
             $dateStr = explode(' ', $dateStr)[0]; // Extract only the date part
         }
-        if ($formats) {
-            foreach ($formats as $format) {
-                try {
-                    return Carbon::createFromFormat($format, $dateStr);
-                } catch (Throwable $e) {
-                    LoggerUtility::logError(
-                        "Invalid or unparseable date $dateStr : " . $e->getMessage(),
-                        [
-                            'line' => $e->getLine(),
-                            'file' => $e->getFile(),
-                            'trace' => $e->getTraceAsString()
-                        ]
-                    );
-                    continue;
-                }
+        // Unparseable input is the expected "not a date" answer here, so it
+        // returns null without logging (see isDateValid)
+        foreach ($formats ?? [] as $format) {
+            try {
+                return Carbon::createFromFormat($format, $dateStr);
+            } catch (Throwable) {
+                continue;
             }
         }
         try {
             return Carbon::parse($dateStr);
-        } catch (Throwable $e) {
-            LoggerUtility::logError(
-                "Invalid or unparseable date $dateStr : " . $e->getMessage(),
-                [
-                    'line' => $e->getLine(),
-                    'file' => $e->getFile(),
-                    'trace' => $e->getTraceAsString()
-                ]
-            );
+        } catch (Throwable) {
+            return null;
         }
-
-        return null;
     }
     private static function normalizeDateString(string $dateStr): string
     {
@@ -457,49 +391,47 @@ final class DateUtility
 
     public static function convertDateRange(?string $dateRange, $seperator = "to", bool $includeTime = false): array
     {
-        return MemoUtility::remember(function () use ($dateRange, $seperator, $includeTime): array {
-            if ($dateRange === null || $dateRange === '' || $dateRange === '0') {
-                return ['', ''];
-            }
+        if ($dateRange === null || $dateRange === '' || $dateRange === '0') {
+            return ['', ''];
+        }
 
-            $dates = explode($seperator, $dateRange ?? '');
-            $dates = array_map('trim', $dates);
+        $dates = explode($seperator, $dateRange ?? '');
+        $dates = array_map('trim', $dates);
 
-            $startDate = '';
-            $endDate = '';
+        $startDate = '';
+        $endDate = '';
 
-            if (!empty($dates[0])) {
-                try {
-                    $start = Carbon::parse(self::normalizeDateString($dates[0]));
-                    if ($includeTime) {
-                        $startDate = preg_match('/\d{2}:\d{2}/', $dates[0])
-                            ? $start->format('Y-m-d H:i:s')
-                            : $start->startOfDay()->format('Y-m-d H:i:s');
-                    } else {
-                        $startDate = $start->format('Y-m-d');
-                    }
-                } catch (Exception $e) {
-                    LoggerUtility::logError("Failed to parse start date: " . $dates[0] . " - " . $e->getMessage());
+        if (!empty($dates[0])) {
+            try {
+                $start = Carbon::parse(self::normalizeDateString($dates[0]));
+                if ($includeTime) {
+                    $startDate = preg_match('/\d{2}:\d{2}/', $dates[0])
+                        ? $start->format('Y-m-d H:i:s')
+                        : $start->startOfDay()->format('Y-m-d H:i:s');
+                } else {
+                    $startDate = $start->format('Y-m-d');
                 }
+            } catch (Exception $e) {
+                LoggerUtility::logError("Failed to parse start date: " . $dates[0] . " - " . $e->getMessage());
             }
+        }
 
-            if (!empty($dates[1])) {
-                try {
-                    $end = Carbon::parse(self::normalizeDateString($dates[1]));
-                    if ($includeTime) {
-                        $endDate = preg_match('/\d{2}:\d{2}/', $dates[1])
-                            ? $end->format('Y-m-d H:i:s')
-                            : $end->endOfDay()->format('Y-m-d H:i:s'); // end of day instead of next day start
-                    } else {
-                        $endDate = $end->format('Y-m-d');
-                    }
-                } catch (Exception $e) {
-                    LoggerUtility::logError("Failed to parse end date: " . $dates[1] . " - " . $e->getMessage());
+        if (!empty($dates[1])) {
+            try {
+                $end = Carbon::parse(self::normalizeDateString($dates[1]));
+                if ($includeTime) {
+                    $endDate = preg_match('/\d{2}:\d{2}/', $dates[1])
+                        ? $end->format('Y-m-d H:i:s')
+                        : $end->endOfDay()->format('Y-m-d H:i:s'); // end of day instead of next day start
+                } else {
+                    $endDate = $end->format('Y-m-d');
                 }
+            } catch (Exception $e) {
+                LoggerUtility::logError("Failed to parse end date: " . $dates[1] . " - " . $e->getMessage());
             }
+        }
 
-            return [$startDate, $endDate];
-        });
+        return [$startDate, $endDate];
     }
 
     /**
@@ -533,25 +465,7 @@ final class DateUtility
      */
     public static function getLowestDate(...$dates): ?string
     {
-        // Filter out invalid dates
-        $validDates = self::filterValidDates($dates);
-
-        // If there are no valid dates, return null
-        if ($validDates === []) {
-            return null;
-        }
-
-        $earliestDate = null;
-
-        foreach ($validDates as $date) {
-            $carbonDate = Carbon::parse(self::normalizeDateString((string) $date));
-
-            if (is_null($earliestDate) || $carbonDate->lt($earliestDate)) {
-                $earliestDate = $carbonDate;
-            }
-        }
-
-        return $earliestDate->format('Y-m-d H:i:s');
+        return self::extremeDate($dates, latest: false);
     }
     /**
      * Returns the latest date among a variable number of given dates.
@@ -561,25 +475,20 @@ final class DateUtility
      */
     public static function getHighestDate(...$dates): ?string
     {
-        // Filter out invalid dates
-        $validDates = self::filterValidDates($dates);
+        return self::extremeDate($dates, latest: true);
+    }
 
-        // If there are no valid dates, return null
-        if ($validDates === []) {
-            return null;
-        }
-
-        $latestDate = null;
-
-        foreach ($validDates as $date) {
+    /** The earliest or latest of the valid dates, as Y-m-d H:i:s; null when none is valid. */
+    private static function extremeDate(array $dates, bool $latest): ?string
+    {
+        $found = null;
+        foreach (self::filterValidDates($dates) as $date) {
             $carbonDate = Carbon::parse(self::normalizeDateString((string) $date));
-
-            if (is_null($latestDate) || $carbonDate->gt($latestDate)) {
-                $latestDate = $carbonDate;
+            if ($found === null || ($latest ? $carbonDate->gt($found) : $carbonDate->lt($found))) {
+                $found = $carbonDate;
             }
         }
-
-        return $latestDate->format('Y-m-d H:i:s');
+        return $found?->format('Y-m-d H:i:s');
     }
 
     /**
