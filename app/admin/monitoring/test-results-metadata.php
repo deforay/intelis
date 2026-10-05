@@ -349,19 +349,12 @@ $activeTests = TestsService::getActiveTests();
 
     function exportTestRequests() {
 
-        $.blockUI();
-        $.post("/admin/monitoring/export-test-results-report.php", {
+        // Runs in the background; progress shows in the navbar Exports menu and the
+        // file downloads when ready, even if the user has moved to another page.
+        IntelisExport.start("/admin/monitoring/export-test-results-report.php", {
                 reqSampleType: $('#requestSampleType').val(),
                 patientInfo: $('#patientInfo').val(),
-            },
-            function(data) {
-                $.unblockUI();
-                if (data === "" || data === null || data === undefined) {
-                    alert("<?= _translate("Unable to generate the excel file", true); ?>");
-                } else {
-                    window.open('/download.php?d=a&f=' + data, '_blank');
-                }
-            });
+            }, <?= json_encode(_translate("Test Results Metadata Export")) ?>);
     }
 </script>
 <?php

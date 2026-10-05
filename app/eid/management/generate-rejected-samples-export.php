@@ -12,6 +12,13 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['rejectedSamples'])) {
+	return;
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -51,6 +58,7 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
      $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
 
      foreach ($rResult as $aRow) {
+          ExportJobUtility::tick();
           $row = [];
           $row[] = ($aRow['labname']);
           $row[] = ($aRow['facility_name']);

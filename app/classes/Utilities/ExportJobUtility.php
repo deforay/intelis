@@ -5,7 +5,9 @@ namespace App\Utilities;
 use Throwable;
 use App\Exceptions\ExportStoppedException;
 use App\Services\SystemService;
+use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
+use Slim\Psr7\Factory\ServerRequestFactory;
 
 /**
  * Runs a long Excel export as a detached background process.
@@ -116,28 +118,43 @@ final class ExportJobUtility
      * returns false and the script carries on exactly as it always did.
      *
      * $queryKey names the session entry holding the listing's SQL; the listing
-     * also stores its row count under the same name plus "Count".
+     * also stores its row count under the same name plus "Count". A report that
+     * builds its query from the posted filters passes null instead, and lists in
+     * $sessionKeys whatever else of the session it reads (a key ending in
+     * "Count" is taken as its row count). $countsRows says the script calls
+     * tick() once per row, so that no ticks at all means no data.
      */
-    public static function queueRequested(string $script, string $queryKey): bool
-    {
+    public static function queueRequested(
+        string $script,
+        ?string $queryKey = null,
+        array $sessionKeys = [],
+        bool $countsRows = true
+    ): bool {
         if (($_POST['async'] ?? '') !== 'yes' || self::inBackground()) {
             return false;
         }
+
+        $countKey = $queryKey !== null ? $queryKey . 'Count' : null;
+        foreach ($sessionKeys as $key) {
+            $countKey ??= str_ends_with($key, 'Count') ? $key : null;
+        }
+        $sessionKeys = array_values(array_unique(array_filter([$queryKey, $countKey, ...$sessionKeys])));
+
         // Nothing listed means nothing to export: say so instead of handing over
         // an empty spreadsheet.
-        $countKey = $queryKey . 'Count';
-        $noQuery = trim((string) ($_SESSION[$queryKey] ?? '')) === '';
-        if ($noQuery || (isset($_SESSION[$countKey]) && (int) $_SESSION[$countKey] === 0)) {
+        $noQuery = $queryKey !== null && trim((string) ($_SESSION[$queryKey] ?? '')) === '';
+        $count = ($countKey !== null && isset($_SESSION[$countKey])) ? (int) $_SESSION[$countKey] : null;
+        if ($noQuery || $count === 0) {
             echo json_encode(['error' => self::noDataMessage(), 'empty' => true]);
             return true;
         }
 
-        if (isset($_SESSION[$countKey]) && (int) $_SESSION[$countKey] <= self::INLINE_MAX_ROWS) {
-            echo json_encode(self::runInline($script));
+        if ($count !== null && $count <= self::INLINE_MAX_ROWS) {
+            echo json_encode(self::runInline($script, $countsRows));
             return true;
         }
 
-        $result = self::start($script, $queryKey, $_POST, $_GET);
+        $result = self::start($script, $sessionKeys, $countKey, $countsRows, $_POST, $_GET);
         if (isset($result['jobId'])) {
             $result['statusUrl'] = self::statusUrl($result['jobId']);
         }
@@ -151,7 +168,7 @@ final class ExportJobUtility
      * the one already running: required again without "async", it goes past
      * queueRequested() and exports as it always did.
      */
-    private static function runInline(string $script): array
+    private static function runInline(string $script, bool $countsRows): array
     {
         // Row count does not bound the cost of every export, so give the
         // request the worker's memory and a time limit before running it.
@@ -174,6 +191,11 @@ final class ExportJobUtility
                 require $script;
             })($script);
             $token = self::grantFromOutput((string) ob_get_clean(), 'inline');
+            if (!DownloadTokenUtility::looksLikeToken($token)) {
+                // An export answering with a bare file name gets a grant here.
+                $legacy = self::legacyFile($token);
+                $token = $legacy !== null ? _downloadToken($legacy) : null;
+            }
             $rows = self::$inlineTicks;
         } catch (Throwable $e) {
             while (ob_get_level() > $level) {
@@ -189,7 +211,7 @@ final class ExportJobUtility
         if (!DownloadTokenUtility::looksLikeToken((string) $token)) {
             return ['error' => _translate('Unable to generate the excel file')];
         }
-        if ($rows === 0) {
+        if ($countsRows && $rows === 0) {
             // The data changed after the listing was counted and nothing matches now.
             $file = DownloadTokenUtility::resolve($token);
             if ($file !== null) {
@@ -227,16 +249,24 @@ final class ExportJobUtility
      * has this very export (same script, query and form values) queued or
      * running, answers with that job instead of starting a second one.
      */
-    private static function start(string $script, string $queryKey, array $post, array $get): array
-    {
+    private static function start(
+        string $script,
+        array $sessionKeys,
+        ?string $countKey,
+        bool $countsRows,
+        array $post,
+        array $get
+    ): array {
         $script = realpath($script);
         if ($script === false || !self::isAppScript($script) || empty($_SESSION['userId'])) {
             return [];
         }
 
-        $query = trim((string) ($_SESSION[$queryKey] ?? ''));
-        if ($query === '') {
-            return [];
+        $session = [];
+        foreach ([...self::SESSION_KEYS, ...$sessionKeys] as $key) {
+            if (isset($_SESSION[$key])) {
+                $session[$key] = $_SESSION[$key];
+            }
         }
 
         $dir = self::directory();
@@ -248,7 +278,8 @@ final class ExportJobUtility
 
         unset($post['async'], $post['csrf_token']);
         $userId = (string) $_SESSION['userId'];
-        $fingerprint = hash('sha256', json_encode([$script, $query, $post, $get]));
+        $exportInput = array_intersect_key($session, array_flip($sessionKeys));
+        $fingerprint = hash('sha256', json_encode([$script, $exportInput, $post, $get]));
 
         // Looking for the same export and recording a new one happen under one
         // lock, so two requests at once cannot both start it.
@@ -266,14 +297,6 @@ final class ExportJobUtility
                 return ['error' => _translate('The server is busy with other exports. Please try again later.')];
             }
 
-            $countKey = $queryKey . 'Count';
-            $session = [$queryKey => $query];
-            foreach ([...self::SESSION_KEYS, $countKey] as $key) {
-                if (isset($_SESSION[$key])) {
-                    $session[$key] = $_SESSION[$key];
-                }
-            }
-
             $id = bin2hex(random_bytes(16));
             $job = new self($id, [
                 'id' => $id,
@@ -284,7 +307,8 @@ final class ExportJobUtility
                 'processed' => 0,
                 // The listing counted this same query when it last drew; the export
                 // query itself cannot be wrapped in a COUNT (it repeats column names).
-                'total' => isset($_SESSION[$countKey]) ? (int) $_SESSION[$countKey] : null,
+                'total' => ($countKey !== null && isset($_SESSION[$countKey])) ? (int) $_SESSION[$countKey] : null,
+                'countsRows' => $countsRows,
                 'file' => null,
                 'error' => null,
                 'claimed' => false,
@@ -403,6 +427,12 @@ final class ExportJobUtility
         $_SESSION = $job->job['session'];
         $_POST = $job->job['post'];
         $_GET = $job->job['get'] ?? [];
+        // Scripts that read their input from the request object, as the web
+        // front controller provides it, get the same values from here.
+        AppRegistry::set('request', (new ServerRequestFactory())
+            ->createServerRequest('POST', '/')
+            ->withParsedBody($_POST)
+            ->withQueryParams($_GET));
         if (!empty($_SESSION['APP_LOCALE'])) {
             ContainerRegistry::get(SystemService::class)->setLocale($_SESSION['APP_LOCALE']);
         }
@@ -424,25 +454,30 @@ final class ExportJobUtility
             }
 
             self::$current = $job;
+            $level = ob_get_level();
             ob_start();
+            // A script that calls exit never comes back here; finish it as it goes.
+            register_shutdown_function(static function () use ($job, $id, $level): void {
+                if (self::$current !== $job) {
+                    return;
+                }
+                $output = '';
+                while (ob_get_level() > $level) {
+                    $output = ob_get_clean() . $output;
+                }
+                self::$current = null;
+                $job->finish(self::fileFromOutput($output, $id));
+                if (!in_array($job->job['status'], self::FINISHED, true)) {
+                    $job->fail(_translate('Unable to generate the excel file'));
+                }
+            });
             (static function (string $script): void {
                 require $script;
             })($script);
-            $file = self::fileFromOutput((string) ob_get_clean(), $id);
-
-            if ($job->ticks === 0) {
-                // The data changed after the listing was counted and nothing matches now.
-                if ($file !== null) {
-                    self::remove($file);
-                }
-                $job->update(['status' => 'empty', 'error' => self::noDataMessage()], self::isRunning(...));
+            self::$current = null;
+            $job->finish(self::fileFromOutput((string) ob_get_clean(), $id));
+            if ($job->job['status'] === 'empty') {
                 return 0;
-            }
-            if ($file !== null) {
-                $job->update(
-                    ['status' => 'done', 'file' => $file, 'processed' => $job->ticks, 'total' => $job->ticks],
-                    self::isRunning(...)
-                );
             }
         } catch (Throwable $e) {
             while (ob_get_level() > 0) {
@@ -471,6 +506,26 @@ final class ExportJobUtility
         return 0;
     }
 
+    /** Records the outcome of a script that ran to its end (or to an exit). */
+    private function finish(?string $file): void
+    {
+        if (($this->job['countsRows'] ?? true) && $this->ticks === 0) {
+            // The data changed after the listing was counted and nothing matches now.
+            if ($file !== null) {
+                self::remove($file);
+            }
+            $this->update(['status' => 'empty', 'error' => self::noDataMessage()], self::isRunning(...));
+            return;
+        }
+        if ($file !== null) {
+            $processed = $this->ticks > 0 ? $this->ticks : (int) $this->job['processed'];
+            $this->update(
+                ['status' => 'done', 'file' => $file, 'processed' => $processed, 'total' => $processed ?: null],
+                self::isRunning(...)
+            );
+        }
+    }
+
     /**
      * Export scripts end by echoing a download grant for the file they wrote;
      * minted in the worker for the restored user, it names that file. Anything
@@ -480,7 +535,40 @@ final class ExportJobUtility
     private static function fileFromOutput(string $output, string $id): ?string
     {
         $token = self::grantFromOutput($output, $id);
-        return DownloadTokenUtility::looksLikeToken($token) ? DownloadTokenUtility::resolve($token) : null;
+        if (DownloadTokenUtility::looksLikeToken($token)) {
+            return DownloadTokenUtility::resolve($token);
+        }
+        return self::legacyFile($token);
+    }
+
+    /**
+     * Some exports still answer with the file's name (plain, url-encoded or
+     * base64) the way download.php accepted it before grants. Only a file
+     * inside one of the temporary folders download.php serves is accepted.
+     */
+    private static function legacyFile(string $name): ?string
+    {
+        if ($name === '') {
+            return null;
+        }
+        if (MiscUtility::isBase64($name) && ($decoded = base64_decode($name, true)) !== false && $decoded !== '') {
+            $name = $decoded;
+        }
+        $name = urldecode($name);
+        foreach ([TEMP_PATH, VAR_TEMP_PATH] as $root) {
+            $realRoot = realpath($root);
+            if ($realRoot === false) {
+                continue;
+            }
+            $candidates = str_starts_with($name, '/') ? [$name] : [$root . DIRECTORY_SEPARATOR . $name];
+            foreach ($candidates as $candidate) {
+                $real = realpath($candidate);
+                if ($real !== false && is_file($real) && str_starts_with($real, $realRoot . DIRECTORY_SEPARATOR)) {
+                    return $real;
+                }
+            }
+        }
+        return null;
     }
 
     /** The last line an export script printed, which is its download grant. */

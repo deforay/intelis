@@ -7,6 +7,13 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['rejectedViralLoadResult', 'rejectedViralLoadResultCount'])) {
+	return;
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -32,6 +39,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
 
      $resultSet = $db->rawQuery($_SESSION['rejectedViralLoadResult']);
      foreach ($resultSet as $aRow) {
+          ExportJobUtility::tick();
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';

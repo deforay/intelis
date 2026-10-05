@@ -10,6 +10,13 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\QualityMonitoringService;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__)) {
+	return;
+}
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -107,6 +114,7 @@ try {
         $writer->openToFile($filePath);
         $writer->addRow(Row::fromValues(array_values($columns)));
         foreach ($qaService->streamSamples($filters, $node) as $row) {
+            ExportJobUtility::tick();
             $cells = [];
             foreach (array_keys($columns) as $key) {
                 $cells[] = $row[$key];

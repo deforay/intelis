@@ -7,6 +7,13 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['storageHistoryDataQuery'])) {
+	return;
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -26,6 +33,7 @@ if (isset($_SESSION['storageHistoryDataQuery']) && trim((string) $_SESSION['stor
 
      $resultSet = $db->rawQuery($_SESSION['storageHistoryDataQuery']);
      foreach ($resultSet as $aRow) {
+          ExportJobUtility::tick();
           $row = [];
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
                $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);

@@ -5,6 +5,13 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['hepatitisMonitoringThresholdReportQuery'])) {
+	return;
+}
 
 
 
@@ -20,6 +27,7 @@ if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim((string)
 
     $res = [];
     foreach ($rResult as $aRow) {
+        ExportJobUtility::tick();
         $row = [];
         if (isset($res[$aRow['facility_id']])) {
             if (isset($res[$aRow['facility_id']][$aRow['monthrange']])) {

@@ -7,6 +7,13 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['sampleStorageQuery'])) {
+	return;
+}
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -32,6 +39,7 @@ $key = (string) $general->getGlobalConfig('key');
 $resultSet = $db->rawQueryGenerator($_SESSION['sampleStorageQuery']);
 
 foreach ($resultSet as $aRow) {
+	ExportJobUtility::tick();
 	$row = [];
 
 	$patientFname = $aRow['patient_first_name'] != '' ? $aRow['patient_first_name'] : '';

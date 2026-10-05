@@ -2,6 +2,7 @@
 
 namespace App\Abstracts;
 
+use App\Utilities\ExportJobUtility;
 use const COUNTRY\PNG;
 use const SAMPLE_STATUS\CANCELLED;
 use const SAMPLE_STATUS\EXPIRED;
@@ -690,6 +691,7 @@ abstract class AbstractTestService
         $writer->addRow(Row::fromValuesWithStyle($headings, $headerStyle));
 
         foreach ($this->db->rawQueryGenerator($sql, $params) as $aRow) {
+            ExportJobUtility::tick();
             $values = [];
             foreach ($columns as [, $column, $isDate]) {
                 $value = $aRow[$column] ?? '';

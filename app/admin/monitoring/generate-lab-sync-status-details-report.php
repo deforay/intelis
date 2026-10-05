@@ -6,6 +6,13 @@ use App\Services\DatabaseService;
 use OpenSpout\Common\Entity\Row;
 use App\Registries\ContainerRegistry;
 use OpenSpout\Writer\XLSX\Writer as XlsxWriter;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['labSyncStatusDetails'])) {
+	return;
+}
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -41,6 +48,7 @@ $writer->openToFile($filePath);
 $writer->addRow(Row::fromValues($headings));
 
 foreach ($db->rawQuery($saved['query'], $saved['params'] ?? []) as $aRow) {
+    ExportJobUtility::tick();
     $writer->addRow(Row::fromValues([
         $aRow['facility_name'],
         $saved['testName'] ?? '',

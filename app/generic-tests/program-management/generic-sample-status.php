@@ -345,25 +345,17 @@ $batResult = $db->rawQuery($batQuery);
 		if (searchExecuted === false) {
 			searchResultData();
 		}
-		$.blockUI();
 		oTable.fnDraw();
-		$.post("/generic-tests/program-management/generic-sample-tat-details-export-in-excel.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/generic-tests/program-management/generic-sample-tat-details-export-in-excel.php", {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
 				sampleTestedDate: $("#sampleTestedDate").val(),
 				Batch_Code: $("#batchCode  option:selected").text(),
 				Sample_Type: $("#sampleType  option:selected").text(),
 				Lab_Name: $("#labName option:selected").text(),
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate excel"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+			}, <?= json_encode(_translate("Other Lab Tests Turnaround Time Export")) ?>);
 
 	}
 </script>

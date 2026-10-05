@@ -364,24 +364,17 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     if (searchExecuted === false) {
       searchVlRequestData();
     }
-    $.blockUI();
     oTable.fnDraw();
-    $.post("/hepatitis/management/hepatitis-testing-target-in-excel.php", {
+    // Runs in the background; progress shows in the navbar Exports menu and the
+    // file downloads when ready, even if the user has moved to another page.
+    IntelisExport.start("/hepatitis/management/hepatitis-testing-target-in-excel.php", {
         sampleCollectionDate: $("#mrp-lowerDate").val() + ' to ' + $("#mrp-upperDate").val(),
         fyName: $("#facilityName  option:selected").text(),
         facilityName: $("#facilityName").val(),
         state: $("#state").val(),
         district: $("#city").val(),
         sampleTestDate: $("#sampleTestDate").val()
-      },
-      function(data) {
-        if (data == "" || data == null || data == undefined) {
-          alert("<?php echo _translate("Unable to generate excel file"); ?>");
-        } else {
-          location.href = '/download.php?d=a&f=' + data;
-        }
-      });
-    $.unblockUI();
+      }, <?= json_encode(_translate("Hepatitis Testing Target Report")) ?>);
   }
 
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

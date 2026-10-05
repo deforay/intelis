@@ -8,6 +8,13 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['covid19MonitoringThresholdReportQuery'])) {
+	return;
+}
 
 
 
@@ -23,6 +30,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim((string) $
 
     $res = [];
     foreach ($rResult as $aRow) {
+        ExportJobUtility::tick();
         $row = [];
         if (isset($res[$aRow['facility_id']])) {
             if (isset($res[$aRow['facility_id']][$aRow['monthrange']])) {

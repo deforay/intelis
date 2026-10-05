@@ -1941,21 +1941,9 @@ $currentRole = trim((string) ($_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? 
     }
 
     function qaExport() {
-        $.blockUI();
-        // The export logs itself where it is written, so the token that comes
-        // back is proof the line was recorded alongside the file.
-        $.post(QA_URL, $.extend({ section: 'export' }, qaGridParams()), function (token) {
-            $.unblockUI();
-            token = $.trim(String(token || ''));
-            if (token === '' || token.indexOf('{') === 0) {
-                alert(QA_LABELS.exportFailed);
-                return;
-            }
-            window.open('/download.php?f=' + token, '_blank');
-        }).fail(function () {
-            $.unblockUI();
-            alert(QA_LABELS.exportFailed);
-        });
+        // Runs in the background; progress shows in the navbar Exports menu and the
+        // file downloads when ready, even if the user has moved to another page.
+        IntelisExport.start(QA_URL, $.extend({ section: 'export' }, qaGridParams()), <?= json_encode(_translate("EID Quality Monitoring Export")) ?>);
     }
 
     // The same presets the Sample Ageing report offers, so a reader moving

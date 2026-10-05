@@ -484,11 +484,12 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function exportInexcel() {
-		$.blockUI();
 
 		// The export rebuilds the filters from what is posted here, so it always
 		// matches the on-screen table without waiting for a table redraw.
-		$.post("/vl/program-management/vlSampleTATDetailsExportInExcel.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/vl/program-management/vlSampleTATDetailsExportInExcel.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
 				sampleTestedDate: $("#sampleTestedDate").val(),
@@ -499,19 +500,7 @@ $batResult = $db->rawQuery($batQuery);
 				batchCodeLabel: $("#batchCode option:selected").text(),
 				sampleTypeLabel: $("#sampleType option:selected").text(),
 				labNameLabel: $("#labName option:selected").text(),
-			})
-			.done(function(data) {
-				$.unblockUI();
-				if (data == "" || data == null || data == undefined) {
-					alert("<?php echo _jsTranslate("Unable to generate excel"); ?>");
-				} else {
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			})
-			.fail(function() {
-				$.unblockUI();
-				alert("<?php echo _jsTranslate("Unable to generate excel"); ?>");
-			});
+			}, <?= json_encode(_translate("VL Turnaround Time Export")) ?>);
 	}
 </script>
 <?php

@@ -453,9 +453,10 @@ $state = $geolocationService->getProvinces("yes");
 		if (searchExecuted === false) {
 			searchVlRequestData();
 		}
-		$.blockUI();
 		oTable.fnDraw();
-		$.post("/vl/program-management/vlMonitoringExportInExcel.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/vl/program-management/vlMonitoringExportInExcel.php", {
 				//sampleCollectionDate: $("#mrp-lowerDate").val() + ' to ' + $("#mrp-upperDate").val(),
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				fyName: $("#facilityName  option:selected").text(),
@@ -463,15 +464,7 @@ $state = $geolocationService->getProvinces("yes");
 				state: $("#state").val(),
 				district: $("#district").val(),
 				sampleTestDate: $("#sampleTestDate").val()
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					alert("<?php echo _translate("Unable to generate excel file"); ?>");
-				} else {
-					location.href = '/download.php?d=a&f=' + data;
-				}
-			});
-		$.unblockUI();
+			}, <?= json_encode(_translate("VL Monitoring Report")) ?>);
 	}
 
 	var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

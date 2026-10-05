@@ -568,21 +568,13 @@ $facilityResult = $db->rawQuery($facilityQuery);
 
   function exportVLWeeklyReport() {
     searchWeeklyData();
-    $.blockUI();
-    $.post("/vl/program-management/generateVlWeeklyReportExcel.php", {
+    // Runs in the background; progress shows in the navbar Exports menu and the
+    // file downloads when ready, even if the user has moved to another page.
+    IntelisExport.start("/vl/program-management/generateVlWeeklyReportExcel.php", {
         reportedDate: $("#sampleTestDate").val(),
         lab: ($("#lab").val() == null) ? '' : $("#lab").val().join(','),
         searchData: $('.dataTables_filter input').val()
-      },
-      function(data) {
-        $.unblockUI();
-        if (data == "" || data == null || data == undefined) {
-          alert("<?php echo _translate("Unable to generate the excel file"); ?>");
-        } else {
-          $.unblockUI();
-          location.href = '/download.php?d=a&f=' + data;
-        }
-      });
+      }, <?= json_encode(_translate("VL Weekly Report")) ?>);
   }
 
   function exportFemaleVLWeeklyReport() {
@@ -592,21 +584,13 @@ $facilityResult = $db->rawQuery($facilityQuery);
       labTexts.push(texts[i].text);
     }
     searchFemaleData();
-    $.blockUI();
-    $.post("/vl/program-management/generateVlWeeklyFemaleReportExcel.php", {
+    // Runs in the background; progress shows in the navbar Exports menu and the
+    // file downloads when ready, even if the user has moved to another page.
+    IntelisExport.start("/vl/program-management/generateVlWeeklyFemaleReportExcel.php", {
         sample_test_date: $("#femaleSampleTestDate").val(),
         lab: (labTexts.length > 0) ? labTexts.join(',') : '',
         searchData: $('.dataTables_filter input').val()
-      },
-      function(data) {
-        $.unblockUI();
-        if (data == "" || data == null || data == undefined) {
-          alert("<?php echo _translate("Unable to generate the excel file"); ?>");
-        } else {
-          $.unblockUI();
-          location.href = '/download.php?d=a&f=' + data;
-        }
-      });
+      }, <?= json_encode(_translate("VL Weekly Female Report")) ?>);
   }
 </script>
 <?php

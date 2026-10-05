@@ -9,10 +9,20 @@ use App\Services\EidService;
 use App\Abstracts\AbstractTestService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\TurnaroundTimeUtility;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['eidTatData'])) {
+	return;
+}
 
 ini_set('memory_limit', '512M');
-set_time_limit(600);
-ini_set('max_execution_time', 600);
+// A background job has no request to time out; a direct request keeps its limit.
+if (!ExportJobUtility::inBackground()) {
+	set_time_limit(600);
+	ini_set('max_execution_time', 600);
+}
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */

@@ -277,25 +277,17 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function cd4ExportTAT() {
-		$.blockUI();
 		oTable.fnDraw();
-		$.post("/cd4/management/cd4-export-tat.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/cd4/management/cd4-export-tat.php", {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
 				sampleTestedDate: $("#sampleTestedDate").val(),
 				Batch_Code: $("#batchCode  option:selected").text(),
 				Sample_Type: $("#sampleType  option:selected").text(),
 				Facility_Name: $("#labName  option:selected").text()
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+			}, <?= json_encode(_translate("CD4 Turnaround Time Export")) ?>);
 
 	}
 </script>

@@ -12,6 +12,13 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use App\Utilities\SampleCountUtility;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__)) {
+	return;
+}
 
 
 /** @var DatabaseService $db */
@@ -155,6 +162,7 @@ $resultSet = $db->rawQuery($sQuery);
 
 $excelResultSet = [];
 foreach ($resultSet as $row) {
+    ExportJobUtility::tick();
     $excelResultSet[$row['lab_name'] . '-' . $row['fcode']][] = $row;
 }
 

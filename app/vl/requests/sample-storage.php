@@ -665,16 +665,9 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 
 	function exportStorageSamples() {
 
-		$.blockUI();
-		$.post("/vl/requests/export-sample-storage.php",
-			function (data) {
-				$.unblockUI();
-				if (data === "" || data === null || data === undefined) {
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
-				} else {
-					window.open('/download.php?d=a&f=' + data, '_blank');
-				}
-			});
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/vl/requests/export-sample-storage.php", {}, <?= json_encode(_translate("Sample Storage Export")) ?>);
 	}
 </script>
 <?php

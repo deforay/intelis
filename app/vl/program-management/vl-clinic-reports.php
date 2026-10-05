@@ -1420,8 +1420,9 @@ $implementingPartnerList = $general->getImplementationPartners();
 	});
 
 	function vfVlnsExportInexcel() {
-		$.blockUI();
-		$.post('/vl/program-management/export-virologic-failure-report.php', {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start('/vl/program-management/export-virologic-failure-report.php', {
 			sampleCollectionDate: $('#vfVlnsSampleCollectionDate').val(),
 			sampleTestDate: $('#vfVlnsSampleTestDate').val(),
 			state: $('#vfVlnsState').val(),
@@ -1434,19 +1435,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			maxAge: $('#max_age').val(),
 			implementingPartner: $('#vfVlnsImplementingPartner').val(),
 			withAlphaNum: 'yes',
-		},
-			function (data) {
-				if (data == "age") {
-					$.unblockUI();
-					alert("Age range is incorrect");
-				} else if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _jsTranslate("No data found matching the selected parameters"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+		}, <?= json_encode(_translate("VL Virologic Failure Report")) ?>);
 	}
 
 	function highViralLoadReport() {
@@ -1779,8 +1768,9 @@ $implementingPartnerList = $general->getImplementationPartners();
 		if (confm) {
 			var markAsComplete = true;
 		}
-		$.blockUI();
-		$.post("/vl/program-management/vlHighViralLoadResultExportInExcel.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/vl/program-management/vlHighViralLoadResultExportInExcel.php", {
 			Sample_Test_Date: $("#hvlSampleTestDate").val(),
 			Batch_Code: $("#hvlBatchCode  option:selected").text(),
 			Sample_Type: $("#hvlSampleType  option:selected").text(),
@@ -1790,18 +1780,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			Pregnant: $("#hvlPatientPregnant  option:selected").text(),
 			Breastfeeding: $("#hvlPatientBreastfeeding  option:selected").text(),
 			markAsComplete: markAsComplete
-		},
-			function (data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
-				} else {
-					$.unblockUI();
-					//location.href = '/temporary/' + data;
-					window.open('/download.php?f=' + data, '_blank');
-
-				}
-			});
+		}, <?= json_encode(_translate("VL High Viral Load Export")) ?>);
 	}
 
 	function exportRejectedResultInexcel() {
@@ -1810,8 +1789,9 @@ $implementingPartnerList = $general->getImplementationPartners();
 		if (!searchExecuted) {
 			return searchVlRequestData().then(exportRejectedResultInexcel);
 		}
-		$.blockUI();
-		$.post("/vl/program-management/vlRejectedResultExportInExcel.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/vl/program-management/vlRejectedResultExportInExcel.php", {
 			Sample_Collection_Date: $("#rjtSampleCollectionDate").val(),
 			Batch_Code: $("#rjtBatchCode  option:selected").text(),
 			Sample_Type: $("#rjtSampleType  option:selected").text(),
@@ -1821,16 +1801,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			Pregnant: $("#rjtPatientPregnant  option:selected").text(),
 			Breastfeeding: $("#rjtPatientBreastfeeding  option:selected").text(),
 			RejectionReason: $("#rejectionReason  option:selected").val()
-		},
-			function (data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+		}, <?= json_encode(_translate("VL Rejected Results Export")) ?>);
 	}
 
 	function exportNotAvailableResultInexcel() {
@@ -1839,8 +1810,9 @@ $implementingPartnerList = $general->getImplementationPartners();
 		if (!searchExecuted) {
 			return searchVlRequestData().then(exportNotAvailableResultInexcel);
 		}
-		$.blockUI();
-		$.post("/vl/program-management/vlNotAvailableResultExportInExcel.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/vl/program-management/vlNotAvailableResultExportInExcel.php", {
 			Sample_Test_Date: $("#noResultSampleTestDate").val(),
 			Batch_Code: $("#noResultBatchCode  option:selected").text(),
 			Sample_Type: $("#noResultSampleType  option:selected").text(),
@@ -1849,16 +1821,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 			patientInfo: $("#patientNtAvailInfo  option:selected").val(),
 			Pregnant: $("#noResultPatientPregnant  option:selected").text(),
 			Breastfeeding: $("#noResultPatientBreastfeeding  option:selected").text()
-		},
-			function (data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+		}, <?= json_encode(_translate("VL Results Not Available Export")) ?>);
 	}
 
 	function hideFemaleDetails(value, pregnant, breastFeeding) {

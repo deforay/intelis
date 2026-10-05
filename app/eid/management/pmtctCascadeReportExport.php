@@ -10,10 +10,20 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\XLSX\Writer;
 use Psr\Http\Message\ServerRequestInterface;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, [], countsRows: false)) {
+	return;
+}
 
 ini_set('memory_limit', '512M');
-set_time_limit(600);
-ini_set('max_execution_time', 600);
+// A background job has no request to time out; a direct request keeps its limit.
+if (!ExportJobUtility::inBackground()) {
+	set_time_limit(600);
+	ini_set('max_execution_time', 600);
+}
 
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');

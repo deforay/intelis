@@ -10,6 +10,13 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['samplewiseReportsCalc', 'samplewiseReportsQuery'])) {
+	return;
+}
 
 
 ini_set('memory_limit', -1);
@@ -111,6 +118,7 @@ foreach ($calcResult as $cRow) {
 
 $no = 1;
 foreach ($rResult as $aRow) {
+    ExportJobUtility::tick();
     $row = [];
     $row[] = $aRow['sample_code'];
     $row[] = $aRow['labname'];

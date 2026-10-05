@@ -173,22 +173,14 @@ $sampleTypeDetails = $genericService->getGenericSampleTypes();
 	}
 
 	function exportInexcel() {
-		$.blockUI();
-		$.post("/generic-tests/program-management/export-sample-rejection-report.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/generic-tests/program-management/export-sample-rejection-report.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				lab_name: $("#labName").val(),
 				clinic_name: $("#clinicName").val(),
 				sample_type: $("#sampleType").val()
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate excel"); ?>.");
-				} else {
-					$.unblockUI();
-					location.href = '/download.php?d=a&f=' + data;
-				}
-			});
+			}, <?= json_encode(_translate("Other Lab Tests Sample Rejection Report")) ?>);
 	}
 </script>
 <?php

@@ -1262,11 +1262,9 @@ $testingLabs = $facilitiesService->getTestingLabs();
     function lpiRunExport(section, format) {
         var data = $.extend({ section: section, format: format }, lpiFilters());
         lpiProgress(1);
-        $.post('/reports/export-lab-performance-indicators.php', data, function (fileName) {
-            if (fileName) {
-                window.location.href = '/download.php?f=' + fileName + '&d=a';
-            }
-        }).always(function () {
+        // Runs in the background; progress shows in the navbar Exports menu and the
+        // file downloads when ready, even if the user has moved to another page.
+        IntelisExport.start('/reports/export-lab-performance-indicators.php', data, <?= json_encode(_translate("Lab Performance Indicators")) ?>).always(function () {
             lpiProgress(-1);
         });
     }

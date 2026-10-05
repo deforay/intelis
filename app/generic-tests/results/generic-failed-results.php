@@ -549,19 +549,12 @@ $state = $geolocationService->getProvinces("yes");
     }
 
     function exportTestRequests() {
-        $.blockUI();
         var requestSampleType = $('#requestSampleType').val();
-        $.post("/generic-tests/requests/export-geeric-tests-requests.php", {
+        // Runs in the background; progress shows in the navbar Exports menu and the
+        // file downloads when ready, even if the user has moved to another page.
+        IntelisExport.start("/generic-tests/requests/export-generic-tests-requests.php", {
                 reqSampleType: requestSampleType
-            },
-            function(data) {
-                $.unblockUI();
-                if (data === "" || data === null || data === undefined) {
-                    alert("<?php echo _translate("Unable to generate the excel file"); ?>");
-                } else {
-                    location.href = '/download.php?d=a&f=' + data;
-                }
-            });
+            }, <?= json_encode(_translate("Other Lab Tests Failed Results Export")) ?>);
     }
 
     function hideAdvanceSearch(hideId, showId) {

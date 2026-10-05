@@ -558,33 +558,20 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 
 	function exportStorageData($data) {
 
-		$.blockUI();
 		if ($data == "storage") {
-			$.post("/vl/program-management/storageDataToExcel.php", {
+			// Runs in the background; progress shows in the navbar Exports menu and the
+			// file downloads when ready, even if the user has moved to another page.
+			IntelisExport.start("/vl/program-management/storageDataToExcel.php", {
 				reqSampleType: $('#requestSampleType').val(),
 				patientInfo: $('#patientInfo').val(),
-			},
-				function (data) {
-					$.unblockUI();
-					if (data === "" || data === null || data === undefined) {
-						alert("<?php echo _translate("Unable to generate the excel file"); ?>");
-					} else {
-						window.open('/download.php?d=a&f=' + data, '_blank');
-					}
-				});
+			}, <?= json_encode(_translate("Sample Storage Report")) ?>);
 		} else {
-			$.post("/vl/program-management/storageHistoryDataToExcel.php", {
+			// Runs in the background; progress shows in the navbar Exports menu and the
+			// file downloads when ready, even if the user has moved to another page.
+			IntelisExport.start("/vl/program-management/storageHistoryDataToExcel.php", {
 				reqSampleType: $('#requestSampleType').val(),
 				patientInfo: $('#patientInfo').val(),
-			},
-				function (data) {
-					$.unblockUI();
-					if (data === "" || data === null || data === undefined) {
-						alert("<?php echo _translate("Unable to generate the excel file"); ?>");
-					} else {
-						window.open('/download.php?d=a&f=' + data, '_blank');
-					}
-				});
+			}, <?= json_encode(_translate("Sample Storage History Report")) ?>);
 		}
 	}
 

@@ -366,23 +366,16 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     if (searchExecuted === false) {
       searchVlRequestData();
     }
-    $.blockUI();
     oTable.fnDraw();
-    $.post("/covid-19/management/covid-19-TestingTargetInExcel.php", {
+    // Runs in the background; progress shows in the navbar Exports menu and the
+    // file downloads when ready, even if the user has moved to another page.
+    IntelisExport.start("/covid-19/management/covid-19-TestingTargetInExcel.php", {
         sampleCollectionDate: $("#mrp-lowerDate").val() + ' to ' + $("#mrp-upperDate").val(),
         fyName: $("#facilityName  option:selected").text(),
         facilityName: $("#facilityName").val(),
         targetType: $("#targetType").val(),
         sampleTestDate: $("#sampleTestDate").val()
-      },
-      function(data) {
-        if (data == "" || data == null || data == undefined) {
-          alert("<?php echo _translate("Unable to generate excel file"); ?>");
-        } else {
-          window.open('/download.php?f=' + data, '_blank');
-        }
-      });
-    $.unblockUI();
+      }, <?= json_encode(_translate("COVID-19 Testing Target Report")) ?>);
   }
 
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

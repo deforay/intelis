@@ -8,6 +8,13 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['tbRejectedResult', 'tbRejectedResultCount'])) {
+	return;
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -31,6 +38,7 @@ if (isset($_SESSION['tbRejectedResult']) && trim((string) $_SESSION['tbRejectedR
 
      $resultSet = $db->rawQuery($_SESSION['tbRejectedResult']);
      foreach ($resultSet as $aRow) {
+          ExportJobUtility::tick();
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';

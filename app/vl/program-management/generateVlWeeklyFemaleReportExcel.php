@@ -5,6 +5,13 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['vlStatisticsFemaleQuery'])) {
+	return;
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -27,6 +34,7 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim((string) $_SESSION['vlSt
     $sheet->fromArray($headings, null, 'A1'); // Write headings
 
     foreach ($rResult as $aRow) {
+ExportJobUtility::tick();
 
         $row = [];
         $row[] = ($aRow['facility_state']);

@@ -11,6 +11,13 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['testResultReportsQuery'])) {
+	return;
+}
 
 
 ini_set('memory_limit', -1);
@@ -113,6 +120,7 @@ $sheet->getStyle('O5:O5')->applyFromArray($styleArray);
 
 $no = 1;
 foreach ($rResult as $aRow) {
+    ExportJobUtility::tick();
     // The reason column holds a history of changes (and, on older records, legacy formats),
     // not the single object this once assumed -- export the most recent recorded change. EID,
     // COVID and hepatitis keep the same history under reason_for_changing.

@@ -12,6 +12,13 @@ use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['labSyncStatus', 'labSyncStatusParams'])) {
+	return;
+}
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -91,6 +98,7 @@ $statusSummary = ['active' => 0, 'warning' => 0, 'critical' => 0];
 
 if (!empty($resultSet)) {
     foreach ($resultSet as $aRow) {
+        ExportJobUtility::tick();
         $row = [];
 
         // Determine sync status

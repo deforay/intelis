@@ -1085,18 +1085,9 @@ $exitLabels = [
 
     function sfExportSamples() {
         if (!sfDrillSel) { return; }
-        $.blockUI();
-        $.post('/reports/get-sample-ageing.php', $.extend({ section: 'export' }, sfDrillParams()), function (data) {
-            $.unblockUI();
-            if (data === '' || data === null || data === undefined || String(data).indexOf('{') === 0) {
-                alert(SF_LABELS.exportFailed);
-                return;
-            }
-            window.open('/download.php?f=' + data, '_blank');
-        }).fail(function () {
-            $.unblockUI();
-            alert(SF_LABELS.exportFailed);
-        });
+        // Runs in the background; progress shows in the navbar Exports menu and the
+        // file downloads when ready, even if the user has moved to another page.
+        IntelisExport.start('/reports/get-sample-ageing.php', $.extend({ section: 'export' }, sfDrillParams()), <?= json_encode(_translate("Sample Ageing Export")) ?>);
     }
 
     // The same presets the clinic reports offer, so a reader moving between the

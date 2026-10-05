@@ -6,6 +6,13 @@ use App\Services\CommonService;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['rejectedSamples'])) {
+	return;
+}
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -38,6 +45,7 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
 
 
      foreach ($rResult as $aRow) {
+          ExportJobUtility::tick();
           $row = [];
           $row[] = ucwords((string) $aRow['labname']);
           $row[] = ucwords((string) $aRow['facility_name']);

@@ -7,6 +7,13 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\SampleRejectionUtility;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['vlRejectedSamplesQuery'])) {
+	return;
+}
 
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -66,6 +73,7 @@ try {
 
      $totalRejected = 0;
      foreach ($rResult as $aRow) {
+          ExportJobUtility::tick();
           $totalRejected += (int) $aRow['total'];
           $writer->addRow(Row::fromValues([
                $aRow['labname'] ?? '',

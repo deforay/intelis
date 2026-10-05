@@ -159,20 +159,9 @@ $jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
     });
 
     function exportSampleStatusDetails() {
-        $.blockUI();
-        $.post('/reports/get-sample-status-details.php', $.extend({ section: 'export' }, SSD_PARAMS))
-            .done(function (data) {
-                $.unblockUI();
-                if (!data || String(data).indexOf('{') === 0) {
-                    alert("<?= _jsTranslate('Unable to generate excel'); ?>");
-                    return;
-                }
-                window.open('/download.php?f=' + data, '_blank');
-            })
-            .fail(function () {
-                $.unblockUI();
-                alert("<?= _jsTranslate('Unable to generate excel'); ?>");
-            });
+        // Runs in the background; progress shows in the navbar Exports menu and the
+        // file downloads when ready, even if the user has moved to another page.
+        IntelisExport.start('/reports/get-sample-status-details.php', $.extend({ section: 'export' }, SSD_PARAMS), <?= json_encode(_translate("Sample Status Details Export")) ?>);
     }
 </script>
 <?php

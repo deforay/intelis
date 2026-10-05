@@ -1109,15 +1109,9 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
     }
 
     function exportPmtctCascade() {
-        $.blockUI();
-        $.post("/eid/management/pmtctCascadeReportExport.php", readFilters(), function (data) {
-            $.unblockUI();
-            if (!data) {
-                alert("<?= _jsTranslate('Unable to generate the excel file'); ?>");
-                return;
-            }
-            window.open('/download.php?f=' + data, '_blank');
-        });
+        // Runs in the background; progress shows in the navbar Exports menu and the
+        // file downloads when ready, even if the user has moved to another page.
+        IntelisExport.start("/eid/management/pmtctCascadeReportExport.php", readFilters(), <?= json_encode(_translate("PMTCT Cascade Report")) ?>);
     }
 
     $(function () {

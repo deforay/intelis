@@ -1106,29 +1106,14 @@ $stateNameList = $geolocationService->getProvinces("yes");
 
         exportButton.html('<i class="fa fa-spinner fa-spin"></i> <?= _jsTranslate("Generating..."); ?>').prop('disabled', true);
 
-        $.ajax({
-            url: "/admin/monitoring/generate-lab-sync-status-report.php",
-            type: "POST",
-            data: {
-                province: $('#province').val(),
-                district: $('#district').val(),
-                labName: $('#labName').val()
-            },
-            timeout: 60000,
-            success: function (data) {
-                if (data && data.trim()) {
-                    window.open('/download.php?f=' + data, '_blank');
-                    showNotification('<?= _jsTranslate("Export generated successfully"); ?>', 'success');
-                } else {
-                    showNotification('<?= _jsTranslate("Unable to generate the excel file. Please try again."); ?>', 'error');
-                }
-            },
-            error: function () {
-                showNotification('<?= _jsTranslate("Failed to generate export. Please try again."); ?>', 'error');
-            },
-            complete: function () {
-                exportButton.html(originalButtonHtml).prop('disabled', false);
-            }
+        // Runs in the background; progress shows in the navbar Exports menu and the
+        // file downloads when ready, even if the user has moved to another page.
+        IntelisExport.start("/admin/monitoring/generate-lab-sync-status-report.php", {
+            province: $('#province').val(),
+            district: $('#district').val(),
+            labName: $('#labName').val()
+        }, <?= json_encode(_translate("Lab Sync Status Export")) ?>).always(function () {
+            exportButton.html(originalButtonHtml).prop('disabled', false);
         });
     }
 

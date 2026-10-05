@@ -8,10 +8,20 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['resultNotAvailable'])) {
+	return;
+}
 
 ini_set('memory_limit', '512M');
-set_time_limit(300);
-ini_set('max_execution_time', 300);
+// A background job has no request to time out; a direct request keeps its limit.
+if (!ExportJobUtility::inBackground()) {
+	set_time_limit(300);
+	ini_set('max_execution_time', 300);
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -40,6 +50,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
 
     $resultSet = $db->rawQueryGenerator($_SESSION['resultNotAvailable']);
     foreach ($resultSet as $aRow) {
+        ExportJobUtility::tick();
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
             $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
             $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);

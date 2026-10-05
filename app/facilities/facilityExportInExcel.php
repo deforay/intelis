@@ -8,6 +8,13 @@ use App\Services\FacilitiesService;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
 use Psr\Http\Message\ServerRequestInterface;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__)) {
+	return;
+}
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -82,6 +89,7 @@ $writer->addRow(Row::fromValues(FacilitiesService::bulkUploadHeadings()));
 $resultSet = $db->rawQueryGenerator($sQuery, $params);
 $no = 0;
 foreach ($resultSet as $aRow) {
+	ExportJobUtility::tick();
 	$row = [
 		$aRow['facility_name'],
 		$aRow['facility_code'],

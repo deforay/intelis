@@ -402,15 +402,9 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
 
     function exportSyncStatus() {
         // $.blockUI();
-        $.post("generate-lab-sync-status-details-report.php", {},
-            function (data) {
-                $.unblockUI();
-                if (data === "" || data === null || data === undefined) {
-                    alert("<?= _translate("Unable to generate the excel file", true); ?>");
-                } else {
-                    window.open('/download.php?f=' + data, '_blank');
-                }
-            });
+        // Runs in the background; progress shows in the navbar Exports menu and the
+        // file downloads when ready, even if the user has moved to another page.
+        IntelisExport.start("generate-lab-sync-status-details-report.php", {}, <?= json_encode(_translate("Lab Sync Details Export")) ?>);
     }
 </script>
 <?php

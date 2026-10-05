@@ -145,21 +145,13 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   }
 
   function exportInexcel() {
-    $.blockUI();
-    $.post("/cd4/management/generate-rejected-samples-export.php", {
+    // Runs in the background; progress shows in the navbar Exports menu and the
+    // file downloads when ready, even if the user has moved to another page.
+    IntelisExport.start("/cd4/management/generate-rejected-samples-export.php", {
         sampleCollectionDate: $("#sampleCollectionDate").val(),
         lab_name: $("#labName").val(),
         clinic_name: $("#clinicName").val()
-      },
-      function(data) {
-        if (data == "" || data == null || data == undefined) {
-          $.unblockUI();
-          alert("<?php echo _translate("Unable to generate excel"); ?>.");
-        } else {
-          $.unblockUI();
-          location.href = '/download.php?d=a&f=' + data;
-        }
-      });
+      }, <?= json_encode(_translate("CD4 Sample Rejection Report")) ?>);
   }
 </script>
 <?php

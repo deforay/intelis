@@ -363,23 +363,16 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   }
 
   function exportInexcel() {
-    $.blockUI();
     oTable.fnDraw();
-    $.post("/vl/program-management/vlTestingTargetInExcel.php", {
+    // Runs in the background; progress shows in the navbar Exports menu and the
+    // file downloads when ready, even if the user has moved to another page.
+    IntelisExport.start("/vl/program-management/vlTestingTargetInExcel.php", {
         sampleCollectionDate: $("#mrp-lowerDate").val() + ' to ' + $("#mrp-upperDate").val(),
         fyName: $("#facilityName  option:selected").text(),
         facilityName: $("#facilityName").val(),
         targetType: $("#targetType").val(),
         sampleTestDate: $("#sampleTestDate").val()
-      },
-      function(data) {
-        if (data == "" || data == null || data == undefined) {
-          alert('Unable to generate excel file');
-        } else {
-          location.href = '/download.php?d=a&f=' + data;
-        }
-      });
-    $.unblockUI();
+      }, <?= json_encode(_translate("VL Testing Target Report")) ?>);
   }
 
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

@@ -6,6 +6,13 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['eidMonitoringThresholdReportQuery'])) {
+	return;
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -18,6 +25,7 @@ if (isset($_SESSION['eidMonitoringThresholdReportQuery']) && trim((string) $_SES
 
     $res = [];
     foreach ($rResult as $aRow) {
+        ExportJobUtility::tick();
         $row = [];
         if (isset($res[$aRow['facility_id']])) {
             if (isset($res[$aRow['facility_id']][$aRow['monthrange']])) {

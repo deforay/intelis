@@ -281,25 +281,17 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function covid19ExportTAT() {
-		$.blockUI();
 		oTable.fnDraw();
-		$.post("/covid-19/management/covid19ExportTAT.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/covid-19/management/covid19ExportTAT.php", {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
 				sampleTestedDate: $("#sampleTestedDate").val(),
 				Batch_Code: $("#batchCode  option:selected").text(),
 				Sample_Type: $("#sampleType  option:selected").text(),
 				Facility_Name: $("#labName  option:selected").text()
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+			}, <?= json_encode(_translate("COVID-19 Turnaround Time Export")) ?>);
 
 	}
 </script>

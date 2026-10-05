@@ -391,25 +391,17 @@ $state = $geolocationService->getProvinces("yes");
 
   function exportInexcel() {
 
-    $.blockUI();
     oTable.fnDraw();
-    $.post("/facilities/facilityExportInExcel.php", {
+    // Runs in the background; progress shows in the navbar Exports menu and the
+    // file downloads when ready, even if the user has moved to another page.
+    IntelisExport.start("/facilities/facilityExportInExcel.php", {
       state: $("#state").val(),
       district: $("#district").val(),
       facilityType: $("#facilityType").val(),
       testType: $("#testType").val(),
       activeFacility: $("#activeFacility").val(),
       orphanFacility: $("#orphanFacility").is(':checked') ? 'yes' : ''
-    },
-      function (data) {
-        if (data == "" || data == null || data == undefined) {
-          $.unblockUI();
-          alert("<?= _translate("Unable to generate excel", true); ?>");
-        } else {
-          $.unblockUI();
-          window.open('/download.php?f=' + data, '_blank');
-        }
-      });
+    }, <?= json_encode(_translate("Facilities Export")) ?>);
 
   }
 

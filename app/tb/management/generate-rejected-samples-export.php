@@ -9,6 +9,13 @@ use App\Services\DatabaseService;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Utilities\ExportJobUtility;
+
+// The page asked for a background export: queue it and answer at once, so the
+// user can move on while bin/export-worker.php runs this same script.
+if (ExportJobUtility::queueRequested(__FILE__, null, ['rejectedSamples'])) {
+	return;
+}
 
 
 /** @var DatabaseService $db */
@@ -40,6 +47,7 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
      }
 
      foreach ($rResult as $aRow) {
+          ExportJobUtility::tick();
           $row = [];
           $row[] = ($aRow['labname']);
           $row[] = ($aRow['facility_name']);

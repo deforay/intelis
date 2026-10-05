@@ -807,24 +807,16 @@ $state = $geolocationService->getProvinces("yes");
 		if (confm) {
 			var markAsComplete = true;
 		}
-		$.blockUI();
-		$.post("/hepatitis/management/hepatitis-clinic-result-exportIn-excel.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/hepatitis/management/hepatitis-clinic-result-exportIn-excel.php", {
 				Sample_Test_Date: $("#hvlSampleTestDate").val(),
 				Batch_Code: $("#hvlBatchCode  option:selected").text(),
 				Sample_Type: $("#hvlSampleType  option:selected").text(),
 				Facility_Name: $("#hvlFacilityName  option:selected").text(),
 				Sex: $("#hvlGender  option:selected").text(),
 				markAsComplete: markAsComplete
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+			}, <?= json_encode(_translate("Hepatitis Clinic Results Export")) ?>);
 	}
 
 	function exportRejectedResultInexcel() {
@@ -833,23 +825,15 @@ $state = $geolocationService->getProvinces("yes");
 		if (!searchExecuted) {
 			return searchVlRequestData().then(exportRejectedResultInexcel);
 		}
-		$.blockUI();
-		$.post("/hepatitis/management/hepatitis-rejected-result-exportIn-excel.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/hepatitis/management/hepatitis-rejected-result-exportIn-excel.php", {
 				Sample_Collection_Date: $("#rjtSampleCollectionDate").val(),
 				Batch_Code: $("#rjtBatchCode  option:selected").text(),
 				Sample_Type: $("#rjtSampleType  option:selected").text(),
 				Facility_Name: $("#rjtFacilityName  option:selected").text(),
 				Sex: $("#rjtGender  option:selected").text()
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+			}, <?= json_encode(_translate("Hepatitis Rejected Results Export")) ?>);
 	}
 
 	function exportNotAvailableResultInexcel() {
@@ -858,23 +842,15 @@ $state = $geolocationService->getProvinces("yes");
 		if (!searchExecuted) {
 			return searchVlRequestData().then(exportNotAvailableResultInexcel);
 		}
-		$.blockUI();
-		$.post("/hepatitis/management/hepatitis-not-available-result-export-in-excel.php", {
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/hepatitis/management/hepatitis-not-available-result-export-in-excel.php", {
 				Sample_Test_Date: $("#noResultSampleTestDate").val(),
 				Batch_Code: $("#noResultBatchCode  option:selected").text(),
 				Sample_Type: $("#noResultSampleType  option:selected").text(),
 				Facility_Name: $("#noResultFacilityName  option:selected").text(),
 				Sex: $("#noResultGender  option:selected").text()
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+			}, <?= json_encode(_translate("Hepatitis Results Not Available Export")) ?>);
 	}
 
 
