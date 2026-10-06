@@ -8,10 +8,21 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
+use const COUNTRY\DRC;
+
 final class AppMenuService
 {
     protected DatabaseService $db;
     protected string $table = 's_app_menu';
+
+    /**
+     * Pages that only the DRC request forms feed (freezer, rack, box, position,
+     * volume). Other countries never record storage, so these stay hidden there.
+     */
+    private const array DRC_ONLY_LINKS = [
+        '/common/reference/lab-storage.php',
+        '/vl/program-management/sample-storage-reports.php',
+    ];
 
     public function __construct(DatabaseService $db, protected CommonService $commonService)
     {
@@ -34,7 +45,9 @@ final class AppMenuService
     {
         $activeModules = SystemService::getActiveModules();
         $activeModulesInfo = implode("','", $activeModules);
-        $this->db->where("module IN ('$activeModulesInfo') AND (sub_module IN ('$activeModulesInfo') OR sub_module IS NULL)");
+        $this->db->where(
+            "module IN ('$activeModulesInfo') AND (sub_module IN ('$activeModulesInfo') OR sub_module IS NULL)"
+        );
         $this->db->where('status', 'active');
         if (!empty($menuId) && $menuId > 0) {
             $this->db->where('id', $menuId);
@@ -72,11 +85,17 @@ final class AppMenuService
             '/admin/monitoring/log-files.php',
         ];
 
+        $isDrc = (int) $this->commonService->getGlobalConfig('vl_form') === DRC;
+
         $response = [];
         foreach ($menuData as $key => $menu) {
             $menu['access'] = true;
             if ($menu['link'] != "" && !empty($menu['link']) && !str_starts_with((string) $menu['link'], '#')) {
                 $menu['access'] = _isAllowed($menu['link']);
+            }
+
+            if (!$isDrc && in_array($menu['link'], self::DRC_ONLY_LINKS, true)) {
+                $menu['access'] = false;
             }
 
             if (
@@ -124,7 +143,10 @@ final class AppMenuService
         // Insert the new menu item
         $inserted = $this->db->insert($this->table, $menuData);
         if (!$inserted) {
-            LoggerUtility::logError("Failed to insert " . $menuData['module'] . ":" . $menuData['parent_id'] . ":" . $menuData['display_text'] . " menu");
+            LoggerUtility::logError(
+                "Failed to insert " . $menuData['module'] . ":" . $menuData['parent_id'] . ":"
+                    . $menuData['display_text'] . " menu"
+            );
             return false;
         } else {
             return $this->db->getInsertId();
