@@ -43,7 +43,7 @@ final class LabMetadataService
             }
             $dataResultSet = $tableInfo['data'][$j];
             $deletedId = [];
-            foreach ($dataResultSet as $key => $resultRow) {
+            foreach ($dataResultSet as $resultRow) {
                 $counter++;
                 // A row that is not a row: skipped here, because thrown it would have
                 // rolled back the lab's whole metadata sync.
@@ -67,7 +67,7 @@ final class LabMetadataService
                             $this->db->where('instrument_id', $data['instrument_id']);
                             $this->db->delete($tableName);
                         }
-                        $id = $this->db->setQueryOption(['IGNORE'])->insert($tableName, $data);
+                        $this->db->setQueryOption(['IGNORE'])->insert($tableName, $data);
                     } else {
                         if ($tableName === 'user_details') {
                             // Unset unwanted columns
@@ -91,9 +91,9 @@ final class LabMetadataService
                         }
                         if (!empty($sResult)) {
                             $this->db->where($primaryKey, $sResult[$primaryKey]);
-                            $id = $this->db->update($tableName, $data);
+                            $this->db->update($tableName, $data);
                         } else {
-                            $id = $this->db->upsert($tableName, $data);
+                            $this->db->upsert($tableName, $data);
                         }
                     }
                 } catch (Throwable $e) {

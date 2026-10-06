@@ -384,7 +384,7 @@ final class LabRequestSyncService
         $updateCounter = 0;
         $receiptSaved = $receiptFailed = [];
 
-        foreach ($parsedData as $key => $remoteData) {
+        foreach ($parsedData as $remoteData) {
             // Per record: the catch below logs these, and a record that throws
             // before setting them must not be reported as the previous one.
             $request = $localRecord = null;
@@ -578,7 +578,7 @@ final class LabRequestSyncService
         $failureCounter = 0;
         $receiptSaved = $receiptFailed = [];
 
-        foreach ($parsedData as $key => $remoteData) {
+        foreach ($parsedData as $remoteData) {
             $request = $localRecord = null;
             try {
                 $this->db->beginTransaction();
