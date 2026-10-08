@@ -917,3 +917,35 @@ div.dataTables_processing>div:last-child {
 .daterangepicker.show-calendar.drp-ranges-collapsed .ranges ul {
     display: none;
 }
+
+/* User menu (Edit Profile, Change Password, Sign out). AdminLTE pads each
+   .user-footer item by 10px and the link inside adds its own padding, which
+   left a wide gap between the options. The link alone sets the spacing now,
+   so the whole row is the click target. */
+.navbar-nav>.user-menu>.dropdown-menu {
+    padding: 4px 0;
+    background-color: #f9f9f9;
+}
+
+.navbar-nav>.user-menu>.dropdown-menu>.user-footer {
+    padding: 0;
+}
+
+.navbar-nav>.user-menu>.dropdown-menu>.user-footer>a {
+    padding: 8px 20px;
+    line-height: 20px;
+}
+
+/* Same width for every icon, so the labels line up. */
+.navbar-nav>.user-menu>.dropdown-menu>.user-footer>a>i {
+    width: 16px;
+    margin-right: 8px;
+    text-align: center;
+    color: #8a9299;
+}
+
+.navbar-nav>.user-menu>.dropdown-menu>.user-footer>a:hover,
+.navbar-nav>.user-menu>.dropdown-menu>.user-footer>a:focus {
+    background-color: #eef1f4;
+    color: #333;
+}

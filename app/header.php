@@ -298,19 +298,22 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 								if (!empty($arr['edit_profile']) && $arr['edit_profile'] == 'yes') {
 									?>
 									<li class="user-footer">
-										<a href="/users/edit-profile.php" class="">
-											<?= _translate("Edit Profile"); ?>
+										<a href="/users/edit-profile.php">
+											<i class="fa-solid fa-user-pen" aria-hidden="true"></i>
+											<?= _htmlTranslate("Edit Profile"); ?>
 										</a>
 									</li>
 								<?php } ?>
 								<li class="user-footer">
-									<a href="/users/change-password.php" class="">
-										<?= _translate("Change Password"); ?>
+									<a href="/users/change-password.php">
+										<i class="fa-solid fa-key" aria-hidden="true"></i>
+										<?= _htmlTranslate("Change Password"); ?>
 									</a>
 								</li>
 								<li class="user-footer">
 									<a href="/login/logout.php">
-										<?= _translate("Sign out"); ?>
+										<i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+										<?= _htmlTranslate("Sign out"); ?>
 									</a>
 								</li>
 							</ul>
