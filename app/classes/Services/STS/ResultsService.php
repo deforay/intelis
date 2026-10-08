@@ -38,7 +38,10 @@ final class ResultsService
      * lab after the result was saved, from the analyzer's stored message, without
      * touching the lab's last_modified_datetime.
      */
-    public const RUN_DETAIL_COLUMNS = ['assay_name', 'lot_number', 'lot_expiration_date'];
+    public const RUN_DETAIL_COLUMNS = [
+        'assay_name', 'lot_number', 'lot_expiration_date', 'instrument_model', 'instrument_serial',
+        'analyzer_run_id', 'analyzer_message', 'analyzer_readings',
+    ];
 
     public function __construct(DatabaseService $db, protected CommonService $commonService, protected UsersService $usersService, protected TestRequestsService $testRequestsService, protected RejectionReasonMappingService $rejectionReasonMappingService)
     {

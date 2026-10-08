@@ -36674,6 +36674,27 @@ msgstr "Affichage des 5 000 échantillons les plus récents."
 msgid "Unable to load the samples"
 msgstr "Impossible de charger les échantillons"
 
+msgid "Instrument Model"
+msgstr "Modèle de l'instrument"
+
+msgid "Instrument Serial Number"
+msgstr "N° de série de l'instrument"
+
+msgid "Analyzer Run ID"
+msgstr "ID de la série de l'analyseur"
+
+msgid "Reagent Lot"
+msgstr "Lot de réactif"
+
+msgid "Reagent Lot Expiry"
+msgstr "Expiration du lot de réactif"
+
+msgid "Analyzer Message"
+msgstr "Message de l'analyseur"
+
+msgid "Analyzer Readings"
+msgstr "Lectures de l'analyseur"
+
 msgid "Users & Roles"
 msgstr "Utilisateurs et rôles"
 

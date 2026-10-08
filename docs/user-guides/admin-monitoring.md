@@ -239,6 +239,12 @@ rates between instruments and assays.
         Tool, the reagent lot number is recorded with the result too, with its
         expiry date when the analyzer sends one.
 
+        From the same message, each Interface Tool result also keeps the
+        instrument's model and serial number, the analyzer's run ID, its message
+        about the run (for example the error behind a failed test) and the
+        readings sent with the result, such as cycle thresholds. The Viral Load
+        and EID exports carry them, with the reagent lot.
+
     ??? info "If the instrument shows Not recorded"
 
         The result was entered by hand without a testing platform.

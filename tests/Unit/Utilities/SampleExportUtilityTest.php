@@ -70,4 +70,18 @@ final class SampleExportUtilityTest extends TestCase
             $headings(SampleExportUtility::forForm($columns, CAMEROON, false, true))
         );
     }
+
+    public function testAnalyzerReadingsAreWrittenAsOneLine(): void
+    {
+        $columns = array_column(SampleExportUtility::analyzerColumns(), 'value', 'heading');
+        $readings = $columns['Analyzer Readings'];
+        $row = ['analyzer_readings' => json_encode([
+            ['name' => 'HIV-1 Ct', 'value' => '26.4', 'unit' => null],
+            ['name' => '1006.C IC', 'value' => '15.70', 'unit' => 'CN'],
+        ])];
+
+        $this->assertSame('HIV-1 Ct: 26.4; 1006.C IC: 15.70 CN', $readings($row));
+        $this->assertNull($readings(['analyzer_readings' => null]));
+        $this->assertNull($readings([]), 'an export from before the column existed');
+    }
 }

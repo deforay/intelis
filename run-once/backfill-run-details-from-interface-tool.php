@@ -14,9 +14,14 @@ use App\Services\InterfacingService;
 /*
  * @run-once-background
  *
- * One-time pass filling in the assay and reagent lot of VL and EID results imported
- * from the Interface Tool before InteLIS recorded them (the assay since 5.7.82, the
- * lot and the assay read from the analyzer's message since the release after it).
+ * One-time pass filling in what the analyzer reported about each VL and EID run
+ * imported from the Interface Tool before InteLIS recorded it: the assay (5.7.82),
+ * the reagent lot and expiry, and the instrument model and serial, run ID, message
+ * and readings (5.7.85).
+ *
+ * Renamed from backfill-assay-from-interface-tool.php when the 5.7.85 fields were
+ * added, so a lab that ran that one runs this again; filling only empty fields, it
+ * changes nothing it already filled.
  *
  * The Interface Tool keeps every result it ever read, with the analyzer's message,
  * in its own orders table. On a lab where InteLIS reads that table directly
@@ -37,7 +42,7 @@ use App\Services\InterfacingService;
 RunOnceUtility::run(__FILE__, function (DatabaseService $db): void {
     $config = SYSTEM_CONFIG['interfacing']['database'] ?? [];
     if (empty($config['host']) || empty($config['username'])) {
-        MiscUtility::safeCliEcho('Assay and lot from the Interface Tool… no Interface Tool database here.' . PHP_EOL);
+        MiscUtility::safeCliEcho('Analyzer details from the Interface Tool… no Interface Tool database here.' . PHP_EOL);
         return;
     }
 
@@ -45,7 +50,7 @@ RunOnceUtility::run(__FILE__, function (DatabaseService $db): void {
     $general = ContainerRegistry::get(CommonService::class);
     $labId = (int) $general->getSystemConfig('sc_testing_lab_id');
     if ($labId <= 0) {
-        MiscUtility::safeCliEcho('Assay and lot from the Interface Tool… no testing lab configured here.' . PHP_EOL);
+        MiscUtility::safeCliEcho('Analyzer details from the Interface Tool… no testing lab configured here.' . PHP_EOL);
         return;
     }
 
@@ -78,7 +83,7 @@ RunOnceUtility::run(__FILE__, function (DatabaseService $db): void {
 
     $filled = ($outcomes['filled'] ?? 0) + ($outcomes['filled_attempt'] ?? 0);
     MiscUtility::safeCliEcho(
-        'Assay and lot from the Interface Tool:' . PHP_EOL
+        'Analyzer details from the Interface Tool:' . PHP_EOL
             . '  ' . array_sum($outcomes) . ' stored result(s) read' . PHP_EOL
             . "  $filled result(s) filled in"
             . ' (' . ($outcomes['filled_attempt'] ?? 0) . ' of them on archived re-test runs)' . PHP_EOL
