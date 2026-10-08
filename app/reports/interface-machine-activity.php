@@ -301,6 +301,29 @@ $summary = $db->rawQueryOne(
                                         ); ?>
                                     </p>
 
+                                    <div class="ia-section-title"><?= _htmlTranslate('Failure Messages by Instrument'); ?></div>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped" id="testsFailuresTable"
+                                            aria-describedby="instrument-failures-description">
+                                            <thead>
+                                                <tr>
+                                                    <th><?= _htmlTranslate('Testing Lab'); ?></th>
+                                                    <th><?= _htmlTranslate('Instrument'); ?></th>
+                                                    <th><?= _htmlTranslate('Assay'); ?></th>
+                                                    <th><?= _htmlTranslate('Analyzer Message'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Failed or Invalid'); ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                    <p class="ia-note" id="instrument-failures-description">
+                                        <?= _htmlTranslate(
+                                            'What the analyzer said about each failed run, for results from the '
+                                            . 'Interface Tool.'
+                                        ); ?>
+                                    </p>
+
                                     <?php // The samples behind a count, opened from its link. ?>
                                     <div id="iaSamples" hidden>
                                         <div class="ia-section-title">
@@ -320,6 +343,8 @@ $summary = $db->rawQueryOne(
                                                         <th><?= _htmlTranslate('Tested On'); ?></th>
                                                         <th><?= _htmlTranslate('Result'); ?></th>
                                                         <th class="num"><?= _htmlTranslate('Runs'); ?></th>
+                                                        <th><?= _htmlTranslate('Analyzer Run ID'); ?></th>
+                                                        <th><?= _htmlTranslate('Analyzer Message'); ?></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>
@@ -584,14 +609,17 @@ $summary = $db->rawQueryOne(
                 iaTestsShown = filters;
                 if (!data || data.error) {
                     iaRenderTests([], (data && data.error) || "<?= _jsTranslate('Unable to load the instrument figures'); ?>");
+                    iaRenderFailures([]);
                     return;
                 }
                 iaRenderTests(data.rows || [], null);
+                iaRenderFailures(data.failures || []);
             })
             .fail(function () {
                 if (request === iaTestsRequest) {
                     iaTestsShown = filters;
                     iaRenderTests([], "<?= _jsTranslate('Unable to load the instrument figures'); ?>");
+                    iaRenderFailures([]);
                 }
             });
     }
@@ -633,9 +661,40 @@ $summary = $db->rawQueryOne(
                 r.tested, r.failed, r.tested > 0 ? r.failed * 100 / r.tested : null,
                 r.samples, r.validFirstTime, r.validAfterRetest, r.stillFailed,
                 // Not shown: the row's keys, for its sample lists.
-                { labId: r.labId, instrument: r.instrument, assay: r.assay }
+                { labId: r.labId, instrument: r.instrument, serial: r.serial, assay: r.assay }
             ];
         }), message);
+    }
+
+    var iaFailuresTable = null;
+
+    // Most frequent first. A failure the analyzer explained nothing about shows as
+    // Not recorded: entered by hand, from a file, or from before 5.7.85.
+    function iaRenderFailures(failures) {
+        var data = failures.map(function (f) {
+            return [
+                f.lab, f.instrumentLabel || IA_NOT_RECORDED, f.assay || IA_NOT_RECORDED,
+                f.message || IA_NOT_RECORDED, f.failed
+            ];
+        });
+        if (iaFailuresTable === null) {
+            var text = function (d, type) { return type === 'display' ? iaEscape(d) : d; };
+            iaFailuresTable = $('#testsFailuresTable').DataTable({
+                data: data,
+                dom: 'frtip',
+                pageLength: 10,
+                order: [[4, 'desc']],
+                columns: [
+                    { render: text }, { render: text }, { render: text }, { render: text },
+                    { className: 'num', render: function (d, type) { return type === 'display' ? iaNumber(d) : d; } }
+                ],
+                language: { emptyTable: "<?= _jsTranslate('No failed runs in the selected range'); ?>" }
+            });
+        } else {
+            // A new load starts with every filter at All, as the table above.
+            iaFailuresTable.columns().search('');
+            iaFailuresTable.clear().rows.add(data).draw();
+        }
     }
 
     var iaDetailTable = null;
@@ -703,10 +762,14 @@ $summary = $db->rawQueryOne(
 
             $('#testsDetailTable .ia-col-filter').on('change', function () {
                 var value = $(this).val();
-                iaDetailTable.column($(this).data('column'))
-                    .search(value ? '^' + $.fn.dataTable.util.escapeRegex(value) + '$' : '', true, false);
+                var search = value ? '^' + $.fn.dataTable.util.escapeRegex(value) + '$' : '';
+                iaDetailTable.column($(this).data('column')).search(search, true, false);
                 iaCascadeFilters();
                 iaDetailTable.draw();
+                // The failure messages share the lab, instrument and assay columns.
+                if (iaFailuresTable !== null) {
+                    iaFailuresTable.column($(this).data('column')).search(search, true, false).draw();
+                }
             });
         } else {
             iaDetailTable.clear().rows.add(data);
@@ -754,7 +817,7 @@ $summary = $db->rawQueryOne(
                             return type === 'display' ? iaEscape(d.display) : d.sort;
                         }
                     },
-                    { render: text }, { className: 'num' }
+                    { render: text }, { className: 'num' }, { render: text }, { render: text }
                 ]
             });
         }
@@ -765,6 +828,7 @@ $summary = $db->rawQueryOne(
         var data = $.extend({}, iaTestsShown, {
             rowLabId: keys.labId === null ? '' : keys.labId,
             instrument: keys.instrument,
+            serial: keys.serial,
             assay: keys.assay,
             outcome: outcome
         });
@@ -783,7 +847,7 @@ $summary = $db->rawQueryOne(
                     return [
                         sample.sampleCode, sample.batchCode || '-',
                         { display: sample.testedOnDisplay, sort: sample.testedOn },
-                        sample.result || '-', sample.runs
+                        sample.result || '-', sample.runs, sample.runId || '-', sample.message || '-'
                     ];
                 })).draw();
                 $('#iaSamplesLimited').prop('hidden', !response.limited);

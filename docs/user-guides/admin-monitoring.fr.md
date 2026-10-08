@@ -208,15 +208,21 @@ taux d'échec entre instruments et entre tests.
    l'instance a des laboratoires d'analyse.
 4. Sélectionner **Rechercher**.
 5. Lire **Par type d'instrument** pour les totaux de chaque marque, et **Par
-   laboratoire, instrument et test** pour chaque instrument.
+   laboratoire, instrument et test** pour chaque instrument. Quand l'analyseur
+   envoie son numéro de série, il suit le nom de l'instrument : deux machines
+   du même nom apparaissent sur deux lignes.
 6. Pour affiner **Par laboratoire, instrument et test**, choisir une valeur
    dans la liste au-dessus d'une colonne. Sélectionner l'en-tête d'une colonne
    pour trier. **Total** additionne les lignes affichées.
 7. Pour voir les échantillons derrière un nombre, sélectionner le nombre sous
    **Échantillons**, **Valides du premier coup**, **Valides après retest** ou
    **Toujours en échec**. La liste s'ouvre sous le tableau, avec le code du lot,
-   la date du test, le résultat et le nombre de passages de chaque échantillon.
-8. Pour garder les chiffres, sélectionner **Exporter vers Excel**. Le fichier
+   la date du test, le résultat, le nombre de passages, l'ID de la série de
+   l'analyseur et le message de l'analyseur de chaque échantillon.
+8. Lire **Messages d'échec par instrument** pour ce que l'analyseur a indiqué
+   pour chaque passage en échec, du plus fréquent au moins fréquent. Un échec
+   sans message de l'analyseur indique **Non enregistré**.
+9. Pour garder les chiffres, sélectionner **Exporter vers Excel**. Le fichier
    se télécharge quand il est prêt. La progression s'affiche dans le menu des
    exports.
 
@@ -237,8 +243,9 @@ taux d'échec entre instruments et entre tests.
         l'autre, et **Total** donne le nombre d'échantillons.
 
         L'export contient aussi **Résultats valides** (les tests réalisés qui
-        n'ont pas échoué) et **Échecs retestés** (les échecs remplacés par un
-        nouveau test, chacun compté aussi dans les tests réalisés).
+        n'ont pas échoué), **Échecs retestés** (les échecs remplacés par un
+        nouveau test, chacun compté aussi dans les tests réalisés), le modèle et
+        le numéro de série de l'instrument, et une feuille **Messages d'échec**.
 
         Les échantillons annulés et rejetés ne sont pas comptés. Pour le même
         test, la même période et le même laboratoire, **Tests réalisés**

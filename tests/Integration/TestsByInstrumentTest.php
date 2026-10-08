@@ -44,6 +44,7 @@ final class TestsByInstrumentTest extends TestCase
             'form_vl', 'test_result_attempts', 'batch_details',
         ]);
         LegacyAppHarness::addMigrationColumns('5.7.82', ['form_vl']);
+        LegacyAppHarness::addMigrationColumns('5.7.85', ['form_vl']);
 
         $db->rawQuery(
             "INSERT INTO r_sample_status (status_id, status_name)
@@ -460,5 +461,164 @@ final class TestsByInstrumentTest extends TestCase
 
         self::assertSame(1, $rows['Abbott m2000|HIV1.0mlDBS']['validFirstTime'], json_encode($rows));
         self::assertSame(0, $rows['Abbott m2000|HIV1.0mlDBS']['validAfterRetest']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTwoMachinesOfOneNameAreToldApartByTheirSerial(): void
+    {
+        // Set up as one instrument in InteLIS, but two analyzers report.
+        $this->seed(['instrument_id' => 'inst-a', 'instrument_model' => 'm2000', 'instrument_serial' => '275020144',
+            'result' => '40']);
+        $this->seed(['instrument_id' => 'inst-a', 'instrument_model' => 'm2000', 'instrument_serial' => '275020145',
+            'result' => '50']);
+        // No instrument set up at all: the model the analyzer reported names it, and its make.
+        $this->seed(['instrument_model' => 'c5800', 'instrument_serial' => 'c5800.2709', 'result' => '60']);
+
+        $service = ContainerRegistry::get(LabPerformanceIndicatorsService::class);
+        $rows = $service->getByInstrument($service->resolveFilters([
+            'testType' => 'vl', 'dateRange' => '01-Sep-2026 to 30-Sep-2026',
+        ]));
+        $labels = array_column($rows, 'instrumentType', 'instrumentLabel');
+
+        self::assertSame([
+            'Abbott m2000 · 275020144' => 'Abbott',
+            'Abbott m2000 · 275020145' => 'Abbott',
+            'c5800 (Roche) · c5800.2709' => 'Roche',
+        ], $labels);
+    }
+
+    #[RunInSeparateProcess]
+    public function testFailedRunsAreCountedByWhatTheAnalyzerSaid(): void
+    {
+        $failed = ['instrument_id' => 'inst-a', 'instrument_serial' => '275020144', 'result' => 'Failed',
+            'result_status' => 5];
+        $message = '4442 : Internal control cycle number is too high.';
+        $this->seed($failed + ['analyzer_message' => $message, 'analyzer_run_id' => 'HIV0910A',
+            'sample_code' => 'S-IC']);
+        $this->seed($failed + ['analyzer_message' => $message]);
+        $this->seed($failed);
+        // An archived failed run keeps its message in the snapshot of its row.
+        $retested = $this->seed(['instrument_id' => 'inst-a', 'instrument_serial' => '275020144', 'result' => '40']);
+        $this->attempt($retested, [
+            'superseded_by' => 'retest',
+            'attempt_data' => json_encode(['row' => ['instrument_serial' => '275020144',
+                'analyzer_message' => '3110 : A drive no load error was encountered by the Liquid Handler.']]),
+        ]);
+
+        $service = ContainerRegistry::get(LabPerformanceIndicatorsService::class);
+        $filters = $service->resolveFilters(['testType' => 'vl', 'dateRange' => '01-Sep-2026 to 30-Sep-2026']);
+        $messages = $service->getFailureMessages($filters);
+        $where = ['lab' => 'Lab One', 'instrumentLabel' => 'Abbott m2000 · 275020144'];
+
+        self::assertSame([
+            [...$where, 'assay' => '', 'message' => $message, 'failed' => 2],
+            [...$where, 'assay' => '', 'message' => '', 'failed' => 1],
+            [
+                ...$where, 'assay' => '',
+                'message' => '3110 : A drive no load error was encountered by the Liquid Handler.', 'failed' => 1,
+            ],
+        ], $messages);
+        $row = $service->getByInstrument($filters)[0];
+        self::assertSame(
+            array_sum(array_column($messages, 'failed')),
+            $row['failed'],
+            'they add up to its failed runs'
+        );
+
+        $samples = $service->getInstrumentSamples($filters, $row, 'still_failed');
+        $sample = array_column($samples, null, 'sampleCode')['S-IC'];
+        self::assertSame('HIV0910A', $sample['runId']);
+        self::assertSame($message, $sample['message']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheExportCarriesEachMachineAndItsFailureMessages(): void
+    {
+        $failed = ['instrument_id' => 'inst-a', 'instrument_model' => 'm2000', 'instrument_serial' => '275020144',
+            'result' => 'Failed', 'result_status' => 5,
+            'analyzer_message' => '4450 : Normalized fluorescence too low.'];
+        $this->seed($failed);
+        $this->seed(['instrument_id' => 'inst-a', 'instrument_model' => 'm2000', 'instrument_serial' => '275020144',
+            'result' => '40']);
+        LegacyAppHarness::withSession(self::CAN_OPEN_PAGE + ['roleId' => 4, 'instance' => ['type' => 'vluser']]);
+
+        $request = LegacyAppHarness::withPost([
+            'section' => 'tests', 'format' => 'xlsx', 'testType' => 'vl', 'dateRange' => '01-Sep-2026 to 30-Sep-2026',
+        ], '/reports/export-instrument-activity.php');
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $token = trim((string) $handler->handle($request)->getBody());
+        $file = \App\Utilities\DownloadTokenUtility::resolve($token, $reason);
+        self::assertNotNull($file, "the token resolves to the workbook: $reason");
+
+        $reader = new \OpenSpout\Reader\XLSX\Reader();
+        $reader->open($file);
+        $sheets = [];
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
+                $sheets[] = $row->toArray();
+            }
+            $sheets[] = '--';
+        }
+        $reader->close();
+        unlink($file);
+
+        [$heading, $row] = [$sheets[0], $sheets[1]];
+        $byHeading = array_combine($heading, $row);
+        self::assertSame('m2000', $byHeading['Instrument Model']);
+        self::assertSame('275020144', (string) $byHeading['Instrument Serial Number']);
+        self::assertSame(2, (int) $byHeading['Samples']);
+        self::assertSame(1, (int) $byHeading['Still Failed']);
+        $failureSheet = array_slice($sheets, array_search('--', $sheets, true) + 1);
+        self::assertSame(
+            ['Testing Lab', 'Instrument', 'Assay', 'Analyzer Message', 'Failed or Invalid'],
+            $failureSheet[0]
+        );
+        self::assertSame(
+            ['Lab One', 'Abbott m2000 · 275020144', 'Not recorded', '4450 : Normalized fluorescence too low.', 1],
+            $failureSheet[1]
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testAMachineHasOneLabelInBothTables(): void
+    {
+        // Set up under a name that says no make; only its valid run reported a model.
+        $this->seed(['vl_test_platform' => 'Machine 1', 'instrument_serial' => 'SN1', 'instrument_model' => 'm2000',
+            'assay_name' => 'HIV1.0mlDBS', 'result' => '40']);
+        $this->seed(['vl_test_platform' => 'Machine 1', 'instrument_serial' => 'SN1', 'assay_name' => 'HIV0.6ml',
+            'result' => 'Failed', 'result_status' => 5]);
+
+        $service = ContainerRegistry::get(LabPerformanceIndicatorsService::class);
+        $filters = $service->resolveFilters(['testType' => 'vl', 'dateRange' => '01-Sep-2026 to 30-Sep-2026']);
+
+        self::assertSame(
+            ['Machine 1 (Abbott) · SN1'],
+            array_values(array_unique(array_column($service->getByInstrument($filters), 'instrumentLabel')))
+        );
+        self::assertSame(
+            ['Machine 1 (Abbott) · SN1'],
+            array_column($service->getFailureMessages($filters), 'instrumentLabel')
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testASampleListHoldsOnlyItsOwnMachinesSamples(): void
+    {
+        $run = ['instrument_id' => 'inst-a', 'assay_name' => 'HIV1.0mlDBS', 'result' => 'Failed', 'result_status' => 5];
+        $this->seed($run + ['instrument_serial' => 'SN1', 'sample_code' => 'S-ON-ONE']);
+        $this->seed($run + ['instrument_serial' => 'SN2', 'sample_code' => 'S-ON-TWO']);
+
+        $service = ContainerRegistry::get(LabPerformanceIndicatorsService::class);
+        $filters = $service->resolveFilters(['testType' => 'vl', 'dateRange' => '01-Sep-2026 to 30-Sep-2026']);
+        $rows = array_column($service->getByInstrument($filters), null, 'serial');
+
+        self::assertSame(
+            ['S-ON-ONE'],
+            array_column($service->getInstrumentSamples($filters, $rows['SN1'], null), 'sampleCode')
+        );
+        self::assertSame(
+            ['S-ON-TWO'],
+            array_column($service->getInstrumentSamples($filters, $rows['SN2'], null), 'sampleCode')
+        );
     }
 }
