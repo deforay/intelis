@@ -468,13 +468,32 @@ final class InterfacingService
     }
 
     /**
-     * The assay as the analyzer reported it, or null. The Interface Tool keeps it in
-     * test_type, trimmed to what the column holds.
+     * The assay as the analyzer reported it, or null. The Interface Tool keeps the
+     * test identifier in test_type, and some analyzers send all of its components:
+     *
+     *   Abbott m2000 (ASTM)  HIV0.6ml^HIV0.6ml^392592^10004378^^F
+     *   GeneXpert (HL7)      ^SSD-HRL-QUAL^^SSD-HRL-HIV1^Xpert_HIV-1 Qual^2^HIV-1^
+     *
+     * Kept whole, every reagent lot would read as an assay of its own. The assay is
+     * the longest component with a letter in it: lot numbers, counts and one-letter
+     * status flags are shorter or have none.
      */
     public static function assayName(array $row): ?string
     {
-        $assay = trim((string) ($row['test_type'] ?? ''));
-        return $assay === '' ? null : mb_substr($assay, 0, 255);
+        $raw = trim((string) ($row['test_type'] ?? ''));
+        if ($raw === '') {
+            return null;
+        }
+
+        $assay = '';
+        foreach (explode('^', $raw) as $component) {
+            $component = trim($component);
+            if (preg_match('/\p{L}/u', $component) === 1 && mb_strlen($component) > mb_strlen($assay)) {
+                $assay = $component;
+            }
+        }
+
+        return mb_substr($assay !== '' ? $assay : $raw, 0, 255);
     }
 
     /**

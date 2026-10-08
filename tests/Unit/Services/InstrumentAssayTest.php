@@ -49,6 +49,25 @@ final class InstrumentAssayTest extends TestCase
         ));
     }
 
+    /** @return iterable<string, array{string, string}> */
+    public static function reportedTestIds(): iterable
+    {
+        // As stored by the Interface Tool on lab installs.
+        yield 'Abbott m2000 ASTM, with lots and status' => ['HIV0.6ml^HIV0.6ml^392592^10004378^^F', 'HIV0.6ml'];
+        yield 'Abbott m2000 ASTM, another lot' => ['HIV0.6ml^HIV0.6ml^395139^10004531^398226^F', 'HIV0.6ml'];
+        yield 'Abbott DBS' => ['HIV1mlDBS^HIV1.0mlDBS^512926^10002287^^F', 'HIV1.0mlDBS'];
+        yield 'GeneXpert HL7' => ['^SSD-HRL-QUAL^^SSD-HRL-HIV1^Xpert_HIV-1 Qual^2^HIV-1^', 'Xpert_HIV-1 Qual'];
+        yield 'plain' => ['HIV-1', 'HIV-1'];
+        yield 'code' => ['0BHIV1', '0BHIV1'];
+        yield 'digits only' => ['12345', '12345'];
+    }
+
+    #[DataProvider('reportedTestIds')]
+    public function testTheAssayIsTakenFromTheReportedTestIdentifier(string $testType, string $assay): void
+    {
+        self::assertSame($assay, InterfacingService::assayName(['test_type' => $testType]));
+    }
+
     public function testTheAssayIsTrimmedAndBlankMeansNone(): void
     {
         self::assertSame(
