@@ -30,12 +30,7 @@ d'[installation](../guides/installing-intelis-on-ubuntu.md) et de
 | Paramètres → Stockage en laboratoire | Les congélateurs et autres lieux de stockage des échantillons du laboratoire | [Listes du formulaire de demande](admin-module-configuration.md) |
 | Paramètres → Configuration générale | Les paramètres qui s'appliquent à toute l'installation | [Configuration générale](admin-general-configuration.md) |
 | Surveillance | Piste d'audit, activité, utilisation des pages, synchronisation, fichiers journaux | [Surveillance et audit](admin-monitoring.md) |
-
-Trois rapports se trouvent sous **RAPPORTS**, une section distincte de la
-barre latérale, hors d'**ADMIN** : **Indicateurs de performance du
-laboratoire**, **Activité des instruments** et **Réseau de
-référencement des échantillons**. Ils sont traités dans
-[Surveillance et audit](admin-monitoring.md).
+| Rapports | Indicateurs de performance du laboratoire, Activité des instruments, Réseau de référencement des échantillons | [Surveillance et audit](admin-monitoring.md) |
 
 **Paramètres des tests** ne montre un onglet que pour les tests actifs sur
 l'installation.

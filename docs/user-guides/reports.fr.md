@@ -20,9 +20,9 @@ sélectionner **Rechercher**, et utiliser la commande d'export lorsqu'elle est
 proposée. Voir [Se connecter et naviguer dans InteLIS](signing-in.md) pour ces
 commandes.
 
-**Indicateurs de performance du laboratoire**, **Activité des machines
-d'interface** et **Réseau de référencement des échantillons** se trouvent sous
-**RAPPORTS** dans la barre latérale. Ils sont décrits dans
+**Indicateurs de performance du laboratoire**, **Activité des instruments** et
+**Réseau de référencement des échantillons** se trouvent sous
+**ADMIN → Rapports**. Ils sont décrits dans
 [Surveiller et auditer InteLIS](admin-monitoring.md).
 
 ## Tableau de bord

@@ -215,3 +215,15 @@ UPDATE `s_app_menu`
                                        '/reports/sample-referral-network.php'));
 
 UPDATE `system_config` SET `value` = '5.7.83' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

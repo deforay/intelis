@@ -19,7 +19,7 @@ use the export control where one is offered. See
 [How to sign in and navigate InteLIS](signing-in.md) for those controls.
 
 **Lab Performance Indicators**, **Instrument Activity** and **Sample Referral
-Network** sit under **REPORTS** in the sidebar. They are described in
+Network** sit under **ADMIN → Reports**. They are described in
 [How to monitor and audit InteLIS](admin-monitoring.md).
 
 ## Dashboard

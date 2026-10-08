@@ -18,9 +18,9 @@ demandent d'abord l'accord de l'équipe nationale.
 
 ## Modifier un paramètre
 
-1. Aller à **ADMIN → Paramètres → Configuration générale**. La
-   page, intitulée **Configuration du système**, s'ouvre en lecture seule.
-2. Sélectionner **Modifier la configuration du système**.
+1. Aller à **ADMIN → Paramètres → Configuration générale**. La page s'ouvre
+   en lecture seule.
+2. Sélectionner **Modifier la configuration générale**.
 3. Trouver le paramètre avec **Rechercher les paramètres par mot-clé**, ou
    choisir son panneau sous **Aller à une section**.
 4. Modifier le paramètre.

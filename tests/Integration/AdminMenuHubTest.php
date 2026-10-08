@@ -113,9 +113,9 @@ final class AdminMenuHubTest extends TestCase
         }
     }
 
-    private function migrate(): void
+    private function migrate(string $version = '5.7.83'): void
     {
-        $sql = (string) file_get_contents(ROOT_PATH . '/sys/migrations/5.7.83.sql');
+        $sql = (string) file_get_contents(ROOT_PATH . "/sys/migrations/$version.sql");
         $sql = preg_replace('/^--.*$/m', '', $sql);
         foreach (array_filter(array_map('trim', explode(";\n", (string) $sql))) as $statement) {
             LegacyAppHarness::db()->rawQuery(rtrim($statement, ';'));
@@ -261,6 +261,35 @@ final class AdminMenuHubTest extends TestCase
             "SELECT p.id FROM s_app_menu p JOIN s_app_menu g ON g.id = p.parent_id
               WHERE g.parent_id = 2 AND g.sub_module IS NOT NULL AND p.link LIKE '/%'"
         ), 'id'));
+    }
+
+    /** 5.7.84: the reports sit in a group under ADMIN, after Monitoring. */
+    public function testReportsBecomeAGroupUnderAdmin(): void
+    {
+        $this->migrate();
+        $this->migrate('5.7.84');
+        $afterFirstRun = $this->menuRows();
+        $this->migrate('5.7.84');
+        self::assertEquals($afterFirstRun, $this->menuRows());
+
+        $reports = $this->row("link = '#reports'");
+        self::assertSame('Reports', $reports['display_text']);
+        self::assertSame('no', $reports['is_header']);
+        self::assertSame('2', (string) $reports['parent_id']);
+
+        $_SESSION = ['roleId' => 1];
+        $groups = $this->adminGroups();
+        self::assertSame(
+            ['Users & Roles', 'Facilities', 'Settings', 'Reference Lists', 'Test Settings', 'Monitoring', 'Reports'],
+            array_keys($groups)
+        );
+        // Sample Ageing Report stays hidden, as 5.7.50 left it.
+        self::assertSame(
+            ['Lab Performance Indicators', 'Instrument Activity', 'Sample Referral Network'],
+            array_column($groups['Reports']['children'], 'display_text')
+        );
+        $topLevel = array_column($this->menuService()->getMenu(), 'display_text');
+        self::assertNotContains('REPORTS', $topLevel);
     }
 
     public function testTheHubIsOneSidebarLinkThatStaysHighlightedOnItsPages(): void

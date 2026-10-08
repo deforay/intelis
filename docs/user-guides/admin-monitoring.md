@@ -11,7 +11,7 @@ reviewed_against: 5.7.74
 Find who changed a record, check that data and analyzer results are moving, and
 read how the lab is performing. Most pages sit under **ADMIN → Monitoring**.
 **Instrument Activity**, **Lab Performance Indicators** and **Sample Referral
-Network** sit under **REPORTS**, a separate section of the sidebar.
+Network** sit under **ADMIN → Reports**.
 
 ## Before starting
 
@@ -166,7 +166,7 @@ length of the sign-in.
 
 ## Check that an analyzer is still sending
 
-1. Go to **REPORTS → Instrument Activity**.
+1. Go to **ADMIN → Reports → Instrument Activity**.
 2. Open **Interface Tool Events**.
 3. Read **Events (last 7 days)**, **Failures (last 7 days)** and **Last event**.
 4. Set **Instrument** to the analyzer, and select **Search**.
@@ -183,7 +183,7 @@ A stale **Last Seen** means the Interface Tool is not reaching InteLIS.
 Use these figures to account for reagents by platform and to compare failure
 rates between instruments and assays.
 
-1. Go to **REPORTS → Instrument Activity**.
+1. Go to **ADMIN → Reports → Instrument Activity**.
 2. Open **Tests by Instrument**. The tab appears when Viral Load or EID is
    active.
 3. Set **Test**, **Tested On** and **Lab**. **Lab** appears only when the
@@ -223,7 +223,7 @@ rates between instruments and assays.
 
 ## Read the lab performance report
 
-1. Go to **REPORTS → Lab Performance Indicators**.
+1. Go to **ADMIN → Reports → Lab Performance Indicators**.
 2. Set **Test**, **Date Range**, **View By** and **Lab**. **Lab** appears only
    when the instance has testing labs.
 3. Select **Apply**.
@@ -270,7 +270,7 @@ sample tested twice counts as two tests, so a retest does not hide a failure.
 
 ## See the referral network
 
-1. Go to **REPORTS → Sample Referral Network**.
+1. Go to **ADMIN → Reports → Sample Referral Network**.
 2. Set **Date Range** and **Test Type**.
 3. Set **Date Based On**: **Sample Collection Date**, **Sample Registration
    Date** or **Sample Tested Date**. Counting by tested date matches a lab's

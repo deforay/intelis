@@ -18,9 +18,9 @@ need the national team's agreement first.
 
 ## Change a setting
 
-1. Go to **ADMIN → Settings → General Configuration**. The page,
-   titled **System Configuration**, opens read-only.
-2. Select **Edit System Configuration**.
+1. Go to **ADMIN → Settings → General Configuration**. The page opens
+   read-only.
+2. Select **Edit General Configuration**.
 3. Find the setting with **Search settings by keyword**, or pick its panel
    under **Jump to a section**.
 4. Change the setting.

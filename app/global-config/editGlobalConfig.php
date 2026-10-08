@@ -8,7 +8,7 @@ use App\Services\FacilitiesService;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\ContainerRegistry;
 
-$title = _translate("System Configuration");
+$title = _translate("General Configuration");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -355,10 +355,10 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("System Configuration"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?= _htmlTranslate("General Configuration"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-			<li class="active"><?php echo _translate("System Configuration"); ?></li>
+			<li class="active"><?= _htmlTranslate("General Configuration"); ?></li>
 		</ol>
 	</section>
 
@@ -376,7 +376,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 					<?php if (_isAllowed("editGlobalConfig.php") && !isset($_GET['e'])) { ?>
 						<a href="editGlobalConfig.php?e=1" class="btn btn-primary">
 							<em class="fa-solid fa-pen-to-square"></em>
-							<?php echo _translate("Edit System Configuration"); ?>
+							<?= _htmlTranslate("Edit General Configuration"); ?>
 						</a>
 					<?php } ?>
 				</div>
