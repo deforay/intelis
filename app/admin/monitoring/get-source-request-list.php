@@ -2,6 +2,7 @@
 
 use App\Services\TestsService;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 /** @var CommonService $general */
@@ -14,14 +15,24 @@ if (isset($_POST['testType'])) {
         return;
     }
     $table = TestsService::getTestTableName($testType);
-    $sourceList = $general->getSourcesOfTestRequests($table, true);
+    // The cached list spans every lab, so a user working for one lab gets the
+    // sources of that lab's samples only.
+    $labScope = $general->labScopeWhere('vl');
+    if ($labScope === '') {
+        $sourceList = $general->getSourcesOfTestRequests($table, true);
+    } else {
+        $sourceList = array_flip(array_column(ContainerRegistry::get(DatabaseService::class)->rawQuery(
+            "SELECT DISTINCT vl.source_of_request FROM $table AS vl
+              WHERE IFNULL(vl.source_of_request, '') != '' AND $labScope"
+        ) ?: [], 'source_of_request'));
+    }
 
     // One option per source: rows stored under an older name of the same source
     // are folded in by the report's filter, so they must not show twice here.
     $options = [];
-    foreach ($sourceList as $optionValue => $displayText) {
+    foreach (array_keys($sourceList) as $optionValue) {
         $stored = CommonService::storedSourcesOfRequest((string) $optionValue);
-        $options[$stored[0]] ??= $displayText;
+        $options[$stored[0]] ??= CommonService::sourceOfRequestLabel($stored[0]);
     }
 
     $option = "<option value=''>" . _translate("All Sources") . "</option>";
