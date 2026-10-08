@@ -228,4 +228,137 @@ final class InterfacingAssayTest extends TestCase
         self::assertSame('updated', $outcome['reason']);
         self::assertSame('HIV1.0mlPlasma', $this->row('form_vl', 'VL-5')['assay_name']);
     }
+
+    /** A GeneXpert message as the Interface Tool keeps it in raw_text. */
+    private function genexpertMessage(string $sampleCode, string $result): string
+    {
+        return implode('<CR>', [
+            'H|@^\\|GXM-00000000001||EXAMPLE HOSPITAL^GeneXpert^6.2|||||Example Hospital||P|1394-97|20261001100000',
+            "O|1|$sampleCode||^^^HIV-1_VL 2 2|R|20261001093000|||||||||ORH||||||||||F",
+            "R|1|^^^HIV-1_VL 2 2^Xpert_HIV-1 Viral Load^2^^|^$result|copies/mL|40.00 to 10000000.00|A||F"
+                . '||Example Operator|20261001093000|20261001100000'
+                . '|Cepheid-1F21001^806911^630912^1113243530^72203^20260825|',
+            'L|1|N',
+        ]);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAResultSentOverTheApiGetsItsAssayAndLotFromTheMessage(): void
+    {
+        $this->seed('form_vl', ['sample_code' => 'VL-7']);
+        // The results API carries raw_text but no test_type.
+        $row = ['raw_text' => $this->genexpertMessage('VL-7', '1250')] + $this->analyzerRow('VL-7', '1250', '');
+        unset($row['test_type']);
+
+        $outcome = $this->service()->importResult($row, 1);
+
+        $stored = $this->row('form_vl', 'VL-7');
+        self::assertSame('updated', $outcome['reason']);
+        self::assertSame('Xpert_HIV-1 Viral Load', $stored['assay_name']);
+        self::assertSame('72203', $stored['lot_number']);
+        self::assertSame('2026-08-25', $stored['lot_expiration_date']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheMessagesAssayIsPreferredToTheLabsOwnTestCode(): void
+    {
+        $this->seed('form_eid', ['sample_code' => 'EID-7']);
+        $row = ['raw_text' => $this->genexpertMessage('EID-7', '1250')]
+            + $this->analyzerRow('EID-7', 'Negative', 'HIV-1_VL 2 2');
+
+        $this->service()->importResult($row, 1);
+
+        self::assertSame('Xpert_HIV-1 Viral Load', $this->row('form_eid', 'EID-7')['assay_name']);
+        self::assertSame('72203', $this->row('form_eid', 'EID-7')['lot_number']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnUnchangedResentResultGetsItsLotFilledInQuietly(): void
+    {
+        $this->seed('form_vl', ['sample_code' => 'VL-8']);
+        $service = $this->service();
+        $row = ['raw_text' => $this->genexpertMessage('VL-8', '1250')] + $this->analyzerRow('VL-8', '1250', '');
+        $service->importResult($row, 1);
+
+        // The row as an install held it before the lot was read: same result, no lot.
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE form_vl SET lot_number = NULL, lot_expiration_date = NULL,
+                    last_modified_datetime = '2026-10-01 11:00:00' WHERE sample_code = 'VL-8'"
+        );
+        $before = $this->row('form_vl', 'VL-8');
+        $attemptsBefore = $this->attempts();
+
+        $outcome = $service->importResult($row, 1);
+
+        $after = $this->row('form_vl', 'VL-8');
+        self::assertSame('already_up_to_date', $outcome['reason']);
+        self::assertSame('72203', $after['lot_number']);
+        self::assertSame('2026-08-25', $after['lot_expiration_date']);
+        self::assertSame($before['last_modified_datetime'], $after['last_modified_datetime'], 'not re-sent to the STS');
+        self::assertSame($attemptsBefore, $this->attempts(), 'nothing is archived as a superseded attempt');
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnUnchangedResentResultNeverReplacesALotAUserTyped(): void
+    {
+        $this->seed('form_vl', ['sample_code' => 'VL-9']);
+        $service = $this->service();
+        $row = ['raw_text' => $this->genexpertMessage('VL-9', '1250')] + $this->analyzerRow('VL-9', '1250', '');
+        $service->importResult($row, 1);
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE form_vl SET lot_number = 'TYPED-1', lot_expiration_date = NULL WHERE sample_code = 'VL-9'"
+        );
+
+        $outcome = $service->importResult($row, 1);
+
+        $after = $this->row('form_vl', 'VL-9');
+        self::assertSame('already_up_to_date', $outcome['reason']);
+        self::assertSame('TYPED-1', $after['lot_number']);
+        self::assertNull($after['lot_expiration_date'], 'no expiry of another lot next to the typed one');
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnUnchangedResentResultNeverPutsALotNextToAnExpiryAUserTyped(): void
+    {
+        $this->seed('form_vl', ['sample_code' => 'VL-10']);
+        $service = $this->service();
+        $row = ['raw_text' => $this->genexpertMessage('VL-10', '1250')] + $this->analyzerRow('VL-10', '1250', '');
+        $service->importResult($row, 1);
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE form_vl SET lot_number = NULL, lot_expiration_date = '2025-12-01' WHERE sample_code = 'VL-10'"
+        );
+
+        $service->importResult($row, 1);
+
+        $after = $this->row('form_vl', 'VL-10');
+        self::assertNull($after['lot_number']);
+        self::assertSame('2025-12-01', $after['lot_expiration_date']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testALotWrittenElsewhereAfterTheRowWasReadIsNotGivenAnotherLotsExpiry(): void
+    {
+        $this->seed('form_vl', ['sample_code' => 'VL-11']);
+        $service = $this->service();
+        $row = ['raw_text' => $this->genexpertMessage('VL-11', '1250')] + $this->analyzerRow('VL-11', '1250', '');
+        $service->importResult($row, 1);
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE form_vl SET lot_number = NULL, lot_expiration_date = NULL WHERE sample_code = 'VL-11'"
+        );
+        $readEarlier = $this->row('form_vl', 'VL-11');
+        // A result file import records its own lot, without an expiry, in between.
+        LegacyAppHarness::db()->rawQuery("UPDATE form_vl SET lot_number = 'FILE-1' WHERE sample_code = 'VL-11'");
+
+        (new ReflectionClass(InterfacingService::class))->getMethod('backfillRunDetails')->invoke(
+            $service,
+            'form_vl',
+            'vl_sample_id',
+            $readEarlier,
+            InterfacingService::runDetails($row)
+        );
+
+        $after = $this->row('form_vl', 'VL-11');
+        self::assertSame('FILE-1', $after['lot_number']);
+        self::assertNull($after['lot_expiration_date']);
+    }
 }
