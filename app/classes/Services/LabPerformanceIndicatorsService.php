@@ -240,25 +240,19 @@ final class LabPerformanceIndicatorsService
      * lab. The lookup reads a single row, so two instruments sharing a name can
      * neither count a test twice nor lend one lab's format to another lab.
      *
-     * @return list<array{lab: string, instrument: string, instrumentFile: string,
-     *                    instrumentType: string, instrumentLabel: string, assay: string, tested: int, failed: int, valid: int,
-     *                    failureRate: float|null, retested: int}>
+     * Beside the runs, each row counts its samples once each (see sampleRuns()):
+     * valid the first time, valid after a re-test, or still failed.
+     *
+     * @return list<array{labId: ?int, lab: string, instrument: string, instrumentFile: string,
+     *                    instrumentType: string, instrumentLabel: string, assay: string, tested: int,
+     *                    failed: int, valid: int, failureRate: float|null, retested: int, samples: int,
+     *                    validFirstTime: int, validAfterRetest: int, stillFailed: int}>
      */
     public function getByInstrument(array $f): array
     {
-        if (!in_array($f['testKey'], self::ASSAY_TEST_KEYS, true)) {
-            throw new SystemException('Select viral load or EID for the instrument breakdown');
-        }
-
-        $events = $this->testEventsFrom($f['testKey'], withInstrument: true);
-        $where = $this->buildWhere(
-            $f,
-            extra: '(t.is_resulted OR t.is_failed)',
-            dateClause: $this->testedInRange($f)
-        );
-
-        $sql = "SELECT COALESCE(f.facility_name, '" . $this->db->escape(_translate('Not assigned to a lab')) . "') AS lab_name,
-                       COALESCE(i.machine_name, NULLIF(TRIM(t.test_platform), ''), '') AS instrument,
+        $sql = "SELECT t.lab_id,
+                       " . self::LAB_NAME . " AS lab_name,
+                       " . self::INSTRUMENT . " AS instrument,
                        MAX(COALESCE(
                            NULLIF(i.import_machine_file_name, ''),
                            (SELECT n.import_machine_file_name
@@ -271,15 +265,18 @@ final class LabPerformanceIndicatorsService
                              LIMIT 1),
                            ''
                        )) AS instrument_file,
-                       COALESCE(NULLIF(TRIM(t.assay_name), ''), '') AS assay,
+                       " . self::ASSAY . " AS assay,
                        COUNT(*) AS tested,
                        SUM(t.is_failed) AS failed,
-                       SUM(t.is_retest) AS retested
-                  FROM $events
+                       SUM(t.is_retest) AS retested,
+                       SUM(t.is_last_run) AS samples,
+                       SUM(t.is_last_run AND t.outcome = 'valid_first_time') AS valid_first_time,
+                       SUM(t.is_last_run AND t.outcome = 'valid_after_retest') AS valid_after_retest,
+                       SUM(t.is_last_run AND t.outcome = 'still_failed') AS still_failed
+                  FROM " . $this->sampleRuns($f) . "
                   LEFT JOIN instruments AS i ON i.instrument_id = t.instrument_id
                   LEFT JOIN facility_details AS f ON f.facility_id = t.lab_id
-                 $where
-                 GROUP BY lab_name, instrument, assay
+                 GROUP BY t.lab_id, lab_name, instrument, assay
                  ORDER BY lab_name ASC, instrument = '' ASC, instrument ASC, assay = '' ASC, assay ASC";
 
         $rows = [];
@@ -289,7 +286,8 @@ final class LabPerformanceIndicatorsService
             $instrument = (string) $row['instrument'];
             $type = self::instrumentType((string) $row['instrument_file'], $instrument);
             $rows[] = [
-                'lab' => (string) $row['lab_name'],
+                'labId' => $row['lab_id'] === null ? null : (int) $row['lab_id'],
+                'lab' => $row['lab_name'] !== '' ? (string) $row['lab_name'] : _translate('Not assigned to a lab'),
                 'instrument' => $instrument,
                 'instrumentFile' => (string) $row['instrument_file'],
                 'instrumentType' => $type,
@@ -300,9 +298,126 @@ final class LabPerformanceIndicatorsService
                 'valid' => $tested - $failed,
                 'failureRate' => $tested > 0 ? round($failed * 100 / $tested, 2) : null,
                 'retested' => (int) $row['retested'],
+                'samples' => (int) $row['samples'],
+                'validFirstTime' => (int) $row['valid_first_time'],
+                'validAfterRetest' => (int) $row['valid_after_retest'],
+                'stillFailed' => (int) $row['still_failed'],
             ];
         }
         return $rows;
+    }
+
+    /** What a sample came to, by its latest run in the range. */
+    public const SAMPLE_OUTCOMES = ['valid_first_time', 'valid_after_retest', 'still_failed'];
+
+    /** Most samples a list returns; the counts beside it are always complete. */
+    public const SAMPLE_LIST_LIMIT = 5000;
+
+    /**
+     * The samples behind one row of getByInstrument(), for the links on its sample
+     * counts: each with its latest run in the range, that run's batch, and how many
+     * runs it had in the range.
+     *
+     * @param array{labId: ?int, instrument: string, assay: string} $row the row's keys
+     * @param ?string $outcome one of SAMPLE_OUTCOMES, or null for every sample
+     * @return list<array{sampleCode: string, batchCode: string, testedOn: string, result: string,
+     *                    outcome: string, runs: int}>
+     */
+    public function getInstrumentSamples(array $f, array $row, ?string $outcome): array
+    {
+        $params = [(string) $row['instrument'], (string) $row['assay']];
+        $labMatch = 't.lab_id IS NULL';
+        if ($row['labId'] !== null) {
+            $labMatch = 't.lab_id = ?';
+            array_unshift($params, (int) $row['labId']);
+        }
+        $outcomeMatch = '';
+        if ($outcome !== null) {
+            if (!in_array($outcome, self::SAMPLE_OUTCOMES, true)) {
+                throw new SystemException('Unknown sample outcome');
+            }
+            $outcomeMatch = 'AND t.outcome = ?';
+            $params[] = $outcome;
+        }
+
+        $sql = "SELECT t.sample_code, b.batch_code, t.sample_tested_datetime, t.result, t.outcome, t.runs
+                  FROM " . $this->sampleRuns($f) . "
+                  LEFT JOIN instruments AS i ON i.instrument_id = t.instrument_id
+                  LEFT JOIN batch_details AS b ON b.batch_id = t.batch_id
+                 WHERE t.is_last_run AND $labMatch
+                   AND " . self::INSTRUMENT . " = ?
+                   AND " . self::ASSAY . " = ?
+                   $outcomeMatch
+                 ORDER BY t.sample_tested_datetime DESC, t.sample_code ASC
+                 LIMIT " . self::SAMPLE_LIST_LIMIT;
+
+        return array_map(static fn(array $sample): array => [
+            'sampleCode' => (string) $sample['sample_code'],
+            'batchCode' => (string) ($sample['batch_code'] ?? ''),
+            'testedOn' => (string) ($sample['sample_tested_datetime'] ?? ''),
+            'result' => (string) ($sample['result'] ?? ''),
+            'outcome' => (string) $sample['outcome'],
+            'runs' => (int) $sample['runs'],
+        ], $this->db->rawQuery($sql, $params) ?: []);
+    }
+
+    /** The grouping columns of getByInstrument(), over sampleRuns() as `t`. */
+    private const LAB_NAME = "COALESCE(f.facility_name, '')";
+    private const INSTRUMENT = "COALESCE(i.machine_name, NULLIF(TRIM(t.test_platform), ''), '')";
+    private const ASSAY = "COALESCE(NULLIF(TRIM(t.assay_name), ''), '')";
+
+    /**
+     * The test events of the instrument breakdown in the range, each marked with
+     * whether it is its sample's latest run there and what the sample came to.
+     *
+     * A sample is counted once, under its latest run in the range: its current result,
+     * else the last run archived at a re-test. So the samples of the rows add up to the
+     * samples in the range, and a total over any rows the page filters to stays true.
+     * A sample whose latest run failed is still failed (re-test pending or failed
+     * again); one whose latest run is valid after a run that failed before it, in
+     * the range or not, is valid after re-test.
+     */
+    private function sampleRuns(array $f): string
+    {
+        if (!in_array($f['testKey'], self::ASSAY_TEST_KEYS, true)) {
+            throw new SystemException('Select viral load or EID for the instrument breakdown');
+        }
+        $table = $this->db->escape(TestsService::getTestTableName($f['testKey']));
+        $events = $this->testEventsFrom($f['testKey'], withInstrument: true);
+        $where = $this->buildWhere(
+            $f,
+            extra: '(t.is_resulted OR t.is_failed)',
+            dateClause: $this->testedInRange($f)
+        );
+
+        return "(
+                    SELECT t.*,
+                           ROW_NUMBER() OVER (
+                               PARTITION BY t.sample_id
+                               ORDER BY t.is_retest ASC, t.sample_tested_datetime DESC, t.attempt_number DESC
+                           ) = 1 AS is_last_run,
+                           COUNT(*) OVER (PARTITION BY t.sample_id) AS runs,
+                           CASE
+                               WHEN t.is_failed THEN 'still_failed'
+                               -- A failure before this run: any archived one for the current
+                               -- result, an earlier attempt for an archived run.
+                               WHEN earlier.first_failed IS NOT NULL
+                                    AND (t.attempt_number IS NULL OR earlier.first_failed < t.attempt_number)
+                                   THEN 'valid_after_retest'
+                               ELSE 'valid_first_time'
+                           END AS outcome
+                      FROM $events
+                      -- Each sample's first failed run archived at a re-test, at any date.
+                      LEFT JOIN (
+                          SELECT record_id, MIN(attempt_number) AS first_failed
+                            FROM test_result_attempts
+                           WHERE form_table = '$table'
+                             AND superseded_by = '" . TestAttemptService::BY_RETEST . "'
+                             AND result_failed = 1
+                           GROUP BY record_id
+                      ) AS earlier ON earlier.record_id = t.sample_id
+                      $where
+                ) AS t";
     }
 
     /**
@@ -926,10 +1041,21 @@ final class LabPerformanceIndicatorsService
                 => "CONVERT($expr USING utf8mb4) COLLATE utf8mb4_0900_ai_ci";
             $platformColumn = TestsService::getTestPlatformColumn($testKey);
             $hasAssay = in_array($testKey, self::ASSAY_TEST_KEYS, true);
-            $liveInstrument = $text("live.`$platformColumn`") . " AS test_platform,
+            $resultColumnText = $text("live.`$resultColumn`");
+            $liveInstrument = "live.`$primaryKey` AS sample_id,
+                           NULL AS attempt_number,
+                           " . $text('live.sample_code') . " AS sample_code,
+                           live.sample_batch_id AS batch_id,
+                           $resultColumnText AS result,
+                           " . $text("live.`$platformColumn`") . " AS test_platform,
                            " . $text('live.instrument_id') . " AS instrument_id,
                            " . ($hasAssay ? $text('live.assay_name') : 'NULL') . " AS assay_name,";
-            $archivedInstrument = $text('a.test_platform') . ",
+            $archivedInstrument = "a.record_id,
+                           a.attempt_number,
+                           " . $text('a.sample_code') . ",
+                           a.batch_id,
+                           " . $text('a.result') . ",
+                           " . $text('a.test_platform') . ",
                            " . $text('a.instrument_id') . ",
                            " . ($hasAssay
                 ? $text("NULLIF(JSON_UNQUOTE(JSON_EXTRACT(a.attempt_data, '$.row.assay_name')), 'null')")

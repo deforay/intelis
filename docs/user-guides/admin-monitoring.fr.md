@@ -212,7 +212,11 @@ taux d'échec entre instruments et entre tests.
 6. Pour affiner **Par laboratoire, instrument et test**, choisir une valeur
    dans la liste au-dessus d'une colonne. Sélectionner l'en-tête d'une colonne
    pour trier. **Total** additionne les lignes affichées.
-7. Pour garder les chiffres, sélectionner **Exporter vers Excel**. Le fichier
+7. Pour voir les échantillons derrière un nombre, sélectionner le nombre sous
+   **Échantillons**, **Valides du premier coup**, **Valides après retest** ou
+   **Toujours en échec**. La liste s'ouvre sous le tableau, avec le code du lot,
+   la date du test, le résultat et le nombre de passages de chaque échantillon.
+8. Pour garder les chiffres, sélectionner **Exporter vers Excel**. Le fichier
    se télécharge quand il est prêt. La progression s'affiche dans le menu des
    exports.
 
@@ -222,10 +226,19 @@ taux d'échec entre instruments et entre tests.
         | --- | --- |
         | Tests réalisés | Chaque résultat et chaque échec enregistré, à la date du test |
         | Échec ou invalide | Les tests au statut Échec |
-        | Échecs retestés | Les échecs remplacés par un nouveau test. Chacun compte aussi dans les tests réalisés |
+        | Échantillons | Chaque échantillon une seule fois, sous son dernier passage de la période |
+        | Valides du premier coup | Les échantillons dont le dernier passage est valide et qui n'ont jamais échoué |
+        | Valides après retest | Les échantillons dont le dernier passage est valide après un échec, dans la période ou avant |
+        | Toujours en échec | Les échantillons dont le dernier passage de la période a échoué : en attente de retest, ou de nouveau en échec |
 
-        L'export contient aussi **Résultats valides** : les tests réalisés qui
-        n'ont pas échoué.
+        Un échantillon testé sur deux instruments, ou en échec dans la période et
+        retesté après, compte une seule fois, sous son dernier passage de la
+        période. Les colonnes d'échantillons s'additionnent donc d'une ligne à
+        l'autre, et **Total** donne le nombre d'échantillons.
+
+        L'export contient aussi **Résultats valides** (les tests réalisés qui
+        n'ont pas échoué) et **Échecs retestés** (les échecs remplacés par un
+        nouveau test, chacun compté aussi dans les tests réalisés).
 
         Les échantillons annulés et rejetés ne sont pas comptés. Pour le même
         test, la même période et le même laboratoire, **Tests réalisés**

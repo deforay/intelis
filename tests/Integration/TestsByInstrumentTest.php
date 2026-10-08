@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use App\Registries\ContainerRegistry;
+use App\HttpHandlers\LegacyRequestHandler;
+use App\Services\CommonService;
 use App\Services\LabPerformanceIndicatorsService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -39,7 +41,7 @@ final class TestsByInstrumentTest extends TestCase
 
         $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
             'r_sample_status', 'system_config', 'global_config', 'facility_details', 'instruments',
-            'form_vl', 'test_result_attempts',
+            'form_vl', 'test_result_attempts', 'batch_details',
         ]);
         LegacyAppHarness::addMigrationColumns('5.7.82', ['form_vl']);
 
@@ -244,5 +246,219 @@ final class TestsByInstrumentTest extends TestCase
 
         $this->expectException(\App\Exceptions\SystemException::class);
         $service->getByInstrument($service->resolveFilters(['testType' => 'tb']));
+    }
+
+    #[RunInSeparateProcess]
+    public function testEachSampleCountsOnceWithWhatItCameTo(): void
+    {
+        LegacyAppHarness::db()->rawQuery("INSERT INTO batch_details (batch_id, batch_code) VALUES (1, 'B-0910')");
+        $run = ['instrument_id' => 'inst-a', 'assay_name' => 'HIV1.0mlDBS'];
+        $failed = ['result' => 'Failed', 'result_status' => 5];
+
+        $this->seed($run + ['sample_code' => 'S-FIRST', 'result' => '40']);
+        $afterRetest = $this->seed($run + ['sample_code' => 'S-AFTER', 'result' => '50']);
+        $this->attempt($afterRetest, ['superseded_by' => 'retest', 'sample_code' => 'S-AFTER']);
+        $this->seed($run + $failed + ['sample_code' => 'S-FAILED']);
+        $twice = $this->seed($run + $failed + ['sample_code' => 'S-TWICE', 'sample_batch_id' => 1]);
+        $this->attempt($twice, ['superseded_by' => 'retest', 'sample_code' => 'S-TWICE']);
+        // Failed before the range, valid in it.
+        $earlier = $this->seed($run + ['sample_code' => 'S-EARLIER', 'result' => '60']);
+        $this->attempt($earlier, [
+            'superseded_by' => 'retest', 'sample_code' => 'S-EARLIER',
+            'sample_tested_datetime' => '2026-08-20 10:00:00',
+        ]);
+        // Failed in the range, re-tested after it: still failed as far as the range goes.
+        $later = $this->seed($run + [
+            'sample_code' => 'S-LATER', 'result' => '70', 'sample_tested_datetime' => '2026-10-02 10:00:00',
+        ]);
+        $this->attempt($later, [
+            'superseded_by' => 'retest', 'sample_code' => 'S-LATER', 'batch_id' => 1,
+            'sample_tested_datetime' => '2026-09-20 10:00:00',
+        ]);
+
+        $service = ContainerRegistry::get(LabPerformanceIndicatorsService::class);
+        $filters = $service->resolveFilters(['testType' => 'vl', 'dateRange' => '01-Sep-2026 to 30-Sep-2026']);
+        $row = $this->rows($service, $filters)['Abbott m2000|HIV1.0mlDBS'];
+
+        self::assertSame(8, $row['tested'], 'every run');
+        self::assertSame(6, $row['samples'], 'every sample once');
+        self::assertSame(1, $row['validFirstTime']);
+        self::assertSame(2, $row['validAfterRetest']);
+        self::assertSame(3, $row['stillFailed']);
+
+        $samples = $service->getInstrumentSamples($filters, $row, 'still_failed');
+        self::assertSame(['S-LATER', 'S-FAILED', 'S-TWICE'], array_column($samples, 'sampleCode'));
+        $byCode = array_column($samples, null, 'sampleCode');
+        self::assertSame('B-0910', $byCode['S-LATER']['batchCode'], 'the batch of the run shown');
+        self::assertSame('B-0910', $byCode['S-TWICE']['batchCode']);
+        self::assertSame(2, $byCode['S-TWICE']['runs']);
+        self::assertSame(1, $byCode['S-FAILED']['runs']);
+        self::assertSame(
+            ['S-AFTER', 'S-EARLIER'],
+            array_column($service->getInstrumentSamples($filters, $row, 'valid_after_retest'), 'sampleCode')
+        );
+        self::assertCount(6, $service->getInstrumentSamples($filters, $row, null));
+    }
+
+    #[RunInSeparateProcess]
+    public function testASampleRetestedOnAnotherInstrumentCountsUnderItsLatestRun(): void
+    {
+        $sample = $this->seed(['instrument_id' => 'inst-g1', 'result' => '40', 'sample_code' => 'S-MOVED']);
+        $this->attempt($sample, ['superseded_by' => 'retest', 'sample_code' => 'S-MOVED']);
+
+        $service = ContainerRegistry::get(LabPerformanceIndicatorsService::class);
+        $filters = $service->resolveFilters(['testType' => 'vl', 'dateRange' => '01-Sep-2026 to 30-Sep-2026']);
+        $rows = $this->rows($service, $filters);
+
+        self::assertSame(1, $rows['Abbott m2000|HIV1.0mlDBS']['tested']);
+        self::assertSame(0, $rows['Abbott m2000|HIV1.0mlDBS']['samples']);
+        self::assertSame(1, $rows['GeneXpert|']['samples']);
+        self::assertSame(1, $rows['GeneXpert|']['validAfterRetest']);
+        self::assertSame(1, array_sum(array_column($rows, 'samples')), 'one sample in the total');
+    }
+
+    /**
+     * One request per test: the handler loads the page with require_once, so a second
+     * request in the same process runs nothing and answers with an empty body.
+     *
+     * @param array<string, mixed> $post
+     * @param array<string, mixed> $session
+     * @return array<string, mixed>
+     */
+    private function sampleList(array $post, array $session): array
+    {
+        LegacyAppHarness::withSession($session + ['roleId' => 4, 'instance' => ['type' => 'vluser']]);
+        $request = LegacyAppHarness::withPost($post + [
+            'testType' => 'vl', 'dateRange' => '01-Sep-2026 to 30-Sep-2026',
+            'instrument' => 'Abbott m2000', 'assay' => 'HIV1.0mlDBS', 'outcome' => 'still_failed',
+        ], '/reports/get-instrument-samples.php');
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $reply = json_decode((string) $handler->handle($request)->getBody(), true);
+        self::assertIsArray($reply, 'the page answered');
+        return $reply;
+    }
+
+    private const CAN_OPEN_PAGE = ['privileges' => ['/reports/interface-machine-activity.php' => true]];
+
+    #[RunInSeparateProcess]
+    public function testTheSampleListEndpointReturnsARowsSamples(): void
+    {
+        $assay = ['instrument_id' => 'inst-a', 'assay_name' => 'HIV-1 & HIV-2'];
+        $this->seed($assay + ['sample_code' => 'S-OK', 'result' => '40']);
+        $this->seed($assay + ['sample_code' => 'S-BAD', 'result' => 'Failed', 'result_status' => 5]);
+
+        $reply = $this->sampleList(['rowLabId' => '1', 'assay' => 'HIV-1 & HIV-2'], self::CAN_OPEN_PAGE);
+
+        self::assertSame(['S-BAD'], array_column($reply['samples'] ?? [], 'sampleCode'), json_encode($reply));
+        self::assertFalse($reply['limited']);
+        self::assertNotSame('', $reply['samples'][0]['testedOnDisplay']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheSampleListIsOnlyForThoseWhoCanOpenThePage(): void
+    {
+        $this->seed([
+            'instrument_id' => 'inst-a', 'assay_name' => 'HIV1.0mlDBS', 'result' => 'Failed', 'result_status' => 5,
+        ]);
+
+        $reply = $this->sampleList(['rowLabId' => '1'], ['privileges' => ['/vl/requests/vl-requests.php' => true]]);
+
+        self::assertArrayNotHasKey('samples', $reply);
+        self::assertArrayHasKey('error', $reply);
+    }
+
+    /**
+     * Failed at Lab One, re-tested valid at Lab Two, plus a failed sample at each.
+     * Under the report's All labs the moved sample is a Lab Two sample.
+     */
+    private function twoLabs(): void
+    {
+        LegacyAppHarness::db()->rawQuery(
+            "INSERT INTO facility_details (facility_id, facility_name, facility_type) VALUES (2, 'Lab Two', 2)"
+        );
+        $run = ['instrument_id' => 'inst-a', 'assay_name' => 'HIV1.0mlDBS'];
+        $moved = $this->seed($run + ['sample_code' => 'S-MOVED', 'result' => '40', 'lab_id' => 2]);
+        $this->attempt($moved, ['superseded_by' => 'retest', 'sample_code' => 'S-MOVED']);
+        $this->seed($run + ['sample_code' => 'S-ONE', 'result' => 'Failed', 'result_status' => 5]);
+        $this->seed($run + ['sample_code' => 'S-TWO', 'result' => 'Failed', 'result_status' => 5, 'lab_id' => 2]);
+    }
+
+    #[RunInSeparateProcess]
+    public function testARowsSampleListMatchesItsCountUnderTheReportFilter(): void
+    {
+        $this->twoLabs();
+
+        $reply = $this->sampleList(['rowLabId' => '1'], self::CAN_OPEN_PAGE);
+
+        self::assertSame(['S-ONE'], array_column($reply['samples'] ?? [], 'sampleCode'), 'not the moved sample');
+    }
+
+    #[RunInSeparateProcess]
+    public function testALabCannotListAnotherLabsSamples(): void
+    {
+        $this->twoLabs();
+
+        $reply = $this->sampleList(['rowLabId' => '2'], self::CAN_OPEN_PAGE + ['labId' => 1]);
+
+        self::assertSame([], $reply['samples'] ?? null, json_encode($reply));
+    }
+
+    #[RunInSeparateProcess]
+    public function testALabCannotListAnotherLabsSamplesThroughTheLabFilter(): void
+    {
+        $this->twoLabs();
+
+        $reply = $this->sampleList(['rowLabId' => '2', 'labId' => '2'], self::CAN_OPEN_PAGE + ['labId' => 1]);
+
+        self::assertNotContains('S-TWO', array_column($reply['samples'] ?? [], 'sampleCode'), json_encode($reply));
+    }
+
+    #[RunInSeparateProcess]
+    public function testOfTwoRunsArchivedAtTheSameTimeTheLaterOneCounts(): void
+    {
+        // Re-tested in October, after the range, so its latest run in September is
+        // the later of two runs archived with the same test time.
+        $sample = $this->seed([
+            'instrument_id' => 'inst-a', 'result' => '40', 'sample_code' => 'S-TIE',
+            'sample_tested_datetime' => '2026-10-02 10:00:00',
+        ]);
+        $this->attempt($sample, ['superseded_by' => 'retest', 'attempt_number' => 1, 'instrument_id' => 'inst-a']);
+        $this->attempt($sample, [
+            'superseded_by' => 'retest', 'attempt_number' => 2,
+            'instrument_id' => 'inst-g1', 'test_platform' => 'GeneXpert',
+        ]);
+
+        $service = ContainerRegistry::get(LabPerformanceIndicatorsService::class);
+        $rows = $this->rows($service, $service->resolveFilters([
+            'testType' => 'vl', 'dateRange' => '01-Sep-2026 to 30-Sep-2026',
+        ]));
+
+        self::assertSame(1, $rows['GeneXpert|HIV1.0mlDBS']['samples'], json_encode($rows));
+        self::assertSame(0, $rows['Abbott m2000|HIV1.0mlDBS']['samples']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAFailureAfterTheRunCountedIsNoReTestOfIt(): void
+    {
+        // Valid in September, then failed in October and archived for a re-test.
+        $sample = $this->seed([
+            'instrument_id' => 'inst-a', 'result' => 'Failed', 'result_status' => 5, 'sample_code' => 'S-LATE-FAIL',
+            'sample_tested_datetime' => '2026-10-20 10:00:00',
+        ]);
+        $this->attempt($sample, [
+            'superseded_by' => 'retest', 'attempt_number' => 1, 'result' => '40', 'result_status' => 7,
+            'result_failed' => 0, 'sample_tested_datetime' => '2026-09-10 10:00:00',
+        ]);
+        $this->attempt($sample, [
+            'superseded_by' => 'retest', 'attempt_number' => 2, 'sample_tested_datetime' => '2026-10-05 10:00:00',
+        ]);
+
+        $service = ContainerRegistry::get(LabPerformanceIndicatorsService::class);
+        $rows = $this->rows($service, $service->resolveFilters([
+            'testType' => 'vl', 'dateRange' => '01-Sep-2026 to 30-Sep-2026',
+        ]));
+
+        self::assertSame(1, $rows['Abbott m2000|HIV1.0mlDBS']['validFirstTime'], json_encode($rows));
+        self::assertSame(0, $rows['Abbott m2000|HIV1.0mlDBS']['validAfterRetest']);
     }
 }
