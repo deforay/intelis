@@ -138,6 +138,10 @@ $summary = $db->rawQueryOne(
         background-color: #f4f6f8;
     }
 
+    #interfaceActivityReport .ia-samples-close {
+        margin-left: 8px;
+    }
+
     th {
         display: revert !important;
     }
@@ -239,6 +243,7 @@ $summary = $db->rawQueryOne(
                                                 <tr>
                                                     <th><?= _htmlTranslate('Instrument Type'); ?></th>
                                                     <th class="num"><?= _htmlTranslate('Tests Run'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Samples'); ?></th>
                                                     <th class="num"><?= _htmlTranslate('Failed or Invalid'); ?></th>
                                                     <th class="num"><?= _htmlTranslate('Failure Rate (%)'); ?></th>
                                                 </tr>
@@ -259,7 +264,10 @@ $summary = $db->rawQueryOne(
                                                     <th class="num"><?= _htmlTranslate('Tests Run'); ?></th>
                                                     <th class="num"><?= _htmlTranslate('Failed or Invalid'); ?></th>
                                                     <th class="num"><?= _htmlTranslate('Failure Rate (%)'); ?></th>
-                                                    <th class="num"><?= _htmlTranslate('Failed Runs Re-tested'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Samples'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Valid First Time'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Valid After Re-test'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Still Failed'); ?></th>
                                                 </tr>
                                                 <?php // One dropdown per text column, filled from the loaded rows. ?>
                                                 <tr class="ia-filters">
@@ -271,27 +279,53 @@ $summary = $db->rawQueryOne(
                                                             </select>
                                                         </th>
                                                     <?php } ?>
-                                                    <th colspan="4"></th>
+                                                    <th colspan="7"></th>
                                                 </tr>
                                             </thead>
                                             <tbody></tbody>
                                             <tfoot>
                                                 <tr class="ia-total">
                                                     <td colspan="3"><?= _htmlTranslate('Total'); ?></td>
-                                                    <td class="num"></td>
-                                                    <td class="num"></td>
-                                                    <td class="num"></td>
-                                                    <td class="num"></td>
+                                                    <?php for ($column = 0; $column < 7; $column++) { ?>
+                                                        <td class="num"></td>
+                                                    <?php } ?>
                                                 </tr>
                                             </tfoot>
                                         </table>
                                     </div>
                                     <p class="ia-note">
                                         <?= _htmlTranslate(
-                                            'Failed runs that were re-tested count as tests. Cancelled and rejected '
-                                            . 'samples do not. The assay is recorded from this update on.'
+                                            'Tests Run counts every run, failed runs that were re-tested included. '
+                                            . 'Samples counts each sample once, under its latest run in the range. '
+                                            . 'Cancelled and rejected samples are not counted.'
                                         ); ?>
                                     </p>
+
+                                    <?php // The samples behind a count, opened from its link. ?>
+                                    <div id="iaSamples" hidden>
+                                        <div class="ia-section-title">
+                                            <span id="iaSamplesTitle"></span>
+                                            <button type="button" class="btn btn-default btn-xs ia-samples-close"
+                                                id="iaSamplesClose"><?= _htmlTranslate('Close'); ?></button>
+                                        </div>
+                                        <p class="ia-note" id="iaSamplesLimited" hidden>
+                                            <?= _htmlTranslate('Showing the most recent 5,000 samples.'); ?>
+                                        </p>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped" id="iaSamplesTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th><?= _htmlTranslate('Sample ID'); ?></th>
+                                                        <th><?= _htmlTranslate('Batch Code'); ?></th>
+                                                        <th><?= _htmlTranslate('Tested On'); ?></th>
+                                                        <th><?= _htmlTranslate('Result'); ?></th>
+                                                        <th class="num"><?= _htmlTranslate('Runs'); ?></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         <?php } ?>
@@ -527,12 +561,27 @@ $summary = $db->rawQueryOne(
         return tested > 0 ? (Math.round(failed * 10000 / tested) / 100).toFixed(2) : '-';
     }
 
+    // The filters the figures on screen were loaded with: the sample lists and the
+    // export follow them, not filters changed since without a new Search. Each
+    // search is numbered so only the latest one's figures and filters are kept.
+    var iaTestsShown = null;
+    var iaTestsRequest = 0;
+
     function iaLoadTests() {
+        var request = ++iaTestsRequest;
+        var filters = iaTestsFilters();
         $('#testsByTypeTable tbody').html(
-            '<tr><td colspan="4" class="dataTables_empty"><?= _jsTranslate("Loading data from server"); ?></td></tr>'
+            '<tr><td colspan="5" class="dataTables_empty"><?= _jsTranslate("Loading data from server"); ?></td></tr>'
         );
-        $.post('/reports/get-instrument-test-volumes.php', iaTestsFilters(), null, 'json')
+        // A list opened from the earlier figures no longer matches them.
+        iaSamplesRequest++;
+        $('#iaSamples').prop('hidden', true);
+        $.post('/reports/get-instrument-test-volumes.php', filters, null, 'json')
             .done(function (data) {
+                if (request !== iaTestsRequest) {
+                    return;
+                }
+                iaTestsShown = filters;
                 if (!data || data.error) {
                     iaRenderTests([], (data && data.error) || "<?= _jsTranslate('Unable to load the instrument figures'); ?>");
                     return;
@@ -540,19 +589,24 @@ $summary = $db->rawQueryOne(
                 iaRenderTests(data.rows || [], null);
             })
             .fail(function () {
-                iaRenderTests([], "<?= _jsTranslate('Unable to load the instrument figures'); ?>");
+                if (request === iaTestsRequest) {
+                    iaTestsShown = filters;
+                    iaRenderTests([], "<?= _jsTranslate('Unable to load the instrument figures'); ?>");
+                }
             });
     }
 
     function iaRenderTests(rows, error) {
         var byType = {};
-        var total = { tested: 0, failed: 0 };
+        var total = { tested: 0, samples: 0, failed: 0 };
 
         rows.forEach(function (r) {
-            var t = byType[r.instrumentType] = byType[r.instrumentType] || { tested: 0, failed: 0 };
+            var t = byType[r.instrumentType] = byType[r.instrumentType] || { tested: 0, samples: 0, failed: 0 };
             t.tested += r.tested;
+            t.samples += r.samples;
             t.failed += r.failed;
             total.tested += r.tested;
+            total.samples += r.samples;
             total.failed += r.failed;
         });
 
@@ -560,21 +614,26 @@ $summary = $db->rawQueryOne(
         Object.keys(byType).sort(function (a, b) { return byType[b].tested - byType[a].tested; }).forEach(function (type) {
             var t = byType[type];
             typeRows += '<tr><td>' + iaEscape(type) + '</td><td class="num">' + iaNumber(t.tested) + '</td>'
+                + '<td class="num">' + iaNumber(t.samples) + '</td>'
                 + '<td class="num">' + iaNumber(t.failed) + '</td><td class="num">' + iaRate(t.failed, t.tested) + '</td></tr>';
         });
         if (Object.keys(byType).length > 1) {
             typeRows += '<tr class="ia-total"><td>' + iaEscape("<?= _jsTranslate('Total'); ?>") + '</td>'
-                + '<td class="num">' + iaNumber(total.tested) + '</td><td class="num">' + iaNumber(total.failed) + '</td>'
+                + '<td class="num">' + iaNumber(total.tested) + '</td><td class="num">' + iaNumber(total.samples) + '</td>'
+                + '<td class="num">' + iaNumber(total.failed) + '</td>'
                 + '<td class="num">' + iaRate(total.failed, total.tested) + '</td></tr>';
         }
         var message = error || "<?= _jsTranslate('No tests in the selected range'); ?>";
         $('#testsByTypeTable tbody').html(rows.length ? typeRows
-            : '<tr><td colspan="4" class="dataTables_empty">' + iaEscape(message) + '</td></tr>');
+            : '<tr><td colspan="5" class="dataTables_empty">' + iaEscape(message) + '</td></tr>');
 
         iaRenderDetail(rows.map(function (r) {
             return [
                 r.lab, r.instrumentLabel || IA_NOT_RECORDED, r.assay || IA_NOT_RECORDED,
-                r.tested, r.failed, r.tested > 0 ? r.failed * 100 / r.tested : null, r.retested
+                r.tested, r.failed, r.tested > 0 ? r.failed * 100 / r.tested : null,
+                r.samples, r.validFirstTime, r.validAfterRetest, r.stillFailed,
+                // Not shown: the row's keys, for its sample lists.
+                { labId: r.labId, instrument: r.instrument, assay: r.assay }
             ];
         }), message);
     }
@@ -587,6 +646,15 @@ $summary = $db->rawQueryOne(
         if (iaDetailTable === null) {
             var text = function (d, type) { return type === 'display' ? iaEscape(d) : d; };
             var count = function (d, type) { return type === 'display' ? iaNumber(d) : d; };
+            // A sample count opens the list of those samples.
+            var samples = function (outcome) {
+                return function (d, type) {
+                    if (type !== 'display' || !d) {
+                        return type === 'display' ? iaNumber(d) : d;
+                    }
+                    return '<a href="#" class="ia-samples" data-outcome="' + outcome + '">' + iaNumber(d) + '</a>';
+                };
+            };
             iaDetailTable = $('#testsDetailTable').DataTable({
                 data: data,
                 dom: 'rtip',
@@ -603,7 +671,10 @@ $summary = $db->rawQueryOne(
                             return type === 'display' ? (d === null ? '-' : d.toFixed(2)) : (d === null ? -1 : d);
                         }
                     },
-                    { render: count, className: 'num' }
+                    { render: samples(''), className: 'num' },
+                    { render: samples('valid_first_time'), className: 'num' },
+                    { render: samples('valid_after_retest'), className: 'num' },
+                    { render: samples('still_failed'), className: 'num' }
                 ],
                 footerCallback: function () {
                     var api = this.api();
@@ -617,8 +688,17 @@ $summary = $db->rawQueryOne(
                     cells.eq(0).text(iaNumber(tested));
                     cells.eq(1).text(iaNumber(failed));
                     cells.eq(2).text(iaRate(failed, tested));
-                    cells.eq(3).text(iaNumber(sum(6)));
+                    // Each sample sits on one row only, so these add up across rows.
+                    [6, 7, 8, 9].forEach(function (column, i) {
+                        cells.eq(3 + i).text(iaNumber(sum(column)));
+                    });
                 }
+            });
+
+            $('#testsDetailTable tbody').on('click', 'a.ia-samples', function (e) {
+                e.preventDefault();
+                var row = iaDetailTable.row($(this).closest('tr')).data();
+                iaLoadSamples(row, $(this).data('outcome'));
             });
 
             $('#testsDetailTable .ia-col-filter').on('change', function () {
@@ -642,6 +722,83 @@ $summary = $db->rawQueryOne(
         iaDetailTable.draw();
         $('#testsDetailTable .dataTables_empty').text(emptyMessage);
     }
+
+    var IA_OUTCOMES = {
+        '': "<?= _jsTranslate('Samples'); ?>",
+        valid_first_time: "<?= _jsTranslate('Valid First Time'); ?>",
+        valid_after_retest: "<?= _jsTranslate('Valid After Re-test'); ?>",
+        still_failed: "<?= _jsTranslate('Still Failed'); ?>"
+    };
+    var iaSamplesTable = null;
+    // Each list request is numbered, so a reply to one the user has since replaced
+    // by another click is dropped rather than mixed into the newer list.
+    var iaSamplesRequest = 0;
+
+    function iaLoadSamples(row, outcome) {
+        var request = ++iaSamplesRequest;
+        var keys = row[10];
+        $('#iaSamplesTitle').text(IA_OUTCOMES[outcome] + ': ' + [row[0], row[1], row[2]].join(' / '));
+        $('#iaSamplesLimited').prop('hidden', true);
+        $('#iaSamples').prop('hidden', false);
+        if (iaSamplesTable === null) {
+            var text = function (d, type) { return type === 'display' ? iaEscape(d) : d; };
+            iaSamplesTable = $('#iaSamplesTable').DataTable({
+                data: [],
+                dom: 'frtip',
+                pageLength: 25,
+                order: [[2, 'desc']],
+                columns: [
+                    { render: text }, { render: text },
+                    {
+                        render: function (d, type) {
+                            return type === 'display' ? iaEscape(d.display) : d.sort;
+                        }
+                    },
+                    { render: text }, { className: 'num' }
+                ]
+            });
+        }
+        iaSamplesTable.clear().draw();
+        $('#iaSamplesTable .dataTables_empty').text("<?= _jsTranslate('Loading data from server'); ?>");
+        $('html, body').animate({ scrollTop: $('#iaSamples').offset().top - 60 }, 200);
+
+        var data = $.extend({}, iaTestsShown, {
+            rowLabId: keys.labId === null ? '' : keys.labId,
+            instrument: keys.instrument,
+            assay: keys.assay,
+            outcome: outcome
+        });
+        $.post('/reports/get-instrument-samples.php', data, null, 'json')
+            .done(function (response) {
+                if (request !== iaSamplesRequest) {
+                    return;
+                }
+                if (!response || response.error) {
+                    $('#iaSamplesTable .dataTables_empty').text(
+                        (response && response.error) || "<?= _jsTranslate('Unable to load the samples'); ?>"
+                    );
+                    return;
+                }
+                iaSamplesTable.rows.add(response.samples.map(function (sample) {
+                    return [
+                        sample.sampleCode, sample.batchCode || '-',
+                        { display: sample.testedOnDisplay, sort: sample.testedOn },
+                        sample.result || '-', sample.runs
+                    ];
+                })).draw();
+                $('#iaSamplesLimited').prop('hidden', !response.limited);
+            })
+            .fail(function () {
+                if (request === iaSamplesRequest) {
+                    $('#iaSamplesTable .dataTables_empty').text("<?= _jsTranslate('Unable to load the samples'); ?>");
+                }
+            });
+    }
+
+    $(document).on('click', '#iaSamplesClose', function () {
+        iaSamplesRequest++;
+        $('#iaSamples').prop('hidden', true);
+    });
 
     // Cascading: each filter offers only the values found in the rows the OTHER
     // filters leave, so picking a lab narrows Instrument and Assay to that lab's.
@@ -676,7 +833,7 @@ $summary = $db->rawQueryOne(
 
     function iaExport(section, format) {
         var data = $.extend({ section: section, format: format },
-            section === 'tests' ? iaTestsFilters() : iaEventsFilters());
+            section === 'tests' ? (iaTestsShown || iaTestsFilters()) : iaEventsFilters());
         if (section === 'tests') {
             // The column filters too, so the file holds the rows on screen.
             data.columnFilters = $('#testsDetailTable .ia-col-filter').map(function () {

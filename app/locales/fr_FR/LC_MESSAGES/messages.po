@@ -36653,8 +36653,27 @@ msgstr "Année dernière"
 msgid "Tests run on each instrument and assay."
 msgstr "Tests réalisés sur chaque instrument et chaque test."
 
-msgid "Failed runs that were re-tested count as tests. Cancelled and rejected samples do not. The assay is recorded from this update on."
-msgstr "Les échecs retestés comptent comme des tests. Les échantillons annulés et rejetés ne comptent pas. Le test (essai) est enregistré à partir de cette mise à jour."
+msgid "Tests Run counts every run, failed runs that were re-tested included. Samples counts each sample once, under its latest run in the range. Cancelled and rejected samples are not counted."
+msgstr "Tests réalisés compte chaque passage, y compris les échecs retestés. Échantillons compte chaque échantillon une seule fois, sous son dernier passage de la période. Les échantillons annulés et rejetés ne sont pas comptés."
+
+msgid "Valid First Time"
+msgstr "Valides du premier coup"
+
+msgid "Valid After Re-test"
+msgstr "Valides après retest"
+
+msgid "Still Failed"
+msgstr "Toujours en échec"
+
+msgid "Runs"
+msgstr "Passages"
+
+msgid "Showing the most recent 5,000 samples."
+msgstr "Affichage des 5 000 échantillons les plus récents."
+
+msgid "Unable to load the samples"
+msgstr "Impossible de charger les échantillons"
+
 msgid "Users & Roles"
 msgstr "Utilisateurs et rôles"
 

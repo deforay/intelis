@@ -60,7 +60,8 @@ try {
             _translate('Testing Lab'), _translate('Instrument Type'), _translate('Instrument'),
             _translate('Assay'), _translate('Tests Run'), _translate('Valid Results'),
             _translate('Failed or Invalid'), _translate('Failure Rate (%)'),
-            _translate('Failed Runs Re-tested'),
+            _translate('Failed Runs Re-tested'), _translate('Samples'), _translate('Valid First Time'),
+            _translate('Valid After Re-test'), _translate('Still Failed'),
         ];
         $writer->addRow(Row::fromValues($headings));
         $notRecorded = _translate('Not recorded');
@@ -87,6 +88,7 @@ try {
             $writer->addRow(Row::fromValues([
                 $r['lab'], $r['instrumentType'], $instrument, $assay,
                 $r['tested'], $r['valid'], $r['failed'], $r['failureRate'], $r['retested'],
+                $r['samples'], $r['validFirstTime'], $r['validAfterRetest'], $r['stillFailed'],
             ]));
         }
         $rawRows = $kept;
@@ -99,6 +101,11 @@ try {
                 _translate('Total'), '', '', '', $tested, $tested - $failed, $failed,
                 $tested > 0 ? round($failed * 100 / $tested, 2) : null,
                 (int) array_sum(array_column($rawRows, 'retested')),
+                // Each sample sits on one row only, so these add up across rows.
+                (int) array_sum(array_column($rawRows, 'samples')),
+                (int) array_sum(array_column($rawRows, 'validFirstTime')),
+                (int) array_sum(array_column($rawRows, 'validAfterRetest')),
+                (int) array_sum(array_column($rawRows, 'stillFailed')),
             ]));
         }
     } else {
