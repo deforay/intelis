@@ -217,6 +217,11 @@ rates between instruments and assays.
         that added this tab. Earlier results, results entered by hand and other
         result file formats show **Not recorded**.
 
+        Where InteLIS reads the Interface Tool database directly, earlier
+        Interface Tool results are filled in once, in the background, after the
+        update that reads the analyzer's message. They then reach the central
+        server with the next results sync.
+
         For Abbott m2000, Alinity m and GeneXpert results from the Interface
         Tool, the reagent lot number is recorded with the result too, with its
         expiry date when the analyzer sends one.

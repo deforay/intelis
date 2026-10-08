@@ -240,6 +240,12 @@ taux d'échec entre instruments et entre tests.
         résultats saisis à la main et les autres formats de fichier indiquent
         **Non enregistré**.
 
+        Là où InteLIS lit directement la base de données de l'Interface Tool,
+        les résultats antérieurs de l'Interface Tool sont complétés une fois, en
+        arrière-plan, après la mise à jour qui lit le message de l'analyseur. Ils
+        parviennent ensuite au serveur central avec la synchronisation suivante
+        des résultats.
+
         Pour les résultats Abbott m2000, Alinity m et GeneXpert reçus de
         l'Interface Tool, le numéro de lot du réactif est aussi enregistré avec
         le résultat, avec sa date d'expiration quand l'analyseur l'envoie.

@@ -33,6 +33,13 @@ final class ResultsService
     protected $fieldsToRemoveForAcceptedResults = [];
     protected $unwantedColumns = [];
 
+    /**
+     * What an analyzer reported about the run rather than the result: filled in on a
+     * lab after the result was saved, from the analyzer's stored message, without
+     * touching the lab's last_modified_datetime.
+     */
+    public const RUN_DETAIL_COLUMNS = ['assay_name', 'lot_number', 'lot_expiration_date'];
+
     public function __construct(DatabaseService $db, protected CommonService $commonService, protected UsersService $usersService, protected TestRequestsService $testRequestsService, protected RejectionReasonMappingService $rejectionReasonMappingService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
@@ -298,7 +305,16 @@ final class ResultsService
                             $id = true; // treating as updated as the incoming data is same as local
                         } else {
 
-                            if ($isSilent) {
+                            // The assay and reagent lot of a result the lab filled in later,
+                            // from the analyzer's stored message, are no new result: the row
+                            // keeps its timestamp, as on the lab, so it does not come back to
+                            // the top of the grids or out again to anyone polling for changes.
+                            $runDetailsOnly = MiscUtility::isArrayEqual(
+                                $resultFromLab,
+                                $localRecord,
+                                ['last_modified_datetime', 'form_attributes', ...self::RUN_DETAIL_COLUMNS]
+                            );
+                            if ($isSilent || $runDetailsOnly) {
                                 unset($resultFromLab['last_modified_datetime']);
                             }
                             $this->db->where($this->primaryKeyName, $localRecord[$this->primaryKeyName]);
