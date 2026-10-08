@@ -8,7 +8,7 @@ reviewed_against: 5.7.74
 ---
 # Configurer un instrument
 
-Enregistrer un automate sous **ADMIN → Configuration du système →
+Enregistrer un automate sous **ADMIN → Paramètres →
 Instruments**, pour qu'InteLIS puisse lire ses résultats. Un instrument non
 enregistré ne peut pas être choisi pour un batch, et ses fichiers de résultats
 ne peuvent pas être importés.
@@ -31,7 +31,7 @@ Deux tâches voisines ont leur propre guide :
 
 ## Ajouter un instrument
 
-1. Aller à **ADMIN → Configuration du système → Instruments**.
+1. Aller à **ADMIN → Paramètres → Instruments**.
 2. Sélectionner **Ajouter un instrument**.
 3. Saisir **Nom de l'instrument**, le fabricant ou la plateforme, par exemple
    Roche ou Abbott.
@@ -108,7 +108,7 @@ Deux tâches voisines ont leur propre guide :
 
 ## Retirer un instrument
 
-1. Aller à **ADMIN → Configuration du système → Instruments**.
+1. Aller à **ADMIN → Paramètres → Instruments**.
 2. Sélectionner **Modifier** sur l'instrument.
 3. Régler **Statut** sur **Inactif**.
 4. Sélectionner **Envoyer**.

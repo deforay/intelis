@@ -8,7 +8,7 @@ reviewed_against: 5.7.74
 ---
 # How to set up an instrument
 
-Register an analyzer under **ADMIN → System Configuration → Instruments**, so
+Register an analyzer under **ADMIN → Settings → Instruments**, so
 InteLIS can read its results. An instrument that is not registered cannot be
 chosen for a batch, and its result files cannot be imported.
 
@@ -28,7 +28,7 @@ Two related tasks have their own guides:
 
 ## Add an instrument
 
-1. Go to **ADMIN → System Configuration → Instruments**.
+1. Go to **ADMIN → Settings → Instruments**.
 2. Select **Add Instrument**.
 3. Enter **Instrument Name**, the manufacturer or platform, such as Roche or
    Abbott.
@@ -95,7 +95,7 @@ Two related tasks have their own guides:
 
 ## Retire an instrument
 
-1. Go to **ADMIN → System Configuration → Instruments**.
+1. Go to **ADMIN → Settings → Instruments**.
 2. Select **Edit** on the instrument.
 3. Set **Status** to **Inactive**.
 4. Select **Submit**.

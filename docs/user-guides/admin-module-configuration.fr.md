@@ -22,22 +22,25 @@ inactive, ou a été ajoutée sous un autre module.
 
 ## Où se trouve chaque liste
 
-Chaque module actif sur l'installation a sa propre section de configuration sous
-**ADMIN**.
+Chaque test actif sur l'installation a son propre onglet sur
+**ADMIN → Paramètres des tests**. Chaque onglet liste les pages de ce test.
 
-| Section de configuration | Listes |
+| Onglet de Paramètres des tests | Listes |
 | --- | --- |
-| Configuration CV | Régime ART, Motifs de rejet, Type d'échantillon, Résultats, Motifs de test, Raisons de l'échec des tests, Mesures correctives recommandées |
-| Configuration EID | Motifs de rejet, Type d'échantillon, Motifs de test, Résultats |
-| Configuration Covid-19 | Co-morbidités, Motifs de rejet, Type d'échantillon, Symptomes, Motifs de test, Résultats, Kits de test QC, Mesures correctives recommandées |
-| Configuration Hépatite | Co-morbidités, Facteurs de risque, Motifs de rejet, Type d'échantillon, Résultats, Motifs de test |
-| Tuberculose-Configuration | Motifs de rejet, Type d'échantillon, Motifs de test, Résultats |
-| Configuration CD4 | Type d'échantillon, Motifs de test, Motifs de rejet |
-| Autres tests de laboratoire Config | Types d'échantillons, Raisons des tests, Raisons de l'échec des tests, Symptomes, Motifs de rejet des échantillons, Unités de résultat du test, Méthodes de test, Catégories de tests, Configuration du type de test |
-| Configuration du système | Divisions géographiques, Partenaires, Sources de financement, Stockage en laboratoire. Elles servent tous les modules |
+| Charge virale du VIH | Types d'échantillons, Motifs de test, Résultats, Motifs de rejet, Raisons de l'échec des tests, Mesures correctives recommandées, Régime ART |
+| EID | Types d'échantillons, Motifs de test, Résultats, Motifs de rejet, Mesures correctives recommandées |
+| COVID-19 | Types d'échantillons, Motifs de test, Résultats, Motifs de rejet, Mesures correctives recommandées, Comorbidités, Symptômes, Kits de test QC |
+| Hépatite | Types d'échantillons, Motifs de test, Résultats, Motifs de rejet, Comorbidités, Facteurs de risque |
+| Tuberculose | Types d'échantillons, Motifs de test, Résultats, Motifs de rejet, Mesures correctives recommandées |
+| CD4 | Types d'échantillons, Motifs de test, Motifs de rejet |
+| Tests personnalisés | Configuration du type de test, Types d'échantillons, Motifs de test, Motifs de rejet, Raisons de l'échec des tests, Symptômes, Unités de résultat du test, Méthodes de test, Catégories de tests |
 
-Un type d'échantillon ajouté sous Configuration CV n'atteint pas le formulaire
-EID. L'ajouter sous chaque module qui en a besoin.
+Les listes qui servent tous les modules se trouvent sous **ADMIN → Listes de
+référence** : Divisions géographiques, Partenaires et Sources de financement.
+Le Stockage en laboratoire se trouve sous **ADMIN → Paramètres**.
+
+Un type d'échantillon ajouté sur l'onglet Charge virale du VIH n'atteint pas le
+formulaire EID. L'ajouter sur l'onglet de chaque test qui en a besoin.
 
 ## Ajouter une entrée
 
@@ -45,8 +48,11 @@ EID. L'ajouter sous chaque module qui en a besoin.
 
 === "STS ou autonome"
 
-    1. Aller à **ADMIN**, puis à la section de configuration du module, puis à
-       la liste. Par exemple, **ADMIN → Configuration CV → Type d'échantillon**.
+    1. Aller à **ADMIN → Paramètres des tests**, sélectionner l'onglet du test,
+       puis la liste. Par exemple, **ADMIN → Paramètres des tests**, l'onglet
+       **Charge virale du VIH**, puis **Types d'échantillons**. Pour une liste
+       partagée, aller à **ADMIN → Listes de référence** et sélectionner la
+       liste.
     2. Sélectionner le bouton d'ajout en haut à droite de la liste. Il porte le
        nom de la liste, par exemple **Ajouter un type d'échantillon VL**.
 
@@ -54,14 +60,14 @@ EID. L'ajouter sous chaque module qui en a besoin.
 
             | Liste | Bouton |
             | --- | --- |
-            | Listes de Configuration CV | **Ajouter un type d'échantillon VL**, **Ajouter les raisons du rejet de l'échantillon VL**, **Ajouter les raisons du test VL**, **Ajouter les résultats VL**, **Ajouter un régime ART VL**, **Ajouter le motif du test VL** (sur Raisons de l'échec des tests), **Ajouter les actions correctives recommandées** |
-            | Listes de Configuration EID | **Ajouter un type d'échantillon EID**, **Ajouter les motifs de rejet de l'échantillon de l'EID**, **Ajouter les raisons du test EID**, **Ajouter des résultats EID** |
-            | Listes de Configuration Covid-19 | **Ajouter un type d'échantillon Covid-19**, **Ajouter les raisons du rejet de l'échantillon Covid-19**, **Ajouter des raisons de test Covid-19**, **Ajouter les résultats de Covid-19**, **Ajouter les symptômes de Covid-19**, **Ajouter les comorbidités Covid-19**, **Ajouter un nouveau kit de test Covid-19 QC** |
-            | Listes de Configuration Hépatite | **Ajouter un type d'échantillon d'hépatite**, **Ajouter les raisons du rejet de l'échantillon d'hépatite**, **Ajouter les raisons du test de l'hépatite**, **Ajouter les résultats concernant l'hépatite**, **Ajouter les comorbidités de l'hépatite**, **Ajouter les facteurs de risque de l'hépatite** |
-            | Listes de Tuberculose-Configuration | **Ajouter un type d'échantillon de tuberculose**, **Ajouter les raisons du rejet de l'échantillon de tuberculose**, **Ajouter les motifs du test de dépistage de la tuberculose**, **Ajouter les résultats de la tuberculose** |
-            | Listes de Configuration CD4 | **Ajouter un type d'échantillon CD4**, **Ajouter les raisons du rejet de l'échantillon de CD4**, **Ajouter les raisons du test CD4** |
-            | Listes de Autres tests de laboratoire Config | **Ajouter un type d'échantillon**, **Ajouter un motif de test**, **Ajouter la raison de l'échec du test**, **Ajouter des symptômes**, **Ajouter les raisons du rejet de l'échantillon**, **Ajouter des unités de résultat du test**, **Ajouter des méthodes de test**, **Ajouter des catégories de test**, **Ajouter un type de test** |
-            | Listes de Configuration du système | **Ajouter de nouvelles divisions géographiques**, **Ajouter des partenaires de mise en œuvre**, **Ajouter des sources de financement** |
+            | Onglet Charge virale du VIH | **Ajouter un type d'échantillon VL**, **Ajouter les raisons du rejet de l'échantillon VL**, **Ajouter les raisons du test VL**, **Ajouter les résultats VL**, **Ajouter un régime ART VL**, **Ajouter le motif du test VL** (sur Raisons de l'échec des tests), **Ajouter les actions correctives recommandées** |
+            | Onglet EID | **Ajouter un type d'échantillon EID**, **Ajouter les motifs de rejet de l'échantillon de l'EID**, **Ajouter les raisons du test EID**, **Ajouter des résultats EID** |
+            | Onglet COVID-19 | **Ajouter un type d'échantillon Covid-19**, **Ajouter les raisons du rejet de l'échantillon Covid-19**, **Ajouter des raisons de test Covid-19**, **Ajouter les résultats de Covid-19**, **Ajouter les symptômes de Covid-19**, **Ajouter les comorbidités Covid-19**, **Ajouter un nouveau kit de test Covid-19 QC** |
+            | Onglet Hépatite | **Ajouter un type d'échantillon d'hépatite**, **Ajouter les raisons du rejet de l'échantillon d'hépatite**, **Ajouter les raisons du test de l'hépatite**, **Ajouter les résultats concernant l'hépatite**, **Ajouter les comorbidités de l'hépatite**, **Ajouter les facteurs de risque de l'hépatite** |
+            | Onglet Tuberculose | **Ajouter un type d'échantillon de tuberculose**, **Ajouter les raisons du rejet de l'échantillon de tuberculose**, **Ajouter les motifs du test de dépistage de la tuberculose**, **Ajouter les résultats de la tuberculose** |
+            | Onglet CD4 | **Ajouter un type d'échantillon CD4**, **Ajouter les raisons du rejet de l'échantillon de CD4**, **Ajouter les raisons du test CD4** |
+            | Onglet Tests personnalisés | **Ajouter un type d'échantillon**, **Ajouter un motif de test**, **Ajouter la raison de l'échec du test**, **Ajouter des symptômes**, **Ajouter les raisons du rejet de l'échantillon**, **Ajouter des unités de résultat du test**, **Ajouter des méthodes de test**, **Ajouter des catégories de test**, **Ajouter un type de test** |
+            | Listes de référence | **Ajouter de nouvelles divisions géographiques**, **Ajouter des partenaires de mise en œuvre**, **Ajouter des sources de financement** |
 
     3. Saisir le nom de l'entrée, et son code lorsque le formulaire le demande.
     4. Régler le statut sur **Actif**.
@@ -79,8 +85,8 @@ EID. L'ajouter sous chaque module qui en a besoin.
     ??? info "Sur une installation autonome"
 
         Sur une installation autonome, les Divisions géographiques et les
-        listes de Autres tests de laboratoire Config (sauf Configuration du type
-        de test) n'ont pas de bouton d'ajout. Elles se tiennent uniquement sur
+        listes de l'onglet Tests personnalisés (sauf Configuration du type de
+        test) n'ont pas de bouton d'ajout. Elles se tiennent uniquement sur
         le STS.
 
 === "LIS"
@@ -97,7 +103,7 @@ EID. L'ajouter sous chaque module qui en a besoin.
 
         Le Stockage en laboratoire est tenu par le laboratoire : sur le LIS, ou
         sur le STS par un utilisateur de laboratoire d'analyse.
-        **ADMIN → Configuration du système → Stockage en laboratoire** relève du
+        **ADMIN → Paramètres → Stockage en laboratoire** relève du
         laboratoire. Y sélectionner **Ajout d'un congélateur/stockage de
         laboratoire** pour ajouter un congélateur.
 
@@ -116,7 +122,7 @@ quitte le formulaire et reste lisible sur les fiches qui l'utilisent déjà.
     Sélectionner **Modifier** sur la ligne, régler le statut sur **Inactif**,
     puis sélectionner **Envoyer**. Sur un LIS, le statut ne peut pas être
     modifié. Retirer l'entrée sur le STS. Sur une installation autonome,
-    retirer les entrées de Autres tests de laboratoire Config sur le STS.
+    retirer les entrées de l'onglet Tests personnalisés sur le STS.
 
 ??? warning "Renommer ou supprimer une province ou un district"
 
@@ -131,17 +137,16 @@ quitte le formulaire et reste lisible sur les fiches qui l'utilisent déjà.
 ## Configurer un test personnalisé
 
 Un test personnalisé (Custom Test) est un type de test qui n'est pas l'un des
-modules intégrés. Il se définit sous **ADMIN → Autres tests de laboratoire Config
-→ Configuration du type de test**.
+modules intégrés. Il se définit sous **ADMIN → Paramètres des tests**, sur
+l'onglet **Tests personnalisés**, sous **Configuration du type de test**.
 
 1. Ajouter au moins une entrée sous **Méthodes de test**. Chaque groupe de
    résultats en demande une. Ajouter les unités sous **Unités de résultat du
    test** si les résultats en portent.
-2. Ajouter les types d'échantillons, raisons des tests et motifs de rejet dont
-   il a besoin, sous les listes correspondantes de Autres tests de laboratoire
-   Config.
-3. Aller à **ADMIN → Autres tests de laboratoire Config → Configuration du type
-   de test**.
+2. Ajouter les types d'échantillons, motifs de test et motifs de rejet dont il
+   a besoin, sous les listes correspondantes de l'onglet Tests personnalisés.
+3. Aller à **ADMIN → Paramètres des tests**, sélectionner l'onglet **Tests
+   personnalisés**, puis **Configuration du type de test**.
 4. Sélectionner **Ajouter un type de test** et définir le test, ou
    **Importer un type de test** pour charger un test exporté d'une autre
    installation.
@@ -153,4 +158,4 @@ modules intégrés. Il se définit sous **ADMIN → Autres tests de laboratoire 
 | Nouvelle entrée | Elle apparaît dans sa liste déroulante sur le formulaire de demande |
 | Entrée retirée | Elle quitte le formulaire et reste lisible sur une fiche existante |
 | Nouveau district | Il apparaît sous sa province sur le formulaire de demande |
-| Nouveau test personnalisé | Il apparaît sur le formulaire de demande des autres tests de laboratoire |
+| Nouveau test personnalisé | Il apparaît sur le formulaire de demande des tests personnalisés |

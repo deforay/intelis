@@ -18,7 +18,8 @@ Every report page uses the same controls. Set the filters, select **Search**, an
 use the export control where one is offered. See
 [How to sign in and navigate InteLIS](signing-in.md) for those controls.
 
-The reports under **ADMIN → Monitoring** are described in
+**Lab Performance Indicators**, **Instrument Activity** and **Sample Referral
+Network** sit under **REPORTS** in the sidebar. They are described in
 [How to monitor and audit InteLIS](admin-monitoring.md).
 
 ## Dashboard
@@ -142,7 +143,7 @@ Facilities**.
 | **Monthly Target** | Samples the lab is expected to test each month |
 | **Suppressed Monthly Target** | Suppressed results expected each month. Viral load only |
 
-**ADMIN → System Configuration → General Configuration** holds only the **VL
+**ADMIN → Settings → General Configuration** holds only the **VL
 Monthly Target** switch. It shows or hides the target charts on the dashboard.
 
 ## Freezer/Storage Reports

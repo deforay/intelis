@@ -130,7 +130,7 @@ internet.
     14. Log in with an administrator account from the old machine. Do not create
         a new one. The restored database already holds the users, the lab
         settings and all the data.
-    15. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    15. Check the lab settings under **Admin → Settings → General Configuration**.
     16. If the lab uses the interfacing tool, restore its database too.
 
         1. In a terminal, type `sudo cp` followed by a space. Do not press Enter
@@ -253,7 +253,7 @@ internet.
     10. Log in with an administrator account from the old machine. Do not create
         a new one. The restored database already holds the users, the lab
         settings and all the data.
-    11. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    11. Check the lab settings under **Admin → Settings → General Configuration**.
     12. If the lab uses the interfacing tool, restore its database too.
 
         1. In a terminal, type `sudo cp` followed by a space. Do not press Enter
@@ -342,7 +342,7 @@ internet.
     11. Log in with an administrator account from the old machine. Do not create
         a new one. The restored database already holds the users, the lab
         settings and all the data.
-    12. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    12. Check the lab settings under **Admin → Settings → General Configuration**.
     13. If the lab uses the interfacing tool, restore its database too.
 
         1. Copy the newest interfacing backup out of the fetched folder:

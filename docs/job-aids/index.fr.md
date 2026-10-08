@@ -47,7 +47,7 @@ avant de les appliquer.
 | 2. Ajouter un utilisateur et définir ses accès | Créer les identifiants, construire les rôles, la règle d'un identifiant par personne | Tout administrateur |
 | 3. Ajouter une structure, connecter un automate | Les champs d'une structure, la règle du Test Type, les instruments, les codes de connexion | Tout administrateur |
 | 4. Maintenir les listes du formulaire de demande | Quelle liste sous quel module, et pourquoi les entrées sont retirées et jamais supprimées | Tout administrateur |
-| 5. Quelque chose manque ou ne va pas | Les plaintes habituelles et leurs causes, et quelle page de Surveillance répond à quoi | Tout administrateur |
+| 5. Quelque chose manque ou ne va pas | Les plaintes habituelles et leurs causes, et quelle page de Surveillance ou de Rapports répond à quoi | Tout administrateur |
 
 ## Pour la machine
 

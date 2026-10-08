@@ -99,7 +99,7 @@ Pour tous les statuts, voir [Statuts des échantillons](sample-statuses.md).
         Afficher les demandes de test**. Rechercher l'échantillon et
         sélectionner **Code barre** sur sa ligne. Le bouton n'apparaît que si
         **Impression d'étiquettes code-barres des échantillons** sous **ADMIN →
-        Configuration du système → Configuration générale** n'est pas réglé sur
+        Paramètres → Configuration générale** n'est pas réglé sur
         **Désactivé**. Avec une imprimante Zebra, si aucune imprimante n'est proposée, sélectionner
         **Modifier/Réessayer** pour en choisir une.
 

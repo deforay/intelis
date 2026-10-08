@@ -181,12 +181,16 @@
   <h3>Le menu ADMIN</h3>
   <table class="wrapfirst">
     <tr><th>Section</th><th>Contient</th></tr>
-    <tr><td>Contrôle d'accès</td><td>Les rôles et les utilisateurs</td></tr>
+    <tr><td>Utilisateurs et rôles</td><td>Les utilisateurs et les rôles</td></tr>
     <tr><td>Structures sanitaires</td><td>Les structures et les laboratoires de test, ainsi que les connexions de l'outil d'interface</td></tr>
-    <tr><td>Configuration du système</td><td>Configuration générale, Instruments, Divisions géographiques, Partenaires, Sources de financement, Stockage en laboratoire</td></tr>
-    <tr><td>Les sections de configuration des modules</td><td>Les listes déroulantes du formulaire de demande de chaque module. Une section par module actif</td></tr>
-    <tr><td>Surveillance</td><td>Journal d'activité, piste d'audit, historique de l'API, activité des automates, performance du laboratoire</td></tr>
+    <tr><td>Paramètres</td><td>Configuration générale, Instruments, Stockage en laboratoire</td></tr>
+    <tr><td>Listes de référence</td><td>Divisions géographiques, Partenaires, Sources de financement</td></tr>
+    <tr><td>Paramètres des tests</td><td>Les listes déroulantes du formulaire de demande de chaque module. Un onglet par test actif</td></tr>
+    <tr><td>Surveillance</td><td>Journal d'activité, piste d'audit, utilisation des pages, historique de l'API, état de la synchronisation, fichiers journaux</td></tr>
   </table>
+  <p>Activité des instruments, Indicateurs de performance du laboratoire et Réseau de
+  référencement des échantillons se trouvent sous <span class="path">RAPPORTS</span>, une
+  section distincte de la barre latérale.</p>
 
   <h3>Deux niveaux d'administrateur</h3>
   <table class="wrapfirst">
@@ -225,7 +229,7 @@
   </header>
 
   <h3>Ajouter l'utilisateur</h3>
-  <p><span class="path">ADMIN &rsaquo; Contrôle d'accès &rsaquo; Utilisateurs &rsaquo; Ajouter un utilisateur</span></p>
+  <p><span class="path">ADMIN &rsaquo; Utilisateurs et rôles &rsaquo; Utilisateurs &rsaquo; Ajouter un utilisateur</span></p>
 
   <ol class="steps">
     <li>Saisir le <span class="ui">Nom complet</span> tel qu'il doit figurer sur les rapports et dans le journal d'activité.</li>
@@ -246,7 +250,7 @@
   </div>
 
   <h3>Ajouter ou modifier un rôle</h3>
-  <p><span class="path">ADMIN &rsaquo; Contrôle d'accès &rsaquo; Les rôles</span></p>
+  <p><span class="path">ADMIN &rsaquo; Utilisateurs et rôles &rsaquo; Les rôles</span></p>
 
   <table class="wrapfirst">
     <tr><th>Champ</th><th>Ce qu'il faut renseigner</th></tr>
@@ -303,7 +307,7 @@
   utiliser <span class="ui">Chargement groupé</span>.</p>
 
   <h3>Ajouter un automate</h3>
-  <p><span class="path">ADMIN &rsaquo; Configuration du système &rsaquo; Instruments &rsaquo; Ajouter un instrument</span></p>
+  <p><span class="path">ADMIN &rsaquo; Paramètres &rsaquo; Instruments &rsaquo; Ajouter un instrument</span></p>
   <p>Saisir le nom, les types de test exécutés, et le fichier de configuration qui indique à
   InteLIS comment lire ses fichiers de résultats. Sans ce fichier, les résultats exportés de
   l'automate ne peuvent pas être importés.</p>
@@ -332,33 +336,34 @@
     <p>Chaque module tient ses propres listes. Elles ne sont pas partagées.</p>
   </header>
 
-  <h3>Une section de configuration par module</h3>
+  <h3>Un onglet de Paramètres des tests par test</h3>
+  <p><span class="path">ADMIN &rsaquo; Paramètres des tests</span>, puis l'onglet du test, puis la liste.</p>
   <table class="wrapfirst">
-    <tr><th>Section de configuration</th><th>Listes qu'elle contient</th></tr>
-    <tr><td>Configuration CV</td><td>Type d'échantillon, Motifs de rejet, Motifs de test, Résultats, Régime ART, Raisons de l'échec des tests, Mesures correctives recommandées</td></tr>
-    <tr><td>Configuration EID</td><td>Type d'échantillon, Motifs de rejet, Motifs de test, Résultats</td></tr>
-    <tr><td>Tuberculose-Configuration</td><td>Type d'échantillon, Motifs de rejet, Motifs de test, Résultats</td></tr>
-    <tr><td>Configuration CD4</td><td>Type d'échantillon, Motifs de rejet, Motifs de test</td></tr>
-    <tr><td>Configuration Covid-19</td><td>Type d'échantillon, Motifs de rejet, Motifs de test, Résultats, Symptomes, Co-morbidités, Mesures correctives recommandées, Kits de test QC</td></tr>
-    <tr><td>Configuration Hépatite</td><td>Type d'échantillon, Motifs de rejet, Motifs de test, Résultats, Co-morbidités, Facteurs de risque</td></tr>
-    <tr><td>Autres tests de laboratoire Config</td><td>Types d'échantillons, Raisons des tests, Motifs de rejet des échantillons, Raisons de l'échec des tests, Symptomes, Unités de résultat du test, Méthodes de test, Catégories de tests, Configuration du type de test</td></tr>
+    <tr><th>Onglet</th><th>Listes qu'il contient</th></tr>
+    <tr><td>Charge virale du VIH</td><td>Types d'échantillons, Motifs de test, Résultats, Motifs de rejet, Raisons de l'échec des tests, Mesures correctives recommandées, Régime ART</td></tr>
+    <tr><td>EID</td><td>Types d'échantillons, Motifs de test, Résultats, Motifs de rejet, Mesures correctives recommandées</td></tr>
+    <tr><td>COVID-19</td><td>Types d'échantillons, Motifs de test, Résultats, Motifs de rejet, Mesures correctives recommandées, Comorbidités, Symptômes, Kits de test QC</td></tr>
+    <tr><td>Hépatite</td><td>Types d'échantillons, Motifs de test, Résultats, Motifs de rejet, Comorbidités, Facteurs de risque</td></tr>
+    <tr><td>Tuberculose</td><td>Types d'échantillons, Motifs de test, Résultats, Motifs de rejet, Mesures correctives recommandées</td></tr>
+    <tr><td>CD4</td><td>Types d'échantillons, Motifs de test, Motifs de rejet</td></tr>
+    <tr><td>Tests personnalisés</td><td>Configuration du type de test, Types d'échantillons, Motifs de test, Motifs de rejet, Raisons de l'échec des tests, Symptômes, Unités de résultat du test, Méthodes de test, Catégories de tests</td></tr>
   </table>
-  <p>Seuls les modules actifs sur l'installation apparaissent dans le menu ADMIN.</p>
+  <p>Seuls les tests actifs sur l'installation ont un onglet.</p>
 
   <div class="warn">
     <strong>Ajouter dans un module ne l'ajoute pas aux autres</strong>
-    Un type d'échantillon ajouté sous la section de configuration d'un module n'apparaît pas
-    sur le formulaire de demande d'un autre module. L'ajouter sous chaque module concerné.
+    Un type d'échantillon ajouté sur l'onglet d'un test n'apparaît pas sur le formulaire de
+    demande d'un autre module. L'ajouter sur l'onglet de chaque test concerné.
   </div>
 
   <h3>Ce que contrôle chaque liste</h3>
   <table class="wrapfirst">
-    <tr><td>Type d'échantillon</td><td>Les types de prélèvement du formulaire</td></tr>
+    <tr><td>Types d'échantillons</td><td>Les types de prélèvement du formulaire</td></tr>
     <tr><td>Motifs de rejet</td><td>Les motifs proposés lors du rejet d'un échantillon</td></tr>
     <tr><td>Motifs de test</td><td>Les indications de test</td></tr>
     <tr><td>Résultats</td><td>Les valeurs de résultat pour le rendu qualitatif</td></tr>
     <tr><td>Raisons de l'échec des tests</td><td>Les motifs proposés en cas d'échec</td></tr>
-    <tr><td>Symptomes, Co-morbidités, Facteurs de risque</td><td>Les listes cliniques à cocher sur le formulaire</td></tr>
+    <tr><td>Symptômes, Comorbidités, Facteurs de risque</td><td>Les listes cliniques à cocher sur le formulaire</td></tr>
     <tr><td>Régime ART</td><td>Les choix de régime sur le formulaire de charge virale</td></tr>
     <tr><td>Mesures correctives recommandées</td><td>Les actions suggérées sur les résultats de charge virale élevée</td></tr>
   </table>
@@ -370,9 +375,10 @@
     vérifier qu'elle figure dans sa liste déroulante.
   </div>
 
-  <p>Divisions géographiques, Partenaires, Sources de financement et Stockage en laboratoire ne
-  sont pas des listes de module. Ils se trouvent sous <span class="path">ADMIN &rsaquo;
-  Configuration du système</span> et servent tous les modules.</p>
+  <p>Divisions géographiques, Partenaires et Sources de financement ne sont pas des listes de
+  module. Elles se trouvent sous <span class="path">ADMIN &rsaquo; Listes de référence</span> et
+  servent tous les modules. Le Stockage en laboratoire se trouve sous
+  <span class="path">ADMIN &rsaquo; Paramètres</span>.</p>
 
   <footer class="cardfoot"><span>InteLIS — aide-mémoire administration</span><span>Fiche 4 : les listes du formulaire</span></footer>
 </section>
@@ -390,10 +396,10 @@
     <tr><th>Plainte</th><th>Cause</th></tr>
     <tr><td>Une structure manque sur le formulaire de demande</td><td>La structure n'est pas cochée pour ce type de test. L'ouvrir sous Structures sanitaires et renseigner Type de test</td></tr>
     <tr><td>Un district manque sur le formulaire de demande</td><td>Il a été ajouté sans province parente. Ouvrir Divisions géographiques et renseigner le parent</td></tr>
-    <tr><td>Une option manque dans une liste déroulante</td><td>Elle est inactive, ou elle a été ajoutée dans la section de configuration d'un autre module</td></tr>
-    <tr><td>Un utilisateur voit le mauvais menu</td><td>Les permissions du rôle, pas de l'utilisateur. Vérifier sous Contrôle d'accès &rsaquo; Les rôles</td></tr>
+    <tr><td>Une option manque dans une liste déroulante</td><td>Elle est inactive, ou elle a été ajoutée sur l'onglet d'un autre test sous Paramètres des tests</td></tr>
+    <tr><td>Un utilisateur voit le mauvais menu</td><td>Les permissions du rôle, pas de l'utilisateur. Vérifier sous Utilisateurs et rôles &rsaquo; Les rôles</td></tr>
     <tr><td>Un utilisateur voit les échantillons d'un autre laboratoire</td><td>Sur un STS : le rôle n'est pas un rôle Laboratoire d'analyse, ou l'utilisateur est rattaché à d'autres structures. Vérifier le Type d'Accès du rôle et ses structures</td></tr>
-    <tr><td>Les résultats n'arrivent plus de l'automate</td><td>Vérifier Dernière connexion sous Installations connectées, puis Surveillance &rsaquo; Activité des instruments</td></tr>
+    <tr><td>Les résultats n'arrivent plus de l'automate</td><td>Vérifier Dernière connexion sous Installations connectées, puis Rapports &rsaquo; Activité des instruments</td></tr>
     <tr><td>Un résultat est contesté</td><td>Surveillance &rsaquo; Piste d'audit. Elle indique quel champ a changé, de quoi à quoi, par qui</td></tr>
     <tr><td>Une structure se comporte mal dans les filtres des rapports</td><td>Activer Afficher les installations orphelines sur la page des structures. Sa province ou son district est absent ou mal rattaché</td></tr>
   </table>
@@ -408,9 +414,10 @@
     <tr><td>Indicateurs de performance du laboratoire</td><td>Délai de rendu, volumes par mode de saisie, taux d'échec et de rejet</td></tr>
     <tr><td>Visualisateur de fichiers journaux</td><td>Les messages système, pour les demandes de support</td></tr>
   </table>
-  <p>Les six se trouvent sous <span class="path">ADMIN &rsaquo; Surveillance</span>. État de la
-  synchronisation du laboratoire et Tableau de bord de l'API n'apparaissent que sur le serveur
-  national.</p>
+  <p>Activité des instruments et Indicateurs de performance du laboratoire se trouvent
+  sous <span class="path">RAPPORTS</span>. Les quatre autres se trouvent sous
+  <span class="path">ADMIN &rsaquo; Surveillance</span>. État de la synchronisation du
+  laboratoire et Tableau de bord de l'API n'apparaissent que sur le serveur national.</p>
 
   <h3>Vérifier qu'une modification a fonctionné</h3>
   <table class="wrapfirst">

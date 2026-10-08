@@ -21,7 +21,7 @@ confirmatory work, or for a quality review.
 - Samples registered in InteLIS
 - The freezer, rack, box and position where each tube goes
 - Permission to view test requests
-- The freezer set up under **ADMIN → System Configuration → Lab Storage**. If it
+- The freezer set up under **ADMIN → Settings → Lab Storage**. If it
   is missing, ask the administrator to add it.
 
 ## Record a position

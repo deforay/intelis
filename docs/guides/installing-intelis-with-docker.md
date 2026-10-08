@@ -175,7 +175,7 @@ versions are not supported. The default image uses PHP 8.4.
     ### Check the lab
 
     18. Log in with the login ID and password from step 13.
-    19. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    19. Check the lab settings under **Admin → Settings → General Configuration**.
     20. In a terminal on the server, confirm the off-server backups work:
 
         ```bash

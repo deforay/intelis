@@ -26,3 +26,15 @@ UPDATE `s_app_menu`
  WHERE `link` = '/reports/interface-machine-activity.php';
 
 UPDATE `system_config` SET `value` = '5.7.82' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

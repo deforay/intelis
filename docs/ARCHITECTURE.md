@@ -57,7 +57,7 @@ flowchart LR
 - Environment config is loaded from `configs/config.<env>.php` (defaulting to production).
 - Module toggles, database credentials and interfacing settings live in the config file
   (see `configs/`). Other settings are rows in the `global_config` table, edited under
-  ADMIN > System Configuration > General Configuration.
+  ADMIN > Settings > General Configuration.
 
 ## Dependency Injection and Registries
 

@@ -37,6 +37,10 @@ class AclMiddleware implements MiddlewareInterface
         // endpoint authorizes itself: it only updates rows belonging to the
         // calling session's own user.
         '/common/track-page-usage.php',
+        // A hub page lists other pages and has no privilege of its own. It
+        // authorizes itself: 403 unless the user may open at least one page it
+        // lists, and it shows only those (AppMenuService::getHub).
+        '/admin/test-settings.php',
         '/health-check',
         '/status'
     ];

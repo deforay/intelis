@@ -81,7 +81,7 @@ was made are lost.
     6. Open InteLIS in the browser.
     7. Log in with an administrator account that existed when the backup was
        made.
-    8. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    8. Check the lab settings under **Admin → Settings → General Configuration**.
     9. Open a request entered shortly before the backup, and check its results
        are there.
 
@@ -194,7 +194,7 @@ was made are lost.
     10. Open InteLIS in the browser.
     11. Log in with an administrator account that existed when the backup was
         made.
-    12. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    12. Check the lab settings under **Admin → Settings → General Configuration**.
     13. Open a request entered shortly before the backup, and check its results
         are there.
     14. If the lab uses the interfacing tool, restore its database too. Type
@@ -333,7 +333,7 @@ was made are lost.
     11. Open InteLIS in the browser.
     12. Log in with an administrator account that existed when the backup was
         made.
-    13. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    13. Check the lab settings under **Admin → Settings → General Configuration**.
     14. Open a request entered shortly before the backup, and check its results
         are there.
     15. If the lab uses the interfacing tool, its database stays as it is. To
@@ -503,7 +503,7 @@ was made are lost.
     15. Open InteLIS in the browser.
     16. Log in with an administrator account that existed when the backup was
         made.
-    17. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    17. Check the lab settings under **Admin → Settings → General Configuration**.
     18. Open a request entered shortly before the backup, and check its results
         are there.
     19. Open a result PDF or an attachment, and check it displays.

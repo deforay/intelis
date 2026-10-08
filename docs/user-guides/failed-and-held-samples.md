@@ -90,7 +90,7 @@ For every status, see [Sample statuses](sample-statuses.md).
         Reprint it from **HIV VIRAL LOAD → Request Management → View Test
         Requests**. Search for the sample and select **Barcode** on its row. The
         button appears only when **Sample ID Barcode Label Printing** under
-        **ADMIN → System Configuration → General Configuration** is not set to
+        **ADMIN → Settings → General Configuration** is not set to
         **Off**. With a Zebra printer, if no printer is listed, select **Change/Retry** to pick one.
 
 === "Recover a run marked failed by mistake"

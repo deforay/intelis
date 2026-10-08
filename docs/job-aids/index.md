@@ -45,7 +45,7 @@ Card 1 carries the list of changes that need approval before they are made.
 | 2. Add a user, and set what they can reach | Creating logins, building roles, the one-login-per-person rule | Every administrator |
 | 3. Add a facility, and connect an analyzer | Facility fields, the Test Type rule, instruments, Interface Tool connection codes | Every administrator |
 | 4. Keep the request form lists correct | Which list sits under which module, and why entries are retired and never deleted | Every administrator |
-| 5. Something is missing or wrong | The usual complaints and their causes, and which Monitoring page answers what | Every administrator |
+| 5. Something is missing or wrong | The usual complaints and their causes, and which Monitoring or Reports page answers what | Every administrator |
 
 ## For the machine
 

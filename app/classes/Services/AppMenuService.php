@@ -16,6 +16,12 @@ final class AppMenuService
     protected string $table = 's_app_menu';
 
     /**
+     * has_children value of a menu row the sidebar shows as one link to a page
+     * that lists the rows below it (Admin > Test Settings).
+     */
+    public const string HUB = 'hub';
+
+    /**
      * Pages that only the DRC request forms feed (freezer, rack, box, position,
      * volume). Other countries never record storage, so these stay hidden there.
      */
@@ -43,16 +49,9 @@ final class AppMenuService
 
     public function getMenu($parentId = 0, $menuId = 0): array
     {
-        $activeModules = SystemService::getActiveModules();
-        $activeModulesInfo = implode("','", $activeModules);
-        $this->db->where(
-            "module IN ('$activeModulesInfo') AND (sub_module IN ('$activeModulesInfo') OR sub_module IS NULL)"
-        );
-        $this->db->where('status', 'active');
-        if (!empty($menuId) && $menuId > 0) {
-            $this->db->where('id', $menuId);
-        }
-
+        // Settled before the query is built: on a cache miss the instance type is
+        // read through the same shared DatabaseService, which would otherwise run
+        // that read with this query's WHERE conditions attached.
         if ($this->commonService->isSTSInstance()) {
             $actsAsLab = ($_SESSION['accessType'] ?? '') === 'testing-lab';
             $mode = $actsAsLab
@@ -64,7 +63,15 @@ final class AppMenuService
             $mode = "(IFNULL(show_mode,'') = '' OR show_mode = 'always')";
         }
 
-
+        $activeModules = SystemService::getActiveModules();
+        $activeModulesInfo = implode("','", $activeModules);
+        $this->db->where(
+            "module IN ('$activeModulesInfo') AND (sub_module IN ('$activeModulesInfo') OR sub_module IS NULL)"
+        );
+        $this->db->where('status', 'active');
+        if (!empty($menuId) && $menuId > 0) {
+            $this->db->where('id', $menuId);
+        }
         $this->db->where($mode);
         $this->db->where('parent_id', $parentId);
         $this->db->orderBy("display_order", "asc");
@@ -89,8 +96,11 @@ final class AppMenuService
 
         $response = [];
         foreach ($menuData as $key => $menu) {
+            $isHub = $menu['has_children'] === self::HUB;
             $menu['access'] = true;
-            if ($menu['link'] != "" && !empty($menu['link']) && !str_starts_with((string) $menu['link'], '#')) {
+            // A hub page has no privilege of its own: it opens for anyone who can
+            // open at least one page listed on it (checked below).
+            if (!$isHub && !empty($menu['link']) && !str_starts_with((string) $menu['link'], '#')) {
                 $menu['access'] = _isAllowed($menu['link']);
             }
 
@@ -113,6 +123,20 @@ final class AppMenuService
                 if (empty($menu['children'])) {
                     $menu['access'] = false;
                 }
+            } elseif ($isHub && $menu['access']) {
+                // The sidebar draws a hub as a single link, so its pages go in
+                // 'hub_children' (read by the hub page and Spotlight) rather than
+                // 'children', and into inner_pages so the link stays highlighted
+                // on every one of them.
+                $menu['hub_children'] = $this->getMenu($menu['id']);
+                if (empty($menu['hub_children'])) {
+                    $menu['access'] = false;
+                } else {
+                    $menu['inner_pages'] = implode(',', array_unique(array_filter([
+                        ...explode(',', (string) $menu['inner_pages']),
+                        ...self::collectPages($menu['hub_children']),
+                    ])));
+                }
             }
 
             if ($menu['access']) {
@@ -120,6 +144,43 @@ final class AppMenuService
             }
         }
         return $response;
+    }
+
+    /**
+     * The hub row at $link with its allowed groups in 'hub_children', or null
+     * when the user can open none of the pages listed on it.
+     */
+    public function getHub(string $link): ?array
+    {
+        $this->db->where('link', $link);
+        $this->db->where('has_children', self::HUB);
+        $row = $this->db->getOne($this->table, ['id', 'parent_id']);
+        if (empty($row)) {
+            return null;
+        }
+        $hub = $this->getMenu((int) $row['parent_id'], (int) $row['id']);
+        return $hub === [] ? null : reset($hub);
+    }
+
+    /**
+     * Every link and inner page under $menuItems, at any depth.
+     */
+    private static function collectPages(array $menuItems): array
+    {
+        $pages = [];
+        foreach ($menuItems as $item) {
+            $link = (string) ($item['link'] ?? '');
+            if ($link !== '' && !str_starts_with($link, '#')) {
+                $pages[] = $link;
+            }
+            if (!empty($item['inner_pages'])) {
+                $pages = [...$pages, ...explode(',', (string) $item['inner_pages'])];
+            }
+            if (!empty($item['children'])) {
+                $pages = [...$pages, ...self::collectPages($item['children'])];
+            }
+        }
+        return $pages;
     }
 
     /**

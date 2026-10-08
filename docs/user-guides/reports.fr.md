@@ -20,7 +20,9 @@ sélectionner **Rechercher**, et utiliser la commande d'export lorsqu'elle est
 proposée. Voir [Se connecter et naviguer dans InteLIS](signing-in.md) pour ces
 commandes.
 
-Les rapports situés sous **ADMIN → Surveillance** sont décrits dans
+**Indicateurs de performance du laboratoire**, **Activité des machines
+d'interface** et **Réseau de référencement des échantillons** se trouvent sous
+**RAPPORTS** dans la barre latérale. Ils sont décrits dans
 [Surveiller et auditer InteLIS](admin-monitoring.md).
 
 ## Tableau de bord
@@ -156,7 +158,7 @@ laboratoire sous **ADMIN → Structures sanitaires**.
 | **Objectif mensuel** | Le nombre d'échantillons que le laboratoire doit tester chaque mois |
 | **Cible mensuelle de suppression virale** | Le nombre de résultats supprimés attendu chaque mois. Charge virale uniquement |
 
-**ADMIN → Configuration du système → Configuration générale** ne contient que
+**ADMIN → Paramètres → Configuration générale** ne contient que
 l'interrupteur **VL Objectif mensuel**. Il affiche ou masque les graphiques
 d'objectif sur le tableau de bord.
 
