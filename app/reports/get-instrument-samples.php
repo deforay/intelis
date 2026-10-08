@@ -38,6 +38,7 @@ try {
     $row = [
         'labId' => ctype_digit($rowLabId) ? (int) $rowLabId : null,
         'instrument' => $text('instrument'),
+        'serial' => $text('serial'),
         'assay' => $text('assay'),
     ];
 

@@ -27,7 +27,11 @@ try {
     // Filter validation and lab scoping both live in the service.
     $filters = $indicators->resolveFilters($_POST);
 
-    echo JsonUtility::encodeUtf8Json(['rows' => $indicators->getByInstrument($filters)]);
+    $rows = $indicators->getByInstrument($filters);
+    echo JsonUtility::encodeUtf8Json([
+        'rows' => $rows,
+        'failures' => $indicators->getFailureMessages($filters, $rows),
+    ]);
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getMessage(), [
         'trace' => $e->getTraceAsString(),

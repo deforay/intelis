@@ -190,15 +190,20 @@ rates between instruments and assays.
    instance has testing labs.
 4. Select **Search**.
 5. Read **By Instrument Type** for the totals of each make, and **By Lab,
-   Instrument and Assay** for each instrument.
+   Instrument and Assay** for each instrument. When the analyzer reports its
+   serial number, it follows the instrument's name, so two machines with the
+   same name show as two rows.
 6. To narrow **By Lab, Instrument and Assay**, pick a value in the dropdown
    above a column. Select a column heading to sort by it. **Total** adds up the
    rows left showing.
 7. To see the samples behind a count, select the number under **Samples**,
    **Valid First Time**, **Valid After Re-test** or **Still Failed**. The list
-   opens below the table, with the batch code, test date, result and number of
-   runs of each sample.
-8. To keep the figures, select **Export to Excel**. The file downloads when it
+   opens below the table, with the batch code, test date, result, number of
+   runs, analyzer run ID and analyzer message of each sample.
+8. Read **Failure Messages by Instrument** for what the analyzer said about each
+   failed run, most frequent first. A failure the analyzer gave no message for
+   shows **Not recorded**.
+9. To keep the figures, select **Export to Excel**. The file downloads when it
    is ready. Progress shows in the Exports menu.
 
     ??? info "What each column counts"
@@ -216,9 +221,10 @@ rates between instruments and assays.
         after it, counts once, under its latest run in the range. So the sample
         columns add up across the rows and **Total** is the number of samples.
 
-        The export also has **Valid Results** (Tests Run that did not fail) and
+        The export also has **Valid Results** (Tests Run that did not fail),
         **Failed Runs Re-tested** (failed runs that a re-test replaced, each one
-        also in Tests Run).
+        also in Tests Run), the instrument's model and serial number, and a
+        **Failure Messages** sheet.
 
         Cancelled and rejected samples are not counted. For the same test, range
         and lab, **Tests Run** matches **Failures** in Lab Performance Indicators.

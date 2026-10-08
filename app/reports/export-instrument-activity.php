@@ -55,10 +55,12 @@ try {
         $indicators = ContainerRegistry::get(LabPerformanceIndicatorsService::class);
         $filters = $indicators->resolveFilters($_POST);
         $rawRows = $indicators->getByInstrument($filters);
+        // Labelled from every row, before the column filters drop some.
+        $failures = $indicators->getFailureMessages($filters, $rawRows);
 
         $headings = [
             _translate('Testing Lab'), _translate('Instrument Type'), _translate('Instrument'),
-            _translate('Assay'), _translate('Tests Run'), _translate('Valid Results'),
+            _translate('Instrument Model'), _translate('Instrument Serial Number'), _translate('Assay'), _translate('Tests Run'), _translate('Valid Results'),
             _translate('Failed or Invalid'), _translate('Failure Rate (%)'),
             _translate('Failed Runs Re-tested'), _translate('Samples'), _translate('Valid First Time'),
             _translate('Valid After Re-test'), _translate('Still Failed'),
@@ -86,7 +88,7 @@ try {
             ExportJobUtility::tick();
             $kept[] = $r;
             $writer->addRow(Row::fromValues([
-                $r['lab'], $r['instrumentType'], $instrument, $assay,
+                $r['lab'], $r['instrumentType'], $instrument, $r['model'], $r['serial'], $assay,
                 $r['tested'], $r['valid'], $r['failed'], $r['failureRate'], $r['retested'],
                 $r['samples'], $r['validFirstTime'], $r['validAfterRetest'], $r['stillFailed'],
             ]));
@@ -98,7 +100,7 @@ try {
             $tested = (int) array_sum(array_column($rawRows, 'tested'));
             $failed = (int) array_sum(array_column($rawRows, 'failed'));
             $writer->addRow(Row::fromValues([
-                _translate('Total'), '', '', '', $tested, $tested - $failed, $failed,
+                _translate('Total'), '', '', '', '', '', $tested, $tested - $failed, $failed,
                 $tested > 0 ? round($failed * 100 / $tested, 2) : null,
                 (int) array_sum(array_column($rawRows, 'retested')),
                 // Each sample sits on one row only, so these add up across rows.
@@ -106,6 +108,34 @@ try {
                 (int) array_sum(array_column($rawRows, 'validFirstTime')),
                 (int) array_sum(array_column($rawRows, 'validAfterRetest')),
                 (int) array_sum(array_column($rawRows, 'stillFailed')),
+            ]));
+        }
+
+        // Why runs failed, by instrument: a sheet of its own in Excel, after a blank
+        // row in CSV. The column filters apply as to the rows above.
+        if ($writer instanceof XlsxWriter) {
+            $writer->addNewSheetAndMakeItCurrent()->setName(_translate('Failure Messages'));
+        } else {
+            $writer->addRow(Row::fromValues([]));
+        }
+        $writer->addRow(Row::fromValues([
+            _translate('Testing Lab'), _translate('Instrument'), _translate('Assay'), _translate('Analyzer Message'),
+            _translate('Failed or Invalid'),
+        ]));
+        foreach ($failures as $failure) {
+            $shown = [
+                $failure['lab'],
+                $failure['instrumentLabel'] !== '' ? $failure['instrumentLabel'] : $notRecorded,
+                $failure['assay'] !== '' ? $failure['assay'] : $notRecorded,
+            ];
+            foreach ($columnFilters as $column => $value) {
+                if ($value !== '' && $shown[$column] !== $value) {
+                    continue 2;
+                }
+            }
+            ExportJobUtility::tick();
+            $writer->addRow(Row::fromValues([
+                ...$shown, $failure['message'] !== '' ? $failure['message'] : $notRecorded, $failure['failed'],
             ]));
         }
     } else {

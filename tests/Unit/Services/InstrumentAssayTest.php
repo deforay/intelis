@@ -122,4 +122,29 @@ final class InstrumentAssayTest extends TestCase
     ): void {
         self::assertSame($expected, LabPerformanceIndicatorsService::instrumentType($file, $name));
     }
+
+    public function testTheModelTheAnalyzerReportsDecidesTheMake(): void
+    {
+        self::assertSame('Roche', LabPerformanceIndicatorsService::instrumentType('', 'Machine 2', 'c5800'));
+        self::assertSame('Abbott', LabPerformanceIndicatorsService::instrumentType('', 'Machine 1', 'Alinity m'));
+        self::assertSame(
+            'Abbott',
+            LabPerformanceIndicatorsService::instrumentType('roche-rwanda.php', 'Cobas', 'm2000'),
+            'over a format or name the lab set up wrongly'
+        );
+        self::assertSame('Other', LabPerformanceIndicatorsService::instrumentType('', '', 'NewBox 9'));
+    }
+
+    public function testTheSerialTellsTwoMachinesOfOneNameApart(): void
+    {
+        self::assertSame(
+            'Lab PCR · SN-1',
+            LabPerformanceIndicatorsService::instrumentLabel('Lab PCR', 'Other', 'SN-1')
+        );
+        self::assertSame(
+            'Cobas 6800 NRL (Roche) · ID_1',
+            LabPerformanceIndicatorsService::instrumentLabel('Cobas 6800 NRL', 'Roche', 'ID_1')
+        );
+        self::assertSame('SN-1', LabPerformanceIndicatorsService::instrumentLabel('', 'Not recorded', 'SN-1'));
+    }
 }

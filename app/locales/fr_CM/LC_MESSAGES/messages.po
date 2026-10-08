@@ -36684,6 +36684,18 @@ msgstr "Message de l'analyseur"
 msgid "Analyzer Readings"
 msgstr "Lectures de l'analyseur"
 
+msgid "Failure Messages by Instrument"
+msgstr "Messages d'échec par instrument"
+
+msgid "Failure Messages"
+msgstr "Messages d'échec"
+
+msgid "No failed runs in the selected range"
+msgstr "Aucun passage en échec dans la période choisie"
+
+msgid "What the analyzer said about each failed run, for results from the Interface Tool."
+msgstr "Ce que l'analyseur a indiqué pour chaque passage en échec, pour les résultats de l'Interface Tool."
+
 msgid "Users & Roles"
 msgstr "Utilisateurs et rôles"
 

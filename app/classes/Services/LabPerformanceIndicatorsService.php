@@ -31,6 +31,9 @@ final class LabPerformanceIndicatorsService
 {
     public const GROUPINGS = ['monthly', 'quarterly', 'yearly'];
 
+    /** What the analyzer reported about a run, carried by the instrument breakdown (5.7.85). */
+    private const RUN_DETAIL_COLUMNS = ['instrument_model', 'instrument_serial', 'analyzer_run_id', 'analyzer_message'];
+
     /** Modules whose form table records the assay (assay_name, 5.7.82). */
     public const ASSAY_TEST_KEYS = ['vl', 'eid'];
 
@@ -253,19 +256,10 @@ final class LabPerformanceIndicatorsService
         $sql = "SELECT t.lab_id,
                        " . self::LAB_NAME . " AS lab_name,
                        " . self::INSTRUMENT . " AS instrument,
-                       MAX(COALESCE(
-                           NULLIF(i.import_machine_file_name, ''),
-                           (SELECT n.import_machine_file_name
-                              FROM instruments AS n
-                             WHERE i.instrument_id IS NULL
-                               AND n.machine_name = TRIM(t.test_platform)
-                               AND (n.lab_id = t.lab_id OR n.lab_id IS NULL)
-                               AND COALESCE(n.import_machine_file_name, '') != ''
-                             ORDER BY n.lab_id IS NULL
-                             LIMIT 1),
-                           ''
-                       )) AS instrument_file,
+                       " . self::INSTRUMENT_FILE . " AS instrument_file,
                        " . self::ASSAY . " AS assay,
+                       " . self::SERIAL . " AS serial,
+                       MAX(t.instrument_model) AS model,
                        COUNT(*) AS tested,
                        SUM(t.is_failed) AS failed,
                        SUM(t.is_retest) AS retested,
@@ -276,22 +270,25 @@ final class LabPerformanceIndicatorsService
                   FROM " . $this->sampleRuns($f) . "
                   LEFT JOIN instruments AS i ON i.instrument_id = t.instrument_id
                   LEFT JOIN facility_details AS f ON f.facility_id = t.lab_id
-                 GROUP BY t.lab_id, lab_name, instrument, assay
-                 ORDER BY lab_name ASC, instrument = '' ASC, instrument ASC, assay = '' ASC, assay ASC";
+                 GROUP BY t.lab_id, lab_name, instrument, serial, assay
+                 ORDER BY lab_name ASC, instrument = '' ASC, instrument ASC, serial ASC, assay = '' ASC, assay ASC";
 
         $rows = [];
         foreach ($this->db->rawQuery($sql) ?: [] as $row) {
             $tested = (int) $row['tested'];
             $failed = (int) $row['failed'];
             $instrument = (string) $row['instrument'];
-            $type = self::instrumentType((string) $row['instrument_file'], $instrument);
+            $model = (string) ($row['model'] ?? '');
+            $serial = (string) $row['serial'];
             $rows[] = [
                 'labId' => $row['lab_id'] === null ? null : (int) $row['lab_id'],
+                'serial' => $serial,
+                'model' => $model,
                 'lab' => $row['lab_name'] !== '' ? (string) $row['lab_name'] : _translate('Not assigned to a lab'),
                 'instrument' => $instrument,
                 'instrumentFile' => (string) $row['instrument_file'],
-                'instrumentType' => $type,
-                'instrumentLabel' => self::instrumentLabel($instrument, $type),
+                'instrumentType' => '',
+                'instrumentLabel' => '',
                 'assay' => (string) $row['assay'],
                 'tested' => $tested,
                 'failed' => $failed,
@@ -304,6 +301,42 @@ final class LabPerformanceIndicatorsService
                 'stillFailed' => (int) $row['still_failed'],
             ];
         }
+        return self::nameMachines($rows);
+    }
+
+    private static function machineKey(?int $labId, string $instrument, string $serial): string
+    {
+        return json_encode([$labId, $instrument, $serial]);
+    }
+
+    /**
+     * One make and one label per machine (lab, instrument, serial), over all its rows:
+     * a model or file format reported for one assay names the machine for all of
+     * them, so the failure messages and the column filters see the same label.
+     *
+     * @param list<array<string, mixed>> $rows
+     * @return list<array<string, mixed>>
+     */
+    private static function nameMachines(array $rows): array
+    {
+        $machines = [];
+        foreach ($rows as $row) {
+            $key = self::machineKey($row['labId'], $row['instrument'], $row['serial']);
+            $machines[$key]['model'] = max($machines[$key]['model'] ?? '', $row['model']);
+            $machines[$key]['file'] = max($machines[$key]['file'] ?? '', $row['instrumentFile']);
+        }
+        foreach ($rows as &$row) {
+            $machine = $machines[self::machineKey($row['labId'], $row['instrument'], $row['serial'])];
+            $row['model'] = $machine['model'];
+            $row['instrumentFile'] = $machine['file'];
+            $row['instrumentType'] = self::instrumentType($machine['file'], $row['instrument'], $machine['model']);
+            $row['instrumentLabel'] = self::instrumentLabel(
+                $row['instrument'] !== '' ? $row['instrument'] : $machine['model'],
+                $row['instrumentType'],
+                $row['serial']
+            );
+        }
+        unset($row);
         return $rows;
     }
 
@@ -318,14 +351,14 @@ final class LabPerformanceIndicatorsService
      * counts: each with its latest run in the range, that run's batch, and how many
      * runs it had in the range.
      *
-     * @param array{labId: ?int, instrument: string, assay: string} $row the row's keys
+     * @param array{labId: ?int, instrument: string, serial?: string, assay: string} $row the row's keys
      * @param ?string $outcome one of SAMPLE_OUTCOMES, or null for every sample
      * @return list<array{sampleCode: string, batchCode: string, testedOn: string, result: string,
-     *                    outcome: string, runs: int}>
+     *                    outcome: string, runs: int, runId: string, message: string}>
      */
     public function getInstrumentSamples(array $f, array $row, ?string $outcome): array
     {
-        $params = [(string) $row['instrument'], (string) $row['assay']];
+        $params = [(string) $row['instrument'], (string) ($row['serial'] ?? ''), (string) $row['assay']];
         $labMatch = 't.lab_id IS NULL';
         if ($row['labId'] !== null) {
             $labMatch = 't.lab_id = ?';
@@ -340,12 +373,14 @@ final class LabPerformanceIndicatorsService
             $params[] = $outcome;
         }
 
-        $sql = "SELECT t.sample_code, b.batch_code, t.sample_tested_datetime, t.result, t.outcome, t.runs
+        $sql = "SELECT t.sample_code, b.batch_code, t.sample_tested_datetime, t.result, t.outcome, t.runs,
+                       t.analyzer_run_id, t.analyzer_message
                   FROM " . $this->sampleRuns($f) . "
                   LEFT JOIN instruments AS i ON i.instrument_id = t.instrument_id
                   LEFT JOIN batch_details AS b ON b.batch_id = t.batch_id
                  WHERE t.is_last_run AND $labMatch
                    AND " . self::INSTRUMENT . " = ?
+                   AND " . self::SERIAL . " = ?
                    AND " . self::ASSAY . " = ?
                    $outcomeMatch
                  ORDER BY t.sample_tested_datetime DESC, t.sample_code ASC
@@ -358,13 +393,83 @@ final class LabPerformanceIndicatorsService
             'result' => (string) ($sample['result'] ?? ''),
             'outcome' => (string) $sample['outcome'],
             'runs' => (int) $sample['runs'],
+            'runId' => (string) ($sample['analyzer_run_id'] ?? ''),
+            'message' => (string) ($sample['analyzer_message'] ?? ''),
         ], $this->db->rawQuery($sql, $params) ?: []);
+    }
+
+    /**
+     * Failed runs by lab, instrument, assay and what the analyzer said about them,
+     * most frequent first: why tests fail, machine by machine. Over the same runs as
+     * getByInstrument()'s Failed or Invalid, so a row's messages add up to its failed
+     * runs; a failure the analyzer explained nothing about is counted with an empty
+     * message.
+     *
+     * Each machine is labelled as in getByInstrument(), whose rows for the same filters
+     * can be passed in so they are not counted twice.
+     *
+     * @param ?list<array<string, mixed>> $byInstrument getByInstrument($f), when at hand
+     * @return list<array{lab: string, instrumentLabel: string, assay: string, message: string, failed: int}>
+     */
+    public function getFailureMessages(array $f, ?array $byInstrument = null): array
+    {
+        $labels = [];
+        foreach ($byInstrument ?? $this->getByInstrument($f) as $row) {
+            $labels[self::machineKey($row['labId'], $row['instrument'], $row['serial'])] = $row['instrumentLabel'];
+        }
+
+        $sql = "SELECT t.lab_id,
+                       " . self::LAB_NAME . " AS lab_name,
+                       " . self::INSTRUMENT . " AS instrument,
+                       " . self::SERIAL . " AS serial,
+                       " . self::ASSAY . " AS assay,
+                       COALESCE(NULLIF(TRIM(t.analyzer_message), ''), '') AS message,
+                       COUNT(*) AS failed
+                  FROM " . $this->sampleRuns($f) . "
+                  LEFT JOIN instruments AS i ON i.instrument_id = t.instrument_id
+                  LEFT JOIN facility_details AS f ON f.facility_id = t.lab_id
+                 WHERE t.is_failed
+                 GROUP BY t.lab_id, lab_name, instrument, serial, assay, message
+                 ORDER BY failed DESC, lab_name ASC, instrument ASC, message ASC";
+
+        $rows = [];
+        foreach ($this->db->rawQuery($sql) ?: [] as $row) {
+            $labId = $row['lab_id'] === null ? null : (int) $row['lab_id'];
+            $rows[] = [
+                'lab' => $row['lab_name'] !== '' ? (string) $row['lab_name'] : _translate('Not assigned to a lab'),
+                // Every failed run is also a run of getByInstrument(), so its machine is there.
+                'instrumentLabel' => $labels[self::machineKey($labId, (string) $row['instrument'], (string) $row['serial'])]
+                    ?? (string) $row['instrument'],
+                'assay' => (string) $row['assay'],
+                'message' => (string) $row['message'],
+                'failed' => (int) $row['failed'],
+            ];
+        }
+        return $rows;
     }
 
     /** The grouping columns of getByInstrument(), over sampleRuns() as `t`. */
     private const LAB_NAME = "COALESCE(f.facility_name, '')";
     private const INSTRUMENT = "COALESCE(i.machine_name, NULLIF(TRIM(t.test_platform), ''), '')";
     private const ASSAY = "COALESCE(NULLIF(TRIM(t.assay_name), ''), '')";
+    private const SERIAL = "COALESCE(NULLIF(TRIM(t.instrument_serial), ''), '')";
+
+    /**
+     * The result file format of a group's instrument, for its make: the instrument's
+     * own, else that of an instrument with the platform's name, the test's lab first.
+     */
+    private const INSTRUMENT_FILE = "MAX(COALESCE(
+                           NULLIF(i.import_machine_file_name, ''),
+                           (SELECT n.import_machine_file_name
+                              FROM instruments AS n
+                             WHERE i.instrument_id IS NULL
+                               AND n.machine_name = TRIM(t.test_platform)
+                               AND (n.lab_id = t.lab_id OR n.lab_id IS NULL)
+                               AND COALESCE(n.import_machine_file_name, '') != ''
+                             ORDER BY n.lab_id IS NULL
+                             LIMIT 1),
+                           ''
+                       ))";
 
     /**
      * The test events of the instrument breakdown in the range, each marked with
@@ -424,22 +529,24 @@ final class LabPerformanceIndicatorsService
      * The instrument as one label: its name, with its make added when the name does
      * not already say it ("Cobas 6800 NRL (Roche)", but "GeneXpert" as it is).
      */
-    public static function instrumentLabel(string $instrument, string $type): string
+    public static function instrumentLabel(string $instrument, string $type, string $serial = ''): string
     {
         if ($instrument === '') {
-            return '';
+            return $serial;
         }
+        $label = $instrument;
         if (
-            in_array($type, [_translate('Other'), _translate('Not recorded')], true)
+            !in_array($type, [_translate('Other'), _translate('Not recorded')], true)
             // Letters and digits only, so "BioRad PCR" already says Bio-Rad.
-            || str_contains(
+            && !str_contains(
                 (string) preg_replace('/[^a-z0-9]/', '', strtolower($instrument)),
                 (string) preg_replace('/[^a-z0-9]/', '', strtolower($type))
             )
         ) {
-            return $instrument;
+            $label = "$instrument ($type)";
         }
-        return "$instrument ($type)";
+        // The serial the analyzer reported tells two machines of one name apart.
+        return $serial === '' ? $label : "$label · $serial";
     }
 
     /**
@@ -448,11 +555,11 @@ final class LabPerformanceIndicatorsService
      * are typed by each lab ("Cobas 6800 NRL", "m2000 1"), so the format is the
      * reliable signal; the name covers results that came in without one.
      */
-    public static function instrumentType(string $instrumentFile, string $instrumentName): string
+    public static function instrumentType(string $instrumentFile, string $instrumentName, string $model = ''): string
     {
         $makes = [
             'Abbott' => ['abbott', 'alinity', 'm2000'],
-            'Roche' => ['roche', 'cobas', 'taqman', 'lightcycler'],
+            'Roche' => ['roche', 'cobas', 'taqman', 'lightcycler', 'c4800', 'c5800', 'c6800', 'c8800'],
             'GeneXpert' => ['genexpert', 'xpert'],
             'Hologic' => ['hologic', 'panther'],
             'bioMérieux' => ['biomerieux', 'nuclisens'],
@@ -460,7 +567,9 @@ final class LabPerformanceIndicatorsService
             'Applied Biosystems' => ['abi7500', 'quantstudio', 'thermo'],
             'Qiagen' => ['rotor-gene', 'rotor gene', 'rotorgene'],
         ];
-        foreach ([$instrumentFile, $instrumentName] as $text) {
+        // The model the analyzer reports of itself first: it does not depend on how
+        // the lab set the instrument up or named it.
+        foreach ([$model, $instrumentFile, $instrumentName] as $text) {
             $text = strtolower($text);
             if ($text === '') {
                 continue;
@@ -473,7 +582,7 @@ final class LabPerformanceIndicatorsService
                 }
             }
         }
-        return $instrumentFile === '' && $instrumentName === ''
+        return $instrumentFile === '' && $instrumentName === '' && $model === ''
             ? _translate('Not recorded')
             : _translate('Other');
     }
@@ -1050,6 +1159,7 @@ final class LabPerformanceIndicatorsService
                            " . $text("live.`$platformColumn`") . " AS test_platform,
                            " . $text('live.instrument_id') . " AS instrument_id,
                            " . ($hasAssay ? $text('live.assay_name') : 'NULL') . " AS assay_name,";
+
             $archivedInstrument = "a.record_id,
                            a.attempt_number,
                            " . $text('a.sample_code') . ",
@@ -1060,6 +1170,16 @@ final class LabPerformanceIndicatorsService
                            " . ($hasAssay
                 ? $text("NULLIF(JSON_UNQUOTE(JSON_EXTRACT(a.attempt_data, '$.row.assay_name')), 'null')")
                 : 'NULL') . ",";
+            // What the analyzer reported about the run (5.7.85), from the row or from
+            // the archived run's snapshot of it.
+            foreach (self::RUN_DETAIL_COLUMNS as $column) {
+                $liveInstrument .= "
+                           " . ($hasAssay ? $text("live.`$column`") : 'NULL') . " AS $column,";
+                $archivedInstrument .= "
+                           " . ($hasAssay
+                    ? $text("NULLIF(JSON_UNQUOTE(JSON_EXTRACT(a.attempt_data, '$.row.$column')), 'null')")
+                    : 'NULL') . ",";
+            }
         }
 
         // result_status is carried through because buildWhere() excludes cancelled
