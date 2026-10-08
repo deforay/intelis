@@ -36,6 +36,10 @@ $overdueHeading = sprintf(
     _translate('Not Returned After %d Days'),
     SourcesOfRequestsReportUtility::OVERDUE_DAYS
 );
+$notArrivedHeading = sprintf(
+    _translate('Not Received After %d Days'),
+    SourcesOfRequestsReportUtility::NOT_ARRIVED_DAYS
+);
 
 $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-SOURCES-OF-REQUESTS-' . date('d-M-Y-H-i-s')
     . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
@@ -50,6 +54,9 @@ $writer->addRow(Row::fromValues(array_map('html_entity_decode', [
     _translate('Requested'),
     _translate('Received at Lab'),
     _translate('% Received'),
+    $notArrivedHeading,
+    _translate('Rejected'),
+    _translate('% Rejected'),
     _translate('Tested'),
     _translate('% Tested'),
     _translate('Results Returned'),
@@ -65,6 +72,10 @@ foreach ([...$summary['rows'], $summary['total']] as $row) {
         $row['requested'],
         $row['received'],
         $percent($row['received'], $row['requested']),
+        // The lab entered these requests with the sample in hand.
+        $row['electronic'] ? $row['notArrived'] : null,
+        $row['rejected'],
+        $percent($row['rejected'], $row['requested']),
         $row['tested'],
         $percent($row['tested'], $row['requested']),
         $row['returned'],
@@ -83,6 +94,8 @@ $writer->addRow(Row::fromValues(array_map('html_entity_decode', [
     _translate('Requested'),
     ...array_column($clinics['sources'], 'label'),
     _translate('% Electronic'),
+    $notArrivedHeading,
+    _translate('Rejected'),
     _translate('Results Returned'),
     $overdueHeading,
     _translate('Median Days to Return'),
@@ -93,6 +106,8 @@ foreach ([...$clinics['rows'], $clinics['total']] as $row) {
         $row['requested'],
         ...array_map(fn(array $source): int => $row['bySource'][$source['source']] ?? 0, $clinics['sources']),
         $percent($row['electronic'], $row['requested']),
+        $row['notArrived'],
+        $row['rejected'],
         $row['returned'],
         $row['overdue'],
         $row['returnDays'],
