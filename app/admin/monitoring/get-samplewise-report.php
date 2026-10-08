@@ -1,8 +1,6 @@
 <?php
 
-use App\Utilities\AdminFilterClauseBuilder;
 use App\Utilities\DataTableUtility;
-use App\Utilities\SampleCountUtility;
 use App\Utilities\SourcesOfRequestsReportUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
@@ -13,6 +11,9 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+
+// AJAX requests skip the page ACL, so this checks the report's own privilege.
+_requirePrivilege('/admin/monitoring/sources-of-requests.php');
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -29,11 +30,7 @@ try {
 
 
     $testType = (string) ($_POST['testType'] ?? 'vl');
-    if (!in_array($testType, TestsService::getActiveTests(), true)) {
-        throw new InvalidArgumentException("Inactive or unknown test type: $testType");
-    }
-
-    $table = TestsService::getTestTableName($testType);
+    ['from' => $fromQuery, 'where' => $reportWhere] = SourcesOfRequestsReportUtility::reportScope($_POST, $general);
     $returnedOn = SourcesOfRequestsReportUtility::RETURNED_ON;
 
     // In the order the page shows them.
@@ -64,35 +61,8 @@ try {
 
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-    $fromQuery = "
-                FROM $table as vl
-                LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
-                LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-                LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-                LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
-
-    // Cancelled requests are not counted anywhere, so they are not listed either.
-    // These five filters appear, verbatim, in a dozen admin endpoints, each with
-    // its own alias. AdminFilterClauseBuilder is the one copy of them.
-    $reportWhere = [
-        SampleCountUtility::countableWhere('vl'),
-        ...AdminFilterClauseBuilder::buildStandardFilters($_POST, [
-            'dateColumn' => 'vl.request_created_datetime',
-            'labColumn' => 'vl.lab_id',
-            'stateColumn' => 'f.facility_state_id',
-            'districtColumn' => 'f.facility_district_id',
-            'facilityColumn' => 'vl.facility_id',
-        ]),
-    ];
-    // A user working for one lab sees that lab's samples only, in the list and in
-    // the summary alike.
-    $labScope = $general->labScopeWhere('vl');
-    if ($labScope !== '') {
-        $reportWhere[] = $labScope;
-    }
-
-    // The summary compares every source, so the source, stage and search box
-    // narrow only the sample list.
+    // The summaries compare every source and clinic, so the source, stage, clinic
+    // and search box narrow only the sample list.
     $sWhere = $reportWhere;
     $source = trim((string) ($_POST['originalSourceOfRequest'] ?? ''));
     if ($source === 'unrecorded') {
@@ -103,6 +73,11 @@ try {
             CommonService::storedSourcesOfRequest($source)
         );
         $sWhere[] = 'vl.source_of_request IN (' . implode(', ', $stored) . ')';
+    }
+    // A clinic picked from the clinic summary; 0 is requests with no clinic.
+    $clinicId = trim((string) ($_POST['clinicId'] ?? ''));
+    if ($clinicId !== '' && ctype_digit($clinicId)) {
+        $sWhere[] = 'IFNULL(vl.facility_id, 0) = ' . (int) $clinicId;
     }
     $stageWhere = SourcesOfRequestsReportUtility::stageWhere((string) ($_POST['stage'] ?? ''));
     if ($stageWhere !== null) {

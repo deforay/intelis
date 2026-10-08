@@ -150,6 +150,19 @@ final class SourcesOfRequestsReportTest extends TestCase
         return $json;
     }
 
+    /** @return array<string, mixed> */
+    private function breakdown(string $view, array $post = []): array
+    {
+        $request = LegacyAppHarness::withPost($post + [
+            'testType' => 'vl', 'dateRange' => '', 'view' => $view,
+        ], '/admin/monitoring/get-sources-of-requests-breakdown.php');
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $body = (string) $handler->handle($request)->getBody();
+        $json = json_decode($body, true);
+        self::assertIsArray($json, "Endpoint did not return JSON: $body");
+        return $json;
+    }
+
     /** @return list<string> */
     private static function sampleCodes(array $json): array
     {
@@ -341,6 +354,113 @@ final class SourcesOfRequestsReportTest extends TestCase
         self::assertEquals([2.0, 4.0], $days['Total']);
     }
 
+    private function seedOverdue(): void
+    {
+        $daysAgo = fn(int $days): string => date('Y-m-d H:i:s', strtotime("-$days days"));
+        $this->seed('form_vl', [
+            'sample_code' => 'LATE', 'source_of_request' => 'vlsts', 'sample_received_at_lab_datetime' => $daysAgo(12),
+            'sample_tested_datetime' => $daysAgo(10),
+        ]);
+        $this->seed('form_vl', [
+            'sample_code' => 'RECENT', 'source_of_request' => 'vlsts', 'sample_received_at_lab_datetime' => $daysAgo(3),
+            'sample_tested_datetime' => $daysAgo(2),
+        ]);
+        $this->seed('form_vl', [
+            'sample_code' => 'SENT', 'source_of_request' => 'vlsts', 'sample_received_at_lab_datetime' => $daysAgo(12),
+            'sample_tested_datetime' => $daysAgo(10), 'result_sent_to_source_datetime' => $daysAgo(9),
+        ]);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAResultNotReturnedAWeekAfterTestingIsOverdue(): void
+    {
+        $this->seedOverdue();
+
+        $json = $this->drive(['stage' => 'overdue']);
+
+        self::assertSame(['LATE'], self::sampleCodes($json));
+        self::assertSame(1, $json['summary']['rows'][0]['overdue']);
+        self::assertSame(1, $json['summary']['total']['overdue']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheClinicSummarySplitsEachClinicBySource(): void
+    {
+        $this->seedVl();
+        LegacyAppHarness::db()->rawQuery(
+            "INSERT INTO facility_details (facility_id, facility_name, facility_type, vlsm_instance_id, status)
+             VALUES (803, 'Hilltop Clinic', 1, 'test', 'active')"
+        );
+        $this->seed('form_vl', ['sample_code' => 'HILL-1', 'source_of_request' => 'vlsts', 'facility_id' => 803]);
+        $this->seed('form_vl', ['sample_code' => 'NOWHERE', 'source_of_request' => 'api', 'facility_id' => null]);
+
+        $clinics = $this->breakdown('clinic');
+
+        self::assertSame(['vlsm', 'vlsts', 'api', 'unrecorded'], array_column($clinics['sources'], 'source'));
+        $rows = array_column($clinics['rows'], null, 'label');
+        self::assertSame(['Riverside Clinic', 'Hilltop Clinic', 'Not Recorded'], array_keys($rows));
+        // Riverside: 2 LIS, 1 STS, 1 API and 2 with no source; STS and API are electronic.
+        self::assertSame(
+            ['vlsm' => 2, 'vlsts' => 1, 'api' => 1, 'unrecorded' => 2],
+            $rows['Riverside Clinic']['bySource'] + []
+        );
+        self::assertSame([6, 2, 1], [
+            $rows['Riverside Clinic']['requested'], $rows['Riverside Clinic']['electronic'],
+            $rows['Riverside Clinic']['returned'],
+        ]);
+        self::assertSame(['0', 1, 1], [
+            $rows['Not Recorded']['clinicId'], $rows['Not Recorded']['requested'], $rows['Not Recorded']['electronic'],
+        ]);
+        self::assertSame([8, 4], [$clinics['total']['requested'], $clinics['total']['electronic']]);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAClinicFromTheClinicSummaryNarrowsOnlyTheList(): void
+    {
+        $this->seedVl();
+        $this->seed('form_vl', ['sample_code' => 'NOWHERE', 'source_of_request' => 'api', 'facility_id' => null]);
+
+        $json = $this->drive(['clinicId' => '0']);
+
+        self::assertSame(['NOWHERE'], self::sampleCodes($json));
+        self::assertSame(7, $json['summary']['total']['requested'], 'the summary still covers every clinic');
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheTrendCountsEachWeekAndKeepsEmptyWeeks(): void
+    {
+        $monday = strtotime('monday this week', strtotime('-35 days'));
+        $at = fn(int $days): string => date('Y-m-d 10:00:00', $monday + $days * 86400);
+        $this->seed('form_vl', ['source_of_request' => 'vlsts', 'request_created_datetime' => $at(0)]);
+        $this->seed('form_vl', ['source_of_request' => 'vlsts', 'request_created_datetime' => $at(6)]);
+        $this->seed('form_vl', ['source_of_request' => 'vlsm', 'request_created_datetime' => $at(15)]);
+
+        $trend = $this->breakdown('trend');
+
+        self::assertSame('week', $trend['unit']);
+        self::assertCount(3, $trend['periods'], 'the empty week between stays');
+        self::assertSame(
+            ['STS' => [2, 0, 0], 'LIS' => [0, 0, 1]],
+            array_column($trend['series'], 'data', 'label')
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheTrendCountsByMonthOverMoreThanHalfAYear(): void
+    {
+        $this->seed('form_vl', ['source_of_request' => 'vlsts', 'request_created_datetime' => '2025-01-15 10:00:00']);
+        $this->seed('form_vl', ['source_of_request' => 'vlsts', 'request_created_datetime' => '2025-08-02 10:00:00']);
+
+        $trend = $this->breakdown('trend');
+
+        self::assertSame('month', $trend['unit']);
+        self::assertSame(
+            ['2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06', '2025-07', '2025-08'],
+            $trend['periods']
+        );
+        self::assertSame([1, 0, 0, 0, 0, 0, 0, 1], $trend['series'][0]['data']);
+    }
+
     #[RunInSeparateProcess]
     public function testNotRecordedFindsOnlyRowsWithNoSource(): void
     {
@@ -361,6 +481,32 @@ final class SourcesOfRequestsReportTest extends TestCase
 
         self::assertSame(['CD4-ROW'], self::sampleCodes($this->drive(['testType' => 'cd4'])));
         self::assertSame('350', (string) $this->export()['Samples'][1][13]);
+    }
+
+    /** @return array<string, array{string, array<string, mixed>}> */
+    public static function endpoints(): array
+    {
+        return [
+            'sample list' => ['/admin/monitoring/get-samplewise-report.php', ['sEcho' => 1]],
+            'clinic summary' => ['/admin/monitoring/get-sources-of-requests-breakdown.php', ['view' => 'clinic']],
+            'trend' => ['/admin/monitoring/get-sources-of-requests-breakdown.php', ['view' => 'trend']],
+            'source list' => ['/admin/monitoring/get-source-request-list.php', []],
+            'export' => ['/admin/monitoring/export-samplewise-reports.php', []],
+        ];
+    }
+
+    /** @param array<string, mixed> $post */
+    #[RunInSeparateProcess]
+    #[DataProvider('endpoints')]
+    public function testAUserWithoutTheReportIsRefused(string $endpoint, array $post): void
+    {
+        LegacyAppHarness::withSession(['roleId' => 2, 'userId' => 'u2', 'privileges' => ['/dashboard/index.php']]);
+
+        $this->expectException(\App\Exceptions\SystemException::class);
+        $this->expectExceptionCode(403);
+        $request = LegacyAppHarness::withPost($post + ['testType' => 'vl'], $endpoint);
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $handler->handle($request);
     }
 
     #[RunInSeparateProcess]
@@ -409,7 +555,7 @@ final class SourcesOfRequestsReportTest extends TestCase
         $this->drive(['originalSourceOfRequest' => 'vlsm']);
 
         $sheets = $this->export();
-        self::assertSame(['Summary by Source', 'Samples'], array_keys($sheets));
+        self::assertSame(['Summary by Source', 'By Clinic', 'Requests by Week', 'Samples'], array_keys($sheets));
 
         // The summary covers every source, as on the page.
         $summary = $sheets['Summary by Source'];
