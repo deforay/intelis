@@ -136,6 +136,16 @@ class TestResultImportService
     }
 
     /**
+     * An assay name read from a result file, or null. Kept in
+     * temp_sample_import.test_type, a varchar(255).
+     */
+    public static function assayFromFile(mixed $value): ?string
+    {
+        $assay = trim((string) $value);
+        return $assay === '' ? null : mb_substr($assay, 0, 255);
+    }
+
+    /**
      * Process and insert parsed data - call this after your parsing logic
      */
     public function insertParsedData(array $parsedData): void
@@ -170,6 +180,8 @@ class TestResultImportService
             'lab_tech_comments' => $sampleData['resultFlag'] ?? '',
             'lot_number' => $sampleData['lotNumber'] ?? null,
             'lot_expiration_date' => $sampleData['lotExpirationDate'] ?? null,
+            // The assay the instrument ran; process-vl/process-eid copy it to assay_name.
+            'test_type' => self::assayFromFile($sampleData['assay'] ?? null),
             'cv_number' => $sampleData['cvNumber'] ?? null,
             'sample_review_by' => $sampleData['reviewBy'] ?? null,
             'result_value_log' => $sampleData['logVal'] ?? null,

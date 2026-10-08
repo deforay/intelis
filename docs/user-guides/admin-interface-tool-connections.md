@@ -99,5 +99,5 @@ To install the tool and add the analyzer in it, see
 | Results | A result run on the analyzer appears in InteLIS |
 
 When results stop arriving, a stale **Last Seen** means the tool is not
-reaching InteLIS. See also **Interface Machine Activity** in
+reaching InteLIS. See also **Instrument Activity** in
 [Monitoring and audit](admin-monitoring.md#check-that-an-analyzer-is-still-sending).

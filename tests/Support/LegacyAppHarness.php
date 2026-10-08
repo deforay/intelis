@@ -157,6 +157,31 @@ final class LegacyAppHarness
     }
 
     /** Pull one CREATE TABLE out of sql/init.sql verbatim. */
+    /**
+     * Adds the columns a migration adds to the given tables. sql/init.sql is a snapshot
+     * regenerated now and then, so a column added since is missing from the tables
+     * boot() creates; this applies that migration's ADD statements as written.
+     *
+     * @param list<string> $tables
+     */
+    public static function addMigrationColumns(string $version, array $tables): void
+    {
+        $migration = file_get_contents(dirname(__DIR__, 2) . "/sys/migrations/$version.sql");
+        if ($migration === false) {
+            throw new RuntimeException("Could not read sys/migrations/$version.sql");
+        }
+
+        foreach ($tables as $table) {
+            $pattern = '/^ALTER TABLE `' . preg_quote($table, '/') . '` ADD `.*?;$/m';
+            if (preg_match_all($pattern, $migration, $matches) === 0) {
+                throw new RuntimeException("sys/migrations/$version.sql adds no column to $table");
+            }
+            foreach ($matches[0] as $statement) {
+                self::db()->rawQuery($statement);
+            }
+        }
+    }
+
     private static function schemaFor(string $table): string
     {
         $initSql = file_get_contents(dirname(__DIR__, 2) . '/sql/init.sql');

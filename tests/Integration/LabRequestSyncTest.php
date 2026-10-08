@@ -60,6 +60,7 @@ final class LabRequestSyncTest extends TestCase
         ]);
         $this->booted = true;
         $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (6, 'Registered'), (7, 'Accepted')");
+        LegacyAppHarness::addMigrationColumns('5.7.82', ['form_vl']);
         foreach (['form_vl', 'form_tb', 'form_generic', 'form_covid19'] as $table) {
             $db->rawQuery("CREATE TABLE `sts_$table` LIKE `$table`");
         }
@@ -174,6 +175,32 @@ final class LabRequestSyncTest extends TestCase
         self::assertSame('40', $row['result']);
         self::assertSame('7', (string) $row['result_status']);
         self::assertSame('2026-09-03 10:00:00', $row['sample_tested_datetime']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheStsCannotBlankTheInstrumentTheLabTestedOn(): void
+    {
+        $db = $this->boot();
+        self::sync()->saveModule('vl', [self::vlRequest($db, 'u-1')], 'tx-1');
+        // The lab imports the result from its instrument file.
+        $db->rawQuery(
+            "UPDATE form_vl SET instrument_id = 'inst-1', assay_name = 'HIV1.0mlDBS', lot_number = '417517',
+                lot_expiration_date = '2026-12-31', result = '40', result_status = 7
+                WHERE unique_id = 'u-1'"
+        );
+
+        // Before the lab sends its result up, the STS edits the request and sends its
+        // copy, which has no instrument, assay or lot yet.
+        $db->rawQuery("UPDATE sts_form_vl SET patient_first_name = 'Adah' WHERE unique_id = 'u-1'");
+        $stsCopy = $db->rawQueryOne("SELECT * FROM sts_form_vl WHERE unique_id = 'u-1'");
+        self::sync()->saveModule('vl', [$stsCopy], 'tx-2');
+
+        $row = $this->committed('form_vl')['u-1'];
+        self::assertSame('Adah', $row['patient_first_name']);
+        self::assertSame('inst-1', $row['instrument_id']);
+        self::assertSame('HIV1.0mlDBS', $row['assay_name']);
+        self::assertSame('417517', $row['lot_number']);
+        self::assertSame('2026-12-31', $row['lot_expiration_date']);
     }
 
     #[RunInSeparateProcess]

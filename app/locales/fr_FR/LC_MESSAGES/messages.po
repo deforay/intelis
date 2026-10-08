@@ -36595,3 +36595,63 @@ msgstr "Union libre"
 
 msgid "Widow"
 msgstr "Veuf/Veuve"
+
+msgid "Assay"
+msgstr "Test (essai)"
+
+msgid "Instrument Activity"
+msgstr "Activité des instruments"
+
+msgid "Tests by Instrument"
+msgstr "Tests par instrument"
+
+msgid "Interface Tool Events"
+msgstr "Événements de l'Interface Tool"
+
+msgid "Instrument Type"
+msgstr "Type d'instrument"
+
+msgid "Tests Run"
+msgstr "Tests réalisés"
+
+msgid "Valid Results"
+msgstr "Résultats valides"
+
+msgid "Failed Runs Re-tested"
+msgstr "Échecs retestés"
+
+msgid "By Instrument Type"
+msgstr "Par type d'instrument"
+
+msgid "By Lab, Instrument and Assay"
+msgstr "Par laboratoire, instrument et test"
+
+msgid "Not recorded"
+msgstr "Non enregistré"
+
+msgid "Machine Type"
+msgstr "Type de machine"
+
+msgid "Protocol"
+msgstr "Protocole"
+
+msgid "Connection Mode"
+msgstr "Mode de connexion"
+
+msgid "No tests in the selected range"
+msgstr "Aucun test sur la période choisie"
+
+msgid "Unable to load the instrument figures"
+msgstr "Impossible de charger les chiffres des instruments"
+
+msgid "Last 3 Months"
+msgstr "3 derniers mois"
+
+msgid "Last Year"
+msgstr "Année dernière"
+
+msgid "Tests run on each instrument and assay."
+msgstr "Tests réalisés sur chaque instrument et chaque test."
+
+msgid "Failed runs that were re-tested count as tests. Cancelled and rejected samples do not. The assay is recorded from this update on."
+msgstr "Les échecs retestés comptent comme des tests. Les échantillons annulés et rejetés ne comptent pas. Le test (essai) est enregistré à partir de cette mise à jour."

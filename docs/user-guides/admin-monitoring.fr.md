@@ -17,8 +17,8 @@ trouvent sous **ADMIN → Surveillance**.
 - Un compte dont le rôle porte les pages de Surveillance nécessaires. Le rôle
   Admin intégré les voit toutes
 - Sur la page des rôles, **Indicateurs de performance du laboratoire**,
-  **Activité des machines d'interface** et **Exemple de réseau de
-  recommandation** s'accordent sous **Rapports**, et non sous Surveillance
+  **Activité des instruments** et **Exemple de réseau de recommandation**
+  s'accordent sous **Rapports**, et non sous Surveillance
 
 ??? info "Quelles pages apparaissent"
 
@@ -42,7 +42,8 @@ trouvent sous **ADMIN → Surveillance**.
 | Quelles pages les utilisateurs ouvrent-ils, et combien de temps ? | Utilisation des pages |
 | Les données ont-elles atteint le STS ? | Historique de l’API sur un LIS. État de la synchronisation du laboratoire sur le STS |
 | D'où viennent les demandes du STS, et les résultats sont-ils repartis ? | Tableau de bord de l’API |
-| Cet automate envoie-t-il toujours ? | Activité des machines d'interface |
+| Cet automate envoie-t-il toujours ? | Activité des instruments |
+| Combien de tests ont été réalisés sur chaque instrument et chaque test ? | Activité des instruments |
 | Combien de temps le laboratoire met-il, et à quelle fréquence les tests échouent-ils ? | Indicateurs de performance du laboratoire |
 | Où les échantillons se perdent-ils entre la demande et le résultat ? | Source des demandes |
 | Que contient InteLIS derrière un résultat ? | Métadonnées des résultats des tests |
@@ -178,18 +179,68 @@ l'utilisateur. Ce n'est pas la durée de la connexion.
 
 ## Vérifier qu'un automate envoie toujours
 
-1. Aller à **ADMIN → Surveillance → Activité des machines d'interface**.
-2. Lire **Événements (7 derniers jours)**, **Échecs (7 derniers jours)** et
+1. Aller à **ADMIN → Surveillance → Activité des instruments**.
+2. Ouvrir **Événements de l'Interface Tool**.
+3. Lire **Événements (7 derniers jours)**, **Échecs (7 derniers jours)** et
    **Dernier événement**.
-3. Renseigner **Instrument** avec l'automate, puis sélectionner **Rechercher**.
-4. Lire la **Date de l'événement** la plus récente. Un événement en échec porte
-   un **Code d'échec**.
-5. Si rien de récent n'apparaît, ouvrir les **Connexions des outils
+4. Renseigner **Instrument** avec l'automate, puis sélectionner **Rechercher**.
+5. Lire la **Date de l'événement** la plus récente. Un événement en échec porte
+   un **Code d'échec**. Pour garder la liste, sélectionner **Exporter vers
+   Excel**.
+6. Si rien de récent n'apparaît, ouvrir les **Connexions des outils
    d'interface** du laboratoire d'analyse et lire la **Dernière connexion**.
    Voir [Connexions de l'outil d'interface](admin-interface-tool-connections.md).
 
 Une **Dernière connexion** ancienne signifie que l'outil d'interface n'atteint
 pas InteLIS.
+
+## Compter les tests par instrument et par test
+
+Ces chiffres servent à suivre les réactifs par plateforme et à comparer les
+taux d'échec entre instruments et entre tests.
+
+1. Aller à **ADMIN → Surveillance → Activité des instruments**.
+2. Ouvrir **Tests par instrument**. L'onglet apparaît quand la Charge virale
+   ou l'EID est active.
+3. Renseigner **Test**, **Testé le** et **Labo**. **Labo** n'apparaît que si
+   l'instance a des laboratoires d'analyse.
+4. Sélectionner **Rechercher**.
+5. Lire **Par type d'instrument** pour les totaux de chaque marque, et **Par
+   laboratoire, instrument et test** pour chaque instrument.
+6. Pour affiner **Par laboratoire, instrument et test**, choisir une valeur
+   dans la liste au-dessus d'une colonne. Sélectionner l'en-tête d'une colonne
+   pour trier. **Total** additionne les lignes affichées.
+7. Pour garder les chiffres, sélectionner **Exporter vers Excel**. Le fichier
+   se télécharge quand il est prêt. La progression s'affiche dans le menu des
+   exports.
+
+    ??? info "Ce que compte chaque colonne"
+
+        | Colonne | Compte |
+        | --- | --- |
+        | Tests réalisés | Chaque résultat et chaque échec enregistré, à la date du test |
+        | Échec ou invalide | Les tests au statut Échec |
+        | Échecs retestés | Les échecs remplacés par un nouveau test. Chacun compte aussi dans les tests réalisés |
+
+        L'export contient aussi **Résultats valides** : les tests réalisés qui
+        n'ont pas échoué.
+
+        Les échantillons annulés et rejetés ne sont pas comptés. Pour le même
+        test, la même période et le même laboratoire, **Tests réalisés**
+        correspond à **Échecs** dans les Indicateurs de performance du
+        laboratoire.
+
+    ??? info "Si le test (essai) indique Non enregistré"
+
+        Le test (essai) est enregistré pour les résultats reçus de l'Interface
+        Tool ou des fichiers de résultats GeneXpert et Abbott m2000, à partir de
+        la mise à jour qui a ajouté cet onglet. Les résultats antérieurs, les
+        résultats saisis à la main et les autres formats de fichier indiquent
+        **Non enregistré**.
+
+    ??? info "Si l'instrument indique Non enregistré"
+
+        Le résultat a été saisi à la main sans plateforme de test.
 
 ## Lire le rapport de performance du laboratoire
 
@@ -280,5 +331,5 @@ Le journal consigne les défauts, pas les actions des utilisateurs.
 | --- | --- |
 | Modification retracée | La Piste d'audit nomme le champ, l'ancienne valeur, la nouvelle valeur et l'utilisateur |
 | Synchronisation confirmée | L'Historique de l'API ou l'État de la synchronisation du laboratoire montre une synchronisation récente avec des fiches |
-| Automate confirmé actif | L'Activité des machines d'interface contient un événement récent, et la **Dernière connexion** est récente |
+| Automate confirmé actif | L'Activité des instruments contient un événement récent de l'Interface Tool, et la **Dernière connexion** est récente |
 | Échantillon manquant trouvé | La Source des demandes montre l'étape où le chiffre baisse |

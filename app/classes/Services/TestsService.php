@@ -83,7 +83,7 @@ final class TestsService
                 'clearOnRetest' => [
                     'result', 'result_value_log', 'result_value_absolute', 'result_value_text',
                     'result_value_absolute_decimal', 'sample_tested_datetime', 'sample_batch_id',
-                    'lot_expiration_date', 'lot_number',
+                    'lot_expiration_date', 'lot_number', 'assay_name',
                     // Previously left stale, so a wiped sample kept looking categorised.
                     'vl_result_category',
                 ]
@@ -108,7 +108,7 @@ final class TestsService
                 'clearOnRetest' => [
                     'result', 'result_value_log', 'result_value_absolute', 'result_value_text',
                     'result_value_absolute_decimal', 'sample_tested_datetime', 'sample_batch_id',
-                    'lot_expiration_date', 'lot_number', 'vl_result_category',
+                    'lot_expiration_date', 'lot_number', 'assay_name', 'vl_result_category',
                 ]
             ],
             'cd4' => [
@@ -151,7 +151,7 @@ final class TestsService
                 'deleteChildOnRetest' => false,
                 'clearOnRetest' => [
                     'result', 'sample_tested_datetime', 'sample_batch_id',
-                    'lot_expiration_date', 'lot_number',
+                    'lot_expiration_date', 'lot_number', 'assay_name',
                 ]
             ],
             'covid19' => [

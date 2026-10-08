@@ -40,6 +40,7 @@ try {
     $flagCol = 10;
     $testDateCol = 11;
     $lotNumberCol = 12;
+    $assayCol = 3; // ASSAY NAME
     $lotExpirationDateCol = 13;
 
     // Parse the file using fgetcsv
@@ -139,6 +140,7 @@ try {
                 "testingDate" => $testingDate ?? null,
                 "sampleType" => $sampleType,
                 "lotNumber" => $lotNumberVal,
+                "assay" => $sheetData[$assayCol] ?? null,
                 "lotExpirationDate" => $lotExpirationDateVal,
                 "cvNumber" => $cvNumber,
             ];

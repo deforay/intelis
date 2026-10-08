@@ -111,6 +111,7 @@ final class EidExportService extends AbstractSampleExportService
             ...X::rejectionColumns(),
             X::text(_translate('Recommended Corrective Action'), 'recommended_corrective_action_name', $notDrc),
             X::text(_translate('Testing Platform'), 'eid_test_platform'),
+            X::text(_translate('Assay'), 'assay_name'),
             X::date(_translate('Sample Tested On'), 'sample_tested_datetime', true),
             X::choice(_translate('Result'), 'result', [], $eidResults),
             X::text(_translate('Comments'), 'lab_tech_comments', $notDrc),

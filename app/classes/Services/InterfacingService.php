@@ -31,6 +31,9 @@ final class InterfacingService
 {
     private const FAILURE_RESULTS = ['fail', 'failed', 'failure', 'error', 'err'];
 
+    /** Test tables with an assay_name column (5.7.82). */
+    private const ASSAY_TABLES = ['form_vl', 'form_eid'];
+
     /** @var array<string, string>|null primary key column => test table name */
     private ?array $activeModules = null;
     private ?int $formId = null;
@@ -167,6 +170,12 @@ final class InterfacingService
             return $this->outcome(false, false, $table, 'unsupported_test_type');
         }
 
+        // The assay the analyzer ran, as it names it. Programs count tests by
+        // instrument and assay for reagent planning and failure rates.
+        if (in_array($table, self::ASSAY_TABLES, true)) {
+            $data['assay_name'] = self::assayName($row);
+        }
+
         // A result from the analyzer means the sample was tested, so it is no longer
         // rejected. The builders above already move result_status off Rejected; without
         // this the rejection flag and reason stay behind from an earlier rejection and
@@ -184,8 +193,13 @@ final class InterfacingService
         }
 
         // Timestamps always differ, so comparing them would make every row look changed.
-        $ignoredKeys = ['last_modified_datetime', 'result_printed_datetime'];
-        if (MiscUtility::isArrayEqual($data, $existing, $ignoredKeys)) {
+        // The assay is left out too: a result re-sent after the upgrade that added it
+        // would otherwise read as changed, and an instrument that uploads its whole
+        // history (GeneXpert "Automatic Result Upload") would archive, rewrite and
+        // re-send every old row. The assay is filled in quietly instead.
+        $ignoredKeys = ['last_modified_datetime', 'result_printed_datetime', 'assay_name'];
+        if (self::holdsSameValues($data, $existing, $ignoredKeys)) {
+            $this->backfillAssay($table, $sample['primaryKey'], $existing, $data['assay_name'] ?? null);
             return $this->outcome(true, false, $table, 'already_up_to_date');
         }
 
@@ -413,6 +427,78 @@ final class InterfacingService
         }
 
         return null;
+    }
+
+    /**
+     * True when the row already holds every value about to be written.
+     *
+     * The values built from an analyzer result are typed (3.1, 1250.0) while a row
+     * reads back as strings ('3.1', '1250'), so a strict comparison never matched a
+     * numeric result: every re-send was archived as a superseded attempt, rewritten
+     * and queued for the STS again. Numbers are compared as numbers, everything else
+     * as text.
+     *
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $existing
+     * @param list<string> $ignoredKeys
+     */
+    public static function holdsSameValues(array $data, array $existing, array $ignoredKeys = []): bool
+    {
+        foreach ($data as $key => $value) {
+            if (in_array($key, $ignoredKeys, true)) {
+                continue;
+            }
+            if (!array_key_exists($key, $existing)) {
+                return false;
+            }
+            $stored = $existing[$key];
+            if ($value === null || $stored === null) {
+                if ($value !== $stored) {
+                    return false;
+                }
+            } elseif (is_numeric($value) && is_numeric($stored)) {
+                if ((float) $value !== (float) $stored) {
+                    return false;
+                }
+            } elseif ((string) $value !== (string) $stored) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * The assay as the analyzer reported it, or null. The Interface Tool keeps it in
+     * test_type, trimmed to what the column holds.
+     */
+    public static function assayName(array $row): ?string
+    {
+        $assay = trim((string) ($row['test_type'] ?? ''));
+        return $assay === '' ? null : mb_substr($assay, 0, 255);
+    }
+
+    /**
+     * Fills in the assay on a row the analyzer re-sent unchanged, and only when the
+     * row has none. last_modified_datetime is not touched: the result did not change,
+     * so the row is not re-sent or re-sorted on its account.
+     *
+     * @param array<string, mixed> $existing
+     */
+    private function backfillAssay(string $table, string $primaryKey, array $existing, ?string $assay): void
+    {
+        if (
+            $assay === null
+            || !in_array($table, self::ASSAY_TABLES, true)
+            || trim((string) ($existing['assay_name'] ?? '')) !== ''
+        ) {
+            return;
+        }
+
+        $this->db->connection('default')->rawQuery(
+            "UPDATE `$table` SET assay_name = ?
+              WHERE `$primaryKey` = ? AND (assay_name IS NULL OR assay_name = '')",
+            [$assay, $existing[$primaryKey]]
+        );
     }
 
     /**
