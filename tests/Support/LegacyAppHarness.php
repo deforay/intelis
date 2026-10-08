@@ -7,6 +7,8 @@ namespace Tests\Support;
 use App\Registries\ContainerRegistry;
 use App\Services\AuditTriggerService;
 use App\Services\DatabaseService;
+use App\Utilities\FileCacheUtility;
+use App\Utilities\MemoUtility;
 use DI\ContainerBuilder;
 use mysqli;
 use Psr\Http\Message\ServerRequestInterface;
@@ -180,6 +182,11 @@ final class LegacyAppHarness
                 self::db()->rawQuery($statement);
             }
         }
+
+        // Column lists are cached across processes for a few seconds, keyed by table
+        // name alone, so one read by an earlier test lacks the columns just added.
+        MemoUtility::clear();
+        ContainerRegistry::get(FileCacheUtility::class)->clear();
     }
 
     private static function schemaFor(string $table): string

@@ -361,4 +361,233 @@ final class InterfacingAssayTest extends TestCase
         self::assertSame('FILE-1', $after['lot_number']);
         self::assertNull($after['lot_expiration_date']);
     }
+
+    /** An Interface Tool orders row as the run-once backfill reads it. */
+    private function storedResult(string $sampleCode, string $testedAt = '2026-10-01 10:00:00'): array
+    {
+        return [
+            'id' => 1,
+            'order_id' => $sampleCode,
+            'test_id' => $sampleCode,
+            'test_type' => 'HIV-1_VL 2 2',
+            'result_accepted_date_time' => $testedAt,
+            'raw_text' => $this->genexpertMessage($sampleCode, '1250'),
+        ];
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheBackfillFillsTheCurrentRunAndQueuesItWithoutTouchingTheTimestamp(): void
+    {
+        $this->seed('form_vl', [
+            'sample_code' => 'VL-20', 'result' => '1250', 'sample_tested_datetime' => '2026-10-01 10:00:00',
+            'last_modified_datetime' => '2026-10-01 11:00:00', 'data_sync' => 1,
+        ]);
+
+        $outcome = $this->service()->backfillFromStoredResults([$this->storedResult('VL-20')], 1)[0];
+
+        $row = $this->row('form_vl', 'VL-20');
+        self::assertSame('filled', $outcome);
+        self::assertSame('Xpert_HIV-1 Viral Load', $row['assay_name']);
+        self::assertSame('72203', $row['lot_number']);
+        self::assertSame('2026-08-25', $row['lot_expiration_date']);
+        self::assertSame('2026-10-01 11:00:00', $row['last_modified_datetime']);
+        self::assertSame('0', (string) $row['data_sync'], 'sent to the STS by the next results sync');
+        self::assertSame(
+            'already_recorded',
+            $this->service()->backfillFromStoredResults([$this->storedResult('VL-20')], 1)[0]
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheBackfillFillsAReTestedSamplesArchivedRunAndNotItsCurrentResult(): void
+    {
+        $this->seed('form_vl', [
+            'sample_code' => 'VL-21', 'result' => '400', 'sample_tested_datetime' => '2026-10-05 09:00:00',
+            'data_sync' => 1,
+        ]);
+        $id = (int) LegacyAppHarness::db()->rawQueryOne(
+            "SELECT vl_sample_id FROM form_vl WHERE sample_code = 'VL-21'"
+        )['vl_sample_id'];
+        LegacyAppHarness::db()->insert('test_result_attempts', [
+            'test_type' => 'vl', 'form_table' => 'form_vl', 'record_id' => $id, 'attempt_number' => 1,
+            'superseded_by' => 'retest', 'sample_code' => 'VL-21', 'result' => 'Invalid', 'result_failed' => 1,
+            'sample_tested_datetime' => '2026-10-01 10:00:00',
+            'attempt_data' => json_encode(['row' => ['sample_code' => 'VL-21', 'assay_name' => null]]),
+            'created_datetime' => '2026-10-02 08:00:00',
+        ]);
+
+        $outcome = $this->service()->backfillFromStoredResults([$this->storedResult('VL-21')], 1)[0];
+
+        self::assertSame('filled_attempt', $outcome);
+        self::assertNull($this->row('form_vl', 'VL-21')['assay_name'], 'the current result is another run');
+        self::assertSame('1', (string) $this->row('form_vl', 'VL-21')['data_sync']);
+        $attempt = LegacyAppHarness::db()->rawQueryOne(
+            "SELECT lot_number, lot_expiration_date,
+                    JSON_UNQUOTE(JSON_EXTRACT(attempt_data, '$.row.assay_name')) AS assay
+               FROM test_result_attempts WHERE record_id = ?",
+            [$id]
+        );
+        self::assertSame('Xpert_HIV-1 Viral Load', $attempt['assay']);
+        self::assertSame('72203', $attempt['lot_number']);
+        self::assertSame('2026-08-25', $attempt['lot_expiration_date']);
+        self::assertSame(
+            'other_run',
+            $this->service()->backfillFromStoredResults([$this->storedResult('VL-21', '2026-09-01 10:00:00')], 1)[0]
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheBackfillLeavesWhatItCannotPlace(): void
+    {
+        $this->seed('form_vl', ['sample_code' => 'VL-22', 'sample_tested_datetime' => '2026-10-01 10:00:00']);
+        $service = $this->service();
+
+        self::assertSame('no_sample', $service->backfillFromStoredResults([$this->storedResult('VL-404')], 1)[0]);
+        $tb = ['test_type' => 'MTB-RIF_ULTRA 2'] + $this->storedResult('VL-22');
+        self::assertSame(
+            'no_sample',
+            $service->backfillFromStoredResults([$tb], 1)[0],
+            'a TB result never fills a VL sample'
+        );
+        $untimed = ['result_accepted_date_time' => null] + $this->storedResult('VL-22');
+        self::assertSame('no_test_time', $service->backfillFromStoredResults([$untimed], 1)[0]);
+        $empty = ['raw_text' => '', 'test_type' => ''] + $this->storedResult('VL-22');
+        self::assertSame('nothing_to_read', $service->backfillFromStoredResults([$empty], 1)[0]);
+        self::assertNull($this->row('form_vl', 'VL-22')['assay_name']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testABatchIsMatchedRowByRowAcrossVlAndEid(): void
+    {
+        $this->seed('form_vl', ['sample_code' => 'VL-30', 'sample_tested_datetime' => '2026-10-01 10:00:00']);
+        $this->seed('form_eid', ['sample_code' => 'EID-30', 'sample_tested_datetime' => '2026-10-01 10:00:00']);
+        // Two VL samples sharing a lab code and the run's test time: no answer.
+        $this->seed('form_vl', [
+            'sample_code' => 'VL-31', 'lab_assigned_code' => 'LAB-1',
+            'sample_tested_datetime' => '2026-10-01 10:00:00',
+        ]);
+        $this->seed('form_vl', [
+            'sample_code' => 'VL-32', 'lab_assigned_code' => 'LAB-1',
+            'sample_tested_datetime' => '2026-10-01 10:00:00',
+        ]);
+        $this->seed('form_eid', [
+            'sample_code' => 'EID-31', 'lab_assigned_code' => 'LAB-1',
+            'sample_tested_datetime' => '2026-10-01 10:00:00',
+        ]);
+        $shared = ['order_id' => '', 'test_id' => 'LAB-1'] + $this->storedResult('LAB-1');
+
+        $outcomes = $this->service()->backfillFromStoredResults([
+            $this->storedResult('VL-30'),
+            $this->storedResult('VL-404'),
+            $this->storedResult('EID-30'),
+            $shared,
+        ], 1);
+
+        self::assertSame(['filled', 'no_sample', 'filled', 'ambiguous'], $outcomes);
+        self::assertSame('72203', $this->row('form_vl', 'VL-30')['lot_number']);
+        self::assertSame('72203', $this->row('form_eid', 'EID-30')['lot_number']);
+        self::assertNull($this->row('form_vl', 'VL-31')['lot_number']);
+        self::assertNull($this->row('form_eid', 'EID-31')['lot_number'], 'not taken for the only EID sample');
+    }
+
+    #[RunInSeparateProcess]
+    public function testASampleResetForReTestAfterItWasReadGetsNothingFromTheOldRun(): void
+    {
+        $this->seed('form_vl', ['sample_code' => 'VL-40', 'sample_tested_datetime' => '2026-10-01 10:00:00']);
+        $readEarlier = $this->row('form_vl', 'VL-40');
+        $id = (int) $readEarlier['vl_sample_id'];
+        // Reset for re-test in between: the run is archived and the row cleared.
+        LegacyAppHarness::db()->insert('test_result_attempts', [
+            'test_type' => 'vl', 'form_table' => 'form_vl', 'record_id' => $id, 'attempt_number' => 1,
+            'superseded_by' => 'retest', 'sample_code' => 'VL-40', 'sample_tested_datetime' => '2026-10-01 10:00:00',
+            'attempt_data' => json_encode(['row' => ['sample_code' => 'VL-40']]),
+            'created_datetime' => '2026-10-02 08:00:00',
+        ]);
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE form_vl SET sample_tested_datetime = NULL WHERE sample_code = 'VL-40'"
+        );
+
+        $outcome = (new ReflectionClass(InterfacingService::class))->getMethod('backfillRun')->invoke(
+            $this->service(),
+            [['table' => 'form_vl', 'primaryKey' => 'vl_sample_id', 'row' => $readEarlier]],
+            '2026-10-01 10:00:00',
+            array_filter(InterfacingService::runDetails($this->storedResult('VL-40')))
+        );
+
+        self::assertSame('filled_attempt', $outcome);
+        $row = $this->row('form_vl', 'VL-40');
+        self::assertNull($row['assay_name']);
+        self::assertNull($row['lot_number']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnEidRunIsFoundWhenANewerVlSampleSharesItsCode(): void
+    {
+        $this->seed('form_vl', [
+            'sample_code' => 'VL-50', 'lab_assigned_code' => 'LAB-50',
+            'sample_tested_datetime' => '2026-10-07 09:00:00',
+        ]);
+        $this->seed('form_eid', [
+            'sample_code' => 'EID-50', 'lab_assigned_code' => 'LAB-50',
+            'sample_tested_datetime' => '2026-10-01 10:00:00',
+        ]);
+        $stored = ['order_id' => '', 'test_id' => 'LAB-50'] + $this->storedResult('LAB-50');
+
+        self::assertSame(['filled'], $this->service()->backfillFromStoredResults([$stored], 1));
+        self::assertSame('72203', $this->row('form_eid', 'EID-50')['lot_number']);
+        self::assertNull($this->row('form_vl', 'VL-50')['lot_number']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testARunTimeTwoSamplesShareFillsNeither(): void
+    {
+        $this->seed('form_vl', [
+            'sample_code' => 'VL-60', 'lab_assigned_code' => 'LAB-60',
+            'sample_tested_datetime' => '2026-10-01 10:00:00',
+        ]);
+        $this->seed('form_eid', [
+            'sample_code' => 'EID-60', 'lab_assigned_code' => 'LAB-60',
+            'sample_tested_datetime' => '2026-10-05 09:00:00',
+        ]);
+        $eidId = (int) LegacyAppHarness::db()->rawQueryOne(
+            "SELECT eid_id FROM form_eid WHERE sample_code = 'EID-60'"
+        )['eid_id'];
+        LegacyAppHarness::db()->insert('test_result_attempts', [
+            'test_type' => 'eid', 'form_table' => 'form_eid', 'record_id' => $eidId, 'attempt_number' => 1,
+            'superseded_by' => 'retest', 'sample_code' => 'EID-60', 'sample_tested_datetime' => '2026-10-01 10:00:00',
+            'attempt_data' => json_encode(['row' => ['sample_code' => 'EID-60']]),
+            'created_datetime' => '2026-10-02 08:00:00',
+        ]);
+        $stored = ['order_id' => '', 'test_id' => 'LAB-60'] + $this->storedResult('LAB-60');
+
+        self::assertSame(['ambiguous'], $this->service()->backfillFromStoredResults([$stored], 1));
+        self::assertNull($this->row('form_vl', 'VL-60')['lot_number']);
+        self::assertNull(LegacyAppHarness::db()->rawQueryOne(
+            'SELECT lot_number FROM test_result_attempts WHERE record_id = ?',
+            [$eidId]
+        )['lot_number']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testCodesMatchAsTheTablesCompareThem(): void
+    {
+        $this->seed('form_vl', [
+            'sample_code' => 'VL-70', 'lab_assigned_code' => 'Lab-É70',
+            'sample_tested_datetime' => '2026-10-01 10:00:00',
+        ]);
+        $stored = ['order_id' => '', 'test_id' => 'LAB-E70'] + $this->storedResult('LAB-E70');
+
+        self::assertSame(['filled'], $this->service()->backfillFromStoredResults([$stored], 1));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnotherLabsSampleWithTheSameCodeIsLeftAlone(): void
+    {
+        $this->seed('form_vl', [
+            'sample_code' => 'VL-80', 'lab_id' => 2, 'sample_tested_datetime' => '2026-10-01 10:00:00',
+        ]);
+
+        self::assertSame(['no_sample'], $this->service()->backfillFromStoredResults([$this->storedResult('VL-80')], 1));
+        self::assertNull($this->row('form_vl', 'VL-80')['assay_name']);
+    }
 }

@@ -8,6 +8,7 @@ use App\Utilities\AnalyzerRawText;
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;
 use App\Utilities\MiscUtility;
+use Normalizer;
 use RuntimeException;
 use Throwable;
 
@@ -517,23 +518,39 @@ final class InterfacingService
     /**
      * Fills in the assay and lot on a row the analyzer re-sent unchanged, each only
      * where the row has none, so nothing a user typed is replaced.
-     * last_modified_datetime is not touched: the result did not change, so the row
-     * is not re-sent or re-sorted on its account.
+     *
+     * last_modified_datetime is not touched: the result did not change, so the row is
+     * not re-sorted on its account. data_sync goes back to 0 so the next results sync
+     * still carries the assay and lot to the STS, which keeps its own timestamp for a
+     * change to these columns alone (STS\ResultsService::RUN_DETAIL_COLUMNS).
      *
      * @param array<string, mixed> $existing
      * @param array<string, ?string> $details
+     * @param ?string $testedAt when given, the run's test time, which the row must still
+     *                          have when it is written: a sample reset for re-test since
+     *                          it was read is another run
+     * @return bool whether anything was filled in
      */
-    private function backfillRunDetails(string $table, string $primaryKey, array $existing, array $details): void
-    {
+    private function backfillRunDetails(
+        string $table,
+        string $primaryKey,
+        array $existing,
+        array $details,
+        ?string $testedAt = null
+    ): bool {
         $db = $this->db->connection('default');
         $id = $existing[$primaryKey];
+        $sameRun = $testedAt === null ? '' : ' AND sample_tested_datetime = ?';
+        $runParams = $testedAt === null ? [] : [$testedAt];
+        $filled = false;
 
         if (($details['assay_name'] ?? null) !== null && trim((string) ($existing['assay_name'] ?? '')) === '') {
             $db->rawQuery(
-                "UPDATE `$table` SET assay_name = ?
-                  WHERE `$primaryKey` = ? AND (assay_name IS NULL OR assay_name = '')",
-                [$details['assay_name'], $id]
+                "UPDATE `$table` SET assay_name = ?, data_sync = 0
+                  WHERE `$primaryKey` = ? AND (assay_name IS NULL OR assay_name = '')$sameRun",
+                [$details['assay_name'], $id, ...$runParams]
             );
+            $filled = $db->count > 0;
         }
 
         // A lot and its expiry go in as a pair, and only where the row has neither,
@@ -545,12 +562,253 @@ final class InterfacingService
             && trim((string) ($existing['lot_expiration_date'] ?? '')) === ''
         ) {
             $db->rawQuery(
-                "UPDATE `$table` SET lot_number = ?, lot_expiration_date = ?
+                "UPDATE `$table` SET lot_number = ?, lot_expiration_date = ?, data_sync = 0
                   WHERE `$primaryKey` = ? AND (lot_number IS NULL OR lot_number = '')
-                    AND lot_expiration_date IS NULL",
-                [$details['lot_number'], $details['lot_expiration_date'] ?? null, $id]
+                    AND lot_expiration_date IS NULL$sameRun",
+                [$details['lot_number'], $details['lot_expiration_date'] ?? null, $id, ...$runParams]
             );
+            $filled = $db->count > 0 || $filled;
         }
+
+        return $filled;
+    }
+
+    /**
+     * Fills in the assay and lot of results imported before they were recorded, from
+     * the Interface Tool's stored copies of them (its orders rows, raw_text included).
+     * Only the run each row was saved from is filled: the sample's current result when
+     * its test time is the run's, or the archived attempt with that test time when the
+     * sample was re-tested since. Nothing a user entered is replaced.
+     *
+     * Samples are found by the codes importResult() matches on, locked ones included,
+     * and told apart by the run's test time. They are looked up a batch at a time and
+     * on one indexed column per query: run per row, the OR across the code columns
+     * scanned form_eid once for every result that was not an EID.
+     *
+     * @param list<array<string, mixed>> $rows Interface Tool orders rows
+     * @param int $labId the lab the Interface Tool belongs to: only its samples are
+     *                   looked at, as importResult() saves its results under it
+     * @return array<int, string> per row, by its index: 'filled', 'filled_attempt',
+     *         'nothing_to_read', 'no_sample', 'no_test_time', 'other_run', 'ambiguous'
+     *         or 'already_recorded'
+     */
+    public function backfillFromStoredResults(array $rows, int $labId): array
+    {
+        $outcomes = [];
+        $pending = [];
+        foreach ($rows as $index => $row) {
+            $details = array_filter(self::runDetails($row), static fn(?string $value): bool => $value !== null);
+            if ($this->isTbTest($row)) {
+                $outcomes[$index] = 'no_sample';
+            } elseif ($details === []) {
+                $outcomes[$index] = 'nothing_to_read';
+            } else {
+                // The test time as importResult() saved it in sample_tested_datetime.
+                $testedAt = trim((string) ($row['result_accepted_date_time'] ?? ''));
+                $pending[$index] = [
+                    'orderId' => trim((string) ($row['order_id'] ?? '')),
+                    'testId' => trim((string) ($row['test_id'] ?? '')),
+                    'testedAt' => substr(str_replace('T', ' ', $testedAt), 0, 19),
+                    'details' => $details,
+                ];
+            }
+        }
+        if ($pending === []) {
+            return $outcomes;
+        }
+
+        $samples = [];
+        foreach ($this->activeModules() as $primaryKey => $table) {
+            if (in_array($table, self::ASSAY_TABLES, true)) {
+                $samples[$table] = [
+                    'primaryKey' => $primaryKey,
+                    'byCode' => $this->samplesByCode(
+                        $table,
+                        $primaryKey,
+                        $labId,
+                        array_column($pending, 'orderId'),
+                        array_column($pending, 'testId')
+                    ),
+                ];
+            }
+        }
+
+        foreach ($pending as $index => $result) {
+            // Every sample in every module the codes name: which one the message
+            // belongs to is settled by the run's test time, and more than one with a
+            // run at that time is no answer.
+            $candidates = [];
+            foreach ($samples as $table => ['primaryKey' => $primaryKey, 'byCode' => $byCode]) {
+                $matches = [];
+                foreach (
+                    [
+                        ['sample_code', $result['orderId']],
+                        ['remote_sample_code', $result['orderId']],
+                        ['remote_sample_code', $result['testId']],
+                        ['lab_assigned_code', $result['testId']],
+                    ] as [$column, $code]
+                ) {
+                    $matches += $byCode[$column][self::codeKey($code)] ?? [];
+                }
+                foreach ($matches as $row) {
+                    $candidates[] = ['table' => $table, 'primaryKey' => $primaryKey, 'row' => $row];
+                }
+            }
+            $outcomes[$index] = $this->backfillRun($candidates, $result['testedAt'], $result['details']);
+        }
+
+        ksort($outcomes);
+        return $outcomes;
+    }
+
+    /**
+     * Fills the run among these samples that has this test time: the sample's current
+     * result, or a run archived at a re-test. When more than one sample has a run at
+     * that time the message is no answer, and nothing is filled.
+     *
+     * @param list<array{table: string, primaryKey: string, row: array<string, mixed>}> $candidates
+     * @param array<string, string> $details
+     * @return string 'filled', 'filled_attempt', 'already_recorded', 'other_run',
+     *                'ambiguous', 'no_sample' or 'no_test_time'
+     */
+    private function backfillRun(array $candidates, string $testedAt, array $details): string
+    {
+        if ($candidates === []) {
+            return 'no_sample';
+        }
+        if ($testedAt === '') {
+            return 'no_test_time';
+        }
+
+        $runs = [];
+        foreach ($candidates as $candidate) {
+            $isCurrent = (string) ($candidate['row']['sample_tested_datetime'] ?? '') === $testedAt;
+            $archived = (int) ($this->db->connection('default')->rawQueryOne(
+                'SELECT COUNT(*) AS n FROM test_result_attempts
+                  WHERE form_table = ? AND record_id = ? AND sample_tested_datetime = ?',
+                [$candidate['table'], $candidate['row'][$candidate['primaryKey']], $testedAt]
+            )['n'] ?? 0) > 0;
+            // The current result and an archived copy of it are one run.
+            if ($isCurrent || $archived) {
+                $runs[] = $candidate + ['isCurrent' => $isCurrent];
+            }
+        }
+        if ($runs === []) {
+            return 'other_run';
+        }
+        if (count($runs) > 1) {
+            return 'ambiguous';
+        }
+
+        ['table' => $table, 'primaryKey' => $primaryKey, 'row' => $row, 'isCurrent' => $isCurrent] = $runs[0];
+        $filled = $isCurrent && $this->backfillRunDetails($table, $primaryKey, $row, $details, $testedAt);
+        // The archived copy too: the run may have been archived at a re-test since the
+        // row was read, even between the writes above.
+        $filledAttempt = $this->backfillAttempt($table, (int) $row[$primaryKey], $testedAt, $details);
+        return match (true) {
+            $filled => 'filled',
+            $filledAttempt => 'filled_attempt',
+            default => 'already_recorded',
+        };
+    }
+
+    /**
+     * The samples any of these codes could name, by the column and code that names
+     * them, the pairing importResult() uses: sample_code gets order IDs,
+     * remote_sample_code both, lab_assigned_code test IDs. One query per column so
+     * each uses its own index.
+     *
+     * @param list<string> $orderIds
+     * @param list<string> $testIds
+     * @return array<string, array<string, array<int|string, array<string, mixed>>>>
+     *         column => code key => primary key => row
+     */
+    private function samplesByCode(
+        string $table,
+        string $primaryKey,
+        int $labId,
+        array $orderIds,
+        array $testIds
+    ): array {
+        $codes = static fn(array $values): array => array_values(array_unique(array_filter(
+            $values,
+            static fn(string $value): bool => $value !== ''
+        )));
+        $byColumn = [
+            'sample_code' => $codes($orderIds),
+            'remote_sample_code' => $codes([...$orderIds, ...$testIds]),
+            'lab_assigned_code' => $codes($testIds),
+        ];
+
+        $byCode = [];
+        foreach ($byColumn as $column => $values) {
+            if ($values === []) {
+                continue;
+            }
+            $rows = $this->db->connection('default')->rawQuery(
+                "SELECT `$primaryKey`, sample_code, remote_sample_code, lab_assigned_code,
+                        sample_tested_datetime, assay_name, lot_number, lot_expiration_date
+                   FROM `$table`
+                  WHERE lab_id = ?
+                    AND `$column` IN (" . implode(', ', array_fill(0, count($values), '?')) . ')',
+                [$labId, ...$values]
+            ) ?: [];
+            foreach ($rows as $row) {
+                $byCode[$column][self::codeKey((string) $row[$column])][$row[$primaryKey]] = $row;
+            }
+        }
+        return $byCode;
+    }
+
+    /**
+     * A code compared at least as loosely as the tables' collations compare it: case,
+     * accents and trailing spaces ignored. The query already chose the samples and
+     * the test time picks the run, so this only has to never miss one.
+     */
+    private static function codeKey(string $code): string
+    {
+        $code = rtrim($code);
+        if (class_exists(Normalizer::class)) {
+            $decomposed = Normalizer::normalize($code, Normalizer::FORM_D);
+            $code = is_string($decomposed) ? (preg_replace('/\p{Mn}/u', '', $decomposed) ?? $code) : $code;
+        }
+        return mb_strtolower($code);
+    }
+
+    /**
+     * The same for a run archived when the sample was re-tested. The attempt keeps
+     * the lot in its own columns and the assay in its snapshot of the row.
+     *
+     * @param array<string, string> $details
+     */
+    private function backfillAttempt(string $table, int $recordId, string $testedAt, array $details): bool
+    {
+        $db = $this->db->connection('default');
+        $match = 'form_table = ? AND record_id = ? AND sample_tested_datetime = ?';
+        $filled = false;
+
+        if (isset($details['assay_name'])) {
+            $db->rawQuery(
+                "UPDATE test_result_attempts
+                    SET attempt_data = JSON_SET(attempt_data, '$.row.assay_name', ?)
+                  WHERE $match AND JSON_VALID(attempt_data)
+                    AND IFNULL(JSON_UNQUOTE(JSON_EXTRACT(attempt_data, '$.row.assay_name')), 'null')
+                        IN ('null', '')",
+                [$details['assay_name'], $table, $recordId, $testedAt]
+            );
+            $filled = $db->count > 0;
+        }
+
+        if (isset($details['lot_number'])) {
+            $db->rawQuery(
+                "UPDATE test_result_attempts SET lot_number = ?, lot_expiration_date = ?
+                  WHERE $match AND (lot_number IS NULL OR lot_number = '') AND lot_expiration_date IS NULL",
+                [$details['lot_number'], $details['lot_expiration_date'] ?? null, $table, $recordId, $testedAt]
+            );
+            $filled = $db->count > 0 || $filled;
+        }
+
+        return $filled;
     }
 
     /**
