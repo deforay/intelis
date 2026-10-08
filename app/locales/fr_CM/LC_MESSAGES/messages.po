@@ -36661,3 +36661,9 @@ msgstr "RAPPORTS"
 
 msgid "Edit General Configuration"
 msgstr "Modifier la configuration générale"
+
+msgid "All Sources"
+msgstr "Toutes les sources"
+
+msgid "Not Recorded"
+msgstr "Non renseigné"

@@ -1796,6 +1796,23 @@ final class CommonService
         }, ['r_funding_sources']);
     }
 
+    /**
+     * The stored source_of_request values behind one source, as a filter sees it.
+     * LIS and STS rows were written under two names over the years ('vlsm'/'lis',
+     * 'vlsts'/'sts'); filtering on one name alone would drop the other half.
+     *
+     * @return string[]
+     */
+    public static function storedSourcesOfRequest(string $source): array
+    {
+        $source = strtolower(trim($source));
+        return match ($source) {
+            'vlsm', 'lis' => ['vlsm', 'lis'],
+            'vlsts', 'sts' => ['vlsts', 'sts'],
+            default => [$source],
+        };
+    }
+
     public function getSourcesOfTestRequests($table, $asNameValuePair = false)
     {
         $key = "sources_of_test_requests_list_{$table}_" . ($asNameValuePair ? 'name_value' : 'full_data');

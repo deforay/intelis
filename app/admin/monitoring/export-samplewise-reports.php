@@ -2,160 +2,99 @@
 
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
-use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use App\Utilities\ExportJobUtility;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
-if (ExportJobUtility::queueRequested(__FILE__, null, ['samplewiseReportsCalc', 'samplewiseReportsQuery'])) {
-	return;
+if (ExportJobUtility::queueRequested(__FILE__, 'samplewiseReportsQuery', ['samplewiseReportsCalc'])) {
+    return;
 }
 
-
-ini_set('memory_limit', -1);
-set_time_limit(0);
-ini_set('max_execution_time', 300000);
+// A background job has no request to time out, and the worker sets its own
+// memory limit; a direct request keeps these.
+if (!ExportJobUtility::inBackground()) {
+    ini_set('memory_limit', -1);
+    set_time_limit(0);
+    ini_set('max_execution_time', 300000);
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+$calcResult = $db->rawQuery($_SESSION['samplewiseReportsCalc']);
 
-$sQuery = $_SESSION['samplewiseReportsQuery'];
-$rResult = $db->rawQuery($sQuery);
-
-$calcQuery = $_SESSION['samplewiseReportsCalc'];
-$calcResult = $db->rawQuery($calcQuery);
-
-$totalCalculationHeadings = ['No. of Samples Requested', 'No. of Samples Acknowledged', 'No. of Samples Received at Testing Lab', 'No. of Samples Tested', 'No. of Results Returned'];
-$headings = ['LIS Sample ID', 'Name of the Clinic', 'External ID', "Electronic Test request Date and Time", "STS Sample ID", "Request Acknowledged Date Time", "Samples Received At Lab", "Date Time of Sample added to Batch", "Test Result", "Result Received/Entered Date and Time", "Result Approved Date and Time", "Result Return Date and Time", "Last Modified On"];
-
-$outputCalc = [];
-$output = [];
-
-$colNo = 1;
-$colNum = 1;
-$styleArray = [
-    'font' => [
-        'bold' => true,
-        'size' => '13',
-    ],
-    'alignment' => [
-        'horizontal' => Alignment::HORIZONTAL_CENTER,
-        'vertical' => Alignment::VERTICAL_CENTER,
-    ],
-    'borders' => [
-        'outline' => [
-            'style' => Border::BORDER_THIN,
-        ],
-    ],
+// Same totals and columns, in the same order, as the page shows.
+$totalHeadings = [
+    _translate("No. of Samples Requested"),
+    _translate("No. of Samples Received at Testing Lab"),
+    _translate("No. of Samples Tested"),
+    _translate("No. of Results Returned"),
 ];
-$nameValue = '';
-foreach ($_POST as $key => $value) {
-    if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-        $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-    }
-}
+$headings = [
+    _translate("LIS Sample ID"),
+    _translate("STS Sample ID"),
+    _translate("External ID"),
+    _translate("Name of the Clinic"),
+    _translate("Name of the Testing Lab"),
+    _translate("Electronic Test request Date and Time"),
+    _translate("Samples Received At Lab"),
+    _translate("Sample added to Batch on"),
+    _translate("Sample Status"),
+    _translate("Test Result"),
+    _translate("Sample Tested On"),
+    _translate("Result Approved Date and Time"),
+    _translate("Result Return Date and Time"),
+    _translate("Last Modified On"),
+];
 
-$excel = new Spreadsheet();
-$sheet = $excel->getActiveSheet();
+$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-SOURCES-OF-REQUESTS-' . date('d-M-Y-H-i-s')
+    . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
 
-$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNum) . '1', html_entity_decode($nameValue));
+$writer = new Writer();
+$writer->openToFile($filename);
 
-
-foreach ($totalCalculationHeadings as $field => $value) {
-    $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNum) . '2', html_entity_decode($value));
-    $colNum++;
-}
-
-$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-
-
-foreach ($headings as $field => $value) {
-    $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '5', html_entity_decode($value));
-    $colNo++;
-}
-
-$sheet->getStyle('A2:A2')->applyFromArray($styleArray);
-$sheet->getStyle('B2:B2')->applyFromArray($styleArray);
-$sheet->getStyle('C2:C2')->applyFromArray($styleArray);
-$sheet->getStyle('D2:D2')->applyFromArray($styleArray);
-$sheet->getStyle('E2:E2')->applyFromArray($styleArray);
-
-$sheet->getStyle('A5:A5')->applyFromArray($styleArray);
-$sheet->getStyle('B5:B5')->applyFromArray($styleArray);
-$sheet->getStyle('C5:C5')->applyFromArray($styleArray);
-$sheet->getStyle('D5:D5')->applyFromArray($styleArray);
-$sheet->getStyle('E5:E5')->applyFromArray($styleArray);
-$sheet->getStyle('F5:F5')->applyFromArray($styleArray);
-$sheet->getStyle('G5:G5')->applyFromArray($styleArray);
-$sheet->getStyle('H5:H5')->applyFromArray($styleArray);
-$sheet->getStyle('I5:I5')->applyFromArray($styleArray);
-$sheet->getStyle('J5:J5')->applyFromArray($styleArray);
-$sheet->getStyle('K5:K5')->applyFromArray($styleArray);
-$sheet->getStyle('L5:L5')->applyFromArray($styleArray);
-$sheet->getStyle('M5:M5')->applyFromArray($styleArray);
-
-
+$writer->addRow(Row::fromValues(array_map('html_entity_decode', $totalHeadings)));
 foreach ($calcResult as $cRow) {
-    $rowC = [];
-    $rowC[] = $cRow['totalSamplesRequested'];
-    $rowC[] = $cRow['totalSamplesAcknowledged'];
-    $rowC[] = $cRow['totalSamplesReceived'];
-    $rowC[] = $cRow['totalSamplesTested'];
-    $rowC[] = $cRow['totalSamplesDispatched'];
-
-    $outputCalc[] = $rowC;
+    $writer->addRow(Row::fromValues([
+        (int) $cRow['totalSamplesRequested'],
+        (int) $cRow['totalSamplesReceived'],
+        (int) $cRow['totalSamplesTested'],
+        (int) $cRow['totalSamplesDispatched'],
+    ]));
 }
+$writer->addRow(Row::fromValues(['']));
 
-$no = 1;
-foreach ($rResult as $aRow) {
+$writer->addRow(Row::fromValues(array_map('html_entity_decode', $headings)));
+
+$no = 0;
+foreach ($db->rawQueryGenerator($_SESSION['samplewiseReportsQuery']) as $aRow) {
     ExportJobUtility::tick();
-    $row = [];
-    $row[] = $aRow['sample_code'];
-    $row[] = $aRow['labname'];
-    $row[] = $aRow['external_sample_code'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
-    $row[] = $aRow['remote_sample_code'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
-    $row[] = DateUtility::humanReadableDateFormat($aRow['batch_request_created']);
-    $row[] = $aRow['result'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['result_reviewed_datetime']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['result_approved_datetime']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['result_sent_to_source_datetime']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime']);
+    $writer->addRow(Row::fromValues([
+        $aRow['sample_code'],
+        $aRow['remote_sample_code'],
+        $aRow['external_sample_code'] ?? $aRow['app_sample_code'],
+        $aRow['facility_name'],
+        $aRow['labname'],
+        DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true),
+        DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '', true),
+        DateUtility::humanReadableDateFormat($aRow['batch_request_created'] ?? '', true),
+        $aRow['status_name'],
+        $aRow['result'],
+        DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '', true),
+        DateUtility::humanReadableDateFormat($aRow['result_approved_datetime'] ?? '', true),
+        DateUtility::humanReadableDateFormat($aRow['result_returned_datetime'] ?? '', true),
+        DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true),
+    ]));
 
-    $output[] = $row;
-    $no++;
-}
-
-foreach ($outputCalc as $rNo => $rData) {
-    $colNum = 1;
-    $rCount = $rNo + 3;
-    foreach ($rData as $field => $value) {
-        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNum) . $rCount, html_entity_decode((string) $value));
-        $colNum++;
+    if (++$no % 5000 === 0) {
+        gc_collect_cycles();
     }
 }
 
-foreach ($output as $rowNo => $rowData) {
-    $colNo = 1;
-    $rRowCount = $rowNo + 6;
-    foreach ($rowData as $field => $value) {
-        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
-        $colNo++;
-    }
-}
-$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-$filename = 'InteLIS-SAMPLEWISE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomNumber(6) . '.xlsx';
-$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+$writer->close();
+
 echo _downloadToken($filename);
