@@ -29,11 +29,7 @@ by the [installation](../guides/installing-intelis-on-ubuntu.md) and
 | Settings → Lab Storage | The lab's freezers and other sample storage | [Request form lists](admin-module-configuration.md) |
 | Settings → General Configuration | Settings that apply to the whole installation | [General configuration](admin-general-configuration.md) |
 | Monitoring | Audit trail, activity, page usage, sync, log files | [Monitoring and audit](admin-monitoring.md) |
-
-Three reports sit under **REPORTS**, a separate section of the sidebar outside
-**ADMIN**: **Lab Performance Indicators**, **Instrument Activity** and
-**Sample Referral Network**. They are covered in
-[Monitoring and audit](admin-monitoring.md).
+| Reports | Lab Performance Indicators, Instrument Activity, Sample Referral Network | [Monitoring and audit](admin-monitoring.md) |
 
 **Test Settings** shows a tab only for the tests the installation runs.
 

@@ -36658,3 +36658,6 @@ msgstr "Paramètres des tests"
 
 msgid "REPORTS"
 msgstr "RAPPORTS"
+
+msgid "Edit General Configuration"
+msgstr "Modifier la configuration générale"

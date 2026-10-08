@@ -10,10 +10,9 @@ reviewed_against: 5.7.74
 
 Trouver qui a modifié une fiche, vérifier que les données et les résultats des
 automates circulent, et lire la performance du laboratoire. La plupart des
-pages se trouvent sous **ADMIN → Surveillance**. **Activité des machines
-d'interface**, **Indicateurs de performance du laboratoire** et **Réseau de
-référencement des échantillons** se trouvent sous **RAPPORTS**, une section
-distincte de la barre latérale.
+pages se trouvent sous **ADMIN → Surveillance**. **Activité des
+instruments**, **Indicateurs de performance du laboratoire** et **Réseau de
+référencement des échantillons** se trouvent sous **ADMIN → Rapports**.
 
 ## Avant de commencer
 
@@ -182,7 +181,7 @@ l'utilisateur. Ce n'est pas la durée de la connexion.
 
 ## Vérifier qu'un automate envoie toujours
 
-1. Aller à **RAPPORTS → Activité des instruments**.
+1. Aller à **ADMIN → Rapports → Activité des instruments**.
 2. Ouvrir **Événements de l'Interface Tool**.
 3. Lire **Événements (7 derniers jours)**, **Échecs (7 derniers jours)** et
    **Dernier événement**.
@@ -202,7 +201,7 @@ pas InteLIS.
 Ces chiffres servent à suivre les réactifs par plateforme et à comparer les
 taux d'échec entre instruments et entre tests.
 
-1. Aller à **RAPPORTS → Activité des instruments**.
+1. Aller à **ADMIN → Rapports → Activité des instruments**.
 2. Ouvrir **Tests par instrument**. L'onglet apparaît quand la Charge virale
    ou l'EID est active.
 3. Renseigner **Test**, **Testé le** et **Labo**. **Labo** n'apparaît que si
@@ -247,7 +246,7 @@ taux d'échec entre instruments et entre tests.
 
 ## Lire le rapport de performance du laboratoire
 
-1. Aller à **RAPPORTS → Indicateurs de performance du laboratoire**.
+1. Aller à **ADMIN → Rapports → Indicateurs de performance du laboratoire**.
 2. Renseigner **Test**, **Plage de dates**, **Afficher par** et **Labo**.
    **Labo** n'apparaît que si l'instance compte des laboratoires d'analyse.
 3. Sélectionner **Appliquer**.
@@ -298,7 +297,7 @@ masque donc pas un échec.
 
 ## Voir le réseau de référence
 
-1. Aller à **RAPPORTS → Réseau de référencement des échantillons**.
+1. Aller à **ADMIN → Rapports → Réseau de référencement des échantillons**.
 2. Renseigner **Plage de dates** et **Type de test**.
 3. Renseigner **Date basée sur** : **Date de prélèvement de l'échantillon**,
    **Date d'enregistrement de l'échantillon** ou **Date de test de
