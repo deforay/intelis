@@ -31,6 +31,9 @@ final class LabPerformanceIndicatorsService
 {
     public const GROUPINGS = ['monthly', 'quarterly', 'yearly'];
 
+    /** Modules whose form table records the assay (assay_name, 5.7.82). */
+    public const ASSAY_TEST_KEYS = ['vl', 'eid'];
+
     /**
      * How a result reached the system. A row is classified by the first rule
      * that matches, so a result imported and later corrected by hand counts as
@@ -222,6 +225,142 @@ final class LabPerformanceIndicatorsService
             ];
         }
         return $rows;
+    }
+
+    /**
+     * Tests by lab, instrument and assay, counted over the same events as the failure
+     * rate: a run with a usable result or a recorded failure, plus each earlier failed
+     * run a re-test replaced. Programs use it to account for reagents by platform, so a
+     * failed run counts as a test used.
+     *
+     * The instrument is the one the result came from (instrument_id). Older file
+     * imports stored the machine configuration there instead, and results entered by
+     * hand may carry only the platform name, so those take the result file format of
+     * an instrument with that name, the test's own lab first, then one not tied to a
+     * lab. The lookup reads a single row, so two instruments sharing a name can
+     * neither count a test twice nor lend one lab's format to another lab.
+     *
+     * @return list<array{lab: string, instrument: string, instrumentFile: string,
+     *                    instrumentType: string, instrumentLabel: string, assay: string, tested: int, failed: int, valid: int,
+     *                    failureRate: float|null, retested: int}>
+     */
+    public function getByInstrument(array $f): array
+    {
+        if (!in_array($f['testKey'], self::ASSAY_TEST_KEYS, true)) {
+            throw new SystemException('Select viral load or EID for the instrument breakdown');
+        }
+
+        $events = $this->testEventsFrom($f['testKey'], withInstrument: true);
+        $where = $this->buildWhere(
+            $f,
+            extra: '(t.is_resulted OR t.is_failed)',
+            dateClause: $this->testedInRange($f)
+        );
+
+        $sql = "SELECT COALESCE(f.facility_name, '" . $this->db->escape(_translate('Not assigned to a lab')) . "') AS lab_name,
+                       COALESCE(i.machine_name, NULLIF(TRIM(t.test_platform), ''), '') AS instrument,
+                       MAX(COALESCE(
+                           NULLIF(i.import_machine_file_name, ''),
+                           (SELECT n.import_machine_file_name
+                              FROM instruments AS n
+                             WHERE i.instrument_id IS NULL
+                               AND n.machine_name = TRIM(t.test_platform)
+                               AND (n.lab_id = t.lab_id OR n.lab_id IS NULL)
+                               AND COALESCE(n.import_machine_file_name, '') != ''
+                             ORDER BY n.lab_id IS NULL
+                             LIMIT 1),
+                           ''
+                       )) AS instrument_file,
+                       COALESCE(NULLIF(TRIM(t.assay_name), ''), '') AS assay,
+                       COUNT(*) AS tested,
+                       SUM(t.is_failed) AS failed,
+                       SUM(t.is_retest) AS retested
+                  FROM $events
+                  LEFT JOIN instruments AS i ON i.instrument_id = t.instrument_id
+                  LEFT JOIN facility_details AS f ON f.facility_id = t.lab_id
+                 $where
+                 GROUP BY lab_name, instrument, assay
+                 ORDER BY lab_name ASC, instrument = '' ASC, instrument ASC, assay = '' ASC, assay ASC";
+
+        $rows = [];
+        foreach ($this->db->rawQuery($sql) ?: [] as $row) {
+            $tested = (int) $row['tested'];
+            $failed = (int) $row['failed'];
+            $instrument = (string) $row['instrument'];
+            $type = self::instrumentType((string) $row['instrument_file'], $instrument);
+            $rows[] = [
+                'lab' => (string) $row['lab_name'],
+                'instrument' => $instrument,
+                'instrumentFile' => (string) $row['instrument_file'],
+                'instrumentType' => $type,
+                'instrumentLabel' => self::instrumentLabel($instrument, $type),
+                'assay' => (string) $row['assay'],
+                'tested' => $tested,
+                'failed' => $failed,
+                'valid' => $tested - $failed,
+                'failureRate' => $tested > 0 ? round($failed * 100 / $tested, 2) : null,
+                'retested' => (int) $row['retested'],
+            ];
+        }
+        return $rows;
+    }
+
+    /**
+     * The instrument as one label: its name, with its make added when the name does
+     * not already say it ("Cobas 6800 NRL (Roche)", but "GeneXpert" as it is).
+     */
+    public static function instrumentLabel(string $instrument, string $type): string
+    {
+        if ($instrument === '') {
+            return '';
+        }
+        if (
+            in_array($type, [_translate('Other'), _translate('Not recorded')], true)
+            // Letters and digits only, so "BioRad PCR" already says Bio-Rad.
+            || str_contains(
+                (string) preg_replace('/[^a-z0-9]/', '', strtolower($instrument)),
+                (string) preg_replace('/[^a-z0-9]/', '', strtolower($type))
+            )
+        ) {
+            return $instrument;
+        }
+        return "$instrument ($type)";
+    }
+
+    /**
+     * The make of an instrument, for grouping tests by platform: read from the result
+     * file format the instrument is set up with, else from its name. Instrument names
+     * are typed by each lab ("Cobas 6800 NRL", "m2000 1"), so the format is the
+     * reliable signal; the name covers results that came in without one.
+     */
+    public static function instrumentType(string $instrumentFile, string $instrumentName): string
+    {
+        $makes = [
+            'Abbott' => ['abbott', 'alinity', 'm2000'],
+            'Roche' => ['roche', 'cobas', 'taqman', 'lightcycler'],
+            'GeneXpert' => ['genexpert', 'xpert'],
+            'Hologic' => ['hologic', 'panther'],
+            'bioMérieux' => ['biomerieux', 'nuclisens'],
+            'Bio-Rad' => ['biorad', 'bio-rad'],
+            'Applied Biosystems' => ['abi7500', 'quantstudio', 'thermo'],
+            'Qiagen' => ['rotor-gene', 'rotor gene', 'rotorgene'],
+        ];
+        foreach ([$instrumentFile, $instrumentName] as $text) {
+            $text = strtolower($text);
+            if ($text === '') {
+                continue;
+            }
+            foreach ($makes as $make => $keywords) {
+                foreach ($keywords as $keyword) {
+                    if (str_contains($text, $keyword)) {
+                        return $make;
+                    }
+                }
+            }
+        }
+        return $instrumentFile === '' && $instrumentName === ''
+            ? _translate('Not recorded')
+            : _translate('Other');
     }
 
     /**
@@ -751,7 +890,7 @@ final class LabPerformanceIndicatorsService
      * unchanged. is_failed / is_resulted are precomputed because the resulted test differs
      * per module and must not be re-derived per call site.
      */
-    private function testEventsFrom(string $testKey): string
+    private function testEventsFrom(string $testKey, bool $withInstrument = false): string
     {
         $table = TestsService::getTestTableName($testKey);
         $primaryKey = TestsService::getPrimaryColumn($testKey);
@@ -775,6 +914,28 @@ final class LabPerformanceIndicatorsService
             ? "CAST(JSON_UNQUOTE(JSON_EXTRACT(a.attempt_data, '$.row.test_type')) AS UNSIGNED) AS test_type,"
             : '';
 
+        // The instrument a test ran on, for the instrument breakdown only. An archived
+        // attempt keeps the platform and instrument as promoted columns; the assay is
+        // read from its row snapshot (JSON null reads back as the string 'null').
+        // Each is given one collation: installs upgraded through 5.2.0 keep
+        // utf8mb4_general_ci on some form columns, and the UNION below and the joins
+        // on instruments fail with "Illegal mix of collations" otherwise.
+        $liveInstrument = $archivedInstrument = '';
+        if ($withInstrument) {
+            $text = static fn(string $expr): string
+                => "CONVERT($expr USING utf8mb4) COLLATE utf8mb4_0900_ai_ci";
+            $platformColumn = TestsService::getTestPlatformColumn($testKey);
+            $hasAssay = in_array($testKey, self::ASSAY_TEST_KEYS, true);
+            $liveInstrument = $text("live.`$platformColumn`") . " AS test_platform,
+                           " . $text('live.instrument_id') . " AS instrument_id,
+                           " . ($hasAssay ? $text('live.assay_name') : 'NULL') . " AS assay_name,";
+            $archivedInstrument = $text('a.test_platform') . ",
+                           " . $text('a.instrument_id') . ",
+                           " . ($hasAssay
+                ? $text("NULLIF(JSON_UNQUOTE(JSON_EXTRACT(a.attempt_data, '$.row.assay_name')), 'null')")
+                : 'NULL') . ",";
+        }
+
         // result_status is carried through because buildWhere() excludes cancelled
         // samples by it, and this derived table is aliased `t` exactly like the
         // form tables the other indicators read. An archived attempt takes the
@@ -787,6 +948,7 @@ final class LabPerformanceIndicatorsService
                     SELECT live.lab_id AS lab_id,
                            live.facility_id AS facility_id,
                            $liveTestType
+                           $liveInstrument
                            live.sample_tested_datetime AS sample_tested_datetime,
                            (live.result_status = $failed) AS is_failed,
                            $liveResulted AS is_resulted,
@@ -800,6 +962,7 @@ final class LabPerformanceIndicatorsService
                     SELECT a.lab_id,
                            a.facility_id,
                            $archivedTestType
+                           $archivedInstrument
                            a.sample_tested_datetime,
                            a.result_failed,
                            (a.result IS NOT NULL AND a.result != ''),

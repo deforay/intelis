@@ -61,6 +61,7 @@ try {
         $testDateCol = 11;
 
         $lotNumberCol = 12;
+        $assayCol = 3; // ASSAY NAME
         $reviewByCol = '';
         $lotExpirationDateCol = 13;
 
@@ -143,6 +144,7 @@ try {
                             "testingDate" => $testingDate,
                             "sampleType" => $sampleType,
                             "lotNumber" => $lotNumberVal,
+                            "assay" => $sheetData[$assayCol] ?? null,
                             "result" => $result,
                             "lotExpirationDate" => $lotExpirationDateVal,
                         ];
@@ -171,6 +173,7 @@ try {
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag'],
                 'lot_number' => $d['lotNumber'],
+                'test_type' => \App\Services\TestResultImportService::assayFromFile($d['assay'] ?? null),
                 'lot_expiration_date' => $d['lotExpirationDate'],
                 'result' => $d['result'],
             ];

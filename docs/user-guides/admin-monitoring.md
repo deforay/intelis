@@ -15,9 +15,9 @@ read how the lab is performing. The pages sit under **ADMIN → Monitoring**.
 
 - An account whose role holds the Monitoring pages needed. The built-in Admin
   role sees them all
-- On the Roles page, **Lab Performance Indicators**, **Interface Machine
-  Activity** and **Sample Referral Network** are granted under **Reports**, not
-  under Monitoring
+- On the Roles page, **Lab Performance Indicators**, **Instrument Activity**
+  and **Sample Referral Network** are granted under **Reports**, not under
+  Monitoring
 
 ??? info "Which pages appear"
 
@@ -40,7 +40,8 @@ read how the lab is performing. The pages sit under **ADMIN → Monitoring**.
 | Which pages do users open, and for how long? | Page Usage |
 | Did data reach the STS? | API History on a LIS. Lab Sync Status on the STS |
 | Where did the STS requests come from, and did results go back? | API Dashboard |
-| Is this analyzer still sending? | Interface Machine Activity |
+| Is this analyzer still sending? | Instrument Activity |
+| How many tests ran on each instrument and assay? | Instrument Activity |
 | How long is the lab taking, and how often do tests fail? | Lab Performance Indicators |
 | Where are samples lost between request and result? | Source of Requests |
 | What does InteLIS hold behind a result? | Test Results Metadata |
@@ -163,16 +164,60 @@ length of the sign-in.
 
 ## Check that an analyzer is still sending
 
-1. Go to **ADMIN → Monitoring → Interface Machine Activity**.
-2. Read **Events (last 7 days)**, **Failures (last 7 days)** and **Last event**.
-3. Set **Instrument** to the analyzer, and select **Search**.
-4. Read the most recent **Occurred On**. A failed event carries a **Failure
-   Code**.
-5. If nothing recent appears, open the testing lab's **Interface Tool
+1. Go to **ADMIN → Monitoring → Instrument Activity**.
+2. Open **Interface Tool Events**.
+3. Read **Events (last 7 days)**, **Failures (last 7 days)** and **Last event**.
+4. Set **Instrument** to the analyzer, and select **Search**.
+5. Read the most recent **Occurred On**. A failed event carries a **Failure
+   Code**. To keep the list, select **Export to Excel**.
+6. If nothing recent appears, open the testing lab's **Interface Tool
    Connections** and read **Last Seen**. See
    [Interface Tool connections](admin-interface-tool-connections.md).
 
 A stale **Last Seen** means the Interface Tool is not reaching InteLIS.
+
+## Count tests by instrument and assay
+
+Use these figures to account for reagents by platform and to compare failure
+rates between instruments and assays.
+
+1. Go to **ADMIN → Monitoring → Instrument Activity**.
+2. Open **Tests by Instrument**. The tab appears when Viral Load or EID is
+   active.
+3. Set **Test**, **Tested On** and **Lab**. **Lab** appears only when the
+   instance has testing labs.
+4. Select **Search**.
+5. Read **By Instrument Type** for the totals of each make, and **By Lab,
+   Instrument and Assay** for each instrument.
+6. To narrow **By Lab, Instrument and Assay**, pick a value in the dropdown
+   above a column. Select a column heading to sort by it. **Total** adds up the
+   rows left showing.
+7. To keep the figures, select **Export to Excel**. The file downloads when it
+   is ready. Progress shows in the Exports menu.
+
+    ??? info "What each column counts"
+
+        | Column | Counts |
+        | --- | --- |
+        | Tests Run | Every result and every recorded failure, on the date of the test |
+        | Failed or Invalid | Tests with the status Failed |
+        | Failed Runs Re-tested | Failed runs that a re-test replaced. Each one is also in Tests Run |
+
+        The export also has **Valid Results**: Tests Run that did not fail.
+
+        Cancelled and rejected samples are not counted. For the same test, range
+        and lab, **Tests Run** matches **Failures** in Lab Performance Indicators.
+
+    ??? info "If the assay shows Not recorded"
+
+        The assay is recorded for results that arrive from the Interface Tool or
+        from GeneXpert and Abbott m2000 result files, starting with the update
+        that added this tab. Earlier results, results entered by hand and other
+        result file formats show **Not recorded**.
+
+    ??? info "If the instrument shows Not recorded"
+
+        The result was entered by hand without a testing platform.
 
 ## Read the lab performance report
 
@@ -254,5 +299,5 @@ The log records faults, not user actions.
 | --- | --- |
 | Traced a change | The Audit Trail names the field, the old value, the new value and the user |
 | Confirmed a sync | API History or Lab Sync Status shows a recent sync carrying records |
-| Confirmed an analyzer is live | Interface Machine Activity holds a recent event, and **Last Seen** is recent |
+| Confirmed an analyzer is live | Instrument Activity holds a recent Interface Tool event, and **Last Seen** is recent |
 | Found a missing sample | Source of Requests shows the stage where the count drops |

@@ -134,6 +134,7 @@ try {
                 'sample_type' => 'S',
                 'result_status' => RECEIVED_AT_TESTING_LAB,
                 'import_machine_file_name' => $fileName,
+                'test_type' => \App\Services\TestResultImportService::assayFromFile($d['assay'] ?? null),
                 'result' => trim($d['result']),
             ];
 

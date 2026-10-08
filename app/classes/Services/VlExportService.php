@@ -131,6 +131,7 @@ final class VlExportService extends AbstractSampleExportService
             X::text(_translate('Recommended Corrective Action'), 'recommended_corrective_action_name', $notDrc),
             X::date(_translate('Sample Tested On'), 'sample_tested_datetime', true),
             X::text(_translate('Testing Platform'), 'vl_test_platform'),
+            X::text(_translate('Assay'), 'assay_name'),
             X::text(_translate('Result (cp/mL)'), 'result'),
             X::text(_translate('Result (log)'), 'result_log'),
             X::text(_translate('Reason for Failure'), 'failure_reason', $drc),

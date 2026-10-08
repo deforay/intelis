@@ -1,10 +1,13 @@
 <?php
 
+use App\Services\TestsService;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\LabPerformanceIndicatorsService;
 
-$title = _translate("Interface Machine Activity");
+$title = _translate("Instrument Activity");
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
@@ -12,6 +15,16 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+// The modules that record the instrument and assay of each test.
+$instrumentTests = array_values(array_intersect(
+    LabPerformanceIndicatorsService::ASSAY_TEST_KEYS,
+    TestsService::getActiveTests()
+));
+$testingLabs = $facilitiesService->getTestingLabs();
 
 $labScope = $general->labAdminScopeWhere('lab_id');
 $scopeClause = !empty($labScope) ? " WHERE $labScope " : '';
@@ -94,6 +107,37 @@ $summary = $db->rawQueryOne(
         border: 1px solid #e0e5ea;
     }
 
+    #interfaceActivityReport .nav-tabs {
+        margin: 0 10px 15px;
+    }
+
+    #interfaceActivityReport .ia-note {
+        margin: 0 0 15px;
+        color: #6b7580;
+        font-size: 12px;
+    }
+
+    #interfaceActivityReport .ia-section-title {
+        margin: 20px 0 8px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    #interfaceActivityReport td.num,
+    #interfaceActivityReport th.num {
+        text-align: right;
+    }
+
+    #interfaceActivityReport tr.ia-filters th {
+        padding: 4px;
+        font-weight: normal;
+    }
+
+    #interfaceActivityReport tr.ia-total td {
+        font-weight: 700;
+        background-color: #f4f6f8;
+    }
+
     th {
         display: revert !important;
     }
@@ -103,14 +147,14 @@ $summary = $db->rawQueryOne(
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><em class="fa-solid fa-plug"></em>
-            <?php echo _translate("Interface Machine Activity"); ?>
+            <?php echo _htmlTranslate("Instrument Activity"); ?>
         </h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em>
-                    <?php echo _translate("Home"); ?>
+                    <?php echo _htmlTranslate("Home"); ?>
                 </a></li>
             <li class="active">
-                <?php echo _translate("Interface Machine Activity"); ?>
+                <?php echo _htmlTranslate("Instrument Activity"); ?>
             </li>
         </ol>
     </section>
@@ -120,9 +164,143 @@ $summary = $db->rawQueryOne(
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
+                    <ul class="nav nav-tabs" id="iaTabs" role="tablist" style="margin-top:10px;">
+                        <?php if (!empty($instrumentTests)) { ?>
+                            <li role="presentation" class="active"><a href="#tab-tests" role="tab"
+                                    data-toggle="tab"><?= _htmlTranslate('Tests by Instrument'); ?></a></li>
+                        <?php } ?>
+                        <li role="presentation" class="<?= empty($instrumentTests) ? 'active' : ''; ?>">
+                            <a href="#tab-events" role="tab" data-toggle="tab">
+                                <?= _htmlTranslate('Interface Tool Events'); ?></a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <?php if (!empty($instrumentTests)) { ?>
+                            <div role="tabpanel" class="tab-pane active" id="tab-tests">
+                                <div class="box-body">
+                                    <p class="text-muted" id="instrument-tests-description">
+                                        <?= _htmlTranslate('Tests run on each instrument and assay.'); ?>
+                                    </p>
+                                    <table aria-describedby="instrument-tests-description" class="table pageFilters"
+                                        aria-hidden="true" cellspacing="3" style="width:100%;">
+                                        <tr>
+                                            <td><strong><?= _htmlTranslate('Test'); ?>&nbsp;:</strong></td>
+                                            <td>
+                                                <select id="testsTestType" class="form-control"
+                                                    style="width:100%;max-width:200px;">
+                                                    <?php foreach ($instrumentTests as $testKey) { ?>
+                                                        <option value="<?= htmlspecialchars($testKey, ENT_QUOTES); ?>">
+                                                            <?= htmlspecialchars(
+                                                                (string) TestsService::getTestName($testKey),
+                                                                ENT_QUOTES
+                                                            ); ?>
+                                                        </option>
+                                                    <?php } ?>
+                                                </select>
+                                            </td>
+                                            <td><strong><?= _htmlTranslate('Tested On'); ?>&nbsp;:</strong></td>
+                                            <td>
+                                                <input type="text" id="testsDateRange"
+                                                    class="form-control daterangefield"
+                                                    style="width:100%;max-width:260px;" />
+                                            </td>
+                                            <?php if (!empty($testingLabs)) { ?>
+                                                <td><strong><?= _htmlTranslate('Lab'); ?>&nbsp;:</strong></td>
+                                                <td>
+                                                    <select id="testsLabId" class="form-control"
+                                                        style="width:100%;max-width:240px;">
+                                                        <option value=""><?= _htmlTranslate('-- All Labs --'); ?></option>
+                                                        <?php foreach ($testingLabs as $labId => $labName) { ?>
+                                                            <option value="<?= (int) $labId; ?>">
+                                                                <?= htmlspecialchars((string) $labName, ENT_QUOTES); ?>
+                                                            </option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </td>
+                                            <?php } ?>
+                                            <td>
+                                                <button onclick="iaLoadTests();" class="btn btn-primary btn-sm">
+                                                    <span><?= _htmlTranslate("Search"); ?></span>
+                                                </button>
+                                                <button onclick="iaExport('tests', 'xlsx');" class="btn btn-success btn-sm">
+                                                    <em class="fa-solid fa-file-excel"></em>
+                                                    <?= _htmlTranslate("Export to Excel"); ?>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <div class="ia-section-title"><?= _htmlTranslate('By Instrument Type'); ?></div>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped" id="testsByTypeTable"
+                                            aria-describedby="instrument-tests-description">
+                                            <thead>
+                                                <tr>
+                                                    <th><?= _htmlTranslate('Instrument Type'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Tests Run'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Failed or Invalid'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Failure Rate (%)'); ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="ia-section-title"><?= _htmlTranslate('By Lab, Instrument and Assay'); ?></div>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped" id="testsDetailTable"
+                                            aria-describedby="instrument-tests-description">
+                                            <thead>
+                                                <tr>
+                                                    <th><?= _htmlTranslate('Testing Lab'); ?></th>
+                                                    <th><?= _htmlTranslate('Instrument'); ?></th>
+                                                    <th><?= _htmlTranslate('Assay'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Tests Run'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Failed or Invalid'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Failure Rate (%)'); ?></th>
+                                                    <th class="num"><?= _htmlTranslate('Failed Runs Re-tested'); ?></th>
+                                                </tr>
+                                                <?php // One dropdown per text column, filled from the loaded rows. ?>
+                                                <tr class="ia-filters">
+                                                    <?php for ($column = 0; $column < 3; $column++) { ?>
+                                                        <th>
+                                                            <select class="form-control input-sm ia-col-filter"
+                                                                data-column="<?= $column; ?>">
+                                                                <option value=""><?= _htmlTranslate('-- All --'); ?></option>
+                                                            </select>
+                                                        </th>
+                                                    <?php } ?>
+                                                    <th colspan="4"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                            <tfoot>
+                                                <tr class="ia-total">
+                                                    <td colspan="3"><?= _htmlTranslate('Total'); ?></td>
+                                                    <td class="num"></td>
+                                                    <td class="num"></td>
+                                                    <td class="num"></td>
+                                                    <td class="num"></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                    <p class="ia-note">
+                                        <?= _htmlTranslate(
+                                            'Failed runs that were re-tested count as tests. Cancelled and rejected '
+                                            . 'samples do not. The assay is recorded from this update on.'
+                                        ); ?>
+                                    </p>
+                                </div>
+                            </div>
+                        <?php } ?>
+
+                        <div role="tabpanel" class="tab-pane <?= empty($instrumentTests) ? 'active' : ''; ?>"
+                            id="tab-events">
                     <div class="box-body">
                         <p class="text-muted" id="interface-activity-description">
-                            <?= _translate(
+                            <?= _htmlTranslate(
                                 'What the Interface Tool recorded about its instruments: '
                                 . 'connection attempts, connection failures and application starts.'
                             ); ?>
@@ -130,25 +308,25 @@ $summary = $db->rawQueryOne(
 
                         <div class="ifa-summary">
                             <div class="ifa-card">
-                                <div class="ifa-card-label"><?= _translate('Events (last 7 days)'); ?></div>
+                                <div class="ifa-card-label"><?= _htmlTranslate('Events (last 7 days)'); ?></div>
                                 <div class="ifa-card-value">
                                     <?= number_format((int) ($summary['total_events'] ?? 0)); ?>
                                 </div>
                             </div>
                             <div class="ifa-card <?= (int) ($summary['failures'] ?? 0) > 0 ? 'is-alert' : ''; ?>">
-                                <div class="ifa-card-label"><?= _translate('Failures (last 7 days)'); ?></div>
+                                <div class="ifa-card-label"><?= _htmlTranslate('Failures (last 7 days)'); ?></div>
                                 <div class="ifa-card-value">
                                     <?= number_format((int) ($summary['failures'] ?? 0)); ?>
                                 </div>
                             </div>
                             <div class="ifa-card">
-                                <div class="ifa-card-label"><?= _translate('Instruments reporting'); ?></div>
+                                <div class="ifa-card-label"><?= _htmlTranslate('Instruments reporting'); ?></div>
                                 <div class="ifa-card-value">
                                     <?= number_format((int) ($summary['instruments'] ?? 0)); ?>
                                 </div>
                             </div>
                             <div class="ifa-card">
-                                <div class="ifa-card-label"><?= _translate('Last event'); ?></div>
+                                <div class="ifa-card-label"><?= _htmlTranslate('Last event'); ?></div>
                                 <div class="ifa-card-value" style="font-size:15px;">
                                     <?= !empty($summary['last_seen'])
                                         ? htmlspecialchars(
@@ -159,7 +337,7 @@ $summary = $db->rawQueryOne(
                                             ENT_QUOTES,
                                             'UTF-8'
                                         )
-                                        : _translate('No activity yet'); ?>
+                                        : _htmlTranslate('No activity yet'); ?>
                                 </div>
                             </div>
                         </div>
@@ -168,16 +346,16 @@ $summary = $db->rawQueryOne(
                     <table aria-describedby="interface-activity-description" class="table pageFilters"
                         aria-hidden="true" cellspacing="3" style="margin-left:1%;margin-top:5px;width:98%;">
                         <tr>
-                            <td><strong><?= _translate('Date Range'); ?>&nbsp;:</strong></td>
+                            <td><strong><?= _htmlTranslate('Date Range'); ?>&nbsp;:</strong></td>
                             <td>
                                 <input type="text" id="dateRange" name="dateRange"
                                     class="form-control daterangefield" style="width:100%;max-width:260px;" />
                             </td>
-                            <td><strong><?= _translate('Event'); ?>&nbsp;:</strong></td>
+                            <td><strong><?= _htmlTranslate('Event'); ?>&nbsp;:</strong></td>
                             <td>
                                 <select id="eventType" name="eventType" class="form-control"
                                     style="width:100%;max-width:260px;">
-                                    <option value=""><?= _translate('-- All --'); ?></option>
+                                    <option value=""><?= _htmlTranslate('-- All --'); ?></option>
                                     <?php foreach ($eventTypes as $eventType) {
                                         $value = htmlspecialchars(
                                             (string) $eventType['event_type'],
@@ -188,30 +366,34 @@ $summary = $db->rawQueryOne(
                                     <?php } ?>
                                 </select>
                             </td>
-                            <td><strong><?= _translate('Outcome'); ?>&nbsp;:</strong></td>
+                            <td><strong><?= _htmlTranslate('Outcome'); ?>&nbsp;:</strong></td>
                             <td>
                                 <select id="outcome" name="outcome" class="form-control"
                                     style="width:100%;max-width:180px;">
-                                    <option value=""><?= _translate('-- All --'); ?></option>
-                                    <option value="failed"><?= _translate('Failed'); ?></option>
-                                    <option value="success"><?= _translate('Success'); ?></option>
-                                    <option value="started"><?= _translate('Started'); ?></option>
+                                    <option value=""><?= _htmlTranslate('-- All --'); ?></option>
+                                    <option value="failed"><?= _htmlTranslate('Failed'); ?></option>
+                                    <option value="success"><?= _htmlTranslate('Success'); ?></option>
+                                    <option value="started"><?= _htmlTranslate('Started'); ?></option>
                                 </select>
                             </td>
-                            <td><strong><?= _translate('Instrument'); ?>&nbsp;:</strong></td>
+                            <td><strong><?= _htmlTranslate('Instrument'); ?>&nbsp;:</strong></td>
                             <td>
                                 <input type="text" id="instrument" name="instrument" class="form-control"
-                                    placeholder="<?= _translate('Instrument name'); ?>"
+                                    placeholder="<?= _htmlTranslate('Instrument name'); ?>"
                                     style="width:100%;max-width:220px;" />
                             </td>
                             <td>
                                 <button onclick="oTable.fnDraw();" class="btn btn-primary btn-sm">
-                                    <span><?= _translate("Search"); ?></span>
+                                    <span><?= _htmlTranslate("Search"); ?></span>
                                 </button>
                                 <button
                                     onclick="$('#dateRange,#instrument').val('');$('#eventType,#outcome').val('').trigger('change');oTable.fnDraw();"
                                     class="btn btn-default btn-sm">
-                                    <span><?= _translate("Reset"); ?></span>
+                                    <span><?= _htmlTranslate("Reset"); ?></span>
+                                </button>
+                                <button onclick="iaExport('events', 'xlsx');" class="btn btn-success btn-sm">
+                                    <em class="fa-solid fa-file-excel"></em>
+                                    <?= _htmlTranslate("Export to Excel"); ?>
                                 </button>
                             </td>
                         </tr>
@@ -222,24 +404,26 @@ $summary = $db->rawQueryOne(
                             class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
-                                    <th><?= _translate("Occurred On"); ?></th>
-                                    <th><?= _translate("Lab"); ?></th>
-                                    <th><?= _translate("Instrument"); ?></th>
-                                    <th><?= _translate("Event"); ?></th>
-                                    <th><?= _translate("Outcome"); ?></th>
-                                    <th><?= _translate("Failure Code"); ?></th>
-                                    <th><?= _translate("Protocol / Mode"); ?></th>
-                                    <th><?= _translate("App Version"); ?></th>
+                                    <th><?= _htmlTranslate("Occurred On"); ?></th>
+                                    <th><?= _htmlTranslate("Lab"); ?></th>
+                                    <th><?= _htmlTranslate("Instrument"); ?></th>
+                                    <th><?= _htmlTranslate("Event"); ?></th>
+                                    <th><?= _htmlTranslate("Outcome"); ?></th>
+                                    <th><?= _htmlTranslate("Failure Code"); ?></th>
+                                    <th><?= _htmlTranslate("Protocol / Mode"); ?></th>
+                                    <th><?= _htmlTranslate("App Version"); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td colspan="8" class="dataTables_empty">
-                                        <?= _translate("Loading data from server"); ?>
+                                        <?= _htmlTranslate("Loading data from server"); ?>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                        </div>
                     </div>
                 </div>
                 <!-- /.box -->
@@ -257,7 +441,7 @@ $summary = $db->rawQueryOne(
     $(document).ready(function () {
         $('#dateRange').daterangepicker({
             locale: {
-                cancelLabel: "<?= _translate("Clear", true); ?>",
+                cancelLabel: "<?= _jsTranslate("Clear"); ?>",
                 format: 'DD-MMM-YYYY',
                 separator: ' to ',
             },
@@ -265,17 +449,246 @@ $summary = $db->rawQueryOne(
             endDate: moment(),
             maxDate: moment(),
             ranges: {
-                'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                "<?= _jsTranslate('Today'); ?>": [moment(), moment()],
+                "<?= _jsTranslate('Yesterday'); ?>": [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                "<?= _jsTranslate('Last 7 Days'); ?>": [moment().subtract(6, 'days'), moment()],
+                "<?= _jsTranslate('Last 30 Days'); ?>": [moment().subtract(29, 'days'), moment()],
+                "<?= _jsTranslate('This Month'); ?>": [moment().startOf('month'), moment().endOf('month')],
+                "<?= _jsTranslate('Last Month'); ?>": [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
             }
         });
 
-        loadInterfaceActivity();
+        // The events grid loads the first time its tab is opened.
+        $('#iaTabs a[href="#tab-events"]').on('shown.bs.tab', function () {
+            loadInterfaceActivity();
+        });
+
+        if ($('#tab-tests').length) {
+            $('#testsDateRange').daterangepicker({
+                locale: {
+                    cancelLabel: "<?= _jsTranslate("Clear"); ?>",
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
+                },
+                showDropdowns: true,
+                startDate: moment().subtract(2, 'months').startOf('month'),
+                endDate: moment(),
+                maxDate: moment(),
+                ranges: {
+                    "<?= _jsTranslate('This Month'); ?>": [moment().startOf('month'), moment()],
+                    "<?= _jsTranslate('Last Month'); ?>": [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    "<?= _jsTranslate('Last 3 Months'); ?>": [moment().subtract(2, 'months').startOf('month'), moment()],
+                    "<?= _jsTranslate('This Quarter'); ?>": [moment().startOf('quarter'), moment()],
+                    "<?= _jsTranslate('Last Quarter'); ?>": [moment().subtract(1, 'quarter').startOf('quarter'), moment().subtract(1, 'quarter').endOf('quarter')],
+                    "<?= _jsTranslate('This Year'); ?>": [moment().startOf('year'), moment()],
+                    "<?= _jsTranslate('Last Year'); ?>": [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+                }
+            });
+            if ($('#testsLabId').length) {
+                $('#testsLabId').select2({ allowClear: true, placeholder: "<?= _jsTranslate('-- All Labs --'); ?>" });
+            }
+            $('#testsTestType').on('change', iaLoadTests);
+            iaLoadTests();
+        } else {
+            loadInterfaceActivity();
+        }
     });
+
+    var IA_NOT_RECORDED = "<?= _jsTranslate('Not recorded'); ?>";
+
+    function iaTestsFilters() {
+        return {
+            testType: $('#testsTestType').val(),
+            dateRange: $('#testsDateRange').val(),
+            labId: $('#testsLabId').length ? ($('#testsLabId').val() || '') : ''
+        };
+    }
+
+    function iaEventsFilters() {
+        return {
+            dateRange: $('#dateRange').val(),
+            eventType: $('#eventType').val(),
+            outcome: $('#outcome').val(),
+            instrument: $('#instrument').val(),
+            search: oTable ? oTable.fnSettings().oPreviousSearch.sSearch : ''
+        };
+    }
+
+    function iaEscape(value) {
+        return $('<div>').text(value === null || value === undefined ? '' : String(value)).html();
+    }
+
+    function iaNumber(value) {
+        return Number(value || 0).toLocaleString();
+    }
+
+    // A rate is recomputed from the counts it covers, never averaged.
+    function iaRate(failed, tested) {
+        return tested > 0 ? (Math.round(failed * 10000 / tested) / 100).toFixed(2) : '-';
+    }
+
+    function iaLoadTests() {
+        $('#testsByTypeTable tbody').html(
+            '<tr><td colspan="4" class="dataTables_empty"><?= _jsTranslate("Loading data from server"); ?></td></tr>'
+        );
+        $.post('/reports/get-instrument-test-volumes.php', iaTestsFilters(), null, 'json')
+            .done(function (data) {
+                if (!data || data.error) {
+                    iaRenderTests([], (data && data.error) || "<?= _jsTranslate('Unable to load the instrument figures'); ?>");
+                    return;
+                }
+                iaRenderTests(data.rows || [], null);
+            })
+            .fail(function () {
+                iaRenderTests([], "<?= _jsTranslate('Unable to load the instrument figures'); ?>");
+            });
+    }
+
+    function iaRenderTests(rows, error) {
+        var byType = {};
+        var total = { tested: 0, failed: 0 };
+
+        rows.forEach(function (r) {
+            var t = byType[r.instrumentType] = byType[r.instrumentType] || { tested: 0, failed: 0 };
+            t.tested += r.tested;
+            t.failed += r.failed;
+            total.tested += r.tested;
+            total.failed += r.failed;
+        });
+
+        var typeRows = '';
+        Object.keys(byType).sort(function (a, b) { return byType[b].tested - byType[a].tested; }).forEach(function (type) {
+            var t = byType[type];
+            typeRows += '<tr><td>' + iaEscape(type) + '</td><td class="num">' + iaNumber(t.tested) + '</td>'
+                + '<td class="num">' + iaNumber(t.failed) + '</td><td class="num">' + iaRate(t.failed, t.tested) + '</td></tr>';
+        });
+        if (Object.keys(byType).length > 1) {
+            typeRows += '<tr class="ia-total"><td>' + iaEscape("<?= _jsTranslate('Total'); ?>") + '</td>'
+                + '<td class="num">' + iaNumber(total.tested) + '</td><td class="num">' + iaNumber(total.failed) + '</td>'
+                + '<td class="num">' + iaRate(total.failed, total.tested) + '</td></tr>';
+        }
+        var message = error || "<?= _jsTranslate('No tests in the selected range'); ?>";
+        $('#testsByTypeTable tbody').html(rows.length ? typeRows
+            : '<tr><td colspan="4" class="dataTables_empty">' + iaEscape(message) + '</td></tr>');
+
+        iaRenderDetail(rows.map(function (r) {
+            return [
+                r.lab, r.instrumentLabel || IA_NOT_RECORDED, r.assay || IA_NOT_RECORDED,
+                r.tested, r.failed, r.tested > 0 ? r.failed * 100 / r.tested : null, r.retested
+            ];
+        }), message);
+    }
+
+    var iaDetailTable = null;
+
+    // Sortable, filterable by column, with a total over the rows left showing. The
+    // rows are already on the page, so all of it runs here, without a server call.
+    function iaRenderDetail(data, emptyMessage) {
+        if (iaDetailTable === null) {
+            var text = function (d, type) { return type === 'display' ? iaEscape(d) : d; };
+            var count = function (d, type) { return type === 'display' ? iaNumber(d) : d; };
+            iaDetailTable = $('#testsDetailTable').DataTable({
+                data: data,
+                dom: 'rtip',
+                pageLength: 50,
+                orderCellsTop: true,
+                order: [[0, 'asc'], [3, 'desc']],
+                columns: [
+                    { render: text }, { render: text }, { render: text },
+                    { render: count, className: 'num' },
+                    { render: count, className: 'num' },
+                    {
+                        className: 'num',
+                        render: function (d, type) {
+                            return type === 'display' ? (d === null ? '-' : d.toFixed(2)) : (d === null ? -1 : d);
+                        }
+                    },
+                    { render: count, className: 'num' }
+                ],
+                footerCallback: function () {
+                    var api = this.api();
+                    var sum = function (column) {
+                        return api.column(column, { search: 'applied' }).data()
+                            .reduce(function (a, b) { return a + b; }, 0);
+                    };
+                    var tested = sum(3);
+                    var failed = sum(4);
+                    var cells = $(api.table().footer()).find('td.num');
+                    cells.eq(0).text(iaNumber(tested));
+                    cells.eq(1).text(iaNumber(failed));
+                    cells.eq(2).text(iaRate(failed, tested));
+                    cells.eq(3).text(iaNumber(sum(6)));
+                }
+            });
+
+            $('#testsDetailTable .ia-col-filter').on('change', function () {
+                var value = $(this).val();
+                iaDetailTable.column($(this).data('column'))
+                    .search(value ? '^' + $.fn.dataTable.util.escapeRegex(value) + '$' : '', true, false);
+                iaCascadeFilters();
+                iaDetailTable.draw();
+            });
+        } else {
+            iaDetailTable.clear().rows.add(data);
+        }
+
+        // A new load starts every filter at All.
+        $('#testsDetailTable .ia-col-filter').each(function () {
+            $(this).val('');
+            iaDetailTable.column($(this).data('column')).search('');
+        });
+        iaCascadeFilters();
+
+        iaDetailTable.draw();
+        $('#testsDetailTable .dataTables_empty').text(emptyMessage);
+    }
+
+    // Cascading: each filter offers only the values found in the rows the OTHER
+    // filters leave, so picking a lab narrows Instrument and Assay to that lab's.
+    function iaCascadeFilters() {
+        var selects = $('#testsDetailTable .ia-col-filter');
+        var chosen = selects.map(function () { return $(this).val(); }).get();
+        var rows = iaDetailTable.rows().data().toArray();
+
+        selects.each(function (index) {
+            var select = $(this);
+            var column = select.data('column');
+            var values = {};
+            rows.forEach(function (row) {
+                var matchesOthers = selects.toArray().every(function (other, j) {
+                    return j === index || chosen[j] === '' || row[$(other).data('column')] === chosen[j];
+                });
+                if (matchesOthers) {
+                    values[row[column]] = true;
+                }
+            });
+            // The current choice stays offered, so it never vanishes from under the user.
+            if (chosen[index] !== '') {
+                values[chosen[index]] = true;
+            }
+            select.find('option:not(:first)').remove();
+            Object.keys(values).sort().forEach(function (value) {
+                select.append($('<option>').val(value).text(value));
+            });
+            select.val(chosen[index]);
+        });
+    }
+
+    function iaExport(section, format) {
+        var data = $.extend({ section: section, format: format },
+            section === 'tests' ? iaTestsFilters() : iaEventsFilters());
+        if (section === 'tests') {
+            // The column filters too, so the file holds the rows on screen.
+            data.columnFilters = $('#testsDetailTable .ia-col-filter').map(function () {
+                return $(this).val();
+            }).get();
+        }
+        // Runs in the background; progress shows in the navbar Exports menu and the
+        // file downloads when ready, even if the user has moved to another page.
+        IntelisExport.start('/reports/export-instrument-activity.php', data, section === 'tests'
+            ? "<?= _jsTranslate('Tests by Instrument'); ?>"
+            : "<?= _jsTranslate('Interface Tool Events'); ?>");
+    }
 
     function loadInterfaceActivity() {
         oTable = $('#interfaceActivityTable').dataTable({

@@ -103,6 +103,8 @@ try {
                     $result = $db->insert('hold_sample_import', $data);
                 } else {
                     $data['eid_test_platform'] = $rResult['vl_test_platform'];
+                    // The assay the file named (staged in test_type); hold_sample_import has no column for it.
+                    $data['assay_name'] = $rResult['test_type'] ?? null;
                     $data['tested_by'] = $_POST['testBy'];
                     $data['sample_tested_datetime'] = $rResult['sample_tested_datetime'];
                     $data['last_modified_by'] = $rResult['result_reviewed_by'];
@@ -212,6 +214,7 @@ try {
                 'manual_result_entry' => 'no',
                 //'result_status'=>'7',
                 'eid_test_platform' => $accResult[$i]['vl_test_platform'],
+                'assay_name' => $accResult[$i]['test_type'] ?? null,
                 'import_machine_name' => $accResult[$i]['import_machine_name'],
             ];
 

@@ -43,6 +43,7 @@ final class RetestLabScopeTest extends TestCase
             self::DATABASE . '_' . getmypid(),
             ['r_sample_status', 'form_vl', 'test_result_attempts']
         );
+        LegacyAppHarness::addMigrationColumns('5.7.82', ['form_vl']);
         LegacyAppHarness::withSession();
         foreach ([TEST_FAILED, RECEIVED_AT_TESTING_LAB] as $status) {
             LegacyAppHarness::db()->insert('r_sample_status', [

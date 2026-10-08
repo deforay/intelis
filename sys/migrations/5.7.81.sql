@@ -46,3 +46,15 @@ WHERE (NULLIF(TRIM(`patient_middle_name`), '') IS NOT NULL OR NULLIF(TRIM(`patie
            AND EXISTS (SELECT 1 FROM `global_config` WHERE `name` = 'vl_form' AND `value` = '1')));
 
 UPDATE `system_config` SET `value` = '5.7.81' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

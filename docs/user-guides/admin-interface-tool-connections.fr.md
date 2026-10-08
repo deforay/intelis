@@ -106,6 +106,6 @@ Pour installer l'outil et y ajouter l'automate, voir
 | Résultats | Un résultat passé sur l'automate apparaît dans InteLIS |
 
 Lorsque les résultats cessent d'arriver, une **Dernière connexion** ancienne
-signifie que l'outil n'atteint pas InteLIS. Voir aussi **Activité des machines
-d'interface** dans
+signifie que l'outil n'atteint pas InteLIS. Voir aussi **Activité des
+instruments** dans
 [Surveillance et audit](admin-monitoring.md#verifier-quun-automate-envoie-toujours).

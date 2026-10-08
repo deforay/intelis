@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
+use App\Utilities\InterfaceActivityFilter;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -25,15 +26,6 @@ try {
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
 
-    $aColumns = [
-        'a.instrument_id',
-        'a.machine_type',
-        'a.event_type',
-        'a.outcome',
-        'a.failure_code',
-        'a.app_version',
-        'f.facility_name',
-    ];
     $orderColumns = [
         'a.occurred_at',
         'f.facility_name',
@@ -58,34 +50,13 @@ try {
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
     $sWhere = [];
-    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? '', $aColumns);
-    if (!empty($columnSearch)) {
+    $columnSearch = InterfaceActivityFilter::searchClause((string) ($_POST['sSearch'] ?? ''), $general);
+    if ($columnSearch !== null) {
         $sWhere[] = $columnSearch;
     }
 
-    // An operator only ever sees their own lab's machines. Applied here rather than
-    // in the page so the endpoint is safe when called directly.
-    $labScope = $general->labAdminScopeWhere('lab_id', 'a');
-    if (!empty($labScope)) {
-        $sWhere[] = $labScope;
-    }
-
-    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
-        [$startDate, $endDate] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
-        $sWhere[] = " DATE(a.occurred_at) BETWEEN '$startDate' AND '$endDate' ";
-    }
-
-    if (isset($_POST['outcome']) && trim((string) $_POST['outcome']) !== '') {
-        $sWhere[] = " a.outcome = '" . $db->escape($_POST['outcome']) . "' ";
-    }
-
-    if (isset($_POST['eventType']) && trim((string) $_POST['eventType']) !== '') {
-        $sWhere[] = " a.event_type = '" . $db->escape($_POST['eventType']) . "' ";
-    }
-
-    if (isset($_POST['instrument']) && trim((string) $_POST['instrument']) !== '') {
-        $sWhere[] = " a.instrument_id LIKE '%" . $db->escape($_POST['instrument']) . "%' ";
-    }
+    // Lab scope and the page filters, shared with the export.
+    $sWhere = array_merge($sWhere, InterfaceActivityFilter::clauses($_POST, $db, $general));
 
     $sQuery = "SELECT a.activity_id, a.occurred_at, a.instrument_id, a.machine_type,
                       a.event_type, a.event_category, a.outcome, a.failure_code,
