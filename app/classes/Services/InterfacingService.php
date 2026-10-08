@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Utilities\AnalyzerRawText;
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;
 use App\Utilities\MiscUtility;
@@ -170,11 +171,11 @@ final class InterfacingService
             return $this->outcome(false, false, $table, 'unsupported_test_type');
         }
 
-        // The assay the analyzer ran, as it names it. Programs count tests by
-        // instrument and assay for reagent planning and failure rates.
-        if (in_array($table, self::ASSAY_TABLES, true)) {
-            $data['assay_name'] = self::assayName($row);
-        }
+        // The assay the analyzer ran, as it names it, and the reagent lot when the
+        // analyzer reports one. Programs count tests by instrument and assay for
+        // reagent planning and failure rates.
+        $runDetails = in_array($table, self::ASSAY_TABLES, true) ? self::runDetails($row) : [];
+        $data = array_merge($data, $runDetails);
 
         // A result from the analyzer means the sample was tested, so it is no longer
         // rejected. The builders above already move result_status off Rejected; without
@@ -193,13 +194,13 @@ final class InterfacingService
         }
 
         // Timestamps always differ, so comparing them would make every row look changed.
-        // The assay is left out too: a result re-sent after the upgrade that added it
-        // would otherwise read as changed, and an instrument that uploads its whole
-        // history (GeneXpert "Automatic Result Upload") would archive, rewrite and
-        // re-send every old row. The assay is filled in quietly instead.
-        $ignoredKeys = ['last_modified_datetime', 'result_printed_datetime', 'assay_name'];
+        // The assay and lot are left out too: a result re-sent after the upgrade that
+        // added them would otherwise read as changed, and an instrument that uploads
+        // its whole history (GeneXpert "Automatic Result Upload") would archive,
+        // rewrite and re-send every old row. They are filled in quietly instead.
+        $ignoredKeys = array_merge(['last_modified_datetime', 'result_printed_datetime'], array_keys($runDetails));
         if (self::holdsSameValues($data, $existing, $ignoredKeys)) {
-            $this->backfillAssay($table, $sample['primaryKey'], $existing, $data['assay_name'] ?? null);
+            $this->backfillRunDetails($table, $sample['primaryKey'], $existing, $runDetails);
             return $this->outcome(true, false, $table, 'already_up_to_date');
         }
 
@@ -485,39 +486,71 @@ final class InterfacingService
             return null;
         }
 
-        $assay = '';
-        foreach (explode('^', $raw) as $component) {
-            $component = trim($component);
-            if (preg_match('/\p{L}/u', $component) === 1 && mb_strlen($component) > mb_strlen($assay)) {
-                $assay = $component;
-            }
-        }
-
-        return mb_substr($assay !== '' ? $assay : $raw, 0, 255);
+        return AnalyzerRawText::longestName(explode('^', $raw)) ?? mb_substr($raw, 0, 255);
     }
 
     /**
-     * Fills in the assay on a row the analyzer re-sent unchanged, and only when the
-     * row has none. last_modified_datetime is not touched: the result did not change,
-     * so the row is not re-sent or re-sorted on its account.
+     * The assay, reagent lot and lot expiry of the run, for form_vl and form_eid.
+     * Read from the analyzer message first, which every Interface Tool version
+     * sends, then the assay from test_type. The assay is always set, so a new run
+     * never keeps an earlier run's; the lot only when the analyzer reported one.
+     *
+     * @param array<string, mixed> $row
+     * @return array<string, ?string>
+     */
+    public static function runDetails(array $row): array
+    {
+        $message = AnalyzerRawText::read(
+            isset($row['raw_text']) ? (string) $row['raw_text'] : null,
+            (string) ($row['order_id'] ?? ''),
+            (string) ($row['test_id'] ?? '')
+        );
+
+        $details = ['assay_name' => $message['assay'] ?? self::assayName($row)];
+        if ($message['lot'] !== null) {
+            $details['lot_number'] = $message['lot'];
+            $details['lot_expiration_date'] = $message['lotExpiry'];
+        }
+        return $details;
+    }
+
+    /**
+     * Fills in the assay and lot on a row the analyzer re-sent unchanged, each only
+     * where the row has none, so nothing a user typed is replaced.
+     * last_modified_datetime is not touched: the result did not change, so the row
+     * is not re-sent or re-sorted on its account.
      *
      * @param array<string, mixed> $existing
+     * @param array<string, ?string> $details
      */
-    private function backfillAssay(string $table, string $primaryKey, array $existing, ?string $assay): void
+    private function backfillRunDetails(string $table, string $primaryKey, array $existing, array $details): void
     {
-        if (
-            $assay === null
-            || !in_array($table, self::ASSAY_TABLES, true)
-            || trim((string) ($existing['assay_name'] ?? '')) !== ''
-        ) {
-            return;
+        $db = $this->db->connection('default');
+        $id = $existing[$primaryKey];
+
+        if (($details['assay_name'] ?? null) !== null && trim((string) ($existing['assay_name'] ?? '')) === '') {
+            $db->rawQuery(
+                "UPDATE `$table` SET assay_name = ?
+                  WHERE `$primaryKey` = ? AND (assay_name IS NULL OR assay_name = '')",
+                [$details['assay_name'], $id]
+            );
         }
 
-        $this->db->connection('default')->rawQuery(
-            "UPDATE `$table` SET assay_name = ?
-              WHERE `$primaryKey` = ? AND (assay_name IS NULL OR assay_name = '')",
-            [$assay, $existing[$primaryKey]]
-        );
+        // A lot and its expiry go in as a pair, and only where the row has neither,
+        // checked in the same statement that writes them: never a lot next to an
+        // expiry, or an expiry next to a lot, from somewhere else.
+        if (
+            ($details['lot_number'] ?? null) !== null
+            && trim((string) ($existing['lot_number'] ?? '')) === ''
+            && trim((string) ($existing['lot_expiration_date'] ?? '')) === ''
+        ) {
+            $db->rawQuery(
+                "UPDATE `$table` SET lot_number = ?, lot_expiration_date = ?
+                  WHERE `$primaryKey` = ? AND (lot_number IS NULL OR lot_number = '')
+                    AND lot_expiration_date IS NULL",
+                [$details['lot_number'], $details['lot_expiration_date'] ?? null, $id]
+            );
+        }
     }
 
     /**

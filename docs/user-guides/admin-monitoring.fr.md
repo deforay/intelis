@@ -240,6 +240,10 @@ taux d'échec entre instruments et entre tests.
         résultats saisis à la main et les autres formats de fichier indiquent
         **Non enregistré**.
 
+        Pour les résultats Abbott m2000, Alinity m et GeneXpert reçus de
+        l'Interface Tool, le numéro de lot du réactif est aussi enregistré avec
+        le résultat, avec sa date d'expiration quand l'analyseur l'envoie.
+
     ??? info "Si l'instrument indique Non enregistré"
 
         Le résultat a été saisi à la main sans plateforme de test.
