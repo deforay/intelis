@@ -181,12 +181,15 @@
   <h3>The ADMIN menu</h3>
   <table class="wrapfirst">
     <tr><th>Section</th><th>Holds</th></tr>
-    <tr><td>Access Control</td><td>Roles and Users</td></tr>
+    <tr><td>Users &amp; Roles</td><td>Users and Roles</td></tr>
     <tr><td>Facilities</td><td>Health facilities and testing labs, and the Interface Tool connections</td></tr>
-    <tr><td>System Configuration</td><td>General Configuration, Instruments, Geographical Divisions, Implementation Partners, Funding Sources, Lab Storage</td></tr>
-    <tr><td>The module config sections</td><td>The dropdown lists on each module's request form. One section per module the installation runs</td></tr>
-    <tr><td>Monitoring</td><td>Activity log, audit trail, API history, analyzer activity, lab performance</td></tr>
+    <tr><td>Settings</td><td>General Configuration, Instruments, Lab Storage</td></tr>
+    <tr><td>Reference Lists</td><td>Geographical Divisions, Implementation Partners, Funding Sources</td></tr>
+    <tr><td>Test Settings</td><td>The dropdown lists on each module's request form. One tab per test the installation runs</td></tr>
+    <tr><td>Monitoring</td><td>Activity log, audit trail, page usage, API history, sync status, log files</td></tr>
   </table>
+  <p>Instrument Activity, Lab Performance Indicators and Sample Referral Network sit under
+  <span class="path">REPORTS</span>, a separate section of the sidebar.</p>
 
   <h3>Two levels of administrator</h3>
   <table class="wrapfirst">
@@ -223,7 +226,7 @@
   </header>
 
   <h3>Add the user</h3>
-  <p><span class="path">ADMIN &rsaquo; Access Control &rsaquo; Users &rsaquo; Add User</span></p>
+  <p><span class="path">ADMIN &rsaquo; Users &amp; Roles &rsaquo; Users &rsaquo; Add User</span></p>
 
   <ol class="steps">
     <li>Enter the <span class="ui">Full Name</span> as it should appear on reports and in the activity log.</li>
@@ -243,7 +246,7 @@
   </div>
 
   <h3>Add or change a role</h3>
-  <p><span class="path">ADMIN &rsaquo; Access Control &rsaquo; Roles</span></p>
+  <p><span class="path">ADMIN &rsaquo; Users &amp; Roles &rsaquo; Roles</span></p>
 
   <table class="wrapfirst">
     <tr><th>Field</th><th>What to set</th></tr>
@@ -298,7 +301,7 @@
   To load many facilities at once, use <span class="ui">Bulk Upload</span>.</p>
 
   <h3>Add an analyzer</h3>
-  <p><span class="path">ADMIN &rsaquo; System Configuration &rsaquo; Instruments &rsaquo; Add Instrument</span></p>
+  <p><span class="path">ADMIN &rsaquo; Settings &rsaquo; Instruments &rsaquo; Add Instrument</span></p>
   <p>Enter the name, the test types it runs, and the configuration file that tells InteLIS how
   to read its result files. Without that file, results exported from the analyzer cannot be imported.</p>
 
@@ -326,33 +329,34 @@
     <p>Each module keeps its own lists. They do not share.</p>
   </header>
 
-  <h3>One config section per module</h3>
+  <h3>One Test Settings tab per test</h3>
+  <p><span class="path">ADMIN &rsaquo; Test Settings</span>, then the test's tab, then the list.</p>
   <table class="wrapfirst">
-    <tr><th>Config section</th><th>Lists it holds</th></tr>
-    <tr><td>VL Config</td><td>Sample Type, Rejection Reasons, Test Reasons, Results, ART Regimen, Test Failure Reasons, Recommended Corrective Actions</td></tr>
-    <tr><td>EID Config</td><td>Sample Type, Rejection Reasons, Test Reasons, Results</td></tr>
-    <tr><td>TB Config</td><td>Sample Type, Rejection Reasons, Test Reasons, Results</td></tr>
-    <tr><td>CD4 Config</td><td>Sample Type, Rejection Reasons, Test Reasons</td></tr>
-    <tr><td>Covid-19 Config</td><td>Sample Type, Rejection Reasons, Test Reasons, Results, Symptoms, Co-morbidities, Recommended Corrective Actions, QC Test Kits</td></tr>
-    <tr><td>Hepatitis Config</td><td>Sample Type, Rejection Reasons, Test Reasons, Results, Co-morbidities, Risk Factors</td></tr>
-    <tr><td>Other Lab Tests Config</td><td>Sample Types, Testing Reasons, Sample Rejection Reasons, Test Failure Reasons, Symptoms, Test Result Units, Test Methods, Test Categories, Test Type Configuration</td></tr>
+    <tr><th>Tab</th><th>Lists it holds</th></tr>
+    <tr><td>HIV Viral Load</td><td>Sample Types, Test Reasons, Results, Rejection Reasons, Test Failure Reasons, Recommended Corrective Actions, ART Regimen</td></tr>
+    <tr><td>EID</td><td>Sample Types, Test Reasons, Results, Rejection Reasons, Recommended Corrective Actions</td></tr>
+    <tr><td>COVID-19</td><td>Sample Types, Test Reasons, Results, Rejection Reasons, Recommended Corrective Actions, Comorbidities, Symptoms, QC Test Kits</td></tr>
+    <tr><td>Hepatitis</td><td>Sample Types, Test Reasons, Results, Rejection Reasons, Comorbidities, Risk Factors</td></tr>
+    <tr><td>TB</td><td>Sample Types, Test Reasons, Results, Rejection Reasons, Recommended Corrective Actions</td></tr>
+    <tr><td>CD4</td><td>Sample Types, Test Reasons, Rejection Reasons</td></tr>
+    <tr><td>Custom Tests</td><td>Test Type Configuration, Sample Types, Test Reasons, Rejection Reasons, Test Failure Reasons, Symptoms, Test Result Units, Test Methods, Test Categories</td></tr>
   </table>
-  <p>Only the modules the installation runs appear in the ADMIN menu.</p>
+  <p>Only the tests the installation runs have a tab.</p>
 
   <div class="warn">
     <strong>Adding to one module does not add to the others</strong>
-    A sample type added under one module's config section does not appear on another module's
-    request form. Add it under every module that needs it.
+    A sample type added on one test's tab does not appear on another module's request form.
+    Add it on the tab of every test that needs it.
   </div>
 
   <h3>What each list controls</h3>
   <table class="wrapfirst">
-    <tr><td>Sample Type</td><td>The specimen types on the request form</td></tr>
+    <tr><td>Sample Types</td><td>The specimen types on the request form</td></tr>
     <tr><td>Rejection Reasons</td><td>The reasons offered when rejecting a sample</td></tr>
     <tr><td>Test Reasons</td><td>The indications for testing</td></tr>
     <tr><td>Results</td><td>The result values for qualitative reporting</td></tr>
     <tr><td>Test Failure Reasons</td><td>The reasons offered when a test fails</td></tr>
-    <tr><td>Symptoms, Co-morbidities, Risk Factors</td><td>The clinical checklists on the request form</td></tr>
+    <tr><td>Symptoms, Comorbidities, Risk Factors</td><td>The clinical checklists on the request form</td></tr>
     <tr><td>ART Regimen</td><td>The regimen choices on the viral load request form</td></tr>
     <tr><td>Recommended Corrective Actions</td><td>The actions suggested on high viral load results</td></tr>
   </table>
@@ -364,9 +368,9 @@
     appears in its dropdown.
   </div>
 
-  <p>Geographical Divisions, Implementation Partners, Funding Sources, and Lab Storage are not
-  module lists. They sit under <span class="path">ADMIN &rsaquo; System Configuration</span> and
-  serve every module.</p>
+  <p>Geographical Divisions, Implementation Partners and Funding Sources are not module lists.
+  They sit under <span class="path">ADMIN &rsaquo; Reference Lists</span> and serve every module.
+  Lab Storage sits under <span class="path">ADMIN &rsaquo; Settings</span>.</p>
 
   <footer class="cardfoot"><span>InteLIS administration job aid</span><span>Card 4: the request form lists</span></footer>
 </section>
@@ -384,10 +388,10 @@
     <tr><th>Complaint</th><th>Cause</th></tr>
     <tr><td>A facility is missing from the request form</td><td>The facility is not ticked for that test type. Open it under Facilities and set Test Type</td></tr>
     <tr><td>A district is missing from the request form</td><td>It was added without a parent province. Open Geographical Divisions and set the parent</td></tr>
-    <tr><td>An option is missing from a dropdown</td><td>It is inactive, or it was added under a different module's config section</td></tr>
-    <tr><td>A user sees the wrong menu</td><td>The role's privileges, not the user. Check under Access Control &rsaquo; Roles</td></tr>
+    <tr><td>An option is missing from a dropdown</td><td>It is inactive, or it was added on a different test's tab under Test Settings</td></tr>
+    <tr><td>A user sees the wrong menu</td><td>The role's privileges, not the user. Check under Users &amp; Roles &rsaquo; Roles</td></tr>
     <tr><td>A user sees another lab's samples</td><td>On an STS: the role is not a Testing Lab role, or the user is mapped to other facilities. Check the role's Access Type and the user's facilities</td></tr>
-    <tr><td>Results stopped arriving from the analyzer</td><td>Check Last Seen under Connected Installations, then Monitoring &rsaquo; Instrument Activity</td></tr>
+    <tr><td>Results stopped arriving from the analyzer</td><td>Check Last Seen under Connected Installations, then Reports &rsaquo; Instrument Activity</td></tr>
     <tr><td>A result was questioned</td><td>Monitoring &rsaquo; Audit Trail. It shows which field changed, from what to what, by whom</td></tr>
     <tr><td>A facility behaves oddly in report filters</td><td>Set Show Orphaned Facilities on the Facilities page. Its province or district is missing or wrongly linked</td></tr>
   </table>
@@ -402,8 +406,10 @@
     <tr><td>Lab Performance Indicators</td><td>Turnaround time, volumes by entry mode, failure and rejection rates</td></tr>
     <tr><td>Log File Viewer</td><td>System messages, for support requests</td></tr>
   </table>
-  <p>All six sit under <span class="path">ADMIN &rsaquo; Monitoring</span>. Lab Sync Status and
-  API Dashboard appear on the national server only.</p>
+  <p>Instrument Activity and Lab Performance Indicators sit under
+  <span class="path">REPORTS</span>. The other four sit under
+  <span class="path">ADMIN &rsaquo; Monitoring</span>. Lab Sync Status and API Dashboard appear on
+  the national server only.</p>
 
   <h3>Confirm a change worked</h3>
   <table class="wrapfirst">

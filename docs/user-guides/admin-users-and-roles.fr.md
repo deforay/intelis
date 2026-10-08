@@ -10,8 +10,8 @@ reviewed_against: 5.7.74
 # Gérer les utilisateurs et les rôles
 
 Créer un identifiant pour chaque personne, et décider de ce que chaque
-identifiant peut atteindre. Les deux se trouvent sous **ADMIN → Contrôle
-d'accès**.
+identifiant peut atteindre. Les deux se trouvent sous **ADMIN → Utilisateurs
+et rôles**.
 
 InteLIS n'a pas d'auto-inscription. Un administrateur crée chaque identifiant.
 
@@ -27,7 +27,7 @@ InteLIS n'a pas d'auto-inscription. Un administrateur crée chaque identifiant.
 
 === "STS"
 
-    1. Aller à **ADMIN → Contrôle d'accès → Utilisateurs**.
+    1. Aller à **ADMIN → Utilisateurs et rôles → Utilisateurs**.
     2. Sélectionner **Ajouter un utilisateur**.
     3. Saisir **Nom complet**, **Courriel** et **Numéro de téléphone**. Le nom
        figure sur les rapports et dans le journal d'activité.
@@ -70,7 +70,7 @@ InteLIS n'a pas d'auto-inscription. Un administrateur crée chaque identifiant.
 
 === "LIS ou autonome"
 
-    1. Aller à **ADMIN → Contrôle d'accès → Utilisateurs**.
+    1. Aller à **ADMIN → Utilisateurs et rôles → Utilisateurs**.
     2. Sélectionner **Ajouter un utilisateur**.
     3. Saisir **Nom complet**, **Courriel** et **Numéro de téléphone**. Le nom
        figure sur les rapports et dans le journal d'activité.
@@ -108,7 +108,7 @@ InteLIS n'a pas d'auto-inscription. Un administrateur crée chaque identifiant.
     À utiliser lors d'une connexion au STS avec un rôle de laboratoire
     d'analyse autre que le rôle Admin intégré.
 
-    1. Aller à **ADMIN → Contrôle d'accès → Utilisateurs**.
+    1. Aller à **ADMIN → Utilisateurs et rôles → Utilisateurs**.
     2. Sélectionner **Ajouter un utilisateur**.
     3. Saisir **Nom complet**, **Courriel** et **Numéro de téléphone**. Le nom
        figure sur les rapports et dans le journal d'activité.
@@ -154,7 +154,7 @@ InteLIS n'a pas d'auto-inscription. Un administrateur crée chaque identifiant.
 Ceci ne concerne que le STS. À utiliser pour le personnel des structures qui
 enregistre ses propres demandes, afin que chacun ne voie que sa structure.
 
-1. Aller à **ADMIN → Contrôle d'accès → Utilisateurs**.
+1. Aller à **ADMIN → Utilisateurs et rôles → Utilisateurs**.
 2. Sélectionner **Modifier** sur l'utilisateur.
 3. Sous **Carte de l'utilisateur vers les installations sélectionnées
    (facultatif)**, faire passer les structures dans la liste sélectionnée.
@@ -173,7 +173,7 @@ enregistre ses propres demandes, afin que chacun ne voie que sa structure.
 
 ## Réinitialiser le mot de passe d'un utilisateur
 
-1. Aller à **ADMIN → Contrôle d'accès → Utilisateurs**.
+1. Aller à **ADMIN → Utilisateurs et rôles → Utilisateurs**.
 2. Sélectionner **Modifier** sur l'utilisateur.
 3. Saisir **Mot de passe** et **Confirmer le mot de passe**, ou sélectionner
    **Générer**.
@@ -186,7 +186,7 @@ enregistre ses propres demandes, afin que chacun ne voie que sa structure.
 Les systèmes qui se connectent par l'API utilisent un jeton au lieu d'un mot de
 passe.
 
-1. Aller à **ADMIN → Contrôle d'accès → Utilisateurs**.
+1. Aller à **ADMIN → Utilisateurs et rôles → Utilisateurs**.
 2. Sélectionner **Modifier** sur l'utilisateur.
 3. Régler **Rôle** sur le rôle API. Le champ **AuthToken** apparaît.
 4. Sélectionner **Générer un autre jeton**.
@@ -209,7 +209,7 @@ mobile** sur **Oui** et sans jeton reçoit aussi un jeton à l'enregistrement.
 
 ## Désactiver un utilisateur qui part
 
-1. Aller à **ADMIN → Contrôle d'accès → Utilisateurs**.
+1. Aller à **ADMIN → Utilisateurs et rôles → Utilisateurs**.
 2. Sélectionner **Modifier** sur l'utilisateur.
 3. Régler **Statut de l'utilisateur** sur **Inactif**.
 4. Sélectionner **Envoyer**.
@@ -233,7 +233,7 @@ nouvel utilisateur est toujours enregistré comme actif.
 Un rôle est un ensemble nommé de privilèges. Les utilisateurs ne tiennent leurs
 privilèges que de leur rôle.
 
-1. Aller à **ADMIN → Contrôle d'accès → Les rôles**.
+1. Aller à **ADMIN → Utilisateurs et rôles → Les rôles**.
 2. Sélectionner **Ajouter rôle**, ou **Modifier** sur un rôle existant.
 3. Saisir **Nom du rôle** et **Code de rôle**. Les deux doivent être uniques.
 4. Renseigner, si besoin, **Page de destination**. Les utilisateurs de ce rôle arrivent sur

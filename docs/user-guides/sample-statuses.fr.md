@@ -46,7 +46,7 @@ entre parenthèses.
 | En attente | Aucun écran de charge virale ne l'attribue. Choisir **Hold** sur l'écran **Résultats importés** met de côté le résultat de cette ligne et laisse le statut de l'échantillon inchangé |
 | Échantillon réorganisé | Aucun flux actuel. Retester un échantillon le ramène à Échantillon enregistré au laboratoire d'analyse. La case **Échantillon réorganisé** du formulaire de demande enregistre un indicateur distinct, pas ce statut |
 | Perdu | L'application de **Perdu** dans **Gérer le statut des résultats** |
-| Expiré | La mise à jour nocturne des statuts. Un échantillon encore En attente, Échantillon réorganisé, Échantillon enregistré au centre de santé ou Échantillon enregistré au laboratoire d'analyse expire dès qu'il dépasse **Jours d'expiration de l'échantillon** sous **ADMIN → Configuration du système → Configuration générale**. L'âge se compte depuis la date de prélèvement, ou depuis la date de la demande si aucune date de prélèvement n'est enregistrée. La valeur par défaut est de 365 jours |
+| Expiré | La mise à jour nocturne des statuts. Un échantillon encore En attente, Échantillon réorganisé, Échantillon enregistré au centre de santé ou Échantillon enregistré au laboratoire d'analyse expire dès qu'il dépasse **Jours d'expiration de l'échantillon** sous **ADMIN → Paramètres → Configuration générale**. L'âge se compte depuis la date de prélèvement, ou depuis la date de la demande si aucune date de prélèvement n'est enregistrée. La valeur par défaut est de 365 jours |
 | Aucun résultats | La saisie de `no result` comme résultat |
 | Annulée | L'application de **Annulée** dans **Gérer le statut des résultats**, avec la saisie de `CANCEL` pour confirmer |
 
@@ -54,8 +54,8 @@ entre parenthèses.
 
 | Statut | Motif enregistré |
 | --- | --- |
-| Rejeté | Un motif de rejet issu de la liste sous **ADMIN → Configuration CV → Motifs de rejet** |
-| Échec/Invalidité | Un motif d'échec issu de la liste sous **ADMIN → Configuration CV → Raisons de l'échec des tests**, sur les formulaires de résultat qui comportent un champ de motif d'échec |
+| Rejeté | Un motif de rejet issu de la liste sous **ADMIN → Paramètres des tests**, onglet **Charge virale du VIH**, **Motifs de rejet** |
+| Échec/Invalidité | Un motif d'échec issu de la liste sous **ADMIN → Paramètres des tests**, onglet **Charge virale du VIH**, **Raisons de l'échec des tests**, sur les formulaires de résultat qui comportent un champ de motif d'échec |
 
 ## Effet des statuts dans les rapports
 

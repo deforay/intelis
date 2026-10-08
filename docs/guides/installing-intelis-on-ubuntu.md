@@ -137,7 +137,7 @@ instead.
     ### Check the lab
 
     13. Log in with the login ID and password from step 10.
-    14. Check the lab settings under **Admin → System Configuration → General Configuration**.
+    14. Check the lab settings under **Admin → Settings → General Configuration**.
     15. In a terminal, confirm the backups work:
 
         ```bash
@@ -260,7 +260,7 @@ instead.
     ### Check the server
 
     14. Log in with the login ID and password from step 11.
-    15. Check the settings under **Admin → System Configuration → General Configuration**.
+    15. Check the settings under **Admin → Settings → General Configuration**.
     16. From a lab computer, open the web address from step 4. The InteLIS
         login page appears.
     17. In a terminal, confirm the backups work:

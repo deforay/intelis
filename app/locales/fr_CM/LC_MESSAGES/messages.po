@@ -36644,3 +36644,17 @@ msgstr "Tests réalisés sur chaque instrument et chaque test."
 
 msgid "Failed runs that were re-tested count as tests. Cancelled and rejected samples do not. The assay is recorded from this update on."
 msgstr "Les échecs retestés comptent comme des tests. Les échantillons annulés et rejetés ne comptent pas. Le test (essai) est enregistré à partir de cette mise à jour."
+msgid "Users & Roles"
+msgstr "Utilisateurs et rôles"
+
+msgid "Settings"
+msgstr "Paramètres"
+
+msgid "Reference Lists"
+msgstr "Listes de référence"
+
+msgid "Test Settings"
+msgstr "Paramètres des tests"
+
+msgid "REPORTS"
+msgstr "RAPPORTS"

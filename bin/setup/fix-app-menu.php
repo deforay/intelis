@@ -150,16 +150,17 @@ try {
     }
 
 
-    /** Adding CD4 Config */
+    /** Adding CD4 Config: a tab of Admin > Test Settings (5.7.83), else under ADMIN */
+    $testSettings = $db->rawQueryOne("SELECT id FROM s_app_menu WHERE link='/admin/test-settings.php'");
     $getAdminModule = $db->rawQueryOne("SELECT id FROM s_app_menu WHERE display_text='ADMIN'");
-    $adminModuleId = $getAdminModule['id'];
-    $menuValues = ['admin', 'cd4', 'no', 'CD4 Config', '#cd4-config', null, 'always', 'fa-solid fa-eyedropper', 'yes', 'treeview tb-reference-manage', $adminModuleId, 42, 'active', DateUtility::getCurrentDateTime()];
+    $cd4ConfigParentId = $testSettings['id'] ?? $getAdminModule['id'];
+    $menuValues = ['admin', 'cd4', 'no', 'CD4', '#cd4-config', null, 'always', 'fa-solid fa-eyedropper', 'yes', 'treeview tb-reference-manage', $cd4ConfigParentId, 6, 'active', DateUtility::getCurrentDateTime()];
     $menuData = array_combine($menuKeys, $menuValues);
     $cd4ConfigId = $appMenuService->insertMenu($menuData);
 
     if ($cd4ConfigId !== false && $cd4ConfigId > 0) {
 
-        $menuValues = ['admin', 'cd4', 'no', 'Sample Type', '/cd4/reference/cd4-sample-type.php', '/cd4/reference/add-cd4-sample-type.php,/cd4/reference/edit-cd4-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4-sample-type', $cd4ConfigId, 43, 'active', DateUtility::getCurrentDateTime()];
+        $menuValues = ['admin', 'cd4', 'no', 'Sample Types', '/cd4/reference/cd4-sample-type.php', '/cd4/reference/add-cd4-sample-type.php,/cd4/reference/edit-cd4-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4-sample-type', $cd4ConfigId, 43, 'active', DateUtility::getCurrentDateTime()];
         $menuData = array_combine($menuKeys, $menuValues);
         $appMenuService->insertMenu($menuData);
 
@@ -172,13 +173,15 @@ try {
         $appMenuService->insertMenu($menuData);
     }
 
-    /** Adding Lab storage menu under system settings */
-    $systemConfig = $db->rawQueryOne("SELECT id FROM s_app_menu WHERE display_text='System Configuration'");
-    $systemConfigId = $systemConfig['id'];
+    /** Adding Lab storage menu under Admin > Settings (was "System Configuration") */
+    $systemConfig = $db->rawQueryOne("SELECT id FROM s_app_menu WHERE additional_class_names LIKE '%system-config-menu%'");
+    $systemConfigId = $systemConfig['id'] ?? null;
 
-    $menuValues = ['admin', null, 'no', 'Lab Storage', '/common/reference/lab-storage.php', '/common/reference/add-lab-storage.php', 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-lab-storage', $systemConfigId, 24, 'active', DateUtility::getCurrentDateTime()];
-    $menuData = array_combine($menuKeys, $menuValues);
-    $appMenuService->insertMenu($menuData);
+    if (!empty($systemConfigId)) {
+        $menuValues = ['admin', null, 'no', 'Lab Storage', '/common/reference/lab-storage.php', '/common/reference/add-lab-storage.php', 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-lab-storage', $systemConfigId, 3, 'active', DateUtility::getCurrentDateTime()];
+        $menuData = array_combine($menuKeys, $menuValues);
+        $appMenuService->insertMenu($menuData);
+    }
 
 
     /** Sample Storage Reports menu under vl->Management */

@@ -19,7 +19,7 @@ For how the plane works and why, see the
 
 - The STS account's role has **Queue Lab Command**, **Cancel Lab Command** and
   **Lab Command History** under **Monitoring**. Set them in
-  **ADMIN → Access Control → Roles**. Without **Queue Lab Command**, the
+  **ADMIN → Users & Roles → Roles**. Without **Queue Lab Command**, the
   **Queue** button does not appear.
 - The lab is online and syncing with the STS.
 

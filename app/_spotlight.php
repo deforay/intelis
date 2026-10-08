@@ -184,6 +184,11 @@ $flattenMenuForSpotlight = function (array $menuItems, array $parentPath = []) u
                 'keywords' => $spotlightKeywordsFor($menu['module'] ?? '', $link, $menuTitle),
             ];
             $flatList = [...$flatList, ...$spotlightClinicTabs($menu, $link, $menuTitle, $category, $parentPath)];
+            // A hub (Admin > Test Settings) is one link in the sidebar, but each
+            // page it lists stays searchable here.
+            if (!empty($menu['hub_children'])) {
+                $flatList = [...$flatList, ...$flattenMenuForSpotlight($menu['hub_children'], [...$currentPath, $menuTitle])];
+            }
         }
     }
     return $flatList;

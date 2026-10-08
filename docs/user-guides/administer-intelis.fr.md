@@ -20,17 +20,24 @@ d'[installation](../guides/installing-intelis-on-ubuntu.md) et de
 
 | Menu | Contient | Guide |
 | --- | --- | --- |
-| Contrôle d'accès → Utilisateurs, Les rôles | Les identifiants et ce que chacun peut atteindre | [Utilisateurs et rôles](admin-users-and-roles.md) |
+| Utilisateurs et rôles → Utilisateurs, Les rôles | Les identifiants et ce que chacun peut atteindre | [Utilisateurs et rôles](admin-users-and-roles.md) |
 | Structures sanitaires | Structures, laboratoires d'analyse, objectifs des laboratoires, signataires | [Structures et laboratoires](admin-facilities.md) |
 | Structures sanitaires → Chargement groupé | Plusieurs structures ajoutées ou mises à jour depuis un seul fichier Excel | [Ajouter ou mettre à jour plusieurs structures](admin-facilities-bulk-upload.md) |
 | Structures sanitaires → un laboratoire d'analyse → Connexions des outils d'interface | Les codes de connexion de l'outil d'interface | [Connexions de l'outil d'interface](admin-interface-tool-connections.md) |
-| Configuration du système → Instruments | Les automates et la lecture de leurs fichiers de résultats | [Instruments](admin-instruments.md) |
-| Configuration CV, Configuration EID, Tuberculose-Configuration et les autres sections de configuration | Les listes déroulantes du formulaire de demande de chaque module | [Listes du formulaire de demande](admin-module-configuration.md) |
-| Configuration du système → Divisions géographiques, Partenaires, Sources de financement, Stockage en laboratoire | Les listes partagées par tous les modules | [Listes du formulaire de demande](admin-module-configuration.md) |
-| Configuration du système → Configuration générale | Les paramètres qui s'appliquent à toute l'installation | [Configuration générale](admin-general-configuration.md) |
-| Surveillance | Piste d'audit, activité, utilisation des pages, synchronisation, activité des automates, performance du laboratoire | [Surveillance et audit](admin-monitoring.md) |
+| Paramètres → Instruments | Les automates et la lecture de leurs fichiers de résultats | [Instruments](admin-instruments.md) |
+| Paramètres des tests, un onglet par test | Les listes déroulantes du formulaire de demande de chaque module | [Listes du formulaire de demande](admin-module-configuration.md) |
+| Listes de référence → Divisions géographiques, Partenaires, Sources de financement | Les listes partagées par tous les modules | [Listes du formulaire de demande](admin-module-configuration.md) |
+| Paramètres → Stockage en laboratoire | Les congélateurs et autres lieux de stockage des échantillons du laboratoire | [Listes du formulaire de demande](admin-module-configuration.md) |
+| Paramètres → Configuration générale | Les paramètres qui s'appliquent à toute l'installation | [Configuration générale](admin-general-configuration.md) |
+| Surveillance | Piste d'audit, activité, utilisation des pages, synchronisation, fichiers journaux | [Surveillance et audit](admin-monitoring.md) |
 
-Le menu ne montre une section de configuration que pour les modules actifs sur
+Trois rapports se trouvent sous **RAPPORTS**, une section distincte de la
+barre latérale, hors d'**ADMIN** : **Indicateurs de performance du
+laboratoire**, **Activité des instruments** et **Réseau de
+référencement des échantillons**. Ils sont traités dans
+[Surveillance et audit](admin-monitoring.md).
+
+**Paramètres des tests** ne montre un onglet que pour les tests actifs sur
 l'installation.
 
 Un second espace d'administration, **System Admin**, se trouve hors de ce menu, à
@@ -97,9 +104,9 @@ créées.
 | Approbation automatique des résultats de l'API (CV, EID, COVID-19 ou TB, libellé exact selon le module) | Configuration générale, par module | Les résultats reçus par l'API sont approuvés sans contrôle humain |
 | Pays d'installation | Configuration générale → Paramètres globaux | Change le formulaire de demande vu par tous |
 | Mode de formation | Configuration générale → Paramètres globaux | Marque l'installation comme un entraînement |
-| Privilèges d'un rôle | Contrôle d'accès → Les rôles | S'appliquent aussitôt à tous les utilisateurs de ce rôle |
-| Suppression d'une entrée de liste | Toute section de configuration | Les fiches qui utilisaient l'entrée deviennent illisibles. La passer en inactif à la place |
-| Renommage ou suppression d'une province ou d'un district | Configuration du système → Divisions géographiques | Les structures rattachées perdent leur lien, et les filtres des rapports cessent de correspondre |
+| Privilèges d'un rôle | Utilisateurs et rôles → Les rôles | S'appliquent aussitôt à tous les utilisateurs de ce rôle |
+| Suppression d'une entrée de liste | Tout onglet de Paramètres des tests ou toute page de Listes de référence | Les fiches qui utilisaient l'entrée deviennent illisibles. La passer en inactif à la place |
+| Renommage ou suppression d'une province ou d'un district | Listes de référence → Divisions géographiques | Les structures rattachées perdent leur lien, et les filtres des rapports cessent de correspondre |
 
 ## Règles valables partout
 

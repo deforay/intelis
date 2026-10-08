@@ -9,7 +9,7 @@ reviewed_against: 5.7.74
 
 # Paramètres de la configuration générale
 
-Référence de **ADMIN → Configuration du système → Configuration générale**.
+Référence de **ADMIN → Paramètres → Configuration générale**.
 Chaque paramètre s'applique aussitôt à tous les utilisateurs de l'installation.
 
 Les paramètres listés sous
@@ -18,7 +18,7 @@ demandent d'abord l'accord de l'équipe nationale.
 
 ## Modifier un paramètre
 
-1. Aller à **ADMIN → Configuration du système → Configuration générale**. La
+1. Aller à **ADMIN → Paramètres → Configuration générale**. La
    page, intitulée **Configuration du système**, s'ouvre en lecture seule.
 2. Sélectionner **Modifier la configuration du système**.
 3. Trouver le paramètre avec **Rechercher les paramètres par mot-clé**, ou

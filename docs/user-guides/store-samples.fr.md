@@ -22,7 +22,7 @@ conservés en vue d'un retest, d'un test de confirmation ou d'une revue qualité
 - Des échantillons enregistrés dans InteLIS
 - Le congélateur, le coffret, la boîte et la position de chaque tube
 - La permission de consulter les demandes de test
-- Le congélateur configuré sous **ADMIN → Configuration du système → Stockage en
+- Le congélateur configuré sous **ADMIN → Paramètres → Stockage en
   laboratoire**. S'il manque, demander à l'administrateur de l'ajouter.
 
 ## Enregistrer une position

@@ -194,8 +194,8 @@ never changes the result value. To correct a wrong value:
     ??? failure "If the row shows Locked"
 
         Accepted and rejected samples lock once they have not been modified for
-        the number of days set in **Sample Lock Days** under **ADMIN → System
-        Configuration → General Configuration**. Only a user with the Edit
+        the number of days set in **Sample Lock Days** under **ADMIN → Settings
+        → General Configuration**. Only a user with the Edit
         Locked VL Samples permission can correct a locked sample.
 
 4. Enter the correct result.

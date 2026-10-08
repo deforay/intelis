@@ -21,7 +21,7 @@ Other tasks on the same page have their own guides:
 - An account with administrator rights on the STS, or on a standalone
   installation
 - The facility's province and district. A missing one can be added with
-  **Other** on the form, or first under **ADMIN → System Configuration →
+  **Other** on the form, or first under **ADMIN → Reference Lists →
   Geographical Divisions**
 
 ??? info "On a LIS, the Facilities page is read-only"

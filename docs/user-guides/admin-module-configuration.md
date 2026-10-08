@@ -22,21 +22,25 @@ was added under a different module.
 
 ## Where each list is
 
-Each module the installation runs has its own config section under **ADMIN**.
+Each test the installation runs has its own tab on **ADMIN → Test Settings**.
+Each tab lists that test's pages.
 
-| Config section | Lists |
+| Test Settings tab | Lists |
 | --- | --- |
-| VL Config | ART Regimen, Rejection Reasons, Sample Type, Results, Test Reasons, Test Failure Reasons, Recommended Corrective Actions |
-| EID Config | Rejection Reasons, Sample Type, Test Reasons, Results |
-| Covid-19 Config | Co-morbidities, Rejection Reasons, Sample Type, Symptoms, Test Reasons, Results, QC Test Kits, Recommended Corrective Actions |
-| Hepatitis Config | Co-morbidities, Risk Factors, Rejection Reasons, Sample Type, Results, Test Reasons |
-| TB Config | Rejection Reasons, Sample Type, Test Reasons, Results |
-| CD4 Config | Sample Type, Test Reasons, Rejection Reasons |
-| Other Lab Tests Config | Sample Types, Testing Reasons, Test Failure Reasons, Symptoms, Sample Rejection Reasons, Test Result Units, Test Methods, Test Categories, Test Type Configuration |
-| System Configuration | Geographical Divisions, Implementation Partners, Funding Sources, Lab Storage. These serve every module |
+| HIV Viral Load | Sample Types, Test Reasons, Results, Rejection Reasons, Test Failure Reasons, Recommended Corrective Actions, ART Regimen |
+| EID | Sample Types, Test Reasons, Results, Rejection Reasons, Recommended Corrective Actions |
+| COVID-19 | Sample Types, Test Reasons, Results, Rejection Reasons, Recommended Corrective Actions, Comorbidities, Symptoms, QC Test Kits |
+| Hepatitis | Sample Types, Test Reasons, Results, Rejection Reasons, Comorbidities, Risk Factors |
+| TB | Sample Types, Test Reasons, Results, Rejection Reasons, Recommended Corrective Actions |
+| CD4 | Sample Types, Test Reasons, Rejection Reasons |
+| Custom Tests | Test Type Configuration, Sample Types, Test Reasons, Rejection Reasons, Test Failure Reasons, Symptoms, Test Result Units, Test Methods, Test Categories |
 
-A sample type added under VL Config does not reach the EID form. Add it under
-each module that needs it.
+The lists that serve every module sit under **ADMIN → Reference Lists**:
+Geographical Divisions, Implementation Partners and Funding Sources. Lab
+Storage sits under **ADMIN → Settings**.
+
+A sample type added on the HIV Viral Load tab does not reach the EID form. Add
+it on the tab of each test that needs it.
 
 ## Add an entry
 
@@ -44,8 +48,10 @@ each module that needs it.
 
 === "STS or standalone"
 
-    1. Go to **ADMIN**, then the module's config section, then the list. For
-       example, **ADMIN → VL Config → Sample Type**.
+    1. Go to **ADMIN → Test Settings**, select the test's tab, then select the
+       list. For example, **ADMIN → Test Settings**, the **HIV Viral Load** tab,
+       then **Sample Types**. For a shared list, go to **ADMIN → Reference
+       Lists** and select the list.
     2. Select the add button at the top right of the list. It is named after
        the list, such as **Add VL Sample Type**.
 
@@ -53,14 +59,14 @@ each module that needs it.
 
             | List | Button |
             | --- | --- |
-            | VL Config lists | **Add VL Sample Type**, **Add VL Sample Rejection Reasons**, **Add VL Test Reasons**, **Add VL Results**, **Add VL ART Regimen**, **Add VL Test Reason** (on Test Failure Reasons), **Add Recommended Corrective Actions** |
-            | EID Config lists | **Add EID Sample Type**, **Add EID Sample Rejection Reasons**, **Add EID Test Reasons**, **Add EID Results** |
-            | Covid-19 Config lists | **Add Covid-19 Sample Type**, **Add Covid-19 Sample Rejection Reasons**, **Add Covid-19 Test Reasons**, **Add Covid-19 Results**, **Add Covid-19 Symptoms**, **Add Covid-19 Co-morbidities**, **Add New Covid-19 QC Test Kit** |
-            | Hepatitis Config lists | **Add Hepatitis Sample Type**, **Add Hepatitis Sample Rejection Reasons**, **Add Hepatitis Test Reasons**, **Add Hepatitis Results**, **Add Hepatitis Co-morbidities**, **Add Hepatitis Risk Factors** |
-            | TB Config lists | **Add TB Sample Type**, **Add TB Sample Rejection Reasons**, **Add TB Test Reasons**, **Add TB Results** |
-            | CD4 Config lists | **Add CD4 Sample Type**, **Add CD4 Sample Rejection Reasons**, **Add CD4 Test Reasons** |
-            | Other Lab Tests Config lists | **Add Sample Type**, **Add Testing Reason**, **Add Test Failure Reason**, **Add Symptoms**, **Add Sample Rejection Reasons**, **Add Test Result Units**, **Add Test Methods**, **Add Test Categories**, **Add Test Type** |
-            | System Configuration lists | **Add New Geographical Divisions**, **Add Implementation Partners**, **Add Funding Sources** |
+            | HIV Viral Load tab | **Add VL Sample Type**, **Add VL Sample Rejection Reasons**, **Add VL Test Reasons**, **Add VL Results**, **Add VL ART Regimen**, **Add VL Test Reason** (on Test Failure Reasons), **Add Recommended Corrective Actions** |
+            | EID tab | **Add EID Sample Type**, **Add EID Sample Rejection Reasons**, **Add EID Test Reasons**, **Add EID Results** |
+            | COVID-19 tab | **Add Covid-19 Sample Type**, **Add Covid-19 Sample Rejection Reasons**, **Add Covid-19 Test Reasons**, **Add Covid-19 Results**, **Add Covid-19 Symptoms**, **Add Covid-19 Co-morbidities**, **Add New Covid-19 QC Test Kit** |
+            | Hepatitis tab | **Add Hepatitis Sample Type**, **Add Hepatitis Sample Rejection Reasons**, **Add Hepatitis Test Reasons**, **Add Hepatitis Results**, **Add Hepatitis Co-morbidities**, **Add Hepatitis Risk Factors** |
+            | TB tab | **Add TB Sample Type**, **Add TB Sample Rejection Reasons**, **Add TB Test Reasons**, **Add TB Results** |
+            | CD4 tab | **Add CD4 Sample Type**, **Add CD4 Sample Rejection Reasons**, **Add CD4 Test Reasons** |
+            | Custom Tests tab | **Add Sample Type**, **Add Testing Reason**, **Add Test Failure Reason**, **Add Symptoms**, **Add Sample Rejection Reasons**, **Add Test Result Units**, **Add Test Methods**, **Add Test Categories**, **Add Test Type** |
+            | Reference Lists | **Add New Geographical Divisions**, **Add Implementation Partners**, **Add Funding Sources** |
 
     3. Enter the name of the entry, and its code where the form asks for one.
     4. Set the status to **Active**.
@@ -76,8 +82,8 @@ each module that needs it.
 
     ??? info "On a standalone installation"
 
-        On a standalone installation, Geographical Divisions and the Other Lab
-        Tests Config lists (except Test Type Configuration) show no add button.
+        On a standalone installation, Geographical Divisions and the lists on
+        the Custom Tests tab (except Test Type Configuration) show no add button.
         They are maintained on the STS only.
 
 === "LIS"
@@ -92,7 +98,7 @@ each module that needs it.
     ??? info "Lab Storage is maintained by the lab"
 
         Lab Storage is maintained by the lab: on the LIS, or on the STS by a
-        testing-lab user. **ADMIN → System Configuration → Lab Storage**
+        testing-lab user. **ADMIN → Settings → Lab Storage**
         belongs to the lab. Select **Add Lab Freezer/Storage** there to add a
         freezer.
 
@@ -110,8 +116,8 @@ form, and stays readable on the records that already use it.
 
     Select **Edit** on the row, set the status to **Inactive**, and select
     **Submit**. On a LIS, the status cannot be changed. Retire the entry on the
-    STS. On a standalone installation, retire Other Lab Tests Config entries on
-    the STS.
+    STS. On a standalone installation, retire entries on the Custom Tests tab
+    on the STS.
 
 ??? warning "Renaming or removing a province or district"
 
@@ -125,13 +131,15 @@ form, and stays readable on the records that already use it.
 ## Set up a Custom Test
 
 A Custom Test is a test type that is not one of the built-in modules. It is
-defined under **ADMIN → Other Lab Tests Config → Test Type Configuration**.
+defined under **ADMIN → Test Settings**, on the **Custom Tests** tab, under
+**Test Type Configuration**.
 
 1. Add at least one entry under **Test Methods**. Every result group needs
    one. Add units under **Test Result Units** if results carry a unit.
-2. Add the sample types, testing reasons and rejection reasons it needs, under
-   the matching Other Lab Tests Config lists.
-3. Go to **ADMIN → Other Lab Tests Config → Test Type Configuration**.
+2. Add the sample types, test reasons and rejection reasons it needs, under
+   the matching lists on the Custom Tests tab.
+3. Go to **ADMIN → Test Settings**, select the **Custom Tests** tab, then
+   select **Test Type Configuration**.
 4. Select **Add Test Type** and define the test, or select **Import Test
    Type** to load one exported from another installation.
 
@@ -142,4 +150,4 @@ defined under **ADMIN → Other Lab Tests Config → Test Type Configuration**.
 | New entry | It appears in its dropdown on the request form |
 | Retired entry | It leaves the form and stays readable on an existing record |
 | New district | It appears under its province on the request form |
-| New Custom Test | It appears in the Other Lab Tests request form |
+| New Custom Test | It appears in the Custom Tests request form |

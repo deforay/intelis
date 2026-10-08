@@ -23,7 +23,7 @@ D'autres tâches de la même page ont leur propre guide :
   installation autonome
 - La province et le district de la structure. Une province ou un district
   manquant peut être ajouté avec **Autre** sur le formulaire, ou d'abord sous
-  **ADMIN → Configuration du système → Divisions géographiques**
+  **ADMIN → Listes de référence → Divisions géographiques**
 
 ??? info "Sur un LIS, la page Structures sanitaires est en lecture seule"
 
@@ -60,7 +60,7 @@ D'autres tâches de la même page ont leur propre guide :
     | --- | --- |
     | Autre/code externe | Un second code, lorsqu'un autre système utilise le sien |
     | Point(s) de contrôle | Les points de service, par exemple CDV ou PTME |
-    | Adresse, Latitude, Longitude | L'emplacement de la structure. La latitude et la longitude la placent sur la carte Exemple de réseau de recommandation |
+    | Adresse, Latitude, Longitude | L'emplacement de la structure. La latitude et la longitude la placent sur la carte Réseau de référencement des échantillons |
     | Pays | Le pays de la structure |
     | Email(s) | Les adresses d'envoi des résultats, séparées par des virgules |
     | Gestionnaire du laboratoire | La personne de contact, choisie parmi les utilisateurs d'InteLIS |

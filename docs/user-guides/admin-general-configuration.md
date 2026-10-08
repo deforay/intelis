@@ -9,7 +9,7 @@ reviewed_against: 5.7.74
 
 # General configuration settings
 
-Reference for **ADMIN → System Configuration → General Configuration**. Every
+Reference for **ADMIN → Settings → General Configuration**. Every
 setting applies to every user of the installation at once.
 
 The settings listed under
@@ -18,7 +18,7 @@ need the national team's agreement first.
 
 ## Change a setting
 
-1. Go to **ADMIN → System Configuration → General Configuration**. The page,
+1. Go to **ADMIN → Settings → General Configuration**. The page,
    titled **System Configuration**, opens read-only.
 2. Select **Edit System Configuration**.
 3. Find the setting with **Search settings by keyword**, or pick its panel

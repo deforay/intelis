@@ -44,7 +44,7 @@ sets each one, and how each one counts in reports.
 | Hold | No viral load screen sets it. Choosing **Hold** on the **Imported Results** screen sets that row's result aside and leaves the sample's status unchanged |
 | Sample Reordered | No current workflow. Retesting returns a sample to Sample Registered at Testing Lab. The **Sample Reordered** checkbox on the request form records a separate flag, not this status |
 | Lost | Applying **Lost** in **Manage Results Status** |
-| Expired | The nightly status update. A sample still in Hold, Sample Reordered, Sample Currently Registered at Health Center or Sample Registered at Testing Lab expires once it is older than **Sample Expiry Days** under **ADMIN → System Configuration → General Configuration**. The age counts from the collection date, or from the request date when no collection date is recorded. The default is 365 days |
+| Expired | The nightly status update. A sample still in Hold, Sample Reordered, Sample Currently Registered at Health Center or Sample Registered at Testing Lab expires once it is older than **Sample Expiry Days** under **ADMIN → Settings → General Configuration**. The age counts from the collection date, or from the request date when no collection date is recorded. The default is 365 days |
 | No Result | Entering `no result` as the result |
 | Cancelled | Applying **Cancelled** in **Manage Results Status** and typing `CANCEL` to confirm |
 
@@ -52,8 +52,8 @@ sets each one, and how each one counts in reports.
 
 | Status | Reason recorded |
 | --- | --- |
-| Rejected | A rejection reason from the list under **ADMIN → VL Config → Rejection Reasons** |
-| Failed/Invalid | A failure reason from the list under **ADMIN → VL Config → Test Failure Reasons**, on result forms that include a failure reason field |
+| Rejected | A rejection reason from the list under **ADMIN → Test Settings**, **HIV Viral Load** tab, **Rejection Reasons** |
+| Failed/Invalid | A failure reason from the list under **ADMIN → Test Settings**, **HIV Viral Load** tab, **Test Failure Reasons**, on result forms that include a failure reason field |
 
 ## How statuses count in reports
 

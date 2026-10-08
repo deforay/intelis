@@ -214,7 +214,7 @@ valeur fausse :
 
         Les échantillons acceptés et rejetés se verrouillent lorsqu'ils n'ont pas
         été modifiés depuis le nombre de jours défini dans **Jours de
-        verrouillage des échantillons** sous **ADMIN → Configuration du système
+        verrouillage des échantillons** sous **ADMIN → Paramètres
         → Configuration générale**. Seul un utilisateur disposant de la
         permission Editer les échantillons VL verrouillés peut corriger un
         échantillon verrouillé.

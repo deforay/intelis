@@ -10,7 +10,7 @@ reviewed_against: 5.7.74
 # How to manage users and roles
 
 Create a login for each person, and decide what each login can reach. Both live
-under **ADMIN → Access Control**.
+under **ADMIN → Users & Roles**.
 
 InteLIS has no self-registration. An administrator creates every login.
 
@@ -25,7 +25,7 @@ InteLIS has no self-registration. An administrator creates every login.
 
 === "STS"
 
-    1. Go to **ADMIN → Access Control → Users**.
+    1. Go to **ADMIN → Users & Roles → Users**.
     2. Select **Add User**.
     3. Enter **Full Name**, **Email** and **Phone Number**. The name appears on
        reports and in the activity log.
@@ -64,7 +64,7 @@ InteLIS has no self-registration. An administrator creates every login.
 
 === "LIS or standalone"
 
-    1. Go to **ADMIN → Access Control → Users**.
+    1. Go to **ADMIN → Users & Roles → Users**.
     2. Select **Add User**.
     3. Enter **Full Name**, **Email** and **Phone Number**. The name appears on
        reports and in the activity log.
@@ -99,7 +99,7 @@ InteLIS has no self-registration. An administrator creates every login.
     Use this when signed in to the STS with a testing-lab role other than the
     built-in Admin role.
 
-    1. Go to **ADMIN → Access Control → Users**.
+    1. Go to **ADMIN → Users & Roles → Users**.
     2. Select **Add User**.
     3. Enter **Full Name**, **Email** and **Phone Number**. The name appears on
        reports and in the activity log.
@@ -141,7 +141,7 @@ InteLIS has no self-registration. An administrator creates every login.
 This applies to the STS only. Use it for facility staff who register their own
 requests, so each sees only their own facility.
 
-1. Go to **ADMIN → Access Control → Users**.
+1. Go to **ADMIN → Users & Roles → Users**.
 2. Select **Edit** on the user.
 3. Under **Map User to Selected Facilities (optional)**, move the facilities
    into the selected list. To narrow the facility list, select **Show Advanced
@@ -158,7 +158,7 @@ requests, so each sees only their own facility.
 
 ## Reset a user's password
 
-1. Go to **ADMIN → Access Control → Users**.
+1. Go to **ADMIN → Users & Roles → Users**.
 2. Select **Edit** on the user.
 3. Enter **Password** and **Confirm Password**, or select **Generate**.
 4. Select **Submit**.
@@ -169,7 +169,7 @@ requests, so each sees only their own facility.
 
 Systems that connect through the API use a token instead of a password.
 
-1. Go to **ADMIN → Access Control → Users**.
+1. Go to **ADMIN → Users & Roles → Users**.
 2. Select **Edit** on the user.
 3. Set **Role** to the API role. The **AuthToken** field appears.
 4. Select **Generate Another Token**.
@@ -192,7 +192,7 @@ token on save.
 
 ## Disable a departing user
 
-1. Go to **ADMIN → Access Control → Users**.
+1. Go to **ADMIN → Users & Roles → Users**.
 2. Select **Edit** on the user.
 3. Set **User Status** to **Inactive**.
 4. Select **Submit**.
@@ -212,7 +212,7 @@ token on save.
 
 A role is a named set of privileges. Users get privileges from their role only.
 
-1. Go to **ADMIN → Access Control → Roles**.
+1. Go to **ADMIN → Users & Roles → Roles**.
 2. Select **Add Role**, or **Edit** on an existing role.
 3. Enter **Role Name** and **Role Code**. Both must be unique.
 4. Optionally, set **Landing Page**. Users with this role open on it after
