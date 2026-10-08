@@ -73,7 +73,7 @@ final class SourcesOfRequestsReportTest extends TestCase
         );
         $db->rawQuery(
             "INSERT INTO r_sample_status (status_id, status_name, status) VALUES
-                (6, 'Sample Registered at Testing Lab', 'active'), (7, 'Accepted', 'active'),
+                (4, 'Rejected', 'active'), (6, 'Sample Registered at Testing Lab', 'active'), (7, 'Accepted', 'active'),
                 (12, 'Cancelled', 'active')"
         );
     }
@@ -383,6 +383,78 @@ final class SourcesOfRequestsReportTest extends TestCase
         self::assertSame(1, $json['summary']['total']['overdue']);
     }
 
+    private function seedNotArrived(): void
+    {
+        $daysAgo = fn(int $days): string => date('Y-m-d H:i:s', strtotime("-$days days"));
+        $this->seed('form_vl', [
+            'sample_code' => 'LOST-STS', 'source_of_request' => 'vlsts', 'request_created_datetime' => $daysAgo(20),
+        ]);
+        // The API stores a missing flag as NULL: not a rejection.
+        $this->seed('form_vl', [
+            'sample_code' => 'LOST-API', 'source_of_request' => 'api', 'request_created_datetime' => $daysAgo(15),
+            'is_sample_rejected' => null,
+        ]);
+        // Asked for a few days ago: still on its way.
+        $this->seed('form_vl', [
+            'sample_code' => 'ON-ITS-WAY', 'source_of_request' => 'vlsts', 'request_created_datetime' => $daysAgo(5),
+        ]);
+        // Entered by the lab, with the sample in hand.
+        $this->seed('form_vl', [
+            'sample_code' => 'LAB-ENTERED', 'source_of_request' => 'vlsm', 'request_created_datetime' => $daysAgo(20),
+        ]);
+        // Tested or rejected: it arrived, receipt recorded or not.
+        $this->seed('form_vl', [
+            'sample_code' => 'TESTED', 'source_of_request' => 'vlsts', 'request_created_datetime' => $daysAgo(20),
+            'sample_tested_datetime' => $daysAgo(10),
+        ]);
+        $this->seed('form_vl', [
+            'sample_code' => 'REJECTED-FLAG', 'source_of_request' => 'vlsts',
+            'request_created_datetime' => $daysAgo(20), 'is_sample_rejected' => 'yes',
+        ]);
+        $this->seed('form_vl', [
+            'sample_code' => 'REJECTED-STATUS', 'source_of_request' => 'api',
+            'request_created_datetime' => $daysAgo(19), 'result_status' => 4,
+        ]);
+        $this->seed('form_vl', [
+            'sample_code' => 'RECEIVED', 'source_of_request' => 'api', 'request_created_datetime' => $daysAgo(20),
+            'sample_received_at_lab_datetime' => $daysAgo(18),
+        ]);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnElectronicRequestWithNoSampleAfterTwoWeeksHasNotArrived(): void
+    {
+        $this->seedNotArrived();
+
+        $json = $this->drive(['stage' => 'notArrived']);
+
+        self::assertSame(['LOST-STS', 'LOST-API'], self::sampleCodes($json));
+        $rows = array_column($json['summary']['rows'], null, 'label');
+        self::assertSame([1, true], [$rows['STS']['notArrived'], $rows['STS']['electronic']]);
+        self::assertSame(1, $rows['API']['notArrived']);
+        self::assertSame([0, false], [$rows['LIS']['notArrived'], $rows['LIS']['electronic']]);
+        self::assertSame(2, $json['summary']['total']['notArrived']);
+
+        $clinic = $this->breakdown('clinic')['rows'][0];
+        self::assertSame(2, $clinic['notArrived']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testARejectionCountsByItsFlagOrItsStatus(): void
+    {
+        $this->seedNotArrived();
+
+        $json = $this->drive(['stage' => 'rejected']);
+
+        self::assertSame(['REJECTED-FLAG', 'REJECTED-STATUS'], self::sampleCodes($json));
+        $rows = array_column($json['summary']['rows'], null, 'label');
+        self::assertSame([1, 1, 0], [$rows['STS']['rejected'], $rows['API']['rejected'], $rows['LIS']['rejected']]);
+        self::assertSame(2, $json['summary']['total']['rejected']);
+
+        $clinics = $this->breakdown('clinic');
+        self::assertSame([2, 2], [$clinics['rows'][0]['rejected'], $clinics['total']['rejected']]);
+    }
+
     #[RunInSeparateProcess]
     public function testTheClinicSummarySplitsEachClinicBySource(): void
     {
@@ -560,9 +632,11 @@ final class SourcesOfRequestsReportTest extends TestCase
         // The summary covers every source, as on the page.
         $summary = $sheets['Summary by Source'];
         self::assertSame('Source of Request', $summary[0][0]);
-        self::assertSame(['LIS', 2, 1, 50, 1, 50, 1, 50], array_map(
+        // Requested, received and %, not arrived (blank: the lab entered these),
+        // rejected and %, tested and %, returned and %.
+        self::assertSame(['LIS', 2, 1, 50, '', 0, 0, 1, 50, 1, 50], array_map(
             static fn($cell) => is_numeric($cell) ? (int) $cell : $cell,
-            array_slice($summary[1], 0, 8)
+            array_slice($summary[1], 0, 11)
         ));
         self::assertSame(['Total', 6], [end($summary)[0], (int) end($summary)[1]]);
 

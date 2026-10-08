@@ -27,8 +27,16 @@ final class SourcesOfRequestsReportUtility
     /** A tested result not returned after this many days is overdue. */
     public const OVERDUE_DAYS = 7;
 
+    /**
+     * An electronic request whose sample has not reached the lab this many days
+     * after it was made: the sample was lost, held at the clinic or never taken.
+     */
+    public const NOT_ARRIVED_DAYS = 14;
+
     /** Stages the sample list can be narrowed to, as the summaries count them. */
-    public const STAGES = ['received', 'notReceived', 'tested', 'returned', 'notReturned', 'overdue'];
+    public const STAGES = [
+        'received', 'notReceived', 'notArrived', 'rejected', 'tested', 'returned', 'notReturned', 'overdue',
+    ];
 
     /** Sources whose requests the lab had to enter itself. */
     private const NOT_ELECTRONIC = ['vlsm', 'unrecorded'];
@@ -97,13 +105,26 @@ final class SourcesOfRequestsReportUtility
             . ' ELSE LOWER(vl.source_of_request) END';
     }
 
-    /** The condition for one stage, or null for an unknown one. */
+    /**
+     * The condition for one stage, or null for an unknown one.
+     *
+     * notArrived counts only requests the clinic sent electronically: a request
+     * the lab entered itself was entered with the sample in hand. A sample tested
+     * or rejected arrived, whether or not its receipt was recorded.
+     */
     public static function stageWhere(string $stage): ?string
     {
         $returnedOn = self::RETURNED_ON;
         return match ($stage) {
             'received' => 'vl.sample_received_at_lab_datetime IS NOT NULL',
             'notReceived' => 'vl.sample_received_at_lab_datetime IS NULL',
+            'notArrived' => self::sourceExpression() . " NOT IN ('" . implode("', '", self::NOT_ELECTRONIC) . "')"
+                . ' AND vl.sample_received_at_lab_datetime IS NULL AND vl.sample_tested_datetime IS NULL'
+                // IS NOT TRUE, not NOT: a NULL flag makes the predicate NULL, and NOT NULL
+                // would drop the request.
+                . ' AND ' . SampleRejectionUtility::sqlPredicate('vl') . ' IS NOT TRUE'
+                . ' AND vl.request_created_datetime < NOW() - INTERVAL ' . self::NOT_ARRIVED_DAYS . ' DAY',
+            'rejected' => SampleRejectionUtility::sqlPredicate('vl'),
             'tested' => 'vl.sample_tested_datetime IS NOT NULL',
             'returned' => "$returnedOn IS NOT NULL",
             'notReturned' => "vl.sample_tested_datetime IS NOT NULL AND $returnedOn IS NULL",
@@ -114,9 +135,9 @@ final class SourcesOfRequestsReportUtility
     }
 
     /**
-     * Per source: requests, how many reached each step, how many results are
-     * overdue, and the median days from sample collection to receipt at the lab
-     * and to the result being returned.
+     * Per source: requests, how many reached each step, how many samples never
+     * arrived or were rejected, how many results are overdue, and the median days
+     * from sample collection to receipt at the lab and to the result being returned.
      *
      * @param string $fromWhere The FROM and WHERE of the rows to count.
      * @return array{rows: array<int, array<string, mixed>>, total: array<string, mixed>}
@@ -126,11 +147,15 @@ final class SourcesOfRequestsReportUtility
         $source = self::sourceExpression();
         $returnedOn = self::RETURNED_ON;
         $overdue = self::stageWhere('overdue');
+        $notArrived = self::stageWhere('notArrived');
+        $rejected = self::stageWhere('rejected');
 
         $counts = $db->rawQuery(
             "SELECT $source AS request_source,
                     COUNT(*) AS requested,
                     SUM(vl.sample_received_at_lab_datetime IS NOT NULL) AS received,
+                    SUM($notArrived) AS notArrived,
+                    SUM($rejected) AS rejected,
                     SUM(vl.sample_tested_datetime IS NOT NULL) AS tested,
                     SUM($returnedOn IS NOT NULL) AS returned,
                     SUM($overdue) AS overdue
@@ -139,11 +164,18 @@ final class SourcesOfRequestsReportUtility
         ) ?: [];
         $median = self::medians($db, $fromWhere, $source);
 
-        $total = ['requested' => 0, 'received' => 0, 'tested' => 0, 'returned' => 0, 'overdue' => 0];
+        $total = [
+            'requested' => 0, 'received' => 0, 'notArrived' => 0, 'rejected' => 0,
+            'tested' => 0, 'returned' => 0, 'overdue' => 0,
+        ];
         $rows = [];
         foreach ($counts as $row) {
             $key = (string) $row['request_source'];
-            $entry = ['source' => $key, 'label' => CommonService::sourceOfRequestLabel($key)];
+            $entry = [
+                'source' => $key,
+                'label' => CommonService::sourceOfRequestLabel($key),
+                'electronic' => self::isElectronic($key),
+            ];
             foreach (array_keys($total) as $step) {
                 $entry[$step] = (int) $row[$step];
                 $total[$step] += $entry[$step];
@@ -156,7 +188,7 @@ final class SourcesOfRequestsReportUtility
 
         return [
             'rows' => self::sortSources($rows),
-            'total' => ['source' => '', 'label' => _translate('Total')] + $total + [
+            'total' => ['source' => '', 'label' => _translate('Total'), 'electronic' => true] + $total + [
                 'receiptDays' => $median[self::ALL]['receipt'] ?? null,
                 'returnDays' => $median[self::ALL]['return'] ?? null,
             ],
@@ -165,7 +197,8 @@ final class SourcesOfRequestsReportUtility
 
     /**
      * Per clinic: requests from each source, how many came electronically (not
-     * entered at the lab), results returned and overdue, and the median days from
+     * entered at the lab), samples that never arrived or were rejected, results
+     * returned and overdue, and the median days from
      * collection to the result being returned. Clinic 0 holds requests with none.
      *
      * @return array{sources: list<array{source: string, label: string}>,
@@ -176,6 +209,8 @@ final class SourcesOfRequestsReportUtility
         $source = self::sourceExpression();
         $returnedOn = self::RETURNED_ON;
         $overdue = self::stageWhere('overdue');
+        $notArrived = self::stageWhere('notArrived');
+        $rejected = self::stageWhere('rejected');
         $clinic = 'IFNULL(vl.facility_id, 0)';
 
         $counts = $db->rawQuery(
@@ -183,6 +218,8 @@ final class SourcesOfRequestsReportUtility
                     MAX(f.facility_name) AS clinic_name,
                     $source AS request_source,
                     COUNT(*) AS requested,
+                    SUM($notArrived) AS notArrived,
+                    SUM($rejected) AS rejected,
                     SUM($returnedOn IS NOT NULL) AS returned,
                     SUM($overdue) AS overdue
              $fromWhere
@@ -190,7 +227,10 @@ final class SourcesOfRequestsReportUtility
         ) ?: [];
         $median = self::medians($db, $fromWhere, $clinic);
 
-        $blank = ['requested' => 0, 'electronic' => 0, 'returned' => 0, 'overdue' => 0, 'bySource' => []];
+        $blank = [
+            'requested' => 0, 'electronic' => 0, 'notArrived' => 0, 'rejected' => 0,
+            'returned' => 0, 'overdue' => 0, 'bySource' => [],
+        ];
         $clinics = [];
         $sources = [];
         $total = $blank;
@@ -206,10 +246,12 @@ final class SourcesOfRequestsReportUtility
 
             foreach ([&$clinics[$id], &$total] as &$entry) {
                 $entry['requested'] += (int) $row['requested'];
+                $entry['notArrived'] += (int) $row['notArrived'];
+                $entry['rejected'] += (int) $row['rejected'];
                 $entry['returned'] += (int) $row['returned'];
                 $entry['overdue'] += (int) $row['overdue'];
                 $entry['bySource'][$key] = ($entry['bySource'][$key] ?? 0) + (int) $row['requested'];
-                if (!in_array($key, self::NOT_ELECTRONIC, true)) {
+                if (self::isElectronic($key)) {
                     $entry['electronic'] += (int) $row['requested'];
                 }
             }
@@ -367,6 +409,12 @@ final class SourcesOfRequestsReportUtility
             $median[(string) $row['group_key']][$row['step']] = round((float) $row['median_minutes'] / 1440, 1);
         }
         return $median;
+    }
+
+    /** Whether requests from a source reach the lab without the lab entering them. */
+    private static function isElectronic(string $source): bool
+    {
+        return !in_array($source, self::NOT_ELECTRONIC, true);
     }
 
     /**

@@ -36749,8 +36749,8 @@ msgstr "Pas encore reçu"
 msgid "Requested"
 msgstr "Demandés"
 
-msgid "Requests made in the date range. Percentages are of requests. Median days run from sample collection to receipt at the lab and to the result being returned. Click a number to list those samples."
-msgstr "Demandes faites dans la période. Les pourcentages sont calculés sur les demandes. Les jours médians vont du prélèvement à la réception au laboratoire et au renvoi du résultat. Cliquer sur un nombre pour lister ces échantillons."
+msgid "Requests made in the date range. Percentages are of requests. Samples not received are counted for electronic requests only. Median days run from sample collection to receipt at the lab and to the result being returned. Click a number to list those samples."
+msgstr "Demandes faites dans la période. Les pourcentages sont calculés sur les demandes. Les échantillons non reçus ne sont comptés que pour les demandes électroniques. Les jours médians vont du prélèvement à la réception au laboratoire et au renvoi du résultat. Cliquer sur un nombre pour lister ces échantillons."
 
 msgid "Result Returned"
 msgstr "Résultat renvoyé"
@@ -36812,3 +36812,10 @@ msgstr "Tendance"
 
 msgid "Week Starting"
 msgstr "Semaine du"
+
+msgid "% Rejected"
+msgstr "% rejetés"
+
+#, c-format
+msgid "Not Received After %d Days"
+msgstr "Non reçus après %d jours"

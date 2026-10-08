@@ -35,9 +35,12 @@ $testTypeLabels = [
 $state = $geolocationService->getProvinces("yes");
 
 $overdueLabel = sprintf(_translate('Not Returned After %d Days'), SourcesOfRequestsReportUtility::OVERDUE_DAYS);
+$notArrivedLabel = sprintf(_translate('Not Received After %d Days'), SourcesOfRequestsReportUtility::NOT_ARRIVED_DAYS);
 $stages = [
     'received' => _translate("Received at Lab"),
     'notReceived' => _translate("Not Yet Received"),
+    'notArrived' => $notArrivedLabel,
+    'rejected' => _translate("Rejected"),
     'tested' => _translate("Tested"),
     'returned' => _translate("Result Returned"),
     'notReturned' => _translate("Tested, Result Not Returned"),
@@ -222,7 +225,7 @@ $stages = [
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="sorBySource">
                                 <p class="sor-note" id="sourceSummaryNote">
-                                    <?= _htmlTranslate("Requests made in the date range. Percentages are of requests. Median days run from sample collection to receipt at the lab and to the result being returned. Click a number to list those samples."); ?>
+                                    <?= _htmlTranslate("Requests made in the date range. Percentages are of requests. Samples not received are counted for electronic requests only. Median days run from sample collection to receipt at the lab and to the result being returned. Click a number to list those samples."); ?>
                                 </p>
                                 <table aria-describedby="sourceSummaryNote" id="sourceSummary" class="table table-bordered table-condensed">
                                     <thead>
@@ -230,6 +233,8 @@ $stages = [
                                             <th><?= _htmlTranslate("Source of Request"); ?></th>
                                             <th class="num"><?= _htmlTranslate("Requested"); ?></th>
                                             <th class="num"><?= _htmlTranslate("Received at Lab"); ?></th>
+                                            <th class="num"><?= htmlspecialchars($notArrivedLabel); ?></th>
+                                            <th class="num"><?= _htmlTranslate("Rejected"); ?></th>
                                             <th class="num"><?= _htmlTranslate("Tested"); ?></th>
                                             <th class="num"><?= _htmlTranslate("Results Returned"); ?></th>
                                             <th class="num"><?= htmlspecialchars($overdueLabel); ?></th>
@@ -298,6 +303,7 @@ $stages = [
     var loadedVersion = { clinic: -1, trend: -1 };
     var clinicTable = null;
     var OVERDUE_LABEL = "<?= _jsTranslate($overdueLabel); ?>";
+    var NOT_ARRIVED_LABEL = "<?= _jsTranslate($notArrivedLabel); ?>";
 
     function applyFilters() {
         applied = {
@@ -383,16 +389,21 @@ $stages = [
             + escapeText(drill.clinicLabel || '') + '">' + text + '</a>';
     }
 
+    // A count that needs following up, in red when there is any.
+    function alertCell(cell, value) {
+        return '<td class="num' + (value > 0 ? ' sor-overdue' : '') + '">' + cell + '</td>';
+    }
+
     function drawSummary(summary) {
         var body = $('#sourceSummary tbody').empty();
         if (!summary || !summary.rows.length) {
-            body.append('<tr><td colspan="8" class="text-center text-muted"><?= _jsTranslate("No data available"); ?></td></tr>');
+            body.append('<tr><td colspan="10" class="text-center text-muted"><?= _jsTranslate("No data available"); ?></td></tr>');
             return;
         }
 
         function count(row, value, stage) {
             var text = drillLink(value, { source: row.source, stage: stage });
-            if (stage === '' || stage === 'overdue') {
+            if (stage === '' || stage === 'overdue' || stage === 'notArrived') {
                 return text;
             }
             var percent = row.requested > 0 ? Math.round(value * 100 / row.requested) + '%' : '';
@@ -405,9 +416,13 @@ $stages = [
                 + '<td>' + escapeText(row.label) + '</td>'
                 + '<td class="num">' + count(row, row.requested, '') + '</td>'
                 + '<td class="num">' + count(row, row.received, 'received') + '</td>'
+                // The lab entered these requests with the sample in hand.
+                + (row.electronic ? alertCell(count(row, row.notArrived, 'notArrived'), row.notArrived)
+                    : '<td class="num">&ndash;</td>')
+                + '<td class="num">' + count(row, row.rejected, 'rejected') + '</td>'
                 + '<td class="num">' + count(row, row.tested, 'tested') + '</td>'
                 + '<td class="num">' + count(row, row.returned, 'returned') + '</td>'
-                + '<td class="num' + (row.overdue > 0 ? ' sor-overdue' : '') + '">' + count(row, row.overdue, 'overdue') + '</td>'
+                + alertCell(count(row, row.overdue, 'overdue'), row.overdue)
                 + '<td class="num">' + days(row.receiptDays) + '</td>'
                 + '<td class="num">' + days(row.returnDays) + '</td>'
                 + '</tr>');
@@ -483,8 +498,8 @@ $stages = [
         data.sources.forEach(function (source) {
             heads.push(source.label);
         });
-        heads.push('<?= _jsTranslate("% Electronic"); ?>', '<?= _jsTranslate("Results Returned"); ?>', OVERDUE_LABEL,
-            '<?= _jsTranslate("Median Days to Return"); ?>');
+        heads.push('<?= _jsTranslate("% Electronic"); ?>', NOT_ARRIVED_LABEL, '<?= _jsTranslate("Rejected"); ?>',
+            '<?= _jsTranslate("Results Returned"); ?>', OVERDUE_LABEL, '<?= _jsTranslate("Median Days to Return"); ?>');
         table.append('<thead><tr>' + heads.map(function (head, index) {
             return '<th' + (index > 0 ? ' class="num"' : '') + '>' + escapeText(head) + '</th>';
         }).join('') + '</tr></thead><tbody></tbody><tfoot></tfoot>');
@@ -496,6 +511,9 @@ $stages = [
                 list.push(drillLink(row.bySource[source.source] || 0, $.extend({ source: source.source, stage: '' }, drill)));
             });
             list.push(row.requested > 0 ? Math.round(row.electronic * 100 / row.requested) + '%' : '&ndash;');
+            list.push('<span class="' + (row.notArrived > 0 ? 'sor-overdue' : '') + '">'
+                + drillLink(row.notArrived, $.extend({ source: '', stage: 'notArrived' }, drill)) + '</span>');
+            list.push(drillLink(row.rejected, $.extend({ source: '', stage: 'rejected' }, drill)));
             list.push(drillLink(row.returned, $.extend({ source: '', stage: 'returned' }, drill)));
             list.push('<span class="' + (row.overdue > 0 ? 'sor-overdue' : '') + '">'
                 + drillLink(row.overdue, $.extend({ source: '', stage: 'overdue' }, drill)) + '</span>');
@@ -509,7 +527,8 @@ $stages = [
             data.sources.forEach(function (source) {
                 values.push(row.bySource[source.source] || 0);
             });
-            values.push(row.requested > 0 ? row.electronic / row.requested : 0, row.returned, row.overdue,
+            values.push(row.requested > 0 ? row.electronic / row.requested : 0, row.notArrived, row.rejected,
+                row.returned, row.overdue,
                 row.returnDays == null ? -1 : row.returnDays);
             return values;
         }
