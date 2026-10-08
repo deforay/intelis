@@ -36678,3 +36678,48 @@ msgstr "Toutes les sources"
 
 msgid "Not Recorded"
 msgstr "Non renseigné"
+
+msgid "% Received"
+msgstr "% reçus"
+
+msgid "% Returned"
+msgstr "% renvoyés"
+
+msgid "Median Days to Receipt"
+msgstr "Jours médians jusqu'à la réception"
+
+msgid "Median Days to Return"
+msgstr "Jours médians jusqu'au renvoi"
+
+msgid "Not Yet Received"
+msgstr "Pas encore reçu"
+
+msgid "Requested"
+msgstr "Demandés"
+
+msgid "Requests made in the date range. Percentages are of requests. Median days run from sample collection to receipt at the lab and to the result being returned. Click a number to list those samples."
+msgstr "Demandes faites dans la période. Les pourcentages sont calculés sur les demandes. Les jours médians vont du prélèvement à la réception au laboratoire et au renvoi du résultat. Cliquer sur un nombre pour lister ces échantillons."
+
+msgid "Result Returned"
+msgstr "Résultat renvoyé"
+
+msgid "Result Returned On"
+msgstr "Résultat renvoyé le"
+
+msgid "Results Returned"
+msgstr "Résultats renvoyés"
+
+msgid "Select Name of the Clinic"
+msgstr "Sélectionner le nom de la clinique"
+
+msgid "Sources of Requests Export"
+msgstr "Export des sources de demandes"
+
+msgid "Summary by Source"
+msgstr "Synthèse par source"
+
+msgid "Tablet"
+msgstr "Tablette"
+
+msgid "Tested, Result Not Returned"
+msgstr "Testé, résultat non renvoyé"

@@ -1813,6 +1813,23 @@ final class CommonService
         };
     }
 
+    /**
+     * What a report shows for a source of request: one name per source, whichever
+     * name the row was stored under. 'unrecorded' stands for rows with no source.
+     */
+    public static function sourceOfRequestLabel(string $source): string
+    {
+        $source = self::storedSourcesOfRequest($source)[0];
+        return match ($source) {
+            '', 'unrecorded' => _translate('Not Recorded'),
+            'vlsm' => 'LIS',
+            'vlsts' => 'STS',
+            'app' => _translate('Tablet'),
+            'api', 'dhis2', 'fhir' => strtoupper($source),
+            default => $source,
+        };
+    }
+
     public function getSourcesOfTestRequests($table, $asNameValuePair = false)
     {
         $key = "sources_of_test_requests_list_{$table}_" . ($asNameValuePair ? 'name_value' : 'full_data');
