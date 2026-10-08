@@ -33,6 +33,16 @@ final class InterfacingService
 {
     private const FAILURE_RESULTS = ['fail', 'failed', 'failure', 'error', 'err'];
 
+    /**
+     * What the analyzer reported about the run, one column each (5.7.82, 5.7.85): set
+     * from every new result, filled in on earlier ones only where empty. The lot and
+     * its expiry go separately, as a pair.
+     */
+    private const RUN_COLUMNS = [
+        'assay_name', 'instrument_model', 'instrument_serial', 'analyzer_run_id', 'analyzer_message',
+        'analyzer_readings',
+    ];
+
     /** Test tables with an assay_name column (5.7.82). */
     private const ASSAY_TABLES = ['form_vl', 'form_eid'];
 
@@ -507,7 +517,16 @@ final class InterfacingService
             (string) ($row['test_id'] ?? '')
         );
 
-        $details = ['assay_name' => $message['assay'] ?? self::assayName($row)];
+        $details = [
+            'assay_name' => $message['assay'] ?? self::assayName($row),
+            'instrument_model' => $message['model'],
+            'instrument_serial' => $message['serial'],
+            'analyzer_run_id' => $message['runId'],
+            'analyzer_message' => $message['message'],
+            'analyzer_readings' => $message['readings'] === []
+                ? null
+                : json_encode($message['readings'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        ];
         if ($message['lot'] !== null) {
             $details['lot_number'] = $message['lot'];
             $details['lot_expiration_date'] = $message['lotExpiry'];
@@ -544,11 +563,28 @@ final class InterfacingService
         $runParams = $testedAt === null ? [] : [$testedAt];
         $filled = false;
 
-        if (($details['assay_name'] ?? null) !== null && trim((string) ($existing['assay_name'] ?? '')) === '') {
+        // Each column only where the row has none, in one statement; the row is
+        // matched only while one of them is still empty.
+        $fill = array_filter(
+            array_intersect_key($details, array_flip(self::RUN_COLUMNS)),
+            static fn(?string $value, string $column): bool => $value !== null
+                && trim((string) ($existing[$column] ?? '')) === '',
+            ARRAY_FILTER_USE_BOTH
+        );
+        if ($fill !== []) {
+            // A JSON column cannot be compared with ''.
+            $empty = static fn(string $column): string => $column === 'analyzer_readings'
+                ? "`$column` IS NULL"
+                : "(`$column` IS NULL OR `$column` = '')";
+            $set = array_map(
+                static fn(string $column): string => "`$column` = IF({$empty($column)}, ?, `$column`)",
+                array_keys($fill)
+            );
             $db->rawQuery(
-                "UPDATE `$table` SET assay_name = ?, data_sync = 0
-                  WHERE `$primaryKey` = ? AND (assay_name IS NULL OR assay_name = '')$sameRun",
-                [$details['assay_name'], $id, ...$runParams]
+                "UPDATE `$table` SET " . implode(', ', $set) . ", data_sync = 0
+                  WHERE `$primaryKey` = ?
+                    AND (" . implode(' OR ', array_map($empty, array_keys($fill))) . ")$sameRun",
+                [...array_values($fill), $id, ...$runParams]
             );
             $filled = $db->count > 0;
         }
@@ -747,7 +783,8 @@ final class InterfacingService
             }
             $rows = $this->db->connection('default')->rawQuery(
                 "SELECT `$primaryKey`, sample_code, remote_sample_code, lab_assigned_code,
-                        sample_tested_datetime, assay_name, lot_number, lot_expiration_date
+                        sample_tested_datetime, lot_number, lot_expiration_date,
+                        " . implode(', ', self::RUN_COLUMNS) . "
                    FROM `$table`
                   WHERE lab_id = ?
                     AND `$column` IN (" . implode(', ', array_fill(0, count($values), '?')) . ')',
@@ -787,16 +824,21 @@ final class InterfacingService
         $match = 'form_table = ? AND record_id = ? AND sample_tested_datetime = ?';
         $filled = false;
 
-        if (isset($details['assay_name'])) {
+        // In the snapshot of the row, each as the row itself would hold it (the
+        // readings as their JSON text). JSON null reads back as the string 'null'.
+        foreach (self::RUN_COLUMNS as $column) {
+            if (!isset($details[$column])) {
+                continue;
+            }
+            $path = "$.row.$column";
             $db->rawQuery(
                 "UPDATE test_result_attempts
-                    SET attempt_data = JSON_SET(attempt_data, '$.row.assay_name', ?)
+                    SET attempt_data = JSON_SET(attempt_data, '$path', ?)
                   WHERE $match AND JSON_VALID(attempt_data)
-                    AND IFNULL(JSON_UNQUOTE(JSON_EXTRACT(attempt_data, '$.row.assay_name')), 'null')
-                        IN ('null', '')",
-                [$details['assay_name'], $table, $recordId, $testedAt]
+                    AND IFNULL(JSON_UNQUOTE(JSON_EXTRACT(attempt_data, '$path')), 'null') IN ('null', '')",
+                [$details[$column], $table, $recordId, $testedAt]
             );
-            $filled = $db->count > 0;
+            $filled = $db->count > 0 || $filled;
         }
 
         if (isset($details['lot_number'])) {

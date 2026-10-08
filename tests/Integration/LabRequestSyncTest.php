@@ -61,6 +61,7 @@ final class LabRequestSyncTest extends TestCase
         $this->booted = true;
         $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (6, 'Registered'), (7, 'Accepted')");
         LegacyAppHarness::addMigrationColumns('5.7.82', ['form_vl']);
+        LegacyAppHarness::addMigrationColumns('5.7.85', ['form_vl']);
         foreach (['form_vl', 'form_tb', 'form_generic', 'form_covid19'] as $table) {
             $db->rawQuery("CREATE TABLE `sts_$table` LIKE `$table`");
         }
@@ -185,7 +186,10 @@ final class LabRequestSyncTest extends TestCase
         // The lab imports the result from its instrument file.
         $db->rawQuery(
             "UPDATE form_vl SET instrument_id = 'inst-1', assay_name = 'HIV1.0mlDBS', lot_number = '417517',
-                lot_expiration_date = '2026-12-31', result = '40', result_status = 7
+                lot_expiration_date = '2026-12-31', instrument_model = 'Alinity m', instrument_serial = 'M01133',
+                analyzer_run_id = 'RUN-1', analyzer_message = 'U06T Pipetting anomaly',
+                analyzer_readings = '[{\"name\":\"IC\",\"value\":\"15.70\",\"unit\":\"CN\"}]',
+                result = '40', result_status = 7
                 WHERE unique_id = 'u-1'"
         );
 
@@ -201,6 +205,10 @@ final class LabRequestSyncTest extends TestCase
         self::assertSame('HIV1.0mlDBS', $row['assay_name']);
         self::assertSame('417517', $row['lot_number']);
         self::assertSame('2026-12-31', $row['lot_expiration_date']);
+        foreach (['instrument_model', 'instrument_serial', 'analyzer_run_id', 'analyzer_message'] as $column) {
+            self::assertNotNull($row[$column], $column);
+        }
+        self::assertNotNull($row['analyzer_readings']);
     }
 
     #[RunInSeparateProcess]

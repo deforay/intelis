@@ -27,17 +27,39 @@ namespace App\Utilities;
  *
  * The cobas analyzers send no reagent lot. Anything not found is null, and the
  * caller falls back to test_type.
+ *
+ * Also read, for the run rather than the result:
+ *
+ *   model, serial  HL7 OBX-18 "Alinity m^Abbott~M01133^Abbott", "c5800^Roche~c5800.2709";
+ *                  m2000 H.5 "m2000^8.1.9.0^275020144"; GeneXpert R.14 system
+ *                  "Cepheid-1F21001"; TaqMan R.14 "Cobas TaqMan" and the AMPLILINK id
+ *   run ID         cobas OBX-21 "5-2709-20260404-1526", m2000 O.4 "...^HIV120126A^F7",
+ *                  GeneXpert R.14 cartridge serial
+ *   message        what the analyzer said about the run: HL7 OBX-8 codes with text
+ *                  ("U06T Pipetting anomaly ..."), ASTM instrument comments (C records:
+ *                  "Sample clotted", "Error 2014 ...", "TM40 STEP_CORR-2")
+ *   readings       the other values reported with the result: cycle numbers, Ct,
+ *                  internal control, as name, value and unit
  */
 final class AnalyzerRawText
 {
+    /** Most readings kept for one run, and the longest value of one. */
+    private const MAX_READINGS = 30;
+    private const MAX_READING_LENGTH = 100;
+
     /**
      * @param string ...$sampleIds the sample's identifiers as the analyzer sent them
      *                             (order ID, test ID); either one picks out its sample
-     * @return array{assay: ?string, lot: ?string, lotExpiry: ?string}
+     * @return array{assay: ?string, lot: ?string, lotExpiry: ?string, model: ?string, serial: ?string,
+     *               runId: ?string, message: ?string,
+     *               readings: list<array{name: string, value: string, unit: ?string}>}
      */
     public static function read(?string $rawText, string ...$sampleIds): array
     {
-        $none = ['assay' => null, 'lot' => null, 'lotExpiry' => null];
+        $none = [
+            'assay' => null, 'lot' => null, 'lotExpiry' => null, 'model' => null, 'serial' => null,
+            'runId' => null, 'message' => null, 'readings' => [],
+        ];
         $records = self::records((string) $rawText);
         if ($records === []) {
             return $none;
@@ -49,7 +71,7 @@ final class AnalyzerRawText
             return $none;
         }
 
-        return $isHl7 ? self::readHl7($records) : self::readAstm($records);
+        return ($isHl7 ? self::readHl7($records) : self::readAstm($records)) + $none;
     }
 
     /**
@@ -147,12 +169,13 @@ final class AnalyzerRawText
 
     /**
      * @param list<string> $records
-     * @return array{assay: ?string, lot: ?string, lotExpiry: ?string}
+     * @return array<string, mixed>
      */
     private static function readAstm(array $records): array
     {
         $result = self::first($records, 'R');
         $order = self::first($records, 'O');
+        $sender = explode('^', self::first($records, 'H')[4] ?? '');
 
         $testId = $result[2] ?? $order[4] ?? '';
         $assay = self::longestName(explode('^', $testId));
@@ -160,25 +183,75 @@ final class AnalyzerRawText
             $assay = self::longestName(explode('^', $order[4] ?? ''));
         }
 
-        $lot = null;
-        $lotExpiry = null;
+        $lot = $lotExpiry = $model = $serial = $runId = null;
         $components = explode('^', $testId);
         $cartridge = explode('^', $result[13] ?? '');
         if (str_starts_with($cartridge[0], 'Cepheid')) {
             // GeneXpert: system^module^...^cartridge serial^reagent lot^expiry
             $lot = self::lot($cartridge[4] ?? '');
             $lotExpiry = self::date($cartridge[5] ?? '');
+            $model = 'GeneXpert';
+            $serial = self::text($cartridge[0]);
+            $runId = self::text($cartridge[3] ?? '');
         } elseif (count($components) >= 9 && $components[3] !== '') {
             // Abbott m2000: ^^^assay^protocol^assay lot^reagent serial^^result type
             $lot = self::lot($components[5]);
         }
+        if (strcasecmp(trim($sender[0]), 'm2000') === 0) {
+            // m2000^software^serial^record types; the run is O.4 sample^run^well.
+            $model = 'm2000';
+            $serial = self::text($sender[2] ?? '') ?? self::text($result[13] ?? '');
+            $runId = self::text(explode('^', $order[3] ?? '')[1] ?? '');
+        } elseif (in_array('AMPLILINK', array_map('trim', $sender), true)) {
+            // AMPLILINK id^Roche^AMPLILINK^version^protocol^instrument^address; the
+            // instrument names itself in R.14 ("Cobas TaqMan", "Taqman96").
+            $model = self::text($result[13] ?? '');
+            $serial = self::text($sender[5] ?? '') ?? self::text($sender[0]);
+        }
 
-        return ['assay' => $assay, 'lot' => $lot, 'lotExpiry' => $lotExpiry];
+        // Instrument comments: m2000 "Sample clotted", GeneXpert
+        // "Error^2014^Operation terminated^description^time", TaqMan flags "TM40^ STEP_CORR-2".
+        $messages = [];
+        foreach ($records as $record) {
+            $fields = explode('|', $record);
+            if ($fields[0] === 'C' && trim($fields[2] ?? '') === 'I') {
+                $parts = array_filter(
+                    array_map('trim', explode('^', $fields[3] ?? '')),
+                    static fn(string $part): bool => $part !== '' && preg_match('/^\d{12,14}$/', $part) !== 1
+                );
+                $messages[] = implode(' ', $parts);
+            }
+        }
+
+        // The result's other records: GeneXpert "^^^HIV-1_VL 2 2^^^HIV-1^Ct" = 26.4,
+        // m2000 "...^402072^10004668^^P" = -1.00 "cycle number". The name is what
+        // follows the assay, lot and reagent numbers left out; m2000 names the
+        // result type by a letter.
+        $m2000Types = ['I' => 'Interpretation', 'P' => 'Cycle number'];
+        $readings = [];
+        $resultRecords = array_values(array_filter($records, static fn(string $r): bool => self::type($r) === 'R'));
+        foreach (array_slice($resultRecords, 1) as $record) {
+            $fields = explode('|', $record);
+            $name = implode(' ', array_filter(
+                array_map('trim', array_slice(explode('^', $fields[2] ?? ''), 6)),
+                static fn(string $part): bool => $part !== '' && !ctype_digit($part)
+            ));
+            if ($model === 'm2000') {
+                $name = $m2000Types[$name] ?? $name;
+            }
+            $readings[] = self::reading($name, $fields[3] ?? '', $fields[4] ?? '');
+        }
+
+        return [
+            'assay' => $assay, 'lot' => $lot, 'lotExpiry' => $lotExpiry,
+            'model' => $model, 'serial' => $serial, 'runId' => $runId,
+            'message' => self::message($messages), 'readings' => self::readings($readings),
+        ];
     }
 
     /**
      * @param list<string> $records
-     * @return array{assay: ?string, lot: ?string, lotExpiry: ?string}
+     * @return array<string, mixed>
      */
     private static function readHl7(array $records): array
     {
@@ -225,7 +298,105 @@ final class AnalyzerRawText
             }
         }
 
-        return ['assay' => $assay, 'lot' => $lot, 'lotExpiry' => $lotExpiry];
+        // The result is the OBX for the assay code (the cobas 4800 sends a run-time
+        // OBX first); every other OBX is a reading reported with it.
+        $observations = array_map(
+            static fn(string $record): array => explode('|', $record),
+            array_values(array_filter($records, static fn(string $record): bool => self::type($record) === 'OBX'))
+        );
+        $resultIndex = 0;
+        foreach ($observations as $index => $fields) {
+            if ($code !== '' && trim(explode('^', $fields[3] ?? '')[0]) === $code) {
+                $resultIndex = $index;
+                break;
+            }
+        }
+        $result = $observations[$resultIndex] ?? [];
+
+        // OBX-18, the equipment: model^maker~serial^maker, a serial of "Unknown" skipped.
+        $equipment = array_map(
+            static fn(string $repetition): string => trim(explode('^', $repetition)[0]),
+            explode('~', $result[18] ?? '')
+        );
+        $serial = null;
+        foreach (array_slice($equipment, 1) as $candidate) {
+            if ($candidate !== '' && strcasecmp($candidate, 'Unknown') !== 0) {
+                $serial = self::text($candidate);
+                break;
+            }
+        }
+
+        // OBX-8, codes with their text: "U06T^Pipetting anomaly ...^99ROC~...".
+        $messages = [];
+        foreach (explode('~', $result[8] ?? '') as $flag) {
+            $parts = explode('^', $flag);
+            if (trim($parts[1] ?? '') !== '') {
+                $messages[] = trim($parts[0] . ' ' . $parts[1]);
+            }
+        }
+
+        $readings = [];
+        foreach ($observations as $index => $fields) {
+            if ($index === $resultIndex || trim($fields[2] ?? '') === 'EI') {
+                continue;
+            }
+            $name = trim(explode('^', $fields[3] ?? '')[0] . ' ' . trim($fields[4] ?? ''));
+            $unit = explode('^', $fields[6] ?? '');
+            $readings[] = self::reading($name, $fields[5] ?? '', trim($unit[1] ?? '') !== '' ? $unit[1] : $unit[0]);
+        }
+
+        return [
+            'assay' => $assay, 'lot' => $lot, 'lotExpiry' => $lotExpiry,
+            'model' => self::text($equipment[0] ?? ''), 'serial' => $serial,
+            'runId' => self::text(explode('^', $result[21] ?? '')[0]),
+            'message' => self::message($messages), 'readings' => self::readings($readings),
+        ];
+    }
+
+    /** A value as text, or null when empty or the HL7 empty value. */
+    private static function text(string $value, int $length = 100): ?string
+    {
+        $value = trim($value);
+        return $value === '' || $value === '""' ? null : mb_substr($value, 0, $length);
+    }
+
+    /**
+     * What the analyzer said about the run, each thing once, in the order said.
+     *
+     * @param list<string> $messages
+     */
+    private static function message(array $messages): ?string
+    {
+        $messages = array_values(array_unique(array_filter(
+            array_map(static fn(string $m): string => (string) preg_replace('/\s+/', ' ', trim($m)), $messages),
+            static fn(string $m): bool => $m !== ''
+        )));
+        return $messages === [] ? null : mb_substr(implode('; ', $messages), 0, 500);
+    }
+
+    /** @return ?array{name: string, value: string, unit: ?string} */
+    private static function reading(string $name, string $value, string $unit): ?array
+    {
+        // Components of a value ("^26.4", "36.51^^37.15") read as one.
+        $value = trim((string) preg_replace('/\s+/', ' ', str_replace('^', ' ', $value)));
+        $name = trim($name);
+        if ($value === '' || $value === '""' || $name === '') {
+            return null;
+        }
+        return [
+            'name' => mb_substr($name, 0, self::MAX_READING_LENGTH),
+            'value' => mb_substr($value, 0, self::MAX_READING_LENGTH),
+            'unit' => self::text($unit, self::MAX_READING_LENGTH),
+        ];
+    }
+
+    /**
+     * @param list<?array{name: string, value: string, unit: ?string}> $readings
+     * @return list<array{name: string, value: string, unit: ?string}>
+     */
+    private static function readings(array $readings): array
+    {
+        return array_slice(array_values(array_filter($readings)), 0, self::MAX_READINGS);
     }
 
     private static function type(string $record): string

@@ -176,6 +176,7 @@ final class StsResultsReceiveTest extends TestCase
     {
         $db = $this->boot();
         LegacyAppHarness::addMigrationColumns('5.7.82', ['form_vl']);
+        LegacyAppHarness::addMigrationColumns('5.7.85', ['form_vl']);
         self::stsRequest($db, 'form_vl', 'u-1');
         self::sts()->receiveResults('vl', self::payload([self::vlResult('u-1')]));
         $db->rawQuery("UPDATE form_vl SET last_modified_datetime = '2026-09-02 08:00:00'");
@@ -183,6 +184,7 @@ final class StsResultsReceiveTest extends TestCase
         // The lab filled them in from the analyzer's stored message and sent the row again.
         $ack = self::sts()->receiveResults('vl', self::payload([self::vlResult('u-1', [
             'assay_name' => 'HIV-1', 'lot_number' => '399444', 'lot_expiration_date' => '2026-02-14',
+            'instrument_serial' => 'M01133', 'analyzer_readings' => '[{"name":"IC","value":"15.70","unit":"CN"}]',
         ])]));
 
         $row = $this->committed('form_vl')['u-1'];
@@ -190,6 +192,7 @@ final class StsResultsReceiveTest extends TestCase
         self::assertSame('HIV-1', $row['assay_name']);
         self::assertSame('399444', $row['lot_number']);
         self::assertSame('2026-02-14', $row['lot_expiration_date']);
+        self::assertSame('M01133', $row['instrument_serial']);
         self::assertSame('2026-09-02 08:00:00', $row['last_modified_datetime']);
     }
 

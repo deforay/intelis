@@ -48,6 +48,7 @@ final class InterfacingAssayTest extends TestCase
         ]);
 
         LegacyAppHarness::addMigrationColumns('5.7.82', ['form_vl', 'form_eid']);
+        LegacyAppHarness::addMigrationColumns('5.7.85', ['form_vl', 'form_eid']);
 
         LegacyAppHarness::db()->rawQuery(
             "INSERT INTO roles (role_id, role_name, status) VALUES (4, 'Lab Technician', 'active')"
@@ -257,6 +258,9 @@ final class InterfacingAssayTest extends TestCase
         self::assertSame('Xpert_HIV-1 Viral Load', $stored['assay_name']);
         self::assertSame('72203', $stored['lot_number']);
         self::assertSame('2026-08-25', $stored['lot_expiration_date']);
+        self::assertSame('GeneXpert', $stored['instrument_model']);
+        self::assertSame('Cepheid-1F21001', $stored['instrument_serial']);
+        self::assertSame('1113243530', $stored['analyzer_run_id'], 'the cartridge');
     }
 
     #[RunInSeparateProcess]
@@ -390,6 +394,8 @@ final class InterfacingAssayTest extends TestCase
         self::assertSame('Xpert_HIV-1 Viral Load', $row['assay_name']);
         self::assertSame('72203', $row['lot_number']);
         self::assertSame('2026-08-25', $row['lot_expiration_date']);
+        self::assertSame('Cepheid-1F21001', $row['instrument_serial']);
+        self::assertSame('1113243530', $row['analyzer_run_id']);
         self::assertSame('2026-10-01 11:00:00', $row['last_modified_datetime']);
         self::assertSame('0', (string) $row['data_sync'], 'sent to the STS by the next results sync');
         self::assertSame(
@@ -423,11 +429,13 @@ final class InterfacingAssayTest extends TestCase
         self::assertSame('1', (string) $this->row('form_vl', 'VL-21')['data_sync']);
         $attempt = LegacyAppHarness::db()->rawQueryOne(
             "SELECT lot_number, lot_expiration_date,
-                    JSON_UNQUOTE(JSON_EXTRACT(attempt_data, '$.row.assay_name')) AS assay
+                    JSON_UNQUOTE(JSON_EXTRACT(attempt_data, '$.row.assay_name')) AS assay,
+                    JSON_UNQUOTE(JSON_EXTRACT(attempt_data, '$.row.instrument_serial')) AS serial
                FROM test_result_attempts WHERE record_id = ?",
             [$id]
         );
         self::assertSame('Xpert_HIV-1 Viral Load', $attempt['assay']);
+        self::assertSame('Cepheid-1F21001', $attempt['serial']);
         self::assertSame('72203', $attempt['lot_number']);
         self::assertSame('2026-08-25', $attempt['lot_expiration_date']);
         self::assertSame(
@@ -589,5 +597,22 @@ final class InterfacingAssayTest extends TestCase
 
         self::assertSame(['no_sample'], $this->service()->backfillFromStoredResults([$this->storedResult('VL-80')], 1));
         self::assertNull($this->row('form_vl', 'VL-80')['assay_name']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheBackfillFillsOnlyTheRunColumnsStillEmpty(): void
+    {
+        $this->seed('form_vl', [
+            'sample_code' => 'VL-90', 'sample_tested_datetime' => '2026-10-01 10:00:00',
+            'assay_name' => 'Typed assay', 'instrument_serial' => 'TYPED-SERIAL', 'data_sync' => 1,
+        ]);
+
+        self::assertSame(['filled'], $this->service()->backfillFromStoredResults([$this->storedResult('VL-90')], 1));
+
+        $row = $this->row('form_vl', 'VL-90');
+        self::assertSame('Typed assay', $row['assay_name']);
+        self::assertSame('TYPED-SERIAL', $row['instrument_serial']);
+        self::assertSame('GeneXpert', $row['instrument_model'], 'the empty ones are filled');
+        self::assertSame('1113243530', $row['analyzer_run_id']);
     }
 }

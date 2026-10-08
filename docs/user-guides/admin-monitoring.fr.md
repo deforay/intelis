@@ -263,6 +263,13 @@ taux d'échec entre instruments et entre tests.
         l'Interface Tool, le numéro de lot du réactif est aussi enregistré avec
         le résultat, avec sa date d'expiration quand l'analyseur l'envoie.
 
+        Du même message, chaque résultat de l'Interface Tool garde aussi le
+        modèle et le numéro de série de l'instrument, l'ID de la série de
+        l'analyseur, son message sur la série (par exemple l'erreur derrière un
+        test en échec) et les lectures envoyées avec le résultat, comme les
+        cycles seuils. Les exports Charge virale et EID les contiennent, avec le
+        lot de réactif.
+
     ??? info "Si l'instrument indique Non enregistré"
 
         Le résultat a été saisi à la main sans plateforme de test.

@@ -105,6 +105,12 @@ try {
                     $data['eid_test_platform'] = $rResult['vl_test_platform'];
                     // The assay the file named (staged in test_type); hold_sample_import has no column for it.
                     $data['assay_name'] = $rResult['test_type'] ?? null;
+                    // A file result is a run of its own: nothing of an earlier analyzer run stays.
+                    $data['instrument_model'] = null;
+                    $data['instrument_serial'] = null;
+                    $data['analyzer_run_id'] = null;
+                    $data['analyzer_message'] = null;
+                    $data['analyzer_readings'] = null;
                     $data['tested_by'] = $_POST['testBy'];
                     $data['sample_tested_datetime'] = $rResult['sample_tested_datetime'];
                     $data['last_modified_by'] = $rResult['result_reviewed_by'];
@@ -215,6 +221,11 @@ try {
                 //'result_status'=>'7',
                 'eid_test_platform' => $accResult[$i]['vl_test_platform'],
                 'assay_name' => $accResult[$i]['test_type'] ?? null,
+                'instrument_model' => null,
+                'instrument_serial' => null,
+                'analyzer_run_id' => null,
+                'analyzer_message' => null,
+                'analyzer_readings' => null,
                 'import_machine_name' => $accResult[$i]['import_machine_name'],
             ];
 

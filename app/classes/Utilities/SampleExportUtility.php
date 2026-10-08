@@ -198,6 +198,37 @@ final class SampleExportUtility
     }
 
     /** Whether the sample was rejected, and why. */
+    /**
+     * What the analyzer reported about the run (5.7.85), with the reagent lot: filled
+     * for Interface Tool results; empty for results entered by hand.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public static function analyzerColumns(): array
+    {
+        return [
+            self::text(_translate('Instrument Model'), 'instrument_model'),
+            self::text(_translate('Instrument Serial Number'), 'instrument_serial'),
+            self::text(_translate('Analyzer Run ID'), 'analyzer_run_id'),
+            self::text(_translate('Reagent Lot'), 'lot_number'),
+            self::date(_translate('Reagent Lot Expiry'), 'lot_expiration_date'),
+            self::text(_translate('Analyzer Message'), 'analyzer_message'),
+            // "HIV-1 Ct: 26.4; IC: 15.70 CN", read from the stored JSON list.
+            self::column(_translate('Analyzer Readings'), static function (array $r): ?string {
+                $readings = json_decode((string) ($r['analyzer_readings'] ?? ''), true);
+                if (!is_array($readings) || $readings === []) {
+                    return null;
+                }
+                return implode('; ', array_map(
+                    static fn(array $reading): string => trim(
+                        ($reading['name'] ?? '') . ': ' . ($reading['value'] ?? '') . ' ' . ($reading['unit'] ?? '')
+                    ),
+                    array_filter($readings, 'is_array')
+                ));
+            }),
+        ];
+    }
+
     public static function rejectionColumns(): array
     {
         return [
