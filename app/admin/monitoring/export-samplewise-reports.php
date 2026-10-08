@@ -10,6 +10,9 @@ use App\Utilities\SourcesOfRequestsReportUtility;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
 
+// AJAX requests skip the page ACL, so this checks the report's own privilege.
+_requirePrivilege('/admin/monitoring/sources-of-requests.php');
+
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
 if (ExportJobUtility::queueRequested(__FILE__, 'samplewiseReportsQuery', ['samplewiseReportsSummaryFrom'])) {
@@ -27,7 +30,12 @@ if (!ExportJobUtility::inBackground()) {
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-$summary = SourcesOfRequestsReportUtility::summary($db, (string) $_SESSION['samplewiseReportsSummaryFrom']);
+$summaryFrom = (string) $_SESSION['samplewiseReportsSummaryFrom'];
+$summary = SourcesOfRequestsReportUtility::summary($db, $summaryFrom);
+$overdueHeading = sprintf(
+    _translate('Not Returned After %d Days'),
+    SourcesOfRequestsReportUtility::OVERDUE_DAYS
+);
 
 $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-SOURCES-OF-REQUESTS-' . date('d-M-Y-H-i-s')
     . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
@@ -46,6 +54,7 @@ $writer->addRow(Row::fromValues(array_map('html_entity_decode', [
     _translate('% Tested'),
     _translate('Results Returned'),
     _translate('% Returned'),
+    $overdueHeading,
     _translate('Median Days to Receipt'),
     _translate('Median Days to Return'),
 ])));
@@ -60,8 +69,49 @@ foreach ([...$summary['rows'], $summary['total']] as $row) {
         $percent($row['tested'], $row['requested']),
         $row['returned'],
         $percent($row['returned'], $row['requested']),
+        $row['overdue'],
         $row['receiptDays'],
         $row['returnDays'],
+    ]));
+}
+
+// The clinic breakdown, one column per source.
+$clinics = SourcesOfRequestsReportUtility::byClinic($db, $summaryFrom);
+$writer->addNewSheetAndMakeItCurrent()->setName(_translate('By Clinic'));
+$writer->addRow(Row::fromValues(array_map('html_entity_decode', [
+    _translate('Clinic'),
+    _translate('Requested'),
+    ...array_column($clinics['sources'], 'label'),
+    _translate('% Electronic'),
+    _translate('Results Returned'),
+    $overdueHeading,
+    _translate('Median Days to Return'),
+])));
+foreach ([...$clinics['rows'], $clinics['total']] as $row) {
+    $writer->addRow(Row::fromValues([
+        $row['label'],
+        $row['requested'],
+        ...array_map(fn(array $source): int => $row['bySource'][$source['source']] ?? 0, $clinics['sources']),
+        $percent($row['electronic'], $row['requested']),
+        $row['returned'],
+        $row['overdue'],
+        $row['returnDays'],
+    ]));
+}
+
+// Requests per week or month from each source, as the Trend tab charts them.
+$trend = SourcesOfRequestsReportUtility::trend($db, $summaryFrom);
+$writer->addNewSheetAndMakeItCurrent()->setName(
+    $trend['unit'] === 'week' ? _translate('Requests by Week') : _translate('Requests by Month')
+);
+$writer->addRow(Row::fromValues(array_map('html_entity_decode', [
+    $trend['unit'] === 'week' ? _translate('Week Starting') : _translate('Month'),
+    ...array_column($trend['series'], 'label'),
+])));
+foreach ($trend['periods'] as $index => $period) {
+    $writer->addRow(Row::fromValues([
+        $period,
+        ...array_map(fn(array $series): int => $series['data'][$index], $trend['series']),
     ]));
 }
 

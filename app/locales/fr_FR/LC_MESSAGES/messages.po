@@ -36763,3 +36763,40 @@ msgstr "Tablette"
 
 msgid "Tested, Result Not Returned"
 msgstr "Testé, résultat non renvoyé"
+
+msgid "% Electronic"
+msgstr "% électroniques"
+
+msgid "By Clinic"
+msgstr "Par clinique"
+
+msgid "By Source"
+msgstr "Par source"
+
+#, c-format
+msgid "Not Returned After %d Days"
+msgstr "Non renvoyés après %d jours"
+
+msgid "Requests by Month"
+msgstr "Demandes par mois"
+
+msgid "Requests by Week"
+msgstr "Demandes par semaine"
+
+msgid "Requests from each clinic, by source. Electronic requests are those the lab did not have to enter. Click a number to list those samples."
+msgstr "Demandes de chaque clinique, par source. Les demandes électroniques sont celles que le laboratoire n'a pas eu à saisir. Cliquer sur un nombre pour lister ces échantillons."
+
+msgid "Requests per Month by Source"
+msgstr "Demandes par mois et par source"
+
+msgid "Requests per Week by Source"
+msgstr "Demandes par semaine et par source"
+
+msgid "Show all clinics"
+msgstr "Afficher toutes les cliniques"
+
+msgid "Trend"
+msgstr "Tendance"
+
+msgid "Week Starting"
+msgstr "Semaine du"

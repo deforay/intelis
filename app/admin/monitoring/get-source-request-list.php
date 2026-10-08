@@ -5,6 +5,9 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
+// AJAX requests skip the page ACL, so this checks the report's own privilege.
+_requirePrivilege('/admin/monitoring/sources-of-requests.php');
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 

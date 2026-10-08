@@ -5,6 +5,7 @@ use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
+use App\Utilities\SourcesOfRequestsReportUtility;
 
 
 $title = _translate("Sources of Requests");
@@ -33,12 +34,14 @@ $testTypeLabels = [
 ];
 $state = $geolocationService->getProvinces("yes");
 
+$overdueLabel = sprintf(_translate('Not Returned After %d Days'), SourcesOfRequestsReportUtility::OVERDUE_DAYS);
 $stages = [
     'received' => _translate("Received at Lab"),
     'notReceived' => _translate("Not Yet Received"),
     'tested' => _translate("Tested"),
     'returned' => _translate("Result Returned"),
     'notReturned' => _translate("Tested, Result Not Returned"),
+    'overdue' => $overdueLabel,
 ];
 
 ?>
@@ -73,6 +76,29 @@ $stages = [
     }
 
     #sourcesOfRequests a.sor-drill {
+        cursor: pointer;
+    }
+
+    #sourcesOfRequests .sor-overdue a,
+    #sourcesOfRequests .sor-overdue {
+        color: #c0392b;
+        font-weight: 600;
+    }
+
+    #sourcesOfRequests .tab-content {
+        padding-top: 10px;
+    }
+
+    #sourcesOfRequests #clinicDrill {
+        display: none;
+        margin-left: 8px;
+        font-size: 12px;
+        font-weight: normal;
+    }
+
+    #sourcesOfRequests #clinicDrill a {
+        margin-left: 4px;
+        color: #fff;
         cursor: pointer;
     }
 </style>
@@ -185,26 +211,50 @@ $stages = [
                             </div>
                         </div>
 
-                        <h4 class="sor-section-title"><?= _htmlTranslate("Summary by Source"); ?></h4>
-                        <p class="sor-note" id="sourceSummaryNote">
-                            <?= _htmlTranslate("Requests made in the date range. Percentages are of requests. Median days run from sample collection to receipt at the lab and to the result being returned. Click a number to list those samples."); ?>
-                        </p>
-                        <table aria-describedby="sourceSummaryNote" id="sourceSummary" class="table table-bordered table-condensed">
-                            <thead>
-                                <tr>
-                                    <th><?= _htmlTranslate("Source of Request"); ?></th>
-                                    <th class="num"><?= _htmlTranslate("Requested"); ?></th>
-                                    <th class="num"><?= _htmlTranslate("Received at Lab"); ?></th>
-                                    <th class="num"><?= _htmlTranslate("Tested"); ?></th>
-                                    <th class="num"><?= _htmlTranslate("Results Returned"); ?></th>
-                                    <th class="num"><?= _htmlTranslate("Median Days to Receipt"); ?></th>
-                                    <th class="num"><?= _htmlTranslate("Median Days to Return"); ?></th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                        <ul class="nav nav-tabs" id="sorTabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#sorBySource" role="tab" data-toggle="tab"
+                                    data-view="source"><?= _htmlTranslate("By Source"); ?></a></li>
+                            <li role="presentation"><a href="#sorByClinic" role="tab" data-toggle="tab"
+                                    data-view="clinic"><?= _htmlTranslate("By Clinic"); ?></a></li>
+                            <li role="presentation"><a href="#sorTrend" role="tab" data-toggle="tab"
+                                    data-view="trend"><?= _htmlTranslate("Trend"); ?></a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="sorBySource">
+                                <p class="sor-note" id="sourceSummaryNote">
+                                    <?= _htmlTranslate("Requests made in the date range. Percentages are of requests. Median days run from sample collection to receipt at the lab and to the result being returned. Click a number to list those samples."); ?>
+                                </p>
+                                <table aria-describedby="sourceSummaryNote" id="sourceSummary" class="table table-bordered table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th><?= _htmlTranslate("Source of Request"); ?></th>
+                                            <th class="num"><?= _htmlTranslate("Requested"); ?></th>
+                                            <th class="num"><?= _htmlTranslate("Received at Lab"); ?></th>
+                                            <th class="num"><?= _htmlTranslate("Tested"); ?></th>
+                                            <th class="num"><?= _htmlTranslate("Results Returned"); ?></th>
+                                            <th class="num"><?= htmlspecialchars($overdueLabel); ?></th>
+                                            <th class="num"><?= _htmlTranslate("Median Days to Receipt"); ?></th>
+                                            <th class="num"><?= _htmlTranslate("Median Days to Return"); ?></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="sorByClinic">
+                                <p class="sor-note" id="clinicSummaryNote">
+                                    <?= _htmlTranslate("Requests from each clinic, by source. Electronic requests are those the lab did not have to enter. Click a number to list those samples."); ?>
+                                </p>
+                                <table aria-describedby="clinicSummaryNote" id="clinicSummary" class="table table-bordered table-condensed" style="width:100%;"></table>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="sorTrend">
+                                <div id="sorTrendChart" style="height:380px;"></div>
+                            </div>
+                        </div>
 
-                        <h4 class="sor-section-title"><?= _htmlTranslate("Samples"); ?></h4>
+                        <h4 class="sor-section-title"><?= _htmlTranslate("Samples"); ?>
+                            <span id="clinicDrill" class="label label-info"><span></span><a
+                                    title="<?= _htmlTranslate("Show all clinics"); ?>">&times;</a></span>
+                        </h4>
                         <table aria-describedby="sourceSummaryNote" id="sampleWiseReport" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
@@ -242,6 +292,12 @@ $stages = [
     // The summary changes only with the filters, so paging and sorting the
     // sample list leave it alone.
     var summaryPending = true;
+    // Bumped on every Search, so the By Clinic and Trend tabs know when what they
+    // show is out of date and load again the next time they are opened.
+    var filterVersion = 0;
+    var loadedVersion = { clinic: -1, trend: -1 };
+    var clinicTable = null;
+    var OVERDUE_LABEL = "<?= _jsTranslate($overdueLabel); ?>";
 
     function applyFilters() {
         applied = {
@@ -254,6 +310,8 @@ $stages = [
             originalSourceOfRequest: $("#originalSourceOfRequest").val(),
             stage: $("#stage").val()
         };
+        // A clinic picked from the clinic summary narrows the list until the next Search.
+        $('#clinicDrill').hide();
     }
 
     $(document).ready(function () {
@@ -309,27 +367,36 @@ $stages = [
         });
     }
 
+    function days(value) {
+        return value == null ? '&ndash;' : Number(value).toFixed(1);
+    }
+
+    // A count that lists the samples behind it when clicked. clinicId is set only
+    // from the clinic summary.
+    function drillLink(value, drill) {
+        var text = Number(value).toLocaleString();
+        if (!(value > 0)) {
+            return text;
+        }
+        return '<a class="sor-drill" data-source="' + escapeText(drill.source) + '" data-stage="' + escapeText(drill.stage)
+            + '" data-clinic="' + escapeText(drill.clinicId == null ? '' : drill.clinicId) + '" data-clinic-label="'
+            + escapeText(drill.clinicLabel || '') + '">' + text + '</a>';
+    }
+
     function drawSummary(summary) {
         var body = $('#sourceSummary tbody').empty();
         if (!summary || !summary.rows.length) {
-            body.append('<tr><td colspan="7" class="text-center text-muted"><?= _jsTranslate("No data available"); ?></td></tr>');
+            body.append('<tr><td colspan="8" class="text-center text-muted"><?= _jsTranslate("No data available"); ?></td></tr>');
             return;
         }
 
         function count(row, value, stage) {
-            var text = Number(value).toLocaleString();
-            if (value > 0) {
-                text = '<a class="sor-drill" data-source="' + escapeText(row.source) + '" data-stage="' + stage + '">' + text + '</a>';
-            }
-            if (stage === '') {
+            var text = drillLink(value, { source: row.source, stage: stage });
+            if (stage === '' || stage === 'overdue') {
                 return text;
             }
             var percent = row.requested > 0 ? Math.round(value * 100 / row.requested) + '%' : '';
             return text + ' <span class="sor-percent">' + percent + '</span>';
-        }
-
-        function days(value) {
-            return value == null ? '&ndash;' : Number(value).toFixed(1);
         }
 
         summary.rows.concat([summary.total]).forEach(function (row, index) {
@@ -340,31 +407,156 @@ $stages = [
                 + '<td class="num">' + count(row, row.received, 'received') + '</td>'
                 + '<td class="num">' + count(row, row.tested, 'tested') + '</td>'
                 + '<td class="num">' + count(row, row.returned, 'returned') + '</td>'
+                + '<td class="num' + (row.overdue > 0 ? ' sor-overdue' : '') + '">' + count(row, row.overdue, 'overdue') + '</td>'
                 + '<td class="num">' + days(row.receiptDays) + '</td>'
                 + '<td class="num">' + days(row.returnDays) + '</td>'
                 + '</tr>');
         });
     }
 
-    // A number in the summary lists the samples behind it: same filters, that
-    // source and that stage.
-    $(document).on('click', '#sourceSummary a.sor-drill', function () {
-        var source = $(this).attr('data-source');
+    // A number in a summary lists the samples behind it: same filters, that
+    // source and stage, and that clinic when it comes from the clinic summary.
+    $(document).on('click', '#sorBySource a.sor-drill, #sorByClinic a.sor-drill', function () {
+        var link = $(this);
+        var source = link.attr('data-source');
         var select = $('#originalSourceOfRequest');
         if (source !== '' && select.find('option').filter(function () { return this.value === source; }).length === 0) {
-            select.append($('<option>').val(source).text($(this).closest('tr').find('td').first().text()));
+            select.append($('<option>').val(source).text(source));
         }
         select.val(source);
-        $('#stage').val($(this).attr('data-stage'));
+        $('#stage').val(link.attr('data-stage'));
         FilterPanel.refresh($('.filter-panel'));
-        // Only the source and stage change: the rest stay as the summary has them.
+        // Only the source, stage and clinic change: the rest stay as the summary has them.
         applied.originalSourceOfRequest = source;
-        applied.stage = $(this).attr('data-stage');
+        applied.stage = link.attr('data-stage');
+        applied.clinicId = link.attr('data-clinic');
+        if (applied.clinicId !== '') {
+            $('#clinicDrill').show().children('span').text(link.attr('data-clinic-label'));
+        } else {
+            $('#clinicDrill').hide();
+        }
         // The summary ignores the search box, so the list must too, or a
         // leftover search could hide the very samples counted. This redraws.
         oTable.fnFilter('');
         $('html, body').animate({ scrollTop: $('#sampleWiseReport').offset().top - 80 }, 200);
     });
+
+    $(document).on('click', '#clinicDrill a', function () {
+        applied.clinicId = '';
+        $('#clinicDrill').hide();
+        oTable.fnDraw();
+    });
+
+    // The By Clinic and Trend tabs load when opened, and again after a Search.
+    $(document).on('shown.bs.tab', '#sorTabs a', function () {
+        loadBreakdown($(this).attr('data-view'));
+    });
+
+    function loadBreakdown(view) {
+        if ((view !== 'clinic' && view !== 'trend') || loadedVersion[view] === filterVersion) {
+            return;
+        }
+        loadedVersion[view] = filterVersion;
+        var version = filterVersion;
+        $.post('/admin/monitoring/get-sources-of-requests-breakdown.php', $.extend({}, applied, { view: view }), function (data) {
+            // A Search made while this was loading has its own request on the way.
+            if (version !== filterVersion) {
+                return;
+            }
+            if (view === 'clinic') {
+                drawClinics(data);
+            } else {
+                drawTrend(data);
+            }
+        }, 'json').fail(function () {
+            loadedVersion[view] = -1;
+        });
+    }
+
+    function drawClinics(data) {
+        if (clinicTable !== null) {
+            clinicTable.destroy();
+            clinicTable = null;
+        }
+        var table = $('#clinicSummary').empty();
+        var heads = ['<?= _jsTranslate("Clinic"); ?>', '<?= _jsTranslate("Requested"); ?>'];
+        data.sources.forEach(function (source) {
+            heads.push(source.label);
+        });
+        heads.push('<?= _jsTranslate("% Electronic"); ?>', '<?= _jsTranslate("Results Returned"); ?>', OVERDUE_LABEL,
+            '<?= _jsTranslate("Median Days to Return"); ?>');
+        table.append('<thead><tr>' + heads.map(function (head, index) {
+            return '<th' + (index > 0 ? ' class="num"' : '') + '>' + escapeText(head) + '</th>';
+        }).join('') + '</tr></thead><tbody></tbody><tfoot></tfoot>');
+
+        function cells(row) {
+            var drill = { clinicId: row.clinicId, clinicLabel: row.label };
+            var list = [escapeText(row.label), drillLink(row.requested, $.extend({ source: '', stage: '' }, drill))];
+            data.sources.forEach(function (source) {
+                list.push(drillLink(row.bySource[source.source] || 0, $.extend({ source: source.source, stage: '' }, drill)));
+            });
+            list.push(row.requested > 0 ? Math.round(row.electronic * 100 / row.requested) + '%' : '&ndash;');
+            list.push(drillLink(row.returned, $.extend({ source: '', stage: 'returned' }, drill)));
+            list.push('<span class="' + (row.overdue > 0 ? 'sor-overdue' : '') + '">'
+                + drillLink(row.overdue, $.extend({ source: '', stage: 'overdue' }, drill)) + '</span>');
+            list.push(days(row.returnDays));
+            return list;
+        }
+
+        // Sorting reads the plain number behind each formatted cell.
+        function sortValue(row) {
+            var values = [row.label, row.requested];
+            data.sources.forEach(function (source) {
+                values.push(row.bySource[source.source] || 0);
+            });
+            values.push(row.requested > 0 ? row.electronic / row.requested : 0, row.returned, row.overdue,
+                row.returnDays == null ? -1 : row.returnDays);
+            return values;
+        }
+
+        var total = data.total;
+        total.clinicId = '';
+        table.find('tfoot').append('<tr class="sor-total">' + cells(total).map(function (cell, index) {
+            return '<td' + (index > 0 ? ' class="num"' : '') + '>' + cell + '</td>';
+        }).join('') + '</tr>');
+
+        clinicTable = table.DataTable({
+            data: data.rows.map(function (row) {
+                return { display: cells(row), sort: sortValue(row) };
+            }),
+            columns: heads.map(function (head, index) {
+                return {
+                    className: index > 0 ? 'num' : '',
+                    render: function (cell, type, row) {
+                        return type === 'display' ? row.display[index] : row.sort[index];
+                    }
+                };
+            }),
+            order: [[1, 'desc']],
+            pageLength: 25,
+            language: { emptyTable: "<?= _jsTranslate("No data available"); ?>" }
+        });
+    }
+
+    function drawTrend(data) {
+        Highcharts.chart('sorTrendChart', {
+            chart: { type: 'column', style: { fontFamily: 'inherit' } },
+            title: {
+                text: data.unit === 'week' ? "<?= _jsTranslate("Requests per Week by Source"); ?>"
+                    : "<?= _jsTranslate("Requests per Month by Source"); ?>",
+                style: { fontSize: '14px', fontWeight: '600' }
+            },
+            xAxis: { categories: data.periods },
+            yAxis: { min: 0, allowDecimals: false, title: { text: "<?= _jsTranslate("Requested"); ?>" } },
+            plotOptions: { column: { stacking: 'normal' } },
+            tooltip: { shared: true },
+            credits: { enabled: false },
+            lang: { noData: "<?= _jsTranslate("No data available"); ?>" },
+            series: data.series.map(function (series) {
+                return { name: series.label, data: series.data };
+            })
+        });
+    }
 
     function getSourcesOfRequestReport() {
         oTable = $('#sampleWiseReport').dataTable({
@@ -431,6 +623,8 @@ $stages = [
     function searchRequestData() {
         applyFilters();
         summaryPending = true;
+        filterVersion++;
+        loadBreakdown($('#sorTabs li.active a').attr('data-view'));
         if (oTable) {
             oTable.fnDraw();
         } else {
