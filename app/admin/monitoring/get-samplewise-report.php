@@ -2,6 +2,7 @@
 
 use App\Utilities\AdminFilterClauseBuilder;
 use App\Utilities\DataTableUtility;
+use App\Utilities\SampleCountUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
@@ -26,15 +27,16 @@ try {
     $general = ContainerRegistry::get(CommonService::class);
 
 
-    $testType = $_POST['testType'] ?? 'vl';
-    $resultColumn = "result";
-    if ($testType == "cd4") {
-        $resultColumn = "cd4_result";
+    $testType = (string) ($_POST['testType'] ?? 'vl');
+    if (!in_array($testType, TestsService::getActiveTests(), true)) {
+        throw new InvalidArgumentException("Inactive or unknown test type: $testType");
     }
 
     $table = TestsService::getTestTableName($testType);
-    $testName = TestsService::getTestName($testType);
-    $primaryColumn = TestsService::getPrimaryColumn($testType);
+    $resultColumn = TestsService::getResultColumn($testType);
+    // A result counts as returned once dispatched or sent back to the source;
+    // the column shows whichever happened, as the Returned total counts it.
+    $returnedOn = 'COALESCE(vl.result_sent_to_source_datetime, vl.result_dispatched_datetime)';
 
     $orderColumns = $aColumns = [
         'vl.sample_code',
@@ -43,14 +45,13 @@ try {
         'f.facility_name',
         'l.facility_name',
         'vl.request_created_datetime',
-        'vl.request_created_datetime',
         'vl.sample_received_at_lab_datetime',
         'b.request_created_datetime',
         'ts.status_name',
         "vl.$resultColumn",
         'vl.sample_tested_datetime',
         'vl.result_approved_datetime',
-        'vl.result_sent_to_source_datetime',
+        $returnedOn,
         'vl.last_modified_datetime'
     ];
 
@@ -62,7 +63,8 @@ try {
 
 
     $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
-    $sWhere = [];
+    // Cancelled requests are not counted anywhere, so they are not listed either.
+    $sWhere = [SampleCountUtility::countableWhere('vl')];
     if (!empty($columnSearch) && $columnSearch != '') {
         $sWhere[] = $columnSearch;
     }
@@ -89,15 +91,21 @@ try {
         'facilityColumn' => 'vl.facility_id',
     ]));
 
-    if (isset($_POST['originalSourceOfRequest']) && trim((string) $_POST['originalSourceOfRequest']) !== '') {
-        $sWhere[] = ' vl.source_of_request = "' . $db->escape((string) $_POST['originalSourceOfRequest']) . '"';
+    $source = trim((string) ($_POST['originalSourceOfRequest'] ?? ''));
+    if ($source === 'unrecorded') {
+        $sWhere[] = "IFNULL(vl.source_of_request, '') = ''";
+    } elseif ($source !== '') {
+        $stored = array_map(
+            fn(string $value): string => "'" . $db->escape($value) . "'",
+            CommonService::storedSourcesOfRequest($source)
+        );
+        $sWhere[] = 'vl.source_of_request IN (' . implode(', ', $stored) . ')';
     }
 
     /* Implode all the where fields for filtering the data */
     $whereSql = empty($sWhere) ? ('') : ' WHERE ' . implode(' AND ', $sWhere);
 
     $sQuery = "SELECT
-                    vl.$primaryColumn,
                     f.facility_name,
                     l.facility_name as 'labname',
                     vl.sample_code,
@@ -105,18 +113,14 @@ try {
                     vl.external_sample_code,
                     vl.app_sample_code,
                     vl.sample_tested_datetime,
-                    vl.request_created_datetime as request_created,
                     vl.remote_sample_code,
                     vl.request_created_datetime,
                     vl.sample_received_at_lab_datetime,
                     b.request_created_datetime as batch_request_created,
-                    vl.$resultColumn,
-                    vl.result_reviewed_datetime,
+                    vl.$resultColumn AS result,
                     vl.result_approved_datetime,
-                    vl.result_sent_to_source_datetime,
+                    $returnedOn AS result_returned_datetime,
                     vl.last_modified_datetime $fromQuery $whereSql";
-
-    //$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
         $sQuery = "$sQuery ORDER BY $sOrder";
@@ -129,6 +133,7 @@ try {
     }
 
     [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
+    $_SESSION['samplewiseReportsQueryCount'] = $resultCount;
 
     $output = [
         "sEcho" => (int) $_POST['sEcho'],
@@ -141,13 +146,11 @@ try {
     foreach ($rResult as $key => $aRow) {
 
         $row = [];
-        //$row[] = $aRow['f.facility_name'];
         $row[] = $aRow['sample_code'];
         $row[] = $aRow['remote_sample_code'];
         $row[] = $aRow['external_sample_code'] ?? $aRow['app_sample_code'];
         $row[] = $aRow['facility_name'];
         $row[] = $aRow['labname'];
-        $row[] = DateUtility::humanReadableDateFormat($aRow['request_created'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['batch_request_created'], true);
@@ -155,22 +158,18 @@ try {
         $row[] = $aRow['result'];
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['result_approved_datetime'], true);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['result_sent_to_source_datetime'], true);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['result_returned_datetime'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
 
         $output['aaData'][] = $row;
     }
 
-    $calcValueQuery = "SELECT SUM(CASE WHEN (vl.request_created_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesRequested',
-                SUM(CASE WHEN (vl.request_created_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesAcknowledged',
+    // Every listed row is a request, so the total is a plain count of the listing.
+    $calcValueQuery = "SELECT COUNT(*) AS 'totalSamplesRequested',
                 SUM(CASE WHEN (vl.sample_received_at_lab_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesReceived',
                 SUM(CASE WHEN (vl.sample_tested_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesTested',
-                SUM(CASE WHEN ((vl.result_dispatched_datetime is not null) OR (vl.result_sent_to_source_datetime is not null)) THEN 1 ELSE 0 END) AS 'totalSamplesDispatched'
-                FROM $table as vl
-            LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
-            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-            LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id
-            INNER JOIN ( SELECT vl.$primaryColumn AS id $fromQuery $whereSql ) AS flt ON flt.id = vl.$primaryColumn";
+                SUM(CASE WHEN ($returnedOn is not null) THEN 1 ELSE 0 END) AS 'totalSamplesDispatched'
+                $fromQuery $whereSql";
 
     $_SESSION['samplewiseReportsCalc'] = $calcValueQuery;
 
@@ -178,11 +177,10 @@ try {
 
     foreach ($calculateFields as $row) {
         $r = [];
-        $r[] = $row['totalSamplesRequested'];
-        $r[] = $row['totalSamplesAcknowledged'];
-        $r[] = $row['totalSamplesReceived'];
-        $r[] = $row['totalSamplesTested'];
-        $r[] = $row['totalSamplesDispatched'];
+        $r[] = (int) $row['totalSamplesRequested'];
+        $r[] = (int) $row['totalSamplesReceived'];
+        $r[] = (int) $row['totalSamplesTested'];
+        $r[] = (int) $row['totalSamplesDispatched'];
         $output['calculation'][] = $r;
     }
 
