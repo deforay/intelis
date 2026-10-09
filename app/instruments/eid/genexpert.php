@@ -7,6 +7,7 @@ use const SAMPLE_STATUS\ON_HOLD;
 use League\Csv\Reader;
 use App\Services\EidService;
 use App\Services\UsersService;
+use App\Services\ImportedSampleMatcher;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -102,7 +103,8 @@ try {
                     }
                     $infoFromFile[$sampleCode]['sampleCode'] = $sampleCode;
                     $infoFromFile[$sampleCode]['testedOn'] = $testedOn;
-                    $infoFromFile[$sampleCode]['testedBy'] = $testedBy;
+                    // The operator who ran the cartridge, as for viral load.
+                    $infoFromFile[$sampleCode]['reviewBy'] = $testedBy;
                 } elseif ($v == "Assay" || $v == "Test") {
                     if (empty($sampleCode)) {
                         continue;
@@ -146,22 +148,10 @@ try {
 
                 /** @var UsersService $usersService */
                 $usersService = ContainerRegistry::get(UsersService::class);
-                $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy']);
+                $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy'], labId: (int) $data['lab_id']);
             }
 
-            $query = "SELECT facility_id, eid_id, result
-                        FROM form_eid
-                        WHERE sample_code= ?";
-            $vlResult = $db->rawQueryOne($query, [$sampleCode]);
-
-            if (!empty($vlResult) && ($sampleCode !== 0 && ($sampleCode !== '' && $sampleCode !== '0'))) {
-                if (!empty($vlResult['result'])) {
-                    $data['sample_details'] = 'Result already exists';
-                }
-                $data['facility_id'] = $vlResult['facility_id'];
-            } else {
-                $data['sample_details'] = 'New Sample';
-            }
+            $data = ContainerRegistry::get(ImportedSampleMatcher::class)->stage('eid', $data);
 
             if ($sampleCode !== '' && $sampleCode !== '0' && $sampleCode !== 0) {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();

@@ -85,7 +85,8 @@ Get the results of a finished analyzer run into InteLIS.
     5. Check **Date Format**. If the analyzer has a pre-configured format, it is
        already filled. If not, paste a date copied from the file. InteLIS works
        out the format from it.
-    6. Choose the **Testing Lab Name**.
+    6. Choose the **Testing Lab Name**. Results reach only this lab's samples
+       and samples no lab has taken yet.
     7. Select the file under **Upload HIV Viral Load File**.
     8. Select **Submit**. InteLIS lists every row it read. The colour of each
        Sample ID box matches a **Sample source** entry in the legend above the
@@ -95,7 +96,7 @@ Get the results of a finished analyzer run into InteLIS.
         | Legend entry | Meaning | Action |
         |---|---|---|
         | Result for Sample ID from VLSM | The Sample ID matches a registered sample | Accept it |
-        | Sample ID not from VLSM | The Sample ID matches no registered sample | Do not accept. Find why the Sample ID differs |
+        | Sample ID not from VLSM | The Sample ID matches no sample of this lab, belongs to another lab, or matches more than one sample. Point to the box to see which | Do not accept. Find why the Sample ID differs. A result for another lab's sample, or for a Sample ID shared by several samples, is not saved |
         | Result already exists for this sample | The sample already has a result | Overwrite only if the new result is the correct one |
         | Test date ~1+ month from collection | The test date is a month or more after collection | Check the date |
         | Test date ~1+ year from collection | The test date is a year or more after collection | Check the date. A gap of a year is usually a typing error |

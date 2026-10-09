@@ -12,6 +12,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\TestResultsService;
 use App\Services\TestAttemptService;
+use App\Services\ImportedSampleMatcher;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -30,6 +31,9 @@ $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 /** @var TestAttemptService $attempts */
 $attempts = ContainerRegistry::get(TestAttemptService::class);
+
+/** @var ImportedSampleMatcher $sampleMatcher */
+$sampleMatcher = ContainerRegistry::get(ImportedSampleMatcher::class);
 
 $fileName = null;
 $importedBy = $_SESSION['userId'];
@@ -50,6 +54,8 @@ try {
     $rejectedReasonId = explode(",", (string) $_POST['rejectReasonId']);
     if ($_POST['value'] != '' && !empty($_POST['value'])) {
         for ($i = 0; $i < $totalIds; $i++) {
+            // Written in this pass only: a stale id from the row before is no sample of this one.
+            $eidId = null;
             $sQuery = "SELECT * FROM temp_sample_import WHERE imported_by =? AND temp_sample_id= ?";
             $rResult = $db->rawQueryOne($sQuery, [$importedBy, $id[$i]]);
             $fileName = $rResult['import_machine_file_name'];
@@ -129,44 +135,44 @@ try {
                         $data['result'] = $rResult['result'];
                     }
 
-                    $query = "SELECT eid_id, result FROM form_eid WHERE sample_code='" . $sampleVal . "'";
-                    $vlResult = $db->rawQuery($query);
+                    // The sample in the lab the file was imported for; a code can be shared.
+                    $match = $sampleMatcher->find('eid', $sampleVal, $rResult['lab_id']);
+                    if (!ImportedSampleMatcher::writable($match, $importNonMatching)) {
+                        continue;
+                    }
                     $data['result_status'] = $status[$i];
                     $data['sample_code'] = $rResult['sample_code'];
 
-                    if (!empty($vlResult)) {
+                    if ($match['id'] !== null) {
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['data_sync'] = 0;
 
                         // Retain the outgoing result before the import overwrites it. This path
-                        // matches on sample_code alone with no "already has a result" guard, so
-                        // re-importing a file replaces whatever was there, including a failure.
-                        $attempts->archive(
-                            'eid',
-                            (int) $vlResult[0]['eid_id'],
-                            TestAttemptService::BY_IMPORT
-                        );
+                        // has no "already has a result" guard, so re-importing a file replaces
+                        // whatever was there, including a failure.
+                        $attempts->archive('eid', $match['id'], TestAttemptService::BY_IMPORT);
 
-                        $db->where('sample_code', $rResult['sample_code']);
+                        $db->where('eid_id', $match['id']);
                         $result = $db->update("form_eid", $data);
-                        $eidId = $vlResult[0]['eid_id'];
+                        $eidId = $match['id'];
                     } else {
-                        if (!$importNonMatching) {
-                            continue;
-                        }
                         $data['sample_code'] = $rResult['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
                         $eidId = $db->insert("form_eid", $data);
                     }
                     $printSampleCode[] = "'" . $rResult['sample_code'] . "'";
+                    // Counted here too: rows written by this pass are not written again below.
+                    $numberOfResults++;
                 }
             }
             if (isset($eidId) && $eidId != "") {
                 $db->insert('log_result_updates', ["user_id" => $_SESSION['userId'], "vl_sample_id" => $eidId, "test_type" => "vl", "result_method" => "import", "file_name" => $rResult['import_machine_file_name'], "updated_datetime" => DateUtility::getCurrentDateTime()]);
             }
             $db->where('temp_sample_id', $id[$i]);
-            $result = $db->update("temp_sample_import", ['temp_sample_status' => 1]);
+            $result = $db->update("temp_sample_import", [
+                'temp_sample_status' => 1,
+            ] + ($eidId !== null ? ['matched_sample_id' => (int) $eidId] : []));
         }
         if (MiscUtility::fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'])) {
             copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name']);
@@ -191,17 +197,18 @@ try {
         }
     }
 
-    //get all accepted data result
-    // eid_id is selected from the join so the outgoing result can be archived before the
-    // update below replaces it.
-    $accQuery = "SELECT tsr.*, vl.eid_id
+    // Accepted rows the loop above did not already write.
+    $accQuery = "SELECT tsr.*
                     FROM temp_sample_import as tsr
-                    LEFT JOIN form_eid as vl ON vl.sample_code=tsr.sample_code
-                    WHERE imported_by = ? AND tsr.result_status=7";
+                    WHERE imported_by = ? AND tsr.temp_sample_status = 0 AND tsr.result_status=7";
     $accResult = $db->rawQuery($accQuery, [$importedBy]);
     if ($accResult) {
         $counter = count($accResult);
         for ($i = 0; $i < $counter; $i++) {
+            $match = $sampleMatcher->find('eid', $accResult[$i]['sample_code'], $accResult[$i]['lab_id']);
+            if ($match['id'] === null) {
+                continue;
+            }
             $data = [
                 'result_reviewed_datetime' => $accResult[$i]['result_reviewed_datetime'],
                 'result_reviewed_by' => $_POST['reviewedBy'],
@@ -242,15 +249,10 @@ try {
 
             $data['data_sync'] = 0;
 
-            // eid_id comes from the LEFT JOIN above and is null for a sample_code with no
-            // matching row, in which case there is nothing to archive.
-            $attempts->archive(
-                'eid',
-                (int) ($accResult[$i]['eid_id'] ?? 0),
-                TestAttemptService::BY_IMPORT
-            );
+            // Retain the outgoing result before the import overwrites it.
+            $attempts->archive('eid', $match['id'], TestAttemptService::BY_IMPORT);
 
-            $db->where('sample_code', $accResult[$i]['sample_code']);
+            $db->where('eid_id', $match['id']);
             $result = $db->update("form_eid", $data);
 
             $numberOfResults++;
@@ -260,15 +262,10 @@ try {
                 copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']);
             }
             $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
-            $result = $db->update("temp_sample_import", ['temp_sample_status' => 1]);
+            $result = $db->update("temp_sample_import", ['temp_sample_status' => 1, 'matched_sample_id' => $match['id']]);
         }
     }
     $sCode = implode(', ', $printSampleCode);
-    $stQuery = "SELECT *
-                    FROM temp_sample_import as tsr
-                    LEFT JOIN form_eid as vl ON vl.sample_code=tsr.sample_code
-                    WHERE imported_by =? AND tsr.sample_type='s'";
-    $stResult = $db->rawQuery($stQuery, [$importedBy]);
 
     if ($numberOfResults > 0) {
         $importedBy = $_SESSION['userId'] ?? 'AUTO';

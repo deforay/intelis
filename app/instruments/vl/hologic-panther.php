@@ -180,8 +180,6 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
             ];
 
             // Check if sample already exists in the database
-            $query = "SELECT facility_id, vl_sample_id, result FROM form_vl WHERE sample_code='" . $db->escape($sampleCode) . "'";
-            $vlResult = $db->rawQueryOne($query);
 
             // Insert sample controls if needed
             $scQuery = "SELECT r_sample_control_name FROM r_sample_controls where r_sample_control_name='" . $db->escape(trim($d['sampleType'])) . "'";
@@ -191,15 +189,8 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
                 $scId = $db->insert("r_sample_controls", $scData);
             }
 
-            // Check if result already exists
-            if (!empty($vlResult) && ($sampleCode !== '' && $sampleCode !== '0')) {
-                if (!empty($vlResult['result'])) {
-                    $data['sample_details'] = _translate('Result already exists');
-                }
-                $data['facility_id'] = $vlResult['facility_id'];
-            } else {
-                $data['sample_details'] = _translate('New Sample');
-            }
+            // The sample in the lab the file is for; a code alone can be another lab's.
+            $data = \App\Registries\ContainerRegistry::get(\App\Services\ImportedSampleMatcher::class)->stage('vl', $data);
 
             // Insert data into database
             $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();

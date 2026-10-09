@@ -193,11 +193,9 @@ try {
 
                 /** @var UsersService $usersService */
                 $usersService = ContainerRegistry::get(UsersService::class);
-                $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy']);
+                $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy'], labId: (int) $data['lab_id']);
             }
 
-            $query = "SELECT facility_id,eid_id,result FROM form_eid WHERE sample_code='$sampleCode'";
-            $eidResult = $db->rawQueryOne($query);
             //insert sample controls
             $scQuery = "SELECT r_sample_control_name FROM r_sample_controls WHERE r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
@@ -205,14 +203,8 @@ try {
                 $scData = ['r_sample_control_name' => trim((string) $d['sampleType'])];
                 $scId = $db->insert("r_sample_controls", $scData);
             }
-            if (!empty($eidResult) && ($sampleCode !== 0 && ($sampleCode !== '' && $sampleCode !== '0'))) {
-                if (!empty($eidResult['result'])) {
-                    $data['sample_details'] = 'Result already exists';
-                }
-                $data['facility_id'] = $eidResult['facility_id'];
-            } else {
-                $data['sample_details'] = 'New Sample';
-            }
+            // The sample in the lab the file is for; a code alone can be another lab's.
+            $data = \App\Registries\ContainerRegistry::get(\App\Services\ImportedSampleMatcher::class)->stage('eid', $data);
 
             if ($sampleCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();

@@ -13,6 +13,7 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Services\TestResultsService;
 use App\Services\TestAttemptService;
+use App\Services\ImportedSampleMatcher;
 use App\Registries\ContainerRegistry;
 
 
@@ -39,6 +40,9 @@ $testResultsService = ContainerRegistry::get(TestResultsService::class);
 /** @var TestAttemptService $attempts */
 $attempts = ContainerRegistry::get(TestAttemptService::class);
 
+/** @var ImportedSampleMatcher $sampleMatcher */
+$sampleMatcher = ContainerRegistry::get(ImportedSampleMatcher::class);
+
 $tableName = "temp_sample_import";
 $tableName1 = "form_covid19";
 $fileName = null;
@@ -46,6 +50,7 @@ $importedBy = $_SESSION['userId'];
 
 try {
     $numberOfResults = 0;
+    $printSampleIds = [];
     $arr = $general->getGlobalConfig();
 
     $importNonMatching = !(isset($arr['import_non_matching_sample']) && $arr['import_non_matching_sample'] == 'no');
@@ -59,6 +64,8 @@ try {
     if ($_POST['value'] != '' && !empty($_POST['value'])) {
         $counter = count($id);
         for ($i = 0; $i < $counter; $i++) {
+            // Written in this pass only: a stale id from the row before is no sample of this one.
+            $covid19Id = null;
             $sQuery = "SELECT * FROM temp_sample_import
                         WHERE  imported_by = ? AND temp_sample_id= ?";
             $rResult = $db->rawQueryOne($sQuery, [$importedBy, $id[$i]]);
@@ -142,51 +149,53 @@ try {
                         $data['reason_for_sample_rejection'] = null;
                         $data['result'] = $rResult['result'];
                     }
+                    // The status chosen on the screen, as the other modules save it here.
+                    $data['result_status'] = $status[$i];
 
 
-                    $query = "SELECT covid19_id from form_covid19 where sample_code= ?";
-                    $vlResult = $db->rawQuery($query, [$sampleVal]);
+                    // The sample in the lab the file was imported for; a code can be shared.
+                    $match = $sampleMatcher->find('covid19', $sampleVal, $rResult['lab_id']);
+                    if (!ImportedSampleMatcher::writable($match, $importNonMatching)) {
+                        continue;
+                    }
 
 
 
                     $data['sample_code'] = $rResult['sample_code'];
 
-                    if (!empty($vlResult)) {
+                    if ($match['id'] !== null) {
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['data_sync'] = 0;
 
                         // Retain the outgoing result before the import overwrites it. This path
-                        // matches on sample_code alone with no "already has a result" guard, so
-                        // re-importing a file replaces whatever was there, including a failure.
-                        $attempts->archive(
-                            'covid19',
-                            (int) $vlResult[0]['covid19_id'],
-                            TestAttemptService::BY_IMPORT
-                        );
+                        // has no "already has a result" guard, so re-importing a file replaces
+                        // whatever was there, including a failure.
+                        $attempts->archive('covid19', $match['id'], TestAttemptService::BY_IMPORT);
 
-                        $db->where('sample_code', $rResult['sample_code']);
+                        $db->where('covid19_id', $match['id']);
 
                         $result = $db->update($tableName1, $data);
-                        $covid19Id = $vlResult[0]['covid19_id'];
-                        $covid19Service->insertCovid19Tests($vlResult[0]['covid19_id'], $rResult['lot_number'], $rResult['lab_id'], $rResult['sample_tested_datetime'], $rResult['result']);
+                        $covid19Id = $match['id'];
+                        $covid19Service->insertCovid19Tests($match['id'], $rResult['lot_number'], $rResult['lab_id'], $rResult['sample_tested_datetime'], $rResult['result']);
                     } else {
-                        if (!$importNonMatching) {
-                            continue;
-                        }
                         $data['sample_code'] = $rResult['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
                         $covid19Id = $db->insert($tableName1, $data);
                         $covid19Service->insertCovid19Tests($covid19Id, $rResult['lot_number'], $rResult['lab_id'], $rResult['sample_tested_datetime'], $rResult['result']);
                     }
-                    $printSampleCode[] = "'" . $rResult['sample_code'] . "'";
+                    $printSampleIds[] = (int) $covid19Id;
+                    // Counted here too: rows written by this pass are not written again below.
+                    $numberOfResults++;
                 }
             }
             if (isset($covid19Id) && $covid19Id != "") {
                 $db->insert('log_result_updates', ["user_id" => $_SESSION['userId'], "vl_sample_id" => $covid19Id, "test_type" => "vl", "result_method" => "import", "file_name" => $rResult['import_machine_file_name'], "updated_datetime" => DateUtility::getCurrentDateTime()]);
             }
             $db->where('temp_sample_id', $id[$i]);
-            $result = $db->update($tableName, ['temp_sample_status' => 1]);
+            $result = $db->update($tableName, [
+                'temp_sample_status' => 1,
+            ] + ($covid19Id !== null ? ['matched_sample_id' => (int) $covid19Id] : []));
         }
         if (MiscUtility::fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'])) {
             copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name']);
@@ -211,15 +220,18 @@ try {
         }
     }
 
-    //get all accepted data result
-    $accQuery = "SELECT tsr.*, vl.covid19_id
+    // Accepted rows the loop above did not already write.
+    $accQuery = "SELECT tsr.*
                     FROM temp_sample_import as tsr
-                    LEFT JOIN form_covid19 as vl ON vl.sample_code=tsr.sample_code
-                    WHERE imported_by =? AND tsr.result_status=7";
+                    WHERE imported_by =? AND tsr.temp_sample_status = 0 AND tsr.result_status=7";
     $accResult = $db->rawQuery($accQuery, [$importedBy]);
     if ($accResult) {
         $counter = count($accResult);
         for ($i = 0; $i < $counter; $i++) {
+            $match = $sampleMatcher->find('covid19', $accResult[$i]['sample_code'], $accResult[$i]['lab_id']);
+            if ($match['id'] === null) {
+                continue;
+            }
 
             $data = [
                 'result_reviewed_datetime' => $accResult[$i]['result_reviewed_datetime'],
@@ -261,28 +273,24 @@ try {
 
             $data['data_sync'] = 0;
 
-            // covid19_id comes from the LEFT JOIN above and is null for a sample_code with
-            // no matching row, in which case there is nothing to archive.
-            $attempts->archive(
-                'covid19',
-                (int) ($accResult[$i]['covid19_id'] ?? 0),
-                TestAttemptService::BY_IMPORT
-            );
+            // Retain the outgoing result before the import overwrites it.
+            $attempts->archive('covid19', $match['id'], TestAttemptService::BY_IMPORT);
 
-            $db->where('sample_code', $accResult[$i]['sample_code']);
+            $db->where('covid19_id', $match['id']);
             $result = $db->update($tableName1, $data);
 
             $numberOfResults++;
 
-            $printSampleCode[] = "'" . $accResult[$i]['sample_code'] . "'";
+            $printSampleIds[] = $match['id'];
             if (MiscUtility::fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'])) {
                 copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']);
             }
             $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
-            $result = $db->update($tableName, ['temp_sample_status' => 1]);
+            $result = $db->update($tableName, ['temp_sample_status' => 1, 'matched_sample_id' => $match['id']]);
         }
     }
-    $sCode = implode(', ', $printSampleCode);
+    // The samples just written, by id: a code alone can name other labs' samples too.
+    $printIds = implode(', ', $printSampleIds ?: [0]);
     $samplePrintQuery = "SELECT vl.*,
                             ts.*,
                             s.sample_name,
@@ -303,7 +311,7 @@ try {
                             LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
                             LEFT JOIN r_covid19_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
 
-    $samplePrintQuery .= ' WHERE vl.sample_code IN ( ' . $sCode . ')';
+    $samplePrintQuery .= ' WHERE vl.covid19_id IN ( ' . $printIds . ')';
 
     $_SESSION['covid19PrintQuery'] = $samplePrintQuery;
 

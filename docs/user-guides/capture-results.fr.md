@@ -91,7 +91,9 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
     5. Vérifier le **Format de date**. Si l'automate a un format préconfiguré, il
        est déjà rempli. Sinon, coller une date copiée depuis le fichier. InteLIS
        en déduit le format.
-    6. Choisir le **Nom du laboratoire d'analyse**.
+    6. Choisir le **Nom du laboratoire d'analyse**. Les résultats ne vont
+       qu'aux échantillons de ce laboratoire et aux échantillons qu'aucun
+       laboratoire n'a encore pris en charge.
     7. Sélectionner le fichier sous **Téléverser Charge virale du VIH Fichier**.
     8. Sélectionner **Envoyer**. InteLIS liste chaque ligne lue. La couleur de
        la case ID de chaque ligne correspond à une entrée **Source de
@@ -102,7 +104,7 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
         | Entrée de la légende | Signification | Action |
         |---|---|---|
         | Résultat pour l'ID de l'échantillon du VLSM | L'ID correspond à un échantillon enregistré | Accepter |
-        | ID de l'échantillon/ID ne provenant pas du VLSM | L'ID ne correspond à aucun échantillon enregistré | Ne pas accepter. Chercher pourquoi l'ID diffère |
+        | ID de l'échantillon/ID ne provenant pas du VLSM | L'ID ne correspond à aucun échantillon de ce laboratoire, appartient à un autre laboratoire ou correspond à plusieurs échantillons. Pointer la case pour voir le cas | Ne pas accepter. Chercher pourquoi l'ID diffère. Un résultat pour l'échantillon d'un autre laboratoire, ou pour un ID partagé par plusieurs échantillons, n'est pas enregistré |
         | Le résultat existe déjà pour cet échantillon | L'échantillon a déjà un résultat | N'écraser que si le nouveau résultat est le bon |
         | Date du test : environ 1 mois après le prélèvement | La date du test est postérieure d'un mois ou plus au prélèvement | Vérifier la date |
         | Date du test : environ 1 an après le prélèvement | La date du test est postérieure d'un an ou plus au prélèvement | Vérifier la date. Un écart d'un an est le plus souvent une faute de frappe |

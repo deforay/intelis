@@ -111,7 +111,8 @@ try {
         }
 
         foreach ($data as $d) {
-            $db->insert("temp_sample_import", $d);
+            // The sample in the lab the file is for; a code alone can be another lab's.
+            $db->insert("temp_sample_import", \App\Registries\ContainerRegistry::get(\App\Services\ImportedSampleMatcher::class)->stage('vl', $d));
         }
     }
     $_SESSION['alertMsg'] = "Results imported successfully";

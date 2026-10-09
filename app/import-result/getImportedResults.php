@@ -9,6 +9,8 @@ use App\Services\Covid19Service;
 use App\Utilities\JsonUtility;
 use const SAMPLE_STATUS\ON_HOLD;
 use App\Services\DatabaseService;
+use App\Services\TestsService;
+use App\Services\ImportedSampleMatcher;
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\TEST_FAILED;
@@ -54,19 +56,42 @@ if ($module == 'vl') {
     $rejectionTableName = 'r_tb_sample_rejection_reasons';
 }
 
+// Staged rows carry the sample they were matched to, in the lab the file was for.
+$primaryKey = TestsService::getPrimaryColumn($module);
+$moduleSql = $db->escape((string) $module);
+
+// Matched again where no match is recorded: rows staged before the match was kept, and
+// codes registered since the file was read. Only this importer's unprocessed samples.
+$sampleMatcher = ContainerRegistry::get(ImportedSampleMatcher::class);
+$unmatched = $db->rawQuery(
+    "SELECT temp_sample_id, sample_code, lab_id FROM temp_sample_import
+        WHERE imported_by = ? AND module = ? AND temp_sample_status = 0
+            AND matched_sample_id IS NULL AND LOWER(sample_type) = 's'",
+    [$importedBy, $module]
+) ?: [];
+foreach ($unmatched as $staged) {
+    $restaged = $sampleMatcher->stage($module, [
+        'sample_code' => $staged['sample_code'],
+        'lab_id' => $staged['lab_id'],
+    ]);
+    $db->where('temp_sample_id', $staged['temp_sample_id']);
+    $db->update('temp_sample_import', $restaged);
+}
 
 $allowImportingNonMatchingSamples = $general->getGlobalConfig('import_non_matching_sample');
 if (!empty($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSamples == 'no') {
-    $sql = "DELETE t
-            FROM temp_sample_import t
-            LEFT JOIN $mainTableName f ON t.sample_code = f.sample_code
-            WHERE t.imported_by = ? AND f.sample_code IS NULL;";
-    $db->rawQuery($sql, [$importedBy]);
+    $sql = "DELETE FROM temp_sample_import
+            WHERE imported_by = ? AND module = ? AND matched_sample_id IS NULL
+                AND IFNULL(sample_details, '') NOT IN (?, ?)";
+    // A code shared by several samples, or another lab's, stays so it can be corrected.
+    $db->rawQuery($sql, [
+        $importedBy, $module, ImportedSampleMatcher::DETAILS_AMBIGUOUS, ImportedSampleMatcher::DETAILS_OTHER_LAB,
+    ]);
 }
 
 $sQuery = "SELECT tsr.temp_sample_id,
                 tsr.module,tsr.sample_code,
-                tsr.sample_details,
+                tsr.sample_details,tsr.matched_sample_id,
                     tsr.result_value_absolute,
                     tsr.result_value_log,
                     tsr.result_value_text,
@@ -80,7 +105,7 @@ $sQuery = "SELECT tsr.temp_sample_id,
                     tsr.result_status,
                     ts.status_name
                     FROM temp_sample_import as tsr
-                    LEFT JOIN $mainTableName as vl ON vl.sample_code=tsr.sample_code
+                    LEFT JOIN $mainTableName as vl ON vl.$primaryKey=tsr.matched_sample_id AND tsr.module = '$moduleSql'
                     LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                     LEFT JOIN $rejectionTableName as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
                     INNER JOIN r_sample_status as ts ON ts.status_id=tsr.result_status";
@@ -90,7 +115,7 @@ if (isset($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSample
     $sampleQuery = "SELECT tsr.temp_sample_id,vl.sample_collection_date
     FROM temp_sample_import as tsr
     LEFT JOIN $mainTableName as vl
-    ON vl.sample_code=tsr.sample_code";
+    ON vl.$primaryKey=tsr.matched_sample_id AND tsr.module = '$moduleSql'";
     $sampleResultResult = $db->rawQuery($sampleQuery);
     if (empty($sampleResultResult)) {
         $db->where('sample_type', 'S');
@@ -98,7 +123,7 @@ if (isset($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSample
 
         $sQuery = "SELECT
                     tsr.temp_sample_id,tsr.sample_code,
-                    tsr.sample_details,
+                    tsr.sample_details,tsr.matched_sample_id,
                     tsr.result_value_absolute,
                     tsr.result_value_log,tsr.result_value_text,
                     vl.sample_collection_date,
@@ -108,7 +133,7 @@ if (isset($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSample
                     fd.facility_name,rsrr.rejection_reason_name,tsr.sample_type,
                     tsr.result,tsr.result_status,ts.status_name
                     FROM temp_sample_import as tsr
-                    LEFT JOIN $mainTableName as vl ON vl.sample_code=tsr.sample_code
+                    LEFT JOIN $mainTableName as vl ON vl.$primaryKey=tsr.matched_sample_id AND tsr.module = '$moduleSql'
                     LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                     LEFT JOIN $rejectionTableName as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
                     INNER JOIN r_sample_status as ts ON ts.status_id=tsr.result_status";
@@ -156,7 +181,8 @@ if (!empty($columnSearch) && $columnSearch != '') {
 }
 
 
-$sWhere[] = "temp_sample_status=0 AND imported_by ='$importedBy' ";
+// This module's rows only: the matched sample ids are ids in this module's table.
+$sWhere[] = "temp_sample_status=0 AND imported_by ='$importedBy' AND tsr.module = '$moduleSql'";
 $whereCondition = "";
 if ($sWhere !== []) {
     $whereCondition = "WHERE " . implode(" AND ", $sWhere);
@@ -186,9 +212,9 @@ foreach ($rResult as $aRow) {
     $controlCode = "'" . $aRow['sample_type'] . "'";
     $color = '';
     $status = '';
-    if (isset($aRow['sample_code']) && trim((string) $aRow['sample_code']) !== '') {
-        $batchCodeQuery = "SELECT batch_code from batch_details as b_d INNER JOIN $mainTableName as vl ON vl.sample_batch_id = b_d.batch_id WHERE vl.sample_code = ?";
-        $batchCodeResult = $db->rawQueryOne($batchCodeQuery, [$aRow['sample_code']]);
+    if (!empty($aRow['matched_sample_id'])) {
+        $batchCodeQuery = "SELECT batch_code from batch_details as b_d INNER JOIN $mainTableName as vl ON vl.sample_batch_id = b_d.batch_id WHERE vl.$primaryKey = ?";
+        $batchCodeResult = $db->rawQueryOne($batchCodeQuery, [$aRow['matched_sample_id']]);
         if (!empty($batchCodeResult)) {
             $batchCode = "'" . $batchCodeResult['batch_code'] . "'";
             $aRow['batch_code'] = $batchCodeResult['batch_code'];
@@ -222,10 +248,18 @@ foreach ($rResult as $aRow) {
     }
 
     $sampleSourceClass = 'source-existing';
-    if ($aRow['sample_details'] == _translate('Result already exists')) {
+    $sampleDetails = (string) $aRow['sample_details'];
+    if ($sampleDetails === ImportedSampleMatcher::DETAILS_HAS_RESULT || $sampleDetails === _translate('Result already exists')) {
         $rsDetails = _translate('Existing Result');
         $sampleSourceClass = 'source-existing';
-    } elseif ($aRow['sample_details'] == _translate('New Sample')) {
+    } elseif ($sampleDetails === ImportedSampleMatcher::DETAILS_OTHER_LAB) {
+        // Not saved: the code is another lab's sample.
+        $rsDetails = _htmlTranslate('This Sample ID belongs to another lab. The result will not be saved.');
+        $sampleSourceClass = 'source-new';
+    } elseif ($sampleDetails === ImportedSampleMatcher::DETAILS_AMBIGUOUS) {
+        $rsDetails = _htmlTranslate('This Sample ID matches more than one sample. Correct it, or the result will not be saved.');
+        $sampleSourceClass = 'source-new';
+    } elseif ($sampleDetails === ImportedSampleMatcher::DETAILS_NEW || $sampleDetails === _translate('New Sample')) {
         $rsDetails = _translate('Unknown Sample');
         $sampleSourceClass = 'source-new';
     } else {

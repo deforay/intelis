@@ -40,7 +40,37 @@ final class FacilitiesService
         });
     }
 
+    /**
+     * The labs results may be imported for. An operator of one lab on a server shared
+     * by many labs imports only for that lab: the lab chosen decides which samples
+     * the results reach.
+     */
     public function getFacilitiesForResultUpload($testType): mixed
+    {
+        $labs = $this->allFacilitiesForResultUpload($testType) ?: [];
+        $general = ContainerRegistry::get(CommonService::class);
+        if ($general->isCloudLisNonAdmin()) {
+            $ownLabId = (int) $general->getOwnLabId();
+            $labs = array_values(array_filter(
+                $labs,
+                static fn(array $lab): bool => (int) $lab['facility_id'] === $ownLabId
+            ));
+        }
+        return $labs;
+    }
+
+    /** Whether results may be imported for $labId by this user. */
+    public function canUploadResultsFor(string $testType, mixed $labId): bool
+    {
+        foreach ($this->getFacilitiesForResultUpload($testType) as $lab) {
+            if ((string) $lab['facility_id'] === trim((string) $labId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function allFacilitiesForResultUpload($testType): mixed
     {
         return MemoUtility::remember(function () use ($testType) {
 

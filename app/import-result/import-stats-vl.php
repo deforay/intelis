@@ -8,8 +8,8 @@ $tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount,
                     SUM(CASE WHEN vl.result_status like '4' OR vl.vl_result_category like 'rejected' THEN 1 ELSE 0 END) AS Rejected,
                     SUM(CASE WHEN vl.result_status like '1' OR  vl.vl_result_category like 'failed' THEN 1 ELSE 0 END) AS HoldOrFailed
                     FROM temp_sample_import as tsr
-                    $joinTypeWithTestTable form_vl as vl ON vl.sample_code=tsr.sample_code
-                    WHERE  imported_by ='$importedBy' ";
+                    $joinTypeWithTestTable form_vl as vl ON vl.vl_sample_id=tsr.matched_sample_id AND tsr.module = 'vl'
+                    WHERE  imported_by ='$importedBy' AND tsr.module = 'vl' ";
 $tsResult = $db->rawQueryOne($tsQuery);
 
 //set print query
@@ -23,18 +23,19 @@ if ($hResult) {
         $holdSample[] = $sample['sample_code'];
     }
 }
-$saQuery = "SELECT tsr.sample_code
+$saQuery = "SELECT tsr.sample_code, tsr.matched_sample_id
             FROM temp_sample_import as tsr
-            $joinTypeWithTestTable form_vl as vl ON vl.sample_code=tsr.sample_code
-            WHERE imported_by = ? ";
+            $joinTypeWithTestTable form_vl as vl ON vl.vl_sample_id=tsr.matched_sample_id AND tsr.module = 'vl'
+            WHERE imported_by = ? AND tsr.module = 'vl' ";
 $saResult = $db->rawQuery($saQuery, [$importedBy]);
-$sampleCode = [];
+// The samples the import wrote, by id: a code alone can name other labs' samples too.
+$sampleIds = [];
 foreach ($saResult as $sample) {
-    if (!in_array($sample['sample_code'], $holdSample)) {
-        $sampleCode[] = "'" . $sample['sample_code'] . "'";
+    if (!in_array($sample['sample_code'], $holdSample) && !empty($sample['matched_sample_id'])) {
+        $sampleIds[] = (int) $sample['matched_sample_id'];
     }
 }
-$sCode = implode(', ', $sampleCode);
+$sampleIdList = implode(',', $sampleIds);
 
 ?>
 
@@ -125,8 +126,7 @@ $sCode = implode(', ', $sampleCode);
         ?>
         $.post("<?php echo $path; ?>", {
                 source: 'print',
-                id: '',
-                sampleCodes: "<?php echo $sCode; ?>"
+                id: "<?php echo $sampleIdList; ?>"
             },
             function(data) {
                 if (data == "" || data == null || data == undefined) {

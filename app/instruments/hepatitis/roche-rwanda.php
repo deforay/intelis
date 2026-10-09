@@ -196,11 +196,9 @@ try {
 
                 /** @var UsersService $usersService */
                 $usersService = ContainerRegistry::get(UsersService::class);
-                $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy']);
+                $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy'], labId: (int) $data['lab_id']);
             }
 
-            $query = "SELECT facility_id,hepatitis_id,hcv_vl_count,hbv_vl_count,hepatitis_test_type, result_status FROM form_hepatitis WHERE sample_code='" . $sampleCode . "'";
-            $hepResult = $db->rawQueryOne($query);
 
             // $testType = strtolower($hepResult['hepatitis_test_type']);
             // if ($testType == 'hbv') {
@@ -233,14 +231,8 @@ try {
                 $scData = ['r_sample_control_name' => trim((string) $d['sampleType'])];
                 $scId = $db->insert("r_sample_controls", $scData);
             }
-            if (!empty($hepResult) && !empty($sampleCode)) {
-                if ($hepResult['hcv_vl_count'] != '' || $hepResult['hbv_vl_count'] != '') {
-                    $data['sample_details'] = 'Result already exists';
-                }
-                $data['facility_id'] = $hepResult['facility_id'];
-            } else {
-                $data['sample_details'] = 'New Sample';
-            }
+            // The sample in the lab the file is for; a code alone can be another lab's.
+            $data = \App\Registries\ContainerRegistry::get(\App\Services\ImportedSampleMatcher::class)->stage('hepatitis', $data);
 
             if ($sampleCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();

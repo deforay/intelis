@@ -132,16 +132,8 @@ try {
                 $data['result'] = "";
             }
 
-            $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from form_vl where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
-            $vlResult = $db->rawQueryOne($query);
-            if (!empty($vlResult) && !empty($sampleCode)) {
-                if (!empty($vlResult['result'])) {
-                    $data['sample_details'] = 'Result already exists';
-                }
-                $data['facility_id'] = $vlResult['facility_id'];
-            } else {
-                $data['sample_details'] = 'New Sample';
-            }
+            // The sample in the lab the file is for; a code alone can be another lab's.
+            $data = \App\Registries\ContainerRegistry::get(\App\Services\ImportedSampleMatcher::class)->stage('vl', $data);
 
             if ($sampleCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();

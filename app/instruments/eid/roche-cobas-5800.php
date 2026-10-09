@@ -94,23 +94,9 @@ try {
                 'lab_tech_comments' => $d['resultFlag'],
             ];
 
-            $query = "SELECT facility_id,
-                             eid_id,
-                             result
-                      FROM form_eid
-                      WHERE result_printed_datetime IS NULL
-                      AND sample_code = ?";
 
-            $vlResult = $db->rawQueryOne($query, [$sampleCode]);
-
-            if (!empty($vlResult) && !empty($sampleCode)) {
-                if (!empty($vlResult['result'])) {
-                    $data['sample_details'] = 'Result already exists';
-                }
-                $data['facility_id'] = $vlResult['facility_id'];
-            } else {
-                $data['sample_details'] = 'New Sample';
-            }
+            // The sample in the lab the file is for; a code alone can be another lab's.
+            $data = \App\Registries\ContainerRegistry::get(\App\Services\ImportedSampleMatcher::class)->stage('eid', $data);
 
             // ($sampleType, $logVal, $absVal, $absDecimalVal were never defined
             // in this scope — only $d['...'] equivalents exist).

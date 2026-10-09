@@ -5,6 +5,7 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -47,6 +48,16 @@ if (!isset($directoryMap[$type])) {
 }
 
 $directoryName = $directoryMap[$type];
+
+// The lab chosen decides which samples the results reach, so it must be one this user
+// may import for: the same list the form offered.
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+if (!$facilitiesService->canUploadResultsFor($type, base64_decode((string) ($_POST['labId'] ?? '')))) {
+    $_SESSION['alertMsg'] = _translate("Results cannot be imported for this lab");
+    header("Location:/import-result/import-file.php?t=" . urlencode($type));
+    exit;
+}
 
 // basename() strips any path-traversal sequences (../, absolute paths) from the
 // user-supplied filename before it is used to build the include path.
