@@ -935,7 +935,7 @@ final class InterfacingService
         $data = [
             'lab_id' => $labId,
             'instrument_id' => $instrument['instrument_id'] ?? null,
-            'tested_by' => $this->usersService->getOrCreateUser($this->testerName($row)),
+            'tested_by' => $this->usersService->getOrCreateUser($this->testerName($row), labId: $labId),
             'result_approved_by' => $this->instrumentUser($instrument, 'approved_by', 'vl'),
             'result_approved_datetime' => $row['authorised_date_time'],
             'result_reviewed_by' => $this->instrumentUser($instrument, 'reviewed_by', 'vl'),
@@ -1062,7 +1062,7 @@ final class InterfacingService
         $data = [
             'lab_id' => $labId,
             'instrument_id' => $instrument['instrument_id'] ?? null,
-            'tested_by' => $this->usersService->getOrCreateUser($row['tested_by']),
+            'tested_by' => $this->usersService->getOrCreateUser($row['tested_by'], labId: $labId),
             'result_approved_datetime' => $row['authorised_date_time'],
             'sample_tested_datetime' => $row['result_accepted_date_time'],
             $resultField => $result,
@@ -1358,7 +1358,7 @@ final class InterfacingService
         $testedAt = (string) $this->tbTestedAt($row);
 
         $instrument = $this->findInstrument($row['instrument_id'] ?? $row['machine_used'] ?? null);
-        $testedBy = $this->usersService->getOrCreateUser($this->testerName($row));
+        $testedBy = $this->usersService->getOrCreateUser($this->testerName($row), labId: $labId);
         $comment = $poolNote;
         if ($reading['mtb'] === 'invalid' && trim((string) ($row['notes'] ?? '')) !== '') {
             $comment = trim(($comment ?? '') . ' ' . trim((string) $row['notes']));

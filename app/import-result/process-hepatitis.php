@@ -11,6 +11,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\TestResultsService;
 use App\Services\TestAttemptService;
+use App\Services\ImportedSampleMatcher;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -30,6 +31,9 @@ $testResultsService = ContainerRegistry::get(TestResultsService::class);
 /** @var TestAttemptService $attempts */
 $attempts = ContainerRegistry::get(TestAttemptService::class);
 
+/** @var ImportedSampleMatcher $sampleMatcher */
+$sampleMatcher = ContainerRegistry::get(ImportedSampleMatcher::class);
+
 $fileName = null;
 $importedBy = $_SESSION['userId'];
 
@@ -37,7 +41,7 @@ try {
     $numberOfResults = 0;
 
     $arr = $general->getGlobalConfig();
-    $printSampleCode = [];
+    $printSampleIds = [];
 
     $importNonMatching = !(isset($arr['import_non_matching_sample']) && $arr['import_non_matching_sample'] == 'no');
     $instanceQuery = "SELECT * FROM s_vlsm_instance";
@@ -49,6 +53,8 @@ try {
     if ($_POST['value'] != '' && !empty($_POST['value'])) {
         $counter = count($id);
         for ($i = 0; $i < $counter; $i++) {
+            // Written in this pass only: a stale id from the row before is no sample of this one.
+            $hepatitisId = null;
             $sQuery = "SELECT * FROM temp_sample_import
                         WHERE imported_by =? AND temp_sample_id=?";
             $rResult = $db->rawQueryOne($sQuery, [$importedBy, $id[$i]]);
@@ -122,20 +128,23 @@ try {
                     $data['hepatitis_test_platform'] = $rResult['vl_test_platform'];
                     $data['tested_by'] = $_POST['testBy'];
                     $data['sample_tested_datetime'] = $rResult['sample_tested_datetime'] ?? DateUtility::getCurrentDateTime();
-                    $data['result_reviewed_by'] = $rResult['result_reviewed_by'];
+                    // The reviewer chosen on the screen; a status change from the list sends none.
+                    $data['result_reviewed_by'] = ($_POST['reviewedBy'] ?? '') ?: $rResult['result_reviewed_by'];
                     $data['last_modified_by'] = $rResult['result_reviewed_by'];
                     $data['last_modified_datetime'] = DateUtility::getCurrentDateTime();
                     $data['result_approved_by'] = $_POST['appBy'];
                     $data['result_approved_datetime'] = DateUtility::getCurrentDateTime();
                     $sampleVal = $rResult['sample_code'];
 
-                    $query = "SELECT hepatitis_id, hcv_vl_count, hbv_vl_count,hepatitis_test_type, result_status
-                                FROM form_hepatitis
-                                WHERE sample_code = ?";
-                    $hepResult = $db->rawQueryOne($query, [$rResult['sample_code']]);
+                    // The sample in the lab the file was imported for; a code can be shared.
+                    $match = $sampleMatcher->find('hepatitis', $sampleVal, $rResult['lab_id']);
+                    if (!ImportedSampleMatcher::writable($match, $importNonMatching)) {
+                        continue;
+                    }
+                    $hepResult = $match['row'];
 
 
-                    $testType = strtolower((string) $hepResult['hepatitis_test_type']);
+                    $testType = strtolower((string) ($hepResult['hepatitis_test_type'] ?? ''));
                     $resultField = $otherField = null;
                     if ($testType === 'hbv') {
                         $resultField = "hbv_vl_count";
@@ -172,15 +181,11 @@ try {
                         $data['data_sync'] = 0;
 
                         // Retain the outgoing result before the import overwrites it. This path
-                        // matches on sample_code alone with no "already has a result" guard, so
-                        // re-importing a file replaces whatever was there, including a failure.
-                        $attempts->archive(
-                            'hepatitis',
-                            (int) $hepResult['hepatitis_id'],
-                            TestAttemptService::BY_IMPORT
-                        );
+                        // has no "already has a result" guard, so re-importing a file replaces
+                        // whatever was there, including a failure.
+                        $attempts->archive('hepatitis', $match['id'], TestAttemptService::BY_IMPORT);
 
-                        $db->where('sample_code', $rResult['sample_code']);
+                        $db->where('hepatitis_id', $match['id']);
                         $result = $db->update('form_hepatitis', $data);
 
                         // Was read from $vlResult, which is never defined in this file, so it was
@@ -188,9 +193,6 @@ try {
                         // updated sample. $hepResult is a single row, not a list.
                         $hepatitisId = $hepResult['hepatitis_id'];
                     } else {
-                        if (!$importNonMatching) {
-                            continue;
-                        }
                         $data['sample_code'] = $rResult['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
@@ -198,14 +200,18 @@ try {
                         $data['request_created_datetime'] = DateUtility::getCurrentDateTime();
                         $hepatitisId = $db->insert('form_hepatitis', $data);
                     }
-                    $printSampleCode[] = "'" . $rResult['sample_code'] . "'";
+                    $printSampleIds[] = (int) $hepatitisId;
+                    // Counted here too: rows written by this pass are not written again below.
+                    $numberOfResults++;
                 }
             }
             if (isset($hepatitisId) && $hepatitisId != "") {
                 $db->insert('log_result_updates', ["user_id" => $_SESSION['userId'], "vl_sample_id" => $hepatitisId, "test_type" => "vl", "result_method" => "import", "updated_datetime" => DateUtility::getCurrentDateTime()]);
             }
             $db->where('temp_sample_id', $id[$i]);
-            $result = $db->update('temp_sample_import', ['temp_sample_status' => 1]);
+            $result = $db->update('temp_sample_import', [
+                'temp_sample_status' => 1,
+            ] + ($hepatitisId !== null ? ['matched_sample_id' => (int) $hepatitisId] : []));
         }
         if (MiscUtility::fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'])) {
             copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name']);
@@ -230,27 +236,21 @@ try {
         }
     }
 
-    //get all accepted data result
-    // hepatitis_id is selected from the join so the outgoing result can be archived before
-    // the update below replaces it.
-    $accQuery = "SELECT tsr.*, vl.hepatitis_id
+    // Accepted rows the loop above did not already write.
+    $accQuery = "SELECT tsr.*
                     FROM temp_sample_import as tsr
-                    LEFT JOIN form_hepatitis as vl ON vl.sample_code=tsr.sample_code
-                    WHERE imported_by =? AND tsr.result_status='7'";
+                    WHERE imported_by =? AND tsr.temp_sample_status = 0 AND tsr.result_status='7'";
     $accResult = $db->rawQuery($accQuery, [$importedBy]);
     if ($accResult) {
         $counter = count($accResult);
         for ($i = 0; $i < $counter; $i++) {
 
 
-            $query = "SELECT hepatitis_id,
-                        hcv_vl_count,
-                        hbv_vl_count,
-                        hepatitis_test_type,
-                        result_status
-                        FROM form_hepatitis
-                        WHERE sample_code= ?";
-            $hepResult = $db->rawQueryOne($query, [$accResult[$i]['sample_code']]);
+            $match = $sampleMatcher->find('hepatitis', $accResult[$i]['sample_code'], $accResult[$i]['lab_id']);
+            if ($match['id'] === null) {
+                continue;
+            }
+            $hepResult = $match['row'];
 
 
             $testType = strtolower((string) $hepResult['hepatitis_test_type']);
@@ -300,29 +300,25 @@ try {
 
             $data['data_sync'] = 0;
 
-            // hepatitis_id comes from the LEFT JOIN above and is null for a sample_code with
-            // no matching row, in which case there is nothing to archive.
-            $attempts->archive(
-                'hepatitis',
-                (int) ($accResult[$i]['hepatitis_id'] ?? 0),
-                TestAttemptService::BY_IMPORT
-            );
+            // Retain the outgoing result before the import overwrites it.
+            $attempts->archive('hepatitis', $match['id'], TestAttemptService::BY_IMPORT);
 
-            $db->where('sample_code', $accResult[$i]['sample_code']);
+            $db->where('hepatitis_id', $match['id']);
             $result = $db->update('form_hepatitis', $data);
 
             $numberOfResults++;
 
-            $printSampleCode[] = "'" . $accResult[$i]['sample_code'] . "'";
+            $printSampleIds[] = $match['id'];
             if (MiscUtility::fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']) && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'])) {
                 MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results");
                 copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']);
             }
             $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
-            $result = $db->update('temp_sample_import', ['temp_sample_status' => 1]);
+            $result = $db->update('temp_sample_import', ['temp_sample_status' => 1, 'matched_sample_id' => $match['id']]);
         }
     }
-    $sCode = implode(', ', $printSampleCode);
+    // The samples just written, by id: a code alone can name other labs' samples too.
+    $printIds = implode(', ', $printSampleIds ?: [0]);
     $samplePrintQuery = "SELECT vl.*,
                             s.sample_name,
                             ts.*,
@@ -336,12 +332,8 @@ try {
                             rs.rejection_reason_name
                             FROM form_hepatitis as vl
                             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by LEFT JOIN r_hepatitis_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
-    $samplePrintQuery .= ' WHERE vl.sample_code IN ( ' . $sCode . ')';
+    $samplePrintQuery .= ' WHERE vl.hepatitis_id IN ( ' . $printIds . ')';
     $_SESSION['hepatitisPrintSearchResultQuery'] = $samplePrintQuery;
-    $stQuery = "SELECT * FROM temp_sample_import as tsr
-                    LEFT JOIN form_hepatitis as vl ON vl.sample_code=tsr.sample_code
-                    WHERE imported_by =? AND tsr.sample_type='s'";
-    $stResult = $db->rawQuery($stQuery, [$importedBy]);
 
     if ($numberOfResults > 0) {
         $importedBy = $_SESSION['userId'] ?? 'AUTO';

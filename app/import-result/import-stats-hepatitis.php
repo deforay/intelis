@@ -2,7 +2,7 @@
 
 // imported in importedStatistics.php
 
-$tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount, SUM(CASE WHEN tsr.result = 'Target Not Detected' OR tsr.result = 'target not detected' THEN 1 ELSE 0 END) AS TargetNotDetected, SUM(CASE WHEN tsr.result > 1000 AND (tsr.result !='Target Not Detected' OR tsr.result != 'target not detected') THEN 1 ELSE 0 END) AS HighViralLoad, SUM(CASE WHEN tsr.result < 1000 AND (tsr.result !='Target Not Detected' OR tsr.result != 'target not detected') THEN 1 ELSE 0 END) AS LowViralLoad,SUM(CASE WHEN tsr.result = 'Invalid' OR tsr.result = 'invalid' THEN 1 ELSE 0 END) AS invalid FROM temp_sample_import as tsr $joinTypeWithTestTable form_hepatitis as vl ON vl.sample_code=tsr.sample_code WHERE  imported_by ='$importedBy' ";
+$tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount, SUM(CASE WHEN tsr.result = 'Target Not Detected' OR tsr.result = 'target not detected' THEN 1 ELSE 0 END) AS TargetNotDetected, SUM(CASE WHEN tsr.result > 1000 AND (tsr.result !='Target Not Detected' OR tsr.result != 'target not detected') THEN 1 ELSE 0 END) AS HighViralLoad, SUM(CASE WHEN tsr.result < 1000 AND (tsr.result !='Target Not Detected' OR tsr.result != 'target not detected') THEN 1 ELSE 0 END) AS LowViralLoad,SUM(CASE WHEN tsr.result = 'Invalid' OR tsr.result = 'invalid' THEN 1 ELSE 0 END) AS invalid FROM temp_sample_import as tsr $joinTypeWithTestTable form_hepatitis as vl ON vl.hepatitis_id=tsr.matched_sample_id AND tsr.module = 'hepatitis' WHERE  imported_by ='$importedBy' AND tsr.module = 'hepatitis' ";
 $tsResult = $db->rawQuery($tsQuery);
 
 //set print query
@@ -14,17 +14,18 @@ if ($hResult) {
         $holdSample[] = $sample['sample_code'];
     }
 }
-$saQuery = "SELECT tsr.sample_code FROM temp_sample_import as tsr $joinTypeWithTestTable form_hepatitis as vl ON vl.sample_code=tsr.sample_code WHERE  imported_by ='$importedBy' ";
+$saQuery = "SELECT tsr.sample_code, tsr.matched_sample_id FROM temp_sample_import as tsr $joinTypeWithTestTable form_hepatitis as vl ON vl.hepatitis_id=tsr.matched_sample_id AND tsr.module = 'hepatitis' WHERE  imported_by ='$importedBy' AND tsr.module = 'hepatitis' ";
 $saResult = $db->rawQuery($saQuery);
-$sampleCode = [];
+// The samples the import wrote, by id: a code alone can name other labs' samples too.
+$sampleIds = [];
 foreach ($saResult as $sample) {
-    if (!in_array($sample['sample_code'], $holdSample)) {
-        $sampleCode[] = "'" . $sample['sample_code'] . "'";
+    if (!in_array($sample['sample_code'], $holdSample) && !empty($sample['matched_sample_id'])) {
+        $sampleIds[] = (int) $sample['matched_sample_id'];
     }
 }
-$sCode = implode(', ', $sampleCode);
+$sampleIdList = implode(',', $sampleIds);
 $samplePrintQuery = "SELECT vl.*,s.sample_name,b.*,ts.*,f.facility_name,l.facility_name as labName,f.facility_code,f.facility_state,f.facility_district,u_d.user_name as reviewedBy,a_u_d.user_name as approvedBy ,rs.rejection_reason_name FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by LEFT JOIN r_hepatitis_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
-$samplePrintQuery .= ' where vl.sample_code IN ( ' . $sCode . ')'; // Append to condition
+$samplePrintQuery .= ' where vl.hepatitis_id IN (' . ($sampleIdList ?: '0') . ')';
 $_SESSION['hepatitisPrintSearchResultQuery'] = $samplePrintQuery;
 
 

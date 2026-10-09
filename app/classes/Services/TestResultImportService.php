@@ -183,7 +183,8 @@ class TestResultImportService
             // The assay the instrument ran; process-vl/process-eid copy it to assay_name.
             'test_type' => self::assayFromFile($sampleData['assay'] ?? null),
             'cv_number' => $sampleData['cvNumber'] ?? null,
-            'sample_review_by' => $sampleData['reviewBy'] ?? null,
+            // The operator the file names, as a user of the lab the file is for.
+            'sample_review_by' => $this->getUserByName((string) ($sampleData['reviewBy'] ?? '')),
             'result_value_log' => $sampleData['logVal'] ?? null,
             'result_value_absolute' => $sampleData['absVal'] ?? null,
             'result_value_text' => $sampleData['txtVal'] ?? null,
@@ -191,23 +192,11 @@ class TestResultImportService
             'result' => $sampleData['result'] ?? null
         ];
 
-        // Check for existing sample
-        $tableName = TestsService::getTestTableName($this->testType);
-        $primaryKey = TestsService::getPrimaryColumn($this->testType);
-        $query = "SELECT facility_id, $primaryKey, result FROM $tableName
-                        WHERE sample_code = ?";
-        $existingResult = $this->db->rawQueryOne($query, [$sampleCode]);
-
         // Insert sample control if needed
         $this->insertSampleControl($data['sample_type']);
 
-        // Set sample details based on existing record
-        if (!empty($existingResult)) {
-            $data['sample_details'] = empty($existingResult['result']) ? 'Existing Sample' : 'Result already exists';
-            $data['facility_id'] = $existingResult['facility_id'];
-        } else {
-            $data['sample_details'] = 'New Sample';
-        }
+        // The sample this result belongs to, within the lab the file is for.
+        $data = ContainerRegistry::get(ImportedSampleMatcher::class)->stage($this->testType, $data);
 
         // Add import metadata
         $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
@@ -345,7 +334,7 @@ class TestResultImportService
         }
 
         $usersService = ContainerRegistry::get(UsersService::class);
-        return $usersService->getOrCreateUser($username);
+        return $usersService->getOrCreateUser($username, labId: (int) base64_decode((string) ($this->postData['labId'] ?? '')));
     }
 
     // This function removes control characters from the strings in the CSV file.

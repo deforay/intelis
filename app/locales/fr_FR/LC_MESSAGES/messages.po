@@ -36819,3 +36819,12 @@ msgstr "% rejetés"
 #, c-format
 msgid "Not Received After %d Days"
 msgstr "Non reçus après %d jours"
+
+msgid "This Sample ID belongs to another lab. The result will not be saved."
+msgstr "Cet ID d'échantillon appartient à un autre laboratoire. Le résultat ne sera pas enregistré."
+
+msgid "This Sample ID matches more than one sample. Correct it, or the result will not be saved."
+msgstr "Cet ID d'échantillon correspond à plusieurs échantillons. Corrigez-le, sinon le résultat ne sera pas enregistré."
+
+msgid "Results cannot be imported for this lab"
+msgstr "Les résultats ne peuvent pas être importés pour ce laboratoire"

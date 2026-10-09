@@ -13,8 +13,8 @@ $tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount,
             SUM(CASE WHEN tsr.result = 'positive' THEN 1 ELSE 0 END) AS positive,
             SUM(CASE WHEN tsr.result = 'negative' THEN 1 ELSE 0 END) AS negative,
             SUM(CASE WHEN tsr.result = 'indeterminate' THEN 1 ELSE 0 END) AS indeterminate
-            FROM temp_sample_import as tsr $joinTypeWithTestTable form_eid as vl ON vl.sample_code=tsr.sample_code
-            WHERE  imported_by ='$importedBy' ";
+            FROM temp_sample_import as tsr $joinTypeWithTestTable form_eid as vl ON vl.eid_id=tsr.matched_sample_id AND tsr.module = 'eid'
+            WHERE  imported_by ='$importedBy' AND tsr.module = 'eid' ";
 $tsResult = $db->rawQuery($tsQuery);
 
 //set print query
@@ -26,17 +26,18 @@ if ($hResult) {
         $holdSample[] = $sample['sample_code'];
     }
 }
-$saQuery = "SELECT tsr.sample_code
-            FROM temp_sample_import as tsr $joinTypeWithTestTable form_eid as vl ON vl.sample_code=tsr.sample_code
-                WHERE  imported_by ='$importedBy' ";
+$saQuery = "SELECT tsr.sample_code, tsr.matched_sample_id
+            FROM temp_sample_import as tsr $joinTypeWithTestTable form_eid as vl ON vl.eid_id=tsr.matched_sample_id AND tsr.module = 'eid'
+                WHERE  imported_by ='$importedBy' AND tsr.module = 'eid' ";
 $saResult = $db->rawQuery($saQuery);
-$sampleCode = [];
+// The samples the import wrote, by id: a code alone can name other labs' samples too.
+$sampleIds = [];
 foreach ($saResult as $sample) {
-    if (!in_array($sample['sample_code'], $holdSample)) {
-        $sampleCode[] = "'" . $sample['sample_code'] . "'";
+    if (!in_array($sample['sample_code'], $holdSample) && !empty($sample['matched_sample_id'])) {
+        $sampleIds[] = (int) $sample['matched_sample_id'];
     }
 }
-$sCode = implode(', ', $sampleCode);
+$sampleIdList = implode(',', $sampleIds);
 $samplePrintQuery = "SELECT vl.*, b.*, ts.*, f.facility_name, l_f.facility_name as labName,
                         f.facility_code,
                         f.facility_state,
@@ -52,7 +53,7 @@ $samplePrintQuery = "SELECT vl.*, b.*, ts.*, f.facility_name, l_f.facility_name 
                         LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
                         LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
                         LEFT JOIN r_eid_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
-$samplePrintQuery .= ' where vl.sample_code IN ( ' . $sCode . ')'; // Append to condition
+$samplePrintQuery .= ' where vl.eid_id IN (' . ($sampleIdList ?: '0') . ')';
 $_SESSION['eidPrintSearchResultQuery'] = $samplePrintQuery;
 
 

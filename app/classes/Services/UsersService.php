@@ -257,7 +257,13 @@ final class UsersService
         });
     }
 
-    public function getOrCreateUser($name, $status = 'active', $role = 4)
+    /**
+     * @param int|null $labId the lab the name was recorded at. When given, only that
+     *                        lab's users and users with no lab are considered, its own
+     *                        first, and a new user is created in that lab: on a server
+     *                        shared by many labs, two labs can each have a "john".
+     */
+    public function getOrCreateUser($name, $status = 'active', $role = 4, ?int $labId = null)
     {
         // No name, no user. A blank name never matches user_name, so each call used
         // to insert another nameless user: one per analyzer row with no tester.
@@ -265,16 +271,23 @@ final class UsersService
         if ($name === '') {
             return null;
         }
+        $labId = $labId > 0 ? $labId : null;
 
         $uQuery = "SELECT `user_id`
                     FROM $this->table
-                    WHERE user_name = ?
-                    OR (JSON_VALID(interface_user_name)
+                    WHERE (user_name = ?
+                        OR (JSON_VALID(interface_user_name)
                             AND JSON_CONTAINS(interface_user_name, JSON_QUOTE(?), '$')
-                        )";
+                        ))";
+        $params = [$name, $name];
+        if ($labId !== null) {
+            $uQuery .= " AND (testing_lab_id = ? OR testing_lab_id IS NULL)
+                        ORDER BY testing_lab_id IS NULL
+                        LIMIT 1";
+            $params[] = $labId;
+        }
 
-
-        $result = $this->db->rawQueryOne($uQuery, [$name, $name]);
+        $result = $this->db->rawQueryOne($uQuery, $params);
         if ($result == null) {
 
             $userId = MiscUtility::generateUUID();
@@ -282,7 +295,8 @@ final class UsersService
                 'user_id' => $userId,
                 'user_name' => $name,
                 'role_id' => $role,
-                'status' => $status
+                'status' => $status,
+                'testing_lab_id' => $labId,
             ];
             $this->db->insert($this->table, $userData);
         } else {
