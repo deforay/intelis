@@ -91,6 +91,28 @@ UPDATE `s_app_menu`
                                     AND `parent_id` = 2) AS `oldest`)
    AND NOT EXISTS (SELECT 1 FROM (SELECT `id` FROM `s_app_menu` WHERE `link` = '#cd4-config' LIMIT 1) AS `kept`);
 
+-- Some installs have the same CD4 page in more than one group. (link, parent_id)
+-- is unique, so drop the copies in the stale groups that the kept group already
+-- has, and all but the oldest of any copies repeated across stale groups.
+DELETE `d` FROM `s_app_menu` `d`
+  JOIN `s_app_menu` `g` ON `g`.`id` = `d`.`parent_id`
+  JOIN `s_app_menu` `k` ON `k`.`link` = '#cd4-config'
+  JOIN `s_app_menu` `dup` ON `dup`.`parent_id` = `k`.`id` AND `dup`.`link` = `d`.`link`
+ WHERE `g`.`module` = 'admin'
+   AND `g`.`display_text` = 'CD4 Config'
+   AND (`g`.`link` IS NULL OR `g`.`link` IN ('', 'cd4-config'));
+
+DELETE `d` FROM `s_app_menu` `d`
+  JOIN `s_app_menu` `g` ON `g`.`id` = `d`.`parent_id`
+  JOIN `s_app_menu` `dup` ON `dup`.`link` = `d`.`link` AND `dup`.`id` < `d`.`id`
+  JOIN `s_app_menu` `dg` ON `dg`.`id` = `dup`.`parent_id`
+ WHERE `g`.`module` = 'admin'
+   AND `g`.`display_text` = 'CD4 Config'
+   AND (`g`.`link` IS NULL OR `g`.`link` IN ('', 'cd4-config'))
+   AND `dg`.`module` = 'admin'
+   AND `dg`.`display_text` = 'CD4 Config'
+   AND (`dg`.`link` IS NULL OR `dg`.`link` IN ('', 'cd4-config'));
+
 UPDATE `s_app_menu`
    SET `parent_id` = (SELECT `id` FROM (SELECT `id` FROM `s_app_menu` WHERE `link` = '#cd4-config' LIMIT 1) AS `kept`),
        `updated_datetime` = CURRENT_TIMESTAMP
