@@ -284,11 +284,17 @@ final class ApiGenerateManifestTest extends TestCase
             'labId' => 1,
             'sampleCode' => ['VL-ART-1', 'VL-ART-2'],
         ]);
-        self::assertSame(0, self::finish($other), 'The overlapping transaction did not commit.');
+        self::assertSame(0, self::finish($other), 'The request never waited on the held samples.');
 
         // It waits for the other to commit and leaves both samples where they went,
         // rather than taking them onto a second manifest.
+        self::assertSame('success', $payload['status']);
         self::assertArrayNotHasKey('manifestCode', $payload);
+        self::assertSame('VLFIRST', $payload['data']['existingManifests'][0]['manifestCode']);
+        self::assertSame(
+            ['VL-ART-1', 'VL-ART-2'],
+            array_column($payload['data']['existingManifests'][0]['samples'], 'sampleCode')
+        );
         self::assertSame(['VL-ART-1' => 'VLFIRST', 'VL-ART-2' => 'VLFIRST'], self::manifests());
         $manifestCount = $db->rawQueryOne('SELECT COUNT(*) n FROM specimen_manifests')['n'];
         self::assertSame(1, (int) $manifestCount);
@@ -313,13 +319,19 @@ final class ApiGenerateManifestTest extends TestCase
             );
             $stmt->execute([(int) getenv('M'), getenv('C'), ...$codes]);
             fwrite(STDOUT, "held\n");
-            // Commit once the request under test is waiting on these rows, so it
-            // is certain to have started while they were held.
-            $waiting = 'SELECT COUNT(*) FROM performance_schema.data_lock_waits';
-            for ($i = 0; $i < 1000 && (int) $db->query($waiting)->fetch_row()[0] === 0; $i++) {
-                usleep(20000);
+            // Commit once a request is waiting on this connection's locks, so the
+            // request under test is certain to have started while they were held.
+            // Exits 3 when no such wait appears: then the overlap was never tested.
+            $waiting = 'SELECT COUNT(*) FROM performance_schema.data_lock_waits w
+                JOIN performance_schema.threads t ON t.THREAD_ID = w.BLOCKING_THREAD_ID
+                WHERE t.PROCESSLIST_ID = CONNECTION_ID()';
+            $waited = false;
+            for ($i = 0; $i < 1000 && !$waited; $i++) {
+                $waited = (int) $db->query($waiting)->fetch_row()[0] > 0;
+                $waited || usleep(20000);
             }
             $db->commit();
+            exit($waited ? 0 : 3);
             PHP;
         $env = [
             'H' => (string) getenv('INTELIS_TEST_DB_HOST'),
