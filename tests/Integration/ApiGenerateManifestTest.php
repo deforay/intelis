@@ -259,4 +259,40 @@ final class ApiGenerateManifestTest extends TestCase
 
         self::assertSame(['VL-ART-1' => null], self::manifests());
     }
+
+    #[RunInSeparateProcess]
+    public function testARepeatedRequestLeavesTakenSamplesOnTheirManifest(): void
+    {
+        // The first request has run: ART-1 is on its manifest. The client sends
+        // the request again, now naming ART-2 as well.
+        $db = LegacyAppHarness::db();
+        $db->insert('specimen_manifests', [
+            'manifest_code' => 'VLFIRST',
+            'module' => 'vl',
+            'lab_id' => 1,
+            'number_of_samples' => 1,
+            'manifest_status' => 'pending',
+        ]);
+        $firstId = (int) $db->getInsertId();
+        $this->seedVl('ART-1', 1, ['sample_package_id' => $firstId, 'sample_package_code' => 'VLFIRST']);
+        $this->seedVl('ART-2', 1);
+
+        $payload = $this->drive('/api/v1.1/generate-manifest.php', [
+            'testType' => 'vl',
+            'labId' => 1,
+            'sampleCode' => ['VL-ART-1', 'VL-ART-2'],
+        ]);
+
+        // ART-1 stays where it was; the new manifest holds ART-2 and counts it
+        // alone, never the samples it was asked for.
+        self::assertSame('success', $payload['status']);
+        self::assertSame('VLFIRST', $payload['data']['existingManifests'][0]['manifestCode']);
+        self::assertSame(['VL-ART-1' => 'VLFIRST', 'VL-ART-2' => $payload['manifestCode']], self::manifests());
+        self::assertSame(['VL-ART-2'], array_column($payload['data']['addedToManifest'], 'sampleCode'));
+        $counts = $db->rawQuery('SELECT manifest_code, number_of_samples FROM specimen_manifests ORDER BY manifest_id');
+        self::assertSame(
+            ['VLFIRST' => 1, $payload['manifestCode'] => 1],
+            array_map('intval', array_column($counts, 'number_of_samples', 'manifest_code'))
+        );
+    }
 }

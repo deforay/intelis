@@ -110,9 +110,28 @@ try {
         $whereString = " WHERE " . implode(" AND ", $where);
     }
     $sQuery .= $whereString;
-    $sQuery .= " ORDER BY COALESCE(NULLIF(vl.remote_sample_code, ''), NULLIF(vl.sample_code, ''), NULLIF(vl.app_sample_code, ''), vl.$testPrimaryKey)";
+    $sampleOrder = " ORDER BY COALESCE(NULLIF(vl.remote_sample_code, ''), NULLIF(vl.sample_code, ''), NULLIF(vl.app_sample_code, ''), vl.$testPrimaryKey)";
+    $sQuery .= $sampleOrder;
+
+    // Choosing the samples and linking them is one step. A client that sends the
+    // same request twice used to have both requests read the samples as free,
+    // and each linked them to its own manifest: a 1183-sample manifest that
+    // listed 320, the rest on a second manifest nobody asked for.
+    $db->beginTransaction();
 
     $rowData = $db->rawQuery($sQuery);
+    if (!empty($rowData)) {
+        // Lock the matched rows by primary key and read their manifest again: a
+        // request for the same samples waits here until this one commits, then
+        // finds them taken. By key, so the lock holds these rows and no others.
+        // The locking read is the re-read: it sees the latest commit, where a
+        // plain read would answer from the snapshot taken before the wait.
+        $idList = $db->inIntList(array_column($rowData, $testPrimaryKey));
+        $rowData = $db->rawQuery(
+            "SELECT unique_id, sample_code, remote_sample_code, app_sample_code, sample_package_id, sample_package_code, $testPrimaryKey
+                FROM $testTable as vl WHERE vl.$testPrimaryKey IN ($idList) $sampleOrder FOR UPDATE"
+        );
+    }
 
     // Separate samples into different categories
     $availableSamples = [];
@@ -167,24 +186,37 @@ try {
             $db->insert('specimen_manifests', $data);
             $lastId = $db->getInsertId();
 
-            foreach ($samplesToAdd as $key => $row) {
-                $tData = [
+            // Only a sample still free is taken; the lock above already holds
+            // them, this keeps the update honest on its own.
+            foreach (array_chunk($selectedSamplesIds, 500) as $batch) {
+                $db->where($testPrimaryKey, $batch, 'IN');
+                $db->where("(sample_package_id IS NULL OR sample_package_id = 0 OR sample_package_code IS NULL OR sample_package_code = '')");
+                $db->update($testTable, [
                     'sample_package_id' => $lastId,
                     'sample_package_code' => $sampleManifestCode,
                     'lab_id' => $input['labId'],
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
+                ]);
+            }
+
+            // The manifest lists what was linked, and says so in its count.
+            $linked = $db->rawQuery(
+                "SELECT unique_id, sample_code, remote_sample_code, app_sample_code
+                    FROM $testTable as vl WHERE vl.sample_package_id = ? $sampleOrder",
+                [$lastId]
+            ) ?: [];
+            foreach ($linked as $row) {
+                $addedToManifest[] = [
+                    'sampleCode' => $row['sample_code'],
+                    'remoteSampleCode' => $row['remote_sample_code'],
+                    'appSampleCode' => $row['app_sample_code'],
+                    'uniqueId' => $row['unique_id']
                 ];
-                $db->where($testPrimaryKey, $row[$testPrimaryKey]);
-                $status = $db->update($testTable, $tData);
-                if ($status) {
-                    $addedToManifest[] = [
-                        'sampleCode' => $row['sample_code'],
-                        'remoteSampleCode' => $row['remote_sample_code'],
-                        'appSampleCode' => $row['app_sample_code'],
-                        'uniqueId' => $row['unique_id']
-                    ];
-                }
+            }
+            if (count($linked) !== count($samplesToAdd)) {
+                $db->where('manifest_id', $lastId);
+                $db->update('specimen_manifests', ['number_of_samples' => count($linked)]);
             }
         }
 
@@ -238,7 +270,9 @@ try {
             'data' => []
         ];
     }
+    $db->commitTransaction();
 } catch (Throwable $exc) {
+    $db->rollbackTransaction();
     http_response_code(500);
     $payload = [
         'status' => 'failed',
