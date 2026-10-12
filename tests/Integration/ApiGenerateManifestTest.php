@@ -261,38 +261,94 @@ final class ApiGenerateManifestTest extends TestCase
     }
 
     #[RunInSeparateProcess]
-    public function testARepeatedRequestLeavesTakenSamplesOnTheirManifest(): void
+    public function testARequestOverlappingAnotherLeavesItsSamplesAlone(): void
     {
-        // The first request has run: ART-1 is on its manifest. The client sends
-        // the request again, now naming ART-2 as well.
         $db = LegacyAppHarness::db();
         $db->insert('specimen_manifests', [
             'manifest_code' => 'VLFIRST',
             'module' => 'vl',
             'lab_id' => 1,
-            'number_of_samples' => 1,
+            'number_of_samples' => 2,
             'manifest_status' => 'pending',
         ]);
         $firstId = (int) $db->getInsertId();
-        $this->seedVl('ART-1', 1, ['sample_package_id' => $firstId, 'sample_package_code' => 'VLFIRST']);
+        $this->seedVl('ART-1', 1);
         $this->seedVl('ART-2', 1);
+
+        // Another request is mid-way through taking both samples: linked, not yet
+        // committed. This one starts now, so its first read finds them free.
+        $other = self::holdSamplesOnManifest($firstId, 'VLFIRST', ['VL-ART-1', 'VL-ART-2']);
 
         $payload = $this->drive('/api/v1.1/generate-manifest.php', [
             'testType' => 'vl',
             'labId' => 1,
             'sampleCode' => ['VL-ART-1', 'VL-ART-2'],
         ]);
+        self::assertSame(0, self::finish($other), 'The overlapping transaction did not commit.');
 
-        // ART-1 stays where it was; the new manifest holds ART-2 and counts it
-        // alone, never the samples it was asked for.
-        self::assertSame('success', $payload['status']);
-        self::assertSame('VLFIRST', $payload['data']['existingManifests'][0]['manifestCode']);
-        self::assertSame(['VL-ART-1' => 'VLFIRST', 'VL-ART-2' => $payload['manifestCode']], self::manifests());
-        self::assertSame(['VL-ART-2'], array_column($payload['data']['addedToManifest'], 'sampleCode'));
-        $counts = $db->rawQuery('SELECT manifest_code, number_of_samples FROM specimen_manifests ORDER BY manifest_id');
-        self::assertSame(
-            ['VLFIRST' => 1, $payload['manifestCode'] => 1],
-            array_map('intval', array_column($counts, 'number_of_samples', 'manifest_code'))
-        );
+        // It waits for the other to commit and leaves both samples where they went,
+        // rather than taking them onto a second manifest.
+        self::assertArrayNotHasKey('manifestCode', $payload);
+        self::assertSame(['VL-ART-1' => 'VLFIRST', 'VL-ART-2' => 'VLFIRST'], self::manifests());
+        $manifestCount = $db->rawQueryOne('SELECT COUNT(*) n FROM specimen_manifests')['n'];
+        self::assertSame(1, (int) $manifestCount);
+    }
+
+    /**
+     * Link the samples to a manifest in a transaction of another connection, and
+     * hold it open until the request under test waits on them.
+     *
+     * @param list<string> $sampleCodes
+     * @return array{0: resource, 1: array<int, resource>}
+     */
+    private static function holdSamplesOnManifest(int $manifestId, string $manifestCode, array $sampleCodes): array
+    {
+        $script = <<<'PHP'
+            $db = new mysqli(getenv('H'), getenv('U'), getenv('P'), getenv('D'), (int) getenv('O'));
+            $db->begin_transaction();
+            $codes = json_decode(getenv('S'), true);
+            $in = implode(',', array_fill(0, count($codes), '?'));
+            $stmt = $db->prepare(
+                "UPDATE form_vl SET sample_package_id = ?, sample_package_code = ? WHERE sample_code IN ($in)"
+            );
+            $stmt->execute([(int) getenv('M'), getenv('C'), ...$codes]);
+            fwrite(STDOUT, "held\n");
+            // Commit once the request under test is waiting on these rows, so it
+            // is certain to have started while they were held.
+            $waiting = 'SELECT COUNT(*) FROM performance_schema.data_lock_waits';
+            for ($i = 0; $i < 1000 && (int) $db->query($waiting)->fetch_row()[0] === 0; $i++) {
+                usleep(20000);
+            }
+            $db->commit();
+            PHP;
+        $env = [
+            'H' => (string) getenv('INTELIS_TEST_DB_HOST'),
+            'U' => (string) getenv('INTELIS_TEST_DB_USER'),
+            'P' => (string) (getenv('INTELIS_TEST_DB_PASS') ?: ''),
+            'O' => (string) (getenv('INTELIS_TEST_DB_PORT') ?: 3306),
+            'D' => self::DATABASE . '_' . getmypid(),
+            'M' => (string) $manifestId,
+            'C' => $manifestCode,
+            'S' => json_encode($sampleCodes, JSON_THROW_ON_ERROR),
+        ];
+        $process = proc_open([PHP_BINARY, '-r', $script], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes, null, $env);
+        self::assertIsResource($process);
+        $held = fgets($pipes[1]);
+        if ($held !== "held\n") {
+            // Read only on failure: reading it waits for the process to exit.
+            self::fail('Could not hold the samples: ' . stream_get_contents($pipes[2]));
+        }
+
+        return [$process, $pipes];
+    }
+
+    /** @param array{0: resource, 1: array<int, resource>} $held */
+    private static function finish(array $held): int
+    {
+        [$process, $pipes] = $held;
+        stream_get_contents($pipes[1]);
+        stream_get_contents($pipes[2]);
+
+        return proc_close($process);
     }
 }
