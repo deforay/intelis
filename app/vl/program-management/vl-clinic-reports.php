@@ -1222,6 +1222,11 @@ $implementingPartnerList = $general->getImplementationPartners();
 													onclick="resetFilters('stReportFilter');"><span>
 													<?= _translate("Reset"); ?>
 													</span></button>
+													<button class="filter-export btn btn-success btn-sm" type="button"
+													onclick="sampleTestingInexcel();"><em
+													class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
 												</div>
 											</div>
 											<div id="sampleTestingResultDetails"></div>
@@ -1822,6 +1827,36 @@ $implementingPartnerList = $general->getImplementationPartners();
 			Pregnant: $("#noResultPatientPregnant  option:selected").text(),
 			Breastfeeding: $("#noResultPatientBreastfeeding  option:selected").text()
 		}, <?= json_encode(_translate("VL Results Not Available Export")) ?>);
+	}
+
+	function sampleTestingInexcel()
+	{
+		if (!searchExecuted) {
+			return searchVlRequestData().then(sampleTestingInexcel);
+		}
+		//alert("yes, gng");
+		$.blockUI();
+
+		$.post("/vl/program-management/vlSampleTestingReportExportInExcel.php", {
+			Sample_Test_Date: $("#noResultSampleTestDate").val(),
+			Batch_Code: $("#noResultBatchCode  option:selected").text(),
+			Sample_Type: $("#noResultSampleType  option:selected").text(),
+			Facility_Name: $("#noResultFacilityName  option:selected").text(),
+			Sex: $("#noResultGender  option:selected").text(),
+			patientInfo: $("#patientNtAvailInfo  option:selected").val(),
+			Pregnant: $("#noResultPatientPregnant  option:selected").text(),
+			Breastfeeding: $("#noResultPatientBreastfeeding  option:selected").text()
+		},
+			function (data) {
+				console.log(data);
+				if (data == "" || data == null || data == undefined) {
+					$.unblockUI();
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
+				} else {
+					$.unblockUI();
+					window.open('/download.php?f=' + data, '_blank');
+				}
+			});
 	}
 
 	function hideFemaleDetails(value, pregnant, breastFeeding) {

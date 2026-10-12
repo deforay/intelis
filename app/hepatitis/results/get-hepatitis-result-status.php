@@ -1,5 +1,9 @@
 <?php
-
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\LOST_OR_MISSING;
+use const SAMPLE_STATUS\CANCELLED;
+use const SAMPLE_STATUS\EXPIRED;
 use App\Utilities\ListingFilterClauseBuilder;
 use App\Utilities\DataTableUtility;
 use Psr\Http\Message\ServerRequestInterface;
@@ -93,7 +97,9 @@ try {
         } elseif ($cancellableFilter) {
             // Cancellation is allowed for any sample that is not already Expired (10) or Cancelled (12),
             // regardless of whether it has been tested yet.
-            $sWhere[] = ' vl.result_status NOT IN (10,12)';
+            //$sWhere[] = ' vl.result_status NOT IN (10,12)';
+            $sWhere[] = ' vl.result_status NOT IN (' . EXPIRED . ',' . CANCELLED . ')';
+
         }
     }
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
@@ -106,7 +112,7 @@ try {
 
     // Untested samples (no viral load count yet) are still cancellable.
     if (!$cancellableFilter) {
-        $sWhere[] = ' (vl.hcv_vl_count !="" OR vl.hbv_vl_count !="") ';
+        $sWhere[] = ' (vl.hcv_vl_count !="" OR vl.hbv_vl_count !="" OR vl.hcv_vl_count is not null OR vl.hbv_vl_count is not null) ';
     }
 
     /* Implode all the where fields for filtering the data */
@@ -152,11 +158,13 @@ try {
         $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 
 
-        $status = '<select class="form-control"  name="status[]" id="' . $aRow['hepatitis_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . (int) $aRow['result_status'] . ')">
+        
+     $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . (int) $aRow['result_status'] . ')">
                <option value="">' . _translate("-- Select --") . '</option>
-               <option value="7" ' . ($aRow['result_status'] == "7" ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
-               <option value="4" ' . ($aRow['result_status'] == "4" ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
-               <option value="2" ' . ($aRow['result_status'] == "2" ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
+               <option value="' . ACCEPTED . '" ' . ($aRow['result_status'] == ACCEPTED ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
+               <option value="' . REJECTED . '" ' . ($aRow['result_status'] == REJECTED ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
+               <option value="' . LOST_OR_MISSING . '" ' . ($aRow['result_status'] == LOST_OR_MISSING ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
+               <option value="' . CANCELLED . '" ' . ($aRow['result_status'] == CANCELLED ? "selected=selected" : "") . '>' . _translate("Cancelled") . '</option>
                </select><br><br>';
 
         $row = [];

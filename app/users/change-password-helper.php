@@ -111,7 +111,7 @@ try {
             if ($wasUpdated !== false) {
                 $response['status'] = "success";
                 $response['message'] = "New Password updated successfully!";
-                $general->activityLog('password-update', $userRow['user_name'] . ' profile updated via Recency API', 'user-profile-recency-api');
+                $general->activityLog('password-update', $userRow['user_name'] . ' password updated via Recency API', 'user-profile-recency-api');
             } else {
                 $response['status'] = "fail";
                 $response['message'] = "Password not updated!";

@@ -459,6 +459,9 @@ $state = $geolocationService->getProvinces("yes");
 												<div class="box-footer filter-actions">
 													&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _htmlTranslate('Search'); ?>" class="filter-search searchBtn btn btn-success btn-sm">
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+													<button class="filter-export btn btn-success btn-sm" type="button" onclick="sampleTestingInexcel();"><em class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
 												</div>
 											</div>
 											<div id="sampleTestingResultDetails"></div>
@@ -584,9 +587,7 @@ $state = $geolocationService->getProvinces("yes");
 				{
 					"sClass": "center"
 				},
-				{
-					"sClass": "center"
-				},
+				
 			],
 			"aaSorting": [
 				[<?= ($general->isStandaloneInstance()) ? 5 : 6; ?>, "desc"]
@@ -853,6 +854,31 @@ $state = $geolocationService->getProvinces("yes");
 				Facility_Name: $("#noResultFacilityName  option:selected").text(),
 				Sex: $("#noResultGender  option:selected").text()
 			}, <?= json_encode(_translate("COVID-19 Results Not Available Export")) ?>);
+	}
+
+	function sampleTestingInexcel()
+	{
+		if (!searchExecuted) {
+			return searchVlRequestData().then(sampleTestingInexcel);
+		}
+		$.blockUI();
+
+		$.post("/covid-19/management/covid19SampleTestingReportExportInExcel.php", {
+				Sample_Test_Date: $("#noResultSampleTestDate").val(),
+				Batch_Code: $("#noResultBatchCode  option:selected").text(),
+				Sample_Type: $("#noResultSampleType  option:selected").text(),
+				Facility_Name: $("#noResultFacilityName  option:selected").text(),
+				Sex: $("#noResultGender  option:selected").text()
+			},
+			function(data) {
+				if (data == "" || data == null || data == undefined) {
+					$.unblockUI();
+					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
+				} else {
+					$.unblockUI();
+					window.open('/download.php?f=' + data, '_blank');
+				}
+			});
 	}
 
 

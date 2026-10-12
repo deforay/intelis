@@ -74,7 +74,7 @@ final class SampleTestingReportUtility
                 WHERE " . implode(' AND ', $where) . "
                 GROUP BY f.facility_id
                 ORDER BY total DESC, f.facility_name";
-
+        $_SESSION['sampleTestingReport'] = $sql;
         $rows = [];
         foreach ($db->rawQuery($sql) ?: [] as $row) {
             $out = [

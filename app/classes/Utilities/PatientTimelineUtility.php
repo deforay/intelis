@@ -191,8 +191,7 @@ final class PatientTimelineUtility
         }
 
         usort($events, fn($x, $y) => strcmp((string) $x['collected'], (string) $y['collected']));
-
-        return [
+        $data = [
             'patient' => [
                 'id' => $patientId,
                 'names' => array_values($names),
@@ -206,6 +205,10 @@ final class PatientTimelineUtility
             'vlThreshold' => $vlThreshold,
             'cd4Low' => self::CD4_LOW,
         ];
+
+        $_SESSION['timelineData'] = $data;
+        return $data;
+        
     }
 
     /** @return array<string, mixed> */

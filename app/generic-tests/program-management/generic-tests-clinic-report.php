@@ -88,6 +88,11 @@ $state = $geolocationService->getProvinces("yes");
 													&nbsp;<button type="button" class="btn btn-default btn-sm" onclick="resetFilters('stReportFilter');"><span>
 													<?= _translate("Reset"); ?>
 													</span></button>
+													<button class="filter-export btn btn-success btn-sm" type="button"
+													onclick="sampleTestingInexcel();"><em
+													class="fa-solid fa-cloud-arrow-down"></em>
+													<?php echo _translate("Export to excel"); ?>
+													</button>
 												</div>
 											</div>
 											<div id="sampleTestingResultDetails"></div>
@@ -243,6 +248,27 @@ $state = $geolocationService->getProvinces("yes");
 			});
 		return currentXHR;
 	}
+
+	function sampleTestingInexcel()
+		{
+			if (!searchExecuted) {
+				return searchVlRequestData().then(sampleTestingInexcel);
+			}
+			$.blockUI();
+
+			$.post("/generic-tests/program-management/generic-tests-sample-testing-report-export-in-excel.php", {
+					sampleCollectionDate: $("#stSampleCollectionDate").val(),
+				},
+				function(data) {
+					if (data == "" || data == null || data == undefined) {
+						$.unblockUI();
+						alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
+					} else {
+						$.unblockUI();
+						window.open('/download.php?f=' + data, '_blank');
+					}
+				});
+		}
 
 </script>
 <?php

@@ -289,6 +289,8 @@
             var events = data.events;
             var name = p.names[0] || this.L.unnamed;
 
+            var excelBtn = '<button class="filter-export btn btn-success btn-sm" type="button" onclick="patientTimelineInexcel();"><em class="fa-solid fa-cloud-arrow-down"></em>Export to excel</button>';
+            $('#patientTimelineApp').append(excelBtn);
             var card = $('<div class="pt-patient">');
             card.append($('<span class="pt-avatar pt-avatar-lg">').text(this.initials(p.names[0])));
 
