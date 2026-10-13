@@ -1239,7 +1239,13 @@ final class CommonService
         $saved = null;
         $savedLabId = null;
         if (!empty($table) && !empty($primaryKey) && !empty($recordId)) {
-            $saved = $this->db->rawQueryOne("SELECT * FROM `$table` WHERE `$primaryKey` = ?", [$recordId]);
+            // Only what the checks below need: this runs before the save checks
+            // the user may see the sample.
+            $saved = $this->db->rawQueryOne(
+                "SELECT lab_id, facility_id, sample_package_id, sample_package_code
+                   FROM `$table` WHERE `$primaryKey` = ?",
+                [$recordId]
+            );
             $savedLabId = ((int) ($saved['lab_id'] ?? 0)) ?: null;
         }
 

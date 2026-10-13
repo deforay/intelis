@@ -184,7 +184,7 @@ $statusLabels = [
                 $(this).val('');
             });
             $('#selectAll').on('change', function() {
-                $('#manifestRows input:checkbox').prop('checked', this.checked);
+                manifestBoxes().prop('checked', this.checked);
                 updateMoveButton();
             });
             $('#manifestRows').on('change', 'input:checkbox', updateMoveButton);
@@ -200,8 +200,17 @@ $statusLabels = [
             });
         });
 
+        // Every row of the list, including those a search is hiding: a search
+        // takes them out of the page, so they are reached through the table.
+        function manifestBoxes() {
+            if ($.fn.DataTable.isDataTable('#manifestTable')) {
+                return $($('#manifestTable').DataTable().rows().nodes()).find('input:checkbox');
+            }
+            return $('#manifestRows input:checkbox');
+        }
+
         function updateMoveButton() {
-            $('#moveButton').prop('disabled', $('#manifestRows input:checkbox:checked').length === 0);
+            $('#moveButton').prop('disabled', manifestBoxes().filter(':checked').length === 0);
         }
 
         function findManifests() {
