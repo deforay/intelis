@@ -25,9 +25,10 @@ final class LabMetadataService
     /**
      * @param array{primaryKey?: array<int, string>, table?: array<int, string>, data?: array<int, iterable>} $tableInfo
      *        by position: each table, the column rows are matched on, and its rows
+     * @param int|null $labId the lab that sent them, as its token says
      * @return int rows processed
      */
-    public function storeTables(array $tableInfo): int
+    public function storeTables(array $tableInfo, ?int $labId = null): int
     {
         $counter = 0;
         if ($tableInfo === []) {
@@ -58,6 +59,8 @@ final class LabMetadataService
                 try {
                     if ($tableName === 'instrument_machines') {
                         $this->storeMachine($data);
+                    } elseif ($tableName === 'lab_storage_history') {
+                        $this->storeStorageHistory($data, $resultRow, $labId);
                     } elseif ($tableName === 'instrument_controls') {
                         if (
                             (in_array($data['instrument_id'], $deletedId)) === false &&
@@ -142,6 +145,64 @@ final class LabMetadataService
             return;
         }
         $this->db->setQueryOption(['IGNORE'])->insert('instrument_machines', $data);
+    }
+
+    /**
+     * A row of a lab's sample storage history, matched on the lab and the lab's own id
+     * for it. Every lab numbers its history from 1, so matched on that id alone, as it
+     * was before 5.7.88, one lab's row overwrote another's. The lab is the one the
+     * token belongs to, never what the row says; history_id here is this server's own.
+     *
+     * The time is the lab's: it is when the sample went into or out of the freezer,
+     * which the storage reports show, not when the row reached this server.
+     */
+    private function storeStorageHistory(array $data, array $sent, ?int $labId): void
+    {
+        $labHistoryId = filter_var($sent['history_id'] ?? null, FILTER_VALIDATE_INT);
+        if (empty($labId) || $labHistoryId === false) {
+            // Without both it cannot be told apart from another lab's row.
+            return;
+        }
+        unset($data['history_id']);
+        $data['source_lab_id'] = $labId;
+        $data['lab_history_id'] = $labHistoryId;
+        if (!empty($sent['updated_datetime'])) {
+            $data['updated_datetime'] = $sent['updated_datetime'];
+        }
+
+        // A row stored before 5.7.88 sits under the id the lab sent, unclaimed. It is
+        // this lab's row only if it holds exactly what the lab sent: another lab may have
+        // overwritten it since, and a row written on this server is numbered in a run of
+        // its own, so an id alone proves nothing. Every stored value is compared but the
+        // time, which this server used to replace with its own. Claimed, the row keeps
+        // its place; otherwise it is added.
+        //
+        // Accepted: a row written on this server that happens to carry the lab's id and
+        // every value of the lab's row, who wrote it included, is taken for the lab's.
+        // Nothing stored before 5.7.88 marks where a row came from, so the two cannot be
+        // told apart; leaving such rows unclaimed instead would show every row the lab
+        // sent twice once it sends its history again.
+        $claimed = $this->db->rawQueryOne(
+            'SELECT 1 AS found FROM lab_storage_history WHERE source_lab_id = ? AND lab_history_id = ?',
+            [$labId, $labHistoryId]
+        );
+        if (empty($claimed)) {
+            $this->db->rawQuery(
+                'UPDATE lab_storage_history SET source_lab_id = ?, lab_history_id = ?
+                  WHERE history_id = ? AND source_lab_id IS NULL
+                    AND test_type <=> ? AND sample_unique_id <=> ? AND volume <=> ? AND freezer_id <=> ?
+                    AND rack <=> ? AND box <=> ? AND position <=> ? AND sample_status <=> ?
+                    AND date_out <=> ? AND comments <=> ? AND sample_removal_reason <=> ? AND updated_by <=> ?',
+                [
+                    $labId, $labHistoryId, $labHistoryId,
+                    $data['test_type'] ?? null, $data['sample_unique_id'] ?? null, $data['volume'] ?? null,
+                    $data['freezer_id'] ?? null, $data['rack'] ?? null, $data['box'] ?? null,
+                    $data['position'] ?? null, $data['sample_status'] ?? null, $data['date_out'] ?? null,
+                    $data['comments'] ?? null, $data['sample_removal_reason'] ?? null, $data['updated_by'] ?? null,
+                ]
+            );
+        }
+        $this->db->upsert('lab_storage_history', $data, [], ['history_id', 'source_lab_id', 'lab_history_id']);
     }
 
     /** Image types a signature may be stored as. */
