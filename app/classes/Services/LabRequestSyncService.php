@@ -850,11 +850,17 @@ final class LabRequestSyncService
         string $primaryKeyName
     ): array {
         $ownLabId = $this->ownLabId();
-        if (
-            $ownLabId <= 0
-            || (int) ($incoming['lab_id'] ?? 0) !== $ownLabId
-            || (int) ($localRecord['lab_id'] ?? 0) === $ownLabId
-        ) {
+        if ($ownLabId <= 0 || (int) ($incoming['lab_id'] ?? 0) !== $ownLabId) {
+            return $updatePayload;
+        }
+        $updatePayload = $this->reviveWithdrawnCopy(
+            $updatePayload,
+            $incoming,
+            $localRecord,
+            $tableName,
+            $primaryKeyName
+        );
+        if ((int) ($localRecord['lab_id'] ?? 0) === $ownLabId) {
             return $updatePayload;
         }
         $updatePayload['lab_id'] = $ownLabId;
@@ -875,23 +881,46 @@ final class LabRequestSyncService
             $updatePayload['sample_code_format'] = null;
         }
 
-        // A copy this lab cancelled when the sample was moved away (withdraw-
-        // samples), now moved back: it is live again, at the STS's status.
+        return $updatePayload;
+    }
+
+    /**
+     * A copy this lab cancelled when its sample was moved away (withdraw-
+     * samples), now that the STS has moved it back: live again, at the STS's
+     * status, and without the moved marker -- else a later cancellation for
+     * another reason would never be sent. The marker is taken out of the update
+     * too, which otherwise writes the local attributes back (Custom Tests).
+     */
+    private function reviveWithdrawnCopy(
+        array $updatePayload,
+        array $incoming,
+        array $localRecord,
+        string $tableName,
+        string $primaryKeyName
+    ): array {
         $copy = $this->db->rawQueryOne(
             "SELECT result_status, JSON_EXTRACT(form_attributes, '$.movedToLabId') AS moved_to
                FROM `$tableName` WHERE `$primaryKeyName` = ?",
             [$localRecord[$primaryKeyName]]
         );
-        if (!empty($copy['moved_to'])) {
-            $this->db->rawQuery(
-                "UPDATE `$tableName`
-                    SET form_attributes = JSON_REMOVE(form_attributes, '$.movedToLabId', '$.movedOn')
-                  WHERE `$primaryKeyName` = ?",
-                [$localRecord[$primaryKeyName]]
+        if (empty($copy['moved_to'])) {
+            return $updatePayload;
+        }
+        $removeMarker = "'$.movedToLabId', '$.movedOn'";
+        $this->db->rawQuery(
+            "UPDATE `$tableName` SET form_attributes = JSON_REMOVE(form_attributes, $removeMarker)
+              WHERE `$primaryKeyName` = ?",
+            [$localRecord[$primaryKeyName]]
+        );
+        $attributes = $updatePayload['form_attributes'] ?? null;
+        if (is_array($attributes) && isset($attributes['[F]'][0])) {
+            $updatePayload['form_attributes'] = $this->db->func(
+                'JSON_REMOVE(' . $attributes['[F]'][0] . ", $removeMarker)",
+                $attributes['[F]'][1] ?? null
             );
-            if ((int) $copy['result_status'] === CANCELLED) {
-                $updatePayload['result_status'] = (int) ($incoming['result_status'] ?? 0) ?: RECEIVED_AT_CLINIC;
-            }
+        }
+        if ((int) $copy['result_status'] === CANCELLED) {
+            $updatePayload['result_status'] = (int) ($incoming['result_status'] ?? 0) ?: RECEIVED_AT_CLINIC;
         }
         return $updatePayload;
     }

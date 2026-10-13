@@ -49,12 +49,12 @@ final class ManifestMoveTest extends TestCase
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', [
                 'database' => ['db' => $this->database],
-                'modules' => ['vl' => true, 'cd4' => true],
+                'modules' => ['vl' => true, 'cd4' => true, 'tb' => true],
             ]);
         }
         $db = LegacyAppHarness::boot($this->database, [
             'system_config', 'global_config', 's_vlsm_instance', 'r_sample_status', 'form_vl', 'form_cd4',
-            'specimen_manifests', 's_lis_remote_commands', 'facility_details',
+            'form_tb', 'tb_tests', 'specimen_manifests', 's_lis_remote_commands', 'facility_details',
         ]);
         $this->booted = true;
         $db->rawQuery(
@@ -362,21 +362,81 @@ final class ManifestMoveTest extends TestCase
         self::assertSame(
             [
                 'cancelled' => ['open'], 'tested' => ['tested'],
-                'alreadyCancelled' => ['gone'], 'notFound' => ['never-here'],
+                'alreadyCancelled' => ['gone'], 'notFound' => ['never-here'], 'failed' => [],
             ],
             $outcome
         );
         $rows = $this->committed('form_vl');
         self::assertSame('12', (string) $rows['open']['result_status']);
-        self::assertSame(
-            (string) self::NEW_LAB,
-            (string) $rows['open']['lab_id'],
-            'so a later push cannot claim it back'
-        );
+        self::assertSame((string) self::OLD_LAB, (string) $rows['open']['lab_id'], 'keeps its lab and code');
+        self::assertSame('OLD-1', $rows['open']['sample_code']);
         self::assertSame('1', (string) $rows['open']['data_sync'], 'not sent to the STS as cancelled');
         self::assertSame(self::NEW_LAB, json_decode((string) $rows['open']['form_attributes'], true)['movedToLabId']);
         self::assertSame('7', (string) $rows['tested']['result_status'], 'the result is this lab\'s');
         self::assertSame((string) self::OLD_LAB, (string) $rows['tested']['lab_id']);
         self::assertFalse($db->isTransactionActive());
+    }
+
+    #[RunInSeparateProcess]
+    public function testOneSampleThatCannotBeCancelledDoesNotLeaveTheRestLive(): void
+    {
+        $db = $this->boot();
+        self::sample($db, 0, 'M-1', 'a');
+        self::sample($db, 0, 'M-1', 'b');
+        self::sample($db, 0, 'M-1', 'c');
+        $db->rawQuery(
+            "ALTER TABLE form_vl ADD CONSTRAINT no_cancel_b CHECK (NOT (unique_id = 'b' AND result_status = 12))"
+        );
+
+        $outcome = ContainerRegistry::get(SampleWithdrawalService::class)
+            ->withdraw('vl', ['a', 'b', 'c'], self::NEW_LAB);
+
+        self::assertSame(['a', 'c'], $outcome['cancelled']);
+        self::assertSame(['b'], $outcome['failed']);
+        self::assertSame('12', (string) $this->committed('form_vl')['c']['result_status']);
+        self::assertFalse($db->isTransactionActive());
+    }
+
+    #[RunInSeparateProcess]
+    public function testATbPreliminaryResultOrTestRowCountsAsTested(): void
+    {
+        $db = $this->boot();
+        foreach (['T-xpert' => 't-xpert', 'T-row' => 't-row', 'T-open' => 't-open'] as $code => $uniqueId) {
+            $db->insert('specimen_manifests', [
+                'manifest_code' => $code, 'module' => 'tb', 'lab_id' => self::OLD_LAB, 'manifest_type' => 'collection',
+            ]);
+            $db->insert('form_tb', [
+                'unique_id' => $uniqueId, 'facility_id' => 1, 'lab_id' => self::OLD_LAB,
+                'sample_package_id' => (int) $db->getInsertId(), 'sample_package_code' => $code,
+                'result_status' => 6, 'vlsm_instance_id' => 'sts',
+                'xpert_mtb_result' => $uniqueId === 't-xpert' ? 'MTB DETECTED' : null,
+            ]);
+            $tbId = (int) $db->getInsertId();
+            // A test row the request created, with no result yet, is not a test.
+            $db->insert('tb_tests', ['tb_id' => $tbId, 'test_result' => $uniqueId === 't-row' ? 'Positive' : null]);
+        }
+
+        $outcome = self::moves()->move('tb', ['T-xpert', 'T-row', 'T-open'], self::NEW_LAB, 'Wrong lab', 'user-1');
+
+        self::assertSame(['T-open' => 1], $outcome['moved']);
+        self::assertSame(['T-xpert' => 'tested', 'T-row' => 'tested'], $outcome['refused']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAUserLimitedToSomeFacilitiesOnlySeesAndMovesTheirManifests(): void
+    {
+        $db = $this->boot();
+        $mine = self::manifest($db, 'M-mine');
+        self::sample($db, $mine, 'M-mine', 'm-1', ['facility_id' => 1]);
+        $mixed = self::manifest($db, 'M-mixed');
+        self::sample($db, $mixed, 'M-mixed', 'x-1', ['facility_id' => 1]);
+        self::sample($db, $mixed, 'M-mixed', 'x-2', ['facility_id' => 2]);
+
+        $listed = self::moves()->listForLab('vl', self::OLD_LAB, null, null, '1');
+        self::assertSame(['M-mine'], array_column($listed, 'code'));
+        $outcome = self::moves()->move('vl', ['M-mine', 'M-mixed'], self::NEW_LAB, 'Wrong lab', 'user-1', '1');
+
+        self::assertSame(['M-mine' => 1], $outcome['moved']);
+        self::assertSame(['M-mixed' => 'not-found'], $outcome['refused']);
     }
 }

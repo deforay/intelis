@@ -5,12 +5,8 @@ namespace App\Services;
 use Throwable;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\TestedSampleRule;
 
-use const SAMPLE_STATUS\ACCEPTED;
-use const SAMPLE_STATUS\NO_RESULT;
-use const SAMPLE_STATUS\REJECTED;
-use const SAMPLE_STATUS\TEST_FAILED;
-use const SAMPLE_STATUS\PENDING_APPROVAL;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
@@ -35,9 +31,6 @@ final class ManifestMoveService
     /** How recently a lab must have said it handles withdraw-samples. */
     private const CAPABILITY_STALE_MINUTES = 30 * 24 * 60;
 
-    /** Statuses that mean the lab has decided about the sample. */
-    private const DECIDED_STATUSES = [REJECTED, TEST_FAILED, ACCEPTED, PENDING_APPROVAL, NO_RESULT];
-
     public function __construct(
         private readonly DatabaseService $db,
         private readonly LabCapabilityService $labCapabilities
@@ -45,26 +38,20 @@ final class ManifestMoveService
     }
 
     /**
-     * SQL that is true for a sample a lab has tested or otherwise decided
-     * about: a decided status, a test date, or a result entered.
-     */
-    public static function testedCondition(string $testType, string $alias = ''): string
-    {
-        $prefix = $alias === '' ? '' : "$alias.";
-        $resultColumn = $testType === 'cd4' ? 'cd4_result' : 'result';
-        return "({$prefix}result_status IN (" . implode(',', self::DECIDED_STATUSES) . ')'
-            . " OR {$prefix}sample_tested_datetime IS NOT NULL"
-            . " OR NULLIF(TRIM({$prefix}{$resultColumn}), '') IS NOT NULL)";
-    }
-
-    /**
      * The collection manifests of a lab, newest first: those it is the
-     * manifest's lab for, or holds samples of.
+     * manifest's lab for, or holds samples of. With a facility map (a user
+     * limited to some facilities), only manifests all of whose samples are
+     * from those facilities.
      *
      * @return list<array{code: string, created: ?string, status: ?string, samples: int, tested: int}>
      */
-    public function listForLab(string $testType, int $labId, ?string $from = null, ?string $to = null): array
-    {
+    public function listForLab(
+        string $testType,
+        int $labId,
+        ?string $from = null,
+        ?string $to = null,
+        ?string $facilityMap = null
+    ): array {
         $table = TestsService::getTestTableName($testType);
         $where = ['m.module = ?', "COALESCE(m.manifest_type, 'collection') <> 'referral'"];
         $params = [$testType];
@@ -75,13 +62,14 @@ final class ManifestMoveService
         $rows = $this->db->rawQuery(
             "SELECT m.manifest_code, m.request_created_datetime, m.manifest_status,
                     COUNT(t.unique_id) AS samples,
-                    COALESCE(SUM(" . self::testedCondition($testType, 't') . "), 0) AS tested
+                    COALESCE(SUM(" . TestedSampleRule::sql($testType, 't') . "), 0) AS tested
                FROM specimen_manifests m
                JOIN `$table` t
                  ON t.sample_package_id = m.manifest_id OR t.sample_package_code = m.manifest_code
               WHERE " . implode(' AND ', $where) . "
               GROUP BY m.manifest_id, m.manifest_code, m.request_created_datetime, m.manifest_status
-             HAVING MAX(m.lab_id = ?) = 1 OR MAX(t.lab_id = ?) = 1
+             HAVING (MAX(m.lab_id = ?) = 1 OR MAX(t.lab_id = ?) = 1)"
+            . $this->withinFacilities('t', $facilityMap) . "
               ORDER BY m.request_created_datetime DESC
               LIMIT 500",
             [...$params, $labId, $labId]
@@ -111,7 +99,8 @@ final class ManifestMoveService
         array $manifestCodes,
         int $toLabId,
         string $reason,
-        ?string $userId
+        ?string $userId,
+        ?string $facilityMap = null
     ): array {
         $outcome = ['moved' => [], 'refused' => [], 'withdrawals' => []];
         if ($toLabId <= 0) {
@@ -145,13 +134,25 @@ final class ManifestMoveService
                     continue;
                 }
                 $samples = $this->db->rawQuery(
-                    "SELECT `$primaryKey` AS id, unique_id, lab_id, result_status,
-                            " . self::testedCondition($testType) . " AS tested
-                       FROM `$table`
-                      WHERE sample_package_id = ? OR sample_package_code = ?
+                    "SELECT t.`$primaryKey` AS id, t.unique_id, t.lab_id, t.result_status,
+                            " . TestedSampleRule::sql($testType, 't') . " AS tested
+                       FROM `$table` AS t
+                      WHERE t.sample_package_id = ? OR t.sample_package_code = ?
                       FOR UPDATE",
                     [(int) $manifest['manifest_id'], $code]
                 );
+                if ($facilityMap !== null && trim($facilityMap) !== '') {
+                    $outside = $this->db->rawQueryOne(
+                        "SELECT 1 AS outside FROM `$table` AS t
+                          WHERE (t.sample_package_id = ? OR t.sample_package_code = ?)
+                            AND NOT (t.facility_id IN (" . $this->db->inIntList($facilityMap) . ')) LIMIT 1',
+                        [(int) $manifest['manifest_id'], $code]
+                    );
+                    if (!empty($outside)) {
+                        $outcome['refused'][$code] = 'not-found';
+                        continue;
+                    }
+                }
                 if (array_filter($samples, static fn(array $s): bool => (int) $s['tested'] === 1) !== []) {
                     $outcome['refused'][$code] = 'tested';
                     continue;
@@ -298,6 +299,15 @@ final class ManifestMoveService
                 );
             }
         }
+    }
+
+    /** HAVING clause part keeping groups whose samples are all in the facility map. */
+    private function withinFacilities(string $alias, ?string $facilityMap): string
+    {
+        if ($facilityMap === null || trim($facilityMap) === '') {
+            return '';
+        }
+        return " AND MIN($alias.facility_id IN (" . $this->db->inIntList($facilityMap) . ')) = 1';
     }
 
     /**

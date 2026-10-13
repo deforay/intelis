@@ -206,6 +206,38 @@ final class StsResultsReceiveTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testALabASampleWasMovedAwayFromCannotTakeItBackUntested(): void
+    {
+        $db = $this->boot();
+        // Move Manifest gave this lab's sample to lab 9.
+        self::stsRequest($db, 'form_vl', 'u-1', ['vl_sample_id' => 1, 'lab_id' => 9, 'referring_lab_id' => self::LAB]);
+
+        // The lab received its copy before it heard, and sends it.
+        $ack = self::sts()->receiveResults('vl', self::payload([
+            self::vlResult('u-1', ['result' => null, 'result_status' => 6]),
+        ]), ackByUniqueId: true);
+
+        self::assertSame(['u-1'], $ack, 'acknowledged, so the lab stops sending it');
+        $row = $this->committed('form_vl')['u-1'];
+        self::assertSame('9', (string) $row['lab_id']);
+        self::assertNull($row['sample_code'], 'nothing of the copy is saved');
+        self::assertFalse($db->isTransactionActive());
+    }
+
+    #[RunInSeparateProcess]
+    public function testALabASampleWasMovedAwayFromKeepsItIfItTestedIt(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_vl', 'u-1', ['vl_sample_id' => 1, 'lab_id' => 9, 'referring_lab_id' => self::LAB]);
+
+        self::sts()->receiveResults('vl', self::payload([self::vlResult('u-1')]));
+
+        $row = $this->committed('form_vl')['u-1'];
+        self::assertSame((string) self::LAB, (string) $row['lab_id'], 'the result is the lab\'s');
+        self::assertSame('40', $row['result']);
+    }
+
+    #[RunInSeparateProcess]
     public function testAResultTheStsHasNeverSeenIsAdded(): void
     {
         $this->boot();

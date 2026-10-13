@@ -20,6 +20,7 @@ use App\Utilities\QueryLoggerUtility;
 use App\Abstracts\AbstractTestService;
 use App\Exceptions\SystemException;
 use App\Utilities\ResultSyncPayload;
+use App\Utilities\TestedSampleRule;
 
 final class ResultsService
 {
@@ -277,6 +278,29 @@ final class ResultsService
                     // Who owns the sample as stored, before this update can change it.
                     $storedOwner = empty($localRecord) ? [] : $this->storedOwner($localRecord[$this->primaryKeyName]);
 
+                    if (
+                        $this->wasMovedAwayFrom($storedOwner, $labId)
+                        && !TestedSampleRule::isTested(
+                            $testType,
+                            $originalLISRecord,
+                            $dataFromLIS['data_from_tests'] ?? null
+                        )
+                    ) {
+                        // The lab's copy of a sample moved to another lab, sent before it
+                        // cancelled it: taken as delivered and not saved, so the lab stops
+                        // sending it and the sample stays with the lab it was moved to.
+                        $this->db->rollbackTransaction();
+                        $labIdentifier = trim((string) ($originalLISRecord['unique_id'] ?? ''))
+                            ?: trim((string) ($originalLISRecord['sample_code'] ?? ''));
+                        if ($labIdentifier !== '') {
+                            $labIdentifiers[] = $labIdentifier;
+                        }
+                        if (isset($resultFromLab['sample_code'])) {
+                            $sampleCodes[] = $resultFromLab['sample_code'];
+                        }
+                        continue;
+                    }
+
                     $resultFromLab = $this->keepTestingLab($resultFromLab, $localRecord, $labId);
 
                     $resultFromLab['form_attributes'] = $this->buildSafeFormAttributesExpression(
@@ -524,7 +548,7 @@ final class ResultsService
     /**
      * The sample's testing lab and referral as the STS has them stored.
      *
-     * @return array{lab_id?: mixed, referred_to_lab_id?: mixed}
+     * @return array{lab_id?: mixed, referred_to_lab_id?: mixed, referring_lab_id?: mixed}
      */
     private function storedOwner(mixed $primaryKeyValue): array
     {
@@ -532,7 +556,26 @@ final class ResultsService
             "SELECT * FROM `{$this->tableName}` WHERE `{$this->primaryKeyName}` = ?",
             [$primaryKeyValue]
         );
-        return is_array($row) ? array_intersect_key($row, ['lab_id' => 1, 'referred_to_lab_id' => 1]) : [];
+        return is_array($row)
+            ? array_intersect_key($row, ['lab_id' => 1, 'referred_to_lab_id' => 1, 'referring_lab_id' => 1])
+            : [];
+    }
+
+    /**
+     * Whether the STS moved this sample away from the sending lab: Move Manifest
+     * records the lab each sample came from in referring_lab_id.
+     *
+     * @param array{lab_id?: mixed, referred_to_lab_id?: mixed, referring_lab_id?: mixed} $storedOwner
+     */
+    private function wasMovedAwayFrom(array $storedOwner, mixed $senderLabId): bool
+    {
+        $sender = (int) $senderLabId;
+        $owner = (int) ($storedOwner['lab_id'] ?? 0);
+        return $sender > 0
+            && $owner > 0
+            && $owner !== $sender
+            && (int) ($storedOwner['referring_lab_id'] ?? 0) === $sender
+            && (int) ($storedOwner['referred_to_lab_id'] ?? 0) !== $sender;
     }
 
     /**

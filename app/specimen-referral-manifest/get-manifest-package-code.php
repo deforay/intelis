@@ -48,7 +48,13 @@ if ($labId <= 0) {
 
 /** @var ManifestMoveService $manifestMoveService */
 $manifestMoveService = ContainerRegistry::get(ManifestMoveService::class);
-$manifests = $manifestMoveService->listForLab($testType, $labId, $from ?: null, $to ?: null);
+$manifests = $manifestMoveService->listForLab(
+    $testType,
+    $labId,
+    $from ?: null,
+    $to ?: null,
+    $_SESSION['facilityMap'] ?? null
+);
 
 echo json_encode(['manifests' => array_map(static fn(array $m): array => $m + [
     'createdLabel' => DateUtility::humanReadableDateFormat($m['created'] ?? '', true),
