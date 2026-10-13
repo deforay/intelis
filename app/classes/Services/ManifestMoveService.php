@@ -5,8 +5,10 @@ namespace App\Services;
 use Throwable;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 use App\Utilities\TestedSampleRule;
 
+use const SAMPLE_STATUS\CANCELLED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
@@ -255,6 +257,108 @@ final class ManifestMoveService
         }
 
         return $outcome;
+    }
+
+    /**
+     * Puts back samples a move gave to another lab and a lab's push then gave
+     * back to the old lab, before the STS refused such pushes.
+     *
+     * The lab moved to held copies of some of them already, pulled through a
+     * clinic mapped to it, under the old lab; its pull never changed a lab, and
+     * its next results push named the old lab again. Those samples sit on a
+     * moved manifest, marked moved (samples_referred_datetime), with a lab
+     * other than the manifest's, and untested -- a tested one stays with the
+     * lab that tested it. Each goes back to the manifest's lab, recording the
+     * lab it is taken from, and is sent to its lab again. Its code is kept: the
+     * lab moved to gave it. If that lab already uses the code for another
+     * sample, the code is cleared and activation gives a new one. A sample
+     * moved on its own since (Move Samples) is left where it was put. Move
+     * Samples records only the day, so one moved on its own earlier the same
+     * day is left too: accepted, because the tool has no menu entry and a
+     * sample left behind is put right by moving its manifest again, whereas
+     * one wrongly put back would undo a move an operator chose.
+     *
+     * @return array<string, int> samples put back, by table
+     */
+    public function healRevertedMoves(): array
+    {
+        $healed = [];
+        $now = DateUtility::getCurrentDateTime();
+        $seen = [];
+        foreach (TestsService::getActiveTests() as $testType) {
+            $table = TestsService::getTestTableName($testType);
+            if (isset($seen[$table])) {
+                continue;
+            }
+            $seen[$table] = true;
+            $primaryKey = TestsService::getPrimaryColumn($testType);
+            $rows = $this->db->rawQuery(
+                "SELECT DISTINCT t.`$primaryKey` AS id, t.lab_id, t.sample_code,
+                        m.manifest_id, m.lab_id AS manifest_lab
+                   FROM `$table` AS t
+                   JOIN specimen_manifests AS m
+                     ON m.module = ? AND (m.manifest_id = t.sample_package_id OR m.manifest_code = t.sample_package_code)
+                  WHERE m.lab_id > 0 AND t.lab_id > 0 AND t.lab_id <> m.lab_id
+                    AND COALESCE(JSON_LENGTH(m.manifest_change_history), 0) > 0
+                    AND t.samples_referred_datetime IS NOT NULL
+                    AND t.result_status <> " . CANCELLED . "
+                    AND NOT EXISTS (
+                        SELECT 1 FROM move_samples_map msm
+                          JOIN move_samples ms ON ms.move_sample_id = msm.move_sample_id
+                         WHERE msm.test_type = ? AND msm.test_type_sample_id = t.`$primaryKey`
+                           AND ms.moved_on >= DATE(t.samples_referred_datetime)
+                    )
+                    AND NOT " . TestedSampleRule::sql($testType, 't'),
+                [$testType, $testType]
+            );
+            foreach ($rows as $row) {
+                $clash = trim((string) $row['sample_code']) !== '' && !empty($this->db->rawQueryOne(
+                    "SELECT 1 AS clash FROM `$table` WHERE sample_code = ? AND lab_id = ? AND `$primaryKey` <> ?",
+                    [$row['sample_code'], $row['manifest_lab'], $row['id']]
+                ));
+                // Rechecked as it is written: a result or a code the lab sent, or
+                // a change to the manifest or its samples, since the rows were read
+                // keeps the sample where it is. A sample
+                // the new lab cannot take (its mobile-app code is used there) is
+                // logged and left, and does not stop the others.
+                try {
+                    $this->db->rawQuery(
+                        "UPDATE `$table` AS t
+                            SET t.referring_lab_id = t.lab_id, t.lab_id = ?, t.data_sync = 0, t.last_modified_datetime = ?"
+                            . ($clash ? ', t.sample_code = NULL, t.sample_code_key = NULL, t.sample_code_format = NULL' : '')
+                            . " WHERE t.`$primaryKey` = ? AND t.lab_id = ? AND t.sample_code <=> ?
+                                AND t.result_status <> " . CANCELLED . "
+                                AND EXISTS (
+                                    SELECT 1 FROM specimen_manifests m
+                                     WHERE m.manifest_id = ? AND m.lab_id = ?
+                                       AND (t.sample_package_id = m.manifest_id OR t.sample_package_code = m.manifest_code)
+                                )
+                                AND NOT " . TestedSampleRule::sql($testType, 't'),
+                        [
+                            (int) $row['manifest_lab'], $now, $row['id'], (int) $row['lab_id'], $row['sample_code'],
+                            (int) $row['manifest_id'], (int) $row['manifest_lab'],
+                        ]
+                    );
+                } catch (Throwable $e) {
+                    // Only the unique-key clash is expected. Anything else fails the
+                    // run, so the run-once is not recorded done and is tried again.
+                    if ((int) $e->getCode() !== 1062) {
+                        throw $e;
+                    }
+                    LoggerUtility::logWarning('Could not give a moved sample back to its lab', [
+                        'table' => $table,
+                        'id' => $row['id'],
+                        'lab_id' => (int) $row['manifest_lab'],
+                        'error' => $e->getMessage(),
+                    ]);
+                    continue;
+                }
+                if ((int) $this->db->count > 0) {
+                    $healed[$table] = ($healed[$table] ?? 0) + 1;
+                }
+            }
+        }
+        return $healed;
     }
 
     /**
