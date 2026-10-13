@@ -422,9 +422,11 @@ do {
             }
             if ($pagedWindow) {
                 // An older STS ignores the key and sends the whole window.
+                // A manifest is its own window: the date beside it is ignored by
+                // the STS and moves as pages are saved, so it is no part of the key.
                 $pageKeys[$module] = RequestPageCursor::key(
                     $module,
-                    $effectiveSyncSinceDate,
+                    empty($basePayload['manifestCode']) ? $effectiveSyncSinceDate : null,
                     $basePayload['manifestCode'] ?? null
                 );
                 $basePayload['page'] = [
