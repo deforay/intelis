@@ -22,18 +22,28 @@ final class TestedSampleRule
 {
     private const DECIDED_STATUSES = [REJECTED, TEST_FAILED, ACCEPTED, PENDING_APPROVAL, NO_RESULT];
 
-    /** Result columns on each sample table. */
+    /**
+     * Columns the lab writes a result into, on each sample table. Request-side
+     * history (a previous or last result, the mother's) is not a test here;
+     * erring the other way only refuses a move, never loses a result.
+     */
     private const RESULT_COLUMNS = [
-        'vl' => ['result'],
-        'eid' => ['result'],
+        'vl' => [
+            'result', 'result_value_absolute', 'result_value_absolute_decimal', 'result_value_text',
+            'result_value_log', 'result_value_hiv_detection', 'cphl_vl_result', 'failed_vl_result',
+        ],
+        'eid' => ['result', 'pcr_1_test_result', 'pcr_2_test_result', 'pcr_3_test_result'],
         'covid19' => ['result'],
-        'hepatitis' => ['result', 'hcv_vl_result', 'hbv_vl_result', 'hbsag_result', 'anti_hcv_result'],
+        'hepatitis' => [
+            'result', 'hcv_vl_result', 'hbv_vl_result', 'hbsag_result', 'anti_hcv_result',
+            'hcv_vl_count', 'hbv_vl_count',
+        ],
         'tb' => [
             'result', 'xpert_mtb_result', 'tb_lam_result', 'culture_result',
             'identification_result', 'drug_mgit_result', 'drug_lpa_result',
         ],
-        'cd4' => ['cd4_result'],
-        'generic-tests' => ['result'],
+        'cd4' => ['cd4_result', 'cd4_result_percentage', 'crag_test_results'],
+        'generic-tests' => ['result', 'final_result_interpretation'],
     ];
 
     /** Test rows: table, column naming the sample, result column. */
