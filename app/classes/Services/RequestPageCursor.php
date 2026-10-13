@@ -18,7 +18,12 @@ final class RequestPageCursor
     /** @var array<string, string> */
     private array $markers = [];
 
-    public function __construct(private readonly ?string $file)
+    /**
+     * Without a file (a dry run) nothing is kept. The default also lets the DI
+     * container, which registers every class here, build it: a required string
+     * it cannot guess broke the container's compilation and every page with it.
+     */
+    public function __construct(private readonly ?string $file = null)
     {
         if ($file !== null && is_file($file)) {
             $saved = json_decode((string) file_get_contents($file), true);
