@@ -49,11 +49,13 @@ final class TestedSampleRule
         'generic-tests' => ['result', 'final_result_interpretation'],
     ];
 
-    /** Test rows: table, column naming the sample, result column. */
+    /** Test rows: table, column naming the sample, columns holding a result. */
     private const TEST_ROWS = [
-        'covid19' => ['covid19_tests', 'covid19_id', 'result'],
-        'tb' => ['tb_tests', 'tb_id', 'test_result'],
-        'generic-tests' => ['generic_test_results', 'generic_id', 'result'],
+        'covid19' => ['covid19_tests', 'covid19_id', ['result']],
+        'tb' => ['tb_tests', 'tb_id', ['test_result', 'actual_no']],
+        'generic-tests' => [
+            'generic_test_results', 'generic_id', ['result', 'final_result', 'final_result_interpretation'],
+        ],
     ];
 
     /** SQL that is true for a tested sample; $alias names the sample table. */
@@ -67,10 +69,13 @@ final class TestedSampleRule
             $parts[] = "NULLIF(TRIM($alias.$column), '') IS NOT NULL";
         }
         if (isset(self::TEST_ROWS[$testType])) {
-            [$table, $parent, $result] = self::TEST_ROWS[$testType];
+            [$table, $parent, $results] = self::TEST_ROWS[$testType];
             $primaryKey = TestsService::getPrimaryColumn($testType);
-            $parts[] = "EXISTS (SELECT 1 FROM `$table` tr WHERE tr.$parent = $alias.$primaryKey"
-                . " AND NULLIF(TRIM(tr.$result), '') IS NOT NULL)";
+            $anyResult = implode(' OR ', array_map(
+                static fn(string $column): string => "NULLIF(TRIM(tr.$column), '') IS NOT NULL",
+                $results
+            ));
+            $parts[] = "EXISTS (SELECT 1 FROM `$table` tr WHERE tr.$parent = $alias.$primaryKey AND ($anyResult))";
         }
         return '(' . implode(' OR ', $parts) . ')';
     }
@@ -95,10 +100,10 @@ final class TestedSampleRule
             }
         }
         if (isset(self::TEST_ROWS[$testType]) && is_array($testRows)) {
-            $result = self::TEST_ROWS[$testType][2];
+            $results = self::TEST_ROWS[$testType][2];
             $found = false;
-            array_walk_recursive($testRows, static function ($value, $key) use ($result, &$found): void {
-                $found = $found || ($key === $result && trim((string) $value) !== '');
+            array_walk_recursive($testRows, static function ($value, $key) use ($results, &$found): void {
+                $found = $found || (in_array($key, $results, true) && trim((string) $value) !== '');
             });
             if ($found) {
                 return true;
