@@ -32,7 +32,10 @@ final class TestedSampleRule
             'result', 'result_value_absolute', 'result_value_absolute_decimal', 'result_value_text',
             'result_value_log', 'result_value_hiv_detection', 'cphl_vl_result', 'failed_vl_result',
         ],
-        'eid' => ['result', 'pcr_1_test_result', 'pcr_2_test_result', 'pcr_3_test_result'],
+        'eid' => [
+            'result', 'test_1_result', 'test_2_result',
+            'pcr_1_test_result', 'pcr_2_test_result', 'pcr_3_test_result',
+        ],
         'covid19' => ['result'],
         'hepatitis' => [
             'result', 'hcv_vl_result', 'hbv_vl_result', 'hbsag_result', 'anti_hcv_result',

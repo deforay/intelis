@@ -8,7 +8,6 @@ use App\Services\TestsService;
 use App\Utilities\TestedSampleRule;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use ReflectionClassConstant;
 
 /**
  * A sample with any result entered is tested, whichever column the result went
@@ -16,11 +15,36 @@ use ReflectionClassConstant;
  */
 final class TestedSampleRuleTest extends TestCase
 {
+    /**
+     * Every column a lab writes a result into. Kept here, apart from the rule,
+     * so a column dropped from the rule fails a test instead of losing its case.
+     */
+    private const LAB_RESULT_COLUMNS = [
+        'vl' => [
+            'result', 'result_value_absolute', 'result_value_absolute_decimal', 'result_value_text',
+            'result_value_log', 'result_value_hiv_detection', 'cphl_vl_result', 'failed_vl_result',
+        ],
+        'eid' => [
+            'result', 'test_1_result', 'test_2_result',
+            'pcr_1_test_result', 'pcr_2_test_result', 'pcr_3_test_result',
+        ],
+        'covid19' => ['result'],
+        'hepatitis' => [
+            'result', 'hcv_vl_result', 'hbv_vl_result', 'hbsag_result', 'anti_hcv_result',
+            'hcv_vl_count', 'hbv_vl_count',
+        ],
+        'tb' => [
+            'result', 'xpert_mtb_result', 'tb_lam_result', 'culture_result',
+            'identification_result', 'drug_mgit_result', 'drug_lpa_result',
+        ],
+        'cd4' => ['cd4_result', 'cd4_result_percentage', 'crag_test_results'],
+        'generic-tests' => ['result', 'final_result_interpretation'],
+    ];
+
     /** @return iterable<string, array{string, array<string, mixed>}> */
     public static function oneResultEach(): iterable
     {
-        $columns = (new ReflectionClassConstant(TestedSampleRule::class, 'RESULT_COLUMNS'))->getValue();
-        foreach ($columns as $testType => $list) {
+        foreach (self::LAB_RESULT_COLUMNS as $testType => $list) {
             foreach ($list as $column) {
                 yield "$testType $column" => [$testType, [$column => '1', 'result_status' => 6]];
             }
@@ -32,6 +56,14 @@ final class TestedSampleRuleTest extends TestCase
     public function testAnyResultColumnMakesTheSampleTested(string $testType, array $record): void
     {
         self::assertTrue(TestedSampleRule::isTested($testType, $record));
+    }
+
+    /** @param array<string, mixed> $record */
+    #[DataProvider('oneResultEach')]
+    public function testTheSqlRuleChecksTheSameColumn(string $testType, array $record): void
+    {
+        $column = array_key_first($record);
+        self::assertStringContainsString("TRIM(t.$column)", TestedSampleRule::sql($testType, 't'));
     }
 
     public function testTheResultsMissedBeforeAreCounted(): void
@@ -78,8 +110,7 @@ final class TestedSampleRuleTest extends TestCase
     public function testEveryListedColumnExistsOnItsTable(): void
     {
         $schema = (string) file_get_contents(dirname(__DIR__, 3) . '/sql/init.sql');
-        $columns = (new ReflectionClassConstant(TestedSampleRule::class, 'RESULT_COLUMNS'))->getValue();
-        foreach ($columns as $testType => $list) {
+        foreach (self::LAB_RESULT_COLUMNS as $testType => $list) {
             $table = TestsService::getTestTableName($testType);
             self::assertSame(1, preg_match("/CREATE TABLE `$table` \\((.*?)\\) ENGINE=/s", $schema, $match), $table);
             foreach ($list as $column) {

@@ -69,6 +69,14 @@ try {
         exit;
     }
 
+    // A withdrawal is decided by Move Manifest from where the samples are at
+    // that moment. Replayed later, it could cancel samples since moved back.
+    if ($source['command'] === 'withdraw-samples') {
+        http_response_code(409);
+        echo json_encode(['status' => 'error', 'error' => 'Withdrawals are queued by Move Manifest and cannot be replayed']);
+        exit;
+    }
+
     if (!in_array($source['status'], $terminalStatuses, true)) {
         http_response_code(409);
         echo json_encode([
