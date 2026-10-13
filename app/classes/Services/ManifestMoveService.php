@@ -109,7 +109,8 @@ final class ManifestMoveService
 
     /**
      * Moves the given manifests to $toLabId. Each manifest is moved whole or
-     * not at all.
+     * not at all. One already received at its lab moves only with
+     * $receivedConfirmed: its samples have to be sent on from there.
      *
      * @param list<string> $manifestCodes
      * @return array{
@@ -124,7 +125,8 @@ final class ManifestMoveService
         int $toLabId,
         string $reason,
         ?string $userId,
-        ?string $facilityMap = null
+        ?string $facilityMap = null,
+        bool $receivedConfirmed = false
     ): array {
         $outcome = ['moved' => [], 'refused' => [], 'withdrawals' => []];
         if ($toLabId <= 0) {
@@ -157,6 +159,12 @@ final class ManifestMoveService
                 }
                 if (($manifest['manifest_type'] ?? 'collection') === 'referral') {
                     $outcome['refused'][$code] = 'referral';
+                    continue;
+                }
+                // Its samples are physically at the lab: moved only when the
+                // operator has confirmed they were sent on.
+                if ($manifest['manifest_status'] === TestRequestsService::MANIFEST_RECEIVED && !$receivedConfirmed) {
+                    $outcome['refused'][$code] = 'received';
                     continue;
                 }
                 $columns = "t.`$primaryKey` AS id, t.unique_id, t.lab_id, t.facility_id, t.result_status, "
