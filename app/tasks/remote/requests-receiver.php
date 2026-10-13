@@ -25,6 +25,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\RequestPageCursor;
 use App\Services\RequestReceiptsClient;
 use App\Services\LabRequestSyncService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -344,6 +345,16 @@ $apiService->setBearerToken($stsBearerToken);
 // Define per-module config
 $moduleConfigs = LabRequestSyncService::moduleConfigs();
 
+// A window someone asked for (a number of days, a date, a manifest) comes a page
+// at a time from an STS that pages, saved page by page, and resumes where it
+// stopped when run again. One response for a big window outlasted the request
+// timeout and saved nothing. The scheduled pull stays as it was.
+$pagedWindow = $cliMode && ($syncSinceDate !== null || !empty($manifestCode));
+$pageCursor = new RequestPageCursor(
+    $pagedWindow && !$isDryRun ? VAR_PATH . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'request-pages.json' : null
+);
+$pageKeys = [];
+
 /**
  * No new pull for waiting requests starts after this. Cron runs the receiver
  * through `composer run sync-sts`, and composer stops a script after 300 seconds
@@ -390,8 +401,8 @@ do {
         if ($status === true) {
             $basePayload['testType'] = $module;
             // Ask the STS for receipts: an older STS ignores the key. Not for a
-            // manifest pull or a dry run, which confirm nothing.
-            if (!$isDryRun && empty($manifestCode)) {
+            // manifest pull, a dry run or a paged window, which confirm nothing.
+            if (!$isDryRun && empty($manifestCode) && !$pagedWindow) {
                 $basePayload['receipts'] = 1;
                 // Pulling again: this run has the window already. An older STS
                 // ignores the key and sends the window again, which is harmless.
@@ -408,6 +419,18 @@ do {
                 if ($cliMode && $syncSinceDate === null && isset($moduleSyncSinceDates[$module])) {
                     $io->text("Requesting " . strtoupper((string) $module) . " records updated since $effectiveSyncSinceDate");
                 }
+            }
+            if ($pagedWindow) {
+                // An older STS ignores the key and sends the whole window.
+                $pageKeys[$module] = RequestPageCursor::key(
+                    $module,
+                    $effectiveSyncSinceDate,
+                    $basePayload['manifestCode'] ?? null
+                );
+                $basePayload['page'] = [
+                    'size' => RequestPageCursor::PAGE_SIZE,
+                    'after' => $pageCursor->get($pageKeys[$module]),
+                ];
             }
 
             // preserve for tracking later
@@ -630,8 +653,32 @@ do {
     if ($pullModules !== [] && $cliMode) {
         $io->text('More requests are waiting on the STS for: ' . implode(', ', $pullModules) . '. Pulling again.');
     }
-// Web runs (the sync button) pull once: a long loop would outlast the request.
-} while ($cliMode && $pullModules !== [] && time() < $pullDeadline);
+
+    // The next page of each window, once this one is saved. A page that failed to
+    // arrive or to save keeps its marker, so running the pull again resumes there.
+    foreach ($pagedWindow ? $pageKeys : [] as $module => $key) {
+        $headers = $moduleResponseHeaders[$module] ?? null;
+        $saved = isset($savedCounts[$module]) || ($responsePayload[$module] ?? null) === '[]';
+        if ($headers === null || !$saved) {
+            continue;
+        }
+        $next = (string) ($headers['x-requests-next-after'] ?? '');
+        if (($headers['x-requests-paged'] ?? '') !== '1' || $next === '') {
+            // The whole window (an older STS), or its last page.
+            $pageCursor->finish($key);
+            continue;
+        }
+        if ($pageCursor->advance($key, $next)) {
+            $pullModules[] = $module;
+            if ($cliMode) {
+                $io->text('More of the ' . strtoupper((string) $module) . ' window on the STS. Pulling the next page.');
+            }
+        }
+    }
+    $pullModules = array_values(array_unique($pullModules));
+// Web runs (the sync button) pull once: a long loop would outlast the request. A
+// window someone asked for runs to its end: they are waiting for it.
+} while ($cliMode && $pullModules !== [] && ($pagedWindow || time() < $pullDeadline));
 
 // Final sync timestamp update
 if (!$isDryRun) {

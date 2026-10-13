@@ -58,6 +58,14 @@ final class RequestsService
      *
      * $pendingOnly (with $withPending) leaves the window out: a lab pulling again in
      * the same run already has it, and wants only the requests still waiting.
+     *
+     * $page (a lab that asks, on a pull over a date or manifest) returns the window
+     * a page at a time: up to $page['size'] rows in (last modified, id) order after
+     * $page['after'], with nextAfter set while more remain. One response for a big
+     * window outlasted the lab's timeout and nothing was saved. A lab that does not
+     * ask gets the whole window, as it always has.
+     *
+     * @param array{size: int, after: ?string}|null $page
      */
     public function getRequests(
         $testType,
@@ -66,9 +74,15 @@ final class RequestsService
         $manifestCode = null,
         $syncSinceDate = null,
         bool $withPending = false,
-        bool $pendingOnly = false
+        bool $pendingOnly = false,
+        ?array $page = null
     ) {
         $this->setTestType($testType);
+        if ($page !== null) {
+            // A page is the window alone: waiting requests come with the next
+            // ordinary pull, receipted as usual.
+            $withPending = false;
+        }
 
         $pendingIds = [];
         $pendingRemaining = 0;
@@ -94,8 +108,16 @@ final class RequestsService
             $syncSinceDate,
             $pendingIds,
             // Only when the pending rows were read: else the plain window.
-            withWindow: !($pendingOnly && $receiptsEnabled)
+            withWindow: !($pendingOnly && $receiptsEnabled),
+            page: $page
         );
+        $nextAfter = null;
+        if ($page !== null && count($rResult) > $page['size']) {
+            $rResult = array_slice($rResult, 0, $page['size']);
+            $last = $rResult[count($rResult) - 1];
+            $nextAfter = self::pageMarker($last['last_modified_datetime'] ?? null, $last[$this->primaryKeyName]);
+            $resultCount = count($rResult);
+        }
         // Handle specific test types with additional logic
         if ($testType === 'covid19') {
             $requestData = $this->returnCovid19Requests($rResult, $resultCount);
@@ -119,8 +141,65 @@ final class RequestsService
             $requestData['receiptsEnabled'] = $receiptsEnabled;
             $requestData['pendingRemaining'] = $pendingRemaining;
         }
+        if ($page !== null) {
+            $requestData['paged'] = true;
+            $requestData['nextAfter'] = $nextAfter;
+        }
 
         return $requestData;
+    }
+
+    /**
+     * The paging headers for a pull: none unless the lab asked for pages, which an
+     * older lab never does and so sees no change.
+     *
+     * @return array<string, int|string>
+     */
+    public static function pagingHeaders(array $requestsData): array
+    {
+        if (empty($requestsData['paged'])) {
+            return [];
+        }
+        $headers = ['x-requests-paged' => 1];
+        if (!empty($requestsData['nextAfter'])) {
+            $headers['x-requests-next-after'] = $requestsData['nextAfter'];
+        }
+        return $headers;
+    }
+
+    /** Rows with no modification time sort first, as the oldest. */
+    private const NO_MODIFIED = '1970-01-01 00:00:00';
+
+    /** Where a page ended: the last row's modification time and id. */
+    public static function pageMarker(?string $modified, int|string $id): string
+    {
+        return ($modified ?: self::NO_MODIFIED) . '|' . (int) $id;
+    }
+
+    /**
+     * A page request from a lab, or null for none or one that cannot be read.
+     *
+     * @return array{size: int, after: ?string}|null
+     */
+    public static function readPage(mixed $page): ?array
+    {
+        if (!is_array($page)) {
+            return null;
+        }
+        $size = filter_var(
+            $page['size'] ?? null,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1, 'max_range' => 1000]]
+        );
+        if ($size === false) {
+            return null;
+        }
+        $after = $page['after'] ?? null;
+        $marker = '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\|\d+$/';
+        if ($after !== null && $after !== '' && !preg_match($marker, (string) $after)) {
+            return null;
+        }
+        return ['size' => $size, 'after' => ($after === '' ? null : $after)];
     }
 
     /**
@@ -189,7 +268,8 @@ final class RequestsService
         $manifestCode,
         $syncSinceDate = null,
         array $pendingIds = [],
-        bool $withWindow = true
+        bool $withWindow = true,
+        ?array $page = null
     ): array {
         // Start with selecting all columns
         $columnSelection = "*";
@@ -229,9 +309,25 @@ final class RequestsService
             $params = [...$params, ...$pendingIds];
         }
 
-        $sQuery = "SELECT $columnSelection FROM $this->tableName WHERE $condition";
+        $sQuery = "SELECT $columnSelection FROM $this->tableName WHERE ($condition)";
+        if ($page !== null) {
+            $modified = "COALESCE(last_modified_datetime, '" . self::NO_MODIFIED . "')";
+            if ($page['after'] !== null) {
+                [$afterModified, $afterId] = explode('|', $page['after']);
+                $sQuery .= " AND ($modified > ? OR ($modified = ? AND `$this->primaryKeyName` > ?))";
+                array_push($params, $afterModified, $afterModified, (int) $afterId);
+            }
+            // One more than a page: whether another page follows.
+            $sQuery .= " ORDER BY $modified, `$this->primaryKeyName` LIMIT " . ($page['size'] + 1);
+        }
 
-        [$rResult, $resultCount] = $this->db->getDataAndCount($sQuery, $params, returnGenerator: false);
+        if ($page !== null) {
+            // A page needs no count of the whole window.
+            $rResult = $this->db->rawQuery($sQuery, $params) ?: [];
+            $resultCount = count($rResult);
+        } else {
+            [$rResult, $resultCount] = $this->db->getDataAndCount($sQuery, $params, returnGenerator: false);
+        }
 
         // The in-flight marker is this STS's bookkeeping, not part of the request.
         foreach ($rResult as &$row) {
