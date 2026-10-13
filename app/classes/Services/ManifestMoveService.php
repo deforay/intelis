@@ -30,6 +30,9 @@ final class ManifestMoveService
 {
     public const WITHDRAW_COMMAND = 'withdraw-samples';
 
+    /** How far back the manifest list goes when no date range is chosen. */
+    private const DEFAULT_MONTHS = 6;
+
     /** How recently a lab must have said it handles withdraw-samples. */
     private const CAPABILITY_STALE_MINUTES = 30 * 24 * 60;
 
@@ -40,12 +43,13 @@ final class ManifestMoveService
     }
 
     /**
-     * The collection manifests of a lab, newest first: those it is the
-     * manifest's lab for, or holds samples of. With a facility map (a user
-     * limited to some facilities), only manifests all of whose samples are
-     * from those facilities.
+     * The collection manifests of a lab, newest first. Read from the manifests
+     * alone: Add and Edit Manifest keep a manifest's samples at its lab, and
+     * whether any sample is tested is checked when it is moved. With a
+     * facility map (a user limited to some facilities), only manifests all of
+     * whose samples are from those facilities.
      *
-     * @return list<array{code: string, created: ?string, status: ?string, samples: int, tested: int}>
+     * @return list<array{code: string, created: ?string, status: ?string, samples: int}>
      */
     public function listForLab(
         string $testType,
@@ -54,34 +58,49 @@ final class ManifestMoveService
         ?string $to = null,
         ?string $facilityMap = null
     ): array {
-        $table = TestsService::getTestTableName($testType);
-        $where = ['m.module = ?', "COALESCE(m.manifest_type, 'collection') <> 'referral'"];
-        $params = [$testType];
+        $where = ['m.module = ?', 'm.lab_id = ?', "COALESCE(m.manifest_type, 'collection') <> 'referral'"];
+        $params = [$testType, $labId];
         if ($from !== null && $from !== '' && $to !== null && $to !== '') {
             $where[] = 'm.request_created_datetime BETWEEN ? AND ?';
             array_push($params, $from, $to);
+        } else {
+            $where[] = 'm.request_created_datetime >= ?';
+            $params[] = date('Y-m-d H:i:s', strtotime('-' . self::DEFAULT_MONTHS . ' months'));
+        }
+        $table = TestsService::getTestTableName($testType);
+        if ($facilityMap !== null && trim($facilityMap) !== '') {
+            // The one case that reads samples, through the sample_package_id index.
+            $where[] = "NOT EXISTS (SELECT 1 FROM `$table` AS t WHERE t.sample_package_id = m.manifest_id
+                          AND NOT (t.facility_id IN (" . $this->db->inIntList($facilityMap) . ')))';
         }
         $rows = $this->db->rawQuery(
-            "SELECT m.manifest_code, m.request_created_datetime, m.manifest_status,
-                    COUNT(t.unique_id) AS samples,
-                    COALESCE(SUM(" . TestedSampleRule::sql($testType, 't') . "), 0) AS tested
-               FROM specimen_manifests m
-               JOIN `$table` t
-                 ON t.sample_package_id = m.manifest_id OR t.sample_package_code = m.manifest_code
-              WHERE " . implode(' AND ', $where) . "
-              GROUP BY m.manifest_id, m.manifest_code, m.request_created_datetime, m.manifest_status
-             HAVING (MAX(m.lab_id = ?) = 1 OR MAX(t.lab_id = ?) = 1)"
-            . $this->withinFacilities('t', $facilityMap) . "
+            'SELECT m.manifest_code, m.request_created_datetime, m.manifest_status, m.number_of_samples
+               FROM specimen_manifests AS m
+              WHERE ' . implode(' AND ', $where) . '
               ORDER BY m.request_created_datetime DESC
-              LIMIT 500",
-            [...$params, $labId, $labId]
+              LIMIT 500',
+            $params
         );
+        if ($rows !== [] && $facilityMap !== null && trim($facilityMap) !== '') {
+            // Samples on a manifest by its code alone: one pass for all of them.
+            $codes = array_column($rows, 'manifest_code');
+            $outside = array_column($this->db->rawQuery(
+                "SELECT DISTINCT sample_package_code FROM `$table`
+                  WHERE sample_package_code IN (" . implode(',', array_fill(0, count($codes), '?')) . ')
+                    AND IFNULL(sample_package_id, 0) = 0
+                    AND NOT (facility_id IN (' . $this->db->inIntList($facilityMap) . '))',
+                $codes
+            ), 'sample_package_code');
+            $rows = array_values(array_filter(
+                $rows,
+                static fn(array $row): bool => !in_array($row['manifest_code'], $outside, true)
+            ));
+        }
         return array_map(static fn(array $row): array => [
             'code' => (string) $row['manifest_code'],
             'created' => $row['request_created_datetime'],
             'status' => $row['manifest_status'],
-            'samples' => (int) $row['samples'],
-            'tested' => (int) $row['tested'],
+            'samples' => (int) $row['number_of_samples'],
         ], $rows);
     }
 
@@ -119,9 +138,11 @@ final class ManifestMoveService
         /** @var list<string> $movedHere unique ids now at $toLabId */
         $movedHere = [];
 
+        $codes = self::cleanCodes($manifestCodes);
         $this->db->beginTransaction();
         try {
-            foreach (self::cleanCodes($manifestCodes) as $code) {
+            $codeOnly = $this->codeOnlySamples($table, $primaryKey, $codes);
+            foreach ($codes as $code) {
                 $manifest = $this->db->rawQueryOne(
                     'SELECT manifest_id, lab_id, manifest_type, manifest_status, manifest_change_history
                        FROM specimen_manifests WHERE manifest_code = ? AND module = ? FOR UPDATE',
@@ -135,22 +156,40 @@ final class ManifestMoveService
                     $outcome['refused'][$code] = 'referral';
                     continue;
                 }
+                $columns = "t.`$primaryKey` AS id, t.unique_id, t.lab_id, t.facility_id, t.result_status, "
+                    . TestedSampleRule::sql($testType, 't') . ' AS tested';
                 $samples = $this->db->rawQuery(
-                    "SELECT t.`$primaryKey` AS id, t.unique_id, t.lab_id, t.result_status,
-                            " . TestedSampleRule::sql($testType, 't') . " AS tested
-                       FROM `$table` AS t
-                      WHERE t.sample_package_id = ? OR t.sample_package_code = ?
-                      FOR UPDATE",
-                    [(int) $manifest['manifest_id'], $code]
+                    "SELECT $columns FROM `$table` AS t WHERE t.sample_package_id = ? FOR UPDATE",
+                    [(int) $manifest['manifest_id']]
                 );
-                if ($facilityMap !== null && trim($facilityMap) !== '') {
-                    $outside = $this->db->rawQueryOne(
-                        "SELECT 1 AS outside FROM `$table` AS t
-                          WHERE (t.sample_package_id = ? OR t.sample_package_code = ?)
-                            AND NOT (t.facility_id IN (" . $this->db->inIntList($facilityMap) . ')) LIMIT 1',
-                        [(int) $manifest['manifest_id'], $code]
+                if (!empty($codeOnly[$code])) {
+                    // On the manifest by its code alone (older installs): locked by
+                    // primary key, and given the manifest's id so the index finds
+                    // them from now on.
+                    $ids = implode(',', array_map('intval', $codeOnly[$code]));
+                    $linked = $this->db->rawQuery(
+                        "SELECT $columns FROM `$table` AS t
+                          WHERE t.`$primaryKey` IN ($ids) AND t.sample_package_code = ?
+                            AND IFNULL(t.sample_package_id, 0) = 0
+                          FOR UPDATE",
+                        [$code]
                     );
-                    if (!empty($outside)) {
+                    if ($linked !== []) {
+                        $this->db->rawQuery(
+                            "UPDATE `$table` SET sample_package_id = ? WHERE `$primaryKey` IN ("
+                                . implode(',', array_map(static fn(array $l): int => (int) $l['id'], $linked)) . ')',
+                            [(int) $manifest['manifest_id']]
+                        );
+                        $samples = [...$samples, ...$linked];
+                    }
+                }
+                if ($facilityMap !== null && trim($facilityMap) !== '') {
+                    $allowed = array_map('intval', explode(',', $this->db->inIntList($facilityMap)));
+                    $outside = array_filter(
+                        $samples,
+                        static fn(array $s): bool => !in_array((int) $s['facility_id'], $allowed, true)
+                    );
+                    if ($outside !== []) {
                         $outcome['refused'][$code] = 'not-found';
                         continue;
                     }
@@ -260,6 +299,32 @@ final class ManifestMoveService
     }
 
     /**
+     * Samples on the given manifests by their code alone, with no package id,
+     * by manifest code. No index serves sample_package_code, so this is one
+     * unlocked pass over the table for the whole move, not one per manifest.
+     *
+     * @param list<string> $codes
+     * @return array<string, list<int>>
+     */
+    private function codeOnlySamples(string $table, string $primaryKey, array $codes): array
+    {
+        if ($codes === []) {
+            return [];
+        }
+        $rows = $this->db->rawQuery(
+            "SELECT `$primaryKey` AS id, sample_package_code AS code FROM `$table`
+              WHERE sample_package_code IN (" . implode(',', array_fill(0, count($codes), '?')) . ')
+                AND IFNULL(sample_package_id, 0) = 0',
+            $codes
+        );
+        $byCode = [];
+        foreach ($rows as $row) {
+            $byCode[(string) $row['code']][] = (int) $row['id'];
+        }
+        return $byCode;
+    }
+
+    /**
      * Puts back samples a move gave to another lab and a lab's push then gave
      * back to the old lab, before the STS refused such pushes.
      *
@@ -292,13 +357,7 @@ final class ManifestMoveService
             }
             $seen[$table] = true;
             $primaryKey = TestsService::getPrimaryColumn($testType);
-            $rows = $this->db->rawQuery(
-                "SELECT DISTINCT t.`$primaryKey` AS id, t.lab_id, t.sample_code,
-                        m.manifest_id, m.lab_id AS manifest_lab
-                   FROM `$table` AS t
-                   JOIN specimen_manifests AS m
-                     ON m.module = ? AND (m.manifest_id = t.sample_package_id OR m.manifest_code = t.sample_package_code)
-                  WHERE m.lab_id > 0 AND t.lab_id > 0 AND t.lab_id <> m.lab_id
+            $eligible = "m.module = ? AND m.lab_id > 0 AND t.lab_id > 0 AND t.lab_id <> m.lab_id
                     AND COALESCE(JSON_LENGTH(m.manifest_change_history), 0) > 0
                     AND t.samples_referred_datetime IS NOT NULL
                     AND t.result_status <> " . CANCELLED . "
@@ -308,8 +367,19 @@ final class ManifestMoveService
                          WHERE msm.test_type = ? AND msm.test_type_sample_id = t.`$primaryKey`
                            AND ms.moved_on >= DATE(t.samples_referred_datetime)
                     )
-                    AND NOT " . TestedSampleRule::sql($testType, 't'),
-                [$testType, $testType]
+                    AND NOT " . TestedSampleRule::sql($testType, 't');
+            $columns = "t.`$primaryKey` AS id, t.lab_id, t.sample_code, m.manifest_id, m.lab_id AS manifest_lab";
+            // By package id through its index; then the few samples linked by
+            // the manifest code alone, which takes one pass over the table.
+            $rows = $this->db->rawQuery(
+                "SELECT $columns FROM specimen_manifests AS m
+                   JOIN `$table` AS t ON t.sample_package_id = m.manifest_id
+                  WHERE $eligible
+                 UNION
+                 SELECT $columns FROM specimen_manifests AS m
+                   JOIN `$table` AS t ON t.sample_package_code = m.manifest_code
+                  WHERE (t.sample_package_id IS NULL OR t.sample_package_id = 0) AND $eligible",
+                [$testType, $testType, $testType, $testType]
             );
             foreach ($rows as $row) {
                 $clash = trim((string) $row['sample_code']) !== '' && !empty($this->db->rawQueryOne(

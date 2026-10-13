@@ -79,7 +79,7 @@ $statusLabels = [
                                 </label>
                                 <div class="col-lg-7">
                                     <input type="text" class="form-control" id="daterange" readonly
-                                        placeholder="<?= _translate('Date Range', 'html'); ?>"
+                                        placeholder="<?= _translate('Last 6 months', 'html'); ?>"
                                         title="<?= _translate('Choose the date range the manifests were created in', 'html'); ?>">
                                 </div>
                             </div>
@@ -111,7 +111,6 @@ $statusLabels = [
                                     <th scope="col"><?= _translate("Created On"); ?></th>
                                     <th scope="col"><?= _translate("Status"); ?></th>
                                     <th scope="col"><?= _translate("Samples"); ?></th>
-                                    <th scope="col"><?= _translate("Tested"); ?></th>
                                 </tr>
                             </thead>
                             <tbody id="manifestRows"></tbody>
@@ -182,7 +181,7 @@ $statusLabels = [
                 $(this).val('');
             });
             $('#selectAll').on('change', function() {
-                $('#manifestRows input:checkbox:enabled').prop('checked', this.checked);
+                $('#manifestRows input:checkbox').prop('checked', this.checked);
                 updateMoveButton();
             });
             $('#manifestRows').on('change', 'input:checkbox', updateMoveButton);
@@ -214,16 +213,11 @@ $statusLabels = [
                 manifests.forEach(function(m) {
                     const box = $('<input type="checkbox" name="packageCode[]">').val(m.code);
                     const tr = $('<tr>');
-                    if (m.tested > 0) {
-                        box.prop('disabled', true);
-                        tr.addClass('text-muted').attr('title', "<?= _translate('Has tested samples, cannot be moved', true); ?>");
-                    }
                     tr.append($('<td>').append(box))
                         .append($('<td>').text(m.code))
                         .append($('<td>').text(m.createdLabel || ''))
                         .append($('<td>').text(statusLabels[m.status] || m.status || ''))
-                        .append($('<td>').text(m.samples))
-                        .append($('<td>').text(m.tested));
+                        .append($('<td>').text(m.samples));
                     rows.append(tr);
                 });
                 $('#selectAll').prop('checked', false);

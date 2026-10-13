@@ -36920,3 +36920,6 @@ msgstr "Aucun manifeste sélectionné"
 
 msgid "Withdrawals are queued by Move Manifest and cannot be replayed"
 msgstr "Les retraits sont créés par le déplacement de manifeste et ne peuvent pas être rejoués"
+
+msgid "Last 6 months"
+msgstr "6 derniers mois"
