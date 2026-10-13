@@ -47,6 +47,7 @@ use App\Utilities\LoggerUtility;
 use App\Utilities\MiscUtility;
 
 // @run-once-background
+// @run-once-done-flag audit_legacy_prune_done
 // upgrade.sh / docker/entrypoint.sh detect this marker and launch this script
 // DETACHED (nohup … &), then continue immediately. On a big instance the
 // archive can move 100K+ legacy audit rows and take many minutes; firing it in

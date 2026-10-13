@@ -2381,8 +2381,15 @@ upgrade_instance() {
             local run_once_skipped=0
             local run_once_failed=0
             local run_once_bg=0
+            local run_once_bg_running=0
+            local run_once_bg_notes=()
             local run_once_logdir="${lis_path}/var/logs"
             mkdir -p "$run_once_logdir" 2>/dev/null || true
+            # Ask once which background scripts still have work, so finished ones
+            # are neither launched nor named. If the check fails, fall back to
+            # launching them all; each still skips itself when already done.
+            local bg_pending bg_check_ok=1
+            bg_pending=$(php "${lis_path}/bin/run-once-pending.php" 2>/dev/null) || bg_check_ok=0
             for script_path in "${run_once_scripts[@]}"; do
                 local script_name
                 script_name=$(basename "$script_path")
@@ -2392,10 +2399,21 @@ upgrade_instance() {
                 # They own their own concurrency + skip logic, so we fire and
                 # forget and never wait on their exit code.
                 if grep -q '@run-once-background' "$script_path"; then
+                    if [ "$bg_check_ok" -eq 1 ]; then
+                        if printf '%s\n' "$bg_pending" | grep -qxF "running ${script_name}"; then
+                            run_once_bg_running=$((run_once_bg_running + 1))
+                            run_once_bg_notes+=("${script_name}: still running from an earlier launch")
+                            continue
+                        fi
+                        if ! printf '%s\n' "$bg_pending" | grep -qxF "launch ${script_name}"; then
+                            run_once_skipped=$((run_once_skipped + 1))
+                            continue
+                        fi
+                    fi
                     local bg_log="${run_once_logdir}/${script_name%.php}-$(date +%Y%m%d-%H%M%S).log"
                     nohup php "$script_path" >>"$bg_log" 2>&1 &
                     run_once_bg=$((run_once_bg + 1))
-                    print info "Launched run-once script in background: ${script_name} (log: ${bg_log})"
+                    run_once_bg_notes+=("${script_name}: started in background, log ${bg_log}")
                     continue
                 fi
                 php "$script_path"
@@ -2416,10 +2434,17 @@ upgrade_instance() {
             if [ "$run_once_bg" -gt 0 ]; then
                 run_once_summary="${run_once_summary}, ${run_once_bg} launched in background"
             fi
+            if [ "$run_once_bg_running" -gt 0 ]; then
+                run_once_summary="${run_once_summary}, ${run_once_bg_running} still running"
+            fi
             if [ "$run_once_failed" -gt 0 ]; then
                 print warning "${run_once_summary}, ${run_once_failed} failed (of ${run_once_total} script(s))."
             else
                 print success "${run_once_summary} (of ${run_once_total} script(s))."
+            fi
+            # Name only the background scripts that have work, under the summary.
+            if [ "${#run_once_bg_notes[@]}" -gt 0 ]; then
+                ui_note "${run_once_bg_notes[@]}"
             fi
         fi
     fi

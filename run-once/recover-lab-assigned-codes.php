@@ -44,6 +44,7 @@ use App\Utilities\LoggerUtility;
 use App\Utilities\MiscUtility;
 
 // @run-once-background
+// @run-once-done-flag lab_code_recovery_done
 // The audit_log pass is quick, but the archive fallback opens one compressed
 // file per sample and can run long on a lab with a big backlog. upgrade.sh
 // detects this marker and launches the script detached so the upgrade is never
