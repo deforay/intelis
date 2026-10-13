@@ -55,6 +55,7 @@ final class ManifestMoveTest extends TestCase
         $db = LegacyAppHarness::boot($this->database, [
             'system_config', 'global_config', 's_vlsm_instance', 'r_sample_status', 'form_vl', 'form_cd4',
             'form_tb', 'tb_tests', 'specimen_manifests', 's_lis_remote_commands', 'facility_details',
+            'move_samples', 'move_samples_map',
         ]);
         $this->booted = true;
         $db->rawQuery(
@@ -457,5 +458,88 @@ final class ManifestMoveTest extends TestCase
 
         self::assertSame(['M-mine' => 1], $outcome['moved']);
         self::assertSame(['M-mixed' => 'not-found'], $outcome['refused']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testSamplesAPushGaveBackToTheOldLabAreHealed(): void
+    {
+        $db = $this->boot();
+        $moved = ['manifest_change_history' => '[{"reason": "Wrong lab"}]', 'lab_id' => self::NEW_LAB];
+        $id = self::manifest($db, 'M-1', $moved);
+        $sent = ['samples_referred_datetime' => '2026-08-11 14:37:21', 'result_status' => 6];
+        // Given back to the old lab by the new lab's push, with the new lab's code.
+        self::sample($db, $id, 'M-1', 'back', $sent + ['sample_code' => 'NEW-1']);
+        self::sample($db, $id, 'M-1', 'clash', $sent + ['sample_code' => 'NEW-9']);
+        self::sample($db, $id, 'M-1', 'stayed', $sent + ['lab_id' => self::NEW_LAB, 'sample_code' => 'NEW-9']);
+        // Left alone: tested at the old lab, never marked moved, cancelled.
+        self::sample($db, $id, 'M-1', 'tested', ['result' => '40', 'result_status' => 7] + $sent);
+        self::sample($db, $id, 'M-1', 'unmoved', ['result_status' => 6]);
+        self::sample($db, $id, 'M-1', 'cancelled', ['result_status' => 12] + $sent);
+        // Moved on its own with Move Samples: afterwards, and long before.
+        self::sample($db, $id, 'M-1', 'moved-alone', ['samples_referred_datetime' => '2026-08-20 09:00:00'] + $sent);
+        self::sample($db, $id, 'M-1', 'moved-before', $sent);
+        foreach (['moved-alone' => '2026-08-20', 'moved-before' => '2026-03-01'] as $u => $on) {
+            $db->insert('move_samples', ['moved_on' => $on, 'test_type' => 'vl']);
+            $sample = $db->rawQueryOne('SELECT vl_sample_id FROM form_vl WHERE unique_id = ?', [$u]);
+            $db->insert('move_samples_map', [
+                'move_sample_id' => (int) $db->rawQueryOne('SELECT MAX(move_sample_id) AS id FROM move_samples')['id'],
+                'test_type' => 'vl', 'test_type_sample_id' => (int) $sample['vl_sample_id'],
+            ]);
+        }
+        // On the manifest by its code only.
+        self::sample($db, 0, 'M-1', 'by-code', $sent + ['sample_package_id' => null]);
+        // A manifest never moved.
+        $other = self::manifest($db, 'M-2', ['lab_id' => self::NEW_LAB]);
+        self::sample($db, $other, 'M-2', 'never', $sent);
+
+        $healed = self::moves()->healRevertedMoves();
+
+        self::assertSame(['form_vl' => 4], $healed);
+        $rows = $this->committed('form_vl');
+        foreach (['back', 'clash', 'by-code', 'moved-before'] as $u) {
+            self::assertSame((string) self::NEW_LAB, (string) $rows[$u]['lab_id'], $u);
+            self::assertSame((string) self::OLD_LAB, (string) $rows[$u]['referring_lab_id'], $u);
+            self::assertSame('0', (string) $rows[$u]['data_sync'], 'sent to the new lab again');
+        }
+        self::assertSame('NEW-1', $rows['back']['sample_code'], 'the new lab gave it');
+        self::assertNull($rows['clash']['sample_code'], 'the new lab uses it for another sample');
+        foreach (['tested', 'unmoved', 'cancelled', 'never', 'moved-alone'] as $u) {
+            self::assertSame((string) self::OLD_LAB, (string) $rows[$u]['lab_id'], $u);
+        }
+        self::assertSame([], self::moves()->healRevertedMoves(), 'nothing left on a second run');
+    }
+
+    #[RunInSeparateProcess]
+    public function testASampleTheNewLabCannotTakeIsLeftAndTheRestAreHealed(): void
+    {
+        $db = $this->boot();
+        $id = self::manifest($db, 'M-1', ['manifest_change_history' => '[{}]', 'lab_id' => self::NEW_LAB]);
+        $sent = ['samples_referred_datetime' => '2026-08-11 14:37:21', 'result_status' => 6];
+        // Its mobile-app code is already used at the new lab.
+        self::sample($db, $id, 'M-1', 'app-clash', $sent + ['app_sample_code' => 'APP-1']);
+        self::sample($db, 0, 'X-1', 'there', ['lab_id' => self::NEW_LAB, 'app_sample_code' => 'APP-1']);
+        self::sample($db, $id, 'M-1', 'fine', $sent);
+
+        $healed = self::moves()->healRevertedMoves();
+
+        self::assertSame(['form_vl' => 1], $healed);
+        $rows = $this->committed('form_vl');
+        self::assertSame((string) self::OLD_LAB, (string) $rows['app-clash']['lab_id']);
+        self::assertSame('APP-1', $rows['app-clash']['app_sample_code'], 'not discarded');
+        self::assertSame((string) self::NEW_LAB, (string) $rows['fine']['lab_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnUnexpectedFailureStopsTheHealSoItRunsAgain(): void
+    {
+        $db = $this->boot();
+        $id = self::manifest($db, 'M-1', ['manifest_change_history' => '[{}]', 'lab_id' => self::NEW_LAB]);
+        self::sample($db, $id, 'M-1', 'u-1', [
+            'samples_referred_datetime' => '2026-08-11 14:37:21', 'result_status' => 6,
+        ]);
+        $db->rawQuery('ALTER TABLE form_vl ADD CONSTRAINT not_now CHECK (lab_id <> ' . self::NEW_LAB . ')');
+
+        $this->expectException(\Throwable::class);
+        self::moves()->healRevertedMoves();
     }
 }
