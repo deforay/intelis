@@ -118,6 +118,16 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 		}
 		unset($_SESSION['alertMsg']);
 
+		// Set by CommonService::resolveRequestLabId() when an edit tried to change
+		// the lab of a sample on a manifest; shown after the save's own message.
+		$labKept = $_SESSION['labKeptOnManifest'] ?? '';
+		unset($_SESSION['labKeptOnManifest']);
+		if ($labKept !== '') {
+		?>
+			alert(<?= json_encode($labKept, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
+		<?php
+		}
+
 		$isLogged = $_SESSION['logged'] ?? '';
 		if ($isLogged !== '') { ?>
 			setCrossLogin();

@@ -91,16 +91,15 @@ try {
     // $where[] = " ((vl.sample_package_id IS NULL OR vl.sample_package_id = '') AND (vl.sample_package_code IS NULL  OR vl.sample_package_code = ''))";
 
     $facilityMap = $facilitiesService->getUserFacilityMap($user['user_id']);
-    $response = [];
+    // A lab the user is not mapped to gets no manifest. This used to build the
+    // failure answer and then make the manifest anyway.
+    $labNotMapped = false;
 
     if (!empty($facilityMap)) {
         $arrFacility = explode(",", (string) $facilityMap);
         if (in_array($input['labId'], $arrFacility) == false) {
-            $response = [
-                'status' => 'Failed',
-                'timestamp' => time(),
-                'message' => 'Requested Facilities not mapped. Failed to add samples to manifest'
-            ];
+            $labNotMapped = true;
+            $where[] = ' 1 = 0 ';
         }
         $where[] = " vl.facility_id IN ($facilityMap)";
     }
@@ -266,7 +265,9 @@ try {
         $payload = [
             'status' => 'Failed',
             'timestamp' => time(),
-            'message' => 'No samples found matching the criteria',
+            'message' => $labNotMapped
+                ? 'Requested Facilities not mapped. Failed to add samples to manifest'
+                : 'No samples found matching the criteria',
             'data' => []
         ];
     }

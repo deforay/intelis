@@ -115,5 +115,15 @@ foreach ($outcome['withdrawals'] as $withdrawal) {
         );
 }
 
-$_SESSION['alertMsg'] = implode("\n", $messages) ?: _translate('No manifests were selected');
+// The footer writes alertMsg into a JavaScript string as it is: each line is
+// escaped for that, and lines are joined with an escaped newline, not a real one.
+$_SESSION['alertMsg'] = $messages === []
+    ? _translate('No manifests were selected', true)
+    : implode('\\n', array_map(
+        static fn(string $m): string => substr((string) json_encode(
+            $m,
+            JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+        ), 1, -1),
+        $messages
+    ));
 header("Location: $back");
