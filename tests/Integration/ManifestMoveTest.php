@@ -372,6 +372,7 @@ final class ManifestMoveTest extends TestCase
 
         self::assertSame(['M-b', 'M-a'], array_column($listed, 'code'));
         self::assertSame(2, $listed[1]['samples']);
+        self::assertSame('Lab ' . self::OLD_LAB, $listed[0]['lab'], 'shown to double-check');
         self::assertSame(
             ['M-old'],
             array_column(
