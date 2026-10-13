@@ -130,6 +130,82 @@ final class StsResultsReceiveTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testAMoveIsNotUndoneByTheLabsOldCopy(): void
+    {
+        $db = $this->boot();
+        // Move Manifest gave the sample to this lab, but the lab's copy, pulled
+        // while it belonged to lab 5, still names lab 5.
+        self::stsRequest($db, 'form_vl', 'u-1', ['vl_sample_id' => 1]);
+
+        $ack = self::sts()->receiveResults('vl', self::payload([self::vlResult('u-1', ['lab_id' => 5])]));
+
+        self::assertSame(['L-u-1'], $ack, 'the rest of the result is still taken');
+        $row = $this->committed('form_vl')['u-1'];
+        self::assertSame((string) self::LAB, (string) $row['lab_id']);
+        self::assertSame('40', $row['result']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testALabCannotHandASampleItDoesNotHoldToAnotherLab(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_vl', 'u-1', ['vl_sample_id' => 1, 'lab_id' => 5]);
+
+        self::sts()->receiveResults('vl', self::payload([self::vlResult('u-1', ['lab_id' => 9])]));
+
+        self::assertSame('5', (string) $this->committed('form_vl')['u-1']['lab_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testALabStillTakesOnASampleItTested(): void
+    {
+        $db = $this->boot();
+        // Sent to lab 5, but it reached this lab and was tested here.
+        self::stsRequest($db, 'form_vl', 'u-1', ['vl_sample_id' => 1, 'lab_id' => 5]);
+
+        self::sts()->receiveResults('vl', self::payload([self::vlResult('u-1')]));
+
+        self::assertSame((string) self::LAB, (string) $this->committed('form_vl')['u-1']['lab_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testANewSampleFromALabIsThatLabs(): void
+    {
+        $this->boot();
+
+        $result = self::vlResult('u-lab', ['remote_sample_code' => null, 'lab_id' => 5]);
+        self::sts()->receiveResults('vl', self::payload([$result]));
+
+        self::assertSame((string) self::LAB, (string) $this->committed('form_vl')['u-lab']['lab_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAResultWithNoLabDoesNotClearTheStoredLab(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_vl', 'u-1', ['vl_sample_id' => 1]);
+
+        self::sts()->receiveResults('vl', self::payload([self::vlResult('u-1', ['lab_id' => null])]));
+
+        self::assertSame((string) self::LAB, (string) $this->committed('form_vl')['u-1']['lab_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheLabATbSampleWasReferredToLeavesItsTestingLabAlone(): void
+    {
+        $db = $this->boot();
+        self::stsRequest($db, 'form_tb', 't-1', ['tb_id' => 1, 'referred_to_lab_id' => 8]);
+
+        // Lab 8 sends its result on the referring lab's sample.
+        self::sts()->receiveResults('tb', ['labId' => 8, 'results' => [self::tbRecord([self::tbTest('MTB')])]]);
+
+        $row = $this->committed('form_tb')['t-1'];
+        self::assertSame((string) self::LAB, (string) $row['lab_id']);
+        self::assertSame('8', (string) $row['referred_to_lab_id']);
+        self::assertSame(['MTB'], self::tbResults($db));
+    }
+
+    #[RunInSeparateProcess]
     public function testAResultTheStsHasNeverSeenIsAdded(): void
     {
         $this->boot();

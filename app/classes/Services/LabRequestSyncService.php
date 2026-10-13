@@ -25,6 +25,8 @@ final class LabRequestSyncService
     private const string UNIDENTIFIABLE =
         'unidentifiable: no remote_sample_code, no unique_id, and no sample_code paired with a lab or facility';
 
+    private ?int $ownLabId = null;
+
     public function __construct(
         private readonly DatabaseService $db,
         private readonly CommonService $general,
@@ -661,6 +663,13 @@ final class LabRequestSyncService
                     $updatePayload = MiscUtility::excludeKeys($request, $removeKeysForUpdate);
                     $updatePayload = self::preserveLocallyOwnedFields($updatePayload, $localRecord);
                     $updatePayload = self::keepRequestSource($updatePayload);
+                    $updatePayload = $this->takeSampleMovedHere(
+                        $updatePayload,
+                        $request,
+                        $localRecord,
+                        $tableName,
+                        $primaryKeyName
+                    );
                     // Conditional backfill of remote_sample_code
                     if (!empty($request['remote_sample_code']) && empty($localRecord['remote_sample_code'])) {
                         $this->db->rawQuery(
@@ -822,6 +831,57 @@ final class LabRequestSyncService
     }
 
     /**
+     * The testing lab is never taken from a pull, because the lab owns its
+     * samples -- except when the STS has moved a sample to THIS lab (Move
+     * Manifest). A copy the lab already held, pulled earlier through a facility
+     * mapped to it, otherwise stayed under the old lab: hidden from this lab's
+     * grids and batches, and sent back to the STS under the old lab.
+     *
+     * The copy keeps its code unless another of this lab's samples already has
+     * it, which happens when the code came from the old lab's series. That code
+     * is dropped, and activating the manifest gives the sample one of this lab's.
+     */
+    private function takeSampleMovedHere(
+        array $updatePayload,
+        array $incoming,
+        array $localRecord,
+        string $tableName,
+        string $primaryKeyName
+    ): array {
+        $ownLabId = $this->ownLabId();
+        if (
+            $ownLabId <= 0
+            || (int) ($incoming['lab_id'] ?? 0) !== $ownLabId
+            || (int) ($localRecord['lab_id'] ?? 0) === $ownLabId
+        ) {
+            return $updatePayload;
+        }
+        $updatePayload['lab_id'] = $ownLabId;
+
+        // The matched record holds only the columns the STS sent, which leaves
+        // the code out, so the copy's own code is read here.
+        $taken = $this->db->rawQueryOne(
+            "SELECT 1 AS taken FROM `$tableName` AS copy
+               JOIN `$tableName` AS other
+                 ON other.sample_code = copy.sample_code AND other.lab_id = ?
+                AND other.`$primaryKeyName` <> copy.`$primaryKeyName`
+              WHERE copy.`$primaryKeyName` = ? LIMIT 1",
+            [$ownLabId, $localRecord[$primaryKeyName]]
+        );
+        if (!empty($taken)) {
+            $updatePayload['sample_code'] = null;
+            $updatePayload['sample_code_key'] = null;
+            $updatePayload['sample_code_format'] = null;
+        }
+        return $updatePayload;
+    }
+
+    private function ownLabId(): int
+    {
+        return $this->ownLabId ??= (int) $this->general->getSystemConfig('sc_testing_lab_id');
+    }
+
+    /**
      * Codes the testing lab assigns on this instance. STS only ever holds a copy of
      * them, and only after the lab pushed the row up with its results, so STS is
      * never the authority for these columns -- the local value always wins.
@@ -946,6 +1006,13 @@ final class LabRequestSyncService
             $updatePayload['is_result_mail_sent'] ??= 'no';
             $updatePayload = self::preserveLocallyOwnedFields($updatePayload, $localRecord);
             $updatePayload = self::keepRequestSource($updatePayload);
+            $updatePayload = $this->takeSampleMovedHere(
+                $updatePayload,
+                $incoming,
+                $localRecord,
+                $tableName,
+                $primaryKeyName
+            );
 
             // Conditional backfill of remote_sample_code
             if (!empty($incoming['remote_sample_code']) && empty($localRecord['remote_sample_code'])) {

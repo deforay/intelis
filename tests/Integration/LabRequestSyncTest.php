@@ -29,6 +29,8 @@ final class LabRequestSyncTest extends TestCase
 {
     private const LAB = 7;
 
+    private const OTHER_LAB = 5;
+
     private bool $booted = false;
 
     private string $database = '';
@@ -568,5 +570,105 @@ final class LabRequestSyncTest extends TestCase
         self::assertSame('Positive', $row['result']);
         self::assertSame('7', (string) $row['result_status']);
         self::assertSame('LAC-2', $row['lab_assigned_code']);
+    }
+
+    private static function ownLab($db): void
+    {
+        $db->insert('system_config', [
+            'display_name' => 'Testing Lab', 'name' => 'sc_testing_lab_id', 'value' => self::LAB,
+        ]);
+    }
+
+    #[RunInSeparateProcess]
+    public function testASampleTheStsMovedToThisLabIsTakenOverOnThePull(): void
+    {
+        $db = $this->boot();
+        self::ownLab($db);
+        // Pulled earlier through a clinic mapped to this lab, while it belonged
+        // to another lab, and coded here when the manifest arrived.
+        self::sync()->saveModule('vl', [self::vlRequest($db, 'u-1', ['lab_id' => self::OTHER_LAB])], 'tx-1');
+        $db->rawQuery("UPDATE form_vl SET sample_code = 'LAB-1', result_status = 6 WHERE unique_id = 'u-1'");
+
+        // Move Manifest on the STS hands the sample to this lab.
+        $db->rawQuery('UPDATE sts_form_vl SET lab_id = ? WHERE unique_id = ?', [self::LAB, 'u-1']);
+        $moved = $db->rawQueryOne("SELECT * FROM sts_form_vl WHERE unique_id = 'u-1'");
+        $result = self::sync()->saveModule('vl', [$moved], 'tx-2');
+
+        self::assertSame(['u-1'], $result['saved']);
+        $row = $this->committed('form_vl')['u-1'];
+        self::assertSame((string) self::LAB, (string) $row['lab_id'], 'else it stays hidden from this lab');
+        self::assertSame('LAB-1', $row['sample_code'], 'the code this lab gave it stays');
+    }
+
+    #[RunInSeparateProcess]
+    public function testAMovedSampleWhoseCodeThisLabAlreadyUsesIsTakenOverWithoutIt(): void
+    {
+        $db = $this->boot();
+        self::ownLab($db);
+        // As on the labs: a code is unique within its lab.
+        $db->rawQuery('ALTER TABLE form_vl ADD UNIQUE KEY sample_code_lab (sample_code, lab_id)');
+        // A copy of another lab's sample, pulled with that lab's code, and a
+        // sample of this lab's that its own series gave the same code.
+        self::sync()->saveModule('vl', [
+            self::vlRequest($db, 'moved', ['sample_code' => 'VL-1', 'lab_id' => self::OTHER_LAB]),
+            self::vlRequest($db, 'mine'),
+        ], 'tx-1');
+        $db->rawQuery("UPDATE form_vl SET sample_code = 'VL-1' WHERE unique_id = 'mine'");
+
+        // Move Manifest gives the sample to this lab and clears its code.
+        $db->rawQuery(
+            'UPDATE sts_form_vl SET lab_id = ?, sample_code = NULL WHERE unique_id = ?',
+            [self::LAB, 'moved']
+        );
+        $moved = $db->rawQueryOne("SELECT * FROM sts_form_vl WHERE unique_id = 'moved'");
+        $result = self::sync()->saveModule('vl', [$moved], 'tx-2');
+
+        self::assertSame(['moved'], $result['saved'], 'else every pull fails on the same code');
+        $rows = $this->committed('form_vl');
+        self::assertSame((string) self::LAB, (string) $rows['moved']['lab_id']);
+        self::assertNull($rows['moved']['sample_code'], 'activation gives it one of this lab\'s codes');
+        self::assertSame('VL-1', $rows['mine']['sample_code']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAPullNeverTakesASampleAwayFromItsLab(): void
+    {
+        $db = $this->boot();
+        self::ownLab($db);
+        self::sync()->saveModule('vl', [
+            self::vlRequest($db, 'mine'),
+            self::vlRequest($db, 'theirs', ['lab_id' => self::OTHER_LAB]),
+        ], 'tx-1');
+
+        // The STS sends this lab's sample under another lab, and another lab's
+        // sample under a third: the lab keeps what it holds.
+        $db->rawQuery("UPDATE sts_form_vl SET lab_id = 9, patient_first_name = 'Adah'");
+        $result = self::sync()->saveModule('vl', $db->rawQuery('SELECT * FROM sts_form_vl ORDER BY unique_id'), 'tx-2');
+
+        self::assertSame(['mine', 'theirs'], $result['saved']);
+        $rows = $this->committed('form_vl');
+        self::assertSame('Adah', $rows['mine']['patient_first_name'], 'the pull was applied');
+        self::assertSame((string) self::LAB, (string) $rows['mine']['lab_id']);
+        self::assertSame((string) self::OTHER_LAB, (string) $rows['theirs']['lab_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testACustomTestsSampleTheStsMovedToThisLabIsTakenOverOnThePull(): void
+    {
+        $db = $this->boot();
+        self::ownLab($db);
+        $request = self::stsRow($db, 'form_generic', [
+            'unique_id' => 'g-1', 'remote_sample_code' => 'R-g-1', 'lab_id' => self::OTHER_LAB,
+        ]);
+        self::sync()->saveCustomTests([$request], 'tx-1');
+
+        $db->rawQuery('UPDATE sts_form_generic SET lab_id = ? WHERE unique_id = ?', [self::LAB, 'g-1']);
+        $result = self::sync()->saveCustomTests(
+            [$db->rawQueryOne("SELECT * FROM sts_form_generic WHERE unique_id = 'g-1'")],
+            'tx-2'
+        );
+
+        self::assertSame(['g-1'], $result['saved']);
+        self::assertSame((string) self::LAB, (string) $this->committed('form_generic')['g-1']['lab_id']);
     }
 }
