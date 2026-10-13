@@ -1126,9 +1126,10 @@ final class VlService extends AbstractTestService
         }
     }
 
-    public function getVlResults($instrumentId = null): void
+    public function getVlResults($instrumentId = null): array
     {
-        _getFromFileCache('vl_results_for_instrument', function () use ($instrumentId) {
+        $cacheKey = 'vl_results_for_instrument_' . (empty($instrumentId) ? 'all' : md5((string) $instrumentId));
+        return _getFromFileCache($cacheKey, function () use ($instrumentId) {
 
             if (!empty($instrumentId)) {
                 // Using 'one' instead of 'all' if checking for at least one occurrence is sufficient

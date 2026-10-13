@@ -78,7 +78,8 @@
         "secure-http": true,
         "platform": {
             "php": "8.4.1"
-        }
+        },
+        "process-timeout": 0
     },
     "require-dev": {
         "kint-php/kint": "^6.1",
