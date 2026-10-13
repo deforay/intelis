@@ -36,6 +36,7 @@ $commandOptions = [
     'metadata-resync' => 'metadata-resync',
     'refresh-cache' => 'refresh-cache',
     'rotate-token' => 'rotate-token',
+    'withdraw-samples' => 'withdraw-samples',
     'refresh-perms' => 'refresh-perms',
     'restart-apache' => 'restart-apache',
     'upgrade' => 'upgrade',
