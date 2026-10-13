@@ -186,13 +186,30 @@ if [ -d run-once ]; then
     run_once_skipped=0
     run_once_failed=0
     run_once_bg=0
+    run_once_bg_running=0
     mkdir -p var/logs 2>/dev/null || true
+    # Ask once which background scripts still have work, so finished ones are
+    # neither launched nor named. If the check fails, fall back to launching
+    # them all; each still skips itself when already done.
+    bg_check_ok=1
+    bg_pending=$(php bin/run-once-pending.php 2>/dev/null) || bg_check_ok=0
     for script in run-once/*.php; do
         [ -f "$script" ] || continue
         # Scripts tagged "@run-once-background" are launched detached so a long
         # migration never blocks container start-up. They own their own
         # concurrency + skip logic, so we fire and forget.
         if grep -q '@run-once-background' "$script"; then
+            if [ "$bg_check_ok" -eq 1 ]; then
+                if printf '%s\n' "$bg_pending" | grep -qxF "running $(basename "$script")"; then
+                    run_once_bg_running=$((run_once_bg_running + 1))
+                    echo "Run-once script still running from an earlier launch: $script"
+                    continue
+                fi
+                if ! printf '%s\n' "$bg_pending" | grep -qxF "launch $(basename "$script")"; then
+                    run_once_skipped=$((run_once_skipped + 1))
+                    continue
+                fi
+            fi
             bg_log="var/logs/$(basename "${script%.php}")-$(date +%Y%m%d-%H%M%S).log"
             nohup php "$script" >>"$bg_log" 2>&1 &
             run_once_bg=$((run_once_bg + 1))
@@ -213,7 +230,7 @@ if [ -d run-once ]; then
                 ;;
         esac
     done
-    echo "Run-once: ${run_once_ran} ran, ${run_once_skipped} already applied, ${run_once_bg} launched in background, ${run_once_failed} failed."
+    echo "Run-once: ${run_once_ran} ran, ${run_once_skipped} already applied, ${run_once_bg} launched in background, ${run_once_bg_running} still running, ${run_once_failed} failed."
 fi
 
 # Start the cron service
