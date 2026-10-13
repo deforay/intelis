@@ -654,16 +654,20 @@ do {
         $io->text('More requests are waiting on the STS for: ' . implode(', ', $pullModules) . '. Pulling again.');
     }
 
-    // The next page of each window, once this one is saved. A page that failed to
-    // arrive or to save keeps its marker, so running the pull again resumes there.
+    // The next page of each window, once this one is processed. A page that did
+    // not arrive, or whose processing broke off, keeps its marker, so running the
+    // pull again resumes there. A record that fails on its own does not hold the
+    // pull: it is logged and counted above, and the STS does not send it again
+    // until it changes -- what a window pull has always done with one. Holding
+    // the marker for it would stop a big pull for good on a single bad record.
     foreach ($pagedWindow ? $pageKeys : [] as $module => $key) {
-        $headers = $moduleResponseHeaders[$module] ?? null;
-        $saved = isset($savedCounts[$module]) || ($responsePayload[$module] ?? null) === '[]';
-        if ($headers === null || !$saved) {
+        $body = $responsePayload[$module] ?? null;
+        if ($body === null || !isset($savedCounts[$module])) {
             continue;
         }
-        $next = (string) ($headers['x-requests-next-after'] ?? '');
-        if (($headers['x-requests-paged'] ?? '') !== '1' || $next === '') {
+        $paging = json_decode((string) $body, true);
+        $next = is_array($paging) ? (string) ($paging['nextAfter'] ?? '') : '';
+        if (!is_array($paging) || empty($paging['paged']) || $next === '') {
             // The whole window (an older STS), or its last page.
             $pageCursor->finish($key);
             continue;

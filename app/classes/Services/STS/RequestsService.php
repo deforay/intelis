@@ -150,21 +150,18 @@ final class RequestsService
     }
 
     /**
-     * The paging headers for a pull: none unless the lab asked for pages, which an
-     * older lab never does and so sees no change.
+     * What a paged pull adds to the response body, next to "requests": that it is
+     * a page, and the marker of the next one while more remain. Nothing for a lab
+     * that did not ask, so an older lab sees no change; it reads "requests" only.
      *
-     * @return array<string, int|string>
+     * @return array{paged?: true, nextAfter?: ?string}
      */
-    public static function pagingHeaders(array $requestsData): array
+    public static function pagingFields(array $requestsData): array
     {
         if (empty($requestsData['paged'])) {
             return [];
         }
-        $headers = ['x-requests-paged' => 1];
-        if (!empty($requestsData['nextAfter'])) {
-            $headers['x-requests-next-after'] = $requestsData['nextAfter'];
-        }
-        return $headers;
+        return ['paged' => true, 'nextAfter' => $requestsData['nextAfter'] ?? null];
     }
 
     /** Rows with no modification time sort first, as the oldest. */

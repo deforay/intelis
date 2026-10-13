@@ -122,6 +122,8 @@ try {
         'labId'         => $labId,
         'syncSinceDate' => $syncSinceDate,
     ];
+    // Fields an older lab never reads: this is one page, and where the next starts.
+    $payload += RequestsService::pagingFields($requestsData);
 
     $general->addApiTracking(
         $transactionId,
@@ -200,8 +202,6 @@ try {
         $responseHeaders['x-request-receipts'] = 1;
         $responseHeaders['x-pending-remaining'] = (int) ($requestsData['pendingRemaining'] ?? 0);
     }
-    // Headers an older lab ignores: this is one page, and where the next starts.
-    $responseHeaders += RequestsService::pagingHeaders($requestsData);
 
     echo ApiService::generateJsonResponse($payload, $request, $responseHeaders);
 } catch (Throwable $e) {

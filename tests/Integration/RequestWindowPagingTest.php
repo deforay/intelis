@@ -188,22 +188,33 @@ final class RequestWindowPagingTest extends TestCase
         return $handler->handle($request);
     }
 
-    /** @return list<string> */
-    private static function sentBy(ResponseInterface $response): array
-    {
-        return array_column(json_decode((string) $response->getBody(), true)['requests'] ?? [], 'unique_id');
-    }
-
     #[RunInSeparateProcess]
-    public function testRequestsPhpSendsAPageToALabThatAsks(): void
+    public function testRequestsPhpSendsAPageAndNamesTheNextToALabThatAsks(): void
     {
         $this->boot();
 
-        $response = self::post([
+        $body = json_decode((string) self::post([
             'labId' => 7, 'testType' => 'vl', 'syncSinceDate' => self::SINCE, 'page' => ['size' => 5],
-        ]);
+        ])->getBody(), true);
 
-        self::assertCount(5, self::sentBy($response));
+        self::assertCount(5, $body['requests']);
+        self::assertTrue($body['paged']);
+        self::assertMatchesRegularExpression('/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\|\d+$/', $body['nextAfter']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testRequestsPhpNamesNoNextPageAfterTheLast(): void
+    {
+        $this->boot();
+        $last = RequestsService::pageMarker('2026-08-07 10:00:00', 19);
+
+        $body = json_decode((string) self::post([
+            'labId' => 7, 'testType' => 'vl', 'syncSinceDate' => self::SINCE, 'page' => ['size' => 5, 'after' => $last],
+        ])->getBody(), true);
+
+        self::assertSame(['u-20', 'u-21', 'u-22', 'u-23'], array_column($body['requests'], 'unique_id'));
+        self::assertTrue($body['paged']);
+        self::assertNull($body['nextAfter']);
     }
 
     /** @return iterable<string, array{?array<string, mixed>}> */
@@ -225,20 +236,10 @@ final class RequestWindowPagingTest extends TestCase
             $body['page'] = $page;
         }
 
-        self::assertEqualsCanonicalizing(self::windowIds(), self::sentBy(self::post($body)));
-    }
+        $response = json_decode((string) self::post($body)->getBody(), true);
 
-    public function testPagingHeadersGoOnlyToALabThatAskedForPages(): void
-    {
-        self::assertSame([], RequestsService::pagingHeaders(['requests' => []]), 'an older lab sees no change');
-        self::assertSame(
-            ['x-requests-paged' => 1, 'x-requests-next-after' => '2026-08-20 10:00:00|42'],
-            RequestsService::pagingHeaders(['paged' => true, 'nextAfter' => '2026-08-20 10:00:00|42'])
-        );
-        self::assertSame(
-            ['x-requests-paged' => 1],
-            RequestsService::pagingHeaders(['paged' => true, 'nextAfter' => null]),
-            'the last page names no next one'
-        );
+        self::assertEqualsCanonicalizing(self::windowIds(), array_column($response['requests'], 'unique_id'));
+        self::assertArrayNotHasKey('paged', $response, 'an older lab sees the body it always did');
+        self::assertArrayNotHasKey('nextAfter', $response);
     }
 }
