@@ -5,9 +5,11 @@
 // Pulls test requests (and/or a specific manifest) from STS by spawning
 // requests-receiver.php with the requested params.
 //
-// Expected params:
+// Expected params (validated by ResendRequestsArgs):
 //   - module   (optional)  one of: vl, eid, covid19, hepatitis, tb, cd4, generic-tests
 //   - manifest (optional)  specific manifest code to fetch
+//   - days     (optional)  1..3650: pull everything changed in the last N days,
+//                          including requests the STS already sent
 //
 // Returns the status payload for the STS-side row.
 
@@ -15,33 +17,18 @@
 
 $module = $params['module'] ?? null;
 $manifest = $params['manifest'] ?? null;
+$days = $params['days'] ?? null;
 
-$validModules = ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'cd4', 'generic-tests'];
-if (!empty($module) && !in_array($module, $validModules, true)) {
-    return [
-        'status' => 'failed',
-        'error' => 'Invalid module: ' . $module,
-    ];
-}
-if (!empty($manifest) && !preg_match('/^[A-Za-z0-9_\-\.]{1,64}$/', (string) $manifest)) {
-    return [
-        'status' => 'failed',
-        'error' => 'Invalid manifest code',
-    ];
+try {
+    $args = \App\Utilities\ResendRequestsArgs::from($params);
+} catch (\InvalidArgumentException $e) {
+    return ['status' => 'failed', 'error' => $e->getMessage()];
 }
 
 $scriptPath = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'tasks'
     . DIRECTORY_SEPARATOR . 'remote' . DIRECTORY_SEPARATOR . 'requests-receiver.php';
 
-$argv = [PHP_BINARY, $scriptPath];
-if (!empty($module)) {
-    $argv[] = '-t';
-    $argv[] = $module;
-}
-if (!empty($manifest)) {
-    $argv[] = '-m';
-    $argv[] = $manifest;
-}
+$argv = [PHP_BINARY, $scriptPath, ...$args];
 
 $descriptorSpec = [
     0 => ['pipe', 'r'],
@@ -75,5 +62,6 @@ return [
     'durationSeconds' => $duration,
     'module' => $module,
     'manifest' => $manifest,
+    'days' => $days,
     'outputTail' => implode("\n", array_slice(array_filter($combined, 'strlen'), -30)),
 ];
