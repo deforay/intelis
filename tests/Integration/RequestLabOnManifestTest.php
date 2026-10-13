@@ -49,11 +49,11 @@ final class RequestLabOnManifestTest extends TestCase
         ]);
         $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (9, 'Clinic')");
         $_SESSION = ['instance' => ['type' => 'remoteuser']];
-        foreach (['on-manifest' => 22026, 'loose' => null] as $uniqueId => $manifestId) {
+        $samples = ['on-manifest' => [22026, 'VL-M-1'], 'by-code' => [null, 'VL-M-2'], 'loose' => [null, null]];
+        foreach ($samples as $uniqueId => [$manifestId, $manifestCode]) {
             $db->insert('form_vl', [
                 'unique_id' => $uniqueId, 'vlsm_instance_id' => 'sts', 'facility_id' => 1, 'lab_id' => 5,
-                'result_status' => 9, 'sample_package_id' => $manifestId,
-                'sample_package_code' => $manifestId ? 'VL-M-1' : null,
+                'result_status' => 9, 'sample_package_id' => $manifestId, 'sample_package_code' => $manifestCode,
             ]);
         }
         return $db;
@@ -73,9 +73,12 @@ final class RequestLabOnManifestTest extends TestCase
         $id = self::idOf($db, 'on-manifest');
 
         self::assertSame(5, $general->resolveRequestLabId(7, 'form_vl', 'vl_sample_id', $id));
-        self::assertStringContainsString('VL-M-1', $_SESSION['labKeptOnManifest'] ?? '', 'the user is told why');
+        self::assertStringContainsString('manifest', $_SESSION['labKeptOnManifest'] ?? '', 'the user is told why');
+        self::assertStringNotContainsString('VL-M-1', $_SESSION['labKeptOnManifest'], 'before the save checks access');
         self::assertSame(5, $general->resolveRequestLabId(null, 'form_vl', 'vl_sample_id', $id), 'nor blanked');
         self::assertSame(5, $general->resolveRequestLabId(5, 'form_vl', 'vl_sample_id', $id));
+        // On older installs a sample can be on a manifest by its code alone.
+        self::assertSame(5, $general->resolveRequestLabId(7, 'form_vl', 'vl_sample_id', self::idOf($db, 'by-code')));
     }
 
     #[RunInSeparateProcess]

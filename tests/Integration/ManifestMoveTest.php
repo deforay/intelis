@@ -176,6 +176,10 @@ final class ManifestMoveTest extends TestCase
         $row = $this->committed('form_vl')['by-code'];
         self::assertSame((string) self::NEW_LAB, (string) $row['lab_id']);
         self::assertSame((string) $id, (string) $row['sample_package_id'], 'linked by id from now on');
+        self::assertNull(
+            $this->committed('form_vl')['tested-by-code']['sample_package_id'],
+            'a manifest that is not moved is not touched'
+        );
     }
 
     #[RunInSeparateProcess]

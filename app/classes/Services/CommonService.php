@@ -1247,7 +1247,9 @@ final class CommonService
         // edit picking another lab left the manifest naming one lab and the sample
         // another; the sample then went to a lab that never received the package.
         // Moving it is Move Manifest's job.
-        if ($savedLabId !== null && $posted !== $savedLabId && (int) ($saved['sample_package_id'] ?? 0) > 0) {
+        $onManifest = (int) ($saved['sample_package_id'] ?? 0) > 0
+            || trim((string) ($saved['sample_package_code'] ?? '')) !== '';
+        if ($savedLabId !== null && $posted !== $savedLabId && $onManifest) {
             LoggerUtility::logWarning('Testing lab kept on a sample that is on a manifest', [
                 'table' => $table,
                 'record_id' => $recordId,
@@ -1255,10 +1257,11 @@ final class CommonService
                 'kept' => $savedLabId,
                 'manifest' => $saved['sample_package_code'] ?? null,
             ]);
+            // Says nothing about the manifest itself: this runs before the save
+            // checks the user may touch the sample at all.
             if (isset($_SESSION) && is_array($_SESSION)) {
-                $_SESSION['labKeptOnManifest'] = sprintf(
-                    _translate('The testing lab was not changed: this sample is on manifest %s. Use Move Manifest to move it to another lab.'),
-                    (string) ($saved['sample_package_code'] ?? '')
+                $_SESSION['labKeptOnManifest'] = _translate(
+                    'The testing lab was not changed: this sample is on a manifest. Use Move Manifest to move it to another lab.'
                 );
             }
             return $savedLabId;

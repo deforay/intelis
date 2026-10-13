@@ -165,10 +165,10 @@ final class ManifestMoveService
                     "SELECT $columns FROM `$table` AS t WHERE t.sample_package_id = ? FOR UPDATE",
                     [(int) $manifest['manifest_id']]
                 );
+                $linked = [];
                 if (!empty($codeOnly[$code])) {
                     // On the manifest by its code alone (older installs): locked by
-                    // primary key, and given the manifest's id so the index finds
-                    // them from now on.
+                    // primary key, and given the manifest's id once it moves.
                     $ids = implode(',', array_map('intval', $codeOnly[$code]));
                     $linked = $this->db->rawQuery(
                         "SELECT $columns FROM `$table` AS t
@@ -177,14 +177,7 @@ final class ManifestMoveService
                           FOR UPDATE",
                         [$code]
                     );
-                    if ($linked !== []) {
-                        $this->db->rawQuery(
-                            "UPDATE `$table` SET sample_package_id = ? WHERE `$primaryKey` IN ("
-                                . implode(',', array_map(static fn(array $l): int => (int) $l['id'], $linked)) . ')',
-                            [(int) $manifest['manifest_id']]
-                        );
-                        $samples = [...$samples, ...$linked];
-                    }
+                    $samples = [...$samples, ...$linked];
                 }
                 if ($facilityMap !== null && trim($facilityMap) !== '') {
                     $allowed = array_map('intval', explode(',', $this->db->inIntList($facilityMap)));
@@ -210,6 +203,15 @@ final class ManifestMoveService
                     continue;
                 }
 
+                if (!empty($linked)) {
+                    // Only now the manifest passed its checks: from here the
+                    // sample_package_id index finds them.
+                    $this->db->rawQuery(
+                        "UPDATE `$table` SET sample_package_id = ? WHERE `$primaryKey` IN ("
+                            . implode(',', array_map(static fn(array $l): int => (int) $l['id'], $linked)) . ')',
+                        [(int) $manifest['manifest_id']]
+                    );
+                }
                 foreach ($toMove as $sample) {
                     $movedHere[] = (string) $sample['unique_id'];
                     $fromLab = (int) ($sample['lab_id'] ?? 0);
