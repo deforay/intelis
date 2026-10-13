@@ -105,6 +105,12 @@ final class TestedSampleRuleTest extends TestCase
         // COVID-19 rows arrive keyed by sample and then by test.
         self::assertTrue(TestedSampleRule::isTested('covid19', [], ['55' => ['9' => ['result' => 'positive']]]));
         self::assertTrue(TestedSampleRule::isTested('generic-tests', [], [['result' => 'Reactive']]));
+        // A result saved in a test row's other columns.
+        self::assertTrue(TestedSampleRule::isTested('tb', [], [['test_result' => null, 'actual_no' => '3']]));
+        self::assertTrue(TestedSampleRule::isTested('generic-tests', [], [['final_result' => '12']]));
+        self::assertTrue(TestedSampleRule::isTested('generic-tests', [], [['final_result_interpretation' => 'High']]));
+        self::assertStringContainsString('tr.actual_no', TestedSampleRule::sql('tb', 't'));
+        self::assertStringContainsString('tr.final_result_interpretation', TestedSampleRule::sql('generic-tests', 't'));
     }
 
     public function testEveryListedColumnExistsOnItsTable(): void
