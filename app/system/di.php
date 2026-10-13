@@ -8,6 +8,7 @@ use App\Factories\DatabaseFactory;
 use App\Registries\ContainerRegistry;
 use App\Repositories\InterfaceApi\MySqlInterfaceInstallationRepository;
 use App\Services\DatabaseService;
+use App\Utilities\AutowireCheck;
 use DI\ContainerBuilder;
 
 use function DI\autowire;
@@ -34,9 +35,6 @@ try {
     throw new SystemException("Error loading configuration file: Please ensure the config file is present");
 }
 
-$builder = new ContainerBuilder();
-$builder->useAutowiring(true);
-
 // Enable compilation for better performance in production.
 // INTELIS_DI_COMPILE_CHECK forces compilation from the CLI so bin/build/check-di.php
 // (and CI) can catch a broken definition here instead of in production, where the
@@ -45,97 +43,123 @@ $compileCheck = getenv('INTELIS_DI_COMPILE_CHECK') === '1';
 $enableCompilation = $compileCheck
     || (!$isCli && !empty($systemConfig['system']['cache_di']) && true === $systemConfig['system']['cache_di']);
 
-if ($enableCompilation) {
-    if (!is_dir(CACHE_PATH)) {
-        mkdir(CACHE_PATH, 0777, true);
-    }
-    $builder->enableCompilation(CACHE_PATH);
+$buildContainer = static function (bool $compile) use (
+    $systemConfig,
+    $debugMode,
+    $compileCheck
+): DI\Container {
+    $builder = new ContainerBuilder();
+    $builder->useAutowiring(true);
 
-    // The APCu definition cache is a production optimisation; skip it for the
-    // compile-check so each run compiles fresh rather than reusing a cache.
-    if (!$compileCheck && extension_loaded('apcu')) {
-        // This string namespaces the APCu keys, and APCu is one segment shared by
-        // every vhost under the same Apache. instance-name is empty on most
-        // installs -- it is the login/header title, not an identifier -- so two
-        // instances on one machine namespaced by it share definitions, and during
-        // a staggered upgrade one can serve the other's. Falling back to a digest
-        // of the install path keeps them apart without giving the machine a title
-        // nobody asked for. Same idiom as the OPcache token in bootstrap.php:
-        // xxh128 is a cache-key digest here, never a security hash.
-        $definitionCacheNamespace = (string) ($systemConfig['instance-name'] ?? '');
-
-        if ($definitionCacheNamespace === '') {
-            $definitionCacheNamespace = hash('xxh128', ROOT_PATH);
+    if ($compile) {
+        if (!is_dir(CACHE_PATH)) {
+            mkdir(CACHE_PATH, 0777, true);
         }
+        $builder->enableCompilation(CACHE_PATH);
 
-        $builder->enableDefinitionCache($definitionCacheNamespace);
+        // The APCu definition cache is a production optimisation; skip it for the
+        // compile-check so each run compiles fresh rather than reusing a cache.
+        if (!$compileCheck && extension_loaded('apcu')) {
+            // This string namespaces the APCu keys, and APCu is one segment shared by
+            // every vhost under the same Apache. instance-name is empty on most
+            // installs -- it is the login/header title, not an identifier -- so two
+            // instances on one machine namespaced by it share definitions, and during
+            // a staggered upgrade one can serve the other's. Falling back to a digest
+            // of the install path keeps them apart without giving the machine a title
+            // nobody asked for. Same idiom as the OPcache token in bootstrap.php:
+            // xxh128 is a cache-key digest here, never a security hash.
+            $definitionCacheNamespace = (string) ($systemConfig['instance-name'] ?? '');
+
+            if ($definitionCacheNamespace === '') {
+                $definitionCacheNamespace = hash('xxh128', ROOT_PATH);
+            }
+
+            $builder->enableDefinitionCache($definitionCacheNamespace);
+        }
     }
+
+    // Auto-register all classes in app/classes to ensure they are compiled
+    $classesDir = APPLICATION_PATH . '/classes';
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($classesDir));
+    $regex = new RegexIterator($iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
+
+    // Classes to skip during auto-registration
+    $excludeClasses = [
+        'App\\Interop\\Dhis2',
+        'App\\Interop\\Fhir',
+        'App\\Utilities\\ImageResizeUtility',
+        // Built per sync run with a query callable, never resolved from the container
+        'App\\Utilities\\ResultSyncBatch',
+        // Add other classes to skip here
+    ];
+
+    foreach ($regex as $file) {
+        $filePath = $file[0];
+
+        // Convert file path to namespace
+        $relativePath = str_replace($classesDir . '/', '', $filePath);
+        $className = 'App\\' . str_replace(['/', '.php'], ['\\', ''], $relativePath);
+
+        if (class_exists($className)) {
+            // Skip if in exclusion list
+            if (in_array($className, $excludeClasses)) {
+                continue;
+            }
+
+            // Only register instantiable classes (skips Interfaces, Traits, Abstract classes)
+            $reflection = new ReflectionClass($className);
+
+            // Never autowire exceptions: they are thrown with explicit constructor
+            // args (e.g. an error code / message) that the container cannot guess,
+            // which breaks DI compilation in production.
+            if ($reflection->isSubclassOf(Throwable::class)) {
+                continue;
+            }
+
+            // A constructor needing a value the container cannot guess (a string, a
+            // number, an array, no type, with no default) cannot be autowired:
+            // registering it only fails the compilation, and with it every page.
+            // Such a class is made with `new` by its callers.
+            if ($reflection->isInstantiable() && !AutowireCheck::needsUnguessableArgument($reflection)) {
+                $builder->addDefinitions([$className => autowire()]);
+            }
+        }
+    }
+
+    // Configuration and DB
+    $builder->addDefinitions([
+        'applicationConfig' => $systemConfig,
+        'db' => factory(DatabaseFactory::class),
+        DatabaseService::class => get('db')
+    ]);
+
+    // Services
+    $builder->addDefinitions([
+        InterfaceInstallationRepositoryInterface::class => get(MySqlInterfaceInstallationRepository::class),
+    ]);
+
+    // Utilities, Helpers and Other Classes
+    $builder->addDefinitions([
+        ErrorResponseGenerator::class => create(ErrorResponseGenerator::class)
+            ->constructor($debugMode),
+    ]);
+
+    return $builder->build();
+};
+
+try {
+    $container = $buildContainer($enableCompilation);
+} catch (Throwable $e) {
+    // The compile check exists to fail on this, loudly.
+    if ($compileCheck || !$enableCompilation) {
+        throw $e;
+    }
+    // In production a definition that does not compile used to take every page
+    // and API call down with it. Built without compiling, the container makes
+    // classes as they are asked for, so only the broken one fails, where used.
+    error_log('DI container did not compile; running uncompiled: ' . $e->getMessage());
+    $container = $buildContainer(false);
 }
-
-// Auto-register all classes in app/classes to ensure they are compiled
-$classesDir = APPLICATION_PATH . '/classes';
-$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($classesDir));
-$regex = new RegexIterator($iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
-
-// Classes to skip during auto-registration
-$excludeClasses = [
-    'App\\Interop\\Dhis2',
-    'App\\Interop\\Fhir',
-    'App\\Utilities\\ImageResizeUtility',
-    // Built per sync run with a query callable, never resolved from the container
-    'App\\Utilities\\ResultSyncBatch',
-    // Add other classes to skip here
-];
-
-foreach ($regex as $file) {
-    $filePath = $file[0];
-
-    // Convert file path to namespace
-    $relativePath = str_replace($classesDir . '/', '', $filePath);
-    $className = 'App\\' . str_replace(['/', '.php'], ['\\', ''], $relativePath);
-
-    if (class_exists($className)) {
-        // Skip if in exclusion list
-        if (in_array($className, $excludeClasses)) {
-            continue;
-        }
-
-        // Only register instantiable classes (skips Interfaces, Traits, Abstract classes)
-        $reflection = new ReflectionClass($className);
-
-        // Never autowire exceptions: they are thrown with explicit constructor
-        // args (e.g. an error code / message) that the container cannot guess,
-        // which breaks DI compilation in production.
-        if ($reflection->isSubclassOf(Throwable::class)) {
-            continue;
-        }
-
-        if ($reflection->isInstantiable()) {
-            $builder->addDefinitions([$className => autowire()]);
-        }
-    }
-}
-
-// Configuration and DB
-$builder->addDefinitions([
-    'applicationConfig' => $systemConfig,
-    'db' => factory(DatabaseFactory::class),
-    DatabaseService::class => get('db')
-]);
-
-// Services
-$builder->addDefinitions([
-    InterfaceInstallationRepositoryInterface::class => get(MySqlInterfaceInstallationRepository::class),
-]);
-
-// Utilities, Helpers and Other Classes
-$builder->addDefinitions([
-    ErrorResponseGenerator::class => create(ErrorResponseGenerator::class)
-        ->constructor($debugMode),
-]);
-
-
-$container = $builder->build();
 
 // Putting $container into a singleton registry for access across the application
 ContainerRegistry::setContainer($container);
