@@ -243,7 +243,7 @@ $statusLabels = [
                 $('#manifestTable').DataTable({
                     paging: false,
                     info: false,
-                    searching: false,
+                    searching: true,
                     order: [[3, 'desc']],
                     columnDefs: [{ targets: 0, orderable: false }]
                 });
