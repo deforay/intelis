@@ -1229,26 +1229,47 @@ final class CommonService
      * editing an unrelated field never silently reassigns someone else's sample.
      * Pass $table/$primaryKey/$recordId on edit to enable that; omit them on add.
      *
-     * A no-op for STS, standalone, and any LIS session with no resolved lab, so
-     * it never blanks a lab that used to save fine.
+     * On every install, an edit never changes the lab of a sample that is on a
+     * manifest (see below). Otherwise a no-op for STS, standalone, and any LIS
+     * session with no resolved lab, so it never blanks a lab that used to save fine.
      */
     public function resolveRequestLabId($postedLabId, ?string $table = null, ?string $primaryKey = null, $recordId = null): ?int
     {
         $posted = ((int) $postedLabId) ?: null;
+        $saved = null;
+        $savedLabId = null;
+        if (!empty($table) && !empty($primaryKey) && !empty($recordId)) {
+            $saved = $this->db->rawQueryOne("SELECT * FROM `$table` WHERE `$primaryKey` = ?", [$recordId]);
+            $savedLabId = ((int) ($saved['lab_id'] ?? 0)) ?: null;
+        }
+
+        // On every install: a sample on a manifest keeps the manifest's lab. An
+        // edit picking another lab left the manifest naming one lab and the sample
+        // another; the sample then went to a lab that never received the package.
+        // Moving it is Move Manifest's job.
+        if ($savedLabId !== null && $posted !== $savedLabId && (int) ($saved['sample_package_id'] ?? 0) > 0) {
+            LoggerUtility::logWarning('Testing lab kept on a sample that is on a manifest', [
+                'table' => $table,
+                'record_id' => $recordId,
+                'posted' => $posted,
+                'kept' => $savedLabId,
+                'manifest' => $saved['sample_package_code'] ?? null,
+            ]);
+            if (isset($_SESSION) && is_array($_SESSION)) {
+                $_SESSION['labKeptOnManifest'] = sprintf(
+                    _translate('The testing lab was not changed: this sample is on manifest %s. Use Move Manifest to move it to another lab.'),
+                    (string) ($saved['sample_package_code'] ?? '')
+                );
+            }
+            return $savedLabId;
+        }
+
         $ownLabId = $this->getOwnLabId();
         if ($ownLabId === null) {
             return $posted;
         }
         if ($posted === $ownLabId) {
             return $posted;
-        }
-        $savedLabId = null;
-        if (!empty($table) && !empty($primaryKey) && !empty($recordId)) {
-            $saved = $this->db->rawQueryOne(
-                "SELECT lab_id FROM `$table` WHERE `$primaryKey` = ?",
-                [$recordId]
-            );
-            $savedLabId = ((int) ($saved['lab_id'] ?? 0)) ?: null;
         }
         // Keep an existing foreign lab as-is; otherwise this install's own lab.
         $resolved = $savedLabId ?? $ownLabId;

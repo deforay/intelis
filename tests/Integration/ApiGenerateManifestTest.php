@@ -195,6 +195,25 @@ final class ApiGenerateManifestTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testALabTheUserIsNotMappedToGetsNoManifest(): void
+    {
+        $this->seedVl('ART-1', 1);
+
+        // The user is mapped to facility 1 only.
+        $payload = $this->drive('/api/v1.1/generate-manifest.php', [
+            'testType' => 'vl',
+            'labId' => 2,
+            'sampleCode' => ['VL-ART-1'],
+        ]);
+
+        self::assertSame('Failed', $payload['status']);
+        self::assertSame('Requested Facilities not mapped. Failed to add samples to manifest', $payload['message']);
+        self::assertNull(self::manifests()['VL-ART-1']);
+        $made = LegacyAppHarness::db()->rawQueryOne('SELECT COUNT(*) AS n FROM specimen_manifests');
+        self::assertSame(0, (int) $made['n']);
+    }
+
+    #[RunInSeparateProcess]
     public function testUniqueIdsPutOnlyThoseSamplesInTheManifest(): void
     {
         $this->seedVl('ART-1', 1, ['unique_id' => 'uid-1']);

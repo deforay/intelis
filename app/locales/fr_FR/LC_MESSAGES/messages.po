@@ -36934,3 +36934,7 @@ msgstr "Les retraits sont créés par le déplacement de manifeste et ne peuvent
 
 msgid "Last 6 months"
 msgstr "6 derniers mois"
+
+#, c-format
+msgid "The testing lab was not changed: this sample is on manifest %s. Use Move Manifest to move it to another lab."
+msgstr "Le laboratoire n'a pas été modifié : cet échantillon est sur le manifeste %s. Utilisez le déplacement de manifeste pour le changer de laboratoire."
