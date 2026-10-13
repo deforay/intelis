@@ -125,6 +125,8 @@ final class ManifestMoveService
         $withdrawnByLab = [];
         /** @var array<int, list<string>> $manifestsByLab */
         $manifestsByLab = [];
+        /** @var list<string> $movedHere unique ids now at $toLabId */
+        $movedHere = [];
 
         $this->db->beginTransaction();
         try {
@@ -164,6 +166,7 @@ final class ManifestMoveService
                 }
 
                 foreach ($toMove as $sample) {
+                    $movedHere[] = (string) $sample['unique_id'];
                     $fromLab = (int) ($sample['lab_id'] ?? 0);
                     $received = (int) ($sample['result_status'] ?? 0) === RECEIVED_AT_TESTING_LAB;
                     $this->db->rawQuery(
@@ -210,6 +213,8 @@ final class ManifestMoveService
                 $outcome['moved'][$code] = count($toMove);
             }
 
+            $this->dropWithdrawals($toLabId, $movedHere, $now);
+
             foreach ($withdrawnByLab as $fromLab => $uniqueIds) {
                 $commandId = null;
                 $canWithdraw = $this->labCapabilities->supportsCommand(
@@ -249,6 +254,50 @@ final class ManifestMoveService
         }
 
         return $outcome;
+    }
+
+    /**
+     * A sample moved (back) to a lab must not be cancelled there by a withdrawal
+     * from an earlier move that the lab has not picked up yet. Those samples
+     * come out of its pending withdrawals; one left with none is cancelled.
+     * One the lab already ran is undone by its next pull (LabRequestSyncService).
+     *
+     * @param list<string> $uniqueIds
+     */
+    private function dropWithdrawals(int $labId, array $uniqueIds, string $now): void
+    {
+        if ($uniqueIds === []) {
+            return;
+        }
+        $pending = $this->db->rawQuery(
+            "SELECT command_id, params FROM s_lis_remote_commands
+              WHERE lab_id = ? AND command = ? AND status = 'pending' FOR UPDATE",
+            [$labId, self::WITHDRAW_COMMAND]
+        );
+        foreach ($pending as $command) {
+            $params = json_decode((string) $command['params'], true);
+            if (!is_array($params) || !is_array($params['uniqueIds'] ?? null)) {
+                continue;
+            }
+            $left = array_values(array_diff($params['uniqueIds'], $uniqueIds));
+            if (count($left) === count($params['uniqueIds'])) {
+                continue;
+            }
+            if ($left === []) {
+                $this->db->rawQuery(
+                    "UPDATE s_lis_remote_commands
+                        SET status = 'cancelled', completed_at = ?, last_error = 'Superseded by a later move'
+                      WHERE command_id = ?",
+                    [$now, $command['command_id']]
+                );
+            } else {
+                $params['uniqueIds'] = $left;
+                $this->db->rawQuery(
+                    'UPDATE s_lis_remote_commands SET params = ? WHERE command_id = ?',
+                    [json_encode($params), $command['command_id']]
+                );
+            }
+        }
     }
 
     /**

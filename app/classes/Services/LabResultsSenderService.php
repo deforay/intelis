@@ -120,7 +120,8 @@ final class LabResultsSenderService
             FROM `$table` AS $alias
             LEFT JOIN `user_details` AS a ON $alias.result_approved_by = a.user_id
             WHERE result_status != " . RECEIVED_AT_CLINIC . "
-            AND IFNULL($alias.sample_code, '') != ''";
+            AND IFNULL($alias.sample_code, '') != ''
+            AND " . SampleWithdrawalService::notWithdrawnCondition($alias);
 
         if (!empty($run['sampleCode'])) {
             // Exact match on a quoted literal: the value can come from the query string.

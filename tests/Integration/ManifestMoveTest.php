@@ -254,6 +254,28 @@ final class ManifestMoveTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testMovingSamplesBackDropsTheWithdrawalTheLabHasNotPickedUp(): void
+    {
+        $db = $this->boot();
+        self::canWithdraw($db, self::OLD_LAB);
+        foreach (['M-1' => 'u-1', 'M-2' => 'u-2', 'M-3' => 'u-3'] as $code => $uniqueId) {
+            self::sample($db, self::manifest($db, $code), $code, $uniqueId);
+        }
+        self::moves()->move('vl', ['M-1', 'M-2'], self::NEW_LAB, 'Wrong lab', 'user-1');
+        self::moves()->move('vl', ['M-3'], self::NEW_LAB, 'Wrong lab', 'user-1');
+
+        // Moved back before the old lab polled: it must not cancel them now.
+        self::moves()->move('vl', ['M-1', 'M-3'], self::OLD_LAB, 'Back again', 'user-1');
+
+        $commands = $this->committed('s_lis_remote_commands', 'command_id');
+        $byIds = [];
+        foreach ($commands as $command) {
+            $byIds[implode(',', json_decode((string) $command['params'], true)['uniqueIds'])] = $command['status'];
+        }
+        self::assertSame(['u-2' => 'pending', 'u-3' => 'cancelled'], $byIds);
+    }
+
+    #[RunInSeparateProcess]
     public function testNothingIsMovedOrQueuedWhenTheMoveFailsPartWay(): void
     {
         $db = $this->boot();

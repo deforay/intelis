@@ -31,6 +31,11 @@ try {
 // Which lab a sample belongs to is decided on the STS, by an administrator.
 $canMove = $module !== '' && $general->isSTSInstance() && !$general->isCloudLisNonAdmin();
 $testingLabs = $canMove ? $facilitiesService->getTestingLabs($module) : [];
+$statusLabels = [
+    'pending' => _translate("Pending"),
+    'dispatch' => _translate("Dispatch"),
+    'received' => _translate("Received"),
+];
 ?>
 <div class="content-wrapper">
     <section class="content-header">
@@ -155,6 +160,8 @@ $testingLabs = $canMove ? $facilitiesService->getTestingLabs($module) : [];
     <script src="/assets/js/moment.min.js"></script>
     <script type="text/javascript" src="<?= _asset('/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
     <script type="text/javascript">
+        const statusLabels = <?= json_encode($statusLabels, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
+
         $(document).ready(function() {
             $('#testingLab, #assignLab').select2({
                 width: '100%',
@@ -214,7 +221,7 @@ $testingLabs = $canMove ? $facilitiesService->getTestingLabs($module) : [];
                     tr.append($('<td>').append(box))
                         .append($('<td>').text(m.code))
                         .append($('<td>').text(m.createdLabel || ''))
-                        .append($('<td>').text(m.status || ''))
+                        .append($('<td>').text(statusLabels[m.status] || m.status || ''))
                         .append($('<td>').text(m.samples))
                         .append($('<td>').text(m.tested));
                     rows.append(tr);
