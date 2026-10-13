@@ -1,114 +1,118 @@
 <?php
 
 use App\Services\TestsService;
-use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
-use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
-use Psr\Http\Message\ServerRequestInterface;
+use App\Services\ManifestMoveService;
 use App\Registries\ContainerRegistry;
+use Psr\Http\Message\ServerRequestInterface;
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-if (isset($_POST['testType']) && $_POST['testType'] == "") {
-    $_POST['testType'] = "generic-tests";
-}
-$table = TestsService::getTestTableName($_POST['testType']);
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-try {
 
-    $db->beginTransaction();
+/** @var ManifestMoveService $manifestMoveService */
+$manifestMoveService = ContainerRegistry::get(ManifestMoveService::class);
 
-    // The picker used to wrap each code in literal single quotes for raw SQL
-    // interpolation; those quotes make a bound parameter match nothing, so
-    // strip them in case an older cached picker still posts quoted codes.
-    $packageCodes = array_map(fn($code) => trim((string) $code, "'"), (array) ($_POST['packageCode'] ?? []));
-    $packageCodes = array_values(array_filter($packageCodes, 'strlen'));
+$testType = trim((string) ($_POST['testType'] ?? '')) ?: 'generic-tests';
+$back = 'view-manifests.php?t=' . urlencode($testType);
 
-    if (isset($_POST['assignLab']) && trim((string) $_POST['assignLab']) !== "" && $packageCodes !== []) {
-
-        $assignLab = (int) $_POST['assignLab'];
-        $placeholders = implode(',', array_fill(0, count($packageCodes), '?'));
-
-        // Append this move to each manifest's OWN change history. This used to
-        // read one undefined manifest's history and stamp that merged blob onto
-        // every selected manifest, with the codes interpolated unquoted into the
-        // SQL; the codes are bound now.
-        $newReason = ['reason' => $_POST['reasonForChange'], 'changedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
-        $manifests = $db->rawQuery(
-            "SELECT manifest_code, manifest_change_history FROM specimen_manifests WHERE manifest_code IN ($placeholders)",
-            $packageCodes
-        );
-        foreach ($manifests as $manifest) {
-            $history = json_decode((string) $manifest['manifest_change_history']) ?: [];
-            $history[] = $newReason;
-            $db->reset();
-            $db->where('manifest_code', $manifest['manifest_code']);
-            $db->update('specimen_manifests', ['lab_id' => $assignLab, 'manifest_change_history' => json_encode($history)]);
-        }
-
-        // A sample_code is the TESTING LAB's working id, minted from that lab's
-        // own series. Moving a sample used to carry the origin lab's code along,
-        // planting a foreign code inside the destination lab's series -- which is
-        // what wedged a lab's code generation in the field. Clear it (before the
-        // lab flips below, while lab_id still names the origin) so the
-        // destination lab mints its own code at activation. The network code
-        // (remote_sample_code) is untouched.
-        $db->rawQuery(
-            "UPDATE $table
-                SET sample_code = NULL, sample_code_format = NULL, sample_code_key = NULL
-              WHERE sample_package_code IN ($placeholders)
-                AND lab_id <> ?
-                AND sample_code IS NOT NULL",
-            [...$packageCodes, $assignLab]
-        );
-
-        $value = [
-            'lab_id' => $assignLab,
-            'referring_lab_id' => (int) $_POST['testingLab'],
-            'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-            'samples_referred_datetime' => DateUtility::getCurrentDateTime(),
-            'data_sync' => 0
-        ];
-        /* Update test types */
-        $db->reset();
-        $db->where("sample_package_code IN ($placeholders)", $packageCodes);
-        $db->update($table, $value);
-
-        $_SESSION['alertMsg'] = "Manifest code(s) moved successfully";
-    }
-
-    //Add event log
-    $eventType = 'move-manifest';
-    $action = $_SESSION['userName'] . ' moved Sample Manifest(s) ' . implode(", ", $packageCodes) . ' from ' . $facilitiesService->getFacilityName($_POST['testingLab']) . ' to ' . $facilitiesService->getFacilityName($_POST['assignLab']);
-    $resource = 'specimen-manifest';
-
-    $general->activityLog($eventType, $action, $resource);
-
-
-    $db->commitTransaction();
-    header("Location:view-manifests.php?t=" . ($_POST['testType']));
-} catch (Throwable $e) {
-    $db->rollbackTransaction();
-    LoggerUtility::logError($e->getMessage(), [
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
-        'trace' => $e->getTraceAsString(),
-        'last_db_query' => $db->getLastQuery(),
-        'last_db_error' => $db->getLastError()
-    ]);
-    throw $e;
+// Which lab a sample belongs to is decided on the STS. A lab moving its own
+// samples would be handing them to another lab, which a lab cannot do.
+if (!$general->isSTSInstance() || $general->isCloudLisNonAdmin()) {
+    $_SESSION['alertMsg'] = _translate('Manifests can only be moved by an administrator on the Sample Tracking System');
+    header("Location: $back");
+    exit;
 }
+
+try {
+    TestsService::getTestTableName($testType);
+} catch (Throwable) {
+    $_SESSION['alertMsg'] = _translate('Unknown test type');
+    header('Location: view-manifests.php');
+    exit;
+}
+
+$toLabId = (int) ($_POST['assignLab'] ?? 0);
+$testingLabs = $facilitiesService->getTestingLabs($testType);
+if ($toLabId <= 0 || !array_key_exists($toLabId, $testingLabs)) {
+    $_SESSION['alertMsg'] = _translate('Please choose the testing lab to move the manifests to');
+    header('Location: move-manifest.php?t=' . urlencode($testType));
+    exit;
+}
+$reason = trim((string) ($_POST['reasonForChange'] ?? ''));
+if ($reason === '') {
+    $_SESSION['alertMsg'] = _translate('Please enter the reason for moving the manifests');
+    header('Location: move-manifest.php?t=' . urlencode($testType));
+    exit;
+}
+
+try {
+    $outcome = $manifestMoveService->move(
+        $testType,
+        (array) ($_POST['packageCode'] ?? []),
+        $toLabId,
+        $reason,
+        $_SESSION['userId'] ?? null
+    );
+} catch (Throwable $e) {
+    LoggerUtility::logError('Move Manifest failed: ' . $e->getMessage(), [
+        'test_type' => $testType,
+        'to_lab_id' => $toLabId,
+        'trace' => $e->getTraceAsString(),
+    ]);
+    $_SESSION['alertMsg'] = _translate('The manifests could not be moved. Nothing was changed.');
+    header('Location: move-manifest.php?t=' . urlencode($testType));
+    exit;
+}
+
+$toLabName = $testingLabs[$toLabId];
+$messages = [];
+if ($outcome['moved'] !== []) {
+    $messages[] = sprintf(
+        _translate('Moved to %s: %s'),
+        $toLabName,
+        implode(', ', array_keys($outcome['moved']))
+    );
+    $general->activityLog(
+        'move-manifest',
+        ($_SESSION['userName'] ?? '') . ' moved manifest(s) ' . implode(', ', array_keys($outcome['moved']))
+            . " to $toLabName: $reason",
+        'specimen-manifest'
+    );
+}
+$refusalText = [
+    'tested' => _translate('has samples already tested'),
+    'referral' => _translate('is a referral manifest'),
+    'already-there' => _translate('is already at that lab'),
+    'not-found' => _translate('was not found'),
+];
+foreach ($outcome['refused'] as $code => $why) {
+    $messages[] = sprintf(_translate('Not moved: %s %s'), $code, $refusalText[$why] ?? $why);
+}
+foreach ($outcome['withdrawals'] as $withdrawal) {
+    $fromLabName = $facilitiesService->getFacilityName($withdrawal['labId']) ?: (string) $withdrawal['labId'];
+    $messages[] = $withdrawal['commandId'] !== null
+        ? sprintf(
+            _translate('%s will cancel its copies of %d sample(s) at its next sync'),
+            $fromLabName,
+            $withdrawal['samples']
+        )
+        : sprintf(
+            _translate('%s cannot be told automatically: its copies of %d sample(s) must be cancelled there'),
+            $fromLabName,
+            $withdrawal['samples']
+        );
+}
+
+$_SESSION['alertMsg'] = implode("\n", $messages) ?: _translate('No manifests were selected');
+header("Location: $back");

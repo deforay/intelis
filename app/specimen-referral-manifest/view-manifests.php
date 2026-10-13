@@ -3,6 +3,7 @@
 
 use App\Registries\AppRegistry;
 use App\Services\UsersService;
+use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
 
@@ -10,6 +11,9 @@ $title = "Specimen Referral Manifest";
 
 require_once APPLICATION_PATH . '/header.php';
 
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -42,7 +46,10 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("/specimen-referral-manifest/move-manifest.php?t=" . $_GET['t'])) { ?>
+						<?php if (
+							$general->isSTSInstance() && !$general->isCloudLisNonAdmin()
+							&& _isAllowed("/specimen-referral-manifest/move-manifest.php?t=" . $_GET['t'])
+						) { ?>
 							<a href="move-manifest.php?t=<?php echo _sanitizeOutput($_GET['t']); ?>" class="btn btn-primary pull-right"
 								style=" margin-left: 10px; "> <em class="fa-solid fa-angles-right"></em>
 								<?= _translate("Move Manifest"); ?></a>

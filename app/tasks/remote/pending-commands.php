@@ -148,6 +148,8 @@ $inProcessHandlers = [
     'metadata-resync' => __DIR__ . '/command-handlers/metadata-resync.php',
     'refresh-cache' => __DIR__ . '/command-handlers/refresh-cache.php',
     'rotate-token' => __DIR__ . '/command-handlers/rotate-token.php',
+    // Queued by Move Manifest on the STS, never by hand.
+    'withdraw-samples' => __DIR__ . '/command-handlers/withdraw-samples.php',
 ];
 $rootRunnerCommands = ['upgrade', 'upgrade-prepare', 'upgrade-apply', 'rollback', 'refresh-perms', 'restart-apache'];
 

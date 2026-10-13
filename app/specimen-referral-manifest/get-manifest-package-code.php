@@ -1,161 +1,55 @@
 <?php
 
+// The manifests Move Manifest can offer for one lab, with how many of their
+// samples are tested (a manifest with any is not moved). JSON for the page.
+
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\DatabaseService;
+use App\Services\ManifestMoveService;
 use App\Registries\ContainerRegistry;
 
-// Sanitized values from $request object
+header('Content-Type: application/json');
+
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-
-$module = (empty($_POST['userSelectedTestType'])) ? $_POST['module'] : $_POST['userSelectedTestType'];
-
-$tableName = TestsService::getTestTableName($module);
-$query = "SELECT p.manifest_code, p.lab_id, p.request_created_datetime
-			FROM specimen_manifests as p
-			INNER JOIN $tableName as vl ON vl.sample_package_code = p.manifest_code ";
-$where = [];
-if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) !== '') {
-	[$startDate, $endDate] = DateUtility::convertDateRange($_POST['daterange'], includeTime: true);
-	$where[] = "p.request_created_datetime BETWEEN '$startDate' AND '$endDate'";
-}
-if (!empty($_SESSION['facilityMap'])) {
-	$where[] = " vl.facility_id IN(" . $_SESSION['facilityMap'] . ")";
-}
-// Lab isolation (cloud-LIS): scope to this user's lab. No-op unless the session
-// carries a lab id, so byte-identical for every existing LIS/STS user.
-if ($labScope = $general->labScopeWhere('vl')) {
-	$where[] = $labScope;
+$testType = trim((string) ($_POST['module'] ?? ''));
+try {
+    TestsService::getTestTableName($testType);
+} catch (Throwable) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Unknown test type']);
+    exit;
 }
 
-if (!empty($_POST['testingLab'])) {
-	$where[] = " p.lab_id IN(" . $db->inIntList($_POST['testingLab']) . ")";
+// AJAX requests bypass the AclMiddleware, so the page's own gate is checked here.
+if (
+    !$general->isSTSInstance()
+    || $general->isCloudLisNonAdmin()
+    || !_isAllowed('/specimen-referral-manifest/move-manifest.php?t=' . $testType)
+) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Not allowed']);
+    exit;
 }
 
-if (!empty($_POST['genericTestType'])) {
-	$where[] = " vl.test_type = " . (int) $_POST['genericTestType'];
+$labId = (int) ($_POST['testingLab'] ?? 0);
+if ($labId <= 0) {
+    echo json_encode(['manifests' => []]);
+    exit;
 }
+[$from, $to] = DateUtility::convertDateRange($_POST['daterange'] ?? null, includeTime: true);
 
+/** @var ManifestMoveService $manifestMoveService */
+$manifestMoveService = ContainerRegistry::get(ManifestMoveService::class);
+$manifests = $manifestMoveService->listForLab($testType, $labId, $from ?: null, $to ?: null);
 
-if ($where !== []) {
-	$query .= " WHERE " . implode(" AND ", $where);
-}
-$query .= " GROUP BY p.manifest_code ORDER BY p.last_modified_datetime ASC";
-
-$manifestResults = $db->rawQuery($query);
-
-if (empty($manifestResults)) {
-	echo "";
-	exit(0);
-}
-
-?>
-<div class="col-md-9 col-md-offset-1">
-	<div class="form-group">
-		<div class="col-md-12">
-			<div class="col-md-12">
-				<div style="width:60%;margin:0 auto;clear:both;">
-					<a href="#" id="select-all-packageCode" style="float:left" class="btn btn-info btn-xs">Select
-						All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#'
-						id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em
-							class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
-				</div><br /><br />
-				<select id="packageCode" name="packageCode[]" multiple="multiple" class="search">
-					<?php foreach ($manifestResults as $manifest) { ?>
-						<option value="<?= _sanitizeOutput($manifest['manifest_code']); ?>">
-							<?= $manifest["manifest_code"] . " (" . DateUtility::humanReadableDateFormat($manifest["request_created_datetime"]) . ")"; ?>
-						</option>
-					<?php } ?>
-				</select>
-			</div>
-		</div>
-	</div>
-</div>
-<script>
-	$(document).ready(function () {
-		$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Manifest Code'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Manifest Code'>",
-			afterInit: function (ms) {
-				var that = this,
-					$selectableSearch = that.$selectableUl.prev(),
-					$selectionSearch = that.$selectionUl.prev(),
-					selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
-					selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
-
-				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-					.on('keydown', function (e) {
-						if (e.which === 40) {
-							that.$selectableUl.focus();
-							return false;
-						}
-					});
-
-				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-					.on('keydown', function (e) {
-						if (e.which == 40) {
-							that.$selectionUl.focus();
-							return false;
-						}
-					});
-			},
-			afterSelect: function () {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
-					$("#packageSubmit").attr("disabled", false);
-					$("#packageSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#packageSubmit").attr("disabled", false);
-					$("#packageSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					alert("You have already selected Maximum no. of sample " + noOfSamples);
-					$("#packageSubmit").attr("disabled", true);
-					$("#packageSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-			},
-			afterDeselect: function () {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == 0) {
-					$("#packageSubmit").attr("disabled", true);
-					$("#packageSubmit").css("pointer-events", "none");
-				} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
-					$("#packageSubmit").attr("disabled", false);
-					$("#packageSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#packageSubmit").attr("disabled", false);
-					$("#packageSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					$("#packageSubmit").attr("disabled", true);
-					$("#packageSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-			}
-		});
-		$('#select-all-packageCode').click(function () {
-			$('#packageCode').multiSelect('select_all');
-			return false;
-		});
-		$('#deselect-all-packageCode').click(function () {
-			$('#packageCode').multiSelect('deselect_all');
-			$("#packageSubmit").attr("disabled", true);
-			$("#packageSubmit").css("pointer-events", "none");
-			return false;
-		});
-	});
-</script>
+echo json_encode(['manifests' => array_map(static fn(array $m): array => $m + [
+    'createdLabel' => DateUtility::humanReadableDateFormat($m['created'] ?? '', true),
+], $manifests)]);

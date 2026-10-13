@@ -36828,3 +36828,103 @@ msgstr "Cet ID d'échantillon correspond à plusieurs échantillons. Corrigez-le
 
 msgid "Results cannot be imported for this lab"
 msgstr "Les résultats ne peuvent pas être importés pour ce laboratoire"
+
+msgid "Move Manifests"
+msgstr "Déplacer des manifestes"
+
+msgid "Manifests can only be moved by an administrator on the Sample Tracking System"
+msgstr "Seul un administrateur du système de suivi des échantillons peut déplacer des manifestes"
+
+msgid "Find Manifests"
+msgstr "Rechercher des manifestes"
+
+msgid "Choose the testing lab the manifests are at"
+msgstr "Choisir le laboratoire où se trouvent les manifestes"
+
+msgid "Manifest Date"
+msgstr "Date du manifeste"
+
+msgid "Choose the date range the manifests were created in"
+msgstr "Choisir la période de création des manifestes"
+
+msgid "Move Selected Manifests"
+msgstr "Déplacer les manifestes sélectionnés"
+
+msgid "A manifest with any tested sample cannot be moved. The lab the samples are taken from is asked to cancel its copies."
+msgstr "Un manifeste contenant un échantillon déjà testé ne peut pas être déplacé. Le laboratoire d'origine des échantillons est invité à annuler ses copies."
+
+msgid "Move to Testing Lab"
+msgstr "Déplacer vers le laboratoire"
+
+msgid "Choose the testing lab the manifests are moving to"
+msgstr "Choisir le laboratoire de destination des manifestes"
+
+msgid "Reason for Moving"
+msgstr "Motif du déplacement"
+
+msgid "Enter the reason for moving the selected manifests"
+msgstr "Saisir le motif du déplacement des manifestes sélectionnés"
+
+msgid "Move"
+msgstr "Déplacer"
+
+msgid "Please choose the testing lab"
+msgstr "Veuillez choisir le laboratoire"
+
+msgid "No manifests found for this lab"
+msgstr "Aucun manifeste trouvé pour ce laboratoire"
+
+msgid "Has tested samples, cannot be moved"
+msgstr "Contient des échantillons testés, ne peut pas être déplacé"
+
+msgid "Could not load the manifests"
+msgstr "Impossible de charger les manifestes"
+
+msgid "Please choose a different lab to move the manifests to"
+msgstr "Veuillez choisir un autre laboratoire de destination"
+
+msgid "Move the selected manifests and all their samples?"
+msgstr "Déplacer les manifestes sélectionnés et tous leurs échantillons ?"
+
+msgid "Unknown test type"
+msgstr "Type de test inconnu"
+
+msgid "Please choose the testing lab to move the manifests to"
+msgstr "Veuillez choisir le laboratoire de destination des manifestes"
+
+msgid "Please enter the reason for moving the manifests"
+msgstr "Veuillez saisir le motif du déplacement des manifestes"
+
+msgid "The manifests could not be moved. Nothing was changed."
+msgstr "Les manifestes n'ont pas pu être déplacés. Rien n'a été modifié."
+
+#, c-format
+msgid "Moved to %s: %s"
+msgstr "Déplacés vers %s : %s"
+
+msgid "has samples already tested"
+msgstr "contient des échantillons déjà testés"
+
+msgid "is a referral manifest"
+msgstr "est un manifeste de référence"
+
+msgid "is already at that lab"
+msgstr "est déjà dans ce laboratoire"
+
+msgid "was not found"
+msgstr "est introuvable"
+
+#, c-format
+msgid "Not moved: %s %s"
+msgstr "Non déplacé : %s %s"
+
+#, c-format
+msgid "%s will cancel its copies of %d sample(s) at its next sync"
+msgstr "%s annulera ses copies de %d échantillon(s) à sa prochaine synchronisation"
+
+#, c-format
+msgid "%s cannot be told automatically: its copies of %d sample(s) must be cancelled there"
+msgstr "%s ne peut pas être prévenu automatiquement : ses copies de %d échantillon(s) doivent y être annulées"
+
+msgid "No manifests were selected"
+msgstr "Aucun manifeste sélectionné"
