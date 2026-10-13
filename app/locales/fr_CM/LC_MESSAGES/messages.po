@@ -36917,3 +36917,6 @@ msgstr "%s ne peut pas être prévenu automatiquement : ses copies de %d échant
 
 msgid "No manifests were selected"
 msgstr "Aucun manifeste sélectionné"
+
+msgid "Withdrawals are queued by Move Manifest and cannot be replayed"
+msgstr "Les retraits sont créés par le déplacement de manifeste et ne peuvent pas être rejoués"
