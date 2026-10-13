@@ -97,6 +97,7 @@ $statusLabels = [
 
             <form method="post" id="moveManifestForm" autocomplete="off" action="moveSpecimenManifestCodeHelper.php">
                 <input type="hidden" name="testType" value="<?= _sanitizeOutput($module); ?>">
+                <input type="hidden" name="receivedConfirmed" id="receivedConfirmed" value="">
                 <div class="box box-success" id="moveSection" style="display:none;">
                     <div class="box-header with-border">
                         <h3 class="box-title"><em class="fa-solid fa-exchange"></em> <?= _translate("Move Selected Manifests"); ?></h3>
@@ -236,7 +237,7 @@ $statusLabels = [
                     return;
                 }
                 manifests.forEach(function(m) {
-                    const box = $('<input type="checkbox" name="packageCode[]">').val(m.code);
+                    const box = $('<input type="checkbox" name="packageCode[]">').val(m.code).attr('data-status', m.status || '');
                     const tr = $('<tr>');
                     tr.append($('<td>').append(box))
                         .append($('<td>').text(m.code))
@@ -271,7 +272,28 @@ $statusLabels = [
             const flag = deforayValidator.init({
                 formId: 'moveManifestForm'
             });
-            if (flag && confirm("<?= _translate('Move the selected manifests and all their samples?', true); ?>")) {
+            if (!flag) {
+                return;
+            }
+            // Received means the samples are at the lab now: moving them is only
+            // right once they have physically gone on to the new lab.
+            const received = manifestBoxes().filter(':checked').filter(function() {
+                return $(this).attr('data-status') === 'received';
+            }).map(function() {
+                return this.value;
+            }).get();
+            $('#receivedConfirmed').val('');
+            if (received.length > 0) {
+                const question = "<?= _translate('These manifests were already received at %1$s: %2$s. Have their samples physically been sent on to %3$s?', true); ?>"
+                    .replace('%1$s', $('#testingLab option:selected').text())
+                    .replace('%2$s', received.join(', '))
+                    .replace('%3$s', $('#assignLab option:selected').text());
+                if (!confirm(question)) {
+                    return;
+                }
+                $('#receivedConfirmed').val('yes');
+            }
+            if (confirm("<?= _translate('Move the selected manifests and all their samples?', true); ?>")) {
                 // A search takes the rows it hides out of the page, and their
                 // checked boxes with them: clear it so every selection is sent.
                 if ($.fn.DataTable.isDataTable('#manifestTable')) {

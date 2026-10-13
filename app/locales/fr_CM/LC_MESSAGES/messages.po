@@ -36927,3 +36927,11 @@ msgstr "6 derniers mois"
 
 msgid "The testing lab was not changed: this sample is on a manifest. Use Move Manifest to move it to another lab."
 msgstr "Le laboratoire n'a pas été modifié : cet échantillon est sur un manifeste. Utilisez le déplacement de manifeste pour le changer de laboratoire."
+
+
+msgid "was received at its lab and was not confirmed as sent on"
+msgstr "a été reçu à son laboratoire et son envoi n'a pas été confirmé"
+
+#, c-format
+msgid "These manifests were already received at %1$s: %2$s. Have their samples physically been sent on to %3$s?"
+msgstr "Ces manifestes ont déjà été reçus à %1$s : %2$s. Leurs échantillons ont-ils été physiquement envoyés à %3$s ?"

@@ -63,7 +63,8 @@ try {
         $toLabId,
         $reason,
         $_SESSION['userId'] ?? null,
-        $_SESSION['facilityMap'] ?? null
+        $_SESSION['facilityMap'] ?? null,
+        ($_POST['receivedConfirmed'] ?? '') === 'yes'
     );
 } catch (Throwable $e) {
     LoggerUtility::logError('Move Manifest failed: ' . $e->getMessage(), [
@@ -95,6 +96,7 @@ $refusalText = [
     'tested' => _translate('has samples already tested'),
     'referral' => _translate('is a referral manifest'),
     'already-there' => _translate('is already at that lab'),
+    'received' => _translate('was received at its lab and was not confirmed as sent on'),
     'not-found' => _translate('was not found'),
 ];
 foreach ($outcome['refused'] as $code => $why) {

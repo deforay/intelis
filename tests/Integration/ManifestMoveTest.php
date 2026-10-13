@@ -134,7 +134,7 @@ final class ManifestMoveTest extends TestCase
         ]);
         self::sample($db, $id, 'M-1', 'u-2');
 
-        $outcome = self::moves()->move('vl', ['M-1'], self::NEW_LAB, 'Wrong lab', 'user-1');
+        $outcome = self::moves()->move('vl', ['M-1'], self::NEW_LAB, 'Wrong lab', 'user-1', null, true);
 
         self::assertSame(['M-1' => 2], $outcome['moved']);
         self::assertSame([], $outcome['refused']);
@@ -180,6 +180,25 @@ final class ManifestMoveTest extends TestCase
             $this->committed('form_vl')['tested-by-code']['sample_package_id'],
             'a manifest that is not moved is not touched'
         );
+    }
+
+    #[RunInSeparateProcess]
+    public function testAReceivedManifestMovesOnlyWhenConfirmedAsSentOn(): void
+    {
+        $db = $this->boot();
+        $received = self::manifest($db, 'M-received', ['manifest_status' => 'received']);
+        self::sample($db, $received, 'M-received', 'r-1', ['result_status' => 6]);
+        $dispatched = self::manifest($db, 'M-sent', ['manifest_status' => 'dispatch']);
+        self::sample($db, $dispatched, 'M-sent', 's-1');
+
+        $outcome = self::moves()->move('vl', ['M-received', 'M-sent'], self::NEW_LAB, 'Wrong lab', 'user-1');
+
+        self::assertSame(['M-sent' => 1], $outcome['moved']);
+        self::assertSame(['M-received' => 'received'], $outcome['refused']);
+        self::assertSame((string) self::OLD_LAB, (string) $this->committed('form_vl')['r-1']['lab_id']);
+
+        $confirmed = self::moves()->move('vl', ['M-received'], self::NEW_LAB, 'Sent on', 'user-1', null, true);
+        self::assertSame(['M-received' => 1], $confirmed['moved']);
     }
 
     #[RunInSeparateProcess]
