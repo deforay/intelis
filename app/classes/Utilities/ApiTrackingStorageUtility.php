@@ -33,6 +33,9 @@ final class ApiTrackingStorageUtility
 
     private const PURGE_MARKER = '.purge-';
 
+    /** Files the repository keeps in an otherwise empty folder. */
+    private const array PLACEHOLDERS = ['.gitkeep', '.hgkeep'];
+
     public static function root(): string
     {
         return VAR_PATH . DIRECTORY_SEPARATOR . 'track-api';
@@ -161,6 +164,15 @@ final class ApiTrackingStorageUtility
             @chgrp($dir, $stat['gid']);
         }
         self::copyAcl($aside, $dir);
+
+        // The placeholders the repository keeps in the folder go back into it: deleted
+        // with the rest, they left every git checkout with a change it did not make,
+        // and `git pull --rebase` (composer refresh) refuses to run on one.
+        foreach (self::PLACEHOLDERS as $placeholder) {
+            if (is_file($aside . DIRECTORY_SEPARATOR . $placeholder)) {
+                @rename($aside . DIRECTORY_SEPARATOR . $placeholder, $dir . DIRECTORY_SEPARATOR . $placeholder);
+            }
+        }
 
         return $aside;
     }

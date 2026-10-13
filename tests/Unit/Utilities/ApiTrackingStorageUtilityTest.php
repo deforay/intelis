@@ -96,6 +96,25 @@ final class ApiTrackingStorageUtilityTest extends TestCase
         self::assertTrue(ApiTrackingStorageUtility::hasFlatFiles('requests'));
     }
 
+    public function testTheTrackedPlaceholderStaysInTheFolderAFlatFolderIsReplacedWith(): void
+    {
+        // var/track-api/{requests,responses}/.gitkeep are in the repository. Deleted with
+        // the folder moved aside, they left every git checkout with a change it did not
+        // make, and `git pull --rebase` refuses to run on one.
+        $root = ApiTrackingStorageUtility::kindRoot('requests');
+        touch("$root/.gitkeep");
+        touch("$root/01abc.json.zst");
+
+        $aside = ApiTrackingStorageUtility::moveAsideFlatFolder(
+            'requests',
+            new DateTimeImmutable('2026-09-16 14:00:00')
+        );
+        ApiTrackingStorageUtility::deleteAtLowPriority([$aside]);
+
+        self::assertFileExists("$root/.gitkeep");
+        self::assertFileDoesNotExist("$root/01abc.json.zst");
+    }
+
     public function testFlatFolderIsMovedAsideAndReplacedWithTheSameMode(): void
     {
         $root = ApiTrackingStorageUtility::kindRoot('responses');
