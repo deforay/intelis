@@ -560,6 +560,8 @@ $output->writeln('');
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+$deleteBatch = 10000;
+
 $tablesToCleanup = [
     'activity_log' => [
         'condition' => 'date_time < NOW() - INTERVAL 365 DAY',
@@ -596,23 +598,31 @@ foreach ($tablesToCleanup as $table => $config) {
     $output->write("<info>Processing table:</info> <comment>{$table}</comment>... ");
 
     try {
-        $db->where($config['condition']);
-        $countBefore = $db->getValue($table, 'COUNT(*)');
-
-        if ($countBefore > 0) {
+        // In batches: a year of activity_log or track_api_requests in one DELETE built
+        // an undo log as large as the rows and held the table for the whole of it, on a
+        // server where MySQL shares the memory with everything else.
+        $deleted = 0;
+        $failed = false;
+        do {
             $db->where($config['condition']);
-            if ($db->delete($table)) {
-                $output->writeln("<success>✓ Deleted {$countBefore} rows</success>");
-                $dbStats['rows_deleted'] += $countBefore;
-                LoggerUtility::logInfo("Deleted {$countBefore} rows from {$table}");
-            } else {
-                $output->writeln("<fire>✗ ERROR: " . $db->getLastError() . "</fire>");
-                $dbStats['errors']++;
-                LoggerUtility::logError("Error deleting from {$table}: " . $db->getLastError());
+            if (!$db->delete($table, $deleteBatch)) {
+                $failed = true;
+                break;
             }
+            $deleted += (int) $db->count;
+        } while ((int) $db->count === $deleteBatch);
+
+        if ($failed) {
+            $output->writeln("<fire>✗ ERROR: " . $db->getLastError() . "</fire>");
+            $dbStats['errors']++;
+            LoggerUtility::logError("Error deleting from {$table}: " . $db->getLastError());
+        } elseif ($deleted > 0) {
+            $output->writeln("<success>✓ Deleted {$deleted} rows</success>");
+            LoggerUtility::logInfo("Deleted {$deleted} rows from {$table}");
         } else {
             $output->writeln("<info>ℹ No rows to delete</info>");
         }
+        $dbStats['rows_deleted'] += $deleted;
 
         $dbStats['tables_processed']++;
     } catch (Throwable $e) {

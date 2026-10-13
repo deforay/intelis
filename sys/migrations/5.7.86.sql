@@ -8,3 +8,15 @@ ALTER TABLE `temp_sample_import` ADD `matched_sample_id` INT NULL DEFAULT NULL A
 
 
 UPDATE `system_config` SET `value` = '5.7.86' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

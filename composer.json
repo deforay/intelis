@@ -4,7 +4,7 @@
     "homepage": "https://github.com/deforay/intelis",
     "type": "project",
     "license": "AGPL-3.0-or-later",
-    "version": "5.7.86",
+    "version": "5.7.87",
     "authors": [
         {
             "name": "Deforay",
@@ -155,7 +155,10 @@
             "Composer\\Config::disableProcessTimeout",
             "@php bin/dev/switch-mode.php"
         ],
-        "migrate": "@php bin/migrate.php -y",
+        "migrate": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php bin/migrate.php -y"
+        ],
         "reset-metadata": [
             "@php app/tasks/remote/sts-metadata-receiver.php -ft",
             "@php app/tasks/remote/lab-metadata-sender.php -f"
@@ -178,6 +181,7 @@
             "@pending-commands"
         ],
         "post-install": [
+            "Composer\\Config::disableProcessTimeout",
             "@provision",
             "@audit-triggers-drop",
             "@migrate",
@@ -188,6 +192,7 @@
             "@sts-setup"
         ],
         "post-update": [
+            "Composer\\Config::disableProcessTimeout",
             "@provision",
             "@audit-triggers-drop",
             "@migrate",
@@ -201,6 +206,7 @@
             "@purge-cache"
         ],
         "db:repair": [
+            "Composer\\Config::disableProcessTimeout",
             "@php bin/setup/regenerate-audit-triggers.php --apply install",
             "@php bin/reset-seq.php"
         ],
@@ -212,6 +218,7 @@
             "@install-hooks"
         ],
         "refresh": [
+            "Composer\\Config::disableProcessTimeout",
             "git refresh",
             "@composer install",
             "@composer post-update"

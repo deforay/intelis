@@ -21,6 +21,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\LabMetadataBatchReader;
 use App\Services\RejectionReasonMappingService;
 
 /** @var DatabaseService $db */
@@ -83,17 +84,18 @@ try {
 
     $metadataTables = [
         'lab_storage' => 'labStorage',
-        'lab_storage_history' => 'labStorageHistory',
         'instruments' => 'instruments',
         'instrument_machines' => 'instrumentMachines',
         'instrument_controls' => 'instrumentControls',
     ];
 
-    // What the Interface Tool reported, forwarded on to STS. These do not belong with
-    // the tables above: they have no updated_datetime, they are append-only rather than
-    // a small fixed set of rows, and they carry their own watermark so a burst of
-    // activity cannot hold up the metadata sync (or arrive as one enormous payload).
-    $instrumentDataTables = [
+    // Append-only tables that grow with the lab's work: what the Interface Tool
+    // reported, and every time a sample was stored or moved. These do not belong with
+    // the tables above, which are a small fixed set of rows. Each carries its own
+    // watermark and goes a capped batch per run, so a backlog (or a forced sync, which
+    // starts them over) cannot hold up the metadata sync or arrive as one enormous
+    // payload held in memory.
+    $batchedTables = [
         'instrument_activity_log' => [
             'payloadKey' => 'instrumentActivity',
             'deltaColumn' => 'received_at',
@@ -104,6 +106,13 @@ try {
             'payloadKey' => 'instrumentUsageStatistics',
             'deltaColumn' => 'updated_at',
             'watermark' => 'last_instrument_usage_sync',
+            'limit' => 5000,
+        ],
+        // Rows are only ever added, so the lab's own id orders them and never ties.
+        'lab_storage_history' => [
+            'payloadKey' => 'labStorageHistory',
+            'deltaColumn' => 'history_id',
+            'watermark' => 'last_lab_storage_history_id',
             'limit' => 5000,
         ],
     ];
@@ -128,7 +137,7 @@ try {
     }
 
     // +1 for users table
-    $totalSteps = count($metadataTables) + count($reasonTables) + count($instrumentDataTables) + 1;
+    $totalSteps = count($metadataTables) + count($reasonTables) + count($batchedTables) + 1;
     $bar = MiscUtility::spinnerStart($totalSteps, 'Collecting table data…');
 
     // Machines go whole every run: a few rows per lab. STS releases before 5.7.78
@@ -158,24 +167,20 @@ try {
     }
 
     // Watermarks are advanced only after STS has accepted the payload, so a failed run
-    // resends rather than skipping. Re-sending is free: STS stores these by their own
-    // identifiers, so a row it already holds is a no-op there.
-    $instrumentWatermarks = [];
-    foreach ($instrumentDataTables as $table => $spec) {
+    // resends rather than skipping. Re-sending is free: STS matches each row to the one
+    // it already holds, so a row it has is updated in place, not added again.
+    /** @var LabMetadataBatchReader $batchReader */
+    $batchReader = ContainerRegistry::get(LabMetadataBatchReader::class);
+    $batchedWatermarks = [];
+    foreach ($batchedTables as $table => $spec) {
         $sentUpTo = $db->getValue('s_vlsm_instance', $spec['watermark']);
-
-        $db->reset();
-        if ($forceFlag === false && !empty($sentUpTo)) {
-            $db->where($spec['deltaColumn'] . ' > ?', [$sentUpTo]);
-        }
-        $db->orderBy($spec['deltaColumn'], 'ASC');
-        $records = $db->get($table, $spec['limit']);
+        $records = $batchReader->next($table, $spec['deltaColumn'], $sentUpTo, $spec['limit'], $forceFlag);
 
         if (!empty($records)) {
             $payload[$spec['payloadKey']] = $records;
             // The watermark follows the last row actually sent, not the clock, so rows
             // written while this run was in flight are picked up next time.
-            $instrumentWatermarks[$spec['watermark']] =
+            $batchedWatermarks[$spec['watermark']] =
                 end($records)[$spec['deltaColumn']] ?? null;
         }
         MiscUtility::spinnerAdvance($bar);
@@ -196,7 +201,9 @@ try {
 
     if (!empty($users)) {
         foreach ($users as &$user) {
-            $signatureImagePath = isset($user['user_signature']) ? $signatureImagePathBase . DIRECTORY_SEPARATOR . $user['user_signature'] : null;
+            $signatureImagePath = isset($user['user_signature'])
+                ? $signatureImagePathBase . DIRECTORY_SEPARATOR . $user['user_signature']
+                : null;
             if ($signatureImagePath && MiscUtility::isImageValid($signatureImagePath)) {
                 $user['signature_image_content'] = base64_encode(file_get_contents($signatureImagePath));
                 $user['signature_image_filename'] = $user['user_signature'];
@@ -241,7 +248,7 @@ try {
     // on a delivery STS accepted. Each instrument watermark moves to the last row that
     // was actually sent; a table with nothing new leaves its watermark untouched.
     $syncUpdate = ['last_lab_metadata_sync' => DateUtility::getCurrentDateTime()];
-    foreach ($instrumentWatermarks as $watermarkColumn => $watermarkValue) {
+    foreach ($batchedWatermarks as $watermarkColumn => $watermarkValue) {
         if ($watermarkValue !== null) {
             $syncUpdate[$watermarkColumn] = $watermarkValue;
         }
