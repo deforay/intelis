@@ -276,6 +276,25 @@ final class ManifestMoveTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testMovingBackLeavesAnotherTestTypesWithdrawalAlone(): void
+    {
+        $db = $this->boot();
+        // An EID withdrawal pending at the old lab for a sample whose unique id
+        // a VL sample happens to share.
+        $db->insert('s_lis_remote_commands', [
+            'command_id' => 'eid-cmd', 'lab_id' => self::OLD_LAB, 'command' => 'withdraw-samples',
+            'params' => json_encode(['testType' => 'eid', 'uniqueIds' => ['u-1']]),
+            'status' => 'pending', 'nonce' => 'n-1',
+        ]);
+        $id = self::manifest($db, 'M-1', ['lab_id' => self::NEW_LAB]);
+        self::sample($db, $id, 'M-1', 'u-1', ['lab_id' => self::NEW_LAB]);
+
+        self::moves()->move('vl', ['M-1'], self::OLD_LAB, 'Back again', 'user-1');
+
+        self::assertSame('pending', $this->committed('s_lis_remote_commands', 'command_id')['eid-cmd']['status']);
+    }
+
+    #[RunInSeparateProcess]
     public function testNothingIsMovedOrQueuedWhenTheMoveFailsPartWay(): void
     {
         $db = $this->boot();

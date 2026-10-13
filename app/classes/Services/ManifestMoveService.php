@@ -214,7 +214,7 @@ final class ManifestMoveService
                 $outcome['moved'][$code] = count($toMove);
             }
 
-            $this->dropWithdrawals($toLabId, $movedHere, $now);
+            $this->dropWithdrawals($testType, $toLabId, $movedHere, $now);
 
             foreach ($withdrawnByLab as $fromLab => $uniqueIds) {
                 $commandId = null;
@@ -265,7 +265,7 @@ final class ManifestMoveService
      *
      * @param list<string> $uniqueIds
      */
-    private function dropWithdrawals(int $labId, array $uniqueIds, string $now): void
+    private function dropWithdrawals(string $testType, int $labId, array $uniqueIds, string $now): void
     {
         if ($uniqueIds === []) {
             return;
@@ -277,7 +277,11 @@ final class ManifestMoveService
         );
         foreach ($pending as $command) {
             $params = json_decode((string) $command['params'], true);
-            if (!is_array($params) || !is_array($params['uniqueIds'] ?? null)) {
+            // unique_id is unique within one test type's table only.
+            if (
+                !is_array($params) || !is_array($params['uniqueIds'] ?? null)
+                || ($params['testType'] ?? null) !== $testType
+            ) {
                 continue;
             }
             $left = array_values(array_diff($params['uniqueIds'], $uniqueIds));
