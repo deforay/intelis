@@ -1082,13 +1082,15 @@ $storageInfo = $storageService->getLabStorage();
 
 	function getVlResults(platformInfo) {
 		if (!platformInfo) {
-			$("#vlResult").attr("disabled", true);
+			// A disabled input is not submitted, so never disable one holding a saved result
+			$("#vlResult").attr("disabled", ($("#vlResult").val() || '').trim() === '');
 			return;
 		}
 
 		var str1 = platformInfo.split("##");
 		//Get VL results by platform id
 		var platformId = str1[3];
+		$("#vlResult").attr("disabled", false);
 		$("#possibleVlResults").html('');
 		$.post("/vl/requests/getVlResults.php", {
 				instrumentId: platformId,
@@ -1096,7 +1098,6 @@ $storageInfo = $storageService->getLabStorage();
 			function(data) {
 				if (data != "") {
 					$("#possibleVlResults").html(data);
-					$("#vlResult").attr("disabled", false);
 				}
 			});
 	}

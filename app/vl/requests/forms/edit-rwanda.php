@@ -835,13 +835,30 @@ if (trim((string) $facilityResult[0]['facility_state']) !== '') {
                }
           });
           //hivDetectionChange();
+          loadPossibleVlResults();
      });
+
+     // Fill the result suggestions for the saved platform without hivDetectionChange()'s
+     // side effects (it resets the rejection decision)
+     function loadPossibleVlResults() {
+          var text = $('#testingPlatform').val();
+          if (!text) {
+               return;
+          }
+          $.post("/vl/requests/getVlResults.php", {
+                    instrumentId: text.split("##")[3],
+               },
+               function(data) {
+                    $("#possibleVlResults").html(data);
+               });
+     }
 
      function hivDetectionChange() {
 
           var text = $('#testingPlatform').val();
           if (!text) {
-               $("#vlResult").attr("disabled", true);
+               // A disabled input is not submitted, so never disable one holding a saved result
+               $("#vlResult").attr("disabled", ($("#vlResult").val() || '').trim() === '');
                return;
           }
           var str1 = text.split("##");

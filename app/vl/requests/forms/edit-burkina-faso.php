@@ -1290,7 +1290,8 @@ if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty
 
           var text = $('#testingPlatform').val();
           if (!text) {
-               $("#vlResult").attr("disabled", true);
+               // A disabled input is not submitted, so never disable one holding a saved result
+               $("#vlResult").attr("disabled", ($("#vlResult").val() || '').trim() === '');
                return;
           }
 

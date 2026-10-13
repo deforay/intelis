@@ -1501,7 +1501,8 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] === "Other") {
 
 		var text = $('#testingPlatform').val();
 		if (!text) {
-			$("#vlResult").attr("disabled", true);
+			// A disabled input is not submitted, so never disable one holding a saved result
+			$("#vlResult").attr("disabled", ($("#vlResult").val() || '').trim() === '');
 			return;
 		}
 		var str1 = text.split("##");
@@ -1584,6 +1585,9 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] === "Other") {
 				platformId = str1[3];
 			}
 		}
+		if (platformId) {
+			$("#" + vlResultId).attr("disabled", false);
+		}
 		$("#" + datalistId).html('');
 		$.post("/vl/requests/getVlResults.php", {
 				instrumentId: platformId,
@@ -1592,7 +1596,6 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] === "Other") {
 				// alert(data);
 				if (data != "") {
 					$("#" + datalistId).html(data);
-					$("#" + vlResultId).attr("disabled", false);
 				}
 			});
 	}

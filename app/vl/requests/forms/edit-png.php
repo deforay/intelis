@@ -800,33 +800,37 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 	let provinceName = true;
 	let facilityName = true;
 
-	function getVlResults(testingPlatformId, datalistId, vlResultId) {
+	function getVlResults(testingPlatformId, datalistId, vlResultId, keepSavedValue = false) {
 		const testingVal = $('#' + testingPlatformId).val();
 		if (testingVal == "") {
+			// A disabled input is not submitted, so on load keep a saved result editable
+			if (keepSavedValue && ($("#" + vlResultId).val() || '').trim() !== '') {
+				$("#" + vlResultId).attr("disabled", false);
+				return false;
+			}
 			$("#" + vlResultId).val("");
 			$("#" + vlResultId).attr("disabled", true);
 			return false;
 		}
 		const str1 = testingVal.split("##");
 		const platformId = str1[3];
+		$("#" + vlResultId).attr("disabled", false);
 		$("#" + datalistId).html('');
 		$.post("/vl/requests/getVlResults.php", {
 				instrumentId: platformId,
 			},
 			function(data) {
-				// alert(data);
 				if (data != "") {
 					$("#" + datalistId).html(data);
-					$("#" + vlResultId).attr("disabled", false);
 				}
 			});
 	}
 
 	$(document).ready(function() {
 		checkCollectionDate('<?php echo $vlQueryInfo['sample_collection_date']; ?>');
-		getVlResults('testingPlatform', 'possibleVlResults', 'cphlvlResult');
-		getVlResults('failedTestingTech', 'failedPossibleVlResults', 'failedvlResult');
-		getVlResults('testingPlatform', 'finalPossibleVlResults', 'finalViralLoadResult');
+		getVlResults('testingPlatform', 'possibleVlResults', 'cphlvlResult', true);
+		getVlResults('failedTestingTech', 'failedPossibleVlResults', 'failedvlResult', true);
+		getVlResults('testingPlatform', 'finalPossibleVlResults', 'finalViralLoadResult', true);
 		$("#gender").change(function() {
 			if ($(this).val() == "female")
 				$(".femaleFactor").show();

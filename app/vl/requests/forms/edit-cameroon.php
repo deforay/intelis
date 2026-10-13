@@ -846,9 +846,11 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", ["request_clin
           });
           //hivDetectionChange();
           var text = $('#testingPlatform').val();
-          if (text) {
+          // A disabled input is not submitted, so keep a saved result enabled too
+          if (text || ($("#vlResult").val() || '').trim() !== '') {
                $("#vlResult").attr("disabled", false);
           }
+          loadPossibleVlResults();
 
      });
 
@@ -893,11 +895,27 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", ["request_clin
      }
 
 
+     // Fill the result suggestions for the saved platform without hivDetectionChange()'s
+     // side effects (it resets the rejection decision)
+     function loadPossibleVlResults() {
+          var text = $('#testingPlatform').val();
+          if (!text) {
+               return;
+          }
+          $.post("/vl/requests/getVlResults.php", {
+                    instrumentId: text.split("##")[3],
+               },
+               function(data) {
+                    $("#possibleVlResults").html(data);
+               });
+     }
+
      function hivDetectionChange() {
 
           var text = $('#testingPlatform').val();
           if (!text) {
-               $("#vlResult").attr("disabled", true);
+               // A disabled input is not submitted, so never disable one holding a saved result
+               $("#vlResult").attr("disabled", ($("#vlResult").val() || '').trim() === '');
                return;
           }
           var str1 = text.split("##");

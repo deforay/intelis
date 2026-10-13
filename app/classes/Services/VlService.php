@@ -403,6 +403,60 @@ final class VlService extends AbstractTestService
         return trim((string) preg_replace('/^(?:\s*' . $phrase . ')+/i', '', $result));
     }
 
+    /**
+     * The form keys a VL request form carries its result in. PNG posts its result as
+     * cphlVlResult / finalViralLoadResult, and a GeneXpert detection with no figure
+     * ("HIV-1 Not Detected") arrives in hivDetection alone.
+     */
+    public const RESULT_FORM_KEYS = ['vlResult', 'vlLog', 'hivDetection', 'cphlVlResult', 'finalViralLoadResult'];
+
+    /** The form_vl columns written from that result, all derived from the same entry. */
+    public const RESULT_VALUE_COLUMNS = [
+        'result',
+        'result_value_log',
+        'result_value_absolute',
+        'result_value_absolute_decimal',
+        'result_value_text',
+        'result_value_hiv_detection',
+        'vl_result_category',
+    ];
+
+    /**
+     * Whether a request edit has to keep the stored result because the form sent none.
+     *
+     * A browser does not submit a disabled input, and the request forms disable the
+     * result box until a testing platform is chosen. Writing the result from such a
+     * post blanked a result already on the record. Rejecting the sample is the one
+     * case where a result must be cleared without one being sent, so that still goes
+     * through. An empty value that was sent is still a sent key: clearing the box on
+     * purpose clears the result.
+     *
+     * @param array<string, mixed> $post the request exactly as the form sent it
+     */
+    public static function mustKeepSavedResult(array $post): bool
+    {
+        if (($post['isSampleRejected'] ?? null) === 'yes') {
+            return false;
+        }
+        foreach (self::RESULT_FORM_KEYS as $key) {
+            if (array_key_exists($key, $post)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Drops the result columns from a form_vl update, so the stored ones stand.
+     *
+     * @param array<string, mixed> $vlData
+     * @return array<string, mixed>
+     */
+    public static function withoutResultColumns(array $vlData): array
+    {
+        return array_diff_key($vlData, array_flip(self::RESULT_VALUE_COLUMNS));
+    }
+
     public function processViralLoadResultFromForm(array $params): array
     {
         $isRejected = 'no';

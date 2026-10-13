@@ -61,6 +61,9 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
         $resultColumnsPosted[] = $column;
     }
 }
+// The result itself is guarded the same way, but as a group: result, log, absolute and
+// category are all derived from one entry. Rejecting the sample still clears it.
+$keepSavedResult = VlService::mustKeepSavedResult((array) $_POST);
 
 $tableName = "form_vl";
 $tableName1 = "activity_log";
@@ -322,7 +325,10 @@ try {
      // The result counts as modified when the value changed or the sample flipped
      // between rejected and not rejected -- the same rule the change history is logged on.
      $previousState = ['result' => $getPrevResult['result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null];
-     $currentState = ['result' => $finalResult, 'is_sample_rejected' => $_POST['isSampleRejected'] ?? null];
+     $currentState = [
+          'result' => $keepSavedResult ? $getPrevResult['result'] : $finalResult,
+          'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
+     ];
      $vlData['result_modified'] = MiscUtility::resultOrRejectionChanged($previousState, $currentState) ? "yes" : "no";
 
      // Append the change reason (preserving prior history) whenever the result or rejection changed.
@@ -395,9 +401,12 @@ try {
          }
      }
 
-     $vlData = $vlService->sanitizeResultColumnsForWrite($vlData, 'edit-vl-request');
-
-     $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
+     if ($keepSavedResult) {
+          $vlData = VlService::withoutResultColumns($vlData);
+     } else {
+          $vlData = $vlService->sanitizeResultColumnsForWrite($vlData, 'edit-vl-request');
+          $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'] ?? null, $vlData['result']);
+     }
 
 
      //For PNG form

@@ -1622,6 +1622,9 @@ $sFormat = '';
                     platformId = str1[3];
                }
           }
+          if (platformId) {
+               $("#" + vlResultId).attr("disabled", false);
+          }
           $("#" + datalistId).html('');
           $.post("/vl/requests/getVlResults.php", {
                     instrumentId: platformId,
@@ -1630,7 +1633,6 @@ $sFormat = '';
                     // alert(data);
                     if (data != "") {
                          $("#" + datalistId).html(data);
-                         $("#" + vlResultId).attr("disabled", false);
                     }
                });
      }
