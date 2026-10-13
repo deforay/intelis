@@ -482,15 +482,6 @@ final class ManifestMoveService
         }
     }
 
-    /** HAVING clause part keeping groups whose samples are all in the facility map. */
-    private function withinFacilities(string $alias, ?string $facilityMap): string
-    {
-        if ($facilityMap === null || trim($facilityMap) === '') {
-            return '';
-        }
-        return " AND MIN($alias.facility_id IN (" . $this->db->inIntList($facilityMap) . ')) = 1';
-    }
-
     /**
      * @param array<mixed> $codes
      * @return list<string>
