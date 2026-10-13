@@ -6,6 +6,7 @@ use Override;
 use Exception;
 use App\Services\Database\MysqliDb;
 use Generator;
+use mysqli;
 use Throwable;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -374,7 +375,21 @@ final class DatabaseService extends MysqliDb
     }
 
     /**
-     * Execute a query and return a generator to fetch results row by row.
+     * Run a query and hand back its rows one at a time, without holding the whole
+     * result in memory.
+     *
+     * The rows come over a connection of their own, read as the caller asks for them.
+     * Reading them on the application's connection (get_result()) pulled the whole
+     * result into this process before the first row came back: 65 MB for 100,000
+     * form_vl rows, which is what an export of a large lab's data ran into. A connection
+     * of its own rather than an unbuffered read on the application's, because callers
+     * run queries of their own between rows (the exports fetch details a chunk at a
+     * time), and while an unbuffered result is open its connection can do nothing else.
+     *
+     * The other connection cannot see what an open transaction on this one has written
+     * and not committed, so inside a transaction the rows are read on this connection as
+     * before. So too when no other connection can be opened: the query still runs, only
+     * held in memory again.
      *
      * The cleanup sits in a finally so it also covers the two paths that used to skip it:
      * a throw from execute(), and a caller that breaks out of the loop and abandons the
@@ -388,9 +403,28 @@ final class DatabaseService extends MysqliDb
      */
     public function rawQueryGenerator(?string $query, $bindParams = null)
     {
-        if ($query === null || $query === '' || $query === '0' || $query === '') {
+        if ($query === null || $query === '' || $query === '0') {
             return yield from [];
         }
+
+        $connection = $this->currentConnection();
+        $inTransaction = $this->_transaction_in_progress || ($this->transactionDepth[$connection] ?? 0) > 0;
+        $stream = $inTransaction ? null : $this->openStreamConnection($connection);
+        if ($stream === null) {
+            return yield from $this->bufferedQueryGenerator($query, $bindParams);
+        }
+
+        return yield from $this->streamedQueryGenerator($stream, $query, $bindParams);
+    }
+
+    /**
+     * Rows read on the application's connection, the whole result held in memory first.
+     * What rawQueryGenerator() falls back to, and what paginated listings use: a page is
+     * small, and a connection of its own for every grid request would cost more than it
+     * saves.
+     */
+    private function bufferedQueryGenerator(string $query, $bindParams = null): Generator
+    {
         $this->_query = $query;
         $stmt = $this->_prepareQuery();
 
@@ -399,21 +433,7 @@ final class DatabaseService extends MysqliDb
         }
 
         try {
-            // parameter binding
-            if (is_array($bindParams) && $bindParams !== []) {
-                $types = '';
-                $values = [];
-
-                foreach ($bindParams as $val) {
-                    $types .= $this->_determineType($val);
-                    $values[] = $val;
-                }
-
-                // Spread from a variable, so bind_param() gets the references it wants.
-                // The references array_merge() used to pass had already decayed to
-                // values, which bound but raised a warning on every call.
-                $stmt->bind_param($types, ...$values);
-            }
+            $this->bindGeneratorParams($stmt, $bindParams);
 
             $stmt->execute();
             $result = $stmt->get_result();
@@ -434,6 +454,159 @@ final class DatabaseService extends MysqliDb
             $stmt->close();
             $this->reset();
         }
+    }
+
+    /**
+     * Rows read from the server as the caller asks for them. A prepared statement that
+     * is executed and not stored is unbuffered, and fetch() reads one row at a time;
+     * the values come over the same binary protocol get_result() reads, so an INT is
+     * still an int and a NULL still null.
+     */
+    private function streamedQueryGenerator(mysqli $stream, string $query, $bindParams = null): Generator
+    {
+        // For the error log, as every other query sets it.
+        $this->_query = $query;
+        $stmt = null;
+        $finished = false;
+
+        try {
+            $stmt = $stream->prepare($query);
+            $this->bindGeneratorParams($stmt, $bindParams);
+            $stmt->execute();
+
+            $metadata = $stmt->result_metadata();
+            if ($metadata === false) {
+                // As get_result() answers a statement that returns no rows.
+                throw new Exception("Failed to get result: " . $stream->error);
+            }
+            $row = [];
+            $bound = [];
+            foreach ($metadata->fetch_fields() as $field) {
+                $bound[] = &$row[$field->name];
+            }
+            $metadata->free();
+            $stmt->bind_result(...$bound);
+
+            while (($fetched = $stmt->fetch()) === true) {
+                // A copy, so the caller holds values and not the references fetch() writes.
+                $values = [];
+                foreach ($row as $column => $value) {
+                    $values[$column] = $value;
+                }
+                yield $values;
+            }
+            if ($fetched === false) {
+                throw new Exception("Failed to fetch row: " . $stmt->error);
+            }
+            $finished = true;
+        } catch (\mysqli_sql_exception $e) {
+            $this->lastFailedQuery = $query;
+            throw $e;
+        } finally {
+            $this->closeStream($stream, $stmt, $finished);
+            $this->reset();
+        }
+    }
+
+    /**
+     * A connection of its own, with the settings and credentials of the named one and
+     * the same session settings. Not persistent: it is closed when its rows are done,
+     * and a pinned second connection in every web worker would count twice against
+     * max_connections.
+     */
+    private function openStreamConnection(string $connection): ?mysqli
+    {
+        $settings = $this->connectionsSettings[$connection] ?? null;
+        if (empty($settings['host']) && empty($settings['socket'])) {
+            // Opened from a handle passed in, with no credentials to open another.
+            return null;
+        }
+
+        try {
+            $stream = new mysqli(
+                preg_replace('/^p:/', '', (string) $settings['host']),
+                $settings['username'],
+                $settings['password'],
+                $settings['db'],
+                $settings['port'] ?? null,
+                $settings['socket'] ?? null
+            );
+            $stream->set_charset($this->sessionCharset);
+            foreach (
+                [
+                    'SET collation_connection = ?' => $this->sessionCollation ?: 'utf8mb4_unicode_ci',
+                    'SET time_zone = ?' => (new \DateTimeImmutable('now'))->format('P'),
+                ] as $statement => $value
+            ) {
+                $set = $stream->prepare($statement);
+                $set->bind_param('s', $value);
+                $set->execute();
+                $set->close();
+            }
+            // The server waits this long for the caller to take the next rows before it
+            // gives up on the connection. Callers query between rows (an export's details
+            // for each chunk), so the 60-second default could cut a long export off half way.
+            $stream->query('SET SESSION net_write_timeout = 600');
+            return $stream;
+        } catch (Throwable $e) {
+            if (isset($stream) && $stream instanceof mysqli) {
+                try {
+                    $stream->close();
+                } catch (Throwable) {
+                    // Being dropped either way.
+                }
+            }
+            LoggerUtility::logWarning('Could not open a connection to stream rows on; reading them in memory: '
+                . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Close a streaming read, finished or not. Rows the caller never asked for are
+     * still on their way, and closing the statement would read every one of them
+     * first -- the rest of a million-row export someone stopped. The query is stopped
+     * on the server instead, from the application's connection, which can stop a query
+     * of the same user without any extra privilege.
+     */
+    private function closeStream(mysqli $stream, ?\mysqli_stmt $stmt, bool $finished): void
+    {
+        if (!$finished && $stmt !== null) {
+            try {
+                $this->mysqli()->query('KILL QUERY ' . (int) $stream->thread_id);
+            } catch (Throwable) {
+                // Then closing reads the rest: slower, never wrong.
+            }
+        }
+        try {
+            $stmt?->close();
+        } catch (Throwable) {
+            // A stopped query ends in an error; the connection is closed next anyway.
+        }
+        try {
+            $stream->close();
+        } catch (Throwable) {
+            // Being dropped either way.
+        }
+    }
+
+    private function bindGeneratorParams(\mysqli_stmt $stmt, $bindParams): void
+    {
+        if (!is_array($bindParams) || $bindParams === []) {
+            return;
+        }
+        $types = '';
+        $values = [];
+
+        foreach ($bindParams as $val) {
+            $types .= $this->_determineType($val);
+            $values[] = $val;
+        }
+
+        // Spread from a variable, so bind_param() gets the references it wants.
+        // The references array_merge() used to pass had already decayed to
+        // values, which bound but raised a warning on every call.
+        $stmt->bind_param($types, ...$values);
     }
 
     private function applySessionSettings(): void
@@ -991,7 +1164,7 @@ final class DatabaseService extends MysqliDb
             );
 
             $queryResult = $returnGenerator
-                ? $this->rawQueryGenerator($querySql, $params)
+                ? $this->bufferedQueryGenerator($querySql, $params)
                 : $this->rawQuery($querySql, $params);
 
             $count = $this->resolveCount(

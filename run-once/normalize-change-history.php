@@ -50,25 +50,35 @@ RunOnceUtility::run(__FILE__, function (DatabaseService $db): void {
     $bar = MiscUtility::spinnerStart($grandTotal, 'Normalizing change history…');
 
     $updated = 0;
+    $batchSize = 1000;
     foreach ($targets as $t) {
-        $rows = $db->rawQuery(
-            "SELECT `{$t['pk']}` AS id, `{$t['col']}` AS val FROM `{$t['table']}` "
-                . "WHERE `{$t['col']}` IS NOT NULL AND TRIM(`{$t['col']}`) <> ''"
-        );
+        // A page at a time by primary key: the history text of every row at once ran
+        // to the better part of a gigabyte on a lab with two million form_vl rows.
+        $lastId = null;
+        do {
+            $rows = $db->rawQuery(
+                "SELECT `{$t['pk']}` AS id, `{$t['col']}` AS val FROM `{$t['table']}` "
+                    . "WHERE `{$t['col']}` IS NOT NULL AND TRIM(`{$t['col']}`) <> ''"
+                    . ($lastId === null ? '' : " AND `{$t['pk']}` > ?")
+                    . " ORDER BY `{$t['pk']}` LIMIT " . $batchSize,
+                $lastId === null ? null : [$lastId]
+            ) ?? [];
 
-        foreach ($rows as $row) {
-            $history = MiscUtility::parseResultChangeHistory($row['val']);
-            $normalized = empty($history) ? null : json_encode($history);
+            foreach ($rows as $row) {
+                $history = MiscUtility::parseResultChangeHistory($row['val']);
+                $normalized = empty($history) ? null : json_encode($history);
 
-            // Rewrite only rows that aren't already in canonical form.
-            if ((string) $normalized !== (string) $row['val']) {
-                $db->where($t['pk'], $row['id']);
-                $db->update($t['table'], [$t['col'] => $normalized]);
-                $updated++;
+                // Rewrite only rows that aren't already in canonical form.
+                if ((string) $normalized !== (string) $row['val']) {
+                    $db->where($t['pk'], $row['id']);
+                    $db->update($t['table'], [$t['col'] => $normalized]);
+                    $updated++;
+                }
+
+                MiscUtility::spinnerAdvance($bar);
+                $lastId = $row['id'];
             }
-
-            MiscUtility::spinnerAdvance($bar);
-        }
+        } while (count($rows) === $batchSize);
     }
 
     MiscUtility::spinnerFinish($bar);

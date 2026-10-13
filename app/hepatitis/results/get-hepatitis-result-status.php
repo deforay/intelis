@@ -159,7 +159,7 @@ try {
 
 
         
-     $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . (int) $aRow['result_status'] . ')">
+     $status = '<select class="form-control"  name="status[]" id="' . $aRow['hepatitis_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . (int) $aRow['result_status'] . ')">
                <option value="">' . _translate("-- Select --") . '</option>
                <option value="' . ACCEPTED . '" ' . ($aRow['result_status'] == ACCEPTED ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
                <option value="' . REJECTED . '" ' . ($aRow['result_status'] == REJECTED ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
