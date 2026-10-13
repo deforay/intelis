@@ -62,7 +62,8 @@ try {
         (array) ($_POST['packageCode'] ?? []),
         $toLabId,
         $reason,
-        $_SESSION['userId'] ?? null
+        $_SESSION['userId'] ?? null,
+        $_SESSION['facilityMap'] ?? null
     );
 } catch (Throwable $e) {
     LoggerUtility::logError('Move Manifest failed: ' . $e->getMessage(), [

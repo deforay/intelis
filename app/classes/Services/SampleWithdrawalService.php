@@ -4,6 +4,8 @@ namespace App\Services;
 
 use Throwable;
 use App\Utilities\DateUtility;
+use App\Utilities\LoggerUtility;
+use App\Utilities\TestedSampleRule;
 
 use const SAMPLE_STATUS\CANCELLED;
 
@@ -15,9 +17,10 @@ use const SAMPLE_STATUS\CANCELLED;
  * tested one since its last sync. Such a sample is left exactly as it is and
  * reported back: the result is this lab's, and its next sync claims the sample.
  *
- * A cancelled copy is renamed to the new lab, marked synced and kept out of
+ * A cancelled copy keeps its lab and code, is marked synced and is kept out of
  * every results send (notWithdrawnCondition). Sent, it would put "cancelled"
- * on the sample the new lab is working on.
+ * on the sample the new lab is working on; the STS refuses it in any case
+ * (ResultsService, a lab a sample was moved away from).
  */
 final class SampleWithdrawalService
 {
@@ -40,12 +43,12 @@ final class SampleWithdrawalService
      * @param list<string> $uniqueIds
      * @return array{
      *     cancelled: list<string>, tested: list<string>,
-     *     alreadyCancelled: list<string>, notFound: list<string>
+     *     alreadyCancelled: list<string>, notFound: list<string>, failed: list<string>
      * }
      */
     public function withdraw(string $testType, array $uniqueIds, int $movedToLabId): array
     {
-        $outcome = ['cancelled' => [], 'tested' => [], 'alreadyCancelled' => [], 'notFound' => []];
+        $outcome = ['cancelled' => [], 'tested' => [], 'alreadyCancelled' => [], 'notFound' => [], 'failed' => []];
         $table = TestsService::getTestTableName($testType);
         $primaryKey = TestsService::getPrimaryColumn($testType);
         $now = DateUtility::getCurrentDateTime();
@@ -58,9 +61,9 @@ final class SampleWithdrawalService
             $this->db->beginTransaction();
             try {
                 $row = $this->db->rawQueryOne(
-                    "SELECT `$primaryKey` AS id, result_status,
-                            " . ManifestMoveService::testedCondition($testType) . " AS tested
-                       FROM `$table` WHERE unique_id = ? FOR UPDATE",
+                    "SELECT t.`$primaryKey` AS id, t.result_status,
+                            " . TestedSampleRule::sql($testType, 't') . " AS tested
+                       FROM `$table` AS t WHERE t.unique_id = ? FOR UPDATE",
                     [$uniqueId]
                 );
                 if (empty($row)) {
@@ -72,20 +75,25 @@ final class SampleWithdrawalService
                 } else {
                     $this->db->rawQuery(
                         "UPDATE `$table`
-                            SET result_status = ?, lab_id = ?, data_sync = 1, last_modified_datetime = ?,
+                            SET result_status = ?, data_sync = 1, last_modified_datetime = ?,
                                 form_attributes = JSON_SET(
                                     COALESCE(form_attributes, JSON_OBJECT()),
                                     '$.movedToLabId', ?, '$.movedOn', ?
                                 )
                           WHERE `$primaryKey` = ?",
-                        [CANCELLED, $movedToLabId, $now, $movedToLabId, $now, $row['id']]
+                        [CANCELLED, $now, $movedToLabId, $now, $row['id']]
                     );
                     $outcome['cancelled'][] = $uniqueId;
                 }
                 $this->db->commitTransaction();
             } catch (Throwable $e) {
+                // One sample that cannot be cancelled must not leave the rest live.
                 $this->db->rollbackTransaction();
-                throw $e;
+                $outcome['failed'][] = $uniqueId;
+                LoggerUtility::logError('Could not withdraw a moved sample: ' . $e->getMessage(), [
+                    'test_type' => $testType,
+                    'unique_id' => $uniqueId,
+                ]);
             }
         }
 

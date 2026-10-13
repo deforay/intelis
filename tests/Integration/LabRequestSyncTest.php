@@ -656,6 +656,26 @@ final class LabRequestSyncTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testACustomTestsCopyCancelledWhenMovedAwayComesBackWithoutTheMarker(): void
+    {
+        $db = $this->boot();
+        self::ownLab($db);
+        $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (9, 'Clinic'), (12, 'Cancelled')");
+        $request = self::stsRow($db, 'form_generic', [
+            'unique_id' => 'g-1', 'remote_sample_code' => 'R-g-1', 'result_status' => 9,
+        ]);
+        self::sync()->saveCustomTests([$request], 'tx-1');
+        ContainerRegistry::get(SampleWithdrawalService::class)->withdraw('generic-tests', ['g-1'], self::OTHER_LAB);
+
+        $result = self::sync()->saveCustomTests([$request], 'tx-2');
+
+        self::assertSame(['g-1'], $result['saved']);
+        $row = $this->committed('form_generic')['g-1'];
+        self::assertSame('9', (string) $row['result_status']);
+        self::assertArrayNotHasKey('movedToLabId', json_decode((string) $row['form_attributes'], true) ?? []);
+    }
+
+    #[RunInSeparateProcess]
     public function testAPullNeverTakesASampleAwayFromItsLab(): void
     {
         $db = $this->boot();
