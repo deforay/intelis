@@ -84,6 +84,9 @@ try {
     $wantsReceipts = in_array($data['receipts'] ?? null, [1, '1', true], true);
     // Pulling again in the same run: the lab has the window already.
     $pendingOnly = $wantsReceipts && in_array($data['pendingOnly'] ?? null, [1, '1', true], true);
+    // A newer lab pulling a date or manifest window asks for it in pages; older
+    // labs never send the key and get the whole window, as they always have.
+    $page = RequestsService::readPage($data['page'] ?? null);
 
     if (!$testType) {
         throw new SystemException('Test Type is missing in the request', 400);
@@ -101,7 +104,8 @@ try {
         $manifestCode,
         $syncSinceDate,
         $wantsReceipts,
-        $pendingOnly
+        $pendingOnly,
+        $page
     );
     // Only when the pending rows could be read; otherwise this pull is the plain
     // window and the lab is not told to send a receipt.
@@ -196,6 +200,8 @@ try {
         $responseHeaders['x-request-receipts'] = 1;
         $responseHeaders['x-pending-remaining'] = (int) ($requestsData['pendingRemaining'] ?? 0);
     }
+    // Headers an older lab ignores: this is one page, and where the next starts.
+    $responseHeaders += RequestsService::pagingHeaders($requestsData);
 
     echo ApiService::generateJsonResponse($payload, $request, $responseHeaders);
 } catch (Throwable $e) {
