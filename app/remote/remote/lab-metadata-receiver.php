@@ -146,7 +146,7 @@ try {
 
         /** @var LabMetadataService $labMetadataService */
         $labMetadataService = ContainerRegistry::get(LabMetadataService::class);
-        $counter += $labMetadataService->storeTables($tableInfo);
+        $counter += $labMetadataService->storeTables($tableInfo, (int) $labId);
     }
 
     // The lab is the payload's labId -- the same source every table above is stored

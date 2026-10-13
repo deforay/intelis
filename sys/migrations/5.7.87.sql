@@ -25,3 +25,15 @@ UPDATE `s_vlsm_instance` i
    AND i.`last_lab_storage_history_id` IS NULL;
 
 UPDATE `system_config` SET `value` = '5.7.87' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

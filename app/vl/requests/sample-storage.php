@@ -109,7 +109,7 @@ $vlQuery = "SELECT vl.*,f.facility_name,s.storage_code,h.*,r.removal_reason_name
 			LEFT JOIN r_reasons_for_sample_removal as r ON r.removal_reason_id=h.sample_removal_reason
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE vl.sample_code IS NOT NULL ";
 
-$vlQuery = "$vlQuery $sWhere ORDER BY h.history_id";
+$vlQuery = "$vlQuery $sWhere ORDER BY " . StorageService::historyOrder($general->isSTSInstance());
 
 //echo $vlQuery;  die;
 $_SESSION['sampleStorageQuery'] = $vlQuery;
@@ -119,12 +119,7 @@ $storageInfo = $storageService->getLabStorage();
 
 // Each row is one storage history entry, so a sample moved between freezers
 // appears once per move. Only its latest entry can still be removed.
-$latestHistoryId = [];
-foreach ($vlQueryInfo as $info) {
-	if (!empty($info['history_id'])) {
-		$latestHistoryId[$info['unique_id']] = max((int) $info['history_id'], $latestHistoryId[$info['unique_id']] ?? 0);
-	}
-}
+$latestHistoryId = StorageService::latestHistoryIds($vlQueryInfo);
 
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 ?>
