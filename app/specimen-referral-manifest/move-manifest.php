@@ -31,10 +31,12 @@ try {
 // Which lab a sample belongs to is decided on the STS, by an administrator.
 $canMove = $module !== '' && $general->isSTSInstance() && !$general->isCloudLisNonAdmin();
 $testingLabs = $canMove ? $facilitiesService->getTestingLabs($module) : [];
+// Pending: made, not sent yet. Dispatched: printed and sent to the lab.
+// Received at lab: the lab has activated it.
 $statusLabels = [
     'pending' => _translate("Pending"),
-    'dispatch' => _translate("Dispatch"),
-    'received' => _translate("Received"),
+    'dispatch' => _translate("Dispatched"),
+    'received' => _translate("Received at lab"),
 ];
 ?>
 <div class="content-wrapper">
@@ -103,11 +105,12 @@ $statusLabels = [
                         <p class="text-muted">
                             <?= _translate("A manifest with any tested sample cannot be moved. The lab the samples are taken from is asked to cancel its copies."); ?>
                         </p>
-                        <table class="table table-bordered table-striped" aria-describedby="moveSection">
+                        <table id="manifestTable" class="table table-bordered table-striped" aria-describedby="moveSection">
                             <thead>
                                 <tr>
                                     <th scope="col"><input type="checkbox" id="selectAll" title="<?= _translate('Select all', 'html'); ?>"></th>
                                     <th scope="col"><?= _translate("Manifest Code"); ?></th>
+                                    <th scope="col"><?= _translate("Testing Lab"); ?></th>
                                     <th scope="col"><?= _translate("Created On"); ?></th>
                                     <th scope="col"><?= _translate("Status"); ?></th>
                                     <th scope="col"><?= _translate("Samples"); ?></th>
@@ -185,6 +188,16 @@ $statusLabels = [
                 updateMoveButton();
             });
             $('#manifestRows').on('change', 'input:checkbox', updateMoveButton);
+            // The lab the manifests are at is not a place to move them to.
+            const destinations = $('#assignLab option').clone();
+            $('#testingLab').on('change', function() {
+                const from = $(this).val();
+                const kept = $('#assignLab').val();
+                $('#assignLab').empty().append(destinations.clone().filter(function() {
+                    return this.value === '' || this.value !== from;
+                }));
+                $('#assignLab').val(kept !== from ? kept : '').trigger('change');
+            });
         });
 
         function updateMoveButton() {
@@ -203,6 +216,9 @@ $statusLabels = [
                 testingLab: lab,
                 daterange: $('#daterange').val()
             }).done(function(data) {
+                if ($.fn.DataTable.isDataTable('#manifestTable')) {
+                    $('#manifestTable').DataTable().destroy();
+                }
                 const rows = $('#manifestRows').empty();
                 const manifests = (data && data.manifests) || [];
                 if (manifests.length === 0) {
@@ -215,7 +231,8 @@ $statusLabels = [
                     const tr = $('<tr>');
                     tr.append($('<td>').append(box))
                         .append($('<td>').text(m.code))
-                        .append($('<td>').text(m.createdLabel || ''))
+                        .append($('<td>').text(m.lab || ''))
+                        .append($('<td>').attr('data-order', m.created || '').text(m.createdLabel || ''))
                         .append($('<td>').text(statusLabels[m.status] || m.status || ''))
                         .append($('<td>').text(m.samples));
                     rows.append(tr);
@@ -223,6 +240,13 @@ $statusLabels = [
                 $('#selectAll').prop('checked', false);
                 updateMoveButton();
                 $('#moveSection').slideDown();
+                $('#manifestTable').DataTable({
+                    paging: false,
+                    info: false,
+                    searching: false,
+                    order: [[3, 'desc']],
+                    columnDefs: [{ targets: 0, orderable: false }]
+                });
             }).fail(function() {
                 alert("<?= _translate('Could not load the manifests', true); ?>");
             }).always(function() {

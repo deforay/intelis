@@ -49,7 +49,7 @@ final class ManifestMoveService
      * facility map (a user limited to some facilities), only manifests all of
      * whose samples are from those facilities.
      *
-     * @return list<array{code: string, created: ?string, status: ?string, samples: int}>
+     * @return list<array{code: string, created: ?string, status: ?string, samples: int, lab: ?string}>
      */
     public function listForLab(
         string $testType,
@@ -74,8 +74,10 @@ final class ManifestMoveService
                           AND NOT (t.facility_id IN (" . $this->db->inIntList($facilityMap) . ')))';
         }
         $rows = $this->db->rawQuery(
-            'SELECT m.manifest_code, m.request_created_datetime, m.manifest_status, m.number_of_samples
+            'SELECT m.manifest_code, m.request_created_datetime, m.manifest_status, m.number_of_samples,
+                    f.facility_name AS lab_name
                FROM specimen_manifests AS m
+               LEFT JOIN facility_details AS f ON f.facility_id = m.lab_id
               WHERE ' . implode(' AND ', $where) . '
               ORDER BY m.request_created_datetime DESC
               LIMIT 500',
@@ -101,6 +103,7 @@ final class ManifestMoveService
             'created' => $row['request_created_datetime'],
             'status' => $row['manifest_status'],
             'samples' => (int) $row['number_of_samples'],
+            'lab' => $row['lab_name'],
         ], $rows);
     }
 
