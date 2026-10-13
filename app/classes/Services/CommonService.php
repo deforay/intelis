@@ -1257,9 +1257,17 @@ final class CommonService
                 'kept' => $savedLabId,
                 'manifest' => $saved['sample_package_code'] ?? null,
             ]);
-            // Says nothing about the manifest itself: this runs before the save
-            // checks the user may touch the sample at all.
-            if (isset($_SESSION) && is_array($_SESSION)) {
+            // Told only to someone who may see the sample: this runs before the
+            // save checks access, and the notice alone would say it is on a manifest.
+            $ownLab = $this->getOwnLabId();
+            $facilityMap = trim((string) ($_SESSION['facilityMap'] ?? ''));
+            $visible = ($ownLab === null || $ownLab === $savedLabId)
+                && ($facilityMap === '' || in_array(
+                    (int) ($saved['facility_id'] ?? 0),
+                    array_map('intval', explode(',', $facilityMap)),
+                    true
+                ));
+            if ($visible && isset($_SESSION) && is_array($_SESSION)) {
                 $_SESSION['labKeptOnManifest'] = _translate(
                     'The testing lab was not changed: this sample is on a manifest. Use Move Manifest to move it to another lab.'
                 );

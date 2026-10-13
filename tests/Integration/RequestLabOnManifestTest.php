@@ -91,4 +91,16 @@ final class RequestLabOnManifestTest extends TestCase
         self::assertSame(7, $general->resolveRequestLabId(7));
         self::assertArrayNotHasKey('labKeptOnManifest', $_SESSION);
     }
+
+    #[RunInSeparateProcess]
+    public function testSomeoneWhoCannotSeeTheSampleIsNotTold(): void
+    {
+        $db = $this->boot();
+        $_SESSION['facilityMap'] = '2';
+        $general = ContainerRegistry::get(CommonService::class);
+
+        $id = self::idOf($db, 'on-manifest');
+        self::assertSame(5, $general->resolveRequestLabId(7, 'form_vl', 'vl_sample_id', $id));
+        self::assertArrayNotHasKey('labKeptOnManifest', $_SESSION, 'the notice would say it is on a manifest');
+    }
 }

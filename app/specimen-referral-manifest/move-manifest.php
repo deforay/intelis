@@ -263,6 +263,11 @@ $statusLabels = [
                 formId: 'moveManifestForm'
             });
             if (flag && confirm("<?= _translate('Move the selected manifests and all their samples?', true); ?>")) {
+                // A search takes the rows it hides out of the page, and their
+                // checked boxes with them: clear it so every selection is sent.
+                if ($.fn.DataTable.isDataTable('#manifestTable')) {
+                    $('#manifestTable').DataTable().search('').draw();
+                }
                 $.blockUI();
                 document.getElementById('moveManifestForm').submit();
             }
