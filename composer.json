@@ -108,6 +108,21 @@
             "@check-repository-boundaries",
             "@check-request-output-escaping"
         ],
+        "lint": "find app bin public sys tests -name '*.php' -print0 | xargs -0 -P 8 -n 1 php -d display_errors=stderr -l > /dev/null",
+        "cs-check": [
+            "vendor/bin/phpcs --standard=PSR12 app/classes/Contracts/InterfaceApi app/classes/Repositories/InterfaceApi app/classes/Services/InterfaceApi app/classes/HttpHandlers/InterfaceApi app/classes/Http app/classes/Exceptions/InterfaceApiException.php app/classes/Services/InterfacingService.php app/classes/Services/InstrumentActivityService.php app/classes/Services/InstrumentUsageStatisticsService.php app/classes/Middlewares/Api/Interface*.php app/facilities/interfaceConnectionAction.php app/facilities/partials/interface-connections.php tests bin/interface-api.php",
+            "vendor/bin/phpcs --standard=PSR12 --runtime-set ignore_warnings_on_exit 1 app/classes/Middlewares/Api/ApiAuthMiddleware.php app/system/di.php public/api/index.php"
+        ],
+        "qc": [
+            "Composer\\Config::disableProcessTimeout",
+            "@composer validate --no-check-publish",
+            "@lint",
+            "@cs-check",
+            "@check-di",
+            "@check-invariants",
+            "@test",
+            "@composer audit"
+        ],
         "preflight": "@php bin/preflight.php",
         "duplicate-indexes": "@php bin/duplicate-indexes.php",
         "scan": "@php bin/scan.php",

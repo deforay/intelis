@@ -116,20 +116,9 @@ jobs:
           php -l public/api/index.php
 
       - name: Check coding style
+        # Path list lives in composer.json (cs-check) so `composer qc` runs the same set.
         run: |
-          vendor/bin/phpcs --standard=PSR12 \
-            app/classes/Contracts/InterfaceApi app/classes/Repositories/InterfaceApi \
-            app/classes/Services/InterfaceApi app/classes/HttpHandlers/InterfaceApi \
-            app/classes/Http app/classes/Exceptions/InterfaceApiException.php \
-            app/classes/Services/InterfacingService.php \
-            app/classes/Services/InstrumentActivityService.php \
-            app/classes/Services/InstrumentUsageStatisticsService.php \
-            app/classes/Middlewares/Api/Interface*.php \
-            app/facilities/interfaceConnectionAction.php \
-            app/facilities/partials/interface-connections.php tests bin/interface-api.php
-          vendor/bin/phpcs --standard=PSR12 --runtime-set ignore_warnings_on_exit 1 \
-            app/classes/Middlewares/Api/ApiAuthMiddleware.php app/system/di.php \
-            public/api/index.php
+          composer cs-check
           vendor/bin/yaml-lint docs/api/openapi.yaml \
             .github/workflows/no-conflict-markers.yml
 
