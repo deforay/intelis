@@ -277,6 +277,8 @@ final class ResultsService
                     // Who owns the sample as stored, before this update can change it.
                     $storedOwner = empty($localRecord) ? [] : $this->storedOwner($localRecord[$this->primaryKeyName]);
 
+                    $resultFromLab = $this->keepTestingLab($resultFromLab, $localRecord, $labId);
+
                     $resultFromLab['form_attributes'] = $this->buildSafeFormAttributesExpression(
                         $localRecord['form_attributes'] ?? null,
                         $resultFromLab['form_attributes'] ?? null
@@ -550,6 +552,44 @@ final class ResultsService
             }
         }
         return array_merge(...array_map('array_values', array_values($rows)));
+    }
+
+    /**
+     * A lab cannot hand a sample to another lab. The testing lab it sends is
+     * taken only when it is the sending lab itself; anything else keeps the lab
+     * the STS has stored, or becomes the sender when nothing is stored.
+     *
+     * A lab's copy of a sample does not follow a move made on the STS (Move
+     * Manifest), so the lab a sample was moved TO can still hold it under the
+     * old lab. Taking that copy's lab undid the move: the samples went back to
+     * the old lab and vanished from the new one.
+     */
+    private function keepTestingLab(array $incoming, array $localRecord, mixed $senderLabId): array
+    {
+        $sender = (int) $senderLabId;
+        if ($sender <= 0 || !array_key_exists('lab_id', $incoming)) {
+            return $incoming;
+        }
+        $sent = (int) $incoming['lab_id'];
+        if ($sent === $sender) {
+            return $incoming;
+        }
+        $stored = (int) ($localRecord['lab_id'] ?? 0);
+        if ($sent <= 0 && $stored <= 0) {
+            return $incoming;
+        }
+        $kept = $stored > 0 ? $stored : $sender;
+        if ($sent !== $kept) {
+            LoggerUtility::logWarning('Kept the testing lab of a result whose lab sent another lab', [
+                'test_type' => $this->testType,
+                'unique_id' => $incoming['unique_id'] ?? null,
+                'sent_lab_id' => $incoming['lab_id'],
+                'kept_lab_id' => $kept,
+                'synced_from_lab_id' => $sender,
+            ]);
+        }
+        $incoming['lab_id'] = $kept;
+        return $incoming;
     }
 
     /**
