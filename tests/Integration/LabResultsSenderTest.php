@@ -309,6 +309,28 @@ final class LabResultsSenderTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testACopyWithdrawnByAMoveIsNeverSentEvenOnAResend(): void
+    {
+        $this->boot();
+        LegacyAppHarness::db()->rawQuery(
+            "INSERT INTO r_sample_status (status_id, status_name) VALUES (12, 'Cancelled')"
+        );
+        // Moved to lab 9 on the STS; this lab cancelled its copy.
+        self::vl('withdrawn', [
+            'result_status' => 12, 'lab_id' => 9, 'data_sync' => 1, 'result' => null,
+            'form_attributes' => '{"movedToLabId": 9}', 'last_modified_datetime' => '2026-09-15 09:00:00',
+        ]);
+        // Cancelled here for another reason: still the lab's to report.
+        self::vl('cancelled', [
+            'result_status' => 12, 'data_sync' => 1, 'last_modified_datetime' => '2026-09-15 09:00:00',
+        ]);
+
+        $this->send('vl', $this->sts(), ['syncSinceDate' => '2026-09-10 00:00:00']);
+
+        $this->assertSame(['cancelled'], $this->postedIds());
+    }
+
+    #[RunInSeparateProcess]
     public function testASampleCodeSendsOnlyThatSample(): void
     {
         $this->boot();

@@ -8,6 +8,7 @@ use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 
+use const SAMPLE_STATUS\CANCELLED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\REFERRED;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
@@ -872,6 +873,25 @@ final class LabRequestSyncService
             $updatePayload['sample_code'] = null;
             $updatePayload['sample_code_key'] = null;
             $updatePayload['sample_code_format'] = null;
+        }
+
+        // A copy this lab cancelled when the sample was moved away (withdraw-
+        // samples), now moved back: it is live again, at the STS's status.
+        $copy = $this->db->rawQueryOne(
+            "SELECT result_status, JSON_EXTRACT(form_attributes, '$.movedToLabId') AS moved_to
+               FROM `$tableName` WHERE `$primaryKeyName` = ?",
+            [$localRecord[$primaryKeyName]]
+        );
+        if (!empty($copy['moved_to'])) {
+            $this->db->rawQuery(
+                "UPDATE `$tableName`
+                    SET form_attributes = JSON_REMOVE(form_attributes, '$.movedToLabId', '$.movedOn')
+                  WHERE `$primaryKeyName` = ?",
+                [$localRecord[$primaryKeyName]]
+            );
+            if ((int) $copy['result_status'] === CANCELLED) {
+                $updatePayload['result_status'] = (int) ($incoming['result_status'] ?? 0) ?: RECEIVED_AT_CLINIC;
+            }
         }
         return $updatePayload;
     }

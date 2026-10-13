@@ -6,6 +6,7 @@ namespace Tests\Integration;
 
 use App\Registries\ContainerRegistry;
 use App\Services\LabRequestSyncService;
+use App\Services\SampleWithdrawalService;
 use mysqli;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -628,6 +629,30 @@ final class LabRequestSyncTest extends TestCase
         self::assertSame((string) self::LAB, (string) $rows['moved']['lab_id']);
         self::assertNull($rows['moved']['sample_code'], 'activation gives it one of this lab\'s codes');
         self::assertSame('VL-1', $rows['mine']['sample_code']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testACopyCancelledWhenTheSampleWasMovedAwayComesBackLive(): void
+    {
+        $db = $this->boot();
+        self::ownLab($db);
+        $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (9, 'Clinic'), (12, 'Cancelled')");
+        self::sync()->saveModule('vl', [self::vlRequest($db, 'u-1', ['result_status' => 9])], 'tx-1');
+        // Moved to another lab: this lab cancelled its copy.
+        ContainerRegistry::get(SampleWithdrawalService::class)->withdraw('vl', ['u-1'], self::OTHER_LAB);
+
+        // Then moved back here on the STS.
+        $request = $db->rawQueryOne("SELECT * FROM sts_form_vl WHERE unique_id = 'u-1'");
+        $result = self::sync()->saveModule('vl', [$request], 'tx-2');
+
+        self::assertSame(['u-1'], $result['saved']);
+        $row = $this->committed('form_vl')['u-1'];
+        self::assertSame((string) self::LAB, (string) $row['lab_id']);
+        self::assertSame('9', (string) $row['result_status'], 'live again');
+        self::assertNull(
+            json_decode((string) $row['form_attributes'], true)['movedToLabId'] ?? null,
+            'else a later cancellation for another reason would never be reported'
+        );
     }
 
     #[RunInSeparateProcess]

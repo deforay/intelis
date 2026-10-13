@@ -15,13 +15,25 @@ use const SAMPLE_STATUS\CANCELLED;
  * tested one since its last sync. Such a sample is left exactly as it is and
  * reported back: the result is this lab's, and its next sync claims the sample.
  *
- * A cancelled copy is renamed to the new lab and not sent to the STS. Sent, it
- * would put "cancelled" on the sample the new lab is working on.
+ * A cancelled copy is renamed to the new lab, marked synced and kept out of
+ * every results send (notWithdrawnCondition). Sent, it would put "cancelled"
+ * on the sample the new lab is working on.
  */
 final class SampleWithdrawalService
 {
     public function __construct(private readonly DatabaseService $db)
     {
+    }
+
+    /**
+     * SQL that is true for a row that is NOT a withdrawn copy. Kept out of every
+     * results send, including a resend of everything changed since a date,
+     * which ignores data_sync.
+     */
+    public static function notWithdrawnCondition(string $alias): string
+    {
+        return "NOT ($alias.result_status = " . CANCELLED
+            . " AND JSON_EXTRACT($alias.form_attributes, '$.movedToLabId') IS NOT NULL)";
     }
 
     /**
