@@ -91,7 +91,8 @@ final class ManifestMoveTest extends TestCase
     {
         $db->insert('specimen_manifests', $extra + [
             'manifest_code' => $code, 'module' => 'vl', 'lab_id' => self::OLD_LAB, 'manifest_type' => 'collection',
-            'manifest_status' => 'pending', 'request_created_datetime' => '2026-08-05 19:10:00',
+            // Recent: the manifest list shows the last 6 months by default.
+            'manifest_status' => 'pending', 'request_created_datetime' => date('Y-m-d H:i:s', strtotime('-10 days')),
         ]);
         return (int) $db->getInsertId();
     }
@@ -155,6 +156,26 @@ final class ManifestMoveTest extends TestCase
             $history[0]['reason'], $history[0]['fromLabId'], $history[0]['toLabId'],
         ]);
         self::assertFalse($db->isTransactionActive());
+    }
+
+    #[RunInSeparateProcess]
+    public function testASampleOnTheManifestByItsCodeAloneMovesAndBlocksToo(): void
+    {
+        $db = $this->boot();
+        $id = self::manifest($db, 'M-1');
+        self::sample($db, $id, 'M-1', 'by-id');
+        self::sample($db, 0, 'M-1', 'by-code', ['sample_package_id' => null]);
+        $tested = self::manifest($db, 'M-2');
+        self::sample($db, $tested, 'M-2', 'open');
+        self::sample($db, 0, 'M-2', 'tested-by-code', ['sample_package_id' => null, 'result' => '40']);
+
+        $outcome = self::moves()->move('vl', ['M-1', 'M-2'], self::NEW_LAB, 'Wrong lab', 'user-1');
+
+        self::assertSame(['M-1' => 2], $outcome['moved']);
+        self::assertSame(['M-2' => 'tested'], $outcome['refused']);
+        $row = $this->committed('form_vl')['by-code'];
+        self::assertSame((string) self::NEW_LAB, (string) $row['lab_id']);
+        self::assertSame((string) $id, (string) $row['sample_package_id'], 'linked by id from now on');
     }
 
     #[RunInSeparateProcess]
@@ -335,33 +356,26 @@ final class ManifestMoveTest extends TestCase
     }
 
     #[RunInSeparateProcess]
-    public function testALabsManifestsAreListedWithTheirTestedSamples(): void
+    public function testALabsManifestsAreListedFromTheManifestsAlone(): void
     {
         $db = $this->boot();
-        $a = self::manifest($db, 'M-a', ['request_created_datetime' => '2026-08-01 10:00:00']);
-        self::sample($db, $a, 'M-a', 'a-1');
-        self::sample($db, $a, 'M-a', 'a-2', ['result' => '40', 'result_status' => 7]);
-        // The manifest names another lab, but its samples are at this one.
-        $b = self::manifest($db, 'M-b', [
-            'lab_id' => self::OTHER_LAB, 'request_created_datetime' => '2026-08-02 10:00:00',
-        ]);
-        self::sample($db, $b, 'M-b', 'b-1');
-        // Another lab's manifest, and this lab's referral manifest.
-        $c = self::manifest($db, 'M-c', ['lab_id' => self::OTHER_LAB]);
-        self::sample($db, $c, 'M-c', 'c-1', ['lab_id' => self::OTHER_LAB]);
-        $r = self::manifest($db, 'M-r', ['manifest_type' => 'referral']);
-        self::sample($db, $r, 'M-r', 'r-1');
+        $recent = date('Y-m-d H:i:s', strtotime('-1 month'));
+        self::manifest($db, 'M-a', ['request_created_datetime' => $recent, 'number_of_samples' => 2]);
+        self::manifest($db, 'M-b', ['request_created_datetime' => date('Y-m-d H:i:s', strtotime('-2 days'))]);
+        // Another lab's manifest, this lab's referral manifest, and one older
+        // than the default window.
+        self::manifest($db, 'M-c', ['lab_id' => self::OTHER_LAB, 'request_created_datetime' => $recent]);
+        self::manifest($db, 'M-r', ['manifest_type' => 'referral', 'request_created_datetime' => $recent]);
+        self::manifest($db, 'M-old', ['request_created_datetime' => '2020-01-01 10:00:00']);
 
         $listed = self::moves()->listForLab('vl', self::OLD_LAB);
 
+        self::assertSame(['M-b', 'M-a'], array_column($listed, 'code'));
+        self::assertSame(2, $listed[1]['samples']);
         self::assertSame(
-            [['M-b', 1, 0], ['M-a', 2, 1]],
-            array_map(static fn(array $m): array => [$m['code'], $m['samples'], $m['tested']], $listed)
-        );
-        self::assertSame(
-            ['M-a'],
+            ['M-old'],
             array_column(
-                self::moves()->listForLab('vl', self::OLD_LAB, '2026-08-01 00:00:00', '2026-08-01 23:59:59'),
+                self::moves()->listForLab('vl', self::OLD_LAB, '2020-01-01 00:00:00', '2020-01-01 23:59:59'),
                 'code'
             )
         );
@@ -451,6 +465,10 @@ final class ManifestMoveTest extends TestCase
         $mixed = self::manifest($db, 'M-mixed');
         self::sample($db, $mixed, 'M-mixed', 'x-1', ['facility_id' => 1]);
         self::sample($db, $mixed, 'M-mixed', 'x-2', ['facility_id' => 2]);
+        // Another facility's sample on the manifest by its code alone.
+        $byCode = self::manifest($db, 'M-code');
+        self::sample($db, $byCode, 'M-code', 'c-1', ['facility_id' => 1]);
+        self::sample($db, 0, 'M-code', 'c-2', ['facility_id' => 2, 'sample_package_id' => null]);
 
         $listed = self::moves()->listForLab('vl', self::OLD_LAB, null, null, '1');
         self::assertSame(['M-mine'], array_column($listed, 'code'));
