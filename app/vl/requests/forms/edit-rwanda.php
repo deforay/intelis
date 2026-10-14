@@ -1194,7 +1194,8 @@ if (trim((string) $facilityResult[0]['facility_state']) !== '') {
                // sent with it, or the entry is lost when that box was disabled.
                $("#vlResult").attr("disabled", false);
                logValue = $("#vlLog").val();
-               if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
+               // Same bound as VlService::MAX_PLAUSIBLE_VL_LOG: a larger log is a typo, not a result.
+               if (logValue != '' && !isNaN(logValue) && logValue > 0 && logValue <= 10) {
                     var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
                     if (absVal != 'Infinity' && !isNaN(absVal)) {
                          $("#vlResult").val(Math.round(Math.pow(10, logValue) * 100) / 100);
