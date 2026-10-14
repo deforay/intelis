@@ -4,6 +4,7 @@ use const SAMPLE_STATUS\PENDING_APPROVAL;
 use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SampleStatusUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -214,7 +215,6 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
 	}
 	/* echo "<pre>";
 		  print_r($covid19Data);die; */
-	$db->where('covid19_id', $_POST['covid19SampleId']);
 	// Drop every one this form did not send.
 	foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
 	    if (!in_array($column, $resultColumnsPosted, true)) {
@@ -222,6 +222,29 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
 	    }
 	}
 
+	// Awaiting Approval needs a result. A result cleared, or a rejection undone with
+	// no result entered, leaves the sample waiting for testing, and the old review and
+	// approval go with it. Saved with no result otherwise, the status stays as it is.
+	$isRejected = ($_POST['isSampleRejected'] ?? null) === 'yes';
+	$isSts = $general->isSTSInstance();
+	$accessType = $_SESSION['accessType'] ?? null;
+	$waitingStatus = SampleStatusUtility::waitingStatusAfterSave(
+		'covid19',
+		$getPrevResult,
+		$covid19Data,
+		$isRejected,
+		array_key_exists('isSampleRejected', (array) $_POST),
+		$isSts,
+		$accessType
+	);
+	if ($waitingStatus !== null) {
+		$covid19Data['result_status'] = $waitingStatus;
+		$covid19Data = SampleStatusUtility::withoutSignoff($covid19Data);
+	} elseif (SampleStatusUtility::leavesNoResult('covid19', $getPrevResult, $covid19Data, $isRejected)) {
+		unset($covid19Data['result_status']);
+	}
+
+	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$id = $db->update($tableName, $covid19Data);
 	if ($id === true) {
 		$_SESSION['alertMsg'] = _translate("Covid-19 result updated successfully");

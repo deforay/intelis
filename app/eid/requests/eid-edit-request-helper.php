@@ -447,7 +447,6 @@ try {
 	}
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
-		$db->where('eid_id', $_POST['eidSampleId']);
 		// Drop every result column this form did not send.
 		foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
 		    if (!in_array($column, $resultColumnsPosted, true)) {
@@ -455,6 +454,26 @@ try {
 		    }
 		}
 
+		// A result cleared, or a rejection undone with no result entered, leaves the
+		// sample waiting for testing, and the old review and approval go with it
+		$isRejected = ($_POST['isSampleRejected'] ?? null) === 'yes';
+		$isSts = $general->isSTSInstance();
+		$accessType = $_SESSION['accessType'] ?? null;
+		$waitingStatus = SampleStatusUtility::waitingStatusAfterSave(
+			'eid',
+			$getPrevResult,
+			$eidData,
+			$isRejected,
+			array_key_exists('isSampleRejected', (array) $_POST),
+			$isSts,
+			$accessType
+		);
+		if ($waitingStatus !== null) {
+			$eidData['result_status'] = $waitingStatus;
+			$eidData = SampleStatusUtility::withoutSignoff($eidData);
+		}
+
+		$db->where('eid_id', $_POST['eidSampleId']);
 		$id = $db->update($tableName, $eidData);
 	}
 

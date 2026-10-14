@@ -440,7 +440,6 @@ try {
 
 	$id = 0;
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '') {
-		$db->where('covid19_id', $_POST['covid19SampleId']);
 		// Drop every result column this form did not send.
 		foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
 		    if (!in_array($column, $resultColumnsPosted, true)) {
@@ -448,6 +447,26 @@ try {
 		    }
 		}
 
+		// A result cleared, or a rejection undone with no result entered, leaves the
+		// sample waiting for testing, and the old review and approval go with it
+		$isRejected = ($_POST['isSampleRejected'] ?? null) === 'yes';
+		$isSts = $general->isSTSInstance();
+		$accessType = $_SESSION['accessType'] ?? null;
+		$waitingStatus = SampleStatusUtility::waitingStatusAfterSave(
+			'covid19',
+			$getPrevResult,
+			$covid19Data,
+			$isRejected,
+			array_key_exists('isSampleRejected', (array) $_POST),
+			$isSts,
+			$accessType
+		);
+		if ($waitingStatus !== null) {
+			$covid19Data['result_status'] = $waitingStatus;
+			$covid19Data = SampleStatusUtility::withoutSignoff($covid19Data);
+		}
+
+		$db->where('covid19_id', $_POST['covid19SampleId']);
 		$id = $db->update($tableName, $covid19Data);
 		if ($db->getLastError() !== '') {
 			error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
