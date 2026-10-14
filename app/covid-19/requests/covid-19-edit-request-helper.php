@@ -157,6 +157,8 @@ try {
 
 	$resultSentToSource = null;
 
+	// Not posted by a form that does not ask; read once, without a warning
+	$rejectionAnswer = $_POST['isSampleRejected'] ?? '';
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$_POST['result'] = null;
 		$status = REJECTED;
@@ -281,11 +283,11 @@ try {
 		'authorized_on' => empty($_POST['authorizedOn']) ? null : DateUtility::isoDateFormat($_POST['authorizedOn']),
 		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
 		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
-		'rejection_on' => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
+		'rejection_on' => (!empty($_POST['rejectionDate']) && $rejectionAnswer === 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
 		//'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'result_status' => $status,
 		'data_sync' => 0,
-		'reason_for_sample_rejection' => (!empty($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
+		'reason_for_sample_rejection' => (!empty($_POST['sampleRejectionReason']) && $rejectionAnswer === 'yes') ? $_POST['sampleRejectionReason'] : null,
 		'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) !== '') ? $_POST['correctiveAction'] : null,
 		'last_modified_by' => $_SESSION['userId'],
 		'last_modified_datetime' => DateUtility::getCurrentDateTime(),
@@ -336,7 +338,7 @@ try {
 	$covid19Data['last_modified_by'] = $_SESSION['userId'];
 	$covid19Data['lab_technician'] = (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'];
 
-	if (isset($_POST['deletedRow']) && trim((string) $_POST['deletedRow']) !== '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
+	if (isset($_POST['deletedRow']) && trim((string) $_POST['deletedRow']) !== '' && in_array($rejectionAnswer, ['no', ''], true)) {
 		$deleteRows = explode(',', (string) $_POST['deletedRow']);
 		foreach ($deleteRows as $delete) {
 			$db->where('test_id', base64_decode($delete));
@@ -392,7 +394,7 @@ try {
 	}
 
 
-	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
+	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '' && in_array($rejectionAnswer, ['no', ''], true)) {
 
 		if (!empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testName) {
@@ -464,6 +466,16 @@ try {
 		if ($waitingStatus !== null) {
 			$covid19Data['result_status'] = $waitingStatus;
 			$covid19Data = SampleStatusUtility::withoutSignoff($covid19Data);
+		}
+
+		// A form without the rejection question (a collection site's edit, say) must
+		// not undo a rejection it never showed: keep the stored answer, reason and date
+		if (!array_key_exists('isSampleRejected', $_POST)) {
+			unset(
+				$covid19Data['is_sample_rejected'],
+				$covid19Data['reason_for_sample_rejection'],
+				$covid19Data['rejection_on']
+			);
 		}
 
 		$db->where('covid19_id', $_POST['covid19SampleId']);

@@ -343,7 +343,7 @@ try {
 
      $vlData['patient_first_name'] = $_POST['patientFirstName'] ?? '';
      $vlData['patient_middle_name'] = $_POST['patientMiddleName'] ?? '';
-     $vlData['patient_last_name'] = $_POST['patientMiddleName'] ?? '';
+     $vlData['patient_last_name'] = $_POST['patientLastName'] ?? '';
 
 
      // only if result status has changed, let us update
@@ -394,6 +394,12 @@ try {
      if ($waitingStatus !== null) {
          $vlData['result_status'] = $waitingStatus;
          $vlData = SampleStatusUtility::withoutSignoff($vlData);
+     }
+
+     // A form without the rejection question (a collection site's edit, say) must
+     // not undo a rejection it never showed: keep the stored answer, reason and date
+     if (!array_key_exists('isSampleRejected', $_POST)) {
+          unset($vlData['is_sample_rejected'], $vlData['reason_for_sample_rejection'], $vlData['rejection_on']);
      }
 
      $db->where('cd4_id', $_POST['cd4SampleId']);
