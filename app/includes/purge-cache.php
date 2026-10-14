@@ -27,6 +27,8 @@ if (!$isCli && CommonService::isSessionActive() && isset($_SESSION['instance']))
 if ($isCli) {
     $compiledContainerPath = CACHE_PATH . DIRECTORY_SEPARATOR . 'CompiledContainer.php';
     MiscUtility::deleteFile($compiledContainerPath);
+    // So a container that failed to compile is tried again now (app/system/di.php)
+    MiscUtility::deleteFile(CACHE_PATH . DIRECTORY_SEPARATOR . 'di-compile-failed');
 
     // Signal web workers to reset OPcache. Production serves PHP with
     // opcache.validate_timestamps=0, so mod_php/FPM workers never notice the

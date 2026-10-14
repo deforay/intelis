@@ -16,6 +16,30 @@ use ReflectionNamedType;
  */
 final class AutowireCheck
 {
+    /**
+     * Classes left out on purpose. bin/build/check-di.php fails on any other one,
+     * so a class callers get from the container that gains such an argument is
+     * caught in CI, not on the page that asks for it.
+     */
+    public const LEFT_OUT = [
+        \App\Interop\Dhis2::class,
+        \App\Interop\Fhir::class,
+        \App\Utilities\ImageResizeUtility::class,
+        // Built per sync run with a query callable
+        \App\Utilities\ResultSyncBatch::class,
+        // Defined by hand in app/system/di.php with the debug flag
+        \App\ErrorHandlers\ErrorResponseGenerator::class,
+    ];
+
+    /**
+     * @param list<string> $leftOut
+     * @return list<string> those AutowireCheck::LEFT_OUT does not name
+     */
+    public static function unexpected(array $leftOut): array
+    {
+        return array_values(array_diff($leftOut, self::LEFT_OUT));
+    }
+
     /** @param ReflectionClass<object> $reflection */
     public static function needsUnguessableArgument(ReflectionClass $reflection): bool
     {
