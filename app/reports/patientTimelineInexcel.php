@@ -6,10 +6,19 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
+use App\Utilities\ExportJobUtility;
+
+if (ExportJobUtility::queueRequested(__FILE__, null, ['timelineData', 'timelineDataCount'])) {
+	return;
+}
+
 
 ini_set('memory_limit', '512M');
-set_time_limit(300);
-ini_set('max_execution_time', 300);
+// A background job has no request to time out; a direct request keeps its limit.
+if (!ExportJobUtility::inBackground()) {
+	set_time_limit(300);
+	ini_set('max_execution_time', 300);
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -48,8 +57,8 @@ if (isset($_SESSION['timelineData']) && trim((string) $_SESSION['timelineData'])
       $historyHeadings = ['SAMPLE ID', 'SAMPLE TYPE','FACILITY', 'TESTING LAB', 'SAMPLE STATUS'];
       $writer->addRow(Row::fromValues($historyHeadings));
 
-        foreach ($events as $row) {
-         
+      foreach ($events as $row) {
+         ExportJobUtility::tick();
             $out = [
                'sampleId' => $row['sampleId'],
                'sampleType' => $row['sampleType'],
@@ -57,10 +66,8 @@ if (isset($_SESSION['timelineData']) && trim((string) $_SESSION['timelineData'])
                'lab' => $row['lab'],
                'status' => $row['statusName'],
             ];
-          
             $writer->addRow(Row::fromValues(array_values($out)));
-
-        }
+      }
 
      $writer->close();
      echo _downloadToken($filename);

@@ -114,39 +114,30 @@ $ptConfig = [
         </form>
         <p class="pt-search-hint"></p>
     </div><br>
-    <div class="row timelineExport" style="margin-left: 15px;">
-       
-    </div>
+   
     <div class="pt-results" aria-live="polite"></div>
     <div class="pt-view" hidden></div>
 </div>
 <script>
     $(function() {
-        
-        $(".timelineExport").hide();
 
         ClinicReports.registerTab('patientTestHistoryFormReport', {
             init: function() {
                 PatientTimeline.init($('#patientTimelineApp'), <?= json_encode($ptConfig, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>);
             }
         });
-              //  $(".timelineExport").show();
 
     });
 
     function patientTimelineInexcel()
     {
+
         $.blockUI();
 
-		$.post("/reports/patientTimelineInexcel.php",
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+        IntelisExport.start("/reports/patientTimelineInexcel.php", {
+			
+		}, <?= json_encode(_translate("Intelis-Patient-Timeline-Data")) ?>);
+        $.unblockUI();
+
     }
 </script>

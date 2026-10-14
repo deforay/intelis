@@ -256,18 +256,9 @@ $state = $geolocationService->getProvinces("yes");
 			}
 			$.blockUI();
 
-			$.post("/generic-tests/program-management/generic-tests-sample-testing-report-export-in-excel.php", {
-					sampleCollectionDate: $("#stSampleCollectionDate").val(),
-				},
-				function(data) {
-					if (data == "" || data == null || data == undefined) {
-						$.unblockUI();
-						alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
-					} else {
-						$.unblockUI();
-						window.open('/download.php?f=' + data, '_blank');
-					}
-				});
+			IntelisExport.start("/generic-tests/program-management/generic-tests-sample-testing-report-export-in-excel.php", {
+			
+		}, <?= json_encode(_translate("Intelis-Generic-Tests-Sample-Testing-Report")) ?>);
 		}
 
 </script>

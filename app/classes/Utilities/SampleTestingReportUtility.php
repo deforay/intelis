@@ -75,8 +75,10 @@ final class SampleTestingReportUtility
                 GROUP BY f.facility_id
                 ORDER BY total DESC, f.facility_name";
         $_SESSION['sampleTestingReport'] = $sql;
+        [$rResult, $resultCount] = $db->getDataAndCount($sql);
+        $_SESSION['sampleTestingReportCount'] = $resultCount;
         $rows = [];
-        foreach ($db->rawQuery($sql) ?: [] as $row) {
+        foreach ($rResult ?: [] as $row) {
             $out = [
                 'facility' => (string) $row['facility_name'],
                 'state' => (string) ($row['facility_state'] ?? ''),

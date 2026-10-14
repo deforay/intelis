@@ -6,10 +6,19 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
+use App\Utilities\ExportJobUtility;
+
+if (ExportJobUtility::queueRequested(__FILE__, null, ['sampleTestingReport', 'sampleTestingReportCount'])) {
+	return;
+}
+
 
 ini_set('memory_limit', '512M');
-set_time_limit(300);
-ini_set('max_execution_time', 300);
+// A background job has no request to time out; a direct request keeps its limit.
+if (!ExportJobUtility::inBackground()) {
+	set_time_limit(300);
+	ini_set('max_execution_time', 300);
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -24,14 +33,17 @@ if (isset($_SESSION['sampleTestingReport']) && trim((string) $_SESSION['sampleTe
 
      $headings = ['Facility', 'State', 'District', 'Samples Collected', 'Tested', 'Awaiting Testing', 'Not Yet at Lab','Rejected'];
     
-     $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Sample-Testing-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
+     $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-VL-Sample-Testing-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
 
      $writer = new Writer();
      $writer->openToFile($filename);
      $writer->addRow(Row::fromValues($headings));
 
     $resultSet = $db->rawQueryGenerator($_SESSION['sampleTestingReport']);
+    
         foreach ($resultSet as $row) {
+            ExportJobUtility::tick();
+
             $out = [
                 'facility' => (string) $row['facility_name'],
                 'state' => (string) ($row['facility_state'] ?? ''),

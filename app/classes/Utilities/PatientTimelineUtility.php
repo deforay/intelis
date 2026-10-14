@@ -207,6 +207,7 @@ final class PatientTimelineUtility
         ];
 
         $_SESSION['timelineData'] = $data;
+        $_SESSION['timelineDataCount'] = count($data);
         return $data;
         
     }

@@ -975,22 +975,9 @@ foreach ($rejectionTypeResult as $type) {
 		}
 		$.blockUI();
 
-		$.post("/eid/management/eidSampleTestingReportExportInExcel.php", {
-				Sample_Test_Date: $("#noResultSampleTestDate").val(),
-				Batch_Code: $("#noResultBatchCode  option:selected").text(),
-				Sample_Type: $("#noResultSampleType  option:selected").text(),
-				Facility_Name: $("#noResultFacilityName  option:selected").text(),
-				Sex: $("#noResultGender  option:selected").text()
-			},
-			function(data) {
-				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _jsTranslate("Unable to generate the excel file"); ?>");
-				} else {
-					$.unblockUI();
-					window.open('/download.php?f=' + data, '_blank');
-				}
-			});
+			IntelisExport.start("/eid/management/eidSampleTestingReportExportInExcel.php", {
+			
+		}, <?= json_encode(_translate("Intelis-EID-Sample-Testing-Report")) ?>);
 	}
 
 
