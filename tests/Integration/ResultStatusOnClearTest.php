@@ -328,6 +328,21 @@ final class ResultStatusOnClearTest extends TestCase
         self::assertSame('approver', $row['result_approved_by']);
     }
 
+    #[DataProvider('editPages')]
+    #[RunInSeparateProcess]
+    public function testAnEditWithoutTheRejectionQuestionLeavesARejectionStanding(string $module): void
+    {
+        $id = $this->rejectedSample($module);
+
+        // A collection site's edit form shows no rejection question, so none is posted
+        $this->drive(self::MODULES[$module]['edit'], self::post($module, $id, 'edit', []));
+
+        $row = $this->saved($module, $id);
+        self::assertSame('yes', $row['is_sample_rejected']);
+        self::assertSame(REJECTED, (int) $row['result_status']);
+        self::assertSame('approver', $row['result_approved_by']);
+    }
+
     /** @return array<string, array{string}> */
     public static function resultPages(): array
     {

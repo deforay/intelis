@@ -123,6 +123,8 @@ try {
 		$status = RECEIVED_AT_TESTING_LAB;
 	}
 
+	// Not posted by a form that does not ask; read once, without a warning
+	$rejectionAnswer = $_POST['isSampleRejected'] ?? '';
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$_POST['result'] = null;
 		$status = REJECTED;
@@ -213,11 +215,11 @@ try {
 		'authorized_on' => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
 		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
 		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : "",
-		'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
+		'rejection_on' => (isset($_POST['rejectionDate']) && $rejectionAnswer === 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
 		'result_status' => $status,
 		'result_sent_to_source' => $resultSentToSource,
 		'data_sync' => 0,
-		'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
+		'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $rejectionAnswer === 'yes') ? $_POST['sampleRejectionReason'] : null,
 		'last_modified_by' => $_SESSION['userId'],
 		'last_modified_datetime' => DateUtility::getCurrentDateTime(),
 		'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
@@ -327,6 +329,16 @@ try {
 			if ($waitingStatus !== null) {
 				$hepatitisData['result_status'] = $waitingStatus;
 				$hepatitisData = SampleStatusUtility::withoutSignoff($hepatitisData);
+			}
+
+			// A form without the rejection question (a collection site's edit, say) must
+			// not undo a rejection it never showed: keep the stored answer, reason and date
+			if (!array_key_exists('isSampleRejected', $_POST)) {
+				unset(
+					$hepatitisData['is_sample_rejected'],
+					$hepatitisData['reason_for_sample_rejection'],
+					$hepatitisData['rejection_on']
+				);
 			}
 
 			$db->where('hepatitis_id', $_POST['hepatitisSampleId']);

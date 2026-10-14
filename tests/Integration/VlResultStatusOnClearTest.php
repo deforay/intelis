@@ -169,8 +169,9 @@ final class VlResultStatusOnClearTest extends TestCase
             (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306)
         );
         $statement = $mysqli->prepare(
-            'SELECT result, result_status, is_sample_rejected, vl_test_platform, tested_by, sample_tested_datetime,
-                    result_reviewed_by, result_reviewed_datetime, result_approved_by, result_approved_datetime
+            'SELECT result, result_status, is_sample_rejected, reason_for_sample_rejection, rejection_on,
+                    vl_test_platform, tested_by, sample_tested_datetime, result_reviewed_by,
+                    result_reviewed_datetime, result_approved_by, result_approved_datetime
                FROM form_vl WHERE vl_sample_id = ?'
         );
         $statement->bind_param('i', $id);
@@ -266,6 +267,10 @@ final class VlResultStatusOnClearTest extends TestCase
         $row = $this->saved($id);
         self::assertSame(REJECTED, (int) $row['result_status']);
         self::assertSame('approver', $row['result_approved_by']);
+        // The flag, reason and date it never showed are kept too, so the row stays one rejection
+        self::assertSame('yes', $row['is_sample_rejected']);
+        self::assertSame(1, (int) $row['reason_for_sample_rejection']);
+        self::assertSame('2026-09-27', substr((string) $row['rejection_on'], 0, 10));
     }
 
     #[RunInSeparateProcess]
