@@ -1412,6 +1412,9 @@ $implementingPartnerList = $general->getImplementationPartners();
 		$(document).on('clinicreports:filterschanged', function () {
 			searchExecuted = false;
 		});
+		$('#sampleTestingReport').on('change', 'input, select', function () {
+			searchExecuted = false;
+		});
 		ClinicReports.start();
 		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select").on("change", function () {
 			searchExecuted = false;
@@ -1829,19 +1832,15 @@ $implementingPartnerList = $general->getImplementationPartners();
 		}, <?= json_encode(_translate("VL Results Not Available Export")) ?>);
 	}
 
-	function sampleTestingInexcel()
-	{
+	function sampleTestingInexcel() {
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
 		if (!searchExecuted) {
 			return searchVlRequestData().then(sampleTestingInexcel);
 		}
-		//alert("yes, gng");
-		$.blockUI();
-
-		IntelisExport.start("/vl/program-management/vlSampleTestingReportExportInExcel.php", {
-			
-		}, <?= json_encode(_translate("Intelis-VL-Sample-Testing-Report")) ?>);
-
-	
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/vl/program-management/vlSampleTestingReportExportInExcel.php", {}, <?= json_encode(_translate("VL Sample Testing Export")) ?>);
 	}
 
 	function hideFemaleDetails(value, pregnant, breastFeeding) {
@@ -1920,19 +1919,15 @@ $implementingPartnerList = $general->getImplementationPartners();
 	}
 
 	function sampleTestingReport() {
-
-		$.when(
-			getSampleResult()
-		)
-			.done(function () {
-				$.unblockUI();
-				$(window).scroll();
-			});
-
-		$(window).on('beforeunload', function () {
+		$(window).off('beforeunload.sampleTesting').on('beforeunload.sampleTesting', function () {
 			if (currentXHR !== null && currentXHR !== undefined) {
 				currentXHR.abort();
 			}
+		});
+		// Returned so that an export can wait for this search to come back.
+		return $.when(getSampleResult()).done(function () {
+			$.unblockUI();
+			$(window).scroll();
 		});
 	}
 

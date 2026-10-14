@@ -98,9 +98,19 @@
         }
         tab.ready = true;
         if (typeof tab.init === 'function') {
-            tab.init();
+            track(tab.init());
         }
         return true;
+    }
+
+    /* A tab that is not a DataTable (Sample Testing) draws with its own
+       request and returns it; count it like a table draw, so an export
+       waiting on the search waits for this one too. */
+    function track(request) {
+        if (request && typeof request.always === 'function') {
+            startLoading();
+            request.always(endLoading);
+        }
     }
 
     function draw(paneId) {
@@ -112,7 +122,7 @@
             return; // init draws once by itself
         }
         if (typeof tab.search === 'function') {
-            tab.search();
+            track(tab.search());
             return;
         }
         var table = typeof tab.table === 'function' ? tab.table() : null;

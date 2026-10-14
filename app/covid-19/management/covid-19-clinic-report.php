@@ -543,6 +543,9 @@ $state = $geolocationService->getProvinces("yes");
 		$(document).on('clinicreports:filterschanged', function () {
 			searchExecuted = false;
 		});
+		$('#sampleTestingReport').on('change', 'input, select', function () {
+			searchExecuted = false;
+		});
 		ClinicReports.start();
 		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select").on("change", function() {
 			searchExecuted = false;
@@ -856,17 +859,15 @@ $state = $geolocationService->getProvinces("yes");
 			}, <?= json_encode(_translate("COVID-19 Results Not Available Export")) ?>);
 	}
 
-	function sampleTestingInexcel()
-	{
+	function sampleTestingInexcel() {
+		/* The export replays the query the last search stored in the session,
+		   so it has to wait for that search rather than race it. */
 		if (!searchExecuted) {
 			return searchVlRequestData().then(sampleTestingInexcel);
 		}
-		$.blockUI();
-
-		IntelisExport.start("/covid-19/management/covid19SampleTestingReportExportInExcel.php", {
-			
-		}, <?= json_encode(_translate("Intelis-COVID19-Sample-Testing-Report")) ?>);
-
+		// Runs in the background; progress shows in the navbar Exports menu and the
+		// file downloads when ready, even if the user has moved to another page.
+		IntelisExport.start("/covid-19/management/covid19SampleTestingReportExportInExcel.php", {}, <?= json_encode(_translate("COVID-19 Sample Testing Export")) ?>);
 	}
 
 
@@ -919,18 +920,15 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function sampleTestingReport() {
-		$.when(
-				getSampleTestingResult()
-			)
-			.done(function() {
-				$.unblockUI();
-				$(window).scroll();
-			});
-
-		$(window).on('beforeunload', function() {
+		$(window).off('beforeunload.sampleTesting').on('beforeunload.sampleTesting', function () {
 			if (currentXHR !== null && currentXHR !== undefined) {
 				currentXHR.abort();
 			}
+		});
+		// Returned so that an export can wait for this search to come back.
+		return $.when(getSampleTestingResult()).done(function () {
+			$.unblockUI();
+			$(window).scroll();
 		});
 	}
 
