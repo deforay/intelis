@@ -36946,3 +36946,168 @@ msgstr "a été reçu à son laboratoire et son envoi n'a pas été confirmé"
 #, c-format
 msgid "These manifests were already received at %1$s: %2$s. Have their samples physically been sent on to %3$s?"
 msgstr "Ces manifestes ont déjà été reçus à %1$s : %2$s. Leurs échantillons ont-ils été physiquement envoyés à %3$s ?"
+
+msgid "(Please tick one):(To be completed by clinician)"
+msgstr "(Cochez une case) : (à remplir par le clinicien)"
+
+msgid "CD4 Clinic Results Export"
+msgstr "Export des résultats cliniques de CD4"
+
+msgid "CD4 Rejected Results Export"
+msgstr "Export des résultats rejetés de CD4"
+
+msgid "CD4 Results Not Available Export"
+msgstr "Export des résultats non disponibles de CD4"
+
+msgid "CD4 Sample Testing Export"
+msgstr "Export des tests d'échantillons de CD4"
+
+msgid "COVID-19 Clinic Results Export"
+msgstr "Export des résultats cliniques de COVID-19"
+
+msgid "COVID-19 Rejected Results Export"
+msgstr "Export des résultats rejetés de COVID-19"
+
+msgid "COVID-19 Results Not Available Export"
+msgstr "Export des résultats non disponibles de COVID-19"
+
+msgid "COVID-19 Sample Testing Export"
+msgstr "Export des tests d'échantillons de COVID-19"
+
+msgid "Community"
+msgstr "Communauté"
+
+msgid "Current Regimen Initiated On"
+msgstr "Régime actuel initié le"
+
+msgid "Custom Tests Sample Testing Export"
+msgstr "Export des tests d'échantillons des tests personnalisés"
+
+msgid "Data Quality Export"
+msgstr "Export de la qualité des données"
+
+msgid "Date Sample Received at Hub (PHL)"
+msgstr "Date de réception de l'échantillon au hub (PHL)"
+
+msgid "EID Clinic Results Export"
+msgstr "Export des résultats cliniques de EID"
+
+msgid "EID Rejected Results Export"
+msgstr "Export des résultats rejetés de EID"
+
+msgid "EID Results Not Available Export"
+msgstr "Export des résultats non disponibles de EID"
+
+msgid "EID Sample Testing Export"
+msgstr "Export des tests d'échantillons de EID"
+
+msgid "Email for HF"
+msgstr "Courriel de l'établissement de santé"
+
+msgid "Hepatitis Clinic Results Export"
+msgstr "Export des résultats cliniques de Hépatite"
+
+msgid "Hepatitis Rejected Results Export"
+msgstr "Export des résultats rejetés de Hépatite"
+
+msgid "Hepatitis Results Not Available Export"
+msgstr "Export des résultats non disponibles de Hépatite"
+
+msgid "Hepatitis Sample Testing Export"
+msgstr "Export des tests d'échantillons de Hépatite"
+
+msgid "Location Of Sample Collection"
+msgstr "Lieu de prélèvement de l'échantillon"
+
+msgid "Patient Timeline Export"
+msgstr "Export de la chronologie du patient"
+
+msgid "Please choose HIV detection"
+msgstr "Veuillez choisir la détection VIH"
+
+msgid "Please choose adherence"
+msgstr "Veuillez choisir l'adhésion"
+
+msgid "Please choose location of sample collection"
+msgstr "Veuillez choisir le lieu de prélèvement de l'échantillon"
+
+msgid "Please enter VL Result"
+msgstr "Veuillez saisir le résultat VL"
+
+msgid "Please enter art regimen"
+msgstr "Veuillez saisir le régime ART"
+
+msgid "Please enter current regimen initiated on"
+msgstr "Veuillez saisir la date d'initiation du régime actuel"
+
+msgid "Please enter email for hf"
+msgstr "Veuillez saisir le courriel de l'établissement de santé"
+
+msgid "Please enter viral load in log"
+msgstr "Veuillez saisir la charge virale en log"
+
+msgid "Please enter viral load result in Log"
+msgstr "Veuillez saisir le résultat de charge virale en log"
+
+msgid "Please select Last VL Date"
+msgstr "Veuillez sélectionner la date du dernier test VL"
+
+msgid "Please select indication/reason for testing"
+msgstr "Veuillez sélectionner l'indication/le motif du test"
+
+msgid "Please select request date"
+msgstr "Veuillez sélectionner la date de la demande"
+
+msgid "Repeat VL test after suspected treatment failure adherence counseling (Reason for testing)"
+msgstr "Test VL répété après conseil d'adhésion pour échec présumé du traitement (motif du test)"
+
+msgid "Repeat VL test after suspected treatment failure adherence counselling"
+msgstr "Test VL répété après conseil d'adhésion pour échec présumé du traitement"
+
+msgid "Routine Monitoring"
+msgstr "Suivi de routine"
+
+msgid "Sample ID length must be a minimum length of"
+msgstr "L'ID de l'échantillon doit avoir une longueur minimale de"
+
+msgid "Select ART Regimen"
+msgstr "Sélectionnez le régime ART"
+
+msgid "Select Last VL Date"
+msgstr "Sélectionnez la date du dernier test VL"
+
+msgid "Select or Type VL Result"
+msgstr "Sélectionnez ou saisissez le résultat VL"
+
+msgid "Suspect Treatment Failure (Reason for testing)"
+msgstr "Échec présumé du traitement (motif du test)"
+
+msgid "TB Clinic Results Export"
+msgstr "Export des résultats cliniques de TB"
+
+msgid "TB Rejected Results Export"
+msgstr "Export des résultats rejetés de TB"
+
+msgid "TB Results Not Available Export"
+msgstr "Export des résultats non disponibles de TB"
+
+msgid "TB Sample Testing Export"
+msgstr "Export des tests d'échantillons de TB"
+
+msgid "VL High Viral Load Export"
+msgstr "Export des charges virales élevées VL"
+
+msgid "VL Rejected Results Export"
+msgstr "Export des résultats rejetés de VL"
+
+msgid "VL Results Not Available Export"
+msgstr "Export des résultats non disponibles de VL"
+
+msgid "VL Sample Testing Export"
+msgstr "Export des tests d'échantillons de VL"
+
+msgid "VL Virologic Failure Report"
+msgstr "Rapport d'échec virologique VL"
+
+msgid "characters"
+msgstr "caractères"
