@@ -29,6 +29,7 @@ foreach (DataQualityReportUtility::checks($dqTestType) as $dqKey => $dqCheck) {
 
 $dqConfig = [
     'endpoint' => '/reports/get-data-quality.php',
+    'exportEndpoint' => '/reports/export-data-quality.php',
     'testType' => $dqTestType,
     'locale' => str_replace('_', '-', (string) ($_SESSION['APP_LOCALE'] ?? 'en_US')),
     'checks' => $dqChecks,
@@ -70,7 +71,7 @@ $dqConfig = [
         'showing' => _translate('Showing the %s most recent. Export for the full list.'),
         'close' => _translate('Close'),
         'export' => _translate('Export to Excel'),
-        'exportFailed' => _translate('Unable to generate the excel file'),
+        'exportName' => _translate('Data Quality Export'),
         'sampleCode' => _translate('Sample ID'),
         'patientId' => _translate('Patient ID'),
         'collected' => _translate('Sample Collection Date'),
