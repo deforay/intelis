@@ -252,6 +252,25 @@ final class SampleStatusUtility
         return $data;
     }
 
+    /**
+     * A sample the form says is not rejected keeps no rejection reason or date.
+     * A hidden reason select can still post the old reason after a rejection is
+     * undone, and the result PDFs print any reason they find. Left alone when
+     * the form does not ask the question.
+     *
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $post
+     * @return array<string, mixed>
+     */
+    public static function withoutStaleRejection(array $data, array $post): array
+    {
+        if (array_key_exists('isSampleRejected', $post) && $post['isSampleRejected'] !== 'yes') {
+            $data['reason_for_sample_rejection'] = null;
+            $data['rejection_on'] = null;
+        }
+        return $data;
+    }
+
     private static function isRealDate(?string $value): bool
     {
         $value = trim((string) $value);

@@ -163,6 +163,8 @@ final class ResultStatusOnClearTest extends TestCase
         return $this->seed($module, [
             'result_status' => REJECTED,
             'is_sample_rejected' => 'yes',
+            'reason_for_sample_rejection' => 1,
+            'rejection_on' => '2026-09-27',
             'result_approved_by' => 'approver',
             'result_approved_datetime' => '2026-09-27 12:00:00',
         ]);
@@ -196,7 +198,7 @@ final class ResultStatusOnClearTest extends TestCase
         $resultColumn = self::MODULES[$module]['resultColumn'];
         $statement = $mysqli->prepare(
             "SELECT $resultColumn AS result, result_status, is_sample_rejected, result_reviewed_by,
-                    result_approved_by, result_approved_datetime
+                    result_approved_by, result_approved_datetime, reason_for_sample_rejection, rejection_on
                FROM $table WHERE $key = ?"
         );
         $statement->bind_param('i', $id);
@@ -262,12 +264,18 @@ final class ResultStatusOnClearTest extends TestCase
             'isSampleRejected' => 'no',
             self::MODULES[$module]['resultField'] => '',
             'approvedBy' => 'approver',
+            // The hidden reason select still holds the old reason
+            'sampleRejectionReason' => '1',
+            'rejectionReason' => '1',
+            'rejectionDate' => '2026-09-27',
         ]));
 
         $row = $this->saved($module, $id);
         self::assertSame('no', $row['is_sample_rejected']);
         self::assertSame(RECEIVED_AT_TESTING_LAB, (int) $row['result_status']);
         self::assertNull($row['result_approved_by']);
+        self::assertNull($row['reason_for_sample_rejection']);
+        self::assertNull($row['rejection_on']);
     }
 
     #[DataProvider('pages')]
@@ -369,12 +377,19 @@ final class ResultStatusOnClearTest extends TestCase
     {
         $id = $this->resultedSample($module, ACCEPTED);
 
+        // The result box still holds the result when the sample is rejected
         $this->drive(self::MODULES[$module][$page], self::post($module, $id, $page, [
             'isSampleRejected' => 'yes',
             'sampleRejectionReason' => '1',
+            'rejectionReason' => '1',
             'rejectionDate' => '2026-09-27',
+            self::MODULES[$module]['resultField'] => self::MODULES[$module]['value'],
         ]));
 
-        self::assertSame(REJECTED, (int) $this->saved($module, $id)['result_status']);
+        $row = $this->saved($module, $id);
+        self::assertSame(REJECTED, (int) $row['result_status']);
+        self::assertSame('yes', $row['is_sample_rejected']);
+        self::assertNull($row['result']);
+        self::assertSame(1, (int) $row['reason_for_sample_rejection']);
     }
 }

@@ -394,11 +394,18 @@ final class VlResultStatusOnClearTest extends TestCase
     {
         $id = $this->rejectedSample();
 
-        $this->drive(self::RESULT, self::resultPost($id, ['isSampleRejected' => 'no']));
+        // The hidden reason select still holds the old reason
+        $this->drive(self::RESULT, self::resultPost($id, [
+            'isSampleRejected' => 'no',
+            'rejectionReason' => '1',
+            'rejectionDate' => '2026-09-27',
+        ]));
 
         $row = $this->saved($id);
         self::assertSame('no', $row['is_sample_rejected']);
         self::assertSame(RECEIVED_AT_TESTING_LAB, (int) $row['result_status']);
+        self::assertNull($row['reason_for_sample_rejection']);
+        self::assertNull($row['rejection_on']);
     }
 
     #[RunInSeparateProcess]

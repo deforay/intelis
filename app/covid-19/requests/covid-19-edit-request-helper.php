@@ -468,6 +468,7 @@ try {
 			$covid19Data = SampleStatusUtility::withoutSignoff($covid19Data);
 		}
 
+		$covid19Data = SampleStatusUtility::withoutStaleRejection($covid19Data, $_POST);
 		// A form without the rejection question (a collection site's edit, say) must
 		// not undo a rejection it never showed: keep the stored answer, reason and date
 		if (!array_key_exists('isSampleRejected', $_POST)) {

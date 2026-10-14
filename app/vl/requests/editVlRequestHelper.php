@@ -505,6 +505,7 @@ try {
           $vlData['is_encrypted'] = null;
      }
 
+     $vlData = SampleStatusUtility::withoutStaleRejection($vlData, $_POST);
      // A form without the rejection question (a collection site's edit, say) must
      // not undo a rejection it never showed: keep the stored answer, reason and date
      if (!array_key_exists('isSampleRejected', $_POST)) {

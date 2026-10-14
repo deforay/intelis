@@ -149,6 +149,7 @@ try {
 		} elseif (SampleStatusUtility::leavesNoResult('hepatitis', $getPrevResult, $hepatitisData, $isRejected)) {
 			unset($hepatitisData['result_status']);
 		}
+		$hepatitisData = SampleStatusUtility::withoutStaleRejection($hepatitisData, $_POST);
 
 		$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 		$id = $db->update($tableName, $hepatitisData);
