@@ -191,7 +191,14 @@ final class PatientTimelineUtility
         }
 
         usort($events, fn($x, $y) => strcmp((string) $x['collected'], (string) $y['collected']));
-        $data = [
+
+        // Only the count is kept, for the export to size its job: the export
+        // rebuilds the timeline of the patient it is asked for. Holding the
+        // timeline itself would weigh down every later request of the session,
+        // and would export whichever patient another browser tab opened last.
+        $_SESSION['patientTimelineCount'] = count($events);
+
+        return [
             'patient' => [
                 'id' => $patientId,
                 'names' => array_values($names),
@@ -205,11 +212,6 @@ final class PatientTimelineUtility
             'vlThreshold' => $vlThreshold,
             'cd4Low' => self::CD4_LOW,
         ];
-
-        $_SESSION['timelineData'] = $data;
-        $_SESSION['timelineDataCount'] = count($data);
-        return $data;
-        
     }
 
     /** @return array<string, mixed> */

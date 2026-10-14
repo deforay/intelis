@@ -22,6 +22,7 @@ if (isset($ptTypes['generic-tests'])) {
 
 $ptConfig = [
     'endpoint' => '/reports/get-patient-timeline.php',
+    'exportEndpoint' => '/reports/patientTimelineInexcel.php',
     'locale' => str_replace('_', '-', (string) ($_SESSION['APP_LOCALE'] ?? 'en_US')),
     'types' => $ptTypes,
     'labels' => [
@@ -35,6 +36,8 @@ $ptConfig = [
         'error' => _translate('Unable to load the patient history right now'),
         'back' => _translate('Back to search results'),
         'print' => _translate('Print'),
+        'export' => _translate('Export to Excel'),
+        'exportName' => _translate('Patient Timeline Export'),
         'unnamed' => _translate('Name not recorded'),
         'patientId' => _translate('Patient ID'),
         'sex' => _translate('Sex'),
@@ -113,31 +116,16 @@ $ptConfig = [
             <button type="submit" class="btn btn-primary pt-search-button"></button>
         </form>
         <p class="pt-search-hint"></p>
-    </div><br>
-   
+    </div>
     <div class="pt-results" aria-live="polite"></div>
     <div class="pt-view" hidden></div>
 </div>
 <script>
     $(function() {
-
         ClinicReports.registerTab('patientTestHistoryFormReport', {
             init: function() {
                 PatientTimeline.init($('#patientTimelineApp'), <?= json_encode($ptConfig, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>);
             }
         });
-
     });
-
-    function patientTimelineInexcel()
-    {
-
-        $.blockUI();
-
-        IntelisExport.start("/reports/patientTimelineInexcel.php", {
-			
-		}, <?= json_encode(_translate("Intelis-Patient-Timeline-Data")) ?>);
-        $.unblockUI();
-
-    }
 </script>
