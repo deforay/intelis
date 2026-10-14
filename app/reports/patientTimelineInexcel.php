@@ -13,8 +13,8 @@ use App\Utilities\PatientTimelineUtility;
 
 // Export of the Patient Test History tab, for the patient the page posts.
 // The timeline is rebuilt here rather than read from the session: the session
-// only keeps the size of the last one opened (patientTimelineCount), which is
-// enough to tell a small export, run at once, from a big one.
+// only keeps the size of each one opened, which is enough to tell a small
+// export, run at once, from a big one.
 
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
@@ -32,6 +32,10 @@ if ($patientId === '') {
     return;
 }
 
+// The count of this patient's timeline, never another one's: a count of 0
+// left by a different patient would answer "no data" for this one. Without a
+// count the export runs as a background job.
+$_SESSION['patientTimelineCount'] = PatientTimelineUtility::rememberedCount($patientId);
 if (ExportJobUtility::queueRequested(__FILE__, null, ['patientTimelineCount'])) {
     return;
 }
