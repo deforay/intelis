@@ -618,7 +618,7 @@ if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label  labels" for="vlResult"><?= _translate("Viral Load Result (copies/mL)"); ?> </label>
                                                                       <div class="col-lg-7 resultInputContainer">
-                                                                           <input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)" <?= (empty($vlQueryInfo['vl_test_platform']) && trim((string) $vlQueryInfo['result']) === '') ? 'disabled' : ''; ?>>
+                                                                           <input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" data-has-saved-result="<?= trim((string) ($vlQueryInfo['result'] ?? '')) !== '' ? 'yes' : 'no'; ?>" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)" <?= (empty($vlQueryInfo['vl_test_platform']) && trim((string) $vlQueryInfo['result']) === '') ? 'disabled' : ''; ?>>
                                                                            <datalist id="possibleVlResults">
 
                                                                            </datalist>
@@ -1302,12 +1302,19 @@ if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty
                });
      }
 
+     // A disabled input is not submitted. Disable the result box only while it is empty and
+     // never held a saved result, so a result cleared on purpose is still saved as cleared.
+     function disableEmptyVlResult() {
+          var vlResultBox = $("#vlResult");
+          var isEmpty = (vlResultBox.val() || '').trim() === '';
+          vlResultBox.attr("disabled", isEmpty && vlResultBox.attr("data-has-saved-result") !== "yes");
+     }
+
      function hivDetectionChange() {
 
           var text = $('#testingPlatform').val();
           if (!text) {
-               // A disabled input is not submitted, so never disable one holding a saved result
-               $("#vlResult").attr("disabled", ($("#vlResult").val() || '').trim() === '');
+               disableEmptyVlResult();
                return;
           }
 
@@ -1494,6 +1501,9 @@ if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty
                }
           }
           if (obj.id == "vlLog") {
+               // The log is the same result in another unit. The result box it fills has to be
+               // sent with it, or the entry is lost when that box was disabled.
+               $("#vlResult").attr("disabled", false);
                logValue = $("#vlLog").val();
                if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
                     var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;

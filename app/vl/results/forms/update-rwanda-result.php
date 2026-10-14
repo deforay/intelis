@@ -664,7 +664,7 @@ $disable = "disabled = 'disabled'";
 													<label class="col-lg-5 control-label" for="vlResult">
 														Viral Load Result<span class="mandatory">*</span> (copies/mL) </label>
 													<div class="col-lg-7 resultInputContainer">
-														<input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
+														<input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" data-has-saved-result="<?= trim((string) ($vlQueryInfo['result'] ?? '')) !== '' ? 'yes' : 'no'; ?>" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
 														<datalist id="possibleVlResults">
 														</datalist>
 													</div>
@@ -800,8 +800,23 @@ $disable = "disabled = 'disabled'";
 		__clone = $("#vlRequestFormRwd .labSection").clone();
 		reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
 		result = ($("#vlResult").length) ? $("#vlResult").val() : '';
-		hivDetectionChange();
+        if ($('#testingPlatform').val()) {
+            loadPossibleVlResults();
+        } else {
+            disableEmptyVlResult();
+        }
 	});
+
+    // Fill the result suggestions for the saved platform without hivDetectionChange()'s
+    // side effects (it resets the rejection decision)
+    function loadPossibleVlResults() {
+        $.post("/vl/requests/getVlResults.php", {
+                instrumentId: $('#testingPlatform').val().split("##")[3],
+            },
+            function(data) {
+                $("#possibleVlResults").html(data);
+            });
+    }
 
 	$("#isSampleRejected").on("change", function() {
 		if ($(this).val() == 'yes') {
@@ -896,6 +911,9 @@ $disable = "disabled = 'disabled'";
 			}
 		}
 		if (obj.id == "vlLog") {
+            // The log is the same result in another unit. The result box it fills has to be
+            // sent with it, or the entry is lost when that box was disabled.
+            $("#vlResult").attr("disabled", false);
 			logValue = $("#vlLog").val();
 			if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
 				var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
@@ -922,11 +940,19 @@ $disable = "disabled = 'disabled'";
 		}
 	}
 
+    // A disabled input is not submitted. Disable the result box only while it is empty and
+    // never held a saved result, so a result cleared on purpose is still saved as cleared.
+    function disableEmptyVlResult() {
+        var vlResultBox = $("#vlResult");
+        var isEmpty = (vlResultBox.val() || '').trim() === '';
+        vlResultBox.attr("disabled", isEmpty && vlResultBox.attr("data-has-saved-result") !== "yes");
+    }
+
 	function hivDetectionChange() {
 
 		let text = $('#testingPlatform').val();
 		if (!text) {
-			$("#vlResult").attr("disabled", true);
+            disableEmptyVlResult();
 			return;
 		}
 		var str1 = text.split("##");

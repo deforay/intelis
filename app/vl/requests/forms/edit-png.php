@@ -615,7 +615,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 											<label for="vlResult">VL result</label>
 										</td>
 										<td class="vlResult resultInputContainer" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "none" : ""; ?>">
-											<input list="possibleVlResults" disabled="disabled" type="text" class="form-control" name="cphlVlResult" id="cphlvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
+											<input list="possibleVlResults" disabled="disabled" type="text" class="form-control" name="cphlVlResult" id="cphlvlResult" data-has-saved-result="<?= trim((string) ($vlQueryInfo['cphl_vl_result'] ?? '')) !== '' ? 'yes' : 'no'; ?>" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['cphl_vl_result']; ?>">
 											<datalist id="possibleVlResults"></datalist>
 										</td>
 										<!--<td class="vlresultequ" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>"></td>
@@ -676,7 +676,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 										</td>
 										<td class="labels"><label for="failedvlResult">VL result</label></td>
 										<td class="resultInputContainer">
-											<input list="failedPossibleVlResults" disabled="disabled" type="text" class="form-control" name="failedvlResult" id="failedvlResult" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['failed_vl_result']; ?>">
+											<input list="failedPossibleVlResults" disabled="disabled" type="text" class="form-control" name="failedvlResult" id="failedvlResult" data-has-saved-result="<?= trim((string) ($vlQueryInfo['failed_vl_result'] ?? '')) !== '' ? 'yes' : 'no'; ?>" placeholder="VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['failed_vl_result']; ?>">
 											<datalist id="failedPossibleVlResults"></datalist>
 										</td>
 									</tr>
@@ -717,7 +717,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 										<td class="labels"><label for="finalViralLoadResult">Final Viral Load
 												Result(copies/mL)</label></td>
 										<td class="resultInputContainer">
-											<input list="finalPossibleVlResults" disabled="disabled" type="text" class="form-control" name="finalViralLoadResult" id="finalViralLoadResult" placeholder="Final VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['result']; ?>">
+											<input list="finalPossibleVlResults" disabled="disabled" type="text" class="form-control" name="finalViralLoadResult" id="finalViralLoadResult" data-has-saved-result="<?= trim((string) ($vlQueryInfo['result'] ?? '')) !== '' ? 'yes' : 'no'; ?>" placeholder="Final VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['result']; ?>">
 											<datalist id="finalPossibleVlResults"></datalist>
 										</td>
 										<td class="labels"><label for="testQuality">QC Tech Name</label></td>
@@ -803,8 +803,11 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 	function getVlResults(testingPlatformId, datalistId, vlResultId) {
 		const testingVal = $('#' + testingPlatformId).val();
 		if (!testingVal) {
-			// A disabled input is not submitted, so a box holding a result stays editable
-			$("#" + vlResultId).attr("disabled", ($("#" + vlResultId).val() || '').trim() === '');
+            // A disabled input is not submitted. Disable a result box only while it is empty and
+            // never held a saved result, so a result cleared on purpose is still saved as cleared.
+            const vlResultBox = $("#" + vlResultId);
+            const isEmpty = (vlResultBox.val() || '').trim() === '';
+            vlResultBox.attr("disabled", isEmpty && vlResultBox.attr("data-has-saved-result") !== "yes");
 			return false;
 		}
 		const platformId = testingVal.split("##")[3];
