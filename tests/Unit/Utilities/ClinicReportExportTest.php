@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Utilities;
 
 use App\Utilities\DataQualityReportUtility;
+use App\Utilities\PatientTimelineUtility;
 use App\Utilities\SampleTestingReportUtility;
 use PHPUnit\Framework\TestCase;
 
@@ -124,5 +125,34 @@ final class ClinicReportExportTest extends TestCase
             DataQualityReportUtility::listingKey($base),
             DataQualityReportUtility::listingKey(['testType' => 'eid'] + $base)
         );
+    }
+
+    public function testTimelineCountBelongsToItsOwnPatient(): void
+    {
+        $_SESSION = [];
+        PatientTimelineUtility::rememberCount('P-WITH-SAMPLES', 12);
+        // Opened later, in another browser tab, with nothing visible.
+        PatientTimelineUtility::rememberCount('P-EMPTY', 0);
+
+        $this->assertSame(12, PatientTimelineUtility::rememberedCount('P-WITH-SAMPLES'));
+        $this->assertSame(0, PatientTimelineUtility::rememberedCount('P-EMPTY'));
+        $this->assertNull(PatientTimelineUtility::rememberedCount('P-NEVER-OPENED'));
+    }
+
+    public function testTimelineCountsStaySmall(): void
+    {
+        $_SESSION = [];
+        for ($i = 1; $i <= 50; $i++) {
+            PatientTimelineUtility::rememberCount((string) $i, $i);
+        }
+        // Reopening a patient already dropped makes it the newest again.
+        PatientTimelineUtility::rememberCount('5', 5);
+
+        $this->assertCount(20, $_SESSION['patientTimelineCounts']);
+        $this->assertSame(5, PatientTimelineUtility::rememberedCount('5'));
+        $this->assertSame(50, PatientTimelineUtility::rememberedCount('50'));
+        // The oldest of the rest makes room.
+        $this->assertNull(PatientTimelineUtility::rememberedCount('31'));
+        $this->assertSame(32, PatientTimelineUtility::rememberedCount('32'));
     }
 }

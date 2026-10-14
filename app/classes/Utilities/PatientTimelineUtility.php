@@ -194,9 +194,10 @@ final class PatientTimelineUtility
 
         // Only the count is kept, for the export to size its job: the export
         // rebuilds the timeline of the patient it is asked for. Holding the
-        // timeline itself would weigh down every later request of the session,
-        // and would export whichever patient another browser tab opened last.
-        $_SESSION['patientTimelineCount'] = count($events);
+        // timeline itself would weigh down every later request of the session.
+        // Kept per patient, so a patient opened in another browser tab cannot
+        // lend this one its count, and capped so the session stays small.
+        self::rememberCount($patientId, count($events));
 
         return [
             'patient' => [
@@ -345,5 +346,23 @@ final class PatientTimelineUtility
             return '';
         }
         return substr($value, 0, 10);
+    }
+
+    /** Patients whose timeline count the session keeps; older ones are dropped. */
+    private const COUNTS_KEPT = 20;
+
+    public static function rememberCount(string $patientId, int $count): void
+    {
+        $counts = (array) ($_SESSION['patientTimelineCounts'] ?? []);
+        unset($counts[$patientId]);
+        $counts[$patientId] = $count;
+        $_SESSION['patientTimelineCounts'] = array_slice($counts, -self::COUNTS_KEPT, null, true);
+    }
+
+    /** The count stored when this patient's timeline was last opened, or null. */
+    public static function rememberedCount(string $patientId): ?int
+    {
+        $count = $_SESSION['patientTimelineCounts'][$patientId] ?? null;
+        return $count === null ? null : (int) $count;
     }
 }
