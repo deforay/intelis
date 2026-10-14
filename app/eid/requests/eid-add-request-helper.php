@@ -5,6 +5,7 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\REJECTED;
 use App\Services\VlService;
+use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -33,6 +34,14 @@ $vlService = ContainerRegistry::get(VlService::class);
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
+
+// Refused before anything is written. Nothing here opens a transaction, but one left
+// open would be committed when the connection closes, so it is rolled back first.
+if (EidService::refusesResultWithoutPlatform((array) $_POST)) {
+    $db->rollbackTransaction();
+    $_SESSION['alertMsg'] = _translate("Nothing was saved. Please choose the testing platform for the result.");
+    MiscUtility::redirect("/eid/requests/eid-add-request.php");
+}
 
 
 $tableName = "form_eid";

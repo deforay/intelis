@@ -6,6 +6,7 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\PENDING_APPROVAL;
 use const SAMPLE_STATUS\REJECTED;
 use App\Services\VlService;
+use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -62,6 +63,12 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
     }
 }
 
+// Refused before anything is written, back to this sample's edit page
+if (EidService::refusesResultWithoutPlatform((array) $_POST)) {
+    $_SESSION['alertMsg'] = _translate("Nothing was saved. Please choose the testing platform for the result.");
+    $editPage = "/eid/requests/eid-edit-request.php?id=" . MiscUtility::sqid((int) ($_POST['eidSampleId'] ?? 0));
+    MiscUtility::redirect($editPage);
+}
 
 try {
 	// Acting as a LIS: the Testing Lab is this install's own lab, not a free

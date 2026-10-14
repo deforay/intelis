@@ -307,6 +307,8 @@ final class ResultStatusOnClearTest extends TestCase
         $this->drive(self::MODULES[$module][$page], self::post($module, $id, $page, [
             'isSampleRejected' => 'no',
             self::MODULES[$module]['resultField'] => self::MODULES[$module]['value'],
+            // An EID result is refused without its platform; the other modules ignore the field
+            'eidPlatform' => 'Abbott##20',
         ]));
 
         $row = $this->saved($module, $id);

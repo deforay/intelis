@@ -2,6 +2,7 @@
 
 use const SAMPLE_STATUS\PENDING_APPROVAL;
 use const SAMPLE_STATUS\REJECTED;
+use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -23,6 +24,12 @@ $tableName = "form_eid";
 $tableName1 = "activity_log";
 $tableName2 = "log_result_updates";
 
+// Refused before anything is written, back to this sample's result page
+if (EidService::refusesResultWithoutPlatform((array) $_POST)) {
+    $_SESSION['alertMsg'] = _translate("Nothing was saved. Please choose the testing platform for the result.");
+    $resultPage = "/eid/results/eid-update-result.php?id=" . base64_encode((string) ($_POST['eidSampleId'] ?? ''));
+    MiscUtility::redirect($resultPage);
+}
 
 try {
   // Acting as a LIS: a result can only be recorded for this install's own lab.
