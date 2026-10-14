@@ -83,6 +83,28 @@ final class EidService extends AbstractTestService
     }
 
     /**
+     * Whether an EID web save has to be refused because it writes a result with no
+     * testing platform. A result is read off a platform, so one saved without it
+     * cannot be traced to the run that produced it.
+     *
+     * A rejection needs no platform, and neither does clearing a result. A form that
+     * did not send the result field keeps the stored result, so it writes none.
+     * Every EID country form sends the platform as eidPlatform.
+     *
+     * @param array<string, mixed> $post the request as the form sent it
+     */
+    public static function refusesResultWithoutPlatform(array $post): bool
+    {
+        if (($post['isSampleRejected'] ?? null) === 'yes') {
+            return false;
+        }
+        if (!array_key_exists('result', $post) || trim((string) $post['result']) === '') {
+            return false;
+        }
+        return trim((string) ($post['eidPlatform'] ?? '')) === '';
+    }
+
+    /**
      * Instruments report the qualitative EID result as free text in the language the
      * machine is configured in, so "HIV-1 NOT DETECTED", "HIV-1 NON DÉTECTÉ" and
      * "hiv-1 non detecte" all have to land on the same r_eid_results key.
