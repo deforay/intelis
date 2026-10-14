@@ -78,9 +78,9 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
         $resultColumnsPosted[] = $column;
     }
 }
-// The result itself is guarded the same way, but as a group: result, log, absolute and
-// category are all derived from one entry. Rejecting the sample still clears it.
-$keepSavedResult = VlService::mustKeepSavedResult((array) $_POST);
+    // The result itself is guarded the same way, but as a group: result, log, absolute and
+    // category are all derived from one entry. Rejecting the sample still clears it.
+    $keepSavedResult = VlService::mustKeepSavedResult((array) $_POST);
 
     $_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true);
     $_POST['sampleTestingDateAtLab'] = DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'] ?? '', true);
@@ -135,7 +135,7 @@ $keepSavedResult = VlService::mustKeepSavedResult((array) $_POST);
     // The result-change reason is appended (preserving prior history) further below, after the
     // previous row is fetched -- see appendResultChangeReason near the result_modified check.
 
-    if ($_POST['failedTestingTech'] != '') {
+    if (($_POST['failedTestingTech'] ?? '') != '') {
         $platForm = explode("##", (string) $_POST['failedTestingTech']);
         $_POST['failedTestingTech'] = $platForm[0];
     }
@@ -302,8 +302,11 @@ $keepSavedResult = VlService::mustKeepSavedResult((array) $_POST);
     }
 
 
-    // only if result status has changed, let us update
-    if (!empty($resultStatus)) {
+    // Only a rejection may change the status of a sample whose saved result is kept:
+    // a status derived from an entry that is not being written would mark it
+    // Awaiting Approval with no result on record.
+    $resultStatus = VlService::resultStatusToWrite($processedResults, $keepSavedResult);
+    if ($resultStatus !== null) {
         $vlData['result_status'] = $resultStatus;
     }
 
@@ -314,7 +317,10 @@ $keepSavedResult = VlService::mustKeepSavedResult((array) $_POST);
     } else {
         $vlData = $vlService->sanitizeResultColumnsForWrite($vlData, 'update-vl-result');
 
-        $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
+        $vlData['vl_result_category'] = $vlService->getVLResultCategory(
+            $vlData['result_status'] ?? null,
+            $vlData['result']
+        );
     }
 
     // Retain the outgoing result before it is replaced. Editing a result overwrites it just

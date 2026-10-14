@@ -385,8 +385,11 @@ try {
      $vlData['patient_middle_name'] = $_POST['patientMiddleName'] ?? '';
      $vlData['patient_last_name'] = $_POST['patientLastName'] ?? '';
 
-     // only if result status has changed, let us update
-     if (!empty($resultStatus)) {
+     // Only a rejection may change the status of a sample whose saved result is kept:
+     // a status derived from an entry that is not being written would mark it
+     // Awaiting Approval with no result on record.
+     $resultStatus = VlService::resultStatusToWrite($processedResults, $keepSavedResult);
+     if ($resultStatus !== null) {
           $vlData['result_status'] = $resultStatus;
      }
 
@@ -405,8 +408,8 @@ try {
      if (!$keepSavedResult) {
           $vlData = $vlService->sanitizeResultColumnsForWrite($vlData, 'edit-vl-request');
           $vlData['vl_result_category'] = $vlService->getVLResultCategory(
-               $vlData['result_status'] ?? null,
-               $vlData['result']
+              $vlData['result_status'] ?? null,
+              $vlData['result']
           );
      }
 

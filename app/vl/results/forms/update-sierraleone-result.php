@@ -1157,6 +1157,9 @@ if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty
 			}
 		}
 		if (obj.id == "vlLog") {
+            // The log is the same result in another unit. The result box it fills has to be
+            // sent with it, or the entry is lost when that box was disabled.
+            $("#vlResult").attr("disabled", false);
 			logValue = $("#vlLog").val();
 			if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
 				var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;

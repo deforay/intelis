@@ -574,7 +574,7 @@ foreach ($testReasonsResultDetails as $row) {
 												<div class="col-md-6">
 													<label for="testingPlatform" class="col-lg-5 control-label"><?= _translate('VL Testing Platform'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
-														<select name="testingPlatform" id="testingPlatform" class="form-control" title="<?= _translate('Please choose VL Testing Platform'); ?>" <?php echo $labFieldDisabled; ?> onchange="hivDetectionChange();">
+														<select name="testingPlatform" id="testingPlatform" class="form-control isRequired result-optional" title="<?= _translate('Please choose VL Testing Platform'); ?>" <?php echo $labFieldDisabled; ?> onchange="hivDetectionChange();">
 															<option value=""><?= _translate('-- Select --'); ?></option>
 															<?php foreach ($importResult as $mName) { ?>
 																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
@@ -642,7 +642,7 @@ foreach ($testReasonsResultDetails as $row) {
 												<div class="col-md-6 vlResult">
 													<label class="col-lg-5 control-label" for="vlResult"><?= _translate('Viral Load Result (copies/mL)'); ?> </label>
 													<div class="col-lg-7 resultInputContainer">
-														<input list="possibleVlResults" autocomplete="off" class="form-control" id="vlResult" name="vlResult" placeholder="<?= _translate('Viral Load Result'); ?>" title="<?= _translate('Please enter viral load result'); ?>" value="<?= ($vlQueryInfo['result']); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" disabled />
+														<input list="possibleVlResults" autocomplete="off" class="form-control" id="vlResult" data-has-saved-result="<?= trim((string) ($vlQueryInfo['result'] ?? '')) !== '' ? 'yes' : 'no'; ?>" name="vlResult" placeholder="<?= _translate('Viral Load Result'); ?>" title="<?= _translate('Please enter viral load result'); ?>" value="<?= ($vlQueryInfo['result']); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" <?= (empty($vlQueryInfo['vl_test_platform']) && trim((string) $vlQueryInfo['result']) === '') ? 'disabled' : ''; ?> />
 														<datalist id="possibleVlResults">
 
 														</datalist>
@@ -854,6 +854,7 @@ foreach ($testReasonsResultDetails as $row) {
 		} else if ($(this).val() == 'no') {
 			$(".result-fields").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
+            $(".result-optional").addClass("isRequired");
 			$(".result-span").show();
 			$(".review-approve-span").show();
 			$('.vlResult,.vlLog').css('display', 'block');
@@ -928,10 +929,21 @@ foreach ($testReasonsResultDetails as $row) {
 		hivDetectionChange();
 	});
 
+    // A disabled input is not submitted. Disable the result box only while it is empty and
+    // never held a saved result, so a result cleared on purpose is still saved as cleared.
+    function disableEmptyVlResult() {
+        var vlResultBox = $("#vlResult");
+        var isEmpty = (vlResultBox.val() || '').trim() === '';
+        vlResultBox.attr("disabled", isEmpty && vlResultBox.attr("data-has-saved-result") !== "yes");
+    }
+
 	function hivDetectionChange() {
 
 		var text = $('#testingPlatform').val();
-		if (!text) return;
+        if (!text) {
+            disableEmptyVlResult();
+            return;
+        }
 		var str1 = text.split("##");
 		var str = str1[0];
 		if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#isSampleRejected').val() != 'yes') {
@@ -1011,6 +1023,9 @@ foreach ($testReasonsResultDetails as $row) {
 			}
 		}
 		if (obj.id == "vlLog") {
+            // The log is the same result in another unit. The result box it fills has to be
+            // sent with it, or the entry is lost when that box was disabled.
+            $("#vlResult").attr("disabled", false);
 			logValue = $("#vlLog").val();
 			if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
 				var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;

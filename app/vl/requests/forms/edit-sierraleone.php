@@ -887,7 +887,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] === "Other") {
 										<div class="col-md-4 vlResult" style="margin-top: 10px;display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 											<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/mL) </label>
 											<div class="col-lg-7 resultInputContainer">
-												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
+												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" data-has-saved-result="<?= trim((string) ($vlQueryInfo['result'] ?? '')) !== '' ? 'yes' : 'no'; ?>" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
 												<datalist id="possibleVlResults" title="Please enter viral load result">
 
 												</datalist>
@@ -1497,12 +1497,19 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] === "Other") {
 		hivDetectionChange();
 	});
 
+    // A disabled input is not submitted. Disable the result box only while it is empty and
+    // never held a saved result, so a result cleared on purpose is still saved as cleared.
+    function disableEmptyVlResult() {
+        var vlResultBox = $("#vlResult");
+        var isEmpty = (vlResultBox.val() || '').trim() === '';
+        vlResultBox.attr("disabled", isEmpty && vlResultBox.attr("data-has-saved-result") !== "yes");
+    }
+
 	function hivDetectionChange() {
 
 		var text = $('#testingPlatform').val();
 		if (!text) {
-			// A disabled input is not submitted, so never disable one holding a saved result
-			$("#vlResult").attr("disabled", ($("#vlResult").val() || '').trim() === '');
+            disableEmptyVlResult();
 			return;
 		}
 		var str1 = text.split("##");
@@ -1612,6 +1619,9 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] === "Other") {
 			}
 		}
 		if (obj.id == "vlLog") {
+            // The log is the same result in another unit. The result box it fills has to be
+            // sent with it, or the entry is lost when that box was disabled.
+            $("#vlResult").attr("disabled", false);
 			logValue = $("#vlLog").val();
 			if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
 				var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;

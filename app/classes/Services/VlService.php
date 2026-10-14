@@ -461,6 +461,29 @@ final class VlService extends AbstractTestService
         return array_diff_key($vlData, array_flip(self::RESULT_VALUE_COLUMNS));
     }
 
+    /**
+     * The result_status a VL edit or result update writes, or null to leave it as stored.
+     *
+     * processViralLoadResultFromForm() derives a status from whatever result entry it
+     * was given, including a log typed beside a result box that was not posted. When
+     * the saved result is kept, that entry is ignored, so a status derived from it
+     * would mark the sample Awaiting Approval with no result on record. Only a
+     * rejection may still change the status then.
+     *
+     * @param array<string, mixed> $processedResults what processViralLoadResultFromForm() returned
+     */
+    public static function resultStatusToWrite(array $processedResults, bool $keepSavedResult): ?int
+    {
+        if (($processedResults['isRejected'] ?? null) === 'yes') {
+            return REJECTED;
+        }
+        if ($keepSavedResult) {
+            return null;
+        }
+        $status = $processedResults['resultStatus'] ?? null;
+        return empty($status) ? null : (int) $status;
+    }
+
     public function processViralLoadResultFromForm(array $params): array
     {
         $isRejected = 'no';
