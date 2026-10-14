@@ -108,4 +108,63 @@
         var char = artRegimen.charAt(0);
         $("#lineOfTreatment").val(char);
     }
+    // A result is never saved without the testing platform it was read on. The
+    // save helpers refuse one, so the form asks for the platform first. Applied
+    // just before validation, from what the form is about to send: a result box
+    // that is disabled is not sent, so it keeps the saved result and needs nothing.
+    (function() {
+        var MARK = 'platformForResult';
+
+        function isRejected($form) {
+            return $form.find('select[name="isSampleRejected"]').val() === 'yes' ||
+                $form.find('input[name="isSampleRejected"]:checked').val() === 'yes';
+        }
+
+        function sendsAResult($form) {
+            var $boxes = $form.find('[name="vlResult"], [name="cphlVlResult"], [name="finalViralLoadResult"]')
+                .filter(':enabled');
+            if (!$boxes.length) {
+                return false;
+            }
+            // The log and the detection line make a result on their own once a result box is sent
+            var entered = false;
+            $boxes.add($form.find('[name="vlLog"], [name="hivDetection"]').filter(':enabled')).each(function() {
+                if ($.trim($(this).val() || '') !== '') {
+                    entered = true;
+                }
+            });
+            return entered;
+        }
+
+        function requirePlatformForResult(form) {
+            if (!form) {
+                return;
+            }
+            var $form = $(form);
+            var $platform = $form.find('[name="testingPlatform"]');
+            if (!$platform.length) {
+                return;
+            }
+            if (!isRejected($form) && sendsAResult($form)) {
+                if (!$platform.hasClass('isRequired')) {
+                    $platform.addClass('isRequired ' + MARK)
+                        .attr('title', "<?= _jsTranslate('Please choose VL Testing Platform'); ?>");
+                }
+            } else if ($platform.hasClass(MARK)) {
+                // Only lift a requirement this added, never one the form set itself
+                $platform.removeClass('isRequired ' + MARK);
+            }
+        }
+
+        $(function() {
+            if (typeof deforayValidator === 'undefined' || typeof deforayValidator.validate !== 'function') {
+                return;
+            }
+            var originalValidate = deforayValidator.validate;
+            deforayValidator.validate = function() {
+                requirePlatformForResult(document.getElementById(this.settings && this.settings.formId));
+                return originalValidate.apply(this, arguments);
+            };
+        });
+    })();
 </script>

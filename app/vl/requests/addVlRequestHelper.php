@@ -1,13 +1,12 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface;
-use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const COUNTRY\PNG;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SampleStatusUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -64,11 +63,7 @@ try {
         MiscUtility::redirect("/vl/requests/addVlRequest.php");
     }
 
-    if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
-        $resultStatus = RECEIVED_AT_CLINIC;
-    } else {
-        $resultStatus = RECEIVED_AT_TESTING_LAB;
-    }
+    $resultStatus = SampleStatusUtility::initialStatus($general->isSTSInstance(), $_SESSION['accessType'] ?? null);
 
     //add province
     if (isset($splitProvince[0]) && trim((string) $splitProvince[0]) !== '') {
@@ -149,6 +144,12 @@ try {
 
     // Let us process the result entered by the user
     $processedResults = $vlService->processViralLoadResultFromForm($_POST);
+
+    if (VlService::refusesResultWithoutPlatform((array) $_POST, $processedResults, false)) {
+        $db->rollbackTransaction();
+        $_SESSION['alertMsg'] = _translate("Nothing was saved. Please choose the testing platform for the result.");
+        MiscUtility::redirect("/vl/requests/addVlRequest.php");
+    }
 
     $isRejected = $processedResults['isRejected'];
     $finalResult = $processedResults['finalResult'];

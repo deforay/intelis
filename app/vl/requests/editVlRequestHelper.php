@@ -5,6 +5,7 @@ use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SampleStatusUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\StorageService;
@@ -99,10 +100,25 @@ try {
           $_POST['sampleCode'],
           $_POST['sampleCollectionDate']
      ];
+     // Back to this sample's edit page, not the add page, when the save is refused
+     $editPage = "/vl/requests/editVlRequest.php?id=" . MiscUtility::sqid((int) ($_POST['vlSampleId'] ?? 0));
      if (ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
           $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
-          MiscUtility::redirect("/vl/requests/addVlRequest.php");
+          MiscUtility::redirect($editPage);
           die;
+     }
+
+     if ($formId == '5') {
+          $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlVlResult'] ?? $_POST['vlResult'] ?? null;
+     }
+
+     // Let us process the result entered by the user
+     $processedResults = $vlService->processViralLoadResultFromForm($_POST);
+
+     // Refused before anything is written
+     if (VlService::refusesResultWithoutPlatform((array) $_POST, $processedResults, $keepSavedResult)) {
+          $_SESSION['alertMsg'] = _translate("Nothing was saved. Please choose the testing platform for the result.");
+          MiscUtility::redirect($editPage);
      }
 
      //add province
@@ -169,13 +185,6 @@ try {
                $_POST['rejectionReason'] = $rejectionResult['rejection_reason_id'];
           }
      }
-
-     if ($formId == '5') {
-          $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlVlResult'] ?? $_POST['vlResult'] ?? null;
-     }
-
-     // Let us process the result entered by the user
-     $processedResults = $vlService->processViralLoadResultFromForm($_POST);
 
      //Update patient Information in Patients Table
      //$systemPatientCode = $patientsService->savePatient($_POST, 'form_vl');
@@ -389,6 +398,17 @@ try {
      // a status derived from an entry that is not being written would mark it
      // Awaiting Approval with no result on record.
      $resultStatus = VlService::resultStatusToWrite($processedResults, $keepSavedResult);
+
+     // A result cleared, or a rejection undone with no result entered, leaves nothing
+     // for the old status to describe: the sample is waiting for testing again
+     // The helper always writes the receipt date, so the one it writes is the one that counts
+     $receivedAtLab = $vlData['sample_received_at_lab_datetime'];
+     $isSts = $general->isSTSInstance();
+     $accessType = $_SESSION['accessType'] ?? null;
+     $leavesWaiting = VlService::leavesSampleWaiting($_POST, $getPrevResult, $processedResults, $keepSavedResult);
+     $resultStatus = $leavesWaiting
+         ? SampleStatusUtility::waitingForTestingStatus($receivedAtLab, $isSts, $accessType)
+         : $resultStatus;
      if ($resultStatus !== null) {
           $vlData['result_status'] = $resultStatus;
      }
@@ -402,6 +422,11 @@ try {
          if (!in_array($column, $resultColumnsPosted, true)) {
              unset($vlData[$column]);
          }
+     }
+
+     // The review and approval belonged to the result or rejection that is gone
+     if ($leavesWaiting) {
+          $vlData = SampleStatusUtility::withoutSignoff($vlData);
      }
 
      // A kept result is dropped below, after the PNG columns are merged in
