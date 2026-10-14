@@ -38,6 +38,8 @@ $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 $resultColumnsOwnedByTheForm = [
     'sample_tested_datetime'   => 'sampleTestedDateTime',
     'result'                   => 'result',
+    'hcv_vl_count'             => 'hcvCount',
+    'hbv_vl_count'             => 'hbvCount',
     'result_reviewed_by'       => 'reviewedBy',
     'result_reviewed_datetime' => 'reviewedOn',
 ];
@@ -301,7 +303,6 @@ try {
 
 		$id = 0;
 		if (isset($_POST['hepatitisSampleId']) && $_POST['hepatitisSampleId'] != '') {
-			$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 			// Drop every result column this form did not send.
 			foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
 			    if (!in_array($column, $resultColumnsPosted, true)) {
@@ -309,6 +310,26 @@ try {
 			    }
 			}
 
+			// A result cleared, or a rejection undone with no result entered, leaves the
+			// sample waiting for testing, and the old review and approval go with it
+			$isRejected = ($_POST['isSampleRejected'] ?? null) === 'yes';
+			$isSts = $general->isSTSInstance();
+			$accessType = $_SESSION['accessType'] ?? null;
+			$waitingStatus = SampleStatusUtility::waitingStatusAfterSave(
+				'hepatitis',
+				$getPrevResult,
+				$hepatitisData,
+				$isRejected,
+				array_key_exists('isSampleRejected', (array) $_POST),
+				$isSts,
+				$accessType
+			);
+			if ($waitingStatus !== null) {
+				$hepatitisData['result_status'] = $waitingStatus;
+				$hepatitisData = SampleStatusUtility::withoutSignoff($hepatitisData);
+			}
+
+			$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 			$id = $db->update($tableName, $hepatitisData);
 		}
 	} else {

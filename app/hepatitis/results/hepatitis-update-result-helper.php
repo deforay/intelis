@@ -1,8 +1,10 @@
 <?php
 
 use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SampleStatusUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -118,6 +120,35 @@ try {
 			TestAttemptService::BY_RESULT_EDIT,
 			$_POST['reasonForResultChanges'] ?? $_POST['reasonForChanging'] ?? null
 		);
+
+		// A rejection used to be saved as Awaiting Approval, with no reason or date.
+		// Awaiting Approval needs a result: a result cleared, or a rejection undone with
+		// no result entered, leaves the sample waiting for testing, and the old review
+		// and approval go with it. Saved with no result otherwise, the status stays.
+		$isRejected = ($_POST['isSampleRejected'] ?? null) === 'yes';
+		if ($isRejected) {
+			$hepatitisData['result'] = null;
+			$hepatitisData['result_status'] = REJECTED;
+			$hepatitisData['reason_for_sample_rejection'] = $_POST['sampleRejectionReason'] ?? null;
+			$hepatitisData['rejection_on'] = DateUtility::isoDateFormat($_POST['rejectionDate'] ?? '');
+		}
+		$isSts = $general->isSTSInstance();
+		$accessType = $_SESSION['accessType'] ?? null;
+		$waitingStatus = SampleStatusUtility::waitingStatusAfterSave(
+			'hepatitis',
+			$getPrevResult,
+			$hepatitisData,
+			$isRejected,
+			array_key_exists('isSampleRejected', (array) $_POST),
+			$isSts,
+			$accessType
+		);
+		if ($waitingStatus !== null) {
+			$hepatitisData['result_status'] = $waitingStatus;
+			$hepatitisData = SampleStatusUtility::withoutSignoff($hepatitisData);
+		} elseif (SampleStatusUtility::leavesNoResult('hepatitis', $getPrevResult, $hepatitisData, $isRejected)) {
+			unset($hepatitisData['result_status']);
+		}
 
 		$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 		$id = $db->update($tableName, $hepatitisData);
