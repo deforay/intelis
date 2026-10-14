@@ -372,6 +372,7 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
         if ($leavesWaiting) {
             $vlData = SampleStatusUtility::withoutSignoff($vlData);
         }
+        $vlData = SampleStatusUtility::withoutStaleRejection($vlData, $_POST);
 
         $id = $db->update($tableName, $vlData);
 

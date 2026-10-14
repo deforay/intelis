@@ -225,6 +225,7 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
       } elseif (SampleStatusUtility::leavesNoResult('eid', $getPrevResult, $eidData, $isRejected)) {
           unset($eidData['result_status']);
       }
+      $eidData = SampleStatusUtility::withoutStaleRejection($eidData, $_POST);
 
       $db->where('eid_id', $_POST['eidSampleId']);
       $id = $db->update($tableName, $eidData);

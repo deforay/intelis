@@ -199,6 +199,7 @@ try {
         } elseif (SampleStatusUtility::leavesNoResult('cd4', $getPrevResult, $vlData, $isRejected)) {
             unset($vlData['result_status']);
         }
+        $vlData = SampleStatusUtility::withoutStaleRejection($vlData, $_POST);
 
         $db->where('cd4_id', $_POST['cd4SampleId']);
         $id = $db->update('form_cd4', $vlData);

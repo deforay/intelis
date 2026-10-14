@@ -243,6 +243,7 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
 	} elseif (SampleStatusUtility::leavesNoResult('covid19', $getPrevResult, $covid19Data, $isRejected)) {
 		unset($covid19Data['result_status']);
 	}
+	$covid19Data = SampleStatusUtility::withoutStaleRejection($covid19Data, $_POST);
 
 	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$id = $db->update($tableName, $covid19Data);
