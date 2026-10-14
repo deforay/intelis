@@ -3,6 +3,7 @@
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
 use const SAMPLE_STATUS\REJECTED;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
@@ -470,6 +471,18 @@ try {
 		);
 		if ($waitingStatus !== null) {
 			$eidData['result_status'] = $waitingStatus;
+			$eidData = SampleStatusUtility::withoutSignoff($eidData);
+		} elseif (
+			SampleStatusUtility::undoesRejectionWithResult(
+				'eid',
+				$getPrevResult,
+				$eidData,
+				$isRejected,
+				array_key_exists('isSampleRejected', (array) $_POST)
+			)
+		) {
+			// The review and approval were of the rejection
+			$eidData['result_status'] = PENDING_APPROVAL;
 			$eidData = SampleStatusUtility::withoutSignoff($eidData);
 		}
 

@@ -3,6 +3,7 @@
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
 use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -328,6 +329,18 @@ try {
 			);
 			if ($waitingStatus !== null) {
 				$hepatitisData['result_status'] = $waitingStatus;
+				$hepatitisData = SampleStatusUtility::withoutSignoff($hepatitisData);
+			} elseif (
+				SampleStatusUtility::undoesRejectionWithResult(
+					'hepatitis',
+					$getPrevResult,
+					$hepatitisData,
+					$isRejected,
+					array_key_exists('isSampleRejected', (array) $_POST)
+				)
+			) {
+				// The review and approval were of the rejection
+				$hepatitisData['result_status'] = PENDING_APPROVAL;
 				$hepatitisData = SampleStatusUtility::withoutSignoff($hepatitisData);
 			}
 
