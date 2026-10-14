@@ -1,64 +1,24 @@
 <?php
 
-namespace App\Utilities;
-
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use OpenSpout\Common\Entity\Row;
-use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\ExportJobUtility;
+use App\Utilities\SampleTestingReportUtility;
 
-if (ExportJobUtility::queueRequested(__FILE__, null, ['sampleTestingReport', 'sampleTestingReportCount'])) {
-	return;
+// Export of the Sample Testing tab. Every clinic report page shares its
+// columns and file through SampleTestingReportUtility; this script only
+// names the test type.
+if (ExportJobUtility::queueRequested(__FILE__, SampleTestingReportUtility::sessionKey('generic-tests'))) {
+    return;
 }
 
-
-ini_set('memory_limit', '512M');
-// A background job has no request to time out; a direct request keeps its limit.
+// A background job has no request to time out; a direct request keeps its limits.
 if (!ExportJobUtility::inBackground()) {
-	set_time_limit(300);
-	ini_set('max_execution_time', 300);
+    ini_set('memory_limit', '512M');
+    set_time_limit(300);
 }
 
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-
-/*
- * Get data from your service/database.
- *
- * Replace this with your existing report query/service.
- */
-if (isset($_SESSION['sampleTestingReport']) && trim((string) $_SESSION['sampleTestingReport']) !== "") {
-
-     $headings = ['Facility', 'State', 'District', 'Samples Collected', 'Tested', 'Awaiting Approval', 'Awaiting Testing','Lost, Expired or Referred'];
-    
-     $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-generic-tests-Sample-Testing-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-
-     $writer = new Writer();
-     $writer->openToFile($filename);
-     $writer->addRow(Row::fromValues($headings));
-
-    $resultSet = $db->rawQueryGenerator($_SESSION['sampleTestingReport']);
-        foreach ($resultSet as $row) {
-            ExportJobUtility::tick();
-            $out = [
-                'facility' => (string) $row['facility_name'],
-                'state' => (string) ($row['facility_state'] ?? ''),
-                'district' => (string) ($row['facility_district'] ?? ''),
-                'total' => (int) $row['total'],
-                'tested' => (int) $row['tested'],
-                'awaitingApproval' => (int) $row['awaitingApproval'],
-                'awaitingTesting' => (int) $row['awaitingTesting'],
-                'other' => (int) $row['other']
-            ];
-           
-            $writer->addRow(Row::fromValues(array_values($out)));
-
-        }
-
-     $writer->close();
-     echo _downloadToken($filename);
+$file = SampleTestingReportUtility::export('generic-tests', ContainerRegistry::get(DatabaseService::class));
+if ($file !== null) {
+    echo _downloadToken($file);
 }
-

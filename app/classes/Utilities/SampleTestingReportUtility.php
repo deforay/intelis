@@ -7,6 +7,8 @@ namespace App\Utilities;
 use App\Services\TestsService;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 
 /**
  * The Sample Testing tab of the seven clinic report pages.
@@ -74,26 +76,112 @@ final class SampleTestingReportUtility
                 WHERE " . implode(' AND ', $where) . "
                 GROUP BY f.facility_id
                 ORDER BY total DESC, f.facility_name";
-        $_SESSION['sampleTestingReport'] = $sql;
-        [$rResult, $resultCount] = $db->getDataAndCount($sql);
-        $_SESSION['sampleTestingReportCount'] = $resultCount;
-        $rows = [];
-        foreach ($rResult ?: [] as $row) {
-            $out = [
-                'facility' => (string) $row['facility_name'],
-                'state' => (string) ($row['facility_state'] ?? ''),
-                'district' => (string) ($row['facility_district'] ?? ''),
-                'total' => (int) $row['total'],
-            ];
-            $counted = 0;
-            foreach (array_keys(self::BUCKETS) as $bucket) {
-                $out[$bucket] = (int) $row[$bucket];
-                $counted += $out[$bucket];
-            }
-            $out['other'] = $out['total'] - $counted;
-            $rows[] = $out;
-        }
+        $rows = array_map(self::shapeRow(...), $db->rawQuery($sql) ?: []);
+
+        // The export replays this query. One entry per test type, so a search
+        // in another module's clinic report (in another browser tab, say)
+        // never changes what this one exports. A row per facility, so the
+        // rows already in hand are the export's row count.
+        $key = self::sessionKey($testType);
+        $_SESSION[$key] = $sql;
+        $_SESSION[$key . 'Count'] = count($rows);
 
         return ['rows' => $rows, 'startDate' => $startDate, 'endDate' => $endDate];
+    }
+
+    /**
+     * Session entry holding the tab's last query for $testType. Its row count
+     * is stored under the same name plus "Count", as ExportJobUtility expects.
+     */
+    public static function sessionKey(string $testType): string
+    {
+        return 'sampleTestingReport_' . $testType;
+    }
+
+    /**
+     * One facility's counts as the tab and the export show them: every bucket,
+     * plus "other" for whatever the buckets do not hold.
+     *
+     * @param array<string, mixed> $row a row of the query built by fetch()
+     * @return array<string, int|string>
+     */
+    public static function shapeRow(array $row): array
+    {
+        $out = [
+            'facility' => (string) $row['facility_name'],
+            'state' => (string) ($row['facility_state'] ?? ''),
+            'district' => (string) ($row['facility_district'] ?? ''),
+            'total' => (int) $row['total'],
+        ];
+        $counted = 0;
+        foreach (array_keys(self::BUCKETS) as $bucket) {
+            $out[$bucket] = (int) ($row[$bucket] ?? 0);
+            $counted += $out[$bucket];
+        }
+        $out['other'] = $out['total'] - $counted;
+        return $out;
+    }
+
+    /**
+     * Column => heading, in the order of the tab's facility table. The tab
+     * and the export both take their headings from here.
+     *
+     * @return array<string, string>
+     */
+    public static function columns(): array
+    {
+        return [
+            'facility' => _translate('Facility Name'),
+            'state' => _translate('Province/State'),
+            'district' => _translate('District/County'),
+            'total' => _translate('Samples Collected'),
+            'tested' => _translate('Tested'),
+            'awaitingApproval' => _translate('Awaiting Approval'),
+            'awaitingTesting' => _translate('Awaiting Testing'),
+            'notAtLab' => _translate('Not Yet at Lab'),
+            'failed' => _translate('Failed or No Result'),
+            'rejected' => _translate('Rejected'),
+            'other' => _translate('Lost, Expired or Referred'),
+        ];
+    }
+
+    /**
+     * One export row, in the order of columns().
+     *
+     * @param array<string, mixed> $row a row of the query built by fetch()
+     * @return list<int|string>
+     */
+    public static function exportRow(array $row): array
+    {
+        $shaped = self::shapeRow($row);
+        return array_map(fn(string $column) => $shaped[$column], array_keys(self::columns()));
+    }
+
+    /**
+     * Writes the tab's last result for $testType to a spreadsheet. Every
+     * bucket gets its own column whether or not it holds samples, so files
+     * from different periods and modules line up. Returns the file written,
+     * or null when the tab has not been searched in this session.
+     */
+    public static function export(string $testType, DatabaseService $db): ?string
+    {
+        $sql = trim((string) ($_SESSION[self::sessionKey($testType)] ?? ''));
+        if ($sql === '') {
+            return null;
+        }
+
+        $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Sample-Testing-' . $testType . '-'
+            . date('d-M-Y-H-i-s') . '-' . bin2hex(random_bytes(4)) . '.xlsx';
+
+        $writer = new Writer();
+        $writer->openToFile($filename);
+        $writer->addRow(Row::fromValues(array_values(self::columns())));
+        foreach ($db->rawQueryGenerator($sql) as $row) {
+            ExportJobUtility::tick();
+            $writer->addRow(Row::fromValues(self::exportRow($row)));
+        }
+        $writer->close();
+
+        return $filename;
     }
 }
