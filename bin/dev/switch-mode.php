@@ -131,6 +131,8 @@ try {
     // ---- clear caches so the new mode is read immediately ------------------
     (ContainerRegistry::get(FileCacheUtility::class))->clear();
     MiscUtility::deleteFile(CACHE_PATH . DIRECTORY_SEPARATOR . 'CompiledContainer.php');
+    // So a container that failed to compile is tried again now (app/system/di.php)
+    MiscUtility::deleteFile(CACHE_PATH . DIRECTORY_SEPARATOR . 'di-compile-failed');
     if (isset($_SESSION['instance'])) {
         unset($_SESSION['instance']);
     }

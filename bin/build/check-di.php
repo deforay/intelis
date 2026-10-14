@@ -47,6 +47,22 @@ try {
     // or runtime environment is required.
     require ROOT_PATH . '/app/system/di.php';
     $cleanup();
+
+    // di.php leaves out a class it cannot build rather than fail the compile.
+    // One not named as left out on purpose is probably got from the container
+    // somewhere, and would fail there: give its new argument a default, or make
+    // it with `new` and add it to AutowireCheck::LEFT_OUT.
+    $unexpected = \App\Utilities\AutowireCheck::unexpected($leftOutOfContainer);
+    if ($unexpected !== []) {
+        fwrite(
+            STDERR,
+            "check-di: the DI container cannot build these classes:\n  "
+                . implode("\n  ", $unexpected)
+                . "\n\nGive the constructor argument a default, or, if callers make the class with `new`,"
+                . "\nadd it to App\\Utilities\\AutowireCheck::LEFT_OUT.\n"
+        );
+        exit(1);
+    }
     fwrite(STDOUT, "check-di: DI container compiled cleanly.\n");
     exit(0);
 } catch (\Throwable $e) {

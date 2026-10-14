@@ -68,4 +68,22 @@ final class AutowireCheckTest extends TestCase
             self::assertFalse(AutowireCheck::needsUnguessableArgument($reflection), $what);
         }
     }
+
+    public function testEveryClassLeftOutOnPurposeStillNeedsLeavingOut(): void
+    {
+        // A stale entry would hide the next class that really needs a default.
+        foreach (AutowireCheck::LEFT_OUT as $className) {
+            self::assertTrue(class_exists($className), $className);
+            self::assertTrue(AutowireCheck::needsUnguessableArgument(new ReflectionClass($className)), $className);
+        }
+    }
+
+    public function testOnlyClassesNotLeftOutOnPurposeAreUnexpected(): void
+    {
+        self::assertSame(
+            ['App\\Services\\SomethingNew'],
+            AutowireCheck::unexpected([...AutowireCheck::LEFT_OUT, 'App\\Services\\SomethingNew'])
+        );
+        self::assertSame([], AutowireCheck::unexpected(AutowireCheck::LEFT_OUT));
+    }
 }

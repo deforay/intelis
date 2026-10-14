@@ -43,10 +43,27 @@ $compileCheck = getenv('INTELIS_DI_COMPILE_CHECK') === '1';
 $enableCompilation = $compileCheck
     || (!$isCli && !empty($systemConfig['system']['cache_di']) && true === $systemConfig['system']['cache_di']);
 
+// A compile that failed writes no CompiledContainer.php, so without this every
+// request would compile again, fail again and log again before running
+// uncompiled. The marker holds that off for an hour; purge-cache (run by every
+// upgrade) deletes it, so the next release is compiled straight away.
+$compileFailedMarker = CACHE_PATH . DIRECTORY_SEPARATOR . 'di-compile-failed';
+if (
+    $enableCompilation && !$compileCheck
+    && is_file($compileFailedMarker) && time() - (int) filemtime($compileFailedMarker) < 3600
+) {
+    $enableCompilation = false;
+}
+
+// Classes left out of the container; bin/build/check-di.php fails on any that
+// AutowireCheck::LEFT_OUT does not name.
+$leftOutOfContainer = [];
+
 $buildContainer = static function (bool $compile) use (
     $systemConfig,
     $debugMode,
-    $compileCheck
+    $compileCheck,
+    &$leftOutOfContainer
 ): DI\Container {
     $builder = new ContainerBuilder();
     $builder->useAutowiring(true);
@@ -83,15 +100,7 @@ $buildContainer = static function (bool $compile) use (
     $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($classesDir));
     $regex = new RegexIterator($iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
 
-    // Classes to skip during auto-registration
-    $excludeClasses = [
-        'App\\Interop\\Dhis2',
-        'App\\Interop\\Fhir',
-        'App\\Utilities\\ImageResizeUtility',
-        // Built per sync run with a query callable, never resolved from the container
-        'App\\Utilities\\ResultSyncBatch',
-        // Add other classes to skip here
-    ];
+    $leftOutOfContainer = [];
 
     foreach ($regex as $file) {
         $filePath = $file[0];
@@ -101,11 +110,6 @@ $buildContainer = static function (bool $compile) use (
         $className = 'App\\' . str_replace(['/', '.php'], ['\\', ''], $relativePath);
 
         if (class_exists($className)) {
-            // Skip if in exclusion list
-            if (in_array($className, $excludeClasses)) {
-                continue;
-            }
-
             // Only register instantiable classes (skips Interfaces, Traits, Abstract classes)
             $reflection = new ReflectionClass($className);
 
@@ -120,9 +124,14 @@ $buildContainer = static function (bool $compile) use (
             // number, an array, no type, with no default) cannot be autowired:
             // registering it only fails the compilation, and with it every page.
             // Such a class is made with `new` by its callers.
-            if ($reflection->isInstantiable() && !AutowireCheck::needsUnguessableArgument($reflection)) {
-                $builder->addDefinitions([$className => autowire()]);
+            if (!$reflection->isInstantiable()) {
+                continue;
             }
+            if (AutowireCheck::needsUnguessableArgument($reflection)) {
+                $leftOutOfContainer[] = $className;
+                continue;
+            }
+            $builder->addDefinitions([$className => autowire()]);
         }
     }
 
@@ -157,7 +166,9 @@ try {
     // In production a definition that does not compile used to take every page
     // and API call down with it. Built without compiling, the container makes
     // classes as they are asked for, so only the broken one fails, where used.
-    error_log('DI container did not compile; running uncompiled: ' . $e->getMessage());
+    // Logged once an hour, not once a request: see $compileFailedMarker.
+    @touch($compileFailedMarker);
+    error_log('DI container did not compile; running uncompiled for an hour: ' . $e->getMessage());
     $container = $buildContainer(false);
 }
 
