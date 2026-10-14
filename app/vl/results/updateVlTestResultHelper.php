@@ -5,6 +5,7 @@ use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SampleStatusUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -131,6 +132,10 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
     $hivDetection = $processedResults['hivDetection'];
     $resultStatus = $processedResults['resultStatus'] ?? null;
 
+    if (VlService::refusesResultWithoutPlatform((array) $_POST, $processedResults, $keepSavedResult)) {
+        $_SESSION['alertMsg'] = _translate("Nothing was saved. Please choose the testing platform for the result.");
+        MiscUtility::redirect("/vl/results/updateVlTestResult.php?id=" . MiscUtility::sqid((int) $_POST['vlSampleId']));
+    }
 
     // The result-change reason is appended (preserving prior history) further below, after the
     // previous row is fetched -- see appendResultChangeReason near the result_modified check.
@@ -306,6 +311,17 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
     // a status derived from an entry that is not being written would mark it
     // Awaiting Approval with no result on record.
     $resultStatus = VlService::resultStatusToWrite($processedResults, $keepSavedResult);
+
+    // A result cleared, or a rejection undone with no result entered, leaves nothing
+    // for the old status to describe: the sample is waiting for testing again
+    // The helper always writes the receipt date, so the one it writes is the one that counts
+    $receivedAtLab = $vlData['sample_received_at_lab_datetime'];
+    $isSts = $general->isSTSInstance();
+    $accessType = $_SESSION['accessType'] ?? null;
+    $leavesWaiting = VlService::leavesSampleWaiting($_POST, $getPrevResult, $processedResults, $keepSavedResult);
+    $resultStatus = $leavesWaiting
+        ? SampleStatusUtility::waitingForTestingStatus($receivedAtLab, $isSts, $accessType)
+        : $resultStatus;
     if ($resultStatus !== null) {
         $vlData['result_status'] = $resultStatus;
     }
@@ -350,6 +366,11 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
             if (!in_array($column, $resultColumnsPosted, true)) {
                 unset($vlData[$column]);
             }
+        }
+
+        // The review and approval belonged to the result or rejection that is gone
+        if ($leavesWaiting) {
+            $vlData = SampleStatusUtility::withoutSignoff($vlData);
         }
 
         $id = $db->update($tableName, $vlData);

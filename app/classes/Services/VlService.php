@@ -7,6 +7,7 @@ use Throwable;
 use App\Utilities\DateUtility;
 use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SampleStatusUtility;
 
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
@@ -20,7 +21,6 @@ use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\NO_RESULT;
 use const SAMPLE_STATUS\TEST_FAILED;
 use const SAMPLE_STATUS\PENDING_APPROVAL;
-use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
 final class VlService extends AbstractTestService
@@ -482,6 +482,78 @@ final class VlService extends AbstractTestService
         }
         $status = $processedResults['resultStatus'] ?? null;
         return empty($status) ? null : (int) $status;
+    }
+
+    /**
+     * Whether a VL web save writes a result: one was sent, the sample is not
+     * rejected, and the entry came to something.
+     *
+     * @param array<string, mixed> $processedResults what processViralLoadResultFromForm() returned
+     */
+    public static function writesResult(array $processedResults, bool $keepSavedResult): bool
+    {
+        return !$keepSavedResult
+            && ($processedResults['isRejected'] ?? null) !== 'yes'
+            && trim((string) ($processedResults['finalResult'] ?? '')) !== '';
+    }
+
+    /**
+     * Whether a VL web save has to be refused because it writes a result with no
+     * testing platform. A result is read off a platform, so one saved without it
+     * cannot be traced to the run that produced it. A rejection needs no
+     * platform, and neither does a save that keeps the stored result. Every VL
+     * country form, PNG included, sends the platform as testingPlatform.
+     *
+     * @param array<string, mixed> $post the request as the form sent it
+     * @param array<string, mixed> $processedResults what processViralLoadResultFromForm() returned
+     */
+    public static function refusesResultWithoutPlatform(
+        array $post,
+        array $processedResults,
+        bool $keepSavedResult
+    ): bool {
+        return self::writesResult($processedResults, $keepSavedResult)
+            && trim((string) ($post['testingPlatform'] ?? '')) === '';
+    }
+
+    /**
+     * Whether a VL web save leaves a decided sample with no result and not
+     * rejected, so its status has to go back to waiting for testing
+     * (SampleStatusUtility::waitingForTestingStatus()).
+     *
+     * Two saves do that: a result cleared on purpose, and a rejection undone with
+     * no result entered. Both used to leave the old status standing, so a sample
+     * showed as Accepted or Awaiting Approval with nothing to approve, or as
+     * Rejected while no longer rejected.
+     *
+     * A sample that was never decided keeps its status, so an edit of a request
+     * still on hold, referred or cancelled does not move it.
+     *
+     * A rejection is undone only by a form that sent the rejection field: a
+     * collection site's request edit has none and says nothing about it.
+     *
+     * @param array<string, mixed> $post the request as the form sent it
+     * @param array<string, mixed> $stored the row before the save
+     * @param array<string, mixed> $processedResults what processViralLoadResultFromForm() returned
+     */
+    public static function leavesSampleWaiting(
+        array $post,
+        array $stored,
+        array $processedResults,
+        bool $keepSavedResult
+    ): bool {
+        if (($processedResults['isRejected'] ?? null) === 'yes') {
+            return false;
+        }
+
+        $resultAfterSave = $keepSavedResult
+            ? trim((string) ($stored['result'] ?? '')) . trim((string) ($stored['cphl_vl_result'] ?? ''))
+            : trim((string) ($processedResults['finalResult'] ?? ''));
+        if ($resultAfterSave !== '') {
+            return false;
+        }
+
+        return SampleStatusUtility::saveUndoesDecision($stored, array_key_exists('isSampleRejected', $post));
     }
 
     public function processViralLoadResultFromForm(array $params): array
@@ -1143,9 +1215,7 @@ final class VlService extends AbstractTestService
                 $tesRequestData['remote_sample'] = 'yes';
                 // Only collection-site samples stay at the clinic; every other role
                 // (testing-lab, or an unset/legacy access_type) works the lab side.
-                $tesRequestData['result_status'] = ($accessType === 'collection-site')
-                    ? RECEIVED_AT_CLINIC
-                    : RECEIVED_AT_TESTING_LAB;
+                $tesRequestData['result_status'] = SampleStatusUtility::initialStatus(true, $accessType);
             } else {
                 $tesRequestData['remote_sample'] = 'no';
                 $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;

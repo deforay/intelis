@@ -7,6 +7,12 @@ namespace App\Utilities;
 use App\Services\TestsService;
 
 use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\NO_RESULT;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\TEST_FAILED;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
 /**
  * What a sample status asserts about the row carrying it.
@@ -116,5 +122,139 @@ final class SampleStatusUtility
             \SAMPLE_STATUS\REFERRED => '#1f77b4',
             default => '#999999',
         };
+    }
+
+    /**
+     * Statuses that record the lab's decision on a sample: a result of some kind,
+     * a failed or empty run, or a rejection. A sample with none of these behind it
+     * is still waiting to be tested.
+     */
+    public const DECIDED_STATUSES = [REJECTED, TEST_FAILED, ACCEPTED, PENDING_APPROVAL, NO_RESULT];
+
+    /**
+     * The columns that sign off a result: who reviewed and approved it, and when.
+     * The same names on every test type's form table.
+     */
+    public const SIGNOFF_COLUMNS = [
+        'result_reviewed_by',
+        'result_reviewed_datetime',
+        'result_approved_by',
+        'result_approved_datetime',
+    ];
+
+    public static function isDecided(int|string|null $status): bool
+    {
+        return in_array((int) $status, self::DECIDED_STATUSES, true);
+    }
+
+    /**
+     * The status a new request starts in. Only a collection-site user on an STS
+     * starts a sample at the clinic; every other role, and every LIS, works the
+     * lab side. The rule the request add pages and insertSample() apply.
+     */
+    public static function initialStatus(bool $isSts, ?string $accessType): int
+    {
+        return ($isSts && $accessType === 'collection-site') ? RECEIVED_AT_CLINIC : RECEIVED_AT_TESTING_LAB;
+    }
+
+    /**
+     * The status of a sample that is waiting for a result: received at the lab
+     * once the lab has a receipt date for it, otherwise where a new request on
+     * this instance would start.
+     */
+    public static function waitingForTestingStatus(?string $receivedAtLab, bool $isSts, ?string $accessType): int
+    {
+        if (self::isRealDate($receivedAtLab)) {
+            return RECEIVED_AT_TESTING_LAB;
+        }
+        return self::initialStatus($isSts, $accessType);
+    }
+
+    /**
+     * Whether a save leaves the sample with no result and not rejected, judged on the
+     * row as it will be: the stored row with the columns the save writes laid over it.
+     *
+     * @param array<string, mixed> $stored the row before the save
+     * @param array<string, mixed> $written the columns the save writes
+     */
+    public static function leavesNoResult(string $testType, array $stored, array $written, bool $rejected): bool
+    {
+        return !$rejected && !self::rowHasResult($testType, array_merge($stored, $written));
+    }
+
+    /**
+     * The status a web save writes when it leaves a decided sample with no result
+     * and not rejected, or null when no reset is needed.
+     *
+     * Two saves do that: a result cleared on purpose, and a rejection undone with no
+     * result entered. The old status would otherwise stand over a sample with
+     * nothing to show for it. A sample never decided keeps its status, so a request
+     * still on hold, referred or cancelled does not move.
+     *
+     * A rejection is undone only by a form that sent the rejection field. A form
+     * without one, such as a collection site's request edit, says nothing about it.
+     *
+     * @param array<string, mixed> $stored the row before the save
+     * @param array<string, mixed> $written the columns the save writes
+     * @param bool $rejectionPosted whether the form sent the rejection field at all
+     */
+    public static function waitingStatusAfterSave(
+        string $testType,
+        array $stored,
+        array $written,
+        bool $rejected,
+        bool $rejectionPosted,
+        bool $isSts,
+        ?string $accessType
+    ): ?int {
+        if (!self::leavesNoResult($testType, $stored, $written, $rejected)) {
+            return null;
+        }
+        if (!self::saveUndoesDecision($stored, $rejectionPosted)) {
+            return null;
+        }
+        $receivedAtLab = array_key_exists('sample_received_at_lab_datetime', $written)
+            ? $written['sample_received_at_lab_datetime']
+            : ($stored['sample_received_at_lab_datetime'] ?? null);
+
+        return self::waitingForTestingStatus($receivedAtLab, $isSts, $accessType);
+    }
+
+    /**
+     * Whether the stored row records a decision that a save leaving no result and no
+     * rejection takes back. A rejection counts only when the form sent the
+     * rejection field.
+     *
+     * @param array<string, mixed> $stored the row before the save
+     */
+    public static function saveUndoesDecision(array $stored, bool $rejectionPosted): bool
+    {
+        $wasRejected = ($stored['is_sample_rejected'] ?? null) === 'yes'
+            || (int) ($stored['result_status'] ?? 0) === REJECTED;
+        if ($wasRejected) {
+            return $rejectionPosted;
+        }
+        return self::isDecided($stored['result_status'] ?? null);
+    }
+
+    /**
+     * Sets the sign-off columns in a form table update to NULL, so an approval
+     * cannot outlive the result or rejection it approved.
+     *
+     * @param array<string, mixed> $data
+     * @return array<string, mixed>
+     */
+    public static function withoutSignoff(array $data): array
+    {
+        foreach (self::SIGNOFF_COLUMNS as $column) {
+            $data[$column] = null;
+        }
+        return $data;
+    }
+
+    private static function isRealDate(?string $value): bool
+    {
+        $value = trim((string) $value);
+        return $value !== '' && !str_starts_with($value, '0000-00-00');
     }
 }

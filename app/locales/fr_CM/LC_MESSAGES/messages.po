@@ -37100,3 +37100,6 @@ msgstr "Rapport d'échec virologique VL"
 
 msgid "characters"
 msgstr "caractères"
+
+msgid "Nothing was saved. Please choose the testing platform for the result."
+msgstr "Rien n'a été enregistré. Veuillez choisir la plateforme de test pour le résultat."
