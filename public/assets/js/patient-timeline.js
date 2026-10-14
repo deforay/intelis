@@ -137,6 +137,13 @@
             this.root.on('click', '.pt-print', function () {
                 self.print();
             });
+            this.root.on('click', '.pt-export', function () {
+                // The patient on screen, which need not be the last one this
+                // session opened if another browser tab opened someone else.
+                if (self.data) {
+                    window.IntelisExport.start(self.cfg.exportEndpoint, { patientId: self.data.patient.id }, self.L.exportName);
+                }
+            });
             this.root.on('click', '.pt-print-result', function () {
                 self.printResult($(this).data('url'), $(this).data('id'));
             });
@@ -275,6 +282,10 @@
                     .append('<em class="fa-solid fa-arrow-left"></em> ', document.createTextNode(this.L.back)))
                 .append($('<button type="button" class="btn btn-default btn-sm pt-print">')
                     .append('<em class="fa-solid fa-print"></em> ', document.createTextNode(this.L.print)));
+            if (this.cfg.exportEndpoint && window.IntelisExport) {
+                toolbar.append($('<button type="button" class="btn btn-success btn-sm pt-export">')
+                    .append('<em class="fa-solid fa-cloud-arrow-down"></em> ', document.createTextNode(this.L.export)));
+            }
             this.view.append(toolbar);
             this.view.append(this.renderHeader(data));
             this.view.append(this.renderInsights(data));
@@ -289,8 +300,6 @@
             var events = data.events;
             var name = p.names[0] || this.L.unnamed;
 
-            var excelBtn = '<button class="filter-export btn btn-success btn-sm" type="button" onclick="patientTimelineInexcel();"><em class="fa-solid fa-cloud-arrow-down"></em>Export to excel</button>';
-            $('#patientTimelineApp').append(excelBtn);
             var card = $('<div class="pt-patient">');
             card.append($('<span class="pt-avatar pt-avatar-lg">').text(this.initials(p.names[0])));
 

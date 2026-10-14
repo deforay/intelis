@@ -1,75 +1,120 @@
 <?php
 
-namespace App\Utilities;
-
+use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Registries\ContainerRegistry;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
+use App\Registries\ContainerRegistry;
 use App\Utilities\ExportJobUtility;
+use App\Utilities\ClinicReportUtility;
+use App\Utilities\PatientTimelineUtility;
 
-if (ExportJobUtility::queueRequested(__FILE__, null, ['timelineData', 'timelineDataCount'])) {
-	return;
+// Export of the Patient Test History tab, for the patient the page posts.
+// The timeline is rebuilt here rather than read from the session: the session
+// only keeps the size of the last one opened (patientTimelineCount), which is
+// enough to tell a small export, run at once, from a big one.
+
+/** @var Psr\Http\Message\ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$input = _sanitizeInput($request->getParsedBody());
+$patientId = trim((string) ($input['patientId'] ?? ''));
+
+// AJAX requests bypass the access control layer. As on the tab itself, each
+// test type is only read when the user can open that module's clinic report.
+// Checked before a job is queued.
+if (ClinicReportUtility::visibleTypes() === []) {
+    echo json_encode(['error' => _translate('You do not have permission to perform this action.')]);
+    return;
+}
+if ($patientId === '') {
+    return;
 }
 
+if (ExportJobUtility::queueRequested(__FILE__, null, ['patientTimelineCount'])) {
+    return;
+}
 
-ini_set('memory_limit', '512M');
-// A background job has no request to time out; a direct request keeps its limit.
+// A background job has no request to time out; a direct request keeps its limits.
 if (!ExportJobUtility::inBackground()) {
-	set_time_limit(300);
-	ini_set('max_execution_time', 300);
+    ini_set('memory_limit', '512M');
+    set_time_limit(300);
 }
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
-/*
- * Get data from your service/database.
- *
- * Replace this with your existing report query/service.
- */
-if (isset($_SESSION['timelineData']) && trim((string) $_SESSION['timelineData']) !== "") {
-
-      $headings = ['PATIENT ID', 'PATIENT NAME', 'SEX', 'DATE OF BIRTH',  'FIRST SAMPLE', 'LAST SAMPLE','FACILITIES'];
-   
-      $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Patient-Timeline-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-
-      $writer = new Writer();
-      $writer->openToFile($filename);
-      $writer->addRow(Row::fromValues($headings));
-      $totalEvents = count($_SESSION['timelineData']['events']);
-      $events = $_SESSION['timelineData']['events'];
-      $row = $_SESSION['timelineData']['patient'];
-      $out = [
-               'patientId' => $row['id'],
-               'name' => $row['names'][0],
-               'sex' => $row['sexes'][0],
-               'dob' => DateUtility::humanReadableDateFormat($row['dobs'][0]),
-               'firstSample' => DateUtility::humanReadableDateFormat($events[0]['collected']),
-               'lastSample' => DateUtility::humanReadableDateFormat($events[$totalEvents-1]['collected']),
-               'facility' => $row['facilities'][0],
-            ];
-          
-      $writer->addRow(Row::fromValues(array_values($out)));
-      $writer->addRow(Row::fromValues([]));
-      $writer->addRow(Row::fromValues(['Test History']));
-      $historyHeadings = ['SAMPLE ID', 'SAMPLE TYPE','FACILITY', 'TESTING LAB', 'SAMPLE STATUS'];
-      $writer->addRow(Row::fromValues($historyHeadings));
-
-      foreach ($events as $row) {
-         ExportJobUtility::tick();
-            $out = [
-               'sampleId' => $row['sampleId'],
-               'sampleType' => $row['sampleType'],
-               'facility' => $row['facility'],
-               'lab' => $row['lab'],
-               'status' => $row['statusName'],
-            ];
-            $writer->addRow(Row::fromValues(array_values($out)));
-      }
-
-     $writer->close();
-     echo _downloadToken($filename);
+$data = PatientTimelineUtility::timeline($patientId, $db, $general);
+$patient = $data['patient'];
+$events = $data['events'];
+if ($events === []) {
+    return;
 }
 
+$dates = static fn(array $values): string => implode(' / ', array_filter(array_map(
+    static fn($d) => (string) DateUtility::humanReadableDateFormat($d),
+    $values
+)));
+
+$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Patient-Timeline-' . date('d-M-Y-H-i-s')
+    . '-' . bin2hex(random_bytes(4)) . '.xlsx';
+
+$writer = new Writer();
+$writer->openToFile($filename);
+
+$writer->addRow(Row::fromValues([
+    _translate('Patient ID'),
+    _translate('Patient Name'),
+    _translate('Sex'),
+    _translate('Date of Birth'),
+    _translate('First Sample'),
+    _translate('Last Sample'),
+    _translate('Facilities'),
+]));
+$writer->addRow(Row::fromValues([
+    (string) $patient['id'],
+    implode(' / ', $patient['names']),
+    implode(' / ', $patient['sexes']),
+    $dates($patient['dobs']),
+    $dates([$events[0]['collected']]),
+    $dates([$events[count($events) - 1]['collected']]),
+    implode(', ', $patient['facilities']),
+]));
+
+$writer->addRow(Row::fromValues([]));
+$writer->addRow(Row::fromValues([_translate('Test History')]));
+$writer->addRow(Row::fromValues([
+    _translate('Test Type'),
+    _translate('Sample ID'),
+    _translate('Sample Collection Date'),
+    _translate('Sample Type'),
+    _translate('Facility'),
+    _translate('Testing Lab'),
+    _translate('Status'),
+    _translate('Result'),
+]));
+
+foreach ($events as $event) {
+    ExportJobUtility::tick();
+    // Custom Tests are told apart by the test they ran.
+    $type = $event['type'] === 'generic-tests'
+        ? ($event['note'] ?: _translate('Custom Tests'))
+        : ($data['types'][$event['type']] ?? $event['type']);
+    $writer->addRow(Row::fromValues([
+        (string) $type,
+        $event['code'],
+        $dates([$event['collected']]),
+        $event['sampleType'],
+        $event['facility'],
+        $event['lab'],
+        $event['statusName'],
+        (string) $event['result'],
+    ]));
+}
+
+$writer->close();
+echo _downloadToken($filename);
