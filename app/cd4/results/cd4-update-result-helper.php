@@ -2,9 +2,11 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\REJECTED;
 use App\Services\CD4Service;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SampleStatusUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -89,7 +91,7 @@ try {
     // The result-change reason is appended (preserving prior history) further below, after the
     // previous row is fetched -- see appendResultChangeReason near the result_modified check.
 
-    if ($_POST['failedTestingTech'] != '') {
+    if (($_POST['failedTestingTech'] ?? '') != '') {
         $platForm = explode("##", (string) $_POST['failedTestingTech']);
         $_POST['failedTestingTech'] = $platForm[0];
     }
@@ -132,6 +134,15 @@ try {
         $vlData['sample_reordered'] = $_POST['isSampleReordered'];
     }
 
+    // A rejection used to be saved as Awaiting Approval with its result still in place
+    $isRejected = ($_POST['isSampleRejected'] ?? null) === 'yes';
+    if ($isRejected) {
+        $vlData['cd4_result'] = null;
+        $vlData['cd4_result_percentage'] = null;
+        $vlData['result_status'] = REJECTED;
+    }
+    $finalResult = $vlData['cd4_result'];
+
     $db->where('cd4_id', $_POST['cd4SampleId']);
     $getPrevResult = $db->getOne('form_cd4');
     // The result counts as modified when the value changed or the sample flipped
@@ -167,6 +178,27 @@ try {
             TestAttemptService::BY_RESULT_EDIT,
             $_POST['reasonForResultChanges'] ?? null
         );
+
+        // Awaiting Approval needs a result. A result cleared, or a rejection undone with
+        // no result entered, leaves the sample waiting for testing, and the old review and
+        // approval go with it. Saved with no result otherwise, the status stays as it is.
+        $isSts = $general->isSTSInstance();
+        $accessType = $_SESSION['accessType'] ?? null;
+        $waitingStatus = SampleStatusUtility::waitingStatusAfterSave(
+            'cd4',
+            $getPrevResult,
+            $vlData,
+            $isRejected,
+            array_key_exists('isSampleRejected', $_POST),
+            $isSts,
+            $accessType
+        );
+        if ($waitingStatus !== null) {
+            $vlData['result_status'] = $waitingStatus;
+            $vlData = SampleStatusUtility::withoutSignoff($vlData);
+        } elseif (SampleStatusUtility::leavesNoResult('cd4', $getPrevResult, $vlData, $isRejected)) {
+            unset($vlData['result_status']);
+        }
 
         $db->where('cd4_id', $_POST['cd4SampleId']);
         $id = $db->update('form_cd4', $vlData);

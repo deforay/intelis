@@ -218,12 +218,12 @@ try {
      $resultSentToSource = null;
 
      if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
-          $_POST['cd4_result'] = null;
+          $_POST['cd4Result'] = null;
           $status = REJECTED;
           $resultSentToSource = 'pending';
      }
 
-     if (!empty($_POST['cd4_result'])) {
+     if (!empty($_POST['cd4Result'])) {
           $resultSentToSource = 'pending';
      }
 
@@ -318,9 +318,9 @@ try {
      // result page, which owns that column.
      if (
          SampleStatusUtility::assertsAResult($status)
-         && !SampleStatusUtility::rowHasResult('cd4', $cd4Data)
+         && !SampleStatusUtility::rowHasResult('cd4', $vlData)
      ) {
-         $cd4Data['cd4_result'] = $getPrevResult['cd4_result'];
+         $vlData['cd4_result'] = $getPrevResult['cd4_result'];
          $_POST['cd4Result'] = $getPrevResult['cd4_result'];
      }
      // The result counts as modified when the value changed or the sample flipped
@@ -369,7 +369,6 @@ try {
           $vlData['is_encrypted'] = null;
      }
 
-     $db->where('cd4_id', $_POST['cd4SampleId']);
      // Drop every result column this form did not send.
      foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
          if (!in_array($column, $resultColumnsPosted, true)) {
@@ -377,6 +376,27 @@ try {
          }
      }
 
+     // A result cleared, or a rejection undone with no result entered, leaves the
+     // sample waiting for testing, and the old review and approval go with it
+     $isRejected = ($_POST['isSampleRejected'] ?? null) === 'yes';
+     $rejectionPosted = array_key_exists('isSampleRejected', (array) $_POST);
+     $isSts = $general->isSTSInstance();
+     $accessType = $_SESSION['accessType'] ?? null;
+     $waitingStatus = SampleStatusUtility::waitingStatusAfterSave(
+         'cd4',
+         $getPrevResult,
+         $vlData,
+         $isRejected,
+         $rejectionPosted,
+         $isSts,
+         $accessType
+     );
+     if ($waitingStatus !== null) {
+         $vlData['result_status'] = $waitingStatus;
+         $vlData = SampleStatusUtility::withoutSignoff($vlData);
+     }
+
+     $db->where('cd4_id', $_POST['cd4SampleId']);
      $id = $db->update($tableName, $vlData);
      if ($db->getLastErrno() > 0) {
           LoggerUtility::logError("DB ERROR :: " . $db->getLastError(), [

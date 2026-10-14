@@ -157,6 +157,38 @@ if (!function_exists('_getIteratorKey')) {
     }
 }
 
+// The request helpers cast posted values with this. Copied as it is, since it
+// needs nothing of the framework.
+if (!function_exists('_castVariable')) {
+    function _castVariable(mixed $variable, ?string $expectedType = null, bool $isNullable = true): mixed
+    {
+        if ($variable === null || (is_string($variable) && trim($variable) === '') || $variable === []) {
+            if ($isNullable) {
+                return null;
+            }
+            return match ($expectedType) {
+                'array' => [],
+                'json' => '{}',
+                'string' => '',
+                'int' => 0,
+                'float' => 0.0,
+                'bool' => false,
+                default => null,
+            };
+        }
+
+        return match ($expectedType) {
+            'int' => (int) $variable,
+            'float' => (float) $variable,
+            'string' => (string) $variable,
+            'bool' => (bool) $variable,
+            'array' => is_array($variable) ? $variable : (array) $variable,
+            'json' => \App\Utilities\JsonUtility::toJSON($variable),
+            default => $variable,
+        };
+    }
+}
+
 // The AJAX guard the endpoints call. The real one asks UsersService, which the
 // suite does not boot; this keeps the one rule a test relies on -- superadmin
 // (role 1) always passes, anyone else needs the privilege in their session --

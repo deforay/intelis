@@ -21,11 +21,13 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\REJECTED;
 
 /**
- * The EID and COVID-19 request edit and result pages, driven as a browser posts them.
+ * The EID, COVID-19, Hepatitis and CD4 request edit and result pages, driven as a
+ * browser posts them.
  *
  * Undoing a rejection with no result left the sample Rejected on the request edit and
  * moved it to Awaiting Approval on the result page, with nothing to approve. Clearing
  * a result on the result page left it Awaiting Approval with the old approval standing.
+ * The Hepatitis and CD4 result pages saved a rejection as Awaiting Approval.
  *
  * Set INTELIS_TEST_DB_HOST/_PORT/_USER/_PASS to run; skipped without them.
  */
@@ -40,6 +42,9 @@ final class ResultStatusOnClearTest extends TestCase
             'idField' => 'eidSampleId',
             'edit' => '/eid/requests/eid-edit-request-helper.php',
             'result' => '/eid/results/eid-update-result-helper.php',
+            'resultColumn' => 'result',
+            'resultField' => 'result',
+            'value' => 'negative',
         ],
         'covid19' => [
             'table' => 'form_covid19',
@@ -47,6 +52,29 @@ final class ResultStatusOnClearTest extends TestCase
             'idField' => 'covid19SampleId',
             'edit' => '/covid-19/requests/covid-19-edit-request-helper.php',
             'result' => '/covid-19/results/covid-19-update-result-helper.php',
+            'resultColumn' => 'result',
+            'resultField' => 'result',
+            'value' => 'negative',
+        ],
+        'hepatitis' => [
+            'table' => 'form_hepatitis',
+            'key' => 'hepatitis_id',
+            'idField' => 'hepatitisSampleId',
+            'edit' => '/hepatitis/requests/hepatitis-edit-request-helper.php',
+            'result' => '/hepatitis/results/hepatitis-update-result-helper.php',
+            'resultColumn' => 'hcv_vl_count',
+            'resultField' => 'hcvCount',
+            'value' => '1500',
+        ],
+        'cd4' => [
+            'table' => 'form_cd4',
+            'key' => 'cd4_id',
+            'idField' => 'cd4SampleId',
+            'edit' => '/cd4/requests/cd4-edit-request-helper.php',
+            'result' => '/cd4/results/cd4-update-result-helper.php',
+            'resultColumn' => 'cd4_result',
+            'resultField' => 'cd4Result',
+            'value' => '350',
         ],
     ];
 
@@ -73,7 +101,9 @@ final class ResultStatusOnClearTest extends TestCase
             'r_sample_status', 'form_eid', 'form_covid19', 'covid19_tests', 'covid19_patient_symptoms',
             'covid19_reasons_for_testing', 'covid19_patient_comorbidities', 'facility_details',
             'geographical_divisions', 'r_eid_sample_rejection_reasons', 'r_covid19_sample_rejection_reasons',
-            'r_vl_art_regimen', 'lab_storage', 'activity_log', 'audit_log', 'system_config', 'global_config',
+            'r_vl_art_regimen', 'form_hepatitis', 'hepatitis_patient_comorbidities', 'hepatitis_risk_factors',
+            'r_hepatitis_sample_rejection_reasons', 'form_cd4', 'r_cd4_sample_rejection_reasons', 'r_cd4_test_reasons',
+            'lab_storage', 'activity_log', 'audit_log', 'system_config', 'global_config',
             's_vlsm_instance', 'log_result_updates', 'test_result_attempts',
         ]);
         $db->rawQuery(
@@ -93,6 +123,9 @@ final class ResultStatusOnClearTest extends TestCase
 
     private function drive(string $path, array $post): void
     {
+        // The Hepatitis result page error_log()s on every save; on stderr that fails an
+        // isolated test however the save went
+        ini_set('error_log', '/dev/null');
         $request = LegacyAppHarness::withPost($post, $path);
         $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
         try {
@@ -140,7 +173,7 @@ final class ResultStatusOnClearTest extends TestCase
         return $this->seed($module, [
             'result_status' => $status,
             'is_sample_rejected' => 'no',
-            'result' => 'negative',
+            self::MODULES[$module]['resultColumn'] => self::MODULES[$module]['value'],
             'result_reviewed_by' => 'reviewer',
             'result_reviewed_datetime' => '2026-09-27 11:00:00',
             'result_approved_by' => 'approver',
@@ -160,9 +193,10 @@ final class ResultStatusOnClearTest extends TestCase
         );
         $table = self::MODULES[$module]['table'];
         $key = self::MODULES[$module]['key'];
+        $resultColumn = self::MODULES[$module]['resultColumn'];
         $statement = $mysqli->prepare(
-            "SELECT result, result_status, is_sample_rejected, result_reviewed_by, result_approved_by,
-                    result_approved_datetime
+            "SELECT $resultColumn AS result, result_status, is_sample_rejected, result_reviewed_by,
+                    result_approved_by, result_approved_datetime
                FROM $table WHERE $key = ?"
         );
         $statement->bind_param('i', $id);
@@ -188,6 +222,10 @@ final class ResultStatusOnClearTest extends TestCase
             'status' => '',
             'testName' => [],
             'motherTreatment' => [],
+            'province' => '',
+            'facilityCode' => '',
+            'reasonForCD4Testing' => '',
+            'emailHf' => '',
         ];
         if ($page === 'edit') {
             $common['oldStatus'] = (string) LegacyAppHarness::db()->rawQueryOne(
@@ -207,6 +245,10 @@ final class ResultStatusOnClearTest extends TestCase
             'EID result page' => ['eid', 'result'],
             'COVID-19 request edit' => ['covid19', 'edit'],
             'COVID-19 result page' => ['covid19', 'result'],
+            'Hepatitis request edit' => ['hepatitis', 'edit'],
+            'Hepatitis result page' => ['hepatitis', 'result'],
+            'CD4 request edit' => ['cd4', 'edit'],
+            'CD4 result page' => ['cd4', 'result'],
         ];
     }
 
@@ -218,7 +260,7 @@ final class ResultStatusOnClearTest extends TestCase
 
         $this->drive(self::MODULES[$module][$page], self::post($module, $id, $page, [
             'isSampleRejected' => 'no',
-            'result' => '',
+            self::MODULES[$module]['resultField'] => '',
             'approvedBy' => 'approver',
         ]));
 
@@ -236,7 +278,7 @@ final class ResultStatusOnClearTest extends TestCase
 
         $this->drive(self::MODULES[$module][$page], self::post($module, $id, $page, [
             'isSampleRejected' => 'no',
-            'result' => '',
+            self::MODULES[$module]['resultField'] => '',
             'reviewedBy' => 'reviewer',
             'approvedBy' => 'approver',
         ]));
@@ -256,19 +298,40 @@ final class ResultStatusOnClearTest extends TestCase
 
         $this->drive(self::MODULES[$module][$page], self::post($module, $id, $page, [
             'isSampleRejected' => 'no',
-            'result' => 'positive',
+            self::MODULES[$module]['resultField'] => self::MODULES[$module]['value'],
             'oldStatus' => (string) PENDING_APPROVAL,
         ]));
 
         $row = $this->saved($module, $id);
-        self::assertSame('positive', $row['result']);
+        self::assertSame(self::MODULES[$module]['value'], (string) $row['result']);
         self::assertSame(PENDING_APPROVAL, (int) $row['result_status']);
+    }
+
+    /** @return array<string, array{string}> */
+    public static function editPages(): array
+    {
+        return ['EID' => ['eid'], 'COVID-19' => ['covid19'], 'Hepatitis' => ['hepatitis'], 'CD4' => ['cd4']];
+    }
+
+    #[DataProvider('editPages')]
+    #[RunInSeparateProcess]
+    public function testAnEditWithoutTheResultKeepsAnAcceptedResult(string $module): void
+    {
+        $id = $this->resultedSample($module, ACCEPTED);
+
+        // The result box is not sent; the request edit is not where a result is removed
+        $this->drive(self::MODULES[$module]['edit'], self::post($module, $id, 'edit', ['isSampleRejected' => 'no']));
+
+        $row = $this->saved($module, $id);
+        self::assertSame(self::MODULES[$module]['value'], (string) $row['result']);
+        self::assertSame(ACCEPTED, (int) $row['result_status']);
+        self::assertSame('approver', $row['result_approved_by']);
     }
 
     /** @return array<string, array{string}> */
     public static function resultPages(): array
     {
-        return ['EID' => ['eid'], 'COVID-19' => ['covid19']];
+        return ['EID' => ['eid'], 'COVID-19' => ['covid19'], 'Hepatitis' => ['hepatitis'], 'CD4' => ['cd4']];
     }
 
     #[DataProvider('resultPages')]
@@ -279,7 +342,7 @@ final class ResultStatusOnClearTest extends TestCase
 
         $this->drive(self::MODULES[$module]['result'], self::post($module, $id, 'result', [
             'isSampleRejected' => 'no',
-            'result' => '',
+            self::MODULES[$module]['resultField'] => '',
         ]));
 
         self::assertSame(RECEIVED_AT_TESTING_LAB, (int) $this->saved($module, $id)['result_status']);
