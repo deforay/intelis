@@ -8,31 +8,22 @@
  */
 
 use App\Utilities\DateUtility;
+use App\Utilities\SampleTestingReportUtility;
 
 $payload = [
     'rows' => $report['rows'],
     'period' => DateUtility::humanReadableDateFormat($report['startDate'])
         . ' - ' . DateUtility::humanReadableDateFormat($report['endDate']),
     'locale' => str_replace('_', '-', (string) ($_SESSION['APP_LOCALE'] ?? 'en_US')),
-    'labels' => [
+    // Column headings come from the utility, so the export's match the table's.
+    'labels' => SampleTestingReportUtility::columns() + [
         'title' => _translate('Sample Testing by Facility'),
         'topFacilities' => _translate('Top %s of %s facilities by samples collected'),
         'allFacilities' => _translate('%s facilities'),
         'samples' => _translate('Samples'),
-        'total' => _translate('Samples Collected'),
-        'tested' => _translate('Tested'),
-        'awaitingApproval' => _translate('Awaiting Approval'),
-        'awaitingTesting' => _translate('Awaiting Testing'),
-        'notAtLab' => _translate('Not Yet at Lab'),
-        'failed' => _translate('Failed or No Result'),
-        'rejected' => _translate('Rejected'),
-        'other' => _translate('Lost, Expired or Referred'),
         'pending' => _translate('Pending'),
         'testedRate' => _translate('% Tested'),
         'ofCollected' => _translate('%s of samples collected'),
-        'facility' => _translate('Facility Name'),
-        'state' => _translate('Province/State'),
-        'district' => _translate('District/County'),
         'details' => _translate('Facility Breakdown'),
         'noData' => _translate('No samples were collected in the selected period for these filters.'),
     ],
