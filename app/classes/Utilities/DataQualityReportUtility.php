@@ -33,6 +33,13 @@ final class DataQualityReportUtility
     public const SAMPLE_LIMIT = 1000;
 
     /**
+     * Session entry where the on-screen listing leaves which listing it was
+     * (listingKey()) and how many samples it found, or null when it hit
+     * SAMPLE_LIMIT. The export of that same listing reads it to size its job.
+     */
+    public const LISTING_SESSION_KEY = 'dataQualityListing';
+
+    /**
      * Samples a field must be expected on before its absence from all of them
      * reads as a form that does not ask for it rather than a handful of gaps.
      */
@@ -233,6 +240,21 @@ final class DataQualityReportUtility
             'checks' => $checkRows,
             'facilities' => $facilities,
         ];
+    }
+
+    /**
+     * Names a sample listing by the filters that select it, so the export can
+     * tell whether the count the listing left in the session is its own and
+     * not one from another browser tab. Request plumbing (the action, the
+     * async flag, the CSRF token) is left out.
+     *
+     * @param array<string, mixed> $filters sanitized request values
+     */
+    public static function listingKey(array $filters): string
+    {
+        unset($filters['action'], $filters['async'], $filters['csrf_token']);
+        ksort($filters);
+        return hash('sha256', (string) json_encode($filters));
     }
 
     /**

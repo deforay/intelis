@@ -480,26 +480,16 @@
         return wrap;
     }
 
+    /* Runs in the background; progress shows in the navbar Exports menu and
+       the file downloads when ready, even if the user has moved on. Sends the
+       same values as the listing it exports, which is how the server knows
+       the count that listing found. */
     function exportSamples(params) {
-        if ($.blockUI) {
-            $.blockUI();
-        }
-        post($.extend({ action: 'export' }, params))
-            .done(function (data) {
-                if (data && data.download) {
-                    window.open('/download.php?f=' + encodeURIComponent(data.download), '_blank');
-                } else {
-                    alert(L.exportFailed);
-                }
-            })
-            .fail(function () {
-                alert(L.exportFailed);
-            })
-            .always(function () {
-                if ($.unblockUI) {
-                    $.unblockUI();
-                }
-            });
+        window.IntelisExport.start(
+            config.exportEndpoint,
+            $.extend({ testType: config.testType }, lastFilters, params),
+            L.exportName
+        );
     }
 
     /* ------------------------------------------------------------- public */

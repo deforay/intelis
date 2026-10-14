@@ -39,6 +39,8 @@ const COVERED_FILES = [
     'app/reports/get-sample-status-details.php',
     'app/reports/get-patient-timeline.php',
     'app/reports/get-data-quality.php',
+    'app/reports/export-data-quality.php',
+    'app/reports/patientTimelineInexcel.php',
     'app/reports/sample-status-details.php',
     'app/vl/program-management/getSampleRejectionReport.php',
     'app/vl/program-management/getResultNotAvailable.php',

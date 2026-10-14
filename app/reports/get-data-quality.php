@@ -1,7 +1,5 @@
 <?php
 
-use OpenSpout\Common\Entity\Row;
-use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -41,40 +39,18 @@ try {
             break;
 
         case 'samples':
+            $samples = iterator_to_array(DataQualityReportUtility::samples($testType, $filters, $db, $general), false);
+            // The export of this listing (export-data-quality.php) sizes its
+            // job from this: a count below the limit is exact, one at the
+            // limit only says "at least", so it is not kept.
+            $_SESSION[DataQualityReportUtility::LISTING_SESSION_KEY] = [
+                'key' => DataQualityReportUtility::listingKey($filters),
+                'count' => count($samples) < DataQualityReportUtility::SAMPLE_LIMIT ? count($samples) : null,
+            ];
             echo JsonUtility::encodeUtf8Json([
                 'limit' => DataQualityReportUtility::SAMPLE_LIMIT,
-                'samples' => iterator_to_array(DataQualityReportUtility::samples($testType, $filters, $db, $general), false),
+                'samples' => $samples,
             ]);
-            break;
-
-        case 'export':
-            $labels = array_map(fn($c) => $c['label'], DataQualityReportUtility::checks($testType));
-            $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Data-Quality-' . $testType . '-' . date('d-M-Y-H-i-s') . '-' . bin2hex(random_bytes(4)) . '.xlsx';
-
-            $writer = new Writer();
-            $writer->openToFile($fileName);
-            $writer->addRow(Row::fromValues([
-                _translate('Sample ID'),
-                _translate('Patient ID'),
-                _translate('Sample Collection Date'),
-                _translate('Request Created On'),
-                _translate('Facility'),
-                _translate('Status'),
-                _translate('Missing Fields'),
-            ]));
-            foreach (DataQualityReportUtility::samples($testType, $filters, $db, $general, null) as $sample) {
-                $writer->addRow(Row::fromValues([
-                    $sample['sampleCode'],
-                    $sample['patientId'],
-                    DateUtility::humanReadableDateFormat($sample['collected']),
-                    DateUtility::humanReadableDateFormat($sample['requested']),
-                    $sample['facility'],
-                    $sample['status'],
-                    implode(', ', array_map(fn($k) => $labels[$k], $sample['missing'])),
-                ]));
-            }
-            $writer->close();
-            echo JsonUtility::encodeUtf8Json(['download' => _downloadToken($fileName)]);
             break;
 
         default:
