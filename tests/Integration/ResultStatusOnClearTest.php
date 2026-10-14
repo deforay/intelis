@@ -347,6 +347,8 @@ final class ResultStatusOnClearTest extends TestCase
 
         $row = $this->saved($module, $id);
         self::assertSame('yes', $row['is_sample_rejected']);
+        self::assertSame(1, (int) $row['reason_for_sample_rejection']);
+        self::assertSame('2026-09-27', substr((string) $row['rejection_on'], 0, 10));
         self::assertSame(REJECTED, (int) $row['result_status']);
         self::assertSame('approver', $row['result_approved_by']);
     }
