@@ -442,7 +442,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											</td>
 											<td class="labels"><label for="testingPlatform">Testing Platform</label></td>
 											<td>
-												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" style="width: 100%" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlVlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalVlResult');">
+												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" style="width: 100%" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlVlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalViralLoadResult');getFailedVlResults();">
 													<option value="">-- Select --</option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>">
@@ -502,7 +502,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											</td>
 											<td class="labels"><label for="failedTestingTech">Testing Platform</label></td>
 											<td>
-												<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults', 'failedvlResult');" class="form-control" title="Please choose VL Testing Platform" style="width: 100%">
+												<select name="failedTestingTech" id="failedTestingTech" onchange="getFailedVlResults();" class="form-control" title="Please choose VL Testing Platform" style="width: 100%">
 													<option value="">-- Select --</option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>">
@@ -553,10 +553,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<th scope="row" class="labels" colspan="6" style="font-size: 18px; font-weight: bold;">Final Result</th>
 										</tr>
 										<tr>
-											<td class="labels"><label for="finalVlResult">Final Viral Load
+											<td class="labels"><label for="finalViralLoadResult">Final Viral Load
 													Result(copies/mL)</label></td>
 											<td class="resultInputContainer">
-												<input list="finalPossibleVlResults" disabled="disabled" type="text" class="form-control" name="finalVlResult" id="finalVlResult" placeholder="Viral Load Result" title="Enter VL Result" style="width:100%;">
+												<input list="finalPossibleVlResults" disabled="disabled" type="text" class="form-control" name="finalViralLoadResult" id="finalViralLoadResult" placeholder="Viral Load Result" title="Enter VL Result" style="width:100%;">
 												<datalist id="finalPossibleVlResults">
 
 												</datalist>
@@ -565,13 +565,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<td>
 												<input type="text" class="form-control" name="qcTechName" id="qcTechName" placeholder="QC Tech Name" title="Enter QC Tech Name" style="width:100%;">
 											</td>
-											<td class="labels"><label for="vlResult">Report Date</label></td>
+											<td class="labels"><label for="reportDate">Report Date</label></td>
 											<td>
 												<input type="text" class="form-control date" name="reportDate" id="reportDate" placeholder="Report Date" title="Enter Report Date" style="width:100%;">
 											</td>
 										</tr>
 										<tr>
-											<td class="labels"><label for="vlResult">QC Tech Signature</label></td>
+											<td class="labels"><label for="qcTechSign">QC Tech Signature</label></td>
 											<td>
 												<input type="text" class="form-control" name="qcTechSign" id="qcTechSign" placeholder="QC Tech Signature" title="Enter QC Tech Signature" style="width:100%;">
 											</td>
@@ -792,13 +792,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 	function getVlResults(testingPlatformId, datalistId, vlResultId) {
 		const testingVal = $('#' + testingPlatformId).val();
-		if (testingVal == "") {
-			$("#" + vlResultId).val("");
-			$("#" + vlResultId).attr("disabled", true);
+		if (!testingVal) {
+			// A disabled input is not submitted, so a box holding a result stays editable
+			$("#" + vlResultId).attr("disabled", ($("#" + vlResultId).val() || '').trim() === '');
 			return false;
 		}
-		const str1 = testingVal.split("##");
-		const platformId = str1[3];
+		const platformId = testingVal.split("##")[3];
 		$("#" + vlResultId).attr("disabled", false);
 		$("#" + datalistId).html('');
 		$.post("/vl/requests/getVlResults.php", {
@@ -809,6 +808,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 					$("#" + datalistId).html(data);
 				}
 			});
+	}
+
+	// The failed / invalid run result takes its suggestions from the repeat test's
+	// platform, or from the main one until a repeat platform is chosen
+	function getFailedVlResults() {
+		const platformField = $('#failedTestingTech').val() ? 'failedTestingTech' : 'testingPlatform';
+		getVlResults(platformField, 'failedPossibleVlResults', 'failedvlResult');
 	}
 
 	function validateSaveNow() {

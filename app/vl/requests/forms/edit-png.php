@@ -598,7 +598,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 										</td>
 										<td class="labels"><label for="testingPlatform">Testing Platform</label></td>
 										<td>
-											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlvlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalViralLoadResult');" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlvlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalViralLoadResult');getFailedVlResults();" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?><?php echo (($mName['status'] ?? '') !== 'active') ? ' (' . _translate('Inactive') . ')' : ''; ?>
@@ -664,7 +664,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 										</td>
 										<td class="labels"><label for="failedTestingTech">Testing Platform</label></td>
 										<td>
-											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults', 'failedvlResult');" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="failedTestingTech" id="failedTestingTech" onchange="getFailedVlResults();" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['failed_test_tech'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?><?php echo (($mName['status'] ?? '') !== 'active') ? ' (' . _translate('Inactive') . ')' : ''; ?>
@@ -800,20 +800,14 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 	let provinceName = true;
 	let facilityName = true;
 
-	function getVlResults(testingPlatformId, datalistId, vlResultId, keepSavedValue = false) {
+	function getVlResults(testingPlatformId, datalistId, vlResultId) {
 		const testingVal = $('#' + testingPlatformId).val();
-		if (testingVal == "") {
-			// A disabled input is not submitted, so on load keep a saved result editable
-			if (keepSavedValue && ($("#" + vlResultId).val() || '').trim() !== '') {
-				$("#" + vlResultId).attr("disabled", false);
-				return false;
-			}
-			$("#" + vlResultId).val("");
-			$("#" + vlResultId).attr("disabled", true);
+		if (!testingVal) {
+			// A disabled input is not submitted, so a box holding a result stays editable
+			$("#" + vlResultId).attr("disabled", ($("#" + vlResultId).val() || '').trim() === '');
 			return false;
 		}
-		const str1 = testingVal.split("##");
-		const platformId = str1[3];
+		const platformId = testingVal.split("##")[3];
 		$("#" + vlResultId).attr("disabled", false);
 		$("#" + datalistId).html('');
 		$.post("/vl/requests/getVlResults.php", {
@@ -826,11 +820,18 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 			});
 	}
 
+	// The failed / invalid run result takes its suggestions from the repeat test's
+	// platform, or from the main one until a repeat platform is chosen
+	function getFailedVlResults() {
+		const platformField = $('#failedTestingTech').val() ? 'failedTestingTech' : 'testingPlatform';
+		getVlResults(platformField, 'failedPossibleVlResults', 'failedvlResult');
+	}
+
 	$(document).ready(function() {
 		checkCollectionDate('<?php echo $vlQueryInfo['sample_collection_date']; ?>');
-		getVlResults('testingPlatform', 'possibleVlResults', 'cphlvlResult', true);
-		getVlResults('failedTestingTech', 'failedPossibleVlResults', 'failedvlResult', true);
-		getVlResults('testingPlatform', 'finalPossibleVlResults', 'finalViralLoadResult', true);
+		getVlResults('testingPlatform', 'possibleVlResults', 'cphlvlResult');
+		getFailedVlResults();
+		getVlResults('testingPlatform', 'finalPossibleVlResults', 'finalViralLoadResult');
 		$("#gender").change(function() {
 			if ($(this).val() == "female")
 				$(".femaleFactor").show();

@@ -610,7 +610,7 @@ $disable = "disabled = 'disabled'";
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label  labels" for="vlResult"><?= _translate("Viral Load Result (copies/mL)"); ?> </label>
                                                                       <div class="col-lg-7 resultInputContainer">
-                                                                           <input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)" disabled>
+                                                                           <input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)" <?= (empty($vlQueryInfo['vl_test_platform']) && trim((string) $vlQueryInfo['result']) === '') ? 'disabled' : ''; ?>>
                                                                            <datalist id="possibleVlResults">
 
                                                                            </datalist>
@@ -997,6 +997,7 @@ $disable = "disabled = 'disabled'";
                     return markup;
                }
           });
+          loadPossibleVlResults();
      });
 
      // $(document).on('select2:open', (e) => {
@@ -1277,11 +1278,27 @@ $disable = "disabled = 'disabled'";
           hivDetectionChange();
      });
 
+     // Fill the result suggestions for the saved platform without hivDetectionChange()'s
+     // side effects (it clears a saved HIV detection on a non-GeneXpert platform)
+     function loadPossibleVlResults() {
+          var text = $('#testingPlatform').val();
+          if (!text) {
+               return;
+          }
+          $.post("/vl/requests/getVlResults.php", {
+                    instrumentId: text.split("##")[3],
+               },
+               function(data) {
+                    $("#possibleVlResults").html(data);
+               });
+     }
+
      function hivDetectionChange() {
 
           var text = $('#testingPlatform').val();
           if (!text) {
-               $("#vlResult").attr("disabled", true);
+               // A disabled input is not submitted, so never disable one holding a saved result
+               $("#vlResult").attr("disabled", ($("#vlResult").val() || '').trim() === '');
                return;
           }
 

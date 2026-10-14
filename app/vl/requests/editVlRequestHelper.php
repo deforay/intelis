@@ -401,11 +401,13 @@ try {
          }
      }
 
-     if ($keepSavedResult) {
-          $vlData = VlService::withoutResultColumns($vlData);
-     } else {
+     // A kept result is dropped below, after the PNG columns are merged in
+     if (!$keepSavedResult) {
           $vlData = $vlService->sanitizeResultColumnsForWrite($vlData, 'edit-vl-request');
-          $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'] ?? null, $vlData['result']);
+          $vlData['vl_result_category'] = $vlService->getVLResultCategory(
+               $vlData['result_status'] ?? null,
+               $vlData['result']
+          );
      }
 
 
@@ -447,6 +449,9 @@ try {
           $pngSpecificFields['report_date'] = DateUtility::isoDateFormat($_POST['reportDate'] ?? '');
      }
      $vlData = array_merge($vlData, $pngSpecificFields);
+     if ($keepSavedResult) {
+          $vlData = VlService::withoutResultColumns($vlData);
+     }
 
      // Only touch lab_assigned_code when the field was part of the submitted
      // form. On non-LIS instances the input isn't rendered, so the key is absent

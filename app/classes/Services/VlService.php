@@ -404,15 +404,18 @@ final class VlService extends AbstractTestService
     }
 
     /**
-     * The form keys a VL request form carries its result in. PNG posts its result as
-     * cphlVlResult / finalViralLoadResult, and a GeneXpert detection with no figure
-     * ("HIV-1 Not Detected") arrives in hivDetection alone.
+     * The form keys a VL form carries its result in; PNG posts cphlVlResult and
+     * finalViralLoadResult. Only the result box itself counts. vlLog and hivDetection
+     * sit beside it, stay enabled while it is disabled, and are posted on every save --
+     * counting them would let a save with the box disabled rebuild the result from the
+     * log alone ("1200" became "1202.2644346174", and "< 20" became NULL).
      */
-    public const RESULT_FORM_KEYS = ['vlResult', 'vlLog', 'hivDetection', 'cphlVlResult', 'finalViralLoadResult'];
+    public const RESULT_FORM_KEYS = ['vlResult', 'cphlVlResult', 'finalViralLoadResult'];
 
     /** The form_vl columns written from that result, all derived from the same entry. */
     public const RESULT_VALUE_COLUMNS = [
         'result',
+        'cphl_vl_result',
         'result_value_log',
         'result_value_absolute',
         'result_value_absolute_decimal',
@@ -422,7 +425,8 @@ final class VlService extends AbstractTestService
     ];
 
     /**
-     * Whether a request edit has to keep the stored result because the form sent none.
+     * Whether a VL request edit or result update has to keep the stored result because
+     * the form sent none.
      *
      * A browser does not submit a disabled input, and the request forms disable the
      * result box until a testing platform is chosen. Writing the result from such a

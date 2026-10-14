@@ -498,7 +498,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="labels"><label for="testingPlatform">Testing Platform <span class="mandatory">*</span></label></td>
 										<td>
-											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlvlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalViralLoadResult');" class="testingPlatformSelect form-control isRequired" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlvlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalViralLoadResult');getFailedVlResults();" class="testingPlatformSelect form-control isRequired" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
@@ -556,7 +556,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="labels"><label for="testingTech">Testing Platform</label></td>
 										<td>
-											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults', 'failedvlResult');" class="testingPlatformSelect form-control" title="Please choose VL Testing Platform" style="width:100%;">
+											<select name="failedTestingTech" id="failedTestingTech" onchange="getFailedVlResults();" class="testingPlatformSelect form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['failed_test_tech'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
@@ -683,29 +683,34 @@ $disable = "disabled = 'disabled'";
 
 	function getVlResults(testingPlatformId, datalistId, vlResultId) {
 		const testingVal = $('#' + testingPlatformId).val();
-		if (testingVal == "") {
-			$("#" + vlResultId).val("");
-			$("#" + vlResultId).attr("disabled", true);
+		if (!testingVal) {
+			// A disabled input is not submitted, so a box holding a result stays editable
+			$("#" + vlResultId).attr("disabled", ($("#" + vlResultId).val() || '').trim() === '');
 			return false;
 		}
-		const str1 = testingVal.split("##");
-		const platformId = str1[3];
+		const platformId = testingVal.split("##")[3];
+		$("#" + vlResultId).attr("disabled", false);
 		$("#" + datalistId).html('');
 		$.post("/vl/requests/getVlResults.php", {
 				instrumentId: platformId,
 			},
 			function(data) {
-				// alert(data);
 				if (data != "") {
 					$("#" + datalistId).html(data);
-					$("#" + vlResultId).attr("disabled", false);
 				}
 			});
 	}
 
+	// The failed / invalid run result takes its suggestions from the repeat test's
+	// platform, or from the main one until a repeat platform is chosen
+	function getFailedVlResults() {
+		const platformField = $('#failedTestingTech').val() ? 'failedTestingTech' : 'testingPlatform';
+		getVlResults(platformField, 'failedPossibleVlResults', 'failedvlResult');
+	}
+
 	$(document).ready(function() {
 		getVlResults('testingPlatform', 'possibleVlResults', 'cphlvlResult');
-		getVlResults('failedTestingTech', 'failedPossibleVlResults', 'failedvlResult');
+		getFailedVlResults();
 		getVlResults('testingPlatform', 'finalPossibleVlResults', 'finalViralLoadResult');
 		$('.date').datepicker({
 			changeMonth: true,

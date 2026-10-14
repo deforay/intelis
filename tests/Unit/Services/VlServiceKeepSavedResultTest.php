@@ -29,8 +29,12 @@ final class VlServiceKeepSavedResultTest extends TestCase
             'accepted, result box disabled' => [$request + ['isSampleRejected' => 'no'], true],
             'result sent' => [$request + ['vlResult' => '1200'], false],
             'result box cleared on purpose' => [$request + ['vlResult' => null], false],
-            'only a log sent' => [$request + ['vlLog' => '3.08'], false],
-            'GeneXpert detection with no figure' => [$request + ['hivDetection' => 'HIV-1 Not Detected'], false],
+            // vlLog and hivDetection stay enabled beside a disabled result box and are
+            // posted on every save; they must not stand in for the result
+            'result box disabled, log posted' => [$request + ['vlLog' => '3.08'], true],
+            'result box disabled, empty log posted' => [$request + ['vlLog' => null], true],
+            'result box disabled, detection posted' => [$request + ['hivDetection' => 'HIV-1 Detected'], true],
+            'result and log sent' => [$request + ['vlResult' => '1200', 'vlLog' => '3.08'], false],
             'PNG CPHL result' => [$request + ['cphlVlResult' => '< 20'], false],
             'PNG final result' => [$request + ['finalViralLoadResult' => '400'], false],
             'rejected, result box hidden' => [$request + ['isSampleRejected' => 'yes'], false],
@@ -50,6 +54,7 @@ final class VlServiceKeepSavedResultTest extends TestCase
     {
         $vlData = [
             'result' => null,
+            'cphl_vl_result' => null,
             'result_value_log' => null,
             'result_value_absolute' => null,
             'result_value_absolute_decimal' => null,

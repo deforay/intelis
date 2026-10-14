@@ -78,6 +78,9 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
         $resultColumnsPosted[] = $column;
     }
 }
+// The result itself is guarded the same way, but as a group: result, log, absolute and
+// category are all derived from one entry. Rejecting the sample still clears it.
+$keepSavedResult = VlService::mustKeepSavedResult((array) $_POST);
 
     $_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true);
     $_POST['sampleTestingDateAtLab'] = DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'] ?? '', true);
@@ -273,7 +276,10 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
     // The result counts as modified when the value changed or the sample flipped
     // between rejected and not rejected -- the same rule the change history is logged on.
     $previousState = ['result' => $getPrevResult['result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null];
-    $currentState = ['result' => $finalResult, 'is_sample_rejected' => $isRejected];
+    $currentState = [
+        'result' => $keepSavedResult ? $getPrevResult['result'] : $finalResult,
+        'is_sample_rejected' => $isRejected,
+    ];
     $vlData['result_modified'] = MiscUtility::resultOrRejectionChanged($previousState, $currentState) ? "yes" : "no";
 
     // Append the change reason (preserving prior history) whenever the result or rejection changed.
@@ -303,9 +309,13 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
 
     // The log and absolute columns are derived in a dozen places and nothing downstream
     // checks they can be true. Drop any that cannot before they reach the table.
-    $vlData = $vlService->sanitizeResultColumnsForWrite($vlData, 'update-vl-result');
+    if ($keepSavedResult) {
+        $vlData = VlService::withoutResultColumns($vlData);
+    } else {
+        $vlData = $vlService->sanitizeResultColumnsForWrite($vlData, 'update-vl-result');
 
-    $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
+        $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
+    }
 
     // Retain the outgoing result before it is replaced. Editing a result overwrites it just
     // as surely as a re-test does, and the change-reason history above only records the
@@ -318,12 +328,15 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
     $db->beginTransaction();
 
     try {
-        $attempts->archive(
-            'vl',
-            (int) $_POST['vlSampleId'],
-            TestAttemptService::BY_RESULT_EDIT,
-            $_POST['reasonForResultChanges'] ?? null
-        );
+        // A kept result is not being replaced, so there is nothing to archive
+        if (!$keepSavedResult || $vlData['result_modified'] === 'yes') {
+            $attempts->archive(
+                'vl',
+                (int) $_POST['vlSampleId'],
+                TestAttemptService::BY_RESULT_EDIT,
+                $_POST['reasonForResultChanges'] ?? null
+            );
+        }
 
         $db->where('vl_sample_id', $_POST['vlSampleId']);
         // Drop every one this form did not send.
