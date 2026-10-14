@@ -5,6 +5,7 @@ use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SampleStatusUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -196,7 +197,6 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
           $_POST['reasonForResultChanges'] ?? $_POST['reasonForChanging'] ?? null
       );
 
-      $db->where('eid_id', $_POST['eidSampleId']);
       // Drop every one this form did not send.
       foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
           if (!in_array($column, $resultColumnsPosted, true)) {
@@ -204,6 +204,29 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
           }
       }
 
+      // Awaiting Approval needs a result. A result cleared, or a rejection undone with
+      // no result entered, leaves the sample waiting for testing, and the old review and
+      // approval go with it. Saved with no result otherwise, the status stays as it is.
+      $isRejected = ($_POST['isSampleRejected'] ?? null) === 'yes';
+      $isSts = $general->isSTSInstance();
+      $accessType = $_SESSION['accessType'] ?? null;
+      $waitingStatus = SampleStatusUtility::waitingStatusAfterSave(
+          'eid',
+          $getPrevResult,
+          $eidData,
+          $isRejected,
+          array_key_exists('isSampleRejected', (array) $_POST),
+          $isSts,
+          $accessType
+      );
+      if ($waitingStatus !== null) {
+          $eidData['result_status'] = $waitingStatus;
+          $eidData = SampleStatusUtility::withoutSignoff($eidData);
+      } elseif (SampleStatusUtility::leavesNoResult('eid', $getPrevResult, $eidData, $isRejected)) {
+          unset($eidData['result_status']);
+      }
+
+      $db->where('eid_id', $_POST['eidSampleId']);
       $id = $db->update($tableName, $eidData);
 
       $db->commitTransaction();
