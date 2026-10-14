@@ -1239,7 +1239,15 @@ chmod u+x ./lamp-setup.sh
 # Hand lamp-setup the MySQL root password we already collected so it doesn't
 # prompt a second time. lamp-setup falls back to its own prompt if this is empty
 # or an older lamp-setup that ignores the variable.
-MYSQL_ROOT_PASSWORD="${mysql_root_password}" ./lamp-setup.sh $PHP_VERSION
+if ! MYSQL_ROOT_PASSWORD="${mysql_root_password}" ./lamp-setup.sh $PHP_VERSION; then
+    rm -f ./lamp-setup.sh
+    print error "Installing the web server, database or PHP (lamp-setup.sh) failed."
+    print info "The messages just above this one show which step failed and how to fix it."
+    print info "Full log: ${HOME}/logsetup.log"
+    print info "After fixing the problem, run setup again. Steps already done are skipped."
+    log_action "lamp-setup.sh failed - setup aborted"
+    exit 1
+fi
 
 rm -f ./lamp-setup.sh
 
