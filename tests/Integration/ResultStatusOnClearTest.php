@@ -307,12 +307,15 @@ final class ResultStatusOnClearTest extends TestCase
         $this->drive(self::MODULES[$module][$page], self::post($module, $id, $page, [
             'isSampleRejected' => 'no',
             self::MODULES[$module]['resultField'] => self::MODULES[$module]['value'],
-            'oldStatus' => (string) PENDING_APPROVAL,
         ]));
 
         $row = $this->saved($module, $id);
         self::assertSame(self::MODULES[$module]['value'], (string) $row['result']);
         self::assertSame(PENDING_APPROVAL, (int) $row['result_status']);
+        if ($page === 'edit') {
+            // The approval was of the rejection, not of this result
+            self::assertNull($row['result_approved_by']);
+        }
     }
 
     /** @return array<string, array{string}> */

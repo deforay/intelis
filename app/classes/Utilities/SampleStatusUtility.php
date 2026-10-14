@@ -221,6 +221,30 @@ final class SampleStatusUtility
     }
 
     /**
+     * Whether a save undoes a rejection and leaves a result: the sample then awaits
+     * approval of that result. The request edits start from the status the form
+     * posts back, which for a rejected sample is Rejected, so without this the
+     * sample stayed Rejected with a result and the flag set to no.
+     *
+     * @param array<string, mixed> $stored the row before the save
+     * @param array<string, mixed> $written the columns the save writes
+     */
+    public static function undoesRejectionWithResult(
+        string $testType,
+        array $stored,
+        array $written,
+        bool $rejected,
+        bool $rejectionPosted
+    ): bool {
+        $wasRejected = ($stored['is_sample_rejected'] ?? null) === 'yes'
+            || (int) ($stored['result_status'] ?? 0) === REJECTED;
+        return !$rejected
+            && $rejectionPosted
+            && $wasRejected
+            && !self::leavesNoResult($testType, $stored, $written, false);
+    }
+
+    /**
      * Whether the stored row records a decision that a save leaving no result and no
      * rejection takes back. A rejection counts only when the form sent the
      * rejection field.

@@ -5,6 +5,7 @@
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
 use const SAMPLE_STATUS\REJECTED;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
@@ -465,6 +466,18 @@ try {
 		);
 		if ($waitingStatus !== null) {
 			$covid19Data['result_status'] = $waitingStatus;
+			$covid19Data = SampleStatusUtility::withoutSignoff($covid19Data);
+		} elseif (
+			SampleStatusUtility::undoesRejectionWithResult(
+				'covid19',
+				$getPrevResult,
+				$covid19Data,
+				$isRejected,
+				array_key_exists('isSampleRejected', (array) $_POST)
+			)
+		) {
+			// The review and approval were of the rejection
+			$covid19Data['result_status'] = PENDING_APPROVAL;
 			$covid19Data = SampleStatusUtility::withoutSignoff($covid19Data);
 		}
 
