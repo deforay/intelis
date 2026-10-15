@@ -108,6 +108,19 @@ $data = $db->get("user_login_history", 25);
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
+                  <label for="currentPassword" class="col-lg-4 control-label"><?php echo _translate("Current Password"); ?></label>
+                  <div class="col-lg-7">
+                    <input type="password" class="form-control" id="currentPassword" name="currentPassword" placeholder="<?php echo _translate('Current Password'); ?>" title="" autocomplete="current-password" />
+                    <small class="form-text text-muted">
+                      <?= _translate("Needed only to change the password"); ?>
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
                   <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?></label>
                   <div class="col-lg-7">
                     <div class="input-group">
@@ -129,7 +142,7 @@ $data = $db->get("user_login_history", 25);
                 <div class="form-group">
                   <label for="confirmPassword" class="col-lg-4 control-label"><?php echo _translate("Confirm Password"); ?></label>
                   <div class="col-lg-8">
-                    <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _translate('Confirm Password'); ?>" title="" />
+                    <input type="password" class="form-control cpwd" id="confirmPassword" name="confirmPassword" placeholder="<?php echo _translate('Confirm Password'); ?>" title="" />
                   </div>
                 </div>
               </div>
@@ -216,14 +229,29 @@ responsive: true
     });
 
     if (flag) {
+      pwdflag = true;
       if ($('.ppwd').val() != '') {
-        pwdflag = checkPasswordLength();
+        pwdflag = passwordFieldsValid() && checkPasswordLength();
       }
       if (pwdflag) {
         $.blockUI();
         document.getElementById('userEditForm').submit();
       }
     }
+  }
+
+  // The current password is checked on the server when the form is submitted
+  function passwordFieldsValid() {
+    if (!$('#currentPassword').val()) {
+      alert("<?= _translate("Please enter your current password.", true); ?>");
+      $('#currentPassword').focus();
+      return false;
+    }
+    if ($('#password').val() !== $('#confirmPassword').val()) {
+      alert("<?= _translate("New password and confirm password do not match.", true); ?>");
+      return false;
+    }
+    return true;
   }
 
   function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {

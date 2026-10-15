@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
@@ -83,10 +84,18 @@ try {
             $submittedPassword = _rawInput('password');
             if (isset($submittedPassword) && trim((string) $submittedPassword) !== "") {
                 $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", [$userId]);
-                if ($usersService->passwordVerify((string) $_SESSION['loginId'], (string) $submittedPassword, (string) $userRow['password'])) {
-                    $_SESSION['alertMsg'] = _translate("Your new password cannot be same as the current password. Please try another password.");
-                    header("Location:edit-profile.php");
-                    exit;
+                $refusal = $usersService->passwordChangeRefusal(
+                    (string) $_SESSION['loginId'],
+                    (string) $userRow['password'],
+                    (string) (_rawInput('currentPassword') ?? ''),
+                    (string) $submittedPassword,
+                    (string) (_rawInput('confirmPassword') ?? '')
+                );
+                if ($refusal !== null) {
+                    // Nothing is saved, the profile fields included, so the user
+                    // fixes the password and submits the whole form again
+                    $_SESSION['alertMsg'] = $refusal;
+                    MiscUtility::redirect("edit-profile.php");
                 }
 
                 if (SYSTEM_CONFIG['recency']['crosslogin']) {
@@ -132,13 +141,13 @@ try {
                 $_SESSION['alertMsg'] = _translate("Your profile changes have been saved. You can continue using the application.");
                 $general->activityLog('profile-update', $_POST['userName'] . ' profile updated', 'user-profile');
                 $_SESSION['userName'] = $_POST['userName'];
-                $_SESSSION['email'] = $_POST['email'];
+                $_SESSION['email'] = $_POST['email'];
             } else {
                 $_SESSION['alertMsg'] = _translate("No changes were made to your profile.");
             }
-            header("Location:edit-profile.php");
+            MiscUtility::redirect("edit-profile.php");
         }
     }
 } catch (Exception $exc) {
-    throw new SystemException($exc->getMessage(), 500);
+    throw new SystemException($exc->getMessage(), 500, $exc);
 }

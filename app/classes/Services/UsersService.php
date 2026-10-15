@@ -504,6 +504,45 @@ final class UsersService
         return $verified;
     }
 
+    /** The rule the password forms show: 8+ characters, a letter and a number. */
+    public const string PASSWORD_RULE = '/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/';
+
+    /**
+     * Why a signed-in user's own password change must be refused, or null to allow it.
+     *
+     * The current password is checked here, on the server: a form's own check is skipped
+     * by a direct POST, so without this an unattended session could change the password.
+     *
+     * @param string $storedHash the user's password hash as stored
+     */
+    public function passwordChangeRefusal(
+        string $loginId,
+        string $storedHash,
+        string $currentPassword,
+        string $newPassword,
+        string $confirmPassword
+    ): ?string {
+        if ($currentPassword === '' || trim($newPassword) === '') {
+            return _translate("Please enter your current password and a new password.");
+        }
+        if (!$this->passwordVerify($loginId, $currentPassword, $storedHash)) {
+            return _translate("Current password is incorrect.");
+        }
+        if ($newPassword !== $confirmPassword) {
+            return _translate("New password and confirm password do not match.");
+        }
+        if (!preg_match(self::PASSWORD_RULE, $newPassword)) {
+            return _translate(
+                "Password must be at least 8 characters long and must include AT LEAST one number, " .
+                    "one alphabet and may have special characters."
+            );
+        }
+        if ($newPassword === $currentPassword) {
+            return _translate("Your new password cannot be same as the current password. Please try another password.");
+        }
+        return null;
+    }
+
     public function saveUserAttributes($data, $userId)
     {
         if (!isset($data) || empty($data) || !isset($userId) || empty($userId)) {

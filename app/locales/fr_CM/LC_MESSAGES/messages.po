@@ -37121,3 +37121,9 @@ msgstr "Veuillez saisir un nouveau mot de passe."
 
 msgid "Password not updated!"
 msgstr "Mot de passe non mis à jour !"
+
+msgid "Current Password"
+msgstr "Mot de passe actuel"
+
+msgid "Needed only to change the password"
+msgstr "Requis uniquement pour changer le mot de passe"
