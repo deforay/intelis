@@ -1,35 +1,6 @@
 <?php
 
-use App\Utilities\DateUtility;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
-use App\Registries\ContainerRegistry;
-use App\Services\UsersService;
-
 require_once APPLICATION_PATH . '/header.php';
-
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
-
-
-$globalConfig = $general->getGlobalConfig();
-
-$localeLists = $general->getLocaleList((int)($globalConfig['vl_form'] ?? 0));
-
-
-$userInfo = $usersService->getUserByID($_SESSION['userId']);
-
-$db->orderBy("login_attempted_datetime");
-$db->where("login_id", $_SESSION['loginId']);
-$db->orWhere('user_id', $_SESSION['userId']);
-$data = $db->get("user_login_history", 25);
 
 ?>
 
@@ -62,7 +33,7 @@ $data = $db->get("user_login_history", 25);
             <div class="row">
              <div class="col-md-6">
                 <div class="form-group">
-                  <label for="confirmPassword" class="col-lg-4 control-label"><?php echo _translate("Current Password"); ?></label>
+                  <label for="currentPassword" class="col-lg-4 control-label"><?php echo _translate("Current Password"); ?></label>
                   <div class="col-lg-8">
                     <input type="password" class="form-control" id="currentPassword" name="currentPassword" placeholder="<?php echo _translate('Current Password'); ?>" title="" />
                     <div id="currentPasswordError" style="color: red;"></div>
@@ -74,7 +45,7 @@ $data = $db->get("user_login_history", 25);
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?></label>
+                  <label for="newPassword" class="col-lg-4 control-label"><?php echo _translate("Password"); ?></label>
                   <div class="col-lg-8">
                     <div class="input-group">
                       <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
@@ -118,18 +89,7 @@ $data = $db->get("user_login_history", 25);
   <!-- /.content -->
 </div>
 
-<!-- $(document).ready(function() {
-$('#example').DataTable({
-responsive: true
-});
-}); -->
 <script type="text/javascript">
-  $(document).ready(function() {
-    $('#loginAttempts').DataTable({
-      responsive: true,
-      ordering: false
-    });
-  });
   pwdflag = true;
 
   function validateNow() {
@@ -137,52 +97,32 @@ responsive: true
       formId: 'changePasswordForm'
     });
 
-    if (flag) {
-      currentPwd = password_verify();
-      if ($('.ppwd').val() != '') {
-        pwdflag = checkPasswordLength();
-      }
-      if (pwdflag && currentPwd == true) {
+    if (flag && passwordFieldsValid()) {
+      pwdflag = checkPasswordLength();
+      if (pwdflag) {
         $.blockUI();
         document.getElementById('changePasswordForm').submit();
       }
     }
   }
 
-  function password_verify()
-  {
-     const currentPassword = $('#currentPassword').val(); 
-     const newPassword = $('#newPassword').val(); 
-     const confirmPassword = $('#confirmPassword').val(); 
-     $('#currentPasswordError').text('');
-      if (!currentPassword) {
-          $('#currentPasswordError').text('Please enter your current password.'); 
-          return false; 
-        }
-      if (!newPassword) { 
-        alert('Please enter a new password.'); 
-        return false; 
-      }
-      if (newPassword !== confirmPassword) { 
-        alert('New password and confirm password do not match.');  
-        return false; 
-      } 
-       $.ajax({
-          url: '/includes/verify-current-password.php', 
-          type: 'POST', 
-          dataType: 'json',
-           data: { currentPassword: currentPassword }, 
-           success: function (response) { 
-            if (response.success) { // Current password is correct. // Now submit the actual change-password form.
-             return true; 
-            } 
-            else 
-              { $('#currentPasswordError').text( response.message || 'Current password is incorrect.' ); 
-            $('#currentPassword').focus(); return false; } }, 
-            error: function () { 
-              $('#currentPasswordError').text( 'Unable to validate current password. Please try again.' ); return false;} 
-            });
-            return true;
+  // The current password is checked on the server when the form is submitted
+  function passwordFieldsValid() {
+    $('#currentPasswordError').text('');
+    if (!$('#currentPassword').val()) {
+      $('#currentPasswordError').text("<?= _translate("Please enter your current password.", true); ?>");
+      $('#currentPassword').focus();
+      return false;
+    }
+    if (!$('#newPassword').val()) {
+      alert("<?= _translate("Please enter a new password.", true); ?>");
+      return false;
+    }
+    if ($('#newPassword').val() !== $('#confirmPassword').val()) {
+      alert("<?= _translate("New password and confirm password do not match.", true); ?>");
+      return false;
+    }
+    return true;
   }
 
   function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {

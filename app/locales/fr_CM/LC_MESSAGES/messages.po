@@ -37103,3 +37103,21 @@ msgstr "caractères"
 
 msgid "Nothing was saved. Please choose the testing platform for the result."
 msgstr "Rien n'a été enregistré. Veuillez choisir la plateforme de test pour le résultat."
+
+msgid "Please enter your current password and a new password."
+msgstr "Veuillez saisir votre mot de passe actuel et un nouveau mot de passe."
+
+msgid "Current password is incorrect."
+msgstr "Le mot de passe actuel est incorrect."
+
+msgid "New password and confirm password do not match."
+msgstr "Le nouveau mot de passe et sa confirmation ne correspondent pas."
+
+msgid "Please enter your current password."
+msgstr "Veuillez saisir votre mot de passe actuel."
+
+msgid "Please enter a new password."
+msgstr "Veuillez saisir un nouveau mot de passe."
+
+msgid "Password not updated!"
+msgstr "Mot de passe non mis à jour !"
