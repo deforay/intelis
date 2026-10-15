@@ -1650,7 +1650,7 @@ final class CommonService
                     'responses' => $responseData,
                 ];
                 foreach ($bodies as $folder => $body) {
-                    $json = JsonUtility::encodeUtf8Json($body ?? '{}');
+                    $json = JsonUtility::encodeUtf8Json(ApiTrackingStorageUtility::redactSecrets($body ?? '{}'));
                     if (self::isEmptyTrackingBody($json)) {
                         continue;
                     }

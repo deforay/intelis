@@ -36,6 +36,49 @@ final class ApiTrackingStorageUtility
     /** Files the repository keeps in an otherwise empty folder. */
     private const array PLACEHOLDERS = ['.gitkeep', '.hgkeep'];
 
+    /** What a secret's value becomes in a kept body. */
+    public const REDACTED = '[redacted]';
+
+    /**
+     * A body with every secret's value replaced, to be kept on disk.
+     *
+     * A mobile login sends the password in plain text and gets the user's API
+     * token back, and the profile save sends a new password; the bodies of both
+     * were kept for 30 days as they came. Any key naming a password or secret, or
+     * ending in "token" (token, api_token, new_token, authToken), is replaced at
+     * any depth. A JSON string is decoded, cleaned and encoded again; a string
+     * that is not JSON is kept as it is.
+     */
+    public static function redactSecrets(mixed $body): mixed
+    {
+        if (is_string($body)) {
+            // Most bodies (sync batches of several MB) hold no secret: skip the decode.
+            if (!preg_match('/password|passwd|secret|token"/i', $body)) {
+                return $body;
+            }
+            $decoded = json_decode($body, true);
+            if (!is_array($decoded)) {
+                return $body;
+            }
+            return JsonUtility::encodeUtf8Json(self::redactSecrets($decoded));
+        }
+        if (is_object($body)) {
+            $body = json_decode((string) json_encode($body), true);
+        }
+        if (!is_array($body)) {
+            return $body;
+        }
+        foreach ($body as $key => $value) {
+            $secret = is_string($key) && preg_match('/password|passwd|secret|token$/i', $key);
+            if ($secret && $value !== null && $value !== '') {
+                $body[$key] = self::REDACTED;
+            } elseif (is_array($value) || is_object($value)) {
+                $body[$key] = self::redactSecrets($value);
+            }
+        }
+        return $body;
+    }
+
     public static function root(): string
     {
         return VAR_PATH . DIRECTORY_SEPARATOR . 'track-api';
