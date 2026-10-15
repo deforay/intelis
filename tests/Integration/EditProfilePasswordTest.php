@@ -137,6 +137,26 @@ final class EditProfilePasswordTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testAPasswordTheSameAfterBcryptsLimitIsRefused(): void
+    {
+        // bcrypt reads 72 bytes, so these two are one password
+        $long = str_repeat('a', 71) . '1';
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE user_details SET password = ? WHERE user_id = 'u-self'",
+            [password_hash($long . '-old', PASSWORD_BCRYPT)]
+        );
+
+        $this->drive([
+            'currentPassword' => $long . '-old',
+            'password' => $long . '-new',
+            'confirmPassword' => $long . '-new',
+        ]);
+
+        self::assertSame(1, (int) self::stored()['force_password_reset'], 'The reset must still be owed');
+        self::assertSame('Old Name', self::stored()['user_name']);
+    }
+
+    #[RunInSeparateProcess]
     public function testAProfileSaveWithoutANewPasswordNeedsNoCurrentPassword(): void
     {
         $url = $this->drive([]);
