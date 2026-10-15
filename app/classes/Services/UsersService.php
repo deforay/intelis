@@ -394,7 +394,7 @@ final class UsersService
         return DateUtility::compareDateWithInterval($lastTokenDate, '>', "$tokenExpiration days");
     }
 
-    private function updateUserToken(int $userId): ?string
+    private function updateUserToken(string $userId): ?string
     {
         $newToken = ApiService::generateAuthToken();
         $data = [
