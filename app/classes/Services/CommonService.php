@@ -606,7 +606,11 @@ final class CommonService
         };
     }
 
-    public function activityLog($eventType, $action, $resource): void
+    /**
+     * @param string|null $userId Who did it, for a call with no web session (the
+     *                            mobile API); a web request takes the session's user.
+     */
+    public function activityLog($eventType, $action, $resource, ?string $userId = null): void
     {
 
         $ipAddress = self::getClientIpAddress();
@@ -615,7 +619,7 @@ final class CommonService
             'event_type' => $eventType,
             'action' => $action,
             'resource' => $resource,
-            'user_id' => (empty($_SESSION['userId'])) ? null : $_SESSION['userId'],
+            'user_id' => $userId ?? ((empty($_SESSION['userId'])) ? null : $_SESSION['userId']),
             'date_time' => DateUtility::getCurrentDateTime(),
             'ip_address' => $ipAddress,
         ];

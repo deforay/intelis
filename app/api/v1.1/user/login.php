@@ -137,6 +137,35 @@ try {
         ];
     }
 }
+// Record the attempt as a web login does: every attempt in the login history, and a
+// successful one in the activity log too, with the device it came from. A malformed
+// request or a server fault is not an attempt. Logging must never fail the login.
+$outcome = match ($payload['status'] ?? null) {
+    1 => 'successful',
+    2 => 'failed',
+    default => null,
+};
+if ($outcome !== null) {
+    try {
+        $userId = isset($userResult['user_id']) ? (string) $userResult['user_id'] : null;
+        $usersService->recordLoginAttempt((string) $input['userName'], $outcome, $userId);
+        if ($outcome === 'successful') {
+            $device = array_filter([
+                'app ' . $request->getHeaderLine('appVersion'),
+                'Android ' . $request->getHeaderLine('osVersion'),
+                'device ' . $request->getHeaderLine('deviceId'),
+            ], static fn(string $part): bool => !str_ends_with($part, ' '));
+            $action = $userResult['user_name'] . ' logged in from InteLIS Mobile'
+                . ($device !== [] ? ' (' . implode(', ', $device) . ')' : '');
+            $general->activityLog('login', $action, 'user-login', $userId);
+        }
+    } catch (Throwable $exc) {
+        LoggerUtility::logError('Could not record the mobile login: ' . $exc->getMessage(), [
+            'transactionId' => $transactionId,
+        ]);
+    }
+}
+
 $payload = JsonUtility::encodeUtf8Json($payload);
 
 $trackId = $general->addApiTracking($transactionId, $data['user']['user_id'] ?? null, 1, 'login', 'common', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
