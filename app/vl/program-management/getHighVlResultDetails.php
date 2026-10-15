@@ -163,6 +163,10 @@ try {
 
     [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
+    // The other modules' result listings share this key, so the export must not
+    // read a count one of them left behind
+    $_SESSION['highViralResultCount'] = $resultCount;
+
     /*
      * Output
      */
