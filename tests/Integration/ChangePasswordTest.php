@@ -45,7 +45,7 @@ final class ChangePasswordTest extends TestCase
             define('SYSTEM_CONFIG', ['recency' => ['crosslogin' => false], 'system' => ['debug_mode' => false]]);
         }
 
-        $db = LegacyAppHarness::boot(self::DATABASE, ['roles', 'user_details', 'activity_log']);
+        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), ['roles', 'user_details', 'activity_log']);
         $db->rawQuery(
             "INSERT INTO roles (role_id, role_name, role_code, status) VALUES (2, 'Lab User', 'lab-user', 'active')"
         );
