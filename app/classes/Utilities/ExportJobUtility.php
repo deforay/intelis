@@ -37,6 +37,9 @@ final class ExportJobUtility
         'userName',
         'roleId',
         'privileges',
+        // The modules the user sees on the dashboard grant access on their own:
+        // SampleStatusDetailsService::canView() falls back to them
+        'modules',
         'APP_LOCALE',
         'userLocale',
         'phpDateFormat',
@@ -242,6 +245,24 @@ final class ExportJobUtility
     }
 
     /**
+     * The slice of the requester's session the worker runs with: what every export
+     * needs to authorize and format, plus the export's own entries.
+     *
+     * @param list<string> $sessionKeys
+     * @return array<string, mixed>
+     */
+    public static function sessionSnapshot(array $sessionKeys = []): array
+    {
+        $session = [];
+        foreach ([...self::SESSION_KEYS, ...$sessionKeys] as $key) {
+            if (isset($_SESSION[$key])) {
+                $session[$key] = $_SESSION[$key];
+            }
+        }
+        return $session;
+    }
+
+    /**
      * Records a new job for the current user and launches its worker.
      * Answers with ['jobId' => ...]; with ['error' => ...] when the server
      * already has MAX_ACTIVE_JOBS unfinished; or with [] if there is nothing to
@@ -262,12 +283,7 @@ final class ExportJobUtility
             return [];
         }
 
-        $session = [];
-        foreach ([...self::SESSION_KEYS, ...$sessionKeys] as $key) {
-            if (isset($_SESSION[$key])) {
-                $session[$key] = $_SESSION[$key];
-            }
-        }
+        $session = self::sessionSnapshot($sessionKeys);
 
         $dir = self::directory();
         if (!is_dir($dir) && !MiscUtility::makeDirectory($dir, 0770)) {
