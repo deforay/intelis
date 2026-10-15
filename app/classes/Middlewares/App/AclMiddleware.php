@@ -32,6 +32,11 @@ class AclMiddleware implements MiddlewareInterface
         // browser having to volunteer a Referer.
         '/download.php',
         '/users/edit-profile-helper.php',
+        // Every signed-in user may change their own password, so these have no
+        // privilege of their own. The helper authorizes itself: it changes only
+        // the session user's password, and only after checking the current one.
+        '/users/change-password.php',
+        '/users/change-password-helper.php',
         // A sendBeacon carries no X-Requested-With header, so the AJAX bypass
         // above does not cover the last flush of a page being unloaded. The
         // endpoint authorizes itself: it only updates rows belonging to the
