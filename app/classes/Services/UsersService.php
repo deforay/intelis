@@ -537,7 +537,9 @@ final class UsersService
                     "one alphabet and may have special characters."
             );
         }
-        if ($newPassword === $currentPassword) {
+        // Against the hash, not the typed text: bcrypt reads only the first 72 bytes,
+        // so a long password changed after those would still be the same password
+        if (password_verify($newPassword, $storedHash)) {
             return _translate("Your new password cannot be same as the current password. Please try another password.");
         }
         return null;
