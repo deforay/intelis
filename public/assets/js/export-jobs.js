@@ -50,19 +50,32 @@
 
     var polling = false;
 
+    // Set once the browser refuses to store the jobs (storage blocked or full).
+    // From then on the jobs live in this page only: the tray still polls and
+    // downloads, but does not follow the user to the next page.
+    var pageJobs = null;
+
     function readJobs() {
+        if (pageJobs !== null) {
+            return pageJobs.slice();
+        }
         try {
             var jobs = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]');
             return Array.isArray(jobs) ? jobs : [];
         } catch (e) {
+            pageJobs = [];
             return [];
         }
     }
 
     function writeJobs(jobs) {
-        try {
-            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
-        } catch (e) { /* tray just will not survive a page change */ }
+        if (pageJobs === null) {
+            try {
+                window.localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+                return;
+            } catch (e) { /* fall through: keep them in this page */ }
+        }
+        pageJobs = jobs.slice();
     }
 
     function updateJob(id, changes) {
