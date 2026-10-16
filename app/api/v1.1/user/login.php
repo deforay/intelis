@@ -72,7 +72,12 @@ try {
                     AND ud.login_id = ?";
     $userResult = $db->rawQueryOne($userQuery, [$input['userName']]);
 
-    if (empty($userResult) || !$usersService->passwordVerify($input['userName'], (string) $input['password'], (string) $userResult['password'])) {
+    if (empty($userResult) || !$usersService->passwordVerify(
+        $input['userName'],
+        (string) $input['password'],
+        (string) $userResult['password'],
+        (string) $userResult['user_id']
+    )) {
         throw new SystemException(_translate('Login failed. Please contact system administrator.'), $credentialsRejected);
     }
 

@@ -22,7 +22,11 @@ try {
             $params = [$adminUsername];
             $adminRow = $db->rawQueryOne("SELECT * FROM system_admin as ud WHERE ud.system_admin_login = ?", $params);
 
-            if (!empty($adminRow) && $usersService->passwordVerify($adminUsername, $adminPassword, (string) $adminRow['system_admin_password'])) {
+            // The admin's hash lives in system_admin, so no rehash into user_details
+            $adminHash = (string) ($adminRow['system_admin_password'] ?? '');
+            $verified = !empty($adminRow)
+                && $usersService->passwordVerify($adminUsername, $adminPassword, $adminHash, null, false);
+            if ($verified) {
                 $_SESSION['_systemAdmin'] = [
                     'userId' => $adminRow['system_admin_id'],
                     'userName' => $adminRow['system_admin_name'],

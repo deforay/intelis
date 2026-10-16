@@ -109,7 +109,9 @@ final readonly class VerifyLoginHandler
         // cannot say whose password this is
         $user = count($users) === 1 ? $users[0] : null;
 
-        if ($user === null || !$this->users->passwordVerify($loginId, $password, (string) $user['password'])) {
+        $verified = $user !== null
+            && $this->users->passwordVerify($loginId, $password, (string) $user['password'], (string) $user['user_id']);
+        if (!$verified) {
             $this->record($loginId, 'failed', $user['user_id'] ?? null);
             return ['verified' => false, 'reason' => 'invalid_credentials'];
         }
