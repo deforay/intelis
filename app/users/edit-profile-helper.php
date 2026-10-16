@@ -64,7 +64,8 @@ try {
                 (string) $userRow['password'],
                 (string) (_rawInput('currentPassword') ?? ''),
                 (string) $submittedPassword,
-                (string) (_rawInput('confirmPassword') ?? '')
+                (string) (_rawInput('confirmPassword') ?? ''),
+                (string) $userId
             );
             if ($refusal !== null) {
                 // Nothing is saved, the profile fields included, so the user

@@ -41,7 +41,8 @@ $refusal = $usersService->passwordChangeRefusal(
     (string) $userRow['password'],
     $currentPassword,
     $newPassword,
-    (string) (_rawInput('confirmPassword') ?? '')
+    (string) (_rawInput('confirmPassword') ?? ''),
+    (string) $userId
 );
 if ($refusal !== null) {
     // Back to the form; nothing has been written

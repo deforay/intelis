@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\InputSanitizer;
 use App\Utilities\JsonUtility;
 use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
@@ -484,24 +485,53 @@ final class UsersService
         return password_hash((string) $password, PASSWORD_BCRYPT, $options);
     }
 
-    public function passwordVerify($loginId, $password, $hash)
+    /**
+     * Whether $password, exactly as the user typed it, is this user's password.
+     *
+     * Until 2026-08-12 the forms hashed the password after HTML sanitizing, so a
+     * password with & or < was stored as the hash of, say, "a&amp;b"; sign-in then
+     * compared the sanitized text too. Since then the typed text is hashed. When the
+     * typed text does not match, its old sanitized form is tried, which is exactly
+     * how every sign-in worked before. That hash is kept as it is: rewriting it could
+     * lock out someone whose password really contains "&amp;".
+     *
+     * Callers pass the raw password (_rawInput()), never the sanitized $_POST copy,
+     * and the user's id when they have it, so a cost rehash rewrites only that user:
+     * login_id is not unique. $rehash false is for a hash kept outside user_details.
+     */
+    public function passwordVerify($loginId, $password, $hash, ?string $userId = null, bool $rehash = true)
     {
         if (empty($password) || empty($hash)) {
             return false;
         }
 
-        $verified = password_verify((string) $password, (string) $hash);
-
-        if ($verified) {
-            $options = ['cost' => $this->passwordCost];
-            if (password_needs_rehash($hash, PASSWORD_BCRYPT, $options)) {
+        if (password_verify((string) $password, (string) $hash)) {
+            if ($rehash && password_needs_rehash($hash, PASSWORD_BCRYPT, ['cost' => $this->passwordCost])) {
                 $newHash = $this->passwordHash($password);
-                $this->db->where('login_id', $loginId);
+                if ($userId !== null && $userId !== '') {
+                    $this->db->where('user_id', $userId);
+                } else {
+                    $this->db->where('login_id', $loginId);
+                }
                 $this->db->update($this->table, ['password' => $newHash]);
             }
+            return true;
         }
 
-        return $verified;
+        $sanitized = self::sanitizedAsBefore((string) $password);
+        return $sanitized !== (string) $password && password_verify($sanitized, (string) $hash);
+    }
+
+    /**
+     * What _sanitizeInput() makes of a string: the form the password forms hashed
+     * before 2026-08-12. The same steps as its string branch, called directly so
+     * they are the real ones wherever this runs.
+     */
+    public static function sanitizedAsBefore(string $password): string
+    {
+        $value = MiscUtility::toUtf8($password);
+        $value = MiscUtility::cleanString($value);
+        return InputSanitizer::clean(is_string($value) ? $value : '');
     }
 
     /** The rule the password forms show: 8+ characters, a letter and a number. */
@@ -520,12 +550,13 @@ final class UsersService
         string $storedHash,
         string $currentPassword,
         string $newPassword,
-        string $confirmPassword
+        string $confirmPassword,
+        ?string $userId = null
     ): ?string {
         if ($currentPassword === '' || trim($newPassword) === '') {
             return _translate("Please enter your current password and a new password.");
         }
-        if (!$this->passwordVerify($loginId, $currentPassword, $storedHash)) {
+        if (!$this->passwordVerify($loginId, $currentPassword, $storedHash, $userId)) {
             return _translate("Current password is incorrect.");
         }
         if ($newPassword !== $confirmPassword) {

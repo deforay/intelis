@@ -285,3 +285,13 @@ if (!function_exists('_invalidateFileCacheByTags')) {
         $GLOBALS['__invalidatedCacheTags'][] = is_array($tags) ? $tags : [$tags];
     }
 }
+
+// The sign-in page screens the login name for injection-shaped input before
+// anything else. What a test of the sign-in checks is the password, so the
+// screen lets every name through.
+if (!function_exists('_isPotentiallyMalicious')) {
+    function _isPotentiallyMalicious(string $input): bool
+    {
+        return false;
+    }
+}

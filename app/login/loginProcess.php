@@ -58,7 +58,11 @@ try {
 
     /* Crosss Login Block End */
 
-    if (!empty($_POST['username']) && !empty($_POST['password'])) {
+    // As typed, not the sanitized $_POST copy: HTML Purifier turns & into &amp; and
+    // drops anything tag-shaped. See UsersService::passwordVerify().
+    $typedPassword = isset($decryptedPassword) ? (string) $decryptedPassword : (string) (_rawInput('password') ?? '');
+
+    if (!empty($_POST['username']) && $typedPassword !== '') {
 
         if (_isPotentiallyMalicious($_POST['username'])) {
             LoggerUtility::logError("Potential malicious login attempt blocked for user: " . $_POST['username']);
@@ -82,7 +86,11 @@ try {
         );
 
 
-        if (empty($userRow) || !$usersService->passwordVerify((string) $_POST['username'], (string) $_POST['password'], (string) $userRow['password'])) {
+        $loginId = (string) $_POST['username'];
+        $storedHash = (string) ($userRow['password'] ?? '');
+        $verified = !empty($userRow)
+            && $usersService->passwordVerify($loginId, $typedPassword, $storedHash, (string) $userRow['user_id']);
+        if (!$verified) {
             $usersService->recordLoginAttempt($_POST['username'], 'failed', $userRow['user_id']);
             throw new SystemException(_translate("Please check your login credentials"));
         }
@@ -151,7 +159,8 @@ try {
         }
         $_SESSION['crossLoginPass'] = null;
         if (SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
-            $_SESSION['crossLoginPass'] = CommonService::encrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
+            $crossLoginSalt = base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']);
+            $_SESSION['crossLoginPass'] = CommonService::encrypt($typedPassword, $crossLoginSalt);
         }
         //Add event log
         $eventType = 'login';
@@ -192,5 +201,4 @@ try {
     $redirect = "/login/login.php";
 }
 
-SecurityService::redirect($redirect);
-exit;
+MiscUtility::redirect($redirect);
