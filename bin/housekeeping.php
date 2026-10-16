@@ -571,9 +571,12 @@ $tablesToCleanup = [
         'condition' => 'login_attempted_datetime < NOW() - INTERVAL 365 DAY',
         'description' => 'login history older than 365 days'
     ],
+    // 90 days, not 365: an STS records every lab's sync calls, about two million
+    // rows a month, so a year was over 20 million rows. Sync reads only the newest
+    // row per type, and falls back to its default window when none is found.
     'track_api_requests' => [
-        'condition' => 'requested_on < NOW() - INTERVAL 365 DAY',
-        'description' => 'API requests older than 365 days'
+        'condition' => 'requested_on < NOW() - INTERVAL 90 DAY',
+        'description' => 'API requests older than 90 days'
     ],
     'user_page_usage' => [
         'condition' => 'usage_date < CURDATE() - INTERVAL 365 DAY',
