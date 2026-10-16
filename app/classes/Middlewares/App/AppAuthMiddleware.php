@@ -20,7 +20,6 @@ class AppAuthMiddleware implements MiddlewareInterface
         '/includes/captcha.php',
         '/login/*',
         '/setup/*',
-        '/users/edit-profile-helper.php',
     ];
 
     /**
@@ -76,11 +75,7 @@ class AppAuthMiddleware implements MiddlewareInterface
 
         if (!empty($_SESSION['forcePasswordReset']) && (int) $_SESSION['forcePasswordReset'] === 1) {
             $_SESSION['alertMsg'] = _translate("Please change your password to proceed.", true);
-            // Gate everything (every method, AJAX or not) back to edit-profile EXCEPT the
-            // handful of helper endpoints the edit-profile page itself needs to function
-            // (password generator + duplicate check). Otherwise those buttons silently fail.
-            $allowedDuringReset = ['edit-profile.php', 'generate-password.php', 'checkDuplicate.php'];
-            if (!in_array(basename((string) $path), $allowedDuringReset, true)) {
+            if (!self::allowedDuringPasswordReset($path)) {
                 return $this->redirect('/users/edit-profile.php');
             }
         }
@@ -172,6 +167,21 @@ class AppAuthMiddleware implements MiddlewareInterface
         }
         $p = preg_replace('#/{2,}#', '/', $p);
         return rtrim((string) $p, '/') ?: '/';
+    }
+
+    /**
+     * What a user who has to change their password may still open. Everything else
+     * goes back to edit-profile, AJAX or not; these are what that page itself needs:
+     * its save, the password generator and the duplicate check. Without them the new
+     * password cannot be saved and those buttons silently fail.
+     */
+    public static function allowedDuringPasswordReset(string $path): bool
+    {
+        return in_array(
+            basename($path),
+            ['edit-profile.php', 'edit-profile-helper.php', 'generate-password.php', 'checkDuplicate.php'],
+            true
+        );
     }
 
     private function isPublic(string $path): bool

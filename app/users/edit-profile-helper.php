@@ -29,30 +29,14 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 $wasUpdated = 0;
 
-/* Used to check if the password update is from the Recency Web App API */
-$fromRecencyAPI = false;
-
-if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty($_POST['u']) && !empty($_POST['t'])) {
-    $fromRecencyAPI = true;
-}
-
-if ($fromRecencyAPI) {
-    // Raw: 't' is ciphertext and the password it carries must survive byte for
-    // byte - the sanitized copy has been through HTML Purifier. See _rawInput().
-    $_POST['userName'] = _rawInput('u');
-    $_POST['password'] = _rawInput('t');
-    $userId = null;
-} else {
-    // A user may only edit their OWN profile. This endpoint is intentionally
-    // open to every authenticated user (it is in the public allow-list so
-    // anyone can change their own password), so we cannot gate it on a
-    // privilege. Instead, ignore any client-supplied userId and bind the
-    // update to the session user -- otherwise a logged-in user could POST
-    // another account's id and reset that account's name/email/password.
-    $userId = $_SESSION['userId'] ?? null;
-    if (empty($userId)) {
-        throw new SystemException(_translate('Your session has expired. Please log in again.'), 401);
-    }
+// A user may only edit their OWN profile. Every signed-in user may use this
+// endpoint (anyone can change their own password), so we cannot gate it on a
+// privilege. Instead, ignore any client-supplied userId and bind the update to
+// the session user -- otherwise a logged-in user could POST another account's
+// id and reset that account's name/email/password.
+$userId = $_SESSION['userId'] ?? null;
+if (empty($userId)) {
+    throw new SystemException(_translate('Your session has expired. Please log in again.'), 401);
 }
 
 try {
@@ -60,93 +44,74 @@ try {
     $wasUpdated = false;
     if (!in_array(trim((string) $_POST['userName']), ['', '0'], true)) {
 
-        if ($fromRecencyAPI) {
-            $data['user_name'] = $_POST['userName'];
-            $decryptedPassword = CommonService::decrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
-            $data['password'] = $decryptedPassword;
-            $db->where('user_name', $data['user_name']);
-            $data['updated_datetime'] = DateUtility::getCurrentDateTime();
-            $wasUpdated = $db->update('user_details', $data);
-        } else {
+        $_SESSION['userLocale'] = $_POST['userLocale'] ?? 'en_US';
+        $systemService->setLocale($_SESSION['userLocale']);
 
-            $_SESSION['userLocale'] = $_POST['userLocale'] ?? 'en_US';
-            $systemService->setLocale($_SESSION['userLocale']);
+        $data = [
+            'user_name' => $_POST['userName'],
+            'email' => $_POST['email'],
+            'user_locale' => $_SESSION['userLocale'],
+            'phone_number' => $_POST['phoneNo'],
+        ];
 
-            $data = [
-                'user_name' => $_POST['userName'],
-                'email' => $_POST['email'],
-                'user_locale' => $_SESSION['userLocale'],
-                'phone_number' => $_POST['phoneNo'],
-            ];
+        // Raw, not sanitized: see _rawInput(). Hashing the purified copy
+        // would store a password the user cannot log in with.
+        $submittedPassword = _rawInput('password');
+        if (isset($submittedPassword) && trim((string) $submittedPassword) !== "") {
+            $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", [$userId]);
+            $refusal = $usersService->passwordChangeRefusal(
+                (string) $_SESSION['loginId'],
+                (string) $userRow['password'],
+                (string) (_rawInput('currentPassword') ?? ''),
+                (string) $submittedPassword,
+                (string) (_rawInput('confirmPassword') ?? '')
+            );
+            if ($refusal !== null) {
+                // Nothing is saved, the profile fields included, so the user
+                // fixes the password and submits the whole form again
+                $_SESSION['alertMsg'] = $refusal;
+                MiscUtility::redirect("edit-profile.php");
+            }
 
-            // Raw, not sanitized: see _rawInput(). Hashing the purified copy
-            // would store a password the user cannot log in with.
-            $submittedPassword = _rawInput('password');
-            if (isset($submittedPassword) && trim((string) $submittedPassword) !== "") {
-                $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", [$userId]);
-                $refusal = $usersService->passwordChangeRefusal(
-                    (string) $_SESSION['loginId'],
-                    (string) $userRow['password'],
-                    (string) (_rawInput('currentPassword') ?? ''),
-                    (string) $submittedPassword,
-                    (string) (_rawInput('confirmPassword') ?? '')
-                );
-                if ($refusal !== null) {
-                    // Nothing is saved, the profile fields included, so the user
-                    // fixes the password and submits the whole form again
-                    $_SESSION['alertMsg'] = $refusal;
-                    MiscUtility::redirect("edit-profile.php");
+            if (SYSTEM_CONFIG['recency']['crosslogin']) {
+                $salt = base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']);
+                $newCrossLoginPassword = CommonService::encrypt($submittedPassword, $salt);
+                $_SESSION['crossLoginPass'] = $newCrossLoginPassword;
+                $client = new Client();
+                $url = rtrim((string) SYSTEM_CONFIG['recency']['url'], "/");
+                $result = $client->post("$url/api/update-password", [
+                    'form_params' => [
+                        'u' => $_SESSION['loginId'],
+                        't' => $newCrossLoginPassword
+                    ]
+                ]);
+                $response = json_decode($result->getBody()->getContents());
+
+                if ($response->status == 'fail') {
+                    LoggerUtility::logError('Recency profile not updated! for the user->' . $_POST['userName']);
                 }
-
-                if (SYSTEM_CONFIG['recency']['crosslogin']) {
-                    $_SESSION['crossLoginPass'] = $newCrossLoginPassword = CommonService::encrypt($submittedPassword, base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
-                    $client = new Client();
-                    $url = rtrim((string) SYSTEM_CONFIG['recency']['url'], "/");
-                    $result = $client->post("$url/api/update-password", [
-                        'form_params' => [
-                            'u' => $_SESSION['loginId'],
-                            't' => $newCrossLoginPassword
-                        ]
-                    ]);
-                    $response = json_decode($result->getBody()->getContents());
-
-                    if ($response->status == 'fail') {
-                        LoggerUtility::logError('Recency profile not updated! for the user->' . $_POST['userName']);
-                    }
-                }
-
-                $newPassword = $usersService->passwordHash($submittedPassword);
-                $data['password'] = $newPassword;
-                $data['force_password_reset'] = 0;
-                unset($_SESSION['forcePasswordReset']);
             }
-            $db->where('user_id', $userId);
-            $data['updated_datetime'] = DateUtility::getCurrentDateTime();
-            $wasUpdated = $db->update('user_details', $data);
+
+            $newPassword = $usersService->passwordHash($submittedPassword);
+            $data['password'] = $newPassword;
+            $data['force_password_reset'] = 0;
+            unset($_SESSION['forcePasswordReset']);
         }
+        $db->where('user_id', $userId);
+        $data['updated_datetime'] = DateUtility::getCurrentDateTime();
+        $wasUpdated = $db->update('user_details', $data);
 
-
-        if ($fromRecencyAPI) {
-            $response = [];
-            if ($wasUpdated !== false) {
-                $response['status'] = "success";
-                $response['message'] = "Profile updated successfully!";
-                $general->activityLog('profile-update', $_POST['userName'] . ' profile updated via Recency API', 'user-profile-recency-api');
-            } else {
-                $response['status'] = "fail";
-                $response['message'] = "Profile not updated!";
-            }
+        if ($wasUpdated !== false) {
+            $_SESSION['alertMsg'] = _translate(
+                "Your profile changes have been saved. You can continue using the application."
+            );
+            $general->activityLog('profile-update', $_POST['userName'] . ' profile updated', 'user-profile');
+            $_SESSION['userName'] = $_POST['userName'];
+            $_SESSION['email'] = $_POST['email'];
         } else {
-            if ($wasUpdated !== false) {
-                $_SESSION['alertMsg'] = _translate("Your profile changes have been saved. You can continue using the application.");
-                $general->activityLog('profile-update', $_POST['userName'] . ' profile updated', 'user-profile');
-                $_SESSION['userName'] = $_POST['userName'];
-                $_SESSION['email'] = $_POST['email'];
-            } else {
-                $_SESSION['alertMsg'] = _translate("No changes were made to your profile.");
-            }
-            MiscUtility::redirect("edit-profile.php");
+            $_SESSION['alertMsg'] = _translate("No changes were made to your profile.");
         }
+        MiscUtility::redirect("edit-profile.php");
     }
 } catch (Exception $exc) {
     throw new SystemException($exc->getMessage(), 500, $exc);
