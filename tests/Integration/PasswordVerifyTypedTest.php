@@ -111,8 +111,12 @@ final class PasswordVerifyTypedTest extends TestCase
         }
 
         $users = ContainerRegistry::get(UsersService::class);
-        self::assertTrue($users->passwordVerify('tester', self::TYPED, self::storedHash(), 'u-1'));
+        $before = self::storedHash();
+        self::assertTrue($users->passwordVerify('tester', self::TYPED, $before, 'u-1'));
 
+        $after = self::storedHash();
+        self::assertNotSame($before, $after, 'The user who signed in got a stronger hash');
+        self::assertSame(12, password_get_info($after)['options']['cost'] ?? null);
         $other = $db->rawQueryOne("SELECT password FROM user_details WHERE user_id = 'u-2'");
         self::assertTrue(password_verify('Other&pass2', (string) $other['password']), "u-2 keeps its own password");
     }
@@ -134,5 +138,16 @@ final class PasswordVerifyTypedTest extends TestCase
         self::addUser(self::TYPED);
 
         self::assertFalse(self::verify('Pass&amp;word1'));
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheCurrentPasswordInItsOldFormCannotBeTheNewOne(): void
+    {
+        self::addUser(UsersService::sanitizedAsBefore(self::TYPED));
+
+        $refusal = ContainerRegistry::get(UsersService::class)
+            ->passwordChangeRefusal('tester', self::storedHash(), self::TYPED, self::TYPED, self::TYPED, 'u-1');
+
+        self::assertNotNull($refusal);
     }
 }

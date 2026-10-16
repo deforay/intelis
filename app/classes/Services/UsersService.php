@@ -518,8 +518,14 @@ final class UsersService
             return true;
         }
 
-        $sanitized = self::sanitizedAsBefore((string) $password);
-        return $sanitized !== (string) $password && password_verify($sanitized, (string) $hash);
+        return self::matchesOldForm((string) $password, (string) $hash);
+    }
+
+    /** Whether $hash is of $password's pre-2026-08-12 sanitized form (see passwordVerify()). */
+    private static function matchesOldForm(string $password, string $hash): bool
+    {
+        $sanitized = self::sanitizedAsBefore($password);
+        return $sanitized !== $password && password_verify($sanitized, $hash);
     }
 
     /**
@@ -570,7 +576,7 @@ final class UsersService
         }
         // Against the hash, not the typed text: bcrypt reads only the first 72 bytes,
         // so a long password changed after those would still be the same password
-        if (password_verify($newPassword, $storedHash)) {
+        if (password_verify($newPassword, $storedHash) || self::matchesOldForm($newPassword, $storedHash)) {
             return _translate("Your new password cannot be same as the current password. Please try another password.");
         }
         return null;
