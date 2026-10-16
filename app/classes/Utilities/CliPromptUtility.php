@@ -40,14 +40,17 @@ final class CliPromptUtility
      * Is there a person on the other end? Both halves matter: a cron run has no
      * terminal, and INTELIS_NONINTERACTIVE is how setup.sh says "there is a
      * terminal, but nobody is watching it".
+     *
+     * @param resource|null $stdin defaults to STDIN; tests pass a pipe so the
+     *                             answer does not depend on how PHPUnit was launched
      */
-    public static function isInteractive(): bool
+    public static function isInteractive($stdin = null): bool
     {
         if (PHP_SAPI !== 'cli' || getenv('INTELIS_NONINTERACTIVE') === '1') {
             return false;
         }
 
-        return function_exists('stream_isatty') && @stream_isatty(STDIN);
+        return function_exists('stream_isatty') && @stream_isatty($stdin ?? STDIN);
     }
 
     public function usingGum(): bool
