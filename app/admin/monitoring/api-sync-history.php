@@ -116,17 +116,24 @@ foreach ($syncedTypeResults as $synced) {
 							<td><strong>
 									<?php echo _translate("Bearer Token"); ?>&nbsp;:
 								</strong></td>
-							<td colspan="3">
+							<td>
 								<input type="text" id="apiToken" name="apiToken" class="form-control"
 									placeholder="<?php echo _translate('Enter bearer token to search'); ?>"
-									style="width:100%;max-width:400px;" />
+									style="width:220px;" />
 							</td>
-							<td></td>
+							<td><strong>
+									<?php echo _translate("Transaction ID"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<input type="text" id="transactionId" name="transactionId" class="form-control"
+									placeholder="<?php echo _translate('Enter transaction ID to search'); ?>"
+									style="width:220px;" />
+							</td>
 							<td>
 								<button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm">
 									<span><?php echo _translate("Search"); ?></span>
 								</button>
-								<button onclick="$('#dateRange,#apiToken').val('');$('#testType,#syncedType').val('').trigger('change');oTable.fnDraw();" class="btn btn-default btn-sm">
+								<button onclick="$('#dateRange,#apiToken,#transactionId').val('');$('#testType,#syncedType').val('').trigger('change');oTable.fnDraw();" class="btn btn-default btn-sm">
 									<span><?php echo _translate("Reset"); ?></span>
 								</button>
 							</td>
@@ -257,6 +264,10 @@ foreach ($syncedTypeResults as $synced) {
 				aoData.push({
 					"name": "apiToken",
 					"value": $("#apiToken").val()
+				});
+				aoData.push({
+					"name": "transactionId",
+					"value": $("#transactionId").val()
 				});
 				$.ajax({
 					"dataType": 'json',

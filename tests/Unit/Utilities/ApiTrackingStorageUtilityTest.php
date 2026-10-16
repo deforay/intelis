@@ -71,6 +71,18 @@ final class ApiTrackingStorageUtilityTest extends TestCase
         self::assertSame(["$root/2025/12/31", "$root/2026/08/16"], $expired);
     }
 
+    public function testABodyIsExpiredExactlyWhenItsDayFolderWouldBePurged(): void
+    {
+        // Same day as above: 2026-08-16 is purged, 2026-08-17 is kept.
+        $today = new DateTimeImmutable('2026-09-16 10:00:00');
+
+        self::assertTrue(ApiTrackingStorageUtility::bodyExpired('2026-08-16 23:59:59', $today));
+        self::assertFalse(ApiTrackingStorageUtility::bodyExpired('2026-08-17 00:00:00', $today));
+        self::assertFalse(ApiTrackingStorageUtility::bodyExpired('2026-09-16 09:00:00', $today));
+        self::assertFalse(ApiTrackingStorageUtility::bodyExpired(null, $today));
+        self::assertFalse(ApiTrackingStorageUtility::bodyExpired('', $today));
+    }
+
     public function testEmptyMonthAndYearFoldersAreRemoved(): void
     {
         $root = ApiTrackingStorageUtility::kindRoot('requests');

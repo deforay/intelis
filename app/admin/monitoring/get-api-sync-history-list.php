@@ -1,6 +1,7 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface;
+use App\Utilities\ApiTrackingStorageUtility;
 use App\Utilities\DataTableUtility;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -65,6 +66,9 @@ try {
      if (isset($_POST['apiToken']) && trim((string) $_POST['apiToken']) !== '') {
           $sWhere[] = ' a.api_token like "%' . $db->escape($_POST['apiToken']) . '%"';
      }
+     if (isset($_POST['transactionId']) && trim((string) $_POST['transactionId']) !== '') {
+          $sWhere[] = ' a.transaction_id like "%' . $db->escape(trim((string) $_POST['transactionId'])) . '%"';
+     }
 
      /* Implode all the where fields for filtering the data */
      if (!empty($sWhere)) {
@@ -93,6 +97,8 @@ try {
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
      ];
+     $today = new DateTimeImmutable();
+     $expiredTitle = sprintf(_translate("Request and response bodies are kept for %d days"), ApiTrackingStorageUtility::RETENTION_DAYS);
      foreach ($rResult as $key => $aRow) {
           $row = [];
           $row[] = $aRow['transaction_id'];
@@ -101,7 +107,11 @@ try {
           $row[] = strtoupper((string) $aRow['test_type']);
           $row[] = $aRow['api_url'];
           $row[] = DateUtility::humanReadableDateFormat($aRow['requested_on'], true);
-          $row[] = "<a href='javascript:void(0);' class='btn btn-success btn-xs' style='margin-right: 2px;' title='Result' onclick=\"showModal('/admin/monitoring/show-params.php?id=" . MiscUtility::sqid($aRow['api_track_id']) . "',1200,720);\"> Show Params</a>";
+          if (ApiTrackingStorageUtility::bodyExpired($aRow['requested_on'], $today)) {
+               $row[] = "<button type='button' class='btn btn-default btn-xs' style='margin-right: 2px;' disabled title='" . htmlspecialchars($expiredTitle, ENT_QUOTES) . "'>" . _translate("Body expired") . "</button>";
+          } else {
+               $row[] = "<a href='javascript:void(0);' class='btn btn-success btn-xs' style='margin-right: 2px;' title='Result' onclick=\"showModal('/admin/monitoring/show-params.php?id=" . MiscUtility::sqid($aRow['api_track_id']) . "',1200,720);\"> Show Params</a>";
+          }
           $output['aaData'][] = $row;
      }
      echo JsonUtility::encodeUtf8Json($output);

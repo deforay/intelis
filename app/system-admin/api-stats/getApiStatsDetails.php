@@ -48,7 +48,7 @@ $sQuery = "SELECT api.api_track_id,
 
 if (!empty($sWhere)) {
     $sWhere = implode(" AND ", $sWhere);
-    $sQuery = "$sQuery $sWhere";
+    $sQuery = "$sQuery WHERE $sWhere";
 }
 
 if (!empty($sOrder) && $sOrder !== '') {

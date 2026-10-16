@@ -115,6 +115,25 @@ final class ApiTrackingStorageUtility
         return $dirs;
     }
 
+    /** The oldest day (Y-m-d) whose bodies are still kept on $today; earlier days are purged. */
+    public static function retentionCutoff(DateTimeImmutable $today, int $retentionDays = self::RETENTION_DAYS): string
+    {
+        return $today->setTime(0, 0)->modify("-{$retentionDays} days")->format('Y-m-d');
+    }
+
+    /**
+     * Whether a call made at $requestedOn (Y-m-d H:i:s) is past the retention window,
+     * so housekeeping has deleted its bodies while the row itself stays for a year.
+     * A missing or unreadable date is not called expired: the viewer can still look.
+     */
+    public static function bodyExpired(?string $requestedOn, DateTimeImmutable $today): bool
+    {
+        if ($requestedOn === null || preg_match('/^\d{4}-\d{2}-\d{2}/', $requestedOn, $m) !== 1) {
+            return false;
+        }
+        return $m[0] < self::retentionCutoff($today);
+    }
+
     /**
      * Day folders older than the retention window, found from their names alone.
      *
@@ -122,7 +141,7 @@ final class ApiTrackingStorageUtility
      */
     public static function expiredDayDirectories(string $kind, DateTimeImmutable $today, int $retentionDays): array
     {
-        $cutoff = $today->setTime(0, 0)->modify("-{$retentionDays} days")->format('Y-m-d');
+        $cutoff = self::retentionCutoff($today, $retentionDays);
         $expired = [];
 
         foreach (self::numberedChildren(self::kindRoot($kind), 4) as $year) {

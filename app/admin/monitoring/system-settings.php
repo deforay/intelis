@@ -29,9 +29,10 @@ $folderPermissions = $systemService->checkFolderPermissions();
 $activeUsers = $userService->getActiveUsers();
 $noOfActiveUsers = count($activeUsers);
 
-$userQry = "SELECT * FROM activity_log WHERE DATE(date_time) = CURDATE()";
-$userResult = $db->rawQuery($userQry);
-$noOfUsersLoggedInToday = count($userResult);
+$noOfUsersLoggedInToday = (int) $db->rawQueryOne(
+  "SELECT COUNT(DISTINCT user_id) AS users FROM activity_log
+    WHERE event_type = 'login' AND date_time >= CURDATE() AND date_time < CURDATE() + INTERVAL 1 DAY"
+)['users'];
 
 
 $labId = $_SESSION['instance']['labId'];
@@ -77,8 +78,11 @@ foreach ($labSyncInfo as $aRow) {
 }
 
 $apiTrack = "SELECT * FROM track_api_requests WHERE response_data IS NOT NULL AND DATE(requested_on) = CURDATE()";
-$apiTrackResult = $db->rawQuery($userQry);
-$apiTrackResultCount = count($apiTrackResult);
+// Counts today's activity_log rows, as it always has: this card ran the old
+// logged-in query, and $apiTrack cannot replace it while response_data is never written.
+$apiTrackResultCount = (int) $db->rawQueryOne(
+  "SELECT COUNT(*) AS n FROM activity_log WHERE date_time >= CURDATE() AND date_time < CURDATE() + INTERVAL 1 DAY"
+)['n'];
 ?>
 <style>
   .current {
