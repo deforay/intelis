@@ -36,7 +36,8 @@ final class ApiSyncHistoryListTest extends TestCase
         LegacyAppHarness::withSession(['roleId' => 1]);
 
         $db->rawQuery(
-            "INSERT INTO track_api_requests (transaction_id, requested_on, number_of_records, request_type, test_type, api_url)
+            "INSERT INTO track_api_requests
+                (transaction_id, requested_on, number_of_records, request_type, test_type, api_url)
              VALUES ('recent', NOW() - INTERVAL 1 DAY, '3', 'requests', 'vl', '/api/v1.1/vl/requests'),
                     ('old', NOW() - INTERVAL 60 DAY, '5', 'results', 'eid', '/api/v1.1/eid/results')"
         );
