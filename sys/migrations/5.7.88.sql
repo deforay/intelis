@@ -21,3 +21,15 @@ ALTER TABLE `lab_storage_history` ADD UNIQUE KEY `uniq_lab_storage_history_lab_r
 UPDATE `s_vlsm_instance` SET `last_lab_storage_history_id` = NULL;
 
 UPDATE `system_config` SET `value` = '5.7.88' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

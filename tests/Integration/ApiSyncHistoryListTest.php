@@ -16,7 +16,8 @@ use Tests\Support\LegacyAppHarness;
  *
  * Bodies are deleted after 30 days but the rows are kept for a year, so "Show
  * Params" on an older row opened an empty popup. Such a row now shows a disabled
- * "Body expired" button instead. The list can also be filtered by transaction ID.
+ * "Body expired" button instead. The list can also be filtered by transaction ID,
+ * matched whole so the index on transaction_id is used.
  *
  * One drive per test: the handler uses require_once. Set INTELIS_TEST_DB_HOST/
  * _PORT/_USER/_PASS to run; skipped without them.
@@ -64,6 +65,22 @@ final class ApiSyncHistoryListTest extends TestCase
         self::assertIsArray($json, "List did not return JSON: $body");
         self::assertSame(1, (int) $json['iTotalDisplayRecords']);
         self::assertSame(['old'], array_column($json['aaData'], 0));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAPartialTransactionIdListsNothing(): void
+    {
+        $request = LegacyAppHarness::withPost(
+            ['sEcho' => 1, 'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sSearch' => '', 'transactionId' => 'ol'],
+            '/admin/monitoring/get-api-sync-history-list.php'
+        );
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $body = (string) $handler->handle($request)->getBody();
+
+        $json = json_decode($body, true);
+        self::assertIsArray($json, "List did not return JSON: $body");
+        self::assertSame(0, (int) $json['iTotalDisplayRecords']);
+        self::assertSame([], $json['aaData']);
     }
 
     #[RunInSeparateProcess]

@@ -37,6 +37,7 @@ try {
 
      $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
      $sWhere = [];
+     $sParams = [];
      if (!empty($columnSearch) && $columnSearch != '') {
           $sWhere[] = $columnSearch;
      }
@@ -67,7 +68,9 @@ try {
           $sWhere[] = ' a.api_token like "%' . $db->escape($_POST['apiToken']) . '%"';
      }
      if (isset($_POST['transactionId']) && trim((string) $_POST['transactionId']) !== '') {
-          $sWhere[] = ' a.transaction_id like "%' . $db->escape(trim((string) $_POST['transactionId'])) . '%"';
+          // Exact match, so the transaction_id index is used: people paste the whole ID.
+          $sWhere[] = ' a.transaction_id = ?';
+          $sParams[] = trim((string) $_POST['transactionId']);
      }
 
      /* Implode all the where fields for filtering the data */
@@ -86,7 +89,7 @@ try {
           $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
 
-     [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
+     [$rResult, $resultCount] = $db->getDataAndCount($sQuery, $sParams);
 
      /*
       * Output

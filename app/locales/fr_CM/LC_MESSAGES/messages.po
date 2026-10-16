@@ -37127,3 +37127,16 @@ msgstr "Mot de passe actuel"
 
 msgid "Needed only to change the password"
 msgstr "Requis uniquement pour changer le mot de passe"
+
+#: app/admin/monitoring/api-sync-history.php
+msgid "Enter transaction ID to search"
+msgstr "Saisissez l'ID de transaction à rechercher"
+
+#: app/admin/monitoring/get-api-sync-history-list.php
+#, php-format
+msgid "Request and response bodies are kept for %d days"
+msgstr "Les corps des requêtes et des réponses sont conservés pendant %d jours"
+
+#: app/admin/monitoring/get-api-sync-history-list.php
+msgid "Body expired"
+msgstr "Corps expiré"
