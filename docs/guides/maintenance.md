@@ -323,7 +323,7 @@ These run outside the scheduler.
 | API request and response bodies | `var/track-api/requests/`, `var/track-api/responses/` | 30 days |
 | Activity log | `activity_log` table | 365 days |
 | Login history | `user_login_history` table | 365 days |
-| API request records | `track_api_requests` table | 365 days |
+| API request records | `track_api_requests` table | 90 days. The API stats and sync history pages show no older calls. |
 | Page usage | `user_page_usage` table | 365 days |
 | Completed sample code queue entries | `queue_sample_code_generation` table | 90 days. Unprocessed entries are never deleted. |
 
