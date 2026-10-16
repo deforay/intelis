@@ -70,6 +70,12 @@ $systemConfig['recency']['vlsync'] = false;
 // This Salt should match the Salt on Recency Web app
 $systemConfig['recency']['crossloginSalt'] = "VALID LIBSODIUM KEY";
 
+// The key Recency sends to check its users' InteLIS logins at
+// /api/v2/user/verify-login, so both apps take the same login and password.
+// Empty (or under 32 characters) keeps that endpoint off. Set the same key in
+// Recency. Generate one with: openssl rand -hex 32
+$systemConfig['recency']['authKey'] = '';
+
 
 $systemConfig['system'] = [
     'debug_mode' => false, // set to true to enable debug mode

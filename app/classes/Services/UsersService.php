@@ -555,43 +555,53 @@ final class UsersService
         return $this->db->update($this->table, $saveData);
     }
 
-    public function continuousFailedLogins($loginId, $intervalMinutes = 15)
+    /**
+     * Failed sign-ins for a login since its last successful one, within the last
+     * $intervalMinutes minutes, and when the latest of them was.
+     *
+     * Ordered by history_id, not by time: a failure and a success in the same second
+     * still come out in the order they happened. Both lookups stay inside the window,
+     * so they use the (login_status, login_attempted_datetime) index.
+     *
+     * @return array{count: int, lastFailed: ?string}
+     */
+    public function failedLoginsSinceLastSuccess(string $loginId, int $intervalMinutes = 15): array
     {
-        // Get current date and time
-        $currentDateTime = DateUtility::getCurrentDateTime();
-
-
-        // Query database for login attempts within the specified interval
-        $loginAttempts = $this->db->rawQueryOne(
-            "SELECT
-            SUM(CASE WHEN ulh.login_status = 'failed' THEN 1 ELSE 0 END) AS failedAttempts,
-            SUM(CASE WHEN ulh.login_status = 'success' THEN 1 ELSE 0 END) AS successAttempts,
-            MAX(CASE WHEN ulh.login_status = 'failed' THEN ulh.login_attempted_datetime ELSE NULL END) AS lastFailedLoginTime
-        FROM user_login_history ulh
-        WHERE ulh.login_id = ? AND
-        ulh.login_attempted_datetime >= DATE_SUB(?, INTERVAL ? MINUTE)",
-            [$loginId, $currentDateTime, $intervalMinutes]
+        $now = DateUtility::getCurrentDateTime();
+        $row = $this->db->rawQueryOne(
+            "SELECT COUNT(*) AS failed, MAX(f.login_attempted_datetime) AS lastFailed
+            FROM user_login_history f
+            WHERE f.login_id = ? AND f.login_status = 'failed'
+            AND f.login_attempted_datetime >= DATE_SUB(?, INTERVAL ? MINUTE)
+            AND f.history_id > COALESCE((
+                SELECT MAX(s.history_id) FROM user_login_history s
+                WHERE s.login_id = ? AND s.login_status IN ('successful', 'success')
+                AND s.login_attempted_datetime >= DATE_SUB(?, INTERVAL ? MINUTE)
+            ), 0)",
+            [$loginId, $now, $intervalMinutes, $loginId, $now, $intervalMinutes]
         );
 
-        // Ensure the results are not null
-        $failedAttempts = $loginAttempts['failedAttempts'] ?? 0;
-        $successAttempts = $loginAttempts['successAttempts'] ?? 0;
-        $lastFailedLoginTime = $loginAttempts['lastFailedLoginTime'] ?? null;
+        return ['count' => (int) ($row['failed'] ?? 0), 'lastFailed' => $row['lastFailed'] ?? null];
+    }
+
+    public function continuousFailedLogins($loginId, $intervalMinutes = 15)
+    {
+        // Sign-ins are recorded as 'successful'; this once counted 'success', so a
+        // successful sign-in never cleared the failures before it
+        $attempts = $this->failedLoginsSinceLastSuccess((string) $loginId, (int) $intervalMinutes);
 
         $ipAddress = $this->commonService->getClientIpAddress();
 
-        // consider failed if there are 3 or more failed attempts
-        // and no successful attempts in the last $intervalMinutes minutes
-        $failed = $failedAttempts >= 3 && $successAttempts == 0;
-
+        // consider failed if there are 3 or more failed attempts since the last
+        // successful one in the last $intervalMinutes minutes
         $_SESSION[$ipAddress] = [
             'failedAttempts' => 0,
             'lastFailedLogin' => null
         ];
 
-        if ($failed) {
-            $_SESSION[$ipAddress]['failedAttempts'] = $failedAttempts;
-            $_SESSION[$ipAddress]['lastFailedLogin'] = $lastFailedLoginTime;
+        if ($attempts['count'] >= 3) {
+            $_SESSION[$ipAddress]['failedAttempts'] = $attempts['count'];
+            $_SESSION[$ipAddress]['lastFailedLogin'] = $attempts['lastFailed'];
         }
 
         // how many continuous failed attempts in the last $intervalMinutes minutes
