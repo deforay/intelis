@@ -54,8 +54,8 @@ try {
                     FROM track_api_requests as a";
 
      if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
-          [$startDate, $endDate] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
-          $sWhere[] = " DATE(a.requested_on) BETWEEN '$startDate' AND '$endDate' ";
+          [$startDate, $endDate] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
+          $sWhere[] = " a.requested_on BETWEEN '$startDate' AND '$endDate' ";
      }
 
      if (isset($_POST['syncedType']) && trim((string) $_POST['syncedType']) !== '') {

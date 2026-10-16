@@ -256,6 +256,8 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
 
         .panel {
             flex: 1;
+            min-width: 0;
+            min-height: 0;
             display: flex;
             flex-direction: column;
             background: #1e1e1e;
@@ -277,6 +279,8 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
             flex-shrink: 0
         }
 
@@ -307,7 +311,9 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
 
         .panel-actions {
             display: flex;
-            gap: 6px
+            gap: 6px;
+            flex-shrink: 0;
+            margin-left: auto
         }
 
         .action-btn {

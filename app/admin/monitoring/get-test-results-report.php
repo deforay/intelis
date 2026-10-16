@@ -137,10 +137,10 @@ try {
                 $joinCond
                 LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
 
-    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '', includeTime: true);
 
     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-        $sWhere[] = ' DATE(vl.sample_tested_datetime) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
+        $sWhere[] = ' vl.sample_tested_datetime BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
     }
     if (isset($_POST['sampleBatchCode']) && trim((string) $_POST['sampleBatchCode']) !== '') {
         $code = $db->escape((string) $_POST['sampleBatchCode']);

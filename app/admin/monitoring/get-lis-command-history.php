@@ -212,12 +212,12 @@ if (!empty($post['status'])) {
     $params[] = (string) $post['status'];
 }
 if (!empty($post['dateFrom'])) {
-    $conditions[] = 'DATE(c.requested_at) >= ?';
+    $conditions[] = 'c.requested_at >= ?';
     $params[] = (string) $post['dateFrom'];
 }
 if (!empty($post['dateTo'])) {
-    $conditions[] = 'DATE(c.requested_at) <= ?';
-    $params[] = (string) $post['dateTo'];
+    $conditions[] = 'c.requested_at <= ?';
+    $params[] = $post['dateTo'] . ' 23:59:59';
 }
 
 $whereClause = $conditions ? (' WHERE ' . implode(' AND ', $conditions)) : '';

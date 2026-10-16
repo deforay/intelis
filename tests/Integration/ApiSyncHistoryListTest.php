@@ -84,6 +84,33 @@ final class ApiSyncHistoryListTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testADateRangeKeepsTheWholeLastDayAndNothingAfter(): void
+    {
+        // requested_on is compared raw (no DATE()) so its index is used; the range
+        // must still run to 23:59:59 on the last day.
+        LegacyAppHarness::db()->rawQuery(
+            "INSERT INTO track_api_requests
+                (transaction_id, requested_on, number_of_records, request_type, test_type, api_url)
+             VALUES ('first-second', '2020-01-01 00:00:00', '1', 'requests', 'vl', '/api/v1.1/vl/requests'),
+                    ('last-second', '2020-01-31 23:59:59', '1', 'requests', 'vl', '/api/v1.1/vl/requests'),
+                    ('next-day', '2020-02-01 00:00:00', '1', 'requests', 'vl', '/api/v1.1/vl/requests')"
+        );
+
+        $request = LegacyAppHarness::withPost(
+            ['sEcho' => 1, 'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sSearch' => '', 'dateRange' => '01-Jan-2020 to 31-Jan-2020'],
+            '/admin/monitoring/get-api-sync-history-list.php'
+        );
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $body = (string) $handler->handle($request)->getBody();
+
+        $json = json_decode($body, true);
+        self::assertIsArray($json, "List did not return JSON: $body");
+        $ids = array_column($json['aaData'], 0);
+        sort($ids);
+        self::assertSame(['first-second', 'last-second'], $ids);
+    }
+
+    #[RunInSeparateProcess]
     public function testAnOldRowShowsBodyExpiredAndARecentRowKeepsShowParams(): void
     {
         $request = LegacyAppHarness::withPost(
