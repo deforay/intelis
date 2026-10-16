@@ -49,11 +49,18 @@ final class CliPromptInteractivityTest extends TestCase
     {
         putenv('INTELIS_NONINTERACTIVE');
 
-        // PHPUnit's own stdin is not a terminal, which is exactly the shape a
-        // cron run has: no flag set, and no one there.
-        $this->assertFalse(
-            CliPromptUtility::isInteractive(),
-            'Without a terminal on stdin there is nobody to answer, flag or no flag.'
-        );
+        // A pipe on stdin is exactly the shape a cron run has: no flag set, and
+        // no one there. PHPUnit's own stdin cannot stand in for it, because it is
+        // a terminal whenever the suite is run by hand.
+        $pipe = fopen('php://memory', 'r');
+
+        try {
+            $this->assertFalse(
+                CliPromptUtility::isInteractive($pipe),
+                'Without a terminal on stdin there is nobody to answer, flag or no flag.'
+            );
+        } finally {
+            fclose($pipe);
+        }
     }
 }
