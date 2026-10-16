@@ -41,6 +41,15 @@ class AppAuthMiddleware implements MiddlewareInterface
     // Session ID regeneration interval (seconds) - prevents session fixation.
     private int $regenInterval = 1800; // 30 minutes
 
+    /** A command-line run has no browser session, so nothing is checked. */
+    private readonly bool $cli;
+
+    /** @param ?bool $cli whether this is a command-line run; tests pass false */
+    public function __construct(?bool $cli = null)
+    {
+        $this->cli = $cli ?? CommonService::isCliRequest();
+    }
+
     #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -52,7 +61,7 @@ class AppAuthMiddleware implements MiddlewareInterface
             return $this->forbiddenJsonOrRedirect($isAjax);
         }
 
-        if (CommonService::isCliRequest()) {
+        if ($this->cli) {
             return $handler->handle($request);
         }
 
