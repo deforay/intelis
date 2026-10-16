@@ -35,7 +35,8 @@ final class ApiStatsSearchTest extends TestCase
         LegacyAppHarness::withSession(['roleId' => 1]);
 
         $db->rawQuery(
-            "INSERT INTO track_api_requests (requested_on, number_of_records, request_type, test_type, api_url, data_format)
+            "INSERT INTO track_api_requests
+                (requested_on, number_of_records, request_type, test_type, api_url, data_format)
              VALUES ('2026-10-01 09:00:00', '3', 'requests', 'vl', '/api/v1.1/vl/requests', 'json'),
                     ('2026-10-02 09:00:00', '5', 'results', 'eid', '/api/v1.1/eid/results', 'json')"
         );
@@ -63,5 +64,21 @@ final class ApiStatsSearchTest extends TestCase
         self::assertSame(1, (int) $json['iTotalDisplayRecords']);
         self::assertCount(1, $json['aaData']);
         self::assertSame('eid', $json['aaData'][0][3]);
+    }
+
+    #[RunInSeparateProcess]
+    public function testSortingByTheRequestDateOrdersTheRows(): void
+    {
+        $request = LegacyAppHarness::withPost(
+            [
+                'sEcho' => 1, 'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sSearch' => '',
+                'iSortCol_0' => 0, 'sSortDir_0' => 'desc', 'iSortingCols' => 1, 'bSortable_0' => 'true',
+            ],
+            '/system-admin/api-stats/getApiStatsDetails.php'
+        );
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $json = json_decode((string) $handler->handle($request)->getBody(), true);
+
+        self::assertSame(['eid', 'vl'], array_column($json['aaData'], 3), 'Newest first');
     }
 }

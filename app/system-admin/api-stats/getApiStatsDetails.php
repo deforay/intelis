@@ -25,6 +25,8 @@ $sTable = $tableName;
 [$sOffset, $sLimit] = DataTableUtility::paging($_POST);
 
 
+// The grid's columns, in its order; it was never defined, so no column sorted
+$orderColumns = array_map(static fn(string $column): string => "api.$column", $aColumns);
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
