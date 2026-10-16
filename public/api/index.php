@@ -61,6 +61,7 @@ use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 use App\HttpHandlers\Api\HealthHandler;
 use App\HttpHandlers\Api\V2\SaveUserProfileHandler;
+use App\HttpHandlers\Api\V2\VerifyLoginHandler;
 use App\HttpHandlers\InterfaceApi\ActivateInstallationHandler;
 use App\HttpHandlers\InterfaceApi\GetConnectionHandler;
 use App\HttpHandlers\InterfaceApi\SubmitActivityHandler;
@@ -102,6 +103,8 @@ $app->map(['GET', 'HEAD'], '/api/v1.1/health', HealthHandler::class);
 // v2: real Slim routes, one envelope, real HTTP status codes. Each handler
 // authenticates its own caller; ApiAuthMiddleware leaves /api/v2/ alone.
 $app->post('/api/v2/user/profile', SaveUserProfileHandler::class);
+// Recency checks its users' InteLIS logins here; 404 unless recency.authKey is set
+$app->post('/api/v2/user/verify-login', VerifyLoginHandler::class);
 
 $app->any(
     '/api/v1.1/init',
