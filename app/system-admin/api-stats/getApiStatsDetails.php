@@ -16,7 +16,6 @@ $primaryKey = "api_track_id";
 
 
 $aColumns = ['requested_on', 'number_of_records', 'request_type', 'test_type', 'api_url', 'data_format'];
-$orderColumns = ['api.requested_on', 'api.number_of_records', 'api.request_type', 'api.test_type', 'api.api_url', 'api.data_format'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
