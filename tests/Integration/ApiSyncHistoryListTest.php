@@ -97,7 +97,10 @@ final class ApiSyncHistoryListTest extends TestCase
         );
 
         $request = LegacyAppHarness::withPost(
-            ['sEcho' => 1, 'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sSearch' => '', 'dateRange' => '01-Jan-2020 to 31-Jan-2020'],
+            [
+                'sEcho' => 1, 'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sSearch' => '',
+                'dateRange' => '01-Jan-2020 to 31-Jan-2020',
+            ],
             '/admin/monitoring/get-api-sync-history-list.php'
         );
         $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
