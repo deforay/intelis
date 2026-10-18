@@ -69,7 +69,7 @@ final class ApiTrackingStorageUtility
             return $body;
         }
         foreach ($body as $key => $value) {
-            $secret = is_string($key) && preg_match('/password|passwd|secret|token$/i', $key);
+            $secret = is_string($key) && preg_match('/(?:password|passwd|secret)|token$/i', $key);
             if ($secret && $value !== null && $value !== '') {
                 $body[$key] = self::REDACTED;
             } elseif (is_array($value) || is_object($value)) {
