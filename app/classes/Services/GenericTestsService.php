@@ -313,7 +313,6 @@ final class GenericTestsService extends AbstractTestService
     public function saveMultiTestResults(int $sampleId, array $post, string $userId): void
     {
         $tableName = 'form_generic';
-        $testTableName = 'generic_test_results';
 
         // Re-assert authorization for the exact sample this will DELETE/UPDATE:
         // resolve the facility from sample_id and confirm it is allowed. A missing
