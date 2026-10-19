@@ -1396,9 +1396,14 @@ final class DatabaseService extends MysqliDb
         return sprintf('SELECT %s FROM (%s) AS subquery', $countExpression, $innerSql);
     }
 
-    /** Whether a GROUP BY expression names an alias from the select list. */
+    /** Whether a GROUP BY expression names an alias or a position in the select list. */
     private function groupReadsSelectAlias(object $statement): bool
     {
+        foreach ($statement->group ?? [] as $group) {
+            if (ctype_digit(trim((string) ($group->expr->expr ?? '')))) {
+                return true;
+            }
+        }
         $aliases = [];
         foreach ($statement->expr ?? [] as $expression) {
             if (!empty($expression->alias)) {
