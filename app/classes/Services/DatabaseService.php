@@ -1369,6 +1369,18 @@ final class DatabaseService extends MysqliDb
                 $statementForCount->order = null;
 
                 if (!empty($originalStatement->group)) {
+                    // A derived table refuses duplicate column names, so
+                    // "SELECT vl.*, f.* ... GROUP BY" failed to count and the
+                    // listing showed 0 rows. One value per group counts the same,
+                    // unless HAVING, DISTINCT, a UNION or a grouped alias reads the
+                    // select list.
+                    $selectListNeeded = !empty($originalStatement->having)
+                        || !empty($originalStatement->union)
+                        || ($originalStatement->options?->has('DISTINCT') ?? false)
+                        || $this->groupReadsSelectAlias($originalStatement);
+                    if (!$selectListNeeded) {
+                        $statementForCount->expr = [new Expression('1')];
+                    }
                     $innerSql = $statementForCount->build();
                     return sprintf('SELECT %s FROM (%s) AS subquery', $countExpression, $innerSql);
                 }
@@ -1382,6 +1394,27 @@ final class DatabaseService extends MysqliDb
 
         $innerSql = rtrim($sql, ";\t\n\r\0\x0B ");
         return sprintf('SELECT %s FROM (%s) AS subquery', $countExpression, $innerSql);
+    }
+
+    /** Whether a GROUP BY expression names an alias from the select list. */
+    private function groupReadsSelectAlias(object $statement): bool
+    {
+        $aliases = [];
+        foreach ($statement->expr ?? [] as $expression) {
+            if (!empty($expression->alias)) {
+                $aliases[] = preg_quote(strtolower((string) $expression->alias), '/');
+            }
+        }
+        if ($aliases === []) {
+            return false;
+        }
+        $pattern = '/(?<![\w.])`?(' . implode('|', $aliases) . ')`?(?![\w.(])/';
+        foreach ($statement->group ?? [] as $group) {
+            if (preg_match($pattern, strtolower((string) ($group->expr->expr ?? '')))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function getSessionIsolationLevel(): ?string
