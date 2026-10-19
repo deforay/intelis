@@ -109,6 +109,17 @@ final class DatabaseGroupedCountTest extends TestCase
         $this->assertSame(3, $count);
     }
 
+    public function testAGroupByOnASelectPositionIsStillCounted(): void
+    {
+        [, $count] = $this->dataAndCount('SELECT facility_id FROM samples GROUP BY 1');
+
+        $this->assertSame(2, $count);
+
+        [, $count] = $this->dataAndCount('SELECT sample_id, taken_on FROM samples GROUP BY 2');
+
+        $this->assertSame(3, $count);
+    }
+
     public function testHavingStillFiltersTheGroupsCounted(): void
     {
         [, $count] = $this->dataAndCount(
