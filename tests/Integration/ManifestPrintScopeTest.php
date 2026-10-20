@@ -104,7 +104,7 @@ final class ManifestPrintScopeTest extends TestCase
         $check = strpos($source, 'mayPrintManifests(');
         self::assertNotFalse($check, 'the print checks the manifests');
         preg_match_all(
-            '/->update\(\s*[\'"]specimen_manifests[\'"]|markManifestDispatched\(/',
+            '/->update\(\s*[\'"]specimen_manifests[\'"]|recordManifestPrint\(/',
             $source,
             $writes,
             PREG_OFFSET_CAPTURE
@@ -189,6 +189,25 @@ final class ManifestPrintScopeTest extends TestCase
 
         self::assertSame('', $output);
         self::assertNull($this->manifestRow($own)['manifest_print_history']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAPrintOfSeveralManifestsRecordsEachOfThem(): void
+    {
+        $this->boot();
+        $first = $this->manifest('M-FIRST', self::OWN_LAB, 'vl');
+        $this->vlSample('F1', self::OWN_LAB, $first, 'M-FIRST');
+        $second = $this->manifest('M-SECOND', self::OWN_LAB, 'vl');
+        $this->vlSample('F2', self::OWN_LAB, $second, 'M-SECOND');
+
+        $output = $this->print('/specimen-referral-manifest/generateVLManifest.php', base64_encode("$first,$second"));
+
+        self::assertNotSame('', $output);
+        foreach ([$first, $second] as $manifest) {
+            $row = $this->manifestRow($manifest);
+            self::assertCount(1, json_decode((string) $row['manifest_print_history'], true), "manifest $manifest");
+            self::assertSame(TestRequestsService::MANIFEST_DISPATCHED, $row['manifest_status'], "manifest $manifest");
+        }
     }
 
     #[RunInSeparateProcess]

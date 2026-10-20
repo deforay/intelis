@@ -63,13 +63,7 @@ if (trim((string) $id) !== '') {
     $showPatientName = $testRequestsService->showsPatientNamesOnManifest('generic-tests', $bResult[0] ?? null);
     if (!empty($bResult)) {
 
-        $oldPrintData = json_decode((string) $bResult[0]['manifest_print_history']);
-        $newPrintData = ['printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
-        $oldPrintData[] = $newPrintData;
-        $db->where('manifest_code', $id);
-        $db->update('specimen_manifests', ['manifest_print_history' => json_encode($oldPrintData)]);
-        // Printing the manifest is sending the package: pending becomes dispatched.
-        $testRequestsService->markManifestDispatched('manifest_code', $id);
+        $testRequestsService->recordManifestPrint($bResult);
 
         $reasonHistory = json_decode((string) $bResult[0]['manifest_change_history']);
 

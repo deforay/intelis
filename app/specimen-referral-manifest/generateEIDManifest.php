@@ -66,13 +66,7 @@ if (trim((string) $id) !== '') {
 
     if (!empty($bResult)) {
 
-        $oldPrintData = json_decode((string) $bResult[0]['manifest_print_history']);
-        $newPrintData = ['printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
-        $oldPrintData[] = $newPrintData;
-        $db->where('manifest_id', $id);
-        $db->update('specimen_manifests', ['manifest_print_history' => json_encode($oldPrintData)]);
-        // Printing the manifest is sending the package: pending becomes dispatched.
-        $testRequestsService->markManifestDispatched('manifest_id', $id);
+        $testRequestsService->recordManifestPrint($bResult);
 
         $reasonHistory = json_decode((string) $bResult[0]['manifest_change_history']);
 

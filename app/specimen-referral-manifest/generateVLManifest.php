@@ -4,7 +4,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use const COUNTRY\SIERRA_LEONE;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
-use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -79,18 +78,13 @@ if (!empty($id)) {
     $bResult = $manifestRows[0] ?? [];
     if (!empty($bResult) && !$testRequestsService->mayPrintManifests($manifestRows, 'form_vl')) {
         $bResult = [];
+        $manifestRows = [];
     }
     $showPatientName = $testRequestsService->showsPatientNamesOnManifest('vl', $bResult ?: null);
 
     if (!empty($bResult)) {
 
-        $oldPrintData = JsonUtility::decodeJson($bResult['manifest_print_history'], false);
-        $newPrintData = ['printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
-        $oldPrintData[] = $newPrintData;
-        $db->where('manifest_id', $id);
-        $db->update('specimen_manifests', ['manifest_print_history' => json_encode($oldPrintData)]);
-        // Printing the manifest is sending the package: pending becomes dispatched.
-        $testRequestsService->markManifestDispatched('manifest_id', $id);
+        $testRequestsService->recordManifestPrint($manifestRows);
 
         $reasonHistory = json_decode((string) $bResult['manifest_change_history']);
 

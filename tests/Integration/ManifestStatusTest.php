@@ -71,7 +71,7 @@ final class ManifestStatusTest extends TestCase
     {
         $id = $this->manifest('M-PRINT', TestRequestsService::MANIFEST_PENDING);
 
-        $this->service()->markManifestDispatched('manifest_id', (string) $id);
+        $this->service()->recordManifestPrint([$this->manifestRow($id)]);
 
         self::assertSame(TestRequestsService::MANIFEST_DISPATCHED, $this->manifestStatus('M-PRINT'));
     }
@@ -80,16 +80,34 @@ final class ManifestStatusTest extends TestCase
     {
         $id = $this->manifest('M-REPRINT', TestRequestsService::MANIFEST_RECEIVED);
 
-        $this->service()->markManifestDispatched('manifest_id', $id);
+        $this->service()->recordManifestPrint([$this->manifestRow($id)]);
 
         self::assertSame(TestRequestsService::MANIFEST_RECEIVED, $this->manifestStatus('M-REPRINT'));
     }
 
-    public function testAnIdThatIsNotASingleValueChangesNothing(): void
+    public function testAPrintIsAppendedToTheHistoryKeptSoFar(): void
+    {
+        $id = $this->manifest('M-HISTORY', TestRequestsService::MANIFEST_PENDING);
+        // An older row whose history is a single entry rather than a list.
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE specimen_manifests SET manifest_print_history = ? WHERE manifest_id = ?",
+            ['{"printedBy": "9", "date": "2026-01-01 00:00:00"}', $id]
+        );
+
+        $this->service()->recordManifestPrint([$this->manifestRow($id)]);
+        $this->service()->recordManifestPrint([$this->manifestRow($id)]);
+
+        $history = json_decode((string) $this->manifestRow($id)['manifest_print_history'], true);
+        self::assertTrue(array_is_list($history));
+        self::assertCount(3, $history);
+        self::assertSame('9', $history[0]['printedBy']);
+    }
+
+    public function testARowWithoutAnIdChangesNothing(): void
     {
         $this->manifest('M-ODD', TestRequestsService::MANIFEST_PENDING);
 
-        $this->service()->markManifestDispatched('manifest_id', ['1', '2']);
+        $this->service()->recordManifestPrint([['manifest_code' => 'M-ODD']]);
 
         self::assertSame(TestRequestsService::MANIFEST_PENDING, $this->manifestStatus('M-ODD'));
     }
@@ -172,5 +190,11 @@ final class ManifestStatusTest extends TestCase
         foreach ($items as $item) {
             $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
         }
+    }
+
+    /** @return array<string, mixed> */
+    private function manifestRow(int|string $id): array
+    {
+        return LegacyAppHarness::db()->rawQueryOne('SELECT * FROM specimen_manifests WHERE manifest_id = ?', [$id]);
     }
 }
