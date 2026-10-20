@@ -54,13 +54,17 @@ if ($_POST['type'] == 'cd4') {
     $resultColumn = 'cd4_result';
 }
 
+// A TB sample whose pool was not negative is back in the list to be tested on its own.
+$poolColumn = $testType === 'tb' ? ' vl.pool_result,' : '';
+$retestLabel = ' - ' . _translate('Pool not negative: test individually');
+
 $query = "(SELECT vl.sample_code,
                     vl.$primaryKeyColumn,
                     vl.$patientIdColumn,
                     vl.facility_id,
                     vl.result_status,
                     vl.sample_batch_id,
-                    vl.lab_assigned_code,
+                    vl.lab_assigned_code,$poolColumn
                     f.facility_name,
                     f.facility_code
                     FROM $table as vl
@@ -143,7 +147,7 @@ if (isset($_POST['batchId'])) {
         vl.facility_id,
         vl.result_status,
         vl.sample_batch_id,
-        vl.lab_assigned_code,
+        vl.lab_assigned_code,$poolColumn
         f.facility_name,
         f.facility_code
         FROM $table as vl
@@ -168,7 +172,10 @@ if (isset($_POST['batchId'])) {
     foreach ($result as $sample) {
         $labCode = "";
         if ($sample['lab_assigned_code'] != "") {
-            $labCode = ' - ' . $sample['lab_assigned_code'];
+            $labCode = ' - ' . _sanitizeOutput($sample['lab_assigned_code']);
+        }
+        if (($sample['pool_result'] ?? '') === 'retest') {
+            $labCode .= $retestLabel;
         }
         if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
             <option value="<?php echo _sanitizeOutput($sample[$primaryKeyColumn]); ?>">
@@ -182,7 +189,10 @@ if (isset($_POST['batchId'])) {
             <?php foreach ($result as $sample) {
                 $labCode = "";
                 if ($sample['lab_assigned_code'] != "") {
-                    $labCode = ' - ' . $sample['lab_assigned_code'];
+                    $labCode = ' - ' . _sanitizeOutput($sample['lab_assigned_code']);
+                }
+                if (($sample['pool_result'] ?? '') === 'retest') {
+                    $labCode .= $retestLabel;
                 }
                 if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
                     <option value="<?php echo _sanitizeOutput($sample[$primaryKeyColumn]); ?>" <?php echo (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) ? "selected='selected'" : ""; ?>>
@@ -213,7 +223,10 @@ if (isset($_POST['batchId'])) {
             <?php foreach ($result as $sample) {
                 $labCode = "";
                 if ($sample['lab_assigned_code'] != "") {
-                    $labCode = ' - ' . $sample['lab_assigned_code'];
+                    $labCode = ' - ' . _sanitizeOutput($sample['lab_assigned_code']);
+                }
+                if (($sample['pool_result'] ?? '') === 'retest') {
+                    $labCode .= $retestLabel;
                 }
                 if (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) { ?>
                     <option value="<?php echo _sanitizeOutput($sample[$primaryKeyColumn]); ?>">

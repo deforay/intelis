@@ -6,6 +6,7 @@ namespace Tests\Integration;
 
 use App\Registries\ContainerRegistry;
 use App\Services\InterfacingService;
+use App\Services\TbPoolService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -23,8 +24,9 @@ use const COUNTRY\RWANDA;
  * the result page. The single-result forms keep the Xpert result on form_tb.
  * Neither ever writes the final interpretation or the sample's status.
  *
- * A pool is one run whose sample ID lists its members. It is applied whole or not
- * at all, only when negative, and only where the lab has turned that on.
+ * A pool is one run whose sample ID is a pool code from a TB batch, or lists its
+ * members. A negative pool is applied whole or not at all, and only where the lab has
+ * turned that on. Any other pool sends its members back to be tested on their own.
  *
  * Set INTELIS_TEST_DB_HOST/_PORT/_USER/_PASS to run; skipped without them.
  */
@@ -49,6 +51,7 @@ final class InterfacingTbImportTest extends TestCase
         LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
             'r_sample_status', 'form_vl', 'form_tb', 'tb_tests', 'r_tb_results',
             'roles', 'user_details', 'instruments', 'instrument_machines', 'test_result_attempts',
+            'batch_details',
         ]);
 
         // The Xpert results exactly as an install is seeded with them.
@@ -59,6 +62,12 @@ final class InterfacingTbImportTest extends TestCase
         $migration = (string) file_get_contents(dirname(__DIR__, 2) . '/sys/migrations/5.7.79.sql');
         preg_match('/^UPDATE `r_tb_results`.*?;$/ms', $migration, $fix);
         LegacyAppHarness::db()->rawQuery($fix[0]);
+        // The pool columns from migration 5.7.90.
+        $pooling = (string) file_get_contents(dirname(__DIR__, 2) . '/sys/migrations/5.7.90.sql');
+        preg_match_all('/^ALTER TABLE `form_tb` .*?;$/m', $pooling, $alters);
+        foreach ($alters[0] as $alter) {
+            LegacyAppHarness::db()->rawQuery($alter);
+        }
         // The role an analyzer's tester is created with.
         LegacyAppHarness::db()->rawQuery(
             "INSERT INTO roles (role_id, role_name, status) VALUES (4, 'Lab Technician', 'active')"
@@ -432,6 +441,7 @@ final class InterfacingTbImportTest extends TestCase
             $tests = $this->tests($tbId);
             self::assertCount(1, $tests);
             self::assertSame('MTB not detected', $tests[0]['test_result']);
+            self::assertNull($this->sample($tbId)['pool_result'], 'a pool listed by sample codes is not tracked');
         }
         self::assertSame('Pooled with 0734, 0736, 0737: pool NOT DETECTED', $this->tests($members[1])[0]['comments']);
     }
@@ -440,6 +450,9 @@ final class InterfacingTbImportTest extends TestCase
     public function testAPoolThatIsNotNegativeIsNeverRecorded(): void
     {
         $members = $this->seedPool();
+        LegacyAppHarness::db()->rawQuery(
+            'UPDATE form_tb SET sample_batch_id = 7 WHERE tb_id IN (' . implode(',', $members) . ')'
+        );
         $service = $this->service(RWANDA, releaseNegativePools: true);
 
         foreach (
@@ -455,7 +468,299 @@ final class InterfacingTbImportTest extends TestCase
         }
         foreach ($members as $tbId) {
             self::assertSame([], $this->tests($tbId));
+            $sample = $this->sample($tbId);
+            self::assertNull($sample['pool_result'], 'a pool listed by sample codes is left for the lab');
+            self::assertSame(7, (int) $sample['sample_batch_id']);
         }
+    }
+
+    // -----------------------------------------------------------------
+    // Pools made in a TB batch
+    // -----------------------------------------------------------------
+
+    /** @return list<int> */
+    private function seedBatchPool(string $poolCode = 'POOL-20261020001-1'): array
+    {
+        LegacyAppHarness::db()->rawQuery(
+            "INSERT IGNORE INTO batch_details (batch_id, batch_code, machine, test_type)
+                VALUES (7, '20261020001', 1, 'tb')"
+        );
+        return array_map(
+            fn(string $code): int => $this->seedTb([
+                'sample_code' => $code,
+                'sample_batch_id' => 7,
+                'pool_code' => $poolCode,
+            ]),
+            ['TB26-0101', 'TB26-0102', 'TB26-0103', 'TB26-0104']
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testANegativeBatchPoolIsRecordedOnEverySampleInIt(): void
+    {
+        $members = $this->seedBatchPool();
+
+        $outcome = $this->service(RWANDA, releaseNegativePools: true)
+            ->importResult($this->ultra('POOL-20261020001-1', 'NOT DETECTED'), 1);
+
+        self::assertSame('updated', $outcome['reason']);
+        foreach ($members as $tbId) {
+            self::assertSame(['MTB not detected'], array_column($this->tests($tbId), 'test_result'));
+            self::assertSame('negative', $this->sample($tbId)['pool_result']);
+            self::assertSame(7, (int) $this->sample($tbId)['sample_batch_id']);
+        }
+        self::assertSame(
+            'Pool POOL-20261020001-1 NOT DETECTED, pooled with TB26-0101, TB26-0103, TB26-0104',
+            $this->tests($members[1])[0]['comments']
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testAPositiveBatchPoolSendsItsSamplesBackToBeTestedOnTheirOwn(): void
+    {
+        $members = $this->seedBatchPool();
+        $service = $this->service(RWANDA, releaseNegativePools: true);
+        $positive = $this->ultra('POOL-20261020001-1', 'DETECTED LOW', 'RIF Resistance NOT DETECTED');
+
+        $outcome = $service->importResult($positive, 1);
+
+        self::assertSame('pool_positive_test_individually', $outcome['reason']);
+        self::assertTrue($outcome['updated']);
+        foreach ($members as $tbId) {
+            self::assertSame([], $this->tests($tbId), 'a pool result is never a sample result');
+            self::assertSame('retest', $this->sample($tbId)['pool_result']);
+            self::assertNull($this->sample($tbId)['sample_batch_id']);
+        }
+
+        // The lab puts one in a new batch. The same run sent again leaves it there.
+        LegacyAppHarness::db()->rawQuery('UPDATE form_tb SET sample_batch_id = 8 WHERE tb_id = ?', [$members[0]]);
+        $again = $service->importResult($positive, 1);
+        self::assertFalse($again['updated']);
+        self::assertSame(8, (int) $this->sample($members[0])['sample_batch_id']);
+
+        // Its own result arrives under its own code.
+        $own = $service->importResult(
+            $this->ultra('TB26-0101', 'DETECTED LOW', 'RIF Resistance NOT DETECTED', '2026-09-20 10:00:00'),
+            1
+        );
+        self::assertSame('updated', $own['reason']);
+        self::assertSame(['MTB Detected Low/RIF not detected'], array_column($this->tests($members[0]), 'test_result'));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAPositiveBatchPoolLeavesAFinalisedSampleWhereItIs(): void
+    {
+        $members = $this->seedBatchPool();
+        LegacyAppHarness::db()->rawQuery("UPDATE form_tb SET result = '1' WHERE tb_id = ?", [$members[2]]);
+
+        $outcome = $this->service(RWANDA, releaseNegativePools: true)->importResult(
+            $this->ultra('POOL-20261020001-1', 'DETECTED LOW', 'RIF Resistance NOT DETECTED'),
+            1
+        );
+
+        self::assertSame('pool_positive_test_individually', $outcome['reason']);
+        self::assertSame('retest', $this->sample($members[2])['pool_result'], 'the pool is recorded on every member');
+        self::assertSame(7, (int) $this->sample($members[2])['sample_batch_id']);
+        self::assertSame('retest', $this->sample($members[0])['pool_result']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAPositiveBatchPoolLeavesASampleInTheBatchItMovedTo(): void
+    {
+        $members = $this->seedBatchPool();
+        LegacyAppHarness::db()->rawQuery('UPDATE form_tb SET sample_batch_id = 9 WHERE tb_id = ?', [$members[3]]);
+
+        $this->service(RWANDA, releaseNegativePools: true)
+            ->importResult($this->ultra('POOL-20261020001-1', 'ERROR'), 1);
+
+        self::assertSame('retest', $this->sample($members[3])['pool_result']);
+        self::assertSame(9, (int) $this->sample($members[3])['sample_batch_id']);
+        self::assertNull($this->sample($members[0])['sample_batch_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testABatchPoolWithALockedSampleIsNotRecordedUnlessForced(): void
+    {
+        $members = $this->seedBatchPool();
+        LegacyAppHarness::db()->rawQuery("UPDATE form_tb SET locked = 'yes' WHERE tb_id = ?", [$members[1]]);
+
+        $negative = $this->ultra('POOL-20261020001-1', 'NOT DETECTED');
+        $outcome = $this->service(RWANDA, releaseNegativePools: true)->importResult($negative, 1);
+        self::assertSame('pool_member_locked', $outcome['reason']);
+        foreach ($members as $tbId) {
+            self::assertSame([], $this->tests($tbId));
+            self::assertSame('negative', $this->sample($tbId)['pool_result'], 'the run is still noted');
+        }
+
+        $forced = $this->service(RWANDA, releaseNegativePools: true)->importResult($negative, 1, includeLocked: true);
+        self::assertSame('updated', $forced['reason']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testANegativeBatchPoolIsNotedEvenWhenReleaseIsOff(): void
+    {
+        $members = $this->seedBatchPool();
+
+        $outcome = $this->service(RWANDA)->importResult($this->ultra('POOL-20261020001-1', 'NOT DETECTED'), 1);
+
+        self::assertSame('pool_release_off', $outcome['reason']);
+        self::assertFalse($outcome['synced']);
+        foreach ($members as $tbId) {
+            self::assertSame([], $this->tests($tbId), 'left for the lab to enter');
+            self::assertSame('negative', $this->sample($tbId)['pool_result']);
+        }
+    }
+
+    #[RunInSeparateProcess]
+    public function testAPoolKeepsTheFirstResultRecordedForIt(): void
+    {
+        $members = $this->seedBatchPool();
+        $service = $this->service(RWANDA, releaseNegativePools: true);
+        $service->importResult($this->ultra('POOL-20261020001-1', 'ERROR'), 1);
+        LegacyAppHarness::db()->rawQuery('UPDATE form_tb SET sample_batch_id = 8 WHERE tb_id = ?', [$members[0]]);
+
+        $outcome = $service->importResult($this->ultra('POOL-20261020001-1', 'NOT DETECTED'), 1);
+
+        self::assertSame('pool_result_on_record', $outcome['reason']);
+        self::assertFalse($outcome['synced']);
+        foreach ($members as $tbId) {
+            self::assertSame([], $this->tests($tbId));
+            self::assertSame('retest', $this->sample($tbId)['pool_result']);
+        }
+        self::assertSame(8, (int) $this->sample($members[0])['sample_batch_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAPoolCodeThatIsAlsoASampleCodeIsNotRecorded(): void
+    {
+        $members = $this->seedBatchPool();
+        $lookalike = $this->seedTb(['lab_assigned_code' => 'POOL-20261020001-1']);
+
+        $outcome = $this->service(RWANDA, releaseNegativePools: true)
+            ->importResult($this->ultra('POOL-20261020001-1', 'NOT DETECTED'), 1);
+
+        self::assertSame('pool_code_ambiguous', $outcome['reason']);
+        foreach ([...$members, $lookalike] as $tbId) {
+            self::assertSame([], $this->tests($tbId));
+            self::assertNull($this->sample($tbId)['pool_result']);
+        }
+    }
+
+    #[RunInSeparateProcess]
+    public function testABatchPoolIsPooledInWorksheetOrderAndNeverAgain(): void
+    {
+        $ids = array_map(
+            fn(int $n): int => $this->seedTb(['sample_batch_id' => 7]),
+            range(1, 6)
+        );
+        // The third was in a pool that was not negative.
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE form_tb SET pool_code = 'POOL-20260901001-2', pool_result = 'retest' WHERE tb_id = ?",
+            [$ids[2]]
+        );
+        $pools = new TbPoolService(LegacyAppHarness::db());
+
+        self::assertTrue($pools->assignPools(7, '20261020001', null, array_reverse($ids), 4));
+
+        $codes = array_column(
+            LegacyAppHarness::db()->rawQuery('SELECT tb_id, pool_code FROM form_tb ORDER BY tb_id'),
+            'pool_code',
+            'tb_id'
+        );
+        self::assertSame('POOL-20261020001-1', $codes[$ids[5]]);
+        self::assertSame('POOL-20261020001-1', $codes[$ids[3]]);
+        self::assertSame('POOL-20261020001-1', $codes[$ids[1]]);
+        self::assertSame('POOL-20260901001-2', $codes[$ids[2]], 'its earlier pool is kept');
+        self::assertSame('POOL-20261020001-1', $codes[$ids[4]]);
+        self::assertNull($codes[$ids[0]], 'a last pool of one is no pool');
+
+        // Once a pool has a result its cartridges have been run, and the pools stay.
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE form_tb SET pool_result = 'negative' WHERE pool_code = 'POOL-20261020001-1'"
+        );
+        self::assertFalse($pools->assignPools(7, '20261020001', null, $ids, 2));
+        self::assertSame('POOL-20261020001-1', $this->sample($ids[5])['pool_code']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testOnlyAPrintedWorksheetWithPoolsFixesThem(): void
+    {
+        $ids = array_map(fn(int $n): int => $this->seedTb(['sample_batch_id' => 7]), range(1, 4));
+        LegacyAppHarness::db()->rawQuery(
+            "INSERT INTO batch_details (batch_id, batch_code, machine, test_type) VALUES (7, 'B7', 1, 'tb')"
+        );
+        $pools = new TbPoolService(LegacyAppHarness::db());
+        $batch = fn(): array => LegacyAppHarness::db()->rawQueryOne('SELECT * FROM batch_details WHERE batch_id = 7');
+
+        // Printed before it had pools: nothing on paper carries a pool code.
+        self::assertTrue($pools->assignPools(7, 'B7', TbPoolService::poolsPrintedAt($batch()), $ids, 4));
+        self::assertFalse($pools->isBatchLocked($batch()));
+
+        $pools->markPoolsPrinted(7, '2026-10-20 10:00:00');
+        self::assertTrue($pools->isBatchLocked($batch()));
+        self::assertSame('2026-10-20 10:00:00', TbPoolService::poolsPrintedAt($batch()));
+        self::assertFalse($pools->assignPools(7, 'B7', TbPoolService::poolsPrintedAt($batch()), $ids, 2));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAPoolLeftWithOneSampleIsNoPool(): void
+    {
+        $ids = array_map(fn(int $n): int => $this->seedTb(['sample_batch_id' => 7]), range(1, 6));
+        $pools = new TbPoolService(LegacyAppHarness::db());
+        self::assertTrue($pools->assignPools(7, 'B7', null, $ids, 4));
+        self::assertSame('POOL-B7-2', $this->sample($ids[5])['pool_code']);
+
+        // One sample of the pool of two leaves the batch.
+        LegacyAppHarness::db()->rawQuery('UPDATE form_tb SET sample_batch_id = NULL WHERE tb_id = ?', [$ids[4]]);
+        $pools->releaseRemovedSamples(7, 'B7');
+
+        self::assertNull($this->sample($ids[4])['pool_code']);
+        self::assertNull($this->sample($ids[5])['pool_code'], 'the one left runs on its own');
+        self::assertSame('POOL-B7-1', $this->sample($ids[0])['pool_code']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheWorksheetKeepsControlsInTheirPlace(): void
+    {
+        $ids = array_map(fn(int $n): int => $this->seedTb(['sample_batch_id' => 7]), range(1, 3));
+        $pools = new TbPoolService(LegacyAppHarness::db());
+        $pools->assignPools(7, 'B7', null, $ids, 2);
+
+        $order = json_encode([
+            'in_house_controls_1', 's_' . $ids[0], 's_' . $ids[1], 's_' . $ids[2], 'manufacturer_controls_1',
+        ]);
+        $rows = $pools->cartridgesOfBatch(7, 'B7', $order);
+
+        self::assertSame(['control', 'pool', 'sample', 'control'], array_column($rows, 'kind'));
+        self::assertSame(
+            ['in_house_controls_1', 'POOL-B7-1', $this->sample($ids[2])['sample_code'], 'manufacturer_controls_1'],
+            array_column($rows, 'code')
+        );
+        self::assertCount(2, $rows[1]['samples']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testPoolsAreFixedOncePrintedAndKeptApartFromLookalikeBatches(): void
+    {
+        $ids = array_map(fn(int $n): int => $this->seedTb(['sample_batch_id' => 7]), range(1, 4));
+        // Batch "TB1-2" is a different batch whose code starts with "TB1-".
+        $other = $this->seedTb(['sample_batch_id' => 9, 'pool_code' => 'POOL-TB1-2-1']);
+        $pools = new TbPoolService(LegacyAppHarness::db());
+
+        self::assertTrue($pools->assignPools(7, 'TB1', null, $ids, 4));
+        self::assertSame('POOL-TB1-1', $this->sample($ids[0])['pool_code']);
+        self::assertSame('POOL-TB1-2-1', $this->sample($other)['pool_code'], 'another batch\'s pool is left alone');
+
+        self::assertFalse($pools->assignPools(7, 'TB1', '2026-10-20 09:00:00', array_reverse($ids), 2));
+        self::assertSame('POOL-TB1-1', $this->sample($ids[3])['pool_code'], 'printed pools stay as printed');
+
+        $pools->clearPools('TB1');
+        self::assertSame('POOL-TB1-2-1', $this->sample($other)['pool_code']);
+
+        // A batch whose code differs only in case is another batch.
+        $upper = $this->seedTb(['sample_batch_id' => 10, 'pool_code' => 'POOL-tb1-1']);
+        $pools->clearPools('TB1');
+        self::assertSame('POOL-tb1-1', $this->sample($upper)['pool_code']);
     }
 
     #[RunInSeparateProcess]

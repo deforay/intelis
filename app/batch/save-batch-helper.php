@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use App\Services\BatchService;
+use App\Services\TbPoolService;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -47,6 +48,29 @@ try {
     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== "") {
         if (!empty($_POST['batchId'])) {
             $id = intval($_POST['batchId']);
+            $previousBatch = $db->rawQueryOne("SELECT * FROM batch_details WHERE batch_id = ?", [$id]) ?: [];
+            $previousBatchCode = trim((string) ($previousBatch['batch_code'] ?? ''));
+
+            // Pool codes carry the batch code, so a TB batch whose pools are fixed keeps
+            // its code: the cartridges may already be labelled with it.
+            $tbPoolService = null;
+            $poolsLocked = false;
+            if ($_POST['type'] === 'tb' && $previousBatchCode !== '') {
+                /** @var TbPoolService $tbPoolService */
+                $tbPoolService = ContainerRegistry::get(TbPoolService::class);
+                $poolsLocked = $tbPoolService->isBatchLocked($previousBatch);
+                $newBatchCode = trim((string) $_POST['batchCode']);
+                if ($newBatchCode !== $previousBatchCode) {
+                    if ($poolsLocked) {
+                        $_POST['batchCode'] = $previousBatch['batch_code'];
+                        $_SESSION['alertMsg'] = _translate("The batch code was not changed. Its GeneXpert pools were printed or have results.", true);
+                    } elseif ($tbPoolService->isBatchCodeInUse($newBatchCode, $id)) {
+                        // Two batches with one code would share their pool codes.
+                        $_POST['batchCode'] = $previousBatch['batch_code'];
+                        $_SESSION['alertMsg'] = _translate("The batch code was not changed. Another batch already uses it.", true);
+                    }
+                }
+            }
             $data = [
                 'batch_code' => $_POST['batchCode'],
                 'position_type' => $_POST['positions'],
@@ -76,6 +100,16 @@ try {
 
                 $db->where($testTablePrimaryKey, $uniqueSampleIds, "IN");
                 $db->update($testTable, ['sample_batch_id' => $id]);
+
+                // Pools are named after the batch code, so a new code drops the pools
+                // that have no result yet. Saving the positions pools the batch again.
+                // Fixed pools keep their samples, even one taken out of the batch.
+                if ($tbPoolService !== null && !$poolsLocked) {
+                    $tbPoolService->releaseRemovedSamples($id, $previousBatchCode);
+                    if ($previousBatchCode !== trim((string) $_POST['batchCode'])) {
+                        $tbPoolService->clearPools($previousBatchCode);
+                    }
+                }
                 MiscUtility::redirect("edit-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
             }
         } elseif ($batchService->doesBatchCodeExist($_POST['batchCode'])) {

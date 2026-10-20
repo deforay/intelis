@@ -137,6 +137,9 @@ $contentData = $batchService->generateContent($samplesResult, $batchInfo, $batch
 				<form class="form-horizontal" method='post' name='addBatchControlsPosition'
 					id='addBatchControlsPosition' autocomplete="off" action="save-batch-position-helper.php">
 					<div class="box-body">
+						<?php if ($_GET['type'] === 'tb') {
+							require APPLICATION_PATH . '/batch/partials/tb-pooling.php';
+						} ?>
 						<div class="row" id="displayOrderDetails">
 							<div class="col-lg-12">
 								<ul id="sortableRow">

@@ -12,6 +12,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Services\TbTestsService;
+use App\Services\TbPoolService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
@@ -306,6 +307,20 @@ try {
         'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
     ];
 
+    // Only the forms that show the field post it, so the others keep what is stored.
+    // A code that is in use or looks like a pool code is not saved.
+    $labCodeWarning = null;
+    if (array_key_exists('labAssignedCode', $_POST)) {
+        $labAssignedCode = trim((string) $_POST['labAssignedCode']);
+        /** @var TbPoolService $tbPoolService */
+        $tbPoolService = ContainerRegistry::get(TbPoolService::class);
+        if ($tbPoolService->isLabAssignedCodeTaken($labAssignedCode, (int) ($_POST['tbSampleId'] ?? 0))) {
+            $labCodeWarning = _translate("The Lab Assigned Code was not saved. It is already in use, or it starts with POOL-.");
+        } else {
+            $tbData['lab_assigned_code'] = $labAssignedCode === '' ? null : $labAssignedCode;
+        }
+    }
+
     if ($general->isLISInstance() || $general->isStandaloneInstance()) {
         $tbData['source_of_request'] = 'vlsm';
     } elseif ($general->isSTSInstance()) {
@@ -396,6 +411,9 @@ try {
     $id === true ? $db->commitTransaction() : $db->rollbackTransaction();
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("TB test request added successfully");
+        if ($labCodeWarning !== null) {
+            $_SESSION['alertMsg'] .= ' ' . $labCodeWarning;
+        }
         //Add event log
         $eventType = 'tb-add-request';
         $action = $_SESSION['userName'] . ' added a new TB request with the Sample ID/Code  ' . $_POST['tbSampleId'];

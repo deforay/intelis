@@ -155,7 +155,16 @@ if ($isLisInstance) {
                                             <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                         </select>
                                     </td>
-                                    <td style="width: 33.33%;"></td>
+                                    <td style="width: 33.33%;">
+                                        <?php if ($_SESSION['accessType'] != 'collection-site') { ?>
+                                            <label class="label-control" for="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></label>
+                                            <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" maxlength="32"
+                                                value=""
+                                                placeholder="<?= _translate("Enter Lab Assigned Code"); ?>"
+                                                title="<?= _translate("Please enter Lab Assigned Code"); ?>"
+                                                onblur="checkNameValidation('form_tb', 'lab_assigned_code', this, null, '<?= _translate("This Lab Assigned Code already exists. Enter another Lab Assigned Code.", true); ?>', null)" />
+                                        <?php } ?>
+                                    </td>
                                     <td style="width: 33.33%;"></td>
                                 </tr>
                             </table>
