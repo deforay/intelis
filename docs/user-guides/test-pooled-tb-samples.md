@@ -19,11 +19,9 @@ each sample in the pool is tested on its own cartridge.
 - Samples [registered](register-a-request.md) and received at the lab, not
   rejected
 - Permission to manage batches
-- Xpert MTB/RIF Ultra cartridges and Sample Reagent buffer
-- A vortex mixer, one 50 ml Falcon tube per pool, a micropipette set to 1 ml,
-  and a marker pen
 
-Follow your national guidelines on which patients may be pooled.
+Follow your national guidelines on which patients may be pooled, and your
+national pooling job aid on how to prepare a pooled cartridge.
 
 ## Create the pooled batch
 
@@ -61,40 +59,17 @@ Pool codes always start with **POOL-**. Sample codes never do.
     pools as they are. Create a new batch for any further samples. A batch in
     this state also cannot be deleted or have its code changed.
 
-## Prepare and run each cartridge
+## Label and run each cartridge
 
-Work one row of the worksheet at a time.
+Prepare each cartridge as your national pooling job aid and the GeneXpert SOP
+describe. Then, for each row of the worksheet:
 
-1. Check the sample containers match the sample codes in the row.
-2. Add Sample Reagent buffer to each sample container at a 2:1 ratio of buffer
-   to sputum.
-3. Vortex each container for 20 seconds.
-4. Incubate for 10 minutes.
-5. Vortex each container for 20 seconds.
-6. Incubate for 5 minutes.
-7. For a pool, transfer 1 ml of each digested sample into one Falcon tube. Four
-   samples give 4 ml.
-8. For a pool, vortex the Falcon tube for 10 seconds.
-9. Write the cartridge sample ID on the cartridge.
-10. Transfer 2.5 ml of the mixture into the cartridge.
-11. Load the cartridge into the GeneXpert, following the GeneXpert SOP.
-12. At the sample ID prompt, scan the row's barcode from the worksheet.
+1. Write the cartridge sample ID on the cartridge.
+2. At the GeneXpert's sample ID prompt, scan the row's barcode from the
+   worksheet.
 
 The sample ID must match the barcode exactly. If it is typed, copy every
 character, including **POOL-**.
-
-!!! warning "Pools of 2 or 3 samples"
-
-    Two samples give 2 ml, which is less than the 2.5 ml a cartridge takes.
-    Confirm the volumes for pools of 2 or 3 with the National Reference
-    Laboratory before running them.
-
-When pipetting:
-
-- Set the micropipette to the volume needed.
-- Do not pipette up and down.
-- Release sample or reagent down the inside wall of the tube.
-- Draw the sample up gently.
 
 ## Act on the pool result
 
