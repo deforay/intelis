@@ -72,9 +72,12 @@ if (!empty($id)) {
 
     $globalConfig = $general->getGlobalConfig();
 
-    $db->where('manifest_id', $id);
-    $bResult = $db->getOne('specimen_manifests');
-    if (!empty($bResult) && !$testRequestsService->mayPrintManifests([$bResult], $result)) {
+    // Every manifest in the print is checked, not only the first: $id may list several.
+    $manifestRows = $db->rawQuery(
+        "SELECT * FROM specimen_manifests WHERE manifest_id IN(" . $db->inIntList($id) . ")"
+    ) ?: [];
+    $bResult = $manifestRows[0] ?? [];
+    if (!empty($bResult) && !$testRequestsService->mayPrintManifests($manifestRows, 'form_vl')) {
         $bResult = [];
     }
     $showPatientName = $testRequestsService->showsPatientNamesOnManifest('vl', $bResult ?: null);

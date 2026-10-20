@@ -517,6 +517,11 @@ final class FacilitiesService
      *        select falls back to its placeholder and the field -- which is required
      *        -- forces the user to pick some OTHER lab merely to save, silently
      *        reassigning the sample. Appended after the sorted active labs.
+     *        It is kept whether or not it is still active, set up for $testType,
+     *        inside the user's facility map or matching $condition: the record holds
+     *        it either way, and the form must be able to show and keep it. It must
+     *        still be a testing lab (facility_type 2). Pass only the lab stored on
+     *        the record, never a value from the request.
      */
     public function getTestingLabs($testType = null, $byPassFacilityMap = true, $allColumns = false, $condition = [], $onlyActive = true, $userId = null, $alwaysIncludeLabId = null)
     {

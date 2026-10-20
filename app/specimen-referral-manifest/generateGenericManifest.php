@@ -49,7 +49,7 @@ if (trim((string) $id) !== '') {
     $bQuery = "SELECT * from specimen_manifests as pd where manifest_id IN(" . $db->inIntList($id) . ")";
 
     $bResult = $db->query($bQuery);
-    if (!$testRequestsService->mayPrintManifests($bResult ?: [], $result)) {
+    if (!$testRequestsService->mayPrintManifests($bResult ?: [], 'form_generic')) {
         $bResult = [];
     }
     $showPatientName = $testRequestsService->showsPatientNamesOnManifest('generic-tests', $bResult[0] ?? null);

@@ -174,7 +174,7 @@ final class LegacyAppHarness
         }
 
         foreach ($tables as $table) {
-            $pattern = '/^ALTER TABLE `' . preg_quote($table, '/') . '` ADD `.*?;$/m';
+            $pattern = '/^ALTER TABLE `' . preg_quote($table, '/') . '` ADD (?:COLUMN )?`.*?;$/m';
             if (preg_match_all($pattern, $migration, $matches) === 0) {
                 throw new RuntimeException("sys/migrations/$version.sql adds no column to $table");
             }

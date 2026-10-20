@@ -57,7 +57,7 @@ if (trim((string) $id) !== '') {
     $bQuery = "SELECT * FROM specimen_manifests as pd WHERE manifest_code IN('" . $db->escape((string) $id) . "')";
 
     $bResult = $db->query($bQuery);
-    if (!$testRequestsService->mayPrintManifests($bResult ?: [], $result, referral: true)) {
+    if (!$testRequestsService->mayPrintManifests($bResult ?: [], 'form_generic', referral: true)) {
         $bResult = [];
     }
     $showPatientName = $testRequestsService->showsPatientNamesOnManifest('generic-tests', $bResult[0] ?? null);
