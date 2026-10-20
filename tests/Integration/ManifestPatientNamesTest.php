@@ -9,6 +9,7 @@ use App\HttpHandlers\LegacyRequestHandler;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\TestRequestsService;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Sqids\Sqids;
@@ -44,7 +45,7 @@ final class ManifestPatientNamesTest extends TestCase
         'roles', 'user_details', 'facility_details', 'geographical_divisions', 'testing_labs',
         'batch_details', 'r_sample_status', 'r_funding_sources', 'r_implementation_partners',
         'form_vl', 'r_vl_sample_rejection_reasons', 'r_vl_sample_type', 'r_vl_test_reasons',
-        'specimen_manifests',
+        'specimen_manifests', 'form_tb',
     ];
 
     private static function booted(): bool
@@ -190,11 +191,35 @@ final class ManifestPatientNamesTest extends TestCase
     public function testALabPrintsOnlyManifestsBoundForIt(): void
     {
         $this->actAsLab(self::LAB);
+        $printable = fn(int $manifest): bool
+            => $this->service()->mayPrintManifests([$this->manifestRow($manifest)], 'form_vl');
 
-        self::assertFalse($this->service()->mayPrintManifests([['lab_id' => 99]], [['x' => 1]]));
-        self::assertTrue($this->service()->mayPrintManifests([['lab_id' => self::LAB]], []));
-        self::assertTrue($this->service()->mayPrintManifests([['lab_id' => null]], []));
+        $own = $this->printTestManifest('P-OWN', self::LAB, [self::LAB]);
+        $foreign = $this->printTestManifest('P-FOREIGN', 99, [self::LAB]);
+        $unboundOwn = $this->printTestManifest('P-UNBOUND-OWN', null, [99, self::LAB]);
+        $unboundForeign = $this->printTestManifest('P-UNBOUND-FOREIGN', null, [99]);
+        $unclaimed = $this->printTestManifest('P-UNCLAIMED', null, [null]);
+        $empty = $this->printTestManifest('P-EMPTY', self::LAB, []);
+
+        self::assertTrue($printable($own));
+        self::assertFalse($printable($foreign), 'bound for another lab');
+        self::assertTrue($printable($unboundOwn));
+        self::assertFalse($printable($unboundForeign), 'bound for no lab, holding none of this lab\'s samples');
+        self::assertTrue($printable($unclaimed), 'a sample no lab has yet is visible to every lab');
+        self::assertTrue($printable($empty), 'its own manifest, even with nothing on it yet');
+        self::assertFalse(
+            $this->service()->mayPrintManifests(
+                [$this->manifestRow($unboundOwn), $this->manifestRow($unboundForeign)],
+                'form_vl'
+            ),
+            'a sample on one manifest does not let the lab print another'
+        );
+        self::assertFalse($this->service()->mayPrintManifests([], 'form_vl'));
         self::assertStringContainsString('vl.lab_id = ' . self::LAB, $this->service()->manifestPrintScope());
+
+        // Last: the table is built into SQL, so anything but a test table is refused.
+        $this->expectException(InvalidArgumentException::class);
+        $this->service()->mayPrintManifests([$this->manifestRow($unboundOwn)], 'form_vl; DROP TABLE form_vl');
     }
 
     #[RunInSeparateProcess]
@@ -205,15 +230,76 @@ final class ManifestPatientNamesTest extends TestCase
         $scope = $this->service()->manifestPrintScope(referral: true);
         self::assertStringContainsString('vl.referred_by_lab_id = ' . self::LAB, $scope);
         self::assertStringContainsString('vl.referred_to_lab_id = ' . self::LAB, $scope);
-        self::assertFalse($this->service()->mayPrintManifests([['lab_id' => 99]], [], referral: true));
-        self::assertTrue($this->service()->mayPrintManifests([['lab_id' => 99]], [['x' => 1]], referral: true));
+
+        // Referral is a TB and custom tests workflow.
+        $referral = ['manifest_code' => 'R-1', 'lab_id' => 99];
+        LegacyAppHarness::db()->insert('form_tb', [
+            'unique_id' => 'ref-1', 'sample_code' => 'TB-R1', 'facility_id' => 1,
+            'result_status' => RECEIVED_AT_CLINIC, 'referral_manifest_code' => 'R-1',
+            'referred_by_lab_id' => 98, 'referred_to_lab_id' => 99,
+        ]);
+        self::assertFalse(
+            $this->service()->mayPrintManifests([$referral], 'form_tb', referral: true),
+            'a referral between two other labs'
+        );
+
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE form_tb SET referred_to_lab_id = ? WHERE unique_id = 'ref-1'",
+            [self::LAB]
+        );
+        self::assertTrue($this->service()->mayPrintManifests([$referral], 'form_tb', referral: true));
     }
 
     #[RunInSeparateProcess]
     public function testASessionNotActingAsALabPrintsAsBefore(): void
     {
         self::assertSame('', $this->service()->manifestPrintScope());
-        self::assertTrue($this->service()->mayPrintManifests([['lab_id' => 99]], []));
+        self::assertTrue($this->service()->mayPrintManifests([['lab_id' => 99]], 'form_vl'));
+    }
+
+    /**
+     * A manifest for the print checks, with one VL sample per lab given (null: a
+     * sample no lab has yet).
+     *
+     * @param list<int|null> $sampleLabs
+     */
+    private function printTestManifest(string $code, ?int $lab, array $sampleLabs): int
+    {
+        LegacyAppHarness::db()->insert('specimen_manifests', [
+            'manifest_code' => $code,
+            'manifest_status' => TestRequestsService::MANIFEST_PENDING,
+            'manifest_type' => 'collection',
+            'module' => 'vl',
+            'lab_id' => $lab,
+            'added_by' => '1',
+        ]);
+        $manifest = (int) LegacyAppHarness::db()->getInsertId();
+        foreach ($sampleLabs as $sampleLab) {
+            $this->sampleOn($manifest, $sampleLab);
+        }
+        return $manifest;
+    }
+
+    /** @return array<string, mixed> */
+    private function manifestRow(int $id): array
+    {
+        return LegacyAppHarness::db()->rawQueryOne('SELECT * FROM specimen_manifests WHERE manifest_id = ?', [$id]);
+    }
+
+    private function sampleOn(?int $manifest, ?int $lab): int
+    {
+        static $n = 0;
+        $n++;
+        LegacyAppHarness::db()->insert('form_vl', [
+            'unique_id' => "print-check-$n",
+            'sample_code' => "PC-$n",
+            'facility_id' => 1,
+            'lab_id' => $lab,
+            'sample_package_id' => $manifest,
+            'result_status' => RECEIVED_AT_CLINIC,
+            'sample_collection_date' => '2026-09-01 10:00:00',
+        ]);
+        return (int) LegacyAppHarness::db()->getInsertId();
     }
 
     #[RunInSeparateProcess]

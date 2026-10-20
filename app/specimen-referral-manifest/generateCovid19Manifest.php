@@ -77,7 +77,7 @@ if (trim((string) $id) !== '') {
     $arr = $general->getGlobalConfig();
     $bQuery = "SELECT * FROM specimen_manifests as pd WHERE manifest_id IN(" . $db->inIntList($id) . ")";
     $bResult = $db->rawQuery($bQuery);
-    if (!$testRequestsService->mayPrintManifests($bResult ?: [], $result)) {
+    if (!$testRequestsService->mayPrintManifests($bResult ?: [], 'form_covid19')) {
         $bResult = [];
     }
     $showPatientName = $testRequestsService->showsPatientNamesOnManifest('covid19', $bResult[0] ?? null);

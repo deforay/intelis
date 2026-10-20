@@ -77,26 +77,42 @@ final class ManifestPrintScopeTest extends TestCase
 
     /**
      * Every print adds the scope to its sample query and checks the manifests
-     * before printing, recording or marking anything. Only two are driven below;
-     * this holds the other seven to the same wiring.
+     * before printing, recording or marking anything. Only some are driven below;
+     * this holds all nine to the same wiring.
      */
     #[DataProvider('prints')]
     public function testEveryPrintScopesItsSamplesAndChecksTheManifest(string $path): void
     {
         $source = (string) file_get_contents(dirname(__DIR__, 2) . '/' . $path);
         $referral = str_contains($path, '/results/pdf/');
+        $referralArgument = $referral ? 'referral:\s*true' : '';
 
         self::assertMatchesRegularExpression(
-            '/\$printScope = \$testRequestsService->manifestPrintScope\('
-                . ($referral ? 'referral: true' : '') . '\)/',
+            '/\$printScope\s*=\s*\$testRequestsService->manifestPrintScope\(\s*' . $referralArgument . '\s*\)/',
             $source
         );
-        self::assertMatchesRegularExpression('/\$sQuery = "[^;]*" \. \$printScope/s', $source);
+        self::assertMatchesRegularExpression('/\$sQuery\s*=\s*"[^;]*"\s*\.\s*\$printScope/s', $source);
         self::assertMatchesRegularExpression(
-            '/mayPrintManifests\([^;]*\$result' . ($referral ? ', referral: true' : '')
-                . '\)\) \{\s*\$bResult = \[\];/',
+            '/mayPrintManifests\((?:(?!referral)[^;])*?,\s*\'form_\w+\''
+                . ($referral ? ',\s*' . $referralArgument : '')
+                . '\s*\)\)\s*\{\s*\$bResult\s*=\s*\[\];/',
             $source
         );
+
+        // The check comes before every write: recording the print on the manifest,
+        // and marking it dispatched.
+        $check = strpos($source, 'mayPrintManifests(');
+        self::assertNotFalse($check, 'the print checks the manifests');
+        preg_match_all(
+            '/->update\(\s*[\'"]specimen_manifests[\'"]|markManifestDispatched\(/',
+            $source,
+            $writes,
+            PREG_OFFSET_CAPTURE
+        );
+        self::assertNotEmpty($writes[0], 'the print records itself');
+        foreach ($writes[0] as [$write, $at]) {
+            self::assertLessThan($at, $check, "$write at offset $at comes before the manifest check");
+        }
     }
 
     /**
@@ -132,6 +148,50 @@ final class ManifestPrintScopeTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testALabCannotPrintAnUnboundManifestOfAnotherLabsSamples(): void
+    {
+        $this->boot();
+        $manifest = $this->manifest('M-UNBOUND', null, 'vl');
+        $this->vlSample('C1', self::OTHER_LAB, $manifest, 'M-UNBOUND');
+
+        $output = $this->print('/specimen-referral-manifest/generateVLManifest.php', base64_encode((string) $manifest));
+
+        self::assertSame('', $output);
+        $row = $this->manifestRow($manifest);
+        self::assertSame(TestRequestsService::MANIFEST_PENDING, $row['manifest_status']);
+        self::assertNull($row['manifest_print_history']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testALabPrintsAnUnboundManifestHoldingItsOwnSample(): void
+    {
+        $this->boot();
+        $manifest = $this->manifest('M-SHARED', null, 'vl');
+        $this->vlSample('D1', self::OWN_LAB, $manifest, 'M-SHARED');
+        $this->vlSample('D2', self::OTHER_LAB, $manifest, 'M-SHARED');
+
+        $output = $this->print('/specimen-referral-manifest/generateVLManifest.php', base64_encode((string) $manifest));
+
+        self::assertNotSame('', $output);
+        self::assertNotNull($this->manifestRow($manifest)['manifest_print_history']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testListingAnotherLabsManifestBesideItsOwnDoesNotPrintIt(): void
+    {
+        $this->boot();
+        $own = $this->manifest('M-OWN-2', self::OWN_LAB, 'vl');
+        $this->vlSample('E1', self::OWN_LAB, $own, 'M-OWN-2');
+        $other = $this->manifest('M-OTHER-2', self::OTHER_LAB, 'vl');
+        $this->vlSample('E2', self::OTHER_LAB, $other, 'M-OTHER-2');
+
+        $output = $this->print('/specimen-referral-manifest/generateVLManifest.php', base64_encode("$own,$other"));
+
+        self::assertSame('', $output);
+        self::assertNull($this->manifestRow($own)['manifest_print_history']);
+    }
+
+    #[RunInSeparateProcess]
     public function testALabCannotPrintAReferralItNeitherSentNorReceives(): void
     {
         $this->boot();
@@ -158,10 +218,7 @@ final class ManifestPrintScopeTest extends TestCase
         }
 
         $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), self::TABLES);
-        $db->rawQuery(
-            "ALTER TABLE `specimen_manifests`
-                ADD COLUMN `show_patient_names` ENUM('yes','no') NULL DEFAULT NULL AFTER `lab_id`"
-        );
+        LegacyAppHarness::addMigrationColumns('5.7.80', ['specimen_manifests']);
         // The settings a print reads for its header.
         foreach (['logo' => '', 'header' => 'Test Lab', 'vl_form' => '0'] as $name => $value) {
             $db->insert('global_config', ['display_name' => $name, 'name' => $name, 'value' => $value]);
@@ -197,7 +254,7 @@ final class ManifestPrintScopeTest extends TestCase
         return trim((string) $handler->handle($request)->getBody());
     }
 
-    private function manifest(string $code, int $lab, string $module, string $type = 'collection'): int
+    private function manifest(string $code, ?int $lab, string $module, string $type = 'collection'): int
     {
         LegacyAppHarness::db()->insert('specimen_manifests', [
             'manifest_code' => $code,

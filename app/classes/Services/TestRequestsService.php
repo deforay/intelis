@@ -2261,38 +2261,73 @@ final class TestRequestsService
             return '';
         }
         if ($referral) {
-            $labId = (int) ($_SESSION['labId'] ?? 0);
-            return " AND ($alias.referred_by_lab_id = $labId OR $alias.referred_to_lab_id = $labId) ";
+            return ' AND ' . self::referralScope($alias, (int) ($_SESSION['labId'] ?? 0)) . ' ';
         }
         return " AND $scope ";
+    }
+
+    /** The samples of a referral a lab sent or receives. */
+    private static function referralScope(string $alias, int $labId): string
+    {
+        return "($alias.referred_by_lab_id = $labId OR $alias.referred_to_lab_id = $labId)";
     }
 
     /**
      * Whether this session may print these manifests, and so record the print
      * and mark them dispatched.
      *
-     * A session acting as one lab prints only manifests bound for that lab (or
-     * not yet bound), and a referral manifest only when it sent or receives one
-     * of its samples, which the scoped sample query has already decided.
+     * A session acting as one lab prints a manifest bound for that lab. A manifest
+     * bound for no lab it prints only when the manifest holds a sample the lab can
+     * see: one of its own, or one no lab has yet. A referral manifest it prints only
+     * when it sent or receives one of the manifest's samples. A sample on another
+     * manifest in the same print does not count.
+     *
+     * The samples are looked up in the table the print reads, so the rule does not
+     * depend on how each print builds its own sample query.
      *
      * @param list<array<string, mixed>> $manifests specimen_manifests rows
-     * @param list<array<string, mixed>> $samples the rows the scoped sample query returned
+     * @param string $sampleTable the test table the print reads its samples from
      */
-    public function mayPrintManifests(array $manifests, array $samples, bool $referral = false): bool
+    public function mayPrintManifests(array $manifests, string $sampleTable, bool $referral = false): bool
     {
-        if ($this->commonService->labScopeWhere('') === '') {
+        if (!in_array($sampleTable, array_column(TestsService::getTestTypes(), 'tableName'), true)) {
+            throw new InvalidArgumentException("Not a test table: $sampleTable");
+        }
+        $labScope = $this->commonService->labScopeWhere($sampleTable);
+        if ($labScope === '') {
             return true;
         }
-        if ($referral) {
-            return $samples !== [];
+        if ($manifests === []) {
+            return false;
         }
+
         $labId = (int) ($_SESSION['labId'] ?? 0);
+        $needSamples = [];
         foreach ($manifests as $manifest) {
             $manifestLab = (int) ($manifest['lab_id'] ?? 0);
-            if ($manifestLab > 0 && $manifestLab !== $labId) {
+            if ($referral) {
+                $needSamples[] = (string) ($manifest['manifest_code'] ?? '');
+            } elseif ($manifestLab > 0 && $manifestLab !== $labId) {
                 return false;
+            } elseif ($manifestLab <= 0) {
+                $needSamples[] = (int) ($manifest['manifest_id'] ?? 0);
             }
         }
-        return true;
+        if ($needSamples === []) {
+            return true;
+        }
+
+        // The same conditions the prints add to their own sample queries.
+        $needSamples = array_values(array_unique($needSamples));
+        $placeholders = implode(',', array_fill(0, count($needSamples), '?'));
+        [$column, $visible] = $referral
+            ? ['referral_manifest_code', self::referralScope($sampleTable, $labId)]
+            : ['sample_package_id', $labScope];
+        $rows = $this->db->rawQuery(
+            "SELECT DISTINCT $sampleTable.$column AS manifest FROM $sampleTable
+                WHERE $sampleTable.$column IN ($placeholders) AND $visible",
+            $needSamples
+        );
+        return count($rows ?: []) === count($needSamples);
     }
 }
