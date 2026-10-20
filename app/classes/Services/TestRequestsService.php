@@ -1200,29 +1200,57 @@ final class TestRequestsService
     public const MANIFEST_RECEIVED = 'received';
 
     /**
-     * Marks a manifest dispatched when it is printed.
+     * Records a print on every manifest in it, each in its own print history, and
+     * marks each pending one dispatched: printing the manifest is sending the
+     * package. A received manifest stays received. A print of several manifests
+     * used to record only the first.
      *
-     * Only a pending manifest moves. Reprinting one the lab has already received
-     * must not send it back to "dispatched".
+     * Both writes are made in the database in one transaction, so two prints at once
+     * each keep their entry, and a print is recorded on all its manifests or none.
      *
-     * Takes the print pages' own id value as it is and ignores anything that is
-     * not a single id, so a print never fails over its status.
-     *
-     * @param 'manifest_id'|'manifest_code' $key
+     * @param list<array<string, mixed>> $manifests specimen_manifests rows
      */
-    public function markManifestDispatched(string $key, mixed $value): void
+    public function recordManifestPrint(array $manifests): void
     {
-        if (!in_array($key, ['manifest_id', 'manifest_code'], true) || !is_scalar($value) || trim((string) $value) === '') {
+        $ids = array_values(array_unique(array_filter(
+            array_map(static fn(array $manifest): int => (int) ($manifest['manifest_id'] ?? 0), $manifests),
+            static fn(int $id): bool => $id > 0
+        )));
+        if ($ids === []) {
             return;
         }
 
-        $this->db->rawQuery(
-            "UPDATE specimen_manifests
-                SET manifest_status = ?, last_modified_datetime = ?
-              WHERE $key = ?
-                AND (manifest_status IS NULL OR manifest_status IN ('', ?))",
-            [self::MANIFEST_DISPATCHED, DateUtility::getCurrentDateTime(), $value, self::MANIFEST_PENDING]
-        );
+        $in = $this->db->inIntList($ids);
+        $now = DateUtility::getCurrentDateTime();
+        $entry = json_encode(['printedBy' => $_SESSION['userId'] ?? null, 'date' => $now]);
+
+        $this->db->beginTransaction();
+        try {
+            // A history that is not a list (older rows) becomes the first item of one.
+            $this->db->rawQuery(
+                "UPDATE specimen_manifests SET manifest_print_history = JSON_ARRAY_APPEND(
+                        CASE
+                            WHEN manifest_print_history IS NULL THEN JSON_ARRAY()
+                            WHEN JSON_TYPE(manifest_print_history) = 'ARRAY' THEN manifest_print_history
+                            ELSE JSON_ARRAY(manifest_print_history)
+                        END,
+                        '\$',
+                        CAST(? AS JSON)
+                    )
+                    WHERE manifest_id IN ($in)",
+                [$entry]
+            );
+            $this->db->rawQuery(
+                "UPDATE specimen_manifests SET manifest_status = ?, last_modified_datetime = ?
+                    WHERE manifest_id IN ($in)
+                    AND (manifest_status IS NULL OR manifest_status IN ('', ?))",
+                [self::MANIFEST_DISPATCHED, $now, self::MANIFEST_PENDING]
+            );
+            $this->db->commitTransaction();
+        } catch (Throwable $e) {
+            $this->db->rollbackTransaction();
+            throw $e;
+        }
     }
 
     /**

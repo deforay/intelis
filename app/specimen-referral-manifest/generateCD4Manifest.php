@@ -78,19 +78,13 @@ if (!empty($id)) {
     $bResult = $manifestRows[0] ?? [];
     if (!empty($bResult) && !$testRequestsService->mayPrintManifests($manifestRows, 'form_cd4')) {
         $bResult = [];
+        $manifestRows = [];
     }
     $showPatientName = $testRequestsService->showsPatientNamesOnManifest('cd4', $bResult ?: null);
 
     if (!empty($bResult)) {
 
-        $oldPrintData = json_decode((string) $bResult['manifest_print_history']);
-
-        $newPrintData = ['printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
-        $oldPrintData[] = $newPrintData;
-        $db->where('manifest_id', $id);
-        $db->update('specimen_manifests', ['manifest_print_history' => json_encode($oldPrintData)]);
-        // Printing the manifest is sending the package: pending becomes dispatched.
-        $testRequestsService->markManifestDispatched('manifest_id', $id);
+        $testRequestsService->recordManifestPrint($manifestRows);
 
         $reasonHistory = json_decode((string) $bResult['manifest_change_history']);
 
