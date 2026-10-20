@@ -7,3 +7,15 @@ ALTER TABLE `track_api_requests` ADD INDEX `idx_track_api_transaction_id` (`tran
 
 UPDATE `system_config` SET `value` = '5.7.89' WHERE `system_config`.`name` = 'sc_version';
 
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

@@ -229,6 +229,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					if (data == 1) {
 						toastMessage = "<?= _translate("Batch deleted successfully", true); ?>";
 						toastColor = 'green';
+					} else if (data == 2) {
+						toastMessage = "<?= _translate("This batch cannot be deleted. Its GeneXpert pools were printed or have results.", true); ?>";
+						toastColor = 'red';
 					} else {
 						toastMessage = "<?= _translate("Something went wrong. Please try again later.", true); ?>";
 						toastColor = 'red';

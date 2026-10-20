@@ -51,6 +51,7 @@ final class InterfacingService
     private ?int $formId = null;
     private ?bool $autoApprove = null;
     private ?TestAttemptService $attempts = null;
+    private ?TbPoolService $tbPools = null;
 
     /**
      * Resolved lazily rather than constructor-injected, so the existing call sites that
@@ -59,6 +60,11 @@ final class InterfacingService
     private function attempts(): TestAttemptService
     {
         return $this->attempts ??= new TestAttemptService($this->db->connection('default'));
+    }
+
+    private function tbPools(): TbPoolService
+    {
+        return $this->tbPools ??= new TbPoolService($this->db->connection('default'));
     }
 
     public function __construct(
@@ -1217,8 +1223,9 @@ final class InterfacingService
     }
 
     /**
-     * The sample codes in a pooled run: a GeneXpert pool is one test whose sample ID
-     * lists its members, separated by commas.
+     * The sample codes in a pooled run whose sample ID lists its members, separated
+     * by commas. A pool made in a TB batch is named by its pool code instead (see
+     * TbPoolService).
      *
      * @return list<string>
      */
@@ -1256,68 +1263,142 @@ final class InterfacingService
             return $this->outcome(false, false, 'form_tb', 'unreadable_tb_result');
         }
 
-        $members = self::poolMembers($orderId !== '' ? $orderId : $testId);
-        if (count($members) <= 1) {
-            $code = $members[0] ?? $orderId;
-            $sample = $this->findSample(
-                $code,
-                $orderId === '' ? $code : $testId,
-                $includeLocked,
-                $scopedLabId,
-                'form_tb'
-            );
-            if ($sample === null) {
-                return $this->outcome(false, false, null, 'no_matching_sample');
-            }
-            if (!empty($sample['ambiguous'])) {
-                return $this->outcome(false, false, 'form_tb', 'ambiguous_sample');
-            }
-            return $this->writeTbResult($row, $sample, $reading, null, $labId, $updateModifiedTime);
+        $runId = $orderId !== '' ? $orderId : $testId;
+        $poolRows = TbPoolService::isPoolCode($runId) ? $this->tbPools()->samplesInPool($runId, $scopedLabId) : [];
+        $batchPool = $poolRows !== [];
+        // A pool code is never a sample's code. If one sample carries it anyway, the
+        // run could be either, and neither is written.
+        if ($batchPool && $this->findSample($runId, $runId, true, $scopedLabId, 'form_tb') !== null) {
+            return $this->outcome(false, false, 'form_tb', 'pool_code_ambiguous');
+        }
+        // A cartridge holds at most four samples. More under one code means two pools
+        // came to share it, and which samples were in this run cannot be told.
+        if (count($poolRows) > TbPoolService::MAX_POOL_SIZE) {
+            return $this->outcome(false, false, 'form_tb', 'pool_code_ambiguous');
         }
 
-        // A pool is applied whole or not at all: every member has to be one known
-        // sample before anything is written.
-        $samples = [];
-        foreach ($members as $member) {
-            $sample = $this->findSample($member, $member, $includeLocked, $scopedLabId, 'form_tb');
-            if ($sample === null) {
-                return $this->outcome(false, false, 'form_tb', 'pool_member_not_found');
+        if ($batchPool) {
+            // A pool from a batch knows its samples by their pool code.
+            $samples = [];
+            foreach ($poolRows as $poolRow) {
+                $code = trim((string) ($poolRow['sample_code'] ?: $poolRow['remote_sample_code']));
+                // Keyed by code for the pool note; a code missing or shared falls back to
+                // the record, so no member is dropped.
+                $key = ($code === '' || isset($samples[$code])) ? trim("$code #" . $poolRow['tb_id']) : $code;
+                $samples[$key] = [
+                    'table' => 'form_tb',
+                    'primaryKey' => 'tb_id',
+                    'row' => $poolRow,
+                ];
             }
-            if (!empty($sample['ambiguous'])) {
-                return $this->outcome(false, false, 'form_tb', 'pool_member_ambiguous');
+            $members = array_keys($samples);
+        } else {
+            $members = self::poolMembers($runId);
+            if (count($members) <= 1) {
+                $code = $members[0] ?? $orderId;
+                $sample = $this->findSample(
+                    $code,
+                    $orderId === '' ? $code : $testId,
+                    $includeLocked,
+                    $scopedLabId,
+                    'form_tb'
+                );
+                if ($sample === null) {
+                    return $this->outcome(false, false, null, 'no_matching_sample');
+                }
+                if (!empty($sample['ambiguous'])) {
+                    return $this->outcome(false, false, 'form_tb', 'ambiguous_sample');
+                }
+                return $this->writeTbResult($row, $sample, $reading, null, $labId, $updateModifiedTime);
             }
-            $samples[$member] = $sample;
+
+            // A pool listed by sample codes is applied whole or not at all: every
+            // member has to be one known sample before anything is written.
+            $samples = [];
+            foreach ($members as $member) {
+                $sample = $this->findSample($member, $member, $includeLocked, $scopedLabId, 'form_tb');
+                if ($sample === null) {
+                    return $this->outcome(false, false, 'form_tb', 'pool_member_not_found');
+                }
+                if (!empty($sample['ambiguous'])) {
+                    return $this->outcome(false, false, 'form_tb', 'pool_member_ambiguous');
+                }
+                $samples[$member] = $sample;
+            }
         }
         $tbIds = array_map(static fn(array $s): mixed => $s['row']['tb_id'], $samples);
         if (count(array_unique($tbIds)) !== count($tbIds)) {
             return $this->outcome(false, false, 'form_tb', 'pool_member_ambiguous');
         }
+        $isLocked = static fn(array $s): bool => !$includeLocked && ($s['row']['locked'] ?? 'no') === 'yes';
+
+        // A pool from a batch has one result. A run that reads differently from the
+        // one recorded is the lab's to look into, and changes nothing.
+        $memberIds = array_values(array_map('intval', $tbIds));
+        $poolResult = $reading['mtb'] === 'not_detected'
+            ? TbPoolService::RESULT_NEGATIVE
+            : TbPoolService::RESULT_RETEST;
+        if ($batchPool) {
+            $recorded = $this->tbPools()->recordedResults($memberIds);
+            if ($recorded !== [] && $recorded !== [$poolResult]) {
+                return $this->outcome(false, false, 'form_tb', 'pool_result_on_record');
+            }
+        }
 
         // Anything but a negative pool means each member is tested on its own, and
         // those results arrive as rows of their own.
-        if ($reading['mtb'] === 'invalid') {
-            return $this->outcome(false, false, 'form_tb', 'pool_invalid_retest');
-        }
-        if ($reading['mtb'] !== 'not_detected') {
-            return $this->outcome(false, false, 'form_tb', 'pool_positive_test_individually');
+        if ($poolResult === TbPoolService::RESULT_RETEST) {
+            $reason = $reading['mtb'] === 'invalid' ? 'pool_invalid_retest' : 'pool_positive_test_individually';
+            // A pool written as a list of sample codes is left for the lab, as it
+            // always was.
+            if (!$batchPool) {
+                return $this->outcome(false, false, 'form_tb', $reason);
+            }
+            // A pool from a batch marks its members and takes those still waiting out
+            // of its batch, so the lab can put them in a new one. A member that is
+            // locked, rejected or already has a final interpretation stays where it is.
+            $waiting = array_values(array_map(
+                static fn(array $s): int => (int) $s['row']['tb_id'],
+                array_filter($samples, static fn(array $s): bool => !$isLocked($s)
+                    && ($s['row']['is_sample_rejected'] ?? null) !== 'yes'
+                    && trim((string) ($s['row']['result'] ?? '')) === '')
+            ));
+            $marked = $this->tbPools()->recordResult(
+                $memberIds,
+                TbPoolService::RESULT_RETEST,
+                $this->tbPools()->batchIdOfPool($runId),
+                $waiting
+            );
+            return $this->outcome(true, $marked, 'form_tb', $reason);
         }
         if (!$this->releaseNegativePools()) {
-            return $this->outcome(false, false, 'form_tb', 'pool_release_off');
+            // The samples are left for the lab to enter by hand. A pool from a batch
+            // still records that it was negative: the cartridge was run, so its pools
+            // are fixed and its samples are not pooled again.
+            $marked = $batchPool && $this->tbPools()->recordResult($memberIds, TbPoolService::RESULT_NEGATIVE);
+            return $this->outcome(false, $marked, 'form_tb', 'pool_release_off');
         }
 
         // Anything that would stop one member being recorded stops the pool. A member
         // that already has a later Xpert run of its own is only passed over.
+        // A pool from a batch still records that it was negative: the cartridge was
+        // run, so its pools are fixed and its samples are not pooled again.
         foreach ($samples as $sample) {
-            $refusal = $this->tbRefusal($row, $sample['row'], $reading);
+            $refusal = $isLocked($sample)
+                ? ['synced' => false, 'reason' => 'locked']
+                : $this->tbRefusal($row, $sample['row'], $reading);
             if ($refusal !== null && !$refusal['synced']) {
-                return $this->outcome(false, false, 'form_tb', 'pool_member_' . $refusal['reason']);
+                $marked = $batchPool && $this->tbPools()->recordResult($memberIds, TbPoolService::RESULT_NEGATIVE);
+                return $this->outcome(false, $marked, 'form_tb', 'pool_member_' . $refusal['reason']);
             }
         }
 
         $updated = false;
         foreach ($samples as $member => $sample) {
             $others = array_values(array_diff($members, [$member]));
-            $note = 'Pooled with ' . implode(', ', $others) . ': pool NOT DETECTED';
+            $note = $batchPool
+                ? "Pool $runId NOT DETECTED, pooled with " . implode(', ', $others)
+                : 'Pooled with ' . implode(', ', $others) . ': pool NOT DETECTED';
             $outcome = $this->writeTbResult($row, $sample, $reading, $note, $labId, $updateModifiedTime);
             if ($outcome['reason'] === 'update_failed') {
                 // Thrown rather than returned, so the caller rolls back the members
@@ -1325,6 +1406,9 @@ final class InterfacingService
                 throw new RuntimeException("Could not record pool $orderId on sample $member");
             }
             $updated = $updated || $outcome['updated'];
+        }
+        if ($batchPool) {
+            $updated = $this->tbPools()->recordResult($memberIds, TbPoolService::RESULT_NEGATIVE) || $updated;
         }
 
         return $this->outcome(true, $updated, 'form_tb', $updated ? 'updated' : 'already_up_to_date');

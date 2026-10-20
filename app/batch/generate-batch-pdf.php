@@ -539,6 +539,14 @@ if (!empty($id)) {
             }
         }
 
+        // A pooled batch is run cartridge by cartridge, so its worksheet lists the
+        // cartridges instead of the samples one by one.
+        if ($_GET['type'] === 'tb') {
+            $cartridgesTable = BatchPdfHelper::buildTbCartridgesWorksheet($general, $bResult, (int) $id, $barcodeFormat);
+            if ($cartridgesTable !== '') {
+                $tbl = $cartridgesTable;
+            }
+        }
         $pdf->writeHTML($tbl);
         $filename = "BATCH-" . trim((string) $bResult['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . MiscUtility::generateRandomString(5) . '.pdf';
         $filename = MiscUtility::cleanFileName($filename);

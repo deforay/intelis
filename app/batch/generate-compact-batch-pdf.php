@@ -526,6 +526,14 @@ try {
                 $tbl .= '</tr></table>';
             }
 
+            // A pooled batch is run cartridge by cartridge, so its worksheet lists the
+            // cartridges instead of the samples one by one.
+            if ($_GET['type'] === 'tb') {
+                $cartridgesTable = BatchPdfHelper::buildTbCartridgesWorksheet($general, $bResult, (int) $id, $barcodeFormat);
+                if ($cartridgesTable !== '') {
+                    $tbl = $cartridgesTable;
+                }
+            }
             $pdf->writeHTML($tbl);
 
 

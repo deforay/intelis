@@ -529,6 +529,23 @@ if ($isLisInstance) {
                                     </h3>
                                 </div>
 
+                                <?php if (!empty($tbInfo['pool_code'])) { ?>
+                                    <div class="alert alert-info" style="margin:10px;">
+                                        <?php
+                                        $poolCodeText = _sanitizeOutput($tbInfo['pool_code']);
+                                        echo match ($tbInfo['pool_result'] ?? null) {
+                                            'retest' => sprintf(_translate("This sample was in GeneXpert pool %s, which was not negative. Test this sample on its own."), $poolCodeText),
+                                            'negative' => sprintf(_translate("This sample was in GeneXpert pool %s, which was negative."), $poolCodeText),
+                                            default => sprintf(_translate("This sample is in GeneXpert pool %s, which has no result yet."), $poolCodeText),
+                                        };
+                                        ?>
+                                    </div>
+                                <?php } elseif (($tbInfo['pool_result'] ?? null) === 'retest') { ?>
+                                    <div class="alert alert-info" style="margin:10px;">
+                                        <?= _translate("This sample was in a GeneXpert pool that was not negative. Test this sample on its own."); ?>
+                                    </div>
+                                <?php } ?>
+
                                 <div id="testSections">
                                     <?php if (isset($tbTestInfo) && !empty($tbTestInfo)) {
                                         $n = 1;

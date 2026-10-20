@@ -276,6 +276,8 @@ final class LabRequestSyncService
                 'removeKeys' => [
                     TestsService::getPrimaryColumn('tb'),
                     'sample_batch_id',
+                    'pool_code',
+                    'pool_result',
                     'result',
                     'xpert_mtb_result',
                     'sample_tested_datetime',
@@ -294,6 +296,8 @@ final class LabRequestSyncService
                     'sample_code_key',
                     'sample_code_format',
                     'sample_batch_id',
+                    'pool_code',
+                    'pool_result',
                     'specimen_quality',
                     'lab_id',
                     'reason_for_tb_test',
