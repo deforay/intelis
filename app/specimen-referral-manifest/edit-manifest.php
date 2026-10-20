@@ -41,6 +41,11 @@ $m = $module = $_GET['t'] ?? 'vl';
 
 $pQuery = "SELECT * FROM specimen_manifests WHERE manifest_id = ?";
 $pResult = $db->rawQueryOne($pQuery, [$id]);
+// The manifest's own module, not the link's: the labs listed and the module the
+// save checks them against have to be the manifest's.
+if (!empty($pResult['module'])) {
+	$m = $module = $pResult['module'];
+}
 
 // Once the lab has the package, its contents are settled. A dispatched manifest
 // stays editable: printing marks it dispatched, and a manifest is often
@@ -55,7 +60,9 @@ if ($notOurs || empty($pResult) || ($pResult['manifest_status'] ?? null) === Tes
 	exit;
 }
 
-$testingLabs = $facilitiesService->getTestingLabs($m);
+// The manifest's own lab stays listed even if it has since been deactivated:
+// without it the lab could not be kept, and changing it empties the manifest.
+$testingLabs = $facilitiesService->getTestingLabs($m, alwaysIncludeLabId: $pResult['lab_id'] ?? null);
 
 // This manifest's own choice, or the module's setting for one saved before it.
 $showPatientNames = ContainerRegistry::get(TestRequestsService::class)
