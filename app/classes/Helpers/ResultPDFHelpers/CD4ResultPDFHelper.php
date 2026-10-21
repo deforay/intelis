@@ -3,10 +3,10 @@
 namespace App\Helpers\ResultPDFHelpers;
 
 use Override;
-use setasign\Fpdi\Tcpdf\Fpdi;
+use App\Helpers\BasePdf;
 use App\Utilities\MiscUtility;
 
-class CD4ResultPDFHelper extends Fpdi
+class CD4ResultPDFHelper extends BasePdf
 {
     public ?string $logo = null;
     public ?string $text = null;

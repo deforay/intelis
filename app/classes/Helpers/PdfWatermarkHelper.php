@@ -3,10 +3,9 @@
 namespace App\Helpers;
 
 use Override;
-use setasign\Fpdi\Tcpdf\Fpdi;
 
 
-class PdfWatermarkHelper extends Fpdi
+class PdfWatermarkHelper extends BasePdf
 {
 
     public $tplIdx;

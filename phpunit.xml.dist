@@ -17,6 +17,9 @@
         <testsuite name="Utilities">
             <directory>tests/Unit/Utilities</directory>
         </testsuite>
+        <testsuite name="Helpers">
+            <directory>tests/Unit/Helpers</directory>
+        </testsuite>
         <testsuite name="Error handlers">
             <directory>tests/Unit/ErrorHandlers</directory>
         </testsuite>

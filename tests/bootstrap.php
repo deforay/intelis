@@ -58,6 +58,16 @@ if (!defined('WEB_ROOT')) {
 if (!defined('TEMP_PATH')) {
     define('TEMP_PATH', WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary');
 }
+// TCPDF's Error() calls die() unless K_TCPDF_THROW_EXCEPTION_ERROR is true, and a
+// die() inside a test ends PHPUnit with exit code 0 and the remaining tests unrun.
+// TCPDF's own config file defines that constant without checking, so it is skipped,
+// and TCPDF's autoconfig fills in the same defaults for everything else.
+if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
+    define('K_TCPDF_EXTERNAL_CONFIG', true);
+}
+if (!defined('K_TCPDF_THROW_EXCEPTION_ERROR')) {
+    define('K_TCPDF_THROW_EXCEPTION_ERROR', true);
+}
 if (!defined('VAR_TEMP_PATH')) {
     define('VAR_TEMP_PATH', VAR_PATH . DIRECTORY_SEPARATOR . 'temporary');
 }

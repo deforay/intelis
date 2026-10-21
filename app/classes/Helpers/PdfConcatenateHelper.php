@@ -2,10 +2,9 @@
 
 namespace App\Helpers;
 
-use setasign\Fpdi\Tcpdf\Fpdi;
 
 
-class PdfConcatenateHelper extends FPDI
+class PdfConcatenateHelper extends BasePdf
 {
 	public array $files = [];
 	public function setFiles(array $files): void

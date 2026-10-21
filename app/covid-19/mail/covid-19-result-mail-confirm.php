@@ -36,7 +36,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
    if (isset($mailconf['rs_field']) && trim((string) $mailconf['rs_field']) !== '') {
       //Pdf code start
       // create new PDF document
-      class Covid19MailPDF extends TCPDF
+      class Covid19MailPDF extends \App\Helpers\BasePdf
       {
          public ?string $logo = null;
          public ?string $text = '';
