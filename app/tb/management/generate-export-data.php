@@ -10,9 +10,8 @@ use App\Services\CommonService;
 use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\SampleRejectionUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
@@ -139,20 +138,16 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 		unset($output);
 		echo _downloadToken($fileName);
 	} else {
-		$excel = new Spreadsheet();
-		$sheet = $excel->getActiveSheet();
-		$sheet->setTitle('TB Results');
-
-		$sheet->fromArray($headings, null, 'A3');
-
-		foreach ($output as $rowNo => $rowData) {
-			$rRowCount = $rowNo + 4;
-			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
-		}
-
-		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-TB-Export-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
-		$writer->save($filename);
+
+		$writer = new Writer();
+		$writer->openToFile($filename);
+		$writer->addRow(Row::fromValues($headings));
+		foreach ($output as $rowData) {
+			$writer->addRow(Row::fromValues($rowData));
+		}
+		$writer->close();
+
 		echo _downloadToken($filename);
 	}
 }
