@@ -6,8 +6,8 @@ use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\SampleRejectionUtility;
 
 
@@ -109,14 +109,16 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 		unset($output);
 		echo _downloadToken($fileName);
 	} else {
-		$excel = new Spreadsheet();
-		$sheet = $excel->getActiveSheet();
-		$sheet->fromArray($headings, null, 'A1'); // Write headings
-		$sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
-
-		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
-		$writer->save($fileName);
+
+		$writer = new Writer();
+		$writer->openToFile($fileName);
+		$writer->addRow(Row::fromValues($headings));
+		foreach ($output as $rowData) {
+			$writer->addRow(Row::fromValues($rowData));
+		}
+		$writer->close();
+
 		echo _downloadToken($fileName);
 	}
 }

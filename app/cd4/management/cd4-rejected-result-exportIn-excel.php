@@ -6,12 +6,8 @@ use App\Utilities\SampleRejectionUtility;
 use App\Services\CommonService;
 use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
@@ -79,23 +75,16 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           unset($output);
           echo _downloadToken($fileName);
      } else {
-          $excel = new Spreadsheet();
-          $sheet = $excel->getActiveSheet();
-
-          $styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
-
-          $sheet->mergeCells('A1:AE1');
-          $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
-
-          $sheet->fromArray($headings, null, 'A3');
-
-          foreach ($output as $rowNo => $rowData) {
-               $rRowCount = $rowNo + 4;
-               $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-          }
-          $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-CD4-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
-          $writer->save($fileName);
+
+          $writer = new Writer();
+          $writer->openToFile($fileName);
+          $writer->addRow(Row::fromValues($headings));
+          foreach ($output as $rowData) {
+               $writer->addRow(Row::fromValues($rowData));
+          }
+          $writer->close();
+
           echo _downloadToken($fileName);
      }
 }

@@ -8,7 +8,6 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Utilities\SampleRejectionUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
