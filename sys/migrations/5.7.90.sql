@@ -17,3 +17,15 @@ UPDATE `global_config` SET `remote_sync_needed` = 'yes'
     WHERE `name` = 'tb_interface_release_negative_pools';
 
 UPDATE `system_config` SET `value` = '5.7.90' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
