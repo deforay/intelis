@@ -116,6 +116,62 @@ final class BasePdfTest extends TestCase
         $this->assertSame(0, self::imageCount($pdf));
     }
 
+    public static function svgTextInPngProvider(): array
+    {
+        return [
+            'as a file' => ['file'],
+            'as a data image' => ['data'],
+            'as a data stream' => ['stream'],
+        ];
+    }
+
+    #[DataProvider('svgTextInPngProvider')]
+    public function testPngWithSvgTextRendersAsPng(string $form): void
+    {
+        // TCPDF reads an '@' stream holding "<svg ...>...</svg>" anywhere as SVG,
+        // and the SVG parser throws on PNG bytes, stopping the print
+        $png = base64_decode(self::PNG) . '<svg width="1" height="1"><rect/></svg>';
+        $file = WEB_ROOT . '/uploads/base-pdf-test/svg-text.png';
+        file_put_contents($file, $png);
+        $src = match ($form) {
+            'file' => $file,
+            'data' => 'data:image/png;base64,' . base64_encode($png),
+            'stream' => '@' . base64_encode($png),
+        };
+
+        $pdf = self::render('<img src="' . $src . '"/>');
+
+        $this->assertSame(1, self::imageCount($pdf));
+    }
+
+    public function testRepeatedFileImageIsStoredOnce(): void
+    {
+        $pdf = self::render(str_repeat('<img src="' . $this->insideFile . '"/>', 20));
+
+        $this->assertSame(20, self::imageCount($pdf));
+        $this->assertSame(1, substr_count($pdf, '/Subtype /Image'));
+    }
+
+    public function testRasterFileWithVectorExtensionIsDropped(): void
+    {
+        // TCPDF sends a .svg file to its SVG parser whatever the file holds
+        $file = WEB_ROOT . '/uploads/base-pdf-test/raster.svg';
+        file_put_contents($file, base64_decode(self::PNG));
+
+        $pdf = self::render('<img src="' . $file . '"/>');
+
+        $this->assertSame(0, self::imageCount($pdf));
+    }
+
+    public function testDocumentRootIsRestoredAfterAnImage(): void
+    {
+        $_SERVER['DOCUMENT_ROOT'] = WEB_ROOT;
+
+        self::render('<img src="/uploads/base-pdf-test/signature.png"/>');
+
+        $this->assertSame(WEB_ROOT, $_SERVER['DOCUMENT_ROOT']);
+    }
+
     public function testRootRelativePathResolvesOnlyInsideWebRoot(): void
     {
         // TCPDF would prefix DOCUMENT_ROOT and load the file outside WEB_ROOT
