@@ -45,8 +45,9 @@ if (trim((string) $id) !== '') {
                 JOIN form_generic as vl ON vl.referral_manifest_code = pd.manifest_code 
                 JOIN r_test_types as rtt ON vl.test_type = rtt.test_type_id 
                 JOIN facility_details as fd ON fd.facility_id = vl.facility_id 
-                JOIN facility_details as l ON l.facility_id = vl.lab_id 
-                WHERE pd.manifest_code IN('" . $db->escape((string) $id) . "')" . $printScope;
+                JOIN facility_details as l ON l.facility_id = COALESCE(vl.referred_to_lab_id, vl.lab_id)
+                WHERE pd.manifest_code IN('" . $db->escape((string) $id) . "')" . $printScope . "
+                ORDER BY remote_sample_code ASC";
     $result = $testRequestsService->decryptManifestRows(
         $db->query($sQuery) ?: [],
         ['patient_id', 'patient_first_name', 'patient_last_name'],

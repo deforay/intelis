@@ -148,6 +148,39 @@ final class PdfOutputTest extends TestCase
         'covid-19-result-ssudan-default' => ['covid-19', SOUTH_SUDAN, 'pdf/result-pdf-ssudan-default.php'],
     ];
 
+    /**
+     * The manifest each module prints: its id, the print script, the sample
+     * table and its key, the samples on it, and the text each sample must print.
+     * A referral manifest is printed by its code, and lists the samples a lab
+     * sent to another lab. Not every form prints patient names, so the
+     * encrypted TB sample is found by its decrypted patient ID. A referral
+     * manifest names the lab the samples go to.
+     */
+    private const MANIFESTS = [
+        'vl-manifest' => [4, 'specimen-referral-manifest/generateVLManifest.php', null, null, [],
+            ['R-VL-TEST-0001', 'R-VL-TEST-0002', 'R-VL-TEST-0003']],
+        'eid-manifest' => [5, 'specimen-referral-manifest/generateEIDManifest.php', 'form_eid', 'eid_id', [1, 2],
+            ['R-EID-TEST-0001', 'R-EID-TEST-0002']],
+        'tb-manifest' => [6, 'specimen-referral-manifest/generateTBManifest.php', 'form_tb', 'tb_id', [1, 2, 3],
+            ['R-TB-TEST-0001', 'R-TB-TEST-0002', 'R-TB-TEST-0003', 'TBP-0003']],
+        'cd4-manifest' => [7, 'specimen-referral-manifest/generateCD4Manifest.php', 'form_cd4', 'cd4_id', [1, 2],
+            ['R-CD4-TEST-0001', 'R-CD4-TEST-0002']],
+        'hepatitis-manifest' => [8, 'specimen-referral-manifest/generateHepatitisManifest.php', 'form_hepatitis',
+            'hepatitis_id', [1, 2, 3], ['R-HEP-TEST-0001', 'R-HEP-TEST-0002', 'R-HEP-TEST-0003']],
+        'generic-tests-manifest' => [9, 'specimen-referral-manifest/generateGenericManifest.php', 'form_generic',
+            'sample_id', [1, 2], ['R-GEN-TEST-0001', 'R-GEN-TEST-0002']],
+        'covid-19-manifest' => [10, 'specimen-referral-manifest/generateCovid19Manifest.php', 'form_covid19',
+            'covid19_id', [1, 2], ['R-COV-TEST-0001', 'R-COV-TEST-0002']],
+        'tb-referral-manifest' => [11, 'tb/results/pdf/generate-generic-manifest.php', 'form_tb', 'tb_id', [1, 2, 3],
+            ['R-TB-TEST-0001', 'R-TB-TEST-0002', 'R-TB-TEST-0003', 'TBP-0003', 'MTB detected',
+                'Reference Lab']],
+        'generic-tests-referral-manifest' => [12, 'generic-tests/results/pdf/generate-generic-manifest.php',
+            'form_generic', 'sample_id', [1, 2], ['R-GEN-TEST-0001', 'R-GEN-TEST-0002', 'Reference Lab']],
+    ];
+
+    /** The lab a referral manifest sends samples to. */
+    private const REFERENCE_LAB = 6;
+
     /** Three VL samples: a numeric result, a target-not-detected result and no result yet. */
     private const SAMPLES = [
         ['VL-TEST-0001', 'PT-0001', 'Amina', 'Kamara', '1250', 'LAB-0001'],
@@ -161,6 +194,14 @@ final class PdfOutputTest extends TestCase
             'VL batch worksheet' => ['vl-batch-worksheet'],
             'VL compact batch worksheet' => ['vl-batch-worksheet-compact'],
             'VL manifest' => ['vl-manifest'],
+            'EID manifest' => ['eid-manifest'],
+            'TB manifest' => ['tb-manifest'],
+            'CD4 manifest' => ['cd4-manifest'],
+            'Hepatitis manifest' => ['hepatitis-manifest'],
+            'Custom Tests manifest' => ['generic-tests-manifest'],
+            'COVID-19 manifest' => ['covid-19-manifest'],
+            'TB referral manifest' => ['tb-referral-manifest'],
+            'Custom Tests referral manifest' => ['generic-tests-referral-manifest'],
             'VL result, South Sudan form' => ['vl-result-south-sudan'],
             'VL result, Sierra Leone form' => ['vl-result-sierra-leone'],
             'VL result, DRC form' => ['vl-result-drc'],
@@ -214,8 +255,9 @@ final class PdfOutputTest extends TestCase
                 '/batch/generate-compact-batch-pdf.php',
                 ['type' => 'vl', 'id' => MiscUtility::sqid(self::BATCH_ID)]
             )),
-            'vl-manifest' => $this->manifestPdf(),
-            default => $this->resultPdf(...self::RESULT_FORMS[$name]),
+            default => isset(self::MANIFESTS[$name])
+                ? $this->manifestPdf($name)
+                : $this->resultPdf(...self::RESULT_FORMS[$name]),
         };
 
         self::assertStringStartsWith('%PDF-', $pdf);
@@ -389,6 +431,7 @@ final class PdfOutputTest extends TestCase
         $this->seedCd4AndHepatitis();
         $this->seedCustomTests();
         $this->seedCovid19();
+        $this->seedManifests();
 
         // A file cache shared by every test process holds global config for an hour
         MemoUtility::clear();
@@ -554,6 +597,40 @@ final class PdfOutputTest extends TestCase
         }
     }
 
+    /**
+     * Puts the samples of each module on its manifest. A referral moves the
+     * samples from this lab to the reference lab, and the manifest is bound
+     * for the reference lab.
+     */
+    private function seedManifests(): void
+    {
+        $db = LegacyAppHarness::db();
+        $db->insert('facility_details', [
+            'facility_id' => self::REFERENCE_LAB, 'facility_name' => 'Reference Lab', 'facility_type' => 2,
+            'status' => 'active',
+        ]);
+        foreach (self::MANIFESTS as $name => [$id, , $table, $key, $samples]) {
+            if ($table === null) {
+                continue;
+            }
+            $referral = str_contains($name, 'referral');
+            $code = sprintf($referral ? 'REFERRAL-TEST-%04d' : 'MANIFEST-TEST-%04d', $id);
+            $module = explode('-manifest', str_replace('-referral', '', $name))[0];
+            $db->insert('specimen_manifests', [
+                'manifest_id' => $id, 'manifest_code' => $code, 'manifest_status' => 'pending',
+                'manifest_type' => $referral ? 'referral' : 'collection', 'module' => $module,
+                'lab_id' => $referral ? self::REFERENCE_LAB : self::LAB, 'number_of_samples' => count($samples),
+                'added_by' => '1', 'request_created_datetime' => '2026-09-28 09:00:00',
+            ]);
+            $sample = $referral
+                ? ['referral_manifest_code' => $code, 'referred_by_lab_id' => self::LAB,
+                    'referred_to_lab_id' => self::REFERENCE_LAB]
+                : ['sample_package_id' => $id, 'sample_package_code' => $code];
+            $db->where($key, $samples, 'IN');
+            $db->update($table, $sample);
+        }
+    }
+
     protected function tearDown(): void
     {
         $_GET = [];
@@ -564,18 +641,25 @@ final class PdfOutputTest extends TestCase
         }
     }
 
-    /** The manifest print saves the PDF and answers with its file name. */
-    private function manifestPdf(): string
+    /**
+     * The manifest print saves the PDF and answers with its file name. A
+     * referral manifest is printed by its code, every other one by its id.
+     */
+    private function manifestPdf(string $name): string
     {
-        $request = LegacyAppHarness::withPost(
-            ['id' => base64_encode((string) self::MANIFEST_ID)],
-            '/specimen-referral-manifest/generateVLManifest.php'
-        );
+        [$id, $script, , , , $expected] = self::MANIFESTS[$name];
+        $key = str_contains($name, 'referral') ? sprintf('REFERRAL-TEST-%04d', $id) : (string) $id;
+        $request = LegacyAppHarness::withPost(['id' => base64_encode($key)], '/' . $script);
         $file = trim($this->body($request));
         $path = VAR_TEMP_PATH . '/sample-manifests/' . basename($file);
         self::assertFileExists($path, 'The manifest print answered with ' . $file);
         $pdf = (string) file_get_contents($path);
         unlink($path);
+
+        $text = PdfFingerprint::plainText($pdf);
+        foreach ($expected as $sample) {
+            self::assertStringContainsString($sample, $text, "The $name print left out '$sample'");
+        }
         return $pdf;
     }
 
