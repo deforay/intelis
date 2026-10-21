@@ -1,0 +1,342 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Integration;
+
+use App\HttpHandlers\LegacyRequestHandler;
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
+use App\Utilities\DownloadTokenUtility;
+use App\Utilities\FileCacheUtility;
+use App\Utilities\MemoUtility;
+use App\Utilities\MiscUtility;
+use Carbon\Carbon;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ServerRequestInterface;
+use Slim\Psr7\Factory\ServerRequestFactory;
+use Tests\Support\LegacyAppHarness;
+use Tests\Support\PdfFingerprint;
+
+use const COUNTRY\BURKINA_FASO;
+use const COUNTRY\CAMEROON;
+use const COUNTRY\DRC;
+use const COUNTRY\PNG;
+use const COUNTRY\RWANDA;
+use const COUNTRY\SIERRA_LEONE;
+use const COUNTRY\SOUTH_SUDAN;
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\REJECTED;
+
+/**
+ * Each PDF the app prints, rendered from fixed data through its real page and
+ * compared with a snapshot of what a reader sees: pages, words and their
+ * positions, and images. A refactor of the PDF code, or a change of PDF
+ * engine, must leave every snapshot unchanged unless the change is intended.
+ *
+ * See Tests\Support\PdfFingerprint for what is compared and how to update a
+ * snapshot.
+ *
+ * LegacyRequestHandler requires a page with require_once, so a process can drive
+ * it once: every test that drives a page runs in its own process.
+ *
+ * Set INTELIS_TEST_DB_HOST/_PORT/_USER/_PASS to run; skipped without them, and
+ * without poppler's pdfinfo, pdftotext and pdfimages.
+ */
+final class PdfOutputTest extends TestCase
+{
+    private const DATABASE = 'intelis_pdf_output_test';
+
+    private const LAB = 5;
+    private const CLINIC = 11;
+    private const BATCH_ID = 3;
+    private const MANIFEST_ID = 4;
+
+    private const TABLES = [
+        's_vlsm_instance', 'system_config', 'global_config', 'activity_log',
+        'roles', 'user_details', 'facility_details', 'geographical_divisions', 'instruments',
+        'batch_details', 'r_sample_status', 'r_funding_sources', 'r_implementation_partners',
+        'form_vl', 'r_vl_sample_rejection_reasons', 'r_vl_sample_type', 'r_vl_test_reasons',
+        'specimen_manifests', 'r_recommended_corrective_actions',
+        'form_eid', 'r_eid_sample_rejection_reasons', 'r_eid_sample_type', 'r_eid_results',
+    ];
+
+    /** Two EID samples: a positive and a negative result. */
+    private const EID_SAMPLES = [
+        ['EID-TEST-0001', 'INF-0001', 'Baby', 'Kamara', 'male', 'Positive'],
+        ['EID-TEST-0002', 'INF-0002', 'Infant', 'Mukendi', 'female', 'Negative'],
+    ];
+
+    /** The result form each country prints, by its vl_form setting, per module. */
+    private const RESULT_FORMS = [
+        'vl-result-south-sudan' => SOUTH_SUDAN,
+        'vl-result-sierra-leone' => SIERRA_LEONE,
+        'vl-result-drc' => DRC,
+        'vl-result-cameroon' => CAMEROON,
+        'vl-result-png' => PNG,
+        'vl-result-rwanda' => RWANDA,
+        'vl-result-burkina-faso' => BURKINA_FASO,
+        'eid-result-burkina-faso' => BURKINA_FASO,
+    ];
+
+    /** Three VL samples: a numeric result, a target-not-detected result and no result yet. */
+    private const SAMPLES = [
+        ['VL-TEST-0001', 'PT-0001', 'Amina', 'Kamara', '1250', 'LAB-0001'],
+        ['VL-TEST-0002', 'PT-0002', 'Jean', 'Mukendi', 'Target Not Detected', 'LAB-0002'],
+        ['VL-TEST-0003', 'PT-0003', 'Grace', 'Okafor', null, null],
+    ];
+
+    public static function pdfProvider(): array
+    {
+        return [
+            'VL batch worksheet' => ['vl-batch-worksheet'],
+            'VL compact batch worksheet' => ['vl-batch-worksheet-compact'],
+            'VL manifest' => ['vl-manifest'],
+            'VL result, South Sudan form' => ['vl-result-south-sudan'],
+            'VL result, Sierra Leone form' => ['vl-result-sierra-leone'],
+            'VL result, DRC form' => ['vl-result-drc'],
+            'VL result, Cameroon form' => ['vl-result-cameroon'],
+            'VL result, PNG form' => ['vl-result-png'],
+            'VL result, Rwanda form' => ['vl-result-rwanda'],
+            'VL result, Burkina Faso form' => ['vl-result-burkina-faso'],
+            'EID result, Burkina Faso form' => ['eid-result-burkina-faso'],
+        ];
+    }
+
+    #[RunInSeparateProcess]
+    #[DataProvider('pdfProvider')]
+    public function testPdfMatchesItsSnapshot(string $name): void
+    {
+        $this->boot();
+
+        $pdf = match ($name) {
+            'vl-batch-worksheet' => $this->body($this->get(
+                '/batch/generate-batch-pdf.php',
+                ['type' => 'vl', 'id' => MiscUtility::sqid(self::BATCH_ID)]
+            )),
+            'vl-batch-worksheet-compact' => $this->body($this->get(
+                '/batch/generate-compact-batch-pdf.php',
+                ['type' => 'vl', 'id' => MiscUtility::sqid(self::BATCH_ID)]
+            )),
+            'vl-manifest' => $this->manifestPdf(),
+            default => $this->resultPdf(strtok($name, '-'), self::RESULT_FORMS[$name]),
+        };
+
+        self::assertStringStartsWith('%PDF-', $pdf);
+        PdfFingerprint::assertMatchesSnapshot($name, $pdf);
+    }
+
+    private function boot(): void
+    {
+        if (!LegacyAppHarness::configured()) {
+            self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
+        }
+        if (!PdfFingerprint::available()) {
+            self::markTestSkipped('Install poppler (pdfinfo, pdftotext, pdfimages) to compare PDFs.');
+        }
+
+        // Every print date that goes through Carbon. Raw date() calls are masked.
+        Carbon::setTestNow('2026-10-01 12:00:00');
+
+        // A logo and a signature, so the result PDFs print the images a lab sees.
+        // The app defines UPLOAD_PATH in its bootstrap; the test bootstrap does not.
+        if (!defined('UPLOAD_PATH')) {
+            define('UPLOAD_PATH', WEB_ROOT . '/uploads');
+        }
+        $image = ROOT_PATH . '/public/assets/img/approved.png';
+        foreach (['logo/test-logo.png', 'users-signature/test-signature.png'] as $file) {
+            MiscUtility::makeDirectory(dirname(UPLOAD_PATH . '/' . $file));
+            copy($image, UPLOAD_PATH . '/' . $file);
+        }
+
+        // Result PDFs print a QR code that links to the STS, encrypted with tryCrypt
+        $db = LegacyAppHarness::boot(
+            self::DATABASE . '_' . getmypid(),
+            self::TABLES,
+            ['remoteURL' => 'https://sts.example.org', 'tryCrypt' => 'pdf-output-test-key']
+        );
+        // The app's bootstrap defines this from the same config
+        if (!defined('SYSTEM_CONFIG')) {
+            define('SYSTEM_CONFIG', ContainerRegistry::get('applicationConfig'));
+        }
+        LegacyAppHarness::addMigrationColumns('5.7.80', ['specimen_manifests']);
+        LegacyAppHarness::seedDefaults('global_config');
+        $config = ['logo' => 'test-logo.png', 'header' => 'Test Lab', 'vl_form' => '0'];
+        foreach ($config as $name => $value) {
+            $db->rawQuery('UPDATE global_config SET value = ? WHERE name = ?', [$value, $name]);
+        }
+        $statuses = [ACCEPTED => 'Accepted', RECEIVED_AT_CLINIC => 'Received at Clinic', REJECTED => 'Rejected'];
+        foreach ($statuses as $id => $status) {
+            $db->insert('r_sample_status', ['status_id' => $id, 'status_name' => $status, 'status' => 'active']);
+        }
+        $db->insert('facility_details', [
+            'facility_id' => self::LAB, 'facility_name' => 'Central Lab', 'facility_type' => 2, 'status' => 'active',
+        ]);
+        $db->insert('facility_details', [
+            'facility_id' => self::CLINIC, 'facility_name' => 'Hillside Clinic', 'facility_type' => 1,
+            'status' => 'active',
+        ]);
+        $db->insert('user_details', [
+            'user_id' => '1', 'user_name' => 'Test User', 'login_id' => 'test', 'status' => 'active',
+            'user_signature' => 'test-signature.png',
+        ]);
+        $db->insert('batch_details', [
+            'batch_id' => self::BATCH_ID, 'machine' => '1', 'batch_code' => 'BATCH-TEST-0003',
+            'test_type' => 'vl', 'position_type' => 'numeric', 'created_by' => '1',
+            'label_order' => json_encode(['s_1', 's_2', 's_3', 'no_of_in_house_controls_1']),
+            'request_created_datetime' => '2026-09-30 09:00:00',
+        ]);
+        $db->insert('specimen_manifests', [
+            'manifest_id' => self::MANIFEST_ID, 'manifest_code' => 'MANIFEST-TEST-0004',
+            'manifest_status' => 'pending', 'manifest_type' => 'collection', 'module' => 'vl',
+            'lab_id' => self::LAB, 'added_by' => '1',
+        ]);
+        foreach (self::SAMPLES as $index => [$code, $patient, $first, $last, $result, $labCode]) {
+            $db->insert('form_vl', [
+                'vl_sample_id' => $index + 1, 'unique_id' => 'pdf-output-' . ($index + 1),
+                'sample_code' => $code, 'remote_sample_code' => 'R-' . $code, 'lab_assigned_code' => $labCode,
+                'patient_art_no' => $patient, 'patient_first_name' => $first, 'patient_last_name' => $last,
+                'patient_gender' => $index % 2 === 0 ? 'female' : 'male', 'patient_dob' => '1990-05-1' . $index,
+                'facility_id' => self::CLINIC, 'lab_id' => self::LAB, 'result' => $result,
+                'result_status' => $result === null ? RECEIVED_AT_CLINIC : ACCEPTED,
+                'sample_batch_id' => self::BATCH_ID,
+                'sample_package_id' => self::MANIFEST_ID, 'sample_package_code' => 'MANIFEST-TEST-0004',
+                'sample_collection_date' => '2026-09-2' . $index . ' 10:00:00',
+                'sample_tested_datetime' => $result === null ? null : '2026-09-30 11:00:00',
+                'sample_received_at_lab_datetime' => '2026-09-29 08:00:00',
+                'tested_by' => $result === null ? null : '1',
+                'result_reviewed_by' => $result === null ? null : '1',
+                'result_reviewed_datetime' => $result === null ? null : '2026-09-30 14:00:00',
+                'result_approved_by' => $result === null ? null : '1',
+                'result_approved_datetime' => $result === null ? null : '2026-09-30 15:00:00',
+            ]);
+        }
+
+        // A result of 0 with no stored log value. log10(0) is -INF, which the forms
+        // must not print. Not in the batch or the manifest.
+        $db->insert('form_vl', [
+            'vl_sample_id' => 4, 'unique_id' => 'pdf-output-4', 'sample_code' => 'VL-TEST-0004',
+            'remote_sample_code' => 'R-VL-TEST-0004', 'patient_art_no' => 'PT-0004',
+            'patient_first_name' => 'Esther', 'patient_last_name' => 'Banda', 'patient_gender' => 'female',
+            'patient_dob' => '1985-03-03', 'facility_id' => self::CLINIC, 'lab_id' => self::LAB,
+            'result' => '0', 'result_value_log' => null, 'result_status' => ACCEPTED,
+            'sample_collection_date' => '2026-09-23 10:00:00',
+            'sample_received_at_lab_datetime' => '2026-09-29 08:00:00',
+            'sample_tested_datetime' => '2026-09-30 11:00:00', 'tested_by' => '1',
+            'result_reviewed_by' => '1', 'result_reviewed_datetime' => '2026-09-30 14:00:00',
+            'result_approved_by' => '1', 'result_approved_datetime' => '2026-09-30 15:00:00',
+        ]);
+
+        // A rejected sample, with no result. Every form prints it.
+        $db->insert('r_vl_sample_rejection_reasons', [
+            'rejection_reason_id' => 1, 'rejection_reason_name' => 'Haemolysed sample',
+            'rejection_type' => 'general', 'rejection_reason_status' => 'active', 'rejection_reason_code' => 'HAEM',
+        ]);
+        $db->insert('form_vl', [
+            'vl_sample_id' => 5, 'unique_id' => 'pdf-output-5', 'sample_code' => 'VL-TEST-0005',
+            'remote_sample_code' => 'R-VL-TEST-0005', 'patient_art_no' => 'PT-0005',
+            'patient_first_name' => 'Joseph', 'patient_last_name' => 'Phiri', 'patient_gender' => 'male',
+            'patient_dob' => '1979-07-07', 'facility_id' => self::CLINIC, 'lab_id' => self::LAB,
+            'result' => null, 'result_status' => REJECTED, 'is_sample_rejected' => 'yes',
+            'reason_for_sample_rejection' => 1, 'rejection_on' => '2026-09-29',
+            'sample_collection_date' => '2026-09-24 10:00:00',
+            'sample_received_at_lab_datetime' => '2026-09-29 08:00:00',
+            'result_approved_by' => '1', 'result_approved_datetime' => '2026-09-30 15:00:00',
+        ]);
+
+        foreach (self::EID_SAMPLES as $index => [$code, $child, $first, $last, $sex, $result]) {
+            $db->insert('form_eid', [
+                'eid_id' => $index + 1, 'unique_id' => 'pdf-output-eid-' . ($index + 1),
+                'sample_code' => $code, 'remote_sample_code' => 'R-' . $code,
+                'child_id' => $child, 'child_name' => $first, 'child_surname' => $last, 'child_gender' => $sex,
+                'child_dob' => '2026-0' . ($index + 3) . '-15', 'mother_name' => 'Mother ' . $last,
+                'facility_id' => self::CLINIC, 'lab_id' => self::LAB, 'result' => $result,
+                'result_status' => ACCEPTED,
+                'sample_collection_date' => '2026-09-2' . $index . ' 10:00:00',
+                'sample_received_at_lab_datetime' => '2026-09-29 08:00:00',
+                'sample_tested_datetime' => '2026-09-30 11:00:00',
+                'tested_by' => '1', 'result_reviewed_by' => '1', 'result_reviewed_datetime' => '2026-09-30 14:00:00',
+                'result_approved_by' => '1', 'result_approved_datetime' => '2026-09-30 15:00:00',
+            ]);
+        }
+
+        // A file cache shared by every test process holds global config for an hour
+        MemoUtility::clear();
+        ContainerRegistry::get(FileCacheUtility::class)->clear();
+
+        LegacyAppHarness::withSession(['labId' => self::LAB, 'instance' => ['type' => 'vluser']]);
+    }
+
+    /**
+     * The result print merges a PDF per sample and answers with a download token
+     * for the merged file. Prints every sample with a result or a rejection:
+     * VL 1, 2, 4 and 5, and EID 1 and 2.
+     */
+    private function resultPdf(string $module, int $form): string
+    {
+        LegacyAppHarness::db()->rawQuery("UPDATE global_config SET value = ? WHERE name = 'vl_form'", [$form]);
+        MemoUtility::clear();
+        ContainerRegistry::get(FileCacheUtility::class)->clear();
+
+        $samples = $module === 'vl'
+            ? ['1,2,4,5', ['VL-TEST-0001', 'VL-TEST-0002', 'VL-TEST-0004', 'VL-TEST-0005']]
+            : ['1,2', ['EID-TEST-0001', 'EID-TEST-0002']];
+        $request = LegacyAppHarness::withPost(['id' => $samples[0]], "/$module/results/generate-result-pdf.php");
+        $token = trim($this->body($request));
+        $path = DownloadTokenUtility::resolve($token, $reason);
+        self::assertNotNull($path, "The result print answered with '$token' ($reason)");
+        $pdf = (string) file_get_contents($path);
+        unlink($path);
+
+        // A snapshot taken while a form drops a sample would accept the drop
+        $text = PdfFingerprint::plainText($pdf);
+        foreach ($samples[1] as $code) {
+            self::assertStringContainsString($code, $text, "The $module result print left out $code");
+        }
+        return $pdf;
+    }
+
+    protected function tearDown(): void
+    {
+        $_GET = [];
+        $_POST = [];
+        Carbon::setTestNow();
+        if (LegacyAppHarness::configured()) {
+            LegacyAppHarness::shutdown();
+        }
+    }
+
+    /** The manifest print saves the PDF and answers with its file name. */
+    private function manifestPdf(): string
+    {
+        $request = LegacyAppHarness::withPost(
+            ['id' => base64_encode((string) self::MANIFEST_ID)],
+            '/specimen-referral-manifest/generateVLManifest.php'
+        );
+        $file = trim($this->body($request));
+        $path = VAR_TEMP_PATH . '/sample-manifests/' . basename($file);
+        self::assertFileExists($path, 'The manifest print answered with ' . $file);
+        $pdf = (string) file_get_contents($path);
+        unlink($path);
+        return $pdf;
+    }
+
+    /** @param array<string, string> $query */
+    private function get(string $path, array $query): ServerRequestInterface
+    {
+        return (new ServerRequestFactory())
+            ->createServerRequest('GET', $path)
+            ->withQueryParams($query)
+            ->withHeader('User-Agent', 'intelis-tests')
+            ->withHeader('X-Forwarded-For', '127.0.0.1');
+    }
+
+    private function body(ServerRequestInterface $request): string
+    {
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        return (string) $handler->handle($request)->getBody();
+    }
+}

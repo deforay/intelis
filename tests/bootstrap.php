@@ -90,6 +90,24 @@ if (!function_exists('_translate')) {
     }
 }
 
+// Result PDFs print names and headings through these. Same as the real ones.
+if (!function_exists('_toUpperCase')) {
+    function _toUpperCase(?string $string): ?string
+    {
+        return $string ? (new \Symfony\Component\String\UnicodeString($string))->upper()->toString() : $string;
+    }
+}
+if (!function_exists('_capitalizeFirstLetter')) {
+    function _capitalizeFirstLetter(?string $string): string
+    {
+        if ($string === null || $string === '' || $string === '0') {
+            return (string) $string;
+        }
+        $str = new \Symfony\Component\String\UnicodeString($string);
+        return $str->slice(0, 1)->upper()->append($str->slice(1)->toString())->toString();
+    }
+}
+
 // The escaping wrappers pages print into scripts and markup. Stubbed with the
 // same escaping as the real ones, so a test sees what a page would print.
 if (!function_exists('_jsTranslate')) {

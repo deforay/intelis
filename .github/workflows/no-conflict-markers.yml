@@ -235,6 +235,11 @@ jobs:
             exit 1
           fi
 
+      # PdfOutputTest reads each PDF with pdfinfo, pdftotext and pdfimages, and skips
+      # itself without them. Installed explicitly rather than trusting the runner image.
+      - name: Install poppler for the PDF output tests
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+
       # Runs here rather than alongside the unit suite because this is the only job
       # with a server. What these cover is what MySQL itself does with SAVEPOINT and
       # an implicit commit, so a double would prove nothing. The suite skips itself
