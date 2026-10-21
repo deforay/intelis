@@ -7,12 +7,8 @@ use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
@@ -196,29 +192,16 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 		unset($output);
 		echo _downloadToken($fileName);
 	} else {
-		$excel = new Spreadsheet();
-		$sheet = $excel->getActiveSheet();
-		$sheet->setTitle('Generic Results');
-
-		$styleArray = ['font' => ['bold' => true, 'size' => 12], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
-
-		$borderStyle = ['alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
-		$sheet->mergeCells('A1:O1');
-		$sheet->getStyle('A1:O1')->applyFromArray(['font' => ['bold' => true, 'size' => 12], 'alignment' => [
-      // 'horizontal' => Alignment::HORIZONTAL_CENTER,
-      'vertical' => Alignment::VERTICAL_CENTER,
-  ], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]]);
-
-		$sheet->fromArray($headings, null, 'A3');
-
-		foreach ($output as $rowNo => $rowData) {
-			$rRowCount = $rowNo + 4;
-			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
-		}
-
-		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-LAB-TESTS-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
-		$writer->save($filename);
+
+		$writer = new Writer();
+		$writer->openToFile($filename);
+		$writer->addRow(Row::fromValues($headings));
+		foreach ($output as $rowData) {
+			$writer->addRow(Row::fromValues($rowData));
+		}
+		$writer->close();
+
 		echo _downloadToken($filename);
 	}
 }

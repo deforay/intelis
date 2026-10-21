@@ -8,10 +8,8 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\SampleRejectionUtility;
 use App\Services\GenericTestsService;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
@@ -201,25 +199,16 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		unset($output);
 		echo _downloadToken($fileName);
 	} else {
-		$excel = new Spreadsheet();
-		$sheet = $excel->getActiveSheet();
-
-		$styleArray = ['font' => ['bold' => true, 'size' => 12], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
-
-		$borderStyle = ['alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
-		$sheet->setTitle('Generic Results');
-		$sheet->mergeCells('A1:AH1');
-		$sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
-		$sheet->fromArray($headings, null, 'A3');
-		foreach ($output as $rowNo => $rowData) {
-			$rRowCount = $rowNo + 4;
-			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
-		}
-
-
-		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
-		$writer->save($filename);
+
+		$writer = new Writer();
+		$writer->openToFile($filename);
+		$writer->addRow(Row::fromValues($headings));
+		foreach ($output as $rowData) {
+			$writer->addRow(Row::fromValues($rowData));
+		}
+		$writer->close();
+
 		echo _downloadToken($filename);
 	}
 }
