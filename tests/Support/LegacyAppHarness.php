@@ -35,6 +35,14 @@ final class LegacyAppHarness
 
     private static string $database = '';
 
+    /** Whether a test database is configured, so boot() can run. */
+    public static function configured(): bool
+    {
+        $host = getenv('INTELIS_TEST_DB_HOST');
+        $user = getenv('INTELIS_TEST_DB_USER');
+        return $host !== false && $host !== '' && $user !== false && $user !== '';
+    }
+
     /**
      * @param list<string> $tables tables to create, by name, from sql/init.sql
      * @param array<string, mixed> $config extra applicationConfig entries, for example
@@ -103,6 +111,26 @@ final class LegacyAppHarness
                 }
             }
         }
+    }
+
+    /**
+     * The rows a fresh install starts with, from the INSERT in sql/init.sql, so a
+     * page reads every setting it expects. A test then overrides only the
+     * settings it is about.
+     */
+    public static function seedDefaults(string $table): void
+    {
+        $prefix = 'INSERT INTO `' . $table . '` VALUES ';
+        foreach (file(dirname(__DIR__, 2) . '/sql/init.sql') ?: [] as $line) {
+            if (str_starts_with($line, $prefix)) {
+                $mysqli = self::db()->mysqli();
+                if ($mysqli->query(rtrim($line)) === false) {
+                    throw new RuntimeException("Could not seed $table: " . $mysqli->error);
+                }
+                return;
+            }
+        }
+        throw new RuntimeException("sql/init.sql has no rows for $table.");
     }
 
     public static function db(): DatabaseService
