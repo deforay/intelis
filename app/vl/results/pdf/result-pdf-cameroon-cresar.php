@@ -180,7 +180,7 @@ if (!empty($result)) {
      if ($result['result_value_log'] != '' && $result['result_value_log'] != null && ($result['reason_for_sample_rejection'] == '' || $result['reason_for_sample_rejection'] == null)) {
           $logValue = '&nbsp;' . $result['result_value_log'];
      } else {
-          $isResultNumeric = is_numeric($result['result']);
+          $isResultNumeric = is_numeric($result['result']) && (float) $result['result'] > 0;
           if ($isResultNumeric) {
                $logV = round(log10($result['result']), 2);
                $logValue = '&nbsp;&nbsp;' . $logV;

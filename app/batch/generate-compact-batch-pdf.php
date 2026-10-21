@@ -365,7 +365,7 @@ try {
                             }
 
                             $tbl .= '</td>';
-                            // Start a new row after every third sample code
+                            // Start a new row after every second cell
                             if ($sampleCounter % 2 == 0) {
                                 $tbl .= '</tr><tr>'; // Close the current row and start a new row
                             }
@@ -380,7 +380,7 @@ try {
                             $tbl .= '<br>';
                             $tbl .= '<br>';
                             $tbl .= '</td>';
-                            // Start a new row after every third sample code
+                            // Start a new row after every second cell
                             if ($sampleCounter % 2 == 0) {
                                 $tbl .= '</tr><tr>'; // Close the current row and start a new row
                             }
@@ -389,14 +389,14 @@ try {
                     }
                     $a++;
                 }
-                $tbl .= '</tr></table>';
+                $tbl = CompactBatchPdfHelper::closeTable($tbl);
             } else {
                 $tbl .= '<table border="1" style="width:100%;border-bottom:1px solid black;"><tr nobr="true" style="width:100%;">';
                 $noOfInHouseControls = 0;
                 if (isset($bResult['number_of_in_house_controls']) && $bResult['number_of_in_house_controls'] != '' && $bResult['number_of_in_house_controls'] != null) {
                     $noOfInHouseControls = $bResult['number_of_in_house_controls'];
                     for ($i = 1; $i <= $bResult['number_of_in_house_controls']; $i++) {
-                        $tbl .= '<tdalign="center">' . _translate('In-House Control') . ' ' . $i . '<br>
+                        $tbl .= '<td align="center">' . _translate('In-House Control') . ' ' . $i . '<br>
                             <br>
                             <br>
                             <br>
@@ -523,7 +523,7 @@ try {
                         $tbl .= '</tr><tr>'; // Close the current row and start a new row
                     }
                 }
-                $tbl .= '</tr></table>';
+                $tbl = CompactBatchPdfHelper::closeTable($tbl);
             }
 
             // A pooled batch is run cartridge by cartridge, so its worksheet lists the

@@ -296,6 +296,11 @@ if (!empty($result)) {
      $resultValue = $result['result'] ?? '';
      $decodedResult = is_numeric($resultValue) ? $resultValue : html_entity_decode((string) $resultValue, ENT_QUOTES | ENT_HTML5, 'UTF-8');
      $displayResult = is_numeric($decodedResult) ? round((float) $decodedResult, 2) : $decodedResult;
+     // A rejected sample has no result. Say so, rather than print a blank one.
+     if ($result['result_status'] == REJECTED || ($result['is_sample_rejected'] ?? '') == 'yes') {
+          $reason = (string) ($result['rejection_reason_name'] ?? '');
+          $displayResult = _translate('Rejected') . ($reason === '' ? '' : " ($reason)");
+     }
 
      $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;VIRAL LOAD RESULT (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $displayResult, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</td></tr>';
      $html .= '<tr><td colspan="3"></td></tr>';
@@ -381,7 +386,10 @@ if (!empty($result)) {
      $html .= '</td>';
      $html .= '</tr>';
      $html .= '</table>';
-     if (!empty($result['result'])) {
+     // A result of "0" is a result, which empty() treats as none. A rejected
+     // sample prints too, as on the other forms, with the rejected icon above.
+     $isRejected = $result['result_status'] == REJECTED || ($result['is_sample_rejected'] ?? '') == 'yes';
+     if ((string) ($result['result'] ?? '') !== '' || $isRejected) {
           $pdf->writeHTML($html);
           if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
                $viewId = CommonService::encryptViewQRCode($result['unique_id']);

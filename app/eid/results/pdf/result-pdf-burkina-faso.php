@@ -22,8 +22,8 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 
-$pages = [];
-$page = 1;
+// generate-result-pdf.php requires this form once per sample and owns $pages and
+// $page. Resetting them here kept only the last sample of a multi-sample print.
 
 if (!empty($result)) {
     $currentTime = DateUtility::getCurrentDateTime();
@@ -104,7 +104,6 @@ if (!empty($result)) {
     $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '', true, 'd/M/Y H:i:s');
     $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true, 'd/M/Y H:i:s');
     $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true, 'd/M/Y H:i:s');
-    $result['result_approved_datetime'] = DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true, 'd/M/Y H:i:s');
     $testedBy = $result['testedBy'] ?? null;
     $revisedBy = $result['revisedBy'] ?? null;
 
@@ -245,19 +244,6 @@ if (!empty($result)) {
     $html .= '</tr>';
 
 
-    $html .= '<tr>';
-    $html .= '<td colspan="3">';
-    $html .= '<table style="padding:8px 2px 2px 2px;">';
-    $html .= '<tr>';
-
-    $html .= '</tr>';
-    $html .= '<tr>';
-
-    $html .= '</tr>';
-    $html .= '</table>';
-    $html .= '</td>';
-    $html .= '</tr>';
-
 
     $html .= '<tr>';
     $html .= '<td colspan="3" style="line-height:2px;border-bottom:1px solid #d3d3d3;"></td>';
@@ -390,7 +376,7 @@ if (!empty($result)) {
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         }
 
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (empty($result['result_approved_datetime']) ? '' : date('d/M/Y', strtotime((string) $result['result_approved_datetime']))) . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', false, 'd/M/Y') . '</td>';
         $html .= '</tr>';
     }
 

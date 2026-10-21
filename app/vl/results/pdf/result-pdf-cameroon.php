@@ -333,24 +333,27 @@ if (!empty($result)) {
      $html .= '</table>';
 
 
-     $html .= '<table style="padding:8px 4px 2px 2px;">';
-     $html .= '<tr>';
-     if (!empty($result['health_insurance_code'])) {
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH INSURANCE CODE") . '</td>';
-     }
-     if (!empty($result['lab_assigned_code'])) {
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("LAB ASSIGNED CODE") . '</td>';
-     }
-     $html .= '</tr><tr>';
+     // With neither code the rows would be empty, which TCPDF cannot lay out
+     if (!empty($result['health_insurance_code']) || !empty($result['lab_assigned_code'])) {
+          $html .= '<table style="padding:8px 4px 2px 2px;">';
+          $html .= '<tr>';
+          if (!empty($result['health_insurance_code'])) {
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("HEALTH INSURANCE CODE") . '</td>';
+          }
+          if (!empty($result['lab_assigned_code'])) {
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("LAB ASSIGNED CODE") . '</td>';
+          }
+          $html .= '</tr><tr>';
 
-     if (!empty($result['health_insurance_code'])) {
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['health_insurance_code'] . '</td>';
-     }
-     if (!empty($result['lab_assigned_code'])) {
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['lab_assigned_code'] . '</td>';
-     }
+          if (!empty($result['health_insurance_code'])) {
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['health_insurance_code'] . '</td>';
+          }
+          if (!empty($result['lab_assigned_code'])) {
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['lab_assigned_code'] . '</td>';
+          }
 
-     $html .= '</tr></table>';
+          $html .= '</tr></table>';
+     }
 
 
      $html .= '</td>';
@@ -402,7 +405,7 @@ if (!empty($result)) {
           if ($result['result_value_log'] != '' && !empty($result['result_value_log'])) {
                $result['result_value_log'] = round($result['result_value_log'], 2);
                $logValue = '<br/>&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
-          } elseif (is_numeric($result['result'])) {
+          } elseif (is_numeric($result['result']) && (float) $result['result'] > 0) {
                $logV = round(log10($result['result']), 2);
                $logValue = '<br/>&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logV;
           } else {
