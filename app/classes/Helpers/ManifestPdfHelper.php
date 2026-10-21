@@ -5,9 +5,8 @@ namespace App\Helpers;
 use Override;
 use App\Utilities\MiscUtility;
 use App\Utilities\DateUtility;
-use TCPDF;
 
-class ManifestPdfHelper extends TCPDF
+class ManifestPdfHelper extends BasePdf
 {
     public ?string $logo = "";
     public ?string $text = "";

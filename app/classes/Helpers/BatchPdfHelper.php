@@ -8,9 +8,8 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\TbPoolService;
-use setasign\Fpdi\Tcpdf\Fpdi;
 
-class BatchPdfHelper extends Fpdi
+class BatchPdfHelper extends BasePdf
 {
     public ?string $logo = null;
     public ?string $text = null;

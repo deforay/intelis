@@ -4,9 +4,9 @@ namespace App\Helpers\ResultPDFHelpers;
 
 use Override;
 use App\Utilities\MiscUtility;
-use setasign\Fpdi\Tcpdf\Fpdi;
+use App\Helpers\BasePdf;
 
-class EIDResultPDFHelper extends Fpdi
+class EIDResultPDFHelper extends BasePdf
 {
     public ?string $logo = null;
     public ?string $text = null;

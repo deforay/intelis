@@ -2,7 +2,7 @@
 
 
 use Psr\Http\Message\ServerRequestInterface;
-use setasign\Fpdi\Tcpdf\Fpdi;
+use App\Helpers\BasePdf;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -25,7 +25,7 @@ $globalConfig = $general->getGlobalConfig();
 
 $barcodeFormat = $globalConfig['barcode_format'] ?? 'C39';
 
-class Covid19ConfirmationManifestPDF extends Fpdi
+class Covid19ConfirmationManifestPDF extends BasePdf
 {
     public ?string $logo = null;
     public ?string $text = null;

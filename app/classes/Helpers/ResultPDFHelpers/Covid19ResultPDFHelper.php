@@ -3,12 +3,12 @@
 namespace App\Helpers\ResultPDFHelpers;
 
 use Override;
-use setasign\Fpdi\Tcpdf\Fpdi;
+use App\Helpers\BasePdf;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
-class Covid19ResultPDFHelper extends Fpdi
+class Covid19ResultPDFHelper extends BasePdf
 {
     public ?string $logo = null;
     public ?string $text = null;

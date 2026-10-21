@@ -3,10 +3,9 @@
 namespace App\Helpers;
 
 use Override;
-use setasign\Fpdi\Tcpdf\Fpdi;
 use App\Utilities\DateUtility;
 
-class CompactBatchPdfHelper extends Fpdi
+class CompactBatchPdfHelper extends BasePdf
 {
     public ?string $text = null;
     public ?array $batchDetails = null;
