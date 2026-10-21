@@ -60,7 +60,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 }
 
 //set query
-$allQuery = $_SESSION['eidPrintQuery'];
+$allQuery = $_SESSION['eidPrintQuery'] ?? '';
 if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 
     $searchQuery = "SELECT vl.*,f.*,

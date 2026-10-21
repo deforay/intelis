@@ -54,7 +54,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 }
 
 //set query
-$allQuery = $_SESSION['covid19PrintQuery'];
+$allQuery = $_SESSION['covid19PrintQuery'] ?? '';
 if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 
 	$searchQuery = "SELECT vl.*,f.*,

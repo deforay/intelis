@@ -62,7 +62,7 @@ class PdfConcatenateHelper extends BasePdf
 			for ($i = 1; $i <= $pagecount; $i++) {
 				$tplidx = $this->importPage($i);
 				$s = $this->getTemplateSize($tplidx);
-				$this->AddPage('P', [$s['w'], $s['h']]);
+				$this->AddPage($s['orientation'], [$s['width'], $s['height']]);
 				$this->useTemplate($tplidx);
 			}
 		}

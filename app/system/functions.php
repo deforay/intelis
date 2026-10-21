@@ -502,18 +502,19 @@ function _capitalizeWords(string $string): string
 /**
  * Capitalizes only the first letter of a string
  *
- * @param string $string The input string
- * @param string $encoding The character encoding
+ * @param string|null $string The input string. NULL gives an empty string,
+ *                            because result PDFs pass columns that can be NULL,
+ *                            such as patient_gender.
  * @return string The string with only the first letter capitalized
  */
-function _capitalizeFirstLetter(string $string): string
+function _capitalizeFirstLetter(?string $string): string
 {
-    if ($string === '' || $string === '0') {
-        return $string;
+    if ($string === null || $string === '' || $string === '0') {
+        return (string) $string;
     }
 
     $str = new UnicodeString($string);
-    return $str->slice(0, 1)->upper()->append($str->slice(1))->toString();
+    return $str->slice(0, 1)->upper()->append($str->slice(1)->toString())->toString();
 }
 
 /**

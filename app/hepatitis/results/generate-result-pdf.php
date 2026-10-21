@@ -44,7 +44,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
 }
 //set query
-$allQuery = $_SESSION['hepatitisPrintQuery'];
+$allQuery = $_SESSION['hepatitisPrintQuery'] ?? '';
 if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 
 	$searchQuery = "SELECT vl.*,f.*,
