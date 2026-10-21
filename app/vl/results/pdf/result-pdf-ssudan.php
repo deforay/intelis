@@ -342,7 +342,7 @@ if (!empty($result)) {
           . '<td>' . $smileyContent . '</td>'
           . '</tr>';
      if ($result['reason_for_sample_rejection'] != '' && $result['is_sample_rejected'] == 'yes') {
-          $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
+          $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . _sanitizeOutput($result['rejection_reason_name']) . '</td></tr>';
      }
      /* if (str_contains(strtolower((string)$result['instrument_machine_name']), 'abbott m2000')) {
            $html .= '<tr>';

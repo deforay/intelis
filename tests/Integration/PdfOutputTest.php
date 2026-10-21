@@ -118,6 +118,7 @@ final class PdfOutputTest extends TestCase
         'vl-result-png' => ['vl', PNG],
         'vl-result-rwanda' => ['vl', RWANDA],
         'vl-result-burkina-faso' => ['vl', BURKINA_FASO],
+        'vl-result-cameroon-cresar' => ['vl', CAMEROON, 'pdf/result-pdf-cameroon-cresar.php'],
         'eid-result-south-sudan' => ['eid', SOUTH_SUDAN],
         'eid-result-sierra-leone' => ['eid', SIERRA_LEONE],
         'eid-result-drc' => ['eid', DRC],
@@ -209,6 +210,7 @@ final class PdfOutputTest extends TestCase
             'VL result, PNG form' => ['vl-result-png'],
             'VL result, Rwanda form' => ['vl-result-rwanda'],
             'VL result, Burkina Faso form' => ['vl-result-burkina-faso'],
+            'VL result, Cameroon CRESAR report format' => ['vl-result-cameroon-cresar'],
             'EID result, South Sudan form' => ['eid-result-south-sudan'],
             'EID result, Sierra Leone form' => ['eid-result-sierra-leone'],
             'EID result, DRC form' => ['eid-result-drc'],
@@ -367,9 +369,10 @@ final class PdfOutputTest extends TestCase
             'result_approved_by' => '1', 'result_approved_datetime' => '2026-09-30 15:00:00',
         ]);
 
-        // A rejected sample, with no result. Every form prints it.
+        // A rejected sample, with no result. Every form prints it, and its
+        // reason. The "<" must print as text, not open a tag TCPDF drops.
         $db->insert('r_vl_sample_rejection_reasons', [
-            'rejection_reason_id' => 1, 'rejection_reason_name' => 'Haemolysed sample',
+            'rejection_reason_id' => 1, 'rejection_reason_name' => 'Volume <1ml',
             'rejection_type' => 'general', 'rejection_reason_status' => 'active', 'rejection_reason_code' => 'HAEM',
         ]);
         $db->insert('form_vl', [
@@ -462,9 +465,13 @@ final class PdfOutputTest extends TestCase
 
         // Sample ids, then the text each sample must print. Not every TB form
         // prints the sample code, so TB samples are found by patient ID. For the
-        // encrypted sample that and the name are the decrypted values.
+        // encrypted sample that and the name are the decrypted values. The VL
+        // CRESAR report format prints no sample code either, so its samples are
+        // found by ART number.
         $samples = match ($module) {
-            'vl' => ['1,2,4,5', ['VL-TEST-0001', 'VL-TEST-0002', 'VL-TEST-0004', 'VL-TEST-0005']],
+            'vl' => ['1,2,4,5', $reportFormat === null
+                ? ['VL-TEST-0001', 'VL-TEST-0002', 'VL-TEST-0004', 'VL-TEST-0005', 'Volume <1ml']
+                : ['PT-0001', 'PT-0002', 'PT-0004', 'PT-0005', 'Volume <1ml']],
             'eid' => ['1,2', ['EID-TEST-0001', 'EID-TEST-0002']],
             'tb' => ['1,2,3', ['TBP-0001', 'TBP-0002', 'TBP-0003', 'Okafor']],
             'cd4' => ['1,2', ['CD4-TEST-0001', 'CD4-TEST-0002']],

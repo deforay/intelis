@@ -133,7 +133,10 @@ if (!empty($result)) {
           $modificationDate = _translate('Modification date') . " : " . DateUtility::humanReadableDateFormat($result['last_modified_datetime']);
      }
 
-     $finalDate = date('d-m-Y', strtotime('+1 day', strtotime((string) $result['sample_tested_datetime'])));
+     // A sample with no test date, such as a rejected one, has no result date
+     $finalDate = empty($result['sample_tested_datetime'])
+          ? ''
+          : date('d-m-Y', strtotime('+1 day', strtotime((string) $result['sample_tested_datetime'])));
 
 
      if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) === '') {
@@ -216,7 +219,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Contact") . " : " . $result['patient_mobile_number'] . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Date of Sample Collection") . " : " . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
+     $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Date of Sample Collection") . " : " . $result['sample_collection_date'] . '</td>';
      $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Collected By") . " : " . $result['facility_name'] . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
@@ -268,6 +271,10 @@ if (!empty($result)) {
      $html .= '<td width="25%" style="line-height:15px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . $result['labName'] . '</td>';
 
      $html .= '</tr>';
+     if (!empty($result['reason_for_sample_rejection'])) {
+          $html .= '<tr><td></td></tr>';
+          $html .= '<tr><td width="100%" style="line-height:15px;font-size:10px;text-align:left;">' . _translate('Rejection Reason') . ' : ' . _sanitizeOutput($result['rejection_reason_name']) . '</td></tr>';
+     }
      $html .= '<tr><td width="100%" style="line-height:17px;font-size:10px;">';
      $html .= '<br>';
      $html .= '<p>' . "N.B : Le test Abbott 0.6ml a une limite inférieure de quantification de 40 copies/mL et une limite supérieure de quantification de 10.000.000 copies/mL. Pour tout résultat entre ces limites, le nombre de copies par ml est signalé. Lorsque le virus est détecté au dessus ou en dessous des limites de quantification, ceci est signalé. Si le test est réussi et qu'aucun virus n'est détecté, le résultat est signalé comme cible non détectée. Pour qu'une variation de la charge virale soit significative, il faut que la différence entre deux mesures soit d'au moins 0.5 Log10 soit une réduction ou une augmentation d'un facteur de 3 du nombre de copies/mL" . '</p>';

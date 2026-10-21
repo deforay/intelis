@@ -420,7 +420,7 @@ if (!empty($result)) {
           htmlspecialchars((string) $displayResult, ENT_QUOTES | ENT_HTML5, 'UTF-8');
      $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">' . $vlFinalResult . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
      if (!empty($result['reason_for_sample_rejection']) && $result['reason_for_sample_rejection'] != '') {
-          $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;' . _translate("Rejection Reason") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
+          $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;' . _translate("Rejection Reason") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . _sanitizeOutput($result['rejection_reason_name']) . '</td></tr>';
      }
      $instrumentMachineName = $result['instrument_machine_name'] ?? $result['vl_test_platform'] ?? '';
      if (str_contains(strtolower((string) $instrumentMachineName), 'm2000')) {
