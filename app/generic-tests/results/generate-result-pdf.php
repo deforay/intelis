@@ -279,7 +279,7 @@ if (!empty($requestResult)) {
 		if (!empty($result['result_approved_by'])) {
 			$resultApprovedByRes = $usersService->getUserByID($result['result_approved_by'], ['user_name', 'user_signature']);
 			if ($resultApprovedByRes) {
-				$resultApprovedBy = $resultApprovedByRes['result_approved_by'];
+				$resultApprovedBy = $resultApprovedByRes['user_name'];
 			}
 			if (!empty($resultApprovedByRes['user_signature'])) {
 				$userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $resultApprovedByRes['user_signature'];
@@ -498,7 +498,10 @@ if (!empty($requestResult)) {
 			return $out;
 		};
 
-		$patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_id']));
+		$patientName = implode(' ', array_filter(
+			[$result['patient_first_name'], $result['patient_middle_name'], $result['patient_last_name']],
+			static fn($part): bool => trim((string) $part) !== ''
+		));
 
 		// Section 1 - requesting facility & patient
 		$sec1 = [
@@ -506,7 +509,7 @@ if (!empty($requestResult)) {
 			$f(_translate('Facility Code'), $result['facility_code']),
 			$f(_translate('State'), $result['facility_state']),
 			$f(_translate('County'), $result['facility_district']),
-			$showPatientName ? $f(_translate('Patient Name'), $patientFname) : null,
+			$showPatientName ? $f(_translate('Patient Name'), $patientName) : null,
 			$f($patientIdLabel, $result['patient_id']),
 			$f(_translate('Reason for Testing'), $result['test_reason']),
 			$f(_translate('Age'), $age),
@@ -734,9 +737,6 @@ if (!empty($requestResult)) {
 		$html .= '</tr></table>';
 		if ($result['reason_for_sample_rejection'] != '') {
 			$html .= '<table cellpadding="2" cellspacing="0" style="width:100%;"><tr><td style="font-size:10px;font-weight:bold;color:#000000;">' . _translate('Rejection Reason') . ': ' . $result['rejection_reason_name'] . '</td></tr></table>';
-		}
-		if (str_contains(strtolower((string) $result['vl_test_platform']), 'abbott')) {
-			$html .= '<table cellpadding="2" cellspacing="0" style="width:100%;"><tr><td style="font-size:8px;color:#777777;">Abbott Linear Detection range: 839 copies/mL - 10 million copies/mL</td></tr></table>';
 		}
 		$html .= '</td>';
 		$html .= '</tr>';
