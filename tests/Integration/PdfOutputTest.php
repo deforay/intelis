@@ -70,6 +70,8 @@ final class PdfOutputTest extends TestCase
         'r_test_types', 'form_generic', 'generic_test_results', 'r_generic_test_reasons', 'r_generic_sample_types',
         'r_generic_sample_rejection_reasons', 'r_generic_test_methods', 'r_generic_test_result_units',
         'generic_test_result_units_map',
+        'form_covid19', 'covid19_tests', 'r_covid19_results', 'r_covid19_test_reasons',
+        'r_covid19_sample_rejection_reasons', 'r_covid19_sample_type',
     ];
 
     /** The one Custom Test type: a malaria test with a qualitative result. */
@@ -104,7 +106,10 @@ final class PdfOutputTest extends TestCase
         ['EID-TEST-0002', 'INF-0002', 'Infant', 'Mukendi', 'female', 'Negative'],
     ];
 
-    /** The result form each country prints, by its vl_form setting, per module. */
+    /**
+     * The result form each country prints, by its vl_form setting, per module.
+     * A third value is the form a lab picks with its report_format setting.
+     */
     private const RESULT_FORMS = [
         'vl-result-south-sudan' => ['vl', SOUTH_SUDAN],
         'vl-result-sierra-leone' => ['vl', SIERRA_LEONE],
@@ -126,6 +131,21 @@ final class PdfOutputTest extends TestCase
         'cd4-result-rwanda' => ['cd4', RWANDA],
         'hepatitis-result-rwanda' => ['hepatitis', RWANDA],
         'generic-tests-result' => ['generic-tests', RWANDA],
+        'covid-19-result-south-sudan' => ['covid-19', SOUTH_SUDAN],
+        'covid-19-result-sierra-leone' => ['covid-19', SIERRA_LEONE],
+        'covid-19-result-drc-1' => ['covid-19', DRC],
+        'covid-19-result-cameroon' => ['covid-19', CAMEROON],
+        'covid-19-result-png' => ['covid-19', PNG],
+        'covid-19-result-rwanda' => ['covid-19', RWANDA],
+        'covid-19-result-drc' => ['covid-19', DRC, 'pdf/result-pdf-drc.php'],
+        'covid-19-result-drc-2' => ['covid-19', DRC, 'pdf/result-pdf-drc-2.php'],
+        'covid-19-result-drc-3' => ['covid-19', DRC, 'pdf/result-pdf-drc-3.php'],
+        'covid-19-result-drc-4' => ['covid-19', DRC, 'pdf/result-pdf-drc-4.php'],
+        'covid-19-result-drc-5' => ['covid-19', DRC, 'pdf/result-pdf-drc-5.php'],
+        'covid-19-result-drc-6' => ['covid-19', DRC, 'pdf/result-pdf-drc-6.php'],
+        'covid-19-result-drc-7' => ['covid-19', DRC, 'pdf/result-pdf-drc-7.php'],
+        'covid-19-result-drc-8' => ['covid-19', DRC, 'pdf/result-pdf-drc-8.php'],
+        'covid-19-result-ssudan-default' => ['covid-19', SOUTH_SUDAN, 'pdf/result-pdf-ssudan-default.php'],
     ];
 
     /** Three VL samples: a numeric result, a target-not-detected result and no result yet. */
@@ -161,6 +181,21 @@ final class PdfOutputTest extends TestCase
             'CD4 result, Rwanda form' => ['cd4-result-rwanda'],
             'Hepatitis result, Rwanda form' => ['hepatitis-result-rwanda'],
             'Custom Tests result' => ['generic-tests-result'],
+            'COVID-19 result, South Sudan form' => ['covid-19-result-south-sudan'],
+            'COVID-19 result, Sierra Leone form' => ['covid-19-result-sierra-leone'],
+            'COVID-19 result, DRC form' => ['covid-19-result-drc-1'],
+            'COVID-19 result, Cameroon form' => ['covid-19-result-cameroon'],
+            'COVID-19 result, PNG form' => ['covid-19-result-png'],
+            'COVID-19 result, Rwanda form' => ['covid-19-result-rwanda'],
+            'COVID-19 result, DRC report format' => ['covid-19-result-drc'],
+            'COVID-19 result, DRC report format 2' => ['covid-19-result-drc-2'],
+            'COVID-19 result, DRC report format 3' => ['covid-19-result-drc-3'],
+            'COVID-19 result, DRC report format 4' => ['covid-19-result-drc-4'],
+            'COVID-19 result, DRC report format 5' => ['covid-19-result-drc-5'],
+            'COVID-19 result, DRC report format 6' => ['covid-19-result-drc-6'],
+            'COVID-19 result, DRC report format 7' => ['covid-19-result-drc-7'],
+            'COVID-19 result, DRC report format 8' => ['covid-19-result-drc-8'],
+            'COVID-19 result, South Sudan default report format' => ['covid-19-result-ssudan-default'],
         ];
     }
 
@@ -353,12 +388,16 @@ final class PdfOutputTest extends TestCase
         LegacyAppHarness::seedDefaults('r_tb_results');
         $this->seedCd4AndHepatitis();
         $this->seedCustomTests();
+        $this->seedCovid19();
 
         // A file cache shared by every test process holds global config for an hour
         MemoUtility::clear();
         ContainerRegistry::get(FileCacheUtility::class)->clear();
 
-        LegacyAppHarness::withSession(['labId' => self::LAB, 'instance' => ['type' => 'vluser']]);
+        // SystemService sets APP_TIMEZONE on every app request
+        LegacyAppHarness::withSession([
+            'labId' => self::LAB, 'instance' => ['type' => 'vluser'], 'APP_TIMEZONE' => date_default_timezone_get(),
+        ]);
     }
 
     /**
@@ -366,9 +405,15 @@ final class PdfOutputTest extends TestCase
      * for the merged file. Prints every sample with a result or a rejection:
      * VL 1, 2, 4 and 5, TB and Hepatitis 1 to 3, and 1 and 2 of every other module.
      */
-    private function resultPdf(string $module, int $form): string
+    private function resultPdf(string $module, int $form, ?string $reportFormat = null): string
     {
-        LegacyAppHarness::db()->rawQuery("UPDATE global_config SET value = ? WHERE name = 'vl_form'", [$form]);
+        $db = LegacyAppHarness::db();
+        $db->rawQuery("UPDATE global_config SET value = ? WHERE name = 'vl_form'", [$form]);
+        if ($reportFormat !== null) {
+            $db->rawQuery('UPDATE facility_details SET report_format = ? WHERE facility_id = ?', [
+                json_encode([str_replace('-', '', $module) => $reportFormat]), self::LAB,
+            ]);
+        }
         MemoUtility::clear();
         ContainerRegistry::get(FileCacheUtility::class)->clear();
 
@@ -383,6 +428,7 @@ final class PdfOutputTest extends TestCase
             'hepatitis' => ['1,2,3', ['HEP-TEST-0001', 'HEP-TEST-0002', 'HEP-TEST-0003', 'HBV VL RESULTS : 310',
                 'TEST REQUESTED : HBV', 'Riverside District']],
             'generic-tests' => ['1,2', ['GEN-TEST-0001', 'GEN-TEST-0002']],
+            'covid-19' => ['1,2', ['Kamara', 'Mukendi']],
         };
         $request = LegacyAppHarness::withPost(['id' => $samples[0]], "/$module/results/generate-result-pdf.php");
         $token = trim($this->body($request));
@@ -478,6 +524,33 @@ final class PdfOutputTest extends TestCase
                     'generic_id' => $id, 'result' => $result, 'final_result' => $result,
                 ]);
             }
+        }
+    }
+
+    /** Two COVID-19 samples, a positive and a negative, with one test each. */
+    private function seedCovid19(): void
+    {
+        $db = LegacyAppHarness::db();
+        LegacyAppHarness::seedDefaults('r_covid19_results');
+        $samples = [[1, 'Amina', 'Kamara', 'female', 'positive'], [2, 'Jean', 'Mukendi', 'male', 'negative']];
+        foreach ($samples as [$id, $first, $last, $sex, $result]) {
+            $db->insert('form_covid19', [
+                'covid19_id' => $id, 'unique_id' => 'pdf-output-cov-' . $id, 'vlsm_instance_id' => 'pdf-output',
+                'sample_code' => 'COV-TEST-000' . $id, 'remote_sample_code' => 'R-COV-TEST-000' . $id,
+                'patient_id' => 'COVP-000' . $id, 'patient_name' => $first, 'patient_surname' => $last,
+                'patient_gender' => $sex, 'patient_dob' => '1988-04-0' . $id,
+                'facility_id' => self::CLINIC, 'lab_id' => self::LAB, 'result' => $result,
+                'result_status' => ACCEPTED, 'sample_collection_date' => '2026-09-2' . $id . ' 10:00:00',
+                'sample_received_at_lab_datetime' => '2026-09-29 08:00:00',
+                'sample_tested_datetime' => '2026-09-30 11:00:00', 'tested_by' => '1',
+                'result_reviewed_by' => '1', 'result_reviewed_datetime' => '2026-09-30 14:00:00',
+                'result_approved_by' => '1', 'result_approved_datetime' => '2026-09-30 15:00:00',
+            ]);
+            $db->insert('covid19_tests', [
+                'covid19_id' => $id, 'facility_id' => self::LAB, 'test_name' => 'Real Time RT-PCR',
+                'tested_by' => '1', 'sample_tested_datetime' => '2026-09-30 11:00:00',
+                'testing_platform' => 'GeneXpert', 'result' => $result,
+            ]);
         }
     }
 

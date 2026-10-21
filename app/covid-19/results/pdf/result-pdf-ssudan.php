@@ -306,7 +306,7 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">FULL NAME </td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $patientFname . ' ' . $patientLname . '</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">LABORATORY NAME</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['labName']) . '(' . ($result['facility_code']) . ')</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['labName']) . (empty($result['facility_code']) ? '' : '(' . $result['facility_code'] . ')') . '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
@@ -414,7 +414,7 @@ if (!empty($requestResult)) {
         $resultFlag = "";
         if (isset($result['result']) && $result['result'] == "negative") {
             $resultFlag = "(-)";
-        } elseif (isset($result['result']) && $result['result'] == "postive") {
+        } elseif (isset($result['result']) && $result['result'] == "positive") {
             $resultFlag = "(+)";
         }
 
@@ -472,9 +472,10 @@ if (!empty($requestResult)) {
             $html .= '</table>';
         } else {
             $lh = 0;
+            // The </td></tr></table> after this if/else closes these, as it does for the signatory table
+            $html .= '<table>';
             $html .= '<tr>';
-            $html .= '<td colspan="5" style="line-height:50px;"></td>';
-            $html .= '</tr>';
+            $html .= '<td colspan="5" style="line-height:50px;">';
         }
 
         /*

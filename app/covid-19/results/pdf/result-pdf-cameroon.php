@@ -269,7 +269,7 @@ if (!empty($requestResult)) {
     $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">FULL NAME </td>';
     $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $patientFname . ' ' . $patientLname . '</td>';
     $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">LABORATORY NAME</td>';
-    $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['labName']) . '(' . ($result['facility_code']) . ')</td>';
+    $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['labName']) . (empty($result['facility_code']) ? '' : '(' . $result['facility_code'] . ')') . '</td>';
     $html .= '</tr>';
 
     $html .= '<tr>';
@@ -378,7 +378,7 @@ if (!empty($requestResult)) {
     $resultFlag = "";
     if (isset($result['result']) && $result['result'] == "negative") {
         $resultFlag = "(-)";
-    } elseif (isset($result['result']) && $result['result'] == "postive") {
+    } elseif (isset($result['result']) && $result['result'] == "positive") {
         $resultFlag = "(+)";
     }
 
@@ -459,9 +459,10 @@ if (!empty($requestResult)) {
         $html .= '</table>';
     } else {
         $lh = 0;
+        // The </td></tr></table> after this if/else closes these, as it does for the signatory table
+        $html .= '<table>';
         $html .= '<tr>';
-        $html .= '<td colspan="5" style="line-height:50px;"></td>';
-        $html .= '</tr>';
+        $html .= '<td colspan="5" style="line-height:50px;">';
     }
 
     /*
@@ -498,6 +499,7 @@ if (!empty($requestResult)) {
         $generatedAtTestingLab = "";
     }
     $html .= '<tr>';
+    $showContent = '';
     if ($pdfPrintCount > 1)
           $showContent = '(' . _translate("Duplicata: ") . $pdfPrintCount . ')';
     $html .= '<td style="font-size:10px;text-align:left;" colspan="2">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab . ' ' . $showContent . '</td>';
@@ -507,6 +509,7 @@ if (!empty($requestResult)) {
     $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
     $html .= '</tr>';
     $html .= '</table>';
+    $showQR = false;
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
         $showQR = true;
     }
