@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+#
+# pre-ship — the checks `git sync`, `git ship` and `git land` run before they
+# push anything (see "What every push checks first" in the team git guide).
+#
+# It runs in a throwaway worktree holding exactly the commits being pushed, so
+# a class you forgot to `git add` fails here as it would on a lab server. Only
+# the fast checks that have broken production run here; the full suite stays in
+# CI, which `git land` waits for.
+#
+#   1. php -l on every PHP file the commits change
+#   2. check-di: the DI container compiles. A class it could not build took
+#      every DRC page down on 2026-10-13, and CI flagged it only after the merge.
+#   3. check-invariants: the codebase rules that have drifted before
+#
+# Environment, set by git-ship.sh:
+#   SHIP_SOURCE_ROOT  the developer's checkout, for vendor/ (git does not track it)
+#   SHIP_BASE         the commit the push builds on
+set -euo pipefail
+
+src="${SHIP_SOURCE_ROOT:?run this through git sync, git ship or git land}"
+base="${SHIP_BASE:?}"
+
+for tool in php composer; do
+    if ! command -v "$tool" >/dev/null 2>&1; then
+        echo "pre-ship: $tool is not on PATH, so the checks cannot run." >&2
+        exit 1
+    fi
+done
+if [ ! -f "$src/vendor/autoload.php" ]; then
+    echo "pre-ship: $src/vendor is missing. Run: composer install" >&2
+    exit 1
+fi
+if ! cmp -s "$src/composer.lock" composer.lock; then
+    echo "pre-ship: composer.lock in these commits differs from your checkout's." >&2
+    echo "          Run composer install in your checkout, then push again." >&2
+    exit 1
+fi
+
+# vendor/: link each package from the checkout, but give this copy its own
+# autoloader files. Composer's autoloader finds app/classes relative to its own
+# location, so a linked vendor/composer would load the checkout's classes, not
+# the ones being pushed, and the check would pass on code that is not shipping.
+mkdir vendor
+for entry in "$src"/vendor/* "$src"/vendor/.[!.]*; do
+    [ -e "$entry" ] || continue
+    name="$(basename "$entry")"
+    case "$name" in
+        composer|autoload.php) cp -R "$entry" "vendor/$name" ;;
+        *) ln -s "$entry" "vendor/$name" ;;
+    esac
+done
+
+# check-di boots the app, which needs a config. CI uses the shipped template;
+# so does this, so the result does not depend on one developer's local config.
+cp configs/config.production.dist.php configs/config.production.php
+
+echo "pre-ship: php -l on changed files"
+changed="$(git diff --name-only --diff-filter=AMR "$base" HEAD -- '*.php')"
+if [ -n "$changed" ]; then
+    printf '%s\n' "$changed" | while IFS= read -r f; do
+        php -d display_errors=stderr -l "$f" >/dev/null || { echo "pre-ship: syntax error in $f" >&2; exit 1; }
+    done
+fi
+
+echo "pre-ship: DI container"
+php bin/build/check-di.php
+
+echo "pre-ship: invariants"
+composer --no-interaction --quiet check-invariants
