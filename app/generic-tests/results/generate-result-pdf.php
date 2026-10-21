@@ -736,7 +736,7 @@ if (!empty($requestResult)) {
 		$html .= '<td style="width:80%;font-size:14px;font-weight:bold;color:#000000;text-align:left;line-height:18px;">' . $vlResult . $smileyContent . '</td>';
 		$html .= '</tr></table>';
 		if ($result['reason_for_sample_rejection'] != '') {
-			$html .= '<table cellpadding="2" cellspacing="0" style="width:100%;"><tr><td style="font-size:10px;font-weight:bold;color:#000000;">' . _translate('Rejection Reason') . ': ' . $result['rejection_reason_name'] . '</td></tr></table>';
+			$html .= '<table cellpadding="2" cellspacing="0" style="width:100%;"><tr><td style="font-size:10px;font-weight:bold;color:#000000;">' . _translate('Rejection Reason') . ': ' . _sanitizeOutput($result['rejection_reason_name']) . '</td></tr></table>';
 		}
 		$html .= '</td>';
 		$html .= '</tr>';

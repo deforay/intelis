@@ -355,7 +355,7 @@ if (!empty($requestResult)) {
             $html .= '<tr>';
             $html .= '<td colspan="2" style="line-height:2px;"></td>';
             $html .= '</tr>';
-            $html .= '<tr><td colspan="2" style="line-height:26px;font-size:12px;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
+            $html .= '<tr><td colspan="2" style="line-height:26px;font-size:12px;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . _sanitizeOutput($result['rejection_reason_name']) . '</td></tr>';
         }
         $html .= '</table>';
         $html .= '</td>';
