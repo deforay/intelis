@@ -24,9 +24,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
 
-$pages = [];
-$page = 1;
-
 if (!empty($result)) {
 
      $tbXPertResults = $tbService->getTbResults('x-pert');
