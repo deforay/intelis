@@ -10,16 +10,22 @@ use setasign\Fpdi\Tcpdf\Fpdi;
  * Base class for every PDF the app builds.
  *
  * PDF HTML carries text from the database, such as patient and facility names,
- * and TCPDF 6 receives no security fixes. Each HTML tag passes through
- * openHTMLTagHandler() after TCPDF has parsed it, so the checks here see
- * exactly what TCPDF would act on:
- *  - an image must be raster data, or an image file inside WEB_ROOT
- *  - a link may only be #..., mailto: or http(s)://
+ * and TCPDF 6 receives no security fixes. Two hooks keep that HTML from
+ * fetching URLs, embedding server files, adding scripts or script links, or
+ * stopping a print run (TCPDF throws on a <form> without an action):
+ *
+ * getHtmlDomArray() runs before TCPDF parses the HTML. It removes <link> tags,
+ * because TCPDF fetches a linked stylesheet while it parses.
+ *
+ * openHTMLTagHandler() sees each tag after TCPDF has parsed it:
+ *  - an image must be raster data, or a raster file inside WEB_ROOT. An
+ *    approved file is passed to TCPDF as data, so TCPDF loads exactly the file
+ *    that was checked and never resolves the path itself.
+ *  - a list may not use an image as its bullet
+ *  - a link may only be #... or http(s)://
  *  - form fields, forms and <tcpdf> tags render as plain text
  *  - on* attributes are removed
- * Anything else is dropped and logged. This stops injected HTML from fetching
- * URLs, embedding server files, adding scripts or script links, or stopping a
- * print run (TCPDF throws on a <form> without an action).
+ * Anything else is dropped and logged.
  *
  * It extends FPDI's TCPDF class, which itself extends TCPDF, so classes that
  * import pages and classes that do not share this one parent.
@@ -28,8 +34,19 @@ class BasePdf extends Fpdi
 {
     private const INERT_TAGS = ['form', 'input', 'textarea', 'select', 'tcpdf'];
 
-    /** @var array<string, bool> */
-    private static array $imageVerdicts = [];
+    /** @var array<string, string|false> image file as an '@' data source, or false when refused */
+    private static array $imageSources = [];
+
+    #[Override]
+    protected function getHtmlDomArray($html)
+    {
+        $html = preg_replace_callback('/<link([^\>]*?)>/is', function (array $match): string {
+            self::logDropped('link', $match[1]);
+            return '';
+        }, (string) $html);
+
+        return parent::getHtmlDomArray($html);
+    }
 
     #[Override]
     protected function openHTMLTagHandler($dom, $key, $cell)
@@ -45,18 +62,43 @@ class BasePdf extends Fpdi
             }
         }
 
+        // A list item takes its bullet from its parent list. An image bullet
+        // ("img|type|width|height|file") would load that file unchecked.
+        foreach ([$key, $dom[$key]['parent'] ?? null] as $listKey) {
+            if ($listKey === null || !isset($dom[$listKey])) {
+                continue;
+            }
+            foreach (['type', 'listtype'] as $field) {
+                $value = $field === 'type'
+                    ? ($dom[$listKey]['attribute']['type'] ?? null)
+                    : ($dom[$listKey]['listtype'] ?? null);
+                if (is_string($value) && str_starts_with(strtolower(trim($value)), 'img|')) {
+                    self::logDropped('list image', $value);
+                    if ($field === 'type') {
+                        unset($dom[$listKey]['attribute']['type']);
+                    } else {
+                        $dom[$listKey]['listtype'] = '';
+                    }
+                }
+            }
+        }
+
         if (in_array($tag, self::INERT_TAGS, true)) {
             self::logDropped($tag, (string) ($attributes['type'] ?? ''));
             $dom[$key]['value'] = 'span';
         } elseif ($tag === 'img' && isset($attributes['src'])) {
             $src = (string) $attributes['src'];
-            if ($src !== '' && !self::isAllowedImage($src)) {
-                self::logDropped('img', $src);
-                $dom[$key]['attribute']['src'] = '';
+            if ($src !== '') {
+                $source = self::imageSource($src);
+                if ($source === false) {
+                    self::logDropped('img', $src);
+                    $source = '';
+                }
+                $dom[$key]['attribute']['src'] = $source;
             }
         } elseif ($tag === 'a' && isset($attributes['href'])) {
             $href = trim((string) $attributes['href']);
-            if (!preg_match('~^(#|mailto:|https?://)~i', $href)) {
+            if (!preg_match('~^(#|https?://)~i', $href)) {
                 self::logDropped('a', $href);
                 unset($dom[$key]['attribute']['href']);
             }
@@ -65,7 +107,10 @@ class BasePdf extends Fpdi
         return parent::openHTMLTagHandler($dom, $key, $cell);
     }
 
-    private static function isAllowedImage(string $src): bool
+    /**
+     * The src TCPDF should load for an image, or false to drop it.
+     */
+    private static function imageSource(string $src): string|false
     {
         $data = null;
         if ($src[0] === '@') {
@@ -76,38 +121,42 @@ class BasePdf extends Fpdi
 
         if ($data !== null) {
             // Raster only. SVG can make TCPDF fetch the files it references.
-            return $data !== false && @getimagesizefromstring($data) !== false;
+            return $data !== false && @getimagesizefromstring($data) !== false ? $src : false;
         }
 
-        // Data images are large and rarely repeat, so only file paths are cached
-        $file = self::imageFileTcpdfOpens($src);
-        if (!isset(self::$imageVerdicts[$file])) {
-            $path = realpath($file);
-            $root = realpath(WEB_ROOT);
-            self::$imageVerdicts[$file] = $path !== false && $root !== false && is_file($path)
-                && str_starts_with($path, $root . DIRECTORY_SEPARATOR)
-                && @getimagesize($path) !== false;
+        // Data images are large and rarely repeat, so only files are cached
+        if (!array_key_exists($src, self::$imageSources)) {
+            $file = self::imageFileInsideWebRoot($src);
+            $contents = $file === null ? false : @file_get_contents($file);
+            self::$imageSources[$src] = $contents !== false && @getimagesizefromstring($contents) !== false
+                ? '@' . base64_encode($contents)
+                : false;
         }
-        return self::$imageVerdicts[$file];
+        return self::$imageSources[$src];
     }
 
     /**
-     * TCPDF prefixes DOCUMENT_ROOT to a root-relative src such as
-     * /assets/img/cross.png, so the check has to look at that file and not at
-     * the src as written. Without DOCUMENT_ROOT, as on the command line, TCPDF
-     * opens the src as it is.
+     * Result PDFs use root-relative paths such as /assets/img/cross.png and
+     * absolute paths such as UPLOAD_PATH signatures. Both resolve inside
+     * WEB_ROOT, on the web and on the command line alike.
      */
-    private static function imageFileTcpdfOpens(string $src): string
+    private static function imageFileInsideWebRoot(string $src): ?string
     {
-        $documentRoot = (string) ($_SERVER['DOCUMENT_ROOT'] ?? '');
-        if ($src[0] === '/' && $documentRoot !== '' && $documentRoot !== '/') {
-            $found = strpos($src, $documentRoot);
-            if ($found === false || $found > 1) {
-                $src = rtrim($documentRoot, '/') . $src;
-            }
-            $src = urldecode($src);
+        $root = realpath(WEB_ROOT);
+        if ($root === false) {
+            return null;
         }
-        return $src;
+        $candidates = [$src];
+        if ($src[0] === '/') {
+            $candidates[] = $root . urldecode($src);
+        }
+        foreach ($candidates as $candidate) {
+            $path = realpath($candidate);
+            if ($path !== false && is_file($path) && str_starts_with($path, $root . DIRECTORY_SEPARATOR)) {
+                return $path;
+            }
+        }
+        return null;
     }
 
     private static function logDropped(string $tag, string $value): void

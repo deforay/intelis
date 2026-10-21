@@ -65,9 +65,19 @@ final class BasePdfTest extends TestCase
         return preg_match_all('#/I\d+ Do#', $pdf);
     }
 
-    public function testImagesTheResultPdfsUseStillRender(): void
+    public static function documentRootProvider(): array
     {
-        $_SERVER['DOCUMENT_ROOT'] = WEB_ROOT;
+        return [
+            'on the web' => [WEB_ROOT],
+            'on the command line, with no DOCUMENT_ROOT' => [''],
+            'with DOCUMENT_ROOT outside WEB_ROOT' => [VAR_PATH],
+        ];
+    }
+
+    #[DataProvider('documentRootProvider')]
+    public function testImagesTheResultPdfsUseStillRender(string $documentRoot): void
+    {
+        $_SERVER['DOCUMENT_ROOT'] = $documentRoot;
 
         $pdf = self::render(
             '<img src="/uploads/base-pdf-test/signature.png"/>'
@@ -106,19 +116,54 @@ final class BasePdfTest extends TestCase
         $this->assertSame(0, self::imageCount($pdf));
     }
 
-    public function testRemoteImageIsNeverFetched(): void
+    public function testRootRelativePathResolvesOnlyInsideWebRoot(): void
     {
-        // TCPDF connects to an http(s) image URL. A listener that never answers
+        // TCPDF would prefix DOCUMENT_ROOT and load the file outside WEB_ROOT
+        $_SERVER['DOCUMENT_ROOT'] = VAR_PATH;
+
+        $pdf = self::render('<img src="/' . basename($this->outsideFile) . '"/>');
+
+        $this->assertSame(0, self::imageCount($pdf));
+    }
+
+    public static function listBulletProvider(): array
+    {
+        return [
+            'the type attribute' => ['<ul type="img|png|10|10|%s"><li>item</li></ul>'],
+            'the list-style-type style' => ['<ul style="list-style-type:img|png|10|10|%s"><li>item</li></ul>'],
+        ];
+    }
+
+    #[DataProvider('listBulletProvider')]
+    public function testListImageBulletIsDropped(string $html): void
+    {
+        $pdf = self::render(sprintf($html, $this->outsideFile));
+
+        $this->assertSame(0, self::imageCount($pdf));
+    }
+
+    public static function remoteFetchProvider(): array
+    {
+        return [
+            'an image' => ['<img src="http://%s/image.png"/>'],
+            'a stylesheet' => ['<link type="text/css" href="http://%s/style.css"/><p>text</p>'],
+        ];
+    }
+
+    #[DataProvider('remoteFetchProvider')]
+    public function testRemoteUrlIsNeverFetched(string $html): void
+    {
+        // TCPDF connects to an http(s) URL. A listener that never answers
         // records the connection without the test reaching the network.
         $server = stream_socket_server('tcp://127.0.0.1:0');
         $this->assertNotFalse($server);
         $address = stream_socket_get_name($server, false);
 
-        $pdf = self::render('<img src="http://' . $address . '/image.png"/>');
+        $pdf = self::render(sprintf($html, $address));
         $connection = @stream_socket_accept($server, 0);
         fclose($server);
 
-        $this->assertFalse($connection, 'TCPDF tried to fetch the remote image');
+        $this->assertFalse($connection, 'TCPDF tried to fetch the remote URL');
         $this->assertSame(0, self::imageCount($pdf));
     }
 
@@ -141,10 +186,12 @@ final class BasePdfTest extends TestCase
     public function testScriptLinkIsDroppedAndWebLinkKept(): void
     {
         $pdf = self::render(
-            '<a href="javascript:app.alert(1)">script</a> <a href="https://example.org/report">web</a>'
+            '<a href="javascript:app.alert(1)">script</a> <a href="mailto:lab@example.org">mail</a>'
+            . ' <a href="https://example.org/report">web</a>'
         );
 
         $this->assertStringNotContainsString('app.alert', $pdf);
+        $this->assertStringNotContainsString('mailto:', $pdf);
         $this->assertStringContainsString('https://example.org/report', $pdf);
     }
 
