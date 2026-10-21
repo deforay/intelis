@@ -62,6 +62,22 @@ final class PdfOutputTest extends TestCase
         'form_vl', 'r_vl_sample_rejection_reasons', 'r_vl_sample_type', 'r_vl_test_reasons',
         'specimen_manifests', 'r_recommended_corrective_actions',
         'form_eid', 'r_eid_sample_rejection_reasons', 'r_eid_sample_type', 'r_eid_results',
+        'form_tb', 'tb_tests', 'facility_type', 'lab_report_signatories', 'r_tb_results',
+        'r_tb_sample_rejection_reasons', 'r_tb_sample_type', 'r_tb_test_reasons',
+    ];
+
+    /** The key a lab encrypts patient details with, 32 bytes for libsodium. */
+    private const KEY = 'pdf-output-test-key-32-bytes-ok!';
+
+    /**
+     * Three TB samples: the result, the Xpert result id in r_tb_results, and the
+     * result of the one test row. The third has its patient details encrypted,
+     * and every form must print them decrypted.
+     */
+    private const TB_SAMPLES = [
+        ['TB-TEST-0001', 'TBP-0001', 'Amina', 'Kamara', 'positive', '7', 'MTB detected', false],
+        ['TB-TEST-0002', 'TBP-0002', 'Jean', 'Mukendi', 'negative', '6', 'MTB not detected', false],
+        ['TB-TEST-0003', 'TBP-0003', 'Grace', 'Okafor', 'negative', '6', 'MTB not detected', true],
     ];
 
     /** Two EID samples: a positive and a negative result. */
@@ -80,6 +96,10 @@ final class PdfOutputTest extends TestCase
         'vl-result-rwanda' => RWANDA,
         'vl-result-burkina-faso' => BURKINA_FASO,
         'eid-result-burkina-faso' => BURKINA_FASO,
+        'tb-result-south-sudan' => SOUTH_SUDAN,
+        'tb-result-sierra-leone' => SIERRA_LEONE,
+        'tb-result-rwanda' => RWANDA,
+        'tb-result-burkina-faso' => BURKINA_FASO,
     ];
 
     /** Three VL samples: a numeric result, a target-not-detected result and no result yet. */
@@ -103,6 +123,10 @@ final class PdfOutputTest extends TestCase
             'VL result, Rwanda form' => ['vl-result-rwanda'],
             'VL result, Burkina Faso form' => ['vl-result-burkina-faso'],
             'EID result, Burkina Faso form' => ['eid-result-burkina-faso'],
+            'TB result, South Sudan form' => ['tb-result-south-sudan'],
+            'TB result, Sierra Leone form' => ['tb-result-sierra-leone'],
+            'TB result, Rwanda form' => ['tb-result-rwanda'],
+            'TB result, Burkina Faso form' => ['tb-result-burkina-faso'],
         ];
     }
 
@@ -164,7 +188,7 @@ final class PdfOutputTest extends TestCase
         }
         LegacyAppHarness::addMigrationColumns('5.7.80', ['specimen_manifests']);
         LegacyAppHarness::seedDefaults('global_config');
-        $config = ['logo' => 'test-logo.png', 'header' => 'Test Lab', 'vl_form' => '0'];
+        $config = ['logo' => 'test-logo.png', 'header' => 'Test Lab', 'vl_form' => '0', 'key' => self::KEY];
         foreach ($config as $name => $value) {
             $db->rawQuery('UPDATE global_config SET value = ? WHERE name = ?', [$value, $name]);
         }
@@ -179,8 +203,10 @@ final class PdfOutputTest extends TestCase
             'facility_id' => self::CLINIC, 'facility_name' => 'Hillside Clinic', 'facility_type' => 1,
             'status' => 'active',
         ]);
+        // Some forms find the user through their role
+        $db->insert('roles', ['role_id' => 1, 'role_name' => 'Admin', 'role_code' => 'AD', 'status' => 'active']);
         $db->insert('user_details', [
-            'user_id' => '1', 'user_name' => 'Test User', 'login_id' => 'test', 'status' => 'active',
+            'user_id' => '1', 'user_name' => 'Test User', 'login_id' => 'test', 'status' => 'active', 'role_id' => 1,
             'user_signature' => 'test-signature.png',
         ]);
         $db->insert('batch_details', [
@@ -263,6 +289,35 @@ final class PdfOutputTest extends TestCase
             ]);
         }
 
+        foreach (self::TB_SAMPLES as $index => [$code, $patient, $first, $last, $result, $xpert, $test, $encrypted]) {
+            $crypt = static fn(string $value): string
+                => $encrypted ? CommonService::encrypt($value, self::KEY) : $value;
+            $db->insert('form_tb', [
+                'tb_id' => $index + 1, 'unique_id' => 'pdf-output-tb-' . ($index + 1),
+                'sample_code' => $code, 'remote_sample_code' => 'R-' . $code,
+                'is_encrypted' => $encrypted ? 'yes' : 'no', 'patient_id' => $crypt($patient),
+                'patient_name' => $crypt($first), 'patient_surname' => $crypt($last),
+                'patient_gender' => $index % 2 === 0 ? 'female' : 'male', 'patient_dob' => '1990-05-1' . $index,
+                'facility_id' => self::CLINIC, 'lab_id' => self::LAB, 'result' => $result,
+                'xpert_mtb_result' => $xpert, 'result_status' => ACCEPTED,
+                'patient_type' => $index === 0 ? '["new"]' : null,
+                'tests_requested' => $index === 0 ? '["xpert"]' : null,
+                'sample_collection_date' => '2026-09-2' . $index . ' 10:00:00',
+                'sample_received_at_lab_datetime' => '2026-09-29 08:00:00',
+                'sample_tested_datetime' => '2026-09-30 11:00:00',
+                'tested_by' => '1', 'result_reviewed_by' => '1', 'result_reviewed_datetime' => '2026-09-30 14:00:00',
+                'result_approved_by' => '1', 'result_approved_datetime' => '2026-09-30 15:00:00',
+            ]);
+            $db->insert('tb_tests', [
+                'tb_id' => $index + 1, 'lab_id' => self::LAB, 'test_type' => 'xpert', 'test_result' => $test,
+                'sample_received_at_lab_datetime' => '2026-09-29 08:00:00',
+                'sample_tested_datetime' => '2026-09-30 11:00:00', 'tested_by' => '1',
+                'result_reviewed_by' => '1', 'result_reviewed_datetime' => '2026-09-30 14:00:00',
+                'result_approved_by' => '1', 'result_approved_datetime' => '2026-09-30 15:00:00',
+            ]);
+        }
+        LegacyAppHarness::seedDefaults('r_tb_results');
+
         // A file cache shared by every test process holds global config for an hour
         MemoUtility::clear();
         ContainerRegistry::get(FileCacheUtility::class)->clear();
@@ -273,7 +328,7 @@ final class PdfOutputTest extends TestCase
     /**
      * The result print merges a PDF per sample and answers with a download token
      * for the merged file. Prints every sample with a result or a rejection:
-     * VL 1, 2, 4 and 5, and EID 1 and 2.
+     * VL 1, 2, 4 and 5, EID 1 and 2, and TB 1 to 3.
      */
     private function resultPdf(string $module, int $form): string
     {
@@ -281,9 +336,14 @@ final class PdfOutputTest extends TestCase
         MemoUtility::clear();
         ContainerRegistry::get(FileCacheUtility::class)->clear();
 
-        $samples = $module === 'vl'
-            ? ['1,2,4,5', ['VL-TEST-0001', 'VL-TEST-0002', 'VL-TEST-0004', 'VL-TEST-0005']]
-            : ['1,2', ['EID-TEST-0001', 'EID-TEST-0002']];
+        // Sample ids, then the text each sample must print. Not every TB form
+        // prints the sample code, so TB samples are found by patient ID. For the
+        // encrypted sample that and the name are the decrypted values.
+        $samples = match ($module) {
+            'vl' => ['1,2,4,5', ['VL-TEST-0001', 'VL-TEST-0002', 'VL-TEST-0004', 'VL-TEST-0005']],
+            'eid' => ['1,2', ['EID-TEST-0001', 'EID-TEST-0002']],
+            'tb' => ['1,2,3', ['TBP-0001', 'TBP-0002', 'TBP-0003', 'Okafor']],
+        };
         $request = LegacyAppHarness::withPost(['id' => $samples[0]], "/$module/results/generate-result-pdf.php");
         $token = trim($this->body($request));
         $path = DownloadTokenUtility::resolve($token, $reason);
@@ -294,7 +354,7 @@ final class PdfOutputTest extends TestCase
         // A snapshot taken while a form drops a sample would accept the drop
         $text = PdfFingerprint::plainText($pdf);
         foreach ($samples[1] as $code) {
-            self::assertStringContainsString($code, $text, "The $module result print left out $code");
+            self::assertStringContainsString($code, $text, "The $module result print left out '$code'");
         }
         return $pdf;
     }

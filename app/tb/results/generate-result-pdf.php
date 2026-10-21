@@ -49,7 +49,6 @@ try {
     $tbService = ContainerRegistry::get(TbService::class);
 
     $formId = (int) $general->getGlobalConfig('vl_form');
-    $key = (string) $general->getGlobalConfig('key');
 
     // Set print time
     $printedTime = date('Y-m-d H:i:s');
@@ -247,15 +246,9 @@ try {
                 $facilityQuery = "SELECT * from form_tb as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where tb_id = ? GROUP BY fd.facility_id LIMIT 1";
                 $facilityInfo = $db->rawQueryOne($facilityQuery, [$result['tb_id']]);
 
-                // Handle patient name decryption
-                $patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
-                $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
-
-                if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-                    $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
-                    $patientFname = $general->crypto('decrypt', $patientFname, $key);
-                    $patientLname = $general->crypto('decrypt', $patientLname, $key);
-                }
+                // Still encrypted: each form decrypts, and a second decrypt returns ''
+                $patientFname = $result['patient_name'];
+                $patientLname = $result['patient_surname'];
 
                 // Get lab report signatories
                 $signQuery = "SELECT * from lab_report_signatories where lab_id = ? AND test_types like '%tb%' AND signatory_status like 'active' ORDER BY display_order ASC";
@@ -306,7 +299,6 @@ try {
 
                         if (file_exists($customFormatPath) && is_readable($customFormatPath)) {
                             $reportFormatFile = $customFormatPath;
-                            error_log("Using custom TB report format for TB ID {$result['tb_id']}: " . $requestedFormat);
                         } else {
                             error_log("Custom TB report format not found or not readable for TB ID {$result['tb_id']}: " . $customFormatPath);
                         }
@@ -322,7 +314,6 @@ try {
 
                         if (file_exists($defaultFormatPath) && is_readable($defaultFormatPath)) {
                             $reportFormatFile = $defaultFormatPath;
-                            error_log("Using default TB report format for TB ID {$result['tb_id']}, formId {$formId}: " . $fileArray[$formId]);
                         } else {
                             error_log("Default TB report format not found for TB ID {$result['tb_id']}: " . $defaultFormatPath);
                             throw new Exception("Default TB report format file not found: " . $defaultFormatPath);
@@ -348,8 +339,8 @@ try {
 
                 // Include the selected report format file
                 if ($reportFormatFile !== null) {
-                    include_once($reportFormatFile);
-                    error_log("TB Report page {$page} generated for TB ID {$result['tb_id']} using format: " . basename($reportFormatFile));
+                    // Once per sample: the form renders the one sample in $result
+                    include $reportFormatFile;
                 } else {
                     throw new Exception("Critical error: No TB report format available for TB ID: " . $result['tb_id']);
                 }
@@ -368,8 +359,6 @@ try {
                 $resultFilename = 'InteLIS-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
                 $resultPdf = new PdfConcatenateHelper();
                 $resultPdf->mergeFiles($pages, TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, 50);
-
-                error_log("TB PDF report successfully generated: " . $resultFilename);
             } catch (Exception $e) {
                 error_log("Error concatenating TB PDF pages: " . $e->getMessage());
                 throw new Exception("Failed to generate final TB PDF report: " . $e->getMessage(), $e->getCode(), $e);
