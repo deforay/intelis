@@ -559,8 +559,7 @@ if (!empty($id)) {
             $update = "UPDATE batch_details SET printed_datetime = ? WHERE batch_id = ?";
             $bResult = $db->rawQueryOne($update, [$printedDatetime, $id]);
         }
-        exit;
+    } else {
+        throw new SystemException(_translate('Invalid Batch'), 500);
     }
-
-    throw new SystemException(_translate('Invalid Batch'), 500);
 }
