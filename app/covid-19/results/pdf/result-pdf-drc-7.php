@@ -357,13 +357,13 @@ if (empty($result['lab_manager'])) {
     }
 }
 $labManager = "";
+$labManagerSignature = '';
 if (!empty($result['lab_manager'])) {
     $labManagerRes = $usersService->getUserByID($result['lab_manager'], ['user_name', 'user_signature']);
     if ($labManagerRes) {
         $labManager = $labManagerRes['user_name'];
     }
 
-    $labManagerSignature = '';
     if (!empty($labManagerRes['user_signature'])) {
         $labManagerSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $labManagerRes['user_signature'];
         if (MiscUtility::isImageValid($labManagerSignaturePath)) {
