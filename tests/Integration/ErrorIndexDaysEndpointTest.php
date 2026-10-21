@@ -30,10 +30,11 @@ final class ErrorIndexDaysEndpointTest extends TestCase
     protected function tearDown(): void
     {
         ErrorIndexUtility::usePath(null);
-        foreach (glob($this->dir . '/*') ?: [] as $file) {
-            unlink($file);
-        }
+        // A skipped test never sets the directory, and glob('/*') would match the filesystem root.
         if ($this->dir !== '' && is_dir($this->dir)) {
+            foreach (glob($this->dir . '/*') ?: [] as $file) {
+                unlink($file);
+            }
             rmdir($this->dir);
         }
         if ($this->booted) {
