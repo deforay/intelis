@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Override;
 use App\Utilities\LoggerUtility;
+use TCPDF_IMAGES;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 /**
@@ -19,8 +20,8 @@ use setasign\Fpdi\Tcpdf\Fpdi;
  *
  * openHTMLTagHandler() sees each tag after TCPDF has parsed it:
  *  - an image must be raster data, or a raster file inside WEB_ROOT. An
- *    approved file is passed to TCPDF as data, so TCPDF loads exactly the file
- *    that was checked and never resolves the path itself.
+ *    approved file is passed to TCPDF as its real path, with DOCUMENT_ROOT
+ *    hidden, so TCPDF loads exactly the file that was checked.
  *  - a list may not use an image as its bullet
  *  - a link may only be #... or http(s)://
  *  - form fields, forms and <tcpdf> tags render as plain text
@@ -34,7 +35,7 @@ class BasePdf extends Fpdi
 {
     private const INERT_TAGS = ['form', 'input', 'textarea', 'select', 'tcpdf'];
 
-    /** @var array<string, string|false> image file as an '@' data source, or false when refused */
+    /** @var array<string, string|false> real path of an approved image file, or false when refused */
     private static array $imageSources = [];
 
     #[Override]
@@ -104,11 +105,30 @@ class BasePdf extends Fpdi
             }
         }
 
-        return parent::openHTMLTagHandler($dom, $key, $cell);
+        if ($tag !== 'img') {
+            return parent::openHTMLTagHandler($dom, $key, $cell);
+        }
+
+        // An approved file src is already the real path. TCPDF prefixes
+        // DOCUMENT_ROOT to a path that does not contain it, and then tries other
+        // locations and URLs for a file it cannot find, so it reads no
+        // DOCUMENT_ROOT while it loads the image.
+        $documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? null;
+        $_SERVER['DOCUMENT_ROOT'] = '';
+        try {
+            return parent::openHTMLTagHandler($dom, $key, $cell);
+        } finally {
+            $_SERVER['DOCUMENT_ROOT'] = $documentRoot;
+        }
     }
 
     /**
      * The src TCPDF should load for an image, or false to drop it.
+     *
+     * A data image becomes data:image/<type>, with the type read from its
+     * bytes, because TCPDF treats an '@' stream that contains "<svg" anywhere
+     * as SVG, even a PNG with that text in its metadata. A file becomes its
+     * real path, so TCPDF stores an image used many times only once.
      */
     private static function imageSource(string $src): string|false
     {
@@ -121,15 +141,19 @@ class BasePdf extends Fpdi
 
         if ($data !== null) {
             // Raster only. SVG can make TCPDF fetch the files it references.
-            return $data !== false && @getimagesizefromstring($data) !== false ? $src : false;
+            $size = $data === false ? false : @getimagesizefromstring($data);
+            return $size === false ? false : 'data:' . $size['mime'] . ';base64,' . base64_encode($data);
         }
 
         // Data images are large and rarely repeat, so only files are cached
         if (!array_key_exists($src, self::$imageSources)) {
             $file = self::imageFileInsideWebRoot($src);
-            $contents = $file === null ? false : @file_get_contents($file);
-            self::$imageSources[$src] = $contents !== false && @getimagesizefromstring($contents) !== false
-                ? '@' . base64_encode($contents)
+            // TCPDF picks its parser for a file from the extension: .svg, .ai
+            // and .eps go to the vector parsers whatever the file holds.
+            $vector = $file !== null
+                && in_array(TCPDF_IMAGES::getImageFileType($file), ['svg', 'ai', 'eps'], true);
+            self::$imageSources[$src] = $file !== null && !$vector && @getimagesize($file) !== false
+                ? $file
                 : false;
         }
         return self::$imageSources[$src];
