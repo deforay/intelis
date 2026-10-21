@@ -110,12 +110,14 @@ final class PdfFingerprint
         }
 
         $expected = json_decode((string) file_get_contents($path), true);
+        $expected['words'] = self::inPageOrder($expected['words']);
+        $actual['words'] = self::inPageOrder($actual['words']);
         Assert::assertSame($expected['pages'], $actual['pages'], "$name: page count");
         Assert::assertSame($expected['images'], $actual['images'], "$name: images (page top left width height)");
         Assert::assertSame(
             self::text($expected['words']),
             self::text($actual['words']),
-            "$name: words, in reading order"
+            "$name: words, top to bottom and left to right"
         );
         Assert::assertSame(
             self::positions($expected['words']),
@@ -338,6 +340,20 @@ final class PdfFingerprint
                 }
             }
         }
+        return $words;
+    }
+
+    /**
+     * The words by page, top to bottom, then left to right. poppler versions
+     * differ in the order they give the words of one line: 24.02 puts a centred
+     * "Département" after the rest of its line.
+     *
+     * @param list<array{0: int, 1: string, 2: float, 3: float}> $words
+     * @return list<array{0: int, 1: string, 2: float, 3: float}>
+     */
+    private static function inPageOrder(array $words): array
+    {
+        usort($words, static fn (array $a, array $b): int => [$a[0], $a[3], $a[2]] <=> [$b[0], $b[3], $b[2]]);
         return $words;
     }
 
