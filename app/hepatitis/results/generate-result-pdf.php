@@ -150,7 +150,7 @@ $_SESSION['aliasPage'] = $page;
 //print_r($requestResult);die;
 
 
-$fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php', DRC => 'pdf/result-pdf-drc.php', CAMEROON => 'pdf/result-pdf-cameroon.php', PNG => 'pdf/result-pdf-png.php', RWANDA => 'pdf/result-pdf-rwanda.php'];
+$fileArray = [RWANDA => 'pdf/result-pdf-rwanda.php'];
 
 require_once($fileArray[$formId]);
 

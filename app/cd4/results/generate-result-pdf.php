@@ -124,7 +124,7 @@ $printDate = DateUtility::humanReadableDateFormat($currentDateTime, true);
 
 $currentDateTime = DateUtility::getCurrentDateTime();
 
-$fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php', DRC => 'pdf/result-pdf-drc.php', CAMEROON => 'pdf/result-pdf-cameroon.php', PNG => 'pdf/result-pdf-png.php', RWANDA => 'pdf/result-pdf-rwanda.php'];
+$fileArray = [RWANDA => 'pdf/result-pdf-rwanda.php'];
 
 $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR . time() . '-' . MiscUtility::generateRandomString(6);
 MiscUtility::makeDirectory($pathFront);
