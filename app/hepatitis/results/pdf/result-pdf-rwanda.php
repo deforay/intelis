@@ -193,7 +193,7 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">HEALTH FACILITY CODE</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_name']) . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_district']) . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['funding_source_name']) . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_name']) . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_code']) . '</td>';
@@ -326,17 +326,15 @@ if (!empty($requestResult)) {
             $html .= '</tr>';
         } elseif ((isset($result['hcv_vl_count']) && $result['hcv_vl_count'] != "") && (isset($result['hbv_vl_count']) && $result['hbv_vl_count'] != "")) {
             $html .= '<tr>';
-            $html .= '<td colspan="2" style="line-height:50px;font-size:14px;text-align:left;">&nbsp;&nbsp;<strong>TEST REQUESTED : </strong>' . $result['sample_tested_datetime'] . '</td>';
+            $html .= '<td colspan="2" style="line-height:50px;font-size:14px;text-align:left;">&nbsp;&nbsp;<strong>TEST REQUESTED : </strong>' . strtoupper((string) $result['hepatitis_test_type']) . '</td>';
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td colspan="2" style="line-height:2px;"></td>';
             $html .= '</tr>';
+            // This branch has both counts
             $html .= '<tr style="background-color:#dbdbdb;">';
-            if (isset($result['hcv_vl_count']) && $result['hcv_vl_count'] != "") {
-                $html .= '<td style="line-height:50px;font-size:14px;font-weight:bold;text-align:left;">&nbsp;&nbsp;HCV VL RESULTS : ' . ($result['hcv_vl_count']) . '</td>';
-            } elseif (isset($result['hbv_vl_count']) && $result['hbv_vl_count'] != "") {
-                $html .= '<td style="line-height:50px;font-size:14px;font-weight:bold;text-align:left;">&nbsp;&nbsp;HBV VL RESULTS : ' . ($result['hbv_vl_count']) . '</td>';
-            }
+            $html .= '<td style="line-height:50px;font-size:14px;font-weight:bold;text-align:left;">&nbsp;&nbsp;HCV VL RESULTS : ' . ($result['hcv_vl_count']) . '</td>';
+            $html .= '<td style="line-height:50px;font-size:14px;font-weight:bold;text-align:left;">&nbsp;&nbsp;HBV VL RESULTS : ' . ($result['hbv_vl_count']) . '</td>';
             $html .= '</tr>';
         } else {
             $resultTxt = "Result";
@@ -349,7 +347,7 @@ if (!empty($requestResult)) {
                 $resultVal = ($result['hbv_vl_count']);
             }
             $html .= '<tr style="background-color:#dbdbdb;">';
-            $html .= '<td style="line-height:50px;font-size:16px;font-weight:bold;text-align:left;">&nbsp;&nbsp;<strong>TEST REQUESTED : </strong>' . $result['sample_tested_datetime'] . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' . strtoupper($resultTxt) . ' : ' . $resultVal . '</td>';
+            $html .= '<td style="line-height:50px;font-size:16px;font-weight:bold;text-align:left;">&nbsp;&nbsp;<strong>TEST REQUESTED : </strong>' . strtoupper((string) $result['hepatitis_test_type']) . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' . strtoupper($resultTxt) . ' : ' . $resultVal . '</td>';
             $html .= '</tr>';
         }
 

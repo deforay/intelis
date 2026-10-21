@@ -64,6 +64,24 @@ final class PdfOutputTest extends TestCase
         'form_eid', 'r_eid_sample_rejection_reasons', 'r_eid_sample_type', 'r_eid_results',
         'form_tb', 'tb_tests', 'facility_type', 'lab_report_signatories', 'r_tb_results',
         'r_tb_sample_rejection_reasons', 'r_tb_sample_type', 'r_tb_test_reasons',
+        'form_cd4', 'r_cd4_sample_rejection_reasons', 'r_cd4_sample_types', 'r_cd4_test_reasons',
+        'form_hepatitis', 'r_countries', 'r_hepatitis_test_reasons', 'r_hepatitis_sample_rejection_reasons',
+        'r_hepatitis_sample_type',
+        'r_test_types', 'form_generic', 'generic_test_results', 'r_generic_test_reasons', 'r_generic_sample_types',
+        'r_generic_sample_rejection_reasons', 'r_generic_test_methods', 'r_generic_test_result_units',
+        'generic_test_result_units_map',
+    ];
+
+    /** The one Custom Test type: a malaria test with a qualitative result. */
+    private const CUSTOM_TEST_RESULTS_CONFIG = [
+        'result_type' => ['1' => 'qualitative'],
+        'sub_test_name' => ['1' => 'Malaria'],
+        'methods' => ['1' => ['RDT']],
+        'qualitative' => [
+            'expectedResult' => ['1' => ['1' => 'Positive', '2' => 'Negative']],
+            'resultCode' => ['1' => ['1' => 'POS', '2' => 'NEG']],
+            'sortOrder' => ['1' => ['1' => '1', '2' => '2']],
+        ],
     ];
 
     /** The key a lab encrypts patient details with, 32 bytes for libsodium. */
@@ -88,18 +106,26 @@ final class PdfOutputTest extends TestCase
 
     /** The result form each country prints, by its vl_form setting, per module. */
     private const RESULT_FORMS = [
-        'vl-result-south-sudan' => SOUTH_SUDAN,
-        'vl-result-sierra-leone' => SIERRA_LEONE,
-        'vl-result-drc' => DRC,
-        'vl-result-cameroon' => CAMEROON,
-        'vl-result-png' => PNG,
-        'vl-result-rwanda' => RWANDA,
-        'vl-result-burkina-faso' => BURKINA_FASO,
-        'eid-result-burkina-faso' => BURKINA_FASO,
-        'tb-result-south-sudan' => SOUTH_SUDAN,
-        'tb-result-sierra-leone' => SIERRA_LEONE,
-        'tb-result-rwanda' => RWANDA,
-        'tb-result-burkina-faso' => BURKINA_FASO,
+        'vl-result-south-sudan' => ['vl', SOUTH_SUDAN],
+        'vl-result-sierra-leone' => ['vl', SIERRA_LEONE],
+        'vl-result-drc' => ['vl', DRC],
+        'vl-result-cameroon' => ['vl', CAMEROON],
+        'vl-result-png' => ['vl', PNG],
+        'vl-result-rwanda' => ['vl', RWANDA],
+        'vl-result-burkina-faso' => ['vl', BURKINA_FASO],
+        'eid-result-south-sudan' => ['eid', SOUTH_SUDAN],
+        'eid-result-sierra-leone' => ['eid', SIERRA_LEONE],
+        'eid-result-drc' => ['eid', DRC],
+        'eid-result-cameroon' => ['eid', CAMEROON],
+        'eid-result-rwanda' => ['eid', RWANDA],
+        'eid-result-burkina-faso' => ['eid', BURKINA_FASO],
+        'tb-result-south-sudan' => ['tb', SOUTH_SUDAN],
+        'tb-result-sierra-leone' => ['tb', SIERRA_LEONE],
+        'tb-result-rwanda' => ['tb', RWANDA],
+        'tb-result-burkina-faso' => ['tb', BURKINA_FASO],
+        'cd4-result-rwanda' => ['cd4', RWANDA],
+        'hepatitis-result-rwanda' => ['hepatitis', RWANDA],
+        'generic-tests-result' => ['generic-tests', RWANDA],
     ];
 
     /** Three VL samples: a numeric result, a target-not-detected result and no result yet. */
@@ -122,11 +148,19 @@ final class PdfOutputTest extends TestCase
             'VL result, PNG form' => ['vl-result-png'],
             'VL result, Rwanda form' => ['vl-result-rwanda'],
             'VL result, Burkina Faso form' => ['vl-result-burkina-faso'],
+            'EID result, South Sudan form' => ['eid-result-south-sudan'],
+            'EID result, Sierra Leone form' => ['eid-result-sierra-leone'],
+            'EID result, DRC form' => ['eid-result-drc'],
+            'EID result, Cameroon form' => ['eid-result-cameroon'],
+            'EID result, Rwanda form' => ['eid-result-rwanda'],
             'EID result, Burkina Faso form' => ['eid-result-burkina-faso'],
             'TB result, South Sudan form' => ['tb-result-south-sudan'],
             'TB result, Sierra Leone form' => ['tb-result-sierra-leone'],
             'TB result, Rwanda form' => ['tb-result-rwanda'],
             'TB result, Burkina Faso form' => ['tb-result-burkina-faso'],
+            'CD4 result, Rwanda form' => ['cd4-result-rwanda'],
+            'Hepatitis result, Rwanda form' => ['hepatitis-result-rwanda'],
+            'Custom Tests result' => ['generic-tests-result'],
         ];
     }
 
@@ -146,7 +180,7 @@ final class PdfOutputTest extends TestCase
                 ['type' => 'vl', 'id' => MiscUtility::sqid(self::BATCH_ID)]
             )),
             'vl-manifest' => $this->manifestPdf(),
-            default => $this->resultPdf(strtok($name, '-'), self::RESULT_FORMS[$name]),
+            default => $this->resultPdf(...self::RESULT_FORMS[$name]),
         };
 
         self::assertStringStartsWith('%PDF-', $pdf);
@@ -201,7 +235,7 @@ final class PdfOutputTest extends TestCase
         ]);
         $db->insert('facility_details', [
             'facility_id' => self::CLINIC, 'facility_name' => 'Hillside Clinic', 'facility_type' => 1,
-            'status' => 'active',
+            'facility_district' => 'Riverside District', 'status' => 'active',
         ]);
         // Some forms find the user through their role
         $db->insert('roles', ['role_id' => 1, 'role_name' => 'Admin', 'role_code' => 'AD', 'status' => 'active']);
@@ -317,6 +351,8 @@ final class PdfOutputTest extends TestCase
             ]);
         }
         LegacyAppHarness::seedDefaults('r_tb_results');
+        $this->seedCd4AndHepatitis();
+        $this->seedCustomTests();
 
         // A file cache shared by every test process holds global config for an hour
         MemoUtility::clear();
@@ -328,7 +364,7 @@ final class PdfOutputTest extends TestCase
     /**
      * The result print merges a PDF per sample and answers with a download token
      * for the merged file. Prints every sample with a result or a rejection:
-     * VL 1, 2, 4 and 5, EID 1 and 2, and TB 1 to 3.
+     * VL 1, 2, 4 and 5, TB and Hepatitis 1 to 3, and 1 and 2 of every other module.
      */
     private function resultPdf(string $module, int $form): string
     {
@@ -343,6 +379,10 @@ final class PdfOutputTest extends TestCase
             'vl' => ['1,2,4,5', ['VL-TEST-0001', 'VL-TEST-0002', 'VL-TEST-0004', 'VL-TEST-0005']],
             'eid' => ['1,2', ['EID-TEST-0001', 'EID-TEST-0002']],
             'tb' => ['1,2,3', ['TBP-0001', 'TBP-0002', 'TBP-0003', 'Okafor']],
+            'cd4' => ['1,2', ['CD4-TEST-0001', 'CD4-TEST-0002']],
+            'hepatitis' => ['1,2,3', ['HEP-TEST-0001', 'HEP-TEST-0002', 'HEP-TEST-0003', 'HBV VL RESULTS : 310',
+                'TEST REQUESTED : HBV', 'Riverside District']],
+            'generic-tests' => ['1,2', ['GEN-TEST-0001', 'GEN-TEST-0002']],
         };
         $request = LegacyAppHarness::withPost(['id' => $samples[0]], "/$module/results/generate-result-pdf.php");
         $token = trim($this->body($request));
@@ -357,6 +397,88 @@ final class PdfOutputTest extends TestCase
             self::assertStringContainsString($code, $text, "The $module result print left out '$code'");
         }
         return $pdf;
+    }
+
+    /** Two CD4 samples, and three Hepatitis samples: an HCV, an HBV and a sample with both. */
+    private function seedCd4AndHepatitis(): void
+    {
+        $db = LegacyAppHarness::db();
+        $common = [
+            'facility_id' => self::CLINIC, 'lab_id' => self::LAB, 'result_status' => ACCEPTED,
+            'sample_received_at_lab_datetime' => '2026-09-29 08:00:00',
+            'sample_tested_datetime' => '2026-09-30 11:00:00', 'tested_by' => '1',
+            'result_reviewed_by' => '1', 'result_reviewed_datetime' => '2026-09-30 14:00:00',
+            'result_approved_by' => '1', 'result_approved_datetime' => '2026-09-30 15:00:00',
+        ];
+        foreach ([[1, 'Amina', 'Kamara', 'female', '350'], [2, 'Jean', 'Mukendi', 'male', '820']] as $sample) {
+            [$id, $first, $last, $sex, $count] = $sample;
+            $db->insert('form_cd4', $common + [
+                'cd4_id' => $id, 'unique_id' => 'pdf-output-cd4-' . $id, 'sample_code' => 'CD4-TEST-000' . $id,
+                'remote_sample_code' => 'R-CD4-TEST-000' . $id, 'patient_art_no' => 'CD4P-000' . $id,
+                'patient_first_name' => $first, 'patient_last_name' => $last, 'patient_gender' => $sex,
+                'patient_dob' => '1990-05-1' . $id, 'cd4_result' => $count,
+                'sample_collection_date' => '2026-09-2' . $id . ' 10:00:00',
+            ]);
+        }
+        $hepatitis = [
+            [1, 'Grace', 'Okafor', 'female', ['hcv_vl_count' => '1500']],
+            [2, 'Joseph', 'Phiri', 'male', ['hbv_vl_count' => '1500']],
+            [3, 'Esther', 'Banda', 'female', ['hcv_vl_count' => '2400', 'hbv_vl_count' => '310']],
+        ];
+        foreach ($hepatitis as [$id, $first, $last, $sex, $counts]) {
+            $db->insert('form_hepatitis', $common + $counts + [
+                'hepatitis_id' => $id, 'unique_id' => 'pdf-output-hep-' . $id, 'sample_code' => 'HEP-TEST-000' . $id,
+                'remote_sample_code' => 'R-HEP-TEST-000' . $id, 'patient_id' => 'HEPP-000' . $id,
+                'patient_name' => $first, 'patient_surname' => $last, 'patient_gender' => $sex,
+                'patient_dob' => '1985-03-0' . $id,
+                'hepatitis_test_type' => isset($counts['hcv_vl_count']) ? 'HCV' : 'hbv',
+                'sample_collection_date' => '2026-09-2' . $id . ' 10:00:00',
+            ]);
+        }
+    }
+
+    /**
+     * Two Custom Tests samples of one test type. The first has one test, the
+     * second has two, which prints the layout with a card per test.
+     */
+    private function seedCustomTests(): void
+    {
+        $db = LegacyAppHarness::db();
+        $db->insert('r_test_types', [
+            'test_type_id' => 1, 'test_standard_name' => 'Malaria', 'test_generic_name' => 'Malaria',
+            'test_short_code' => 'MAL', 'test_status' => 'active', 'test_form_config' => '{}',
+            'test_results_config' => json_encode(self::CUSTOM_TEST_RESULTS_CONFIG),
+        ]);
+        $tested = [
+            'lab_id' => self::LAB, 'facility_id' => self::CLINIC, 'test_name' => 'Malaria', 'tested_by' => '1',
+            'sample_received_at_lab_datetime' => '2026-09-29 08:00:00',
+            'sample_tested_datetime' => '2026-09-30 11:00:00',
+            'result_reviewed_by' => '1', 'result_reviewed_datetime' => '2026-09-30 14:00:00',
+            'result_approved_by' => '1', 'result_approved_datetime' => '2026-09-30 15:00:00',
+        ];
+        $samples = [
+            [1, 'Amina', 'Kamara', 'female', ['Positive']],
+            [2, 'Jean', 'Mukendi', 'male', ['Negative', 'Positive']],
+        ];
+        foreach ($samples as [$id, $first, $last, $sex, $results]) {
+            $db->insert('form_generic', [
+                'sample_id' => $id, 'unique_id' => 'pdf-output-gen-' . $id, 'test_type' => 1,
+                'sample_code' => 'GEN-TEST-000' . $id, 'remote_sample_code' => 'R-GEN-TEST-000' . $id,
+                'patient_id' => 'GENP-000' . $id, 'patient_first_name' => $first, 'patient_last_name' => $last,
+                'patient_gender' => $sex, 'patient_dob' => '1992-07-0' . $id,
+                'facility_id' => self::CLINIC, 'lab_id' => self::LAB, 'result_status' => ACCEPTED,
+                'result' => end($results), 'sample_collection_date' => '2026-09-2' . $id . ' 10:00:00',
+                'sample_received_at_lab_datetime' => '2026-09-29 08:00:00',
+                'sample_tested_datetime' => '2026-09-30 11:00:00', 'tested_by' => '1',
+                'result_reviewed_by' => '1', 'result_reviewed_datetime' => '2026-09-30 14:00:00',
+                'result_approved_by' => '1', 'result_approved_datetime' => '2026-09-30 15:00:00',
+            ]);
+            foreach ($results as $result) {
+                $db->insert('generic_test_results', $tested + [
+                    'generic_id' => $id, 'result' => $result, 'final_result' => $result,
+                ]);
+            }
+        }
     }
 
     protected function tearDown(): void

@@ -196,20 +196,6 @@ if (!empty($result)) {
 
 
     $html .= '<tr>';
-    $html .= '<td colspan="3">';
-    $html .= '<table style="padding:8px 2px 2px 2px;">';
-    $html .= '<tr>';
-
-    $html .= '</tr>';
-    $html .= '<tr>';
-
-    $html .= '</tr>';
-    $html .= '</table>';
-    $html .= '</td>';
-    $html .= '</tr>';
-
-
-    $html .= '<tr>';
     $html .= '<td colspan="3" style="line-height:2px;border-bottom:1px solid #d3d3d3;"></td>';
     $html .= '</tr>';
     $html .= '<tr>';
