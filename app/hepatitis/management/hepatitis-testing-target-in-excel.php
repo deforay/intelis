@@ -3,8 +3,8 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
@@ -85,35 +85,28 @@ if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim((string)
     // print_r($res);die;
     //get current quarter total samples tested
 
-    $excel = new Spreadsheet();
-    $output = [];
-    $sheet = $excel->getActiveSheet();
+    $filename = 'InteLIS-hepatitis-Testing-Target-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
 
-    $colNo = 1;
-
-    $sheet->setCellValue('A1', html_entity_decode('Hepatitis - Testing Target ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('A4', html_entity_decode('Facility Name', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('B4', html_entity_decode('Month', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('C4', html_entity_decode('Number of Samples Received', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('D4', html_entity_decode('Number of Samples Rejected', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('E4', html_entity_decode('Number of Samples Tested', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('F4', html_entity_decode('Monthly Test Target', ENT_QUOTES, 'UTF-8'));
-    $cnt = 4;
+    $writer = new Writer();
+    $writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+    $writer->addRow(Row::fromValues([html_entity_decode('Hepatitis - Testing Target ', ENT_QUOTES, 'UTF-8')]));
+    $writer->addRow(Row::fromValues(['']));
+    $writer->addRow(Row::fromValues(array_map(static fn($value): string => html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ['Facility Name', 'Month', 'Number of Samples Received', 'Number of Samples Rejected', 'Number of Samples Tested', 'Monthly Test Target'])));
     foreach ($res as $resultData) {
         foreach ($resultData as $rowData) {
             if ($rowData['monthly_target'] > $rowData['totalCollected']) {
-                $cnt++;
-                $sheet->setCellValue('A' . $cnt, html_entity_decode(((string) $rowData['facility_name']), ENT_QUOTES, 'UTF-8'));
-                $sheet->setCellValue('B' . $cnt, html_entity_decode((string) $rowData['monthrange'], ENT_QUOTES, 'UTF-8'));
-                $sheet->setCellValue('C' . $cnt, html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'));
-                $sheet->setCellValue('D' . $cnt, html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'));
-                $sheet->setCellValue('E' . $cnt, html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'));
-                $sheet->setCellValue('F' . $cnt, html_entity_decode((string) $rowData['monthly_target'], ENT_QUOTES, 'UTF-8'));
+                $writer->addRow(Row::fromValues([
+                    html_entity_decode(((string) $rowData['facility_name']), ENT_QUOTES, 'UTF-8'),
+                    html_entity_decode((string) $rowData['monthrange'], ENT_QUOTES, 'UTF-8'),
+                    html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'),
+                    html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'),
+                    html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'),
+                    html_entity_decode((string) $rowData['monthly_target'], ENT_QUOTES, 'UTF-8'),
+                ]));
             }
         }
     }
-    $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-    $filename = 'InteLIS-hepatitis-Testing-Target-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-    $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+    $writer->close();
+
     echo _downloadToken($filename);
 }
