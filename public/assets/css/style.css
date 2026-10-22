@@ -68,6 +68,23 @@ select[readonly] {
     line-height: 1.3;
 }
 
+/* Keep wrapped labels clear of the caret, which AdminLTE positions
+   absolutely at right:10px. */
+.sidebar-menu li.treeview>a {
+    padding-right: 32px;
+}
+
+/* One caret convention for the whole sidebar: right when closed, down when
+   open. AdminLTE's treeview caret points left when closed, which read as the
+   opposite of the section carets next to it. */
+.sidebar-menu li>a>.pull-right-container>.fa-angle-left {
+    transform: rotate(180deg);
+}
+
+.sidebar-menu .menu-open>a>.pull-right-container>.fa-angle-left {
+    transform: rotate(270deg);
+}
+
 /* Fix sidebar treeview menu z-index issue */
 .sidebar-menu>li.treeview {
     position: relative;
@@ -87,12 +104,24 @@ select[readonly] {
     z-index: 1001;
 }
 
+/* Module labels read as section dividers, not as menu items: darker than
+   the items, with a rule above. The old light band looked like an opened
+   submenu, so a module seemed to belong to the item above it. */
 .skin-red .sidebar-menu>li.header,
 .skin-blue .sidebar-menu>li.header,
 .skin-purple .sidebar-menu>li.header {
-    background: #dddddd2b;
-    color: #ddd;
+    background: #1a2226;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    color: #8aa4af;
     font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.skin-red .sidebar-menu>li.header:hover,
+.skin-blue .sidebar-menu>li.header:hover,
+.skin-purple .sidebar-menu>li.header:hover {
+    color: #fff;
 }
 
 .select2-container .select2-selection--single {
@@ -221,14 +250,22 @@ form table tr td>label,
     background-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Clickable section labels + caret. */
-.vlsm-section-toggle {
+/* Clickable section labels + caret. Long labels wrap instead of being
+   clipped, and the caret stays on the first line beside them. */
+.sidebar-menu>li.header.vlsm-section-toggle {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    padding-right: 15px;
+    white-space: normal;
+    line-height: 1.3;
     cursor: pointer;
 }
 
 .vlsm-section-caret {
-    float: right;
-    margin-top: 2px;
+    flex-shrink: 0;
+    margin-top: 1px;
     transition: transform 0.15s ease;
 }
 
