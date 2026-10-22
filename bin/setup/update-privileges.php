@@ -185,8 +185,6 @@ $sharedCovid19Privileges = [
         '/covid-19/requests/covid-19-add-request.php',
         '/covid-19/requests/covid-19-edit-request.php'
     ],
-    '/covid-19/mail/mail-covid-19-results.php' => '/covid-19/results/covid-19-print-results.php',
-    '/covid-19/mail/covid-19-result-mail-confirm.php' => '/covid-19/results/covid-19-print-results.php',
     '/covid-19/results/covid-19-update-result.php' => '/covid-19/results/covid-19-manual-results.php',
     '/covid-19/results/covid-19-failed-results.php' => '/covid-19/results/covid-19-manual-results.php',
     '/covid-19/results/email-results-confirm.php' => '/covid-19/results/email-results.php',
