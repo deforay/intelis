@@ -4,13 +4,9 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Writer\Exception\InvalidSheetNameException;
 use App\Utilities\SampleCountUtility;
 use App\Utilities\ExportJobUtility;
 
@@ -41,37 +37,9 @@ if (isset($_POST['reportedDate']) && trim((string) $_POST['reportedDate']) !== '
 
 
 
-//excel code start
-$excel = new Spreadsheet();
-$sheet = $excel->getActiveSheet();
-$headingStyle = ['font' => ['bold' => true, 'size' => '11'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]];
-$backgroundTitleStyle = ['font' => ['bold' => true, 'size' => '11'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER], 'fill' => ['type' => Fill::FILL_SOLID, 'color' => ['rgb' => 'FFFF00']]];
-$backgroundFieldStyle = ['font' => ['bold' => false, 'size' => '11'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT]];
-$styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
-
-$borderStyle = ['alignment' => [], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
-
 if (isset($_POST['lab']) && trim((string) $_POST['lab']) !== '') {
     $labId = ($_POST['lab']);
 }
-
-//Statistics sheet start
-$sheet->mergeCells('A2:A3');
-$sheet->mergeCells('B2:B3');
-$sheet->mergeCells('C2:C3');
-$sheet->mergeCells('D2:D3');
-$sheet->mergeCells('E2:E3');
-$sheet->mergeCells('F2:F3');
-$sheet->mergeCells('G2:H2');
-$sheet->mergeCells('I2:L2');
-$sheet->mergeCells('M2:N2');
-$sheet->mergeCells('O2:P2');
-$sheet->mergeCells('Q2:R2');
-$sheet->mergeCells('S2:S3');
-$sheet->mergeCells('T2:T3');
-
-
-$c = 0;
 
 $sQuery = "SELECT
             vl.lab_id,
@@ -166,81 +134,38 @@ foreach ($resultSet as $row) {
     $excelResultSet[$row['lab_name'] . '-' . $row['fcode']][] = $row;
 }
 
+//Statistics sheet start
+if ($excelResultSet === []) {
+    echo '';
+    return;
+}
+
+$filename = 'InteLIS-VL-Lab-Weekly-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
+$writer = new Writer();
+$writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+
+$c = 0;
 foreach ($excelResultSet as $vlLab => $labResult) {
 
-    $sheet = new Worksheet($excel, '');
-    $excel->addSheet($sheet, $c);
+    if ($c > 0) {
+        $writer->addNewSheetAndMakeItCurrent();
+    }
     $vlLab = preg_replace('/\s+/', ' ', ($vlLab));
     $labInfo = explode('-', (string) $vlLab);
 
-    if (isset($labInfo[1]) && $labInfo[1] !== '') {
-        $sheet->setTitle($labInfo[1]);
-    } else {
-        $labName = substr($labInfo[1], 0, 31);
-        $sheet->setTitle($labName);
+    // A name Excel would refuse (too long, a repeat, odd characters) keeps the default "SheetN".
+    $sheetName = $labInfo[1] ?? '';
+    if ($sheetName !== '') {
+        try {
+            $writer->getCurrentSheet()->setName($sheetName);
+        } catch (InvalidSheetNameException) {
+        }
     }
 
-    $sheet->setCellValue('B1', html_entity_decode('Reported Date ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('C1', html_entity_decode((string) $_POST['reportedDate'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('D1', html_entity_decode('Lab Name ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('E1', html_entity_decode(((string) $vlLab), ENT_QUOTES, 'UTF-8'));
-    //$sheet->setCellValue('F1', html_entity_decode('Collection Date ' , ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-    //$sheet->setCellValue('G1', html_entity_decode($_POST['collectionDate'] , ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-    $sheet->setCellValue('B2', html_entity_decode('Province/State ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('C2', html_entity_decode('District/County ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('D2', html_entity_decode('Site Name ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('E2', html_entity_decode('Facility ID ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('F2', html_entity_decode('No. of Rejections ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('G2', html_entity_decode('Viral Load Result- Peds ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('G3', html_entity_decode('<15 yrs <=1000 copies/mL ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H3', html_entity_decode('<15 yrs >1000 copies/mL ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('I2', html_entity_decode('Viral Load Result- Adults ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('I3', html_entity_decode('>15yrs Male <=1000 copies/mL ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('J3', html_entity_decode('>15yrs Male >1000 copies/mL ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('K3', html_entity_decode('>15yrs Female <=1000 copies/mL ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('L3', html_entity_decode('>15yrs  Female >1000 copies/mL ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('M2', html_entity_decode('Viral Load Results- Pregnant/Breastfeeding Women ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('M3', html_entity_decode('<= 1000 copies/mL ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('N3', html_entity_decode('> 1000 copies/mL ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('O2', html_entity_decode('Age/Sex Unknown ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('O3', html_entity_decode('Unknown Age/Sex <= 1000ml ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('P3', html_entity_decode('Unknown Age/Sex > 1000ml ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('Q2', html_entity_decode('Totals ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('Q3', html_entity_decode('<= 1000 copies/mL ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('R3', html_entity_decode('> 1000 copies/mL ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('S2', html_entity_decode('Total Registered ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('T2', html_entity_decode('Comments ', ENT_QUOTES, 'UTF-8'));
-
-    $sheet->getStyle('B1')->applyFromArray($backgroundTitleStyle);
-    $sheet->getStyle('C1')->applyFromArray($backgroundFieldStyle);
-    $sheet->getStyle('D1')->applyFromArray($backgroundTitleStyle);
-    $sheet->getStyle('E1')->applyFromArray($backgroundFieldStyle);
-    //$sheet->getStyle('F1')->applyFromArray($backgroundTitleStyle);
-    //$sheet->getStyle('G1')->applyFromArray($backgroundFieldStyle);
-    $sheet->getStyle('B2:B3')->applyFromArray($styleArray);
-    $sheet->getStyle('C2:C3')->applyFromArray($styleArray);
-    $sheet->getStyle('D2:D3')->applyFromArray($styleArray);
-    $sheet->getStyle('E2:E3')->applyFromArray($styleArray);
-    $sheet->getStyle('F2:F3')->applyFromArray($styleArray);
-    $sheet->getStyle('G2:H2')->applyFromArray($styleArray);
-    $sheet->getStyle('G3')->applyFromArray($styleArray);
-    $sheet->getStyle('H3')->applyFromArray($styleArray);
-    $sheet->getStyle('I2:L2')->applyFromArray($styleArray);
-    $sheet->getStyle('I3')->applyFromArray($styleArray);
-    $sheet->getStyle('J3')->applyFromArray($styleArray);
-    $sheet->getStyle('K3')->applyFromArray($styleArray);
-    $sheet->getStyle('L3')->applyFromArray($styleArray);
-    $sheet->getStyle('M2:N2')->applyFromArray($styleArray);
-    $sheet->getStyle('M3')->applyFromArray($styleArray);
-    $sheet->getStyle('N3')->applyFromArray($styleArray);
-    $sheet->getStyle('O2:P2')->applyFromArray($styleArray);
-    $sheet->getStyle('O3')->applyFromArray($styleArray);
-    $sheet->getStyle('P3')->applyFromArray($styleArray);
-    $sheet->getStyle('Q2:R2')->applyFromArray($styleArray);
-    $sheet->getStyle('Q3')->applyFromArray($styleArray);
-    $sheet->getStyle('R3')->applyFromArray($styleArray);
-    $sheet->getStyle('S2:S3')->applyFromArray($styleArray);
-    $sheet->getStyle('T2:T3')->applyFromArray($styleArray);
+    $decode = static fn($value): string => html_entity_decode((string) $value, ENT_QUOTES, 'UTF-8');
+    $writer->addRow(Row::fromValues(array_map($decode, ['', 'Reported Date ', $_POST['reportedDate'], 'Lab Name ', $vlLab])));
+    $writer->addRow(Row::fromValues(array_map($decode, ['', 'Province/State ', 'District/County ', 'Site Name ', 'Facility ID ', 'No. of Rejections ', 'Viral Load Result- Peds ', '', 'Viral Load Result- Adults ', '', '', '', 'Viral Load Results- Pregnant/Breastfeeding Women ', '', 'Age/Sex Unknown ', '', 'Totals ', '', 'Total Registered ', 'Comments '])));
+    $writer->addRow(Row::fromValues(array_map($decode, ['', '', '', '', '', '', '<15 yrs <=1000 copies/mL ', '<15 yrs >1000 copies/mL ', '>15yrs Male <=1000 copies/mL ', '>15yrs Male >1000 copies/mL ', '>15yrs Female <=1000 copies/mL ', '>15yrs  Female >1000 copies/mL ', '<= 1000 copies/mL ', '> 1000 copies/mL ', 'Unknown Age/Sex <= 1000ml ', 'Unknown Age/Sex > 1000ml ', '<= 1000 copies/mL ', '> 1000 copies/mL '])));
 
     $output = [];
     $r = 1;
@@ -296,24 +221,12 @@ foreach ($excelResultSet as $vlLab => $labResult) {
         $r++;
     }
 
-    foreach ($output as $rowNo => $rowData) {
-        $colNo = 1;
-        foreach ($rowData as $field => $value) {
-            $rRowCount = $rowNo + 4;
-            $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
-            $colNo++;
-        }
+    foreach ($output as $rowData) {
+        $writer->addRow(Row::fromValues(array_map(static fn($value): string => html_entity_decode((string) $value), $rowData)));
     }
     $c++;
 }
 //Statistics sheet end
-if ($c > 0) {
+$writer->close();
 
-    $excel->setActiveSheetIndex(0);
-    $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-    $filename = 'InteLIS-VL-Lab-Weekly-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-    $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-    echo _downloadToken($filename);
-} else {
-    echo '';
-}
+echo _downloadToken($filename);

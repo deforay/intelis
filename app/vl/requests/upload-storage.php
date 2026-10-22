@@ -6,8 +6,6 @@ use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 require_once APPLICATION_PATH . '/header.php';
 /** @var DatabaseService $db */

@@ -5,8 +5,8 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
@@ -73,13 +73,14 @@ foreach ($resultSet as $aRow) {
 	$no++;
 }
 
-$excel = new Spreadsheet();
-$sheet = $excel->getActiveSheet();
-
-$sheet->fromArray($headings, null, 'A1'); // Write headings
-$sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
-
-$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 $filename = 'InteLIS-SAMPLE-STORAGE-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
-$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+
+$writer = new Writer();
+$writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+$writer->addRow(Row::fromValues($headings));
+foreach ($output as $rowData) {
+	$writer->addRow(Row::fromValues($rowData));
+}
+$writer->close();
+
 echo _downloadToken($filename);
