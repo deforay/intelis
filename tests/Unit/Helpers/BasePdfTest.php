@@ -251,6 +251,32 @@ final class BasePdfTest extends TestCase
         $this->assertStringContainsString('https://example.org/report', $pdf);
     }
 
+    public static function lessThanProvider(): array
+    {
+        return [
+            'before a digit' => ['<td>Volume <1ml</td><td>Haemolysed</td>', ['Volume <1ml', 'Haemolysed']],
+            'before a space' => ['<p>Result < 40 copies/mL, see note</p>', ['Result < 40 copies/mL, see note']],
+            'before "="' => ['<p>Ct <=35 means detected</p>', ['Ct <=35 means detected']],
+            'at the end' => ['<p>Count <</p><p>Next line</p>', ['Count <', 'Next line']],
+        ];
+    }
+
+    /**
+     * A "<" in text that cannot start a tag prints as text, along with the text
+     * after it. TCPDF would read it as the start of a tag and drop both.
+     *
+     * @param list<string> $expected
+     */
+    #[DataProvider('lessThanProvider')]
+    public function testLessThanInTextPrints(string $html, array $expected): void
+    {
+        $html = str_starts_with($html, '<td>') ? "<table><tr>$html</tr></table>" : $html;
+        $pdf = self::render($html);
+        foreach ($expected as $text) {
+            $this->assertStringContainsString('(' . $text . ')', $pdf);
+        }
+    }
+
     public function testEveryPdfClassExtendsBasePdf(): void
     {
         $offenders = [];
