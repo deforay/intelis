@@ -643,8 +643,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 												</option>
 												<option value="First test for sick baby"> 1st test pour bébé malade
 												</option>
-												<option value="Test at 9 months"> Test à 9 mois</option>
-												<option value="Test after 9 months"> Test à plus de 9 mois</option>
+												<option value="Test at 9 months"> <?= _htmlTranslate("Test at 9 months"); ?></option>
+												<option value="Test after 9 months"> <?= _htmlTranslate("Test after 9 months"); ?></option>
 												<option value="Repeat due to problem with first test"> Répéter car
 													problème avec 1er test</option>
 												<option value="Repeat to confirm the first result"> Répéter pour
