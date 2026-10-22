@@ -15,8 +15,12 @@ use setasign\Fpdi\Tcpdf\Fpdi;
  * fetching URLs, embedding server files, adding scripts or script links, or
  * stopping a print run (TCPDF throws on a <form> without an action):
  *
- * getHtmlDomArray() runs before TCPDF parses the HTML. It removes <link> tags,
- * because TCPDF fetches a linked stylesheet while it parses.
+ * getHtmlDomArray() runs before TCPDF parses the HTML:
+ *  - it removes <link> tags, because TCPDF fetches a linked stylesheet while
+ *    it parses
+ *  - it escapes a "<" that cannot start a tag, such as the one in "Volume
+ *    <1ml". TCPDF reads everything from a "<" to the next ">" as a tag, so the
+ *    text after it was lost up to the end of the next tag.
  *
  * openHTMLTagHandler() sees each tag after TCPDF has parsed it:
  *  - an image must be raster data, or a raster file inside WEB_ROOT. An
@@ -45,6 +49,9 @@ class BasePdf extends Fpdi
             self::logDropped('link', $match[1]);
             return '';
         }, (string) $html);
+
+        // A tag starts with a letter, "/" (closing tag), "!" (comment) or "?"
+        $html = preg_replace('~<(?![a-zA-Z/!?])~', '&lt;', $html);
 
         return parent::getHtmlDomArray($html);
     }
