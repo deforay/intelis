@@ -475,6 +475,8 @@ $storageInfo = $storageService->getLabStorage();
 												<option value="Nothing" <?php echo ($eidInfo['reason_for_pcr'] == 'Nothing') ? "selected='selected'" : ""; ?>> Rien</option>
 												<option value="First Test for exposed baby" <?php echo ($eidInfo['reason_for_pcr'] == 'First Test for exposed baby') ? "selected='selected'" : ""; ?>> 1st test pour bébé exposé</option>
 												<option value="First test for sick baby" <?php echo ($eidInfo['reason_for_pcr'] == 'First test for sick baby') ? "selected='selected'" : ""; ?>> 1st test pour bébé malade</option>
+												<option value="Test at 9 months" <?php echo ($eidInfo['reason_for_pcr'] == 'Test at 9 months') ? "selected='selected'" : ""; ?>> Test à 9 mois</option>
+												<option value="Test after 9 months" <?php echo ($eidInfo['reason_for_pcr'] == 'Test after 9 months') ? "selected='selected'" : ""; ?>> Test à plus de 9 mois</option>
 												<option value="Repeat due to problem with first test" <?php echo ($eidInfo['reason_for_pcr'] == 'Repeat due to problem with first test') ? "selected='selected'" : ""; ?>> Répéter car problème avec
 													1er test</option>
 												<option value="Repeat to confirm the first result" <?php echo ($eidInfo['reason_for_pcr'] == 'Repeat to confirm the first result') ? "selected='selected'" : ""; ?>> Répéter pour confirmer 1er résultat
