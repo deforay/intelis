@@ -6,11 +6,8 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
@@ -56,67 +53,12 @@ $headings = [
 $output = [];
 
 
-$colNo = 1;
-$colNum = 1;
-$styleArray = [
-    'font' => [
-        'bold' => true,
-        'size' => '13',
-    ],
-    'alignment' => [
-        'horizontal' => Alignment::HORIZONTAL_CENTER,
-        'vertical' => Alignment::VERTICAL_CENTER,
-    ],
-    'borders' => [
-        'outline' => [
-            'style' => Border::BORDER_THIN,
-        ],
-    ],
-];
 $nameValue = '';
 foreach ($_POST as $key => $value) {
     if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
         $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
     }
 }
-
-$excel = new Spreadsheet();
-$sheet = $excel->getActiveSheet();
-
-$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNum) . '1', html_entity_decode($nameValue));
-
-
-
-$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-
-
-foreach ($headings as $field => $value) {
-    $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '5', html_entity_decode($value));
-    $colNo++;
-}
-
-$sheet->getStyle('A2:A2')->applyFromArray($styleArray);
-$sheet->getStyle('B2:B2')->applyFromArray($styleArray);
-$sheet->getStyle('C2:C2')->applyFromArray($styleArray);
-$sheet->getStyle('D2:D2')->applyFromArray($styleArray);
-$sheet->getStyle('E2:E2')->applyFromArray($styleArray);
-
-$sheet->getStyle('A5:A5')->applyFromArray($styleArray);
-$sheet->getStyle('B5:B5')->applyFromArray($styleArray);
-$sheet->getStyle('C5:C5')->applyFromArray($styleArray);
-$sheet->getStyle('D5:D5')->applyFromArray($styleArray);
-$sheet->getStyle('E5:E5')->applyFromArray($styleArray);
-$sheet->getStyle('F5:F5')->applyFromArray($styleArray);
-$sheet->getStyle('G5:G5')->applyFromArray($styleArray);
-$sheet->getStyle('H5:H5')->applyFromArray($styleArray);
-$sheet->getStyle('I5:I5')->applyFromArray($styleArray);
-$sheet->getStyle('J5:J5')->applyFromArray($styleArray);
-$sheet->getStyle('K5:K5')->applyFromArray($styleArray);
-$sheet->getStyle('L5:L5')->applyFromArray($styleArray);
-$sheet->getStyle('M5:M5')->applyFromArray($styleArray);
-$sheet->getStyle('N5:N5')->applyFromArray($styleArray);
-$sheet->getStyle('O5:O5')->applyFromArray($styleArray);
-
 
 $no = 1;
 foreach ($rResult as $aRow) {
@@ -147,11 +89,16 @@ foreach ($rResult as $aRow) {
     $no++;
 }
 
-foreach ($output as $rowNo => $rowData) {
-    $rRowCount = $rowNo + 6;
-    $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-}
-$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 $filename = 'InteLIS-SAMPLEWISE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomNumber(6) . '.xlsx';
-$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+
+$writer = new Writer();
+$writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+$writer->addRow(Row::fromValues([html_entity_decode($nameValue)]));
+$writer->addRow(Row::fromValues(['']));
+$writer->addRow(Row::fromValues(array_map('html_entity_decode', $headings)));
+foreach ($output as $rowData) {
+    $writer->addRow(Row::fromValues($rowData));
+}
+$writer->close();
+
 echo _downloadToken($filename);
