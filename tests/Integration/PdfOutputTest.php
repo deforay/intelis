@@ -471,7 +471,7 @@ final class PdfOutputTest extends TestCase
         $samples = match ($module) {
             'vl' => ['1,2,4,5', $reportFormat === null
                 ? ['VL-TEST-0001', 'VL-TEST-0002', 'VL-TEST-0004', 'VL-TEST-0005', 'Volume <1ml']
-                : ['PT-0001', 'PT-0002', 'PT-0004', 'PT-0005', 'Volume <1ml']],
+                : ['PT-0001', 'PT-0002', 'PT-0004', 'PT-0005', 'Volume <1ml', 'Amina Kamara']],
             'eid' => ['1,2', ['EID-TEST-0001', 'EID-TEST-0002']],
             'tb' => ['1,2,3', ['TBP-0001', 'TBP-0002', 'TBP-0003', 'Okafor']],
             'cd4' => ['1,2', ['CD4-TEST-0001', 'CD4-TEST-0002']],
