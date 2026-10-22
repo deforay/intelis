@@ -171,12 +171,14 @@ if (!empty($result)) {
      $html .= '<tr>';
 
      $html .= '<td colspan="3">';
-     $patientFname = $result['patient_first_name'] ?? '';
      if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
           $key = (string) $general->getGlobalConfig('key');
           $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
-          $patientFname = $general->crypto('decrypt', $patientFname, $key);
+          foreach (['patient_first_name', 'patient_middle_name', 'patient_last_name'] as $nameField) {
+               $result[$nameField] = $general->crypto('decrypt', $result[$nameField], $key);
+          }
      }
+     $patientFname = trim(preg_replace('/\s+/', ' ', ($result['patient_first_name'] ?? '') . ' ' . ($result['patient_middle_name'] ?? '') . ' ' . ($result['patient_last_name'] ?? '')));
 
 
      $logValue = '';
@@ -203,7 +205,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Region") . " : " . $result['facility_state'] . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Patient Name") . " : " . $patientFname . '</td>';
+     $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Patient Name") . " : " . _sanitizeOutput($patientFname) . '</td>';
      $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Age") . " : " . $age . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . _translate("Sex : ") . _translate(str_replace("_", " ", (string) _capitalizeFirstLetter($result['patient_gender']))) . '</td>';
      $html .= '</tr>';
 
