@@ -6,12 +6,8 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\SampleRejectionUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
@@ -29,33 +25,15 @@ $general = ContainerRegistry::get(CommonService::class);
 if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamples']) !== "") {
      $rResult = $db->rawQuery($_SESSION['rejectedSamples']);
 
-     $excel = new Spreadsheet();
      $output = [];
-     $sheet = $excel->getActiveSheet();
      $headings = ["Lab Name", "Facility Name", "Rejection Reason", "Reason Category", "Recommended Corrective Action", "No. of Samples"];
 
-
-     $colNo = 1;
-
-     $styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
-
-
-     $sheet->mergeCells('A1:E1');
      $nameValue = '';
      foreach ($_POST as $key => $value) {
           if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
                $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }
-     $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-          ->setValueExplicit(html_entity_decode($nameValue));
-
-     foreach ($headings as $field => $value) {
-          $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-               ->setValueExplicit(html_entity_decode($value));
-          $colNo++;
-     }
-     $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
 
      foreach ($rResult as $aRow) {
           ExportJobUtility::tick();
@@ -69,20 +47,17 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
           $output[] = $row;
      }
 
-     $start = (count($output)) + 2;
-     foreach ($output as $rowNo => $rowData) {
-          $colNo = 1;
-          $rRowCount = $rowNo + 4;
-          foreach ($rowData as $field => $value) {
-               $sheet->setCellValue(
-                    Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                    html_entity_decode((string) $value)
-               );
-               $colNo++;
-          }
-     }
-     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
      $filename = 'InteLIS-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
-     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+
+     $writer = new Writer();
+     $writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+     $writer->addRow(Row::fromValues([html_entity_decode($nameValue)]));
+     $writer->addRow(Row::fromValues(['']));
+     $writer->addRow(Row::fromValues(array_map('html_entity_decode', $headings)));
+     foreach ($output as $rowData) {
+          $writer->addRow(Row::fromValues(array_map(static fn($value): string => html_entity_decode((string) $value), $rowData)));
+     }
+     $writer->close();
+
      echo _downloadToken($filename);
 }

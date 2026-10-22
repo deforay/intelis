@@ -6,12 +6,8 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
@@ -43,10 +39,6 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
-
-     $styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
-
-
 
      $filters = ['hvlSampleTestDate' => 'Sample Test Date', 'hvlBatchCode' => 'Batch Code', 'hvlSampleType' => 'Sample Type', 'hvlFacilityName' => 'Facility Name', 'hvlContactStatus' => 'Contact Status', 'hvlGender' => 'Sex'];
 
@@ -100,40 +92,16 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           unset($output);
           echo _downloadToken($fileName);
      } else {
-          $colNo = 1;
-          $nameValue = '';
-
-          $excel = new Spreadsheet();
-          $sheet = $excel->getActiveSheet();
-          $sheet->mergeCells('A1:AE1');
-          $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-
-          /*  foreach ($headings as $field => $value) {
-                 $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-                 $colNo++;
-            }*/
-          $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
-          $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
-          $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
-          $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
-          $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
-          $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
-          $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
-          $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
-          $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
-          if (!$general->isStandaloneInstance()) {
-               $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
-          }
-
-          $sheet->fromArray($headings, null, 'A3');
-
-          foreach ($output as $rowNo => $rowData) {
-               $rRowCount = $rowNo + 4;
-               $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-          }
-          $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Covid-19-Report' . date('d-M-Y-H-i-s') . '.xlsx';
-          $writer->save($filename);
+
+          $writer = new Writer();
+          $writer->openToFile($filename);
+          $writer->addRow(Row::fromValues($headings));
+          foreach ($output as $rowData) {
+               $writer->addRow(Row::fromValues($rowData));
+          }
+          $writer->close();
+
           echo _downloadToken($filename);
      }
 }

@@ -13,12 +13,8 @@ use App\Services\CommonService;
 use App\Services\Covid19Service;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\SampleRejectionUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
@@ -48,9 +44,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 
 	$rResult = $db->rawQuery($_SESSION['covid19ResultQuery']);
 
-	$excel = new Spreadsheet();
 	$output = [];
-	$sheet = $excel->getActiveSheet();
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 		$headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request", "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released"];
 	} else {
@@ -60,12 +54,6 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 		$headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
 	}
 
-	$colNo = 1;
-
-	$styleArray = ['font' => ['bold' => true, 'size' => 12], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
-
-
-	$sheet->mergeCells('A1:AG1');
 	$nameValue = '';
 	foreach ($_POST as $key => $value) {
 		if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
@@ -73,24 +61,9 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 		}
 	}
 
-	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue));
 	if ($_POST['withAlphaNum'] == 'yes') {
-		foreach ($headings as $field => $value) {
-			$string = str_replace(' ', '', $value);
-			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value));
-			$colNo++;
-		}
-	} else {
-		foreach ($headings as $field => $value) {
-			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode((string) $value));
-			$colNo++;
-		}
+		$headings = array_map(static fn($value): string => (string) preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $value)), $headings);
 	}
-	$sheet->getStyle('A3:AG3')->applyFromArray($styleArray);
 
 	$no = 1;
 	foreach ($rResult as $aRow) {
@@ -211,20 +184,17 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 		$no++;
 	}
 
-	$start = (count($output)) + 2;
-	foreach ($output as $rowNo => $rowData) {
-		$colNo = 1;
-		$rRowCount = $rowNo + 4;
-		foreach ($rowData as $field => $value) {
-			$sheet->setCellValue(
-				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode((string) $value)
-			);
-			$colNo++;
-		}
-	}
-	$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 	$filename = 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
-	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+
+	$writer = new Writer();
+	$writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+	$writer->addRow(Row::fromValues([html_entity_decode($nameValue)]));
+	$writer->addRow(Row::fromValues(['']));
+	$writer->addRow(Row::fromValues(array_map(static fn($value): string => html_entity_decode((string) $value), $headings)));
+	foreach ($output as $rowData) {
+		$writer->addRow(Row::fromValues(array_map(static fn($value): string => html_entity_decode((string) $value), $rowData)));
+	}
+	$writer->close();
+
 	echo _downloadToken($filename);
 }
