@@ -37151,3 +37151,11 @@ msgstr "Les corps des requêtes et des réponses sont conservés pendant %d jour
 #: app/admin/monitoring/get-api-sync-history-list.php
 msgid "Body expired"
 msgstr "Corps expiré"
+
+#: app/eid/requests/forms/add-drc.php
+msgid "Test at 9 months"
+msgstr "Test à 9 mois"
+
+#: app/eid/requests/forms/add-drc.php
+msgid "Test after 9 months"
+msgstr "Test à plus de 9 mois"
