@@ -7,6 +7,10 @@ use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
 
@@ -40,20 +44,11 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 
 	/* To get dynamic fields */
 	$labels = [];
-	foreach ($rResult as $key => $row) {
-		$testType[$key] = $genericTestsService->getDynamicFields($row['sample_id']);
-		foreach ($testType[$key]['dynamicLabel'] as $id => $le) {
-			$labels[$id] = $le;
-		}
-	}
 
 	$output = [];
 
-	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = ["No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Patient ID.", "Patient Name", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
-	} else {
-		$headings = ["No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
-	}
+	$headings = ["No.", "Test Type","Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Patient ID.", "Patient Name", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Request Created On"];
+	 
 	if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
 		unset($headings[$key]);
 	}
@@ -74,6 +69,15 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 
 	$no = 1;
 	$resultSet = $db->rawQuery($_SESSION['genericRequestQuery']);
+	foreach ($resultSet as $key => $row) {
+		// Key the structure mapping strictly by sample_id
+		$testType[$row['sample_id']] = $genericTestsService->getDynamicFields($row['sample_id']);
+		foreach ($testType[$row['sample_id']]['dynamicLabel'] as $id => $le) {
+			$labels[$id] = $le;
+		}
+	}
+
+
 	foreach ($resultSet as $key => $aRow) {
 		ExportJobUtility::tick();
 		$row = [];
@@ -94,11 +98,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 			'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
 			default => '',
 		};
-		//requested date
-		$requestedDate = '';
-		if (!empty($aRow['test_requested_on'])) {
-			$requestedDate =  DateUtility::humanReadableDateFormat($aRow['test_requested_on']);
-		}
+		
 		//request created date time
 		$requestCreatedDatetime = '';
 		if (!empty($aRow['request_created_datetime'])) {
@@ -139,6 +139,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 		$patientLname = $aRow['patient_last_name'] ?? '';
 
 		$row[] = $no;
+		$row[] = $aRow['test_standard_name'];
 		$row[] = $aRow["sample_code"];
 		if (!$general->isStandaloneInstance()) {
 			$row[] = $aRow["remote_sample_code"] ?? null;
@@ -149,38 +150,31 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 		$row[] = $aRow['facility_code'];
 		$row[] = ($aRow['facility_district']);
 		$row[] = ($aRow['facility_state']);
-
-		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-			$row[] = $aRow['patient_id'];
-			$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-		}
+		$row[] = $aRow['patient_id'];
+		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');
 		$row[] = $aRow['patient_age_in_years'];
 		$row[] = $gender;
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-		$row[] = $aRow['sample_name'] ?: null;
-		$row[] = $treatmentInitiationDate;
+		$row[] = $aRow['sample_type_name'] ?: null;
 		$row[] = ($aRow['is_patient_pregnant']);
 		$row[] = ($aRow['is_patient_breastfeeding']);
-		$row[] = (str_replace("_", " ", (string) $aRow['test_reason']));
-		$row[] = ($aRow['request_clinician_name']);
-		$row[] = $requestedDate;
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason_name'];
 		$row[] = $sampleTestedOn;
 		$row[] = $aRow['result'];
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
-		$row[] = (isset($aRow['funding_source_name']) && trim((string) $aRow['funding_source_name']) !== '') ? ($aRow['funding_source_name']) : '';
-		$row[] = (isset($aRow['i_partner_name']) && trim((string) $aRow['i_partner_name']) !== '') ? ($aRow['i_partner_name']) : '';
 		$row[] = $requestCreatedDatetime;
 
 		/* To assign the dynamic fields values */
 		if ($labels !== []) {
 			foreach (array_keys($labels) as $id) {
-				$row[] = empty($testType[$key]['dynamicValue'][$id]) ? "" : $testType[$key]['dynamicValue'][$id];
+				// Look up the dynamic field value mapped securely by sample_id
+				$row[] = empty($testType[$aRow['sample_id']]['dynamicValue'][$id]) ? "" : $testType[$aRow['sample_id']]['dynamicValue'][$id];
 			}
 		}
+
 		$output[] = $row;
 		$no++;
 	}
@@ -192,6 +186,27 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 		unset($output);
 		echo _downloadToken($fileName);
 	} else {
+		$excel = new Spreadsheet();
+		$sheet = $excel->getActiveSheet();
+		$sheet->setTitle('Generic Results');
+
+		$styleArray = ['font' => ['bold' => true, 'size' => 12], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
+
+		$borderStyle = ['alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
+		$sheet->mergeCells('A1:O1');
+		$sheet->getStyle('A1:O1')->applyFromArray(['font' => ['bold' => true, 'size' => 12], 'alignment' => [
+      // 'horizontal' => Alignment::HORIZONTAL_CENTER,
+      'vertical' => Alignment::VERTICAL_CENTER,
+  ], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]]);
+
+		$sheet->fromArray($headings, null, 'A3');
+
+		foreach ($output as $rowNo => $rowData) {
+			$rRowCount = $rowNo + 4;
+			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
+		}
+
+		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-LAB-TESTS-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 
 		$writer = new Writer();

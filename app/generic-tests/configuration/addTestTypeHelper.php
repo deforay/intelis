@@ -136,8 +136,13 @@ try {
             //echo '<pre>'; print_r($_POST['sampleType']); die;
             if (!empty($_POST['sampleType'])) {
                 foreach ($_POST['sampleType'] as $val) {
-                    $value = ['sample_type_id' => $val, 'test_type_id' => $lastId];
-                    $db->insert($tableName2, $value);
+                    $db->where('sample_type_id', $val);
+                    $db->where('test_type_id', $lastId);
+                    $checkDuplicateSample = $db->getOne($tableName2);
+                    if(!empty($checkDuplicateSample)){
+                        $value = ['sample_type_id' => $val, 'test_type_id' => $lastId];
+                        $db->insert($tableName2, $value);
+                    }
                 }
             }
 

@@ -191,10 +191,241 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 		left: auto;
 		right: 16px;
 	}
+
+/* ================================================================
+   INTELIS COLLAPSED MODULE SIDEBAR
+   ================================================================ */
+@media (min-width: 768px) {
+.sidebar-mini.sidebar-collapse .main-sidebar {
+width: 120px !important;
+/*overflow: visible !important;*/
+}
+.sidebar-mini.sidebar-collapse .content-wrapper,
+.sidebar-mini.sidebar-collapse .right-side,
+.sidebar-mini.sidebar-collapse .main-footer {
+margin-left: 120px !important;
+}
+.sidebar-mini.sidebar-collapse .main-header .logo {
+width: 120px !important;
+}
+.sidebar-mini.sidebar-collapse .main-header .navbar {
+margin-left: 120px !important;
+}
+.sidebar-mini.sidebar-collapse .sidebar,
+.sidebar-mini.sidebar-collapse .sidebar-menu {
+overflow: visible !important;
+}
+/* LEFT COLUMN - vertical module name */
+.sidebar-mini.sidebar-collapse.sidebar-menu > li.module-header {
+display: block !important;
+position: relative;
+float: left;
+width: 55px;
+min-height: 135px;
+padding: 0 !important;
+background: #2f4148;
+border-right: 1px solid #17252b;
+border-bottom: 1px solid #17252b;
+overflow: hidden !important;
+}
+.sidebar-mini.sidebar-collapse
+.sidebar-menu > li.module-header .module-title {
+display: block !important;
+position: absolute;
+top: 50%;
+left: 50%;
+width: 125px;
+transform: translate(-50%, -50%) rotate(-90deg);
+transform-origin: center;
+color: #fff;
+font-size: 13px;
+font-weight: 700;
+letter-spacing: 1px;
+text-align: center;
+white-space: nowrap;
+}
+/* RIGHT COLUMN - menu icons */
+.sidebar-mini.sidebar-collapse
+.sidebar-menu > li:not(.module-header) {
+position: relative;
+margin-left: 55px;
+width: 65px;
+background: #1f3035;
+border-bottom: 1px solid #17252b;
+}
+.sidebar-mini.sidebar-collapse
+.sidebar-menu > li:not(.module-header) > a {
+width: 65px;
+min-height: 45px;
+padding: 12px 0 !important;
+text-align: center;
+}
+.sidebar-mini.sidebar-collapse
+.sidebar-menu > li:not(.module-header) > a > i:first-child {
+width: 65px !important;
+margin: 0 !important;
+font-size: 20px;
+text-align: center;
+}
+/* Hide normal menu labels and arrows in collapsed mode */
+.sidebar-mini.sidebar-collapse
+.sidebar-menu > li:not(.module-header) >
+a > span:not(.pull-right-container) {
+display: none !important;
+}
+.sidebar-mini.sidebar-collapse
+.sidebar-menu > li > a > .pull-right-container {
+display: none !important;
+}
+/* Active icon */
+.sidebar-mini.sidebar-collapse .sidebar-menu > li.active > a,
+.sidebar-mini.sidebar-collapse .sidebar-menu > li.menu-open > a {
+background: #625fb2 !important;
+color: #fff !important;
+}
+/* Submenu flyout */
+.sidebar-mini.sidebar-collapse
+.sidebar-menu > li.treeview > .treeview-menu {
+display: none !important;
+position: absolute !important;top: 0 !important;
+left: 65px !important;
+width: 320px !important;
+margin: 0 !important;
+padding: 0 !important;
+background: #304248;
+z-index: 99999;
+box-shadow: 4px 4px 12px rgba(0,0,0,.25);
+}
+.sidebar-mini.sidebar-collapse
+.sidebar-menu > li.treeview.menu-open > .treeview-menu {
+display: block !important;
+}
+.sidebar-mini.sidebar-collapse .treeview-menu > li {
+width: 100% !important;
+margin: 0 !important;
+}
+.sidebar-mini.sidebar-collapse .treeview-menu > li > a {
+display: block !important;
+width: 100% !important;
+padding: 13px 20px !important;
+color: #e6ecef !important;
+white-space: nowrap;
+text-align: left !important;
+}
+/*.sidebar-mini.sidebar-collapse .treeview-menu > li > a:hover {
+background: #26383e !important;
+color: #fff !important;
+}*/
+.sidebar-mini.sidebar-collapse
+.treeview-menu > li > a > span {
+display: inline !important;
+position: static !important;
+width: auto !important;
+margin: 0 !important;
+padding: 0 !important;
+transform: none !important;
+background: transparent !important;
+}
+/* Disable AdminLTE's default hover flyout */
+.sidebar-mini:not(.sidebar-mini-expand-feature)
+.sidebar-collapse
+.sidebar-menu > li:hover > .treeview-menu {
+display: none !important;
+}
+.sidebar-mini:not(.sidebar-mini-expand-feature)
+.sidebar-collapse
+.sidebar-menu > li.menu-open:hover > .treeview-menu {
+display: block !important;
+}
+
+}
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li.custom-vertical-header-item {
+        display: block !important; /* Overrides default script asset blocks */
+        float: left !important;
+        clear: left !important;
+        width: 55px !important;
+        height: 180px !important;  /* Locks structural height directly to match 3 sub-items rows */
+        background: #2f4148 !important;
+        border-right: 1px solid #17252b !important;
+        border-bottom: 1px solid #17252b !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        position: relative !important;
+    }
+
+    /* Format inner parent anchor spacing inside the header box block */
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li.custom-vertical-header-item > a.custom-header-anchor-link {
+        display: block !important;
+        width: 55px !important;
+        height: 135px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        cursor: default !important;
+    }
+
+    /* 4. Text Rotation Framework Alignment Rules */
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li.custom-vertical-header-item .vertical-title-text {
+        display: block !important;
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        width: 125px !important;
+        transform: translate(-50%, -50%) rotate(-90deg) !important;
+        transform-origin: center center !important;
+        color: #fff !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+    }
+
+    /* 5. RIGHT COLUMN MENU ICON ALIGNMENTS */
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li:not(.custom-vertical-header-item) {
+        display: block !important;
+        float: left !important;
+        clear: none !important;
+        width: 65px !important;
+        margin: 0 !important;
+        background: #1f3035;
+        border-bottom: 1px solid #17252b;
+        position: relative !important;
+    }
+
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li:not(.custom-vertical-header-item) > a {
+        display: block !important;
+        width: 65px !important;
+        min-height: 45px;
+        padding: 12px 0 !important;
+        text-align: center;
+    }
+
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li:not(.custom-vertical-header-item) > a > i:first-child {
+        width: 65px !important;
+        margin: 0 !important;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    /* Strip native text values inside standard icons items in collapsed mode */
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li:not(.custom-vertical-header-item) > a > span {
+        display: none !important;
+    }
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li > a > .pull-right-container {
+        display: none !important;
+    }
+
+    /* Active Highlight Element Configurations */
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li.active > a,
+    .sidebar-mini.sidebar-collapse .sidebar-menu > li.menu-open > a {
+        background: #625fb2 !important;
+        color: #fff !important;
+    }
 </style>
 
 <body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" <?= $margin; ?> translate="no"
 	class="notranslate">
+	
 
 	<?php if (
 		($general->isLisInstance() && $instrumentsCount == 0) ||
@@ -229,7 +460,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 				</span>
 			</a>
 
-			<nav class="navbar" style="position:fixed;top:10;left:0;right:0;">
+			<nav class="navbar">
 				<!-- Sidebar toggle button-->
 				<a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
 					<span class="sr-only">Toggle navigation</span>
@@ -325,6 +556,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 		</header>
 
 		<!-- Left side column. contains the logo and sidebar -->
+	<!-- Left side column. contains the logo and sidebar -->
 		<aside class="main-sidebar" <?= $topSide; ?>>
 			<section class="sidebar">
 				<?php if (isset($arr['logo']) && trim((string) $arr['logo']) !== "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) { ?>
@@ -334,7 +566,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 						</div>
 					</div>
 				<?php } ?>
-				<ul class="sidebar-menu" data-widget="tree">
+	<ul class="sidebar-menu vertical-module-menu" data-widget="tree">
 					<?php
 					foreach ($_SESSION['menuItems'] as $menu) {
 						if ($menu['has_children'] == 'yes' && empty($menu['children'])) {
@@ -345,8 +577,14 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 						$classNames = trim((string) ($menu['additional_class_names'] ?? '' . ($menu['has_children'] == "yes" ? ' treeview' : '')));
 
 						if ($menu['is_header'] == 'yes') {
-							echo '<li class="header">' . _translate($menu['display_text']);
-						} else {
+							?>
+							<li class="header module-header custom-vertical-header-item">
+							<span class="module-title">
+							<?= _translate($menu['display_text']); ?>
+							</span>
+							<?php
+						}
+							else {
 							?>
 
 							<li class="<?= $classNames; ?>">
@@ -432,9 +670,11 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 					?>
 				</ul>
 
+
 			</section>
 			<!-- /.sidebar -->
 		</aside>
+
 
 		<!-- content-wrapper -->
 		<div id="dDiv" class="dialog" hidden>
