@@ -459,7 +459,7 @@ try {
     if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
         if ($cliMode) {
-            $io->success(_translate("Receieved metadata from STS"));
+            $io->success(_translate("Received metadata from STS"));
         }
 
         $options = [

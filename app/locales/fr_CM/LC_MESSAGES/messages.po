@@ -32254,7 +32254,7 @@ msgstr ""
 "medatata."
 
 #: app/tasks/remote/sts-metadata-receiver.php:459
-msgid "Receieved metadata from STS"
+msgid "Received metadata from STS"
 msgstr "Réception des métadonnées du STS"
 
 #: app/tasks/remote/sts-metadata-receiver.php:502

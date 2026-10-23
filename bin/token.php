@@ -98,7 +98,9 @@ try {
 
         // Handle the response
         if (!empty($response['status']) && $response['status'] === 'success') {
-            $io->success("Token generated: {$response['token']}");
+            // The first characters are enough to tell tokens apart; the rest stays
+            // off the screen, out of terminal scrollback and screenshots.
+            $io->success('Token generated: ' . substr((string) $response['token'], 0, 8) . '…');
             $data['sts_token'] = $response['token'];
             $db->update('s_vlsm_instance', $data);
         } else {
