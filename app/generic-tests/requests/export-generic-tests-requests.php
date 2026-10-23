@@ -36,30 +36,61 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 
 	/* To get dynamic fields */
 	$labels = [];
-
+	$testTypeData = [];
 	$output = [];
 
-	$headings = ["No.", "Test Type","Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Patient ID.", "Patient Name", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Request Created On"];
+	$resultSet = $db->rawQuery($_SESSION['genericRequestQuery']);
+
+	// 1. Process dynamic fields and headings FIRST so headers are accurately populated
+	foreach ($resultSet as $key => $row) {
+		ExportJobUtility::tick();
+		$testTypeData[$row['sample_id']] = $genericTestsService->getDynamicFields($row['sample_id']);
+		if (!empty($testTypeData[$row['sample_id']]['dynamicLabel'])) {
+			foreach ($testTypeData[$row['sample_id']]['dynamicLabel'] as $id => $le) {
+				$labels[$id] = $le;
+			}
+		}
+	}
+
+	$headings = [
+		_translate("No."), 
+		_translate("Test Type"), 
+		_translate("Sample ID"), 
+		_translate("Remote Sample ID"), 
+		_translate("Health Facility Name"), 
+		_translate("Testing Lab"), 
+		_translate("Sample Receipt Date"), 
+		_translate("Health Facility Code"), 
+		_translate("District/County"), 
+		_translate("Province/State"), 
+		_translate("Patient ID."), 
+		_translate("Patient Name"), 
+		_translate("Date of Birth"), 
+		_translate("Age"), 
+		_translate("Sex"), 
+		_translate("Date of Sample Collection"), 
+		_translate("Sample Type"), 
+		_translate("Is Patient Pregnant?"), 
+		_translate("Is Patient Breastfeeding?"), 
+		_translate("Is Sample Rejected?"), 
+		_translate("Rejection Reason"), 
+		_translate("Sample Tested On"), 
+		_translate("Result"), 
+		_translate("Date Result Dispatched"), 
+		_translate("Comments"), 
+		_translate("Request Created On")
+	];
 	 
 	if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
 		unset($headings[$key]);
 	}
-	/* Assign the dynamic labels to the heading */
+
+	/* Assign the dynamic labels to the heading now that $labels is fully populated */
 	if ($labels !== []) {
 		$headings = array_merge($headings, $labels);
 	}
-
+//echo "<pre>"; print_r($labels); die;
 	$no = 1;
-	$resultSet = $db->rawQuery($_SESSION['genericRequestQuery']);
-	foreach ($resultSet as $key => $row) {
-		// Key the structure mapping strictly by sample_id
-		$testType[$row['sample_id']] = $genericTestsService->getDynamicFields($row['sample_id']);
-		foreach ($testType[$row['sample_id']]['dynamicLabel'] as $id => $le) {
-			$labels[$id] = $le;
-		}
-	}
-
-
 	foreach ($resultSet as $key => $aRow) {
 		ExportJobUtility::tick();
 		$row = [];
@@ -147,12 +178,11 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = $requestCreatedDatetime;
-
-		/* To assign the dynamic fields values */
+//echo "<pre>"; print_r($labels); die;
+		/* To assign the dynamic fields values safely mapped by sample_id */
 		if ($labels !== []) {
 			foreach (array_keys($labels) as $id) {
-				// Look up the dynamic field value mapped securely by sample_id
-				$row[] = empty($testType[$aRow['sample_id']]['dynamicValue'][$id]) ? "" : $testType[$aRow['sample_id']]['dynamicValue'][$id];
+				$row[] = empty($testTypeData[$aRow['sample_id']]['dynamicValue'][$id]) ? "" : $testTypeData[$aRow['sample_id']]['dynamicValue'][$id];
 			}
 		}
 
@@ -163,7 +193,6 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 	if (isset($_SESSION['genericRequestQueryCount']) && $_SESSION['genericRequestQueryCount'] > 50000) {
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-LAB-TESTS-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
 		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-		// we dont need the $output variable anymore
 		unset($output);
 		echo _downloadToken($fileName);
 	} else {
