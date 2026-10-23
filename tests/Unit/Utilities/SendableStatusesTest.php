@@ -39,6 +39,43 @@ final class SendableStatusesTest extends TestCase
         SampleStatusUtility::parseSendableStatuses(' , ');
     }
 
+    public function testAFilterIsAbsentOrValid(): void
+    {
+        self::assertNull(SampleStatusUtility::sendableStatusFilter(null));
+        self::assertNull(SampleStatusUtility::sendableStatusFilter(''));
+        self::assertNull(SampleStatusUtility::sendableStatusFilter([]));
+        self::assertSame('rejected', SampleStatusUtility::sendableStatusFilter(' Rejected '));
+        self::assertSame('rejected,accepted', SampleStatusUtility::sendableStatusFilter(['accepted', 'rejected']));
+    }
+
+    /** @return iterable<string, array{mixed}> */
+    public static function malformedFilters(): iterable
+    {
+        yield 'a status number in a list' => [[4]];
+        yield 'a number' => [4];
+        yield 'only separators' => [' , '];
+        yield 'an empty name in a list' => [['']];
+    }
+
+    /** Dropped instead of refused, each of these once turned into a resend of every status. */
+    #[\PHPUnit\Framework\Attributes\DataProvider('malformedFilters')]
+    public function testAMalformedFilterIsRefusedNotDropped(mixed $filter): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        SampleStatusUtility::sendableStatusFilter($filter);
+    }
+
+    public function testTheRemoteResendRefusesAStatusNumber(): void
+    {
+        $result = (static function (): array {
+            $params = ['module' => 'vl', 'days' => 400, 'statuses' => [4]];
+            $command = [];
+            return require dirname(__DIR__, 3) . '/app/tasks/remote/command-handlers/resend-results.php';
+        })();
+
+        self::assertSame('failed', $result['status']);
+    }
+
     public function testTheRemoteResendRefusesAnUnknownStatusBeforeSendingAnything(): void
     {
         $result = (static function (): array {

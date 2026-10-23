@@ -131,29 +131,30 @@ if ($command === 'resend-results' || $command === 'resend-requests') {
         $params['days'] = $days;
     }
 
-    $statuses = $command === 'resend-results' ? ($post['statuses'] ?? null) : null;
-    if (is_array($statuses)) {
-        $statuses = implode(',', array_filter($statuses, 'is_string'));
+    try {
+        $statuses = SampleStatusUtility::sendableStatusFilter(
+            $command === 'resend-results' ? ($post['statuses'] ?? null) : null
+        );
+    } catch (InvalidArgumentException $e) {
+        http_response_code(400);
+        echo json_encode([
+            'status' => 'error',
+            'error' => _translate('The status filter is not valid.') . ' ' . $e->getMessage(),
+        ]);
+        exit;
     }
-    if (is_string($statuses) && trim($statuses) !== '') {
+    if ($statuses !== null) {
         // A courier without the option would ignore it and resend the whole window,
         // while the queued command said otherwise.
         if (!$labCaps->supportsCommand($labId, LabCapabilityService::RESEND_RESULTS_BY_STATUS)) {
             http_response_code(409);
             echo json_encode([
                 'status' => 'error',
-                'error' => 'This lab cannot filter a resend by status until it is updated.',
+                'error' => _translate('This lab must be updated before a resend can be limited to some statuses.'),
             ]);
             exit;
         }
-        try {
-            SampleStatusUtility::parseSendableStatuses($statuses);
-        } catch (InvalidArgumentException $e) {
-            http_response_code(400);
-            echo json_encode(['status' => 'error', 'error' => $e->getMessage()]);
-            exit;
-        }
-        $params['statuses'] = strtolower(preg_replace('/\s+/', '', $statuses));
+        $params['statuses'] = $statuses;
     }
 }
 

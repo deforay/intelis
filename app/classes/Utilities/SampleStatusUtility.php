@@ -83,6 +83,37 @@ final class SampleStatusUtility
     }
 
     /**
+     * A status filter as a request or a queued command carries it -- absent, a
+     * comma-separated string, or a list of names -- as one validated string, or
+     * null for no filter.
+     *
+     * Anything else is refused. Dropped instead, a malformed filter left the
+     * resend unfiltered, sending every status while the command said otherwise.
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function sendableStatusFilter(mixed $filter): ?string
+    {
+        if ($filter === null || $filter === '' || $filter === []) {
+            return null;
+        }
+        if (is_array($filter)) {
+            foreach ($filter as $name) {
+                if (!is_string($name)) {
+                    throw new \InvalidArgumentException('Statuses must be given by name.');
+                }
+            }
+            $filter = implode(',', $filter);
+        }
+        if (!is_string($filter)) {
+            throw new \InvalidArgumentException('Statuses must be given by name.');
+        }
+
+        $names = array_keys(array_intersect(self::SENDABLE_STATUS_NAMES, self::parseSendableStatuses($filter)));
+        return implode(',', $names);
+    }
+
+    /**
      * True for a status that claims the test is finished, and so cannot be set
      * on a sample with nothing to show for it.
      *
