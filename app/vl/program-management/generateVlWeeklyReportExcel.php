@@ -151,10 +151,10 @@ foreach ($excelResultSet as $vlLab => $labResult) {
         $writer->addNewSheetAndMakeItCurrent();
     }
     $vlLab = preg_replace('/\s+/', ' ', ($vlLab));
-    $labInfo = explode('-', (string) $vlLab);
 
     // A name Excel would refuse (too long, a repeat, odd characters) keeps the default "SheetN".
-    $sheetName = $labInfo[1] ?? '';
+    // The facility code, read from the row itself: a hyphen in the lab name would shift a split of the group key.
+    $sheetName = trim((string) ($labResult[0]['fcode'] ?? ''));
     if ($sheetName !== '') {
         try {
             $writer->getCurrentSheet()->setName($sheetName);

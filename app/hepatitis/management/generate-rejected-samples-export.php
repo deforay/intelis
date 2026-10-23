@@ -48,7 +48,7 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
           $output[] = $row;
      }
 
-     $filename = 'InteLIS-TB-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
+     $filename = 'InteLIS-Hepatitis-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
 
      $writer = new Writer();
      $writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
