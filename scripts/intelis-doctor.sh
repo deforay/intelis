@@ -807,7 +807,7 @@ check_permissions() {
   local dir
   [ -n "$INSTALL_PATH" ] || return 0
 
-  if ! sudo -u "$WEB_USER" test -r "${INSTALL_PATH}/public/index.php" 2>/dev/null; then
+  if ! sudo -n -u "$WEB_USER" test -r "${INSTALL_PATH}/public/index.php" </dev/null 2>/dev/null; then
     finding critical permissions \
       "The web server is not allowed to read the site's files." \
       "${WEB_USER} cannot read ${INSTALL_PATH}/public/index.php."
@@ -816,7 +816,7 @@ check_permissions() {
 
   for dir in var public/uploads; do
     [ -d "${INSTALL_PATH}/${dir}" ] || continue
-    if ! sudo -u "$WEB_USER" test -w "${INSTALL_PATH}/${dir}" 2>/dev/null; then
+    if ! sudo -n -u "$WEB_USER" test -w "${INSTALL_PATH}/${dir}" </dev/null 2>/dev/null; then
       finding warning permissions \
         "The web server cannot write to the folders it has to write to." \
         "${WEB_USER} cannot write to ${INSTALL_PATH}/${dir}. Pages load, but saving, caching and uploads fail."
@@ -905,6 +905,112 @@ db_answers() {
 
 # The database is somebody else's script to diagnose. All this decides is
 # whether to go and get it.
+# --- updates ------------------------------------------------------------------
+#
+# Labs follow the stable branch, and a release is a commit: the version number
+# moves only with schema changes, so two installs can share one and differ by
+# weeks of fixes. The commit in VERSION.txt is compared with the tip of stable.
+# People see a version and dates. The hashes go to the report only.
+
+UPDATE_STATE=unknown   # current | behind | ahead | diverged | differs | offline | unstamped
+UPDATE_BEHIND_BY=""
+INSTALLED_SHA=""
+STABLE_SHA=""
+INSTALLED_VERSION=""
+INSTALLED_DATE=""
+STABLE_DATE=""
+
+check_update() {
+  local cmp parsed
+  [ -n "$INSTALL_PATH" ] || { UPDATE_STATE=unstamped; return 0; }
+  INSTALLED_VERSION="$(php -r '$j = json_decode((string) @file_get_contents($argv[1]), true); echo $j["version"] ?? "";' \
+    "${INSTALL_PATH}/composer.json" 2>/dev/null || true)"
+
+  INSTALLED_SHA="$(head -n 1 "${INSTALL_PATH}/VERSION.txt" 2>/dev/null | tr -d '\r\n ' || true)"
+  [[ "$INSTALLED_SHA" =~ ^[0-9a-f]{40}$ ]] || { UPDATE_STATE=unstamped; return 0; }
+
+  # Anonymous and never interactive, as resolve_intelis_ref does it: a stored
+  # credential that has expired would otherwise prompt on the terminal.
+  if command -v git >/dev/null 2>&1; then
+    STABLE_SHA="$(GIT_TERMINAL_PROMPT=0 timeout -k 2 8 git -c credential.helper= \
+      ls-remote https://github.com/deforay/intelis.git refs/heads/stable 2>/dev/null | awk '{print $1; exit}' || true)"
+  fi
+  [[ "$STABLE_SHA" =~ ^[0-9a-f]{40}$ ]] || { UPDATE_STATE=offline; return 0; }
+
+  # Different is not behind: a lab hotfixed from master is ahead of stable.
+  # GitHub's compare says which, how far, and the dates people can read.
+  # Without it the direction is unknown, and nothing is offered: updating a
+  # hotfixed lab to stable would remove the hotfix.
+  cmp="$(http_get "https://api.github.com/repos/deforay/intelis/compare/${INSTALLED_SHA}...${STABLE_SHA}" || true)"
+  parsed="$(printf '%s' "$cmp" | php -r '
+    $j = json_decode(stream_get_contents(STDIN), true);
+    if (!is_array($j) || !isset($j["status"])) { exit; }
+    $day = static fn ($d) => $d ? date("j M Y", strtotime($d)) : "";
+    $commits = $j["commits"] ?? [];
+    $last = $commits ? end($commits) : null;
+    echo $j["status"], "|", $j["ahead_by"] ?? "", "|",
+      $day($j["base_commit"]["commit"]["committer"]["date"] ?? ""), "|",
+      $day($last["commit"]["committer"]["date"] ?? ""), "|";
+  ' 2>/dev/null || true)"
+
+  if [ "$INSTALLED_SHA" = "$STABLE_SHA" ]; then
+    UPDATE_STATE=current
+  else
+    case "$(printf '%s' "$parsed" | cut -d'|' -f1)" in
+      ahead) UPDATE_STATE=behind ;;
+      # Both sides have commits the other lacks: a hotfix taken before stable
+      # moved on. An update would drop the hotfix, so that is a person's call.
+      diverged) UPDATE_STATE=diverged ;;
+      behind) UPDATE_STATE=ahead ;;
+      identical) UPDATE_STATE=current ;;
+      *) UPDATE_STATE=differs ;;
+    esac
+  fi
+  UPDATE_BEHIND_BY="$(printf '%s' "$parsed" | cut -d'|' -f2)"
+  INSTALLED_DATE="$(printf '%s' "$parsed" | cut -d'|' -f3)"
+  STABLE_DATE="$(printf '%s' "$parsed" | cut -d'|' -f4)"
+  report "update: state=${UPDATE_STATE} installed=${INSTALLED_SHA} (${INSTALLED_VERSION:-?}, ${INSTALLED_DATE:-?}) stable=${STABLE_SHA} (${STABLE_DATE:-?}) behind_by=${UPDATE_BEHIND_BY:-?}"
+}
+
+has_dispatcher() {
+  local cmd
+  cmd="$(command -v intelis 2>/dev/null || true)"
+  [ -n "$cmd" ] && grep -q '^cmd_update()' "$cmd" 2>/dev/null
+}
+
+# What to tell a person to type. Where `intelis` is still the Composer wrapper,
+# `intelis update` would run composer, so the commands are brought up to date
+# first, as the update guide does it.
+print_update_advice() {
+  if has_dispatcher; then
+    print info "To install it, run: intelis update"
+  else
+    print info "To install it, first bring the InteLIS commands up to date:"
+    printf '       sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/deforay/intelis/master/scripts/bootstrap.sh)"\n'
+    print plain "     Then run: intelis update"
+  fi
+}
+
+update_row() {
+  local v="${INSTALLED_VERSION:-version unknown}"
+  case "$UPDATE_STATE" in
+    current) row ok "InteLIS" "${v}, up to date" ;;
+    ahead)   row ok "InteLIS" "${v}, newer than the current release" ;;
+    behind)
+      if [ -n "$STABLE_DATE" ] && [ "$INSTALLED_DATE" = "$STABLE_DATE" ]; then
+        row warn "InteLIS" "${v}, a newer update from ${STABLE_DATE} is available"
+      elif [ -n "$INSTALLED_DATE" ] && [ -n "$STABLE_DATE" ]; then
+        row warn "InteLIS" "${v} from ${INSTALLED_DATE}, an update from ${STABLE_DATE} is available"
+      else
+        row warn "InteLIS" "${v}, an update is available"
+      fi ;;
+    diverged) row warn "InteLIS" "${v}, has changes the current release does not, so it is not updated here" ;;
+    differs) row skip "InteLIS" "${v}, could not compare with the current release" ;;
+    offline) row skip "InteLIS" "${v}, update check needs an internet connection" ;;
+    *)       row skip "InteLIS" "${v}, update status not recorded" ;;
+  esac
+}
+
 DB_STATE=unknown
 check_database() {
   if ! systemctl is-active --quiet "$DB_UNIT" 2>/dev/null; then
@@ -940,6 +1046,7 @@ check_permissions
 check_disk
 check_database
 $APACHE_UP && check_probe
+check_update
 
 if ! $APACHE_UP && ! has_finding config; then
   finding critical start \
@@ -1030,6 +1137,8 @@ render_checks() {
   elif [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null; then row bad "Site" "error ${PROBE_STATUS}"
   else row ok "Site" "opens"
   fi
+
+  update_row
 }
 
 report_findings
@@ -1054,6 +1163,11 @@ if ! $QUIET || [ ${#FINDING_TITLES[@]} -gt 0 ]; then
   printf '\n'
   render_checks
   [ ${#FINDING_TITLES[@]} -gt 1 ] && render_other_problems "$HEADLINE"
+  if [ ${#FINDING_TITLES[@]} -eq 0 ] && [ "$UPDATE_STATE" = behind ]; then
+    printf '\n'
+    print info "An update is available."
+    print_update_advice
+  fi
 fi
 
 # --- repairs ------------------------------------------------------------------
@@ -1314,13 +1428,68 @@ if has_finding database ||
   [ "$MODE" = check ] || recheck_site
 fi
 
-# --- result -------------------------------------------------------------------
-
 RECOVERED=false
 site_opens() {
   [ "$PROBE_RESULT" = php-runs ] && [ -z "$PROBE_MISSING" ] &&
     [ -n "$PROBE_STATUS" ] && [ "$PROBE_STATUS" != 000 ] && [ "$PROBE_STATUS" -lt 500 ] 2>/dev/null
 }
+
+# --- update -------------------------------------------------------------------
+#
+# Offered only where an update is a plausible fix: the web server, PHP and the
+# database all work and InteLIS itself still answers with an error, which is a
+# bug or an unfinished migration. With any of those broken the update needs
+# what is missing and stops part way, which is how labs end up stranded
+# mid-migration. Never unattended: it changes far more than any repair above.
+
+# On older machines `intelis` is still the Composer wrapper, where "update"
+# means composer update. Only the dispatcher that has an update command of its
+# own is trusted with it, and otherwise the updater is run directly. The
+# dispatcher updates the install it is run from, so it runs from this one.
+run_update() {
+  if has_dispatcher && [ -n "$INSTALL_PATH" ]; then
+    ( cd "$INSTALL_PATH" && "$(command -v intelis)" update )
+  elif [ -x /usr/local/bin/intelis-update ] && [ -n "$INSTALL_PATH" ]; then
+    bash /usr/local/bin/intelis-update -p "$INSTALL_PATH"
+  elif [ -n "$INSTALL_PATH" ] && [ -f "${INSTALL_PATH}/scripts/upgrade.sh" ]; then
+    bash "${INSTALL_PATH}/scripts/upgrade.sh" -p "$INSTALL_PATH"
+  else
+    return 1
+  fi
+}
+
+if [ "$UPDATE_STATE" = behind ] && [ "$MODE" != check ] &&
+   [ "$PROBE_RESULT" = php-runs ] && [ -z "$PROBE_MISSING" ] && { [ ${#FIXES_APPLIED[@]} -gt 0 ] || ! php_fault; } &&
+   ! has_finding disk &&
+   [ -n "$PROBE_STATUS" ] && [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null && db_answers &&
+   ! { $DB_DOCTOR_RAN && [ "$DB_DOCTOR_RC" -ne 0 ]; }; then
+  # A ping proves the server is alive, not that InteLIS can log in. The database
+  # doctor's result says that, and anything it left unresolved comes first.
+  print header "Update"
+  print_wrapped "The web server, PHP and the database are working, and InteLIS still returns an error. An update often fixes errors inside InteLIS itself."
+  if [ "$MODE" = yes ]; then
+    print info "Left alone: unattended runs do not install updates."
+    print_update_advice
+    report "SKIPPED (unattended): update offered"
+  else
+    FIXES_OFFERED=$((FIXES_OFFERED + 1))
+    print step "Update InteLIS to the current release."
+    if ask_yes_no "     Do this now?" no; then
+      if run_update; then
+        FIXES_APPLIED+=("Update InteLIS")
+        report "FIX APPLIED: update"
+      else
+        print error "The update did not finish. Its own messages above say why."
+        report "FIX FAILED: update"
+      fi
+      recheck_site
+    else
+      print plain "     Left alone."
+    fi
+  fi
+fi
+
+
 
 if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
   if [ "$MODE" = check ]; then
@@ -1349,16 +1518,16 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
   else
     case "$PROBE_RESULT" in
       source-served) card bad "The server still shows PHP code instead of running it." \
-                       "Send the report below. It records everything that was changed." ;;
+                       "Send the report below when asking for help." ;;
       php-runs)      if [ -n "$PROBE_MISSING" ]; then
                        card bad "PHP still has not loaded: ${PROBE_MISSING//,/, }" \
-                         "Send the report below. It records everything that was changed."
+                         "Send the report below when asking for help."
                      else
                        card bad "InteLIS still does not open (error ${PROBE_STATUS:-unknown})." \
-                         "Send the report below. It records everything that was changed."
+                         "Send the report below when asking for help."
                      fi ;;
       *)             card bad "The site still does not answer." \
-                       "Send the report below. It records everything that was changed." ;;
+                       "Send the report below when asking for help." ;;
     esac
     report "VERDICT: unresolved after fixes"
   fi
