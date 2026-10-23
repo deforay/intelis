@@ -150,6 +150,26 @@ final class ApiTrackingStorageUtilityTest extends TestCase
         self::assertSame([], ApiTrackingStorageUtility::pendingPurges());
     }
 
+    public function testDayFoldersTakeTheKindFolderModeWhateverTheUmask(): void
+    {
+        $root = ApiTrackingStorageUtility::kindRoot('requests');
+        chmod($root, 0775);
+        $umask = umask(0022);
+        try {
+            $dir = ApiTrackingStorageUtility::ensureDayDirectory('requests', '2026-10-23 00:00:05');
+        } finally {
+            umask($umask);
+        }
+
+        self::assertSame("$root/2026/10/23", $dir);
+        // Root's cron made these 0755 under its umask, and the web server could
+        // not write the day's bodies.
+        foreach (["$root/2026", "$root/2026/10", "$root/2026/10/23"] as $level) {
+            self::assertSame(0775, fileperms($level) & 0777, $level);
+        }
+        self::assertSame($dir, ApiTrackingStorageUtility::ensureDayDirectory('requests', '2026-10-23 18:00:00'));
+    }
+
     private function wipe(string $dir): void
     {
         if (is_dir($dir)) {

@@ -112,6 +112,31 @@ final class ApiTrackingStorageTest extends TestCase
         self::assertFalse($this->bodyExists('responses', $txn));
     }
 
+    public function testUnwritableDayFolderStillKeepsTheRow(): void
+    {
+        if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
+            self::markTestSkipped('Root writes through any folder mode.');
+        }
+        $dirs = [];
+        foreach (ApiTrackingStorageUtility::KINDS as $kind) {
+            $dir = ApiTrackingStorageUtility::dayDirectory($kind, date('Y-m-d H:i:s'));
+            MiscUtility::makeDirectory($dir, 0775);
+            chmod($dir, 0555);
+            $dirs[] = $dir;
+        }
+
+        try {
+            $txn = $this->track(['labId' => 7], ['requests' => [['sample_code' => 'S1']]]);
+            // A root-owned day folder on an STS dropped the row of every web call.
+            self::assertSame(1, $this->rowCount($txn));
+            self::assertFalse($this->bodyExists('requests', $txn));
+        } finally {
+            foreach ($dirs as $dir) {
+                chmod($dir, 0775);
+            }
+        }
+    }
+
     private function track(mixed $request, mixed $response, bool $emptyPoll = false, bool $keepRow = false): string
     {
         /** @var CommonService $general */
