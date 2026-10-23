@@ -444,19 +444,57 @@ final class LoggerUtility
         $debugMode = defined('SYSTEM_CONFIG')
             && !empty(SYSTEM_CONFIG['system']['debug_mode']);
 
-        // Page copy (all translatable). Intentionally vendor/role agnostic — the
+        // Page copy (all translatable). Intentionally vendor/role agnostic: the
         // "support team" differs per deployment, so we never name who that is.
-        $pageTitle     = _htmlTranslate("System Temporarily Unavailable");
-        $heading       = _htmlTranslate("We can't reach the system right now");
-        $intro         = _htmlTranslate("InteLIS could not connect to its database. This is usually temporary and often resolves on its own within a few minutes.");
-        $stepsHeading  = _htmlTranslate("What you can try");
-        $step1         = _htmlTranslate("Wait a minute, then reload this page — the database may simply be restarting.");
-        $step2         = _htmlTranslate("If you can, restart the computer or server that runs InteLIS, then wait a minute and reload. This restarts the database and fixes the problem most of the time.");
-        $step3         = _htmlTranslate("Make sure the server has enough free disk space and memory.");
-        $step4         = _htmlTranslate("Confirm the database settings in the configuration are correct and the credentials have not changed.");
-        $reloadLabel   = _htmlTranslate("Reload page");
-        $supportLead   = _htmlTranslate("If the problem continues after a few minutes, please contact your support team and share the time this happened.");
-        $detailsLabel  = _htmlTranslate("Technical details");
+        //
+        // This page is the last thing standing when the database is gone, and a
+        // translation cache can be broken in the same incident. A failing
+        // translation falls back to the English text rather than taking the
+        // page down with it.
+        $t = static function (string $text): string {
+            try {
+                return _htmlTranslate($text);
+            } catch (Throwable) {
+                return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+            }
+        };
+
+        // Without mysqli, PHP cannot open a connection at all, and the database
+        // may be perfectly healthy. Saying "the database is down" would send
+        // whoever reads this to the wrong half of the problem.
+        $phpCannotConnect = !extension_loaded('mysqli');
+
+        $pageTitle    = $t("Database Unavailable");
+        $stepsHeading = $t("What to do");
+        $command      = '<code class="cmd">sudo intelis doctor</code>';
+        if ($phpCannotConnect) {
+            $heading = $t("This server's PHP cannot reach the database");
+            $intro   = $t("PHP on this server is missing mysqli, the part that connects to the database. "
+                . "The database itself may be running normally. This usually follows a PHP update.");
+            $steps   = [
+                $t("Ask the person who looks after the InteLIS server to run this command on it:") . ' ' . $command
+                    . ' ' . $t("It installs and switches on the missing part of PHP."),
+                $t("Reload this page when the command reports that InteLIS is working again."),
+            ];
+        } else {
+            $heading = $t("The InteLIS database is not responding");
+            $intro   = $t("InteLIS is running, but it cannot connect to its database (MySQL), so no page can open. "
+                . "This often lasts a minute while the server restarts, for example after an update or a power cut.");
+            $steps   = [
+                $t("Wait a minute, then reload this page."),
+                $t("If this page comes back, ask the person who looks after the InteLIS server "
+                    . "to run this command on it:")
+                    . ' ' . $command . ' ' . $t("It finds out why the database stopped and offers to repair it."),
+                $t("Restarting the InteLIS server also restarts the database, and often fixes this."),
+            ];
+        }
+        $stepItems    = implode('', array_map(static fn (string $step): string => "<li>{$step}</li>", $steps));
+        $reloadLabel  = $t("Reload page");
+        $guideLabel   = $t("Troubleshooting guide");
+        $guideUrl     = 'https://deforay.github.io/intelis/guides/site-will-not-open/';
+        $supportLead  = $t("If the problem continues, contact the support team and give them the time shown here:");
+        $failedAt     = htmlspecialchars(date('Y-m-d H:i:s'), ENT_QUOTES, 'UTF-8');
+        $detailsLabel = $t("Technical details");
 
         $detail = $debugMode
             ? '<details class="tech"><summary>' . $detailsLabel . '</summary><pre>'
@@ -570,6 +608,30 @@ final class LoggerUtility
             cursor: pointer;
         }
         .btn:hover { background: #1d4ed8; }
+        .btn--quiet {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--line);
+            margin-left: 8px;
+        }
+        .btn--quiet:hover { background: #f1f5f9; }
+        code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            background: #f1f5f9;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 1px 6px;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+        code.cmd {
+            display: block;
+            width: fit-content;
+            margin: 8px 0;
+            padding: 6px 12px;
+            font-size: 0.95em;
+        }
+        .support strong { white-space: nowrap; }
         .support {
             background: #f8fafc;
             border: 1px solid var(--line);
@@ -598,16 +660,12 @@ final class LoggerUtility
             <div class="card__body">
                 <p class="intro">{$intro}</p>
                 <h2>{$stepsHeading}</h2>
-                <ol class="steps">
-                    <li>{$step1}</li>
-                    <li>{$step2}</li>
-                    <li>{$step3}</li>
-                    <li>{$step4}</li>
-                </ol>
+                <ol class="steps">{$stepItems}</ol>
                 <div class="actions">
                     <a class="btn" href="javascript:location.reload()">{$reloadLabel}</a>
+                    <a class="btn btn--quiet" href="{$guideUrl}" target="_blank" rel="noopener">{$guideLabel}</a>
                 </div>
-                <p class="support">{$supportLead}</p>
+                <p class="support">{$supportLead} <strong>{$failedAt}</strong></p>
                 {$detail}
             </div>
         </div>

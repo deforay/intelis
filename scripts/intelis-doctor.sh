@@ -770,7 +770,7 @@ check_maintenance_marker() {
 
   if [ -f "$marker" ]; then
     finding critical maintenance \
-      "The site is still showing the 'Upgrade in progress' page." \
+      "The site is still showing the update page." \
       "An update was interrupted and left its marker behind, so every page is being turned away. Nothing is wrong with the machine; the marker just has to go."
   fi
 

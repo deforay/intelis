@@ -37148,3 +37148,63 @@ msgstr "Test à 9 mois"
 #: app/eid/requests/forms/add-drc.php
 msgid "Test after 9 months"
 msgstr "Test à plus de 9 mois"
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "Database Unavailable"
+msgstr "Base de données indisponible"
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "What to do"
+msgstr "Que faire"
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "This server's PHP cannot reach the database"
+msgstr "Le PHP de ce serveur ne peut pas joindre la base de données"
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "PHP on this server is missing mysqli, the part that connects to the database. The database itself may be running normally. This usually follows a PHP update."
+msgstr "Il manque mysqli au PHP de ce serveur, la partie qui se connecte à la base de données. La base de données elle-même fonctionne peut-être normalement. Cela fait généralement suite à une mise à jour de PHP."
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "Ask the person who looks after the InteLIS server to run this command on it:"
+msgstr "Demandez à la personne qui s'occupe du serveur InteLIS d'y exécuter cette commande :"
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "It installs and switches on the missing part of PHP."
+msgstr "Elle installe et active la partie manquante de PHP."
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "Reload this page when the command reports that InteLIS is working again."
+msgstr "Rechargez cette page quand la commande indique qu'InteLIS fonctionne à nouveau."
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "The InteLIS database is not responding"
+msgstr "La base de données InteLIS ne répond pas"
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "InteLIS is running, but it cannot connect to its database (MySQL), so no page can open. This often lasts a minute while the server restarts, for example after an update or a power cut."
+msgstr "InteLIS fonctionne, mais ne peut pas se connecter à sa base de données (MySQL), donc aucune page ne peut s'ouvrir. Cela dure souvent une minute pendant le redémarrage du serveur, par exemple après une mise à jour ou une coupure de courant."
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "Wait a minute, then reload this page."
+msgstr "Attendez une minute, puis rechargez cette page."
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "If this page comes back, ask the person who looks after the InteLIS server to run this command on it:"
+msgstr "Si cette page revient, demandez à la personne qui s'occupe du serveur InteLIS d'y exécuter cette commande :"
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "It finds out why the database stopped and offers to repair it."
+msgstr "Elle trouve pourquoi la base de données s'est arrêtée et propose de la réparer."
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "Restarting the InteLIS server also restarts the database, and often fixes this."
+msgstr "Redémarrer le serveur InteLIS redémarre aussi la base de données, ce qui résout souvent le problème."
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "Troubleshooting guide"
+msgstr "Guide de dépannage"
+
+#: app/classes/Utilities/LoggerUtility.php
+msgid "If the problem continues, contact the support team and give them the time shown here:"
+msgstr "Si le problème persiste, contactez l'équipe d'assistance et communiquez-lui l'heure affichée ici :"
