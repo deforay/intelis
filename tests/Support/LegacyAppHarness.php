@@ -92,6 +92,13 @@ final class LegacyAppHarness
         ]);
         ContainerRegistry::setContainer($builder->build());
 
+        // The file cache lives in one directory for every test process, and what
+        // it holds was computed against another test's database and modules: the
+        // active test types from a class with Custom Tests enabled sent a VL-only
+        // class looking for form_generic. A fresh database starts with no cache.
+        MemoUtility::clear();
+        ContainerRegistry::get(FileCacheUtility::class)->clear();
+
         return self::$db;
     }
 

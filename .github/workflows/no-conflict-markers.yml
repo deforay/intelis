@@ -1,12 +1,23 @@
 name: Verify
 
 on:
+  # A branch push is not on this list: git ship opens a pull request for it at
+  # once, and that run is the one the ruleset waits on. Running both tested the
+  # same commit twice and competed for runners with the run that mattered.
   push:
+    branches: [master]
   pull_request:
   workflow_dispatch:
 
 # No token scopes by default; each job grants itself only what it needs.
 permissions: {}
+
+# A new push to a pull request makes its older run worthless, so that one is
+# cancelled. Every master run keeps its own group: Publish advances stable from
+# master runs that succeed, and a cancelled one publishes nothing.
+concurrency:
+  group: verify-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   check:
@@ -93,27 +104,11 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
+      # Integration runs in its own jobs, against a server. Left in here it skips
+      # every test, but only after starting a PHP process for each one that runs
+      # isolated, which was most of this job's minute.
       - name: Run PHPUnit
-        run: composer test
-
-      - name: Check PHP syntax
-        run: |
-          find app/classes/Contracts/InterfaceApi app/classes/Repositories/InterfaceApi \
-            app/classes/Services/InterfaceApi app/classes/HttpHandlers/InterfaceApi \
-            app/classes/Http tests -name '*.php' -print0 | xargs -0 -n1 php -l
-          find app/classes/Middlewares/Api -name 'Interface*.php' -print0 \
-            | xargs -0 -n1 php -l
-          php -l app/classes/Exceptions/InterfaceApiException.php
-          php -l app/classes/Services/InterfacingService.php
-          find app/classes/Services -maxdepth 1 -name "Instrument*.php" -print0 \
-            | xargs -0 -n1 php -l
-          php -l app/classes/Middlewares/Api/ApiAuthMiddleware.php
-          php -l app/facilities/editFacility.php
-          php -l app/facilities/interfaceConnectionAction.php
-          php -l app/facilities/partials/interface-connections.php
-          php -l app/system/di.php
-          php -l bin/interface-api.php
-          php -l public/api/index.php
+        run: composer test -- --exclude-testsuite Integration
 
       - name: Check coding style
         # Path list lives in composer.json (cs-check) so `composer qc` runs the same set.
@@ -138,9 +133,9 @@ jobs:
           coverage: none
 
       # A parse error that reaches an installation is a white screen for every
-      # user of that lab until somebody notices and reports it. The per-module
-      # lint above covers the Interface API; most of app/ is procedural pages
-      # that no test ever loads, so nothing else would catch one there.
+      # user of that lab until somebody notices and reports it. Most of app/ is
+      # procedural pages that no test ever loads, so nothing else would catch
+      # one there.
       # No composer install: php -l does not autoload anything.
       - name: Lint every PHP file
         run: |
@@ -153,11 +148,25 @@ jobs:
           fi
           echo "OK — ${#files[@]} files parse."
 
-  fresh-install:
-    name: Fresh install migrates
+  # The integration suite takes minutes in one process, mostly PHP start-up for
+  # the tests that run isolated, so it is split across parallel jobs. Each shard
+  # repeats the whole fresh install first: the setup is under a minute and runs
+  # in parallel, and it keeps every shard on exactly the server state the suite
+  # always had.
+  integration:
+    name: Fresh install + integration (${{ matrix.shard }})
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # The PDF tests are the only ones that need poppler, and PdfOutputTest is
+        # the slowest class, so they get a shard of their own. The rest are
+        # dealt out round-robin.
+        shard: [pdf, 1, 2, 3, 4]
+    env:
+      SHARDS: 4
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -181,9 +190,16 @@ jobs:
       # settings is part of proving a fresh install works.
       - name: Start MySQL configured the way an install configures it
         run: |
-          docker run -d --name mysql -p 3306:3306 \
+          #
+          # Everything after those two flags gives up durability, which a
+          # database thrown away after the run does not need. Data on tmpfs and
+          # no fsync, binlog or doublewrite halved the suite's run time and
+          # changes nothing a query can observe.
+          docker run -d --name mysql -p 3306:3306 --tmpfs /var/lib/mysql:rw \
             -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=vlsm \
-            mysql:8.0 --innodb-strict-mode=0 --sql-mode=
+            mysql:8.0 --innodb-strict-mode=0 --sql-mode= \
+            --skip-log-bin --innodb-flush-log-at-trx-commit=0 \
+            --innodb-doublewrite=0 --innodb-flush-method=nosync
           # The entrypoint runs a temporary server over the unix socket while
           # it initialises, then stops it and starts the real one. A socket
           # probe answers during that window, so the seed step that follows
@@ -238,7 +254,39 @@ jobs:
       # PdfOutputTest reads each PDF with pdfinfo, pdftotext and pdfimages, and skips
       # itself without them. Installed explicitly rather than trusting the runner image.
       - name: Install poppler for the PDF output tests
+        if: matrix.shard == 'pdf'
         run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+
+      # PHPUnit 11 cannot shard on its own, so each shard writes a configuration
+      # that lists its own files. The split is deterministic, so the shards
+      # together always cover every file exactly once.
+      - name: Pick this shard's test files
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          # Picked by what a test calls rather than by name: a PDF test that
+          # lands in a shard without poppler skips its text checks and still
+          # passes.
+          poppler='pdftotext|pdfinfo|pdfimages|PdfFingerprint'
+          files=()
+          i=0
+          while IFS= read -r f; do
+            if grep -qE "$poppler" "$f"; then
+              [ "$SHARD" = pdf ] && files+=("$f")
+              continue
+            fi
+            [ "$SHARD" != pdf ] && [ $((i % SHARDS)) -eq $((SHARD - 1)) ] && files+=("$f")
+            i=$((i + 1))
+          done < <(find tests/Integration -name '*Test.php' | sort)
+          {
+            echo '<?xml version="1.0" encoding="UTF-8"?>'
+            echo '<phpunit bootstrap="tests/bootstrap.php" cacheDirectory="var/phpunit-cache">'
+            echo '<testsuites><testsuite name="Integration">'
+            printf '<file>%s</file>\n' "${files[@]}"
+            echo '</testsuite></testsuites></phpunit>'
+          } > phpunit-shard.xml
+          echo "${#files[@]} files in shard ${SHARD}:"
+          printf '  %s\n' "${files[@]}"
 
       # Runs here rather than alongside the unit suite because this is the only job
       # with a server. What these cover is what MySQL itself does with SAVEPOINT and
@@ -250,4 +298,21 @@ jobs:
           INTELIS_TEST_DB_PORT: '3306'
           INTELIS_TEST_DB_USER: root
           INTELIS_TEST_DB_PASS: root
-        run: vendor/bin/phpunit --testsuite Integration
+        run: vendor/bin/phpunit -c phpunit-shard.xml --fail-on-empty-test-suite
+
+  # The ruleset requires a check with this name, and a matrix job reports under
+  # its shard names instead. This job is that check: it passes only when every
+  # shard did.
+  fresh-install:
+    name: Fresh install migrates
+    runs-on: ubuntu-latest
+    needs: integration
+    if: always()
+    permissions: {}
+    steps:
+      - name: Every shard passed
+        env:
+          RESULT: ${{ needs.integration.result }}
+        run: |
+          echo "integration shards: ${RESULT}"
+          [ "$RESULT" = success ]
