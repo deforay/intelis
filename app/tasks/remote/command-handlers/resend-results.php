@@ -35,28 +35,14 @@ if ($days !== null && ($days < 1 || $days > 3650)) {
     ];
 }
 
-$statuses = $params['statuses'] ?? null;
-if (is_array($statuses)) {
-    $statuses = implode(',', array_filter($statuses, 'is_string'));
-}
-if ($statuses !== null && !is_string($statuses)) {
+// Refused here rather than in the sender, so the STS sees why.
+try {
+    $statuses = \App\Utilities\SampleStatusUtility::sendableStatusFilter($params['statuses'] ?? null);
+} catch (InvalidArgumentException $e) {
     return [
         'status' => 'failed',
-        'error' => 'Statuses must be a list of status names',
+        'error' => $e->getMessage(),
     ];
-}
-if ($statuses !== null && trim($statuses) !== '') {
-    // Refused here rather than in the sender, so the STS sees why.
-    try {
-        \App\Utilities\SampleStatusUtility::parseSendableStatuses($statuses);
-    } catch (InvalidArgumentException $e) {
-        return [
-            'status' => 'failed',
-            'error' => $e->getMessage(),
-        ];
-    }
-} else {
-    $statuses = null;
 }
 
 $scriptPath = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'tasks'
