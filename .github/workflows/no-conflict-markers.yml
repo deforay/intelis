@@ -180,15 +180,33 @@ jobs:
       # binlog or doublewrite halved the suite's run time and changes nothing a
       # query can observe.
       #
-      # First, and not waited for here: the server takes about 20 seconds to
-      # initialise, which the checkout and composer steps below cover.
+      # First, in the background, and not waited for here. Pulling the image
+      # and initialising the server take about 35 seconds, which the checkout
+      # and composer steps below now cover instead of waiting on.
+      #
+      # PdfOutputTest and BatchPdfPrintTest read each PDF with pdfinfo,
+      # pdftotext and pdfimages, and skip their checks without them. Installed
+      # explicitly rather than trusting the runner image, and in the
+      # background too: apt-get update has taken anywhere from 10 to 90
+      # seconds, depending on the mirror. The install is tried against the
+      # image's package lists first, and updates them only if that fails.
       - name: Start MySQL configured the way an install configures it
+        env:
+          SHARD: ${{ matrix.shard }}
         run: |
-          docker run -d --name mysql -p 3306:3306 --tmpfs /var/lib/mysql:rw \
+          nohup docker run -d --name mysql -p 3306:3306 --tmpfs /var/lib/mysql:rw \
             -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=vlsm \
             mysql:8.0 --innodb-strict-mode=0 --sql-mode= \
             --skip-log-bin --innodb-flush-log-at-trx-commit=0 \
-            --innodb-doublewrite=0 --innodb-flush-method=nosync
+            --innodb-doublewrite=0 --innodb-flush-method=nosync \
+            > "$RUNNER_TEMP/mysql-start.log" 2>&1 &
+          if [ "$SHARD" = pdf ]; then
+            nohup sh -c '
+              install="sudo apt-get install -y -qq --no-install-recommends poppler-utils"
+              $install || { sudo apt-get update -qq && $install; }
+              echo $? > "$RUNNER_TEMP/poppler.done"
+            ' > "$RUNNER_TEMP/poppler.log" 2>&1 &
+          fi
 
       - name: Checkout code
         uses: actions/checkout@v7
@@ -218,8 +236,11 @@ jobs:
               -e 'SELECT 1' >/dev/null 2>&1 && break
             sleep 2
           done
-          docker exec mysql mysql -uroot -proot --protocol=TCP -h 127.0.0.1 \
-            -e 'SELECT VERSION()'
+          if ! docker exec mysql mysql -uroot -proot --protocol=TCP -h 127.0.0.1 \
+            -e 'SELECT VERSION()'; then
+            cat "$RUNNER_TEMP/mysql-start.log"
+            exit 1
+          fi
 
       - name: Seed the baseline schema
         run: |
@@ -257,11 +278,19 @@ jobs:
             exit 1
           fi
 
-      # PdfOutputTest reads each PDF with pdfinfo, pdftotext and pdfimages, and skips
-      # itself without them. Installed explicitly rather than trusting the runner image.
-      - name: Install poppler for the PDF output tests
+      # A missing tool fails the shard here. Left to the tests, it would only
+      # skip their checks, and the shard would pass.
+      - name: Wait for poppler
         if: matrix.shard == 'pdf'
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+        run: |
+          for _ in $(seq 1 120); do
+            [ -f "$RUNNER_TEMP/poppler.done" ] && break
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/poppler.log"
+          for tool in pdfinfo pdftotext pdfimages; do
+            command -v "$tool" >/dev/null || { echo "::error::$tool is not installed"; exit 1; }
+          done
 
       # PHPUnit 11 cannot shard on its own, so each shard writes a configuration
       # that lists its own files. The split is deterministic, so the shards
