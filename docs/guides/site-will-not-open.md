@@ -20,8 +20,14 @@ computer.
 
 === "An error page"
 
-    The browser shows `System Temporarily Unavailable`, `Internal Server Error`,
-    or a blank page. phpMyAdmin may show `The mysqli extension is missing`.
+    The browser shows a blank page, or one of these:
+
+    - `The InteLIS database is not responding`
+    - `This server's PHP cannot reach the database`
+    - `System Temporarily Unavailable`, on older versions
+    - `Internal Server Error`
+
+    phpMyAdmin may show `The mysqli extension is missing`.
 
     1. Open a terminal on the InteLIS machine and run:
 
@@ -130,10 +136,10 @@ computer.
         An interrupted setup or release upgrade can also leave file ownership
         and database migrations unfinished. The update settles both.
 
-=== "Upgrade in progress"
+=== "Update page stays on"
 
-    The browser shows `Upgrade in progress` long after an update finished or
-    stopped.
+    The browser shows `InteLIS is being updated`, or `Upgrade in progress` on
+    older versions, more than 30 minutes after the start time on the page.
 
     1. Open a terminal on the InteLIS machine and run:
 
@@ -263,7 +269,7 @@ person.
     | The web server can run PHP | Installs and enables the PHP module |
     | The web server runs the installed PHP | Restarts the web server |
     | PHP has every extension InteLIS needs | Installs and enables the missing ones |
-    | An update left the `Upgrade in progress` page on | Removes it |
+    | An update left the update page on | Removes it |
     | The web server can read and write the InteLIS folders | Repairs ownership of `var` and `public/uploads` |
     | The disk has space left | Lists the largest folders, deletes nothing |
     | The database is running and answering | Checks why it stopped, then starts it |

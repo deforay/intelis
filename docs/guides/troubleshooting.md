@@ -16,7 +16,9 @@ the next command to run.
 | Symptom | Run first | Then read |
 | --- | --- | --- |
 | The site will not open in the browser | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
-| The browser shows `System Temporarily Unavailable` | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
+| The browser shows `The InteLIS database is not responding`, or `System Temporarily Unavailable` on older versions | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
+| The browser shows `This server's PHP cannot reach the database` | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
+| The browser shows `InteLIS is being updated` for more than 30 minutes | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
 | phpMyAdmin shows `The mysqli extension is missing` | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
 | The browser shows PHP code instead of InteLIS | `sudo intelis doctor` | [Browser Shows PHP Code](browser-shows-php-code.md) |
 | MySQL is stopped, or the site reports a database error | `sudo intelis fix-database` | [MySQL Will Not Start](mysql-will-not-start.md) |

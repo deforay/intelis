@@ -1778,17 +1778,85 @@ enable_maintenance_mode() {
     conf_basename=$(basename "$conf_file" .conf)
     local doc_root="${lp}/public"
 
-    # Write a tiny static maintenance page next to the app.
+    # A static page next to the app, because PHP and the database may both be
+    # mid-change while it shows. It says what is happening, when it started and
+    # when to stop waiting, in the card style of the database-down page. French
+    # is chosen by the browser's language, since nothing else can be read here.
     local maint_page="${doc_root}/.intelis-maintenance.html"
+    local started_at
+    started_at="$(date '+%Y-%m-%d %H:%M')"
     cat > "$maint_page" <<'HTML'
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><title>Upgrade in progress</title>
-<meta http-equiv="refresh" content="15"></head>
-<body style="font-family:sans-serif;max-width:640px;margin:3em auto;padding:1em;">
-<h1>Upgrade in progress</h1>
-<p>This Intelis instance is being updated. Please retry in a moment.</p>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="15">
+<title>Upgrade in progress</title>
+<style>
+:root { --bg:#eef2f7; --card:#fff; --ink:#1f2937; --muted:#6b7280; --accent:#2563eb; --line:#e5e7eb; --top:#eff6ff; }
+* { box-sizing:border-box; }
+body { font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); margin:0;
+  min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1.5rem; line-height:1.55; }
+.card { background:var(--card); width:100%; max-width:720px; border-radius:16px; box-shadow:0 10px 40px rgba(15,23,42,.12); overflow:hidden; }
+.top { display:flex; align-items:center; gap:14px; padding:28px 32px; background:var(--top); border-bottom:1px solid var(--line); }
+.spin { flex:0 0 auto; width:40px; height:40px; border-radius:50%; border:4px solid #bfdbfe; border-top-color:var(--accent); animation:spin 1s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spin { animation:none; } }
+h1 { font-size:1.3rem; margin:0; color:#1e3a8a; }
+.body { padding:28px 32px 32px; }
+.facts { margin:0 0 22px; padding:12px 16px; background:#f8fafc; border:1px solid var(--line); border-radius:10px; }
+.facts strong { white-space:nowrap; }
+h2 { font-size:.8rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 12px; }
+ol { margin:0 0 24px; padding-left:1.3rem; }
+li { margin:0 0 10px; }
+code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; background:#f1f5f9; border:1px solid var(--line);
+  border-radius:6px; padding:6px 12px; display:block; width:fit-content; margin:8px 0; }
+a.btn { display:inline-block; color:var(--accent); border:1px solid var(--line); border-radius:9px; padding:10px 18px;
+  text-decoration:none; font-weight:600; }
+[hidden] { display:none !important; }
+</style></head>
+<body>
+<div class="card">
+  <div class="top"><div class="spin" aria-hidden="true"></div>
+    <h1 data-en="InteLIS is being updated" data-fr="InteLIS est en cours de mise à jour">InteLIS is being updated</h1></div>
+  <div class="body">
+    <div id="en" lang="en">
+      <p>An update is being installed on this server. InteLIS opens again by itself when it finishes. Most updates take a few minutes.</p>
+      <p class="facts">Update started: <strong>__STARTED_AT__</strong> (server time). This page checks again every 15 seconds.</p>
+      <h2>What to do</h2>
+      <ol>
+        <li>Wait. Nothing needs to be done while the update runs.</li>
+        <li>Do not restart or switch off the server until InteLIS opens again.</li>
+        <li>If this page is still here 30 minutes after the start time, the update may have stopped. Ask the person who looks after the InteLIS server to run this command on it:
+          <code>sudo intelis doctor</code> It takes the site out of update mode and says what to do next.</li>
+      </ol>
+      <a class="btn" href="https://deforay.github.io/intelis/guides/site-will-not-open/" target="_blank" rel="noopener">Troubleshooting guide</a>
+    </div>
+    <div id="fr" lang="fr" hidden>
+      <p>Une mise à jour est en cours d'installation sur ce serveur. InteLIS se rouvre de lui-même à la fin. La plupart des mises à jour prennent quelques minutes.</p>
+      <p class="facts">Début de la mise à jour : <strong>__STARTED_AT__</strong> (heure du serveur). Cette page se recharge toutes les 15 secondes.</p>
+      <h2>Que faire</h2>
+      <ol>
+        <li>Attendez. Rien n'est à faire pendant la mise à jour.</li>
+        <li>Ne redémarrez pas et n'éteignez pas le serveur avant qu'InteLIS se rouvre.</li>
+        <li>Si cette page est toujours là 30 minutes après l'heure de début, la mise à jour s'est peut-être arrêtée. Demandez à la personne qui s'occupe du serveur InteLIS d'y exécuter cette commande :
+          <code>sudo intelis doctor</code> Elle sort le site du mode mise à jour et indique la suite.</li>
+      </ol>
+      <a class="btn" href="https://deforay.github.io/intelis/fr/guides/site-will-not-open/" target="_blank" rel="noopener">Guide de dépannage</a>
+    </div>
+  </div>
+</div>
+<script>
+if ((navigator.language || '').toLowerCase().indexOf('fr') === 0) {
+  document.documentElement.lang = 'fr';
+  document.getElementById('en').hidden = true;
+  document.getElementById('fr').hidden = false;
+  var h = document.querySelector('h1'); h.textContent = h.getAttribute('data-fr');
+  document.title = 'Mise à jour en cours';
+}
+</script>
 </body></html>
 HTML
+    sed -i "s/__STARTED_AT__/${started_at}/g" "$maint_page" 2>/dev/null || true
     chown www-data:www-data "$maint_page" 2>/dev/null || true
 
     if command -v a2enconf >/dev/null 2>&1 && [ -d /etc/apache2/conf-available ]; then
