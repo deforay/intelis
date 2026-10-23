@@ -207,6 +207,114 @@ ensure_gum || true
 
 using_gum() { [ "$(ui_renderer 2>/dev/null || echo plain)" = "gum" ]; }
 
+# --- output -------------------------------------------------------------------
+#
+# One layout for both doctors, because the database doctor runs inside this
+# one: a verdict card, a checklist, then the repairs. The card is drawn by hand
+# rather than with gum, so it looks the same on a machine without gum.
+
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+  C_OK=$'\033[1;92m'; C_BAD=$'\033[1;91m'; C_WARN=$'\033[1;93m'; C_INFO=$'\033[1;96m'
+  C_BOLD=$'\033[1m'; C_DIM=$'\033[2m'; C_OFF=$'\033[0m'
+else
+  C_OK=""; C_BAD=""; C_WARN=""; C_INFO=""; C_BOLD=""; C_DIM=""; C_OFF=""
+fi
+
+print() {
+  local type=${1:-info}; shift || true
+  local message=${1:-}
+  case "$type" in
+    error)   printf '  %s✘%s  %s\n' "$C_BAD" "$C_OFF" "$message" ;;
+    success) printf '  %s✔%s  %s\n' "$C_OK" "$C_OFF" "$message" ;;
+    warning) printf '  %s!%s  %s\n' "$C_WARN" "$C_OFF" "$message" ;;
+    info)    printf '  %s›%s  %s\n' "$C_INFO" "$C_OFF" "$message" ;;
+    step)    printf '  %s→%s  %s\n' "$C_INFO" "$C_OFF" "$message" ;;
+    header)  printf '\n%s%s%s\n' "$C_BOLD" "$message" "$C_OFF" ;;
+    *)       printf '%s\n' "$message" ;;
+  esac
+}
+
+# Long sentences, wrapped and indented to sit under the text of a line above.
+print_wrapped() { # print_wrapped <text>
+  printf '%s\n' "$1" | fold -s -w 70 | sed 's/^/     /'
+}
+
+CARD_WIDTH=66
+
+# printf pads by bytes and the marks are several bytes each, so padding counts
+# characters instead.
+pad_to() { # pad_to <width> <text>
+  local n
+  n="$(printf '%s' "$2" | LC_ALL=C.UTF-8 wc -m 2>/dev/null || printf '%s' "${#2}")"
+  printf '%s%*s' "$2" $(( $1 > n ? $1 - n : 0 )) ''
+}
+
+card() { # card <ok|bad|warn> <title> [paragraph...]
+  local tone="$1" title="$2" color mark rule="" line first=true
+  shift 2
+  case "$tone" in
+    ok)  color="$C_OK";   mark="✔" ;;
+    bad) color="$C_BAD";  mark="✘" ;;
+    *)   color="$C_WARN"; mark="!" ;;
+  esac
+  rule="$(printf '─%.0s' $(seq 1 "$CARD_WIDTH"))"
+
+  printf '\n%s╭%s╮%s\n' "$color" "$rule" "$C_OFF"
+  while IFS= read -r line; do
+    if $first; then line="${mark} ${line}"; first=false; else line="  ${line}"; fi
+    printf '%s│%s %s%s%s %s│%s\n' "$color" "$C_OFF" "$color" "$(pad_to $((CARD_WIDTH - 2)) "$line")" "$C_OFF" "$color" "$C_OFF"
+  done < <(printf '%s\n' "$title" | fold -s -w $((CARD_WIDTH - 6)))
+  for paragraph in "$@"; do
+    [ -n "$paragraph" ] || continue
+    printf '%s│%s %s %s│%s\n' "$color" "$C_OFF" "$(pad_to $((CARD_WIDTH - 2)) "")" "$color" "$C_OFF"
+    while IFS= read -r line; do
+      printf '%s│%s %s %s│%s\n' "$color" "$C_OFF" "$(pad_to $((CARD_WIDTH - 2)) "  ${line}")" "$color" "$C_OFF"
+    done < <(printf '%s\n' "$paragraph" | fold -s -w $((CARD_WIDTH - 6)))
+  done
+  printf '%s╰%s╯%s\n' "$color" "$rule" "$C_OFF"
+}
+
+row() { # row <ok|bad|warn|skip> <label> <detail>
+  local mark color
+  case "$1" in
+    ok)   mark="✔"; color="$C_OK" ;;
+    bad)  mark="✘"; color="$C_BAD" ;;
+    warn) mark="!"; color="$C_WARN" ;;
+    *)    mark="·"; color="$C_DIM" ;;
+  esac
+  printf '  %-14s %s%s%s  %s\n' "$2" "$color" "$mark" "$C_OFF" "$3"
+}
+
+# The verdict card names the most serious finding, and the rest are listed
+# under the checklist. With nothing found, there is no problems section at all.
+headline_index() {
+  local i
+  for i in "${!FINDING_SEVERITIES[@]}"; do
+    [ "${FINDING_SEVERITIES[$i]}" = critical ] && { echo "$i"; return; }
+  done
+  echo 0
+}
+
+render_other_problems() {
+  local first="$1" i shown=false
+  for i in "${!FINDING_TITLES[@]}"; do
+    [ "$i" = "$first" ] && continue
+    $shown || { print header "Also wrong"; shown=true; }
+    case "${FINDING_SEVERITIES[$i]}" in
+      critical) print error   "${FINDING_TITLES[$i]}" ;;
+      *)        print warning "${FINDING_TITLES[$i]}" ;;
+    esac
+    print_wrapped "${FINDING_DETAILS[$i]}"
+  done
+}
+
+report_findings() {
+  local i
+  for i in "${!FINDING_TITLES[@]}"; do
+    report "FINDING [${FINDING_SEVERITIES[$i]}/${FINDING_KEYS[$i]}] ${FINDING_TITLES[$i]} :: ${FINDING_DETAILS[$i]}"
+  done
+}
+
 say() { $QUIET || print "$@"; }
 
 # Repairs that install packages are the slow part of any run, and their output is
@@ -293,12 +401,12 @@ run_fix() { # run_fix <description> <function> [args...]
   FIXES_OFFERED=$((FIXES_OFFERED + 1))
 
   if [ "$MODE" = check ]; then
-    print info "Can be repaired: ${description}"
+    print step "Can be repaired: ${description}"
     return 1
   fi
 
-  print info "${description}"
-  if [ "$MODE" = ask ] && ! ask_yes_no "Do this now?" no; then
+  print step "${description}"
+  if [ "$MODE" = ask ] && ! ask_yes_no "     Do this now?" no; then
     print plain "     Left alone."
     return 1
   fi
@@ -486,7 +594,10 @@ web_user() {
 mysql_unit_name() {
   local unit
   for unit in mysql mariadb mysqld; do
-    if systemctl list-unit-files "${unit}.service" 2>/dev/null | grep -q "^${unit}.service"; then
+    # MariaDB installs mysql.service as an alias of mariadb.service. The journal
+    # files entries under the real name only, so an alias reads as an empty log.
+    if systemctl list-unit-files "${unit}.service" 2>/dev/null |
+       awk -v u="${unit}.service" '$1 == u && $2 != "alias" { found = 1 } END { exit !found }'; then
       echo "$unit"; return 0
     fi
   done
@@ -524,7 +635,7 @@ report_cmd "database service" systemctl is-active "$DB_UNIT"
 report_cmd "disk" df -h / /var /var/www
 [ -n "$INSTALL_PATH" ] && report_cmd "install dir" ls -ld "$INSTALL_PATH" "$INSTALL_PATH/public" "$INSTALL_PATH/var"
 
-$QUIET || print header "Checking the site"
+$QUIET || printf '\n%sInteLIS doctor%s  ·  %s  ·  %s\n' "$C_BOLD" "$C_OFF" "$(hostname 2>/dev/null || echo this machine)" "$(date '+%d %b %Y %H:%M')"
 
 # --- is there a web server at all ---------------------------------------------
 
@@ -546,11 +657,6 @@ fi
 APACHE_UP=false
 systemctl is-active --quiet apache2 2>/dev/null && APACHE_UP=true
 
-if $APACHE_UP; then
-  say success "The web server is running."
-else
-  say error "The web server is not running."
-fi
 
 # --- checks -------------------------------------------------------------------
 
@@ -621,7 +727,6 @@ check_php_handler() {
   mods="$(apache2ctl -M 2>/dev/null || true)"
 
   if printf '%s' "$mods" | grep -q 'php[0-9._]*_module'; then
-    say success "Apache knows how to run PHP."
     return
   fi
 
@@ -781,15 +886,50 @@ check_php_extensions() {
     "$shown"
 }
 
+# Bounded, because a server that is frozen rather than stopped accepts the
+# connection and never answers, and an unbounded ping waits with it forever.
+# A valid [client] option the tool does not know (max_allowed_packet is the
+# usual one) makes mysqladmin exit before it connects, which would read as a
+# dead server. So that refusal is retried without the option files.
+db_answers() {
+  local out rc=0
+  out="$(timeout -k 3 10 mysqladmin --connect-timeout=5 ping 2>&1)" || rc=$?
+  case "$out" in
+    *"unknown variable"*|*"unknown option"*)
+      timeout -k 3 10 mysqladmin --no-defaults --connect-timeout=5 ping >/dev/null 2>&1
+      return
+      ;;
+  esac
+  return "$rc"
+}
+
 # The database is somebody else's script to diagnose. All this decides is
 # whether to go and get it.
+DB_STATE=unknown
 check_database() {
   if ! systemctl is-active --quiet "$DB_UNIT" 2>/dev/null; then
+    DB_STATE=stopped
     finding critical database \
       "The database is not running." \
       "InteLIS cannot show a single page without it, however healthy the web server is."
+    return
   fi
+  # systemd says active for a server that is running and no longer answering.
+  # mysqladmin ping answers for a live server even with wrong credentials, so a
+  # failure here means the server itself is stuck.
+  if command -v mysqladmin >/dev/null 2>&1 && ! db_answers; then
+    DB_STATE=hung
+    finding critical database \
+      "The database is running but not answering." \
+      "It needs restarting. InteLIS cannot show a single page until it answers."
+    return
+  fi
+  DB_STATE=running
 }
+
+# The database doctor answers the database finding further down, so on its own
+# that finding leaves nothing to list under the repairs.
+only_database_finding() { [ ${#FINDING_KEYS[@]} -eq 1 ] && has_finding database; }
 
 check_config_valid
 check_foreign_server
@@ -809,7 +949,6 @@ fi
 
 case "$PROBE_RESULT" in
   source-served)
-    say error "Confirmed: the server is sending PHP code to the browser instead of running it."
     # apache2ctl -M reads the configuration on disk, not what the running server
     # actually loaded. A server that was never restarted after the configuration
     # was corrected passes every check above and still serves source — which is
@@ -823,7 +962,6 @@ case "$PROBE_RESULT" in
     ;;
   php-runs)
     check_php_extensions
-    php_fault || say success "PHP runs correctly on this machine."
     # PHP works and the site still fails: that is the application's own error,
     # and on these machines it is the database far more often than not. Unless
     # PHP cannot reach it at all, in which case the database is not the fault
@@ -852,29 +990,70 @@ report "probe=${PROBE_RESULT}"
 
 # --- verdict ------------------------------------------------------------------
 
-print header "What is wrong"
-
-if [ ${#FINDING_TITLES[@]} -eq 0 ]; then
-  if [ "$PROBE_RESULT" = php-runs ]; then
-    print success "Nothing looks wrong with the web server, and InteLIS answered."
-    report "VERDICT: healthy"
-  else
-    print warning "Nothing matched, and the site still did not answer as expected."
-    print info    "The report has the full logs. Send it on and ask for help."
-    report "VERDICT: no known cause matched"
+render_checks() {
+  local free
+  if has_finding config; then row bad "Web server" "its configuration has an error"
+  elif has_finding foreign; then row bad "Web server" "another program holds port 80"
+  elif $APACHE_UP; then row ok "Web server" "running"
+  else row bad "Web server" "stopped"
   fi
-else
-  i=0
-  while [ $i -lt ${#FINDING_TITLES[@]} ]; do
-    n=$((i + 1))
-    case "${FINDING_SEVERITIES[$i]}" in
-      critical) print error   "${n}. ${FINDING_TITLES[$i]}" ;;
-      *)        print warning "${n}. ${FINDING_TITLES[$i]}" ;;
-    esac
-    print plain "     ${FINDING_DETAILS[$i]}"
-    report "FINDING [${FINDING_SEVERITIES[$i]}/${FINDING_KEYS[$i]}] ${FINDING_TITLES[$i]} :: ${FINDING_DETAILS[$i]}"
-    i=$((i + 1))
-  done
+
+  if has_finding ppa || has_finding handler; then row bad "PHP" "the web server cannot run it"
+  elif [ "$PROBE_RESULT" = source-served ]; then row bad "PHP" "shown as code instead of run"
+  elif has_finding stale; then row bad "PHP" "updated, the web server still runs the old copy"
+  elif [ -n "$PROBE_MISSING" ]; then row bad "PHP" "missing ${PROBE_MISSING//,/, }"
+  elif [ "$PROBE_RESULT" = php-runs ]; then row ok "PHP" "${PROBE_PHP_VERSION}, all ${#REQUIRED_EXTENSIONS[@]} extensions loaded"
+  else row skip "PHP" "not checked"
+  fi
+
+  if has_finding permissions; then row bad "Files" "the web server cannot use them"
+  elif has_finding maintenance; then row warn "Files" "the update page is still on"
+  elif has_finding docroot; then row warn "Files" "the web server is not pointed at them"
+  elif [ -z "$INSTALL_PATH" ]; then row warn "Files" "no InteLIS install under /var/www"
+  else row ok "Files" "readable and writable"
+  fi
+
+  free="$(df -h /var 2>/dev/null | awk 'NR==2 {print $4}' || true)"
+  if has_finding disk; then row bad "Disk" "only ${free:-?} free"
+  else row ok "Disk" "${free:-?} free"
+  fi
+
+  case "$DB_STATE" in
+    running) row ok  "Database" "running" ;;
+    stopped) row bad "Database" "stopped" ;;
+    hung)    row bad "Database" "running, not answering" ;;
+    *)       row skip "Database" "not checked" ;;
+  esac
+
+  if [ -z "$PROBE_STATUS" ] || [ "$PROBE_STATUS" = 000 ]; then
+    if $APACHE_UP; then row bad "Site" "no answer"; else row skip "Site" "not checked"; fi
+  elif [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null; then row bad "Site" "error ${PROBE_STATUS}"
+  else row ok "Site" "opens"
+  fi
+}
+
+report_findings
+
+if ! $QUIET || [ ${#FINDING_TITLES[@]} -gt 0 ]; then
+  if [ ${#FINDING_TITLES[@]} -eq 0 ]; then
+    if [ "$PROBE_RESULT" = php-runs ]; then
+      card ok "InteLIS is working." "The web server, PHP and the database all answered."
+      report "VERDICT: healthy"
+    else
+      card warn "The site did not answer as expected." \
+        "None of the known causes matched. Send the report below when asking for help."
+      report "VERDICT: no known cause matched"
+    fi
+  else
+    HEADLINE="$(headline_index)"
+    MORE=""
+    [ ${#FINDING_TITLES[@]} -gt 1 ] && MORE="Also wrong: $(( ${#FINDING_TITLES[@]} - 1 )) more, listed below."
+    if [ "${FINDING_SEVERITIES[$HEADLINE]}" = critical ]; then TONE=bad; else TONE=warn; fi
+    card "$TONE" "${FINDING_TITLES[$HEADLINE]}" "${FINDING_DETAILS[$HEADLINE]}" "$MORE"
+  fi
+  printf '\n'
+  render_checks
+  [ ${#FINDING_TITLES[@]} -gt 1 ] && render_other_problems "$HEADLINE"
 fi
 
 # --- repairs ------------------------------------------------------------------
@@ -1040,9 +1219,10 @@ run_database_doctor() {
 }
 
 DB_DOCTOR_RAN=false
+DB_DOCTOR_RC=0
 
-if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
-  print header "What can be done about it"
+if [ ${#FINDING_TITLES[@]} -gt 0 ] && ! only_database_finding; then
+  print header "Repairs"
 
   has_finding maintenance && { run_fix "Take the site out of update mode." fix_maintenance || true; }
   has_finding stale       && { run_fix "Restart the web server so it picks up its settings." fix_stale || true; }
@@ -1070,7 +1250,7 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
   fi
 
   if has_finding config; then
-    print header "This one needs a person"
+    print header "Needs a person"
     print warning "The web server's own configuration is broken, and guessing at an edit would"
     print plain   "     make it worse. This says which file and which line:"
     print plain   ""
@@ -1103,43 +1283,21 @@ fi
 
 # --- did it work --------------------------------------------------------------
 
-if [ ${#FIXES_APPLIED[@]} -gt 0 ]; then
-  print header "Checking again"
-  systemctl is-active --quiet apache2 2>/dev/null || systemctl start apache2 >/dev/null 2>&1 || true
-  APACHE_UP=true
+# Only looks. Starting the web server is a repair of its own, offered and
+# agreed to above, and a re-check must not do it behind a declined question.
+recheck_site() {
+  APACHE_UP=false
+  systemctl is-active --quiet apache2 2>/dev/null && APACHE_UP=true
+  PROBE_RESULT=unknown
+  PROBE_STATUS=""
+  $APACHE_UP || { report "recheck: web server not running"; return 0; }
   DOC_ROOT="$(apache_doc_root || true)"
   [ -z "$DOC_ROOT" ] && [ -n "$INSTALL_PATH" ] && DOC_ROOT="${INSTALL_PATH}/public"
   check_probe
-  report "probe after fixes=${PROBE_RESULT}"
+  report "probe after fixes=${PROBE_RESULT} status=${PROBE_STATUS:-none}"
+}
 
-  case "$PROBE_RESULT" in
-    php-runs)
-      if [ -n "$PROBE_MISSING" ] && has_finding stale && ! has_finding extensions; then
-        # The restart was the only repair on offer, because the old PHP could
-        # not be told apart from a missing extension. Now it can.
-        print warning "The restart worked, and PHP still has not loaded: ${PROBE_MISSING//,/, }"
-        print info    "Run sudo intelis doctor again to repair that."
-        report "VERDICT: extensions missing after restart, rerun offered"
-      elif [ -n "$PROBE_MISSING" ]; then
-        print error "PHP still has not loaded: ${PROBE_MISSING//,/, }"
-        print info  "Send ${REPORT} on. It records everything that was changed just now."
-        report "VERDICT: extensions still missing after fixes"
-      else
-        print success "The web server is working again."
-      fi
-      ;;
-    source-served)
-      print error "The server is still sending PHP code to the browser."
-      print info  "Send ${REPORT} on. It records everything that was changed just now."
-      report "VERDICT: still broken after fixes"
-      ;;
-    *)
-      print warning "The site did not answer as expected yet."
-      print info    "Send ${REPORT} on. It records everything that was changed just now."
-      report "VERDICT: unresolved after fixes"
-      ;;
-  esac
-fi
+[ ${#FIXES_APPLIED[@]} -gt 0 ] && recheck_site
 
 # --- the database ---------------------------------------------------------------
 #
@@ -1149,37 +1307,71 @@ fi
 if has_finding database ||
    { [ "$PROBE_RESULT" = php-runs ] && [ -z "$PROBE_MISSING" ] && { [ ${#FIXES_APPLIED[@]} -gt 0 ] || ! php_fault; } &&
      [ -n "$PROBE_STATUS" ] && [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null; }; then
-  print header "The database"
-  print info "The web server is not the whole answer here, so the database doctor runs next."
-  print plain "     It asks its own questions and writes its own report."
-  print plain ""
-  if [ "$MODE" = check ] || [ "$MODE" = yes ] || ask_yes_no "Check the database now?" yes; then
-    DB_DOCTOR_RAN=true
-    run_database_doctor || true
-  else
-    print info "Skipped. To do it later: sudo intelis fix-database"
-  fi
+  # One doctor to the person running it: the database half asks its own
+  # questions before it changes anything, so there is no question here.
+  DB_DOCTOR_RAN=true
+  INTELIS_DOCTOR_EMBEDDED=1 run_database_doctor || DB_DOCTOR_RC=$?
+  [ "$MODE" = check ] || recheck_site
 fi
 
-if [ ${#FIXES_APPLIED[@]} -gt 0 ] && [ "$PROBE_RESULT" = php-runs ] && [ -z "$PROBE_MISSING" ] &&
-   ! { [ -n "$PROBE_STATUS" ] && [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null; }; then
-  print success "Open InteLIS in the browser."
-  report "VERDICT: recovered after ${#FIXES_APPLIED[@]} fix(es)"
-elif [ "$MODE" = check ] && [ ${#FINDING_TITLES[@]} -gt 0 ]; then
-  print header "Next step"
-  print info  "This run only looked; nothing was changed."
-  print plain "     To let it repair what it can: sudo intelis doctor"
+# --- result -------------------------------------------------------------------
+
+RECOVERED=false
+site_opens() {
+  [ "$PROBE_RESULT" = php-runs ] && [ -z "$PROBE_MISSING" ] &&
+    [ -n "$PROBE_STATUS" ] && [ "$PROBE_STATUS" != 000 ] && [ "$PROBE_STATUS" -lt 500 ] 2>/dev/null
+}
+
+if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
+  if [ "$MODE" = check ]; then
+    card warn "Nothing was changed." "This run only looked. To let it repair what it can, run: sudo intelis doctor"
+  elif [ ${#FIXES_APPLIED[@]} -eq 0 ] && ! $DB_DOCTOR_RAN; then
+    card bad "Nothing was repaired." "Send the report below when asking for help."
+    report "VERDICT: nothing repaired"
+  elif $DB_DOCTOR_RAN && [ "$DB_DOCTOR_RC" -ne 0 ] && db_answers; then
+    card bad "The database still needs attention." \
+      "The database section above says what is wrong. Send both reports below when asking for help."
+    report "VERDICT: database unresolved (${DB_DOCTOR_RC})"
+  elif $DB_DOCTOR_RAN && ! db_answers; then
+    card bad "The database still will not start." \
+      "The database section above says why. Send both reports below when asking for help."
+    report "VERDICT: database still down"
+  elif site_opens; then
+    card ok "InteLIS is working again." "Reload the page in the browser."
+    RECOVERED=true
+    report "VERDICT: recovered"
+  elif [ -n "$PROBE_MISSING" ] && has_finding stale && ! has_finding extensions; then
+    # The restart was the only repair on offer, because the old PHP could not be
+    # told apart from a missing extension. Now it can.
+    card warn "The restart worked. PHP still has not loaded: ${PROBE_MISSING//,/, }" \
+      "Run sudo intelis doctor again to repair that."
+    report "VERDICT: extensions missing after restart, rerun offered"
+  else
+    case "$PROBE_RESULT" in
+      source-served) card bad "The server still shows PHP code instead of running it." \
+                       "Send the report below. It records everything that was changed." ;;
+      php-runs)      if [ -n "$PROBE_MISSING" ]; then
+                       card bad "PHP still has not loaded: ${PROBE_MISSING//,/, }" \
+                         "Send the report below. It records everything that was changed."
+                     else
+                       card bad "InteLIS still does not open (error ${PROBE_STATUS:-unknown})." \
+                         "Send the report below. It records everything that was changed."
+                     fi ;;
+      *)             card bad "The site still does not answer." \
+                       "Send the report below. It records everything that was changed." ;;
+    esac
+    report "VERDICT: unresolved after fixes"
+  fi
 fi
 
 # The database doctor has just printed its own report path and put its own copy
 # in the operator's folder. Printing a second set of instructions on top of that
 # is how somebody ends up sending the wrong file.
 if $DB_DOCTOR_RAN; then
-  print info "This script's own report is at ${REPORT}"
+  printf '\n'
+  print info "Site report: ${REPORT}"
   exit 0
 fi
-
-print header "Report"
 
 # /var/log cannot be opened from the desktop, and the person who has to send
 # this file is not going to copy it out with a terminal command. So put a copy
@@ -1216,16 +1408,16 @@ if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != "root" ]; then
   fi
 fi
 
-if [ -n "$HANDOFF" ]; then
-  print info  "A copy has been put in your own folder, ready to send:"
-  print plain "       ${HANDOFF}"
-  print plain ""
-  print plain "     Open Files, find site-report.txt, and attach it to a message. It"
-  print plain "     holds the web server's log, its settings and this machine's disk"
-  print plain "     and version details. Passwords have been removed from it."
+printf '\n'
+# A healthy run has nothing to send, so the instructions for sending stay out.
+if [ ${#FINDING_TITLES[@]} -eq 0 ] || $RECOVERED; then
+  print info "Report: ${HANDOFF:-$REPORT}"
+elif [ -n "$HANDOFF" ]; then
+  print info "Report: ${HANDOFF}"
+  print_wrapped "Attach this file when asking for help. It is in the Files app, in the home folder or on the Desktop. Passwords have been removed from it."
 else
-  print info  "Written to ${REPORT}"
-  print plain "     Send that file when asking for help. Passwords have been removed from it."
+  print info "Report: ${REPORT}"
+  print_wrapped "Send this file when asking for help. Passwords have been removed from it."
 fi
 
 exit 0
