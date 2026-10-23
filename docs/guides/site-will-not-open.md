@@ -83,6 +83,14 @@ computer.
             prints the last errors it wrote. See
             [MySQL Will Not Start](mysql-will-not-start.md).
 
+        ??? info "If it offers `Update InteLIS to the current release.`"
+
+            The web server, PHP and the database all work, and InteLIS itself
+            still returns an error. This machine is also behind the current
+            release, and an update often fixes errors inside InteLIS. Answer
+            `y` to run `intelis update`. The doctor checks the site again
+            afterwards.
+
     5. Reload the browser when the doctor shows `InteLIS is working again.`
 
         ??? failure "If the site still does not open"
@@ -255,8 +263,8 @@ session, add `--yes`:
 sudo intelis doctor --yes
 ```
 
-`--yes` never stops another program that holds port 80. That decision needs a
-person.
+`--yes` never stops another program that holds port 80, and never installs an
+update. Those decisions need a person.
 
 ??? info "What the doctor checks"
 
@@ -274,6 +282,7 @@ person.
     | The disk has space left | Lists the largest folders, deletes nothing |
     | The database is running and answering | Checks why it stopped, then starts it |
     | The site answers without an error | Checks the database for the cause |
+    | InteLIS is the current release | Offers an update, only when everything else works and the site still fails |
 
     The doctor requests a page from the site and reads the answer, so it also
     finds a web server that has the right settings but never loaded them.
