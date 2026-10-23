@@ -94,6 +94,11 @@ The lab must already be connected to the STS. If it never was, follow
             - Leave out the module to send every module.
             - Give a date as `YYYY-MM-DD` in place of the days, for example
               `2026-09-01`.
+            - Add `--status=` to send only some sample statuses, for example
+              `--status=rejected` or `--status=accepted,rejected`. The names are
+              `on-hold`, `lost`, `reordered`, `rejected`, `failed`, `received`,
+              `accepted`, `pending-approval`, `expired`, `no-result`,
+              `cancelled` and `referred`.
 
         ??? failure "If it prints `Another results sync is already running. Exiting.`"
 

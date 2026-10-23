@@ -31,6 +31,58 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 final class SampleStatusUtility
 {
     /**
+     * The statuses a lab can ask the results sender for by name, as in
+     * `composer send-results 400 --status=rejected,accepted`. Received at Clinic is
+     * left out: the sender never sends it, so asking for it would select nothing.
+     */
+    public const SENDABLE_STATUS_NAMES = [
+        'on-hold' => \SAMPLE_STATUS\ON_HOLD,
+        'lost' => \SAMPLE_STATUS\LOST_OR_MISSING,
+        'reordered' => \SAMPLE_STATUS\REORDERED_FOR_TESTING,
+        'rejected' => REJECTED,
+        'failed' => TEST_FAILED,
+        'received' => RECEIVED_AT_TESTING_LAB,
+        'accepted' => ACCEPTED,
+        'pending-approval' => PENDING_APPROVAL,
+        'expired' => \SAMPLE_STATUS\EXPIRED,
+        'no-result' => NO_RESULT,
+        'cancelled' => \SAMPLE_STATUS\CANCELLED,
+        'referred' => \SAMPLE_STATUS\REFERRED,
+    ];
+
+    /**
+     * Status values for a comma-separated list of names from SENDABLE_STATUS_NAMES.
+     *
+     * An unknown name is refused rather than dropped: a typo that quietly sent
+     * nothing would read as "nothing to resend".
+     *
+     * @return list<int>
+     * @throws \InvalidArgumentException
+     */
+    public static function parseSendableStatuses(string $names): array
+    {
+        $statuses = [];
+        foreach (explode(',', strtolower($names)) as $name) {
+            $name = trim($name);
+            if ($name === '') {
+                continue;
+            }
+            if (!isset(self::SENDABLE_STATUS_NAMES[$name])) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Unknown status "%s". Use one or more of: %s',
+                    $name,
+                    implode(', ', array_keys(self::SENDABLE_STATUS_NAMES))
+                ));
+            }
+            $statuses[] = self::SENDABLE_STATUS_NAMES[$name];
+        }
+        if ($statuses === []) {
+            throw new \InvalidArgumentException('No status given.');
+        }
+        return array_values(array_unique($statuses));
+    }
+
+    /**
      * True for a status that claims the test is finished, and so cannot be set
      * on a sample with nothing to show for it.
      *

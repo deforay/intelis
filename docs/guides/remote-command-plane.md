@@ -70,6 +70,7 @@ For how the plane works and why, see the
     | --- | --- | --- |
     | Module (optional) | Resend results, Resend requests | A module, or leave **All enabled modules**. |
     | Resend data from last N days | Resend results, Resend requests | A number of days from 1 to 3650. Leave blank to send only records not yet synced. **Resend requests** ignores this field. |
+    | Only these sample statuses (optional) | Resend results | The statuses to send, for example **Rejected**. Leave all unticked to send every status. A lab on an older release cannot use this field until it is updated. |
     | Prepared staging to apply | Apply a prepared upgrade | The staged release to install. |
     | Not before (optional) | Upgrade, Prepare upgrade only, Apply a prepared upgrade | The earliest time the lab may start, by the STS clock. Leave blank to start at the next sync. |
     | Show maintenance page to users during apply | Upgrade, Apply a prepared upgrade | Select it when the release runs database migrations or changes composer dependencies. |

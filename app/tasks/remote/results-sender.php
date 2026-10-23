@@ -33,6 +33,7 @@ use App\Utilities\ResultSyncAcknowledgement;
 use App\Services\CommonService;
 use App\Services\TestsService;
 use App\Utilities\LoggerUtility;
+use App\Utilities\SampleStatusUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\LabResultsSenderService;
@@ -98,6 +99,8 @@ function showHelp(SymfonyStyle $io): void
         ['<date>' => 'Optional. Send results modified since date (YYYY-MM-DD), e.g. 2025-01-01'],
         ['<days>' => 'Optional. Send results modified in the last N days, e.g. 7'],
         ['silent' => 'Optional. Suppresses certain notifications / timestamp bumps where applicable'],
+        ['--status=NAMES' => 'Optional. Send only these statuses, comma-separated: '
+            . implode(', ', array_keys(SampleStatusUtility::SENDABLE_STATUS_NAMES))],
         ['-c, --chunk-size' => 'Optional. Number of records per request (default ' . RESULTS_SENDER_DEFAULT_CHUNK_SIZE . ')'],
         ['--max-payload-bytes' => 'Optional. Maximum JSON bytes before gzip (default '
             . RESULTS_SENDER_MAX_PAYLOAD_BYTES . '). A single sample stays intact'],
@@ -118,6 +121,8 @@ function showHelp(SymfonyStyle $io): void
         'php results-sender.php eid silent',
         'php results-sender.php hepatitis 2025-01-01 silent',
         'php results-sender.php vl -c 500',
+        'php results-sender.php vl 400 --status=rejected',
+        'php results-sender.php 30 --status=accepted,rejected',
         'php results-sender.php vl 2025-01-01 --dry-run',
     ]);
 
@@ -173,6 +178,7 @@ $waitForLockSeconds = null;
 $syncSinceDate = null;
 $forceSyncModule = null;
 $sampleCode = null;
+$statuses = null;
 $chunkSize = RESULTS_SENDER_DEFAULT_CHUNK_SIZE;
 $maxPayloadBytes = RESULTS_SENDER_MAX_PAYLOAD_BYTES;
 
@@ -184,6 +190,7 @@ if ($cliMode) {
     $awaitingTestType = false;
     $awaitingChunkSize = false;
     $awaitingPayloadBytes = false;
+    $awaitingStatuses = false;
 
     foreach ($argv as $index => $arg) {
         if ($index === 0) {
@@ -201,6 +208,18 @@ if ($cliMode) {
             }
             $maxPayloadBytes = $validated;
             $awaitingPayloadBytes = false;
+            continue;
+        }
+
+        if ($awaitingStatuses || str_starts_with($arg, '--status=')) {
+            $value = $awaitingStatuses ? $arg : substr($arg, strlen('--status='));
+            try {
+                $statuses = SampleStatusUtility::parseSendableStatuses($value);
+            } catch (InvalidArgumentException $e) {
+                $io->error($e->getMessage());
+                exit(1);
+            }
+            $awaitingStatuses = false;
             continue;
         }
 
@@ -239,6 +258,8 @@ if ($cliMode) {
                 exit(1);
             }
             $waitForLockSeconds = $validated;
+        } elseif ($arg === '--status') {
+            $awaitingStatuses = true;
         } elseif ($arg === '--max-payload-bytes') {
             $awaitingPayloadBytes = true;
         } elseif ($arg === '-t' || $arg === '--test') {
@@ -276,6 +297,11 @@ if ($cliMode) {
         exit(1);
     }
 
+    if ($awaitingStatuses) {
+        $io->error('Missing value after --status');
+        exit(1);
+    }
+
     if ($awaitingTestType) {
         $io->error("Missing test type value after -t/--test");
         exit(1);
@@ -293,6 +319,11 @@ if ($cliMode) {
 
     if ($forceSyncModule !== null) {
         $io->text("Forcing module sync for: $forceSyncModule");
+    }
+
+    if ($statuses !== null) {
+        $io->text('Sending only statuses: '
+            . implode(', ', array_keys(array_intersect(SampleStatusUtility::SENDABLE_STATUS_NAMES, $statuses))));
     }
 
     $io->text("Maximum records per request: $chunkSize");
@@ -405,6 +436,7 @@ try {
                 'sampleCode' => $forceSyncModule === $testType ? $sampleCode : null,
                 'maxChunkSize' => $maxChunkSize,
                 'maxPayloadBytes' => $maxPayloadBytes,
+                'statuses' => $statuses,
                 'dryRun' => $isDryRun,
                 'silent' => $isSilent,
             ], $chunkSize, $cliMode ? $io : null);

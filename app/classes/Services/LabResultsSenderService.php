@@ -81,7 +81,7 @@ final class LabResultsSenderService
      * @param array{
      *     labId: int|string, url: string, remoteUrl: string, transactionId: string,
      *     syncSinceDate: ?string, sampleCode: ?string, maxChunkSize: int, maxPayloadBytes: int,
-     *     dryRun: bool, silent: bool
+     *     dryRun: bool, silent: bool, statuses?: ?list<int>
      * } $run
      * @param int $chunkSize records per request; the STS's timing hints change it, and the
      *                       change carries on to the next module, as it did in the script
@@ -126,6 +126,10 @@ final class LabResultsSenderService
         if (!empty($run['sampleCode'])) {
             // Exact match on a quoted literal: the value can come from the query string.
             $query .= " AND $alias.sample_code = " . $db->quote($run['sampleCode']);
+        }
+        if (!empty($run['statuses'])) {
+            // Integers from SampleStatusUtility::parseSendableStatuses(), never raw input.
+            $query .= " AND $alias.result_status IN (" . implode(',', array_map('intval', $run['statuses'])) . ")";
         }
         if (null !== $run['syncSinceDate']) {
             $query .= " AND $alias.last_modified_datetime >= " . $db->quote($run['syncSinceDate']);

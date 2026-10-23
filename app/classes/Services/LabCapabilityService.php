@@ -45,6 +45,12 @@ final class LabCapabilityService
         'rotate-token',
     ];
 
+    // Not a command: an option of resend-results, listed in supports[] by couriers
+    // that can filter by status. Older couriers ignore a parameter they do not
+    // know and would resend everything in the window, so the STS offers the
+    // filter only to labs that list this.
+    public const RESEND_RESULTS_BY_STATUS = 'resend-results-by-status';
+
     public function __construct(private DatabaseService $db) {}
 
     public static function instance(): self
