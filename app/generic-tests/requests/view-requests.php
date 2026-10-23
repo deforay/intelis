@@ -549,9 +549,7 @@ $sampleStatusData = $general->getSampleStatus();
 		}
 		// Runs in the background; progress shows in the navbar Exports menu and the
 		// file downloads when ready, even if the user has moved to another page.
-		IntelisExport.start("/generic-tests/requests/export-generic-tests-requests.php", {
-			patientInfo: $('#patientInfo').val(),
-		}, <?= json_encode(_translate("Custom Tests Requests Export")) ?>);
+		IntelisExport.start("/generic-tests/requests/export-generic-tests-requests.php", {}, <?= json_encode(_translate("Custom Tests Requests Export")) ?>);
 	}
 
 	<?php if ($general->isLISInstance()) { ?>

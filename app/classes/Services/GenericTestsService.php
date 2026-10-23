@@ -191,8 +191,10 @@ final class GenericTestsService extends AbstractTestService
                 $testTypes = $this->db->getOne('r_test_types');
                 $labels = json_decode((string) $testTypes['test_form_config'], true);
 
-                foreach ($labels['field_id'] as $key => $le) {
-                    $labelsResponse[$le] = $labels['field_name'][$key];
+                foreach ($labels as $key => $le) {
+                    foreach ($le as $k => $v) {
+                        $labelsResponse[$k] = $le[$k]['field_name'];
+                    }
                 }
                 unset(
                     $testTypes['test_form_config'],
