@@ -1654,18 +1654,24 @@ final class CommonService
                     'responses' => $responseData,
                 ];
                 foreach ($bodies as $folder => $body) {
-                    $json = JsonUtility::encodeUtf8Json(ApiTrackingStorageUtility::redactSecrets($body ?? '{}'));
-                    if (self::isEmptyTrackingBody($json)) {
-                        continue;
+                    // A body that cannot be written must not cost the row: a
+                    // root-owned day folder once dropped every web call's row
+                    // for a month on an STS.
+                    try {
+                        $json = JsonUtility::encodeUtf8Json(ApiTrackingStorageUtility::redactSecrets($body ?? '{}'));
+                        if (self::isEmptyTrackingBody($json)) {
+                            continue;
+                        }
+
+                        $dir = ApiTrackingStorageUtility::ensureDayDirectory($folder, $requestedOn);
+
+                        // Use ArchiveUtility with auto-backend selection
+                        $file = ArchiveUtility::compressContent($json, "$dir/$transactionId.json");
+                        // Keep archives readable to the app group without exposing them to all local users.
+                        @chmod($file, 0640);
+                    } catch (Throwable $exc) {
+                        LoggerUtility::logError("Could not keep the API $folder body: " . $exc->getMessage());
                     }
-
-                    $dir = ApiTrackingStorageUtility::dayDirectory($folder, $requestedOn);
-                    MiscUtility::makeDirectory($dir);
-
-                    // Use ArchiveUtility with auto-backend selection
-                    $file = ArchiveUtility::compressContent($json, "$dir/$transactionId.json");
-                    // Keep archives readable to the app group without exposing them to all local users.
-                    @chmod($file, 0640);
                 }
             }
 

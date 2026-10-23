@@ -101,6 +101,47 @@ final class ApiTrackingStorageUtility
     }
 
     /**
+     * The day folder for $requestedOn, created if missing, writable by whoever owns
+     * the kind folder.
+     *
+     * Root's cron (Smart Connect sync) and the web server both write bodies, and
+     * whichever comes first after midnight makes the day's folders. Made by root,
+     * they were root's with a umask-narrowed ACL mask, so every web call for the
+     * rest of the day failed to write -- and lost its tracking row with it. Each
+     * new level now takes its parent's owner, group, mode and ACL, as
+     * moveAsideFlatFolder() does for the kind folder.
+     */
+    public static function ensureDayDirectory(string $kind, string $requestedOn): string
+    {
+        $dayDir = self::dayDirectory($kind, $requestedOn);
+        if (is_dir($dayDir)) {
+            return $dayDir;
+        }
+
+        $parent = self::kindRoot($kind);
+        $relative = substr($dayDir, strlen($parent) + 1);
+        foreach (explode(DIRECTORY_SEPARATOR, $relative) as $part) {
+            $dir = $parent . DIRECTORY_SEPARATOR . $part;
+            if (!is_dir($dir)) {
+                $stat = @stat($parent);
+                // Another writer may create it first; is_dir() below settles it.
+                @mkdir($dir, $stat === false ? 0775 : $stat['mode'] & 0777);
+                if ($stat !== false && is_dir($dir)) {
+                    @chmod($dir, $stat['mode'] & 07777);
+                    if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
+                        @chown($dir, $stat['uid']);
+                        @chgrp($dir, $stat['gid']);
+                    }
+                    self::copyAcl($parent, $dir);
+                }
+            }
+            $parent = $dir;
+        }
+
+        return $dayDir;
+    }
+
+    /**
      * Where to look for a call's body: its day folder, then the flat folder that
      * calls recorded before the dated layout still point at.
      *
