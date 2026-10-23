@@ -69,7 +69,7 @@ final class SampleStatusUtility
             }
             if (!isset(self::SENDABLE_STATUS_NAMES[$name])) {
                 throw new \InvalidArgumentException(sprintf(
-                    'Unknown status "%s". Use one or more of: %s',
+                    _translate('Unknown status "%s". Use one or more of: %s'),
                     $name,
                     implode(', ', array_keys(self::SENDABLE_STATUS_NAMES))
                 ));
@@ -77,7 +77,7 @@ final class SampleStatusUtility
             $statuses[] = self::SENDABLE_STATUS_NAMES[$name];
         }
         if ($statuses === []) {
-            throw new \InvalidArgumentException('No status given.');
+            throw new \InvalidArgumentException(_translate('No status given.'));
         }
         return array_values(array_unique($statuses));
     }
@@ -100,13 +100,13 @@ final class SampleStatusUtility
         if (is_array($filter)) {
             foreach ($filter as $name) {
                 if (!is_string($name)) {
-                    throw new \InvalidArgumentException('Statuses must be given by name.');
+                    throw new \InvalidArgumentException(_translate('Statuses must be given by name.'));
                 }
             }
             $filter = implode(',', $filter);
         }
         if (!is_string($filter)) {
-            throw new \InvalidArgumentException('Statuses must be given by name.');
+            throw new \InvalidArgumentException(_translate('Statuses must be given by name.'));
         }
 
         $names = array_keys(array_intersect(self::SENDABLE_STATUS_NAMES, self::parseSendableStatuses($filter)));
