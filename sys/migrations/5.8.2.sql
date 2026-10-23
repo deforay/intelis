@@ -60,3 +60,15 @@ UPDATE `s_app_menu`
 
 UPDATE `system_config` SET `value` = '5.8.2' WHERE `system_config`.`name` = 'sc_version';
 
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
