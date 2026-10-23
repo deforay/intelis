@@ -10,6 +10,8 @@
 // Expected params:
 //   - module  (optional)  one of: vl, eid, covid19, hepatitis, tb, cd4, generic-tests
 //   - days    (optional)  integer 1..3650 — resend records modified within last N days
+//   - statuses (optional) status names from SampleStatusUtility::SENDABLE_STATUS_NAMES,
+//                         as a list or a comma-separated string — resend only those
 //
 // Returns an array that becomes the `result` field on the status row back at STS.
 
@@ -33,6 +35,30 @@ if ($days !== null && ($days < 1 || $days > 3650)) {
     ];
 }
 
+$statuses = $params['statuses'] ?? null;
+if (is_array($statuses)) {
+    $statuses = implode(',', array_filter($statuses, 'is_string'));
+}
+if ($statuses !== null && !is_string($statuses)) {
+    return [
+        'status' => 'failed',
+        'error' => 'Statuses must be a list of status names',
+    ];
+}
+if ($statuses !== null && trim($statuses) !== '') {
+    // Refused here rather than in the sender, so the STS sees why.
+    try {
+        \App\Utilities\SampleStatusUtility::parseSendableStatuses($statuses);
+    } catch (InvalidArgumentException $e) {
+        return [
+            'status' => 'failed',
+            'error' => $e->getMessage(),
+        ];
+    }
+} else {
+    $statuses = null;
+}
+
 $scriptPath = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'tasks'
     . DIRECTORY_SEPARATOR . 'remote' . DIRECTORY_SEPARATOR . 'results-sender.php';
 
@@ -45,6 +71,9 @@ if (!empty($module)) {
 }
 if ($days !== null && $days > 0) {
     $argv[] = (string) $days;
+}
+if ($statuses !== null) {
+    $argv[] = '--status=' . $statuses;
 }
 // Match manual cron convention so timestamp rewrites stay consistent.
 $argv[] = 'silent';
@@ -88,5 +117,6 @@ return [
     'durationSeconds' => $duration,
     'module' => $module,
     'days' => $days,
+    'statuses' => $statuses,
     'outputTail' => implode("\n", array_slice(array_filter($combinedLines, 'strlen'), -30)),
 ];

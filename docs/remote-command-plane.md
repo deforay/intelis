@@ -79,7 +79,7 @@ the runner decides whether that name means anything.
 | Command | Runs as | What runs |
 | --- | --- | --- |
 | `ping` | www-data | `command-handlers/ping.php`. No side effects. |
-| `resend-results` | www-data | `command-handlers/resend-results.php`, which runs `results-sender.php` with the module and days filters. |
+| `resend-results` | www-data | `command-handlers/resend-results.php`, which runs `results-sender.php` with the module, days and status filters. The status filter is offered only to couriers that list `resend-results-by-status` in `supports`. |
 | `resend-requests` | www-data | `command-handlers/resend-requests.php`, which runs `requests-receiver.php` with the module filter. |
 | `metadata-resync` | www-data | `command-handlers/metadata-resync.php`, which runs `sts-metadata-receiver.php -f` and `lab-metadata-sender.php -f`. |
 | `refresh-cache` | www-data | `command-handlers/refresh-cache.php`. Clears the file cache, or only the given tags. |

@@ -8,6 +8,7 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\LoggerUtility;
+use App\Utilities\SampleStatusUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\LabCapabilityService;
 
@@ -128,6 +129,31 @@ if ($command === 'resend-results' || $command === 'resend-requests') {
     }
     if ($days !== null && $days > 0) {
         $params['days'] = $days;
+    }
+
+    $statuses = $command === 'resend-results' ? ($post['statuses'] ?? null) : null;
+    if (is_array($statuses)) {
+        $statuses = implode(',', array_filter($statuses, 'is_string'));
+    }
+    if (is_string($statuses) && trim($statuses) !== '') {
+        // A courier without the option would ignore it and resend the whole window,
+        // while the queued command said otherwise.
+        if (!$labCaps->supportsCommand($labId, LabCapabilityService::RESEND_RESULTS_BY_STATUS)) {
+            http_response_code(409);
+            echo json_encode([
+                'status' => 'error',
+                'error' => 'This lab cannot filter a resend by status until it is updated.',
+            ]);
+            exit;
+        }
+        try {
+            SampleStatusUtility::parseSendableStatuses($statuses);
+        } catch (InvalidArgumentException $e) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'error' => $e->getMessage()]);
+            exit;
+        }
+        $params['statuses'] = strtolower(preg_replace('/\s+/', '', $statuses));
     }
 }
 

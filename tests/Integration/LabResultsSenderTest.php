@@ -309,6 +309,39 @@ final class LabResultsSenderTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testAStatusFilterResendsOnlyThoseStatuses(): void
+    {
+        $this->boot();
+        LegacyAppHarness::db()->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (4, 'Rejected')");
+        $changed = ['data_sync' => 1, 'last_modified_datetime' => '2026-09-15 09:00:00'];
+        self::vl('accepted', $changed);
+        self::vl('rejected', ['result_status' => 4, 'result' => null] + $changed);
+        self::vl('received', ['result_status' => 6, 'result' => null] + $changed);
+
+        $this->send('vl', $this->sts(), ['syncSinceDate' => '2026-09-10 00:00:00', 'statuses' => [4]]);
+        $this->assertSame(['rejected'], $this->postedIds());
+
+        $this->posts = [];
+        $this->send('vl', $this->sts(), ['syncSinceDate' => '2026-09-10 00:00:00', 'statuses' => [4, 7]]);
+        $this->assertSame(['accepted', 'rejected'], $this->postedIds());
+    }
+
+    #[RunInSeparateProcess]
+    public function testAStatusFilterLeavesOtherPendingRowsPending(): void
+    {
+        $this->boot();
+        LegacyAppHarness::db()->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (4, 'Rejected')");
+        self::vl('rejected', ['result_status' => 4, 'result' => null]);
+        self::vl('accepted');
+
+        $this->send('vl', $this->sts(), ['statuses' => [4]]);
+
+        $this->assertSame(['rejected'], $this->postedIds());
+        // Not asked for this time, so still due on the next ordinary run.
+        $this->assertSame(['accepted' => 0, 'rejected' => 1], $this->dataSync());
+    }
+
+    #[RunInSeparateProcess]
     public function testACopyWithdrawnByAMoveIsNeverSentEvenOnAResend(): void
     {
         $this->boot();

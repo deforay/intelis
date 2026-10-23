@@ -29,6 +29,7 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\LabCapabilityService;
 use App\Registries\ContainerRegistry;
 
 use Symfony\Component\Console\Input\ArgvInput;
@@ -205,6 +206,7 @@ $heartbeats = [
 // advertised when allow_remote_upgrade is on — otherwise the runner
 // refuses to act on them anyway (var/remote-commands/disabled).
 $supportedCommands = array_keys($inProcessHandlers);
+$supportedCommands[] = LabCapabilityService::RESEND_RESULTS_BY_STATUS;
 if ($upgradeAllowed) {
     $supportedCommands = array_merge($supportedCommands, $rootRunnerCommands);
 }

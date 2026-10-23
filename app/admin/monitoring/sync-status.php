@@ -3,6 +3,7 @@
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
+use App\Services\LabCapabilityService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
@@ -625,6 +626,39 @@ $stateNameList = $geolocationService->getProvinces("yes");
                             placeholder="<?= _translate('e.g. 45'); ?>">
                         <small class="text-muted"><?= _translate('Leave blank to send only unsynced records.'); ?></small>
                     </div>
+                    <div class="form-group command-params resend-results-params">
+                        <label><?= _translate('Only these sample statuses (optional)'); ?></label>
+                        <div id="queueCommandStatuses">
+                            <?php
+                            $resendStatusLabels = [
+                                'rejected' => _translate('Rejected'),
+                                'accepted' => _translate('Accepted'),
+                                'failed' => _translate('Failed'),
+                                'pending-approval' => _translate('Awaiting Approval'),
+                                'received' => _translate('Received at Testing Lab'),
+                                'no-result' => _translate('No Result'),
+                                'on-hold' => _translate('On Hold'),
+                                'lost' => _translate('Lost'),
+                                'reordered' => _translate('Reordered for Testing'),
+                                'expired' => _translate('Expired'),
+                                'cancelled' => _translate('Cancelled'),
+                                'referred' => _translate('Referred'),
+                            ];
+                            foreach ($resendStatusLabels as $statusName => $statusLabel) { ?>
+                                <label class="checkbox-inline" style="margin:0 12px 4px 0;">
+                                    <input type="checkbox" class="queue-command-status"
+                                        value="<?= htmlspecialchars($statusName); ?>">
+                                    <?= htmlspecialchars($statusLabel); ?>
+                                </label>
+                            <?php } ?>
+                        </div>
+                        <small class="text-muted" id="queueCommandStatusesHint">
+                            <?= _translate('Leave all unticked to send every status.'); ?>
+                        </small>
+                        <small class="text-muted" id="queueCommandStatusesUnsupported" style="display:none;">
+                            <?= _translate('This lab must be updated before a resend can be limited to some statuses.'); ?>
+                        </small>
+                    </div>
                     <div class="form-group command-params upgrade-apply-params" style="display:none;">
                         <label for="queueCommandDependsOn"><?= _translate('Prepared staging to apply'); ?></label>
                         <select class="form-control" id="queueCommandDependsOn">
@@ -783,6 +817,11 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 }
                 $('#queueCommandModule').val('');
                 $('#queueCommandDays').val('');
+                const byStatus = Array.isArray(supports)
+                    && supports.indexOf('<?= LabCapabilityService::RESEND_RESULTS_BY_STATUS; ?>') !== -1;
+                $('.queue-command-status').prop('checked', false).prop('disabled', !byStatus);
+                $('#queueCommandStatusesHint').toggle(byStatus);
+                $('#queueCommandStatusesUnsupported').toggle(!byStatus);
                 $('#queueCommandNotBefore').val('');
                 $('#queueCommandMaintenance').prop('checked', false);
 
@@ -820,6 +859,12 @@ $stateNameList = $geolocationService->getProvinces("yes");
                     const days = $('#queueCommandDays').val();
                     if (module) payload.module = module;
                     if (days) payload.days = days;
+                }
+                if (command === 'resend-results') {
+                    const statuses = $('.queue-command-status:checked:enabled').map(function () {
+                        return $(this).val();
+                    }).get();
+                    if (statuses.length) payload.statuses = statuses.join(',');
                 }
                 if (command === 'upgrade-apply') {
                     const dep = $('#queueCommandDependsOn').val();
