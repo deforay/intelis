@@ -41,8 +41,9 @@ computer.
             feeds the script its own text as the answers to its questions.
 
     2. Enter the password for the account when asked.
-    3. Read the list under **What is wrong**.
-    4. Answer `y` at each `Do this now?` question to apply that repair.
+    3. Read the box at the top. It names the problem, and the list under it
+       shows each check with ✔ or ✘.
+    4. Answer `y` at each `Do this now?` question under **Repairs**.
 
         ??? info "If it says `PHP is missing parts InteLIS needs`"
 
@@ -67,12 +68,16 @@ computer.
             sudo switch-php 8.4 --force
             ```
 
-    5. Answer `y` at `Check the database now?` if the doctor asks it.
+        ??? info "If the box says `The database has stopped`"
 
-        The database doctor runs next and asks its own questions. See
-        [MySQL Will Not Start](mysql-will-not-start.md).
+            The doctor checks the database next, in a section headed
+            **Database**. When none of the known causes match, it offers
+            `Start the database again.` That start is the usual repair after a
+            crash or a power cut. If the database refuses to start, the doctor
+            prints the last errors it wrote. See
+            [MySQL Will Not Start](mysql-will-not-start.md).
 
-    6. Reload the browser when the doctor prints `Open InteLIS in the browser.`
+    5. Reload the browser when the doctor shows `InteLIS is working again.`
 
         ??? failure "If the site still does not open"
 
@@ -101,15 +106,16 @@ computer.
             feeds the script its own text as the answers to its questions.
 
     2. Enter the password for the account when asked.
-    3. Read the list under **What is wrong**.
-    4. Answer `y` at each `Do this now?` question to apply that repair.
+    3. Read the box at the top. It names the problem, and the list under it
+       shows each check with ✔ or ✘.
+    4. Answer `y` at each `Do this now?` question under **Repairs**.
 
         The doctor installs the PHP module for the web server, restores the PHP
         package repository when an Ubuntu upgrade removed it, and restarts the
         web server. [Browser Shows PHP Code](browser-shows-php-code.md) explains
         each cause.
 
-    5. Reload the browser when the doctor prints `Open InteLIS in the browser.`
+    5. Reload the browser when the doctor shows `InteLIS is working again.`
 
         ??? failure "If the site still does not open"
 
@@ -182,8 +188,9 @@ computer.
             feeds the script its own text as the answers to its questions.
 
     2. Enter the password for the account when asked.
-    3. Read the list under **What is wrong**.
-    4. Answer `y` at each `Do this now?` question to apply that repair.
+    3. Read the box at the top. It names the problem, and the list under it
+       shows each check with ✔ or ✘.
+    4. Answer `y` at each `Do this now?` question under **Repairs**.
 
         ??? info "If it says `Another program has taken the address the site is served on`"
 
@@ -201,7 +208,7 @@ computer.
             The doctor lists the largest folders and deletes nothing. See
             [Free disk space](maintenance.md#free-disk-space).
 
-    5. Reload the browser when the doctor prints `Open InteLIS in the browser.`
+    5. Reload the browser when the doctor shows `InteLIS is working again.`
 
         ??? failure "If the browser on another computer still cannot reach the site"
 
@@ -218,7 +225,7 @@ Every run writes a report. Passwords are removed from it.
    Desktop.
 3. Attach it to the message asking for help.
 
-When the doctor also ran the database doctor, send `mysql-report.txt` as well.
+When the doctor also checked the database, send `mysql-report.txt` as well.
 It is in the same place.
 
 ??? info "Where the full reports are kept"
@@ -259,7 +266,8 @@ person.
     | An update left the `Upgrade in progress` page on | Removes it |
     | The web server can read and write the InteLIS folders | Repairs ownership of `var` and `public/uploads` |
     | The disk has space left | Lists the largest folders, deletes nothing |
-    | The database is running, and the site answers without an error | Runs the database doctor |
+    | The database is running and answering | Checks why it stopped, then starts it |
+    | The site answers without an error | Checks the database for the cause |
 
     The doctor requests a page from the site and reads the answer, so it also
     finds a web server that has the right settings but never loaded them.

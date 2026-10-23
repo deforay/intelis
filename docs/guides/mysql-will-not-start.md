@@ -4,36 +4,42 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-10-23
+reviewed_against: 5.8.2
 ---
 # MySQL Will Not Start
 
 MySQL refuses to start, so InteLIS cannot open and nothing can be backed up.
 
-1. Open a terminal on the InteLIS machine and run the database doctor:
+1. Open a terminal on the InteLIS machine and run the doctor:
 
     ```bash
-    sudo intelis fix-database
+    sudo intelis doctor
     ```
 
-    ??? info "If `intelis` is not recognised, or `fix-database` does not exist"
+    It checks the web server first, then the database. To check only the
+    database, run `sudo intelis fix-database` instead.
+
+    ??? info "If `intelis` is not recognised, or `doctor` does not exist"
 
         The install is older. Run the same tool straight from the internet:
 
         ```bash
-        sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/deforay/intelis/master/scripts/mysql-doctor.sh)"
+        sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/deforay/intelis/master/scripts/intelis-doctor.sh)"
         ```
 
         Type it exactly as shown. Piping the download into `bash` instead
         feeds the script its own text as the answers to its questions.
 
-2. Answer its questions. It asks before each repair, and starts MySQL again
-   after a repair.
-3. Wait for `The database is running again.` If MySQL was already running,
-   the doctor reports what it fixed instead.
+2. Answer `y` at each `Do this now?` question under **Repairs**. When none of
+   the known causes match, the doctor offers `Start the database again.` That
+   start is the usual repair after a crash or a power cut.
+3. Wait for `InteLIS is working again.`
 
-    ??? failure "If it reports `It still will not start.`"
+    ??? failure "If it shows `The database still will not start.`"
+
+        The doctor prints the last errors MySQL wrote, under
+        **Last errors the database wrote**.
 
         The doctor puts `mysql-report.txt` on the Desktop, or in the home
         folder when there is no Desktop. Send that file when asking for help.

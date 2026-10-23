@@ -90,22 +90,111 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # --- output -------------------------------------------------------------------
+#
+# The same layout as intelis doctor, which runs this script inside its own run:
+# a verdict card, a checklist, then the repairs. The card is drawn by hand
+# rather than with gum, so it looks the same on a machine without gum.
+
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+  C_OK=$'\033[1;92m'; C_BAD=$'\033[1;91m'; C_WARN=$'\033[1;93m'; C_INFO=$'\033[1;96m'
+  C_BOLD=$'\033[1m'; C_DIM=$'\033[2m'; C_OFF=$'\033[0m'
+else
+  C_OK=""; C_BAD=""; C_WARN=""; C_INFO=""; C_BOLD=""; C_DIM=""; C_OFF=""
+fi
 
 print() {
   local type=${1:-info}; shift || true
-  local message=${1:-};  shift || true
+  local message=${1:-}
   case "$type" in
-    error)   printf "\033[1;91m❌ %s\033[0m\n" "$message" ;;
-    success) printf "\033[1;92m✅ %s\033[0m\n" "$message" ;;
-    warning) printf "\033[1;93m⚠️  %s\033[0m\n" "$message" ;;
-    info)    printf "\033[1;96mℹ️  %s\033[0m\n" "$message" ;;
-    plain)   printf "%s\n" "$message" ;;
-    header)
-      printf "\n\033[1;96m%s\033[0m\n" "$message"
-      printf "\033[1;96m%s\033[0m\n" "${message//?/-}"
-      ;;
-    *)       printf "%s\n" "$message" ;;
+    error)   printf '  %s✘%s  %s\n' "$C_BAD" "$C_OFF" "$message" ;;
+    success) printf '  %s✔%s  %s\n' "$C_OK" "$C_OFF" "$message" ;;
+    warning) printf '  %s!%s  %s\n' "$C_WARN" "$C_OFF" "$message" ;;
+    info)    printf '  %s›%s  %s\n' "$C_INFO" "$C_OFF" "$message" ;;
+    step)    printf '  %s→%s  %s\n' "$C_INFO" "$C_OFF" "$message" ;;
+    header)  printf '\n%s%s%s\n' "$C_BOLD" "$message" "$C_OFF" ;;
+    *)       printf '%s\n' "$message" ;;
   esac
+}
+
+# Long sentences, wrapped and indented to sit under the text of a line above.
+print_wrapped() { # print_wrapped <text>
+  printf '%s\n' "$1" | fold -s -w 70 | sed 's/^/     /'
+}
+
+CARD_WIDTH=66
+
+# printf pads by bytes and the marks are several bytes each, so padding counts
+# characters instead.
+pad_to() { # pad_to <width> <text>
+  local n
+  n="$(printf '%s' "$2" | LC_ALL=C.UTF-8 wc -m 2>/dev/null || printf '%s' "${#2}")"
+  printf '%s%*s' "$2" $(( $1 > n ? $1 - n : 0 )) ''
+}
+
+card() { # card <ok|bad|warn> <title> [paragraph...]
+  local tone="$1" title="$2" color mark rule="" line first=true
+  shift 2
+  case "$tone" in
+    ok)  color="$C_OK";   mark="✔" ;;
+    bad) color="$C_BAD";  mark="✘" ;;
+    *)   color="$C_WARN"; mark="!" ;;
+  esac
+  rule="$(printf '─%.0s' $(seq 1 "$CARD_WIDTH"))"
+
+  printf '\n%s╭%s╮%s\n' "$color" "$rule" "$C_OFF"
+  while IFS= read -r line; do
+    if $first; then line="${mark} ${line}"; first=false; else line="  ${line}"; fi
+    printf '%s│%s %s%s%s %s│%s\n' "$color" "$C_OFF" "$color" "$(pad_to $((CARD_WIDTH - 2)) "$line")" "$C_OFF" "$color" "$C_OFF"
+  done < <(printf '%s\n' "$title" | fold -s -w $((CARD_WIDTH - 6)))
+  for paragraph in "$@"; do
+    [ -n "$paragraph" ] || continue
+    printf '%s│%s %s %s│%s\n' "$color" "$C_OFF" "$(pad_to $((CARD_WIDTH - 2)) "")" "$color" "$C_OFF"
+    while IFS= read -r line; do
+      printf '%s│%s %s %s│%s\n' "$color" "$C_OFF" "$(pad_to $((CARD_WIDTH - 2)) "  ${line}")" "$color" "$C_OFF"
+    done < <(printf '%s\n' "$paragraph" | fold -s -w $((CARD_WIDTH - 6)))
+  done
+  printf '%s╰%s╯%s\n' "$color" "$rule" "$C_OFF"
+}
+
+row() { # row <ok|bad|warn|skip> <label> <detail>
+  local mark color
+  case "$1" in
+    ok)   mark="✔"; color="$C_OK" ;;
+    bad)  mark="✘"; color="$C_BAD" ;;
+    warn) mark="!"; color="$C_WARN" ;;
+    *)    mark="·"; color="$C_DIM" ;;
+  esac
+  printf '  %-14s %s%s%s  %s\n' "$2" "$color" "$mark" "$C_OFF" "$3"
+}
+
+# The verdict card names the most serious finding, and the rest are listed
+# under the checklist. With nothing found, there is no problems section at all.
+headline_index() {
+  local i
+  for i in "${!FINDING_SEVERITIES[@]}"; do
+    [ "${FINDING_SEVERITIES[$i]}" = critical ] && { echo "$i"; return; }
+  done
+  echo 0
+}
+
+render_other_problems() {
+  local first="$1" i shown=false
+  for i in "${!FINDING_TITLES[@]}"; do
+    [ "$i" = "$first" ] && continue
+    $shown || { print header "Also wrong"; shown=true; }
+    case "${FINDING_SEVERITIES[$i]}" in
+      critical) print error   "${FINDING_TITLES[$i]}" ;;
+      *)        print warning "${FINDING_TITLES[$i]}" ;;
+    esac
+    print_wrapped "${FINDING_DETAILS[$i]}"
+  done
+}
+
+report_findings() {
+  local i
+  for i in "${!FINDING_TITLES[@]}"; do
+    report "FINDING [${FINDING_SEVERITIES[$i]}/${FINDING_KEYS[$i]}] ${FINDING_TITLES[$i]} :: ${FINDING_DETAILS[$i]}"
+  done
 }
 
 say() { $QUIET || print "$@"; }
@@ -184,7 +273,7 @@ has_finding() { # has_finding <fix-key>
 
 confirm() {
   local answer
-  read -r -p "  $1 [y/N]: " answer || return 1
+  read -r -p "     $1 [y/N]: " answer || return 1
   case "${answer,,}" in y|yes) return 0 ;; *) return 1 ;; esac
 }
 
@@ -193,11 +282,11 @@ run_fix() { # run_fix <description> <function> [args...]
   FIXES_OFFERED=$((FIXES_OFFERED + 1))
 
   if [ "$MODE" = check ]; then
-    print info "Can be repaired: ${description}"
+    print step "Can be repaired: ${description}"
     return 1
   fi
 
-  print info "${description}"
+  print step "${description}"
   if [ "$MODE" = ask ] && ! confirm "Do this now?"; then
     print plain "     Left alone."
     return 1
@@ -222,7 +311,10 @@ run_fix() { # run_fix <description> <function> [args...]
 mysql_unit_name() {
   local unit
   for unit in mysql mariadb mysqld; do
-    if systemctl list-unit-files "${unit}.service" 2>/dev/null | grep -q "^${unit}.service"; then
+    # MariaDB installs mysql.service as an alias of mariadb.service. The journal
+    # files entries under the real name only, so an alias reads as an empty log.
+    if systemctl list-unit-files "${unit}.service" 2>/dev/null |
+       awk -v u="${unit}.service" '$1 == u && $2 != "alias" { found = 1 } END { exit !found }'; then
       echo "$unit"; return 0
     fi
   done
@@ -231,7 +323,24 @@ mysql_unit_name() {
 
 # `mysqladmin ping` reports the server alive even when the credentials are
 # wrong, which is exactly the distinction this script has to draw.
-mysql_is_up() { mysqladmin ping --silent >/dev/null 2>&1; }
+#
+# Bounded, because a server that is frozen rather than stopped accepts the
+# connection and never answers, and an unbounded ping waits with it forever.
+# A valid [client] option the tool does not know (max_allowed_packet is the
+# usual one) makes mysqladmin exit before it connects, which would read as a
+# dead server. So that refusal is retried without the option files.
+db_answers() {
+  local out rc=0
+  out="$(timeout -k 3 10 mysqladmin --connect-timeout=5 ping 2>&1)" || rc=$?
+  case "$out" in
+    *"unknown variable"*|*"unknown option"*)
+      timeout -k 3 10 mysqladmin --no-defaults --connect-timeout=5 ping >/dev/null 2>&1
+      return
+      ;;
+  esac
+  return "$rc"
+}
+mysql_is_up() { db_answers; }
 
 MYSQL_CONFS="/etc/mysql/mysql.conf.d/mysqld.cnf /etc/mysql/my.cnf /etc/my.cnf /etc/mysql/mariadb.conf.d/50-server.cnf"
 
@@ -306,8 +415,14 @@ if command -v pt-mysql-summary >/dev/null 2>&1 && mysql_is_up; then
   report_cmd "pt-mysql-summary" pt-mysql-summary
 fi
 
-$QUIET || print header "Checking the database"
-say info "This is ${FLAVOUR}, run by the ${UNIT} service. Data lives in ${DATADIR}."
+# Inside intelis doctor this is one section of a longer run, so it takes a
+# heading there and a title line only when run on its own.
+EMBEDDED="${INTELIS_DOCTOR_EMBEDDED:-}"
+if [ -n "$EMBEDDED" ]; then
+  $QUIET || print header "Database"
+else
+  $QUIET || printf '\n%sInteLIS database doctor%s  ·  %s  ·  %s\n' "$C_BOLD" "$C_OFF" "$(hostname 2>/dev/null || echo this machine)" "$(date '+%d %b %Y %H:%M')"
+fi
 
 # --- is it installed at all ---------------------------------------------------
 
@@ -322,12 +437,11 @@ fi
 
 SERVER_UP=false
 mysql_is_up && SERVER_UP=true
+# Running as far as systemd knows, and not answering: frozen rather than stopped.
+SERVER_HUNG=false
+if ! $SERVER_UP && systemctl is-active --quiet "$UNIT" 2>/dev/null; then SERVER_HUNG=true; fi
 
-if $SERVER_UP; then
-  say success "The database server is running."
-else
-  say error "The database server is not running."
-fi
+
 
 # --- checks -------------------------------------------------------------------
 
@@ -355,11 +469,13 @@ check_disk() {
   done
 }
 
+OOM_HITS=0
 check_oom() {
   local hits
   hits="$(journalctl -k --since "-7 days" --no-pager 2>/dev/null |
     grep -iE 'oom.?kill|out of memory' | grep -ci -e mysql -e mariadb || true)"
   [ -n "$hits" ] && [ "$hits" -gt 0 ] 2>/dev/null || return 0
+  OOM_HITS="$hits"
   finding critical none \
     "The machine ran out of memory and the system shut the database down to cope (${hits} time(s) in the last week)." \
     "There is not enough RAM for everything running here. It will keep happening until the database is told to reserve less, or something else on this machine is stopped."
@@ -409,13 +525,22 @@ error_log_recent() {
 # step, before mysqld is running and therefore before anything can be written to
 # the error log. That log is empty in exactly the case an operator most needs it,
 # so the journal has to be read as well. Both sources, most recent first.
+#
+# Only from the most recent start onwards, like the error log above: a setting
+# that was refused and since corrected is still in the journal, and quoting it
+# would name a fault that is already gone.
 journal_recent() {
-  journalctl -u "$UNIT" -n 200 --no-pager 2>/dev/null || true
+  journalctl -u "$UNIT" -n 400 --no-pager 2>/dev/null |
+    awk '/systemd\[1\]: Starting / { buf = "" } { buf = buf $0 "\n" } END { printf "%s", buf }' || true
 }
 
 mysql_complaints() {
   { journal_recent; error_log_recent; } 2>/dev/null || true
 }
+
+# The journal's date, host and process prefix, so what is left is the
+# database's own sentence.
+strip_log_prefix() { sed -E 's/^[A-Z][a-z]{2} [ 0-9]{2} [0-9:]{8} [^ ]+ [^ ]+: //'; }
 
 CONFIG_PRELUDE_FILE=""
 
@@ -653,7 +778,7 @@ check_client_option_leak() {
 check_config_refusal() {
   $SERVER_UP && return 0
   local refusal
-  refusal="$(mysql_complaints | grep -iE "unknown variable|unknown option|error while setting value" | tail -n 1 || true)"
+  refusal="$(mysql_complaints | grep -iE "unknown variable|unknown option|error while setting value" | tail -n 1 | strip_log_prefix || true)"
   [ -n "$refusal" ] || return 0
   finding critical config \
     "The database is refusing a setting in its configuration file." \
@@ -666,10 +791,11 @@ newest_config_backup() {
   [ -n "$newest" ] && [ -f "$newest" ] && printf '%s' "$newest"
 }
 
+# No error-log guard: mysql_complaints reads the journal too, and a server that
+# logs only there is the one most likely to be offered a restart below.
 check_corruption() {
-  [ -n "$ERRLOG" ] || return 0
   local marker
-  marker="$(mysql_complaints | grep -iE "corrupt|page.*checksum|cannot find tablespace|forcing recovery|Assertion failure" | tail -n 1 || true)"
+  marker="$(mysql_complaints | grep -iE "corrupt|page.*checksum|cannot find tablespace|forcing recovery|Assertion failure" | tail -n 1 | strip_log_prefix || true)"
   [ -n "$marker" ] || return 0
   finding critical corruption \
     "The database reports damage in its own files." \
@@ -742,6 +868,13 @@ check_port_conflict() {
   local holder
   holder="$(ss -lntp 2>/dev/null | awk '$4 ~ /:3306$/ {print $NF; exit}' || true)"
   [ -n "$holder" ] || return 0
+  # A server that is hung rather than stopped still holds its own port. That is
+  # this service, which the restart below deals with, not a second copy.
+  local main_pid
+  main_pid="$(systemctl show -p MainPID --value "$UNIT" 2>/dev/null || true)"
+  if [ -n "$main_pid" ] && [ "$main_pid" != 0 ]; then
+    case "$holder" in *"pid=${main_pid},"*) return 0 ;; esac
+  fi
   finding warning none \
     "Something is already using the database's port: ${holder}" \
     "A second copy of the server may have been started by hand. Two cannot share the port or the data folder."
@@ -767,7 +900,7 @@ check_app_credentials() {
   db="$(php -r "error_reporting(0); \$c=include '$cfg'; echo \$c['database']['db'] ?? '';" 2>/dev/null || true)"
   [ -n "$user" ] || return 0
 
-  if MYSQL_PWD="$pass" mysql --no-defaults -u "$user" -h "${host:-localhost}" \
+  if MYSQL_PWD="$pass" timeout -k 3 15 mysql --no-defaults --connect-timeout=5 -u "$user" -h "${host:-localhost}" \
       -e "USE \`${db}\`;" >/dev/null 2>&1; then
     APP_CONN_OK=yes
     return 0
@@ -781,7 +914,7 @@ check_app_credentials() {
   local decoded
   decoded="$(printf '%s' "$pass" | sed -e 's/&amp;/\&/g' -e 's/&lt;/</g' -e 's/&gt;/>/g' -e 's/&quot;/"/g' -e "s/&#0*39;/'/g" || true)"
   if [ "$decoded" != "$pass" ] &&
-     MYSQL_PWD="$decoded" mysql --no-defaults -u "$user" -h "${host:-localhost}" \
+     MYSQL_PWD="$decoded" timeout -k 3 15 mysql --no-defaults --connect-timeout=5 -u "$user" -h "${host:-localhost}" \
        -e "USE \`${db}\`;" >/dev/null 2>&1; then
     APP_DECODED_PASSWORD="$decoded"
     finding critical password \
@@ -816,48 +949,96 @@ check_crashed_tables() {
     "Its own words: ${hits}"
 }
 
-check_disk
-check_oom
-check_buffer_pool
-check_config_prelude
-check_client_option_leak
-check_config_refusal
-check_corruption
-check_socket_dir
-check_datadir_ownership
-check_unit_masked
-check_port_conflict
-check_app_credentials
-check_connection_limit
-check_crashed_tables
+run_checks() {
+  # Every check below adds to this state, so a second pass starts it empty.
+  FINDING_KEYS=(); FINDING_SEVERITIES=(); FINDING_TITLES=(); FINDING_DETAILS=()
+  OOM_HITS=0
+  CONFIG_PRELUDE_FILE=""
+  CLIENT_LEAK_HITS=(); CLIENT_LEAK_FILES=(); CLIENT_LEAK_BREAKS_CLIENTS=false
+  SOCKET_DIR=""
+  APP_CONN_OK=""; APP_DECODED_PASSWORD=""
+  check_disk
+  check_oom
+  check_buffer_pool
+  check_config_prelude
+  check_client_option_leak
+  check_config_refusal
+  check_corruption
+  check_socket_dir
+  check_datadir_ownership
+  check_unit_masked
+  check_port_conflict
+  check_app_credentials
+  check_connection_limit
+  check_crashed_tables
+}
+
+run_checks
 
 # --- verdict ------------------------------------------------------------------
 
-print header "What is wrong"
+render_checks() {
+  local free
+  if $SERVER_UP; then row ok "Server" "${FLAVOUR}, running"
+  elif $SERVER_HUNG; then row bad "Server" "${FLAVOUR}, running but not answering"
+  else row bad "Server" "${FLAVOUR}, stopped"
+  fi
+
+  free="$(df -h "$DATADIR" 2>/dev/null | awk 'NR==2 {print $4}' || true)"
+  if has_finding disk; then row bad "Disk" "full, ${free:-?} free"
+  else row ok "Disk" "${free:-?} free"
+  fi
+
+  if has_finding bufferpool; then row bad "Memory" "the database reserves more than there is"
+  elif [ "$OOM_HITS" -gt 0 ] 2>/dev/null; then row bad "Memory" "ran out ${OOM_HITS} time(s) this week"
+  else row ok "Memory" "enough"
+  fi
+
+  if has_finding config || has_finding configprelude || has_finding clientleak; then row bad "Settings" "a setting is refused"
+  else row ok "Settings" "accepted"
+  fi
+
+  if has_finding corruption; then row bad "Data files" "damaged"
+  elif has_finding dataowner; then row bad "Data files" "owned by the wrong account"
+  else row ok "Data files" "${DATADIR}"
+  fi
+
+  if has_finding password; then row bad "InteLIS login" "password saved wrongly"
+  elif [ "$APP_CONN_OK" = yes ]; then row ok "InteLIS login" "works"
+  elif [ "$APP_CONN_OK" = no ]; then row bad "InteLIS login" "refused"
+  else row skip "InteLIS login" "not checked"
+  fi
+}
+
+report_findings
 
 if [ ${#FINDING_TITLES[@]} -eq 0 ]; then
   if $SERVER_UP; then
-    print success "Nothing looks wrong with the database."
-    [ "$APP_CONN_OK" = "yes" ] && print success "InteLIS can log in to it."
+    if [ "$APP_CONN_OK" = yes ]; then
+      card ok "The database is working." "InteLIS can log in to it."
+    else
+      card ok "The database is working."
+    fi
     report "VERDICT: healthy"
+  elif $SERVER_HUNG; then
+    card bad "The database is running but not answering." \
+      "None of the known causes matched. Restarting it is the usual repair, offered below."
+    report "VERDICT: hung, no known cause matched"
   else
-    print error "The database is not running, and none of the usual causes matched."
-    print info  "The report has the full logs. Send it on and ask for help."
+    card bad "The database has stopped." \
+      "None of the known causes matched. Most often it only needs starting again, which is offered below."
     report "VERDICT: down, no known cause matched"
   fi
 else
-  i=0
-  while [ $i -lt ${#FINDING_TITLES[@]} ]; do
-    n=$((i + 1))
-    case "${FINDING_SEVERITIES[$i]}" in
-      critical) print error   "${n}. ${FINDING_TITLES[$i]}" ;;
-      *)        print warning "${n}. ${FINDING_TITLES[$i]}" ;;
-    esac
-    print plain "     ${FINDING_DETAILS[$i]}"
-    report "FINDING [${FINDING_SEVERITIES[$i]}/${FINDING_KEYS[$i]}] ${FINDING_TITLES[$i]} :: ${FINDING_DETAILS[$i]}"
-    i=$((i + 1))
-  done
+  HEADLINE="$(headline_index)"
+  MORE=""
+  [ ${#FINDING_TITLES[@]} -gt 1 ] && MORE="Also wrong: $(( ${#FINDING_TITLES[@]} - 1 )) more, listed below."
+  if [ "${FINDING_SEVERITIES[$HEADLINE]}" = critical ]; then TONE=bad; else TONE=warn; fi
+  card "$TONE" "${FINDING_TITLES[$HEADLINE]}" "${FINDING_DETAILS[$HEADLINE]}" "$MORE"
 fi
+printf '\n'
+render_checks
+[ ${#FINDING_TITLES[@]} -gt 1 ] && render_other_problems "$HEADLINE"
 
 # --- repairs ------------------------------------------------------------------
 
@@ -1030,7 +1211,7 @@ fix_app_password() {
 }
 
 if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
-  print header "What can be done about it"
+  print header "Repairs"
 
   has_finding configprelude && { run_fix "Disable the settings that were added above the first heading in ${CONFIG_PRELUDE_FILE:-the configuration file}." fix_config_prelude || true; }
   has_finding clientleak && { run_fix "Disable the server settings that were put under a client heading in ${CLIENT_LEAK_FILES[0]:-the configuration file}, so that mysql and the backup can run again." fix_client_option_leak || true; }
@@ -1042,6 +1223,9 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
 
   if has_finding config && [ -n "$(newest_config_backup || true)" ]; then
     run_fix "Put back the last configuration that worked." fix_rollback_config || true
+  elif has_finding config; then
+    print info  "Correct or remove the setting quoted above, in the file under /etc/mysql"
+    print plain "     that holds it. Then run sudo intelis doctor again."
   fi
 
   if has_finding disk; then
@@ -1059,7 +1243,7 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
 
   # Damage to the data files is the one case with no safe automatic answer.
   if has_finding corruption; then
-    print header "This one needs a person"
+    print header "Needs a person"
     print warning "The database says its own files are damaged."
     print plain  "     There is a way to start it long enough to take a backup, but the wrong"
     print plain  "     setting makes the damage permanent, so it is not done automatically."
@@ -1082,34 +1266,118 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
     fi
   fi
 
-  if [ "$FIXES_OFFERED" -eq 0 ]; then
+  if [ "$FIXES_OFFERED" -eq 0 ] && { $SERVER_UP || has_finding corruption; }; then
     print info "There is nothing this script can safely do on its own. What is written above says what is needed."
   fi
 fi
 
 # --- start it again -----------------------------------------------------------
+#
+# A stopped database most often needs nothing more than starting. The system
+# killed it for memory, or the power went and it never came back. So a start is
+# offered even when no cause matched. Damaged files are the exception: every
+# failed start can write more damage, so that case stays with a person.
+#
+# restart rather than start: a server that is running but no longer answering
+# has to be stopped first, and restart does both.
 
-if ! $SERVER_UP; then
+START_TRIED=false
+fix_start_database() {
+  START_TRIED=true
+  systemctl reset-failed "$UNIT" >/dev/null 2>&1 || true
+  # Bounded: a server flushing a large buffer pool can take minutes to stop,
+  # and a person is watching. The restart carries on in the background if this
+  # gives up first, and the wait below still sees it come up.
+  timeout 300 systemctl restart "$UNIT" >/dev/null 2>&1 || true
+  for _ in $(seq 1 60); do mysql_is_up && return 0; sleep 1; done
+  return 1
+}
+
+# A setting the server refuses makes every start fail the same way, so a start
+# is only worth offering once a repair has changed something.
+if ! $SERVER_UP && ! has_finding corruption && { ! has_finding config || [ ${#FIXES_APPLIED[@]} -gt 0 ]; }; then
+  [ "$MODE" = check ] || [ ${#FINDING_TITLES[@]} -gt 0 ] || print header "Repairs"
+  STARTED=false
   if [ ${#FIXES_APPLIED[@]} -gt 0 ]; then
-    print header "Starting the database"
-    systemctl start "$UNIT" >/dev/null 2>&1 || true
-    for _ in $(seq 1 30); do mysql_is_up && break; sleep 1; done
-    if mysql_is_up; then
-      print success "The database is running again."
-      report "VERDICT: recovered after ${#FIXES_APPLIED[@]} fix(es)"
+    # The repairs above were agreed to so that it would start. Asking again
+    # would be a second question for the same decision.
+    print step "Starting the database..."
+    fix_start_database && STARTED=true
+  else
+    if $SERVER_HUNG; then
+      run_fix "Restart the database." fix_start_database && STARTED=true
     else
-      print error "It still will not start."
-      print info  "Send ${REPORT} on. It also records everything that was changed just now."
-      report "VERDICT: still down after fixes"
+      run_fix "Start the database again." fix_start_database && STARTED=true
     fi
-  elif [ "$MODE" = check ]; then
-    print header "Next step"
-    print info "This run only looked; nothing was changed."
-    print plain "     To let it repair what it can: sudo intelis fix-database"
+  fi
+  $STARTED && report "VERDICT: running again after start (${#FIXES_APPLIED[@]} fix(es) applied)"
+fi
+
+# --- result -------------------------------------------------------------------
+#
+# Inside intelis doctor the closing card is that script's, after it has checked
+# the site again, so one run ends on one verdict. The failure detail is printed
+# either way, because only this script has it.
+
+# Handed back to intelis doctor through the exit status, because its closing
+# card stands in for this one and must not call a run recovered that is not.
+DB_OUTCOME=ok
+if [ ${#FINDING_TITLES[@]} -gt 0 ] || ! $SERVER_UP; then
+  DB_OUTCOME=unresolved
+  if [ "$MODE" = check ]; then
+    [ -n "$EMBEDDED" ] || card warn "Nothing was changed." \
+      "This run only looked. To let it repair what it can, run: sudo intelis doctor"
+  elif mysql_is_up && [ ${#FIXES_APPLIED[@]} -eq 0 ]; then
+    [ -n "$EMBEDDED" ] || card warn "The database is running, and the problems above are still there." \
+      "Send the report below when asking for help."
+    report "VERDICT: running, nothing repaired"
+  elif mysql_is_up; then
+    # Recovered means every check passes now, not that a repair ran. A declined
+    # repair, a finding nothing here can repair, and a login that could not be
+    # tested while the server was down all show up only on a second pass.
+    SERVER_UP=true
+    SERVER_HUNG=false
+    run_checks
+    report "--- after repairs ---"
+    report_findings
+
+    if [ ${#FINDING_TITLES[@]} -eq 0 ]; then
+      DB_OUTCOME=ok
+      [ -n "$EMBEDDED" ] || card ok "The database is working again." "Reload InteLIS in the browser."
+    else
+      print header "Still wrong"
+      for i in "${!FINDING_TITLES[@]}"; do
+        case "${FINDING_SEVERITIES[$i]}" in
+          critical) print error   "${FINDING_TITLES[$i]}" ;;
+          *)        print warning "${FINDING_TITLES[$i]}" ;;
+        esac
+        print_wrapped "${FINDING_DETAILS[$i]}"
+      done
+      # Damaged files are never repaired here, so nothing else makes it safe to
+      # carry on working on them.
+      if has_finding corruption; then
+        [ -n "$EMBEDDED" ] || card bad "The database is running, and it reports damaged files." \
+          "Do not carry on working in InteLIS yet. Send the report below when asking for help."
+        report "VERDICT: running with damaged files"
+      else
+        [ -n "$EMBEDDED" ] || card warn "The database is running, and the problems above are still there." \
+          "Send the report below when asking for help."
+        report "VERDICT: running with problems left"
+      fi
+    fi
+  else
+    if $START_TRIED; then
+      print header "Last errors the database wrote"
+      mysql_complaints | grep -E '\[ERROR\]' | strip_log_prefix |
+        awk '!seen[$0]++' | tail -n 4 | fold -s -w 70 | sed 's/^/     /' || true
+    fi
+    [ -n "$EMBEDDED" ] || card bad "The database still will not start." \
+      "Send the report below when asking for help."
+    report "VERDICT: still down"
   fi
 fi
 
-print header "Report"
+printf '\n'
 
 # /var/log cannot be opened from the desktop, and the person who has to send
 # this file is not going to copy it out with a terminal command. So put a copy
@@ -1151,18 +1419,22 @@ if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != "root" ]; then
   fi
 fi
 
-if [ -n "$HANDOFF" ]; then
-  print info "A copy has been put in your own folder, ready to send:"
-  print plain "       ${HANDOFF}"
-  print plain ""
-  print plain "     Open Files, find mysql-report.txt, and attach it to a message. It"
-  print plain "     holds the service log, the database error log, memory, disk and"
-  print plain "     settings. Passwords have been removed from it."
+REPORT_LABEL="Report"
+[ -n "$EMBEDDED" ] && REPORT_LABEL="Database report"
+# Nothing to send when it is working, whether it was all along or is now.
+if { [ ${#FINDING_TITLES[@]} -eq 0 ] && $SERVER_UP; } ||
+   [ "$DB_OUTCOME" = ok ]; then
+  print info "${REPORT_LABEL}: ${HANDOFF:-$REPORT}"
+elif [ -n "$HANDOFF" ]; then
+  print info "${REPORT_LABEL}: ${HANDOFF}"
+  print_wrapped "Attach this file when asking for help. It is in the Files app, in the home folder or on the Desktop. Passwords have been removed from it."
 else
-  print info "Written to ${REPORT}"
-  print plain "     Send that file when asking for help. It holds the service log, the"
-  print plain "     database error log, memory, disk and settings. Passwords have been"
-  print plain "     removed from it."
+  print info "${REPORT_LABEL}: ${REPORT}"
+  print_wrapped "Send this file when asking for help. Passwords have been removed from it."
 fi
 
+# 10 tells intelis doctor that something here still needs a person.
+if [ -n "$EMBEDDED" ] && [ "$MODE" != check ] && [ "$DB_OUTCOME" != ok ]; then
+  exit 10
+fi
 exit 0

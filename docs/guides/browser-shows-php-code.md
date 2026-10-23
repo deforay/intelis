@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-10-23
+reviewed_against: 5.8.2
 ---
 # Browser Shows PHP Code Instead of InteLIS
 
@@ -39,7 +39,7 @@ a file to download, instead of the InteLIS sign-in page.
 
 2. Answer its questions. It asks before each repair.
    [Site Will Not Open](site-will-not-open.md) covers every other symptom.
-3. Reload the browser when the doctor prints `Open InteLIS in the browser.`
+3. Reload the browser when the doctor shows `InteLIS is working again.`
 
     ??? failure "If the site still does not open"
 
