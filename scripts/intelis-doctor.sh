@@ -42,7 +42,7 @@ set -Eeuo pipefail
 # genuine bugs in this script, not for a grep that found nothing.
 # ------------------------------------------------------------------------------
 
-trap 'echo "intelis doctor stopped unexpectedly at line $LINENO (status $?). Please report this."' ERR
+trap 'echo "intelis doctor stopped unexpectedly at ${BASH_SOURCE[0]:-intelis-doctor.sh} line $LINENO (status $?). Please report this."' ERR
 
 MODE=ask          # ask | check | yes
 QUIET=false
@@ -89,6 +89,14 @@ done
 # terminal reports and stops rather than making changes nobody chose.
 if [ "$MODE" = ask ] && [ ! -t 0 ]; then
   MODE=check
+fi
+
+# Every check below assumes an Ubuntu lab server (apt, systemd, Apache), and
+# shared-functions.sh needs bash 4 for associative arrays. Anywhere else, such as
+# a Mac with bash 3.2, sourcing it dies on `declare -A` before a word is said.
+if [ "$(uname -s)" != Linux ] || [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
+  echo "intelis doctor checks Linux servers only, and this machine is $(uname -s) with bash ${BASH_VERSION}."
+  exit 1
 fi
 
 if [ "$EUID" -ne 0 ]; then
@@ -346,6 +354,18 @@ apache_php_module_version() {
 
 cli_php_version() { php -r 'echo PHP_MAJOR_VERSION,".",PHP_MINOR_VERSION;' 2>/dev/null || return 1; }
 
+# What InteLIS cannot run without, as extension:package, where the package is
+# apt's php<version>-<package>. "-" means the extension is built into PHP itself,
+# so there is nothing to install when it is absent. The list is every ext-*
+# required by composer.json and the production packages in composer.lock, plus
+# the MySQL drivers. Keep it in step with both.
+REQUIRED_EXTENSIONS=(
+  mysqli:mysql pdo:common pdo_mysql:mysql mbstring:mbstring curl:curl gd:gd
+  intl:intl zip:zip bcmath:bcmath xml:xml dom:xml simplexml:xml xmlreader:xml
+  xmlwriter:xml gettext:common fileinfo:common sodium:common ctype:common
+  iconv:common openssl:- json:- zlib:- filter:- hash:- libxml:-
+)
+
 active_mpm() {
   local f
   for f in /etc/apache2/mods-enabled/mpm_*.load; do
@@ -536,20 +556,34 @@ fi
 
 # The one test that settles the argument. Everything else below explains this
 # answer; none of it replaces it.
+#
+# The probe also says which PHP the web server is running and which required
+# extensions it failed to load. Asking the CLI would not do: Apache has its own
+# conf.d, and after a PHP update its workers can be running the old core, which
+# then cannot load the new extension files. Either way PHP itself runs, the
+# site fails, and only the web server's own answer shows why.
 PROBE_RESULT=unknown
 PROBE_STATUS=""
+PROBE_PHP_VERSION=""
+PROBE_MISSING=""
 check_probe() {
-  local probe body
+  local probe body line exts=() entry
+
+  PROBE_PHP_VERSION=""
+  PROBE_MISSING=""
 
   if [ -z "$DOC_ROOT" ] || [ ! -d "$DOC_ROOT" ]; then
     PROBE_RESULT=no-docroot
     return
   fi
 
+  for entry in "${REQUIRED_EXTENSIONS[@]}"; do exts+=("'${entry%%:*}'"); done
+
   probe="${DOC_ROOT}/.intelis-doctor-probe.php"
   # Never follow a symlink left at that name, and never leave the file behind.
   [ -L "$probe" ] && { PROBE_RESULT=unknown; return; }
-  printf '%s' '<?php echo "INTELIS_PHP_OK";' >"$probe" 2>/dev/null || { PROBE_RESULT=unwritable; return; }
+  printf '<?php $m = []; foreach ([%s] as $e) { if (!extension_loaded($e)) { $m[] = $e; } } echo "INTELIS_PHP_OK|", PHP_VERSION, "|", implode(",", $m), "|";' \
+    "$(IFS=,; printf '%s' "${exts[*]}")" >"$probe" 2>/dev/null || { PROBE_RESULT=unwritable; return; }
   chmod 644 "$probe" 2>/dev/null || true
 
   # 127.0.0.1 reaches the DEFAULT vhost. Send the InteLIS vhost's ServerName so
@@ -568,6 +602,10 @@ check_probe() {
     PROBE_RESULT=unreachable
   elif printf '%s' "$body" | grep -q 'INTELIS_PHP_OK'; then
     PROBE_RESULT=php-runs
+    line="$(printf '%s' "$body" | grep -o 'INTELIS_PHP_OK|[^|]*|[^|]*|' | head -n 1 || true)"
+    PROBE_PHP_VERSION="$(printf '%s' "$line" | cut -d'|' -f2)"
+    PROBE_MISSING="$(printf '%s' "$line" | cut -d'|' -f3)"
+    report "probe php=${PROBE_PHP_VERSION:-unknown} missing=${PROBE_MISSING:-none}"
   elif printf '%s' "$body" | grep -q '<?php'; then
     PROBE_RESULT=source-served
   else
@@ -693,6 +731,56 @@ check_disk() {
   fi
 }
 
+# Runs on the probe's answer, so only once PHP is known to run at all. A web
+# server still on the PHP it started with, after the packages under it were
+# updated, is the one case where a restart is the whole repair; apt does not
+# restart Apache, and mod_php workers spawned afterwards fail to load the new
+# extension files.
+php_fault() { has_finding stale || has_finding extensions || has_finding builtin; }
+
+check_php_extensions() {
+  local installed shown entry ext builtin="" installable=""
+  # -n skips every ini file, so a broken conf.d cannot print a startup warning
+  # into the version and make it look like an update.
+  installed="$("/usr/bin/php${TARGET_PHP}" -n -r 'echo PHP_VERSION;' 2>/dev/null || true)"
+  report "installed php=${installed:-unknown}"
+
+  if [ -n "$installed" ] && [ -n "$PROBE_PHP_VERSION" ] && [ "$installed" != "$PROBE_PHP_VERSION" ]; then
+    finding critical stale \
+      "PHP was updated, but the web server is still running the old copy." \
+      "The web server runs PHP ${PROBE_PHP_VERSION} and the installed PHP is ${installed}. Until it restarts, parts of PHP fail to load and pages stop working at random. A restart is all it needs."
+    return
+  fi
+
+  [ -n "$PROBE_MISSING" ] || return 0
+
+  # An extension built into PHP has no package, so installing cannot bring it
+  # back. Offering that repair would only end in "That did not work".
+  for entry in "${REQUIRED_EXTENSIONS[@]}"; do
+    ext="${entry%%:*}"
+    case ",${PROBE_MISSING}," in *",${ext},"*) ;; *) continue ;; esac
+    if [ "${entry##*:}" = "-" ]; then
+      builtin="${builtin:+${builtin}, }${ext}"
+    else
+      installable="${installable:+${installable}, }${ext}"
+    fi
+  done
+  if [ -n "$builtin" ]; then
+    finding critical builtin \
+      "This PHP was built without parts InteLIS needs." \
+      "The web server's PHP ${PROBE_PHP_VERSION} has no ${builtin}. These are part of PHP itself, so the PHP packages have to be reinstalled by a person."
+  fi
+  [ -n "$installable" ] || return 0
+
+  shown="The web server's PHP ${PROBE_PHP_VERSION} has not loaded: ${installable}."
+  case ",${PROBE_MISSING}," in
+    *,mysqli,*) shown="${shown} Without mysqli, neither InteLIS nor phpMyAdmin can reach the database, however healthy the database is." ;;
+  esac
+  finding critical extensions \
+    "PHP is missing parts InteLIS needs." \
+    "$shown"
+}
+
 # The database is somebody else's script to diagnose. All this decides is
 # whether to go and get it.
 check_database() {
@@ -734,10 +822,13 @@ case "$PROBE_RESULT" in
     fi
     ;;
   php-runs)
-    say success "PHP runs correctly on this machine."
+    check_php_extensions
+    php_fault || say success "PHP runs correctly on this machine."
     # PHP works and the site still fails: that is the application's own error,
-    # and on these machines it is the database far more often than not.
-    if [ -n "$PROBE_STATUS" ] && [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null && ! has_finding database; then
+    # and on these machines it is the database far more often than not. Unless
+    # PHP cannot reach it at all, in which case the database is not the fault
+    # and its doctor would only report that it is healthy.
+    if [ -n "$PROBE_STATUS" ] && [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null && ! has_finding database && ! php_fault; then
       finding critical database \
         "The site runs, but InteLIS itself is returning an error." \
         "http://127.0.0.1/ answered ${PROBE_STATUS}. The web server is doing its job, so the fault is inside the application — most often the database."
@@ -824,6 +915,42 @@ fix_php_handler() {
   systemctl restart apache2 >/dev/null 2>&1 || return 1
   sleep 2
   apache2ctl -M 2>/dev/null | grep -q 'php[0-9._]*_module'
+}
+
+# Install what is absent, then switch each module on for every SAPI. The switch
+# is the half that is usually lost: a module's mods-available/<name>.ini is
+# created through ucf, which remembers a deletion and will not recreate it on a
+# reinstall, so it is copied back from the package's own template. Built-in
+# extensions have no package, and a PHP missing one of those is not something
+# installing can repair.
+fix_php_extensions() {
+  local entry ext pkg ini template pkgs=() modules=()
+
+  for entry in "${REQUIRED_EXTENSIONS[@]}"; do
+    ext="${entry%%:*}"; pkg="${entry##*:}"
+    case ",${PROBE_MISSING}," in *",${ext},"*) ;; *) continue ;; esac
+    [ "$pkg" = "-" ] && continue
+    pkgs+=("php${TARGET_PHP}-${pkg}")
+    modules+=("$ext")
+  done
+  [ ${#pkgs[@]} -gt 0 ] || return 1
+
+  spin "Installing the missing parts of PHP..." \
+    apt-get install -y "${pkgs[@]}" >/dev/null 2>&1 || return 1
+
+  for ext in "${modules[@]}"; do
+    ini="/etc/php/${TARGET_PHP}/mods-available/${ext}.ini"
+    if [ ! -f "$ini" ]; then
+      template="$(find /usr/share/php${TARGET_PHP}-* -name "${ext}.ini" -type f 2>/dev/null | head -n 1 || true)"
+      [ -n "$template" ] && cp "$template" "$ini" 2>/dev/null
+    fi
+    [ -f "$ini" ] && phpenmod -v "$TARGET_PHP" -s ALL "$ext" >/dev/null 2>&1
+  done
+
+  apache2ctl -t >/dev/null 2>&1 || return 1
+  systemctl restart apache2 >/dev/null 2>&1 || return 1
+  sleep 2
+  systemctl is-active --quiet apache2
 }
 
 # Deliberately a restart and not a reload: a reload keeps existing worker
@@ -921,6 +1048,7 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
   has_finding stale       && { run_fix "Restart the web server so it picks up its settings." fix_stale || true; }
   has_finding ppa         && { run_fix "Restore the PHP repository so the packages can be installed." fix_add_ppa || true; }
   has_finding handler     && { run_fix "Make Apache able to run PHP again." fix_php_handler || true; }
+  has_finding extensions  && { run_fix "Install and switch on the parts of PHP that are missing, then restart the web server." fix_php_extensions || true; }
   has_finding permissions && { run_fix "Give the web server access to the folders it needs." fix_permissions || true; }
   has_finding start       && { run_fix "Start the web server." fix_start_apache || true; }
 
@@ -957,6 +1085,11 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
     print plain "     hand is possible but easy to get wrong, so it is not done automatically."
   fi
 
+  if has_finding builtin; then
+    print info  "PHP itself is incomplete, and installing extensions cannot repair that."
+    print plain "     Reinstall PHP with: sudo switch-php ${TARGET_PHP} --force"
+  fi
+
   if has_finding disk; then
     print header "What is filling the disk"
     du -h -d 1 /var/log /var/www 2>/dev/null | sort -h | tail -n 10 || true
@@ -981,7 +1114,19 @@ if [ ${#FIXES_APPLIED[@]} -gt 0 ]; then
 
   case "$PROBE_RESULT" in
     php-runs)
-      print success "The web server is working again."
+      if [ -n "$PROBE_MISSING" ] && has_finding stale && ! has_finding extensions; then
+        # The restart was the only repair on offer, because the old PHP could
+        # not be told apart from a missing extension. Now it can.
+        print warning "The restart worked, and PHP still has not loaded: ${PROBE_MISSING//,/, }"
+        print info    "Run sudo intelis doctor again to repair that."
+        report "VERDICT: extensions missing after restart, rerun offered"
+      elif [ -n "$PROBE_MISSING" ]; then
+        print error "PHP still has not loaded: ${PROBE_MISSING//,/, }"
+        print info  "Send ${REPORT} on. It records everything that was changed just now."
+        report "VERDICT: extensions still missing after fixes"
+      else
+        print success "The web server is working again."
+      fi
       ;;
     source-served)
       print error "The server is still sending PHP code to the browser."
@@ -1001,7 +1146,9 @@ fi
 # Run last, and only once the web side is settled: its own findings are far
 # easier to read when they are not interleaved with Apache's.
 
-if has_finding database || { [ "$PROBE_RESULT" = php-runs ] && [ -n "$PROBE_STATUS" ] && [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null; }; then
+if has_finding database ||
+   { [ "$PROBE_RESULT" = php-runs ] && [ -z "$PROBE_MISSING" ] && { [ ${#FIXES_APPLIED[@]} -gt 0 ] || ! php_fault; } &&
+     [ -n "$PROBE_STATUS" ] && [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null; }; then
   print header "The database"
   print info "The web server is not the whole answer here, so the database doctor runs next."
   print plain "     It asks its own questions and writes its own report."
@@ -1014,7 +1161,8 @@ if has_finding database || { [ "$PROBE_RESULT" = php-runs ] && [ -n "$PROBE_STAT
   fi
 fi
 
-if [ ${#FIXES_APPLIED[@]} -gt 0 ] && [ "$PROBE_RESULT" = php-runs ]; then
+if [ ${#FIXES_APPLIED[@]} -gt 0 ] && [ "$PROBE_RESULT" = php-runs ] && [ -z "$PROBE_MISSING" ] &&
+   ! { [ -n "$PROBE_STATUS" ] && [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null; }; then
   print success "Open InteLIS in the browser."
   report "VERDICT: recovered after ${#FIXES_APPLIED[@]} fix(es)"
 elif [ "$MODE" = check ] && [ ${#FINDING_TITLES[@]} -gt 0 ]; then

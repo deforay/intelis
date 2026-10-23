@@ -105,6 +105,7 @@ nav:
       - Run Commands on Labs Remotely: guides/remote-command-plane.md
   - Troubleshooting:
       - Where to Start: guides/troubleshooting.md
+      - Site Will Not Open: guides/site-will-not-open.md
       - MySQL Will Not Start: guides/mysql-will-not-start.md
       - Browser Shows PHP Code: guides/browser-shows-php-code.md
       - Fix Collation Mismatch: guides/fix-collation-issue.md

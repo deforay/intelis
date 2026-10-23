@@ -4,8 +4,8 @@ audience: [system-admin, lab-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.78
+reviewed: 2026-10-23
+reviewed_against: 5.8.2
 ---
 # Where to Start
 
@@ -15,7 +15,9 @@ the next command to run.
 
 | Symptom | Run first | Then read |
 | --- | --- | --- |
-| The site will not open in the browser | `sudo intelis doctor` | [Browser Shows PHP Code](browser-shows-php-code.md) |
+| The site will not open in the browser | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
+| The browser shows `System Temporarily Unavailable` | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
+| phpMyAdmin shows `The mysqli extension is missing` | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
 | The browser shows PHP code instead of InteLIS | `sudo intelis doctor` | [Browser Shows PHP Code](browser-shows-php-code.md) |
 | MySQL is stopped, or the site reports a database error | `sudo intelis fix-database` | [MySQL Will Not Start](mysql-will-not-start.md) |
 | An update stops at `Running database migrations...` | Nothing yet. Read the page first. | [Update Stuck at Database Migrations](update-stuck-at-migrations.md) |
@@ -42,7 +44,7 @@ The four diagnostic commands change nothing unless they ask first.
 | --- | --- | --- |
 | `sudo intelis check` | PHP, the web server's PHP settings, `vendor/`, the configuration file, writable paths, the database, and pending migrations. Prints the command that fixes each failure. | InteLIS will not start, or after any change to the server. |
 | `sudo intelis health` | Disk usage, MySQL response time, writable paths, and off-machine backups. | InteLIS runs, but something seems wrong. |
-| `sudo intelis doctor` | Why the site will not open: the web server, PHP, and the files it serves and who may read them. Offers each safe repair. Runs `fix-database` itself when MySQL is at fault. | The site will not open. |
+| `sudo intelis doctor` | Why the site will not open: the web server, PHP and its extensions, and the files it serves and who may read them. Offers each safe repair. Runs `fix-database` itself when MySQL is at fault. | The site will not open. |
 | `sudo intelis fix-database` | Why MySQL will not start: disk space, memory, edited configuration files, the data folder owner, and damaged data files. Offers each safe repair. | MySQL is stopped. |
 
 `doctor` and `fix-database` accept `--check` to report without repairing.

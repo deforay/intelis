@@ -38,6 +38,7 @@ a file to download, instead of the InteLIS sign-in page.
         ```
 
 2. Answer its questions. It asks before each repair.
+   [Site Will Not Open](site-will-not-open.md) covers every other symptom.
 3. Reload the browser when the doctor prints `Open InteLIS in the browser.`
 
     ??? failure "If the site still does not open"
