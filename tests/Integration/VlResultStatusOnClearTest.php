@@ -171,7 +171,7 @@ final class VlResultStatusOnClearTest extends TestCase
         $statement = $mysqli->prepare(
             'SELECT result, result_status, is_sample_rejected, reason_for_sample_rejection, rejection_on,
                     vl_test_platform, tested_by, sample_tested_datetime, result_reviewed_by,
-                    result_reviewed_datetime, result_approved_by, result_approved_datetime
+                    result_reviewed_datetime, result_approved_by, result_approved_datetime, data_sync
                FROM form_vl WHERE vl_sample_id = ?'
         );
         $statement->bind_param('i', $id);
@@ -364,6 +364,9 @@ final class VlResultStatusOnClearTest extends TestCase
         $row = $this->saved($id);
         self::assertSame(REJECTED, (int) $row['result_status']);
         self::assertSame('yes', $row['is_sample_rejected']);
+        // The seeded row was already sent. Left at 1, the rejection never reached the
+        // STS and the clinic kept seeing the sample as pending.
+        self::assertSame(0, (int) $row['data_sync']);
     }
 
     #[RunInSeparateProcess]

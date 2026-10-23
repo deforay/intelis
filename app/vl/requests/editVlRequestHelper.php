@@ -325,6 +325,9 @@ try {
           'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') ? base64_decode((string) $_POST['implementingPartner']) : null,
           'vl_test_number' => $_POST['viralLoadNo'] ?? null,
           'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+          // Flag the row for the next results sync. Without it a rejection or result
+          // saved here stayed on the lab and never reached the STS.
+          'data_sync' => 0,
           'manual_result_entry' => 'yes',
           'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'] ?? null,
      ];
