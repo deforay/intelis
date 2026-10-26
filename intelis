@@ -535,6 +535,31 @@ run_app_composer() {
     ( cd "$APP_DIR" && sudo -u "$runner" composer "$@" )
 }
 
+# Run straight through php rather than as a composer script: the account picker
+# and the hidden password prompt need the terminal, and composer would put a
+# timeout and its own process between them. It switches to the application's
+# account the same way run_app_composer does, so a lab whose only admin is
+# locked out can type it as themselves or with sudo and get the same result.
+cmd_reset_password() {
+    local runner
+
+    if ! runner="$(web_user)" || [ "$(id -un)" = "$runner" ]; then
+        ( cd "$APP_DIR" && php bin/reset-user-password.php "$@" )
+        return $?
+    fi
+
+    if [ "$(id -u)" -ne 0 ]; then
+        if ! command -v sudo >/dev/null 2>&1; then
+            error "Resetting a password needs administrator rights, and sudo is not installed."
+            error "Log in as root and run 'intelis reset-password' again."
+            return 1
+        fi
+        info "This needs administrator rights. You may be asked for your password." >&2
+    fi
+
+    ( cd "$APP_DIR" && sudo -u "$runner" php bin/reset-user-password.php "$@" )
+}
+
 confirm() {
     local answer
     read -r -p "$1 (y/N): " answer || return 1
@@ -563,6 +588,8 @@ cmd_help() {
     say ""
     say "  intelis interface        Import whatever the Interfacing Tool is holding"
     say "  intelis interface setup  Connect this machine to the Interfacing Tool"
+    say ""
+    say "  intelis reset-password   Set a new password for a user who cannot sign in"
     say ""
     say "  Anything else is passed to composer, e.g. intelis migrate."
     say "  Use 'intelis composer update' for composer's own update command."
@@ -661,6 +688,10 @@ case "$command" in
     # typed them: `intelis migrate` as the operator litters var/cache with
     # files the web server cannot replace, and `intelis provision` silently
     # fails to chown anything at all.
+    # Named after what the person at the keyboard has lost, like doctor.
+    reset-password|password|forgot-password|forgotten-password)
+                        cmd_reset_password "$@" ;;
+
     provision)          cmd_provision "$@" ;;
     install|migrate|token|db:collation|audit-triggers-install|purge-cache)
                         run_app_composer "$command" "$@" ;;

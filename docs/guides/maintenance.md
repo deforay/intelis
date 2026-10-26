@@ -43,6 +43,7 @@ asks for the password.
 | `intelis interface` | Imports the results the Interfacing Tool is holding. | To import results now instead of waiting for the scheduled import. See [Analyzer Results Not Arriving](interfacing-results-not-arriving.md). |
 | `intelis interface setup` | Creates the interfacing database and the account the Interfacing Tool connects with, and writes the settings. | Once, when connecting the Interfacing Tool. See [Connect an Instrument to InteLIS](setting-up-interfacing-tool.md). |
 | `intelis interface migrate` | Brings the interfacing database up to date with the Interfacing Tool's own migrations. | When `intelis check` or support asks for it. |
+| `intelis reset-password` | Sets a new password for a user who cannot sign in, including the only admin. Lists the active users to choose from. Takes the options of `bin/reset-user-password.php`. Also runs as `intelis password`. | When nobody can reset the password from the browser. See [Forgotten Password](forgotten-password.md). |
 | `intelis provision` | Creates the directories InteLIS writes to and fixes their owner and permissions. | When `intelis check` reports a path that is missing or not writable. |
 | `intelis migrate` | Runs the database migrations. | When `intelis check` reports pending migrations. |
 | `intelis install` | Installs the PHP dependencies in `vendor/`. | When `intelis check` reports `vendor/` missing or out of date. |
@@ -362,6 +363,7 @@ PHP maintenance scripts run as `www-data`:
 | `bin/preflight.php` | Runs behind `intelis check`. | `sudo -u www-data php bin/preflight.php` |
 | `bin/housekeeping.php` | Deletes old backups, files and database rows. See [Housekeeping retention](#housekeeping-retention). | `sudo -u www-data php bin/housekeeping.php 30` |
 | `bin/clear-logs.php` | Deletes log files from `var/logs/`. `--keep=N` keeps the newest N, `--days=N` keeps the last N days, `--all` deletes all, `--dry-run` only reports. | `sudo -u www-data php bin/clear-logs.php --days=7` |
+| `bin/reset-user-password.php` | Sets a new password for a user who cannot sign in. Lists the active users to choose from. `--login` names the user, `--generate` prints a random password, `--activate` also activates the account, `--force-reset` asks for a new password at the next sign-in. `intelis reset-password` runs it. | `sudo -u www-data php bin/reset-user-password.php` |
 | `bin/duplicate-indexes.php` | Lists indexes that duplicate another index on the same table. `--fix` drops the duplicates. | `sudo -u www-data php bin/duplicate-indexes.php` |
 
 All commands above assume `cd /var/www/intelis` first.
