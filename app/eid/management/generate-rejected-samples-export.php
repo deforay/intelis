@@ -44,7 +44,7 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
           $row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);
           $row[] = strtoupper((string) $aRow['rejection_type']);
           $row[] = ($aRow['recommended_corrective_action_name']);
-          $row[] = $aRow['total'];
+          $row[] = (int) $aRow['total'];
           $output[] = $row;
      }
 

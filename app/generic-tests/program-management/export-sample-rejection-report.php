@@ -36,7 +36,7 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
           $row[] = ucwords((string) $aRow['facility_name']);
           $row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);
           $row[] = strtoupper((string) $aRow['rejection_type']);
-          $row[] = $aRow['total'];
+          $row[] = (int) $aRow['total'];
           $output[] = $row;
      }
 

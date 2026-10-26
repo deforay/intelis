@@ -85,11 +85,11 @@ if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim((string)
 
     //get current quarter total samples tested
 
-    $filename = 'InteLIS-hepatitis-Testing-Target-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
+    $filename = 'InteLIS-CD4-Testing-Target-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
 
     $writer = new Writer();
     $writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-    $writer->addRow(Row::fromValues([html_entity_decode('Hepatitis - Testing Target ', ENT_QUOTES, 'UTF-8')]));
+    $writer->addRow(Row::fromValues([html_entity_decode('CD4 - Testing Target ', ENT_QUOTES, 'UTF-8')]));
     $writer->addRow(Row::fromValues(['']));
     $writer->addRow(Row::fromValues(array_map(static fn($value): string => html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ['Facility Name', 'Month', 'Number of Samples Received', 'Number of Samples Rejected', 'Number of Samples Tested', 'Monthly Test Target'])));
     foreach ($res as $resultData) {
@@ -98,9 +98,9 @@ if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim((string)
                 $writer->addRow(Row::fromValues([
                     html_entity_decode(((string) $rowData['facility_name']), ENT_QUOTES, 'UTF-8'),
                     html_entity_decode((string) $rowData['monthrange'], ENT_QUOTES, 'UTF-8'),
-                    $rowData['totalReceived'],
-                    $rowData['totalRejected'],
-                    $rowData['totalCollected'],
+                    (int) $rowData['totalReceived'],
+                    (int) $rowData['totalRejected'],
+                    (int) $rowData['totalCollected'],
                     is_numeric($rowData['monthly_target']) ? (int) $rowData['monthly_target'] : $rowData['monthly_target'],
                 ]));
             }
