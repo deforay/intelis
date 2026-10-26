@@ -37208,3 +37208,11 @@ msgstr "Guide de dépannage"
 #: app/classes/Utilities/LoggerUtility.php
 msgid "If the problem continues, contact the support team and give them the time shown here:"
 msgstr "Si le problème persiste, contactez l'équipe d'assistance et communiquez-lui l'heure affichée ici :"
+
+#: app/vl/program-management/vl-clinic-reports.php
+msgid "Only samples registered at the testing lab"
+msgstr "Uniquement les échantillons enregistrés au laboratoire d'analyse"
+
+#: app/vl/program-management/vl-clinic-reports.php
+msgid "This list shows samples that have a Sample ID from the testing lab and no result yet. Rejected samples are left out. Samples still at the health facility or on their way to the lab do not have this Sample ID yet, so they are not counted here. View Test Requests lists them too."
+msgstr "Cette liste présente les échantillons qui ont un ID de l'échantillon attribué par le laboratoire d'analyse et pas encore de résultat. Les échantillons rejetés sont exclus. Les échantillons encore à la structure de santé ou en route vers le laboratoire n'ont pas encore cet ID, ils ne sont donc pas comptés ici. Afficher les demandes de test les liste aussi."

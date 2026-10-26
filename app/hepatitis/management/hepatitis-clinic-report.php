@@ -398,6 +398,14 @@ $state = $geolocationService->getProvinces("yes");
 													<button class="filter-export btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 												</div>
 											</div>
+											<!-- The request list counts every request without a result, so say what this one leaves out. -->
+											<div class="clinic-report-note">
+												<em class="fa-solid fa-circle-info" aria-hidden="true"></em>
+												<div>
+													<strong><?= _htmlTranslate("Only samples registered at the testing lab"); ?></strong>
+													<p><?= _htmlTranslate("This list shows samples that have a Sample ID from the testing lab and no result yet. Rejected samples are left out. Samples still at the health facility or on their way to the lab do not have this Sample ID yet, so they are not counted here. View Test Requests lists them too."); ?></p>
+												</div>
+											</div>
 											<table aria-describedby="table" id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
