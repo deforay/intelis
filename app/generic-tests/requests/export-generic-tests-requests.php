@@ -27,6 +27,9 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 $arr = $general->getGlobalConfig();
 
+$globalKey = (string) $general->getGlobalConfig('key');
+
+
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
@@ -72,12 +75,14 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 		_translate("Sample Type"), 
 		_translate("Is Patient Pregnant?"), 
 		_translate("Is Patient Breastfeeding?"), 
+		_translate("Requesting Clinican"), _translate("Request Date"),
 		_translate("Is Sample Rejected?"), 
 		_translate("Rejection Reason"), 
 		_translate("Sample Tested On"), 
 		_translate("Result"), 
 		_translate("Date Result Dispatched"), 
 		_translate("Comments"), 
+		_translate("Funding Source"), _translate("Implementing Partner"),
 		_translate("Request Created On")
 	];
 	 
@@ -110,7 +115,11 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 			'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
 			default => '',
 		};
-		
+		//requested date
+		$requestedDate = '';
+		if (!empty($aRow['test_requested_on'])) {
+			$requestedDate =  DateUtility::humanReadableDateFormat($aRow['test_requested_on']);
+		}
 		//request created date time
 		$requestCreatedDatetime = '';
 		if (!empty($aRow['request_created_datetime'])) {
@@ -163,6 +172,12 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 		$row[] = ($aRow['facility_district']);
 		$row[] = ($aRow['facility_state']);
 		$row[] = $aRow['patient_id'];
+		if (!empty($globalKey) && !empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+			$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $globalKey);
+			$patientFname = $general->crypto('decrypt', $patientFname, $globalKey);
+			$patientMname = $general->crypto('decrypt', $patientMname, $globalKey);
+			$patientLname = $general->crypto('decrypt', $patientLname, $globalKey);
+		}
 		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');
 		$row[] = $aRow['patient_age_in_years'];
@@ -171,12 +186,16 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 		$row[] = $aRow['sample_type_name'] ?: null;
 		$row[] = ($aRow['is_patient_pregnant']);
 		$row[] = ($aRow['is_patient_breastfeeding']);
+		$row[] = ($aRow['request_clinician_name']);
+		$row[] = $requestedDate;
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason_name'];
 		$row[] = $sampleTestedOn;
 		$row[] = $aRow['result'];
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
+		$row[] = (isset($aRow['funding_source_name']) && trim((string) $aRow['funding_source_name']) !== '') ? ($aRow['funding_source_name']) : '';
+		$row[] = (isset($aRow['i_partner_name']) && trim((string) $aRow['i_partner_name']) !== '') ? ($aRow['i_partner_name']) : '';
 		$row[] = $requestCreatedDatetime;
 //echo "<pre>"; print_r($labels); die;
 		/* To assign the dynamic fields values safely mapped by sample_id */
