@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * The status names a results resend can be limited to, as in
- * `composer send-results 400 --status=rejected,accepted`.
+ * `composer send-results -- 400 --status=rejected,accepted`.
  *
  * A name the parser does not know is refused: dropped quietly, a typo would
  * resend nothing and read as "nothing to resend".

@@ -32,8 +32,9 @@ final class SampleStatusUtility
 {
     /**
      * The statuses a lab can ask the results sender for by name, as in
-     * `composer send-results 400 --status=rejected,accepted`. Received at Clinic is
-     * left out: the sender never sends it, so asking for it would select nothing.
+     * `composer send-results -- 400 --status=rejected,accepted` (composer drops
+     * options that are not after `--`). Received at Clinic is left out: the
+     * sender never sends it, so asking for it would select nothing.
      */
     public const SENDABLE_STATUS_NAMES = [
         'on-hold' => \SAMPLE_STATUS\ON_HOLD,
