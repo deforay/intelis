@@ -269,6 +269,45 @@ function is_benign_ddl_error(Throwable $e, DatabaseService $db): bool
     return in_array($code, [1050, 1060, 1061, 1068, 1091, 1826], true);
 }
 
+/**
+ * Run a statement; a table DDL that fails 1118 is tried once more with
+ * innodb_strict_mode off for this session.
+ *
+ * 1118 "Row size too large" is InnoDB's worst-case sum over the clustered row:
+ * fixed-width columns and every VARCHAR of 255 bytes or less counted in full.
+ * form_vl sits right at the 8126-byte line, so the next ADD COLUMN fails on some
+ * servers and not others (a lab on MySQL 8.0 stopped at 5.7.82 on a plain
+ * VARCHAR(255) that MySQL 8.4 took), and the lab stays on the old version until
+ * somebody runs the ALTER by hand.
+ *
+ * With strict mode off, InnoDB adds the column and only warns. A real row is a
+ * fraction of the worst case, and an INSERT whose row really did not fit would
+ * still fail on its own, so nothing is stored that could not be. Only table
+ * DDL is retried: a 1118 on anything else is about the data and is left alone.
+ */
+function run_tolerating_wide_rows(DatabaseService $db, string $sql): void
+{
+    $isTableDdl = preg_match('/^\s*(alter|create)\s+table\b/i', $sql) === 1;
+    try {
+        $db->rawQuery($sql);
+        if ($db->getLastErrno() !== 1118 || !$isTableDdl) {
+            return;
+        }
+    } catch (Throwable $e) {
+        if ((int) $e->getCode() !== 1118 || !$isTableDdl) {
+            throw $e;
+        }
+    }
+
+    $strictBefore = (int) ($db->rawQueryOne('SELECT @@SESSION.innodb_strict_mode AS m')['m'] ?? 1);
+    $db->rawQuery('SET SESSION innodb_strict_mode = OFF');
+    try {
+        $db->rawQuery($sql);
+    } finally {
+        $db->rawQuery('SET SESSION innodb_strict_mode = ' . ($strictBefore === 1 ? 'ON' : 'OFF'));
+    }
+}
+
 function assert_no_errno(DatabaseService $db, string $sql): void
 {
     $errno = $db->getLastErrno();
@@ -330,7 +369,7 @@ function add_column_if_missing(DatabaseService $db, string $table, string $colum
         if (preg_match('/\bafter\s+`?([a-z0-9_]+)`?\s*;?\s*$/i', $ddl, $am) && !column_exists($db, $table, $am[1])) {
             $ddl = preg_replace('/\s+after\s+`?[a-z0-9_]+`?(\s*;?\s*)$/i', '$1', $ddl);
         }
-        $db->rawQuery($ddl);
+        run_tolerating_wide_rows($db, $ddl);
         assert_no_errno($db, $ddl);
         return MIG_EXECUTED;
     }
@@ -591,7 +630,7 @@ function _apply_change_column(DatabaseService $db, string $table, string $oldCol
         if ($isRename && column_exists($db, $table, $newCol)) {
             return _reconcile_renamed_column($db, $table, $oldCol, $newCol, $ddl);
         }
-        $db->rawQuery($ddl);
+        run_tolerating_wide_rows($db, $ddl);
         assert_no_errno($db, $ddl);
         return MIG_EXECUTED;
     }
@@ -691,7 +730,7 @@ function _reconcile_renamed_column(
         $db->rawQuery($drop);
         assert_no_errno($db, $drop);
 
-        $db->rawQuery($ddl);
+        run_tolerating_wide_rows($db, $ddl);
         assert_no_errno($db, $ddl);
 
         return MIG_EXECUTED;
@@ -797,7 +836,7 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
         $actions = split_top_level($alter[2]);
         if (count($actions) > 1) {
             try {
-                $db->rawQuery($q);
+                run_tolerating_wide_rows($db, $q);
                 assert_no_errno($db, $q);
                 return MIG_EXECUTED;      // nothing was applied yet: one rebuild, as written
             } catch (Throwable $e) {
@@ -852,7 +891,7 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
                     if ($result === MIG_NOT_HANDLED) {
                         // No guard knows this one; run it on its own so the
                         // actions beside it are not lost with it.
-                        $db->rawQuery($single);
+                        run_tolerating_wide_rows($db, $single);
                         assert_no_errno($db, $single);
                         $result = MIG_EXECUTED;
                     }
@@ -1070,6 +1109,8 @@ $totalMigrations = 0;
 $totalQueries = 0;
 $skippedQueries = $successfulQueries = 0;
 $totalErrors = 0;
+// Each failed statement with its version and error, for migrate-last-failure.txt.
+$failedStatements = [];
 $lastVersion = $currentVersion;
 
 foreach ($versions as $version) {
@@ -1146,7 +1187,7 @@ foreach ($versions as $version) {
                     } elseif ($status === MIG_EXECUTED) {
                         $successfulQueries++;
                     } else {
-                        $db->rawQuery($query);
+                        run_tolerating_wide_rows($db, $query);
                         $errno = $db->getLastErrno();
                         if ($errno > 0) {
                             // Benign idempotence codes: 1050 table exists, 1060 dup column,
@@ -1174,6 +1215,8 @@ foreach ($versions as $version) {
                                 $totalErrors++;
                                 $versionErrors++;
                                 $msg = "Error executing query ({$errno}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
+                                $failedStatements[] = "{$version}: ({$errno}) {$db->getLastError()}\n"
+                                    . $db->getLastQuery();
                                 if (!$quietMode) {
                                     if ($bar instanceof ProgressBar) {
                                         MiscUtility::spinnerPausePrint($bar, fn() => print $msg);
@@ -1253,6 +1296,7 @@ foreach ($versions as $version) {
                     } else {
                         $totalErrors++;
                         $versionErrors++;
+                        $failedStatements[] = "{$version}: ({$errCode}) {$msgStr}\n{$sqlInMsg}";
                         if (!$quietMode) {
                             $toPrint = "Error executing query ({$errCode}): {$msgStr}\n{$sqlInMsg}\n";
                             if ($bar instanceof ProgressBar) {
@@ -1373,6 +1417,26 @@ if (!$quietMode) {
         $summaryRows[] = ['Potential Errors logged', $totalErrors];
     }
     $io->table(['Migration summary', ''], $summaryRows);
+}
+
+// What failed, kept where the upgrade can find it. The error is printed the
+// moment it happens, and by the time the upgrade finishes it has scrolled far
+// out of sight: the screenshot from a lab shows the summary and "Failed to
+// update" with nothing about why. upgrade.sh prints this file under its own
+// summary, so the last screen names the statement and the error. Overwritten by
+// every run and removed by a clean one, so it never describes an old failure.
+// Capped at five statements: the chain halts at the first failing version.
+if (!$dryRun) {
+    $failuresFile = LOG_PATH . '/migrate-last-failure.txt';
+    if ($failedStatements === []) {
+        MiscUtility::deleteFile($failuresFile);
+    } else {
+        $failureText = implode("\n\n", array_map(
+            static fn(string $s): string => mb_strimwidth($s, 0, 600, ' ...'),
+            array_slice($failedStatements, 0, 5)
+        ));
+        @file_put_contents($failuresFile, $failureText . "\n");
+    }
 }
 
 // A failed migration has to be a failed command. `composer post-update` runs
