@@ -222,7 +222,7 @@ foreach ($excelResultSet as $vlLab => $labResult) {
     }
 
     foreach ($output as $rowData) {
-        $writer->addRow(Row::fromValues(array_map(static fn($value): string => html_entity_decode((string) $value), $rowData)));
+        $writer->addRow(Row::fromValues(array_map(static fn($value) => is_string($value) ? html_entity_decode($value) : $value, $rowData)));
     }
     $c++;
 }

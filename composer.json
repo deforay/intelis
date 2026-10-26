@@ -235,7 +235,7 @@
         ],
         "refresh": [
             "Composer\\Config::disableProcessTimeout",
-            "git refresh",
+            "git fetch origin --prune && git rebase --autostash \"$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null || echo origin/master)\"",
             "@composer install",
             "@composer post-update"
         ]
