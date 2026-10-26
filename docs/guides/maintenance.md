@@ -362,6 +362,7 @@ PHP maintenance scripts run as `www-data`:
 | `bin/preflight.php` | Runs behind `intelis check`. | `sudo -u www-data php bin/preflight.php` |
 | `bin/housekeeping.php` | Deletes old backups, files and database rows. See [Housekeeping retention](#housekeeping-retention). | `sudo -u www-data php bin/housekeeping.php 30` |
 | `bin/clear-logs.php` | Deletes log files from `var/logs/`. `--keep=N` keeps the newest N, `--days=N` keeps the last N days, `--all` deletes all, `--dry-run` only reports. | `sudo -u www-data php bin/clear-logs.php --days=7` |
+| `bin/reset-user-password.php` | Sets a new password for a user who cannot sign in. Lists the active users to choose from. `--login` names the user, `--generate` prints a random password, `--activate` also activates the account, `--force-reset` asks for a new password at the next sign-in. See [Forgotten Password](forgotten-password.md). | `sudo -u www-data php bin/reset-user-password.php` |
 | `bin/duplicate-indexes.php` | Lists indexes that duplicate another index on the same table. `--fix` drops the duplicates. | `sudo -u www-data php bin/duplicate-indexes.php` |
 
 All commands above assume `cd /var/www/intelis` first.

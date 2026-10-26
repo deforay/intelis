@@ -4,8 +4,8 @@ audience: [system-admin, lab-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-23
-reviewed_against: 5.8.2
+reviewed: 2026-10-26
+reviewed_against: 5.8.3
 ---
 # Where to Start
 
@@ -21,6 +21,7 @@ the next command to run.
 | The browser shows `InteLIS is being updated` for more than 30 minutes | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
 | phpMyAdmin shows `The mysqli extension is missing` | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
 | The browser shows PHP code instead of InteLIS | `sudo intelis doctor` | [Browser Shows PHP Code](browser-shows-php-code.md) |
+| A user, or the only admin, cannot sign in because the password is forgotten | `sudo -u www-data php bin/reset-user-password.php` in `/var/www/intelis` | [Forgotten Password](forgotten-password.md) |
 | MySQL is stopped, or the site reports a database error | `sudo intelis fix-database` | [MySQL Will Not Start](mysql-will-not-start.md) |
 | An update stops at `Running database migrations...` | Nothing yet. Read the page first. | [Update Stuck at Database Migrations](update-stuck-at-migrations.md) |
 | InteLIS fails to start after an update or a server change | `sudo intelis check` | The fix it prints for each failure |
