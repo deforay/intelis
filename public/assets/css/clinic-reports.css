@@ -162,8 +162,8 @@
     box-shadow: none;
 }
 
-/* A tab whose report is a download rather than a table says so, so the empty
-   space under its filters does not read as a page that failed to load. */
+/* A short note under a tab's filters: says when a report is a download
+   rather than a table, or what a list leaves out. */
 .clinic-report-note {
     display: flex;
     align-items: flex-start;
@@ -191,6 +191,10 @@
 
 .clinic-report-note p {
     margin: 0;
+}
+
+.clinic-report-note + .table {
+    margin-top: 12px;
 }
 
 /* Sample Testing tab: headline figures, a per-facility chart, then the table
