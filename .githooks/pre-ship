@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # pre-ship — the checks `git sync`, `git ship` and `git land` run before they
-# push anything (see "What every push checks first" in the team git guide).
+# push anything (see https://kb.deforay.in/git/push-checks/).
 #
 # It runs in a throwaway worktree holding exactly the commits being pushed, so
 # a class you forgot to `git add` fails here as it would on a lab server. Only
@@ -31,9 +31,18 @@ if [ ! -f "$src/vendor/autoload.php" ]; then
     echo "pre-ship: $src/vendor is missing. Run: composer install" >&2
     exit 1
 fi
+# vendor/ below is linked from the checkout, so it must belong to the same
+# composer.lock as the commits being pushed.
 if ! cmp -s "$src/composer.lock" composer.lock; then
-    echo "pre-ship: composer.lock in these commits differs from your checkout's." >&2
-    echo "          Run composer install in your checkout, then push again." >&2
+    if ! git -C "$src" diff --quiet HEAD -- composer.lock; then
+        echo "pre-ship: composer.lock has changes in your checkout that are not committed." >&2
+        echo "          To send them, commit composer.lock. To drop them, run:" >&2
+        echo "            git checkout -- composer.lock" >&2
+    else
+        echo "pre-ship: composer.lock in the commits being pushed differs from your checkout's." >&2
+        echo "          If you used --pick, also pick the commit that changes composer.lock." >&2
+    fi
+    echo "          Then push again." >&2
     exit 1
 fi
 
