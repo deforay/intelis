@@ -99,11 +99,43 @@ The lab must already be connected to the STS. If it never was, follow
               `on-hold`, `lost`, `reordered`, `rejected`, `failed`, `received`,
               `accepted`, `pending-approval`, `expired`, `no-result`,
               `cancelled` and `referred`.
+            - The same command runs as `composer send-results` from
+              `/var/www/intelis`. Put `--` before the arguments, for example
+              `composer send-results -- vl 400 --status=rejected`. Without
+              `--`, composer drops every option, and the sync sends all
+              statuses.
+            - When a status filter is in use, the output shows
+              `Sending only statuses:` under `Syncing results since:`. If that
+              line is missing, the filter was not applied. Press Ctrl+C and
+              run the command again.
 
         ??? failure "If it prints `Another results sync is already running. Exiting.`"
 
-            The scheduled sync is sending now. Wait 5 minutes, then repeat
-            step 3.
+            Another sync is sending now. It can be the scheduled sync, an
+            earlier manual resend, or the **Sync** button on a request list.
+
+            1. Add `--wait-for-lock=3600` to the **Send them** command. The
+               command then waits up to one hour for the other sync to finish,
+               and starts after it.
+            2. If it still does not start, find the process that holds the
+               lock:
+
+                ```bash
+                sudo lsof /var/www/intelis/var/results-sender.lock
+                ```
+
+            3. If the process is `apache2`, restart the web server:
+
+                ```bash
+                sudo systemctl restart apache2
+                ```
+
+                For any other process, stop it with `sudo kill` and the
+                process ID from the `PID` column.
+
+            4. Run the **Send them** command again. Stopping a sync partway
+               loses nothing: the next sync sends the results that the stopped
+               sync did not finish.
 
     4. Check that the results arrived. Follow the **LIS** tab of
        [Check that data reached the STS](../user-guides/admin-monitoring.md#check-that-data-reached-the-sts).
