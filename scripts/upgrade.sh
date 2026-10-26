@@ -2043,6 +2043,10 @@ declare -A instance_commit_change=()
 # knowing an instance died forty minutes in, rather than immediately, is most of
 # the diagnosis on a machine none of us can log in to.
 declare -A instance_seconds=()
+# Why each failed instance failed, keyed by lis_path, repeated at the very end of
+# the run. The error itself is printed hundreds of lines earlier, and a lab sends
+# a screenshot of the last screen -- which until now said only "Failed".
+declare -A instance_failure_reason=()
 
 # Shared timestamp for rollback snapshots across all instances in this run.
 apply_run_ts="$(date +%Y%m%d-%H%M%S)"
@@ -2077,9 +2081,15 @@ upgrade_instance() {
     # --- Maintenance mode (503 via Apache) ---
     enable_maintenance_mode "$lis_path"
 
+    # migrate.php rewrites this on every run, but an attempt that fails before
+    # reaching it (the database check, composer) would otherwise have a previous
+    # run's migration error reported at the end as this one's.
+    rm -f "${lis_path}/var/logs/migrate-last-failure.txt"
+
     # Helper: called on any failure below. Disables maintenance and restores snapshot.
     _apply_failure() {
         local reason="$1"
+        instance_failure_reason["$lis_path"]="$reason"
         print error "Apply failed for ${lis_path}: ${reason}"
         log_action "Apply failed for ${lis_path}: ${reason}"
         if [ -n "$_snapshot_dir" ]; then
@@ -2095,6 +2105,7 @@ upgrade_instance() {
     # than reverting code or (worse) declaring success.
     _apply_failure_no_rollback() {
         local reason="$1"
+        instance_failure_reason["$lis_path"]="$reason"
         print error "Apply failed for ${lis_path}: ${reason}"
         if [ "${show_maintenance:-false}" = "true" ]; then
             print error "  Left in MAINTENANCE mode (503) pending manual fix; code NOT rolled back."
@@ -2886,5 +2897,22 @@ fi
 # operator actually waited through -- the per-instance figures above will not
 # add up to it, and are not meant to.
 _total_seconds=$(( $(date +%s) - upgrade_started_at ))
+
+# Why it failed, at the bottom where the screenshot is taken. The summary above
+# lists the failed paths; this repeats the reason and, for a migration, the
+# statement and the MySQL error migrate.php left behind, so nobody has to be
+# asked to scroll up and find them.
+if [ ${#failed_instances[@]} -gt 0 ]; then
+    print header "Why the update failed"
+    for p in "${failed_instances[@]}"; do
+        printf '   \033[1;91m✗\033[0m %s: %s\n' "$p" "${instance_failure_reason[$p]:-see $log_file}"
+        _failure_file="${p}/var/logs/migrate-last-failure.txt"
+        if [ -s "$_failure_file" ]; then
+            sed 's/^/       /' "$_failure_file"
+        fi
+    done
+    echo
+fi
+
 print info "Total time: $(format_duration "${_total_seconds}")"
 log_action "Upgrade finished in $(format_duration "${_total_seconds}")"
