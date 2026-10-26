@@ -94,10 +94,10 @@ if (isset($_SESSION['eidMonitoringThresholdReportQuery']) && trim((string) $_SES
                     $writer->addRow(Row::fromValues([
                         html_entity_decode(((string) $rowData['facility_name']), ENT_QUOTES, 'UTF-8'),
                         html_entity_decode((string) $rowData['monthrange'], ENT_QUOTES, 'UTF-8'),
-                        html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'),
-                        html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'),
-                        html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'),
-                        html_entity_decode((string) $rowData['monthly_target'], ENT_QUOTES, 'UTF-8'),
+                        $rowData['totalReceived'],
+                        $rowData['totalRejected'],
+                        $rowData['totalCollected'],
+                        is_numeric($rowData['monthly_target']) ? (int) $rowData['monthly_target'] : $rowData['monthly_target'],
                     ]));
                 }
             } elseif ($_POST['targetType'] == 2) {
@@ -105,20 +105,20 @@ if (isset($_SESSION['eidMonitoringThresholdReportQuery']) && trim((string) $_SES
                     $writer->addRow(Row::fromValues([
                         html_entity_decode(((string) $rowData['facility_name']), ENT_QUOTES, 'UTF-8'),
                         html_entity_decode((string) $rowData['monthrange'], ENT_QUOTES, 'UTF-8'),
-                        html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'),
-                        html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'),
-                        html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'),
-                        html_entity_decode((string) $rowData['monthly_target'], ENT_QUOTES, 'UTF-8'),
+                        $rowData['totalReceived'],
+                        $rowData['totalRejected'],
+                        $rowData['totalCollected'],
+                        is_numeric($rowData['monthly_target']) ? (int) $rowData['monthly_target'] : $rowData['monthly_target'],
                     ]));
                 }
             } else {
                 $writer->addRow(Row::fromValues([
                     html_entity_decode(((string) $rowData['facility_name']), ENT_QUOTES, 'UTF-8'),
                     html_entity_decode((string) $rowData['monthrange'], ENT_QUOTES, 'UTF-8'),
-                    html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'),
-                    html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'),
-                    html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'),
-                    html_entity_decode((string) $rowData['monthly_target'], ENT_QUOTES, 'UTF-8'),
+                    $rowData['totalReceived'],
+                    $rowData['totalRejected'],
+                    $rowData['totalCollected'],
+                    is_numeric($rowData['monthly_target']) ? (int) $rowData['monthly_target'] : $rowData['monthly_target'],
                 ]));
             }
         }

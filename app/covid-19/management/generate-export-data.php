@@ -192,7 +192,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 	$writer->addRow(Row::fromValues(['']));
 	$writer->addRow(Row::fromValues(array_map(static fn($value): string => html_entity_decode((string) $value), $headings)));
 	foreach ($output as $rowData) {
-		$writer->addRow(Row::fromValues(array_map(static fn($value): string => html_entity_decode((string) $value), $rowData)));
+		$writer->addRow(Row::fromValues(array_map(static fn($value) => is_string($value) ? html_entity_decode($value) : $value, $rowData)));
 	}
 	$writer->close();
 

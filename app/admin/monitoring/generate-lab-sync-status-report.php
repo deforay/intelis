@@ -1,6 +1,7 @@
 <?php
 
 use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -99,8 +100,11 @@ $writer->addRow(Row::fromValues(['Lab Sync Status Report']));
 $writer->addRow(Row::fromValues(['Generated on: ' . DateUtility::humanReadableDateFormat(date('Y-m-d H:i:s'), true)]));
 $writer->addRow(Row::fromValues(['']));
 $writer->addRow(Row::fromValues($headings));
+// Row fills match the colours named in the summary below
+$statusFill = ['Active' => 'C8E6C9', 'Warning' => 'FFF9C4', 'Critical' => 'FFCDD2'];
 foreach ($output as $rowData) {
-    $writer->addRow(Row::fromValues($rowData));
+    $fill = (new Style())->withBackgroundColor($statusFill[$rowData[5]]);
+    $writer->addRow(Row::fromValuesWithStyles($rowData, array_fill_keys(array_keys($rowData), $fill)));
 }
 $writer->addRow(Row::fromValues(['']));
 $writer->addRow(Row::fromValues(['']));
