@@ -591,17 +591,24 @@ $state = $geolocationService->getProvinces("yes");
 		// file downloads when ready, even if the user has moved to another page.
 		IntelisExport.start('export-cd4-results.php', {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
-				Batch_Code: $("#batchCode  option:selected").text(),
-				Sample_Type: $("#sampleType  option:selected").text(),
-				Facility_Name: $("#facilityName  option:selected").text(),
+				Sample_Recieved_Date: $("#sampleRecievedDate").val(),
+				Province: $("#state").val() ? $("#state option:selected").text() : '',
+				District: $("#district").val() ? $("#district option:selected").text() : '',
+				Facility_Name: $("#facilityName option:selected").map(function() {
+					return $(this).text();
+				}).get().join(', '),
+				Testing_Lab: $("#testingLab").val() ? $("#testingLab option:selected").text() : '',
 				sample_Test_Date: $("#sampleTestDate").val(),
-				Viral_Load: $("#vLoad  option:selected").text(),
 				Print_Date: $("#printDate").val(),
-				Sex: $("#gender  option:selected").text(),
+				Status: $("#status option:selected").map(function() {
+					return $(this).text();
+				}).get().join(', '),
+				Batch_Code: $("#batchCode").val(),
+				Funding_Source: $("#fundingSource").val() ? $("#fundingSource option:selected").text() : '',
+				Implementing_Partner: $("#implementingPartner").val() ? $("#implementingPartner option:selected").text() : '',
+				Patient_ID: $("#patientId").val(),
+				Patient_Name: $("#patientName").val(),
 				patientInfo: $("#patientInfo  option:selected").val(),
-				Community_Sample: $("#communitySample  option:selected").text(),
-				Status: ($("#status").val() || []).join(', '),
-				Show_Reorder_Sample: $("#showReordSample option:selected").text(),
 				withAlphaNum: withAlphaNum
 			}, <?= json_encode(_translate("CD4 Results Export")) ?>);
 	}

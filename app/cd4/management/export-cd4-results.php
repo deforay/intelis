@@ -49,6 +49,22 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 		$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
 	}
 
+	// The filters the page was searched with, written above the headings so the
+	// sheet says which samples it holds.
+	$nameValue = '';
+	foreach ($_POST as $field => $value) {
+		if (in_array($field, ['async', 'patientInfo', 'withAlphaNum'], true) || !is_scalar($value)) {
+			continue;
+		}
+		if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
+			$nameValue .= str_replace("_", " ", $field) . " : " . $value . "  ";
+		}
+	}
+
+	if (($_POST['withAlphaNum'] ?? '') == 'yes') {
+		$headings = array_map(static fn($value): string => (string) preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $value)), $headings);
+	}
+
 
 	$buildRow = function ($aRow, $no) use ($general, $key): array {
 		$row = [];
@@ -144,7 +160,8 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 	$writer = new Writer();
 	$writer->openToFile($filename);
 
-	// Write headings
+	$writer->addRow(Row::fromValues([html_entity_decode(trim($nameValue), ENT_QUOTES, 'UTF-8')]));
+	$writer->addRow(Row::fromValues(['']));
 	$writer->addRow(Row::fromValues($headings));
 
 	// Stream data

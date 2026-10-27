@@ -266,7 +266,6 @@ try {
      if (isset($sLimit) && isset($sOffset)) {
           $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
-
      [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
      $_SESSION['cd4RequestQueryCount'] = $resultCount;
