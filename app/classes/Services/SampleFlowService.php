@@ -8,12 +8,19 @@ use App\Exceptions\SystemException;
 use App\Utilities\DateUtility;
 use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
+use App\Utilities\SampleStatusUtility;
 
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\CANCELLED;
 use const SAMPLE_STATUS\EXPIRED;
 use const SAMPLE_STATUS\LOST_OR_MISSING;
+use const SAMPLE_STATUS\NO_RESULT;
 use const SAMPLE_STATUS\ON_HOLD;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\REFERRED;
+use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\REORDERED_FOR_TESTING;
 use const SAMPLE_STATUS\TEST_FAILED;
 
@@ -47,6 +54,23 @@ final class SampleFlowService
      * lab records receiving it.
      */
     public const STAGES = ['atFacility', 'atLab', 'awaitingApproval', 'awaitingRelease', 'released'];
+
+    /**
+     * The statuses the rest of the app gives a sample in each stage. The page
+     * marks any other status it finds in a stage, because there the status and
+     * the sample's dates or result disagree, mostly a status nobody updated.
+     */
+    public const EXPECTED_STATUSES = [
+        'atFacility' => [RECEIVED_AT_CLINIC, RECEIVED_AT_TESTING_LAB],
+        'atLab' => [RECEIVED_AT_TESTING_LAB, ON_HOLD, REORDERED_FOR_TESTING, TEST_FAILED, REFERRED],
+        'awaitingApproval' => [PENDING_APPROVAL, NO_RESULT],
+        'awaitingRelease' => [ACCEPTED, NO_RESULT],
+        'released' => [ACCEPTED, NO_RESULT],
+        'rejected' => [REJECTED],
+        'expired' => [EXPIRED],
+        'lost' => [LOST_OR_MISSING],
+        'cancelled' => [CANCELLED],
+    ];
 
     /** Ways out of the pipeline that are not a released result. */
     public const EXITS = ['rejected', 'expired', 'lost', 'cancelled'];
@@ -144,8 +168,13 @@ final class SampleFlowService
      */
     public static function stageExpression(string $testType): string
     {
-        $result = 't.' . TestsService::getResultColumn($testType);
-        $hasResult = "($result IS NOT NULL AND TRIM($result) <> '')";
+        // Hepatitis keeps its result in more than one column: the analyzer import
+        // writes only the HBV or HCV count, and reading `result` alone held
+        // every such sample at "awaiting approval" for good.
+        $hasResult = '(' . implode(' OR ', array_map(
+            static fn(string $column): string => "NULLIF(TRIM(t.$column), '') IS NOT NULL",
+            SampleStatusUtility::resultColumns($testType)
+        )) . ')';
         $set = static fn(string $column): string => self::milestone($column) . ' IS NOT NULL';
         // A result is released when it has actually left for the facility:
         // printed, dispatched, e-mailed, sent to an EMR, or pulled over the API.
@@ -159,7 +188,16 @@ final class SampleFlowService
         // the 4,598 EID results carrying the flag have no delivery of any kind.
         $released = '(' . implode(' OR ', array_map($set, self::releaseChannels($testType))) . ')';
         $onBench = "t.result_status IN (" . TEST_FAILED . ", " . ON_HOLD . ", " . REORDERED_FOR_TESTING . ")";
-        $approved = "(" . $set('result_approved_datetime') . " OR t.result_status = " . ACCEPTED . ")";
+        // A result edited after approval goes back to Awaiting Approval and keeps
+        // its old approval date, so that status outranks the date.
+        $approved = "(t.result_status = " . ACCEPTED . " OR (" . $set('result_approved_datetime')
+            . " AND IFNULL(t.result_status, 0) <> " . PENDING_APPROVAL . "))";
+        // Some country forms ask for the lab receipt date when the facility
+        // registers the sample, so a receipt date alone does not mean a lab has
+        // it. Until the status moves off "registered at health center", no lab
+        // has touched the sample and it is still at the facility.
+        $receivedAtLab = "(" . $set('sample_received_at_lab_datetime')
+            . " AND IFNULL(t.result_status, 0) <> " . RECEIVED_AT_CLINIC . ")";
 
         return "CASE
             WHEN t.result_status = " . CANCELLED . " THEN 'cancelled'
@@ -170,7 +208,7 @@ final class SampleFlowService
             WHEN $onBench THEN 'atLab'
             WHEN $hasResult AND $approved THEN 'awaitingRelease'
             WHEN " . $set('sample_tested_datetime') . " OR $hasResult THEN 'awaitingApproval'
-            WHEN " . $set('sample_received_at_lab_datetime') . " THEN 'atLab'
+            WHEN $receivedAtLab THEN 'atLab'
             ELSE 'atFacility'
         END";
     }
@@ -256,15 +294,15 @@ final class SampleFlowService
                        t.sample_dispatched_datetime,
                        t.sample_received_at_lab_datetime,
                        t.sample_tested_datetime,
-                       t.result_approved_datetime,
-                       t.result_status";
+                       t.result_approved_datetime";
         }
 
         return "SELECT " . self::stageExpression($f['testKey']) . " AS stage,
                        " . self::ageExpression() . " AS age,
                        t.facility_id,
                        t.lab_id,
-                       t.implementing_partner$detail
+                       t.implementing_partner,
+                       t.result_status$detail
                   FROM $table AS t
                 " . $this->buildWhere($f);
     }
@@ -328,25 +366,43 @@ final class SampleFlowService
     }
 
     /**
-     * Counts per stage and exit, each with its age distribution.
+     * Counts per stage and exit, each with its age distribution and the
+     * sample statuses it holds.
      *
-     * @return array<string, array{total: int, b0: int, b1: int, b2: int, b3: int, b4: int}>
+     * A stage is read off the milestone dates, so one stage can hold several
+     * of the statuses the rest of the app shows: a sample at the lab may be
+     * registered there, failed, on hold or reordered. Listing them lets a
+     * reader match a stage to the status they see on the sample lists.
+     *
+     * @return array<string, array{total: int, b0: int, b1: int, b2: int, b3: int, b4: int,
+     *         statuses: list<array{id: int, name: string, total: int}>}>
      *         keyed by every stage and exit, zeros where nothing sits
      */
     public function getFlow(array $f): array
     {
         $rows = $this->db->rawQuery(
-            "SELECT stage, COUNT(*) AS total, " . $this->bucketSelects() . "
+            "SELECT stage, placed.result_status, ts.status_name, COUNT(*) AS total, " . $this->bucketSelects() . "
                FROM (" . $this->placedSamples($f) . ") AS placed
-              GROUP BY stage"
+               LEFT JOIN r_sample_status AS ts ON ts.status_id = placed.result_status
+              GROUP BY stage, placed.result_status, ts.status_name
+              ORDER BY total DESC"
         ) ?: [];
 
         $flow = [];
         foreach (array_merge(self::STAGES, self::EXITS) as $key) {
-            $flow[$key] = $this->emptyCounts();
+            $flow[$key] = $this->emptyCounts() + ['statuses' => []];
         }
+        $notSet = _translate('Status not set');
         foreach ($rows as $row) {
-            $flow[(string) $row['stage']] = $this->counts($row);
+            $stage = (string) $row['stage'];
+            foreach ($this->counts($row) as $key => $count) {
+                $flow[$stage][$key] += $count;
+            }
+            $flow[$stage]['statuses'][] = [
+                'id' => (int) $row['result_status'],
+                'name' => $row['status_name'] !== null ? _translate((string) $row['status_name']) : $notSet,
+                'total' => (int) $row['total'],
+            ];
         }
         return $flow;
     }

@@ -199,6 +199,16 @@ final class SampleFlowEndpointTest extends TestCase
         $this->seed(['result_status' => 10]);
         $this->seed(['result_status' => 2]);
         $this->seed(['result_status' => 12, 'implementing_partner' => 7]);
+        // A receipt date typed in when the facility registered it, as some country
+        // forms ask for. The status says no lab has touched it: still at the facility.
+        $this->seed(['sample_received_at_lab_datetime' => self::daysAgo(50), 'result_status' => 9]);
+        // Edited after approval: back at Awaiting Approval, old approval date kept.
+        $this->seed([
+            'sample_tested_datetime' => self::daysAgo(6),
+            'result' => 'positive',
+            'result_status' => 8,
+            'result_approved_datetime' => self::daysAgo(5),
+        ]);
     }
 
     #[RunInSeparateProcess]
@@ -208,17 +218,24 @@ final class SampleFlowEndpointTest extends TestCase
         self::assertArrayHasKey('flow', $json, json_encode($json));
         $flow = $json['flow'];
 
-        self::assertSame(2, $flow['atFacility']['total'], 'the untouched one and the dispatched, never received one');
+        self::assertSame(
+            3,
+            $flow['atFacility']['total'],
+            'the untouched one, the dispatched one and the one with a facility-typed receipt date'
+        );
         self::assertSame(1, $flow['atFacility']['b4'], 'collected 100 days ago, nothing since');
         self::assertSame(1, $flow['atFacility']['b2'], 'dispatched 20 days ago, so 20 days waiting');
         self::assertArrayNotHasKey('inTransit', $flow, 'dispatch is not a tracked stage on this system');
 
         self::assertSame(2, $flow['atLab']['total'], 'received-not-tested plus the failed one');
+        $atLabStatuses = array_column($flow['atLab']['statuses'], 'total', 'id');
+        ksort($atLabStatuses);
+        self::assertSame([5 => 1, 6 => 1], $atLabStatuses, 'each stage lists the app statuses it holds');
         self::assertSame(1, $flow['atLab']['b3'], 'received 40 days ago');
         self::assertSame(1, $flow['atLab']['b0'], 'failed 3 days ago counts from the failure');
 
-        self::assertSame(1, $flow['awaitingApproval']['total']);
-        self::assertSame(1, $flow['awaitingApproval']['b0']);
+        self::assertSame(2, $flow['awaitingApproval']['total'], 'including the one edited after approval');
+        self::assertSame(2, $flow['awaitingApproval']['b0']);
 
         self::assertSame(2, $flow['awaitingRelease']['total']);
         self::assertSame(1, $flow['awaitingRelease']['b4'], 'approved 70 days ago, nothing delivered');
@@ -235,7 +252,7 @@ final class SampleFlowEndpointTest extends TestCase
         foreach ($flow as $counts) {
             $counted += $counts['total'];
         }
-        self::assertSame(13, $counted, 'stages and exits together account for every row once');
+        self::assertSame(15, $counted, 'stages and exits together account for every row once');
     }
 
     #[RunInSeparateProcess]
@@ -345,7 +362,7 @@ final class SampleFlowEndpointTest extends TestCase
             'stage' => 'atFacility', 'groupBy' => 'facility', 'groupKey' => (string) self::FACILITY_ID, 'bucket' => '',
             'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sEcho' => 1,
         ]);
-        self::assertSame(2, $json['iTotalRecords'], json_encode($json));
+        self::assertSame(3, $json['iTotalRecords'], json_encode($json));
     }
 
     #[RunInSeparateProcess]

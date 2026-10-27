@@ -37227,3 +37227,47 @@ msgstr "Uniquement les échantillons enregistrés au laboratoire d'analyse"
 #: app/vl/program-management/vl-clinic-reports.php
 msgid "This list shows samples that have a Sample ID from the testing lab and no result yet. Rejected samples are left out. Samples still at the health facility or on their way to the lab do not have this Sample ID yet, so they are not counted here. View Test Requests lists them too."
 msgstr "Cette liste présente les échantillons qui ont un ID de l'échantillon attribué par le laboratoire d'analyse et pas encore de résultat. Les échantillons rejetés sont exclus. Les échantillons encore à la structure de santé ou en route vers le laboratoire n'ont pas encore cet ID, ils ne sont donc pas comptés ici. Afficher les demandes de test les liste aussi."
+
+#: app/reports/sample-ageing.php
+msgid "Pick a stage to see where its samples are."
+msgstr "Choisissez une étape pour voir où se trouvent ses échantillons."
+
+#: app/reports/sample-ageing.php
+msgid "Group by"
+msgstr "Regrouper par"
+
+#: app/reports/sample-ageing.php
+msgid "%s over 30 days"
+msgstr "%s depuis plus de 30 jours"
+
+#: app/reports/sample-ageing.php
+msgid "%s samples"
+msgstr "%s échantillons"
+
+#: app/reports/sample-ageing.php
+msgid "Status in the app"
+msgstr "Statut dans l'application"
+
+#: app/reports/sample-ageing.php
+msgid "Testing lab: %s"
+msgstr "Laboratoire d'analyse : %s"
+
+#: app/reports/sample-ageing.php
+msgid "tests on site"
+msgstr "analyse sur place"
+
+#: app/classes/Services/SampleFlowService.php
+msgid "Status not set"
+msgstr "Statut non renseigné"
+
+#: app/reports/sample-ageing.php
+msgid "Closed without a result"
+msgstr "Clôturés sans résultat"
+
+#: app/reports/sample-ageing.php
+msgid "Rejected, expired, lost and cancelled samples are closed without a result. They are listed so the total adds up, and can be broken down like any stage."
+msgstr "Les échantillons rejetés, expirés, perdus et annulés sont clôturés sans résultat. Ils sont listés pour que le total soit juste, et peuvent être répartis comme toute autre étape."
+
+#: app/reports/sample-ageing.php
+msgid "This status does not match the stage. The dates or result of the sample place it here, so the status was probably not updated."
+msgstr "Ce statut ne correspond pas à l'étape. Les dates ou le résultat de l'échantillon le placent ici, le statut n'a donc probablement pas été mis à jour."
