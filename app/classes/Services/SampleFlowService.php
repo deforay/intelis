@@ -125,7 +125,7 @@ final class SampleFlowService
      * Throws if the test type is not in the registry, so a request value can
      * never reach a query as a table name.
      *
-     * @return array{testKey: string, startDate: string, endDate: string, labId: int, partnerId: int}
+     * @return array{testKey: string, startDate: string, endDate: string, labId: int, partnerId: int, statusId: int}
      */
     public function resolveFilters(array $input): array
     {
@@ -141,6 +141,9 @@ final class SampleFlowService
             'endDate' => (string) $endDate,
             'labId' => (int) ($input['labId'] ?? 0),
             'partnerId' => (int) ($input['partnerId'] ?? 0),
+            // Narrows the sample listing to one status; 0 lists every status
+            // and -1 lists the samples with no status set. The counts ignore it.
+            'statusId' => max(-1, (int) ($input['statusId'] ?? 0)),
         ];
     }
 
@@ -555,6 +558,13 @@ final class SampleFlowService
             }
             [$from, $to] = self::AGE_BUCKETS[$bucket];
             $where[] = $to === null ? "placed.age >= $from" : "placed.age BETWEEN $from AND $to";
+        }
+
+        $statusId = (int) ($f['statusId'] ?? 0);
+        if ($statusId > 0) {
+            $where[] = "placed.result_status = $statusId";
+        } elseif ($statusId === -1) {
+            $where[] = "IFNULL(placed.result_status, 0) = 0";
         }
 
         $search = trim($search);

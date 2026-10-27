@@ -258,11 +258,34 @@ $exitLabels = [
         display: none;
     }
 
+    #sampleFlow .sf-status-chip {
+        cursor: pointer;
+        font: inherit;
+        font-size: 12px;
+    }
+
+    #sampleFlow .sf-status-chip:hover,
+    #sampleFlow .sf-status-chip:focus-visible {
+        border-color: #3c8dbc;
+        color: #1f5f8b;
+    }
+
+    #sampleFlow .sf-status-chip.is-active {
+        background-color: #3c8dbc;
+        border-color: #3c8dbc;
+        color: #fff;
+    }
+
     #sampleFlow .sf-chip.is-mismatch {
         color: #8a5300;
         background-color: #fff4e0;
         border-color: #f0d29a;
-        cursor: help;
+    }
+
+    #sampleFlow .sf-chip.is-mismatch.is-active {
+        background-color: #b26a00;
+        border-color: #b26a00;
+        color: #fff;
     }
 
     #sampleFlow .sf-statuses-label {
@@ -859,6 +882,8 @@ $exitLabels = [
         testingLab: "<?= _jsTranslate('Testing lab: %s'); ?>",
         onSite: "<?= _jsTranslate('tests on site'); ?>",
         statusInApp: "<?= _jsTranslate('Status in the app'); ?>",
+        listStatus: "<?= _jsTranslate('Click to list the samples with this status'); ?>",
+        withStatus: "<?= _jsTranslate('Status: %s'); ?>",
         statusMismatch: "<?= _jsTranslate('This status does not match the stage. The dates or result of the sample place it here, so the status was probably not updated.'); ?>",
         showingOf: "<?= _jsTranslate('Showing %s of %s'); ?>",
         noMatch: "<?= _jsTranslate('No rows match the search'); ?>",
@@ -891,8 +916,11 @@ $exitLabels = [
         $('#sfProgress').toggleClass('is-active', sfPending > 0);
     }
 
+    // Safe in HTML text and in a quoted attribute alike: .html() leaves quotes
+    // as they are, which would end an attribute value early.
     function esc(value) {
-        return $('<div>').text(value === null || value === undefined ? '' : String(value)).html();
+        return $('<div>').text(value === null || value === undefined ? '' : String(value)).html()
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
     function sfFilters() {
@@ -1025,10 +1053,12 @@ $exitLabels = [
         var expected = SF_EXPECTED_STATUSES[sfStage] || [];
         var chips = statuses.map(function (status) {
             var mismatch = expected.indexOf(status.id) === -1;
-            return '<span class="sf-chip' + (mismatch ? ' is-mismatch' : '') + '"'
-                + (mismatch ? ' title="' + esc(SF_LABELS.statusMismatch) + '"' : '') + '>'
+            var title = SF_LABELS.listStatus + (mismatch ? '\n' + SF_LABELS.statusMismatch : '');
+            return '<button type="button" class="sf-chip sf-status-chip' + (mismatch ? ' is-mismatch' : '') + '"'
+                + ' data-status="' + (status.id > 0 ? status.id : -1) + '" data-name="' + esc(status.name) + '"'
+                + ' title="' + esc(title) + '">'
                 + (mismatch ? '<em class="fa-solid fa-triangle-exclamation" aria-hidden="true"></em> ' : '')
-                + esc(status.name) + ' <strong>' + status.total.toLocaleString() + '</strong></span>';
+                + esc(status.name) + ' <strong>' + status.total.toLocaleString() + '</strong></button>';
         }).join('');
         $('#sfStageStatuses').html(statuses.length === 0 ? ''
             : '<span class="sf-statuses-label">' + esc(SF_LABELS.statusInApp) + ':</span>' + chips);
@@ -1143,15 +1173,20 @@ $exitLabels = [
 
     // The samples behind one count: an empty key lists the whole stage, a key
     // narrows to one breakdown row.
-    function sfDrill(groupKey, label) {
+    function sfDrill(groupKey, label, statusId, statusName) {
         if (!sfStage) { return; }
         sfDrillSel = {
             stage: sfStage,
             groupBy: groupKey === '' && label === '' ? '' : sfGroup,
             groupKey: groupKey,
             bucket: '',
-            label: label
+            label: label,
+            statusId: statusId || 0
         };
+        $('#sfStageStatuses .sf-status-chip').removeClass('is-active');
+        if (statusId) {
+            $('#sfStageStatuses .sf-status-chip[data-status="' + statusId + '"]').addClass('is-active');
+        }
         sfMarkDrillCell();
 
         var stageLabel = SF_STAGE_LABELS[sfStage] || sfStage;
@@ -1159,6 +1194,9 @@ $exitLabels = [
         var subtitle = label !== ''
             ? (SF_GROUP_LABELS[sfDrillSel.groupBy] || '') + ': ' + label
             : SF_LABELS.wholeStage.replace('%s', stageLabel.toLowerCase());
+        if (statusId) {
+            subtitle += ' · ' + SF_LABELS.withStatus.replace('%s', statusName);
+        }
         var instruments = label !== '' ? sfInstrumentsFor(groupKey) : '';
         if (instruments !== '') {
             subtitle += ' · ' + SF_LABELS.instruments.replace('%s', instruments);
@@ -1184,6 +1222,7 @@ $exitLabels = [
         sfDrillSel = null;
         $('#sfSamples').hide();
         $('#sfTable tr.sf-drill-row').removeClass('is-active');
+        $('#sfStageStatuses .sf-status-chip').removeClass('is-active');
     }
 
     function sfDrillParams() {
@@ -1191,7 +1230,8 @@ $exitLabels = [
             stage: sfDrillSel.stage,
             groupBy: sfDrillSel.groupBy,
             groupKey: sfDrillSel.groupKey,
-            bucket: sfDrillSel.bucket
+            bucket: sfDrillSel.bucket,
+            statusId: sfDrillSel.statusId || 0
         });
     }
 
@@ -1295,6 +1335,11 @@ $exitLabels = [
         }
         $('#testType').on('change', function () {
             sfApplyFilters();
+        });
+
+        // A status chip lists the samples of the stage that carry that status.
+        $('#sfStageStatuses').on('click', '.sf-status-chip', function () {
+            sfDrill('', '', parseInt($(this).attr('data-status'), 10), $(this).attr('data-name'));
         });
 
         // Rows act as buttons, so the keyboard opens them too.
