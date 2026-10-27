@@ -19,6 +19,7 @@ use const COUNTRY\SOUTH_SUDAN;
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\CANCELLED;
+use const SAMPLE_STATUS\EXPIRED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\NO_RESULT;
 use const SAMPLE_STATUS\TEST_FAILED;
@@ -469,14 +470,15 @@ final class VlService extends AbstractTestService
      * Whether a listing row can be rejected from the Reject Sample dialog.
      *
      * Only a sample with no result yet qualifies. A sample that carries a result is
-     * rejected from its result screen, where the result change is recorded.
+     * rejected from its result screen, where the result change is recorded. A
+     * cancelled or expired sample is not rejected, and a locked one only by an admin.
      *
      * @param array<string, mixed> $row form_vl columns: result, result_status, locked
      */
     public static function isRejectableFromListing(array $row, bool $isLis, bool $canEditLocked): bool
     {
         $status = (int) ($row['result_status'] ?? 0);
-        return !in_array($status, [REJECTED, CANCELLED], true)
+        return !in_array($status, [REJECTED, CANCELLED, EXPIRED], true)
             && !($isLis && $status === RECEIVED_AT_CLINIC)
             && trim((string) ($row['result'] ?? '')) === ''
             && (($row['locked'] ?? null) !== 'yes' || $canEditLocked);

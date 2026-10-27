@@ -8,6 +8,7 @@
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\REJECTED;
 use App\Services\VlService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -25,6 +26,9 @@ try {
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
 
+    /** @var UsersService $usersService */
+    $usersService = ContainerRegistry::get(UsersService::class);
+
     /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
@@ -34,9 +38,11 @@ try {
     $reasonId = 0;
     $rejectedOn = $approvedOn = $approvedBy = null;
     // Why the posted rejection cannot be saved, or null when it can
+    $db->beginTransaction();
     $refusal = (static function () use (
         $db,
         $general,
+        $usersService,
         $vlSampleId,
         &$row,
         &$reasonId,
@@ -49,9 +55,16 @@ try {
             return _translate("You do not have permission to reject samples");
         }
 
+        // Another lab's sample reads as not found. The row stays locked until the
+        // write below, so a result saved meanwhile cannot be overwritten.
+        $labScope = $general->labScopeWhere('vl');
         if ($vlSampleId > 0) {
-            $db->where('vl_sample_id', $vlSampleId);
-            $row = $db->getOne('form_vl');
+            $row = $db->rawQueryOne(
+                "SELECT * FROM form_vl AS vl WHERE vl.vl_sample_id = ?"
+                    . ($labScope !== '' ? " AND $labScope" : '')
+                    . " FOR UPDATE",
+                [$vlSampleId]
+            );
         }
         if (empty($row)) {
             return _translate("Sample not found");
@@ -85,6 +98,10 @@ try {
         if (empty($rejectedOn) || empty($approvedOn) || empty($approvedBy)) {
             return _translate("Please enter the rejection date, approved by and approved on");
         }
+        // The same lab-scoped list the dialog offers
+        if (!array_key_exists((string) $approvedBy, $usersService->getActiveLabScopedUsers())) {
+            return _translate("Please choose who approved the rejection");
+        }
         $today = date('Y-m-d');
         if ($rejectedOn > $today || substr($approvedOn, 0, 10) > $today) {
             return _translate("Dates cannot be in the future");
@@ -101,6 +118,7 @@ try {
     })();
 
     if ($refusal !== null) {
+        $db->rollbackTransaction();
         echo json_encode(['status' => 'error', 'message' => $refusal]);
         return;
     }
@@ -121,6 +139,21 @@ try {
         'last_modified_by' => $userId,
         'last_modified_datetime' => $now,
         'data_sync' => 0,
+        // A rejected sample is not tested, so nothing about a test or result stays
+        'result' => null,
+        'result_value_log' => null,
+        'result_value_absolute' => null,
+        'result_value_absolute_decimal' => null,
+        'result_value_text' => null,
+        'result_value_hiv_detection' => null,
+        'reason_for_failure' => null,
+        'sample_tested_datetime' => null,
+        'tested_by' => null,
+        'vl_test_platform' => null,
+        'instrument_id' => null,
+        'result_reviewed_by' => null,
+        'result_reviewed_datetime' => null,
+        'result_dispatched_datetime' => null,
     ];
     // Optional: a blank box keeps whatever comment the sample already had
     if (!empty($_POST['labComments'])) {
@@ -133,9 +166,11 @@ try {
 
     $db->where('vl_sample_id', $vlSampleId);
     if (!$db->update('form_vl', $data)) {
+        $db->rollbackTransaction();
         echo json_encode(['status' => 'error', 'message' => _translate("Please try again later")]);
         return;
     }
+    $db->commitTransaction();
 
     $sampleCode = $row['sample_code'] ?: $row['remote_sample_code'];
     $general->activityLog(
@@ -149,5 +184,8 @@ try {
         'message' => _translate("Sample rejected") . ' : ' . $sampleCode,
     ]);
 } catch (Throwable $e) {
+    if (isset($db) && $db->isTransactionActive()) {
+        $db->rollbackTransaction();
+    }
     throw new SystemException($e->getMessage(), 500, $e);
 }

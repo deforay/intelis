@@ -246,6 +246,49 @@ final class UsersService
         return $this->getAllUsers($facilityMap, 'active', null, $updatedDateTime);
     }
 
+    /**
+     * Active users the current session may name as a signer, as user_id => user_name.
+     *
+     * Applies the lab axis (labAdminScopeWhere on testing_lab_id) as well as the
+     * session's facility map, so a cloud-LIS operator never sees another lab's users.
+     *
+     * @return array<string, string>
+     */
+    public function getActiveLabScopedUsers(): array
+    {
+        $sql = "SELECT DISTINCT u.user_id, u.user_name FROM user_details u";
+        $params = [];
+        $where = ["u.status = 'active'"];
+
+        $facilityMap = $_SESSION['facilityMap'] ?? null;
+        if (!empty($facilityMap)) {
+            $facilityIds = array_values(array_filter(array_map(
+                'intval',
+                is_array($facilityMap) ? $facilityMap : explode(',', (string) $facilityMap)
+            )));
+            if ($facilityIds !== []) {
+                $sql .= " INNER JOIN user_facility_map map ON map.user_id = u.user_id";
+                $where[] = 'map.facility_id IN (' . implode(',', array_fill(0, count($facilityIds), '?')) . ')';
+                $params = $facilityIds;
+            }
+        }
+
+        $labScope = $this->commonService->labAdminScopeWhere('testing_lab_id', 'u');
+        if ($labScope !== '') {
+            $where[] = $labScope;
+        }
+
+        $rows = $this->db->rawQuery(
+            "$sql WHERE " . implode(' AND ', $where) . " ORDER BY u.user_name ASC",
+            $params
+        );
+        $users = [];
+        foreach ($rows as $row) {
+            $users[(string) $row['user_id']] = (string) $row['user_name'];
+        }
+        return $users;
+    }
+
     public function getUserName($userId)
     {
         if (empty($userId) || $userId == '') {
