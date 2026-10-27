@@ -365,6 +365,26 @@ final class SampleFlowEndpointTest extends TestCase
         self::assertSame(3, $json['iTotalRecords'], json_encode($json));
     }
 
+    /** A status chip lists only the samples of the stage that carry that status. */
+    #[RunInSeparateProcess]
+    public function testTheStatusFilterNarrowsTheListingToOneStatus(): void
+    {
+        $json = $this->drive([
+            'section' => 'samples', 'testType' => 'eid', 'dateRange' => '',
+            'stage' => 'atLab', 'groupBy' => '', 'groupKey' => '', 'bucket' => '', 'statusId' => 5,
+            'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sEcho' => 1,
+        ]);
+        self::assertSame(1, $json['iTotalRecords'], 'only the failed one of the two at the lab');
+        self::assertSame('S000004', $json['aaData'][0][0], 'the failed sample');
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheStatusFilterLeavesTheStageCountsAlone(): void
+    {
+        $json = $this->drive(['section' => 'flow', 'testType' => 'eid', 'dateRange' => '', 'statusId' => 5]);
+        self::assertSame(2, $json['flow']['atLab']['total'], 'the counts never take the listing filter');
+    }
+
     #[RunInSeparateProcess]
     public function testTheLabFilterNarrowsEveryStage(): void
     {

@@ -37260,3 +37260,11 @@ msgstr "Les échantillons rejetés, expirés, perdus et annulés sont clôturés
 #: app/reports/sample-ageing.php
 msgid "This status does not match the stage. The dates or result of the sample place it here, so the status was probably not updated."
 msgstr "Ce statut ne correspond pas à l'étape. Les dates ou le résultat de l'échantillon le placent ici, le statut n'a donc probablement pas été mis à jour."
+
+#: app/reports/sample-ageing.php
+msgid "Click to list the samples with this status"
+msgstr "Cliquez pour lister les échantillons ayant ce statut"
+
+#: app/reports/sample-ageing.php
+msgid "Status: %s"
+msgstr "Statut : %s"
