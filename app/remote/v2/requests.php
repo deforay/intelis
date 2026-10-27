@@ -13,6 +13,7 @@ use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Services\STS\TokensService;
 use App\Registries\ContainerRegistry;
+use App\HttpHandlers\LegacyRequestHandler;
 use App\Services\STS\RequestsService;
 
 header('Content-Type: application/json');
@@ -39,6 +40,9 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $payload = [];
 $procStart = microtime(true);
+// The whole-window answer, written to a file (see below).
+$bodyFile = null;
+$body = null;
 
 try {
     $db->beginTransaction();
@@ -97,38 +101,61 @@ try {
 
     $facilityMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
-    $requestsData = $stsRequestsService->getRequests(
-        $testType,
-        $labId,
-        $facilityMapResult ?? [],
-        $manifestCode,
-        $syncSinceDate,
-        $wantsReceipts,
-        $pendingOnly,
-        $page
-    );
+    // The fields around "requests", in the order the lab has always had them.
+    $head = ['status' => 'success'];
+    $tail = ['testType' => $testType, 'labId' => $labId, 'syncSinceDate' => $syncSinceDate];
+
+    if ($page === null) {
+        // The whole window, which every lab that does not page asks for. It is
+        // written to a file as it is read, never held: one lab's window of 31,000
+        // rows ran this STS out of memory, and the lab got a 500 on every pull.
+        // The same bytes as before, so a lab of any version reads them unchanged.
+        $bodyFile = tempnam(sys_get_temp_dir(), 'sts-requests-');
+        $body = $bodyFile === false ? false : fopen($bodyFile, 'w+b');
+        if ($body === false) {
+            throw new SystemException('Could not open a file for the requests answer', 500);
+        }
+        RequestsService::write($body, substr((string) JsonUtility::encodeUtf8Json($head), 0, -1) . ',"requests":');
+        $requestsData = $stsRequestsService->writeRequests(
+            $body,
+            $testType,
+            $labId,
+            $facilityMapResult ?? [],
+            $manifestCode,
+            $syncSinceDate,
+            $wantsReceipts,
+            $pendingOnly
+        );
+        RequestsService::write($body, ',' . substr((string) JsonUtility::encodeUtf8Json($tail), 1));
+        $requestCount = $requestsData['count'];
+        $payload = null;
+    } else {
+        $requestsData = $stsRequestsService->getRequests(
+            $testType,
+            $labId,
+            $facilityMapResult ?? [],
+            $manifestCode,
+            $syncSinceDate,
+            $wantsReceipts,
+            $pendingOnly,
+            $page
+        );
+        $requestCount = count($requestsData['requests'] ?? []);
+        $payload = $head + ['requests' => $requestsData['requests'] ?? []] + $tail
+            // Fields an older lab never reads: this is one page, and where the next starts.
+            + RequestsService::pagingFields($requestsData);
+    }
     // Only when the pending rows could be read; otherwise this pull is the plain
     // window and the lab is not told to send a receipt.
     $receiptsEnabled = $requestsData['receiptsEnabled'] ?? false;
 
     $sampleIds   = $requestsData['sampleIds'] ?? [];
     $facilityIds = $requestsData['facilityIds'] ?? [];
-    $requests    = $requestsData['requests'] ?? [];
-
-    $payload = [
-        'status'        => 'success',
-        'requests'      => $requests,
-        'testType'      => $testType,
-        'labId'         => $labId,
-        'syncSinceDate' => $syncSinceDate,
-    ];
-    // Fields an older lab never reads: this is one page, and where the next starts.
-    $payload += RequestsService::pagingFields($requestsData);
 
     $general->addApiTracking(
         $transactionId,
         'system',
-        count($requests),
+        $requestCount,
         'requests',
         $testType,
         $_SERVER['REQUEST_URI'] ?? null,
@@ -138,7 +165,9 @@ try {
         $labId,
         null,
         $authToken,
-        emptyPoll: count($requests) === 0
+        emptyPoll: $requestCount === 0,
+        // Request rows hold no secret, so the file is kept as it is.
+        responseFile: $bodyFile
     );
 
     if ($facilityIds) {
@@ -203,7 +232,20 @@ try {
         $responseHeaders['x-pending-remaining'] = (int) ($requestsData['pendingRemaining'] ?? 0);
     }
 
-    echo ApiService::generateJsonResponse($payload, $request, $responseHeaders);
+    if ($body === null) {
+        echo ApiService::generateJsonResponse($payload, $request, $responseHeaders);
+    } else {
+        // The file is the response body: printing it would put the whole answer
+        // in the page buffer. The emitter copies it out a piece at a time, after
+        // the middleware has added its headers. Every database write is
+        // committed above, so from the first byte on only the copy is left.
+        ApiService::sendJsonHeaders($request, $responseHeaders);
+        rewind($body);
+        AppRegistry::set(LegacyRequestHandler::RESPONSE_BODY_FILE, $body);
+        // The response owns the handle now. The name can go: the open handle
+        // keeps the file readable until the emitter has copied it.
+        $body = null;
+    }
 } catch (Throwable $e) {
     $db->rollbackTransaction();
 
@@ -219,4 +261,11 @@ try {
 
     // Re-throw so ErrorResponseGenerator builds the error JSON + status code
     throw new SystemException($e->getMessage(), ($e->getCode() ?: 500), $e);
+} finally {
+    if (is_resource($body)) {
+        fclose($body);
+    }
+    if (is_string($bodyFile)) {
+        @unlink($bodyFile);
+    }
 }

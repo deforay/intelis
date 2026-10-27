@@ -1634,7 +1634,12 @@ final class CommonService
      * data; 'all' records everything, for debugging a single server; 'off' keeps
      * rows but never writes bodies.
      */
-    public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null, $apiToken = null, bool $emptyPoll = false, bool $keepRow = false)
+    /**
+     * @param string|null $responseFile the response body already written to a file, kept
+     *     in place of $responseData when the body is too big to hold in memory. It is
+     *     compressed as it is, without redaction: pass only bodies that hold no secret.
+     */
+    public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null, $apiToken = null, bool $emptyPoll = false, bool $keepRow = false, ?string $responseFile = null)
     {
         $bodiesMode = $this->getApiTrackingBodiesMode();
         $captureAll = $bodiesMode === 'all';
@@ -1658,6 +1663,12 @@ final class CommonService
                     // root-owned day folder once dropped every web call's row
                     // for a month on an STS.
                     try {
+                        if ($folder === 'responses' && $responseFile !== null) {
+                            $dir = ApiTrackingStorageUtility::ensureDayDirectory($folder, $requestedOn);
+                            $file = ArchiveUtility::compressFile($responseFile, "$dir/$transactionId.json");
+                            @chmod($file, 0640);
+                            continue;
+                        }
                         $json = JsonUtility::encodeUtf8Json(ApiTrackingStorageUtility::redactSecrets($body ?? '{}'));
                         if (self::isEmptyTrackingBody($json)) {
                             continue;

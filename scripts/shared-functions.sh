@@ -2462,6 +2462,13 @@ configure_php_ini() {
     # and other hardened kernels refuse. Disabling avoids "Allocation of JIT
     # memory failed" fatals from RegexIterator / preg_* at request time.
     local desired_pcre_jit="pcre.jit=0"
+    # remote/v2/requests.php sends a lab's whole request window by copying it to
+    # the output a piece at a time, so memory stays flat however big the window
+    # is. An unlimited output buffer (output_buffering = On) or PHP's own
+    # compression would hold the whole answer in memory again, and a big window
+    # would run the STS out of memory, as it did before the copy was streamed.
+    local desired_output_buffering="output_buffering = 4096"
+    local desired_zlib_compression="zlib.output_compression = Off"
 
     # Inner function to update a single PHP ini file
     _update_php_ini_file() {
@@ -2477,7 +2484,7 @@ configure_php_ini() {
         local er_set de_set le_set pms_set umf_set ml_set sm_set sid_len_set sid_bits_set gc_maxlifetime_set expose_set
         local opcache_enable_set opcache_enable_cli_set opcache_memory_set opcache_max_files_set
         local opcache_validate_set opcache_revalidate_freq_set opcache_save_comments_set opcache_jit_set opcache_interned_set opcache_override_set
-        local pcre_jit_set
+        local pcre_jit_set ob_set zlib_set
 
         er_set=$(grep -q "^${desired_error_reporting}$" "$ini_file" && echo true || echo false)
         de_set=$(grep -q "^${desired_display_errors}$" "$ini_file" && echo true || echo false)
@@ -2501,6 +2508,8 @@ configure_php_ini() {
         opcache_interned_set=$(grep -q "^${desired_opcache_interned}$" "$ini_file" && echo true || echo false)
         opcache_override_set=$(grep -q "^${desired_opcache_override}$" "$ini_file" && echo true || echo false)
         pcre_jit_set=$(grep -q "^${desired_pcre_jit}$" "$ini_file" && echo true || echo false)
+        ob_set=$(grep -q "^${desired_output_buffering}$" "$ini_file" && echo true || echo false)
+        zlib_set=$(grep -q "^${desired_zlib_compression}$" "$ini_file" && echo true || echo false)
 
         # If ANY are missing, we need to rewrite
         if [ "$er_set" = false ] || [ "$de_set" = false ] || [ "$le_set" = false ] || [ "$pms_set" = false ] || [ "$umf_set" = false ] || [ "$ml_set" = false ] || [ "$sm_set" = false ] \
@@ -2509,7 +2518,7 @@ configure_php_ini() {
             || [ "$opcache_enable_set" = false ] || [ "$opcache_enable_cli_set" = false ] || [ "$opcache_memory_set" = false ] \
             || [ "$opcache_max_files_set" = false ] || [ "$opcache_validate_set" = false ] || [ "$opcache_revalidate_freq_set" = false ] || [ "$opcache_save_comments_set" = false ] || [ "$opcache_jit_set" = false ] \
             || [ "$opcache_interned_set" = false ] || [ "$opcache_override_set" = false ] \
-            || [ "$pcre_jit_set" = false ]; then
+            || [ "$pcre_jit_set" = false ] || [ "$ob_set" = false ] || [ "$zlib_set" = false ]; then
             changes_needed=true
             cp "$ini_file" "$backup_file"
             print info "Changes needed. Backup created at $backup_file"
@@ -2565,6 +2574,10 @@ configure_php_ini() {
                     echo ";$line" >>"$temp_file"; echo "$desired_opcache_override" >>"$temp_file"; opcache_override_set=true
                 elif [[ "$line" =~ ^[[:space:]]*pcre\.jit[[:space:]]*= ]] && [ "$pcre_jit_set" = false ]; then
                     echo ";$line" >>"$temp_file"; echo "$desired_pcre_jit" >>"$temp_file"; pcre_jit_set=true
+                elif [[ "$line" =~ ^[[:space:]]*output_buffering[[:space:]]*= ]] && [ "$ob_set" = false ]; then
+                    echo ";$line" >>"$temp_file"; echo "$desired_output_buffering" >>"$temp_file"; ob_set=true
+                elif [[ "$line" =~ ^[[:space:]]*zlib\.output_compression[[:space:]]*= ]] && [ "$zlib_set" = false ]; then
+                    echo ";$line" >>"$temp_file"; echo "$desired_zlib_compression" >>"$temp_file"; zlib_set=true
                 else
                     echo "$line" >>"$temp_file"
                 fi
@@ -2593,6 +2606,8 @@ configure_php_ini() {
             [ "$opcache_interned_set" = true ] || echo "$desired_opcache_interned" >>"$temp_file"
             [ "$opcache_override_set" = true ] || echo "$desired_opcache_override" >>"$temp_file"
             [ "$pcre_jit_set" = true ] || echo "$desired_pcre_jit" >>"$temp_file"
+            [ "$ob_set" = true ] || echo "$desired_output_buffering" >>"$temp_file"
+            [ "$zlib_set" = true ] || echo "$desired_zlib_compression" >>"$temp_file"
 
             # mktemp creates its file 0600 root:root, and mv carries those bits
             # onto the destination — so a plain mv here quietly turns a 0644

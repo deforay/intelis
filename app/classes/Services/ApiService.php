@@ -575,6 +575,14 @@ final class ApiService
             $jsonPayload = '{"error":"JSON encoding failed"}';
         }
 
+        self::sendJsonHeaders($request, $extraHeaders);
+
+        return $jsonPayload; // caller echoes
+    }
+
+    /** The headers of a JSON answer, for a caller that writes the body itself. */
+    public static function sendJsonHeaders(ServerRequestInterface $request, array $extraHeaders = []): void
+    {
         // Propagate request id for tracing
         $reqId = $request->getHeaderLine('X-Request-ID');
         if ($reqId !== '') {
@@ -591,8 +599,6 @@ final class ApiService
 
         header('Content-Type: application/json; charset=utf-8');
         header('Cache-Control: no-store');
-
-        return $jsonPayload; // caller echoes
     }
 
 

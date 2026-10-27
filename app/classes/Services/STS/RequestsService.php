@@ -11,8 +11,10 @@ use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use App\Utilities\JsonUtility;
 use App\Utilities\LoggerUtility;
 use App\Abstracts\AbstractTestService;
+use RuntimeException;
 use Throwable;
 
 final class RequestsService
@@ -84,22 +86,12 @@ final class RequestsService
             $withPending = false;
         }
 
-        $pendingIds = [];
-        $pendingRemaining = 0;
-        $receiptsEnabled = false;
-        if ($withPending && empty($manifestCode)) {
-            try {
-                [$pendingIds, $pendingRemaining] = $this->pendingRequestIds((int) $labId, $facilityMapResult);
-                $receiptsEnabled = true;
-            } catch (Throwable $e) {
-                LoggerUtility::logError('Could not read pending requests for lab receipts: ' . $e->getMessage(), [
-                    'exception_class' => $e::class,
-                    'lab' => $labId,
-                    'test_type' => $testType,
-                ]);
-                $this->db->reset();
-            }
-        }
+        [$pendingIds, $pendingRemaining, $receiptsEnabled] = $this->pendingFor(
+            $withPending,
+            $labId,
+            $facilityMapResult,
+            $manifestCode
+        );
 
         [$rResult, $resultCount] = $this->runQuery(
             $labId,
@@ -118,24 +110,8 @@ final class RequestsService
             $nextAfter = self::pageMarker($last['last_modified_datetime'] ?? null, $last[$this->primaryKeyName]);
             $resultCount = count($rResult);
         }
-        // Handle specific test types with additional logic
-        if ($testType === 'covid19') {
-            $requestData = $this->returnCovid19Requests($rResult, $resultCount);
-        } elseif ($testType === 'hepatitis') {
-            $requestData = $this->returnHepatitisRequests($rResult, $resultCount);
-        } elseif ($testType === 'tb') {
-            $requestData = $this->returnTbRequests($rResult, $resultCount);
-        } elseif ($testType === 'generic-tests') {
-            $this->commonService->updateNullColumnsWithDefaults($this->tableName, [
-                'is_result_mail_sent' => 'no',
-                'is_request_mail_sent' => 'no',
-                'is_result_sms_sent' => 'no'
-            ]);
-            $requestData = $this->returnCustomTestsRequests($rResult, $resultCount);
-        } else {
-            // Default for other test types
-            $requestData = $this->returnRequests($rResult, $resultCount);
-        }
+        $this->fillCustomTestsDefaults();
+        $requestData = $this->shapeRequests($rResult, $resultCount);
 
         if ($withPending) {
             $requestData['receiptsEnabled'] = $receiptsEnabled;
@@ -147,6 +123,173 @@ final class RequestsService
         }
 
         return $requestData;
+    }
+
+    /** Rows read per query when the whole window is written out. */
+    public const int WRITE_CHUNK = 500;
+
+    /**
+     * The whole window, as getRequests() returns it without a page, written to $out
+     * as the JSON value of "requests" instead of returned.
+     *
+     * getRequests() holds every row in memory, and a form_vl row carries about 250
+     * columns. A lab whose window held 31,000 rows (a results resend touches every
+     * row it sends) ran this STS out of its 512 MB, and the lab got a 500 on every
+     * pull until the window moved past them. Here the rows are read WRITE_CHUNK at
+     * a time, in primary key order, and encoded as they come, so memory stays flat.
+     *
+     * The bytes are the ones JsonUtility::encodeUtf8Json() makes of getRequests()'s
+     * "requests", so a lab of any version reads them as before. The order of the
+     * rows is the primary key's; a lab does not depend on it.
+     *
+     * @param resource $out
+     * @return array{count: int, sampleIds: list<int|string>, facilityIds: list<int|string>,
+     *     receiptsEnabled?: bool, pendingRemaining?: int}
+     */
+    public function writeRequests(
+        $out,
+        $testType,
+        $labId,
+        $facilityMapResult = [],
+        $manifestCode = null,
+        $syncSinceDate = null,
+        bool $withPending = false,
+        bool $pendingOnly = false,
+        int $chunkSize = self::WRITE_CHUNK
+    ): array {
+        $this->setTestType($testType);
+        [$pendingIds, $pendingRemaining, $receiptsEnabled] = $this->pendingFor(
+            $withPending,
+            $labId,
+            $facilityMapResult,
+            $manifestCode
+        );
+        [$sQuery, $params] = $this->windowQuery(
+            $labId,
+            $facilityMapResult,
+            $manifestCode,
+            $syncSinceDate,
+            $pendingIds,
+            withWindow: !($pendingOnly && $receiptsEnabled)
+        );
+        $pk = $this->primaryKeyName;
+        // TB, COVID-19, hepatitis and Custom Tests send an object keyed by id.
+        $keyed = in_array($testType, ['tb', 'covid19', 'hepatitis', 'generic-tests'], true);
+
+        $count = 0;
+        $sampleIds = [];
+        $facilityIds = [];
+        $after = null;
+        do {
+            $chunkQuery = $sQuery . ($after === null ? '' : " AND `$pk` > ?") . " ORDER BY `$pk` LIMIT $chunkSize";
+            $rows = $this->db->rawQuery($chunkQuery, $after === null ? $params : [...$params, $after]) ?: [];
+            if ($rows === []) {
+                break;
+            }
+            $after = $rows[count($rows) - 1][$pk];
+            $shaped = $this->shapeRequests($this->withoutInFlightMarker($rows), count($rows));
+            array_push($sampleIds, ...$shaped['sampleIds']);
+            array_push($facilityIds, ...$shaped['facilityIds']);
+            foreach ($shaped['requests'] as $id => $request) {
+                $json = JsonUtility::encodeUtf8Json($request);
+                if ($json === null) {
+                    throw new RuntimeException("Request $id could not be encoded as JSON");
+                }
+                $opening = $count === 0 ? ($keyed ? '{' : '[') : ',';
+                // json_encode, not encodeUtf8Json: that keeps a numeric string as a number.
+                $key = $keyed ? json_encode((string) $id) . ':' : '';
+                self::write($out, $opening . $key . $json);
+                $count++;
+            }
+        } while (count($rows) === $chunkSize);
+        // An empty array encodes as [] whichever shape it would have had.
+        self::write($out, $count === 0 ? '[]' : ($keyed ? '}' : ']'));
+
+        // After the rows are read, as getRequests() does: they are sent as they were.
+        $this->fillCustomTestsDefaults();
+
+        $written = [
+            'count' => $count,
+            'sampleIds' => array_values(array_unique($sampleIds)),
+            'facilityIds' => array_values(array_unique($facilityIds)),
+        ];
+        if ($withPending) {
+            $written['receiptsEnabled'] = $receiptsEnabled;
+            $written['pendingRemaining'] = $pendingRemaining;
+        }
+        return $written;
+    }
+
+    /**
+     * Writes all of $data or throws. A short write, from a full disk say, must stop
+     * the pull before its rows are marked as sent: the lab would get cut-off JSON
+     * while the STS recorded them as delivered.
+     *
+     * @param resource $out
+     */
+    public static function write($out, string $data): void
+    {
+        $length = strlen($data);
+        $written = 0;
+        while ($written < $length) {
+            $bytes = fwrite($out, $written === 0 ? $data : substr($data, $written));
+            if ($bytes === false || $bytes === 0) {
+                throw new RuntimeException('Could not write the requests answer to its file');
+            }
+            $written += $bytes;
+        }
+    }
+
+    /**
+     * The requests still waiting for a lab that asked for receipts.
+     *
+     * @return array{0: list<int|string>, 1: int, 2: bool} ids, how many more wait, and
+     *     whether they could be read (receipts work only then)
+     */
+    private function pendingFor(bool $withPending, $labId, $facilityMapResult, $manifestCode): array
+    {
+        if (!$withPending || !empty($manifestCode)) {
+            return [[], 0, false];
+        }
+        try {
+            [$pendingIds, $pendingRemaining] = $this->pendingRequestIds((int) $labId, $facilityMapResult);
+            return [$pendingIds, $pendingRemaining, true];
+        } catch (Throwable $e) {
+            LoggerUtility::logError('Could not read pending requests for lab receipts: ' . $e->getMessage(), [
+                'exception_class' => $e::class,
+                'lab' => $labId,
+                'test_type' => $this->testType,
+            ]);
+            $this->db->reset();
+            return [[], 0, false];
+        }
+    }
+
+    private function fillCustomTestsDefaults(): void
+    {
+        if ($this->testType === 'generic-tests') {
+            $this->commonService->updateNullColumnsWithDefaults($this->tableName, [
+                'is_result_mail_sent' => 'no',
+                'is_request_mail_sent' => 'no',
+                'is_result_sms_sent' => 'no'
+            ]);
+        }
+    }
+
+    /**
+     * Rows as the lab receives them, with the ids to mark as sent.
+     *
+     * @return array{sampleIds: list<int|string>, facilityIds: list<int|string>, requests: array<int|string, mixed>}
+     */
+    private function shapeRequests(array $rows, int $count): array
+    {
+        return match ($this->testType) {
+            'covid19' => $this->returnCovid19Requests($rows, $count),
+            'hepatitis' => $this->returnHepatitisRequests($rows, $count),
+            'tb' => $this->returnTbRequests($rows, $count),
+            'generic-tests' => $this->returnCustomTestsRequests($rows, $count),
+            default => $this->returnRequests($rows, $count),
+        };
     }
 
     /**
@@ -268,6 +411,66 @@ final class RequestsService
         bool $withWindow = true,
         ?array $page = null
     ): array {
+        [$sQuery, $params] = $this->windowQuery(
+            $labId,
+            $facilityMapResult,
+            $manifestCode,
+            $syncSinceDate,
+            $pendingIds,
+            $withWindow
+        );
+        if ($page !== null) {
+            $modified = "COALESCE(last_modified_datetime, '" . self::NO_MODIFIED . "')";
+            if ($page['after'] !== null) {
+                [$afterModified, $afterId] = explode('|', $page['after']);
+                $sQuery .= " AND ($modified > ? OR ($modified = ? AND `$this->primaryKeyName` > ?))";
+                array_push($params, $afterModified, $afterModified, (int) $afterId);
+            }
+            // One more than a page: whether another page follows.
+            $sQuery .= " ORDER BY $modified, `$this->primaryKeyName` LIMIT " . ($page['size'] + 1);
+        }
+
+        if ($page !== null) {
+            // A page needs no count of the whole window.
+            $rResult = $this->db->rawQuery($sQuery, $params) ?: [];
+            $resultCount = count($rResult);
+        } else {
+            [$rResult, $resultCount] = $this->db->getDataAndCount($sQuery, $params, returnGenerator: false);
+        }
+
+        return [$this->withoutInFlightMarker($rResult), $resultCount];
+    }
+
+    /**
+     * The in-flight marker is this STS's bookkeeping, not part of the request.
+     *
+     * @param list<array<string, mixed>> $rows
+     * @return list<array<string, mixed>>
+     */
+    private function withoutInFlightMarker(array $rows): array
+    {
+        foreach ($rows as &$row) {
+            if (isset($row['data_sync']) && (int) $row['data_sync'] === self::IN_FLIGHT) {
+                $row['data_sync'] = 0;
+            }
+        }
+        unset($row);
+        return $rows;
+    }
+
+    /**
+     * The SELECT for a lab's window and its waiting requests, before any paging.
+     *
+     * @return array{0: string, 1: list<mixed>}
+     */
+    private function windowQuery(
+        $labId,
+        $facilityMapResult,
+        $manifestCode,
+        $syncSinceDate,
+        array $pendingIds,
+        bool $withWindow
+    ): array {
         // Start with selecting all columns
         $columnSelection = "*";
 
@@ -306,35 +509,7 @@ final class RequestsService
             $params = [...$params, ...$pendingIds];
         }
 
-        $sQuery = "SELECT $columnSelection FROM $this->tableName WHERE ($condition)";
-        if ($page !== null) {
-            $modified = "COALESCE(last_modified_datetime, '" . self::NO_MODIFIED . "')";
-            if ($page['after'] !== null) {
-                [$afterModified, $afterId] = explode('|', $page['after']);
-                $sQuery .= " AND ($modified > ? OR ($modified = ? AND `$this->primaryKeyName` > ?))";
-                array_push($params, $afterModified, $afterModified, (int) $afterId);
-            }
-            // One more than a page: whether another page follows.
-            $sQuery .= " ORDER BY $modified, `$this->primaryKeyName` LIMIT " . ($page['size'] + 1);
-        }
-
-        if ($page !== null) {
-            // A page needs no count of the whole window.
-            $rResult = $this->db->rawQuery($sQuery, $params) ?: [];
-            $resultCount = count($rResult);
-        } else {
-            [$rResult, $resultCount] = $this->db->getDataAndCount($sQuery, $params, returnGenerator: false);
-        }
-
-        // The in-flight marker is this STS's bookkeeping, not part of the request.
-        foreach ($rResult as &$row) {
-            if (isset($row['data_sync']) && (int) $row['data_sync'] === self::IN_FLIGHT) {
-                $row['data_sync'] = 0;
-            }
-        }
-        unset($row);
-
-        return [$rResult, $resultCount];
+        return ["SELECT $columnSelection FROM $this->tableName WHERE ($condition)", $params];
     }
     /**
      * Build the WHERE clause the sync selects on, with its bound values.
