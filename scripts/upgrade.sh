@@ -2949,8 +2949,10 @@ if [ ${#failed_instances[@]} -gt 0 ]; then
     for p in "${failed_instances[@]}"; do
         printf '   \033[1;91m✗\033[0m %s: %s\n' "$p" "${instance_failure_reason[$p]:-see $log_file}"
         _failure_file="${p}/var/logs/migrate-last-failure.txt"
+        # Read as www-data, for the same reason the post-update log is: a root
+        # read would follow a symlink planted in var/logs onto the screen.
         if [ -s "$_failure_file" ]; then
-            sed 's/^/       /' "$_failure_file"
+            sudo -u www-data sed 's/^/       /' "$_failure_file"
         elif [ -n "${instance_failure_detail[$p]:-}" ]; then
             printf '%s\n' "${instance_failure_detail[$p]}" | sed 's/^/       /'
         fi
