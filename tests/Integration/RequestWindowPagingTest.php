@@ -217,6 +217,77 @@ final class RequestWindowPagingTest extends TestCase
         self::assertNull($body['nextAfter']);
     }
 
+    /** data_sync of each row of lab 7's window, by unique_id. */
+    private static function dataSync(): array
+    {
+        $rows = LegacyAppHarness::db()->rawQuery(
+            "SELECT unique_id, data_sync FROM form_vl WHERE lab_id = 7 AND vl_sample_id <= 23"
+        );
+        return array_map('intval', array_column($rows, 'data_sync', 'unique_id'));
+    }
+
+    /**
+     * A newer lab pages its scheduled window under "windowPage", with receipts. A
+     * page sent under "page" is marked sent at once, with no receipt, so a row the
+     * lab could not save was never sent again. An STS that does not know the key
+     * sends the whole window with receipts, as it always has.
+     */
+    #[RunInSeparateProcess]
+    public function testAWindowPageWithReceiptsWaitsForTheLabsReceipt(): void
+    {
+        $this->boot();
+        $migration = (string) file_get_contents(ROOT_PATH . '/sys/migrations/5.7.75.sql');
+        preg_match('/^CREATE TABLE IF NOT EXISTS `request_sync_failures` \(.*?^\) ENGINE=[^;]*;/ms', $migration, $sql);
+        LegacyAppHarness::db()->rawQuery($sql[0]);
+
+        $body = json_decode((string) self::post([
+            'labId' => 7, 'testType' => 'vl', 'syncSinceDate' => self::SINCE, 'receipts' => 1,
+            'windowPage' => ['size' => 5],
+        ])->getBody(), true);
+
+        $sent = array_column($body['requests'], 'unique_id');
+        self::assertCount(5, $sent, 'one page, not the whole window');
+        self::assertTrue($body['paged']);
+        self::assertNotNull($body['nextAfter']);
+        // In flight is what x-request-receipts goes with: the lab sends a receipt.
+        // header() sends nothing under the CLI, so the rows are what is checked.
+        $sync = self::dataSync();
+        foreach ($sent as $uniqueId) {
+            self::assertSame(RequestsService::IN_FLIGHT, $sync[$uniqueId], 'sent, waiting for the receipt');
+        }
+        self::assertSame(18, count(array_filter($sync, static fn(int $s): bool => $s === 0)), 'the rest untouched');
+    }
+
+    #[RunInSeparateProcess]
+    public function testAWindowPageWithoutReceiptsGetsTheWholeWindowAsBefore(): void
+    {
+        $this->boot();
+
+        $body = json_decode((string) self::post([
+            'labId' => 7, 'testType' => 'vl', 'syncSinceDate' => self::SINCE, 'windowPage' => ['size' => 5],
+        ])->getBody(), true);
+
+        self::assertEqualsCanonicalizing(self::windowIds(), array_column($body['requests'], 'unique_id'));
+        self::assertArrayNotHasKey('paged', $body);
+        self::assertSame([1], array_values(array_unique(self::dataSync())), 'marked sent, as without receipts');
+    }
+
+    #[RunInSeparateProcess]
+    public function testAWindowPageIsSentWithoutReceiptsWhenTheStsCannotTakeThem(): void
+    {
+        // No request_sync_failures table: a receipt could not be recorded.
+        $this->boot();
+
+        $body = json_decode((string) self::post([
+            'labId' => 7, 'testType' => 'vl', 'syncSinceDate' => self::SINCE, 'receipts' => 1,
+            'windowPage' => ['size' => 5],
+        ])->getBody(), true);
+
+        self::assertCount(5, $body['requests']);
+        self::assertSame(5, count(array_filter(self::dataSync(), static fn(int $s): bool => $s === 1)), 'marked sent');
+        self::assertNotContains(RequestsService::IN_FLIGHT, self::dataSync(), 'no receipt can come for it');
+    }
+
     /** @return iterable<string, array{?array<string, mixed>}> */
     public static function noUsablePage(): iterable
     {

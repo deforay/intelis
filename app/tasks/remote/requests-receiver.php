@@ -343,18 +343,39 @@ $apiService->setBearerToken($stsBearerToken);
 // Define per-module config
 $moduleConfigs = LabRequestSyncService::moduleConfigs();
 
-// A window someone asked for (a number of days, a date, a manifest) comes a page
-// at a time from an STS that pages, saved page by page, and resumes where it
-// stopped when run again. One response for a big window outlasted the request
-// timeout and saved nothing. The scheduled pull stays as it was.
-$pagedWindow = $cliMode && ($syncSinceDate !== null || !empty($manifestCode));
+// From the command line a window comes a page at a time from an STS that pages,
+// saved page by page, and resumes where it stopped when run again. One response
+// for a big window outlasted the request timeout and saved nothing.
+//
+// A window someone asked for (a number of days, a date, a manifest) is paged to
+// its end. The scheduled pull first pulls the requests waiting for this lab, with
+// receipts, then pages the window, with receipts, while the run has time. One
+// lab's window of 31,000 rows failed on every run. While its window is unfinished,
+// its start is held, and the next run carries on from the page it reached.
+//
+// The sync button (a web run) pulls once, as does a dry run of the scheduled pull.
+$scheduledPull = $cliMode && $syncSinceDate === null && empty($manifestCode);
+$firstPhase = match (true) {
+    !$cliMode, $scheduledPull && $isDryRun => 'plain',
+    $scheduledPull => LabRequestSyncService::NEXT_WAITING,
+    default => LabRequestSyncService::NEXT_PAGES,
+};
 $pageCursor = new RequestPageCursor(
-    $pagedWindow && !$isDryRun ? VAR_PATH . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'request-pages.json' : null
+    $cliMode && !$isDryRun
+        ? VAR_PATH . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'request-pages.json'
+        : null
 );
 $pageKeys = [];
+$phases = [];
+$announced = [];
+if ($firstPhase === LabRequestSyncService::NEXT_WAITING) {
+    foreach ($moduleSyncSinceDates as $module => $since) {
+        $moduleSyncSinceDates[$module] = $pageCursor->heldStart((string) $module) ?? $since;
+    }
+}
 
 /**
- * No new pull for waiting requests starts after this. Cron runs the receiver
+ * No new pull of the scheduled pull starts after this. Cron runs the receiver
  * through `composer run sync-sts`, and composer stops a script after 300 seconds
  * (its process-timeout) and skips the rest of the chain, so this leaves the last
  * pull time to finish inside that.
@@ -398,13 +419,16 @@ do {
         }
         if ($status === true) {
             $basePayload['testType'] = $module;
+            $phase = $phases[$module] ??= $firstPhase;
             // Ask the STS for receipts: an older STS ignores the key. Not for a
-            // manifest pull, a dry run or a paged window, which confirm nothing.
-            if (!$isDryRun && empty($manifestCode) && !$pagedWindow) {
+            // manifest pull, a dry run or a window someone asked for, which
+            // confirm nothing.
+            $confirms = $phase !== LabRequestSyncService::NEXT_PAGES || $scheduledPull;
+            if (!$isDryRun && empty($manifestCode) && $confirms) {
                 $basePayload['receipts'] = 1;
-                // Pulling again: this run has the window already. An older STS
-                // ignores the key and sends the window again, which is harmless.
-                if ($pullModules !== null) {
+                // Pulling again, or the waiting requests alone. An older STS
+                // ignores the key and sends the window, which is harmless.
+                if ($phase === LabRequestSyncService::NEXT_WAITING || ($phase === 'plain' && $pullModules !== null)) {
                     $basePayload['pendingOnly'] = 1;
                 }
             }
@@ -414,23 +438,37 @@ do {
             $effectiveSyncSinceDate = $syncSinceDate ?? ($moduleSyncSinceDates[$module] ?? null);
             if (!empty($effectiveSyncSinceDate)) {
                 $basePayload['syncSinceDate'] = $effectiveSyncSinceDate;
-                if ($cliMode && $syncSinceDate === null && isset($moduleSyncSinceDates[$module])) {
+                // Once a run: the start does not move between its pulls.
+                $scheduledStart = $cliMode && $syncSinceDate === null && isset($moduleSyncSinceDates[$module]);
+                if ($scheduledStart && !isset($announced[$module])) {
+                    $announced[$module] = true;
                     $io->text(TestsService::getTestName((string) $module)
                         . ": checking for new or updated requests since $effectiveSyncSinceDate");
                 }
             }
-            if ($pagedWindow) {
-                // An older STS ignores the key and sends the whole window.
+            if ($phase !== 'plain') {
                 // A manifest is its own window: the date beside it is ignored by
                 // the STS and moves as pages are saved, so it is no part of the key.
-                $pageKeys[$module] = RequestPageCursor::key(
-                    $module,
-                    empty($basePayload['manifestCode']) ? $effectiveSyncSinceDate : null,
-                    $basePayload['manifestCode'] ?? null
-                );
-                $basePayload['page'] = [
+                $pageKeys[$module] ??= $scheduledPull
+                    ? RequestPageCursor::scheduledKey($module, (string) $effectiveSyncSinceDate)
+                    : RequestPageCursor::key(
+                        $module,
+                        empty($basePayload['manifestCode']) ? $effectiveSyncSinceDate : null,
+                        $basePayload['manifestCode'] ?? null
+                    );
+                if ($scheduledPull) {
+                    // Held from the first pull: that pull alone moves the start.
+                    $pageCursor->begin($pageKeys[$module]);
+                }
+            }
+            if ($phase === LabRequestSyncService::NEXT_PAGES) {
+                // An older STS ignores the key and sends the whole window. The
+                // scheduled pull asks under its own key, for a page with receipts:
+                // an STS that pages but does not know it sends the whole window
+                // with receipts, as it always has, not a page without them.
+                $basePayload[$scheduledPull ? 'windowPage' : 'page'] = [
                     'size' => RequestPageCursor::PAGE_SIZE,
-                    'after' => $pageCursor->get($pageKeys[$module]),
+                    'after' => $pageCursor->get($pageKeys[$module]) ?: null,
                 ];
             }
 
@@ -643,46 +681,80 @@ do {
         ]);
     }
 
-    $pullModules = LabRequestSyncService::modulesToPullAgain(
+    $moreWaiting = LabRequestSyncService::modulesToPullAgain(
         $receiptDelivered,
         $moduleResponseHeaders,
         $previousRemaining,
         $savedCounts
     );
-    if ($pullModules !== [] && $cliMode) {
-        $io->text('More requests are waiting on the STS for '
-            . implode(', ', array_map(TestsService::getTestName(...), $pullModules)) . '. Getting the next set.');
-    }
+    $waitingAgain = [];
+    $pullModules = [];
 
-    // The next page of each window, once this one is processed. A page that did
-    // not arrive, or whose processing broke off, keeps its marker, so running the
-    // pull again resumes there. A record that fails on its own does not hold the
-    // pull: it is logged and counted above, and the STS does not send it again
-    // until it changes -- what a window pull has always done with one. Holding
-    // the marker for it would stop a big pull for good on a single bad record.
-    foreach ($pagedWindow ? $pageKeys : [] as $module => $key) {
+    // What each module pulls next, once this pull is processed. A pull that did
+    // not arrive, or whose processing broke off, keeps its window's marker, so the
+    // next run resumes there. A record that fails on its own does not hold the
+    // pull: it is logged and counted above (and, with receipts, sent again by the
+    // STS). Holding the marker for it would stop a big pull for good on one record.
+    foreach (array_keys($requestInfo) as $module) {
         $body = $responsePayload[$module] ?? null;
-        if ($body === null || !isset($savedCounts[$module])) {
+        // Saved, or an answer of nothing at all ('[]', from an older STS).
+        $answered = $body !== null && ($body === '[]' || isset($savedCounts[$module]));
+        $phase = $phases[$module];
+
+        if ($phase === 'plain') {
+            if (in_array($module, $moreWaiting, true)) {
+                $waitingAgain[] = $module;
+            }
             continue;
         }
-        $paging = json_decode((string) $body, true);
-        $next = is_array($paging) ? (string) ($paging['nextAfter'] ?? '') : '';
-        if (!is_array($paging) || empty($paging['paged']) || $next === '') {
+
+        if ($phase === LabRequestSyncService::NEXT_WAITING) {
+            $next = LabRequestSyncService::afterWaitingPull(
+                $answered,
+                ($moduleResponseHeaders[$module]['x-request-receipts'] ?? '') === '1',
+                in_array($module, $moreWaiting, true)
+            );
+            if ($next === LabRequestSyncService::NEXT_WAITING) {
+                $waitingAgain[] = $module;
+            } elseif ($next === LabRequestSyncService::NEXT_PAGES) {
+                $phases[$module] = $next;
+                $pullModules[] = $module;
+            } elseif ($next === LabRequestSyncService::NEXT_WHOLE) {
+                $pageCursor->finish($pageKeys[$module]);
+            }
+            continue;
+        }
+
+        if (!$answered) {
+            continue;
+        }
+        $paging = $body === '[]' ? null : json_decode((string) $body, true);
+        $nextAfter = is_array($paging) ? (string) ($paging['nextAfter'] ?? '') : '';
+        if (!is_array($paging) || empty($paging['paged']) || $nextAfter === '') {
             // The whole window (an older STS), or its last page.
-            $pageCursor->finish($key);
+            $pageCursor->finish($pageKeys[$module]);
             continue;
         }
-        if ($pageCursor->advance($key, $next)) {
+        if ($pageCursor->advance($pageKeys[$module], $nextAfter)) {
             $pullModules[] = $module;
             if ($cliMode) {
                 $io->text(TestsService::getTestName((string) $module) . ': more requests on the STS. Getting the next page.');
             }
         }
     }
-    $pullModules = array_values(array_unique($pullModules));
+    if ($waitingAgain !== [] && $cliMode) {
+        $io->text('More requests are waiting on the STS for '
+            . implode(', ', array_map(TestsService::getTestName(...), $waitingAgain)) . '. Getting the next set.');
+    }
+    $pullModules = array_values(array_unique([...$waitingAgain, ...$pullModules]));
 // Web runs (the sync button) pull once: a long loop would outlast the request. A
 // window someone asked for runs to its end: they are waiting for it.
-} while ($cliMode && $pullModules !== [] && ($pagedWindow || time() < $pullDeadline));
+} while ($cliMode && $pullModules !== [] && (!$scheduledPull || time() < $pullDeadline));
+
+if ($scheduledPull && $pullModules !== []) {
+    $io->text('This run is out of time. The next run carries on with '
+        . implode(', ', array_map(TestsService::getTestName(...), $pullModules)) . '.');
+}
 
 // Final sync timestamp update
 if (!$isDryRun) {

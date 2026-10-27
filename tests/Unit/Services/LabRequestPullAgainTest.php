@@ -76,4 +76,36 @@ final class LabRequestPullAgainTest extends TestCase
             )
         );
     }
+
+    public function testTheScheduledPullPagesTheWindowOnceNothingIsWaiting(): void
+    {
+        self::assertSame(
+            LabRequestSyncService::NEXT_PAGES,
+            LabRequestSyncService::afterWaitingPull(true, true, false)
+        );
+    }
+
+    public function testTheScheduledPullTakesTheWaitingRequestsFirst(): void
+    {
+        self::assertSame(
+            LabRequestSyncService::NEXT_WAITING,
+            LabRequestSyncService::afterWaitingPull(true, true, true)
+        );
+    }
+
+    public function testAnStsWithoutReceiptsSentTheWholeWindowAlready(): void
+    {
+        // It ignores pendingOnly: paging the window too would pull it twice.
+        self::assertSame(
+            LabRequestSyncService::NEXT_WHOLE,
+            LabRequestSyncService::afterWaitingPull(true, false, false)
+        );
+    }
+
+    public function testNoAnswerStopsTheModuleUntilTheNextRun(): void
+    {
+        $stop = LabRequestSyncService::NEXT_STOP;
+        self::assertSame($stop, LabRequestSyncService::afterWaitingPull(false, false, false));
+        self::assertSame($stop, LabRequestSyncService::afterWaitingPull(false, true, true));
+    }
 }

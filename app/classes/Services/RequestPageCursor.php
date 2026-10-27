@@ -15,6 +15,8 @@ final class RequestPageCursor
 {
     public const PAGE_SIZE = 500;
 
+    private const SCHEDULED = 'scheduled|';
+
     /** @var array<string, string> */
     private array $markers = [];
 
@@ -35,6 +37,43 @@ final class RequestPageCursor
     public static function key(string $module, ?string $since, ?string $manifestCode): string
     {
         return $module . '|' . ($since ?? '') . '|' . ($manifestCode ?? '');
+    }
+
+    /**
+     * The scheduled pull's window of one module. While it is paged, its start is
+     * held: each saved page moves the lab's last pull time, and a window that
+     * started from that again would skip the rows between its last page and the
+     * new start.
+     */
+    public static function scheduledKey(string $module, string $since): string
+    {
+        return self::SCHEDULED . $module . '|' . $since;
+    }
+
+    /** The start of a scheduled window of $module not paged to its end, or null. */
+    public function heldStart(string $module): ?string
+    {
+        $prefix = self::SCHEDULED . $module . '|';
+        $starts = [];
+        foreach (array_keys($this->markers) as $key) {
+            if (str_starts_with($key, $prefix)) {
+                $starts[] = substr($key, strlen($prefix));
+            }
+        }
+        return $starts === [] ? null : min($starts);
+    }
+
+    /**
+     * Holds a window from its first pull, before any page has come: the first
+     * pull alone moves the lab's last pull time. A window already begun keeps
+     * its marker. The marker of a window with no page yet is ''.
+     */
+    public function begin(string $key): void
+    {
+        if (!array_key_exists($key, $this->markers)) {
+            $this->markers[$key] = '';
+            $this->save();
+        }
     }
 
     public function get(string $key): ?string

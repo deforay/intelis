@@ -1000,6 +1000,32 @@ final class LabRequestSyncService
         return $modules;
     }
 
+    /** Pull the waiting requests again: more remain on the STS. */
+    public const string NEXT_WAITING = 'waiting';
+    /** None left: page through the rest of the window. */
+    public const string NEXT_PAGES = 'pages';
+    /** The STS sent the whole window, as one without receipts does: done. */
+    public const string NEXT_WHOLE = 'whole';
+    /** No answer: the next run starts from the same point. */
+    public const string NEXT_STOP = 'stop';
+
+    /**
+     * What the scheduled pull does next for one module, after pulling its waiting
+     * requests. Only an STS that sent a receipt header held the window back: any
+     * other sent it all, whatever the lab asked for.
+     *
+     * @return self::NEXT_*
+     */
+    public static function afterWaitingPull(bool $answered, bool $receipted, bool $moreWaiting): string
+    {
+        return match (true) {
+            !$answered => self::NEXT_STOP,
+            !$receipted => self::NEXT_WHOLE,
+            $moreWaiting => self::NEXT_WAITING,
+            default => self::NEXT_PAGES,
+        };
+    }
+
     /** A JSON_SET() expression from JsonUtility::jsonToSetString(), or NULL when it built none. */
     private function jsonSetOrNull(?string $expression): mixed
     {
