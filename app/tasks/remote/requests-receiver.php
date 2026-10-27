@@ -259,7 +259,7 @@ if ($_POST !== []) {
 }
 
 if ($syncSinceDate !== null) {
-    $io->text("Requests changed since: $syncSinceDate");
+    $io->text("Checking for new or updated requests since: $syncSinceDate");
 }
 $transactionId = MiscUtility::generateULID();
 
@@ -416,7 +416,7 @@ do {
                 $basePayload['syncSinceDate'] = $effectiveSyncSinceDate;
                 if ($cliMode && $syncSinceDate === null && isset($moduleSyncSinceDates[$module])) {
                     $io->text(TestsService::getTestName((string) $module)
-                        . ": asking the STS for requests changed since $effectiveSyncSinceDate");
+                        . ": checking for new or updated requests since $effectiveSyncSinceDate");
                 }
             }
             if ($pagedWindow) {
@@ -460,7 +460,6 @@ do {
                 $moduleResponseHeaders[$module] = $headers;
                 if ($cliMode) {
                     showServerHints($io, $headers, $module);
-                    $io->text(TestsService::getTestName((string) $module) . ': the STS answered.');
                 }
             })->otherwise(function (mixed $reason) use ($module, $cliMode, $io): void {
                 $reason = $reason instanceof Throwable ? $reason->getMessage() : (string) $reason;
