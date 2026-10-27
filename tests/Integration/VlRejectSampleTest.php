@@ -167,25 +167,31 @@ final class VlRejectSampleTest extends TestCase
     #[RunInSeparateProcess]
     public function testClearsTheTestDetailsOfTheRejectedSample(): void
     {
-        $id = $this->seedSample([
+        // Every column the rejection clears holds a value first. The result stays
+        // empty, or the sample would not be eligible.
+        $testDetails = [
+            'result_value_log' => '3.08',
+            'result_value_absolute' => '1200',
+            'result_value_absolute_decimal' => '1200.00',
+            'result_value_text' => 'Detected',
+            'result_value_hiv_detection' => 'HIV-1 Detected',
+            'reason_for_failure' => '3',
             'sample_tested_datetime' => '2026-10-02 08:00:00',
             'tested_by' => 'user-2',
             'vl_test_platform' => 'Abbott',
+            'instrument_id' => 'instrument-1',
             'result_reviewed_by' => 'user-2',
             'result_reviewed_datetime' => '2026-10-02 09:00:00',
-            'reason_for_failure' => '3',
-        ]);
+            'result_dispatched_datetime' => '2026-10-02 10:00:00',
+        ];
+        $id = $this->seedSample($testDetails);
 
-        $this->reject($id);
+        $reply = $this->reject($id);
 
+        self::assertSame('success', $reply['status'] ?? null, (string) ($reply['message'] ?? ''));
         $row = $this->row($id);
-        foreach (
-            [
-                'result', 'result_value_log', 'result_value_absolute', 'result_value_text',
-                'sample_tested_datetime', 'tested_by', 'vl_test_platform', 'instrument_id',
-                'result_reviewed_by', 'result_reviewed_datetime', 'reason_for_failure',
-            ] as $column
-        ) {
+        self::assertNull($row['result']);
+        foreach (array_keys($testDetails) as $column) {
             self::assertNull($row[$column], $column);
         }
     }
