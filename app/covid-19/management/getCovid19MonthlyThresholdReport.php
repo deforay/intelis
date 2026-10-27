@@ -92,7 +92,7 @@ $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tes
 if (($_POST['targetType'] ?? '') == 1) {
      $sQuery .= ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 } elseif (($_POST['targetType'] ?? '') == 2) {
-     $sQuery .= ' HAVING tl.monthly_target < SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
+     $sQuery .= ' HAVING tl.monthly_target <= SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 }
 $_SESSION['covid19MonitoringThresholdReportQuery'] = $sQuery;
 //die($sQuery);
