@@ -885,11 +885,38 @@ final readonly class AuditArchiveService
                             // Append new entries in id order (chronological). Collect
                             // this sample's ids locally — they only join the batch
                             // delete list after the file write below succeeds.
+                            // Rows moved over from a legacy audit_form_* table carry a
+                            // negative revision (see run-once/prune-legacy-audit-tables.php).
+                            // Viewing a sample archived its legacy rows straight to the
+                            // file, so one already there at the same second is skipped,
+                            // the rule the legacy archive has always used. And they are
+                            // older than what the file holds, so the file is put back in
+                            // time order below: the view diffs neighbouring revisions.
+                            $idxDt = $this->idx($currentHeaders, 'dt_datetime') ?? 2;
+                            $fileDts = [];
+                            $latestFileDt = '';
+                            foreach ($reheaderedExisting as $r) {
+                                $dt = $this->jsonishScalar((string) ($r[$idxDt] ?? ''));
+                                $fileDts[$dt] = true;
+                                $latestFileDt = max($latestFileDt, $dt);
+                            }
+                            $outOfOrder = false;
+
                             $newRows = [];
                             $newIds  = [];
                             foreach ($entries as $e) {
                                 $r    = $e['row'];
                                 $data = $e['data'];
+                                $dt   = (string) $r['dt_datetime'];
+                                if ((int) $r['revision'] < 0 && isset($fileDts[$dt])) {
+                                    $newIds[] = (int) $r['id'];
+                                    continue;
+                                }
+                                $fileDts[$dt] = true;
+                                // Against everything before it, file and batch alike: a live row
+                                // still queued can share a batch with older moved rows.
+                                $outOfOrder = $outOfOrder || $dt < $latestFileDt;
+                                $latestFileDt = max($latestFileDt, $dt);
                                 $maxRev++;
                                 $record = $data + [
                                     'action'      => $r['action'],
@@ -900,8 +927,24 @@ final readonly class AuditArchiveService
                                 $newIds[]  = (int) $r['id'];
                             }
 
+                            if ($newRows === [] && $newIds !== []) {
+                                // Every row was already in the file: drain them, write nothing.
+                                array_push($archivedIds, ...$newIds);
+                            }
+
                             if ($newRows !== []) {
                                 $allRows = [...$reheaderedExisting, ...$newRows];
+                                if ($outOfOrder) {
+                                    // usort is stable, so rows at the same second keep the
+                                    // order they had. Revisions are then renumbered 1..n.
+                                    usort($allRows, fn(array $a, array $b): int => strcmp(
+                                        $this->jsonishScalar((string) ($a[$idxDt] ?? '')),
+                                        $this->jsonishScalar((string) ($b[$idxDt] ?? ''))
+                                    ));
+                                    foreach ($allRows as $i => $row) {
+                                        $allRows[$i][$idxRev] = (string) ($i + 1);
+                                    }
+                                }
                                 $dstBaseNoExt = $targetDir . DIRECTORY_SEPARATOR . $uniqueId;
                                 // Write FIRST (overwrites the same-format file), then
                                 // prune any other-format leftovers. If the write throws,
@@ -971,6 +1014,120 @@ final readonly class AuditArchiveService
                 MiscUtility::deleteLockFile($lockFile);
             }
         }
+    }
+
+    /** The latest dt_datetime the legacy archive has written to files for this table. */
+    public function legacyHighWaterMark(string $auditTable): ?string
+    {
+        $mark = MiscUtility::loadMetadata($this->metadataPath)[$auditTable]['last_processed_date'] ?? null;
+        return is_string($mark) && $mark !== '' ? $mark : null;
+    }
+
+    /**
+     * Move a legacy audit_form_* table into audit_log, then drop it.
+     *
+     * Rows up to the table's archive high-water mark are already in the files,
+     * written by the legacy archive, and go with the table. The rest are copied
+     * into audit_log a batch at a time, one INSERT ... SELECT each, and every batch
+     * is deleted once copied. runFromAuditLog() files them from there. The mark's
+     * own second is copied again because a batch boundary in the legacy archive
+     * could fall inside it, and the drain skips a copied row whose second the file
+     * already holds. That also covers samples whose legacy rows were archived when
+     * somebody opened their audit trail.
+     *
+     * A copied row carries its legacy revision negated: live revisions are
+     * positive, so the two never meet on audit_log's unique key, and the drain can
+     * tell a copied row from a live one. A key already present is a row an
+     * interrupted run copied before it could delete it.
+     *
+     * @param string|null $archivedUpTo The table's high-water mark, see legacyHighWaterMark().
+     * @param callable|null $afterBatch Called after each batch, to keep a lock fresh.
+     * @return int The number of rows copied.
+     */
+    public function moveLegacyTableToAuditLog(
+        string $auditTable,
+        string $formTable,
+        string $pk,
+        ?string $archivedUpTo,
+        ?callable $afterBatch = null
+    ): int {
+        $columns = array_column($this->db->rawQuery(
+            "SELECT COLUMN_NAME FROM information_schema.COLUMNS
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? ORDER BY ORDINAL_POSITION",
+            [$auditTable]
+        ) ?? [], 'COLUMN_NAME');
+        $pairs = [];
+        foreach ($columns as $col) {
+            if (in_array($col, ['action', 'revision', 'dt_datetime'], true)) {
+                continue;
+            }
+            // An old row without a unique_id cannot be filed. Take it from the sample.
+            $value = $col === 'unique_id' ? 'COALESCE(a.`unique_id`, f.`unique_id`)' : "a.`{$col}`";
+            $pairs[] = "'{$col}', {$value}";
+        }
+        if (!in_array('unique_id', $columns, true)) {
+            $pairs[] = "'unique_id', f.`unique_id`";
+        }
+        $jsonObject = 'JSON_OBJECT(' . implode(', ', $pairs) . ')';
+
+        $hasMark = $archivedUpTo !== null && $archivedUpTo !== '';
+        // A row without a time was never archived by the legacy path: it is copied too.
+        $pending = $hasMark ? '(a.dt_datetime >= ? OR a.dt_datetime IS NULL)' : '1 = 1';
+        $markParams = $hasMark ? [$archivedUpTo] : [];
+
+        $moved = 0;
+        // Resumes after the last key copied. Without it every batch would scan again
+        // past all the rows below the mark, which stay until the table is dropped.
+        $after = '1 = 1';
+        $afterParams = [];
+        while (true) {
+            $keys = $this->db->rawQuery(
+                "SELECT a.`{$pk}` AS k, a.revision AS r FROM `{$auditTable}` a
+                  WHERE {$pending} AND {$after} ORDER BY a.`{$pk}`, a.revision LIMIT 2000",
+                [...$markParams, ...$afterParams]
+            ) ?? [];
+            if ($keys === []) {
+                break;
+            }
+            $first = $keys[0];
+            $last = $keys[count($keys) - 1];
+            // The BETWEEN is what lets MySQL range-scan the primary key. The two
+            // conditions after it only trim the first and last record of the batch.
+            $range = "{$pending}
+                AND a.`{$pk}` BETWEEN ? AND ?
+                AND (a.`{$pk}` > ? OR a.revision >= ?)
+                AND (a.`{$pk}` < ? OR a.revision <= ?)";
+            $rangeParams = [
+                ...$markParams,
+                $first['k'], $last['k'],
+                $first['k'], $first['r'],
+                $last['k'], $last['r'],
+            ];
+
+            // A plain INSERT, so a row that cannot be written fails the move instead
+            // of being deleted unwritten.
+            $this->db->rawQuery(
+                "INSERT INTO audit_log (form_table, record_id, revision, action, dt_datetime, row_data)
+                 SELECT ?, a.`{$pk}`, -a.revision,
+                        IF(LOWER(a.action) IN ('insert', 'update', 'delete'), LOWER(a.action), 'update'),
+                        COALESCE(a.dt_datetime, '1970-01-01 00:00:00'), {$jsonObject}
+                   FROM `{$auditTable}` a
+                   LEFT JOIN `{$formTable}` f ON f.`{$pk}` = a.`{$pk}`
+                  WHERE {$range}
+                 ON DUPLICATE KEY UPDATE id = id",
+                [$formTable, ...$rangeParams]
+            );
+            $this->db->rawQuery("DELETE a FROM `{$auditTable}` a WHERE {$range}", $rangeParams);
+            $moved += count($keys);
+            $after = "a.`{$pk}` >= ? AND (a.`{$pk}` > ? OR a.revision > ?)";
+            $afterParams = [$last['k'], $last['k'], $last['r']];
+            if ($afterBatch !== null) {
+                $afterBatch();
+            }
+        }
+
+        $this->db->rawQuery("DROP TABLE `{$auditTable}`");
+        return $moved;
     }
 
     /**

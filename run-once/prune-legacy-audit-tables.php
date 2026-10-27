@@ -15,32 +15,30 @@ declare(strict_types=1);
  *
  * Algorithm per upgrade run:
  *   1. If `global_config.audit_legacy_prune_done = 'yes'`, exit (no-op).
- *   2. Run AuditArchiveService::run() — archives every audit_form_* table into
- *      the existing compressed CSV file store (var/audit-trail/...) with the
- *      service's own metadata-tracked last_processed_date.
+ *   2. Drop any legacy `_data__` trigger still in the schema.
  *   3. For each legacy audit_form_* that exists:
- *        a. DELETE rows with dt_datetime <= last_processed_date (the archive's
- *           guaranteed high-water mark).
- *        b. If the table is empty -> DROP TABLE (instant OS-level space reclaim).
- *      Tables that aren't yet empty are left in place for next upgrade.
+ *        a. Copy the rows the legacy archive has not written to var/audit-trail
+ *           (from its high-water mark on) into audit_log, in batches, and delete
+ *           each batch once copied. The cron drain files them from there.
+ *        b. DROP TABLE. The rows left are the ones the files already hold.
+ *      A crashed MyISAM table is repaired and the move tried once more.
  *   4. If every legacy table is now gone, set
  *      `global_config.audit_legacy_prune_done = 'yes'` so subsequent runs
  *      short-circuit.
  *
- * Trade-off intentionally accepted: the archive's de-dup is by dt_datetime
- * (second granularity), so two distinct revisions written in the same second
- * could be collapsed into one file row, and the corresponding `DELETE …
- * dt_datetime <= last_processed_date` would remove BOTH. This matches the
- * existing legacy archive's behavior (which has been live in production), so
- * the prune does not introduce a new risk class beyond what's already there;
- * v2 capture (audit_log) does NOT have this issue (UNIQUE per
- * record_id+revision).
+ * The legacy archive de-duplicates by dt_datetime, at second granularity, and
+ * the drain applies the same rule to moved rows, so two distinct revisions
+ * written in the same second can still be collapsed into one file row. That
+ * matches the legacy archive's behaviour since it went live. audit_log rows
+ * written by the live triggers are keyed by record_id and revision and do not
+ * have this issue.
  */
 
 require_once __DIR__ . '/../bootstrap.php';
 
 use App\Registries\ContainerRegistry;
 use App\Services\AuditArchiveService;
+use App\Services\AuditTriggerService;
 use App\Services\DatabaseService;
 use App\Services\TestsService;
 use App\Utilities\LoggerUtility;
@@ -80,9 +78,6 @@ $log = static function (string $msg) use ($cliMode): void {
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var AuditArchiveService $svc */
-$svc = ContainerRegistry::get(AuditArchiveService::class);
 
 // ----- 1. Short-circuit if already complete -----
 try {
@@ -129,107 +124,72 @@ if ($legacyTables === []) {
 
 $log('Legacy tables present: ' . implode(', ', array_keys($legacyTables)));
 
-// ----- 2. Archive all legacy rows to files via the existing service -----
+// ----- 2. Drop any legacy trigger still writing to these tables -----
+// upgrade.sh already drops them when it reinstalls the audit triggers. This makes
+// sure of it before rows are moved, so nothing can write to a table being emptied.
+$triggers = AuditTriggerService::instance();
+foreach ($triggers->findLegacyTriggers() as $legacy) {
+    $db->mysqli()->query($triggers->buildDropLegacyTriggerByName($legacy['trigger']));
+    $log("  dropped legacy trigger {$legacy['trigger']} on {$legacy['table']}");
+}
+
+// ----- 3. Move what the files do not hold into audit_log, then drop the table -----
 //
-// A crashed legacy table is repaired and the archive run again. Older installs
-// created some of these tables as MyISAM, which marks a table crashed after an
-// unclean shutdown, and every read of it then fails with "is marked as crashed
-// and should be repaired". The archive stopped there on every upgrade: one lab
-// had 3.7 million rows in a crashed audit_form_vl. This reacts to the error
-// rather than checking first, because CHECK TABLE ... FAST passes some corrupt
-// tables, and a full CHECK of a table that size every upgrade costs minutes.
-// The archive resumes from its own high-water mark, so running it again repeats
-// no work. REPAIR on a large table takes minutes, which is why this script runs
-// in the background.
-$repairCrashed = static function (Throwable $e) use ($db, $log, $legacyTables): bool {
+// AuditArchiveService::moveLegacyTableToAuditLog() copies the rows the files do
+// not hold into audit_log, where the cron drain files them like any other audit
+// row, and drops the table. One INSERT ... SELECT per batch moves millions of
+// rows in minutes. Archiving them row by row in PHP kept these tables for months.
+//
+// A crashed MyISAM table is repaired first, then the move is tried again. Older
+// installs created some of these tables as MyISAM, which marks a table crashed
+// after an unclean shutdown, and every read of it fails until it is repaired. One
+// lab had 3.7 million rows in a crashed audit_form_vl.
+$archive = ContainerRegistry::get(AuditArchiveService::class);
+
+$formPk = [];
+foreach (TestsService::getTestTypes() as $meta) {
+    if (is_string($meta['tableName'] ?? null) && is_string($meta['primaryKey'] ?? null)) {
+        $formPk[$meta['tableName']] = $meta['primaryKey'];
+    }
+}
+
+$moveTable = static function (string $auditTable) use ($archive, $log, $formPk, $lockFile): void {
+    $formTable = substr($auditTable, strlen('audit_'));
+    $pk = $formPk[$formTable] ?? throw new RuntimeException("no primary key known for {$formTable}");
+    $moved = $archive->moveLegacyTableToAuditLog(
+        $auditTable,
+        $formTable,
+        $pk,
+        $archive->legacyHighWaterMark($auditTable),
+        static fn() => MiscUtility::touchLockFile($lockFile)
+    );
+    $log("  {$auditTable}: moved {$moved} row(s) to audit_log, dropped the table.");
+};
+
+$repairCrashed = static function (Throwable $e, string $auditTable) use ($db, $log): bool {
     if (preg_match('/crashed|try to repair/i', $e->getMessage()) !== 1) {
         return false;
     }
-    $repaired = false;
-    foreach (array_keys($legacyTables) as $auditTable) {
-        if (!str_contains($e->getMessage(), $auditTable)) {
-            continue;
-        }
-        $log("  {$auditTable}: marked as crashed, repairing (this can take several minutes) …");
-        // Not prepared: MySQL refuses REPAIR over the prepared-statement protocol.
-        $result = $db->mysqli()->query("REPAIR TABLE `{$auditTable}`")->fetch_all(MYSQLI_ASSOC);
-        $messages = array_map(static fn(array $r): string => (string) ($r['Msg_text'] ?? ''), $result);
-        $log("  {$auditTable}: " . implode('; ', $messages));
-        $repaired = true;
-    }
-    return $repaired;
-};
-
-$log('Archiving legacy audit data to var/audit-trail/* …');
-try {
-    // One repair per legacy table at most, so a table REPAIR cannot fix ends the loop.
-    for ($attempt = 0;; $attempt++) {
-        try {
-            $svc->run(progress: $log, useLock: false);
-            break;
-        } catch (Throwable $e) {
-            if ($attempt >= count($legacyTables) || !$repairCrashed($e)) {
-                throw $e;
-            }
-        }
-    }
-} catch (Throwable $e) {
-    $log('Archive run failed: ' . $e->getMessage());
-    LoggerUtility::logError('legacy-audit-prune: archive failed', [
-        'message' => $e->getMessage(),
-        'file'    => $e->getFile(),
-        'line'    => $e->getLine(),
-    ]);
-    // Don't mark done — next upgrade retries.
-    exit(1);
-}
-
-// ----- 3. DELETE archived rows and DROP empty tables -----
-$metadataPath = VAR_PATH . '/metadata/archive.mdata.json';
-$metadata = MiscUtility::loadMetadata($metadataPath);
-
-// Scalar row count. rawQueryValue() returns an ARRAY of the column unless the
-// query ends in "limit 1" — `(int) [0 => 0]` casts to 1, so a bare
-// rawQueryValue(COUNT(*)) is never === 0. rawQueryOne()['c'] is unambiguous.
-$rowCount = static function (string $table) use ($db): int {
-    $row = $db->rawQueryOne("SELECT COUNT(*) AS c FROM `{$table}`");
-    return (int) ($row['c'] ?? 0);
+    $log("  {$auditTable}: marked as crashed, repairing (this can take several minutes) …");
+    // Not prepared: MySQL refuses REPAIR over the prepared-statement protocol.
+    $result = $db->mysqli()->query("REPAIR TABLE `{$auditTable}`")->fetch_all(MYSQLI_ASSOC);
+    $log("  {$auditTable}: " . implode('; ', array_column($result, 'Msg_text')));
+    return true;
 };
 
 $allDropped = true;
 foreach (array_keys($legacyTables) as $auditTable) {
     try {
-        // Already-empty legacy table: drained in a prior run (or never held
-        // rows), so the archive produced no last_processed_date for it. It is
-        // nonetheless safe to drop — do so directly instead of skipping it
-        // forever on the missing-high-water-mark guard below.
-        if ($rowCount($auditTable) === 0) {
-            $db->rawQuery("DROP TABLE `{$auditTable}`");
-            $log("  {$auditTable}: already empty — dropped.");
-            continue;
-        }
-
-        $lastDt = $metadata[$auditTable]['last_processed_date'] ?? null;
-        if (!is_string($lastDt) || $lastDt === '') {
-            $log("  {$auditTable}: rows present but no last_processed_date — will retry next upgrade.");
-            $allDropped = false;
-            continue;
-        }
-
-        $db->rawQuery(
-            "DELETE FROM `{$auditTable}` WHERE dt_datetime <= ?",
-            [$lastDt]
-        );
-        $remaining = $rowCount($auditTable);
-        if ($remaining === 0) {
-            $db->rawQuery("DROP TABLE `{$auditTable}`");
-            $log("  {$auditTable}: drained + dropped (OS-level space reclaimed).");
-        } else {
-            $log("  {$auditTable}: deleted archived rows; {$remaining} unprocessed remain — resuming next upgrade.");
-            $allDropped = false;
+        try {
+            $moveTable($auditTable);
+        } catch (Throwable $e) {
+            if (!$repairCrashed($e, $auditTable)) {
+                throw $e;
+            }
+            $moveTable($auditTable);
         }
     } catch (Throwable $e) {
-        $log("  {$auditTable}: error during DELETE/DROP — {$e->getMessage()}");
+        $log("  {$auditTable}: could not move — {$e->getMessage()}");
         LoggerUtility::logError("legacy-audit-prune: table {$auditTable} failed", [
             'message' => $e->getMessage(),
         ]);
@@ -240,7 +200,7 @@ foreach (array_keys($legacyTables) as $auditTable) {
 // ----- 4. Mark done iff every legacy table is gone -----
 if ($allDropped) {
     markPruneDone($db, $log);
-    $log('All legacy audit_form_* tables drained and dropped — prune complete.');
+    $log('All legacy audit_form_* tables moved and dropped — prune complete.');
 } else {
     $log('Some legacy tables still have rows or could not be dropped — will continue on next upgrade.');
 }
