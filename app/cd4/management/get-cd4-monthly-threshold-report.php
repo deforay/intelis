@@ -116,6 +116,13 @@ $sWhere[] = " hf.test_type = 'cd4'";
 $sWhere = $sWhere === [] ? [] : ' where ' . implode(' AND ', $sWhere);
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery .= ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
+// Filter on the Target Type in SQL, as the VL, EID and COVID-19 reports do, so
+// the query saved for the Excel export returns the same rows as the screen.
+if (($_POST['targetType'] ?? '') == 1) {
+     $sQuery .= ' HAVING hf.monthly_target > SUM(CASE WHEN (vl.sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
+} elseif (($_POST['targetType'] ?? '') == 2) {
+     $sQuery .= ' HAVING hf.monthly_target < SUM(CASE WHEN (vl.sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
+}
 $_SESSION['cd4MonitoringThresholdReportQuery'] = $sQuery;
 // die($sQuery);
 $rResult = $db->rawQuery($sQuery);
