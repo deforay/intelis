@@ -9,6 +9,9 @@ use App\Services\LabResultsSenderService;
 use mysqli;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Tests\Support\LegacyAppHarness;
 
 /**
@@ -139,8 +142,13 @@ final class LabResultsSenderTest extends TestCase
     }
 
     /** @return array{selected: int, acknowledged: int, chunks: int} */
-    private function send(string $testType, callable $sts, array $run = [], int $chunkSize = 100): array
-    {
+    private function send(
+        string $testType,
+        callable $sts,
+        array $run = [],
+        int $chunkSize = 100,
+        ?SymfonyStyle $io = null
+    ): array {
         $sender = ContainerRegistry::get(LabResultsSenderService::class);
         return $sender->sendModule($testType, $run + [
             'labId' => self::LAB,
@@ -153,13 +161,53 @@ final class LabResultsSenderTest extends TestCase
             'maxPayloadBytes' => 2 * 1024 * 1024,
             'dryRun' => false,
             'silent' => false,
-        ], $chunkSize, null, $sts);
+        ], $chunkSize, $io, $sts);
     }
 
     /** @return list<string> unique_ids of every result posted, in order */
     private function postedIds(): array
     {
         return array_merge(...array_map(self::idsIn(...), $this->posts ?: [['results' => []]]));
+    }
+
+    // ---- Console output ------------------------------------------------------------
+
+    #[RunInSeparateProcess]
+    public function testALogGetsTextLinesAndNoProgressBar(): void
+    {
+        $this->boot();
+        self::vl('a');
+        self::vl('b');
+        self::vl('c');
+        $output = new BufferedOutput(decorated: false);
+
+        $this->send('vl', $this->sts(), chunkSize: 2, io: new SymfonyStyle(new ArrayInput([]), $output));
+
+        $text = $output->fetch();
+        self::assertStringContainsString('Batch 1: 2 samples', $text);
+        self::assertStringContainsString('Sending to https://sts.test...', $text);
+        self::assertStringContainsString('Progress: 2 of 3 samples sent.', $text);
+        self::assertStringContainsString('Progress: 3 of 3 samples sent.', $text);
+        self::assertStringNotContainsString('elapsed', $text, 'No progress bar in a log.');
+    }
+
+    #[RunInSeparateProcess]
+    public function testATerminalGetsAProgressBarInPlaceOfTheProgressLines(): void
+    {
+        $this->boot();
+        self::vl('a');
+        self::vl('b');
+        self::vl('c');
+        $output = new BufferedOutput(decorated: true);
+
+        $this->send('vl', $this->sts(), chunkSize: 2, io: new SymfonyStyle(new ArrayInput([]), $output));
+
+        $text = $output->fetch();
+        self::assertStringContainsString('Batch 2: 1 sample', $text);
+        self::assertStringContainsString('3/3', $text);
+        self::assertStringContainsString('elapsed', $text);
+        self::assertStringNotContainsString('Progress:', $text);
+        self::assertSame(['a' => 1, 'b' => 1, 'c' => 1], $this->dataSync());
     }
 
     // ---- The STS does not acknowledge -------------------------------------------

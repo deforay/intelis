@@ -57,19 +57,19 @@ $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
 // Feature flag (defaults 'no'). Until an admin turns this on at the STS, saving
 // the key is a no-op and the fleet keeps its current behavior.
 if ($general->getGlobalConfig('backup_key_recovery_enabled') !== 'yes') {
-    $io->note('Backup key recovery is disabled (backup_key_recovery_enabled != yes) — skipping.');
+    $io->note('Backup key recovery is off (backup_key_recovery_enabled). Skipping.');
     exit(CLI\OK);
 }
 
 $remoteURL = rtrim((string) $general->getRemoteURL(), '/');
 if ($remoteURL === '' || $remoteURL === '0') {
-    $io->note('No STS URL configured — skipping backup key recovery.');
+    $io->note('The STS URL is not set. Skipping backup key recovery.');
     exit(CLI\OK);
 }
 
 $stsToken = (string) $general->getSTSToken();
 if ($stsToken === '' || $stsToken === '0') {
-    $io->note('No STS token yet — skipping backup key recovery (run token generation first).');
+    $io->note('This lab has no STS token yet. Skipping backup key recovery. Run composer token first.');
     exit(CLI\OK);
 }
 
@@ -126,7 +126,7 @@ try {
 
     $jsonResponse = $apiService->post($tokenURL, json_encode($payload), gzip: true);
     if (empty($jsonResponse) || $jsonResponse === '[]') {
-        $io->warning('Empty response from STS during backup key recovery save — will retry next sync.');
+        $io->warning('The STS sent an empty answer when saving the backup key. The next run tries again.');
         exit(CLI\OK);
     }
 
@@ -141,10 +141,11 @@ try {
             'backup_key_recovery_ready' => 1,
             'backup_key_saved_at'       => DateUtility::getCurrentDateTime(),
         ]);
-        $io->success("Backup key saved to STS and verified for recovery (version {$keyVersion}).");
+        $io->success("Backup key saved on the STS and checked for recovery (version {$keyVersion}).");
     } else {
         $errMsg = $response['message'] ?? ($response['error'] ?? 'fingerprint mismatch or unexpected response');
-        $io->warning('Backup key recovery save failed (will retry next sync): ' . (is_array($errMsg) ? implode(' | ', $errMsg) : $errMsg));
+        $io->warning('Could not save the backup key on the STS: '
+            . rtrim(is_array($errMsg) ? implode(' | ', $errMsg) : (string) $errMsg, '.') . '. The next run tries again.');
         exit(CLI\OK);
     }
 } catch (Throwable $e) {
@@ -157,6 +158,6 @@ try {
         ]
     );
     // Fail open: never break the sync-sts chain because key recovery had a hiccup.
-    $io->warning('Backup key recovery save error (will retry next sync). See logs for details.');
+    $io->warning('Could not save the backup key on the STS. The next run tries again. The error log has the details.');
     exit(CLI\OK);
 }

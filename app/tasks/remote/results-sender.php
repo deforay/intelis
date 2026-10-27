@@ -43,7 +43,7 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-$io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+$io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput(MiscUtility::verbosityFromArgv($_SERVER['argv'] ?? [])));
 
 
 /** @var DatabaseService $db */
@@ -107,6 +107,7 @@ function showHelp(SymfonyStyle $io): void
         ['--dry-run, dry-run' => 'Optional. Select and chunk rows, report what would be sent, but send nothing and update nothing'],
         ['--wait-for-lock[=seconds]' => 'Optional. If another sync is running, wait for it (default 900 seconds) instead of exiting.'
             . ' Exits ' . RESULTS_SENDER_EXIT_LOCKED . ' if it is still running after that'],
+        ['-v' => 'Optional. Also show timings and sizes for each batch'],
         ['-h, --help, help' => 'Show this help and exit']
     );
 
@@ -154,7 +155,7 @@ if ($cliMode) {
     if (in_array('-h', $args) || in_array('--help', $args) || in_array('help', $args)) {
         showHelp($io);
     }
-    $io->title("Starting results sending");
+    $io->title("Sending results to the STS");
 }
 $remoteURL = $general->getRemoteURL();
 
@@ -246,6 +247,9 @@ if ($cliMode) {
 
         if ($arg === 'silent') {
             $isSilent = true;
+        } elseif (isset(MiscUtility::VERBOSITY_FLAGS[$arg])) {
+            // Read when $io was built.
+            continue;
         } elseif ($arg === '--dry-run' || $arg === 'dry-run') {
             $isDryRun = true;
         } elseif ($arg === '--wait-for-lock') {
@@ -314,23 +318,25 @@ if ($cliMode) {
 
     if ($syncSinceDate !== null) {
         $syncSinceDate = DateUtility::getDateTime($syncSinceDate, 'Y-m-d H:i:s');
-        $io->text("Syncing results since: $syncSinceDate");
+        $io->text("Results changed since: $syncSinceDate");
     }
 
     if ($forceSyncModule !== null) {
-        $io->text("Forcing module sync for: $forceSyncModule");
+        $io->text("Test type: $forceSyncModule");
     }
 
     if ($statuses !== null) {
-        $io->text('Sending only statuses: '
+        $io->text('Statuses: '
             . implode(', ', array_keys(array_intersect(SampleStatusUtility::SENDABLE_STATUS_NAMES, $statuses))));
     }
 
-    $io->text("Maximum records per request: $chunkSize");
-    $io->text("Maximum JSON bytes before gzip: $maxPayloadBytes (except oversized single samples)");
+    $io->text("Up to $chunkSize samples per batch");
+    if ($io->isVerbose()) {
+        $io->comment("Maximum JSON bytes before gzip: $maxPayloadBytes (except oversized single samples)");
+    }
 
     if ($isDryRun) {
-        $io->warning('DRY RUN: nothing will be sent to STS and no local sync flags will be updated.');
+        $io->warning('Dry run: nothing goes to the STS and no sample is marked as sent.');
     }
 }
 
@@ -347,7 +353,7 @@ $senderLock = @fopen($senderLockPath, 'c') ?: @fopen($senderLockPath, 'r');
 $lockAcquired = $senderLock !== false && flock($senderLock, LOCK_EX | LOCK_NB);
 if ($senderLock !== false && !$lockAcquired && $waitForLockSeconds !== null) {
     if ($cliMode) {
-        $io->text("Another results sync is running. Waiting up to {$waitForLockSeconds}s...");
+        $io->text("Another results sending run is in progress. Waiting up to {$waitForLockSeconds}s...");
     }
     $deadline = time() + $waitForLockSeconds;
     while (!$lockAcquired && time() < $deadline) {
@@ -363,8 +369,8 @@ if ($senderLock === false) {
     LoggerUtility::logInfo('Results sender is already running. ' . ($waited ? 'Gave up waiting.' : 'Exiting.'));
     if ($cliMode) {
         $io->warning($waited
-            ? 'Another results sync is still running. Nothing was sent; retry later.'
-            : 'Another results sync is already running. Exiting.');
+            ? 'Another results sending run is still in progress. Nothing was sent. Try again later.'
+            : 'Another results sending run is already in progress. Exiting.');
     }
     exit($waited ? RESULTS_SENDER_EXIT_LOCKED : 0);
 }
@@ -447,8 +453,8 @@ try {
                 'last_db_error' => $db->getLastError(),
             ]);
             if ($cliMode) {
-                $io->error(strtoupper($testType) . ' sync failed: ' . $e->getMessage()
-                    . '. Continuing with the next module.');
+                $io->error(strtoupper($testType) . ' sending failed: ' . rtrim($e->getMessage(), '.')
+                    . '. The next run sends these results again. Moving on to the next test type.');
             }
         }
     }
@@ -456,19 +462,19 @@ try {
     // Final sync timestamp update
     if ($isDryRun) {
         if ($cliMode) {
-            $io->success("DRY RUN complete. Nothing was sent and nothing was updated.");
+            $io->success("Dry run complete. Nothing was sent and nothing was updated.");
         }
     } else {
         if ($cliMode) {
-            $io->section("Timestamps");
-            $io->text("Updating sync timestamps...");
+            $io->section("Finishing");
+            $io->text("Saving the time of this run...");
         }
         $tFinal = MiscUtility::startTimer();
         $instanceId = $general->getInstanceId();
         $db->where('vlsm_instance_id', $instanceId);
         $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
         if ($cliMode) {
-            $io->text("Updated timestamps in " . MiscUtility::elapsedTime($tFinal) . "s");
+            $io->text("Done in " . MiscUtility::elapsedTime($tFinal) . "s.");
         }
     }
 } catch (Exception $e) {

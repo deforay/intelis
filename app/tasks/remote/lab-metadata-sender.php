@@ -50,22 +50,22 @@ $lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_lab_metadata_sync');
 
 $remoteURL = $general->getRemoteURL();
 
-$output->writeln("<info>Lab Metadata Sync</info>");
+$output->writeln("<info>Sending lab metadata to the STS</info>");
 if ($forceFlag) {
-    $output->writeln("<comment>Force sync enabled — ignoring last sync time</comment>");
+    $output->writeln("<comment>Sending everything, not only the changes since the last run.</comment>");
 }
 
 if (empty($remoteURL)) {
-    $output->writeln("<error>STS URL is not set</error>");
+    $output->writeln("<error>The STS URL is not set in System Config. Exiting.</error>");
     LoggerUtility::logError("Please check if STS URL is set");
     exit(0);
 }
 
 try {
     // Checking if the network connection is available
-    $output->write("Checking connectivity... ");
+    $output->write("Checking the connection to the STS... ");
     if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
-        $output->writeln("<error>FAILED</error>");
+        $output->writeln("<error>FAILED. Check the internet connection.</error>");
         LoggerUtility::logError("No network connectivity while trying remote sync.");
         return false;
     }
@@ -226,7 +226,7 @@ try {
     // request receiver use, so STS can tie the payload to the facility it came from.
     $apiService->setBearerToken((string) $general->getSTSToken());
 
-    $output->write("Uploading to STS... ");
+    $output->write("Sending... ");
     $response = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
     $httpStatusCode = (int) ($response['httpStatusCode'] ?? 0);
 
@@ -258,7 +258,7 @@ try {
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', $syncUpdate);
 
-    $output->writeln("<info>Sync complete.</info>");
+    $output->writeln("<info>Lab metadata sent.</info>");
 } catch (Exception $exc) {
     $output->writeln("<error>Error: " . $exc->getMessage() . "</error>");
     LoggerUtility::log("error", __FILE__ . ":" . $exc->getMessage(), [

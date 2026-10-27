@@ -33,7 +33,7 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-$io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+$io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput(MiscUtility::verbosityFromArgv($_SERVER['argv'] ?? [])));
 
 
 /**
@@ -60,6 +60,7 @@ function showHelp(SymfonyStyle $io): void
         ['-t <module>' => 'Force sync for a specific test module. Valid: vl, eid, covid19, hepatitis, tb, cd4, generic-tests'],
         ['-m <manifest_code>' => 'Sync only a specific manifest/package (use with -t).'],
         ['--dry-run, dry-run' => 'Preview the sync: fetch from STS and report what would be inserted/updated, then roll everything back.'],
+        ['-v' => 'Also show the STS processing time for each test type.'],
         ['-h, --help, help' => 'Show this help and exit.']
     );
 
@@ -99,7 +100,8 @@ function showHelp(SymfonyStyle $io): void
  */
 function showServerHints(?SymfonyStyle $io, array $headers, ?string $label = null): void
 {
-    if ($io === null) {
+    // STS timings help diagnose a slow run. They are noise otherwise.
+    if ($io === null || !$io->isVerbose()) {
         return;
     }
 
@@ -145,14 +147,10 @@ $db->rawQuery("SET SESSION wait_timeout=28800"); // 8 hours
 
 function outputSyncResults(SymfonyStyle $io, string $module, int $success, int $failures): void
 {
-    if ($success > 0) {
-        $io->success("Synced $success new " . strtoupper($module) . " record(s)");
-    } else {
-        $io->success("Synced no new " . strtoupper($module) . " record(s)");
-    }
+    $io->success($success > 0 ? "Saved $success request(s)." : 'No new requests.');
 
     if ($failures > 0) {
-        $io->error("Failed to sync $failures " . strtoupper($module) . " record(s)");
+        $io->error("$failures request(s) could not be saved. The error log has the details.");
     }
 }
 
@@ -205,7 +203,7 @@ $isSilent = false;
 $isDryRun = false;
 if ($cliMode) {
 
-    $io->section('Starting test requests sync');
+    $io->title('Receiving test requests from the STS');
 
     $args = array_slice($_SERVER['argv'], 1);
 
@@ -221,7 +219,7 @@ if ($cliMode) {
 
     if (in_array('--dry-run', $args, true) || in_array('dry-run', $args, true)) {
         $isDryRun = true;
-        $io->warning('DRY RUN: every change will be rolled back; nothing will be saved and the sync window will not advance.');
+        $io->warning('Dry run: nothing is saved. The next run starts from the same point.');
     }
 
     // Scan all args to find a valid date or number-of-days
@@ -261,7 +259,7 @@ if ($_POST !== []) {
 }
 
 if ($syncSinceDate !== null) {
-    $io->text("Filtering requests from: $syncSinceDate");
+    $io->text("Requests changed since: $syncSinceDate");
 }
 $transactionId = MiscUtility::generateULID();
 
@@ -280,7 +278,7 @@ if (empty($remoteURL)) {
 
 if (empty($labId)) {
     if ($cliMode) {
-        $io->error("No Lab ID set in System Config");
+        $io->error("The testing lab is not set in System Config. Exiting.");
     }
     LoggerUtility::logError("No Lab ID set in System Config", [
         'line' => __LINE__,
@@ -297,7 +295,7 @@ if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
         'remoteURL' => $remoteURL
     ]);
     if ($cliMode) {
-        echo "No internet connectivity while trying remote sync." . PHP_EOL;
+        $io->error("Cannot reach the STS at $remoteURL. Check the internet connection. Exiting.");
     }
     exit(0);
 }
@@ -370,7 +368,7 @@ $receiptsClient = ContainerRegistry::get(RequestReceiptsClient::class);
 if (!$isDryRun) {
     $flushed = $receiptsClient->flushOutbox($remoteURL);
     if ($flushed > 0 && $cliMode) {
-        $io->text("Delivered $flushed receipt(s) kept from an earlier run");
+        $io->text("Sent $flushed confirmation(s) of received requests left over from an earlier run.");
     }
 }
 
@@ -417,7 +415,8 @@ do {
             if (!empty($effectiveSyncSinceDate)) {
                 $basePayload['syncSinceDate'] = $effectiveSyncSinceDate;
                 if ($cliMode && $syncSinceDate === null && isset($moduleSyncSinceDates[$module])) {
-                    $io->text("Requesting " . strtoupper((string) $module) . " records updated since $effectiveSyncSinceDate");
+                    $io->text(TestsService::getTestName((string) $module)
+                        . ": asking the STS for requests changed since $effectiveSyncSinceDate");
                 }
             }
             if ($pagedWindow) {
@@ -461,12 +460,13 @@ do {
                 $moduleResponseHeaders[$module] = $headers;
                 if ($cliMode) {
                     showServerHints($io, $headers, $module);
-                    $io->text("Received server response for $module");
+                    $io->text(TestsService::getTestName((string) $module) . ': the STS answered.');
                 }
             })->otherwise(function (mixed $reason) use ($module, $cliMode, $io): void {
                 $reason = $reason instanceof Throwable ? $reason->getMessage() : (string) $reason;
                 if ($cliMode) {
-                    $io->error("STS Request sync for $module failed: $reason");
+                    $io->error(TestsService::getTestName((string) $module) . ': could not get requests from the STS: '
+                        . rtrim($reason, '.') . '. The next run tries again.');
                 }
                 LoggerUtility::logError(__FILE__ . ":" . __LINE__ . ":" . "STS Request sync for $module failed: " . $reason);
             });
@@ -477,7 +477,7 @@ do {
     Utils::settle($promises)->wait();
 
     if ($cliMode) {
-        $io->comment("Total download time for STS Requests: " . MiscUtility::elapsedTime($startTime) . " seconds");
+        $io->comment("Download finished in " . MiscUtility::elapsedTime($startTime) . "s.");
     }
 
     // Process modules
@@ -488,7 +488,7 @@ do {
             }
 
             if ($cliMode) {
-                $io->section("Processing for " . strtoupper($module) . "...");
+                $io->section(TestsService::getTestName((string) $module));
             }
 
             $options = [
@@ -518,8 +518,7 @@ do {
                 echo PHP_EOL;
                 if ($isDryRun) {
                     $io->note(sprintf(
-                        'DRY RUN %s: would insert %d and update %d record(s); %d would fail',
-                        strtoupper($module),
+                        'Dry run: would add %d and update %d request(s). %d would fail.',
                         $insertCounter,
                         $updateCounter,
                         $failureCounter
@@ -557,7 +556,8 @@ do {
                 );
                 if ($cliMode && !$receiptDelivered[$module]) {
                     $io->warning(
-                        'Could not deliver the receipt for ' . strtoupper($module) . '; it will be sent next run.'
+                        TestsService::getTestName((string) $module)
+                            . ': could not confirm to the STS that the requests arrived. The next run sends it.'
                     );
                 }
             }
@@ -568,7 +568,7 @@ do {
             $module = 'generic-tests';
 
             if ($cliMode) {
-                $io->section("Processing for CUSTOM TESTS...");
+                $io->section(TestsService::getTestName('generic-tests'));
             }
 
             $options = [
@@ -593,12 +593,9 @@ do {
             if ($cliMode) {
                 clearSpinner();
                 if ($isDryRun) {
-                    $io->note("DRY RUN CUSTOM TESTS: would sync $successCounter record(s)");
+                    $io->note("Dry run: would save $successCounter request(s).");
                 } else {
-                    $io->success("Synced $successCounter Custom Tests record(s)");
-                    if ($failureCounter > 0) {
-                        $io->error("Failed to sync $failureCounter Custom Tests record(s)");
-                    }
+                    outputSyncResults($io, $module, $successCounter, $failureCounter);
                 }
             }
 
@@ -630,7 +627,8 @@ do {
                 );
                 if ($cliMode && !$receiptDelivered[$module]) {
                     $io->warning(
-                        'Could not deliver the receipt for ' . strtoupper($module) . '; it will be sent next run.'
+                        TestsService::getTestName((string) $module)
+                            . ': could not confirm to the STS that the requests arrived. The next run sends it.'
                     );
                 }
             }
@@ -653,7 +651,8 @@ do {
         $savedCounts
     );
     if ($pullModules !== [] && $cliMode) {
-        $io->text('More requests are waiting on the STS for: ' . implode(', ', $pullModules) . '. Pulling again.');
+        $io->text('More requests are waiting on the STS for '
+            . implode(', ', array_map(TestsService::getTestName(...), $pullModules)) . '. Getting the next set.');
     }
 
     // The next page of each window, once this one is processed. A page that did
@@ -677,7 +676,7 @@ do {
         if ($pageCursor->advance($key, $next)) {
             $pullModules[] = $module;
             if ($cliMode) {
-                $io->text('More of the ' . strtoupper((string) $module) . ' window on the STS. Pulling the next page.');
+                $io->text(TestsService::getTestName((string) $module) . ': more requests on the STS. Getting the next page.');
             }
         }
     }
@@ -691,7 +690,7 @@ if (!$isDryRun) {
     $db->where('vlsm_instance_id', $general->getInstanceId());
     $db->update('s_vlsm_instance', ['last_remote_requests_sync' => DateUtility::getCurrentDateTime()]);
 } elseif ($cliMode) {
-    $io->success('DRY RUN complete. All changes were rolled back.');
+    $io->success('Dry run complete. Nothing was saved.');
 }
 
 if (
