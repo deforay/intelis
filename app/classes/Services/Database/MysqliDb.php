@@ -525,7 +525,7 @@ class MysqliDb
             call_user_func_array(array($stmt, 'bind_param'), $this->refValues($params));
         }
 
-        $stmt->execute();
+        $this->executeStatement($stmt);
         $this->count = $stmt->affected_rows;
         $this->_stmtError = $stmt->error;
         $this->_stmtErrno = $stmt->errno;
@@ -601,7 +601,7 @@ class MysqliDb
     {
         $this->_query = $query;
         $stmt = $this->_buildQuery($numRows);
-        $stmt->execute();
+        $this->executeStatement($stmt);
         $this->_stmtError = $stmt->error;
         $this->_stmtErrno = $stmt->errno;
         $res = $this->_dynamicBindResults($stmt);
@@ -683,7 +683,7 @@ class MysqliDb
             return $this;
         }
 
-        $stmt->execute();
+        $this->executeStatement($stmt);
         $this->_stmtError = $stmt->error;
         $this->_stmtErrno = $stmt->errno;
         $res = $this->_dynamicBindResults($stmt);
@@ -838,7 +838,7 @@ class MysqliDb
         $this->_query = "UPDATE " . self::$prefix . $tableName;
 
         $stmt = $this->_buildQuery($numRows, $tableData);
-        $status = $stmt->execute();
+        $status = $this->executeStatement($stmt);
         $this->reset();
         $this->_stmtError = $stmt->error;
         $this->_stmtErrno = $stmt->errno;
@@ -877,7 +877,7 @@ class MysqliDb
         $stmt = $this->_buildQuery($numRows);
 
         // Error handling
-        if (!$stmt->execute()) {
+        if (!$this->executeStatement($stmt)) {
             throw new Exception('Failed to execute delete operation: ' . $this->_stmtError);
         }
         $this->_stmtError = $stmt->error;
@@ -1150,7 +1150,7 @@ class MysqliDb
 
         $this->_query = $operation . " " . implode(' ', $this->_queryOptions) . " INTO " . self::$prefix . $tableName;
         $stmt = $this->_buildQuery(null, $insertData);
-        $status = $stmt->execute();
+        $status = $this->executeStatement($stmt);
         $this->_stmtError = $stmt->error;
         $this->_stmtErrno = $stmt->errno;
         $haveOnDuplicate = !empty ($this->_updateColumns);
@@ -1713,6 +1713,21 @@ class MysqliDb
             return $connectionError;
         }
         return $connectionError === '' ? $stmtError : $stmtError . ' ' . $connectionError;
+    }
+
+    /**
+     * Execute a prepared statement.
+     *
+     * Every statement the builder runs goes through here, so a subclass can act on
+     * a failed execution in one place. DatabaseService retries deadlocks.
+     *
+     * @param mysqli_stmt $stmt
+     *
+     * @return bool
+     */
+    protected function executeStatement(mysqli_stmt $stmt): bool
+    {
+        return $stmt->execute();
     }
 
     /**

@@ -130,9 +130,49 @@ if ($legacyTables === []) {
 $log('Legacy tables present: ' . implode(', ', array_keys($legacyTables)));
 
 // ----- 2. Archive all legacy rows to files via the existing service -----
+//
+// A crashed legacy table is repaired and the archive run again. Older installs
+// created some of these tables as MyISAM, which marks a table crashed after an
+// unclean shutdown, and every read of it then fails with "is marked as crashed
+// and should be repaired". The archive stopped there on every upgrade: one lab
+// had 3.7 million rows in a crashed audit_form_vl. This reacts to the error
+// rather than checking first, because CHECK TABLE ... FAST passes some corrupt
+// tables, and a full CHECK of a table that size every upgrade costs minutes.
+// The archive resumes from its own high-water mark, so running it again repeats
+// no work. REPAIR on a large table takes minutes, which is why this script runs
+// in the background.
+$repairCrashed = static function (Throwable $e) use ($db, $log, $legacyTables): bool {
+    if (preg_match('/crashed|try to repair/i', $e->getMessage()) !== 1) {
+        return false;
+    }
+    $repaired = false;
+    foreach (array_keys($legacyTables) as $auditTable) {
+        if (!str_contains($e->getMessage(), $auditTable)) {
+            continue;
+        }
+        $log("  {$auditTable}: marked as crashed, repairing (this can take several minutes) …");
+        // Not prepared: MySQL refuses REPAIR over the prepared-statement protocol.
+        $result = $db->mysqli()->query("REPAIR TABLE `{$auditTable}`")->fetch_all(MYSQLI_ASSOC);
+        $messages = array_map(static fn(array $r): string => (string) ($r['Msg_text'] ?? ''), $result);
+        $log("  {$auditTable}: " . implode('; ', $messages));
+        $repaired = true;
+    }
+    return $repaired;
+};
+
 $log('Archiving legacy audit data to var/audit-trail/* …');
 try {
-    $svc->run(progress: $log, useLock: false);
+    // One repair per legacy table at most, so a table REPAIR cannot fix ends the loop.
+    for ($attempt = 0;; $attempt++) {
+        try {
+            $svc->run(progress: $log, useLock: false);
+            break;
+        } catch (Throwable $e) {
+            if ($attempt >= count($legacyTables) || !$repairCrashed($e)) {
+                throw $e;
+            }
+        }
+    }
 } catch (Throwable $e) {
     $log('Archive run failed: ' . $e->getMessage());
     LoggerUtility::logError('legacy-audit-prune: archive failed', [

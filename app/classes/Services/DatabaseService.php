@@ -61,6 +61,9 @@ final class DatabaseService extends MysqliDb
      */
     private const array CONNECTION_LOST_ERRORS = [2006, 2013, 4031];
 
+    /** How many times a deadlocked statement runs before the error reaches the caller. */
+    private const int DEADLOCK_ATTEMPTS = 3;
+
     private string $sessionCollation = 'utf8mb4_unicode_ci';
     private string $sessionCharset = 'utf8mb4';
     private int $countQueryMaxExecutionMs = 10000;
@@ -857,6 +860,46 @@ final class DatabaseService extends MysqliDb
     }
 
     /**
+     * Run a statement again when InnoDB picked it as a deadlock victim.
+     *
+     * Two writers on the same table, each locking rows the other needs, end in
+     * 1213 for one of them. In one upgrade a lab lost two run-once scripts this
+     * way, both updating form_vl at the same second. Background scripts, cron and
+     * the app share these tables, so it can happen at any time.
+     *
+     * Outside a transaction the statement is its own transaction, and InnoDB has
+     * rolled all of it back, so running it again cannot do its work twice. Inside
+     * one, the server has rolled back everything before it as well, and only the
+     * caller can redo that, so the failure goes to the caller. Lock wait timeouts
+     * (1205) are not retried: each one has already waited innodb_lock_wait_timeout.
+     */
+    #[Override]
+    protected function executeStatement(\mysqli_stmt $stmt): bool
+    {
+        for ($attempt = 1;; $attempt++) {
+            try {
+                return parent::executeStatement($stmt);
+            } catch (\mysqli_sql_exception $e) {
+                $retry = (int) $e->getCode() === 1213
+                    && $attempt < self::DEADLOCK_ATTEMPTS
+                    && $this->outsideTransaction();
+                if (!$retry) {
+                    throw $e;
+                }
+                LoggerUtility::logWarning("Deadlock, running the statement again (attempt {$attempt})");
+                usleep(random_int(50_000, 200_000) * $attempt);
+            }
+        }
+    }
+
+    private function outsideTransaction(): bool
+    {
+        return !$this->isSubQuery
+            && !$this->_transaction_in_progress
+            && ($this->transactionDepth[$this->currentConnection()] ?? 0) === 0;
+    }
+
+    /**
      * Set the transaction isolation level to READ COMMITTED.
      */
     private function setTransactionIsolationLevel($level = 'READ COMMITTED'): void
@@ -1132,7 +1175,7 @@ final class DatabaseService extends MysqliDb
         $types = str_repeat('s', count($allValues));
         $stmt->bind_param($types, ...$allValues);
 
-        if ($stmt->execute()) {
+        if ($this->executeStatement($stmt)) {
             $stmt->close();
             return true;
         } else {
@@ -1663,7 +1706,7 @@ final class DatabaseService extends MysqliDb
         $types = $this->determineTypes($values);
         $stmt->bind_param($types, ...$values);
 
-        if ($stmt->execute()) {
+        if ($this->executeStatement($stmt)) {
             $stmt->close();
             return true;
         } else {
