@@ -91,6 +91,16 @@ try {
     // A newer lab pulling a date or manifest window asks for it in pages; older
     // labs never send the key and get the whole window, as they always have.
     $page = RequestsService::readPage($data['page'] ?? null);
+    // A newer lab pages its scheduled window too, with receipts, under its own
+    // key. An STS that pages but does not know the key sends the whole window
+    // with receipts, as it always has. Under "page" it would mark a page sent
+    // with no receipt, and a row the lab could not save was never sent again.
+    if ($page === null && $wantsReceipts && !$pendingOnly) {
+        $page = RequestsService::readPage($data['windowPage'] ?? null);
+    } else {
+        // "page" is the dated or manifest pull, which confirms nothing.
+        $wantsReceipts = $wantsReceipts && $page === null;
+    }
 
     if (!$testType) {
         throw new SystemException('Test Type is missing in the request', 400);

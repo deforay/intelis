@@ -67,6 +67,11 @@ final class RequestsService
      * window outlasted the lab's timeout and nothing was saved. A lab that does not
      * ask gets the whole window, as it always has.
      *
+     * A page is the window alone: waiting requests come with the lab's pulls for
+     * them. With $withPending (a lab paging its scheduled window, "windowPage")
+     * the page is receipted like any other pull: receiptsEnabled is set, and
+     * pendingRemaining is 0, as the page holds none of them.
+     *
      * @param array{size: int, after: ?string}|null $page
      */
     public function getRequests(
@@ -80,18 +85,21 @@ final class RequestsService
         ?array $page = null
     ) {
         $this->setTestType($testType);
-        if ($page !== null) {
-            // A page is the window alone: waiting requests come with the next
-            // ordinary pull, receipted as usual.
-            $withPending = false;
-        }
 
-        [$pendingIds, $pendingRemaining, $receiptsEnabled] = $this->pendingFor(
-            $withPending,
-            $labId,
-            $facilityMapResult,
-            $manifestCode
-        );
+        if ($page === null) {
+            [$pendingIds, $pendingRemaining, $receiptsEnabled] = $this->pendingFor(
+                $withPending,
+                $labId,
+                $facilityMapResult,
+                $manifestCode
+            );
+        } else {
+            $pendingOnly = false;
+            [$pendingIds, $pendingRemaining] = [[], 0];
+            // A receipt is recorded in request_sync_failures: without the table
+            // the page is marked sent at once, as for a lab without receipts.
+            $receiptsEnabled = $withPending && empty($manifestCode) && $this->db->tableExists('request_sync_failures');
+        }
 
         [$rResult, $resultCount] = $this->runQuery(
             $labId,
