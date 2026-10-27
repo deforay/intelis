@@ -559,4 +559,5 @@ if (str_contains((string) $httpReferer, "updateVlTestResult.php") || str_contain
 	}
 </script>
 <?php
+require_once APPLICATION_PATH . '/vl/requests/_reject-sample-modal.php';
 require_once APPLICATION_PATH . '/footer.php';

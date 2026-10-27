@@ -1,6 +1,7 @@
 <?php
 
 use const COUNTRY\CAMEROON;
+use App\Services\VlService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -323,6 +324,8 @@ try {
      ];
 
      $canEditRequest = $canSyncRequest = _isAllowed("/vl/requests/editVlRequest.php");
+     $canRejectRequest = $canEditRequest && VlService::canRejectFromListing();
+     $canEditLocked = _isAllowed("/vl/requests/edit-locked-vl-samples");
 
      $sampleCodeColumn = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
 
@@ -330,6 +333,7 @@ try {
 
           $vlResult = '';
           $edit = '';
+          $reject = '';
           $sync = '';
           $barcode = '';
 
@@ -439,6 +443,10 @@ try {
                }
           }
 
+          if ($canRejectRequest && VlService::isRejectableFromListing($aRow, $general->isLISInstance(), $canEditLocked)) {
+               $reject = '<a href="javascript:void(0);" class="btn btn-danger btn-xs reject-sample" style="margin-right: 2px;" title="' . _htmlTranslate("Reject Sample") . '" data-id="' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" data-code="' . htmlspecialchars((string) ($aRow['sample_code'] ?: $aRow['remote_sample_code']), ENT_QUOTES) . '"><em class="fa-solid fa-ban"></em> ' . _htmlTranslate("Reject") . '</a>';
+          }
+
           if (isset($barCodePrinting) && $barCodePrinting !== "off") {
                $fac = ($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
                $barcode = "<br><a href='javascript:void(0)' onclick=\"printBarcodeLabel('{$aRow[$sampleCode]}', '{$fac}', '{$aRow['patient_art_no']}')\" class='btn btn-default btn-xs' style='margin-right: 2px;' title='" . _htmlTranslate("Barcode") . "'><em class='fa-solid fa-barcode'></em> " . _htmlTranslate("Barcode") . " </a>";
@@ -451,7 +459,7 @@ try {
 
           $actions = "";
           if ($canEditRequest) {
-               $actions .= $edit;
+               $actions .= $edit . $reject;
           }
           if ($canSyncRequest) {
                $actions .= $sync;

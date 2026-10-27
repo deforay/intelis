@@ -1519,4 +1519,8 @@ function fnShowHide(iCol) {
 	}
 </script>
 <?php
+// The Reject button sits in the Action column, which needs the request edit privilege
+if (_isAllowed("/vl/requests/editVlRequest.php") && !$hidesrcofreq) {
+	require_once APPLICATION_PATH . '/vl/requests/_reject-sample-modal.php';
+}
 require_once APPLICATION_PATH . '/footer.php';
