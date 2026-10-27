@@ -71,6 +71,23 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# One upgrade at a time. A second run copies files and rebuilds vendor/ under
+# the first one's migrations, and the first then dies with an error that names
+# neither run (seen on a production STS with two SSH sessions open). The lock
+# is on fd 9 and goes with the process, so a killed run never leaves it behind;
+# the jobs this script leaves running in the background close fd 9 so they do
+# not hold it after the script ends.
+UPGRADE_LOCK_FILE="/run/intelis-upgrade.lock"
+exec 9>>"$UPGRADE_LOCK_FILE"
+if ! flock -n 9; then
+    _lock_holder=$(cat "$UPGRADE_LOCK_FILE" 2>/dev/null)
+    echo "Another InteLIS upgrade is already running${_lock_holder:+ (${_lock_holder})}."
+    echo "Wait for it to finish, then run this again."
+    exit 1
+fi
+: >"$UPGRADE_LOCK_FILE"
+echo "pid $$, started $(date +'%Y-%m-%d %H:%M:%S')" >>"$UPGRADE_LOCK_FILE"
+
 # Download and update shared-functions.sh
 SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
 SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/shared-functions.sh"
@@ -1877,7 +1894,7 @@ EOF
         a2enconf -q "$conf_basename" >/dev/null 2>&1 || true
         # Best-effort reload; if it fails we still proceed — the marker file is a backstop.
         if apache2ctl -t >/dev/null 2>&1; then
-            apache2ctl -k graceful >/dev/null 2>&1 || systemctl reload apache2 >/dev/null 2>&1 || true
+            apache2ctl -k graceful >/dev/null 2>&1 9>&- || systemctl reload apache2 >/dev/null 2>&1 || true
             print info "Maintenance mode enabled (Apache 503) for ${lp}"
         else
             print warning "Apache config test failed; maintenance conf left disabled for ${lp}"
@@ -1917,7 +1934,7 @@ disable_maintenance_mode() {
     rm -f "${lp}/public/.intelis-maintenance.html" 2>/dev/null || true
 
     if command -v apache2ctl >/dev/null 2>&1 && apache2ctl -t >/dev/null 2>&1; then
-        apache2ctl -k graceful >/dev/null 2>&1 || systemctl reload apache2 >/dev/null 2>&1 || true
+        apache2ctl -k graceful >/dev/null 2>&1 9>&- || systemctl reload apache2 >/dev/null 2>&1 || true
     fi
     print info "Maintenance mode disabled for ${lp}"
 }
@@ -2047,6 +2064,9 @@ declare -A instance_seconds=()
 # the run. The error itself is printed hundreds of lines earlier, and a lab sends
 # a screenshot of the last screen -- which until now said only "Failed".
 declare -A instance_failure_reason=()
+# The last lines of the failing step's own output, keyed by lis_path, printed
+# under the reason so the screenshot carries the actual error.
+declare -A instance_failure_detail=()
 
 # Shared timestamp for rollback snapshots across all instances in this run.
 apply_run_ts="$(date +%Y%m%d-%H%M%S)"
@@ -2401,6 +2421,7 @@ upgrade_instance() {
             print error "MySQL is not answering. Collecting diagnostics..."
             mysql_diagnostics || true
         fi
+        instance_failure_detail["$lis_path"]=$(printf '%s\n' "$db_probe_out" | grep -v '^[[:space:]]*$' | tail -n 15)
         _apply_failure_no_rollback "database connectivity check failed"
         return 1
     fi
@@ -2422,9 +2443,20 @@ upgrade_instance() {
 
     phase_mark "migrations"
     print info "Running database migrations..."
-    if ! wwwdata_composer post-update; then
+    # Keep a copy of the output: a step that dies outright (a PHP fatal, a
+    # killed process) leaves no migrate-last-failure.txt, and its error has
+    # long scrolled away by the time the summary is on screen. Overwritten on
+    # every run, so it never grows. tee runs as www-data: var/logs is the app's
+    # directory, and a root tee would follow a symlink planted there.
+    local post_update_log="${lis_path}/var/logs/post-update-last.log"
+    local post_update_rc
+    wwwdata_composer post-update 2>&1 | sudo -u www-data tee "$post_update_log"
+    post_update_rc=${PIPESTATUS[0]}
+    if [ "$post_update_rc" -ne 0 ]; then
         resume_cron "${lis_path}"
-        _apply_failure_no_rollback "database migrations (composer post-update) failed"
+        instance_failure_detail["$lis_path"]=$(sudo -u www-data sed -E 's/\x1b\[[0-9;]*[A-Za-z]//g' "$post_update_log" |
+            grep -v '^[[:space:]]*$' | tail -n 15)
+        _apply_failure_no_rollback "database migrations (composer post-update) failed (exit ${post_update_rc})"
         return 1
     fi
 
@@ -2515,7 +2547,7 @@ upgrade_instance() {
                 local script_name bg_log
                 script_name=$(basename "$script_path")
                 bg_log="${run_once_logdir}/${script_name%.php}-$(date +%Y%m%d-%H%M%S).log"
-                nohup php "$script_path" >>"$bg_log" 2>&1 &
+                nohup php "$script_path" >>"$bg_log" 2>&1 9>&- &
                 run_once_bg=$((run_once_bg + 1))
                 run_once_bg_notes+=("${script_name}: started in background, log ${bg_log}")
             done
@@ -2585,7 +2617,7 @@ upgrade_instance() {
     # whatever happens to the rest of the script.
     (trap '' INT
         INTELIS_SHARED_FN_FRESH=1 intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
-            chown_app_tree "${lis_path}" || true) &
+            chown_app_tree "${lis_path}" || true) 9>&- &
     permission_pids+=("$!")
 
     # --- Report which commit-to-commit jump this update made ---
@@ -2751,7 +2783,7 @@ true  # absorb nonzero exit from the tests above
 # opcache on instances running with validate_timestamps=0). Guarded by an `if`
 # so a failed reload reports instead of tripping the ERR trap.
 print header "Reloading Apache"
-if apache2ctl -k graceful >/dev/null 2>&1 || systemctl reload apache2 >/dev/null 2>&1 || systemctl restart apache2 >/dev/null 2>&1; then
+if apache2ctl -k graceful >/dev/null 2>&1 9>&- || systemctl reload apache2 >/dev/null 2>&1 || systemctl restart apache2 >/dev/null 2>&1; then
     print success "Apache reloaded."
     log_action "Apache reloaded after instance updates"
 else
@@ -2919,6 +2951,8 @@ if [ ${#failed_instances[@]} -gt 0 ]; then
         _failure_file="${p}/var/logs/migrate-last-failure.txt"
         if [ -s "$_failure_file" ]; then
             sed 's/^/       /' "$_failure_file"
+        elif [ -n "${instance_failure_detail[$p]:-}" ]; then
+            printf '%s\n' "${instance_failure_detail[$p]}" | sed 's/^/       /'
         fi
     done
     echo
