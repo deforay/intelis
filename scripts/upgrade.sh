@@ -2462,6 +2462,7 @@ upgrade_instance() {
             local run_once_bg=0
             local run_once_bg_running=0
             local run_once_bg_notes=()
+            local run_once_bg_queue=()
             local run_once_logdir="${lis_path}/var/logs"
             mkdir -p "$run_once_logdir" 2>/dev/null || true
             # Ask once which background scripts still have work, so finished ones
@@ -2489,10 +2490,7 @@ upgrade_instance() {
                             continue
                         fi
                     fi
-                    local bg_log="${run_once_logdir}/${script_name%.php}-$(date +%Y%m%d-%H%M%S).log"
-                    nohup php "$script_path" >>"$bg_log" 2>&1 &
-                    run_once_bg=$((run_once_bg + 1))
-                    run_once_bg_notes+=("${script_name}: started in background, log ${bg_log}")
+                    run_once_bg_queue+=("$script_path")
                     continue
                 fi
                 php "$script_path"
@@ -2508,6 +2506,18 @@ upgrade_instance() {
                         print warning "run-once script ${script_name} exited with status ${run_once_rc}"
                         ;;
                 esac
+            done
+            # Background scripts start only once the foreground ones are done. Launched
+            # in the middle of the loop, they wrote to form_vl while the scripts after
+            # them were still writing to it: one lab lost a foreground and a background
+            # script to the same deadlock in a single upgrade.
+            for script_path in "${run_once_bg_queue[@]}"; do
+                local script_name bg_log
+                script_name=$(basename "$script_path")
+                bg_log="${run_once_logdir}/${script_name%.php}-$(date +%Y%m%d-%H%M%S).log"
+                nohup php "$script_path" >>"$bg_log" 2>&1 &
+                run_once_bg=$((run_once_bg + 1))
+                run_once_bg_notes+=("${script_name}: started in background, log ${bg_log}")
             done
             local run_once_summary="Run-once: ${run_once_ran} ran, ${run_once_skipped} already applied"
             if [ "$run_once_bg" -gt 0 ]; then
