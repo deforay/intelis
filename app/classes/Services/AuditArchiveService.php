@@ -1075,6 +1075,52 @@ final readonly class AuditArchiveService
         $pending = $hasMark ? '(a.dt_datetime >= ? OR a.dt_datetime IS NULL)' : '1 = 1';
         $markParams = $hasMark ? [$archivedUpTo] : [];
 
+        // Under REPEATABLE READ an INSERT ... SELECT share-locks every row it reads,
+        // the joined sample rows included, until the batch commits. On a slow disk a
+        // batch runs past a minute, and the results sender, marking those samples in
+        // flight, failed with "Lock wait timeout exceeded". READ COMMITTED reads them
+        // without locking. Row-based binlog only: statement-based refuses the INSERT.
+        $isolation = $this->db->rawQueryOne(
+            'SELECT @@SESSION.transaction_isolation AS iso, @@SESSION.binlog_format AS fmt'
+        ) ?: [];
+        $restoreIsolation = ($isolation['iso'] ?? '') !== 'READ-COMMITTED'
+            && strtoupper((string) ($isolation['fmt'] ?? '')) !== 'STATEMENT';
+        if ($restoreIsolation) {
+            $this->db->rawQuery('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
+        }
+
+        try {
+            return $this->copyLegacyRowsToAuditLog(
+                $auditTable,
+                $formTable,
+                $pk,
+                $jsonObject,
+                $pending,
+                $markParams,
+                $afterBatch
+            );
+        } finally {
+            if ($restoreIsolation) {
+                $level = str_replace('-', ' ', (string) $isolation['iso']);
+                $this->db->rawQuery("SET SESSION TRANSACTION ISOLATION LEVEL {$level}");
+            }
+        }
+    }
+
+    /**
+     * The batch loop of moveLegacyTableToAuditLog().
+     *
+     * @param list<string> $markParams
+     */
+    private function copyLegacyRowsToAuditLog(
+        string $auditTable,
+        string $formTable,
+        string $pk,
+        string $jsonObject,
+        string $pending,
+        array $markParams,
+        ?callable $afterBatch
+    ): int {
         $moved = 0;
         // Resumes after the last key copied. Without it every batch would scan again
         // past all the rows below the mark, which stay until the table is dropped.

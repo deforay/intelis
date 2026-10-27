@@ -127,6 +127,42 @@ final class LegacyAuditMoveTest extends TestCase
         );
     }
 
+    /**
+     * The results sender marks samples in flight while a move runs. Under
+     * REPEATABLE READ each batch share-locked the sample rows it joined, and on a
+     * slow lab disk the sender's UPDATE timed out behind it. Here a second
+     * connection holds the sample row instead, which blocks the same lock.
+     */
+    public function testTheMoveDoesNotLockTheSampleRows(): void
+    {
+        $this->legacy(2, self::MARK, 'at the mark');
+        $db = LegacyAppHarness::db();
+        $db->rawQuery('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+        $db->rawQuery('SET SESSION innodb_lock_wait_timeout = 1');
+
+        $sender = new \mysqli(
+            (string) getenv('INTELIS_TEST_DB_HOST'),
+            (string) getenv('INTELIS_TEST_DB_USER'),
+            (string) getenv('INTELIS_TEST_DB_PASS'),
+            self::DATABASE . '_' . getmypid(),
+            (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306)
+        );
+        try {
+            $sender->begin_transaction();
+            $sender->query('UPDATE form_vl SET data_sync = 2 WHERE vl_sample_id = 50');
+
+            self::assertSame(1, $this->move(new AuditArchiveService($db)));
+        } finally {
+            $sender->rollback();
+            $sender->close();
+        }
+        self::assertSame(
+            'REPEATABLE-READ',
+            $db->rawQueryOne('SELECT @@SESSION.transaction_isolation AS iso')['iso'],
+            'The move puts the session back the way it found it.'
+        );
+    }
+
     public function testMovedRowsAreFiledBeforeTheLiveHistoryThatCameAfterThem(): void
     {
         $archive = new AuditArchiveService(LegacyAppHarness::db());
