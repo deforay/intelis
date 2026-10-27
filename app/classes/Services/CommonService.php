@@ -1603,11 +1603,20 @@ final class CommonService
         return $dateTime['dateTime'] ?? null;
     }
 
+    /**
+     * The newest call of one type and test type that moved data. Read newest first
+     * along idx_track_api_type_test_requested, stopping at the first that qualifies:
+     * MAX() over the same rows read every one of them, which on a lab with 200,000
+     * rows on a slow disk took 102 seconds.
+     */
     public function getLastApiSyncByTypeAndModule(string $syncType, string $testType): ?string
     {
-        $lastSyncQuery = "SELECT MAX(`requested_on`) AS `dateTime`
+        $lastSyncQuery = "SELECT `requested_on` AS `dateTime`
                             FROM `track_api_requests`
-                            WHERE `request_type` = ? AND `test_type` = ? AND (`response_data` IS NOT NULL OR `number_of_records` IS NOT NULL)";
+                            WHERE `request_type` = ? AND `test_type` = ? AND `requested_on` IS NOT NULL
+                                AND (`response_data` IS NOT NULL OR `number_of_records` IS NOT NULL)
+                            ORDER BY `requested_on` DESC
+                            LIMIT 1";
         $dateTime = $this->db->rawQueryOne($lastSyncQuery, [$syncType, $testType]);
         return $dateTime['dateTime'] ?? null;
     }
