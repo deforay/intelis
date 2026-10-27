@@ -7,6 +7,7 @@ use Throwable;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use Slim\Psr7\Response;
+use Slim\Psr7\Stream;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -16,6 +17,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class LegacyRequestHandler implements RequestHandlerInterface
 {
+    /**
+     * A page whose body is too big to print sets an open file here instead
+     * (AppRegistry). It becomes the response body, so the middleware still adds
+     * its headers, and the emitter copies it out a piece at a time.
+     */
+    public const RESPONSE_BODY_FILE = 'legacy.response_body_file';
+
     public function __construct(private readonly DatabaseService $dbService, private readonly CommonService $commonService)
     {
     }
@@ -49,6 +57,11 @@ class LegacyRequestHandler implements RequestHandlerInterface
 
             // Get the output buffer content and clean the buffer
             $output = ob_get_clean();
+            $bodyFile = AppRegistry::get(self::RESPONSE_BODY_FILE);
+            AppRegistry::remove(self::RESPONSE_BODY_FILE);
+            if (is_resource($bodyFile)) {
+                return $this->manageHeaders(new Response(200, null, new Stream($bodyFile)));
+            }
             return $this->createResponse($output);
         } catch (Throwable $e) {
             // Unwind only buffers opened above, and only if any were. sanitizePath()
@@ -58,6 +71,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
             while (ob_get_level() > $bufferDepth) {
                 ob_end_clean();
             }
+            AppRegistry::remove(self::RESPONSE_BODY_FILE);
 
             // sanitizePath() has already logged a 404 against the path that was
             // requested. Re-logging it here only adds a Slim stack trace, which

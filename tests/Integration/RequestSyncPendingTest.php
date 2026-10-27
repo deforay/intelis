@@ -126,14 +126,10 @@ final class RequestSyncPendingTest extends TestCase
             ->withHeader('User-Agent', 'intelis-tests')
             ->withBody((new StreamFactory())->createStream((string) json_encode($body)));
         $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
-        // The whole window is printed past the page buffer; the tests read the rows.
-        ob_start();
         try {
             $handler->handle($request);
         } catch (Throwable $e) {
             self::fail('requests.php failed: ' . $e->getMessage());
-        } finally {
-            ob_end_clean();
         }
     }
 

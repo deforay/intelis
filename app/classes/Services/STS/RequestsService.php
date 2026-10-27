@@ -198,12 +198,12 @@ final class RequestsService
                 $opening = $count === 0 ? ($keyed ? '{' : '[') : ',';
                 // json_encode, not encodeUtf8Json: that keeps a numeric string as a number.
                 $key = $keyed ? json_encode((string) $id) . ':' : '';
-                fwrite($out, $opening . $key . $json);
+                self::write($out, $opening . $key . $json);
                 $count++;
             }
         } while (count($rows) === $chunkSize);
         // An empty array encodes as [] whichever shape it would have had.
-        fwrite($out, $count === 0 ? '[]' : ($keyed ? '}' : ']'));
+        self::write($out, $count === 0 ? '[]' : ($keyed ? '}' : ']'));
 
         // After the rows are read, as getRequests() does: they are sent as they were.
         $this->fillCustomTestsDefaults();
@@ -218,6 +218,26 @@ final class RequestsService
             $written['pendingRemaining'] = $pendingRemaining;
         }
         return $written;
+    }
+
+    /**
+     * Writes all of $data or throws. A short write, from a full disk say, must stop
+     * the pull before its rows are marked as sent: the lab would get cut-off JSON
+     * while the STS recorded them as delivered.
+     *
+     * @param resource $out
+     */
+    public static function write($out, string $data): void
+    {
+        $length = strlen($data);
+        $written = 0;
+        while ($written < $length) {
+            $bytes = fwrite($out, $written === 0 ? $data : substr($data, $written));
+            if ($bytes === false || $bytes === 0) {
+                throw new RuntimeException('Could not write the requests answer to its file');
+            }
+            $written += $bytes;
+        }
     }
 
     /**

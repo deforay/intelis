@@ -182,13 +182,33 @@ final class RequestWindowStreamingTest extends TestCase
         }
     }
 
+    #[RunInSeparateProcess]
+    public function testAWriteThatFailsStopsThePullBeforeAnythingIsMarkedSent(): void
+    {
+        $db = $this->boot();
+        self::vl(1);
+        // A stream that takes no bytes, as a full disk would.
+        $out = fopen('php://memory', 'rb');
+
+        try {
+            self::sts()->writeRequests($out, 'vl', 7, null, null, self::SINCE);
+            self::fail('a write that failed went unnoticed');
+        } catch (\RuntimeException $e) {
+            self::assertStringContainsString('Could not write', $e->getMessage());
+        }
+        self::assertSame(0, (int) $db->rawQueryOne('SELECT data_sync FROM form_vl')['data_sync']);
+    }
+
     // ---- Through requests.php -------------------------------------------------------
 
     /**
-     * Posts to requests.php as a lab would. The whole window is written past the
-     * page buffer, so the body is what was printed, not the response's.
+     * Posts to requests.php as a lab would, and reads the answer as the emitter
+     * does: a piece at a time, each passed to $read.
+     *
+     * @param callable(string): void $read
+     * @return string what requests.php printed, which should be nothing
      */
-    private static function post(array $body, ?callable $output = null): string
+    private static function post(array $body, callable $read): string
     {
         $request = (new ServerRequestFactory())
             ->createServerRequest('POST', '/remote/v2/requests.php')
@@ -196,13 +216,18 @@ final class RequestWindowStreamingTest extends TestCase
             ->withHeader('Authorization', 'Bearer lab-seven-token')
             ->withBody((new StreamFactory())->createStream((string) json_encode($body)));
         $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
-        ob_start($output, $output === null ? 0 : 8192);
+        ob_start();
         try {
             $response = $handler->handle($request);
         } finally {
             $printed = (string) ob_get_clean();
         }
-        return $printed . $response->getBody();
+        $answer = $response->getBody();
+        $answer->rewind();
+        while (!$answer->eof()) {
+            $read($answer->read(4096));
+        }
+        return $printed;
     }
 
     #[RunInSeparateProcess]
@@ -213,8 +238,17 @@ final class RequestWindowStreamingTest extends TestCase
             self::vl($id);
         }
 
-        $json = self::post(['labId' => 7, 'testType' => 'vl', 'syncSinceDate' => self::SINCE]);
+        $json = '';
+        $printed = self::post(
+            ['labId' => 7, 'testType' => 'vl', 'syncSinceDate' => self::SINCE],
+            static function (string $piece) use (&$json): void {
+                $json .= $piece;
+            }
+        );
         $answer = json_decode($json, true, flags: JSON_THROW_ON_ERROR);
+
+        // In the response, not printed: the middleware adds its headers to it.
+        self::assertSame('', $printed);
 
         self::assertSame(['status', 'requests', 'testType', 'labId', 'syncSinceDate'], array_keys($answer));
         self::assertSame(['success', 'vl', 7, self::SINCE], [
@@ -255,17 +289,16 @@ final class RequestWindowStreamingTest extends TestCase
 
         $bytes = 0;
         $tail = '';
-        $json = self::post(
+        self::post(
             ['labId' => 7, 'testType' => 'vl', 'syncSinceDate' => self::SINCE],
-            static function (string $piece) use (&$bytes, &$tail): string {
+            static function (string $piece) use (&$bytes, &$tail): void {
                 $bytes += strlen($piece);
                 $tail = substr($tail . $piece, -200);
-                return '';
             }
         );
 
         self::assertGreaterThan(47_000_000, $bytes, 'the whole window was sent');
-        self::assertStringEndsWith('"testType":"vl","labId":7,"syncSinceDate":"' . self::SINCE . '"}', $tail . $json);
+        self::assertStringEndsWith('"testType":"vl","labId":7,"syncSinceDate":"' . self::SINCE . '"}', $tail);
         self::assertSame(
             6000,
             (int) $db->rawQueryOne('SELECT COUNT(*) AS n FROM form_vl WHERE data_sync = 1')['n']

@@ -13,6 +13,7 @@ use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Services\STS\TokensService;
 use App\Registries\ContainerRegistry;
+use App\HttpHandlers\LegacyRequestHandler;
 use App\Services\STS\RequestsService;
 
 header('Content-Type: application/json');
@@ -114,7 +115,7 @@ try {
         if ($body === false) {
             throw new SystemException('Could not open a file for the requests answer', 500);
         }
-        fwrite($body, substr((string) JsonUtility::encodeUtf8Json($head), 0, -1) . ',"requests":');
+        RequestsService::write($body, substr((string) JsonUtility::encodeUtf8Json($head), 0, -1) . ',"requests":');
         $requestsData = $stsRequestsService->writeRequests(
             $body,
             $testType,
@@ -125,7 +126,7 @@ try {
             $wantsReceipts,
             $pendingOnly
         );
-        fwrite($body, ',' . substr((string) JsonUtility::encodeUtf8Json($tail), 1));
+        RequestsService::write($body, ',' . substr((string) JsonUtility::encodeUtf8Json($tail), 1));
         $requestCount = $requestsData['count'];
         $payload = null;
     } else {
@@ -234,21 +235,16 @@ try {
     if ($body === null) {
         echo ApiService::generateJsonResponse($payload, $request, $responseHeaders);
     } else {
-        // Every database write is committed above: from the first byte on, only
-        // copying the file is left. Straight to the lab, past the page buffer,
-        // which would otherwise hold the whole body in memory again.
+        // The file is the response body: printing it would put the whole answer
+        // in the page buffer. The emitter copies it out a piece at a time, after
+        // the middleware has added its headers. Every database write is
+        // committed above, so from the first byte on only the copy is left.
         ApiService::sendJsonHeaders($request, $responseHeaders);
-        $buffered = ob_get_level() > 0 && ob_end_clean();
         rewind($body);
-        // A piece at a time: fpassthru() maps the whole file and writes it in one go.
-        while (!feof($body)) {
-            echo fread($body, 65536);
-            flush();
-        }
-        if ($buffered) {
-            // The request handler closes the buffer it opened.
-            ob_start();
-        }
+        AppRegistry::set(LegacyRequestHandler::RESPONSE_BODY_FILE, $body);
+        // The response owns the handle now. The name can go: the open handle
+        // keeps the file readable until the emitter has copied it.
+        $body = null;
     }
 } catch (Throwable $e) {
     $db->rollbackTransaction();

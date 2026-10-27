@@ -8,6 +8,7 @@ use App\HttpHandlers\LegacyRequestHandler;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\STS\RequestsService;
+use Psr\Http\Message\ResponseInterface;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
@@ -175,11 +176,7 @@ final class RequestWindowPagingTest extends TestCase
         self::assertArrayNotHasKey('nextAfter', $data);
     }
 
-    /**
-     * The body requests.php answered with. The whole window is written past the
-     * page buffer, so it is what was printed; a page is the response's body.
-     */
-    private static function post(array $body): string
+    private static function post(array $body): ResponseInterface
     {
         // One per test: the legacy handler loads requests.php once a process.
         $request = (new ServerRequestFactory())
@@ -188,13 +185,7 @@ final class RequestWindowPagingTest extends TestCase
             ->withHeader('Authorization', 'Bearer lab-seven-token')
             ->withBody((new StreamFactory())->createStream((string) json_encode($body)));
         $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
-        ob_start();
-        try {
-            $response = $handler->handle($request);
-        } finally {
-            $printed = (string) ob_get_clean();
-        }
-        return $printed . $response->getBody();
+        return $handler->handle($request);
     }
 
     #[RunInSeparateProcess]
@@ -202,9 +193,9 @@ final class RequestWindowPagingTest extends TestCase
     {
         $this->boot();
 
-        $body = json_decode(self::post([
+        $body = json_decode((string) self::post([
             'labId' => 7, 'testType' => 'vl', 'syncSinceDate' => self::SINCE, 'page' => ['size' => 5],
-        ]), true);
+        ])->getBody(), true);
 
         self::assertCount(5, $body['requests']);
         self::assertTrue($body['paged']);
@@ -217,9 +208,9 @@ final class RequestWindowPagingTest extends TestCase
         $this->boot();
         $last = RequestsService::pageMarker('2026-08-07 10:00:00', 19);
 
-        $body = json_decode(self::post([
+        $body = json_decode((string) self::post([
             'labId' => 7, 'testType' => 'vl', 'syncSinceDate' => self::SINCE, 'page' => ['size' => 5, 'after' => $last],
-        ]), true);
+        ])->getBody(), true);
 
         self::assertSame(['u-20', 'u-21', 'u-22', 'u-23'], array_column($body['requests'], 'unique_id'));
         self::assertTrue($body['paged']);
@@ -245,7 +236,7 @@ final class RequestWindowPagingTest extends TestCase
             $body['page'] = $page;
         }
 
-        $response = json_decode(self::post($body), true);
+        $response = json_decode((string) self::post($body)->getBody(), true);
 
         self::assertEqualsCanonicalizing(self::windowIds(), array_column($response['requests'], 'unique_id'));
         self::assertArrayNotHasKey('paged', $response, 'an older lab sees the body it always did');
