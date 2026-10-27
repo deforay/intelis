@@ -15,6 +15,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use function strlen;
 
@@ -1267,6 +1268,27 @@ final class MiscUtility
             $out = new ConsoleOutput();
         }
         return $out;
+    }
+
+    /**
+     * The verbosity flags a standalone script reads itself: only a Symfony Application
+     * applies -v on its own, so ConsoleOutput built by hand ignores it.
+     */
+    public const VERBOSITY_FLAGS = [
+        '-v' => OutputInterface::VERBOSITY_VERBOSE,
+        '--verbose' => OutputInterface::VERBOSITY_VERBOSE,
+        '-vv' => OutputInterface::VERBOSITY_VERY_VERBOSE,
+        '-vvv' => OutputInterface::VERBOSITY_DEBUG,
+    ];
+
+    /** @param list<string> $argv */
+    public static function verbosityFromArgv(array $argv): int
+    {
+        $level = OutputInterface::VERBOSITY_NORMAL;
+        foreach ($argv as $arg) {
+            $level = max($level, self::VERBOSITY_FLAGS[$arg] ?? $level);
+        }
+        return $level;
     }
 
     /** Lazily-created SymfonyStyle wrapper around the global console output (CLI only). */

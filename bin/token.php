@@ -49,7 +49,7 @@ $remoteURL = rtrim((string) $general->getRemoteURL(), '/');
 // script runs from install/upgrade post hooks that must not fail because of it.
 // (Mirrors the no-op-on-non-LIS behavior above.)
 if ($remoteURL === '' || $remoteURL === '0') {
-    $io->note('No STS URL configured — skipping STS token generation.');
+    $io->note('The STS URL is not set. Skipping the STS token.');
     exit(CLI\OK);
 }
 
@@ -61,7 +61,7 @@ if ($apiKey === '' || $apiKey === '0' || $apiKey === [] || $apiKey === false || 
     $apiKey = ConfigService::generateAPIKeyForSTS($remoteURL);
 }
 if (!$cliMode) {
-    $io->info("Usage only via CLI: php bin/token.php --key <API_KEY>");
+    $io->info("Run this from the command line: php bin/token.php --key <API_KEY>");
     exit(CLI\ERROR);
 }
 
@@ -100,11 +100,11 @@ try {
         if (!empty($response['status']) && $response['status'] === 'success') {
             // The first characters are enough to tell tokens apart; the rest stays
             // off the screen, out of terminal scrollback and screenshots.
-            $io->success('Token generated: ' . substr((string) $response['token'], 0, 8) . '…');
+            $io->success('STS token created: ' . substr((string) $response['token'], 0, 8) . '…');
             $data['sts_token'] = $response['token'];
             $db->update('s_vlsm_instance', $data);
         } else {
-            $io->error("Failed to generate token. Error: " . (implode(" | ", $response['error']) ?? 'Unknown error'));
+            $io->error("Could not get an STS token: " . (implode(" | ", $response['error']) ?? 'Unknown error'));
         }
     }
 } catch (Throwable $e) {
@@ -116,5 +116,5 @@ try {
             'trace' => $e->getTraceAsString(),
         ]
     );
-    $io->error("Error in token generation. Please check logs for details");
+    $io->error("Could not get an STS token. The error log has the details.");
 }

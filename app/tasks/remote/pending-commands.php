@@ -58,7 +58,7 @@ $gateRaw = (string) $general->getGlobalConfig('remote_commands_enabled');
 $gateEnabled = in_array(strtolower(trim($gateRaw)), ['1', 'true', 'yes', 'on'], true);
 if (!$gateEnabled) {
     if ($io) {
-        $io->text('remote_commands_enabled is off — skipping pending-commands sync.');
+        $io->text('Remote commands are off (remote_commands_enabled). Skipping.');
     }
     exit(0);
 }
@@ -227,7 +227,7 @@ $payload = [
 
 try {
     if ($io && !empty($statusUpdates)) {
-        $io->text('Reporting ' . count($statusUpdates) . ' status update(s) to STS.');
+        $io->text('Sending ' . count($statusUpdates) . ' command status update(s) to the STS.');
     }
 
     $response = $apiService->post($url, $payload, gzip: true);
@@ -269,7 +269,7 @@ try {
         }
 
         if ($io) {
-            $io->section("Dispatching {$commandName} ({$commandId})");
+            $io->section("Starting {$commandName} ({$commandId})");
         }
 
         // Root-privileged commands — drop a marker and let the runner do the work.
@@ -378,7 +378,7 @@ try {
 
     if ($io) {
         $io->success(sprintf(
-            'Pending-commands tick complete. Reported %d, received %d.',
+            'Remote commands checked. Sent %d status update(s), received %d new command(s).',
             count($statusUpdates),
             count($newCommands)
         ));
@@ -390,7 +390,7 @@ try {
         'line' => $e->getLine(),
     ]);
     if ($io) {
-        $io->error('pending-commands: ' . $e->getMessage());
+        $io->error('Could not check remote commands: ' . $e->getMessage());
     }
     exit(0);
 }

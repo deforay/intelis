@@ -15,6 +15,8 @@ use App\Utilities\ResultSyncPayload;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ResultSyncBatchSize;
 use App\Utilities\ResultSyncAcknowledgement;
+use Symfony\Component\Console\Helper\Helper;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
@@ -113,7 +115,7 @@ final class LabResultsSenderService
         $isDryRun = $run['dryRun'];
 
         $io?->section($module['section']);
-        $io?->text("Selecting rows...");
+        $io?->text("Looking for results to send...");
         $t = MiscUtility::startTimer();
 
         $query = "SELECT $alias.*, a.user_name as 'approved_by_name'
@@ -161,9 +163,14 @@ final class LabResultsSenderService
         };
 
         if ($count === 0) {
-            $io?->text("Nothing to send for {$module['name']}.");
+            $io?->text("No results to send.");
         } else {
-            $io?->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
+            $io?->text(sprintf(
+                'Found %d sample%s to send (%ss).',
+                $count,
+                $count === 1 ? '' : 's',
+                MiscUtility::elapsedTime($t)
+            ));
 
             $totalChunks = (int) ceil($count / max(1, $chunkSize));
             $childLoader = $this->childLoader($testType);
@@ -184,7 +191,10 @@ final class LabResultsSenderService
                 $run['maxPayloadBytes'],
                 $nextBatchSize
             );
+            $bar = $isDryRun ? null : self::startProgressBar($io, $count);
+            self::showProgressStep($bar, 'Preparing the next batch...');
             foreach ($requests as $chunkIndex => $preparedRequest) {
+                $bar?->clear();
                 $payload = $preparedRequest['payload'];
                 $chunk = $payload['results'];
                 self::reportPreparedResult($io, $resultBatch, $preparedRequest);
@@ -193,15 +203,20 @@ final class LabResultsSenderService
                 $chunkCount = count($chunk);
 
                 $io?->text(sprintf(
-                    "Posting chunk %d (%d record%s) to %s...",
+                    'Batch %d: %d sample%s (%.1f MB)',
                     $chunkNumber,
                     $chunkCount,
                     $chunkCount === 1 ? '' : 's',
-                    $run['remoteUrl']
+                    $preparedRequest['bytes'] / 1048576
                 ));
+                if ($bar === null) {
+                    $io?->text("  Sending to {$run['remoteUrl']}...");
+                }
+                self::showProgressStep($bar, 'Sending to the STS...');
                 $tPost = MiscUtility::startTimer();
 
                 $apiResponse = $post($url, $preparedRequest['json']);
+                $bar?->clear();
                 $responseHeaders = self::unpackApiResponse($apiResponse)['headers'];
                 self::showServerHints($io, $responseHeaders, $testType);
                 $chunkSize = ResultSyncBatchSize::next(
@@ -210,7 +225,6 @@ final class LabResultsSenderService
                     $responseHeaders,
                     microtime(true) - $tPost
                 );
-                $io?->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
 
                 try {
                     $acknowledgedSamples = ResultSyncAcknowledgement::fromResponse($apiResponse, $testType);
@@ -219,8 +233,15 @@ final class LabResultsSenderService
                     break;
                 }
                 $acked += count($acknowledgedSamples);
+                $io?->text(sprintf(
+                    '  The STS accepted %d of %d (%ss).',
+                    count($acknowledgedSamples),
+                    $chunkCount,
+                    MiscUtility::elapsedTime($tPost)
+                ));
 
                 if ($acknowledgedSamples !== []) {
+                    self::showProgressStep($bar, 'Marking as sent...');
                     $tUpd = MiscUtility::startTimer();
                     $marked = self::markAcknowledgedResults(
                         $db,
@@ -230,6 +251,7 @@ final class LabResultsSenderService
                         $acknowledgedSamples,
                         $responseHeaders
                     );
+                    $bar?->clear();
                     if ($io !== null) {
                         self::reportMarkedResults(
                             $io,
@@ -240,7 +262,13 @@ final class LabResultsSenderService
                     }
                 }
 
-                $io?->comment(sprintf('Acknowledged %d/%d so far', $acked, $count));
+                if ($bar === null) {
+                    $io?->text(sprintf('  Progress: %d of %d samples sent.', $acked, $count));
+                    $io?->newLine();
+                } else {
+                    $bar->setProgress($acked);
+                    self::showProgressStep($bar, 'Preparing the next batch...');
+                }
 
                 $chunkTransactionId = $run['transactionId'] . "-$testType-"
                     . str_pad((string) $chunkNumber, 3, '0', STR_PAD_LEFT);
@@ -258,9 +286,15 @@ final class LabResultsSenderService
                 );
             }
 
+            if ($bar !== null) {
+                $bar->setMessage('');
+                $bar->display();
+                $io?->newLine(2);
+            }
+
             if (!$isDryRun) {
-                $summary = "{$module['name']}: acknowledged $acked / $count row(s). Total "
-                    . MiscUtility::elapsedTime($t) . "s";
+                $summary = "{$module['name']}: the STS accepted $acked of $count sample(s) in "
+                    . MiscUtility::elapsedTime($t) . "s.";
                 $testType === 'generic-tests' ? $io?->success($summary) : $io?->text($summary);
             }
         }
@@ -426,13 +460,45 @@ final class LabResultsSenderService
         return ResultSyncAcknowledgement::markSynced($db, $table, $primaryKey, $rows);
     }
 
-    private static function reportMarkedResults(SymfonyStyle $io, int $acknowledged, int $marked, string $seconds): void
-    {
-        $io->text("Marked $marked of $acknowledged acknowledged row(s) as synced in {$seconds}s");
+    private static function reportMarkedResults(
+        SymfonyStyle $io,
+        int $acknowledged,
+        int $marked,
+        string $seconds
+    ): void {
+        $io->text("  Marked $marked as sent in this lab ({$seconds}s).");
         if ($marked < $acknowledged) {
-            $io->comment('Unmarked rows stay pending: edited while their request was in flight,'
-                . ' or acknowledged under a code this lab did not send.');
+            $io->comment(($acknowledged - $marked) . ' sample(s) stay unsent. Someone edited them during sending,'
+                . ' or the STS answered with a sample code this lab did not send. The next run sends them again.');
         }
+    }
+
+    /**
+     * A progress bar for someone watching in a terminal. Cron output goes to a log,
+     * where a redrawn bar is a pile of partial lines, so it keeps the text lines.
+     */
+    private static function startProgressBar(?SymfonyStyle $io, int $count): ?ProgressBar
+    {
+        if ($io === null || !$io->isDecorated()) {
+            return null;
+        }
+        $bar = $io->createProgressBar($count);
+        $bar->setFormat(' %current%/%max% [%bar%] %percent:3s%%  %elapsed% elapsed, %left%  %message%');
+        $bar->setPlaceholderFormatter('left', static function (ProgressBar $bar): string {
+            // The first estimate needs one finished batch.
+            return $bar->getProgress() === 0
+                ? 'working out the time left'
+                : 'about ' . Helper::formatTime($bar->getRemaining()) . ' left';
+        });
+        $bar->start();
+        return $bar;
+    }
+
+    /** Redraw the bar with the step that runs next, so a long wait shows what it waits on. */
+    private static function showProgressStep(?ProgressBar $bar, string $step): void
+    {
+        $bar?->setMessage($step);
+        $bar?->display();
     }
 
     /** An unreadable acknowledgment stops this module only; the next module still runs. */
@@ -443,8 +509,8 @@ final class LabResultsSenderService
         Throwable $e
     ): void {
         LoggerUtility::logError("Results sync for $label stopped at chunk $chunkNumber: " . $e->getMessage());
-        $io?->error(strtoupper($label) . " sync stopped at chunk $chunkNumber: " . rtrim($e->getMessage(), '.')
-            . '. Unacknowledged rows stay pending; continuing with the next module.');
+        $io?->error(strtoupper($label) . " sending stopped at batch $chunkNumber: " . rtrim($e->getMessage(), '.')
+            . '. The next run sends the samples the STS did not accept. Moving on to the next test type.');
     }
 
     /**
@@ -452,7 +518,7 @@ final class LabResultsSenderService
      */
     private static function showServerHints(?SymfonyStyle $io, array $headers, ?string $label = null): void
     {
-        if ($io === null) {
+        if ($io === null || !$io->isVerbose()) {
             return;
         }
 
@@ -484,16 +550,17 @@ final class LabResultsSenderService
                 'testType' => $preparedRequest['payload']['testType'],
                 'bytes' => $preparedRequest['bytes'],
             ]);
-            $io?->warning('One sample exceeds the payload limit. Sending it intact.');
+            $io?->warning('One sample is larger than the size limit for a batch. It goes in a batch of its own.');
         }
-        if ($io !== null) {
+        // Timings and byte counts help diagnose a slow run. They are noise otherwise.
+        if ($io !== null && $io->isVerbose()) {
             $timings = $resultBatch->timings();
             $io->comment(sprintf(
                 'Source batch preparation: parent rows %.1f ms, child data/payload %.1f ms',
                 $timings['readMs'],
                 $timings['prepareMs']
             ));
-            $io->text(sprintf('JSON payload: %s bytes before gzip', number_format($preparedRequest['bytes'])));
+            $io->comment(sprintf('JSON payload: %s bytes before gzip', number_format($preparedRequest['bytes'])));
         }
     }
 
@@ -520,7 +587,7 @@ final class LabResultsSenderService
         }
 
         $io->text(sprintf(
-            'DRY RUN: would send %d %s row(s) in at least %d chunk(s) before payload-size splitting',
+            'Dry run: would send %d %s sample(s) in at least %d batch(es).',
             $count,
             strtoupper($label),
             $totalChunks

@@ -62,7 +62,7 @@ if ($cliMode) {
     if (isset($options['t']) || isset($options['truncate'])) {
         $truncateFlag = true;
     }
-    $io->title("Preparing to sync metadata...");
+    $io->title("Receiving metadata from the STS");
 }
 
 
@@ -81,7 +81,7 @@ if ($_POST !== []) {
 
 if (empty($remoteURL) || $remoteURL == '') {
     if ($cliMode) {
-        $io->error(_translate("Please check if STS URL is set"));
+        $io->error(_translate("The STS URL is not set in System Config. Exiting."));
     }
     LoggerUtility::logError("Please check if STS URL is set");
     exit(0);
@@ -93,13 +93,79 @@ $version = VERSION;
 
 if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
     if ($cliMode) {
-        $io->error(_translate("No network connectivity while trying STS medatata sync."));
+        $io->error(sprintf(
+            _translate("Cannot reach the STS at %s. Check the internet connection. Exiting."),
+            $remoteURL
+        ));
     }
     LoggerUtility::logError("No network connectivity while trying STS medatata sync.");
     return false;
 }
 
 $instanceId = $general->getInstanceId();
+
+/**
+ * A readable name for each metadata list. A list added without a label here shows
+ * its raw key, so the gap is visible.
+ */
+$metadataLabel = static function (string $dataType): string {
+    $named = [
+        'globalConfig' => _translate('System settings'),
+        'users' => _translate('Users'),
+        'facilities' => _translate('Facilities'),
+        'healthFacilities' => _translate('Health facilities'),
+        'testingLabs' => _translate('Testing labs'),
+        'fundingSources' => _translate('Funding sources'),
+        'partners' => _translate('Implementation partners'),
+        'geoDivisions' => _translate('Geographical divisions'),
+        'vlSampleTypes' => _translate('VL sample types'),
+        'vlArtCodes' => _translate('VL ART regimens'),
+        'vlRejectionReasons' => _translate('VL rejection reasons'),
+        'vlTestReasons' => _translate('VL test reasons'),
+        'vlFailureReasons' => _translate('VL test failure reasons'),
+        'vlResults' => _translate('VL results'),
+        'eidRejectionReasons' => _translate('EID rejection reasons'),
+        'eidSampleTypes' => _translate('EID sample types'),
+        'eidResults' => _translate('EID results'),
+        'eidReasonForTesting' => _translate('EID reasons for testing'),
+        'covid19RejectionReasons' => _translate('COVID-19 rejection reasons'),
+        'covid19SampleTypes' => _translate('COVID-19 sample types'),
+        'covid19Comorbidities' => _translate('COVID-19 comorbidities'),
+        'covid19Results' => _translate('COVID-19 results'),
+        'covid19Symptoms' => _translate('COVID-19 symptoms'),
+        'covid19ReasonForTesting' => _translate('COVID-19 reasons for testing'),
+        'covid19QCTestKits' => _translate('COVID-19 QC test kits'),
+        'hepatitisReasonForTesting' => _translate('Hepatitis reasons for testing'),
+        'hepatitisResults' => _translate('Hepatitis results'),
+        'hepatitisComorbidities' => _translate('Hepatitis comorbidities'),
+        'hepatitisSampleTypes' => _translate('Hepatitis sample types'),
+        'hepatitisRejectionReasons' => _translate('Hepatitis rejection reasons'),
+        'tbReasonForTesting' => _translate('TB reasons for testing'),
+        'tbResults' => _translate('TB results'),
+        'tbSampleTypes' => _translate('TB sample types'),
+        'tbRejectionReasons' => _translate('TB rejection reasons'),
+        'cd4SampleTypes' => _translate('CD4 sample types'),
+        'cd4RejectionReasons' => _translate('CD4 rejection reasons'),
+        'cd4ReasonForTesting' => _translate('CD4 reasons for testing'),
+        'rTestTypes' => _translate('Custom Tests test types'),
+        'rGenericTestMethods' => _translate('Custom Tests test methods'),
+        'rGenericTestCategories' => _translate('Custom Tests test categories'),
+        'rGenericSampleTypes' => _translate('Custom Tests sample types'),
+        'rGenericTestReasons' => _translate('Custom Tests test reasons'),
+        'rGenericTestResultUnits' => _translate('Custom Tests result units'),
+        'rGenericTestFailureReasons' => _translate('Custom Tests test failure reasons'),
+        'rGenericSampleRejectionReasons' => _translate('Custom Tests rejection reasons'),
+        'rGenericSymptoms' => _translate('Custom Tests symptoms'),
+        'genericTestMethodsMap' => _translate('Custom Tests method links'),
+        'genericTestSampleTypeMap' => _translate('Custom Tests sample type links'),
+        'genericTestReasonMap' => _translate('Custom Tests test reason links'),
+        'genericTestFailureReasonMap' => _translate('Custom Tests failure reason links'),
+        'genericSampleRejectionReasonMap' => _translate('Custom Tests rejection reason links'),
+        'genericTestSymptomsMap' => _translate('Custom Tests symptom links'),
+        'genericTestResultUnitsMap' => _translate('Custom Tests result unit links'),
+    ];
+    return $named[$dataType] ?? $dataType;
+};
 
 $dataToSync = [];
 $commonDataToSync = [];
@@ -454,13 +520,11 @@ $dataToSync = array_merge(
 
 $payload['labId'] = $labId;
 
+$metadataFailed = false;
 try {
     $jsonResponse = $apiService->post($url, $payload, gzip: true);
     if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
-        if ($cliMode) {
-            $io->success(_translate("Received metadata from STS"));
-        }
 
         $options = [
             'decoder' => new ExtJsonDecoder(true)
@@ -501,9 +565,6 @@ try {
                     // so that we update only the matching keys in the table
                     $emptyTableArray = $general->getTableFieldsAsArray($dataToSync[$dataType]['tableName']);
 
-                    if ($cliMode) {
-                        $io->info(_translate("Syncing data for") . " " . $dataToSync[$dataType]['tableName']);
-                    }
 
 
                     $totalRows = count($dataValues); // Get the total number of rows for the current table
@@ -628,7 +689,7 @@ try {
                 $db->rollbackTransaction();
 
                 if ($cliMode) {
-                    $io->error(_translate("Error while syncing metadata from STS for") . " " . $dataToSync[$dataType]['tableName']);
+                    $io->error($metadataLabel($dataType) . ': ' . _translate("could not save. The error log has the details."));
                 }
                 LoggerUtility::logError(
                     "Error while syncing metadata from STS for " . $dataToSync[$dataType]['tableName'],
@@ -647,14 +708,15 @@ try {
                 continue;
             }
             if ($cliMode) {
-                $io->info(_translate("Completed syncing data for") . " " . $dataToSync[$dataType]['tableName']);
+                $io->text($metadataLabel($dataType) . ': ' . sprintf(_translate("%d received"), count($dataValues)));
             }
         }
     }
     $id = $db->update('s_vlsm_instance', ['last_remote_reference_data_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Throwable $e) {
+    $metadataFailed = true;
     if ($cliMode) {
-        $io->error(_translate("Error while syncing metadata from STS"));
+        $io->error(_translate("Could not receive metadata from the STS. The error log has the details."));
     }
     LoggerUtility::logError("Error while syncing metadata from STS", [
         'line' => $e->getLine(),
@@ -666,8 +728,9 @@ try {
         'last_db_query' => $db->getLastQuery()
     ]);
 } finally {
-    if ($cliMode) {
-        $io->success("Metadata Synced");
+    // Only after a run that got through: the error above already said it did not.
+    if ($cliMode && !$metadataFailed) {
+        $io->success(_translate("Metadata is up to date."));
     }
     $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;"); // Enable foreign key checks
 }
