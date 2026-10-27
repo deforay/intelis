@@ -42,10 +42,11 @@ $progress = static function (string $msg) use ($cliMode): void {
 };
 
 try {
-    // Legacy path: archive any remaining audit_form_* tables. After the Audit
-    // Trail v2 cutover + run-once prune drops those tables, this becomes a fast
-    // no-op (skipping missing tables internally).
-    $auditArchiveService->run(sampleCode: null, progress: $progress, useLock: false);
+    // The legacy audit_form_* tables are no longer read here. They were, first,
+    // and one that could not be read stopped the run before the drain below: a lab
+    // whose audit_form_vl had crashed drained nothing for five months and built up
+    // 1.7 million rows in audit_log. run-once/prune-legacy-audit-tables.php moves
+    // what is left of them into audit_log, which this drains like any other row.
 
     // v2 path: drain audit_log → files (precision keying + self-prune). Safe to
     // call even pre-cutover — it no-ops if audit_log doesn't exist yet

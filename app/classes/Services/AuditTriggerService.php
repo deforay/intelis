@@ -326,6 +326,12 @@ final class AuditTriggerService
             // `audit_log`, never on the form table, and the index takes it straight to
             // the record's last revision: four locks scoped to that one record, whether
             // it has five revisions or four hundred.
+            //
+            // Only positive revisions count. Rows moved over from a legacy audit_form_*
+            // table carry their old revision negated (AuditArchiveService::
+            // moveLegacyTableToAuditLog()). Counted, a record holding only those would
+            // number its next live revision zero or below: onto a moved row's key,
+            // which fails the save, or into the range the drain treats as moved.
             $statements[] = <<<SQL
 CREATE TRIGGER {$trigQ} {$d['timing']} ON {$form}
 FOR EACH ROW
@@ -334,7 +340,8 @@ BEGIN
   SELECT COALESCE(MAX(`revision`),0)+1 INTO next_rev
     FROM {$audit}
    WHERE `form_table` = {$formLit}
-     AND `record_id`  = {$rowAlias}.{$pkQ}{$lockClause};
+     AND `record_id`  = {$rowAlias}.{$pkQ}
+     AND `revision` > 0{$lockClause};
   INSERT INTO {$audit}
     (`form_table`, `record_id`, `revision`, `action`, `dt_datetime`, `row_data`)
   VALUES (
