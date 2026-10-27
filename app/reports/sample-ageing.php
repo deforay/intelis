@@ -86,82 +86,211 @@ $exitLabels = [
 ];
 ?>
 <style>
-    /* The breakdown of one stage, worst first. */
-    #sampleFlow .sf-breakdown-title {
+    /* Two panes: a plain list of stages on the left, and the stage picked
+       from it on the right. A bordered table on each side read as two
+       unrelated grids, and first-time readers did not see that one drives
+       the other. */
+    #sampleFlow .sf-panel-title {
         font-size: 15px;
         font-weight: 600;
         color: #444;
         margin: 0 0 4px;
     }
 
-    #sampleFlow .sf-breakdown-head {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 4px 14px;
-    }
-
-    #sampleFlow .sf-groups {
-        font-size: 12px;
-        color: #8a9299;
-        white-space: nowrap;
-    }
-
-    #sampleFlow .sf-groups a {
-        margin-left: 8px;
-        cursor: pointer;
-    }
-
-    #sampleFlow .sf-groups a.is-active {
-        color: #444;
-        font-weight: 600;
-        text-decoration: none;
-        cursor: default;
-    }
-
     #sampleFlow .sf-breakdown-hint {
-        font-size: 12px;
-        color: #8a9299;
+        font-size: 13px;
+        color: #5f6b75;
         margin: 0 0 10px;
     }
 
-    /* Stage and breakdown rows both open the level below them. */
-    #sampleFlow tr.sf-row {
+    #sampleFlow .sf-breakdown-hint>em {
+        margin-right: 5px;
+        color: #3c8dbc;
+    }
+
+    /* The stage list. A row is a button: name on the left, count on the
+       right, a chevron pointing at the pane it opens. What a stage means is
+       shown once, in the right pane, not under every name. */
+    #sampleFlow .sf-stage-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-top: 1px solid #e4e8ec;
+    }
+
+    #sampleFlow .sf-stage-list>li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-bottom: 1px solid #e4e8ec;
+    }
+
+    #sampleFlow .sf-row {
         cursor: pointer;
     }
 
-    #sampleFlow tr.sf-row.is-empty {
+    #sampleFlow .sf-row:hover {
+        background-color: #f0f6fb;
+    }
+
+    #sampleFlow .sf-row:focus-visible {
+        outline: 2px solid #3c8dbc;
+        outline-offset: -2px;
+    }
+
+    #sampleFlow .sf-row-label {
+        flex: 1;
+        min-width: 0;
+    }
+
+    #sampleFlow .sf-count {
+        color: #3c8dbc;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    #sampleFlow .sf-go {
+        width: 12px;
+        font-size: 12px;
+        color: #c3cad0;
+    }
+
+    #sampleFlow .sf-row:hover .sf-go {
+        color: #3c8dbc;
+    }
+
+    /* Samples past 30 days, in amber under the name, only when there are any. */
+    #sampleFlow .sf-old {
+        display: block;
+        font-size: 12px;
+        color: #b26a00;
+    }
+
+    #sampleFlow .sf-old:empty {
+        display: none;
+    }
+
+    #sampleFlow .sf-row.is-empty {
         cursor: default;
         color: #a6adb4;
     }
 
-    #sampleFlow tr.sf-row.is-empty:hover>td {
-        background-color: inherit;
+    #sampleFlow .sf-row.is-empty:hover {
+        background-color: transparent;
     }
 
-    #sampleFlow tr.sf-row:hover>td {
-        background-color: #f4f8fb;
+    #sampleFlow .sf-row.is-empty .sf-count {
+        color: #a6adb4;
+        font-weight: 400;
     }
 
-    #sampleFlow tr.sf-row.is-active>td {
-        background-color: #eaf3fa;
+    #sampleFlow .sf-row.is-empty .sf-go {
+        visibility: hidden;
+    }
+
+    #sampleFlow .sf-row.is-active,
+    #sampleFlow .sf-row.is-active:hover {
+        background-color: #3c8dbc;
+        color: #fff;
+    }
+
+    #sampleFlow .sf-row.is-active .sf-count,
+    #sampleFlow .sf-row.is-active .sf-go,
+    #sampleFlow .sf-row.is-active .sf-old {
+        color: #fff;
+    }
+
+    #sampleFlow .sf-stage-list>li.sf-section {
+        padding: 14px 12px 4px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #8a9299;
+    }
+
+    #sampleFlow .sf-stage-list>li.sf-total {
         font-weight: 600;
+        border-bottom: 0;
+        border-top: 2px solid #d5dce2;
+        margin-top: -1px;
+    }
+
+    #sampleFlow .sf-stage-list>li.sf-total>span:last-child {
+        padding-right: 22px;
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* The right pane, tied to the picked stage by the same blue. */
+    #sampleFlow #sfBreakdown {
+        border-left: 4px solid #3c8dbc;
+        padding-left: 16px;
+    }
+
+    #sampleFlow .sf-breakdown-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1f5f8b;
+    }
+
+    #sampleFlow .sf-breakdown-title small {
+        margin-left: 6px;
+        font-size: 14px;
+        font-weight: 400;
+        color: #5f6b75;
+    }
+
+    #sampleFlow .sf-stage-desc {
+        margin: 2px 0 12px;
+        font-size: 13px;
+        color: #5f6b75;
+    }
+
+    #sampleFlow .sf-statuses {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px 6px;
+        margin: -4px 0 14px;
+    }
+
+    #sampleFlow .sf-statuses:empty {
+        display: none;
+    }
+
+    #sampleFlow .sf-chip.is-mismatch {
+        color: #8a5300;
+        background-color: #fff4e0;
+        border-color: #f0d29a;
+        cursor: help;
+    }
+
+    #sampleFlow .sf-statuses-label {
+        font-size: 12px;
+        color: #8a9299;
+        margin-right: 2px;
+    }
+
+    #sampleFlow .sf-groups {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: #5f6b75;
+    }
+
+    #sampleFlow .sf-groups .btn.is-active {
+        background-color: #3c8dbc;
+        border-color: #367fa9;
+        color: #fff;
+        box-shadow: none;
     }
 
     #sampleFlow .sf-stage-note {
         display: block;
         margin-top: 2px;
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 400;
-        color: #8a9299;
-    }
-
-    #sampleFlow tr.sf-section>td {
-        background-color: #f7f7f7;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
         color: #8a9299;
     }
 
@@ -300,11 +429,13 @@ $exitLabels = [
     }
 
     #sampleFlow #sfTable tr.sf-drill-row.is-active>td {
-        background-color: #e3eef5;
+        background-color: #d6e8f5;
+        color: #1f5f8b;
+        font-weight: 600;
     }
 
     #sampleFlow #sfTable tr.sf-drill-row.is-active>td:first-child {
-        box-shadow: inset 3px 0 0 #3c8dbc;
+        box-shadow: inset 4px 0 0 #3c8dbc;
     }
 
     /* A breakdown can run to hundreds of collection sites. It scrolls inside
@@ -542,7 +673,7 @@ $exitLabels = [
                                 <dd><?= _htmlTranslate('A stage can be broken down by collection facility, testing lab or implementing partner. At facility opens on the collection facility, with the labs its samples are assigned to listed under each one. The other stages open on the testing lab, with the instruments the lab used for this test in the selected period listed under each one, read from the results it recorded.'); ?></dd>
 
                                 <dt><?= _htmlTranslate('Exits'); ?></dt>
-                                <dd><?= _htmlTranslate('Rejected, expired, lost and cancelled samples have left the pipeline without a released result. They are listed so the total reconciles, and can be broken down like any stage.'); ?></dd>
+                                <dd><?= _htmlTranslate('Rejected, expired, lost and cancelled samples are closed without a result. They are listed so the total adds up, and can be broken down like any stage.'); ?></dd>
                             </dl>
                         </div>
 
@@ -593,82 +724,71 @@ $exitLabels = [
 
 
                         <div class="row">
-                            <div class="col-md-5">
-                                <div class="sf-breakdown-title"><?= _htmlTranslate('All stages'); ?></div>
+                            <div class="col-md-4">
+                                <div class="sf-panel-title"><?= _htmlTranslate('Stages'); ?></div>
                                 <div class="sf-breakdown-hint">
-                                    <?= _htmlTranslate('Click a stage to break it down.'); ?>
+                                    <em class="fa-solid fa-hand-pointer" aria-hidden="true"></em><?= _htmlTranslate('Pick a stage to see where its samples are.'); ?>
                                 </div>
-                                <div class="table-responsive" style="margin-top:12px;">
-                                    <table class="table table-bordered table-striped sf-table" id="sfStages"
-                                        aria-describedby="sf-description">
-                                        <thead>
-                                            <tr>
-                                                <th><?= _htmlTranslate('Stage'); ?></th>
-                                                <th class="sf-num"><?= _htmlTranslate('Samples'); ?></th>
-                                                <th class="sf-num"><?= _htmlTranslate('Over 30 days'); ?></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($stageLabels as $stageKey => $label) { ?>
-                                                <tr class="sf-row" data-stage="<?= $stageKey; ?>"
-                                                    onclick="sfSelectStage('<?= $stageKey; ?>');">
-                                                    <td>
-                                                        <?= htmlspecialchars($label, ENT_QUOTES); ?>
-                                                        <small class="sf-stage-note"><?= htmlspecialchars($stageHints[$stageKey], ENT_QUOTES); ?></small>
-                                                    </td>
-                                                    <td class="num" id="count-<?= $stageKey; ?>">&ndash;</td>
-                                                    <td class="num" id="old-<?= $stageKey; ?>"></td>
-                                                </tr>
-                                            <?php } ?>
-                                            <tr class="sf-section">
-                                                <td colspan="3"><?= _htmlTranslate('Left the pipeline'); ?></td>
-                                            </tr>
-                                            <?php foreach ($exitLabels as $exitKey => $label) { ?>
-                                                <tr class="sf-row" data-stage="<?= $exitKey; ?>"
-                                                    onclick="sfSelectStage('<?= $exitKey; ?>');">
-                                                    <td><?= htmlspecialchars($label, ENT_QUOTES); ?></td>
-                                                    <td class="num" id="count-<?= $exitKey; ?>">&ndash;</td>
-                                                    <td></td>
-                                                </tr>
-                                            <?php } ?>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th style="text-align:left;"><?= _htmlTranslate('Registered in this period'); ?></th>
-                                                <th id="foot-registered"></th>
-                                                <th></th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
+                                <ul class="sf-stage-list" id="sfStages" aria-describedby="sf-description">
+                                    <?php foreach ($stageLabels as $stageKey => $label) { ?>
+                                        <li class="sf-row" data-stage="<?= $stageKey; ?>" tabindex="0" role="button"
+                                            onclick="sfSelectStage('<?= $stageKey; ?>');">
+                                            <span class="sf-row-label">
+                                                <?= htmlspecialchars($label, ENT_QUOTES); ?>
+                                                <small class="sf-old" id="old-<?= $stageKey; ?>"></small>
+                                            </span>
+                                            <span class="sf-count" id="count-<?= $stageKey; ?>">&ndash;</span>
+                                            <em class="fa-solid fa-chevron-right sf-go" aria-hidden="true"></em>
+                                        </li>
+                                    <?php } ?>
+                                    <li class="sf-section"><?= _htmlTranslate('Closed without a result'); ?></li>
+                                    <?php foreach ($exitLabels as $exitKey => $label) { ?>
+                                        <li class="sf-row" data-stage="<?= $exitKey; ?>" tabindex="0" role="button"
+                                            onclick="sfSelectStage('<?= $exitKey; ?>');">
+                                            <span class="sf-row-label"><?= htmlspecialchars($label, ENT_QUOTES); ?></span>
+                                            <span class="sf-count" id="count-<?= $exitKey; ?>">&ndash;</span>
+                                            <em class="fa-solid fa-chevron-right sf-go" aria-hidden="true"></em>
+                                        </li>
+                                    <?php } ?>
+                                    <li class="sf-total">
+                                        <span class="sf-row-label"><?= _htmlTranslate('Registered in this period'); ?></span>
+                                        <span id="foot-registered"></span>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="col-md-7">
+                            <div class="col-md-8">
                                 <div id="sfBreakdown" style="display:none;">
-                                    <div class="sf-breakdown-head">
-                                    <div class="sf-breakdown-title" id="sfBreakdownTitle"></div>
-                                    <div class="sf-groups" id="sfGroups">
-                                        <?= _htmlTranslate('Break down by'); ?>:
-                                        <?php foreach ($groupLabels as $gKey => $gLabel) { ?>
-                                            <a href="javascript:void(0);" data-group="<?= $gKey; ?>"
-                                                onclick="sfSelectGroup('<?= $gKey; ?>');"><?= htmlspecialchars($gLabel, ENT_QUOTES); ?></a>
-                                        <?php } ?>
+                                    <div class="sf-breakdown-title">
+                                        <span id="sfBreakdownTitle"></span><small id="sfBreakdownTotal"></small>
                                     </div>
-                                </div>
-                                    <div class="sf-breakdown-hint sf-breakdown-actions">
-                                        <span><?= _htmlTranslate('Click a row to list its samples.'); ?></span>
+                                    <div class="sf-stage-desc" id="sfStageDesc"></div>
+                                    <div class="sf-statuses" id="sfStageStatuses"></div>
+                                    <div class="sf-breakdown-actions">
+                                        <div class="sf-groups" id="sfGroups">
+                                            <span><?= _htmlTranslate('Group by'); ?></span>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <?php foreach ($groupLabels as $gKey => $gLabel) { ?>
+                                                    <button type="button" class="btn btn-default" data-group="<?= $gKey; ?>"
+                                                        onclick="sfSelectGroup('<?= $gKey; ?>');"><?= htmlspecialchars($gLabel, ENT_QUOTES); ?></button>
+                                                <?php } ?>
+                                            </div>
+                                        </div>
                                         <div class="sf-breakdown-tools">
                                             <div class="sf-find" id="sfBreakdownFind" style="display:none;">
                                                 <em class="fa-solid fa-magnifying-glass" aria-hidden="true"></em>
                                                 <input type="search" id="sfBreakdownSearch" class="form-control" autocomplete="off" aria-controls="sfTable" />
                                             </div>
-                                            <button type="button" class="btn btn-default btn-xs" onclick="sfDrill('', '');">
+                                            <button type="button" class="btn btn-default btn-sm" onclick="sfDrill('', '');">
                                                 <em class="fa-solid fa-list"></em>
                                                 <?= _htmlTranslate('List every sample in this stage'); ?>
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="table-responsive sf-scroll" id="sfBreakdownScroll" style="margin-top:12px;">
-                                        <table class="table table-bordered table-striped sf-table" id="sfTable" aria-describedby="sfBreakdownTitle">
+                                    <div class="sf-breakdown-hint" style="margin-top:12px;">
+                                        <em class="fa-solid fa-hand-pointer" aria-hidden="true"></em><?= _htmlTranslate('Click a row to list its samples.'); ?>
+                                    </div>
+                                    <div class="table-responsive sf-scroll" id="sfBreakdownScroll">
+                                        <table class="table sf-table" id="sfTable" aria-describedby="sfBreakdownTitle">
                                             <thead>
                                                 <tr>
                                                     <th id="sfGroupHeading"></th>
@@ -724,6 +844,8 @@ $exitLabels = [
     var SF_STAGES = <?= json_encode(array_keys($stageLabels)); ?>;
     var SF_EXITS = <?= json_encode(array_keys($exitLabels)); ?>;
     var SF_STAGE_LABELS = <?= json_encode(array_merge($stageLabels, $exitLabels), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+    var SF_EXPECTED_STATUSES = <?= json_encode(\App\Services\SampleFlowService::EXPECTED_STATUSES); ?>;
+    var SF_STAGE_HINTS = <?= json_encode($stageHints, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
     var SF_GROUP_LABELS = <?= json_encode($groupLabels, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
     var SF_SAMPLE_COLUMNS = <?= count(\App\Services\SampleFlowService::sampleColumns()); ?>;
     var SF_LABELS = {
@@ -732,6 +854,12 @@ $exitLabels = [
         wholeStage: "<?= _jsTranslate('every %s'); ?>",
         instruments: "<?= _jsTranslate('Instruments: %s'); ?>",
         andMore: "<?= _jsTranslate('and %s more'); ?>",
+        overDays: "<?= _jsTranslate('%s over 30 days'); ?>",
+        samplesCount: "<?= _jsTranslate('%s samples'); ?>",
+        testingLab: "<?= _jsTranslate('Testing lab: %s'); ?>",
+        onSite: "<?= _jsTranslate('tests on site'); ?>",
+        statusInApp: "<?= _jsTranslate('Status in the app'); ?>",
+        statusMismatch: "<?= _jsTranslate('This status does not match the stage. The dates or result of the sample place it here, so the status was probably not updated.'); ?>",
         showingOf: "<?= _jsTranslate('Showing %s of %s'); ?>",
         noMatch: "<?= _jsTranslate('No rows match the search'); ?>",
         search: {
@@ -794,7 +922,7 @@ $exitLabels = [
         sfFlow = null;
         sfCloseSamples();
         $('#sfBreakdown').hide();
-        $('#sfStages tr.sf-row').removeClass('is-active');
+        $('#sfStages .sf-row').removeClass('is-active');
         sfLoadFlow(function () {
             // Keep the reader on the stage they were looking at across a
             // filter change; otherwise open on the backlog.
@@ -855,9 +983,7 @@ $exitLabels = [
             // another. The full age breakdown is deliberately not shown.
             var oldHere = (counts.b3 || 0) + (counts.b4 || 0);
             $('#old-' + stage).text(
-                (stage !== 'released' && oldHere > 0)
-                    ? oldHere.toLocaleString() + ' (' + Math.round(oldHere / counts.total * 100) + '%)'
-                    : ''
+                (stage !== 'released' && oldHere > 0) ? SF_LABELS.overDays.replace('%s', oldHere.toLocaleString()) : ''
             );
         });
 
@@ -875,7 +1001,7 @@ $exitLabels = [
     // A stage holding nothing is dimmed and stops responding to a click, so it
     // cannot open an empty breakdown.
     function sfMarkRow(stage, total) {
-        $('#sfStages tr[data-stage="' + stage + '"]').toggleClass('is-empty', total === 0);
+        $('#sfStages .sf-row[data-stage="' + stage + '"]').toggleClass('is-empty', total === 0);
     }
 
     function sfSelectStage(stage) {
@@ -887,9 +1013,25 @@ $exitLabels = [
             sfGroup = stage === 'atFacility' ? 'facility' : 'lab';
         }
         sfCloseSamples();
-        $('#sfStages tr.sf-row').removeClass('is-active');
-        $('#sfStages tr[data-stage="' + stage + '"]').addClass('is-active');
+        $('#sfStages .sf-row').removeClass('is-active');
+        $('#sfStages .sf-row[data-stage="' + stage + '"]').addClass('is-active');
         sfLoadBreakdown();
+    }
+
+    // The statuses the rest of the app shows for the samples in this stage. A
+    // stage is read off dates, so it can hold more than one.
+    function sfRenderStatuses() {
+        var statuses = (((sfFlow || {})[sfStage] || {}).statuses) || [];
+        var expected = SF_EXPECTED_STATUSES[sfStage] || [];
+        var chips = statuses.map(function (status) {
+            var mismatch = expected.indexOf(status.id) === -1;
+            return '<span class="sf-chip' + (mismatch ? ' is-mismatch' : '') + '"'
+                + (mismatch ? ' title="' + esc(SF_LABELS.statusMismatch) + '"' : '') + '>'
+                + (mismatch ? '<em class="fa-solid fa-triangle-exclamation" aria-hidden="true"></em> ' : '')
+                + esc(status.name) + ' <strong>' + status.total.toLocaleString() + '</strong></span>';
+        }).join('');
+        $('#sfStageStatuses').html(statuses.length === 0 ? ''
+            : '<span class="sf-statuses-label">' + esc(SF_LABELS.statusInApp) + ':</span>' + chips);
     }
 
     function sfSelectGroup(group) {
@@ -903,9 +1045,12 @@ $exitLabels = [
     function sfLoadBreakdown() {
         if (!sfStage) { return; }
         $('#sfBreakdownTitle').text(SF_STAGE_LABELS[sfStage] || sfStage);
+        $('#sfBreakdownTotal').text(SF_LABELS.samplesCount.replace('%s', (((sfFlow || {})[sfStage] || {}).total || 0).toLocaleString()));
+        $('#sfStageDesc').text(SF_STAGE_HINTS[sfStage] || '').toggle(!!SF_STAGE_HINTS[sfStage]);
+        sfRenderStatuses();
         $('#sfGroupHeading').text(SF_GROUP_LABELS[sfGroup] || sfGroup);
-        $('#sfGroups a').removeClass('is-active');
-        $('#sfGroups a[data-group="' + sfGroup + '"]').addClass('is-active');
+        $('#sfGroups .btn').removeClass('is-active').attr('aria-pressed', 'false');
+        $('#sfGroups .btn[data-group="' + sfGroup + '"]').addClass('is-active').attr('aria-pressed', 'true');
         $('#sfBreakdown').show();
         // A new list starts unsearched and scrolled to its worst row.
         $('#sfBreakdownSearch').val('').attr('placeholder', SF_LABELS.search[sfGroup] || '');
@@ -939,7 +1084,7 @@ $exitLabels = [
             html += '<tr class="sf-drill-row" data-key="' + esc(key) + '" data-label="' + esc(row.label) + '">'
                 + '<td>' + esc(row.label) + sfSubLine(row) + '</td>'
                 + '<td class="num sf-drill">' + row.total.toLocaleString()
-                + '<em class="fa-solid fa-list sf-drill-icon" aria-hidden="true"></em></td></tr>';
+                + '<em class="fa-solid fa-chevron-right sf-drill-icon" aria-hidden="true"></em></td></tr>';
         });
         if (rows.length === 0) {
             html = '<tr><td colspan="2" class="text-center text-muted">' + esc(SF_LABELS.noData) + '</td></tr>';
@@ -966,8 +1111,14 @@ $exitLabels = [
     // instruments are shown, with the rest on hover, so a lab with a long list
     // does not push every row taller. A lab that tested nothing shows no line.
     function sfSubLine(row) {
+        // A facility that is its own testing lab would otherwise list its own
+        // name under itself, which read as a duplicate row.
         if (sfGroup === 'facility' && row.labs) {
-            return '<small class="sf-stage-note"><em class="fa-solid fa-flask"></em> ' + esc(row.labs) + '</small>';
+            var labs = String(row.labs).split(', ').map(function (name) {
+                return name === String(row.label) ? SF_LABELS.onSite : name;
+            }).join(', ');
+            return '<small class="sf-stage-note"><em class="fa-solid fa-flask"></em> '
+                + esc(SF_LABELS.testingLab.replace('%s', labs)) + '</small>';
         }
         if (sfGroup === 'lab' && row.instruments) {
             var names = String(row.instruments).split(', ');
@@ -1144,6 +1295,14 @@ $exitLabels = [
         }
         $('#testType').on('change', function () {
             sfApplyFilters();
+        });
+
+        // Rows act as buttons, so the keyboard opens them too.
+        $('#sfStages').on('keydown', '.sf-row', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                sfSelectStage($(this).attr('data-stage'));
+            }
         });
 
         $('#sfTable').on('click', 'tr.sf-drill-row', function () {
