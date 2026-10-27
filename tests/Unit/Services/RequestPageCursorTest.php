@@ -28,9 +28,9 @@ final class RequestPageCursorTest extends TestCase
     public function testThePullRunAgainResumesFromItsPage(): void
     {
         $key = RequestPageCursor::key('vl', '2026-08-14', null);
-        (new RequestPageCursor($this->file))->advance($key, '2026-08-20 10:00:00|42');
+        (new RequestPageCursor(null, $this->file))->advance($key, '2026-08-20 10:00:00|42');
 
-        $again = new RequestPageCursor($this->file);
+        $again = new RequestPageCursor(null, $this->file);
 
         self::assertSame('2026-08-20 10:00:00|42', $again->get($key));
         self::assertNull($again->get(RequestPageCursor::key('vl', '2026-08-01', null)), 'another window starts over');
@@ -40,17 +40,17 @@ final class RequestPageCursorTest extends TestCase
     public function testAFinishedWindowStartsOverNextTime(): void
     {
         $key = RequestPageCursor::key('vl', null, 'VL26080519MHWZ');
-        $cursor = new RequestPageCursor($this->file);
+        $cursor = new RequestPageCursor(null, $this->file);
         $cursor->advance($key, '2026-08-20 10:00:00|42');
 
         $cursor->finish($key);
 
-        self::assertNull((new RequestPageCursor($this->file))->get($key));
+        self::assertNull((new RequestPageCursor(null, $this->file))->get($key));
     }
 
     public function testTheSameMarkerTwiceStopsThePull(): void
     {
-        $cursor = new RequestPageCursor($this->file);
+        $cursor = new RequestPageCursor(null, $this->file);
         $key = RequestPageCursor::key('vl', '2026-08-14', null);
 
         self::assertTrue($cursor->advance($key, '2026-08-20 10:00:00|42'));
@@ -65,11 +65,11 @@ final class RequestPageCursorTest extends TestCase
     public function testAnUnfinishedScheduledWindowHoldsItsStart(): void
     {
         $key = RequestPageCursor::scheduledKey('vl', '2026-10-20');
-        $cursor = new RequestPageCursor($this->file);
+        $cursor = new RequestPageCursor(null, $this->file);
         $cursor->begin($key);
         $cursor->advance($key, '2026-10-21 10:00:00|42');
 
-        $nextRun = new RequestPageCursor($this->file);
+        $nextRun = new RequestPageCursor(null, $this->file);
 
         self::assertSame('2026-10-20', $nextRun->heldStart('vl'));
         self::assertSame('2026-10-21 10:00:00|42', $nextRun->get($key), 'and carries on from its page');
@@ -80,9 +80,9 @@ final class RequestPageCursorTest extends TestCase
     {
         // The first pull (the waiting requests) moves the last pull time too.
         $key = RequestPageCursor::scheduledKey('vl', '2026-10-20');
-        (new RequestPageCursor($this->file))->begin($key);
+        (new RequestPageCursor(null, $this->file))->begin($key);
 
-        $nextRun = new RequestPageCursor($this->file);
+        $nextRun = new RequestPageCursor(null, $this->file);
 
         self::assertSame('2026-10-20', $nextRun->heldStart('vl'));
         self::assertSame('', $nextRun->get($key), 'no page yet: the window starts at its first');
@@ -91,37 +91,37 @@ final class RequestPageCursorTest extends TestCase
     public function testBeginKeepsThePageAWindowReached(): void
     {
         $key = RequestPageCursor::scheduledKey('vl', '2026-10-20');
-        $cursor = new RequestPageCursor($this->file);
+        $cursor = new RequestPageCursor(null, $this->file);
         $cursor->advance($key, '2026-10-21 10:00:00|42');
 
         $cursor->begin($key);
 
-        self::assertSame('2026-10-21 10:00:00|42', (new RequestPageCursor($this->file))->get($key));
+        self::assertSame('2026-10-21 10:00:00|42', (new RequestPageCursor(null, $this->file))->get($key));
     }
 
     public function testAFinishedScheduledWindowHoldsNothing(): void
     {
         $key = RequestPageCursor::scheduledKey('vl', '2026-10-20');
-        $cursor = new RequestPageCursor($this->file);
+        $cursor = new RequestPageCursor(null, $this->file);
         $cursor->begin($key);
         $cursor->advance($key, '2026-10-21 10:00:00|42');
 
         $cursor->finish($key);
 
-        self::assertNull((new RequestPageCursor($this->file))->heldStart('vl'));
+        self::assertNull((new RequestPageCursor(null, $this->file))->heldStart('vl'));
     }
 
     public function testAWindowSomeoneAskedForHoldsNoScheduledStart(): void
     {
-        $cursor = new RequestPageCursor($this->file);
+        $cursor = new RequestPageCursor(null, $this->file);
         $cursor->advance(RequestPageCursor::key('vl', '2026-08-14', null), '2026-08-20 10:00:00|42');
 
-        self::assertNull((new RequestPageCursor($this->file))->heldStart('vl'));
+        self::assertNull((new RequestPageCursor(null, $this->file))->heldStart('vl'));
     }
 
     public function testADryRunKeepsNothing(): void
     {
-        $cursor = new RequestPageCursor(null);
+        $cursor = new RequestPageCursor();
         $key = RequestPageCursor::key('vl', '2026-08-14', null);
 
         self::assertTrue($cursor->advance($key, '2026-08-20 10:00:00|42'));

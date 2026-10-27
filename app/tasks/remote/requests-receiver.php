@@ -306,6 +306,15 @@ if (!empty($forceSyncModule)) {
     $systemConfig['modules'][$forceSyncModule] = true;
 }
 
+// Where the pulls have got to. A dry run keeps nothing. The file is where a lab
+// kept its page markers before request_pull_state: they move into the table.
+$pageCursor = new RequestPageCursor(
+    $isDryRun ? null : $db,
+    $cliMode && !$isDryRun
+        ? VAR_PATH . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'request-pages.json'
+        : null
+);
+
 $moduleSyncSinceDates = [];
 if ($syncSinceDate === null) {
     $defaultWindowDays = (int) ($general->getGlobalConfig('data_sync_interval') ?? 30);
@@ -321,7 +330,9 @@ if ($syncSinceDate === null) {
         }
 
         $moduleSyncDate = $defaultModuleSyncDate;
-        $lastSyncDateTime = $general->getLastApiSyncByTypeAndModule('receive-requests', $moduleKey);
+        // track_api_requests only until this lab has recorded a pull of its own.
+        $lastSyncDateTime = $pageCursor->lastPull((string) $moduleKey)
+            ?? $general->getLastApiSyncByTypeAndModule('receive-requests', $moduleKey);
 
         if (!empty($lastSyncDateTime) && DateUtility::isDateValid($lastSyncDateTime)) {
             $moduleSyncDate = (new DateTimeImmutable($lastSyncDateTime))
@@ -360,11 +371,6 @@ $firstPhase = match (true) {
     $scheduledPull => LabRequestSyncService::NEXT_WAITING,
     default => LabRequestSyncService::NEXT_PAGES,
 };
-$pageCursor = new RequestPageCursor(
-    $cliMode && !$isDryRun
-        ? VAR_PATH . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'request-pages.json'
-        : null
-);
 $pageKeys = [];
 $phases = [];
 $announced = [];
@@ -403,6 +409,7 @@ do {
     $promises = [];
     $requestInfo = []; // to retain url+payload for tracking
     $startTime = MiscUtility::startTimer();
+    $pullAskedAt = DateUtility::getCurrentDateTime();
     $responsePayload = [];
     $moduleResponseHeaders = [];
     $receiptDelivered = [];
@@ -700,6 +707,11 @@ do {
         // Saved, or an answer of nothing at all ('[]', from an older STS).
         $answered = $body !== null && ($body === '[]' || isset($savedCounts[$module]));
         $phase = $phases[$module];
+        if ($answered && $syncSinceDate === null && empty($manifestCode)) {
+            // Where the next window starts from. A window someone asked for says
+            // nothing about the time before its own start, so it is not recorded.
+            $pageCursor->recordPull((string) $module, $pullAskedAt);
+        }
 
         if ($phase === 'plain') {
             if (in_array($module, $moreWaiting, true)) {
@@ -719,6 +731,10 @@ do {
             } elseif ($next === LabRequestSyncService::NEXT_PAGES) {
                 $phases[$module] = $next;
                 $pullModules[] = $module;
+                if ($cliMode) {
+                    $io->text(TestsService::getTestName((string) $module) . ': getting the requests changed since '
+                        . ($moduleSyncSinceDates[$module] ?? '') . ', ' . RequestPageCursor::PAGE_SIZE . ' at a time.');
+                }
             } elseif ($next === LabRequestSyncService::NEXT_WHOLE) {
                 $pageCursor->finish($pageKeys[$module]);
             }
