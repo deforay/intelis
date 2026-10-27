@@ -18,6 +18,8 @@ use const COUNTRY\SOUTH_SUDAN;
 
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\CANCELLED;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\NO_RESULT;
 use const SAMPLE_STATUS\TEST_FAILED;
 use const SAMPLE_STATUS\PENDING_APPROVAL;
@@ -448,6 +450,36 @@ final class VlService extends AbstractTestService
             }
         }
         return true;
+    }
+
+    /**
+     * Whether this user may reject samples from the VL request and result listings.
+     *
+     * A collection site edits requests but does not reject samples. Rejecting is a
+     * lab decision.
+     */
+    public static function canRejectFromListing(): bool
+    {
+        $canEdit = _isAllowed("/vl/requests/editVlRequest.php")
+            || _isAllowed("/vl/results/updateVlTestResult.php");
+        return $canEdit && ($_SESSION['accessType'] ?? null) !== 'collection-site';
+    }
+
+    /**
+     * Whether a listing row can be rejected from the Reject Sample dialog.
+     *
+     * Only a sample with no result yet qualifies. A sample that carries a result is
+     * rejected from its result screen, where the result change is recorded.
+     *
+     * @param array<string, mixed> $row form_vl columns: result, result_status, locked
+     */
+    public static function isRejectableFromListing(array $row, bool $isLis, bool $canEditLocked): bool
+    {
+        $status = (int) ($row['result_status'] ?? 0);
+        return !in_array($status, [REJECTED, CANCELLED], true)
+            && !($isLis && $status === RECEIVED_AT_CLINIC)
+            && trim((string) ($row['result'] ?? '')) === ''
+            && (($row['locked'] ?? null) !== 'yes' || $canEditLocked);
     }
 
     /**

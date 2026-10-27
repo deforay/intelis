@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\ACCEPTED;
+use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -244,6 +245,9 @@ try {
           "aaData" => []
      ];
 
+     $canRejectSamples = !isset($_POST['vlPrint']) && VlService::canRejectFromListing();
+     $canEditLocked = _isAllowed("/vl/requests/edit-locked-vl-samples");
+
      foreach ($rResult as $aRow) {
           $row = [];
           if (isset($_POST['vlPrint'])) {
@@ -257,6 +261,9 @@ try {
                $print = '<a href="/vl/results/updateVlTestResult.php?id=' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
                if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/vl/requests/edit-locked-vl-samples")) {
                     $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
+               }
+               if ($canRejectSamples && VlService::isRejectableFromListing($aRow, $general->isLISInstance(), $canEditLocked)) {
+                    $print .= '<a href="javascript:void(0);" class="btn btn-danger btn-xs reject-sample" style="margin-right: 2px;" title="' . _htmlTranslate("Reject Sample") . '" data-id="' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" data-code="' . htmlspecialchars((string) ($aRow['sample_code'] ?: $aRow['remote_sample_code']), ENT_QUOTES) . '"><em class="fa-solid fa-ban"></em> ' . _htmlTranslate("Reject") . '</a>';
                }
           }
 
