@@ -30,9 +30,12 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
  * report, the Quality Monitoring module -- counts them as still pending. That is
  * how one lab comes to have two answers to the same question.
  *
- * Where a sample is put back to is read from the milestones, never guessed: a
- * lab receipt means it is at the lab, and nothing means it never left the
- * collection point.
+ * Where a sample is put back to is read from the record, never guessed: a lab
+ * receipt, or anything only a lab writes (see labHandledSql()), means it is at
+ * the lab, and nothing means it never left the collection point. The receipt
+ * alone is not enough: lab-registered samples without one were sent back to
+ * Registered at Health Center by the first version of this repair, which
+ * repairLabSamplesMarkedAtClinic() puts right.
  *
  * The test date is the one judgement, and it is made per row:
  *
@@ -124,6 +127,7 @@ final class SampleStatusRepairService
                 . " OR t.last_modified_datetime >= DATE_SUB(NOW(), INTERVAL $months MONTH))";
         }
         $whereSql = implode(' AND ', $where);
+        $labHandled = $this->labHandledSql($table, 't') ?? '0';
 
         $repaired = 0;
         $datesCleared = 0;
@@ -140,6 +144,7 @@ final class SampleStatusRepairService
                     "SELECT t.$primaryKey AS record_id,
                             t.sample_tested_datetime,
                             t.sample_received_at_lab_datetime,
+                            ($labHandled) AS lab_handled,
                             (t.sample_tested_datetime <=> t.sample_received_at_lab_datetime
                              OR t.sample_tested_datetime <=> t.sample_collection_date) AS copied_stamp
                        FROM $table AS t
@@ -226,13 +231,148 @@ final class SampleStatusRepairService
 
         $buckets = [];
         foreach ($rows as $row) {
-            $atLab = $real($row['sample_received_at_lab_datetime']);
+            $atLab = $real($row['sample_received_at_lab_datetime']) || (int) $row['lab_handled'] === 1;
             $keepTested = $real($row['sample_tested_datetime']) && (int) $row['copied_stamp'] === 0;
 
             $status = $atLab ? RECEIVED_AT_TESTING_LAB : RECEIVED_AT_CLINIC;
             $buckets[$status . ':' . ($keepTested ? 'keep' : 'clear')][] = $row['record_id'];
         }
         return $buckets;
+    }
+
+    /**
+     * Puts back to Registered at Testing Lab the samples that say they are at
+     * the health facility while their own record shows the lab handled them.
+     *
+     * The first version of repairAcceptedWithoutResult() read only the receipt
+     * date, so a lab-registered sample without one went back to Registered at
+     * Health Center. Reports then listed lab samples as still at the collection
+     * site, and the receipt fallback skips that status, so nothing else would
+     * ever move them.
+     *
+     * The reception date is filled from the collection date where it is
+     * missing: the same value LabReceiptService gives every lab-registered
+     * sample without one. Set here rather than left to the receipt trigger,
+     * which does not cover every remote sample.
+     *
+     * @param callable|null $progress called with (repaired) after each batch
+     * @return array{repaired: int, scanned: bool}
+     */
+    public function repairLabSamplesMarkedAtClinic(
+        string $testKey,
+        ?callable $progress = null,
+        int $batchSize = self::BATCH_SIZE,
+        int $pauseMicroseconds = self::BATCH_PAUSE_MICROSECONDS
+    ): array {
+        $table = TestsService::getTestTableName($testKey);
+        $primaryKey = TestsService::getPrimaryColumn($testKey);
+        $resultColumn = TestsService::getResultColumn($testKey);
+
+        if ($table === '' || $primaryKey === '' || $resultColumn === '' || !$this->hasColumn($table, $resultColumn)) {
+            return ['repaired' => 0, 'scanned' => false];
+        }
+        $labHandled = $this->labHandledSql($table, 't');
+        if ($labHandled === null) {
+            return ['repaired' => 0, 'scanned' => false];
+        }
+
+        $whereSql = implode(' AND ', [
+            "t.result_status = " . RECEIVED_AT_CLINIC,
+            SampleStatusUtility::noResultSql($testKey, 't'),
+            "IFNULL(t.is_sample_rejected, 'no') <> 'yes'",
+            $labHandled,
+        ]);
+
+        $repaired = 0;
+        $previousIds = [];
+
+        // Not paged with an offset, for the same reason as the repair above: a
+        // repaired row leaves the matching set.
+        while (true) {
+            try {
+                $ids = array_column($this->db->rawQuery(
+                    "SELECT t.$primaryKey AS record_id
+                       FROM $table AS t
+                      WHERE $whereSql
+                      ORDER BY t.$primaryKey ASC
+                      LIMIT " . (int) $batchSize
+                ) ?: [], 'record_id');
+
+                if ($ids === []) {
+                    break;
+                }
+                if ($ids === $previousIds) {
+                    LoggerUtility::logError(
+                        'Sample status repair: the same batch came back unchanged',
+                        ['module' => $testKey, 'ids' => array_slice($ids, 0, 10)]
+                    );
+                    break;
+                }
+                $previousIds = $ids;
+
+                $placeholders = implode(',', array_fill(0, count($ids), '?'));
+                $this->db->rawQuery(
+                    "UPDATE $table
+                        SET sample_received_at_lab_datetime = CASE
+                                WHEN sample_received_at_lab_datetime IS NULL
+                                  OR sample_received_at_lab_datetime < '1970-01-02'
+                                THEN sample_collection_date
+                                ELSE sample_received_at_lab_datetime
+                            END,
+                            result_status = " . RECEIVED_AT_TESTING_LAB . ",
+                            -- The correction has to reach STS too, or the next
+                            -- sync brings the wrong status back down.
+                            data_sync = 0,
+                            last_modified_datetime = ?
+                      WHERE $primaryKey IN ($placeholders)",
+                    array_merge([DateUtility::getCurrentDateTime()], $ids)
+                );
+
+                $repaired += count($ids);
+
+                if ($progress !== null) {
+                    $progress($repaired);
+                }
+
+                if ($pauseMicroseconds > 0) {
+                    usleep($pauseMicroseconds);
+                }
+            } catch (Throwable $e) {
+                LoggerUtility::logError($e->getMessage(), [
+                    'module' => $testKey,
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'last_db_error' => $this->db->getLastError(),
+                    'last_db_query' => $this->db->getLastQuery(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                break;
+            }
+        }
+
+        return ['repaired' => $repaired, 'scanned' => true];
+    }
+
+    /**
+     * SQL that is true when a row holds something only a lab writes: a lab
+     * Sample ID beside the one the collection site issued, a tester, or a lab
+     * batch. A lab Sample ID alone is not proof, because a collection-site user
+     * on a lab instance is given one too. Null when the table has none of these
+     * columns.
+     */
+    private function labHandledSql(string $table, string $alias): ?string
+    {
+        $signs = [];
+        if ($this->hasColumn($table, 'remote_sample_code') && $this->hasColumn($table, 'sample_code')) {
+            $signs[] = "(IFNULL($alias.remote_sample_code, '') <> '' AND IFNULL($alias.sample_code, '') <> '')";
+        }
+        if ($this->hasColumn($table, 'tested_by')) {
+            $signs[] = "IFNULL($alias.tested_by, '') <> ''";
+        }
+        if ($this->hasColumn($table, 'sample_batch_id')) {
+            $signs[] = "$alias.sample_batch_id IS NOT NULL";
+        }
+        return $signs === [] ? null : '(' . implode(' OR ', $signs) . ')';
     }
 
     private function hasColumn(string $table, string $column): bool
