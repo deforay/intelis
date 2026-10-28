@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use Closure;
 use Throwable;
+use JsonMachine\Items;
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;
+use App\Services\STS\RequestsService;
 
 /**
  * Where a lab's request pulls have got to, per module: the last pull, and the page
@@ -25,6 +28,12 @@ use App\Utilities\LoggerUtility;
 final class RequestPageCursor
 {
     public const PAGE_SIZE = 500;
+
+    /**
+     * Saved requests between two markers inside a page. A page took 12 minutes on
+     * a slow lab, and an interruption made it start the page again.
+     */
+    public const PROGRESS_EVERY = 50;
 
     private const TABLE = 'request_pull_state';
 
@@ -142,11 +151,71 @@ final class RequestPageCursor
      */
     public function advance(string $key, string $after): bool
     {
-        if (($this->markers[$key] ?? null) === $after) {
+        return $this->advanceFrom($key, $this->markers[$key] ?? '', $after);
+    }
+
+    /**
+     * advance() for a page asked for with $askedWith ('' for the first page). The
+     * marker may have moved inside the page since (recordSaved()), up to the very
+     * marker the STS answers with, so only the one asked with shows a stuck page.
+     */
+    public function advanceFrom(string $key, string $askedWith, string $after): bool
+    {
+        if ($askedWith === $after) {
             return false;
         }
         $this->set($key, $after);
         return true;
+    }
+
+    /**
+     * Records the last saved request inside a page, so an interrupted page resumes
+     * after it rather than from the page's start.
+     */
+    public function recordSaved(string $key, string $after): void
+    {
+        $this->set($key, $after);
+    }
+
+    /**
+     * For a page of a paged pull, a callback for each saved request that records
+     * the last one every PROGRESS_EVERY requests (recordSaved()). Null for anything
+     * else: a whole window from an older STS is not in page order.
+     *
+     * A request saved past the marker but not yet confirmed to the STS comes back
+     * in the next waiting pull, as one in a page that breaks off always has.
+     *
+     * @return (Closure(int, array<string, mixed>): void)|null called with the
+     *         request's index in the page and the row as the STS sent it
+     */
+    public function saveRecorder(?string $key, string $body, string $module): ?Closure
+    {
+        if ($key === null || !self::isPage($body)) {
+            return null;
+        }
+        $primaryKey = TestsService::getPrimaryColumn($module);
+        return function (int $index, array $row) use ($key, $primaryKey): void {
+            if (($index + 1) % self::PROGRESS_EVERY !== 0 || !isset($row[$primaryKey])) {
+                return;
+            }
+            $this->recordSaved(
+                $key,
+                RequestsService::pageMarker($row['last_modified_datetime'] ?? null, $row[$primaryKey])
+            );
+        };
+    }
+
+    /** Whether the STS answered with one page: "paged": true next to "requests". */
+    public static function isPage(string $body): bool
+    {
+        try {
+            foreach (Items::fromString($body, ['pointer' => '/paged']) as $paged) {
+                return $paged === true;
+            }
+        } catch (Throwable) {
+            // No "paged" key: the whole window.
+        }
+        return false;
     }
 
     public function finish(string $key): void

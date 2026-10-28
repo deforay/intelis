@@ -64,7 +64,8 @@ final class AuditUnchangedUpdateTest extends TestCase
         ResultSyncAcknowledgement::markInFlight($db, 'form_vl', 'vl_sample_id', [7]);
         ResultSyncAcknowledgement::markSynced($db, 'form_vl', 'vl_sample_id', [['vl_sample_id' => 7]]);
 
-        $this->assertSame(1, (int) $db->rawQueryValue('SELECT data_sync FROM form_vl WHERE vl_sample_id = 7'));
+        $dataSync = $db->rawQueryValue('SELECT data_sync FROM form_vl WHERE vl_sample_id = 7 LIMIT 1');
+        $this->assertSame(1, (int) $dataSync);
         $this->assertSame(['insert'], array_column($this->revisions(), 'action'));
     }
 

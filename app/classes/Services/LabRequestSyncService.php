@@ -383,8 +383,9 @@ final class LabRequestSyncService
      * Save one module's pulled requests (every module but Custom Tests).
      *
      * @param iterable<mixed> $parsedData the pulled requests, as decoded rows
-     * @param callable(int, int): void|null $progress called after each record with
-     *        its index and the running success count
+     * @param callable(int, int, array<string, mixed>): void|null $progress called after
+     *        each record with its index, the running success count and the row as the
+     *        STS sent it
      * @return array{success: int, failures: int, inserts: int, updates: int,
      *         saved: list<string>, failed: list<array{unique_id: string, reason: ?string}>}
      */
@@ -549,7 +550,7 @@ final class LabRequestSyncService
             }
 
             if ($progress !== null) {
-                $progress($loopIndex, $successCounter);
+                $progress($loopIndex, $successCounter, (array) $remoteData);
             }
             $loopIndex++;
         }
@@ -569,7 +570,7 @@ final class LabRequestSyncService
      * own column lists.
      *
      * @param iterable<mixed> $parsedData
-     * @param callable(int, int): void|null $progress
+     * @param callable(int, int, array<string, mixed>): void|null $progress as for saveModule()
      * @return array{success: int, failures: int, saved: list<string>,
      *         failed: list<array{unique_id: string, reason: ?string}>}
      */
@@ -796,7 +797,7 @@ final class LabRequestSyncService
             }
 
             if ($progress !== null) {
-                $progress($loopIndex, $successCounter);
+                $progress($loopIndex, $successCounter, (array) $remoteData);
             }
             $loopIndex++;
         }

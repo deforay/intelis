@@ -605,13 +605,21 @@ do {
             $parsedData = Items::fromString($responsePayload[$module], $options);
 
             $saving = $console->progress(null, _translate('Saving'));
+            $recordSaved = $isDryRun || ($phases[$module] ?? null) !== LabRequestSyncService::NEXT_PAGES
+                ? null
+                : $pageCursor->saveRecorder($pageKeys[$module] ?? null, $responsePayload[$module], (string) $module);
             $saveResult = $labRequestSync->saveModule(
                 $module,
                 $parsedData,
                 $transactionId,
                 (bool) $isSilent,
                 $isDryRun,
-                static fn(int $index) => $saving->setProgress($index + 1)
+                static function (int $index, int $saved, array $row) use ($saving, $recordSaved): void {
+                    $saving->setProgress($index + 1);
+                    if ($recordSaved !== null) {
+                        $recordSaved($index, $row);
+                    }
+                }
             );
             $saving->finish();
             $successCounter = $saveResult['success'];
@@ -685,12 +693,20 @@ do {
             $parsedData = Items::fromString($responsePayload['generic-tests'], $options);
 
             $saving = $console->progress(null, _translate('Saving'));
+            $recordSaved = $isDryRun || ($phases[$module] ?? null) !== LabRequestSyncService::NEXT_PAGES
+                ? null
+                : $pageCursor->saveRecorder($pageKeys[$module] ?? null, $responsePayload[$module], $module);
             $saveResult = $labRequestSync->saveCustomTests(
                 $parsedData,
                 $transactionId,
                 (bool) $isSilent,
                 $isDryRun,
-                static fn(int $index) => $saving->setProgress($index + 1)
+                static function (int $index, int $saved, array $row) use ($saving, $recordSaved): void {
+                    $saving->setProgress($index + 1);
+                    if ($recordSaved !== null) {
+                        $recordSaved($index, $row);
+                    }
+                }
             );
             $saving->finish();
             $successCounter = $saveResult['success'];
@@ -819,7 +835,8 @@ do {
             $pageCursor->finish($pageKeys[$module]);
             continue;
         }
-        if ($pageCursor->advance($pageKeys[$module], $nextAfter)) {
+        $asked = $requestInfo[$module]['payload'][$scheduledPull ? 'windowPage' : 'page']['after'] ?? null;
+        if ($pageCursor->advanceFrom($pageKeys[$module], (string) $asked, $nextAfter)) {
             $pullModules[] = $module;
             if ($cliMode) {
                 $io->text(TestsService::getTestName((string) $module) . ': more requests on the STS. Getting the next page.');
