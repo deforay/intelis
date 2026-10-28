@@ -1427,7 +1427,7 @@ $userModules = $_SESSION['modules'] ?? [];
 
 	function getTbMonthlyTargetsReport() {
 		let xhr = $.ajax({
-			url: "/tb/management/getTbMonthlyThresholdReport.php",
+			url: "/tb/management/get-tb-monthly-threshold-report.php",
 			type: 'POST',
 			data: {
 				targetType: '1',
@@ -1439,7 +1439,7 @@ $userModules = $_SESSION['modules'] ?? [];
 				if (dataObj['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + dataObj['aaData'].length + ' <?= _translate("TB testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/tb/management/tbTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span>' + dataObj['aaData'].length + ' <?= _translate("TB testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/tb/management/tb-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#contTB").html(div);
 				}

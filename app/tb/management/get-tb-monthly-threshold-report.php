@@ -29,8 +29,8 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $tableName = "form_tb";
 $primaryKey = "tb_id";
 
-$aColumns = ['vl.sample_tested_datetime', 'f.facility_name'];
-$orderColumns = ['vl.sample_tested_datetime', 'f.facility_name'];
+$aColumns = ['vl.sample_tested_datetime', 'f.facility_name', 'lab.facility_name'];
+$orderColumns = ['vl.sample_tested_datetime', 'f.facility_name', 'lab.facility_name'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -59,13 +59,13 @@ $sQuery = "SELECT
           DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange,
           f.facility_id,
           f.facility_name,
+          lab.facility_name as lab_name,
           hf.monthly_target,
           SUM(CASE WHEN (vl.is_sample_rejected IS NOT NULL AND vl.is_sample_rejected LIKE 'yes%') THEN 1 ELSE 0 END) as totalRejected,
           SUM(CASE WHEN (vl.sample_tested_datetime IS NULL AND vl.sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalReceived,
           SUM(CASE WHEN (vl.sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalCollected
-          FROM testing_labs as hf INNER JOIN form_tb as vl ON vl.lab_id=hf.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
+          FROM testing_labs as hf INNER JOIN form_tb as vl ON vl.lab_id=hf.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as lab ON vl.lab_id=lab.facility_id  ";
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 $sTestDate = '';
 $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
@@ -107,6 +107,7 @@ $sWhere[] = " hf.test_type = 'tb'";
 $sQuery = $sQuery . ' WHERE ' . implode(' AND ', $sWhere);
 $sQuery .= ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 // Filter on the Target Type in SQL, as the other modules' threshold reports do.
+
 if (($_POST['targetType'] ?? '') == 1) {
      $sQuery .= ' HAVING hf.monthly_target > SUM(CASE WHEN (vl.sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 } elseif (($_POST['targetType'] ?? '') == 2) {
@@ -122,6 +123,7 @@ $cnt = 0;
 foreach ($rResult as $rowData) {
      $cnt++;
      $data = [];
+     $data[] = $rowData['lab_name'];
      $data[] = ($rowData['facility_name']);
      $data[] = $rowData['monthrange'];
      $data[] = $rowData['totalReceived'];

@@ -223,7 +223,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             <table aria-describedby="table" id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
-                  <th scope="row"><?php echo _translate("Facility Name"); ?></th>
+                  <th scope="row"><?php echo _translate("Lab Name"); ?></th>
+                  <th><?php echo _translate("Facility Name"); ?></th>
                   <th><?php echo _translate("Month"); ?> </th>
                   <th> <?php echo _translate("Number of Samples Received"); ?> </th>
                   <th> <?php echo _translate("Number of Samples Rejected"); ?> </th>
@@ -304,6 +305,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       "iDisplayLength": 25,
       "bRetrieve": true,
       "aoColumns": [{
+          "sClass": "center"
+        },
+        {
           "sClass": "center"
         },
         {

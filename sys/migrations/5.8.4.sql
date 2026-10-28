@@ -20,3 +20,15 @@ CREATE TABLE IF NOT EXISTS `request_pull_state` (
 -- The last pull of one type and test type, for a lab updated before the table above
 -- was filled, and for the API activity pages.
 ALTER TABLE `track_api_requests` ADD INDEX `idx_track_api_type_test_requested` (`request_type`, `test_type`, `requested_on`);
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

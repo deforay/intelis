@@ -225,6 +225,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             <table aria-describedby="table" id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
+                  <th>Lab Name</th>
                   <th>Facility Name</th>
                   <th>Month </th>
                   <th> Number of Samples Received </th>
@@ -307,6 +308,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       "iDisplayLength": 25,
       "bRetrieve": true,
       "aoColumns": [{
+          "sClass": "center"
+        },
+        {
           "sClass": "center"
         },
         {

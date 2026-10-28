@@ -27,6 +27,7 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim((string) $_SESS
     $writer->addRow(Row::fromValues([_translate('Viral Load - Testing Target')]));
     $writer->addRow(Row::fromValues(['']));
     $writer->addRow(Row::fromValues([
+        _translate('Lab Name'),
         _translate('Facility Name'),
         _translate('Month'),
         _translate('Number of Samples Received'),
@@ -37,6 +38,7 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim((string) $_SESS
     foreach ($rResult as $aRow) {
         ExportJobUtility::tick();
         $writer->addRow(Row::fromValues([
+            html_entity_decode((string) $aRow['lab_name'], ENT_QUOTES, 'UTF-8'),
             html_entity_decode((string) $aRow['facility_name'], ENT_QUOTES, 'UTF-8'),
             $aRow['monthrange'],
             (int) $aRow['totalReceived'],
