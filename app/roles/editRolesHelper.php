@@ -17,9 +17,19 @@ $db = ContainerRegistry::get(DatabaseService::class);
 _requirePrivilege('/roles/editRole.php');
 
 $tableName1 = "roles";
+$roleId = base64_decode((string) ($_POST['roleId'] ?? ''));
+
+// The edit page refuses these two roles, but a POST can come here directly.
+// The superadmin role bypasses ACL, and the API role's privileges are fixed.
+$roleCode = $db->rawQueryOne("SELECT role_code FROM roles WHERE role_id = ?", [$roleId])['role_code'] ?? null;
+if ((int) $roleId === 1 || $roleCode === 'API') {
+        $_SESSION['alertMsg'] = _translate("This role cannot be edited");
+        header("Location:roles.php");
+        return;
+}
+
 $db->beginTransaction();
 try {
-        $roleId = base64_decode((string) $_POST['roleId']);
 
 
         $db->where('role_id', $roleId);
