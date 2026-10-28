@@ -2656,6 +2656,47 @@ configure_php_ini() {
     done
 }
 
+# Compress JSON answers. A lab pulls its requests, metadata and command answers
+# from the STS as JSON, and Ubuntu's mod_deflate list leaves application/json out:
+# one lab's page of 500 requests came down as 3.6 MB where gzip makes it about
+# 0.4 MB, and older labs that pull a whole window timed out at 100 MB. Every lab
+# already asks for gzip and unpacks it, so this needs nothing on the lab side.
+# Safe to run on every upgrade: it writes and enables the file only when it is not
+# already there as it should be. The caller's config test and reload apply it.
+# Usage: configure_apache_compression
+configure_apache_compression() {
+    local conf_name="intelis-compression"
+    local conf_file="/etc/apache2/conf-available/${conf_name}.conf"
+    local desired
+
+    if ! command -v a2enconf >/dev/null 2>&1 || [ ! -d /etc/apache2/conf-available ]; then
+        return 0
+    fi
+
+    # The IfModule guards keep this from ever failing the config test: without
+    # deflate (or the filter module it needs) the file does nothing.
+    desired='# Managed by the InteLIS upgrade (configure_apache_compression). Edits are replaced.
+<IfModule mod_filter.c>
+    <IfModule mod_deflate.c>
+        AddOutputFilterByType DEFLATE application/json
+    </IfModule>
+</IfModule>'
+
+    if ! a2query -m deflate >/dev/null 2>&1; then
+        a2enmod -q deflate >/dev/null 2>&1 && print info "Enabled Apache module: deflate"
+    fi
+
+    if [ ! -f "$conf_file" ] || [ "$(cat "$conf_file")" != "$desired" ]; then
+        printf '%s\n' "$desired" >"$conf_file"
+        print info "Apache now compresses JSON answers (${conf_file})"
+        log_action "Wrote ${conf_file}"
+    fi
+
+    if [ ! -e "/etc/apache2/conf-enabled/${conf_name}.conf" ]; then
+        a2enconf -q "$conf_name" >/dev/null 2>&1 && log_action "Enabled Apache config ${conf_name}"
+    fi
+}
+
 # ===========================================================================
 # Interactive prompt layer
 #
