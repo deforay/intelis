@@ -406,6 +406,30 @@ final class ManifestMoveTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testOneManifestIsFoundByItsCodeAtAnyLabAndAge(): void
+    {
+        $db = $this->boot();
+        $old = ['lab_id' => self::OTHER_LAB, 'request_created_datetime' => '2020-01-01 10:00:00'];
+        self::manifest($db, 'M-old', $old);
+        self::manifest($db, 'M-r', ['manifest_type' => 'referral']);
+        self::manifest($db, 'M-eid', ['module' => 'eid']);
+        $mixed = self::manifest($db, 'M-mixed');
+        self::sample($db, $mixed, 'M-mixed', 'x-1', ['facility_id' => 1]);
+        self::sample($db, $mixed, 'M-mixed', 'x-2', ['facility_id' => 2]);
+
+        $found = self::moves()->findByCode('vl', ' M-old ');
+        self::assertSame(['M-old'], array_column($found, 'code'));
+        self::assertSame(self::OTHER_LAB, $found[0]['labId'], 'the page takes the lab it is moving from');
+
+        self::assertSame([], self::moves()->findByCode('vl', 'M-r'), 'referral manifests are not moved');
+        self::assertSame([], self::moves()->findByCode('vl', 'M-eid'), 'another test type');
+        self::assertSame([], self::moves()->findByCode('vl', 'NOPE'));
+        self::assertSame([], self::moves()->findByCode('vl', ''));
+        self::assertSame(['M-mixed'], array_column(self::moves()->findByCode('vl', 'M-mixed'), 'code'));
+        self::assertSame([], self::moves()->findByCode('vl', 'M-mixed', '1'), 'a facility outside the user\'s map');
+    }
+
+    #[RunInSeparateProcess]
     public function testTheOldLabCancelsItsCopiesButKeepsWhatItHasTested(): void
     {
         $db = $this->boot();

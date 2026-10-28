@@ -31,6 +31,8 @@ try {
 // Which lab a sample belongs to is decided on the STS, by an administrator.
 $canMove = $module !== '' && $general->isSTSInstance() && !$general->isCloudLisNonAdmin();
 $testingLabs = $canMove ? $facilitiesService->getTestingLabs($module) : [];
+// From a manifest's Move button: that one manifest is looked up straight away.
+$manifestCode = trim((string) ($_GET['code'] ?? ''));
 // Pending: made, not sent yet. Dispatched: printed and sent to the lab.
 // Received at lab: the lab has activated it.
 $statusLabels = [
@@ -60,11 +62,29 @@ $statusLabels = [
                     <h3 class="box-title"><em class="fa-solid fa-search"></em> <?= _translate("Find Manifests"); ?></h3>
                 </div>
                 <div class="box-body form-horizontal">
+                    <p class="text-muted">
+                        <?= _translate("Enter a manifest code to move that one manifest, or choose a testing lab to list its manifests."); ?>
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="manifestCode" class="col-lg-4 control-label">
+                                    <?= _translate("Manifest Code"); ?>
+                                </label>
+                                <div class="col-lg-7">
+                                    <input type="text" class="form-control" id="manifestCode"
+                                        value="<?= _sanitizeOutput($manifestCode); ?>"
+                                        placeholder="<?= _translate('Manifest Code', 'html'); ?>"
+                                        title="<?= _translate('Enter the code of the manifest to move', 'html'); ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="testingLab" class="col-lg-4 control-label">
-                                    <?= _translate("Testing Lab"); ?> <span class="mandatory">*</span>
+                                    <?= _translate("Testing Lab"); ?>
                                 </label>
                                 <div class="col-lg-7">
                                     <select class="form-control" id="testingLab" style="width:100%;"
@@ -189,6 +209,12 @@ $statusLabels = [
                 updateMoveButton();
             });
             $('#manifestRows').on('change', 'input:checkbox', updateMoveButton);
+            $('#manifestCode').on('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    findManifests();
+                }
+            });
             // The lab the manifests are at is not a place to move them to.
             const destinations = $('#assignLab option').clone();
             $('#testingLab').on('change', function() {
@@ -199,6 +225,9 @@ $statusLabels = [
                 }));
                 $('#assignLab').val(kept !== from ? kept : '').trigger('change');
             });
+            if ($('#manifestCode').val().trim() !== '') {
+                findManifests();
+            }
         });
 
         // Every row of the list, including those a search is hiding: a search
@@ -215,15 +244,17 @@ $statusLabels = [
         }
 
         function findManifests() {
+            const code = $('#manifestCode').val().trim();
             const lab = $('#testingLab').val();
-            if (!lab) {
-                alert("<?= _translate('Please choose the testing lab', true); ?>");
+            if (code === '' && !lab) {
+                alert("<?= _translate('Please enter a manifest code or choose the testing lab', true); ?>");
                 return;
             }
             $.blockUI();
             $.post('/specimen-referral-manifest/get-manifest-package-code.php', {
                 module: <?= json_encode($module); ?>,
-                testingLab: lab,
+                manifestCode: code,
+                testingLab: code === '' ? lab : '',
                 daterange: $('#daterange').val()
             }).done(function(data) {
                 if ($.fn.DataTable.isDataTable('#manifestTable')) {
@@ -233,11 +264,24 @@ $statusLabels = [
                 const manifests = (data && data.manifests) || [];
                 if (manifests.length === 0) {
                     $('#moveSection').slideUp();
-                    alert("<?= _translate('No manifests found for this lab', true); ?>");
+                    alert(code !== ''
+                        ? "<?= _translate('No manifest found with this code', true); ?>"
+                        : "<?= _translate('No manifests found for this lab', true); ?>");
                     return;
                 }
+                if (code !== '') {
+                    // The manifest's own lab is not a place to move it to.
+                    const at = String(manifests[0].labId || '');
+                    if ($('#testingLab option').filter(function() { return this.value === at; }).length) {
+                        $('#testingLab').val(at).trigger('change');
+                    }
+                }
                 manifests.forEach(function(m) {
-                    const box = $('<input type="checkbox" name="packageCode[]">').val(m.code).attr('data-status', m.status || '');
+                    const box = $('<input type="checkbox" name="packageCode[]">').val(m.code)
+                        .attr('data-status', m.status || '')
+                        .attr('data-lab-id', m.labId || '')
+                        .attr('data-lab', m.lab || '')
+                        .prop('checked', manifests.length === 1);
                     const tr = $('<tr>');
                     tr.append($('<td>').append(box))
                         .append($('<td>').text(m.code))
@@ -265,7 +309,9 @@ $statusLabels = [
         }
 
         function moveManifests() {
-            if ($('#assignLab').val() === $('#testingLab').val()) {
+            const to = $('#assignLab').val();
+            const checked = manifestBoxes().filter(':checked');
+            if (checked.filter(function() { return $(this).attr('data-lab-id') === to; }).length > 0) {
                 alert("<?= _translate('Please choose a different lab to move the manifests to', true); ?>");
                 return;
             }
@@ -277,15 +323,19 @@ $statusLabels = [
             }
             // Received means the samples are at the lab now: moving them is only
             // right once they have physically gone on to the new lab.
-            const received = manifestBoxes().filter(':checked').filter(function() {
+            const receivedBoxes = checked.filter(function() {
                 return $(this).attr('data-status') === 'received';
-            }).map(function() {
+            });
+            const received = receivedBoxes.map(function() {
                 return this.value;
             }).get();
+            const receivedAt = [...new Set(receivedBoxes.map(function() {
+                return $(this).attr('data-lab');
+            }).get())];
             $('#receivedConfirmed').val('');
             if (received.length > 0) {
                 const question = "<?= _translate('These manifests were already received at %1$s: %2$s. Have their samples physically been sent on to %3$s?', true); ?>"
-                    .replace('%1$s', $('#testingLab option:selected').text())
+                    .replace('%1$s', receivedAt.join(', '))
                     .replace('%2$s', received.join(', '))
                     .replace('%3$s', $('#assignLab option:selected').text());
                 if (!confirm(question)) {
