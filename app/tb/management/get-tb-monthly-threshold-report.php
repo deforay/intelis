@@ -107,6 +107,13 @@ if ($labScope = $general->labScopeWhere('vl')) {
 $sWhere[] = " hf.test_type = 'tb'";
 $sQuery = $sQuery . ' WHERE ' . implode(' AND ', $sWhere);
 $sQuery .= ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
+// Filter on the Target Type in SQL, as the VL, EID and COVID-19 reports do, so
+// the query saved for the Excel export returns the same rows as the screen.
+if (($_POST['targetType'] ?? '') == 1) {
+     $sQuery .= ' HAVING hf.monthly_target > SUM(CASE WHEN (vl.sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
+} elseif (($_POST['targetType'] ?? '') == 2) {
+     $sQuery .= ' HAVING hf.monthly_target <= SUM(CASE WHEN (vl.sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
+}
 $_SESSION['tbMonitoringThresholdReportQuery'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
 
@@ -115,31 +122,15 @@ $output = ["sEcho" => (int) $_POST['sEcho'], "aaData" => []];
 
 $cnt = 0;
 foreach ($rResult as $rowData) {
-     $targetType1 = false;
-     $targetType2 = false;
-     $targetType3 = false;
-     if (($_POST['targetType'] ?? '') == 1) {
-         if ($rowData['monthly_target'] > $rowData['totalCollected']) {
-              $targetType1 = true;
-         }
-     } elseif (($_POST['targetType'] ?? '') == 2) {
-         if ($rowData['monthly_target'] < $rowData['totalCollected']) {
-              $targetType2 = true;
-         }
-     } elseif (($_POST['targetType'] ?? '') == 3) {
-         $targetType3 = true;
-     }
-     if ($targetType1 || $targetType2 || $targetType3) {
-          $cnt++;
-          $data = [];
-          $data[] = ($rowData['facility_name']);
-          $data[] = $rowData['monthrange'];
-          $data[] = $rowData['totalReceived'];
-          $data[] = $rowData['totalRejected'];
-          $data[] = $rowData['totalCollected'];
-          $data[] = $rowData['monthly_target'];
-          $output['aaData'][] = $data;
-     }
+     $cnt++;
+     $data = [];
+     $data[] = ($rowData['facility_name']);
+     $data[] = $rowData['monthrange'];
+     $data[] = $rowData['totalReceived'];
+     $data[] = $rowData['totalRejected'];
+     $data[] = $rowData['totalCollected'];
+     $data[] = $rowData['monthly_target'];
+     $output['aaData'][] = $data;
 }
 $output['iTotalDisplayRecords'] = $cnt;
 $output['iTotalRecords'] = $cnt;
