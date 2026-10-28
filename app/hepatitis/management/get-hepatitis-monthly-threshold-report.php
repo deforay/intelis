@@ -63,13 +63,13 @@ $sQuery = "SELECT
           DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange,
           f.facility_id,
           f.facility_name,
+          lab.facility_name as lab_name,
           hf.monthly_target,
           SUM(CASE WHEN (vl.is_sample_rejected IS NOT NULL AND vl.is_sample_rejected LIKE 'yes%') THEN 1 ELSE 0 END) as totalRejected,
           SUM(CASE WHEN (vl.sample_tested_datetime IS NULL AND vl.sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalReceived,
           SUM(CASE WHEN (vl.sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalCollected
-          FROM testing_labs as hf INNER JOIN form_hepatitis as vl ON vl.lab_id=hf.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
+          FROM testing_labs as hf INNER JOIN form_hepatitis as vl ON vl.lab_id=hf.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as lab ON vl.lab_id=lab.facility_id  ";
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 $sTestDate = '';
 $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
@@ -110,7 +110,7 @@ if ($labScope = $general->labScopeWhere('vl')) {
 }
 $sWhere[] = " hf.test_type = 'hepatitis'";
 $sQuery = $sQuery . ' WHERE ' . implode(' AND ', $sWhere);
-$sQuery .= ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
+$sQuery .= ' GROUP BY vl.lab_id, f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 // Filter on the Target Type in SQL, as the VL, EID and COVID-19 reports do, so
 // the query saved for the Excel export returns the same rows as the screen.
 if (($_POST['targetType'] ?? '') == 1) {
@@ -128,6 +128,7 @@ $cnt = 0;
 foreach ($rResult as $rowData) {
      $cnt++;
      $data = [];
+     $data[] = $rowData['lab_name'];
      $data[] = ($rowData['facility_name']);
      $data[] = $rowData['monthrange'];
      $data[] = $rowData['totalReceived'];

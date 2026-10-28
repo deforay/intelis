@@ -58,15 +58,15 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
           DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange,
           f.facility_id,
           f.facility_name,
+          lab.facility_name as lab_name,
           vl.is_sample_rejected,
           vl.sample_tested_datetime,
           vl.sample_collection_date,
           tl.monthly_target,
           SUM(CASE WHEN (is_sample_rejected IS NOT NULL AND is_sample_rejected LIKE 'yes%') THEN 1 ELSE 0 END) as totalRejected,
           SUM(CASE WHEN (sample_tested_datetime IS NULL AND sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalReceived,
-          SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalCollected FROM testing_labs as tl INNER JOIN form_eid as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id";
+          SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalCollected FROM testing_labs as tl INNER JOIN form_eid as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as lab ON vl.lab_id=lab.facility_id";
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 $sTestDate = '';
 $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
@@ -115,7 +115,7 @@ if ($sWhere !== []) {
 }
 
 
-$sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
+$sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY vl.lab_id, f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 if (($_POST['targetType'] ?? '') == 1) {
      $sQuery .= ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 } elseif (($_POST['targetType'] ?? '') == 2) {
@@ -137,6 +137,7 @@ $cnt = 0;
 foreach ($rResult as $rowData) {
      $cnt++;
      $data = [];
+     $data[] = $rowData['lab_name'];
      $data[] = ($rowData['facility_name']);
      $data[] = $rowData['monthrange'];
      $data[] = $rowData['totalReceived'];

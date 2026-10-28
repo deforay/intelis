@@ -36,55 +36,19 @@ $sTable = $tableName;
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 
-$sWhere = "";
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", (string) $_POST['sSearch']);
-     $sWhereSub = "";
-     foreach ($searchArray as $search) {
-          $search = $db->escapeLike($search);
-          if ($sWhereSub === "") {
-               $sWhereSub .= "(";
-          } else {
-               $sWhereSub .= " AND (";
-          }
-          $colSize = count($aColumns);
-
-          for ($i = 0; $i < $colSize; $i++) {
-               if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-               } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-               }
-          }
-          $sWhereSub .= ")";
-     }
-     $sWhere .= $sWhereSub;
+$sWhere = [];
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? null, $aColumns);
+if (!empty($columnSearch)) {
+     $sWhere[] = $columnSearch;
 }
 
-
-
-
 $aWhere = '';
-$sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange, f.facility_id, f.facility_name, vl.is_sample_rejected,vl.sample_tested_datetime,vl.sample_collection_date, tl.monthly_target,
+$sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange, f.facility_id, f.facility_name, lab.facility_name as lab_name, vl.is_sample_rejected,vl.sample_tested_datetime,vl.sample_collection_date, tl.monthly_target,
           SUM(CASE WHEN (is_sample_rejected IS NOT NULL AND is_sample_rejected LIKE 'yes%') THEN 1 ELSE 0 END) as totalRejected,
           SUM(CASE WHEN (sample_tested_datetime IS NULL AND sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalReceived,
           SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalCollected
-          FROM testing_labs as tl INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id";
+          FROM testing_labs as tl INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as lab ON vl.lab_id=lab.facility_id";
 
-// form_vl
-// health_facilities
-$start_date = '';
-$end_date = '';
-if (!empty($_POST['sampleCollectionDate'])) {
-     $s_c_date = explode(" to ", (string) $_POST['sampleCollectionDate']);
-
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
-          $start_date = trim($s_c_date[0]) . "-01";
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
-          $end_date = trim($s_c_date[1]) . "-31";
-     }
-}
 $sTestDate = '';
 $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
@@ -97,65 +61,35 @@ if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !
      }
 }
 
-if ($sWhere !== '' && $sWhere !== '0') {
-     $sWhere = ' WHERE ' . $sWhere;
-     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-          if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
-          } else {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          }
-     }
-} else {
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-          $fac = explode(',', (string) $_POST['facilityName']);
-          $out = '';
-          $counter = count($fac);
-          for ($s = 0; $s < $counter; $s++) {
-               $out = $out !== '' && $out !== '0' ? $out . ',"' . $db->escape($fac[$s]) . '"' : '("' . $db->escape($fac[$s]) . '"';
-          }
-          $out .= ')';
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out;
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' WHERE ' . $sWhere;
-               $sWhere = $sWhere . ' vl.lab_id IN ' . $out;
-          }
-     }
-
-     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-          if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          } else {
-               $setWhr = 'where';
-               $sWhere = ' WHERE ' . $sWhere;
-               $sWhere = $sWhere . ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          }
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
+     if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+     } else {
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
 }
-if ($sWhere !== '') {
-     $sWhere = $sWhere . ' AND vl.result!="" AND vl.result_status != ' . RECEIVED_AT_CLINIC;
-} else {
-     $sWhere = $sWhere . ' where vl.result!="" AND vl.result_status != ' . RECEIVED_AT_CLINIC;
+
+// Applied whatever else is set, so a search in the table no longer drops the
+// lab filter and shows every lab.
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
+     $sWhere[] = ' vl.lab_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
 }
 
-// HAVING COUNT(c2.sid) >= 2)
-$sWhere .= " AND tl.test_type = 'vl'";
+$sWhere[] = ' vl.result!="" AND vl.result_status != ' . RECEIVED_AT_CLINIC;
 
-// Appended past the branches above, where $sWhere is guaranteed to carry a
-// WHERE either way. A cancelled sample was called off before testing, so it is
-// not work this report should count.
-$sWhere .= ' AND ' . SampleCountUtility::countableWhere('vl');
+$sWhere[] = " tl.test_type = 'vl'";
+
+// A cancelled sample was called off before testing, so it is not work this
+// report should count.
+$sWhere[] = SampleCountUtility::countableWhere('vl');
 
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
-     $sWhere .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
 if ($labScope = $general->labScopeWhere('vl')) {
-    $sWhere .= " AND $labScope";
+    $sWhere[] = $labScope;
 }
-
 
 $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 if (($_POST['targetType'] ?? '') == 1) {
@@ -179,6 +113,7 @@ $cnt = 0;
 foreach ($rResult as $rowData) {
      $cnt++;
      $data = [];
+     $data[] = $rowData['lab_name'];
      $data[] = ($rowData['facility_name']);
      $data[] = $rowData['monthrange'];
      $data[] = $rowData['totalReceived'];
