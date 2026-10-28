@@ -40,6 +40,8 @@ final class RequestsService
     protected string $testType;
     protected string $tableName;
     protected string $primaryKeyName;
+    /** This call's $skipOwnResults: see getRequests(). */
+    protected bool $skipOwnResults = false;
 
     /** @var AbstractTestService $testTypeService */
     protected $testTypeService;
@@ -73,6 +75,10 @@ final class RequestsService
      * the page is receipted like any other pull: receiptsEnabled is set, and
      * pendingRemaining is 0, as the page holds none of them.
      *
+     * $skipOwnResults (a lab that asks, on its routine pull) leaves out of a date
+     * window the rows whose latest change is this lab's own result upload. A lab
+     * that does not ask, and every pull it makes by hand to recover rows, gets them.
+     *
      * @param array{size: int, after: ?string}|null $page
      */
     public function getRequests(
@@ -83,9 +89,11 @@ final class RequestsService
         $syncSinceDate = null,
         bool $withPending = false,
         bool $pendingOnly = false,
-        ?array $page = null
+        ?array $page = null,
+        bool $skipOwnResults = false
     ) {
         $this->setTestType($testType);
+        $this->skipOwnResults = $skipOwnResults;
 
         if ($page === null) {
             [$pendingIds, $pendingRemaining, $receiptsEnabled] = $this->pendingFor(
@@ -169,9 +177,11 @@ final class RequestsService
         $syncSinceDate = null,
         bool $withPending = false,
         bool $pendingOnly = false,
-        int $chunkSize = self::WRITE_CHUNK
+        int $chunkSize = self::WRITE_CHUNK,
+        bool $skipOwnResults = false
     ): array {
         $this->setTestType($testType);
+        $this->skipOwnResults = $skipOwnResults;
         [$pendingIds, $pendingRemaining, $receiptsEnabled] = $this->pendingFor(
             $withPending,
             $labId,
@@ -601,6 +611,22 @@ final class RequestsService
         } else {
             $condition .= " AND last_modified_datetime >= SUBDATE(?, INTERVAL $this->dataSyncInterval DAY)";
             $params[] = DateUtility::getCurrentDateTime();
+        }
+
+        if ($this->skipOwnResults && !$manifestCode) {
+            // A row whose latest change is this lab's own result upload holds what
+            // the lab sent: the lab has it. Left out of the window, so a lab that
+            // resends its results does not pull them all back. One resend put 26,000
+            // rows in a lab's window. A later change on the STS moves
+            // last_modified_datetime past the recorded time, and the row is sent
+            // again. Each <=> is false on NULL, so a row with nothing recorded stays.
+            // Only on the lab's routine pull: a lab restored from an older backup
+            // pulls by hand to get its rows back.
+            $key = ResultsService::RESULTS_FROM_LAB;
+            $condition .= " AND NOT (data_sync <=> 1
+                AND form_attributes->>'$.$key.labId' <=> ?
+                AND CAST(form_attributes->>'$.$key.at' AS DATETIME) <=> last_modified_datetime)";
+            $params[] = (string) $labId;
         }
 
         return [$condition, $params];

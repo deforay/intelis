@@ -521,6 +521,12 @@ do {
                         . ": checking for new or updated requests since $effectiveSyncSinceDate");
                 }
             }
+            if ($syncSinceDate === null && empty($manifestCode)) {
+                // The routine pull: the requests this lab sent results for, unchanged
+                // since, stay on the STS. A pull for a number of days or a date gets
+                // them, so a lab restored from an older backup can pull them back.
+                $basePayload['skipOwnResults'] = 1;
+            }
             if ($phase !== 'plain') {
                 // A manifest is its own window: the date beside it is ignored by
                 // the STS and moves as pages are saved, so it is no part of the key.
