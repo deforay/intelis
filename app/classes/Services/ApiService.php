@@ -105,6 +105,10 @@ final class ApiService
             'read_timeout' => 120,
             'timeout' => 120,
             'decode_content' => true, // auto-decodes gzip/br when libcurl supports it
+            // Asked for out loud: with decode_content alone, Guzzle stops curl from
+            // sending Accept-Encoding, so an STS that compresses JSON never did for
+            // a lab, and a page of 500 requests came down as 3.6 MB, not 0.4 MB.
+            'headers' => ['Accept-Encoding' => 'gzip'],
             // 'http_errors'  => false, // enable for no exceptions on 4xx/5xx
         ]);
     }
