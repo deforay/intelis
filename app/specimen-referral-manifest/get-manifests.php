@@ -121,7 +121,8 @@ if (!empty($sOrder) && $sOrder !== '') {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-[$rResult, $resultCount] = $db->getDataAndCount($sQuery);
+// An array, not a generator: the rows are read twice, for the Move buttons first.
+[$rResult, $resultCount] = $db->getDataAndCount($sQuery, returnGenerator: false);
 
 
 $output = [
