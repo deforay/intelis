@@ -51,6 +51,17 @@ final class RequestReceiptsClient
         return $delivered;
     }
 
+    /** How many receipts earlier runs could not deliver: 0 without the outbox table. */
+    public function outboxSize(): int
+    {
+        try {
+            $row = $this->db->rawQueryOne('SELECT COUNT(*) AS n FROM request_receipt_outbox');
+            return is_array($row) ? (int) $row['n'] : 0;
+        } catch (Throwable) {
+            return 0;
+        }
+    }
+
     /**
      * Send what earlier runs could not, oldest first. Stops at the first failure:
      * the STS is still unreachable, and the rest can wait for the next run.

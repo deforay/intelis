@@ -28,12 +28,15 @@ use App\Registries\ContainerRegistry;
 use App\Services\RequestPageCursor;
 use App\Services\RequestReceiptsClient;
 use App\Services\LabRequestSyncService;
+use App\Utilities\SyncConsole;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput(MiscUtility::verbosityFromArgv($_SERVER['argv'] ?? [])));
+// The sync button runs this too, with no console to talk to.
+$console = new SyncConsole($cliMode ? $io : null);
 
 
 /**
@@ -154,27 +157,6 @@ function outputSyncResults(SymfonyStyle $io, string $module, int $success, int $
     }
 }
 
-function spinner(int $loopIndex, int $count, string $label = 'Processed', array $spinnerChars = ['.   ', '..  ', '... ', '....']): void
-{
-    static $lastSpinnerChar = '';
-    $shouldUpdateSpinner = ($loopIndex % 10 === 0);
-
-    if ($shouldUpdateSpinner) {
-        $lastSpinnerChar = $spinnerChars[intdiv($loopIndex, 10) % count($spinnerChars)];
-    }
-
-    echo "\r$lastSpinnerChar $label: $count";
-
-    if (ob_get_level() > 0) {
-        ob_flush();
-        flush();
-    }
-}
-
-function clearSpinner(): void
-{
-    echo "\r" . str_repeat(' ', 40) . "\r";
-}
 
 
 
@@ -288,6 +270,7 @@ if (empty($labId)) {
     exit(0);
 }
 
+$console->line(_translate('Checking the connection to the STS...'));
 if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
     LoggerUtility::logError("No internet connectivity while trying remote sync.", [
         'line' => __LINE__,
@@ -374,6 +357,15 @@ $firstPhase = match (true) {
 $pageKeys = [];
 $phases = [];
 $announced = [];
+// A test type's heading, unless its last lines are still the ones above: a window
+// of many pages reads as one section, not one heading per page.
+$lastSection = null;
+$showSection = static function (string $module) use (&$lastSection, $console): void {
+    if ($lastSection !== $module) {
+        $console->section(TestsService::getTestName($module));
+        $lastSection = $module;
+    }
+};
 if ($firstPhase === LabRequestSyncService::NEXT_WAITING) {
     foreach ($moduleSyncSinceDates as $module => $since) {
         $moduleSyncSinceDates[$module] = $pageCursor->heldStart((string) $module) ?? $since;
@@ -393,6 +385,9 @@ $receiptsClient = ContainerRegistry::get(RequestReceiptsClient::class);
 // Receipts earlier runs could not deliver go first. Never in a dry run, which
 // changes nothing on either side.
 if (!$isDryRun) {
+    if ($receiptsClient->outboxSize() > 0) {
+        $console->line(_translate('Sending confirmations left over from an earlier run...'));
+    }
     $flushed = $receiptsClient->flushOutbox($remoteURL);
     if ($flushed > 0 && $cliMode) {
         $io->text("Sent $flushed confirmation(s) of received requests left over from an earlier run.");
@@ -410,6 +405,7 @@ do {
     $requestInfo = []; // to retain url+payload for tracking
     $startTime = MiscUtility::startTimer();
     $pullAskedAt = DateUtility::getCurrentDateTime();
+    $wait = $console->wait();
     $responsePayload = [];
     $moduleResponseHeaders = [];
     $receiptDelivered = [];
@@ -489,7 +485,8 @@ do {
                 $moduleUrl,
                 $basePayload,
                 gzip: true,
-                async: true
+                async: true,
+                onProgress: $cliMode ? $wait->track((string) $module) : null
             )->then(function ($response) use (
                 &$responsePayload,
                 &$moduleResponseHeaders,
@@ -519,9 +516,10 @@ do {
 
     // Wait for all promises
     Utils::settle($promises)->wait();
+    $wait->done();
 
     if ($cliMode) {
-        $io->comment("Download finished in " . MiscUtility::elapsedTime($startTime) . "s.");
+        $console->detail("Download finished in " . MiscUtility::elapsedTime($startTime) . "s.");
     }
 
     // Process modules
@@ -532,7 +530,7 @@ do {
             }
 
             if ($cliMode) {
-                $io->section(TestsService::getTestName((string) $module));
+                $showSection((string) $module);
             }
 
             $options = [
@@ -541,14 +539,16 @@ do {
             ];
             $parsedData = Items::fromString($responsePayload[$module], $options);
 
+            $saving = $console->progress(null, _translate('Saving'));
             $saveResult = $labRequestSync->saveModule(
                 $module,
                 $parsedData,
                 $transactionId,
                 (bool) $isSilent,
                 $isDryRun,
-                $cliMode ? spinner(...) : null
+                static fn(int $index) => $saving->setProgress($index + 1)
             );
+            $saving->finish();
             $successCounter = $saveResult['success'];
             $failureCounter = $saveResult['failures'];
             $insertCounter = $saveResult['inserts'];
@@ -558,8 +558,6 @@ do {
             $savedCounts[$module] = count($receiptSaved);
 
             if ($cliMode) {
-                clearSpinner();
-                echo PHP_EOL;
                 if ($isDryRun) {
                     $io->note(sprintf(
                         'Dry run: would add %d and update %d request(s). %d would fail.',
@@ -612,7 +610,7 @@ do {
             $module = 'generic-tests';
 
             if ($cliMode) {
-                $io->section(TestsService::getTestName('generic-tests'));
+                $showSection('generic-tests');
             }
 
             $options = [
@@ -621,13 +619,15 @@ do {
             ];
             $parsedData = Items::fromString($responsePayload['generic-tests'], $options);
 
+            $saving = $console->progress(null, _translate('Saving'));
             $saveResult = $labRequestSync->saveCustomTests(
                 $parsedData,
                 $transactionId,
                 (bool) $isSilent,
                 $isDryRun,
-                $cliMode ? spinner(...) : null
+                static fn(int $index) => $saving->setProgress($index + 1)
             );
+            $saving->finish();
             $successCounter = $saveResult['success'];
             $failureCounter = $saveResult['failures'];
             $receiptSaved = $saveResult['saved'];
@@ -635,7 +635,6 @@ do {
             $savedCounts[$module] = count($receiptSaved);
 
             if ($cliMode) {
-                clearSpinner();
                 if ($isDryRun) {
                     $io->note("Dry run: would save $successCounter request(s).");
                 } else {
@@ -732,8 +731,12 @@ do {
                 $phases[$module] = $next;
                 $pullModules[] = $module;
                 if ($cliMode) {
-                    $io->text(TestsService::getTestName((string) $module) . ': getting the requests changed since '
-                        . ($moduleSyncSinceDates[$module] ?? '') . ', ' . RequestPageCursor::PAGE_SIZE . ' at a time.');
+                    $io->text(sprintf(
+                        _translate('%s: getting the requests changed since %s, %d at a time.'),
+                        TestsService::getTestName((string) $module),
+                        $moduleSyncSinceDates[$module] ?? '',
+                        RequestPageCursor::PAGE_SIZE
+                    ));
                 }
             } elseif ($next === LabRequestSyncService::NEXT_WHOLE) {
                 $pageCursor->finish($pageKeys[$module]);

@@ -416,8 +416,13 @@ $url = "$remoteURL/remote/v2/results.php";
 
 try {
     // Check network
+    $io?->text(_translate('Checking the connection to the STS...'));
     if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
         LoggerUtility::logError("No network connectivity while trying remote sync.");
+        $io?->error(sprintf(
+            _translate('Cannot reach the STS at %s. Check the internet connection. The next run tries again.'),
+            $remoteURL
+        ));
         return false;
     }
 

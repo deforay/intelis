@@ -13,6 +13,8 @@
 
 require_once __DIR__ . "/../bootstrap.php";
 
+use App\Utilities\MiscUtility;
+use App\Utilities\SyncConsole;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -52,7 +54,9 @@ if (!$cliMode) {
     exit(CLI\ERROR);
 }
 
-$io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+$io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput(MiscUtility::verbosityFromArgv($_SERVER['argv'] ?? [])));
+$console = new SyncConsole($io);
+$console->title(_translate('Saving the backup key on the STS'));
 
 // Feature flag (defaults 'no'). Until an admin turns this on at the STS, saving
 // the key is a no-op and the fleet keeps its current behavior.
@@ -124,7 +128,10 @@ try {
 
     $apiService->setBearerToken($stsToken);
 
-    $jsonResponse = $apiService->post($tokenURL, json_encode($payload), gzip: true);
+    $console->line(_translate('Sending the backup key to the STS...'));
+    $wait = $console->wait();
+    $jsonResponse = $apiService->post($tokenURL, json_encode($payload), gzip: true, onProgress: $wait->track());
+    $wait->done();
     if (empty($jsonResponse) || $jsonResponse === '[]') {
         $io->warning('The STS sent an empty answer when saving the backup key. The next run tries again.');
         exit(CLI\OK);

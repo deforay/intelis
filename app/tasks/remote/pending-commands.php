@@ -24,6 +24,7 @@ if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
 }
 
+use App\Utilities\SyncConsole;
 use App\Services\ApiService;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -36,7 +37,10 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-$io = $cliMode ? new SymfonyStyle(new ArgvInput(), new ConsoleOutput()) : null;
+$io = $cliMode
+    ? new SymfonyStyle(new ArgvInput(), new ConsoleOutput(MiscUtility::verbosityFromArgv($_SERVER['argv'] ?? [])))
+    : null;
+$console = new SyncConsole($io);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -51,6 +55,8 @@ $apiService = ContainerRegistry::get(ApiService::class);
 if ($general->isLISInstance() === false) {
     exit(0);
 }
+
+$console->title(_translate('Checking for commands from the STS'));
 
 // Feature gate. Default off until a lab opts in by setting
 // global_config.remote_commands_enabled = 'yes' (or 1/true).
@@ -230,13 +236,17 @@ try {
         $io->text('Sending ' . count($statusUpdates) . ' command status update(s) to the STS.');
     }
 
-    $response = $apiService->post($url, $payload, gzip: true);
+    $console->line(_translate('Asking the STS for commands...'));
+    $wait = $console->wait();
+    $response = $apiService->post($url, $payload, gzip: true, onProgress: $io ? $wait->track() : null);
+    $wait->done();
     $parsed = is_array($response) ? $response : json_decode((string) $response, true);
 
     if (!is_array($parsed) || ($parsed['status'] ?? null) !== 'success') {
         LoggerUtility::logError('pending-commands: STS rejected the request', [
             'response' => is_string($response) ? mb_substr($response, 0, 1000) : null,
         ]);
+        $console->fail(_translate('The STS did not answer the request for commands. The next run asks again.'));
         exit(0);
     }
 
@@ -390,7 +400,10 @@ try {
         'line' => $e->getLine(),
     ]);
     if ($io) {
-        $io->error('Could not check remote commands: ' . $e->getMessage());
+        $io->error(sprintf(
+            _translate('Could not check remote commands: %s. The next run tries again.'),
+            rtrim($e->getMessage(), '.')
+        ));
     }
     exit(0);
 }

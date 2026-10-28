@@ -174,8 +174,19 @@ final class ApiService
     /**
      * @return array{httpStatusCode: int, body: ?string, headers: array<string, string>}|string|null|PromiseInterface<mixed, mixed>
      */
-    public function post($url, $payload, $gzip = false, $returnWithStatusCode = false, $async = false): array|string|null|PromiseInterface
-    {
+    /**
+     * @param null|callable(int, int, int, int): void $onProgress Guzzle's progress callback
+     *     (download total, downloaded, upload total, uploaded), for a console that shows
+     *     a wait as it happens: SyncConsoleWait::track()
+     */
+    public function post(
+        $url,
+        $payload,
+        $gzip = false,
+        $returnWithStatusCode = false,
+        $async = false,
+        ?callable $onProgress = null
+    ): array|string|null|PromiseInterface {
         $options = [
             RequestOptions::HEADERS => [
                 'X-Request-ID' => MiscUtility::generateULID(),
@@ -209,6 +220,9 @@ final class ApiService
 
             // Set the request body
             $options[RequestOptions::BODY] = $payload;
+            if ($onProgress !== null) {
+                $options[RequestOptions::PROGRESS] = $onProgress;
+            }
 
             if ($async) {
                 // Perform an asynchronous request
