@@ -521,10 +521,11 @@ do {
                         . ": checking for new or updated requests since $effectiveSyncSinceDate");
                 }
             }
-            if ($syncSinceDate === null && empty($manifestCode)) {
-                // The routine pull: the requests this lab sent results for, unchanged
-                // since, stay on the STS. A pull for a number of days or a date gets
-                // them, so a lab restored from an older backup can pull them back.
+            if ($timeLimited) {
+                // The cron pull: the requests this lab sent results for, unchanged
+                // since, stay on the STS. A pull started by hand or by a remote
+                // command gets them, so a lab restored from an older backup or
+                // reinstalled can pull them back.
                 $basePayload['skipOwnResults'] = 1;
             }
             if ($phase !== 'plain') {

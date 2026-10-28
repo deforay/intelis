@@ -235,6 +235,25 @@ final class RequestOwnResultsEchoTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testAChangeTheLabHadNotPulledBeforeItsResultStillArrives(): void
+    {
+        $db = $this->boot();
+        // Edited on the STS while the lab was offline, and in flight to it.
+        $db->rawQuery("UPDATE form_vl SET patient_first_name = 'Ana', data_sync = 0 WHERE unique_id = 'u-1'");
+        $db->rawQuery('UPDATE form_vl SET data_sync = ' . RequestsService::IN_FLIGHT . " WHERE unique_id = 'u-2'");
+
+        // The lab sends its results before it pulls again.
+        self::labSends('u-1');
+        self::labSends('u-2');
+        self::labSends('u-3');
+
+        // Its copies of u-1 and u-2 may lack what the STS holds; u-3 it had.
+        self::assertSame(['u-1', 'u-2'], self::wholeWindow());
+        [$paged] = self::pagedWindow();
+        self::assertSame(['u-1', 'u-2'], $paged);
+    }
+
+    #[RunInSeparateProcess]
     public function testAnotherLabStillGetsTheResult(): void
     {
         $this->boot();
