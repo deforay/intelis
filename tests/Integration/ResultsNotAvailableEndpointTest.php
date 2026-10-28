@@ -67,8 +67,8 @@ final class ResultsNotAvailableEndpointTest extends TestCase
         $db->rawQuery("INSERT INTO r_vl_sample_type (sample_id, sample_name, status) VALUES (1, 'Plasma', 'active')");
 
         $this->seed('WAITING', ['result_status' => 6]);
-        // A failed test has no result until the sample is retested, whatever
-        // was typed in the result field.
+        // A failed sample was tested and failed, so it is never awaiting a
+        // result, whatever its result field holds.
         $this->seed('FAILED-EMPTY', ['result_status' => 5]);
         $this->seed('FAILED-TEXT', ['result_status' => 5, 'result' => 'Failed']);
         $this->seed('INVALID-TEXT', ['result_status' => 5, 'result' => 'Invalid']);
@@ -125,12 +125,12 @@ final class ResultsNotAvailableEndpointTest extends TestCase
     }
 
     #[RunInSeparateProcess]
-    public function testFailedSamplesAreListedWhateverTheirResultFieldHolds(): void
+    public function testFailedSamplesAreNeverListed(): void
     {
         self::assertSame(
-            ['FAILED-EMPTY', 'FAILED-TEXT', 'INVALID-TEXT', 'WAITING'],
+            ['WAITING'],
             $this->listed(),
-            'accepted, rejected and cancelled samples are left out'
+            'failed, accepted, rejected and cancelled samples are left out'
         );
     }
 }

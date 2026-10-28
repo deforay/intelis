@@ -74,9 +74,10 @@ try {
                     -- a sample still awaiting a result.
                     AND " . SampleCountUtility::countableWhere('vl') . "
                     AND vl.sample_code is NOT NULL
-                    -- A Failed sample has no result until it is retested, which moves it
-                    -- to another status. Its result field can still hold Failed or Invalid.
-                    AND ((vl.cd4_result IS NULL OR vl.cd4_result='') OR vl.result_status = " . TEST_FAILED . ")";
+                    -- A Failed sample was tested and failed, so it is not a sample still
+                    -- awaiting a result, even when its result field is empty.
+                    AND (vl.cd4_result IS NULL OR vl.cd4_result='')
+                    AND vl.result_status != " . TEST_FAILED;
     $start_date = '';
     $end_date = '';
     if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) !== '') {
