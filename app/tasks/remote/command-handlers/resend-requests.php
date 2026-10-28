@@ -29,6 +29,9 @@ $scriptPath = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'tasks'
     . DIRECTORY_SEPARATOR . 'remote' . DIRECTORY_SEPARATOR . 'requests-receiver.php';
 
 $argv = [PHP_BINARY, $scriptPath, ...$args];
+// Wait out a cron run instead of exiting 0, which would mark this command
+// completed without pulling the window it asked for.
+$argv[] = '--wait-for-lock';
 
 $descriptorSpec = [
     0 => ['pipe', 'r'],
