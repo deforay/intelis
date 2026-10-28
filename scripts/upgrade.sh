@@ -181,7 +181,7 @@ fi
 # then keep the names this script uses.
 REQUIRED_SHARED_FN=(
     app_heavy_dirs ask_multi ask_password ask_yes_no chown_app_tree
-    configure_php_ini download_file ensure_composer ensure_mysql_running
+    configure_apache_compression configure_php_ini download_file ensure_composer ensure_mysql_running
     ensure_opcache ensure_path ensure_php_cli_extensions ensure_switch_php
     error_handling escape_php_string_for_sed extract_mysql_password_from_config
     fetch_master_tree format_duration hosts_file_shadows io_walk_jobs
@@ -1403,7 +1403,10 @@ fi
 # Configure PHP INI settings (uses shared function)
 configure_php_ini "${php_version}"
 
-# Validate Apache config and reload to apply PHP INI changes
+# Compress the JSON answers labs pull from this server (uses shared function)
+configure_apache_compression
+
+# Validate Apache config and reload to apply the PHP INI and compression changes
 if apache2ctl -t; then
     grep -q '^ServerName localhost$' /etc/apache2/conf-available/servername.conf 2>/dev/null || \
         { echo 'ServerName localhost' >/etc/apache2/conf-available/servername.conf && a2enconf -q servername; }
