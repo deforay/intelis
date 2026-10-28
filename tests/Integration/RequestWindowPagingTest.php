@@ -87,9 +87,13 @@ final class RequestWindowPagingTest extends TestCase
      *
      * @return list<list<string>>
      */
-    private static function pageThrough(?string $manifest = null, ?callable $betweenPages = null): array
-    {
+    private static function pageThrough(
+        ?string $manifest = null,
+        ?callable $betweenPages = null,
+        ?array &$remaining = null
+    ): array {
         $pages = [];
+        $remaining = [];
         $after = null;
         do {
             $data = self::sts()->getRequests(
@@ -103,6 +107,7 @@ final class RequestWindowPagingTest extends TestCase
                 ['size' => 5, 'after' => $after]
             );
             $pages[] = array_column($data['requests'], 'unique_id');
+            $remaining[] = $data['remaining'];
             $after = $data['nextAfter'];
             if ($betweenPages !== null) {
                 $betweenPages(count($pages));
@@ -132,6 +137,19 @@ final class RequestWindowPagingTest extends TestCase
         $all = array_merge(...$pages);
         self::assertSame(count($all), count(array_unique($all)), 'no row twice');
         self::assertEqualsCanonicalizing(self::windowIds(), $all, 'every row of the window, nothing else');
+    }
+
+    #[RunInSeparateProcess]
+    public function testEachPageSaysHowManyRowsOfTheWindowFollowIt(): void
+    {
+        $this->boot();
+
+        self::pageThrough(null, null, $remaining);
+        self::assertSame([18, 13, 8, 3, 0], $remaining, '23 rows, 5 to a page');
+
+        // The manifest's window: the lab's 24 samples on M-1.
+        self::pageThrough('M-1', null, $remaining);
+        self::assertSame([19, 14, 9, 4, 0], $remaining);
     }
 
     #[RunInSeparateProcess]
@@ -174,6 +192,7 @@ final class RequestWindowPagingTest extends TestCase
         self::assertEqualsCanonicalizing(self::windowIds(), array_column($data['requests'], 'unique_id'));
         self::assertArrayNotHasKey('paged', $data);
         self::assertArrayNotHasKey('nextAfter', $data);
+        self::assertArrayNotHasKey('remaining', $data);
     }
 
     private static function post(array $body): ResponseInterface
@@ -200,6 +219,7 @@ final class RequestWindowPagingTest extends TestCase
         self::assertCount(5, $body['requests']);
         self::assertTrue($body['paged']);
         self::assertMatchesRegularExpression('/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\|\d+$/', $body['nextAfter']);
+        self::assertSame(18, $body['remaining']);
     }
 
     #[RunInSeparateProcess]
@@ -215,6 +235,7 @@ final class RequestWindowPagingTest extends TestCase
         self::assertSame(['u-20', 'u-21', 'u-22', 'u-23'], array_column($body['requests'], 'unique_id'));
         self::assertTrue($body['paged']);
         self::assertNull($body['nextAfter']);
+        self::assertSame(0, $body['remaining']);
     }
 
     /** data_sync of each row of lab 7's window, by unique_id. */

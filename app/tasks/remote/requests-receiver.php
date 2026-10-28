@@ -839,7 +839,15 @@ do {
         if ($pageCursor->advanceFrom($pageKeys[$module], (string) $asked, $nextAfter)) {
             $pullModules[] = $module;
             if ($cliMode) {
-                $io->text(TestsService::getTestName((string) $module) . ': more requests on the STS. Getting the next page.');
+                $testName = TestsService::getTestName((string) $module);
+                // An STS before the count sends no "remaining".
+                $io->text(isset($paging['remaining'])
+                    ? sprintf(
+                        _translate('%s: %d more requests on the STS. Getting the next page.'),
+                        $testName,
+                        (int) $paging['remaining']
+                    )
+                    : $testName . ': more requests on the STS. Getting the next page.');
             }
         }
     }

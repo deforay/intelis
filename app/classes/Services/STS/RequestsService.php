@@ -63,7 +63,8 @@ final class RequestsService
      *
      * $page (a lab that asks, on a pull over a date or manifest) returns the window
      * a page at a time: up to $page['size'] rows in (last modified, id) order after
-     * $page['after'], with nextAfter set while more remain. One response for a big
+     * $page['after'], with nextAfter set while more remain, and remaining, how many
+     * rows of the window follow the page. One response for a big
      * window outlasted the lab's timeout and nothing was saved. A lab that does not
      * ask gets the whole window, as it always has.
      *
@@ -128,6 +129,9 @@ final class RequestsService
         if ($page !== null) {
             $requestData['paged'] = true;
             $requestData['nextAfter'] = $nextAfter;
+            $requestData['remaining'] = $nextAfter === null
+                ? 0
+                : $this->countAfter($labId, $facilityMapResult, $manifestCode, $syncSinceDate, $nextAfter);
         }
 
         return $requestData;
@@ -305,18 +309,54 @@ final class RequestsService
      * a page, and the marker of the next one while more remain. Nothing for a lab
      * that did not ask, so an older lab sees no change; it reads "requests" only.
      *
-     * @return array{paged?: true, nextAfter?: ?string}
+     * remaining gives the lab's progress bar a total. A lab that pages but does
+     * not read it sees no change.
+     *
+     * @return array{paged?: true, nextAfter?: ?string, remaining?: int}
      */
     public static function pagingFields(array $requestsData): array
     {
         if (empty($requestsData['paged'])) {
             return [];
         }
-        return ['paged' => true, 'nextAfter' => $requestsData['nextAfter'] ?? null];
+        return [
+            'paged' => true,
+            'nextAfter' => $requestsData['nextAfter'] ?? null,
+            'remaining' => (int) ($requestsData['remaining'] ?? 0),
+        ];
     }
 
     /** Rows with no modification time sort first, as the oldest. */
     private const NO_MODIFIED = '1970-01-01 00:00:00';
+
+    private const MODIFIED_SORT = "COALESCE(last_modified_datetime, '" . self::NO_MODIFIED . "')";
+
+    /**
+     * The rows after a page marker, in page order.
+     *
+     * @return array{0: string, 1: list<string|int>}
+     */
+    private function afterMarker(string $after): array
+    {
+        [$afterModified, $afterId] = explode('|', $after);
+        $modified = self::MODIFIED_SORT;
+        return [
+            "($modified > ? OR ($modified = ? AND `$this->primaryKeyName` > ?))",
+            [$afterModified, $afterModified, (int) $afterId],
+        ];
+    }
+
+    /** How many rows of the window follow the page marker. */
+    private function countAfter($labId, $facilityMapResult, $manifestCode, $syncSinceDate, string $after): int
+    {
+        [$condition, $params] = $this->buildCondition($labId, $facilityMapResult, $manifestCode, $syncSinceDate);
+        [$afterSql, $afterParams] = $this->afterMarker($after);
+        $row = $this->db->rawQueryOne(
+            "SELECT COUNT(*) AS n FROM $this->tableName WHERE ($condition) AND $afterSql",
+            [...$params, ...$afterParams]
+        );
+        return (int) ($row['n'] ?? 0);
+    }
 
     /** Where a page ended: the last row's modification time and id. */
     public static function pageMarker(?string $modified, int|string $id): string
@@ -428,14 +468,13 @@ final class RequestsService
             $withWindow
         );
         if ($page !== null) {
-            $modified = "COALESCE(last_modified_datetime, '" . self::NO_MODIFIED . "')";
             if ($page['after'] !== null) {
-                [$afterModified, $afterId] = explode('|', $page['after']);
-                $sQuery .= " AND ($modified > ? OR ($modified = ? AND `$this->primaryKeyName` > ?))";
-                array_push($params, $afterModified, $afterModified, (int) $afterId);
+                [$afterSql, $afterParams] = $this->afterMarker($page['after']);
+                $sQuery .= " AND $afterSql";
+                array_push($params, ...$afterParams);
             }
             // One more than a page: whether another page follows.
-            $sQuery .= " ORDER BY $modified, `$this->primaryKeyName` LIMIT " . ($page['size'] + 1);
+            $sQuery .= ' ORDER BY ' . self::MODIFIED_SORT . ", `$this->primaryKeyName` LIMIT " . ($page['size'] + 1);
         }
 
         if ($page !== null) {
