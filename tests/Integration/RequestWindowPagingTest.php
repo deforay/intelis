@@ -309,6 +309,111 @@ final class RequestWindowPagingTest extends TestCase
         self::assertNotContains(RequestsService::IN_FLIGHT, self::dataSync(), 'no receipt can come for it');
     }
 
+    private static function withFailuresTable(): void
+    {
+        $migration = (string) file_get_contents(ROOT_PATH . '/sys/migrations/5.7.75.sql');
+        preg_match('/^CREATE TABLE IF NOT EXISTS `request_sync_failures` \(.*?^\) ENGINE=[^;]*;/ms', $migration, $sql);
+        LegacyAppHarness::db()->rawQuery($sql[0]);
+    }
+
+    /** data_sync of every row of lab 7, by unique_id: the manifest's 24 and u-26 off it. */
+    private static function labSync(): array
+    {
+        $rows = LegacyAppHarness::db()->rawQuery("SELECT unique_id, data_sync FROM form_vl WHERE lab_id = 7");
+        return array_map('intval', array_column($rows, 'data_sync', 'unique_id'));
+    }
+
+    /** A request of lab 7 still waiting, in the window but on another manifest. */
+    private static function waitingOffTheManifest(): void
+    {
+        self::row(LegacyAppHarness::db(), 26, '2026-08-03 10:00:00', ['sample_package_code' => 'M-2']);
+    }
+
+    /**
+     * An older lab may send "receipts" with a manifest pull. It never sends a
+     * receipt for one, so the manifest is marked sent at once, as it always was.
+     */
+    #[RunInSeparateProcess]
+    public function testAManifestPullFromAnOlderLabIsMarkedSentAtOnce(): void
+    {
+        $this->boot();
+        self::withFailuresTable();
+        self::waitingOffTheManifest();
+
+        $body = json_decode((string) self::post([
+            'labId' => 7, 'testType' => 'vl', 'manifestCode' => 'M-1', 'receipts' => 1,
+        ])->getBody(), true);
+
+        self::assertCount(24, $body['requests']);
+        $sync = self::labSync();
+        self::assertSame(0, $sync['u-26'], 'not on the manifest');
+        unset($sync['u-26']);
+        self::assertSame([1], array_values(array_unique($sync)), 'marked sent, no receipt expected');
+    }
+
+    #[RunInSeparateProcess]
+    public function testAManifestTheLabConfirmsWaitsForTheReceipt(): void
+    {
+        $this->boot();
+        self::withFailuresTable();
+        self::waitingOffTheManifest();
+
+        $body = json_decode((string) self::post([
+            'labId' => 7, 'testType' => 'vl', 'manifestCode' => 'M-1', 'receipts' => 1, 'manifestReceipts' => 1,
+        ])->getBody(), true);
+
+        $sent = array_column($body['requests'], 'unique_id');
+        self::assertCount(24, $sent, "the manifest's requests, not the lab's other waiting ones");
+        $sync = self::labSync();
+        self::assertSame(0, $sync['u-26'], 'waiting, and left for the lab\'s own pull');
+        unset($sync['u-26']);
+        self::assertSame([RequestsService::IN_FLIGHT], array_values(array_unique($sync)), 'waiting for the receipt');
+    }
+
+    #[RunInSeparateProcess]
+    public function testAManifestPageTheLabConfirmsWaitsForTheReceipt(): void
+    {
+        $this->boot();
+        self::withFailuresTable();
+
+        $body = json_decode((string) self::post([
+            'labId' => 7, 'testType' => 'vl', 'manifestCode' => 'M-1', 'receipts' => 1, 'manifestReceipts' => 1,
+            'page' => ['size' => 5],
+        ])->getBody(), true);
+
+        self::assertCount(5, $body['requests']);
+        self::assertTrue($body['paged']);
+        $sync = self::labSync();
+        foreach (array_column($body['requests'], 'unique_id') as $uniqueId) {
+            self::assertSame(RequestsService::IN_FLIGHT, $sync[$uniqueId]);
+        }
+        self::assertSame(19, count(array_filter($sync, static fn(int $s): bool => $s === 0)), 'the rest untouched');
+    }
+
+    #[RunInSeparateProcess]
+    public function testAManifestIsConfirmedOnlyWithReceiptsAsked(): void
+    {
+        $this->boot();
+        self::withFailuresTable();
+
+        self::post(['labId' => 7, 'testType' => 'vl', 'manifestCode' => 'M-1', 'manifestReceipts' => 1]);
+
+        self::assertSame([1], array_values(array_unique(self::labSync())), 'marked sent');
+    }
+
+    #[RunInSeparateProcess]
+    public function testAManifestIsSentWithoutReceiptsWhenTheStsCannotTakeThem(): void
+    {
+        // No request_sync_failures table: a receipt could not be recorded.
+        $this->boot();
+
+        self::post([
+            'labId' => 7, 'testType' => 'vl', 'manifestCode' => 'M-1', 'receipts' => 1, 'manifestReceipts' => 1,
+        ]);
+
+        self::assertSame([1], array_values(array_unique(self::labSync())), 'marked sent');
+    }
+
     /** @return iterable<string, array{?array<string, mixed>}> */
     public static function noUsablePage(): iterable
     {
