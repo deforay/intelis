@@ -37280,17 +37280,23 @@ msgstr "Cliquez pour lister les échantillons ayant ce statut"
 msgid "Status: %s"
 msgstr "Statut : %s"
 
-msgid "Enter a manifest code to move that one manifest, or choose a testing lab to list its manifests."
-msgstr "Saisir un code de manifeste pour déplacer ce seul manifeste, ou choisir un laboratoire pour lister ses manifestes."
-
 msgid "Enter the code of the manifest to move"
 msgstr "Saisir le code du manifeste à déplacer"
-
-msgid "Please enter a manifest code or choose the testing lab"
-msgstr "Veuillez saisir un code de manifeste ou choisir le laboratoire"
 
 msgid "No manifest found with this code"
 msgstr "Aucun manifeste trouvé avec ce code"
 
 msgid "Move this manifest to another testing lab"
 msgstr "Déplacer ce manifeste vers un autre laboratoire"
+
+msgid "Move one manifest"
+msgstr "Déplacer un seul manifeste"
+
+msgid "List a lab's manifests"
+msgstr "Lister les manifestes d'un laboratoire"
+
+msgid "How to find the manifests"
+msgstr "Comment trouver les manifestes"
+
+msgid "Please enter the manifest code"
+msgstr "Veuillez saisir le code du manifeste"

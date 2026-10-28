@@ -61,49 +61,43 @@ $statusLabels = [
                 <div class="box-header with-border">
                     <h3 class="box-title"><em class="fa-solid fa-search"></em> <?= _translate("Find Manifests"); ?></h3>
                 </div>
-                <div class="box-body form-horizontal">
-                    <p class="text-muted">
-                        <?= _translate("Enter a manifest code to move that one manifest, or choose a testing lab to list its manifests."); ?>
-                    </p>
-                    <div class="row">
-                        <div class="col-md-6">
+                <div class="box-body">
+                    <div class="btn-group" role="group" id="findBy" style="margin-bottom:15px;"
+                        aria-label="<?= _translate('How to find the manifests', 'html'); ?>">
+                        <button type="button" class="btn btn-default" data-find="code">
+                            <em class="fa-solid fa-barcode"></em> <?= _translate("Move one manifest"); ?>
+                        </button>
+                        <button type="button" class="btn btn-default" data-find="lab">
+                            <em class="fa-solid fa-list"></em> <?= _translate("List a lab's manifests"); ?>
+                        </button>
+                    </div>
+                    <div class="row" id="findByCode">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="manifestCode" class="col-lg-4 control-label">
-                                    <?= _translate("Manifest Code"); ?>
-                                </label>
-                                <div class="col-lg-7">
-                                    <input type="text" class="form-control" id="manifestCode"
-                                        value="<?= _sanitizeOutput($manifestCode); ?>"
-                                        placeholder="<?= _translate('Manifest Code', 'html'); ?>"
-                                        title="<?= _translate('Enter the code of the manifest to move', 'html'); ?>">
-                                </div>
+                                <label for="manifestCode"><?= _translate("Manifest Code"); ?></label>
+                                <input type="text" class="form-control" id="manifestCode"
+                                    value="<?= _sanitizeOutput($manifestCode); ?>"
+                                    title="<?= _translate('Enter the code of the manifest to move', 'html'); ?>">
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
+                    <div class="row" id="findByLab" style="display:none;">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="testingLab" class="col-lg-4 control-label">
-                                    <?= _translate("Testing Lab"); ?>
-                                </label>
-                                <div class="col-lg-7">
-                                    <select class="form-control" id="testingLab" style="width:100%;"
-                                        title="<?= _translate("Choose the testing lab the manifests are at", 'html'); ?>">
-                                        <?= $general->generateSelectOptions($testingLabs, null, _translate('-- Select --')); ?>
-                                    </select>
-                                </div>
+                                <label for="testingLab"><?= _translate("Testing Lab"); ?></label>
+                                <select class="form-control" id="testingLab" style="width:100%;"
+                                    title="<?= _translate("Choose the testing lab the manifests are at", 'html'); ?>">
+                                    <?= $general->generateSelectOptions($testingLabs, null, _translate('-- Select --')); ?>
+                                </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="daterange" class="col-lg-4 control-label">
-                                    <?= _translate("Manifest Date"); ?>
-                                </label>
-                                <div class="col-lg-7">
-                                    <input type="text" class="form-control" id="daterange" readonly
-                                        placeholder="<?= _translate('Last 6 months', 'html'); ?>"
-                                        title="<?= _translate('Choose the date range the manifests were created in', 'html'); ?>">
-                                </div>
+                                <label for="daterange"><?= _translate("Manifest Date"); ?></label>
+                                <input type="text" class="form-control" id="daterange" readonly
+                                    style="background-color:#fff;cursor:pointer;"
+                                    placeholder="<?= _translate('Last 6 months', 'html'); ?>"
+                                    title="<?= _translate('Choose the date range the manifests were created in', 'html'); ?>">
                             </div>
                         </div>
                     </div>
@@ -184,6 +178,8 @@ $statusLabels = [
     <script type="text/javascript" src="<?= _asset('/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
     <script type="text/javascript">
         const statusLabels = <?= json_encode($statusLabels, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
+        // How the manifests are found: 'code' (one manifest) or 'lab' (a lab's list).
+        let findingBy = 'code';
 
         $(document).ready(function() {
             $('#testingLab, #assignLab').select2({
@@ -209,6 +205,11 @@ $statusLabels = [
                 updateMoveButton();
             });
             $('#manifestRows').on('change', 'input:checkbox', updateMoveButton);
+            // One manifest by its code, or the list of one lab's manifests.
+            $('#findBy').on('click', 'button', function() {
+                findBy($(this).data('find'));
+            });
+            findBy('code');
             $('#manifestCode').on('keydown', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -243,18 +244,36 @@ $statusLabels = [
             $('#moveButton').prop('disabled', manifestBoxes().filter(':checked').length === 0);
         }
 
+        function findBy(how) {
+            findingBy = how;
+            $('#findBy button').each(function() {
+                const on = $(this).data('find') === how;
+                $(this).toggleClass('btn-primary', on).toggleClass('btn-default', !on).attr('aria-pressed', on);
+            });
+            $('#findByCode').toggle(how === 'code');
+            $('#findByLab').toggle(how === 'lab');
+            if (how === 'code') {
+                $('#manifestCode').trigger('focus');
+            }
+        }
+
         function findManifests() {
-            const code = $('#manifestCode').val().trim();
+            const byCode = findingBy === 'code';
+            const code = byCode ? $('#manifestCode').val().trim() : '';
             const lab = $('#testingLab').val();
-            if (code === '' && !lab) {
-                alert("<?= _translate('Please enter a manifest code or choose the testing lab', true); ?>");
+            if (byCode && code === '') {
+                alert("<?= _translate('Please enter the manifest code', true); ?>");
+                return;
+            }
+            if (!byCode && !lab) {
+                alert("<?= _translate('Please choose the testing lab', true); ?>");
                 return;
             }
             $.blockUI();
             $.post('/specimen-referral-manifest/get-manifest-package-code.php', {
                 module: <?= json_encode($module); ?>,
                 manifestCode: code,
-                testingLab: code === '' ? lab : '',
+                testingLab: byCode ? '' : lab,
                 daterange: $('#daterange').val()
             }).done(function(data) {
                 if ($.fn.DataTable.isDataTable('#manifestTable')) {
