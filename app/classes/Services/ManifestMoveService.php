@@ -49,7 +49,7 @@ final class ManifestMoveService
      * facility map (a user limited to some facilities), only manifests all of
      * whose samples are from those facilities.
      *
-     * @return list<array{code: string, created: ?string, status: ?string, samples: int, lab: ?string}>
+     * @return list<array{code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string}>
      */
     public function listForLab(
         string $testType,
@@ -58,8 +58,8 @@ final class ManifestMoveService
         ?string $to = null,
         ?string $facilityMap = null
     ): array {
-        $where = ['m.module = ?', 'm.lab_id = ?', "COALESCE(m.manifest_type, 'collection') <> 'referral'"];
-        $params = [$testType, $labId];
+        $where = ['m.lab_id = ?'];
+        $params = [$labId];
         if ($from !== null && $from !== '' && $to !== null && $to !== '') {
             $where[] = 'm.request_created_datetime BETWEEN ? AND ?';
             array_push($params, $from, $to);
@@ -67,6 +67,34 @@ final class ManifestMoveService
             $where[] = 'm.request_created_datetime >= ?';
             $params[] = date('Y-m-d H:i:s', strtotime('-' . self::DEFAULT_MONTHS . ' months'));
         }
+        return $this->listManifests($testType, $where, $params, $facilityMap);
+    }
+
+    /**
+     * One collection manifest by its code, at whichever lab it is, at any age:
+     * for moving a single manifest without first finding its lab. Empty when
+     * there is no such manifest, or the facility map does not cover it.
+     *
+     * @return list<array{code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string}>
+     */
+    public function findByCode(string $testType, string $manifestCode, ?string $facilityMap = null): array
+    {
+        $manifestCode = trim($manifestCode);
+        if ($manifestCode === '') {
+            return [];
+        }
+        return $this->listManifests($testType, ['m.manifest_code = ?'], [$manifestCode], $facilityMap);
+    }
+
+    /**
+     * @param list<string> $where
+     * @param list<mixed> $params
+     * @return list<array{code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string}>
+     */
+    private function listManifests(string $testType, array $where, array $params, ?string $facilityMap): array
+    {
+        array_unshift($where, 'm.module = ?', "COALESCE(m.manifest_type, 'collection') <> 'referral'");
+        array_unshift($params, $testType);
         $table = TestsService::getTestTableName($testType);
         if ($facilityMap !== null && trim($facilityMap) !== '') {
             // The one case that reads samples, through the sample_package_id index.
@@ -75,7 +103,7 @@ final class ManifestMoveService
         }
         $rows = $this->db->rawQuery(
             'SELECT m.manifest_code, m.request_created_datetime, m.manifest_status, m.number_of_samples,
-                    f.facility_name AS lab_name
+                    m.lab_id, f.facility_name AS lab_name
                FROM specimen_manifests AS m
                LEFT JOIN facility_details AS f ON f.facility_id = m.lab_id
               WHERE ' . implode(' AND ', $where) . '
@@ -103,6 +131,7 @@ final class ManifestMoveService
             'created' => $row['request_created_datetime'],
             'status' => $row['manifest_status'],
             'samples' => (int) $row['number_of_samples'],
+            'labId' => (int) $row['lab_id'],
             'lab' => $row['lab_name'],
         ], $rows);
     }

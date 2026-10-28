@@ -1,7 +1,7 @@
 <?php
 
-// The manifests Move Manifest can offer for one lab, with how many of their
-// samples are tested (a manifest with any is not moved). JSON for the page.
+// The manifests Move Manifest can offer: those of one lab, or the one with a
+// given code. JSON for the page.
 
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
@@ -39,22 +39,26 @@ if (
     exit;
 }
 
-$labId = (int) ($_POST['testingLab'] ?? 0);
-if ($labId <= 0) {
-    echo json_encode(['manifests' => []]);
-    exit;
-}
-[$from, $to] = DateUtility::convertDateRange($_POST['daterange'] ?? null, includeTime: true);
-
 /** @var ManifestMoveService $manifestMoveService */
 $manifestMoveService = ContainerRegistry::get(ManifestMoveService::class);
-$manifests = $manifestMoveService->listForLab(
-    $testType,
-    $labId,
-    $from ?: null,
-    $to ?: null,
-    $_SESSION['facilityMap'] ?? null
-);
+
+// A manifest code finds that one manifest wherever it is; otherwise a lab's list.
+$manifestCode = trim((string) ($_POST['manifestCode'] ?? ''));
+$labId = (int) ($_POST['testingLab'] ?? 0);
+if ($manifestCode !== '') {
+    $manifests = $manifestMoveService->findByCode($testType, $manifestCode, $_SESSION['facilityMap'] ?? null);
+} elseif ($labId > 0) {
+    [$from, $to] = DateUtility::convertDateRange($_POST['daterange'] ?? null, includeTime: true);
+    $manifests = $manifestMoveService->listForLab(
+        $testType,
+        $labId,
+        $from ?: null,
+        $to ?: null,
+        $_SESSION['facilityMap'] ?? null
+    );
+} else {
+    $manifests = [];
+}
 
 echo json_encode(['manifests' => array_map(static fn(array $m): array => $m + [
     'createdLabel' => DateUtility::humanReadableDateFormat($m['created'] ?? '', true),

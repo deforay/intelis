@@ -89,7 +89,7 @@ if (!empty($columnSearch)) {
 
 $sQuery = "SELECT p.request_created_datetime,
             p.manifest_code, p.manifest_status,
-            p.module, p.manifest_id, p.number_of_samples,
+            p.module, p.manifest_id, p.number_of_samples, p.manifest_type,
             lab.facility_name as labName
             FROM specimen_manifests p
             LEFT JOIN facility_details lab on lab.facility_id = p.lab_id";
@@ -137,6 +137,10 @@ if (_isAllowed($editUrl)) {
     $editAllowed = true;
 }
 
+// Moving is for administrators on the STS, and for collection manifests only.
+$moveUrl = '/specimen-referral-manifest/move-manifest.php?t=' . $testType;
+$moveAllowed = $general->isSTSInstance() && !$general->isCloudLisNonAdmin() && _isAllowed($moveUrl);
+
 foreach ($rResult as $aRow) {
 
     $packageId = base64_encode((string) $aRow['manifest_id']);
@@ -160,6 +164,12 @@ foreach ($rResult as $aRow) {
     if ($editAllowed) {
         $editBtn = '<a href="' . $editUrl . '&id=' . base64_encode((string) $aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="' . _htmlTranslate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</a>';
     }
+    $moveBtn = '';
+    if ($moveAllowed && ($aRow['manifest_type'] ?? 'collection') !== 'referral') {
+        $moveBtn = '&nbsp;&nbsp;<a href="' . $moveUrl . '&code=' . urlencode((string) $aRow['manifest_code'])
+            . '" class="btn btn-default btn-xs" title="' . _htmlTranslate("Move this manifest to another testing lab")
+            . '"><em class="fa-solid fa-angles-right"></em> ' . _translate("Move") . '</a>';
+    }
     if ($testType == 'generic-tests') {
         $aRow['module'] = "OTHER LAB TESTS ";
     }
@@ -169,7 +179,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['labName'];
     $row[] = $aRow['number_of_samples'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
-    $row[] = $editBtn . '&nbsp;&nbsp;' . $printBarcode;
+    $row[] = $editBtn . '&nbsp;&nbsp;' . $printBarcode . $moveBtn;
 
     $output['aaData'][] = $row;
 }
