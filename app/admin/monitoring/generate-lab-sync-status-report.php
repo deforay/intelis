@@ -58,37 +58,35 @@ $headings = [
 $output = [];
 $statusSummary = ['active' => 0, 'warning' => 0, 'critical' => 0];
 
-if (!empty($resultSet)) {
-    foreach ($resultSet as $aRow) {
-        ExportJobUtility::tick();
-        $row = [];
+foreach ($resultSet as $aRow) {
+    ExportJobUtility::tick();
+    $row = [];
 
-        // Determine sync status
-        $latestSync = (int)$aRow['latest_timestamp'];
-        if ($latestSync > $twoWeeksAgo) {
-            $syncStatus = 'Active';
-            $statusSummary['active']++;
-        } elseif ($latestSync > $fourWeeksAgo) {
-            $syncStatus = 'Warning';
-            $statusSummary['warning']++;
-        } else {
-            $syncStatus = 'Critical';
-            $statusSummary['critical']++;
-        }
-
-        // Calculate days since last sync
-        $daysSinceSync = $latestSync !== 0 ? floor((time() - $latestSync) / 86400) : 'Never';
-
-        $row[] = $aRow['facility_name'] ?? '';
-        $row[] = $latestSync !== 0 ? DateUtility::humanReadableDateFormat(date('Y-m-d H:i:s', $latestSync), true) : 'Never';
-        $row[] = DateUtility::humanReadableDateFormat($aRow['lastResultsSync'] ?? '', true) ?: 'Never';
-        $row[] = DateUtility::humanReadableDateFormat($aRow['lastRequestsSync'] ?? '', true) ?: 'Never';
-        $row[] = $aRow['version'] ?? '-';
-        $row[] = $syncStatus;
-        $row[] = $daysSinceSync;
-
-        $output[] = $row;
+    // Determine sync status
+    $latestSync = (int)$aRow['latest_timestamp'];
+    if ($latestSync > $twoWeeksAgo) {
+        $syncStatus = 'Active';
+        $statusSummary['active']++;
+    } elseif ($latestSync > $fourWeeksAgo) {
+        $syncStatus = 'Warning';
+        $statusSummary['warning']++;
+    } else {
+        $syncStatus = 'Critical';
+        $statusSummary['critical']++;
     }
+
+    // Calculate days since last sync
+    $daysSinceSync = $latestSync !== 0 ? floor((time() - $latestSync) / 86400) : 'Never';
+
+    $row[] = $aRow['facility_name'] ?? '';
+    $row[] = $latestSync !== 0 ? DateUtility::humanReadableDateFormat(date('Y-m-d H:i:s', $latestSync), true) : 'Never';
+    $row[] = DateUtility::humanReadableDateFormat($aRow['lastResultsSync'] ?? '', true) ?: 'Never';
+    $row[] = DateUtility::humanReadableDateFormat($aRow['lastRequestsSync'] ?? '', true) ?: 'Never';
+    $row[] = $aRow['version'] ?? '-';
+    $row[] = $syncStatus;
+    $row[] = $daysSinceSync;
+
+    $output[] = $row;
 }
 
 $filename = 'InteLIS-LAB-SYNC-STATUS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomNumber(6) . '.xlsx';
