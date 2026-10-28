@@ -31,8 +31,16 @@ use mysqli;
  */
 final class MigrationRunnerFunctions
 {
-    /** The one schema every migration test shares; see the class note. */
-    public const DATABASE = 'intelis_migration_test';
+    /**
+     * The one schema every migration test in this process shares; see the class
+     * note. ParaTest workers each get their own, named by TEST_TOKEN rather than
+     * the process id so a run reuses the last run's instead of leaving one behind.
+     */
+    private static function database(): string
+    {
+        $worker = getenv('TEST_TOKEN');
+        return 'intelis_migration_test' . ($worker === false || $worker === '' ? '' : '_' . $worker);
+    }
 
     private static ?DatabaseService $db = null;
 
@@ -56,9 +64,9 @@ final class MigrationRunnerFunctions
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
         $bootstrap = new mysqli($host, $user, $password, null, $port);
-        $bootstrap->query('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
-        $bootstrap->query('CREATE DATABASE `' . self::DATABASE . '`');
-        $bootstrap->select_db(self::DATABASE);
+        $bootstrap->query('DROP DATABASE IF EXISTS `' . self::database() . '`');
+        $bootstrap->query('CREATE DATABASE `' . self::database() . '`');
+        $bootstrap->select_db(self::database());
         self::loadRealSchema($bootstrap);
         $bootstrap->close();
 
@@ -66,7 +74,7 @@ final class MigrationRunnerFunctions
 
         return self::$db = new DatabaseService([
             'host' => $host, 'username' => $user, 'password' => $password,
-            'db' => self::DATABASE, 'port' => $port,
+            'db' => self::database(), 'port' => $port,
         ]);
     }
 

@@ -82,6 +82,7 @@
         "process-timeout": 0
     },
     "require-dev": {
+        "brianium/paratest": "^7.8",
         "kint-php/kint": "^6.1",
         "phpunit/phpunit": "^11.5.57",
         "rector/rector": "^2.7",
@@ -92,7 +93,7 @@
         "pre-update-cmd": [
             "@php bin/guard-composer-update.php"
         ],
-        "test": "@php vendor/bin/phpunit",
+        "test": "@php vendor/bin/paratest --processes=8",
         "check-di": "@php bin/build/check-di.php",
         "check-counts": "@php bin/build/check-count-invariants.php",
         "check-sync-ownership": "@php bin/build/check-sync-ownership.php",

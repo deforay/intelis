@@ -169,12 +169,17 @@ against them without running a review.
 
 ## 4. Before you push
 
-- `composer test` green.
+- `composer test` green. It runs the suite in 8 ParaTest workers, about a minute with
+  MySQL. `vendor/bin/phpunit` still runs it in one process, which is easier to debug.
 - `php -l` clean on every changed PHP file.
 - `composer check-invariants` and `composer check-di` clean.
-- The Integration suite (`vendor/bin/phpunit --testsuite Integration`) needs a real MySQL.
+- The Integration suite (`composer test -- --testsuite Integration`) needs a real MySQL.
   It skips itself when `INTELIS_TEST_DB_HOST` and `INTELIS_TEST_DB_USER` are unset, so a
   green `composer test` without them has not run it. CI runs it against MySQL.
+- A test that creates a database or a file must not share its name with another test
+  file, because the workers run files at the same time. Name it for the test file, and
+  add the `TEST_TOKEN` environment variable (the worker number) when shared helper
+  code creates it for several files.
 - `bin/dev/review` run, and every finding addressed or rebutted.
 - Shell scripts under `scripts/` run, not just read. `bash -n` proves syntax and nothing
   else. Use a privileged systemd container and stage the machine the way the fleet actually
