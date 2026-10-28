@@ -43,7 +43,7 @@ final class AuditLogDrainTest extends TestCase
             LegacyAppHarness::shutdown();
         }
         foreach (['tb', 'tb-test-rows', 'users'] as $folder) {
-            foreach (glob(VAR_PATH . "/audit-trail/$folder/{$this->uniqueId}.csv*") ?: [] as $file) {
+            foreach (glob(VAR_PATH . "/audit-trail/$folder/{$this->uniqueId}*.csv*") ?: [] as $file) {
                 MiscUtility::deleteFile($file);
             }
         }
@@ -107,6 +107,45 @@ final class AuditLogDrainTest extends TestCase
 
         self::assertSame([], self::remaining());
         self::assertNotSame([], glob(VAR_PATH . '/audit-trail/users/9123.csv*') ?: []);
+    }
+
+    /**
+     * Two samples whose revisions alternate through the queue, read two rows at a
+     * time. The old drain rewrote each file once per batch: 12 writes. The drain
+     * now takes each record's later rows along, so each file is written once.
+     */
+    public function testASampleSpreadOverManyBatchesIsWrittenOnce(): void
+    {
+        $other = $this->uniqueId . '-b';
+        for ($revision = 1; $revision <= 6; $revision++) {
+            $a = ['tb_id' => 40, 'unique_id' => $this->uniqueId, 'result' => "a$revision"];
+            $b = ['tb_id' => 41, 'unique_id' => $other, 'result' => "b$revision"];
+            self::log('form_tb', 40, $revision, 'update', $a);
+            self::log('form_tb', 41, $revision, 'update', $b);
+        }
+        $log = [];
+        $archive = new AuditArchiveService(LegacyAppHarness::db());
+
+        $archive->runFromAuditLog(progress: function (string $line) use (&$log): void {
+            $log[] = $line;
+        }, batchSize: 2);
+
+        self::assertSame([], self::remaining());
+        $written = 0;
+        foreach ($log as $line) {
+            if (preg_match('/filed into (\d+) file/', $line, $m)) {
+                $written += (int) $m[1];
+            }
+        }
+        self::assertSame(2, $written, implode("\n", $log));
+        foreach ([$this->uniqueId => 'a', $other => 'b'] as $uniqueId => $prefix) {
+            $file = $archive->resolveAuditFilePath('tb', $uniqueId);
+            self::assertNotNull($file);
+            $rows = $archive->readAuditDataFromCsvFlexible($file);
+            $expected = array_map(fn(int $i): string => "$prefix$i", range(1, 6));
+            self::assertSame($expected, array_column($rows, 'result'));
+            self::assertSame(range(1, 6), array_map('intval', array_column($rows, 'revision')));
+        }
     }
 
     public function testRowsOfATableNothingFilesAreStillDropped(): void
