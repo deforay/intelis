@@ -6,6 +6,7 @@ namespace Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * sys/migrations/5.7.81.sql against real rows.
@@ -26,7 +27,7 @@ final class MigrationSouthSudanNamesTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'system_config', 'global_config', 'facility_details', 'r_sample_status', 'form_vl', 'form_eid',
         ]);
         foreach (range(1, 12) as $statusId) {

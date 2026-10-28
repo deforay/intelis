@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\PENDING_APPROVAL;
 
@@ -38,7 +39,7 @@ final class ApiRepostKeepsLabResultTest extends TestCase
         $_SERVER['HTTP_HOST'] ??= 'localhost';
         $_SERVER['REQUEST_URI'] ??= '/api/v1.1/tb/save-request.php';
 
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             's_vlsm_instance', 'system_config', 'global_config', 'roles', 'user_details', 'facility_details',
             'user_facility_map', 'form_tb', 'tb_tests', 'activity_log', 'audit_log', 'test_result_attempts',
             'r_sample_status', 'track_api_requests',

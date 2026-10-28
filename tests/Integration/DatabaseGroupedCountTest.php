@@ -7,6 +7,7 @@ namespace Tests\Integration;
 use App\Services\DatabaseService;
 use mysqli;
 use PHPUnit\Framework\TestCase;
+use Tests\Support\TestRun;
 
 /**
  * getDataAndCount() counting a GROUP BY listing, against a real server.
@@ -36,7 +37,7 @@ final class DatabaseGroupedCountTest extends TestCase
         $port = (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306);
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
-        self::$database = 'intelis_grouped_count_test_' . getmypid();
+        self::$database = TestRun::database('intelis_grouped_count_test');
         $bootstrap = new mysqli($host, $user, $password, null, $port);
         $bootstrap->query('DROP DATABASE IF EXISTS `' . self::$database . '`');
         $bootstrap->query('CREATE DATABASE `' . self::$database . '`');

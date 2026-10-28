@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * How an instrument result finds the sample it belongs to.
@@ -42,7 +43,7 @@ final class InterfacingSampleLookupTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), ['r_sample_status', 'form_vl']);
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), ['r_sample_status', 'form_vl']);
         LegacyAppHarness::db()->rawQuery(
             "INSERT INTO r_sample_status (status_id, status_name) VALUES (6, 'Received at lab')"
         );

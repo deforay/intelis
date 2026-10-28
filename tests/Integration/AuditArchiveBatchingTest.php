@@ -10,6 +10,7 @@ use App\Utilities\ArchiveUtility;
 use mysqli;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
+use Tests\Support\TestRun;
 
 /**
  * How many times archiving rewrites a sample's file, against a real server.
@@ -56,9 +57,9 @@ final class AuditArchiveBatchingTest extends TestCase
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
         $bootstrap = new mysqli($host, $user, $password, null, $port);
-        $bootstrap->query('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
-        $bootstrap->query('CREATE DATABASE `' . self::DATABASE . '`');
-        $bootstrap->select_db(self::DATABASE);
+        $bootstrap->query('DROP DATABASE IF EXISTS `' . TestRun::database(self::DATABASE) . '`');
+        $bootstrap->query('CREATE DATABASE `' . TestRun::database(self::DATABASE) . '`');
+        $bootstrap->select_db(TestRun::database(self::DATABASE));
         // The columns the archiver reads by name, the three the single-sample
         // filter searches, and one payload column so a reheader would have
         // something to move.
@@ -79,7 +80,7 @@ final class AuditArchiveBatchingTest extends TestCase
             'host'     => $host,
             'username' => $user,
             'password' => $password,
-            'db'       => self::DATABASE,
+            'db'       => TestRun::database(self::DATABASE),
             'port'     => $port,
         ]);
     }

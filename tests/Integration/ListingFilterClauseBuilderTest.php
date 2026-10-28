@@ -7,6 +7,7 @@ namespace Tests\Integration;
 use App\Utilities\ListingFilterClauseBuilder as Filters;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The clauses ListingFilterClauseBuilder writes, run against real MySQL.
@@ -26,7 +27,7 @@ final class ListingFilterClauseBuilderTest extends TestCase
         if ((getenv('INTELIS_TEST_DB_HOST') ?: '') === '' || (getenv('INTELIS_TEST_DB_USER') ?: '') === '') {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), []);
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), []);
         $db->rawQuery('CREATE TABLE t (id INT PRIMARY KEY, code VARCHAR(40), lab_id INT)');
         $db->rawQuery(
             "INSERT INTO t VALUES

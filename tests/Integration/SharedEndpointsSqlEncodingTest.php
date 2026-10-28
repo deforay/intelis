@@ -10,6 +10,7 @@ use App\Registries\ContainerRegistry;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * Shared lookup and admin listing endpoints, driven with values that try to
@@ -48,7 +49,7 @@ final class SharedEndpointsSqlEncodingTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'roles', 'facility_details', 'user_details', 'user_login_history', 'r_generic_test_methods',
             'lab_storage', 'r_vl_sample_type', 'r_funding_sources', 'global_config', 'system_config',
         ]);

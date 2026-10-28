@@ -9,6 +9,7 @@ use mysqli;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Throwable;
+use Tests\Support\TestRun;
 
 /**
  * Transaction nesting, against a real server.
@@ -41,9 +42,9 @@ final class DatabaseTransactionNestingTest extends TestCase
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
         $bootstrap = new mysqli($host, $user, $password, null, $port);
-        $bootstrap->query('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
-        $bootstrap->query('CREATE DATABASE `' . self::DATABASE . '`');
-        $bootstrap->select_db(self::DATABASE);
+        $bootstrap->query('DROP DATABASE IF EXISTS `' . TestRun::database(self::DATABASE) . '`');
+        $bootstrap->query('CREATE DATABASE `' . TestRun::database(self::DATABASE) . '`');
+        $bootstrap->select_db(TestRun::database(self::DATABASE));
         $bootstrap->query(
             'CREATE TABLE samples (id INT AUTO_INCREMENT PRIMARY KEY, tag VARCHAR(32)) ENGINE=InnoDB'
         );
@@ -55,7 +56,7 @@ final class DatabaseTransactionNestingTest extends TestCase
             'host' => $host,
             'username' => $user,
             'password' => $password,
-            'db' => self::DATABASE,
+            'db' => TestRun::database(self::DATABASE),
             'port' => $port,
         ]);
     }

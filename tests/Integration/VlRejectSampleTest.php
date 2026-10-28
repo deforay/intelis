@@ -11,6 +11,7 @@ use App\Utilities\MiscUtility;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\EXPIRED;
@@ -54,8 +55,7 @@ final class VlRejectSampleTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        // Named per process, so a second run against the same server cannot drop it
-        $this->database = 'intelis_vl_reject_sample_test_' . getmypid();
+        $this->database = TestRun::database('intelis_vl_reject_sample_test');
         LegacyAppHarness::boot($this->database, self::TABLES);
         LegacyAppHarness::withSession(['roleId' => 1]);
 

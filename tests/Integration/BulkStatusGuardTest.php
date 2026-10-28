@@ -10,6 +10,7 @@ use App\Services\CommonService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
@@ -49,7 +50,7 @@ final class BulkStatusGuardTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        LegacyAppHarness::boot(self::DATABASE, ['form_eid', 'activity_log']);
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), ['form_eid', 'activity_log']);
         LegacyAppHarness::withSession();
     }
 

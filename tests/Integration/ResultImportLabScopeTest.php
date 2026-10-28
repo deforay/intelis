@@ -13,6 +13,7 @@ use App\Services\UsersService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * Results imported from an instrument file reach only the samples of the lab the file
@@ -46,7 +47,7 @@ final class ResultImportLabScopeTest extends TestCase
         if (!defined('UPLOAD_PATH')) {
             define('UPLOAD_PATH', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'intelis-uploads-' . getmypid());
         }
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'r_sample_status', 'system_config', 'global_config', 'facility_details', 'roles', 'user_details',
             'form_vl', 'form_eid', 'test_result_attempts', 'temp_sample_import', 'log_result_updates',
             'result_import_stats', 'hold_sample_import', 'vl_imported_controls', 's_vlsm_instance',

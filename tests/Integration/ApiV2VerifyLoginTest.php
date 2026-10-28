@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * POST /api/v2/user/verify-login: Recency checks a user's InteLIS login and
@@ -58,7 +59,7 @@ final class ApiV2VerifyLoginTest extends TestCase
     private function start(string $key = self::KEY): void
     {
         $db = LegacyAppHarness::boot(
-            self::DATABASE . '_' . getmypid(),
+            TestRun::database(self::DATABASE),
             ['roles', 'user_details', 'user_login_history'],
             ['recency' => ['authKey' => $key]]
         );

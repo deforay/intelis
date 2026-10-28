@@ -15,6 +15,7 @@ use Throwable;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * A lab's receipt for the requests it pulled: saved ones confirmed, failed ones
@@ -48,7 +49,7 @@ final class RequestReceiptsTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
         $db = LegacyAppHarness::boot(
-            'intelis_request_receipts_test_' . getmypid(),
+            TestRun::database('intelis_request_receipts_test'),
             ['r_sample_status', 'form_vl', ...$extraTables]
         );
         $this->booted = true;

@@ -18,6 +18,7 @@ use Monolog\Handler\TestHandler;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * A lab whose Smart Connect enrollment is refused.
@@ -52,7 +53,7 @@ final class SmartConnectEnrollmentLogTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $database = 'intelis_smart_connect_log_test_' . getmypid();
+        $database = TestRun::database('intelis_smart_connect_log_test');
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', ['database' => ['db' => $database]]);
         }

@@ -12,6 +12,7 @@ use App\Services\UsersService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 use Throwable;
 
 /**
@@ -50,7 +51,7 @@ final class WebLoginTypedPasswordTest extends TestCase
         }
         require_once ROOT_PATH . '/app/system/version.php';
 
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             's_vlsm_instance', 'system_config', 'global_config',
             'resources', 'privileges', 'roles', 'roles_privileges_map', 'user_details',
             'user_login_history', 'facility_details', 'user_facility_map', 'activity_log',

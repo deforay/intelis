@@ -11,6 +11,7 @@ use Slim\Psr7\Factory\ServerRequestFactory;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * Pages that print a value from the request, driven with one that tries to add
@@ -33,8 +34,7 @@ final class RequestValueEscapingTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        // Named per process: two runs against one MySQL would drop each other's fixtures.
-        $db = LegacyAppHarness::boot('intelis_request_value_escaping_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database('intelis_request_value_escaping'), [
             'roles', 'facility_details', 'r_sample_status', 'batch_details', 'user_details',
             'r_vl_sample_type', 'r_vl_sample_rejection_reasons', 'r_vl_test_reasons', 'r_vl_art_regimen',
             'r_funding_sources', 'r_implementation_partners', 'form_vl', 'r_covid19_symptoms',

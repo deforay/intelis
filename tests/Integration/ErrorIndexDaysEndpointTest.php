@@ -13,6 +13,7 @@ use Slim\Psr7\Factory\ServerRequestFactory;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The log viewer's "days with errors matching this search", driven through the
@@ -47,7 +48,7 @@ final class ErrorIndexDaysEndpointTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $database = 'intelis_error_index_days_test_' . getmypid();
+        $database = TestRun::database('intelis_error_index_days_test');
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', ['database' => ['db' => $database], 'modules' => ['vl' => true]]);
         }

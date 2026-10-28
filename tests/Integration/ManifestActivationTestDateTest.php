@@ -8,6 +8,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
@@ -63,7 +64,7 @@ final class ManifestActivationTestDateTest extends TestCase
         // would answer for this database.
         self::clearFileCache();
 
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), self::TABLES);
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), self::TABLES);
         LegacyAppHarness::withSession();
 
         $statuses = [

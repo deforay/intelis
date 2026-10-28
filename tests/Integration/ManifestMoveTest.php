@@ -13,6 +13,7 @@ use mysqli;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * Move Manifest on the STS, and the old lab cancelling its copies.
@@ -47,7 +48,7 @@ final class ManifestMoveTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $this->database = 'intelis_manifest_move_test_' . getmypid();
+        $this->database = TestRun::database('intelis_manifest_move_test');
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', [
                 'database' => ['db' => $this->database],

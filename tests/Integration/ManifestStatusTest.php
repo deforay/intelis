@@ -8,6 +8,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
@@ -50,7 +51,7 @@ final class ManifestStatusTest extends TestCase
 
         self::clearFileCache();
 
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), self::TABLES);
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), self::TABLES);
         LegacyAppHarness::withSession();
 
         $statuses = [RECEIVED_AT_TESTING_LAB => 'Received at Testing Lab', RECEIVED_AT_CLINIC => 'Received at Clinic'];

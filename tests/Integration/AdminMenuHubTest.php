@@ -7,6 +7,7 @@ namespace Tests\Integration;
 use App\Services\AppMenuService;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 use App\Registries\ContainerRegistry;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
@@ -36,7 +37,7 @@ final class AdminMenuHubTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $database = self::DATABASE . '_' . getmypid();
+        $database = TestRun::database(self::DATABASE);
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', [
                 'database' => ['db' => $database],

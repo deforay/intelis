@@ -9,6 +9,7 @@ use mysqli;
 use mysqli_sql_exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
+use Tests\Support\TestRun;
 
 /**
  * rawQueryGenerator() handing back rows as they are read, against a real server.
@@ -41,8 +42,7 @@ final class DatabaseStreamingTest extends TestCase
         $port = (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306);
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
-        // One database per process: a run alongside another must not drop its fixtures.
-        self::$database = 'intelis_streaming_test_' . getmypid();
+        self::$database = TestRun::database('intelis_streaming_test');
         $bootstrap = new mysqli($host, $user, $password, null, $port);
         $bootstrap->query('DROP DATABASE IF EXISTS `' . self::$database . '`');
         $bootstrap->query('CREATE DATABASE `' . self::$database . '`');

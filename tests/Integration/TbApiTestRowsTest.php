@@ -7,6 +7,7 @@ namespace Tests\Integration;
 use App\Services\TbTestsService;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * TB test rows an API client sends (api/v1.1/tb/save-request.php).
@@ -29,7 +30,7 @@ final class TbApiTestRowsTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), ['form_tb', 'tb_tests']);
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), ['form_tb', 'tb_tests']);
         $db->insert('form_tb', ['unique_id' => 'tb-1', 'sample_collection_date' => '2026-09-01 10:00:00']);
         $this->tbId = (int) $db->getInsertId();
     }

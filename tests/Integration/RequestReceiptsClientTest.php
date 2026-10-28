@@ -17,6 +17,7 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The lab side of request receipts: a receipt the STS takes is gone, one it
@@ -46,7 +47,7 @@ final class RequestReceiptsClientTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
         $db = LegacyAppHarness::boot(
-            'intelis_request_receipts_client_test_' . getmypid(),
+            TestRun::database('intelis_request_receipts_client_test'),
             ['global_config', 's_vlsm_instance', 'system_config']
         );
         $this->booted = true;

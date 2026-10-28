@@ -9,6 +9,7 @@ use App\Services\STS\LabMetadataService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The STS storing the storage, instruments and users a lab sends it
@@ -36,7 +37,7 @@ final class LabMetadataStoreTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $database = 'intelis_lab_metadata_store_test_' . getmypid();
+        $database = TestRun::database('intelis_lab_metadata_store_test');
         // getTableFieldsAsArray() reads columns from SYSTEM_CONFIG's database.
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', ['database' => ['db' => $database], 'modules' => ['vl' => true]]);

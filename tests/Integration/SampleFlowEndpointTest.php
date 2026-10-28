@@ -10,6 +10,7 @@ use App\Registries\ContainerRegistry;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The Sample Flow endpoint, driven the way the page drives it, against rows
@@ -48,7 +49,7 @@ final class SampleFlowEndpointTest extends TestCase
 
         // system_config and global_config are read by the scoping checks the
         // service applies to every query; empty is what a plain install has.
-        $db = LegacyAppHarness::boot(self::DATABASE, [
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'form_eid', 'facility_details', 'r_implementation_partners', 'r_sample_status', 'instruments',
             'system_config', 'global_config',
         ]);

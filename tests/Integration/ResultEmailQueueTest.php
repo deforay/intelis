@@ -10,6 +10,7 @@ use App\Services\CommonService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * What the VL "email results" form may queue for bin/send-email.php to attach.
@@ -33,8 +34,7 @@ final class ResultEmailQueueTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        // Named per process: two runs against one MySQL would drop each other's fixtures.
-        $db = LegacyAppHarness::boot('intelis_result_email_queue_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database('intelis_result_email_queue'), [
             'roles', 'facility_details', 'r_sample_status', 'batch_details', 'user_details',
             'r_vl_sample_type', 'r_vl_sample_rejection_reasons', 'r_vl_test_reasons', 'r_vl_art_regimen',
             'r_funding_sources', 'r_implementation_partners', 'form_vl', 's_vlsm_instance',

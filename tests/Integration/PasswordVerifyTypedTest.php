@@ -9,6 +9,7 @@ use App\Services\UsersService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * A password with & or < signs in whichever way it was stored. Until 2026-08-12
@@ -38,7 +39,7 @@ final class PasswordVerifyTypedTest extends TestCase
         if (!self::booted()) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), ['roles', 'user_details']);
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), ['roles', 'user_details']);
         $db->insert('roles', ['role_id' => 2, 'role_name' => 'Lab', 'role_code' => 'lab', 'status' => 'active']);
     }
 

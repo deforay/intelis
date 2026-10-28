@@ -11,6 +11,7 @@ use App\Utilities\ApiTrackingStorageUtility;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * What addApiTracking() keeps for a call: the track_api_requests row, and the
@@ -42,7 +43,7 @@ final class ApiTrackingStorageTest extends TestCase
         if (!self::booted()) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        LegacyAppHarness::boot(self::DATABASE, ['track_api_requests']);
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), ['track_api_requests']);
     }
 
     protected function tearDown(): void

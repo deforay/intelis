@@ -10,6 +10,7 @@ use App\Registries\ContainerRegistry;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The COVID-19 request, result-entry, print, failed and result-status listings,
@@ -47,9 +48,7 @@ final class Covid19ListingSqlEncodingTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        // Named per process: two runs against one MySQL would otherwise drop each
-        // other's fixtures mid-test.
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'roles', 'facility_details', 'r_sample_status', 'batch_details', 'user_details',
             'r_countries', 'r_covid19_results', 'r_covid19_test_reasons', 'r_covid19_sample_type',
             'r_covid19_sample_rejection_reasons', 'r_funding_sources', 'r_implementation_partners',

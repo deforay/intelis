@@ -8,6 +8,7 @@ use App\Services\DatabaseService;
 use App\Utilities\SampleRejectionUtility;
 use mysqli;
 use PHPUnit\Framework\TestCase;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\REJECTED;
 
@@ -85,9 +86,9 @@ final class SampleRejectionCountingTest extends TestCase
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
         $bootstrap = new mysqli($host, $user, $password, null, $port);
-        $bootstrap->query('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
-        $bootstrap->query('CREATE DATABASE `' . self::DATABASE . '`');
-        $bootstrap->select_db(self::DATABASE);
+        $bootstrap->query('DROP DATABASE IF EXISTS `' . TestRun::database(self::DATABASE) . '`');
+        $bootstrap->query('CREATE DATABASE `' . TestRun::database(self::DATABASE) . '`');
+        $bootstrap->select_db(TestRun::database(self::DATABASE));
         $bootstrap->query(
             'CREATE TABLE form_vl (
                 vl_sample_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -113,7 +114,7 @@ final class SampleRejectionCountingTest extends TestCase
             'host' => $host,
             'username' => $user,
             'password' => $password,
-            'db' => self::DATABASE,
+            'db' => TestRun::database(self::DATABASE),
             'port' => $port,
         ]);
 

@@ -8,6 +8,7 @@ use App\Services\AuditArchiveService;
 use App\Utilities\MiscUtility;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The nightly drain moving audit_log into per-sample archive files.
@@ -30,7 +31,7 @@ final class AuditLogDrainTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), ['form_tb', 'tb_tests', 'audit_log']);
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), ['form_tb', 'tb_tests', 'audit_log']);
         $this->uniqueId = 'drain-' . bin2hex(random_bytes(6));
         $db->insert('form_tb', [
             'tb_id' => 40, 'unique_id' => $this->uniqueId, 'sample_collection_date' => '2026-09-01 10:00:00',

@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 use const COUNTRY\BURKINA_FASO;
 use const COUNTRY\RWANDA;
@@ -48,7 +49,7 @@ final class InterfacingTbImportTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'r_sample_status', 'form_vl', 'form_tb', 'tb_tests', 'r_tb_results',
             'roles', 'user_details', 'instruments', 'instrument_machines', 'test_result_attempts',
             'batch_details',

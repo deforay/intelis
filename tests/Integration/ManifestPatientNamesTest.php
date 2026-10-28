@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Sqids\Sqids;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 use Throwable;
 
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
@@ -66,7 +67,7 @@ final class ManifestPatientNamesTest extends TestCase
         // there would stand in for the settings seeded here.
         self::clearFileCache();
 
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), self::TABLES);
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), self::TABLES);
         LegacyAppHarness::withSession();
         // sql/init.sql predates the column; 5.7.80 adds it.
         $db->rawQuery(

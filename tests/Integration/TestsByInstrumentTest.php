@@ -11,6 +11,7 @@ use App\Services\LabPerformanceIndicatorsService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * Tests by lab, instrument and assay on the Instrument Activity page.
@@ -39,7 +40,7 @@ final class TestsByInstrumentTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'r_sample_status', 'system_config', 'global_config', 'facility_details', 'instruments',
             'form_vl', 'test_result_attempts', 'batch_details',
         ]);

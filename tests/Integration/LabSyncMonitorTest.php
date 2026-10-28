@@ -11,6 +11,7 @@ use App\Services\STS\RequestReceiptsService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The STS sync monitor for one lab (admin/monitoring/lab-sync-details.php): the
@@ -47,7 +48,7 @@ final class LabSyncMonitorTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $database = 'intelis_lab_sync_monitor_test_' . getmypid();
+        $database = TestRun::database('intelis_lab_sync_monitor_test');
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', [
                 'database' => ['db' => $database], 'modules' => ['vl' => true, 'generic-tests' => true],

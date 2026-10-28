@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * /api/v1.1/init.php end to end: the shape InteLIS Mobile parses on first
@@ -61,7 +62,7 @@ final class ApiInitEndpointTest extends TestCase
             define('SYSTEM_CONFIG', ['modules' => self::MODULES, 'system' => ['debug_mode' => false]]);
         }
 
-        LegacyAppHarness::boot(self::DATABASE, self::TABLES, ['modules' => self::MODULES]);
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), self::TABLES, ['modules' => self::MODULES]);
         $db = LegacyAppHarness::db();
         $db->insert('s_vlsm_instance', ['vlsm_instance_id' => 'test-instance']);
         $db->insert('system_config', [

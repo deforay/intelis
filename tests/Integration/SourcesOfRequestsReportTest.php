@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The Sources of Requests report: its summary by source, its sample list,
@@ -28,10 +29,9 @@ use Tests\Support\LegacyAppHarness;
  */
 final class SourcesOfRequestsReportTest extends TestCase
 {
-    /** Per process, so two runs sharing a MySQL server never drop each other's fixtures. */
     private static function database(): string
     {
-        return 'intelis_sources_of_requests_test_' . getmypid();
+        return TestRun::database('intelis_sources_of_requests_test');
     }
 
     private const LAB_ID = 801;

@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\ACCEPTED;
 
@@ -99,7 +100,7 @@ final class BatchPdfPrintTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), self::TABLES);
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), self::TABLES);
         foreach (['logo' => '', 'header' => 'Test Lab', 'barcode_format' => 'C39', 'key' => ''] as $name => $value) {
             $db->insert('global_config', ['display_name' => $name, 'name' => $name, 'value' => $value]);
         }

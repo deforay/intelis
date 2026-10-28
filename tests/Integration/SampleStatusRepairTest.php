@@ -9,6 +9,7 @@ use App\Registries\ContainerRegistry;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The repair that puts a sample's status back to what its own record proves.
@@ -41,7 +42,7 @@ final class SampleStatusRepairTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        LegacyAppHarness::boot(self::DATABASE, [
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'facility_details', 'r_sample_status', 'form_eid', 'form_hepatitis',
             'system_config', 'global_config',
         ]);

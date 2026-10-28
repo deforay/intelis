@@ -13,6 +13,7 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * Bulk facility upload: staging plans each row without writing, apply() writes
@@ -36,7 +37,7 @@ final class FacilityImportServiceTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        $this->db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        $this->db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'facility_details', 'geographical_divisions', 'facility_type', 'activity_log',
         ]);
         LegacyAppHarness::withSession(['instanceId' => 'test-instance']);

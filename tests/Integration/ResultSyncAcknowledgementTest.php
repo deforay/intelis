@@ -10,6 +10,7 @@ use App\Utilities\ResultSyncAcknowledgement;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 final class ResultSyncAcknowledgementTest extends TestCase
 {
@@ -46,7 +47,7 @@ final class ResultSyncAcknowledgementTest extends TestCase
     public function testOnlyRowsStillInFlightAreMarkedSynced(): void
     {
         $this->requireDatabase();
-        $db = LegacyAppHarness::boot('intelis_result_sync_ack_test_' . getmypid(), ['r_sample_status', 'form_vl']);
+        $db = LegacyAppHarness::boot(TestRun::database('intelis_result_sync_ack_test'), ['r_sample_status', 'form_vl']);
         $this->booted = true;
         $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (7, 'Accepted')");
 
@@ -100,7 +101,10 @@ final class ResultSyncAcknowledgementTest extends TestCase
     public function testAResendOfRowsAlreadySyncedCountsThemAsMarked(): void
     {
         $this->requireDatabase();
-        $db = LegacyAppHarness::boot('intelis_result_sync_resend_test_' . getmypid(), ['r_sample_status', 'form_vl']);
+        $db = LegacyAppHarness::boot(
+            TestRun::database('intelis_result_sync_resend_test'),
+            ['r_sample_status', 'form_vl']
+        );
         $this->booted = true;
         $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (7, 'Accepted')");
 
@@ -129,11 +133,11 @@ final class ResultSyncAcknowledgementTest extends TestCase
         // getTableFieldsAsArray() reads columns from SYSTEM_CONFIG's database.
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', [
-                'database' => ['db' => 'intelis_result_sync_ack_sts_test_' . getmypid()],
+                'database' => ['db' => TestRun::database('intelis_result_sync_ack_sts_test')],
                 'modules' => ['vl' => true],
             ]);
         }
-        $db = LegacyAppHarness::boot('intelis_result_sync_ack_sts_test_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database('intelis_result_sync_ack_sts_test'), [
             'system_config', 'global_config', 's_vlsm_instance', 'r_sample_status', 'form_vl', 'roles', 'user_details',
             'r_vl_sample_rejection_reasons', 'facility_details',
         ]);

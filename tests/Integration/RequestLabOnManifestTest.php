@@ -9,6 +9,7 @@ use App\Services\CommonService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The testing lab a request edit may save (CommonService::resolveRequestLabId).
@@ -35,7 +36,7 @@ final class RequestLabOnManifestTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $database = 'intelis_request_lab_on_manifest_test_' . getmypid();
+        $database = TestRun::database('intelis_request_lab_on_manifest_test');
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', ['database' => ['db' => $database], 'modules' => ['vl' => true]]);
         }

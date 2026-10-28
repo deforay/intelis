@@ -9,6 +9,7 @@ use App\Services\CommonService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The two list builders behind init.php that dominated its response time and
@@ -35,7 +36,10 @@ final class ApiInitBuildersTest extends TestCase
         if (!self::booted()) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        LegacyAppHarness::boot(self::DATABASE, ['geographical_divisions', 'facility_details', 'health_facilities']);
+        LegacyAppHarness::boot(
+            TestRun::database(self::DATABASE),
+            ['geographical_divisions', 'facility_details', 'health_facilities']
+        );
 
         $db = LegacyAppHarness::db();
         $db->insert('geographical_divisions', [

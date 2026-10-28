@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * POST /api/v2/user/profile: the strict replacement for the v1.1 profile push.
@@ -47,7 +48,7 @@ final class ApiV2UserProfileTest extends TestCase
             define('UPLOAD_PATH', VAR_PATH . DIRECTORY_SEPARATOR . 'uploads');
         }
 
-        LegacyAppHarness::boot(self::DATABASE, [
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             's_vlsm_instance', 'system_config', 'global_config', 'roles', 'user_details', 'facility_details',
         ]);
         $db = LegacyAppHarness::db();

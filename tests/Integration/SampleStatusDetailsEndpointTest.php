@@ -11,6 +11,7 @@ use App\Registries\ContainerRegistry;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The drilldown behind a VL Sample Status Report slice, driven the way the
@@ -45,7 +46,7 @@ final class SampleStatusDetailsEndpointTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        $db = LegacyAppHarness::boot(self::DATABASE, [
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             // Lookup tables first: form_vl holds foreign keys to some of them.
             'r_sample_status', 'facility_details', 'r_vl_sample_type', 'batch_details',
             'r_vl_sample_rejection_reasons', 'r_test_failure_reasons', 'r_vl_test_failure_reasons',

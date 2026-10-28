@@ -27,12 +27,12 @@ if (!defined('APPLICATION_PATH')) {
     define('APPLICATION_PATH', ROOT_PATH . DIRECTORY_SEPARATOR . 'app');
 }
 
-// ParaTest numbers its workers in TEST_TOKEN. Each worker gets its own directory, so one
-// worker's logs, caches and temporary files never land in a test another is running.
+// Each run, and each ParaTest worker in it, gets its own directory and database names,
+// so two runs on one machine never touch each other's files or tables. Removed when the
+// run ends. See Tests\Support\TestRun.
+\Tests\Support\TestRun::start();
 if (!defined('VAR_PATH')) {
-    $worker = getenv('TEST_TOKEN');
-    define('VAR_PATH', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'intelis-tests-var'
-        . ($worker === false || $worker === '' ? '' : '-' . $worker));
+    define('VAR_PATH', \Tests\Support\TestRun::varPath());
 }
 if (!is_dir(VAR_PATH)) {
     mkdir(VAR_PATH, 0777, true);

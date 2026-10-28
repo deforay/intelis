@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The STS endpoint a lab pushes results to (remote/v2/results.php), driven the way
@@ -46,7 +47,7 @@ final class StsResultsEndpointTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
         require_once ROOT_PATH . '/app/system/version.php';
-        $database = 'intelis_sts_results_endpoint_test_' . getmypid();
+        $database = TestRun::database('intelis_sts_results_endpoint_test');
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', ['database' => ['db' => $database], 'modules' => ['vl' => true]]);
         }

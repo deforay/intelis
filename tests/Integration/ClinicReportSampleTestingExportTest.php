@@ -11,6 +11,7 @@ use OpenSpout\Reader\XLSX\Reader;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The Sample Testing export replays the query its own module's tab last ran.
@@ -28,10 +29,9 @@ final class ClinicReportSampleTestingExportTest extends TestCase
     private const VL_FACILITY = 902;
     private const EID_FACILITY = 903;
 
-    /** Per process, so two runs sharing a MySQL server never drop each other's fixtures. */
     private static function database(): string
     {
-        return 'intelis_clinic_sample_testing_test_' . getmypid();
+        return TestRun::database('intelis_clinic_sample_testing_test');
     }
 
     private static function booted(): bool

@@ -12,6 +12,7 @@ use mysqli;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 use Throwable;
 
 use const SAMPLE_STATUS\ACCEPTED;
@@ -53,7 +54,7 @@ final class VlResultStatusOnClearTest extends TestCase
 
     private static function database(): string
     {
-        return self::DATABASE . '_' . getmypid();
+        return TestRun::database(self::DATABASE);
     }
 
     protected function setUp(): void
