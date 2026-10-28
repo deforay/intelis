@@ -72,9 +72,10 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,
                     -- a sample still awaiting a result.
                     AND " . SampleCountUtility::countableWhere('vl') . "
             AND vl.sample_code is NOT NULL
-            -- A Failed sample has no result until it is retested, which moves it
-            -- to another status. Its result field can still hold Failed or Invalid.
-            AND ((vl.result IS NULL OR vl.result='') OR vl.result_status = " . TEST_FAILED . ")";
+            -- A Failed sample was tested and failed, so it is not a sample still
+            -- awaiting a result, even when its result field is empty.
+            AND (vl.result IS NULL OR vl.result='')
+            AND vl.result_status != " . TEST_FAILED;
 
 if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) !== '') {
     // The filter is fed by a dropdown of exact batch codes; LIKE made
