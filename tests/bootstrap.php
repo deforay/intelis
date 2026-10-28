@@ -27,8 +27,12 @@ if (!defined('APPLICATION_PATH')) {
     define('APPLICATION_PATH', ROOT_PATH . DIRECTORY_SEPARATOR . 'app');
 }
 
+// ParaTest numbers its workers in TEST_TOKEN. Each worker gets its own directory, so one
+// worker's logs, caches and temporary files never land in a test another is running.
 if (!defined('VAR_PATH')) {
-    define('VAR_PATH', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'intelis-tests-var');
+    $worker = getenv('TEST_TOKEN');
+    define('VAR_PATH', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'intelis-tests-var'
+        . ($worker === false || $worker === '' ? '' : '-' . $worker));
 }
 if (!is_dir(VAR_PATH)) {
     mkdir(VAR_PATH, 0777, true);
