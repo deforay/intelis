@@ -160,7 +160,7 @@ if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty
 				<div class="box-body">
 					<div class="box box-primary">
 						<div class="box-header with-border">
-							<h3 class="box-title">Clinic Information: (To be filled by requesting Clinican/Nurse)</h3>
+							<h3 class="box-title">Clinic Information: (To be filled by requesting Clinician/Nurse)</h3>
 						</div>
 						<div class="box-body">
 							<div class="row">

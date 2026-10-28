@@ -11092,12 +11092,12 @@ msgstr "Indications pour l'analyse de la charge virale"
 #: app/cd4/requests/export-cd4-requests.php:27
 #: app/vl/program-management/export-vl-results.php:36
 #: app/vl/requests/export-vl-requests.php:31
-msgid "Requesting Clinican"
+msgid "Requesting Clinician"
 msgstr "Clinicien demandeur"
 
 #: app/cd4/management/export-cd4-results.php:30
 #: app/vl/program-management/export-vl-results.php:36
-msgid "Requesting Clinican Cellphone Number"
+msgid "Requesting Clinician Cellphone Number"
 msgstr "Demande de numéro de téléphone portable du clinicien"
 
 #: app/cd4/management/export-cd4-results.php:30
@@ -25030,7 +25030,7 @@ msgstr ""
 #: app/vl/requests/forms/edit-cameroon.php:137
 #: app/vl/results/forms/update-burkina-faso-result.php:181
 #: app/vl/results/forms/update-cameroon-result.php:179
-msgid "Clinic Information: (To be filled by requesting Clinican/Nurse)"
+msgid "Clinic Information: (To be filled by requesting Clinician/Nurse)"
 msgstr ""
 "Informations sur la clinique : (à remplir par le clinicien/infirmier "
 "demandeur)"

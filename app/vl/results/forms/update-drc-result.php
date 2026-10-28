@@ -149,9 +149,9 @@ $storageInfo = $storageService->getLabStorage();
 										<td>
 											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" style="width:100%;" />
 										</td>
-										<td><label for="clinicanTelephone">Téléphone </label></td>
+										<td><label for="ClinicianTelephone">Téléphone </label></td>
 										<td>
-											<input type="text" class="form-control forceNumeric" id="clinicanTelephone" name="clinicanTelephone" placeholder="Téléphone" title="<?= _translate("Please enter phone number"); ?>" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ClinicianTelephone" name="ClinicianTelephone" placeholder="Téléphone" title="<?= _translate("Please enter phone number"); ?>" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="supportPartner">Partnaire d'appui </label></td>
 										<td>

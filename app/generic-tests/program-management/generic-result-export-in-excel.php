@@ -40,19 +40,13 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 
 	/* To get dynamic fields */
 	$labels = [];
-	foreach ($rResult as $key => $row) {
-		$testType[$key] = $genericTestsService->getDynamicFields($row['sample_id']);
-		foreach ($testType[$key]['dynamicLabel'] as $id => $le) {
-			$labels[$id] = $le;
-		}
-	}
-
+	
 	$output = [];
 
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = ["No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Patient ID.", "Patient Name", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
+		$headings = ["No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Patient ID.", "Patient Name", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinician", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
 	} else {
-		$headings = ["No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
+		$headings = ["No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinician", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
 	}
 	if ($general->isStandaloneInstance()) {
 		$headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
@@ -64,6 +58,13 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 
 	$no = 1;
 	$resultSet = $db->rawQuery($_SESSION['genericResultQuery']);
+	foreach ($resultSet as $key => $row) {
+		$testType[$key] = $genericTestsService->getDynamicFields($row['sample_id']);
+		foreach ($testType[$key]['dynamicLabel'] as $id => $le) {
+			$labels[$id] = $le;
+		}
+	}
+
 	foreach ($resultSet as $key => $aRow) {
 		ExportJobUtility::tick();
 		$row = [];
@@ -87,6 +88,7 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		if (!empty($aRow['sample_collection_date'])) {
 			$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		}
+		$treatmentInitiationDate = "";
 		//requested date
 		$requestedDate = '';
 		if (!empty($aRow['test_requested_on'])) {

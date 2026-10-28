@@ -75,7 +75,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 		_translate("Sample Type"), 
 		_translate("Is Patient Pregnant?"), 
 		_translate("Is Patient Breastfeeding?"), 
-		_translate("Requesting Clinican"), _translate("Request Date"),
+		_translate("Requesting Clinician"), _translate("Request Date"),
 		_translate("Is Sample Rejected?"), 
 		_translate("Rejection Reason"), 
 		_translate("Sample Tested On"), 
@@ -86,7 +86,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 		_translate("Request Created On")
 	];
 	 
-	if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
+	if ($general->isStandaloneInstance() && ($key = array_search(_translate("Remote Sample ID"), $headings)) !== false) {
 		unset($headings[$key]);
 	}
 
@@ -94,7 +94,6 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 	if ($labels !== []) {
 		$headings = array_merge($headings, $labels);
 	}
-//echo "<pre>"; print_r($labels); die;
 	$no = 1;
 	foreach ($resultSet as $key => $aRow) {
 		ExportJobUtility::tick();
@@ -171,13 +170,13 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 		$row[] = $aRow['facility_code'];
 		$row[] = ($aRow['facility_district']);
 		$row[] = ($aRow['facility_state']);
-		$row[] = $aRow['patient_id'];
 		if (!empty($globalKey) && !empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-			$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $globalKey);
+			$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $globalKey);
 			$patientFname = $general->crypto('decrypt', $patientFname, $globalKey);
 			$patientMname = $general->crypto('decrypt', $patientMname, $globalKey);
 			$patientLname = $general->crypto('decrypt', $patientLname, $globalKey);
 		}
+		$row['patient_id'] = $aRow['patient_id'];
 		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');
 		$row[] = $aRow['patient_age_in_years'];
@@ -197,11 +196,11 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 		$row[] = (isset($aRow['funding_source_name']) && trim((string) $aRow['funding_source_name']) !== '') ? ($aRow['funding_source_name']) : '';
 		$row[] = (isset($aRow['i_partner_name']) && trim((string) $aRow['i_partner_name']) !== '') ? ($aRow['i_partner_name']) : '';
 		$row[] = $requestCreatedDatetime;
-//echo "<pre>"; print_r($labels); die;
 		/* To assign the dynamic fields values safely mapped by sample_id */
 		if ($labels !== []) {
 			foreach (array_keys($labels) as $id) {
-				$row[] = empty($testTypeData[$aRow['sample_id']]['dynamicValue'][$id]) ? "" : $testTypeData[$aRow['sample_id']]['dynamicValue'][$id];
+				$value = $testTypeData[$aRow['sample_id']]['dynamicValue'][$id] ?? '';
+				$row[] = is_array($value) ? implode(', ', $value) : $value;
 			}
 		}
 

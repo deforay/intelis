@@ -15950,7 +15950,7 @@ msgstr ""
 
 #: vl/requests/forms/add-cameroon.php:91
 #: vl/requests/forms/edit-cameroon.php:132
-msgid "Clinic Information: (To be filled by requesting Clinican/Nurse)"
+msgid "Clinic Information: (To be filled by requesting Clinician/Nurse)"
 msgstr ""
 
 #: vl/requests/forms/add-cameroon.php:103
