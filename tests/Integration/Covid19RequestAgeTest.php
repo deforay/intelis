@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The COVID-19 request add and edit saved no patient age from most country forms.
@@ -41,7 +42,7 @@ final class Covid19RequestAgeTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'r_sample_status', 'form_covid19', 'covid19_tests', 'covid19_patient_symptoms',
             'covid19_reasons_for_testing', 'covid19_patient_comorbidities', 'audit_log', 'activity_log',
             'system_config', 'global_config', 's_vlsm_instance', 'facility_details',

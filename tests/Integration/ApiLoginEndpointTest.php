@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * /api/v1.1/user/login.php has three outcomes and the app shows the message of
@@ -47,7 +48,7 @@ final class ApiLoginEndpointTest extends TestCase
         }
         require_once ROOT_PATH . '/app/system/version.php';
 
-        LegacyAppHarness::boot(self::DATABASE, self::TABLES);
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), self::TABLES);
         $db = LegacyAppHarness::db();
         $db->insert('s_vlsm_instance', ['vlsm_instance_id' => 'test-instance']);
         $db->insert('system_config', [

@@ -9,6 +9,7 @@ use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
 use mysqli;
 use PHPUnit\Framework\TestCase;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\CANCELLED;
@@ -70,9 +71,9 @@ final class SampleCountingTest extends TestCase
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
         $bootstrap = new mysqli($host, $user, $password, null, $port);
-        $bootstrap->query('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
-        $bootstrap->query('CREATE DATABASE `' . self::DATABASE . '`');
-        $bootstrap->select_db(self::DATABASE);
+        $bootstrap->query('DROP DATABASE IF EXISTS `' . TestRun::database(self::DATABASE) . '`');
+        $bootstrap->query('CREATE DATABASE `' . TestRun::database(self::DATABASE) . '`');
+        $bootstrap->select_db(TestRun::database(self::DATABASE));
         // Nullable on purpose. form_vl declares result_status NOT NULL, but form_eid
         // and form_covid19 do not, so the NULL case is reachable in those modules by
         // schema even though no row carries one today.
@@ -99,7 +100,7 @@ final class SampleCountingTest extends TestCase
             'host' => $host,
             'username' => $user,
             'password' => $password,
-            'db' => self::DATABASE,
+            'db' => TestRun::database(self::DATABASE),
             'port' => $port,
         ]);
 

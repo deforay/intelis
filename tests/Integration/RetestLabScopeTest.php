@@ -7,6 +7,7 @@ namespace Tests\Integration;
 use App\Services\TestAttemptService;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\TEST_FAILED;
@@ -40,7 +41,7 @@ final class RetestLabScopeTest extends TestCase
         }
 
         LegacyAppHarness::boot(
-            self::DATABASE . '_' . getmypid(),
+            TestRun::database(self::DATABASE),
             ['r_sample_status', 'form_vl', 'test_result_attempts']
         );
         LegacyAppHarness::addMigrationColumns('5.7.82', ['form_vl']);

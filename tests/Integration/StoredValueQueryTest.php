@@ -10,6 +10,7 @@ use App\Services\GeoLocationsService;
 use App\Services\PatientsService;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * Lookups that used to paste a value into their SQL: a request value (the
@@ -32,8 +33,7 @@ final class StoredValueQueryTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        // Named per process: two runs against one MySQL would drop each other's fixtures.
-        $this->db = LegacyAppHarness::boot('intelis_stored_value_query_' . getmypid(), [
+        $this->db = LegacyAppHarness::boot(TestRun::database('intelis_stored_value_query'), [
             'geographical_divisions', 'r_vl_test_reasons', 'patients',
         ]);
 

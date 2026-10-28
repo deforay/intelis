@@ -12,6 +12,7 @@ use App\Registries\ContainerRegistry;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The EID Quality Monitoring endpoint, driven the way the page drives it.
@@ -50,7 +51,7 @@ final class QualityMonitoringEndpointTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        $db = LegacyAppHarness::boot(self::DATABASE, [
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             // Referenced tables first: form_vl carries a foreign key to
             // r_sample_status and will not create without it.
             'facility_details', 'r_implementation_partners', 'r_sample_status',

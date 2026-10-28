@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 use Throwable;
 
 /**
@@ -40,7 +41,7 @@ final class RequestSyncPendingTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
         require_once ROOT_PATH . '/app/system/version.php';
-        $db = LegacyAppHarness::boot('intelis_request_pending_test_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database('intelis_request_pending_test'), [
             'r_sample_status', 'form_vl', 'facility_details', 'testing_lab_health_facilities_map',
             'track_api_requests', 'global_config', 'system_config', 's_vlsm_instance',
         ]);

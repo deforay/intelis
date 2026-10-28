@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\REFERRED;
@@ -236,7 +237,7 @@ final class ManifestPrintScopeTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), self::TABLES);
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), self::TABLES);
         LegacyAppHarness::addMigrationColumns('5.7.80', ['specimen_manifests']);
         // The settings a print reads for its header.
         foreach (['logo' => '', 'header' => 'Test Lab', 'vl_form' => '0'] as $name => $value) {

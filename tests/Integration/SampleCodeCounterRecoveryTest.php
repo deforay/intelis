@@ -15,6 +15,7 @@ use App\Utilities\FileCacheUtility;
 use mysqli;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
@@ -64,9 +65,9 @@ final class SampleCodeCounterRecoveryTest extends TestCase
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
         $bootstrap = new mysqli($host, $user, $password, null, $port);
-        $bootstrap->query('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
-        $bootstrap->query('CREATE DATABASE `' . self::DATABASE . '`');
-        $bootstrap->select_db(self::DATABASE);
+        $bootstrap->query('DROP DATABASE IF EXISTS `' . TestRun::database(self::DATABASE) . '`');
+        $bootstrap->query('CREATE DATABASE `' . TestRun::database(self::DATABASE) . '`');
+        $bootstrap->select_db(TestRun::database(self::DATABASE));
         // The columns generateSampleCode() and its recovery path actually touch,
         // with the same key indexes the real form tables carry.
         $bootstrap->query(
@@ -129,14 +130,14 @@ final class SampleCodeCounterRecoveryTest extends TestCase
             'host' => $host,
             'username' => $user,
             'password' => $password,
-            'db' => self::DATABASE,
+            'db' => TestRun::database(self::DATABASE),
             'port' => $port,
         ]);
     }
 
     public static function tearDownAfterClass(): void
     {
-        self::$db?->rawQuery('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
+        self::$db?->rawQuery('DROP DATABASE IF EXISTS `' . TestRun::database(self::DATABASE) . '`');
         self::$db = null;
     }
 

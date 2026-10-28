@@ -10,6 +10,7 @@ use mysqli;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The STS saving the results a lab sends (remote/v2/results.php).
@@ -42,7 +43,7 @@ final class StsResultsReceiveTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $this->database = 'intelis_sts_results_receive_test_' . getmypid();
+        $this->database = TestRun::database('intelis_sts_results_receive_test');
         // getTableFieldsAsArray() reads columns from SYSTEM_CONFIG's database.
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', [

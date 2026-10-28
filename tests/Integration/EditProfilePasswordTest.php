@@ -11,6 +11,7 @@ use App\Services\CommonService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 use Throwable;
 
 /**
@@ -46,7 +47,7 @@ final class EditProfilePasswordTest extends TestCase
         }
 
         $db = LegacyAppHarness::boot(
-            self::DATABASE . '_' . getmypid(),
+            TestRun::database(self::DATABASE),
             ['roles', 'user_details', 'activity_log', 'global_config']
         );
         $db->rawQuery(

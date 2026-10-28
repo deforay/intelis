@@ -10,6 +10,7 @@ use App\Registries\ContainerRegistry;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The CD4 request, result-entry, print, failed and result-status listings, driven
@@ -58,9 +59,7 @@ final class Cd4ListingSqlEncodingTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        // Named per process: two runs against one MySQL would otherwise drop each
-        // other's fixtures mid-test.
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'roles', 'facility_details', 'r_sample_status', 'batch_details', 'user_details',
             'r_cd4_sample_types', 'r_cd4_sample_rejection_reasons', 'r_cd4_test_reasons',
             'r_funding_sources', 'r_implementation_partners', 'r_vl_art_regimen',

@@ -10,6 +10,7 @@ use App\Services\RequestPageCursor;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * Where a lab's request pulls have got to, kept in request_pull_state (5.8.4).
@@ -45,7 +46,7 @@ final class RequestPullStateTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $db = LegacyAppHarness::boot('intelis_request_pull_state_test_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database('intelis_request_pull_state_test'), [
             'track_api_requests', 'system_config', 'global_config',
         ]);
         $this->booted = true;

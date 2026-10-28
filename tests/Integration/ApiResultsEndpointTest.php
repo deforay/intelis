@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * Driving the InteLIS Mobile results endpoints under app/api/v1.1 end to end.
@@ -68,7 +69,7 @@ final class ApiResultsEndpointTest extends TestCase
         // would answer for this database.
         self::clearFileCache();
 
-        LegacyAppHarness::boot(self::DATABASE, self::TABLES);
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), self::TABLES);
         $this->seedInstanceAndUser();
     }
 

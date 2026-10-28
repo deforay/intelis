@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use mysqli;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Tests\Support\TestRun;
 
 /**
  * JsonUtility::jsonToSetString() builds a JSON_SET() expression that callers hand to
@@ -42,8 +43,7 @@ final class JsonSetStringTest extends TestCase
         $port = (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306);
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
-        // Per process, so two runs on one server cannot drop each other's database.
-        self::$database = self::DATABASE . '_' . getmypid();
+        self::$database = TestRun::database(self::DATABASE);
 
         $bootstrap = new mysqli($host, $user, $password, null, $port);
         $bootstrap->query('DROP DATABASE IF EXISTS `' . self::$database . '`');

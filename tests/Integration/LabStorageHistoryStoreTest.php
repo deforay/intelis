@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The STS storing the sample storage history labs send it.
@@ -44,7 +45,7 @@ final class LabStorageHistoryStoreTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $database = 'intelis_storage_history_test_' . getmypid();
+        $database = TestRun::database('intelis_storage_history_test');
         // getTableFieldsAsArray() reads columns from SYSTEM_CONFIG's database.
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', ['database' => ['db' => $database]]);

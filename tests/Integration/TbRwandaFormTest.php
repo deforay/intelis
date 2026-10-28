@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The Rwanda TB form, which posts per-test cards (testResult[field][]) and asks
@@ -38,7 +39,7 @@ final class TbRwandaFormTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'r_sample_status', 'form_tb', 'tb_tests', 'audit_log', 'test_result_attempts', 'activity_log',
             'system_config', 'global_config',
         ]);

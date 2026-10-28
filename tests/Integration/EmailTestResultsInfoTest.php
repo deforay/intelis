@@ -7,6 +7,7 @@ namespace Tests\Integration;
 use App\Services\TestResultsService;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * Marking results as emailed touches only the samples that were emailed.
@@ -24,7 +25,7 @@ final class EmailTestResultsInfoTest extends TestCase
         if ((getenv('INTELIS_TEST_DB_HOST') ?: '') === '' || (getenv('INTELIS_TEST_DB_USER') ?: '') === '') {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $db = LegacyAppHarness::boot('intelis_email_results_info_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database('intelis_email_results_info'), [
             'roles', 'facility_details', 'r_sample_status', 'batch_details', 'user_details',
             'r_vl_sample_type', 'r_vl_sample_rejection_reasons', 'r_vl_test_reasons', 'r_vl_art_regimen',
             'r_funding_sources', 'r_implementation_partners', 'form_vl',

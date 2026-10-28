@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * A sample's test rows (tb_tests, generic_test_results) are saved in place.
@@ -45,7 +46,7 @@ final class TestRowsSavedInPlaceTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'r_sample_status', 'form_tb', 'tb_tests', 'form_generic', 'generic_test_results',
             'audit_log', 'test_result_attempts', 'activity_log', 'system_config', 'global_config',
         ]);

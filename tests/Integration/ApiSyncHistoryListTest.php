@@ -10,6 +10,7 @@ use App\Services\CommonService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The API sync history list.
@@ -30,8 +31,7 @@ final class ApiSyncHistoryListTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        // Named per process: two runs against one MySQL would drop each other's fixtures.
-        $db = LegacyAppHarness::boot('intelis_api_sync_history_list_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database('intelis_api_sync_history_list'), [
             'track_api_requests', 'activity_log', 'system_config', 'global_config',
         ]);
         LegacyAppHarness::withSession(['roleId' => 1]);

@@ -8,6 +8,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\SampleFlowService;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * Hepatitis samples placed by the Sample Ageing Report.
@@ -27,7 +28,7 @@ final class SampleFlowHepatitisTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'form_hepatitis', 'facility_details', 'r_sample_status', 'instruments', 'system_config', 'global_config',
         ]);
         LegacyAppHarness::withSession(['roleId' => 1]);

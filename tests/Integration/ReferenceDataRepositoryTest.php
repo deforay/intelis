@@ -9,6 +9,7 @@ use App\Repositories\Reference\ReferenceDataRepository;
 use App\Services\DatabaseService;
 use mysqli;
 use PHPUnit\Framework\TestCase;
+use Tests\Support\TestRun;
 
 /**
  * The reference-data repository against a real server.
@@ -153,9 +154,9 @@ final class ReferenceDataRepositoryTest extends TestCase
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
         $bootstrap = new mysqli($host, $user, $password, null, $port);
-        $bootstrap->query('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
-        $bootstrap->query('CREATE DATABASE `' . self::DATABASE . '`');
-        $bootstrap->select_db(self::DATABASE);
+        $bootstrap->query('DROP DATABASE IF EXISTS `' . TestRun::database(self::DATABASE) . '`');
+        $bootstrap->query('CREATE DATABASE `' . TestRun::database(self::DATABASE) . '`');
+        $bootstrap->select_db(TestRun::database(self::DATABASE));
         foreach (self::ENTITIES['sample-type']['tables'] as $table) {
             $bootstrap->query(
                 "CREATE TABLE `$table` (
@@ -271,7 +272,7 @@ final class ReferenceDataRepositoryTest extends TestCase
             'host' => $host,
             'username' => $user,
             'password' => $password,
-            'db' => self::DATABASE,
+            'db' => TestRun::database(self::DATABASE),
             'port' => $port,
         ]);
     }
@@ -560,7 +561,7 @@ final class ReferenceDataRepositoryTest extends TestCase
     public static function tearDownAfterClass(): void
     {
         if (self::$db instanceof DatabaseService) {
-            self::$db->rawQuery('DROP DATABASE IF EXISTS `' . self::DATABASE . '`');
+            self::$db->rawQuery('DROP DATABASE IF EXISTS `' . TestRun::database(self::DATABASE) . '`');
             self::$db = null;
         }
     }

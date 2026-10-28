@@ -10,6 +10,7 @@ use App\Services\CommonService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * A reference grid asked for its rows without a sort column.
@@ -30,8 +31,7 @@ final class ReferenceGridWithoutSortTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        // Named per process: two runs against one MySQL would drop each other's fixtures.
-        $db = LegacyAppHarness::boot('intelis_reference_grid_without_sort_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database('intelis_reference_grid_without_sort'), [
             'r_funding_sources', 'activity_log', 'system_config', 'global_config',
         ]);
         LegacyAppHarness::withSession(['roleId' => 1]);

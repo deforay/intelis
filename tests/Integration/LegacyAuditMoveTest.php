@@ -8,6 +8,7 @@ use App\Services\AuditArchiveService;
 use App\Utilities\MiscUtility;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * A legacy audit_form_* table moved into audit_log, then filed by the drain.
@@ -33,7 +34,7 @@ final class LegacyAuditMoveTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), ['r_sample_status', 'form_vl', 'audit_log']);
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), ['r_sample_status', 'form_vl', 'audit_log']);
         LegacyAppHarness::seedDefaults('r_sample_status');
         $this->uniqueId = 'legacy-move-' . bin2hex(random_bytes(6));
         $db->insert('form_vl', [
@@ -144,7 +145,7 @@ final class LegacyAuditMoveTest extends TestCase
             (string) getenv('INTELIS_TEST_DB_HOST'),
             (string) getenv('INTELIS_TEST_DB_USER'),
             (string) getenv('INTELIS_TEST_DB_PASS'),
-            self::DATABASE . '_' . getmypid(),
+            TestRun::database(self::DATABASE),
             (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306)
         );
         try {

@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * What the lab sends the STS of its sample storage history on each metadata sync.
@@ -37,7 +38,7 @@ final class LabMetadataBatchReaderTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        LegacyAppHarness::boot('intelis_lab_metadata_batch_test_' . getmypid(), [
+        LegacyAppHarness::boot(TestRun::database('intelis_lab_metadata_batch_test'), [
             'system_config', 'global_config', 's_vlsm_instance', 'lab_storage_history',
         ]);
         $this->booted = true;

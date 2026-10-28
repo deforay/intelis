@@ -7,6 +7,7 @@ namespace Tests\Integration;
 use App\Services\DatabaseService;
 use mysqli;
 use PHPUnit\Framework\TestCase;
+use Tests\Support\TestRun;
 
 /**
  * What `intelis check` actually reports when a table is gone.
@@ -39,19 +40,12 @@ final class PreflightMissingTablesTest extends TestCase
      * would make one suite or the other fail depending on the order PHPUnit
      * happened to run them in, which it did: MigrationRepairsStrandedSchemaTest
      * builds a form_covid19 and this class was dropping it.
-     *
-     * The name carries the process id for the same reason one step out. Two
-     * suites running at once against one MySQL -- two terminals, or a watcher
-     * beside a manual run -- would otherwise drop and recreate this database
-     * underneath each other, and the fixture would be gone by the time the
-     * assertions read it. That is not hypothetical either: it is where the
-     * intermittent failure in this class came from.
      */
     private const DATABASE = 'intelis_preflight_test';
 
     private static ?DatabaseService $db = null;
 
-    private static string $database = self::DATABASE;
+    private static string $database = '';
 
     public static function setUpBeforeClass(): void
     {
@@ -64,7 +58,7 @@ final class PreflightMissingTablesTest extends TestCase
         $port     = (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306);
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
-        self::$database = self::DATABASE . '_' . getmypid();
+        self::$database = TestRun::database(self::DATABASE);
 
         $bootstrap = new mysqli($host, $user, $password, null, $port);
         $bootstrap->query('DROP DATABASE IF EXISTS `' . self::$database . '`');

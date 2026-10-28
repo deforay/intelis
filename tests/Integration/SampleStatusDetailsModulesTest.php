@@ -11,6 +11,7 @@ use App\Registries\ContainerRegistry;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The sample status drilldown for the modules other than VL.
@@ -46,7 +47,7 @@ final class SampleStatusDetailsModulesTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        $db = LegacyAppHarness::boot(self::DATABASE, [
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'r_sample_status', 'facility_details', 'batch_details', 'roles', 'user_details',
             'r_eid_sample_type', 'r_tb_sample_type', 'r_cd4_sample_types', 'r_hepatitis_sample_type',
             'r_generic_sample_types',

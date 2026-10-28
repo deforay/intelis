@@ -249,7 +249,7 @@ abstract class PdfOutputTestCase extends TestCase
 
         // Result PDFs print a QR code that links to the STS, encrypted with tryCrypt
         $db = LegacyAppHarness::boot(
-            self::DATABASE . '_' . getmypid(),
+            TestRun::database(self::DATABASE),
             self::TABLES,
             ['remoteURL' => 'https://sts.example.org', 'tryCrypt' => 'pdf-output-test-key']
         );

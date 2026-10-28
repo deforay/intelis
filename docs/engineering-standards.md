@@ -176,10 +176,12 @@ against them without running a review.
 - The Integration suite (`composer test -- --testsuite Integration`) needs a real MySQL.
   It skips itself when `INTELIS_TEST_DB_HOST` and `INTELIS_TEST_DB_USER` are unset, so a
   green `composer test` without them has not run it. CI runs it against MySQL.
-- A test that creates a database or a file must not share its name with another test
-  file, because the workers run files at the same time. Name it for the test file, and
-  add the `TEST_TOKEN` environment variable (the worker number) when shared helper
-  code creates it for several files.
+- Name a test database with `TestRun::database('intelis_<what_it_tests>')`. The name
+  then belongs to one run and one worker, so parallel workers and a second run on the
+  same machine never drop each other's tables, and the run drops it when it ends. Write
+  files under `VAR_PATH`, which is per run and removed the same way.
+- Assert on what your own connection did, not on a server-wide counter. Another run
+  on the same server moves those counters too.
 - `bin/dev/review` run, and every finding addressed or rebutted.
 - Shell scripts under `scripts/` run, not just read. `bash -n` proves syntax and nothing
   else. Use a privileged systemd container and stage the machine the way the fleet actually

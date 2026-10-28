@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * A lab's own results, left out of its next request pull.
@@ -49,7 +50,7 @@ final class RequestOwnResultsEchoTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
         require_once ROOT_PATH . '/app/system/version.php';
-        $database = 'intelis_request_own_results_echo_test_' . getmypid();
+        $database = TestRun::database('intelis_request_own_results_echo_test');
         // getTableFieldsAsArray() reads columns from SYSTEM_CONFIG's database.
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', ['database' => ['db' => $database], 'modules' => ['vl' => true]]);

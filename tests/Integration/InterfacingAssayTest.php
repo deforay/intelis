@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 use const COUNTRY\RWANDA;
 
@@ -42,7 +43,7 @@ final class InterfacingAssayTest extends TestCase
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
 
-        LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), [
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'r_sample_status', 'global_config', 'form_vl', 'form_eid', 'roles', 'user_details',
             'instruments', 'instrument_machines', 'test_result_attempts',
         ]);

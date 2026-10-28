@@ -12,6 +12,7 @@ use App\Utilities\ResultSyncBatch;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 final class ResultSyncChildPayloadTest extends TestCase
 {
@@ -30,7 +31,7 @@ final class ResultSyncChildPayloadTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $db = LegacyAppHarness::boot('intelis_result_sync_children_test_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database('intelis_result_sync_children_test'), [
             'system_config', 'global_config', 's_vlsm_instance',
             'form_generic', 'form_covid19', 'form_tb', 'generic_test_results', 'covid19_tests', 'tb_tests',
         ]);
@@ -90,7 +91,7 @@ final class ResultSyncChildPayloadTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $db = LegacyAppHarness::boot('intelis_result_sync_generic_order_test_' . getmypid(), [
+        $db = LegacyAppHarness::boot(TestRun::database('intelis_result_sync_generic_order_test'), [
             'system_config', 'global_config', 's_vlsm_instance', 'form_generic', 'generic_test_results',
         ]);
         $this->booted = true;

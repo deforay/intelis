@@ -11,6 +11,7 @@ use mysqli;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * A lab saving the requests it pulled from the STS (requests-receiver.php).
@@ -48,7 +49,7 @@ final class LabRequestSyncTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $this->database = 'intelis_lab_request_sync_test_' . getmypid();
+        $this->database = TestRun::database('intelis_lab_request_sync_test');
         // getTableFieldsAsArray() reads columns from SYSTEM_CONFIG's database.
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', [

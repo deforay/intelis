@@ -7,6 +7,7 @@ namespace Tests\Integration;
 use App\Utilities\ResultSyncAcknowledgement;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The update trigger writes an audit row only when a column a person can change
@@ -27,7 +28,7 @@ final class AuditUnchangedUpdateTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $db = LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), ['r_sample_status', 'form_vl', 'audit_log']);
+        $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), ['r_sample_status', 'form_vl', 'audit_log']);
         LegacyAppHarness::seedDefaults('r_sample_status');
         LegacyAppHarness::withAuditTriggers(['form_vl' => 'vl_sample_id']);
         $db->insert('form_vl', [

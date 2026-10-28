@@ -31,15 +31,10 @@ use mysqli;
  */
 final class MigrationRunnerFunctions
 {
-    /**
-     * The one schema every migration test in this process shares; see the class
-     * note. ParaTest workers each get their own, named by TEST_TOKEN rather than
-     * the process id so a run reuses the last run's instead of leaving one behind.
-     */
+    /** The one schema every migration test in this process shares; see the class note. */
     private static function database(): string
     {
-        $worker = getenv('TEST_TOKEN');
-        return 'intelis_migration_test' . ($worker === false || $worker === '' ? '' : '_' . $worker);
+        return TestRun::database('intelis_migration_test');
     }
 
     private static ?DatabaseService $db = null;

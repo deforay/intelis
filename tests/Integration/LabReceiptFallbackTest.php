@@ -9,6 +9,7 @@ use App\Services\DatabaseService;
 use App\Services\LabReceiptService;
 use mysqli;
 use PHPUnit\Framework\TestCase;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\CANCELLED;
@@ -36,7 +37,7 @@ final class LabReceiptFallbackTest extends TestCase
     private const ENTERED = '2026-09-03 08:30:00';
 
     private static ?DatabaseService $db = null;
-    private static string $database = self::DATABASE;
+    private static string $database = '';
     private static ?mysqli $mysqli = null;
 
     /**
@@ -83,8 +84,7 @@ final class LabReceiptFallbackTest extends TestCase
         $port = (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306);
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
-        // Per process, so a second run against the same server cannot drop this one's tables.
-        self::$database = self::DATABASE . '_' . getmypid();
+        self::$database = TestRun::database(self::DATABASE);
 
         $bootstrap = new mysqli($host, $user, $password, null, $port);
         $bootstrap->query('DROP DATABASE IF EXISTS `' . self::$database . '`');

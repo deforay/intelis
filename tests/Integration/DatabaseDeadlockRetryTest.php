@@ -8,6 +8,7 @@ use App\Services\DatabaseService;
 use mysqli;
 use mysqli_sql_exception;
 use PHPUnit\Framework\TestCase;
+use Tests\Support\TestRun;
 
 /**
  * A statement InnoDB picks as a deadlock victim runs again, against a real server.
@@ -47,9 +48,7 @@ final class DatabaseDeadlockRetryTest extends TestCase
         $port = (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306);
         $password = (string) (getenv('INTELIS_TEST_DB_PASS') ?: '');
 
-        // One database per process: a second run against the same server must not
-        // drop this one's tables underneath it.
-        $database = self::DATABASE . '_' . getmypid();
+        $database = TestRun::database(self::DATABASE);
         $bootstrap = new mysqli($host, $user, $password, null, $port);
         $bootstrap->query('DROP DATABASE IF EXISTS `' . $database . '`');
         $bootstrap->query('CREATE DATABASE `' . $database . '`');
@@ -91,11 +90,19 @@ final class DatabaseDeadlockRetryTest extends TestCase
         self::$db->rawQuery('ANALYZE TABLE rows_probe');
     }
 
-    /** Deadlocks InnoDB has detected since the server started. */
+    /**
+     * Times this connection was picked as a deadlock victim.
+     *
+     * Counted for this connection alone. InnoDB's own lock_deadlocks counts the whole
+     * server, so a second test run deadlocking at the same moment moved it twice. It
+     * also went up when the other writer was the victim, which this test must rule out.
+     */
     private function deadlocks(): int
     {
         return (int) self::$db->rawQueryOne(
-            "SELECT `count` AS c FROM information_schema.INNODB_METRICS WHERE name = 'lock_deadlocks'"
+            'SELECT COALESCE(SUM(SUM_ERROR_RAISED), 0) AS c
+               FROM performance_schema.events_errors_summary_by_thread_by_error
+              WHERE THREAD_ID = PS_CURRENT_THREAD_ID() AND ERROR_NUMBER = 1213'
         )['c'];
     }
 

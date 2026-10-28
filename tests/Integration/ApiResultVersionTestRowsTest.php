@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 use const SAMPLE_STATUS\PENDING_APPROVAL;
 
@@ -46,7 +47,7 @@ final class ApiResultVersionTestRowsTest extends TestCase
         $_SERVER['HTTP_HOST'] ??= 'localhost';
         $_SERVER['REQUEST_URI'] ??= '/api/v1.1/covid-19/save-request.php';
 
-        $this->database = self::DATABASE . '_' . getmypid();
+        $this->database = TestRun::database(self::DATABASE);
         $db = LegacyAppHarness::boot($this->database, [
             's_vlsm_instance', 'system_config', 'global_config', 'roles', 'user_details', 'facility_details',
             'user_facility_map', 'form_covid19', 'covid19_tests', 'covid19_patient_symptoms',

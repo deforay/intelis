@@ -10,6 +10,7 @@ use App\Services\StsMetadataWriter;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * A lab writing the metadata it pulls from the STS (sts-metadata-receiver.php).
@@ -32,7 +33,7 @@ final class StsMetadataWriterTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $database = 'intelis_sts_metadata_writer_test_' . getmypid();
+        $database = TestRun::database('intelis_sts_metadata_writer_test');
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', ['database' => ['db' => $database], 'modules' => ['vl' => true]]);
         }

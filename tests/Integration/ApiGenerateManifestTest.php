@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Tests\Support\LegacyAppHarness;
+use Tests\Support\TestRun;
 
 /**
  * The InteLIS Mobile manifest endpoint puts only the samples it was asked for
@@ -62,8 +63,7 @@ final class ApiGenerateManifestTest extends TestCase
         // would answer for this database.
         self::clearFileCache();
 
-        // Named per process: two runs against one MySQL would drop each other's fixtures.
-        LegacyAppHarness::boot(self::DATABASE . '_' . getmypid(), self::TABLES);
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), self::TABLES);
         $this->seedInstanceAndUser();
     }
 
@@ -357,7 +357,7 @@ final class ApiGenerateManifestTest extends TestCase
             'U' => (string) getenv('INTELIS_TEST_DB_USER'),
             'P' => (string) (getenv('INTELIS_TEST_DB_PASS') ?: ''),
             'O' => (string) (getenv('INTELIS_TEST_DB_PORT') ?: 3306),
-            'D' => self::DATABASE . '_' . getmypid(),
+            'D' => TestRun::database(self::DATABASE),
             'M' => (string) $manifestId,
             'C' => $manifestCode,
             'S' => json_encode($sampleCodes, JSON_THROW_ON_ERROR),
