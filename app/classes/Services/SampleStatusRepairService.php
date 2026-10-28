@@ -257,6 +257,7 @@ final class SampleStatusRepairService
      *
      * @param callable|null $progress called with (repaired) after each batch
      * @return array{repaired: int, scanned: bool}
+     * @throws Throwable when a batch fails, after logging it
      */
     public function repairLabSamplesMarkedAtClinic(
         string $testKey,
@@ -311,24 +312,27 @@ final class SampleStatusRepairService
                 $previousIds = $ids;
 
                 $placeholders = implode(',', array_fill(0, count($ids), '?'));
+                // The whole predicate again, not the ids alone: a sample resulted,
+                // rejected or received between the read and this write is no
+                // longer this repair's to move.
                 $this->db->rawQuery(
-                    "UPDATE $table
-                        SET sample_received_at_lab_datetime = CASE
-                                WHEN sample_received_at_lab_datetime IS NULL
-                                  OR sample_received_at_lab_datetime < '1970-01-02'
-                                THEN sample_collection_date
-                                ELSE sample_received_at_lab_datetime
+                    "UPDATE $table AS t
+                        SET t.sample_received_at_lab_datetime = CASE
+                                WHEN t.sample_received_at_lab_datetime IS NULL
+                                  OR t.sample_received_at_lab_datetime < '1970-01-02'
+                                THEN t.sample_collection_date
+                                ELSE t.sample_received_at_lab_datetime
                             END,
-                            result_status = " . RECEIVED_AT_TESTING_LAB . ",
+                            t.result_status = " . RECEIVED_AT_TESTING_LAB . ",
                             -- The correction has to reach STS too, or the next
                             -- sync brings the wrong status back down.
-                            data_sync = 0,
-                            last_modified_datetime = ?
-                      WHERE $primaryKey IN ($placeholders)",
+                            t.data_sync = 0,
+                            t.last_modified_datetime = ?
+                      WHERE t.$primaryKey IN ($placeholders) AND $whereSql",
                     array_merge([DateUtility::getCurrentDateTime()], $ids)
                 );
 
-                $repaired += count($ids);
+                $repaired += max(0, (int) $this->db->count);
 
                 if ($progress !== null) {
                     $progress($repaired);
@@ -346,7 +350,9 @@ final class SampleStatusRepairService
                     'last_db_query' => $this->db->getLastQuery(),
                     'trace' => $e->getTraceAsString(),
                 ]);
-                break;
+                // Thrown, not swallowed: the run-once has to stay unrecorded so
+                // the next upgrade tries again.
+                throw $e;
             }
         }
 
