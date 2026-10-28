@@ -32,11 +32,14 @@ final class StsSyncConditionTest extends TestCase
         $manifestCode = null,
         $syncSinceDate = null,
         string $testType = 'vl',
-        int $dataSyncInterval = 30
+        int $dataSyncInterval = 30,
+        bool $skipOwnResults = false
     ): array {
         $service = (new ReflectionClass(RequestsService::class))->newInstanceWithoutConstructor();
 
-        foreach (['testType' => $testType, 'dataSyncInterval' => $dataSyncInterval] as $prop => $value) {
+        $properties = ['testType' => $testType, 'dataSyncInterval' => $dataSyncInterval,
+            'skipOwnResults' => $skipOwnResults];
+        foreach ($properties as $prop => $value) {
             $p = new \ReflectionProperty(RequestsService::class, $prop);
             $p->setValue($service, $value);
         }
@@ -80,6 +83,22 @@ final class StsSyncConditionTest extends TestCase
         $this->assertStringContainsString('last_modified_datetime >= ?', $condition);
         $this->assertStringNotContainsString('2026-09-03', $condition, 'The date must not reach the SQL string.');
         $this->assertSame(['2026-09-03 00:00:00'], $params);
+    }
+
+    /** Only a lab that asks has its own results left out, and never from a manifest. */
+    public function testOnlyAWindowALabAsksForLeavesOutItsOwnResults(): void
+    {
+        foreach ([[null, '2026-09-03'], [null, null]] as [$manifest, $since]) {
+            [$condition, $params] = $this->buildCondition(86, '1,2,3', $manifest, $since, skipOwnResults: true);
+            $this->assertStringContainsString("form_attributes->>'$.resultsFromLab.labId' <=> ?", $condition);
+            $this->assertSame('86', end($params), 'the lab id is bound');
+
+            [$notAsked] = $this->buildCondition(86, '1,2,3', $manifest, $since);
+            $this->assertStringNotContainsString('resultsFromLab', $notAsked);
+        }
+
+        [$manifestCondition] = $this->buildCondition(86, '1,2,3', 'MAN-001', null, skipOwnResults: true);
+        $this->assertStringNotContainsString('resultsFromLab', $manifestCondition);
     }
 
     /**

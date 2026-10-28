@@ -114,6 +114,10 @@ try {
     if (!$testType) {
         throw new SystemException('Test Type is missing in the request', 400);
     }
+    // A newer lab's routine pull leaves out the rows it sent results for and that
+    // nothing has changed since. Older labs, and pulls a lab makes by hand to
+    // recover rows, never send the key and get every row, as they always have.
+    $skipOwnResults = in_array($data['skipOwnResults'] ?? null, [1, '1', true], true);
 
     $tableName      = TestsService::getTestTableName($testType);
     $primaryKeyName = TestsService::getPrimaryColumn($testType);
@@ -143,7 +147,8 @@ try {
             $manifestCode,
             $syncSinceDate,
             $wantsReceipts,
-            $pendingOnly
+            $pendingOnly,
+            skipOwnResults: $skipOwnResults
         );
         RequestsService::write($body, ',' . substr((string) JsonUtility::encodeUtf8Json($tail), 1));
         $requestCount = $requestsData['count'];
@@ -157,7 +162,8 @@ try {
             $syncSinceDate,
             $wantsReceipts,
             $pendingOnly,
-            $page
+            $page,
+            $skipOwnResults
         );
         $requestCount = count($requestsData['requests'] ?? []);
         $payload = $head + ['requests' => $requestsData['requests'] ?? []] + $tail

@@ -44,6 +44,14 @@ final class ResultsService
         'analyzer_run_id', 'analyzer_message', 'analyzer_readings',
     ];
 
+    /**
+     * The form_attributes key that names the lab whose result upload made a row's
+     * latest change, and the last_modified_datetime that upload set. That lab holds
+     * this version already, so its request pulls leave the row out
+     * (RequestsService). Only the STS writes the key: a lab's copy of it is dropped.
+     */
+    public const RESULTS_FROM_LAB = 'resultsFromLab';
+
     public function __construct(DatabaseService $db, protected CommonService $commonService, protected UsersService $usersService, protected TestRequestsService $testRequestsService, protected RejectionReasonMappingService $rejectionReasonMappingService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
@@ -303,9 +311,14 @@ final class ResultsService
 
                     $resultFromLab = $this->keepTestingLab($resultFromLab, $localRecord, $labId);
 
+                    $incomingAttributes = $resultFromLab['form_attributes'] ?? null;
                     $resultFromLab['form_attributes'] = $this->buildSafeFormAttributesExpression(
                         $localRecord['form_attributes'] ?? null,
-                        $resultFromLab['form_attributes'] ?? null
+                        $incomingAttributes,
+                        empty($labId) ? null : [
+                            'labId' => (string) $labId,
+                            'at' => $resultFromLab['last_modified_datetime'],
+                        ]
                     );
 
                     // Two instances can mint the same sample code for the same
@@ -345,6 +358,11 @@ final class ResultsService
                             );
                             if ($isSilent || $runDetailsOnly) {
                                 unset($resultFromLab['last_modified_datetime']);
+                                // The row keeps its timestamp, so it keeps the record of who set it.
+                                $resultFromLab['form_attributes'] = $this->buildSafeFormAttributesExpression(
+                                    $localRecord['form_attributes'] ?? null,
+                                    $incomingAttributes
+                                );
                             }
                             $this->db->where($this->primaryKeyName, $localRecord[$this->primaryKeyName]);
                             $id = $this->db->update($this->tableName, $resultFromLab);
@@ -716,11 +734,22 @@ final class ResultsService
         return $incoming;
     }
 
-    private function buildSafeFormAttributesExpression(mixed $existingAttributes, mixed $incomingAttributes): mixed
-    {
+    /**
+     * @param array{labId: string, at: string}|null $resultsFromLab the lab and time
+     *        this save records under RESULTS_FROM_LAB; null keeps the stored one
+     */
+    private function buildSafeFormAttributesExpression(
+        mixed $existingAttributes,
+        mixed $incomingAttributes,
+        ?array $resultsFromLab = null
+    ): mixed {
         $existing = $this->normalizeFormAttributesPayload($existingAttributes, 'existing');
         $incoming = $this->normalizeFormAttributesPayload($incomingAttributes, 'incoming');
+        unset($incoming[self::RESULTS_FROM_LAB]);
         $mergedAttributes = [...$existing, ...$incoming];
+        if ($resultsFromLab !== null) {
+            $mergedAttributes[self::RESULTS_FROM_LAB] = $resultsFromLab;
+        }
 
         if ($mergedAttributes === []) {
             return null;
