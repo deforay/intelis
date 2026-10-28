@@ -335,6 +335,18 @@ final class SampleStatusRepairTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testAFailedHealThrowsSoTheRunOnceIsTriedAgain(): void
+    {
+        $this->seed('CLINIC-TESTED', ['result_status' => 9, 'tested_by' => 'the technician']);
+        // The read never touches this column and the write does, so the batch
+        // is found and then fails, as a lock timeout would.
+        LegacyAppHarness::db()->rawQuery("ALTER TABLE form_eid DROP COLUMN sample_collection_date");
+
+        $this->expectException(\Throwable::class);
+        $this->healAtClinic();
+    }
+
+    #[RunInSeparateProcess]
     public function testASweepThatFindsNothingLeavesTheTableUntouched(): void
     {
         $this->sweep();
