@@ -430,6 +430,21 @@ final class ManifestMoveTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testManifestsWithATestedSampleAreTold(): void
+    {
+        $db = $this->boot();
+        $untested = self::manifest($db, 'M-untested');
+        self::sample($db, $untested, 'M-untested', 'u-1');
+        $tested = self::manifest($db, 'M-tested');
+        self::sample($db, $tested, 'M-tested', 't-1');
+        self::sample($db, $tested, 'M-tested', 't-2', ['result' => '40']);
+        $empty = self::manifest($db, 'M-empty');
+
+        self::assertSame([$tested], self::moves()->testedManifestIds('vl', [$untested, $tested, $empty]));
+        self::assertSame([], self::moves()->testedManifestIds('vl', []));
+    }
+
+    #[RunInSeparateProcess]
     public function testTheOldLabCancelsItsCopiesButKeepsWhatItHasTested(): void
     {
         $db = $this->boot();

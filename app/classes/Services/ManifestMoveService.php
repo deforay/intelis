@@ -87,6 +87,30 @@ final class ManifestMoveService
     }
 
     /**
+     * Which of these manifests hold a tested sample, and so cannot be moved:
+     * for showing a Move button only where a move can succeed. Reads samples
+     * through the sample_package_id index. A sample on a manifest by its code
+     * alone is not seen here, and the move itself still refuses it.
+     *
+     * @param list<int> $manifestIds
+     * @return list<int>
+     */
+    public function testedManifestIds(string $testType, array $manifestIds): array
+    {
+        $manifestIds = array_values(array_unique(array_filter(array_map('intval', $manifestIds))));
+        if ($manifestIds === []) {
+            return [];
+        }
+        $table = TestsService::getTestTableName($testType);
+        $rows = $this->db->rawQuery(
+            "SELECT DISTINCT t.sample_package_id FROM `$table` AS t
+              WHERE t.sample_package_id IN (" . implode(',', $manifestIds) . ')
+                AND ' . TestedSampleRule::sql($testType, 't')
+        );
+        return array_map('intval', array_column($rows, 'sample_package_id'));
+    }
+
+    /**
      * @param list<string> $where
      * @param list<mixed> $params
      * @return list<array{code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string}>
