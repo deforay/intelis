@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Integration;
+namespace Tests\Support;
 
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Registries\ContainerRegistry;
@@ -17,8 +17,6 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Psr7\Factory\ServerRequestFactory;
-use Tests\Support\LegacyAppHarness;
-use Tests\Support\PdfFingerprint;
 
 use const COUNTRY\BURKINA_FASO;
 use const COUNTRY\CAMEROON;
@@ -43,10 +41,16 @@ use const SAMPLE_STATUS\REJECTED;
  * LegacyRequestHandler requires a page with require_once, so a process can drive
  * it once: every test that drives a page runs in its own process.
  *
+ * Each case takes about a second, so the cases are dealt out to several test
+ * classes in tests/Integration, one per kind of PDF. Parallel workers run a
+ * file at a time, and one class holding every case was the slowest file in the
+ * suite. A subclass lists its cases in pdfProvider(); the names are the
+ * snapshot names, and a name no subclass lists is never checked.
+ *
  * Set INTELIS_TEST_DB_HOST/_PORT/_USER/_PASS to run; skipped without them, and
  * without poppler's pdfinfo, pdftotext and pdfimages.
  */
-final class PdfOutputTest extends TestCase
+abstract class PdfOutputTestCase extends TestCase
 {
     private const DATABASE = 'intelis_pdf_output_test';
 
@@ -189,58 +193,12 @@ final class PdfOutputTest extends TestCase
         ['VL-TEST-0003', 'PT-0003', 'Grace', 'Okafor', null, null],
     ];
 
-    public static function pdfProvider(): array
-    {
-        return [
-            'VL batch worksheet' => ['vl-batch-worksheet'],
-            'VL compact batch worksheet' => ['vl-batch-worksheet-compact'],
-            'VL manifest' => ['vl-manifest'],
-            'EID manifest' => ['eid-manifest'],
-            'TB manifest' => ['tb-manifest'],
-            'CD4 manifest' => ['cd4-manifest'],
-            'Hepatitis manifest' => ['hepatitis-manifest'],
-            'Custom Tests manifest' => ['generic-tests-manifest'],
-            'COVID-19 manifest' => ['covid-19-manifest'],
-            'TB referral manifest' => ['tb-referral-manifest'],
-            'Custom Tests referral manifest' => ['generic-tests-referral-manifest'],
-            'VL result, South Sudan form' => ['vl-result-south-sudan'],
-            'VL result, Sierra Leone form' => ['vl-result-sierra-leone'],
-            'VL result, DRC form' => ['vl-result-drc'],
-            'VL result, Cameroon form' => ['vl-result-cameroon'],
-            'VL result, PNG form' => ['vl-result-png'],
-            'VL result, Rwanda form' => ['vl-result-rwanda'],
-            'VL result, Burkina Faso form' => ['vl-result-burkina-faso'],
-            'VL result, Cameroon CRESAR report format' => ['vl-result-cameroon-cresar'],
-            'EID result, South Sudan form' => ['eid-result-south-sudan'],
-            'EID result, Sierra Leone form' => ['eid-result-sierra-leone'],
-            'EID result, DRC form' => ['eid-result-drc'],
-            'EID result, Cameroon form' => ['eid-result-cameroon'],
-            'EID result, Rwanda form' => ['eid-result-rwanda'],
-            'EID result, Burkina Faso form' => ['eid-result-burkina-faso'],
-            'TB result, South Sudan form' => ['tb-result-south-sudan'],
-            'TB result, Sierra Leone form' => ['tb-result-sierra-leone'],
-            'TB result, Rwanda form' => ['tb-result-rwanda'],
-            'TB result, Burkina Faso form' => ['tb-result-burkina-faso'],
-            'CD4 result, Rwanda form' => ['cd4-result-rwanda'],
-            'Hepatitis result, Rwanda form' => ['hepatitis-result-rwanda'],
-            'Custom Tests result' => ['generic-tests-result'],
-            'COVID-19 result, South Sudan form' => ['covid-19-result-south-sudan'],
-            'COVID-19 result, Sierra Leone form' => ['covid-19-result-sierra-leone'],
-            'COVID-19 result, DRC form' => ['covid-19-result-drc-1'],
-            'COVID-19 result, Cameroon form' => ['covid-19-result-cameroon'],
-            'COVID-19 result, PNG form' => ['covid-19-result-png'],
-            'COVID-19 result, Rwanda form' => ['covid-19-result-rwanda'],
-            'COVID-19 result, DRC report format' => ['covid-19-result-drc'],
-            'COVID-19 result, DRC report format 2' => ['covid-19-result-drc-2'],
-            'COVID-19 result, DRC report format 3' => ['covid-19-result-drc-3'],
-            'COVID-19 result, DRC report format 4' => ['covid-19-result-drc-4'],
-            'COVID-19 result, DRC report format 5' => ['covid-19-result-drc-5'],
-            'COVID-19 result, DRC report format 6' => ['covid-19-result-drc-6'],
-            'COVID-19 result, DRC report format 7' => ['covid-19-result-drc-7'],
-            'COVID-19 result, DRC report format 8' => ['covid-19-result-drc-8'],
-            'COVID-19 result, South Sudan default report format' => ['covid-19-result-ssudan-default'],
-        ];
-    }
+    /**
+     * This class's cases, keyed by description, each holding a snapshot name.
+     *
+     * @return array<string, array{string}>
+     */
+    abstract public static function pdfProvider(): array;
 
     #[RunInSeparateProcess]
     #[DataProvider('pdfProvider')]

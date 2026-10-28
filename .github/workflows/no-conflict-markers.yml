@@ -161,9 +161,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # The PDF tests are the only ones that need poppler, and PdfOutputTest is
-        # the slowest class, so they get a shard of their own. The rest are
-        # dealt out round-robin.
+        # The PDF tests are the only ones that need poppler, so they get a shard
+        # of their own. The rest are dealt out round-robin.
         shard: [pdf, 1, 2, 3, 4, 5, 6, 7, 8]
     env:
       SHARDS: 8
@@ -184,7 +183,7 @@ jobs:
       # and initialising the server take about 35 seconds, which the checkout
       # and composer steps below now cover instead of waiting on.
       #
-      # PdfOutputTest and BatchPdfPrintTest read each PDF with pdfinfo,
+      # The PDF output tests and BatchPdfPrintTest read each PDF with pdfinfo,
       # pdftotext and pdfimages, and skip their checks without them. Installed
       # explicitly rather than trusting the runner image, and in the
       # background too: apt-get update has taken anywhere from 10 to 90
@@ -302,7 +301,8 @@ jobs:
           # Picked by what a test calls rather than by name: a PDF test that
           # lands in a shard without poppler skips its text checks and still
           # passes.
-          poppler='pdftotext|pdfinfo|pdfimages|PdfFingerprint'
+          # The PDF output tests reach poppler through their base class.
+          poppler='pdftotext|pdfinfo|pdfimages|PdfFingerprint|PdfOutputTestCase'
           files=()
           i=0
           while IFS= read -r f; do
@@ -322,6 +322,12 @@ jobs:
           } > phpunit-shard.xml
           echo "${#files[@]} files in shard ${SHARD}:"
           printf '  %s\n' "${files[@]}"
+          # ParaTest has no --fail-on-empty-test-suite, so an empty shard is
+          # caught here instead.
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "::error::shard ${SHARD} has no test files"
+            exit 1
+          fi
 
       # Runs here rather than alongside the unit suite because this is the only job
       # with a server. What these cover is what MySQL itself does with SAVEPOINT and
@@ -333,7 +339,9 @@ jobs:
           INTELIS_TEST_DB_PORT: '3306'
           INTELIS_TEST_DB_USER: root
           INTELIS_TEST_DB_PASS: root
-        run: vendor/bin/phpunit -c phpunit-shard.xml --fail-on-empty-test-suite
+        # Four workers, one per CPU on the runner. ParaTest runs a file at a
+        # time per worker, and each file names its own database.
+        run: vendor/bin/paratest -c phpunit-shard.xml --processes=4
 
   # The ruleset requires a check with this name, and a matrix job reports under
   # its shard names instead. This job is that check: it passes only when every
