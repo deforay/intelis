@@ -158,22 +158,14 @@ if ($labScope = $general->labScopeWhere('vl')) {
 
 
 $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
-if ($_POST['targetType'] == 1) {
+if (($_POST['targetType'] ?? '') == 1) {
     $sQuery .= ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
-} elseif ($_POST['targetType'] == 2) {
+} elseif (($_POST['targetType'] ?? '') == 2) {
     $sQuery .= ' HAVING tl.monthly_target <= SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 }
 
 $_SESSION['vlMonitoringThresholdReportQuery'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
-
-$aResultFilterTotal = $db->rawQuery($sQuery);
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length */
-$aResultTotal = $db->rawQuery($sQuery);
-$iTotal = count($aResultTotal);
 
 
 $output = [
