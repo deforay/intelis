@@ -114,9 +114,9 @@ try {
     if (!$testType) {
         throw new SystemException('Test Type is missing in the request', 400);
     }
-    // A newer lab's routine pull leaves out the rows it sent results for and that
-    // nothing has changed since. Older labs, and pulls a lab makes by hand to
-    // recover rows, never send the key and get every row, as they always have.
+    // A newer lab's cron pull leaves out the rows it sent results for and that
+    // nothing has changed since. Older labs, and pulls a lab starts by hand or by
+    // a remote command, never send the key and get every row, as they always have.
     $skipOwnResults = in_array($data['skipOwnResults'] ?? null, [1, '1', true], true);
 
     $tableName      = TestsService::getTestTableName($testType);

@@ -311,11 +311,16 @@ final class ResultsService
 
                     $resultFromLab = $this->keepTestingLab($resultFromLab, $localRecord, $labId);
 
+                    // Recorded only when the lab held the STS's latest version: a row
+                    // new here, or one it has (data_sync 1). A change made on the STS
+                    // and not yet delivered (0, or 2 in flight) is not in the lab's
+                    // copy, so the row must still reach the lab in its next pull.
+                    $labHadLatest = empty($localRecord) || (int) ($localRecord['data_sync'] ?? 0) === 1;
                     $incomingAttributes = $resultFromLab['form_attributes'] ?? null;
                     $resultFromLab['form_attributes'] = $this->buildSafeFormAttributesExpression(
                         $localRecord['form_attributes'] ?? null,
                         $incomingAttributes,
-                        empty($labId) ? null : [
+                        empty($labId) || !$labHadLatest ? null : [
                             'labId' => (string) $labId,
                             'at' => $resultFromLab['last_modified_datetime'],
                         ]

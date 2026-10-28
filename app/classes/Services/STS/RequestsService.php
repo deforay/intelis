@@ -75,9 +75,9 @@ final class RequestsService
      * the page is receipted like any other pull: receiptsEnabled is set, and
      * pendingRemaining is 0, as the page holds none of them.
      *
-     * $skipOwnResults (a lab that asks, on its routine pull) leaves out of a date
+     * $skipOwnResults (a lab that asks, on its cron pull) leaves out of a date
      * window the rows whose latest change is this lab's own result upload. A lab
-     * that does not ask, and every pull it makes by hand to recover rows, gets them.
+     * that does not ask, and every pull it starts by hand to recover rows, gets them.
      *
      * @param array{size: int, after: ?string}|null $page
      */
@@ -620,7 +620,7 @@ final class RequestsService
             // rows in a lab's window. A later change on the STS moves
             // last_modified_datetime past the recorded time, and the row is sent
             // again. Each <=> is false on NULL, so a row with nothing recorded stays.
-            // Only on the lab's routine pull: a lab restored from an older backup
+            // Only on the lab's cron pull: a lab restored from an older backup
             // pulls by hand to get its rows back.
             $key = ResultsService::RESULTS_FROM_LAB;
             $condition .= " AND NOT (data_sync <=> 1
