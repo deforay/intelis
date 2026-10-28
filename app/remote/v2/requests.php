@@ -86,8 +86,16 @@ try {
     // A newer lab asks for receipts; older labs never send the key and get the
     // plain window they always have.
     $wantsReceipts = in_array($data['receipts'] ?? null, [1, '1', true], true);
+    // A manifest pull is confirmed only by a lab that says it confirms one. An
+    // older lab that sends "receipts" with a manifest gets it marked sent at once,
+    // as it always has.
+    if (!empty($manifestCode) && !in_array($data['manifestReceipts'] ?? null, [1, '1', true], true)) {
+        $wantsReceipts = false;
+    }
+    $manifestReceipts = $wantsReceipts && !empty($manifestCode);
     // Pulling again in the same run: the lab has the window already.
-    $pendingOnly = $wantsReceipts && in_array($data['pendingOnly'] ?? null, [1, '1', true], true);
+    $pendingOnly = $wantsReceipts && !$manifestReceipts
+        && in_array($data['pendingOnly'] ?? null, [1, '1', true], true);
     // A newer lab pulling a date or manifest window asks for it in pages; older
     // labs never send the key and get the whole window, as they always have.
     $page = RequestsService::readPage($data['page'] ?? null);
@@ -98,8 +106,9 @@ try {
     if ($page === null && $wantsReceipts && !$pendingOnly) {
         $page = RequestsService::readPage($data['windowPage'] ?? null);
     } else {
-        // "page" is the dated or manifest pull, which confirms nothing.
-        $wantsReceipts = $wantsReceipts && $page === null;
+        // "page" is the dated or manifest pull, which confirms nothing, unless it
+        // is a manifest the lab confirms.
+        $wantsReceipts = $wantsReceipts && ($page === null || $manifestReceipts);
     }
 
     if (!$testType) {

@@ -99,7 +99,9 @@ final class RequestsService
             [$pendingIds, $pendingRemaining] = [[], 0];
             // A receipt is recorded in request_sync_failures: without the table
             // the page is marked sent at once, as for a lab without receipts.
-            $receiptsEnabled = $withPending && empty($manifestCode) && $this->db->tableExists('request_sync_failures');
+            // requests.php passes $withPending for a manifest only when the lab
+            // asked to confirm it (manifestReceipts).
+            $receiptsEnabled = $withPending && $this->db->tableExists('request_sync_failures');
         }
 
         [$rResult, $resultCount] = $this->runQuery(
@@ -260,8 +262,13 @@ final class RequestsService
      */
     private function pendingFor(bool $withPending, $labId, $facilityMapResult, $manifestCode): array
     {
-        if (!$withPending || !empty($manifestCode)) {
+        if (!$withPending) {
             return [[], 0, false];
+        }
+        if (!empty($manifestCode)) {
+            // A manifest pull the lab confirms: its rows, receipted, and none of the
+            // lab's other waiting requests, which come with its own pulls.
+            return [[], 0, $this->db->tableExists('request_sync_failures')];
         }
         try {
             [$pendingIds, $pendingRemaining] = $this->pendingRequestIds((int) $labId, $facilityMapResult);

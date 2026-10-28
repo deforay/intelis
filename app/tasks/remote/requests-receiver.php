@@ -488,11 +488,18 @@ do {
         if ($status === true) {
             $basePayload['testType'] = $module;
             $phase = $phases[$module] ??= $firstPhase;
-            // Ask the STS for receipts: an older STS ignores the key. Not for a
-            // manifest pull, a dry run or a window someone asked for, which
-            // confirm nothing.
+            $sendsManifest = !empty($forceSyncModule) && trim((string) $forceSyncModule) == $module
+                && !empty($manifestCode) && trim((string) $manifestCode) !== '';
+            // Ask the STS for receipts: an older STS ignores the key. Not for a dry
+            // run or a window someone asked for, which confirm nothing.
             $confirms = $phase !== LabRequestSyncService::NEXT_PAGES || $scheduledPull;
-            if (!$isDryRun && empty($manifestCode) && $confirms) {
+            if (!$isDryRun && $sendsManifest) {
+                // A manifest is confirmed like any other pull, so a request the lab
+                // could not save is sent again. An STS that does not know the key
+                // marks the manifest sent at once and asks for no receipt, as before.
+                $basePayload['receipts'] = 1;
+                $basePayload['manifestReceipts'] = 1;
+            } elseif (!$isDryRun && empty($manifestCode) && $confirms) {
                 $basePayload['receipts'] = 1;
                 // Pulling again, or the waiting requests alone. An older STS
                 // ignores the key and sends the window, which is harmless.
@@ -500,7 +507,7 @@ do {
                     $basePayload['pendingOnly'] = 1;
                 }
             }
-            if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == $module && !empty($manifestCode) && trim((string) $manifestCode) !== "") {
+            if ($sendsManifest) {
                 $basePayload['manifestCode'] = $manifestCode;
             }
             $effectiveSyncSinceDate = $syncSinceDate ?? ($moduleSyncSinceDates[$module] ?? null);
