@@ -3,6 +3,7 @@
 use App\Utilities\SampleCountUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\TEST_FAILED;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -73,7 +74,9 @@ try {
                     -- a sample still awaiting a result.
                     AND " . SampleCountUtility::countableWhere('vl') . "
                     AND vl.sample_code is NOT NULL
-                    AND (vl.cd4_result IS NULL OR vl.cd4_result='')";
+                    -- A Failed sample has no result until it is retested, which moves it
+                    -- to another status. Its result field can still hold Failed or Invalid.
+                    AND ((vl.cd4_result IS NULL OR vl.cd4_result='') OR vl.result_status = " . TEST_FAILED . ")";
     $start_date = '';
     $end_date = '';
     if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) !== '') {
