@@ -100,6 +100,27 @@ final class AuditTriggerService
         'user_details' => ['api_token', 'password'],
     ];
 
+    /**
+     * Columns an update may change without writing an audit row: sync and
+     * dispatch bookkeeping, not anything a person entered.
+     *
+     * A results send flips data_sync 0 -> 2 -> 1 and sets result_sent_to_source,
+     * and each of those UPDATEs copied the whole row into audit_log. Older lab
+     * releases also rewrote every pulled request on every pull, changing only
+     * last_modified_datetime and form_attributes. One lab held up to 551
+     * snapshots per sample and a 24 GB audit_log against a 76 MB form_vl. The
+     * flags are not lost: the next audited change snapshots the whole row,
+     * flags included. An UPDATE that changes nothing at all is skipped too.
+     */
+    public const array UNAUDITED_UPDATE_COLUMNS = [
+        'data_sync',
+        'result_sent_to_source',
+        'result_sent_to_source_datetime',
+        'last_modified_datetime',
+        'vldash_sync',
+        'recency_sync',
+    ];
+
     public function __construct(private DatabaseService $db) {}
 
     public static function instance(): self
@@ -283,6 +304,8 @@ final class AuditTriggerService
             ['suffix' => 'bd', 'timing' => 'BEFORE DELETE', 'row' => 'OLD', 'action' => 'delete', 'lockingRead' => true],
         ];
 
+        $changed = $this->buildChangedCondition($cols);
+
         $statements = [];
         foreach ($defs as $d) {
             $trigQ      = $this->qIdent($this->newTriggerName($formTable, $d['suffix']));
@@ -304,6 +327,14 @@ final class AuditTriggerService
             $jsonObject = implode(",\n", $pairs);
 
             $statements[] = "DROP TRIGGER IF EXISTS {$trigQ}";
+
+            // Only the update trigger can see a row that did not change. With no
+            // column left to compare, every update is audited, as before.
+            $open = $close = '';
+            if ($d['action'] === 'update' && $changed !== '') {
+                $open = "\n  IF {$changed} THEN";
+                $close = "\n  END IF;";
+            }
 
             // The BEGIN…END body intentionally contains inner semicolons; the
             // caller must dispatch this as a SINGLE statement (e.g. via
@@ -336,7 +367,7 @@ final class AuditTriggerService
 CREATE TRIGGER {$trigQ} {$d['timing']} ON {$form}
 FOR EACH ROW
 BEGIN
-  DECLARE next_rev INT;
+  DECLARE next_rev INT;{$open}
   SELECT COALESCE(MAX(`revision`),0)+1 INTO next_rev
     FROM {$audit}
    WHERE `form_table` = {$formLit}
@@ -353,12 +384,34 @@ BEGIN
     JSON_OBJECT(
 {$jsonObject}
     )
-  );
+  );{$close}
 END
 SQL;
         }
 
         return [...$statements, ...$this->buildReceiptTriggersFor($formTable, $cols)];
+    }
+
+    /**
+     * `NOT (CAST(OLD.c AS BINARY) <=> CAST(NEW.c AS BINARY)) OR ...` over every
+     * column an update is audited for, or '' when there is none. `<=>` treats two
+     * NULLs as equal and NULL against a value as a change, so a column that is
+     * cleared is still audited. The casts compare bytes: the tables' collation
+     * ignores case and accents, so a plain `<=>` reads Jose -> José as no change.
+     *
+     * @param list<string> $cols
+     */
+    private function buildChangedCondition(array $cols): string
+    {
+        $skip = array_flip(self::UNAUDITED_UPDATE_COLUMNS);
+        $tests = [];
+        foreach ($cols as $col) {
+            if (!isset($skip[$col])) {
+                $c = $this->qIdent($col);
+                $tests[] = "NOT (CAST(OLD.{$c} AS BINARY) <=> CAST(NEW.{$c} AS BINARY))";
+            }
+        }
+        return implode("\n     OR ", $tests);
     }
 
     /**
