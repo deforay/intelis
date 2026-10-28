@@ -10,6 +10,7 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use App\Services\ManifestMoveService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -140,6 +141,13 @@ if (_isAllowed($editUrl)) {
 // Moving is for administrators on the STS, and for collection manifests only.
 $moveUrl = '/specimen-referral-manifest/move-manifest.php?t=' . $testType;
 $moveAllowed = $general->isSTSInstance() && !$general->isCloudLisNonAdmin() && _isAllowed($moveUrl);
+// A manifest with a tested sample cannot move: no button for it.
+$testedManifests = [];
+if ($moveAllowed && $rResult !== []) {
+    /** @var ManifestMoveService $manifestMoveService */
+    $manifestMoveService = ContainerRegistry::get(ManifestMoveService::class);
+    $testedManifests = $manifestMoveService->testedManifestIds($testType, array_column($rResult, 'manifest_id'));
+}
 
 foreach ($rResult as $aRow) {
 
@@ -165,9 +173,14 @@ foreach ($rResult as $aRow) {
         $editBtn = '<a href="' . $editUrl . '&id=' . base64_encode((string) $aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="' . _htmlTranslate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</a>';
     }
     $moveBtn = '';
-    if ($moveAllowed && ($aRow['manifest_type'] ?? 'collection') !== 'referral') {
-        $moveBtn = '&nbsp;&nbsp;<a href="' . $moveUrl . '&code=' . urlencode((string) $aRow['manifest_code'])
-            . '" class="btn btn-default btn-xs" title="' . _htmlTranslate("Move this manifest to another testing lab")
+    if (
+        $moveAllowed
+        && ($aRow['manifest_type'] ?? 'collection') !== 'referral'
+        && !in_array((int) $aRow['manifest_id'], $testedManifests, true)
+    ) {
+        $moveBtn = '<a href="' . $moveUrl . '&code=' . urlencode((string) $aRow['manifest_code'])
+            . '" class="btn btn-default btn-xs" style="margin-right: 2px;"'
+            . ' title="' . _htmlTranslate("Move this manifest to another testing lab")
             . '"><em class="fa-solid fa-angles-right"></em> ' . _translate("Move") . '</a>';
     }
     if ($testType == 'generic-tests') {
@@ -179,7 +192,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['labName'];
     $row[] = $aRow['number_of_samples'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
-    $row[] = $editBtn . '&nbsp;&nbsp;' . $printBarcode . $moveBtn;
+    $row[] = $editBtn . $moveBtn . '&nbsp;&nbsp;' . $printBarcode;
 
     $output['aaData'][] = $row;
 }
