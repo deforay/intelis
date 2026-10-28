@@ -49,7 +49,9 @@ final class ManifestMoveService
      * facility map (a user limited to some facilities), only manifests all of
      * whose samples are from those facilities.
      *
-     * @return list<array{code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string}>
+     * @return list<array{
+     *     code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string, tested: bool
+     * }>
      */
     public function listForLab(
         string $testType,
@@ -71,19 +73,48 @@ final class ManifestMoveService
     }
 
     /**
-     * One collection manifest by its code, at whichever lab it is, at any age:
-     * for moving a single manifest without first finding its lab. Empty when
-     * there is no such manifest, or the facility map does not cover it.
+     * The labs that hold collection manifests of this test type, by name: the
+     * labs there are manifests to move from. Read from the manifests alone.
      *
-     * @return list<array{code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string}>
+     * @return array<int, string> lab id => lab name
      */
-    public function findByCode(string $testType, string $manifestCode, ?string $facilityMap = null): array
+    public function labsWithManifests(string $testType): array
     {
-        $manifestCode = trim($manifestCode);
-        if ($manifestCode === '') {
+        $rows = $this->db->rawQuery(
+            "SELECT f.facility_id, f.facility_name
+               FROM facility_details AS f
+              WHERE f.facility_id IN (
+                    SELECT m.lab_id FROM specimen_manifests AS m
+                     WHERE m.module = ? AND COALESCE(m.manifest_type, 'collection') <> 'referral'
+              )
+              ORDER BY f.facility_name",
+            [$testType]
+        );
+        return array_column($rows, 'facility_name', 'facility_id');
+    }
+
+    /**
+     * Collection manifests by their codes, at whichever lab each is, at any age:
+     * for moving a few manifests without first finding their lab. A code with no
+     * such manifest, or one the facility map does not cover, is left out.
+     *
+     * @param list<string> $manifestCodes
+     * @return list<array{
+     *     code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string, tested: bool
+     * }>
+     */
+    public function findByCodes(string $testType, array $manifestCodes, ?string $facilityMap = null): array
+    {
+        $codes = self::cleanCodes($manifestCodes);
+        if ($codes === []) {
             return [];
         }
-        return $this->listManifests($testType, ['m.manifest_code = ?'], [$manifestCode], $facilityMap);
+        return $this->listManifests(
+            $testType,
+            ['m.manifest_code IN (' . implode(',', array_fill(0, count($codes), '?')) . ')'],
+            $codes,
+            $facilityMap
+        );
     }
 
     /**
@@ -113,7 +144,9 @@ final class ManifestMoveService
     /**
      * @param list<string> $where
      * @param list<mixed> $params
-     * @return list<array{code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string}>
+     * @return list<array{
+     *     code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string, tested: bool
+     * }>
      */
     private function listManifests(string $testType, array $where, array $params, ?string $facilityMap): array
     {
@@ -126,8 +159,8 @@ final class ManifestMoveService
                           AND NOT (t.facility_id IN (" . $this->db->inIntList($facilityMap) . ')))';
         }
         $rows = $this->db->rawQuery(
-            'SELECT m.manifest_code, m.request_created_datetime, m.manifest_status, m.number_of_samples,
-                    m.lab_id, f.facility_name AS lab_name
+            'SELECT m.manifest_id, m.manifest_code, m.request_created_datetime, m.manifest_status,
+                    m.number_of_samples, m.lab_id, f.facility_name AS lab_name
                FROM specimen_manifests AS m
                LEFT JOIN facility_details AS f ON f.facility_id = m.lab_id
               WHERE ' . implode(' AND ', $where) . '
@@ -150,6 +183,8 @@ final class ManifestMoveService
                 static fn(array $row): bool => !in_array($row['manifest_code'], $outside, true)
             ));
         }
+        // Listed all the same, so a manifest that cannot move is seen to be there.
+        $tested = $this->testedManifestIds($testType, array_column($rows, 'manifest_id'));
         return array_map(static fn(array $row): array => [
             'code' => (string) $row['manifest_code'],
             'created' => $row['request_created_datetime'],
@@ -157,6 +192,7 @@ final class ManifestMoveService
             'samples' => (int) $row['number_of_samples'],
             'labId' => (int) $row['lab_id'],
             'lab' => $row['lab_name'],
+            'tested' => in_array((int) $row['manifest_id'], $tested, true),
         ], $rows);
     }
 

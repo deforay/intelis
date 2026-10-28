@@ -4,6 +4,7 @@ use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
+use App\Services\ManifestMoveService;
 use App\Registries\ContainerRegistry;
 
 $title = _translate("Move Manifest");
@@ -31,6 +32,13 @@ try {
 // Which lab a sample belongs to is decided on the STS, by an administrator.
 $canMove = $module !== '' && $general->isSTSInstance() && !$general->isCloudLisNonAdmin();
 $testingLabs = $canMove ? $facilitiesService->getTestingLabs($module) : [];
+// Only labs with manifests to move from are offered to list.
+$sourceLabs = [];
+if ($canMove) {
+    /** @var ManifestMoveService $manifestMoveService */
+    $manifestMoveService = ContainerRegistry::get(ManifestMoveService::class);
+    $sourceLabs = $manifestMoveService->labsWithManifests($module);
+}
 // From a manifest's Move button: that one manifest is looked up straight away.
 $manifestCode = trim((string) ($_GET['code'] ?? ''));
 // Pending: made, not sent yet. Dispatched: printed and sent to the lab.
@@ -62,23 +70,31 @@ $statusLabels = [
                     <h3 class="box-title"><em class="fa-solid fa-search"></em> <?= _translate("Find Manifests"); ?></h3>
                 </div>
                 <div class="box-body">
-                    <div class="btn-group" role="group" id="findBy" style="margin-bottom:15px;"
-                        aria-label="<?= _translate('How to find the manifests', 'html'); ?>">
-                        <button type="button" class="btn btn-default" data-find="code">
-                            <em class="fa-solid fa-barcode"></em> <?= _translate("Move one manifest"); ?>
-                        </button>
-                        <button type="button" class="btn btn-default" data-find="lab">
-                            <em class="fa-solid fa-list"></em> <?= _translate("List a lab's manifests"); ?>
-                        </button>
-                    </div>
+                    <ul class="nav nav-tabs" id="findBy" role="tablist" style="margin-bottom:15px;">
+                        <li role="presentation">
+                            <a href="#" role="tab" data-find="code">
+                                <em class="fa-solid fa-barcode"></em> <?= _translate("By Manifest Code"); ?>
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#" role="tab" data-find="lab">
+                                <em class="fa-solid fa-hospital"></em> <?= _translate("By Testing Lab"); ?>
+                            </a>
+                        </li>
+                    </ul>
                     <div class="row" id="findByCode">
-                        <div class="col-md-4">
+                        <div class="col-md-5">
                             <div class="form-group">
-                                <label for="manifestCode"><?= _translate("Manifest Code"); ?></label>
-                                <input type="text" class="form-control" id="manifestCode"
-                                    value="<?= _sanitizeOutput($manifestCode); ?>"
-                                    title="<?= _translate('Enter the code of the manifest to move', 'html'); ?>">
+                                <label for="manifestCodes"><?= _translate("Manifest Codes"); ?></label>
+                                <textarea class="form-control" id="manifestCodes" rows="3"
+                                    title="<?= _translate('Enter the codes of the manifests to move', 'html'); ?>"><?= _sanitizeOutput($manifestCode); ?></textarea>
+                                <p class="help-block"><?= _translate("Type, paste or scan the codes: one per line, or separated by commas"); ?></p>
                             </div>
+                        </div>
+                        <div class="col-md-2" style="padding-top:25px;">
+                            <button type="button" class="btn btn-primary" onclick="findManifests();">
+                                <em class="fa-solid fa-search"></em> <?= _translate("Search"); ?>
+                            </button>
                         </div>
                     </div>
                     <div class="row" id="findByLab" style="display:none;">
@@ -87,7 +103,7 @@ $statusLabels = [
                                 <label for="testingLab"><?= _translate("Testing Lab"); ?></label>
                                 <select class="form-control" id="testingLab" style="width:100%;"
                                     title="<?= _translate("Choose the testing lab the manifests are at", 'html'); ?>">
-                                    <?= $general->generateSelectOptions($testingLabs, null, _translate('-- Select --')); ?>
+                                    <?= $general->generateSelectOptions($sourceLabs, null, _translate('-- Select --')); ?>
                                 </select>
                             </div>
                         </div>
@@ -101,11 +117,7 @@ $statusLabels = [
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="box-footer text-center">
-                    <button type="button" class="btn btn-primary" onclick="findManifests();">
-                        <em class="fa-solid fa-search"></em> <?= _translate("Search"); ?>
-                    </button>
+                    <div class="alert alert-warning" id="findNotice" style="display:none;margin-bottom:0;"></div>
                 </div>
             </div>
 
@@ -117,9 +129,6 @@ $statusLabels = [
                         <h3 class="box-title"><em class="fa-solid fa-exchange"></em> <?= _translate("Move Selected Manifests"); ?></h3>
                     </div>
                     <div class="box-body">
-                        <p class="text-muted">
-                            <?= _translate("A manifest with any tested sample cannot be moved. The lab the samples are taken from is asked to cancel its copies."); ?>
-                        </p>
                         <table id="manifestTable" class="table table-bordered table-striped" aria-describedby="moveSection">
                             <thead>
                                 <tr>
@@ -161,6 +170,9 @@ $statusLabels = [
                         </div>
                     </div>
                     <div class="box-footer text-center">
+                        <p class="text-muted">
+                            <?= _translate("The lab the samples are taken from is asked to cancel its copies."); ?>
+                        </p>
                         <button type="button" class="btn btn-success" id="moveButton" onclick="moveManifests();" disabled>
                             <em class="fa-solid fa-exchange"></em> <?= _translate("Move"); ?>
                         </button>
@@ -178,14 +190,16 @@ $statusLabels = [
     <script type="text/javascript" src="<?= _asset('/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
     <script type="text/javascript">
         const statusLabels = <?= json_encode($statusLabels, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
-        // How the manifests are found: 'code' (one manifest) or 'lab' (a lab's list).
+        // How the manifests are found: 'code' (by their codes) or 'lab' (a lab's list).
         let findingBy = 'code';
+        let destinations = null;
 
         $(document).ready(function() {
             $('#testingLab, #assignLab').select2({
                 width: '100%',
                 placeholder: "<?= _translate('-- Select --', true); ?>"
             });
+            destinations = $('#assignLab option').clone();
             $('#daterange').daterangepicker({
                 locale: {
                     cancelLabel: "<?= _translate('Clear', true); ?>",
@@ -197,36 +211,34 @@ $statusLabels = [
                 maxDate: moment()
             }, function(start, end) {
                 $('#daterange').val(start.format('DD-MMM-YYYY') + ' to ' + end.format('DD-MMM-YYYY'));
+                findLabManifests();
             }).on('cancel.daterangepicker', function() {
                 $(this).val('');
+                findLabManifests();
             });
             $('#selectAll').on('change', function() {
-                manifestBoxes().prop('checked', this.checked);
+                manifestBoxes().filter(':enabled').prop('checked', this.checked);
                 updateMoveButton();
             });
             $('#manifestRows').on('change', 'input:checkbox', updateMoveButton);
-            // One manifest by its code, or the list of one lab's manifests.
-            $('#findBy').on('click', 'button', function() {
+            $('#findBy').on('click', 'a', function(e) {
+                e.preventDefault();
                 findBy($(this).data('find'));
             });
-            findBy('code');
-            $('#manifestCode').on('keydown', function(e) {
-                if (e.key === 'Enter') {
+            // Enter searches. It also starts a new line, so a scanner that ends
+            // each code with Enter builds up the list.
+            $('#manifestCodes').on('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
+                    if (this.value.trim() !== '') {
+                        this.value = this.value.replace(/\s*$/, '\n');
+                    }
                     findManifests();
                 }
             });
-            // The lab the manifests are at is not a place to move them to.
-            const destinations = $('#assignLab option').clone();
-            $('#testingLab').on('change', function() {
-                const from = $(this).val();
-                const kept = $('#assignLab').val();
-                $('#assignLab').empty().append(destinations.clone().filter(function() {
-                    return this.value === '' || this.value !== from;
-                }));
-                $('#assignLab').val(kept !== from ? kept : '').trigger('change');
-            });
-            if ($('#manifestCode').val().trim() !== '') {
+            $('#testingLab').on('change', findLabManifests);
+            findBy('code');
+            if ($('#manifestCodes').val().trim() !== '') {
                 findManifests();
             }
         });
@@ -246,79 +258,123 @@ $statusLabels = [
 
         function findBy(how) {
             findingBy = how;
-            $('#findBy button').each(function() {
+            $('#findBy a').each(function() {
                 const on = $(this).data('find') === how;
-                $(this).toggleClass('btn-primary', on).toggleClass('btn-default', !on).attr('aria-pressed', on);
+                $(this).parent().toggleClass('active', on);
+                $(this).attr('aria-selected', on);
             });
             $('#findByCode').toggle(how === 'code');
             $('#findByLab').toggle(how === 'lab');
+            // The other tab's results are not left on the page to be moved by mistake.
+            clearResults();
             if (how === 'code') {
-                $('#manifestCode').trigger('focus');
+                $('#manifestCodes').trigger('focus');
+            } else {
+                findLabManifests();
+            }
+        }
+
+        function clearResults() {
+            if ($.fn.DataTable.isDataTable('#manifestTable')) {
+                $('#manifestTable').DataTable().destroy();
+            }
+            $('#manifestRows').empty();
+            $('#moveSection').hide();
+            $('#findNotice').hide().empty();
+            fromLab('');
+        }
+
+        // The lab the manifests are at is not a place to move them to.
+        function fromLab(labId) {
+            const kept = $('#assignLab').val();
+            $('#assignLab').empty().append(destinations.clone().filter(function() {
+                return this.value === '' || this.value !== labId;
+            }));
+            $('#assignLab').val(kept !== labId ? kept : '').trigger('change');
+        }
+
+        function notice(text) {
+            $('#findNotice').text(text).toggle(text !== '');
+        }
+
+        function findLabManifests() {
+            if (findingBy === 'lab' && $('#testingLab').val()) {
+                findManifests();
             }
         }
 
         function findManifests() {
             const byCode = findingBy === 'code';
-            const code = byCode ? $('#manifestCode').val().trim() : '';
+            const codes = byCode ? $('#manifestCodes').val().trim() : '';
             const lab = $('#testingLab').val();
-            if (byCode && code === '') {
+            if (byCode && codes === '') {
                 alert("<?= _translate('Please enter the manifest code', true); ?>");
                 return;
             }
             if (!byCode && !lab) {
-                alert("<?= _translate('Please choose the testing lab', true); ?>");
                 return;
             }
             $.blockUI();
             $.post('/specimen-referral-manifest/get-manifest-package-code.php', {
                 module: <?= json_encode($module); ?>,
-                manifestCode: code,
+                manifestCodes: codes,
                 testingLab: byCode ? '' : lab,
-                daterange: $('#daterange').val()
+                daterange: byCode ? '' : $('#daterange').val()
             }).done(function(data) {
-                if ($.fn.DataTable.isDataTable('#manifestTable')) {
-                    $('#manifestTable').DataTable().destroy();
-                }
-                const rows = $('#manifestRows').empty();
+                clearResults();
                 const manifests = (data && data.manifests) || [];
+                const notFound = (data && data.notFound) || [];
                 if (manifests.length === 0) {
-                    $('#moveSection').slideUp();
-                    alert(code !== ''
-                        ? "<?= _translate('No manifest found with this code', true); ?>"
+                    notice(byCode
+                        ? "<?= _translate('No manifest found with these codes', true); ?>"
                         : "<?= _translate('No manifests found for this lab', true); ?>");
                     return;
                 }
-                if (code !== '') {
-                    // The manifest's own lab is not a place to move it to.
-                    const at = String(manifests[0].labId || '');
-                    if ($('#testingLab option').filter(function() { return this.value === at; }).length) {
-                        $('#testingLab').val(at).trigger('change');
-                    }
+                if (notFound.length > 0) {
+                    notice("<?= _translate('Not found: %s', true); ?>".replace('%s', notFound.join(', ')));
                 }
+                const labs = [...new Set(manifests.map(function(m) {
+                    return String(m.labId || '');
+                }))];
+                fromLab(labs.length === 1 ? labs[0] : '');
+                const rows = $('#manifestRows');
                 manifests.forEach(function(m) {
+                    // Codes asked for one by one are ticked; a lab's list is not.
                     const box = $('<input type="checkbox" name="packageCode[]">').val(m.code)
                         .attr('data-status', m.status || '')
                         .attr('data-lab-id', m.labId || '')
                         .attr('data-lab', m.lab || '')
-                        .prop('checked', manifests.length === 1);
-                    const tr = $('<tr>');
+                        .prop('disabled', m.tested)
+                        .prop('checked', byCode && !m.tested);
+                    const status = $('<td>').text(statusLabels[m.status] || m.status || '');
+                    if (m.tested) {
+                        status.append(' ').append($('<span class="label label-default">')
+                            .text("<?= _translate('Has tested samples, cannot be moved', true); ?>"));
+                    }
+                    const tr = $('<tr>').toggleClass('text-muted', m.tested);
                     tr.append($('<td>').append(box))
                         .append($('<td>').text(m.code))
                         .append($('<td>').text(m.lab || ''))
                         .append($('<td>').attr('data-order', m.created || '').text(m.createdLabel || ''))
-                        .append($('<td>').text(statusLabels[m.status] || m.status || ''))
+                        .append(status)
                         .append($('<td>').text(m.samples));
                     rows.append(tr);
                 });
-                $('#selectAll').prop('checked', false);
+                $('#selectAll').prop('checked', false)
+                    .prop('disabled', manifests.every(function(m) { return m.tested; }));
                 updateMoveButton();
                 $('#moveSection').slideDown();
                 $('#manifestTable').DataTable({
                     paging: false,
                     info: false,
-                    searching: true,
+                    // A short list needs no search box of its own.
+                    searching: manifests.length > 25,
                     order: [[3, 'desc']],
-                    columnDefs: [{ targets: 0, orderable: false }]
+                    columnDefs: [
+                        { targets: 0, orderable: false },
+                        // A lab's list is all at that lab.
+                        { targets: 2, visible: byCode }
+                    ]
                 });
             }).fail(function() {
                 alert("<?= _translate('Could not load the manifests', true); ?>");

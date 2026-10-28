@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Services\ManifestMoveService;
 use App\Services\SampleWithdrawalService;
+use App\HttpHandlers\LegacyRequestHandler;
 use mysqli;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -406,27 +408,78 @@ final class ManifestMoveTest extends TestCase
     }
 
     #[RunInSeparateProcess]
-    public function testOneManifestIsFoundByItsCodeAtAnyLabAndAge(): void
+    public function testManifestsAreFoundByTheirCodesAtAnyLabAndAge(): void
     {
         $db = $this->boot();
         $old = ['lab_id' => self::OTHER_LAB, 'request_created_datetime' => '2020-01-01 10:00:00'];
         self::manifest($db, 'M-old', $old);
+        self::manifest($db, 'M-new');
         self::manifest($db, 'M-r', ['manifest_type' => 'referral']);
         self::manifest($db, 'M-eid', ['module' => 'eid']);
         $mixed = self::manifest($db, 'M-mixed');
         self::sample($db, $mixed, 'M-mixed', 'x-1', ['facility_id' => 1]);
         self::sample($db, $mixed, 'M-mixed', 'x-2', ['facility_id' => 2]);
 
-        $found = self::moves()->findByCode('vl', ' M-old ');
-        self::assertSame(['M-old'], array_column($found, 'code'));
-        self::assertSame(self::OTHER_LAB, $found[0]['labId'], 'the page takes the lab it is moving from');
+        $found = self::moves()->findByCodes('vl', [' M-old ', 'M-new', 'NOPE']);
+        self::assertSame(['M-new', 'M-old'], array_column($found, 'code'));
+        self::assertSame(self::OTHER_LAB, $found[1]['labId'], 'the page takes the lab it is moving from');
 
-        self::assertSame([], self::moves()->findByCode('vl', 'M-r'), 'referral manifests are not moved');
-        self::assertSame([], self::moves()->findByCode('vl', 'M-eid'), 'another test type');
-        self::assertSame([], self::moves()->findByCode('vl', 'NOPE'));
-        self::assertSame([], self::moves()->findByCode('vl', ''));
-        self::assertSame(['M-mixed'], array_column(self::moves()->findByCode('vl', 'M-mixed'), 'code'));
-        self::assertSame([], self::moves()->findByCode('vl', 'M-mixed', '1'), 'a facility outside the user\'s map');
+        self::assertSame([], self::moves()->findByCodes('vl', ['M-r']), 'referral manifests are not moved');
+        self::assertSame([], self::moves()->findByCodes('vl', ['M-eid']), 'another test type');
+        self::assertSame([], self::moves()->findByCodes('vl', ['', ' ']));
+        self::assertSame(['M-mixed'], array_column(self::moves()->findByCodes('vl', ['M-mixed']), 'code'));
+        self::assertSame([], self::moves()->findByCodes('vl', ['M-mixed'], '1'), 'a facility outside the user\'s map');
+    }
+
+    #[RunInSeparateProcess]
+    public function testThePageFindsTypedPastedOrScannedCodesAndNamesTheMissingOnes(): void
+    {
+        $db = $this->boot();
+        self::manifest($db, 'M-1');
+        self::manifest($db, 'M-2', ['lab_id' => self::OTHER_LAB]);
+        LegacyAppHarness::withSession([
+            'userId' => 'admin', 'roleId' => 1, 'instance' => ['type' => 'remoteuser'],
+        ]);
+        $request = LegacyAppHarness::withPost(
+            ['module' => 'vl', 'manifestCodes' => "M-1\nm-2, NOPE;M-1\n", 'testingLab' => (string) self::OLD_LAB],
+            '/specimen-referral-manifest/get-manifest-package-code.php'
+        );
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $reply = json_decode((string) $handler->handle($request)->getBody(), true);
+
+        $codes = array_column($reply['manifests'], 'code');
+        sort($codes);
+        self::assertSame(['M-1', 'M-2'], $codes, 'codes win over the lab');
+        self::assertSame(['NOPE'], $reply['notFound'], 'm-2 is found whatever its case');
+    }
+
+    #[RunInSeparateProcess]
+    public function testOnlyLabsWithManifestsAreOfferedToListFrom(): void
+    {
+        $db = $this->boot();
+        self::manifest($db, 'M-1');
+        self::manifest($db, 'M-old', ['request_created_datetime' => '2020-01-01 10:00:00']);
+        // A referral manifest, and another test type's manifest, at the other labs.
+        self::manifest($db, 'M-r', ['lab_id' => self::NEW_LAB, 'manifest_type' => 'referral']);
+        self::manifest($db, 'M-eid', ['lab_id' => self::OTHER_LAB, 'module' => 'eid']);
+
+        self::assertSame([self::OLD_LAB => 'Lab ' . self::OLD_LAB], self::moves()->labsWithManifests('vl'));
+        self::assertSame([self::OTHER_LAB => 'Lab ' . self::OTHER_LAB], self::moves()->labsWithManifests('eid'));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAListedManifestSaysWhetherItHasATestedSample(): void
+    {
+        $db = $this->boot();
+        $untested = self::manifest($db, 'M-untested');
+        self::sample($db, $untested, 'M-untested', 'u-1');
+        $tested = self::manifest($db, 'M-tested');
+        self::sample($db, $tested, 'M-tested', 't-1', ['result' => '40']);
+
+        $listed = array_column(self::moves()->listForLab('vl', self::OLD_LAB), 'tested', 'code');
+        self::assertSame(['M-untested' => false, 'M-tested' => true], $listed);
+        $found = array_column(self::moves()->findByCodes('vl', ['M-tested']), 'tested', 'code');
+        self::assertSame(['M-tested' => true], $found);
     }
 
     #[RunInSeparateProcess]
