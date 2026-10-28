@@ -1,6 +1,7 @@
 <?php
 
 use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\TEST_FAILED;
 use const SAMPLE_STATUS\EXPIRED;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
@@ -62,7 +63,9 @@ $sQuery = "SELECT vl.*,
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
             WHERE vl.result_status != " . REJECTED . "
             AND vl.sample_code is NOT NULL
-            AND (vl.result IS NULL OR vl.result='')";
+            -- A Failed sample has no result until it is retested, which moves it
+            -- to another status. Its result field can still hold Failed or Invalid.
+            AND ((vl.result IS NULL OR vl.result='') OR vl.result_status = " . TEST_FAILED . ")";
 
 if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) !== '') {
     // The filter is fed by a dropdown of exact batch codes; LIKE made
