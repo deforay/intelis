@@ -27,6 +27,9 @@ final class AutowireCheck
         \App\Utilities\ImageResizeUtility::class,
         // Built per sync run with a query callable
         \App\Utilities\ResultSyncBatch::class,
+        // Made by SyncConsole for one wait, or one run through records
+        \App\Utilities\SyncConsoleWait::class,
+        \App\Utilities\SyncConsoleProgress::class,
         // Defined by hand in app/system/di.php with the debug flag
         \App\ErrorHandlers\ErrorResponseGenerator::class,
     ];

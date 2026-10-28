@@ -10,6 +10,8 @@ use App\Utilities\JsonUtility;
 use App\Services\CommonService;
 use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
+use App\Utilities\MiscUtility;
+use App\Utilities\SyncConsole;
 use App\Registries\ContainerRegistry;
 
 use Symfony\Component\Console\Input\ArgvInput;
@@ -39,7 +41,9 @@ if (!$cliMode) {
 }
 
 
-$io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+$io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput(MiscUtility::verbosityFromArgv($_SERVER['argv'] ?? [])));
+$console = new SyncConsole($io);
+$console->title(_translate('Getting a token from the STS'));
 
 // Set the URL for the token generation endpoint
 $remoteURL = rtrim((string) $general->getRemoteURL(), '/');
@@ -90,8 +94,13 @@ try {
 
     $apiService->setHeaders($headers);
 
-    $jsonResponse = $apiService->post($tokenURL, json_encode($payload), gzip: true);
-    if (!empty($jsonResponse) && $jsonResponse != "[]") {
+    $console->line(_translate('Asking the STS for a token...'));
+    $wait = $console->wait();
+    $jsonResponse = $apiService->post($tokenURL, json_encode($payload), gzip: true, onProgress: $wait->track());
+    $wait->done();
+    if (empty($jsonResponse) || $jsonResponse == "[]") {
+        $console->warn(_translate('The STS sent no answer. The next run asks again.'));
+    } else {
 
 
         $response = JsonUtility::decodeJson($jsonResponse);

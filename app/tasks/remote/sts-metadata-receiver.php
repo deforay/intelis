@@ -20,6 +20,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
+use App\Utilities\SyncConsole;
 use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
@@ -51,8 +52,11 @@ if ($general->isLISInstance() === false) {
     exit(0);
 }
 
+// The web runs this too, with no console to talk to.
+$console = SyncConsole::none();
 if ($cliMode) {
-    $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+    $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput(MiscUtility::verbosityFromArgv($_SERVER['argv'] ?? [])));
+    $console = new SyncConsole($io);
 
     // Parse CLI arguments
     $options = getopt('ft', ['force', 'truncate']);
@@ -91,6 +95,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
 $version = VERSION;
 
+$console->line(_translate('Checking the connection to the STS...'));
 if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
     if ($cliMode) {
         $io->error(sprintf(
@@ -522,7 +527,10 @@ $payload['labId'] = $labId;
 
 $metadataFailed = false;
 try {
-    $jsonResponse = $apiService->post($url, $payload, gzip: true);
+    $console->line(_translate('Asking the STS for metadata...'));
+    $wait = $console->wait();
+    $jsonResponse = $apiService->post($url, $payload, gzip: true, onProgress: $cliMode ? $wait->track() : null);
+    $wait->done();
     if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
 

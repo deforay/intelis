@@ -19,6 +19,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
+use App\Utilities\SyncConsole;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\LabMetadataBatchReader;
@@ -33,7 +34,8 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
-$output = MiscUtility::console();
+// The web runs this too, with no console to talk to.
+$console = $cliMode ? SyncConsole::cli() : SyncConsole::none();
 
 // only for LIS instances
 if ($general->isLISInstance() === false) {
@@ -50,26 +52,28 @@ $lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_lab_metadata_sync');
 
 $remoteURL = $general->getRemoteURL();
 
-$output->writeln("<info>Sending lab metadata to the STS</info>");
+$console->title(_translate('Sending lab metadata to the STS'));
 if ($forceFlag) {
-    $output->writeln("<comment>Sending everything, not only the changes since the last run.</comment>");
+    $console->line(_translate('Sending everything, not only the changes since the last run.'));
 }
 
 if (empty($remoteURL)) {
-    $output->writeln("<error>The STS URL is not set in System Config. Exiting.</error>");
+    $console->fail(_translate('The STS URL is not set in System Config. Exiting.'));
     LoggerUtility::logError("Please check if STS URL is set");
     exit(0);
 }
 
 try {
     // Checking if the network connection is available
-    $output->write("Checking the connection to the STS... ");
+    $console->line(_translate('Checking the connection to the STS...'));
     if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
-        $output->writeln("<error>FAILED. Check the internet connection.</error>");
+        $console->fail(sprintf(
+            _translate('Cannot reach the STS at %s. Check the internet connection. The next run tries again.'),
+            $remoteURL
+        ));
         LoggerUtility::logError("No network connectivity while trying remote sync.");
         return false;
     }
-    $output->writeln("<info>OK</info>");
 
     $transactionId = MiscUtility::generateULID();
 
@@ -138,7 +142,8 @@ try {
 
     // +1 for users table
     $totalSteps = count($metadataTables) + count($reasonTables) + count($batchedTables) + 1;
-    $bar = MiscUtility::spinnerStart($totalSteps, 'Collecting table data…');
+    $console->line(_translate('Collecting what changed since the last run...'));
+    $bar = $console->progress($totalSteps, _translate('Collecting'));
 
     // Machines go whole every run: a few rows per lab. STS releases before 5.7.78
     // dropped a machine whose id another lab also used, and a machine that is not
@@ -154,7 +159,7 @@ try {
         if (!empty($records)) {
             $payload[$payloadKey] = $records;
         }
-        MiscUtility::spinnerAdvance($bar);
+        $bar->advance();
     }
 
     foreach ($reasonTables as $table => $payloadKey) {
@@ -163,7 +168,7 @@ try {
         if (!empty($records)) {
             $payload[$payloadKey] = $records;
         }
-        MiscUtility::spinnerAdvance($bar);
+        $bar->advance();
     }
 
     // Watermarks are advanced only after STS has accepted the payload, so a failed run
@@ -183,7 +188,7 @@ try {
             $batchedWatermarks[$spec['watermark']] =
                 end($records)[$spec['deltaColumn']] ?? null;
         }
-        MiscUtility::spinnerAdvance($bar);
+        $bar->advance();
     }
 
     // USERS
@@ -219,15 +224,23 @@ try {
         }
         $payload["users"] = $users;
     }
-    MiscUtility::spinnerAdvance($bar);
-    MiscUtility::spinnerFinish($bar);
+    $bar->advance();
+    $bar->finish();
 
     // Authenticate to STS with this lab's token, the same one the result sender and
     // request receiver use, so STS can tie the payload to the facility it came from.
     $apiService->setBearerToken((string) $general->getSTSToken());
 
-    $output->write("Sending... ");
-    $response = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
+    $console->line(_translate('Sending lab metadata to the STS...'));
+    $wait = $console->wait();
+    $response = $apiService->post(
+        $url,
+        $payload,
+        gzip: true,
+        returnWithStatusCode: true,
+        onProgress: $cliMode ? $wait->track() : null
+    );
+    $wait->done();
     $httpStatusCode = (int) ($response['httpStatusCode'] ?? 0);
 
     // post() swallows HTTP errors and hands back the body, so the status has to be
@@ -242,7 +255,6 @@ try {
                 : "STS rejected the lab metadata upload with HTTP $httpStatusCode: $reason"
         );
     }
-    $output->writeln("<info>OK</info>");
 
     // Only reached when the post above did not throw, so the watermarks advance solely
     // on a delivery STS accepted. Each instrument watermark moves to the last row that
@@ -258,9 +270,12 @@ try {
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', $syncUpdate);
 
-    $output->writeln("<info>Lab metadata sent.</info>");
+    $console->ok(_translate('Lab metadata sent.'));
 } catch (Exception $exc) {
-    $output->writeln("<error>Error: " . $exc->getMessage() . "</error>");
+    $console->fail(sprintf(
+        _translate('Could not send lab metadata: %s. The next run tries again.'),
+        rtrim($exc->getMessage(), '.')
+    ));
     LoggerUtility::log("error", __FILE__ . ":" . $exc->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),

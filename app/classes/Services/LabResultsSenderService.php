@@ -15,8 +15,8 @@ use App\Utilities\ResultSyncPayload;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ResultSyncBatchSize;
 use App\Utilities\ResultSyncAcknowledgement;
-use Symfony\Component\Console\Helper\Helper;
-use Symfony\Component\Console\Helper\ProgressBar;
+use App\Utilities\SyncConsole;
+use App\Utilities\SyncConsoleProgress;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
@@ -102,8 +102,9 @@ final class LabResultsSenderService
         if ($module === null) {
             throw new RuntimeException("Unknown test type: $testType");
         }
-        $post ??= fn(string $url, string $json): array|string|null
-            => $this->apiService->post($url, $json, gzip: true, returnWithStatusCode: true);
+        $post ??= fn(string $url, string $json, ?callable $onProgress = null): array|string|null
+            => $this->apiService->post($url, $json, gzip: true, returnWithStatusCode: true, onProgress: $onProgress);
+        $console = new SyncConsole($io);
 
         $db = $this->db;
         $general = $this->general;
@@ -191,8 +192,8 @@ final class LabResultsSenderService
                 $run['maxPayloadBytes'],
                 $nextBatchSize
             );
-            $bar = $isDryRun ? null : self::startProgressBar($io, $count);
-            self::showProgressStep($bar, 'Preparing the next batch...');
+            $bar = $isDryRun ? null : self::startProgressBar($console, $count);
+            $bar?->message('Preparing the next batch...');
             foreach ($requests as $chunkIndex => $preparedRequest) {
                 $bar?->clear();
                 $payload = $preparedRequest['payload'];
@@ -212,10 +213,14 @@ final class LabResultsSenderService
                 if ($bar === null) {
                     $io?->text("  Sending to {$run['remoteUrl']}...");
                 }
-                self::showProgressStep($bar, 'Sending to the STS...');
+                $bar?->message('Sending to the STS...');
                 $tPost = MiscUtility::startTimer();
 
-                $apiResponse = $post($url, $preparedRequest['json']);
+                // The bar, or a line of its own in a log, follows the upload and the
+                // wait for the answer: one batch can take minutes on a slow link.
+                $wait = $console->wait(into: $bar);
+                $apiResponse = $post($url, $preparedRequest['json'], $wait->track());
+                $wait->done();
                 $bar?->clear();
                 $responseHeaders = self::unpackApiResponse($apiResponse)['headers'];
                 self::showServerHints($io, $responseHeaders, $testType);
@@ -241,7 +246,7 @@ final class LabResultsSenderService
                 ));
 
                 if ($acknowledgedSamples !== []) {
-                    self::showProgressStep($bar, 'Marking as sent...');
+                    $bar?->message('Marking as sent...');
                     $tUpd = MiscUtility::startTimer();
                     $marked = self::markAcknowledgedResults(
                         $db,
@@ -267,7 +272,7 @@ final class LabResultsSenderService
                     $io?->newLine();
                 } else {
                     $bar->setProgress($acked);
-                    self::showProgressStep($bar, 'Preparing the next batch...');
+                    $bar->message('Preparing the next batch...');
                 }
 
                 $chunkTransactionId = $run['transactionId'] . "-$testType-"
@@ -286,11 +291,7 @@ final class LabResultsSenderService
                 );
             }
 
-            if ($bar !== null) {
-                $bar->setMessage('');
-                $bar->display();
-                $io?->newLine(2);
-            }
+            $bar?->finish();
 
             if (!$isDryRun) {
                 $summary = "{$module['name']}: the STS accepted $acked of $count sample(s) in "
@@ -477,28 +478,10 @@ final class LabResultsSenderService
      * A progress bar for someone watching in a terminal. Cron output goes to a log,
      * where a redrawn bar is a pile of partial lines, so it keeps the text lines.
      */
-    private static function startProgressBar(?SymfonyStyle $io, int $count): ?ProgressBar
+    private static function startProgressBar(SyncConsole $console, int $count): ?SyncConsoleProgress
     {
-        if ($io === null || !$io->isDecorated()) {
-            return null;
-        }
-        $bar = $io->createProgressBar($count);
-        $bar->setFormat(' %current%/%max% [%bar%] %percent:3s%%  %elapsed% elapsed, %left%  %message%');
-        $bar->setPlaceholderFormatter('left', static function (ProgressBar $bar): string {
-            // The first estimate needs one finished batch.
-            return $bar->getProgress() === 0
-                ? 'working out the time left'
-                : 'about ' . Helper::formatTime($bar->getRemaining()) . ' left';
-        });
-        $bar->start();
-        return $bar;
-    }
-
-    /** Redraw the bar with the step that runs next, so a long wait shows what it waits on. */
-    private static function showProgressStep(?ProgressBar $bar, string $step): void
-    {
-        $bar?->setMessage($step);
-        $bar?->display();
+        $bar = $console->progress($count, 'Preparing the next batch...');
+        return $bar->isLive() ? $bar : null;
     }
 
     /** An unreadable acknowledgment stops this module only; the next module still runs. */
