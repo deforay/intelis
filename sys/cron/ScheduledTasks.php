@@ -171,7 +171,10 @@ $schedule->run(PHP_BINARY . " " . BIN_PATH . "/update-vl-suppression.php")
 
 // REMOTE SYNC JOBS START
 if (!empty($general->getRemoteURL()) && $general->isLISInstance() === true) {
-    $schedule->run('COMPOSER_ALLOW_SUPERUSER=1 composer -d ' . ROOT_PATH . ' run sync-sts -n')
+    // INTELIS_SCHEDULED_SYNC tells the requests receiver this is the cron run: it
+    // stops pulling after its time budget and the next run carries on. A run
+    // started by hand runs to the end.
+    $schedule->run('COMPOSER_ALLOW_SUPERUSER=1 INTELIS_SCHEDULED_SYNC=1 composer -d ' . ROOT_PATH . ' run sync-sts -n')
         ->everyFiveMinutes()
         ->timezone($timezone)
         ->preventOverlapping()

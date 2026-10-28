@@ -372,6 +372,15 @@ $remoteURL = $general->getRemoteURL();
                         $('.activateSample').hide();
                         $('#sampleId').val('');
                     }
+                })
+                .fail(function(xhr) {
+                    // Without this the overlay stayed up for good on any server error.
+                    $.unblockUI();
+                    toast.error(xhr.status === 503
+                        ? "<?= _jsTranslate('Another sync with the STS is running. Try again in a minute.'); ?>"
+                        : "<?= _jsTranslate('Unable to sync manifest'); ?>" + ' ' + manifestCode, '', MANIFEST_ERROR_TOAST_MS);
+                    $('.activateSample').hide();
+                    $('#sampleId').val('');
                 });
         } else {
             alert("<?= _jsTranslate("Please enter a valid Sample Manifest Code"); ?>");
@@ -477,9 +486,11 @@ $remoteURL = $general->getRemoteURL();
                         console.log("Requests Synced | STS -> LIS");
                         $.unblockUI();
                     })
-                    .fail(function() {
+                    .fail(function(xhr) {
                         $.unblockUI();
-                        alert("<?= _jsTranslate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
+                        alert(xhr.status === 503
+                            ? "<?= _jsTranslate("Another sync with the STS is running. Try again in a minute."); ?>"
+                            : "<?= _jsTranslate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
                     });
             }
         }

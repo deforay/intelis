@@ -29,6 +29,7 @@ use App\Services\RequestPageCursor;
 use App\Services\RequestReceiptsClient;
 use App\Services\LabRequestSyncService;
 use App\Utilities\SyncConsole;
+use App\Exceptions\SystemException;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -64,6 +65,8 @@ function showHelp(SymfonyStyle $io): void
         ['-m <manifest_code>' => 'Sync only a specific manifest/package (use with -t).'],
         ['--dry-run, dry-run' => 'Preview the sync: fetch from STS and report what would be inserted/updated, then roll everything back.'],
         ['-v' => 'Also show the STS processing time for each test type.'],
+        ['--wait-for-lock[=seconds]' => 'If another run is receiving requests, wait for it (default 900 seconds)'
+            . ' instead of exiting. Exits 75 if it is still running after that.'],
         ['-h, --help, help' => 'Show this help and exit.']
     );
 
@@ -130,6 +133,20 @@ if ($cliMode) {
     $args = array_slice($_SERVER['argv'], 1);
     if (in_array('-h', $args) || in_array('--help', $args) || in_array('help', $args)) {
         showHelp($io);
+    }
+}
+
+// Exit code when --wait-for-lock gives up: the run did not happen and can be retried.
+const REQUESTS_RECEIVER_EXIT_LOCKED = 75;
+
+// A remote resend passes --wait-for-lock: its command status is final, so it must
+// either run or exit non-zero, never report "completed" for a window it skipped.
+$waitForLockSeconds = null;
+foreach ($cliMode ? array_slice($_SERVER['argv'], 1) : [] as $arg) {
+    if ($arg === '--wait-for-lock') {
+        $waitForLockSeconds = 900;
+    } elseif (str_starts_with((string) $arg, '--wait-for-lock=')) {
+        $waitForLockSeconds = max(1, (int) substr((string) $arg, strlen('--wait-for-lock=')));
     }
 }
 
@@ -283,6 +300,50 @@ if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
     exit(0);
 }
 
+// One receiver at a time. Cron, a run started by hand and the sync button can all
+// start one, and two at once pulled the same window and saved every request
+// twice over, on a disk already too slow for one. flock() belongs to this
+// process, so the OS releases it when the run ends, however it ends. The run
+// that finds it held exits: the one already running covers the scheduled window.
+// A remote resend, which asks for a window of its own, waits instead.
+$receiverLockPath = VAR_PATH . DIRECTORY_SEPARATOR . 'requests-receiver.lock';
+// Whoever did not create the file (root's cron or the web user) opens it
+// read-only; flock() works on a read-only handle.
+$receiverLock = @fopen($receiverLockPath, 'c') ?: @fopen($receiverLockPath, 'r');
+// A web run (the sync button, a manifest being activated) has someone waiting on
+// the page for its answer: it waits a bounded while for a cron run to finish its
+// page instead of answering with nothing.
+if (!$cliMode) {
+    $waitForLockSeconds ??= 60;
+}
+$lockAcquired = $receiverLock !== false && flock($receiverLock, LOCK_EX | LOCK_NB);
+if ($receiverLock !== false && !$lockAcquired && $waitForLockSeconds !== null) {
+    $console->line(sprintf(
+        _translate('Another run is receiving requests. Waiting up to %d seconds for it to finish...'),
+        $waitForLockSeconds
+    ));
+    $deadline = time() + $waitForLockSeconds;
+    while (!$lockAcquired && time() < $deadline) {
+        sleep(2);
+        $lockAcquired = flock($receiverLock, LOCK_EX | LOCK_NB);
+    }
+}
+if ($receiverLock === false) {
+    // Never block syncing over an unwritable lock file; run unguarded.
+    LoggerUtility::logWarning("Requests receiver could not open its lock file: $receiverLockPath");
+} elseif (!$lockAcquired) {
+    $waited = $waitForLockSeconds !== null;
+    LoggerUtility::logInfo('Requests receiver is already running. ' . ($waited ? 'Gave up waiting.' : 'Exiting.'));
+    if (!$cliMode) {
+        // An empty 200 read as a finished sync on the page. 503: busy, try again.
+        throw new SystemException(_translate('Another run is still receiving requests. Try again in a minute.'), 503);
+    }
+    $console->warn($waited
+        ? _translate('Another run is still receiving requests. Nothing was pulled. Try again later.')
+        : _translate('Another run is already receiving requests. This run stops here.'));
+    exit($waited ? REQUESTS_RECEIVER_EXIT_LOCKED : 0);
+}
+
 // if only one module is getting synced, limit to that
 if (!empty($forceSyncModule)) {
     unset($systemConfig['modules']);
@@ -373,12 +434,16 @@ if ($firstPhase === LabRequestSyncService::NEXT_WAITING) {
 }
 
 /**
- * No new pull of the scheduled pull starts after this. Cron runs the receiver
- * through `composer run sync-sts`, and composer stops a script after 300 seconds
- * (its process-timeout) and skips the rest of the chain, so this leaves the last
- * pull time to finish inside that.
+ * No new pull of a cron run starts after this. Cron runs the whole sync chain
+ * every five minutes, and the steps after this one (remote commands above all)
+ * would wait behind a big window for as long as it takes. The next cron run
+ * carries on where this one stopped.
+ *
+ * A run started by hand is not limited: whoever started it is waiting for the
+ * window. Cron marks its runs with INTELIS_SCHEDULED_SYNC (sys/cron/ScheduledTasks.php).
  */
 const REQUEST_PULL_BUDGET_SECONDS = 180;
+$timeLimited = $scheduledPull && getenv('INTELIS_SCHEDULED_SYNC') === '1';
 
 /** @var RequestReceiptsClient $receiptsClient */
 $receiptsClient = ContainerRegistry::get(RequestReceiptsClient::class);
@@ -768,9 +833,9 @@ do {
     $pullModules = array_values(array_unique([...$waitingAgain, ...$pullModules]));
 // Web runs (the sync button) pull once: a long loop would outlast the request. A
 // window someone asked for runs to its end: they are waiting for it.
-} while ($cliMode && $pullModules !== [] && (!$scheduledPull || time() < $pullDeadline));
+} while ($cliMode && $pullModules !== [] && (!$timeLimited || time() < $pullDeadline));
 
-if ($scheduledPull && $pullModules !== []) {
+if ($timeLimited && $pullModules !== []) {
     $io->text('This run is out of time. The next run carries on with '
         . implode(', ', array_map(TestsService::getTestName(...), $pullModules)) . '.');
 }
