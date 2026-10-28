@@ -1,7 +1,7 @@
 <?php
 
-// The manifests Move Manifest can offer: those of one lab, or the one with a
-// given code. JSON for the page.
+// The manifests Move Manifest can offer: those of one lab, or those with the
+// given codes. JSON for the page.
 
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
@@ -42,11 +42,21 @@ if (
 /** @var ManifestMoveService $manifestMoveService */
 $manifestMoveService = ContainerRegistry::get(ManifestMoveService::class);
 
-// A manifest code finds that one manifest wherever it is; otherwise a lab's list.
-$manifestCode = trim((string) ($_POST['manifestCode'] ?? ''));
+// Manifest codes find those manifests wherever they are; otherwise a lab's list.
+// Codes come typed, pasted or scanned: one per line, or separated by commas.
+$manifestCodes = array_slice(array_values(array_unique(array_filter(
+    preg_split('/[\s,;]+/', (string) ($_POST['manifestCodes'] ?? '')) ?: [],
+    'strlen'
+))), 0, 200);
 $labId = (int) ($_POST['testingLab'] ?? 0);
-if ($manifestCode !== '') {
-    $manifests = $manifestMoveService->findByCode($testType, $manifestCode, $_SESSION['facilityMap'] ?? null);
+$notFound = [];
+if ($manifestCodes !== []) {
+    $manifests = $manifestMoveService->findByCodes($testType, $manifestCodes, $_SESSION['facilityMap'] ?? null);
+    $found = array_map('strtoupper', array_column($manifests, 'code'));
+    $notFound = array_values(array_filter(
+        $manifestCodes,
+        static fn(string $code): bool => !in_array(strtoupper($code), $found, true)
+    ));
 } elseif ($labId > 0) {
     [$from, $to] = DateUtility::convertDateRange($_POST['daterange'] ?? null, includeTime: true);
     $manifests = $manifestMoveService->listForLab(
@@ -60,6 +70,9 @@ if ($manifestCode !== '') {
     $manifests = [];
 }
 
-echo json_encode(['manifests' => array_map(static fn(array $m): array => $m + [
-    'createdLabel' => DateUtility::humanReadableDateFormat($m['created'] ?? '', true),
-], $manifests)]);
+echo json_encode([
+    'manifests' => array_map(static fn(array $m): array => $m + [
+        'createdLabel' => DateUtility::humanReadableDateFormat($m['created'] ?? '', true),
+    ], $manifests),
+    'notFound' => $notFound,
+]);

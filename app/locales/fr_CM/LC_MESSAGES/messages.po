@@ -36839,9 +36839,6 @@ msgstr "Choisir la période de création des manifestes"
 msgid "Move Selected Manifests"
 msgstr "Déplacer les manifestes sélectionnés"
 
-msgid "A manifest with any tested sample cannot be moved. The lab the samples are taken from is asked to cancel its copies."
-msgstr "Un manifeste contenant un échantillon déjà testé ne peut pas être déplacé. Le laboratoire d'origine des échantillons est invité à annuler ses copies."
-
 msgid "Move to Testing Lab"
 msgstr "Déplacer vers le laboratoire"
 
@@ -37269,23 +37266,32 @@ msgstr "Cliquez pour lister les échantillons ayant ce statut"
 msgid "Status: %s"
 msgstr "Statut : %s"
 
-msgid "Enter the code of the manifest to move"
-msgstr "Saisir le code du manifeste à déplacer"
-
-msgid "No manifest found with this code"
-msgstr "Aucun manifeste trouvé avec ce code"
-
 msgid "Move this manifest to another testing lab"
 msgstr "Déplacer ce manifeste vers un autre laboratoire"
 
-msgid "Move one manifest"
-msgstr "Déplacer un seul manifeste"
-
-msgid "List a lab's manifests"
-msgstr "Lister les manifestes d'un laboratoire"
-
-msgid "How to find the manifests"
-msgstr "Comment trouver les manifestes"
-
 msgid "Please enter the manifest code"
 msgstr "Veuillez saisir le code du manifeste"
+
+msgid "By Manifest Code"
+msgstr "Par code de manifeste"
+
+msgid "By Testing Lab"
+msgstr "Par laboratoire"
+
+msgid "Manifest Codes"
+msgstr "Codes des manifestes"
+
+msgid "Enter the codes of the manifests to move"
+msgstr "Saisir les codes des manifestes à déplacer"
+
+msgid "Type, paste or scan the codes: one per line, or separated by commas"
+msgstr "Saisir, coller ou scanner les codes : un par ligne, ou séparés par des virgules"
+
+msgid "The lab the samples are taken from is asked to cancel its copies."
+msgstr "Le laboratoire d'origine des échantillons est invité à annuler ses copies."
+
+msgid "No manifest found with these codes"
+msgstr "Aucun manifeste trouvé avec ces codes"
+
+msgid "Not found: %s"
+msgstr "Introuvable : %s"
