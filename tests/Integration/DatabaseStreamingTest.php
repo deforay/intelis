@@ -103,6 +103,20 @@ final class DatabaseStreamingTest extends TestCase
         return (int) $row['c'];
     }
 
+    /**
+     * The connections are back to $before. A closed connection leaves the server's
+     * list a moment after close() returns, so the count is read again for up to
+     * two seconds. A connection left open stays in the list, and still fails here.
+     */
+    private function assertConnectionsBackTo(int $before): void
+    {
+        $deadline = microtime(true) + 2.0;
+        while (($open = $this->openConnections()) !== $before && microtime(true) < $deadline) {
+            usleep(20000);
+        }
+        $this->assertSame($before, $open);
+    }
+
     public function testTheRowsAreNotHeldInMemoryAllAtOnce(): void
     {
         // About 20 MB of rows. Held at once, that is what memory grows by.
@@ -153,7 +167,7 @@ final class DatabaseStreamingTest extends TestCase
         gc_collect_cycles();
 
         $this->assertLessThan(5.0, microtime(true) - $started);
-        $this->assertSame($before, $this->openConnections());
+        $this->assertConnectionsBackTo($before);
         $this->assertSame(1, self::$db->rawQueryOne('SELECT 1 AS one')['one']);
     }
 
@@ -163,7 +177,7 @@ final class DatabaseStreamingTest extends TestCase
 
         iterator_to_array(self::$db->rawQueryGenerator('SELECT id FROM samples WHERE id <= 3'));
 
-        $this->assertSame($before, $this->openConnections());
+        $this->assertConnectionsBackTo($before);
     }
 
     public function testInsideATransactionItSeesWhatTheTransactionWroteAndHasNotCommitted(): void
@@ -213,7 +227,7 @@ final class DatabaseStreamingTest extends TestCase
         } catch (mysqli_sql_exception) {
         }
 
-        $this->assertSame($before, $this->openConnections());
+        $this->assertConnectionsBackTo($before);
         $this->assertSame(1, self::$db->rawQueryOne('SELECT 1 AS one')['one']);
     }
 
