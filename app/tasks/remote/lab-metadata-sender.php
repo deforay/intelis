@@ -276,6 +276,7 @@ try {
         _translate('Could not send lab metadata: %s. The next run tries again.'),
         rtrim($exc->getMessage(), '.')
     ));
+    $console->stsError((string) ($url ?? ''), $response ?? null);
     LoggerUtility::log("error", __FILE__ . ":" . $exc->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),

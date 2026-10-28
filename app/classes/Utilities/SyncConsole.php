@@ -2,6 +2,8 @@
 
 namespace App\Utilities;
 
+use Throwable;
+use GuzzleHttp\Exception\ResponseException;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -90,6 +92,51 @@ final class SyncConsole
     public function fail(string $text): void
     {
         $this->io?->error($text);
+    }
+
+    /**
+     * After a failed call to the STS: the STS's error ID and where to look it up,
+     * when its answer carries one. The STS logs every error under that ID, and the
+     * lab's message alone is often the reason without the detail.
+     *
+     * @param string $endpointUrl the URL that was called, under /remote/ on the STS
+     * @param mixed $answer what came back: the body, ApiService::post()'s
+     *        array with a 'body', or the exception of an async call
+     */
+    public function stsError(string $endpointUrl, mixed $answer): void
+    {
+        $errorId = self::stsErrorId($answer);
+        if ($errorId === null) {
+            return;
+        }
+        $base = strstr($endpointUrl, '/remote/', true) ?: rtrim($endpointUrl, '/');
+        $this->line(sprintf(
+            _translate('STS error ID: %s. Look it up on the STS: %s'),
+            $errorId,
+            $base . '/admin/monitoring/log-files.php?q=' . rawurlencode($errorId)
+        ));
+    }
+
+    /** The error ID in an STS error answer ({"error": {"error_id": "ERR-..."}}), or null. */
+    public static function stsErrorId(mixed $answer): ?string
+    {
+        if ($answer instanceof ResponseException) {
+            $body = $answer->getResponse()->getBody();
+            if ($body->isSeekable()) {
+                $body->rewind();
+            }
+            $answer = $body->getContents();
+        } elseif ($answer instanceof Throwable) {
+            return null;
+        } elseif (is_array($answer)) {
+            $answer = $answer['body'] ?? null;
+        }
+        if (!is_string($answer) || $answer === '') {
+            return null;
+        }
+        $data = json_decode($answer, true);
+        $errorId = is_array($data) && is_array($data['error'] ?? null) ? ($data['error']['error_id'] ?? null) : null;
+        return is_string($errorId) && preg_match('/^ERR-[0-9A-Z]{4}-[0-9A-Z]{4}$/', $errorId) ? $errorId : null;
     }
 
     /**
