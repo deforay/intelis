@@ -247,6 +247,94 @@ final class SampleStatusRepairTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testAnAcceptedSampleTheLabTestedStaysAtTheLabWithoutAReceipt(): void
+    {
+        // No reception date, but a tester: only a lab writes that, so the
+        // sample was at the lab. The first version of the repair sent it to the
+        // collection site.
+        $this->seed('ACCEPTED-TESTED-NO-RECEIPT', [
+            'result_status' => 7,
+            'tested_by' => 'the technician',
+            'result_approved_datetime' => '2026-06-30 13:58:09',
+        ]);
+
+        $this->sweep();
+
+        self::assertSame(6, (int) $this->fetch('ACCEPTED-TESTED-NO-RECEIPT')['result_status']);
+        self::assertSame(9, (int) $this->fetch('NEVER-REACHED-A-LAB')['result_status'], 'no lab sign at all');
+    }
+
+    private function healAtClinic(): array
+    {
+        /** @var SampleStatusRepairService $service */
+        $service = ContainerRegistry::get(SampleStatusRepairService::class);
+        return $service->repairLabSamplesMarkedAtClinic('eid', null, 200, 0);
+    }
+
+    #[RunInSeparateProcess]
+    public function testLabSamplesMarkedAtTheHealthCenterGoBackToTheLab(): void
+    {
+        $this->seed('CLINIC-LAB-CODE', [
+            // Collection-site ID plus the one the lab gave it on arrival.
+            'result_status' => 9,
+            'remote_sample_code' => 'REID-1',
+        ]);
+        $this->seed('CLINIC-TESTED', ['result_status' => 9, 'tested_by' => 'the technician']);
+        $this->seed('CLINIC-BATCHED', [
+            'result_status' => 9,
+            'sample_batch_id' => 5,
+            'sample_received_at_lab_datetime' => '2026-03-12 09:00:00',
+        ]);
+
+        $result = $this->healAtClinic();
+        self::assertSame(3, $result['repaired'], 'the three lab samples, and only those');
+
+        foreach (['CLINIC-LAB-CODE', 'CLINIC-TESTED'] as $sampleCode) {
+            $row = $this->fetch($sampleCode);
+            self::assertSame(6, (int) $row['result_status'], "$sampleCode is at the lab");
+            self::assertSame(
+                '2026-03-10 09:00:00',
+                $row['sample_received_at_lab_datetime'],
+                "$sampleCode takes its collection date as reception date"
+            );
+            self::assertSame(0, (int) $row['data_sync'], 'the correction has to reach STS too');
+        }
+
+        $batched = $this->fetch('CLINIC-BATCHED');
+        self::assertSame(6, (int) $batched['result_status']);
+        self::assertSame('2026-03-12 09:00:00', $batched['sample_received_at_lab_datetime'], 'a real receipt is kept');
+
+        self::assertSame(0, $this->healAtClinic()['repaired'], 'a second run finds nothing');
+    }
+
+    #[RunInSeparateProcess]
+    public function testSamplesTrulyAtTheHealthCenterAreLeftThere(): void
+    {
+        $this->seed('CLINIC-CODE-ONLY', [
+            // A collection-site user on a lab instance gets a Sample ID too, so
+            // that alone does not prove the lab had it.
+            'result_status' => 9,
+        ]);
+        $this->seed('CLINIC-WITH-RESULT', [
+            'result_status' => 9,
+            'tested_by' => 'the technician',
+            'result' => 'Not Detected',
+        ]);
+        $this->seed('CLINIC-REJECTED', [
+            'result_status' => 9,
+            'tested_by' => 'the technician',
+            'is_sample_rejected' => 'yes',
+        ]);
+
+        self::assertSame(0, $this->healAtClinic()['repaired']);
+        foreach (['CLINIC-CODE-ONLY', 'CLINIC-WITH-RESULT', 'CLINIC-REJECTED'] as $sampleCode) {
+            $row = $this->fetch($sampleCode);
+            self::assertSame(9, (int) $row['result_status'], "$sampleCode stays where it is");
+            self::assertNull($row['sample_received_at_lab_datetime'], "$sampleCode gets no reception date");
+        }
+    }
+
+    #[RunInSeparateProcess]
     public function testASweepThatFindsNothingLeavesTheTableUntouched(): void
     {
         $this->sweep();
