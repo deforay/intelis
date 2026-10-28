@@ -575,11 +575,13 @@ do {
                 if ($cliMode) {
                     showServerHints($io, $headers, $module);
                 }
-            })->otherwise(function (mixed $reason) use ($module, $cliMode, $io): void {
+            })->otherwise(function (mixed $reason) use ($module, $cliMode, $io, $console, $moduleUrl): void {
+                $failure = $reason;
                 $reason = $reason instanceof Throwable ? $reason->getMessage() : (string) $reason;
                 if ($cliMode) {
                     $io->error(TestsService::getTestName((string) $module) . ': could not get requests from the STS: '
                         . rtrim($reason, '.') . '. The next run tries again.');
+                    $console->stsError((string) $moduleUrl, $failure);
                 }
                 LoggerUtility::logError(__FILE__ . ":" . __LINE__ . ":" . "STS Request sync for $module failed: " . $reason);
             });

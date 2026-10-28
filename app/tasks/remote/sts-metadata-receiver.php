@@ -531,6 +531,12 @@ try {
     $wait = $console->wait();
     $jsonResponse = $apiService->post($url, $payload, gzip: true, onProgress: $cliMode ? $wait->track() : null);
     $wait->done();
+    // An error answer read as metadata saved nothing, reported the metadata up to
+    // date and moved the last sync time past what it should have brought.
+    $stsErrorId = SyncConsole::stsErrorId($jsonResponse);
+    if ($stsErrorId !== null) {
+        throw new RuntimeException("The STS answered the metadata request with error $stsErrorId");
+    }
     if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
 
@@ -725,6 +731,7 @@ try {
     $metadataFailed = true;
     if ($cliMode) {
         $io->error(_translate("Could not receive metadata from the STS. The error log has the details."));
+        $console->stsError((string) $url, $jsonResponse ?? null);
     }
     LoggerUtility::logError("Error while syncing metadata from STS", [
         'line' => $e->getLine(),

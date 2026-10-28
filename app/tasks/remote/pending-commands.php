@@ -247,6 +247,7 @@ try {
             'response' => is_string($response) ? mb_substr($response, 0, 1000) : null,
         ]);
         $console->fail(_translate('The STS did not answer the request for commands. The next run asks again.'));
+        $console->stsError((string) $url, $response);
         exit(0);
     }
 

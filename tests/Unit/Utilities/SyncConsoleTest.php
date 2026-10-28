@@ -6,6 +6,10 @@ namespace Tests\Unit\Utilities;
 
 use App\Utilities\SyncConsole;
 use App\Utilities\SyncConsoleWait;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -163,5 +167,48 @@ final class SyncConsoleTest extends TestCase
         $progress->finish();
 
         self::assertSame('', $out->fetch());
+    }
+    private const ERROR_BODY = '{"error":{"code":500,"message":"Internal Server Error | Sorry",'
+        . '"error_id":"ERR-7K3Q-X9M2","support_info":{"contact":"Please contact support"}}}';
+
+    public function testTheStsErrorIdIsReadFromEveryShapeOfAnswer(): void
+    {
+        $request = new Request('POST', 'https://sts.example/remote/v2/requests.php');
+        $failed = new ServerException('Server error', $request, new Response(500, [], self::ERROR_BODY));
+
+        self::assertSame('ERR-7K3Q-X9M2', SyncConsole::stsErrorId(self::ERROR_BODY));
+        $answered = ['httpStatusCode' => 500, 'body' => self::ERROR_BODY];
+        self::assertSame('ERR-7K3Q-X9M2', SyncConsole::stsErrorId($answered));
+        self::assertSame('ERR-7K3Q-X9M2', SyncConsole::stsErrorId($failed));
+        // Read once already (ApiService logs the body): still found.
+        self::assertSame('ERR-7K3Q-X9M2', SyncConsole::stsErrorId($failed));
+    }
+
+    public function testAnAnswerWithoutAnErrorIdHasNone(): void
+    {
+        $request = new Request('POST', 'https://sts.example/remote/v2/requests.php');
+
+        self::assertNull(SyncConsole::stsErrorId('{"status":"success","requests":[]}'));
+        self::assertNull(SyncConsole::stsErrorId('<html>502 Bad Gateway</html>'));
+        self::assertNull(SyncConsole::stsErrorId('{"error":{"error_id":"<script>"}}'), 'not an ID');
+        self::assertNull(SyncConsole::stsErrorId(null));
+        self::assertNull(SyncConsole::stsErrorId(new ConnectException('Connection refused', $request)));
+    }
+
+    public function testAFailedCallPrintsTheIdAndWhereToLookItUp(): void
+    {
+        $out = new BufferedOutput();
+        $console = new SyncConsole($this->style($out));
+
+        $console->stsError('https://sts.example/remote/v2/requests.php', self::ERROR_BODY);
+        $console->stsError('https://sts.example/remote/v2/requests.php', '{"status":"success"}');
+
+        $printed = preg_replace('/\s+/', ' ', $out->fetch());
+        self::assertStringContainsString('STS error ID: ERR-7K3Q-X9M2.', $printed);
+        self::assertStringContainsString(
+            'https://sts.example/admin/monitoring/log-files.php?q=ERR-7K3Q-X9M2',
+            $printed
+        );
+        self::assertSame(1, substr_count($printed, 'STS error ID'), 'nothing for an answer without one');
     }
 }

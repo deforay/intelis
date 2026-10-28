@@ -235,6 +235,7 @@ final class LabResultsSenderService
                     $acknowledgedSamples = ResultSyncAcknowledgement::fromResponse($apiResponse, $testType);
                 } catch (RuntimeException $e) {
                     self::reportModuleSyncFailure($io, $testType, $chunkNumber, $e);
+                    $console->stsError($url, $apiResponse);
                     break;
                 }
                 $acked += count($acknowledgedSamples);
