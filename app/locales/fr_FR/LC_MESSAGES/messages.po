@@ -37306,3 +37306,6 @@ msgstr "Aucun manifeste trouvé avec ces codes"
 
 msgid "Not found: %s"
 msgstr "Introuvable : %s"
+
+msgid "This role cannot be edited"
+msgstr "Ce rôle ne peut pas être modifié"

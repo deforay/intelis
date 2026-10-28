@@ -29,8 +29,8 @@ $roleQuery = "SELECT * FROM roles WHERE role_id= ?";
 $roleInfo = $db->rawQueryOne($roleQuery, [$id]);
 /* Not allowed to edit the API role or the superadmin role (id 1) */
 if ($isSuperAdmin || (isset($roleInfo['role_code']) && $roleInfo['role_code'] == 'API')) {
-	// header("Location:roles.php");
-	// return;
+	header("Location:roles.php");
+	return;
 }
 $activeModules = SystemService::getActiveModules();
 
