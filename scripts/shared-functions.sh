@@ -2660,7 +2660,7 @@ configure_php_ini() {
 # from the STS as JSON, and Ubuntu's mod_deflate list leaves application/json out:
 # one lab's page of 500 requests came down as 3.6 MB where gzip makes it about
 # 0.4 MB, and older labs that pull a whole window timed out at 100 MB. Every lab
-# already asks for gzip and unpacks it, so this needs nothing on the lab side.
+# unpacks gzip, so this needs nothing on the lab side.
 # Safe to run on every upgrade: it writes and enables the file only when it is not
 # already there as it should be. The caller's config test and reload apply it.
 # Usage: configure_apache_compression
@@ -2675,10 +2675,20 @@ configure_apache_compression() {
 
     # The IfModule guards keep this from ever failing the config test: without
     # deflate (or the filter module it needs) the file does nothing.
+    #
+    # Labs up to 5.8.4 never send Accept-Encoding: Guzzle drops it when the client
+    # only sets decode_content. Their curl still unpacks gzip, so a sync request
+    # from one (a /remote/ path in the request line, which the front controller's
+    # rewrite to index.php leaves as it was, a Guzzle user agent, no Accept-Encoding) is
+    # treated as asking for it. Nothing else changes: browsers, the mobile app and
+    # API clients under /api/ are left as they are.
     desired='# Managed by the InteLIS upgrade (configure_apache_compression). Edits are replaced.
 <IfModule mod_filter.c>
     <IfModule mod_deflate.c>
         AddOutputFilterByType DEFLATE application/json
+        <IfModule mod_headers.c>
+            RequestHeader setifempty Accept-Encoding gzip "expr=%{THE_REQUEST} =~ m#^[A-Z]+ /remote/# && %{HTTP_USER_AGENT} =~ /^GuzzleHttp/"
+        </IfModule>
     </IfModule>
 </IfModule>'
 
