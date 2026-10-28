@@ -38,6 +38,21 @@ final readonly class AuditArchiveService
      */
     private const ARCHIVE_BATCH = 1000;
 
+    /** audit_log rows the drain reads per batch, in id order. */
+    private const DRAIN_BATCH = 500;
+
+    /**
+     * Later rows of the batch's records the drain reads with it, at most.
+     *
+     * Filing a sample reads, merges and rewrites its whole archive file. Rows
+     * are read in id order, so a sample whose revisions are spread over the
+     * queue was rewritten once per batch it appeared in, its file larger each
+     * time: one lab's drain fell 24 GB behind on samples with 200 to 550
+     * revisions each. Taking the record's later rows along files most samples
+     * in one rewrite per run. The cap bounds memory: a row holds a whole form row.
+     */
+    private const DRAIN_FOLLOW_ROWS = 5000;
+
     /**
      * No escape character: archives are written and read as RFC 4180.
      *
@@ -693,7 +708,8 @@ final readonly class AuditArchiveService
         ?string $formTableFilter = null,
         ?string $recordIdFilter = null,
         ?callable $progress = null,
-        bool $useLock = false
+        bool $useLock = false,
+        int $batchSize = self::DRAIN_BATCH
     ): void {
         $lockFile = null;
         try {
@@ -728,7 +744,6 @@ final readonly class AuditArchiveService
 
             $childTables = self::childTables();
 
-            $batchSize = 500;
             // Samples that threw this run (corrupt file, bad read, disk error).
             // Their rows stay in audit_log; we skip re-attempting them on later
             // batches so one bad sample can't slow or spam the whole drain.
@@ -767,6 +782,11 @@ final readonly class AuditArchiveService
                 foreach ($batch as $br) {
                     $afterId = max($afterId, (int) $br['id']);
                 }
+                $batchCount = count($batch);
+                // Past the cursor, so a later batch reads them only if they were
+                // not filed: a sample that failed is skipped there too.
+                $batch = [...$batch, ...$this->laterRowsOfTheSameRecords($batch, $afterId)];
+                $filesWritten = 0;
 
                 // Group rows by (folder, uniqueId-from-row_data). Rows without a
                 // unique_id (or an unknown form_table) can't be filed — we delete
@@ -961,6 +981,7 @@ final readonly class AuditArchiveService
                                 foreach ($newIds as $id) {
                                     $archivedIds[] = $id;
                                 }
+                                $filesWritten++;
                             }
                         } catch (Throwable $e) {
                             // One sample failing (corrupt .zst, bad read, disk error)
@@ -991,10 +1012,17 @@ final readonly class AuditArchiveService
                     $this->db->rawQuery("DELETE FROM audit_log WHERE id IN ($placeholders)", $toDelete);
                 }
 
+                $this->log($progress, sprintf(
+                    'audit_log drain: %d row(s) filed into %d file(s), %d dropped.',
+                    count($archivedIds),
+                    $filesWritten,
+                    count($orphanIds)
+                ));
+
                 if ($useLock) {
                     MiscUtility::touchLockFile($lockFile);
                 }
-                if (count($batch) < $batchSize) {
+                if ($batchCount < $batchSize) {
                     break;
                 }
             }
@@ -1014,6 +1042,57 @@ final readonly class AuditArchiveService
                 MiscUtility::deleteLockFile($lockFile);
             }
         }
+    }
+
+    /**
+     * The rows after $afterId of every record in the batch, up to DRAIN_FOLLOW_ROWS,
+     * in id order.
+     *
+     * The ids are read first, from u_rec_rev alone (the primary key is part of
+     * every secondary index), then the rows by id. record_id is a varchar and is
+     * bound as a string, or MySQL cannot use the index.
+     *
+     * @param list<array<string, mixed>> $batch
+     * @return list<array<string, mixed>>
+     */
+    private function laterRowsOfTheSameRecords(array $batch, int $afterId): array
+    {
+        $byTable = [];
+        foreach ($batch as $r) {
+            $byTable[(string) $r['form_table']][(string) $r['record_id']] = true;
+        }
+
+        $ids = [];
+        foreach ($byTable as $table => $records) {
+            $room = self::DRAIN_FOLLOW_ROWS - count($ids);
+            if ($room <= 0) {
+                break;
+            }
+            $recordIds = array_map('strval', array_keys($records));
+            $placeholders = implode(',', array_fill(0, count($recordIds), '?'));
+            $found = $this->db->rawQuery(
+                "SELECT id FROM audit_log
+                  WHERE form_table = ? AND record_id IN ($placeholders) AND id > ?
+                  ORDER BY record_id, revision
+                  LIMIT $room",
+                [$table, ...$recordIds, $afterId]
+            );
+            foreach ($found ?: [] as $f) {
+                $ids[] = (int) $f['id'];
+            }
+        }
+        if ($ids === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        return $this->db->rawQuery(
+            "SELECT id, form_table, record_id, revision, action, dt_datetime, row_data
+               FROM audit_log
+              WHERE id IN ($placeholders)
+              ORDER BY id ASC",
+            $ids
+        ) ?: [];
     }
 
     /** The latest dt_datetime the legacy archive has written to files for this table. */
