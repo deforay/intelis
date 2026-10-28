@@ -131,8 +131,8 @@ try {
 
 // --- Fetch migration file list from GitHub API ---
 
-$repoApiUrl = 'https://api.github.com/repos/deforay/vlsm-interfacing/contents/app/mysql-migrations?ref=master';
-$rawBaseUrl = 'https://raw.githubusercontent.com/deforay/vlsm-interfacing/master/app/mysql-migrations/';
+$repoApiUrl = 'https://api.github.com/repos/deforay/intelis-interfacing/contents/app/mysql-migrations?ref=master';
+$rawBaseUrl = 'https://raw.githubusercontent.com/deforay/intelis-interfacing/master/app/mysql-migrations/';
 
 $options = getopt("", ["from:", "status", "dry-run"]);
 $fromFile = $options['from'] ?? null;
