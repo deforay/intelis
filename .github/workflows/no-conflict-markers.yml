@@ -200,15 +200,7 @@ jobs:
       # and initialising the server take about 35 seconds, which the checkout
       # and composer steps below now cover instead of waiting on.
       #
-      # The PDF output tests and BatchPdfPrintTest read each PDF with pdfinfo,
-      # pdftotext and pdfimages, and skip their checks without them. Installed
-      # explicitly rather than trusting the runner image, and in the
-      # background too: apt-get update has taken anywhere from 10 to 90
-      # seconds, depending on the mirror. The install is tried against the
-      # image's package lists first, and updates them only if that fails.
       - name: Start MySQL configured the way an install configures it
-        env:
-          SHARD: ${{ matrix.shard }}
         run: |
           nohup docker run -d --name mysql -p 3306:3306 --tmpfs /var/lib/mysql:rw \
             -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=vlsm \
@@ -216,13 +208,6 @@ jobs:
             --skip-log-bin --innodb-flush-log-at-trx-commit=0 \
             --innodb-doublewrite=0 --innodb-flush-method=nosync \
             > "$RUNNER_TEMP/mysql-start.log" 2>&1 &
-          if [ "$SHARD" = pdf ]; then
-            nohup sh -c '
-              install="sudo apt-get install -y -qq --no-install-recommends poppler-utils"
-              $install || { sudo apt-get update -qq && $install; }
-              echo $? > "$RUNNER_TEMP/poppler.done"
-            ' > "$RUNNER_TEMP/poppler.log" 2>&1 &
-          fi
 
       - name: Checkout code
         uses: actions/checkout@v7
@@ -234,6 +219,24 @@ jobs:
           extensions: gd, zip, pdo, pdo_mysql, mysqli, json, curl, gettext, openssl, fileinfo, sodium, zlib, intl, bcmath
           tools: composer:v2
           coverage: none
+
+      # The PDF output tests and BatchPdfPrintTest read each PDF with pdfinfo,
+      # pdftotext and pdfimages, and skip their checks without them. Installed
+      # explicitly rather than trusting the runner image, and in the
+      # background: apt-get update has taken anywhere from 10 to 90 seconds,
+      # depending on the mirror. The install is tried against the image's
+      # package lists first, and updates them only if that fails.
+      #
+      # Started after Set up PHP, not before. On Ubuntu 26.04 setup-php installs
+      # PHP extensions with apt, and an apt run beside it left gd unable to load.
+      - name: Start installing poppler
+        if: matrix.shard == 'pdf'
+        run: |
+          nohup sh -c '
+            install="sudo apt-get install -y -qq --no-install-recommends poppler-utils"
+            $install || { sudo apt-get update -qq && $install; }
+            echo $? > "$RUNNER_TEMP/poppler.done"
+          ' > "$RUNNER_TEMP/poppler.log" 2>&1 &
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
