@@ -3,14 +3,18 @@
 # systemd runs as PID 1 because setup.sh, intelis update and the doctor all
 # restart apache2 and mysql through systemctl. The container must be started
 # privileged with the host cgroup tree; bin/dev/record-casts does that.
+#
+# cron is here because every Ubuntu machine has it and the scripts rely on it:
+# without it, intelis-refresh fails, and the update never hands the app tree
+# back to www-data.
 FROM ubuntu:24.04
 
-ENV DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       systemd systemd-sysv dbus sudo curl wget ca-certificates gnupg lsb-release \
-      tzdata git asciinema expect locales \
+      tzdata git asciinema expect locales cron \
  && locale-gen en_US.UTF-8 \
  && rm -rf /var/lib/apt/lists/*
 

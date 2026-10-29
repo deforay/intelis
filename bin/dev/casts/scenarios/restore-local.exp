@@ -1,0 +1,48 @@
+#!/usr/bin/expect -f
+#
+# Restore the database from a backup on this machine: db-tools restore, then
+# intelis migrate.
+# Shown on docs/guides/restoring-from-backup.md, "Backup on this machine".
+
+source [file join [file dirname [info script]] common.exp]
+
+wait_prompt
+type_command "cd /var/www/intelis"
+wait_prompt
+type_command "sudo -u www-data php vendor/bin/db-tools restore"
+
+# The list is fzf: typing filters it. "vlsm" leaves out the interfacing-
+# backups, and the newest match is on top.
+# fzf asks the terminal where the cursor is (ESC[6n) and waits for the answer.
+# A real terminal replies by itself. This one is a script, so it replies here:
+# row 12, column 1, just below the command that was typed.
+set timeout 120
+expect {
+    -re {\[sudo\] password for labuser:} { sleep 1; send "$sudo_password\r"; exp_continue }
+    -ex "\033\[6n"                      { send "\033\[12;1R"; exp_continue }
+    "Select backup to restore"           {}
+    "No backup files found"              { fail "no backups to restore" }
+    timeout { fail "no backup list" }
+}
+sleep 2
+send -h "vlsm"
+sleep 1.5
+send "\r"
+
+set timeout 600
+expect {
+    "Restore completed to"               {}
+    "Restore failed"                     { fail "restore failed" }
+    timeout { fail "restore did not finish" }
+}
+
+wait_prompt
+type_command "intelis migrate"
+set timeout 600
+expect {
+    -re {\[sudo\] password for labuser:} { sleep 1; send "$sudo_password\r"; exp_continue }
+    "Potential Errors logged"            {}
+    timeout { fail "migrate did not finish" }
+}
+
+finish

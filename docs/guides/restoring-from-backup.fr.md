@@ -71,6 +71,8 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
        une copie de sécurité de la base de données actuelle, dans un fichier
        commençant par `pre-restore-vlsm-`.
 
+        [Restauration de la base de données depuis une sauvegarde sur cette machine : choix de la sauvegarde dans la liste en tapant `vlsm`, puis `intelis migrate`.](../assets/casts/restore-local.cast){ .asciicast }
+
         ??? failure "S'il se termine par `Restore failed`"
 
             La base de données est peut-être vide maintenant. Remettre en place
@@ -191,6 +193,8 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
        sécurité de la base de données actuelle. Il restaure ensuite la
        sauvegarde la plus récente commençant par `vlsm-`, puis applique les
        mises à jour de la base de données.
+
+        [Restauration de la base de données seule depuis la machine de sauvegarde, de `intelis restore` jusqu'à la commande de nettoyage. Ce laboratoire de test n'a ni signatures ni logos, donc aucun n'est restauré.](../assets/casts/restore-from-linux.cast){ .asciicast }
 
         ??? failure "S'il indique `The restore did not finish`"
 

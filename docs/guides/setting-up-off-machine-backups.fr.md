@@ -185,6 +185,8 @@ machine.
     7. Attendre la fin de la première sauvegarde. Elle peut durer une heure ou
        plus. Le script se termine par `Backups are set up and the first one completed`.
 
+        [Configuration des sauvegardes vers une autre machine Linux, de `intelis backup setup` jusqu'à la première sauvegarde et à `intelis backup status`. Les longues attentes sont raccourcies.](../assets/casts/backup-setup-linux.cast){ .asciicast }
+
         ??? failure "S'il se termine par `Setup finished, but the first backup failed`"
 
             Les paramètres sont enregistrés. Lire l'erreur au-dessus du

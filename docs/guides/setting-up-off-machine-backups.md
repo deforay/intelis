@@ -170,6 +170,8 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     7. Wait for the first backup to finish. It can take an hour or more. The
        script ends with `Backups are set up and the first one completed`.
 
+        [Setting up backups to another Linux machine, from `intelis backup setup` through the first backup to `intelis backup status`. Long waits play shortened.](../assets/casts/backup-setup-linux.cast){ .asciicast }
+
         ??? failure "If it ends with `Setup finished, but the first backup failed`"
 
             The settings are saved. Read the error above the message, fix the

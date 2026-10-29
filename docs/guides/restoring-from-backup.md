@@ -66,6 +66,8 @@ was made are lost.
     4. Wait for `Restore completed to vlsm`. The restore first saves a safety
        copy of the current database, in a file starting with `pre-restore-vlsm-`.
 
+        [Restoring the database from a backup on this machine: choosing the backup in the list by typing `vlsm`, then `intelis migrate`.](../assets/casts/restore-local.cast){ .asciicast }
+
         ??? failure "If it ends with `Restore failed`"
 
             The database may now be empty. Put the safety copy back. Run step 2
@@ -171,6 +173,8 @@ was made are lost.
     9. Wait for `Database restored`. The script first saves a safety copy of the
        current database, then restores the newest backup starting with `vlsm-`,
        then applies the database updates.
+
+        [Restoring only the database from the backup machine, from `intelis restore` to the cleanup command. This test lab has no signatures or logos, so none are restored.](../assets/casts/restore-from-linux.cast){ .asciicast }
 
         ??? failure "If it says `The restore did not finish`"
 

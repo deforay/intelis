@@ -1,0 +1,47 @@
+#!/usr/bin/expect -f
+#
+# Off-machine backups to another Linux machine: `intelis backup setup`, the
+# first backup, then `intelis backup status`.
+# Shown on docs/guides/setting-up-off-machine-backups.md, "Another Linux machine".
+#
+# needs: backup-server
+
+source [file join [file dirname [info script]] common.exp]
+
+set server $env(BACKUP_SERVER)
+set server_password "Srv-Admin-Pw"
+
+wait_prompt
+type_command "intelis backup setup"
+
+# Questions are gum prompts: text boxes take typed text and Enter, menus are
+# answered with pick. The password prompts come from ssh and from sudo on the
+# backup machine.
+set timeout 600
+expect {
+    -re {\[sudo\] password for labuser:}  { sleep 1; send "$sudo_password\r"; exp_continue }
+    "Lab name or lab code"                { answer "central-lab"; exp_continue }
+    "Where should the backup be sent?"    { pick "Another Linux machine"; exp_continue }
+    "Address of the backup machine"       { answer $server; exp_continue }
+    "How should it be given?"             { pick "Log in as the backup machine's administrator"; exp_continue }
+    "Administrator account on the backup machine" { answer "labadmin"; exp_continue }
+    -re {labadmin@[^ ]*'s password: $}    { sleep 1; send "$server_password\r"; exp_continue }
+    -re {\[sudo\] password for labadmin:} { sleep 1; send "$server_password\r"; exp_continue }
+    "Backups are set up and the first one completed" {}
+    "the first backup failed"             { fail "first backup failed" }
+    "backup did not finish"               { fail "local backup failed" }
+    "setup failed at line"                { fail "setup failed" }
+    timeout { fail "setup did not finish" }
+    eof     { fail "shell ended early" }
+}
+
+wait_prompt
+type_command "intelis backup status"
+set timeout 60
+expect {
+    -re {\[sudo\] password for labuser:} { sleep 1; send "$sudo_password\r"; exp_continue }
+    "Schedule" {}
+    timeout { fail "no status" }
+}
+
+finish
