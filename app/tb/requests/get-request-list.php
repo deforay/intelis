@@ -194,7 +194,7 @@ try {
      if (isset($_POST['dateRangeModel']) && trim((string) $_POST['dateRangeModel']) !== '') {
           $sWhere[] = ' DATE(vl.sample_collection_date) like "' . DateUtility::isoDateFormat($_POST['dateRangeModel']) . '"';
      }
-     if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
+     if (!empty($_POST['rejectedSamples']) && $_POST['rejectedSamples'] == 'no') {
           $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') not like 'yes' ";
      }
      if ($general->isSTSInstance()) {
