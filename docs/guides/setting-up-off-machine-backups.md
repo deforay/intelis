@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-28
-reviewed_against: 5.7.81
+reviewed: 2026-10-29
+reviewed_against: 5.8.5
 ---
 # How to set up off-machine backups
 
@@ -244,9 +244,10 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     ```
 
     It holds the whole InteLIS folder. The database backups are in `backups/db`
-    and the settings backups in `backups/config`. It leaves out files rebuilt on
-    install: `vendor/`, `node_modules/`, caches, logs, temporary files and
-    version-control folders.
+    and the settings backups in `backups/config`. A settings backup holds the
+    lab settings, signatures, report templates and logos. The backup leaves out
+    files rebuilt on install: `vendor/`, `node_modules/`, caches, logs,
+    temporary files and version-control folders.
 
     The folder is a mirror of this machine, so it holds the newest database
     backups only, about the last 2 days. Files deleted on this machine are
@@ -257,7 +258,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     | --- | --- |
     | One database backup per day | The newest 7 days |
     | One database backup per week, after that | 4 more weeks |
-    | The settings backup | One per week, for the same period |
+    | One settings backup per day, then one per week | The same 7 days and 4 weeks |
 
     That is about 5 weeks in all. A wipe or reinstall of this machine does not
     touch `.history/`. To keep more, change `HISTORY_DAYS` and `HISTORY_WEEKS`
@@ -446,9 +447,10 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     ```
 
     It holds the whole InteLIS folder. The database backups are in `backups\db`
-    and the settings backups in `backups\config`. It leaves out files rebuilt on
-    install: `vendor/`, `node_modules/`, caches, logs, temporary files and
-    version-control folders.
+    and the settings backups in `backups\config`. A settings backup holds the
+    lab settings, signatures, report templates and logos. The backup leaves out
+    files rebuilt on install: `vendor/`, `node_modules/`, caches, logs,
+    temporary files and version-control folders.
 
     The folder is a mirror of this machine, so it holds the newest database
     backups only, about the last 2 days. Files deleted on this machine are
@@ -459,7 +461,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     | --- | --- |
     | One database backup per day | The newest 7 days |
     | One database backup per week, after that | 4 more weeks |
-    | The settings backup | One per week, for the same period |
+    | One settings backup per day, then one per week | The same 7 days and 4 weeks |
 
     That is about 5 weeks in all. A wipe or reinstall of this machine does not
     touch `.history/`. To keep more, change `HISTORY_DAYS` and `HISTORY_WEEKS`
@@ -624,9 +626,10 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     ```
 
     It holds the whole InteLIS folder. The database backups are in `backups/db`
-    and the settings backups in `backups/config`. It leaves out files rebuilt on
-    install: `vendor/`, `node_modules/`, caches, logs, temporary files and
-    version-control folders.
+    and the settings backups in `backups/config`. A settings backup holds the
+    lab settings, signatures, report templates and logos. The backup leaves out
+    files rebuilt on install: `vendor/`, `node_modules/`, caches, logs,
+    temporary files and version-control folders.
 
     The folder is a mirror of this machine, so it holds the newest database
     backups only, about the last 2 days. Files deleted on this machine are
@@ -637,7 +640,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     | --- | --- |
     | One database backup per day | The newest 7 days |
     | One database backup per week, after that | 4 more weeks |
-    | The settings backup | One per week, for the same period |
+    | One settings backup per day, then one per week | The same 7 days and 4 weeks |
 
     That is about 5 weeks in all. A wipe or reinstall of this machine does not
     touch `.history/`. To keep more, change `HISTORY_DAYS` and `HISTORY_WEEKS`

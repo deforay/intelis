@@ -4,13 +4,15 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-28
-reviewed_against: 5.7.81
+reviewed: 2026-10-29
+reviewed_against: 5.8.5
 ---
 # How to restore from a backup
 
 Put the database back from a backup on a machine where InteLIS already runs.
-Uploaded files and attachments can come back too.
+A restore from the off-machine backup also brings back the lab settings,
+signatures, report templates and logos. Uploaded files and attachments can
+come back too.
 
 Restoring replaces everything in the database. Records entered after the backup
 was made are lost.
@@ -189,15 +191,37 @@ was made are lost.
             intelis migrate
             ```
 
+    10. Wait for `Signatures, report templates and logos restored`. The script
+        puts back the lab settings from the newest settings backup, such as the
+        STS address and the enabled modules. It keeps the database password of
+        this machine. It then puts back the signatures, report templates and
+        logos. The settings this machine had are saved in
+        `configs/config.production.php.pre-restore`.
+
+        ??? warning "If it says `This machine keeps its own settings`"
+
+            The settings backup could not be used, so the lab settings did not
+            change. Check the STS address and the enabled modules in
+            **System Configuration**. See
+            [System administration](../user-guides/admin-system-administration.md).
+
+        ??? warning "If it says `holds no signatures, report templates or logos` or `did not bring back`"
+
+            The settings backup was made by an older InteLIS, or is missing.
+            Follow the **Database and uploaded files** tab to copy them back
+            from the backup.
+
     ### Check the lab
 
-    10. Open InteLIS in the browser.
-    11. Log in with an administrator account that existed when the backup was
+    11. Open InteLIS in the browser.
+    12. Log in with an administrator account that existed when the backup was
         made.
-    12. Check the lab settings under **Admin → Settings → General Configuration**.
-    13. Open a request entered shortly before the backup, and check its results
+    13. Check the lab settings under **Admin → Settings → General Configuration**.
+    14. Open a request entered shortly before the backup, and check its results
         are there.
-    14. If the lab uses the interfacing tool, restore its database too. Type
+    15. Open the result PDF of that request, and check its signatures and logo
+        appear.
+    16. If the lab uses the interfacing tool, restore its database too. Type
         this, followed by a space. Do not press Enter yet:
 
         ```bash
@@ -211,7 +235,7 @@ was made are lost.
         Always keep `--profile=interfacing` in this command. Without it, the
         file is restored over the main database.
 
-    15. When the lab works, run the exact cleanup command printed by the script.
+    17. When the lab works, run the exact cleanup command printed by the script.
         It removes only this fetched copy, which holds the database password.
 
 === "Older date"
@@ -328,18 +352,40 @@ was made are lost.
             intelis migrate
             ```
 
+    11. Wait for `Signatures, report templates and logos restored`. The script
+        puts back the lab settings from the newest settings backup, such as the
+        STS address and the enabled modules. It keeps the database password of
+        this machine. It then puts back the signatures, report templates and
+        logos. The settings this machine had are saved in
+        `configs/config.production.php.pre-restore`.
+
+        ??? warning "If it says `This machine keeps its own settings`"
+
+            The settings backup could not be used, so the lab settings did not
+            change. Check the STS address and the enabled modules in
+            **System Configuration**. See
+            [System administration](../user-guides/admin-system-administration.md).
+
+        ??? warning "If it says `holds no signatures, report templates or logos` or `did not bring back`"
+
+            The settings backup was made by an older InteLIS, or is missing.
+            Follow the **Database and uploaded files** tab to copy them back
+            from the backup.
+
     ### Check the lab
 
-    11. Open InteLIS in the browser.
-    12. Log in with an administrator account that existed when the backup was
+    12. Open InteLIS in the browser.
+    13. Log in with an administrator account that existed when the backup was
         made.
-    13. Check the lab settings under **Admin → Settings → General Configuration**.
-    14. Open a request entered shortly before the backup, and check its results
+    14. Check the lab settings under **Admin → Settings → General Configuration**.
+    15. Open a request entered shortly before the backup, and check its results
         are there.
-    15. If the lab uses the interfacing tool, its database stays as it is. To
+    16. Open the result PDF of that request, and check its signatures and logo
+        appear.
+    17. If the lab uses the interfacing tool, its database stays as it is. To
         put it back to the same day too, contact support.
 
-    16. When the lab works, run the exact cleanup command printed by the script.
+    18. When the lab works, run the exact cleanup command printed by the script.
         It removes only this fetched copy, which holds the database password.
 
 === "Database and uploaded files"
@@ -448,22 +494,41 @@ was made are lost.
             intelis migrate
             ```
 
+    10. Wait for `Signatures, report templates and logos restored`. The script
+        puts back the lab settings from the newest settings backup, such as the
+        STS address and the enabled modules. It keeps the database password of
+        this machine. It then puts back the signatures, report templates and
+        logos. The settings this machine had are saved in
+        `configs/config.production.php.pre-restore`.
+
+        ??? warning "If it says `This machine keeps its own settings`"
+
+            The settings backup could not be used, so the lab settings did not
+            change. Check the STS address and the enabled modules in
+            **System Configuration**. See
+            [System administration](../user-guides/admin-system-administration.md).
+
+        ??? warning "If it says `holds no signatures, report templates or logos` or `did not bring back`"
+
+            The settings backup was made by an older InteLIS, or is missing.
+            The steps below copy them back from the backup too.
+
     ### Put the uploaded files back
 
-    10. Save the restore folder from step 6 in the terminal. Replace the example
+    11. Save the restore folder from step 6 in the terminal. Replace the example
         with the path shown by the script:
 
         ```bash
         restore_dir="/var/intelis-restore/centrallab-12345678-20260928-120000.ABCDEF"
         ```
 
-    11. Check what the copy holds:
+    12. Check what the copy holds:
 
         ```bash
         ls "$restore_dir/public/uploads"
         ```
 
-    12. List what would be copied, without changing anything:
+    13. List what would be copied, without changing anything:
 
         ```bash
         sudo rsync -a --dry-run --itemize-changes "$restore_dir/public/uploads/" /var/www/intelis/public/uploads/
@@ -471,7 +536,7 @@ was made are lost.
 
         Each line is a file that is missing or different on this machine.
 
-    13. Copy the files across:
+    14. Copy the files across:
 
         ```bash
         sudo rsync -a "$restore_dir/public/uploads/" /var/www/intelis/public/uploads/
@@ -491,7 +556,7 @@ was made are lost.
         On older installs, type `/var/www/vlsm/var/audit-trail/` as the last
         path.
 
-    14. Repair the file ownership, so the web server can read the restored
+    15. Repair the file ownership, so the web server can read the restored
         files:
 
         ```bash
@@ -500,14 +565,15 @@ was made are lost.
 
     ### Check the lab
 
-    15. Open InteLIS in the browser.
-    16. Log in with an administrator account that existed when the backup was
+    16. Open InteLIS in the browser.
+    17. Log in with an administrator account that existed when the backup was
         made.
-    17. Check the lab settings under **Admin → Settings → General Configuration**.
-    18. Open a request entered shortly before the backup, and check its results
+    18. Check the lab settings under **Admin → Settings → General Configuration**.
+    19. Open a request entered shortly before the backup, and check its results
         are there.
-    19. Open a result PDF or an attachment, and check it displays.
-    20. If the lab uses the interfacing tool, restore its database too. Type
+    20. Open a result PDF, and check its signatures and logo appear.
+    21. Open an attachment, and check it displays.
+    22. If the lab uses the interfacing tool, restore its database too. Type
         this, followed by a space. Do not press Enter yet:
 
         ```bash
@@ -521,5 +587,5 @@ was made are lost.
         Always keep `--profile=interfacing` in this command. Without it, the
         file is restored over the main database.
 
-    21. When the lab works, run the exact cleanup command printed by the script.
+    23. When the lab works, run the exact cleanup command printed by the script.
         It removes only this fetched copy, which holds the database password.

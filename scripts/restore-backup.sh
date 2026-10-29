@@ -807,13 +807,13 @@ for pair in "${SUBPATHS[@]}"; do
       if ! rsync -rtLz --info=progress2 -e "$ssh_cmd" \
           "${SSH_USER}@${SSH_HOST}:${SRC_DIR}${from}/" "${STAGING}/${to}/"; then
         $required && { print error "The copy did not finish."; exit 1; }
-        print warning "No config backups were copied. An encrypted dump may need its key typed in."
+        print warning "No settings backups were copied. An encrypted dump may need its key typed in."
       fi
       ;;
     *)
       if ! rsync -rtL --info=progress2 "${SRC_DIR}${from}/" "${STAGING}/${to}/"; then
         $required && { print error "The copy did not finish."; exit 1; }
-        print warning "No config backups were copied. An encrypted dump may need its key typed in."
+        print warning "No settings backups were copied. An encrypted dump may need its key typed in."
       fi
       ;;
   esac
@@ -962,7 +962,7 @@ if [ -n "$LIS_PATH" ]; then
       elif restore_from_config_backup "$(dirname "$DUMP_DIR")/config" "$LIS_PATH"; then
         (cd "$LIS_PATH" && sudo -u www-data php app/includes/purge-cache.php >/dev/null 2>&1) || true
       else
-        print warning "This backup has no config backup (config-*.tgz). The restore did not bring back the settings, signatures, report templates or logos."
+        print warning "This backup has no settings backup (config-*.tgz). The restore did not bring back the settings, signatures, report templates or logos."
       fi
       print info "Log in and check Admin → System Config."
     else
@@ -1013,7 +1013,7 @@ else
   echo
   if [ -n "$(find "$DUMP_DIR" -maxdepth 1 -name '*.gpg' -print -quit)" ]; then
     print info "These backups are encrypted. Setup opens them with the old database password, read from the"
-    print info "config backups copied alongside. If that fails, ask the STS administrator for a recovery token and add:"
+    print info "settings backups copied alongside. If that fails, ask the STS administrator for a recovery token and add:"
     echo
     echo "      --sts-url https://your-sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS"
     echo
