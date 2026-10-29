@@ -176,7 +176,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 			$patientMname = $general->crypto('decrypt', $patientMname, $globalKey);
 			$patientLname = $general->crypto('decrypt', $patientLname, $globalKey);
 		}
-		$row['patient_id'] = $aRow['patient_id'];
+		$row[] = $aRow['patient_id'];
 		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');
 		$row[] = $aRow['patient_age_in_years'];

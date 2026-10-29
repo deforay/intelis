@@ -44,17 +44,14 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 	$output = [];
 
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = ["No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Patient ID.", "Patient Name", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinician", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
+		$headings = [_translate("No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Health Facility Name"), _translate("Testing Lab"), _translate("Sample Receipt Date"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Patient ID."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Sex"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinician"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Rejection Reason"), _translate("Sample Tested On"), _translate("Result"), _translate("Date Result Dispatched"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
 	} else {
-		$headings = ["No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinician", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
+		$headings = [_translate("No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Health Facility Name"), _translate("Testing Lab"), _translate("Sample Receipt Date"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Date of Birth"), _translate("Age"), _translate("Sex"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinician"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Rejection Reason"), _translate("Sample Tested On"), _translate("Result"), _translate("Date Result Dispatched"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
 	}
 	if ($general->isStandaloneInstance()) {
-		$headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
+		$headings = MiscUtility::removeMatchingElements($headings, [_translate('Remote Sample ID')]);
 	}
-	/* Assign the dynamic labels to the heading */
-	if ($labels !== []) {
-		$headings = array_merge($headings, $labels);
-	}
+	
 
 	$no = 1;
 	$resultSet = $db->rawQuery($_SESSION['genericResultQuery']);
@@ -63,6 +60,11 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		foreach ($testType[$key]['dynamicLabel'] as $id => $le) {
 			$labels[$id] = $le;
 		}
+	}
+
+	/* Assign the dynamic labels to the heading */
+	if ($labels !== []) {
+		$headings = array_merge($headings, $labels);
 	}
 
 	foreach ($resultSet as $key => $aRow) {
@@ -89,6 +91,9 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 			$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		}
 		$treatmentInitiationDate = "";
+		if (!empty($aRow['treatment_initiated_date'])) {
+			$treatmentInitiationDate =  DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date'] ?? '');
+		}
 		//requested date
 		$requestedDate = '';
 		if (!empty($aRow['test_requested_on'])) {
@@ -187,7 +192,9 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		/* To assign the dynamic fields values */
 		if ($labels !== []) {
 			foreach (array_keys($labels) as $id) {
-				$row[] = empty($testType[$key]['dynamicValue'][$id]) ? "" : $testType[$key]['dynamicValue'][$id];
+				//$row[] = empty($testType[$key]['dynamicValue'][$id]) ? "" : $testType[$key]['dynamicValue'][$id];
+				$value = $testType[$key]['dynamicValue'][$id] ?? '';
+				$row[] = is_array($value) ? implode(', ', $value) : $value;
 			}
 		}
 		$output[] = $row;

@@ -191,7 +191,6 @@ final class GenericTestsService extends AbstractTestService
                 $testTypes = $this->db->getOne('r_test_types');
                 $labels = json_decode((string) $testTypes['test_form_config'], true);
 
-                // SUGGESTED CHANGES
                 foreach ($labels as $section => $fields) {
                     if ($section === 'otherSection') {
                         foreach ($fields as $sectionFields) {
