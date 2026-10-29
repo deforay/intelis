@@ -205,7 +205,9 @@ fi
 # already correct without it, so its absence is never fatal and never delays.
 ensure_gum || true
 
-using_gum() { [ "$(ui_renderer 2>/dev/null || echo plain)" = "gum" ]; }
+# Not `ui_renderer 2>/dev/null`: ui_renderer looks at stderr to decide whether
+# gum can draw, so sending stderr away always answered plain.
+using_gum() { [ "$(ui_renderer || echo plain)" = "gum" ]; }
 
 # --- output -------------------------------------------------------------------
 #
@@ -317,16 +319,21 @@ report_findings() {
 
 say() { $QUIET || print "$@"; }
 
-# Repairs that install packages are the slow part of any run, and their output is
-# already sent to the report rather than the screen. Without a spinner that is a
-# silent minute, which reads as a hang to the person waiting.
+# Repairs that install packages are the slow part of any run. Without a spinner
+# that is a silent minute, which reads as a hang to the person waiting.
+#
+# The command's output is discarded here, not by the caller. Every caller used
+# to write `spin ... >/dev/null 2>&1`, which discarded the title and the
+# spinner along with it, so the silent minute was exactly what the operator got.
 spin() { # spin <title> <command...>
   local title="$1"; shift
   if using_gum && [ "$QUIET" = false ]; then
+    # gum shows the title and spinner on stderr and keeps the command's output
+    # to itself. Redirecting gum hides the spinner.
     gum spin --spinner dot --title "$title" -- "$@"
   else
     say info "$title"
-    "$@"
+    "$@" >/dev/null 2>&1
   fi
 }
 
@@ -616,7 +623,7 @@ MPM="$(active_mpm || echo none)"
 DB_UNIT="$(mysql_unit_name)"
 
 report "=== InteLIS doctor: $(date +'%F %T') ==="
-report "install=${INSTALL_PATH:-none} docroot=${DOC_ROOT:-none} php=${TARGET_PHP} mpm=${MPM} webuser=${WEB_USER} mode=${MODE} gum=$(ui_renderer 2>/dev/null || echo plain)"
+report "install=${INSTALL_PATH:-none} docroot=${DOC_ROOT:-none} php=${TARGET_PHP} mpm=${MPM} webuser=${WEB_USER} mode=${MODE} gum=$(ui_renderer || echo plain)"
 report_cmd "host" uname -a
 report_cmd "os" lsb_release -a
 report_cmd "php cli" php -v
@@ -1181,9 +1188,9 @@ fix_start_apache() {
 fix_add_ppa() {
   command -v add-apt-repository >/dev/null 2>&1 ||
     spin "Installing the tool that manages repositories..." \
-      apt-get install -y software-properties-common >/dev/null 2>&1 || true
-  spin "Restoring the PHP repository..." add-apt-repository -y ppa:ondrej/php >/dev/null 2>&1 || return 1
-  spin "Refreshing the package list..." apt-get update -y >/dev/null 2>&1 || return 1
+      apt-get install -y software-properties-common || true
+  spin "Restoring the PHP repository..." add-apt-repository -y ppa:ondrej/php || return 1
+  spin "Refreshing the package list..." apt-get update -y || return 1
   TARGET_PHP="$(default_php_version)"
   return 0
 }
@@ -1194,7 +1201,7 @@ fix_add_ppa() {
 # order appear to succeed and change nothing.
 fix_php_handler() {
   spin "Installing PHP ${TARGET_PHP} for the web server..." \
-    apt-get install -y "libapache2-mod-php${TARGET_PHP}" >/dev/null 2>&1 || true
+    apt-get install -y "libapache2-mod-php${TARGET_PHP}" || true
 
   if [ "$(active_mpm || echo none)" != "mpm_prefork" ]; then
     a2dismod -f mpm_event mpm_worker >/dev/null 2>&1 || true
@@ -1229,7 +1236,7 @@ fix_php_extensions() {
   [ ${#pkgs[@]} -gt 0 ] || return 1
 
   spin "Installing the missing parts of PHP..." \
-    apt-get install -y "${pkgs[@]}" >/dev/null 2>&1 || return 1
+    apt-get install -y "${pkgs[@]}" || return 1
 
   for ext in "${modules[@]}"; do
     ini="/etc/php/${TARGET_PHP}/mods-available/${ext}.ini"

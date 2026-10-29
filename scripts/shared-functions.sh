@@ -2810,14 +2810,22 @@ configure_apache_compression() {
 # variables are belt and braces for the cases where a tty exists but nobody is
 # watching it.
 ui_interactive() {
-    [ -n "${INTELIS_UNATTENDED:-}" ] && return 1
-    [ -n "${CI:-}" ] && return 1
-    [ "${DEBIAN_FRONTEND:-}" = "noninteractive" ] && return 1
+    ui_unattended && return 1
     [ -t 0 ] && [ -t 1 ]
 }
 
+ui_unattended() {
+    [ -n "${INTELIS_UNATTENDED:-}" ] || [ -n "${CI:-}" ] ||
+        [ "${DEBIAN_FRONTEND:-}" = "noninteractive" ]
+}
+
+# Every caller runs this as $(ui_renderer), where stdout is the pipe of the
+# substitution and never the terminal. It used ui_interactive, whose stdout
+# test therefore always failed, so gum was installed on every lab and never
+# drawn a single prompt. gum reads the keyboard on stdin and draws on stderr,
+# so those are the two that must be the terminal.
 ui_renderer() {
-    if [ "${INTELIS_UI:-}" = "plain" ] || ! ui_interactive; then
+    if [ "${INTELIS_UI:-}" = "plain" ] || ui_unattended || ! [ -t 0 ] || ! [ -t 2 ]; then
         printf 'plain'
     elif command -v gum >/dev/null 2>&1; then
         printf 'gum'
@@ -3018,7 +3026,7 @@ ask_choice() {
         done
         chosen=$(gum choose --height "$((count + 2))" \
             --selected "${labels[$((default_index - 1))]} — ${descs[$((default_index - 1))]}" \
-            "${options[@]}" 2>/dev/null) || chosen=""
+            "${options[@]}") || chosen=""
         for ((i = 0; i < count; i++)); do
             if [ "$chosen" = "${labels[$i]} — ${descs[$i]}" ]; then
                 printf -v "$__outvar" '%s' "${keys[$i]}"
@@ -3090,7 +3098,7 @@ ask_multi() {
     if [ "$(ui_renderer)" = "gum" ]; then
         local chosen
         chosen=$(gum choose --no-limit --height "$((count + 2))" \
-            --header "$question" "${items[@]}" 2>/dev/null) || chosen=""
+            --header "$question" "${items[@]}") || chosen=""
         if [ -z "$chosen" ]; then
             printf '%s\n' "${items[@]}"
         else
@@ -3193,7 +3201,7 @@ ask_text() {
     while true; do
         if [ "$(ui_renderer)" = "gum" ]; then
             printf '\n \033[1m%s\033[0m\n' "$question" >&2
-            reply=$(gum input --placeholder "${placeholder:-$default}" --value "" 2>/dev/null) || reply=""
+            reply=$(gum input --placeholder "${placeholder:-$default}" --value "") || reply=""
         else
             printf '\n \033[1m%s\033[0m\n' "$question" >&2
             [ -n "$default" ] && printf '   \033[2mpress enter for: %s\033[0m\n' "$default" >&2
@@ -3235,9 +3243,9 @@ ask_password() {
 
     while true; do
         if [ "$(ui_renderer)" = "gum" ]; then
-            first=$(gum input --password --header "$question" 2>/dev/null) || first=""
+            first=$(gum input --password --header "$question") || first=""
             if [ -n "$confirm_question" ]; then
-                second=$(gum input --password --header "$confirm_question" 2>/dev/null) || second=""
+                second=$(gum input --password --header "$confirm_question") || second=""
             else
                 second="$first"
             fi
