@@ -88,12 +88,15 @@ final class AnalyzerRawText
         // A record too long for one frame goes on in the next: the end of the
         // intermediate frame, its checksum and the next frame's start and number join
         // the two halves, which may break mid-field.
+        // The control byte comes before its <TAG> spelling in each group. PCRE2 10.46
+        // (Ubuntu 26.04) never matches the byte when the tag comes first, so the frames
+        // of a lab on 26.04 stayed split and the assay lot was lost.
         $text = preg_replace(
-            '/(?:<ETB>|\x17)[0-9A-Fa-f]{0,2}(?:<CR>|\r)?(?:<LF>|\n)?(?:(?:<STX>|\x02)[0-7])?/',
+            '/(?:\x17|<ETB>)[0-9A-Fa-f]{0,2}(?:\r|<CR>)?(?:\n|<LF>)?(?:(?:\x02|<STX>)[0-7])?/',
             '',
             $text
         ) ?? '';
-        $text = preg_replace('/(?:<ETX>|\x03)[0-9A-Fa-f]{0,2}/', "\n", $text) ?? '';
+        $text = preg_replace('/(?:\x03|<ETX>)[0-9A-Fa-f]{0,2}/', "\n", $text) ?? '';
         $text = preg_replace('/<(?:CR|LF)>|[\r\n]/', "\n", $text) ?? '';
         $text = preg_replace('/<(?:STX|EOT|ENQ|ACK|NAK)>/', '', $text) ?? '';
         $text = preg_replace('/[\x00-\x09\x0b-\x1f\x7f]/', '', $text) ?? '';

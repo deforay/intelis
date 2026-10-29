@@ -146,7 +146,6 @@ function _sanitizeInput(mixed $input, bool $nullifyEmptyStrings = false): mixed
         $reflection = new ReflectionObject($input);
         $properties = $reflection->getProperties();
         foreach ($properties as $property) {
-            $property->setAccessible(true);
             $value = $property->getValue($input);
             $property->setValue($input, _sanitizeInput($value, $nullifyEmptyStrings));
         }

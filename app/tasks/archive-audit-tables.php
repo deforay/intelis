@@ -7,7 +7,6 @@ declare(ticks=1);
 
 require_once __DIR__ . '/../../bootstrap.php';
 
-use Throwable;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
