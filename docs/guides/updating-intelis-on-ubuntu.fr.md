@@ -82,7 +82,7 @@ appuyer sur Entrée :
     4. Attendre. Garder la fenêtre du terminal ouverte jusqu'à ce que la
        dernière ligne indique `Total time:`.
 
-        [Une mise à jour normale, de `intelis update` à `Total time:`. Les longues attentes sont raccourcies. La machine de test n'a pas de STS, donc sa vérification affiche deux lignes `WARN` sur le STS.](../assets/casts/intelis-update.cast){ .asciicast data-poster="npt:2:50" }
+        [Une mise à jour normale, de `intelis update` à `Total time:`. Les longues attentes sont raccourcies. La machine de test n'a pas de STS, donc sa vérification affiche deux lignes `WARN` sur le STS.](../assets/casts/intelis-update.cast){ .asciicast }
 
         ??? info "S'il demande `Do you want to run maintenance scripts?`"
 

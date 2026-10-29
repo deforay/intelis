@@ -27,10 +27,12 @@ document.addEventListener("DOMContentLoaded", function () {
       fit: "width",
       // Long pauses were already cut to 2 seconds when it was recorded.
       idleTimeLimit: 2,
-      // The still frame shown before playing. A link sets it with
-      // data-poster="npt:M:SS", usually near the end, so the reader sees what a
-      // good result looks like without pressing play.
-      poster: link.dataset.poster || "npt:0:4",
+      // The still frame shown before playing: the last one, so the reader sees
+      // what a good result looks like without pressing play. A time past the
+      // end shows the last frame. The recordings end on the prompt after the
+      // result (see bin/dev/casts/scenarios/common.exp). A link can pick
+      // another moment with data-poster="npt:M:SS".
+      poster: link.dataset.poster || "npt:99:00",
     });
   });
 });

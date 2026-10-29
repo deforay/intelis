@@ -19,12 +19,17 @@ set send_human {.06 .2 1 .03 .3}
 
 # Pauses longer than 2 seconds play as 2 seconds, so a 10-minute update plays
 # in about a minute, while what the operator sees and types stays the same.
-spawn asciinema rec --quiet --overwrite --idle-time-limit 2 --command "bash -i" $out
+# exec: asciinema runs the command through sh -c, and that sh would print
+# "Hangup" when finish ends the recorded shell.
+spawn asciinema rec --quiet --overwrite --idle-time-limit 2 --command "exec bash -i" $out
 
+# Anchored: "$ " at the very end is a prompt waiting for input. An earlier
+# prompt line in the output also contains "$ ", and matching that typed the next
+# command while the last one was still printing.
 proc wait_prompt {} {
     set timeout 30
     expect {
-        -ex {$ } {}
+        -re {\$ $} {}
         timeout { puts stderr "\nno shell prompt"; exit 1 }
     }
 }
@@ -42,11 +47,80 @@ proc answer {text} {
     send "\r"
 }
 
+# Ends the recording on the prompt. Typing exit would leave "exit" as the last
+# thing on screen, which is then the still frame the guide shows. The recorded
+# shell is hung up from outside instead, so the last frame is the result.
 proc finish {} {
     wait_prompt
     sleep 2
-    send "exit\r"
+    exec pkill -HUP -f {^bash -i$}
     set timeout 30
     expect eof
     catch wait
+}
+
+# The output seen so far with colour codes removed, for reading values off the
+# screen and for failure messages.
+proc plain {text} {
+    regsub -all {\x1b\[[0-9;?]*[A-Za-z]} $text {} text
+    return $text
+}
+
+proc fail {why} {
+    global expect_out
+    set seen ""
+    catch { set seen [plain $expect_out(buffer)] }
+    puts stderr "\n$why\n--- last output ---\n[string range $seen end-1500 end]"
+    exit 1
+}
+
+# Picks an option in a gum menu by its label. ask_choice draws each option as
+# "label — description", starting on the default, so `g` first jumps to the
+# top, then the down arrow moves to the option. The order is read off the
+# screen rather than fixed here, so a reordered menu still gets the right
+# answer, and a missing label fails instead of choosing something else.
+proc pick {label} {
+    regsub -all {[][{}()*+?.\\^$|]} $label {\\&} literal
+    set timeout 30
+    expect {
+        -re $literal { set seen [plain $expect_out(buffer)] }
+        timeout { fail "no option \"$label\"" }
+    }
+    # The rest of the menu arrives right after the matched label.
+    set timeout 1
+    expect {
+        -re {.+} { append seen [plain $expect_out(buffer)]; exp_continue }
+        timeout {}
+    }
+
+    # [^—]+ rather than .+?: in Tcl the first quantifier sets the greediness
+    # of the whole expression, and the leading one here is greedy.
+    set options {}
+    foreach line [split [string map {"\r" "\n"} $seen] "\n"] {
+        if {[regexp {^[\s>•│]*([^—]+) — } $line -> option]} {
+            set option [string trim $option]
+            if {[lsearch -exact $options $option] < 0} { lappend options $option }
+        }
+    }
+    set index -1
+    for {set i 0} {$i < [llength $options]} {incr i} {
+        if {[string first $label [lindex $options $i]] == 0} { set index $i; break }
+    }
+    if {$index < 0} { fail "\"$label\" is not in the menu: $options" }
+
+    sleep 1
+    send "g"
+    for {set i 0} {$i < $index} {incr i} {
+        sleep 0.4
+        send "\033\[B"
+    }
+    sleep 0.8
+    send "\r"
+}
+
+# Answers a gum Yes/No question with its key, y or n. gum takes the key as the
+# answer, so no Enter follows: one would land on the next question.
+proc confirm_with {key} {
+    sleep 1.2
+    send $key
 }
