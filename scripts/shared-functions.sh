@@ -1527,7 +1527,8 @@ restore_from_config_backup() { # restore_from_config_backup <config-backup-folde
     fi
     # Listed to a file, not piped into grep -q: under pipefail, tar killed by
     # SIGPIPE when grep stops early would read as "no uploads".
-    tar -tzf "$archive" 2>/dev/null | grep '^uploads/' >"${tmp_dir}/uploads.txt" || true
+    tar -tzf "$archive" 2>/dev/null >"${tmp_dir}/contents.txt" || true
+    grep '^uploads/' "${tmp_dir}/contents.txt" >"${tmp_dir}/uploads.txt" || true
     if [[ -s "${tmp_dir}/uploads.txt" ]]; then
         if tar -xzf "$archive" -C "${lis_path}/public" --wildcards 'uploads/*'; then
             (cd "${lis_path}/public" && xargs -d '\n' chown www-data:www-data <"${tmp_dir}/uploads.txt") 2>/dev/null || true
@@ -1535,6 +1536,10 @@ restore_from_config_backup() { # restore_from_config_backup <config-backup-folde
         else
             print warning "Restoring the signatures, report templates and logos from the settings backup failed."
         fi
+    elif grep -qx './uploads-included.txt' "${tmp_dir}/contents.txt"; then
+        # Every settings backup that can hold them carries this list, so the lab
+        # simply had none when the backup was made.
+        print info "The lab had no signatures, report templates or logos when this backup was made."
     else
         print info "This settings backup holds no signatures, report templates or logos. Older settings backups leave them out."
     fi
