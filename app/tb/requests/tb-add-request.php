@@ -47,11 +47,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 /* Get Active users for approved / reviewed / examined by */
-$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
-$userInfo = [];
-foreach ($userResult as $user) {
-    $userInfo[$user['user_id']] = ($user['user_name']);
-}
+$userInfo = $usersService->getActiveLabScopedUsers();
 /* Health facility list */
 $healthFacilities = $facilitiesService->getHealthFacilities('tb');
 
