@@ -955,6 +955,15 @@ if [ -n "$LIS_PATH" ]; then
         print error "The database is restored, but its migrations did not finish. Run 'intelis migrate' before using InteLIS."
         exit 1
       fi
+      # The settings, signatures, report templates and logos come from the
+      # config backups copied down beside the dumps.
+      if ! declare -F restore_from_config_backup >/dev/null; then
+        print warning "shared-functions.sh is out of date. The restore did not bring back the settings, signatures, report templates or logos."
+      elif restore_from_config_backup "$(dirname "$DUMP_DIR")/config" "$LIS_PATH"; then
+        (cd "$LIS_PATH" && sudo -u www-data php app/includes/purge-cache.php >/dev/null 2>&1) || true
+      else
+        print warning "This backup has no config backup (config-*.tgz). The restore did not bring back the settings, signatures, report templates or logos."
+      fi
       print info "Log in and check Admin → System Config."
     else
       print error "The restore did not finish."

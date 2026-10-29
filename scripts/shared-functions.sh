@@ -1471,6 +1471,77 @@ extract_config_value() {
     " 2>/dev/null
 }
 
+# Put back the settings, signatures, report templates and logos from the newest
+# config backup (config-*.tgz, written by bin/backup-configs.php). The settings
+# come from its config.production.php, and the files from its uploads/ folder.
+# Returns 1 when the folder holds no config backup.
+#
+# The database lines of this machine's config are kept. They hold this
+# machine's credentials, which are not the ones the backed-up machine had. The
+# replaced config is kept beside it as config.production.php.pre-restore.
+#
+# The archived config is never run, only merged as text, as setup.sh does when
+# it reads the old password out of it.
+restore_from_config_backup() { # restore_from_config_backup <config-backup-folder> <lis_path>
+    local config_dir="$1" lis_path="$2"
+    local archive tmp_dir db_password_line
+    local config_file="${lis_path}/configs/config.production.php"
+
+    archive="$(ls -1t "${config_dir}"/config-*.tgz 2>/dev/null | head -1 || true)"
+    [[ -n "$archive" && -f "$archive" ]] || return 1
+    print info "Restoring settings, signatures, report templates and logos from $(basename "$archive")"
+
+    tmp_dir="$(mktemp -d)"
+    if [[ -f "$config_file" ]] &&
+        tar -xzOf "$archive" --wildcards '*config.production.php' >"${tmp_dir}/old.php" 2>/dev/null &&
+        [[ -s "${tmp_dir}/old.php" ]]; then
+        # Every database line of this machine replaces the archived line with the
+        # same key: $systemConfig['database'][...] and
+        # $systemConfig['interfacing']['database'][...].
+        awk '
+            function key(line) { sub(/=.*/, "", line); gsub(/[[:space:]]/, "", line); return line }
+            function is_db(line) {
+                return line ~ /^[[:space:]]*\$systemConfig\[.database.\]\[/ ||
+                       line ~ /^[[:space:]]*\$systemConfig\[.interfacing.\]\[.database.\]\[/
+            }
+            FNR == NR { if (is_db($0)) keep[key($0)] = $0; next }
+            is_db($0) && (key($0) in keep) { print keep[key($0)]; next }
+            { print }
+        ' "$config_file" "${tmp_dir}/old.php" >"${tmp_dir}/merged.php"
+
+        # An archived config written in another layout would keep its own
+        # credentials, and the application could not reach the database.
+        db_password_line="$(grep -m1 "^[[:space:]]*\$systemConfig\['database'\]\['password'\]" "$config_file" || true)"
+        if [[ -n "$db_password_line" ]] && grep -qxF "$db_password_line" "${tmp_dir}/merged.php" &&
+            php -l "${tmp_dir}/merged.php" >/dev/null 2>&1; then
+            cp -p "$config_file" "${config_file}.pre-restore"
+            chmod 600 "${config_file}.pre-restore"
+            # cat, not mv: the config keeps its owner and permissions.
+            cat "${tmp_dir}/merged.php" >"$config_file"
+            print success "Settings restored. The previous config is in ${config_file}.pre-restore"
+        else
+            print warning "The settings in the config backup do not merge cleanly. This machine keeps its own settings."
+        fi
+    else
+        print warning "The config backup holds no config.production.php. This machine keeps its own settings."
+    fi
+    # Listed to a file, not piped into grep -q: under pipefail, tar killed by
+    # SIGPIPE when grep stops early would read as "no uploads".
+    tar -tzf "$archive" 2>/dev/null | grep '^uploads/' >"${tmp_dir}/uploads.txt" || true
+    if [[ -s "${tmp_dir}/uploads.txt" ]]; then
+        if tar -xzf "$archive" -C "${lis_path}/public" --wildcards 'uploads/*'; then
+            (cd "${lis_path}/public" && xargs -d '\n' chown www-data:www-data <"${tmp_dir}/uploads.txt") 2>/dev/null || true
+            print success "Signatures, report templates and logos restored"
+        else
+            print warning "Restoring the signatures, report templates and logos from the config backup failed."
+        fi
+    else
+        print info "This config backup holds no signatures, report templates or logos. Config backups made before this change leave them out."
+    fi
+    rm -rf "$tmp_dir"
+    return 0
+}
+
 # Repair a database password that was HTML-escaped on its way into the config.
 #
 # The app's input sanitizer is an HTML purifier, and until this was fixed it ran

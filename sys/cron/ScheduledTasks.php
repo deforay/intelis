@@ -99,10 +99,10 @@ $schedule->run(PHP_BINARY . " " . VENDOR_BIN . "/db-tools maintain --all --optim
     ->description('DB Tools: monthly optimize + analyze + binlog purge');
 
 
-// Weekly config backup    
+// Daily config backup: settings, signatures, report templates and logos
 $schedule->run(PHP_BINARY . ' ' . BIN_PATH . '/backup-configs.php')
-    ->weeklyOn(0, '03:00') // Sundays 3:00 AM
-    ->description('Weekly config backup')
+    ->dailyAt('03:30')
+    ->description('Daily config backup')
     ->preventOverlapping()
     ->timezone($timezone);
 
@@ -219,7 +219,11 @@ if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['eid']) && SYSTE
         ->preventOverlapping()
         ->description('Syncing EID data from local database to Dashboard');
 }
-if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
+if (
+    !empty($smartConnectURL)
+    && !empty(SYSTEM_CONFIG['modules']['covid19'])
+    && SYSTEM_CONFIG['modules']['covid19'] === true
+) {
     $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/sync.php covid19")
         ->cron('*/35 * * * *')
         ->timezone($timezone)

@@ -819,7 +819,12 @@ collect_user_inputs() {
             exit 1
         fi
         _bkdir="$(cd "$_bkdir" && pwd)"
-        [[ -d "${_bkdir}/db" ]] && _bkdir="${_bkdir}/db"
+        # Also the lab's folder at the backup destination, which holds backups/.
+        if [[ -d "${_bkdir}/db" ]]; then
+            _bkdir="${_bkdir}/db"
+        elif [[ -d "${_bkdir}/backups/db" ]]; then
+            _bkdir="${_bkdir}/backups/db"
+        fi
         local _newest
         # Include encrypted (.gpg) backups — db-tools encrypts by default — so a
         # routine encrypted backup is picked up like any other.
@@ -1546,13 +1551,32 @@ setup_intelis_cron "${lis_path}"
 config_file="${lis_path}/configs/config.production.php"
 source_file="${lis_path}/configs/config.production.dist.php"
 
+config_is_new=false
 if [ ! -e "${config_file}" ]; then
+    config_is_new=true
     print info  "Renaming config.production.dist.php to config.production.php..."
     log_action "Renaming config.production.dist.php to config.production.php..."
     mv "${source_file}" "${config_file}"
 else
     echo "File config.production.php already exists. Skipping renaming."
     log_action "File config.production.php already exists. Skipping renaming."
+fi
+
+# Restoring a backup: put back the settings, signatures, report templates and
+# logos from the config backups beside the dumps. The database lines are
+# rewritten for this machine just below either way. A re-run with --db latest
+# repairs a working install from its own newest dump. That run keeps the
+# current settings, which can be newer than last night's config backup.
+if ! $resume_setup && [[ -n "$intelis_sql_file" && -f "$intelis_sql_file" ]] &&
+    { $config_is_new || [[ "$(dirname "$intelis_sql_file")" != "${lis_path}/backups/db" ]]; }; then
+    restore_config_dir="$(dirname "$(dirname "$intelis_sql_file")")/config"
+    if ! declare -F restore_from_config_backup >/dev/null; then
+        print warning "shared-functions.sh is out of date. Setup did not restore the settings, signatures, report templates or logos."
+    elif restore_from_config_backup "$restore_config_dir" "${lis_path}"; then
+        log_action "Restored settings, signatures, report templates and logos from ${restore_config_dir}"
+    elif $intelis_pick_backup; then
+        print warning "${restore_config_dir} holds no config backup (config-*.tgz). Setup did not restore the settings, signatures, report templates or logos."
+    fi
 fi
 
 # MySQL root password was collected upfront. If it was prompted (not read
