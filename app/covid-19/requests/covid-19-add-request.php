@@ -59,11 +59,7 @@ $fundingSourceList = $general->getFundingSources();
 //Implementing partner list
 $implementingPartnerList = $general->getImplementationPartners();
 
-$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
-$labTechniciansResults = [];
-foreach ($userResult as $user) {
-    $labTechniciansResults[$user['user_id']] = ($user['user_name']);
-}
+$labTechniciansResults = $usersService->getActiveLabScopedUsers();
 $healthFacilities = $facilitiesService->getHealthFacilities('covid19');
 $testingLabs = $facilitiesService->getTestingLabs('covid19');
 
