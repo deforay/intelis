@@ -80,6 +80,10 @@ $uploadDirs = array_merge(
     )
 );
 $uploadDirs = array_values(array_filter($uploadDirs, fn($dir): bool => is_dir(WEB_ROOT . '/' . $dir)));
+// Written into every backup, even when no folder exists. A restore that finds
+// no uploads/ in the archive then knows whether the lab had none or the backup
+// predates them, and says which.
+file_put_contents("$tmp/uploads-included.txt", implode("\n", $uploadDirs) . "\n");
 $uploadsInput = $uploadDirs === [] ? '' : sprintf(
     ' -C %s %s',
     escapeshellarg(WEB_ROOT),
