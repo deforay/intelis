@@ -218,7 +218,7 @@ machine.
 
         | Ligne | Doit afficher |
         | --- | --- |
-        | Last good backup | Une heure datant de moins de 8 heures. |
+        | Last good backup | Une date et une heure de moins de 8 heures. |
         | Last attempt | `succeeded`. |
         | Schedule | `every 8 hours and after every restart`. |
 
@@ -230,7 +230,7 @@ machine.
 
         ??? failure "Si `Schedule` affiche `OFF`"
 
-            Relancer les sauvegardes planifiées :
+            Réactiver les sauvegardes planifiées :
 
             ```bash
             intelis backup enable
@@ -306,7 +306,7 @@ machine.
     | Vérifier la connexion sans copier | `intelis backup test` |
     | Suivre une sauvegarde en cours | `tail -f /var/log/intelis-backup.log` |
     | Arrêter les sauvegardes planifiées | `intelis backup disable` |
-    | Les relancer | `intelis backup enable` |
+    | Les réactiver | `intelis backup enable` |
     | Changer la destination des sauvegardes | Lancer `intelis backup setup`, puis choisir **Change where backups go** (changer la destination). Les réponses enregistrées sont proposées. Appuyer sur Entrée pour en garder une. |
 
     Pour récupérer les données, voir [Restaurer depuis une sauvegarde](restoring-from-backup.md).
@@ -453,7 +453,7 @@ machine.
 
         | Ligne | Doit afficher |
         | --- | --- |
-        | Last good backup | Une heure datant de moins de 8 heures. |
+        | Last good backup | Une date et une heure de moins de 8 heures. |
         | Last attempt | `succeeded`. |
         | Schedule | `every 8 hours and after every restart`. |
 
@@ -466,7 +466,7 @@ machine.
 
         ??? failure "Si `Schedule` affiche `OFF`"
 
-            Relancer les sauvegardes planifiées :
+            Réactiver les sauvegardes planifiées :
 
             ```bash
             intelis backup enable
@@ -542,7 +542,7 @@ machine.
     | Vérifier la connexion sans copier | `intelis backup test` |
     | Suivre une sauvegarde en cours | `tail -f /var/log/intelis-backup.log` |
     | Arrêter les sauvegardes planifiées | `intelis backup disable` |
-    | Les relancer | `intelis backup enable` |
+    | Les réactiver | `intelis backup enable` |
     | Changer la destination des sauvegardes | Lancer `intelis backup setup`, puis choisir **Change where backups go**. Les réponses enregistrées sont proposées. Appuyer sur Entrée pour en garder une. |
 
     Pour récupérer les données, voir [Restaurer depuis une sauvegarde](restoring-from-backup.md).
@@ -635,7 +635,7 @@ machine.
 
         | Ligne | Doit afficher |
         | --- | --- |
-        | Last good backup | Une heure datant de moins de 8 heures. |
+        | Last good backup | Une date et une heure de moins de 8 heures. |
         | Last attempt | `succeeded`. |
         | Schedule | `every 8 hours and after every restart`. |
 
@@ -660,7 +660,7 @@ machine.
 
         ??? failure "Si `Schedule` affiche `OFF`"
 
-            Relancer les sauvegardes planifiées :
+            Réactiver les sauvegardes planifiées :
 
             ```bash
             intelis backup enable
@@ -736,7 +736,7 @@ machine.
     | Vérifier le disque sans copier | `intelis backup test` |
     | Suivre une sauvegarde en cours | `tail -f /var/log/intelis-backup.log` |
     | Arrêter les sauvegardes planifiées | `intelis backup disable` |
-    | Les relancer | `intelis backup enable` |
+    | Les réactiver | `intelis backup enable` |
     | Changer la destination des sauvegardes | Lancer `intelis backup setup`, puis choisir **Change where backups go**. Les réponses enregistrées sont proposées. Appuyer sur Entrée pour en garder une. |
 
     Pour récupérer les données, voir [Restaurer depuis une sauvegarde](restoring-from-backup.md).

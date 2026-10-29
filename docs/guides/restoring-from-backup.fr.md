@@ -227,7 +227,7 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             La sauvegarde des paramètres n'a pas pu être utilisée. Les
             paramètres du laboratoire n'ont donc pas changé. Vérifier l'adresse
             du STS et les modules activés dans **Configuration du système**.
-            Voir [Administration du système](../user-guides/admin-system-administration.md).
+            Voir [Utiliser l'espace System Admin](../user-guides/admin-system-administration.md).
 
         ??? warning "S'il indique `holds no signatures, report templates or logos` ou `did not bring back`"
 
@@ -408,7 +408,7 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             La sauvegarde des paramètres n'a pas pu être utilisée. Les
             paramètres du laboratoire n'ont donc pas changé. Vérifier l'adresse
             du STS et les modules activés dans **Configuration du système**.
-            Voir [Administration du système](../user-guides/admin-system-administration.md).
+            Voir [Utiliser l'espace System Admin](../user-guides/admin-system-administration.md).
 
         ??? warning "S'il indique `holds no signatures, report templates or logos` ou `did not bring back`"
 
@@ -566,7 +566,7 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             La sauvegarde des paramètres n'a pas pu être utilisée. Les
             paramètres du laboratoire n'ont donc pas changé. Vérifier l'adresse
             du STS et les modules activés dans **Configuration du système**.
-            Voir [Administration du système](../user-guides/admin-system-administration.md).
+            Voir [Utiliser l'espace System Admin](../user-guides/admin-system-administration.md).
 
         ??? warning "S'il indique `holds no signatures, report templates or logos` ou `did not bring back`"
 

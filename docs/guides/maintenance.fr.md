@@ -28,12 +28,12 @@ des droits d'administrateur demande le mot de passe.
 | `intelis` | Affiche un menu numéroté des commandes les plus courantes. Hors d'un terminal, affiche l'aide à la place. | Chaque fois que la commande exacte n'est pas connue. |
 | `intelis help` | Affiche la liste des commandes. | Pour retrouver une commande. |
 | `intelis update` | Télécharge le programme de mise à jour actuel et met à jour InteLIS vers la version actuelle. Les options sont transmises au programme de mise à jour, par exemple `-s` pour ignorer les mises à jour du système Ubuntu. | Pour installer une nouvelle version. Voir [Mettre à jour InteLIS sur Ubuntu](updating-intelis-on-ubuntu.md). |
-| `intelis backup` | Enregistre une nouvelle copie de la base de données et des paramètres sur cette machine, puis l'envoie vers la destination hors de la machine. Propose de configurer une destination s'il n'en existe aucune. | Avant une mise à jour, un déménagement ou toute modification risquée. |
+| `intelis backup` | Enregistre une nouvelle copie de la base de données et des paramètres sur cette machine, puis l'envoie vers la destination hors de la machine. Propose de configurer une destination s'il n'en existe aucune. | Avant une mise à jour, un changement de machine ou toute modification risquée. |
 | `intelis backup status` | Indique quand la dernière sauvegarde hors de la machine s'est exécutée et si elle a réussi. | Pour confirmer que les sauvegardes fonctionnent. |
 | `intelis backup test` | Vérifie la destination des sauvegardes. Ne modifie rien. | Après un changement de destination, ou quand `backup status` signale un échec. |
 | `intelis backup setup` | Choisit ou change la destination des sauvegardes : une autre machine Linux, un dossier partagé Windows ou une clé USB. | Une fois par machine, ou quand la destination change. |
 | `intelis backup disable` | Arrête les sauvegardes planifiées hors de la machine. | Avant de mettre la destination hors ligne. |
-| `intelis backup enable` | Relance les sauvegardes planifiées hors de la machine. | Après `backup disable`. |
+| `intelis backup enable` | Réactive les sauvegardes planifiées hors de la machine. | Après `backup disable`. |
 | `intelis restore` | Se connecte à la destination des sauvegardes, liste les laboratoires qui y sont stockés et recopie la sauvegarde choisie. Sur une installation qui fonctionne, restaure la base de données en place. `--list` liste seulement les laboratoires. | Pour se remettre d'une machine en panne ou de données perdues. Voir [Restaurer depuis une sauvegarde](restoring-from-backup.md). |
 | `intelis check` | Vérifie PHP, les paramètres PHP du serveur web, `vendor/`, le fichier de configuration, les chemins accessibles en écriture et la base de données. Affiche la commande qui corrige chaque échec. `--quiet` n'affiche que les avertissements et les échecs. S'exécute aussi sous le nom `intelis preflight`. | Quand InteLIS ne démarre pas, et après toute modification du serveur. |
 | `intelis health` | Vérifie l'utilisation du disque, le temps de réponse de MySQL, les chemins accessibles en écriture et les sauvegardes hors de la machine. | Pour savoir si un serveur en marche va bien en ce moment. |
@@ -66,8 +66,8 @@ les lance avec `sudo`, ils copient aussi le rapport dans le dossier personnel de
 cet utilisateur, sous le nom `site-report.txt` ou `mysql-report.txt`. Les mots de
 passe sont retirés de la copie.
 
-Sur une machine sans la commande `intelis`, lancer le doctor directement depuis
-GitHub :
+Sur une machine sans la commande `intelis`, lancer l'outil de diagnostic (`intelis-doctor.sh`)
+directement depuis GitHub :
 
 ```bash
 sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/deforay/intelis/master/scripts/intelis-doctor.sh)"
@@ -289,18 +289,18 @@ précédente est encore en cours.
 | Purge des journaux binaires | `db-tools purge-binlogs --days=7` | Chaque jour à 04:05 | Toujours |
 | Maintenance hebdomadaire de la base de données | `db-tools maintain --all --days=7` | Le dimanche à 03:00 | Toujours |
 | Optimisation mensuelle de la base de données | `db-tools maintain --all --optimize --days=7` | Le 1er du mois à 04:00 | Toujours |
-| Sauvegarde de la configuration (paramètres, signatures, modèles de rapport, logos) | `bin/backup-configs.php` | Chaque jour à 03:30 | Toujours |
+| Sauvegarde des paramètres (paramètres, signatures, modèles de rapport, logos) | `bin/backup-configs.php` | Chaque jour à 03:30 | Toujours |
 | Nettoyage automatique | `bin/housekeeping.php 30` | Chaque jour à 00:45 | Toujours |
 | Contrôles de santé | `bin/health.php` | Toutes les heures, à l'heure pile | Toujours |
 | Mise à jour du statut des échantillons | `bin/update-sample-status.php` | Chaque jour à 00:05 | Toujours |
 | Signalement des problèmes de données | `bin/flag-data-issues.php` | Chaque jour à 00:25 | Toujours |
-| Interprétation des résultats CV | `bin/update-vl-suppression.php` | Chaque minute | Toujours |
+| Interprétation des résultats VL | `bin/update-vl-suppression.php` | Chaque minute | Toujours |
 | Élagage des commandes à distance | `bin/prune-remote-commands.php` | Chaque jour à 03:15 | Toujours |
 | Synchronisation SQLite vers MySQL de l'interface | `bin/sync-interface-sqlite-mysql.php` | Toutes les 5 minutes | Interfaçage activé |
 | Import de l'interface | `bin/interface.php` | Chaque minute | Interfaçage activé |
 | Synchronisation STS | `composer run sync-sts` | Toutes les 5 minutes | LIS uniquement, avec une URL STS définie |
 | Métadonnées SmartConnect | `bin/smart-connect/sync.php metadata` | Toutes les 20 minutes | URL SmartConnect définie |
-| SmartConnect CV | `bin/smart-connect/sync.php vl` | Aux minutes 0, 25 et 50 | URL SmartConnect définie, module CV activé |
+| SmartConnect VL | `bin/smart-connect/sync.php vl` | Aux minutes 0, 25 et 50 | URL SmartConnect définie, module VL (charge virale) activé |
 | SmartConnect EID | `bin/smart-connect/sync.php eid` | Toutes les 30 minutes | URL SmartConnect définie, module EID activé |
 | SmartConnect COVID-19 | `bin/smart-connect/sync.php covid19` | Aux minutes 0 et 35 | URL SmartConnect définie, module COVID-19 activé |
 | Références entre laboratoires | `bin/referrals.php` | Chaque minute | STS uniquement |

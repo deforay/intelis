@@ -138,31 +138,36 @@ PHP 8.4.
 
     ### Configurer dans le navigateur
 
+
+    L'assistant de configuration s'affiche en anglais, car la langue n'est
+    pas encore choisie. Les libellés ci-dessous sont ceux de l'écran.
+
     9. Depuis un ordinateur du réseau, ouvrir `http://` suivi de l'adresse IP
        du serveur, par exemple `http://192.168.1.20/`. Sur le serveur
        lui-même, ouvrir <http://localhost/>. Si `APACHE_PORT` n'est pas 80,
        l'ajouter après l'adresse, par exemple `http://192.168.1.20:8080/`. La
-       page **Configuration de la base de données** s'ouvre.
+       page **Database Setup** (configuration de la base de données) s'ouvre.
     10. Les informations de la base de données sont déjà renseignées.
-        Sélectionner **Suivante**.
-    11. Sur **Configuration de l'instance**, renseigner :
+        Sélectionner **Next** (suivant).
+    11. Sur **Instance Setup** (configuration de l'instance), renseigner :
 
         | Champ | Réponse |
         | --- | --- |
-        | Type d'instance | **LIS avec commande à distance activée**. Si le laboratoire n'a pas de STS, choisir **Autonome (pas de commande à distance)**. |
-        | URL STS | L'adresse du STS, par exemple `https://sts.example.org`. La demander au programme national. |
-        | Laboratoire d'analyse | Le laboratoire que dessert ce serveur. Sélectionner le bouton d'actualisation à côté de l'URL STS pour charger la liste depuis le STS. |
-        | Modules à activer | Les tests que réalise ce laboratoire. |
-        | Pays d'installation | Le formulaire de demande du pays. |
-        | Fuseau horaire | Le fuseau horaire du laboratoire. |
-        | Langue du système | La langue des écrans. |
+        | Instance type | **LIS with Remote Ordering Enabled** (LIS avec commande à distance). Si le laboratoire n'a pas de STS, choisir **Standalone (no Remote Ordering)** (autonome, sans commande à distance). |
+        | STS URL | L'adresse du STS, par exemple `https://sts.example.org`. La demander au programme national. |
+        | Testing lab | Le laboratoire que dessert ce serveur. Sélectionner le bouton d'actualisation à côté de l'URL STS pour charger la liste depuis le STS. |
+        | Modules to enable | Les tests que réalise ce laboratoire. |
+        | Country of installation | Le formulaire de demande du pays. |
+        | Timezone | Le fuseau horaire du laboratoire. |
+        | System language | La langue des écrans. |
 
-    12. Sélectionner **Suivante**.
-    13. Sur **Configuration de l'administrateur**, saisir l'email ID, le nom
-        complet, l'identifiant de connexion et le mot de passe du premier
-        administrateur. Le mot de passe compte au moins 8 caractères, dont
-        au moins une lettre et un chiffre.
-    14. Sélectionner **Terminer**. La page de connexion s'ouvre.
+    12. Sélectionner **Next**.
+    13. Sur **Admin Setup** (configuration de l'administrateur),
+        saisir l'adresse e-mail (**Email ID**), le nom complet, l'identifiant de
+        connexion et le mot de passe du premier administrateur. Le mot de
+        passe doit compter au moins 8 caractères, dont au moins une lettre et
+        un chiffre.
+    14. Sélectionner **Finish** (terminer). La page de connexion s'ouvre.
 
     ### Configurer les sauvegardes
 
@@ -342,12 +347,11 @@ PHP 8.4.
 
     7. Ouvrir <http://localhost/>, ou `http://localhost:<APACHE_PORT>/` si
        `APACHE_PORT` n'est pas 80.
-    8. Terminer la configuration dans le navigateur. Sur **Configuration de
-       la base de données**, sélectionner **Suivante**. Sur **Configuration
-       de l'instance**, choisir **Autonome (pas de commande à distance)**,
-       sauf si un STS est disponible. Sur **Configuration de
-       l'administrateur**, créer l'administrateur, puis sélectionner
-       **Terminer**.
+    8. Terminer la configuration dans le navigateur. Sur **Database Setup**,
+       sélectionner **Next**. Sur **Instance Setup**, choisir
+       **Standalone (no Remote Ordering)**, sauf si un STS est disponible.
+       Sur **Admin Setup**, créer l'administrateur, puis sélectionner
+       **Finish**.
 
     ### Travailler sur le code
 
