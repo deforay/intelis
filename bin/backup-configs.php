@@ -1,8 +1,9 @@
 #!/usr/bin/env php
 <?php
 
-// Recursively tar+gzip CONFIG_PATH plus runtime info into BACKUP_PATH/config.
-// Keeps last BACKUP_KEEP archives (default 7).
+// Recursively tar+gzip CONFIG_PATH, runtime info and the uploaded files that
+// shape a result report (signatures, report templates, logos) into
+// BACKUP_PATH/config. Keeps the newest CONFIG_BACKUP_KEEP archives (default 7).
 
 use App\Utilities\MiscUtility;
 
@@ -58,14 +59,42 @@ $excludes = [
     '--exclude=*.pem',
 ];
 
-// Build one archive with two inputs: CONFIG_PATH (.) and $tmp (.)
+// Uploads that cannot be rebuilt and that every result report needs. They go in
+// under uploads/ so they unpack straight back into public/. Only folders that
+// exist are listed, because tar fails on a missing one.
+$uploadDirs = array_merge(
+    [
+        'uploads/users-signature',
+        'uploads/facility-logo',
+        'uploads/logo',
+        'uploads/login-logos',
+        'uploads/stamps',
+        'uploads/labs/report-template',
+    ],
+    array_map(
+        fn($dir): string => substr($dir, strlen(WEB_ROOT) + 1),
+        array_merge(
+            glob(UPLOAD_PATH . '/labs/*/signatures', GLOB_ONLYDIR) ?: [],
+            glob(UPLOAD_PATH . '/labs/*/report-template', GLOB_ONLYDIR) ?: []
+        )
+    )
+);
+$uploadDirs = array_values(array_filter($uploadDirs, fn($dir): bool => is_dir(WEB_ROOT . '/' . $dir)));
+$uploadsInput = $uploadDirs === [] ? '' : sprintf(
+    ' -C %s %s',
+    escapeshellarg(WEB_ROOT),
+    implode(' ', array_map('escapeshellarg', $uploadDirs))
+);
+
+// Build one archive from CONFIG_PATH (.), $tmp (.) and the upload folders.
 // The archive holds the database password, so only its owner may read it.
 $cmd = sprintf(
-    'umask 077 && tar -czf %s %s -C %s . -C %s .',
+    'umask 077 && tar -czf %s %s -C %s . -C %s .%s',
     escapeshellarg($partial),
     implode(' ', $excludes),
     escapeshellarg($CONFIG_PATH),
-    escapeshellarg($tmp)
+    escapeshellarg($tmp),
+    $uploadsInput
 );
 
 // Run tar and capture status

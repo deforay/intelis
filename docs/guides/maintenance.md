@@ -277,7 +277,7 @@ does not start while its previous run is still going.
 | Binary log purge | `db-tools purge-binlogs --days=7` | Daily 04:05 | Always |
 | Weekly database maintenance | `db-tools maintain --all --days=7` | Sundays 03:00 | Always |
 | Monthly database optimization | `db-tools maintain --all --optimize --days=7` | 1st of the month 04:00 | Always |
-| Config backup | `bin/backup-configs.php` | Sundays 03:00 | Always |
+| Config backup (settings, signatures, report templates, logos) | `bin/backup-configs.php` | Daily 03:30 | Always |
 | Housekeeping | `bin/housekeeping.php 30` | Daily 00:45 | Always |
 | Health checks | `bin/health.php` | Hourly, on the hour | Always |
 | Update sample status | `bin/update-sample-status.php` | Daily 00:05 | Always |
