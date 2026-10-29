@@ -48,11 +48,7 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
-$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
-$userInfo = [];
-foreach ($userResult as $user) {
-	$userInfo[$user['user_id']] = ($user['user_name']);
-}
+$userInfo = $usersService->getActiveLabScopedUsers();
 /* To get testing platform names */
 $testPlatformResult = $general->getTestingPlatforms('generic-tests');
 foreach ($testPlatformResult as $row) {
@@ -234,6 +230,18 @@ if ($multiTestResults) {
 	$genericMethodGroups = $genericMultiTestConfig['methodGroups'];
 	$genericDefaultGroup = $genericMultiTestConfig['defaultGroup'];
 	$genericResultUnitOptions = $genericMultiTestConfig['unitOptions'];
+}
+
+// A saved signer may now be outside the lab scope; keep them selectable so the
+// dropdown does not render blank and a re-save does not clear the value. The
+// multi-test cards keep their own signers on each generic_test_results row.
+foreach (array_merge([$genericResultInfo], $genericTestInfo) as $signerRow) {
+	foreach (['tested_by', 'result_reviewed_by', 'result_approved_by'] as $field) {
+		$savedUserId = (string) ($signerRow[$field] ?? '');
+		if ($savedUserId !== '' && !isset($userInfo[$savedUserId])) {
+			$userInfo[$savedUserId] = $usersService->getUserName($savedUserId) ?? $savedUserId;
+		}
+	}
 }
 
 //Funding source list

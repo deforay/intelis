@@ -475,10 +475,7 @@ if (!empty($_POST['multiTest']) && $general->treatAsLIS()) {
     $usersService = ContainerRegistry::get(UsersService::class);
 
     $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
-    $userInfo = [];
-    foreach ($usersService->getActiveUsers($_SESSION['facilityMap'] ?? '') as $gtUser) {
-        $userInfo[$gtUser['user_id']] = $gtUser['user_name'];
-    }
+    $userInfo = $usersService->getActiveLabScopedUsers();
     $rejectionResult = $db->rawQuery("SELECT * FROM r_generic_sample_rejection_reasons WHERE rejection_reason_status = 'active'");
     $rejectionTypeResult = $db->rawQuery("SELECT DISTINCT rejection_type FROM r_generic_sample_rejection_reasons WHERE rejection_reason_status = 'active'");
 
