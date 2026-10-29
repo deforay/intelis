@@ -53,7 +53,7 @@ if (!empty($columnSearch)) {
      $sWhere[] = $columnSearch;
 }
 
-// The HAVING below compares monthly_target against per-facility-per-month
+// The HAVING below compares monthly_target against per-lab, per-facility, per-month
 // totals, so the SELECT must aggregate them with SUM and GROUP BY.
 $sQuery = "SELECT
           DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange,
@@ -105,7 +105,7 @@ if ($labScope = $general->labScopeWhere('vl')) {
 }
 $sWhere[] = " hf.test_type = 'tb'";
 $sQuery = $sQuery . ' WHERE ' . implode(' AND ', $sWhere);
-$sQuery .= ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
+$sQuery .= ' GROUP BY vl.lab_id, f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 // Filter on the Target Type in SQL, as the other modules' threshold reports do.
 
 if (($_POST['targetType'] ?? '') == 1) {
