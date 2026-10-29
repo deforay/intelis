@@ -48,11 +48,7 @@ $healthFacilities = $facilitiesService->getHealthFacilities('eid');
 $healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('eid', false, true);
 
 $testingLabs = $facilitiesService->getTestingLabs('eid');
-$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
-$userInfo = [];
-foreach ($userResult as $user) {
-    $userInfo[$user['user_id']] = ($user['user_name']);
-}
+$userInfo = $usersService->getActiveLabScopedUsers();
 
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_eid_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
