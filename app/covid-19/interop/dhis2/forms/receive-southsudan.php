@@ -3,7 +3,6 @@
 // this file is included in /covid-19/interop/dhis2/covid-19-receive.php
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-use Throwable;
 use App\Interop\Dhis2;
 use JsonMachine\Items;
 use App\Utilities\DateUtility;

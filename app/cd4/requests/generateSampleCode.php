@@ -1,7 +1,6 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface;
-use Throwable;
 use App\Services\CD4Service;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;

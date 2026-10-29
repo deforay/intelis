@@ -12,6 +12,12 @@ on:
 # No token scopes by default; each job grants itself only what it needs.
 permissions: {}
 
+# Every job names its Ubuntu release instead of ubuntu-latest. When ubuntu-latest
+# moved to 26.04, its newer PCRE2 broke an analyzer test overnight with no change
+# to the code. Jobs run on 26.04 with PHP 8.5, which every installation is moving
+# to. The PHP 8.4 leg of the PHPUnit job keeps Ubuntu 24.04 labs covered until
+# they move.
+
 # A new push to a pull request makes its older run worthless, so that one is
 # cancelled. Every master run keeps its own group: Publish advances stable from
 # master runs that succeed, and a cancelled one publishes nothing.
@@ -22,7 +28,7 @@ concurrency:
 jobs:
   check:
     name: Check for conflict markers
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
@@ -47,7 +53,7 @@ jobs:
 
   di-container:
     name: DI container compiles
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
@@ -57,7 +63,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
-          php-version: '8.4'
+          php-version: '8.5'
           extensions: json, mbstring
           tools: composer:v2
           coverage: none
@@ -85,10 +91,21 @@ jobs:
         run: composer check-invariants
 
   interface-api-tests:
-    name: Interface API tests
-    runs-on: ubuntu-latest
+    # The ruleset requires "Interface API tests" by name, so the 26.04 leg keeps it.
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Interface API tests
+            os: ubuntu-26.04
+            php: '8.5'
+          - name: Interface API tests (Ubuntu 24.04, PHP 8.4)
+            os: ubuntu-24.04
+            php: '8.4'
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -96,7 +113,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
-          php-version: '8.4'
+          php-version: ${{ matrix.php }}
           extensions: json, mbstring
           tools: composer:v2
           coverage: none
@@ -119,7 +136,7 @@ jobs:
 
   php-syntax:
     name: Every PHP file parses
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
@@ -129,7 +146,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
-          php-version: '8.4'
+          php-version: '8.5'
           coverage: none
 
       # A parse error that reaches an installation is a white screen for every
@@ -155,7 +172,7 @@ jobs:
   # always had.
   integration:
     name: Fresh install + integration (${{ matrix.shard }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     strategy:
@@ -213,7 +230,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
-          php-version: '8.4'
+          php-version: '8.5'
           extensions: gd, zip, pdo, pdo_mysql, mysqli, json, curl, gettext, openssl, fileinfo, sodium, zlib, intl, bcmath
           tools: composer:v2
           coverage: none
@@ -348,7 +365,7 @@ jobs:
   # shard did.
   fresh-install:
     name: Fresh install migrates
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: integration
     if: always()
     permissions: {}

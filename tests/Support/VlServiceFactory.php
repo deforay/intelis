@@ -86,13 +86,11 @@ final class VlServiceFactory
         $commonService = $commonRef->newInstanceWithoutConstructor();
 
         $fileCacheProp = $commonRef->getProperty('fileCache');
-        $fileCacheProp->setAccessible(true);
         $fileCacheProp->setValue($commonService, $configCache);
 
         // getGlobalConfig() reads $this->db into a local before handing the cache a
         // callback it never runs here, so the property has to exist. It is never used.
         $dbProp = $commonRef->getProperty('db');
-        $dbProp->setAccessible(true);
         $stubDb = (new ReflectionClass(DatabaseService::class))->newInstanceWithoutConstructor();
         $dbProp->setValue($commonService, $stubDb);
 
