@@ -25,7 +25,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
-$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
+$userInfo = $usersService->getActiveLabScopedUsers();
 
 $sQuery = "SELECT * FROM r_cd4_sample_types";
 $sResult = $db->rawQuery($sQuery);
@@ -288,9 +288,9 @@ foreach ($rejectionTypeResult as $type) {
 												title="<?php echo _translate('Please select approver'); ?>"
 												disabled="disabled">
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
-												<?php foreach ($userResult as $uName) { ?>
-													<option value="<?php echo $uName['user_id']; ?>">
-														<?php echo ($uName['user_name']); ?>
+												<?php foreach ($userInfo as $userId => $userName) { ?>
+													<option value="<?= htmlspecialchars((string) $userId); ?>">
+														<?= htmlspecialchars((string) $userName); ?>
 													</option>
 												<?php } ?>
 											</select>
@@ -307,9 +307,9 @@ foreach ($rejectionTypeResult as $type) {
 												title="<?php echo _translate('Please select tester'); ?>"
 												disabled="disabled">
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
-												<?php foreach ($userResult as $uName) { ?>
-													<option value="<?php echo $uName['user_id']; ?>">
-														<?php echo ($uName['user_name']); ?>
+												<?php foreach ($userInfo as $userId => $userName) { ?>
+													<option value="<?= htmlspecialchars((string) $userId); ?>">
+														<?= htmlspecialchars((string) $userName); ?>
 													</option>
 												<?php } ?>
 											</select>
@@ -326,9 +326,9 @@ foreach ($rejectionTypeResult as $type) {
 												title="<?php echo _translate('Please select reviewer'); ?>"
 												disabled="disabled">
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
-												<?php foreach ($userResult as $uName) { ?>
-													<option value="<?php echo $uName['user_id']; ?>">
-														<?php echo ($uName['user_name']); ?>
+												<?php foreach ($userInfo as $userId => $userName) { ?>
+													<option value="<?= htmlspecialchars((string) $userId); ?>">
+														<?= htmlspecialchars((string) $userName); ?>
 													</option>
 												<?php } ?>
 											</select>
