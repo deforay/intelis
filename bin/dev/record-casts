@@ -165,14 +165,20 @@ scenario_option() {
 # Addresses in general are fine. The container has no lab address to leak, and
 # its own output is full of mirror addresses and version numbers that look like
 # them. Prints what it found.
+#
+# On CI the machine's identity is a throwaway runner's, and its user is
+# "runner", a word the scripts print ("Backup runner installed"). There only
+# the secrets are checked.
 check_for_leaks() {
     local cast="$1" found patterns
     patterns='Rec0rd-Only-Pw|Srv-Admin-Pw|RootPass123|gh[pousr]_[A-Za-z0-9]{20,}'
-    patterns+="|$(hostname -s)|${USER:-$(id -un)}"
-    local ip
-    for ip in $(ifconfig 2>/dev/null | awk '/inet / && $2 != "127.0.0.1" {print $2}'); do
-        patterns+="|${ip//./\\.}"
-    done
+    if [ -z "${CI:-}" ]; then
+        patterns+="|$(hostname -s)|${USER:-$(id -un)}"
+        local ip
+        for ip in $(ifconfig 2>/dev/null | awk '/inet / && $2 != "127.0.0.1" {print $2}'); do
+            patterns+="|${ip//./\\.}"
+        done
+    fi
     found="$(grep -noiE "$patterns" "$cast" || true)"
     if [ -n "$found" ]; then
         log "record-casts: $(basename "$cast") contains (line:match):"

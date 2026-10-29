@@ -1,0 +1,120 @@
+name: Operator paths
+
+# Runs install, update, backup and restore the way a lab operator does: an
+# ordinary account going through sudo, at a real terminal, on a fresh Ubuntu
+# 24.04 machine. It is bin/dev/record-casts, the tool that makes the terminal
+# recordings in the server guides, so a failure here means a guide's steps no
+# longer work.
+#
+# The CI that gates every push runs as root or without a terminal, and the
+# scripts take simpler paths there. On 2026-10-29 this path alone found eight
+# bugs, among them encrypted backups that wrote nothing and a restore list
+# that could never choose a backup.
+#
+# It never gates anything. A run takes about 20 minutes and depends on GitHub,
+# Launchpad and Packagist answering, so it runs only:
+#
+#   - after a push to master that touches what an operator runs, once that
+#     commit has reached `stable`: the recorder installs from `stable`, as a
+#     lab does, and a run on the push itself would test the code before it
+#   - every Sunday, for what breaks without a commit: the PPA, Ubuntu's
+#     packages, how sudo sets up the environment
+#   - by hand, from the Actions tab
+#
+# A failed run is reported like any other failed workflow. The recordings and
+# the logs of each scenario are kept with the run.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'scripts/**'
+      - 'intelis'
+      - 'bin/backup-configs.php'
+      - 'sys/migrations/**'
+      - 'composer.lock'
+      - 'bin/dev/record-casts'
+      - 'bin/dev/casts/**'
+      - '.github/workflows/operator-paths.yml'
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+permissions: {}
+
+# A newer push makes a waiting or running check of an older one pointless.
+concurrency:
+  group: operator-paths
+  cancel-in-progress: true
+
+jobs:
+  record:
+    name: Install, update, back up and restore
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # Only for a push. A scheduled or manual run tests whatever `stable` is.
+      - name: Wait for the push to reach stable
+        id: wait
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          sha="$GITHUB_SHA"
+          # stable moves only after Verify passes. If it never includes this
+          # commit, Verify failed and has already said why.
+          reached=false
+          for _ in $(seq 1 90); do
+            status=$(gh api "repos/${GITHUB_REPOSITORY}/compare/${sha}...stable" --jq .status 2>/dev/null || true)
+            if [ "$status" = "ahead" ] || [ "$status" = "identical" ]; then
+              reached=true
+              break
+            fi
+            sleep 30
+          done
+          if ! $reached; then
+            echo "::notice::stable did not reach ${sha:0:12} within 45 minutes, so there is nothing new to check."
+            echo "skip=true" >>"$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # An update downloads the prebuilt vendor tarball, which is rebuilt
+          # only when the lock changes. Wait for that build too.
+          if git diff --name-only "$BEFORE" "$sha" 2>/dev/null | grep -qx 'composer.lock'; then
+            for _ in $(seq 1 60); do
+              run=$(gh run list -R "$GITHUB_REPOSITORY" -w "Build Vendor Package" --commit "$sha" \
+                --json status,conclusion --jq '.[0] | "\(.status) \(.conclusion)"' 2>/dev/null || true)
+              case "$run" in
+                "completed success") break ;;
+                completed*) echo "::error::The vendor package for ${sha:0:12} did not build: ${run}"; exit 1 ;;
+              esac
+              sleep 30
+            done
+          fi
+          echo "skip=false" >>"$GITHUB_OUTPUT"
+
+      - name: Record every scenario
+        if: steps.wait.outputs.skip != 'true'
+        run: bin/dev/record-casts --reinstall
+
+      - name: Keep the recordings and logs
+        if: always() && steps.wait.outputs.skip != 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: operator-paths
+          path: |
+            docs/assets/casts/*.cast
+            bin/dev/casts/.*.log
+            bin/dev/casts/.*.rejected.cast
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 14
