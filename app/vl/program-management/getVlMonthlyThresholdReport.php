@@ -91,7 +91,8 @@ if ($labScope = $general->labScopeWhere('vl')) {
     $sWhere[] = $labScope;
 }
 
-$sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
+$sQuery = $sQuery . ' WHERE ' . implode(' AND ', $sWhere)
+    . ' GROUP BY vl.lab_id, f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 if (($_POST['targetType'] ?? '') == 1) {
     $sQuery .= ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 } elseif (($_POST['targetType'] ?? '') == 2) {
