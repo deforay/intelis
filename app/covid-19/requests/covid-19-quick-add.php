@@ -52,7 +52,7 @@ $fundingSourceList = $general->getFundingSources();
 //Implementing partner list
 $implementingPartnerList = $general->getImplementationPartners();
 
-$labTechnicians = $usersService->getActiveUsers($_SESSION['facilityMap']);
+$labTechnicians = $usersService->getActiveLabScopedUsers();
 
 $healthFacilities = $facilitiesService->getHealthFacilities('covid19');
 $testingLabs = $facilitiesService->getTestingLabs('covid19');

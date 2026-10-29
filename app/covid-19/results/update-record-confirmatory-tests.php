@@ -33,7 +33,7 @@ $importResult = $db->query($importQuery);
 
 $fResult = $facilitiesService->getAllFacilities();
 
-$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
+$labTechniciansResults = $usersService->getActiveLabScopedUsers();
 
 //get labs
 $lResult = $facilitiesService->getAllFacilities(2);
@@ -63,6 +63,15 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $covid19Query = "SELECT * from form_covid19 where covid19_id=?";
 $covid19Info = $db->rawQueryOne($covid19Query, [$id]);
+
+// A saved signer may now be outside the lab scope; keep them selectable so the
+// dropdown does not render blank and a re-save does not clear the value.
+foreach (['tested_by', 'result_reviewed_by', 'result_approved_by', 'authorized_by', 'lab_technician'] as $field) {
+	$savedUserId = (string) ($covid19Info[$field] ?? '');
+	if ($savedUserId !== '' && !isset($labTechniciansResults[$savedUserId])) {
+		$labTechniciansResults[$savedUserId] = $usersService->getUserName($savedUserId) ?? $savedUserId;
+	}
+}
 
 $covid19TestQuery = "SELECT * from covid19_tests where covid19_id=" . (int) $id . " ORDER BY test_id ASC";
 $covid19TestInfo = $db->rawQuery($covid19TestQuery);
