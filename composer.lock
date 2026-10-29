@@ -62,16 +62,16 @@
         },
         {
             "name": "amitdugar/db-tools",
-            "version": "3.3.4",
+            "version": "3.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amitdugar/db-tools.git",
-                "reference": "0a5dd9e58b0df31a73878cb96b5a2e99feaf4394"
+                "reference": "0f9c53f01da621f231416e2ffe184920ebca9263"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amitdugar/db-tools/zipball/0a5dd9e58b0df31a73878cb96b5a2e99feaf4394",
-                "reference": "0a5dd9e58b0df31a73878cb96b5a2e99feaf4394",
+                "url": "https://api.github.com/repos/amitdugar/db-tools/zipball/0f9c53f01da621f231416e2ffe184920ebca9263",
+                "reference": "0f9c53f01da621f231416e2ffe184920ebca9263",
                 "shasum": ""
             },
             "require": {
@@ -117,7 +117,7 @@
                 "issues": "https://github.com/amitdugar/db-tools/issues",
                 "source": "https://github.com/amitdugar/db-tools"
             },
-            "time": "2026-10-29T09:41:56+00:00"
+            "time": "2026-10-29T10:46:28+00:00"
         },
         {
             "name": "brick/phonenumber",
