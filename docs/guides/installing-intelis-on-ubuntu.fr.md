@@ -104,29 +104,34 @@ données, suivre plutôt
 
     ### Configurer dans le navigateur
 
+
+    L'assistant de configuration s'affiche en anglais, car la langue n'est
+    pas encore choisie. Les libellés ci-dessous sont ceux de l'écran.
+
     6. Ouvrir <http://intelis/> dans un navigateur sur cette machine. Depuis
        un autre ordinateur du réseau, utiliser plutôt l'adresse IP de cette
-       machine. La page **Configuration de la base de données** s'ouvre.
+       machine. La page **Database Setup** (configuration de la base de données) s'ouvre.
     7. Les informations de la base de données sont déjà renseignées.
-       Sélectionner **Suivante**.
-    8. Sur **Configuration de l'instance**, renseigner :
+       Sélectionner **Next** (suivant).
+    8. Sur **Instance Setup** (configuration de l'instance), renseigner :
 
         | Champ | Réponse |
         | --- | --- |
-        | Type d'instance | **LIS avec commande à distance activée**. Si le laboratoire n'a pas de STS, choisir **Autonome (pas de commande à distance)**. |
-        | URL STS | Déjà renseignée à l'étape 3. Si elle est vide, saisir l'adresse du STS. |
-        | Laboratoire d'analyse | Le laboratoire que dessert cette machine. La liste vient du STS. Si elle est vide, sélectionner le bouton d'actualisation à côté de l'URL STS. |
-        | Modules à activer | Les tests que réalise ce laboratoire. |
-        | Pays d'installation | Le formulaire de demande du pays. |
-        | Fuseau horaire | Le fuseau horaire du laboratoire. |
-        | Langue du système | La langue des écrans. |
+        | Instance type | **LIS with Remote Ordering Enabled** (LIS avec commande à distance). Si le laboratoire n'a pas de STS, choisir **Standalone (no Remote Ordering)** (autonome, sans commande à distance). |
+        | STS URL | Déjà renseignée à l'étape 3. Si elle est vide, saisir l'adresse du STS. |
+        | Testing lab | Le laboratoire que dessert cette machine. La liste vient du STS. Si elle est vide, sélectionner le bouton d'actualisation à côté de l'URL STS. |
+        | Modules to enable | Les tests que réalise ce laboratoire. |
+        | Country of installation | Le formulaire de demande du pays. |
+        | Timezone | Le fuseau horaire du laboratoire. |
+        | System language | La langue des écrans. |
 
-    9. Sélectionner **Suivante**.
-    10. Sur **Configuration de l'administrateur**, saisir l'email ID, le nom
-        complet, l'identifiant de connexion et le mot de passe du premier
-        administrateur. Le mot de passe compte au moins 8 caractères, dont
-        au moins une lettre et un chiffre.
-    11. Sélectionner **Terminer**. La page de connexion s'ouvre.
+    9. Sélectionner **Next**.
+    10. Sur **Admin Setup** (configuration de l'administrateur),
+        saisir l'adresse e-mail (**Email ID**), le nom complet, l'identifiant de
+        connexion et le mot de passe du premier administrateur. Le mot de
+        passe doit compter au moins 8 caractères, dont au moins une lettre et
+        un chiffre.
+    11. Sélectionner **Finish** (terminer). La page de connexion s'ouvre.
 
     ### Configurer les sauvegardes
 
@@ -238,28 +243,33 @@ données, suivre plutôt
 
     ### Configurer dans le navigateur
 
+
+    L'assistant de configuration s'affiche en anglais, car la langue n'est
+    pas encore choisie. Les libellés ci-dessous sont ceux de l'écran.
+
     7. Ouvrir l'adresse web de l'étape 4 dans un navigateur, par exemple
        `http://sts.example.org/`. Si les laboratoires utilisent l'adresse
        IP, ouvrir `http://` suivi de l'adresse IP. La page **Configuration de
        la base de données** s'ouvre.
     8. Les informations de la base de données sont déjà renseignées.
-       Sélectionner **Suivante**.
-    9. Sur **Configuration de l'instance**, renseigner :
+       Sélectionner **Next**.
+    9. Sur **Instance Setup**, renseigner :
 
         | Champ | Réponse |
         | --- | --- |
-        | Type d'instance | **Système de suivi des échantillons (STS)**. |
-        | Modules à activer | Les tests que réalisent les laboratoires. |
-        | Pays d'installation | Le formulaire de demande du pays. |
-        | Fuseau horaire | Le fuseau horaire du pays. |
-        | Langue du système | La langue des écrans. |
+        | Instance type | **Sample Tracking System(STS)** (système de suivi des échantillons). |
+        | Modules to enable | Les tests que réalisent les laboratoires. |
+        | Country of installation | Le formulaire de demande du pays. |
+        | Timezone | Le fuseau horaire du pays. |
+        | System language | La langue des écrans. |
 
-    10. Sélectionner **Suivante**.
-    11. Sur **Configuration de l'administrateur**, saisir l'email ID, le nom
-        complet, l'identifiant de connexion et le mot de passe du premier
-        administrateur. Le mot de passe compte au moins 8 caractères, dont
-        au moins une lettre et un chiffre.
-    12. Sélectionner **Terminer**. La page de connexion s'ouvre.
+    10. Sélectionner **Next**.
+    11. Sur **Admin Setup**, saisir
+        l'adresse e-mail (**Email ID**), le nom complet, l'identifiant de
+        connexion et le mot de passe du premier administrateur. Le mot de
+        passe doit compter au moins 8 caractères, dont au moins une lettre et
+        un chiffre.
+    12. Sélectionner **Finish**. La page de connexion s'ouvre.
 
     ### Configurer les sauvegardes
 

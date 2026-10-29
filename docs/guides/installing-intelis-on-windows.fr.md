@@ -299,24 +299,28 @@ tables.
 ## Terminer la configuration dans le navigateur
 
 44. Ouvrir <http://vlsm>. La page de configuration s'ouvre.
-45. Sous **Configuration de la base de données**, vérifier que les valeurs
-    correspondent à `config.production.php`. Sélectionner **Suivante**.
-46. Renseigner **Configuration de l'instance**, puis sélectionner
-    **Suivante** :
+
+    L'assistant de configuration s'affiche en anglais, car la langue n'est
+    pas encore choisie. Les libellés ci-dessous sont ceux de l'écran.
+
+45. Sous **Database Setup** (configuration de la base de données), vérifier que les valeurs
+    correspondent à `config.production.php`. Sélectionner **Next** (suivant).
+46. Renseigner **Instance Setup** (configuration de l'instance), puis sélectionner
+    **Next** :
 
     | Champ | Valeur |
     | --- | --- |
-    | Type d'instance | **LIS avec commande à distance activée** si le laboratoire envoie les résultats à un STS. **Autonome (pas de commande à distance)** dans le cas contraire. |
-    | URL STS | L'adresse du STS. Elle est reprise de `config.production.php`. |
-    | Laboratoire d'analyse | Le laboratoire choisi à l'étape 42. Si la liste est vide, sélectionner le bouton d'actualisation à côté de l'URL STS. |
-    | Choisir les modules à activer | Les tests que réalise ce laboratoire. |
-    | Pays d'installation | Le pays où se trouve le laboratoire. |
-    | Fuseau horaire | Le fuseau horaire du laboratoire. |
-    | Choisir la langue du système | La langue des écrans. |
+    | Instance type | **LIS with Remote Ordering Enabled** (LIS avec commande à distance) si le laboratoire envoie les résultats à un STS. **Standalone (no Remote Ordering)** (autonome, sans commande à distance) dans le cas contraire. |
+    | STS URL | L'adresse du STS. Elle est reprise de `config.production.php`. |
+    | Testing lab | Le laboratoire choisi à l'étape 42. Si la liste est vide, sélectionner le bouton d'actualisation à côté de l'URL STS. |
+    | Choose Modules to Enable | Les tests que réalise ce laboratoire. |
+    | Country of installation | Le pays où se trouve le laboratoire. |
+    | Timezone | Le fuseau horaire du laboratoire. |
+    | Choose System Language | La langue des écrans. |
 
-47. Renseigner **Configuration de l'administrateur** avec l'email, le nom
+47. Renseigner **Admin Setup** (configuration de l'administrateur) avec l'email, le nom
     complet, l'identifiant de connexion et le mot de passe du premier
-    administrateur du laboratoire. Sélectionner **Terminer**.
+    administrateur du laboratoire. Sélectionner **Finish** (terminer).
 48. Se connecter avec ce compte administrateur.
 
 **Vérification :** le tableau de bord s'ouvre, et le pied de page affiche la
