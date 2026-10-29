@@ -152,7 +152,7 @@ instead.
     ### Install
 
     1. Point the server's web address at this machine in DNS, for example
-       `sts.health.gov.zm`. Labs use this address to reach the STS. To use the
+       `sts.example.org`. Labs use this address to reach the STS. To use the
        machine's IP address instead, skip this step.
     2. Open a terminal and download the installer:
 
@@ -225,7 +225,7 @@ instead.
     ### Set up in the browser
 
     7. Open the web address from step 4 in a browser, for example
-       `http://sts.health.gov.zm/`. If the labs use the IP address, open
+       `http://sts.example.org/`. If the labs use the IP address, open
        `http://` followed by the IP address. The **Database Setup** page opens.
     8. The database details are already filled in. Select **Next**.
     9. On **Instance Setup**, fill in:

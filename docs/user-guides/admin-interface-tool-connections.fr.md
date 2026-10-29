@@ -13,7 +13,7 @@ que les résultats de ses automates parviennent à InteLIS. Chaque ordinateur de
 laboratoire qui fait tourner l'outil se connecte une fois.
 
 Pour installer l'outil et y ajouter l'automate, voir
-[Connecter un instrument à InteLIS](../guides/setting-up-interfacing-tool.md).
+[Connecter un automate à InteLIS](../guides/setting-up-interfacing-tool.md).
 
 ## Avant de commencer
 

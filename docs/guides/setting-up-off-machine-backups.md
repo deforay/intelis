@@ -311,7 +311,17 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
             Other users** and select **Add account**. Select
             **I don't have this person's sign-in information**, then
             **Add a user without a Microsoft account**. Create the user from
-            step 3 there, then carry on at step 5.
+            step 3 there.
+
+            Then stop its password from expiring, or the backup stops working
+            when it does. Right-click **Start**, select
+            **Terminal (Admin)**, and run:
+
+            ```powershell
+            Set-LocalUser -Name lisbackup -PasswordNeverExpires $true
+            ```
+
+            Carry on at step 5.
 
     3. Right-click **Users** and select **New User**. Set the user name to
        `lisbackup` and set a strong password. Write the password down.
