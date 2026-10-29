@@ -51,11 +51,7 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
 $general = ContainerRegistry::get(CommonService::class);
 
 /* Get Active users for approved / reviewed / examined by */
-$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
-$userInfo = [];
-foreach ($userResult as $user) {
-    $userInfo[$user['user_id']] = ($user['user_name']);
-}
+$userInfo = $usersService->getActiveLabScopedUsers();
 
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_tb_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
@@ -94,6 +90,24 @@ if (isset($tbInfo['tests_requested']) && $tbInfo['tests_requested'] != "") {
 }
 $testQuery = "SELECT * from tb_tests where tb_id=? ORDER BY tb_test_id ASC";
 $tbTestInfo = $db->rawQuery($testQuery, [$id]);
+
+// A saved signer may now be outside the lab scope; keep them selectable so the
+// dropdown does not render blank and a re-save does not clear the value.
+foreach (['tested_by', 'result_reviewed_by', 'result_approved_by'] as $field) {
+    $savedUserId = (string) ($tbInfo[$field] ?? '');
+    if ($savedUserId !== '' && !isset($userInfo[$savedUserId])) {
+        $userInfo[$savedUserId] = $usersService->getUserName($savedUserId) ?? $savedUserId;
+    }
+}
+// The Rwanda form keeps its signers on each tb_tests row.
+foreach ($tbTestInfo as $testRow) {
+    foreach (['tested_by', 'result_reviewed_by', 'result_approved_by', 'revised_by'] as $field) {
+        $savedUserId = (string) ($testRow[$field] ?? '');
+        if ($savedUserId !== '' && !isset($userInfo[$savedUserId])) {
+            $userInfo[$savedUserId] = $usersService->getUserName($savedUserId) ?? $savedUserId;
+        }
+    }
+}
 $specimenTypeResult = $general->fetchDataFromTable('r_tb_sample_type', "status = 'active'");
 
 $userId = $_SESSION['userId'];
