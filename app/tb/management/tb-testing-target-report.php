@@ -5,7 +5,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-$title = _translate("TB Quarterly Monitoring Report");
+$title = _translate("TB Testing Target Report");
 
 require_once APPLICATION_PATH . '/header.php';
 
