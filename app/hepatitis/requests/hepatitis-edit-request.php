@@ -57,11 +57,7 @@ $testReasonResults = $hepatitisService->getHepatitisReasonsForTesting();
 $healthFacilities = $facilitiesService->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 
-$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
-$labTechniciansResults = [];
-foreach ($userResult as $user) {
-    $labTechniciansResults[$user['user_id']] = ($user['user_name']);
-}
+$labTechniciansResults = $usersService->getActiveLabScopedUsers();
 
 // Comorbidity
 $comorbidityData = $hepatitisService->getHepatitisComorbidities();
@@ -75,6 +71,15 @@ $riskFactorsInfo = $hepatitisService->getRiskFactorsByHepatitisId($id);
 //$id = ($_GET['id']);
 $hepatitisQuery = "SELECT * FROM form_hepatitis where hepatitis_id=?";
 $hepatitisInfo = $db->rawQueryOne($hepatitisQuery, [$id]);
+
+// A saved signer may now be outside the lab scope; keep them selectable so the
+// dropdown does not render blank and a re-save does not clear the value.
+foreach (['lab_technician', 'authorized_by'] as $field) {
+    $savedUserId = (string) ($hepatitisInfo[$field] ?? '');
+    if ($savedUserId !== '' && !isset($labTechniciansResults[$savedUserId])) {
+        $labTechniciansResults[$savedUserId] = $usersService->getUserName($savedUserId) ?? $savedUserId;
+    }
+}
 
 // Keep the sample's own stored lab selectable even if that lab has since been
 // deactivated. Without it the required Testing Lab select renders empty and the

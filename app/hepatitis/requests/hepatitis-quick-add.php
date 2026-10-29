@@ -42,7 +42,7 @@ require_once APPLICATION_PATH . '/header.php';
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
-$labTechnicians = $usersService->getActiveUsers($_SESSION['facilityMap']);
+$labTechnicians = $usersService->getActiveLabScopedUsers();
 
 $healthFacilities = $facilitiesService->getHealthFacilities('hepatitis');
 $testingLabs = $facilitiesService->getTestingLabs('hepatitis');
