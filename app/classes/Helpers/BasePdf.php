@@ -147,9 +147,8 @@ class BasePdf extends Fpdi
         }
 
         if ($data !== null) {
-            // Raster only. SVG can make TCPDF fetch the files it references.
             $size = $data === false ? false : @getimagesizefromstring($data);
-            return $size === false ? false : 'data:' . $size['mime'] . ';base64,' . base64_encode($data);
+            return self::isRaster($size) ? 'data:' . $size['mime'] . ';base64,' . base64_encode($data) : false;
         }
 
         // Data images are large and rarely repeat, so only files are cached
@@ -159,11 +158,23 @@ class BasePdf extends Fpdi
             // and .eps go to the vector parsers whatever the file holds.
             $vector = $file !== null
                 && in_array(TCPDF_IMAGES::getImageFileType($file), ['svg', 'ai', 'eps'], true);
-            self::$imageSources[$src] = $file !== null && !$vector && @getimagesize($file) !== false
+            self::$imageSources[$src] = $file !== null && !$vector && self::isRaster(@getimagesize($file))
                 ? $file
                 : false;
         }
         return self::$imageSources[$src];
+    }
+
+    /**
+     * Raster only. SVG can make TCPDF fetch the files it references. From PHP
+     * 8.5, getimagesize() recognises SVG, so a size alone no longer proves a
+     * raster image.
+     *
+     * @param array<int|string, mixed>|false $size from getimagesize()
+     */
+    private static function isRaster(array|false $size): bool
+    {
+        return $size !== false && $size['mime'] !== 'image/svg+xml';
     }
 
     /**
