@@ -1,0 +1,52 @@
+# Shared by every scenario. Sourced, never run on its own.
+#
+# record-casts runs a scenario as labuser. It spawns one recorded shell, types
+# into it with a human rhythm, answers prompts, and exits the shell, which ends
+# the recording.
+
+set out [lindex $argv 0]
+set sudo_password "Rec0rd-Only-Pw"
+
+# The pty size is the size the programs see and the size the recording plays
+# at. 100 columns keeps the longest update lines from wrapping.
+set stty_init "rows 30 columns 100"
+set env(TERM) xterm-256color
+set env(LANG) en_US.UTF-8
+set env(SHELL) /bin/bash
+
+# {interval-within-word interval-between-words variability min max}
+set send_human {.06 .2 1 .03 .3}
+
+# Pauses longer than 2 seconds play as 2 seconds, so a 10-minute update plays
+# in about a minute, while what the operator sees and types stays the same.
+spawn asciinema rec --quiet --overwrite --idle-time-limit 2 --command "bash -i" $out
+
+proc wait_prompt {} {
+    set timeout 30
+    expect {
+        -ex {$ } {}
+        timeout { puts stderr "\nno shell prompt"; exit 1 }
+    }
+}
+
+proc type_command {cmd} {
+    sleep 1
+    send -h -- $cmd
+    sleep 0.6
+    send "\r"
+}
+
+proc answer {text} {
+    sleep 1.2
+    send -h -- $text
+    send "\r"
+}
+
+proc finish {} {
+    wait_prompt
+    sleep 2
+    send "exit\r"
+    set timeout 30
+    expect eof
+    catch wait
+}

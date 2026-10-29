@@ -1,0 +1,12 @@
+/* Recorded terminal sessions on the server guides (see casts.js). */
+.md-typeset .asciicast-figure {
+  margin: 1em 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.md-typeset .asciicast-figure figcaption {
+  font-style: normal;
+  max-width: none;
+  color: var(--md-default-fg-color--light);
+}

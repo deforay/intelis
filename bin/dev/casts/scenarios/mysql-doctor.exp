@@ -1,0 +1,21 @@
+#!/usr/bin/expect -f
+#
+# MySQL will not start: `sudo intelis doctor` finds and repairs the fault.
+# Shown on docs/guides/mysql-will-not-start.md.
+
+source [file join [file dirname [info script]] common.exp]
+
+wait_prompt
+type_command "sudo intelis doctor"
+
+set timeout 900
+expect {
+    -re {\[sudo\] password for labuser:} { sleep 1; send "$sudo_password\r"; exp_continue }
+    -re {\[[yY]/[nN]\][^\n]*$}           { answer "y"; exp_continue }
+    "InteLIS is working again."          {}
+    "The database still will not start." { puts stderr "\ndoctor did not repair it"; exit 1 }
+    timeout { puts stderr "\ndoctor did not finish"; exit 1 }
+    eof     { puts stderr "\nshell ended early"; exit 1 }
+}
+
+finish
