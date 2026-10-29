@@ -111,3 +111,5 @@ dump-*
 # Per-install commit SHA stamp written by scripts/upgrade.sh on tarball
 # installs. Must never be committed — it's specific to each deployment.
 VERSION.txt
+/bin/dev/casts/.*.log
+/bin/dev/casts/.*.rejected.cast

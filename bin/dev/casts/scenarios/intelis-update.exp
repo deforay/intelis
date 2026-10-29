@@ -1,0 +1,24 @@
+#!/usr/bin/expect -f
+#
+# Normal update: `intelis update` on a machine two migrations behind.
+# Shown on docs/guides/updating-intelis-on-ubuntu.md.
+
+# The migration step prints a "Total time:" of its own part-way through, so the
+# end of the update is the Info line, which is the last line of the run.
+
+source [file join [file dirname [info script]] common.exp]
+
+wait_prompt
+type_command "intelis update"
+
+set timeout 3600
+expect {
+    -re {\[sudo\] password for labuser:} { sleep 1; send "$sudo_password\r"; exp_continue }
+    -re {maintenance scripts\?[^\n]*$}   { answer ""; exp_continue }
+    -re {\[[yY]/[nN]\][^\n]*$}           { answer ""; exp_continue }
+    -re {Info:[^\n]*Total time:}         {}
+    timeout { puts stderr "\nupdate did not finish"; exit 1 }
+    eof     { puts stderr "\nshell ended early"; exit 1 }
+}
+
+finish

@@ -261,3 +261,15 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/deforay/intelis
+
+# The terminal player for the recorded sessions on the server guides. Kept in
+# the repository rather than loaded from a CDN, so the guides play offline and
+# from a copy of the site on a lab network. bin/dev/record-casts makes the
+# recordings; docs/assets/javascripts/casts.js explains how a page embeds one.
+extra_css:
+  - assets/asciinema-player/asciinema-player.css
+  - assets/stylesheets/casts.css
+
+extra_javascript:
+  - assets/asciinema-player/asciinema-player.min.js
+  - assets/javascripts/casts.js

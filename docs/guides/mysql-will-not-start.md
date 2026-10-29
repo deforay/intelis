@@ -36,6 +36,8 @@ MySQL refuses to start, so InteLIS cannot open and nothing can be backed up.
    start is the usual repair after a crash or a power cut.
 3. Wait for `InteLIS is working again.`
 
+    [The doctor finds a setting above the first heading of the MySQL configuration and repairs it.](../assets/casts/mysql-doctor.cast){ .asciicast data-poster="npt:0:10" }
+
     ??? failure "If it shows `The database still will not start.`"
 
         The doctor prints the last errors MySQL wrote, under
