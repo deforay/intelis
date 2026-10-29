@@ -1518,12 +1518,12 @@ restore_from_config_backup() { # restore_from_config_backup <config-backup-folde
             chmod 600 "${config_file}.pre-restore"
             # cat, not mv: the config keeps its owner and permissions.
             cat "${tmp_dir}/merged.php" >"$config_file"
-            print success "Settings restored. The previous config is in ${config_file}.pre-restore"
+            print success "Settings restored. The previous settings are in ${config_file}.pre-restore"
         else
-            print warning "The settings in the config backup do not merge cleanly. This machine keeps its own settings."
+            print warning "The settings backup does not merge cleanly. This machine keeps its own settings."
         fi
     else
-        print warning "The config backup holds no config.production.php. This machine keeps its own settings."
+        print warning "The settings backup holds no config.production.php. This machine keeps its own settings."
     fi
     # Listed to a file, not piped into grep -q: under pipefail, tar killed by
     # SIGPIPE when grep stops early would read as "no uploads".
@@ -1533,10 +1533,10 @@ restore_from_config_backup() { # restore_from_config_backup <config-backup-folde
             (cd "${lis_path}/public" && xargs -d '\n' chown www-data:www-data <"${tmp_dir}/uploads.txt") 2>/dev/null || true
             print success "Signatures, report templates and logos restored"
         else
-            print warning "Restoring the signatures, report templates and logos from the config backup failed."
+            print warning "Restoring the signatures, report templates and logos from the settings backup failed."
         fi
     else
-        print info "This config backup holds no signatures, report templates or logos. Config backups made before this change leave them out."
+        print info "This settings backup holds no signatures, report templates or logos. Older settings backups leave them out."
     fi
     rm -rf "$tmp_dir"
     return 0

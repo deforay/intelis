@@ -440,9 +440,9 @@ handle_database_setup_and_import() {
                 print error "Failed to decrypt ${import_file} (wrong key, or corrupt file)."
                 if [[ -z "${intelis_enc_password}${intelis_recovery_token}" ]]; then
                     if $_tried_configs; then
-                        print info "Tried this machine's MySQL password and every password in the config backups beside it."
+                        print info "Tried this machine's MySQL password and every password in the settings backups beside it."
                     else
-                        print info "No config backups (config-*.tgz) were found next to the dump folder to read the old password from."
+                        print info "No settings backups (config-*.tgz) were found next to the dump folder to read the old password from."
                     fi
                     print info "Pass the old machine's key as --encryption-password=<code>, or use --recovery-token."
                 fi
@@ -1575,7 +1575,7 @@ if ! $resume_setup && [[ -n "$intelis_sql_file" && -f "$intelis_sql_file" ]] &&
     elif restore_from_config_backup "$restore_config_dir" "${lis_path}"; then
         log_action "Restored settings, signatures, report templates and logos from ${restore_config_dir}"
     elif $intelis_pick_backup; then
-        print warning "${restore_config_dir} holds no config backup (config-*.tgz). Setup did not restore the settings, signatures, report templates or logos."
+        print warning "${restore_config_dir} holds no settings backup (config-*.tgz). Setup did not restore the settings, signatures, report templates or logos."
     fi
 fi
 

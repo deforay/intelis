@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-10-29
+reviewed_against: 5.8.5
 ---
 # Migrating From One Ubuntu Machine to Another
 
@@ -103,6 +103,27 @@ internet.
 
     12. Wait 10 to 20 minutes. The installer ends with `Setup complete`.
 
+        Near the end it prints `Signatures, report templates and logos restored`.
+        The lab settings, such as the STS address and the enabled modules, and
+        the signatures, report templates and logos are then back from the
+        settings backup in `backups/config`.
+
+        ??? warning "If it says `Setup did not restore the settings, signatures, report templates or logos`"
+
+            The `backups/config` folder is missing, or was made by an older
+            InteLIS. The database still comes back. After the install, check the
+            STS address and the enabled modules in **System Configuration**. See
+            [System administration](../user-guides/admin-system-administration.md).
+            To copy the uploaded files back from an off-machine backup, follow
+            the **Database and uploaded files** tab of
+            [Restoring from a backup](restoring-from-backup.md).
+
+        ??? warning "If it says `This machine keeps its own settings`"
+
+            The settings backup could not be used. After the install, check the
+            STS address and the enabled modules in **System Configuration**. See
+            [System administration](../user-guides/admin-system-administration.md).
+
         ??? failure "If it stops with `Failed to decrypt`"
 
             Setup could not open the backup with the old machine's settings in
@@ -131,7 +152,9 @@ internet.
         a new one. The restored database already holds the users, the lab
         settings and all the data.
     15. Check the lab settings under **Admin → Settings → General Configuration**.
-    16. If the lab uses the interfacing tool, restore its database too.
+    16. Open the result PDF of a recent request, and check its signatures and
+        logo appear.
+    17. If the lab uses the interfacing tool, restore its database too.
 
         1. In a terminal, type `sudo cp` followed by a space. Do not press Enter
            yet.
@@ -168,10 +191,10 @@ internet.
         | Folder | What it holds |
         | --- | --- |
         | `db` | The database backups. |
-        | `config` | The old machine's settings. The key to the database backups is read from here. |
+        | `config` | The old machine's settings, signatures, report templates and logos. The key to the database backups is read from here. |
 
-        If `config` is missing, carry on. Step 8 shows what to do if the backup
-        does not open.
+        If `config` is missing, carry on. The database still comes back. Step 8
+        shows what to do if the backup does not open.
 
     3. Open `db` and find the newest file starting with `vlsm-`. Its name gives
        the date and time of the backup. For example, `vlsm-20260903-100002-…`
@@ -212,6 +235,27 @@ internet.
         | Is this correct? | Check the summary, then press Enter (Yes). |
 
     8. Wait 10 to 20 minutes. The installer ends with `Setup complete`.
+
+        Near the end it prints `Signatures, report templates and logos restored`.
+        The lab settings, such as the STS address and the enabled modules, and
+        the signatures, report templates and logos are then back from the
+        settings backup in `backups/config`.
+
+        ??? warning "If it says `Setup did not restore the settings, signatures, report templates or logos`"
+
+            The `backups/config` folder is missing, or was made by an older
+            InteLIS. The database still comes back. After the install, check the
+            STS address and the enabled modules in **System Configuration**. See
+            [System administration](../user-guides/admin-system-administration.md).
+            To copy the uploaded files back from an off-machine backup, follow
+            the **Database and uploaded files** tab of
+            [Restoring from a backup](restoring-from-backup.md).
+
+        ??? warning "If it says `This machine keeps its own settings`"
+
+            The settings backup could not be used. After the install, check the
+            STS address and the enabled modules in **System Configuration**. See
+            [System administration](../user-guides/admin-system-administration.md).
 
         ??? failure "If it stops with `Failed to decrypt`"
 
@@ -254,7 +298,9 @@ internet.
         a new one. The restored database already holds the users, the lab
         settings and all the data.
     11. Check the lab settings under **Admin → Settings → General Configuration**.
-    12. If the lab uses the interfacing tool, restore its database too.
+    12. Open the result PDF of a recent request, and check its signatures and
+        logo appear.
+    13. If the lab uses the interfacing tool, restore its database too.
 
         1. In a terminal, type `sudo cp` followed by a space. Do not press Enter
            yet.
@@ -316,6 +362,27 @@ internet.
 
     9. Wait 10 to 20 minutes. The installer ends with `Setup complete`.
 
+        Near the end it prints `Signatures, report templates and logos restored`.
+        The lab settings, such as the STS address and the enabled modules, and
+        the signatures, report templates and logos are then back from the
+        settings backup in `backups/config`.
+
+        ??? warning "If it says `Setup did not restore the settings, signatures, report templates or logos`"
+
+            The `backups/config` folder is missing, or was made by an older
+            InteLIS. The database still comes back. After the install, check the
+            STS address and the enabled modules in **System Configuration**. See
+            [System administration](../user-guides/admin-system-administration.md).
+            To copy the uploaded files back from an off-machine backup, follow
+            the **Database and uploaded files** tab of
+            [Restoring from a backup](restoring-from-backup.md).
+
+        ??? warning "If it says `This machine keeps its own settings`"
+
+            The settings backup could not be used. After the install, check the
+            STS address and the enabled modules in **System Configuration**. See
+            [System administration](../user-guides/admin-system-administration.md).
+
         ??? failure "If it stops with `Failed to decrypt`"
 
             The backup uses a key held by the STS. Ask the STS administrator for a
@@ -343,7 +410,9 @@ internet.
         a new one. The restored database already holds the users, the lab
         settings and all the data.
     12. Check the lab settings under **Admin → Settings → General Configuration**.
-    13. If the lab uses the interfacing tool, restore its database too.
+    13. Open the result PDF of a recent request, and check its signatures and
+        logo appear.
+    14. If the lab uses the interfacing tool, restore its database too.
 
         1. Copy the newest interfacing backup out of the fetched folder:
 
