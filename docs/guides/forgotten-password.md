@@ -100,4 +100,4 @@ The new password stays after the next STS sync. STS sync never changes a lab
 user's password.
 
 After the admin signs in, the admin resets other users' passwords from
-**Admin > Access Control > Users**.
+**ADMIN → Users & Roles → Users**.

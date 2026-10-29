@@ -16,7 +16,7 @@ ne peuvent pas être importés.
 Deux tâches voisines ont leur propre guide :
 
 - Pour envoyer les résultats directement depuis l'automate, voir
-  [Connecter un instrument à InteLIS](../guides/setting-up-interfacing-tool.md).
+  [Connecter un automate à InteLIS](../guides/setting-up-interfacing-tool.md).
 - Pour relier une installation de l'outil d'interface au laboratoire, voir
   [Connexions de l'outil d'interface](admin-interface-tool-connections.md).
 
