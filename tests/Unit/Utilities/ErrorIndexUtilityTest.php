@@ -12,7 +12,11 @@ use App\Utilities\MiscUtility;
 use App\Utilities\ErrorIndexUtility;
 use App\Utilities\ErrorIndexLogHandler;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 
+// The app turns the error index off when PHP has no SQLite driver, so these
+// tests only mean something where the driver is installed.
+#[RequiresPhpExtension('pdo_sqlite')]
 final class ErrorIndexUtilityTest extends TestCase
 {
     private string $dir;
