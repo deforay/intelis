@@ -1239,7 +1239,7 @@ if ($generateAutomatedPatientCode !== '' && $generateAutomatedPatientCode !== '0
     function validateNow() {
 
         if ($("#dob").val() == "" && $("#patientAge").val() == "") {
-            alert("<?= _translate("Please enter Patient Age or Date of Birth"); ?>");
+            alert("<?= _jsTranslate("Please enter Patient Age or Date of Birth"); ?>");
             return false;
         }
         if ($('#isResultAuthorized').val() != "yes") {

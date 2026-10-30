@@ -718,7 +718,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
         // Initialize select2 with better performance
         $('#labName').select2({
             width: '100%',
-            placeholder: "<?php echo _translate('Select Testing Lab'); ?>",
+            placeholder: "<?php echo _jsTranslate('Select Testing Lab'); ?>",
             allowClear: true,
             minimumInputLength: 0
         });
@@ -835,7 +835,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                         $dep.append($('<option>').val(p.commandId).text(label));
                     });
                 } else {
-                    $dep.append('<option value=""><?= _translate('-- No prepared upgrades available for this lab --'); ?></option>');
+                    $dep.append('<option value=""><?= _jsTranslate('-- No prepared upgrades available for this lab --'); ?></option>');
                 }
 
                 $('#queueCommandModal').modal('show');
@@ -884,7 +884,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                     }
                 }
 
-                $btn.html('<i class="fa fa-spinner fa-spin"></i> <?= _translate('Queueing...'); ?>').prop('disabled', true);
+                $btn.html('<i class="fa fa-spinner fa-spin"></i> <?= _jsTranslate('Queueing...'); ?>').prop('disabled', true);
                 $.ajax({
                     url: '/admin/monitoring/queue-lis-command.php',
                     type: 'POST',
@@ -894,14 +894,14 @@ $stateNameList = $geolocationService->getProvinces("yes");
                     success: function (res) {
                         if (res && res.status === 'success') {
                             $('#queueCommandModal').modal('hide');
-                            showNotification('<?= _translate('Command queued.'); ?> <code>' + (res.commandId || '') + '</code>', 'success');
+                            showNotification('<?= _jsTranslate('Command queued.'); ?> <code>' + (res.commandId || '') + '</code>', 'success');
                             loadData(true);
                         } else {
-                            showNotification((res && res.error) ? res.error : '<?= _translate('Failed to queue command'); ?>', 'error');
+                            showNotification((res && res.error) ? res.error : '<?= _jsTranslate('Failed to queue command'); ?>', 'error');
                         }
                     },
                     error: function (xhr) {
-                        let msg = '<?= _translate('Failed to queue command'); ?>';
+                        let msg = '<?= _jsTranslate('Failed to queue command'); ?>';
                         try {
                             const body = JSON.parse(xhr.responseText);
                             if (body && body.error) msg = body.error;
@@ -944,12 +944,12 @@ $stateNameList = $geolocationService->getProvinces("yes");
                             showNotification('<?= _translate('Command cancelled.'); ?>', 'success');
                             loadData(true);
                         } else {
-                            showNotification((res && res.error) ? res.error : '<?= _translate('Failed to cancel command'); ?>', 'error');
+                            showNotification((res && res.error) ? res.error : '<?= _jsTranslate('Failed to cancel command'); ?>', 'error');
                             $link.text('×').css('pointer-events', 'auto');
                         }
                     },
                     error: function (xhr) {
-                        let msg = '<?= _translate('Failed to cancel command'); ?>';
+                        let msg = '<?= _jsTranslate('Failed to cancel command'); ?>';
                         try {
                             const body = JSON.parse(xhr.responseText);
                             if (body && body.error) msg = body.error;

@@ -72,12 +72,12 @@ Pour installer l'outil et y ajouter l'automate, voir
     5. Sélectionner **Se reconnecter / Réinstaller**. Un nouveau code apparaît.
     6. Dans l'outil d'interface de l'ordinateur du laboratoire, saisir l'**URL
        InteLIS** et les trois groupes du code.
-    7. Recharger la page. L'installation montre une **Dernière connexion**
+    7. Recharger la page. L'installation montre une **Dernière activité**
        récente.
 
     ??? info "Connecter cet outil"
 
-        Une installation marquée **Signalement via l'importateur** envoie des
+        Une installation marquée **Transmission via l'importateur** envoie des
         résultats sans être encore connectée. Son bouton s'intitule **Connecter
         cet outil**. Suivre les mêmes étapes avec ce bouton.
 
@@ -102,10 +102,10 @@ Pour installer l'outil et y ajouter l'automate, voir
 
 | Contrôle | Attendu |
 | --- | --- |
-| Installations connectées | L'installation est listée, avec une **Dernière connexion** récente |
+| Installations connectées | L'installation est listée, avec une **Dernière activité** récente |
 | Résultats | Un résultat passé sur l'automate apparaît dans InteLIS |
 
-Lorsque les résultats cessent d'arriver, une **Dernière connexion** ancienne
+Lorsque les résultats cessent d'arriver, une **Dernière activité** ancienne
 signifie que l'outil n'atteint pas InteLIS. Voir aussi **Activité des
 instruments** dans
 [Surveillance et audit](admin-monitoring.md#verifier-quun-automate-envoie-toujours).

@@ -239,7 +239,7 @@ if ($general->treatAsLIS()) {
                 $(".sampleSelectionArea").show();
                 initializeMultiselect();
             } else {
-                alert("<?php echo _translate("No samples available for referral"); ?>");
+                alert("<?php echo _jsTranslate("No samples available for referral"); ?>");
             }
             $.unblockUI();
         });

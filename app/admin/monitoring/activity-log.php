@@ -663,7 +663,7 @@ foreach ($actions as $list) {
 			renderFeed(payload);
 		}).fail(function () {
 			if (seq !== fetchSeq) return;
-			$feed.html('<div class="audit-empty"><?php echo _translate("Failed to load activity. Please retry."); ?></div>');
+			$feed.html('<div class="audit-empty"><?php echo _jsTranslate("Failed to load activity. Please retry."); ?></div>');
 			$pager.hide();
 		});
 	}

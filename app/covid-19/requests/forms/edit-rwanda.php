@@ -620,20 +620,20 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             name="testName[]" id="testName<?= ($indexKey + 1); ?>"
                                                                             class="form-control test-name-table-input"
                                                                             placeholder="Test name"
-                                                                            title="Please enter the test name for row <?= ($indexKey + 1); ?>" />
+                                                                            title="<?= sprintf(_translate("Please enter the test name for row %d"), $indexKey + 1); ?>" />
                                                                     </td>
                                                                     <td><input type="text"
                                                                             value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']); ?>"
                                                                             name="testDate[]" id="testDate<?= ($indexKey + 1); ?>"
                                                                             class="form-control test-name-table-input dateTime"
                                                                             placeholder="Tested on"
-                                                                            title="Please enter the tested on for row <?= ($indexKey + 1); ?>" />
+                                                                            title="<?= sprintf(_translate("Please enter the tested on for row %d"), $indexKey + 1); ?>" />
                                                                     </td>
                                                                     <td><select
                                                                             class="form-control test-result test-name-table-input result-focus"
                                                                             name="testResult[]"
                                                                             id="testResult<?= ($indexKey + 1); ?>"
-                                                                            title="Please select the result for row <?= ($indexKey + 1); ?>">
+                                                                            title="<?= sprintf(_translate("Please select the result for row %d"), $indexKey + 1); ?>">
                                                                             <option value=''> -- Select -- </option>
                                                                             <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                                 <option value="<?php echo $c19ResultKey; ?>" <?php echo ($rows['result'] == $c19ResultKey) ? "selected='selected'" : ""; ?>>

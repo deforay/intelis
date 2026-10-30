@@ -658,7 +658,7 @@ $state = $geolocationService->getProvinces("yes");
                         $(".retest-btn").hide();
                         $("#checkTestsData").prop('checked', false);
                     } else {
-                        alert("<?php echo _translate("Something went wrong. Please try again later"); ?>");
+                        alert("<?php echo _jsTranslate("Something went wrong. Please try again later"); ?>");
                     }
                 });
         }
@@ -690,7 +690,7 @@ $state = $geolocationService->getProvinces("yes");
                     $(".retest-btn, .accept-btn").hide();
                     $("#checkTestsData").prop('checked', false);
                 } else {
-                    alert("<?php echo _translate("No samples were moved. They may be genuine failures or already accepted"); ?>.");
+                    alert("<?php echo _jsTranslate("No samples were moved. They may be genuine failures or already accepted"); ?>.");
                 }
             });
     }

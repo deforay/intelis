@@ -101,7 +101,7 @@ sort($fileList);
 										<?php echo _translate("Instrument Name"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder='<?php echo _translate("eg. Roche or Abbott"); ?>' title='<?php echo _translate("Please enter instrument name"); ?>' onblur="checkNameValidation('instruments','machine_name',this,null,'<?php echo _translate('This instrument name already exists.Try another name'); ?>',null);" onchange="setConfigFileName();" />
+										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder='<?php echo _translate("eg. Roche or Abbott"); ?>' title='<?php echo _htmlTranslate("Please enter instrument name"); ?>' onblur="checkNameValidation('instruments','machine_name',this,null,'<?php echo _jsTranslate('This instrument name already exists.Try another name'); ?>',null);" onchange="setConfigFileName();" />
 									</div>
 								</div>
 							</div>
@@ -191,7 +191,7 @@ sort($fileList);
 										<?php echo _translate("Maximum No. of Samples In a Batch"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric isRequired" id="maxNOfSamplesInBatch" name="maxNOfSamplesInBatch" placeholder='<?php echo _translate("Max. no of samples"); ?>' title='<?php echo _translate("Please enter max no of samples in a row"); ?>' />
+										<input type="text" class="form-control forceNumeric isRequired" id="maxNOfSamplesInBatch" name="maxNOfSamplesInBatch" placeholder='<?php echo _htmlTranslate("Max. no of samples"); ?>' title='<?php echo _htmlTranslate("Please enter max no of samples in a row"); ?>' />
 									</div>
 								</div>
 							</div>
@@ -299,12 +299,12 @@ sort($fileList);
 													<?php echo _translate("Hepatitis"); ?><input type="hidden" name="userTestType[]" id="userTestTypeHepatitis" value="hepatitis" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByHepatitis" class="form-control select2" title='<?php echo _translate("Please enter Reviewed By for Hepatitis Test"); ?>' onchange="changeDefaultReviewer(this.value,'hepatitis');">
+													<select name="reviewedBy[]" id="reviewedByHepatitis" class="form-control select2" title='<?php echo _htmlTranslate("Please enter Reviewed By for Hepatitis Test"); ?>' onchange="changeDefaultReviewer(this.value,'hepatitis');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByHepatitis" class="form-control select2" title='<?php echo _translate("Please enter Approved By for Hepatitis Test"); ?>' onchange="changeDefaultApprover(this.value,'hepatitis');">
+													<select name="approvedBy[]" id="approvedByHepatitis" class="form-control select2" title='<?php echo _htmlTranslate("Please enter Approved By for Hepatitis Test"); ?>' onchange="changeDefaultApprover(this.value,'hepatitis');">
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -392,7 +392,7 @@ sort($fileList);
 												</td>
 												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Manufacturer Controls in vl"); ?>' title='<?php echo _translate("Please enter No of Manufacturer Controls in vl"); ?>' />
 												</td>
-												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Calibrators in vl"); ?>' title='<?php echo _translate("Please enter No of Calibrators in vl"); ?>' /></td>
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _htmlTranslate("No of Calibrators in vl"); ?>' title='<?php echo _htmlTranslate("Please enter No of Calibrators in vl"); ?>' /></td>
 											</tr>
 										<?php }
 										if (SYSTEM_CONFIG['modules']['eid']) { ?>
@@ -400,11 +400,11 @@ sort($fileList);
 												<td align="left" style="text-align:center;">
 													<?php echo _translate("EID"); ?><input type="hidden" name="testType[]" id="testType1" value="eid" />
 												</td>
-												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of In-House Controls in EID"); ?>' title='<?php echo _translate("Please enter No of In-House Controls in EID"); ?>' />
+												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder='<?php echo _htmlTranslate("No of In-House Controls in EID"); ?>' title='<?php echo _htmlTranslate("Please enter No of In-House Controls in EID"); ?>' />
 												</td>
-												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Manufacturer Controls in EID"); ?>' title='<?php echo _translate("Please enter No of Manufacturer Controls in EID"); ?>' />
+												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder='<?php echo _htmlTranslate("No of Manufacturer Controls in EID"); ?>' title='<?php echo _htmlTranslate("Please enter No of Manufacturer Controls in EID"); ?>' />
 												</td>
-												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Calibrators in EID"); ?>' title='<?php echo _translate("Please enter No of Calibrators in EID"); ?>' />
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _htmlTranslate("No of Calibrators in EID"); ?>' title='<?php echo _htmlTranslate("Please enter No of Calibrators in EID"); ?>' />
 												</td>
 											</tr>
 										<?php }
@@ -426,11 +426,11 @@ sort($fileList);
 												<td align="left" style="text-align:center;">
 													<?php echo _translate("Hepatitis"); ?><input type="hidden" name="testType[]" id="testType1" value="hepatitis" />
 												</td>
-												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of In-House Controls in Hepatitis"); ?>' title='<?php echo _translate("Please enter No of In-House Controls in Hepatitis"); ?>' />
+												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder='<?php echo _htmlTranslate("No of In-House Controls in Hepatitis"); ?>' title='<?php echo _htmlTranslate("Please enter No of In-House Controls in Hepatitis"); ?>' />
 												</td>
-												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Manufacturer Controls in Hepatitis"); ?>' title='<?php echo _translate("Please enter No of Manufacturer Controls in Hepatitis"); ?>' />
+												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder='<?php echo _htmlTranslate("No of Manufacturer Controls in Hepatitis"); ?>' title='<?php echo _htmlTranslate("Please enter No of Manufacturer Controls in Hepatitis"); ?>' />
 												</td>
-												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Calibrators in Hepatitis"); ?>' title='<?php echo _translate("Please enter No of Calibrators in Hepatitis"); ?>' />
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _htmlTranslate("No of Calibrators in Hepatitis"); ?>' title='<?php echo _htmlTranslate("Please enter No of Calibrators in Hepatitis"); ?>' />
 												</td>
 											</tr>
 										<?php }
@@ -443,7 +443,7 @@ sort($fileList);
 												</td>
 												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Manufacturer Controls in TB"); ?>' title='<?php echo _translate("Please enter No of Manufacturer Controls in TB"); ?>' />
 												</td>
-												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Calibrators in TB"); ?>' title='<?php echo _translate("Please enter No of Calibrators in TB"); ?>' /></td>
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _htmlTranslate("No of Calibrators in TB"); ?>' title='<?php echo _htmlTranslate("Please enter No of Calibrators in TB"); ?>' /></td>
 											</tr>
 										<?php }
 										if (SYSTEM_CONFIG['modules']['cd4']) { ?>
@@ -455,7 +455,7 @@ sort($fileList);
 												</td>
 												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Manufacturer Controls in CD4"); ?>' title='<?php echo _translate("Please enter No of Manufacturer Controls in CD4"); ?>' />
 												</td>
-												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Calibrators in CD4"); ?>' title='<?php echo _translate("Please enter No of Calibrators in CD4"); ?>' /></td>
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _htmlTranslate("No of Calibrators in CD4"); ?>' title='<?php echo _htmlTranslate("Please enter No of Calibrators in CD4"); ?>' /></td>
 											</tr>
 										<?php }
 										if (SYSTEM_CONFIG['modules']['generic-tests']) { ?>
@@ -463,11 +463,11 @@ sort($fileList);
 												<td align="left" style="text-align:center;">
 													<?php echo _translate("Other Lab Tests"); ?><input type="hidden" name="testType[]" id="testType1" value="generic-tests" />
 												</td>
-												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of In-House Controls in Other Lab Tests"); ?>' title='<?php echo _translate("Please enter No of In-House Controls in Other Lab Tests"); ?>' />
+												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder='<?php echo _htmlTranslate("No of In-House Controls in Other Lab Tests"); ?>' title='<?php echo _htmlTranslate("Please enter No of In-House Controls in Other Lab Tests"); ?>' />
 												</td>
-												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Manufacturer Controls in Other Lab Tests"); ?>' title='<?php echo _translate("Please enter No of Manufacturer Controls in Other Lab Tests"); ?>' />
+												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder='<?php echo _htmlTranslate("No of Manufacturer Controls in Other Lab Tests"); ?>' title='<?php echo _htmlTranslate("Please enter No of Manufacturer Controls in Other Lab Tests"); ?>' />
 												</td>
-												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Calibrators in Other Lab Tests"); ?>' title='<?php echo _translate("Please enter No of Calibrators in Other Lab Tests"); ?>' />
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _htmlTranslate("No of Calibrators in Other Lab Tests"); ?>' title='<?php echo _htmlTranslate("Please enter No of Calibrators in Other Lab Tests"); ?>' />
 												</td>
 											</tr>
 										<?php } ?>

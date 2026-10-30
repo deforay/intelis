@@ -583,7 +583,7 @@ $state = $geolocationService->getProvinces("yes");
                         $(".retest-btn").hide();
                         $("#checkTestsData").prop('checked', false);
                     } else {
-                        alert("<?php echo _translate("Something went wrong. Please try again later"); ?>");
+                        alert("<?php echo _jsTranslate("Something went wrong. Please try again later"); ?>");
                     }
                 });
         }

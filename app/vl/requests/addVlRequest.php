@@ -163,7 +163,7 @@ require_once WEB_ROOT . "/assets/js/test-specific/vl.js.php";
                 } else {
                     $.unblockUI();
                     generateSampleCode();
-                    alert("<?= _translate("Could not save this form. Please try again."); ?>");
+                    alert("<?= _jsTranslate("Could not save this form. Please try again."); ?>");
                 }
             });
     }

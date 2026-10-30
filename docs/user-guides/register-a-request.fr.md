@@ -66,7 +66,7 @@ astérisque rouge sont obligatoires.
 
     ### Information du patient
 
-    8. Saisir l'**ART (TRACNET) No.** exactement tel qu'il figure sur la fiche
+    8. Saisir l'**N° ART (TRACNET)** exactement tel qu'il figure sur la fiche
        papier. InteLIS affiche les demandes antérieures du patient : **Nombre de
        fois où le test a été demandé pour ce patient**, **Dernière demande
        envoyée par LIS/STS** et **Date de prélèvement de l'échantillon pour la
@@ -112,8 +112,8 @@ astérisque rouge sont obligatoires.
 
     ### Enregistrer
 
-    19. Sélectionner **Sauvegarder** pour revenir à la liste des demandes, ou
-        **Sauvegarder et Suivant** pour ouvrir un nouveau formulaire pour la
+    19. Sélectionner **Enregistrer** pour revenir à la liste des demandes, ou
+        **Enregistrer et suivant** pour ouvrir un nouveau formulaire pour la
         fiche papier suivante.
 
         ??? info "Si Sauvegarder et Suivant reporte des informations sur le nouveau formulaire"
@@ -134,8 +134,8 @@ astérisque rouge sont obligatoires.
 
         Pour corriger une erreur, sélectionner **Modifier** sur la ligne.
 
-    Ensuite, ajouter l'échantillon à un batch. Voir
-    [Créer un batch pour le test](batch-samples.md).
+    Ensuite, ajouter l'échantillon à un lot. Voir
+    [Créer un lot pour le test](batch-samples.md).
 
 === "Dans une structure sanitaire (STS)"
 
@@ -163,7 +163,7 @@ astérisque rouge sont obligatoires.
 
     ### Information du patient
 
-    8. Saisir l'**ART (TRACNET) No.** exactement tel qu'il figure sur la fiche
+    8. Saisir l'**N° ART (TRACNET)** exactement tel qu'il figure sur la fiche
        papier. InteLIS affiche les demandes antérieures du patient : **Nombre de
        fois où le test a été demandé pour ce patient**, **Dernière demande
        envoyée par LIS/STS** et **Date de prélèvement de l'échantillon pour la
@@ -206,8 +206,8 @@ astérisque rouge sont obligatoires.
 
     ### Enregistrer
 
-    18. Sélectionner **Sauvegarder** pour revenir à la liste des demandes, ou
-        **Sauvegarder et Suivant** pour ouvrir un nouveau formulaire pour la
+    18. Sélectionner **Enregistrer** pour revenir à la liste des demandes, ou
+        **Enregistrer et suivant** pour ouvrir un nouveau formulaire pour la
         fiche papier suivante.
 
         ??? info "Si Sauvegarder et Suivant reporte des informations sur le nouveau formulaire"

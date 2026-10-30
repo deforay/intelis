@@ -24,7 +24,7 @@ demandent d'abord l'accord de l'équipe nationale.
 3. Trouver le paramètre avec **Rechercher les paramètres par mot-clé**, ou
    choisir son panneau sous **Aller à une section**.
 4. Modifier le paramètre.
-5. Sélectionner **Sauvegarder**.
+5. Sélectionner **Enregistrer**.
 6. Vérifier l'effet avec la ligne correspondante de
    [Vérifier une modification](#verifier-une-modification).
 
@@ -85,7 +85,7 @@ modification dans un panneau n'atteint pas les autres.
 | --- | --- | --- |
 | ID de l'échantillon | La construction des ID d'échantillon de ce module. Voir [Formats d'ID d'échantillon](#formats-did-dechantillon) | Tous |
 | Longueur minimale de l'identifiant du patient | Le plus court identifiant de patient accepté par le formulaire | Tous |
-| Demande de copie sur les formulaires Enregistrer et Suivant | Si **Sauvegarder et Suivant** reporte les valeurs de la demande précédente | Tous. Seuls certains formulaires nationaux l'utilisent |
+| Demande de copie sur les formulaires Enregistrer et Suivant | Si **Enregistrer et suivant** reporte les valeurs de la demande précédente | Tous. Seuls certains formulaires nationaux l'utilisent |
 | VL Auto Approve API Results (Approbation automatique des résultats de l'API), Approbation automatique des résultats de l'API par l'EID, COVID-19 Approbation automatique des résultats de l'API, Approbation automatique des résultats de l'API TB | Si les résultats reçus par l'API sont approuvés sans contrôle humain | Charge virale, EID, Covid-19, TB |
 | Afficher le nom du participant dans le manifeste VL / EID / COVID-19 / TB / CD4, Afficher le nom du participant dans Hepatitis Manifest, Afficher le nom du participant dans le manifeste des tests de laboratoire personnalisés | Si le nom du participant s'imprime sur le manifeste de ce module | Tous |
 | Tests de confirmation positifs Covid-19 requis | Si un résultat COVID-19 positif demande un test de confirmation | Covid-19 |
@@ -102,7 +102,7 @@ Les **Réglages de la charge virale** portent en plus :
 ??? warning "Approbation automatique des résultats de l'API"
 
     Les résultats reçus par l'API sont diffusés sans contrôle humain. C'est sûr
-    lorsque l'automate est fiable et que le circuit des batchs est respecté. Ce
+    lorsque l'automate est fiable et que le circuit des lots est respecté. Ce
     n'est pas sûr lorsque les ID d'échantillon sont saisis à la main sur
     l'automate.
 
@@ -180,7 +180,7 @@ Le support InteLIS modifie ces deux paramètres sur demande.
 | --- | --- |
 | Format de date, En-tête, Image du logo | Ouvrir un rapport et le lire |
 | ID de l'échantillon | Enregistrer une demande et lire l'ID de l'échantillon attribué |
-| Format du code-barres | Imprimer un PDF de batch et scanner un code-barres |
+| Format du code-barres | Imprimer un PDF de lot et scanner un code-barres |
 | Le même utilisateur peut réviser et approuver | Réviser un résultat, puis tenter d'approuver ce même résultat |
 | Approbation automatique des résultats de l'API | Envoyer un résultat par l'API et lire son statut |
 | VL Objectif mensuel | Ouvrir le tableau de bord et trouver les graphiques d'objectifs |

@@ -387,7 +387,7 @@ $state = $geolocationService->getProvinces("yes");
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 		$("#vlLab").select2({
-			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Testing Lab"); ?>"
 		});
 		$("#batchCode").select2({
 			placeholder: "<?php echo _translate("Select Batch Code"); ?>"

@@ -274,7 +274,7 @@ $genericResult = $db->rawQuery($sQuery, [$codeId]);
 
 
         if (!referralLabId) {
-            alert("<?php echo _translate("Please select the sending lab first"); ?>");
+            alert("<?php echo _jsTranslate("Please select the sending lab first"); ?>");
             return;
         }
 
@@ -300,7 +300,7 @@ $genericResult = $db->rawQuery($sQuery, [$codeId]);
                 initializeMultiselect();
                 updateCounters();
             } else {
-                alert("<?php echo _translate("No samples available for referral"); ?>");
+                alert("<?php echo _jsTranslate("No samples available for referral"); ?>");
             }
             $.unblockUI();
         });

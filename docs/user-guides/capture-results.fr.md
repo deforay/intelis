@@ -12,7 +12,7 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
 
 ## Avant de commencer
 
-- Un batch dont la série est terminée sur l'automate
+- Un lot dont la série est terminée sur l'automate
 - La permission d'enregistrer des résultats
 
 **Choisir la façon dont les résultats parviennent à InteLIS, puis suivre ses étapes de haut en bas.**
@@ -36,7 +36,7 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
 
     4. Dans InteLIS, aller à **CHARGE VIRALE DU VIH → Gestion des demandes →
        Afficher les demandes de test**.
-    5. Rechercher le code du batch. Chaque échantillon arrivé porte un résultat.
+    5. Rechercher le code du lot. Chaque échantillon arrivé porte un résultat.
 
         ??? failure "Si les résultats n'arrivent pas"
 
@@ -52,7 +52,7 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
                sanitaires**, de modifier le laboratoire de test et de vérifier le
                panneau **Connexions des outils d'interface** en bas de page.
                Chaque installation connectée affiche un **Statut** et une
-               **Dernière connexion**. Le panneau n'apparaît que sur les
+               **Dernière activité**. Le panneau n'apparaît que sur les
                installations où le contact support du laboratoire a activé les
                connexions de l'outil d'interface. Sans le panneau, demander au
                contact support de vérifier la connexion.
@@ -76,10 +76,10 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
     peut exporter un fichier de résultats.
 
     1. Sur l'automate, exporter les résultats de la série en fichier xls, xlsx,
-       csv ou txt. Le fichier porte les ID d'échantillon du PDF du batch.
+       csv ou txt. Le fichier porte les ID d'échantillon du PDF du lot.
     2. Dans InteLIS, aller à **CHARGE VIRALE DU VIH → Gestion des résultats des
        tests → Importer les résultats d'un fichier**.
-    3. Choisir l'automate qui a passé le batch dans **Nom de
+    3. Choisir l'automate qui a passé le lot dans **Nom de
        l'instrument/plateforme**.
 
         ??? failure "Si l'import est illisible ou vide"
@@ -131,12 +131,12 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
             demande une confirmation, soit il refuse. En cas de refus, choisir une
             autre personne pour **Approuvé par**.
 
-    12. Sélectionner **Sauvegarder**.
+    12. Sélectionner **Enregistrer**.
 
         ??? failure "Si InteLIS signale qu'un ou plusieurs échantillons n'ont pas de date de test"
 
             Saisir la date de test manquante sur chaque ligne qui n'en a pas,
-            puis sélectionner à nouveau **Sauvegarder**.
+            puis sélectionner à nouveau **Enregistrer**.
 
 === "Saisie manuelle"
 
@@ -180,12 +180,12 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
             1. Saisir `Failed` comme **Résultat de la charge virale (copies/mL)**.
             2. Choisir la **Raison de l'échec**.
 
-            L'échantillon passe dans **Échec/Echantillons en attente** pour un
+            L'échantillon passe dans **Échantillons en échec/en attente** pour un
             retest. Voir
             [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
 
     5. Relire le résultat à l'écran par rapport au tirage de l'automate.
-    6. Sélectionner **Sauvegarder**. Le résultat passe à **Awaiting Approval**
+    6. Sélectionner **Enregistrer**. Le résultat passe à **Awaiting Approval**
        (en attente d'approbation). Voir
        [Vérifier et approuver les résultats](approve-results.md).
 
@@ -197,7 +197,7 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
     1. Aller à **AUTRES EXAMENS DE LABORATOIRE → Gestion des résultats des tests
        → Saisir le résultat manuellement**.
     2. Sélectionner **Saisir le résultat** sur la ligne de l'échantillon.
-    3. Sélectionner **Ajouter Test** pour un test effectué sur l'échantillon.
+    3. Sélectionner **Ajouter un test** pour un test effectué sur l'échantillon.
     4. Enregistrer le résultat de ce test sur sa fiche. Une fiche enregistre un
        test réalisé dans ce laboratoire ou un test confié à un autre laboratoire.
     5. Répéter les étapes 3 et 4 pour chaque test effectué sur l'échantillon.
@@ -217,13 +217,13 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
             laboratoire d'analyse) quel que soit le nombre de fiches enregistrées, et il n'atteint jamais la file
             d'approbation. Rouvrir l'échantillon et refaire les étapes 6 et 7.
 
-    8. Sélectionner **Sauvegarder**.
+    8. Sélectionner **Enregistrer**.
 
 ## Vérifier que tout fonctionne
 
 1. Aller à **Afficher les demandes de test** sous **Gestion des demandes** pour
    le type de test.
-2. Rechercher le code du batch.
+2. Rechercher le code du lot.
 
 Chaque échantillon de la série porte un résultat, un rejet ou un échec. Un
 échantillon sans aucun des trois n'est pas parvenu à InteLIS. Vérifier son ID

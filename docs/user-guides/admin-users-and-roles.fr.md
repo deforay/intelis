@@ -195,7 +195,7 @@ passe.
 
 Sur **Ajouter un utilisateur**, choisir le rôle API remplit **AuthToken**
 automatiquement. Un utilisateur enregistré avec **Accès à l'application
-mobile** sur **Oui** et sans jeton reçoit aussi un jeton à l'enregistrement.
+mobile** du total **Oui** et sans jeton reçoit aussi un jeton à l'enregistrement.
 
 ??? warning "Un nouveau jeton arrête aussitôt l'ancien"
 
@@ -234,12 +234,12 @@ Un rôle est un ensemble nommé de privilèges. Les utilisateurs ne tiennent leu
 privilèges que de leur rôle.
 
 1. Aller à **ADMIN → Utilisateurs et rôles → Les rôles**.
-2. Sélectionner **Ajouter rôle**, ou **Modifier** sur un rôle existant.
+2. Sélectionner **Ajouter un rôle**, ou **Modifier** sur un rôle existant.
 3. Saisir **Nom du rôle** et **Code de rôle**. Les deux doivent être uniques.
 4. Renseigner, si besoin, **Page de destination**. Les utilisateurs de ce rôle arrivent sur
    cette page après la connexion.
 5. Régler **Statut** sur **Actif**.
-6. Renseigner **Type d'Accès** : **Laboratoire d'analyse** pour le personnel du
+6. Renseigner **Type d'accès** : **Laboratoire d'analyse** pour le personnel du
    laboratoire, **Site de prélèvement** pour le personnel des structures. Le
    renseigner avant les privilèges. Il masque les pages qui ne relèvent pas de
    ce type, et InteLIS refuse les pages masquées à l'enregistrement.

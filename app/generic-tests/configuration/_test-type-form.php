@@ -608,8 +608,8 @@ $i = 1;
 								<div class="col-lg-7">
 									<!--<select class="quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='< ?php echo _translate("Enter test result unit"); ?>' title='< ?php echo _translate("Please enter test result unit"); ?>' multiple>-->
 									<select id="testResultUnit" name="resultConfig[test_result_unit][]"
-										placeholder='<?php echo _translate("Enter test result unit"); ?>'
-										title='<?php echo _translate("Please enter test result unit"); ?>' multiple>
+										placeholder='<?php echo _htmlTranslate("Enter test result unit"); ?>'
+										title='<?php echo _htmlTranslate("Please enter test result unit"); ?>' multiple>
 										<?= $general->generateSelectOptions($testResultUnitInfo, $testResultUnitId, true) ?>
 									</select>
 								</div>
@@ -981,13 +981,13 @@ $i = 1;
 		checkResultType();
 		$("#sampleType").select2({
 			width: '100%',
-			placeholder: "<?php echo _translate("Select Sample Type"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Sample Type"); ?>"
 		});
 		$("#testingReason").select2({
 			placeholder: "<?php echo _translate("Select Testing Reason"); ?>"
 		});
 		$("#testFailureReason").select2({
-			placeholder: "<?php echo _translate("Select Test Failure Reason"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Test Failure Reason"); ?>"
 		});
 		$("#rejectionReason").select2({
 			placeholder: "<?php echo _translate("Select Rejection Reason"); ?>"
@@ -1137,7 +1137,7 @@ $i = 1;
 		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _translate('Please select is it mandatory'); ?>"><option value="yes"><?php echo _translate("Yes"); ?></option><option value="no" selected><?php echo _translate("No"); ?></option></select>';
 		e.innerHTML = '<select class="form-control" name="showOnReport[]" id="showOnReport' + tableRowId + '" title="<?php echo _translate('Show on result PDF'); ?>"><option value="no" selected><?php echo _translate("No"); ?></option><option value="yes"><?php echo _translate("Yes"); ?></option></select>';
 		f.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _translate('Please select the section'); ?>" onchange="checkSection(' + tableRowId + ')"><option value=""> <?php echo _translate("-- Select --"); ?> </option><option value="facilitySection"><?php echo _translate("Facility"); ?></option><option value="patientSection"><?php echo _translate("Patient"); ?></option><option value="specimenSection"><?php echo _translate("Specimen"); ?></option><option value="caseInformation"><?php echo _translate("Case Information"); ?></option><option value="labSection"><?php echo _translate("Lab"); ?></option><option value="otherSection"><?php echo _translate("Other"); ?></option></select><input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder="<?php echo _translate("Section Other"); ?>" title="<?php echo _translate("Please enter section other"); ?>" style="display:none;"/>';
-		g.innerHTML = '<input type="text" name="fieldOrder[]" id="fieldOrder' + tableRowId + '" class="form-control forceNumeric" placeholder="<?php echo _translate("Order"); ?>" title="<?php echo _translate("Please enter field order"); ?>" />';
+		g.innerHTML = '<input type="text" name="fieldOrder[]" id="fieldOrder' + tableRowId + '" class="form-control forceNumeric" placeholder="<?php echo _translate("Order"); ?>" title="<?php echo _jsTranslate("Please enter field order"); ?>" />';
 		h.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
 

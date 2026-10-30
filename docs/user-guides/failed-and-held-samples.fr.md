@@ -62,7 +62,7 @@ Pour tous les statuts, voir [Statuts des échantillons](sample-statuses.md).
 
     1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests →
        Échec/Echantillons en attente**.
-    2. Vérifier **Résultat Statut**. **Echec** et **En attente** sont
+    2. Vérifier **Statut du résultat**. **Échec** et **En attente** sont
        sélectionnés par défaut. Ajouter **Perdu** si nécessaire.
     3. Restreindre avec les autres filtres si nécessaire, par exemple **Nom de la
        structure**, **Date de prélèvement de l'échantillon** ou **Code du
@@ -82,7 +82,7 @@ Pour tous les statuts, voir [Statuts des échantillons](sample-statuses.md).
 
         ??? info "Ce que fait le retest"
 
-            Le résultat est effacé et l'échantillon quitte son batch. Son statut
+            Le résultat est effacé et l'échantillon quitte son lot. Son statut
             revient à **Échantillon enregistré au laboratoire d'analyse**.
             InteLIS conserve la tentative en échec, de sorte que les rapports de
             performance du laboratoire comptent à la fois l'échec et le retest.
@@ -90,14 +90,14 @@ Pour tous les statuts, voir [Statuts des échantillons](sample-statuses.md).
     8. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
        demandes de test** et rechercher l'échantillon. La colonne **Statut**
        affiche `Sample Registered at Testing Lab`, et le résultat est vide.
-    9. Ajouter l'échantillon à un nouveau batch. Voir
-       [Créer un batch pour le test](batch-samples.md).
+    9. Ajouter l'échantillon à un nouveau lot. Voir
+       [Créer un lot pour le test](batch-samples.md).
 
     ??? info "Si l'étiquette code-barres du tube est abîmée"
 
         La réimprimer depuis **CHARGE VIRALE DU VIH → Gestion des demandes →
         Afficher les demandes de test**. Rechercher l'échantillon et
-        sélectionner **Code barre** sur sa ligne. Le bouton n'apparaît que si
+        sélectionner **Code-barres** sur sa ligne. Le bouton n'apparaît que si
         **Impression d'étiquettes code-barres des échantillons** sous **ADMIN →
         Paramètres → Configuration générale** n'est pas réglé sur
         **Désactivé**. Avec une imprimante Zebra, si aucune imprimante n'est proposée, sélectionner
@@ -112,7 +112,7 @@ Pour tous les statuts, voir [Statuts des échantillons](sample-statuses.md).
 
     1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests →
        Échec/Echantillons en attente**.
-    2. Régler **Résultat Statut** sur **Echec** uniquement.
+    2. Régler **Statut du résultat** sur **Échec** uniquement.
     3. Restreindre avec les autres filtres si nécessaire.
     4. Sélectionner **Rechercher**.
     5. Cocher les échantillons concernés. Le bouton **Déplacer la sélection vers
@@ -135,7 +135,7 @@ Pour tous les statuts, voir [Statuts des échantillons](sample-statuses.md).
             Error ou Invalid, ou sont déjà acceptés. Les véritables échecs sont
             toujours ignorés. Les retester plutôt.
 
-    8. Rechercher de nouveau avec **Résultat Statut** réglé sur **Echec**. Les
+    8. Rechercher de nouveau avec **Statut du résultat** réglé sur **Échec**. Les
        échantillons récupérés n'apparaissent plus.
 
     Suite : [diffuser les résultats à la structure demandeuse](release-results.md).

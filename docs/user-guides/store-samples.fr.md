@@ -58,7 +58,7 @@ toujours celle où il se trouve.
         | Champ | À saisir |
         | --- | --- |
         | Volume (ml) | Le volume stocké. Obligatoire, et supérieur à zéro |
-        | Labo | Le laboratoire qui détient le congélateur. Obligatoire |
+        | Laboratoire | Le laboratoire qui détient le congélateur. Obligatoire |
         | Congélateur | Le congélateur. Obligatoire |
         | Coffret | Le coffret dans le congélateur. Obligatoire |
         | Boîte | La boîte dans le coffret. Obligatoire |
@@ -73,7 +73,7 @@ toujours celle où il se trouve.
 
     7. Laisser **Date de sortie** vide. Ce champ n'enregistre pas la sortie de
        l'échantillon.
-    8. Sélectionner **Sauvegarder**. InteLIS affiche
+    8. Sélectionner **Enregistrer**. InteLIS affiche
        `Échantillon ajouté au congélateur avec succès`.
     9. Vérifier chaque échantillon :
 
@@ -82,7 +82,7 @@ toujours celle où il se trouve.
         2. Sélectionner l'onglet **Historique du stockage des échantillons**.
         3. Choisir le **Laboratoire d'analyse**, saisir l'**ID de
            l'échantillon**, puis sélectionner **Rechercher**.
-        4. La ligne affiche le congélateur, le **Coffret**, la **Boîte** et la
+        4. La ligne affiche le congélateur, le **Portoir**, la **Boîte** et la
            **Position** saisis à l'étape 6, avec le statut `Added`.
 
         ??? info "La colonne Stockage actuel reste vide"
@@ -95,7 +95,7 @@ toujours celle où il se trouve.
 
     !!! warning "Ces positions vont sur le formulaire de demande, pas dans les enregistrements de stockage"
 
-        L'import remplit les champs **Congélateur**, **Coffret**, **Boîte**,
+        L'import remplit les champs **Congélateur**, **Portoir**, **Boîte**,
         **Position** et **Volume (ml)** du formulaire de demande de chaque
         échantillon. Il n'ajoute pas les échantillons aux Rapports sur les
         congélateurs et le stockage.
@@ -103,11 +103,11 @@ toujours celle où il se trouve.
     1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
        demandes de test**.
     2. Sélectionner **Stockage des échantillons** en haut à droite de la liste.
-    3. Sélectionner **Stockage Téléchargement en masse**.
-    4. Saisir le code du batch ou du manifeste de la boîte dans **Code du lot
+    3. Sélectionner **Import en masse du stockage**.
+    4. Saisir le code du lot ou du manifeste de la boîte dans **Code du lot
        (ou) Code du manifeste**.
     5. Sélectionner **Télécharger le format Excel**. Le fichier se télécharge
-       avec les ID des échantillons et des patients de ce batch ou de ce
+       avec les ID des échantillons et des patients de ce lot ou de ce
        manifeste déjà remplis.
     6. Remplir le fichier. Conserver ses colonnes telles quelles. Leurs en-têtes
        sont en anglais :
@@ -141,7 +141,7 @@ toujours celle où il se trouve.
     9. Vérifier quelques échantillons avant de remettre la boîte au
        congélateur. Dans **Afficher les demandes de test**, rechercher
        l'échantillon et sélectionner **Modifier**. Les champs **Congélateur**,
-       **Coffret**, **Boîte**, **Position** et **Volume (ml)** affichent les
+       **Portoir**, **Boîte**, **Position** et **Volume (ml)** affichent les
        valeurs importées.
 
 ## Enregistrer la sortie d'un échantillon
@@ -182,5 +182,5 @@ toujours celle où il se trouve.
 4. Pour vérifier le congélateur à la main, sélectionner **Exporter vers Excel**
    et comparer le fichier avec les tubes.
 
-Les échantillons enregistrés par **Stockage Téléchargement en masse**
+Les échantillons enregistrés par **Import en masse du stockage**
 n'apparaissent pas dans ce rapport.

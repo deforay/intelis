@@ -38,7 +38,7 @@ approuvés automatiquement, si le laboratoire est configuré ainsi.
     2. Régler **Afficher les échantillons qui sont** sur **Non approuvé/rejeté**.
        Cette liste montre les échantillons qui ont un résultat et attendent
        l'approbation.
-    3. Régler **Code de batch** sur la série de l'automate. Une seule série à
+    3. Régler **Code du lot** sur la série de l'automate. Une seule série à
        l'écran se vérifie contre un seul tirage.
 
         ??? info "Autres filtres"
@@ -74,7 +74,7 @@ approuvés automatiquement, si le laboratoire est configuré ainsi.
 
     6. Cocher les lignes conformes.
     7. Dans **Actions groupées**, régler **Statut** sur **Accepté**.
-    8. Renseigner **Approbateur**. Renseigner **Tester** et **Réviseur** si le
+    8. Renseigner **Approbateur**. Renseigner **Testeur** et **Réviseur** si le
        laboratoire les enregistre. Si **Approbateur** reste vide et que
        l'échantillon n'a pas encore d'approbateur, InteLIS enregistre
        l'utilisateur connecté comme approbateur et réviseur.
@@ -104,7 +104,7 @@ approuvés automatiquement, si le laboratoire est configuré ainsi.
 
             Un résultat qui correspond à un échec ou à une série invalide ne peut
             pas être accepté. InteLIS attribue alors le statut
-            **Échec/Invalidité**. Voir
+            **Échec/Invalide**. Voir
             [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
 
     11. Régler **Afficher les échantillons qui sont** sur **Déjà approuvé/rejeté**,
@@ -128,7 +128,7 @@ approuvés automatiquement, si le laboratoire est configuré ainsi.
             **Peut être annulé**. Cette liste montre tous les échantillons qui ne
             sont pas déjà Expiré ou Annulée.
 
-    3. Filtrer jusqu'à l'échantillon, par exemple par **Code de batch** ou **Nom
+    3. Filtrer jusqu'à l'échantillon, par exemple par **Code du lot** ou **Nom
        de la structure**.
     4. Sélectionner **Rechercher**.
     5. Cocher les échantillons à rejeter.

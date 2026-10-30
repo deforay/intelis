@@ -50,7 +50,7 @@ $unitInfo = $db->query($tQuery);
                                         <input type="text" class="form-control isRequired" id="unitName" name="unitName"
                                             placeholder="<?php echo _translate('Unit Name'); ?>"
                                             title="<?php echo _translate('Please enter unit name'); ?>"
-                                            onblur="checkNameValidation('r_generic_test_result_units','unit_name',this,'<?php echo "unit_id##" . $unitInfo[0]['unit_id']; ?>','<?php echo _translate("This test result unit name that you entered already exists.Try another name"); ?>',null)"
+                                            onblur="checkNameValidation('r_generic_test_result_units','unit_name',this,'<?php echo "unit_id##" . $unitInfo[0]['unit_id']; ?>','<?php echo _jsTranslate("This test result unit name that you entered already exists.Try another name"); ?>',null)"
                                             value="<?php echo $unitInfo[0]['unit_name']; ?>" />
                                         <input type="hidden" name="unitId" id="unitId"
                                             value="<?php echo base64_encode((string) $unitInfo[0]['unit_id']); ?>" />

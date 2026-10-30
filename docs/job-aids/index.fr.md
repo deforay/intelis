@@ -27,7 +27,7 @@ travail concerné.
 |---|---|---|
 | 1. Le parcours d'un échantillon | Les étapes, les deux voies d'arrivée, qui fait quoi | Partout dans le laboratoire |
 | 2. Enregistrer une demande de test | Le formulaire de demande, champ par champ | Au poste de saisie |
-| 3. Créer un batch et lancer l'automate | Constituer un batch, le PDF, charger l'automate | À l'automate |
+| 3. Créer un lot et lancer l'automate | Constituer un lot, le PDF, charger l'automate | À l'automate |
 | 4. Saisir les résultats : trois méthodes | Outil d'interface, import de fichier, saisie manuelle | À l'automate et au poste de saisie |
 | 5. Approuver et diffuser les résultats | Contrôles d'approbation, impression, courriel | Au poste du superviseur |
 | 6. Échec, rejet, perte ou annulation ? | Choisir la bonne action, retest, récupération | Au poste du superviseur |
@@ -75,7 +75,7 @@ exceptions et la conduite à tenir en cas de problème.
 |---|---|
 | Labo 1 | [Le parcours d'un échantillon dans InteLIS](../user-guides/index.md) |
 | Labo 2 | [Enregistrer une demande de test de charge virale](../user-guides/register-a-request.md) |
-| Labo 3 | [Créer un batch pour le test](../user-guides/batch-samples.md) |
+| Labo 3 | [Créer un lot pour le test](../user-guides/batch-samples.md) |
 | Labo 4 | [Saisir les résultats de charge virale](../user-guides/capture-results.md) |
 | Labo 5 | [Vérifier et approuver les résultats](../user-guides/approve-results.md) et [Diffuser les résultats](../user-guides/release-results.md) |
 | Labo 6 | [Gérer les échecs et les échantillons en attente](../user-guides/failed-and-held-samples.md) |

@@ -22,7 +22,7 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
     ---
 
     Le travail quotidien au laboratoire : enregistrer les demandes, réceptionner
-    et envoyer les manifestes, créer les batchs, saisir les résultats, les
+    et envoyer les manifestes, créer les lots, saisir les résultats, les
     vérifier et les diffuser.
 
     [:octicons-arrow-right-24: Le parcours d'un échantillon](user-guides/index.md)

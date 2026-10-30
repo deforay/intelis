@@ -489,9 +489,9 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
                                                                         </select>
                                                                         <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testNameOther<?= ($indexKey + 1); ?>" title="<?= _translate("Please enter the name of the Testkit (or) Test Method used"); ?>" placeholder="<?= _translate("Enter Test Method used"); ?>" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
-                                                                    <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="<?= _translate("Tested on"); ?>" title="<?= _translate("Please enter the tested on for row <?= ($indexKey + 1); ?>"); ?>" /></td>
+                                                                    <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="<?= _translate("Tested on"); ?>" title="<?= sprintf(_translate("Please enter the tested on for row %d"), $indexKey + 1); ?>" /></td>
                                                                     <td>
-                                                                        <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control result-optional test-name-table-input" title="<?= _translate("Please select the Testing Platform for <?= ($indexKey + 1); ?>"); ?>">
+                                                                        <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control result-optional test-name-table-input" title="<?= sprintf(_translate("Please select the Testing Platform for %d"), $indexKey + 1); ?>">
                                                                             <?php $display = "display:none;";
                                                                             if ((str_contains((string)$rows['test_name'], 'RDT'))) {
                                                                                 $display = "";
@@ -510,7 +510,7 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
                                                                     </td>
                                                                     <td class="kitlabels" style="display: none;"><input type="text" value="<?php echo $rows['kit_lot_no']; ?>" name="lotNo[]" id="lotNo<?= ($indexKey + 1); ?>" class="form-control kit-fields<?= ($indexKey + 1); ?>" placeholder="<?= _translate("Kit lot no"); ?>" title="<?= _translate("Please enter the kit lot no. for row 1"); ?>" style="<?php echo $display; ?>" /></td>
                                                                     <td class="kitlabels" style="display: none;"><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['kit_expiry_date']); ?>" name="expDate[]" id="expDate<?= ($indexKey + 1); ?>" class="form-control expDate kit-fields<?= ($indexKey + 1); ?>" placeholder="<?= _translate("Expiry date"); ?>" title="<?= _translate("Please enter the expiry date for row 1"); ?>" style="<?php echo $display; ?>" /></td>
-                                                                    <td><select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult<?= ($indexKey + 1); ?>" title="<?= _translate("Please select the result for row <?= ($indexKey + 1); ?>"); ?>">
+                                                                    <td><select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult<?= ($indexKey + 1); ?>" title="<?= sprintf(_translate("Please select the result for row %d"), $indexKey + 1); ?>">
                                                                             <option value=''> <?= _translate("-- Select --"); ?> </option>
                                                                             <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                                 <option value="<?php echo $c19ResultKey; ?>" <?php echo ($rows['result'] == $c19ResultKey) ? "selected='selected'" : ""; ?>> <?php echo $c19ResultValue; ?> </option>
@@ -861,7 +861,7 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
         });
         $('#labId').select2({
             width: '100%',
-            placeholder: "<?= _translate('Select Testing Lab'); ?>"
+            placeholder: "<?= _jsTranslate('Select Testing Lab'); ?>"
         });
         $('#reviewedBy').select2({
             width: '100%',
@@ -875,7 +875,7 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
         });
 
         $('#patientProvince').select2({
-            placeholder: "<?= _translate('Select Case State'); ?>"
+            placeholder: "<?= _jsTranslate('Select Case State'); ?>"
         });
         $('#province').select2({
             placeholder: "<?= _translate('Select Province'); ?>"
@@ -956,7 +956,7 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
             <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="<?= _translate('Tested on'); ?>" title="<?= _translate('Please enter the tested on for row'); ?> ${testCounter}" /></td>
             <td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="<?= _translate('Please select the Testing Platform for'); ?> ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
             <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="<?= _translate('Kit lot no'); ?>" title="<?= _translate('Please enter the kit lot no. for row'); ?> ${testCounter}" style="display:none;"/></td>
-            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="<?= _translate('Expiry date'); ?>" title="<?= _translate('Please enter the expiry date for row'); ?> ${testCounter}" style="display:none;"/></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="<?= _jsTranslate('Expiry date'); ?>" title="<?= _jsTranslate('Please enter the expiry date for row'); ?> ${testCounter}" style="display:none;"/></td>
             <td>
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>

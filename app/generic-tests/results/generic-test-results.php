@@ -354,7 +354,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 		$("#vlLab").select2({
-			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Testing Lab"); ?>"
 		});
 		$('#sampleCollectionDate').daterangepicker({
 			locale: {

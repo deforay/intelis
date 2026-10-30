@@ -248,10 +248,10 @@ $(function () {
                 if (res && res.status === 'success') {
                     loadHistory();
                 } else {
-                    alert((res && res.error) || '<?= _translate('Failed to cancel'); ?>');
+                    alert((res && res.error) || '<?= _jsTranslate('Failed to cancel'); ?>');
                 }
             }, 'json').fail(function (xhr) {
-                let msg = '<?= _translate('Failed to cancel'); ?>';
+                let msg = '<?= _jsTranslate('Failed to cancel'); ?>';
                 try { const b = JSON.parse(xhr.responseText); if (b && b.error) msg = b.error; } catch (_) {}
                 alert(msg);
             });
@@ -262,7 +262,7 @@ $(function () {
         $('#cmdHistoryBody').on('click', '.replay-link', function (e) {
             e.preventDefault();
             const commandId = $(this).data('commandId');
-            if (!window.confirm('<?= _translate('Re-queue this command with the same params?'); ?>')) return;
+            if (!window.confirm('<?= _jsTranslate('Re-queue this command with the same params?'); ?>')) return;
             $.post('/admin/monitoring/replay-lis-command.php', { commandId: commandId }, function (res) {
                 if (res && res.status === 'success') {
                     loadHistory();
@@ -292,7 +292,7 @@ function loadHistory() {
     $.post('/admin/monitoring/get-lis-command-history.php', params, function (html) {
         $('#cmdHistoryBody').html(html);
     }).fail(function () {
-        $('#cmdHistoryBody').html('<tr><td colspan="8" class="text-center text-danger"><?= _translate('Failed to load history.'); ?></td></tr>');
+        $('#cmdHistoryBody').html('<tr><td colspan="8" class="text-center text-danger"><?= _jsTranslate('Failed to load history.'); ?></td></tr>');
     });
 }
 </script>

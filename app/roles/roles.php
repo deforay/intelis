@@ -160,7 +160,7 @@ if ($activeModules !== []) {
       });
 
     $("#accessType").select2({
-      placeholder: "<?php echo _translate("Select Access Type"); ?>"
+      placeholder: "<?php echo _jsTranslate("Select Access Type"); ?>"
     });
     $("#status").select2({
       placeholder: "<?php echo _translate("Select Status"); ?>"
