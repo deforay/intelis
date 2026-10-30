@@ -162,4 +162,12 @@ final class PmtctCascadeSummaryTest extends TestCase
         self::assertSame('no', PmtctCascadeUtility::preBirthFlag('2026-01-15', []));
         self::assertSame('unknown', PmtctCascadeUtility::preBirthFlag('', ['2025-12-01']));
     }
+
+    public function testIdKeyComparesLikeTheColumnCollation(): void
+    {
+        // utf8mb4_0900_ai_ci ignores case, accents and the TRIM the join applies.
+        self::assertSame(PmtctCascadeUtility::idKey('M1'), PmtctCascadeUtility::idKey(' m1 '));
+        self::assertSame(PmtctCascadeUtility::idKey('MÈRE-1'), PmtctCascadeUtility::idKey('mere-1'));
+        self::assertNotSame(PmtctCascadeUtility::idKey('M1'), PmtctCascadeUtility::idKey('M2'));
+    }
 }
