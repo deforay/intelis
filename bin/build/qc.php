@@ -11,10 +11,15 @@ declare(strict_types=1);
 // the tests skipped looked the same as a full run. This runner exists so the
 // last screen of output answers "did everything pass, and what did not run".
 //
-// Run: composer qc              (or: php bin/build/qc.php)
-//      composer qc --quick, -q   skip the integration tests, which take most
-//                                of the time. CI runs them on every pull request.
-//      composer qc -- -v         print every check's output as it runs
+// Run: composer qc          every check except the integration tests, which
+//                           take most of the time (or: php bin/build/qc.php)
+//      composer qc --full   every check, the integration tests too
+//                           (or: composer qc:full). CI runs them on every
+//                           pull request.
+//      composer qc -- -v     print every check's output as it runs
+//
+// --quick and -q are accepted and change nothing: they asked for what is now
+// the default.
 
 // A command-line script that defines a helper and runs: PSR1's side-effects
 // rule does not fit it.
@@ -24,8 +29,8 @@ declare(strict_types=1);
  * The arguments of the composer command that started this script.
  *
  * Composer passes a script only what follows `--`. It drops an option it does
- * not know, such as --quick, and takes -q as its own --quiet. People type
- * `composer qc --quick` and `composer qc -q`, so read them from the composer
+ * not know, such as --full, and takes -q as its own --quiet. People type
+ * `composer qc --full` and `composer qc -q`, so read them from the composer
  * process: it is this script's parent, or the parent of the shell between them.
  *
  * @return list<string>
@@ -51,7 +56,7 @@ function composerArguments(): array
 
 $arguments = array_merge(array_slice($argv, 1), getenv('COMPOSER_BINARY') !== false ? composerArguments() : []);
 $verbose = array_intersect($arguments, ['-v', '--verbose']) !== [];
-$quick = array_intersect($arguments, ['-q', '--quick']) !== [];
+$quick = !in_array('--full', $arguments, true);
 
 // composer -q mutes everything this script prints. The person asked for a quick
 // run, not a silent one, so write to the terminal directly.
@@ -96,16 +101,23 @@ $checks = [
     ['invariants', "{$composer} check-invariants", 'composer check-invariants'],
     ['commit attribution', "{$composer} check-commit-attribution", 'composer check-commit-attribution'],
     $quick
-        ? ['unit tests', "{$composer} test -- --exclude-testsuite Integration", 'composer qc:quick']
+        ? [
+            'unit tests',
+            "{$composer} test -- --exclude-testsuite Integration",
+            'composer test -- --exclude-testsuite Integration',
+        ]
         : ['tests', "{$composer} test", 'composer test'],
     ['security advisories', "{$composer} audit", 'composer audit'],
 ];
 
 // The tests read the saved test MySQL login from the environment, so load it
-// here, where every check inherits it. On the first run on a terminal, offer
-// to set it up.
+// here, where every check inherits it. On the first full run on a terminal,
+// offer to set it up.
 require_once $root . '/tests/Support/TestDbSettings.php';
-if (!\Tests\Support\TestDbSettings::saved() && stream_isatty(STDIN) && getenv('INTELIS_TEST_DB_HOST') === false) {
+if (
+    !$quick && !\Tests\Support\TestDbSettings::saved() && stream_isatty(STDIN)
+    && getenv('INTELIS_TEST_DB_HOST') === false
+) {
     echo "First run: set up the test environment. Rerun this any time with composer setup-tests.\n\n";
     passthru(escapeshellarg(PHP_BINARY) . ' bin/build/setup-tests.php' . $toTerminal);
     echo "\n";
@@ -114,12 +126,15 @@ if (!\Tests\Support\TestDbSettings::saved() && stream_isatty(STDIN) && getenv('I
 $loginFromEnvironment = getenv('INTELIS_TEST_DB_HOST') !== false;
 \Tests\Support\TestDbSettings::load();
 
-// With binary logging on, the test user cannot create triggers until setup
-// turns on log_bin_trust_function_creators, and dozens of tests fail with a
-// SUPER error. Check once here and offer the fix.
-$triggersBlocked = static function (): bool {
+// Problems with the saved test login that setup can fix: the login stopped
+// working (a new password, a reinstalled MySQL), or MySQL logs binary and the
+// test user cannot create triggers until setup turns on
+// log_bin_trust_function_creators. Either one fails dozens of tests with an
+// error that does not name the fix, so check before the tests and, on a
+// terminal, run setup.
+$testDbProblem = static function (): ?string {
     if (!\Tests\Support\TestDbSettings::configured() || !extension_loaded('mysqli')) {
-        return false;
+        return null;
     }
     try {
         $mysqli = new mysqli(
@@ -129,22 +144,28 @@ $triggersBlocked = static function (): bool {
             null,
             (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306)
         );
+    } catch (Throwable $e) {
+        return 'The test MySQL login does not work: ' . $e->getMessage();
+    }
+    try {
         $row = $mysqli->query('SELECT @@log_bin, @@log_bin_trust_function_creators')->fetch_row();
         $mysqli->close();
-        return (int) $row[0] === 1 && (int) $row[1] !== 1;
     } catch (Throwable) {
-        return false;
+        return null;
     }
+    return (int) $row[0] === 1 && (int) $row[1] !== 1
+        ? 'MySQL has binary logging on, so the test user cannot create triggers.'
+        : null;
 };
-if (!$quick && $triggersBlocked()) {
-    echo "MySQL has binary logging on, so the test user cannot create triggers.\n";
-    if (stream_isatty(STDIN)) {
-        echo "Running composer setup-tests to fix it.\n\n";
-        passthru(escapeshellarg(PHP_BINARY) . ' bin/build/setup-tests.php' . $toTerminal);
-        echo "\n";
-        // Setup saved a new password for the test user.
-        \Tests\Support\TestDbSettings::load(!$loginFromEnvironment);
-    }
+$problem = $quick ? null : $testDbProblem();
+// Setup saves a login to the file, which a login set in the environment
+// overrides, so it cannot fix that one.
+if ($problem !== null && !$loginFromEnvironment && stream_isatty(STDIN)) {
+    echo "{$problem}\nRunning composer setup-tests to fix it.\n\n";
+    passthru(escapeshellarg(PHP_BINARY) . ' bin/build/setup-tests.php' . $toTerminal);
+    echo "\n";
+    \Tests\Support\TestDbSettings::load(true);
+    $problem = $testDbProblem();
 }
 
 $formatSeconds = static fn (float $seconds): string => sprintf('%.1fs', $seconds);
@@ -210,11 +231,12 @@ foreach ($checks as $check) {
 }
 
 $notes = [];
-if (!$quick && $triggersBlocked()) {
-    $notes[] = 'Tests that create triggers FAILED: MySQL has binary logging on. Run composer setup-tests to fix it.';
+if ($problem !== null) {
+    $notes[] = "Integration tests FAILED because of the test database: {$problem} "
+        . ($loginFromEnvironment ? 'Fix the INTELIS_TEST_DB_* variables.' : 'Run composer setup-tests to fix it.');
 }
 if ($quick) {
-    $notes[] = 'Integration tests were not run (--quick). CI runs them on every pull request.';
+    $notes[] = 'Integration tests were not run. composer qc --full runs them. CI runs them on every pull request.';
 } elseif (!\Tests\Support\TestDbSettings::configured()) {
     $notes[] = 'Integration tests were SKIPPED: no test MySQL login. Run composer setup-tests to set one up.';
 }

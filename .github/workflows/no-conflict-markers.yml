@@ -120,6 +120,37 @@ jobs:
       - name: Shared invariants hold
         run: composer check-invariants
 
+  # The checks composer qc runs that no other job does, so CI covers all of
+  # composer qc --full.
+  composer-checks:
+    name: Composer file, PHP extensions and security advisories
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.5'
+          extensions: gd, zip, pdo, pdo_mysql, mysqli, json, curl, gettext, openssl, fileinfo, sodium, zlib, intl, bcmath
+          tools: composer:v2
+          coverage: none
+
+      - name: composer.json is valid
+        run: composer validate --no-check-publish --no-check-version
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: PHP has every extension the packages need
+        run: composer check-platform-reqs --lock
+
+      - name: No package has a known security advisory
+        run: composer audit
+
   interface-api-tests:
     # The ruleset requires "Interface API tests" by name, so the 26.04 leg keeps it.
     name: ${{ matrix.name }}

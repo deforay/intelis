@@ -121,9 +121,9 @@
             "Composer\\Config::disableProcessTimeout",
             "@php bin/build/qc.php"
         ],
-        "qc:quick": [
+        "qc:full": [
             "Composer\\Config::disableProcessTimeout",
-            "@php bin/build/qc.php --quick"
+            "@php bin/build/qc.php --full"
         ],
         "preflight": "@php bin/preflight.php",
         "duplicate-indexes": "@php bin/duplicate-indexes.php",
@@ -247,7 +247,7 @@
         "check-invariants": "Run every static invariant check \u2014 rules the codebase states in one place and has to apply in many",
         "check-schema-drift": "Check the live database has every table and column its recorded version claims",
         "check-interface-seed": "Check sql/interface-init.sql still describes what the Interface Tool\u2019s migrations build \u2014 needs a vlsm-interfacing checkout",
-        "qc:quick": "Run composer qc without the integration tests",
+        "qc:full": "Run composer qc with the integration tests",
         "setup-tests": "Set up a MySQL login and the SQLite driver so the whole test suite runs",
         "check-commit-attribution": "Check no commit ahead of origin/master names an AI tool or vendor, in its message or its author",
         "check-sync-ownership": "Check an incoming sync cannot overwrite a column the lab owns, such as a sample it has cancelled",
