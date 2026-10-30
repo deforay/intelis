@@ -339,8 +339,8 @@ $eidSql = "SELECT
 
 $rowCount = 0;
 foreach ($db->rawQueryGenerator($eidSql) as $r) {
-    $motherKey = trim((string) ($r['mother_id'] ?? ''));
-    $vlCount = ($motherKey !== '') ? ($vlCountByMother[PmtctCascadeUtility::idKey($motherKey)] ?? 0) : 0;
+    $motherKey = PmtctCascadeUtility::idKey($r['mother_id'] ?? '');
+    $vlCount = ($motherKey !== '') ? ($vlCountByMother[$motherKey] ?? 0) : 0;
     $writer->addRow(Row::fromValues([
         // Child
         $r['child_id'] ?? '',
@@ -450,8 +450,8 @@ $vlSql = "SELECT
 $rowCount = 0;
 foreach ($db->rawQueryGenerator($vlSql) as $r) {
     $patientName = trim(($r['patient_first_name'] ?? '') . ' ' . ($r['patient_last_name'] ?? ''));
-    $motherKey = trim((string) ($r['patient_art_no'] ?? ''));
-    $matchedEidCount = ($motherKey !== '') ? ($eidCountByMother[PmtctCascadeUtility::idKey($motherKey)] ?? 0) : 0;
+    $motherKey = PmtctCascadeUtility::idKey($r['patient_art_no'] ?? '');
+    $matchedEidCount = ($motherKey !== '') ? ($eidCountByMother[$motherKey] ?? 0) : 0;
     $writer->addRow(Row::fromValues([
         $r['patient_art_no'] ?? '',
         $patientName,
