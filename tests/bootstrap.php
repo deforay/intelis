@@ -27,6 +27,9 @@ if (!defined('APPLICATION_PATH')) {
     define('APPLICATION_PATH', ROOT_PATH . DIRECTORY_SEPARATOR . 'app');
 }
 
+// The test MySQL login saved by composer setup-tests. A login already in the environment wins.
+\Tests\Support\TestDbSettings::load();
+
 // Each run, and each ParaTest worker in it, gets its own directory and database names,
 // so two runs on one machine never touch each other's files or tables. Removed when the
 // run ends. See Tests\Support\TestRun.
