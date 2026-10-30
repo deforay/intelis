@@ -322,11 +322,11 @@ function pmtctLoadEidTests(DatabaseService $db, string $whereClause, array $bind
     foreach ($rows as $r) {
         $tests[] = [
             'eidId'          => (int) ($r['eid_id'] ?? 0),
-            'childId'        => trim((string) ($r['child_id'] ?? '')),
+            'childId'        => trim((string) ($r['child_id'] ?? ''), ' '),
             'childSex'       => $r['child_gender'] ?? '',
             'childDob'       => pmtctDateOrBlank($r['child_dob'] ?? null),
             'childAgeMonths' => $r['child_age'] ?? '',
-            'motherId'       => trim((string) ($r['mother_id'] ?? '')),
+            'motherId'       => trim((string) ($r['mother_id'] ?? ''), ' '),
             'sampleCode'     => $r['sample_code'] ?? '',
             'remoteSampleCode' => $r['remote_sample_code'] ?? '',
             'collectionDate' => pmtctDateOrBlank($r['sample_collection_date'] ?? null),
@@ -349,7 +349,8 @@ function pmtctLoadEidTests(DatabaseService $db, string $whereClause, array $bind
 // ---------------------------------------------------------------------------
 if ($action === 'childHistory') {
 
-    $childId = trim((string) ($_POST['childId'] ?? ''));
+    // Spaces only, as SQL TRIM() removes, so the IDs compare like the join.
+    $childId = trim((string) ($_POST['childId'] ?? ''), ' ');
     $eidId   = (int) ($_POST['eidId'] ?? 0);
 
     if ($childId !== '') {
@@ -399,7 +400,7 @@ if ($action === 'childHistory') {
 // ---------------------------------------------------------------------------
 if ($action === 'motherHistory') {
 
-    $motherId = trim((string) ($_POST['motherId'] ?? ''));
+    $motherId = trim((string) ($_POST['motherId'] ?? ''), ' ');
 
     $vlTests  = pmtctLoadMotherVlTests($db, $motherId);
     $eidTests = ($motherId !== '')
