@@ -15,13 +15,19 @@
 # prevent. Checked before this push rather than after, because the commits being
 # pushed now have not had their chance yet.
 #
-# It never blocks. A push refused over paperwork would be worse than the problem.
+# It blocks for one reason only: a commit that names an AI tool or vendor (see
+# bin/build/check-commit-attribution.sh). A rewritten commit can be pushed again
+# in a minute. One that reached GitHub has to be rewritten on every clone that
+# fetched it. Everything else here only warns. A push refused over paperwork
+# would be worse than the problem.
 
 set -u
 
+zero_sha=0000000000000000000000000000000000000000
 remote_ref_is_master=0
 master_local_sha=""
 master_remote_sha=""
+attribution_ranges=()
 # `|| [ -n "${remote_ref:-}" ]` catches a final line with no trailing newline:
 # read fills the variables but still reports EOF, so a plain `while read` drops
 # it. Git itself terminates every line, but a global core.hooksPath dispatcher
@@ -35,7 +41,20 @@ while read -r _local_ref local_sha remote_ref remote_sha || [ -n "${remote_ref:-
             master_remote_sha="$remote_sha"
             ;;
     esac
+    # A deleted ref pushes no commits. A new ref pushes whatever the remote
+    # does not have yet.
+    if [ -n "${local_sha:-}" ] && [ "$local_sha" != "$zero_sha" ]; then
+        if [ "${remote_sha:-$zero_sha}" = "$zero_sha" ]; then
+            attribution_ranges+=("$local_sha --not --remotes")
+        else
+            attribution_ranges+=("$remote_sha..$local_sha")
+        fi
+    fi
 done
+
+if [ "${#attribution_ranges[@]}" -gt 0 ]; then
+    bash bin/build/check-commit-attribution.sh "${attribution_ranges[@]}" || exit 1
+fi
 
 [ "$remote_ref_is_master" -eq 1 ] || exit 0
 
