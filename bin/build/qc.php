@@ -11,10 +11,62 @@ declare(strict_types=1);
 // the tests skipped looked the same as a full run. This runner exists so the
 // last screen of output answers "did everything pass, and what did not run".
 //
-// Run: composer qc         (or: php bin/build/qc.php)
-//      composer qc -- -v   print every check's output as it runs
+// Run: composer qc              (or: php bin/build/qc.php)
+//      composer qc --quick, -q   skip the integration tests, which take most
+//                                of the time. CI runs them on every pull request.
+//      composer qc -- -v         print every check's output as it runs
 
-$verbose = array_intersect(array_slice($argv, 1), ['-v', '--verbose']) !== [];
+// A command-line script that defines a helper and runs: PSR1's side-effects
+// rule does not fit it.
+// phpcs:disable PSR1.Files.SideEffects
+
+/**
+ * The arguments of the composer command that started this script.
+ *
+ * Composer passes a script only what follows `--`. It drops an option it does
+ * not know, such as --quick, and takes -q as its own --quiet. People type
+ * `composer qc --quick` and `composer qc -q`, so read them from the composer
+ * process: it is this script's parent, or the parent of the shell between them.
+ *
+ * @return list<string>
+ */
+function composerArguments(): array
+{
+    $pid = getmypid();
+    for ($level = 0; $level < 3 && $pid > 1; $level++) {
+        $line = trim((string) shell_exec('ps -o ppid=,args= -p ' . (int) $pid . ' 2>/dev/null'));
+        if ($line === '' || preg_match('/^(\d+)\s+(.*)$/', $line, $match) !== 1) {
+            return [];
+        }
+        [, $parent, $command] = $match;
+        $words = preg_split('/\s+/', $command) ?: [];
+        $at = array_search('qc', $words, true);
+        if ($at !== false && preg_match('/composer/', $command) === 1) {
+            return array_slice($words, $at + 1);
+        }
+        $pid = (int) $parent;
+    }
+    return [];
+}
+
+$arguments = array_merge(array_slice($argv, 1), getenv('COMPOSER_BINARY') !== false ? composerArguments() : []);
+$verbose = array_intersect($arguments, ['-v', '--verbose']) !== [];
+$quick = array_intersect($arguments, ['-q', '--quick']) !== [];
+
+// composer -q mutes everything this script prints. The person asked for a quick
+// run, not a silent one, so write to the terminal directly.
+$toTerminal = '';
+if (in_array('-q', $arguments, true) && !in_array('-q', $argv, true) && is_writable('/dev/tty')) {
+    $terminal = fopen('/dev/tty', 'w');
+    if ($terminal !== false) {
+        ob_start(static function (string $buffer) use ($terminal): string {
+            fwrite($terminal, $buffer);
+            return '';
+        }, 1);
+        $toTerminal = ' > /dev/tty';
+    }
+}
+$onTerminal = stream_isatty(STDOUT) || $toTerminal !== '';
 
 $root = dirname(__DIR__, 2);
 chdir($root);
@@ -31,7 +83,7 @@ $composer = $composerBinary !== false && $composerBinary !== ''
 $checks = [
     [
         'vendor/ matches composer.lock',
-        escapeshellarg(PHP_BINARY) . ' bin/build/check-vendor.php',
+        escapeshellarg(PHP_BINARY) . ' bin/build/check-vendor.php --quiet',
         'composer check-vendor',
         'interactive' => true,
         'required' => true,
@@ -43,7 +95,9 @@ $checks = [
     ['DI container', "{$composer} check-di", 'composer check-di'],
     ['invariants', "{$composer} check-invariants", 'composer check-invariants'],
     ['commit attribution', "{$composer} check-commit-attribution", 'composer check-commit-attribution'],
-    ['tests', "{$composer} test", 'composer test'],
+    $quick
+        ? ['unit tests', "{$composer} test -- --exclude-testsuite Integration", 'composer qc:quick']
+        : ['tests', "{$composer} test", 'composer test'],
     ['security advisories', "{$composer} audit", 'composer audit'],
 ];
 
@@ -53,12 +107,39 @@ $checks = [
 require_once $root . '/tests/Support/TestDbSettings.php';
 if (!\Tests\Support\TestDbSettings::saved() && stream_isatty(STDIN) && getenv('INTELIS_TEST_DB_HOST') === false) {
     echo "First run: set up the test environment. Rerun this any time with composer setup-tests.\n\n";
-    passthru(escapeshellarg(PHP_BINARY) . ' bin/build/setup-tests.php');
+    passthru(escapeshellarg(PHP_BINARY) . ' bin/build/setup-tests.php' . $toTerminal);
     echo "\n";
 }
 \Tests\Support\TestDbSettings::load();
 
 $formatSeconds = static fn (float $seconds): string => sprintf('%.1fs', $seconds);
+
+// Run a command with its output captured. On a terminal, show the time spent
+// so far after the check's name, so a long check does not look stuck.
+$runCaptured = static function (string $command, string $label, float $started) use ($onTerminal): array {
+    $process = proc_open($command . ' 2>&1', [1 => ['pipe', 'w']], $pipes);
+    if ($process === false) {
+        return [1, "could not start: {$command}"];
+    }
+    stream_set_blocking($pipes[1], false);
+    $output = '';
+    while (!feof($pipes[1])) {
+        $read = [$pipes[1]];
+        $write = $except = null;
+        if (stream_select($read, $write, $except, 1) > 0) {
+            $output .= (string) fread($pipes[1], 65536);
+        }
+        if ($onTerminal) {
+            printf("\r%s ... %ds", $label, (int) (microtime(true) - $started));
+        }
+    }
+    fclose($pipes[1]);
+    $exitCode = proc_close($process);
+    if ($onTerminal) {
+        echo "\r\033[K{$label} ... ";
+    }
+    return [$exitCode, rtrim($output)];
+};
 
 $runStarted = microtime(true);
 $results = [];
@@ -67,14 +148,15 @@ foreach ($checks as $check) {
     echo "{$name} ... ";
     $started = microtime(true);
 
-    if (($check['interactive'] ?? false) || $verbose) {
+    if ($check['interactive'] ?? false) {
+        passthru($command . $toTerminal . ' 2>&1', $exitCode);
+        $output = '';
+    } elseif ($verbose) {
         echo "\n";
-        passthru($command . ' 2>&1', $exitCode);
+        passthru($command . $toTerminal . ' 2>&1', $exitCode);
         $output = '';
     } else {
-        exec($command . ' 2>&1', $lines, $exitCode);
-        $output = implode("\n", $lines);
-        $lines = [];
+        [$exitCode, $output] = $runCaptured($command, $name, $started);
     }
 
     $passed = $exitCode === 0;
@@ -93,7 +175,9 @@ foreach ($checks as $check) {
 }
 
 $notes = [];
-if (!\Tests\Support\TestDbSettings::configured()) {
+if ($quick) {
+    $notes[] = 'Integration tests were not run (--quick). CI runs them on every pull request.';
+} elseif (!\Tests\Support\TestDbSettings::configured()) {
     $notes[] = 'Integration tests were SKIPPED: no test MySQL login. Run composer setup-tests to set one up.';
 }
 // The tests run in a new PHP process, so ask that one, not this one: an install

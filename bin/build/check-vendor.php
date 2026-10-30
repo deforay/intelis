@@ -11,6 +11,7 @@ declare(strict_types=1);
 // pipe) it names the problem and exits 1.
 //
 // Run: composer check-vendor   (or: php bin/build/check-vendor.php)
+//      --quiet   print nothing when vendor/ matches (composer qc uses this)
 
 $root = dirname(__DIR__, 2);
 $lock = json_decode((string) @file_get_contents($root . '/composer.lock'), true);
@@ -43,11 +44,18 @@ if (!is_array($installed)) {
     }
 }
 
+$quiet = in_array('--quiet', array_slice($argv, 1), true);
 if ($problems === []) {
-    echo "check-vendor: vendor/ matches composer.lock.\n";
+    if (!$quiet) {
+        echo "check-vendor: vendor/ matches composer.lock.\n";
+    }
     exit(0);
 }
 
+// composer qc prints this check's name without a line break before running it.
+if ($quiet) {
+    fwrite(STDERR, "\n");
+}
 fwrite(STDERR, "check-vendor: vendor/ does not match composer.lock:\n  " . implode("\n  ", $problems) . "\n");
 
 // A lab install gets vendor/ from the release package, without dev packages.
