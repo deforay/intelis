@@ -31,7 +31,11 @@ final class TestDbSettings
         return is_file(self::path());
     }
 
-    public static function load(): void
+    /**
+     * @param bool $replace replace what an earlier load() put in the environment,
+     *                      after setup saved a new login
+     */
+    public static function load(bool $replace = false): void
     {
         if (!self::saved()) {
             return;
@@ -41,7 +45,7 @@ final class TestDbSettings
             return;
         }
         foreach (self::VARIABLES as $key => $variable) {
-            if (isset($settings[$key]) && $settings[$key] !== '' && getenv($variable) === false) {
+            if (isset($settings[$key]) && $settings[$key] !== '' && ($replace || getenv($variable) === false)) {
                 putenv("{$variable}={$settings[$key]}");
             }
         }
