@@ -96,6 +96,7 @@
         "test": "@php vendor/bin/paratest",
         "check-di": "@php bin/build/check-di.php",
         "check-vendor": "@php bin/build/check-vendor.php",
+        "setup-tests": "@php bin/build/setup-tests.php",
         "check-counts": "@php bin/build/check-count-invariants.php",
         "check-sync-ownership": "@php bin/build/check-sync-ownership.php",
         "check-sql-value-safety": "@php bin/build/check-sql-value-safety.php",
@@ -111,7 +112,7 @@
             "@check-repository-boundaries",
             "@check-request-output-escaping"
         ],
-        "lint": "find app bin public sys tests -name '*.php' -print0 | xargs -0 -P 8 -n 1 php -d display_errors=stderr -l > /dev/null",
+        "lint": "find app bin public sys tests -name '*.php' -print0 | xargs -0 -P 8 -n 200 php -d display_errors=stderr -l > /dev/null",
         "cs-check": [
             "vendor/bin/phpcs --standard=PSR12 app/classes/Contracts/InterfaceApi app/classes/Repositories/InterfaceApi app/classes/Services/InterfaceApi app/classes/HttpHandlers/InterfaceApi app/classes/Http app/classes/Exceptions/InterfaceApiException.php app/classes/Services/InterfacingService.php app/classes/Services/InstrumentActivityService.php app/classes/Services/InstrumentUsageStatisticsService.php app/classes/Middlewares/Api/Interface*.php app/facilities/interfaceConnectionAction.php app/facilities/partials/interface-connections.php tests bin/interface-api.php",
             "vendor/bin/phpcs --standard=PSR12 --runtime-set ignore_warnings_on_exit 1 app/classes/Middlewares/Api/ApiAuthMiddleware.php app/system/di.php public/api/index.php"
@@ -242,6 +243,7 @@
         "check-invariants": "Run every static invariant check \u2014 rules the codebase states in one place and has to apply in many",
         "check-schema-drift": "Check the live database has every table and column its recorded version claims",
         "check-interface-seed": "Check sql/interface-init.sql still describes what the Interface Tool\u2019s migrations build \u2014 needs a vlsm-interfacing checkout",
+        "setup-tests": "Set up a MySQL login and the SQLite driver so the whole test suite runs",
         "check-commit-attribution": "Check no commit ahead of origin/master names an AI tool or vendor, in its message or its author",
         "check-sync-ownership": "Check an incoming sync cannot overwrite a column the lab owns, such as a sample it has cancelled",
         "check-counts": "Check every surface that counts rejected samples also excludes cancelled ones, so two screens cannot disagree",

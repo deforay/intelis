@@ -47,10 +47,25 @@ $checks = [
     ['security advisories', "{$composer} audit", 'composer audit'],
 ];
 
+// The tests read the saved test MySQL login from the environment, so load it
+// here, where every check inherits it. On the first run on a terminal, offer
+// to set it up.
+require_once $root . '/tests/Support/TestDbSettings.php';
+if (!\Tests\Support\TestDbSettings::saved() && stream_isatty(STDIN) && getenv('INTELIS_TEST_DB_HOST') === false) {
+    echo "First run: set up the test environment. Rerun this any time with composer setup-tests.\n\n";
+    passthru(escapeshellarg(PHP_BINARY) . ' bin/build/setup-tests.php');
+    echo "\n";
+}
+\Tests\Support\TestDbSettings::load();
+
+$formatSeconds = static fn (float $seconds): string => sprintf('%.1fs', $seconds);
+
+$runStarted = microtime(true);
 $results = [];
 foreach ($checks as $check) {
     [$name, $command, $rerun] = $check;
     echo "{$name} ... ";
+    $started = microtime(true);
 
     if (($check['interactive'] ?? false) || $verbose) {
         echo "\n";
@@ -63,11 +78,12 @@ foreach ($checks as $check) {
     }
 
     $passed = $exitCode === 0;
-    echo $passed ? "ok\n" : "FAILED\n";
+    $took = $formatSeconds(microtime(true) - $started);
+    echo $passed ? "ok ({$took})\n" : "FAILED ({$took})\n";
     if (!$passed && $output !== '') {
         echo $output, "\n\n";
     }
-    $results[] = [$name, $passed, $rerun];
+    $results[] = [$name, $passed, $rerun, $took];
 
     // Every later check runs code from vendor/, so their failures would only
     // repeat this one.
@@ -77,25 +93,25 @@ foreach ($checks as $check) {
 }
 
 $notes = [];
-$dbHost = getenv('INTELIS_TEST_DB_HOST');
-$dbUser = getenv('INTELIS_TEST_DB_USER');
-if ($dbHost === false || $dbHost === '' || $dbUser === false || $dbUser === '') {
-    $notes[] = 'Integration tests were SKIPPED: no test MySQL. Set INTELIS_TEST_DB_HOST and '
-        . 'INTELIS_TEST_DB_USER (and _PASS, _PORT if needed) to run them.';
+if (!\Tests\Support\TestDbSettings::configured()) {
+    $notes[] = 'Integration tests were SKIPPED: no test MySQL login. Run composer setup-tests to set one up.';
 }
-if (!extension_loaded('pdo_sqlite')) {
-    $notes[] = 'Error index tests were SKIPPED: PHP has no pdo_sqlite. On Ubuntu: apt install php'
-        . PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION . '-sqlite3';
+// The tests run in a new PHP process, so ask that one, not this one: an install
+// made during setup is not loaded here.
+$sqliteCheck = escapeshellarg(PHP_BINARY) . ' -r "echo extension_loaded(\'pdo_sqlite\') ? 1 : 0;"';
+if (trim((string) shell_exec($sqliteCheck)) !== '1') {
+    $notes[] = 'Error index tests were SKIPPED: PHP has no pdo_sqlite. Run composer setup-tests to install it.';
 }
 
 echo "\nSummary\n";
 $failed = 0;
-foreach ($results as [$name, $passed, $rerun]) {
+foreach ($results as [$name, $passed, $rerun, $took]) {
+    $took = str_pad($took, 7, ' ', STR_PAD_LEFT);
     if ($passed) {
-        echo "  ok      {$name}\n";
+        echo "  ok      {$took}  {$name}\n";
     } else {
         $failed++;
-        echo "  FAILED  {$name}  (rerun: {$rerun})\n";
+        echo "  FAILED  {$took}  {$name}  (rerun: {$rerun})\n";
     }
 }
 foreach (array_slice($checks, count($results)) as [$name]) {
@@ -105,7 +121,8 @@ foreach ($notes as $note) {
     echo "\n  {$note}\n";
 }
 
+$total = $formatSeconds(microtime(true) - $runStarted);
 echo $failed === 0 && count($results) === count($checks)
-    ? "\nqc: all checks passed.\n"
-    : "\nqc: {$failed} check(s) failed.\n";
+    ? "\nqc: all checks passed in {$total}.\n"
+    : "\nqc: {$failed} check(s) failed. Total {$total}.\n";
 exit($failed === 0 ? 0 : 1);
