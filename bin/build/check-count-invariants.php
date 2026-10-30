@@ -77,12 +77,14 @@ const CANCELLED_RULE_EXEMPT = [
  */
 const COUNT_RULE_DELEGATES = [
     'SampleStatusDetailsService' => 'classes/Services/SampleStatusDetailsService.php',
+    'PmtctCascadeUtility' => 'classes/Utilities/PmtctCascadeUtility.php',
 ];
 
 function delegatesTheCountRule(string $source): bool
 {
     foreach (COUNT_RULE_DELEGATES as $class => $file) {
-        if (!str_contains($source, $class . '::class')) {
+        // "Class::" covers both Class::class (a container lookup) and a static call.
+        if (!str_contains($source, $class . '::')) {
             continue;
         }
         $delegate = file_get_contents(APP_DIR . '/' . $file);

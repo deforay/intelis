@@ -2,7 +2,9 @@
 
 namespace App\Utilities;
 
+use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 /**
  * The PMTCT Cascade Report's counting rules, shared by the report screen and
@@ -39,6 +41,10 @@ final class PmtctCascadeUtility
             "TRIM($alias.mother_id) != ''",
             SampleCountUtility::countableWhere($alias),
         ];
+        $labScope = self::labScope($alias);
+        if ($labScope !== '') {
+            $where[] = $labScope;
+        }
 
         if (!empty($post['sampleCollectionDate'])) {
             $range = explode("to", (string) $post['sampleCollectionDate']);
@@ -55,6 +61,27 @@ final class PmtctCascadeUtility
             $where[] = "$alias.lab_id = " . (int) $post['labName'];
         }
         return $where;
+    }
+
+    /**
+     * The lab scope for one table alias: on a multi-lab LIS, only the signed-in
+     * lab's records. Empty where no scope applies.
+     */
+    public static function labScope(string $alias): string
+    {
+        return trim(ContainerRegistry::get(CommonService::class)->labScopeWhere($alias));
+    }
+
+    /**
+     * WHERE condition for the mothers' VL records: not cancelled, and inside
+     * the lab scope. The EID filters do not reach these rows, so every query
+     * that reads form_vl states it.
+     */
+    public static function vlRowsWhere(string $alias = 'v'): string
+    {
+        $where = SampleCountUtility::countableWhere($alias);
+        $labScope = self::labScope($alias);
+        return $labScope !== '' ? "$where AND $labScope" : $where;
     }
 
     /**
@@ -106,13 +133,13 @@ final class PmtctCascadeUtility
 
     /**
      * PHP array key for a Mother ID or ART number that compares the way the
-     * SQL join does. The columns use utf8mb4_0900_ai_ci, which ignores case and
-     * accents, so "m1" and "M1" are one mother in SQL. A plain PHP key would
-     * split them.
+     * SQL join does. The join applies TRIM(), which removes spaces only, and
+     * the columns use utf8mb4_0900_ai_ci, which ignores case and accents. So
+     * " m1" and "M1" are one mother in SQL. A plain PHP key would split them.
      */
     public static function idKey(?string $id): string
     {
-        $key = trim((string) $id);
+        $key = trim((string) $id, ' ');
         if (class_exists(\Normalizer::class)) {
             $key = preg_replace('/\p{Mn}+/u', '', (string) \Normalizer::normalize($key, \Normalizer::FORM_D)) ?? $key;
         }
@@ -150,7 +177,7 @@ final class PmtctCascadeUtility
     {
         $whereSql   = implode(' AND ', self::filterConditions($post));
         $whereSqlE2 = implode(' AND ', self::filterConditions($post, 'e2'));
-        $vlCountable  = SampleCountUtility::countableWhere('v');
+        $vlCountable  = self::vlRowsWhere('v');
         $positiveExpr = self::eidPositiveExpr('e');
         $childKey     = self::childKeyExpr('e');
         $hasResult    = self::vlHasResultExpr('v');

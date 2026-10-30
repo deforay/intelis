@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
+use App\HttpHandlers\LegacyRequestHandler;
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Utilities\PmtctCascadeUtility;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +22,8 @@ use const SAMPLE_STATUS\CANCELLED;
  *
  * Each fixture is built so the old counting rules give a different answer:
  * children were counted per EID sample, a mother was "high VL" if any result
- * ever was, "before birth" had no time limit, and cancelled VL samples matched.
+ * ever was, "before birth" had no time limit, cancelled VL samples matched, and
+ * no lab scope applied.
  *
  * Set INTELIS_TEST_DB_HOST/_PORT/_USER/_PASS to run; skipped without them.
  */
@@ -45,7 +49,9 @@ final class PmtctCascadeSummaryTest extends TestCase
         if (!defined('SYSTEM_CONFIG')) {
             define('SYSTEM_CONFIG', ['database' => ['db' => $database], 'modules' => ['eid' => true]]);
         }
-        $db = LegacyAppHarness::boot($database, ['r_sample_status', 'form_eid', 'form_vl']);
+        $db = LegacyAppHarness::boot($database, [
+            'r_sample_status', 'system_config', 'global_config', 'facility_details', 'form_eid', 'form_vl',
+        ]);
         LegacyAppHarness::seedDefaults('r_sample_status');
         $this->booted = true;
         return $db;
@@ -57,9 +63,11 @@ final class PmtctCascadeSummaryTest extends TestCase
         string $motherId,
         string $collected,
         string $result,
-        ?string $dob
+        ?string $dob,
+        int $labId = 1
     ): void {
         $db->insert('form_eid', [
+            'lab_id' => $labId,
             'child_id' => $childId,
             'mother_id' => $motherId,
             'child_dob' => $dob,
@@ -75,9 +83,11 @@ final class PmtctCascadeSummaryTest extends TestCase
         string $collected,
         ?string $category,
         string $pregnant = 'no',
-        int $status = ACCEPTED
+        int $status = ACCEPTED,
+        int $labId = 1
     ): void {
         $db->insert('form_vl', [
+            'lab_id' => $labId,
             'patient_art_no' => $artNo,
             'sample_collection_date' => $collected,
             'vl_result_category' => $category,
@@ -169,5 +179,60 @@ final class PmtctCascadeSummaryTest extends TestCase
         self::assertSame(PmtctCascadeUtility::idKey('M1'), PmtctCascadeUtility::idKey(' m1 '));
         self::assertSame(PmtctCascadeUtility::idKey('MÈRE-1'), PmtctCascadeUtility::idKey('mere-1'));
         self::assertNotSame(PmtctCascadeUtility::idKey('M1'), PmtctCascadeUtility::idKey('M2'));
+    }
+
+    /**
+     * One request to the report endpoint. The handler loads the page with
+     * require_once, so each test that calls this runs in its own process.
+     *
+     * @param array<string, mixed> $post
+     * @return array<string, mixed>
+     */
+    private static function endpoint(array $post): array
+    {
+        $request = LegacyAppHarness::withPost($post + self::WINDOW, '/eid/management/getPmtctCascadeReport.php');
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        return json_decode((string) $handler->handle($request)->getBody(), true) ?? [];
+    }
+
+    #[RunInSeparateProcess]
+    public function testPositiveChildrenListMatchesMotherIdsLikeTheJoin(): void
+    {
+        $db = $this->boot();
+        LegacyAppHarness::withSession();
+
+        // The join matches "m1" to "M1"; the list must find her high result too.
+        self::vl($db, 'M1', '2025-12-01', 'not suppressed');
+        self::eid($db, 'C1', 'm1', '2026-02-10', 'positive', '2026-01-10');
+
+        $rows = self::endpoint(['action' => 'positiveChildren', 'preBirthOnly' => 1])['rows'] ?? [];
+
+        self::assertCount(1, $rows, 'the child is in the pregnancy list');
+        self::assertSame('yes', $rows[0]['motherHighVlPreBirth']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testOnAMultiLabInstanceOnlyTheSignedInLabCounts(): void
+    {
+        $db = $this->boot();
+        LegacyAppHarness::withSession(['instance' => ['type' => 'vluser'], 'labId' => 1]);
+
+        // Lab 1: a mother suppressed, her child negative.
+        self::vl($db, 'M1', '2025-12-01', 'suppressed');
+        self::eid($db, 'C1', 'M1', '2026-02-10', 'negative', '2026-01-10');
+        // Lab 2 holds a later high result for the same mother, and its own child.
+        self::vl($db, 'M1', '2026-01-05', 'not suppressed', 'no', ACCEPTED, 2);
+        self::eid($db, 'C2', 'M2', '2026-02-10', 'positive', '2026-01-10', 2);
+        self::vl($db, 'M2', '2025-12-01', 'not suppressed', 'no', ACCEPTED, 2);
+
+        $s = PmtctCascadeUtility::summary($db, self::WINDOW);
+
+        self::assertSame(1, $s['totalChildrenWithMotherId'], 'lab 2 children are not counted');
+        self::assertSame(0, $s['positiveChildren']);
+        self::assertSame(1, $s['vlTests'], 'lab 2 VL tests are not read');
+        self::assertSame(0, $s['mothersHighVl'], 'her latest result in lab 1 is suppressed');
+
+        $mothers = self::endpoint(['action' => 'highVlMothers'])['rows'] ?? null;
+        self::assertSame([], $mothers, 'the high VL list does not reach lab 2');
     }
 }

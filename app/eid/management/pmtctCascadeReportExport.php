@@ -1,7 +1,6 @@
 <?php
 
 use App\Utilities\PmtctCascadeUtility;
-use App\Utilities\SampleCountUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -96,7 +95,7 @@ $whereSql = implode(' AND ', $where);
 // The mother's VL rows are constrained only by the join onto positive mothers, so
 // the cancelled rule has to be stated for them separately. Same clause the report
 // uses, or the export and the screen it was taken from disagree.
-$vlCountable = SampleCountUtility::countableWhere('v');
+$vlCountable = PmtctCascadeUtility::vlRowsWhere('v');
 $positiveExpr = PmtctCascadeUtility::eidPositiveExpr('e');
 $highVlExpr   = PmtctCascadeUtility::highVlExpr('v');
 
@@ -533,6 +532,8 @@ $historyEidSelect = "SELECT
     FROM form_eid e
     LEFT JOIN facility_details fel ON fel.facility_id = e.lab_id
     LEFT JOIN r_sample_status rs ON rs.status_id = e.result_status";
+$historyLabScope = PmtctCascadeUtility::labScope('e');
+$historyLabScope = $historyLabScope !== '' ? "AND $historyLabScope" : '';
 
 $writeHistoryRows = static function (array $rows) use ($writer, $positiveChildren, $vlHistoryByMother): void {
     foreach ($rows as $r) {
@@ -581,13 +582,13 @@ $writeHistoryRows = static function (array $rows) use ($writer, $positiveChildre
 
 foreach (array_chunk($childIdList, 500) as $chunk) {
     $in = "'" . implode("','", array_map(static fn ($v) => $db->escape($v), $chunk)) . "'";
-    $rows = $db->rawQuery("$historyEidSelect WHERE TRIM(e.child_id) IN ($in)
+    $rows = $db->rawQuery("$historyEidSelect WHERE TRIM(e.child_id) IN ($in) $historyLabScope
         ORDER BY TRIM(e.child_id), e.sample_collection_date ASC, e.eid_id ASC") ?: [];
     $writeHistoryRows($rows);
 }
 foreach (array_chunk($eidIdList, 500) as $chunk) {
     $in = implode(',', array_map('intval', $chunk));
-    $rows = $db->rawQuery("$historyEidSelect WHERE e.eid_id IN ($in)
+    $rows = $db->rawQuery("$historyEidSelect WHERE e.eid_id IN ($in) $historyLabScope
         ORDER BY e.sample_collection_date ASC, e.eid_id ASC") ?: [];
     $writeHistoryRows($rows);
 }
