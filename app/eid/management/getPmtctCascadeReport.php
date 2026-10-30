@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\PmtctCascadeUtility;
 use App\Utilities\SampleCountUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\AppRegistry;
@@ -16,88 +17,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-/**
- * Build a SQL WHERE clause fragment from the user's filter inputs.
- * Returns an array of conditions to be ANDed together.
- */
-function pmtctBuildFilterConditions(array $post, DatabaseService $db, string $alias = 'e'): array
-{
-    // A cancelled sample was called off before testing, so it is not a test this
-    // cascade should count.
-    $where = [
-        "$alias.mother_id IS NOT NULL",
-        "TRIM($alias.mother_id) != ''",
-        SampleCountUtility::countableWhere($alias),
-    ];
-
-    if (!empty($post['sampleCollectionDate'])) {
-        $range = explode("to", (string) $post['sampleCollectionDate']);
-        if (count($range) === 2) {
-            $start = trim($range[0]);
-            $end   = trim($range[1]);
-            $startSql = date('Y-m-d', strtotime($start));
-            $endSql   = date('Y-m-d', strtotime($end));
-            $where[] = "DATE($alias.sample_collection_date) BETWEEN '" . $startSql . "' AND '" . $endSql . "'";
-        }
-    }
-
-    if (!empty($post['provinceId']) && ctype_digit((string) $post['provinceId'])) {
-        $where[] = "$alias.province_id = " . (int) $post['provinceId'];
-    }
-
-    if (!empty($post['labName']) && ctype_digit((string) $post['labName'])) {
-        $where[] = "$alias.lab_id = " . (int) $post['labName'];
-    }
-
-    return $where;
-}
-
-/**
- * SQL fragment that classifies an EID record as HIV-positive.
- * Captures both the canonical "positive" string used in this DB and the
- * descriptive "HIV-1 DETECTED ..." form (excluding "NOT DETECTED").
- */
-function pmtctEidPositiveExpr(string $alias = 'e'): string
-{
-    return "(LOWER(TRIM($alias.result)) = 'positive'"
-        . " OR ($alias.result LIKE '%DETECTED%'"
-        . " AND $alias.result NOT LIKE '%NOT DETECTED%'"
-        . " AND $alias.result NOT LIKE '%Not Detected%'"
-        . " AND $alias.result NOT LIKE '%not detected%'))";
-}
-
-/**
- * SQL fragment that classifies a VL test as a high viral load
- * (>= 1000 cp/mL per WHO PMTCT thresholds). Relies on the precomputed
- * vl_result_category column ('suppressed' for <1000, 'not suppressed' for
- * >=1000) so we don't have to interpret the raw result fields here.
- */
-function pmtctHighVlExpr(string $alias = 'v'): string
-{
-    return "$alias.vl_result_category = 'not suppressed'";
-}
-
-/**
- * SQL fragment for "VL test has a categorised result on file" — i.e. the
- * lab has classified the value as suppressed/not suppressed. Replaces the
- * older "v.result IS NOT NULL AND TRIM(v.result) != ''" check.
- */
-function pmtctVlHasResultExpr(string $alias = 'v'): string
-{
-    return "$alias.vl_result_category IN ('suppressed','not suppressed')";
-}
-
-/**
- * SQL fragment identifying a child across repeat EID tests. Prefers the
- * facility-recorded Child ID; records without one fall back to their own
- * eid_id so they count as single-test children instead of collapsing into
- * one bogus "blank" child.
- */
-function pmtctChildKeyExpr(string $alias = 'e'): string
-{
-    return "COALESCE(NULLIF(TRIM($alias.child_id), ''), CONCAT('eid:', $alias.eid_id))";
-}
 
 /**
  * Normalise a date value for JSON output (zero dates and NULLs become '').
@@ -127,160 +46,38 @@ function pmtctYesNoLabel($value): string
     };
 }
 
-/**
- * SQL fragment picking one column's value from the mother's most recent VL
- * test within a GROUP BY. Same GROUP_CONCAT/SUBSTRING_INDEX trick the latest
- * result columns already use: only the first element is read, so hitting
- * group_concat_max_len on a long history truncates the tail we discard anyway.
- */
-function pmtctLatestVlValueExpr(string $column, string $alias = 'v'): string
-{
-    return "SUBSTRING_INDEX(GROUP_CONCAT(COALESCE($alias.$column, '')"
-        . " ORDER BY $alias.sample_collection_date DESC SEPARATOR '||'), '||', 1)";
-}
-
-/**
- * Classify whether the mother had a documented high VL strictly before the
- * child's date of birth. Returns 'yes', 'no', or 'unknown' (no usable DOB).
- */
-function pmtctPreBirthFlag(?string $childDob, ?string $firstHighVlDate): string
-{
-    $dob = pmtctDateOrBlank($childDob);
-    if ($dob === '') {
-        return 'unknown';
-    }
-    $firstHigh = pmtctDateOrBlank($firstHighVlDate);
-    if ($firstHigh === '' || $firstHigh >= $dob) {
-        return 'no';
-    }
-    return 'yes';
-}
-
 $action = $_POST['action'] ?? 'linked';
 
 // ---------------------------------------------------------------------------
-// SUMMARY action - returns the 7 KPI numbers as JSON
+// SUMMARY action - the snapshot numbers as JSON (shared with the export)
 // ---------------------------------------------------------------------------
 if ($action === 'summary') {
-
-    $where = pmtctBuildFilterConditions($_POST, $db);
-    $whereSql = implode(' AND ', $where);
-    $positiveExpr = pmtctEidPositiveExpr('e');
-    $highVlExpr   = pmtctHighVlExpr('v');
-    $childKeyExpr = pmtctChildKeyExpr('e');
-
-    // Children-side counts (one row per child)
-    $childSql = "SELECT
-            COUNT(DISTINCT e.eid_id) AS totalChildrenWithMotherId,
-            COUNT(DISTINCT CASE WHEN v.vl_sample_id IS NOT NULL THEN e.eid_id END) AS matchedChildren,
-            COUNT(DISTINCT CASE WHEN v.vl_sample_id IS NOT NULL
-                                 AND e.result IS NOT NULL AND TRIM(e.result) != ''
-                            THEN e.eid_id END) AS testedChildren,
-            COUNT(DISTINCT CASE WHEN v.vl_sample_id IS NOT NULL AND $positiveExpr
-                            THEN e.eid_id END) AS positiveChildren,
-            COUNT(DISTINCT CASE WHEN v.vl_sample_id IS NOT NULL AND $positiveExpr
-                            THEN $childKeyExpr END) AS positiveChildrenDistinct,
-            COUNT(DISTINCT CASE WHEN v.vl_sample_id IS NULL THEN e.eid_id END) AS unmatchedChildren
-        FROM form_eid e
-        LEFT JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
-        WHERE $whereSql";
-
-    // Mother / VL-side counts (one row per VL test). VL tests are NOT
-    // constrained by the EID date filter on purpose: a mother may have
-    // tested before the child's EID date window and we still want to
-    // surface that history.
-    $hasVlResult = pmtctVlHasResultExpr('v');
-    $motherSql = "SELECT
-            COUNT(DISTINCT v.patient_art_no) AS distinctMothers,
-            COUNT(DISTINCT v.vl_sample_id) AS vlTests,
-            COUNT(DISTINCT CASE WHEN $hasVlResult THEN v.vl_sample_id END) AS vlTestsWithResult,
-            COUNT(DISTINCT CASE WHEN $hasVlResult THEN v.patient_art_no END) AS mothersWithResult,
-            COUNT(DISTINCT CASE WHEN $highVlExpr THEN v.patient_art_no END) AS mothersHighVl,
-            COUNT(DISTINCT CASE WHEN $highVlExpr AND LOWER(TRIM(v.is_patient_pregnant)) = 'yes'
-                            THEN v.patient_art_no END) AS mothersHighVlPregnant,
-            COUNT(DISTINCT CASE WHEN $highVlExpr AND LOWER(TRIM(v.is_patient_breastfeeding)) = 'yes'
-                            THEN v.patient_art_no END) AS mothersHighVlBreastfeeding
-        FROM form_eid e
-        INNER JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
-        WHERE $whereSql";
-
-    // Of the HIV-positive children, how many had a mother with a documented
-    // high VL strictly BEFORE the child's date of birth? Children without a
-    // usable DOB cannot be classified and are excluded here (surfaced as
-    // "unknown" in the drilldown). The mother's first high-VL date is
-    // pre-aggregated in a derived table: joining form_vl row-by-row with the
-    // date inequality forces a nested-loop full scan per EID row (~30s),
-    // while "MIN(high VL date) < DOB" is equivalent and runs in ~2s.
-    $whereSqlE2     = implode(' AND ', pmtctBuildFilterConditions($_POST, $db, 'e2'));
-    // The mother's VL rows are constrained only by the join onto positive mothers,
-    // so they need the cancelled rule stated separately.
-    $vlCountable    = SampleCountUtility::countableWhere('v');
-    $positiveExprE2 = pmtctEidPositiveExpr('e2');
-    $preBirthSql = "SELECT
-            COUNT(DISTINCT $childKeyExpr) AS preBirthHighVlChildren
-        FROM form_eid e
-        INNER JOIN (
-            SELECT TRIM(v.patient_art_no) AS mid,
-                   MIN(CASE WHEN v.vl_result_category = 'not suppressed' THEN DATE(v.sample_collection_date) END) AS firstHighVlDate
-            FROM form_vl v
-            INNER JOIN (
-                SELECT DISTINCT TRIM(e2.mother_id) AS mid
-                FROM form_eid e2
-                WHERE $whereSqlE2 AND $positiveExprE2
-            ) pm ON pm.mid = TRIM(v.patient_art_no)
-            WHERE $vlCountable
-            GROUP BY TRIM(v.patient_art_no)
-        ) vm ON vm.mid = TRIM(e.mother_id)
-        WHERE $whereSql AND $positiveExpr
-          AND e.child_dob IS NOT NULL AND e.child_dob != '0000-00-00'
-          AND vm.firstHighVlDate IS NOT NULL
-          AND vm.firstHighVlDate < e.child_dob";
-
-    $childRow    = $db->rawQueryOne($childSql);
-    $motherRow   = $db->rawQueryOne($motherSql);
-    $preBirthRow = $db->rawQueryOne($preBirthSql);
-
-    $payload = [
-        'totalChildrenWithMotherId' => (int) ($childRow['totalChildrenWithMotherId'] ?? 0),
-        'matchedChildren'           => (int) ($childRow['matchedChildren'] ?? 0),
-        'testedChildren'            => (int) ($childRow['testedChildren'] ?? 0),
-        'positiveChildren'          => (int) ($childRow['positiveChildren'] ?? 0),
-        'positiveChildrenDistinct'  => (int) ($childRow['positiveChildrenDistinct'] ?? 0),
-        'preBirthHighVlChildren'    => (int) ($preBirthRow['preBirthHighVlChildren'] ?? 0),
-        'unmatchedChildren'         => (int) ($childRow['unmatchedChildren'] ?? 0),
-        'distinctMothers'           => (int) ($motherRow['distinctMothers'] ?? 0),
-        'vlTests'                   => (int) ($motherRow['vlTests'] ?? 0),
-        'vlTestsWithResult'         => (int) ($motherRow['vlTestsWithResult'] ?? 0),
-        'mothersWithResult'         => (int) ($motherRow['mothersWithResult'] ?? 0),
-        'mothersHighVl'             => (int) ($motherRow['mothersHighVl'] ?? 0),
-        'mothersHighVlPregnant'     => (int) ($motherRow['mothersHighVlPregnant'] ?? 0),
-        'mothersHighVlBreastfeeding' => (int) ($motherRow['mothersHighVlBreastfeeding'] ?? 0),
-    ];
-
     header('Content-Type: application/json');
-    echo json_encode($payload);
+    echo json_encode(PmtctCascadeUtility::summary($db, $_POST));
     return;
 }
 
 // ---------------------------------------------------------------------------
 // POSITIVE CHILDREN drilldown - one row per distinct HIV-positive matched
 // child in the current filter window, with the mother's VL picture alongside.
-// Optional preBirthOnly=1 restricts to children whose mother had a documented
-// high VL before the child's date of birth.
+// Optional preBirthOnly=1 restricts to children whose mother had a high VL
+// result in the pregnancy window before the child's date of birth.
 // ---------------------------------------------------------------------------
 if ($action === 'positiveChildren') {
 
-    $whereSql     = implode(' AND ', pmtctBuildFilterConditions($_POST, $db));
-    $whereSqlE2   = implode(' AND ', pmtctBuildFilterConditions($_POST, $db, 'e2'));
-    // As above: the mother's VL rows carry no filter of their own.
-    $vlCountable  = SampleCountUtility::countableWhere('v');
-    $positiveExpr   = pmtctEidPositiveExpr('e');
-    $positiveExprE2 = pmtctEidPositiveExpr('e2');
-    $childKeyExpr   = pmtctChildKeyExpr('e');
+    $whereSql     = implode(' AND ', PmtctCascadeUtility::filterConditions($_POST));
+    $whereSqlE2   = implode(' AND ', PmtctCascadeUtility::filterConditions($_POST, 'e2'));
+    // The mother's VL rows carry no filter of their own.
+    $vlCountable    = SampleCountUtility::countableWhere('v');
+    $highVlExpr     = PmtctCascadeUtility::highVlExpr('v');
+    $positiveExpr   = PmtctCascadeUtility::eidPositiveExpr('e');
+    $positiveExprE2 = PmtctCascadeUtility::eidPositiveExpr('e2');
+    $childKeyExpr   = PmtctCascadeUtility::childKeyExpr('e');
 
     // Aggregate each mother's full VL history once (all time, on purpose:
     // pre-birth tests usually predate the EID filter window), restricted to
     // mothers of positive children in the window so the scan stays bounded.
+    // "Latest" columns come from her most recent test with a result.
     $sql = "SELECT
             $childKeyExpr AS childKey,
             MAX(TRIM(e.child_id)) AS childId,
@@ -294,6 +91,7 @@ if ($action === 'positiveChildren') {
             vm.vlTests,
             vm.highVlTests,
             vm.firstHighVlDate,
+            vm.highVlDates,
             vm.latestVlDate,
             vm.latestVlResult,
             vm.latestVlCategory,
@@ -303,13 +101,15 @@ if ($action === 'positiveChildren') {
         INNER JOIN (
             SELECT TRIM(v.patient_art_no) AS mid,
                    COUNT(*) AS vlTests,
-                   SUM(CASE WHEN v.vl_result_category = 'not suppressed' THEN 1 ELSE 0 END) AS highVlTests,
-                   MIN(CASE WHEN v.vl_result_category = 'not suppressed' THEN DATE(v.sample_collection_date) END) AS firstHighVlDate,
-                   MAX(DATE(v.sample_collection_date)) AS latestVlDate,
-                   SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.result, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlResult,
-                   SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.vl_result_category, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlCategory,
-                   " . pmtctLatestVlValueExpr('is_patient_pregnant') . " AS latestPregnant,
-                   " . pmtctLatestVlValueExpr('is_patient_breastfeeding') . " AS latestBreastfeeding
+                   SUM($highVlExpr) AS highVlTests,
+                   MIN(CASE WHEN $highVlExpr THEN DATE(v.sample_collection_date) END) AS firstHighVlDate,
+                   GROUP_CONCAT(DISTINCT CASE WHEN $highVlExpr THEN DATE(v.sample_collection_date) END
+                                SEPARATOR ',') AS highVlDates,
+                   " . PmtctCascadeUtility::latestResultExpr('DATE(v.sample_collection_date)') . " AS latestVlDate,
+                   " . PmtctCascadeUtility::latestResultExpr('v.result') . " AS latestVlResult,
+                   " . PmtctCascadeUtility::latestResultExpr('v.vl_result_category') . " AS latestVlCategory,
+                   " . PmtctCascadeUtility::latestResultExpr('v.is_patient_pregnant') . " AS latestPregnant,
+                   " . PmtctCascadeUtility::latestResultExpr('v.is_patient_breastfeeding') . " AS latestBreastfeeding
             FROM form_vl v
             INNER JOIN (
                 SELECT DISTINCT TRIM(e2.mother_id) AS mid
@@ -327,7 +127,8 @@ if ($action === 'positiveChildren') {
 
     $rows = [];
     foreach ($db->rawQuery($sql) as $r) {
-        $preBirth = pmtctPreBirthFlag($r['childDob'] ?? null, $r['firstHighVlDate'] ?? null);
+        $highVlDates = array_filter(explode(',', (string) ($r['highVlDates'] ?? '')));
+        $preBirth = PmtctCascadeUtility::preBirthFlag(pmtctDateOrBlank($r['childDob'] ?? null), $highVlDates);
         if ($preBirthOnly && $preBirth !== 'yes') {
             continue;
         }
@@ -358,28 +159,30 @@ if ($action === 'positiveChildren') {
 }
 
 // ---------------------------------------------------------------------------
-// HIGH VL MOTHERS drilldown - one row per distinct matched mother with at
-// least one high VL (>= 1000 cp/mL) test on record, for children in the
-// current filter window. VL history is all-time by design.
+// HIGH VL MOTHERS drilldown - one row per distinct matched mother whose most
+// recent VL result is high (>= 1000 cp/mL), for children in the current
+// filter window. VL history is all-time by design.
 // ---------------------------------------------------------------------------
 if ($action === 'highVlMothers') {
 
-    $whereSql     = implode(' AND ', pmtctBuildFilterConditions($_POST, $db));
-    $positiveExpr = pmtctEidPositiveExpr('e');
-    $childKeyExpr = pmtctChildKeyExpr('e');
+    $whereSql     = implode(' AND ', PmtctCascadeUtility::filterConditions($_POST));
+    $vlCountable  = SampleCountUtility::countableWhere('v');
+    $highVlExpr   = PmtctCascadeUtility::highVlExpr('v');
+    $positiveExpr = PmtctCascadeUtility::eidPositiveExpr('e');
+    $childKeyExpr = PmtctCascadeUtility::childKeyExpr('e');
 
     $sql = "SELECT
             em.mid AS motherId,
             MAX(em.childrenInWindow) AS childrenInWindow,
             MAX(em.positiveChildren) AS positiveChildren,
             COUNT(*) AS vlTests,
-            SUM(CASE WHEN v.vl_result_category = 'not suppressed' THEN 1 ELSE 0 END) AS highVlTests,
-            MIN(CASE WHEN v.vl_result_category = 'not suppressed' THEN DATE(v.sample_collection_date) END) AS firstHighVlDate,
-            MAX(DATE(v.sample_collection_date)) AS latestVlDate,
-            SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.result, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlResult,
-            SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.vl_result_category, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlCategory,
-            " . pmtctLatestVlValueExpr('is_patient_pregnant') . " AS latestPregnant,
-            " . pmtctLatestVlValueExpr('is_patient_breastfeeding') . " AS latestBreastfeeding
+            SUM($highVlExpr) AS highVlTests,
+            MIN(CASE WHEN $highVlExpr THEN DATE(v.sample_collection_date) END) AS firstHighVlDate,
+            " . PmtctCascadeUtility::latestResultExpr('DATE(v.sample_collection_date)') . " AS latestVlDate,
+            " . PmtctCascadeUtility::latestResultExpr('v.result') . " AS latestVlResult,
+            " . PmtctCascadeUtility::latestResultExpr('v.vl_result_category') . " AS latestVlCategory,
+            " . PmtctCascadeUtility::latestResultExpr('v.is_patient_pregnant') . " AS latestPregnant,
+            " . PmtctCascadeUtility::latestResultExpr('v.is_patient_breastfeeding') . " AS latestBreastfeeding
         FROM (
             SELECT TRIM(e.mother_id) AS mid,
                    COUNT(DISTINCT $childKeyExpr) AS childrenInWindow,
@@ -389,8 +192,9 @@ if ($action === 'highVlMothers') {
             GROUP BY TRIM(e.mother_id)
         ) em
         INNER JOIN form_vl v ON TRIM(v.patient_art_no) = em.mid
+        WHERE $vlCountable
         GROUP BY em.mid
-        HAVING highVlTests > 0
+        HAVING latestVlCategory = 'not suppressed'
         ORDER BY latestVlDate DESC";
 
     $rows = [];
@@ -555,11 +359,10 @@ if ($action === 'childHistory') {
 
     $vlTests = pmtctLoadMotherVlTests($db, $motherId);
 
-    $firstHighVlDate = '';
+    $highVlDates = [];
     foreach ($vlTests as $t) {
         if ($t['category'] === 'not suppressed' && $t['collectionDate'] !== '') {
-            $firstHighVlDate = $t['collectionDate'];
-            break;
+            $highVlDates[] = $t['collectionDate'];
         }
     }
 
@@ -568,7 +371,7 @@ if ($action === 'childHistory') {
         'childId'              => $childId,
         'childDob'             => $childDob,
         'motherId'             => $motherId,
-        'motherHighVlPreBirth' => pmtctPreBirthFlag($childDob ?: null, $firstHighVlDate ?: null),
+        'motherHighVlPreBirth' => PmtctCascadeUtility::preBirthFlag($childDob, $highVlDates),
         'eidTests'             => $eidTests,
         'vlTests'              => $vlTests,
     ]);
@@ -608,7 +411,7 @@ if ($action === 'motherHistory') {
 $matchStatus = $_POST['matchStatus'] ?? 'matched';
 $joinType = $matchStatus === 'matched' ? 'INNER' : 'LEFT';
 
-$where = pmtctBuildFilterConditions($_POST, $db);
+$where = PmtctCascadeUtility::filterConditions($_POST);
 if ($matchStatus === 'unmatched') {
     $where[] = "v.vl_sample_id IS NULL";
 }
@@ -691,8 +494,10 @@ $selectCols = "e.eid_id, e.sample_code AS eid_sample_code,
         v.vl_test_platform,
         fvl.facility_name AS vl_testing_lab";
 
+// Cancelled VL samples are not a match, the same rule the snapshot counts use.
 $baseFrom = "FROM form_eid e
         $joinType JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
+            AND " . SampleCountUtility::countableWhere('v') . "
         LEFT JOIN facility_details fel ON fel.facility_id = e.lab_id
         LEFT JOIN facility_details fvl ON fvl.facility_id = v.lab_id
         LEFT JOIN r_sample_status rs ON rs.status_id = e.result_status

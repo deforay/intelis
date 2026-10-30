@@ -282,6 +282,98 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         font-size: 12px;
     }
 
+    .pmtct-funnel-step .pmtct-funnel-help {
+        font-size: 11px;
+        color: #777;
+        margin-top: 6px;
+        line-height: 1.35;
+    }
+
+    .pmtct-hero-card .pmtct-hero-help {
+        font-size: 11px;
+        opacity: .85;
+        margin-top: 6px;
+        line-height: 1.35;
+    }
+
+    /* ---- Reading aids: guide panel and plain-language summary ---- */
+    .pmtct-guide {
+        background: #f7f9fc;
+        border: 1px solid #dbe3ee;
+        border-radius: 4px;
+        padding: 10px 14px;
+        margin-bottom: 14px;
+        font-size: 13px;
+        color: #444;
+    }
+
+    .pmtct-guide summary {
+        cursor: pointer;
+        font-weight: 600;
+        color: #21618c;
+    }
+
+    .pmtct-guide-steps {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 12px 0 8px;
+    }
+
+    .pmtct-guide-step {
+        flex: 1 1 220px;
+        background: #fff;
+        border: 1px solid #e1e5eb;
+        border-radius: 4px;
+        padding: 10px 12px;
+    }
+
+    .pmtct-guide-step .pmtct-guide-num {
+        display: inline-block;
+        width: 22px;
+        height: 22px;
+        line-height: 22px;
+        text-align: center;
+        border-radius: 50%;
+        background: #21618c;
+        color: #fff;
+        font-weight: 700;
+        font-size: 12px;
+        margin-right: 6px;
+    }
+
+    .pmtct-guide dl {
+        margin: 8px 0 0;
+    }
+
+    .pmtct-guide dt {
+        font-weight: 600;
+        margin-top: 6px;
+    }
+
+    .pmtct-guide dd {
+        margin-left: 0;
+        color: #555;
+    }
+
+    .pmtct-plain-summary {
+        background: #fffdf3;
+        border-left: 3px solid #f0c36d;
+        border-radius: 3px;
+        padding: 10px 14px;
+        margin-bottom: 14px;
+        font-size: 13px;
+        color: #444;
+        line-height: 1.6;
+    }
+
+    .pmtct-filter-help {
+        display: block;
+        font-size: 11px;
+        color: #888;
+        margin-top: 4px;
+    }
+
     .select2-selection__choice {
         color: black !important;
     }
@@ -337,6 +429,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                                     </option>
                                     <option value="unmatched"><?= _htmlTranslate("Not matched"); ?></option>
                                 </select>
+                                <span class="pmtct-filter-help"><?= _htmlTranslate("Changes only the Line-Level Records table. The snapshot counts stay the same."); ?></span>
                             </td>
                         </tr>
                         <tr>
@@ -364,29 +457,74 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                         <h3 class="box-title"><?= _htmlTranslate("PMTCT Snapshot"); ?></h3>
                     </div>
                     <div class="box-body">
+                        <!-- Reading guide: how the report links children to mothers and
+                             what each term means. Open by default; the closed state is
+                             remembered per browser. -->
+                        <details class="pmtct-guide" id="pmtctGuide" open>
+                            <summary><em class="fa-solid fa-circle-question"></em> <?= _htmlTranslate("How to read this report"); ?></summary>
+                            <div class="pmtct-guide-steps">
+                                <div class="pmtct-guide-step">
+                                    <span class="pmtct-guide-num">1</span><strong><?= _htmlTranslate("Start with the children"); ?></strong>
+                                    <div><?= _htmlTranslate("The report starts from EID samples that have a Mother ID. The samples come from the selected period, province and lab."); ?></div>
+                                </div>
+                                <div class="pmtct-guide-step">
+                                    <span class="pmtct-guide-num">2</span><strong><?= _htmlTranslate("Find the mother"); ?></strong>
+                                    <div><?= _htmlTranslate("The report compares the Mother ID on each EID request with the ART number on VL requests. If they are the same, the child is matched. The report then uses all of the mother's VL tests, from any date."); ?></div>
+                                </div>
+                                <div class="pmtct-guide-step">
+                                    <span class="pmtct-guide-num">3</span><strong><?= _htmlTranslate("Check mother and child"); ?></strong>
+                                    <div><?= _htmlTranslate("For the mother: is her latest VL result 1000 cp/mL or more? For the child: was an EID result positive?"); ?></div>
+                                </div>
+                            </div>
+                            <dl>
+                                <dt><?= _htmlTranslate("Matched"); ?></dt>
+                                <dd><?= _htmlTranslate("The Mother ID on the EID request is the same as the ART number on at least one VL request. The report has no VL data for the mothers of children who are not matched."); ?></dd>
+                                <dt><?= _htmlTranslate("High VL (≥1000 cp/mL)"); ?></dt>
+                                <dd><?= _htmlTranslate("The mother's latest VL result is 1000 cp/mL or more. Her earlier results do not change this."); ?></dd>
+                                <dt><?= _htmlTranslate("Suppressed"); ?></dt>
+                                <dd><?= _htmlTranslate("The mother's latest VL result is below 1000 cp/mL, even if an earlier result was high."); ?></dd>
+                                <dt><?= _htmlTranslate("High VL during pregnancy"); ?></dt>
+                                <dd><?= _htmlTranslate("The mother had a VL result of 1000 cp/mL or more in the 9 months (280 days) before the child's date of birth. The report cannot check children who have no date of birth recorded."); ?></dd>
+                                <dt><?= _htmlTranslate("How children are counted"); ?></dt>
+                                <dd><?= _htmlTranslate("The report counts each child once, by Child ID, even when the child has more than one EID test in the period."); ?></dd>
+                                <dt><?= _htmlTranslate("% of previous stage"); ?></dt>
+                                <dd><?= _htmlTranslate("The share of the box to the left. Matched Mothers has no percentage, because several children can have the same mother."); ?></dd>
+                                <dt><?= _htmlTranslate("Clickable cards and boxes"); ?></dt>
+                                <dd><?= _htmlTranslate("Click a card or a red box to open the list of mothers or children behind the number. Each row has buttons that open the full test history of the child and the mother."); ?></dd>
+                            </dl>
+                        </details>
+
+                        <!-- The snapshot in one paragraph of plain words, built from the
+                             same numbers as the cards and boxes below. -->
+                        <div class="pmtct-plain-summary" id="pmtctPlainSummary"><?= _htmlTranslate("Loading…"); ?></div>
+
                         <!-- Hero: the two numbers that matter most -->
                         <div class="pmtct-hero" id="pmtctHero">
                             <div class="pmtct-hero-card hero-good">
                                 <div class="pmtct-hero-label"><?= _htmlTranslate("Maternal Viral Suppression"); ?></div>
                                 <div class="pmtct-hero-value" id="heroSuppressionPct">&mdash;</div>
                                 <div class="pmtct-hero-sub" id="heroSuppressionSub">&nbsp;</div>
+                                <div class="pmtct-hero-help"><?= _htmlTranslate("Mothers whose latest VL result is below 1000 cp/mL."); ?></div>
                             </div>
                             <div class="pmtct-hero-card hero-danger pmtct-clickable" onclick="openHighVlMothersDrill()">
-                                <div class="pmtct-hero-label"><?= _htmlTranslate("Mothers with High VL (≥1000 cp/mL)"); ?></div>
+                                <div class="pmtct-hero-label"><?= _htmlTranslate("Mothers with High VL (latest ≥1000 cp/mL)"); ?></div>
                                 <div class="pmtct-hero-value" id="heroHighVl">&mdash;</div>
                                 <div class="pmtct-hero-sub" id="heroHighVlSub">&nbsp;</div>
+                                <div class="pmtct-hero-help"><?= _htmlTranslate("Mothers whose latest VL result is 1000 cp/mL or more."); ?></div>
                                 <div class="pmtct-drill-hint"><em class="fa-solid fa-magnifying-glass"></em> <?= _htmlTranslate("Click to view mothers"); ?></div>
                             </div>
                             <div class="pmtct-hero-card hero-critical pmtct-clickable" onclick="openPositiveChildrenDrill(false)">
-                                <div class="pmtct-hero-label"><?= _htmlTranslate("HIV-Positive Infants"); ?></div>
+                                <div class="pmtct-hero-label"><?= _htmlTranslate("HIV-Positive Children"); ?></div>
                                 <div class="pmtct-hero-value" id="heroPositiveInfants">&mdash;</div>
                                 <div class="pmtct-hero-sub" id="heroPositiveInfantsSub">&nbsp;</div>
+                                <div class="pmtct-hero-help"><?= _htmlTranslate("Matched children with a positive EID result in the selected period, counted once each."); ?></div>
                                 <div class="pmtct-drill-hint"><em class="fa-solid fa-magnifying-glass"></em> <?= _htmlTranslate("Click to view children"); ?></div>
                             </div>
                             <div class="pmtct-hero-card hero-prebirth pmtct-clickable" onclick="openPositiveChildrenDrill(true)">
-                                <div class="pmtct-hero-label"><?= _htmlTranslate("Positive Infants — Mother High VL Before Birth"); ?></div>
+                                <div class="pmtct-hero-label"><?= _htmlTranslate("Positive Children: Mother High VL During Pregnancy"); ?></div>
                                 <div class="pmtct-hero-value" id="heroPreBirth">&mdash;</div>
                                 <div class="pmtct-hero-sub" id="heroPreBirthSub">&nbsp;</div>
+                                <div class="pmtct-hero-help"><?= _htmlTranslate("HIV-positive children whose mother had a high VL result in the 9 months before the child was born."); ?></div>
                                 <div class="pmtct-drill-hint"><em class="fa-solid fa-magnifying-glass"></em> <?= _htmlTranslate("Click to view children"); ?></div>
                             </div>
                         </div>
@@ -553,6 +691,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
             $step.append('<div class="pmtct-funnel-stage">' + s.label + '</div>');
             $step.append('<div class="pmtct-funnel-count">' + (s.count || 0).toLocaleString() + '</div>');
             if (pct) { $step.append('<div class="pmtct-funnel-pct">' + pct + '</div>'); }
+            if (s.help) { $step.append('<div class="pmtct-funnel-help">' + s.help + '</div>'); }
             if (s.drill) {
                 $step.addClass('pmtct-clickable').attr('title', "<?= _jsTranslate('Click to view the records behind this number'); ?>").on('click', s.drill);
             }
@@ -601,53 +740,91 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         // endpoint; Suppressed lives in the green hero (complementary outcome).
         // Pre-birth risk hero — of the distinct HIV-positive children, how many
         // had a mother with a documented high VL before the child's birth.
-        var posDistinct = s.positiveChildrenDistinct || 0;
+        var posChildren = s.positiveChildren || 0;
+        var noDob = s.positiveChildrenNoDob || 0;
         var preBirth = s.preBirthHighVlChildren || 0;
         $("#heroPreBirth").text(preBirth.toLocaleString());
-        $("#heroPreBirthSub").text(
-            posDistinct > 0
-                ? "<?= _jsTranslate('of %s HIV-positive children (needs child DOB on record)'); ?>".replace('%s', posDistinct.toLocaleString())
-                : "<?= _jsTranslate('No HIV-positive children in the selected period'); ?>"
-        );
+        var preBirthSub = "<?= _jsTranslate('No HIV-positive children in the selected period'); ?>";
+        if (posChildren > 0) {
+            preBirthSub = "<?= _jsTranslate('of %s HIV-positive children'); ?>".replace('%s', posChildren.toLocaleString());
+            if (noDob > 0) {
+                preBirthSub += ". " + "<?= _jsTranslate('%s have no date of birth, so the report cannot check them'); ?>"
+                    .replace('%s', noDob.toLocaleString());
+            }
+        }
+        $("#heroPreBirthSub").text(preBirthSub);
 
         renderPmtctFunnel('pmtctMaternalFunnel', [
-            { label: "<?= _jsTranslate('Children w/ Mother ID'); ?>", count: s.totalChildrenWithMotherId || 0 },
-            { label: "<?= _jsTranslate('Matched Mothers'); ?>", count: s.distinctMothers || 0, crossUnit: true },
-            { label: "<?= _jsTranslate('Mothers w/ VL Result'); ?>", count: mWithResult },
-            { label: "<?= _jsTranslate('Mothers w/ High VL ≥1000'); ?>", count: mHighVl, tone: 'danger', drill: function () { openHighVlMothersDrill(); } }
+            {
+                label: "<?= _jsTranslate('Children w/ Mother ID'); ?>", count: s.totalChildrenWithMotherId || 0,
+                help: "<?= _jsTranslate('Children tested in the period with a Mother ID'); ?>"
+            },
+            {
+                label: "<?= _jsTranslate('Matched Mothers'); ?>", count: s.distinctMothers || 0, crossUnit: true,
+                help: "<?= _jsTranslate('Each matched mother, counted once'); ?>"
+            },
+            {
+                label: "<?= _jsTranslate('Mothers w/ VL Result'); ?>", count: mWithResult,
+                help: "<?= _jsTranslate('At least one VL result, any date'); ?>"
+            },
+            {
+                label: "<?= _jsTranslate('Mothers w/ High VL ≥1000'); ?>", count: mHighVl, tone: 'danger',
+                help: "<?= _jsTranslate('Latest result is 1000 cp/mL or more'); ?>",
+                drill: function () { openHighVlMothersDrill(); }
+            }
         ]);
 
-        // Of the mothers still at high VL, how many were pregnant or
-        // breastfeeding when that sample was taken. These two are not exclusive
-        // (a mother can be recorded as both) and are counted over her whole VL
-        // history, so they are shown as separate counts rather than a split of
-        // the high-VL total.
+        // Of the mothers whose latest result is high, how many were pregnant or
+        // breastfeeding on that latest request. A mother can be recorded as
+        // both, so these are separate counts, not a split of the high-VL total.
         var hvPregnant = s.mothersHighVlPregnant || 0;
         var hvBreastfeeding = s.mothersHighVlBreastfeeding || 0;
-        $("#pmtctMaternalStatusNote").html(
-            mHighVl > 0
-                ? "<em class='fa-solid fa-person-breastfeeding'></em> " +
-                  "<?= _jsTranslate('Of the mothers at high VL:'); ?> " +
-                  "<strong>" + hvPregnant.toLocaleString() + "</strong> <?= _jsTranslate('pregnant'); ?>" +
-                  " &nbsp;\u00b7&nbsp; <strong>" + hvBreastfeeding.toLocaleString() + "</strong> <?= _jsTranslate('breastfeeding'); ?>" +
-                  " <span style='color:#999;'>(<?= _jsTranslate('as recorded on the VL request'); ?>)</span>"
-                : "&nbsp;"
-        );
+        var suppressedAfterHigh = s.mothersSuppressedAfterHighVl || 0;
+        var statusNote = "";
+        if (mHighVl > 0) {
+            statusNote = "<em class='fa-solid fa-person-breastfeeding'></em> " +
+                "<?= _jsTranslate('Of the mothers at high VL:'); ?> " +
+                "<strong>" + hvPregnant.toLocaleString() + "</strong> <?= _jsTranslate('pregnant'); ?>" +
+                " &nbsp;·&nbsp; <strong>" + hvBreastfeeding.toLocaleString() + "</strong> <?= _jsTranslate('breastfeeding'); ?>" +
+                " <span style='color:#999;'>(<?= _jsTranslate('as recorded on the latest VL request'); ?>)</span>";
+        }
+        if (suppressedAfterHigh > 0) {
+            statusNote += (statusNote ? "<br>" : "") + "<em class='fa-solid fa-arrow-trend-down'></em> " +
+                fillCounts("<?= _jsTranslate('%s more mothers had a high VL result earlier but their latest result is suppressed.'); ?>",
+                    [suppressedAfterHigh.toLocaleString()]);
+        }
+        $("#pmtctMaternalStatusNote").html(statusNote || "&nbsp;");
 
-        // Pivot note — explain the children → mothers unit change without repeating
-        // numbers already in the boxes.
-        $("#pmtctBridgeNote").html(
-            "<em class='fa-solid fa-circle-info'></em> " +
-            "<?= _jsTranslate('Matched Mothers counts distinct mothers (siblings share a mother), so it is a unit change from the children at left — not a drop-off.'); ?>"
-        );
+        // Pivot note: explain the children to mothers unit change, and say how
+        // many children never reached it because their mother was not found.
+        var unmatched = s.unmatchedChildren || 0;
+        var bridgeNote = "<em class='fa-solid fa-circle-info'></em> " +
+            "<?= _jsTranslate('Matched Mothers counts each mother once. Siblings share a mother, so this box is not a drop-off from the children at left.'); ?>";
+        if (unmatched > 0) {
+            bridgeNote += " " + fillCounts("<?= _jsTranslate('%s children are not matched. The report has no VL data for their mothers.'); ?>",
+                [unmatched.toLocaleString()]);
+        }
+        $("#pmtctBridgeNote").html(bridgeNote);
 
         // Infant EID outcome — all in children units: matched children → those with
         // an EID result → those found HIV-positive (the actual transmissions).
         renderPmtctFunnel('pmtctInfantFunnel', [
-            { label: "<?= _jsTranslate('Matched Children'); ?>", count: s.matchedChildren || 0 },
-            { label: "<?= _jsTranslate('With EID Result'); ?>", count: s.testedChildren || 0 },
-            { label: "<?= _jsTranslate('HIV-Positive'); ?>", count: s.positiveChildren || 0, tone: 'danger', drill: function () { openPositiveChildrenDrill(false); } }
+            {
+                label: "<?= _jsTranslate('Matched Children'); ?>", count: s.matchedChildren || 0,
+                help: "<?= _jsTranslate('Children matched to a mother'); ?>"
+            },
+            {
+                label: "<?= _jsTranslate('With EID Result'); ?>", count: s.testedChildren || 0,
+                help: "<?= _jsTranslate('At least one EID result entered'); ?>"
+            },
+            {
+                label: "<?= _jsTranslate('HIV-Positive'); ?>", count: s.positiveChildren || 0, tone: 'danger',
+                help: "<?= _jsTranslate('At least one positive EID result'); ?>",
+                drill: function () { openPositiveChildrenDrill(false); }
+            }
         ]);
+
+        renderPlainSummary(s);
 
         // VL test volume strip — test-level (a mother may have many tests over time).
         var vlTests = s.vlTests || 0;
@@ -658,6 +835,47 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
             " &nbsp;·&nbsp; <strong>" + vlWithResult.toLocaleString() + "</strong> <?= _jsTranslate('with result'); ?>" +
             " &nbsp;·&nbsp; <strong>" + vlPending.toLocaleString() + "</strong> <?= _jsTranslate('pending'); ?>"
         );
+    }
+
+    // Replace each %s in a translated sentence, in order, with a bold number.
+    function fillCounts(sentence, values) {
+        values.forEach(function (v) {
+            sentence = sentence.replace('%s', '<strong>' + v + '</strong>');
+        });
+        return sentence;
+    }
+
+    // The snapshot as a few plain sentences, from the same numbers as the cards.
+    function renderPlainSummary(s) {
+        var $p = $('#pmtctPlainSummary');
+        var period = $('#sampleCollectionDate').val();
+        var html = period
+            ? "<?= _jsTranslate('Selected period:'); ?> <strong>" + escHtml(period) + "</strong>. "
+            : "";
+
+        var total = s.totalChildrenWithMotherId || 0;
+        if (total === 0) {
+            $p.html(html + "<?= _jsTranslate('No children with a Mother ID for the selected filters.'); ?>");
+            return;
+        }
+        var n = function (v) { return (v || 0).toLocaleString(); };
+        var mWithResult = s.mothersWithResult || 0;
+        var mHighVl = s.mothersHighVl || 0;
+        var highPct = mWithResult > 0 ? Math.round(100 * mHighVl / mWithResult) : 0;
+
+        html += fillCounts("<?= _jsTranslate('%s children have an EID test and a Mother ID. %s of them are matched to %s mothers.'); ?>",
+            [n(total), n(s.matchedChildren), n(s.distinctMothers)]);
+        if (mWithResult > 0) {
+            html += ' ' + fillCounts("<?= _jsTranslate('%s of these mothers have a VL result. For %s of them (%s%), the latest result is 1000 cp/mL or more.'); ?>",
+                [n(mWithResult), n(mHighVl), highPct]);
+        }
+        html += ' ' + fillCounts("<?= _jsTranslate('Of the %s matched children with an EID result, %s are HIV-positive.'); ?>",
+            [n(s.testedChildren), n(s.positiveChildren)]);
+        if ((s.positiveChildren || 0) > 0) {
+            html += ' ' + fillCounts("<?= _jsTranslate('For %s of the %s HIV-positive children, the mother had a high VL result in the 9 months before the child was born.'); ?>",
+                [n(s.preBirthHighVlChildren), n(s.positiveChildren)]);
+        }
+        $p.html(html);
     }
 
     function loadPmtctSummary() {
@@ -793,7 +1011,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                 pmtctDrillRows = rows;
 
                 $('#pmtctDrillModalLabel').text(preBirthOnly
-                    ? "<?= _jsTranslate('HIV-Positive Children — Mother High VL Before Birth'); ?>"
+                    ? "<?= _jsTranslate('HIV-Positive Children: Mother High VL During Pregnancy'); ?>"
                     : "<?= _jsTranslate('HIV-Positive Children'); ?>");
 
                 // A child recorded under two mother IDs gets one row per pair,
@@ -809,7 +1027,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                 renderDrillMeta([
                     ["<?= _jsTranslate('Distinct children'); ?>", Object.keys(childKeys).length.toLocaleString()],
                     ["<?= _jsTranslate('Positive EID results in period'); ?>", totalTests.toLocaleString()],
-                    ["<?= _jsTranslate('Mother high VL before birth'); ?>",
+                    ["<?= _jsTranslate('Mother high VL during pregnancy'); ?>",
                         yes.toLocaleString() + " <?= _jsTranslate('yes'); ?> / " + no.toLocaleString() + " <?= _jsTranslate('no'); ?> / " + unknown.toLocaleString() + " <?= _jsTranslate('unknown'); ?>"]
                 ]);
 
@@ -850,7 +1068,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                         { sTitle: "<?= _jsTranslate('Mother Latest VL'); ?>" },
                         { sTitle: "<?= _jsTranslate('Pregnant at Latest VL'); ?>" },
                         { sTitle: "<?= _jsTranslate('Breastfeeding at Latest VL'); ?>" },
-                        { sTitle: "<?= _jsTranslate('High VL Before Birth'); ?>" },
+                        { sTitle: "<?= _jsTranslate('High VL During Pregnancy'); ?>" },
                         { sTitle: "<?= _jsTranslate('Actions'); ?>", bSortable: false }
                     ],
                     bDestroy: true,
@@ -872,7 +1090,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                 var rows = payload.rows || [];
                 pmtctDrillRows = rows;
 
-                $('#pmtctDrillModalLabel').text("<?= _jsTranslate('Mothers with High VL (≥1000 cp/mL)'); ?>");
+                $('#pmtctDrillModalLabel').text("<?= _jsTranslate('Mothers Whose Latest VL Is High (≥1000 cp/mL)'); ?>");
 
                 var vlTests = 0, posKids = 0;
                 rows.forEach(function (r) { vlTests += r.vlTests || 0; posKids += r.positiveChildren || 0; });
@@ -1066,7 +1284,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                     ["<?= _jsTranslate('Mother ID'); ?>", escHtml(d.motherId || '—')],
                     ["<?= _jsTranslate('EID tests'); ?>", (d.eidTests || []).length],
                     ["<?= _jsTranslate('Mother VL tests'); ?>", (d.vlTests || []).length],
-                    ["<?= _jsTranslate('Mother high VL before birth'); ?>", preBirthBadge(d.motherHighVlPreBirth)]
+                    ["<?= _jsTranslate('Mother high VL during pregnancy'); ?>", preBirthBadge(d.motherHighVlPreBirth)]
                 ]);
                 html += '<div class="pmtct-subhead"><?= _jsTranslate('EID Test History (all time)'); ?></div>';
                 html += eidHistoryTableHtml(d.eidTests, { ageFromDob: d.childDob });
@@ -1132,10 +1350,23 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
                 'Last 30 Days': [moment().subtract(29, 'days'), moment()],
                 'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-                'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+                'Last 12 Months': [moment().subtract(11, 'months').startOf('month'), moment()],
                 'Current Year To Date': [moment().startOf('year'), moment()]
             }
         });
+        // Keep the reading guide closed for users who closed it before.
+        var guideKey = 'pmtctGuideClosed';
+        try {
+            if (localStorage.getItem(guideKey) === '1') {
+                $('#pmtctGuide').removeAttr('open');
+            }
+        } catch (e) { }
+        $('#pmtctGuide').on('toggle', function () {
+            try {
+                localStorage.setItem(guideKey, this.open ? '0' : '1');
+            } catch (e) { }
+        });
+
         // Drill-row action buttons (delegated: rows are re-rendered per drill)
         $(document).on('click', '.pmtct-child-history-btn', function () {
             var r = pmtctDrillRows[$(this).data('idx')] || {};
