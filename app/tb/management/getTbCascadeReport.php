@@ -38,10 +38,13 @@ function tbcFinalExpr(): string
     return "(NULLIF(TRIM(f.result), '') IS NOT NULL OR f.is_result_finalized = 'yes')";
 }
 
-/** SQL: the sample is rejected. */
+/**
+ * SQL: the sample is rejected. Never NULL: is_sample_rejected can be NULL, and
+ * NOT of a NULL predicate would drop the sample from every stage it guards.
+ */
 function tbcRejectedExpr(): string
 {
-    return SampleRejectionUtility::sqlPredicate('f');
+    return 'COALESCE(' . SampleRejectionUtility::sqlPredicate('f') . ', FALSE)';
 }
 
 /** SQL: the sample was tested. */
@@ -331,9 +334,10 @@ if ($action === 'per-lab') {
                 SELECT tb_id, to_lab_id, referred_on_datetime AS referred_on
                 FROM tb_referral_history
                 UNION
-                SELECT tb_id, referred_to_lab_id, samples_referred_datetime
-                FROM form_tb
-                WHERE referred_to_lab_id IS NOT NULL
+                SELECT ft.tb_id, ft.referred_to_lab_id, ft.samples_referred_datetime
+                FROM form_tb ft
+                WHERE ft.referred_to_lab_id IS NOT NULL
+                  AND NOT EXISTS (SELECT 1 FROM tb_referral_history h WHERE h.tb_id = ft.tb_id)
             ) hop ON hop.tb_id = f.tb_id AND hop.to_lab_id IS NOT NULL
             WHERE $whereSql
         ) x
@@ -416,7 +420,8 @@ if ($action === 'referral-matrix') {
 
     /* Each row in tb_referral_history is one hop; samples that traverse
        Lab A -> B -> C contribute two pairs (A-B and B-C). The form_tb
-       pair covers samples referred before the history table existed.
+       pair covers only samples with no history rows: those referred before
+       the history table existed.
        Received and tested at the receiving lab mean on or after the
        referral date, the same rule as the summary's referral branch. */
     $stage = tbcStageExpr();
@@ -440,9 +445,10 @@ if ($action === 'referral-matrix') {
         FROM (
             SELECT tb_id, from_lab_id, to_lab_id, referred_on_datetime AS referred_on FROM tb_referral_history
             UNION
-            SELECT tb_id, referred_by_lab_id, referred_to_lab_id, samples_referred_datetime
-            FROM form_tb
-            WHERE referred_by_lab_id IS NOT NULL AND referred_to_lab_id IS NOT NULL
+            SELECT ft.tb_id, ft.referred_by_lab_id, ft.referred_to_lab_id, ft.samples_referred_datetime
+            FROM form_tb ft
+            WHERE ft.referred_by_lab_id IS NOT NULL AND ft.referred_to_lab_id IS NOT NULL
+              AND NOT EXISTS (SELECT 1 FROM tb_referral_history h WHERE h.tb_id = ft.tb_id)
         ) hop
         INNER JOIN form_tb f ON f.tb_id = hop.tb_id
         INNER JOIN facility_details frm ON frm.facility_id = hop.from_lab_id

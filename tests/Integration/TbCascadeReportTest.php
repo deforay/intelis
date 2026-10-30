@@ -93,10 +93,11 @@ final class TbCascadeReportTest extends TestCase
             ['result' => 'MTB detected', 'is_result_finalized' => 'yes'],
             [['Xpert', 'MTB detected']]
         );
-        // Accepted and dispatched; accepted and printed only.
+        // Accepted and dispatched, with the rejection flag NULL as the result form
+        // saves it; accepted and printed only.
         self::sample($db, 'S3', [
             'result_status' => ACCEPTED, 'result' => 'Negative', 'sample_tested_datetime' => '2026-02-03 09:00:00',
-            'result_dispatched_datetime' => '2026-02-04 09:00:00',
+            'result_dispatched_datetime' => '2026-02-04 09:00:00', 'is_sample_rejected' => null,
         ]);
         self::sample($db, 'S4', [
             'result_status' => ACCEPTED, 'result' => 'Negative', 'sample_tested_datetime' => '2026-02-03 09:00:00',
@@ -106,8 +107,11 @@ final class TbCascadeReportTest extends TestCase
         self::sample($db, 'S5', ['is_sample_rejected' => 'yes']);
         self::sample($db, 'S6', ['result_status' => TEST_FAILED, 'sample_tested_datetime' => '2026-02-03 09:00:00']);
         self::sample($db, 'S7', ['result_status' => CANCELLED]);
-        // Referred to lab 2 after reception, not received there yet.
-        $s8 = self::sample($db, 'S8', ['result_status' => REFERRED]);
+        // Referred to lab 2 after reception, not received there yet. The sample
+        // also carries the pair on form_tb, with no date.
+        $s8 = self::sample($db, 'S8', [
+            'result_status' => REFERRED, 'referred_by_lab_id' => 1, 'referred_to_lab_id' => 2,
+        ]);
         $db->insert('tb_referral_history', [
             'tb_id' => $s8, 'from_lab_id' => 1, 'to_lab_id' => 2, 'referred_on_datetime' => '2026-02-05 09:00:00',
         ]);
@@ -181,5 +185,17 @@ final class TbCascadeReportTest extends TestCase
         self::assertCount(2, $rows, 'lab 1 as originator, lab 2 as referred-in');
         $labOne = array_values(array_filter($rows, fn($r) => $r[0] === 'Lab One'))[0];
         self::assertSame(3, $labOne[3], 'tests with a result, in the window only');
+    }
+
+    #[RunInSeparateProcess]
+    public function testAReferralRecordedTwiceCountsOnce(): void
+    {
+        $this->boot();
+        $rows = self::endpoint(['action' => 'referral-matrix'])['aaData'] ?? [];
+
+        self::assertCount(1, $rows);
+        self::assertSame(1, $rows[0][2], 'referred');
+        self::assertSame(1, $rows[0][3], 'awaiting receipt');
+        self::assertSame(0, $rows[0][4], 'not also received, not tested');
     }
 }
