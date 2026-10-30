@@ -23,10 +23,17 @@ $testType = urldecode((string) $_GET['testType']);
 
 
 $db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
-$db->where("patient_id LIKE ?", ["%$artNo%"]);
-$db->orWhere("patient_first_name LIKE ?", ["%$artNo%"]);
-$db->orWhere("patient_middle_name LIKE ?", ["%$artNo%"]);
-$db->orWhere("patient_last_name LIKE ?", ["%$artNo%"]);
+$db->where(
+    "(vl.patient_id LIKE ? OR vl.patient_first_name LIKE ? OR vl.patient_middle_name LIKE ? OR vl.patient_last_name LIKE ?)",
+    ["%$artNo%", "%$artNo%", "%$artNo%", "%$artNo%"]
+);
+// Same scope as the View Requests grid (get-request-list.php)
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+    $db->where("vl.facility_id IN (" . $_SESSION['facilityMap'] . ")");
+}
+if ($labScope = $general->labScopeWhere('vl')) {
+    $db->where($labScope);
+}
 $db->orderBy("sample_tested_datetime");
 $db->orderBy("sample_collection_date");
 
