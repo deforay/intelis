@@ -76,7 +76,7 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
     4. Wait. Keep the terminal window open until the last line reads
        `Total time:`.
 
-        [A normal update, from `intelis update` to `Total time:`. Long waits play shortened. The test machine has no STS, so its check shows two `WARN` lines about the STS.](../assets/casts/intelis-update.cast){ .asciicast data-poster="npt:2:50" }
+        [A normal update, from `intelis update` to `Total time:`. Long waits play shortened. The test machine has no STS, so its check shows two `WARN` lines about the STS.](../assets/casts/intelis-update.cast){ .asciicast }
 
         ??? info "If it asks `Do you want to run maintenance scripts?`"
 

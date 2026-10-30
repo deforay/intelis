@@ -699,7 +699,7 @@ if ($isLisInstance) {
                                                             <select name="testResult[approvedBy][]" id="approvedBy<?php echo $n; ?>"
                                                                 class="form-control isRequired"
                                                                 title="<?php echo _translate("Please choose approved by"); ?>">
-                                                                <?= $general->generateSelectOptions($userInfo, $test['result_reviewed_by'], '-- Select --'); ?>
+                                                                <?= $general->generateSelectOptions($userInfo, $test['result_approved_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
                                                         <td style="width: 33.33%;">

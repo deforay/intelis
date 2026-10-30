@@ -1,0 +1,35 @@
+#!/usr/bin/expect -f
+#
+# Restore only the database from the backup machine: `intelis restore`.
+# Shown on docs/guides/restoring-from-backup.md, "Only the database".
+#
+# needs: backup-server
+
+source [file join [file dirname [info script]] common.exp]
+
+wait_prompt
+type_command "cd /var/www/intelis"
+wait_prompt
+type_command "intelis restore"
+
+# The run always ends by saying how to remove the fetched copy. The line about
+# signatures and logos differs with what the lab had, so it is not the end.
+set timeout 900
+expect {
+    -re {\[sudo\] password for labuser:}  { sleep 1; send "$sudo_password\r"; exp_continue }
+    "Fetch the backup from there?"        { confirm_with "y"; exp_continue }
+    "Which lab should be restored?"       { pick "central-lab"; exp_continue }
+    "What should be copied back?"         { pick "Just the database backups"; exp_continue }
+    "Where should the restore folder be created?" { answer ""; exp_continue }
+    -re {Type (\S+) to confirm that this is the backup to restore} {
+        answer [plain $expect_out(1,string)]
+        exp_continue
+    }
+    "remove only this fetched copy"       {}
+    "Restore failed"                      { fail "restore failed" }
+    -re {failed at line [0-9]+}           { fail "restore script failed" }
+    timeout { fail "restore did not finish" }
+    eof     { fail "shell ended early" }
+}
+
+finish

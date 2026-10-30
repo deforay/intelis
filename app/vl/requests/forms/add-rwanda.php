@@ -660,8 +660,8 @@ $sFormat = '';
                                                                  <div class="col-lg-7">
                                                                       <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
                                                                            <option value="">-- Select --</option>
-                                                                           <?php foreach ($userResult as $uName) { ?>
-                                                                                <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+                                                                           <?php foreach ($userInfo as $userId => $userName) { ?>
+                                                                                <option value="<?= htmlspecialchars((string) $userId); ?>"><?= htmlspecialchars((string) $userName); ?></option>
                                                                            <?php } ?>
                                                                       </select>
                                                                  </div>

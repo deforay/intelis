@@ -181,7 +181,7 @@ ask_secret() {
   local __var=$1 prompt=$2 input
   while true; do
     if [ "$(ui_renderer)" = "gum" ]; then
-      input=$(gum input --password --header "$prompt" 2>/dev/null) || input=""
+      input=$(gum input --password --header "$prompt") || input=""
     else
       printf '\n \033[1m%s\033[0m\n > ' "$prompt" >&2
       read -r -s input || no_more_input

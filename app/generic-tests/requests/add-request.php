@@ -47,7 +47,6 @@ $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 // get instruments
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
-$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $reasonForFailure = $genericTestsService->getReasonForFailure();
 
 /* To get testing platform names */
@@ -56,10 +55,7 @@ foreach ($testPlatformResult as $row) {
      $testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
 
-$userInfo = [];
-foreach ($userResult as $user) {
-     $userInfo[$user['user_id']] = ($user['user_name']);
-}
+$userInfo = $usersService->getActiveLabScopedUsers();
 
 //sample rejection reason
 $condition = "rejection_reason_status ='active'";

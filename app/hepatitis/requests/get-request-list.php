@@ -178,7 +178,7 @@ try {
           $sWhere[] = " IFNULL(vl.result_sent_to_source, '') like 'sent' ";
      }
 
-     if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
+     if (!empty($_POST['rejectedSamples']) && $_POST['rejectedSamples'] == 'no') {
           $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') not like 'yes' ";
      }
 

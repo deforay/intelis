@@ -2186,8 +2186,18 @@ upgrade_instance() {
     # It is also what makes the swap atomic. --inplace leaves a window where a
     # PHP file on a live instance is half old and half new, and Apache is still
     # serving during the sync unless --maintenance was passed.
+    #
+    # --no-owner --no-group: the downloaded tree belongs to root, and -a alone
+    # gave every folder and unchanged file in the install that owner. The
+    # ownership pass afterwards skips what is inside backups/, var/track-api/,
+    # public/files/ and the other large folders, so the folders git tracks
+    # there (backups/config, backups/db, var/track-api/requests, ...) stayed
+    # root's, and a backup run as www-data failed until the ACL pass caught up.
+    # Now existing folders and unchanged files keep their owner. New and
+    # changed files are root's until the ownership pass, as before.
     phase_mark "code sync"
-    eval rsync -a --whole-file $exclude_options --info=progress2 "$temp_dir/intelis-master/" "$lis_path/" &
+    eval rsync -a --no-owner --no-group --whole-file $exclude_options --info=progress2 \
+        "$temp_dir/intelis-master/" "$lis_path/" &
     local rsync_pid=$!
     spinner "${rsync_pid}"
     wait ${rsync_pid}

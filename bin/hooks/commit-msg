@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# commit-msg — refuse a commit message that names an AI tool or vendor.
+#
+# The check itself is bin/build/check-commit-attribution.sh, shared with the
+# pre-push hook, composer qc and CI. See that file for why it exists.
+# git runs hooks from the top of the working tree, so the relative path holds.
+exec bash bin/build/check-commit-attribution.sh --message-file "$1"

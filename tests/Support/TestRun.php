@@ -33,6 +33,12 @@ final class TestRun
     /** MySQL refuses a longer database name. */
     private const MAX_NAME = 64;
 
+    /**
+     * Every test database starts with this, so the MySQL user that composer
+     * setup-tests creates is granted itest_% and can reach nothing else.
+     */
+    public const DATABASE_PREFIX = 'itest_';
+
     public static function start(): void
     {
         if (self::id() !== '') {
@@ -55,7 +61,7 @@ final class TestRun
      */
     public static function database(string $base): string
     {
-        $name = $base . '_' . self::suffix();
+        $name = self::DATABASE_PREFIX . $base . '_' . self::suffix();
         if (strlen($name) > self::MAX_NAME) {
             throw new RuntimeException("Test database name is longer than MySQL allows: $name");
         }
@@ -106,7 +112,7 @@ final class TestRun
             $mysqli->query('SET SESSION lock_wait_timeout = 10');
             $result = $mysqli->query(
                 "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA
-                  WHERE SCHEMA_NAME LIKE 'intelis\\_%\\_{$id}%'"
+                  WHERE SCHEMA_NAME LIKE 'itest\\_%\\_{$id}%'"
             );
             foreach ($result->fetch_all() as [$name]) {
                 try {

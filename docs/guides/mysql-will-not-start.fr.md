@@ -40,7 +40,7 @@ MySQL refuse de démarrer. InteLIS ne peut donc pas s'ouvrir et rien ne peut
    un plantage ou une coupure de courant.
 3. Attendre `InteLIS is working again.`
 
-    [Le doctor trouve un réglage placé au-dessus du premier en-tête de la configuration MySQL, puis le répare.](../assets/casts/mysql-doctor.cast){ .asciicast data-poster="npt:0:10" }
+    [Le doctor trouve un réglage placé au-dessus du premier en-tête de la configuration MySQL, puis le répare.](../assets/casts/mysql-doctor.cast){ .asciicast }
 
     ??? failure "S'il affiche `The database still will not start.`"
 

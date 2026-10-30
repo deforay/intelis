@@ -804,8 +804,8 @@ $rch = '';
                                                                  <div class="col-lg-7">
                                                                       <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
                                                                            <option value="">-- Select --</option>
-                                                                           <?php foreach ($userResult as $uName) { ?>
-                                                                                <option value="<?php echo $uName['user_id']; ?>" <?php echo ($cd4QueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
+                                                                           <?php foreach ($userInfo as $userId => $userName) { ?>
+                                                                                <option value="<?= htmlspecialchars((string) $userId); ?>" <?php echo ($cd4QueryInfo['result_approved_by'] == $userId) ? "selected=selected" : ""; ?>><?= htmlspecialchars((string) $userName); ?></option>
                                                                            <?php } ?>
                                                                       </select>
                                                                  </div>

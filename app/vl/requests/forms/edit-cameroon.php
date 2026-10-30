@@ -695,8 +695,8 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", ["request_clin
                                                                            <div class="col-lg-7">
                                                                                 <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
                                                                                      <option value=""><?= _translate('-- Select --'); ?></option>
-                                                                                     <?php foreach ($userResult as $uName) { ?>
-                                                                                          <option value="<?php echo $uName['user_id']; ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
+                                                                                     <?php foreach ($userInfo as $userId => $userName) { ?>
+                                                                                          <option value="<?= htmlspecialchars((string) $userId); ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $userId) ? "selected=selected" : ""; ?>><?= htmlspecialchars((string) $userName); ?></option>
                                                                                      <?php } ?>
                                                                                 </select>
                                                                            </div>

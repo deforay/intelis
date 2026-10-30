@@ -5,7 +5,9 @@
 # Usage:
 #   bin/dev/record-casts                  # record every scenario
 #   bin/dev/record-casts mysql-doctor     # record one scenario
-#   bin/dev/record-casts --reinstall ...  # rebuild the installed image first
+#   bin/dev/record-casts --reinstall ...  # rebuild both images first
+#   bin/dev/record-casts --update ...     # update only the current image, after
+#                                         # a change reached the stable branch
 #
 # Each scenario runs in a fresh, throwaway Ubuntu container, never on a real
 # machine, so no lab hostname, address or credential can reach a recording.
@@ -13,14 +15,21 @@
 # guide page by the player under docs/assets/asciinema-player/.
 #
 # The slow part is installing InteLIS (about 10 minutes). That runs once and is
-# saved as the image intelis-casts:installed; every scenario starts from it.
-# Pass --reinstall when the base commit changes or the install has gone stale.
+# saved as the image intelis-casts:installed, at BASE_COMMIT. The image
+# intelis-casts:current is that install updated to the current stable branch.
+# Pass --reinstall when the base commit changes or the images have gone stale.
 #
 # A scenario is two files in bin/dev/casts/scenarios/:
 #   <name>.prepare.sh  run as root before recording, to set the scene
 #                      (for example, break MySQL)
 #   <name>.exp         the expect script that types the commands and answers
 #                      the prompts while asciinema records
+#
+# Comment lines at the top of <name>.exp choose the scene:
+#   # base: installed    start from the older install, not the current one
+#   # needs: backup-server
+#                        start a second container as the backup machine, on a
+#                        private network. Its address is in BACKUP_SERVER.
 #
 # Every recording is checked for leaked secrets and addresses before it is
 # written to docs/. A failed check keeps the old file in docs/ and leaves the
@@ -33,6 +42,9 @@ CASTS_DIR=bin/dev/casts
 OUT_DIR=docs/assets/casts
 BASE_IMAGE=intelis-casts:base
 INSTALLED_IMAGE=intelis-casts:installed
+CURRENT_IMAGE=intelis-casts:current
+SERVER_IMAGE=intelis-casts:backup-server
+NETWORK=intelis-casts-net
 
 # The commit the update recording starts from: the last one before migration
 # 5.8.4, so the recorded update runs real migrations. Move it forward now and
@@ -40,11 +52,13 @@ INSTALLED_IMAGE=intelis-casts:installed
 BASE_COMMIT=b94f6e972974c808a70929d2ddb2038a496eed7a
 
 reinstall=false
+update=false
 scenarios=()
 for arg in "$@"; do
     case "$arg" in
         --reinstall) reinstall=true ;;
-        -h|--help) sed -n '3,27p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        --update) update=true ;;
+        -h|--help) sed -n '3,29p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
         *) scenarios+=("$arg") ;;
     esac
 done
@@ -60,9 +74,9 @@ log() { printf '%s\n' "$*" >&2; }
 # Privileged with the host cgroup tree: systemd needs both to run as PID 1.
 # The hostname is what appears in every shell prompt of every recording.
 start_container() {
-    local name="$1" image="$2"
+    local name="$1" image="$2" network="${3:-bridge}"
     docker rm -f "$name" >/dev/null 2>&1 || true
-    docker run -d --name "$name" --hostname intelis-lab \
+    docker run -d --name "$name" --hostname intelis-lab --network "$network" \
         --privileged --cgroupns=host -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
         --tmpfs /run --tmpfs /run/lock \
         -v "$PWD/$CASTS_DIR:/casts-src:ro" \
@@ -93,6 +107,15 @@ build_installed_image() {
         tail -n 30 "$CASTS_DIR/.install.log" >&2
         exit 1
     fi
+    # gum draws the questions. Setup installs it on its first run on a
+    # terminal, so a lab machine has it, but this install had no terminal.
+    docker exec intelis-casts-install bash -c '
+        mkdir -p /etc/apt/keyrings &&
+        curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg &&
+        echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" \
+            >/etc/apt/sources.list.d/charm.list &&
+        apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq gum' \
+        >>"$CASTS_DIR/.install.log" 2>&1
     # Stop the services so the image holds a cleanly shut down database.
     docker exec intelis-casts-install systemctl stop apache2 mysql
     docker commit intelis-casts-install "$INSTALLED_IMAGE" >/dev/null
@@ -100,19 +123,62 @@ build_installed_image() {
     log "Saved as $INSTALLED_IMAGE."
 }
 
+# The installed image updated to the current stable branch, the way a lab gets
+# it. Scenarios start from this one unless they ask for the older install.
+build_current_image() {
+    log "Updating the install to the current stable branch..."
+    start_container intelis-casts-update "$INSTALLED_IMAGE"
+    if ! docker exec intelis-casts-update bash -c 'intelis update </dev/null' \
+            >"$CASTS_DIR/.update.log" 2>&1; then
+        log "record-casts: update failed; last lines of $CASTS_DIR/.update.log:"
+        tail -n 30 "$CASTS_DIR/.update.log" >&2
+        exit 1
+    fi
+    # The update finishes its permission passes in the background. Let them end
+    # first, or the image keeps a half-done tree.
+    docker exec intelis-casts-update bash -c '
+        for _ in $(seq 1 150); do pgrep -f "setfacl|chown -h|intelis-refresh" >/dev/null || exit 0; sleep 2; done'
+    docker exec intelis-casts-update systemctl stop apache2 mysql
+    docker commit intelis-casts-update "$CURRENT_IMAGE" >/dev/null
+    docker rm -f intelis-casts-update >/dev/null
+    log "Saved as $CURRENT_IMAGE."
+}
+
+# Starts the backup machine and prints its address on the private network.
+start_backup_server() {
+    docker build -q -t "$SERVER_IMAGE" "$CASTS_DIR/backup-server" >/dev/null
+    docker network inspect "$NETWORK" >/dev/null 2>&1 || docker network create "$NETWORK" >/dev/null
+    docker rm -f intelis-casts-backup-server >/dev/null 2>&1 || true
+    docker run -d --name intelis-casts-backup-server --hostname backup-server \
+        --network "$NETWORK" "$SERVER_IMAGE" >/dev/null
+    docker inspect -f "{{(index .NetworkSettings.Networks \"$NETWORK\").IPAddress}}" \
+        intelis-casts-backup-server
+}
+
+# Prints the value of a "# key: value" line at the top of a scenario.
+scenario_option() {
+    sed -n "s/^# $2: *//p" "$CASTS_DIR/scenarios/$1.exp" | head -n 1
+}
+
 # Refuses a recording that holds a password, a token, or anything that names
 # the machine doing the recording: its hostname, its user, its addresses.
 # Addresses in general are fine. The container has no lab address to leak, and
 # its own output is full of mirror addresses and version numbers that look like
 # them. Prints what it found.
+#
+# On CI the machine's identity is a throwaway runner's, and its user is
+# "runner", a word the scripts print ("Backup runner installed"). There only
+# the secrets are checked.
 check_for_leaks() {
     local cast="$1" found patterns
-    patterns='Rec0rd-Only-Pw|RootPass123|gh[pousr]_[A-Za-z0-9]{20,}'
-    patterns+="|$(hostname -s)|${USER:-$(id -un)}"
-    local ip
-    for ip in $(ifconfig 2>/dev/null | awk '/inet / && $2 != "127.0.0.1" {print $2}'); do
-        patterns+="|${ip//./\\.}"
-    done
+    patterns='Rec0rd-Only-Pw|Srv-Admin-Pw|RootPass123|gh[pousr]_[A-Za-z0-9]{20,}'
+    if [ -z "${CI:-}" ]; then
+        patterns+="|$(hostname -s)|${USER:-$(id -un)}"
+        local ip
+        for ip in $(ifconfig 2>/dev/null | awk '/inet / && $2 != "127.0.0.1" {print $2}'); do
+            patterns+="|${ip//./\\.}"
+        done
+    fi
     found="$(grep -noiE "$patterns" "$cast" || true)"
     if [ -n "$found" ]; then
         log "record-casts: $(basename "$cast") contains (line:match):"
@@ -125,26 +191,34 @@ record() {
     local scenario="$1" container="intelis-casts-$1"
     [ -f "$CASTS_DIR/scenarios/$scenario.exp" ] || { log "record-casts: no scenario $scenario"; exit 1; }
 
+    local image="$CURRENT_IMAGE" network=bridge server_ip=""
+    [ "$(scenario_option "$scenario" base)" = installed ] && image="$INSTALLED_IMAGE"
+    if [ "$(scenario_option "$scenario" needs)" = backup-server ]; then
+        network="$NETWORK"
+        server_ip="$(start_backup_server)"
+    fi
+
     log "Recording $scenario..."
-    start_container "$container" "$INSTALLED_IMAGE"
-    docker exec "$container" bash "/casts/scenarios/$scenario.prepare.sh" >&2
+    start_container "$container" "$image" "$network"
+    docker exec -e BACKUP_SERVER="$server_ip" "$container" \
+        bash "/casts/scenarios/$scenario.prepare.sh" >&2
     # The marker file is what stops Ubuntu printing its "To run a command as
     # administrator" hint above the first prompt of every recording.
     docker exec "$container" bash -c 'mkdir -p /tmp/out && chown labuser /tmp/out &&
         sudo -u labuser touch /home/labuser/.sudo_as_admin_successful'
     if ! docker exec -u labuser -w /home/labuser -e HOME=/home/labuser -e USER=labuser \
-            "$container" expect "/casts/scenarios/$scenario.exp" "/tmp/out/$scenario.cast" \
+            -e BACKUP_SERVER="$server_ip" "$container" expect "/casts/scenarios/$scenario.exp" "/tmp/out/$scenario.cast" \
             >"$CASTS_DIR/.$scenario.log" 2>&1; then
         log "record-casts: $scenario failed; last lines of $CASTS_DIR/.$scenario.log:"
         tail -n 30 "$CASTS_DIR/.$scenario.log" >&2
-        docker rm -f "$container" >/dev/null
+        docker rm -f "$container" intelis-casts-backup-server >/dev/null 2>&1
         exit 1
     fi
 
     local tmp
     tmp="$(mktemp)"
     docker cp "$container:/tmp/out/$scenario.cast" "$tmp"
-    docker rm -f "$container" >/dev/null
+    docker rm -f "$container" intelis-casts-backup-server >/dev/null 2>&1
     if ! check_for_leaks "$tmp"; then
         mv "$tmp" "$CASTS_DIR/.$scenario.rejected.cast"
         log "record-casts: kept as $CASTS_DIR/.$scenario.rejected.cast for inspection"
@@ -158,6 +232,9 @@ record() {
 
 if $reinstall || ! docker image inspect "$INSTALLED_IMAGE" >/dev/null 2>&1; then
     build_installed_image
+    build_current_image
+elif $update || ! docker image inspect "$CURRENT_IMAGE" >/dev/null 2>&1; then
+    build_current_image
 fi
 for scenario in "${scenarios[@]}"; do
     record "$scenario"

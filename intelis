@@ -120,6 +120,16 @@ header() {
 }
 
 # --- privileges ---------------------------------------------------------------
+
+# Says a password may be asked for, but only when sudo will ask. One command can
+# elevate more than once (update fetches the newest script, then runs it), and
+# after the first, sudo remembers the password: the notice used to print again
+# with nothing to answer.
+notice_sudo() {
+    sudo -n true 2>/dev/null && return 0
+    info "This needs administrator rights. You may be asked for your password." >&2
+}
+
 # Elevation is per-command rather than for the whole script. Re-executing all of
 # `intelis` under sudo would also elevate the composer passthrough, and composer
 # run as root leaves a root-owned var/cache that the next www-data run cannot
@@ -137,10 +147,10 @@ as_root() {
         return 1
     fi
 
-    # To stderr: callers capture the stdout of helpers that elevate, and a
-    # courtesy notice landing in a command substitution would be read as part of
-    # the value.
-    info "This needs administrator rights. You may be asked for your password." >&2
+    # To stderr (notice_sudo): callers capture the stdout of helpers that
+    # elevate, and a courtesy notice landing in a command substitution would be
+    # read as part of the value.
+    notice_sudo
     sudo "$@"
 }
 
@@ -498,7 +508,7 @@ cmd_provision() {
         return 1
     fi
 
-    info "This needs administrator rights. You may be asked for your password." >&2
+    notice_sudo
     # sudo clears the environment, so the variable is handed over explicitly
     # rather than exported and hoped for.
     ( cd "$APP_DIR" && sudo env COMPOSER_ALLOW_SUPERUSER=1 composer provision "$@" )
@@ -529,7 +539,7 @@ run_app_composer() {
             run_composer "$@"
             return $?
         fi
-        info "This needs administrator rights. You may be asked for your password." >&2
+        notice_sudo
     fi
 
     ( cd "$APP_DIR" && sudo -u "$runner" composer "$@" )
@@ -554,7 +564,7 @@ cmd_reset_password() {
             error "Log in as root and run 'intelis reset-password' again."
             return 1
         fi
-        info "This needs administrator rights. You may be asked for your password." >&2
+        notice_sudo
     fi
 
     ( cd "$APP_DIR" && sudo -u "$runner" php bin/reset-user-password.php "$@" )

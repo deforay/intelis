@@ -56,11 +56,7 @@ $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
 
-$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
-$userInfo = [];
-foreach ($userResult as $user) {
-	$userInfo[$user['user_id']] = ($user['user_name']);
-}
+$userInfo = $usersService->getActiveLabScopedUsers();
 //sample rejection reason
 $rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active'";
 $rejectionResult = $db->rawQuery($rejectionQuery);
@@ -86,6 +82,15 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 
 $vlQuery = "SELECT * from form_vl where vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, [$id]);
+
+// A saved signer may now be outside the lab scope; keep them selectable so the
+// dropdown does not render blank and a re-save does not clear the value.
+foreach (['tested_by', 'result_reviewed_by', 'result_approved_by'] as $field) {
+	$savedUserId = (string) ($vlQueryInfo[$field] ?? '');
+	if ($savedUserId !== '' && !isset($userInfo[$savedUserId])) {
+		$userInfo[$savedUserId] = $usersService->getUserName($savedUserId) ?? $savedUserId;
+	}
+}
 
 // Keep the sample's own stored lab selectable even if that lab has since been
 // deactivated. Without it the required Testing Lab select renders empty and the

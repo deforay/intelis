@@ -1,6 +1,7 @@
 #!/usr/bin/expect -f
 #
 # Normal update: `intelis update` on a machine two migrations behind.
+# base: installed
 # Shown on docs/guides/updating-intelis-on-ubuntu.md.
 
 # The migration step prints a "Total time:" of its own part-way through, so the

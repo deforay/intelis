@@ -702,9 +702,9 @@ $disable = "disabled = 'disabled'";
 														<select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
 															<option value="">-- Select --</option>
 															<?php
-															foreach ($userResult as $uName) {
+															foreach ($userInfo as $userId => $userName) {
 															?>
-																<option value="<?php echo $uName['user_id']; ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?= $uName['user_name']; ?></option>
+																<option value="<?= htmlspecialchars((string) $userId); ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $userId) ? "selected=selected" : ""; ?>><?= htmlspecialchars((string) $userName); ?></option>
 															<?php
 															}
 															?>

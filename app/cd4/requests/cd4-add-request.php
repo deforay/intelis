@@ -38,11 +38,7 @@ $healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('cd4', fal
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
 
-$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
-$userInfo = [];
-foreach ($userResult as $user) {
-    $userInfo[$user['user_id']] = ($user['user_name']);
-}
+$userInfo = $usersService->getActiveLabScopedUsers();
 
 //sample rejection reason
 $condition = "rejection_reason_status ='active'";
