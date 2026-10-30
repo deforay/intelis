@@ -90,6 +90,7 @@ try {
 	}
 
 	$_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true);
+	$_POST['sampleDispatchedDate'] = DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true);
 	$_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true);
 	$_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($_POST['sampleTestedDateTime'] ?? '', true);
 	$_POST['rapidtestDate'] = DateUtility::isoDateFormat($_POST['rapidtestDate'] ?? '');
@@ -345,6 +346,15 @@ try {
 		'rejection_on' => isset($_POST['rejectionDate']) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
 	];
+
+	if (isset($_POST['motherAgeInYears'])) {
+		$eidData['mother_age_in_years'] = $_POST['motherAgeInYears'];
+	}
+
+	if (isset($_POST['test2Result'])) {
+		$eidData['test_2_result'] = $_POST['test2Result'];
+	}
+
 	// Only one country form has the box: another form's save must not clear it.
 	if (array_key_exists('labTestingPointOther', $_POST)) {
 		$eidData['lab_testing_point_other'] = $_POST['labTestingPointOther'];

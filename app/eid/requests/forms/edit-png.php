@@ -606,8 +606,8 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                     of positive first EID PCR test result </option>
                                                 <option
                                                     value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months"
-                                                    <?php echo ($eidInfo['reason_for_pcr'] == 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months') ? "selected='selected'" : ""; ?>> Repeat EID PCR test 6 weeks after
-                                                    stopping breastfeeding for children < 9 months </option>
+                                                    <?php echo (trim($eidInfo['reason_for_pcr']) == 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children <9 months') ? "selected='selected'" : ""; ?>> Repeat EID PCR test 6 weeks after
+                                                    stopping breastfeeding for children <9 months </option>
                                                 <option value="Positive HIV rapid test result at 9 months or later"
                                                     <?php echo ($eidInfo['reason_for_pcr'] == 'Positive HIV rapid test result at 9 months or later') ? "selected='selected'" : ""; ?>>
                                                     Positive HIV rapid test result at 9 months or later </option>
