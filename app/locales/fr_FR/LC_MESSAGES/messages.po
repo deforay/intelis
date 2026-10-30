@@ -37765,3 +37765,177 @@ msgstr "Saisir le nom du test %d"
 
 msgid "Please select the test date for row %d"
 msgstr "Veuillez sélectionner la date de l'analyse pour la ligne %d"
+
+msgid "Changes only the Line-Level Records table. The snapshot counts stay the same."
+msgstr "Modifie uniquement le tableau Enregistrements détaillés. Les chiffres de l'aperçu ne changent pas."
+
+msgid "How to read this report"
+msgstr "Comment lire ce rapport"
+
+msgid "How the cascade reads"
+msgstr "Comment lire la cascade"
+
+msgid "Read each row of boxes from left to right."
+msgstr "Lisez chaque ligne de cases de gauche à droite."
+
+msgid "Each box is part of the box to its left. The percentage under a box is that share."
+msgstr "Chaque case fait partie de la case à sa gauche. Le pourcentage sous une case indique cette part."
+
+msgid "A large drop between two boxes shows where children or mothers fall out of follow-up."
+msgstr "Une forte baisse entre deux cases montre où des enfants ou des mères sortent du suivi."
+
+msgid "The red box at the end of a row is the group that needs action."
+msgstr "La case rouge en fin de ligne est le groupe qui demande une action."
+
+msgid "Parts of the page"
+msgstr "Parties de la page"
+
+msgid "Cards"
+msgstr "Cartes"
+
+msgid "The headline numbers. Green is the goal. Red and purple need action. A card with a View button opens the list behind the number."
+msgstr "Les chiffres principaux. Le vert est l'objectif. Le rouge et le violet demandent une action. Une carte avec un bouton Voir ouvre la liste derrière le chiffre."
+
+msgid "Maternal VL Risk row"
+msgstr "Ligne Risque de charge virale chez la mère"
+
+msgid "Starts from the children, then counts their mothers. Ends with the mothers whose latest VL result is high."
+msgstr "Part des enfants, puis compte leurs mères. Se termine par les mères dont le dernier résultat de charge virale est élevé."
+
+msgid "Infant EID Outcome row"
+msgstr "Ligne Résultats de l'EID chez les nourrissons"
+
+msgid "Follows the matched children to an EID result, then to a positive result."
+msgstr "Suit les enfants appariés jusqu'à un résultat EID, puis jusqu'à un résultat positif."
+
+msgid "Notes under the rows"
+msgstr "Notes sous les lignes"
+
+msgid "Children not matched to a mother, and how many mothers at high VL are pregnant or breastfeeding."
+msgstr "Les enfants non appariés à une mère, et le nombre de mères à charge virale élevée qui sont enceintes ou allaitent."
+
+msgid "The records behind the numbers. An EID test appears once for each VL test of the mother. The Match Status filter changes only this table."
+msgstr "Les enregistrements derrière les chiffres. Un test EID apparaît une fois pour chaque test de charge virale de la mère. Le filtre Statut de correspondance modifie uniquement ce tableau."
+
+msgid "Terms"
+msgstr "Termes"
+
+msgid "Matched"
+msgstr "Apparié"
+
+msgid "The Mother ID on the EID request is the same as the ART number on a VL request."
+msgstr "L'ID de la mère sur la demande EID est identique au N° ART d'une demande de charge virale."
+
+msgid "High VL / Suppressed"
+msgstr "Charge virale élevée / Supprimée"
+
+msgid "The mother's latest VL result is 1000 cp/mL or more / below 1000 cp/mL."
+msgstr "Le dernier résultat de charge virale de la mère est de 1000 cp/mL ou plus / inférieur à 1000 cp/mL."
+
+msgid "High VL during pregnancy"
+msgstr "Charge virale élevée pendant la grossesse"
+
+msgid "A high VL result in the 9 months before the child's date of birth."
+msgstr "Un résultat de charge virale élevé dans les 9 mois avant la date de naissance de l'enfant."
+
+msgid "Children"
+msgstr "Enfants"
+
+msgid "Each child counts once, even with more than one EID test."
+msgstr "Chaque enfant compte une fois, même avec plus d'un test EID."
+
+msgid "Several children can have the same mother, so this box has no percentage."
+msgstr "Plusieurs enfants peuvent avoir la même mère. Cette case n'a donc pas de pourcentage."
+
+msgid "VL history"
+msgstr "Historique de charge virale"
+
+msgid "The report uses the mother's VL tests from any date, not only the selected period."
+msgstr "Le rapport utilise les tests de charge virale de la mère de toute date, pas seulement de la période choisie."
+
+msgid "Mothers whose latest VL result is below 1000 cp/mL."
+msgstr "Mères dont le dernier résultat de charge virale est inférieur à 1000 cp/mL."
+
+msgid "Mothers whose latest VL result is 1000 cp/mL or more."
+msgstr "Mères dont le dernier résultat de charge virale est de 1000 cp/mL ou plus."
+
+msgid "Mothers with High VL (latest ≥1000 cp/mL)"
+msgstr "Mères à charge virale élevée (dernière ≥1000 cp/mL)"
+
+msgid "View mothers"
+msgstr "Voir les mères"
+
+msgid "Matched children with a positive EID result in the selected period, counted once each."
+msgstr "Enfants appariés avec un résultat EID positif dans la période choisie, comptés une fois chacun."
+
+msgid "View children"
+msgstr "Voir les enfants"
+
+msgid "HIV-positive children whose mother had a high VL result in the 9 months before the child was born."
+msgstr "Enfants séropositifs dont la mère a eu un résultat de charge virale élevé dans les 9 mois avant la naissance de l'enfant."
+
+msgid "Positive Children: Mother High VL During Pregnancy"
+msgstr "Enfants positifs : charge virale de la mère élevée pendant la grossesse"
+
+msgid "View list"
+msgstr "Voir la liste"
+
+msgid "of %s HIV-positive children"
+msgstr "sur %s enfants séropositifs"
+
+msgid "%s with no date of birth"
+msgstr "%s sans date de naissance"
+
+msgid "%s children not matched to a mother"
+msgstr "%s enfants non appariés à une mère"
+
+msgid "Mothers at high VL: %s pregnant, %s breastfeeding"
+msgstr "Mères à charge virale élevée : %s enceintes, %s allaitantes"
+
+msgid "%s mothers suppressed now after an earlier high result"
+msgstr "%s mères maintenant supprimées après un résultat élevé antérieur"
+
+msgid "HIV-Positive Children: Mother High VL During Pregnancy"
+msgstr "Enfants séropositifs : charge virale de la mère élevée pendant la grossesse"
+
+msgid "Mother high VL during pregnancy"
+msgstr "Charge virale de la mère élevée pendant la grossesse"
+
+msgid "High VL During Pregnancy"
+msgstr "Charge virale élevée pendant la grossesse"
+
+msgid "Mothers Whose Latest VL Is High (≥1000 cp/mL)"
+msgstr "Mères dont la dernière charge virale est élevée (≥1000 cp/mL)"
+
+msgid "Mothers whose latest VL is suppressed (< 1000 cp/mL)"
+msgstr "Mères dont la dernière charge virale est supprimée (< 1000 cp/mL)"
+
+msgid "Of those, had a high VL result earlier"
+msgstr "Parmi elles, résultat de charge virale élevé antérieur"
+
+msgid "Mothers whose latest VL is high (>= 1000 cp/mL)"
+msgstr "Mères dont la dernière charge virale est élevée (>= 1000 cp/mL)"
+
+msgid "Of those, pregnant at the latest VL test"
+msgstr "Parmi elles, enceintes au dernier test de charge virale"
+
+msgid "Of those, breastfeeding at the latest VL test"
+msgstr "Parmi elles, allaitantes au dernier test de charge virale"
+
+msgid "HIV-positive children"
+msgstr "Enfants séropositifs"
+
+msgid "Of those, mother had high VL in the 9 months before birth"
+msgstr "Parmi eux, mère à charge virale élevée dans les 9 mois avant la naissance"
+
+msgid "Of those, no date of birth recorded"
+msgstr "Parmi eux, sans date de naissance enregistrée"
+
+msgid "Note"
+msgstr "Remarque"
+
+msgid "Children are counted once each, by Child ID. A mother's VL status is her latest VL result."
+msgstr "Chaque enfant est compté une fois, par ID de l'enfant. Le statut de charge virale d'une mère est son dernier résultat."
+
+msgid "Mother Had High VL in 9 Months Before Birth"
+msgstr "Charge virale de la mère élevée dans les 9 mois avant la naissance"
