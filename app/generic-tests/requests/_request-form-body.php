@@ -173,7 +173,7 @@ if ($ownLabId > 0) {
                               <div class="box box-primary requestForm<?= $dnr ?>" style="display:none;">
                                    <div class="box-header with-border">
                                         <h3 class="box-title">
-                                             <?= _translate("Clinic Information: (To be filled by requesting Clinican/Nurse)"); ?>
+                                             <?= _translate("Clinic Information: (To be filled by requesting Clinician/Nurse)"); ?>
                                         </h3>
                                    </div>
                                    <div class="row requestForm" style="display:none;">

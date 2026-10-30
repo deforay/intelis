@@ -7377,7 +7377,7 @@ msgstr ""
 #: vl/program-management/export-vl-results.php:35
 #: vl/program-management/highViralLoad.php:1122
 #: vl/requests/export-vl-requests.php:38
-msgid "Requesting Clinican"
+msgid "Requesting Clinician"
 msgstr ""
 
 #: cd4/management/cd4-clinic-report.php:571
@@ -8803,7 +8803,7 @@ msgstr ""
 
 #: cd4/management/export-cd4-results.php:32
 #: vl/program-management/export-vl-results.php:35
-msgid "Requesting Clinican Cellphone Number"
+msgid "Requesting Clinician Cellphone Number"
 msgstr ""
 
 #: cd4/management/export-cd4-results.php:32
@@ -18614,7 +18614,7 @@ msgstr ""
 #: vl/requests/forms/edit-cameroon.php:150
 #: vl/results/forms/update-burkina-faso-result.php:199
 #: vl/results/forms/update-cameroon-result.php:195
-msgid "Clinic Information: (To be filled by requesting Clinican/Nurse)"
+msgid "Clinic Information: (To be filled by requesting Clinician/Nurse)"
 msgstr ""
 
 #: generic-tests/requests/add-request.php:252
