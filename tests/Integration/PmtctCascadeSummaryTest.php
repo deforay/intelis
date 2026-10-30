@@ -123,24 +123,30 @@ final class PmtctCascadeSummaryTest extends TestCase
         self::vl($db, 'M6', '2025-12-01', 'not suppressed');
         self::eid($db, 'C6', 'M6', '2026-02-10', 'positive', null);
 
+        // M8: latest high, in the pregnancy window. C8 has two positive records
+        // and only one carries a date of birth, so C8 can still be checked.
+        self::vl($db, 'M8', '2025-12-01', 'not suppressed');
+        self::eid($db, 'C8', 'M8', '2026-02-10', 'positive', null);
+        self::eid($db, 'C8', 'M8', '2026-03-10', 'positive', '2026-01-20');
+
         // Outside the window: not counted.
         self::eid($db, 'C7', 'M2', '2025-06-01', 'positive', '2025-05-01');
 
         $s = PmtctCascadeUtility::summary($db, self::WINDOW);
 
-        self::assertSame(6, $s['totalChildrenWithMotherId'], 'children, not EID samples');
-        self::assertSame(4, $s['matchedChildren']);
+        self::assertSame(7, $s['totalChildrenWithMotherId'], 'children, not EID samples');
+        self::assertSame(5, $s['matchedChildren']);
         self::assertSame(2, $s['unmatchedChildren'], 'no VL, or only a cancelled one');
-        self::assertSame(4, $s['testedChildren']);
-        self::assertSame(3, $s['positiveChildren'], 'children, not EID samples');
-        self::assertSame(1, $s['positiveChildrenNoDob']);
-        self::assertSame(1, $s['preBirthHighVlChildren'], 'only a high result during the pregnancy');
+        self::assertSame(5, $s['testedChildren']);
+        self::assertSame(4, $s['positiveChildren'], 'children, not EID samples');
+        self::assertSame(1, $s['positiveChildrenNoDob'], 'a date of birth on any positive record counts');
+        self::assertSame(2, $s['preBirthHighVlChildren'], 'only a high result during the pregnancy');
 
-        self::assertSame(4, $s['distinctMothers'], 'a cancelled VL sample is not a match');
-        self::assertSame(8, $s['vlTests']);
-        self::assertSame(7, $s['vlTestsWithResult']);
-        self::assertSame(4, $s['mothersWithResult']);
-        self::assertSame(2, $s['mothersHighVl'], 'latest result, not any result');
+        self::assertSame(5, $s['distinctMothers'], 'a cancelled VL sample is not a match');
+        self::assertSame(9, $s['vlTests']);
+        self::assertSame(8, $s['vlTestsWithResult']);
+        self::assertSame(5, $s['mothersWithResult']);
+        self::assertSame(3, $s['mothersHighVl'], 'latest result, not any result');
         self::assertSame(2, $s['mothersSuppressedAfterHighVl']);
         self::assertSame(1, $s['mothersHighVlPregnant'], 'as recorded on the latest result');
         self::assertSame(0, $s['mothersHighVlBreastfeeding']);

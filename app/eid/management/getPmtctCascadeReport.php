@@ -91,7 +91,6 @@ if ($action === 'positiveChildren') {
             vm.vlTests,
             vm.highVlTests,
             vm.firstHighVlDate,
-            vm.highVlDates,
             vm.latestVlDate,
             vm.latestVlResult,
             vm.latestVlCategory,
@@ -103,8 +102,6 @@ if ($action === 'positiveChildren') {
                    COUNT(*) AS vlTests,
                    SUM($highVlExpr) AS highVlTests,
                    MIN(CASE WHEN $highVlExpr THEN DATE(v.sample_collection_date) END) AS firstHighVlDate,
-                   GROUP_CONCAT(DISTINCT CASE WHEN $highVlExpr THEN DATE(v.sample_collection_date) END
-                                SEPARATOR ',') AS highVlDates,
                    " . PmtctCascadeUtility::latestResultExpr('DATE(v.sample_collection_date)') . " AS latestVlDate,
                    " . PmtctCascadeUtility::latestResultExpr('v.result') . " AS latestVlResult,
                    " . PmtctCascadeUtility::latestResultExpr('v.vl_result_category') . " AS latestVlCategory,
@@ -125,10 +122,28 @@ if ($action === 'positiveChildren') {
 
     $preBirthOnly = !empty($_POST['preBirthOnly']) && $_POST['preBirthOnly'] !== '0';
 
+    // Every high result of these mothers, one row each. A GROUP_CONCAT of the
+    // dates would be cut at group_concat_max_len and could drop the one date
+    // that falls in the pregnancy window.
+    $highVlDatesByMother = [];
+    $highVlSql = "SELECT DISTINCT TRIM(v.patient_art_no) AS mid, DATE(v.sample_collection_date) AS highDate
+        FROM form_vl v
+        INNER JOIN (
+            SELECT DISTINCT TRIM(e2.mother_id) AS mid
+            FROM form_eid e2
+            WHERE $whereSqlE2 AND $positiveExprE2
+        ) pm ON pm.mid = TRIM(v.patient_art_no)
+        WHERE $vlCountable AND $highVlExpr";
+    foreach ($db->rawQueryGenerator($highVlSql) as $h) {
+        $highVlDatesByMother[(string) $h['mid']][] = pmtctDateOrBlank($h['highDate'] ?? null);
+    }
+
     $rows = [];
     foreach ($db->rawQuery($sql) as $r) {
-        $highVlDates = array_filter(explode(',', (string) ($r['highVlDates'] ?? '')));
-        $preBirth = PmtctCascadeUtility::preBirthFlag(pmtctDateOrBlank($r['childDob'] ?? null), $highVlDates);
+        $preBirth = PmtctCascadeUtility::preBirthFlag(
+            pmtctDateOrBlank($r['childDob'] ?? null),
+            $highVlDatesByMother[(string) ($r['motherId'] ?? '')] ?? []
+        );
         if ($preBirthOnly && $preBirth !== 'yes') {
             continue;
         }
