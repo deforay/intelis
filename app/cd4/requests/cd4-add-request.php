@@ -142,7 +142,7 @@ require_once($fileArray[$formId]);
                 } else {
                     $.unblockUI();
                     generateSampleCode();
-                    alert("<?= _translate("Could not save this form. Please try again."); ?>");
+                    alert("<?= _jsTranslate("Could not save this form. Please try again."); ?>");
                 }
             });
     }

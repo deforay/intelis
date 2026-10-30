@@ -197,7 +197,7 @@ if (!empty($tableResult)) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _translate("Sample Rejection by Categories"); ?>"
+                text: "<?php echo _jsTranslate("Sample Rejection by Categories"); ?>"
             },
             credits: {
                 enabled: false

@@ -1301,7 +1301,7 @@ if ($isLisInstance) {
     function addTestSection() {
         if ($('#isResultFinalized').val() === 'yes' && $('#finalResult').val()) {
             showFinalInterpretationConfirmModal({
-                message: '<?= _translate("The Final Interpretation is already recorded. Do you still want to add a new test?"); ?>',
+                message: '<?= _jsTranslate("The Final Interpretation is already recorded. Do you still want to add a new test?"); ?>',
                 onConfirm: function () { _appendTestSection(); }
             });
             return;
@@ -1699,7 +1699,7 @@ if ($isLisInstance) {
         });
 
         $('#specimenType').select2({
-            placeholder: "<?php echo _translate('Select specimen type'); ?>",
+            placeholder: "<?php echo _jsTranslate('Select specimen type'); ?>",
             width: '100%'
         });
 
@@ -1731,7 +1731,7 @@ if ($isLisInstance) {
 
         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
             $('#labId').select2({
-                placeholder: "<?php echo _translate('Select testing lab'); ?>"
+                placeholder: "<?php echo _jsTranslate('Select testing lab'); ?>"
             });
         <?php } ?>
 

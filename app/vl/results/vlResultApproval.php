@@ -445,7 +445,7 @@ foreach ($rejectionTypeResult as $type) {
 			allowClear: true
 		});
 		$("#sampleType").select2({
-			placeholder: "<?php echo _translate("Select Sample Type"); ?>",
+			placeholder: "<?php echo _jsTranslate("Select Sample Type"); ?>",
 			allowClear: true
 		});
 		$("#facilityName").select2({

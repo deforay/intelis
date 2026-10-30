@@ -316,7 +316,7 @@ $sampleStatusData = $general->getSampleStatus();
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$("#vlLab").select2({
-			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Testing Lab"); ?>"
 		});
 		$("#batchCode").select2({
 			placeholder: "<?php echo _translate("Select Batch Code"); ?>"

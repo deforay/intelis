@@ -1,5 +1,5 @@
 ---
-description: Explique le parcours d'un échantillon de charge virale dans InteLIS, du prélèvement et de l'enregistrement jusqu'au batch, à la saisie, à l'approbation et à la diffusion du résultat.
+description: Explique le parcours d'un échantillon de charge virale dans InteLIS, du prélèvement et de l'enregistrement jusqu'au lot, à la saisie, à l'approbation et à la diffusion du résultat.
 audience: [lab-staff, lab-supervisor, requesting-facility]
 module: [vl]
 type: explanation
@@ -36,9 +36,9 @@ flowchart TD
     A[Échantillon prélevé] --> B{Comment arrive-t-il au laboratoire ?}
     B -->|Directement| C[Enregistrer une demande de test]
     B -->|Avec manifeste| D[Activer les échantillons du manifeste]
-    C --> E[Ajouter les échantillons à un batch]
+    C --> E[Ajouter les échantillons à un lot]
     D --> E
-    E --> F[Imprimer le PDF du batch]
+    E --> F[Imprimer le PDF du lot]
     F --> G[Enregistrer les échantillons sur l'automate]
     G --> H[Lancer le test]
     H --> I[Saisir le résultat dans InteLIS]
@@ -49,16 +49,16 @@ flowchart TD
     L --> M[Imprimer ou envoyer le résultat]
 ```
 
-## Pourquoi le PDF du batch est essentiel
+## Pourquoi le PDF du lot est essentiel
 
 L'automate et InteLIS ne s'accordent que sur une seule donnée : l'ID de
 l'échantillon. Si l'ID saisi sur l'automate diffère d'un seul caractère de l'ID
 enregistré dans InteLIS, le résultat revient et ne correspond à aucun
 échantillon.
 
-Le PDF du batch existe pour éviter cela. Il porte les ID d'échantillon générés
+Le PDF du lot existe pour éviter cela. Il porte les ID d'échantillon générés
 par InteLIS sous forme de codes-barres, dans l'ordre où les échantillons sont
-placés dans la série. Scanner depuis le PDF du batch supprime le risque
+placés dans la série. Scanner depuis le PDF du lot supprime le risque
 d'erreur de saisie. Enregistrer les échantillons sur l'automate de mémoire, ou
 depuis la fiche papier, réintroduit ce risque.
 
@@ -94,7 +94,7 @@ diffusé.
 - [Enregistrer une demande de test de charge virale](register-a-request.md)
 - [Envoyer des échantillons à un laboratoire avec un manifeste](send-samples-on-a-manifest.md)
 - [Réceptionner des échantillons envoyés avec un manifeste](receive-referred-samples.md)
-- [Créer un batch pour le test](batch-samples.md)
+- [Créer un lot pour le test](batch-samples.md)
 - [Saisir les résultats de charge virale](capture-results.md)
 - [Vérifier et approuver les résultats](approve-results.md)
 - [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md)

@@ -389,7 +389,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$("#testingLab").select2({
-			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Testing Lab"); ?>"
 		});
 		$('#sampleCollectionDate,#sampleTestDate,#printDate').daterangepicker({
 				locale: {

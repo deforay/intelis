@@ -52,7 +52,7 @@ l'impression ni au courriel.
             | Filtre | Usage |
             | --- | --- |
             | Date du test de l'échantillon | Tout ce qui a été testé à une date |
-            | Code de batch | Une seule série d'automate |
+            | Code de lot | Une seule série d'automate |
             | ID Patient ou Nom du patient | Un seul patient |
             | Province et District | Une région |
 
@@ -65,7 +65,7 @@ l'impression ni au courriel.
             Sélectionner plutôt **Imprimer** sur la ligne de ce résultat, puis
             passer à l'étape 7.
 
-    6. Sélectionner **Imprimer les résultats sélectionnés PDF**.
+    6. Sélectionner **Imprimer le PDF des résultats sélectionnés**.
 
         ??? failure "Si InteLIS refuse plus de 1000 résultats"
 
@@ -81,17 +81,17 @@ l'impression ni au courriel.
 
     1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests → Envoyer
        le résultat du test par courriel**.
-    2. Choisir la structure dans **Nom de l'installation (à)**. InteLIS règle le
+    2. Choisir la structure dans **Nom de la structure (destinataire)**. InteLIS règle le
        filtre **Nom de la structure** sur la même structure, liste ses
        échantillons et affiche l'adresse à laquelle part le courriel.
 
         ??? failure "Si InteLIS affiche `Aucune adresse électronique valide n'est disponible`"
 
             La structure n'a pas d'adresse électronique enregistrée, et
-            **Suivante** reste désactivé. Demander à l'administrateur d'en
+            **Suivant** reste désactivé. Demander à l'administrateur d'en
             ajouter une sous **ADMIN → Structures sanitaires**.
 
-    3. Vérifier le **Sujet** et le **Message**. Les deux sont déjà remplis.
+    3. Vérifier le **Objet** et le **Message**. Les deux sont déjà remplis.
     4. Laisser **Statut du courrier envoyé** sur **Échantillons non encore
        envoyés**, pour écarter les résultats déjà envoyés.
     5. Garder **Nom de la structure** réglé sur cette seule structure.
@@ -106,7 +106,7 @@ l'impression ni au courriel.
             Un courriel contient au plus 100 échantillons. Envoyer le reste dans
             un second courriel.
 
-    7. Sélectionner **Suivante**. La page suivante liste les échantillons
+    7. Sélectionner **Suivant**. La page suivante liste les échantillons
        envoyés.
 
         ??? info "Si un échantillon rejeté manque dans la liste"
@@ -116,7 +116,7 @@ l'impression ni au courriel.
 
     8. Sélectionner **Send**. Ce bouton s'affiche en anglais.
     9. Revenir à **Envoyer le résultat du test par courriel**, régler **Statut du
-       courrier envoyé** sur **Échantillons déjà envoyés** et rechercher. Les
+       courrier envoyé** du total **Échantillons déjà envoyés** et rechercher. Les
        résultats envoyés y figurent.
 
 === "Exporter"

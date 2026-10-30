@@ -21,7 +21,7 @@ proposée. Voir [Se connecter et naviguer dans InteLIS](signing-in.md) pour ces
 commandes.
 
 **Indicateurs de performance du laboratoire**, **Activité des instruments** et
-**Réseau de référencement des échantillons** se trouvent sous
+**Réseau de référence des échantillons** se trouvent sous
 **ADMIN → Rapports**. Ils sont décrits dans
 [Surveiller et auditer InteLIS](admin-monitoring.md).
 
@@ -37,7 +37,7 @@ S'ouvre sur les 29 derniers jours, aujourd'hui compris. La commande de période
 en haut de page modifie l'intervalle, et son préréglage **30 derniers jours**
 couvre 30 jours.
 
-Lorsque **VL Objectif mensuel** est activé, l'onglet charge virale affiche
+Lorsque **Objectif mensuel VL** est activé, l'onglet charge virale affiche
 aussi les objectifs de test et de suppression virale. Voir
 [CV-Rapport d'objectif de test](#cv-rapport-dobjectif-de-test).
 
@@ -111,7 +111,7 @@ L'onglet **Charge virale élevée** consigne le suivi effectué auprès de la
 structure. Son filtre **Statut des contacts** sépare les patients dont le
 contact est terminé des autres.
 
-## Rapport hebdomadaire du labo VL
+## Rapport hebdomadaire du laboratoire VL
 
 **Emplacement :** **CHARGE VIRALE DU VIH → Gestion → Rapport hebdomadaire du
 labo VL**
@@ -120,7 +120,7 @@ Deux rapports sur une même page.
 
 | Rapport | Contenu |
 |---|---|
-| Rapport hebdomadaire du labo VL | L'activité de test sur la période sélectionnée, par défaut les 7 derniers jours |
+| Rapport hebdomadaire du laboratoire VL | L'activité de test sur la période sélectionnée, par défaut les 7 derniers jours |
 | Rapport hebdomadaire du laboratoire VL - Femmes | La même activité pour les patientes, ventilée par âge |
 
 Les deux s'exportent vers un tableur.
@@ -159,7 +159,7 @@ laboratoire sous **ADMIN → Structures sanitaires**.
 | **Cible mensuelle de suppression virale** | Le nombre de résultats supprimés attendu chaque mois. Charge virale uniquement |
 
 **ADMIN → Paramètres → Configuration générale** ne contient que
-l'interrupteur **VL Objectif mensuel**. Il affiche ou masque les graphiques
+l'interrupteur **Objectif mensuel VL**. Il affiche ou masque les graphiques
 d'objectif sur le tableau de bord.
 
 ## Rapports sur les congélateurs et le stockage
@@ -183,7 +183,7 @@ afin de retrouver les échantillons bloqués avant leur expiration.
 
 | Étape | Contenu |
 |---|---|
-| À l'établissement | Enregistré au point de prélèvement. Aucun laboratoire n'a enregistré sa réception |
+| À la structure | Enregistré au point de prélèvement. Aucun laboratoire n'a enregistré sa réception |
 | Au laboratoire, en attente d'analyse | Un laboratoire a l'échantillon mais ne l'a pas encore testé. Inclut les échecs, les mises en attente et les nouveaux prélèvements demandés |
 | Testé, en attente d'approbation | Testé. Le résultat attend une approbation |
 | Approuvé, en attente de transmission | Le résultat est prêt, mais n'a été ni imprimé, ni envoyé, ni téléchargé |
@@ -194,5 +194,5 @@ La période se base sur la date de prélèvement, ou sur la date de la demande s
 aucune date de prélèvement n'est enregistrée. Le sélecteur **Test** couvre
 chaque type de test activé.
 
-La ventilation regroupe les échantillons par **Établissement de prélèvement**,
+La ventilation regroupe les échantillons par **Structure de prélèvement**,
 **Laboratoire d'analyse** ou **Partenaire**.

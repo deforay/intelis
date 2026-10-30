@@ -159,7 +159,7 @@ plugins:
             Register a Test Request: Enregistrer une demande de test
             Receive Samples Sent on a Manifest: Réceptionner un colis avec manifeste
             Send Samples on a Manifest: Envoyer des échantillons avec un manifeste
-            Batch Samples for Testing: Créer un batch pour le test
+            Batch Samples for Testing: Créer un lot pour le test
             Test Pooled TB Samples on GeneXpert: Tester des échantillons TB groupés sur GeneXpert
             Capture Results: Saisir les résultats
             Review and Approve Results: Vérifier et approuver les résultats
@@ -170,7 +170,7 @@ plugins:
             Users and Roles: Utilisateurs et rôles
             Facilities and Testing Labs: Structures et laboratoires
             Add or Update Many Facilities: Ajouter ou mettre à jour plusieurs structures
-            Instruments: Automates
+            Instruments: Instruments
             Interface Tool Connections: Connexions de l'outil d'interface
             Module Configuration: Configuration des modules
             General Configuration: Configuration générale

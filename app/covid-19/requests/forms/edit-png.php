@@ -781,13 +781,13 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             name="testDate[]" id="testDate<?= ($indexKey + 1); ?>"
                                                                             class="form-control test-name-table-input dateTime"
                                                                             placeholder="Tested on"
-                                                                            title="Please enter the tested on for row <?= ($indexKey + 1); ?>" />
+                                                                            title="<?= sprintf(_translate("Please enter the tested on for row %d"), $indexKey + 1); ?>" />
                                                                     </td>
                                                                     <td>
                                                                         <select name="testingPlatform[]"
                                                                             id="testingPlatform<?= ($indexKey + 1); ?>"
                                                                             class="form-control test-name-table-input"
-                                                                            title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+                                                                            title="<?= sprintf(_translate("Please select the Testing Platform for %d"), $indexKey + 1); ?>">
                                                                             <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'] . '##' . $rows['instrument_id'], '-- Select --'); ?>
                                                                         </select>
                                                                     </td>
@@ -796,7 +796,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             class="form-control test-result test-name-table-input"
                                                                             name="testResult[]"
                                                                             id="testResult<?= ($indexKey + 1); ?>"
-                                                                            title="Please select the result for row <?= ($indexKey + 1); ?>">
+                                                                            title="<?= sprintf(_translate("Please select the result for row %d"), $indexKey + 1); ?>">
                                                                             <?= $general->generateSelectOptions($covid19Results, $rows['result'], '-- Select --'); ?>
                                                                         </select>
                                                                     </td>

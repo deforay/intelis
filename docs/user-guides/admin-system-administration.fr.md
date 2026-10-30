@@ -52,7 +52,7 @@ fois, à l'installation.
     anciennes, le dossier est `/var/www/vlsm`. Ouvrir d'abord la page, puis
     lire la clé. Elle change à chaque chargement de la page.
 
-    Renseigner **Clé secrète**, **Nom d'utilisateur**, **Email ID**,
+    Renseigner **Clé secrète**, **Nom d'utilisateur**, **Adresse e-mail**,
     **Identifiant de connexion**, **Mot de passe** et **Confirmer le mot de
     passe**, puis sélectionner **Envoyer**. L'identifiant de connexion est le
     nom utilisé pour se connecter.
@@ -76,7 +76,7 @@ fois, à l'installation.
     | Section | Paramètres |
     | --- | --- |
     | Paramètres système | **Nom de l'hôte de la base de données**, **Nom d’utilisateur de la base de données**, **Mot de passe de la base de données**, **Nom de la base de données**, **Port de la base de données** |
-    | Réglages de l’instance | **Type d'instance**, **URL STS** et **Nom du Labo** (LIS uniquement. Nom du Labo obligatoire), **Modules activés**, **Pays d'installation**, **Fuseau horaire** |
+    | Réglages de l’instance | **Type d'instance**, **URL STS** et **Nom du laboratoire** (LIS uniquement. Nom du laboratoire obligatoire), **Modules activés**, **Pays d'installation**, **Fuseau horaire** |
     | Paramétrage SMTP | **Email** et **Password** du compte Gmail qui envoie les demandes d'assistance |
 
 5. Sélectionner **Envoyer**.

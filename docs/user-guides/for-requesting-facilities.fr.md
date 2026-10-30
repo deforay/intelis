@@ -17,7 +17,7 @@ tâche.
 ## Ce que voit un compte de structure
 
 - Le personnel des structures travaille sur le système central (STS). Le
-  **Type d'Accès** du rôle est **Site de prélèvement**.
+  **Type d'accès** du rôle est **Site de prélèvement**.
 - Le compte ne voit que les demandes des structures qui lui sont rattachées.
 - Le menu n'affiche que ce que le rôle autorise. La réception des manifestes,
   la saisie des résultats et leur approbation se font au laboratoire

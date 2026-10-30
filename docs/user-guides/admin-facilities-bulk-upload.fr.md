@@ -34,7 +34,7 @@ revue n'est pas acceptée.
         | --- | --- |
         | Nom de la structure | Obligatoire |
         | Code de la structure | Le code national unique. Laissé vide pour un laboratoire d'analyse, InteLIS en génère un. Enregistré en majuscules. La revue montre toute modification |
-        | Code d'établissement externe | Un second code utilisé par un autre système |
+        | Code externe de la structure | Un second code utilisé par un autre système |
         | Province, District | Obligatoires. Un nom qu'InteLIS ne connaît pas est ajouté comme nouvelle province ou nouveau district |
         | Type d'installation | Obligatoire. `1` Etablissement de santé, `2` Laboratoire d'analyse, `3` Site de prélèvement. Le nom du type en anglais, par exemple `Testing Lab`, est aussi accepté |
         | Adresse, Courriel, Numéro de téléphone | Facultatifs |

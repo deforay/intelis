@@ -58,9 +58,9 @@ référencement des échantillons** se trouvent sous **ADMIN → Rapports**.
 2. Renseigner **Type de test**.
 3. Saisir l'**ID de l'échantillon ou ID de l'échantillon à distance**.
 4. Sélectionner **Envoyer**.
-5. Lire l'**Affichage Tableau** : une ligne par révision, avec l'utilisateur qui
+5. Lire l'**Vue tableau** : une ligne par révision, avec l'utilisateur qui
    l'a enregistrée et le moment. Ouvrir **Changements uniquement** pour voir
-   chaque champ modifié avec son **Ancienne Valeur** et sa **Nouvelle
+   chaque champ modifié avec son **Ancienne valeur** et sa **Nouvelle
    Valeur**.
 
     ??? info "Autres vues"
@@ -146,7 +146,7 @@ l'utilisateur. Ce n'est pas la durée de la connexion.
 
     1. Aller à **ADMIN → Surveillance → État de la synchronisation du
        laboratoire**.
-    2. Renseigner **Province**, **District** ou **Nom du Labo** pour réduire la
+    2. Renseigner **Province**, **District** ou **Nom du laboratoire** pour réduire la
        liste, puis sélectionner **Rechercher**.
     3. Lire la ligne du laboratoire. Sa couleur suit son activité la plus
        récente :
@@ -159,7 +159,7 @@ l'utilisateur. Ce n'est pas la durée de la connexion.
         | Jamais synchronisé | Enregistré, jamais mis en service |
 
     4. Comparer **Synchronisation des derniers résultats du laboratoire** et
-       **Dernière demande de synchronisation du STS**. Un retard sur la première
+       **Dernière synchronisation des demandes depuis le STS**. Un retard sur la première
        signifie que des résultats restent sur la machine du laboratoire. Un
        retard sur la seconde signifie que le laboratoire ne voit pas les
        nouvelles demandes.
@@ -193,7 +193,7 @@ l'utilisateur. Ce n'est pas la durée de la connexion.
    d'interface** du laboratoire d'analyse et lire la **Dernière connexion**.
    Voir [Connexions de l'outil d'interface](admin-interface-tool-connections.md).
 
-Une **Dernière connexion** ancienne signifie que l'outil d'interface n'atteint
+Une **Dernière activité** ancienne signifie que l'outil d'interface n'atteint
 pas InteLIS.
 
 ## Compter les tests par instrument et par test
@@ -204,7 +204,7 @@ taux d'échec entre instruments et entre tests.
 1. Aller à **ADMIN → Rapports → Activité des instruments**.
 2. Ouvrir **Tests par instrument**. L'onglet apparaît quand la Charge virale
    ou l'EID est active.
-3. Renseigner **Test**, **Testé le** et **Labo**. **Labo** n'apparaît que si
+3. Renseigner **Test**, **Testé le** et **Laboratoire**. **Laboratoire** n'apparaît que si
    l'instance a des laboratoires d'analyse.
 4. Sélectionner **Rechercher**.
 5. Lire **Par type d'instrument** pour les totaux de chaque marque, et **Par
@@ -284,8 +284,8 @@ taux d'échec entre instruments et entre tests.
 ## Lire le rapport de performance du laboratoire
 
 1. Aller à **ADMIN → Rapports → Indicateurs de performance du laboratoire**.
-2. Renseigner **Test**, **Plage de dates**, **Afficher par** et **Labo**.
-   **Labo** n'apparaît que si l'instance compte des laboratoires d'analyse.
+2. Renseigner **Test**, **Plage de dates**, **Afficher par** et **Laboratoire**.
+   **Laboratoire** n'apparaît que si l'instance compte des laboratoires d'analyse.
 3. Sélectionner **Appliquer**.
 4. Ouvrir l'onglet utile. **Aperçu** apparaît lorsque **Test** vaut **Tous les
    tests (Aperçu)**. Les autres onglets apparaissent lorsqu'un seul test est
@@ -295,7 +295,7 @@ taux d'échec entre instruments et entre tests.
     | --- | --- |
     | Aperçu | Échantillons enregistrés et testés, résultats disponibles et en attente |
     | Délai d'exécution | Le nombre moyen de jours entre prélèvement, réception au laboratoire, test et diffusion |
-    | Volume d'analyses | Les résultats par mode de saisie : **Saisie manuelle**, **Interface de l'analyseur**, **Importation de fichiers**. Les anciens résultats apparaissent comme **Non classifié** |
+    | Volume d'analyses | Les résultats par mode de saisie : **Saisie manuelle**, **Interface de l'instrument**, **Importation de fichiers**. Les anciens résultats apparaissent comme **Non classifié** |
     | Échecs | Les tests en échec, le taux d'échec et le taux de reprise d'analyse |
     | Rejets | Les échantillons rejetés, le taux de rejet et les principaux motifs |
     | Patients avec tests répétés | Les patients testés plus d'une fois, et les changements de résultat |
@@ -334,7 +334,7 @@ masque donc pas un échec.
 
 ## Voir le réseau de référence
 
-1. Aller à **ADMIN → Rapports → Réseau de référencement des échantillons**.
+1. Aller à **ADMIN → Rapports → Réseau de référence des échantillons**.
 2. Renseigner **Plage de dates** et **Type de test**.
 3. Renseigner **Date basée sur** : **Date de prélèvement de l'échantillon**,
    **Date d'enregistrement de l'échantillon** ou **Date de test de
@@ -370,5 +370,5 @@ Le journal consigne les défauts, pas les actions des utilisateurs.
 | --- | --- |
 | Modification retracée | La Piste d'audit nomme le champ, l'ancienne valeur, la nouvelle valeur et l'utilisateur |
 | Synchronisation confirmée | L'Historique de l'API ou l'État de la synchronisation du laboratoire montre une synchronisation récente avec des fiches |
-| Automate confirmé actif | L'Activité des instruments contient un événement récent de l'Interface Tool, et la **Dernière connexion** est récente |
+| Automate confirmé actif | L'Activité des instruments contient un événement récent de l'Interface Tool, et la **Dernière activité** est récente |
 | Échantillon manquant trouvé | La Source des demandes montre l'étape où le chiffre baisse |

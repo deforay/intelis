@@ -1544,7 +1544,7 @@ if ($showInterfaceConnections) {
 				<input type="file" class="form-control" name="reportTemplate[]" id="reportTemplate${testTypeFileCounter}" accept=".pdf" title="<?php echo _translate('Please upload PDF file', true); ?>">
 			</td>
 			<td>
-				<input type="text" class="form-control" name="headerMargin[]" id="headerMargin${testTypeFileCounter}" placeholder="<?php echo _translate('Top margin'); ?>" title="<?php echo _translate('Please enter the header margin'); ?>">
+				<input type="text" class="form-control" name="headerMargin[]" id="headerMargin${testTypeFileCounter}" placeholder="<?php echo _translate('Top margin'); ?>" title="<?php echo _jsTranslate('Please enter the header margin'); ?>">
 			</td>
 			<td style="vertical-align:middle;text-align: center;">
 				<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;

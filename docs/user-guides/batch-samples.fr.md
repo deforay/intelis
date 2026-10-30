@@ -1,15 +1,15 @@
 ---
-description: Regrouper des échantillons de charge virale enregistrés dans un batch pour une série sur automate et imprimer le PDF du batch.
+description: Regrouper des échantillons de charge virale enregistrés dans un lot pour une série sur automate et imprimer le PDF du lot.
 audience: [lab-staff]
 module: [vl]
 type: how-to
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# Créer un batch pour le test
+# Créer un lot pour le test
 
-Regrouper des échantillons enregistrés dans un batch pour une série sur un
-automate, et imprimer le PDF du batch qui porte leurs ID jusqu'à l'automate.
+Regrouper des échantillons enregistrés dans un lot pour une série sur un
+automate, et imprimer le PDF du lot qui porte leurs ID jusqu'à l'automate.
 
 ## Avant de commencer
 
@@ -17,14 +17,14 @@ automate, et imprimer le PDF du batch qui porte leurs ID jusqu'à l'automate.
   [enregistrés directement](register-a-request.md), soit
   [activés depuis un manifeste](receive-referred-samples.md)
 - L'automate sur lequel la série sera passée
-- La permission de gérer les batchs
+- La permission de gérer les lots
 
-## Créer le batch
+## Créer le lot
 
-1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Gérer le batch**.
-2. Sélectionner **Créer un nouveau batch**.
+1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Gérer le lot**.
+2. Sélectionner **Créer un nouveau lot**.
 3. Choisir l'automate dans **Plateforme de test**. La liste des échantillons en
-   attente de batch s'affiche, avec le nombre maximum d'échantillons accepté par
+   attente de lot s'affiche, avec le nombre maximum d'échantillons accepté par
    l'automate.
 4. Sélectionner **Afficher la recherche avancée**.
 5. Choisir la numérotation des **Positions**, **Numérique** ou
@@ -35,7 +35,7 @@ automate, et imprimer le PDF du batch qui porte leurs ID jusqu'à l'automate.
 
     | Filtre | Restreint la liste à |
     |---|---|
-    | Établissement | Les échantillons des structures sanitaires choisies |
+    | Structure | Les échantillons des structures sanitaires choisies |
     | Échantillons saisis ou modifiés par | Les échantillons traités par un utilisateur |
     | Date de prélèvement de l'échantillon | Une période de prélèvement |
     | Date de réception de l'échantillon au laboratoire | Une période de réception au laboratoire |
@@ -56,40 +56,40 @@ automate, et imprimer le PDF du batch qui porte leurs ID jusqu'à l'automate.
         sont à **Sample Registered at Testing Lab** (échantillon enregistré au
         laboratoire d'analyse) ou **Sample Reordered** (échantillon redemandé),
         n'ont pas de résultat, ne sont pas rejetés et ne sont pas dans un autre
-        batch.
+        lot.
 
-9. Vérifier le **Code de batch**. InteLIS le remplit et il ne peut pas être
+9. Vérifier le **Code du lot**. InteLIS le remplit et il ne peut pas être
    modifié.
 10. Sélectionner les échantillons de la série. Au choix :
 
     - Sélectionner **Sélection automatique des échantillons pour le lot**. Les
-      échantillons du haut de la liste passent dans le batch, jusqu'au maximum
+      échantillons du haut de la liste passent dans le lot, jusqu'au maximum
       de l'automate.
     - Sélectionner des échantillons dans la liste de gauche, puis sélectionner
-      la flèche simple vers la droite pour les passer dans le batch à droite.
+      la flèche simple vers la droite pour les passer dans le lot à droite.
 
-11. Sélectionner **Sauvegarder et Suivant**. L'écran **Ajouter une position de
+11. Sélectionner **Enregistrer et suivant**. L'écran **Ajouter une position de
     contrôle de lot** s'ouvre.
 
     ??? failure "Si InteLIS signale un nombre d'échantillons supérieur à celui autorisé"
 
-        Le batch contient plus d'échantillons que l'automate n'en accepte.
+        Le lot contient plus d'échantillons que l'automate n'en accepte.
         Renvoyer des échantillons dans la liste de gauche avec la flèche simple
-        vers la gauche, puis sélectionner à nouveau **Sauvegarder et Suivant**.
+        vers la gauche, puis sélectionner à nouveau **Enregistrer et suivant**.
 
     ??? failure "Si InteLIS demande de sélectionner au moins un échantillon"
 
-        Le batch à droite est vide. Y passer des échantillons, puis sélectionner
-        à nouveau **Sauvegarder et Suivant**.
+        Le lot à droite est vide. Y passer des échantillons, puis sélectionner
+        à nouveau **Enregistrer et suivant**.
 
 12. Faire glisser les échantillons et les contrôles dans l'ordre de passage sur
     l'automate.
-13. Sélectionner **Save**. Le batch apparaît dans la liste **Gérer le batch**.
+13. Sélectionner **Save**. Le lot apparaît dans la liste **Gérer le lot**.
 
-## Imprimer le PDF du batch
+## Imprimer le PDF du lot
 
-14. Sur la ligne du batch dans **Gérer le batch**, sélectionner **PDF par lots**
-    ou **PDF par lots compacts**.
+14. Sur la ligne du lot dans **Gérer le lot**, sélectionner **PDF du lot**
+    ou **PDF compact du lot**.
 
     | Option | Présentation |
     |---|---|
@@ -99,29 +99,29 @@ automate, et imprimer le PDF du batch qui porte leurs ID jusqu'à l'automate.
     ??? info "Si PDF par lots n'apparaît pas sur la ligne"
 
         Le laboratoire est configuré pour la seule version compacte. Utiliser
-        **PDF par lots compacts**.
+        **PDF compact du lot**.
 
 15. Imprimer le PDF.
 
 Charger les échantillons sur l'automate avec les ID du PDF imprimé. Puis
 [saisir les résultats](capture-results.md).
 
-## Modifier ou supprimer un batch
+## Modifier ou supprimer un lot
 
-Chaque ligne de **Gérer le batch** propose ces actions.
+Chaque ligne de **Gérer le lot** propose ces actions.
 
 | Action | Effet |
 |---|---|
-| **Modifier** | Modifier le batch et ses échantillons |
-| **Modifier le poste** | Modifier la position de chaque échantillon |
-| **PDF par lots**, **PDF par lots compacts** | Réimprimer le PDF du batch |
-| **Supprimer** | Supprimer le batch et renvoyer ses échantillons dans la liste en attente de batch. Affiché uniquement tant qu'aucun échantillon du batch n'a de résultat ni de rejet |
+| **Modifier** | Modifier le lot et ses échantillons |
+| **Modifier la position** | Modifier la position de chaque échantillon |
+| **PDF du lot**, **PDF compact du lot** | Réimprimer le PDF du lot |
+| **Supprimer** | Supprimer le lot et renvoyer ses échantillons dans la liste en attente de lot. Affiché uniquement tant qu'aucun échantillon du lot n'a de résultat ni de rejet |
 
-Pour retester des échantillons d'un batch qui a déjà des résultats, voir
+Pour retester des échantillons d'un lot qui a déjà des résultats, voir
 [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md).
 
 ## Vérifier que tout fonctionne
 
-Le batch apparaît dans **Gérer le batch** avec le bon nombre dans **Nombre
+Le lot apparaît dans **Gérer le lot** avec le bon nombre dans **Nombre
 d'échantillons**. Une fois les résultats saisis, **Nombre d'échantillons
 testés** augmente jusqu'à correspondre.

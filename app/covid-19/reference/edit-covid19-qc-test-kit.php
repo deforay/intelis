@@ -112,7 +112,7 @@ $subResult = json_decode((string) $resultInfo['labels_and_expected_results'], tr
                                                 name=" qcTestLable[]" id="qcTestLable<?php echo ($key + 1); ?>"
                                                 class="form-control isRequired"
                                                 placeholder='<?php echo _translate("QC Test Label"); ?>'
-                                                title='<?php echo _translate("Please enter QC test label"); ?>'
+                                                title='<?php echo _htmlTranslate("Please enter QC test label"); ?>'
                                                 onblur="checkLabelName(this);" />
                                         </td>
                                         <td>
@@ -136,7 +136,7 @@ $subResult = json_decode((string) $resultInfo['labels_and_expected_results'], tr
                                         <input type="text" name=" qcTestLable[]" id="qcTestLable1"
                                             class="form-control isRequired"
                                             placeholder='<?php echo _translate("QC Test Label"); ?>'
-                                            title='<?php echo _translate("Please enter QC test label"); ?>'
+                                            title='<?php echo _htmlTranslate("Please enter QC test label"); ?>'
                                             onblur="checkLabelName(this);" />
                                     </td>
                                     <td>
@@ -222,7 +222,7 @@ $subResult = json_decode((string) $resultInfo['labels_and_expected_results'], tr
         d.setAttribute("align", "center");
         d.setAttribute("style", "vertical-align:middle");
 
-        b.innerHTML = '<input type="text" name="qcTestLable[]" id="qcTestLable' + tableRowId + '" class="isRequired form-control" placeholder="<?php echo _translate('QC Test Label'); ?>" title="<?php echo _translate('Please enter qc test label'); ?>" onblur="checkLabelName(this);"/ >';
+        b.innerHTML = '<input type="text" name="qcTestLable[]" id="qcTestLable' + tableRowId + '" class="isRequired form-control" placeholder="<?php echo _translate('QC Test Label'); ?>" title="<?php echo _jsTranslate('Please enter qc test label'); ?>" onblur="checkLabelName(this);"/ >';
         c.innerHTML = '<select id="expectedResult' + tableRowId + '" name="expectedResult[]" class="isRequired form-control" title="Please enter the expected results"><option value="">--Select--</option><?php foreach ($covid19Results as $key => $row) { ?><option value="<?php echo $key; ?>"><?php echo $row; ?></option><?php } ?></select>';
         d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
         $(a).fadeIn(800);

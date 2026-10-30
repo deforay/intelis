@@ -158,7 +158,7 @@ $activeTests = TestsService::getActiveTests();
 											title="<?php echo _translate('Please enter instrument name'); ?>"
 											value="<?php echo $sInfo['machine_name']; ?>"
 											onchange="setConfigFileName();"
-											onblur="checkNameValidation('instruments','machine_name',this,'<?php echo "instrument_id##" . $sInfo['instrument_id']; ?>','<?php echo _translate('This instrument name already exists.Try another name'); ?>',null);" />
+											onblur="checkNameValidation('instruments','machine_name',this,'<?php echo "instrument_id##" . $sInfo['instrument_id']; ?>','<?php echo _jsTranslate('This instrument name already exists.Try another name'); ?>',null);" />
 									</div>
 								</div>
 							</div>
@@ -447,7 +447,7 @@ $activeTests = TestsService::getActiveTests();
 												<td>
 													<select name="reviewedBy[]" id="reviewedByHepatitis"
 														class="form-control user-hepatitis select2"
-														title='<?php echo _translate("Please enter Reviewed By for Hepatitis Test"); ?>'
+														title='<?php echo _htmlTranslate("Please enter Reviewed By for Hepatitis Test"); ?>'
 														onchange="changeDefaultReviewer(this.value,'hepatitis');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['hepatitis'], '--Select--'); ?>
 													</select>
@@ -455,7 +455,7 @@ $activeTests = TestsService::getActiveTests();
 												<td>
 													<select name="approvedBy[]" id="approvedByHepatitis"
 														class="form-control user-hepatitis select2"
-														title='<?php echo _translate("Please enter Approved By for Hepatitis Test"); ?>'
+														title='<?php echo _htmlTranslate("Please enter Approved By for Hepatitis Test"); ?>'
 														onchange="changeDefaultApprover(this.value,'hepatitis');">
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['hepatitis'], '--Select--'); ?>
 													</select>
@@ -738,22 +738,22 @@ $activeTests = TestsService::getActiveTests();
 												<td><input type="text"
 														value="<?php echo $configControl['generic-tests']['noHouseCtrl']; ?>"
 														name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric"
-														placeholder='<?php echo _translate("No of In-House Controls in Other Lab Tests"); ?>'
-														title='<?php echo _translate("Please enter No of In-House Controls in Other Lab Tests"); ?>' />
+														placeholder='<?php echo _htmlTranslate("No of In-House Controls in Other Lab Tests"); ?>'
+														title='<?php echo _htmlTranslate("Please enter No of In-House Controls in Other Lab Tests"); ?>' />
 												</td>
 												<td><input type="text"
 														value="<?php echo $configControl['generic-tests']['noManufacturerCtrl']; ?>"
 														name="noManufacturerCtrl[]" id="noManufacturerCtrl1"
 														class="form-control forceNumeric"
-														placeholder='<?php echo _translate("No of Manufacturer Controls in Other Lab Tests"); ?>'
-														title='<?php echo _translate("Please enter No of Manufacturer Controls in Other Lab Tests"); ?>' />
+														placeholder='<?php echo _htmlTranslate("No of Manufacturer Controls in Other Lab Tests"); ?>'
+														title='<?php echo _htmlTranslate("Please enter No of Manufacturer Controls in Other Lab Tests"); ?>' />
 												</td>
 												<td><input type="text"
 														value="<?php echo $configControl['generic-tests']['noCalibrators']; ?>"
 														name="noCalibrators[]" id="noCalibrators1"
 														class="form-control forceNumeric"
-														placeholder='<?php echo _translate("No of Calibrators in Other Lab Tests"); ?>'
-														title='<?php echo _translate("Please enter No of Calibrators in Other Lab Tests"); ?>' />
+														placeholder='<?php echo _htmlTranslate("No of Calibrators in Other Lab Tests"); ?>'
+														title='<?php echo _htmlTranslate("Please enter No of Calibrators in Other Lab Tests"); ?>' />
 												</td>
 											</tr>
 										<?php } ?>

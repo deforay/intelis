@@ -145,7 +145,7 @@ $batResult = $db->rawQuery($batQuery);
 <script>
 	$(function() {
 		$("#labName").select2({
-			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
+			placeholder: "<?php echo _jsTranslate("Select Testing Lab"); ?>"
 		});
 		$("#batchCode").select2({
 			placeholder: "<?php echo _translate("Select Batch Code"); ?>"

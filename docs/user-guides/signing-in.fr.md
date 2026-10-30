@@ -65,7 +65,7 @@ latéral. Ce groupe comporte trois sections.
 
 | Section | Objet |
 |---|---|
-| Gestion des demandes | Enregistrer les demandes, activer les manifestes, constituer les batchs |
+| Gestion des demandes | Enregistrer les demandes, activer les manifestes, constituer les lots |
 | Gestion des résultats des tests | Importer, saisir, approuver et envoyer les résultats |
 | Gestion | Rapports, exports et impression |
 

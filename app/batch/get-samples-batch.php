@@ -272,9 +272,9 @@ if (isset($_POST['batchId'])) {
         }
 
         let alertText = selectedCount > 0 ?
-            "<?php echo _translate('Number of samples selected out of maximum number of samples allowed for the selected platform'); ?> : " +
+            "<?php echo _jsTranslate('Number of samples selected out of maximum number of samples allowed for the selected platform'); ?> : " +
             selectedCount + '/' + noOfSamples :
-            "<?php echo _translate('Maximum number of samples allowed for the selected platform'); ?> : " + noOfSamples;
+            "<?php echo _jsTranslate('Maximum number of samples allowed for the selected platform'); ?> : " + noOfSamples;
 
         $('#alertText').html(alertText);
     }

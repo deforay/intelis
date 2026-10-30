@@ -151,7 +151,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                        placeholder="<?php echo _translate('Email'); ?>"
                                                        title="<?php echo _translate('Please enter email'); ?>"
                                                        value="<?php echo $userInfo['email']; ?>"
-                                                       onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _translate("This email id that you entered already exists.Try another email id"); ?>',null)" />
+                                                       onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _jsTranslate("This email id that you entered already exists.Try another email id"); ?>',null)" />
                                              </div>
                                         </div>
                                    </div>
@@ -342,7 +342,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                        placeholder="<?php echo _translate('Login ID'); ?>"
                                                        title="<?php echo _translate('Please enter Login ID'); ?>"
                                                        value="<?php echo $userInfo['login_id']; ?>"
-                                                       onblur="checkNameValidation('user_details','login_id',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _translate("This login id that you entered already exists.Try another login id"); ?>',null)" />
+                                                       onblur="checkNameValidation('user_details','login_id',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _jsTranslate("This login id that you entered already exists.Try another login id"); ?>',null)" />
                                                   <input type="hidden" id="originalLoginId"
                                                        value="<?php echo htmlspecialchars((string) $userInfo['login_id'], ENT_QUOTES); ?>" />
                                                   <small class="form-text text-muted">

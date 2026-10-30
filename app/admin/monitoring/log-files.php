@@ -598,7 +598,7 @@ require_once APPLICATION_PATH . '/header.php';
 							<div class="col-md-8">
 								<div class="input-group">
 									<input type="text" id="logSearchInput" class="form-control"
-										placeholder="<?php echo _translate("Search in logs... Use +word for exact, \"phrase\" for exact phrase"); ?>"
+										placeholder="<?php echo _htmlTranslate("Search in logs... Use +word for exact, \"phrase\" for exact phrase"); ?>"
 										aria-label="<?php echo _translate("Search logs"); ?>">
 									<span class="input-group-btn">
 										<button id="searchLogsButton" class="btn btn-default" type="button"

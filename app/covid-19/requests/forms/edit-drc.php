@@ -1135,7 +1135,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                                             onchange="changeDRCTestName(this.value,<?= ($indexKey + 1); ?>)"
                                                                             class="form-control test-name-table-input"
                                                                             id="testName<?= ($indexKey + 1); ?>" name="testName[]"
-                                                                            title="Veuillez saisir le nom du test pour les lignes <?= ($indexKey + 1); ?>">
+                                                                            title="<?= sprintf(_translate("Please enter the test name for row %d"), $indexKey + 1); ?>">
                                                                             <option value=''><?= _translate("-- Select --"); ?>
                                                                             </option>
                                                                             <option value="PCR/RT-PCR" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'PCR/RT-PCR') ? "selected='selected'" : ""; ?>>PCR/RT-PCR</option>
@@ -1158,23 +1158,23 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                                             name="testNameOther[]"
                                                                             id="testNameOther<?= ($indexKey + 1); ?>"
                                                                             class="form-control testInputOther<?= ($indexKey + 1); ?>"
-                                                                            title="Veuillez saisir le nom du test pour les lignes <?= ($indexKey + 1); ?>"
-                                                                            placeholder="Entrez le nom du test <?= ($indexKey + 1); ?>"
+                                                                            title="<?= sprintf(_translate("Please enter the test name for row %d"), $indexKey + 1); ?>"
+                                                                            placeholder="<?= sprintf(_translate("Enter the name of the test %d"), $indexKey + 1); ?>"
                                                                             style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
-                                                                    <!-- <td><input type="text" value="<?php echo $rows['test_name']; ?>" name="testName[]" id="testName<?= ($indexKey + 1); ?>" class="form-control test-name-table-input" placeholder="Nom du test" title="Veuillez saisir le nom du test pour la ligne<?= ($indexKey + 1); ?>" /></td> -->
+                                                                    <!-- <td><input type="text" value="<?php echo $rows['test_name']; ?>" name="testName[]" id="testName<?= ($indexKey + 1); ?>" class="form-control test-name-table-input" placeholder="Nom du test" title="<?= sprintf(_translate("Please enter the test name for row %d"), $indexKey + 1); ?>" /></td> -->
                                                                     <td><input type="text"
                                                                             value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']); ?>"
                                                                             name="testDate[]" id="testDate<?= ($indexKey + 1); ?>"
                                                                             class="form-control test-name-table-input dateTime"
                                                                             placeholder="Testé sur"
-                                                                            title="Veuillez sélectionner la Date de l analyse pour la ligne <?= ($indexKey + 1); ?>" />
+                                                                            title="<?= sprintf(_translate("Please select the test date for row %d"), $indexKey + 1); ?>" />
                                                                     </td>
                                                                     <td><select
                                                                             class="form-control test-result test-name-table-input result-focus"
                                                                             name="testResult[]"
                                                                             id="testResult<?= ($indexKey + 1); ?>"
-                                                                            title="Veuillez sélectionner le résultat pour la ligne<?= ($indexKey + 1); ?>">
+                                                                            title="<?= sprintf(_translate("Please select the result for row %d"), $indexKey + 1); ?>">
                                                                             <option value=''><?= _translate("-- Select --"); ?>
                                                                             </option>
                                                                             <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>

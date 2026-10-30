@@ -472,7 +472,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                                             </td>
                                                             <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
                                                             <td>
-                                                                <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+                                                                <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="<?= sprintf(_translate("Please select the Testing Platform for %d"), $indexKey + 1); ?>">
                                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                                 </select>
                                                             </td>
@@ -1056,7 +1056,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
         });
         $('#labId').select2({
             width: '100%',
-            placeholder: "<?= _translate('Select Testing Lab'); ?>"
+            placeholder: "<?= _jsTranslate('Select Testing Lab'); ?>"
         });
         $('#reviewedBy').select2({
             width: '100%',
@@ -1080,7 +1080,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
         });
 
         $('#patientProvince').select2({
-            placeholder: "<?= _translate('Select Case State'); ?>"
+            placeholder: "<?= _jsTranslate('Select Case State'); ?>"
         });
         $('#authorizedBy').select2({
             width: '100%',

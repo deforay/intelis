@@ -57,7 +57,7 @@ de ce test.
 
     5. Vérifier que le nombre de lignes correspond aux tubes présents sur la
        paillasse.
-    6. Régler **Date de réception de l'échantillon au labo** sur la date et
+    6. Régler **Date de réception de l'échantillon au laboratoire** sur la date et
        l'heure d'arrivée du colis. La date est obligatoire. Sans elle, InteLIS
        affiche **Veuillez indiquer la date à laquelle les échantillons ont été
        reçus par le laboratoire d'analyse**.
@@ -72,8 +72,8 @@ de ce test.
             tous ses échantillons. Les dates de test et les statuts sont
             conservés.
 
-    8. Ajouter les échantillons à un batch. Voir
-       [Créer un batch pour le test](batch-samples.md).
+    8. Ajouter les échantillons à un lot. Voir
+       [Créer un lot pour le test](batch-samples.md).
 
 === "Tubes manquants ou endommagés"
 
@@ -103,7 +103,7 @@ de ce test.
             l'activation** tant qu'aucun manifeste n'est chargé. Ce n'est pas
             une erreur.
 
-    5. Régler **Date de réception de l'échantillon au labo** sur la date et
+    5. Régler **Date de réception de l'échantillon au laboratoire** sur la date et
        l'heure d'arrivée du colis. La date est obligatoire. Sans elle, InteLIS
        affiche **Veuillez indiquer la date à laquelle les échantillons ont été
        reçus par le laboratoire d'analyse**.
@@ -124,8 +124,8 @@ de ce test.
        [Vérifier et approuver les résultats](approve-results.md).
     8. Indiquer à l'expéditeur les échantillons rejetés ou perdus, afin qu'il
        prélève de nouveau.
-    9. Ajouter les autres échantillons à un batch. Voir
-       [Créer un batch pour le test](batch-samples.md).
+    9. Ajouter les autres échantillons à un lot. Voir
+       [Créer un lot pour le test](batch-samples.md).
 
 ## Vérifier que tout fonctionne
 

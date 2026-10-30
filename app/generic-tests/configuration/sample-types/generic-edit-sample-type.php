@@ -52,7 +52,7 @@ $sampleTypeInfo = $db->query($tQuery);
                                             name="sampleTypeName"
                                             placeholder="<?php echo _translate('Sample Type Name'); ?>"
                                             title="<?php echo _translate('Please enter sample type name'); ?>"
-                                            onblur="checkNameValidation('r_generic_sample_types','sample_type_name',this,'<?php echo "sample_type_id##" . $sampleTypeInfo[0]['sample_type_id']; ?>','<?php echo _translate("This sample type name that you entered already exists.Try another name"); ?>',null)"
+                                            onblur="checkNameValidation('r_generic_sample_types','sample_type_name',this,'<?php echo "sample_type_id##" . $sampleTypeInfo[0]['sample_type_id']; ?>','<?php echo _jsTranslate("This sample type name that you entered already exists.Try another name"); ?>',null)"
                                             value="<?php echo $sampleTypeInfo[0]['sample_type_name']; ?>" />
                                         <input type="hidden" name="sampleTypeId" id="sampleTypeId"
                                             value="<?php echo base64_encode((string) $sampleTypeInfo[0]['sample_type_id']); ?>" />
@@ -69,7 +69,7 @@ $sampleTypeInfo = $db->query($tQuery);
                                             name="sampleTypeCode"
                                             placeholder="<?php echo _translate('Sample Type Code'); ?>"
                                             title="<?php echo _translate('Please enter sample type code'); ?>"
-                                            onblur="checkNameValidation('r_generic_sample_types','sample_type_code',this,'<?php echo "sample_type_id##" . $sampleTypeInfo[0]['sample_type_id']; ?>','<?php echo _translate("This sample type code that you entered already exists.Try another code"); ?>',null)"
+                                            onblur="checkNameValidation('r_generic_sample_types','sample_type_code',this,'<?php echo "sample_type_id##" . $sampleTypeInfo[0]['sample_type_id']; ?>','<?php echo _jsTranslate("This sample type code that you entered already exists.Try another code"); ?>',null)"
                                             value="<?php echo $sampleTypeInfo[0]['sample_type_code']; ?>" />
                                     </div>
                                 </div>

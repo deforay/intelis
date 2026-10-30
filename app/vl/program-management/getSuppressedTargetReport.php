@@ -159,7 +159,7 @@ if (isset($_POST['targetType']) && $_POST['targetType'] != '') {
         },
         yAxis: {
             title: {
-                text: "<?php echo _translate("No of target in month %"); ?>"
+                text: "<?php echo _jsTranslate("No of target in month %"); ?>"
             },
             labels: {
                 formatter: function() {

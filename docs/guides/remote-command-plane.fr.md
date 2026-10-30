@@ -30,10 +30,10 @@ Pour le fonctionnement du plan de commande et ses raisons, voir la
 1. Aller à **ADMIN → Surveillance → État de la synchronisation du
    laboratoire**.
 2. Trouver la ligne du laboratoire. Dans la colonne **Plan de commande**,
-   vérifier que la puce **courier** (**service de livraison** dans l'interface
+   vérifier que la puce **courier** (**coursier** dans l'interface
    en français) affiche une heure récente. La mise à niveau, le retour arrière
    et les autres commandes root demandent aussi une puce **runner**
-   (**coureur** dans l'interface en français) récente.
+   (**exécuteur** dans l'interface en français) récente.
 
     ??? info "Si la colonne n'affiche qu'un tiret"
 
@@ -88,7 +88,7 @@ Pour le fonctionnement du plan de commande et ses raisons, voir la
     | Pas avant (facultatif) | Mise à niveau (préparation + application automatique), Préparer la mise à niveau uniquement, Appliquer une mise à jour préparée | L'heure la plus tôt à laquelle le laboratoire peut commencer, selon l'horloge du STS. Laisser vide pour commencer à la synchronisation suivante. |
     | Afficher la page de maintenance aux utilisateurs pendant l'application | Mise à niveau (préparation + application automatique), Appliquer une mise à jour préparée | Le cocher quand la version exécute des migrations de la base de données ou modifie les dépendances composer. |
 
-6. Sélectionner **Commande de file d'attente**. Le message **Commande mise en
+6. Sélectionner **Mettre la commande en file d'attente**. Le message **Commande mise en
    file d'attente.** affiche l'ID de la commande. Un badge jaune comme
    `upgrade: pending` apparaît sur la ligne du laboratoire.
 
@@ -152,7 +152,7 @@ Choisir une méthode, puis suivre ses étapes de haut en bas.
        utilisateurs pendant l'application**. Les utilisateurs voient alors une
        page "mise à niveau en cours" pendant l'installation au lieu
        d'erreurs.
-    7. Sélectionner **Commande de file d'attente**.
+    7. Sélectionner **Mettre la commande en file d'attente**.
     8. Attendre. Les utilisateurs continuent à travailler pendant le
        téléchargement de la version. L'installation elle-même est courte.
 
@@ -192,12 +192,12 @@ Choisir une méthode, puis suivre ses étapes de haut en bas.
     3. Sur la ligne de chaque laboratoire, sélectionner **File d'attente**.
     4. Choisir **Préparer la mise à niveau uniquement**.
     5. Pour commencer à une heure fixée, la saisir dans **Pas avant**.
-    6. Sélectionner **Commande de file d'attente**.
-    7. Attendre un badge bleu **Mise en scène: vX.Y.Z** sur la ligne de chaque
+    6. Sélectionner **Mettre la commande en file d'attente**.
+    7. Attendre un badge bleu **Préparée: vX.Y.Z** sur la ligne de chaque
        laboratoire. Les utilisateurs ne sont pas gênés pendant qu'un
        laboratoire prépare.
 
-        ??? info "Si un laboratoire affiche deux badges **Mise en scène**"
+        ??? info "Si un laboratoire affiche deux badges **Préparée**"
 
             Chaque préparation remplace la préparation plus ancienne sur la
             machine du laboratoire. Appliquer la plus récente. La plus ancienne
@@ -207,14 +207,14 @@ Choisir une méthode, puis suivre ses étapes de haut en bas.
 
     8. Choisir deux ou trois laboratoires pilotes.
     9. Sur la ligne d'un laboratoire pilote, sélectionner **File d'attente**.
-    10. Choisir **Appliquer une mise à jour préparée**.
-    11. Dans **Préparation de la mise en scène à mettre en œuvre**, choisir la
+    10. Choisir **Appliquer une mise à niveau préparée**.
+    11. Dans **Mise à niveau préparée à appliquer**, choisir la
         version préparée.
     12. Pour commencer à une heure fixée, la saisir dans **Pas avant**.
     13. Si la version exécute des migrations de la base de données ou modifie
         les dépendances composer, cocher **Afficher la page de maintenance aux
         utilisateurs pendant l'application**.
-    14. Sélectionner **Commande de file d'attente**.
+    14. Sélectionner **Mettre la commande en file d'attente**.
     15. Quand le badge `upgrade-apply` disparaît, vérifier que la colonne
         **Version** affiche la nouvelle version.
     16. Sélectionner **Historique des commandes du laboratoire**. Trouver la
@@ -234,7 +234,7 @@ Choisir une méthode, puis suivre ses étapes de haut en bas.
               Quelqu'un devant la machine du laboratoire doit corriger la cause
               et relancer `intelis update`.
 
-        ??? info "Si le badge **Mise en scène** reste après une application réussie"
+        ??? info "Si le badge **Préparée** reste après une application réussie"
 
             Le badge ne disparaît pas tout seul. Se fier à la colonne
             **Version**. Ne pas appliquer de nouveau la même préparation. Elle
@@ -278,7 +278,7 @@ Choisir une méthode, puis suivre ses étapes de haut en bas.
             **Allow Remote Upgrade** est désactivé sur le laboratoire. Utiliser
             plutôt l'onglet **Sur la machine du laboratoire**.
 
-    5. Sélectionner **Commande de file d'attente**.
+    5. Sélectionner **Mettre la commande en file d'attente**.
 
         ??? failure "S'il signale `Unknown command`"
 
@@ -381,7 +381,7 @@ une version corrigée.
    laboratoire**.
 2. Sélectionner **Historique des commandes du laboratoire**. La page s'ouvre
    dans un nouvel onglet et liste les 200 commandes les plus récentes.
-3. Pour trouver une commande plus ancienne, filtrer la liste par **Labo**,
+3. Pour trouver une commande plus ancienne, filtrer la liste par **Laboratoire**,
    **Commande**, **Statut** ou **Plage de dates**, puis sélectionner
    **Rechercher**.
 4. Sur la ligne de la commande, sélectionner **Détails**.

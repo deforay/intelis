@@ -79,7 +79,7 @@ manifeste dans le groupe de ce test.
         colis. Le laboratoire destinataire enregistre comme reçu chaque
         échantillon listé.
 
-    9. Sélectionner **Sauvegarder**. La liste des manifestes s'ouvre.
+    9. Sélectionner **Enregistrer**. La liste des manifestes s'ouvre.
 
     ### Imprimer le manifeste
 
@@ -152,7 +152,7 @@ manifeste dans le groupe de ce test.
     6. Passer dans la liste de droite chaque manifeste à réaffecter.
     7. Choisir le nouveau laboratoire dans **Affectation au laboratoire
        d'analyse**.
-    8. Saisir le **Motif du déménagement Manifeste(s)**. C'est la seule trace de
+    8. Saisir le **Motif du déplacement du ou des manifestes**. C'est la seule trace de
        la raison pour laquelle les échantillons sont partis vers un autre
        laboratoire.
     9. Sélectionner **Save Changes**. La liste des manifestes s'ouvre.

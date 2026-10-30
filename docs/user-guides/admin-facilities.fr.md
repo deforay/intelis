@@ -27,8 +27,8 @@ D'autres tâches de la même page ont leur propre guide :
 
 ??? info "Sur un LIS, la page Structures sanitaires est en lecture seule"
 
-    Un LIS liste les structures sans bouton **Ajouter installations**,
-    **Modifier**, **Chargement groupé**, **Établissements de santé** ni
+    Un LIS liste les structures sans bouton **Ajouter une structure**,
+    **Modifier**, **Chargement groupé**, **Structures sanitaires** ni
     **Laboratoire d'analyse**. Faire la modification sur le STS.
     Pour l'amener aussitôt sur le LIS, sélectionner **Forcer la synchronisation
     à distance** en bas à droite de n'importe quelle page du LIS.
@@ -36,13 +36,13 @@ D'autres tâches de la même page ont leur propre guide :
 ## Ajouter une structure
 
 1. Aller à **ADMIN → Structures sanitaires**.
-2. Sélectionner **Ajouter installations**.
+2. Sélectionner **Ajouter une structure**.
 3. Saisir **Nom de la structure**. Il ne doit pas déjà être utilisé.
 4. Saisir éventuellement **Code de la structure**, le code national unique. Il
    accepte les lettres, les chiffres et les traits d'union et est enregistré en
    majuscules. Laissé vide sur un laboratoire d'analyse, InteLIS en génère un.
    Un code déjà utilisé par une autre structure est refusé.
-5. Renseigner **Type d'installation** : **Etablissement de santé**,
+5. Renseigner **Type de structure** : **Structure sanitaire**,
    **Laboratoire d'analyse** ou **Site de prélèvement**.
 6. Renseigner **Province** et **District**.
 7. Sous **Type de test**, choisir au moins un type de test auquel la structure
@@ -81,7 +81,7 @@ D'autres tâches de la même page ont leur propre guide :
 type de test, par exemple après un chargement groupé.
 
 1. Aller à **ADMIN → Structures sanitaires**.
-2. Sélectionner **Établissements de santé**, ou **Laboratoire d'analyse** pour
+2. Sélectionner **Structures sanitaires**, ou **Laboratoire d'analyse** pour
    les laboratoires.
 3. Renseigner **Type de test**.
 4. Faire passer les structures qui participent dans la liste sélectionnée.
@@ -97,15 +97,15 @@ type de test, par exemple après un chargement groupé.
 
 ## Configurer un laboratoire d'analyse
 
-Un laboratoire d'analyse est une structure dont le **Type d'installation** est
+Un laboratoire d'analyse est une structure dont le **Type de structure** est
 **Laboratoire d'analyse**. Il porte des réglages qu'une structure sanitaire n'a
 pas.
 
 1. Aller à **ADMIN → Structures sanitaires**.
 2. Sélectionner **Modifier** sur le laboratoire.
-3. Vérifier que **Type d'installation** vaut **Laboratoire d'analyse**, et que
+3. Vérifier que **Type de structure** vaut **Laboratoire d'analyse**, et que
    **Type de test** contient chaque test réalisé par le laboratoire.
-4. Vérifier que **Autoriser le téléchargement de fichiers de résultats ?** vaut
+4. Vérifier que **Autoriser l'import de fichiers de résultats ?** vaut
    **yes** si le laboratoire importe des fichiers de résultats. La valeur
    **yes** est présélectionnée.
 5. Pour la TB, renseigner **Plates-formes disponibles** avec les méthodes du
@@ -130,7 +130,7 @@ pas.
     | Afficher le numéro de page dans le pied de page | La numérotation des pages |
     | Afficher le tableau de signatures | L'impression du bloc de signatures |
     | Rapport sur la marge supérieure | L'espace au-dessus du rapport |
-    | Emplacement du texte en bas de page | **Au-dessus du pied de page** ou **Nom de la plate-forme inférieure** |
+    | Emplacement du texte en bas de page | **Au-dessus du pied de page** ou **Sous le nom de la plateforme** |
     | Télécharger le modèle de rapport | Un seul modèle PDF pour les rapports du laboratoire |
     | Modèles de type de test | Un PDF par type de test avec sa **Marge de l'en-tête**. Sur **Modifier**, affiché seulement une fois qu'un modèle existe |
 
@@ -144,8 +144,8 @@ de résultats d'un laboratoire.
 1. Aller à **ADMIN → Structures sanitaires**.
 2. Sélectionner **Modifier** sur le laboratoire d'analyse.
 3. Dans le tableau des signataires, saisir le **Nom du signataire** et la
-   **Désignation**.
-4. Charger la signature sous **Télécharger la signature (jpg, png)**.
+   **Fonction**.
+4. Charger la signature sous **Téléverser la signature (jpg, png)**.
 5. Sous **Types de tests**, choisir chaque module dont le PDF de résultats porte
    ce signataire.
 
@@ -164,7 +164,7 @@ de résultats d'un laboratoire.
 
 1. Aller à **ADMIN → Structures sanitaires**.
 2. Ouvrir **Recherche avancée**.
-3. Cocher **Afficher les installations orphelines**.
+3. Cocher **Afficher les structures orphelines**.
 4. Sélectionner **Search**. La liste montre les structures dont la province ou
    le district manque, est inactif ou n'est pas rattaché à sa province.
 5. Sélectionner **Modifier** sur chacune, renseigner une **Province** et un
@@ -187,4 +187,4 @@ ne sont pas corrigées.
 | Nouvelle structure | Elle apparaît sur le formulaire de demande de chaque type de test coché |
 | Laboratoire d'analyse | Il apparaît dans la liste **Laboratoire d'analyse** du formulaire de demande |
 | Signataires | Un PDF de résultats imprimé porte les noms attendus |
-| Structure orpheline corrigée | Elle n'apparaît plus sous **Afficher les installations orphelines** |
+| Structure orpheline corrigée | Elle n'apparaît plus sous **Afficher les structures orphelines** |

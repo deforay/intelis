@@ -526,7 +526,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             id="testNameOther<?= ($indexKey + 1); ?>"
                                                                             class="form-control testNameOther<?= ($indexKey + 1); ?>"
                                                                             title="Please enter the name of the Testkit (or) Test Method used"
-                                                                            placeholder="Entrez le nom du test <?= ($indexKey + 1); ?>"
+                                                                            placeholder="<?= sprintf(_translate("Enter the name of the test %d"), $indexKey + 1); ?>"
                                                                             style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
                                                                     <td><input type="text"
@@ -534,13 +534,13 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             name="testDate[]" id="testDate<?= ($indexKey + 1); ?>"
                                                                             class="form-control test-name-table-input dateTime isRequired"
                                                                             placeholder="Tested on"
-                                                                            title="Please enter the tested on for row <?= ($indexKey + 1); ?>" />
+                                                                            title="<?= sprintf(_translate("Please enter the tested on for row %d"), $indexKey + 1); ?>" />
                                                                     </td>
                                                                     <td>
                                                                         <select name="testingPlatform[]"
                                                                             id="testingPlatform<?= ($indexKey + 1); ?>"
                                                                             class="form-control result-optional test-name-table-input isRequired"
-                                                                            title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+                                                                            title="<?= sprintf(_translate("Please select the Testing Platform for %d"), $indexKey + 1); ?>">
                                                                             <?php $display = "display:none;";
                                                                             if ((str_contains((string) $rows['test_name'], 'RDT'))) {
                                                                                 $display = "";
@@ -585,7 +585,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             class="form-control test-result test-name-table-input result-focus isRequired"
                                                                             name="testResult[]"
                                                                             id="testResult<?= ($indexKey + 1); ?>"
-                                                                            title="Please select the result for row <?= ($indexKey + 1); ?>">
+                                                                            title="<?= sprintf(_translate("Please select the result for row %d"), $indexKey + 1); ?>">
                                                                             <option value=''> -- Select -- </option>
 
                                                                             <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>

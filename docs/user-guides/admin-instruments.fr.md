@@ -10,7 +10,7 @@ reviewed_against: 5.7.74
 
 Enregistrer un automate sous **ADMIN → Paramètres →
 Instruments**, pour qu'InteLIS puisse lire ses résultats. Un instrument non
-enregistré ne peut pas être choisi pour un batch, et ses fichiers de résultats
+enregistré ne peut pas être choisi pour un lot, et ses fichiers de résultats
 ne peuvent pas être importés.
 
 Deux tâches voisines ont leur propre guide :
@@ -120,8 +120,8 @@ est enregistré comme actif.
 
 | Modification | Contrôle |
 | --- | --- |
-| Nouvel instrument | Il est proposé comme plateforme de test à la création d'un batch |
+| Nouvel instrument | Il est proposé comme plateforme de test à la création d'un lot |
 | Fichier des instruments | Importer un fichier de résultats de l'automate et lire les lignes importées |
 | Format de date | Les dates de test importées correspondent à celles de l'automate |
 | Faible VL Texte de résultat | Un résultat indétectable est importé comme indétectable |
-| Nombre de contrôles | Le nombre de positions du batch correspond à la série |
+| Nombre de contrôles | Le nombre de positions du lot correspond à la série |

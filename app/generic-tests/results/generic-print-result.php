@@ -586,7 +586,7 @@ $state = $geolocationService->getProvinces("yes");
 		});
 
 		$("#sampleType, #printSampleType").select2({
-			placeholder: "<?php echo _translate("Select Sample Type"); ?>",
+			placeholder: "<?php echo _jsTranslate("Select Sample Type"); ?>",
 			width: '100%'
 		});
 		$("#state, #printState, #printSampleType").select2({

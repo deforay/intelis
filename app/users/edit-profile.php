@@ -91,7 +91,7 @@ $data = $db->get("user_login_history", 25);
                 <div class="form-group">
                   <label for="email" class="col-lg-4 control-label"><?php echo _translate("Official Email"); ?> </label>
                   <div class="col-lg-8">
-                    <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _translate('Official Email'); ?>" title="<?php echo _translate('Please enter email'); ?>" value="<?php echo $userInfo['email']; ?>" onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _translate("This email id that you entered already exists.Try another email id"); ?>',null)" />
+                    <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _translate('Official Email'); ?>" title="<?php echo _translate('Please enter email'); ?>" value="<?php echo $userInfo['email']; ?>" onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _jsTranslate("This email id that you entered already exists.Try another email id"); ?>',null)" />
                   </div>
                 </div>
               </div>

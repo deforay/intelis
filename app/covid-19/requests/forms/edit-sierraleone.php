@@ -662,13 +662,13 @@ $patientProvince = $patientProvinceInfo[0];
                                                                             name="testDate[]" id="testDate<?= ($indexKey + 1); ?>"
                                                                             class="form-control test-name-table-input date"
                                                                             placeholder="Tested on"
-                                                                            title="Please enter the tested on for row <?= ($indexKey + 1); ?>" />
+                                                                            title="<?= sprintf(_translate("Please enter the tested on for row %d"), $indexKey + 1); ?>" />
                                                                     </td>
                                                                     <td>
                                                                         <select name="testingPlatform[]"
                                                                             id="testingPlatform<?= ($indexKey + 1); ?>"
                                                                             class="form-control result-optional test-name-table-input"
-                                                                            title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
+                                                                            title="<?= sprintf(_translate("Please select the Testing Platform for %d"), $indexKey + 1); ?>">
                                                                             <?php $display = "display:none;";
                                                                             if ((str_contains((string) $rows['test_name'], 'RDT'))) {
                                                                                 $display = "";
@@ -708,7 +708,7 @@ $patientProvince = $patientProvinceInfo[0];
                                                                             class="form-control test-result test-name-table-input result-focus"
                                                                             name="testResult[]"
                                                                             id="testResult<?= ($indexKey + 1); ?>"
-                                                                            title="Please select the result for row <?= ($indexKey + 1); ?>">
+                                                                            title="<?= sprintf(_translate("Please select the result for row %d"), $indexKey + 1); ?>">
                                                                             <option value=''> -- Select -- </option>
                                                                             <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                                 <option value="<?php echo $c19ResultKey; ?>" <?php echo ($rows['result'] == $c19ResultKey) ? "selected='selected'" : ""; ?>>
