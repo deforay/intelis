@@ -127,6 +127,12 @@ require_once($fileArray[$formId]);
 
 <script type="text/javascript" src="<?= _asset('/assets/js/datalist-css.min.js') ?>"></script>
 
+<?php
+// Common JS functions in a PHP file
+// Why PHP? Because we can use PHP variables in the JS code
+require_once WEB_ROOT . "/assets/js/test-specific/cd4.js.php";
+?>
+
 <script>
     function insertSampleCode(formId) {
         $.blockUI();

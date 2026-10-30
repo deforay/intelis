@@ -24,14 +24,14 @@ $motherId = urldecode((string) ($_GET['motherId'] ?? ''));
 $db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
 if(!empty($artNo)){
 	$db->where(
-		"(vl.child_id LIKE ? OR vl.child_name LIKE ? OR vl.child_surname LIKE ?)",
-		["%$artNo%", "%$artNo%", "%$artNo%"]
+		"(vl.child_id LIKE ? OR vl.child_name LIKE ? OR vl.child_surname LIKE ? OR vl.caretaker_phone_number LIKE ?)",
+		["%$artNo%", "%$artNo%", "%$artNo%", "%$artNo%"]
 	);
 }
 if(!empty($motherId)){
 	$db->where(
-		"(vl.mother_id LIKE ? OR vl.mother_name LIKE ? OR vl.mother_surname LIKE ?)",
-		["%$motherId%", "%$motherId%", "%$motherId%"]
+		"(vl.mother_id LIKE ? OR vl.mother_name LIKE ? OR vl.mother_surname LIKE ? OR vl.caretaker_address LIKE ? OR vl.caretaker_phone_number LIKE ?)",
+		["%$motherId%", "%$motherId%", "%$motherId%", "%$motherId%", "%$motherId%"]
 	);
 }
 // Same scope as the View Requests grid (get-request-list.php)

@@ -36,8 +36,6 @@ if ($labScope = $general->labScopeWhere('vl')) {
 
 $pQuery = "SELECT count(*) as 'count'
             FROM form_tb as vl
-            WHERE " . implode(" AND ", $sWhere) . "
-            ORDER BY sample_tested_datetime DESC, sample_collection_date DESC
-            LIMIT 25";
+            WHERE " . implode(" AND ", $sWhere);
 $pResult = $db->rawQueryOne($pQuery, [$searchTerm, $searchTerm, $searchTerm]);
 echo $pResult['count'];
