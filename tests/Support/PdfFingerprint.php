@@ -48,6 +48,20 @@ final class PdfFingerprint
     private const INK_CELL = 5;
     private const INK_TOLERANCE = 2;
 
+    /**
+     * The oldest poppler the snapshots are known to match. An older one draws
+     * the transparent barcode images differently, so every barcode reads as
+     * changed.
+     */
+    public const OLDEST_POPPLER = '24.02';
+
+    /** The installed poppler version, or '' when it cannot be read. */
+    public static function popplerVersion(): string
+    {
+        preg_match('/version ([\d.]+)/', (string) shell_exec('pdftotext -v 2>&1'), $version);
+        return $version[1] ?? '';
+    }
+
     /** Whether the poppler tools are installed. */
     public static function available(): bool
     {
@@ -76,10 +90,8 @@ final class PdfFingerprint
         try {
             $arg = escapeshellarg($file);
             preg_match('/^Pages:\s+(\d+)/m', (string) shell_exec("pdfinfo $arg 2>/dev/null"), $pages);
-            preg_match('/version ([\d.]+)/', (string) shell_exec('pdftotext -v 2>&1'), $version);
-
             return [
-                'poppler' => $version[1] ?? '',
+                'poppler' => self::popplerVersion(),
                 'pages' => (int) ($pages[1] ?? 0),
                 'images' => self::images($file),
                 'ink' => self::ink($file),

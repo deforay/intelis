@@ -110,7 +110,42 @@ if (!\Tests\Support\TestDbSettings::saved() && stream_isatty(STDIN) && getenv('I
     passthru(escapeshellarg(PHP_BINARY) . ' bin/build/setup-tests.php' . $toTerminal);
     echo "\n";
 }
+// A login set in the environment (CI) wins over the saved one.
+$loginFromEnvironment = getenv('INTELIS_TEST_DB_HOST') !== false;
 \Tests\Support\TestDbSettings::load();
+
+// With binary logging on, the test user cannot create triggers until setup
+// turns on log_bin_trust_function_creators, and dozens of tests fail with a
+// SUPER error. Check once here and offer the fix.
+$triggersBlocked = static function (): bool {
+    if (!\Tests\Support\TestDbSettings::configured() || !extension_loaded('mysqli')) {
+        return false;
+    }
+    try {
+        $mysqli = new mysqli(
+            (string) getenv('INTELIS_TEST_DB_HOST'),
+            (string) getenv('INTELIS_TEST_DB_USER'),
+            (string) getenv('INTELIS_TEST_DB_PASS'),
+            null,
+            (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306)
+        );
+        $row = $mysqli->query('SELECT @@log_bin, @@log_bin_trust_function_creators')->fetch_row();
+        $mysqli->close();
+        return (int) $row[0] === 1 && (int) $row[1] !== 1;
+    } catch (Throwable) {
+        return false;
+    }
+};
+if (!$quick && $triggersBlocked()) {
+    echo "MySQL has binary logging on, so the test user cannot create triggers.\n";
+    if (stream_isatty(STDIN)) {
+        echo "Running composer setup-tests to fix it.\n\n";
+        passthru(escapeshellarg(PHP_BINARY) . ' bin/build/setup-tests.php' . $toTerminal);
+        echo "\n";
+        // Setup saved a new password for the test user.
+        \Tests\Support\TestDbSettings::load(!$loginFromEnvironment);
+    }
+}
 
 $formatSeconds = static fn (float $seconds): string => sprintf('%.1fs', $seconds);
 
@@ -175,6 +210,9 @@ foreach ($checks as $check) {
 }
 
 $notes = [];
+if (!$quick && $triggersBlocked()) {
+    $notes[] = 'Tests that create triggers FAILED: MySQL has binary logging on. Run composer setup-tests to fix it.';
+}
 if ($quick) {
     $notes[] = 'Integration tests were not run (--quick). CI runs them on every pull request.';
 } elseif (!\Tests\Support\TestDbSettings::configured()) {

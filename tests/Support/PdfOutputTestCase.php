@@ -232,6 +232,13 @@ abstract class PdfOutputTestCase extends TestCase
         if (!PdfFingerprint::available()) {
             self::markTestSkipped('Install poppler (pdfinfo, pdftotext, pdfimages) to compare PDFs.');
         }
+        $poppler = PdfFingerprint::popplerVersion();
+        if (version_compare($poppler, PdfFingerprint::OLDEST_POPPLER, '<')) {
+            self::markTestSkipped(
+                "poppler {$poppler} is older than " . PdfFingerprint::OLDEST_POPPLER
+                    . ', the oldest version the PDF snapshots match. CI compares the PDFs.'
+            );
+        }
 
         // Every print date that goes through Carbon. Raw date() calls are masked.
         Carbon::setTestNow('2026-10-01 12:00:00');

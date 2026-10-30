@@ -164,6 +164,35 @@ function createTestUser(mysqli $admin, string $host, int $port): array|string
 }
 
 /**
+ * With binary logging on, MySQL lets only a SUPER user create triggers unless
+ * log_bin_trust_function_creators is on. The tests create the app's audit
+ * triggers, so turn the setting on rather than give intelis_test SUPER.
+ *
+ * Return what was done, or null when nothing was needed.
+ */
+function allowTriggers(mysqli $admin): ?string
+{
+    $row = $admin->query('SELECT @@log_bin, @@log_bin_trust_function_creators')->fetch_row();
+    if ((int) $row[0] !== 1 || (int) $row[1] === 1) {
+        return null;
+    }
+    try {
+        $admin->query('SET PERSIST log_bin_trust_function_creators = 1');
+        return 'Turned on log_bin_trust_function_creators so the tests can create triggers.';
+    } catch (Throwable) {
+    }
+    try {
+        // MariaDB and MySQL 5.7 have no SET PERSIST.
+        $admin->query('SET GLOBAL log_bin_trust_function_creators = 1');
+        return 'Turned on log_bin_trust_function_creators until MySQL restarts. To keep it, add'
+            . " log_bin_trust_function_creators = 1 under [mysqld] in the MySQL config.";
+    } catch (Throwable $e) {
+        return 'Could not turn on log_bin_trust_function_creators, so tests that create triggers fail: '
+            . $e->getMessage();
+    }
+}
+
+/**
  * Databases the intelis_test user could reach that are not left over from a
  * test run (those end in an 8-character run id, plus a worker number).
  *
@@ -231,6 +260,10 @@ while ($saved === null) {
     }
 
     $login = createTestUser($admin, $adminHost, $adminPort);
+    $triggers = is_string($login) ? null : allowTriggers($admin);
+    if ($triggers !== null) {
+        echo "  {$triggers}\n";
+    }
     $admin->close();
     $admin = null;
     if (is_string($login)) {
