@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+// phpcs:disable PSR1.Files.SideEffects -- the maintenance and health-probe
+// answers have to run before bootstrap loads anything.
+
 // Upgrade-in-progress bounce. Must run before any require so a half-replaced
 // codebase cannot be loaded. Marker files live at public/.maintenance (one dir
 // up from public/api/) and are managed by scripts/upgrade.sh --maintenance.

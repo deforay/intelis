@@ -50,6 +50,18 @@ if ($problems === []) {
 
 fwrite(STDERR, "check-vendor: vendor/ does not match composer.lock:\n  " . implode("\n  ", $problems) . "\n");
 
+// A lab install gets vendor/ from the release package, without dev packages.
+// Offering to install them there would put test tools on a lab server, so name
+// the problem and leave the decision to the person at the keyboard.
+if (is_array($installed) && ($installed['dev'] ?? false) !== true) {
+    fwrite(
+        STDERR,
+        "check-vendor: this vendor/ has no dev packages, as on a lab install. qc runs on a\n"
+            . "development checkout. If this is one, run `composer install`, then run this again.\n"
+    );
+    exit(1);
+}
+
 if (!stream_isatty(STDIN)) {
     fwrite(STDERR, "check-vendor: run `composer install`, then run this again.\n");
     exit(1);
