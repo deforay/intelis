@@ -93,8 +93,9 @@
         "pre-update-cmd": [
             "@php bin/guard-composer-update.php"
         ],
-        "test": "@php vendor/bin/paratest --processes=8",
+        "test": "@php vendor/bin/paratest",
         "check-di": "@php bin/build/check-di.php",
+        "check-vendor": "@php bin/build/check-vendor.php",
         "check-counts": "@php bin/build/check-count-invariants.php",
         "check-sync-ownership": "@php bin/build/check-sync-ownership.php",
         "check-sql-value-safety": "@php bin/build/check-sql-value-safety.php",
@@ -117,6 +118,7 @@
         "qc": [
             "Composer\\Config::disableProcessTimeout",
             "@composer validate --no-check-publish",
+            "@check-vendor",
             "@lint",
             "@cs-check",
             "@check-di",
