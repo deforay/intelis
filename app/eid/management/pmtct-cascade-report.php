@@ -342,9 +342,31 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         color: #21618c;
     }
 
-    .pmtct-guide-steps {
-        margin: 10px 0 4px;
-        padding-left: 20px;
+    .pmtct-guide-cols {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin-top: 10px;
+    }
+
+    .pmtct-guide-col {
+        flex: 1 1 260px;
+    }
+
+    .pmtct-guide-col h4 {
+        font-size: 13px;
+        font-weight: 700;
+        margin: 0 0 6px;
+        color: #333;
+    }
+
+    .pmtct-guide-col ul {
+        padding-left: 18px;
+        margin: 0;
+    }
+
+    .pmtct-guide-col li {
+        margin-bottom: 4px;
     }
 
     .pmtct-guide dl {
@@ -451,30 +473,52 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                         <h3 class="box-title"><?= _htmlTranslate("PMTCT Snapshot"); ?></h3>
                     </div>
                     <div class="box-body">
-                        <!-- Definitions, closed until clicked. -->
+                        <!-- How to read the page, closed until clicked. -->
                         <details class="pmtct-guide">
                             <summary><em class="fa-solid fa-circle-question"></em> <?= _htmlTranslate("How to read this report"); ?></summary>
-                            <ol class="pmtct-guide-steps">
-                                <li><?= _htmlTranslate("The report starts from EID samples that have a Mother ID. The samples come from the selected period, province and lab."); ?></li>
-                                <li><?= _htmlTranslate("The report compares each Mother ID with the ART number on VL requests. If they are the same, the child is matched."); ?></li>
-                                <li><?= _htmlTranslate("For each matched mother, the report checks her latest VL result. For each matched child, it checks the EID results."); ?></li>
-                            </ol>
-                            <dl>
-                                <dt><?= _htmlTranslate("Matched"); ?></dt>
-                                <dd><?= _htmlTranslate("The Mother ID on the EID request is the same as the ART number on a VL request."); ?></dd>
-                                <dt><?= _htmlTranslate("High VL / Suppressed"); ?></dt>
-                                <dd><?= _htmlTranslate("The mother's latest VL result is 1000 cp/mL or more / below 1000 cp/mL."); ?></dd>
-                                <dt><?= _htmlTranslate("High VL during pregnancy"); ?></dt>
-                                <dd><?= _htmlTranslate("A high VL result in the 9 months before the child's date of birth."); ?></dd>
-                                <dt><?= _htmlTranslate("Children"); ?></dt>
-                                <dd><?= _htmlTranslate("Each child counts once, even with more than one EID test."); ?></dd>
-                                <dt><?= _htmlTranslate("VL history"); ?></dt>
-                                <dd><?= _htmlTranslate("The report uses the mother's VL tests from any date, not only the selected period."); ?></dd>
-                                <dt><?= _htmlTranslate("% of previous stage"); ?></dt>
-                                <dd><?= _htmlTranslate("The share of the box to the left. Matched Mothers has no percentage, because several children can have the same mother."); ?></dd>
-                                <dt><?= _htmlTranslate("Cards and red boxes"); ?></dt>
-                                <dd><?= _htmlTranslate("Click one to open the list of mothers or children behind the number. Each row opens the full test history of the child and the mother."); ?></dd>
-                            </dl>
+                            <div class="pmtct-guide-cols">
+                                <div class="pmtct-guide-col">
+                                    <h4><?= _htmlTranslate("How the cascade reads"); ?></h4>
+                                    <ul>
+                                        <li><?= _htmlTranslate("Read each row of boxes from left to right."); ?></li>
+                                        <li><?= _htmlTranslate("Each box is part of the box to its left. The percentage under a box is that share."); ?></li>
+                                        <li><?= _htmlTranslate("A large drop between two boxes shows where children or mothers fall out of follow-up."); ?></li>
+                                        <li><?= _htmlTranslate("The red box at the end of a row is the group that needs action."); ?></li>
+                                    </ul>
+                                </div>
+                                <div class="pmtct-guide-col">
+                                    <h4><?= _htmlTranslate("Parts of the page"); ?></h4>
+                                    <dl>
+                                        <dt><?= _htmlTranslate("Cards"); ?></dt>
+                                        <dd><?= _htmlTranslate("The headline numbers. Green is the goal. Red and purple need action. A card with a View button opens the list behind the number."); ?></dd>
+                                        <dt><?= _htmlTranslate("Maternal VL Risk row"); ?></dt>
+                                        <dd><?= _htmlTranslate("Starts from the children, then counts their mothers. Ends with the mothers whose latest VL result is high."); ?></dd>
+                                        <dt><?= _htmlTranslate("Infant EID Outcome row"); ?></dt>
+                                        <dd><?= _htmlTranslate("Follows the matched children to an EID result, then to a positive result."); ?></dd>
+                                        <dt><?= _htmlTranslate("Notes under the rows"); ?></dt>
+                                        <dd><?= _htmlTranslate("Children not matched to a mother, and how many mothers at high VL are pregnant or breastfeeding."); ?></dd>
+                                        <dt><?= _htmlTranslate("Line-Level Records"); ?></dt>
+                                        <dd><?= _htmlTranslate("The records behind the numbers. An EID test appears once for each VL test of the mother. The Match Status filter changes only this table."); ?></dd>
+                                    </dl>
+                                </div>
+                                <div class="pmtct-guide-col">
+                                    <h4><?= _htmlTranslate("Terms"); ?></h4>
+                                    <dl>
+                                        <dt><?= _htmlTranslate("Matched"); ?></dt>
+                                        <dd><?= _htmlTranslate("The Mother ID on the EID request is the same as the ART number on a VL request."); ?></dd>
+                                        <dt><?= _htmlTranslate("High VL / Suppressed"); ?></dt>
+                                        <dd><?= _htmlTranslate("The mother's latest VL result is 1000 cp/mL or more / below 1000 cp/mL."); ?></dd>
+                                        <dt><?= _htmlTranslate("High VL during pregnancy"); ?></dt>
+                                        <dd><?= _htmlTranslate("A high VL result in the 9 months before the child's date of birth."); ?></dd>
+                                        <dt><?= _htmlTranslate("Children"); ?></dt>
+                                        <dd><?= _htmlTranslate("Each child counts once, even with more than one EID test."); ?></dd>
+                                        <dt><?= _htmlTranslate("Matched Mothers"); ?></dt>
+                                        <dd><?= _htmlTranslate("Several children can have the same mother, so this box has no percentage."); ?></dd>
+                                        <dt><?= _htmlTranslate("VL history"); ?></dt>
+                                        <dd><?= _htmlTranslate("The report uses the mother's VL tests from any date, not only the selected period."); ?></dd>
+                                    </dl>
+                                </div>
+                            </div>
                         </details>
 
                         <!-- Hero: the two numbers that matter most -->

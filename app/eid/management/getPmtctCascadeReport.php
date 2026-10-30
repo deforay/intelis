@@ -1,7 +1,6 @@
 <?php
 
 use App\Utilities\PmtctCascadeUtility;
-use App\Utilities\SampleCountUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -68,7 +67,7 @@ if ($action === 'positiveChildren') {
     $whereSql     = implode(' AND ', PmtctCascadeUtility::filterConditions($_POST));
     $whereSqlE2   = implode(' AND ', PmtctCascadeUtility::filterConditions($_POST, 'e2'));
     // The mother's VL rows carry no filter of their own.
-    $vlCountable    = SampleCountUtility::countableWhere('v');
+    $vlCountable    = PmtctCascadeUtility::vlRowsWhere('v');
     $highVlExpr     = PmtctCascadeUtility::highVlExpr('v');
     $positiveExpr   = PmtctCascadeUtility::eidPositiveExpr('e');
     $positiveExprE2 = PmtctCascadeUtility::eidPositiveExpr('e2');
@@ -181,7 +180,7 @@ if ($action === 'positiveChildren') {
 if ($action === 'highVlMothers') {
 
     $whereSql     = implode(' AND ', PmtctCascadeUtility::filterConditions($_POST));
-    $vlCountable  = SampleCountUtility::countableWhere('v');
+    $vlCountable  = PmtctCascadeUtility::vlRowsWhere('v');
     $highVlExpr   = PmtctCascadeUtility::highVlExpr('v');
     $positiveExpr = PmtctCascadeUtility::eidPositiveExpr('e');
     $childKeyExpr = PmtctCascadeUtility::childKeyExpr('e');
@@ -259,7 +258,7 @@ function pmtctLoadMotherVlTests(DatabaseService $db, string $motherId): array
         LEFT JOIN facility_details fvl ON fvl.facility_id = v.lab_id
         LEFT JOIN facility_details fv ON fv.facility_id = v.facility_id
         WHERE TRIM(v.patient_art_no) = ?
-          AND " . SampleCountUtility::countableWhere('v') . "
+          AND " . PmtctCascadeUtility::vlRowsWhere('v') . "
         ORDER BY v.sample_collection_date ASC, v.vl_sample_id ASC",
         [$motherId]
     ) ?: [];
@@ -304,7 +303,8 @@ function pmtctLoadEidTests(DatabaseService $db, string $whereClause, array $bind
         LEFT JOIN facility_details fel ON fel.facility_id = e.lab_id
         LEFT JOIN facility_details fe ON fe.facility_id = e.facility_id
         LEFT JOIN r_sample_status rs ON rs.status_id = e.result_status
-        WHERE $whereClause
+        WHERE ($whereClause)
+          " . (PmtctCascadeUtility::labScope('e') !== '' ? 'AND ' . PmtctCascadeUtility::labScope('e') : '') . "
         ORDER BY e.sample_collection_date ASC, e.eid_id ASC",
         $bind
     ) ?: [];
@@ -512,7 +512,7 @@ $selectCols = "e.eid_id, e.sample_code AS eid_sample_code,
 // Cancelled VL samples are not a match, the same rule the snapshot counts use.
 $baseFrom = "FROM form_eid e
         $joinType JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
-            AND " . SampleCountUtility::countableWhere('v') . "
+            AND " . PmtctCascadeUtility::vlRowsWhere('v') . "
         LEFT JOIN facility_details fel ON fel.facility_id = e.lab_id
         LEFT JOIN facility_details fvl ON fvl.facility_id = v.lab_id
         LEFT JOIN r_sample_status rs ON rs.status_id = e.result_status
