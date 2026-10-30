@@ -93,6 +93,60 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
 
     /* Cascade funnel + referral branch styles live in _tbCascadeFunnel.php (shared with the dashboard). */
 
+    /* ---- How to read this report ---- */
+    .tbc-guide {
+        background: #f7f9fc;
+        border: 1px solid #dbe3ee;
+        border-radius: 4px;
+        padding: 10px 14px;
+        margin: 6px 4px 4px;
+        font-size: 13px;
+        color: #444;
+    }
+
+    .tbc-guide summary {
+        cursor: pointer;
+        font-weight: 600;
+        color: #21618c;
+    }
+
+    .tbc-guide-cols {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin-top: 10px;
+    }
+
+    .tbc-guide-col {
+        flex: 1 1 260px;
+    }
+
+    .tbc-guide-col h4 {
+        font-size: 13px;
+        font-weight: 700;
+        margin: 0 0 6px;
+        color: #333;
+    }
+
+    .tbc-guide-col ul {
+        padding-left: 18px;
+        margin: 0;
+    }
+
+    .tbc-guide-col li {
+        margin-bottom: 4px;
+    }
+
+    .tbc-guide dt {
+        font-weight: 600;
+        margin-top: 6px;
+    }
+
+    .tbc-guide dd {
+        margin-left: 0;
+        color: #555;
+    }
+
     .select2-selection__choice {
         color: black !important;
     }
@@ -100,10 +154,10 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
 
 <div class="content-wrapper">
     <section class="content-header">
-        <h1><em class="fa-solid fa-diagram-project"></em> <?= _translate("TB Cascade Report"); ?></h1>
+        <h1><em class="fa-solid fa-diagram-project"></em> <?= _htmlTranslate("TB Cascade Report"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?= _translate("Home"); ?></a></li>
-            <li class="active"><?= _translate("TB Cascade Report"); ?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?= _htmlTranslate("Home"); ?></a></li>
+            <li class="active"><?= _htmlTranslate("TB Cascade Report"); ?></li>
         </ol>
     </section>
 
@@ -114,17 +168,17 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
                     <table aria-describedby="table" class="table pageFilters" aria-hidden="true"
                         style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
-                            <td><strong><?= _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
+                            <td><strong><?= _htmlTranslate("Sample Collection Date"); ?>&nbsp;:</strong></td>
                             <td>
                                 <input type="text" id="sampleCollectionDate" name="sampleCollectionDate"
                                     class="form-control daterangefield"
-                                    placeholder="<?= _translate('Select Collection Date'); ?>" readonly
+                                    placeholder="<?= _htmlTranslate('Select Collection Date'); ?>" readonly
                                     style="background:#fff;" />
                             </td>
-                            <td><strong><?= _translate("Province"); ?>&nbsp;:</strong></td>
+                            <td><strong><?= _htmlTranslate("Province"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select class="form-control" id="provinceId" name="provinceId" style="width:100%;">
-                                    <option value=""><?= _translate("-- Select --"); ?></option>
+                                    <option value=""><?= _htmlTranslate("-- Select --"); ?></option>
                                     <?php foreach ($provinces as $p) { ?>
                                         <option value="<?= (int) $p['province_id']; ?>">
                                             <?= htmlspecialchars((string) $p['province_name']); ?>
@@ -134,13 +188,13 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
                             </td>
                         </tr>
                         <tr>
-                            <td><strong><?= _translate("Testing Lab"); ?>&nbsp;:</strong></td>
+                            <td><strong><?= _htmlTranslate("Testing Lab"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select class="form-control" id="labName" name="labName" style="width:100%;">
                                     <?= $testingLabsDropdown; ?>
                                 </select>
                             </td>
-                            <td><strong><?= _translate("Collection Site"); ?>&nbsp;:</strong></td>
+                            <td><strong><?= _htmlTranslate("Collection Site"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select class="form-control" id="facilityName" name="facilityName" multiple="multiple"
                                     style="width:100%;">
@@ -149,10 +203,10 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
                             </td>
                         </tr>
                         <tr>
-                            <td><strong><?= _translate("Test Type"); ?>&nbsp;:</strong></td>
+                            <td><strong><?= _htmlTranslate("Test Type"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select class="form-control" id="testType" name="testType" style="width:100%;">
-                                    <option value=""><?= _translate("-- Any --"); ?></option>
+                                    <option value=""><?= _htmlTranslate("-- Any --"); ?></option>
                                     <?php foreach ($testTypes as $tt) { ?>
                                         <option value="<?= htmlspecialchars((string) $tt['test_type']); ?>">
                                             <?= htmlspecialchars((string) $tt['test_type']); ?>
@@ -160,21 +214,21 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
                                     <?php } ?>
                                 </select>
                             </td>
-                            <td><strong><?= _translate("Final Result Entered"); ?>&nbsp;:</strong></td>
+                            <td><strong><?= _htmlTranslate("Final Result Entered"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select class="form-control" id="finalized" name="finalized" style="width:100%;">
-                                    <option value=""><?= _translate("-- Any --"); ?></option>
-                                    <option value="yes"><?= _translate("Yes"); ?></option>
-                                    <option value="no"><?= _translate("No"); ?></option>
+                                    <option value=""><?= _htmlTranslate("-- Any --"); ?></option>
+                                    <option value="yes"><?= _htmlTranslate("Yes"); ?></option>
+                                    <option value="no"><?= _htmlTranslate("No"); ?></option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="4">
-                                <input type="button" onclick="searchCascade()" value="<?= _translate("Search"); ?>"
+                                <input type="button" onclick="searchCascade()" value="<?= _htmlTranslate("Search"); ?>"
                                     class="btn btn-success btn-sm">
                                 &nbsp;<button class="btn btn-danger btn-sm"
-                                    onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+                                    onclick="document.location.href = document.location"><span><?= _htmlTranslate('Reset'); ?></span></button>
                             </td>
                         </tr>
                     </table>
@@ -182,32 +236,84 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
             </div>
         </div>
 
+        <!-- How to read the page, closed until clicked. -->
+        <div class="row">
+            <div class="col-xs-12">
+                <details class="tbc-guide">
+                    <summary><em class="fa-solid fa-circle-question"></em> <?= _htmlTranslate("How to read this report"); ?></summary>
+                    <div class="tbc-guide-cols">
+                        <div class="tbc-guide-col">
+                            <h4><?= _htmlTranslate("How the cascade reads"); ?></h4>
+                            <ul>
+                                        <li><?= _htmlTranslate("Read the funnel from left to right."); ?></li>
+                                        <li><?= _htmlTranslate("Each box is part of the box to its left. The percentage under a box is that share."); ?></li>
+                                        <li><?= _htmlTranslate("A large drop between two boxes shows where samples stop moving."); ?></li>
+                                        <li><?= _htmlTranslate("The blue branch under the funnel follows the samples sent to another lab."); ?></li>
+                            </ul>
+                        </div>
+                        <div class="tbc-guide-col">
+                            <h4><?= _htmlTranslate("Parts of the page"); ?></h4>
+                            <dl>
+                                        <dt><?= _htmlTranslate("Cards"); ?></dt>
+                                        <dd><?= _htmlTranslate("Total Samples, then where they are now: In Pipeline (not finished), Accepted, and Rejected / Failed."); ?></dd>
+                                        <dt><?= _htmlTranslate("Stats line"); ?></dt>
+                                        <dd><?= _htmlTranslate("Average days from collection to reception and from reception to testing, and results dispatched or printed."); ?></dd>
+                                        <dt><?= _htmlTranslate("Cascade Funnel"); ?></dt>
+                                        <dd><?= _htmlTranslate("How far the samples got, from registration to a dispatched or printed result."); ?></dd>
+                                        <dt><?= _htmlTranslate("Referral branch"); ?></dt>
+                                        <dd><?= _htmlTranslate("Samples referred to another lab, then received, tested and accepted there."); ?></dd>
+                                        <dt><?= _htmlTranslate("Explore buttons"); ?></dt>
+                                        <dd><?= _htmlTranslate("Per-lab totals, referrals by pair of labs, and one row per test. Each table uses the same filters."); ?></dd>
+                            </dl>
+                        </div>
+                        <div class="tbc-guide-col">
+                            <h4><?= _htmlTranslate("Terms"); ?></h4>
+                            <dl>
+                                        <dt><?= _htmlTranslate("Received at Lab"); ?></dt>
+                                        <dd><?= _htmlTranslate("The sample has a reception date at the lab, or was tested."); ?></dd>
+                                        <dt><?= _htmlTranslate("Tested"); ?></dt>
+                                        <dd><?= _htmlTranslate("The sample has a test date, a result, or a result on one of its tests. Rejected samples are not tested."); ?></dd>
+                                        <dt><?= _htmlTranslate("Final Result Entered"); ?></dt>
+                                        <dd><?= _htmlTranslate("The final result is entered, or the result is marked final."); ?></dd>
+                                        <dt><?= _htmlTranslate("Accepted"); ?></dt>
+                                        <dd><?= _htmlTranslate("The final result is approved."); ?></dd>
+                                        <dt><?= _htmlTranslate("In Pipeline"); ?></dt>
+                                        <dd><?= _htmlTranslate("At the collection site, at the lab and not tested, awaiting approval, or referred and not yet received. Each sample counts in one of these only."); ?></dd>
+                                        <dt><?= _htmlTranslate("Originator / Referred-in"); ?></dt>
+                                        <dd><?= _htmlTranslate("The lab the sample was registered at / a lab the sample was referred to."); ?></dd>
+                            </dl>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </div>
+
         <!-- KPI cards: single row of 4 — the headline numbers managers care about -->
         <div class="row tbc-kpi-row">
             <div class="col-md-3 col-sm-6">
                 <div class="tbc-kpi-card">
-                    <div class="tbc-kpi-label"><?= _translate("Total Samples"); ?></div>
+                    <div class="tbc-kpi-label"><?= _htmlTranslate("Total Samples"); ?></div>
                     <div class="tbc-kpi-value" id="kpiTotal">&mdash;</div>
                     <div class="tbc-kpi-sub" id="kpiTotalSub">&nbsp;</div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="tbc-kpi-card kpi-warn">
-                    <div class="tbc-kpi-label"><?= _translate("In Pipeline"); ?></div>
+                    <div class="tbc-kpi-label"><?= _htmlTranslate("In Pipeline"); ?></div>
                     <div class="tbc-kpi-value" id="kpiInPipeline">&mdash;</div>
                     <div class="tbc-kpi-sub" id="kpiInPipelineSub">&nbsp;</div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="tbc-kpi-card kpi-good">
-                    <div class="tbc-kpi-label"><?= _translate("Accepted"); ?></div>
+                    <div class="tbc-kpi-label"><?= _htmlTranslate("Accepted"); ?></div>
                     <div class="tbc-kpi-value" id="kpiAccepted">&mdash;</div>
                     <div class="tbc-kpi-sub" id="kpiAcceptedSub">&nbsp;</div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="tbc-kpi-card kpi-danger">
-                    <div class="tbc-kpi-label"><?= _translate("Rejected / Failed"); ?></div>
+                    <div class="tbc-kpi-label"><?= _htmlTranslate("Rejected / Failed"); ?></div>
                     <div class="tbc-kpi-value" id="kpiRejFail">&mdash;</div>
                     <div class="tbc-kpi-sub" id="kpiRejFailSub">&nbsp;</div>
                 </div>
@@ -228,9 +334,9 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title"><?= _translate("Cascade Funnel"); ?></h3>
+                        <h3 class="box-title"><?= _htmlTranslate("Cascade Funnel"); ?></h3>
                         <div class="pull-right" style="font-size:12px;color:#666;">
-                            <?= _translate("Counts at each stage in the selected period. Drop-off % shown below each stage relative to the previous stage."); ?>
+                            <?= _htmlTranslate("Samples at each stage in the selected period. The % under a box is its share of the box before it."); ?>
                         </div>
                     </div>
                     <div class="box-body">
@@ -244,19 +350,19 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
         <div class="row tbc-section">
             <div class="col-xs-12">
                 <div style="margin: 0 4px; padding: 10px 12px; background: #fff; border-radius: 3px; box-shadow: 0 1px 1px rgba(0,0,0,.05);">
-                    <strong style="color:#555;"><?= _translate("Explore:"); ?></strong>
+                    <strong style="color:#555;"><?= _htmlTranslate("Explore:"); ?></strong>
                     &nbsp;
                     <button type="button" class="btn btn-default btn-sm tbc-drill-btn" data-drill="perLab">
-                        <em class="fa-solid fa-flask-vial"></em> <?= _translate("Per-Lab Breakdown"); ?>
+                        <em class="fa-solid fa-flask-vial"></em> <?= _htmlTranslate("Per-Lab Breakdown"); ?>
                     </button>
                     <button type="button" class="btn btn-default btn-sm tbc-drill-btn" data-drill="referralMatrix">
-                        <em class="fa-solid fa-share-from-square"></em> <?= _translate("Referral Pairs"); ?>
+                        <em class="fa-solid fa-share-from-square"></em> <?= _htmlTranslate("Referral Pairs"); ?>
                     </button>
                     <button type="button" class="btn btn-default btn-sm tbc-drill-btn" data-drill="detail">
-                        <em class="fa-solid fa-magnifying-glass"></em> <?= _translate("Detail Samples"); ?>
+                        <em class="fa-solid fa-magnifying-glass"></em> <?= _htmlTranslate("Detail Samples"); ?>
                     </button>
                     <span style="font-size:11px; color:#999; margin-left:8px;">
-                        <em class="fa-solid fa-circle-info"></em> <?= _translate("Tables load on demand. Click a button to open."); ?>
+                        <em class="fa-solid fa-circle-info"></em> <?= _htmlTranslate("Tables load on demand. Click a button to open."); ?>
                     </span>
                 </div>
             </div>
@@ -267,9 +373,9 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title"><?= _translate("Per-Lab Breakdown"); ?></h3>
+                        <h3 class="box-title"><?= _htmlTranslate("Per-Lab Breakdown"); ?></h3>
                         <div class="pull-right" style="font-size:12px;color:#666;">
-                            <?= _translate("Originator = samples this lab received as the primary testing lab. Referred-in = samples this lab received from another lab."); ?>
+                            <?= _htmlTranslate("Originator = samples this lab received as the primary testing lab. Referred-in = samples this lab received from another lab."); ?>
                         </div>
                     </div>
                     <div class="box-body table-responsive">
@@ -277,21 +383,21 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
                             aria-describedby="tbc-per-lab" aria-hidden="true" style="width:100%;">
                             <thead>
                                 <tr>
-                                    <th><?= _translate("Lab"); ?></th>
-                                    <th><?= _translate("Originator Samples"); ?></th>
-                                    <th><?= _translate("Referred-in Samples"); ?></th>
-                                    <th><?= _translate("Tests Performed"); ?></th>
-                                    <th><?= _translate("Accepted"); ?></th>
-                                    <th><?= _translate("Rejected"); ?></th>
-                                    <th><?= _translate("Failed"); ?></th>
-                                    <th><?= _translate("Pending at Lab"); ?></th>
-                                    <th><?= _translate("Avg Coll → Recv (days)"); ?></th>
-                                    <th><?= _translate("Avg Recv → Tested (days)"); ?></th>
+                                    <th><?= _htmlTranslate("Lab"); ?></th>
+                                    <th><?= _htmlTranslate("Originator Samples"); ?></th>
+                                    <th><?= _htmlTranslate("Referred-in Samples"); ?></th>
+                                    <th><?= _htmlTranslate("Tests Performed"); ?></th>
+                                    <th><?= _htmlTranslate("Accepted"); ?></th>
+                                    <th><?= _htmlTranslate("Rejected"); ?></th>
+                                    <th><?= _htmlTranslate("Failed"); ?></th>
+                                    <th><?= _htmlTranslate("Pending at Lab"); ?></th>
+                                    <th><?= _htmlTranslate("Avg Coll → Recv (days)"); ?></th>
+                                    <th><?= _htmlTranslate("Avg Recv → Tested (days)"); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="10" class="dataTables_empty"><?= _translate("Loading data from server"); ?></td>
+                                    <td colspan="10" class="dataTables_empty"><?= _htmlTranslate("Loading data from server"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -305,25 +411,25 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title"><?= _translate("Referral Pairs (From → To)"); ?></h3>
+                        <h3 class="box-title"><?= _htmlTranslate("Referral Pairs (From → To)"); ?></h3>
                     </div>
                     <div class="box-body table-responsive">
                         <table id="referralMatrixTable" class="table table-bordered table-striped"
                             aria-describedby="tbc-referral-matrix" aria-hidden="true" style="width:100%;">
                             <thead>
                                 <tr>
-                                    <th><?= _translate("Referring Lab"); ?></th>
-                                    <th><?= _translate("Receiving Lab"); ?></th>
-                                    <th><?= _translate("Referred"); ?></th>
-                                    <th><?= _translate("Awaiting Receipt"); ?></th>
-                                    <th><?= _translate("Received, Not Tested"); ?></th>
-                                    <th><?= _translate("Tested & Accepted"); ?></th>
-                                    <th><?= _translate("Tested & Rejected / Failed"); ?></th>
+                                    <th><?= _htmlTranslate("Referring Lab"); ?></th>
+                                    <th><?= _htmlTranslate("Receiving Lab"); ?></th>
+                                    <th><?= _htmlTranslate("Referred"); ?></th>
+                                    <th><?= _htmlTranslate("Awaiting Receipt"); ?></th>
+                                    <th><?= _htmlTranslate("Received, Not Tested"); ?></th>
+                                    <th><?= _htmlTranslate("Tested & Accepted"); ?></th>
+                                    <th><?= _htmlTranslate("Tested & Rejected / Failed"); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="7" class="dataTables_empty"><?= _translate("Loading data from server"); ?></td>
+                                    <td colspan="7" class="dataTables_empty"><?= _htmlTranslate("Loading data from server"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -337,9 +443,9 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title"><?= _translate("Detail Samples — One Row per Test"); ?></h3>
+                        <h3 class="box-title"><?= _htmlTranslate("Detail Samples: One Row per Test"); ?></h3>
                         <div class="pull-right" style="font-size:12px;color:#666;">
-                            <?= _translate("Each row is one (sample × test × lab) combination."); ?>
+                            <?= _htmlTranslate("Each row is one (sample × test × lab) combination."); ?>
                         </div>
                     </div>
                     <div class="box-body table-responsive">
@@ -347,23 +453,23 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
                             aria-describedby="tbc-detail" aria-hidden="true" style="width:100%;">
                             <thead>
                                 <tr>
-                                    <th><?= _translate("Sample Code"); ?></th>
-                                    <th><?= _translate("Collection Site"); ?></th>
-                                    <th><?= _translate("Primary Lab"); ?></th>
-                                    <th><?= _translate("Performing Lab"); ?></th>
-                                    <th><?= _translate("Lab Role"); ?></th>
-                                    <th><?= _translate("Test Type"); ?></th>
-                                    <th><?= _translate("Test Result"); ?></th>
-                                    <th><?= _translate("Sample Status"); ?></th>
-                                    <th><?= _translate("Collection Date"); ?></th>
-                                    <th><?= _translate("Received at Lab"); ?></th>
-                                    <th><?= _translate("Tested"); ?></th>
-                                    <th><?= _translate("Final Interpretation"); ?></th>
+                                    <th><?= _htmlTranslate("Sample Code"); ?></th>
+                                    <th><?= _htmlTranslate("Collection Site"); ?></th>
+                                    <th><?= _htmlTranslate("Primary Lab"); ?></th>
+                                    <th><?= _htmlTranslate("Performing Lab"); ?></th>
+                                    <th><?= _htmlTranslate("Lab Role"); ?></th>
+                                    <th><?= _htmlTranslate("Test Type"); ?></th>
+                                    <th><?= _htmlTranslate("Test Result"); ?></th>
+                                    <th><?= _htmlTranslate("Sample Status"); ?></th>
+                                    <th><?= _htmlTranslate("Collection Date"); ?></th>
+                                    <th><?= _htmlTranslate("Received at Lab"); ?></th>
+                                    <th><?= _htmlTranslate("Tested"); ?></th>
+                                    <th><?= _htmlTranslate("Final Interpretation"); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="12" class="dataTables_empty"><?= _translate("Loading data from server"); ?></td>
+                                    <td colspan="12" class="dataTables_empty"><?= _htmlTranslate("Loading data from server"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -419,14 +525,18 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
             $("#kpiTotal").text((s.total || 0).toLocaleString());
             $("#kpiTotalSub").text(s.distinctFacilities + " <?= _jsTranslate('collection sites'); ?> · " + s.distinctLabs + " <?= _jsTranslate('labs'); ?>");
 
-            // In Pipeline = anything still active (at CS + at Lab + result entered but not yet Accepted + referred in transit)
-            var inPipeline = (s.atCollectionSite || 0) + (s.atTestingLab || 0) + (s.awaitingApproval || 0) + (s.referred || 0);
-            $("#kpiInPipeline").text(inPipeline.toLocaleString());
-            $("#kpiInPipelineSub").text(
-                (s.atCollectionSite || 0) + " <?= _jsTranslate('at CS'); ?> · " +
-                (s.atTestingLab || 0) + " <?= _jsTranslate('at Lab'); ?> · " +
-                (s.awaitingApproval || 0) + " <?= _jsTranslate('awaiting approval'); ?>"
-            );
+            // In Pipeline: samples not finished yet. Each is in one stage only
+            // (getTbCascadeReport.php), so the parts add up to the total.
+            $("#kpiInPipeline").text((s.inPipeline || 0).toLocaleString());
+            var pipelineParts = [
+                (s.atCollectionSite || 0).toLocaleString() + " <?= _jsTranslate('at collection site'); ?>",
+                (s.atTestingLab || 0).toLocaleString() + " <?= _jsTranslate('at lab, not tested'); ?>",
+                (s.awaitingApproval || 0).toLocaleString() + " <?= _jsTranslate('awaiting approval'); ?>"
+            ];
+            if ((s.referredInTransit || 0) > 0) {
+                pipelineParts.push(s.referredInTransit.toLocaleString() + " <?= _jsTranslate('referred, not received'); ?>");
+            }
+            $("#kpiInPipelineSub").text(pipelineParts.join(" · "));
 
             // Accepted
             $("#kpiAccepted").text((s.accepted || 0).toLocaleString());
@@ -437,16 +547,18 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
             $("#kpiRejFail").text(rf.toLocaleString());
             $("#kpiRejFailSub").text((s.rejected || 0) + " <?= _jsTranslate('rejected'); ?> · " + (s.testFailed || 0) + " <?= _jsTranslate('failed'); ?>");
 
-            // Secondary stats strip (TATs, hygiene anomaly, dispatched count)
+            // Secondary stats strip: average days, results sent out, data issues
             var tatColl = (s.avgDaysCollToRecv === null || s.avgDaysCollToRecv === undefined) ? '—' : Number(s.avgDaysCollToRecv).toFixed(1);
             var tatTest = (s.avgDaysRecvToTested === null || s.avgDaysRecvToTested === undefined) ? '—' : Number(s.avgDaysRecvToTested).toFixed(1);
-            var dispatched = Math.max(s.printed || 0, s.dispatched || 0);
             var stripBits = [
-                '<strong><?= _jsTranslate("Avg TAT"); ?>:</strong> '
-                    + tatColl + ' <?= _jsTranslate("d coll→recv"); ?> · '
-                    + tatTest + ' <?= _jsTranslate("d recv→tested"); ?>',
-                '<strong>' + dispatched + '</strong> <?= _jsTranslate("results dispatched / printed"); ?>'
+                '<strong><?= _jsTranslate("Average days"); ?>:</strong> '
+                    + tatColl + ' <?= _jsTranslate("collection to reception"); ?> · '
+                    + tatTest + ' <?= _jsTranslate("reception to testing"); ?>',
+                '<strong>' + (s.dispatchedOrPrinted || 0).toLocaleString() + '</strong> <?= _jsTranslate("accepted results dispatched or printed"); ?>'
             ];
+            if ((s.closed || 0) > 0) {
+                stripBits.push('<strong>' + s.closed.toLocaleString() + '</strong> <?= _jsTranslate("expired, lost or no result"); ?>');
+            }
             if ((s.acceptedWithoutResultEntered || 0) > 0) {
                 stripBits.push(
                     '<span style="color:#dd4b39;"><em class="fa-solid fa-triangle-exclamation"></em> '
@@ -545,7 +657,7 @@ require_once __DIR__ . '/_tbCascadeFunnel.php';
                 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
                 'Last 30 Days': [moment().subtract(29, 'days'), moment()],
                 'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-                'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+                'Last 12 Months': [moment().subtract(11, 'months').startOf('month'), moment()],
                 'Current Year To Date': [moment().startOf('year'), moment()]
             }
         });

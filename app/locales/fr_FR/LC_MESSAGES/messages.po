@@ -37939,3 +37939,102 @@ msgstr "Chaque enfant est compté une fois, par ID de l'enfant. Le statut de cha
 
 msgid "Mother Had High VL in 9 Months Before Birth"
 msgstr "Charge virale de la mère élevée dans les 9 mois avant la naissance"
+
+msgid "Read the funnel from left to right."
+msgstr "Lisez l'entonnoir de gauche à droite."
+
+msgid "A large drop between two boxes shows where samples stop moving."
+msgstr "Une forte baisse entre deux cases montre où les échantillons n'avancent plus."
+
+msgid "The blue branch under the funnel follows the samples sent to another lab."
+msgstr "La branche bleue sous l'entonnoir suit les échantillons envoyés à un autre laboratoire."
+
+msgid "Total Samples, then where they are now: In Pipeline (not finished), Accepted, and Rejected / Failed."
+msgstr "Total des échantillons, puis où ils en sont : En cours de réalisation (non terminés), Acceptés, et Refusé / Échec."
+
+msgid "Stats line"
+msgstr "Ligne de statistiques"
+
+msgid "Average days from collection to reception and from reception to testing, and results dispatched or printed."
+msgstr "Nombre moyen de jours du prélèvement à la réception et de la réception au test, et résultats expédiés ou imprimés."
+
+msgid "How far the samples got, from registration to a dispatched or printed result."
+msgstr "Jusqu'où les échantillons sont allés, de l'enregistrement à un résultat expédié ou imprimé."
+
+msgid "Referral branch"
+msgstr "Branche de transfert"
+
+msgid "Samples referred to another lab, then received, tested and accepted there."
+msgstr "Échantillons transférés à un autre laboratoire, puis reçus, testés et acceptés là-bas."
+
+msgid "Explore buttons"
+msgstr "Boutons À découvrir"
+
+msgid "Per-lab totals, referrals by pair of labs, and one row per test. Each table uses the same filters."
+msgstr "Totaux par laboratoire, transferts par paire de laboratoires, et une ligne par test. Chaque tableau utilise les mêmes filtres."
+
+msgid "The sample has a reception date at the lab, or was tested."
+msgstr "L'échantillon a une date de réception au laboratoire, ou a été testé."
+
+msgid "The sample has a test date, a result, or a result on one of its tests. Rejected samples are not tested."
+msgstr "L'échantillon a une date de test, un résultat, ou un résultat sur l'un de ses tests. Les échantillons refusés ne sont pas testés."
+
+msgid "The final result is entered, or the result is marked final."
+msgstr "Le résultat final est saisi, ou le résultat est marqué comme final."
+
+msgid "The final result is approved."
+msgstr "Le résultat final est approuvé."
+
+msgid "At the collection site, at the lab and not tested, awaiting approval, or referred and not yet received. Each sample counts in one of these only."
+msgstr "Au site de prélèvement, au laboratoire et non testé, en attente d'approbation, ou transféré et pas encore reçu. Chaque échantillon compte dans un seul de ces cas."
+
+msgid "Originator / Referred-in"
+msgstr "Laboratoire d'origine / Laboratoire destinataire"
+
+msgid "The lab the sample was registered at / a lab the sample was referred to."
+msgstr "Le laboratoire où l'échantillon a été enregistré / un laboratoire auquel l'échantillon a été transféré."
+
+msgid "Samples at each stage in the selected period. The % under a box is its share of the box before it."
+msgstr "Échantillons à chaque étape dans la période choisie. Le % sous une case est sa part de la case précédente."
+
+msgid "Detail Samples: One Row per Test"
+msgstr "Détail des échantillons : une ligne par test"
+
+msgid "at collection site"
+msgstr "au site de prélèvement"
+
+msgid "at lab, not tested"
+msgstr "au laboratoire, non testés"
+
+msgid "referred, not received"
+msgstr "transférés, non reçus"
+
+msgid "Average days"
+msgstr "Jours en moyenne"
+
+msgid "collection to reception"
+msgstr "du prélèvement à la réception"
+
+msgid "reception to testing"
+msgstr "de la réception au test"
+
+msgid "accepted results dispatched or printed"
+msgstr "résultats acceptés expédiés ou imprimés"
+
+msgid "expired, lost or no result"
+msgstr "expirés, perdus ou sans résultat"
+
+msgid "Referral branch: samples sent to another lab"
+msgstr "Branche de transfert : échantillons envoyés à un autre laboratoire"
+
+msgid "samples went to another lab"
+msgstr "échantillons envoyés à un autre laboratoire"
+
+msgid "Originator"
+msgstr "Origine"
+
+msgid "Referral"
+msgstr "Transfert"
+
+msgid "Samples at each stage for the selected date range. The % under a box is its share of the box before it."
+msgstr "Échantillons à chaque étape pour la période choisie. Le % sous une case est sa part de la case précédente."

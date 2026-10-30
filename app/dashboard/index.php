@@ -397,7 +397,7 @@ $userModules = $_SESSION['modules'] ?? [];
 										<div class="box-header">
 											<h3 class="box-title"><?= _translate("Cascade Funnel"); ?></h3>
 											<div class="pull-right" style="font-size:12px;color:#666;">
-												<?= _translate("Counts at each stage for the selected date range. Drop-off % shown below each stage relative to the previous stage."); ?>
+												<?= _htmlTranslate("Samples at each stage for the selected date range. The % under a box is its share of the box before it."); ?>
 												&nbsp;·&nbsp;
 												<a href="/tb/management/tb-cascade-report.php"><?= _translate("Full Cascade Report"); ?></a>
 											</div>
