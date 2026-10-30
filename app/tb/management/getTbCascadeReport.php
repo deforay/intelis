@@ -4,6 +4,9 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\SampleCountUtility;
+use App\Utilities\SampleRejectionUtility;
+use App\Utilities\TestedSampleRule;
 use Psr\Http\Message\ServerRequestInterface;
 
 /** @var ServerRequestInterface $request */
@@ -16,14 +19,73 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/**
- * Build the shared WHERE clause fragment from POSTed filters.
- * Operates against an aliased `form_tb f` plus optional `facility_details fl`
- * for the testing lab, `facility_details fc` for the collection site.
+/*
+ * Counting rules, shared by every action below so the cards, the funnel and
+ * the tables agree:
+ *   - Final result entered: form_tb.result has text, or is_result_finalized is
+ *     'yes'. The two are written by different code paths and can disagree, and
+ *     in Rwanda a result awaiting approval sits at status 6 with the flag set.
+ *   - Rejected: the flag or the status (SampleRejectionUtility).
+ *   - Tested: TestedSampleRule, less rejected samples. A tb_tests row alone is
+ *     not a test: a card with a lab and no result already creates one.
+ *   - Stage: each sample is in exactly one stage (tbcStageExpr), so the parts of
+ *     "In Pipeline" never overlap.
  */
-function tbcBuildFilterConditions(array $post): array
+
+/** SQL: the sample has a final result entered. */
+function tbcFinalExpr(): string
 {
-    $where = [];
+    return "(NULLIF(TRIM(f.result), '') IS NOT NULL OR f.is_result_finalized = 'yes')";
+}
+
+/** SQL: the sample is rejected. */
+function tbcRejectedExpr(): string
+{
+    return SampleRejectionUtility::sqlPredicate('f');
+}
+
+/** SQL: the sample was tested. */
+function tbcTestedExpr(): string
+{
+    return '(' . TestedSampleRule::sql('tb', 'f') . ' AND NOT ' . tbcRejectedExpr() . ')';
+}
+
+/** SQL: the one stage a sample is in now. */
+function tbcStageExpr(): string
+{
+    return "CASE
+            WHEN " . tbcRejectedExpr() . " THEN 'rejected'
+            WHEN f.result_status = " . SAMPLE_STATUS\TEST_FAILED . " THEN 'failed'
+            WHEN f.result_status = " . SAMPLE_STATUS\ACCEPTED . " THEN 'accepted'
+            WHEN f.result_status IN (" . SAMPLE_STATUS\EXPIRED . ", " . SAMPLE_STATUS\LOST_OR_MISSING . ", "
+        . SAMPLE_STATUS\NO_RESULT . ") THEN 'closed'
+            WHEN f.result_status = " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . " THEN 'atCollectionSite'
+            WHEN f.result_status = " . SAMPLE_STATUS\REFERRED . " THEN 'referred'
+            WHEN " . tbcFinalExpr() . " THEN 'awaitingApproval'
+            ELSE 'atLab'
+        END";
+}
+
+/**
+ * WHERE conditions from the POSTed filters, against `form_tb f`.
+ */
+function tbcBuildFilterConditions(array $post, DatabaseService $db): array
+{
+    /** @var CommonService $general */
+    $general = ContainerRegistry::get(CommonService::class);
+
+    $where = [SampleCountUtility::countableWhere('f')];
+
+    // A LIS has not received a sample still at the collection site.
+    if (!$general->isSTSInstance()) {
+        $where[] = "f.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+    } elseif (!empty($_SESSION['facilityMap'])) {
+        $where[] = "f.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+    }
+
+    if ($labScope = $general->labScopeWhere('f')) {
+        $where[] = $labScope;
+    }
 
     if (!empty($post['sampleCollectionDate'])) {
         $range = explode("to", (string) $post['sampleCollectionDate']);
@@ -43,51 +105,35 @@ function tbcBuildFilterConditions(array $post): array
     }
 
     if (!empty($post['facilityName'])) {
-        $facilityCsv = preg_replace('/[^0-9,]/', '', (string) $post['facilityName']);
+        $facilityCsv = preg_replace('/[^0-9,]/', '', implode(',', (array) $post['facilityName']));
+        $facilityCsv = trim((string) preg_replace('/,+/', ',', (string) $facilityCsv), ',');
         if ($facilityCsv !== '') {
             $where[] = "f.facility_id IN (" . $facilityCsv . ")";
         }
     }
 
-    if (isset($post['finalized']) && ($post['finalized'] === 'yes' || $post['finalized'] === 'no')) {
-        $where[] = "f.is_result_finalized = '" . $post['finalized'] . "'";
+    // The same rule as the Final Result Entered stage, not the flag alone.
+    if (($post['finalized'] ?? '') === 'yes') {
+        $where[] = tbcFinalExpr();
+    } elseif (($post['finalized'] ?? '') === 'no') {
+        $where[] = "NOT " . tbcFinalExpr();
     }
 
-    // STS instance scoping (mirrors getSampleResult.php logic)
-    /** @var CommonService $general */
-    $general = ContainerRegistry::get(CommonService::class);
-    if (!$general->isSTSInstance()) {
-        // On non-STS, exclude RECEIVED_AT_CLINIC (status 9) and CANCELLED (12)
-        $where[] = "f.result_status NOT IN (" . SAMPLE_STATUS\CANCELLED . ", " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . ")";
-    } else {
-        $where[] = "f.result_status != " . SAMPLE_STATUS\CANCELLED;
-        if (!empty($_SESSION['facilityMap'])) {
-            $where[] = "f.facility_id IN (" . $_SESSION['facilityMap'] . ")";
-        }
-    }
-
-    if ($labScope = $general->labScopeWhere('f')) {
-        $where[] = $labScope;
+    // EXISTS, not a join: a sample with two tests of the type counts once.
+    $testType = tbcTestTypeFilter($post);
+    if ($testType !== null) {
+        $where[] = "EXISTS (SELECT 1 FROM tb_tests tt_filter WHERE tt_filter.tb_id = f.tb_id"
+            . " AND tt_filter.test_type = '" . $db->escape($testType) . "')";
     }
 
     return $where;
 }
 
-/**
- * Optional test_type filter applied against a JOIN on tb_tests.
- * Returns the SQL fragment to AND into the WHERE clause and the JOIN
- * needed (only added when a test_type filter is in play, to keep the
- * sample-grain queries fast when no filter is selected).
- */
-function tbcTestTypeJoinAndWhere(array $post): array
+/** The selected test type, or null for any. */
+function tbcTestTypeFilter(array $post): ?string
 {
-    if (empty($post['testType'])) {
-        return ['', ''];
-    }
-    $tt = $post['testType'];
-    $ttEsc = str_replace("'", "''", (string) $tt);
-    $join = " INNER JOIN tb_tests tt_filter ON tt_filter.tb_id = f.tb_id AND tt_filter.test_type = '" . $ttEsc . "' ";
-    return [$join, ''];
+    $testType = trim((string) ($post['testType'] ?? ''));
+    return $testType === '' ? null : $testType;
 }
 
 $action = $_POST['action'] ?? 'summary';
@@ -96,94 +142,105 @@ $action = $_POST['action'] ?? 'summary';
 // SUMMARY action — sample-grain KPIs + funnel counts
 // ---------------------------------------------------------------------------
 if ($action === 'summary') {
-    $where = tbcBuildFilterConditions($_POST);
-    [$ttJoin, $_unused] = tbcTestTypeJoinAndWhere($_POST);
-    $whereSql = !empty($where) ? implode(' AND ', $where) : '1=1';
+    $whereSql = implode(' AND ', tbcBuildFilterConditions($_POST, $db));
+    $referred = "(lr.last_ref IS NOT NULL OR f.referred_to_lab_id IS NOT NULL)";
+    $referredOn = "COALESCE(lr.last_ref, f.samples_referred_datetime)";
+    $receivedAfterReferral = "(f.sample_received_at_lab_datetime IS NOT NULL
+        AND ($referredOn IS NULL OR f.sample_received_at_lab_datetime >= $referredOn))";
+    $testedAfterReferral = "(f.sample_tested_datetime IS NOT NULL
+        AND ($referredOn IS NULL OR f.sample_tested_datetime >= $referredOn))";
 
-    // Cascade stage definitions (per business rules):
-    //   Tested            = sample has at least one row in tb_tests
-    //   Result Entered    = a final result is available — either form_tb.result has text,
-    //                       OR is_result_finalized='yes'. Reading both signals is more
-    //                       honest than just the flag: the two are written by different
-    //                       code paths and can disagree (status-machine vs UI flag).
-    //   Awaiting Approval = result available + status not yet ACCEPTED and not rejected/failed
-    //   Accepted          = result available + status = ACCEPTED
-    // In Rwanda PENDING_APPROVAL (8) is unused — awaiting-approval samples live
-    // at status=6 plus the flag, so reading the flag alone is unreliable.
+    // One row per sample with its classifications, then totals. Each funnel
+    // stage is part of the one before it.
     $sql = "SELECT
-            COUNT(DISTINCT f.tb_id) AS total,
-            SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . " THEN 1 ELSE 0 END) AS atCollectionSite,
-            SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . " THEN 1 ELSE 0 END) AS atTestingLab,
-            SUM(CASE WHEN EXISTS (SELECT 1 FROM tb_tests tt WHERE tt.tb_id = f.tb_id) THEN 1 ELSE 0 END) AS tested,
-            SUM(CASE WHEN ((f.result IS NOT NULL AND TRIM(f.result) <> '') OR f.is_result_finalized = 'yes')
-                          AND f.result_status NOT IN (" . SAMPLE_STATUS\ACCEPTED . ", " . SAMPLE_STATUS\REJECTED . ", " . SAMPLE_STATUS\TEST_FAILED . ")
-                          THEN 1 ELSE 0 END) AS awaitingApproval,
-            SUM(CASE WHEN (f.result IS NOT NULL AND TRIM(f.result) <> '') OR f.is_result_finalized = 'yes' THEN 1 ELSE 0 END) AS resultEntered,
-            SUM(CASE WHEN ((f.result IS NOT NULL AND TRIM(f.result) <> '') OR f.is_result_finalized = 'yes')
-                          AND f.result_status = " . SAMPLE_STATUS\ACCEPTED . " THEN 1 ELSE 0 END) AS accepted,
-            SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\REJECTED . " THEN 1 ELSE 0 END) AS rejected,
-            SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\TEST_FAILED . " THEN 1 ELSE 0 END) AS testFailed,
-            SUM(CASE WHEN lr.last_ref IS NOT NULL OR f.referred_to_lab_id IS NOT NULL THEN 1 ELSE 0 END) AS referred,
-            SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\ACCEPTED . "
-                          AND (f.result IS NULL OR TRIM(f.result) = '')
-                          AND f.is_result_finalized <> 'yes' THEN 1 ELSE 0 END) AS acceptedWithoutResultEntered,
-            SUM(CASE WHEN f.result_dispatched_datetime IS NOT NULL THEN 1 ELSE 0 END) AS dispatched,
-            SUM(CASE WHEN f.result_printed_datetime IS NOT NULL THEN 1 ELSE 0 END) AS printed,
-            AVG(CASE WHEN f.sample_received_at_lab_datetime IS NOT NULL AND f.sample_collection_date IS NOT NULL
+            COUNT(*) AS total,
+            SUM(s.receivedAtLab) AS receivedAtLab,
+            SUM(s.tested) AS tested,
+            SUM(s.resultEntered) AS resultEntered,
+            SUM(s.resultEntered AND s.stage = 'accepted') AS accepted,
+            SUM(s.resultEntered AND s.stage = 'accepted' AND s.sentOut) AS dispatchedOrPrinted,
+            SUM(s.stage = 'atCollectionSite') AS atCollectionSite,
+            SUM(s.stage = 'atLab') AS atTestingLab,
+            SUM(s.stage = 'awaitingApproval') AS awaitingApproval,
+            SUM(s.stage = 'referred') AS referredInTransit,
+            SUM(s.stage = 'rejected') AS rejected,
+            SUM(s.stage = 'failed') AS testFailed,
+            SUM(s.stage = 'closed') AS closed,
+            SUM(s.stage = 'accepted' AND NOT s.resultEntered) AS acceptedWithoutResultEntered,
+            SUM(s.dispatched) AS dispatched,
+            SUM(s.printed) AS printed,
+            SUM(s.referred) AS referred,
+            SUM(s.referred AND s.receivedAfterReferral) AS referralReceived,
+            SUM(s.referred AND s.receivedAfterReferral AND s.testedAfterReferral) AS referralTested,
+            SUM(s.referred AND s.receivedAfterReferral AND s.testedAfterReferral
+                AND s.resultEntered AND s.stage = 'accepted') AS referralAccepted,
+            AVG(s.daysCollToRecv) AS avgDaysCollToRecv,
+            AVG(s.daysRecvToTested) AS avgDaysRecvToTested,
+            COUNT(DISTINCT s.lab_id) AS distinctLabs,
+            COUNT(DISTINCT s.facility_id) AS distinctFacilities
+        FROM (
+            SELECT
+                f.lab_id,
+                f.facility_id,
+                " . tbcStageExpr() . " AS stage,
+                (f.sample_received_at_lab_datetime IS NOT NULL OR " . tbcTestedExpr() . ") AS receivedAtLab,
+                " . tbcTestedExpr() . " AS tested,
+                (" . tbcTestedExpr() . " AND " . tbcFinalExpr() . ") AS resultEntered,
+                (f.result_dispatched_datetime IS NOT NULL) AS dispatched,
+                (f.result_printed_datetime IS NOT NULL) AS printed,
+                (f.result_dispatched_datetime IS NOT NULL OR f.result_printed_datetime IS NOT NULL) AS sentOut,
+                $referred AS referred,
+                $receivedAfterReferral AS receivedAfterReferral,
+                $testedAfterReferral AS testedAfterReferral,
+                CASE WHEN f.sample_received_at_lab_datetime IS NOT NULL AND f.sample_collection_date IS NOT NULL
                      THEN GREATEST(DATEDIFF(f.sample_received_at_lab_datetime, f.sample_collection_date), 0)
-                     END) AS avgDaysCollToRecv,
-            AVG(CASE WHEN f.sample_tested_datetime IS NOT NULL AND f.sample_received_at_lab_datetime IS NOT NULL
+                END AS daysCollToRecv,
+                CASE WHEN f.sample_tested_datetime IS NOT NULL AND f.sample_received_at_lab_datetime IS NOT NULL
                      THEN GREATEST(DATEDIFF(f.sample_tested_datetime, f.sample_received_at_lab_datetime), 0)
-                     END) AS avgDaysRecvToTested,
-            COUNT(DISTINCT f.lab_id) AS distinctLabs,
-            COUNT(DISTINCT f.facility_id) AS distinctFacilities,
-            SUM(CASE WHEN (lr.last_ref IS NOT NULL OR f.referred_to_lab_id IS NOT NULL)
-                          AND f.sample_received_at_lab_datetime IS NOT NULL
-                          AND f.sample_received_at_lab_datetime >= COALESCE(lr.last_ref, f.samples_referred_datetime)
-                     THEN 1 ELSE 0 END) AS referralReceived,
-            SUM(CASE WHEN (lr.last_ref IS NOT NULL OR f.referred_to_lab_id IS NOT NULL)
-                          AND f.sample_tested_datetime IS NOT NULL
-                          AND f.sample_tested_datetime >= COALESCE(lr.last_ref, f.samples_referred_datetime)
-                     THEN 1 ELSE 0 END) AS referralTested,
-            SUM(CASE WHEN (lr.last_ref IS NOT NULL OR f.referred_to_lab_id IS NOT NULL)
-                          AND f.result_status = " . SAMPLE_STATUS\ACCEPTED . "
-                     THEN 1 ELSE 0 END) AS referralAccepted
-        FROM form_tb f $ttJoin
-        LEFT JOIN (
-            SELECT tb_id, MAX(referred_on_datetime) AS last_ref
-            FROM tb_referral_history
-            GROUP BY tb_id
-        ) lr ON lr.tb_id = f.tb_id
-        WHERE $whereSql";
+                END AS daysRecvToTested
+            FROM form_tb f
+            LEFT JOIN (
+                SELECT tb_id, MAX(referred_on_datetime) AS last_ref
+                FROM tb_referral_history
+                GROUP BY tb_id
+            ) lr ON lr.tb_id = f.tb_id
+            WHERE $whereSql
+        ) s";
 
-    $row = $db->rawQueryOne($sql);
+    $row = $db->rawQueryOne($sql) ?: [];
 
     $toNum = function ($v) {
-        if ($v === null) return null;
-        return is_numeric($v) ? (float) $v : null;
+        return ($v === null || !is_numeric($v)) ? null : (float) $v;
     };
+    $int = fn(string $key): int => (int) ($row[$key] ?? 0);
 
     $payload = [
-        'total'              => (int) ($row['total'] ?? 0),
-        'atCollectionSite'   => (int) ($row['atCollectionSite'] ?? 0),
-        'atTestingLab'       => (int) ($row['atTestingLab'] ?? 0),
-        'tested'             => (int) ($row['tested'] ?? 0),
-        'resultEntered'      => (int) ($row['resultEntered'] ?? 0),
-        'awaitingApproval'   => (int) ($row['awaitingApproval'] ?? 0),
-        'accepted'           => (int) ($row['accepted'] ?? 0),
-        'rejected'           => (int) ($row['rejected'] ?? 0),
-        'testFailed'         => (int) ($row['testFailed'] ?? 0),
-        'referred'           => (int) ($row['referred'] ?? 0),
-        'acceptedWithoutResultEntered' => (int) ($row['acceptedWithoutResultEntered'] ?? 0),
-        'dispatched'         => (int) ($row['dispatched'] ?? 0),
-        'printed'            => (int) ($row['printed'] ?? 0),
+        'total'              => $int('total'),
+        'receivedAtLab'      => $int('receivedAtLab'),
+        'tested'             => $int('tested'),
+        'resultEntered'      => $int('resultEntered'),
+        'accepted'           => $int('accepted'),
+        'dispatchedOrPrinted' => $int('dispatchedOrPrinted'),
+        'atCollectionSite'   => $int('atCollectionSite'),
+        'atTestingLab'       => $int('atTestingLab'),
+        'awaitingApproval'   => $int('awaitingApproval'),
+        'referredInTransit'  => $int('referredInTransit'),
+        'inPipeline'         => $int('atCollectionSite') + $int('atTestingLab')
+            + $int('awaitingApproval') + $int('referredInTransit'),
+        'rejected'           => $int('rejected'),
+        'testFailed'         => $int('testFailed'),
+        'closed'             => $int('closed'),
+        'acceptedWithoutResultEntered' => $int('acceptedWithoutResultEntered'),
+        'dispatched'         => $int('dispatched'),
+        'printed'            => $int('printed'),
+        'referred'           => $int('referred'),
+        'referralReceived'   => $int('referralReceived'),
+        'referralTested'     => $int('referralTested'),
+        'referralAccepted'   => $int('referralAccepted'),
         'avgDaysCollToRecv'  => $toNum($row['avgDaysCollToRecv'] ?? null),
         'avgDaysRecvToTested' => $toNum($row['avgDaysRecvToTested'] ?? null),
-        'distinctLabs'       => (int) ($row['distinctLabs'] ?? 0),
-        'distinctFacilities' => (int) ($row['distinctFacilities'] ?? 0),
-        'referralReceived'   => (int) ($row['referralReceived'] ?? 0),
-        'referralTested'     => (int) ($row['referralTested'] ?? 0),
-        'referralAccepted'   => (int) ($row['referralAccepted'] ?? 0),
+        'distinctLabs'       => $int('distinctLabs'),
+        'distinctFacilities' => $int('distinctFacilities'),
     ];
 
     header('Content-Type: application/json');
@@ -197,9 +254,7 @@ if ($action === 'summary') {
 // from tb_tests for tests-performed columns.
 // ---------------------------------------------------------------------------
 if ($action === 'per-lab') {
-    $where = tbcBuildFilterConditions($_POST);
-    [$ttJoin, $_unused] = tbcTestTypeJoinAndWhere($_POST);
-    $whereSql = !empty($where) ? implode(' AND ', $where) : '1=1';
+    $whereSql = implode(' AND ', tbcBuildFilterConditions($_POST, $db));
 
     $aColumns = [
         'fl.facility_name',
@@ -223,10 +278,18 @@ if ($action === 'per-lab') {
         $sLimit = " LIMIT " . (int) $_POST['iDisplayStart'] . "," . (int) $_POST['iDisplayLength'];
     }
 
-    // Inner subquery: one row per sample × lab in scope, with classifications.
-    // Originator = the sample's primary lab_id. Referred-in = where the sample
-    // was referred to that lab (referred_to_lab_id), which today is always 0
-    // but the column is wired so it lights up once referrals are recorded.
+    // Tests with a result, by the lab that ran them, for the samples in scope.
+    $testTypeSql = '';
+    $testType = tbcTestTypeFilter($_POST);
+    if ($testType !== null) {
+        $testTypeSql = " AND t.test_type = '" . $db->escape($testType) . "'";
+    }
+
+    // Inner subquery: one row per sample × lab in scope, with its stage.
+    // Originator = the sample's primary lab_id. Referred-in = a lab the sample
+    // was referred to.
+    $stage = tbcStageExpr();
+    $final = tbcFinalExpr();
     $perLabSql = "
         SELECT
             fl.facility_id AS lab_id,
@@ -234,10 +297,10 @@ if ($action === 'per-lab') {
             SUM(CASE WHEN x.lab_role = 'originator' THEN 1 ELSE 0 END) AS originatorSamples,
             SUM(CASE WHEN x.lab_role = 'referred-in' THEN 1 ELSE 0 END) AS referredInSamples,
             COALESCE(MAX(tt.testsPerformed), 0) AS testsPerformed,
-            SUM(CASE WHEN x.result_status = " . SAMPLE_STATUS\ACCEPTED . " THEN 1 ELSE 0 END) AS accepted,
-            SUM(CASE WHEN x.result_status = " . SAMPLE_STATUS\REJECTED . " THEN 1 ELSE 0 END) AS rejected,
-            SUM(CASE WHEN x.result_status = " . SAMPLE_STATUS\TEST_FAILED . " THEN 1 ELSE 0 END) AS failed,
-            SUM(CASE WHEN x.result_status IN (" . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . ", " . SAMPLE_STATUS\PENDING_APPROVAL . ") THEN 1 ELSE 0 END) AS pendingAtLab,
+            SUM(CASE WHEN x.stage = 'accepted' AND x.isFinal THEN 1 ELSE 0 END) AS accepted,
+            SUM(CASE WHEN x.stage = 'rejected' THEN 1 ELSE 0 END) AS rejected,
+            SUM(CASE WHEN x.stage = 'failed' THEN 1 ELSE 0 END) AS failed,
+            SUM(CASE WHEN x.stage IN ('atLab', 'awaitingApproval') THEN 1 ELSE 0 END) AS pendingAtLab,
             AVG(x.daysCollToRecv) AS avgDaysCollToRecv,
             AVG(x.daysRecvToTested) AS avgDaysRecvToTested
         FROM (
@@ -245,23 +308,25 @@ if ($action === 'per-lab') {
                 f.tb_id,
                 f.lab_id AS lab_id,
                 'originator' AS lab_role,
-                f.result_status,
+                $stage AS stage,
+                $final AS isFinal,
                 CASE WHEN f.sample_received_at_lab_datetime IS NOT NULL AND f.sample_collection_date IS NOT NULL
                      THEN GREATEST(DATEDIFF(f.sample_received_at_lab_datetime, f.sample_collection_date), 0) END AS daysCollToRecv,
                 CASE WHEN f.sample_tested_datetime IS NOT NULL AND f.sample_received_at_lab_datetime IS NOT NULL
                      THEN GREATEST(DATEDIFF(f.sample_tested_datetime, f.sample_received_at_lab_datetime), 0) END AS daysRecvToTested
-            FROM form_tb f $ttJoin
+            FROM form_tb f
             WHERE $whereSql AND f.lab_id IS NOT NULL
             UNION
             SELECT DISTINCT
                 f.tb_id,
                 hop.to_lab_id AS lab_id,
                 'referred-in' AS lab_role,
-                f.result_status,
+                $stage AS stage,
+                $final AS isFinal,
                 NULL AS daysCollToRecv,
                 CASE WHEN f.sample_tested_datetime IS NOT NULL AND hop.referred_on IS NOT NULL
                      THEN GREATEST(DATEDIFF(f.sample_tested_datetime, hop.referred_on), 0) END AS daysRecvToTested
-            FROM form_tb f $ttJoin
+            FROM form_tb f
             INNER JOIN (
                 SELECT tb_id, to_lab_id, referred_on_datetime AS referred_on
                 FROM tb_referral_history
@@ -276,8 +341,11 @@ if ($action === 'per-lab') {
         LEFT JOIN (
             SELECT t.lab_id, COUNT(*) AS testsPerformed
             FROM tb_tests t
-            INNER JOIN form_tb f2 ON f2.tb_id = t.tb_id
-            WHERE t.lab_id IS NOT NULL
+            INNER JOIN form_tb f ON f.tb_id = t.tb_id
+            WHERE $whereSql
+              AND t.lab_id IS NOT NULL
+              AND NULLIF(TRIM(t.test_result), '') IS NOT NULL
+              $testTypeSql
             GROUP BY t.lab_id
         ) tt ON tt.lab_id = fl.facility_id
         GROUP BY fl.facility_id, fl.facility_name
@@ -303,7 +371,7 @@ if ($action === 'per-lab') {
 
     foreach ($rows as $r) {
         $out['aaData'][] = [
-            $r['facility_name'] ?? '',
+            htmlspecialchars((string) ($r['facility_name'] ?? '')),
             (int) ($r['originatorSamples'] ?? 0),
             (int) ($r['referredInSamples'] ?? 0),
             (int) ($r['testsPerformed'] ?? 0),
@@ -326,9 +394,7 @@ if ($action === 'per-lab') {
 // pair. Empty whenever the period has no referrals.
 // ---------------------------------------------------------------------------
 if ($action === 'referral-matrix') {
-    $where = tbcBuildFilterConditions($_POST);
-    [$ttJoin, $_unused] = tbcTestTypeJoinAndWhere($_POST);
-    $whereSql = implode(' AND ', $where);
+    $whereSql = implode(' AND ', tbcBuildFilterConditions($_POST, $db));
 
     $aColumns = [
         'frm.facility_name',
@@ -350,8 +416,15 @@ if ($action === 'referral-matrix') {
 
     /* Each row in tb_referral_history is one hop; samples that traverse
        Lab A -> B -> C contribute two pairs (A-B and B-C). The form_tb
-       fallback only fires for samples that have a referral pair set but
-       no history rows yet (legacy data path). */
+       pair covers samples referred before the history table existed.
+       Received and tested at the receiving lab mean on or after the
+       referral date, the same rule as the summary's referral branch. */
+    $stage = tbcStageExpr();
+    $final = tbcFinalExpr();
+    $received = "(f.sample_received_at_lab_datetime IS NOT NULL
+        AND (hop.referred_on IS NULL OR f.sample_received_at_lab_datetime >= hop.referred_on))";
+    $tested = "(f.sample_tested_datetime IS NOT NULL
+        AND (hop.referred_on IS NULL OR f.sample_tested_datetime >= hop.referred_on))";
     $matrixSql = "
         SELECT
             frm.facility_id AS from_lab_id,
@@ -359,18 +432,19 @@ if ($action === 'referral-matrix') {
             tol.facility_id AS to_lab_id,
             tol.facility_name AS to_lab_name,
             COUNT(DISTINCT hop.tb_id) AS referred,
-            COUNT(DISTINCT CASE WHEN f.sample_received_at_lab_datetime IS NULL THEN f.tb_id END) AS awaitingReceipt,
-            COUNT(DISTINCT CASE WHEN f.sample_received_at_lab_datetime IS NOT NULL AND f.sample_tested_datetime IS NULL THEN f.tb_id END) AS receivedNotTested,
-            COUNT(DISTINCT CASE WHEN f.result_status = " . SAMPLE_STATUS\ACCEPTED . " THEN f.tb_id END) AS acceptedAtTo,
-            COUNT(DISTINCT CASE WHEN f.result_status IN (" . SAMPLE_STATUS\REJECTED . ", " . SAMPLE_STATUS\TEST_FAILED . ") THEN f.tb_id END) AS rejFailAtTo
+            COUNT(DISTINCT CASE WHEN NOT $received THEN f.tb_id END) AS awaitingReceipt,
+            COUNT(DISTINCT CASE WHEN $received AND NOT $tested
+                AND ($stage) NOT IN ('accepted', 'rejected', 'failed') THEN f.tb_id END) AS receivedNotTested,
+            COUNT(DISTINCT CASE WHEN ($stage) = 'accepted' AND $final THEN f.tb_id END) AS acceptedAtTo,
+            COUNT(DISTINCT CASE WHEN ($stage) IN ('rejected', 'failed') THEN f.tb_id END) AS rejFailAtTo
         FROM (
-            SELECT tb_id, from_lab_id, to_lab_id FROM tb_referral_history
+            SELECT tb_id, from_lab_id, to_lab_id, referred_on_datetime AS referred_on FROM tb_referral_history
             UNION
-            SELECT tb_id, referred_by_lab_id, referred_to_lab_id
+            SELECT tb_id, referred_by_lab_id, referred_to_lab_id, samples_referred_datetime
             FROM form_tb
             WHERE referred_by_lab_id IS NOT NULL AND referred_to_lab_id IS NOT NULL
         ) hop
-        INNER JOIN form_tb f ON f.tb_id = hop.tb_id $ttJoin
+        INNER JOIN form_tb f ON f.tb_id = hop.tb_id
         INNER JOIN facility_details frm ON frm.facility_id = hop.from_lab_id
         INNER JOIN facility_details tol ON tol.facility_id = hop.to_lab_id
         WHERE $whereSql
@@ -391,8 +465,8 @@ if ($action === 'referral-matrix') {
     ];
     foreach ($rows as $r) {
         $out['aaData'][] = [
-            $r['from_lab_name'] ?? '',
-            $r['to_lab_name'] ?? '',
+            htmlspecialchars((string) ($r['from_lab_name'] ?? '')),
+            htmlspecialchars((string) ($r['to_lab_name'] ?? '')),
             (int) ($r['referred'] ?? 0),
             (int) ($r['awaitingReceipt'] ?? 0),
             (int) ($r['receivedNotTested'] ?? 0),
@@ -412,9 +486,14 @@ if ($action === 'referral-matrix') {
 // using the sample's primary lab so the explorer mirrors the dashboard total.
 // ---------------------------------------------------------------------------
 if ($action === 'detail') {
-    $where = tbcBuildFilterConditions($_POST);
-    [$ttJoin, $_unused] = tbcTestTypeJoinAndWhere($_POST);
-    $whereSql = !empty($where) ? implode(' AND ', $where) : '1=1';
+    $whereSql = implode(' AND ', tbcBuildFilterConditions($_POST, $db));
+
+    // With a test type selected, show only that type's test rows.
+    $testJoinSql = '';
+    $testType = tbcTestTypeFilter($_POST);
+    if ($testType !== null) {
+        $testJoinSql = " AND t.test_type = '" . $db->escape($testType) . "'";
+    }
 
     $aColumns = [
         'f.sample_code',
@@ -448,15 +527,16 @@ if ($action === 'detail') {
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
     $sOrderSql = (!empty($sOrder)) ? ' ORDER BY ' . preg_replace('/\s+/', ' ', (string) $sOrder) : ' ORDER BY f.sample_collection_date DESC';
 
-    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? '', $aColumns);
+    // lab_role_sort is not a searchable text column.
+    $searchColumns = array_values(array_filter($aColumns, fn($c) => $c !== 'lab_role_sort'));
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? '', $searchColumns);
     if (!empty($columnSearch) && $columnSearch !== '') {
         $whereSql .= ' AND (' . $columnSearch . ')';
     }
 
     // Performing lab is the tb_tests.lab_id when present, else falls back to
-    // the sample's primary lab_id. Lab role: "Originator" when performing
-    // matches form_tb.lab_id; "Referral" otherwise. lab_role_sort is a
-    // hidden numeric for sortable ordering.
+    // the sample's primary lab_id. Lab role: originator when performing
+    // matches form_tb.lab_id, referral otherwise.
     $selectCols = "
         f.tb_id, f.sample_code,
         f.sample_collection_date,
@@ -473,11 +553,6 @@ if ($action === 'detail') {
         t.sample_tested_datetime AS t_tested,
         rs.status_name,
         CASE
-            WHEN t.lab_id IS NULL THEN 'Originator'
-            WHEN t.lab_id = f.lab_id THEN 'Originator'
-            ELSE 'Referral'
-        END AS lab_role,
-        CASE
             WHEN t.lab_id IS NULL THEN 0
             WHEN t.lab_id = f.lab_id THEN 0
             ELSE 1
@@ -485,8 +560,8 @@ if ($action === 'detail') {
     ";
 
     $baseFrom = "
-        FROM form_tb f $ttJoin
-        LEFT JOIN tb_tests t ON t.tb_id = f.tb_id
+        FROM form_tb f
+        LEFT JOIN tb_tests t ON t.tb_id = f.tb_id $testJoinSql
         LEFT JOIN facility_details fc ON fc.facility_id = f.facility_id
         LEFT JOIN facility_details fl ON fl.facility_id = f.lab_id
         LEFT JOIN facility_details fp ON fp.facility_id = COALESCE(t.lab_id, f.lab_id)
@@ -519,107 +594,28 @@ if ($action === 'detail') {
         $ts = strtotime((string) $v);
         return $ts ? date('d-M-Y', $ts) : '';
     };
+    $roleLabels = [0 => _translate('Originator'), 1 => _translate('Referral')];
+    $esc = fn($v): string => htmlspecialchars((string) ($v ?? ''));
 
     foreach ($rows as $r) {
         $out['aaData'][] = [
-            $r['sample_code'] ?? '',
-            $r['collection_site'] ?? '',
-            $r['primary_lab'] ?? '',
-            $r['performing_lab'] ?? '',
-            $r['lab_role'] ?? '',
-            $r['test_type'] ?? '',
-            $r['test_result'] ?? '',
-            $r['status_name'] ?? '',
+            $esc($r['sample_code'] ?? ''),
+            $esc($r['collection_site'] ?? ''),
+            $esc($r['primary_lab'] ?? ''),
+            $esc($r['performing_lab'] ?? ''),
+            $esc($roleLabels[(int) ($r['lab_role_sort'] ?? 0)] ?? ''),
+            $esc($r['test_type'] ?? ''),
+            $esc($r['test_result'] ?? ''),
+            $esc($r['status_name'] ?? ''),
             $fmtDate($r['sample_collection_date'] ?? null),
             $fmtDate($r['t_received'] ?? ($r['f_received'] ?? null)),
             $fmtDate($r['t_tested'] ?? ($r['f_tested'] ?? null)),
-            $r['final_result'] ?? '',
+            $esc($r['final_result'] ?? ''),
         ];
     }
 
     header('Content-Type: application/json');
     echo json_encode($out);
-    return;
-}
-
-// ---------------------------------------------------------------------------
-// STUCK action — counts and average age (days) of samples currently sitting
-// between cascade stages. Answers "where are samples stuck?" rather than the
-// cumulative funnel question. Always allows status=9 (RECEIVED_AT_CLINIC) into
-// the calculation so the "stuck at CS" row is visible on instances that have
-// the data — otherwise the panel would falsely show 0.
-// ---------------------------------------------------------------------------
-if ($action === 'stuck') {
-    // Reuse the standard filter conditions but strip out the non-STS exclusion
-    // of RECEIVED_AT_CLINIC so the CS rows can be counted when the data exists.
-    $where = tbcBuildFilterConditions($_POST);
-    $where = array_values(array_filter($where, function ($cond) {
-        return strpos($cond, 'RECEIVED_AT_CLINIC') === false
-            && strpos($cond, 'NOT IN (' . SAMPLE_STATUS\CANCELLED . ', ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC . ')') === false;
-    }));
-    $where[] = "f.result_status != " . SAMPLE_STATUS\CANCELLED;
-    [$ttJoin, $_unused] = tbcTestTypeJoinAndWhere($_POST);
-    $whereSql = implode(' AND ', $where);
-
-    $sql = "SELECT
-            SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                          AND f.sample_dispatched_datetime IS NULL THEN 1 ELSE 0 END) AS stuckCsCount,
-            AVG(CASE WHEN f.result_status = " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                          AND f.sample_dispatched_datetime IS NULL
-                          AND f.sample_collection_date IS NOT NULL
-                     THEN GREATEST(DATEDIFF(NOW(), f.sample_collection_date), 0) END) AS stuckCsAvgDays,
-
-            SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                          AND f.sample_dispatched_datetime IS NOT NULL
-                          AND f.sample_received_at_lab_datetime IS NULL THEN 1 ELSE 0 END) AS inTransitCount,
-            AVG(CASE WHEN f.result_status = " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                          AND f.sample_dispatched_datetime IS NOT NULL
-                          AND f.sample_received_at_lab_datetime IS NULL
-                     THEN GREATEST(DATEDIFF(NOW(), f.sample_dispatched_datetime), 0) END) AS inTransitAvgDays,
-
-            SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . " THEN 1 ELSE 0 END) AS atLabCount,
-            AVG(CASE WHEN f.result_status = " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . "
-                          AND f.sample_received_at_lab_datetime IS NOT NULL
-                     THEN GREATEST(DATEDIFF(NOW(), f.sample_received_at_lab_datetime), 0) END) AS atLabAvgDays,
-
-            SUM(CASE WHEN f.is_result_finalized = 'yes'
-                          AND f.result_status NOT IN (" . SAMPLE_STATUS\ACCEPTED . ", " . SAMPLE_STATUS\REJECTED . ", " . SAMPLE_STATUS\TEST_FAILED . ")
-                          THEN 1 ELSE 0 END) AS pendingApprovalCount,
-            AVG(CASE WHEN f.is_result_finalized = 'yes'
-                          AND f.result_status NOT IN (" . SAMPLE_STATUS\ACCEPTED . ", " . SAMPLE_STATUS\REJECTED . ", " . SAMPLE_STATUS\TEST_FAILED . ")
-                          AND f.sample_tested_datetime IS NOT NULL
-                     THEN GREATEST(DATEDIFF(NOW(), f.sample_tested_datetime), 0) END) AS pendingApprovalAvgDays,
-
-            SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\REFERRED . " THEN 1 ELSE 0 END) AS referralInFlightCount,
-            AVG(CASE WHEN f.result_status = " . SAMPLE_STATUS\REFERRED . "
-                          AND f.samples_referred_datetime IS NOT NULL
-                     THEN GREATEST(DATEDIFF(NOW(), f.samples_referred_datetime), 0) END) AS referralInFlightAvgDays,
-
-            SUM(CASE WHEN f.is_result_finalized = 'yes'
-                          AND f.result_dispatched_datetime IS NULL THEN 1 ELSE 0 END) AS finalizedNotDispatchedCount,
-            AVG(CASE WHEN f.is_result_finalized = 'yes'
-                          AND f.result_dispatched_datetime IS NULL
-                          AND COALESCE(f.result_approved_datetime, f.sample_tested_datetime) IS NOT NULL
-                     THEN GREATEST(DATEDIFF(NOW(), COALESCE(f.result_approved_datetime, f.sample_tested_datetime)), 0) END) AS finalizedNotDispatchedAvgDays
-        FROM form_tb f $ttJoin
-        WHERE $whereSql";
-
-    $row = $db->rawQueryOne($sql);
-    $toNum = function ($v) {
-        return ($v === null || $v === '') ? null : (float) $v;
-    };
-
-    $rows = [
-        ['stage' => _translate('At Collection Site, not dispatched'),       'count' => (int) ($row['stuckCsCount'] ?? 0),                  'avgDays' => $toNum($row['stuckCsAvgDays'] ?? null)],
-        ['stage' => _translate('Dispatched, not received at Lab'),         'count' => (int) ($row['inTransitCount'] ?? 0),                'avgDays' => $toNum($row['inTransitAvgDays'] ?? null)],
-        ['stage' => _translate('At Lab, not yet tested'),                  'count' => (int) ($row['atLabCount'] ?? 0),                    'avgDays' => $toNum($row['atLabAvgDays'] ?? null)],
-        ['stage' => _translate('Tested, awaiting approval'),               'count' => (int) ($row['pendingApprovalCount'] ?? 0),          'avgDays' => $toNum($row['pendingApprovalAvgDays'] ?? null)],
-        ['stage' => _translate('Referred, not received at target lab'),    'count' => (int) ($row['referralInFlightCount'] ?? 0),         'avgDays' => $toNum($row['referralInFlightAvgDays'] ?? null)],
-        ['stage' => _translate('Final result entered, not dispatched'),    'count' => (int) ($row['finalizedNotDispatchedCount'] ?? 0),   'avgDays' => $toNum($row['finalizedNotDispatchedAvgDays'] ?? null)],
-    ];
-
-    header('Content-Type: application/json');
-    echo json_encode(['rows' => $rows]);
     return;
 }
 

@@ -21,22 +21,22 @@ if (!function_exists('tbCascadeFunnelMarkup')) {
     {
         ?>
         <div class="tbc-funnel" id="<?= $prefix; ?>_cascadeFunnel">
-            <div class="tbc-empty-panel"><?= _translate("Loading…"); ?></div>
+            <div class="tbc-empty-panel"><?= _htmlTranslate("Loading…"); ?></div>
         </div>
 
         <div class="tbc-subfunnel" id="<?= $prefix; ?>_referralBranchWrap">
             <div class="tbc-subfunnel-header">
                 <em class="fa-solid fa-code-branch"></em>
-                <?= _translate("Referral branch — splits off from Tested"); ?>
+                <?= _htmlTranslate("Referral branch: samples sent to another lab"); ?>
                 &nbsp;·&nbsp;
                 <span id="<?= $prefix; ?>_referralBranchSummary" style="font-weight:400; color:#666;">
-                    <?= _translate("checking referral status…"); ?>
+                    <?= _htmlTranslate("checking referral status…"); ?>
                 </span>
             </div>
             <div class="tbc-funnel" id="<?= $prefix; ?>_referralBranchFunnel"></div>
             <div id="<?= $prefix; ?>_referralBranchNote" style="display:none; margin-top:6px; font-size:11px; color:#999; text-align:center;">
                 <em class="fa-solid fa-circle-info"></em>
-                <?= _translate("No referrals recorded in the selected period."); ?>
+                <?= _htmlTranslate("No referrals recorded in the selected period."); ?>
             </div>
         </div>
         <?php
@@ -191,30 +191,24 @@ if (empty($GLOBALS['__tbCascadeFunnelAssetsEmitted'])) {
         // from a summary payload (the JSON returned by getTbCascadeReport action=summary).
         function tbcRenderCascade(prefix, s) {
             s = s || {};
-            var dispatched = Math.max(s.printed || 0, s.dispatched || 0);
 
+            // Each stage is part of the one before it (getTbCascadeReport.php).
             tbcRenderFunnel(prefix + '_cascadeFunnel', [
                 { label: "<?= _jsTranslate('Registered'); ?>", count: s.total },
-                { label: "<?= _jsTranslate('Received at Lab'); ?>", count: (s.total || 0) - (s.atCollectionSite || 0) },
+                { label: "<?= _jsTranslate('Received at Lab'); ?>", count: s.receivedAtLab },
                 { label: "<?= _jsTranslate('Tested'); ?>", count: s.tested },
                 { label: "<?= _jsTranslate('Final Result Entered'); ?>", count: s.resultEntered },
                 { label: "<?= _jsTranslate('Accepted'); ?>", count: s.accepted },
-                { label: "<?= _jsTranslate('Dispatched / Printed'); ?>", count: dispatched }
+                { label: "<?= _jsTranslate('Dispatched / Printed'); ?>", count: s.dispatchedOrPrinted }
             ], {
-                branchAt: "<?= _jsTranslate('Tested'); ?>",
+                branchAt: "<?= _jsTranslate('Received at Lab'); ?>",
                 branchBadge: (s.referred || 0) + " <?= _jsTranslate('referred'); ?>"
             });
 
             var allZero = (!s.referred && !s.referralReceived && !s.referralTested && !s.referralAccepted);
-            var pctOfTested = (s.tested && s.tested > 0) ? Math.round((s.referred / s.tested) * 100) : 0;
-            var summary;
-            if ((s.referred || 0) === 0) {
-                summary = "<?= _jsTranslate('0 samples referred onward.'); ?>";
-            } else {
-                summary = (s.referred || 0).toLocaleString()
-                        + " (" + pctOfTested + "% <?= _jsTranslate('of tested'); ?>) "
-                        + "<?= _jsTranslate('went to another lab'); ?>";
-            }
+            var summary = (s.referred || 0) === 0
+                ? "<?= _jsTranslate('0 samples referred onward.'); ?>"
+                : (s.referred || 0).toLocaleString() + " <?= _jsTranslate('samples went to another lab'); ?>";
             $('#' + prefix + '_referralBranchSummary').text(summary);
 
             tbcRenderFunnel(prefix + '_referralBranchFunnel', [
