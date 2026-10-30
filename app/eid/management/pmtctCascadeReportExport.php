@@ -121,7 +121,7 @@ $vlCountSql = "SELECT TRIM(v.patient_art_no) AS mid, COUNT(*) AS cnt
     GROUP BY TRIM(v.patient_art_no)";
 foreach ($db->rawQueryGenerator($vlCountSql) as $r) {
     if (!empty($r['mid'])) {
-        $vlCountByMother[$r['mid']] = (int) $r['cnt'];
+        $vlCountByMother[PmtctCascadeUtility::idKey($r['mid'])] = (int) $r['cnt'];
     }
 }
 
@@ -131,7 +131,7 @@ $eidCountSql = "SELECT TRIM(e.mother_id) AS mid, COUNT(*) AS cnt
     GROUP BY TRIM(e.mother_id)";
 foreach ($db->rawQueryGenerator($eidCountSql) as $r) {
     if (!empty($r['mid'])) {
-        $eidCountByMother[$r['mid']] = (int) $r['cnt'];
+        $eidCountByMother[PmtctCascadeUtility::idKey($r['mid'])] = (int) $r['cnt'];
     }
 }
 
@@ -169,7 +169,7 @@ foreach ($db->rawQueryGenerator($vlHistorySql) as $r) {
     if ($mid === '') {
         continue;
     }
-    $vlHistoryByMother[$mid][] = [
+    $vlHistoryByMother[PmtctCascadeUtility::idKey($mid)][] = [
         'date'     => pmtctExportIsoDate($r['cdate'] ?? null),
         'result'   => (string) ($r['result'] ?? ''),
         'category' => (string) ($r['vl_result_category'] ?? ''),
@@ -196,13 +196,13 @@ foreach ($db->rawQueryGenerator($posChildSql) as $r) {
     $childDob = pmtctExportIsoDate($r['childDob'] ?? null);
 
     $highVlDates = [];
-    foreach ($vlHistoryByMother[$motherId] ?? [] as $t) {
+    foreach ($vlHistoryByMother[PmtctCascadeUtility::idKey($motherId)] ?? [] as $t) {
         if ($t['category'] === 'not suppressed' && $t['date'] !== '') {
             $highVlDates[] = $t['date'];
         }
     }
 
-    $positiveChildren[(string) $r['childKey']] = [
+    $positiveChildren[PmtctCascadeUtility::idKey($r['childKey'])] = [
         'childId'  => (string) ($r['childId'] ?? ''),
         'anyEidId' => (int) ($r['anyEidId'] ?? 0),
         'motherId' => $motherId,
@@ -341,7 +341,7 @@ $eidSql = "SELECT
 $rowCount = 0;
 foreach ($db->rawQueryGenerator($eidSql) as $r) {
     $motherKey = trim((string) ($r['mother_id'] ?? ''));
-    $vlCount = ($motherKey !== '') ? ($vlCountByMother[$motherKey] ?? 0) : 0;
+    $vlCount = ($motherKey !== '') ? ($vlCountByMother[PmtctCascadeUtility::idKey($motherKey)] ?? 0) : 0;
     $writer->addRow(Row::fromValues([
         // Child
         $r['child_id'] ?? '',
@@ -452,7 +452,7 @@ $rowCount = 0;
 foreach ($db->rawQueryGenerator($vlSql) as $r) {
     $patientName = trim(($r['patient_first_name'] ?? '') . ' ' . ($r['patient_last_name'] ?? ''));
     $motherKey = trim((string) ($r['patient_art_no'] ?? ''));
-    $matchedEidCount = ($motherKey !== '') ? ($eidCountByMother[$motherKey] ?? 0) : 0;
+    $matchedEidCount = ($motherKey !== '') ? ($eidCountByMother[PmtctCascadeUtility::idKey($motherKey)] ?? 0) : 0;
     $writer->addRow(Row::fromValues([
         $r['patient_art_no'] ?? '',
         $patientName,
@@ -538,11 +538,11 @@ $writeHistoryRows = static function (array $rows) use ($writer, $positiveChildre
     foreach ($rows as $r) {
         $childId  = (string) ($r['child_id'] ?? '');
         $childKey = $childId !== '' ? $childId : 'eid:' . (int) ($r['eid_id'] ?? 0);
-        $child    = $positiveChildren[$childKey] ?? null;
+        $child    = $positiveChildren[PmtctCascadeUtility::idKey($childKey)] ?? null;
         $motherId = (string) ($r['mother_id'] ?? '');
 
         $collectionDate = pmtctExportIsoDate($r['sample_collection_date'] ?? null);
-        $atTest = pmtctExportVlStatusAsOf($vlHistoryByMother[$motherId] ?? [], $collectionDate);
+        $atTest = pmtctExportVlStatusAsOf($vlHistoryByMother[PmtctCascadeUtility::idKey($motherId)] ?? [], $collectionDate);
 
         $statusLabel = _translate('No VL result yet');
         if ($atTest !== null) {

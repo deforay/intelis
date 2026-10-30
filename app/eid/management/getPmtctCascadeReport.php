@@ -135,14 +135,14 @@ if ($action === 'positiveChildren') {
         ) pm ON pm.mid = TRIM(v.patient_art_no)
         WHERE $vlCountable AND $highVlExpr";
     foreach ($db->rawQueryGenerator($highVlSql) as $h) {
-        $highVlDatesByMother[(string) $h['mid']][] = pmtctDateOrBlank($h['highDate'] ?? null);
+        $highVlDatesByMother[PmtctCascadeUtility::idKey($h['mid'])][] = pmtctDateOrBlank($h['highDate'] ?? null);
     }
 
     $rows = [];
     foreach ($db->rawQuery($sql) as $r) {
         $preBirth = PmtctCascadeUtility::preBirthFlag(
             pmtctDateOrBlank($r['childDob'] ?? null),
-            $highVlDatesByMother[(string) ($r['motherId'] ?? '')] ?? []
+            $highVlDatesByMother[PmtctCascadeUtility::idKey($r['motherId'] ?? '')] ?? []
         );
         if ($preBirthOnly && $preBirth !== 'yes') {
             continue;

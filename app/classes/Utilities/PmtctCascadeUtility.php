@@ -105,6 +105,21 @@ final class PmtctCascadeUtility
     }
 
     /**
+     * PHP array key for a Mother ID or ART number that compares the way the
+     * SQL join does. The columns use utf8mb4_0900_ai_ci, which ignores case and
+     * accents, so "m1" and "M1" are one mother in SQL. A plain PHP key would
+     * split them.
+     */
+    public static function idKey(?string $id): string
+    {
+        $key = trim((string) $id);
+        if (class_exists(\Normalizer::class)) {
+            $key = preg_replace('/\p{Mn}+/u', '', (string) \Normalizer::normalize($key, \Normalizer::FORM_D)) ?? $key;
+        }
+        return mb_strtolower($key);
+    }
+
+    /**
      * Did the mother have a high VL result in the PREGNANCY_DAYS before the
      * child's birth? 'yes', 'no', or 'unknown' when the child has no DOB.
      *
