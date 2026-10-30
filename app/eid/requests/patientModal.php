@@ -1,6 +1,7 @@
 <?php
 
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
@@ -8,25 +9,43 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
-$artNo = urldecode((string) $_GET['id'] ?? $_GET['artNo'] ?? '');
-$motherId = urldecode((string) $_GET['id'] ?? $_GET['motherId'] ?? '');
+$artNo = urldecode((string) ($_GET['id'] ?? $_GET['artNo'] ?? ''));
+$motherId = urldecode((string) ($_GET['motherId'] ?? ''));
+
+// Same scope as the View Requests grid (get-request-list.php).
+// Built before the query builder below: these lookups run their own queries on $db.
+$scopeWhere = [];
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+	$scopeWhere[] = "vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+}
+if ($labScope = $general->labScopeWhere('vl')) {
+	$scopeWhere[] = $labScope;
+}
 
 $db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
 if(!empty($artNo)){
-	$db->where("child_id LIKE ?", ["%$artNo%"]);
-	$db->orWhere("child_name LIKE ?", ["%$artNo%"]);
-	$db->orWhere("child_surname LIKE ?", ["%$artNo%"]);
+	$db->where(
+		"(vl.child_id LIKE ? OR vl.child_name LIKE ? OR vl.child_surname LIKE ? OR vl.caretaker_phone_number LIKE ?)",
+		["%$artNo%", "%$artNo%", "%$artNo%", "%$artNo%"]
+	);
 }
 if(!empty($motherId)){
-	$db->where("mother_id LIKE ?", ["%$motherId%"]);
-	$db->orWhere("mother_name LIKE ?", ["%$motherId%"]);
-	$db->orWhere("mother_surname LIKE ?", ["%$motherId%"]);
+	$db->where(
+		"(vl.mother_id LIKE ? OR vl.mother_name LIKE ? OR vl.mother_surname LIKE ? OR vl.caretaker_address LIKE ? OR vl.caretaker_phone_number LIKE ?)",
+		["%$motherId%", "%$motherId%", "%$motherId%", "%$motherId%", "%$motherId%"]
+	);
+}
+foreach ($scopeWhere as $where) {
+	$db->where($where);
 }
 $db->orderBy("sample_tested_datetime");
 $db->orderBy("sample_collection_date");

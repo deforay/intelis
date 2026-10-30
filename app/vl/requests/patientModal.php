@@ -1,12 +1,16 @@
 <?php
 
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -15,11 +19,24 @@ $_GET = _sanitizeInput($request->getQueryParams());
 
 $artNo = urldecode((string) $_GET['artNo']);
 
+// Same scope as the View Requests grid (get-request-list.php).
+// Built before the query builder below: these lookups run their own queries on $db.
+$scopeWhere = [];
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+    $scopeWhere[] = "vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+}
+if ($labScope = $general->labScopeWhere('vl')) {
+    $scopeWhere[] = $labScope;
+}
+
 $db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
-$db->where("patient_art_no LIKE ?", ["%$artNo%"]);
-$db->orWhere("patient_first_name LIKE ?", ["%$artNo%"]);
-$db->orWhere("patient_middle_name LIKE ?", ["%$artNo%"]);
-$db->orWhere("patient_last_name LIKE ?", ["%$artNo%"]);
+$db->where(
+    "(vl.patient_art_no LIKE ? OR vl.patient_first_name LIKE ? OR vl.patient_middle_name LIKE ? OR vl.patient_last_name LIKE ?)",
+    ["%$artNo%", "%$artNo%", "%$artNo%", "%$artNo%"]
+);
+foreach ($scopeWhere as $where) {
+    $db->where($where);
+}
 $db->orderBy("sample_tested_datetime");
 $db->orderBy("sample_collection_date");
 

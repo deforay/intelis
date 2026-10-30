@@ -2,12 +2,16 @@
 
 
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 
 // Sanitized values from $request object
@@ -17,8 +21,22 @@ $_GET = _sanitizeInput($request->getQueryParams());
 
 $artNo = urldecode((string) $_GET['artNo']);
 
-$pQuery = "SELECT * FROM form_covid19 as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where (patient_id like '%" . $db->escapeLike($artNo) . "%' OR patient_name like '%" . $db->escapeLike($artNo) . "%' OR patient_surname like '%" . $db->escapeLike($artNo) . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
-$pResult = $db->rawQuery($pQuery);
+$searchTerm = '%' . $artNo . '%';
+$sWhere = [];
+$sWhere[] = " (vl.patient_id like ? OR vl.patient_name like ? OR vl.patient_surname like ? OR vl.patient_phone_number like ?) ";
+
+// Same scope as the View Requests grid (get-request-list.php)
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+    $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+}
+if ($labScope = $general->labScopeWhere('vl')) {
+    $sWhere[] = $labScope;
+}
+
+$pQuery = "SELECT * FROM form_covid19 as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id
+            WHERE " . implode(" AND ", $sWhere) . "
+            ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
+$pResult = $db->rawQuery($pQuery, [$searchTerm, $searchTerm, $searchTerm, $searchTerm]);
 
 ?>
 <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
