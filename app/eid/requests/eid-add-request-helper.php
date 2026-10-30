@@ -368,7 +368,7 @@ try {
 	$formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
 	$eidData['form_attributes'] = $db->func($formAttributes);
 
-
+	$id = false;
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
 		$db->where('eid_id', $_POST['eidSampleId']);
 		$id = $db->update($tableName, $eidData);
