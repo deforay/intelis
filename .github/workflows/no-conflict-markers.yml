@@ -51,6 +51,36 @@ jobs:
           fi
           echo "No conflict markers found."
 
+  # The git hooks run only on clones that installed them, and a direct push to
+  # master skips any pull request. This job is the check every commit meets:
+  # while it fails, Verify fails and Publish does not advance stable.
+  commit-attribution:
+    name: No commit names an AI tool or vendor
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check the pushed commits
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+        run: |
+          # A manual run, or a push the runner cannot see the parent of, has no
+          # usable base. Check the head commit alone then.
+          if [ -z "$BASE_SHA" ] || ! git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null; then
+            BASE_SHA="$(git rev-parse "$HEAD_SHA^" 2>/dev/null || true)"
+          fi
+          if [ -n "$BASE_SHA" ]; then
+            bash bin/build/check-commit-attribution.sh "$BASE_SHA..$HEAD_SHA"
+          else
+            bash bin/build/check-commit-attribution.sh "$HEAD_SHA"
+          fi
+
   di-container:
     name: DI container compiles
     runs-on: ubuntu-26.04

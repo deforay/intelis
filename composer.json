@@ -103,6 +103,7 @@
         "check-request-output-escaping": "@php bin/build/check-request-output-escaping.php",
         "check-schema-drift": "@php bin/build/check-schema-drift.php",
         "check-interface-seed": "@php bin/build/check-interface-seed.php",
+        "check-commit-attribution": "bash bin/build/check-commit-attribution.sh",
         "check-invariants": [
             "@check-counts",
             "@check-sync-ownership",
@@ -123,6 +124,7 @@
             "@cs-check",
             "@check-di",
             "@check-invariants",
+            "@check-commit-attribution",
             "@test",
             "@composer audit"
         ],
@@ -248,6 +250,7 @@
         "check-invariants": "Run every static invariant check \u2014 rules the codebase states in one place and has to apply in many",
         "check-schema-drift": "Check the live database has every table and column its recorded version claims",
         "check-interface-seed": "Check sql/interface-init.sql still describes what the Interface Tool\u2019s migrations build \u2014 needs a vlsm-interfacing checkout",
+        "check-commit-attribution": "Check no commit ahead of origin/master names an AI tool or vendor, in its message or its author",
         "check-sync-ownership": "Check an incoming sync cannot overwrite a column the lab owns, such as a sample it has cancelled",
         "check-counts": "Check every surface that counts rejected samples also excludes cancelled ones, so two screens cannot disagree",
         "check-request-output-escaping": "Check no page prints a request value unescaped, or puts htmlspecialchars output inside an inline handler's JS string",
