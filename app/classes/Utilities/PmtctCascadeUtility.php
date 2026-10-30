@@ -147,23 +147,32 @@ final class PmtctCascadeUtility
         // which cannot use the art_no index, bounded.
         $windowMothers = "SELECT DISTINCT TRIM(e2.mother_id) AS mid FROM form_eid e2 WHERE $whereSqlE2";
 
+        // One row per child first, so a child with several EID records is judged
+        // on all of them. The child's date of birth is the one on their positive
+        // records, the same date the positive children list shows.
         $childRow = $db->rawQueryOne("SELECT
-                COUNT(DISTINCT $childKey) AS totalChildren,
-                COUNT(DISTINCT CASE WHEN vm.mid IS NOT NULL THEN $childKey END) AS matchedChildren,
-                COUNT(DISTINCT CASE WHEN vm.mid IS NOT NULL AND e.result IS NOT NULL AND TRIM(e.result) != ''
-                                THEN $childKey END) AS testedChildren,
-                COUNT(DISTINCT CASE WHEN vm.mid IS NOT NULL AND $positiveExpr
-                                THEN $childKey END) AS positiveChildren,
-                COUNT(DISTINCT CASE WHEN vm.mid IS NOT NULL AND $positiveExpr AND NOT ($validDob)
-                                THEN $childKey END) AS positiveChildrenNoDob
-            FROM form_eid e
-            LEFT JOIN (
-                SELECT DISTINCT TRIM(v.patient_art_no) AS mid
-                FROM form_vl v
-                INNER JOIN ($windowMothers) wm ON wm.mid = TRIM(v.patient_art_no)
-                WHERE $vlCountable
-            ) vm ON vm.mid = TRIM(e.mother_id)
-            WHERE $whereSql") ?: [];
+                COUNT(*) AS totalChildren,
+                SUM(c.matched) AS matchedChildren,
+                SUM(c.tested) AS testedChildren,
+                SUM(c.positive) AS positiveChildren,
+                SUM(c.positive AND c.positiveDob IS NULL) AS positiveChildrenNoDob
+            FROM (
+                SELECT $childKey AS ck,
+                       MAX(vm.mid IS NOT NULL) AS matched,
+                       MAX(vm.mid IS NOT NULL AND e.result IS NOT NULL AND TRIM(e.result) != '') AS tested,
+                       MAX(vm.mid IS NOT NULL AND $positiveExpr) AS positive,
+                       MAX(CASE WHEN vm.mid IS NOT NULL AND $positiveExpr AND $validDob
+                                THEN e.child_dob END) AS positiveDob
+                FROM form_eid e
+                LEFT JOIN (
+                    SELECT DISTINCT TRIM(v.patient_art_no) AS mid
+                    FROM form_vl v
+                    INNER JOIN ($windowMothers) wm ON wm.mid = TRIM(v.patient_art_no)
+                    WHERE $vlCountable
+                ) vm ON vm.mid = TRIM(e.mother_id)
+                WHERE $whereSql
+                GROUP BY ck
+            ) c") ?: [];
 
         // One row per matched mother, then totals over those rows. Status is her
         // latest result; pregnant / breastfeeding are as recorded on that request.
@@ -193,10 +202,18 @@ final class PmtctCascadeUtility
             ) vm") ?: [];
 
         // Positive children whose mother had a high result in the pregnancy
-        // window. Only high results of mothers of positive children are joined.
+        // window. Grouped per child and mother, with the latest date of birth on
+        // the child's positive records, as the positive children list does. Only
+        // high results of mothers of positive children are joined.
         $positiveExprE2 = self::eidPositiveExpr('e2');
-        $preBirthRow = $db->rawQueryOne("SELECT COUNT(DISTINCT $childKey) AS preBirthHighVlChildren
-            FROM form_eid e
+        $preBirthRow = $db->rawQueryOne("SELECT COUNT(DISTINCT pc.ck) AS preBirthHighVlChildren
+            FROM (
+                SELECT $childKey AS ck, TRIM(e.mother_id) AS mid,
+                       MAX(CASE WHEN $validDob THEN e.child_dob END) AS dob
+                FROM form_eid e
+                WHERE $whereSql AND $positiveExpr
+                GROUP BY ck, TRIM(e.mother_id)
+            ) pc
             INNER JOIN (
                 SELECT TRIM(v.patient_art_no) AS mid, DATE(v.sample_collection_date) AS highDate
                 FROM form_vl v
@@ -206,10 +223,10 @@ final class PmtctCascadeUtility
                     WHERE $whereSqlE2 AND $positiveExprE2
                 ) pm ON pm.mid = TRIM(v.patient_art_no)
                 WHERE $vlCountable AND $highVl
-            ) vh ON vh.mid = TRIM(e.mother_id)
-            WHERE $whereSql AND $positiveExpr AND $validDob
-              AND vh.highDate < e.child_dob
-              AND vh.highDate >= DATE_SUB(e.child_dob, INTERVAL " . self::PREGNANCY_DAYS . " DAY)") ?: [];
+            ) vh ON vh.mid = pc.mid
+            WHERE pc.dob IS NOT NULL
+              AND vh.highDate < pc.dob
+              AND vh.highDate >= DATE_SUB(pc.dob, INTERVAL " . self::PREGNANCY_DAYS . " DAY)") ?: [];
 
         $total   = (int) ($childRow['totalChildren'] ?? 0);
         $matched = (int) ($childRow['matchedChildren'] ?? 0);
