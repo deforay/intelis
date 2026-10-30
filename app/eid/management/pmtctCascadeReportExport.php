@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\PmtctCascadeUtility;
 use App\Utilities\SampleCountUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -36,57 +37,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
-// ---------------------------------------------------------------------------
-// Mirror the filter logic used in getPmtctCascadeReport.php so that the
-// exported file always matches what is on screen.
-// ---------------------------------------------------------------------------
-function pmtctExportFilterConditions(array $post, string $alias = 'e'): array
-{
-    // A cancelled sample was called off before testing, so it is not a test this
-    // cascade should count. Must match the report's builder, or the export and
-    // the screen it was taken from disagree.
-    $where = [
-        "$alias.mother_id IS NOT NULL",
-        "TRIM($alias.mother_id) != ''",
-        SampleCountUtility::countableWhere($alias),
-    ];
-
-    if (!empty($post['sampleCollectionDate'])) {
-        $range = explode("to", (string) $post['sampleCollectionDate']);
-        if (count($range) === 2) {
-            $startSql = date('Y-m-d', strtotime(trim($range[0])));
-            $endSql   = date('Y-m-d', strtotime(trim($range[1])));
-            $where[] = "DATE($alias.sample_collection_date) BETWEEN '" . $startSql . "' AND '" . $endSql . "'";
-        }
-    }
-    if (!empty($post['provinceId']) && ctype_digit((string) $post['provinceId'])) {
-        $where[] = "$alias.province_id = " . (int) $post['provinceId'];
-    }
-    if (!empty($post['labName']) && ctype_digit((string) $post['labName'])) {
-        $where[] = "$alias.lab_id = " . (int) $post['labName'];
-    }
-    return $where;
-}
-
-function pmtctExportEidPositiveExpr(string $alias = 'e'): string
-{
-    return "(LOWER(TRIM($alias.result)) = 'positive'"
-        . " OR ($alias.result LIKE '%DETECTED%'"
-        . " AND $alias.result NOT LIKE '%NOT DETECTED%'"
-        . " AND $alias.result NOT LIKE '%Not Detected%'"
-        . " AND $alias.result NOT LIKE '%not detected%'))";
-}
-
-function pmtctExportHighVlExpr(string $alias = 'v'): string
-{
-    return "$alias.vl_result_category = 'not suppressed'";
-}
-
-function pmtctExportVlHasResultExpr(string $alias = 'v'): string
-{
-    return "$alias.vl_result_category IN ('suppressed','not suppressed')";
-}
-
 function pmtctExportFormatDate($v): string
 {
     if (empty($v) || $v === '0000-00-00' || $v === '0000-00-00 00:00:00') {
@@ -121,30 +71,6 @@ function pmtctExportYesNoLabel($value): string
 }
 
 /**
- * Same child-identity rule as the report screen: prefer the recorded Child
- * ID, fall back to the EID record's own id for records without one.
- */
-function pmtctExportChildKeyExpr(string $alias = 'e'): string
-{
-    return "COALESCE(NULLIF(TRIM($alias.child_id), ''), CONCAT('eid:', $alias.eid_id))";
-}
-
-/**
- * 'yes' / 'no' / 'unknown' (no usable DOB): did the mother have a documented
- * high VL strictly before the child's date of birth?
- */
-function pmtctExportPreBirthFlag(string $childDob, string $firstHighVlDate): string
-{
-    if ($childDob === '') {
-        return 'unknown';
-    }
-    if ($firstHighVlDate === '' || $firstHighVlDate >= $childDob) {
-        return 'no';
-    }
-    return 'yes';
-}
-
-/**
  * Latest categorised VL test (from an ascending list) on or before a date.
  */
 function pmtctExportVlStatusAsOf(array $vlTests, string $asOfDate): ?array
@@ -165,14 +91,14 @@ function pmtctExportVlStatusAsOf(array $vlTests, string $asOfDate): ?array
 }
 
 
-$where = pmtctExportFilterConditions($_POST);
+$where = PmtctCascadeUtility::filterConditions($_POST);
 $whereSql = implode(' AND ', $where);
 // The mother's VL rows are constrained only by the join onto positive mothers, so
 // the cancelled rule has to be stated for them separately. Same clause the report
 // uses, or the export and the screen it was taken from disagree.
 $vlCountable = SampleCountUtility::countableWhere('v');
-$positiveExpr = pmtctExportEidPositiveExpr('e');
-$highVlExpr   = pmtctExportHighVlExpr('v');
+$positiveExpr = PmtctCascadeUtility::eidPositiveExpr('e');
+$highVlExpr   = PmtctCascadeUtility::highVlExpr('v');
 
 
 // ---------------------------------------------------------------------------
@@ -211,35 +137,9 @@ foreach ($db->rawQueryGenerator($eidCountSql) as $r) {
 
 
 // ---------------------------------------------------------------------------
-// Summary KPIs
+// Summary KPIs: the same numbers as the report screen.
 // ---------------------------------------------------------------------------
-$childRow = $db->rawQueryOne("SELECT
-        COUNT(DISTINCT e.eid_id) AS totalChildrenWithMotherId,
-        COUNT(DISTINCT CASE WHEN v.vl_sample_id IS NOT NULL THEN e.eid_id END) AS matchedChildren,
-        COUNT(DISTINCT CASE WHEN v.vl_sample_id IS NOT NULL
-                             AND e.result IS NOT NULL AND TRIM(e.result) != ''
-                        THEN e.eid_id END) AS testedChildren,
-        COUNT(DISTINCT CASE WHEN v.vl_sample_id IS NOT NULL AND $positiveExpr
-                        THEN e.eid_id END) AS positiveChildren,
-        COUNT(DISTINCT CASE WHEN v.vl_sample_id IS NULL THEN e.eid_id END) AS unmatchedChildren
-    FROM form_eid e
-    LEFT JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
-    WHERE $whereSql");
-
-$hasVlResult = pmtctExportVlHasResultExpr('v');
-$motherRow = $db->rawQueryOne("SELECT
-        COUNT(DISTINCT v.patient_art_no) AS distinctMothers,
-        COUNT(DISTINCT v.vl_sample_id) AS vlTests,
-        COUNT(DISTINCT CASE WHEN $hasVlResult THEN v.vl_sample_id END) AS vlTestsWithResult,
-        COUNT(DISTINCT CASE WHEN $hasVlResult THEN v.patient_art_no END) AS mothersWithResult,
-        COUNT(DISTINCT CASE WHEN $highVlExpr THEN v.patient_art_no END) AS mothersHighVl,
-        COUNT(DISTINCT CASE WHEN $highVlExpr AND LOWER(TRIM(v.is_patient_pregnant)) = 'yes'
-                        THEN v.patient_art_no END) AS mothersHighVlPregnant,
-        COUNT(DISTINCT CASE WHEN $highVlExpr AND LOWER(TRIM(v.is_patient_breastfeeding)) = 'yes'
-                        THEN v.patient_art_no END) AS mothersHighVlBreastfeeding
-    FROM form_eid e
-    INNER JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
-    WHERE $whereSql");
+$summary = PmtctCascadeUtility::summary($db, $_POST);
 
 
 // ---------------------------------------------------------------------------
@@ -247,9 +147,9 @@ $motherRow = $db->rawQueryOne("SELECT
 // the filter window, plus each of their mothers' full VL history (all time).
 // Powers two Summary indicators and the "Positive Children History" sheet.
 // ---------------------------------------------------------------------------
-$childKeyExpr   = pmtctExportChildKeyExpr('e');
-$whereSqlE2     = implode(' AND ', pmtctExportFilterConditions($_POST, 'e2'));
-$positiveExprE2 = pmtctExportEidPositiveExpr('e2');
+$childKeyExpr   = PmtctCascadeUtility::childKeyExpr('e');
+$whereSqlE2     = implode(' AND ', PmtctCascadeUtility::filterConditions($_POST, 'e2'));
+$positiveExprE2 = PmtctCascadeUtility::eidPositiveExpr('e2');
 
 $posMotherSubquery = "SELECT DISTINCT TRIM(e2.mother_id) AS mid
     FROM form_eid e2
@@ -295,11 +195,10 @@ foreach ($db->rawQueryGenerator($posChildSql) as $r) {
     $motherId = (string) ($r['motherId'] ?? '');
     $childDob = pmtctExportIsoDate($r['childDob'] ?? null);
 
-    $firstHighVlDate = '';
+    $highVlDates = [];
     foreach ($vlHistoryByMother[$motherId] ?? [] as $t) {
         if ($t['category'] === 'not suppressed' && $t['date'] !== '') {
-            $firstHighVlDate = $t['date'];
-            break;
+            $highVlDates[] = $t['date'];
         }
     }
 
@@ -308,12 +207,10 @@ foreach ($db->rawQueryGenerator($posChildSql) as $r) {
         'anyEidId' => (int) ($r['anyEidId'] ?? 0),
         'motherId' => $motherId,
         'childDob' => $childDob,
-        'preBirth' => pmtctExportPreBirthFlag($childDob, $firstHighVlDate),
+        'preBirth' => PmtctCascadeUtility::preBirthFlag($childDob, $highVlDates),
     ];
 }
 
-$positiveChildrenDistinct = count($positiveChildren);
-$preBirthHighVlChildren   = count(array_filter($positiveChildren, static fn ($c) => $c['preBirth'] === 'yes'));
 
 
 // ---------------------------------------------------------------------------
@@ -345,21 +242,25 @@ $writer->addRow(Row::fromValues([])); // spacer
 
 $writer->addRow(Row::fromValuesWithStyle([_translate('Indicator'), _translate('Value')], $headerStyle));
 $summaryRows = [
-    [_translate('Children with a mother ID recorded on EID'),                (int) ($childRow['totalChildrenWithMotherId'] ?? 0)],
-    [_translate('Children with matching mother in VL data'),                 (int) ($childRow['matchedChildren'] ?? 0)],
-    [_translate('Of those, with EID test result available'),                 (int) ($childRow['testedChildren'] ?? 0)],
-    [_translate('Of those, HIV positive'),                                   (int) ($childRow['positiveChildren'] ?? 0)],
-    [_translate('Children NOT matched in VL data'),                          (int) ($childRow['unmatchedChildren'] ?? 0)],
-    [_translate('Distinct mothers matched in VL data'),                      (int) ($motherRow['distinctMothers'] ?? 0)],
-    [_translate('VL tests on record for matched mothers (all time)'),        (int) ($motherRow['vlTests'] ?? 0)],
-    [_translate('VL tests with result reported'),                            (int) ($motherRow['vlTestsWithResult'] ?? 0)],
-    [_translate('VL tests pending result'),                                  max(0, (int) ($motherRow['vlTests'] ?? 0) - (int) ($motherRow['vlTestsWithResult'] ?? 0))],
-    [_translate('Mothers with VL result available'),                         (int) ($motherRow['mothersWithResult'] ?? 0)],
-    [_translate('Mothers with high VL (>= 1000 cp/mL)'),                     (int) ($motherRow['mothersHighVl'] ?? 0)],
-    [_translate('Of those, pregnant at a high VL test'),                     (int) ($motherRow['mothersHighVlPregnant'] ?? 0)],
-    [_translate('Of those, breastfeeding at a high VL test'),                (int) ($motherRow['mothersHighVlBreastfeeding'] ?? 0)],
-    [_translate('Distinct HIV-positive children'),                           $positiveChildrenDistinct],
-    [_translate('Of those, mother had high VL before the child\'s birth'),   $preBirthHighVlChildren],
+    [_translate('Children with a mother ID recorded on EID'),                  $summary['totalChildrenWithMotherId']],
+    [_translate('Children with matching mother in VL data'),                   $summary['matchedChildren']],
+    [_translate('Of those, with EID test result available'),                   $summary['testedChildren']],
+    [_translate('Of those, HIV positive'),                                     $summary['positiveChildren']],
+    [_translate('Children NOT matched in VL data'),                            $summary['unmatchedChildren']],
+    [_translate('Distinct mothers matched in VL data'),                        $summary['distinctMothers']],
+    [_translate('VL tests on record for matched mothers (all time)'),          $summary['vlTests']],
+    [_translate('VL tests with result reported'),                              $summary['vlTestsWithResult']],
+    [_translate('VL tests pending result'),                                    max(0, $summary['vlTests'] - $summary['vlTestsWithResult'])],
+    [_translate('Mothers with VL result available'),                           $summary['mothersWithResult']],
+    [_translate('Mothers whose latest VL is suppressed (< 1000 cp/mL)'),       $summary['mothersWithResult'] - $summary['mothersHighVl']],
+    [_translate('Of those, had a high VL result earlier'),                     $summary['mothersSuppressedAfterHighVl']],
+    [_translate('Mothers whose latest VL is high (>= 1000 cp/mL)'),            $summary['mothersHighVl']],
+    [_translate('Of those, pregnant at the latest VL test'),                   $summary['mothersHighVlPregnant']],
+    [_translate('Of those, breastfeeding at the latest VL test'),              $summary['mothersHighVlBreastfeeding']],
+    [_translate('HIV-positive children'),                                      $summary['positiveChildren']],
+    [_translate('Of those, mother had high VL in the 9 months before birth'), $summary['preBirthHighVlChildren']],
+    [_translate('Of those, no date of birth recorded'),                        $summary['positiveChildrenNoDob']],
+    [_translate('Note'), _translate('Children are counted once each, by Child ID. A mother\'s VL status is her latest VL result.')],
 ];
 foreach ($summaryRows as $r) {
     $writer->addRow(Row::fromValues($r));
@@ -584,7 +485,7 @@ foreach ($db->rawQueryGenerator($vlSql) as $r) {
 // --- Sheet 4: Positive Children History ------------------------------------
 // One row per EID test (all time) of every HIV-positive child from the filter
 // window, each stamped with the mother's VL status as of that test date and
-// whether she had a documented high VL before the child's birth. The mothers'
+// whether she had a high VL result in the 9 months before the child's birth. The mothers'
 // full VL timelines are on the VL Data sheet (Mother ID links the two).
 $historySheet = $writer->addNewSheetAndMakeItCurrent();
 $historySheet->setName(_translate('Positive Children History'));
@@ -605,7 +506,7 @@ $historyHeaders = [
     _translate('Mother VL Status at This Test'),
     _translate('Mother VL Result at This Test'),
     _translate('Mother VL Test Date at This Test'),
-    _translate('Mother Had High VL Before Birth'),
+    _translate('Mother Had High VL in 9 Months Before Birth'),
 ];
 $writer->addRow(Row::fromValuesWithStyle($historyHeaders, $headerStyle));
 
