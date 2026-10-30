@@ -22,17 +22,23 @@ $artNo = urldecode((string) $_GET['artNo']);
 $testType = urldecode((string) $_GET['testType']);
 
 
+// Same scope as the View Requests grid (get-request-list.php).
+// Built before the query builder below: these lookups run their own queries on $db.
+$scopeWhere = [];
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+    $scopeWhere[] = "vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+}
+if ($labScope = $general->labScopeWhere('vl')) {
+    $scopeWhere[] = $labScope;
+}
+
 $db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
 $db->where(
     "(vl.patient_id LIKE ? OR vl.patient_first_name LIKE ? OR vl.patient_middle_name LIKE ? OR vl.patient_last_name LIKE ?)",
     ["%$artNo%", "%$artNo%", "%$artNo%", "%$artNo%"]
 );
-// Same scope as the View Requests grid (get-request-list.php)
-if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
-    $db->where("vl.facility_id IN (" . $_SESSION['facilityMap'] . ")");
-}
-if ($labScope = $general->labScopeWhere('vl')) {
-    $db->where($labScope);
+foreach ($scopeWhere as $where) {
+    $db->where($where);
 }
 $db->orderBy("sample_tested_datetime");
 $db->orderBy("sample_collection_date");

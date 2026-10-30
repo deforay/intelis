@@ -21,6 +21,16 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $artNo = urldecode((string) ($_GET['id'] ?? $_GET['artNo'] ?? ''));
 $motherId = urldecode((string) ($_GET['motherId'] ?? ''));
 
+// Same scope as the View Requests grid (get-request-list.php).
+// Built before the query builder below: these lookups run their own queries on $db.
+$scopeWhere = [];
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+	$scopeWhere[] = "vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+}
+if ($labScope = $general->labScopeWhere('vl')) {
+	$scopeWhere[] = $labScope;
+}
+
 $db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
 if(!empty($artNo)){
 	$db->where(
@@ -34,12 +44,8 @@ if(!empty($motherId)){
 		["%$motherId%", "%$motherId%", "%$motherId%", "%$motherId%", "%$motherId%"]
 	);
 }
-// Same scope as the View Requests grid (get-request-list.php)
-if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
-	$db->where("vl.facility_id IN (" . $_SESSION['facilityMap'] . ")");
-}
-if ($labScope = $general->labScopeWhere('vl')) {
-	$db->where($labScope);
+foreach ($scopeWhere as $where) {
+	$db->where($where);
 }
 $db->orderBy("sample_tested_datetime");
 $db->orderBy("sample_collection_date");
