@@ -118,15 +118,7 @@
         ],
         "qc": [
             "Composer\\Config::disableProcessTimeout",
-            "@composer validate --no-check-publish",
-            "@check-vendor",
-            "@lint",
-            "@cs-check",
-            "@check-di",
-            "@check-invariants",
-            "@check-commit-attribution",
-            "@test",
-            "@composer audit"
+            "@php bin/build/qc.php"
         ],
         "preflight": "@php bin/preflight.php",
         "duplicate-indexes": "@php bin/duplicate-indexes.php",
