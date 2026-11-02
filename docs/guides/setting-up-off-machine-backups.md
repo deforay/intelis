@@ -247,7 +247,8 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
 
     It holds the whole InteLIS folder. The database backups are in `backups/db`
     and the settings backups in `backups/config`. A settings backup holds the
-    lab settings, signatures, report templates and logos. The backup leaves out
+    lab settings, signatures, report templates, logos and barcode label formats.
+    The backup leaves out
     files rebuilt on install: `vendor/`, `node_modules/`, caches, logs,
     temporary files and version-control folders.
 
@@ -460,7 +461,8 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
 
     It holds the whole InteLIS folder. The database backups are in `backups\db`
     and the settings backups in `backups\config`. A settings backup holds the
-    lab settings, signatures, report templates and logos. The backup leaves out
+    lab settings, signatures, report templates, logos and barcode label formats.
+    The backup leaves out
     files rebuilt on install: `vendor/`, `node_modules/`, caches, logs,
     temporary files and version-control folders.
 
@@ -639,7 +641,8 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
 
     It holds the whole InteLIS folder. The database backups are in `backups/db`
     and the settings backups in `backups/config`. A settings backup holds the
-    lab settings, signatures, report templates and logos. The backup leaves out
+    lab settings, signatures, report templates, logos and barcode label formats.
+    The backup leaves out
     files rebuilt on install: `vendor/`, `node_modules/`, caches, logs,
     temporary files and version-control folders.
 

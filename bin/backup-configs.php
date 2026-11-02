@@ -2,8 +2,13 @@
 <?php
 
 // Recursively tar+gzip CONFIG_PATH, runtime info and the uploaded files that
-// shape a result report (signatures, report templates, logos) into
-// BACKUP_PATH/config. Keeps the newest CONFIG_BACKUP_KEEP archives (default 7).
+// shape a result report or a sample label (signatures, report templates,
+// logos, barcode label formats) into BACKUP_PATH/config. Keeps the newest
+// CONFIG_BACKUP_KEEP archives (default 7).
+//
+// It runs every 6 hours, so it writes an archive only when one of those files
+// changed since the last archive. The kept archives are then 7 different
+// versions, not the last day and a half of identical copies.
 
 use App\Utilities\MiscUtility;
 
@@ -70,6 +75,7 @@ $uploadDirs = array_merge(
         'uploads/login-logos',
         'uploads/stamps',
         'uploads/labs/report-template',
+        'uploads/barcode-formats',
     ],
     array_map(
         fn($dir): string => substr($dir, strlen(WEB_ROOT) + 1),
@@ -80,6 +86,39 @@ $uploadDirs = array_merge(
     )
 );
 $uploadDirs = array_values(array_filter($uploadDirs, fn($dir): bool => is_dir(WEB_ROOT . '/' . $dir)));
+// What the archive would hold: every file's path and a digest of its contents.
+// Contents, not size and modification time, because a copy or restore can keep
+// both and still change the file. The files are small, so hashing them every
+// 6 hours costs milliseconds. The same answer as last time, with that archive
+// still there, means nothing changed, so no new archive is written.
+$signatureFile = "$DEST_DIR/.last-backup-signature";
+$listing = [];
+$skip = '#(^|/)(\.git|\.DS_Store|cache|node_modules)(/|$)|\.(key|pem)$#';
+foreach (array_merge([$CONFIG_PATH], array_map(fn($dir): string => WEB_ROOT . '/' . $dir, $uploadDirs)) as $root) {
+    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
+    foreach ($files as $f) {
+        $rel = substr($f->getPathname(), strlen($root));
+        if ($f->isFile() && !preg_match($skip, $rel)) {
+            $listing[] = $f->getPathname() . '|' . hash_file('xxh128', $f->getPathname());
+        }
+    }
+}
+sort($listing);
+$signature = hash('sha256', implode("\n", $listing));
+// The signature file names the archive it describes. Skipping needs that archive
+// itself: if it was deleted, an older one left behind holds older settings.
+[$previous, $previousArchive] = array_pad(
+    explode(' ', is_file($signatureFile) ? trim((string) file_get_contents($signatureFile)) : '', 2),
+    2,
+    ''
+);
+if ($previous === $signature && $previousArchive !== '' && is_file("$DEST_DIR/" . basename($previousArchive))) {
+    MiscUtility::deleteFile("$tmp/system-info.txt");
+    @rmdir($tmp);
+    echo "ℹ️  Config unchanged since the last backup. No new archive.\n";
+    exit(CLI\OK);
+}
+
 // Written into every backup, even when no folder exists. A restore that finds
 // no uploads/ in the archive then knows whether the lab had none or the backup
 // predates them, and says which.
@@ -130,6 +169,9 @@ if (!rename($partial, $out)) {
 foreach (glob($DEST_DIR . '/' . $PREFIX . '*' . $EXT) ?: [] as $existing) {
     @chmod($existing, 0600);
 }
+
+file_put_contents($signatureFile, "$signature $file\n");
+@chmod($signatureFile, 0600);
 
 echo "✅ Config Backed up : $out\n";
 

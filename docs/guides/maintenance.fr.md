@@ -289,7 +289,7 @@ précédente est encore en cours.
 | Purge des journaux binaires | `db-tools purge-binlogs --days=7` | Chaque jour à 04:05 | Toujours |
 | Maintenance hebdomadaire de la base de données | `db-tools maintain --all --days=7` | Le dimanche à 03:00 | Toujours |
 | Optimisation mensuelle de la base de données | `db-tools maintain --all --optimize --days=7` | Le 1er du mois à 04:00 | Toujours |
-| Sauvegarde des paramètres (paramètres, signatures, modèles de rapport, logos) | `bin/backup-configs.php` | Chaque jour à 03:30 | Toujours |
+| Sauvegarde des paramètres (paramètres, signatures, modèles de rapport, logos, formats d'étiquettes code-barres) | `bin/backup-configs.php` | Toutes les 6 heures (00:05, 06:05, 12:05, 18:05), seulement en cas de changement | Toujours |
 | Nettoyage automatique | `bin/housekeeping.php 30` | Chaque jour à 00:45 | Toujours |
 | Contrôles de santé | `bin/health.php` | Toutes les heures, à l'heure pile | Toujours |
 | Mise à jour du statut des échantillons | `bin/update-sample-status.php` | Chaque jour à 00:05 | Toujours |
