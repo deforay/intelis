@@ -25808,7 +25808,7 @@ msgstr "Saisir le résultat d'autres tests de laboratoire"
 #: app/generic-tests/results/getGenericReferralDetails.php:161
 #: app/tb/results/getTbReferralDetails.php:156
 msgid "Print Manifest Referral PDF"
-msgstr "Imprimer le bordereau de référence en PDF"
+msgstr "Imprimer le manifeste de référence en PDF"
 
 #: app/generic-tests/results/pdf/generate-generic-manifest.php:81
 msgid " Sample Referral Manifest"
@@ -30531,7 +30531,7 @@ msgstr "CODE-BARRES DE L'ÉCHANTILLON"
 
 #: app/specimen-referral-manifest/get-manifests.php:144
 msgid "Print Manifest PDF"
-msgstr "Imprimer le bordereau en PDF"
+msgstr "Imprimer le manifeste en PDF"
 
 #: app/specimen-referral-manifest/get-samples-for-manifest.php:120
 msgid "Cancelled samples will be removed from this manifest"
@@ -31313,7 +31313,7 @@ msgstr "Enregistrer les tests de confirmation"
 
 #: app/system/translate-strings.php:82
 msgid "Hepatitis Manifest"
-msgstr "Bordereau hépatite"
+msgstr "Manifeste hépatite"
 
 #: app/system/translate-strings.php:84
 msgid "TB Manifest"
@@ -31682,7 +31682,7 @@ msgstr "Voir les manifestes COVID-19"
 
 #: app/system/translate-strings.php:208
 msgid "View Hepatitis Manifests"
-msgstr "Voir les bordereaux hépatite"
+msgstr "Voir les manifestes hépatite"
 
 #: app/system/translate-strings.php:209
 msgid "View TB Manifests"
@@ -31690,7 +31690,7 @@ msgstr "Voir les manifestes du TB"
 
 #: app/system/translate-strings.php:210
 msgid "View Lab Tests Manifests"
-msgstr "Voir les bordereaux des tests de laboratoire"
+msgstr "Voir les manifestes des tests de laboratoire"
 
 #: app/system/translate-strings.php:211
 msgid "Add VL Manifests"
@@ -31706,7 +31706,7 @@ msgstr "Ajouter les manifestes COVID-19"
 
 #: app/system/translate-strings.php:214
 msgid "Add Hepatitis Manifests"
-msgstr "Ajouter les bordereaux hépatite"
+msgstr "Ajouter les manifestes hépatite"
 
 #: app/system/translate-strings.php:215
 msgid "Add TB Manifests"
@@ -31714,7 +31714,7 @@ msgstr "Ajouter les manifestes du TB"
 
 #: app/system/translate-strings.php:216
 msgid "Add Lab Tests Manifests"
-msgstr "Ajouter les bordereaux des tests de laboratoire"
+msgstr "Ajouter les manifestes des tests de laboratoire"
 
 #: app/system/translate-strings.php:217
 msgid "Edit VL Manifests"
@@ -31730,7 +31730,7 @@ msgstr "Modifier les manifestes COVID-19"
 
 #: app/system/translate-strings.php:220
 msgid "Edit Hepatitis Manifests"
-msgstr "Modifier les bordereaux hépatite"
+msgstr "Modifier les manifestes hépatite"
 
 #: app/system/translate-strings.php:221
 msgid "Edit TB Manifests"
@@ -31738,7 +31738,7 @@ msgstr "Modifier les manifestes de la tuberculose"
 
 #: app/system/translate-strings.php:222
 msgid "Edit Lab Tests Manifests"
-msgstr "Modifier les bordereaux des tests de laboratoire"
+msgstr "Modifier les manifestes des tests de laboratoire"
 
 #: app/system/translate-strings.php:223
 msgid "Move VL Manifests"
@@ -31754,7 +31754,7 @@ msgstr "Déplacer les manifestes COVID-19"
 
 #: app/system/translate-strings.php:226
 msgid "Move Hepatitis Manifests"
-msgstr "Déplacer les bordereaux hépatite"
+msgstr "Déplacer les manifestes hépatite"
 
 #: app/system/translate-strings.php:227
 msgid "Move TB Manifests"
@@ -31762,7 +31762,7 @@ msgstr "Déplacer les manifestes de la tuberculose"
 
 #: app/system/translate-strings.php:228
 msgid "Move Lab Tests Manifests"
-msgstr "Déplacer les bordereaux des tests de laboratoire"
+msgstr "Déplacer les manifestes des tests de laboratoire"
 
 #: app/system/translate-strings.php:229
 msgid "Add/Edit Test Types"
@@ -31822,11 +31822,11 @@ msgstr "Exporter les demandes de CD4"
 
 #: app/system/translate-strings.php:246
 msgid "Add CD4 Manifests"
-msgstr "Ajouter les bordereaux CD4"
+msgstr "Ajouter les manifestes CD4"
 
 #: app/system/translate-strings.php:247
 msgid "Edit CD4 Manifests"
-msgstr "Modifier les bordereaux CD4"
+msgstr "Modifier les manifestes CD4"
 
 #: app/system/translate-strings.php:248
 msgid "View CD4 Manifests"
