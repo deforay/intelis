@@ -36,7 +36,5 @@ if ($labScope = $general->labScopeWhere('vl')) {
 
 $pQuery = "SELECT count(*) as 'count' FROM form_cd4 as vl
                 WHERE " . implode(" AND ", $sWhere);
-
-                die($pQuery);
 $pResult = $db->rawQueryOne($pQuery, [$searchTerm, $searchTerm, $searchTerm, $searchTerm]);
 echo $pResult['count'];
