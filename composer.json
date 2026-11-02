@@ -105,6 +105,7 @@
         "check-schema-drift": "@php bin/build/check-schema-drift.php",
         "check-interface-seed": "@php bin/build/check-interface-seed.php",
         "check-commit-attribution": "bash bin/build/check-commit-attribution.sh",
+        "check-debug-leftovers": "bash bin/build/check-debug-leftovers.sh",
         "check-invariants": [
             "@check-counts",
             "@check-sync-ownership",
@@ -250,6 +251,7 @@
         "qc:full": "Run composer qc with the integration tests",
         "setup-tests": "Set up a MySQL login and the SQLite driver so the whole test suite runs",
         "check-commit-attribution": "Check no commit ahead of origin/master names an AI tool or vendor, in its message or its author",
+        "check-debug-leftovers": "Check no line added since origin/master, committed or not, leaves a die, var_dump or print_r in app/ or public/",
         "check-sync-ownership": "Check an incoming sync cannot overwrite a column the lab owns, such as a sample it has cancelled",
         "check-counts": "Check every surface that counts rejected samples also excludes cancelled ones, so two screens cannot disagree",
         "check-request-output-escaping": "Check no page prints a request value unescaped, or puts htmlspecialchars output inside an inline handler's JS string",
