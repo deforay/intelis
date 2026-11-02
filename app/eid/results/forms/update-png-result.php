@@ -23,7 +23,6 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
-
 $rKey = '';
 $sKey = '';
 $sFormat = '';
@@ -369,22 +368,26 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
                                         <th scope="row">Reason for 2nd PCR :</th>
                                         <td>
-                                            <select class="form-control" name="pcrTestReason" id="pcrTestReason">
+                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason">
                                                 <option value=''> -- Select -- </option>
-                                                <option value="Confirmation of positive first EID PCR test result" <?php echo ($eidInfo['reason_for_pcr'] == 'Confirmation of positive first EID PCR test result') ? "selected='selected'" : ""; ?>> Confirmation
-                                                    of positive first EID PCR test result </option>
-                                                <option
-                                                    value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months"
-                                                    <?php echo ($eidInfo['reason_for_pcr'] == 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months') ? "selected='selected'" : ""; ?>> Repeat EID PCR test 6 weeks after
-                                                    stopping breastfeeding for children < 9 months </option>
+                                                <option value="Confirmation of positive first EID PCR test result" <?php echo ($eidInfo['reason_for_pcr'] == 'Confirmation of positive first EID PCR test result') ? "selected='selected'" : ""; ?>>Confirmation of positive first EID PCR test result</option>
+                                                <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children <9 months"
+                                                    <?php echo (html_entity_decode((string) ($eidInfo['reason_for_pcr'] ?? '')) === 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children <9 months') ? "selected='selected'" : ""; ?>>Repeat EID PCR test 6 weeks after
+                                                    stopping breastfeeding for children <9 months</option>
                                                 <option value="Positive HIV rapid test result at 9 months or later"
-                                                    <?php echo ($eidInfo['reason_for_pcr'] == 'Positive HIV rapid test result at 9 months or later') ? "selected='selected'" : ""; ?>>
-                                                    Positive HIV rapid test result at 9 months or later </option>
+                                                    <?php echo ($eidInfo['reason_for_pcr'] == 'Positive HIV rapid test result at 9 months or later') ? "selected='selected'" : ""; ?>>Positive HIV rapid test result at 9 months or later</option>
+                                                <option value="1st Test Positive" <?php echo ($eidInfo['reason_for_pcr'] == '1st Test Positive') ? "selected='selected'" : ""; ?>>1st Test Positive</option>
+                                                <option value="DBS Invalid" <?php echo ($eidInfo['reason_for_pcr'] == 'DBS Invalid') ? "selected='selected'" : ""; ?>> DBS Invalid </option>
+                                                <option value="Indeterminate" <?php echo ($eidInfo['reason_for_pcr'] == 'Indeterminate') ? "selected='selected'" : ""; ?>> Indeterminate </option>
+                                                <option value="Infant Still breastfeeding" <?php echo ($eidInfo['reason_for_pcr'] == 'Infant Still breastfeeding') ? "selected='selected'" : ""; ?>> Infant Still breastfeeding </option>
+                                                <option value="Infact <2 months post cessation of breastfeeding"  <?php echo (html_entity_decode((string) ($eidInfo['reason_for_pcr'] ?? '')) === 'Infact <2 months post cessation of breastfeeding') ? "selected='selected'" : ""; ?>>Infact <2
+                                                        months post cessation of breastfeeding</option>
+                                                <option value="Infants less than 6 weeks" <?php echo ($eidInfo['reason_for_pcr'] == 'Infants less than 6 weeks') ? "selected='selected'" : ""; ?>> Infants less than 6 weeks </option>
+                                                <option value="Inadequate feeding history" <?php echo ($eidInfo['reason_for_pcr'] == 'Inadequate feeding history') ? "selected='selected'" : ""; ?>> Inadequate feeding history </option>
                                                 <option value="Other" <?php echo ($eidInfo['reason_for_pcr'] == 'Other') ? "selected='selected'" : ""; ?>> Other </option>
                                             </select>
                                         </td>
                                     </tr>
-
 
                                 </table>
 

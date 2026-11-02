@@ -459,9 +459,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason">
                                                 <option value=''> -- Select -- </option>
-                                                <option value="Confirmation of positive first EID PCR test result"> Confirmation of positive first EID PCR test result </option>
-                                                <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months"> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option>
-                                                <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
+                                                <option value="Confirmation of positive first EID PCR test result"> Confirmation of positive first EID PCR test result</option>
+                                                <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children <9 months"> Repeat EID PCR test 6 weeks after stopping breastfeeding for children <9 months</option>
+                                                <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later</option>
                                                 <option value="1st Test Positive"> 1st Test Positive </option>
                                                 <option value="DBS Invalid"> DBS Invalid </option>
                                                 <option value="Indeterminate"> Indeterminate </option>
