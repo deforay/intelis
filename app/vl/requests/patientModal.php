@@ -35,7 +35,13 @@ $db->where(
     ["%$artNo%", "%$artNo%", "%$artNo%", "%$artNo%"]
 );
 foreach ($scopeWhere as $where) {
-    $db->where($where);
+    
+// Same scope as the View Requests grid (get-request-list.php)
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+    $db->where("vl.facility_id IN (" . $_SESSION['facilityMap'] . ")");
+}
+if ($labScope = $general->labScopeWhere('vl')) {
+    $db->where($labScope);
 }
 $db->orderBy("sample_tested_datetime");
 $db->orderBy("sample_collection_date");
