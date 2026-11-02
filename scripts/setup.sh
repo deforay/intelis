@@ -1577,6 +1577,15 @@ if ! $resume_setup && [[ -n "$intelis_sql_file" && -f "$intelis_sql_file" ]] &&
     elif $intelis_pick_backup; then
         print warning "${restore_config_dir} holds no settings backup (config-*.tgz). Setup did not restore the settings, signatures, report templates or logos."
     fi
+    if ! declare -F restore_audit_trail >/dev/null; then
+        print warning "shared-functions.sh is out of date. Setup did not restore the audit trail."
+    else
+        audit_rc=0
+        restore_audit_trail "$(dirname "$intelis_sql_file")" "${lis_path}" || audit_rc=$?
+        if [[ $audit_rc -eq 1 ]] && $intelis_pick_backup; then
+            print warning "This backup folder holds no audit trail. It is in the off-machine backup, in var/audit-trail. Copy that folder into ${lis_path}/var/audit-trail."
+        fi
+    fi
 fi
 
 # MySQL root password was collected upfront. If it was prompted (not read

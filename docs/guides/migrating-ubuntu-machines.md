@@ -340,7 +340,7 @@ internet.
 
     2. Answer where the backups are stored, and sign in when asked.
     3. Choose the lab from the list.
-    4. Choose **Just the database backups**.
+    4. Choose **The database, settings and audit trail**.
     5. Press Enter to accept the folder it offers.
     6. Wait for the copy to finish. Near the end it prints a two-line command
        starting with `cd ~ && wget -O setup.sh`. Select both lines and press

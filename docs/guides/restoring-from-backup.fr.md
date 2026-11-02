@@ -12,7 +12,7 @@ reviewed_against: 5.8.5
 Remettre la base de données en place à partir d'une sauvegarde, sur une machine
 où InteLIS fonctionne déjà. Une restauration depuis la sauvegarde hors de la
 machine remet aussi en place les paramètres du laboratoire, les signatures, les
-modèles de rapport et les logos. Les fichiers téléversés et les pièces jointes
+modèles de rapport, les logos et la piste d’audit. Les fichiers téléversés et les pièces jointes
 peuvent aussi être récupérés.
 
 La restauration remplace tout le contenu de la base de données. Les
@@ -158,7 +158,8 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             où elles vont.
 
     5. À **What should be copied back?** (que faut-il recopier), choisir
-       **Just the database backups**.
+       **The database, settings and audit trail** (la base de données, les
+       paramètres et la piste d’audit).
     6. À **Where should the restore folder be created?** (où créer le dossier
        de restauration), appuyer sur Entrée pour utiliser
        `/var/intelis-restore`. Noter le nouveau dossier de restauration
@@ -239,6 +240,32 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             ancienne d'InteLIS, ou elle est absente. Suivre l'onglet
             **Base de données et fichiers téléversés** pour les recopier
             depuis la sauvegarde.
+
+        Le script remet ensuite en place la piste d’audit, l'historique de
+        chaque modification de chaque échantillon, et affiche
+        `Audit trail restored`. Sur un laboratoire avec un long historique,
+        cette copie peut prendre du temps.
+
+        ??? warning "S'il indique `needs about … GB of free space` ou `did not finish`"
+
+            La piste d’audit n'a pas été restaurée, ou seulement en partie. Le
+            reste de la restauration est terminé. Si le disque est plein, y
+            libérer d'abord de l'espace. Lancer ensuite la commande
+            `sudo rsync` affichée avec le message. Elle ne copie que ce qui
+            manque ou est plus récent.
+
+        ??? info "S'il indique `This installation already has an audit trail`"
+
+            Cette machine garde sa propre piste d’audit, plus récente que celle
+            de la sauvegarde. Rien d'autre n'est nécessaire.
+
+        ??? warning "S'il indique `holds no audit trail` ou `could not be copied`"
+
+            La piste d’audit n'est pas arrivée avec la sauvegarde. La copie a
+            échoué, ou une version plus ancienne d'InteLIS a récupéré la
+            sauvegarde. Le laboratoire fonctionne sans elle, mais l'historique
+            des modifications de chaque échantillon manque. Relancer
+            `intelis restore` pour la copier.
 
     ### Vérifier le laboratoire
 
@@ -421,6 +448,32 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             **Base de données et fichiers téléversés** pour les recopier
             depuis la sauvegarde.
 
+        Le script remet ensuite en place la piste d’audit, l'historique de
+        chaque modification de chaque échantillon, et affiche
+        `Audit trail restored`. Sur un laboratoire avec un long historique,
+        cette copie peut prendre du temps.
+
+        ??? warning "S'il indique `needs about … GB of free space` ou `did not finish`"
+
+            La piste d’audit n'a pas été restaurée, ou seulement en partie. Le
+            reste de la restauration est terminé. Si le disque est plein, y
+            libérer d'abord de l'espace. Lancer ensuite la commande
+            `sudo rsync` affichée avec le message. Elle ne copie que ce qui
+            manque ou est plus récent.
+
+        ??? info "S'il indique `This installation already has an audit trail`"
+
+            Cette machine garde sa propre piste d’audit, plus récente que celle
+            de la sauvegarde. Rien d'autre n'est nécessaire.
+
+        ??? warning "S'il indique `holds no audit trail` ou `could not be copied`"
+
+            La piste d’audit n'est pas arrivée avec la sauvegarde. La copie a
+            échoué, ou une version plus ancienne d'InteLIS a récupéré la
+            sauvegarde. Le laboratoire fonctionne sans elle, mais l'historique
+            des modifications de chaque échantillon manque. Relancer
+            `intelis restore` pour la copier.
+
     ### Vérifier le laboratoire
 
     12. Ouvrir InteLIS dans le navigateur.
@@ -577,6 +630,32 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             La sauvegarde des paramètres a été créée par une version plus
             ancienne d'InteLIS, ou elle est absente. Les étapes suivantes les
             recopient aussi depuis la sauvegarde.
+
+        Le script remet ensuite en place la piste d’audit, l'historique de
+        chaque modification de chaque échantillon, et affiche
+        `Audit trail restored`. Sur un laboratoire avec un long historique,
+        cette copie peut prendre du temps.
+
+        ??? warning "S'il indique `needs about … GB of free space` ou `did not finish`"
+
+            La piste d’audit n'a pas été restaurée, ou seulement en partie. Le
+            reste de la restauration est terminé. Si le disque est plein, y
+            libérer d'abord de l'espace. Lancer ensuite la commande
+            `sudo rsync` affichée avec le message. Elle ne copie que ce qui
+            manque ou est plus récent.
+
+        ??? info "S'il indique `This installation already has an audit trail`"
+
+            Cette machine garde sa propre piste d’audit, plus récente que celle
+            de la sauvegarde. Rien d'autre n'est nécessaire.
+
+        ??? warning "S'il indique `holds no audit trail` ou `could not be copied`"
+
+            La piste d’audit n'est pas arrivée avec la sauvegarde. La copie a
+            échoué, ou une version plus ancienne d'InteLIS a récupéré la
+            sauvegarde. Le laboratoire fonctionne sans elle, mais l'historique
+            des modifications de chaque échantillon manque. Relancer
+            `intelis restore` pour la copier.
 
     ### Remettre en place les fichiers téléversés
 

@@ -59,7 +59,7 @@
 [41.923409, "o", "\u001b[1;92m✅ Success:\u001b[0m Restoring from central-lab-5226bb72\r\n"]
 [41.923664, "o", "\r\n \u001b[1mWhat should be copied back?\u001b[0m\r\n\r\n"]
 [41.977029, "o", "\u001b[?2026$p\u001b[?2027$p\u001b]11;?\u0007"]
-[41.97721, "o", "\u001b[?25l\u001b[?5W\u001b[?2004h\u001b[>4;2m\u001b[>1u\u001b[?u\r\u001b[J\u001b[38;5;99mChoose:\u001b[m\r\n\u001b[38;5;212m> Just the database backups — The right choice for rebuilding a machine.\u001b[m\r\n  Everything, including uploaded files and attachments — Much larger, and slower over a link.\r\n  An older database backup (choose a date) — From the dated history kept at the backup, for undoing\r\n\n\n\u001b[38;5;241m←↓↑→\u001b[m \u001b[38;5;239mnavigate\u001b[38;5;237m • \u001b[38;5;241menter\u001b[m \u001b[38;5;239msubmit\u001b[m"]
+[41.97721, "o", "\u001b[?25l\u001b[?5W\u001b[?2004h\u001b[>4;2m\u001b[>1u\u001b[?u\r\u001b[J\u001b[38;5;99mChoose:\u001b[m\r\n\u001b[38;5;212m> The database, settings and audit trail — The right choice for rebuilding a machine.\u001b[m\r\n  Everything, including uploaded files and attachments — Much larger, and slower over a link.\r\n  An older database backup (choose a date) — From the dated history kept at the backup, for undoing\r\n\n\n\u001b[38;5;241m←↓↑→\u001b[m \u001b[38;5;239mnavigate\u001b[38;5;237m • \u001b[38;5;241menter\u001b[m \u001b[38;5;239msubmit\u001b[m"]
 [44.783028, "o", "\r\u001b[6A\u001b[J\u001b[>4m\u001b[<1u\u001b[J\u001b[?25h\u001b[?2004l"]
 [44.789095, "o", "\r\n \u001b[1mWhere should the restore folder be created?\u001b[0m\r\n"]
 [44.832352, "o", "\u001b[?2026$p\u001b[?2027$p"]

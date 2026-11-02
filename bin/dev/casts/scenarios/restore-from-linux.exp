@@ -19,7 +19,7 @@ expect {
     -re {\[sudo\] password for labuser:}  { sleep 1; send "$sudo_password\r"; exp_continue }
     "Fetch the backup from there?"        { confirm_with "y"; exp_continue }
     "Which lab should be restored?"       { pick "central-lab"; exp_continue }
-    "What should be copied back?"         { pick "Just the database backups"; exp_continue }
+    "What should be copied back?"         { pick "The database, settings and audit trail"; exp_continue }
     "Where should the restore folder be created?" { answer ""; exp_continue }
     -re {Type (\S+) to confirm that this is the backup to restore} {
         answer [plain $expect_out(1,string)]

@@ -371,8 +371,8 @@ récente** et être connectée à Internet.
     2. Indiquer où les sauvegardes sont stockées, et se connecter quand c'est
        demandé.
     3. Choisir le laboratoire dans la liste.
-    4. Choisir **Just the database backups** (seulement les sauvegardes de la
-       base de données).
+    4. Choisir **The database, settings and audit trail** (la base de
+       données, les paramètres et la piste d’audit).
     5. Appuyer sur Entrée pour accepter le dossier proposé.
     6. Attendre la fin de la copie. Vers la fin, il affiche une commande sur
        deux lignes qui commence par `cd ~ && wget -O setup.sh`. Sélectionner les
