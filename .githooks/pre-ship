@@ -12,6 +12,8 @@
 #   2. check-di: the DI container compiles. A class it could not build took
 #      every DRC page down on 2026-10-13, and CI flagged it only after the merge.
 #   3. check-invariants: the codebase rules that have drifted before
+#   4. check-debug-leftovers: no added die, var_dump or print_r. A `die($pQuery);`
+#      in #465 broke the VL patient search on every lab that updated.
 #
 # Environment, set by git-ship.sh:
 #   SHIP_SOURCE_ROOT  the developer's checkout, for vendor/ (git does not track it)
@@ -77,3 +79,6 @@ php bin/build/check-di.php
 
 echo "pre-ship: invariants"
 composer --no-interaction --quiet check-invariants
+
+echo "pre-ship: debugging left in"
+bash bin/build/check-debug-leftovers.sh "$base" HEAD

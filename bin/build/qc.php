@@ -100,6 +100,7 @@ $checks = [
     ['DI container', "{$composer} check-di", 'composer check-di'],
     ['invariants', "{$composer} check-invariants", 'composer check-invariants'],
     ['commit attribution', "{$composer} check-commit-attribution", 'composer check-commit-attribution'],
+    ['debugging left in', "{$composer} check-debug-leftovers", 'composer check-debug-leftovers'],
     $quick
         ? [
             'unit tests',
