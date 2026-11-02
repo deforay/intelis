@@ -253,12 +253,81 @@ final class ResultSyncBatchTest extends TestCase
         }, 'SELECT r.* FROM results r WHERE r.data_sync = 0', 'r.id', keyByUniqueId: true);
         $expected = [];
         foreach ($rows as $row) {
-            $expected[$row['unique_id']] = ['form_data' => $row, 'data_from_tests' => []];
+            $key = $row['unique_id'] ?? 'sample-id:' . $row['id'];
+            $expected[$key] = ['form_data' => $row, 'data_from_tests' => []];
         }
-        self::assertCount(3, $selection);
+        // "same" keeps its first position with the last row. The two rows without a
+        // unique_id are different results, so both are sent.
+        self::assertCount(4, $selection);
         self::assertSame(
             array_chunk($expected, 2, true),
             iterator_to_array($selection->chunks(2, static fn(): array => []))
         );
+    }
+
+    /**
+     * A row without a unique_id is still a result the STS accepts: it matches it by
+     * sample code and lab, and acknowledges it by sample code. Collapsing these rows
+     * onto one key sent only the last of them. The others were never marked in
+     * flight, stayed data_sync = 0, and collapsed again on every run.
+     */
+    public function testRowsWithoutAUniqueIdAreEachSentOnce(): void
+    {
+        $rows = [
+            ['id' => 1, 'unique_id' => null, 'sample_code' => 'S1'],
+            ['id' => 2, 'unique_id' => '', 'sample_code' => 'S2'],
+            ['id' => 3, 'unique_id' => 'uuid-3', 'sample_code' => 'S3'],
+            ['id' => 4, 'unique_id' => null, 'sample_code' => 'S4'],
+        ];
+        $marked = [];
+        $selection = new ResultSyncBatch(
+            static fn(string $sql, array $ids): array => $ids === [] ? $rows : array_values(array_filter(
+                $rows,
+                static fn(array $row): bool => in_array($row['id'], $ids, true)
+            )),
+            'SELECT r.* FROM results r WHERE r.data_sync = 0',
+            'r.id',
+            keyByUniqueId: true,
+            beforeFetch: static function (array $ids) use (&$marked): void {
+                array_push($marked, ...$ids);
+            }
+        );
+
+        self::assertCount(4, $selection);
+        $sent = [];
+        foreach ($selection->chunks(3, static fn(): array => []) as $chunk) {
+            foreach ($chunk as $entry) {
+                $sent[] = $entry['form_data']['id'];
+            }
+        }
+        self::assertSame([1, 2, 3, 4], $sent);
+        self::assertSame([1, 2, 3, 4], $marked, 'every row is marked in flight, so its acknowledgment can land');
+    }
+
+    public function testPayloadKeysForRowsWithAUniqueIdAreUnchanged(): void
+    {
+        $rows = [
+            ['id' => 7, 'unique_id' => 'uuid-7'],
+            ['id' => 8, 'unique_id' => null],
+            ['id' => 9, 'unique_id' => null],
+        ];
+        $payload = ResultSyncBatch::nestedPayload($rows, [7 => [['t' => 1]]], 'id');
+
+        self::assertSame(['uuid-7', 'sample-id:8', 'sample-id:9'], array_keys($payload));
+        self::assertSame([['t' => 1]], $payload['uuid-7']['data_from_tests']);
+        self::assertSame(8, $payload['sample-id:8']['form_data']['id']);
+        self::assertSame(9, $payload['sample-id:9']['form_data']['id']);
+    }
+
+    public function testANumericUniqueIdIsNotConfusedWithAPrimaryKey(): void
+    {
+        $rows = [
+            ['id' => 5, 'unique_id' => '6'],
+            ['id' => 6, 'unique_id' => null],
+        ];
+        $payload = ResultSyncBatch::nestedPayload($rows, [], 'id');
+
+        self::assertCount(2, $payload);
+        self::assertSame([5, 6], array_column(array_column($payload, 'form_data'), 'id'));
     }
 }

@@ -628,4 +628,96 @@ final class LabResultsSenderTest extends TestCase
 
         $this->assertSame(['tb-1' => 1, 'tb-2' => 0], $this->dataSync('form_tb'));
     }
+
+    // ---- Results without a unique_id ------------------------------------------------
+
+    /** Two TB results without a unique_id and one with, each with its own test row. */
+    private static function tbWithoutUniqueIds(): void
+    {
+        $db = LegacyAppHarness::db();
+        foreach ([1 => null, 2 => null, 3 => 'tb-3'] as $id => $uniqueId) {
+            $db->insert('form_tb', [
+                'tb_id' => $id, 'unique_id' => $uniqueId, 'sample_code' => "TB-$id", 'sample_code_key' => $id,
+                'result_status' => self::ACCEPTED, 'data_sync' => 0, 'sample_collection_date' => '2026-09-01 00:00:00',
+            ]);
+            $db->insert('tb_tests', ['tb_id' => $id, 'test_result' => "result-$id"]);
+        }
+    }
+
+    /** @return array<string, int> data_sync by sample code, read through a second connection */
+    private function dataSyncBySampleCode(string $table): array
+    {
+        $mysqli = new mysqli(
+            (string) getenv('INTELIS_TEST_DB_HOST'),
+            (string) getenv('INTELIS_TEST_DB_USER'),
+            (string) (getenv('INTELIS_TEST_DB_PASS') ?: ''),
+            $this->database,
+            (int) (getenv('INTELIS_TEST_DB_PORT') ?: 3306)
+        );
+        $rows = $mysqli->query("SELECT sample_code, data_sync FROM `$table` ORDER BY sample_code")
+            ->fetch_all(MYSQLI_ASSOC);
+        $mysqli->close();
+        return array_map('intval', array_column($rows, 'data_sync', 'sample_code'));
+    }
+
+    /** What an STS acknowledges for each row it saved: the unique_id, else the sample code. */
+    private static function stsIdentifiers(array $payload): array
+    {
+        return array_map(
+            static fn(array $entry): string => (string) (($entry['form_data']['unique_id'] ?? '')
+                ?: $entry['form_data']['sample_code']),
+            array_values($payload['results'])
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testResultsWithoutAUniqueIdAreAllSentWithTheirOwnTests(): void
+    {
+        $this->boot();
+        self::tbWithoutUniqueIds();
+
+        $this->send('tb', $this->sts(static fn(array $payload): array => self::ack(self::stsIdentifiers($payload))));
+
+        $sent = [];
+        foreach ($this->posts as $post) {
+            foreach ($post['results'] as $entry) {
+                $sent[$entry['form_data']['sample_code']] = array_column($entry['data_from_tests'], 'test_result');
+            }
+        }
+        $this->assertSame(
+            ['TB-1' => ['result-1'], 'TB-2' => ['result-2'], 'TB-3' => ['result-3']],
+            $sent,
+            'every result goes out once, with its own tests'
+        );
+        $this->assertSame(['TB-1' => 1, 'TB-2' => 1, 'TB-3' => 1], $this->dataSyncBySampleCode('form_tb'));
+    }
+
+    #[RunInSeparateProcess]
+    public function testResultsWithoutAUniqueIdAreMarkedSyncedByAnOlderSts(): void
+    {
+        $this->boot();
+        self::tbWithoutUniqueIds();
+
+        // An older STS answers with sample codes only, and no X-Ack-Format header.
+        $this->send('tb', $this->sts(static fn(array $payload): array => self::ack(
+            array_map(
+                static fn(array $entry): string => $entry['form_data']['sample_code'],
+                array_values($payload['results'])
+            ),
+            byUniqueId: false
+        )));
+
+        $this->assertSame(['TB-1' => 1, 'TB-2' => 1, 'TB-3' => 1], $this->dataSyncBySampleCode('form_tb'));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAResultWithoutAUniqueIdThatIsNotAcknowledgedStaysPending(): void
+    {
+        $this->boot();
+        self::tbWithoutUniqueIds();
+
+        $this->send('tb', $this->sts(self::ack(['TB-1', 'tb-3'])));
+
+        $this->assertSame(['TB-1' => 1, 'TB-2' => 2, 'TB-3' => 1], $this->dataSyncBySampleCode('form_tb'));
+    }
 }

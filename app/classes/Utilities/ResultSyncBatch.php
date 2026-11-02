@@ -57,8 +57,13 @@ final class ResultSyncBatch implements Countable
         );
         // The old nested payload array kept the last row for each unique_id.
         // Resolve collisions here so they cannot land in separate outgoing batches.
+        // A row without a unique_id is its own result, so it is never merged.
         if ($keyByUniqueId) {
-            $rows = array_column($rows, null, 'unique_id');
+            $byKey = [];
+            foreach ($rows as $row) {
+                $byKey[self::payloadKey($row, $idField)] = $row;
+            }
+            $rows = $byKey;
         }
         $this->ids = [];
         foreach ($rows as $row) {
@@ -136,7 +141,7 @@ final class ResultSyncBatch implements Countable
                         'form_data' => $row,
                         'data_from_tests' => $childTests($row),
                     ],
-                    \iter\reindex(static fn(array $row) => $row['unique_id'], $rows)
+                    \iter\reindex(fn(array $row): string => self::payloadKey($row, $this->idField()), $rows)
                 ));
             }
             $this->timings = ['readMs' => $readMs, 'prepareMs' => (hrtime(true) - $start) / 1e6];
@@ -165,11 +170,7 @@ final class ResultSyncBatch implements Countable
                 throw new UnexpectedValueException('Result row has an invalid parent ID.');
             }
             $tests = $children[$id] ?? [];
-            $key = $row['unique_id'];
-            if ($key !== null && !is_int($key) && !is_string($key)) {
-                throw new UnexpectedValueException('Result row has an invalid unique ID.');
-            }
-            $payload[$key ?? ''] = [
+            $payload[self::payloadKey($row, $idField)] = [
                 'form_data' => $row,
                 'data_from_tests' => $wrapParentId
                     ? ($tests === [] ? [] : [$id => $tests])
@@ -177,6 +178,27 @@ final class ResultSyncBatch implements Countable
             ];
         }
         return $payload;
+    }
+
+    /**
+     * The key a row is sent under: its unique_id, so a repeated unique_id keeps one
+     * row as it always has. A row without one gets a key of its own from its primary
+     * key. The STS reads the rows, not the keys, so every STS version accepts both.
+     *
+     * @param Row $row
+     */
+    private static function payloadKey(array $row, string $idField): string
+    {
+        $uniqueId = $row['unique_id'] ?? null;
+        if ($uniqueId !== null && !is_int($uniqueId) && !is_string($uniqueId)) {
+            throw new UnexpectedValueException('Result row has an invalid unique ID.');
+        }
+        return trim((string) $uniqueId) !== '' ? (string) $uniqueId : 'sample-id:' . $row[$idField];
+    }
+
+    private function idField(): string
+    {
+        return explode('.', $this->idColumn)[1];
     }
 
     /**
