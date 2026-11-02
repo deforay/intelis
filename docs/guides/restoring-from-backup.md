@@ -11,7 +11,7 @@ reviewed_against: 5.8.5
 
 Put the database back from a backup on a machine where InteLIS already runs.
 A restore from the off-machine backup also brings back the lab settings,
-signatures, report templates and logos. Uploaded files and attachments can
+signatures, report templates, logos and the audit trail. Uploaded files and attachments can
 come back too.
 
 Restoring replaces everything in the database. Records entered after the backup
@@ -143,7 +143,7 @@ was made are lost.
             machine that sends the backups, run `intelis backup status`. The
             `Backing up to` line shows where they go.
 
-    5. At **What should be copied back?**, choose **Just the database backups**.
+    5. At **What should be copied back?**, choose **The database, settings and audit trail**.
     6. At **Where should the restore folder be created?**, press Enter to use
        `/var/intelis-restore`. Write down the new restore folder shown next. It
        looks like this:
@@ -214,6 +214,29 @@ was made are lost.
             The settings backup was made by an older InteLIS, or is missing.
             Follow the **Database and uploaded files** tab to copy them back
             from the backup.
+
+        The script then puts back the audit trail, the record of every change
+        made to each sample, and shows `Audit trail restored`. On a lab with a
+        long history, this copy can take a while.
+
+        ??? warning "If it says `needs about … GB of free space` or `did not finish`"
+
+            The audit trail was not restored, or only part of it. The rest of
+            the restore is finished. When the disk is full, free up space on it
+            first. Then run the `sudo rsync` command shown with the message. It
+            copies only what is missing or newer.
+
+        ??? info "If it says `This installation already has an audit trail`"
+
+            This machine keeps its own audit trail, which is newer than the one
+            in the backup. Nothing more is needed.
+
+        ??? warning "If it says `holds no audit trail` or `could not be copied`"
+
+            The audit trail did not come down with the backup. The copy failed,
+            or an older InteLIS fetched the backup. The lab works without it,
+            but the change history of each sample is missing. Run
+            `intelis restore` again to copy it down.
 
     ### Check the lab
 
@@ -376,6 +399,29 @@ was made are lost.
             Follow the **Database and uploaded files** tab to copy them back
             from the backup.
 
+        The script then puts back the audit trail, the record of every change
+        made to each sample, and shows `Audit trail restored`. On a lab with a
+        long history, this copy can take a while.
+
+        ??? warning "If it says `needs about … GB of free space` or `did not finish`"
+
+            The audit trail was not restored, or only part of it. The rest of
+            the restore is finished. When the disk is full, free up space on it
+            first. Then run the `sudo rsync` command shown with the message. It
+            copies only what is missing or newer.
+
+        ??? info "If it says `This installation already has an audit trail`"
+
+            This machine keeps its own audit trail, which is newer than the one
+            in the backup. Nothing more is needed.
+
+        ??? warning "If it says `holds no audit trail` or `could not be copied`"
+
+            The audit trail did not come down with the backup. The copy failed,
+            or an older InteLIS fetched the backup. The lab works without it,
+            but the change history of each sample is missing. Run
+            `intelis restore` again to copy it down.
+
     ### Check the lab
 
     12. Open InteLIS in the browser.
@@ -516,6 +562,29 @@ was made are lost.
 
             The settings backup was made by an older InteLIS, or is missing.
             The steps below copy them back from the backup too.
+
+        The script then puts back the audit trail, the record of every change
+        made to each sample, and shows `Audit trail restored`. On a lab with a
+        long history, this copy can take a while.
+
+        ??? warning "If it says `needs about … GB of free space` or `did not finish`"
+
+            The audit trail was not restored, or only part of it. The rest of
+            the restore is finished. When the disk is full, free up space on it
+            first. Then run the `sudo rsync` command shown with the message. It
+            copies only what is missing or newer.
+
+        ??? info "If it says `This installation already has an audit trail`"
+
+            This machine keeps its own audit trail, which is newer than the one
+            in the backup. Nothing more is needed.
+
+        ??? warning "If it says `holds no audit trail` or `could not be copied`"
+
+            The audit trail did not come down with the backup. The copy failed,
+            or an older InteLIS fetched the backup. The lab works without it,
+            but the change history of each sample is missing. Run
+            `intelis restore` again to copy it down.
 
     ### Put the uploaded files back
 

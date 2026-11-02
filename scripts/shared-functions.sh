@@ -1547,6 +1547,66 @@ restore_from_config_backup() { # restore_from_config_backup <config-backup-folde
     return 0
 }
 
+# Put back the audit trail (var/audit-trail) that the off-machine backup copies
+# beside the dumps. Once a change is archived there it is deleted from the
+# database, so a restored dump does not hold it. Two layouts are recognised:
+#   <folder>/db + <folder>/audit-trail          (what `intelis restore` copies down)
+#   <copy>/backups/db + <copy>/var/audit-trail  (the off-machine copy itself)
+#   <copy>/backups/db + <copy>/audit-trail      (a copy of an install that
+#                                                predates the var/ folder)
+#
+# An installation that already has an audit trail keeps it: that history is
+# newer than the backup's, and nothing in it is ever overwritten or deleted.
+# A copy that did not finish leaves var/.audit-trail-restore-incomplete, so the
+# files it did copy are not mistaken for such a history and the next run
+# resumes it. Returns 1 when the backup holds no audit trail, 2 when copying it
+# failed.
+restore_audit_trail() { # restore_audit_trail <dump-folder> <lis_path>
+    local dump_dir="$1" lis_path="$2"
+    local target="${lis_path}/var/audit-trail" source="" candidate need_kb free_kb resume
+    local marker="${lis_path}/var/.audit-trail-restore-incomplete"
+
+    # Checked first: `intelis restore` does not copy the audit trail down for an
+    # installation that has one, so the backup folder then holds none.
+    if [[ ! -e "$marker" && -n "$(find "$target" -type f ! -name .gitkeep -print -quit 2>/dev/null)" ]]; then
+        print info "This installation already has an audit trail. It is kept, because it is newer than the one in the backup."
+        return 0
+    fi
+    for candidate in "$(dirname "$dump_dir")/audit-trail" "$(dirname "$(dirname "$dump_dir")")/var/audit-trail" \
+        "$(dirname "$(dirname "$dump_dir")")/audit-trail"; do
+        if [[ -d "$candidate" && -n "$(find "$candidate" -type f ! -name .gitkeep -print -quit 2>/dev/null)" ]]; then
+            source="$(cd "$candidate" && pwd -P)"
+            break
+        fi
+    done
+    [[ -n "$source" ]] || return 1
+    mkdir -p "$target"
+    # --update: rsync renames each file into place only once it is whole, so a
+    # file already here is complete. It is replaced only by a newer copy, such
+    # as a monthly bundle that grew in a later backup, never by an older one.
+    resume="$(printf 'sudo rsync -rt --update %q %q && sudo chown -R www-data:www-data %q && sudo rm -f %q' \
+        "${source}/" "${target}/" "$target" "$marker")"
+
+    need_kb="$(du -sk "$source" 2>/dev/null | awk '{print $1}')"
+    free_kb="$(df -Pk "$target" 2>/dev/null | awk 'NR == 2 {print $4}')"
+    if [[ -n "$need_kb" && -n "$free_kb" ]] && ((need_kb + 1048576 > free_kb)); then
+        print error "The audit trail needs about $(((need_kb + 2097151) / 1048576)) GB of free space, and only $((free_kb / 1048576)) GB is free. The audit trail was NOT restored."
+        print info "Free up space, then run: ${resume}"
+        return 2
+    fi
+
+    print info "Restoring the audit trail ($((need_kb / 1024)) MB). This can take a while."
+    touch "$marker"
+    if ! rsync -rt --update --info=progress2 "${source}/" "${target}/"; then
+        print error "Copying the audit trail did not finish. To resume it, run: ${resume}"
+        return 2
+    fi
+    chown -R www-data:www-data "$target" 2>/dev/null || true
+    rm -f "$marker"
+    print success "Audit trail restored"
+    return 0
+}
+
 # Repair a database password that was HTML-escaped on its way into the config.
 #
 # The app's input sanitizer is an HTML purifier, and until this was fixed it ran

@@ -733,16 +733,37 @@ print success "Restoring from ${CHOSEN}"
 
 # --- what should come back? ---------------------------------------------------
 
+# A working installation here decides two things below: the audit trail is only
+# copied down when it has none, and the database goes straight back into it.
+LIS_PATH=""
+for candidate in /var/www/intelis /var/www/vlsm; do
+  if [ -f "$candidate/configs/config.production.php" ]; then LIS_PATH="$candidate"; break; fi
+done
+
 choose what db "What should be copied back?" \
-  "db:Just the database backups:The right choice for rebuilding a machine." \
+  "db:The database, settings and audit trail:The right choice for rebuilding a machine." \
   "all:Everything, including uploaded files and attachments:Much larger, and slower over a link." \
   "older:An older database backup (choose a date):From the dated history kept at the backup, for undoing a mistake noticed late."
 # shellcheck disable=SC2154  # set by `choose` above, via printf -v
-# "Just the database" still brings the config backups: they are small, and they
-# hold the old database password that opens an encrypted dump on a new machine.
+# The config backups are small, and they hold the old database password that
+# opens an encrypted dump on a new machine. The audit trail can be gigabytes, but
+# it is the only copy of the history archived out of the database. It is left
+# behind only when this machine already has one, which is newer.
 HIST_FILE=""
+# An install that predates the var/ folder kept it at the top, and so does its copy.
+AUDIT_SUBPATH=("/var/audit-trail:audit-trail")
+if ! src_exec "test -d $(printf '%q' "${SRC_DIR}/var/audit-trail")" 2>/dev/null &&
+  src_exec "test -d $(printf '%q' "${SRC_DIR}/audit-trail")" 2>/dev/null; then
+  AUDIT_SUBPATH=("/audit-trail:audit-trail")
+fi
+AUDIT_COPY_FAILED=false
+# The marker is left by a restore of the audit trail that did not finish.
+if [ -n "$LIS_PATH" ] && [ ! -e "${LIS_PATH}/var/.audit-trail-restore-incomplete" ] &&
+  [ -n "$(find "${LIS_PATH}/var/audit-trail" -type f ! -name .gitkeep -print -quit 2>/dev/null)" ]; then
+  AUDIT_SUBPATH=()
+fi
 case "$what" in
-  db) SUBPATHS=("/backups/db:db" "/backups/config:config") ;;
+  db) SUBPATHS=("/backups/db:db" "/backups/config:config" ${AUDIT_SUBPATH[@]+"${AUDIT_SUBPATH[@]}"}) ;;
   older)
     # .history/ holds one dump per day, then one per week (see remote-backup.sh).
     # Only the main database is offered; an interfacing dump can be restored by
@@ -753,7 +774,7 @@ case "$what" in
       | grep -v -e '^interfacing-' -e '^pre-restore-' | sort -r || true)
     if [ "${#HIST[@]}" -eq 0 ]; then
       print error "There is no dated history in this backup yet. It starts with the first backup made by an updated InteLIS."
-      print info  "Run this again and choose 'Just the database backups' for the newest backup."
+      print info  "Run this again and choose 'The database, settings and audit trail' for the newest backup."
       exit 1
     fi
     HIST_OPTIONS=()
@@ -764,7 +785,7 @@ case "$what" in
       HIST_OPTIONS+=("${f}:${d:0:4}-${d:4:2}-${d:6:2} at ${t:0:2}h${t:2:2}:${f}")
     done
     choose HIST_FILE "${HIST[0]}" "Which date should be restored?" "${HIST_OPTIONS[@]}"
-    SUBPATHS=("/.history/config:config")
+    SUBPATHS=("/.history/config:config" ${AUDIT_SUBPATH[@]+"${AUDIT_SUBPATH[@]}"})
     ;;
   *)  SUBPATHS=(":") ;;
 esac
@@ -799,7 +820,13 @@ for pair in "${SUBPATHS[@]}"; do
   mkdir -p "${STAGING}/${to}"
   # Only the dumps are required. An old lab may have no config backups yet.
   required=true
+  missing="No settings backups were copied. An encrypted dump may need its key typed in."
   [ "$to" = "config" ] && required=false
+  if [ "$to" = "audit-trail" ]; then
+    required=false
+    missing="The audit trail was not copied. The restore goes on without it."
+  fi
+  copied=true
   case "$SRC_MODE" in
     ssh)
       ssh_cmd="ssh -o ControlPath=${SSH_CONTROL} -o StrictHostKeyChecking=accept-new -p ${SSH_PORT}"
@@ -807,16 +834,23 @@ for pair in "${SUBPATHS[@]}"; do
       if ! rsync -rtLz --info=progress2 -e "$ssh_cmd" \
           "${SSH_USER}@${SSH_HOST}:${SRC_DIR}${from}/" "${STAGING}/${to}/"; then
         $required && { print error "The copy did not finish."; exit 1; }
-        print warning "No settings backups were copied. An encrypted dump may need its key typed in."
+        print warning "$missing"
+        copied=false
       fi
       ;;
     *)
       if ! rsync -rtL --info=progress2 "${SRC_DIR}${from}/" "${STAGING}/${to}/"; then
         $required && { print error "The copy did not finish."; exit 1; }
-        print warning "No settings backups were copied. An encrypted dump may need its key typed in."
+        print warning "$missing"
+        copied=false
       fi
       ;;
   esac
+  # A partial audit trail must not be restored as if it were the whole of it.
+  if [ "$to" = "audit-trail" ] && ! $copied; then
+    rm -rf -- "${STAGING:?}/audit-trail"
+    AUDIT_COPY_FAILED=true
+  fi
 done
 if [ -n "$HIST_FILE" ]; then
   mkdir -p "${STAGING}/db"
@@ -897,11 +931,6 @@ fi
 
 # --- what to do next ----------------------------------------------------------
 
-LIS_PATH=""
-for candidate in /var/www/intelis /var/www/vlsm; do
-  if [ -f "$candidate/configs/config.production.php" ]; then LIS_PATH="$candidate"; break; fi
-done
-
 print header "What to do next"
 
 if [ -n "$LIS_PATH" ]; then
@@ -963,6 +992,17 @@ if [ -n "$LIS_PATH" ]; then
         (cd "$LIS_PATH" && sudo -u www-data php app/includes/purge-cache.php >/dev/null 2>&1) || true
       else
         print warning "This backup has no settings backup (config-*.tgz). The restore did not bring back the settings, signatures, report templates or logos."
+      fi
+      if declare -F restore_audit_trail >/dev/null; then
+        audit_rc=0
+        restore_audit_trail "$DUMP_DIR" "$LIS_PATH" || audit_rc=$?
+        if [ "$audit_rc" -eq 1 ] && $AUDIT_COPY_FAILED; then
+          print warning "The audit trail could not be copied from the backup, so it was not restored. Run 'intelis restore' again to retry."
+        elif [ "$audit_rc" -eq 1 ]; then
+          print warning "This backup holds no audit trail. The audit history of the samples was not restored."
+        fi
+      else
+        print warning "shared-functions.sh is out of date. The restore did not bring back the audit trail."
       fi
       print info "Log in and check Admin → System Config."
     else
