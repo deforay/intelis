@@ -99,10 +99,13 @@ $schedule->run(PHP_BINARY . " " . VENDOR_BIN . "/db-tools maintain --all --optim
     ->description('DB Tools: monthly optimize + analyze + binlog purge');
 
 
-// Daily config backup: settings, signatures, report templates and logos
+// Config backup: settings, signatures, report templates, logos and barcode
+// label formats. Every 6 hours, a few minutes after the database dump, so an
+// upload made during the day is in backups/ by the next off-machine copy. It
+// writes a new archive only when something changed.
 $schedule->run(PHP_BINARY . ' ' . BIN_PATH . '/backup-configs.php')
-    ->dailyAt('03:30')
-    ->description('Daily config backup')
+    ->cron('5 */6 * * *')
+    ->description('Config backup (every 6 hours, when changed)')
     ->preventOverlapping()
     ->timezone($timezone);
 

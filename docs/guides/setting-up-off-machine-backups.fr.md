@@ -264,7 +264,8 @@ machine.
     Il contient tout le dossier InteLIS. Les sauvegardes de la base de données
     se trouvent dans `backups/db` et les sauvegardes des paramètres dans
     `backups/config`. Une sauvegarde des paramètres contient les paramètres du
-    laboratoire, les signatures, les modèles de rapport et les logos. La
+    laboratoire, les signatures, les modèles de rapport, les logos et les
+    formats d'étiquettes code-barres. La
     sauvegarde exclut les fichiers reconstruits à l'installation : `vendor/`,
     `node_modules/`, les caches, les journaux, les fichiers temporaires et les
     dossiers de gestion de versions.
@@ -500,7 +501,8 @@ machine.
     Il contient tout le dossier InteLIS. Les sauvegardes de la base de données
     se trouvent dans `backups\db` et les sauvegardes des paramètres dans
     `backups\config`. Une sauvegarde des paramètres contient les paramètres du
-    laboratoire, les signatures, les modèles de rapport et les logos. La
+    laboratoire, les signatures, les modèles de rapport, les logos et les
+    formats d'étiquettes code-barres. La
     sauvegarde exclut les fichiers reconstruits à l'installation : `vendor/`,
     `node_modules/`, les caches, les journaux, les fichiers temporaires et les
     dossiers de gestion de versions.
@@ -694,7 +696,8 @@ machine.
     Il contient tout le dossier InteLIS. Les sauvegardes de la base de données
     se trouvent dans `backups/db` et les sauvegardes des paramètres dans
     `backups/config`. Une sauvegarde des paramètres contient les paramètres du
-    laboratoire, les signatures, les modèles de rapport et les logos. La
+    laboratoire, les signatures, les modèles de rapport, les logos et les
+    formats d'étiquettes code-barres. La
     sauvegarde exclut les fichiers reconstruits à l'installation : `vendor/`,
     `node_modules/`, les caches, les journaux, les fichiers temporaires et les
     dossiers de gestion de versions.
