@@ -93,7 +93,7 @@ $uploadDirs = array_values(array_filter($uploadDirs, fn($dir): bool => is_dir(WE
 // still there, means nothing changed, so no new archive is written.
 $signatureFile = "$DEST_DIR/.last-backup-signature";
 $listing = [];
-$skip = '#(^|/)(\.git|\.DS_Store|cache|node_modules)(/|$)|\.(key|pem)$#';
+$skip = '#(?:(?:^|/)(?:\.git|\.DS_Store|cache|node_modules)(?:/|$))|(?:\.(?:key|pem)$)#';
 foreach (array_merge([$CONFIG_PATH], array_map(fn($dir): string => WEB_ROOT . '/' . $dir, $uploadDirs)) as $root) {
     $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
     foreach ($files as $f) {
