@@ -51,8 +51,8 @@ $fileName = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'co
                         <div class="form-group">
                           <label class="col-lg-4 control-label" for="requestFile">Upload File <span class="mandatory">*</span></label>
                           <div class="col-lg-7">
-                            <input type="file" class="isRequired" name="requestFile" id="requestFile" title="Please select a file to upload">
-                            (Upload xls, xlsx, csv format)
+                            <input type="file" class="isRequired" name="requestFile" id="requestFile" accept=".xlsx" title="Please select a file to upload">
+                            (Upload xlsx format)
                           </div>
                         </div>
                       </div>

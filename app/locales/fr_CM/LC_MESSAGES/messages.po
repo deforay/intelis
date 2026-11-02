@@ -38044,3 +38044,6 @@ msgstr "Transfert"
 
 msgid "Samples at each stage for the selected date range. The % under a box is its share of the box before it."
 msgstr "Échantillons à chaque étape pour la période choisie. Le % sous une case est sa part de la case précédente."
+
+msgid "Save the file as .xlsx and upload it again."
+msgstr "Enregistrez le fichier au format .xlsx et téléversez-le à nouveau."

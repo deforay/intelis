@@ -7,11 +7,11 @@ use App\Services\EidService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SpreadsheetUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
 ini_set('memory_limit', -1);
@@ -46,12 +46,14 @@ try {
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         $mime_type = $file_info->buffer(file_get_contents(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
 
-        $spreadsheet = IOFactory::load(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName);
-        $sheetData = $spreadsheet->getActiveSheet();
-        $sheetData = $sheetData->toArray(null, true, true, true);
-
-        $resultArray = array_slice($sheetData, 1);
-        // echo "<pre>";print_r($resultArray);die;
+        try {
+            $resultArray = SpreadsheetUtility::readRowsByColumnLetter(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName);
+        } catch (InvalidArgumentException $notXlsx) {
+            // Nothing imported yet, so send them back to upload it again
+            $_SESSION['alertMsg'] = $notXlsx->getMessage();
+            header("Location:/eid/requests/eid-bulk-import-request.php");
+            exit;
+        }
 
         foreach ($resultArray as $rowIndex => $rowData) {
             if (!empty($rowData['B'])) {
@@ -138,12 +140,12 @@ try {
                     'mother_hiv_status' => $rowData['M'] ?? null,
                     'mother_treatment' => $rowData['N'] ?? null,
                     'rapid_test_performed' => isset($rowData['O']) ? strtolower((string) $rowData['O']) : null,
-                    'rapid_test_date' => isset($rowData['P']) ? date('Y-M-d', strtotime((string) $rowData['P'])) : null,
+                    'rapid_test_date' => DateUtility::isoDateFormat($rowData['P'] ?? ''),
                     'rapid_test_result' => isset($rowData['Q']) ? strtolower((string) $rowData['Q']) : null,
                     'has_infant_stopped_breastfeeding' => isset($rowData['R']) ? strtolower((string) $rowData['R']) : null,
                     'age_breastfeeding_stopped_in_months' => $rowData['S'] ?? null,
                     'pcr_test_performed_before' => isset($rowData['T']) ? strtolower((string) $rowData['T']) : null,
-                    'last_pcr_date' => isset($rowData['U']) ? date('Y-M-d', strtotime((string) $rowData['U'])) : null,
+                    'last_pcr_date' => DateUtility::isoDateFormat($rowData['U'] ?? ''),
                     'reason_for_pcr' => $rowData['V'] ?? null,
                     'sample_collection_date' => $sampleCollectionDate,
                     'sample_requestor_name' => $rowData['X'] ?? null,

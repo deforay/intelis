@@ -3,10 +3,10 @@
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SpreadsheetUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
 
@@ -41,11 +41,14 @@ try {
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         $mime_type = $file_info->buffer(file_get_contents(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
 
-        $spreadsheet = IOFactory::load(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName);
-        $sheetData   = $spreadsheet->getActiveSheet();
-        $sheetData   = $sheetData->toArray(null, true, true, true);
-        $returnArray = [];
-        $resultArray = array_slice($sheetData, 1);
+        try {
+            $resultArray = SpreadsheetUtility::readRowsByColumnLetter(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName);
+        } catch (InvalidArgumentException $notXlsx) {
+            // Nothing imported yet, so send them back to upload it again
+            $_SESSION['alertMsg'] = $notXlsx->getMessage();
+            header("Location:/covid-19/requests/covid-19-bulk-import-request.php");
+            exit;
+        }
 
         foreach ($resultArray as $rowIndex => $rowData) {
             // echo "<pre>";print_r($rowData);die;
@@ -119,8 +122,8 @@ try {
                     'flight_transit'                        => $rowData['AM'],
                     'reason_of_visit'                       => $rowData['AN'],
                     'number_of_days_sick'                   => $rowData['AO'],
-                    'date_of_symptom_onset'                 => date('Y-m-d', strtotime((string) $rowData['AP'])),
-                    'date_of_initial_consultation'          => date('Y-m-d', strtotime((string) $rowData['AQ'])),
+                    'date_of_symptom_onset'                 => DateUtility::isoDateFormat($rowData['AP'] ?? ''),
+                    'date_of_initial_consultation'          => DateUtility::isoDateFormat($rowData['AQ'] ?? ''),
                     'type_of_test_requested'                => $rowData['AS'],
                     'reason_for_covid19_test'               => $testReason['test_reason_id'] ?? null,
                     'sample_collection_date'                => $sampleCollectionDate,
@@ -129,12 +132,12 @@ try {
                     'sample_received_at_lab_datetime'    => $sampleReceivedDate,
                     'lab_id'                                => $labName['facility_id'] ?? null,
                     'is_sample_rejected'                    => strtolower((string) $rowData['AZ']),
-                    'reason_for_sample_rejection'           => (isset($rejectionReason['rejection_reason_id']) && $rejectionReason['rejection_reason_id'] != "") ? $rejectionReason['rejection_reason_id'] : 9999,
-                    'rejection_on'                          => date('Y-m-d', strtotime((string) $rowData['BB'])),
+                    'reason_for_sample_rejection'           => strtolower((string) $rowData['AZ']) === 'yes' ? ($rejectionReason['rejection_reason_id'] ?? 9999) : null,
+                    'rejection_on'                          => DateUtility::isoDateFormat($rowData['BB'] ?? ''),
                     'result'                                => $result['result_id'],
                     'is_result_authorised'                  => strtolower((string) $rowData['BL']),
                     'authorized_by'                         => ($rowData['BM']),
-                    'authorized_on'                         => date('Y-m-d', strtotime((string) $rowData['BN'])),
+                    'authorized_on'                         => DateUtility::isoDateFormat($rowData['BN'] ?? ''),
                     'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
                     'last_modified_by'                      => $_SESSION['userId'],
                     'result_status'                         => $resultStatus['status_id'] ?? null,
@@ -165,6 +168,10 @@ try {
                     $db->delete($testTableName);
 
                     foreach ($testData as $testKitName) {
+                        // A test with no method was not done (rejected samples, or only one test)
+                        if (trim((string) $testKitName['testRequest']) === '') {
+                            continue;
+                        }
                         $covid19TestData = ['covid19_id'            => $lastId, 'test_name'             => $testKitName['testRequest'], 'facility_id'           => $labName['facility_id'] ?? null, 'testing_platform'      => $testKitName['testingPlatform'], 'sample_tested_datetime' => DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true), 'result'                => strtolower((string) $testKitName['testResult'])];
                         $db->insert($testTableName, $covid19TestData);
                         $covid19Data['sample_tested_datetime'] = DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true);
