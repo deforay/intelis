@@ -16,7 +16,8 @@
 #   print_r(...)         a dump left in. print_r($x, true) returns a string
 #                        and passes.
 #
-# It runs from .githooks/pre-ship (git ship, git land) and composer qc.
+# It runs from .githooks/pre-ship (git ship, git land), composer qc and the
+# Verify workflow in CI, which also covers direct pushes to master.
 #
 # Usage:
 #   check-debug-leftovers.sh BASE HEAD   check the lines added in BASE..HEAD (pre-ship)

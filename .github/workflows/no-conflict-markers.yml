@@ -81,6 +81,38 @@ jobs:
             bash bin/build/check-commit-attribution.sh "$HEAD_SHA"
           fi
 
+  # pre-ship runs the same check, but a direct push to master skips it. Only the
+  # lines the pushed commits add are read, so old calls already in the code pass.
+  debug-leftovers:
+    name: No debugging left in
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check the lines the pushed commits add
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+        run: |
+          # A manual run, or a push the runner cannot see the parent of, has no
+          # usable base. Check the head commit alone then.
+          if [ -z "$BASE_SHA" ] || ! git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null; then
+            BASE_SHA="$(git rev-parse "$HEAD_SHA^" 2>/dev/null || true)"
+          fi
+          if [ -z "$BASE_SHA" ]; then
+            echo "No parent commit to compare with. Nothing to check."
+            exit 0
+          fi
+          # Compare from the merge base. When master moved on after the branch,
+          # a plain diff from the master tip would count master's removals as
+          # lines this branch adds.
+          bash bin/build/check-debug-leftovers.sh "$(git merge-base "$BASE_SHA" "$HEAD_SHA")" "$HEAD_SHA"
+
   di-container:
     name: DI container compiles
     runs-on: ubuntu-26.04
