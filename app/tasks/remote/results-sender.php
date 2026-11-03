@@ -245,11 +245,13 @@ if ($cliMode) {
             continue;
         }
 
+        // Verbosity flags were read when $io was built.
+        if (isset(MiscUtility::VERBOSITY_FLAGS[$arg])) {
+            continue;
+        }
+
         if ($arg === 'silent') {
             $isSilent = true;
-        } elseif (isset(MiscUtility::VERBOSITY_FLAGS[$arg])) {
-            // Read when $io was built.
-            continue;
         } elseif ($arg === '--dry-run' || $arg === 'dry-run') {
             $isDryRun = true;
         } elseif ($arg === '--wait-for-lock') {

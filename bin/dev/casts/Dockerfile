@@ -13,8 +13,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-      systemd systemd-sysv dbus sudo curl wget ca-certificates gnupg lsb-release \
-      tzdata git asciinema expect locales cron \
+      asciinema ca-certificates cron curl dbus expect git gnupg locales \
+      lsb-release sudo systemd systemd-sysv tzdata wget \
  && locale-gen en_US.UTF-8 \
  && rm -rf /var/lib/apt/lists/*
 

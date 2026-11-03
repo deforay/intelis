@@ -126,7 +126,23 @@ $exitLabels = [
         border-bottom: 1px solid #e4e8ec;
     }
 
+    /* Each stage is a real button, so the keyboard and screen readers treat it
+       as one. It takes the row's layout; its list item keeps only the border. */
+    #sampleFlow .sf-stage-list>li.sf-item {
+        padding: 0;
+    }
+
     #sampleFlow .sf-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 10px 12px;
+        border: 0;
+        background: none;
+        color: inherit;
+        font: inherit;
+        text-align: left;
         cursor: pointer;
     }
 
@@ -754,7 +770,7 @@ $exitLabels = [
                                 </div>
                                 <ul class="sf-stage-list" id="sfStages" aria-describedby="sf-description">
                                     <?php foreach ($stageLabels as $stageKey => $label) { ?>
-                                        <li class="sf-row" data-stage="<?= $stageKey; ?>" tabindex="0" role="button"
+                                        <li class="sf-item"><button type="button" class="sf-row" data-stage="<?= $stageKey; ?>"
                                             onclick="sfSelectStage('<?= $stageKey; ?>');">
                                             <span class="sf-row-label">
                                                 <?= htmlspecialchars($label, ENT_QUOTES); ?>
@@ -762,16 +778,16 @@ $exitLabels = [
                                             </span>
                                             <span class="sf-count" id="count-<?= $stageKey; ?>">&ndash;</span>
                                             <em class="fa-solid fa-chevron-right sf-go" aria-hidden="true"></em>
-                                        </li>
+                                        </button></li>
                                     <?php } ?>
                                     <li class="sf-section"><?= _htmlTranslate('Closed without a result'); ?></li>
                                     <?php foreach ($exitLabels as $exitKey => $label) { ?>
-                                        <li class="sf-row" data-stage="<?= $exitKey; ?>" tabindex="0" role="button"
+                                        <li class="sf-item"><button type="button" class="sf-row" data-stage="<?= $exitKey; ?>"
                                             onclick="sfSelectStage('<?= $exitKey; ?>');">
                                             <span class="sf-row-label"><?= htmlspecialchars($label, ENT_QUOTES); ?></span>
                                             <span class="sf-count" id="count-<?= $exitKey; ?>">&ndash;</span>
                                             <em class="fa-solid fa-chevron-right sf-go" aria-hidden="true"></em>
-                                        </li>
+                                        </button></li>
                                     <?php } ?>
                                     <li class="sf-total">
                                         <span class="sf-row-label"><?= _htmlTranslate('Registered in this period'); ?></span>
@@ -1340,14 +1356,6 @@ $exitLabels = [
         // A status chip lists the samples of the stage that carry that status.
         $('#sfStageStatuses').on('click', '.sf-status-chip', function () {
             sfDrill('', '', parseInt($(this).attr('data-status'), 10), $(this).attr('data-name'));
-        });
-
-        // Rows act as buttons, so the keyboard opens them too.
-        $('#sfStages').on('keydown', '.sf-row', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                sfSelectStage($(this).attr('data-stage'));
-            }
         });
 
         $('#sfTable').on('click', 'tr.sf-drill-row', function () {

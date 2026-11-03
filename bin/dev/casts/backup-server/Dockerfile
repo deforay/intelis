@@ -13,7 +13,7 @@ FROM ubuntu:24.04
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends openssh-server sudo rsync locales \
+ && apt-get install -y --no-install-recommends locales openssh-server rsync sudo \
  && locale-gen en_US.UTF-8 \
  && rm -rf /var/lib/apt/lists/* \
  && useradd -m -s /bin/bash -G sudo labadmin \
