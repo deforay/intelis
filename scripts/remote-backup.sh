@@ -624,6 +624,23 @@ fi
 # --- what to leave out --------------------------------------------------------
 # composer.lock is deliberately kept: vendor/ is excluded, so the lock file is
 # what makes the restored copy reproducible.
+#
+# The application itself is left out too. Every restore installs a fresh copy
+# of it (setup.sh, or the installation already on the machine) and takes only
+# the dumps, the settings archive, the audit trail and public/uploads from the
+# backup. These are named one by one rather than the backup listing what to
+# keep: a folder added later, which may hold data, is then copied until it is
+# looked at, instead of being lost. var/track-api and var/metadata are rebuilt
+# by the application.
+SOURCE_PATHS=(
+  .ddev .devcontainer .dockerignore .env.example .githooks .github .gitignore .hgignore
+  .sonarcloud.properties Dockerfile LICENSE.md README.md app bin bootstrap.php composer.json
+  cron.sh crunz.yml db-tools.php dev docker docker-compose.yml docs intelis
+  mkdocs-requirements.txt mkdocs.yml phpunit.xml.dist run-once scripts sql sys tests user.ini
+  public/.htaccess public/api public/assets public/favicon.ico public/files public/index.php
+  public/robots.txt public/sitemap.xml public/sse
+  var/track-api var/metadata
+)
 
 EXCLUDE_LIST="$(mktemp /tmp/intelis-backup-excludes.XXXXXX)"
 trap 'rm -f "$EXCLUDE_LIST"' EXIT
@@ -659,6 +676,7 @@ Thumbs.db
 desktop.ini
 .directory
 EXCLUDES
+printf '/%s\n' "${SOURCE_PATHS[@]}" >> "$EXCLUDE_LIST"
 
 # --- rsync options per destination --------------------------------------------
 
@@ -1035,6 +1053,14 @@ case "$DEST_MODE" in
     ;;
 esac
 BACKUP_SIZE=${BACKUP_SIZE:-unknown}
+
+# Copies made before the application was left out still hold it. rsync never
+# deletes an excluded path, so the same named paths are removed here, and only
+# those. Running it every time costs one stat per path.
+q_source=""
+for source_path in "${SOURCE_PATHS[@]}"; do q_source+=" $(printf '%q' "$source_path")"; done
+dest_exec "cd ${Q_DEST} && rm -rf --${q_source}" ||
+  print warning "Could not remove the old copy of the application from the destination. The next backup tries again."
 
 # Restore listings use this timestamp. Write it only after the copy and checksum
 # verification finish, so it never claims that a failed run updated the backup.

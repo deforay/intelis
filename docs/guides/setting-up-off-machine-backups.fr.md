@@ -279,9 +279,10 @@ machine.
     `backups/config`. Une sauvegarde des paramètres contient les paramètres du
     laboratoire, les signatures, les modèles de rapport, les logos et les
     formats d'étiquettes code-barres. La
-    sauvegarde exclut les fichiers reconstruits à l'installation : `vendor/`,
-    `node_modules/`, les caches, les journaux, les fichiers temporaires et les
-    dossiers de gestion de versions.
+    sauvegarde exclut les fichiers reconstruits à l'installation :
+    l'application InteLIS elle-même, `vendor/`, `node_modules/`, les caches,
+    les journaux, les fichiers temporaires et les dossiers de gestion de
+    versions. Chaque restauration installe une copie neuve de l'application.
 
     Le dossier est un miroir de cette machine. Il ne contient donc que les
     sauvegardes les plus récentes de la base de données, environ les 2 derniers
@@ -540,9 +541,10 @@ machine.
     `backups\config`. Une sauvegarde des paramètres contient les paramètres du
     laboratoire, les signatures, les modèles de rapport, les logos et les
     formats d'étiquettes code-barres. La
-    sauvegarde exclut les fichiers reconstruits à l'installation : `vendor/`,
-    `node_modules/`, les caches, les journaux, les fichiers temporaires et les
-    dossiers de gestion de versions.
+    sauvegarde exclut les fichiers reconstruits à l'installation :
+    l'application InteLIS elle-même, `vendor/`, `node_modules/`, les caches,
+    les journaux, les fichiers temporaires et les dossiers de gestion de
+    versions. Chaque restauration installe une copie neuve de l'application.
 
     Le dossier est un miroir de cette machine. Il ne contient donc que les
     sauvegardes les plus récentes de la base de données, environ les 2 derniers
@@ -759,9 +761,10 @@ machine.
     `backups/config`. Une sauvegarde des paramètres contient les paramètres du
     laboratoire, les signatures, les modèles de rapport, les logos et les
     formats d'étiquettes code-barres. La
-    sauvegarde exclut les fichiers reconstruits à l'installation : `vendor/`,
-    `node_modules/`, les caches, les journaux, les fichiers temporaires et les
-    dossiers de gestion de versions.
+    sauvegarde exclut les fichiers reconstruits à l'installation :
+    l'application InteLIS elle-même, `vendor/`, `node_modules/`, les caches,
+    les journaux, les fichiers temporaires et les dossiers de gestion de
+    versions. Chaque restauration installe une copie neuve de l'application.
 
     Le dossier est un miroir de cette machine. Il ne contient donc que les
     sauvegardes les plus récentes de la base de données, environ les 2 derniers
