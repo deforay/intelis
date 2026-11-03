@@ -7,6 +7,7 @@ namespace App\Utilities;
 use InvalidArgumentException;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\Reader\XLSX\Reader;
 
 /**
@@ -23,9 +24,7 @@ final class SpreadsheetUtility
      */
     public static function readRowsByColumnLetter(string $path): array
     {
-        if (MiscUtility::getFileExtension($path) !== 'xlsx') {
-            throw new InvalidArgumentException(_translate('Save the file as .xlsx and upload it again.'));
-        }
+        self::assertXlsx($path);
 
         $reader = new Reader();
         $reader->open($path);
@@ -39,13 +38,7 @@ final class SpreadsheetUtility
                         $isHeading = false;
                         continue;
                     }
-                    // A formula cell's getValue() is the formula; take the value Excel saved with it.
-                    $values = array_map(
-                        static fn(Cell $cell): ?string => self::cellToString(
-                            $cell instanceof FormulaCell ? $cell->getComputedValue() : $cell->getValue()
-                        ),
-                        $sheetRow->cells
-                    );
+                    $values = self::rowValues($sheetRow);
                     if (array_filter($values, static fn(?string $value): bool => $value !== null) === []) {
                         continue;
                     }
@@ -65,6 +58,35 @@ final class SpreadsheetUtility
         );
     }
 
+    /**
+     * The heading row of the first sheet as text, empty cells as null and
+     * empty cells at the end left out.
+     *
+     * @return list<?string>
+     */
+    public static function readHeadingRow(string $path): array
+    {
+        self::assertXlsx($path);
+
+        $reader = new Reader();
+        $reader->open($path);
+        try {
+            foreach ($reader->getSheetIterator() as $sheet) {
+                foreach ($sheet->getRowIterator() as $sheetRow) {
+                    $values = self::rowValues($sheetRow);
+                    while ($values !== [] && end($values) === null) {
+                        array_pop($values);
+                    }
+                    return $values;
+                }
+                break; // first sheet only
+            }
+        } finally {
+            $reader->close();
+        }
+        return [];
+    }
+
     /** 1 => 'A', 26 => 'Z', 27 => 'AA', 53 => 'BA' */
     public static function columnLetter(int $column): string
     {
@@ -75,6 +97,25 @@ final class SpreadsheetUtility
             $column = intdiv($column - 1, 26);
         }
         return $letter;
+    }
+
+    private static function assertXlsx(string $path): void
+    {
+        if (MiscUtility::getFileExtension($path) !== 'xlsx') {
+            throw new InvalidArgumentException(_translate('Save the file as .xlsx and upload it again.'));
+        }
+    }
+
+    /** @return list<?string> */
+    private static function rowValues(Row $row): array
+    {
+        // A formula cell's getValue() is the formula; take the value Excel saved with it.
+        return array_map(
+            static fn(Cell $cell): ?string => self::cellToString(
+                $cell instanceof FormulaCell ? $cell->getComputedValue() : $cell->getValue()
+            ),
+            $row->cells
+        );
     }
 
     private static function cellToString(mixed $value): ?string

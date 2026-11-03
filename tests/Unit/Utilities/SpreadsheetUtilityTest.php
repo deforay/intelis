@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Utilities;
 
+use App\Services\CommonService;
 use App\Utilities\SpreadsheetUtility;
 use DateTimeImmutable;
 use InvalidArgumentException;
@@ -114,11 +115,58 @@ final class SpreadsheetUtilityTest extends TestCase
         SpreadsheetUtility::readRowsByColumnLetter(sys_get_temp_dir() . '/requests.xls');
     }
 
+    public function testReadsTheHeadingRowWithoutTrailingEmptyCells(): void
+    {
+        $this->write([
+            Row::fromValues(['Batch Code', '', 'Result', '', '']),
+            Row::fromValues(['B-1', 'x', '200']),
+        ]);
+
+        $this->assertSame(['Batch Code', null, 'Result'], SpreadsheetUtility::readHeadingRow($this->path));
+    }
+
+    public function testHeadingRowOfAnEmptySheetIsEmpty(): void
+    {
+        $this->write([]);
+
+        $this->assertSame([], SpreadsheetUtility::readHeadingRow($this->path));
+    }
+
+    public function testHeadingRowRejectsAnythingButXlsx(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        SpreadsheetUtility::readHeadingRow(sys_get_temp_dir() . '/controls.csv');
+    }
+
+    public function testUploadMatchesTemplateIgnoringCaseAndSpaces(): void
+    {
+        $template = sys_get_temp_dir() . '/intelis-template-' . bin2hex(random_bytes(4)) . '.xlsx';
+        try {
+            $this->writeTo($template, [Row::fromValues(['Batch Code', 'Control Type', 'Tested On'])]);
+
+            $this->write([Row::fromValues(["batch code", "CONTROL\nTYPE", 'TestedOn', '']), Row::fromValues(['B-1'])]);
+            $this->assertTrue(CommonService::validateUploadedFile($this->path, $template));
+
+            $this->write([Row::fromValues(['Batch Code', 'Tested On', 'Control Type'])]);
+            $this->assertFalse(CommonService::validateUploadedFile($this->path, $template));
+        } finally {
+            if (is_file($template)) {
+                unlink($template);
+            }
+        }
+    }
+
     /** @param list<Row> $rows */
     private function write(array $rows): void
     {
+        $this->writeTo($this->path, $rows);
+    }
+
+    /** @param list<Row> $rows */
+    private function writeTo(string $path, array $rows): void
+    {
         $writer = new Writer();
-        $writer->openToFile($this->path);
+        $writer->openToFile($path);
         $writer->addRows($rows);
         $writer->close();
     }

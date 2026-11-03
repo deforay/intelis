@@ -5,6 +5,7 @@ use App\Services\VlService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SpreadsheetUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -45,7 +46,7 @@ try {
     $ranNumber = "BULK-CONTROLS-" . MiscUtility::generateRandomString(16);
     $extension = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
-    $allowedExtensions = ['xls', 'xlsx', 'csv'];
+    $allowedExtensions = ['xlsx'];
 
     MiscUtility::makeDirectory(TEMP_PATH);
 
@@ -66,11 +67,7 @@ try {
 
                 if ($validate) {
 
-                    $spreadsheet = IOFactory::load($targetPath);
-                    $sheetData = $spreadsheet->getActiveSheet();
-                    $sheetData = $sheetData->toArray(null, true, true, true);
-
-                    $filteredArray = array_filter(array_slice($sheetData, 1), fn($row): array => array_filter($row)); // Remove empty rows
+                    $filteredArray = SpreadsheetUtility::readRowsByColumnLetter($targetPath);
 
                     $total = count($filteredArray);
                     $facilityNotAdded = [];
@@ -114,7 +111,7 @@ try {
                                 'batch_id' => trim((string) $rowData['A']) ?? null,
                                 'control_type' => trim((string) $rowData['B']) ?? null,
                                 'lot_number' => trim((string) $rowData['C']) ?? null,
-                                'lot_expiration_date' => trim((string) $rowData['D']) ?? null,
+                                'lot_expiration_date' => DateUtility::isoDateFormat($rowData['D'] ?? ''),
                                 'tested_by' => ($testedBy),
                                 'sample_tested_datetime' => empty($rowData['F']) ? null : DateUtility::isoDateFormat($rowData['F'], true),
                                 'is_sample_rejected' => trim((string) $rowData['G']) ?? null,
@@ -161,7 +158,7 @@ try {
                 }
             }
         } else {
-            $_SESSION['alertMsg'] = _translate("Please Upload xls, xlsx, csv format only");
+            $_SESSION['alertMsg'] = _translate("Save the file as .xlsx and upload it again.");
             MiscUtility::redirect("/vl/program-management/upload-vl-control.php");
             exit();
         }
