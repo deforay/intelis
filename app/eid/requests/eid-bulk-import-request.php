@@ -50,10 +50,10 @@ $fileName = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'ei
                     <div class="row">
                       <div class="col-md-6">
                         <div class="form-group">
-                          <label class="col-lg-4 control-label" for="requestFile">Upload File <span class="mandatory">*</span></label>
+                          <label class="col-lg-4 control-label" for="requestFile"><?= _translate("Upload File"); ?> <span class="mandatory">*</span></label>
                           <div class="col-lg-7">
-                            <input type="file" class="isRequired" name="requestFile" id="requestFile" accept=".xlsx" title="Please select a file to upload">
-                            (Upload xlsx format)
+                            <input type="file" class="isRequired" name="requestFile" id="requestFile" accept=".xlsx" title="<?= _translate("Please select a file to upload"); ?>">
+                            <?= _translate("(Upload xlsx format)"); ?>
                           </div>
                         </div>
                       </div>

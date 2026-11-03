@@ -43,9 +43,6 @@ try {
 
     if (move_uploaded_file($_FILES['requestFile']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)) {
 
-        $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
-        $mime_type = $file_info->buffer(file_get_contents(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
-
         try {
             $resultArray = SpreadsheetUtility::readRowsByColumnLetter(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName);
         } catch (InvalidArgumentException $notXlsx) {
