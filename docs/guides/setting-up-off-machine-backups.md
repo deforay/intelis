@@ -215,6 +215,17 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
             `intelis backup`. The full record is in
             `/var/log/intelis-backup.log`.
 
+        ??? warning "If `Last attempt` shows `WITH A WARNING`"
+
+            The backup finished without the audit trail, the record of every
+            change made to each sample. This machine holds much less of the
+            audit trail than the backup does, or a restore of it did not
+            finish. The audit trail in the backup is kept as it was, so nothing
+            is lost there. The `Warning` line below it gives the cause. To copy
+            the missing part back, run `intelis restore` and choose
+            **Only the audit trail**. The database and settings are not
+            changed, and every file already on this machine is kept.
+
         ??? failure "If `Schedule` shows `OFF`"
 
             Start the scheduled backups again:
@@ -429,6 +440,17 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
             `intelis backup`. The full record is in
             `/var/log/intelis-backup.log`.
 
+        ??? warning "If `Last attempt` shows `WITH A WARNING`"
+
+            The backup finished without the audit trail, the record of every
+            change made to each sample. This machine holds much less of the
+            audit trail than the backup does, or a restore of it did not
+            finish. The audit trail in the backup is kept as it was, so nothing
+            is lost there. The `Warning` line below it gives the cause. To copy
+            the missing part back, run `intelis restore` and choose
+            **Only the audit trail**. The database and settings are not
+            changed, and every file already on this machine is kept.
+
         ??? failure "If `Schedule` shows `OFF`"
 
             Start the scheduled backups again:
@@ -608,6 +630,17 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
             The `Reason` line below it gives the cause. Fix it, then run
             `intelis backup`. The full record is in
             `/var/log/intelis-backup.log`.
+
+        ??? warning "If `Last attempt` shows `WITH A WARNING`"
+
+            The backup finished without the audit trail, the record of every
+            change made to each sample. This machine holds much less of the
+            audit trail than the backup does, or a restore of it did not
+            finish. The audit trail in the backup is kept as it was, so nothing
+            is lost there. The `Warning` line below it gives the cause. To copy
+            the missing part back, run `intelis restore` and choose
+            **Only the audit trail**. The database and settings are not
+            changed, and every file already on this machine is kept.
 
         ??? failure "If `Schedule` shows `OFF`"
 

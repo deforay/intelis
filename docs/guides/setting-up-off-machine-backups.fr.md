@@ -230,6 +230,19 @@ machine.
             lancer `intelis backup`. Le journal complet se trouve dans
             `/var/log/intelis-backup.log`.
 
+        ??? warning "Si `Last attempt` affiche `WITH A WARNING`"
+
+            La sauvegarde s'est terminée sans la piste d’audit, l'historique de
+            chaque modification de chaque échantillon. Cette machine contient
+            beaucoup moins de piste d’audit que la sauvegarde, ou une
+            restauration de celle-ci ne s'est pas terminée. La piste d’audit de
+            la sauvegarde reste telle quelle, donc rien n'y est perdu. La ligne
+            `Warning` en dessous donne la cause. Pour recopier la partie
+            manquante, lancer `intelis restore` et choisir
+            **Only the audit trail**. La base de données et les paramètres ne
+            changent pas, et chaque fichier déjà présent sur cette machine est
+            conservé.
+
         ??? failure "Si `Schedule` affiche `OFF`"
 
             Réactiver les sauvegardes planifiées :
@@ -467,6 +480,19 @@ machine.
             lancer `intelis backup`. Le journal complet se trouve dans
             `/var/log/intelis-backup.log`.
 
+        ??? warning "Si `Last attempt` affiche `WITH A WARNING`"
+
+            La sauvegarde s'est terminée sans la piste d’audit, l'historique de
+            chaque modification de chaque échantillon. Cette machine contient
+            beaucoup moins de piste d’audit que la sauvegarde, ou une
+            restauration de celle-ci ne s'est pas terminée. La piste d’audit de
+            la sauvegarde reste telle quelle, donc rien n'y est perdu. La ligne
+            `Warning` en dessous donne la cause. Pour recopier la partie
+            manquante, lancer `intelis restore` et choisir
+            **Only the audit trail**. La base de données et les paramètres ne
+            changent pas, et chaque fichier déjà présent sur cette machine est
+            conservé.
+
         ??? failure "Si `Schedule` affiche `OFF`"
 
             Réactiver les sauvegardes planifiées :
@@ -661,6 +687,19 @@ machine.
             La ligne `Reason` en dessous donne la cause. La corriger, puis
             lancer `intelis backup`. Le journal complet se trouve dans
             `/var/log/intelis-backup.log`.
+
+        ??? warning "Si `Last attempt` affiche `WITH A WARNING`"
+
+            La sauvegarde s'est terminée sans la piste d’audit, l'historique de
+            chaque modification de chaque échantillon. Cette machine contient
+            beaucoup moins de piste d’audit que la sauvegarde, ou une
+            restauration de celle-ci ne s'est pas terminée. La piste d’audit de
+            la sauvegarde reste telle quelle, donc rien n'y est perdu. La ligne
+            `Warning` en dessous donne la cause. Pour recopier la partie
+            manquante, lancer `intelis restore` et choisir
+            **Only the audit trail**. La base de données et les paramètres ne
+            changent pas, et chaque fichier déjà présent sur cette machine est
+            conservé.
 
         ??? failure "Si `Schedule` affiche `OFF`"
 

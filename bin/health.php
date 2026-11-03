@@ -349,7 +349,7 @@ if (is_file($backupStatusFile) && !is_readable($backupStatusFile)) {
 
         if ($backupAgeHours >= $backupCriticalHours) {
             $backupStatus = 'critical';
-        } elseif ($backupAgeHours >= $backupStaleHours || $lastAttempt === 'failed') {
+        } elseif ($backupAgeHours >= $backupStaleHours || $lastAttempt === 'failed' || $lastAttempt === 'warning') {
             $backupStatus = 'warn';
         } else {
             $backupStatus = 'ok';
@@ -366,6 +366,12 @@ if (is_file($backupStatusFile) && !is_readable($backupStatusFile)) {
         // failure. Saying only the age would hide the failure that matters.
         if ($lastAttempt === 'failed') {
             $backupDetail .= '; last attempt FAILED' . ($lastError !== '' ? ': ' . $lastError : '');
+        }
+        // A run that finished but left something out on purpose: today only the
+        // audit trail, when it looks lost on this machine and the copy at the
+        // destination is being kept as it was.
+        if ($lastAttempt === 'warning' && $lastError !== '') {
+            $backupDetail .= '; ' . $lastError;
         }
 
         // The files are only half a backup — the data is in the dump written by

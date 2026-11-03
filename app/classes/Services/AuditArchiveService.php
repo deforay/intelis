@@ -106,6 +106,11 @@ final readonly class AuditArchiveService
      */
     public function run(?string $sampleCode = null, ?callable $progress = null, bool $useLock = false): void
     {
+        $guard = AuditBundleService::writeGuard();
+        if ($guard === null) {
+            $this->log($progress, 'The audit trail is being restored; archiving waits until it finishes.');
+            return;
+        }
         $lockFile = null;
 
         try {
@@ -643,6 +648,13 @@ final readonly class AuditArchiveService
 
     public function archiveSample(string $testType, string $sampleCode, ?callable $progress = null): void
     {
+        // Held for the whole call: the legacy path and the per-test drain below
+        // both write the audit trail, and neither takes the guard itself.
+        $guard = AuditBundleService::writeGuard();
+        if ($guard === null) {
+            $this->log($progress, 'The audit trail is being restored; archiving waits until it finishes.');
+            return;
+        }
         $tests = TestsService::getTestTypes();
 
         // normalize key (respect aliases in TestsService)
@@ -711,6 +723,12 @@ final readonly class AuditArchiveService
         bool $useLock = false,
         int $batchSize = self::DRAIN_BATCH
     ): void {
+        // The rows stay in audit_log, so waiting loses nothing.
+        $guard = AuditBundleService::writeGuard();
+        if ($guard === null) {
+            $this->log($progress, 'The audit trail is being restored; archiving waits until it finishes.');
+            return;
+        }
         $lockFile = null;
         try {
             if ($useLock) {
@@ -1309,16 +1327,29 @@ final readonly class AuditArchiveService
 
     /**
      * The archived history of a sample's per-test rows, or null when the test type
-     * keeps none or nothing has been archived for it yet. Lifts the file out of a
-     * month bundle when it has settled into one.
+     * keeps none or nothing has been archived for it yet. A sample settled into a
+     * month bundle is read from a temporary copy of its member.
+     *
+     * Read-only on purpose: this serves the audit-trail view, which holds no
+     * write lock. Lifting the member out to a loose file here could write during
+     * a restore of the audit trail, and a loose file wins over the bundle.
      */
     public function resolveTestRowsFilePath(string $testType, string $uniqueId): ?string
     {
         if (TestsService::getChildResultTable($testType) === null || $uniqueId === '') {
             return null;
         }
-        $dir = $this->archiveRoot . DIRECTORY_SEPARATOR . self::testRowsFolder($testType);
-        return is_dir($dir) ? $this->resolveExistingCompressed($dir, $uniqueId) : null;
+        $folder = self::testRowsFolder($testType);
+        $dir = $this->archiveRoot . DIRECTORY_SEPARATOR . $folder;
+        if (!is_dir($dir)) {
+            return null;
+        }
+        foreach (["$uniqueId.csv.zst", "$uniqueId.csv.gz", "$uniqueId.csv.zip", "$uniqueId.csv"] as $rel) {
+            if (is_file($dir . DIRECTORY_SEPARATOR . $rel)) {
+                return $dir . DIRECTORY_SEPARATOR . $rel;
+            }
+        }
+        return AuditTrailService::extractFromBundle($folder, $uniqueId);
     }
 
     /**
@@ -1350,6 +1381,12 @@ final readonly class AuditArchiveService
     // factor the core loop so run() and archiveSample() can share it
     private function runForTables(array $auditToKey, ?string $sampleCode, ?callable $progress): void
     {
+        // Every caller holds the guard already. Taken again here so a new caller
+        // cannot write the audit trail during a restore by forgetting it.
+        $guard = AuditBundleService::writeGuard();
+        if ($guard === null) {
+            return;
+        }
         $metadata = $sampleCode === null || $sampleCode === '' || $sampleCode === '0' ? MiscUtility::loadMetadata($this->metadataPath) : [];
 
         foreach ($auditToKey as $auditTable => $testKey) {

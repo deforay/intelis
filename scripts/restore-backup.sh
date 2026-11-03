@@ -740,10 +740,15 @@ for candidate in /var/www/intelis /var/www/vlsm; do
   if [ -f "$candidate/configs/config.production.php" ]; then LIS_PATH="$candidate"; break; fi
 done
 
-choose what db "What should be copied back?" \
-  "db:The database, settings and audit trail:The right choice for rebuilding a machine." \
-  "all:Everything, including uploaded files and attachments:Much larger, and slower over a link." \
+WHAT_OPTIONS=(
+  "db:The database, settings and audit trail:The right choice for rebuilding a machine."
+  "all:Everything, including uploaded files and attachments:Much larger, and slower over a link."
   "older:An older database backup (choose a date):From the dated history kept at the backup, for undoing a mistake noticed late."
+)
+# Only where InteLIS runs: it puts back audit-trail files that this machine has
+# lost, and leaves the database and settings alone.
+[ -n "$LIS_PATH" ] && WHAT_OPTIONS+=("audit:Only the audit trail:Copies back the audit trail files missing here. The database and settings are not changed.")
+choose what db "What should be copied back?" "${WHAT_OPTIONS[@]}"
 # shellcheck disable=SC2154  # set by `choose` above, via printf -v
 # The config backups are small, and they hold the old database password that
 # opens an encrypted dump on a new machine. The audit trail can be gigabytes, but
@@ -756,14 +761,30 @@ if ! src_exec "test -d $(printf '%q' "${SRC_DIR}/var/audit-trail")" 2>/dev/null 
   src_exec "test -d $(printf '%q' "${SRC_DIR}/audit-trail")" 2>/dev/null; then
   AUDIT_SUBPATH=("/audit-trail:audit-trail")
 fi
+AUDIT_SUBPATH_ALL=("${AUDIT_SUBPATH[@]}")
 AUDIT_COPY_FAILED=false
-# The marker is left by a restore of the audit trail that did not finish.
+# The marker is left by a restore of the audit trail that did not finish. The
+# backup runner records the size of the audit trail it sent in .lab-meta; an
+# installation holding much less than that has lost part of it, and gets the
+# backup's copy too (restore_audit_trail then adds only what is missing).
+AUDIT_BYTES_BACKUP="$(src_exec "awk -F= '/^audit_bytes=/{print \$2}' $(printf '%q' "${SRC_DIR}/.lab-meta") 2>/dev/null || true" | tr -cd '0-9')" || true
 if [ -n "$LIS_PATH" ] && [ ! -e "${LIS_PATH}/var/.audit-trail-restore-incomplete" ] &&
-  [ -n "$(find "${LIS_PATH}/var/audit-trail" -type f ! -name .gitkeep -print -quit 2>/dev/null)" ]; then
+  [ -n "$(find "${LIS_PATH}/var/audit-trail" -type f ! -name .gitkeep -print -quit 2>/dev/null)" ] &&
+  ! audit_trail_short_of "$LIS_PATH" "$AUDIT_BYTES_BACKUP"; then
   AUDIT_SUBPATH=()
 fi
 case "$what" in
   db) SUBPATHS=("/backups/db:db" "/backups/config:config" ${AUDIT_SUBPATH[@]+"${AUDIT_SUBPATH[@]}"}) ;;
+  audit)
+    # A backup made before the runner recorded audit_bytes gives nothing to
+    # compare with here. It is copied down, and restore_audit_trail compares
+    # this machine with the copy itself.
+    if [ "${#AUDIT_SUBPATH[@]}" -eq 0 ] && [ -n "$AUDIT_BYTES_BACKUP" ]; then
+      print success "This installation already has the whole audit trail. Nothing was copied, and nothing was changed."
+      exit 0
+    fi
+    SUBPATHS=("${AUDIT_SUBPATH_ALL[@]}")
+    ;;
   older)
     # .history/ holds one dump per day, then one per week (see remote-backup.sh).
     # Only the main database is offered; an interfacing dump can be restored by
@@ -866,6 +887,29 @@ if [ -n "$HIST_FILE" ]; then
   fi
 fi
 print success "Copied to ${STAGING}"
+
+# --- only the audit trail -----------------------------------------------------
+
+if [ "$what" = "audit" ]; then
+  audit_rc=0
+  if $AUDIT_COPY_FAILED; then
+    audit_rc=1
+  else
+    restore_audit_trail "${STAGING}/db" "$LIS_PATH" || audit_rc=$?
+  fi
+  case "$audit_rc" in
+    0) ;;
+    2) ;; # restore_audit_trail printed the cause and the command that resumes it
+    *) print warning "The audit trail could not be copied from the backup, or the backup holds none. Nothing was changed." ;;
+  esac
+  # A copy that stopped part-way is resumed from the fetched copy, so keep it.
+  if [ "$audit_rc" -ne 2 ]; then
+    echo
+    print info "Remove the fetched copy when it is no longer needed:"
+    printf '    sudo rm -rf -- %q\n' "$STAGING"
+  fi
+  exit "$((audit_rc == 0 ? 0 : 1))"
+fi
 
 # --- check the dumps are readable --------------------------------------------
 # A backup nobody has opened is a rumour, so verify before telling anyone it worked.
