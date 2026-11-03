@@ -1557,21 +1557,29 @@ restore_from_config_backup() { # restore_from_config_backup <config-backup-folde
 #
 # An installation that already has an audit trail keeps it: that history is
 # newer than the backup's, and nothing in it is ever overwritten or deleted.
+# When it holds less than 80% of the backup's, part of it was lost, and the
+# missing files are copied back beside it; a file here is still never replaced
+# by an older one. The backup runner in remote-backup.sh uses the same 80% rule
+# to stop sending an audit trail that looks lost.
 # A copy that did not finish leaves var/.audit-trail-restore-incomplete, so the
 # files it did copy are not mistaken for such a history and the next run
 # resumes it. Returns 1 when the backup holds no audit trail, 2 when copying it
 # failed.
+# audit_trail_short_of <lis_path> <bytes>
+# True when the installation holds less than 80% of <bytes> of audit trail.
+audit_trail_short_of() {
+    local have
+    [[ "${2:-}" =~ ^[0-9]+$ ]] || return 1
+    have="$(du -sb "$1/var/audit-trail" 2>/dev/null | cut -f1)"
+    ((${have:-0} < $2 / 5 * 4))
+}
+
 restore_audit_trail() { # restore_audit_trail <dump-folder> <lis_path>
     local dump_dir="$1" lis_path="$2"
     local target="${lis_path}/var/audit-trail" source="" candidate need_kb free_kb resume
-    local marker="${lis_path}/var/.audit-trail-restore-incomplete"
+    local marker="${lis_path}/var/.audit-trail-restore-incomplete" has_own=false
+    [[ ! -e "$marker" && -n "$(find "$target" -type f ! -name .gitkeep -print -quit 2>/dev/null)" ]] && has_own=true
 
-    # Checked first: `intelis restore` does not copy the audit trail down for an
-    # installation that has one, so the backup folder then holds none.
-    if [[ ! -e "$marker" && -n "$(find "$target" -type f ! -name .gitkeep -print -quit 2>/dev/null)" ]]; then
-        print info "This installation already has an audit trail. It is kept, because it is newer than the one in the backup."
-        return 0
-    fi
     for candidate in "$(dirname "$dump_dir")/audit-trail" "$(dirname "$(dirname "$dump_dir")")/var/audit-trail" \
         "$(dirname "$(dirname "$dump_dir")")/audit-trail"; do
         if [[ -d "$candidate" && -n "$(find "$candidate" -type f ! -name .gitkeep -print -quit 2>/dev/null)" ]]; then
@@ -1579,13 +1587,27 @@ restore_audit_trail() { # restore_audit_trail <dump-folder> <lis_path>
             break
         fi
     done
+    if $has_own; then
+        # `intelis restore` does not copy the audit trail down for an
+        # installation that has a whole one, so the backup folder then holds none.
+        if [[ -z "$source" ]] || ! audit_trail_short_of "$lis_path" "$(du -sb "$source" 2>/dev/null | cut -f1)"; then
+            print info "This installation already has an audit trail. It is kept, because it is newer than the one in the backup."
+            return 0
+        fi
+        print info "This installation holds less of the audit trail than the backup does, so part of it is missing. The missing files are copied back. Every file already here is kept."
+    fi
     [[ -n "$source" ]] || return 1
     mkdir -p "$target"
-    # --update: rsync renames each file into place only once it is whole, so a
-    # file already here is complete. It is replaced only by a newer copy, such
-    # as a monthly bundle that grew in a later backup, never by an older one.
-    resume="$(printf 'sudo rsync -rt --update %q %q && sudo chown -R www-data:www-data %q && sudo rm -f %q' \
-        "${source}/" "${target}/" "$target" "$marker")"
+    local plan="${lis_path}/var/.audit-trail-restore-plan" php_ok=false
+    # Plan files without the marker are left from a restore that finished or
+    # was abandoned. Only an unfinished one may carry its record forward.
+    [[ -e "$marker" ]] || rm -f "$plan" "${plan}.merge" "${plan}.held" "${plan}.held.tmp"
+    command -v php >/dev/null 2>&1 && php -r 'exit(class_exists("ZipArchive") ? 0 : 1);' 2>/dev/null && php_ok=true
+    # Resuming runs this same function again, so a resumed copy is planned the
+    # same way as the first one.
+    # The paths go in as arguments, so no quoting inside the inner script is needed.
+    resume="$(printf "sudo bash -c 'source /usr/local/lib/intelis/shared-functions.sh && restore_audit_trail \"\$1\" \"\$2\"' _ %q %q" \
+        "$dump_dir" "$lis_path")"
 
     need_kb="$(du -sk "$source" 2>/dev/null | awk '{print $1}')"
     free_kb="$(df -Pk "$target" 2>/dev/null | awk 'NR == 2 {print $4}')"
@@ -1597,14 +1619,263 @@ restore_audit_trail() { # restore_audit_trail <dump-folder> <lis_path>
 
     print info "Restoring the audit trail ($((need_kb / 1024)) MB). This can take a while."
     touch "$marker"
-    if ! rsync -rt --update --info=progress2 "${source}/" "${target}/"; then
-        print error "Copying the audit trail did not finish. To resume it, run: ${resume}"
-        return 2
+    # The marker stops new archiving runs; the lock waits for one already
+    # running (AuditBundleService::writeGuard holds it shared while it writes).
+    # The lock goes when this shell exits or the descriptor is closed below.
+    local lock="${lis_path}/var/.audit-trail.lock" lock_fd=""
+    if command -v flock >/dev/null 2>&1 && touch "$lock" 2>/dev/null; then
+        chown www-data:www-data "$lock" 2>/dev/null || true
+        exec {lock_fd}>>"$lock"
+        if ! flock -n -x "$lock_fd"; then
+            print info "Waiting for the audit trail archiving that is running now to finish."
+            flock -x "$lock_fd"
+        fi
+    fi
+    if ! $php_ok; then
+        # No PHP to read the bundles with: copy it all.
+        # --update: rsync renames each file into place only once it is whole, so
+        # a file already here is complete, and it is replaced only by a newer copy.
+        if ! rsync -rt --update --info=progress2 "${source}/" "${target}/"; then
+            print error "Copying the audit trail did not finish. To resume it, run: ${resume}"
+            [[ -z "$lock_fd" ]] || exec {lock_fd}>&-
+            return 2
+        fi
+    else
+        # Planned even when nothing is here yet: the plan records what this
+        # machine held before the first attempt, and an interrupted copy resumes
+        # against that record. A sample is one file,
+        # loose ({uid}.csv.zst or .csv.gz) or a member of a monthly bundle
+        # ({YYYY-MM}.zip), and the reader takes a loose file before any bundle.
+        # Copying file by file would let the backup's older copy of a sample win:
+        # under another extension, as a loose file beside a bundle here, or as a
+        # whole bundle replacing one that holds members the backup lacks. So
+        # only samples this machine does not hold come back. A bundle is copied
+        # whole when none of its samples is here, and otherwise only its other
+        # members are written out as loose files, with their own dates, for the
+        # next bundling pass to file again.
+        if ! audit_trail_plan plan "$source" "$target" "$plan" ||
+            ! rsync -rt --update --from0 --files-from="$plan" --info=progress2 "${source}/" "${target}/" ||
+            ! audit_trail_plan merge "$source" "$target" "$plan"; then
+            print error "Copying the audit trail did not finish. To resume it, run: ${resume}"
+            [[ -z "$lock_fd" ]] || exec {lock_fd}>&-
+            return 2
+        fi
     fi
     chown -R www-data:www-data "$target" 2>/dev/null || true
-    rm -f "$marker"
+    rm -f "$marker" "$plan" "${plan}.merge" "${plan}.held" "${plan}.held.tmp"
+    [[ -z "$lock_fd" ]] || exec {lock_fd}>&-
     print success "Audit trail restored"
     return 0
+}
+
+# audit_trail_plan plan|merge <source> <target> <plan-file>
+# plan:  writes to <plan-file> (NUL separated, for rsync --files-from) the files
+#        of <source> that hold samples <target> does not, and to <plan-file>.merge
+#        the bundles to merge instead of copying.
+# merge: writes each sample of those bundles that <target> does not hold as a
+#        loose file in <target>, dated as it was in the bundle.
+audit_trail_plan() {
+    php -- "$@" <<'PHP'
+<?php
+[, $mode, $src, $dst, $planFile] = $argv;
+$isBundle = static fn (string $n): bool => preg_match('/^\d{4}-\d{2}\.zip$/', $n) === 1;
+$sampleOf = static fn (string $n): ?string => preg_match('/^(.+)\.csv(\.zst|\.gz|\.zip)?$/', $n, $m) ? $m[1] : null;
+$entries = static fn (string $dir): array => is_dir($dir) ? array_values(array_diff(scandir($dir) ?: [], ['.', '..'])) : [];
+$members = static function (string $zipPath) use ($sampleOf): ?array {
+    $zip = new ZipArchive();
+    if ($zip->open($zipPath, ZipArchive::RDONLY) !== true) {
+        return null;
+    }
+    $out = [];
+    for ($i = 0; $i < $zip->numFiles; $i++) {
+        $name = (string) $zip->getNameIndex($i);
+        if (!str_contains($name, '/') && ($sample = $sampleOf($name)) !== null) {
+            $out[$name] = $sample;
+        }
+    }
+    $zip->close();
+    return $out;
+};
+// The samples a folder holds, loose or bundled, under any extension.
+$held = static function (string $dir) use ($entries, $isBundle, $sampleOf, $members): array {
+    $have = [];
+    foreach ($entries($dir) as $n) {
+        if ($isBundle($n)) {
+            foreach ($members("$dir/$n") ?? [] as $sample) {
+                $have[$sample] = true;
+            }
+        } elseif (($sample = $sampleOf($n)) !== null) {
+            $have[$sample] = true;
+        }
+    }
+    return $have;
+};
+
+if ($mode === 'plan') {
+    // What this machine held before the first attempt copied anything: the
+    // samples, under "<type>/<sample>", and its bundles, under "<type>/@<name>".
+    // Nothing the restore writes may replace these. A resumed restore keeps the
+    // first attempt's record, because by then the target also holds the older
+    // copies that attempt brought in, and counting those as this machine's own
+    // would skip the newer ones still to come.
+    $resuming = is_file("$planFile.held");
+    $orig = [];
+    if ($resuming) {
+        $heldList = @file_get_contents("$planFile.held");
+        if ($heldList === false) {
+            fwrite(STDERR, "Cannot read the restore plan beside $planFile\n");
+            exit(1);
+        }
+        $orig = array_flip(array_filter(explode("\0", $heldList)));
+    }
+    $list = fopen($planFile, 'wb');
+    if ($list === false) {
+        fwrite(STDERR, "Cannot write the restore plan $planFile\n");
+        exit(1);
+    }
+    // fclose() succeeds after a short write, so each write is checked itself.
+    $listOk = true;
+    $put = static function (string $entry) use ($list, &$listOk): void {
+        $listOk = $listOk && fwrite($list, $entry) === strlen($entry);
+    };
+    $merge = [];
+    foreach ($entries($src) as $d) {
+        if (!is_dir("$src/$d")) {
+            $put("$d\0");
+            continue;
+        }
+        if (!$resuming) {
+            foreach ($held("$dst/$d") as $sample => $_) {
+                $orig["$d/$sample"] = true;
+            }
+            foreach ($entries("$dst/$d") as $n) {
+                if ($isBundle($n)) {
+                    $orig["$d/@$n"] = true;
+                }
+            }
+        }
+        foreach ($entries("$src/$d") as $n) {
+            $path = "$d/$n";
+            if (is_dir("$src/$path")) {
+                $put("$path\0");
+            } elseif ($isBundle($n)) {
+                $inside = $members("$src/$path");
+                if ($inside === null) {
+                    fwrite(STDERR, "Cannot read $src/$path\n");
+                    exit(1);
+                }
+                // A bundle already here that this machine did not have is one an
+                // earlier attempt copied, possibly from an older backup, so its
+                // members are reconciled rather than the copy being skipped.
+                $overlap = isset($orig["$d/@$n"]) || is_file("$dst/$path");
+                foreach ($inside as $sample) {
+                    $overlap = $overlap || isset($orig["$d/$sample"]);
+                }
+                if ($overlap) {
+                    $merge[] = $path;
+                } else {
+                    $put("$path\0");
+                }
+            } elseif (($sample = $sampleOf($n)) === null || !isset($orig["$d/$sample"])) {
+                $put("$path\0");
+            }
+        }
+    }
+    // An unwritten list would read back as "nothing to merge" and pass for
+    // success, so every write is checked. The record of what was here is
+    // written once, and whole, so an interruption cannot leave half of it.
+    $ok = $listOk && fflush($list) && fclose($list)
+        && file_put_contents("$planFile.merge", $mergeData = implode("\0", $merge)) === strlen($mergeData);
+    if ($ok && !$resuming) {
+        $heldData = implode("\0", array_keys($orig));
+        $ok = file_put_contents("$planFile.held.tmp", $heldData) === strlen($heldData)
+            && rename("$planFile.held.tmp", "$planFile.held");
+    }
+    if (!$ok) {
+        fwrite(STDERR, "Cannot write the restore plan beside $planFile\n");
+        exit(1);
+    }
+    exit(0);
+}
+
+// Both lists are written by the plan step, even when empty. A missing or
+// unreadable one means the plan did not finish, not that there is nothing to do.
+$mergeList = @file_get_contents("$planFile.merge");
+$heldList = @file_get_contents("$planFile.held");
+if (!is_file("$planFile.merge") || !is_file("$planFile.held") || $mergeList === false || $heldList === false) {
+    fwrite(STDERR, "Cannot read the restore plan beside $planFile\n");
+    exit(1);
+}
+$merge = array_filter(explode("\0", $mergeList));
+$before = array_flip(array_filter(explode("\0", $heldList)));
+// Which copy of each sample the backup itself would read, by the reader's own
+// order (AuditTrailService::findAuditFile, AuditBundleService::readSample): a
+// loose file first, then the newest bundle, .csv.zst before .csv.gz inside it.
+// Only that copy is written out. An older member would otherwise become a loose
+// file and hide the newer copy the backup holds.
+$winner = [];
+foreach (array_unique(array_map('dirname', $merge)) as $d) {
+    $bundles = [];
+    foreach ($entries("$src/$d") as $n) {
+        if ($isBundle($n)) {
+            $bundles[] = $n;
+        } elseif (($sample = $sampleOf($n)) !== null) {
+            $winner[$d][$sample] = 'loose';
+        }
+    }
+    rsort($bundles, SORT_STRING);
+    foreach ($bundles as $n) {
+        foreach ($members("$src/$d/$n") ?? [] as $name => $sample) {
+            $current = $winner[$d][$sample] ?? null;
+            if ($current === null || (is_array($current) && $current[0] === $n && str_ends_with($name, '.csv.zst'))) {
+                $winner[$d][$sample] = [$n, $name];
+            }
+        }
+    }
+}
+foreach ($merge as $path) {
+    $d = dirname($path);
+    $n = basename($path);
+    $zip = new ZipArchive();
+    if ($zip->open("$src/$path", ZipArchive::RDONLY) !== true) {
+        fwrite(STDERR, "Cannot read $src/$path\n");
+        exit(1);
+    }
+    for ($i = 0; $i < $zip->numFiles; $i++) {
+        $stat = $zip->statIndex($i);
+        $name = (string) ($stat['name'] ?? '');
+        $sample = str_contains($name, '/') ? null : $sampleOf($name);
+        if ($sample === null || isset($before["$d/$sample"]) || ($winner[$d][$sample] ?? null) !== [$n, $name]) {
+            continue;
+        }
+        // Archiving pauses while the restore marker exists, but a run that
+        // started before it can still be writing. Whatever is here now wins.
+        foreach (['.csv.zst', '.csv.gz', '.csv.zip', '.csv'] as $ext) {
+            if (file_exists("$dst/$d/$sample$ext")) {
+                continue 2;
+            }
+        }
+        $part = "$dst/$d/.$name.part";
+        $in = $zip->getStream($name);
+        $out = $in === false ? false : fopen($part, 'wb');
+        if ($in === false || $out === false || stream_copy_to_stream($in, $out) === false
+            || !fclose($out) || !touch($part, (int) $stat['mtime'])) {
+            fwrite(STDERR, "Cannot write $dst/$d/$name\n");
+            exit(1);
+        }
+        // link() fails when the name exists, so a file written here meanwhile
+        // is never replaced. rename() would replace it.
+        if (!@link($part, "$dst/$d/$name") && !file_exists("$dst/$d/$name")) {
+            fwrite(STDERR, "Cannot write $dst/$d/$name\n");
+            exit(1);
+        }
+        unlink($part);
+        fclose($in);
+    }
+    $zip->close();
+}
+exit(0);
+PHP
 }
 
 # Repair a database password that was HTML-escaped on its way into the config.

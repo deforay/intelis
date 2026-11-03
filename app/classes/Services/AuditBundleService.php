@@ -78,6 +78,68 @@ final class AuditBundleService
     }
 
     /**
+     * True while the audit trail is being restored from a backup.
+     *
+     * restore_audit_trail in scripts/shared-functions.sh creates this marker
+     * before it copies anything and removes it once the copy is complete. Until
+     * then, nothing may write the audit trail: a file written now could be
+     * replaced by the backup's older copy, and its rows are already gone from
+     * the database. Archiving waits instead, and the rows stay in audit_log
+     * until the next run after the restore.
+     */
+    public static function restoreInProgress(): bool
+    {
+        return file_exists(VAR_PATH . '/.audit-trail-restore-incomplete');
+    }
+
+    /**
+     * Permission to write the audit trail, held until the returned object is
+     * released. Null while a restore is in progress, and then nothing is written.
+     *
+     * The marker alone cannot stop a writer that had already started, which
+     * could read a sample's history before the restore brought it back and
+     * write over it afterwards. So every writer holds a shared lock on
+     * var/.audit-trail.lock while it works, and restore_audit_trail creates
+     * the marker first and then takes the lock exclusively. That waits for any
+     * writer still running, and a writer that starts later either finds the
+     * lock taken or sees the marker once it has the lock.
+     */
+    public static function writeGuard(): ?object
+    {
+        if (self::restoreInProgress()) {
+            return null;
+        }
+        $path = VAR_PATH . '/.audit-trail.lock';
+        $handle = @fopen($path, 'c') ?: @fopen($path, 'r');
+        if ($handle !== false && !flock($handle, LOCK_SH | LOCK_NB)) {
+            fclose($handle);
+            return null;
+        }
+        if (self::restoreInProgress()) {
+            if ($handle !== false) {
+                flock($handle, LOCK_UN);
+                fclose($handle);
+            }
+            return null;
+        }
+
+        return new class ($handle === false ? null : $handle) {
+            /** @param resource|null $handle */
+            public function __construct(private $handle)
+            {
+            }
+
+            public function __destruct()
+            {
+                if (is_resource($this->handle)) {
+                    flock($this->handle, LOCK_UN);
+                    fclose($this->handle);
+                }
+            }
+        };
+    }
+
+    /**
      * Bundle settled files for every test type. Returns per-type counts.
      *
      * @param callable|null $progress Optional progress callback(string $msg).
@@ -87,6 +149,14 @@ final class AuditBundleService
     {
         $batch = $batch ?? self::DEFAULT_BATCH;
         $totals = ['bundled' => 0, 'archives' => 0, 'skipped' => 0, 'errors' => 0];
+
+        $guard = self::writeGuard();
+        if ($guard === null) {
+            if ($progress !== null) {
+                $progress('The audit trail is being restored; bundling waits until it finishes.');
+            }
+            return $totals;
+        }
 
         $root = self::archiveRoot();
         if (!is_dir($root)) {

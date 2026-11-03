@@ -1,5 +1,5 @@
 ---
-description: Restaurer la base de données d'InteLIS, une sauvegarde datée plus ancienne ou les fichiers téléversés sur une machine où InteLIS fonctionne déjà.
+description: Restaurer la base de données d'InteLIS, une sauvegarde datée plus ancienne, les fichiers téléversés ou la piste d’audit sur une machine où InteLIS fonctionne déjà.
 audience: [system-admin]
 module: [all]
 type: how-to
@@ -251,8 +251,8 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             La piste d’audit n'a pas été restaurée, ou seulement en partie. Le
             reste de la restauration est terminé. Si le disque est plein, y
             libérer d'abord de l'espace. Lancer ensuite la commande
-            `sudo rsync` affichée avec le message. Elle ne copie que ce qui
-            manque ou est plus récent.
+            `sudo bash -c` affichée avec le message. Elle ne copie que ce qui
+            manque encore.
 
         ??? info "S'il indique `This installation already has an audit trail`"
 
@@ -458,8 +458,8 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             La piste d’audit n'a pas été restaurée, ou seulement en partie. Le
             reste de la restauration est terminé. Si le disque est plein, y
             libérer d'abord de l'espace. Lancer ensuite la commande
-            `sudo rsync` affichée avec le message. Elle ne copie que ce qui
-            manque ou est plus récent.
+            `sudo bash -c` affichée avec le message. Elle ne copie que ce qui
+            manque encore.
 
         ??? info "S'il indique `This installation already has an audit trail`"
 
@@ -641,8 +641,8 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             La piste d’audit n'a pas été restaurée, ou seulement en partie. Le
             reste de la restauration est terminé. Si le disque est plein, y
             libérer d'abord de l'espace. Lancer ensuite la commande
-            `sudo rsync` affichée avec le message. Elle ne copie que ce qui
-            manque ou est plus récent.
+            `sudo bash -c` affichée avec le message. Elle ne copie que ce qui
+            manque encore.
 
         ??? info "S'il indique `This installation already has an audit trail`"
 
@@ -691,16 +691,6 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
         comme dernier chemin. Ne pas ajouter `--delete`. Les fichiers ajoutés
         depuis la sauvegarde seraient supprimés.
 
-        Recopier ensuite la piste d'audit, qui contient l'historique des
-        modifications des échantillons plus anciens :
-
-        ```bash
-        sudo rsync -a "$restore_dir/var/audit-trail/" /var/www/intelis/var/audit-trail/
-        ```
-
-        Sur les installations plus anciennes, taper `/var/www/vlsm/var/audit-trail/`
-        comme dernier chemin.
-
     15. Réparer le propriétaire des fichiers, pour que le serveur web puisse
         lire les fichiers restaurés :
 
@@ -738,3 +728,112 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
     23. Quand le laboratoire fonctionne, lancer exactement la commande de
         nettoyage affichée par le script. Elle supprime uniquement cette copie
         récupérée, qui contient le mot de passe de la base de données.
+
+=== "Seulement la piste d’audit"
+
+    Utiliser cet onglet quand InteLIS fonctionne normalement mais que la piste
+    d’audit manque ou est incomplète, par exemple quand `intelis backup status`
+    affiche `WITH A WARNING`. La piste d’audit est l'historique de chaque
+    modification de chaque échantillon. La base de données et les paramètres
+    ne changent pas.
+
+    ### Récupérer la sauvegarde
+
+    1. Ouvrir un terminal et aller dans le dossier InteLIS :
+
+        ```bash
+        cd /var/www/intelis
+        ```
+
+        Sur les installations plus anciennes, taper `cd /var/www/vlsm` à la place.
+
+    2. Lancer la restauration :
+
+        ```bash
+        intelis restore
+        ```
+
+        La commande vérifie qu'elle dispose du script de restauration actuel
+        avant de le lancer. Si la machine est hors ligne, elle utilise le
+        script installé.
+
+    3. À **Fetch the backup from there?** (récupérer la sauvegarde à cet
+       endroit), choisir **Yes**. Le script utilise les paramètres de
+       sauvegarde enregistrés sur cette machine.
+
+        ??? info "S'il demande **Where is the backup stored?** à la place"
+
+            Cette machine n'a aucun paramètre de sauvegarde enregistré. Choisir
+            l'endroit où se trouvent les sauvegardes, puis répondre aux
+            questions correspondantes :
+
+            | Choix | Questions |
+            | --- | --- |
+            | **On another Linux machine** | Le nom d'utilisateur, le nom d'hôte ou l'adresse IP, et le port SSH (appuyer sur Entrée pour `22`). Saisir ensuite le mot de passe de cet utilisateur quand il est demandé. |
+            | **In a shared folder on a Windows machine** | Le nom d'hôte ou l'adresse IP, le nom du dossier partagé, le nom d'utilisateur Windows et son mot de passe. |
+            | **On a USB or external drive plugged into this machine** | Choisir le disque dans la liste. Le script trouve son dossier `backups`, puis demande quel laboratoire restaurer. Si la sauvegarde se trouve ailleurs, choisir **Browse folders inside a drive**. Ouvrir les dossiers jusqu'à la sauvegarde, puis choisir **Use this folder**. |
+
+        ??? failure "S'il indique `Could not connect`"
+
+            Vérifier que la machine ou le disque est allumé et connecté au
+            réseau, et que les informations sont exactes. Choisir **Yes** à
+            **Try different details?** (ou **Try again?**) et les saisir de
+            nouveau.
+
+    4. À **Which lab should be restored?** (quel laboratoire restaurer),
+       choisir ce laboratoire. Chaque ligne commence par le nom de
+       laboratoire donné lors de la configuration des sauvegardes, et affiche
+       la sauvegarde la plus récente de la base de données.
+
+        ??? failure "S'il indique `There are no backups in …`"
+
+            Le script a atteint un emplacement qui ne contient aucune
+            sauvegarde InteLIS. Sur la machine qui envoie les sauvegardes,
+            lancer `intelis backup status`. La ligne `Backing up to` indique
+            où elles vont.
+
+    5. À **What should be copied back?** (que faut-il recopier), choisir
+       **Only the audit trail** (seulement la piste d’audit).
+
+        ??? info "S'il indique `already has the whole audit trail`"
+
+            Cette machine contient au moins autant de piste d’audit que la
+            sauvegarde. Rien n'a été copié, et rien n'a changé. Il n'y a rien
+            d'autre à faire.
+
+    6. À **Where should the restore folder be created?** (où créer le dossier
+       de restauration), appuyer sur Entrée pour utiliser
+       `/var/intelis-restore`.
+
+    ### Remettre la piste d’audit en place
+
+    7. Attendre `Audit trail restored`. Le script recopie seulement les
+       fichiers de la piste d’audit qui manquent sur cette machine, ou qui y
+       sont plus anciens que dans la sauvegarde. Chaque fichier plus récent sur
+       cette machine est conservé. Sur un laboratoire avec un long historique,
+       cette copie peut prendre du temps.
+
+        ??? warning "S'il indique `needs about … GB of free space` ou `did not finish`"
+
+            La piste d’audit n'a pas été restaurée, ou seulement en partie.
+            Garder le dossier de restauration. Quand le disque est plein,
+            libérer d'abord de l'espace. Lancer ensuite la commande
+            `sudo bash -c` affichée avec le message. Elle copie seulement ce qui
+            manque encore.
+
+        ??? warning "S'il indique `could not be copied from the backup`"
+
+            La copie depuis la sauvegarde a échoué, ou la sauvegarde ne
+            contient aucune piste d’audit. Rien n'a changé. Vérifier que la
+            machine ou le disque de sauvegarde est joignable, puis relancer
+            `intelis restore`.
+
+    ### Vérifier le laboratoire
+
+    8. Ouvrir InteLIS dans le navigateur.
+    9. Ouvrir un échantillon modifié il y a plusieurs mois, et ouvrir sa piste
+       d’audit. Vérifier que ses modifications antérieures sont listées.
+    10. Lancer `intelis backup`, puis `intelis backup status`. Vérifier que
+        `Last attempt` affiche `succeeded`.
+    11. Lancer la commande de nettoyage affichée par le script. Elle supprime
+        uniquement cette copie récupérée.
