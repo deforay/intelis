@@ -9,6 +9,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\LabCapabilityService;
+use App\Services\BackupStatusService;
 use App\Utilities\LoggerUtility;
 
 // Sanitized values from $request object
@@ -26,7 +27,9 @@ $isSTS = $general->isSTSInstance();
 $canQueue = $isSTS && _isAllowed('/admin/monitoring/queue-lis-command.php');
 $canCancel = $isSTS && _isAllowed('/admin/monitoring/cancel-lis-command.php');
 $showActions = $isSTS && ($canQueue || $canCancel);
-$colspan = $showActions ? 6 : 5;
+// Lab, three sync times and version; the backup column on an STS, which is the
+// only side the labs report their backups to; the command plane and actions.
+$colspan = 5 + ($isSTS ? 1 : 0) + ($showActions ? 2 : 0);
 
 // Build parameterized query for better performance and security
 $query = "SELECT
@@ -46,6 +49,8 @@ $query = "SELECT
     f.facility_attributes->>'$.previousInstanceId' as previousInstanceId,
     f.facility_attributes->>'$.instanceChangedAt' as instanceChangedAt,
     f.facility_attributes->>'$.instanceChangeCount' as instanceChangeCount,
+    f.facility_attributes->>'$.backup' as backupJson,
+    f.facility_attributes->>'$.backupSeenAt' as backupSeenAt,
     tar.last_requested_on,
     GREATEST(
         COALESCE(UNIX_TIMESTAMP(STR_TO_DATE(f.facility_attributes->>'$.lastHeartBeat', '%Y-%m-%d %H:%i:%s')), 0),
@@ -232,6 +237,20 @@ foreach ($resultSet as $aRow) {
                     <small class="text-muted">(<?= htmlspecialchars($_rowShaShort, ENT_QUOTES, 'UTF-8'); ?>)</small>
                 <?php endif; ?>
             </td>
+            <?php if ($isSTS) {
+                $backupReport = !empty($aRow['backupJson']) ? json_decode((string) $aRow['backupJson'], true) : null;
+                $backupChip = BackupStatusService::stsChip(
+                    is_array($backupReport) ? $backupReport : null,
+                    $aRow['backupSeenAt'] ?? null
+                ); ?>
+                <td class="text-center">
+                    <span class="plane-chips">
+                        <span class="plane-chip <?= $backupChip['class']; ?>" title="<?= htmlspecialchars($backupChip['title'], ENT_QUOTES); ?>">
+                            <i class="plane-dot"></i><?= htmlspecialchars($backupChip['label']); ?>
+                        </span>
+                    </span>
+                </td>
+            <?php } ?>
             <?php if ($showActions) { ?>
             <!-- Health of the command plane, in its own column. It used to sit
                  under the version, where a red heartbeat block visually

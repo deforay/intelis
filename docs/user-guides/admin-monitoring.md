@@ -150,7 +150,18 @@ length of the sign-in.
     4. Compare **Last Results Sync from Lab** and **Last Requests Sync from
        STS**. A gap in the first means results are sitting on the lab machine.
        A gap in the second means the lab does not see new requests.
-    5. To see which facilities are behind, select the lab's row. **Lab Sync
+    5. Read **Backup**. It shows whether the lab's off-machine backup is set up
+       and how long ago the last good backup was. Point at it to see when the
+       lab reported it and, after a failure, the reason.
+
+        | Backup | Means |
+        | --- | --- |
+        | Green | The last good backup was less than a day ago |
+        | Amber | The last backup failed or ended with a warning, or a restore of the audit trail has not finished |
+        | Red | Not set up, no backup yet, or the last good backup was a day ago or more |
+        | Grey, **not reported** | The lab runs an older version, or has not synced since it was updated |
+
+    6. To see which facilities are behind, select the lab's row. **Lab Sync
        Details** opens in a new tab with **Requests Sent to Lab** and **Results
        Received from Lab** per facility.
 
