@@ -6,6 +6,7 @@ use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\BackupStatusService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ExportJobUtility;
@@ -53,6 +54,11 @@ $headings = [
     _translate("Sync Status"),
     _translate("Days Since Last Sync")
 ];
+// Labs report their backups to the STS only, so the column is there alone.
+$isSTS = $general->isSTSInstance();
+if ($isSTS) {
+    $headings[] = _translate("Backup");
+}
 
 // Data rows
 $output = [];
@@ -85,6 +91,10 @@ foreach ($resultSet as $aRow) {
     $row[] = $aRow['version'] ?? '-';
     $row[] = $syncStatus;
     $row[] = $daysSinceSync;
+    if ($isSTS) {
+        $backupReport = !empty($aRow['backupJson']) ? json_decode((string) $aRow['backupJson'], true) : null;
+        $row[] = BackupStatusService::stsChip(is_array($backupReport) ? $backupReport : null, $aRow['backupSeenAt'] ?? null)['label'];
+    }
 
     $output[] = $row;
 }

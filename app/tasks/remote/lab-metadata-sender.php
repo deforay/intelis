@@ -15,6 +15,7 @@ if ($cliMode) {
 
 // this file gets the data from the local database and updates the remote database
 use App\Services\ApiService;
+use App\Services\BackupStatusService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -226,6 +227,11 @@ try {
     }
     $bar->advance();
     $bar->finish();
+
+    // Whether this lab's off-machine backup is set up and current, for the STS lab
+    // sync status page. Sent on every run: it is a few fields read from one local
+    // file. An STS too old to know the field ignores it.
+    $payload['backupStatus'] = BackupStatusService::reportForSts();
 
     // Authenticate to STS with this lab's token, the same one the result sender and
     // request receiver use, so STS can tie the payload to the facility it came from.
