@@ -339,7 +339,7 @@ $activeTests = TestsService::getActiveTests();
 								</div>
 							</div>
 						</div>
-						<?php if (SYSTEM_CONFIG['modules']['vl'] || SYSTEM_CONFIG['modules']['eid'] || SYSTEM_CONFIG['modules']['covid19']) { ?>
+						<?php if (array_filter(array_intersect_key(SYSTEM_CONFIG['modules'] ?? [], array_flip(['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'cd4', 'generic-tests'])))) { ?>
 							<div class="box-body">
 								<?php $ua = "display:none";
 								if (in_array('vl', $sInfo['supported_tests']) || in_array('eid', $sInfo['supported_tests']) && in_array('covid19', $sInfo['supported_tests']) || in_array('hepatitis', $sInfo['supported_tests']) || in_array('tb', $sInfo['supported_tests'])) {
