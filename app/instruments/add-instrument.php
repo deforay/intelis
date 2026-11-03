@@ -225,7 +225,7 @@ sort($fileList);
 						<!-- <div class="box-header">
 							<h3 class="box-title ">Machine Names</h3>
 						</div> -->
-						<?php if (SYSTEM_CONFIG['modules']['vl'] || SYSTEM_CONFIG['modules']['eid'] || SYSTEM_CONFIG['modules']['covid19']) { ?>
+						<?php if (array_filter(array_intersect_key(SYSTEM_CONFIG['modules'] ?? [], array_flip(['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'cd4', 'generic-tests'])))) { ?>
 							<div class="box-body">
 								<table aria-describedby="table" border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;display:none;">
 									<thead>
