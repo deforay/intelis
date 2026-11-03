@@ -27,6 +27,13 @@ La préparer une fois, puis lancer la configuration sur la machine InteLIS de
 chaque laboratoire. N'utiliser une clé USB que s'il n'existe aucune autre
 machine.
 
+Les administrateurs voient un avertissement sur le tableau de bord d'InteLIS
+quand les sauvegardes hors de la machine ne sont pas configurées, quand la
+dernière bonne sauvegarde date de plus d'un jour, ou quand la dernière
+sauvegarde a échoué. Fermer l'avertissement le masque jusqu'à ce que le
+problème change. Si les sauvegardes n'ont jamais été configurées, il revient
+une fois par semaine.
+
 **Choisir où envoyer les sauvegardes, puis suivre ses étapes de haut en bas.**
 
 === "Une autre machine Linux"

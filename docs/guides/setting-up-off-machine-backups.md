@@ -23,6 +23,11 @@ Another Linux machine is the recommended place for backups. One backup machine
 takes the backups of every lab: prepare it once, then run the setup on each
 lab's InteLIS machine. Use a USB drive only when there is no other machine.
 
+Administrators see a warning on the InteLIS dashboard when off-machine
+backups are not set up, when the last good backup is more than a day old, or
+when the last backup failed. Closing the warning hides it until the problem
+changes. If backups were never set up, it comes back once a week.
+
 **Choose where the backups go, then follow its steps from top to bottom.**
 
 === "Another Linux machine"
