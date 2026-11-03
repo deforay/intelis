@@ -14,6 +14,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
+use App\Services\SampleAccessService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Utilities\SampleStatusUtility;
@@ -66,8 +67,10 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
 // Refused before anything is written, back to this sample's edit page
 if (EidService::refusesResultWithoutPlatform((array) $_POST)) {
     $_SESSION['alertMsg'] = _translate("Nothing was saved. Please choose the testing platform for the result.");
-    $editPage = "/eid/requests/eid-edit-request.php?id=" . MiscUtility::sqid((int) ($_POST['eidSampleId'] ?? 0));
-    MiscUtility::redirect($editPage);
+    $eidSampleId = (int) ($_POST['eidSampleId'] ?? 0);
+    MiscUtility::redirect($eidSampleId > 0
+        ? ContainerRegistry::get(SampleAccessService::class)->url('/eid/requests/eid-edit-request.php', $eidSampleId)
+        : '/eid/requests/eid-requests.php');
 }
 
 try {
