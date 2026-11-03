@@ -852,7 +852,9 @@ for pair in "${SUBPATHS[@]}"; do
     ssh)
       ssh_cmd="ssh -o ControlPath=${SSH_CONTROL} -o StrictHostKeyChecking=accept-new -p ${SSH_PORT}"
       [ -n "$SSH_KEY" ] && [ -f "$SSH_KEY" ] && ssh_cmd="${ssh_cmd} -i ${SSH_KEY}"
-      if ! rsync -rtLz --info=progress2 -e "$ssh_cmd" \
+      # .history/ and .deleted/ are the backup's own past, not part of the
+      # installation, and "Everything" would otherwise bring weeks of dumps.
+      if ! rsync -rtLz --info=progress2 --exclude=/.history/ --exclude=/.deleted/ -e "$ssh_cmd" \
           "${SSH_USER}@${SSH_HOST}:${SRC_DIR}${from}/" "${STAGING}/${to}/"; then
         $required && { print error "The copy did not finish."; exit 1; }
         print warning "$missing"
@@ -860,7 +862,7 @@ for pair in "${SUBPATHS[@]}"; do
       fi
       ;;
     *)
-      if ! rsync -rtL --info=progress2 "${SRC_DIR}${from}/" "${STAGING}/${to}/"; then
+      if ! rsync -rtL --info=progress2 --exclude=/.history/ --exclude=/.deleted/ "${SRC_DIR}${from}/" "${STAGING}/${to}/"; then
         $required && { print error "The copy did not finish."; exit 1; }
         print warning "$missing"
         copied=false

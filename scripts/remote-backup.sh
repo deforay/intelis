@@ -281,6 +281,10 @@ esac
 # days, then one per week for HISTORY_WEEKS weeks. Not asked at setup; change it
 # in backup.conf.
 : "${HISTORY_DAYS:=7}"; : "${HISTORY_WEEKS:=4}"
+# Files the mirror would delete or replace are moved to .deleted/ instead, and
+# kept for DELETED_DAYS days. Old copies of audit-trail bundles, which are
+# rewritten as they grow, are kept for DELETED_BUNDLE_DAYS days.
+: "${DELETED_DAYS:=14}"; : "${DELETED_BUNDLE_DAYS:=3}"
 
 CRON_MARKER="/usr/local/bin/intelis-backup.sh"
 
@@ -664,7 +668,14 @@ EXCLUDES
 # WHAT to send. The verification pass below reuses the transport but must not
 # reuse the filters: it works from an explicit file list, and --delete needs a
 # whole-tree walk, which is the cost this is here to avoid.
-RSYNC_FILTER_OPTS=(--delete --partial-dir=.rsync-partial --timeout=900 --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta --exclude=/.history/ "${AUDIT_EXCLUDE[@]}")
+# Nothing the mirror removes is gone at once. --backup moves each file it would
+# delete or replace into a folder for this run, under .deleted/ at the
+# destination, so a file deleted here by mistake, or emptied, can still be
+# copied back for DELETED_DAYS days. The mirror excludes .deleted/, so it never
+# deletes from it. A relative --backup-dir is taken from the destination folder.
+RUN_STAMP="$(date -u +%Y%m%d-%H%M%S)"
+RSYNC_FILTER_OPTS=(--delete --backup --backup-dir=".deleted/${RUN_STAMP}" --partial-dir=.rsync-partial --timeout=900
+  --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta --exclude=/.history/ --exclude=/.deleted/ "${AUDIT_EXCLUDE[@]}")
 RSYNC_MODE_OPTS=()
 
 # findmnt names the filesystem as the kernel mounted it. stat -f is kept as the
@@ -961,6 +972,48 @@ if update_history; then
   fi
 else
   print warning "Could not update the database history at the destination. The copy itself is complete; the next backup tries again."
+fi
+
+# --- deleted files ------------------------------------------------------------
+# Each run's .deleted/<YYYYMMDD-HHMMSS>/ holds what that run removed or
+# replaced, at its own path. Three things are trimmed here:
+#   - backups/ in every run folder: old dumps and settings archives. The dated
+#     history above already keeps one per day, and a dump is the largest thing
+#     a lab has, so a second copy here would only double the space.
+#   - audit-trail bundles in runs older than DELETED_BUNDLE_DAYS days. Bundling
+#     rewrites a month's bundle every day it grows, so each old copy is nearly
+#     the whole of the new one.
+#   - every run older than DELETED_DAYS days.
+# Days are counted from the newest run folders, not from the clock, for the same
+# reason as the history: a lab with a wrong date must not prune everything.
+prune_deleted() {
+  local listing day keep_days=() bundle_days=() d cmds=()
+  # shellcheck disable=SC2016  # expanded at the destination, not here
+  listing="$(dest_exec "cd ${Q_DEST} && { [ ! -d .deleted ] || { rm -rf .deleted/*/backups; rmdir .deleted/${RUN_STAMP} 2>/dev/null; ls -1 .deleted; }; }")" || return 1
+  # Each pipeline ends in "|| true": a grep that matches nothing fails, and with
+  # set -E the ERR trap would fire inside the substitution and print into it.
+  mapfile -t keep_days < <({ printf '%s\n' "$listing" | tr -d '\r' | grep -E '^[0-9]{8}-[0-9]{6}$' | cut -c1-8 | sort -ru | head -n "$DELETED_DAYS"; } || true)
+  bundle_days=("${keep_days[@]:0:$DELETED_BUNDLE_DAYS}")
+  while read -r d; do
+    [ -n "$d" ] || continue
+    day="${d:0:8}"
+    if [[ " ${keep_days[*]} " != *" ${day} "* ]]; then
+      cmds+=("rm -rf \".deleted/${d}\" || e=1")
+    elif [[ " ${bundle_days[*]} " != *" ${day} "* ]]; then
+      cmds+=("{ [ ! -d \".deleted/${d}/var/audit-trail\" ] || find \".deleted/${d}/var/audit-trail\" -name '*.zip' -type f -delete; } || e=1")
+    fi
+  done < <({ printf '%s\n' "$listing" | tr -d '\r' | grep -E '^[0-9]{8}-[0-9]{6}$'; } || true)
+  DELETED_OLDEST=""
+  [ "${#keep_days[@]}" -eq 0 ] || DELETED_OLDEST="${keep_days[-1]:0:4}-${keep_days[-1]:4:2}-${keep_days[-1]:6:2}"
+  [ "${#cmds[@]}" -gt 0 ] || return 0
+  dest_exec "cd ${Q_DEST} && e=0; $(printf '%s; ' "${cmds[@]}") exit \$e"
+}
+
+DELETED_OLDEST=""
+if prune_deleted; then
+  [ -z "$DELETED_OLDEST" ] || print info "Deleted and replaced files are kept at the destination since ${DELETED_OLDEST}, in .deleted/"
+else
+  print warning "Could not tidy the deleted files kept at the destination. The copy itself is complete; the next backup tries again."
 fi
 
 # The size on the backup, for `intelis backup status` — measured only where

@@ -285,9 +285,8 @@ machine.
 
     Le dossier est un miroir de cette machine. Il ne contient donc que les
     sauvegardes les plus récentes de la base de données, environ les 2 derniers
-    jours. Les fichiers supprimés sur cette machine sont supprimés du miroir à
-    l'exécution suivante. Les sauvegardes plus anciennes de la base de données
-    sont conservées à côté, dans `.history/` :
+    jours. Les sauvegardes plus anciennes de la base de données sont conservées
+    à côté, dans `.history/` :
 
     | Conservé dans `.history/` | Combien |
     | --- | --- |
@@ -298,6 +297,18 @@ machine.
     Cela fait environ 5 semaines au total. L'effacement ou la réinstallation de
     cette machine ne touche pas `.history/`. Pour en conserver davantage,
     modifier `HISTORY_DAYS` et `HISTORY_WEEKS` dans `/etc/intelis/backup.conf`.
+
+    Un fichier supprimé ou modifié sur cette machine quitte le miroir à
+    l'exécution suivante. La copie précédente est conservée 14 jours dans
+    `.deleted/`, dans un dossier nommé d'après la date et l'heure UTC de cette
+    exécution, par exemple `20261103-080000`. Dans ce dossier, le fichier a le
+    même chemin que sur cette machine. Pour récupérer un fichier, ouvrir le
+    dossier de la première exécution après la perte du fichier, et recopier le
+    fichier au même endroit. Les anciennes sauvegardes de la base de données n'y
+    sont pas conservées, car `.history/` les conserve déjà. Les anciennes copies
+    des archives mensuelles de la piste d’audit sont conservées 3 jours. Pour
+    changer ces durées, définir `DELETED_DAYS` et `DELETED_BUNDLE_DAYS` dans
+    `/etc/intelis/backup.conf`.
 
     La sauvegarde contient aussi les paramètres, qui incluent le mot de passe
     de la base de données. Le dossier de sauvegarde ne doit être lisible que
@@ -535,9 +546,8 @@ machine.
 
     Le dossier est un miroir de cette machine. Il ne contient donc que les
     sauvegardes les plus récentes de la base de données, environ les 2 derniers
-    jours. Les fichiers supprimés sur cette machine sont supprimés du miroir à
-    l'exécution suivante. Les sauvegardes plus anciennes de la base de données
-    sont conservées à côté, dans `.history/` :
+    jours. Les sauvegardes plus anciennes de la base de données sont conservées
+    à côté, dans `.history/` :
 
     | Conservé dans `.history/` | Combien |
     | --- | --- |
@@ -548,6 +558,18 @@ machine.
     Cela fait environ 5 semaines au total. L'effacement ou la réinstallation de
     cette machine ne touche pas `.history/`. Pour en conserver davantage,
     modifier `HISTORY_DAYS` et `HISTORY_WEEKS` dans `/etc/intelis/backup.conf`.
+
+    Un fichier supprimé ou modifié sur cette machine quitte le miroir à
+    l'exécution suivante. La copie précédente est conservée 14 jours dans
+    `.deleted/`, dans un dossier nommé d'après la date et l'heure UTC de cette
+    exécution, par exemple `20261103-080000`. Dans ce dossier, le fichier a le
+    même chemin que sur cette machine. Pour récupérer un fichier, ouvrir le
+    dossier de la première exécution après la perte du fichier, et recopier le
+    fichier au même endroit. Les anciennes sauvegardes de la base de données n'y
+    sont pas conservées, car `.history/` les conserve déjà. Les anciennes copies
+    des archives mensuelles de la piste d’audit sont conservées 3 jours. Pour
+    changer ces durées, définir `DELETED_DAYS` et `DELETED_BUNDLE_DAYS` dans
+    `/etc/intelis/backup.conf`.
 
     La sauvegarde contient aussi les paramètres, qui incluent le mot de passe
     de la base de données. Le dossier de sauvegarde ne doit être lisible que
@@ -743,9 +765,8 @@ machine.
 
     Le dossier est un miroir de cette machine. Il ne contient donc que les
     sauvegardes les plus récentes de la base de données, environ les 2 derniers
-    jours. Les fichiers supprimés sur cette machine sont supprimés du miroir à
-    l'exécution suivante. Les sauvegardes plus anciennes de la base de données
-    sont conservées à côté, dans `.history/` :
+    jours. Les sauvegardes plus anciennes de la base de données sont conservées
+    à côté, dans `.history/` :
 
     | Conservé dans `.history/` | Combien |
     | --- | --- |
@@ -756,6 +777,18 @@ machine.
     Cela fait environ 5 semaines au total. L'effacement ou la réinstallation de
     cette machine ne touche pas `.history/`. Pour en conserver davantage,
     modifier `HISTORY_DAYS` et `HISTORY_WEEKS` dans `/etc/intelis/backup.conf`.
+
+    Un fichier supprimé ou modifié sur cette machine quitte le miroir à
+    l'exécution suivante. La copie précédente est conservée 14 jours dans
+    `.deleted/`, dans un dossier nommé d'après la date et l'heure UTC de cette
+    exécution, par exemple `20261103-080000`. Dans ce dossier, le fichier a le
+    même chemin que sur cette machine. Pour récupérer un fichier, ouvrir le
+    dossier de la première exécution après la perte du fichier, et recopier le
+    fichier au même endroit. Les anciennes sauvegardes de la base de données n'y
+    sont pas conservées, car `.history/` les conserve déjà. Les anciennes copies
+    des archives mensuelles de la piste d’audit sont conservées 3 jours. Pour
+    changer ces durées, définir `DELETED_DAYS` et `DELETED_BUNDLE_DAYS` dans
+    `/etc/intelis/backup.conf`.
 
     La sauvegarde contient aussi les paramètres, qui incluent le mot de passe
     de la base de données. Le dossier de sauvegarde ne doit être lisible que

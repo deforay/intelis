@@ -264,9 +264,8 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     temporary files and version-control folders.
 
     The folder is a mirror of this machine, so it holds the newest database
-    backups only, about the last 2 days. Files deleted on this machine are
-    deleted from the mirror at the next run. Older database backups are kept
-    next to it, in `.history/`:
+    backups only, about the last 2 days. Older database backups are kept next to
+    it, in `.history/`:
 
     | Kept in `.history/` | How many |
     | --- | --- |
@@ -277,6 +276,16 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     That is about 5 weeks in all. A wipe or reinstall of this machine does not
     touch `.history/`. To keep more, change `HISTORY_DAYS` and `HISTORY_WEEKS`
     in `/etc/intelis/backup.conf`.
+
+    A file deleted or changed on this machine leaves the mirror at the next
+    run. The earlier copy is kept for 14 days in `.deleted/`, in a folder named
+    after that run's date and time in UTC, such as `20261103-080000`. Inside
+    it, the file has the same path as on this machine. To get a file back, open
+    the folder of the first run after the file was lost, and copy the file back
+    to the same place. Old database backups are not kept there, because
+    `.history/` already keeps them. Old copies of the monthly audit trail
+    bundles are kept for 3 days. To change the periods, set `DELETED_DAYS` and
+    `DELETED_BUNDLE_DAYS` in `/etc/intelis/backup.conf`.
 
     The backup also holds the settings, which include the database password.
     Keep the backup folder readable only by the people who manage InteLIS.
@@ -489,9 +498,8 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     temporary files and version-control folders.
 
     The folder is a mirror of this machine, so it holds the newest database
-    backups only, about the last 2 days. Files deleted on this machine are
-    deleted from the mirror at the next run. Older database backups are kept
-    next to it, in `.history/`:
+    backups only, about the last 2 days. Older database backups are kept next to
+    it, in `.history/`:
 
     | Kept in `.history/` | How many |
     | --- | --- |
@@ -502,6 +510,16 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     That is about 5 weeks in all. A wipe or reinstall of this machine does not
     touch `.history/`. To keep more, change `HISTORY_DAYS` and `HISTORY_WEEKS`
     in `/etc/intelis/backup.conf`.
+
+    A file deleted or changed on this machine leaves the mirror at the next
+    run. The earlier copy is kept for 14 days in `.deleted/`, in a folder named
+    after that run's date and time in UTC, such as `20261103-080000`. Inside
+    it, the file has the same path as on this machine. To get a file back, open
+    the folder of the first run after the file was lost, and copy the file back
+    to the same place. Old database backups are not kept there, because
+    `.history/` already keeps them. Old copies of the monthly audit trail
+    bundles are kept for 3 days. To change the periods, set `DELETED_DAYS` and
+    `DELETED_BUNDLE_DAYS` in `/etc/intelis/backup.conf`.
 
     The backup also holds the settings, which include the database password.
     Keep the backup folder readable only by the people who manage InteLIS.
@@ -680,9 +698,8 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     temporary files and version-control folders.
 
     The folder is a mirror of this machine, so it holds the newest database
-    backups only, about the last 2 days. Files deleted on this machine are
-    deleted from the mirror at the next run. Older database backups are kept
-    next to it, in `.history/`:
+    backups only, about the last 2 days. Older database backups are kept next to
+    it, in `.history/`:
 
     | Kept in `.history/` | How many |
     | --- | --- |
@@ -693,6 +710,16 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     That is about 5 weeks in all. A wipe or reinstall of this machine does not
     touch `.history/`. To keep more, change `HISTORY_DAYS` and `HISTORY_WEEKS`
     in `/etc/intelis/backup.conf`.
+
+    A file deleted or changed on this machine leaves the mirror at the next
+    run. The earlier copy is kept for 14 days in `.deleted/`, in a folder named
+    after that run's date and time in UTC, such as `20261103-080000`. Inside
+    it, the file has the same path as on this machine. To get a file back, open
+    the folder of the first run after the file was lost, and copy the file back
+    to the same place. Old database backups are not kept there, because
+    `.history/` already keeps them. Old copies of the monthly audit trail
+    bundles are kept for 3 days. To change the periods, set `DELETED_DAYS` and
+    `DELETED_BUNDLE_DAYS` in `/etc/intelis/backup.conf`.
 
     The backup also holds the settings, which include the database password.
     Keep the backup folder readable only by the people who manage InteLIS.
