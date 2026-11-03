@@ -93,14 +93,17 @@ $uploadDirs = array_values(array_filter($uploadDirs, fn($dir): bool => is_dir(WE
 // still there, means nothing changed, so no new archive is written.
 $signatureFile = "$DEST_DIR/.last-backup-signature";
 $listing = [];
-// Two alternatives: a skipped folder or file name anywhere in the path, or a
-// key file. A top-level | binds loosest, so each side is whole as written.
-$skip = '#(?:^|/)(?:\.git|\.DS_Store|cache|node_modules)(?:/|$)|\.(?:key|pem)$#';
+// Two separate patterns rather than one with a top-level |: a skipped folder or
+// file name anywhere in the path, or a key file. One combined pattern either
+// needed grouping to make its precedence obvious, or carried groups a reader
+// had to prove were redundant.
+$skipName = '#(?:^|/)(?:\.git|\.DS_Store|cache|node_modules)(?:/|$)#';
+$skipKey = '#\.(?:key|pem)$#';
 foreach (array_merge([$CONFIG_PATH], array_map(fn($dir): string => WEB_ROOT . '/' . $dir, $uploadDirs)) as $root) {
     $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
     foreach ($files as $f) {
         $rel = substr($f->getPathname(), strlen($root));
-        if ($f->isFile() && !preg_match($skip, $rel)) {
+        if ($f->isFile() && !preg_match($skipName, $rel) && !preg_match($skipKey, $rel)) {
             $listing[] = $f->getPathname() . '|' . hash_file('xxh128', $f->getPathname());
         }
     }
