@@ -322,6 +322,7 @@ These run outside the scheduler.
 | Temporary files | `public/temporary/` | 3 days. Above 500 MB, the oldest files are deleted until the folder is at 80% of the limit. |
 | Temporary files | `var/temporary/` | 3 days. Above 500 MB, the oldest files are deleted until the folder is at 80% of the limit. |
 | API request and response bodies | `var/track-api/requests/`, `var/track-api/responses/` | 30 days |
+| Imported result files | `public/uploads/imported-results/` | 365 days. The `INTELIS_IMPORTED_RESULTS_DAYS` environment variable overrides the days. A file that a pending import still uses is never deleted. If the pending imports cannot be read, no file is deleted. |
 | Activity log | `activity_log` table | 365 days |
 | Login history | `user_login_history` table | 365 days |
 | API request records | `track_api_requests` table | 90 days. The API stats and sync history pages show no older calls. |
