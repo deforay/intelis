@@ -646,6 +646,64 @@ $table->setRows([
 ]);
 $table->render();
 
+// IMPORTED RESULT FILES
+//
+// public/uploads/imported-results keeps the raw file of every result import,
+// one per upload, and nothing removed them, so the folder grew for as long as
+// the lab ran. Its results are already in the database by then. The file is
+// read again only to review a pending import or to download it from the test
+// results report, and both check it is still there. Files older than
+// INTELIS_IMPORTED_RESULTS_DAYS (365) days go, except any file a pending
+// import in temp_sample_import still refers to, however old. If that table
+// cannot be read, nothing is deleted. The off-machine backup keeps a deleted
+// file for 14 more days in .deleted/.
+$output->writeln("\n<info>IMPORTED RESULT FILES</info>");
+$output->writeln(str_repeat('-', 80));
+$importDaysEnv = getenv('INTELIS_IMPORTED_RESULTS_DAYS');
+$importDays = $importDaysEnv !== false && ctype_digit($importDaysEnv) && (int) $importDaysEnv > 0
+    ? (int) $importDaysEnv : 365;
+$importDir = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'imported-results';
+try {
+    if (is_dir($importDir)) {
+        $pendingRows = $db->rawQuery("SELECT DISTINCT import_machine_file_name AS f FROM temp_sample_import
+                                       WHERE import_machine_file_name IS NOT NULL AND import_machine_file_name <> ''");
+        if (!is_array($pendingRows)) {
+            throw new RuntimeException('Could not read the pending imports, so no result file was removed');
+        }
+        $pending = [];
+        foreach ($pendingRows as $row) {
+            $pending[basename((string) $row['f'])] = true;
+        }
+        $cutoff = time() - $importDays * 86400;
+        $removed = 0;
+        $freed = 0;
+        foreach (new DirectoryIterator($importDir) as $file) {
+            $name = $file->getFilename();
+            if (
+                !$file->isFile() || $file->isLink() || in_array($name, HOUSEKEEPING_PROTECTED_FILES, true)
+                || isset($pending[$name]) || $file->getMTime() >= $cutoff
+            ) {
+                continue;
+            }
+            $size = $file->getSize();
+            if (@unlink($file->getPathname())) {
+                $removed++;
+                $freed += $size;
+            } else {
+                $totalStats['errors']++;
+            }
+        }
+        $totalStats['files_deleted'] += $removed;
+        $totalStats['bytes_freed'] += $freed;
+        $output->writeln("  <success>✓ Removed {$removed} result files older than {$importDays} days ("
+            . formatBytes($freed) . ")</success>");
+    }
+} catch (Throwable $e) {
+    $totalStats['errors']++;
+    $output->writeln("  <fire>✗ {$e->getMessage()}</fire>");
+    LoggerUtility::logError('Imported result file cleanup failed: ' . $e->getMessage());
+}
+
 // ERROR INDEX
 //
 // var/logs/errors.sqlite indexes error entries by ID and fingerprint. Rows past
