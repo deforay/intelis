@@ -96,6 +96,7 @@ jobs:
               case "$run" in
                 "completed success") break ;;
                 completed*) echo "::error::The vendor package for ${sha:0:12} did not build: ${run}"; exit 1 ;;
+                *) ;; # queued or still running: check again
               esac
               sleep 30
             done

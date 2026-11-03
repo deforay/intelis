@@ -118,7 +118,7 @@ final class BackupStatusService
         if ($status === 'failed') {
             return self::notice(
                 'warning',
-                'failed|' . md5($error),
+                'failed|' . hash('sha256', $error),
                 _translate('The last off-machine backup failed. The one before it worked.') . $reason
             );
         }
@@ -126,7 +126,7 @@ final class BackupStatusService
         if ($status === 'warning') {
             return self::notice(
                 'warning',
-                'warning|' . md5($error),
+                'warning|' . hash('sha256', $error),
                 _translate('The last off-machine backup finished with a warning.') . $reason
             );
         }
