@@ -220,6 +220,7 @@ une fois par semaine.
         Size on backup  : 4.2G
         History         : 2026-08-01 to 2026-08-07 (7 days)
         Last attempt    : succeeded in 47s
+        Server snapshots: 7 kept, newest 2026-08-07
         Schedule        : every 8 hours and after every restart
         ```
 
@@ -229,7 +230,37 @@ une fois par semaine.
         | --- | --- |
         | Last good backup | Une date et une heure de moins de 8 heures. |
         | Last attempt | `succeeded`. |
+        | Server snapshots | Un nombre conservé, et une date d'hier au plus tard. |
         | Schedule | `every 8 hours and after every restart`. |
+
+        ??? info "Ce que sont les copies du serveur"
+
+            Chaque nuit, la machine de sauvegarde copie les sauvegardes de tous
+            les laboratoires dans un dossier que seul son administrateur peut
+            ouvrir. Une machine de laboratoire piratée, ou chiffrée par un
+            rançongiciel, peut supprimer ses propres sauvegardes, mais pas ces
+            copies. Les 7 copies nocturnes les plus récentes sont conservées,
+            puis une par semaine pendant 4 semaines de plus. La configuration
+            les ajoute par la connexion administrateur. Pour récupérer à partir
+            d'une copie, suivre l'onglet
+            [**Machine de laboratoire piratée ou chiffrée**](restoring-from-backup.md)
+            du guide de restauration.
+
+        ??? warning "Si `Server snapshots` affiche `none`"
+
+            La machine de sauvegarde a été configurée avant l'existence des
+            copies. Lancer `intelis backup setup`, choisir **Keep it**, puis
+            **Add them (recommended)**. Se connecter avec le compte
+            administrateur de la machine de sauvegarde quand il est demandé.
+            Il suffit de le faire une fois par machine de sauvegarde, pas une
+            fois par laboratoire.
+
+        ??? warning "Si `Server snapshots` indique qu'aucune copie n'a été faite"
+
+            Le disque de la machine de sauvegarde est trop plein, donc la copie
+            de la nuit a été sautée pour laisser de la place aux sauvegardes des
+            laboratoires. Libérer de l'espace sur la machine de sauvegarde. La
+            copie de la nuit suivante se lance d'elle-même.
 
         ??? failure "Si `Last attempt` affiche `FAILED`"
 

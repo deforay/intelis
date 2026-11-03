@@ -358,6 +358,27 @@ if [ "$ACTION" = "status" ]; then
   else
     echo "Last good backup: never (no backup has finished yet)"
   fi
+  # What the backup machine said about its own snapshots at the last backup.
+  # Only another Linux machine can keep them; a drive or a share has no one to.
+  if [ "$DEST_MODE" = "ssh" ]; then
+    snap_file="${STATE_DIR}/backup-snapshots.status"
+    snap_result=""; snap_newest=""; snap_count=""; snap_message=""
+    # Absent until a backup has asked the backup machine, and set -e would end
+    # the status readout at the first read of a missing file.
+    if [ -f "$snap_file" ]; then
+      snap_result="$(sed -n 's/^result=//p' "$snap_file" | head -1)" || true
+      snap_newest="$(sed -n 's/^newest=//p' "$snap_file" | head -1)" || true
+      snap_count="$(sed -n 's/^count=//p' "$snap_file" | head -1)" || true
+      snap_message="$(sed -n 's/^message=//p' "$snap_file" | head -1)" || true
+    fi
+    if [ -z "$snap_result" ]; then
+      echo "Server snapshots: none. Run 'intelis backup setup' to add them."
+    elif [ "$snap_result" = "ok" ] && [ -n "$snap_newest" ]; then
+      echo "Server snapshots: ${snap_count:-0} kept, newest ${snap_newest:0:4}-${snap_newest:4:2}-${snap_newest:6:2}"
+    else
+      echo "Server snapshots: ${snap_message:-$snap_result}"
+    fi
+  fi
   if crontab -l 2>/dev/null | grep -q "$CRON_MARKER"; then
     echo "Schedule        : every 8 hours and after every restart"
   else
@@ -1054,6 +1075,16 @@ case "$DEST_MODE" in
 esac
 BACKUP_SIZE=${BACKUP_SIZE:-unknown}
 
+# The backup machine's own note on its snapshots, kept here for 'backup status'.
+# Dates and counts only. A machine without snapshots has no note, and the
+# status then says how to add them.
+if [ "$DEST_MODE" = "ssh" ]; then
+  snap_note="$(dest_exec "cat /var/lib/intelis-backup-server/snapshots-$(printf '%q' "$SSH_USER").status 2>/dev/null || true" \
+    | tr -d '\r' | grep -E '^(version|result|message|last_run|count|oldest|newest)=' || true)"
+  printf '%s\n' "$snap_note" > "${STATE_DIR}/backup-snapshots.status.tmp" 2>/dev/null &&
+    mv -f "${STATE_DIR}/backup-snapshots.status.tmp" "${STATE_DIR}/backup-snapshots.status" 2>/dev/null || true
+fi
+
 # Copies made before the application was left out still hold it. rsync never
 # deletes an excluded path, so the same named paths are removed here, and only
 # those. Running it every time costs one stat per path.
@@ -1302,6 +1333,402 @@ $KEEP_DEST || choose DEST_MODE "${DEST_MODE:-ssh}" "Where should the backup be s
 # password if the server takes one for that account. Needed when the server
 # accepts keys only (the default on cloud servers), so ssh-copy-id can never
 # ask for SSH_USER's password, and when SSH_USER does not exist yet.
+# --- snapshots on the backup machine -------------------------------------------
+#
+# Every lab's key can write to its own backup folder, so a lab machine that is
+# hacked or encrypted by ransomware can also delete or encrypt its backups, and
+# .history/ and .deleted/ with them, because they sit in the same folder. The
+# snapshots are the copy no lab can reach: root on the backup machine takes one
+# each night into /var/backups/intelis-snapshots, a folder only root can open.
+#
+# It is installed with the administrator login that also creates the backup
+# account, and again whenever a lab is set up that way, so every lab keeps it
+# current. SNAPSHOT_VERSION lets setup see an older copy and offer to replace it.
+SNAPSHOT_VERSION=1
+SNAPSHOT_SCRIPT_PATH=/usr/local/sbin/intelis-backup-snapshots
+
+# The flush-left body is a quoted heredoc, as for the backup runner above.
+snapshot_server_script() {
+cat <<'SNAPSHOT_SCRIPT'
+#!/bin/bash
+# InteLIS backup machine: daily snapshots of the labs' backups.
+#
+# Installed by remote-backup.sh through the backup machine's administrator
+# login. Runs as root from /etc/cron.d/intelis-backup-snapshots.
+#
+#   intelis-backup-snapshots run       take today's snapshot (what cron runs)
+#   intelis-backup-snapshots list      the snapshots kept, and the labs in each
+#   intelis-backup-snapshots restore   copy one lab's folder out of a snapshot
+#
+# What is kept: each backup account's backups/ folder, every lab in it, except
+# backups/db/ (the newest dumps; .history/db/ holds one per day) and .deleted/.
+# Unchanged files are hard links to the previous snapshot, so a snapshot costs
+# only what changed that day. The newest KEEP_DAYS snapshots are kept, then one
+# per week for KEEP_WEEKS weeks, counted from the snapshots present rather than
+# from the clock. A snapshot is skipped, never forced, when the disk is low:
+# every lab's live backups share this disk.
+SNAPSHOT_VERSION=__SNAPSHOT_VERSION__
+set -euo pipefail
+# cron runs this with PATH=/usr/bin:/bin, and runuser is in /usr/sbin.
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+
+SELF="$(readlink -f -- "$0")"
+CONF=/etc/intelis-backup-server.conf
+SNAP_ROOT=/var/backups/intelis-snapshots
+STATE_DIR=/var/lib/intelis-backup-server
+LOG=/var/log/intelis-backup-snapshots.log
+USERS=""
+KEEP_DAYS=7
+KEEP_WEEKS=4
+MIN_FREE_PERCENT=15
+MIN_FREE_GB=5
+# shellcheck disable=SC1090
+[ -f "$CONF" ] && . "$CONF"
+
+[ "$(id -u)" -eq 0 ] || { echo "Run as root: sudo $0 $*"; exit 1; }
+umask 077
+mkdir -p "$SNAP_ROOT" "$STATE_DIR"
+chmod 700 "$SNAP_ROOT"
+chmod 755 "$STATE_DIR"
+
+say() { printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; }
+
+# pick <var> <prompt> <items...>: a numbered menu. Anything but one of the
+# numbers shown changes nothing.
+pick() {
+  local __var=$1 prompt=$2 i answer
+  shift 2
+  for i in $(seq 1 $#); do echo "  $i) ${!i}"; done
+  read -r -p "$prompt " answer
+  if [[ "$answer" =~ ^[0-9]+$ ]] && [ "$answer" -ge 1 ] && [ "$answer" -le $# ]; then
+    printf -v "$__var" '%s' "${!answer}"
+    return 0
+  fi
+  echo "Nothing was changed."
+  return 1
+}
+
+# A status anyone on this machine can read, labs included. It names dates and
+# counts only, never a lab's data.
+write_status() { # write_status <user> <result> <message>
+  local u=$1 result=$2 message=$3 days oldest newest count tmp
+  days="$(snapshot_days "$u")"
+  count="$(printf '%s\n' "$days" | grep -c . || true)"
+  oldest="$(printf '%s\n' "$days" | head -1)"
+  newest="$(printf '%s\n' "$days" | tail -1)"
+  tmp="$(mktemp "$STATE_DIR/.status.XXXXXX")"
+  printf 'version=%s\nresult=%s\nmessage=%s\nlast_run=%s\ncount=%s\noldest=%s\nnewest=%s\n' \
+    "$SNAPSHOT_VERSION" "$result" "$message" "$(date -u +%FT%TZ)" "$count" "$oldest" "$newest" >"$tmp"
+  chmod 644 "$tmp"
+  mv -f "$tmp" "$STATE_DIR/snapshots-$u.status"
+}
+
+snapshot_days() { ls -1 "$SNAP_ROOT/$1" 2>/dev/null | grep -E '^[0-9]{8}$' | sort || true; }
+
+# The account's backups folder, resolved. The account owns it and could swap
+# it for a link to anywhere, which root would then read, so a folder that is a
+# link, or that resolves anywhere but <home>/backups, is refused.
+backups_of() {
+  local h real
+  h="$(getent passwd "$1" | cut -d: -f6)"
+  [ -n "$h" ] && [ -d "$h/backups" ] && [ ! -L "$h/backups" ] || return 1
+  real="$(realpath -e -- "$h/backups")" || return 1
+  [ "$real" = "$(realpath -e -- "$h")/backups" ] || return 1
+  printf '%s' "$real"
+}
+
+prune() { # prune <user>
+  local u=$1 n=0 weeks=0 wk last_wk="" day
+  local -A keep=()
+  while read -r day; do
+    [ -n "$day" ] || continue
+    n=$((n + 1))
+    if [ "$n" -le "$KEEP_DAYS" ]; then
+      keep[$day]=1
+      [ "$n" -eq "$KEEP_DAYS" ] && last_wk="$(date -u -d "$day" +%G-%V 2>/dev/null || echo "$day")"
+    else
+      wk="$(date -u -d "$day" +%G-%V 2>/dev/null || echo "$day")"
+      if [ "$wk" != "$last_wk" ] && [ "$weeks" -lt "$KEEP_WEEKS" ]; then
+        keep[$day]=1
+        weeks=$((weeks + 1))
+      fi
+      last_wk="$wk"
+    fi
+  done < <(snapshot_days "$u" | sort -r)
+  while read -r day; do
+    [ -n "$day" ] || continue
+    [ -n "${keep[$day]:-}" ] || {
+      say "Removing the snapshot of $day for $u"
+      rm -rf -- "${SNAP_ROOT:?}/$u/$day" "${SNAP_ROOT:?}/$u/.taken-$day"
+    }
+  done < <(snapshot_days "$u")
+  rm -rf -- "$SNAP_ROOT/$u"/.partial-* 2>/dev/null || true
+}
+
+take() { # take <user>
+  local u=$1 src today prev dst avail size pct
+  if ! src="$(backups_of "$u")"; then
+    write_status "$u" none "The account $u has no backups folder, or it is not a plain folder in its home."
+    return 0
+  fi
+  today="$(date -u +%Y%m%d)"
+  mkdir -p "$SNAP_ROOT/$u"
+  if [ -d "$SNAP_ROOT/$u/$today" ]; then
+    write_status "$u" ok "Today's snapshot was already taken."
+    return 0
+  fi
+
+  prev="$(snapshot_days "$u" | tail -1)"
+
+  # A lab's newest dumps are left out only when its .history/db holds a main
+  # database dump (vlsm-* or intelis-*, not an interfacing one) from the last
+  # two days. Otherwise, with history missing, failing or stale, its snapshot
+  # would hold no current database. A lab whose name is not plain is not given
+  # an exclude pattern, so it keeps them too. Read as the account.
+  # Only the main database's dumps are left out, never an interfacing one:
+  # .history/ may not hold those. The same choices feed the estimate below,
+  # through skip_paths, so it counts what the copy will actually send.
+  local -a excludes=(--exclude='.rsync-partial/') skip_paths=()
+  local lab
+  for lab in "$src"/*/; do
+    lab="$(basename "$lab")"
+    [[ "$lab" =~ ^[A-Za-z0-9._-]+$ ]] || continue
+    excludes+=(--exclude="/$lab/.deleted/")
+    skip_paths+=(-path "$src/$lab/.deleted" -prune -o)
+    if [ -n "$(runuser -u "$u" -- find "$src/$lab/.history/db" -maxdepth 1 -type f -mmin -2880 \
+         -regextype posix-extended -regex '.*/(vlsm|intelis)-[^/]*\.sql(\.gz|\.zst|\.zip)?(\.gpg)?' \
+         -print -quit 2>/dev/null)" ]; then
+      excludes+=(--exclude="/$lab/backups/db/vlsm-*" --exclude="/$lab/backups/db/intelis-*")
+      skip_paths+=(-path "$src/$lab/backups/db/vlsm-*" -prune -o -path "$src/$lab/backups/db/intelis-*" -prune -o)
+    fi
+  done
+
+  # What this snapshot will add: everything the first time, then only files
+  # that arrived since the last one (their change time on this disk is newer
+  # than that snapshot). It is skipped unless the reserve still holds after it:
+  # every lab's live backups share this disk.
+  local incoming reserve
+  # The reference is the marker written beside the last snapshot or, if that
+  # is missing, the snapshot folder itself, whose change time is set when it
+  # was moved into place. Both are in the folder only root owns.
+  local taken="$SNAP_ROOT/$u/.taken-$prev"
+  [ -n "$prev" ] && { [ -f "$taken" ] && [ ! -L "$taken" ]; } || taken="$SNAP_ROOT/$u/$prev"
+  # Read as the account, like the copy below: root only looks at the reference.
+  if [ -n "$prev" ] && [ ! -L "$taken" ] && [ -e "$taken" ]; then
+    incoming="$(runuser -u "$u" -- find "$src" "${skip_paths[@]}" -type f -newerct "@$(stat -c %Z -- "$taken")" -printf '%s\n' 2>/dev/null \
+      | awk '{ s += $1 } END { printf "%d", s / 1024 }')"
+  else
+    incoming="$(runuser -u "$u" -- find "$src" "${skip_paths[@]}" -type f -printf '%s\n' 2>/dev/null \
+      | awk '{ s += $1 } END { printf "%d", s / 1024 }')"
+  fi
+  read -r size avail < <(df -Pk "$SNAP_ROOT" | awk 'NR==2 {print $2, $4}')
+  reserve=$(( size * MIN_FREE_PERCENT / 100 ))
+  [ "$reserve" -ge $((MIN_FREE_GB * 1048576)) ] || reserve=$((MIN_FREE_GB * 1048576))
+  if [ $(( avail - ${incoming:-0} )) -lt "$reserve" ]; then
+    pct=$(( avail * 100 / (size > 0 ? size : 1) ))
+    say "Skipped the snapshot for $u: it needs about $(( ${incoming:-0} / 1024 )) MB, and only ${pct}% of the disk is free."
+    write_status "$u" skipped "No snapshot was taken: the disk is too full (${pct}% free). The labs' backups come first."
+    return 0
+  fi
+
+  dst="$SNAP_ROOT/$u/.partial-$today"
+  rm -rf -- "$dst"
+  # The reading side runs as the account, through rsync's remote-shell hook
+  # (the _as command below), so a link the account puts anywhere in its folder,
+  # even between the check above and this copy, reaches only what the account
+  # could read itself. Root only writes, into its own folder.
+  local rc=0
+  rsync -a --delete "${excludes[@]}" ${prev:+--link-dest="$SNAP_ROOT/$u/$prev"} \
+    -e "$SELF _as $u" "localhost:$src/" "$dst/" || rc=$?
+  # 24: files vanished while they were copied, as a lab backing up at the same
+  # moment rotates its dumps. The rest is a good snapshot.
+  if [ "$rc" -eq 0 ] || [ "$rc" -eq 24 ]; then
+    if ! mv -T -- "$dst" "$SNAP_ROOT/$u/$today"; then
+      rm -rf -- "$dst"
+      say "The snapshot for $u could not be put in place."
+      write_status "$u" failed "The snapshot could not be put in place. See $LOG on the backup machine."
+      return 1
+    fi
+    # When it was taken, for the next night's estimate of what arrived since.
+    # Kept beside the snapshot, in the folder only root owns, not inside it:
+    # everything inside came from the account, links included.
+    rm -f -- "$SNAP_ROOT/$u/.taken-$today"
+    : > "$SNAP_ROOT/$u/.taken-$today"
+    prune "$u"
+    say "Took the snapshot of $today for $u"
+    write_status "$u" ok "Snapshot taken."
+  else
+    rm -rf -- "$dst"
+    say "The snapshot for $u failed."
+    write_status "$u" failed "The snapshot failed. See $LOG on the backup machine."
+    return 1
+  fi
+}
+
+cmd_run() {
+  exec 9>/run/intelis-backup-snapshots.lock
+  flock -n 9 || { say "Another snapshot is running."; return 0; }
+  local u rc=0
+  for u in $USERS; do take "$u" || rc=1; done
+  return "$rc"
+}
+
+cmd_list() {
+  local u day
+  for u in $USERS; do
+    echo "Backups of the account $u:"
+    while read -r day; do
+      [ -n "$day" ] || continue
+      printf '  %s-%s-%s:' "${day:0:4}" "${day:4:2}" "${day:6:2}"
+      (cd "$SNAP_ROOT/$u/$day" && ls -1) | tr '\n' ' '
+      echo
+    done < <(snapshot_days "$u" | sort -r)
+  done
+}
+
+# One lab's folder, from one snapshot, copied next to the live one as
+# <folder>-snapshot-<date>. The live folder is never touched. backups/db/ is
+# left out of snapshots, so the dumps that day's .history/ kept are put there,
+# and `intelis restore` then reads the copy like any lab's folder.
+cmd_restore() {
+  # The nightly run prunes snapshots, so it must not delete the one being read.
+  exec 9>/run/intelis-backup-snapshots.lock
+  if ! flock -n 9; then
+    echo "A snapshot is being taken. Waiting for it to finish..."
+    flock 9
+  fi
+  local u day folder src dest
+  local -a users days folders
+  read -r -a users <<<"$USERS"
+  [ "${#users[@]}" -gt 0 ] || { echo "No backup accounts are set up here."; return 1; }
+  u="${users[0]}"
+  if [ "${#users[@]}" -gt 1 ]; then pick u "Which backup account?" "${users[@]}" || return 1; fi
+  mapfile -t days < <(snapshot_days "$u" | sort -r)
+  [ "${#days[@]}" -gt 0 ] || { echo "There are no snapshots for $u yet."; return 1; }
+  # Every lab found in any snapshot, so one deleted from the newest is still here.
+  mapfile -t folders < <(for d in "${days[@]}"; do (cd "$SNAP_ROOT/$u/$d" && ls -1); done | sort -u)
+  [ "${#folders[@]}" -gt 0 ] || { echo "The snapshots hold no labs."; return 1; }
+  pick folder "Which lab?" "${folders[@]}" || return 1
+  # The name came from a folder the account made, and goes into a tar pattern.
+  [[ "$folder" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "That folder name cannot be restored here. Nothing was changed."; return 1; }
+
+  # The lab's size in each snapshot. After a lab machine was hacked or
+  # encrypted, every snapshot since holds the damage, and the good one is the
+  # last before the size dropped.
+  local -a options=()
+  for d in "${days[@]}"; do
+    [ -d "$SNAP_ROOT/$u/$d/$folder" ] || continue
+    options+=("$d  $(du -sh --apparent-size "$SNAP_ROOT/$u/$d/$folder" 2>/dev/null | cut -f1)")
+  done
+  echo "The lab's size in each snapshot, newest first. Choose the last one before it dropped:"
+  pick day "Which date?" "${options[@]}" || return 1
+  day="${day%% *}"
+
+  # Root only reads, from its own folder. Every write runs as the backup
+  # account (runuser), so a link the account left at the new name, or in the
+  # folders on the way, can only ever reach what the account could write anyway.
+  local home name
+  src="$SNAP_ROOT/$u/$day/$folder"
+  # Root reads from here, and the account made every name inside it, links
+  # included. A folder is read only when it is a real one: its resolved path is
+  # itself, so no link sits anywhere on the way.
+  real_dir() { [ -d "$1" ] && [ ! -L "$1" ] && [ "$(realpath -e -- "$1")" = "$1" ]; }
+  real_dir "$src" || { echo "That lab's folder in the snapshot is not a plain folder. Nothing was changed."; return 1; }
+  # Ransomware can delete the whole backups folder. It is made again, as the
+  # account, unless something that is not a folder holds the name.
+  local h
+  h="$(getent passwd "$u" | cut -d: -f6)"
+  if [ -n "$h" ] && [ ! -e "$h/backups" ] && [ ! -L "$h/backups" ]; then
+    runuser -u "$u" -- mkdir -m 700 -- "$h/backups"
+  fi
+  home="$(backups_of "$u")" || { echo "The account $u has no backups folder it can use. Nothing was changed."; return 1; }
+  name="${folder}-snapshot-${day}"
+  dest="$home/$name"
+  if runuser -u "$u" -- test -e "$dest" || runuser -u "$u" -- test -L "$dest"; then
+    echo "$dest already exists. Nothing was changed."
+    return 1
+  fi
+  echo "Copying $folder from ${day:0:4}-${day:4:2}-${day:6:2} to $dest ..."
+  tar -C "$SNAP_ROOT/$u/$day" -cf - -- "$folder" \
+    | runuser -u "$u" -- tar -C "$home" --no-same-owner --transform="s|^${folder}|${name}|" -xf -
+  runuser -u "$u" -- mkdir -p "$dest/backups/db"
+  if real_dir "$src/.history/db"; then
+    tar -C "$src/.history/db" -cf - . | runuser -u "$u" -- tar -C "$dest/backups/db" --no-same-owner -xf -
+  fi
+  if real_dir "$src/.history/config" && [ ! -e "$src/backups/config" ] && [ ! -L "$src/backups/config" ]; then
+    runuser -u "$u" -- mkdir -p "$dest/backups/config"
+    tar -C "$src/.history/config" -cf - . | runuser -u "$u" -- tar -C "$dest/backups/config" --no-same-owner -xf -
+  fi
+  runuser -u "$u" -- chmod 700 "$dest"
+  echo "Done. On the lab machine, run: intelis restore"
+  echo "and choose the lab ${folder}-snapshot-${day}. The live backup folder was not changed."
+}
+
+case "${1:-}" in
+  # rsync's remote shell for take(): `_as <user> <host> rsync --server ...`.
+  # Runs only rsync, and only as a listed backup account.
+  _as)
+    u="${2:-}"
+    case " $USERS " in *" $u "*) ;; *) echo "Not a backup account: $u" >&2; exit 1 ;; esac
+    [ "${4:-}" = "rsync" ] || { echo "Only rsync runs this way." >&2; exit 1; }
+    shift 3
+    exec runuser -u "$u" -- "$@"
+    ;;
+  run) cmd_run >>"$LOG" 2>&1 ;;
+  list) cmd_list ;;
+  restore) cmd_restore ;;
+  *) echo "Usage: $0 run|list|restore"; exit 2 ;;
+esac
+SNAPSHOT_SCRIPT
+}
+
+# Root's lines on the backup machine that install or update the snapshots for
+# backup account $1. Idempotent: every lab set up through the administrator
+# login runs them again, which keeps the script current.
+snapshot_install_lines() {
+  local user=$1 script_b64
+  script_b64="$(snapshot_server_script | sed "s/__SNAPSHOT_VERSION__/${SNAPSHOT_VERSION}/" | base64 | tr -d '\n')"
+  printf '%s\n' \
+    "need=''; command -v rsync >/dev/null 2>&1 || need=rsync; [ -d /etc/cron.d ] && { command -v cron >/dev/null 2>&1 || command -v crond >/dev/null 2>&1; } || need=\"\$need cron\"" \
+    "if [ -n \"\$need\" ]; then apt-get install -y \$need >/dev/null 2>&1 || { apt-get update >/dev/null 2>&1 && apt-get install -y \$need >/dev/null 2>&1; } || { echo \"Could not install \$need on the backup machine.\"; exit 1; }; fi" \
+    "systemctl enable --now cron >/dev/null 2>&1 || true" \
+    "echo '${script_b64}' | base64 -d > ${SNAPSHOT_SCRIPT_PATH}.new" \
+    "chmod 755 ${SNAPSHOT_SCRIPT_PATH}.new && mv -f ${SNAPSHOT_SCRIPT_PATH}.new ${SNAPSHOT_SCRIPT_PATH}" \
+    "c=/etc/intelis-backup-server.conf; touch \"\$c\"; chmod 644 \"\$c\"" \
+    "cur=\$(sed -n 's/^USERS=\"\\(.*\\)\"\$/\\1/p' \"\$c\" | head -1)" \
+    "case \" \$cur \" in *' ${user} '*) ;; *) new=\"\${cur:+\$cur }${user}\"; grep -v '^USERS=' \"\$c\" > \"\$c.new\" || true; echo \"USERS=\\\"\$new\\\"\" >> \"\$c.new\"; chmod 644 \"\$c.new\"; mv -f \"\$c.new\" \"\$c\" ;; esac" \
+    "printf '%s\\n' 'SHELL=/bin/bash' '30 2 * * * root ${SNAPSHOT_SCRIPT_PATH} run' > /etc/cron.d/intelis-backup-snapshots" \
+    "chmod 644 /etc/cron.d/intelis-backup-snapshots"
+}
+
+# Which snapshot version the backup machine keeps for this lab's backup
+# account, read as that account: the script and its list of accounts are
+# world-readable. Empty when there is none, or when the script is there but the
+# account is not on its list, as a second account on the same machine would be.
+server_snapshot_version() {
+  ssh -n -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new -p "$SSH_PORT" \
+    "${SSH_USER}@${SSH_HOST}" \
+    "grep -Eq '^USERS=\"(.* )?${SSH_USER}( .*)?\"' /etc/intelis-backup-server.conf 2>/dev/null && sed -n 's/^SNAPSHOT_VERSION=//p' ${SNAPSHOT_SCRIPT_PATH} 2>/dev/null | head -1" \
+    2>/dev/null | tr -cd '0-9'
+}
+
+# Runs root's lines on the backup machine through its administrator login.
+# Asks for the account, and its password if the machine wants one.
+run_as_backup_admin() { # run_as_backup_admin <lines...>
+  local admin b64 run
+  local mux=(-o ControlMaster=auto -o "ControlPath=/tmp/intelis-admin-%C" -o ControlPersist=60)
+  ask admin "Administrator account on the backup machine (the account used to manage it)" "${BACKUP_ADMIN:-}"
+  [[ "$admin" =~ ^[a-z_][a-z0-9_.-]*$ ]] || { print warning "'$admin' is not a valid username."; return 1; }
+  BACKUP_ADMIN="$admin"
+  b64="$(printf '%s\n' "set -e" "$@" | base64 | tr -d '\n')"
+  run="sh"
+  [ "$admin" = "root" ] || run="sudo sh"
+  print info "Logging in as ${admin}. If it asks for a password, it is ${admin}'s password on the backup server."
+  ssh -t "${mux[@]}" -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 -p "$SSH_PORT" \
+      "${admin}@${SSH_HOST}" "echo ${b64} | base64 -d | ${run}"
+}
+
 install_key_via_admin() {
   local admin key create=0 exists b64 run
   # One connection for both commands, so a password is typed once.
@@ -1326,15 +1753,17 @@ install_key_via_admin() {
   key="$(cat "${SSH_KEY}.pub")"
   # Sent encoded so no quoting survives two shells; everything in it is a fixed
   # command, the validated username and the public key line.
-  b64="$(printf '%s\n' \
+  # The same login also installs, or updates, the snapshots of every lab's
+  # backups on that machine.
+  b64="$({ printf '%s\n' \
     "set -e" \
     "u='${SSH_USER}'" \
     "if [ ${create} -eq 1 ] && ! id -u \"\$u\" >/dev/null 2>&1; then useradd -m -s /bin/bash \"\$u\"; fi" \
     "h=\$(getent passwd \"\$u\" | cut -d: -f6)" \
     "mkdir -p \"\$h/.ssh\"; touch \"\$h/.ssh/authorized_keys\"" \
     "grep -qxF '${key}' \"\$h/.ssh/authorized_keys\" || echo '${key}' >> \"\$h/.ssh/authorized_keys\"" \
-    "chown -R \"\$u\": \"\$h/.ssh\"; chmod 700 \"\$h/.ssh\"; chmod 600 \"\$h/.ssh/authorized_keys\"" \
-    | base64 | tr -d '\n')"
+    "chown -R \"\$u\": \"\$h/.ssh\"; chmod 700 \"\$h/.ssh\"; chmod 600 \"\$h/.ssh/authorized_keys\""
+    snapshot_install_lines "$SSH_USER"; } | base64 | tr -d '\n')"
   run="sh"
   [ "$admin" = "root" ] || run="sudo sh"
   # -t so sudo can ask for its password on this terminal.
@@ -1877,6 +2306,36 @@ if [ "$DEST_MODE" = "ssh" ]; then
   dest_exec "chmod 700 $(printf '%q' "$DEST_BASE") ${q_dest}"
 fi
 print success "Backup folder ready: ${DEST_DIR}"
+
+# Snapshots on the backup machine (see snapshot_server_script). A lab whose key
+# already worked never needed the administrator login that installs them, so a
+# machine set up before them, or with an older copy, is offered them here once.
+# Declining changes nothing, and the next setup asks again.
+if [ "$DEST_MODE" = "ssh" ]; then
+  snap_have="$(server_snapshot_version || true)"
+  if [ "${snap_have:-0}" -ge "$SNAPSHOT_VERSION" ] 2>/dev/null; then
+    print success "The backup machine keeps nightly snapshots that no lab can change"
+  else
+    if [ -z "$snap_have" ]; then
+      print warning "The backup machine keeps no snapshots. A hacked or encrypted lab machine could delete its own backups there."
+    else
+      print info "The backup machine's snapshots can be updated."
+    fi
+    if ui_interactive; then
+      choose snap_choice add "Add nightly snapshots on the backup machine? It needs its administrator login once." \
+        "add:Add them (recommended):Root on the backup machine keeps a nightly copy of every lab's backups that no lab can change." \
+        "skip:Not now:Nothing is changed. The next setup asks again."
+      # shellcheck disable=SC2154  # set by `choose` above, via printf -v
+      if [ "$snap_choice" = "add" ]; then
+        if mapfile -t snap_lines < <(snapshot_install_lines "$SSH_USER") && run_as_backup_admin "${snap_lines[@]}"; then
+          print success "Nightly snapshots are set up on the backup machine"
+        else
+          print warning "The snapshots were not set up. Backups are not affected. Run 'intelis backup setup' again to retry."
+        fi
+      fi
+    fi
+  fi
+fi
 
 # --- tools --------------------------------------------------------------------
 

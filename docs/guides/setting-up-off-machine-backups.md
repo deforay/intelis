@@ -203,6 +203,7 @@ changes. If backups were never set up, it comes back once a week.
         Size on backup  : 4.2G
         History         : 2026-08-01 to 2026-08-07 (7 days)
         Last attempt    : succeeded in 47s
+        Server snapshots: 7 kept, newest 2026-08-07
         Schedule        : every 8 hours and after every restart
         ```
 
@@ -212,7 +213,33 @@ changes. If backups were never set up, it comes back once a week.
         | --- | --- |
         | Last good backup | A time less than 8 hours ago. |
         | Last attempt | `succeeded`. |
+        | Server snapshots | A number kept, and a date no older than yesterday. |
         | Schedule | `every 8 hours and after every restart`. |
+
+        ??? info "What the server snapshots are"
+
+            Each night, the backup machine copies every lab's backups into a
+            folder only its administrator can open. A lab machine that is
+            hacked, or encrypted by ransomware, can delete its own backups,
+            but not these copies. The newest 7 nightly copies are kept, and
+            then one a week for 4 more weeks. Setup adds them through the
+            administrator login. To recover from one, follow the
+            [**Lab machine hacked or encrypted**](restoring-from-backup.md)
+            tab of the restore guide.
+
+        ??? warning "If `Server snapshots` shows `none`"
+
+            The backup machine was set up before snapshots existed. Run
+            `intelis backup setup`, choose **Keep it**, and then
+            **Add them (recommended)**. Log in with the backup machine's
+            administrator account when asked. This is needed once for each
+            backup machine, not once for each lab.
+
+        ??? warning "If `Server snapshots` says no snapshot was taken"
+
+            The backup machine's disk is too full, so the night's copy was
+            skipped to leave room for the labs' backups. Free up space on the
+            backup machine. The next night's copy runs by itself.
 
         ??? failure "If `Last attempt` shows `FAILED`"
 

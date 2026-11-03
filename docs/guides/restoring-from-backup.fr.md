@@ -932,3 +932,89 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
         ou un logo, ouvrir un PDF de résultat.
     11. Quand le fichier restauré est correct, supprimer la copie
         `.before-restore-` s'il y en a une.
+
+=== "Machine de laboratoire piratée ou chiffrée"
+
+    Utiliser cet onglet quand une machine de laboratoire a été piratée ou
+    chiffrée par un rançongiciel, et que ses sauvegardes sur la machine de
+    sauvegarde ont aussi été supprimées ou abîmées. La machine de sauvegarde
+    garde des copies nocturnes qu'aucune machine de laboratoire ne peut
+    modifier. Cela ne fonctionne que si les sauvegardes vont vers une autre
+    machine Linux, et que `intelis backup status` affichait
+    **Server snapshots** avant l'attaque.
+
+    ### Empêcher la machine du laboratoire d'atteindre ses sauvegardes
+
+    1. Déconnecter la machine du laboratoire du réseau.
+    2. Sur la machine de sauvegarde, se connecter avec son compte
+       administrateur.
+    3. Fermer toutes les connexions ouvertes du compte de sauvegarde :
+
+        ```bash
+        sudo pkill -KILL -u lisbackup
+        ```
+
+        Une sauvegarde qu'un autre laboratoire envoyait à ce moment échoue une
+        fois, et sa prochaine sauvegarde planifiée l'envoie à nouveau.
+
+    4. Supprimer toutes les clés du compte de sauvegarde :
+
+        ```bash
+        sudo truncate -s 0 /home/lisbackup/.ssh/authorized_keys
+        ```
+
+        La personne qui a piraté la machine du laboratoire avait sa clé, et le
+        compte de sauvegarde peut modifier sa propre liste de clés. Toute clé
+        de la liste peut donc être la sienne, même une qui porte le nom d'un
+        autre laboratoire. Les supprimer toutes est le seul moyen d'en être
+        sûr. Les sauvegardes de chaque laboratoire s'arrêtent jusqu'à ce que
+        l'étape 5 soit faite pour lui.
+
+    5. Sur la machine de chaque autre laboratoire, lancer
+       `intelis backup setup`, et choisir la connexion administrateur quand
+       l'accès est demandé. Elle ajoute à nouveau la clé de ce laboratoire. Le
+       tableau de bord de chaque laboratoire, et la colonne **Backup** de
+       l'état de la synchronisation des laboratoires sur le STS, montrent les
+       laboratoires qui en ont encore besoin.
+
+    ### Copier les sauvegardes du laboratoire depuis une copie
+
+    6. Sur la machine de sauvegarde, lancer :
+
+        ```bash
+        sudo intelis-backup-snapshots restore
+        ```
+
+    7. À **Which lab?** (quel laboratoire), taper le numéro du laboratoire.
+    8. La taille du laboratoire dans chaque copie est affichée, de la plus
+       récente à la plus ancienne. À **Which date?** (quelle date), taper le
+       numéro de la dernière date avant la chute de la taille. Les copies
+       faites après l'attaque contiennent les dégâts.
+    9. Noter le nom de dossier affiché à la fin, par exemple
+       `centrallab-12345678-snapshot-20261101`. Le dossier de sauvegarde actuel
+       du laboratoire n'est pas modifié.
+
+    ### Reconstruire la machine du laboratoire
+
+    10. Réinstaller Ubuntu sur la machine du laboratoire, ou utiliser une
+        nouvelle machine. Une machine piratée n'est plus digne de confiance,
+        même après nettoyage.
+    11. Sur la machine reconstruite, suivre l'onglet **Sauvegardes sur un
+        serveur ou un partage** de
+        [Migrer d'une machine Ubuntu à une autre](migrating-ubuntu-machines.md).
+        Il installe InteLIS et restaure la sauvegarde en une seule étape. À
+        l'étape 3 de cet onglet, choisir le dossier de l'étape 9 ci-dessus au
+        lieu du dossier habituel du laboratoire.
+
+    12. Configurer à nouveau les sauvegardes avec `intelis backup setup`.
+        Choisir la même machine de sauvegarde, et la connexion administrateur
+        quand l'accès est demandé.
+
+    ### Nettoyer
+
+    13. Quand le laboratoire fonctionne, supprimer le dossier copié sur la
+        machine de sauvegarde. Remplacer le nom par celui de l'étape 9 :
+
+        ```bash
+        sudo rm -rf /home/lisbackup/backups/centrallab-12345678-snapshot-20261101
+        ```
