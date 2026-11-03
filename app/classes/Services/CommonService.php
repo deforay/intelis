@@ -13,6 +13,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SpreadsheetUtility;
 use App\Registries\AppRegistry;
 use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
@@ -26,7 +27,6 @@ use App\Utilities\FileCacheUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\ContainerRegistry;
 use GuzzleHttp\Exception\GuzzleException;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -2634,34 +2634,21 @@ final class CommonService
         $this->db->rawQuery($updateQuery);
     }
 
+    /**
+     * Whether the uploaded .xlsx has the same column headings as the template,
+     * ignoring case and spaces.
+     *
+     * @throws \InvalidArgumentException when the upload is not an .xlsx file
+     */
     public static function validateUploadedFile(string $uploadedFilePath, string $formatFilePath): bool
     {
-        // Load the uploaded Excel file
-        $uploadedSpreadsheet = IOFactory::load($uploadedFilePath);
+        $normalize = static fn(array $headings): array => array_map(
+            static fn(?string $heading): string => strtolower(preg_replace('/\s+/', '', (string) $heading)),
+            $headings
+        );
 
-        // Load the template Excel file
-        $templateSpreadsheet = IOFactory::load($formatFilePath);
-
-        // Get the first sheet of the uploaded file
-        $uploadedSheet = $uploadedSpreadsheet->getSheet(0);
-
-        // Get the first sheet of the template file
-        $templateSheet = $templateSpreadsheet->getSheet(0);
-
-        // Extract headers from both sheets for comparison
-        $uploadedHeaders = $uploadedSheet->rangeToArray('A1:Z1')[0];  // Adjust range as needed
-        $templateHeaders = $templateSheet->rangeToArray('A1:Z1')[0];  // Adjust range as needed
-
-        // Normalize headers for case-insensitive comparison and remove spaces/newlines
-        $normalizedUploadedHeaders = array_map(fn($header) => strtolower(preg_replace('/\s+/', '', (string) $header)), $uploadedHeaders);
-
-        $normalizedTemplateHeaders = array_map(fn($header) => strtolower(preg_replace('/\s+/', '', (string) $header)), $templateHeaders);
-        // Compare the column headers
-        // Compare additional formatting, data types, or any other specific requirements
-        // ...
-        // If all checks pass, return true
-        // The column headers do not match the template
-        return $normalizedUploadedHeaders === $normalizedTemplateHeaders;
+        return $normalize(SpreadsheetUtility::readHeadingRow($uploadedFilePath))
+            === $normalize(SpreadsheetUtility::readHeadingRow($formatFilePath));
     }
 
     public static function validateM2MToken(ServerRequestInterface $request, string $path): bool

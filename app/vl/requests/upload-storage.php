@@ -106,8 +106,9 @@ $filePath = '/files/storage/storage-bulk-upload.xlsx';
 									</label>
 									<div class="col-lg-7">
 										<input type="file" class="form-control isRequired" id="storageInfo"
-											name="storageInfo" placeholder="<?php echo _translate('Storage Name'); ?>"
+											name="storageInfo" accept=".xlsx" placeholder="<?php echo _translate('Storage Name'); ?>"
 											title="<?= _translate('Click to upload file'); ?>" />
+										<?= _translate("(Upload xlsx format)"); ?>
 									</div>
 								</div>
 								<div class="form-group">

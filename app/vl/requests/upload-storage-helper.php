@@ -3,6 +3,7 @@
 use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SpreadsheetUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -50,14 +51,14 @@ try {
 
         if (0 == $uploadedFile->getError()) {
 
-            $spreadsheet = IOFactory::load($targetPath);
-            $sheetData = $spreadsheet->getActiveSheet();
-            $sheetData = $sheetData->toArray(null, true, true, true);
-            $returnArray = [];
-            $resultArray = array_slice($sheetData, 1);
-            $filteredArray = array_filter((array) $resultArray, function ($row): array {
-                return array_filter($row); // Remove empty rows
-            });
+            try {
+                $filteredArray = SpreadsheetUtility::readRowsByColumnLetter($targetPath);
+            } catch (InvalidArgumentException $notXlsx) {
+                // Nothing imported yet, so send them back to upload it again
+                $_SESSION['alertMsg'] = $notXlsx->getMessage();
+                header("Location:/vl/requests/upload-storage.php");
+                exit;
+            }
             $total = count($filteredArray);
             $storageNotAdded = [];
 

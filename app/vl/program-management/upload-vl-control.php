@@ -117,7 +117,8 @@ $formatFilePath = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR
 									</label>
 									<div class="col-lg-5">
 										<input type="file" class="form-control isRequired" id="controlInfo"
-											name="controlInfo" title="<?= _translate('Click to upload file'); ?>" />
+											name="controlInfo" accept=".xlsx" title="<?= _translate('Click to upload file'); ?>" />
+										<?= _translate("(Upload xlsx format)"); ?><br>
 										<?php if (file_exists($formatFilePath)) { ?>
 											<a class="text-primary" style="text-decoration:underline;"
 												href="/files/controls/VL_Controls_Bulk_Upload_Excel_Format.xlsx"
