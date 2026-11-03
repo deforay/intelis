@@ -75,23 +75,9 @@ try {
                 }
                 $resultStatus = $general->getDataFromOneFieldAndValue('r_sample_status', 'status_name', $rowData['AK']);
 
-                if (trim((string) $rowData['W']) !== '') {
-                    $sampleCollectionDate = date('Y-m-d H:i:s', strtotime((string) $rowData['W']));
-                } else {
-                    $sampleCollectionDate = null;
-                }
-
-                if (trim((string) $rowData['Z']) !== '') {
-                    $sampleReceivedDate = date('Y-m-d H:i:s', strtotime((string) $rowData['Z']));
-                } else {
-                    $sampleReceivedDate = null;
-                }
-
-                if (trim((string) $rowData['AD']) !== '') {
-                    $sampleTestDate = date('Y-m-d H:i:s', strtotime((string) $rowData['AD']));
-                } else {
-                    $sampleTestDate = null;
-                }
+                $sampleCollectionDate = DateUtility::isoDateFormat($rowData['W'] ?? '', true);
+                $sampleReceivedDate = DateUtility::isoDateFormat($rowData['Z'] ?? '', true);
+                $sampleTestDate = DateUtility::isoDateFormat($rowData['AD'] ?? '', true);
 
                 $instanceId = '';
                 if (isset($_SESSION['instanceId'])) {
