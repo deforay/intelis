@@ -832,3 +832,78 @@ was made are lost.
         open a result PDF.
     11. When the restored file is right, delete the `.before-restore-` copy if
         there is one.
+
+=== "Lab machine hacked or encrypted"
+
+    Use this when a lab machine was hacked or encrypted by ransomware, and its
+    backups on the backup machine were deleted or damaged too. The backup
+    machine keeps nightly copies that no lab machine can change. This works
+    only when the backups go to another Linux machine, and
+    `intelis backup status` showed **Server snapshots** before the attack.
+
+    ### Stop the lab machine from reaching its backups
+
+    1. Disconnect the lab machine from the network.
+    2. On the backup machine, log in with its administrator account.
+    3. End every open connection of the backup account:
+
+        ```bash
+        sudo pkill -KILL -u lisbackup
+        ```
+
+        A backup another lab was sending at that moment fails once, and its
+        next scheduled backup sends it again.
+
+    4. Remove every key from the backup account:
+
+        ```bash
+        sudo truncate -s 0 /home/lisbackup/.ssh/authorized_keys
+        ```
+
+        Whoever hacked the lab machine had its key, and the backup account can
+        change its own list of keys, so any key on it may now be theirs, even
+        one carrying another lab's name. Removing all of them is the only way
+        to be sure. Every lab's backups stop until step 5 is done for it.
+
+    5. On every other lab's machine, run `intelis backup setup`, and choose
+       the administrator login when it asks how to give access. It adds that
+       lab's key again. The dashboard of each lab, and the **Backup** column of
+       **Lab Sync Status** on the STS, show which labs still need it.
+
+    ### Copy the lab's backups out of a snapshot
+
+    6. On the backup machine, run:
+
+        ```bash
+        sudo intelis-backup-snapshots restore
+        ```
+
+    7. At **Which lab?**, type the number of the lab.
+    8. The lab's size in each snapshot is listed, newest first. At
+       **Which date?**, type the number of the last date before the size
+       dropped. The snapshots after the attack hold the damage.
+    9. Write down the folder name shown at the end, for example
+       `centrallab-12345678-snapshot-20261101`. The lab's live backup folder
+       is not changed.
+
+    ### Rebuild the lab machine
+
+    10. Reinstall Ubuntu on the lab machine, or use a new machine. A hacked
+        machine cannot be trusted again, even after cleaning.
+    11. On the rebuilt machine, follow the **Backups on a server or share** tab
+        of [Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md).
+        It installs InteLIS and restores the backup in one step. At step 3 of
+        that tab, choose the folder from step 9 above instead of the lab's own
+        folder.
+
+    12. Set up backups again with `intelis backup setup`. Choose the same
+        backup machine, and the administrator login when asked for access.
+
+    ### Clean up
+
+    13. When the lab works, remove the copied folder on the backup machine.
+        Replace the name with the one from step 9:
+
+        ```bash
+        sudo rm -rf /home/lisbackup/backups/centrallab-12345678-snapshot-20261101
+        ```
