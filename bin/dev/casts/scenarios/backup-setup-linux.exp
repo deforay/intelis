@@ -27,6 +27,7 @@ expect {
     "Administrator account on the backup machine" { answer "labadmin"; exp_continue }
     -re {labadmin@[^ ]*'s password: $}    { sleep 1; send "$server_password\r"; exp_continue }
     -re {\[sudo\] password for labadmin:} { sleep 1; send "$server_password\r"; exp_continue }
+    "Add nightly snapshots on the backup machine?" { pick "Add them"; exp_continue }
     "Backups are set up and the first one completed" {}
     "the first backup failed"             { fail "first backup failed" }
     "backup did not finish"               { fail "local backup failed" }

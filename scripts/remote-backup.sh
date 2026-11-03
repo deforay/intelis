@@ -375,6 +375,8 @@ if [ "$ACTION" = "status" ]; then
       echo "Server snapshots: none. Run 'intelis backup setup' to add them."
     elif [ "$snap_result" = "ok" ] && [ -n "$snap_newest" ]; then
       echo "Server snapshots: ${snap_count:-0} kept, newest ${snap_newest:0:4}-${snap_newest:4:2}-${snap_newest:6:2}"
+    elif [ "$snap_result" = "ok" ]; then
+      echo "Server snapshots: set up, the first is taken tonight"
     else
       echo "Server snapshots: ${snap_message:-$snap_result}"
     fi
@@ -1675,10 +1677,18 @@ case "${1:-}" in
     shift 3
     exec runuser -u "$u" -- "$@"
     ;;
+  # Right after installing: a status for every account that has none yet, so
+  # the labs' `backup status` says the snapshots are set up, not that there are
+  # none, until the first night.
+  init)
+    for u in $USERS; do
+      [ -e "$STATE_DIR/snapshots-$u.status" ] || write_status "$u" ok "Set up. The first snapshot is taken tonight."
+    done
+    ;;
   run) cmd_run >>"$LOG" 2>&1 ;;
   list) cmd_list ;;
   restore) cmd_restore ;;
-  *) echo "Usage: $0 run|list|restore"; exit 2 ;;
+  *) echo "Usage: $0 run|list|restore|init"; exit 2 ;;
 esac
 SNAPSHOT_SCRIPT
 }
@@ -1687,19 +1697,26 @@ SNAPSHOT_SCRIPT
 # backup account $1. Idempotent: every lab set up through the administrator
 # login runs them again, which keeps the script current.
 snapshot_install_lines() {
-  local user=$1 script_b64
-  script_b64="$(snapshot_server_script | sed "s/__SNAPSHOT_VERSION__/${SNAPSHOT_VERSION}/" | base64 | tr -d '\n')"
+  local user=$1
   printf '%s\n' \
     "need=''; command -v rsync >/dev/null 2>&1 || need=rsync; [ -d /etc/cron.d ] && { command -v cron >/dev/null 2>&1 || command -v crond >/dev/null 2>&1; } || need=\"\$need cron\"" \
     "if [ -n \"\$need\" ]; then apt-get install -y \$need >/dev/null 2>&1 || { apt-get update >/dev/null 2>&1 && apt-get install -y \$need >/dev/null 2>&1; } || { echo \"Could not install \$need on the backup machine.\"; exit 1; }; fi" \
-    "systemctl enable --now cron >/dev/null 2>&1 || true" \
-    "echo '${script_b64}' | base64 -d > ${SNAPSHOT_SCRIPT_PATH}.new" \
+    "systemctl enable --now cron >/dev/null 2>&1 || true"
+  # The script travels as short base64 lines in a heredoc. These lines reach
+  # root's shell through `ssh -t ... | sudo sh`, and sudo can pass its input
+  # through a terminal, which cuts every line at 4096 bytes. One long line
+  # holding the whole script was cut short there, and sh stopped at
+  # "Unterminated quoted string".
+  printf '%s\n' "base64 -d > ${SNAPSHOT_SCRIPT_PATH}.new <<'INTELIS_SNAPSHOT_SCRIPT'"
+  snapshot_server_script | sed "s/__SNAPSHOT_VERSION__/${SNAPSHOT_VERSION}/" | base64 | fold -w 76
+  printf '%s\n' "INTELIS_SNAPSHOT_SCRIPT" \
     "chmod 755 ${SNAPSHOT_SCRIPT_PATH}.new && mv -f ${SNAPSHOT_SCRIPT_PATH}.new ${SNAPSHOT_SCRIPT_PATH}" \
     "c=/etc/intelis-backup-server.conf; touch \"\$c\"; chmod 644 \"\$c\"" \
     "cur=\$(sed -n 's/^USERS=\"\\(.*\\)\"\$/\\1/p' \"\$c\" | head -1)" \
     "case \" \$cur \" in *' ${user} '*) ;; *) new=\"\${cur:+\$cur }${user}\"; grep -v '^USERS=' \"\$c\" > \"\$c.new\" || true; echo \"USERS=\\\"\$new\\\"\" >> \"\$c.new\"; chmod 644 \"\$c.new\"; mv -f \"\$c.new\" \"\$c\" ;; esac" \
     "printf '%s\\n' 'SHELL=/bin/bash' '30 2 * * * root ${SNAPSHOT_SCRIPT_PATH} run' > /etc/cron.d/intelis-backup-snapshots" \
-    "chmod 644 /etc/cron.d/intelis-backup-snapshots"
+    "chmod 644 /etc/cron.d/intelis-backup-snapshots" \
+    "${SNAPSHOT_SCRIPT_PATH} init"
 }
 
 # Which snapshot version the backup machine keeps for this lab's backup
@@ -1716,21 +1733,48 @@ server_snapshot_version() {
 # Runs root's lines on the backup machine through its administrator login.
 # Asks for the account, and its password if the machine wants one.
 run_as_backup_admin() { # run_as_backup_admin <lines...>
-  local admin b64 run
-  local mux=(-o ControlMaster=auto -o "ControlPath=/tmp/intelis-admin-%C" -o ControlPersist=60)
+  local admin
   ask admin "Administrator account on the backup machine (the account used to manage it)" "${BACKUP_ADMIN:-}"
   [[ "$admin" =~ ^[a-z_][a-z0-9_.-]*$ ]] || { print warning "'$admin' is not a valid username."; return 1; }
   BACKUP_ADMIN="$admin"
-  b64="$(printf '%s\n' "set -e" "$@" | base64 | tr -d '\n')"
+  print info "Logging in as ${admin}. If it asks for a password, it is ${admin}'s password on the backup server."
+  admin_run_lines "$admin" "$@"
+}
+
+# admin_run_lines <admin> <lines...>: runs the lines as root on the backup
+# machine, through the administrator's login.
+#
+# They are uploaded to a file first, and only then run. Sent as one long
+# command argument (echo <base64> | base64 -d | sudo sh), the payload arrived
+# cut short on a real setup, and sh stopped half-way at "Unterminated quoted
+# string" after running the lines before the cut. The upload's checksum is
+# compared with what was sent, so a cut-short copy is refused rather than
+# half-run. Then `ssh -t`, so sudo can ask for its password on this terminal.
+admin_run_lines() {
+  local admin=$1 payload sum remote file run
+  shift
+  local mux=(-o ControlMaster=auto -o "ControlPath=/tmp/intelis-admin-%C" -o ControlPersist=60)
+  payload="$(printf '%s\n' "set -e" "$@")"
+  sum="$(printf '%s\n' "$payload" | sha256sum | cut -d' ' -f1)"
+  # shellcheck disable=SC2016  # expanded on the backup machine
+  remote="$(printf '%s\n' "$payload" | ssh "${mux[@]}" -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 \
+      -p "$SSH_PORT" "${admin}@${SSH_HOST}" \
+      'umask 077; f=$(mktemp /tmp/intelis-setup.XXXXXX) && cat > "$f" && printf "%s %s\n" "$f" "$(sha256sum < "$f" | cut -d" " -f1)"')" ||
+    { print warning "Could not send the setup commands to the backup machine as ${admin}."; return 1; }
+  remote="$(printf '%s' "$remote" | tr -d '\r' | tail -1)"
+  file="${remote%% *}"
+  if [[ ! "$file" =~ ^/tmp/intelis-setup\.[A-Za-z0-9]+$ ]] || [ "${remote##* }" != "$sum" ]; then
+    print warning "The setup commands did not arrive whole on the backup machine. Nothing was run."
+    return 1
+  fi
   run="sh"
   [ "$admin" = "root" ] || run="sudo sh"
-  print info "Logging in as ${admin}. If it asks for a password, it is ${admin}'s password on the backup server."
   ssh -t "${mux[@]}" -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 -p "$SSH_PORT" \
-      "${admin}@${SSH_HOST}" "echo ${b64} | base64 -d | ${run}"
+      "${admin}@${SSH_HOST}" "${run} ${file}; rc=\$?; rm -f ${file}; exit \$rc"
 }
 
 install_key_via_admin() {
-  local admin key create=0 exists b64 run
+  local admin key create=0 exists
   # One connection for both commands, so a password is typed once.
   local mux=(-o ControlMaster=auto -o "ControlPath=/tmp/intelis-admin-%C" -o ControlPersist=60)
   # No default. Ubuntu refuses root logins by password, so "root" is the wrong
@@ -1751,24 +1795,19 @@ install_key_via_admin() {
   fi
 
   key="$(cat "${SSH_KEY}.pub")"
-  # Sent encoded so no quoting survives two shells; everything in it is a fixed
-  # command, the validated username and the public key line.
-  # The same login also installs, or updates, the snapshots of every lab's
-  # backups on that machine.
-  b64="$({ printf '%s\n' \
-    "set -e" \
+  # Everything in it is a fixed command, the validated username and the public
+  # key line. The same login also installs, or updates, the snapshots of every
+  # lab's backups on that machine.
+  local -a lines
+  mapfile -t lines < <({ printf '%s\n' \
     "u='${SSH_USER}'" \
     "if [ ${create} -eq 1 ] && ! id -u \"\$u\" >/dev/null 2>&1; then useradd -m -s /bin/bash \"\$u\"; fi" \
     "h=\$(getent passwd \"\$u\" | cut -d: -f6)" \
     "mkdir -p \"\$h/.ssh\"; touch \"\$h/.ssh/authorized_keys\"" \
     "grep -qxF '${key}' \"\$h/.ssh/authorized_keys\" || echo '${key}' >> \"\$h/.ssh/authorized_keys\"" \
     "chown -R \"\$u\": \"\$h/.ssh\"; chmod 700 \"\$h/.ssh\"; chmod 600 \"\$h/.ssh/authorized_keys\""
-    snapshot_install_lines "$SSH_USER"; } | base64 | tr -d '\n')"
-  run="sh"
-  [ "$admin" = "root" ] || run="sudo sh"
-  # -t so sudo can ask for its password on this terminal.
-  ssh -t "${mux[@]}" -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 -p "$SSH_PORT" \
-      "${admin}@${SSH_HOST}" "echo ${b64} | base64 -d | ${run}" ||
+    snapshot_install_lines "$SSH_USER"; })
+  admin_run_lines "$admin" "${lines[@]}" ||
     { print warning "Logged in as ${admin}, but adding the key failed. ${admin} may not be allowed to use sudo."; return 1; }
   print success "This machine can now send backups to ${SSH_HOST} as ${SSH_USER}"
 }
