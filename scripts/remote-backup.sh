@@ -1699,9 +1699,13 @@ SNAPSHOT_SCRIPT
 snapshot_install_lines() {
   local user=$1
   printf '%s\n' \
-    "need=''; command -v rsync >/dev/null 2>&1 || need=rsync; [ -d /etc/cron.d ] && { command -v cron >/dev/null 2>&1 || command -v crond >/dev/null 2>&1; } || need=\"\$need cron\"" \
-    "if [ -n \"\$need\" ]; then apt-get install -y \$need >/dev/null 2>&1 || { apt-get update >/dev/null 2>&1 && apt-get install -y \$need >/dev/null 2>&1; } || { echo \"Could not install \$need on the backup machine.\"; exit 1; }; fi" \
+    "need=''; command -v rsync >/dev/null 2>&1 || need=' rsync'; [ -d /etc/cron.d ] && { command -v cron >/dev/null 2>&1 || command -v crond >/dev/null 2>&1; } || need=\"\$need cron\"" \
+    "export DEBIAN_FRONTEND=noninteractive" \
+    "if [ -n \"\$need\" ]; then echo \"Installing\$need on the backup machine...\"; apt-get install -y -q \$need </dev/null >/dev/null 2>&1 || { apt-get update -q </dev/null >/dev/null 2>&1 && apt-get install -y -q \$need </dev/null >/dev/null 2>&1; } || { echo \"Could not install\$need on the backup machine.\"; exit 1; }; fi" \
     "systemctl enable --now cron >/dev/null 2>&1 || true"
+  # DEBIAN_FRONTEND and </dev/null: these lines run under `ssh -t`, so without
+  # them apt asks its configuration questions (tzdata's timezone, pulled in by
+  # cron) on a terminal whose output is hidden, and setup waits for ever.
   # The script travels as short base64 lines in a heredoc. These lines reach
   # root's shell through `ssh -t ... | sudo sh`, and sudo can pass its input
   # through a terminal, which cuts every line at 4096 bytes. One long line
