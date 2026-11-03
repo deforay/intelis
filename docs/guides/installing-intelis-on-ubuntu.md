@@ -79,6 +79,14 @@ instead.
             Choose **Keep a copy, then start fresh** to set the old data aside
             without losing it.
 
+        ??? info "If it asks `Do you want to set up backups for this installation?`"
+
+            Backups are optional. Choose **I have a backup server ready and
+            configured for backups** only when the backup destination is
+            already prepared. The installer then runs the backup setup.
+            Otherwise choose **Not now**, and set up backups later with
+            `intelis backup setup`.
+
     4. Wait for the installer to finish. It checks the new installation, then
        ends with `Setup complete`.
     5. Read the `Install Check` list printed above `Setup complete`. Each
@@ -134,11 +142,14 @@ instead.
         a USB drive. [Setting up off-machine backups](setting-up-off-machine-backups.md)
         walks through the questions for each destination.
 
+        Backups are optional. Skip this step if backups were set up during
+        installation, or if no backup destination is ready yet.
+
     ### Check the lab
 
     13. Log in with the login ID and password from step 10.
     14. Check the lab settings under **Admin → Settings → General Configuration**.
-    15. In a terminal, confirm the backups work:
+    15. If backups were set up, confirm in a terminal that they work:
 
         ```bash
         intelis backup status
@@ -204,6 +215,14 @@ instead.
             Choose **Keep a copy, then start fresh** to set the old data aside
             without losing it.
 
+        ??? info "If it asks `Do you want to set up backups for this installation?`"
+
+            Backups are optional. Choose **I have a backup server ready and
+            configured for backups** only when the backup destination is
+            already prepared. The installer then runs the backup setup.
+            Otherwise choose **Not now**, and set up backups later with
+            `intelis backup setup`.
+
     5. Wait for the installer to finish. It checks the new installation, then
        ends with `Setup complete`.
     6. Read the `Install Check` list printed above `Setup complete`. Each
@@ -257,13 +276,16 @@ instead.
         a USB drive. [Setting up off-machine backups](setting-up-off-machine-backups.md)
         walks through the questions for each destination.
 
+        Backups are optional. Skip this step if backups were set up during
+        installation, or if no backup destination is ready yet.
+
     ### Check the server
 
     14. Log in with the login ID and password from step 11.
     15. Check the settings under **Admin → Settings → General Configuration**.
     16. From a lab computer, open the web address from step 4. The InteLIS
         login page appears.
-    17. In a terminal, confirm the backups work:
+    17. If backups were set up, confirm in a terminal that they work:
 
         ```bash
         intelis backup status

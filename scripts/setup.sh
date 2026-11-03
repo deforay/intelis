@@ -1937,5 +1937,30 @@ if [ -f "${lis_path}/bin/preflight.php" ]; then
     print info "Re-run any time: intelis check"
 fi
 
+# ---------------------------------------------------------------------------
+# Off-machine backups — optional, offered once at the end.
+#
+# The backup setup needs a destination that is already prepared (a backup
+# machine, a Windows shared folder, or a USB drive), so the default is to skip.
+# A machine that already sends backups somewhere is not asked again, and an
+# unattended run takes the default. A failed backup setup does not fail the
+# install: `if` keeps the ERR trap out of it.
+# ---------------------------------------------------------------------------
+if [ ! -x /usr/local/bin/intelis-backup.sh ] && [ -x /usr/local/bin/intelis ]; then
+    print header "Off-machine Backups"
+    ui_note "You need a backup server set up before we can do this."
+    ask_choice _backup_choice "later" "Do you want to set up backups for this installation?" \
+        "now:I have a backup server ready and configured for backups:Set up backups now" \
+        "later:Not now:Set up later with: sudo intelis backup setup"
+    if [ "${_backup_choice}" = "now" ]; then
+        if ! /usr/local/bin/intelis backup setup; then
+            print warning "Backup setup did not finish. Run it again any time: sudo intelis backup setup"
+            log_action "Backup setup from setup.sh did not finish"
+        fi
+    else
+        print info "Backups are not set up. To set them up later: sudo intelis backup setup"
+    fi
+fi
+
 print success "Setup complete. Proceed to LIS setup."
 log_action "Setup complete. Proceed to LIS setup."

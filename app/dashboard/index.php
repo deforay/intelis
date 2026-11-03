@@ -1,14 +1,10 @@
 <?php
 
 use App\Services\TestsService;
-use App\Services\BackupStatusService;
 
 $title = _translate("Dashboard");
 
 require_once APPLICATION_PATH . '/header.php';
-
-// Administrators only: whether the off-machine backup is set up and current.
-$backupNotice = (int) ($_SESSION['roleId'] ?? 0) === 1 ? BackupStatusService::dashboardNotice() : null;
 
 $activeTests = TestsService::getActiveTests();
 $userModules = $_SESSION['modules'] ?? [];
@@ -101,32 +97,6 @@ $userModules = $_SESSION['modules'] ?? [];
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-	<?php if ($backupNotice !== null) { ?>
-		<div id="backupNotice" class="alert alert-<?= $backupNotice['level'] === 'danger' ? 'danger' : 'warning'; ?> alert-dismissible" role="alert" style="margin: 10px 15px 0; display: none;"
-			data-key="<?= htmlspecialchars($backupNotice['key'], ENT_QUOTES); ?>">
-			<button type="button" class="close" data-dismiss="alert" aria-label="<?= _htmlTranslate("Close"); ?>" style="text-indent: 0px"><span aria-hidden="true">&times;</span></button>
-			<strong><?= _htmlTranslate("Backups"); ?>:</strong> <?= htmlspecialchars($backupNotice['message'], ENT_QUOTES); ?>
-		</div>
-		<script>
-			// Dismissed in this browser until the problem changes (see BackupStatusService).
-			(function() {
-				var el = document.getElementById('backupNotice');
-				var key = el.getAttribute('data-key');
-				var dismissed = null;
-				try {
-					dismissed = window.localStorage.getItem('intelisBackupNoticeDismissed');
-				} catch (e) {}
-				if (dismissed !== key) {
-					el.style.display = '';
-				}
-				el.querySelector('.close').addEventListener('click', function() {
-					try {
-						window.localStorage.setItem('intelisBackupNoticeDismissed', key);
-					} catch (e) {}
-				});
-			})();
-		</script>
-	<?php } ?>
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<div class="bs bs-tabs">
