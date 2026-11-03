@@ -83,6 +83,16 @@ données, suivre plutôt
             (garder une copie, puis repartir de zéro) pour mettre les
             anciennes données de côté sans les perdre.
 
+        ??? info "S'il demande `Do you want to set up backups for this installation?`"
+
+            Les sauvegardes sont facultatives. Choisir **I have a backup server
+            ready and configured for backups** (un serveur de sauvegarde est
+            prêt et configuré) seulement si la destination des sauvegardes est
+            déjà préparée. Le programme d'installation lance alors la
+            configuration des sauvegardes. Sinon, choisir **Not now** (pas
+            maintenant), puis configurer les sauvegardes plus tard avec
+            `intelis backup setup`.
+
     4. Attendre la fin du programme d'installation. Il vérifie la nouvelle
        installation, puis se termine par `Setup complete`.
     5. Lire la liste `Install Check` affichée au-dessus de `Setup complete`.
@@ -147,13 +157,18 @@ données, suivre plutôt
         [Configurer les sauvegardes hors de la machine](setting-up-off-machine-backups.md)
         détaille les questions pour chaque destination.
 
+        Les sauvegardes sont facultatives. Passer cette étape si les
+        sauvegardes ont été configurées pendant l'installation, ou si aucune
+        destination de sauvegarde n'est encore prête.
+
     ### Vérifier le laboratoire
 
     13. Se connecter avec l'identifiant de connexion et le mot de passe de
         l'étape 10.
     14. Vérifier les paramètres du laboratoire sous **ADMIN → Paramètres →
         Configuration générale**.
-    15. Dans un terminal, confirmer que les sauvegardes fonctionnent :
+    15. Si les sauvegardes sont configurées, confirmer dans un terminal
+        qu'elles fonctionnent :
 
         ```bash
         intelis backup status
@@ -222,6 +237,16 @@ données, suivre plutôt
             copie, puis repartir de zéro) pour mettre les anciennes données de
             côté sans les perdre.
 
+        ??? info "S'il demande `Do you want to set up backups for this installation?`"
+
+            Les sauvegardes sont facultatives. Choisir **I have a backup server
+            ready and configured for backups** (un serveur de sauvegarde est
+            prêt et configuré) seulement si la destination des sauvegardes est
+            déjà préparée. Le programme d'installation lance alors la
+            configuration des sauvegardes. Sinon, choisir **Not now** (pas
+            maintenant), puis configurer les sauvegardes plus tard avec
+            `intelis backup setup`.
+
     5. Attendre la fin du programme d'installation. Il vérifie la nouvelle
        installation, puis se termine par `Setup complete`.
     6. Lire la liste `Install Check` affichée au-dessus de `Setup complete`.
@@ -285,6 +310,10 @@ données, suivre plutôt
         [Configurer les sauvegardes hors de la machine](setting-up-off-machine-backups.md)
         détaille les questions pour chaque destination.
 
+        Les sauvegardes sont facultatives. Passer cette étape si les
+        sauvegardes ont été configurées pendant l'installation, ou si aucune
+        destination de sauvegarde n'est encore prête.
+
     ### Vérifier le serveur
 
     14. Se connecter avec l'identifiant de connexion et le mot de passe de
@@ -293,7 +322,8 @@ données, suivre plutôt
         générale**.
     16. Depuis un ordinateur d'un laboratoire, ouvrir l'adresse web de
         l'étape 4. La page de connexion d'InteLIS s'affiche.
-    17. Dans un terminal, confirmer que les sauvegardes fonctionnent :
+    17. Si les sauvegardes sont configurées, confirmer dans un terminal
+        qu'elles fonctionnent :
 
         ```bash
         intelis backup status
