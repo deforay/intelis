@@ -6,6 +6,7 @@ use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
+use App\Services\SampleAccessService;
 use App\Registries\ContainerRegistry;
 use App\Exceptions\SystemException;
 
@@ -17,7 +18,6 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 /** @var FacilitiesService $facilitiesService */
@@ -52,8 +52,11 @@ $vlTestReasonQuery = "SELECT * from r_eid_test_reasons where test_reason_status 
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
 
 
-$eidQuery = "SELECT * from form_eid where eid_id=?";
-$eidInfo = $db->rawQueryOne($eidQuery, [$id]);
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+// Stops with 404 for a bad link and 403 for a sample outside the user's facilities.
+$eidInfo = $sampleAccess->load('eid', $_GET['id'] ?? null);
+$id = (int) $eidInfo['eid_id'];
 
 // A saved signer may now be outside the lab scope; keep them selectable so the
 // dropdown does not render blank and a re-save does not clear the value.
@@ -77,11 +80,6 @@ $eidResults = $eidService->getEidResults();
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-// Facility isolation: a mapped STS user may only open samples for facilities in
-// their facilityMap. No-op on LIS and for unmapped (all-access) users.
-if (!empty($eidInfo['facility_id'])) {
-	$general->assertFacilityAllowed((int) $eidInfo['facility_id']);
-}
 
 //Funding source list
 $fundingSourceList = $general->getFundingSources();
