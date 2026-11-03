@@ -54,7 +54,10 @@ final class SpreadsheetUtilityTest extends TestCase
             Row::fromValues(['Sample Code', 'Collected', 'Viral Load']),
             new Row([
                 Cell::fromValue(12345),
-                Cell::fromValue(new DateTimeImmutable('2026-10-05 14:30:00'), (new Style())->withFormat('yyyy-mm-dd hh:mm:ss')),
+                Cell::fromValue(
+                    new DateTimeImmutable('2026-10-05 14:30:00'),
+                    (new Style())->withFormat('yyyy-mm-dd hh:mm:ss')
+                ),
                 Cell::fromValue(12.5),
             ]),
             Row::fromValues(['', '', '']),
