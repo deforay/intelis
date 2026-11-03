@@ -23,7 +23,6 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 $tableName = "form_covid19";
 $testTableName = 'covid19_tests';
-// echo "<pre>";print_r($_FILES);die;
 try {
     $arr = $general->getGlobalConfig();
 
@@ -38,9 +37,6 @@ try {
 
     if (move_uploaded_file($_FILES['requestFile']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)) {
 
-        $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
-        $mime_type = $file_info->buffer(file_get_contents(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
-
         try {
             $resultArray = SpreadsheetUtility::readRowsByColumnLetter(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName);
         } catch (InvalidArgumentException $notXlsx) {
@@ -51,7 +47,6 @@ try {
         }
 
         foreach ($resultArray as $rowIndex => $rowData) {
-            // echo "<pre>";print_r($rowData);die;
             if (!empty($rowData['A'])) {
                 $sampleCode         = $general->getDataFromOneFieldAndValue('form_covid19', 'sample_code', $rowData['A']);
                 $provinceId         = $general->getDataFromOneFieldAndValue('geographical_divisions', 'geo_name', $rowData['D']);
