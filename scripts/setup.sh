@@ -1948,7 +1948,9 @@ fi
 # ---------------------------------------------------------------------------
 if [ ! -x /usr/local/bin/intelis-backup.sh ] && [ -x /usr/local/bin/intelis ]; then
     print header "Off-machine Backups"
-    ui_note "You need a backup server set up before we can do this."
+    if ui_interactive; then
+        ui_note "You need a backup server set up before we can do this."
+    fi
     ask_choice _backup_choice "later" "Do you want to set up backups for this installation?" \
         "now:I have a backup server ready and configured for backups:Set up backups now" \
         "later:Not now:Set up later with: sudo intelis backup setup"
