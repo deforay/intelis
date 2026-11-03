@@ -260,8 +260,9 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     and the settings backups in `backups/config`. A settings backup holds the
     lab settings, signatures, report templates, logos and barcode label formats.
     The backup leaves out
-    files rebuilt on install: `vendor/`, `node_modules/`, caches, logs,
-    temporary files and version-control folders.
+    files rebuilt on install: the InteLIS application itself, `vendor/`,
+    `node_modules/`, caches, logs, temporary files and version-control
+    folders. Every restore installs a fresh copy of the application.
 
     The folder is a mirror of this machine, so it holds the newest database
     backups only, about the last 2 days. Older database backups are kept next to
@@ -494,8 +495,9 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     and the settings backups in `backups\config`. A settings backup holds the
     lab settings, signatures, report templates, logos and barcode label formats.
     The backup leaves out
-    files rebuilt on install: `vendor/`, `node_modules/`, caches, logs,
-    temporary files and version-control folders.
+    files rebuilt on install: the InteLIS application itself, `vendor/`,
+    `node_modules/`, caches, logs, temporary files and version-control
+    folders. Every restore installs a fresh copy of the application.
 
     The folder is a mirror of this machine, so it holds the newest database
     backups only, about the last 2 days. Older database backups are kept next to
@@ -694,8 +696,9 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     and the settings backups in `backups/config`. A settings backup holds the
     lab settings, signatures, report templates, logos and barcode label formats.
     The backup leaves out
-    files rebuilt on install: `vendor/`, `node_modules/`, caches, logs,
-    temporary files and version-control folders.
+    files rebuilt on install: the InteLIS application itself, `vendor/`,
+    `node_modules/`, caches, logs, temporary files and version-control
+    folders. Every restore installs a fresh copy of the application.
 
     The folder is a mirror of this machine, so it holds the newest database
     backups only, about the last 2 days. Older database backups are kept next to
