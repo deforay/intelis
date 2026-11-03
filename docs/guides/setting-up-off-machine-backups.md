@@ -281,9 +281,9 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     A file deleted or changed on this machine leaves the mirror at the next
     run. The earlier copy is kept for 14 days in `.deleted/`, in a folder named
     after that run's date and time in UTC, such as `20261103-080000`. Inside
-    it, the file has the same path as on this machine. To get a file back, open
-    the folder of the first run after the file was lost, and copy the file back
-    to the same place. Old database backups are not kept there, because
+    it, the file has the same path as on this machine. To get a file back, run
+    `intelis restore` and choose
+    **A file deleted or changed in the last 14 days**. Old database backups are not kept there, because
     `.history/` already keeps them. Old copies of the monthly audit trail
     bundles are kept for 3 days. To change the periods, set `DELETED_DAYS` and
     `DELETED_BUNDLE_DAYS` in `/etc/intelis/backup.conf`.
@@ -516,9 +516,9 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     A file deleted or changed on this machine leaves the mirror at the next
     run. The earlier copy is kept for 14 days in `.deleted/`, in a folder named
     after that run's date and time in UTC, such as `20261103-080000`. Inside
-    it, the file has the same path as on this machine. To get a file back, open
-    the folder of the first run after the file was lost, and copy the file back
-    to the same place. Old database backups are not kept there, because
+    it, the file has the same path as on this machine. To get a file back, run
+    `intelis restore` and choose
+    **A file deleted or changed in the last 14 days**. Old database backups are not kept there, because
     `.history/` already keeps them. Old copies of the monthly audit trail
     bundles are kept for 3 days. To change the periods, set `DELETED_DAYS` and
     `DELETED_BUNDLE_DAYS` in `/etc/intelis/backup.conf`.
@@ -717,9 +717,9 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     A file deleted or changed on this machine leaves the mirror at the next
     run. The earlier copy is kept for 14 days in `.deleted/`, in a folder named
     after that run's date and time in UTC, such as `20261103-080000`. Inside
-    it, the file has the same path as on this machine. To get a file back, open
-    the folder of the first run after the file was lost, and copy the file back
-    to the same place. Old database backups are not kept there, because
+    it, the file has the same path as on this machine. To get a file back, run
+    `intelis restore` and choose
+    **A file deleted or changed in the last 14 days**. Old database backups are not kept there, because
     `.history/` already keeps them. Old copies of the monthly audit trail
     bundles are kept for 3 days. To change the periods, set `DELETED_DAYS` and
     `DELETED_BUNDLE_DAYS` in `/etc/intelis/backup.conf`.

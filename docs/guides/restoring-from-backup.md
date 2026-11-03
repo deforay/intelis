@@ -1,5 +1,5 @@
 ---
-description: Restore the InteLIS database, an older dated backup, uploaded files or the audit trail onto a machine where InteLIS already runs.
+description: Restore the InteLIS database, an older dated backup, uploaded files, the audit trail or a deleted file onto a machine where InteLIS already runs.
 audience: [system-admin]
 module: [all]
 type: how-to
@@ -749,3 +749,86 @@ was made are lost.
         `Last attempt` shows `succeeded`.
     11. Run the cleanup command printed by the script. It removes only this
         fetched copy.
+
+=== "A deleted file"
+
+    Use this when a file was deleted or changed on this machine by mistake in
+    the last 14 days, for example a signature or a report template. The
+    database, the settings and the audit trail are not changed.
+
+    ### Fetch the backup
+
+    1. Open a terminal and go to the InteLIS folder:
+
+        ```bash
+        cd /var/www/intelis
+        ```
+
+        On older installs, type `cd /var/www/vlsm` instead.
+
+    2. Start the restore:
+
+        ```bash
+        intelis restore
+        ```
+
+        The command checks for the current restore script before it runs. If
+        the machine is offline, it uses the installed script.
+
+    3. At **Fetch the backup from there?**, choose **Yes**. The script uses the
+       backup settings saved on this machine.
+
+        ??? info "If it asks **Where is the backup stored?** instead"
+
+            This machine has no saved backup settings. Choose where the backups
+            are, then answer the questions for it:
+
+            | Choice | Questions |
+            | --- | --- |
+            | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
+            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
+            | **On a USB or external drive plugged into this machine** | Choose the drive from the list. The script finds its `backups` folder, then asks which lab to restore. If the backup is elsewhere, choose **Browse folders inside a drive**. Open folders until you reach the backup, then choose **Use this folder**. |
+
+        ??? failure "If it says `Could not connect`"
+
+            Check the machine or drive is switched on and connected to the
+            network, and that the details are right. Choose **Yes** at
+            **Try different details?** (or **Try again?**) and type them again.
+
+    4. At **Which lab should be restored?**, choose this lab. Each row starts
+       with the lab name given when the backups were set up, and shows the
+       newest database backup.
+
+        ??? failure "If it says `There are no backups in …`"
+
+            The script reached a place that holds no InteLIS backups. On the
+            machine that sends the backups, run `intelis backup status`. The
+            `Backing up to` line shows where they go.
+
+    5. At **What should be copied back?**, choose
+       **A file deleted or changed in the last 14 days**.
+    6. At **Which backup removed the file?**, choose the first backup made
+       after the file was lost. Each row shows the date and time in UTC, and
+       how many files that backup removed.
+
+        ??? info "If it says `holds no deleted or changed files`"
+
+            No backup in the last 14 days removed a file, apart from the audit
+            trail. To restore the audit trail, follow the
+            **Only the audit trail** tab.
+
+    7. At **Which file should be put back?**, choose the file, or
+       **All … files** to put back everything that backup removed.
+    8. Check the list of places shown. At **Put back the file(s) listed
+       above?**, choose **Yes**.
+
+        A file already at one of those places is not overwritten. It is kept
+        beside the restored file as `<name>.before-restore-<time>`.
+
+    ### Check the lab
+
+    9. Open InteLIS in the browser.
+    10. Check the restored file where it is used. For a signature or a logo,
+        open a result PDF.
+    11. When the restored file is right, delete the `.before-restore-` copy if
+        there is one.
