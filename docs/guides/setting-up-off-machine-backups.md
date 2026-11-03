@@ -23,6 +23,11 @@ Another Linux machine is the recommended place for backups. One backup machine
 takes the backups of every lab: prepare it once, then run the setup on each
 lab's InteLIS machine. Use a USB drive only when there is no other machine.
 
+Administrators see a warning on the InteLIS dashboard when off-machine
+backups are not set up, when the last good backup is more than a day old, or
+when the last backup failed. Closing the warning hides it until the problem
+changes. If backups were never set up, it comes back once a week.
+
 **Choose where the backups go, then follow its steps from top to bottom.**
 
 === "Another Linux machine"
@@ -215,6 +220,17 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
             `intelis backup`. The full record is in
             `/var/log/intelis-backup.log`.
 
+        ??? warning "If `Last attempt` shows `WITH A WARNING`"
+
+            The backup finished without the audit trail, the record of every
+            change made to each sample. This machine holds much less of the
+            audit trail than the backup does, or a restore of it did not
+            finish. The audit trail in the backup is kept as it was, so nothing
+            is lost there. The `Warning` line below it gives the cause. To copy
+            the missing part back, run `intelis restore` and choose
+            **Only the audit trail**. The database and settings are not
+            changed, and every file already on this machine is kept.
+
         ??? failure "If `Schedule` shows `OFF`"
 
             Start the scheduled backups again:
@@ -249,13 +265,13 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     and the settings backups in `backups/config`. A settings backup holds the
     lab settings, signatures, report templates, logos and barcode label formats.
     The backup leaves out
-    files rebuilt on install: `vendor/`, `node_modules/`, caches, logs,
-    temporary files and version-control folders.
+    files rebuilt on install: the InteLIS application itself, `vendor/`,
+    `node_modules/`, caches, logs, temporary files and version-control
+    folders. Every restore installs a fresh copy of the application.
 
     The folder is a mirror of this machine, so it holds the newest database
-    backups only, about the last 2 days. Files deleted on this machine are
-    deleted from the mirror at the next run. Older database backups are kept
-    next to it, in `.history/`:
+    backups only, about the last 2 days. Older database backups are kept next to
+    it, in `.history/`:
 
     | Kept in `.history/` | How many |
     | --- | --- |
@@ -266,6 +282,16 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     That is about 5 weeks in all. A wipe or reinstall of this machine does not
     touch `.history/`. To keep more, change `HISTORY_DAYS` and `HISTORY_WEEKS`
     in `/etc/intelis/backup.conf`.
+
+    A file deleted or changed on this machine leaves the mirror at the next
+    run. The earlier copy is kept for 14 days in `.deleted/`, in a folder named
+    after that run's date and time in UTC, such as `20261103-080000`. Inside
+    it, the file has the same path as on this machine. To get a file back, run
+    `intelis restore` and choose
+    **A file deleted or changed in the last 14 days**. Old database backups are not kept there, because
+    `.history/` already keeps them. Old copies of the monthly audit trail
+    bundles are kept for 3 days. To change the periods, set `DELETED_DAYS` and
+    `DELETED_BUNDLE_DAYS` in `/etc/intelis/backup.conf`.
 
     The backup also holds the settings, which include the database password.
     Keep the backup folder readable only by the people who manage InteLIS.
@@ -429,6 +455,17 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
             `intelis backup`. The full record is in
             `/var/log/intelis-backup.log`.
 
+        ??? warning "If `Last attempt` shows `WITH A WARNING`"
+
+            The backup finished without the audit trail, the record of every
+            change made to each sample. This machine holds much less of the
+            audit trail than the backup does, or a restore of it did not
+            finish. The audit trail in the backup is kept as it was, so nothing
+            is lost there. The `Warning` line below it gives the cause. To copy
+            the missing part back, run `intelis restore` and choose
+            **Only the audit trail**. The database and settings are not
+            changed, and every file already on this machine is kept.
+
         ??? failure "If `Schedule` shows `OFF`"
 
             Start the scheduled backups again:
@@ -463,13 +500,13 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     and the settings backups in `backups\config`. A settings backup holds the
     lab settings, signatures, report templates, logos and barcode label formats.
     The backup leaves out
-    files rebuilt on install: `vendor/`, `node_modules/`, caches, logs,
-    temporary files and version-control folders.
+    files rebuilt on install: the InteLIS application itself, `vendor/`,
+    `node_modules/`, caches, logs, temporary files and version-control
+    folders. Every restore installs a fresh copy of the application.
 
     The folder is a mirror of this machine, so it holds the newest database
-    backups only, about the last 2 days. Files deleted on this machine are
-    deleted from the mirror at the next run. Older database backups are kept
-    next to it, in `.history/`:
+    backups only, about the last 2 days. Older database backups are kept next to
+    it, in `.history/`:
 
     | Kept in `.history/` | How many |
     | --- | --- |
@@ -480,6 +517,16 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     That is about 5 weeks in all. A wipe or reinstall of this machine does not
     touch `.history/`. To keep more, change `HISTORY_DAYS` and `HISTORY_WEEKS`
     in `/etc/intelis/backup.conf`.
+
+    A file deleted or changed on this machine leaves the mirror at the next
+    run. The earlier copy is kept for 14 days in `.deleted/`, in a folder named
+    after that run's date and time in UTC, such as `20261103-080000`. Inside
+    it, the file has the same path as on this machine. To get a file back, run
+    `intelis restore` and choose
+    **A file deleted or changed in the last 14 days**. Old database backups are not kept there, because
+    `.history/` already keeps them. Old copies of the monthly audit trail
+    bundles are kept for 3 days. To change the periods, set `DELETED_DAYS` and
+    `DELETED_BUNDLE_DAYS` in `/etc/intelis/backup.conf`.
 
     The backup also holds the settings, which include the database password.
     Keep the backup folder readable only by the people who manage InteLIS.
@@ -609,6 +656,17 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
             `intelis backup`. The full record is in
             `/var/log/intelis-backup.log`.
 
+        ??? warning "If `Last attempt` shows `WITH A WARNING`"
+
+            The backup finished without the audit trail, the record of every
+            change made to each sample. This machine holds much less of the
+            audit trail than the backup does, or a restore of it did not
+            finish. The audit trail in the backup is kept as it was, so nothing
+            is lost there. The `Warning` line below it gives the cause. To copy
+            the missing part back, run `intelis restore` and choose
+            **Only the audit trail**. The database and settings are not
+            changed, and every file already on this machine is kept.
+
         ??? failure "If `Schedule` shows `OFF`"
 
             Start the scheduled backups again:
@@ -643,13 +701,13 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     and the settings backups in `backups/config`. A settings backup holds the
     lab settings, signatures, report templates, logos and barcode label formats.
     The backup leaves out
-    files rebuilt on install: `vendor/`, `node_modules/`, caches, logs,
-    temporary files and version-control folders.
+    files rebuilt on install: the InteLIS application itself, `vendor/`,
+    `node_modules/`, caches, logs, temporary files and version-control
+    folders. Every restore installs a fresh copy of the application.
 
     The folder is a mirror of this machine, so it holds the newest database
-    backups only, about the last 2 days. Files deleted on this machine are
-    deleted from the mirror at the next run. Older database backups are kept
-    next to it, in `.history/`:
+    backups only, about the last 2 days. Older database backups are kept next to
+    it, in `.history/`:
 
     | Kept in `.history/` | How many |
     | --- | --- |
@@ -660,6 +718,16 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     That is about 5 weeks in all. A wipe or reinstall of this machine does not
     touch `.history/`. To keep more, change `HISTORY_DAYS` and `HISTORY_WEEKS`
     in `/etc/intelis/backup.conf`.
+
+    A file deleted or changed on this machine leaves the mirror at the next
+    run. The earlier copy is kept for 14 days in `.deleted/`, in a folder named
+    after that run's date and time in UTC, such as `20261103-080000`. Inside
+    it, the file has the same path as on this machine. To get a file back, run
+    `intelis restore` and choose
+    **A file deleted or changed in the last 14 days**. Old database backups are not kept there, because
+    `.history/` already keeps them. Old copies of the monthly audit trail
+    bundles are kept for 3 days. To change the periods, set `DELETED_DAYS` and
+    `DELETED_BUNDLE_DAYS` in `/etc/intelis/backup.conf`.
 
     The backup also holds the settings, which include the database password.
     Keep the backup folder readable only by the people who manage InteLIS.

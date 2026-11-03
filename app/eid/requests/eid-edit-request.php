@@ -5,8 +5,8 @@ use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
+use App\Services\SampleAccessService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 use App\Exceptions\SystemException;
 
 
@@ -86,11 +86,12 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? MiscUtility::desqid($_GET['id']) : null;
 
-//$id = ($_GET['id']);
-$eidQuery = "SELECT * from form_eid where eid_id=?";
-$eidInfo = $db->rawQueryOne($eidQuery, [$id]);
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+// Stops with 404 for a bad link and 403 for a sample outside the user's facilities.
+$eidInfo = $sampleAccess->load('eid', $_GET['id'] ?? null);
+$id = (int) $eidInfo['eid_id'];
 
 // A saved signer may now be outside the lab scope; keep them selectable so the
 // dropdown does not render blank and a re-save does not clear the value.
@@ -105,12 +106,6 @@ foreach (['tested_by', 'result_reviewed_by', 'result_approved_by'] as $field) {
 // deactivated. Without it the required Testing Lab select renders empty and the
 // user must pick some OTHER lab just to save, silently reassigning the sample.
 $testingLabs = $facilitiesService->getTestingLabs('eid', alwaysIncludeLabId: $eidInfo['lab_id'] ?? null);
-
-// Facility isolation: a mapped STS user may only open samples for facilities in
-// their facilityMap. No-op on LIS and for unmapped (all-access) users.
-if (!empty($eidInfo['facility_id'])) {
-    $general->assertFacilityAllowed((int) $eidInfo['facility_id']);
-}
 
 
 $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'active'");

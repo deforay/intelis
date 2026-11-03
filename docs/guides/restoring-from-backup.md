@@ -1,5 +1,5 @@
 ---
-description: Restore the InteLIS database, an older dated backup, or uploaded files onto a machine where InteLIS already runs.
+description: Restore the InteLIS database, an older dated backup, uploaded files, the audit trail or a deleted file onto a machine where InteLIS already runs.
 audience: [system-admin]
 module: [all]
 type: how-to
@@ -223,8 +223,8 @@ was made are lost.
 
             The audit trail was not restored, or only part of it. The rest of
             the restore is finished. When the disk is full, free up space on it
-            first. Then run the `sudo rsync` command shown with the message. It
-            copies only what is missing or newer.
+            first. Then run the `sudo bash -c` command shown with the message. It
+            copies only what is still missing.
 
         ??? info "If it says `This installation already has an audit trail`"
 
@@ -407,8 +407,8 @@ was made are lost.
 
             The audit trail was not restored, or only part of it. The rest of
             the restore is finished. When the disk is full, free up space on it
-            first. Then run the `sudo rsync` command shown with the message. It
-            copies only what is missing or newer.
+            first. Then run the `sudo bash -c` command shown with the message. It
+            copies only what is still missing.
 
         ??? info "If it says `This installation already has an audit trail`"
 
@@ -571,8 +571,8 @@ was made are lost.
 
             The audit trail was not restored, or only part of it. The rest of
             the restore is finished. When the disk is full, free up space on it
-            first. Then run the `sudo rsync` command shown with the message. It
-            copies only what is missing or newer.
+            first. Then run the `sudo bash -c` command shown with the message. It
+            copies only what is still missing.
 
         ??? info "If it says `This installation already has an audit trail`"
 
@@ -619,16 +619,6 @@ was made are lost.
         path. Do not add `--delete`. Files added since the backup would be
         removed.
 
-        Then copy back the audit trail, which holds the change history of
-        older samples:
-
-        ```bash
-        sudo rsync -a "$restore_dir/var/audit-trail/" /var/www/intelis/var/audit-trail/
-        ```
-
-        On older installs, type `/var/www/vlsm/var/audit-trail/` as the last
-        path.
-
     15. Repair the file ownership, so the web server can read the restored
         files:
 
@@ -662,3 +652,183 @@ was made are lost.
 
     23. When the lab works, run the exact cleanup command printed by the script.
         It removes only this fetched copy, which holds the database password.
+
+=== "Only the audit trail"
+
+    Use this when InteLIS runs normally but the audit trail is missing or
+    incomplete, for example when `intelis backup status` shows
+    `WITH A WARNING`. The audit trail is the record of every change made to
+    each sample. The database and settings are not changed.
+
+    ### Fetch the backup
+
+    1. Open a terminal and go to the InteLIS folder:
+
+        ```bash
+        cd /var/www/intelis
+        ```
+
+        On older installs, type `cd /var/www/vlsm` instead.
+
+    2. Start the restore:
+
+        ```bash
+        intelis restore
+        ```
+
+        The command checks for the current restore script before it runs. If
+        the machine is offline, it uses the installed script.
+
+    3. At **Fetch the backup from there?**, choose **Yes**. The script uses the
+       backup settings saved on this machine.
+
+        ??? info "If it asks **Where is the backup stored?** instead"
+
+            This machine has no saved backup settings. Choose where the backups
+            are, then answer the questions for it:
+
+            | Choice | Questions |
+            | --- | --- |
+            | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
+            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
+            | **On a USB or external drive plugged into this machine** | Choose the drive from the list. The script finds its `backups` folder, then asks which lab to restore. If the backup is elsewhere, choose **Browse folders inside a drive**. Open folders until you reach the backup, then choose **Use this folder**. |
+
+        ??? failure "If it says `Could not connect`"
+
+            Check the machine or drive is switched on and connected to the
+            network, and that the details are right. Choose **Yes** at
+            **Try different details?** (or **Try again?**) and type them again.
+
+    4. At **Which lab should be restored?**, choose this lab. Each row starts
+       with the lab name given when the backups were set up, and shows the
+       newest database backup.
+
+        ??? failure "If it says `There are no backups in …`"
+
+            The script reached a place that holds no InteLIS backups. On the
+            machine that sends the backups, run `intelis backup status`. The
+            `Backing up to` line shows where they go.
+
+    5. At **What should be copied back?**, choose **Only the audit trail**.
+
+        ??? info "If it says `already has the whole audit trail`"
+
+            This machine holds at least as much audit trail as the backup.
+            Nothing was copied, and nothing was changed. Nothing more is
+            needed.
+
+    6. At **Where should the restore folder be created?**, press Enter to use
+       `/var/intelis-restore`.
+
+    ### Put the audit trail back
+
+    7. Wait for `Audit trail restored`. The script copies back only the audit
+       trail files that are missing on this machine, or older here than in the
+       backup. Every newer file on this machine is kept. On a lab with a long
+       history, this copy can take a while.
+
+        ??? warning "If it says `needs about … GB of free space` or `did not finish`"
+
+            The audit trail was not restored, or only part of it. Keep the
+            restore folder. When the disk is full, free up space on it first.
+            Then run the `sudo bash -c` command shown with the message. It
+            copies only what is still missing.
+
+        ??? warning "If it says `could not be copied from the backup`"
+
+            The copy from the backup failed, or the backup holds no audit
+            trail. Nothing was changed. Check that the backup machine or drive
+            is reachable, then run `intelis restore` again.
+
+    ### Check the lab
+
+    8. Open InteLIS in the browser.
+    9. Open a sample changed several months ago, and open its audit trail.
+       Check its earlier changes are listed.
+    10. Run `intelis backup`, then `intelis backup status`. Check that
+        `Last attempt` shows `succeeded`.
+    11. Run the cleanup command printed by the script. It removes only this
+        fetched copy.
+
+=== "A deleted file"
+
+    Use this when a file was deleted or changed on this machine by mistake in
+    the last 14 days, for example a signature or a report template. The
+    database, the settings and the audit trail are not changed.
+
+    ### Fetch the backup
+
+    1. Open a terminal and go to the InteLIS folder:
+
+        ```bash
+        cd /var/www/intelis
+        ```
+
+        On older installs, type `cd /var/www/vlsm` instead.
+
+    2. Start the restore:
+
+        ```bash
+        intelis restore
+        ```
+
+        The command checks for the current restore script before it runs. If
+        the machine is offline, it uses the installed script.
+
+    3. At **Fetch the backup from there?**, choose **Yes**. The script uses the
+       backup settings saved on this machine.
+
+        ??? info "If it asks **Where is the backup stored?** instead"
+
+            This machine has no saved backup settings. Choose where the backups
+            are, then answer the questions for it:
+
+            | Choice | Questions |
+            | --- | --- |
+            | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
+            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
+            | **On a USB or external drive plugged into this machine** | Choose the drive from the list. The script finds its `backups` folder, then asks which lab to restore. If the backup is elsewhere, choose **Browse folders inside a drive**. Open folders until you reach the backup, then choose **Use this folder**. |
+
+        ??? failure "If it says `Could not connect`"
+
+            Check the machine or drive is switched on and connected to the
+            network, and that the details are right. Choose **Yes** at
+            **Try different details?** (or **Try again?**) and type them again.
+
+    4. At **Which lab should be restored?**, choose this lab. Each row starts
+       with the lab name given when the backups were set up, and shows the
+       newest database backup.
+
+        ??? failure "If it says `There are no backups in …`"
+
+            The script reached a place that holds no InteLIS backups. On the
+            machine that sends the backups, run `intelis backup status`. The
+            `Backing up to` line shows where they go.
+
+    5. At **What should be copied back?**, choose
+       **A file deleted or changed in the last 14 days**.
+    6. At **Which backup removed the file?**, choose the first backup made
+       after the file was lost. Each row shows the date and time in UTC, and
+       how many files that backup removed.
+
+        ??? info "If it says `holds no deleted or changed files`"
+
+            No backup in the last 14 days removed a file, apart from the audit
+            trail. To restore the audit trail, follow the
+            **Only the audit trail** tab.
+
+    7. At **Which file should be put back?**, choose the file, or
+       **All … files** to put back everything that backup removed.
+    8. Check the list of places shown. At **Put back the file(s) listed
+       above?**, choose **Yes**.
+
+        A file already at one of those places is not overwritten. It is kept
+        beside the restored file as `<name>.before-restore-<time>`.
+
+    ### Check the lab
+
+    9. Open InteLIS in the browser.
+    10. Check the restored file where it is used. For a signature or a logo,
+        open a result PDF.
+    11. When the restored file is right, delete the `.before-restore-` copy if
+        there is one.

@@ -120,7 +120,7 @@ class AuditTrailService
      * Registered for deletion at shutdown: the caller reads lazily through a
      * generator, so the file has to outlive this function.
      */
-    private static function extractFromBundle(string $testType, string $uniqueId): ?string
+    public static function extractFromBundle(string $testType, string $uniqueId): ?string
     {
         $member = AuditBundleService::readSample($testType, $uniqueId);
         if ($member === null) {
@@ -415,6 +415,10 @@ class AuditTrailService
      */
     public static function processSampleAuditData(array $sampleData, string $testType): void
     {
+        $guard = AuditBundleService::writeGuard();
+        if ($guard === null) {
+            return;
+        }
         try {
             $uniqueId = $sampleData['unique_id'] ?? null;
 

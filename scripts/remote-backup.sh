@@ -281,6 +281,10 @@ esac
 # days, then one per week for HISTORY_WEEKS weeks. Not asked at setup; change it
 # in backup.conf.
 : "${HISTORY_DAYS:=7}"; : "${HISTORY_WEEKS:=4}"
+# Files the mirror would delete or replace are moved to .deleted/ instead, and
+# kept for DELETED_DAYS days. Old copies of audit-trail bundles, which are
+# rewritten as they grow, are kept for DELETED_BUNDLE_DAYS days.
+: "${DELETED_DAYS:=14}"; : "${DELETED_BUNDLE_DAYS:=3}"
 
 CRON_MARKER="/usr/local/bin/intelis-backup.sh"
 
@@ -350,6 +354,7 @@ if [ "$ACTION" = "status" ]; then
     fi
     [ "$LAST_STATUS" = "failed" ] && { echo "Last attempt    : FAILED at ${LAST_FAILURE_AT}"; echo "Reason          : ${LAST_ERROR}"; }
     [ "$LAST_STATUS" = "ok" ]     &&   echo "Last attempt    : succeeded in ${LAST_DURATION}s"
+    [ "$LAST_STATUS" = "warning" ] && { echo "Last attempt    : finished in ${LAST_DURATION}s, WITH A WARNING"; echo "Warning         : ${LAST_ERROR}"; }
   else
     echo "Last good backup: never (no backup has finished yet)"
   fi
@@ -402,6 +407,9 @@ write_status() {
   now="$(date -u +%FT%TZ)"; epoch="$(date +%s)"
   if [ "$st" = "ok" ]; then
     LAST_SUCCESS_AT="$now"; LAST_SUCCESS_EPOCH="$epoch"; LAST_SIZE="$size"; LAST_ERROR=""
+  elif [ "$st" = "warning" ]; then
+    # The copy finished, but left something out on purpose; msg says what.
+    LAST_SUCCESS_AT="$now"; LAST_SUCCESS_EPOCH="$epoch"; LAST_SIZE="$size"; LAST_ERROR="$msg"
   else
     LAST_FAILURE_AT="$now"; LAST_ERROR="$msg"
   fi
@@ -566,9 +574,73 @@ else
   fail "The database backup folder ${DB_DUMP_DIR} does not exist. The destination was not changed. Run 'intelis backup' to create and send a complete backup."
 fi
 
+# --- the audit trail ----------------------------------------------------------
+# Changes written to var/audit-trail are deleted from the database, so that
+# folder is the only record of them, and the copy at the destination is the
+# only other one. The mirror deletes whatever this machine no longer has. That
+# is right for a dump that housekeeping removed. It is wrong for an audit trail
+# that a mistake, a disk fault or an unfinished restore has emptied: the next
+# run would delete the last copy. So when the audit trail here looks lost, it is
+# left out of this run. rsync never deletes an excluded path, so the copy at the
+# destination stays exactly as it was, and the run finishes with a warning.
+#
+# Looks lost means one of two things:
+#   - a restore of the audit trail started on this machine and did not finish
+#     (restore_audit_trail leaves var/.audit-trail-restore-incomplete); or
+#   - it holds less than 80% of the bytes the last good run recorded.
+# Bytes rather than files, because bundling turns thousands of files into one
+# and keeps the bytes. Nothing else removes audit history, so the total only
+# grows, and the 20% margin absorbs the small changes that rewriting a bundle
+# makes. The count lives in .lab-meta at the destination, so a rebuilt machine
+# is still compared with what the backup holds.
+AUDIT_LOCAL="${LIS_PATH}/var/audit-trail"
+AUDIT_BYTES=0
+[ -d "$AUDIT_LOCAL" ] && { AUDIT_BYTES=$(du -sb "$AUDIT_LOCAL" 2>/dev/null | cut -f1) || true; }
+AUDIT_BYTES=${AUDIT_BYTES:-0}
+AUDIT_BYTES_BACKUP="$(dest_exec "awk -F= '/^audit_bytes=/{print \$2}' ${Q_DEST}/.lab-meta 2>/dev/null || true" | tr -cd '0-9')" || true
+human_bytes() {
+  awk -v b="$1" 'BEGIN {
+    if (b >= 1073741824) printf "%.1f GB", b / 1073741824
+    else if (b >= 1048576) printf "%.0f MB", b / 1048576
+    else printf "%.0f KB", b / 1024 }'
+}
+AUDIT_WARNING=""
+if [ -e "${LIS_PATH}/var/.audit-trail-restore-incomplete" ]; then
+  AUDIT_WARNING="The audit trail is still being restored on this machine, so the audit trail in the backup was not changed. Finish the restore with the command it printed, or run 'intelis restore' and choose 'Only the audit trail'."
+elif [ -n "$AUDIT_BYTES_BACKUP" ] && [ "$AUDIT_BYTES" -lt $(( AUDIT_BYTES_BACKUP / 5 * 4 )) ]; then
+  AUDIT_WARNING="This machine holds $(human_bytes "$AUDIT_BYTES") of audit trail, and the backup holds $(human_bytes "$AUDIT_BYTES_BACKUP"), so part of it is missing here. The audit trail in the backup was not changed. To put it back, run 'intelis restore' and choose 'Only the audit trail'."
+fi
+if [ -n "$AUDIT_WARNING" ]; then
+  print warning "$AUDIT_WARNING"
+  AUDIT_EXCLUDE=(--exclude=/var/audit-trail/)
+  # Keep the last good figure, so the next run is compared with the backup and
+  # not with what is left here.
+  AUDIT_BYTES_RECORD="$AUDIT_BYTES_BACKUP"
+else
+  AUDIT_EXCLUDE=()
+  AUDIT_BYTES_RECORD="$AUDIT_BYTES"
+fi
+
 # --- what to leave out --------------------------------------------------------
 # composer.lock is deliberately kept: vendor/ is excluded, so the lock file is
 # what makes the restored copy reproducible.
+#
+# The application itself is left out too. Every restore installs a fresh copy
+# of it (setup.sh, or the installation already on the machine) and takes only
+# the dumps, the settings archive, the audit trail and public/uploads from the
+# backup. These are named one by one rather than the backup listing what to
+# keep: a folder added later, which may hold data, is then copied until it is
+# looked at, instead of being lost. var/track-api and var/metadata are rebuilt
+# by the application.
+SOURCE_PATHS=(
+  .ddev .devcontainer .dockerignore .env.example .githooks .github .gitignore .hgignore
+  .sonarcloud.properties Dockerfile LICENSE.md README.md app bin bootstrap.php composer.json
+  cron.sh crunz.yml db-tools.php dev docker docker-compose.yml docs intelis
+  mkdocs-requirements.txt mkdocs.yml phpunit.xml.dist run-once scripts sql sys tests user.ini
+  public/.htaccess public/api public/assets public/favicon.ico public/files public/index.php
+  public/robots.txt public/sitemap.xml public/sse
+  var/track-api var/metadata
+)
 
 EXCLUDE_LIST="$(mktemp /tmp/intelis-backup-excludes.XXXXXX)"
 trap 'rm -f "$EXCLUDE_LIST"' EXIT
@@ -576,6 +648,12 @@ cat > "$EXCLUDE_LIST" <<'EXCLUDES'
 /public/temporary/
 /var/logs/
 /var/cache/
+/var/.audit-trail-restore-incomplete
+/var/.audit-trail-restore-plan
+/var/.audit-trail-restore-plan.merge
+/var/.audit-trail-restore-plan.held
+/var/.audit-trail-restore-plan.held.tmp
+/var/.audit-trail.lock
 /vendor/
 /node_modules/
 /bower_components/
@@ -598,6 +676,7 @@ Thumbs.db
 desktop.ini
 .directory
 EXCLUDES
+printf '/%s\n' "${SOURCE_PATHS[@]}" >> "$EXCLUDE_LIST"
 
 # --- rsync options per destination --------------------------------------------
 
@@ -607,7 +686,14 @@ EXCLUDES
 # WHAT to send. The verification pass below reuses the transport but must not
 # reuse the filters: it works from an explicit file list, and --delete needs a
 # whole-tree walk, which is the cost this is here to avoid.
-RSYNC_FILTER_OPTS=(--delete --partial-dir=.rsync-partial --timeout=900 --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta --exclude=/.history/)
+# Nothing the mirror removes is gone at once. --backup moves each file it would
+# delete or replace into a folder for this run, under .deleted/ at the
+# destination, so a file deleted here by mistake, or emptied, can still be
+# copied back for DELETED_DAYS days. The mirror excludes .deleted/, so it never
+# deletes from it. A relative --backup-dir is taken from the destination folder.
+RUN_STAMP="$(date -u +%Y%m%d-%H%M%S)"
+RSYNC_FILTER_OPTS=(--delete --backup --backup-dir=".deleted/${RUN_STAMP}" --partial-dir=.rsync-partial --timeout=900
+  --exclude-from="$EXCLUDE_LIST" --exclude=.lab-meta --exclude=/.history/ --exclude=/.deleted/ "${AUDIT_EXCLUDE[@]}")
 RSYNC_MODE_OPTS=()
 
 # findmnt names the filesystem as the kernel mounted it. stat -f is kept as the
@@ -906,6 +992,48 @@ else
   print warning "Could not update the database history at the destination. The copy itself is complete; the next backup tries again."
 fi
 
+# --- deleted files ------------------------------------------------------------
+# Each run's .deleted/<YYYYMMDD-HHMMSS>/ holds what that run removed or
+# replaced, at its own path. Three things are trimmed here:
+#   - backups/ in every run folder: old dumps and settings archives. The dated
+#     history above already keeps one per day, and a dump is the largest thing
+#     a lab has, so a second copy here would only double the space.
+#   - audit-trail bundles in runs older than DELETED_BUNDLE_DAYS days. Bundling
+#     rewrites a month's bundle every day it grows, so each old copy is nearly
+#     the whole of the new one.
+#   - every run older than DELETED_DAYS days.
+# Days are counted from the newest run folders, not from the clock, for the same
+# reason as the history: a lab with a wrong date must not prune everything.
+prune_deleted() {
+  local listing day keep_days=() bundle_days=() d cmds=()
+  # shellcheck disable=SC2016  # expanded at the destination, not here
+  listing="$(dest_exec "cd ${Q_DEST} && { [ ! -d .deleted ] || { rm -rf .deleted/*/backups; rmdir .deleted/${RUN_STAMP} 2>/dev/null; ls -1 .deleted; }; }")" || return 1
+  # Each pipeline ends in "|| true": a grep that matches nothing fails, and with
+  # set -E the ERR trap would fire inside the substitution and print into it.
+  mapfile -t keep_days < <({ printf '%s\n' "$listing" | tr -d '\r' | grep -E '^[0-9]{8}-[0-9]{6}$' | cut -c1-8 | sort -ru | head -n "$DELETED_DAYS"; } || true)
+  bundle_days=("${keep_days[@]:0:$DELETED_BUNDLE_DAYS}")
+  while read -r d; do
+    [ -n "$d" ] || continue
+    day="${d:0:8}"
+    if [[ " ${keep_days[*]} " != *" ${day} "* ]]; then
+      cmds+=("rm -rf \".deleted/${d}\" || e=1")
+    elif [[ " ${bundle_days[*]} " != *" ${day} "* ]]; then
+      cmds+=("{ [ ! -d \".deleted/${d}/var/audit-trail\" ] || find \".deleted/${d}/var/audit-trail\" -name '*.zip' -type f -delete; } || e=1")
+    fi
+  done < <({ printf '%s\n' "$listing" | tr -d '\r' | grep -E '^[0-9]{8}-[0-9]{6}$'; } || true)
+  DELETED_OLDEST=""
+  [ "${#keep_days[@]}" -eq 0 ] || DELETED_OLDEST="${keep_days[-1]:0:4}-${keep_days[-1]:4:2}-${keep_days[-1]:6:2}"
+  [ "${#cmds[@]}" -gt 0 ] || return 0
+  dest_exec "cd ${Q_DEST} && e=0; $(printf '%s; ' "${cmds[@]}") exit \$e"
+}
+
+DELETED_OLDEST=""
+if prune_deleted; then
+  [ -z "$DELETED_OLDEST" ] || print info "Deleted and replaced files are kept at the destination since ${DELETED_OLDEST}, in .deleted/"
+else
+  print warning "Could not tidy the deleted files kept at the destination. The copy itself is complete; the next backup tries again."
+fi
+
 # The size on the backup, for `intelis backup status` — measured only where
 # measuring is cheap.
 #
@@ -926,6 +1054,14 @@ case "$DEST_MODE" in
 esac
 BACKUP_SIZE=${BACKUP_SIZE:-unknown}
 
+# Copies made before the application was left out still hold it. rsync never
+# deletes an excluded path, so the same named paths are removed here, and only
+# those. Running it every time costs one stat per path.
+q_source=""
+for source_path in "${SOURCE_PATHS[@]}"; do q_source+=" $(printf '%q' "$source_path")"; done
+dest_exec "cd ${Q_DEST} && rm -rf --${q_source}" ||
+  print warning "Could not remove the old copy of the application from the destination. The next backup tries again."
+
 # Restore listings use this timestamp. Write it only after the copy and checksum
 # verification finish, so it never claims that a failed run updated the backup.
 meta_tmp="${DEST_DIR}/.lab-meta.tmp.$$"
@@ -934,12 +1070,19 @@ q_meta="$(printf '%q' "${DEST_DIR}/.lab-meta")"
 if ! dest_exec "printf 'lab_uuid=%s\ninstance=%s\nhostname=%s\nupdated_at=%s\n' \
   $(printf '%q' "$LAB_UUID") $(printf '%q' "$INSTANCE_NAME") \
   $(printf '%q' "$(hostname -f 2>/dev/null || hostname)") \
-  $(printf '%q' "$(date -u +%FT%TZ)") > ${q_meta_tmp} && mv -f ${q_meta_tmp} ${q_meta}"; then
+  $(printf '%q' "$(date -u +%FT%TZ)") > ${q_meta_tmp} && \
+  { [ -z $(printf '%q' "$AUDIT_BYTES_RECORD") ] || printf 'audit_bytes=%s\n' $(printf '%q' "$AUDIT_BYTES_RECORD") >> ${q_meta_tmp}; } && \
+  mv -f ${q_meta_tmp} ${q_meta}"; then
   fail "The files were copied, but the destination metadata could not be updated. Run 'intelis backup' again."
 fi
 
-write_status ok "" "$BACKUP_SIZE" "$SECONDS"
-print success "Backup finished in ${SECONDS}s. ${AVAILABLE_GB} GB free at the destination."
+if [ -n "$AUDIT_WARNING" ]; then
+  write_status warning "$AUDIT_WARNING" "$BACKUP_SIZE" "$SECONDS"
+  print warning "Backup finished in ${SECONDS}s, without the audit trail. The reason is in the warning above."
+else
+  write_status ok "" "$BACKUP_SIZE" "$SECONDS"
+  print success "Backup finished in ${SECONDS}s. ${AVAILABLE_GB} GB free at the destination."
+fi
 [ "$BACKUP_SIZE" = "not measured" ] || print info "Size on the backup: ${BACKUP_SIZE}"
 RUNNER_SCRIPT
 

@@ -10,6 +10,7 @@ use App\Utilities\SampleStatusUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\SampleAccessService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestAttemptService;
 
@@ -27,8 +28,10 @@ $tableName2 = "log_result_updates";
 // Refused before anything is written, back to this sample's result page
 if (EidService::refusesResultWithoutPlatform((array) $_POST)) {
     $_SESSION['alertMsg'] = _translate("Nothing was saved. Please choose the testing platform for the result.");
-    $resultPage = "/eid/results/eid-update-result.php?id=" . base64_encode((string) ($_POST['eidSampleId'] ?? ''));
-    MiscUtility::redirect($resultPage);
+    $eidSampleId = (int) ($_POST['eidSampleId'] ?? 0);
+    MiscUtility::redirect($eidSampleId > 0
+        ? ContainerRegistry::get(SampleAccessService::class)->url('/eid/results/eid-update-result.php', $eidSampleId)
+        : '/eid/results/eid-manual-results.php');
 }
 
 try {

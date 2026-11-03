@@ -20,6 +20,9 @@ $isSTS = $general->isSTSInstance();
 $canQueue = $isSTS && _isAllowed('/admin/monitoring/queue-lis-command.php');
 $canCancel = $isSTS && _isAllowed('/admin/monitoring/cancel-lis-command.php');
 $showActions = $isSTS && ($canQueue || $canCancel);
+// Same count as get-sync-status.php: five columns, the backup column on an STS,
+// and the command plane and actions where they are shown.
+$syncColspan = 5 + ($isSTS ? 1 : 0) + ($showActions ? 2 : 0);
 $canViewHistory = $isSTS && _isAllowed('/admin/monitoring/lis-command-history.php');
 
 /** @var FacilitiesService $facilitiesService */
@@ -522,6 +525,12 @@ $stateNameList = $geolocationService->getProvinces("yes");
                                                 <?= _translate("Version"); ?>
                                                 <em class="fa-regular fa-circle-question text-muted"></em>
                                             </th>
+                                            <?php if ($isSTS) { ?>
+                                                <th class="center" title="<?= _htmlTranslate("Whether the lab's off-machine backup is set up, and how long ago the last good one was. Reported by the lab with its metadata sync."); ?>">
+                                                    <?= _htmlTranslate("Backup"); ?>
+                                                    <em class="fa-regular fa-circle-question text-muted"></em>
+                                                </th>
+                                            <?php } ?>
                                             <?php if ($showActions) { ?>
                                                 <th class="center" title="<?= _translate('The two background loops that carry remote commands: the courier talks to the STS, the runner executes what needs root. Both must be recent for a queued command to run.'); ?>">
                                                     <?= _translate("Command plane"); ?>
@@ -537,7 +546,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                                     </thead>
                                     <tbody id="syncStatusTable">
                                         <tr>
-                                            <td colspan="<?= $showActions ? 6 : 5; ?>" class="dataTables_empty center">
+                                            <td colspan="<?= $syncColspan; ?>" class="dataTables_empty center">
                                                 <i class="fa fa-spinner fa-spin"></i>
                                                 <?= _translate("Loading data..."); ?>
                                             </td>
@@ -1041,7 +1050,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 if (status !== 'abort') {
                     console.error('Failed to load sync status:', error);
                     $("#syncStatusTable").html(
-                        '<tr><td colspan="<?= $showActions ? 6 : 5; ?>" class="text-center text-danger">' +
+                        '<tr><td colspan="<?= $syncColspan; ?>" class="text-center text-danger">' +
                         '<i class="fa fa-exclamation-triangle"></i> ' +
                         '<?php echo _translate("Failed to load data. Please try again."); ?>' +
                         '</td></tr>'

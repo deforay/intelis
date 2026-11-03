@@ -8,11 +8,13 @@ use App\Utilities\SpreadsheetUtility;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\XLSX\Writer;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use ZipArchive;
 
 final class SpreadsheetUtilityTest extends TestCase
 {
@@ -83,6 +85,26 @@ final class SpreadsheetUtilityTest extends TestCase
         $this->assertSame('v27', $row['AA']);
         $this->assertSame('v52', $row['AZ']);
         $this->assertSame('v53', $row['BA']);
+    }
+
+    public function testFormulaCellsReadAsTheirValue(): void
+    {
+        $this->write([
+            Row::fromValues(['Sample Code', 'Patient']),
+            new Row([Cell::fromValue('S-1'), new FormulaCell('=UPPER("ana")', null)]),
+        ]);
+        // The OpenSpout writer saves only the formula; add the value the way Excel does.
+        $zip = new ZipArchive();
+        $zip->open($this->path);
+        $xml = $zip->getFromName('xl/worksheets/sheet1.xml');
+        $xml = preg_replace('#(<c r="B2")#', '$1 t="str"', $xml);
+        $xml = preg_replace('#</f>#', '</f><v>ANA</v>', $xml);
+        $zip->addFromString('xl/worksheets/sheet1.xml', $xml);
+        $zip->close();
+
+        $rows = SpreadsheetUtility::readRowsByColumnLetter($this->path);
+
+        $this->assertSame([['A' => 'S-1', 'B' => 'ANA']], $rows);
     }
 
     public function testRejectsAnythingButXlsx(): void

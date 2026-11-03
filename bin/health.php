@@ -349,7 +349,7 @@ if (is_file($backupStatusFile) && !is_readable($backupStatusFile)) {
 
         if ($backupAgeHours >= $backupCriticalHours) {
             $backupStatus = 'critical';
-        } elseif ($backupAgeHours >= $backupStaleHours || $lastAttempt === 'failed') {
+        } elseif ($backupAgeHours >= $backupStaleHours || $lastAttempt === 'failed' || $lastAttempt === 'warning') {
             $backupStatus = 'warn';
         } else {
             $backupStatus = 'ok';
@@ -366,6 +366,12 @@ if (is_file($backupStatusFile) && !is_readable($backupStatusFile)) {
         // failure. Saying only the age would hide the failure that matters.
         if ($lastAttempt === 'failed') {
             $backupDetail .= '; last attempt FAILED' . ($lastError !== '' ? ': ' . $lastError : '');
+        }
+        // A run that finished but left something out on purpose: today only the
+        // audit trail, when it looks lost on this machine and the copy at the
+        // destination is being kept as it was.
+        if ($lastAttempt === 'warning' && $lastError !== '') {
+            $backupDetail .= '; ' . $lastError;
         }
 
         // The files are only half a backup — the data is in the dump written by
@@ -444,6 +450,50 @@ if ($backupStatus === 'ok') {
     $criticalCount++;
 }
 
+// ---- 6) Audit trail restore left unfinished ----
+// While var/.audit-trail-restore-incomplete exists, audit archiving and
+// bundling write nothing (AuditBundleService::writeGuard), and the rows wait in
+// audit_log. That is right during a restore, but a restore that was stopped and
+// never resumed would leave archiving paused for good with nothing on screen
+// saying so. After a day it is reported.
+$auditRestoreMarker = VAR_PATH . '/.audit-trail-restore-incomplete';
+$auditRestoreStatus = 'ok';
+$auditRestoreDetail = _translate('No restore in progress');
+$auditRestoreSince = is_file($auditRestoreMarker) ? @filemtime($auditRestoreMarker) : false;
+if ($auditRestoreSince !== false) {
+    $auditRestoreHours = (int) floor((time() - $auditRestoreSince) / 3600);
+    $auditRestoreStatus = $auditRestoreHours >= 24 ? 'warn' : 'ok';
+    $auditRestoreDetail = sprintf(
+        _translate('A restore of the audit trail started %d hours ago and has not finished. '
+            . 'Audit archiving is paused until it does. '
+            . 'To finish it, run intelis restore and choose "Only the audit trail".'),
+        $auditRestoreHours
+    );
+}
+
+setStateAndMaybeAlert(
+    $state,
+    'audit_trail_restore',
+    $auditRestoreStatus,
+    function ($old, $new) use ($auditRestoreDetail): void {
+        if ($new === 'warn') {
+            SystemService::insertSystemAlert(
+                'warn',
+                'audit_trail_restore',
+                _translate('Audit trail restore not finished:') . ' ' . $auditRestoreDetail,
+                null,
+                'admin'
+            );
+        }
+    }
+);
+
+if ($auditRestoreStatus === 'ok') {
+    $okCount++;
+} else {
+    $warnCount++;
+}
+
 // persist state
 saveState($stateFile, $state);
 
@@ -470,6 +520,7 @@ $servicesTable->setRows([
         sprintf('%.1f%% used (warn: %d%%, critical: %d%%)', $usedPct, $warnDiskUsagePct, $criticalDiskUsagePct)
     ],
     ['Off-machine Backup', formatStatus($backupStatus), $backupDetail],
+    [_translate('Audit Trail Restore'), formatStatus($auditRestoreStatus), $auditRestoreDetail],
 ]);
 
 $servicesTable->render();

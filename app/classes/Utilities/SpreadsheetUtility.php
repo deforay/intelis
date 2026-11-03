@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Utilities;
 
 use InvalidArgumentException;
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Reader\XLSX\Reader;
 
 /**
@@ -37,7 +39,13 @@ final class SpreadsheetUtility
                         $isHeading = false;
                         continue;
                     }
-                    $values = array_map(self::cellToString(...), $sheetRow->toArray());
+                    // A formula cell's getValue() is the formula; take the value Excel saved with it.
+                    $values = array_map(
+                        static fn(Cell $cell): ?string => self::cellToString(
+                            $cell instanceof FormulaCell ? $cell->getComputedValue() : $cell->getValue()
+                        ),
+                        $sheetRow->cells
+                    );
                     if (array_filter($values, static fn(?string $value): bool => $value !== null) === []) {
                         continue;
                     }

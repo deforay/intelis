@@ -8,6 +8,7 @@ use App\Exceptions\RedirectException;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\SampleAccessService;
 use mysqli;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -201,7 +202,7 @@ final class EidResultPlatformTest extends TestCase
             'childId' => 'C-CHANGED',
         ]));
 
-        self::assertStringStartsWith('/eid/requests/eid-edit-request.php?id=', (string) $redirect);
+        self::assertSame($id, self::sampleIdIn((string) $redirect, '/eid/requests/eid-edit-request.php'));
         self::assertSame(self::REFUSED, $_SESSION['alertMsg'] ?? null);
         $row = $this->saved($id);
         self::assertSame('negative', $row['result']);
@@ -242,7 +243,7 @@ final class EidResultPlatformTest extends TestCase
             'result' => 'positive',
         ]));
 
-        self::assertSame('/eid/results/eid-update-result.php?id=' . base64_encode((string) $id), $redirect);
+        self::assertSame($id, self::sampleIdIn((string) $redirect, '/eid/results/eid-update-result.php'));
         self::assertSame(self::REFUSED, $_SESSION['alertMsg'] ?? null);
         $row = $this->saved($id);
         self::assertNull($row['result']);
@@ -370,5 +371,13 @@ final class EidResultPlatformTest extends TestCase
         $row = $this->saved($id);
         self::assertSame('positive', $row['result']);
         self::assertSame(PENDING_APPROVAL, (int) $row['result_status']);
+    }
+
+    /** The sample the redirect opens, read the way the page reads it. */
+    private static function sampleIdIn(string $redirect, string $page): ?int
+    {
+        self::assertStringStartsWith($page . '?id=', $redirect);
+        parse_str((string) parse_url($redirect, PHP_URL_QUERY), $query);
+        return ContainerRegistry::get(SampleAccessService::class)->decode((string) ($query['id'] ?? ''));
     }
 }

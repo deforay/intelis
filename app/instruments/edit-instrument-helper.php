@@ -65,8 +65,8 @@ try {
             $_POST['reviewedBy'][$key] = "";
             $_POST['approvedBy'][$key] = "";
         }
-        $_POST['reviewedBy'] = empty($_POST['reviewedBy']) ? null : json_encode(array_combine($_POST['userTestType'], $_POST['reviewedBy']));
-        $_POST['approvedBy'] = empty($_POST['approvedBy']) ? null : json_encode(array_combine($_POST['userTestType'], $_POST['approvedBy']));
+        $_POST['reviewedBy'] = (empty($_POST['reviewedBy']) || count($_POST['userTestType'] ?? []) !== count($_POST['reviewedBy'])) ? null : json_encode(array_combine($_POST['userTestType'], $_POST['reviewedBy']));
+        $_POST['approvedBy'] = (empty($_POST['approvedBy']) || count($_POST['userTestType'] ?? []) !== count($_POST['approvedBy'])) ? null : json_encode(array_combine($_POST['userTestType'], $_POST['approvedBy']));
 
         $_POST['supportedTests'] = empty($_POST['supportedTests']) ? null : json_encode($_POST['supportedTests']);
 

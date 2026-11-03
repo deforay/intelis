@@ -336,6 +336,7 @@ Celles-ci s'exécutent en dehors du planificateur.
 | Fichiers temporaires | `public/temporary/` | 3 jours. Au-delà de 500 Mo, les fichiers les plus anciens sont supprimés jusqu'à ce que le dossier revienne à 80 % de la limite. |
 | Fichiers temporaires | `var/temporary/` | 3 jours. Au-delà de 500 Mo, les fichiers les plus anciens sont supprimés jusqu'à ce que le dossier revienne à 80 % de la limite. |
 | Corps des requêtes et réponses de l'API | `var/track-api/requests/`, `var/track-api/responses/` | 30 jours |
+| Fichiers de résultats importés | `public/uploads/imported-results/` | 365 jours. La variable d'environnement `INTELIS_IMPORTED_RESULTS_DAYS` remplace ce nombre de jours. Un fichier encore utilisé par une importation en attente n'est jamais supprimé. Si les importations en attente ne peuvent pas être lues, aucun fichier n'est supprimé. |
 | Journal d'activité | table `activity_log` | 365 jours |
 | Historique de connexion | table `user_login_history` | 365 jours |
 | Enregistrements des requêtes API | table `track_api_requests` | 90 jours. Les pages de statistiques API et d'historique de synchronisation n'affichent pas d'appels plus anciens. |

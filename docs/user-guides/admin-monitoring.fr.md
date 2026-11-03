@@ -163,7 +163,19 @@ l'utilisateur. Ce n'est pas la durée de la connexion.
        signifie que des résultats restent sur la machine du laboratoire. Un
        retard sur la seconde signifie que le laboratoire ne voit pas les
        nouvelles demandes.
-    5. Pour voir quelles structures sont en retard, sélectionner la ligne du
+    5. Lire **Backup** (sauvegarde). La colonne indique si la sauvegarde hors
+       de la machine du laboratoire est configurée, et quand date la dernière
+       bonne sauvegarde. Pointer dessus pour voir quand le laboratoire l'a
+       signalée et, après un échec, la raison.
+
+        | Backup | Signifie |
+        | --- | --- |
+        | Vert | La dernière bonne sauvegarde date de moins d'un jour |
+        | Orange | La dernière sauvegarde a échoué ou s'est terminée avec un avertissement, ou une restauration de la piste d’audit n'est pas terminée |
+        | Rouge | Non configurée, aucune sauvegarde encore, ou la dernière bonne sauvegarde date d'un jour ou plus |
+        | Gris, **not reported** | Le laboratoire utilise une version plus ancienne, ou ne s'est pas synchronisé depuis sa mise à jour |
+
+    6. Pour voir quelles structures sont en retard, sélectionner la ligne du
        laboratoire. **Détails de la synchronisation des laboratoires** s'ouvre
        dans un nouvel onglet avec **Demandes envoyées au laboratoire** et
        **Résultats reçus du laboratoire** par structure.

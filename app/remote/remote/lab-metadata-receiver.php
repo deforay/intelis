@@ -3,6 +3,7 @@
 use Psr\Http\Message\ServerRequestInterface;
 use JsonMachine\Items;
 use App\Services\ApiService;
+use App\Services\BackupStatusService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -19,7 +20,9 @@ use App\Services\InstrumentUsageStatisticsService;
 use App\Services\RejectionReasonMappingService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
-require_once __DIR__ . "/../../../bootstrap.php";
+// No bootstrap require: like every endpoint, this runs through public/index.php
+// (LegacyRequestHandler), which has loaded it already. Requiring it again here
+// is what kept the endpoint out of the integration suite.
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -59,6 +62,7 @@ try {
     $instrumentActivityRows = [];
     $instrumentUsageRows = [];
     $rejectionReasonRows = [];
+    $backupStatus = null;
 
     $tableMap = [
         'labStorage' => [
@@ -105,6 +109,10 @@ try {
                 $instrumentActivityRows = is_array($data) ? $data : [];
                 continue;
             }
+            if ($name === 'backupStatus') {
+                $backupStatus = BackupStatusService::sanitizeReport($data);
+                continue;
+            }
             if ($name === 'instrumentUsageStatistics') {
                 $instrumentUsageRows = is_array($data) ? $data : [];
                 continue;
@@ -147,6 +155,22 @@ try {
         /** @var LabMetadataService $labMetadataService */
         $labMetadataService = ContainerRegistry::get(LabMetadataService::class);
         $counter += $labMetadataService->storeTables($tableInfo, (int) $labId);
+
+        // The lab's backup status, for the lab sync status page. Stored only
+        // after the token check above, under the lab the token belongs to, and
+        // only in the fixed shape sanitizeReport() returns.
+        if ($backupStatus !== null) {
+            $db->rawQuery(
+                "UPDATE facility_details
+                    SET facility_attributes = JSON_SET(
+                        COALESCE(facility_attributes, '{}'),
+                        '$.backup', CAST(? AS JSON),
+                        '$.backupSeenAt', ?
+                    )
+                    WHERE facility_id = ?",
+                [json_encode($backupStatus), DateUtility::getCurrentDateTime(), (int) $labId]
+            );
+        }
     }
 
     // The lab is the payload's labId -- the same source every table above is stored
