@@ -303,9 +303,9 @@ machine.
     l'exécution suivante. La copie précédente est conservée 14 jours dans
     `.deleted/`, dans un dossier nommé d'après la date et l'heure UTC de cette
     exécution, par exemple `20261103-080000`. Dans ce dossier, le fichier a le
-    même chemin que sur cette machine. Pour récupérer un fichier, ouvrir le
-    dossier de la première exécution après la perte du fichier, et recopier le
-    fichier au même endroit. Les anciennes sauvegardes de la base de données n'y
+    même chemin que sur cette machine. Pour récupérer un fichier, lancer
+    `intelis restore` et choisir
+    **A file deleted or changed in the last 14 days**. Les anciennes sauvegardes de la base de données n'y
     sont pas conservées, car `.history/` les conserve déjà. Les anciennes copies
     des archives mensuelles de la piste d’audit sont conservées 3 jours. Pour
     changer ces durées, définir `DELETED_DAYS` et `DELETED_BUNDLE_DAYS` dans
@@ -565,9 +565,9 @@ machine.
     l'exécution suivante. La copie précédente est conservée 14 jours dans
     `.deleted/`, dans un dossier nommé d'après la date et l'heure UTC de cette
     exécution, par exemple `20261103-080000`. Dans ce dossier, le fichier a le
-    même chemin que sur cette machine. Pour récupérer un fichier, ouvrir le
-    dossier de la première exécution après la perte du fichier, et recopier le
-    fichier au même endroit. Les anciennes sauvegardes de la base de données n'y
+    même chemin que sur cette machine. Pour récupérer un fichier, lancer
+    `intelis restore` et choisir
+    **A file deleted or changed in the last 14 days**. Les anciennes sauvegardes de la base de données n'y
     sont pas conservées, car `.history/` les conserve déjà. Les anciennes copies
     des archives mensuelles de la piste d’audit sont conservées 3 jours. Pour
     changer ces durées, définir `DELETED_DAYS` et `DELETED_BUNDLE_DAYS` dans
@@ -785,9 +785,9 @@ machine.
     l'exécution suivante. La copie précédente est conservée 14 jours dans
     `.deleted/`, dans un dossier nommé d'après la date et l'heure UTC de cette
     exécution, par exemple `20261103-080000`. Dans ce dossier, le fichier a le
-    même chemin que sur cette machine. Pour récupérer un fichier, ouvrir le
-    dossier de la première exécution après la perte du fichier, et recopier le
-    fichier au même endroit. Les anciennes sauvegardes de la base de données n'y
+    même chemin que sur cette machine. Pour récupérer un fichier, lancer
+    `intelis restore` et choisir
+    **A file deleted or changed in the last 14 days**. Les anciennes sauvegardes de la base de données n'y
     sont pas conservées, car `.history/` les conserve déjà. Les anciennes copies
     des archives mensuelles de la piste d’audit sont conservées 3 jours. Pour
     changer ces durées, définir `DELETED_DAYS` et `DELETED_BUNDLE_DAYS` dans

@@ -1,5 +1,5 @@
 ---
-description: Restaurer la base de données d'InteLIS, une sauvegarde datée plus ancienne, les fichiers téléversés ou la piste d’audit sur une machine où InteLIS fonctionne déjà.
+description: Restaurer la base de données d'InteLIS, une sauvegarde datée plus ancienne, les fichiers téléversés, la piste d’audit ou un fichier supprimé sur une machine où InteLIS fonctionne déjà.
 audience: [system-admin]
 module: [all]
 type: how-to
@@ -837,3 +837,98 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
         `Last attempt` affiche `succeeded`.
     11. Lancer la commande de nettoyage affichée par le script. Elle supprime
         uniquement cette copie récupérée.
+
+=== "Un fichier supprimé"
+
+    Utiliser cet onglet quand un fichier a été supprimé ou modifié par erreur
+    sur cette machine au cours des 14 derniers jours, par exemple une
+    signature ou un modèle de rapport. La base de données, les paramètres et
+    la piste d’audit ne changent pas.
+
+    ### Récupérer la sauvegarde
+
+    1. Ouvrir un terminal et aller dans le dossier InteLIS :
+
+        ```bash
+        cd /var/www/intelis
+        ```
+
+        Sur les installations plus anciennes, taper `cd /var/www/vlsm` à la place.
+
+    2. Lancer la restauration :
+
+        ```bash
+        intelis restore
+        ```
+
+        La commande vérifie qu'elle dispose du script de restauration actuel
+        avant de le lancer. Si la machine est hors ligne, elle utilise le
+        script installé.
+
+    3. À **Fetch the backup from there?** (récupérer la sauvegarde à cet
+       endroit), choisir **Yes**. Le script utilise les paramètres de
+       sauvegarde enregistrés sur cette machine.
+
+        ??? info "S'il demande **Where is the backup stored?** à la place"
+
+            Cette machine n'a aucun paramètre de sauvegarde enregistré. Choisir
+            l'endroit où se trouvent les sauvegardes, puis répondre aux
+            questions correspondantes :
+
+            | Choix | Questions |
+            | --- | --- |
+            | **On another Linux machine** | Le nom d'utilisateur, le nom d'hôte ou l'adresse IP, et le port SSH (appuyer sur Entrée pour `22`). Saisir ensuite le mot de passe de cet utilisateur quand il est demandé. |
+            | **In a shared folder on a Windows machine** | Le nom d'hôte ou l'adresse IP, le nom du dossier partagé, le nom d'utilisateur Windows et son mot de passe. |
+            | **On a USB or external drive plugged into this machine** | Choisir le disque dans la liste. Le script trouve son dossier `backups`, puis demande quel laboratoire restaurer. Si la sauvegarde se trouve ailleurs, choisir **Browse folders inside a drive**. Ouvrir les dossiers jusqu'à la sauvegarde, puis choisir **Use this folder**. |
+
+        ??? failure "S'il indique `Could not connect`"
+
+            Vérifier que la machine ou le disque est allumé et connecté au
+            réseau, et que les informations sont exactes. Choisir **Yes** à
+            **Try different details?** (ou **Try again?**) et les saisir de
+            nouveau.
+
+    4. À **Which lab should be restored?** (quel laboratoire restaurer),
+       choisir ce laboratoire. Chaque ligne commence par le nom de
+       laboratoire donné lors de la configuration des sauvegardes, et affiche
+       la sauvegarde la plus récente de la base de données.
+
+        ??? failure "S'il indique `There are no backups in …`"
+
+            Le script a atteint un emplacement qui ne contient aucune
+            sauvegarde InteLIS. Sur la machine qui envoie les sauvegardes,
+            lancer `intelis backup status`. La ligne `Backing up to` indique
+            où elles vont.
+
+    5. À **What should be copied back?** (que faut-il recopier), choisir
+       **A file deleted or changed in the last 14 days** (un fichier supprimé
+       ou modifié au cours des 14 derniers jours).
+    6. À **Which backup removed the file?** (quelle sauvegarde a retiré le
+       fichier), choisir la première sauvegarde faite après la perte du
+       fichier. Chaque ligne affiche la date et l'heure UTC, et le nombre de
+       fichiers retirés par cette sauvegarde.
+
+        ??? info "S'il indique `holds no deleted or changed files`"
+
+            Aucune sauvegarde des 14 derniers jours n'a retiré de fichier, en
+            dehors de la piste d’audit. Pour restaurer la piste d’audit,
+            suivre l'onglet **Seulement la piste d’audit**.
+
+    7. À **Which file should be put back?** (quel fichier remettre en place),
+       choisir le fichier, ou **All … files** pour remettre en place tout ce
+       que cette sauvegarde a retiré.
+    8. Vérifier la liste des emplacements affichés. À **Put back the file(s)
+       listed above?** (remettre en place les fichiers listés), choisir
+       **Yes**.
+
+        Un fichier déjà présent à l'un de ces emplacements n'est pas écrasé.
+        Il est conservé à côté du fichier restauré sous le nom
+        `<nom>.before-restore-<heure>`.
+
+    ### Vérifier le laboratoire
+
+    9. Ouvrir InteLIS dans le navigateur.
+    10. Vérifier le fichier restauré là où il est utilisé. Pour une signature
+        ou un logo, ouvrir un PDF de résultat.
+    11. Quand le fichier restauré est correct, supprimer la copie
+        `.before-restore-` s'il y en a une.

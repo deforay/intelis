@@ -748,6 +748,7 @@ WHAT_OPTIONS=(
 # Only where InteLIS runs: it puts back audit-trail files that this machine has
 # lost, and leaves the database and settings alone.
 [ -n "$LIS_PATH" ] && WHAT_OPTIONS+=("audit:Only the audit trail:Copies back the audit trail files missing here. The database and settings are not changed.")
+[ -n "$LIS_PATH" ] && WHAT_OPTIONS+=("deleted:A file deleted or changed in the last 14 days:Puts back one file, or all from one backup. Nothing else is changed.")
 choose what db "What should be copied back?" "${WHAT_OPTIONS[@]}"
 # shellcheck disable=SC2154  # set by `choose` above, via printf -v
 # The config backups are small, and they hold the old database password that
@@ -773,6 +774,126 @@ if [ -n "$LIS_PATH" ] && [ ! -e "${LIS_PATH}/var/.audit-trail-restore-incomplete
   ! audit_trail_short_of "$LIS_PATH" "$AUDIT_BYTES_BACKUP"; then
   AUDIT_SUBPATH=()
 fi
+# --- a deleted or changed file -----------------------------------------------
+# Each backup run moves what it deletes or replaces at the destination into
+# .deleted/<YYYYMMDD-HHMMSS>/, at the file's own path (see remote-backup.sh).
+# This puts chosen files back where they were. A file already there is set
+# aside as <name>.before-restore-<time>, never overwritten.
+#
+# Three things are left out of the list:
+#   - the audit trail, in both layouts (var/audit-trail, and audit-trail in a
+#     copy of an install from before the var/ folder). "Only the audit trail"
+#     restores it without letting an older copy hide a newer one, and copying
+#     its files one by one would not.
+#   - configs/ and .env. An older copy put back there would quietly switch the
+#     lab to old settings. The settings have their own restore, with the
+#     database.
+if [ "$what" = "deleted" ]; then
+  q_deleted="$(printf '%q' "${SRC_DIR}/.deleted")"
+  # shellcheck disable=SC2016  # expanded at the destination, not here
+  mapfile -t RUNS < <(src_exec "cd ${q_deleted} 2>/dev/null && for d in */; do d=\${d%/}; n=\$(find \"\$d\" \( -path \"\$d/var/audit-trail\" -o -path \"\$d/audit-trail\" -o -path \"\$d/configs\" -o -path \"\$d/.env\" \) -prune -o -type f -print 2>/dev/null | wc -l); [ \"\$n\" -gt 0 ] && printf '%s %s\n' \"\$d\" \"\$n\"; done; true" | tr -d '\r' | grep -E '^[0-9]{8}-[0-9]{6} [0-9]+$' | sort -r || true)
+  if [ "${#RUNS[@]}" -eq 0 ]; then
+    print info "This backup holds no deleted or changed files from the last 14 days, apart from the audit trail. Nothing was changed."
+    exit 0
+  fi
+  RUN_OPTIONS=()
+  for r in "${RUNS[@]}"; do
+    stamp="${r%% *}"; n="${r##* }"
+    RUN_OPTIONS+=("${stamp}:${stamp:0:4}-${stamp:4:2}-${stamp:6:2} at ${stamp:9:2}h${stamp:11:2} UTC:${n} file(s) deleted or changed by that backup")
+  done
+  choose RUN "${RUNS[0]%% *}" "Which backup removed the file? Choose the first one after the file was lost." "${RUN_OPTIONS[@]}"
+  [[ "$RUN" =~ ^[0-9]{8}-[0-9]{6}$ ]] || { print error "Unknown backup: ${RUN}"; exit 1; }
+
+  q_run="$(printf '%q' "${SRC_DIR}/.deleted/${RUN}")"
+  mapfile -t FILES < <(src_exec "cd ${q_run} && find . \( -path ./var/audit-trail -o -path ./audit-trail -o -path ./configs -o -path ./.env \) -prune -o -type f -printf '%P\t%TY-%Tm-%Td %TH:%TM\t%s\n'" | tr -d '\r' | sort || true)
+  [ "${#FILES[@]}" -gt 0 ] || { print error "That backup holds no files any more. Nothing was changed."; exit 1; }
+  if [ "${#FILES[@]}" -gt 300 ]; then
+    print error "That backup removed ${#FILES[@]} files, too many to list. Nothing was changed."
+    print info "They are in ${SRC_DIR}/.deleted/${RUN}/, at their own paths. Copy the ones needed from there."
+    exit 1
+  fi
+  FILE_OPTIONS=("all:All ${#FILES[@]} files:Each one goes back to its place.")
+  i=0
+  for f in "${FILES[@]}"; do
+    IFS=$'\t' read -r rel when size <<<"$f"
+    # ':' separates the fields of a menu row.
+    FILE_OPTIONS+=("${i}:$(printf '%s' "$rel" | tr ':' '-'):${size} bytes, last changed ${when/:/h}")
+    i=$((i + 1))
+  done
+  choose PICK "all" "Which file should be put back?" "${FILE_OPTIONS[@]}"
+
+  PICKED=()
+  if [ "$PICK" = "all" ]; then
+    for f in "${FILES[@]}"; do PICKED+=("${f%%$'\t'*}"); done
+  elif [[ "$PICK" =~ ^[0-9]+$ ]] && [ "$PICK" -lt "${#FILES[@]}" ]; then
+    PICKED=("${FILES[$PICK]%%$'\t'*}")
+  else
+    print error "Unknown choice: ${PICK}"; exit 1
+  fi
+
+  echo
+  for rel in "${PICKED[@]}"; do printf '  %s\n' "${LIS_PATH}/${rel}"; done
+  echo
+  print info "A file already at one of these places is kept beside it as <name>.before-restore-<time>."
+  confirm "Put back the file(s) listed above?" || { print info "Nothing was changed."; exit 0; }
+
+  RESTORED_AT="$(date +%Y%m%d-%H%M%S)"
+  # Each file is copied into a folder only root can open, then moved into place.
+  # A name chosen next to the target could already be a symbolic link left by
+  # whoever can write that folder, and a copy would follow it.
+  mkdir -p /var/intelis-restore && chmod 0750 /var/intelis-restore
+  RESTORE_STAGE="$(mktemp -d /var/intelis-restore/deleted-files.XXXXXX)"
+  trap 'rm -rf -- "$RESTORE_STAGE"; cleanup' EXIT
+  failed=0
+  for rel in "${PICKED[@]}"; do
+    # The names come from the backup destination. Refuse any that would land
+    # outside the installation.
+    case "/${rel}/" in
+      *"/../"* | *"/./"* | "//"*) print error "Skipped an unsafe path: ${rel}"; failed=$((failed + 1)); continue ;;
+    esac
+    dst="${LIS_PATH}/${rel}"
+    tmp="${RESTORE_STAGE}/$(basename "$dst")"
+    rm -f -- "$tmp"
+    # Folders that no longer exist are made again, owned like the nearest one
+    # that does, so the web server can still write where it could before.
+    anc="$(dirname "$dst")"; new_top=""
+    while [ ! -d "$anc" ]; do new_top="$anc"; anc="$(dirname "$anc")"; done
+    # This runs as root, so a folder on the way that is a symbolic link must not
+    # carry the copy outside the installation. The real path of the existing
+    # part is checked before anything is created or written.
+    real_lis="$(realpath -- "$LIS_PATH")"
+    real_anc="$(realpath -- "$anc")"
+    if [ "$real_anc" != "$real_lis" ] && [[ "$real_anc" != "$real_lis/"* ]] || [ -L "$dst" ]; then
+      print error "Skipped ${rel}: its place on this machine leads outside ${LIS_PATH}."
+      failed=$((failed + 1))
+      continue
+    fi
+    mkdir -p "$(dirname "$dst")"
+    [ -z "$new_top" ] || chown -R --reference="$anc" -- "$new_top" 2>/dev/null || true
+    if [ "$SRC_MODE" = "ssh" ]; then
+      ssh_cmd="ssh -o ControlPath=${SSH_CONTROL} -o StrictHostKeyChecking=accept-new -p ${SSH_PORT}"
+      [ -n "$SSH_KEY" ] && [ -f "$SSH_KEY" ] && ssh_cmd="${ssh_cmd} -i ${SSH_KEY}"
+      # -s keeps a space or quote in the name from being split by the remote shell.
+      rsync -stL -e "$ssh_cmd" "${SSH_USER}@${SSH_HOST}:${SRC_DIR}/.deleted/${RUN}/${rel}" "$tmp" 2>/dev/null
+    else
+      cp -p -- "${SRC_DIR}/.deleted/${RUN}/${rel}" "$tmp" 2>/dev/null
+    fi || { rm -f -- "$tmp"; print error "Could not copy ${rel}"; failed=$((failed + 1)); continue; }
+    if [ -e "$dst" ]; then
+      chown --reference="$dst" -- "$tmp" 2>/dev/null || true
+      chmod --reference="$dst" -- "$tmp" 2>/dev/null || true
+      # -T: never move into a folder that happens to have the new name.
+      mv -T -- "$dst" "${dst}.before-restore-${RESTORED_AT}"
+    else
+      chown --reference="$anc" -- "$tmp" 2>/dev/null || true
+    fi
+    # -T replaces the name itself and never follows a link at it.
+    mv -T -- "$tmp" "$dst"
+    print success "Put back ${rel}"
+  done
+  [ "$failed" -eq 0 ] || { print error "${failed} file(s) were not put back."; exit 1; }
+  exit 0
+fi
+
 case "$what" in
   db) SUBPATHS=("/backups/db:db" "/backups/config:config" ${AUDIT_SUBPATH[@]+"${AUDIT_SUBPATH[@]}"}) ;;
   audit)
