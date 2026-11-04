@@ -10,8 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use OpenSpout\Common\Entity\Row;
 use App\Utilities\JsonUtility;
 
 /** @var DatabaseService $db */
@@ -120,19 +119,16 @@ try {
             }
 
             $notAdded = count($storageNotAdded);
+            $filename = '';
             if ($notAdded > 0) {
-
-                $spreadsheet = IOFactory::load(WEB_ROOT . '/files/storage/storage-bulk-upload.xlsx');
-                $sheet = $spreadsheet->getActiveSheet();
-
-                foreach ($storageNotAdded as $rowNo => $dataValue) {
-                    $rRowCount = $rowNo + 2;
-                    $sheet->fromArray($dataValue, null, 'A' . $rRowCount);
+                $filename = TEMP_PATH . '/INCORRECT-STORAGE-ROWS-' . MiscUtility::generateRandomString(12) . '.xlsx';
+                $writer = new \OpenSpout\Writer\XLSX\Writer();
+                $writer->openToFile($filename);
+                $writer->addRow(Row::fromValues(SpreadsheetUtility::readHeadingRow(WEB_ROOT . '/files/storage/storage-bulk-upload.xlsx')));
+                foreach ($storageNotAdded as $rowData) {
+                    $writer->addRow(Row::fromValues(array_values($rowData)));
                 }
-
-                $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
-                $filename = TEMP_PATH . DIRECTORY_SEPARATOR . "INCORRECT-STORAGE-ROWS-" . DateUtility::getCurrentDateTime('Y-m-d-h-i-s') . "-" . $randomFileId . ".xlsx";
-                $writer->save($filename);
+                $writer->close();
             }
 
             $_SESSION['alertMsg'] = _translate("Lab Storage added successfully");
