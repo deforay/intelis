@@ -13,7 +13,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\InstrumentsService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use OpenSpout\Common\Entity\Row;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -136,19 +136,16 @@ try {
                     }
 
                     $notAdded = count($facilityNotAdded);
+                    $filename = '';
                     if ($notAdded > 0) {
-
-                        $spreadsheet = IOFactory::load(WEB_ROOT . '/files/controls/VL_Controls_Bulk_Upload_Excel_Format.xlsx');
-                        $sheet = $spreadsheet->getActiveSheet();
-
-                        foreach ($facilityNotAdded as $rowNo => $dataValue) {
-                            $rRowCount = $rowNo + 2;
-                            $sheet->fromArray($dataValue, null, 'A' . $rRowCount);
+                        $filename = TEMP_PATH . '/INCORRECT-CONTROLS-ROWS-' . MiscUtility::generateRandomString(12) . '.xlsx';
+                        $writer = new \OpenSpout\Writer\XLSX\Writer();
+                        $writer->openToFile($filename);
+                        $writer->addRow(Row::fromValues(SpreadsheetUtility::readHeadingRow(WEB_ROOT . '/files/controls/VL_Controls_Bulk_Upload_Excel_Format.xlsx')));
+                        foreach ($facilityNotAdded as $rowData) {
+                            $writer->addRow(Row::fromValues(array_values($rowData)));
                         }
-
-                        $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
-                        $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'INCORRECT-CONTROLS-ROWS.xlsx';
-                        $writer->save($filename);
+                        $writer->close();
                     }
                     $_SESSION['alertMsg'] = _translate("Controls added successfully");
                 } else {
