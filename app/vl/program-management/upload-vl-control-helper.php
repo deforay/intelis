@@ -162,7 +162,7 @@ try {
     } else {
         throw new SystemException(_translate("Bulk Controls Import Failed") . " - " . $uploadedFile->getError());
     }
-    MiscUtility::redirect("/vl/program-management/upload-vl-control.php?total=$total&notAdded=$notAdded&link=$filename");
+    MiscUtility::redirect("/vl/program-management/upload-vl-control.php?total=$total&notAdded=$notAdded" . '&link=' . ($filename === '' ? '' : rawurlencode(_downloadToken($filename))));
 } catch (Exception $exc) {
     throw new SystemException(($exc->getMessage()));
 }

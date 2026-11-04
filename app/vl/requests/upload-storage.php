@@ -136,8 +136,7 @@ $filePath = '/files/storage/storage-bulk-upload.xlsx';
 						<?= _translate("Number of Storages not added"); ?> : <?= (int) $_GET['notAdded']; ?></h3>
 					<?php if ($_GET['notAdded'] > 0) { ?>
 						<a class="text-danger" style="text-decoration:underline;margin-bottom:10px; font-weight: bold;"
-							href="/temporary/INCORRECT-STORAGE-ROWS.xlsx" download>Download the Excel Sheet with not uploaded
-							storages</a><br><br>
+							href="/download.php?f=<?= htmlspecialchars((string) ($_GET['link'] ?? ''), ENT_QUOTES); ?>" download><?= _translate("Download the Excel Sheet with not uploaded storages"); ?></a><br><br>
 					<?php }
 				}
 				if (isset($_GET['failedRowCount']) && ($_GET['failedRowCount']) > 0) { ?>
