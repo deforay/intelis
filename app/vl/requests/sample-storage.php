@@ -15,7 +15,7 @@ use App\Utilities\ListingFilterClauseBuilder;
 
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
+$_POST = _sanitizeInput($request->getParsedBody() ?? []);
 
 $title = _translate("Export Data");
 
@@ -48,7 +48,7 @@ $sResult = $db->rawQuery($sQuery);
 
 
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
-$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, $_POST['facilityName'], "-- Select --");
+$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, $_POST['facilityName'] ?? '', "-- Select --");
 
 $sRemoveQuery = "SELECT * FROM r_reasons_for_sample_removal where removal_reason_status='active'";
 $sRemoveResult = $db->rawQuery($sRemoveQuery);
@@ -212,7 +212,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 										onchange="getByProvince(this.value)" name="state"
 										title="<?php echo _translate('Please select Province/State'); ?>"
 										style="width:220px;">
-										<?= $general->generateSelectOptions($state, $_POST['state'], _translate("-- Select --")); ?>
+										<?= $general->generateSelectOptions($state, $_POST['state'] ?? '', _translate("-- Select --")); ?>
 									</select>
 								</td>
 								<td><strong>
