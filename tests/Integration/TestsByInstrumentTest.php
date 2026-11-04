@@ -89,7 +89,7 @@ final class TestsByInstrumentTest extends TestCase
     }
 
     /** @param array<string, mixed> $columns */
-    private function attempt(int $recordId, array $columns): void
+    private function insertAttempt(int $recordId, array $columns): void
     {
         LegacyAppHarness::db()->insert('test_result_attempts', $columns + [
             'test_type' => 'vl',
@@ -121,9 +121,9 @@ final class TestsByInstrumentTest extends TestCase
     public function testTestsAreCountedOncePerInstrumentAndAssay(): void
     {
         $retested = $this->seed(['instrument_id' => 'inst-a', 'assay_name' => 'HIV1.0mlDBS', 'result' => '40']);
-        $this->attempt($retested, ['superseded_by' => 'retest']);
+        $this->insertAttempt($retested, ['superseded_by' => 'retest']);
         // A corrected typo replaced the value of the same run: not a second test.
-        $this->attempt($retested, ['superseded_by' => 'result-edit', 'attempt_number' => 2]);
+        $this->insertAttempt($retested, ['superseded_by' => 'result-edit', 'attempt_number' => 2]);
         $this->seed([
             'instrument_id' => 'inst-a', 'assay_name' => 'HIV1.0mlDBS', 'result' => 'Failed', 'result_status' => 5,
         ]);
@@ -181,7 +181,7 @@ final class TestsByInstrumentTest extends TestCase
                 MODIFY assay_name VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"
         );
         $retested = $this->seed(['instrument_id' => 'inst-a', 'assay_name' => 'HIV1.0mlDBS', 'result' => '40']);
-        $this->attempt($retested, ['superseded_by' => 'retest']);
+        $this->insertAttempt($retested, ['superseded_by' => 'retest']);
         $this->seed(['instrument_id' => '12', 'vl_test_platform' => 'GeneXpert', 'result' => '40']);
 
         $service = ContainerRegistry::get(LabPerformanceIndicatorsService::class);
@@ -226,7 +226,7 @@ final class TestsByInstrumentTest extends TestCase
         $other = $this->seed([
             'instrument_id' => 'inst-a', 'assay_name' => 'HIV1.0mlDBS', 'result' => '40', 'lab_id' => 2,
         ]);
-        $this->attempt($other, ['superseded_by' => 'retest', 'lab_id' => 2]);
+        $this->insertAttempt($other, ['superseded_by' => 'retest', 'lab_id' => 2]);
         // A LIS session operating as Lab One.
         $_SESSION['instance']['type'] = 'vluser';
         $_SESSION['labId'] = 1;
@@ -259,13 +259,13 @@ final class TestsByInstrumentTest extends TestCase
 
         $this->seed($run + ['sample_code' => 'S-FIRST', 'result' => '40']);
         $afterRetest = $this->seed($run + ['sample_code' => 'S-AFTER', 'result' => '50']);
-        $this->attempt($afterRetest, ['superseded_by' => 'retest', 'sample_code' => 'S-AFTER']);
+        $this->insertAttempt($afterRetest, ['superseded_by' => 'retest', 'sample_code' => 'S-AFTER']);
         $this->seed($run + $failed + ['sample_code' => 'S-FAILED']);
         $twice = $this->seed($run + $failed + ['sample_code' => 'S-TWICE', 'sample_batch_id' => 1]);
-        $this->attempt($twice, ['superseded_by' => 'retest', 'sample_code' => 'S-TWICE']);
+        $this->insertAttempt($twice, ['superseded_by' => 'retest', 'sample_code' => 'S-TWICE']);
         // Failed before the range, valid in it.
         $earlier = $this->seed($run + ['sample_code' => 'S-EARLIER', 'result' => '60']);
-        $this->attempt($earlier, [
+        $this->insertAttempt($earlier, [
             'superseded_by' => 'retest', 'sample_code' => 'S-EARLIER',
             'sample_tested_datetime' => '2026-08-20 10:00:00',
         ]);
@@ -273,7 +273,7 @@ final class TestsByInstrumentTest extends TestCase
         $later = $this->seed($run + [
             'sample_code' => 'S-LATER', 'result' => '70', 'sample_tested_datetime' => '2026-10-02 10:00:00',
         ]);
-        $this->attempt($later, [
+        $this->insertAttempt($later, [
             'superseded_by' => 'retest', 'sample_code' => 'S-LATER', 'batch_id' => 1,
             'sample_tested_datetime' => '2026-09-20 10:00:00',
         ]);
@@ -306,7 +306,7 @@ final class TestsByInstrumentTest extends TestCase
     public function testASampleRetestedOnAnotherInstrumentCountsUnderItsLatestRun(): void
     {
         $sample = $this->seed(['instrument_id' => 'inst-g1', 'result' => '40', 'sample_code' => 'S-MOVED']);
-        $this->attempt($sample, ['superseded_by' => 'retest', 'sample_code' => 'S-MOVED']);
+        $this->insertAttempt($sample, ['superseded_by' => 'retest', 'sample_code' => 'S-MOVED']);
 
         $service = ContainerRegistry::get(LabPerformanceIndicatorsService::class);
         $filters = $service->resolveFilters(['testType' => 'vl', 'dateRange' => '01-Sep-2026 to 30-Sep-2026']);
@@ -380,7 +380,7 @@ final class TestsByInstrumentTest extends TestCase
         );
         $run = ['instrument_id' => 'inst-a', 'assay_name' => 'HIV1.0mlDBS'];
         $moved = $this->seed($run + ['sample_code' => 'S-MOVED', 'result' => '40', 'lab_id' => 2]);
-        $this->attempt($moved, ['superseded_by' => 'retest', 'sample_code' => 'S-MOVED']);
+        $this->insertAttempt($moved, ['superseded_by' => 'retest', 'sample_code' => 'S-MOVED']);
         $this->seed($run + ['sample_code' => 'S-ONE', 'result' => 'Failed', 'result_status' => 5]);
         $this->seed($run + ['sample_code' => 'S-TWO', 'result' => 'Failed', 'result_status' => 5, 'lab_id' => 2]);
     }
@@ -424,8 +424,10 @@ final class TestsByInstrumentTest extends TestCase
             'instrument_id' => 'inst-a', 'result' => '40', 'sample_code' => 'S-TIE',
             'sample_tested_datetime' => '2026-10-02 10:00:00',
         ]);
-        $this->attempt($sample, ['superseded_by' => 'retest', 'attempt_number' => 1, 'instrument_id' => 'inst-a']);
-        $this->attempt($sample, [
+        $this->insertAttempt($sample, [
+            'superseded_by' => 'retest', 'attempt_number' => 1, 'instrument_id' => 'inst-a',
+        ]);
+        $this->insertAttempt($sample, [
             'superseded_by' => 'retest', 'attempt_number' => 2,
             'instrument_id' => 'inst-g1', 'test_platform' => 'GeneXpert',
         ]);
@@ -447,11 +449,11 @@ final class TestsByInstrumentTest extends TestCase
             'instrument_id' => 'inst-a', 'result' => 'Failed', 'result_status' => 5, 'sample_code' => 'S-LATE-FAIL',
             'sample_tested_datetime' => '2026-10-20 10:00:00',
         ]);
-        $this->attempt($sample, [
+        $this->insertAttempt($sample, [
             'superseded_by' => 'retest', 'attempt_number' => 1, 'result' => '40', 'result_status' => 7,
             'result_failed' => 0, 'sample_tested_datetime' => '2026-09-10 10:00:00',
         ]);
-        $this->attempt($sample, [
+        $this->insertAttempt($sample, [
             'superseded_by' => 'retest', 'attempt_number' => 2, 'sample_tested_datetime' => '2026-10-05 10:00:00',
         ]);
 
@@ -500,7 +502,7 @@ final class TestsByInstrumentTest extends TestCase
         $this->seed($failed);
         // An archived failed run keeps its message in the snapshot of its row.
         $retested = $this->seed(['instrument_id' => 'inst-a', 'instrument_serial' => '275020144', 'result' => '40']);
-        $this->attempt($retested, [
+        $this->insertAttempt($retested, [
             'superseded_by' => 'retest',
             'attempt_data' => json_encode(['row' => ['instrument_serial' => '275020144',
                 'analyzer_message' => '3110 : A drive no load error was encountered by the Liquid Handler.']]),
