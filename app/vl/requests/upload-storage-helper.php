@@ -5,7 +5,6 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\SpreadsheetUtility;
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -15,9 +14,6 @@ use App\Utilities\JsonUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -64,14 +60,19 @@ try {
             if ($total == 0) {
                 $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
                 header("Location:/vl/requests/upload-storage.php");
+                exit;
             }
             $failedRow = [];
 
             foreach ($filteredArray as $rowIndex => $rowData) {
 
+                $formAttributes = null;
+                $storageId = null;
+
                 if (empty($rowData['A']) || empty($rowData['C']) || empty($rowData['D']) || empty($rowData['E']) || empty($rowData['F']) || empty($rowData['G'])) {
-                    $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
-                    header("Location:/vl/requests/upload-storage.php");
+                    $storageNotAdded[] = $rowData;
+                    $failedRow[] = [$rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'], $rowData['G']];
+                    continue;
                 }
 
                 $instanceId = '';
@@ -79,24 +80,26 @@ try {
                     $instanceId = $_SESSION['instanceId'];
                     $_POST['instanceId'] = $instanceId;
                 }
-                $condition = "sample_code = '" . $rowData['A'] . "'";
-                $condition1 = "storage_code = '" . $rowData['C'] . "'";
+                $db->where('sample_code', $rowData['A']);
+                $getSample = $db->getOne('form_vl');
 
-                $getSample = $general->fetchDataFromTable('form_vl', $condition);
-
-
-                if (isset($getSample[0]['sample_code']) && $getSample[0]['sample_code'] != "") {
-                    $freezerCheck = $general->fetchDataFromTable('lab_storage', $condition1);
-
-                    if (empty($freezerCheck)) {
-                        $data = ['storage_id' => MiscUtility::generateULID(), 'storage_code' => $rowData['C'], 'lab_id' => $getSample[0]['lab_id'], 'storage_status' => "active", 'updated_datetime' => DateUtility::getCurrentDateTime()];
-                        $db->insert('lab_storage', $data);
-                        $storageId = $data['storage_id'];
-                    } else {
-                        $storageId = $freezerCheck[0]['storage_id'];
-                    }
-                    $formAttributes = json_decode((string) $getSample[0]['form_attributes']);
+                if (empty($getSample['sample_code'])) {
+                    $storageNotAdded[] = $rowData;
+                    $failedRow[] = [$rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'], $rowData['G']];
+                    continue;
                 }
+
+                $db->where('storage_code', $rowData['C']);
+                $freezerCheck = $db->getOne('lab_storage');
+
+                if (empty($freezerCheck)) {
+                    $data = ['storage_id' => MiscUtility::generateULID(), 'storage_code' => $rowData['C'], 'lab_id' => $getSample['lab_id'], 'storage_status' => "active", 'updated_datetime' => DateUtility::getCurrentDateTime()];
+                    $db->insert('lab_storage', $data);
+                    $storageId = $data['storage_id'];
+                } else {
+                    $storageId = $freezerCheck['storage_id'];
+                }
+                $formAttributes = json_decode((string) $getSample['form_attributes']) ?: new \stdClass();
 
                 try {
                     if (!isset($formAttributes->storage) && empty($formAttributes->storage)) {
@@ -104,7 +107,7 @@ try {
                         // Convert the $formAttributes array to a JSON string and set it using JsonUtility::jsonToSetString
                         $formAttributesString = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
                         $vlData['form_attributes'] = $db->func($formAttributesString);
-                        $db->where('vl_sample_id', $getSample[0]['vl_sample_id']);
+                        $db->where('vl_sample_id', $getSample['vl_sample_id']);
                         $id = $db->update('form_vl', $vlData);
                     } else {
                         $storageNotAdded[] = $rowData;
