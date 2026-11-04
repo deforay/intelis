@@ -137,7 +137,7 @@ try {
         }
         $failedSampleCount = count($failedRow);
         $failedRow = http_build_query($failedRow);
-        header("Location:/vl/requests/upload-storage.php?total=$total&notAdded=$notAdded&link=$filename&option=$uploadOption&failedRowCount=$failedSampleCount&$failedRow");
+        header("Location:/vl/requests/upload-storage.php?total=$total&notAdded=$notAdded" . '&link=' . ($filename === '' ? '' : rawurlencode(_downloadToken($filename))) . "&option=$uploadOption&failedRowCount=$failedSampleCount&$failedRow");
     } else {
         $_SESSION['alertMsg'] = _translate("Please Upload File");
         header("Location:/vl/requests/upload-storage.php");

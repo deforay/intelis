@@ -78,8 +78,7 @@ $formatFilePath = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR
 									<?php if ($_GET['notAdded'] > 0) { ?>
 										<a class="text-danger"
 											style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;"
-											href="/temporary/INCORRECT-CONTROLS-ROWS.xlsx" download>Download the Excel Sheet
-											with not uploaded controls</a><br><br>
+											href="/download.php?f=<?= htmlspecialchars((string) ($_GET['link'] ?? ''), ENT_QUOTES); ?>" download><?= _translate("Download the Excel Sheet with not uploaded controls"); ?></a><br><br>
 									<?php } ?>
 								<?php } ?>
 								<div class="form-group">
