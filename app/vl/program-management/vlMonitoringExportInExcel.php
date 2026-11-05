@@ -201,13 +201,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
         $mnth = date('m', $month);
         $year = date('Y', $month);
         $dFormat = date("M-Y", $month);
-        $checkResultAvgQuery = "SELECT vl.sample_collection_date,
-                                vl.sample_tested_datetime,
-                                f.facility_name,
-                                f.facility_code,
-                                f.facility_state,
-                                f.facility_district,
-                                DATEDIFF(sample_tested_datetime,sample_collection_date) as diff
+        $checkResultAvgQuery = "SELECT AVG(DATEDIFF(vl.sample_tested_datetime, vl.sample_collection_date)) AS avgDays
                                 FROM form_vl as vl
                                 JOIN facility_details as f ON vl.facility_id=f.facility_id
                                 WHERE vl.sample_tested_datetime IS NOT NULL
@@ -240,14 +234,11 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
         // A cancelled sample was called off before testing, so it is not
         // work this report should count.
         $sWhere[] = SampleCountUtility::countableWhere('vl');
-        $checkResultAvgQuery = $checkResultAvgQuery . ' AND ' . implode(" AND ", $sWhere) . ' AND vl.result=""';
-        $checkResultAvgResult = $db->rawQuery($checkResultAvgQuery);
-        if (count($checkResultAvgResult) > 0) {
-            $total = 0;
-            foreach ($checkResultAvgResult as $data) {
-                $total += $data['diff'];
-            }
-            $avgResult[$j] = round($total / count($checkResultAvgResult));
+        $checkResultAvgQuery = $checkResultAvgQuery . ' AND ' . implode(" AND ", $sWhere) . ' AND IFNULL(vl.result, "") != ""';
+        // A month with no tested samples averages to NULL and is skipped
+        $avgDays = $db->rawQueryOne($checkResultAvgQuery)['avgDays'] ?? null;
+        if ($avgDays !== null) {
+            $avgResult[$j] = round((float) $avgDays);
         }
         $month = strtotime("+1 month", $month);
         $i++;
