@@ -1813,18 +1813,51 @@ final class CommonService
         if ($code == null || $code == '') {
             return '';
         }
-        return MemoUtility::remember(function () use ($code, $type, $width, $height, $color): string {
+        // $background is part of the cache key, so images cached before it was added are not reused
+        $background = 'white';
+        return MemoUtility::remember(function () use ($code, $type, $width, $height, $color, $background): string {
             $barcodeobj = new TCPDFBarcode($code, $type);
-            return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
+            return 'data:image/png;base64,' . base64_encode(self::withWhiteBackground($barcodeobj->getBarcodePngData($width, $height, $color)));
         }, 3600);
     }
 
     public function get2DBarcodeImageContent($code, $type = 'QRCODE', $width = 2, $height = 30, $color = [0, 0, 0]): mixed
     {
-        return MemoUtility::remember(function () use ($code, $type, $width, $height, $color): string {
+        // $background is part of the cache key, so images cached before it was added are not reused
+        $background = 'white';
+        return MemoUtility::remember(function () use ($code, $type, $width, $height, $color, $background): string {
             $barcodeobj = new TCPDF2DBarcode($code, $type);
-            return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
+            return 'data:image/png;base64,' . base64_encode(self::withWhiteBackground($barcodeobj->getBarcodePngData($width, $height, $color)));
         }, 3600);
+    }
+
+    /**
+     * The barcode PNG with its white background made solid.
+     *
+     * TCPDF draws barcodes on a transparent background. A PDF then embeds each
+     * one as an image plus a transparency mask, built with Imagick when PHP has
+     * it and with GD when not, so the same barcode is stored two different ways.
+     * A solid background is embedded as it is, the same on every server.
+     */
+    private static function withWhiteBackground(mixed $png): mixed
+    {
+        if (!is_string($png) || $png === '') {
+            return $png;
+        }
+        $source = @imagecreatefromstring($png);
+        if ($source === false) {
+            return $png;
+        }
+        $width = imagesx($source);
+        $height = imagesy($source);
+        // The first colour of a palette image fills it, and imagecopy() skips
+        // the source's transparent pixels, so they stay white.
+        $image = imagecreate($width, $height);
+        imagecolorallocate($image, 255, 255, 255);
+        imagecopy($image, $source, 0, 0, 0, 0, $width, $height);
+        ob_start();
+        imagepng($image);
+        return (string) ob_get_clean();
     }
 
     public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false): ?string
