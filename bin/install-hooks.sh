@@ -5,6 +5,7 @@
 #
 #   bash bin/install-hooks.sh              install, then report what will actually run
 #   bash bin/install-hooks.sh --delegate   also make a global core.hooksPath defer to us
+#   INTELIS_HOOKS_DELEGATE=1 (set by `composer refresh`) does the same as --delegate
 #
 # Best-effort by design: it is wired into composer's post-install-cmd, so it must
 # NEVER fail the composer run (a failing script would abort the deploy). Any
@@ -31,6 +32,10 @@ cd "$root" || exit 0
 
 delegate=""
 [ "${1:-}" = "--delegate" ] && delegate=1
+# `composer refresh` (a developer command) sets this, so a clone on a machine with
+# a global core.hooksPath gets working hooks without a separate step. --delegate
+# keeps any hook already in that directory and runs it first.
+[ "${INTELIS_HOOKS_DELEGATE:-}" = "1" ] && delegate=1
 
 hooks_dir="$(git rev-parse --git-common-dir 2>/dev/null)/hooks"
 mkdir -p "$hooks_dir" 2>/dev/null || {
