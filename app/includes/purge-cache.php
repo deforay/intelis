@@ -121,11 +121,23 @@ function buildPurgeCacheWarning(?array $info): array
             }
         }
 
+        $cachePath = dirname((string) ($info['path'] ?? CACHE_PATH));
         $lines[] = 'This is an ownership mismatch, not a broken cache: the cache is written by the';
-        $lines[] = 'web server user, and removing those files needs ownership of their directories.';
-        $lines[] = 'Hand the cache back and purge as that user:';
-        $lines[] = '  sudo chown -R ' . $webUser . ':' . $webUser . ' ' . dirname((string) ($info['path'] ?? CACHE_PATH));
-        $lines[] = '  sudo -u ' . $webUser . ' composer purge-cache';
+        $lines[] = 'web server user, and removing those files needs write access to their directories.';
+        if ($runningAs !== 'root' && $runningAs !== 'unknown' && $runningAs !== $webUser) {
+            // A developer account running composer next to the web server. Handing the
+            // cache to the web user only moves the problem to the next composer run,
+            // so give both accounts access, inherited by every new directory.
+            $grant = static fn(string $user): string => "-m u:$user:rwX -m d:u:$user:rwX";
+            $lines[] = 'Give both accounts access to it, now and for every new directory:';
+            $lines[] = '  sudo setfacl -R ' . $grant($webUser) . ' ' . $grant($runningAs) . ' '
+                . CACHE_PATH . ' ' . dirname(CACHE_PATH) . '/logs';
+            $lines[] = '  composer purge-cache';
+        } else {
+            $lines[] = 'Hand the cache back and purge as that user:';
+            $lines[] = '  sudo chown -R ' . $webUser . ':' . $webUser . ' ' . $cachePath;
+            $lines[] = '  sudo -u ' . $webUser . ' composer purge-cache';
+        }
     } else {
         $lines[] = 'Remove them manually if stale data appears: ' . ($info['path'] ?? CACHE_PATH);
     }
