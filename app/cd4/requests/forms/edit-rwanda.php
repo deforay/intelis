@@ -878,6 +878,7 @@ $rch = '';
           Utilities.autoSelectSingleOption('specimenType');
           fillFacilityDetails();
           getCrAgResults($("#cd4Result").val());
+          showArtSection($("#insPatientInitiatedOnArt").val());
           $("#artNo").on('input', function() {
 
                let artNo = $.trim($(this).val());

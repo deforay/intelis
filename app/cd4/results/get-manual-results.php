@@ -14,6 +14,7 @@ use App\Services\FacilitiesService;
 use App\Utilities\DataTableUtility;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ListingFilterClauseBuilder;
+use App\Services\SampleAccessService;
 
 
 // Sanitized values from $request object
@@ -37,6 +38,8 @@ try {
      /** @var FacilitiesService $facilitiesService */
      $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
+     /** @var SampleAccessService $sampleAccess */
+     $sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
      $tableName = "form_cd4";
      $primaryKey = "cd4_id";
@@ -243,7 +246,7 @@ try {
                }
                $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="generateResultPDF(' . $aRow['cd4_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
           } else {
-               $print = '<a href="cd4-update-result.php?id=' . base64_encode((string) $aRow['cd4_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
+               $print = '<a href="' . $sampleAccess->url('/cd4/results/cd4-update-result.php', (int) $aRow['cd4_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
                if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/cd4/requests/edit-locked-cd4-samples")) {
                     $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
                }

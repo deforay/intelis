@@ -733,6 +733,11 @@ function _invalidateFileCacheByTags($tags): void
     $fileCache->invalidateTags($tags);
 }
 
+function _selectedIf(?string $saved, string ...$values): string
+{
+    $saved = trim(html_entity_decode((string) $saved, ENT_QUOTES));
+    return in_array($saved, $values, true) ? " selected='selected'" : '';
+}
 /**
  * Memoizes the result of a callable function
  * 

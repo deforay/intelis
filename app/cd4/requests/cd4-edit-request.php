@@ -4,6 +4,7 @@ use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Services\UsersService;
+use App\Services\SampleAccessService;
 use App\Utilities\DateUtility;
 use App\Services\FacilitiesService;
 use App\Services\CommonService;
@@ -30,6 +31,9 @@ $vlService = ContainerRegistry::get(VlService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
 $userId = $_SESSION['userId'];
 $checkNonAdminUser = $general->isNonAdmin($userId);
 $formId = (int) $general->getGlobalConfig('vl_form');
@@ -46,7 +50,6 @@ $reasonForFailure = $vlService->getReasonForFailure();
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 // get instruments
@@ -83,8 +86,11 @@ $cd4TestReasonQuery = "SELECT * FROM r_cd4_test_reasons
                          WHERE test_reason_status = 'active'";
 $cd4TestReasonResult = $db->query($cd4TestReasonQuery);
 
-$cd4Query = "SELECT * FROM form_cd4 WHERE cd4_id=?";
-$cd4QueryInfo = $db->rawQueryOne($cd4Query, [$id]);
+
+$cd4QueryInfo = $sampleAccess->load('cd4', $_GET['id'] ?? null);
+$id = (int) $cd4QueryInfo['cd4_id'];
+
+
 
 // A saved signer may now be outside the lab scope; keep them selectable so the
 // dropdown does not render blank and a re-save does not clear the value.
@@ -100,11 +106,6 @@ foreach (['tested_by', 'result_reviewed_by', 'result_approved_by'] as $field) {
 // user must pick some OTHER lab just to save, silently reassigning the sample.
 $testingLabs = $facilitiesService->getTestingLabs('cd4', alwaysIncludeLabId: $cd4QueryInfo['lab_id'] ?? null);
 
-// Facility isolation: a mapped STS user may only open samples for facilities in
-// their facilityMap. No-op on LIS and for unmapped (all-access) users.
-if (!empty($cd4QueryInfo['facility_id'])) {
-    $general->assertFacilityAllowed((int) $cd4QueryInfo['facility_id']);
-}
 
 $cd4QueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['patient_dob'] ?? '');
 
