@@ -6,6 +6,7 @@ use App\Utilities\MiscUtility;
 use App\Utilities\SpreadsheetUtility;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -14,6 +15,9 @@ use App\Utilities\JsonUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -81,6 +85,12 @@ try {
                     $_POST['instanceId'] = $instanceId;
                 }
                 $db->where('sample_code', $rowData['A']);
+                if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+                    $db->where('facility_id IN (' . $_SESSION['facilityMap'] . ')');
+                }
+                if ($labScope = $general->labScopeWhere('')) {
+                    $db->where($labScope);
+                }
                 $getSample = $db->getOne('form_vl');
 
                 if (empty($getSample['sample_code'])) {
@@ -106,7 +116,11 @@ try {
                         $formAttributes->storage = ["storageId" => $storageId, "storageCode" => $rowData['C'], "rack" => $rowData['D'], "box" => $rowData['E'], "position" => $rowData['F'], "volume" => $rowData['G']];
                         // Convert the $formAttributes array to a JSON string and set it using JsonUtility::jsonToSetString
                         $formAttributesString = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
-                        $vlData['form_attributes'] = $db->func($formAttributesString);
+                        $vlData = [
+                            'form_attributes' => $db->func($formAttributesString),
+                            'data_sync' => 0,
+                            'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                        ];
                         $db->where('vl_sample_id', $getSample['vl_sample_id']);
                         $id = $db->update('form_vl', $vlData);
                     } else {
