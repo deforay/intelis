@@ -4,12 +4,20 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Cell\StringCell;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Border;
+use OpenSpout\Common\Entity\Style\BorderName;
+use OpenSpout\Common\Entity\Style\BorderPart;
+use OpenSpout\Common\Entity\Style\BorderStyle;
+use OpenSpout\Common\Entity\Style\BorderWidth;
+use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Common\Entity\Style\CellVerticalAlignment;
+use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Writer\XLSX\Options;
+use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\SampleCountUtility;
 use App\Utilities\ExportJobUtility;
 
@@ -252,471 +260,303 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
     $startMonth = date("M-Y", strtotime((string) $start_date));
     $endMonth = date("M-Y", strtotime((string) $end_date));
 
-    $excel = new Spreadsheet();
-    $output = [];
-    $sheet = $excel->getActiveSheet();
+    // The report is laid out on a grid first and then written top to bottom.
+    // Its merged blocks span several rows, so a cell's borders are only known
+    // once every block around it is placed.
+    $grid = [];   // [row][column] => ['value' => ..., 'style' => [...]]
+    $merges = []; // [firstColumn, firstRow, lastColumn, lastRow], columns from 0
 
-    $colNo = 1;
+    $parseRange = static function (string $range): array {
+        [$from, $to] = array_pad(explode(':', $range), 2, null);
+        $to ??= $from;
+        preg_match('/^([A-M])(\d+)$/', $from, $a);
+        preg_match('/^([A-M])(\d+)$/', $to, $b);
+        return [ord($a[1]) - 65, (int) $a[2], ord($b[1]) - 65, (int) $b[2]];
+    };
 
-    $headingStyle = ['font' => ['bold' => true, 'size' => '11'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT]];
-    $backgroundStyle = ['font' => ['bold' => true, 'size' => '13', 'color' => ['rgb' => 'FFFFFF']], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER], 'fill' => ['fillType' => Fill::FILL_SOLID, 'color' => ['rgb' => '5c5c5c']]];
-    $questionStyle = ['font' => [
-        //'bold' => true,
-        'size' => '11',
-    ], 'alignment' => [], 'fill' => ['fillType' => Fill::FILL_SOLID, 'color' => ['rgb' => 'A9A9A9']]];
-    $genderquestionStyle = ['font' => [
-        //'bold' => true,
-        'size' => '11',
-    ], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT], 'fill' => ['fillType' => Fill::FILL_SOLID, 'color' => ['rgb' => 'A9A9A9']]];
-    $styleArray = ['font' => [
-        //'bold' => true,
-        'size' => '11',
-    ], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['borderStyle' => Border::BORDER_THIN]]];
+    // Sets a cell's value, or merges a range and puts the value in its first cell
+    $block = static function (string $range, int|string|null $value = null) use (&$grid, &$merges, $parseRange): void {
+        [$c1, $r1, $c2, $r2] = $parseRange($range);
+        if ($c1 !== $c2 || $r1 !== $r2) {
+            $merges[] = [$c1, $r1, $c2, $r2];
+        }
+        if ($value !== null) {
+            $grid[$r1][$c1]['value'] = $value;
+        }
+    };
 
-    $borderStyle = [
-        //'alignment' => array(
-        //    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-        //),
-        'borders' => ['outline' => ['borderStyle' => Border::BORDER_THICK]],
-    ];
-    if ($_POST['fyName'] == '-- Select --') {
+    // Adds style properties to every cell in the range
+    $style = static function (string $range, array $properties) use (&$grid, $parseRange): void {
+        [$c1, $r1, $c2, $r2] = $parseRange($range);
+        for ($r = $r1; $r <= $r2; $r++) {
+            for ($c = $c1; $c <= $c2; $c++) {
+                $grid[$r][$c]['style'] = array_merge($grid[$r][$c]['style'] ?? [], $properties);
+            }
+        }
+    };
+
+    // Thick line under the last row of A..M
+    $underline = static function (int $row) use ($style): void {
+        $style("A$row:M$row", ['bottom' => BorderWidth::THICK]);
+    };
+
+    // Border around the outside edge of a range
+    $outline = static function (string $range, BorderWidth $width) use ($style, $parseRange): void {
+        [$c1, $r1, $c2, $r2] = $parseRange($range);
+        [$first, $last] = [chr(65 + $c1), chr(65 + $c2)];
+        $style("$first$r1:$last$r1", ['top' => $width]);
+        $style("$first$r2:$last$r2", ['bottom' => $width]);
+        $style("$first$r1:$first$r2", ['left' => $width]);
+        $style("$last$r1:$last$r2", ['right' => $width]);
+    };
+
+    $titleStyle = ['bold' => true, 'size' => 13, 'color' => 'FFFFFF', 'h' => CellAlignment::CENTER, 'fill' => '5C5C5C'];
+    $questionStyle = ['fill' => 'A9A9A9'];
+    $subHeadingStyle = ['fill' => 'A9A9A9', 'h' => CellAlignment::LEFT];
+
+    if (($_POST['fyName'] ?? '') === '-- Select --') {
         $_POST['fyName'] = '';
     }
     $atomcolumns = '';
-    //$atomcolumns .= "Country:" . ($countryResult[0]['form_name']) . "&nbsp;&nbsp;&nbsp;";
-    $atomcolumns .= "Region/Province/State:" . ($_POST['state']) . "&nbsp;&nbsp;&nbsp;";
-    $atomcolumns .= "District/County:" . ($_POST['district']) . "\n\n";
-    $atomcolumns .= "Laboratory Name:" . ($_POST['fyName']) . "\n\n";
+    $atomcolumns .= "Region/Province/State:" . ($_POST['state'] ?? '') . "&nbsp;&nbsp;&nbsp;";
+    $atomcolumns .= "District/County:" . ($_POST['district'] ?? '') . "\n\n";
+    $atomcolumns .= "Laboratory Name:" . ($_POST['fyName'] ?? '') . "\n\n";
     $atomcolumns .= "Reporting POC Name:________________";
     $atomcolumns .= "Title:________________";
     $atomcolumns .= "Email:________________\n\n";
     $atomcolumns .= "Date(MM/DD/YYYY): " . date('M/d/Y') . "&nbsp;&nbsp;&nbsp;";
     $atomcolumns .= "Reporting Quarter: " . $startMonth . " to " . $endMonth;
-    $sheet->getStyle('A1')->applyFromArray($headingStyle);
-    $sheet->getStyle('A1')->applyFromArray($backgroundStyle);
-    $sheet->getStyle('A3')->applyFromArray($styleArray);
-    $sheet->mergeCells('A1:M2');
-    $sheet->setCellValue('A1', html_entity_decode('Viral Load Quarterly Monitoring Tool ', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('A3:M10');
-    $sheet->setCellValue('A3', html_entity_decode($atomcolumns, ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('A11:A12');
-    $sheet->mergeCells('B11:F12');
-    $sheet->setCellValue('B11', html_entity_decode('Question', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G11:I12');
-    $sheet->setCellValue('G11', html_entity_decode('Value', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J11:M12');
-    $sheet->setCellValue('J11', html_entity_decode('Comments', ENT_QUOTES, 'UTF-8'));
-    $sheet->getStyle('B11')->applyFromArray($backgroundStyle);
-    $sheet->getStyle('G11')->applyFromArray($backgroundStyle);
-    $sheet->getStyle('J11')->applyFromArray($backgroundStyle);
-    $sheet->getStyle('A11:M12')->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THICK);
-    //question one start
-    $sheet->mergeCells('A13:A14');
-    $sheet->setCellValue('A13', html_entity_decode('Q1', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B13:F14');
-    $sheet->setCellValue('B13', html_entity_decode('Number Of Viral Load tests reported by the laboratory during the current quarter', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G13:I14');
-    $sheet->setCellValue('G13', html_entity_decode(count($rResult), ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J13:M14');
-    $sheet->getStyle('A13')->applyFromArray($questionStyle);
-    $sheet->getStyle('B13')->applyFromArray($questionStyle);
-    $sheet->mergeCells('A15:A16');
-    $sheet->setCellValue('A15', html_entity_decode('Q1.1', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B15:F17');
-    $sheet->setCellValue('B15', html_entity_decode('Of the number of Viral Load test results reported by lab,how many were: ', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G15:G16');
-    $sheet->setCellValue('G15', html_entity_decode('Suppressed < 1000 copies/mL ', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('H15:I16');
-    $sheet->mergeCells('H17:I17');
-    $sheet->setCellValue('G17', html_entity_decode((string) $sResult[0]['suppressed'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H17', html_entity_decode((string) $sResult[0]['NotSuppressed'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H15', html_entity_decode('Suppressed Failure >= 1000 copies/mL ', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J15:M17');
-    $sheet->getStyle('A15')->applyFromArray($questionStyle);
-    $sheet->getStyle('B15')->applyFromArray($questionStyle);
-    $sheet->getStyle('G15')->applyFromArray($questionStyle);
-    $sheet->getStyle('H15')->applyFromArray($questionStyle);
-    $sheet->mergeCells('A18:A18');
-    $sheet->setCellValue('A18', html_entity_decode('Q1.2', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B18:M18');
-    $sheet->setCellValue('B18', html_entity_decode('Sex', ENT_QUOTES, 'UTF-8'));
 
-    $sheet->mergeCells('B19:F19');
-    $sheet->setCellValue('B19', html_entity_decode('Male', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G19:G19');
-    $sheet->setCellValue('G19', html_entity_decode((string) $sResult[0]['ltMale1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H19', html_entity_decode((string) $sResult[0]['gtMale1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('H19:I19');
-    $sheet->mergeCells('J19:M19');
-    $sheet->mergeCells('B20:F20');
-    $sheet->setCellValue('B20', html_entity_decode('Female', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G20:G20');
-    $sheet->mergeCells('H20:I20');
-    $sheet->setCellValue('G20', html_entity_decode((string) $sResult[0]['ltFemale1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H20', html_entity_decode((string) $sResult[0]['gtFemale1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J20:M20');
-    $sheet->mergeCells('B21:F21');
-    $sheet->setCellValue('B21', html_entity_decode('Not Specified', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G21:G21');
-    $sheet->mergeCells('H21:I21');
-    $sheet->setCellValue('G21', html_entity_decode((string) $sResult[0]['ltNotSpecified1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H21', html_entity_decode((string) $sResult[0]['gtNotSpecified1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J21:M21');
-    $sheet->mergeCells('B22:F22');
-    $sheet->setCellValue('B22', html_entity_decode('Total', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G22:G22');
-    $sheet->mergeCells('H22:I22');
-    $sheet->setCellValue('G22', html_entity_decode((string) $sResult[0]['ltTotalGender1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H22', html_entity_decode((string) $sResult[0]['gtTotalGender1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J22:M22');
+    $block('A1:M2', 'Viral Load Quarterly Monitoring Tool ');
+    $style('A1', $titleStyle);
+    $block('A3:M10', html_entity_decode($atomcolumns, ENT_QUOTES, 'UTF-8'));
+    $style('A3', ['h' => CellAlignment::LEFT, 'v' => CellVerticalAlignment::CENTER]);
+    $outline('A3', BorderWidth::THIN);
 
-    $sheet->mergeCells('A23:A23');
-    $sheet->setCellValue('A23', html_entity_decode('Q1.3', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B23:M23');
-    $sheet->setCellValue('B23', html_entity_decode('Age', ENT_QUOTES, 'UTF-8'));
+    $block('A11:A12');
+    $block('B11:F12', 'Question');
+    $block('G11:I12', 'Value');
+    $block('J11:M12', 'Comments');
+    $style('B11', $titleStyle);
+    $style('G11', $titleStyle);
+    $style('J11', $titleStyle);
+    $underline(12);
 
-    $sheet->mergeCells('B24:F24');
-    $sheet->setCellValue('B24', html_entity_decode('<1', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G24:G24');
-    $sheet->mergeCells('H24:I24');
-    $sheet->setCellValue('G24', html_entity_decode((string) $sResult[0]['ltAgeOne1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H24', html_entity_decode((string) $sResult[0]['gtAgeOne1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J24:M24');
-    $sheet->mergeCells('B25:F25');
-    $sheet->setCellValue('B25', html_entity_decode('1-9', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G25:G25');
-    $sheet->mergeCells('H25:I25');
-    $sheet->setCellValue('G25', html_entity_decode((string) $sResult[0]['ltAgeOnetoNine1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H25', html_entity_decode((string) $sResult[0]['gtAgeOnetoNine1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J25:M25');
-    $sheet->mergeCells('B26:F26');
-    $sheet->setCellValue('B26', html_entity_decode('10-14', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G26:G26');
-    $sheet->mergeCells('H26:I26');
-    $sheet->setCellValue('G26', html_entity_decode((string) $sResult[0]['ltAgeTentoFourteen1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H26', html_entity_decode((string) $sResult[0]['gtAgeTentoFourteen1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J26:M26');
-    $sheet->mergeCells('B27:F27');
-    $sheet->setCellValue('B27', html_entity_decode('<15(Subtotal)', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G27:G27');
-    $sheet->mergeCells('H27:I27');
-    $sheet->setCellValue('G27', html_entity_decode((string) $sResult[0]['ltAgeTotalFifteen1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H27', html_entity_decode((string) $sResult[0]['gtAgeTotalFifteen1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J27:M27');
-    $sheet->mergeCells('B28:F28');
-    $sheet->setCellValue('B28', html_entity_decode('15-19', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G28:G28');
-    $sheet->mergeCells('H28:I28');
-    $sheet->setCellValue('G28', html_entity_decode((string) $sResult[0]['ltAgeFifteentoNineteen1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H28', html_entity_decode((string) $sResult[0]['gtAgeFifteentoNineteen1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J28:M28');
-    $sheet->mergeCells('B29:F29');
-    $sheet->setCellValue('B29', html_entity_decode('20-24', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G29:G29');
-    $sheet->mergeCells('H29:I29');
-    $sheet->setCellValue('G29', html_entity_decode((string) $sResult[0]['ltAgeTwentytoTwentyFour1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H29', html_entity_decode((string) $sResult[0]['gtAgeTwentytoTwentyFour1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J29:M29');
-    $sheet->mergeCells('B30:F30');
-    $sheet->setCellValue('B30', html_entity_decode('15-24', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G30:G30');
-    $sheet->mergeCells('H30:I30');
-    $sheet->setCellValue('G30', html_entity_decode((string) $sResult[0]['ltAgeFifteentoTwentyFour1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H30', html_entity_decode((string) $sResult[0]['gtAgeFifteentoTwentyFour1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J30:M30');
-    $sheet->mergeCells('B31:F31');
-    $sheet->setCellValue('B31', html_entity_decode('25+', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G31:G31');
-    $sheet->mergeCells('H31:I31');
-    $sheet->setCellValue('G31', html_entity_decode((string) $sResult[0]['ltAgetwentyFive1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H31', html_entity_decode((string) $sResult[0]['gtAgetwentyFive1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J31:M31');
+    // Q1
+    $count = static fn(string $key): int => (int) ($sResult[0][$key] ?? 0);
+    $block('A13:A14', 'Q1');
+    $block('B13:F14', 'Number Of Viral Load tests reported by the laboratory during the current quarter');
+    $block('G13:I14', count($rResult));
+    $block('J13:M14');
+    $block('A15:A16', 'Q1.1');
+    $block('B15:F17', 'Of the number of Viral Load test results reported by lab,how many were: ');
+    $block('G15:G16', 'Suppressed < 1000 copies/mL ');
+    $block('H15:I16', 'Suppressed Failure >= 1000 copies/mL ');
+    $block('G17', $count('suppressed'));
+    $block('H17:I17', $count('NotSuppressed'));
+    $block('J15:M17');
+    $style('G15:H15', $questionStyle);
+    $block('A18', 'Q1.2');
+    $block('B18:M18', 'Sex');
+    $block('A23', 'Q1.3');
+    $block('B23:M23', 'Age');
 
-    $sheet->mergeCells('B32:F32');
-    $sheet->setCellValue('B32', html_entity_decode('Not Specified', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G32:G32');
-    $sheet->mergeCells('H32:I32');
-    $sheet->setCellValue('G32', html_entity_decode((string) $sResult[0]['ltAgeNotSpecified1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H32', html_entity_decode((string) $sResult[0]['gtAgeNotSpecified1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J32:M32');
+    // row => [question, label, suppressed column, not suppressed column]
+    $breakdown = [
+        19 => [null, 'Male', 'ltMale1000', 'gtMale1000'],
+        20 => [null, 'Female', 'ltFemale1000', 'gtFemale1000'],
+        21 => [null, 'Not Specified', 'ltNotSpecified1000', 'gtNotSpecified1000'],
+        22 => [null, 'Total', 'ltTotalGender1000', 'gtTotalGender1000'],
+        24 => [null, '<1', 'ltAgeOne1000', 'gtAgeOne1000'],
+        25 => [null, '1-9', 'ltAgeOnetoNine1000', 'gtAgeOnetoNine1000'],
+        26 => [null, '10-14', 'ltAgeTentoFourteen1000', 'gtAgeTentoFourteen1000'],
+        27 => [null, '<15(Subtotal)', 'ltAgeTotalFifteen1000', 'gtAgeTotalFifteen1000'],
+        28 => [null, '15-19', 'ltAgeFifteentoNineteen1000', 'gtAgeFifteentoNineteen1000'],
+        29 => [null, '20-24', 'ltAgeTwentytoTwentyFour1000', 'gtAgeTwentytoTwentyFour1000'],
+        30 => [null, '15-24', 'ltAgeFifteentoTwentyFour1000', 'gtAgeFifteentoTwentyFour1000'],
+        31 => [null, '25+', 'ltAgetwentyFive1000', 'gtAgetwentyFive1000'],
+        32 => [null, 'Not Specified', 'ltAgeNotSpecified1000', 'gtAgeNotSpecified1000'],
+        33 => [null, 'Total', 'ltAgeTotal1000', 'gtAgeTotal1000'],
+        34 => ['Q1.4', 'Pregnant Women', 'ltPatientPregnant1000', 'gtPatientPregnant1000'],
+        35 => ['Q1.5', 'Women that are breastfeeding', 'ltPatientBreastFeeding1000', 'gtPatientBreastFeeding1000'],
+    ];
+    foreach ($breakdown as $row => [$question, $label, $suppressed, $notSuppressed]) {
+        if ($question !== null) {
+            $block("A$row", $question);
+        }
+        $block("B$row:F$row", $label);
+        $block("G$row", $count($suppressed));
+        $block("H$row:I$row", $count($notSuppressed));
+        $block("J$row:M$row");
+    }
+    $underline(35);
 
-    $sheet->mergeCells('B33:F33');
-    $sheet->setCellValue('B33', html_entity_decode('Total', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G33:G33');
-    $sheet->mergeCells('H33:I33');
-    $sheet->setCellValue('G33', html_entity_decode((string) $sResult[0]['ltAgeTotal1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H33', html_entity_decode((string) $sResult[0]['gtAgeTotal1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J33:M33');
-    $sheet->mergeCells('A34:A34');
-    $sheet->setCellValue('A34', html_entity_decode('Q1.4', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B34:F34');
-    $sheet->setCellValue('B34', html_entity_decode('Pregnant Women', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G34:G34');
-    $sheet->mergeCells('H34:I34');
-    $sheet->setCellValue('G34', html_entity_decode((string) $sResult[0]['ltPatientPregnant1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H34', html_entity_decode((string) $sResult[0]['gtPatientPregnant1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J34:M34');
-    $sheet->mergeCells('A35:A35');
-    $sheet->setCellValue('A35', html_entity_decode('Q1.5', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B35:F35');
-    $sheet->setCellValue('B35', html_entity_decode('Women that are breastfeeding', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G35:G35');
-    $sheet->mergeCells('H35:I35');
-    $sheet->setCellValue('G35', html_entity_decode((string) $sResult[0]['ltPatientBreastFeeding1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('H35', html_entity_decode((string) $sResult[0]['gtPatientBreastFeeding1000'], ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J35:M35');
-    $sheet->getStyle('A13:F37')->applyFromArray($questionStyle);
-    $sheet->getStyle('B18')->applyFromArray($genderquestionStyle);
-    $sheet->getStyle('B23')->applyFromArray($genderquestionStyle);
-    $sheet->getStyle('B34')->applyFromArray($genderquestionStyle);
-    $sheet->getStyle('B33')->applyFromArray($genderquestionStyle);
-    $sheet->getStyle('A35:M35')->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THICK);
-    //question two start
-    $sheet->mergeCells('A36:A36');
-    $sheet->setCellValue('A36', html_entity_decode('Q2', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B36:F37');
-    $sheet->setCellValue('B36', html_entity_decode('Is there a backlog for viral load testing? (greater than 1 month testing volume) Choose from list', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G36:I37');
-    $sheet->setCellValue('G36', html_entity_decode(count($checkEmptyResult), ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J36:M37');
-    $sheet->setCellValue('J36', html_entity_decode('Reasons:', ENT_QUOTES, 'UTF-8'));
+    // Q2
+    $block('A36', 'Q2');
+    $block('B36:F37', 'Is there a backlog for viral load testing? (greater than 1 month testing volume) Choose from list');
+    $block('G36:I37', count($checkEmptyResult));
+    $block('J36:M37', 'Reasons:');
     $s = 38;
     $ss = 39;
+    $q2End = 37;
     if (count($checkEmptyResult) > 0) {
         foreach ($sampleTypeResult as $sampleName) {
-            if ($checkEmptySampleResult[$sampleName['sample_name']][0]['total'] != 0) {
-                $sheet->mergeCells('B' . $s . ':F' . $ss);
-                $sheet->setCellValue('B' . $s, html_entity_decode('If yes,which type of samples?', ENT_QUOTES, 'UTF-8'));
-                $sheet->mergeCells('G' . $s . ':I' . $ss);
-                $sheet->mergeCells('J' . $s . ':M' . $ss);
-                $sheet->setCellValue('G' . $s, html_entity_decode((string) $sampleName['sample_name'], ENT_QUOTES, 'UTF-8'));
+            $backlog = (int) ($checkEmptySampleResult[$sampleName['sample_name']][0]['total'] ?? 0);
+            if ($backlog !== 0) {
+                $block("B$s:F$ss", 'If yes,which type of samples?');
+                $block("G$s:I$ss", (string) $sampleName['sample_name']);
+                $block("J$s:M$ss");
                 $c = $s + 2;
                 $cc = $ss + 1;
-                $sheet->mergeCells('A' . $c . ':A' . $cc);
-                $sheet->setCellValue('A' . $c, html_entity_decode('Q2.1', ENT_QUOTES, 'UTF-8'));
-                $sheet->mergeCells('B' . $c . ':F' . $cc);
-                $sheet->setCellValue('B' . $c, html_entity_decode('If yes,how many samples?', ENT_QUOTES, 'UTF-8'));
-                $sheet->mergeCells('G' . $c . ':I' . $cc);
-                $sheet->mergeCells('J' . $c . ':M' . $cc);
-                $sheet->setCellValue('G' . $c, html_entity_decode((string) $checkEmptySampleResult[$sampleName['sample_name']][0]['total'], ENT_QUOTES, 'UTF-8'));
+                $block("A$c:A$cc", 'Q2.1');
+                $block("B$c:F$cc", 'If yes,how many samples?');
+                $block("G$c:I$cc", $backlog);
+                $block("J$c:M$cc");
+                $q2End = $cc;
                 $s = $c + 1;
                 $ss = $cc + 2;
             }
         }
     }
-    if (isset($c) && isset($cc)) {
-        $sheet->getStyle('A' . $c . ':M' . $cc)->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THICK);
-    } else {
-        $sheet->getStyle('A37:M37')->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THICK);
-    }
+    $underline($q2End);
 
-    //quetion three start
-    $q3 = $s;
-    $q33 = $ss;
-    $sheet->mergeCells('A' . $q3 . ':A' . $q33);
-    $sheet->setCellValue('A' . $q3, html_entity_decode('Q3', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B' . $q3 . ':F' . $q33);
-    $sheet->setCellValue('B' . $q3, html_entity_decode('What is the average monthly/quarterly TAT? (sample collection to lab result release)', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G' . $q3 . ':I' . $q33);
-    $sheet->setCellValue('G' . $q3, html_entity_decode($totalAvg, ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('J' . $q3 . ':M' . $q33);
-    $sheet->getStyle('A' . $q3 . ':M' . $q33)->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THICK);
+    // Q3 to Q6: one question per two-row block
+    $row = $s;
+    $addQuestion = static function (?string $question, string $text, int|string|null $value = null, ?string $comment = null) use (&$row, $block): int {
+        $last = $row + 1;
+        if ($question !== null) {
+            $block("A$row:A$last", $question);
+        }
+        $block("B$row:F$last", $text);
+        $block("G$row:I$last", $value);
+        $block("J$row:M$last", $comment);
+        $row += 2;
+        return $last;
+    };
+    $underline($addQuestion('Q3', 'What is the average monthly/quarterly TAT? (sample collection to lab result release)', (int) $totalAvg));
 
-    //quetion four start
-    $q4 = $s + 2;
-    $q44 = $ss + 2;
-    $sheet->mergeCells('A' . $q4 . ':A' . $q44);
-    $sheet->setCellValue('A' . $q4, html_entity_decode('Q4', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B' . $q4 . ':F' . $q44);
-    $sheet->setCellValue('B' . $q4, html_entity_decode('Are there planned procurements within this fiscal year? Choose from list', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G' . $q4 . ':I' . $q44);
-    $sheet->mergeCells('J' . $q4 . ':M' . $q44);
+    $addQuestion('Q4', 'Are there planned procurements within this fiscal year? Choose from list');
+    $addQuestion('Q4.1', 'If yes, please list:');
+    $addQuestion(null, 'Platform Type:');
+    $addQuestion(null, 'Quantity:');
+    $underline($addQuestion(null, 'Planned location of placement:'));
 
-    $q4 = $s + 4;
-    $q44 = $ss + 4;
-    $sheet->mergeCells('A' . $q4 . ':A' . $q44);
-    $sheet->setCellValue('A' . $q4, html_entity_decode('Q4.1', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B' . $q4 . ':F' . $q44);
-    $sheet->setCellValue('B' . $q4, html_entity_decode('If yes, please list:', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G' . $q4 . ':I' . $q44);
-    $sheet->mergeCells('J' . $q4 . ':M' . $q44);
-    $q4 += 2;
-    $q44 += 2;
-    $sheet->mergeCells('B' . $q4 . ':F' . $q44);
-    $sheet->setCellValue('B' . $q4, html_entity_decode('Platform Type:', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G' . $q4 . ':I' . $q44);
-    $sheet->mergeCells('J' . $q4 . ':M' . $q44);
-    $q4 += 2;
-    $q44 += 2;
-    $sheet->mergeCells('B' . $q4 . ':F' . $q44);
-    $sheet->setCellValue('B' . $q4, html_entity_decode('Quantity:', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G' . $q4 . ':I' . $q44);
-    $sheet->mergeCells('J' . $q4 . ':M' . $q44);
-    $q4 += 2;
-    $q44 += 2;
-    $sheet->mergeCells('B' . $q4 . ':F' . $q44);
-    $sheet->setCellValue('B' . $q4, html_entity_decode('Planned location of placement:', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G' . $q4 . ':I' . $q44);
-    $sheet->mergeCells('J' . $q4 . ':M' . $q44);
-    $sheet->getStyle('A' . $q4 . ':M' . $q44)->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THICK);
-    //question five start
-    $q5 = $q4 + 2;
-    $q55 = $q44 + 2;
-    $sheet->mergeCells('A' . $q5 . ':A' . $q55);
-    $sheet->setCellValue('A' . $q5, html_entity_decode('Q5', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B' . $q5 . ':F' . $q55);
-    $sheet->setCellValue('B' . $q5, html_entity_decode('Number of Early Infant Diagnosis tests reported by the lab:', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G' . $q5 . ':I' . $q55);
-    $sheet->mergeCells('J' . $q5 . ':M' . $q55);
+    $addQuestion('Q5', 'Number of Early Infant Diagnosis tests reported by the lab:');
+    $underline($addQuestion('Q5.1', 'Number of Early Infant Diagnosis tests with a positive result:'));
 
-    $q5 += 2;
-    $q55 += 2;
-    $sheet->mergeCells('A' . $q5 . ':A' . $q55);
-    $sheet->setCellValue('A' . $q5, html_entity_decode('Q5.1', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B' . $q5 . ':F' . $q55);
-    $sheet->setCellValue('B' . $q5, html_entity_decode('Number of Early Infant Diagnosis tests with a positive result:', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G' . $q5 . ':I' . $q55);
-    $sheet->mergeCells('J' . $q5 . ':M' . $q55);
-    $sheet->getStyle('A' . $q5 . ':M' . $q55)->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THICK);
-    //question six start
-    $q6 = $q5 + 2;
-    $q66 = $q55 + 2;
-    $sheet->mergeCells('A' . $q6 . ':A' . $q66);
-    $sheet->setCellValue('A' . $q6, html_entity_decode('Q6', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B' . $q6 . ':F' . $q66);
-    $sheet->setCellValue('B' . $q6, html_entity_decode('Is there a backlog for Early Infant Diagnosis testing (greater than 1 month testing volume)? Choose from list', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G' . $q6 . ':I' . $q66);
-    $sheet->mergeCells('J' . $q6 . ':M' . $q66);
-    $sheet->setCellValue('J' . $q6, html_entity_decode('Reasons:', ENT_QUOTES, 'UTF-8'));
+    $addQuestion('Q6', 'Is there a backlog for Early Infant Diagnosis testing (greater than 1 month testing volume)? Choose from list', null, 'Reasons:');
+    $underline($addQuestion('Q6.1', 'If yes, how many samples?'));
 
-    $q6 += 2;
-    $q66 += 2;
-    $sheet->mergeCells('A' . $q6 . ':A' . $q66);
-    $sheet->setCellValue('A' . $q6, html_entity_decode('Q6.1', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B' . $q6 . ':F' . $q66);
-    $sheet->setCellValue('B' . $q6, html_entity_decode('If yes, how many samples?', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G' . $q6 . ':I' . $q66);
-    $sheet->mergeCells('J' . $q6 . ':M' . $q66);
-    $sheet->getStyle('A' . $q6 . ':M' . $q66)->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THICK);
-
-    //question seven start
-    $q7 = $q6 + 2;
-    $q77 = $q66 + 2;
-    $mergeQ7 = $q7;
-    $sheet->mergeCells('A' . $q7 . ':A' . $q77);
-    $sheet->setCellValue('A' . $q7, html_entity_decode('Q7', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B' . $q7 . ':F' . $q77);
-    $sheet->setCellValue('B' . $q7, html_entity_decode('Number of invalid VL and EID tests reported by the lab per month:', ENT_QUOTES, 'UTF-8'));
-    //check invalid result
+    // Q7: one row per month of the collection period
+    $q7Start = $row;
     if (!empty($_POST['sampleCollectionDate'])) {
-        $s_c_date = explode(" to ", (string) $_POST['sampleCollectionDate']);
-        $start_date = trim($s_c_date[0]);
-        $end_date = trim($s_c_date[1]);
-        $startMonth = date("Y-m", strtotime($start_date));
-        $endMonth = date("Y-m", strtotime($end_date));
-        $start = $month = strtotime($startMonth);
-        $end = strtotime($endMonth);
-        $i = 0;
+        $month = strtotime(date('Y-m', strtotime((string) $start_date)));
+        $end = strtotime(date('Y-m', strtotime((string) $end_date)));
         while ($month <= $end) {
-            $sheet->getStyle('A38:F' . $q7)->applyFromArray($questionStyle);
             $mnth = date('m', $month);
             $year = date('Y', $month);
-            $dFormat = date("M-Y", $month);
             $invalidResultQuery = "SELECT
-                    vl.sample_collection_date,
-                    f.facility_name,
-                    f.facility_code,
-                    f.facility_state,
-                    f.facility_district,
                     SUM(CASE WHEN (result!='' AND result!='Target Not Detected') AND (result > 10000000 OR result < 20) THEN 1 ELSE 0 END) AS invalidTotal
                     FROM form_vl as vl
                     JOIN facility_details as f ON vl.facility_id=f.facility_id
                     WHERE MONTH(sample_collection_date)='$mnth'
                     AND YEAR(sample_collection_date)='$year'
                     AND " . SampleCountUtility::countableWhere('vl');
-            if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-                $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
-            }
-            if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-                if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
-                    $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
-                } else {
-                    $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-                }
-            }
-            if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-                $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $db->escapeLike($_POST['state']) . "%' ";
-            }
-            if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-                $sWhere = $sWhere . ' AND f.facility_id = "' . $db->escape((string) $_POST['facilityName']) . '"';
-            }
-            $invalidResult[$dFormat] = $db->rawQuery($invalidResultQuery);
+            $invalidResult = $db->rawQuery($invalidResultQuery);
 
-            $sheet->setCellValue('G' . $q7, html_entity_decode($dFormat, ENT_QUOTES, 'UTF-8'));
-            $sheet->mergeCells('H' . $q7 . ':I' . $q7);
-            $sheet->setCellValue('H' . $q7, html_entity_decode((string) $invalidResult[$dFormat][0]['invalidTotal'], ENT_QUOTES, 'UTF-8'));
-            $sheet->mergeCells('J' . $q7 . ':M' . $q7);
-            $q7++;
-            $q77++;
-            $month = strtotime("+1 month", $month);
-            $i++;
+            $block("G$row", date('M-Y', $month));
+            $block("H$row:I$row", (int) ($invalidResult[0]['invalidTotal'] ?? 0));
+            $block("J$row:M$row");
+            $row++;
+            $month = strtotime('+1 month', $month);
         }
     }
-    $bQ7 = $q7 - 1;
-    $sheet->mergeCells('A' . $mergeQ7 . ':A' . $bQ7);
-    $sheet->mergeCells('B' . $mergeQ7 . ':F' . $bQ7);
-    $sheet->getStyle('A' . $bQ7 . ':M' . $bQ7)->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THICK);
-    //question eight start
-    $q8 = $q7;
-    $q88 = $q77;
-    $mergeQ8 = $q8;
-    $sheet->mergeCells('A' . $q8 . ':A' . $q88);
-    $sheet->setCellValue('A' . $q8, html_entity_decode('Q8', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B' . $q8 . ':F' . $q88);
-    $sheet->setCellValue('B' . $q8, html_entity_decode('Duration of equipment breakdown in number of days (provide per instrument type):', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('G' . $q8, html_entity_decode('Instrument', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('H' . $q8 . ':I' . $q8);
-    $sheet->mergeCells('J' . $q8 . ':M' . $q8);
-    $sheet->getStyle('G' . $q8 . ':M' . $q8)->applyFromArray($questionStyle);
-    $sheet->setCellValue('H' . $q8, html_entity_decode('Days Down', ENT_QUOTES, 'UTF-8'));
-    $q8 += 1;
-    $q88 += 1;
-    $sheet->mergeCells('H' . $q8 . ':I' . $q8);
-    $sheet->mergeCells('J' . $q8 . ':M' . $q8);
-    $q8 += 1;
-    $q88 += 1;
-    $sheet->mergeCells('H' . $q8 . ':I' . $q8);
-    $sheet->mergeCells('J' . $q8 . ':M' . $q8);
-    $q8 += 1;
-    $q88 += 1;
-    $sheet->mergeCells('H' . $q8 . ':I' . $q8);
-    $sheet->mergeCells('J' . $q8 . ':M' . $q8);
-    $q8 += 1;
-    $q88 += 1;
-    $sheet->mergeCells('H' . $q8 . ':I' . $q8);
-    $sheet->mergeCells('J' . $q8 . ':M' . $q8);
-    $q8 += 1;
-    $q88 += 1;
-    $sheet->mergeCells('H' . $q8 . ':I' . $q8);
-    $sheet->mergeCells('J' . $q8 . ':M' . $q8);
+    $q7End = max($row, $q7Start + 1) - 1;
+    $block("A$q7Start:A$q7End", 'Q7');
+    $block("B$q7Start:F$q7End", 'Number of invalid VL and EID tests reported by the lab per month:');
+    $underline($q7End);
 
-    $sheet->mergeCells('A' . $mergeQ8 . ':A' . $q8);
-    $sheet->mergeCells('B' . $mergeQ8 . ':F' . $q8);
-    $q8 += 1;
-    $q88 += 1;
+    // Q8: six instrument rows, then the reason
+    $q8Start = $q7End + 1;
+    $q8End = $q8Start + 5;
+    $block("A$q8Start:A$q8End", 'Q8');
+    $block("B$q8Start:F$q8End", 'Duration of equipment breakdown in number of days (provide per instrument type):');
+    for ($r = $q8Start; $r <= $q8End; $r++) {
+        $block("H$r:I$r");
+        $block("J$r:M$r");
+    }
+    $block("G$q8Start", 'Instrument');
+    $block("H$q8Start", 'Days Down');
+    $style("G$q8Start:M$q8Start", $questionStyle);
+    $row = $q8End + 1;
+    $q81Start = $row;
+    $lastRow = $addQuestion('Q8.1', 'Reason for instrument breakdown: ');
 
-    $sheet->mergeCells('A' . $q8 . ':A' . $q88);
-    $sheet->setCellValue('A' . $q8, html_entity_decode('Q8.1', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('B' . $q8 . ':F' . $q88);
-    $sheet->setCellValue('B' . $q8, html_entity_decode('Reason for instrument breakdown: ', ENT_QUOTES, 'UTF-8'));
-    $sheet->mergeCells('G' . $q8 . ':I' . $q88);
-    $sheet->mergeCells('J' . $q8 . ':M' . $q88);
-    $sheet->getStyle('A37:F' . $q8)->applyFromArray($questionStyle);
-    $sheet->getStyle('A' . $mergeQ8 . ':F' . $mergeQ8)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-    $sheet->getStyle('A' . $mergeQ7 . ':F' . $mergeQ7)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-    $sheet->getStyle('A11:M' . $q88)->applyFromArray($borderStyle);
-    $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
+    $style("A13:F$q81Start", $questionStyle);
+    foreach (['B18', 'B23', 'B33', 'B34'] as $cell) {
+        $style($cell, $subHeadingStyle);
+    }
+    $style("A$q7Start:F$q7Start", ['v' => CellVerticalAlignment::CENTER]);
+    $style("A$q8Start:F$q8Start", ['v' => CellVerticalAlignment::CENTER]);
+    $outline("A11:M$lastRow", BorderWidth::THICK);
+
+    // Turn each cell's style properties into an OpenSpout style, once per combination
+    $styles = [];
+    $toStyle = static function (array $properties) use (&$styles): Style {
+        $key = serialize($properties);
+        if (isset($styles[$key])) {
+            return $styles[$key];
+        }
+        $cellStyle = (new Style())
+            ->withFontName('Calibri')
+            ->withFontSize($properties['size'] ?? 11)
+            ->withFontBold($properties['bold'] ?? false)
+            ->withFontColor($properties['color'] ?? Color::BLACK)
+            ->withCellAlignment($properties['h'] ?? null)
+            ->withCellVerticalAlignment($properties['v'] ?? null);
+        if (isset($properties['fill'])) {
+            $cellStyle = $cellStyle->withBackgroundColor($properties['fill']);
+        }
+        $parts = [];
+        foreach (['top' => BorderName::TOP, 'right' => BorderName::RIGHT, 'bottom' => BorderName::BOTTOM, 'left' => BorderName::LEFT] as $side => $name) {
+            if (isset($properties[$side])) {
+                $parts[] = new BorderPart($name, Color::BLACK, $properties[$side], BorderStyle::SOLID);
+            }
+        }
+        if ($parts !== []) {
+            $cellStyle = $cellStyle->withBorder(new Border(...$parts));
+        }
+        return $styles[$key] = $cellStyle;
+    };
+
+    $options = new Options(new Style(fontSize: 11, fontName: 'Calibri'));
+    foreach ($merges as [$c1, $r1, $c2, $r2]) {
+        $options->mergeCells($c1, $r1, $c2, $r2);
+    }
+
     $filename = 'InteLIS-Quarterly-Monitoring-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-    $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+    $writer = new Writer($options);
+    $writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+    for ($r = 1; $r <= $lastRow; $r++) {
+        $cells = [];
+        $hasValue = false;
+        for ($c = 0; $c <= 12; $c++) {
+            $cell = $grid[$r][$c] ?? [];
+            $hasValue = $hasValue || isset($cell['value']);
+            $cells[] = Cell::fromValue($cell['value'] ?? null, isset($cell['style']) ? $toStyle($cell['style']) : null);
+        }
+        // OpenSpout skips a row whose cells are all empty, and its fills and
+        // borders with it. An empty string in the first styled cell keeps it.
+        if (!$hasValue) {
+            foreach ($cells as $c => $cell) {
+                if ($cell->style !== null) {
+                    $cells[$c] = new StringCell('', $cell->style);
+                    break;
+                }
+            }
+        }
+        $writer->addRow(new Row($cells));
+    }
+    $writer->close();
     echo _downloadToken($filename);
 }
