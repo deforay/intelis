@@ -8,6 +8,7 @@ use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Exceptions\SystemException;
+use App\Services\SampleAccessService;
 
 $title = _translate("Enter CD4 Result");
 
@@ -26,6 +27,9 @@ $cd4Service = ContainerRegistry::get(CD4Service::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 //Funding source list
@@ -41,7 +45,6 @@ $testingLabs = $facilitiesService->getTestingLabs('cd4');
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 // get instruments
@@ -74,8 +77,8 @@ $condition = "status ='active' AND test_type='cd4'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 
-$cd4Query = "SELECT * from form_cd4 where cd4_id=?";
-$cd4QueryInfo = $db->rawQueryOne($cd4Query, [$id]);
+$cd4QueryInfo = $sampleAccess->load('cd4', $_GET['id'] ?? null);
+$id = (int) $cd4QueryInfo['cd4_id'];
 
 // A saved signer may now be outside the lab scope; keep them selectable so the
 // dropdown does not render blank and a re-save does not clear the value.
@@ -91,11 +94,6 @@ foreach (['tested_by', 'result_reviewed_by', 'result_approved_by'] as $field) {
 // user must pick some OTHER lab just to save, silently reassigning the sample.
 $testingLabs = $facilitiesService->getTestingLabs('cd4', alwaysIncludeLabId: $cd4QueryInfo['lab_id'] ?? null);
 
-// Facility isolation: a mapped STS user may only open samples for facilities in
-// their facilityMap. No-op on LIS and for unmapped (all-access) users.
-if (!empty($cd4QueryInfo['facility_id'])) {
-    $general->assertFacilityAllowed((int) $cd4QueryInfo['facility_id']);
-}
 
 if (isset($cd4QueryInfo['patient_dob']) && trim((string) $cd4QueryInfo['patient_dob']) !== '' && $cd4QueryInfo['patient_dob'] != '0000-00-00') {
 	$cd4QueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['patient_dob']);
