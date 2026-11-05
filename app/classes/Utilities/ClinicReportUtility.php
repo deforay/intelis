@@ -7,6 +7,8 @@ namespace App\Utilities;
 use App\Services\TestsService;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\SampleAccessService;
+use App\Registries\ContainerRegistry;
 
 /**
  * What the shared tabs of the seven clinic report pages need to know about a
@@ -27,7 +29,8 @@ final class ClinicReportUtility
      *  - reason: the reason for testing
      *  - sampleType*: the sample type lookup
      *  - page: the clinic report page whose privilege grants access
-     *  - edit, editId: the request edit page and how it encodes the id
+     *  - edit, editId: the request edit page and how it encodes the id ('sample' =
+     *    SampleAccessService, for pages that open the sample with load())
      *  - print: the result PDF endpoint
      */
     private const TYPES = [
@@ -50,7 +53,7 @@ final class ClinicReportUtility
             'reason' => 'reason_for_eid_test',
             'sampleTypeTable' => 'r_eid_sample_type', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
             'page' => '/eid/management/eid-clinic-reports.php',
-            'edit' => '/eid/requests/eid-edit-request.php', 'editId' => 'sqid',
+            'edit' => '/eid/requests/eid-edit-request.php', 'editId' => 'sample',
             'print' => '/eid/results/generate-result-pdf.php',
         ],
         'covid19' => [
@@ -94,7 +97,7 @@ final class ClinicReportUtility
             'reason' => null,
             'sampleTypeTable' => 'r_cd4_sample_types', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
             'page' => '/cd4/management/cd4-clinic-report.php',
-            'edit' => '/cd4/requests/cd4-edit-request.php', 'editId' => 'base64',
+            'edit' => '/cd4/requests/cd4-edit-request.php', 'editId' => 'sample',
             'print' => '/cd4/results/generate-result-pdf.php',
         ],
         'generic-tests' => [
@@ -228,6 +231,11 @@ final class ClinicReportUtility
     public static function editUrl(string $type, int|string $id): string
     {
         $cfg = self::type($type);
+        if ($cfg['editId'] === 'sample') {
+            /** @var SampleAccessService $sampleAccess */
+            $sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+            return $sampleAccess->url($cfg['edit'], (int) $id);
+        }
         $encoded = $cfg['editId'] === 'sqid' ? MiscUtility::sqid((int) $id) : base64_encode((string) $id);
         return $cfg['edit'] . '?id=' . rawurlencode($encoded);
     }
