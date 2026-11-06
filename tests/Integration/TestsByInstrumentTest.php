@@ -46,6 +46,7 @@ final class TestsByInstrumentTest extends TestCase
         ]);
         LegacyAppHarness::addMigrationColumns('5.7.82', ['form_vl']);
         LegacyAppHarness::addMigrationColumns('5.7.85', ['form_vl']);
+        LegacyAppHarness::addMigrationColumns('5.8.6', ['instruments']);
 
         $db->rawQuery(
             "INSERT INTO r_sample_status (status_id, status_name)

@@ -51,7 +51,7 @@ try {
         $testingDate = $importService->parseDate($row[$testingDateCol] ?? '');
 
         // Interpret the viral load result using VlService
-        $interpretedResults = $vlService->interpretViralLoadResult($vlResult, null, null, $vlService->getSpecimenTypeBySampleCode($sampleCode));
+        $interpretedResults = $vlService->interpretViralLoadResult($vlResult, null, null, $importService->specimenTypeFor($sampleCode));
 
         // Sample type mapping
         if ($sampleType == 'Patient' || $sampleType == 'Sample' || $sampleType == 'Specimen') {

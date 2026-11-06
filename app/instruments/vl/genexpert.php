@@ -108,7 +108,7 @@ try {
                 $vlResult = $parts[0];
                 $logVal = isset($parts[1]) ? rtrim($parts[1], ")") : null;
 
-                $interpretedResults = $vlService->interpretViralLoadResult($vlResult, null, null, $vlService->getSpecimenTypeBySampleCode($sampleCode));
+                $interpretedResults = $vlService->interpretViralLoadResult($vlResult, null, null, $importService->specimenTypeFor($sampleCode));
 
                 $infoFromFile[$sampleCode]['logVal'] = $logVal ?? $interpretedResults['logVal'] ?? null;
                 $infoFromFile[$sampleCode]['absDecimalVal'] = $interpretedResults['absDecimalVal'] ?? null;
