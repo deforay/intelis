@@ -54,7 +54,7 @@ try {
 
             // Extract testing date from row 8
             if ($row == 8) {
-                $testingDate = $importService->parseDate($sheetData[1] ?? null);
+                $testingDate = $importService->parseDate((string) ($sheetData[1] ?? ''));
             } elseif (in_array($sheetData[0], ['PLATE NUMBER', 'PLATE NAME'])) {
                 $cvNumber = $sheetData[1] ?? null;
             }
