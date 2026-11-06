@@ -290,7 +290,6 @@ does not start while its previous run is still going.
 | SmartConnect metadata | `bin/smart-connect/sync.php metadata` | Every 20 minutes | SmartConnect URL set |
 | SmartConnect VL | `bin/smart-connect/sync.php vl` | At minutes 0, 25 and 50 | SmartConnect URL set, VL module on |
 | SmartConnect EID | `bin/smart-connect/sync.php eid` | Every 30 minutes | SmartConnect URL set, EID module on |
-| SmartConnect COVID-19 | `bin/smart-connect/sync.php covid19` | At minutes 0 and 35 | SmartConnect URL set, COVID-19 module on |
 | Inter-lab referrals | `bin/referrals.php` | Every minute | STS only |
 | Apply rejection reason map | `bin/apply-rejection-reason-map.php --quiet` | Daily 03:40 | STS only |
 

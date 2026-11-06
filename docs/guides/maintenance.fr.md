@@ -302,7 +302,6 @@ précédente est encore en cours.
 | Métadonnées SmartConnect | `bin/smart-connect/sync.php metadata` | Toutes les 20 minutes | URL SmartConnect définie |
 | SmartConnect VL | `bin/smart-connect/sync.php vl` | Aux minutes 0, 25 et 50 | URL SmartConnect définie, module VL (charge virale) activé |
 | SmartConnect EID | `bin/smart-connect/sync.php eid` | Toutes les 30 minutes | URL SmartConnect définie, module EID activé |
-| SmartConnect COVID-19 | `bin/smart-connect/sync.php covid19` | Aux minutes 0 et 35 | URL SmartConnect définie, module COVID-19 activé |
 | Références entre laboratoires | `bin/referrals.php` | Chaque minute | STS uniquement |
 | Application de la correspondance des motifs de rejet | `bin/apply-rejection-reason-map.php --quiet` | Chaque jour à 03:40 | STS uniquement |
 

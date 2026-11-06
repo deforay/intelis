@@ -13,6 +13,10 @@ class SmartConnectService
      * The form tables this client pushes, and everything that differs between
      * them.
      *
+     * Covid-19 is not here: Smart Connect retired its Covid-19 module and
+     * refuses the upload. The covid19_last_dash_sync watermark is left in
+     * place, so if the module returns, sync resumes from where it stopped.
+     *
      * This table is the reason there is one sync script instead of three. The
      * per-module copies it replaced drifted: a debugging `die()` sat in the VL
      * one, uploading nothing on every cron run, because nobody reads three
@@ -37,14 +41,6 @@ class SmartConnectService
             'v2Path' => '/api/v2/eid',
             'v1Path' => '/api/vlsm-eid',
             'tracking' => 'smart-connect-eid-sync',
-        ],
-        'covid19' => [
-            'table' => 'form_covid19',
-            'watermark' => 'covid19_last_dash_sync',
-            'fileField' => 'covid19File',
-            'v2Path' => '/api/v2/covid19',
-            'v1Path' => '/api/vlsm-covid19',
-            'tracking' => 'smart-connect-covid19-sync',
         ],
     ];
 
@@ -417,13 +413,6 @@ class SmartConnectService
                 'r_eid_sample_rejection_reasons',
                 'r_eid_sample_type',
                 //'r_eid_test_reasons',
-            ],
-            'covid19' => [
-                'r_covid19_comorbidities',
-                'r_covid19_sample_rejection_reasons',
-                'r_covid19_sample_type',
-                'r_covid19_symptoms',
-                'r_covid19_test_reasons',
             ],
             'hepatitis' => [
                 'r_hepatitis_sample_rejection_reasons',

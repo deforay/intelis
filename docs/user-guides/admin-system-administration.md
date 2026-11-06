@@ -111,7 +111,7 @@ Most labs never open it. These settings are set once, at installation.
     | --- | --- |
     | Instance ID | The identifier this installation is known by |
     | Added On, Updated On | When the instance was registered and last changed |
-    | VL Last Sync, EID Last Sync, Covid-19 Last Sync | When each module's data last went to the dashboard |
+    | VL Last Sync, EID Last Sync | When each module's data last went to the dashboard |
     | Remote Request Last Sync | When test requests last came from the STS |
     | Remote Results Last Sync | When results last went to the STS |
     | Remote Reference Last Sync | When the lists and facilities last came from the STS |

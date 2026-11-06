@@ -118,7 +118,7 @@ fois, à l'installation.
     | --- | --- |
     | ID d'instance | L'identifiant sous lequel cette installation est connue |
     | Ajouté, Mis à jour le | L'enregistrement de l'instance et sa dernière modification |
-    | VL Dernière synchronisation, Dernière synchronisation EID, Dernière synchronisation Covid-19 | Le dernier envoi des données de chaque module vers le tableau de bord |
+    | VL Dernière synchronisation, Dernière synchronisation EID | Le dernier envoi des données de chaque module vers le tableau de bord |
     | Demande à distance Dernière synchronisation | La dernière réception des demandes de test depuis le STS |
     | Résultats à distance Dernière synchronisation | Le dernier envoi des résultats vers le STS |
     | Référence à distance Dernière synchronisation | La dernière réception des listes et des structures depuis le STS |

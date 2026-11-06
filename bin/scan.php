@@ -272,7 +272,6 @@ if ($isLIS && $instanceInfo) {
         'Interface Sync' => $instanceInfo['last_interface_sync'],
         'EID -> SmartConnect' => $instanceInfo['eid_last_dash_sync'],
         'Lab Metadata' => $instanceInfo['last_lab_metadata_sync'],
-        'COVID -> SmartConnect' => $instanceInfo['covid19_last_dash_sync'],
         'Requests from STS' => $instanceInfo['last_remote_requests_sync'],
         'MetaData -> SmartConnect' => $instanceInfo['last_remote_reference_data_sync'],
         'Results sent to STS' => $instanceInfo['last_remote_results_sync'],
