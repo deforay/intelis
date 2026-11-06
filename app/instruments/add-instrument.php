@@ -9,6 +9,7 @@ use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\LabPerformanceIndicatorsService;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -102,6 +103,24 @@ sort($fileList);
 									</label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder='<?php echo _translate("eg. Roche or Abbott"); ?>' title='<?php echo _htmlTranslate("Please enter instrument name"); ?>' onblur="checkNameValidation('instruments','machine_name',this,null,'<?php echo _jsTranslate('This instrument name already exists.Try another name'); ?>',null);" onchange="setConfigFileName();" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="instrumentMake" class="col-lg-4 control-label">
+										<?php echo _translate("Make"); ?>
+									</label>
+									<div class="col-lg-7">
+										<select class="form-control" id="instrumentMake" name="instrumentMake" title="<?php echo _htmlTranslate('Please select the instrument make'); ?>">
+											<option value="">--<?php echo _translate("Select"); ?>--</option>
+											<?php foreach (array_keys(LabPerformanceIndicatorsService::INSTRUMENT_MAKES) as $make) { ?>
+												<option value="<?= htmlspecialchars($make); ?>"><?= htmlspecialchars($make); ?></option>
+											<?php } ?>
+											<option value="Other"><?php echo _translate("Other"); ?></option>
+										</select>
 									</div>
 								</div>
 							</div>

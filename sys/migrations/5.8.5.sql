@@ -46,3 +46,15 @@ SELECT 'tb', NULL, 'no', 'TB Testing Target Report',
             LIMIT 1)
    AND NOT EXISTS (SELECT 1 FROM `s_app_menu` x
                     WHERE x.`link` = '/tb/management/tb-testing-target-report.php');
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

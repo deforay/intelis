@@ -40,6 +40,9 @@ require_once APPLICATION_PATH . '/header.php';
                     <?php echo _translate("Instrument Name"); ?>
                   </th>
                   <th>
+                    <?php echo _translate("Testing Lab"); ?>
+                  </th>
+                  <th>
                     <?php echo _translate("Status"); ?>
                   </th>
                   <th>
@@ -83,13 +86,15 @@ require_once APPLICATION_PATH . '/header.php';
         "sClass": "center"
       },
       {
+        "sClass": "center"
+      },
+      {
         "sClass": "center",
         "bSortable": false
       }
       ],
-      "aaSorting": [
-        [0, "asc"]
-      ],
+      // None, so the server lists the last added instrument first.
+      "aaSorting": [],
       "bProcessing": true,
       "bServerSide": true,
       "sAjaxSource": "get-instruments.php",
