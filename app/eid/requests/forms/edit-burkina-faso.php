@@ -232,7 +232,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                             <input type="text" value="<?php echo $eidInfo['mother_dob'] ?? null; ?>" class="form-control date" id="mothersDob" name="mothersDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears('mothersDob', 'motherAgeInYears');" style="width:100%;" />
                                         </td>
                                         <th scope="row" style="width:15%" class="labels"><label for="motherAgeInYears"><?= _translate("Mother Age"); ?> <span class="mandatory">*</span></label></th>
-                                        <td style="width:35%"><input value="<?php echo $eidInfo['mother_age_in_years'] ?? null; ?>" type="number" step=".1" max="60" maxlength="4" class="form-control isRequired" id="motherAgeInYears" name="motherAgeInYears" placeholder="Enter mother age" title="Please enter mother age" style="width:100%;" /></td>
+                                        <td style="width:35%"><input value="<?php echo $eidInfo['mother_age_in_years'] ?? null; ?>" type="number" step="1" max="60" maxlength="4" class="form-control isRequired" id="motherAgeInYears" name="motherAgeInYears" placeholder="Enter mother age" title="Please enter mother age" style="width:100%;" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row" style="width:15%" class="labels"><?= _translate("Infant On PMTCT Prophylaxis"); ?><span class="mandatory">*</span></th>
