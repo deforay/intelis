@@ -68,6 +68,7 @@ try {
         $data = [
             'instrument_id' => MiscUtility::generateULID(),
             'machine_name' => $_POST['configurationName'],
+            'instrument_make' => ($_POST['instrumentMake'] ?? '') !== '' ? $_POST['instrumentMake'] : null,
             'lab_id' => $_POST['testingLab'],
             'supported_tests' => $_POST['supportedTests'] ?? null,
             'import_machine_file_name' => $_POST['configurationFile'],
@@ -78,7 +79,8 @@ try {
             'additional_text' => $_POST['additionalText'] ?? null,
             'reviewed_by' => $_POST['reviewedBy'] ?? null,
             'approved_by' => $_POST['approvedBy'] ?? null,
-            'status' => 'active'
+            'status' => 'active',
+            'added_on' => DateUtility::getCurrentDateTime(),
         ];
         // Cloud-LIS lab operators may only add instruments for their OWN lab.
         // Force it server-side so a tampered/AJAX POST can't target another lab.

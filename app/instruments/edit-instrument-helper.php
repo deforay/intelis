@@ -35,6 +35,14 @@ if (isset($_POST['configurationFile']) && is_string($_POST['configurationFile'])
 
 $configId = base64_decode((string) $_POST['configId']);
 
+// Only an instrument that exists: with an empty id the update below would hit the
+// instrument row that has no id, and its machines would be saved with no instrument.
+if ($configId === '' || empty($db->rawQueryOne('SELECT 1 FROM instruments WHERE instrument_id = ?', [$configId]))) {
+    $_SESSION['alertMsg'] = _translate("Instrument not found");
+    header("Location:/instruments/instruments.php");
+    exit;
+}
+
 
 $configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id=?";
 $configControlInfo = $db->rawQuery($configControlQuery, [$configId]);
@@ -72,6 +80,7 @@ try {
 
         $importConfigData = [
             'machine_name' => $_POST['configurationName'],
+            'instrument_make' => ($_POST['instrumentMake'] ?? '') !== '' ? $_POST['instrumentMake'] : null,
             'lab_id' => $_POST['testingLab'],
             'supported_tests' => $_POST['supportedTests'] ?? null,
             'import_machine_file_name' => $_POST['configurationFile'] ?? null,

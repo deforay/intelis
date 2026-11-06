@@ -10,6 +10,7 @@ use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\LabPerformanceIndicatorsService;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -39,7 +40,15 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $sQuery = "SELECT * from instruments where instrument_id=?";
-$sInfo = $db->rawQueryOne($sQuery, [$id]);
+$sInfo = empty($id) ? null : $db->rawQueryOne($sQuery, [$id]);
+
+// No such instrument: with an empty id the machine list below would load every
+// machine row that has no instrument, and saving would write more of them.
+if (empty($sInfo) || ($sInfo['instrument_id'] ?? '') === '') {
+	$_SESSION['alertMsg'] = _translate("Instrument not found");
+	header("Location:instruments.php");
+	exit;
+}
 
 // Block opening another lab's instrument directly by URL.
 if ($general->isCloudLisNonAdmin()) {
@@ -48,6 +57,19 @@ if ($general->isCloudLisNonAdmin()) {
 		$_SESSION['alertMsg'] = _translate("You are not allowed to edit this instrument.");
 		header("Location:instruments.php");
 		exit;
+	}
+}
+
+// The make the lab set, else the one the report guesses from the file format and name.
+$instrumentMake = (string) ($sInfo['instrument_make'] ?? '');
+if ($instrumentMake === '') {
+	$instrumentMake = LabPerformanceIndicatorsService::instrumentType(
+		(string) ($sInfo['import_machine_file_name'] ?? ''),
+		(string) ($sInfo['machine_name'] ?? '')
+	);
+	if (!array_key_exists($instrumentMake, LabPerformanceIndicatorsService::INSTRUMENT_MAKES)) {
+		// "Other" or "Not recorded": leave it for the lab to choose.
+		$instrumentMake = '';
 	}
 }
 
@@ -159,6 +181,24 @@ $activeTests = TestsService::getActiveTests();
 											value="<?php echo $sInfo['machine_name']; ?>"
 											onchange="setConfigFileName();"
 											onblur="checkNameValidation('instruments','machine_name',this,'<?php echo "instrument_id##" . $sInfo['instrument_id']; ?>','<?php echo _jsTranslate('This instrument name already exists.Try another name'); ?>',null);" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="instrumentMake" class="col-lg-4 control-label">
+										<?php echo _translate("Make"); ?>
+									</label>
+									<div class="col-lg-7">
+										<select class="form-control" id="instrumentMake" name="instrumentMake" title="<?php echo _htmlTranslate('Please select the instrument make'); ?>">
+											<option value="">--<?php echo _translate("Select"); ?>--</option>
+											<?php foreach (array_keys(LabPerformanceIndicatorsService::INSTRUMENT_MAKES) as $make) { ?>
+												<option value="<?= htmlspecialchars($make); ?>" <?= $instrumentMake === $make ? 'selected' : ''; ?>><?= htmlspecialchars($make); ?></option>
+											<?php } ?>
+											<option value="Other" <?= $instrumentMake === 'Other' ? 'selected' : ''; ?>><?php echo _translate("Other"); ?></option>
+										</select>
 									</div>
 								</div>
 							</div>

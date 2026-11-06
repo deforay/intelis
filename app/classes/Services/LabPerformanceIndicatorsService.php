@@ -246,7 +246,7 @@ final class LabPerformanceIndicatorsService
      * Beside the runs, each row counts its samples once each (see sampleRuns()):
      * valid the first time, valid after a re-test, or still failed.
      *
-     * @return list<array{labId: ?int, lab: string, instrument: string, instrumentFile: string,
+     * @return list<array{labId: ?int, lab: string, instrument: string, instrumentFile: string, instrumentMake: string,
      *                    instrumentType: string, instrumentLabel: string, assay: string, tested: int,
      *                    failed: int, valid: int, failureRate: float|null, retested: int, samples: int,
      *                    validFirstTime: int, validAfterRetest: int, stillFailed: int}>
@@ -257,6 +257,7 @@ final class LabPerformanceIndicatorsService
                        " . self::LAB_NAME . " AS lab_name,
                        " . self::INSTRUMENT . " AS instrument,
                        " . self::INSTRUMENT_FILE . " AS instrument_file,
+                       COALESCE(MAX(NULLIF(i.instrument_make, '')), '') AS instrument_make,
                        " . self::ASSAY . " AS assay,
                        " . self::SERIAL . " AS serial,
                        MAX(t.instrument_model) AS model,
@@ -287,6 +288,7 @@ final class LabPerformanceIndicatorsService
                 'lab' => $row['lab_name'] !== '' ? (string) $row['lab_name'] : _translate('Not assigned to a lab'),
                 'instrument' => $instrument,
                 'instrumentFile' => (string) $row['instrument_file'],
+                'instrumentMake' => (string) $row['instrument_make'],
                 'instrumentType' => '',
                 'instrumentLabel' => '',
                 'assay' => (string) $row['assay'],
@@ -324,12 +326,19 @@ final class LabPerformanceIndicatorsService
             $key = self::machineKey($row['labId'], $row['instrument'], $row['serial']);
             $machines[$key]['model'] = max($machines[$key]['model'] ?? '', $row['model']);
             $machines[$key]['file'] = max($machines[$key]['file'] ?? '', $row['instrumentFile']);
+            $machines[$key]['make'] = max($machines[$key]['make'] ?? '', $row['instrumentMake']);
         }
         foreach ($rows as &$row) {
             $machine = $machines[self::machineKey($row['labId'], $row['instrument'], $row['serial'])];
             $row['model'] = $machine['model'];
             $row['instrumentFile'] = $machine['file'];
-            $row['instrumentType'] = self::instrumentType($machine['file'], $row['instrument'], $machine['model']);
+            $row['instrumentMake'] = $machine['make'];
+            $row['instrumentType'] = self::instrumentType(
+                $machine['file'],
+                $row['instrument'],
+                $machine['model'],
+                $machine['make']
+            );
             $row['instrumentLabel'] = self::instrumentLabel(
                 $row['instrument'] !== '' ? $row['instrument'] : $machine['model'],
                 $row['instrumentType'],
@@ -549,24 +558,32 @@ final class LabPerformanceIndicatorsService
         return $serial === '' ? $label : "$label · $serial";
     }
 
+    /** Each make, with the words that identify it in a model, file format or name. */
+    public const array INSTRUMENT_MAKES = [
+        'Abbott' => ['abbott', 'alinity', 'm2000'],
+        'Roche' => ['roche', 'cobas', 'taqman', 'lightcycler', 'c4800', 'c5800', 'c6800', 'c8800'],
+        'GeneXpert' => ['genexpert', 'xpert'],
+        'Hologic' => ['hologic', 'panther'],
+        'bioMérieux' => ['biomerieux', 'nuclisens'],
+        'Bio-Rad' => ['biorad', 'bio-rad'],
+        'Applied Biosystems' => ['abi7500', 'quantstudio', 'thermo'],
+        'Qiagen' => ['rotor-gene', 'rotor gene', 'rotorgene'],
+    ];
+
     /**
      * The make of an instrument, for grouping tests by platform: read from the result
      * file format the instrument is set up with, else from its name. Instrument names
      * are typed by each lab ("Cobas 6800 NRL", "m2000 1"), so the format is the
-     * reliable signal; the name covers results that came in without one.
+     * reliable signal; the name covers results that came in without one. A make the
+     * lab set on the instrument overrides all of them.
      */
-    public static function instrumentType(string $instrumentFile, string $instrumentName, string $model = ''): string
+    public static function instrumentType(string $instrumentFile, string $instrumentName, string $model = '', string $make = ''): string
     {
-        $makes = [
-            'Abbott' => ['abbott', 'alinity', 'm2000'],
-            'Roche' => ['roche', 'cobas', 'taqman', 'lightcycler', 'c4800', 'c5800', 'c6800', 'c8800'],
-            'GeneXpert' => ['genexpert', 'xpert'],
-            'Hologic' => ['hologic', 'panther'],
-            'bioMérieux' => ['biomerieux', 'nuclisens'],
-            'Bio-Rad' => ['biorad', 'bio-rad'],
-            'Applied Biosystems' => ['abi7500', 'quantstudio', 'thermo'],
-            'Qiagen' => ['rotor-gene', 'rotor gene', 'rotorgene'],
-        ];
+        // A make the lab set on the instrument comes first.
+        if ($make !== '') {
+            return $make === 'Other' ? _translate('Other') : $make;
+        }
+        $makes = self::INSTRUMENT_MAKES;
         // The model the analyzer reports of itself first: it does not depend on how
         // the lab set the instrument up or named it.
         foreach ([$model, $instrumentFile, $instrumentName] as $text) {

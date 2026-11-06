@@ -8,7 +8,8 @@ $primaryKey = "instrument_id";
 
 
 
-$aColumns = ['machine_name', 'status'];
+// Qualified: facility_details has a status column too. In the order of the list's columns.
+$aColumns = ['i.machine_name', 'f.facility_name', 'i.status'];
 
 
 
@@ -64,9 +65,10 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 // Lab scope (instruments): LIS = own lab + unassigned; cloud-LIS = strictly own
 // lab (fail closed); STS = all. AJAX endpoint -- bypasses ACL, so it self-guards.
 $generalSvc = \App\Registries\ContainerRegistry::get(\App\Services\CommonService::class);
-$instrLabScope = $generalSvc->labAdminScopeWhere('lab_id');
+$instrLabScope = $generalSvc->labAdminScopeWhere('lab_id', 'i');
 
-$whereParts = [];
+// An instrument with no id cannot be opened, so it is not listed.
+$whereParts = ["COALESCE(i.instrument_id, '') != ''"];
 if ($sWhere !== '' && $sWhere !== '0') {
     $whereParts[] = $sWhere;
 }
@@ -75,11 +77,16 @@ if ($instrLabScope !== '') {
 }
 $sWhere = empty($whereParts) ? '' : ' WHERE ' . implode(' AND ', $whereParts);
 
-$sQuery = "SELECT * FROM instruments" . $sWhere;
+// The lab, so instruments of the same name in different labs can be told apart.
+$sFrom = "FROM instruments AS i LEFT JOIN facility_details AS f ON f.facility_id = i.lab_id";
+$sQuery = "SELECT i.instrument_id, i.machine_name, i.status, f.facility_name $sFrom" . $sWhere;
 
+// The last added first, unless a column is sorted; the name settles ties.
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+} else {
+    $sQuery .= ' ORDER BY i.added_on DESC, i.machine_name ASC';
 }
 
 if (isset($sLimit) && isset($sOffset)) {
@@ -91,20 +98,19 @@ $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM instruments $sWhere");
-$iFilteredTotal = count($aResultFilterTotal);
+$iFilteredTotal = (int) ($db->rawQueryOne("SELECT COUNT(*) AS c $sFrom $sWhere")['c'] ?? 0);
 
 /* Total data set length */
-$aResultTotal = $db->rawQuery("SELECT * FROM instruments" . ($instrLabScope !== '' ? " WHERE $instrLabScope" : ""));
+$iTotal = (int) ($db->rawQueryOne("SELECT COUNT(*) AS c FROM instruments AS i WHERE COALESCE(i.instrument_id, '') != ''" . ($instrLabScope !== '' ? " AND $instrLabScope" : ""))['c'] ?? 0);
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
-$iTotal = count($aResultTotal);
 
 $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $row = [];
     $row[] = ($aRow['machine_name']);
+    $row[] = ($aRow['facility_name'] ?? '') !== '' ? $aRow['facility_name'] : _translate('Not assigned to a lab');
     $row[] = ($aRow['status']);
     $row[] = '<a href="edit-instrument.php?id=' . base64_encode((string) $aRow['instrument_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     $output['aaData'][] = $row;
