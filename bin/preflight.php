@@ -66,6 +66,12 @@ const PF_FAIL = 'fail';
 const PF_SKIP = 'skip';
 
 /**
+ * The CVE that marks a distribution PHP package as carrying the PHP2Shell fix.
+ * Keep in step with PHP_SECURITY_FLOOR_CVE in scripts/shared-functions.sh.
+ */
+const PF_PHP_SECURITY_CVE = 'CVE-2026-109618';
+
+/**
  * Where each test type keeps its per-test result rows.
  *
  * Transcribed from TestsService::getTestTypes(), which preflight cannot call --
@@ -157,11 +163,18 @@ if ($constraint === '') {
     check('PHP version', PF_SKIP, 'composer.json declares no php constraint');
 } else {
     $phpOk = pf_satisfies_php_constraint(PHP_VERSION, $constraint);
-    check(
-        'PHP version',
-        $phpOk ? PF_OK : PF_FAIL,
-        PHP_VERSION . ($phpOk ? '' : " — composer.json requires {$constraint}"),
-    );
+    if ($phpOk) {
+        check('PHP version', PF_OK, PHP_VERSION);
+    } elseif (
+        // A backported fix does not lower the oldest PHP Composer's platform
+        // check lets the app start on, which is config.platform.php.
+        version_compare(PHP_VERSION, (string) ($composerJson['config']['platform']['php'] ?? PHP_VERSION), '>=')
+        && pf_distro_php_has_security_fix()
+    ) {
+        check('PHP version', PF_OK, PHP_VERSION . ' (distribution package with the ' . PF_PHP_SECURITY_CVE . ' fix)');
+    } else {
+        check('PHP version', PF_FAIL, PHP_VERSION . " — composer.json requires {$constraint}");
+    }
 }
 
 // pdo_mysql is checked explicitly: composer.json can only declare ext-pdo, but
@@ -1438,6 +1451,36 @@ function pf_exit_code(array $results): int
         }
     }
     return 0;
+}
+
+/**
+ * Whether the running PHP is a Debian or Ubuntu package that backported the
+ * PHP2Shell fix. Ubuntu's own PHP keeps its upstream version (26.04 ships
+ * 8.5.4), so composer.json's version floor rejects it although it is patched.
+ * Its changelog names the CVEs it fixed.
+ */
+function pf_distro_php_has_security_fix(): bool
+{
+    $branch = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
+
+    // The changelog speaks only for the packaged binary. A PHP built from
+    // source and placed earlier on PATH gets no credit from it.
+    if (realpath(PHP_BINARY) !== "/usr/bin/php{$branch}") {
+        return false;
+    }
+
+    foreach (["php{$branch}-common", "php{$branch}-cli"] as $package) {
+        $changelog = "/usr/share/doc/{$package}/changelog.Debian.gz";
+        if (!is_readable($changelog)) {
+            continue;
+        }
+        $text = @gzdecode((string) @file_get_contents($changelog));
+        if (is_string($text) && str_contains($text, PF_PHP_SECURITY_CVE)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**

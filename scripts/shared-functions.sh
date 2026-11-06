@@ -438,20 +438,51 @@ php_pkg_upstream_version() {
         awk '$1 == "installed" { v = $2; sub(/^[0-9]+:/, "", v); sub(/[-+~].*/, "", v); print v }'
 }
 
-# Oldest PHP among the CLI and the installed core packages of <major.minor>.
-# The CLI alone is not enough: mod_php or FPM can lag behind it.
-php_oldest_installed_version() {
-    local ver="$1" oldest="" v pkg
-    v="$(php -r 'echo PHP_VERSION;' 2>/dev/null)"
-    case "$v" in "${ver}".*) oldest="$v" ;; esac
+# The CVE that marks a distribution package as carrying the PHP2Shell fix.
+# Ubuntu's own PHP keeps its upstream version (26.04 ships 8.5.4) and
+# backports fixes, so its version alone says nothing. Its changelog names the
+# CVEs it patched.
+PHP_SECURITY_FLOOR_CVE="CVE-2026-109618"
+
+# Oldest PHP the app starts on at all, whatever its patches: Composer's
+# generated platform check refuses anything older. Keep in step with
+# config.platform.php in composer.json.
+PHP_RUNTIME_MINIMUM="8.4.27"
+
+# True when installed package <pkg> carries the fix: either its upstream
+# version is at least <floor>, or its Debian changelog lists the CVE and its
+# version still meets PHP_RUNTIME_MINIMUM.
+php_pkg_has_security_fix() {
+    local pkg="$1" floor="$2" v changelog
+    v="$(php_pkg_upstream_version "$pkg")"
+    [ -n "$v" ] || return 1
+    dpkg --compare-versions "$v" ge "$floor" && return 0
+    dpkg --compare-versions "$v" ge "$PHP_RUNTIME_MINIMUM" || return 1
+    changelog="/usr/share/doc/${pkg}/changelog.Debian.gz"
+    [ -r "$changelog" ] && zgrep -q "$PHP_SECURITY_FLOOR_CVE" "$changelog"
+}
+
+# Lists "<package> <version>" for each installed core package of
+# <major.minor> that lacks the fix. The CLI alone is not enough: mod_php or
+# FPM can lag behind it. A php on PATH that no package owns (built from
+# source, say) gets no credit from the packages' changelogs, so it is judged
+# by its version.
+php_branch_unfixed() {
+    local ver="$1" floor="$2" pkg v bin
     for pkg in "php${ver}-cli" "php${ver}-common" "libapache2-mod-php${ver}" "php${ver}-fpm"; do
         v="$(php_pkg_upstream_version "$pkg")"
         [ -n "$v" ] || continue
-        if [ -z "$oldest" ] || dpkg --compare-versions "$v" lt "$oldest"; then
-            oldest="$v"
-        fi
+        php_pkg_has_security_fix "$pkg" "$floor" || echo "${pkg} ${v}"
     done
-    echo "${oldest:-0}"
+    v="$(php -r 'echo PHP_VERSION;' 2>/dev/null)"
+    case "$v" in
+    "${ver}".*)
+        bin="$(readlink -f "$(command -v php)" 2>/dev/null)"
+        if ! dpkg -S "$bin" >/dev/null 2>&1; then
+            dpkg --compare-versions "$v" ge "$floor" || echo "${bin:-php} ${v}"
+        fi
+        ;;
+    esac
 }
 
 # PHP branches in use: the php on PATH, plus each mod_php Apache has enabled.
@@ -478,7 +509,7 @@ php_branches_in_use() {
 # extension .so files into it, and every request fails
 # ("Call to undefined function mysqli_*").
 #
-# Returns 1 when any branch in use is still older than its floor.
+# Returns 1 when any branch in use still lacks the fix.
 ensure_php_security_floor() {
     local ver rc=0
     while read -r ver; do
@@ -495,10 +526,10 @@ ensure_php_branch_security_floor() {
     floor="$(php_security_floor "$ver")"
     [ -n "$floor" ] || return 0
 
-    before="$(php_oldest_installed_version "$ver")"
-    if dpkg --compare-versions "$before" lt "$floor"; then
-        print info "PHP ${before} is older than ${floor}. Installing the PHP ${ver} security update..."
-        log_action "PHP ${before} below security floor ${floor}; upgrading php${ver} packages"
+    before="$(php_branch_unfixed "$ver" "$floor")"
+    if [ -n "$before" ]; then
+        print info "PHP ${ver} lacks the security fixes in ${floor}: $(echo "$before" | paste -sd ',' - | sed 's/,/, /g'). Installing the PHP ${ver} security update..."
+        log_action "PHP ${ver} below security floor ${floor} (${before//$'\n'/, }); upgrading php${ver} packages"
 
         mapfile -t pkgs < <(dpkg-query -W -f='${db:Status-Status} ${Package}\n' \
             "php${ver}*" "libapache2-mod-php${ver}" 2>/dev/null | awk '$1 == "installed" { print $2 }')
@@ -515,10 +546,10 @@ ensure_php_branch_security_floor() {
             fi
         fi
     fi
-    after="$(php_oldest_installed_version "$ver")"
+    after="$(php_branch_unfixed "$ver" "$floor")"
 
     if apache_runs_stale_mod_php "$ver"; then
-        log_action "Apache started before the installed mod_php ${ver} (PHP ${after}); restarting"
+        log_action "Apache started before the installed mod_php ${ver}; restarting"
         if ! restart_service apache; then
             print error "Could not restart Apache, so it may still run the old PHP. Run: systemctl restart apache2"
             log_action "Apache restart after PHP ${ver} update failed"
@@ -529,13 +560,13 @@ ensure_php_branch_security_floor() {
         systemctl restart "php${ver}-fpm" || true
     fi
 
-    if dpkg --compare-versions "$after" ge "$floor"; then
-        print success "PHP ${after} includes the security fixes in ${floor}."
+    if [ -z "$after" ]; then
+        print success "PHP ${ver} includes the security fixes in ${floor}."
         return 0
     fi
 
-    print error "PHP ${ver} is at ${after}. InteLIS needs PHP ${floor} or newer."
-    log_action "PHP still ${after} after apt; security floor ${floor} not met"
+    print error "PHP ${ver} still lacks the security fixes in ${floor}: $(echo "$after" | paste -sd ',' - | sed 's/,/, /g'). InteLIS needs PHP ${floor} or newer, or a distribution package that lists ${PHP_SECURITY_FLOOR_CVE}."
+    log_action "PHP ${ver} still below security floor ${floor} after apt (${after//$'\n'/, })"
     return 1
 }
 
