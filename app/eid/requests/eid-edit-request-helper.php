@@ -351,7 +351,8 @@ try {
 	];
 
 	if (isset($_POST['motherAgeInYears'])) {
-		$eidData['mother_age_in_years'] = $_POST['motherAgeInYears'];
+		// Whole years: the column is varchar(3), so 25.5 would be saved as "25.".
+		$eidData['mother_age_in_years'] = is_numeric($_POST['motherAgeInYears']) ? (string) (int) $_POST['motherAgeInYears'] : $_POST['motherAgeInYears'];
 	}
 
 	if (isset($_POST['test2Result'])) {

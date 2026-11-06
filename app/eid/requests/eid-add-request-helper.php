@@ -182,7 +182,8 @@ try {
 		'mother_name' => $_POST['mothersName'] ?? null,
 		'mother_surname' => $_POST['mothersSurname'] ?? null,
 		'mother_dob' => $_POST['mothersDob'] ?? null,
-		'mother_age_in_years' => $_POST['motherAgeInYears'] ?? null,
+		// Whole years: the column is varchar(3), so 25.5 would be saved as "25.".
+		'mother_age_in_years' => is_numeric($_POST['motherAgeInYears'] ?? null) ? (string) (int) $_POST['motherAgeInYears'] : ($_POST['motherAgeInYears'] ?? null),
 		'mother_marital_status' => $_POST['mothersMaritalStatus'] ?? null,
 		'mother_treatment' => is_array($_POST['motherTreatment']) ? implode(",", $_POST['motherTreatment']) : $_POST['motherTreatment'] ?? null,
 		'mother_regimen' => (isset($_POST['motherRegimen']) && $_POST['motherRegimen'] != '') ? $_POST['motherRegimen'] : null,
