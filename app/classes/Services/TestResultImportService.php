@@ -11,6 +11,7 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\SpreadsheetUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -112,8 +113,10 @@ class TestResultImportService
                     throw new SystemException('Failed to read CSV file contents');
                 }
                 return $contents;
-            } elseif ($extension === 'xls' || $extension === 'xlsx') {
-                // Excel files - return parsed array
+            } elseif ($extension === 'xlsx') {
+                return $this->readXlsxRows();
+            } elseif ($extension === 'xls') {
+                // OpenSpout cannot read .xls
                 try {
                     $spreadsheet = IOFactory::load($this->currentFileName);
                     $worksheet = $spreadsheet->getActiveSheet();
@@ -133,6 +136,16 @@ class TestResultImportService
             // just return the file path
             return $this->currentFileName;
         }
+    }
+
+    /** Rows keyed from 2, as PhpSpreadsheet numbered them, the heading row left out. */
+    private function readXlsxRows(): array
+    {
+        $rows = SpreadsheetUtility::readRowsByColumnLetter($this->currentFileName);
+        if ($rows === []) {
+            return [];
+        }
+        return array_combine(range(2, count($rows) + 1), $rows);
     }
 
     /**
@@ -262,6 +275,12 @@ class TestResultImportService
     {
         if ($dateString === '' || $dateString === '0') {
             return null;
+        }
+
+        $dateString = trim($dateString);
+        // OpenSpout gives .xlsx date cells as Y-m-d H:i:s, whatever the date format chosen
+        if (preg_match('/^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?$/', $dateString)) {
+            return DateUtility::isoDateFormat($dateString, true);
         }
 
         return MemoUtility::remember(function () use ($dateString, $inputFormat): ?string {
