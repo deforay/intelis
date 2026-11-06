@@ -41,13 +41,6 @@ if (isset($_POST['eid_last_dash_sync']) && trim((string) $_POST['eid_last_dash_s
     $_POST['eid_last_dash_sync'] = null;
 }
 
-if (isset($_POST['covid19_last_dash_sync']) && trim((string) $_POST['covid19_last_dash_sync']) !== "") {
-    $covid19LastSync = explode(" ", (string) $_POST['covid19_last_dash_sync']);
-    $_POST['covid19_last_dash_sync'] = DateUtility::isoDateFormat($covid19LastSync[0]) . " " . $covid19LastSync[1];
-} else {
-    $_POST['covid19_last_dash_sync'] = null;
-}
-
 if (isset($_POST['last_remote_requests_sync']) && trim((string) $_POST['last_remote_requests_sync']) !== "") {
     $lastRemoteRequestSync = explode(" ", (string) $_POST['last_remote_requests_sync']);
     $_POST['last_remote_requests_sync'] = DateUtility::isoDateFormat($lastRemoteRequestSync[0]) . " " . $lastRemoteRequestSync[1];
@@ -76,7 +69,6 @@ if (($_POST['action'] == 'edit') && !empty($_POST['id'])) {
         'instance_facility_code' => $instanceCode,
         'vl_last_dash_sync' => $_POST['vl_last_dash_sync'],
         'eid_last_dash_sync' => $_POST['eid_last_dash_sync'],
-        'covid19_last_dash_sync' => $_POST['covid19_last_dash_sync'],
         'last_remote_requests_sync' => $_POST['last_remote_requests_sync'],
         'last_remote_results_sync' => $_POST['last_remote_results_sync'],
         'last_remote_reference_data_sync' => $_POST['last_remote_reference_data_sync']

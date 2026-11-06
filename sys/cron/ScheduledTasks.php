@@ -222,17 +222,6 @@ if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['eid']) && SYSTE
         ->preventOverlapping()
         ->description('Syncing EID data from local database to Dashboard');
 }
-if (
-    !empty($smartConnectURL)
-    && !empty(SYSTEM_CONFIG['modules']['covid19'])
-    && SYSTEM_CONFIG['modules']['covid19'] === true
-) {
-    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/sync.php covid19")
-        ->cron('*/35 * * * *')
-        ->timezone($timezone)
-        ->preventOverlapping()
-        ->description('Syncing Covid-19 data from local database to Dashboard');
-}
 // DASHBOARD JOBS END
 
 

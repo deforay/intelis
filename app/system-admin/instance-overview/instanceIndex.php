@@ -95,16 +95,6 @@ $data = $db->rawQuery($instanceValues);
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _translate("Covid-19 Last Sync"); ?></th>
-                                    <td><span
-                                            class="editSpan covid19LastSync"><?php echo date('d-M-Y H:i:s', strtotime((string) $project['covid19_last_dash_sync'])); ?></span>
-                                        <input class="editInput covid19LastSync form-control input-sm date-time" type="text"
-                                            name="covid19_last_dash_sync"
-                                            value="<?php echo date('d-M-Y H:i:s', strtotime((string) $project['covid19_last_dash_sync'])); ?>"
-                                            readonly style="display: none;background:#fff;">
-                                    </td>
-                                </tr>
-                                <tr>
                                     <th><?php echo _translate("Remote Request Last Sync"); ?></th>
                                     <td><span
                                             class="editSpan remoteRequestLastSync"><?php echo date('d-M-Y H:i:s', strtotime((string) $project['last_remote_requests_sync'])); ?></span>
@@ -211,7 +201,6 @@ $data = $db->rawQuery($instanceValues);
                     if (response.status == 'ok') {
                         var vl_last_dash_sync = moment(response.data.vl_last_dash_sync).format('D-MMM-Y HH:mm:ss');
                         var eid_last_dash_sync = moment(response.data.eid_last_dash_sync).format('D-MMM-Y HH:mm:ss');
-                        var covid19_last_dash_sync = moment(response.data.covid19_last_dash_sync).format('D-MMM-Y HH:mm:ss');
                         var last_remote_requests_sync = moment(response.data.last_remote_requests_sync).format('D-MMM-Y HH:mm:ss');
                         var last_remote_results_sync = moment(response.data.last_remote_results_sync).format('D-MMM-Y HH:mm:ss');
                         var last_remote_reference_data_sync = moment(response.data.last_remote_reference_data_sync).format('D-MMM-Y HH:mm:ss');
@@ -219,7 +208,6 @@ $data = $db->rawQuery($instanceValues);
                         trObj.find(".editSpan.instanceCode").text(response.data.instance_facility_code);
                         trObj.find(".editSpan.vlLastSync").text(vl_last_dash_sync);
                         trObj.find(".editSpan.eidLastSync").text(eid_last_dash_sync);
-                        trObj.find(".editSpan.covid19LastSync").text(covid19_last_dash_sync);
                         trObj.find(".editSpan.remoteRequestLastSync").text(last_remote_requests_sync);
                         trObj.find(".editSpan.remoteResultsLastSync").text(last_remote_results_sync);
                         trObj.find(".editSpan.remoteReferenceLastSync").text(last_remote_reference_data_sync);
@@ -228,7 +216,6 @@ $data = $db->rawQuery($instanceValues);
                         trObj.find(".editInput.instanceCode").text(response.data.instance_facility_code);
                         trObj.find(".editInput.vlLastSync").text(vl_last_dash_sync);
                         trObj.find(".editInput.eidLastSync").text(eid_last_dash_sync);
-                        trObj.find(".editInput.covid19LastSync").text(covid19_last_dash_sync);
                         trObj.find(".editInput.remoteRequestLastSync").text(last_remote_requests_sync);
                         trObj.find(".editInput.remoteResultsLastSync").text(last_remote_results_sync);
                         trObj.find(".editInput.remoteReferenceLastSync").text(last_remote_reference_data_sync);

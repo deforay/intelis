@@ -107,7 +107,7 @@ final class SmartConnectEnrollmentLogTest extends TestCase
         $sc = $this->smartConnect([new Response(401, [], '{"status":"error","message":"Invalid enrollment key"}')]);
 
         $logs = self::logsOf(function () use ($sc): void {
-            foreach (['vl', 'eid', 'covid19'] as $module) {
+            foreach (['vl', 'eid'] as $module) {
                 $result = $sc->uploadFile("https://sc.example/api/v2/$module", 'file', $this->file, [], true);
                 self::assertNull($result['httpStatusCode'], 'nothing is uploaded without a token');
             }

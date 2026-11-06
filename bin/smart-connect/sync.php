@@ -5,7 +5,6 @@
 //
 //   php bin/smart-connect/sync.php vl
 //   php bin/smart-connect/sync.php eid
-//   php bin/smart-connect/sync.php covid19
 //   php bin/smart-connect/sync.php metadata [-f|--force]
 //
 // One entry point for everything this instance pushes upstream. The form
