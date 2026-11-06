@@ -14,7 +14,7 @@ WampServer.
 
 L'installation se trouve dans `C:\wamp64\www\vlsm` et s'ouvre à
 <http://vlsm>. WampServer et PHP en ligne de commande doivent exécuter
-**PHP 8.4+ (minimum 8.4.1)**. PHP 8.2, 8.3 et les versions plus anciennes ne
+**PHP 8.4 (8.4.27 ou plus récent) ou PHP 8.5 (8.5.12 ou plus récent)**. PHP 8.2, 8.3 et les versions plus anciennes ne
 sont pas pris en charge. Ce guide utilise les chemins de PHP 8.4. Avec
 PHP 8.5, remplacer par le nom de son dossier installé.
 
@@ -29,7 +29,7 @@ PHP 8.5, remplacer par le nom de son dossier installé.
 
 1. Ouvrir `C:\wamp64\bin\php` dans **File Explorer** (**Explorateur de
    fichiers** sur un poste en français). Noter le nom du dossier qui commence
-   par `php8.4`, par exemple `php8.4.1`. Les étapes suivantes l'appellent
+   par `php8.4`, par exemple `php8.4.27`. Les étapes suivantes l'appellent
    `php8.4.x`.
 2. Ouvrir **Command Prompt** (**Invite de commandes**).
 3. Faire une sauvegarde. Remplacer `php8.4.x` par le nom du dossier de
@@ -99,7 +99,7 @@ PHP 8.5, remplacer par le nom de son dossier installé.
 
     ??? failure "Si composer signale que la version de PHP ne satisfait pas une exigence"
 
-        La ligne `set PATH` pointe vers un PHP antérieur à 8.4.1. Vérifier le
+        La ligne `set PATH` pointe vers un PHP antérieur à 8.4.27. Vérifier le
         nom du dossier de l'étape 1, puis répéter l'étape 10.
 
 11. Appliquer les modifications de la base de données :

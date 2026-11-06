@@ -182,7 +182,8 @@ fi
 REQUIRED_SHARED_FN=(
     app_heavy_dirs ask_multi ask_password ask_yes_no chown_app_tree
     configure_apache_compression configure_php_ini download_file ensure_composer ensure_mysql_running
-    ensure_opcache ensure_path ensure_php_cli_extensions ensure_switch_php
+    ensure_opcache ensure_path ensure_php_cli_extensions ensure_php_security_floor
+    ensure_switch_php
     error_handling escape_php_string_for_sed extract_mysql_password_from_config
     fetch_master_tree format_duration hosts_file_shadows io_walk_jobs
     is_valid_application_path lock_fingerprint log_action mysql_cnf_comment_option
@@ -1453,6 +1454,16 @@ if [ "$skip_ubuntu_updates" = false ]; then
 
     print info "Installing basic packages..."
     apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev mosh pigz gnupg
+fi
+
+# PHP security floor. Runs even with -s / --apply-prepared, which skip the apt
+# step above: the new code refuses to run on an older PHP patch release (every
+# page answers HTTP 500), so stop here, before any instance is touched, if PHP
+# cannot be brought up to it.
+if ! ensure_php_security_floor; then
+    print error "Upgrade stopped. No instance was changed. Update PHP with apt, then run the upgrade again."
+    log_action "Upgrade aborted: PHP below security floor"
+    exit 1
 fi
 
 # SSH is a convenience for remote support, not something the LIS needs, so this

@@ -1256,6 +1256,25 @@ fi
 
 rm -f ./lamp-setup.sh
 
+# lamp-setup keeps a PHP that is already installed, so a reused machine can
+# still carry a patch release older than the one InteLIS needs. An older
+# shared-functions.sh lacks the check: re-fetch it once past the CDN cache.
+if ! declare -F ensure_php_security_floor >/dev/null &&
+    fetch_shared_fn "$SHARED_FN_PATH" "${SHARED_FN_URL}?t=$(date +%s)"; then
+    # shellcheck source=/dev/null
+    source "$SHARED_FN_PATH"
+fi
+if ! declare -F ensure_php_security_floor >/dev/null; then
+    print error "shared-functions.sh is out of date, so setup cannot check the PHP security update. Check the network connection, then run setup again."
+    log_action "Setup aborted: shared-functions.sh lacks ensure_php_security_floor"
+    exit 1
+fi
+if ! ensure_php_security_floor; then
+    print error "Setup stopped. Update PHP with apt, then run setup again."
+    log_action "Setup aborted: PHP below security floor"
+    exit 1
+fi
+
 # Configure PHP INI settings (session timeout, opcache, security, etc.)
 configure_php_ini "${PHP_VERSION}"
 

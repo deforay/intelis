@@ -46,7 +46,7 @@ number.
 ## Reset the password on Windows
 
 1. Open `C:\wamp64\bin\php` in File Explorer. Note the name of the folder that
-   starts with `php8.4`, for example `php8.4.1`. The steps below call it
+   starts with `php8.4`, for example `php8.4.27`. The steps below call it
    `php8.4.x`.
 2. Open **Command Prompt**.
 3. Run the reset script. Replace `php8.4.x` with the folder name from step 1:

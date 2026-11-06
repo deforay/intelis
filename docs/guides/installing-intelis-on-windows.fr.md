@@ -15,7 +15,7 @@ La machine a besoin d'une connexion internet et d'un compte doté des droits
 d'administrateur. L'installation se place dans `C:\wamp64\www\vlsm` et s'ouvre
 à <http://vlsm>.
 
-InteLIS exige **PHP 8.4+ (minimum 8.4.1)**, pour WampServer comme pour la
+InteLIS exige **PHP 8.4 (8.4.27 ou plus récent) ou PHP 8.5 (8.5.12 ou plus récent)**, pour WampServer comme pour la
 ligne de commande. PHP 8.2, 8.3 et les versions plus anciennes ne sont pas
 pris en charge. Ce guide utilise les chemins de PHP 8.4. Avec PHP 8.5,
 remplacer par le nom de son dossier installé.
@@ -56,7 +56,7 @@ verte.
     `8.4`.
 11. Ouvrir `C:\wamp64\bin\php` dans **File Explorer** (**Explorateur de
     fichiers** sur un poste en français). Noter le nom du dossier qui
-    commence par `php8.4`, par exemple `php8.4.1`. Les étapes suivantes
+    commence par `php8.4`, par exemple `php8.4.27`. Les étapes suivantes
     l'appellent `php8.4.x`.
 12. Sélectionner l'icône de WampServer dans la zone de notification, puis
     **PHP → php.ini**. Modifier ces paramètres, puis enregistrer le fichier :
@@ -95,7 +95,7 @@ verte.
     php -m
     ```
 
-**Vérification :** `php -v` indique PHP 8.4.1 ou plus récent, la deuxième
+**Vérification :** `php -v` indique PHP 8.4.27 ou plus récent, la deuxième
 commande affiche `memory_limit => 2G`, et `php -m` liste toutes les extensions
 de l'étape 14.
 

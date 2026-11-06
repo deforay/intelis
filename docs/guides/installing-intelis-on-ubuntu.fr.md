@@ -15,7 +15,7 @@ laboratoire ou comme serveur central.
 La machine doit exécuter **Ubuntu 24.04 LTS ou une version LTS ultérieure** et
 être connectée à internet. Le compte utilisé a besoin des droits `sudo`.
 
-InteLIS exige **PHP 8.4+ (minimum 8.4.1)**. PHP 8.2, 8.3 et les versions plus
+InteLIS exige **PHP 8.4 (8.4.27 ou plus récent) ou PHP 8.5 (8.5.12 ou plus récent)**. PHP 8.2, 8.3 et les versions plus
 anciennes ne sont pas pris en charge. Le programme d'installation choisit
 PHP 8.4, ou 8.5 sur Ubuntu 26.04 et ultérieur.
 
