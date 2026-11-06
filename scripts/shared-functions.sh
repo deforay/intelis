@@ -3013,6 +3013,11 @@ configure_php_ini() {
     # would run the STS out of memory, as it did before the copy was streamed.
     local desired_output_buffering="output_buffering = 4096"
     local desired_zlib_compression="zlib.output_compression = Off"
+    # Nothing in InteLIS reads upload progress from the session (upload bars use
+    # the browser's own progress events). Off removes a way for any request to
+    # write attacker-chosen data into a session file, the vector of the
+    # PHP2Shell bypass reported on 2026-10-23.
+    local desired_upload_progress="session.upload_progress.enabled = 0"
 
     # Inner function to update a single PHP ini file
     _update_php_ini_file() {
@@ -3028,7 +3033,7 @@ configure_php_ini() {
         local er_set de_set le_set pms_set umf_set ml_set sm_set sid_len_set sid_bits_set gc_maxlifetime_set expose_set
         local opcache_enable_set opcache_enable_cli_set opcache_memory_set opcache_max_files_set
         local opcache_validate_set opcache_revalidate_freq_set opcache_save_comments_set opcache_jit_set opcache_interned_set opcache_override_set
-        local pcre_jit_set ob_set zlib_set
+        local pcre_jit_set ob_set zlib_set upload_progress_set
 
         er_set=$(grep -q "^${desired_error_reporting}$" "$ini_file" && echo true || echo false)
         de_set=$(grep -q "^${desired_display_errors}$" "$ini_file" && echo true || echo false)
@@ -3054,6 +3059,7 @@ configure_php_ini() {
         pcre_jit_set=$(grep -q "^${desired_pcre_jit}$" "$ini_file" && echo true || echo false)
         ob_set=$(grep -q "^${desired_output_buffering}$" "$ini_file" && echo true || echo false)
         zlib_set=$(grep -q "^${desired_zlib_compression}$" "$ini_file" && echo true || echo false)
+        upload_progress_set=$(grep -q "^${desired_upload_progress}$" "$ini_file" && echo true || echo false)
 
         # If ANY are missing, we need to rewrite
         if [ "$er_set" = false ] || [ "$de_set" = false ] || [ "$le_set" = false ] || [ "$pms_set" = false ] || [ "$umf_set" = false ] || [ "$ml_set" = false ] || [ "$sm_set" = false ] \
@@ -3062,7 +3068,8 @@ configure_php_ini() {
             || [ "$opcache_enable_set" = false ] || [ "$opcache_enable_cli_set" = false ] || [ "$opcache_memory_set" = false ] \
             || [ "$opcache_max_files_set" = false ] || [ "$opcache_validate_set" = false ] || [ "$opcache_revalidate_freq_set" = false ] || [ "$opcache_save_comments_set" = false ] || [ "$opcache_jit_set" = false ] \
             || [ "$opcache_interned_set" = false ] || [ "$opcache_override_set" = false ] \
-            || [ "$pcre_jit_set" = false ] || [ "$ob_set" = false ] || [ "$zlib_set" = false ]; then
+            || [ "$pcre_jit_set" = false ] || [ "$ob_set" = false ] || [ "$zlib_set" = false ] \
+            || [ "$upload_progress_set" = false ]; then
             changes_needed=true
             cp "$ini_file" "$backup_file"
             print info "Changes needed. Backup created at $backup_file"
@@ -3122,6 +3129,8 @@ configure_php_ini() {
                     echo ";$line" >>"$temp_file"; echo "$desired_output_buffering" >>"$temp_file"; ob_set=true
                 elif [[ "$line" =~ ^[[:space:]]*zlib\.output_compression[[:space:]]*= ]] && [ "$zlib_set" = false ]; then
                     echo ";$line" >>"$temp_file"; echo "$desired_zlib_compression" >>"$temp_file"; zlib_set=true
+                elif [[ "$line" =~ ^[[:space:]]*session\.upload_progress\.enabled[[:space:]]*= ]] && [ "$upload_progress_set" = false ]; then
+                    echo ";$line" >>"$temp_file"; echo "$desired_upload_progress" >>"$temp_file"; upload_progress_set=true
                 else
                     echo "$line" >>"$temp_file"
                 fi
@@ -3152,6 +3161,7 @@ configure_php_ini() {
             [ "$pcre_jit_set" = true ] || echo "$desired_pcre_jit" >>"$temp_file"
             [ "$ob_set" = true ] || echo "$desired_output_buffering" >>"$temp_file"
             [ "$zlib_set" = true ] || echo "$desired_zlib_compression" >>"$temp_file"
+            [ "$upload_progress_set" = true ] || echo "$desired_upload_progress" >>"$temp_file"
 
             # mktemp creates its file 0600 root:root, and mv carries those bits
             # onto the destination — so a plain mv here quietly turns a 0644
