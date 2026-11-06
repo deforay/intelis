@@ -1407,6 +1407,37 @@ final class CommonService
     }
 
     /**
+     * Whether a cloud-LIS operator's lab may open this sample row. The row form of
+     * labScopeWhere(), so a link opens every sample the lists show.
+     *
+     * - True for everyone who is not a cloud-LIS non-admin. LIS installs hold one
+     *   lab's samples, and STS collection-site users have no lab.
+     * - True when the session has no lab, as labScopeWhere() then shows every
+     *   sample.
+     * - True when lab_id is the operator's lab, or NULL (not yet at a lab).
+     * - True when the sample was referred to or by the operator's lab. A referral
+     *   keeps the sending lab in lab_id, so the receiving lab needs
+     *   referred_to_lab_id. Only form_tb and form_generic have these columns.
+     *
+     * @param array<string, mixed> $sample
+     */
+    public function sampleInLabScope(array $sample): bool
+    {
+        if (!$this->isCloudLisNonAdmin()) {
+            return true;
+        }
+        $labId = (int) ($_SESSION['labId'] ?? 0);
+        if ($labId <= 0) {
+            return true;
+        }
+        $sampleLab = (int) ($sample['lab_id'] ?? 0);
+        return $sampleLab === 0
+            || $sampleLab === $labId
+            || (int) ($sample['referred_to_lab_id'] ?? 0) === $labId
+            || (int) ($sample['referred_by_lab_id'] ?? 0) === $labId;
+    }
+
+    /**
      * Whether the current user may act as the testing lab for $facilityId.
      *
      * LIS: single-lab install — true iff $facilityId equals sc_testing_lab_id.

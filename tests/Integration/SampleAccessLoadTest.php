@@ -6,6 +6,8 @@ namespace Tests\Integration;
 
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\SampleAccessService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -36,9 +38,9 @@ final class SampleAccessLoadTest extends TestCase
         }
         $database = TestRun::database('intelis_sample_access_load_test');
         if (!defined('SYSTEM_CONFIG')) {
-            define('SYSTEM_CONFIG', ['database' => ['db' => $database], 'modules' => ['eid' => true]]);
+            define('SYSTEM_CONFIG', ['database' => ['db' => $database], 'modules' => ['eid' => true, 'tb' => true]]);
         }
-        $db = LegacyAppHarness::boot($database, ['system_config', 'global_config', 'form_eid']);
+        $db = LegacyAppHarness::boot($database, ['system_config', 'global_config', 'form_eid', 'form_tb']);
         $this->booted = true;
         $db->insert('system_config', [
             'display_name' => 'Instance type', 'name' => 'sc_user_type', 'value' => 'remoteuser',
@@ -49,6 +51,18 @@ final class SampleAccessLoadTest extends TestCase
                 'sample_code' => "EID-$eidId",
             ]);
         }
+        // Facility 1 samples at lab 10, at lab 20 and not yet at a lab.
+        foreach ([201 => 10, 202 => 20, 203 => null] as $eidId => $labId) {
+            $db->insert('form_eid', [
+                'eid_id' => $eidId, 'unique_id' => "eid-$eidId", 'facility_id' => 1,
+                'lab_id' => $labId, 'sample_code' => "EID-$eidId",
+            ]);
+        }
+        // TB 301: lab 20 referred it to lab 10. A referral keeps the sending lab in lab_id.
+        $db->insert('form_tb', [
+            'tb_id' => 301, 'unique_id' => 'tb-301', 'facility_id' => 1, 'lab_id' => 20,
+            'referred_by_lab_id' => 20, 'referred_to_lab_id' => 10, 'sample_code' => 'TB-301',
+        ]);
         $_SESSION = $session + ['instance' => ['type' => 'remoteuser'], 'roleId' => 2];
         return ContainerRegistry::get(SampleAccessService::class);
     }
@@ -105,5 +119,73 @@ final class SampleAccessLoadTest extends TestCase
     {
         $access = $this->boot(['facilityMap' => '']);
         self::assertSame(15948, (int) $access->load('eid', $access->encode(15948))['eid_id']);
+    }
+
+    /** A testing-lab user of lab 10 on the STS: cloud-LIS. */
+    private const array LAB_10_OPERATOR = ['accessType' => 'testing-lab', 'labId' => 10, 'facilityMap' => '1,2'];
+
+    #[RunInSeparateProcess]
+    public function testACloudLisOperatorCannotOpenAnotherLabsSample(): void
+    {
+        $access = $this->boot(self::LAB_10_OPERATOR);
+        self::assertSame(201, (int) $access->load('eid', $access->encode(201))['eid_id']);
+        self::assertSame(203, (int) $access->load('eid', $access->encode(203))['eid_id']);
+        try {
+            $access->load('eid', $access->encode(202));
+            self::fail("another lab's sample must stop the page");
+        } catch (SystemException $e) {
+            self::assertSame(403, $e->getCode());
+        }
+    }
+
+    #[RunInSeparateProcess]
+    public function testACloudLisOperatorOpensEverySampleTheListShows(): void
+    {
+        $access = $this->boot(self::LAB_10_OPERATOR);
+        $general = ContainerRegistry::get(CommonService::class);
+        $listed = ContainerRegistry::get(DatabaseService::class)->rawQuery(
+            'SELECT * FROM form_eid e WHERE e.facility_id IN (1,2) AND ' . $general->labScopeWhere('e')
+        );
+        self::assertNotEmpty($listed);
+        foreach ($listed as $sample) {
+            $access->assertCanOpen($sample);
+        }
+        self::assertNotContains(202, array_map(intval(...), array_column($listed, 'eid_id')));
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheLabASampleWasReferredToOpensIt(): void
+    {
+        $access = $this->boot(self::LAB_10_OPERATOR);
+        self::assertSame(301, (int) $access->load('tb', $access->encode(301))['tb_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheReferringLabStillOpensItsSample(): void
+    {
+        $access = $this->boot(['labId' => 20] + self::LAB_10_OPERATOR);
+        self::assertSame(301, (int) $access->load('tb', $access->encode(301))['tb_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnAdminOpensEveryLabsSample(): void
+    {
+        $access = $this->boot(['roleId' => 1] + self::LAB_10_OPERATOR);
+        self::assertSame(202, (int) $access->load('eid', $access->encode(202))['eid_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testACollectionSiteUserOpensEveryLabsSample(): void
+    {
+        $access = $this->boot(['accessType' => 'collection-site'] + self::LAB_10_OPERATOR);
+        self::assertSame(202, (int) $access->load('eid', $access->encode(202))['eid_id']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testACloudLisOperatorWithoutALabOpensEverySample(): void
+    {
+        // labScopeWhere() shows this session every sample, so links must open them too.
+        $access = $this->boot(['labId' => null] + self::LAB_10_OPERATOR);
+        self::assertSame(202, (int) $access->load('eid', $access->encode(202))['eid_id']);
     }
 }
