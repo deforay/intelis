@@ -10,6 +10,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestResultImportService;
 use App\Utilities\MiscUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -31,6 +32,9 @@ try {
 
     /** @var VlService $vlService */
     $vlService = ContainerRegistry::get(VlService::class);
+
+    // Only to read each sample's specimen type from the sample this file is for.
+    $importService = new TestResultImportService('vl');
 
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
@@ -86,7 +90,7 @@ try {
             if (empty($row['C'])) {
                 continue;
             }
-            $interpretedResults = $vlService->interpretViralLoadResult($row['D'], null, null, $vlService->getSpecimenTypeBySampleCode($row['C'] ?? null));
+            $interpretedResults = $vlService->interpretViralLoadResult($row['D'], null, null, $importService->specimenTypeFor($row['C'] ?? null));
             // dump($row['C']);
             // dump($row['D']);
             // dump($interpretedResults);

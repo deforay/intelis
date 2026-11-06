@@ -196,32 +196,6 @@ final class VlService extends AbstractTestService
     }
 
     /**
-     * Resolve the registered specimen type (r_vl_sample_type id) of a sample by
-     * its sample code. Used by instrument file imports, where the analyzer
-     * output carries the result but not the specimen type — the specimen type
-     * was recorded on the request and is needed to interpret specimen-dependent
-     * limits (e.g. "< Titer Min"). Returns null when not found.
-     */
-    public function getSpecimenTypeBySampleCode(?string $sampleCode): ?int
-    {
-        $sampleCode = trim((string) $sampleCode);
-        if ($sampleCode === '') {
-            return null;
-        }
-        try {
-            $row = $this->db->rawQueryOne(
-                "SELECT specimen_type FROM form_vl WHERE sample_code = ? ORDER BY vl_sample_id DESC LIMIT 1",
-                [$sampleCode]
-            );
-        } catch (Throwable) {
-            return null;
-        }
-        return isset($row['specimen_type']) && $row['specimen_type'] !== '' && $row['specimen_type'] !== null
-            ? (int) $row['specimen_type']
-            : null;
-    }
-
-    /**
      * Resolve an incoming ART regimen string to a value the request form can render.
      *
      * form_vl.current_regimen stores an art_code, and the request form preselects an

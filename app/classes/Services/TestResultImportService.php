@@ -43,6 +43,15 @@ class TestResultImportService
         $this->postData = _sanitizeInput($request->getParsedBody());
     }
 
+    /** The specimen type of the sample this file's result goes to, or null. */
+    public function specimenTypeFor(?string $sampleCode): ?int
+    {
+        $labId = (int) base64_decode((string) ($this->postData['labId'] ?? ''));
+        $match = ContainerRegistry::get(ImportedSampleMatcher::class)->find($this->testType, $sampleCode, $labId);
+        $specimenType = $match['row']['specimen_type'] ?? null;
+        return $specimenType === null || $specimenType === '' ? null : (int) $specimenType;
+    }
+
     /**
      * Initialize import process - call this first in your procedural scripts
      */

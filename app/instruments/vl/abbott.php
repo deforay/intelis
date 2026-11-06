@@ -88,7 +88,7 @@ try {
             $logVal = null;
         } else {
 
-            $interpretedResults = $vlService->interpretViralLoadResult($sheetData[$resultCol] ?? null, null, null, $vlService->getSpecimenTypeBySampleCode($sampleCode));
+            $interpretedResults = $vlService->interpretViralLoadResult($sheetData[$resultCol] ?? null, null, null, $importService->specimenTypeFor($sampleCode));
 
             $absVal = $interpretedResults['absVal'];
             $absDecimalVal = $interpretedResults['absDecimalVal'];
