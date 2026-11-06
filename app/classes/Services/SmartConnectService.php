@@ -13,9 +13,9 @@ class SmartConnectService
      * The form tables this client pushes, and everything that differs between
      * them.
      *
-     * Covid-19 is not here: Smart Connect retired its Covid-19 module and
-     * refuses the upload. The covid19_last_dash_sync watermark is left in
-     * place, so if the module returns, sync resumes from where it stopped.
+     * Covid-19 has no row here. Smart Connect retired its Covid-19 module and
+     * refuses the upload. Nothing writes covid19_last_dash_sync now. If the
+     * module returns, sync resumes from the value in that column.
      *
      * This table is the reason there is one sync script instead of three. The
      * per-module copies it replaced drifted: a debugging `die()` sat in the VL
