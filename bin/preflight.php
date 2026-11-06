@@ -1442,8 +1442,8 @@ function pf_exit_code(array $results): int
 
 /**
  * Whether a PHP version satisfies a composer constraint, for the small subset of
- * constraint syntax composer.json actually uses here: caret terms joined by ||,
- * plus bare >= / > comparisons. Anything else is reported as unknown by the
+ * constraint syntax composer.json actually uses here: caret and tilde terms
+ * joined by ||, plus bare >= / > comparisons. Anything else is reported as unknown by the
  * caller rather than guessed at.
  */
 function pf_satisfies_php_constraint(string $version, string $constraint): bool
@@ -1455,6 +1455,21 @@ function pf_satisfies_php_constraint(string $version, string $constraint): bool
             $base  = substr($term, 1);
             $major = (int) $base;
             if (version_compare($version, $base, '>=') && version_compare($version, ($major + 1) . '.0.0', '<')) {
+                return true;
+            }
+            continue;
+        }
+
+        // ~8.4.27 means >=8.4.27 <8.5.0. ~8.4 means >=8.4 <9.0.
+        if (str_starts_with($term, '~')) {
+            $base  = substr($term, 1);
+            $parts = array_map('intval', explode('.', $base));
+            if (count($parts) >= 3) {
+                $upper = $parts[0] . '.' . ($parts[1] + 1) . '.0';
+            } else {
+                $upper = ($parts[0] + 1) . '.0.0';
+            }
+            if (version_compare($version, $base, '>=') && version_compare($version, $upper, '<')) {
                 return true;
             }
             continue;

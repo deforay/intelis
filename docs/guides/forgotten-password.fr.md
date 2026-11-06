@@ -49,7 +49,7 @@ une lettre et un chiffre.
 
 1. Ouvrir `C:\wamp64\bin\php` dans **File Explorer** (**Explorateur de
    fichiers** sur un poste en français). Noter le nom du dossier qui commence
-   par `php8.4`, par exemple `php8.4.1`. Les étapes suivantes l'appellent
+   par `php8.4`, par exemple `php8.4.27`. Les étapes suivantes l'appellent
    `php8.4.x`.
 2. Ouvrir **Command Prompt** (**Invite de commandes**).
 3. Lancer le script de réinitialisation. Remplacer `php8.4.x` par le nom du

@@ -15,7 +15,7 @@ The machine needs [Docker](https://docs.docker.com/get-docker/) with the
 [Docker Compose](https://docs.docker.com/compose/install/) plugin, `git`, and
 an internet connection. The lab server steps assume an Ubuntu host.
 
-The container must run **PHP 8.4+ (minimum 8.4.1)**. PHP 8.2, 8.3, and older
+The container must run **PHP 8.4 (8.4.27 or newer) or PHP 8.5 (8.5.12 or newer)**. PHP 8.2, 8.3, and older
 versions are not supported. The default image uses PHP 8.4.
 
 **Choose the situation that fits, then follow its steps from top to bottom.**

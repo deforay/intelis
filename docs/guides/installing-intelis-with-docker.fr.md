@@ -17,7 +17,7 @@ plugin [Docker Compose](https://docs.docker.com/compose/install/), de `git` et
 d'une connexion internet. Les étapes du serveur de laboratoire supposent un
 hôte Ubuntu.
 
-Le conteneur doit exécuter **PHP 8.4+ (minimum 8.4.1)**. PHP 8.2, 8.3 et les
+Le conteneur doit exécuter **PHP 8.4 (8.4.27 ou plus récent) ou PHP 8.5 (8.5.12 ou plus récent)**. PHP 8.2, 8.3 et les
 versions plus anciennes ne sont pas pris en charge. L'image par défaut utilise
 PHP 8.4.
 

@@ -382,7 +382,8 @@ check_ubuntu_version() {
 # Ubuntu 24.04 and older carry (and ondrej's PPA still builds) PHP 8.4, our
 # well-tested baseline. Ubuntu 26.04 dropped PHP 8.4 — its archive/PPA ship
 # PHP 8.5 instead — so on 26.04+ we default to 8.5. The app itself supports
-# PHP 8.x from 8.4.1 (see composer.json), so both are safe; this only chooses the default
+# PHP 8.4 from 8.4.27 and PHP 8.5 from 8.5.12 (see composer.json and
+# php_security_floor), so both are safe; this only chooses the default
 # when the operator hasn't pinned one with --php.
 default_php_version_for_os() {
     local ubuntu_version
@@ -400,6 +401,142 @@ default_php_version_for_os() {
     else
         echo "8.4"
     fi
+}
+
+# Oldest patch release InteLIS accepts on each supported PHP branch. These are
+# the PHP2Shell fixes (CVE-2026-109618, CVE-2026-109619, released 2026-10-21).
+# Keep in step with "php" in composer.json: Composer's platform check answers
+# every page with HTTP 500 on anything older.
+php_security_floor() {
+    case "$1" in
+        8.4) echo "8.4.27" ;;
+        8.5) echo "8.5.12" ;;
+        *) echo "" ;;
+    esac
+}
+
+# True when the running Apache started before the installed mod_php of
+# <major.minor> was written, so its parent process still holds the old PHP
+# core. Uses the file's ctime: dpkg keeps the package's build-time mtime but
+# the install itself sets ctime.
+apache_runs_stale_mod_php() {
+    local so="/usr/lib/apache2/modules/libphp${1}.so" pid elapsed started so_ctime
+    [ -f "$so" ] || return 1
+    pid="$(systemctl show -p MainPID --value apache2 2>/dev/null)"
+    [ -n "$pid" ] && [ "$pid" != "0" ] || return 1
+    elapsed="$(ps -o etimes= -p "$pid" 2>/dev/null | tr -d ' ')"
+    [[ "$elapsed" =~ ^[0-9]+$ ]] || return 1
+    started=$(( $(date +%s) - elapsed ))
+    so_ctime="$(stat -c %Z "$so" 2>/dev/null)" || return 1
+    [ "$so_ctime" -gt "$started" ]
+}
+
+# Upstream version of an installed package ("8.4.27" from
+# "8.4.27-1+ubuntu24.04.1+deb.sury.org+1"), or nothing when not installed.
+php_pkg_upstream_version() {
+    dpkg-query -W -f='${db:Status-Status} ${Version}\n' "$1" 2>/dev/null |
+        awk '$1 == "installed" { v = $2; sub(/^[0-9]+:/, "", v); sub(/[-+~].*/, "", v); print v }'
+}
+
+# Oldest PHP among the CLI and the installed core packages of <major.minor>.
+# The CLI alone is not enough: mod_php or FPM can lag behind it.
+php_oldest_installed_version() {
+    local ver="$1" oldest="" v pkg
+    v="$(php -r 'echo PHP_VERSION;' 2>/dev/null)"
+    case "$v" in "${ver}".*) oldest="$v" ;; esac
+    for pkg in "php${ver}-cli" "php${ver}-common" "libapache2-mod-php${ver}" "php${ver}-fpm"; do
+        v="$(php_pkg_upstream_version "$pkg")"
+        [ -n "$v" ] || continue
+        if [ -z "$oldest" ] || dpkg --compare-versions "$v" lt "$oldest"; then
+            oldest="$v"
+        fi
+    done
+    echo "${oldest:-0}"
+}
+
+# PHP branches in use: the php on PATH, plus each mod_php Apache has enabled.
+# Not what setup or upgrade asked for: an existing install is kept, and the
+# CLI and Apache can be on different branches.
+php_branches_in_use() {
+    local load
+    {
+        php -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION, "\n";' 2>/dev/null
+        for load in /etc/apache2/mods-enabled/php*.load; do
+            [ -e "$load" ] || continue
+            basename "$load" .load | sed -n 's/^php\([0-9][0-9]*\.[0-9][0-9]*\)$/\1/p'
+        done
+    } | sort -u
+}
+
+# Bring every PHP branch in use up to php_security_floor with apt, whether or
+# not the rest of the system is being updated. Only the installed packages of
+# those branches are upgraded.
+#
+# Apache is then fully restarted if its mod_php is newer than the running
+# process, whether this function or an earlier apt run installed it. Under
+# mod_php a reload keeps the old PHP core in memory, new workers load the new
+# extension .so files into it, and every request fails
+# ("Call to undefined function mysqli_*").
+#
+# Returns 1 when any branch in use is still older than its floor.
+ensure_php_security_floor() {
+    local ver rc=0
+    while read -r ver; do
+        [ -n "$ver" ] || continue
+        ensure_php_branch_security_floor "$ver" || rc=1
+    done < <(php_branches_in_use)
+    return "$rc"
+}
+
+ensure_php_branch_security_floor() {
+    local ver="$1" floor before after
+    local -a pkgs=()
+
+    floor="$(php_security_floor "$ver")"
+    [ -n "$floor" ] || return 0
+
+    before="$(php_oldest_installed_version "$ver")"
+    if dpkg --compare-versions "$before" lt "$floor"; then
+        print info "PHP ${before} is older than ${floor}. Installing the PHP ${ver} security update..."
+        log_action "PHP ${before} below security floor ${floor}; upgrading php${ver} packages"
+
+        mapfile -t pkgs < <(dpkg-query -W -f='${db:Status-Status} ${Package}\n' \
+            "php${ver}*" "libapache2-mod-php${ver}" 2>/dev/null | awk '$1 == "installed" { print $2 }')
+        if [ "${#pkgs[@]}" -eq 0 ]; then
+            print warning "No php${ver} packages are installed through apt, so PHP cannot be updated here."
+        else
+            if ! DEBIAN_FRONTEND=noninteractive NEEDRESTART_SUSPEND=1 apt-get update --allow-releaseinfo-change; then
+                print warning "apt-get update failed. Trying the PHP update with the current package lists."
+            fi
+            if ! DEBIAN_FRONTEND=noninteractive NEEDRESTART_SUSPEND=1 apt-get \
+                -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" \
+                install --only-upgrade -y "${pkgs[@]}"; then
+                print warning "apt-get could not upgrade the php${ver} packages."
+            fi
+        fi
+    fi
+    after="$(php_oldest_installed_version "$ver")"
+
+    if apache_runs_stale_mod_php "$ver"; then
+        log_action "Apache started before the installed mod_php ${ver} (PHP ${after}); restarting"
+        if ! restart_service apache; then
+            print error "Could not restart Apache, so it may still run the old PHP. Run: systemctl restart apache2"
+            log_action "Apache restart after PHP ${ver} update failed"
+            return 1
+        fi
+    fi
+    if [ "$after" != "$before" ] && systemctl is-active --quiet "php${ver}-fpm" 2>/dev/null; then
+        systemctl restart "php${ver}-fpm" || true
+    fi
+
+    if dpkg --compare-versions "$after" ge "$floor"; then
+        print success "PHP ${after} includes the security fixes in ${floor}."
+        return 0
+    fi
+
+    print error "PHP ${ver} is at ${after}. InteLIS needs PHP ${floor} or newer."
+    log_action "PHP still ${after} after apt; security floor ${floor} not met"
+    return 1
 }
 
 # Validate LIS application path

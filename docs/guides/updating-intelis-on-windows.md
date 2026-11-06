@@ -12,7 +12,7 @@ reviewed_against: 5.7.74
 Update an InteLIS installation on a Windows machine that runs WampServer.
 
 The installation lives in `C:\wamp64\www\vlsm` and opens at <http://vlsm>.
-WampServer and command-line PHP must run **PHP 8.4+ (minimum 8.4.1)**.
+WampServer and command-line PHP must run **PHP 8.4 (8.4.27 or newer) or PHP 8.5 (8.5.12 or newer)**.
 PHP 8.2, 8.3, and older versions are not supported. This guide uses PHP 8.4
 paths. If you use PHP 8.5, substitute its installed folder name.
 
@@ -26,7 +26,7 @@ paths. If you use PHP 8.5, substitute its installed folder name.
 ## Back up
 
 1. Open `C:\wamp64\bin\php` in File Explorer. Note the name of the folder that
-   starts with `php8.4`, for example `php8.4.1`. The steps below call it
+   starts with `php8.4`, for example `php8.4.27`. The steps below call it
    `php8.4.x`.
 2. Open **Command Prompt**.
 3. Take a backup. Replace `php8.4.x` with the folder name from step 1:
@@ -90,7 +90,7 @@ paths. If you use PHP 8.5, substitute its installed folder name.
 
     ??? failure "If composer reports that the PHP version does not satisfy a requirement"
 
-        The `set PATH` line points to a PHP older than 8.4.1. Check the folder
+        The `set PATH` line points to a PHP older than 8.4.27. Check the folder
         name from step 1, then repeat step 10.
 
 11. Apply the database changes:
