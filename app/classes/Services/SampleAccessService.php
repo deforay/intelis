@@ -116,6 +116,9 @@ final class SampleAccessService
     public function assertCanOpen(array $sample): void
     {
         $this->general->assertFacilityAllowed((int) ($sample['facility_id'] ?? 0));
+        if (!$this->general->sampleInLabScope($sample)) {
+            throw new SystemException(_translate('This sample belongs to another lab'), 403);
+        }
     }
 
     private function sqids(): Sqids
