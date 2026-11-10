@@ -286,17 +286,19 @@ final class ResultsService
                     // Who owns the sample as stored, before this update can change it.
                     $storedOwner = empty($localRecord) ? [] : $this->storedOwner($localRecord[$this->primaryKeyName]);
 
+                    $sentTests = $dataFromLIS['data_from_tests'] ?? null;
                     if (
                         $this->wasMovedAwayFrom($storedOwner, $labId)
-                        && !TestedSampleRule::isTested(
-                            $testType,
-                            $originalLISRecord,
-                            $dataFromLIS['data_from_tests'] ?? null
+                        && (
+                            !TestedSampleRule::isTested($testType, $originalLISRecord, $sentTests)
+                            || TestedSampleRule::isSetAside($testType, $originalLISRecord, $sentTests)
                         )
                     ) {
                         // The lab's copy of a sample moved to another lab, sent before it
                         // cancelled it: taken as delivered and not saved, so the lab stops
                         // sending it and the sample stays with the lab it was moved to.
+                        // A rejection without a result is no test: Move Manifest lets the
+                        // mover send such a sample on, and the old lab cannot undo that.
                         $this->db->rollbackTransaction();
                         $labIdentifier = trim((string) ($originalLISRecord['unique_id'] ?? ''))
                             ?: trim((string) ($originalLISRecord['sample_code'] ?? ''));

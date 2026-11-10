@@ -226,6 +226,23 @@ final class StsResultsReceiveTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testALabASampleWasMovedAwayFromCannotRejectItBack(): void
+    {
+        $db = $this->boot();
+        // Rejected here, then sent on by Move Manifest to be tested at lab 9.
+        self::stsRequest($db, 'form_vl', 'u-1', ['vl_sample_id' => 1, 'lab_id' => 9, 'referring_lab_id' => self::LAB]);
+
+        $ack = self::sts()->receiveResults('vl', self::payload([
+            self::vlResult('u-1', ['result' => null, 'result_status' => 4, 'is_sample_rejected' => 'yes']),
+        ]), ackByUniqueId: true);
+
+        self::assertSame(['u-1'], $ack, 'acknowledged, so the lab stops sending it');
+        $row = $this->committed('form_vl')['u-1'];
+        self::assertSame('9', (string) $row['lab_id'], 'the move stands');
+        self::assertNotSame('4', (string) $row['result_status'], 'the old rejection is not taken');
+    }
+
+    #[RunInSeparateProcess]
     public function testALabASampleWasMovedAwayFromKeepsItIfItTestedIt(): void
     {
         $db = $this->boot();

@@ -24,6 +24,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Exceptions\PermanentQueueFailureException;
 use App\Utilities\FileCacheUtility;
+use App\Utilities\TestedSampleRule;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
@@ -1311,11 +1312,20 @@ final class TestRequestsService
         $placeholders = implode(',', array_fill(0, count($primaryKeys), '?'));
         $codes = [];
         foreach ($codeColumns as $column) {
+            // A cancelled or rejected sample Move Manifest kept at its lab keeps
+            // the reception date it had there: not a sign the manifest reached
+            // the lab it moved to.
             $rows = $this->db->rawQuery(
-                "SELECT DISTINCT $column AS manifest_code FROM $tableName
-                  WHERE $primaryKey IN ($placeholders)
-                    AND $column IS NOT NULL AND $column <> ''
-                    AND sample_received_at_lab_datetime IS NOT NULL",
+                "SELECT DISTINCT t.$column AS manifest_code FROM $tableName AS t
+                  WHERE t.$primaryKey IN ($placeholders)
+                    AND t.$column IS NOT NULL AND t.$column <> ''
+                    AND t.sample_received_at_lab_datetime IS NOT NULL
+                    AND NOT EXISTS (
+                        SELECT 1 FROM specimen_manifests AS m
+                         WHERE m.manifest_code = t.$column AND IFNULL(m.lab_id, 0) > 0
+                           AND IFNULL(t.lab_id, 0) > 0 AND t.lab_id <> m.lab_id
+                           AND " . TestedSampleRule::setAsideSql($testType, 't') . "
+                    )",
                 $primaryKeys
             );
             foreach ($rows ?: [] as $row) {
@@ -1352,6 +1362,20 @@ final class TestRequestsService
             $manifestParams = [$manifestCode, $manifestCode];
         }
 
+        // The lab activating this manifest -> drives the lab-aware sample-code
+        // postfix on STS (see AbstractTestService::stsLabPostfix). Looked up once.
+        $manifestRow = $this->db->rawQueryOne("SELECT lab_id FROM specimen_manifests WHERE manifest_code = ?", [$manifestCode]);
+        $manifestLabId = (int) ($manifestRow['lab_id'] ?? 0) ?: null;
+
+        // A cancelled or rejected sample that Move Manifest kept at its lab stays
+        // on the manifest, which moved on without it. Where one database holds
+        // both labs, activating at the new lab must not take it in.
+        if ($manifestLabId !== null) {
+            $manifestWhere = "($manifestWhere) AND NOT (IFNULL($tableName.lab_id, 0) > 0
+                AND $tableName.lab_id <> ? AND " . TestedSampleRule::setAsideSql($testType, $tableName) . ')';
+            $manifestParams[] = $manifestLabId;
+        }
+
         try {
             $sampleQuery = "SELECT * FROM $tableName WHERE $manifestWhere ORDER BY remote_sample_code ASC";
 
@@ -1360,11 +1384,6 @@ final class TestRequestsService
             $status = 0;
 
             $formId = (int) $this->commonService->getGlobalConfig('vl_form');
-
-            // The lab activating this manifest -> drives the lab-aware sample-code
-            // postfix on STS (see AbstractTestService::stsLabPostfix). Looked up once.
-            $manifestRow = $this->db->rawQueryOne("SELECT lab_id FROM specimen_manifests WHERE manifest_code = ?", [$manifestCode]);
-            $manifestLabId = (int) ($manifestRow['lab_id'] ?? 0) ?: null;
 
             $uniqueIdsForSampleCodeGeneration = [];
             foreach ($sampleResult as $sampleRow) {

@@ -656,6 +656,91 @@ final class LabRequestSyncTest extends TestCase
         );
     }
 
+    /** A copy this lab rejected before testing, and the STS row that sends it on to be tested. */
+    private function rejectedCopySentOn($db, ?string $stamp): array
+    {
+        self::ownLab($db);
+        $db->rawQuery(
+            "INSERT INTO r_sample_status (status_id, status_name)
+                VALUES (4, 'Rejected'), (9, 'Clinic'), (12, 'Cancelled')"
+        );
+        self::sync()->saveModule('vl', [self::vlRequest($db, 'u-1', ['result_status' => 9])], 'tx-1');
+        $db->rawQuery(
+            "UPDATE form_vl SET result_status = 4, is_sample_rejected = 'yes', reason_for_sample_rejection = '3',
+                rejection_on = '2026-10-28', result_approved_datetime = '2026-10-28 15:00:00'
+              WHERE unique_id = 'u-1'"
+        );
+        if ($stamp !== null) {
+            $db->rawQuery(
+                "UPDATE sts_form_vl SET form_attributes = JSON_OBJECT('sentToBeTestedOn', ?) WHERE unique_id = 'u-1'",
+                [$stamp]
+            );
+        }
+        return $db->rawQueryOne("SELECT * FROM sts_form_vl WHERE unique_id = 'u-1'");
+    }
+
+    #[RunInSeparateProcess]
+    public function testARejectedCopyTheStsSentOnToBeTestedIsReopened(): void
+    {
+        $db = $this->boot();
+        $request = $this->rejectedCopySentOn($db, '2026-11-10 15:00:00');
+
+        $result = self::sync()->saveModule('vl', [$request], 'tx-2');
+
+        self::assertSame(['u-1'], $result['saved']);
+        $row = $this->committed('form_vl')['u-1'];
+        self::assertSame('9', (string) $row['result_status'], 'ready to test');
+        self::assertSame('no', $row['is_sample_rejected'], 'else the result form hides the result');
+        self::assertNull($row['reason_for_sample_rejection']);
+        self::assertNull($row['rejection_on']);
+        self::assertNull($row['result_approved_datetime']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheSameStampReopensACopyOnlyOnce(): void
+    {
+        $db = $this->boot();
+        $request = $this->rejectedCopySentOn($db, '2026-11-10 15:00:00');
+        self::sync()->saveModule('vl', [$request], 'tx-2');
+        // The lab rejects it again, for a reason of its own.
+        $db->rawQuery("UPDATE form_vl SET result_status = 4, is_sample_rejected = 'yes' WHERE unique_id = 'u-1'");
+
+        self::sync()->saveModule('vl', [$request], 'tx-3');
+
+        self::assertSame('4', (string) $this->committed('form_vl')['u-1']['result_status']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testWithoutAStampAPullLeavesARejectedCopyRejected(): void
+    {
+        $db = $this->boot();
+        $request = $this->rejectedCopySentOn($db, null);
+
+        self::sync()->saveModule('vl', [$request], 'tx-2');
+
+        $row = $this->committed('form_vl')['u-1'];
+        self::assertSame('4', (string) $row['result_status'], 'the lab decided about it');
+        self::assertSame('yes', $row['is_sample_rejected']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testACustomTestsCopyTheStsSentOnToBeTestedIsReopened(): void
+    {
+        $db = $this->boot();
+        self::ownLab($db);
+        $db->rawQuery("INSERT INTO r_sample_status (status_id, status_name) VALUES (9, 'Clinic'), (12, 'Cancelled')");
+        $request = self::stsRow($db, 'form_generic', [
+            'unique_id' => 'g-1', 'remote_sample_code' => 'R-g-1', 'result_status' => 9,
+        ]);
+        self::sync()->saveCustomTests([$request], 'tx-1');
+        $db->rawQuery("UPDATE form_generic SET result_status = 12 WHERE unique_id = 'g-1'");
+        $request['form_attributes'] = json_encode(['sentToBeTestedOn' => '2026-11-10 15:00:00']);
+
+        self::sync()->saveCustomTests([$request], 'tx-2');
+
+        self::assertSame('9', (string) $this->committed('form_generic')['g-1']['result_status']);
+    }
+
     #[RunInSeparateProcess]
     public function testACustomTestsCopyCancelledWhenMovedAwayComesBackWithoutTheMarker(): void
     {

@@ -7,8 +7,10 @@ use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
+use App\Utilities\TestedSampleRule;
 
 use const SAMPLE_STATUS\CANCELLED;
+use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\REFERRED;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
@@ -659,6 +661,7 @@ final class LabRequestSyncService
                         $request['test_type_form'] ?? null
                     );
                     $request['test_type_form'] = $this->jsonSetOrNull($testTypeForm);
+                    $sentAttributes = $request['form_attributes'] ?? null;
                     $formAttributes = JsonUtility::jsonToSetString(
                         $localRecord['form_attributes'] ?? null,
                         'form_attributes',
@@ -673,6 +676,14 @@ final class LabRequestSyncService
                         $updatePayload,
                         $request,
                         $localRecord,
+                        $tableName,
+                        $primaryKeyName
+                    );
+                    $updatePayload = $this->reopenSentToBeTested(
+                        $updatePayload,
+                        ['form_attributes' => $sentAttributes] + $request,
+                        $localRecord,
+                        'generic-tests',
                         $tableName,
                         $primaryKeyName
                     );
@@ -930,6 +941,59 @@ final class LabRequestSyncService
         return $updatePayload;
     }
 
+    /**
+     * A copy this lab holds cancelled, or rejected without a result, that Move
+     * Manifest on the STS sent on to be tested: reopened at the STS's status,
+     * with its rejection cleared. Left rejected, the result form hides the
+     * result entry.
+     *
+     * The decision arrives as a stamp (ManifestMoveService::SENT_TO_BE_TESTED).
+     * The update writes the stamp onto this copy, so the same stamp reopens it
+     * once. A later cancellation here stands until the STS sends it on again.
+     */
+    private function reopenSentToBeTested(
+        array $updatePayload,
+        array $incoming,
+        array $localRecord,
+        string $testType,
+        string $tableName,
+        string $primaryKeyName
+    ): array {
+        $ownLabId = $this->ownLabId();
+        if ($ownLabId <= 0 || (int) ($incoming['lab_id'] ?? 0) !== $ownLabId) {
+            return $updatePayload;
+        }
+        $attributes = $incoming['form_attributes'] ?? null;
+        if (is_string($attributes)) {
+            $attributes = JsonUtility::isJSON($attributes) ? JsonUtility::decodeJson($attributes, true) : null;
+        }
+        $sent = is_array($attributes) ? trim((string) ($attributes[ManifestMoveService::SENT_TO_BE_TESTED] ?? '')) : '';
+        if ($sent === '') {
+            return $updatePayload;
+        }
+        $copy = $this->db->rawQueryOne(
+            "SELECT " . TestedSampleRule::setAsideSql($testType, 't') . " AS set_aside,
+                    JSON_UNQUOTE(JSON_EXTRACT(t.form_attributes, '$." . ManifestMoveService::SENT_TO_BE_TESTED . "')) AS sent
+               FROM `$tableName` AS t WHERE t.`$primaryKeyName` = ?",
+            [$localRecord[$primaryKeyName]]
+        );
+        if (empty($copy) || (int) $copy['set_aside'] !== 1 || (string) ($copy['sent'] ?? '') === $sent) {
+            return $updatePayload;
+        }
+        $status = (int) ($incoming['result_status'] ?? 0);
+        $updatePayload['result_status'] = in_array($status, [0, CANCELLED, REJECTED], true)
+            ? RECEIVED_AT_CLINIC
+            : $status;
+        $updatePayload += [
+            'is_sample_rejected' => 'no', 'reason_for_sample_rejection' => null, 'rejection_on' => null,
+            'result_approved_by' => null, 'result_approved_datetime' => null,
+        ];
+        if (array_key_exists('sample_rejection_facility', $this->db->getTableFieldsAsArray($tableName))) {
+            $updatePayload['sample_rejection_facility'] = null;
+        }
+        return $updatePayload;
+    }
+
     private function ownLabId(): int
     {
         return $this->ownLabId ??= (int) $this->general->getSystemConfig('sc_testing_lab_id');
@@ -1090,6 +1154,14 @@ final class LabRequestSyncService
                 $updatePayload,
                 $incoming,
                 $localRecord,
+                $tableName,
+                $primaryKeyName
+            );
+            $updatePayload = $this->reopenSentToBeTested(
+                $updatePayload,
+                $incoming,
+                $localRecord,
+                $testType,
                 $tableName,
                 $primaryKeyName
             );
