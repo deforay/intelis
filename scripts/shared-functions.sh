@@ -2772,7 +2772,29 @@ WWW_DATA_COMPOSER_HOME="${WWW_DATA_COMPOSER_HOME:-/var/www/.composer}"
 wwwdata_composer() {
     mkdir -p "$WWW_DATA_COMPOSER_HOME" 2>/dev/null || true
     chown www-data:www-data "$WWW_DATA_COMPOSER_HOME" 2>/dev/null || true
+    ensure_composer_runnable_by_wwwdata
     sudo -u www-data env COMPOSER_HOME="$WWW_DATA_COMPOSER_HOME" composer "$@"
+}
+
+# Composer is a phar: www-data needs read AND execute on it. On a machine whose
+# root umask is 077 (hardened images), `curl -o composer && chmod +x composer`
+# leaves it 0700, so every `sudo -u www-data composer` dies with
+# "env: 'composer': Permission denied" (exit 126). Make it 0755 once per run.
+COMPOSER_WWWDATA_CHECKED=false
+ensure_composer_runnable_by_wwwdata() {
+    [ "$COMPOSER_WWWDATA_CHECKED" = true ] && return 0
+    COMPOSER_WWWDATA_CHECKED=true
+
+    local bin
+    bin="$(sudo -u www-data sh -c 'command -v composer' 2>/dev/null)" || bin=""
+    [ -n "$bin" ] || bin="$(command -v composer 2>/dev/null)" || return 0
+    bin="$(readlink -f "$bin" 2>/dev/null || echo "$bin")"
+    [ -f "$bin" ] || return 0
+
+    if ! sudo -u www-data test -r "$bin" -a -x "$bin"; then
+        print warning "Composer at ${bin} is not runnable by www-data; setting mode 0755."
+        chmod 0755 "$bin" || print error "Could not chmod ${bin}; run: sudo chmod 0755 ${bin}"
+    fi
 }
 
 ensure_composer() {
