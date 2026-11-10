@@ -48,7 +48,35 @@ $lastQuery = "SELECT lab_id FROM $testTableName WHERE lab_id is not NULL ORDER B
 
 $lastResult = $db->rawQueryOne($lastQuery);
 
-$instrumentsList = $general->getInstruments();
+// Folder under app/instruments for each test type: keep in step with
+// $directoryMap in import-file-helper.php, which loads the script from there.
+$directoryMap = [
+	'vl' => 'vl',
+	'eid' => 'eid',
+	'covid19' => 'covid-19',
+	'hepatitis' => 'hepatitis',
+	'tb' => 'tb',
+	'cd4' => 'cd4',
+];
+
+// Only instruments that support this test and have a non-empty import script for
+// it: any other one would fail with "Import Script not found".
+$instrumentsList = [];
+if (isset($directoryMap[$type])) {
+	$scriptDir = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'instruments' . DIRECTORY_SEPARATOR . $directoryMap[$type] . DIRECTORY_SEPARATOR;
+	foreach ($general->getInstruments() as $instrument) {
+		$supportedTests = json_decode((string) ($instrument['supported_tests'] ?? ''), true);
+		if (!is_array($supportedTests) || !in_array($type, $supportedTests, true)) {
+			continue;
+		}
+		$scriptName = basename((string) ($instrument['import_machine_file_name'] ?? ''));
+		$script = $scriptDir . $scriptName;
+		if ($scriptName === '' || !is_file($script) || trim((string) file_get_contents($script)) === '') {
+			continue;
+		}
+		$instrumentsList[] = $instrument;
+	}
+}
 $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 
 
