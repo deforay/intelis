@@ -181,7 +181,8 @@ fi
 # then keep the names this script uses.
 REQUIRED_SHARED_FN=(
     app_heavy_dirs ask_multi ask_password ask_yes_no chown_app_tree
-    configure_apache_compression configure_php_ini download_file ensure_composer ensure_mysql_running
+    configure_apache_compression configure_php_ini download_file ensure_composer
+    ensure_composer_runnable_by_wwwdata ensure_mysql_running
     ensure_opcache ensure_path ensure_php_cli_extensions ensure_php_security_floor
     ensure_switch_php
     error_handling escape_php_string_for_sed extract_mysql_password_from_config

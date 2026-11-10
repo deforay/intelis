@@ -1888,6 +1888,7 @@ cd "${lis_path}"
 # INTELIS_NONINTERACTIVE tells post-install hooks (e.g. sts-setup) not to prompt:
 # the STS URL was already collected upfront, so they use the configured value
 # instead of re-asking. Set it later from Admin or via `composer sts-setup`.
+ensure_composer_runnable_by_wwwdata
 sudo -u www-data env INTELIS_NONINTERACTIVE=1 composer post-install
 
 
