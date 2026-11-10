@@ -64,7 +64,8 @@ try {
         $reason,
         $_SESSION['userId'] ?? null,
         $_SESSION['facilityMap'] ?? null,
-        ($_POST['receivedConfirmed'] ?? '') === 'yes'
+        ($_POST['receivedConfirmed'] ?? '') === 'yes',
+        trim((string) ($_POST['setAside'] ?? '')) ?: null
     );
 } catch (Throwable $e) {
     LoggerUtility::logError('Move Manifest failed: ' . $e->getMessage(), [
@@ -79,6 +80,11 @@ try {
 
 $toLabName = $testingLabs[$toLabId];
 $messages = [];
+$setAsideText = match ($_POST['setAside'] ?? '') {
+    ManifestMoveService::SET_ASIDE_SEND => ' (cancelled and rejected samples sent to be tested)',
+    ManifestMoveService::SET_ASIDE_KEEP => ' (cancelled and rejected samples kept as they were)',
+    default => '',
+};
 if ($outcome['moved'] !== []) {
     $messages[] = sprintf(
         _translate('Moved to %s: %s'),
@@ -88,7 +94,7 @@ if ($outcome['moved'] !== []) {
     $general->activityLog(
         'move-manifest',
         ($_SESSION['userName'] ?? '') . ' moved manifest(s) ' . implode(', ', array_keys($outcome['moved']))
-            . " to $toLabName: $reason",
+            . " to $toLabName: $reason$setAsideText",
         'specimen-manifest'
     );
 }
@@ -98,6 +104,7 @@ $refusalText = [
     'already-there' => _translate('is already at that lab'),
     'received' => _translate('was received at its lab and was not confirmed as sent on'),
     'not-found' => _translate('was not found'),
+    'set-aside' => _translate('has cancelled or rejected samples and no choice was made for them'),
 ];
 foreach ($outcome['refused'] as $code => $why) {
     $messages[] = sprintf(_translate('Not moved: %s %s'), $code, $refusalText[$why] ?? $why);

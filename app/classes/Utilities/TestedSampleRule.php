@@ -5,6 +5,7 @@ namespace App\Utilities;
 use App\Services\TestsService;
 
 use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\CANCELLED;
 use const SAMPLE_STATUS\NO_RESULT;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\TEST_FAILED;
@@ -61,10 +62,25 @@ final class TestedSampleRule
     /** SQL that is true for a tested sample; $alias names the sample table. */
     public static function sql(string $testType, string $alias): string
     {
-        $parts = [
-            "$alias.result_status IN (" . implode(',', self::DECIDED_STATUSES) . ')',
-            "$alias.sample_tested_datetime IS NOT NULL",
-        ];
+        return '(' . "$alias.result_status IN (" . implode(',', self::DECIDED_STATUSES) . ') OR '
+            . self::resultSql($testType, $alias) . ')';
+    }
+
+    /**
+     * SQL that is true for a sample set aside without a result: cancelled, or
+     * rejected before it was tested. Someone has to decide whether such a
+     * sample is still to be tested; nothing about it belongs to a lab's result.
+     */
+    public static function setAsideSql(string $testType, string $alias): string
+    {
+        return "($alias.result_status IN (" . CANCELLED . ',' . REJECTED . ') AND NOT '
+            . self::resultSql($testType, $alias) . ')';
+    }
+
+    /** SQL that is true for a sample with a test date or any result, whatever its status. */
+    private static function resultSql(string $testType, string $alias): string
+    {
+        $parts = ["$alias.sample_tested_datetime IS NOT NULL"];
         foreach (self::RESULT_COLUMNS[$testType] ?? ['result'] as $column) {
             $parts[] = "NULLIF(TRIM($alias.$column), '') IS NOT NULL";
         }
@@ -88,9 +104,29 @@ final class TestedSampleRule
      */
     public static function isTested(string $testType, array $record, ?array $testRows = null): bool
     {
-        if (in_array((int) ($record['result_status'] ?? 0), self::DECIDED_STATUSES, true)) {
-            return true;
-        }
+        return in_array((int) ($record['result_status'] ?? 0), self::DECIDED_STATUSES, true)
+            || self::hasResult($testType, $record, $testRows);
+    }
+
+    /**
+     * Whether a record as a lab sends it is set aside without a result: the PHP
+     * twin of setAsideSql.
+     *
+     * @param array<string, mixed> $record
+     * @param array<mixed>|null $testRows the record's test rows, as sent
+     */
+    public static function isSetAside(string $testType, array $record, ?array $testRows = null): bool
+    {
+        return in_array((int) ($record['result_status'] ?? 0), [CANCELLED, REJECTED], true)
+            && !self::hasResult($testType, $record, $testRows);
+    }
+
+    /**
+     * @param array<string, mixed> $record
+     * @param array<mixed>|null $testRows
+     */
+    private static function hasResult(string $testType, array $record, ?array $testRows): bool
+    {
         if (trim((string) ($record['sample_tested_datetime'] ?? '')) !== '') {
             return true;
         }

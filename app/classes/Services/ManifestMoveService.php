@@ -9,6 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Utilities\TestedSampleRule;
 
 use const SAMPLE_STATUS\CANCELLED;
+use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
@@ -22,6 +23,12 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
  * its received status are cleared, so the new lab activates the manifest and
  * gives the samples codes of its own.
  *
+ * A sample cancelled, or rejected before it was tested, does not stop the move,
+ * but whoever moves the manifest decides what becomes of it: it stays at its
+ * lab with its status, or goes to the new lab to be tested like the rest. A lab that
+ * could not test a manifest often cancels its samples before they are moved,
+ * and kept cancelled the new lab never sees them.
+ *
  * The lab each sample was taken from is told to cancel its copy (the
  * withdraw-samples command), when its LIS has said it can. Its copy would
  * otherwise stay live there, and could still be received and tested.
@@ -29,6 +36,15 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 final class ManifestMoveService
 {
     public const WITHDRAW_COMMAND = 'withdraw-samples';
+
+    /** Cancelled and rejected samples stay at their lab with their status. */
+    public const SET_ASIDE_KEEP = 'keep';
+
+    /** Cancelled and rejected samples go to the new lab to be tested. */
+    public const SET_ASIDE_SEND = 'send';
+
+    /** The form_attributes key that stamps when a sample was sent on to be tested. */
+    public const SENT_TO_BE_TESTED = 'sentToBeTestedOn';
 
     /** How far back the manifest list goes when no date range is chosen. */
     private const DEFAULT_MONTHS = 6;
@@ -50,7 +66,8 @@ final class ManifestMoveService
      * whose samples are from those facilities.
      *
      * @return list<array{
-     *     code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string, tested: bool
+     *     code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string, tested: bool,
+     *     cancelled: int, rejected: int
      * }>
      */
     public function listForLab(
@@ -100,7 +117,8 @@ final class ManifestMoveService
      *
      * @param list<string> $manifestCodes
      * @return list<array{
-     *     code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string, tested: bool
+     *     code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string, tested: bool,
+     *     cancelled: int, rejected: int
      * }>
      */
     public function findByCodes(string $testType, array $manifestCodes, ?string $facilityMap = null): array
@@ -119,9 +137,11 @@ final class ManifestMoveService
 
     /**
      * Which of these manifests hold a tested sample, and so cannot be moved:
-     * for showing a Move button only where a move can succeed. Reads samples
-     * through the sample_package_id index. A sample on a manifest by its code
-     * alone is not seen here, and the move itself still refuses it.
+     * for showing a Move button only where a move can succeed. A sample
+     * rejected before it was tested does not count: the move asks about it.
+     * Reads samples through the sample_package_id index. A sample on a
+     * manifest by its code alone is not seen here, and the move itself still
+     * refuses it.
      *
      * @param list<int> $manifestIds
      * @return list<int>
@@ -136,16 +156,52 @@ final class ManifestMoveService
         $rows = $this->db->rawQuery(
             "SELECT DISTINCT t.sample_package_id FROM `$table` AS t
               WHERE t.sample_package_id IN (" . implode(',', $manifestIds) . ')
-                AND ' . TestedSampleRule::sql($testType, 't')
+                AND ' . TestedSampleRule::sql($testType, 't') . '
+                AND NOT ' . TestedSampleRule::setAsideSql($testType, 't')
         );
         return array_map('intval', array_column($rows, 'sample_package_id'));
+    }
+
+    /**
+     * How many samples on each of these manifests are cancelled, and how many
+     * rejected before they were tested: what the mover is asked about. Read
+     * like testedManifestIds, through the sample_package_id index.
+     *
+     * @param list<int> $manifestIds
+     * @return array<int, array{cancelled: int, rejected: int}> by manifest id
+     */
+    public function setAsideCounts(string $testType, array $manifestIds): array
+    {
+        $manifestIds = array_values(array_unique(array_filter(array_map('intval', $manifestIds))));
+        if ($manifestIds === []) {
+            return [];
+        }
+        $table = TestsService::getTestTableName($testType);
+        $rows = $this->db->rawQuery(
+            "SELECT t.sample_package_id,
+                    SUM(t.result_status = " . CANCELLED . ") AS cancelled,
+                    SUM(t.result_status = " . REJECTED . ") AS rejected
+               FROM `$table` AS t
+              WHERE t.sample_package_id IN (" . implode(',', $manifestIds) . ')
+                AND ' . TestedSampleRule::setAsideSql($testType, 't') . '
+              GROUP BY t.sample_package_id'
+        );
+        $counts = [];
+        foreach ($rows as $row) {
+            $counts[(int) $row['sample_package_id']] = [
+                'cancelled' => (int) $row['cancelled'],
+                'rejected' => (int) $row['rejected'],
+            ];
+        }
+        return $counts;
     }
 
     /**
      * @param list<string> $where
      * @param list<mixed> $params
      * @return list<array{
-     *     code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string, tested: bool
+     *     code: string, created: ?string, status: ?string, samples: int, labId: int, lab: ?string, tested: bool,
+     *     cancelled: int, rejected: int
      * }>
      */
     private function listManifests(string $testType, array $where, array $params, ?string $facilityMap): array
@@ -185,6 +241,7 @@ final class ManifestMoveService
         }
         // Listed all the same, so a manifest that cannot move is seen to be there.
         $tested = $this->testedManifestIds($testType, array_column($rows, 'manifest_id'));
+        $setAside = $this->setAsideCounts($testType, array_column($rows, 'manifest_id'));
         return array_map(static fn(array $row): array => [
             'code' => (string) $row['manifest_code'],
             'created' => $row['request_created_datetime'],
@@ -193,13 +250,17 @@ final class ManifestMoveService
             'labId' => (int) $row['lab_id'],
             'lab' => $row['lab_name'],
             'tested' => in_array((int) $row['manifest_id'], $tested, true),
+            'cancelled' => $setAside[(int) $row['manifest_id']]['cancelled'] ?? 0,
+            'rejected' => $setAside[(int) $row['manifest_id']]['rejected'] ?? 0,
         ], $rows);
     }
 
     /**
      * Moves the given manifests to $toLabId. Each manifest is moved whole or
      * not at all. One already received at its lab moves only with
-     * $receivedConfirmed: its samples have to be sent on from there.
+     * $receivedConfirmed: its samples have to be sent on from there. One with
+     * cancelled or rejected samples moves only with $setAside saying what
+     * becomes of them (SET_ASIDE_KEEP or SET_ASIDE_SEND).
      *
      * @param list<string> $manifestCodes
      * @return array{
@@ -215,8 +276,12 @@ final class ManifestMoveService
         string $reason,
         ?string $userId,
         ?string $facilityMap = null,
-        bool $receivedConfirmed = false
+        bool $receivedConfirmed = false,
+        ?string $setAside = null
     ): array {
+        if (!in_array($setAside, [self::SET_ASIDE_KEEP, self::SET_ASIDE_SEND], true)) {
+            $setAside = null;
+        }
         $outcome = ['moved' => [], 'refused' => [], 'withdrawals' => []];
         if ($toLabId <= 0) {
             throw new \InvalidArgumentException('A testing lab to move the manifests to is required');
@@ -257,7 +322,8 @@ final class ManifestMoveService
                     continue;
                 }
                 $columns = "t.`$primaryKey` AS id, t.unique_id, t.lab_id, t.facility_id, t.result_status, "
-                    . TestedSampleRule::sql($testType, 't') . ' AS tested';
+                    . TestedSampleRule::sql($testType, 't') . ' AS tested, '
+                    . TestedSampleRule::setAsideSql($testType, 't') . ' AS set_aside';
                 $samples = $this->db->rawQuery(
                     "SELECT $columns FROM `$table` AS t WHERE t.sample_package_id = ? FOR UPDATE",
                     [(int) $manifest['manifest_id']]
@@ -287,13 +353,33 @@ final class ManifestMoveService
                         continue;
                     }
                 }
-                if (array_filter($samples, static fn(array $s): bool => (int) $s['tested'] === 1) !== []) {
+                $isSetAside = static fn(array $s): bool => (int) $s['set_aside'] === 1;
+                if (
+                    array_filter($samples, static fn(array $s): bool => (int) $s['tested'] === 1 && !$isSetAside($s))
+                    !== []
+                ) {
                     $outcome['refused'][$code] = 'tested';
                     continue;
                 }
+                // Asked only about samples the page can count: one on the manifest by
+                // its code alone is not counted there, so it moves as it is.
+                $linkedIds = array_column($linked, 'id');
+                $asked = array_filter(
+                    $samples,
+                    static fn(array $s): bool => $isSetAside($s) && !in_array($s['id'], $linkedIds, true)
+                );
+                if ($setAside === null && $asked !== []) {
+                    $outcome['refused'][$code] = 'set-aside';
+                    continue;
+                }
+                // Kept: a cancellation or rejection stays with the lab that made it.
+                // The new lab's LIS takes no rejection details from a pull, so a
+                // rejected sample sent there would arrive without its reason.
+                $keep = $setAside === self::SET_ASIDE_KEEP;
                 $toMove = array_values(array_filter(
                     $samples,
                     static fn(array $s): bool => (int) ($s['lab_id'] ?? 0) !== $toLabId
+                        && !($keep && $isSetAside($s))
                 ));
                 if ($toMove === [] && (int) $manifest['lab_id'] === $toLabId) {
                     $outcome['refused'][$code] = 'already-there';
@@ -309,10 +395,22 @@ final class ManifestMoveService
                         [(int) $manifest['manifest_id']]
                     );
                 }
+                if ($setAside === self::SET_ASIDE_SEND) {
+                    // Every one of them, also those already at the new lab: a
+                    // sample kept there by an earlier move is sent to be tested too.
+                    $this->sendToBeTested(
+                        $table,
+                        $primaryKey,
+                        array_column(array_filter($samples, $isSetAside), 'id'),
+                        $now
+                    );
+                }
                 foreach ($toMove as $sample) {
                     $movedHere[] = (string) $sample['unique_id'];
                     $fromLab = (int) ($sample['lab_id'] ?? 0);
-                    $received = (int) ($sample['result_status'] ?? 0) === RECEIVED_AT_TESTING_LAB;
+                    // Back to registered: received at the old lab, or sent on to be tested.
+                    $reRegister = (int) ($sample['result_status'] ?? 0) === RECEIVED_AT_TESTING_LAB
+                        || ($setAside === self::SET_ASIDE_SEND && $isSetAside($sample));
                     $this->db->rawQuery(
                         "UPDATE `$table`
                             SET referring_lab_id = ?, lab_id = ?,
@@ -324,7 +422,7 @@ final class ManifestMoveService
                         [
                             $fromLab > 0 ? $fromLab : null,
                             $toLabId,
-                            $received ? RECEIVED_AT_CLINIC : (int) $sample['result_status'],
+                            $reRegister ? RECEIVED_AT_CLINIC : (int) $sample['result_status'],
                             $now,
                             $now,
                             $sample['id'],
@@ -398,6 +496,39 @@ final class ManifestMoveService
         }
 
         return $outcome;
+    }
+
+    /**
+     * Cancelled or rejected samples going on to be tested: registered again,
+     * with the rejection and its approval cleared. Those moving to the new lab
+     * are then moved like the rest.
+     * Whoever moves the manifest decided this; the audit trail keeps what they
+     * were.
+     *
+     * The decision is stamped on the request (sentToBeTestedOn). A LIS that
+     * already holds a cancelled or rejected copy takes no status from a pull,
+     * except a new stamp: it then reopens its copy for testing
+     * (LabRequestSyncService).
+     *
+     * @param array<int|string> $ids
+     */
+    private function sendToBeTested(string $table, string $primaryKey, array $ids, string $now): void
+    {
+        if ($ids === []) {
+            return;
+        }
+        $set = "result_status = " . RECEIVED_AT_CLINIC . ", data_sync = 0, last_modified_datetime = ?,
+                is_sample_rejected = 'no', reason_for_sample_rejection = NULL, rejection_on = NULL,
+                result_approved_by = NULL, result_approved_datetime = NULL,
+                form_attributes = JSON_SET(COALESCE(form_attributes, JSON_OBJECT()), '$." . self::SENT_TO_BE_TESTED . "', ?)";
+        if (array_key_exists('sample_rejection_facility', $this->db->getTableFieldsAsArray($table))) {
+            $set .= ', sample_rejection_facility = NULL';
+        }
+        $this->db->rawQuery(
+            "UPDATE `$table` SET $set WHERE `$primaryKey` IN ("
+                . implode(',', array_map('intval', $ids)) . ')',
+            [$now, $now]
+        );
     }
 
     /**

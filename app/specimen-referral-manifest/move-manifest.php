@@ -168,6 +168,25 @@ $statusLabels = [
                                 </div>
                             </div>
                         </div>
+                        <div class="row" id="setAsideGroup" style="display:none;">
+                            <div class="col-md-12">
+                                <div class="alert alert-warning">
+                                    <p id="setAsideCount" style="margin-bottom:10px;"></p>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="setAside" value="send">
+                                            <?= _translate("Send them to the new lab to be tested"); ?>
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="setAside" value="keep">
+                                            <?= _translate("Keep them cancelled or rejected at their current lab"); ?>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="box-footer text-center">
                         <p class="text-muted">
@@ -253,7 +272,27 @@ $statusLabels = [
         }
 
         function updateMoveButton() {
-            $('#moveButton').prop('disabled', manifestBoxes().filter(':checked').length === 0);
+            const checked = manifestBoxes().filter(':checked');
+            $('#moveButton').prop('disabled', checked.length === 0);
+            // Cancelled or rejected samples on the selected manifests: the mover
+            // says whether they go on to be tested at the new lab.
+            let cancelled = 0;
+            let rejected = 0;
+            checked.each(function() {
+                cancelled += parseInt($(this).attr('data-cancelled') || '0', 10);
+                rejected += parseInt($(this).attr('data-rejected') || '0', 10);
+            });
+            const any = cancelled + rejected > 0;
+            $('#setAsideGroup').toggle(any);
+            if (!any) {
+                $('input[name="setAside"]').prop('checked', false);
+                return;
+            }
+            $('#setAsideCount').text(
+                "<?= _translate('The selected manifests have %1$d cancelled and %2$d rejected sample(s). What should happen to them at the new lab?', true); ?>"
+                .replace('%1$d', cancelled)
+                .replace('%2$d', rejected)
+            );
         }
 
         function findBy(how) {
@@ -344,6 +383,8 @@ $statusLabels = [
                         .attr('data-status', m.status || '')
                         .attr('data-lab-id', m.labId || '')
                         .attr('data-lab', m.lab || '')
+                        .attr('data-cancelled', m.cancelled || 0)
+                        .attr('data-rejected', m.rejected || 0)
                         .prop('disabled', m.tested)
                         .prop('checked', byCode && !m.tested);
                     const status = $('<td>').text(statusLabels[m.status] || m.status || '');
@@ -357,7 +398,7 @@ $statusLabels = [
                         .append($('<td>').text(m.lab || ''))
                         .append($('<td>').attr('data-order', m.created || '').text(m.createdLabel || ''))
                         .append(status)
-                        .append($('<td>').text(m.samples));
+                        .append(samplesCell(m));
                     rows.append(tr);
                 });
                 $('#selectAll').prop('checked', false)
@@ -383,6 +424,21 @@ $statusLabels = [
             });
         }
 
+        function samplesCell(m) {
+            const cell = $('<td>').text(m.samples);
+            const notes = [];
+            if (m.cancelled > 0) {
+                notes.push("<?= _translate('%d cancelled', true); ?>".replace('%d', m.cancelled));
+            }
+            if (m.rejected > 0) {
+                notes.push("<?= _translate('%d rejected', true); ?>".replace('%d', m.rejected));
+            }
+            if (notes.length > 0) {
+                cell.append(' ').append($('<span class="label label-warning">').text(notes.join(', ')));
+            }
+            return cell;
+        }
+
         function moveManifests() {
             const to = $('#assignLab').val();
             const checked = manifestBoxes().filter(':checked');
@@ -394,6 +450,10 @@ $statusLabels = [
                 formId: 'moveManifestForm'
             });
             if (!flag) {
+                return;
+            }
+            if ($('#setAsideGroup').is(':visible') && !$('input[name="setAside"]:checked').length) {
+                alert("<?= _translate('Please choose what should happen to the cancelled and rejected samples', true); ?>");
                 return;
             }
             // Received means the samples are at the lab now: moving them is only

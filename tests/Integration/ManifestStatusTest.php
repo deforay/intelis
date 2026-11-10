@@ -137,6 +137,20 @@ final class ManifestStatusTest extends TestCase
         self::assertSame(TestRequestsService::MANIFEST_PENDING, $this->manifestStatus('M-WAITING'));
     }
 
+    public function testASampleKeptAtTheOldLabDoesNotMarkTheMovedManifestReceived(): void
+    {
+        $db = LegacyAppHarness::db();
+        $db->insert('r_sample_status', ['status_id' => 4, 'status_name' => 'Rejected', 'status' => 'active']);
+        // The manifest moved to lab 1. Its rejected sample was kept at lab 2, received there.
+        $this->manifest('M-MOVED', TestRequestsService::MANIFEST_DISPATCHED);
+        $kept = $this->sample('uid-kept', 'M-MOVED', 4, '2026-09-10 08:00:00');
+        $db->rawQuery('UPDATE form_vl SET lab_id = 2 WHERE vl_sample_id = ?', [$kept]);
+
+        $this->service()->markManifestsReceivedForSamples('vl', [$kept]);
+
+        self::assertSame(TestRequestsService::MANIFEST_DISPATCHED, $this->manifestStatus('M-MOVED'));
+    }
+
     private function service(): TestRequestsService
     {
         /** @var TestRequestsService $service */

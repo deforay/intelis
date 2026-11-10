@@ -124,6 +124,29 @@ final class ManifestActivationTestDateTest extends TestCase
         self::assertSame(self::NEW_RECEIPT, $tested['sample_received_at_lab_datetime']);
     }
 
+    public function testASampleKeptAtAnotherLabIsNotTakenIn(): void
+    {
+        $db = LegacyAppHarness::db();
+        $db->insert('r_sample_status', ['status_id' => 12, 'status_name' => 'Cancelled', 'status' => 'active']);
+        // Move Manifest moved the manifest to lab 1 and kept this cancelled one at lab 2.
+        $db->insert('form_vl', [
+            'unique_id' => 'uid-kept',
+            'sample_code' => 'S-KEPT',
+            'sample_package_code' => self::MANIFEST,
+            'lab_id' => 2,
+            'result_status' => 12,
+            'sample_collection_date' => '2026-09-01 10:00:00',
+            'sample_received_at_lab_datetime' => self::FIRST_RECEIPT,
+        ]);
+
+        $this->activate();
+
+        $kept = $this->row('uid-kept');
+        self::assertSame(12, (int) $kept['result_status'], 'still cancelled');
+        self::assertSame(self::FIRST_RECEIPT, $kept['sample_received_at_lab_datetime'], 'not re-dated');
+        self::assertSame(RECEIVED_AT_TESTING_LAB, (int) $this->row('uid-arriving')['result_status']);
+    }
+
     public function testASampleArrivingNowIsReceivedWithNoTestDate(): void
     {
         $this->activate();

@@ -21,7 +21,8 @@ use Tests\Support\TestRun;
  * The rule: a manifest moves whole, with every sample on it, unless a lab has
  * tested any of them; a moved sample arrives at the new lab as if just sent
  * there; the lab it was taken from is asked to cancel its copy, and keeps any
- * it has tested since. Rows are read back through a second connection, so a
+ * it has tested since. Cancelled samples, and those rejected before testing,
+ * move only once the mover has said whether they are to be tested. Rows are read back through a second connection, so a
  * transaction left open shows up as missing data.
  *
  * Set INTELIS_TEST_DB_HOST/_PORT/_USER/_PASS to run; skipped without them.
@@ -212,7 +213,8 @@ final class ManifestMoveTest extends TestCase
         $decided = [
             'M-result' => ['result' => '40'],
             'M-date' => ['sample_tested_datetime' => '2026-08-07 09:00:00'],
-            'M-rejected' => ['result_status' => 4],
+            // Rejected after it was tested: the test is the lab's all the same.
+            'M-rejected' => ['result_status' => 4, 'sample_tested_datetime' => '2026-08-07 09:00:00'],
             'M-failed' => ['result_status' => 5],
             'M-approval' => ['result_status' => 8],
         ];
@@ -233,6 +235,200 @@ final class ManifestMoveTest extends TestCase
         foreach ($this->committed('specimen_manifests', 'manifest_code') as $manifest) {
             self::assertSame((string) self::OLD_LAB, (string) $manifest['lab_id']);
         }
+    }
+
+    /** A manifest whose lab could not test it: one sample cancelled, one rejected, one still open. */
+    private static function setAsideManifest($db, string $code, int $labId = self::OLD_LAB): int
+    {
+        $id = self::manifest($db, $code, ['lab_id' => $labId]);
+        self::sample($db, $id, $code, "$code-cancelled", [
+            'lab_id' => $labId, 'result_status' => 12, 'sample_code' => "C-$code",
+            'result_approved_datetime' => '2026-10-29 12:20:32',
+        ]);
+        self::sample($db, $id, $code, "$code-rejected", [
+            'lab_id' => $labId, 'result_status' => 4, 'is_sample_rejected' => 'yes',
+            'reason_for_sample_rejection' => '3', 'rejection_on' => '2026-10-28',
+            'sample_rejection_facility' => $labId, 'result_approved_by' => 'user-9',
+            'result_approved_datetime' => '2026-10-28 15:00:00',
+        ]);
+        self::sample($db, $id, $code, "$code-open", ['lab_id' => $labId]);
+        return $id;
+    }
+
+    #[RunInSeparateProcess]
+    public function testCancelledOrRejectedSamplesWaitForTheMoverToChoose(): void
+    {
+        $db = $this->boot();
+        self::setAsideManifest($db, 'M-1');
+        $plain = self::manifest($db, 'M-plain');
+        self::sample($db, $plain, 'M-plain', 'p-1');
+
+        $outcome = self::moves()->move('vl', ['M-1', 'M-plain'], self::NEW_LAB, 'No reagents', 'user-1');
+
+        self::assertSame(['M-plain' => 1], $outcome['moved'], 'a manifest with nothing to choose moves as before');
+        self::assertSame(['M-1' => 'set-aside'], $outcome['refused']);
+        foreach (['M-1-cancelled', 'M-1-rejected', 'M-1-open'] as $u) {
+            self::assertSame((string) self::OLD_LAB, (string) $this->committed('form_vl')[$u]['lab_id']);
+        }
+        self::assertSame(
+            (string) self::OLD_LAB,
+            (string) $this->committed('specimen_manifests', 'manifest_code')['M-1']['lab_id']
+        );
+        $unknown = self::moves()->move('vl', ['M-1'], self::NEW_LAB, 'No reagents', 'user-1', null, false, 'maybe');
+        self::assertSame(['M-1' => 'set-aside'], $unknown['refused'], 'only keep or send is a choice');
+    }
+
+    #[RunInSeparateProcess]
+    public function testACancelledSampleOnTheManifestByItsCodeAloneMovesAsItIsWithoutAChoice(): void
+    {
+        $db = $this->boot();
+        $id = self::manifest($db, 'M-1');
+        self::sample($db, $id, 'M-1', 'by-id');
+        // The page does not count it, so it cannot ask about it.
+        self::sample($db, 0, 'M-1', 'by-code', ['sample_package_id' => null, 'result_status' => 12]);
+
+        $outcome = self::moves()->move('vl', ['M-1'], self::NEW_LAB, 'No reagents', 'user-1');
+
+        self::assertSame(['M-1' => 2], $outcome['moved']);
+        $row = $this->committed('form_vl')['by-code'];
+        self::assertSame((string) self::NEW_LAB, (string) $row['lab_id']);
+        self::assertSame('12', (string) $row['result_status']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testSamplesSentToBeTestedArriveAtTheNewLabAsJustRegistered(): void
+    {
+        $db = $this->boot();
+        self::setAsideManifest($db, 'M-1');
+
+        $outcome = self::moves()->move(
+            'vl',
+            ['M-1'],
+            self::NEW_LAB,
+            'No reagents',
+            'user-1',
+            null,
+            false,
+            ManifestMoveService::SET_ASIDE_SEND
+        );
+
+        self::assertSame(['M-1' => 3], $outcome['moved']);
+        $rows = $this->committed('form_vl');
+        foreach (['M-1-cancelled', 'M-1-rejected', 'M-1-open'] as $u) {
+            self::assertSame((string) self::NEW_LAB, (string) $rows[$u]['lab_id']);
+            self::assertSame('9', (string) $rows[$u]['result_status'], "$u is to be tested");
+            self::assertNull($rows[$u]['sample_code']);
+            self::assertNull($rows[$u]['result_approved_datetime'], 'the old decision is not approved anew');
+            self::assertSame('0', (string) $rows[$u]['data_sync']);
+        }
+        foreach (['M-1-cancelled', 'M-1-rejected'] as $u) {
+            self::assertNotEmpty(
+                json_decode((string) $rows[$u]['form_attributes'], true)['sentToBeTestedOn'] ?? null,
+                "$u carries the decision, so a lab holding a copy reopens it"
+            );
+        }
+        self::assertArrayNotHasKey(
+            'sentToBeTestedOn',
+            json_decode((string) ($rows['M-1-open']['form_attributes'] ?? ''), true) ?? []
+        );
+        $rejected = $rows['M-1-rejected'];
+        self::assertSame('no', $rejected['is_sample_rejected']);
+        self::assertNull($rejected['reason_for_sample_rejection']);
+        self::assertNull($rejected['rejection_on']);
+        self::assertNull($rejected['sample_rejection_facility']);
+        self::assertNull($rejected['result_approved_by']);
+        self::assertFalse($db->isTransactionActive());
+    }
+
+    #[RunInSeparateProcess]
+    public function testSamplesKeptCancelledOrRejectedStayWithTheirLab(): void
+    {
+        $db = $this->boot();
+        self::setAsideManifest($db, 'M-1');
+
+        $outcome = self::moves()->move(
+            'vl',
+            ['M-1'],
+            self::NEW_LAB,
+            'No reagents',
+            'user-1',
+            null,
+            false,
+            ManifestMoveService::SET_ASIDE_KEEP
+        );
+
+        self::assertSame(['M-1' => 1], $outcome['moved']);
+        $rows = $this->committed('form_vl');
+        self::assertSame((string) self::NEW_LAB, (string) $rows['M-1-open']['lab_id']);
+        foreach (['M-1-cancelled' => '12', 'M-1-rejected' => '4'] as $u => $status) {
+            self::assertSame((string) self::OLD_LAB, (string) $rows[$u]['lab_id'], "$u stays with its lab");
+            self::assertSame($status, (string) $rows[$u]['result_status']);
+            self::assertSame('1', (string) $rows[$u]['data_sync'], 'untouched');
+        }
+        self::assertSame('yes', $rows['M-1-rejected']['is_sample_rejected']);
+        self::assertSame(
+            (string) self::NEW_LAB,
+            (string) $this->committed('specimen_manifests', 'manifest_code')['M-1']['lab_id']
+        );
+        self::assertSame([], self::moves()->healRevertedMoves(), 'and is not pulled over later');
+    }
+
+    #[RunInSeparateProcess]
+    public function testSamplesKeptByAnEarlierMoveCanBeSentToBeTestedLater(): void
+    {
+        $db = $this->boot();
+        self::setAsideManifest($db, 'M-1');
+        self::moves()->move(
+            'vl',
+            ['M-1'],
+            self::NEW_LAB,
+            'No reagents',
+            'user-1',
+            null,
+            false,
+            ManifestMoveService::SET_ASIDE_KEEP
+        );
+
+        // Back to the old lab, where the kept samples are: now to be tested.
+        $outcome = self::moves()->move(
+            'vl',
+            ['M-1'],
+            self::OLD_LAB,
+            'Reagents arrived',
+            'user-1',
+            null,
+            false,
+            ManifestMoveService::SET_ASIDE_SEND
+        );
+
+        self::assertSame(['M-1' => 1], $outcome['moved']);
+        $rows = $this->committed('form_vl');
+        foreach (['M-1-cancelled', 'M-1-rejected'] as $u) {
+            self::assertSame((string) self::OLD_LAB, (string) $rows[$u]['lab_id']);
+            self::assertSame('9', (string) $rows[$u]['result_status'], "$u is to be tested");
+            self::assertSame('0', (string) $rows[$u]['data_sync'], 'the lab has to pull it');
+            self::assertNotEmpty(json_decode((string) $rows[$u]['form_attributes'], true)['sentToBeTestedOn'] ?? null);
+        }
+        self::assertSame('no', $rows['M-1-rejected']['is_sample_rejected']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAListedManifestCountsItsCancelledAndRejectedSamples(): void
+    {
+        $db = $this->boot();
+        self::setAsideManifest($db, 'M-1');
+        $plain = self::manifest($db, 'M-plain');
+        self::sample($db, $plain, 'M-plain', 'p-1');
+
+        $listed = array_column(self::moves()->findByCodes('vl', ['M-1', 'M-plain']), null, 'code');
+
+        self::assertSame(
+            ['tested' => false, 'cancelled' => 1, 'rejected' => 1],
+            array_intersect_key($listed['M-1'], array_flip(['tested', 'cancelled', 'rejected'])),
+            'a rejection before testing does not stop the move: it is asked about'
+        );
+        self::assertSame(0, $listed['M-plain']['cancelled']);
+        self::assertSame(0, $listed['M-plain']['rejected']);
     }
 
     #[RunInSeparateProcess]
