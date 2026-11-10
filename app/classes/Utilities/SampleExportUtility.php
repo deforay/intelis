@@ -23,6 +23,10 @@ use OpenSpout\Writer\XLSX\Writer;
  *   'exceptForms' => [..]  these country forms do not
  *   'pii'         => true  only when patient details were asked for
  *   'sts'         => true  not on a standalone instance
+ *   'detail'      => true  only when lab and audit details were asked for:
+ *                          who tested, reviewed and approved, analyzer run,
+ *                          status, turnaround and record history. The default
+ *                          sheet stays the compact one labs were used to.
  */
 final class SampleExportUtility
 {
@@ -97,8 +101,13 @@ final class SampleExportUtility
     }
 
     /** The columns one instance shows, by the rules described on the class. */
-    public static function forForm(array $columns, int $formId, bool $withPatientInfo, bool $standalone): array
-    {
+    public static function forForm(
+        array $columns,
+        int $formId,
+        bool $withPatientInfo,
+        bool $standalone,
+        bool $withDetails = true
+    ): array {
         return array_values(array_filter(
             $columns,
             static fn(array $column): bool =>
@@ -106,6 +115,7 @@ final class SampleExportUtility
                 && (!isset($column['exceptForms']) || !in_array($formId, $column['exceptForms'], true))
                 && (empty($column['pii']) || $withPatientInfo)
                 && (empty($column['sts']) || !$standalone)
+                && (empty($column['detail']) || $withDetails)
         ));
     }
 
@@ -206,13 +216,14 @@ final class SampleExportUtility
      */
     public static function analyzerColumns(): array
     {
+        $detail = ['detail' => true];
         return [
-            self::text(_translate('Instrument Model'), 'instrument_model'),
-            self::text(_translate('Instrument Serial Number'), 'instrument_serial'),
-            self::text(_translate('Analyzer Run ID'), 'analyzer_run_id'),
-            self::text(_translate('Reagent Lot'), 'lot_number'),
-            self::date(_translate('Reagent Lot Expiry'), 'lot_expiration_date'),
-            self::text(_translate('Analyzer Message'), 'analyzer_message'),
+            self::text(_translate('Instrument Model'), 'instrument_model', $detail),
+            self::text(_translate('Instrument Serial Number'), 'instrument_serial', $detail),
+            self::text(_translate('Analyzer Run ID'), 'analyzer_run_id', $detail),
+            self::text(_translate('Reagent Lot'), 'lot_number', $detail),
+            self::date(_translate('Reagent Lot Expiry'), 'lot_expiration_date', false, $detail),
+            self::text(_translate('Analyzer Message'), 'analyzer_message', $detail),
             // "HIV-1 Ct: 26.4; IC: 15.70 CN", read from the stored JSON list.
             self::column(_translate('Analyzer Readings'), static function (array $r): ?string {
                 $readings = json_decode((string) ($r['analyzer_readings'] ?? ''), true);
@@ -225,7 +236,7 @@ final class SampleExportUtility
                     ),
                     array_filter($readings, 'is_array')
                 ));
-            }),
+            }, $detail),
         ];
     }
 
@@ -242,7 +253,7 @@ final class SampleExportUtility
                     ? SampleRejectionUtility::reasonLabel($r['rejection_reason_name'] ?? null)
                     : ''
             ),
-            self::date(_translate('Rejection Date'), 'rejection_on'),
+            self::date(_translate('Rejection Date'), 'rejection_on', false, ['detail' => true]),
         ];
     }
 
@@ -340,27 +351,29 @@ final class SampleExportUtility
 
     /**
      * Columns every test export ends with, in this order: lab sign-off,
-     * status, and who made and last changed the record.
+     * status, and who made and last changed the record. Only the result
+     * dates, reception delay and creation date are in the compact sheet.
      */
     public static function recordColumns(): array
     {
+        $detail = ['detail' => true];
         return [
-            self::text(_translate('Tested By'), 'tested_by_name'),
-            self::text(_translate('Reviewed By'), 'reviewed_by_name'),
-            self::date(_translate('Reviewed On'), 'result_reviewed_datetime', true),
-            self::text(_translate('Approved By'), 'approved_by_name'),
-            self::date(_translate('Approved On'), 'result_approved_datetime', true),
-            self::text(_translate('Reason for Result Change'), 'result_change_reason'),
-            self::choice(_translate('Sample Status'), 'status_name'),
+            self::text(_translate('Tested By'), 'tested_by_name', $detail),
+            self::text(_translate('Reviewed By'), 'reviewed_by_name', $detail),
+            self::date(_translate('Reviewed On'), 'result_reviewed_datetime', true, $detail),
+            self::text(_translate('Approved By'), 'approved_by_name', $detail),
+            self::date(_translate('Approved On'), 'result_approved_datetime', true, $detail),
+            self::text(_translate('Reason for Result Change'), 'result_change_reason', $detail),
+            self::choice(_translate('Sample Status'), 'status_name', $detail),
             self::date(_translate('Result Printed Date'), 'result_printed_datetime', true),
             self::date(_translate('Result Sent On'), 'result_dispatched_datetime', true),
             self::text(_translate('Collection to Lab Reception (days)'), 'collection_lab_reception_delay'),
-            self::text(_translate('Reception to Result Approval (days)'), 'turnaround_reception'),
-            self::text(_translate('Collection to Result Approval (days)'), 'turnaround_collection'),
+            self::text(_translate('Reception to Result Approval (days)'), 'turnaround_reception', $detail),
+            self::text(_translate('Collection to Result Approval (days)'), 'turnaround_collection', $detail),
             self::date(_translate('Request Created On'), 'request_created_datetime', true),
-            self::text(_translate('Request Created By'), 'created_by_name'),
-            self::date(_translate('Last Modified On'), 'last_modified_datetime', true),
-            self::text(_translate('Last Modified By'), 'modified_by_name'),
+            self::text(_translate('Request Created By'), 'created_by_name', $detail),
+            self::date(_translate('Last Modified On'), 'last_modified_datetime', true, $detail),
+            self::text(_translate('Last Modified By'), 'modified_by_name', $detail),
         ];
     }
 

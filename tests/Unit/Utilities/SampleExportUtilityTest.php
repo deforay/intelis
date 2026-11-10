@@ -71,6 +71,32 @@ final class SampleExportUtilityTest extends TestCase
         );
     }
 
+    public function testDetailColumnsOnlyComeOutWhenAskedFor(): void
+    {
+        $columns = [
+            SampleExportUtility::text('Patient Name', 'a', ['pii' => true]),
+            SampleExportUtility::text('Tested By', 'b', ['detail' => true]),
+        ];
+        $headings = static fn(array $cols): array => array_column($cols, 'heading');
+
+        $this->assertSame(['Patient Name'], $headings(SampleExportUtility::forForm($columns, DRC, true, false, false)));
+        $this->assertSame(
+            ['Patient Name', 'Tested By'],
+            $headings(SampleExportUtility::forForm($columns, DRC, true, false, true))
+        );
+    }
+
+    public function testStaffNameColumnsAreDetailOnly(): void
+    {
+        $compact = array_column(
+            SampleExportUtility::forForm(SampleExportUtility::recordColumns(), DRC, true, false, false),
+            'heading'
+        );
+        foreach (['Tested By', 'Reviewed By', 'Approved By', 'Request Created By', 'Last Modified By'] as $heading) {
+            $this->assertNotContains($heading, $compact);
+        }
+    }
+
     public function testAnalyzerReadingsAreWrittenAsOneLine(): void
     {
         $columns = array_column(SampleExportUtility::analyzerColumns(), 'value', 'heading');
