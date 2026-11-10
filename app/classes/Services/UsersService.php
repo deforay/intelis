@@ -249,8 +249,14 @@ final class UsersService
     /**
      * Active users the current session may name as a signer, as user_id => user_name.
      *
-     * Applies the lab axis (labAdminScopeWhere on testing_lab_id) as well as the
-     * session's facility map, so a cloud-LIS operator never sees another lab's users.
+     * Applies the session's facility map and the lab axis: a session acting as a lab
+     * (LIS, or a testing-lab user on STS) sees its own lab's users plus users with no
+     * lab assigned, never users assigned to another lab. A lab session with no lab
+     * resolved sees only users with no lab. Other sessions are not narrowed.
+     *
+     * Deliberately not labAdminScopeWhere(): that fails closed on cloud-LIS, and most
+     * STS lab users have no testing_lab_id, so the Tested/Reviewed/Approved By lists
+     * came up empty and results could not be entered.
      *
      * @return array<string, string>
      */
@@ -273,9 +279,14 @@ final class UsersService
             }
         }
 
-        $labScope = $this->commonService->labAdminScopeWhere('testing_lab_id', 'u');
-        if ($labScope !== '') {
-            $where[] = $labScope;
+        if ($this->commonService->treatAsLIS()) {
+            $labId = (int) ($_SESSION['labId'] ?? 0);
+            if ($labId > 0) {
+                $where[] = '(u.testing_lab_id = ? OR u.testing_lab_id IS NULL)';
+                $params[] = $labId;
+            } else {
+                $where[] = 'u.testing_lab_id IS NULL';
+            }
         }
 
         $rows = $this->db->rawQuery(
