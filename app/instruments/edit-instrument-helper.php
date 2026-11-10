@@ -2,13 +2,11 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Services\TestsService;
 
 
 /** @var DatabaseService $db */
@@ -26,9 +24,8 @@ $importControlTable = "instrument_controls";
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-// The configuration file is a file name, picked from the instrument files in this
-// folder or generated from the instrument name, and it is joined onto a directory
-// to create the file. basename() keeps it a name, so a path cannot write elsewhere.
+// The configuration file is a file name picked from the instrument files, and the
+// import later joins it onto a directory. basename() keeps it a name, not a path.
 if (isset($_POST['configurationFile']) && is_string($_POST['configurationFile'])) {
     $_POST['configurationFile'] = basename($_POST['configurationFile']);
 }
@@ -49,25 +46,6 @@ $configControlInfo = $db->rawQuery($configControlQuery, [$configId]);
 
 try {
     if (trim((string) $_POST['configurationName']) !== "") {
-        if (!empty($_POST['supportedTests'])) {
-            foreach ($_POST['supportedTests'] as $test) {
-                // The test type names a folder that gets created, so it has to be one.
-                if (!is_string($test) || !array_key_exists($test, TestsService::getTestTypes())) {
-                    continue;
-                }
-                $configDir = APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments";
-                MiscUtility::makeDirectory($configDir . DIRECTORY_SEPARATOR . $test);
-                $configFile = $configDir . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
-                if (!file_exists($configFile)) {
-                    $fp = fopen($configFile, 'w');
-                    if ($fp !== false && !empty($fp)) {
-                        fwrite($fp, '');
-                        fclose($fp);
-                    }
-                }
-            }
-        }
-
         $matchedTests = array_diff($_POST['userTestType'] ?? [], $_POST['supportedTests'] ?? []);
         foreach (array_keys($matchedTests) as $key) {
             $_POST['reviewedBy'][$key] = "";
@@ -148,48 +126,6 @@ try {
             }
         }
         $_SESSION['alertMsg'] = _translate("Instrument updated successfully");
-        $configDir = APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments";
-        $configFileVL = $configDir . DIRECTORY_SEPARATOR . "vl" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
-        $configFileEID = $configDir . DIRECTORY_SEPARATOR . "eid" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
-        $configFileCovid19 = $configDir . DIRECTORY_SEPARATOR . "covid-19" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
-        $configFileHepatitis = $configDir . DIRECTORY_SEPARATOR . "hepatitis" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
-        $configFileCD4 = $configDir . DIRECTORY_SEPARATOR . "cd4" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
-
-
-
-        MiscUtility::makeDirectory($configDir . DIRECTORY_SEPARATOR . $test);
-
-        if (!file_exists($configFileVL)) {
-            $fp = fopen($configFileVL, 'w');
-            fwrite($fp, '');
-            fclose($fp);
-        }
-
-        if (!file_exists($configFileEID)) {
-            $fp = fopen($configFileEID, 'w');
-            fwrite($fp, '');
-            fclose($fp);
-        }
-
-        if (!file_exists($configFileCovid19)) {
-            $fp = fopen($configFileCovid19, 'w');
-            if ($fp !== false && !empty($fp)) {
-                fwrite($fp, '');
-                fclose($fp);
-            }
-        }
-
-        if (!file_exists($configFileHepatitis)) {
-            $fp = fopen($configFileHepatitis, 'w');
-            fwrite($fp, '');
-            fclose($fp);
-        }
-
-        if (!file_exists($configFileCD4)) {
-            $fp = fopen($configFileCD4, 'w');
-            fwrite($fp, '');
-            fclose($fp);
-        }
     }
 } catch (Exception $e) {
     LoggerUtility::logError($e->getMessage(), [

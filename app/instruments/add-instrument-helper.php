@@ -8,7 +8,6 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Services\TestsService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -25,9 +24,8 @@ $importControlTable = "instrument_controls";
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-// The configuration file is a file name, picked from the instrument files in this
-// folder or generated from the instrument name, and it is joined onto a directory
-// to create the file. basename() keeps it a name, so a path cannot write elsewhere.
+// The configuration file is a file name picked from the instrument files, and the
+// import later joins it onto a directory. basename() keeps it a name, not a path.
 if (isset($_POST['configurationFile']) && is_string($_POST['configurationFile'])) {
     $_POST['configurationFile'] = basename($_POST['configurationFile']);
 }
@@ -35,26 +33,6 @@ if (isset($_POST['configurationFile']) && is_string($_POST['configurationFile'])
 $_POST['configurationName'] = trim((string) $_POST['configurationName']);
 try {
     if (isset($_POST['configurationName']) && ($_POST['configurationName'] !== '' && $_POST['configurationName'] !== '0')) {
-
-        if (!empty($_POST['supportedTests'])) {
-            foreach ($_POST['supportedTests'] as $test) {
-                // The test type names a folder that gets created, so it has to be one.
-                if (!is_string($test) || !array_key_exists($test, TestsService::getTestTypes())) {
-                    continue;
-                }
-                $configDir = realpath(__DIR__);
-                MiscUtility::makeDirectory($configDir . DIRECTORY_SEPARATOR . $test);
-
-                $configFile = $configDir . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
-                if (!file_exists($configFile)) {
-                    $fp = fopen($configFile, 'w');
-                    if ($fp !== false && !empty($fp)) {
-                        fwrite($fp, '');
-                        fclose($fp);
-                    }
-                }
-            }
-        }
         $matchedTests = array_diff($_POST['userTestType'] ?? [], $_POST['supportedTests'] ?? []);
         foreach (array_keys($matchedTests) as $key) {
             $_POST['reviewedBy'][$key] = "";

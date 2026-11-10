@@ -71,6 +71,8 @@ if (
     || !str_starts_with($machineImportScript, $expectedDir)
     || !is_file($machineImportScript)
     || !is_readable($machineImportScript)
+    // An empty script would import nothing and show no error.
+    || trim((string) file_get_contents($machineImportScript)) === ''
 ) {
     throw new SystemException(_translate("Import Script not found"), 404);
 }
