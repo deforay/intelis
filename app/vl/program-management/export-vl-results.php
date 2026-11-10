@@ -29,7 +29,10 @@ $vlExportService = ContainerRegistry::get(VlExportService::class);
 $filename = $vlExportService->export(
 	(string) $_SESSION['vlResultQuery'],
 	'InteLIS-VIRAL-LOAD-Data',
-	($_POST['patientInfo'] ?? '') === 'yes'
+	($_POST['patientInfo'] ?? '') === 'yes',
+	[],
+	false,
+	($_POST['withDetails'] ?? '') === 'yes'
 );
 
 echo _downloadToken($filename);

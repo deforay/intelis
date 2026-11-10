@@ -25,6 +25,10 @@ use const COUNTRY\CAMEROON;
  * entry here, not another layout. The CRESAR layout is the one exception: a
  * single lab asked for its own sheet, and the 'cresar' export format setting
  * picks it on Cameroon instances.
+ *
+ * Columns tagged 'detail' (batch, platform, analyzer run, who tested, reviewed
+ * and approved, status, record history) only come out when the user asks for
+ * lab and audit details; the default sheet is the compact one.
  */
 final class VlExportService extends AbstractSampleExportService
 {
@@ -33,13 +37,13 @@ final class VlExportService extends AbstractSampleExportService
         return 'vl_sample_id';
     }
 
-    public function columns(bool $withPatientInfo): array
+    public function columns(bool $withPatientInfo, bool $withDetails = false): array
     {
         $formId = (int) $this->general->getGlobalConfig('vl_form');
         if ($formId === CAMEROON && $this->general->getGlobalConfig('vl_excel_export_format') === 'cresar') {
             return $this->cresarColumns();
         }
-        return parent::columns($withPatientInfo);
+        return parent::columns($withPatientInfo, $withDetails);
     }
 
     /**
@@ -50,13 +54,14 @@ final class VlExportService extends AbstractSampleExportService
     {
         $drc = ['forms' => [DRC]];
         $notDrc = ['exceptForms' => [DRC]];
+        $detail = ['detail' => true];
 
         return [
             X::column(_translate('S.No.'), static fn(array $r, int $no): int => $no),
             X::text(_translate('Sample ID'), 'sample_code'),
             X::text(_translate('Remote Sample ID'), 'remote_sample_code', ['sts' => true]),
             X::text(_translate('Recency ID'), 'external_sample_code', $drc),
-            X::text(_translate('Batch Code'), 'batch_code'),
+            X::text(_translate('Batch Code'), 'batch_code', $detail),
             X::text(_translate('Testing Lab'), 'lab_name'),
             X::text(_translate('Lab Assigned Code'), 'lab_assigned_code', ['forms' => [CAMEROON]]),
             X::date(_translate('Sample Reception Date'), 'sample_received_at_lab_datetime', true),
@@ -124,14 +129,14 @@ final class VlExportService extends AbstractSampleExportService
             X::text(_translate('Sample Type'), 'sample_name'),
             X::text(_translate('Plasma Conservation Temperature (°C)'), 'plasma_conservation_temperature', $drc),
             X::text(_translate('Plasma Conservation Duration (Days/Hours)'), 'plasma_conservation_duration', $drc),
-            X::date(_translate('Date Sample Sent to Lab'), 'sample_dispatched_datetime', true),
+            X::date(_translate('Date Sample Sent to Lab'), 'sample_dispatched_datetime', true, $detail),
             ...X::storageColumns($drc),
 
             ...X::rejectionColumns(),
             X::text(_translate('Recommended Corrective Action'), 'recommended_corrective_action_name', $notDrc),
             X::date(_translate('Sample Tested On'), 'sample_tested_datetime', true),
-            X::text(_translate('Testing Platform'), 'vl_test_platform'),
-            X::text(_translate('Assay'), 'assay_name'),
+            X::text(_translate('Testing Platform'), 'vl_test_platform', $detail),
+            X::text(_translate('Assay'), 'assay_name', $detail),
             ...X::analyzerColumns(),
             X::text(_translate('Result (cp/mL)'), 'result'),
             X::text(_translate('Result (log)'), 'result_log'),

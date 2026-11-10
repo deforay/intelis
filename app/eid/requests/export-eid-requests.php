@@ -35,7 +35,8 @@ $filename = $eidExportService->export(
 	'InteLIS-EID-REQUESTS',
 	($_POST['patientInfo'] ?? '') === 'yes',
 	[[html_entity_decode($filters)], ['']],
-	($_POST['withAlphaNum'] ?? '') === 'yes'
+	($_POST['withAlphaNum'] ?? '') === 'yes',
+	($_POST['withDetails'] ?? '') === 'yes'
 );
 
 echo _downloadToken($filename);

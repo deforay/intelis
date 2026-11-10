@@ -341,6 +341,7 @@ if ($formId == COUNTRY\CAMEROON) {
 										<?php echo _translate("No"); ?>
 									</option>
 								</select>
+								<label style="font-weight:normal;margin-top:6px;display:block;" title="<?= _htmlTranslate('Add who tested, reviewed and approved each sample, its status, analyzer run and record history'); ?>"><input type="checkbox" id="withDetails" class="filter-panel-ignore" value="yes"> <?= _translate("Include lab and audit details"); ?></label>
 
 							</td>
 							<td><strong>
@@ -859,6 +860,7 @@ if ($formId == COUNTRY\CAMEROON) {
 				Print_Date: $("#printDate").val(),
 				Sex: $("#gender  option:selected").text(),
 				patientInfo: $("#patientInfo  option:selected").val(),
+				withDetails: $('#withDetails').is(':checked') ? 'yes' : 'no',
 				Community_Sample: $("#communitySample  option:selected").text(),
 				Status: ($("#status").val() || []).join(', '),
 				Show_Reorder_Sample: $("#showReordSample option:selected").text(),

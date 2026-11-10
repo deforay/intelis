@@ -29,7 +29,10 @@ $eidExportService = ContainerRegistry::get(EidExportService::class);
 $filename = $eidExportService->export(
 	(string) $_SESSION['eidExportResultQuery'],
 	'InteLIS-EID-Data',
-	($_POST['patientInfo'] ?? '') === 'yes'
+	($_POST['patientInfo'] ?? '') === 'yes',
+	[],
+	false,
+	($_POST['withDetails'] ?? '') === 'yes'
 );
 
 echo _downloadToken($filename);

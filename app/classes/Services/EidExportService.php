@@ -37,13 +37,14 @@ final class EidExportService extends AbstractSampleExportService
     {
         $drc = ['forms' => [DRC]];
         $notDrc = ['exceptForms' => [DRC]];
+        $detail = ['detail' => true];
         $eidResults = $this->eidService->getEidResults();
 
         return [
             X::column(_translate('S.No.'), static fn(array $r, int $no): int => $no),
             X::text(_translate('Sample ID'), 'sample_code'),
             X::text(_translate('Remote Sample ID'), 'remote_sample_code', ['sts' => true]),
-            X::text(_translate('Batch Code'), 'batch_code'),
+            X::text(_translate('Batch Code'), 'batch_code', $detail),
             X::text(_translate('Testing Lab'), 'lab_name'),
             X::text(_translate('Lab Assigned Code'), 'lab_assigned_code', ['forms' => [CAMEROON]]),
             X::date(_translate('Sample Reception Date'), 'sample_received_at_lab_datetime', true),
@@ -111,7 +112,7 @@ final class EidExportService extends AbstractSampleExportService
             ...X::rejectionColumns(),
             X::text(_translate('Recommended Corrective Action'), 'recommended_corrective_action_name', $notDrc),
             X::text(_translate('Testing Platform'), 'eid_test_platform'),
-            X::text(_translate('Assay'), 'assay_name'),
+            X::text(_translate('Assay'), 'assay_name', $detail),
             ...X::analyzerColumns(),
             X::date(_translate('Sample Tested On'), 'sample_tested_datetime', true),
             X::choice(_translate('Result'), 'result', [], $eidResults),

@@ -40,13 +40,15 @@ abstract class AbstractSampleExportService
      * Writes the export for a listing query and returns the file path.
      *
      * @param list<list<string>> $preamble rows written above the headings
+     * @param bool $withDetails add the lab and audit columns (tagged 'detail')
      */
     public function export(
         string $listQuery,
         string $filePrefix,
         bool $withPatientInfo,
         array $preamble = [],
-        bool $alphaNumHeadings = false
+        bool $alphaNumHeadings = false,
+        bool $withDetails = false
     ): string {
         $filename = TEMP_PATH . DIRECTORY_SEPARATOR . $filePrefix . '-' . date('d-M-Y-H-i-s')
             . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
@@ -57,7 +59,7 @@ abstract class AbstractSampleExportService
             $this->db->rawQueryGenerator($listQuery),
             $this->idColumn(),
             fn(array $ids): array => $this->fetchDetails($ids, $key),
-            $this->columns($withPatientInfo),
+            $this->columns($withPatientInfo, $withDetails),
             $preamble,
             $alphaNumHeadings
         );
@@ -78,13 +80,14 @@ abstract class AbstractSampleExportService
     }
 
     /** The columns this instance shows. */
-    public function columns(bool $withPatientInfo): array
+    public function columns(bool $withPatientInfo, bool $withDetails = false): array
     {
         return SampleExportUtility::forForm(
             $this->allColumns(),
             (int) $this->general->getGlobalConfig('vl_form'),
             $withPatientInfo,
-            $this->general->isStandaloneInstance()
+            $this->general->isStandaloneInstance(),
+            $withDetails
         );
     }
 }
