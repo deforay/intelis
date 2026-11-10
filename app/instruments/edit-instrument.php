@@ -179,7 +179,6 @@ $activeTests = TestsService::getActiveTests();
 											placeholder="<?php echo _translate('eg. Roche or Abbott'); ?>"
 											title="<?php echo _translate('Please enter instrument name'); ?>"
 											value="<?php echo $sInfo['machine_name']; ?>"
-											onchange="setConfigFileName();"
 											onblur="checkNameValidation('instruments','machine_name',this,'<?php echo "instrument_id##" . $sInfo['instrument_id']; ?>','<?php echo _jsTranslate('This instrument name already exists.Try another name'); ?>',null);" />
 									</div>
 								</div>
@@ -272,6 +271,13 @@ $activeTests = TestsService::getActiveTests();
 											class="form-control select2">
 											<option value=""><?php echo _translate('Select File'); ?></option>
 											<?php
+											// Keep the saved file selected even when it is not in the folder,
+											// so saving the form does not clear it.
+											$savedFile = (string) ($sInfo['import_machine_file_name'] ?? '');
+											if ($savedFile !== '' && !in_array($savedFile, $fileList, true)) { ?>
+												<option value="<?= htmlspecialchars($savedFile); ?>" selected='selected'><?= htmlspecialchars($savedFile); ?></option>
+												<?php
+											}
 											foreach ($fileList as $fileName) { ?>
 												<option value="<?= $fileName; ?>" <?php if ($sInfo['import_machine_file_name'] == $fileName) {
 													  echo "selected='selected'";
@@ -1111,35 +1117,6 @@ $activeTests = TestsService::getActiveTests();
 		});
 	});
 
-	function setConfigFileName() {
-		var configName = $("#configurationName").val();
-		if ($.trim(configName) != '') {
-			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
-			if (configName.length > 0) {
-				configName = configName.replace(/\s+/g, ' ');
-				configName = configName.replace(/ /g, '-');
-				configName = configName.replace(/\-$/, '');
-				var configFileName = configName.toLowerCase() + ".php";
-				var path = '<?php echo $directory . '/'; ?>' + configFileName;
-				$.post("/includes/checkFileExists.php", {
-					fileName: path,
-				},
-					function (data) {
-						if (data === 'not exists') {
-							$("#configurationFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
-							$(".instrumentFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
-							$('.select2').select2({
-								width: '100%'
-							});
-						}
-					});
-
-			}
-		} else {
-			$("#configurationFile").val("");
-		}
-	}
-
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		$.post("/includes/checkDuplicate.php", {
 			tableName: tableName,
@@ -1514,34 +1491,6 @@ require_once APPLICATION_PATH . '/footer.php';
 
 	// Rest of your existing functions remain the same...
 
-	function setConfigFileName() {
-		var configName = $("#configurationName").val();
-		if ($.trim(configName) != '') {
-			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
-			if (configName.length > 0) {
-				configName = configName.replace(/\s+/g, ' ');
-				configName = configName.replace(/ /g, '-');
-				configName = configName.replace(/\-$/, '');
-				var configFileName = configName.toLowerCase() + ".php";
-				var path = '<?php echo $directory . '/'; ?>' + configFileName;
-				$.post("/includes/checkFileExists.php", {
-					fileName: path,
-				},
-					function (data) {
-						if (data === 'not exists') {
-							$("#configurationFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
-							$(".instrumentFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
-							$('.select2').select2({
-								width: '100%'
-							});
-						}
-					});
-			}
-		} else {
-			$("#configurationFile").val("");
-		}
-	}
-
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		$.post("/includes/checkDuplicate.php", {
 			tableName: tableName,
@@ -1606,30 +1555,6 @@ require_once APPLICATION_PATH . '/footer.php';
 		});
 
 		// No initialization needed! Event delegation handles everything automatically
-
-		var configName = $("#configurationName").val();
-		if ($.trim(configName) != '') {
-			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
-			if (configName.length > 0) {
-				configName = configName.replace(/\s+/g, ' ');
-				configName = configName.replace(/ /g, '-');
-				configName = configName.replace(/\-$/, '');
-				var configFileName = configName.toLowerCase() + ".php";
-				var path = '<?php echo $directory . '/'; ?>' + configFileName;
-
-				$.post("/includes/checkFileExists.php", {
-					fileName: path,
-				},
-					function (data) {
-						if (data === 'not exists') {
-							$(`#fileName${tableRowId}`).append(`<option value="${configFileName}">${configFileName}</option>`);
-							$(`#fileName${tableRowId}`).select2({
-								width: '100%'
-							});
-						}
-					});
-			}
-		}
 
 		tableRowId++;
 	}

@@ -102,7 +102,7 @@ sort($fileList);
 										<?php echo _translate("Instrument Name"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder='<?php echo _translate("eg. Roche or Abbott"); ?>' title='<?php echo _htmlTranslate("Please enter instrument name"); ?>' onblur="checkNameValidation('instruments','machine_name',this,null,'<?php echo _jsTranslate('This instrument name already exists.Try another name'); ?>',null);" onchange="setConfigFileName();" />
+										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder='<?php echo _translate("eg. Roche or Abbott"); ?>' title='<?php echo _htmlTranslate("Please enter instrument name"); ?>' onblur="checkNameValidation('instruments','machine_name',this,null,'<?php echo _jsTranslate('This instrument name already exists.Try another name'); ?>',null);" />
 									</div>
 								</div>
 							</div>
@@ -1086,34 +1086,6 @@ require_once APPLICATION_PATH . '/footer.php';
 		}
 	});
 
-	function setConfigFileName() {
-		var configName = $("#configurationName").val();
-		if ($.trim(configName) != '') {
-			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
-			if (configName.length > 0) {
-				configName = configName.replace(/\s+/g, ' ');
-				configName = configName.replace(/ /g, '-');
-				configName = configName.replace(/\-$/, '');
-				var configFileName = configName.toLowerCase() + ".php";
-				var path = '<?php echo $directory . '/'; ?>' + configFileName;
-				$.post("/includes/checkFileExists.php", {
-						fileName: path,
-					},
-					function(data) {
-						if (data === 'not exists') {
-							$("#configurationFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
-							$(".instrumentFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
-							$('.select2').select2({
-								width: '100%'
-							});
-						}
-					});
-			}
-		} else {
-			$("#configurationFile").val("");
-		}
-	}
-
 	<?php
 	$fileOptions = '';
 	foreach ($fileList as $fileName) {
@@ -1163,31 +1135,6 @@ require_once APPLICATION_PATH . '/footer.php';
 		});
 
 		// No initialization needed! Event delegation handles everything automatically
-
-		// Auto-populate with configuration file if available
-		var configName = $("#configurationName").val();
-		if ($.trim(configName) != '') {
-			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
-			if (configName.length > 0) {
-				configName = configName.replace(/\s+/g, ' ');
-				configName = configName.replace(/ /g, '-');
-				configName = configName.replace(/\-$/, '');
-				var configFileName = configName.toLowerCase() + ".php";
-				var path = '<?php echo $directory . '/'; ?>' + configFileName;
-
-				$.post("/includes/checkFileExists.php", {
-						fileName: path,
-					},
-					function(data) {
-						if (data === 'not exists') {
-							$(`#fileName${tableRowId}`).append(`<option value="${configFileName}">${configFileName}</option>`);
-							$(`#fileName${tableRowId}`).select2({
-								width: '100%'
-							});
-						}
-					});
-			}
-		}
 
 		tableRowId++;
 	}
