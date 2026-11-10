@@ -295,7 +295,6 @@ const COVERED_FILES = [
     'app/generic-tests/mail/generic-tests-result-mail-helper.php',
     'app/generic-tests/results/email-results-helper.php',
     'app/hepatitis/results/email-results-helper.php',
-    'app/includes/checkFileExists.php',
     'app/tb/results/email-results-helper.php',
     'app/vl/results/email-results-helper.php',
 ];
