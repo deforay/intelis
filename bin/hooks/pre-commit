@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 #
-# pre-commit: four guards on the staged changes, scoped for speed. Blocks the
-# commit (exit 1) on any failure.
+# pre-commit: four guards on the staged changes, scoped for speed, plus one
+# automatic fix. Blocks the commit (exit 1) on any failure.
 #
+#   0. shared-functions.sh version: a commit that changes
+#      scripts/shared-functions.sh without raising SHARED_FN_VERSION gets it
+#      raised here, with every script's intelis_require_shared_fn_version line,
+#      and the changed files are added to the commit. Nobody has to remember.
 #   1. Merge-conflict markers — all staged files, any type. Uses git's own
 #      detector (`git diff --cached --check`); mirrors the no-conflict-markers CI
 #      check but catches it at commit time instead of after push.
@@ -36,6 +40,39 @@ if [ -n "$conflicts" ]; then
     printf '%s\n' "$conflicts" | sed 's/^/  /' >&2
     printf '\n  Resolve the conflict, then re-stage — or bypass once: \033[36mgit commit --no-verify\033[0m\n\n' >&2
     exit 1
+fi
+
+# --- fix 0: raise SHARED_FN_VERSION when shared-functions.sh changes --------
+# bin/build/check-shell-loaders.php refuses a push that changes the file without
+# a higher version, so do it here instead of failing later. Only when scripts/
+# has no unstaged changes and no untracked scripts: `git add` would otherwise
+# commit those too, and in a shared working tree they may be someone else's.
+shared="scripts/shared-functions.sh"
+if git diff --cached --quiet -- "$shared" 2>/dev/null; then
+    :
+else
+    fn_version() { sed -n 's/^SHARED_FN_VERSION=\([0-9][0-9]*\)$/\1/p' | head -n 1; }
+    staged_v="$(git show ":$shared" 2>/dev/null | fn_version)"
+    head_v="$(git show "HEAD:$shared" 2>/dev/null | fn_version)"
+    if [ "${staged_v:-0}" -le "${head_v:-0}" ]; then
+        # Unstaged edits, or a new script nobody has added yet: either would be
+        # rewritten and swept into this commit.
+        if ! git diff --quiet -- "$shared" scripts/*.sh 2>/dev/null ||
+            [ -n "$(git ls-files --others --exclude-standard -- 'scripts/*.sh')" ]; then
+            printf '\n\033[31m✋ commit blocked\033[0m — %s changed, so SHARED_FN_VERSION must go up.\n' "$shared" >&2
+            printf '  scripts/ also has unstaged changes or new files, so it was not raised automatically.\n' >&2
+            printf '  Run \033[36mphp bin/dev/bump-shared-fn-version.php\033[0m, stage the files it lists, then commit again.\n\n' >&2
+            exit 1
+        fi
+        if ! command -v php >/dev/null 2>&1; then
+            printf '\n\033[31m✋ commit blocked\033[0m — %s changed, and php is not on PATH to raise SHARED_FN_VERSION.\n\n' "$shared" >&2
+            exit 1
+        fi
+        bumped="$(php bin/dev/bump-shared-fn-version.php)" || exit 1
+        printf '%s\n' "$bumped" | sed -n 's/^\([^:]*\.sh\):.*/\1/p' | while IFS= read -r f; do git add -- "$f"; done
+        printf '\033[32m↑ shared-functions.sh changed:\033[0m raised %s and updated the scripts in this commit.\n' \
+            "$(printf '%s\n' "$bumped" | sed -n 's/^.*\(SHARED_FN_VERSION=[0-9]*\)$/\1/p')" >&2
+    fi
 fi
 
 # Collect staged, still-present PHP files (added/copied/modified). NUL-safe and
