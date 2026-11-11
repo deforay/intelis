@@ -52,7 +52,7 @@ final class Covid19ExportService extends AbstractSampleExportService
             X::text(_translate('Testing Lab Name'), 'lab_name'),
             X::date(_translate('Date specimen received'), 'sample_received_at_lab_datetime', true),
             X::text(_translate('Testing Point'), 'testing_point'),
-            X::text(_translate('Lab staff Assigned'), 'tested_by_name'),
+            X::text(_translate('Lab staff Assigned'), 'lab_technician_name'),
             X::text(_translate('Number of Times Tested'), 'test_number', $drc),
             X::text(_translate('Source Of Alert / POE'), 'source_of_alert_label'),
             X::text(_translate('Health Facility/POE County'), 'facility_district'),
@@ -117,11 +117,10 @@ final class Covid19ExportService extends AbstractSampleExportService
             X::text(_translate('Comments'), 'lab_tech_comments', $rwanda),
             X::text(_translate('Funding Source'), 'funding_source_name', $rwanda),
             X::text(_translate('Implementing Partner'), 'i_partner_name', $rwanda),
-            // Who tested, the registration date, the status and the printed date are
-            // above, under the headings this sheet has always had.
+            // The registration date, the status and the printed date are above,
+            // under the headings this sheet has always had.
             ...X::without(
                 X::recordColumns(),
-                _translate('Tested By'),
                 _translate('Sample Status'),
                 _translate('Result Printed Date'),
                 _translate('Request Created On')
@@ -137,9 +136,11 @@ final class Covid19ExportService extends AbstractSampleExportService
                     tr.test_reason_name,
                     rs.rejection_reason_name,
                     rca.recommended_corrective_action_name,
-                    c.iso_name AS nationality
+                    c.iso_name AS nationality,
+                    u_lab.user_name AS lab_technician_name
                 FROM form_covid19 AS vl
                 {$shared['joins']}
+                LEFT JOIN user_details AS u_lab ON u_lab.user_id = vl.lab_technician
                 LEFT JOIN r_covid19_sample_type AS s ON s.sample_id = vl.specimen_type
                 LEFT JOIN r_covid19_test_reasons AS tr ON tr.test_reason_id = vl.reason_for_covid19_test
                 LEFT JOIN r_covid19_sample_rejection_reasons AS rs
