@@ -641,7 +641,8 @@ https_redirect_target() { # https_redirect_target <path> [host]
   hostport="${hostport%%/*}"
   name="${hostport%%:*}"
   [ "$hostport" != "$name" ] && port="${hostport##*:}"
-  [[ "$port" =~ ^[0-9]+$ ]] && [ -n "$name" ] || return 1
+  case "$port" in ''|*[!0-9]*) return 1 ;; esac
+  [ -n "$name" ] || return 1
   printf '%s %s' "$name" "$port"
 }
 
