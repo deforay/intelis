@@ -89,8 +89,45 @@ fi
 echo "pid $$, started $(date +'%Y-%m-%d %H:%M:%S')" >>"$UPGRADE_LOCK_FILE"
 
 # Download and update shared-functions.sh
+# >>> intelis-loader: identical in every script, kept so by bin/build/check-shell-loaders.php
+#
+# The commit the scripts are downloaded from. raw.githubusercontent.com caches a
+# branch URL for 5 minutes and ignores any query string, so a script fetched
+# just after a push could be paired with the previous shared-functions.sh. A
+# commit URL never changes, so every file fetched through it matches. The commit
+# is read from GitHub's git endpoint (what `git ls-remote` uses), exported so
+# the scripts this one starts use the same commit, and falls back to the branch
+# name when GitHub cannot be reached.
+intelis_resolve_scripts_ref() {
+    [[ "${INTELIS_SCRIPTS_REF:-}" =~ ^[0-9a-f]{40}$ ]] && return 0
+    local url="https://github.com/deforay/intelis.git/info/refs?service=git-upload-pack" sha=""
+    if command -v curl >/dev/null 2>&1; then
+        sha="$(curl -fsS --connect-timeout 5 --max-time 10 "$url" 2>/dev/null | grep -ao '[0-9a-f]\{40\} refs/heads/master' | head -n 1 | cut -c1-40 || true)"
+    elif command -v wget >/dev/null 2>&1; then
+        sha="$(wget -q -T 10 -O - "$url" 2>/dev/null | grep -ao '[0-9a-f]\{40\} refs/heads/master' | head -n 1 | cut -c1-40 || true)"
+    fi
+    if [[ "$sha" =~ ^[0-9a-f]{40}$ ]]; then
+        INTELIS_SCRIPTS_REF="$sha"
+    else
+        INTELIS_SCRIPTS_REF="master"
+    fi
+    export INTELIS_SCRIPTS_REF
+}
+
+# Stop when the shared-functions.sh just loaded is older than this script. That
+# happens when the download failed and an old copy was left on the machine.
+intelis_require_shared_fn_version() {
+    local need="$1" have="${SHARED_FN_VERSION:-0}"
+    [ "$have" -ge "$need" ] 2>/dev/null && return 0
+    echo "shared-functions.sh at ${SHARED_FN_PATH:-/usr/local/lib/intelis/shared-functions.sh} is version ${have}. This script needs version ${need} or newer."
+    echo "Check this machine's internet connection, then run the same command again. Nothing has been changed."
+    exit 1
+}
+# <<< intelis-loader
+intelis_resolve_scripts_ref
+
 SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
-SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/shared-functions.sh"
+SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/${INTELIS_SCRIPTS_REF}/scripts/shared-functions.sh"
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
 
@@ -145,6 +182,7 @@ fi
 
 # Source the shared functions
 source "$SHARED_FN_PATH"
+intelis_require_shared_fn_version 1
 
 # Existing is not the same as usable: a copy left truncated by an older version
 # of this script, or one that fails to parse, gets sourced without a murmur.
@@ -156,77 +194,12 @@ if ! declare -F prepare_system >/dev/null 2>&1; then
     exit 1
 fi
 
-# Usable is not the same as current.
-#
-# This script and shared-functions.sh are released together but downloaded
-# separately, so they can arrive out of step. A failed fetch falls back to the
-# copy already on the machine, and raw.githubusercontent serves each file from a
-# CDN edge with its own five-minute cache — enough for one to be this release
-# and the other the last one.
-#
-# That reached a machine. A new upgrade.sh ran against an old
-# shared-functions.sh and died on "wait_with_progress: command not found",
-# through the ERR trap, at the very END of an upgrade that had otherwise
-# succeeded: instance updated, maintenance mode already lifted, and the run
-# still reporting failure and skipping the post-upgrade check.
-#
-# Asked here instead, before anything has been touched. A mismatch re-fetches
-# once past the cache; only if that still comes up short do we stop, and
-# stopping at this point costs nothing. Nor can it strand a lab with no network
-# — an out-of-date shared-functions.sh means this script was newly downloaded,
-# which means the network is up.
-#
-# Keep this list in step with what the script calls:
-#   grep -oE '^[a-z_][a-z0-9_]*\(\)' scripts/shared-functions.sh | tr -d '()' | sort -u
-# then keep the names this script uses.
-REQUIRED_SHARED_FN=(
-    app_heavy_dirs ask_multi ask_password ask_text ask_yes_no chown_app_tree
-    configure_apache_compression configure_php_ini download_file ensure_composer
-    ensure_composer_runnable_by_wwwdata ensure_mysql_running
-    ensure_opcache ensure_path ensure_php_cli_extensions ensure_php_security_floor
-    ensure_switch_php
-    error_handling escape_php_string_for_sed extract_mysql_password_from_config
-    fetch_master_tree format_duration hosts_file_shadows io_walk_jobs
-    is_valid_application_path lock_fingerprint log_action mysql_cnf_comment_option
-    mysql_cnf_get_option mysql_cnf_insert_mysqld_options mysql_diagnostics
-    normalize_hostname_input pause_cron phase_mark phase_record phase_report
-    phase_reset
-    prepare_system print print_instance_status repair_html_escaped_db_password
-    restart_service resume_cron run_git set_permissions setup_intelis_cron
-    setup_mysql_config spinner to_absolute_path ui_interactive ui_note
-    wwwdata_composer
-)
-
-missing_shared_fn() {
-    local fn missing=""
-    for fn in "${REQUIRED_SHARED_FN[@]}"; do
-        declare -F "$fn" >/dev/null 2>&1 || missing="${missing} ${fn}"
-    done
-    printf '%s' "${missing# }"
-}
-
-_missing="$(missing_shared_fn)"
-if [ -n "$_missing" ]; then
-    echo "shared-functions.sh is older than this script. Re-fetching past the cache..."
-    # A query string is enough to miss the cached edge copy; the content served
-    # is the same file.
-    if fetch_shared_fn "$SHARED_FN_PATH" "${SHARED_FN_URL}?t=$(date +%s)"; then
-        chmod +x "$SHARED_FN_PATH"
-        # shellcheck source=/dev/null
-        source "$SHARED_FN_PATH"
-        _missing="$(missing_shared_fn)"
-    fi
-fi
-
-if [ -n "$_missing" ]; then
-    echo "shared-functions.sh at $SHARED_FN_PATH is older than this script."
-    echo "Missing: ${_missing}"
-    echo ""
-    echo "Nothing has been changed. Wait a few minutes for the cache to expire and"
-    echo "run this again, or force a fresh copy:"
-    echo "  sudo rm -f $SHARED_FN_PATH && sudo intelis update"
-    exit 1
-fi
+# Usable is not the same as current. A new upgrade.sh once ran against an old
+# shared-functions.sh and died on "wait_with_progress: command not found" at the
+# very end of an upgrade that had otherwise succeeded. Both files now come from
+# the same commit (intelis_resolve_scripts_ref), and the
+# intelis_require_shared_fn_version line above stops here, before anything is
+# touched, when only an older copy was available.
 
 # Belt-and-suspenders: whatever happens — normal completion, an ERR-trap abort, or
 # an explicit early exit — make sure MySQL is running before we leave. The MySQL
@@ -2721,7 +2694,7 @@ upgrade_instance() {
 }
 
 # Download and setup intelis-refresh script (once)
-download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh
+download_file "/usr/local/bin/intelis-refresh" "https://raw.githubusercontent.com/deforay/intelis/${INTELIS_SCRIPTS_REF:-master}/scripts/refresh.sh"
 chmod +x /usr/local/bin/intelis-refresh
 
 # Make sure the update command is installed for next time. Instances upgraded by
@@ -2734,7 +2707,7 @@ chmod +x /usr/local/bin/intelis-refresh
 # rest of this run. If we are running as /usr/local/bin/intelis-update then it
 # exists, and this does nothing.
 if [ ! -x /usr/local/bin/intelis-update ]; then
-    download_file "/usr/local/bin/intelis-update" https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh
+    download_file "/usr/local/bin/intelis-update" "https://raw.githubusercontent.com/deforay/intelis/${INTELIS_SCRIPTS_REF:-master}/scripts/upgrade.sh"
     chmod +x /usr/local/bin/intelis-update
     print success "Update command installed. Next time, run: sudo intelis update"
 fi
