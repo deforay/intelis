@@ -443,11 +443,11 @@ trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 # DEBIAN_FRONTEND as the operator launched the upgrade. The apt step below
 # exports noninteractive for apt's own sake, and the prompt helpers read that
 # as "nobody is here". Without this, a repair that runs after the apt step
-# skips the password question even with an operator at the keyboard.
+# skips the password question even with an operator at the keyboard, so the
+# prompts in update_configuration are given the launch value.
 _launch_debian_frontend="${DEBIAN_FRONTEND:-}"
 
 update_configuration() {
-    local DEBIAN_FRONTEND="${_launch_debian_frontend}"
     local mysql_root_password=""
 
     print warning "The database settings in ${config_file} are missing. Setup needs them again."
@@ -458,7 +458,7 @@ update_configuration() {
     # failing at the database check later. `mysqladmin ping` cannot do this
     # check, because it exits 0 on a wrong password.
     while :; do
-        if ! ask_password mysql_root_password "MySQL root password" ""; then
+        if ! DEBIAN_FRONTEND="${_launch_debian_frontend}" ask_password mysql_root_password "MySQL root password" ""; then
             mysql_root_password=""
             print warning "No terminal to ask on. Continuing without a MySQL password."
             break
@@ -487,7 +487,7 @@ update_configuration() {
         "Type its full address, starting with https://" \
         "If you do not know it, ask the national programme." \
         "To set up syncing later, leave it blank and press enter."
-    ask_text remote_sts_url "" "STS address" "" "https://sts.example.org"
+    DEBIAN_FRONTEND="${_launch_debian_frontend}" ask_text remote_sts_url "" "STS address" "" "https://sts.example.org"
     remote_sts_url="${remote_sts_url%/}"
     if [ -n "$remote_sts_url" ] && [[ "$remote_sts_url" != http://* && "$remote_sts_url" != https://* ]]; then
         remote_sts_url="https://${remote_sts_url}"

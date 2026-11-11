@@ -996,7 +996,7 @@ collect_user_inputs() {
             else
                 # curl should be installed by prepare_system; fall back to wget
                 # (always present) so a missing curl can't dead-end the install.
-                response_code=$(wget -q -S -O /dev/null "$remote_sts_url/api/version.php" 2>&1 \
+                response_code=$(wget -q -S --max-redirect=0 -O /dev/null "$remote_sts_url/api/version.php" 2>&1 \
                     | awk '/^  HTTP\//{code=$2} END{print code}' || true)
             fi
             if [[ "$response_code" =~ ^[0-9]+$ ]] && [ "$response_code" -eq 200 ]; then
@@ -1058,9 +1058,10 @@ collect_user_inputs() {
             hostname="${_validated_hostname:-intelis}"
         fi
         if [ "$hostname" = "intelis" ]; then
-            print info "Open InteLIS at http://intelis/ on this machine, or at its IP address from other computers."
+            # InteLIS is served over plain HTTP on the lab network.
+            print info "Open InteLIS at http://intelis/ on this machine, or at its IP address from other computers." # NOSONAR
         else
-            print info "Open InteLIS at http://${hostname}/"
+            print info "Open InteLIS at http://${hostname}/" # NOSONAR
         fi
     else
         print info "Reusing saved hostname: ${hostname}"
@@ -2060,10 +2061,11 @@ if [ ! -x /usr/local/bin/intelis-backup.sh ] && [ -x /usr/local/bin/intelis ]; t
 fi
 
 print success "Setup is complete."
+# InteLIS is served over plain HTTP on the lab network.
 if [ "${hostname:-intelis}" = "intelis" ]; then
-    print info "To finish, open http://intelis/ in a web browser on this machine."
-    print info "From another computer, open http://<this machine's IP address>/ instead."
+    print info "To finish, open http://intelis/ in a web browser on this machine." # NOSONAR
+    print info "From another computer, open http://<this machine's IP address>/ instead." # NOSONAR
 else
-    print info "To finish, open http://${hostname}/ in a web browser."
+    print info "To finish, open http://${hostname}/ in a web browser." # NOSONAR
 fi
 log_action "Setup complete."
