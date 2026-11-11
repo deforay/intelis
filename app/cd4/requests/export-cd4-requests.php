@@ -1,14 +1,9 @@
 <?php
 
+// cd4/requests/export-cd4-requests.php
+use App\Services\Cd4ExportService;
 use App\Utilities\ExportJobUtility;
-use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use OpenSpout\Common\Entity\Row;
-use OpenSpout\Writer\XLSX\Writer;
-use App\Utilities\SampleRejectionUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
@@ -19,162 +14,36 @@ if (ExportJobUtility::queueRequested(__FILE__, 'cd4RequestQuery')) {
 // A background job has no request to time out, and the worker sets its own
 // memory limit; a direct request keeps these.
 if (!ExportJobUtility::inBackground()) {
-	ini_set('memory_limit', -1);
-	set_time_limit(0);
-	ini_set('max_execution_time', 300000);
+	ini_set('memory_limit', '512M');
+	set_time_limit(300);
+	ini_set('max_execution_time', 300);
 }
 
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-$arr = $general->getGlobalConfig();
-$formId = (int) $arr['vl_form'];
-
-
-
-$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Sex"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for CD4 Testing"), _translate("Requesting Clinician"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Sample Tested On"), _translate("CD4 Result"), _translate("Result Printed Date"), _translate("CD4 Result (%)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
-
-if ($general->isStandaloneInstance()) {
-	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
+if (empty($_SESSION['cd4RequestQuery'])) {
+	return;
 }
 
-if (!isset($_POST['patientInfo']) || $_POST['patientInfo'] != 'yes') {
-	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Unique ART No."), _translate("Patient Name")]);
-}
+/** @var Cd4ExportService $cd4ExportService */
+$cd4ExportService = ContainerRegistry::get(Cd4ExportService::class);
 
-
-
-
-$key = (string) $general->getGlobalConfig('key');
-$buildRow = function ($aRow, $no) use ($general, $key): array {
-	$row = [];
-	$age = null;
-	$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
-	$age = DateUtility::ageInYearMonthDays($aRow['patient_dob'] ?? '');
-	if (!empty($age) && $age['year'] > 0) {
-		$aRow['patient_age_in_years'] = $age['year'];
+// The filters the export was made with, written above the headings.
+$filters = '';
+foreach ($_POST as $name => $value) {
+	if (in_array($name, ['async', 'patientInfo', 'withDetails', 'withAlphaNum'], true) || !is_scalar($value)) {
+		continue;
 	}
-
-	$gender = MiscUtility::getGenderFromString($aRow['patient_gender']);
-
-	$arvAdherence = '';
-	if (trim((string) $aRow['arv_adherance_percentage']) === 'good') {
-		$arvAdherence = 'Good >= 95%';
-	} elseif (trim((string) $aRow['arv_adherance_percentage']) === 'fair') {
-		$arvAdherence = 'Fair 85-94%';
-	} elseif (trim((string) $aRow['arv_adherance_percentage']) === 'poor') {
-		$arvAdherence = 'Poor <85%';
-	}
-
-	$sampleRejection = SampleRejectionUtility::isRejected($aRow) ? 'Yes' : 'No';
-
-
-	$patientFname = $aRow['patient_first_name'] != '' ? $aRow['patient_first_name'] : '';
-	$patientMname = $aRow['patient_middle_name'] != '' ? $aRow['patient_middle_name'] : '';
-	$patientLname = $aRow['patient_last_name'] != '' ? $aRow['patient_last_name'] : '';
-
-	$row[] = $no;
-	$row[] = $aRow["sample_code"];
-
-	if (!$general->isStandaloneInstance()) {
-		$row[] = $aRow["remote_sample_code"];
-	}
-
-	$row[] = $aRow['lab_name'] ?? null;
-	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
-	$row[] = $aRow['facility_name'];
-	$row[] = $aRow['facility_code'];
-	$row[] = $aRow['facility_district'];
-	$row[] = $aRow['facility_state'];
-	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		if (!empty($key) && !empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-			$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
-			$patientFname = $general->crypto('decrypt', $patientFname, $key);
-			$patientMname = $general->crypto('decrypt', $patientMname, $key);
-			$patientLname = $general->crypto('decrypt', $patientLname, $key);
-		}
-		$row[] = $aRow['patient_art_no'];
-		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-	}
-	$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');
-	$aRow['patient_age_in_years'] ??= 0;
-	$row[] = ($aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
-	$row[] = $gender;
-	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-	$row[] = $aRow['sample_name'] ?? null;
-	$row[] = DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date'] ?? '');
-	$row[] = $aRow['current_regimen'];
-	$row[] = DateUtility::humanReadableDateFormat($aRow['date_of_initiation_of_current_regimen'] ?? '');
-	$row[] = $aRow['is_patient_pregnant'];
-	$row[] = $aRow['is_patient_breastfeeding'];
-	$row[] = $arvAdherence;
-	$row[] = isset($aRow['test_reason_name']) ? (str_replace("_", " ", (string) $aRow['test_reason_name'])) : null;
-	$row[] = $aRow['request_clinician_name'];
-	$row[] = DateUtility::humanReadableDateFormat($aRow['test_requested_on'] ?? '');
-	$row[] = $sampleRejection;
-	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
-	$row[] = $aRow['cd4_result'];
-	$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
-	$row[] = $aRow['cd4_result_percentage'];
-	$row[] = $aRow['lab_tech_comments'] ?? null;
-	$row[] = $aRow['funding_source_name'] ?? null;
-	$row[] = $aRow['i_partner_name'] ?? null;
-	$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
-	return $row;
-};
-
-
-// Build filter info for header row
-$nameValue = '';
-foreach ($_POST as $key => $value) {
 	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
+		$filters .= str_replace("_", " ", $name) . " : " . $value . "  ";
 	}
 }
 
-// Prepare headings (with alpha-numeric conversion if requested)
-$processedHeadings = $headings;
-if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-	$processedHeadings = array_map(function ($value): string|array|null {
-		$string = str_replace(' ', '', $value);
-		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-	}, $headings);
-}
-
-$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-CD4-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
-
-$writer = new Writer();
-$writer->openToFile($filename);
-
-// Write filter info row
-$writer->addRow(Row::fromValues([html_entity_decode($nameValue)]));
-
-// Empty row for spacing
-$writer->addRow(Row::fromValues(['']));
-
-// Write headings
-$writer->addRow(Row::fromValues(array_map('html_entity_decode', $processedHeadings)));
-
-// Stream data
-$resultSet = $db->rawQueryGenerator($_SESSION['cd4RequestQuery']);
-$no = 1;
-
-foreach ($resultSet as $aRow) {
-	ExportJobUtility::tick();
-	$row = $buildRow($aRow, $no++);
-	$writer->addRow(Row::fromValues($row));
-
-	// Periodic garbage collection
-	if ($no % 5000 === 0) {
-		gc_collect_cycles();
-	}
-}
-
-$writer->close();
+$filename = $cd4ExportService->export(
+	(string) $_SESSION['cd4RequestQuery'],
+	'InteLIS-CD4-REQUESTS',
+	($_POST['patientInfo'] ?? '') === 'yes',
+	[[html_entity_decode($filters)], ['']],
+	($_POST['withAlphaNum'] ?? '') === 'yes',
+	($_POST['withDetails'] ?? '') === 'yes'
+);
 
 echo _downloadToken($filename);
-
-
-

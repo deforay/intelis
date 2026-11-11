@@ -207,7 +207,6 @@ final class SampleExportUtility
         }, $rules);
     }
 
-    /** Whether the sample was rejected, and why. */
     /**
      * What the analyzer reported about the run (5.7.85), with the reagent lot: filled
      * for Interface Tool results; empty for results entered by hand.
@@ -240,21 +239,50 @@ final class SampleExportUtility
         ];
     }
 
-    public static function rejectionColumns(): array
+    /**
+     * Whether the sample was rejected, and why.
+     *
+     * @param array<string, mixed> $rules added to each of the three columns
+     */
+    public static function rejectionColumns(array $rules = []): array
     {
         return [
             self::column(
                 _translate('Is Sample Rejected?'),
-                static fn(array $r): string => $r['is_rejected'] ? _translate('Yes') : _translate('No')
+                static fn(array $r): string => $r['is_rejected'] ? _translate('Yes') : _translate('No'),
+                $rules
             ),
             self::column(
                 _translate('Rejection Reason'),
                 static fn(array $r): string => $r['is_rejected']
                     ? SampleRejectionUtility::reasonLabel($r['rejection_reason_name'] ?? null)
-                    : ''
+                    : '',
+                $rules
             ),
-            self::date(_translate('Rejection Date'), 'rejection_on', false, ['detail' => true]),
+            self::date(_translate('Rejection Date'), 'rejection_on', false, ['detail' => true] + $rules),
         ];
+    }
+
+    /**
+     * A column list without the named headings: for a module whose sheet already
+     * shows one of the record columns under its own heading and in its own place.
+     */
+    public static function without(array $columns, string ...$headings): array
+    {
+        return array_values(array_filter(
+            $columns,
+            static fn(array $column): bool => !in_array($column['heading'], $headings, true)
+        ));
+    }
+
+    /** A field saved as an id or code, shown by its label from $labels when there is one. */
+    public static function label(string $heading, string $field, array $labels, array $rules = []): array
+    {
+        return self::column($heading, static function (array $r) use ($field, $labels): mixed {
+            $value = $r[$field] ?? null;
+            $value = $labels[(string) $value] ?? $value;
+            return is_string($value) ? html_entity_decode($value, ENT_QUOTES) : $value;
+        }, $rules);
     }
 
     /**

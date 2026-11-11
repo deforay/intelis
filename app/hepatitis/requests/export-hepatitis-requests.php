@@ -1,16 +1,9 @@
 <?php
 
-
-
+// hepatitis/requests/export-hepatitis-requests.php
+use App\Services\HepatitisExportService;
 use App\Utilities\ExportJobUtility;
-use App\Utilities\DateUtility;
-use App\Services\CommonService;
-use App\Utilities\MiscUtility;
-use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use OpenSpout\Writer\XLSX\Writer;
-use OpenSpout\Common\Entity\Row;
-use App\Utilities\SampleRejectionUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
@@ -21,155 +14,36 @@ if (ExportJobUtility::queueRequested(__FILE__, 'hepatitisRequestSearchResultQuer
 // A background job has no request to time out, and the worker sets its own
 // memory limit; a direct request keeps these.
 if (!ExportJobUtility::inBackground()) {
-	ini_set('memory_limit', -1);
-	set_time_limit(0);
-	ini_set('max_execution_time', 300000);
+	ini_set('memory_limit', '512M');
+	set_time_limit(300);
+	ini_set('max_execution_time', 300);
 }
 
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-$arr = $general->getGlobalConfig();
-$key = (string) $general->getGlobalConfig('key');
-
-
-
-$sessionQuery = $_SESSION['hepatitisRequestSearchResultQuery'];
-if (isset($sessionQuery) && trim((string) $sessionQuery) !== "") {
-
-
-    $output = [];
-    if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-        $headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner"];
-    } else {
-        $headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Sex", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner"];
-    }
-    if ($general->isStandaloneInstance() && ($key = array_search('Remote Sample ID', $headings)) !== false) {
-        unset($headings[$key]);
-    }
-
-
-    $buildRow = function ($aRow, $no) use ($general, $key): array {
-        $row = [];
-
-        //Sex
-        $gender = match (strtolower((string) $aRow['patient_gender'])) {
-            'male', 'm' => 'M',
-            'female', 'f' => 'F',
-            'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
-            default => '',
-        };
-
-        //set sample rejection
-        $sampleRejection = 'No';
-        if (SampleRejectionUtility::isRejected($aRow)) {
-            $sampleRejection = 'Yes';
-        }
-
-        if (!empty($aRow['patient_name'])) {
-            $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
-        } else {
-            $patientFname = '';
-        }
-        if ($aRow['patient_last_name'] != '') {
-            $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
-        } else {
-            $patientLname = '';
-        }
-
-        $row = [];
-        $row[] = $no;
-        if ($general->isStandaloneInstance()) {
-            $row[] = $aRow["sample_code"];
-        } else {
-            $row[] = $aRow["sample_code"];
-            $row[] = $aRow["remote_sample_code"];
-        }
-        $row[] = ($aRow['labName']);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
-        $row[] = ($aRow['facility_name']);
-        $row[] = $aRow['facility_code'];
-        $row[] = ($aRow['facility_district']);
-        $row[] = ($aRow['facility_state']);
-        if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-            if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-                $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
-                $patientFname = $general->crypto('decrypt', $patientFname, $key);
-                $patientLname = $general->crypto('decrypt', $patientLname, $key);
-            }
-            $row[] = $aRow['patient_id'];
-            $row[] = $patientFname . " " . $patientLname;
-        }
-        $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-        $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) !== '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
-        $row[] = $gender;
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-        $row[] = $sampleRejection;
-        $row[] = $aRow['rejection_reason'];
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
-        $row[] = ($aRow['hcv_vl_count']);
-        $row[] = ($aRow['hbv_vl_count']);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
-        $row[] = $aRow['status_name'];
-        $row[] = ($aRow['lab_tech_comments']);
-        $row[] = $aRow['funding_source_name'] ?? null;
-        $row[] = $aRow['i_partner_name'] ?? null;
-        return $row;
-    };
-
-
-
-    // Build filter info for header row
-    $nameValue = '';
-    foreach ($_POST as $key => $value) {
-        if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-            $nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
-        }
-    }
-
-    // Prepare headings (with alpha-numeric conversion if requested)
-    $processedHeadings = $headings;
-    if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-        $processedHeadings = array_map(function ($value): array|string|null {
-            $string = str_replace(' ', '', $value);
-            return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-        }, $headings);
-    }
-
-    $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-HEPATITIS-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
-
-    $writer = new Writer();
-    $writer->openToFile($filename);
-
-    // Write filter info row
-    $writer->addRow(Row::fromValues([html_entity_decode($nameValue)]));
-
-    // Empty row for spacing
-    $writer->addRow(Row::fromValues(['']));
-
-    // Write headings
-    $writer->addRow(Row::fromValues(array_map('html_entity_decode', $processedHeadings)));
-
-    // Stream data
-    $resultSet = $db->rawQueryGenerator($sessionQuery);
-    $no = 1;
-
-    foreach ($resultSet as $aRow) {
-        ExportJobUtility::tick();
-        $row = $buildRow($aRow, $no++);
-        $writer->addRow(Row::fromValues($row));
-
-        // Periodic garbage collection
-        if ($no % 5000 === 0) {
-            gc_collect_cycles();
-        }
-    }
-
-    $writer->close();
-
-    echo _downloadToken($filename);
-
+if (empty($_SESSION['hepatitisRequestSearchResultQuery'])) {
+	return;
 }
+
+/** @var HepatitisExportService $hepatitisExportService */
+$hepatitisExportService = ContainerRegistry::get(HepatitisExportService::class);
+
+// The filters the export was made with, written above the headings.
+$filters = '';
+foreach ($_POST as $name => $value) {
+	if (in_array($name, ['async', 'patientInfo', 'withDetails', 'withAlphaNum'], true) || !is_scalar($value)) {
+		continue;
+	}
+	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
+		$filters .= str_replace("_", " ", $name) . " : " . $value . "  ";
+	}
+}
+
+$filename = $hepatitisExportService->export(
+	(string) $_SESSION['hepatitisRequestSearchResultQuery'],
+	'InteLIS-HEPATITIS-REQUESTS',
+	($_POST['patientInfo'] ?? '') === 'yes',
+	[[html_entity_decode($filters)], ['']],
+	($_POST['withAlphaNum'] ?? '') === 'yes',
+	($_POST['withDetails'] ?? '') === 'yes'
+);
+
+echo _downloadToken($filename);

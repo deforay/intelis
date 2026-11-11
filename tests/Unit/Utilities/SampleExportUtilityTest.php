@@ -110,4 +110,38 @@ final class SampleExportUtilityTest extends TestCase
         $this->assertNull($readings(['analyzer_readings' => null]));
         $this->assertNull($readings([]), 'an export from before the column existed');
     }
+
+    public function testAModuleCanKeepARecordColumnUnderItsOwnHeading(): void
+    {
+        $headings = array_column(
+            SampleExportUtility::without(SampleExportUtility::recordColumns(), 'Sample Status', 'Result Printed Date'),
+            'heading'
+        );
+
+        $this->assertNotContains('Sample Status', $headings);
+        $this->assertNotContains('Result Printed Date', $headings);
+        $this->assertContains('Result Sent On', $headings);
+        $this->assertSame($headings, array_values($headings));
+    }
+
+    public function testRejectionColumnsTakeTheirFormRule(): void
+    {
+        $columns = SampleExportUtility::rejectionColumns(['exceptForms' => [DRC]]);
+        $headings = static fn(array $cols): array => array_column($cols, 'heading');
+
+        $this->assertSame([], $headings(SampleExportUtility::forForm($columns, DRC, true, false, true)));
+        $this->assertSame(
+            ['Is Sample Rejected?', 'Rejection Reason'],
+            $headings(SampleExportUtility::forForm($columns, CAMEROON, true, false, false))
+        );
+    }
+
+    public function testACodedValueShowsItsLabel(): void
+    {
+        $result = SampleExportUtility::label('Result', 'result', ['1' => 'Positive', '2' => 'Negative'])['value'];
+
+        $this->assertSame('Positive', $result(['result' => '1']));
+        $this->assertSame('< 40', $result(['result' => '&lt; 40']), 'saved HTML-escaped, shown as typed');
+        $this->assertNull($result(['result' => null]));
+    }
 }

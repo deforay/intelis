@@ -1,14 +1,9 @@
 <?php
 
+// tb/requests/export-tb-requests.php
+use App\Services\TbExportService;
 use App\Utilities\ExportJobUtility;
-use App\Services\DatabaseService;
-use App\Services\TbService;
-use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
-use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
-use OpenSpout\Common\Entity\Row;
-use OpenSpout\Writer\XLSX\Writer;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
@@ -16,145 +11,39 @@ if (ExportJobUtility::queueRequested(__FILE__, 'tbRequestSearchResultQuery')) {
 	return;
 }
 
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-$key = (string) $general->getGlobalConfig('key');
-
-
-/** @var TbService $tbService */
-$tbService = ContainerRegistry::get(TbService::class);
-$tbResults = $tbService->getTbResults();
-/* Global config data */
-$arr = $general->getGlobalConfig();
-
-$sQuery = $_SESSION['tbRequestSearchResultQuery'];
-
-
-
-
-if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-    $headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Date specimen Received", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Date specimen collected", "Reason for Test Request", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released"];
-} else {
-    $headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Date specimen Received", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Sex", "Date specimen collected", "Reason for Test Request", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released"];
+// A background job has no request to time out, and the worker sets its own
+// memory limit; a direct request keeps these.
+if (!ExportJobUtility::inBackground()) {
+	ini_set('memory_limit', '512M');
+	set_time_limit(300);
+	ini_set('max_execution_time', 300);
 }
 
-if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
-    unset($headings[$key]);
+if (empty($_SESSION['tbRequestSearchResultQuery'])) {
+	return;
 }
 
+/** @var TbExportService $tbExportService */
+$tbExportService = ContainerRegistry::get(TbExportService::class);
 
-$buildRow = function ($aRow, $no) use ($general, $key, $tbResults, $db): array {
-    $row = [];
-
-    // The platform is the sample's; the method is each test's type, in test order.
-    $testPlatform = $aRow['tb_test_platform'] ?? '';
-    $testMethod = implode(', ', array_unique(array_filter(array_column(
-        $db->rawQuery("SELECT test_type FROM tb_tests WHERE tb_id = ? ORDER BY tb_test_id ASC", [$aRow['tb_id']]),
-        'test_type'
-    ))));
-
-    if (!empty($aRow['patient_name'])) {
-        $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
-    } else {
-        $patientFname = '';
-    }
-    if (!empty($aRow['patient_surname'])) {
-        $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
-    } else {
-        $patientLname = '';
-    }
-    $row[] = $no;
-
-
-
-    if ($general->isStandaloneInstance()) {
-        $row[] = $aRow["sample_code"];
-    } else {
-        $row[] = $aRow["sample_code"];
-        $row[] = $aRow["remote_sample_code"];
-    }
-    $row[] = $aRow['lab_name'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
-    $row[] = $aRow['labTechnician'];
-    $row[] = $aRow['facility_district'];
-    $row[] = $aRow['facility_state'];
-    $row[] = $aRow['facility_name'];
-    if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-        if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
-            $patientFname = $general->crypto('decrypt', $patientFname, $key);
-            $patientLname = $general->crypto('decrypt', $patientLname, $key);
-        }
-        $row[] = $aRow['patient_id'];
-        $row[] = $patientFname . " " . $patientLname;
-    }
-    $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-    $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) !== '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
-    $row[] = $aRow['patient_gender'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-    $row[] = $aRow['test_reason_name'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
-    $row[] = $aRow['status_name'];
-    $row[] = $aRow['sample_name'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
-    $row[] = $testPlatform;
-    $row[] = $testMethod;
-    $row[] = $tbResults[$aRow['result']] ?? $aRow['result'] ?? null;
-    $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
-
-    return $row;
-};
-
-// Build filter info for header row
-$nameValue = '';
-foreach ($_POST as $key => $value) {
-    if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-        $nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
-    }
+// The filters the export was made with, written above the headings.
+$filters = '';
+foreach ($_POST as $name => $value) {
+	if (in_array($name, ['async', 'patientInfo', 'withDetails', 'withAlphaNum'], true) || !is_scalar($value)) {
+		continue;
+	}
+	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
+		$filters .= str_replace("_", " ", $name) . " : " . $value . "  ";
+	}
 }
 
-// Prepare headings (with alpha-numeric conversion if requested)
-$processedHeadings = $headings;
-if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-    $processedHeadings = array_map(function ($value): array|string|null {
-        $string = str_replace(' ', '', $value);
-        return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-    }, $headings);
-}
-
-$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-TB-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
-
-$writer = new Writer();
-$writer->openToFile($filename);
-
-// Write filter info row
-$writer->addRow(Row::fromValues([html_entity_decode($nameValue)]));
-
-// Empty row for spacing
-$writer->addRow(Row::fromValues(['']));
-
-// Write headings
-$writer->addRow(Row::fromValues(array_map('html_entity_decode', $processedHeadings)));
-
-// Stream data
-$resultSet = $db->rawQueryGenerator($sQuery);
-$no = 1;
-
-foreach ($resultSet as $aRow) {
-    ExportJobUtility::tick();
-    $row = $buildRow($aRow, $no++);
-    $writer->addRow(Row::fromValues($row));
-
-    // Periodic garbage collection
-    if ($no % 5000 === 0) {
-        gc_collect_cycles();
-    }
-}
-
-$writer->close();
+$filename = $tbExportService->export(
+	(string) $_SESSION['tbRequestSearchResultQuery'],
+	'InteLIS-TB-REQUESTS',
+	($_POST['patientInfo'] ?? '') === 'yes',
+	[[html_entity_decode($filters)], ['']],
+	($_POST['withAlphaNum'] ?? '') === 'yes',
+	($_POST['withDetails'] ?? '') === 'yes'
+);
 
 echo _downloadToken($filename);

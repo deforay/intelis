@@ -1,21 +1,9 @@
 <?php
 
-
-
-
-
-
+// covid-19/management/generate-export-data.php
+use App\Services\Covid19ExportService;
 use App\Utilities\ExportJobUtility;
-use const COUNTRY\SOUTH_SUDAN;
-use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
-use App\Services\CommonService;
-use App\Services\Covid19Service;
-use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use OpenSpout\Common\Entity\Row;
-use OpenSpout\Writer\XLSX\Writer;
-use App\Utilities\SampleRejectionUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
@@ -23,178 +11,39 @@ if (ExportJobUtility::queueRequested(__FILE__, 'covid19ResultQuery')) {
 	return;
 }
 
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-/** @var Covid19Service $covid19Service */
-$covid19Service = ContainerRegistry::get(Covid19Service::class);
-$covid19Results = $covid19Service->getCovid19Results();
-
-/* Global config data */
-$arr = $general->getGlobalConfig();
-$sarr = $general->getSystemConfig();
-$key = (string) $general->getGlobalConfig('key');
-
-// echo "<pre>";print_r($arr);die;
-if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19ResultQuery']) !== "") {
-
-	$rResult = $db->rawQuery($_SESSION['covid19ResultQuery']);
-
-	$output = [];
-	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request", "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released"];
-	} else {
-		$headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Sex", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request", "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released"];
-	}
-	if ($general->isStandaloneInstance()) {
-		$headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
-	}
-
-	$nameValue = '';
-	foreach ($_POST as $key => $value) {
-		if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-		}
-	}
-
-	if ($_POST['withAlphaNum'] == 'yes') {
-		$headings = array_map(static fn($value): string => (string) preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $value)), $headings);
-	}
-
-	$no = 1;
-	foreach ($rResult as $aRow) {
-		ExportJobUtility::tick();
-		$row = [];
-		if ($arr['vl_form'] == SOUTH_SUDAN) {
-			// Get testing platform and test method
-			$covid19TestQuery = "SELECT * FROM covid19_tests where covid19_id= ? ORDER BY test_id ASC";
-			$covid19TestInfo = $db->rawQuery($covid19TestQuery, [$aRow['covid19_id']]);
-			foreach ($covid19TestInfo as $indexKey => $rows) {
-				$testPlatform = $rows['testing_platform'];
-				$testMethod = $rows['test_name'];
-			}
-		}
-
-		//date of birth
-		$dob = '';
-		if ($aRow['patient_dob'] != null && trim((string) $aRow['patient_dob']) !== '' && $aRow['patient_dob'] != '0000-00-00') {
-			$dob =  date("d-m-Y", strtotime((string) $aRow['patient_dob']));
-		}
-		//set gender
-		$gender = match (strtolower((string)$aRow['patient_gender'])) {
-			'male', 'm' => 'M',
-			'female', 'f' => 'F',
-			'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
-			default => '',
-		};
-		//sample collecion date
-		$sampleCollectionDate = '';
-		if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-			$expStr = explode(" ", (string) $aRow['sample_collection_date']);
-			$sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
-		}
-
-		$sampleTestedOn = '';
-		if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) !== '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
-			$sampleTestedOn =  date("d-m-Y", strtotime((string) $aRow['sample_tested_datetime']));
-		}
-
-
-		//set sample rejection
-		$sampleRejection = 'No';
-		if (SampleRejectionUtility::isRejected($aRow)) {
-			$sampleRejection = 'Yes';
-		}
-		//result dispatched date
-		$resultDispatchedDate = '';
-		if ($aRow['result_printed_datetime'] != null && trim((string) $aRow['result_printed_datetime']) !== '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-			$expStr = explode(" ", (string) $aRow['result_printed_datetime']);
-			$resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
-		}
-
-		if (!empty($aRow['patient_name'])) {
-			$patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
-		} else {
-			$patientFname = '';
-		}
-		if (!empty($aRow['patient_surname'])) {
-			$patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
-		} else {
-			$patientLname = '';
-		}
-
-		if (isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others") {
-			$sourceOfArtPOE = str_replace("-", " ", (string) $aRow['source_of_alert']);
-		} else {
-			$sourceOfArtPOE = $aRow['source_of_alert_other'];
-		}
-
-
-
-		$row[] = $no;
-		if ($general->isStandaloneInstance()) {
-			$row[] = $aRow["sample_code"];
-		} else {
-			$row[] = $aRow["sample_code"];
-			$row[] = $aRow["remote_sample_code"];
-		}
-		$row[] = ($aRow['lab_name']);
-		$row[] = ($aRow['testing_point']);
-		$row[] = ($aRow['labTechnician']);
-		$row[] = ($sourceOfArtPOE);
-		$row[] = ($aRow['facility_district']);
-		$row[] = ($aRow['facility_state']);
-		$row[] = ($aRow['facility_name']);
-		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-			if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-				$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
-				$patientFname = $general->crypto('decrypt', $patientFname, $key);
-				$patientLname = $general->crypto('decrypt', $patientLname, $key);
-			}
-			$row[] = $aRow['patient_id'];
-			$row[] = $patientFname . " " . $patientLname;
-		}
-		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-		$row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) !== '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
-		$row[] = ($aRow['patient_gender']);
-		$row[] = ($aRow['nationality']);
-		$row[] = ($aRow['patient_province']);
-		$row[] = ($aRow['patient_district']);
-		$row[] = ($aRow['patient_city']);
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-		$row[] = ($aRow['test_reason_name']);
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
-		$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
-		$row[] = ($aRow['sample_condition']);
-		$row[] = ($aRow['status_name']);
-		$row[] = ($aRow['sample_name']);
-		$row[] = $sampleRejection;
-		$row[] = $aRow['rejection_reason'];
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
-		$row[] = ($testPlatform);
-		$row[] = ($testMethod);
-		$row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
-		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
-
-		$output[] = $row;
-		$no++;
-	}
-
-	$filename = 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
-
-	$writer = new Writer();
-	$writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-	$writer->addRow(Row::fromValues([html_entity_decode($nameValue)]));
-	$writer->addRow(Row::fromValues(['']));
-	$writer->addRow(Row::fromValues(array_map(static fn($value): string => html_entity_decode((string) $value), $headings)));
-	foreach ($output as $rowData) {
-		$writer->addRow(Row::fromValues(array_map(static fn($value) => is_string($value) ? html_entity_decode($value) : $value, $rowData)));
-	}
-	$writer->close();
-
-	echo _downloadToken($filename);
+// A background job has no request to time out, and the worker sets its own
+// memory limit; a direct request keeps these.
+if (!ExportJobUtility::inBackground()) {
+	ini_set('memory_limit', '512M');
+	set_time_limit(300);
+	ini_set('max_execution_time', 300);
 }
+
+if (empty($_SESSION['covid19ResultQuery'])) {
+	return;
+}
+
+/** @var Covid19ExportService $covid19ExportService */
+$covid19ExportService = ContainerRegistry::get(Covid19ExportService::class);
+
+// The filters the export was made with, written above the headings.
+$filters = '';
+foreach ($_POST as $name => $value) {
+	if (in_array($name, ['async', 'patientInfo', 'withDetails', 'withAlphaNum'], true) || !is_scalar($value)) {
+		continue;
+	}
+	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
+		$filters .= str_replace("_", " ", $name) . " : " . $value . "  ";
+	}
+}
+
+$filename = $covid19ExportService->export(
+	(string) $_SESSION['covid19ResultQuery'],
+	'Covid-19-Export-Data',
+	($_POST['patientInfo'] ?? '') === 'yes',
+	[[html_entity_decode($filters)], ['']],
+	($_POST['withAlphaNum'] ?? '') === 'yes',
+	($_POST['withDetails'] ?? '') === 'yes'
+);
+
+echo _downloadToken($filename);

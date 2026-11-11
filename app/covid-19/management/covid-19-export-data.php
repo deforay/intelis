@@ -51,13 +51,6 @@ $implementingPartnerList = $general->getImplementationPartners();
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 $covid19Results = $covid19Service->getCovid19Results();
-if (isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwanda' && $arr['vl_form'] != 1) {
-	$reportType = 'generate-export-rwanda.php';
-} elseif (isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'drc' && $arr['vl_form'] == COUNTRY\DRC) {
-	$reportType = 'generate-export-drc.php';
-} else {
-	$reportType = 'generate-export-data.php';
-}
 $state = $geolocationService->getProvinces("yes");
 
 ?>
@@ -189,6 +182,7 @@ $state = $geolocationService->getProvinces("yes");
 									<option value="yes"><?php echo _translate("Yes"); ?></option>
 									<option value="no"><?php echo _translate("No"); ?></option>
 								</select>
+								<label style="font-weight:normal;margin-top:6px;display:block;" title="<?= _htmlTranslate('Add who tested, reviewed and approved each sample, its status, analyzer run and record history'); ?>"><input type="checkbox" id="withDetails" class="filter-panel-ignore" value="yes"> <?= _translate("Include lab and audit details"); ?></label>
 
 							</td>
 							<td><strong><?php echo _translate("Patient ID"); ?></strong></td>
@@ -217,7 +211,7 @@ $state = $geolocationService->getProvinces("yes");
 						<button type="button" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
 								<?= _htmlTranslate("Clear Search"); ?>
 							</span></button>
-						<button type="button" class="filter-export btn btn-sm btn-success" onclick="exportInexcel(<?= _jsAttributeEscape($reportType); ?>)"><em class="fa-solid fa-cloud-arrow-down"></em>
+						<button type="button" class="filter-export btn btn-sm btn-success" onclick="exportInexcel('generate-export-data.php')"><em class="fa-solid fa-cloud-arrow-down"></em>
 							<?= _htmlTranslate("Download"); ?>
 						</button>
 						<button type="button" class="filter-keep btn btn-sm btn-default pull-right" onclick="$('#showhide').fadeToggle();return false;"><span>
@@ -616,6 +610,7 @@ $state = $geolocationService->getProvinces("yes");
 				Viral_Load: $("#result  option:selected").text(),
 				Print_Date: $("#printDate").val(),
 				patientInfo: $("#patientInfo  option:selected").val(),
+				withDetails: $('#withDetails').is(':checked') ? 'yes' : 'no',
 				Status: ($("#status").val() || []).join(', '),
 				withAlphaNum: withAlphaNum
 			}, <?= json_encode(_translate("COVID-19 Results Export")) ?>);
