@@ -638,7 +638,7 @@ function _tooltipAttribute(array $lines): string
 }
 
 /**
- * Build the Batch and Manifest labels for a request grid's Sample ID cell.
+ * Build the Batch and Manifest codes, each with an icon, for a request grid's Sample ID cell.
  *
  * The labels show at a glance whether a sample is in a batch or on a manifest.
  * The codes go into the cell, not into a tooltip, so this escapes them once.
@@ -647,20 +647,21 @@ function _tooltipAttribute(array $lines): string
  */
 function _sampleGroupingLabels(?string $batchCode, ?string $manifestCode): string
 {
-    $labels = [];
-    $batchCode = trim((string) $batchCode);
-    $manifestCode = trim((string) $manifestCode);
-
-    if ($batchCode !== '') {
-        $labels[] = '<span class="label label-primary">'
-            . _htmlTranslate('Batch') . ': ' . _sanitizeOutput($batchCode) . '</span>';
+    $tags = [];
+    $codes = [
+        'batch' => ['fa-layer-group', _htmlTranslate('Batch Code'), $batchCode],
+        'manifest' => ['fa-truck', _htmlTranslate('Manifest Code'), $manifestCode],
+    ];
+    foreach ($codes as $kind => [$icon, $label, $code]) {
+        $code = trim((string) $code);
+        if ($code !== '') {
+            $tags[] = '<span class="sample-tag sample-tag-' . $kind . '" title="' . $label . '">'
+                . '<i class="fa-solid ' . $icon . '" aria-hidden="true"></i>'
+                . '<span class="sr-only">' . $label . ': </span>' . _sanitizeOutput($code) . '</span>';
+        }
     }
-    if ($manifestCode !== '') {
-        $labels[] = '<span class="label label-info">'
-            . _htmlTranslate('Manifest') . ': ' . _sanitizeOutput($manifestCode) . '</span>';
-    }
 
-    return $labels === [] ? '' : '<br>' . implode(' ', $labels);
+    return $tags === [] ? '' : '<div class="sample-tags">' . implode('', $tags) . '</div>';
 }
 
 /**
