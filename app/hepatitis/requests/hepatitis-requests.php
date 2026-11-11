@@ -347,6 +347,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 										<?php echo _translate("No"); ?>
 									</option>
 								</select>
+								<label style="font-weight:normal;margin-top:6px;display:block;" title="<?= _htmlTranslate('Add who tested, reviewed and approved each sample, its status, analyzer run and record history'); ?>"><input type="checkbox" id="withDetails" class="filter-panel-ignore" value="yes"> <?= _translate("Include lab and audit details"); ?></label>
 
 							</td>
 							<td><strong>
@@ -880,6 +881,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 		IntelisExport.start("/hepatitis/requests/export-hepatitis-requests.php", {
 			reqSampleType: $('#requestSampleType').val(),
 			patientInfo: $('#patientInfo').val(),
+			withDetails: $('#withDetails').is(':checked') ? 'yes' : 'no',
 		}, <?= json_encode(_translate("Hepatitis Requests Export")) ?>);
 	}
 

@@ -1,15 +1,9 @@
 <?php
 
+// generic-tests/program-management/generic-result-export-in-excel.php
+use App\Services\GenericTestsExportService;
 use App\Utilities\ExportJobUtility;
-use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\SampleRejectionUtility;
-use App\Services\GenericTestsService;
-use OpenSpout\Common\Entity\Row;
-use OpenSpout\Writer\XLSX\Writer;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
@@ -17,207 +11,28 @@ if (ExportJobUtility::queueRequested(__FILE__, 'genericResultQuery')) {
 	return;
 }
 
-
-
-
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-/** @var GenericTestsService $genericTestsService */
-$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
-
-//system config
-$arr = $general->getGlobalConfig();
-
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
-
-if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericResultQuery']) !== "") {
-
-	/* To get dynamic fields */
-	$labels = [];
-	
-	$output = [];
-
-	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = [_translate("No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Health Facility Name"), _translate("Testing Lab"), _translate("Sample Receipt Date"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Patient ID."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Sex"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinician"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Rejection Reason"), _translate("Sample Tested On"), _translate("Result"), _translate("Date Result Dispatched"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
-	} else {
-		$headings = [_translate("No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Health Facility Name"), _translate("Testing Lab"), _translate("Sample Receipt Date"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Date of Birth"), _translate("Age"), _translate("Sex"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinician"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Rejection Reason"), _translate("Sample Tested On"), _translate("Result"), _translate("Date Result Dispatched"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
-	}
-	if ($general->isStandaloneInstance()) {
-		$headings = MiscUtility::removeMatchingElements($headings, [_translate('Remote Sample ID')]);
-	}
-	
-
-	$no = 1;
-	$resultSet = $db->rawQuery($_SESSION['genericResultQuery']);
-	foreach ($resultSet as $key => $row) {
-		$testType[$key] = $genericTestsService->getDynamicFields($row['sample_id']);
-		foreach ($testType[$key]['dynamicLabel'] as $id => $le) {
-			$labels[$id] = $le;
-		}
-	}
-
-	/* Assign the dynamic labels to the heading */
-	if ($labels !== []) {
-		$headings = array_merge($headings, $labels);
-	}
-
-	foreach ($resultSet as $key => $aRow) {
-		ExportJobUtility::tick();
-		$row = [];
-		$age = null;
-		$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
-		if (!empty($aRow['patient_dob'])) {
-			$age = DateUtility::ageInYearMonthDays($aRow['patient_dob']);
-			if (!empty($age) && $age['year'] > 0) {
-				$aRow['patient_age_in_years'] = $age['year'];
-			}
-		}
-		//set gender
-		$gender = match (strtolower((string)$aRow['patient_gender'])) {
-			'male', 'm' => 'M',
-			'female', 'f' => 'F',
-			'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
-			default => '',
-		};
-		//sample collecion date
-		$sampleCollectionDate = '';
-		if (!empty($aRow['sample_collection_date'])) {
-			$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-		}
-		$treatmentInitiationDate = "";
-		if (!empty($aRow['treatment_initiated_date'])) {
-			$treatmentInitiationDate =  DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date'] ?? '');
-		}
-		//requested date
-		$requestedDate = '';
-		if (!empty($aRow['test_requested_on'])) {
-			$requestedDate =  DateUtility::humanReadableDateFormat($aRow['test_requested_on']);
-		}
-		//request created date time
-		$requestCreatedDatetime = '';
-		if (!empty($aRow['request_created_datetime'])) {
-			$requestCreatedDatetime =  DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
-		}
-
-		$sampleTestedOn = '';
-		if (!empty($aRow['sample_tested_datetime'])) {
-			$sampleTestedOn =  DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
-		}
-
-		$sampleReceivedOn = '';
-		if (!empty($aRow['sample_received_at_lab_datetime'])) {
-			$sampleReceivedOn =  DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
-		}
-
-		//set sample rejection
-		$sampleRejection = null;
-		if (isset($aRow['is_sample_rejected']) && trim((string) $aRow['is_sample_rejected']) === 'yes' || $aRow['result_status'] == 4) {
-      $sampleRejection = 'Yes';
-  } elseif (trim((string) $aRow['is_sample_rejected']) === 'no') {
-      $sampleRejection = 'No';
-  }
-		//result dispatched date
-		$lastViralLoadTest = '';
-		if (!empty($aRow['last_viral_load_date'])) {
-			$lastViralLoadTest =  DateUtility::humanReadableDateFormat($aRow['last_viral_load_date']);
-		}
-
-		//result dispatched date
-		$resultDispatchedDate = '';
-		if (!empty($aRow['result_printed_datetime'])) {
-			$resultDispatchedDate =  DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
-		}
-
-		if ($aRow['patient_first_name'] != '') {
-			$patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_id']));
-		} else {
-			$patientFname = '';
-		}
-		if ($aRow['patient_middle_name'] != '') {
-			$patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_id']));
-		} else {
-			$patientMname = '';
-		}
-		if ($aRow['patient_last_name'] != '') {
-			$patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_id']));
-		} else {
-			$patientLname = '';
-		}
-
-		$row[] = $no;
-		if ($general->isStandaloneInstance()) {
-			$row[] = $aRow["sample_code"];
-		} else {
-			$row[] = $aRow["sample_code"];
-			$row[] = $aRow["remote_sample_code"] ?? null;
-		}
-		$row[] = $aRow['facility_name'];
-		$row[] = $aRow['lab_name'];
-		$row[] = $sampleReceivedOn;
-		$row[] = $aRow['facility_code'];
-		$row[] = ($aRow['facility_district']);
-		$row[] = ($aRow['facility_state']);
-
-		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-			$row[] = $aRow['patient_id'];
-			$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-		}
-		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');
-		$row[] = $aRow['patient_age_in_years'];
-		$row[] = $gender;
-		$row[] = $sampleCollectionDate;
-		$row[] = $aRow['sample_name'] ?: null;
-		$row[] = $treatmentInitiationDate;
-		$row[] = ($aRow['is_patient_pregnant']);
-		$row[] = ($aRow['is_patient_breastfeeding']);
-		$row[] = (str_replace("_", " ", (string) $aRow['test_reason']));
-		$row[] = ($aRow['request_clinician_name']);
-		$row[] = $requestedDate;
-		$row[] = $sampleRejection;
-		$row[] = SampleRejectionUtility::reasonLabel($aRow['rejection_reason_name'] ?? null);
-		$row[] = $sampleTestedOn;
-		$row[] = $aRow['result'];
-		$row[] = $resultDispatchedDate;
-		$row[] = ($aRow['lab_tech_comments']);
-		$row[] = (isset($aRow['funding_source_name']) && trim((string) $aRow['funding_source_name']) !== '') ? ($aRow['funding_source_name']) : '';
-		$row[] = (isset($aRow['i_partner_name']) && trim((string) $aRow['i_partner_name']) !== '') ? ($aRow['i_partner_name']) : '';
-		$row[] = $requestCreatedDatetime;
-
-		/* To assign the dynamic fields values */
-		if ($labels !== []) {
-			foreach (array_keys($labels) as $id) {
-				//$row[] = empty($testType[$key]['dynamicValue'][$id]) ? "" : $testType[$key]['dynamicValue'][$id];
-				$value = $testType[$key]['dynamicValue'][$id] ?? '';
-				$row[] = is_array($value) ? implode(', ', $value) : $value;
-			}
-		}
-		$output[] = $row;
-		$no++;
-	}
-
-	if (isset($_SESSION['genericResultQueryCount']) && $_SESSION['genericResultQueryCount'] > 50000) {
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '.csv';
-		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-		// we dont need the $output variable anymore
-		unset($output);
-		echo _downloadToken($fileName);
-	} else {
-		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
-
-		$writer = new Writer();
-		$writer->openToFile($filename);
-		$writer->addRow(Row::fromValues($headings));
-		foreach ($output as $rowData) {
-			$writer->addRow(Row::fromValues($rowData));
-		}
-		$writer->close();
-
-		echo _downloadToken($filename);
-	}
+// A background job has no request to time out, and the worker sets its own
+// memory limit; a direct request keeps these.
+if (!ExportJobUtility::inBackground()) {
+	ini_set('memory_limit', '512M');
+	set_time_limit(300);
+	ini_set('max_execution_time', 300);
 }
+
+if (empty($_SESSION['genericResultQuery'])) {
+	return;
+}
+
+/** @var GenericTestsExportService $genericTestsExportService */
+$genericTestsExportService = ContainerRegistry::get(GenericTestsExportService::class);
+
+$filename = $genericTestsExportService->export(
+	(string) $_SESSION['genericResultQuery'],
+	'InteLIS-LAB-TESTS-Data',
+	($_POST['patientInfo'] ?? '') === 'yes',
+	[],
+	($_POST['withAlphaNum'] ?? '') === 'yes',
+	($_POST['withDetails'] ?? '') === 'yes'
+);
+
+echo _downloadToken($filename);

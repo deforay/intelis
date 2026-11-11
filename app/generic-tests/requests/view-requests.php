@@ -155,6 +155,20 @@ $sampleStatusData = $general->getSampleStatus();
 								</select>
 							</td>
 						</tr>
+						<tr>
+							<td style="width: 10%;"><strong>
+									<?php echo _translate("Export with Patient ID and Name"); ?>&nbsp;:
+								</strong></td>
+							<td style="width: 50%;">
+								<select name="patientInfo" id="patientInfo" class="form-control filter-panel-ignore"
+									title="<?= _htmlTranslate('Choose whether to include patient ID and name in the export'); ?>"
+									style="width:100%;">
+									<option value="yes"><?php echo _translate("Yes"); ?></option>
+									<option value="no"><?php echo _translate("No"); ?></option>
+								</select>
+								<label style="font-weight:normal;margin-top:6px;display:block;" title="<?= _htmlTranslate('Add who tested, reviewed and approved each sample, its status, analyzer run and record history'); ?>"><input type="checkbox" id="withDetails" class="filter-panel-ignore" value="yes"> <?= _translate("Include lab and audit details"); ?></label>
+							</td>
+						</tr>
 					</table>
 					<div class="filter-actions">
 						<button type="button" onclick="searchVlRequestData();" class="filter-search btn btn-default btn-sm">
@@ -549,7 +563,10 @@ $sampleStatusData = $general->getSampleStatus();
 		}
 		// Runs in the background; progress shows in the navbar Exports menu and the
 		// file downloads when ready, even if the user has moved to another page.
-		IntelisExport.start("/generic-tests/requests/export-generic-tests-requests.php", {}, <?= json_encode(_translate("Custom Tests Requests Export")) ?>);
+		IntelisExport.start("/generic-tests/requests/export-generic-tests-requests.php", {
+			patientInfo: $('#patientInfo').val(),
+			withDetails: $('#withDetails').is(':checked') ? 'yes' : 'no',
+		},<?= json_encode(_translate("Custom Tests Requests Export")) ?>);
 	}
 
 	<?php if ($general->isLISInstance()) { ?>
