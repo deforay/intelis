@@ -254,6 +254,7 @@ try {
      // grid should list. Matches the VL requests grid.
      $sWhere[] = SampleCountUtility::countableWhere('vl');
 
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::groupingClauses($_POST['groupingFilter'] ?? null)];
      if (!empty($sWhere)) {
           $_SESSION['vlRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
           $sQuery = "$sQuery WHERE $sWhere";
@@ -392,6 +393,7 @@ try {
                $row[] = $actions . $barcode;
           }
 
+          $row[0] .= _sampleGroupingLabels($aRow['batch_code'] ?? null, $aRow['sample_package_code'] ?? null);
           $output['aaData'][] = $row;
      }
      echo JsonUtility::encodeUtf8Json($output);

@@ -387,6 +387,12 @@ foreach ($sourceOfRequests as $value => $displayText) {
 							<td>
 								<?= _manifestFilter('manifestCode', 'covid19', 'collection'); ?>
 							</td>
+							<td><strong>
+									<?= _htmlTranslate("Batch / Manifest"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _sampleGroupingFilterSelect(); ?>
+							</td>
 						</tr>
 
 					</table>
@@ -797,6 +803,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 				aoData.push({
 					"name": "manifestCode",
 					"value": $("#manifestCode").val()
+				});
+				aoData.push({
+					"name": "groupingFilter",
+					"value": $("#groupingFilter").val()
 				});
 				$.ajax({
 					"dataType": 'json',

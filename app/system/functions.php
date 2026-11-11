@@ -638,6 +638,55 @@ function _tooltipAttribute(array $lines): string
 }
 
 /**
+ * Build the Batch and Manifest labels for a request grid's Sample ID cell.
+ *
+ * The labels show at a glance whether a sample is in a batch or on a manifest.
+ * The codes go into the cell, not into a tooltip, so this escapes them once.
+ *
+ * @return string HTML to append to the cell, or '' when the sample has neither.
+ */
+function _sampleGroupingLabels(?string $batchCode, ?string $manifestCode): string
+{
+    $labels = [];
+    $batchCode = trim((string) $batchCode);
+    $manifestCode = trim((string) $manifestCode);
+
+    if ($batchCode !== '') {
+        $labels[] = '<span class="label label-primary">'
+            . _htmlTranslate('Batch') . ': ' . _sanitizeOutput($batchCode) . '</span>';
+    }
+    if ($manifestCode !== '') {
+        $labels[] = '<span class="label label-info">'
+            . _htmlTranslate('Manifest') . ': ' . _sanitizeOutput($manifestCode) . '</span>';
+    }
+
+    return $labels === [] ? '' : '<br>' . implode(' ', $labels);
+}
+
+/**
+ * Build the "Batch / Manifest" select for a request grid's filter panel.
+ *
+ * The options are All, Not in a batch and Not on a manifest. The page posts
+ * the choice as `groupingFilter`. ListingFilterClauseBuilder::groupingClauses()
+ * turns that value into SQL.
+ */
+function _sampleGroupingFilterSelect(string $id = 'groupingFilter'): string
+{
+    $options = [
+        '' => _htmlTranslate('All'),
+        App\Utilities\ListingFilterClauseBuilder::NOT_BATCHED => _htmlTranslate('Not in a batch'),
+        App\Utilities\ListingFilterClauseBuilder::NOT_MANIFESTED => _htmlTranslate('Not on a manifest'),
+    ];
+
+    $html = '<select class="form-control" id="' . _sanitizeOutput($id) . '" name="' . _sanitizeOutput($id) . '"'
+        . ' style="width:220px;">';
+    foreach ($options as $value => $label) {
+        $html .= '<option value="' . _sanitizeOutput($value) . '">' . $label . '</option>';
+    }
+    return $html . '</select>';
+}
+
+/**
  * Build a title="..." attribute holding a compact HTML table, for tooltipster.
  *
  * Same double-escaping contract as _tooltipAttribute(): each cell is escaped

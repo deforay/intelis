@@ -157,6 +157,14 @@ $sampleStatusData = $general->getSampleStatus();
 						</tr>
 						<tr>
 							<td style="width: 10%;"><strong>
+									<?= _htmlTranslate("Batch / Manifest"); ?>&nbsp;:
+								</strong></td>
+							<td style="width: 50%;">
+								<?= _sampleGroupingFilterSelect(); ?>
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 10%;"><strong>
 									<?php echo _translate("Export with Patient ID and Name"); ?>&nbsp;:
 								</strong></td>
 							<td style="width: 50%;">
@@ -458,6 +466,10 @@ $sampleStatusData = $general->getSampleStatus();
 				aoData.push({
 					"name": "status",
 					"value": $("#statusFilter").val()
+				});
+				aoData.push({
+					"name": "groupingFilter",
+					"value": $("#groupingFilter").val()
 				});
 				$.ajax({
 					"dataType": 'json',
