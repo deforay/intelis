@@ -182,7 +182,7 @@ fi
 
 # Source the shared functions
 source "$SHARED_FN_PATH"
-intelis_require_shared_fn_version 1
+intelis_require_shared_fn_version 2
 
 # Existing is not the same as usable: a copy left truncated by an older version
 # of this script, or one that fails to parse, gets sourced without a murmur.
