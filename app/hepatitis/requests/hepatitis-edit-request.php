@@ -6,6 +6,7 @@ use App\Services\FacilitiesService;
 use App\Services\HepatitisService;
 use App\Services\UsersService;
 use App\Services\CommonService;
+use App\Services\SampleAccessService;
 use App\Utilities\DateUtility;
 use App\Exceptions\SystemException;
 
@@ -39,10 +40,8 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $labFieldDisabled = '';
-
 
 
 /** @var FacilitiesService $facilitiesService */
@@ -51,6 +50,12 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var HepatitisService $hepatitisService */
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
+
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
+$hepatitisInfo = $sampleAccess->load('hepatitis', $_GET['id'] ?? null);
+$id = (int) $hepatitisInfo['hepatitis_id'];
 
 $hepatitisResults = $hepatitisService->getHepatitisResults();
 $testReasonResults = $hepatitisService->getHepatitisReasonsForTesting();
@@ -68,9 +73,6 @@ $riskFactorsData = $hepatitisService->getHepatitisRiskFactors();
 $riskFactorsInfo = $hepatitisService->getRiskFactorsByHepatitisId($id);
 
 
-//$id = ($_GET['id']);
-$hepatitisQuery = "SELECT * FROM form_hepatitis where hepatitis_id=?";
-$hepatitisInfo = $db->rawQueryOne($hepatitisQuery, [$id]);
 
 // A saved signer may now be outside the lab scope; keep them selectable so the
 // dropdown does not render blank and a re-save does not clear the value.
