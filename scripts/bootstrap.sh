@@ -46,7 +46,7 @@ intelis_resolve_scripts_ref() {
     if command -v curl >/dev/null 2>&1; then
         sha="$(curl -fsS --connect-timeout 5 --max-time 10 "$url" 2>/dev/null | grep -ao '[0-9a-f]\{40\} refs/heads/master' | head -n 1 | cut -c1-40 || true)"
     elif command -v wget >/dev/null 2>&1; then
-        sha="$(wget -q -T 10 -O - "$url" 2>/dev/null | grep -ao '[0-9a-f]\{40\} refs/heads/master' | head -n 1 | cut -c1-40 || true)"
+        sha="$(wget -q -T 10 --max-redirect=0 -O - "$url" 2>/dev/null | grep -ao '[0-9a-f]\{40\} refs/heads/master' | head -n 1 | cut -c1-40 || true)"
     fi
     if [[ "$sha" =~ ^[0-9a-f]{40}$ ]]; then
         INTELIS_SCRIPTS_REF="$sha"
