@@ -125,6 +125,29 @@ if ! declare -F prepare_system >/dev/null 2>&1; then
     exit 1
 fi
 
+# A copy left on this machine by an older run can lack functions this script
+# calls. Saving the MySQL password without mysql_cnf_quote would write an empty
+# one into the config, so check before any question is asked: re-fetch once
+# past the CDN cache, then stop if the copy is still too old.
+REQUIRED_SHARED_FN=(ask_password ask_text ask_choice ask_yes_no ui_note mysql_cnf_quote mysql_cnf_password)
+missing_shared_fn() {
+    local fn missing=""
+    for fn in "${REQUIRED_SHARED_FN[@]}"; do
+        declare -F "$fn" >/dev/null 2>&1 || missing="${missing} ${fn}"
+    done
+    printf '%s' "${missing# }"
+}
+if [ -n "$(missing_shared_fn)" ] &&
+    fetch_shared_fn "$SHARED_FN_PATH" "${SHARED_FN_URL}?t=$(date +%s)"; then
+    # shellcheck source=/dev/null
+    source "$SHARED_FN_PATH"
+fi
+if [ -n "$(missing_shared_fn)" ]; then
+    echo "shared-functions.sh at $SHARED_FN_PATH is older than this script (missing: $(missing_shared_fn))."
+    echo "Check the internet connection, then run setup again. Nothing has been changed."
+    exit 1
+fi
+
 prepare_system
 
 log_file="/tmp/intelis-setup-$(date +'%Y%m%d-%H%M%S').log"
@@ -643,7 +666,7 @@ _validate_install_path() {
     local candidate="${1%/}"
     if [[ "$1" != /* ]]; then
         print error "'${1}' is not a full path. A full path starts with /"
-        print error "To keep the suggested folder, type /var/www/intelis or press enter."
+        print info "To keep the suggested folder, type /var/www/intelis or press enter."
         return 1
     fi
     if [[ "$candidate" =~ [[:space:]\'\"\\\$\`] ]]; then
@@ -653,7 +676,7 @@ _validate_install_path() {
     case "$candidate" in
         ""|/bin|/boot|/dev|/etc|/home|/lib|/lib64|/opt|/proc|/root|/run|/sbin|/srv|/sys|/tmp|/usr|/usr/local|/usr/bin|/usr/bin/*|/usr/sbin|/usr/sbin/*|/usr/lib|/usr/lib/*|/usr/share|/usr/share/*|/var|/var/www|/var/lib|/var/lib/*|/var/log|/var/log/*|/etc/*|/boot/*|/proc/*|/sys/*|/dev/*|/run/*)
             print error "${candidate:-/} is a system folder or inside one. Setup replaces the contents of the install folder."
-            print error "Use a folder of its own, for example /var/www/intelis."
+            print info "Use a folder of its own, for example /var/www/intelis."
             return 1
             ;;
     esac
@@ -678,7 +701,7 @@ _validate_local_hostname() {
 
     if ! is_valid_hostname "$normalized"; then
         print error "'${candidate}' is not a valid web address."
-        print error "Use only letters, digits, dots and hyphens. For example: lab.health.gov.zm"
+        print info "Use only letters, digits, dots and hyphens. For example: lab.health.gov.zm"
         return 1
     fi
 
@@ -686,7 +709,7 @@ _validate_local_hostname() {
         sts_host="$(normalize_hostname_input "$remote_sts_url")"
         if [ -n "$sts_host" ] && [ "$normalized" = "$sts_host" ]; then
             print error "That is the STS address you entered earlier (${remote_sts_url})."
-            print error "This question is asking for the address of THIS machine."
+            print info "This question asks for the address of THIS machine."
             print error "If this machine uses the STS name, it answers for the STS, and syncing stops completely."
             log_action "Rejected hostname '${normalized}': same host as the STS URL"
             return 1
@@ -1014,7 +1037,7 @@ collect_user_inputs() {
             fi
             local remaining_sts_url_attempts=$((max_sts_url_attempts - sts_url_attempts))
             print error "Could not reach ${remote_sts_url} (HTTP code: ${response_code:-none})."
-            print error "Check the address and this machine's internet connection. Tries left: ${remaining_sts_url_attempts}."
+            print info "Check the address and this machine's internet connection. Tries left: ${remaining_sts_url_attempts}."
         done
     fi
 
@@ -1071,7 +1094,7 @@ collect_user_inputs() {
     # --- 4. MySQL root password (collect only; verify+persist after lamp-setup) ---
     mysql_password_needs_persisting=false
     if [ -f ~/.my.cnf ]; then
-        mysql_root_password=$(awk -F= '/password/ {print $2}' ~/.my.cnf | xargs)
+        mysql_root_password=$(mysql_cnf_password ~/.my.cnf)
         echo "MySQL root password extracted from ~/.my.cnf"
     else
         ui_step_next "MySQL root password"
@@ -1085,8 +1108,8 @@ collect_user_inputs() {
                 if ! ask_password mysql_root_password "MySQL root password" ""; then
                     # Unattended: nobody can type it, so asking again loops forever.
                     print error "MySQL is already installed, and its root password is not saved in /root/.my.cnf."
-                    print error "Run setup again in a terminal and type the password when asked,"
-                    print error "or save it in /root/.my.cnf first (a [client] section with user=root and password=...)."
+                    print info "Run setup again in a terminal and type the password when asked,"
+                    print info "or save it in /root/.my.cnf first (a [client] section with user=root and password=...)."
                     log_action "Existing MySQL, no /root/.my.cnf, and no terminal to ask for the password."
                     exit 1
                 fi
@@ -1120,7 +1143,11 @@ collect_user_inputs() {
     # turns up anyway, the import step already prompts at the point it finds it,
     # where the question is concrete.
     if ! $resume_setup && [[ -z "$DB_STRATEGY_FLAG" ]] && [ "$vlsm_db_state" != "no" ]; then
-        ui_step_next "An existing database was found"
+        if [ "$vlsm_db_state" = "unknown" ]; then
+            ui_step_next "There may be an existing database"
+        else
+            ui_step_next "An existing database was found"
+        fi
         if [ "$vlsm_db_state" = "unknown" ]; then
             ui_note "MySQL is installed, but setup cannot open it yet." \
                 "Setup cannot tell whether a 'vlsm' database already exists."
@@ -1146,14 +1173,21 @@ collect_user_inputs() {
     # installed at this point beyond the base packages prepare_system pulls in,
     # so declining is free.
     if ! $reuse_saved_answers && ui_interactive; then
-        local _role_label
+        local _role_label _db_label
         _role_label=$($is_sts && echo "Central server (STS)" || echo "Lab machine (LIS)")
+        case "${DB_STRATEGY_FLAG:-}" in
+            rename) _db_label="keep a copy, then start fresh" ;;
+            use)    _db_label="leave it alone and use it" ;;
+            drop)   _db_label="delete it" ;;
+            "")     _db_label="none found" ;;
+            *)      _db_label="$DB_STRATEGY_FLAG" ;;
+        esac
         ui_recap \
             "Role: ${_role_label}" \
             "Install path: ${lis_path}" \
             "Reached at: http://${hostname}/" \
             "Sends data to: ${remote_sts_url:-not set (syncing is not set up)}" \
-            "Existing vlsm database: ${DB_STRATEGY_FLAG:-none found}"
+            "Existing vlsm database: ${_db_label}"
         if ! ask_yes_no "Is this correct?" "yes"; then
             print info "Stopped. Nothing is installed."
             print info "Run the same command again to start over."
@@ -1694,12 +1728,9 @@ if [ "${mysql_password_needs_persisting:-false}" = true ]; then
     fi
 
     echo "Storing MySQL password for secure login..."
-    cat <<EOF >~/.my.cnf
-[client]
-user=root
-password=${mysql_root_password}
-host=localhost
-EOF
+    # Quoted: unquoted, a # in the password starts a comment and MySQL reads
+    # only the part before it.
+    printf '[client]\nuser=root\npassword=%s\nhost=localhost\n' "$(mysql_cnf_quote "$mysql_root_password")" >~/.my.cnf
     chmod 600 ~/.my.cnf
     echo "MySQL credentials saved in secure file."
 else

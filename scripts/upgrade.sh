@@ -277,6 +277,13 @@ detect_intelis_installations() {
         [ -d "$dir" ] || continue
         # Remove trailing slash for cleaner paths
         dir="${dir%/}"
+        # Skip the copies setup keeps when it replaces an installation
+        # (<folder>-YYYYMMDD-HHMMSS). They look like installations and point at
+        # the live database, so -A would upgrade them and run their
+        # migrations against it.
+        if [[ "$(basename "$dir")" =~ -[0-9]{8}-[0-9]{6}$ ]]; then
+            continue
+        fi
         if is_valid_application_path "$dir"; then
             found_paths+=("$dir")
         fi
@@ -508,7 +515,7 @@ update_configuration() {
         if [ -n "$_sts_host" ] && hosts_file_shadows "$_sts_host"; then
             print error "/etc/hosts points ${_sts_host} at this machine."
             print error "Syncing cannot work. This machine sends its results to itself."
-            print error "Remove the '${_sts_host}' line from /etc/hosts, then run: intelis check"
+            print info "Remove the '${_sts_host}' line from /etc/hosts, then run: intelis check"
             log_action "STS host ${_sts_host} is shadowed by /etc/hosts"
         fi
         unset _sts_host

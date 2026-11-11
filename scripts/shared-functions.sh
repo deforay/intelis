@@ -2886,6 +2886,74 @@ ensure_opcache() {
 }
 
 
+# Quote a value for a MySQL option file such as /root/.my.cnf.
+#
+# Unquoted, MySQL reads # as the start of a comment, so password=Root#Pass123
+# is read as "Root" and every later login fails with "Access denied". Inside
+# quotes MySQL unescapes \\ and \", which this escapes. Tested against MySQL 8
+# with #, spaces, =, both quote kinds, backslashes, $ and a backtick.
+mysql_cnf_quote() {
+    local v="$1"
+    v="${v//\\/\\\\}"
+    if [[ "$v" == *\"* && "$v" != *\'* ]]; then
+        printf "'%s'" "$v"
+    else
+        v="${v//\"/\\\"}"
+        printf '"%s"' "$v"
+    fi
+}
+
+# Print the [client] password from a MySQL option file, read the way MySQL
+# reads it: quotes removed, escapes undone, comments dropped. awk on "=" breaks
+# on a password that holds =, #, a quote or a backslash.
+#
+# my_print_defaults is MySQL's own parser. Before MySQL is installed it does
+# not exist, so the fallback decodes the value with the same rules: a quoted
+# value ends at its closing quote, an unquoted one at #, and \b \t \n \r \s \\
+# and an escaped quote are undone.
+mysql_cnf_password() {
+    local file="${1:-$HOME/.my.cnf}"
+    [ -r "$file" ] || return 1
+    if command -v my_print_defaults >/dev/null 2>&1; then
+        my_print_defaults --defaults-file="$file" -s client | sed -n 's/^--password=//p' | tail -n 1
+        return 0
+    fi
+    local raw
+    raw="$(awk '
+        /^[[:space:]]*\[/ { in_client = ($0 ~ /^[[:space:]]*\[client\][[:space:]]*$/); next }
+        in_client && /^[[:space:]]*password[[:space:]]*=/ { v = $0; sub(/^[^=]*=[[:space:]]*/, "", v); last = v }
+        END { if (last != "") print last }
+    ' "$file")"
+    [ -n "$raw" ] || return 0
+    _mysql_cnf_decode_value "$raw"
+}
+
+_mysql_cnf_decode_value() {
+    local v="$1" out="" c q=""
+    case "${v:0:1}" in
+        \"|\') q="${v:0:1}"; v="${v:1}" ;;
+    esac
+    while [ -n "$v" ]; do
+        c="${v:0:1}"; v="${v:1}"
+        if [ "$c" = "\\" ] && [ -n "$v" ]; then
+            c="${v:0:1}"; v="${v:1}"
+            case "$c" in
+                b) c=$'\b' ;; t) c=$'\t' ;; n) c=$'\n' ;; r) c=$'\r' ;; s) c=' ' ;;
+                \\|\"|\') ;;
+                *) c="\\$c" ;;
+            esac
+        elif [ -n "$q" ] && [ "$c" = "$q" ]; then
+            break
+        elif [ -z "$q" ] && [ "$c" = "#" ]; then
+            break
+        fi
+        out+="$c"
+    done
+    # An unquoted value loses the spaces before a comment or the line end.
+    [ -z "$q" ] && out="${out%"${out##*[![:space:]]}"}"
+    printf '%s' "$out"
+}
+
 setup_mysql_config() {
     local config_file="$1"
     local mysql_cnf="/root/.my.cnf"
@@ -2897,7 +2965,7 @@ setup_mysql_config() {
 [client]
 user=root
 EOF
-            printf "password=%s\n" "$pw" >> "$mysql_cnf"
+            printf "password=%s\n" "$(mysql_cnf_quote "$pw")" >> "$mysql_cnf"
             chmod 600 "$mysql_cnf"
             return 0
         fi
