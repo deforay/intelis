@@ -628,13 +628,40 @@ http_get() { # http_get <url> [host] -> body on stdout
   fi
 }
 
+# Where this machine's site redirects a plain-HTTP request, when that is HTTPS:
+# prints "<name> <port>", or nothing. A site with a certificate usually sends
+# every http:// request to https://, so the probe has to follow it to see PHP.
+https_redirect_target() { # https_redirect_target <path> [host]
+  command -v curl >/dev/null 2>&1 || return 1
+  local loc hostport name port=443
+  loc="$(curl -sS --noproxy '*' -o /dev/null -w '%{redirect_url}' --max-time 15 ${2:+-H "Host: $2"} "http://127.0.0.1$1" 2>/dev/null || true)"
+  case "$loc" in https://*) ;; *) return 1 ;; esac
+  hostport="${loc#https://}"
+  hostport="${hostport%%/*}"
+  name="${hostport%%:*}"
+  [ "$hostport" != "$name" ] && port="${hostport##*:}"
+  [[ "$port" =~ ^[0-9]+$ ]] && [ -n "$name" ] || return 1
+  printf '%s %s' "$name" "$port"
+}
+
+# GET over HTTPS from this machine itself: --resolve sends the request to
+# 127.0.0.1 under the site's own name, and --noproxy keeps a configured proxy
+# from carrying it off the box. -k because the question is whether PHP answers,
+# not whether the certificate is valid.
+https_local() { # https_local <name> <port> <path> [curl options...]
+  local name="$1" port="$2" path="$3"
+  shift 3
+  curl -sS -k --noproxy '*' --max-time 15 --resolve "${name}:${port}:127.0.0.1" "$@" "https://${name}:${port}${path}" 2>/dev/null
+}
+
+# Only ever asked about this machine, so a configured proxy is bypassed.
 http_status() { # http_status <url> [host] -> three-digit code, or empty
   local url="$1" host="${2:-}"
   if command -v curl >/dev/null 2>&1; then
     if [ -n "$host" ]; then
-      curl -sS -o /dev/null -w '%{http_code}' --max-time 15 -H "Host: ${host}" "$url" 2>/dev/null
+      curl -sS --noproxy '*' -o /dev/null -w '%{http_code}' --max-time 15 -H "Host: ${host}" "$url" 2>/dev/null
     else
-      curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "$url" 2>/dev/null
+      curl -sS --noproxy '*' -o /dev/null -w '%{http_code}' --max-time 15 "$url" 2>/dev/null
     fi
   elif command -v wget >/dev/null 2>&1; then
     # wget has no --write-out. With -S it prints the status line to stderr, and
@@ -643,9 +670,9 @@ http_status() { # http_status <url> [host] -> three-digit code, or empty
     # Without this branch a wget-only machine got an empty status, so InteLIS
     # returning HTTP 500 read exactly like a healthy site.
     if [ -n "$host" ]; then
-      wget -S -O /dev/null --timeout=15 --header="Host: ${host}" "$url" 2>&1
+      wget -S -O /dev/null --no-proxy --timeout=15 --header="Host: ${host}" "$url" 2>&1
     else
-      wget -S -O /dev/null --timeout=15 "$url" 2>&1
+      wget -S -O /dev/null --no-proxy --timeout=15 "$url" 2>&1
     fi | awk '/^[[:space:]]*HTTP\//{code=$2} END{if (code) print code}'
   else
     return 2
@@ -769,9 +796,22 @@ check_probe() {
   report "probe host=${host:-<default vhost>}"
 
   body="$(http_get "http://127.0.0.1/.intelis-doctor-probe.php" "$host" || true)"
-  rm -f -- "$probe" 2>/dev/null || true
-
   report_cmd "probe response" printf '%s\n' "$body"
+
+  # Redirected to HTTPS: follow it here, or a healthy site with a certificate
+  # reads as "no known cause" and a broken one hides behind the redirect.
+  local https_target="" https_name="" https_port=""
+  if ! printf '%s' "$body" | grep -q 'INTELIS_PHP_OK'; then
+    https_target="$(https_redirect_target "/.intelis-doctor-probe.php" "$host" || true)"
+    if [ -n "$https_target" ]; then
+      https_name="${https_target% *}"
+      https_port="${https_target#* }"
+      report "probe redirected to https://${https_name}:${https_port}, following it on this machine"
+      body="$(https_local "$https_name" "$https_port" "/.intelis-doctor-probe.php" || true)"
+      report_cmd "probe response (https)" printf '%s\n' "$body"
+    fi
+  fi
+  rm -f -- "$probe" 2>/dev/null || true
 
   if [ -z "$body" ]; then
     PROBE_RESULT=unreachable
@@ -787,7 +827,11 @@ check_probe() {
     PROBE_RESULT=other
   fi
 
-  PROBE_STATUS="$(http_status "http://127.0.0.1/" "$host" || true)"
+  if [ -n "$https_name" ]; then
+    PROBE_STATUS="$(https_local "$https_name" "$https_port" "/" -o /dev/null -w '%{http_code}' || true)"
+  else
+    PROBE_STATUS="$(http_status "http://127.0.0.1/" "$host" || true)"
+  fi
   report "site status=${PROBE_STATUS:-unknown}"
 }
 
