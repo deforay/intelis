@@ -39,7 +39,7 @@ set -Eeuo pipefail
 # genuine bugs in this script, not for a grep that found nothing.
 # ------------------------------------------------------------------------------
 
-trap 'echo "fix-database stopped unexpectedly at line $LINENO (status $?). Please report this."' ERR
+trap 'echo "fix-database stopped unexpectedly at line $LINENO (status $?). Send the newest /var/log/intelis-mysql-doctor-*.log file when asking for help."' ERR
 
 MODE=ask          # ask | check | yes
 QUIET=false
@@ -271,10 +271,18 @@ has_finding() { # has_finding <fix-key>
   return 1
 }
 
+# Anything other than yes or no is asked again. A stray key used to count as
+# no, so the operator saw "Left alone." for a repair they meant to accept.
 confirm() {
   local answer
-  read -r -p "     $1 [y/N]: " answer || return 1
-  case "${answer,,}" in y|yes) return 0 ;; *) return 1 ;; esac
+  while true; do
+    read -r -p "     $1 Type y for yes or n for no, then press enter [y/N]: " answer || return 1
+    case "${answer,,}" in
+      y|yes) return 0 ;;
+      ""|n|no) return 1 ;;
+      *) print warning "'${answer}' is not an answer. Type y or n." ;;
+    esac
+  done
 }
 
 run_fix() { # run_fix <description> <function> [args...]
@@ -288,7 +296,7 @@ run_fix() { # run_fix <description> <function> [args...]
 
   print step "${description}"
   if [ "$MODE" = ask ] && ! confirm "Do this now?"; then
-    print plain "     Left alone."
+    print plain "     Skipped. Nothing was changed."
     return 1
   fi
 
@@ -299,7 +307,7 @@ run_fix() { # run_fix <description> <function> [args...]
     return 0
   fi
 
-  print error "That did not work. The details are in ${REPORT}."
+  print error "That repair did not work. The details are in ${REPORT}."
   report "FIX FAILED: ${description}"
   return 1
 }
@@ -427,10 +435,10 @@ fi
 # --- is it installed at all ---------------------------------------------------
 
 if ! command -v mysqld >/dev/null 2>&1 && ! command -v mariadbd >/dev/null 2>&1; then
-  print error "There is no database server installed on this machine at all."
-  print info  "If this machine is meant to run InteLIS, it was never set up, or the"
-  print plain "     package was removed. Run setup.sh again rather than installing a"
-  print plain "     database by hand."
+  print error "There is no database server installed on this machine."
+  print info  "If this machine is meant to run InteLIS, InteLIS setup never finished,"
+  print plain "     or the database package was removed. Run InteLIS setup again."
+  print plain "     Do not install a database by hand."
   report "VERDICT: server not installed"
   exit 1
 fi
@@ -457,14 +465,14 @@ check_disk() {
       human="$(df -h "$target" 2>/dev/null | awk 'NR==2 {print $4" free out of "$2}' || true)"
       finding critical disk \
         "The disk is full (${human})." \
-        "This is the most common reason a lab database stops. The server shuts itself down when it cannot write, and will not start again until there is room."
+        "This is the most common reason a lab database stops. The server shuts itself down when it cannot write. It does not start again until there is room. The repairs below show what is using the space."
     fi
 
     inode_pct="$(df -Pi "$target" 2>/dev/null | awk 'NR==2 {gsub(/%/,"",$5); print $5}' || true)"
     if [ -n "$inode_pct" ] && [ "$inode_pct" -ge 95 ] 2>/dev/null; then
       finding critical disk \
         "The disk holding ${target} has room but cannot hold any more files (${inode_pct}% of its file slots used)." \
-        "Usually a very large number of small files, such as old sessions or cache files. The database cannot create anything until some are removed."
+        "This is usually a very large number of small files, such as old sessions or cache files. The database cannot create anything until some are removed."
     fi
   done
 }
@@ -478,7 +486,7 @@ check_oom() {
   OOM_HITS="$hits"
   finding critical none \
     "The machine ran out of memory and the system shut the database down to cope (${hits} time(s) in the last week)." \
-    "There is not enough RAM for everything running here. It will keep happening until the database is told to reserve less, or something else on this machine is stopped."
+    "There is not enough RAM for everything running here. This keeps happening until the database reserves less memory, or something else on this machine is stopped."
 }
 
 check_buffer_pool() {
@@ -589,12 +597,12 @@ check_config_prelude() {
   if $SERVER_UP; then
     finding warning configprelude \
       "Settings were added to ${found} above the first [section] heading." \
-      "The database is running now, but it will refuse to start the next time it is restarted, because it cannot read a file whose first line is an option with no heading above it."
+      "The database is running now, but it refuses to start at the next restart. It cannot read a file whose first line is an option with no heading above it."
     return 0
   fi
 
   finding critical configprelude \
-    "Settings were added to ${found} above the first [section] heading, and the database will not read that file at all." \
+    "Settings were added to ${found} above the first [section] heading. The database does not read that file at all." \
     "Every setting has to sit under a heading such as [mysqld]. The server stops at the first line and never starts."
 }
 
@@ -742,8 +750,8 @@ check_client_option_leak() {
     # than a clean bill of health for a machine where mysqldump will not run.
     if [ -n "$rejected" ]; then
       finding critical none \
-        "The client programs are refusing an option in a configuration file, and mysqldump is one of them, so the backup cannot run." \
-        "The option they will not accept is ${rejected}. It is not in any of the usual files, so it has to be found by hand: run  my_print_defaults client mysql mysqldump  to see what they are reading, and  mysql --no-defaults  to get a working connection meanwhile."
+        "The client programs refuse an option in a configuration file. mysqldump is one of them, so the backup cannot run." \
+        "The option they refuse is ${rejected}. It is not in any of the usual files, so a person has to find it. To see what they read, run:  my_print_defaults client mysql mysqldump  Until it is fixed, connect with:  mysql --no-defaults"
     fi
     return 0
   fi
@@ -762,14 +770,14 @@ check_client_option_leak() {
 
   if $CLIENT_LEAK_BREAKS_CLIENTS; then
     finding critical clientleak \
-      "Settings meant for the database server were put under a heading that the client programs read, and those programs will no longer run." \
-      "Typing mysql fails with \"unknown variable\". So does mysqldump, which is what takes the backup, so the backups have been failing too. The server itself never reads those sections, so it started normally and none of that tuning has ever been in use. Switching the lines off is safe; they are written back where they belong, sized for this machine, the next time the software is updated. $(printf '%s\n' "${CLIENT_LEAK_HITS[@]}" | awk -F'\t' '{ printf "%s%s line %s under [%s]: %s", (NR > 1 ? "; " : ""), $1, $2, $3, $4 }')"
+      "Settings meant for the database server were put under a heading that the client programs read. Those programs no longer run." \
+      "Typing mysql fails with \"unknown variable\". So does mysqldump, which is what takes the backup, so the backups have been failing too. The server itself never reads those sections, so it started normally and none of that tuning was ever in use. Switching the lines off is safe. The next InteLIS update writes them back where they belong, sized for this machine. $(printf '%s\n' "${CLIENT_LEAK_HITS[@]}" | awk -F'\t' '{ printf "%s%s line %s under [%s]: %s", (NR > 1 ? "; " : ""), $1, $2, $3, $4 }')"
     return 0
   fi
 
   finding warning clientleak \
     "Settings meant for the database server are sitting under a heading that the client programs read." \
-    "This version of the client tolerates them, so nothing is failing today, but the server does not read those sections and never applied any of it. A different client, or the next upgrade, will refuse to start. $(printf '%s\n' "${CLIENT_LEAK_HITS[@]}" | awk -F'\t' '{ printf "%s%s line %s under [%s]: %s", (NR > 1 ? "; " : ""), $1, $2, $3, $4 }')"
+    "This version of the client accepts them, so nothing is failing today. The server does not read those sections and never applied any of it. A different client, or the next upgrade, refuses to start. $(printf '%s\n' "${CLIENT_LEAK_HITS[@]}" | awk -F'\t' '{ printf "%s%s line %s under [%s]: %s", (NR > 1 ? "; " : ""), $1, $2, $3, $4 }')"
 }
 
 # No equivalent direct test exists for a setting the server merely rejects: that
@@ -860,7 +868,7 @@ check_unit_masked() {
   [ "$(systemctl is-enabled "$UNIT" 2>/dev/null || true)" = "masked" ] || return 0
   finding critical unmask \
     "The database service has been blocked from starting." \
-    "Somebody turned it off deliberately at some point. Nothing will start it until that is undone."
+    "Somebody turned it off on purpose at some point. Nothing starts it until that is undone. The repair below undoes it."
 }
 
 check_port_conflict() {
@@ -925,7 +933,7 @@ check_app_credentials() {
 
   finding critical none \
     "The database is running, but InteLIS cannot log in to it as '${user}'." \
-    "The server is healthy, so this is about the username, password or permissions rather than an outage. They are set in ${cfg}."
+    "The server is healthy, so the problem is the username, password or permissions, not an outage. They are set in ${cfg}. To fix it, correct them there, then run: sudo intelis doctor"
 }
 
 check_connection_limit() {
@@ -1238,7 +1246,7 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
     fi
     print plain ""
     run_fix "Trim the system logs to free some space straight away." fix_vacuum_journal || true
-    print info "Deleting anything else is a decision for a person, so this script will not do it."
+    print info "This script does not delete anything else. A person has to decide what to remove."
   fi
 
   # Damage to the data files is the one case with no safe automatic answer.
@@ -1371,7 +1379,7 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ] || ! $SERVER_UP; then
       mysql_complaints | grep -E '\[ERROR\]' | strip_log_prefix |
         awk '!seen[$0]++' | tail -n 4 | fold -s -w 70 | sed 's/^/     /' || true
     fi
-    [ -n "$EMBEDDED" ] || card bad "The database still will not start." \
+    [ -n "$EMBEDDED" ] || card bad "The database still does not start." \
       "Send the report below when asking for help."
     report "VERDICT: still down"
   fi

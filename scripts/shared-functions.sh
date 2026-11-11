@@ -1577,35 +1577,36 @@ ask_yes_no() {
         return $?
     fi
 
-    if [ "$timeout" -gt 0 ] 2>/dev/null; then
-        echo -n "$prompt (y/n) [default: $default, auto in ${timeout}s]: "
-        read -t "$timeout" answer
-        if [ $? -ne 0 ]; then
-            print info "No input received in ${timeout} seconds. Using default: $default"
+    # A typo is asked again. Taking the default on one turned "yse" into a no,
+    # and the operator learned that only from what happened next.
+    while true; do
+        if [ "$timeout" -gt 0 ] 2>/dev/null; then
+            echo -n "$prompt (y/n) [default: $default, continues with $default in ${timeout}s]: "
+            if ! read -t "$timeout" answer; then
+                echo
+                print info "No answer in ${timeout} seconds. Continuing with: $default"
+                [[ "$default" == "yes" ]] && return 0 || return 1
+            fi
+        else
+            echo -n "$prompt (y/n) [default: $default]: "
+            if ! read -r answer; then
+                [[ "$default" == "yes" ]] && return 0 || return 1
+            fi
+        fi
+
+        # Enter on its own chooses the default.
+        answer=$(echo "$answer" | awk '{print tolower($0)}' | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')
+        if [ -z "$answer" ]; then
+            print info "Using default: $default"
             [[ "$default" == "yes" ]] && return 0 || return 1
         fi
-    else
-        echo -n "$prompt (y/n) [default: $default]: "
-        if ! read -r answer; then
-            [[ "$default" == "yes" ]] && return 0 || return 1
-        fi
-    fi
 
-    # Treat empty input (Enter) as choosing default
-    answer=$(echo "$answer" | awk '{print tolower($0)}')
-    if [ -z "$answer" ]; then
-        print info "Using default: $default"
-        [[ "$default" == "yes" ]] && return 0 || return 1
-    fi
-
-    case "$answer" in
-        y | yes) return 0 ;;
-        n | no)  return 1 ;;
-        *)
-            print warning "Invalid input. Using default: $default"
-            [[ "$default" == "yes" ]] && return 0 || return 1
-        ;;
-    esac
+        case "$answer" in
+            y | yes) return 0 ;;
+            n | no)  return 1 ;;
+            *) print warning "'$answer' is not an answer. Type y for yes or n for no." ;;
+        esac
+    done
 }
 
 
@@ -3737,6 +3738,13 @@ ask_text() {
     while true; do
         if [ "$(ui_renderer)" = "gum" ]; then
             printf '\n \033[1m%s\033[0m\n' "$question" >&2
+            # gum draws the placeholder in grey. Operators read it as an example
+            # to type over, not as the answer that enter gives. Print the
+            # default as well. Skip this hint when the placeholder is a separate
+            # example, because the caller's own note explains the default.
+            if [ -n "$default" ] && { [ -z "$placeholder" ] || [ "$placeholder" = "$default" ]; }; then
+                printf '   \033[2mpress enter for: %s\033[0m\n' "$default" >&2
+            fi
             reply=$(gum input --placeholder "${placeholder:-$default}" --value "") || reply=""
         else
             printf '\n \033[1m%s\033[0m\n' "$question" >&2
@@ -3755,6 +3763,32 @@ ask_text() {
         printf -v "$__outvar" '%s' "$reply"
         return 0
     done
+}
+
+# --- Password ---------------------------------------------------------------
+# _read_masked <outvar>
+#
+# Reads a password and prints one * per character. With no echo at all, an
+# operator cannot tell whether the keyboard works, and types the password again
+# on top of the first attempt. Backspace removes the last character and its *.
+_read_masked() {
+    local __out="$1" __pw="" __ch
+    while IFS= read -rs -n1 __ch; do
+        # Enter arrives as an empty read. Ctrl-D arrives as a byte because
+        # read -n1 turns off line mode, so treat it as the end of input too.
+        [ -z "$__ch" ] && break
+        [ "$__ch" = $'\x04' ] && break
+        if [ "$__ch" = $'\x7f' ] || [ "$__ch" = $'\b' ]; then
+            if [ -n "$__pw" ]; then
+                __pw="${__pw%?}"
+                printf '\b \b' >&2
+            fi
+            continue
+        fi
+        __pw+="$__ch"
+        printf '*' >&2
+    done
+    printf -v "$__out" '%s' "$__pw"
 }
 
 # --- Password ---------------------------------------------------------------
@@ -3787,10 +3821,10 @@ ask_password() {
             fi
         else
             printf '\n \033[1m%s\033[0m\n > ' "$question" >&2
-            read -rs first || first=""
+            _read_masked first
             if [ -n "$confirm_question" ]; then
                 printf '\n \033[1m%s\033[0m\n > ' "$confirm_question" >&2
-                read -rs second || second=""
+                _read_masked second
             else
                 second="$first"
             fi
@@ -3798,13 +3832,14 @@ ask_password() {
         fi
 
         if [ -z "$first" ]; then
-            print error "The password cannot be empty."
+            print error "The password cannot be empty. Type a password, then press enter."
             continue
         fi
         if [ "$first" != "$second" ]; then
-            print error "The two entries do not match. Try again."
+            print error "The two passwords do not match. Type them again."
             continue
         fi
+        [ -n "$confirm_question" ] && print success "The passwords match."
 
         printf -v "$__outvar" '%s' "$first"
         return 0
@@ -3820,7 +3855,7 @@ ask_password() {
 # "Domain name: sts.example.org" next to "STS URL: https://sts.example.org"
 # look as wrong as it is.
 ui_recap() {
-    print header "Please confirm before setup begins"
+    print header "Check your answers before setup starts"
     local line
     for line in "$@"; do
         printf '   \033[1;96m%-24s\033[0m %s\n' "${line%%:*}" "${line#*: }"

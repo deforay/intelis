@@ -36,14 +36,15 @@ case "${1:-}" in
   "")        ACTION="restore" ;;
   --list)    ACTION="list" ;;
   --help|-h) sed -n '4,/^$/{ /^#/p; }' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
-  *)         echo "Unknown option: $1"; echo "Try --help"; exit 2 ;;
+  *)         echo "Unknown option: $1"; echo "To see the options, run: intelis restore --help"; exit 2 ;;
 esac
 
 # Checked before anything else: the shared-functions bootstrap below writes
 # under /usr/local/lib, so a non-root run has to fail here rather than partway
 # through with a permission error nobody can read.
 if [ "$(id -u)" -ne 0 ]; then
-  echo "Need admin privileges. Run with sudo."
+  echo "This needs administrator rights. Run it again with sudo:"
+  echo "    sudo intelis restore"
   exit 1
 fi
 
@@ -113,7 +114,7 @@ if ! declare -F ask_choice >/dev/null 2>&1; then
   exit 1
 fi
 
-require_cmd() { command -v "$1" >/dev/null 2>&1 || { print error "Missing dependency: $1"; exit 1; }; }
+require_cmd() { command -v "$1" >/dev/null 2>&1 || { print error "The '$1' command is not installed. Install it, then run this again."; exit 1; }; }
 
 trim() {
   local s=$1
@@ -123,7 +124,7 @@ trim() {
 }
 
 no_more_input() {
-  print error "Ran out of answers — the input ended before the questions did."
+  print error "Ran out of answers. The input ended before the questions did."
   print info  "Run this directly in a terminal: intelis restore"
   exit 1
 }
@@ -142,16 +143,26 @@ no_more_input() {
 
 validate_nonempty() {
   [ -n "$(trim "$1")" ] && return 0
-  print error "This cannot be left empty."
+  print error "This cannot be left empty. Type an answer, then press enter."
   return 1
 }
 
-# ask <var> <prompt> [default] — kept as the local spelling so every call site
-# below reads the same as it always did, now rendered by gum where available.
+validate_full_path() {
+  validate_nonempty "$1" || return 1
+  case "$(trim "$1")" in
+    /*) return 0 ;;
+  esac
+  print error "'$1' is not a full path. A full path starts with /, for example /var/intelis-restore."
+  return 1
+}
+
+# ask <var> <prompt> [default] [validator]: kept as the local spelling so every
+# call site below reads the same as it always did, now rendered by gum where
+# available. The validator defaults to validate_nonempty.
 ask() {
   ui_interactive || no_more_input
-  local __var=$1 prompt=$2 default=${3:-}
-  ask_text "$__var" "$default" "$prompt" validate_nonempty
+  local __var=$1 prompt=$2 default=${3:-} validator=${4:-validate_nonempty}
+  ask_text "$__var" "$default" "$prompt" "$validator"
   printf -v "$__var" '%s' "$(trim "${!__var}")"
 }
 
@@ -167,11 +178,17 @@ ask_secret() {
       input=$(gum input --password --header "$prompt" 2>/dev/null) || input=""
     else
       printf '\n \033[1m%s\033[0m\n > ' "$prompt" >&2
-      read -r -s input || no_more_input
+      # One * per character typed, so the operator can see the keyboard works.
+      # An older cached shared-functions.sh lacks _read_masked: read hidden then.
+      if declare -F _read_masked >/dev/null 2>&1; then
+        _read_masked input
+      else
+        read -r -s input || no_more_input
+      fi
       echo >&2
     fi
     [ -n "$input" ] && break
-    print warning "This cannot be left empty. Try again."
+    print warning "The password cannot be empty. Type it, then press enter."
   done
   printf -v "$__var" '%s' "$input"
 }
@@ -278,12 +295,12 @@ connect_ssh() {
                 -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 -p "$SSH_PORT")
       [ -n "$SSH_KEY" ] && [ -f "$SSH_KEY" ] && SSH_ARGS+=(-i "$SSH_KEY")
     fi
-    print info "Connecting to ${SSH_HOST}... (you may be asked for ${SSH_USER}'s password)"
+    print info "Connecting to ${SSH_HOST}. If asked, type the password of ${SSH_USER} on that server."
     if ssh -n "${SSH_ARGS[@]}" "${SSH_USER}@${SSH_HOST}" true; then
       print success "Connected"
       break
     fi
-    print warning "Could not connect to ${SSH_HOST}."
+    print warning "Could not connect to ${SSH_HOST}. Check the username, the address, the port, and the password."
     confirm "Try different details?" || exit 1
     SSH_HOST=""
   done
@@ -935,7 +952,7 @@ esac
 # Keep the configurable location supported by earlier releases, but create a
 # new child for every run. Reusing the location itself can leave a newer dump
 # from another source behind, and the restore would select that stale file.
-ask STAGING_ROOT "Where should the restore folder be created?" "/var/intelis-restore"
+ask STAGING_ROOT "Where should the restore folder be created?" "/var/intelis-restore" validate_full_path
 case "$STAGING_ROOT" in
   /*) ;;
   *) print error "The restore folder must be an absolute path, starting with /."; exit 1 ;;
@@ -1056,13 +1073,13 @@ else
     case "$name" in
       *.gpg)
         gpg_count=$((gpg_count + 1))
-        printf "  🔒 %s (encrypted — the key is needed to open it)\n" "$name"
+        printf "  🔒 %s (encrypted. The restore needs the key to open it.)\n" "$name"
         ;;
       *.zip)
         # Not tested here: a password-protected zip would stop to ask for the
         # password. db-tools opens it during the restore.
         gpg_count=$((gpg_count + 1))
-        printf "  🔒 %s (zip — opened during the restore)\n" "$name"
+        printf "  🔒 %s (zip. The restore opens it.)\n" "$name"
         ;;
       *.zst)
         if command -v zstd >/dev/null 2>&1; then
@@ -1133,8 +1150,16 @@ if [ -n "$LIS_PATH" ]; then
   echo
   # Require the backup name, not a generic yes. This is the last point at which
   # restoring the wrong lab's database over this one is still catchable.
+  # A typo asks again instead of ending the run. Only the exact name restores,
+  # and an empty answer stops without changing anything.
   restore_confirmation=""
-  ask_text restore_confirmation "" "Type ${CHOSEN} to confirm that this is the backup to restore"
+  print info "To restore, type the name exactly as shown. To stop, press enter."
+  while true; do
+    ask_text restore_confirmation "" "Type ${CHOSEN} to confirm that this is the backup to restore"
+    [ -z "$restore_confirmation" ] && break
+    [ "$restore_confirmation" = "$CHOSEN" ] && break
+    print error "'${restore_confirmation}' does not match ${CHOSEN}. Type it again, or press enter to stop."
+  done
   if [ "$restore_confirmation" = "$CHOSEN" ]; then
     # db-tools reads its settings from the current folder and runs as www-data.
     # It writes the safety copy to its profile's output folder (backups/db of
