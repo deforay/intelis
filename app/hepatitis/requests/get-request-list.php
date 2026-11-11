@@ -343,7 +343,9 @@ try {
           if (!$_POST['hidesrcofreq']) {
                $row[] = $actions . $barcode;
           }
-          $row[0] .= _sampleGroupingLabels($aRow['batch_code'] ?? null, $aRow['sample_package_code'] ?? null);
+          // A sample with no Sample ID yet shows its tags under the Remote Sample ID.
+          $idCell = trim((string) ($aRow['sample_code'] ?? '')) === '' && !$general->isStandaloneInstance() ? 1 : 0;
+          $row[$idCell] .= _sampleGroupingLabels($aRow['batch_code'] ?? null, $aRow['sample_package_code'] ?? null);
           $output['aaData'][] = $row;
      }
 
