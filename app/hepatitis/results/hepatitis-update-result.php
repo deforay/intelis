@@ -7,6 +7,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
+use App\Services\SampleAccessService;
 use App\Registries\ContainerRegistry;
 use App\Exceptions\SystemException;
 
@@ -30,6 +31,10 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var HepatitisService $hepatitisService */
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
+
 $hepatitisResults = $hepatitisService->getHepatitisResults();
 $testReasonResults = $hepatitisService->getHepatitisReasonsForTesting();
 $healthFacilities = $facilitiesService->getHealthFacilities('hepatitis');
@@ -41,14 +46,7 @@ $labTechniciansResults = $usersService->getActiveLabScopedUsers();
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = $_GET['id'] ?? null;
 
-if (empty($id)) {
-	header('Location: /hepatitis/results/hepatitis-manual-results.php');
-	exit;
-}
-
-$id = MiscUtility::desqid((string) $id);
 
 
 // get instruments
@@ -63,8 +61,13 @@ $comorbidityInfo = $hepatitisService->getComorbidityByHepatitisId($id);
 $riskFactorsData = $hepatitisService->getHepatitisRiskFactors();
 $riskFactorsInfo = $hepatitisService->getRiskFactorsByHepatitisId($id);
 
-$hepatitisQuery = "SELECT * FROM form_hepatitis WHERE hepatitis_id=?";
-$hepatitisInfo = $db->rawQueryOne($hepatitisQuery, [$id]);
+$hepatitisInfo = $sampleAccess->load('hepatitis', $_GET['id'] ?? null);
+$id = (int) $hepatitisInfo['hepatitis_id'];
+
+if (empty($id)) {
+	header('Location: /hepatitis/results/hepatitis-manual-results.php');
+	exit;
+}
 
 // A saved signer may now be outside the lab scope; keep them selectable so the
 // dropdown does not render blank and a re-save does not clear the value.

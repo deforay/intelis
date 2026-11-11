@@ -14,6 +14,7 @@ use App\Utilities\ListingFilterClauseBuilder;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use App\Services\SampleAccessService;
 use App\Utilities\MiscUtility;
 use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
@@ -39,6 +40,9 @@ try {
      /** @var TestRequestsService $testRequestsService */
      $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
      $testRequestsService->processSampleCodeQueue();
+
+     /** @var SampleAccessService $sampleAccess */
+     $sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
      $gconfig = $general->getGlobalConfig();
      $sarr = $general->getSystemConfig();
@@ -313,7 +317,7 @@ try {
           $row[] = $aRow['status_name'];
 
           if ($editRequest) {
-               $edit = '<a href="hepatitis-edit-request.php?id=' . base64_encode((string) $aRow[$primaryKey]) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+               $edit = '<a href="' . $sampleAccess->url('/hepatitis/requests/hepatitis-edit-request.php', (int) $aRow[$primaryKey]) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
                if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/hepatitis/requests/edit-locked-hepatitis-samples")) {
                     $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
                }

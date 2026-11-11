@@ -75,7 +75,7 @@ final class ClinicReportUtility
             'reason' => 'reason_for_hepatitis_test',
             'sampleTypeTable' => 'r_hepatitis_sample_type', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
             'page' => '/hepatitis/management/hepatitis-clinic-report.php',
-            'edit' => '/hepatitis/requests/hepatitis-edit-request.php', 'editId' => 'base64',
+            'edit' => '/hepatitis/requests/hepatitis-edit-request.php', 'editId' => 'sample',
             'print' => '/hepatitis/results/generate-result-pdf.php',
         ],
         'tb' => [

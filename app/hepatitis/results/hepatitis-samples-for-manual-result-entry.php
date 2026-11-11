@@ -11,6 +11,7 @@ use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\SampleAccessService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\HepatitisService;
@@ -28,6 +29,9 @@ try {
 
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
+
+     /** @var SampleAccessService $sampleAccess */
+     $sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
      $key = (string) $general->getGlobalConfig('key');
 
@@ -155,7 +159,7 @@ try {
      $hepatitisResults = $hepatitisService->getHepatitisResults();
      foreach ($rResult as $aRow) {
           $row = [];
-          $print = '<a href="/hepatitis/results/hepatitis-update-result.php?id=' . MiscUtility::sqid($aRow['hepatitis_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
+          $print = '<a href="' . $sampleAccess->url('/hepatitis/results/hepatitis-update-result.php', (int) $aRow['hepatitis_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/hepatitis/requests/edit-locked-hepatitis-samples")) {
                $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em> ' . _translate("Locked") . '</a>';
           }
